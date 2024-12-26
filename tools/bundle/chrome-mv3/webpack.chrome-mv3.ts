@@ -29,7 +29,11 @@ import { RulesetsInjector } from '@adguard/dnr-rulesets';
 import { genMv3CommonConfig } from '../webpack.common-mv3';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import { BUILD_ENV, FILTERS_DEST } from '../../constants';
+import {
+    AssetsFiltersBrowser,
+    BUILD_ENV,
+    FILTERS_DEST,
+} from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
 
@@ -83,7 +87,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
                         to: 'manifest.json',
                         transform: (content) => {
                             const filters = fs
-                                .readdirSync(FILTERS_DEST.replace('%browser', 'chromium-mv3'))
+                                .readdirSync(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3))
                                 .filter((filter) => filter.match(/filter_\d+\.txt/));
 
                             return updateManifestBuffer(

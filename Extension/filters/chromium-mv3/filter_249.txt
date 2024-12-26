@@ -1,13 +1,13 @@
-! Checksum: AkTcCERE4aO29kTaNyzDpA
+! Checksum: vjJ2LlcaUae2PzwYbIWp/A
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.74
-! TimeUpdated: 2024-10-10T17:01:50+00:00
+! Version: 2.0.7.83
+! TimeUpdated: 2024-12-07T13:01:48+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! Last modified: 10October2024v3
+! Last modified: 07December2024v1
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -63,14 +63,14 @@ bt.no##.perks-container
 matoppskrift.no##.text-center:not(:has(img))
 bilgalleri.dk###rightFloatingBanner
 veitingageirinn.is###mvp-leader-wrap
-arendalstidende.no#?#.wpb_wrapper:contains(/^An{2}onse:/)
-butikkoversikten.no#?#.lenkeboks:contains(/Cas\ino/i)
+arendalstidende.no#?#.wpb_wrapper:contains(/^An{2}onse:.*$/)
+butikkoversikten.no#?#.lenkeboks:contains(/^.*Cas\ino.*$/i)
 hwt.dk##.box.text-center
 hardwareonline.dk##.containerlefttop
 fcbarcelona.dk##.bluebox_headlines:has(div[id^=cncpt-rec])
 730.no,melkoghonning.no##.sidebar__section:has([class^=ad-unit])
 kreativeideer.no##.strossle-container
-eurosport.com,eurosport.ru,eurosport.com.tr,eurosport.co.uk,eurosport.io,eurosport.de,eurosport.fr,eurosport.it,eurosport.tv,eurosport.es,eurosport.co.in,eurosport.nl,eurosport.us,eurosport.pl,eurosport.ro,eurosport.com.ar,eurosport.rs,eurosport.se,eurosport.cz,eurosport.shop,eurosport.in.ua,eurosport.store,eurosport.dk,eurosport.hu,eurosport.no,eurosport.com.bd,eurosport.com.np,eurosport.fi,eurosport.lt,eurosport.cloud,eurosport.gov.bd,eurosport.pt,eurosport.bg,eurosport.ba,eurosport.com.pe,eurosport.gov.np##div[class$=-top-advert]
+eurosport.be,eurosport.bg,eurosport.co,eurosport.co.in,eurosport.co.uk,eurosport.com,eurosport.com.bd,eurosport.com.cn,eurosport.com.np,eurosport.com.tr,eurosport.com.ua,eurosport.cz,eurosport.de,eurosport.dk,eurosport.es,eurosport.fi,eurosport.fr,eurosport.hu,eurosport.in.ua,eurosport.io,eurosport.it,eurosport.live,eurosport.nl,eurosport.no,eurosport.pl,eurosport.pt,eurosport.ro,eurosport.rs,eurosport.ru,eurosport.se,eurosport.shop,eurosport.su,eurosport.tv##div[class$=-top-advert]
 fcbarcelona.dk###advert
 lokalavisen.dk##div[class=" margin-top-lg "]:has(.custom-ad-container)
 guloggratis.dk##.bannerHookTop
@@ -83,15 +83,15 @@ spillespill.no##.push
 kart.1881.no##.panel-ad-skyscraper
 byggebolig.no#$#body[style^=padding] { padding-top: 80px !important }
 1881.no###dimmer_ad
-skolediskusjon.no#?#iframe[src*="://ads."]:upward(1)
+skolediskusjon.no##*:has(>iframe[src*="://ads."])
 presse-fotos.dk##div[data-is-absolute-layout][style^="top:;"]
 guloggratis.dk##.adservering-container
 edbpriser.dk#$#.product-list-row .description { position: static !important; word-break: break-word !important }
 vl.no##.ad-cols
 nakenprat.com##.threadbit:not([id])
-itavisen.no#?#article:has(.title:contains(/[?:;—]\san{2}ons[eø]r?$/))
+itavisen.no#?#article:has(.title:contains(/^.*[?:;—]\san{2}ons[eø]r?$/))
 extraavisen.no##.extra-adlabel
-tunnelsyn.no#?#.widget_media_image:contains(/^AN{2}ONSE/)
+tunnelsyn.no#?#.widget_media_image:contains(/^AN{2}ONSE.*$/)
 byggebolig.no##.maestro-content-plugins
 onlineposten.dk###header
 melkoghonning.no##.g
@@ -102,7 +102,7 @@ byggebolig.no##.maestro-content-plugins + div[style]
 gulesider.no##aside > .h-fit.p-4
 netdoktor.dk##.common-advert-bold
 digi.no##.commercial
-dfly.no#?#.sidebar-ad:upward(1)
+dfly.no##*:has(>.sidebar-ad)
 vg.no##.betting-widgets
 verktoy24.no##.g-dyn > p
 ksu.no##.center.size-100:not(.nopaddingall)
@@ -120,7 +120,7 @@ fodboldspilleren.dk##a[href*=tjen-penge]
 ekstrabladet.dk###manipulate_monster
 superchat.dk###topbanner_container
 dn.no##[id^=dn_toppbanner]
-ehandel.com,ehandel.se,ehandel.com.bd,ehandel.at,ehandel.com.np,ehandel.gov.bd,ehandel.gov.np##.article-sponsored
+ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz##.article-sponsored
 viralefilmer.no##.td_module_wrap:has(a[href*=automat])
 version2.dk,ing.dk,techmanagement.dk,radar.dk##div:not([class]) > .jobs-wrapper
 bilnorge.no,yrkesbil.no###nettboard_art1
@@ -129,6 +129,8 @@ tvkampen.com,tvsporten.dk##.tvg-manager-tracking-event
 vredens-gnag.no##.ab-appnexus-ads-wrapper
 spillespill.no##.banner-leaderboard
 tvkampen.com,tvsporten.dk###clickable-bg
+tvsporten.dk##a[href^="/_c/"][rel=nofollow]
+tvsporten.dk##.odds
 aftenposten.no##.container > div[class=block]
 xstra.no##.td-fix-index
 tek.no#?#main > section > section:contains(/^an{2}onse$/)
@@ -140,7 +142,7 @@ nakenprat.com#%#//scriptlet('ubo-aopr.js', 'document.dispatchEvent')
 gaffa.no##.ad-continues-txt
 spill.no##.footer_widget.widget-3
 dagensbyggeri.dk##div.no-print.hidden-xs.row
-itavisen.no#?#.comcontent:upward(1)
+itavisen.no##*:has(>.comcontent)
 markedsforing.dk##.acf-block
 qxl.*#$##whitetop { margin-top: 0px !important }
 123mc.dk##.text-center.sidebar-module-inset
@@ -158,7 +160,7 @@ kyst.no,skipsrevyen.no##.disableFocus > .kbSkip + .container
 filmz.dk##.page-top-wrapper
 veitingageirinn.is##.mvp-flex-ad:has(img[width="300"])
 teknologiskmatforum.no##.page-home__logos-sidebar
-arendalstidende.no#?#div[style^=font-size]:contains(/^An{2}onse:/)
+arendalstidende.no#?#div[style^=font-size]:contains(/^An{2}onse:.*$/)
 e24.no##div[data-placement^=native_in_text_]
 startsidendin.no##a[href*=blackjack]
 recordere.dk##.textwidget > div:has(script)
@@ -186,7 +188,7 @@ finn.no###afshcontainer
 localeyes.dk,karfan.is##.td-header-rec-wrap
 historienet.no,iform.dk##.responsive-images
 fodboldspilleren.dk###footer-widgets
-ni.dk#?#script[data-adfscript]:upward(1)
+ni.dk##*:has(>script[data-adfscript])
 eikernytt.no##[href*="eikernytt.no/linkout/"]
 tu.no,digi.no#?#article~div:contains(/^A[n|ĳ]n\ons/i)
 yrkesbil.no##td:has(img[src="gifs/1pix.gif"])
@@ -196,16 +198,16 @@ sonderborgnyt.dk#%#//scriptlet('ubo-ra.js', 'data-track')
 tipsbladet.dk##.h-background-color-gray-background
 qxl.*#$#.n_ListHeader { margin-top: 5px !important }
 nordlysid.fo##.adgroup--component[collapse=vertical]
-fodboldspilleren.dk#?#.et_section_regular:contains(/cas\ino/i)
+fodboldspilleren.dk#?#.et_section_regular:contains(/^.*cas\ino.*$/i)
 lydogbilde.no,lydogbillede.dk##.hidead
 xlmoto.no##.sb-overlay
 gamer.no##div[data-unit$=banner]
-180.com,180.net,180.com.au,180.co,180.gr,180.fr,180.me,180.by,180.co.za,180.co.il,180.eu,180.ch,180.co.jp,180.se,180.live,180.tw,180.dk,180.no,180.com.bd,180.ie,180.com.np,180.fi,180.vip,180.gov.bd,180.com.uy,180.gov.np##.ad-min-height
+180.at,180.cc,180.co.il,180.co.in,180.co.jp,180.co.uk,180.co.za,180.com,180.com.bd,180.com.np,180.com.ua,180.com.uy,180.dk,180.fi,180.fr,180.gg,180.gr,180.mn,180.net.au,180.nl,180.no,180.org,180.org.uk,180.pl,180.se##.ad-min-height
 sysla.no##.ad-nexus-ad
-bilasolur.is#?#div[class*=advertisement-spot]:upward(1)
+bilasolur.is##*:has(>div[class*=advertisement-spot])
 filmweb.no##[class^=ad_adWrapper]
 tvkampen.com##.odds
-elbil24.no#?#.preview:has(.kicker:contains(/an{2}onse/i))
+elbil24.no#?#.preview:has(.kicker:contains(/^.*an{2}onse.*$/i))
 tvkampen.com,tvsporten.dk###event_banner
 pulze.dk###topads
 sorlandsavisen.no#?#div:has(> span:contains(Annonse))
@@ -214,12 +216,12 @@ travservice.dk##.tm-main-top
 pent.no##div:not([class]) > div:empty
 vl.no##.ad-fullwidth-container
 gaffa.dk##.sticky-banner-wrapper
-qxl.org,qxl.io,qxl.co,qxl.ca,qxl.jp,qxl.eu,qxl.es,qxl.com.bd,qxl.asia,qxl.com.np,qxl.gov.bd,qxl.com.ph,qxl.gov.np###lauritzListingView
+qxl.com.bd,qxl.com.np,qxl.dk,qxl.in,qxl.it,qxl.vip,qxl.win###lauritzListingView
 langrenn.com##div[id^=bannerlocation]
 folketidende.dk##.block:has(> div[id^=jourbox] > iframe[src*=readpeak])
 finn.no##.ads__unit--banner
 bt.no##div[class^=article-wrapper-] > div[class^=_]
-nettavisen.no#?#amedia-include[param-editionid=reklame]:upward(1)
+nettavisen.no##*:has(>amedia-include[param-editionid=reklame])
 sundhedslex.dk##.boxl
 costume.no##.teaser--link:has(.teaser__cat--sponsorlabel)
 mytastenor.com,mytastednk.com##.affiliate
@@ -229,14 +231,14 @@ nattogdag.no##.category-annonse
 norskemagasinet.com##a[href*=nett][href*=spill]
 itavisen.no##.ad::before
 udeoghjemme.dk##section[class^=bg-brown-]:has(.text-center)
-intrafish.com,intrafish.no,intrafish.com.bd,intrafish.com.np,intrafish.gov.bd,intrafish.gov.np##.text-center.mb-3
+intrafish.com,intrafish.com.bd,intrafish.com.np,intrafish.no##.text-center.mb-3
 aarhusupdate.dk##.adslot-tag
 forum.kvinneguiden.no##.ehm-megaboard
 shareholders.dk###right_section
 startsiden.no##[class*=adStyles]
-dfly.no#?#.container-footer-ad:upward(1)
+dfly.no##*:has(>.container-footer-ad)
 vg.no##div[class^=Ad_root_]
-veitingageirinn.is#?#.mvp-widget-home:contains(/^Velun{2}arar/)
+veitingageirinn.is#?#.mvp-widget-home:contains(/^Velun{2}arar.*$/)
 flyprat.no###header_right_cell
 installator.dk##.banner-hidden
 abcnyheter.no##div[class^=AdSlot__]
@@ -246,7 +248,7 @@ gamer.no#?#.entrance:has(.entrance__mark__text:contains(Annonse:))
 tek.no#$#section[hidden] + section { column-count: 3 !important; width: 100% !important }
 gamer.no##.posta-placeholder
 tu.no,digi.no##.grid > div:not([class*=" "]):has(> div[class$=" "])
-kanalfrederikshavn.dk#?#.boxbanner:upward(2)
+kanalfrederikshavn.dk##*:has(>*>.boxbanner)
 norskkalender.no##.spacerDesktop
 fl-arena.de##.do_not_print.article_teaser_no_border
 itavisen.no##.itavi-after-content
@@ -270,10 +272,10 @@ gamer.no##.col-12:has(> betting-matchup)
 eyjar.net##.hausad
 baeredygtigtfiskeri.dk##div[data-element_type=widget][data-widget_type="search-form.default"] ~ div[data-element_type=widget][data-widget_type="image.default"]
 baeredygtigtfiskeri.dk##div[data-element_type=widget][data-widget_type="search-form.default"] ~ div[data-element_type=widget][data-widget_type="heading.default"]:has(+ div[data-widget_type="image.default"])
-baeredygtigtfiskeri.dk#?#section.elementor-top-section:contains(/\s\sAnnoncer?\s\s/i) + section.elementor-top-section:has(.elementor-image > [loading=lazy])
-baeredygtigtfiskeri.dk#?#section.elementor-top-section:contains(/\s\sAnnoncer?\s\s/i):has(+ section.elementor-top-section .elementor-image > [loading=lazy])
+baeredygtigtfiskeri.dk#?#section.elementor-top-section:contains(/^.*\s\sAnnoncer?\s\s.*$/i) + section.elementor-top-section:has(.elementor-image > [loading=lazy])
+baeredygtigtfiskeri.dk#?#section.elementor-top-section:contains(/^.*\s\sAnnoncer?\s\s.*$/i):has(+ section.elementor-top-section .elementor-image > [loading=lazy])
 fiskerforum.dk##section[class*=_slider]:has([class*=banner-ads])
-fiskerforum.dk#?#.elementor-widget-text-editor:contains(/\s\sANNONCER\s\s/)
+fiskerforum.dk#?#.elementor-widget-text-editor:contains(/^.*\s\sANNONCER\s\s.*$/)
 fiskerforum.dk##div[data-elementor-type=wp-post] section[class*=_slider]:has(.elementor-size-default > a)
 fiskerforum.dk##section:has(.elementor-row > div:only-of-type div[id*=ezoic])
 netnatur.dk##.widget:has(.g-single)
@@ -301,7 +303,7 @@ trinesmatblogg.no##.sidebar__widget--ad
 sn.dk##.first_paragraph_banner
 kondis.no##.articles .bannerlocation
 folketidende.dk##.block:has(> .adblock)
-parcferme.no#?#ins[data-revive-zoneid]:upward(2)
+parcferme.no##*:has(>*>ins[data-revive-zoneid])
 holdsport.dk##.article:has(a[href*=spillemaskin])
 liverpool.no##.ot-ad
 allematpriser.no##.bottom-center-box
@@ -309,7 +311,7 @@ borsen.dk##.native-ads
 feltet.dk##.box_300_default
 cw.no##.ad-displace-sidebar::before
 sistenytt.com###midten
-tv2.no,gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##.sponsor
+tv2.no,gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##.sponsor
 tek.no#$#main { min-height: unset !important }
 itavisen.no#?#article:has(.title:contains( – annonse))
 digi.no##.carpet
@@ -342,7 +344,7 @@ digi.no##main > .hidden
 livescore.dk###betting_offer
 dagbladet.no##main > div[class^=Row-] > div[class^=Column-]:last-of-type
 abcnyheter.no##.c-ad--adStickyContainer
-dagbladet.no,sol.no#?#.adunit:upward(1)
+dagbladet.no,sol.no##*:has(>.adunit)
 aftenbladet.no###weather-provider-url
 lifdununa.is##.widget:has(.ads)
 klikk.no##div[id^=lpc_belowArticle]
@@ -355,7 +357,7 @@ transitmag.no,onlineposten.dk##.textwidget
 femina.dk##.mb-30.bg-grey-100
 madridista.dk##.uk-panel-box:has(a[href*=casino])
 bvbnorge.no##.wsite-spacer
-united.no#?#.fl-visible-desktop-medium:has(div[class^=ann-forside]:contains(/An{2}onse:/))
+united.no#?#.fl-visible-desktop-medium:has(div[class^=ann-forside]:contains(/^.*An{2}onse:.*$/))
 gjerrigknark.com##.dividerBlock:not(.clearfix)
 version2.dk###headersub
 herognu.dk##div[id^=herognu_]
@@ -378,13 +380,13 @@ onlineaviser.no##table[width^="7"]:first-of-type:has(a[href*=tradedoubler])
 ##.annonselenker:not(html,body,:empty)
 samferdselinfra.no##div[class="ct-div-block "]:last-of-type
 diskusjon.no##.prisguide-content
-google.com,google.ru,google.net,google.org,google.in,google.com.au,google.com.tr,google.co.uk,google.io,google.co,google.gr,google.ca,google.com.ua,google.vn,google.info,google.de,google.fr,google.me,google.by,google.jp,google.xyz,google.ua,google.com.tw,google.co.za,google.co.il,google.eu,google.it,google.id,google.com.br,google.es,google.ch,google.co.in,google.kz,google.com.vn,google.biz,google.co.id,google.nl,google.us,google.pl,google.cl,google.com.mx,google.ro,google.co.jp,google.co.nz,google.ma,google.com.ar,google.site,google.cc,google.rs,google.cn,google.ae,google.co.kr,google.mx,google.pk,google.se,google.com.my,google.cz,google.lk,google.tw,google.ai,google.com.sg,google.top,google.gov,google.com.co,google.co.th,google.be,google.store,google.dk,google.hu,google.az,google.am,google.uz,google.com.pk,google.news,google.md,google.com.hk,google.ge,google.sg,google.my,google.no,google.com.bd,google.to,google.dev,google.mk,google.com.ng,google.ie,google.asia,google.at,google.co.ke,google.com.np,google.ph,google.fi,google.tk,google.lv,google.pe,google.sk,google.ng,google.lt,google.tn,google.hk,google.link,google.cloud,google.gov.bd,google.website,google.kr,google.sa,google.pt,google.gg,google.com.ph,google.hr,google.bg,google.com.sa,google.mn,google.ws,google.ee,google.one,google.uk,google.kg,google.ba,google.com.pe,google.al,google.fm,google.ml,google.dz,google.org.il,google.is,google.com.uy,google.gov.np,google.or.id,google.si,google.gen.tr,google.ga,google.sh###cnsi ~ [jsaction*=dismiss]
+google.ae,google.ai,google.al,google.am,google.at,google.az,google.ba,google.be,google.bg,google.biz,google.by,google.ca,google.cc,google.ch,google.ci,google.cl,google.cloud,google.cn,google.co,google.co.id,google.co.il,google.co.in,google.co.jp,google.co.ke,google.co.kr,google.co.nz,google.co.th,google.co.uk,google.co.za,google.com,google.com.ar,google.com.au,google.com.bd,google.com.br,google.com.co,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.np,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.uy,google.com.vn,google.cz,google.de,google.dev,google.dk,google.dz,google.ee,google.es,google.eu,google.fi,google.fm,google.fr,google.ga,google.ge,google.gen.tr,google.gg,google.gr,google.hk,google.hr,google.hu,google.id,google.ie,google.in,google.info,google.io,google.ir,google.is,google.it,google.jp,google.kg,google.kr,google.kz,google.lk,google.lt,google.lv,google.ma,google.md,google.me,google.mk,google.ml,google.mn,google.mx,google.my,google.net,google.news,google.ng,google.nl,google.no,google.one,google.online,google.or.id,google.org,google.org.il,google.pe,google.ph,google.pk,google.pl,google.pt,google.ro,google.rs,google.ru,google.sa,google.se,google.sg,google.sh,google.si,google.site,google.sk,google.space,google.store,google.su,google.tech,google.tk,google.tn,google.to,google.tv,google.tw,google.ua,google.uk,google.us,google.uz,google.vn,google.ws###cnsi ~ [jsaction*=dismiss]
 kanalen.no##.bannergroup
 kulturportalen.dk##.banner-block
 no.afterdawn.com#$##ad-top-banner-placeholder { min-height: 0px !important }
 erotikmix.dk##.hustle-slidein
 videnskab.dk##.topbanner_wrapper
-bilgalleri.dk#?#a[href*=casino]:upward(3)
+bilgalleri.dk##*:has(>*>*>a[href*=casino])
 tek.no##section[class*=canvas]
 vimedhund.dk,madogvenner.dk##.g-ads
 holdsport.dk##.article:has(a[href*=betting])
@@ -393,7 +395,7 @@ fcbarcelona.dk###rightcolumn
 boligpluss.no##.article-footer + .wg-editorial
 portal.fo###top_vev
 nettavisen.no##optimus-element:has(a[href*="://norsk-tipping."],a[href^="/shoppingtips/"])
-byggenytt.no#?#.home-ads:upward(1)
+byggenytt.no##*:has(>.home-ads)
 gamer.no,tu.no#%#//scriptlet('ubo-acis.js', 'dfpConfig', 'loadAds')
 telefonterror.co.no,ukendtnummer.dk##.ad-comments
 tiendeo.no###header-standard-container
@@ -421,7 +423,11 @@ abcnyheter.no#$#.container-newsfeed + section .c-teaser__image { max-height: non
 gaming.dk##div[style^="width: 370px; "]
 vgtv.no#$#.page-container { margin-top: 0 !important }
 minervanett.no##.row:has(> .adnuntius-ad)
-180.com,180.net,180.com.au,180.co,180.gr,180.fr,180.me,180.by,180.co.za,180.co.il,180.eu,180.ch,180.co.jp,180.se,180.live,180.tw,180.dk,180.no,180.com.bd,180.ie,180.com.np,180.fi,180.vip,180.gov.bd,180.com.uy,180.gov.np##td[class^=frame-shadow-]
+ukenr.no,ugenr.dk#$#body[class*=addemam] > #navbar { padding-bottom:0!important }
+ukenr.no,ugenr.dk#$#body[class*=addemam] > h1#title { padding-bottom:0!important }
+ukenr.no,ugenr.dk#$#body[class*=addemam] > #navbar > #print { padding-bottom:0!important }
+ukenr.no,ugenr.dk##.bannerad:not(empty)
+180.at,180.cc,180.co.il,180.co.in,180.co.jp,180.co.uk,180.co.za,180.com,180.com.bd,180.com.np,180.com.ua,180.com.uy,180.dk,180.fi,180.fr,180.gg,180.gr,180.mn,180.net.au,180.nl,180.no,180.org,180.org.uk,180.pl,180.se##td[class^=frame-shadow-]
 bilbasen.dk##.nmp-ads-layout__top
 vg.no,bt.no##div[id^=adPlacement]
 nyheder24.dk##div[id^=taboola-right-rail-thumbnails-]
@@ -433,12 +439,12 @@ viralefilmer.no##.td_module_wrap:has(a[href*=casino])
 ni.dk###related-i
 123mc.dk##.padtop15.row
 bypatrioten.com,ligeher.nu##.banner.ad
-gamer.no#?#div[data-name=gamer_toppbanner]:upward(1)
+gamer.no##*:has(>div[data-name=gamer_toppbanner])
 prissok.no##.internal-poster
 itavisen.no##article.clearfix:has(a[href*="/go/"])
 bold.dk###dstop
 gulesider.no##.PartnerLinks
-dn.no#?#div[data-placeholder=lantern_placeholder_ad]:upward(2)
+dn.no##*:has(>*>div[data-placeholder=lantern_placeholder_ad])
 tek.no##div[class^=styles__]
 bilnorge.no##td[colspan="7"][style]
 nyheder.tv2.dk##.o-article_sidebar > div.g-item
@@ -458,20 +464,20 @@ frisms.nu##.numbered-phones
 dv.is##.ticker
 maskinbladet.dk##.megaboard-inner
 lindaben.is##.h-banner
-dagens.dk#?#a[href*=".bedrageri.com/"]:upward(2)
+dagens.dk##*:has(>*>a[href*=".bedrageri.com/"])
 golferen.no###smallboard
 m.feltet.dk##.banner_mobile
 audlindin.is,utvarpsaga.is##.g-dyn
 e24.no##.row-with-bottom-border:has(.ad-wrap)
 bramat.no##.scs-banner
 vartoslo.no##.vo-annonse
-gamer.no#?#:not(main,div,header,footer) > * > [data-uname="gamer_toppbanner"]:upward(2)
+gamer.no##*:not(main,div,header,footer):has(>*>[data-uname=gamer_toppbanner])
 gamer.no##.deal-container:has(a[href*="prisjakt.no"])
 gamer.no##div > .entrance:has(> a[href*="/annonser/"])
 gamer.no##div > .entrance:has(> a[href*="/stilling/"])
 gamer.no##[data-uname=gamer_artikkelboard]
-gamer.no#?#div > [data-uname^=gamer_midtbanner]:only-of-type:upward(1)
-kendte.dk#?#.list-group:contains(/cas\ino/i)
+gamer.no##div:has(>[data-uname^=gamer_midtbanner]:only-of-type)
+kendte.dk#?#.list-group:contains(/^.*cas\ino.*$/i)
 feltet.dk##p[style^=" color:#bbb;"]
 tv-kalundborg.dk##div.col-s-100.col-50:nth-of-type(2)
 sveip.no##.notnews
@@ -484,14 +490,14 @@ presse-fotos.dk##div[data-testid=richTextElement]:has(span[style="color:#A0A09F;
 oppdrettstorget.no##.index_extadsm
 gaysir.no##.ad_wrapper_content
 tvkampen.com,tvsporten.dk##div[data-hbwrap]
-kimbino.com,kimbino.com.au,kimbino.com.tr,kimbino.co.uk,kimbino.gr,kimbino.ca,kimbino.com.ua,kimbino.de,kimbino.fr,kimbino.jp,kimbino.co.za,kimbino.co.il,kimbino.it,kimbino.id,kimbino.com.br,kimbino.es,kimbino.ch,kimbino.nl,kimbino.pl,kimbino.cl,kimbino.ro,kimbino.com.ar,kimbino.mx,kimbino.se,kimbino.cz,kimbino.com.co,kimbino.be,kimbino.dk,kimbino.hu,kimbino.no,kimbino.com.bd,kimbino.at,kimbino.com.np,kimbino.fi,kimbino.pe,kimbino.sk,kimbino.ng,kimbino.gov.bd,kimbino.kr,kimbino.pt,kimbino.hr,kimbino.bg,kimbino.gov.np,kimbino.si##.signad
+kimbino.at,kimbino.be,kimbino.bg,kimbino.ca,kimbino.ch,kimbino.cl,kimbino.co,kimbino.co.za,kimbino.com,kimbino.com.ar,kimbino.com.au,kimbino.com.bd,kimbino.com.br,kimbino.com.co,kimbino.com.np,kimbino.com.tr,kimbino.com.ua,kimbino.cz,kimbino.de,kimbino.dk,kimbino.es,kimbino.fi,kimbino.fr,kimbino.gr,kimbino.hr,kimbino.hu,kimbino.id,kimbino.it,kimbino.jp,kimbino.kr,kimbino.lt,kimbino.mx,kimbino.ng,kimbino.nl,kimbino.no,kimbino.pe,kimbino.pl,kimbino.pt,kimbino.ro,kimbino.rs,kimbino.se,kimbino.si,kimbino.sk,kimbino.tv,kimbino.xyz##.signad
 tu.no##div[class*=-ads-wrapper i]
-glr.no#?#.bottomSmallSpaced.topMediumSpaced:contains(/^An{2}onse/)
-manuall.co.uk,manuall.gr,manuall.com.ua,manuall.vn,manuall.de,manuall.fr,manuall.jp,manuall.xyz,manuall.eu,manuall.it,manuall.es,manuall.ch,manuall.pl,manuall.ro,manuall.ae,manuall.se,manuall.cz,manuall.dk,manuall.hu,manuall.no,manuall.com.bd,manuall.com.np,manuall.fi,manuall.lv,manuall.sk,manuall.lt,manuall.gov.bd,manuall.kr,manuall.pt,manuall.hr,manuall.bg,manuall.ee,manuall.gov.np,manuall.si##form + div[style^="border-style:solid; "]
+glr.no#?#.bottomSmallSpaced.topMediumSpaced:contains(/^An{2}onse.*$/)
+manuall.ae,manuall.bg,manuall.co,manuall.co.uk,manuall.com.bd,manuall.com.np,manuall.com.ua,manuall.cz,manuall.de,manuall.dk,manuall.es,manuall.eu,manuall.fi,manuall.fr,manuall.gr,manuall.hr,manuall.hu,manuall.in,manuall.it,manuall.jp,manuall.kr,manuall.lt,manuall.lv,manuall.no,manuall.pl,manuall.pt,manuall.ro,manuall.se,manuall.si,manuall.sk,manuall.vn##form + div[style^="border-style:solid; "]
 kommunikationsforum.dk##.col-xs-12[style]
-thaiguiden.no#?#.adsbygoogle:upward(5)
+thaiguiden.no##*:has(>*>*>*>*>.adsbygoogle)
 krs247.no##.prl-span-12 + h5
-jumpb.dk#?#strong:contains(/Cas\ino/i)
+jumpb.dk#?#strong:contains(/^.*Cas\ino.*$/i)
 spillespill.no###bannerAdmeenRectangleTopContainer
 e24.no##a[href*="/go.click?"]
 treningsforum.no##.ad.netboard
@@ -499,9 +505,15 @@ liverpool.no##.spklw-post-attr[data-content-source]
 spurt.no##.typology-ad
 ekstrabladet.dk##.advertorials
 gastrofun.dk##div[id^=block-steprectangle]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##div[class^=ad_Bumper i]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##div[class^=ad_Bumper i]
 dba.dk##.marketing-container
 koplr.no##.column-banner-ads
+ejendomswatch.dk##div[data-sentry-component$=Ad]
+ejendomswatch.dk##div[class*=":hidden"]:has(>aside[data-label=Annonce i])
+krak.dk##.grid.place-items-center:has(div[data-adunitid])
+estatemedia.dk##.banner
+365design.dk##.dominans-wrapper
+sydsverige.dk##div[class*=-banner i]:not(:empty)
 tilbudmaskin.no##.rek-container
 babyklar.dk##.top_header
 gratiskryssord.no##.adSign
@@ -509,20 +521,20 @@ vg.no##div[id^=ad-front-netboard_]
 dagbladet.no,sol.no##[class^=AdPrefix-]
 purehelp.no##.float-left:has(span[id^=ezoic-pub-ad-placeholder-])
 bilgalleri.dk##.container-featured + .container:last-of-type
-180.com,180.net,180.com.au,180.co,180.gr,180.fr,180.me,180.by,180.co.za,180.co.il,180.eu,180.ch,180.co.jp,180.se,180.live,180.tw,180.dk,180.no,180.com.bd,180.ie,180.com.np,180.fi,180.vip,180.gov.bd,180.com.uy,180.gov.np##.cc-top-ad-outer
+180.at,180.cc,180.co.il,180.co.in,180.co.jp,180.co.uk,180.co.za,180.com,180.com.bd,180.com.np,180.com.ua,180.com.uy,180.dk,180.fi,180.fr,180.gg,180.gr,180.mn,180.net.au,180.nl,180.no,180.org,180.org.uk,180.pl,180.se##.cc-top-ad-outer
 jyllands-posten.dk##div[id^=MediumRectangle]
 verktoy24.no,inputmag.dk##.stream-item
 vielskerserier.dk,udeoghjemme.dk##div.hidden.justify-center
-gunnarandreassen.com#?#a:contains(/[kc]as\ino/i)
+gunnarandreassen.com#?#a:contains(/^.*[kc]as\ino.*$/i)
 parcferme.no##.code-block > p
 boligdebatten.dk###selvsalg-reklame
-tv3.dk##.channelHeaderLogo
+tv3.dk##.channelHeaderLogo:not(:empty)
 jn.fo##.lysingarspot
 kulturnet.dk##.col-md-4:has(a[href*=casino])
 dusken.no##.ad-in-column
 midtsiden.no##div[class^=CustomBlock__Container-]
 mbl.is#$#.container { margin-top: 0 !important }
-momondo.com,momondo.ru,momondo.net,momondo.in,momondo.com.au,momondo.com.tr,momondo.co.uk,momondo.co,momondo.ca,momondo.com.ua,momondo.info,momondo.de,momondo.fr,momondo.by,momondo.jp,momondo.xyz,momondo.ua,momondo.co.za,momondo.online,momondo.it,momondo.com.br,momondo.es,momondo.ch,momondo.co.in,momondo.kz,momondo.nl,momondo.pro,momondo.pl,momondo.cl,momondo.ro,momondo.co.nz,momondo.com.ar,momondo.rs,momondo.ae,momondo.mx,momondo.se,momondo.cz,momondo.live,momondo.tw,momondo.com.co,momondo.be,momondo.dk,momondo.no,momondo.com.bd,momondo.ie,momondo.asia,momondo.at,momondo.com.np,momondo.fi,momondo.life,momondo.sk,momondo.lt,momondo.hk,momondo.link,momondo.gov.bd,momondo.pt,momondo.ee,momondo.com.pe,momondo.gov.np##.type-provider.clearfix.flights
+momondo.ae,momondo.asia,momondo.at,momondo.be,momondo.by,momondo.ca,momondo.ch,momondo.cl,momondo.co,momondo.co.in,momondo.co.kr,momondo.co.nz,momondo.co.uk,momondo.co.za,momondo.com,momondo.com.ar,momondo.com.au,momondo.com.bd,momondo.com.br,momondo.com.co,momondo.com.np,momondo.com.pe,momondo.com.tr,momondo.com.ua,momondo.cz,momondo.de,momondo.dk,momondo.ee,momondo.es,momondo.fi,momondo.fr,momondo.hk,momondo.id,momondo.ie,momondo.in,momondo.it,momondo.lt,momondo.mx,momondo.net,momondo.nl,momondo.no,momondo.online,momondo.org,momondo.pk,momondo.pl,momondo.pt,momondo.ro,momondo.ru,momondo.se,momondo.site,momondo.sk,momondo.store,momondo.tech,momondo.tw,momondo.ua,momondo.us,momondo.xyz##.type-provider.clearfix.flights
 fjellforum.no##.ipsWidget:has([src*="amazonaws.com"])
 magasinetskolen.dk##.region-sidebar-first > .clearfix > .first
 e24.no##.teaser__preview
@@ -540,7 +552,7 @@ sognavis.no##.row.hidden-print:not(.vspace)
 dagens.dk##.col-300 > .wrapper-sticky:has(a[href*=casino])
 xlmoto.no##.overlay-container
 matoppskrift.no###sticky
-leinstrand-il.no#?#.latestnews-box:contains(/cas\ino/i)
+leinstrand-il.no#?#.latestnews-box:contains(/^.*cas\ino.*$/i)
 tipsbladet.dk##.c-single__box-inset
 tv2.no##.esi-include
 finn.no##.banners
@@ -557,19 +569,19 @@ voguescandinavia.com##div[class^=AdssetsAd_]
 klikk.no##.gpt-sticky
 godstart.dk###ad_PageBottom
 tv2.no##div[id^=module-]:has(div[data-adslot^=fullscreen-])
-margit-henriksen.dk,thura.dk#?#.blog-post:contains(/cas\ino/i)
+margit-henriksen.dk,thura.dk#?#.blog-post:contains(/^.*cas\ino.*$/i)
 bo-bedre.no,bobedre.dk##.mb-50.text-center
 abcnyheter.no###commercial
 digi.no##.items-center.mx-auto
-kendte.dk#?##taboola-above-article-thumbnails:upward(1)
+kendte.dk##*:has(>#taboola-above-article-thumbnails)
 gamer.no##[class^=ad-placeholder]
-tek.no#?##topboard:upward(1)
+tek.no##*:has(>#topboard)
 itavisen.no##.block-wrap-columns
-730.no#?#.gofollow:upward(3)
+730.no##*:has(>*>*>.gofollow)
 amino.dk###top-shadow-pad
 eavisa.com##.custom-a-ds
 bt.no###topstripes
-teknologia.no#?#.one-half:contains(/[kc]as\ino/i)
+teknologia.no#?#.one-half:contains(/^.*[kc]as\ino.*$/i)
 e24.no##div[class^=article-wrapper] > div[class^=_][class*=" "]
 fcbarcelona.dk###bottom_footer
 elmagasinet.no##.SkyskraperWrapper
@@ -595,7 +607,7 @@ trening.no##.mb-top-banner-wrapper
 ##div[data-placeholder*=placeholder_ad]:not(body,:empty)
 hjartalif.is##.tdc-row:not(:has(a))
 daria.no##.container[style*=" solid "]
-edbpriser.dk#?#div[id^=leftAdSpotAdcontainer]:upward(2)
+edbpriser.dk##*:has(>*>div[id^=leftAdSpotAdcontainer])
 digi.no##div[class*=ads-wrapper]
 indkast.dk##.flat
 bold.dk##._adr_abp_container
@@ -612,13 +624,13 @@ norskemagasinet.com##a[href*=freespin]
 fodbold-transfers.dk##.post-content > p:has(a[href*=casino])
 livescore.dk##div[style^="padding:5px; "]
 bilnorge.no###artikkel300x250right
-viaplay.com,viaplay.tv,viaplay.nl,viaplay.pl,viaplay.se,viaplay.dk,viaplay.no,viaplay.com.bd,viaplay.com.np,viaplay.fi,viaplay.lv,viaplay.lt,viaplay.cloud,viaplay.gov.bd,viaplay.ee,viaplay.is,viaplay.gov.np##.interaction-block
+viaplay.com,viaplay.com.bd,viaplay.com.np,viaplay.dk,viaplay.ee,viaplay.fi,viaplay.is,viaplay.live,viaplay.lt,viaplay.lv,viaplay.nl,viaplay.no,viaplay.pl,viaplay.se,viaplay.sk,viaplay.tv,viaplay.xyz##.interaction-block
 gamer.no##.feed--commercial
 golferen.no##.os_big_board_box
 hockeymagasinet.dk##.ss-left-sky-reclam
 nord-salten.no##ul:has(.columnLogo)
 startsiden.no##a[id^=desked-section-][rel=nofollow]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##.itsanad
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##.itsanad
 extraavisen.no##figure.wp-caption
 gamer.no##article ~ .text-center
 tu.no##.carpet
@@ -629,7 +641,7 @@ gamer.no##.col-lg-7:has(+ article)
 bilbasen.dk##.vip-finance
 bikelifenorge.no##.dannys-ad-container
 intrafish.no##.row > .d-lg-block
-prisjakt.co.uk,prisjakt.io,prisjakt.co,prisjakt.de,prisjakt.biz,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.no,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.gov.bd,prisjakt.gov.np,prisjagt.dk##.outsider-ads
+prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website,prisjagt.dk##.outsider-ads
 gulesider.no##.min-h-\[300px\]
 reiseplaneten.no###rt-sidebar-c
 ekstrabladet.dk##div[id^=ebbanner_]
@@ -648,8 +660,8 @@ norsk-rally.com###left > .bgbottom > .moduletable
 gulesider.no##div[class*=" h-[calc"]
 vg.no##.type-advert
 proff.no,proff.dk##.topbanner-wrapper
-sveip.net#?#.adsbygoogle:upward(1)
-qxl.org,qxl.io,qxl.co,qxl.ca,qxl.jp,qxl.eu,qxl.es,qxl.com.bd,qxl.asia,qxl.com.np,qxl.gov.bd,qxl.com.ph,qxl.gov.np###crosslistingLauritzAdsenseBanner
+sveip.net##*:has(>.adsbygoogle)
+qxl.com.bd,qxl.com.np,qxl.dk,qxl.in,qxl.it,qxl.vip,qxl.win###crosslistingLauritzAdsenseBanner
 ridr.dk##.partnersites
 digi.no,tu.no##div[class*=" clear"]
 euroinvestor.dk,valutakurser.dk###ctl00_BannerContainerTop
@@ -657,7 +669,7 @@ tilbudsuken.no##.contentBanner
 kanalfrederikshavn.dk###c1670
 kanalfrederikshavn.dk###c2283
 amino.dk##.topAd930x180
-ehandel.com,ehandel.se,ehandel.com.bd,ehandel.at,ehandel.com.np,ehandel.gov.bd,ehandel.gov.np##.commercial-row
+ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz##.commercial-row
 vglive.no##[class*="betting-tip"]
 fiskeribladet.no##div[id^=banner_billboard1_]
 tidensand.no##div[class*=View_has-space__]:has(> .text-center)
@@ -679,13 +691,13 @@ guloggratis.dk##.ad_form_header_right
 skivefolkeblad.dk##.view-cf-skf-avisannoncer
 vilgerneleve.dk##section:has(:is(center > a,.strossle-widget))
 kendte.dk##.transparent-bg
-altomdata.dk#?#script[src^="//s1.adform.net"]:upward(2)
+altomdata.dk##*:has(>*>script[src^="//s1.adform.net"])
 itavisen.no##.itavi-homepage-video-player-instream
-eidfaxi.is#?#.ad-banner:upward(1)
+eidfaxi.is##*:has(>.ad-banner)
 musikknyheter.no##.spklw-widget
 vilgerneleve.dk##div[class^=container-inner] > section[id^=text-]
 bobilverden.no##.grid > h5
-sporttv.is#?#.row div[class^=auglysing-]:upward(1)
+sporttv.is##.row *:has(>div[class^=auglysing-])
 aftenposten.no,tek.no###wallpaper
 dk-kogebogen.dk###banners_left
 bt.dk##.ncpost-banner-container
@@ -696,12 +708,12 @@ startsiden.no###stop-sticky-ad + h4
 mytastenor.com,mytastednk.com#$#.site-wrapper[data-state=panorama] { padding-top: 70px !important }
 gamer.no##header ~ div:has(div[data-unit*=banner])
 vg.no##aside[data-test-tag=factbox i] + div:not([class],[id]):has(a[href*=adtraction])
-ni.dk#?#.color-scheme-1:contains(/Cas\ino/i)
+ni.dk#?#.color-scheme-1:contains(/^.*Cas\ino.*$/i)
 ekstrabladet.dk###front-ekstrabladet-dk-native-1
 pressfire.no##.ad-netboard-front
 bilnorge.no#?#tr:has(td:contains(Annonse:))
 glr.no##.topBarInLogoArea
-prisjakt.co.uk,prisjakt.io,prisjakt.co,prisjakt.de,prisjakt.biz,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.no,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.gov.bd,prisjakt.gov.np##.pjra-relative
+prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website##.pjra-relative
 handyhand.dk##.main-content > .row
 aftenposten.no###main > div[class^=css-]:has(> div[id^=skyscraper])
 sistenytt.com###annonse_side
@@ -744,7 +756,7 @@ minmote.no##.advert-container-inline
 mbl.is#$#.main-header { margin-top: 0 !important }
 borsen.dk##.dfp
 computerworld.dk###computerworldleaderboard
-180.com,180.net,180.com.au,180.co,180.gr,180.fr,180.me,180.by,180.co.za,180.co.il,180.eu,180.ch,180.co.jp,180.se,180.live,180.tw,180.dk,180.no,180.com.bd,180.ie,180.com.np,180.fi,180.vip,180.gov.bd,180.com.uy,180.gov.np##.idle-timeout-outer
+180.at,180.cc,180.co.il,180.co.in,180.co.jp,180.co.uk,180.co.za,180.com,180.com.bd,180.com.np,180.com.ua,180.com.uy,180.dk,180.fi,180.fr,180.gg,180.gr,180.mn,180.net.au,180.nl,180.no,180.org,180.org.uk,180.pl,180.se##.idle-timeout-outer
 nyteknikk.no##.rightbanner
 finansavisen.no,kapital.no,h-a.no##article[id^=lpc_belowarticle]
 no.afterdawn.com##.ni_holder
@@ -755,13 +767,13 @@ min-mave.dk##.vspacer
 gamer.no##.moved
 gaming.dk#?#.panel-latest-forum-threads:contains( sponsor)
 tu.no,digi.no##article ~ div:has([id^=brand i])
-bt.no#?#[data-variants*=article_netboard]:upward(1)
-ehandel.com,ehandel.se,ehandel.com.bd,ehandel.at,ehandel.com.np,ehandel.gov.bd,ehandel.gov.np##.aside-image-with-link:has([href^="https://www.whatsnxt.io/"])
+bt.no##*:has(>[data-variants*=article_netboard])
+ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz##.aside-image-with-link:has([href^="https://www.whatsnxt.io/"])
 marsteinen.no###horizontal-outer-widgets-2
 presse-fotos.dk##div[id^=comp-]:not([class], [style])
 e24.no##.component_content-marketing
 madensverden.dk##.maden-widget
-180.com,180.net,180.com.au,180.co,180.gr,180.fr,180.me,180.by,180.co.za,180.co.il,180.eu,180.ch,180.co.jp,180.se,180.live,180.tw,180.dk,180.no,180.com.bd,180.ie,180.com.np,180.fi,180.vip,180.gov.bd,180.com.uy,180.gov.np##div[class$=-ad-container]
+180.at,180.cc,180.co.il,180.co.in,180.co.jp,180.co.uk,180.co.za,180.com,180.com.bd,180.com.np,180.com.ua,180.com.uy,180.dk,180.fi,180.fr,180.gg,180.gr,180.mn,180.net.au,180.nl,180.no,180.org,180.org.uk,180.pl,180.se##div[class$=-ad-container]
 tek.no###application > div[class]:nth-of-type(1):nth-last-of-type(2)
 fcfredericia.dk##.et_pb_equal_columns
 politiken.dk##.js-sticky-container.col--overflow
@@ -776,7 +788,7 @@ digi.no,tu.no###brandBoardBottom
 digi.no,tu.no###brandBoardTopMobile
 digi.no,tu.no###skyscraperLeft
 digi.no,tu.no###skyscraperRight
-tu.no,digi.no#?#div[id^=brandboard i]:upward(1)
+tu.no,digi.no##*:has(>div[id^=brandboard i])
 abcnyheter.no##span[class*=-ad__]
 gulesider.no##.MuiContainer-root .MuiGrid-root + .MuiBox-root:has(div[id*=gpt])
 tv2.no##div[data-third-party-link^="\[\""]
@@ -802,7 +814,7 @@ aftenposten.no##div[class^=article-wrapper-] > div[class*=css-]:has([data-varian
 jyllands-posten.dk##div[class*=" jp-banner--"]
 1001spill.no###footer
 filmweb.no##.topad.row
-direkte.vg.no#?#div[id*=-feedAdvert]:upward(1)
+direkte.vg.no##*:has(>div[id*=-feedAdvert])
 crazygames.no##div[class*=" jss312 "]
 cw.no##.desktop-only.l-row > .omega.grid-12.grid-item.col
 biff.no,diabetes.no##.ads
@@ -829,7 +841,7 @@ pengenytt.no#?#.textwidget:contains(Annonse)
 guloggratis.dk###topBanner
 lystfiskerguiden.dk#?#.elementor-widget-wrap > .elementor-section:contains(REKLAMER)
 kanalfrederikshavn.dk###knapper
-ehandel.com,ehandel.se,ehandel.com.bd,ehandel.at,ehandel.com.np,ehandel.gov.bd,ehandel.gov.np##body[data-scrolling] .post-container-sponsored
+ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz##body[data-scrolling] .post-container-sponsored
 bold.dk##div[class*="_banner"]
 bold.dk##div[class=row]:has([class*=artikler_monster])
 bold.dk##.FrontPage__lists.d-none:has([class*=_monster])
@@ -861,14 +873,14 @@ newsbreak.dk##.post-the-content > div[class*=rectangle]
 digi.no##.col-span-12:not([class*=" "]):has(> :is([class$=" "],[class*=_class],:not([class*=" "])))
 pslife.dk##.banner_300
 tv2.no##.feed-ad
-prisjakt.co.uk,prisjakt.io,prisjakt.co,prisjakt.de,prisjakt.biz,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.no,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.gov.bd,prisjakt.gov.np,prisjagt.dk##.desktop-inline-ad
+prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website,prisjagt.dk##.desktop-inline-ad
 canariposten.no##.theiaStickySidebar > .widget-1
 austurfrett.is##.lowerad
 steinkjer24.no##article.ad
 dagensbyggeri.dk##.pushBelow.pushAbove
 aftenposten.no,finn.no##div[id^=netboard_]
 euroman.dk##.happy-place--labeled
-cw.no#?#div[nf-desk-widget="spot.content"]:upward(2)
+cw.no##*:has(>*>div[nf-desk-widget="spot.content"])
 latterkula.no##a[title*=casino]
 veitingastadir.is##.footer_top > .footer-wrap > .columns
 nettavisen.no##.skyskraper-container
@@ -878,19 +890,19 @@ kreativtforum.no##.sidebar-box
 sol.dk###linkbox
 fiskeribladet.no##div[id^=banner_billboard1_] + .hide_on_print
 trening.no##.cp-slidein-body
-lydogbilde.no,lydogbillede.dk#?#.adunit-lazy:upward(1)
+lydogbilde.no,lydogbillede.dk##*:has(>.adunit-lazy)
 menn.is##.vc_column:has(.mobile-ad):not(:has(a))
 polarmedia.dk##p:has(a[href*=casino])
 mytastenor.com,mytastednk.com#$#.modal-container.open { padding-top: unset !important }
 dk-kogebogen.dk###banners_right
-flashscore.dk##.boxOverContent--a
+flashscore.app,flashscore.at,flashscore.bg,flashscore.ca,flashscore.ch,flashscore.cl,flashscore.co,flashscore.co.id,flashscore.co.in,flashscore.co.jp,flashscore.co.ke,flashscore.co.kr,flashscore.co.uk,flashscore.co.za,flashscore.com,flashscore.com.ar,flashscore.com.au,flashscore.com.bd,flashscore.com.br,flashscore.com.mx,flashscore.com.my,flashscore.com.ng,flashscore.com.np,flashscore.com.pe,flashscore.com.tr,flashscore.com.ua,flashscore.cz,flashscore.de,flashscore.dev,flashscore.dk,flashscore.es,flashscore.eu,flashscore.fi,flashscore.fr,flashscore.ge,flashscore.gr,flashscore.id,flashscore.ie,flashscore.in,flashscore.info,flashscore.io,flashscore.ir,flashscore.it,flashscore.kz,flashscore.live,flashscore.mobi,flashscore.nl,flashscore.org,flashscore.pe,flashscore.ph,flashscore.pl,flashscore.pt,flashscore.ro,flashscore.rs,flashscore.ru,flashscore.se,flashscore.si,flashscore.sk,flashscore.ua,flashscore.uk,flashscore.vn,flashscore.website##.boxOverContent--a
 kode24.no##.top-profile.row
 borsen.dk##[href*="://borsen.dk/sponsoreret"]
 bt.no##p ~ div[class^=hyperion-css-]:has(> div[id*=-ad- i])
 pengenytt.no##.entry-content > h6:has(script[src$="/adsbygoogle.js"])
 maskinbladet.dk##.outer-skybanner
-ehandel.com,ehandel.se,ehandel.com.bd,ehandel.at,ehandel.com.np,ehandel.gov.bd,ehandel.gov.np###div-leeadsFullpageAd
-ni.dk#?#.color-scheme-1:contains(/Cas\ino/i) + div
+ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz###div-leeadsFullpageAd
+ni.dk#?#.color-scheme-1:contains(/^.*Cas\ino.*$/i) + div
 samler.no##div[class^=sl-banner-outside-child-]
 bt.dk##.hidden-sm-down
 ##a[title=LeoVegas]:not(body,:empty)
@@ -900,7 +912,7 @@ bussmagasinet.no##.textwidget > div[align=center]
 utrop.no##.bottom-widead
 side6.dk##.apn-banner
 kureren.no##td:has(> script[src*="/www/delivery/"])
-ticketmaster.com,ticketmaster.net,ticketmaster.in,ticketmaster.com.au,ticketmaster.com.tr,ticketmaster.co.uk,ticketmaster.co,ticketmaster.gr,ticketmaster.ca,ticketmaster.de,ticketmaster.fr,ticketmaster.xyz,ticketmaster.co.za,ticketmaster.co.il,ticketmaster.eu,ticketmaster.it,ticketmaster.com.br,ticketmaster.es,ticketmaster.ch,ticketmaster.nl,ticketmaster.pl,ticketmaster.cl,ticketmaster.com.mx,ticketmaster.co.nz,ticketmaster.ae,ticketmaster.se,ticketmaster.cz,ticketmaster.lk,ticketmaster.be,ticketmaster.store,ticketmaster.dk,ticketmaster.sg,ticketmaster.my,ticketmaster.no,ticketmaster.com.bd,ticketmaster.ie,ticketmaster.asia,ticketmaster.at,ticketmaster.com.np,ticketmaster.fi,ticketmaster.pe,ticketmaster.cloud,ticketmaster.gov.bd,ticketmaster.kr,ticketmaster.gov.np##div[id^=ad-slot-]
+ticketmaster.ae,ticketmaster.at,ticketmaster.be,ticketmaster.blog,ticketmaster.ca,ticketmaster.ch,ticketmaster.cl,ticketmaster.co,ticketmaster.co.il,ticketmaster.co.nz,ticketmaster.co.uk,ticketmaster.co.za,ticketmaster.com,ticketmaster.com.au,ticketmaster.com.bd,ticketmaster.com.br,ticketmaster.com.cn,ticketmaster.com.mx,ticketmaster.com.np,ticketmaster.com.tr,ticketmaster.cz,ticketmaster.de,ticketmaster.dk,ticketmaster.es,ticketmaster.eu,ticketmaster.fi,ticketmaster.fr,ticketmaster.gr,ticketmaster.ie,ticketmaster.it,ticketmaster.lk,ticketmaster.net,ticketmaster.nl,ticketmaster.no,ticketmaster.online,ticketmaster.pe,ticketmaster.pl,ticketmaster.sa,ticketmaster.se,ticketmaster.sg,ticketmaster.store,ticketmaster.su,ticketmaster.tw##div[id^=ad-slot-]
 fjellforum.no###elPostFeed > form > center
 goerdetselv.dk##div[id^=cx_]
 bornholm.nu##div.container:has(#left_sticky)
@@ -944,11 +956,11 @@ tvkampen.com,tvsporten.dk###before-matches
 tiendeo.no##li[style^="order:"]:not([style*="order: "])
 bilgalleri.dk###leftFloatingBanner
 skagensavis.dk##.auto_expandable[style$=";margin-top:172px"]
-ehandel.com,ehandel.se,ehandel.com.bd,ehandel.at,ehandel.com.np,ehandel.gov.bd,ehandel.gov.np##.article-ad-container
+ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz##.article-ad-container
 artige.no##a[href="//artige.no/blogg"]
 f7city.no###text-5
 nettavisen.no##[param-editionid=reklame]
-ehandel.com,ehandel.se,ehandel.com.bd,ehandel.at,ehandel.com.np,ehandel.gov.bd,ehandel.gov.np##.article-content > .code-block
+ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz##.article-content > .code-block
 digi.no,tu.no##.grid > div:not([class*=" "]):has(> div:not([class*=" "]))
 peters1.dk##div[style="width: 100%;"]
 studenttorget.no,studievalg.no###top-announce
@@ -986,7 +998,7 @@ diskusjon.no##.skyskraper
 visir.is##div[data-placeholder=ad]
 skinnelangs.no###sponsor_large
 1001spill.no##.omega.grid_6
-parcferme.no#?#.adsbygoogle:upward(2)
+parcferme.no##*:has(>*>.adsbygoogle)
 side2.no##.doubleclickAd
 treningsforum.no##.ad.sideboard
 reiseplaneten.no##.custom > p:nth-of-type(1n+2)
@@ -1003,7 +1015,7 @@ digi.no,medier24.no##.ad-label-vertical
 fjellforum.no##li[class=ipsDataItem]
 ni.dk###e-header > div[style^=height]
 computerworld.dk##.paragraphAd
-prisjakt.co.uk,prisjakt.io,prisjakt.co,prisjakt.de,prisjakt.biz,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.no,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.gov.bd,prisjakt.gov.np,prisjagt.dk###footer_header
+prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website,prisjagt.dk###footer_header
 valutakurser.dk##.bottom_banner_div
 vg.no##div[id*=-netboard_article- i]
 hardwareonline.dk##.centerfull
@@ -1014,7 +1026,7 @@ fcbarcelona.dk##.bluebox:has([src*=bet365])
 magasinetskolen.dk##.region-leaderboard
 aftenposten.no###superright-side
 klendr.net##div[class*=ad-module--ad--]
-prisjakt.co.uk,prisjakt.io,prisjakt.co,prisjakt.de,prisjakt.biz,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.no,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.gov.bd,prisjakt.gov.np##div[class*=AdPlacement i]
+prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website##div[class*=AdPlacement i]
 tek.no##.partnerstudio-ad-inline
 diskusjon.no##.love-placeholder
 autouncle.dk##html[lang] > body > div[style^="text-align: center;"]
@@ -1038,7 +1050,7 @@ dagsavisen.no##.dagsavisenDesktopAd
 digi.no,tu.no##h3 ~ div[class=clear-both]
 r7.fo##div[id*=adgroup]
 gratiskryssord.no###adSign
-qxl.org,qxl.io,qxl.co,qxl.ca,qxl.jp,qxl.eu,qxl.es,qxl.com.bd,qxl.asia,qxl.com.np,qxl.gov.bd,qxl.com.ph,qxl.gov.np###GoogleAdsenseFooter + div[style^="width: 100%;"]
+qxl.com.bd,qxl.com.np,qxl.dk,qxl.in,qxl.it,qxl.vip,qxl.win###GoogleAdsenseFooter + div[style^="width: 100%;"]
 iphoneluppen.dk##a[href*=bingo]
 guloggratis.dk###bottomBanner
 aftenposten.no###topboard
@@ -1059,8 +1071,10 @@ dusken.no##.ad-col-article
 portal.fo##.full-width-vev.all
 tvkampen.com,tvsporten.dk##li.tv:has(>.do-link)
 sveip.no##.fromod_section_2
-costume.com,costume.org,costume.de,costume.co.il,costume.com.br,costume.ch,costume.pro,costume.se,costume.top,costume.dk,costume.no,costume.com.bd,costume.at,costume.com.np,costume.gov.bd,costume.gov.np,costume.best#?#.teaser__native:upward()
+costume.ai,costume.by,costume.co.il,costume.co.jp,costume.co.nz,costume.co.uk,costume.co.za,costume.com,costume.com.bd,costume.com.br,costume.com.np,costume.com.pk,costume.dk,costume.no,costume.org,costume.pro##*:has(> * > * > * > .teaser__native)
 boblad.no##.uk-overlay-hover.uk-panel
+elberegner.dk##div[data-banner-id]
+flatpanels.dk##div[id^=lg-wallpaper-]
 lofotposten.no##.front > optimus-element:has(amedia-include[param-url*=innocode])
 lofotposten.no##.front > optimus-element:has(amedia-include[param-url*=amediakreativ])
 snasningen.no##.front > optimus-element:has(amedia-include[param-url*=".api.no"][param-url*=banner])
@@ -1095,12 +1109,12 @@ realmadrid.dk##.TopBanner
 tu.no##.frontpage-top-poster-wrap
 pengenytt.no#?#.widget-title:contains(Annonser)
 gaffa.no##.single-post > .wrapper-2
-eurosport.com,eurosport.ru,eurosport.com.tr,eurosport.co.uk,eurosport.io,eurosport.de,eurosport.fr,eurosport.it,eurosport.tv,eurosport.es,eurosport.co.in,eurosport.nl,eurosport.us,eurosport.pl,eurosport.ro,eurosport.com.ar,eurosport.rs,eurosport.se,eurosport.cz,eurosport.shop,eurosport.in.ua,eurosport.store,eurosport.dk,eurosport.hu,eurosport.no,eurosport.com.bd,eurosport.com.np,eurosport.fi,eurosport.lt,eurosport.cloud,eurosport.gov.bd,eurosport.pt,eurosport.bg,eurosport.ba,eurosport.com.pe,eurosport.gov.np##.AdContainer
+eurosport.be,eurosport.bg,eurosport.co,eurosport.co.in,eurosport.co.uk,eurosport.com,eurosport.com.bd,eurosport.com.cn,eurosport.com.np,eurosport.com.tr,eurosport.com.ua,eurosport.cz,eurosport.de,eurosport.dk,eurosport.es,eurosport.fi,eurosport.fr,eurosport.hu,eurosport.in.ua,eurosport.io,eurosport.it,eurosport.live,eurosport.nl,eurosport.no,eurosport.pl,eurosport.pt,eurosport.ro,eurosport.rs,eurosport.ru,eurosport.se,eurosport.shop,eurosport.su,eurosport.tv##.AdContainer
 kreativtforum.no##.overflow-hidden.hidden
 gamer.no##.mkdsk-placeholder
 billedbladet.dk##.lg\:flex.hidden
 dagensmedisin.no##.widget-article-ad.widget
-dmi.dk#?#.section-1-ad:upward(1)
+dmi.dk##*:has(>.section-1-ad)
 e24.no###main > div:nth-of-type(3)
 alt.dk##.section-banner
 sedirekte.com###streamstopad
@@ -1111,7 +1125,7 @@ bygge-anlaegsavisen.dk##.main--add
 gulesider.no##div[class*=-spacing-xs-] > div[class^="MuiBox-root css-"]
 sedirekte.com###streamsbottomad
 finn.no##div.ads__unit[aria-hidden]
-bimmers.no#?#div[id="336x280-sidebar"]:upward(1)
+bimmers.no##*:has(>div[id="336x280-sidebar"])
 bt.no##div[class^=article-wrapper-] > div[class^=" "]
 golferen.no###os_ad_beam
 visir.is#$#.padded.limit--tight.limit { padding-top: 15px !important }
@@ -1122,7 +1136,7 @@ e24.no##div[data-ad-subtype]
 finansavisen.no##.parallax-container
 selvsalg.dk##.frontpage-nordea
 samferdselinfra.no##.banner-slider
-www.filmweb.no#?#div[class^=adnun]:upward(2)
+www.filmweb.no##*:has(>*>div[class^=adnun])
 tilbudmaskin.no##.page-body .col-xs-12
 smartepenger.no###g-utility > .g-container
 computerworld.dk##.candis-spot
@@ -1136,7 +1150,6 @@ keldan.is##.x-box-inner > .x-panel-noborder:not(.x-grid-panel)
 vg.no,familieklubben.no##.appnexus
 bold.dk##div[id$=-banner]
 onlineaviser.no##html[lang] > body > div > table > tbody > tr > td > table > tbody > tr > td:nth-of-type(2):last-of-type
-digi.no,tu.no##main > div > div[class*=" "]:has(:is([id*=skyscraper i],[id^=brand i]))
 kondis.no##.thearticlecontent > .bannerlocation
 nutiminn.is,newz.dk##.custom-html-widget.textwidget
 lorenskogkino.no,filmweb.no,~www.filmweb.no##div[data-debuglabel]
@@ -1153,25 +1166,25 @@ newsbreak.dk##.post-the-content > .clearfix
 ##.full-width.daily-offers:not(html,body,:empty)
 tu.no,digi.no##main > div > div:empty
 itavisen.no##.\35 00Add:not(.homepage-video-area)
-bt.no#?#div[data-ad-subtype=in-feed]:upward(2)
+bt.no##*:has(>*>div[data-ad-subtype=in-feed])
 austurfrett.is##.banneritem
-yrkesbil.no#?#.forside_adholder:upward(1)
+yrkesbil.no##*:has(>.forside_adholder)
 flatpanels.dk##div[style="text-align:center;clear:both;"]
 mobil.nu,mobilkunden.dk##.tower
 dagsavisen.no##style + .container > .row:has(> .col-sm-12 > .dagsavisenDesktopAd)
-startsiden.no#?#div[data-ga-action$=_ad]:upward(1)
+startsiden.no##*:has(>div[data-ga-action$=_ad])
 elbil24.no##.carousel-container + div:not(.carousel-container):has([class*=ad])
 123mc.dk##.dfp-top-wrp-wide
 flatpanels.dk###sb-site > .hidden-xs.container
 tek.no#?#section:has(> div > div:contains(/^an{2}onse$/))
-minmote.no#?#div[id^=advert-]:upward(1)
+minmote.no##*:has(>div[id^=advert-])
 tvkampen.com,tvsporten.dk###panorama
 tek.no##section + div:has(span)
 amino.dk##.ad624x60
-qxl.org,qxl.io,qxl.co,qxl.ca,qxl.jp,qxl.eu,qxl.es,qxl.com.bd,qxl.asia,qxl.com.np,qxl.gov.bd,qxl.com.ph,qxl.gov.np###leaderBoardListingviewTop
+qxl.com.bd,qxl.com.np,qxl.dk,qxl.in,qxl.it,qxl.vip,qxl.win###leaderBoardListingviewTop
 tu.no,digi.no##[id^=adContainer-]:not([id$=-afterBody])
 vilgerneleve.dk##.sidebar-widget-container:has(center > a)
-padleguide.dk#?#h2:contains(/cas\ino/i)
+padleguide.dk#?#h2:contains(/^.*cas\ino.*$/i)
 skinnelangs.no###sponsor
 win-xp.no##tr > td > div:has(a[href*="clk.tradedoubler."])
 kondis.no#$##content { margin-top: 0px !important }
@@ -1183,7 +1196,7 @@ test.no##.ad-position-top
 tvkampen.com,tvsporten.dk##a.p-icon.partner
 norges.online##.modal-backdrop
 friflyt.no,terrengsykkel.no##.inlineAdBlock
-ehandel.com,ehandel.se,ehandel.com.bd,ehandel.at,ehandel.com.np,ehandel.gov.bd,ehandel.gov.np##.annons
+ehandel.com,ehandel.com.bd,ehandel.com.np,ehandel.no,ehandel.se,ehandel.xyz##.annons
 retrospilling.no#?#.widget:contains(Reklame)
 gulesider.no##.min-h-8
 dagens.dk##.col-sticky > div > p
@@ -1212,26 +1225,25 @@ vgtv.no##.video-branding
 sporttv.is,utdanningsnytt.no##.banner-right
 aftenposten.no,vg.no###main > div:has([data-ad-subtype^=skyscraper])
 ba.no##brick-teaser:has([title=Annonse])
-prisjakt.co.uk,prisjakt.io,prisjakt.co,prisjakt.de,prisjakt.biz,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.no,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.gov.bd,prisjakt.gov.np##div[class^=EmptyCard-sc-]
-prisjakt.co.uk,prisjakt.io,prisjakt.co,prisjakt.de,prisjakt.biz,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.no,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.gov.bd,prisjakt.gov.np##div[class^=AdPlacementWrapper-sc-]
-eurosport.com,eurosport.ru,eurosport.com.tr,eurosport.co.uk,eurosport.io,eurosport.de,eurosport.fr,eurosport.it,eurosport.tv,eurosport.es,eurosport.co.in,eurosport.nl,eurosport.us,eurosport.pl,eurosport.ro,eurosport.com.ar,eurosport.rs,eurosport.se,eurosport.cz,eurosport.shop,eurosport.in.ua,eurosport.store,eurosport.dk,eurosport.hu,eurosport.no,eurosport.com.bd,eurosport.com.np,eurosport.fi,eurosport.lt,eurosport.cloud,eurosport.gov.bd,eurosport.pt,eurosport.bg,eurosport.ba,eurosport.com.pe,eurosport.gov.np##.reform-top-container
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np###eventad
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##[id^=sky]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##[id^=ad_lead]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##a[rel=sponsored]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##.external_div_bigVideoAd
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np###mpu
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np###leftToLogo
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##div[class^=ad_Bumper]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##div[style="min-height: 600px; margin-bottom: 20px;"]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##div[id^=ad_]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##div[class^=preAd_]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##div[class^=ad_smartphbig]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##.adMobileBig
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##div[class^=preMobileBig]
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##.external_div_videoAd
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np#?##grtvbelt_Sponsored:upward()
-gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np#?#.ad_interscroller:upward(.wrapper)
+prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website##div[class^=EmptyCard-sc-]
+prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website##div[class^=AdPlacementWrapper-sc-]
+eurosport.be,eurosport.bg,eurosport.co,eurosport.co.in,eurosport.co.uk,eurosport.com,eurosport.com.bd,eurosport.com.cn,eurosport.com.np,eurosport.com.tr,eurosport.com.ua,eurosport.cz,eurosport.de,eurosport.dk,eurosport.es,eurosport.fi,eurosport.fr,eurosport.hu,eurosport.in.ua,eurosport.io,eurosport.it,eurosport.live,eurosport.nl,eurosport.no,eurosport.pl,eurosport.pt,eurosport.ro,eurosport.rs,eurosport.ru,eurosport.se,eurosport.shop,eurosport.su,eurosport.tv##.reform-top-container
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us###eventad
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##[id^=sky]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##[id^=ad_lead]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##a[rel=sponsored]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##.external_div_bigVideoAd
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us###mpu
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us###leftToLogo
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##div[class^=ad_Bumper]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##div[style="min-height: 600px; margin-bottom: 20px;"]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##div[id^=ad_]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##div[class^=preAd_]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##div[class^=ad_smartphbig]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##.adMobileBig
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##div[class^=preMobileBig]
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##.external_div_videoAd
+gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##*:has(> #grtvbelt_Sponsored)
 sjoborg.no##div[data-debuglabel=_app]
 gulesider.no##div.place-items-center.grid:has([data-adunitid])
 favoritlinks.dk##table:has([align=center] > [class*=box_sponsor])
@@ -1245,6 +1257,10 @@ abcnyheter.no##.c-article__bottom-ad
 sykepleien.no##.content-extra__ads
 custompublish.com##.bannerlocation
 motorhobby.no##.hidden-phone.rt-block
+euroinvestor.dk##div[class^=dre-][class*="-empty "]:has(div[id^=banner i],div[id^=Leaderboard i])
+euroinvestor.dk##.banner-mb-20
+kino.dk##div[class^=ads-topscroll]
+kino.dk##div.section:has([class$=block--advertisement])
 ! — — — — — — — — —
 ! 🇳🇴: Oppføringer for minst 3 nettsteder
 ! 🇬🇧: Entries for at least 3 websites
@@ -1254,8 +1270,8 @@ artige.no,latterkula.no,eikernytt.no,addpressure.no,startsidendin.no,teknologia.
 hsfo.dk,jv.dk,stiften.dk,viborg-folkeblad.dk,dagbladet-holstebro-struer.dk,ugeavisen.dk,fyens.dk,lydogbilde.no,lydogbillede.dk##.adblock:not(html,body,:empty)
 komputer.no,natgeo.no,historienet.no,koplr.no,ing.dk,in.fo,kvennabladid.is##.top-banner:not(html,body,:empty)
 united.no,valkal.no,ksu.no,montages.no,kundeavisogtilbud.no##.ads:not(html,body,:empty)
-prisjakt.co.uk,prisjakt.io,prisjakt.co,prisjakt.de,prisjakt.biz,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.no,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.gov.bd,prisjakt.gov.np,prisjagt.dk,dv.is,drm24.no,flatpanels.dk##.adbox:not(html, body, :empty)
-padleguide.dk,polarmedia.dk,iphoneluppen.dk,anettelyskjaer.dk,dreampapers.dk,nemsvar.nu,cuben-linedance.dk#?#p:contains(/cas\ino/i)
+prisjakt.co.uk,prisjakt.com,prisjakt.com.bd,prisjakt.com.np,prisjakt.fi,prisjakt.info,prisjakt.no,prisjakt.pl,prisjakt.se,prisjakt.top,prisjakt.website,prisjagt.dk,dv.is,drm24.no,flatpanels.dk##.adbox:not(html, body, :empty)
+padleguide.dk,polarmedia.dk,iphoneluppen.dk,anettelyskjaer.dk,dreampapers.dk,nemsvar.nu,cuben-linedance.dk#?#p:contains(/^.*cas\ino.*$/i)
 dagbladet.no,elbil24.no,kk.no,seher.no,sol.no,vi.no#?#[data-cy=video-page-horisontal] > div:contains(Annonse)
 av-avis.no,bygdanytt.no,strilen.no,vestnytt.no##.carousel-ad:not(html,body,:empty)
 hushagehobby.no,tidssonen.no,glr.no,peters1.dk,erotikmix.dk##.widget_custom_html
@@ -1270,7 +1286,7 @@ isolor.no,storfjordnytt.no,thetravelinspector.no,boosted.dk,digitalt.tv##.code-b
 altomdinhelse.no,aftenposten.no,dinordbok.no##.ad-container:not(html,body,:empty)
 nhi.no,langrenn.com,vg.no##.advert:not(html,body,:empty)
 iform.dk,boligpluss.no,magasinetliv.dk,tara.no##.horseshoe
-iphoneluppen.dk,anettelyskjaer.dk,dreampapers.dk,nemsvar.nu#?#h2:has(+ p:contains(/cas\ino/i))
+iphoneluppen.dk,anettelyskjaer.dk,dreampapers.dk,nemsvar.nu#?#h2:has(+ p:contains(/^.*cas\ino.*$/i))
 /images/banners$image,domain=austurfrett.is|samler.no|norsk-rally.com|fcbarcelona.dk
 building-supply.dk,licitationen.dk,jernindustri.dk##.grid-article-sponsored
 gamer.no,tek.no,digi.no##.products-carousel
@@ -1281,12 +1297,12 @@ byggeplads.dk,magasinetgulv.dk,officeplusdesign.dk##.region-sidebar-second > div
 midtjyllandsavis.dk,herningfolkeblad.dk,ikast-brandenyt.dk##main > .container:not([class*=" "])
 midtjyllandsavis.dk,herningfolkeblad.dk,ikast-brandenyt.dk##.container-spacer
 midtjyllandsavis.dk,herningfolkeblad.dk,ikast-brandenyt.dk##.container-outer-wrapper > .col-2:last-of-type
-mytastenor.com,mytastednk.com,tv3sport.dk##.panorama
+mytastenor.com,mytastednk.com,tv3sport.dk##.panorama:not(:empty)
 isabellas.dk,femina.dk,billedbladet.dk##div[data-type=ad]
 migogaarhus.dk,migogaalborg.dk,migogkbh.dk##.yb-top-spot
 startsidendin.no,iphoneluppen.dk,norskemagasinet.com##a[href*=gambling]
 jyllands-posten.dk,finans.dk,lokalavisen.dk##div[class*=banner-container]
-itavisen.no,ba.no,gamereactor.net,gamereactor.com.tr,gamereactor.gr,gamereactor.vn,gamereactor.de,gamereactor.fr,gamereactor.me,gamereactor.jp,gamereactor.eu,gamereactor.it,gamereactor.id,gamereactor.es,gamereactor.nl,gamereactor.pl,gamereactor.cn,gamereactor.se,gamereactor.cz,gamereactor.dk,gamereactor.no,gamereactor.com.bd,gamereactor.asia,gamereactor.com.np,gamereactor.fi,gamereactor.gov.bd,gamereactor.kr,gamereactor.pt,gamereactor.mobi,gamereactor.gov.np##.sponsored
+itavisen.no,ba.no,gamereactor.asia,gamereactor.at,gamereactor.ca,gamereactor.ch,gamereactor.cn,gamereactor.com,gamereactor.com.bd,gamereactor.com.np,gamereactor.com.tr,gamereactor.cz,gamereactor.de,gamereactor.dk,gamereactor.es,gamereactor.eu,gamereactor.fi,gamereactor.fr,gamereactor.gr,gamereactor.id,gamereactor.it,gamereactor.jp,gamereactor.kr,gamereactor.lt,gamereactor.me,gamereactor.mobi,gamereactor.nl,gamereactor.no,gamereactor.pl,gamereactor.pt,gamereactor.se,gamereactor.us##.sponsored
 ||widgets.sprinklecontent.com^$domain=startsiden.no|musikknyheter.no|klikk.no
 latterkula.no,gunnarandreassen.com##a[href*=spill]
 !+ NOT_OPTIMIZED
@@ -1459,12 +1475,12 @@ _visittkortannonse_$image
 -bazaar-$script,domain=nettavisen.no
 -l%C3%BDsing-$image,domain=news.fo
 /930x180_*.gif^$domain=noresk.com|eroguide.dk
-/_bm/abd$script,domain=eurosport.com|eurosport.ru|eurosport.com.tr|eurosport.co.uk|eurosport.io|eurosport.de|eurosport.fr|eurosport.it|eurosport.tv|eurosport.es|eurosport.co.in|eurosport.nl|eurosport.us|eurosport.pl|eurosport.ro|eurosport.com.ar|eurosport.rs|eurosport.se|eurosport.cz|eurosport.shop|eurosport.in.ua|eurosport.store|eurosport.dk|eurosport.hu|eurosport.no|eurosport.com.bd|eurosport.com.np|eurosport.fi|eurosport.lt|eurosport.cloud|eurosport.gov.bd|eurosport.pt|eurosport.bg|eurosport.ba|eurosport.com.pe|eurosport.gov.np
+/_bm/abd$script,domain=eurosport.be|eurosport.bg|eurosport.co|eurosport.co.in|eurosport.co.uk|eurosport.com|eurosport.com.bd|eurosport.com.cn|eurosport.com.np|eurosport.com.tr|eurosport.com.ua|eurosport.cz|eurosport.de|eurosport.dk|eurosport.es|eurosport.fi|eurosport.fr|eurosport.hu|eurosport.in.ua|eurosport.io|eurosport.it|eurosport.live|eurosport.nl|eurosport.no|eurosport.pl|eurosport.pt|eurosport.ro|eurosport.rs|eurosport.ru|eurosport.se|eurosport.shop|eurosport.su|eurosport.tv
 /Bannere/*$image,domain=tek.no|gamer.no
 /banners^$domain=musikknyheter.no|bilasolur.is|fotbolti.is
 /bazaar/*$script,domain=nettavisen.no
 /bilder/erotikk1.jpg$domain=eavisa.com
-/entag.js$script,domain=eniro.com|eniro.net|eniro.de|eniro.by|eniro.pl|eniro.se|eniro.no|eniro.com.bd|eniro.com.np|eniro.fi|eniro.gov.bd|eniro.ee|eniro.gov.np|proff.com|proff.io|proff.ca|proff.info|proff.me|proff.com.br|proff.kz|proff.pl|proff.ro|proff.se|proff.cz|proff.top|proff.be|proff.store|proff.dk|proff.no|proff.com.bd|proff.com.np|proff.fi|proff.gov.bd|proff.ee|proff.gov.np
+/entag.js$script,domain=eniro.by|eniro.com|eniro.com.bd|eniro.com.np|eniro.cz|eniro.dk|eniro.ee|eniro.fi|eniro.it|eniro.net|eniro.no|eniro.pl|eniro.se|proff.ca|proff.com|proff.com.bd|proff.com.br|proff.com.np|proff.dev|proff.dk|proff.es|proff.fi|proff.io|proff.md|proff.net|proff.no|proff.ro|proff.se|proff.top|proff.work
 /js/smartbanner/*$domain=tvkampen.com|tvsporten.dk
 /liveodds-button_nordicbet$domain=tvkampen.com|tvsporten.dk
 /mediaxpress/ad^$domain=bygge-anlaegsavisen.dk,image
@@ -1505,8 +1521,8 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||acdn.adnxs.com/ast/ast.js$script,important,domain=vg.no
 ||acdn.adnxs.com/ast/ast.js$script,redirect=noopjs,important,domain=vgtv.no
 ||aftenposten.no/seksjon/dist/ads-$script
-||akamai.net^$script,domain=eniro.com|eniro.net|eniro.de|eniro.by|eniro.pl|eniro.se|eniro.no|eniro.com.bd|eniro.com.np|eniro.fi|eniro.gov.bd|eniro.ee|eniro.gov.np
-||akamaihd.net^$media,domain=discoveryplus.com|discoveryplus.in|discoveryplus.co.uk|discoveryplus.co|discoveryplus.co.il|discoveryplus.it|discoveryplus.com.br|discoveryplus.nl|discoveryplus.pl|discoveryplus.se|discoveryplus.dk|discoveryplus.no|discoveryplus.com.bd|discoveryplus.com.np|discoveryplus.fi|discoveryplus.cloud|discoveryplus.gov.bd|discoveryplus.gov.np
+||akamai.net^$script,domain=eniro.by|eniro.com|eniro.com.bd|eniro.com.np|eniro.cz|eniro.dk|eniro.ee|eniro.fi|eniro.it|eniro.net|eniro.no|eniro.pl|eniro.se
+||akamaihd.net^$media,domain=discoveryplus.be|discoveryplus.co|discoveryplus.co.uk|discoveryplus.com|discoveryplus.com.bd|discoveryplus.com.br|discoveryplus.com.np|discoveryplus.dk|discoveryplus.es|discoveryplus.fi|discoveryplus.hk|discoveryplus.in|discoveryplus.it|discoveryplus.me|discoveryplus.nl|discoveryplus.no|discoveryplus.online|discoveryplus.se
 ||amino.dk/images/partners/agera/240x140-forside-hardcoded*.jpg^
 ||annoncelight.dk/Graphics/banner^
 ||appetitt.no/uploads/library/*_1150x350*.jpg^
@@ -1533,7 +1549,7 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||danishfamilysearch.dk/images/xp2^$image
 ||deals.innocode.no/api^$third-party,subdocument
 ||detailersclub.no/uploads/*_banner.$image
-||dnitv.com^$media,domain=discoveryplus.com|discoveryplus.in|discoveryplus.co.uk|discoveryplus.co|discoveryplus.co.il|discoveryplus.it|discoveryplus.com.br|discoveryplus.nl|discoveryplus.pl|discoveryplus.se|discoveryplus.dk|discoveryplus.no|discoveryplus.com.bd|discoveryplus.com.np|discoveryplus.fi|discoveryplus.cloud|discoveryplus.gov.bd|discoveryplus.gov.np
+||dnitv.com^$media,domain=discoveryplus.be|discoveryplus.co|discoveryplus.co.uk|discoveryplus.com|discoveryplus.com.bd|discoveryplus.com.br|discoveryplus.com.np|discoveryplus.dk|discoveryplus.es|discoveryplus.fi|discoveryplus.hk|discoveryplus.in|discoveryplus.it|discoveryplus.me|discoveryplus.nl|discoveryplus.no|discoveryplus.online|discoveryplus.se
 ||dust2.dk/img/banners/*$image
 ||erotikmix.dk/mixads300.html^
 ||escort46.dk/bg_images^$image
@@ -1624,10 +1640,10 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||spaniaidag.no/wp-content/uploads/*/Kolstad-Gif-SI.gif^
 ||spanienidag.es/sites/default/files/patrocinadores^
 /^.*://w{3}\.(tu|d\ig\i)\.n\o/(\d|[a-zA-Z_-]){130,}$/$xmlhttprequest,domain=no
-||ssl.p.jwpcdn.com^*/freewheel.js$important,script,domain=eurosport.com|eurosport.ru|eurosport.com.tr|eurosport.co.uk|eurosport.io|eurosport.de|eurosport.fr|eurosport.it|eurosport.tv|eurosport.es|eurosport.co.in|eurosport.nl|eurosport.us|eurosport.pl|eurosport.ro|eurosport.com.ar|eurosport.rs|eurosport.se|eurosport.cz|eurosport.shop|eurosport.in.ua|eurosport.store|eurosport.dk|eurosport.hu|eurosport.no|eurosport.com.bd|eurosport.com.np|eurosport.fi|eurosport.lt|eurosport.cloud|eurosport.gov.bd|eurosport.pt|eurosport.bg|eurosport.ba|eurosport.com.pe|eurosport.gov.np
-||ssl.p.jwpcdn.com^*/jwpsrv.js$important,script,domain=eurosport.com|eurosport.ru|eurosport.com.tr|eurosport.co.uk|eurosport.io|eurosport.de|eurosport.fr|eurosport.it|eurosport.tv|eurosport.es|eurosport.co.in|eurosport.nl|eurosport.us|eurosport.pl|eurosport.ro|eurosport.com.ar|eurosport.rs|eurosport.se|eurosport.cz|eurosport.shop|eurosport.in.ua|eurosport.store|eurosport.dk|eurosport.hu|eurosport.no|eurosport.com.bd|eurosport.com.np|eurosport.fi|eurosport.lt|eurosport.cloud|eurosport.gov.bd|eurosport.pt|eurosport.bg|eurosport.ba|eurosport.com.pe|eurosport.gov.np|gamereactor.net|gamereactor.com.tr|gamereactor.gr|gamereactor.vn|gamereactor.de|gamereactor.fr|gamereactor.me|gamereactor.jp|gamereactor.eu|gamereactor.it|gamereactor.id|gamereactor.es|gamereactor.nl|gamereactor.pl|gamereactor.cn|gamereactor.se|gamereactor.cz|gamereactor.dk|gamereactor.no|gamereactor.com.bd|gamereactor.asia|gamereactor.com.np|gamereactor.fi|gamereactor.gov.bd|gamereactor.kr|gamereactor.pt|gamereactor.mobi|gamereactor.gov.np|vg.no
-||ssl.p.jwpcdn.com^*/sharing.js$important,script,domain=eurosport.com|eurosport.ru|eurosport.com.tr|eurosport.co.uk|eurosport.io|eurosport.de|eurosport.fr|eurosport.it|eurosport.tv|eurosport.es|eurosport.co.in|eurosport.nl|eurosport.us|eurosport.pl|eurosport.ro|eurosport.com.ar|eurosport.rs|eurosport.se|eurosport.cz|eurosport.shop|eurosport.in.ua|eurosport.store|eurosport.dk|eurosport.hu|eurosport.no|eurosport.com.bd|eurosport.com.np|eurosport.fi|eurosport.lt|eurosport.cloud|eurosport.gov.bd|eurosport.pt|eurosport.bg|eurosport.ba|eurosport.com.pe|eurosport.gov.np|gamereactor.net|gamereactor.com.tr|gamereactor.gr|gamereactor.vn|gamereactor.de|gamereactor.fr|gamereactor.me|gamereactor.jp|gamereactor.eu|gamereactor.it|gamereactor.id|gamereactor.es|gamereactor.nl|gamereactor.pl|gamereactor.cn|gamereactor.se|gamereactor.cz|gamereactor.dk|gamereactor.no|gamereactor.com.bd|gamereactor.asia|gamereactor.com.np|gamereactor.fi|gamereactor.gov.bd|gamereactor.kr|gamereactor.pt|gamereactor.mobi|gamereactor.gov.np
-||ssl.p.jwpcdn.com^*/vast.js$important,script,domain=eurosport.com|eurosport.ru|eurosport.com.tr|eurosport.co.uk|eurosport.io|eurosport.de|eurosport.fr|eurosport.it|eurosport.tv|eurosport.es|eurosport.co.in|eurosport.nl|eurosport.us|eurosport.pl|eurosport.ro|eurosport.com.ar|eurosport.rs|eurosport.se|eurosport.cz|eurosport.shop|eurosport.in.ua|eurosport.store|eurosport.dk|eurosport.hu|eurosport.no|eurosport.com.bd|eurosport.com.np|eurosport.fi|eurosport.lt|eurosport.cloud|eurosport.gov.bd|eurosport.pt|eurosport.bg|eurosport.ba|eurosport.com.pe|eurosport.gov.np|gamereactor.net|gamereactor.com.tr|gamereactor.gr|gamereactor.vn|gamereactor.de|gamereactor.fr|gamereactor.me|gamereactor.jp|gamereactor.eu|gamereactor.it|gamereactor.id|gamereactor.es|gamereactor.nl|gamereactor.pl|gamereactor.cn|gamereactor.se|gamereactor.cz|gamereactor.dk|gamereactor.no|gamereactor.com.bd|gamereactor.asia|gamereactor.com.np|gamereactor.fi|gamereactor.gov.bd|gamereactor.kr|gamereactor.pt|gamereactor.mobi|gamereactor.gov.np|vg.no
+||ssl.p.jwpcdn.com^*/freewheel.js$important,script,domain=eurosport.be|eurosport.bg|eurosport.co|eurosport.co.in|eurosport.co.uk|eurosport.com|eurosport.com.bd|eurosport.com.cn|eurosport.com.np|eurosport.com.tr|eurosport.com.ua|eurosport.cz|eurosport.de|eurosport.dk|eurosport.es|eurosport.fi|eurosport.fr|eurosport.hu|eurosport.in.ua|eurosport.io|eurosport.it|eurosport.live|eurosport.nl|eurosport.no|eurosport.pl|eurosport.pt|eurosport.ro|eurosport.rs|eurosport.ru|eurosport.se|eurosport.shop|eurosport.su|eurosport.tv
+||ssl.p.jwpcdn.com^*/jwpsrv.js$important,script,domain=eurosport.be|eurosport.bg|eurosport.co|eurosport.co.in|eurosport.co.uk|eurosport.com|eurosport.com.bd|eurosport.com.cn|eurosport.com.np|eurosport.com.tr|eurosport.com.ua|eurosport.cz|eurosport.de|eurosport.dk|eurosport.es|eurosport.fi|eurosport.fr|eurosport.hu|eurosport.in.ua|eurosport.io|eurosport.it|eurosport.live|eurosport.nl|eurosport.no|eurosport.pl|eurosport.pt|eurosport.ro|eurosport.rs|eurosport.ru|eurosport.se|eurosport.shop|eurosport.su|eurosport.tv|gamereactor.asia|gamereactor.at|gamereactor.ca|gamereactor.ch|gamereactor.cn|gamereactor.com|gamereactor.com.bd|gamereactor.com.np|gamereactor.com.tr|gamereactor.cz|gamereactor.de|gamereactor.dk|gamereactor.es|gamereactor.eu|gamereactor.fi|gamereactor.fr|gamereactor.gr|gamereactor.id|gamereactor.it|gamereactor.jp|gamereactor.kr|gamereactor.lt|gamereactor.me|gamereactor.mobi|gamereactor.nl|gamereactor.no|gamereactor.pl|gamereactor.pt|gamereactor.se|gamereactor.us|vg.no
+||ssl.p.jwpcdn.com^*/sharing.js$important,script,domain=eurosport.be|eurosport.bg|eurosport.co|eurosport.co.in|eurosport.co.uk|eurosport.com|eurosport.com.bd|eurosport.com.cn|eurosport.com.np|eurosport.com.tr|eurosport.com.ua|eurosport.cz|eurosport.de|eurosport.dk|eurosport.es|eurosport.fi|eurosport.fr|eurosport.hu|eurosport.in.ua|eurosport.io|eurosport.it|eurosport.live|eurosport.nl|eurosport.no|eurosport.pl|eurosport.pt|eurosport.ro|eurosport.rs|eurosport.ru|eurosport.se|eurosport.shop|eurosport.su|eurosport.tv|gamereactor.asia|gamereactor.at|gamereactor.ca|gamereactor.ch|gamereactor.cn|gamereactor.com|gamereactor.com.bd|gamereactor.com.np|gamereactor.com.tr|gamereactor.cz|gamereactor.de|gamereactor.dk|gamereactor.es|gamereactor.eu|gamereactor.fi|gamereactor.fr|gamereactor.gr|gamereactor.id|gamereactor.it|gamereactor.jp|gamereactor.kr|gamereactor.lt|gamereactor.me|gamereactor.mobi|gamereactor.nl|gamereactor.no|gamereactor.pl|gamereactor.pt|gamereactor.se|gamereactor.us
+||ssl.p.jwpcdn.com^*/vast.js$important,script,domain=eurosport.be|eurosport.bg|eurosport.co|eurosport.co.in|eurosport.co.uk|eurosport.com|eurosport.com.bd|eurosport.com.cn|eurosport.com.np|eurosport.com.tr|eurosport.com.ua|eurosport.cz|eurosport.de|eurosport.dk|eurosport.es|eurosport.fi|eurosport.fr|eurosport.hu|eurosport.in.ua|eurosport.io|eurosport.it|eurosport.live|eurosport.nl|eurosport.no|eurosport.pl|eurosport.pt|eurosport.ro|eurosport.rs|eurosport.ru|eurosport.se|eurosport.shop|eurosport.su|eurosport.tv|gamereactor.asia|gamereactor.at|gamereactor.ca|gamereactor.ch|gamereactor.cn|gamereactor.com|gamereactor.com.bd|gamereactor.com.np|gamereactor.com.tr|gamereactor.cz|gamereactor.de|gamereactor.dk|gamereactor.es|gamereactor.eu|gamereactor.fi|gamereactor.fr|gamereactor.gr|gamereactor.id|gamereactor.it|gamereactor.jp|gamereactor.kr|gamereactor.lt|gamereactor.me|gamereactor.mobi|gamereactor.nl|gamereactor.no|gamereactor.pl|gamereactor.pt|gamereactor.se|gamereactor.us|vg.no
 ||static.finncdn.no/*/FINNExternalDistribution.js^$domain=aftenbladet.no|aftenposten.no
 ||static.vg.no/css/admark_top.gif
 ||storfjordnytt.no/wp-content/uploads/*.jpg^
@@ -1637,6 +1653,7 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||storfjordnytt.no/wp-content/uploads/*_muri.jpg^$important
 ||stream.fo/wp-content/uploads/*-300x111.jpg^
 ||teknologiskmatforum.no/ViewImage.aspx?*width=343^$image
+||tvsporten.dk/media/tvchannels/100x60_logo.png^
 ||thaiguiden.no/tg-980.html$subdocument
 ||thainytt.no/files/*-160.jpg^
 ||thainytt.no/files/160_*$image
@@ -1694,6 +1711,8 @@ contentMarketing$xmlhttprequest,domain=sol.no
 ||datamaskin.biz/ad/
 _1170x400.$domain=eyjafrettir.is,image,~third-party
 /1170x400_$domain=eyjafrettir.is,image,~third-party
+||ukenr.no/bobs/iframe.php^$subdocument
+||ugenr.dk/bobs/iframe.php^$subdocument
 ! — — — — — — —
 ! 🇳🇴: Filtjener- eller nettstedsspesifikke oppføringer med kilder
 ! 🇳🇴🏞: Filtenar- eller nettstadsspesifikke oppføringar med kildar
@@ -1776,7 +1795,7 @@ tv2.no##.spklw-post-attr[data-pc]
 ##.nf-o-annonse:not(html,body,:empty)
 ##.nf-c-adblock-title:not(html,body,:empty)
 ! Bet365 widget triggered for Norwegian audiences only
-goal.com#?#.js-betting-widget.is-country-no:upward(2)
+goal.com##*:has(>*>.js-betting-widget.is-country-no)
 ! borsenNO (08/10/2020)
 ##.native-advertisement:not(html,body,:empty)
 ! https://www•nettavisen•no/3424050834.html (24/11/2020)
@@ -2019,6 +2038,22 @@ _980banner_
 ##div[class*=" advertory-" i][class*=board i]:not(html,body,:empty)
 ! https://heimildin.is/greinar/?label=1 (09/10/2024)
 ###ad-sidefloat-container:not(html,body,:empty)
+! euroinvestorDK (13/11/2024)
+##.topbanner-desktop:not(body,html,:empty)
+##.topscroll-placeholder:not(body,html,:empty)
+! https://www•avvir•no/samegiella-ja-mearkagiella-vuosttasgiellan/
+~tipsbladet.no##.td-a-rec:not(html,body,:empty)
+! Borrowed from "Frellwit's Swedish Filter" (29/11/2024)
+||spania.no^$third-party
+||plausible.webfokus.no^$third-party
+||bcm.interactives.dk/script/
+||bytelab.dk^$third-party
+||cncpt.dk^$third-party
+||gtm.findroommate.dk^
+||nichehuset.dk^$third-party
+||step.dk^$third-party
+! https://ugenr•dk/kalender (03/12/2024)
+###addemam-wrapper:not(:empty)
 ! — — — — — — —
 ! 🇳🇴: Oppføringer med spesielle omstendigheter
 ! 🇬🇧: Entries with special circumstances
@@ -2039,10 +2074,9 @@ baadmagasinet.dk##.article-bottom .qx-inner > .qx-section:last-of-type
 ! Should not have ":not" + ":empty" added to it due to costume•no
 ##.bonnier-ad:not(html,body)
 ! — — — — — — — — —
-! 🇳🇴: Hovedsaklig for AdGuard
-! 🇳🇴🏞: Huvudsakleg for AdGuard
-! 🇮🇸: Aðallega fyrir AdGuard
-! 🇬🇧: Mostly for AdGuard
+! 🇳🇴: IP-adresse
+! 🇳🇴🏞: IP-adressar
+! 🇬🇧: IP addresses
 ://3.248.18.175^
 ://35.227.231.163^
 ://45.58.146.154^
@@ -2078,10 +2112,10 @@ talkmore.no##.spacer
 tnt-tv.no,tnt-tv.dk##.desktop_element.promo
 tnt-tv.no,tnt-tv.dk##.logos
 tnt-tv.no,tnt-tv.dk##.tabs_placeholder
-yrkesbil.no#?#td:contains(/^\xA0$/):not(:contains(/\S/)):not(:has(img))
-yrkesbil.no#?#tr:contains(/^\xA0$/):not(:contains(/\S/)):not(:has(img))
+yrkesbil.no#?#td:contains(/^\xA0$/):not(:contains(/^.*\s.*$/)):not(:has(img))
+yrkesbil.no#?#tr:contains(/^\xA0$/):not(:contains(/^.*\s.*$/)):not(:has(img))
 foodora.no##.top-skinny-banner-container
-check-in.dk#?#p:contains(/^\xA0$/):not(:contains(/\S/)):not(:has(img))
+check-in.dk#?#p:contains(/^\xA0$/):not(:contains(/^.*\s.*$/)):not(:has(img))
 idag.no#?#.nf-o-moduleblock:not(:has(a))
 mediavejviseren.dk###sectionBeforeBottom
 !+ NOT_OPTIMIZED
@@ -2098,6 +2132,8 @@ sykepleien.no#$#:is(.container--break,.content-extra__recommended-news) { paddin
 no#$#.tag-page { margin:0!important;padding:0!important }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189667
 feltet.dk#$#iframe + div[style*="height: 80vh"] { height: unset !important }
+! https://www•dagsavisen•no/sport/2024/10/31/kfum-oslo-var-uhyre-naer-et-finaleran/
+dagsavisen.no##:is(p,h2):has(> br:only-of-type:empty)
 ! 🇳🇴: ——— Distraherende bakgrunnsbilder ———
 ! 🇩🇰: ——— Distraherende baggrundsbilleder ———
 ! 🇮🇸: ——— Truflanda baksýnsmyndir ———
@@ -2128,7 +2164,7 @@ www.dr.dk#@#[href*=".smartadserver.com"]
 @@||schibsted.com/autoTracker$domain=vg.no
 ! 🇳🇴: Får Discovery+ sin påloggingsside til å vises riktig
 ! 🇬🇧: Makes Discovery+'s login page show up properly
-@@||mparticle.com^*/login$domain=discoveryplus.com|discoveryplus.in|discoveryplus.co.uk|discoveryplus.co|discoveryplus.co.il|discoveryplus.it|discoveryplus.com.br|discoveryplus.nl|discoveryplus.pl|discoveryplus.se|discoveryplus.dk|discoveryplus.no|discoveryplus.com.bd|discoveryplus.com.np|discoveryplus.fi|discoveryplus.cloud|discoveryplus.gov.bd|discoveryplus.gov.np
+@@||mparticle.com^*/login$domain=discoveryplus.be|discoveryplus.co|discoveryplus.co.uk|discoveryplus.com|discoveryplus.com.bd|discoveryplus.com.br|discoveryplus.com.np|discoveryplus.dk|discoveryplus.es|discoveryplus.fi|discoveryplus.hk|discoveryplus.in|discoveryplus.it|discoveryplus.me|discoveryplus.nl|discoveryplus.no|discoveryplus.online|discoveryplus.se
 ! https://github.com/easylist/easylist/issues/18542 (These entries are here to stay, regardless of the report's outcome.)
 @@||medlemskap.*.no^
 @@||bestill.help.no^$~third-party
@@ -2242,7 +2278,7 @@ nettavisen.no#?#.front optimus-element:contains(Eurojackpot)
 dagsavisen.no##a[href*="norsk-tipping.no/artikler/"]
 startsiden.no##div[class*=partnerModule][data-ga-category^=NorskTipping]
 side2.no##.markupbox
-nettavisen.no#?#article[data-lp-section=sportspill]:has(.slotHeader):contains(/lot{2}o/i)
+nettavisen.no#?#article[data-lp-section=sportspill]:has(.slotHeader):contains(/^.*lot{2}o.*$/i)
 ||vg.no/vgc/pool/tipster.png^$image
 /pustehullet/betting-header.png^$image
 startsiden.no###consumer_service_tipping
@@ -2297,6 +2333,7 @@ csp.screen9.com#@#.adsbox
 @@||www.tv2.no/s/js/ads.js$script,~third-party
 @@||fwmrm.net/crossdomain.xml$domain=embed.viaplay.com
 @@||sumo.cdn.tv2.no/ads^
+ukenr.no,ugenr.dk#@#.bannerad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/121422
 @@.v.fwmrm.net/ad/g^*:MTG_Play_
 ! 🇳🇴: Oppføringer som også er tilstede i «AdGuards hovedfilter / AdGuard Base Filter», for de som bruker ABP og AdBlock, eller som ikke har tatt seg bryet å bruke 8 sekunder på å skru den på i uBlock Origin.
@@ -2316,14 +2353,14 @@ nettavisen.no###article-body > .rel-article
 nettavisen.no##.am-bazaar-ad
 nettavisen.no##.background-na-commercial
 nettavisen.no##a > .background-na-commercial ~ *
-nettavisen.no#?#amedia-frontpage > .optimus-complex-front:has(> header > h2:contains(/Reklame|REKLAME/))
+nettavisen.no#?#amedia-frontpage > .optimus-complex-front:has(> header > h2:contains(/Reklame|REKLAME.*$/))
 sofabold.dk##.centerMgfx
 sofabold.dk##.top_b_display
 sofabold.dk##div[class^="sidebanner"]
 trendsales.dk##.top__banner
 xn--bredbnd-ixa.dk##div[class^="speedtest-bg"] > a > img
 ||freewheel-mtgx-tv.akamaized.net/*.mp4$media,redirect=noopmp4-1s,domain=bold.dk
-||freewheel-mtgx-tv.akamaized.net^$media,domain=tv3sport.dk
+!!!||freewheel-mtgx-tv.akamaized.net^$media,domain=tv3sport.dk
 ||googletagservices.com/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=vegetarbloggen.no,important
 ||v.fwmrm.net/ad/g/$domain=ekstrabladet.dk,important
 ||vgc.no/cdn/js/libs/homad-config.json$xmlhttprequest,redirect=noopjson
@@ -2340,9 +2377,6 @@ ni.dk#@#a[href*=".adform.net/"]
 @@||v.fwmrm.net/ad/g/1$domain=bold.dk
 @@||v.fwmrm.net/ad/l/1$domain=bold.dk
 @@||v.fwmrm.net/crossdomain.xml$domain=bold.dk
-! • Not to be removed during upstream syncs •
-! https://www•avvir•no/samegiella-ja-mearkagiella-vuosttasgiellan/
-##.td-a-rec:not(html,body,:empty)
 ! jyllands-postenDK (09/07/2020)
 ###topBanners
 ! specificTXT
@@ -2352,6 +2386,11 @@ thelocal.no,thelocal.dk##.row > div[class^="row-"]:has(> a[href="#"] > .panel-ad
 thelocal.no,thelocal.dk#?#div > .section:has(> div[class*=-label]:contains(Sponsored))
 radio-danmark.dk,radio-norge.org###team_ad
 gaamess.dk##div[class$="Ad"]
+! https://github.com/uBlockOrigin/uAssets/issues/26263 (02/12/2024)
+flashscore.app,flashscore.at,flashscore.bg,flashscore.ca,flashscore.ch,flashscore.cl,flashscore.co,flashscore.co.id,flashscore.co.in,flashscore.co.jp,flashscore.co.ke,flashscore.co.kr,flashscore.co.uk,flashscore.co.za,flashscore.com,flashscore.com.ar,flashscore.com.au,flashscore.com.bd,flashscore.com.br,flashscore.com.mx,flashscore.com.my,flashscore.com.ng,flashscore.com.np,flashscore.com.pe,flashscore.com.tr,flashscore.com.ua,flashscore.cz,flashscore.de,flashscore.dev,flashscore.dk,flashscore.es,flashscore.eu,flashscore.fi,flashscore.fr,flashscore.ge,flashscore.gr,flashscore.id,flashscore.ie,flashscore.in,flashscore.info,flashscore.io,flashscore.ir,flashscore.it,flashscore.kz,flashscore.live,flashscore.mobi,flashscore.nl,flashscore.org,flashscore.pe,flashscore.ph,flashscore.pl,flashscore.pt,flashscore.ro,flashscore.rs,flashscore.ru,flashscore.se,flashscore.si,flashscore.sk,flashscore.ua,flashscore.uk,flashscore.vn,flashscore.website###detail > .detailLeaderboard
+flashscore.app,flashscore.at,flashscore.bg,flashscore.ca,flashscore.ch,flashscore.cl,flashscore.co,flashscore.co.id,flashscore.co.in,flashscore.co.jp,flashscore.co.ke,flashscore.co.kr,flashscore.co.uk,flashscore.co.za,flashscore.com,flashscore.com.ar,flashscore.com.au,flashscore.com.bd,flashscore.com.br,flashscore.com.mx,flashscore.com.my,flashscore.com.ng,flashscore.com.np,flashscore.com.pe,flashscore.com.tr,flashscore.com.ua,flashscore.cz,flashscore.de,flashscore.dev,flashscore.dk,flashscore.es,flashscore.eu,flashscore.fi,flashscore.fr,flashscore.ge,flashscore.gr,flashscore.id,flashscore.ie,flashscore.in,flashscore.info,flashscore.io,flashscore.ir,flashscore.it,flashscore.kz,flashscore.live,flashscore.mobi,flashscore.nl,flashscore.org,flashscore.pe,flashscore.ph,flashscore.pl,flashscore.pt,flashscore.ro,flashscore.rs,flashscore.ru,flashscore.se,flashscore.si,flashscore.sk,flashscore.ua,flashscore.uk,flashscore.vn,flashscore.website##.adsenvelope
+flashscore.app,flashscore.at,flashscore.bg,flashscore.ca,flashscore.ch,flashscore.cl,flashscore.co,flashscore.co.id,flashscore.co.in,flashscore.co.jp,flashscore.co.ke,flashscore.co.kr,flashscore.co.uk,flashscore.co.za,flashscore.com,flashscore.com.ar,flashscore.com.au,flashscore.com.bd,flashscore.com.br,flashscore.com.mx,flashscore.com.my,flashscore.com.ng,flashscore.com.np,flashscore.com.pe,flashscore.com.tr,flashscore.com.ua,flashscore.cz,flashscore.de,flashscore.dev,flashscore.dk,flashscore.es,flashscore.eu,flashscore.fi,flashscore.fr,flashscore.ge,flashscore.gr,flashscore.id,flashscore.ie,flashscore.in,flashscore.info,flashscore.io,flashscore.ir,flashscore.it,flashscore.kz,flashscore.live,flashscore.mobi,flashscore.nl,flashscore.org,flashscore.pe,flashscore.ph,flashscore.pl,flashscore.pt,flashscore.ro,flashscore.rs,flashscore.ru,flashscore.se,flashscore.si,flashscore.sk,flashscore.ua,flashscore.uk,flashscore.vn,flashscore.website##.boxOverContent__banner
+flashscore.app,flashscore.at,flashscore.bg,flashscore.ca,flashscore.ch,flashscore.cl,flashscore.co,flashscore.co.id,flashscore.co.in,flashscore.co.jp,flashscore.co.ke,flashscore.co.kr,flashscore.co.uk,flashscore.co.za,flashscore.com,flashscore.com.ar,flashscore.com.au,flashscore.com.bd,flashscore.com.br,flashscore.com.mx,flashscore.com.my,flashscore.com.ng,flashscore.com.np,flashscore.com.pe,flashscore.com.tr,flashscore.com.ua,flashscore.cz,flashscore.de,flashscore.dev,flashscore.dk,flashscore.es,flashscore.eu,flashscore.fi,flashscore.fr,flashscore.ge,flashscore.gr,flashscore.id,flashscore.ie,flashscore.in,flashscore.info,flashscore.io,flashscore.ir,flashscore.it,flashscore.kz,flashscore.live,flashscore.mobi,flashscore.nl,flashscore.org,flashscore.pe,flashscore.ph,flashscore.pl,flashscore.pt,flashscore.ro,flashscore.rs,flashscore.ru,flashscore.se,flashscore.si,flashscore.sk,flashscore.ua,flashscore.uk,flashscore.vn,flashscore.website##.prematchOddsBonus__bonus
 ! 🇬🇧: Entries that are also present in «uBlock Filters», for those who use ABP and AdGuard
 triplx.dk##.aff-inner-col
 ! ——————————————————————————————————————————————————————————————————————————————————————————
@@ -2362,61 +2401,61 @@ triplx.dk##.aff-inner-col
 ! 🇬🇧: Scam sites and virus sites (Do not visit them if you value your computers and wallets)
 ! Quick 101: Many scam sites use addresses that resemble those of major sites, but which contain random extra tidbits that make them a whole different address. "||vg.no." will block vg.no.iphone-scam-example.xyz, but not vg.no or vg.no/sport
 /begrensede-tilbudet/*$document
-/bli-avbrutt-bor-du-oppdater/*$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
-*/dnb11111^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+/bli-avbrutt-bor-du-oppdater/*$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
+*/dnb11111^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 /KiwiErbjudanden1/*$document
-/Norgesecure/*$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
-/pakkerlevering/*$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
+/Norgesecure/*$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
+/pakkerlevering/*$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
 /finn.no/finno.htm$document,domain=~facebook.com
 .gratis-reisebilletter.$document
 ||102.112.2o7.net^$document
 ://52.216.146.90^
 ://92.42.104.146^
-||appleid.*.no^$domain=~en-svindelside-som-ikke-er-apple.com.bd|~en-svindelside-som-ikke-er-apple.com.np|~en-svindelside-som-ikke-er-apple.gov.bd|~en-svindelside-som-ikke-er-apple.gov.np
-||coop.no.$document,domain=~en-svindelside-som-ikke-er-coop.com.bd|~en-svindelside-som-ikke-er-coop.com.np|~en-svindelside-som-ikke-er-coop.gov.bd|~en-svindelside-som-ikke-er-coop.gov.np
-||danskebank.no.$document,domain=~en-svindelside-som-ikke-er-danskebank.com.bd|~en-svindelside-som-ikke-er-danskebank.com.np|~en-svindelside-som-ikke-er-danskebank.gov.bd|~en-svindelside-som-ikke-er-danskebank.gov.np
-||djurs.com-*.$document,domain=~en-svindelside-som-ikke-er-djurs-sommerland.com.bd|~en-svindelside-som-ikke-er-djurs-sommerland.com.np|~en-svindelside-som-ikke-er-djurs-sommerland.gov.bd|~en-svindelside-som-ikke-er-djurs-sommerland.gov.np
-||dnb.no.$document,domain=~en-svindelside-som-ikke-er-dnb.com.bd|~en-svindelside-som-ikke-er-dnb.com.np|~en-svindelside-som-ikke-er-dnb.gov.bd|~en-svindelside-som-ikke-er-dnb.gov.np
-||elkjop.no.$document,domain=~en-svindelside.com.bd|~en-svindelside.com.np|~en-svindelside.gov.bd|~en-svindelside.gov.np
-||finn.no.$document,domain=~en-svindelside-som-ikke-er-finn.com.bd|~en-svindelside-som-ikke-er-finn.com.np|~en-svindelside-som-ikke-er-finn.gov.bd|~en-svindelside-som-ikke-er-finn.gov.np
-||flysas-no.$document,domain=~en-svindelside-som-ikke-er-sas.com.bd|~en-svindelside-som-ikke-er-sas.com.np|~en-svindelside-som-ikke-er-sas.gov.bd|~en-svindelside-som-ikke-er-sas.gov.np
-||itunesconnect-*.no^$domain=~en-svindelside-som-ikke-er-itunes-eller-apple.com.bd|~en-svindelside-som-ikke-er-itunes-eller-apple.com.np|~en-svindelside-som-ikke-er-itunes-eller-apple.gov.bd|~en-svindelside-som-ikke-er-itunes-eller-apple.gov.np
+||appleid.*.no^$domain=~en-svindelside-som-ikke-er-apple.com.bd|~en-svindelside-som-ikke-er-apple.com.np
+||coop.no.$document,domain=~en-svindelside-som-ikke-er-coop.com.bd|~en-svindelside-som-ikke-er-coop.com.np
+||danskebank.no.$document,domain=~en-svindelside-som-ikke-er-danskebank.com.bd|~en-svindelside-som-ikke-er-danskebank.com.np
+||djurs.com-*.$document,domain=~en-svindelside-som-ikke-er-djurs-sommerland.com.bd|~en-svindelside-som-ikke-er-djurs-sommerland.com.np
+||dnb.no.$document,domain=~en-svindelside-som-ikke-er-dnb.com.bd|~en-svindelside-som-ikke-er-dnb.com.np
+||elkjop.no.$document,domain=~en-svindelside.com.bd|~en-svindelside.com.np
+||finn.no.$document,domain=~en-svindelside-som-ikke-er-finn.com.bd|~en-svindelside-som-ikke-er-finn.com.np
+||flysas-no.$document,domain=~en-svindelside-som-ikke-er-sas.com.bd|~en-svindelside-som-ikke-er-sas.com.np
+||itunesconnect-*.no^$domain=~en-svindelside-som-ikke-er-itunes-eller-apple.com.bd|~en-svindelside-som-ikke-er-itunes-eller-apple.com.np
 ||jimmychoostore.top^$document
-||komplett.no.$document,domain=~en-svindelside-som-ikke-er-komplett.com.bd|~en-svindelside-som-ikke-er-komplett.com.np|~en-svindelside-som-ikke-er-komplett.gov.bd|~en-svindelside-som-ikke-er-komplett.gov.np
+||komplett.no.$document,domain=~en-svindelside-som-ikke-er-komplett.com.bd|~en-svindelside-som-ikke-er-komplett.com.np
 ||look-like-star.myshopify.com^$document
 ||marked.no^
 ||mrcal365.com^$document
-||nordea.no.$document,domain=~en-svindelside-som-ikke-er-nordea.*
-||nordnet.no.$document,domain=~en-svindelside-som-ikke-er-nordnet.com.bd|~en-svindelside-som-ikke-er-nordnet.com.np|~en-svindelside-som-ikke-er-nordnet.gov.bd|~en-svindelside-som-ikke-er-nordnet.gov.np
-||norwegian.com.$document,domain=~en-svindelside-som-ikke-er-norwegian.com.bd|~en-svindelside-som-ikke-er-norwegian.com.np|~en-svindelside-som-ikke-er-norwegian.gov.bd|~en-svindelside-som-ikke-er-norwegian.gov.np
+||nordea.no.$document,domain=~en-svindelside-som-ikke-er-nordea.com.bd|~en-svindelside-som-ikke-er-nordea.com.np
+||nordnet.no.$document,domain=~en-svindelside-som-ikke-er-nordnet.com.bd|~en-svindelside-som-ikke-er-nordnet.com.np
+||norwegian.com.$document,domain=~en-svindelside-som-ikke-er-norwegian.com.bd|~en-svindelside-som-ikke-er-norwegian.com.np
 ||pensjonistferie.no^$document
-||posten.no.$document,domain=~en-svindelside-som-ikke-er-posten.com.bd|~en-svindelside-som-ikke-er-posten.com.np|~en-svindelside-som-ikke-er-posten.gov.bd|~en-svindelside-som-ikke-er-posten.gov.np
-||postnord.no.$document,domain=~en-svindelside-som-ikke-er-postnord.com.bd|~en-svindelside-som-ikke-er-postnord.com.np|~en-svindelside-som-ikke-er-postnord.gov.bd|~en-svindelside-som-ikke-er-postnord.gov.np
+||posten.no.$document,domain=~en-svindelside-som-ikke-er-posten.com.bd|~en-svindelside-som-ikke-er-posten.com.np
+||postnord.no.$document,domain=~en-svindelside-som-ikke-er-postnord.com.bd|~en-svindelside-som-ikke-er-postnord.com.np
 ||postuksus.com^$document
 ||replicapatekphilippe.com^$document
 ||replicarolexyachtmaster.com^$document
-||sbanken.no.$document,domain=~en-svindelside-som-ikke-er-sbanken.com.bd|~en-svindelside-som-ikke-er-sbanken.com.np|~en-svindelside-som-ikke-er-sbanken.gov.bd|~en-svindelside-som-ikke-er-sbanken.gov.np
+||sbanken.no.$document,domain=~en-svindelside-som-ikke-er-sbanken.com.bd|~en-svindelside-som-ikke-er-sbanken.com.np
 ||secureriches.com^$document
-||shell.no.$document,domain=~en-svindelside-som-ikke-er-shell.com.bd|~en-svindelside-som-ikke-er-shell.com.np|~en-svindelside-som-ikke-er-shell.gov.bd|~en-svindelside-som-ikke-er-shell.gov.np
-||skatteetaten.no.$document,domain=~en-svindelside-som-ikke-er-skatteetaten.com.bd|~en-svindelside-som-ikke-er-skatteetaten.com.np|~en-svindelside-som-ikke-er-skatteetaten.gov.bd|~en-svindelside-som-ikke-er-skatteetaten.gov.np
-||sparebank1.no.$document,domain=~en-svindelside-som-ikke-er-sparebank1.com.bd|~en-svindelside-som-ikke-er-sparebank1.com.np|~en-svindelside-som-ikke-er-sparebank1.gov.bd|~en-svindelside-som-ikke-er-sparebank1.gov.np
+||shell.no.$document,domain=~en-svindelside-som-ikke-er-shell.com.bd|~en-svindelside-som-ikke-er-shell.com.np
+||skatteetaten.no.$document,domain=~en-svindelside-som-ikke-er-skatteetaten.com.bd|~en-svindelside-som-ikke-er-skatteetaten.com.np
+||sparebank1.no.$document,domain=~en-svindelside-som-ikke-er-sparebank1.com.bd|~en-svindelside-som-ikke-er-sparebank1.com.np
 ||trackvoluum.com^$document
 ||tromselementbygg.no^$document
-||tusenfryd-com.$document,domain=~en-svindelside-som-ikke-er-tusenfryd.com.bd|~en-svindelside-som-ikke-er-tusenfryd.com.np|~en-svindelside-som-ikke-er-tusenfryd.gov.bd|~en-svindelside-som-ikke-er-tusenfryd.gov.np
+||tusenfryd-com.$document,domain=~en-svindelside-som-ikke-er-tusenfryd.com.bd|~en-svindelside-som-ikke-er-tusenfryd.com.np
 ||ultimate-tech-products.myshopify.com^$document
-||vg.no.$document,domain=~en-svindelside-som-ikke-er-vg.com.bd|~en-svindelside-som-ikke-er-vg.com.np|~en-svindelside-som-ikke-er-vg.gov.bd|~en-svindelside-som-ikke-er-vg.gov.np
-||vipps-sikkerhet.$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||vg.no.$document,domain=~en-svindelside-som-ikke-er-vg.com.bd|~en-svindelside-som-ikke-er-vg.com.np
+||vipps-sikkerhet.$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ||norskposten.com^$document
 ||oslo-tannlegene.no^$document
 ||y6.no^$all
 ||havfruen4220.dk^$all
-||bankid-sperret.$all,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||bankid-sperret.$all,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ||srilanka.no^$document
 ||innboks.info^$all
-||skaatteenok.com^$all,domain=~en-falsk-svindelside.*
+||skaatteenok.com^$all,domain=~en-falsk-svindelside.com.bd|~en-falsk-svindelside.com.np
 ||pearlandcarpetcleaner.com^$all
-||logg-inn.online^$all,domain=~en-falsk-svindelside.*
-||nyhetsnett.no^$all,domain=~en-falsk-svindelside.*
+||logg-inn.online^$all,domain=~en-falsk-svindelside.com.bd|~en-falsk-svindelside.com.np
+||nyhetsnett.no^$all,domain=~en-falsk-svindelside.com.bd|~en-falsk-svindelside.com.np
 !+ NOT_OPTIMIZED
 /?finn.no/login$document
 ! 🇬🇧: Copied over from «Dandelion Sprout's Anti-Malware List»
@@ -2429,61 +2468,61 @@ triplx.dk##.aff-inner-col
 ||galerijajava.ba^$all
 ||p-stn.net^$all
 ! Fake Gymshark webshops
-||altrasgshoes.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||altrask.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||brunateskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||g-ymsharknorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gantdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||gantnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymshark-danmarkudsalg.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||gymshark-no.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharkbutikdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||gymsharkbutikkoslo.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharkdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||gymsharkidanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||gymsharkiesale.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||xn--gymsharkklrnorge-3ob.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharkldanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||gymsharklnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharkno.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharknorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharkoutletsnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharksalg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharktightsnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gymsharnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hilfigerdenmark.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hilfigernorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hugobossbutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hunterstovlerbutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||josefseibeloutletnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||joyaskobutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||kybunskodanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||louboutinnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||montec-danmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||montecnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||montecsalg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||nauticadanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||nauticanorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||salgvejanorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||sanukdk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||sanuksandaler.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||umbrodk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||umbrono.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||underarmourdk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||underarmourdks.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||vejadanmarkudsalg.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||xeroshoes-danmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||xeroshoesdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
--norgesalg.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*danmarks.com^$document,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-*norgno.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norges.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norgebutikk.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norgestore.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norge-no.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norgestores.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*skobutikks.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*butikksoslo.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
+||altrasgshoes.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||altrask.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||brunateskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||g-ymsharknorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gantdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||gantnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymshark-danmarkudsalg.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||gymshark-no.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharkbutikdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||gymsharkbutikkoslo.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharkdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||gymsharkidanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||gymsharkiesale.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||xn--gymsharkklrnorge-3ob.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharkldanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||gymsharklnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharkno.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharknorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharkoutletsnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharksalg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharktightsnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gymsharnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hilfigerdenmark.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hilfigernorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hugobossbutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hunterstovlerbutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||josefseibeloutletnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||joyaskobutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||kybunskodanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||louboutinnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||montec-danmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||montecnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||montecsalg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||nauticadanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||nauticanorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||salgvejanorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||sanukdk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||sanuksandaler.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||umbrodk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||umbrono.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||underarmourdk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||underarmourdks.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||vejadanmarkudsalg.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||xeroshoes-danmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||xeroshoesdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+-norgesalg.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*danmarks.com^$document,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+*norgno.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norges.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norgebutikk.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norgestore.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norge-no.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norgestores.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*skobutikks.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*butikksoslo.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
 ! E-mail tips
 ||s.free.fr^$all
 ||trmff.wpengine.com^$all
@@ -2500,32 +2539,32 @@ triplx.dk##.aff-inner-col
 ||wirexapp.africa.com^$all
 ||tachyoniums.eu.com^$all
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-9075749
-||paypal.*.no|$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
-||paypal.*.no/$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||paypal.*.no|$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
+||paypal.*.no/$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ! 🇳🇴: Som nevnt i diverse nyhetsartikler om svindelsider
 ! 🇩🇰: Som nævnt i diverse nyhedsartikler om fupwebsider
 ! 🇬🇧: As mentioned in various news articles about fraud sites
 ! https://www•tv2•no/nyheter/10493336/
-||rnbinance.com^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||brightertrade.com^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
+||rnbinance.com^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||brightertrade.com^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
 ! https://www•nrk•no/norge/1.14511067
-||kongeparken.com-*$document,domain=~en-svindelside-som-ikke-er-kongeparken.com.bd|~en-svindelside-som-ikke-er-kongeparken.com.np|~en-svindelside-som-ikke-er-kongeparken.gov.bd|~en-svindelside-som-ikke-er-kongeparken.gov.np
-||kiwi.com-*$document,domain=~en-svindelside-som-ikke-er-kongeparken.com.bd|~en-svindelside-som-ikke-er-kongeparken.com.np|~en-svindelside-som-ikke-er-kongeparken.gov.bd|~en-svindelside-som-ikke-er-kongeparken.gov.np
+||kongeparken.com-*$document,domain=~en-svindelside-som-ikke-er-kongeparken.com.bd|~en-svindelside-som-ikke-er-kongeparken.com.np
+||kiwi.com-*$document,domain=~en-svindelside-som-ikke-er-kongeparken.com.bd|~en-svindelside-som-ikke-er-kongeparken.com.np
 ! https://www•datahjelperne•no/verifiser-get-konto-falsk-mail/
-||getmail-no.$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
+||getmail-no.$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
 ! https://www•datahjelperne•no/gratulerer-du-har-vunnet-en-gave-mail-svindel/
 ||liveshopdealz.com^$document
 ! https://www•nrk•no/livsstil/1.14732503
-||elkjop*.club^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
+||elkjop*.club^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
 ! https://www•datahjelperne•no/sparebank1-kortet-ditt-er-blokkert-mail-phishing/
-/css/*sparebank1.no^$document,domain=~en-svindelside-som-ikke-er-sparebank1.com.bd|~en-svindelside-som-ikke-er-sparebank1.com.np|~en-svindelside-som-ikke-er-sparebank1.gov.bd|~en-svindelside-som-ikke-er-sparebank1.gov.np
+/css/*sparebank1.no^$document,domain=~en-svindelside-som-ikke-er-sparebank1.com.bd|~en-svindelside-som-ikke-er-sparebank1.com.np
 ! https://www.facebook.com/viralspiralen/posts/2494251397311027
 ||addmoviesnow.com^$document
 ! https://www•mm•dk/tjekdet/artikel/faarup-sommerland-advarer-mod-gratis-billetter-det-er-spam-og-fup
-||faarup.com-*.$document,domain=~en-svindelside-der-ikke-er-sommerland.com.bd|~en-svindelside-der-ikke-er-sommerland.com.np|~en-svindelside-der-ikke-er-sommerland.gov.bd|~en-svindelside-der-ikke-er-sommerland.gov.np
-||com-dk.com^$document,domain=~en-svindelside-.com.bd|~en-svindelside-.com.np|~en-svindelside-.gov.bd|~en-svindelside-.gov.np
+||faarup.com-*.$document,domain=~en-svindelside-der-ikke-er-sommerland.com.bd|~en-svindelside-der-ikke-er-sommerland.com.np
+||com-dk.com^$document,domain=~en-svindelside-.com.bd|~en-svindelside-.com.np
 ! https://www•mm•dk/tjekdet/artikel/det-er-fup-heller-ikke-denne-gang-giver-legoland-5-gratis-billetter-vaek
-||legoland.com-*.$document,domain=~en-svindelside-der-ikke-er-legoland.com.bd|~en-svindelside-der-ikke-er-legoland.com.np|~en-svindelside-der-ikke-er-legoland.gov.bd|~en-svindelside-der-ikke-er-legoland.gov.np
+||legoland.com-*.$document,domain=~en-svindelside-der-ikke-er-legoland.com.bd|~en-svindelside-der-ikke-er-legoland.com.np
 ! https://www•mm•dk/tjekdet/artikel/ogsaa-chili-klaus-maa-staa-model-til-falske-annoncer
 ||hcliips.com^$document
 ! https://www•nrk•no/troms/1.14788086
@@ -2535,38 +2574,38 @@ triplx.dk##.aff-inner-col
 ! https://www•online•no/sikkerhet/falsk-online-nettside
 ||is-a-personaltrainer.com^$document
 ! https://nyheder.tv2•dk/krimi/2020-02-11-politiet-advarer-mod-svindler-smser-forsoger-at-fa-billede-af-nemid
-||rigspolitiet.com^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||rigspolitiet.com^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ! https://www•faktisk•no/faktasjekker/vw8/erik-gikk-fra-arbeidsledig-til-millionaer-pa-8-uker
-||ocgadgets.com^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||ocgadgetss.myshopify.com^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
+||ocgadgets.com^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||ocgadgetss.myshopify.com^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
 ! https://www•mm•dk/tjekdet/artikel/fup-artikel-hun-er-tiltalt-for-millionsvindel-men-nu-pludselig-loesladt
-||ekstrabiadet.$document,domain=~en-svindelside-der-ikke-er-ekstrabladet.com.bd|~en-svindelside-der-ikke-er-ekstrabladet.com.np|~en-svindelside-der-ikke-er-ekstrabladet.gov.bd|~en-svindelside-der-ikke-er-ekstrabladet.gov.np
+||ekstrabiadet.$document,domain=~en-svindelside-der-ikke-er-ekstrabladet.com.bd|~en-svindelside-der-ikke-er-ekstrabladet.com.np
 ! https://www•tv2•no/nyheter/11516670/
-||fintechnow*.buzz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||wealthnews*.xyz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
+||fintechnow*.buzz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||wealthnews*.xyz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
 ! https://www•datahjelperne•no/posten-informerer-deg-om-forsendelsen-din-mail-svindel/
-||newzeninfotech.com^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
+||newzeninfotech.com^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
 ! https://www•datahjelperne•no/skatteberegning-mail-svindel/
-||probenefit.net^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
-||ssbeveragedistribution.com^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
+||probenefit.net^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
+||ssbeveragedistribution.com^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
 ! https://www•datahjelperne•no/olav-thon-facebook-svindel/
-||norge.*.icu^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||euronews*.buzz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||softwaredaily*.monster^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||stalknews*.buzz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||goldupdates*.xyz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
+||norge.*.icu^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||euronews*.buzz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||softwaredaily*.monster^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||stalknews*.buzz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||goldupdates*.xyz^$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
 ! https://www•datahjelperne•no/vipps-sms-svindel/
-||sikre-vipps-konto.$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||sikre-vipps-konto.$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ! https://www•datahjelperne•no/hvit-bjorn-river-kvinne-i-stykker-facebook-spam-oppdatert/
 ||vidcopa.me^$document
 ! https://www•adressa•no/pluss/nyheter/2020/08/26/Kristofer-Hivju-V%C3%A6r-s%C3%A5-snill-og-slutt-22527944.ece
 ||smallrise.com^$document
 ! https://www•datahjelperne•no/coop-du-har-fatt-nye-kuponger-mail-svindel/
-||offerleads.club^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
-/cop-no/index.htm$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
+||offerleads.club^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
+/cop-no/index.htm$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
 ! https://www•datahjelperne•no/elkjop-kontaktforsok-mail-svindel/
-||bamboobotanica.com^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
-/survey/heldige^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np|~en-falsk-postsvindel.gov.bd|~en-falsk-postsvindel.gov.np
+||bamboobotanica.com^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
+/survey/heldige^$document,domain=~en-falsk-postsvindel.com.bd|~en-falsk-postsvindel.com.np
 ! https://www•datahjelperne•no/sparebank-1-din-tilganger-er-blokkert-svindel/
 ||cionialessio.it^$document
 ! https://www•dinside•no/okonomi/advarer-mot-falsk-facebook/72891041
@@ -2575,13 +2614,13 @@ triplx.dk##.aff-inner-col
 ||sites.google.com/view/truls-svendsen^$document
 ||signup-*vpns.com^$document
 ! https://www•datahjelperne•no/telenor-din-faktura-mislyktes-svindel/
-||telenors.*.cx^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||telenors.*.cx^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ! https://www•datahjelperne•no/eurocard-falsk-epost-faktura/
-||valspe.com.br^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||valspe.com.br^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ! https://www•datahjelperne•no/eika-falsk-epost-svindel/
-||tekuon.com^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||tekuon.com^$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ! https://www•nrk•no/norge/1.15235615
--sparebank1.*.net^$document,domain=~en-svindelside-som-ikke-er-sparebank1.com.bd|~en-svindelside-som-ikke-er-sparebank1.com.np|~en-svindelside-som-ikke-er-sparebank1.gov.bd|~en-svindelside-som-ikke-er-sparebank1.gov.np
+-sparebank1.*.net^$document,domain=~en-svindelside-som-ikke-er-sparebank1.com.bd|~en-svindelside-som-ikke-er-sparebank1.com.np
 ! https://www•datahjelperne•no/er-det-deg-facebook-video-spam/
 ||cinefique.com^$document
 /^(https?://)?[a-z]{10,12}\.easy\.co($|/.*$)/$document
@@ -2590,20 +2629,20 @@ triplx.dk##.aff-inner-col
 ! https://www•adressa•no/pluss/nyheter/2021/03/30/Ser-du-hvilken-profil-som-er-ekte-23739076.ece
 ||nordeninterior.weebly.com^$document
 ! Googling Aksel Hennie (Results for prior week) in late July 2021
-||com/vg.no|$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
+||com/vg.no|$document,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
 ! Various Google results for 'jesper buch bitcoin'
-||fartuelt.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||fancywoman.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||privatedagplejere.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||mxdesign.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||bitcoinevolutionaustraliareview.com^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||irb.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||ditsunde.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||economywatch.com^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||superbinvest.com^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||marvelouskaunas.club^$all,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||aktienboard.com^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
-||minklubshop.dk/dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np|~en-falsk-bitcoin-svindel.gov.bd|~en-falsk-bitcoin-svindel.gov.np
+||fartuelt.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||fancywoman.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||privatedagplejere.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||mxdesign.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||bitcoinevolutionaustraliareview.com^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||irb.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||ditsunde.dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||economywatch.com^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||superbinvest.com^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||marvelouskaunas.club^$all,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||aktienboard.com^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
+||minklubshop.dk/dk^$document,popup,domain=~en-falsk-bitcoin-svindel.com.bd|~en-falsk-bitcoin-svindel.com.np
 ! https://www•nrk•no/vestfoldogtelemark/1.15750360
 ||dundeehills.group^$all
 ! https://www•adressa•no/pluss/nyheter/2021/12/04/Posten-advarer-Vi-sender-ikke-slike-tekstmeldinger-24894483.ece
@@ -2612,9 +2651,9 @@ triplx.dk##.aff-inner-col
 ! https://www•vi•no/forbruker/ikke-trykk-pa-lenka-fra-skatteetaten/75666026
 ||melding.link^$document
 ! https://github.com/DandelionSprout/adfilt/issues/63#issuecomment-1114669106
-||cx/nordea|$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
-||cx/sparebank$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
-||cx/sbanken|$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np|~en-falsk-banksvindel.gov.bd|~en-falsk-banksvindel.gov.np
+||cx/nordea|$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
+||cx/sparebank$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
+||cx/sbanken|$document,domain=~en-falsk-banksvindel.com.bd|~en-falsk-banksvindel.com.np
 ! https://www•kode24•no/artikkel/75980495
 ||campbell-living.com^$all
 ! https://www•telia•no/kundeservice/mobil/malware-flubot-android/
@@ -2627,74 +2666,74 @@ triplx.dk##.aff-inner-col
 ! https://www•tv2•no/nyheter/innenriks/advarer-om-svindel-sms-sender-aldri-slike-henvendelser/16284207/ (15/12/2023)
 ||minklarna.$document,popup,domain=~no|~se|~dk
 ! https://github.com/DandelionSprout/adfilt/issues/747
--norge.co.no^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*skodanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||skechersskosalg-norge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||dkgaborsneakers.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||haglofstilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||fjallraventilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hitecskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||off-whitenorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gaborskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||oofosnorgeoutlet.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||camperskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||eccoskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||clarksskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||off-whitedanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||underarmourdanmarkdk.com^$all,domain=~en-falsk-svindelbuti.com.bd|~en-falsk-svindelbuti.com.np|~en-falsk-svindelbuti.gov.bd|~en-falsk-svindelbuti.gov.np
-||eccodanmarkwebbutik.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||clarks-dk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||salomonoutletnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||speedcrossnettbutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
+-norge.co.no^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*skodanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||skechersskosalg-norge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||dkgaborsneakers.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||haglofstilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||fjallraventilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hitecskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||off-whitenorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gaborskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||oofosnorgeoutlet.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||camperskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||eccoskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||clarksskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||off-whitedanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||underarmourdanmarkdk.com^$all,domain=~en-falsk-svindelbuti.com.bd|~en-falsk-svindelbuti.com.np
+||eccodanmarkwebbutik.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||clarks-dk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||salomonoutletnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||speedcrossnettbutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
 ! https://github.com/DandelionSprout/adfilt/issues/748
-||salomomnorgeoutlet.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||jakkeshopdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||jakkeshopnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||norge-adidas.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||tevanorgeshop.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||wolverineskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hunternorge.co^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hunternorgeno.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||norgeskotilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hokasnorgeno.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||vanssnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||asoloskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hokaonenorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||jordannorge.top^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||quiksilvernorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hokalopesko.$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hokanorgeno.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||drmdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||tevadanmarkshop.com^$all,domain=~en-falsk-svindelbutkk.com.bd|~en-falsk-svindelbutkk.com.np|~en-falsk-svindelbutkk.gov.bd|~en-falsk-svindelbutkk.gov.np
-||hunter-danmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||salomonbutikdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||jordantilbud.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||jordantilbuddanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||quiksilverdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||salomon-danmark.net^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||salomonidanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||saucony-dk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||palladiumskodk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-||keensandalertilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||quiksilvertilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||palladiumskobutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hunterstovlersalg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||martenssalg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hokaskooutlet.co.no^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hoka-sko.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hoka-one-one.cc^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hokaoneone*$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norgeskosalg.$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norge-salg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norgesalg.com^$document,popup,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*norgesalgs.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*salgnorge.com^$document,popup,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*danmarkdk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-*skodktilbud.$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-*skonorgeeu.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*sneakersnorgeshop.$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-*sneakersdkshop.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np|~en-falsk-svindelbutik.gov.bd|~en-falsk-svindelbutik.gov.np
-*skodanmarks.$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
+||salomomnorgeoutlet.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||jakkeshopdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||jakkeshopnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||norge-adidas.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||tevanorgeshop.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||wolverineskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hunternorge.co^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hunternorgeno.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||norgeskotilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hokasnorgeno.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||vanssnorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||asoloskonorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hokaonenorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||jordannorge.top^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||quiksilvernorge.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hokalopesko.$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hokanorgeno.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||drmdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||tevadanmarkshop.com^$all,domain=~en-falsk-svindelbutkk.com.bd|~en-falsk-svindelbutkk.com.np
+||hunter-danmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||salomonbutikdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||jordantilbud.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||jordantilbuddanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||quiksilverdanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||salomon-danmark.net^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||salomonidanmark.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||saucony-dk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||palladiumskodk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+||keensandalertilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||quiksilvertilbud.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||palladiumskobutikk.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hunterstovlersalg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||martenssalg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hokaskooutlet.co.no^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hoka-sko.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hoka-one-one.cc^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hokaoneone*$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norgeskosalg.$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norge-salg.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norgesalg.com^$document,popup,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*norgesalgs.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*salgnorge.com^$document,popup,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*danmarkdk.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+*skodktilbud.$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+*skonorgeeu.com^$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*sneakersnorgeshop.$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+*sneakersdkshop.com^$all,domain=~en-falsk-svindelbutik.com.bd|~en-falsk-svindelbutik.com.np
+*skodanmarks.$all,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
 ! https://www•adressa•no/nyheter/trondheim/i/Moq2wR/svindlere-kaarer-vinnere-i-konkurranser-gir-en-daarlig-foelelse-aa-forklare-at-dette-bare-er-tull
 ! https://www•adressa•no/nyheter/trondheim/i/69d3lL/spisesteder-rammet-det-er-forferdelig-jeg-fikk-panikk
 ||sitey.me^$document
@@ -2924,31 +2963,31 @@ triplx.dk##.aff-inner-col
 ://193.143.1.214^$all
 ://193.143.1.217^$all
 ://193.143.1.^$document
-||adidasko.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||airmaxskobillige.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||assassinfitness.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||coralls.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||daradis.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||drakternorge.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||drcarolyngroff.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||dunjakke-no.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||fotballsko-salg.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||gsport.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||hernoclothing.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||jakkesalgs.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||jakkesnorge.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||linkshe.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||mbtnorge.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||moteshoes.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||mycraftypad.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||norfotball.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||norgefotball.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||norgeshoes.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||oflike.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||parajumperssalg.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||pjs.outlet.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||popeurope.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
-||um-bs.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np|~en-falsk-svindelbutikk.gov.bd|~en-falsk-svindelbutikk.gov.np
+||adidasko.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||airmaxskobillige.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||assassinfitness.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||coralls.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||daradis.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||drakternorge.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||drcarolyngroff.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||dunjakke-no.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||fotballsko-salg.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||gsport.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||hernoclothing.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||jakkesalgs.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||jakkesnorge.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||linkshe.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||mbtnorge.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||moteshoes.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||mycraftypad.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||norfotball.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||norgefotball.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||norgeshoes.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||oflike.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||parajumperssalg.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||pjs.outlet.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||popeurope.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
+||um-bs.com^$document,domain=~en-falsk-svindelbutikk.com.bd|~en-falsk-svindelbutikk.com.np
 ! 🇬🇧: Pirate-product-selling stores registered by the serial scammers who go by the name of "xiang dao xin xi ji shu you xiang gong si".
 ||nofotballshop.com^$document
 ||nofotballstore.com^$document
@@ -2960,21 +2999,21 @@ triplx.dk##.aff-inner-col
 ://193.148.70.153^
 ! 🇳🇴: Falske nettapoteker
 ! 🇬🇧: Fake online pharmacies
--med.footeo.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
-||*medisin*.over-blog.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
-||godtdsamaritansk.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
-||helsehjelp.over-blog.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
-||jensapoteker.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
-||marson.footeo.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
-||sikkertapotek.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
-||sobrilleverandoridanmark.wordpress.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
-||xanax*.over-blog.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np|~falskt-svindelapotek.gov.bd|~falskt-svindelapotek.gov.np
+-med.footeo.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
+||*medisin*.over-blog.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
+||godtdsamaritansk.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
+||helsehjelp.over-blog.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
+||jensapoteker.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
+||marson.footeo.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
+||sikkertapotek.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
+||sobrilleverandoridanmark.wordpress.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
+||xanax*.over-blog.com^$document,domain=~falskt-svindelapotek.com.bd|~falskt-svindelapotek.com.np
 ! 🇬🇧: Old domains stolen by casino sites
-||kohlershop.dk^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np|~the-site-was-stolen-by-a-casino-scammer.gov.bd|~the-site-was-stolen-by-a-casino-scammer.gov.np
-||fredensborg-orredfiskeri.dk^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np|~the-site-was-stolen-by-a-casino-scammer.gov.bd|~the-site-was-stolen-by-a-casino-scammer.gov.np
-||informationer.nu^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np|~the-site-was-stolen-by-a-casino-scammer.gov.bd|~the-site-was-stolen-by-a-casino-scammer.gov.np
-||cphspaogwellness.dk^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np|~the-site-was-stolen-by-a-casino-scammer.gov.bd|~the-site-was-stolen-by-a-casino-scammer.gov.np
-||webavisen.gl^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np|~the-site-was-stolen-by-a-casino-scammer.gov.bd|~the-site-was-stolen-by-a-casino-scammer.gov.np
+||kohlershop.dk^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np
+||fredensborg-orredfiskeri.dk^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np
+||informationer.nu^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np
+||cphspaogwellness.dk^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np
+||webavisen.gl^$document,domain=~the-site-was-stolen-by-a-casino-scammer.com.bd|~the-site-was-stolen-by-a-casino-scammer.com.np
 ! 🇬🇧: Copied over from DNS-BH Malware Domains and verified to actually be malicious (as that list has a whole lot of false positives)
 ||desidert.no^
 ||brigitteheilmann.dk^
@@ -3106,7 +3145,7 @@ fla.de##.index-banner
 /zone?pub
 ! Various Android apps
 ! Other entries that are «AdGuard syntax»-specific
-! Last updated: 15July2024v2-Extension
+! Last updated: 31October2024v2-Extension
 ! 🇳🇴: ——— Vindusviskere for betalte artikler (sånn at de nederste linjene i en forhåndsvisning ikke toner ut) ———
 ! Takk til THEtomaso (https://github.com/THEtomaso) for de fleste av disse oppføringene.
 ! 🇩🇰: ——— Vinduesviskere for betalte artikler (så de sidste par linjer i en forhåndsvisning ikke falder ud) ———
@@ -3114,7 +3153,7 @@ fla.de##.index-banner
 ! 🇬🇧: ——— De-blurrers for paid articles (so that the last few lines of a preview doesn't fade out) ———
 ! Thanks to THEtomaso (https://github.com/THEtomaso) for most of these entries.
 ##.Article-header-body::before
-##.paywall-fade:not(html, body)
+##.paywall-fade:not(html,body)
 ##.polarisSpid.widget::before
 aftenbladet.no,fvn.no##.overlay-wrap::before
 aftenposten.no##.widget-salesposter::before
@@ -3123,18 +3162,17 @@ dinepenger.no##.article-body::after
 dn.no##.vrs-image-block__image-description-overlay
 fiskeribladet.no##.teaser_overlay
 information.dk##.greyed-text
-information.dk#$#.paywall-box { margin-top: 0px !important }
+information.dk#$#.paywall-box { margin-top: 0 !important }
 mm.dk##.fadeout
-mm.dk#$#.promotion { top: 0px !important }
+mm.dk#$#.promotion { top: 0 !important }
 morgenbladet.no##.preview-overlay
 nationen.no##.article-container.locked::after
 politiken.dk##.card.stopsign__article.stopsign::before
 vg.no##p[data-test-tag=lead-text] ~ p[class] ~ div[class]:not(.undefined):not([class^=creative_dark_feature])::before
-borsen.dk#$#.paywall { top: 0px !important }
+borsen.dk#$#.paywall { top: 0 !important }
 borsen.dk##.indent-wrapper > .overlay
 dknyt.dk,kommunen.dk##.fade-out
 vartoslo.no,minerva.no##.teaserContent::before
-h-a.no,lokal-avisa.no,ringsakern.no,stangeavisa.no##.faded-content::before
 h-a.no,lokal-avisa.no,ringsakern.no,stangeavisa.no#$#.faded-content { max-height: none !important }
 markedsforing.dk##.gradient-y-trans-to-white-95
 berlingske.dk##.paywall-wrapper::before
@@ -3142,7 +3180,7 @@ berlingske.dk#$#.paywall-wrapper { top: unset !important }
 intrafish.no##.preview-gradient
 lydogbilde.no,lydogbillede.dk##.lbplussinfo
 ||dagligvarehandelen.no/sites/all/themes/custom/ledelseas/gfx/veil.png$image
-information.dk#$##paywall { margin-top: 0px !important }
+information.dk#$##paywall { margin-top:0!important }
 digi.no###order-form::before
 aasavis.no,amta.no,an.no,ao.no,auraavis.no,austagderblad.no,avisenagder.no,ba.no,bygdebladet.no,bygdeposten.no,dalane-tidende.no,dt.no,eikerbladet.no,enebakkavis.no,f-b.no,finnmarkdagblad.no,finnmarken.no,firda.no,firdaposten.no,fremover.no,gbnett.no,gjengangeren.no,glomdalen.no,h-avis.no,ha-halden.no,hadeland.no,hardanger-folkeblad.no,helg.no,iharstad.no,indre.no,jarlsbergavis.no,jbl.no,kv.no,kvinnheringen.no,laagendalsposten.no,lierposten.no,lofotposten.no,lyngdalsavis.no,moss-avis.no,nettavisen.no,nidaros.no,noblad.no,nordhordland.no,nordlys.no,nt24.no,oa.no,oblad.no,op.no,ostlendingen.no,oyene.no,r-a.no,rablad.no,ranablad.no,rb.no,retten.no,rha.no,ringblad.no,ringsaker-blad.no,sa.no,sandeavis.no,sandnesposten.no,sb.no,smaalenene.no,sognavis.no,solabladet.no,solungavisa.no,strandbuen.no,svelviksposten.no,ta.no,tb.no,telen.no,tk.no,tvedestrandsposten.no,varingen.no,vestbyavis.no,merakerposten.no#$#amedia-include[src*="/incentive/"] { border: 10px !important; border-color: #CD5C5C !important; border-style: solid !important }
 aasavis.no,amta.no,an.no,ao.no,auraavis.no,austagderblad.no,avisenagder.no,ba.no,bygdebladet.no,bygdeposten.no,dalane-tidende.no,dt.no,eikerbladet.no,enebakkavis.no,f-b.no,finnmarkdagblad.no,finnmarken.no,firda.no,firdaposten.no,fremover.no,gbnett.no,gjengangeren.no,glomdalen.no,h-avis.no,ha-halden.no,hadeland.no,hardanger-folkeblad.no,helg.no,iharstad.no,indre.no,jarlsbergavis.no,jbl.no,kv.no,kvinnheringen.no,laagendalsposten.no,lierposten.no,lofotposten.no,lyngdalsavis.no,moss-avis.no,nettavisen.no,nidaros.no,noblad.no,nordhordland.no,nordlys.no,nt24.no,oa.no,oblad.no,op.no,ostlendingen.no,oyene.no,r-a.no,rablad.no,ranablad.no,rb.no,retten.no,rha.no,ringblad.no,ringsaker-blad.no,sa.no,sandeavis.no,sandnesposten.no,sb.no,smaalenene.no,sognavis.no,solabladet.no,solungavisa.no,strandbuen.no,svelviksposten.no,ta.no,tb.no,telen.no,tk.no,tvedestrandsposten.no,varingen.no,vestbyavis.no,merakerposten.no#$#amedia-incentive { top: 1600px !important }
@@ -3164,16 +3202,18 @@ kommunal-rapport.no#$#.paywall-fade-out { overflow-y: unset !important }
 kommunal-rapport.no#$#.paywall-login { margin-top: 30px !important }
 ! https://github.com/DandelionSprout/adfilt/discussions/932#discussioncomment-8603702
 friflyt.no,jeger.no,landevei.no,norsk-klatring.no,terrengsykkel.no,utemagasinet.no#$#.teaser { mask-image: none !important }
-! dagbladet.no,elbil24.no
+! dagbladetNO, elbil24NO
 ##.CTA-body-faded:not(html, body)
 ! digi.no, tu.no, medier24.no, porten.no
 ##.faded-article-content::after
-! https://www.klikk.no/side3/vimenn/viggo-bloffet-hele-norge-6857944
+! https://www•klikk•no/side3/vimenn/viggo-bloffet-hele-norge-6857944
 ##.paywall-gradient:not(html, body)
-! https://www.vg.no/nyheter/i/y3Mka2/ (08/04/2020)
+! https://www•vg•no/nyheter/i/y3Mka2/ (08/04/2020)
 vg.no##div[data-test-tag=timestamp] + div::before
-! https://www.vg.no/nyheter/innenriks/i/3JbRzv/ (09/04/2020)
+! https://www•vg•no/nyheter/innenriks/i/3JbRzv/ (09/04/2020)
 vg.no##div[data-test-tag=timestamp] + p + div::before
+! https://www•vestnesavisa•no/2024/nyheiter/hald-pa-hatten-i-dag-kan-det-blese-godt/ (24/10/2024), h-a•no, lokal-avisa•no, ringsakern•no, stangeavisa•no
+no##.faded-content::before
 ! 🇳🇴/🇩🇰: ——— Anti-anti-reklameblokkering ———
 ! 🇮🇸: ——— And-and-auglýsingshindrun ———
 ! 🇬🇧: ——— Anti-anti-adblocking ———
@@ -3189,16 +3229,26 @@ gamereactor.*#%#//scriptlet('ubo-set.js', 'trackAdblock', 'noopFunc')
 gamereactor.*#%#//scriptlet('ubo-acis.js', 'AdsReloadConfig')
 ! Also fixed in "uBlock Filters - Privacy", but is added to this list as well, because it serves to remove AAAB notices on various pages (especially when "uBlock Filters" is turned on).
 ||googletagmanager.com/gtm.js^$domain=dk|bornholm.nu
-! aftenposten.no, abcnyheter.no, recordere.dk, gastrofun.dk, fyens.dk, tilbudsuken.no, viborg-folkeblad.dk, gaffa.dk, jv.dk
+! aftenpostenNO, abcnyheterNO, recordereDK, gastrofunDK, fyensDK, tilbudsukenNO, viborg-folkebladDK, gaffaDK, jvDK
 ##div[style^="bottom: 0px;"][style*="width: 10"][style*="z-index: 2147"]
 ! https://github.com/uBlockOrigin/uAssets/issues/8648
 connery.dk#%#//scriptlet('ubo-set.js', 'adblockerAlert', 'noopFunc')
 ! https://github.com/finnish-easylist-addition/finnish-easylist-addition/issues/305
 no#%#//scriptlet('ubo-ra.js', 'class', '.dfp-loaded')
-! https://www.findroommate.dk/vaerelser/302142/stort-lyst-vaerelse-taet-paa-aarhus-i-viby-centrum (17/12/2021)
+! https://www•findroommate•dk/vaerelser/302142/stort-lyst-vaerelse-taet-paa-aarhus-i-viby-centrum (17/12/2021)
 findroommate.dk###frm-ablo-message
 ! The green "Abonner" button in the upper right appears to work perfectly even with this entry, and the entry does not cause the Plus article bodies to appear either, so I feel I'm on safe enough grounds on this one.
 ||piano.io/xbuilder/experience/execute^$xmlhttprequest,domain=www.digi.no|www.tu.no
+! Borrowed from "uBlock Filters — Ads" (31/10/2024)
+@@||stokerpiller.dk^$generichide
+fritidsmarkedet.dk,maskinbladet.dk#%#//scriptlet('ubo-nostif.js', 'Check')
+fritidsmarkedet.dk,maskinbladet.dk##.skybanner
+fritidsmarkedet.dk,maskinbladet.dk##megaboard-inner
+mmm.dk#%#//scriptlet('ubo-set.js', 'adblockerAlert', 'noopFunc')
+rabo.no,pressemedie.dk#%#//scriptlet('ubo-noeval-if.js', '/chp_?ad/')
+stokerpiller.dk#$#.adsbygoogle { max-height:1px!important }
+tobys.dk#%#//scriptlet('ubo-aopr.js', 'checkAds')
+tobys.dk#@#.abMessage
 ! 🇬🇧: ——— Not actually AAB, but would've caused fatal breakage in ABP ———
 playpilot.com##.takeover.modals
 playpilot.com#$#html[lang] > body { overflow: auto !important }

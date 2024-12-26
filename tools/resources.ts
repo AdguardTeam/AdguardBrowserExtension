@@ -19,7 +19,7 @@
 
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadFilters } from './resources/download-filters';
-import { updateLocalScriptRules } from './resources/update-local-script-rules';
+import { updateLocalScriptRulesForFirefox } from './resources/update-local-script-rules';
 
 const DEFAULT_OPENAI_API_TOKEN = '<openai_api_key>';
 
@@ -34,7 +34,7 @@ const resources = async () => {
     console.log('Resources downloaded');
 
     console.log('Updating local script rules...');
-    await updateLocalScriptRules();
+    await updateLocalScriptRulesForFirefox();
     console.log('Local script rules updated');
 
     if (isOpenAiTokenProvided()) {

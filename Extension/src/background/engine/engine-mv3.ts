@@ -95,6 +95,17 @@ export class Engine implements TsWebExtensionEngine {
      * to use MV3 in Firefox.
      */
     async start(): Promise<void> {
+        /**
+         * By the rules of Chrome Web Store, we cannot use remote scripts (and our JS rules can be counted as such).
+         *
+         * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
+         *
+         * This is STEP 2.1: Local script rules are passed to the engine.
+         */
+        if (__IS_MV3__) {
+            TsWebExtension.setLocalScriptRules(localScriptRules);
+        }
+
         const configuration = await Engine.getConfiguration();
 
         logger.info('Start tswebextension...');

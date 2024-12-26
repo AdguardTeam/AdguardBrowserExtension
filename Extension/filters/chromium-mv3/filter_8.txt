@@ -1,8 +1,8 @@
-! Checksum: 0sSQHNj1gVCqdRzW0s1G2A
+! Checksum: EK1YsU+8N/xoEy+L4E56RA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.47
-! TimeUpdated: 2024-10-18T16:33:03+00:00
+! Version: 2.0.7.53
+! TimeUpdated: 2024-12-11T09:34:58+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -176,7 +176,6 @@ _advertentieleaderboardhome.
 ||strafrechtadvocaten.nl/media/banner/$third-party
 ||swpportal.com/upload/squarebanners/
 ||t.bazarow.com^$third-party
-||tags.refinery89.com^
 ||traffic.12flirt.com^
 ||viralize.tv/display/$domain=startpagina.nl
 ||wertuipsertj34.azurewebsites.net^$xmlhttprequest
@@ -592,7 +591,6 @@ _advertentieleaderboardhome.
 immo.vlan.be###ProvidersBox
 immo.vlan.be###TopCompareBox
 autobahn.eu,dingenvoorvrouwen.nl,playboy.nl###WB_VIDEO_PLAYER_TARGET
-hoekschnieuws.nl###\36 050c52fcf1d8-2
 gaynews.nl###abri
 gaynews.nl###abri1
 voetbalkrant.com###ad-intro-text
@@ -1040,7 +1038,7 @@ uecl-voetbal.nl,uel-voetbal.nl##.footerderden
 kanaalxxx.nl##.fpbnr
 motorrijdenexpert.nl##.full-row.relative-row.no-padding-bottom.title-txt-btn.flat-theme.flat-theme-content
 unitednews.sr##.fullwidthbanner-container
-amateursexstart.nl,binnenvaartkrant.nl,christmaholic.nl,curacao.nu,dartfreakz.nl,dbsuriname.com,dehavengids.nl,despirituelewereld.be,dewereldmorgen.be,noordernieuws.nl,regioinbedrijf.nl,seksmet.nl,sekswebsite.nl,shespot.nl,sleutelstad.nl,westerwoldeactueel.nl##.g
+amateursexstart.nl,binnenvaartkrant.nl,christmaholic.nl,curacao.nu,dartfreakz.nl,dbsuriname.com,dehavengids.nl,despirituelewereld.be,dewereldmorgen.be,hoekschnieuws.nl,noordernieuws.nl,regioinbedrijf.nl,seksmet.nl,sekswebsite.nl,shespot.nl,sleutelstad.nl,westerwoldeactueel.nl##.g
 zozwanger.nl##.g-single
 zeelandnet.nl##.g_banner
 radiovisie.eu##.gmollik
@@ -1175,6 +1173,7 @@ simone.nl,wfm.be##.qt-sponsor
 rbsradio.be##.qt-sponsors
 nedporno.com##.r11ght-pl4yer-169
 dagelijksestandaard.nl,sportbookies.nl,viraal.nl,wielrennenuptodate.nl##.raw-html-component
+hoekschnieuws.nl##.rbct > a > img
 belegger.nl,debeurs.nl,eurobench.com##.recommendbanner
 wasmachines.nl##.rectangle
 iex.nl##.rectanglemid
@@ -1360,6 +1359,7 @@ tweakers.net##a[href^="https://www.true.nl/?utm_"]
 edelmetaal-info.nl##a[onclick^="javascript:pageTracker._trackPageview"]
 gostreaming.nl,tennisplaza.be##a[rel*="sponsored"]
 oisterwijknieuws.nl##a[target="_blank"] > img
+hoekschnieuws.nl##center > a > img
 pcmweb.nl##div.block:nth-of-type(1)
 pcmweb.nl##div.block:nth-of-type(2)
 oisterwijknieuws.nl##div[align="center"] a[target="_blank"]
@@ -1466,6 +1466,7 @@ ah.nl##.product-card-portrait_root__ZiRpZ:has(.promotion_root__pAAlu)
 tvgids.nl##.square-item:has( > .banner)
 agconnect.nl#?#.c-teaser:has(.c-pill--partner)
 krefel.be#?#div[class^="Flex-styled__StyledFlex-"]:has(h3:contains(Gesponsorde producten))
+marktplaats.nl#?#.hz-Listing--list-item:contains(Topadvertentie)
 feijenoordnieuws.nl##.cv-table-left > a:not([target="_blank"]):not([rel="nofollow"]):not(a[href^="https://feijenoordnieuws.nl/"])
 2dehands.be#?#.hz-Listing--list-item:has(.hz-Listing-priority:contains(Topadvertentie))
 almere-nieuws.nl#?#.wpb_wrapper:has(.section-heading:contains(partners))
@@ -1562,8 +1563,9 @@ hardware.info,tweakers.net#@#.AdBar
 topkleurplaat.nl#%#//scriptlet('prevent-setTimeout', '.height() === 0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177923
 filmvandaag.nl#%#//scriptlet('prevent-fetch', 'securepubads.g.doubleclick.net')
+! https://github.com/AdguardTeam/AdguardFilters/issues/192874
 ! https://github.com/AdguardTeam/AdguardFilters/issues/163031
-@@||looopings.nl/*ad*.js
+@@||looopings.nl/*.js$script,~third-party
 looopings.nl#%#//scriptlet('remove-node-text', 'script', 'if(!document.getElementById')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/160271
 webcam-binnenvaart.nl#%#//scriptlet('prevent-element-src-loading', 'script', 'adsbygoogle')
@@ -1724,6 +1726,8 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+||hfg.iuknyw5evnygw9v.nl/*?*=omroepzeeland&direct=
+||2mdn.net/instream/html5/ima3.js$domain=omroepzeeland.nl,important
 centraalplus.nl#?#div[class^="col"] > div.center:has(> div.g > div.g-single > center > i:contains(Advertentie))
 voetbalzone.nl##div[class^="ad-wrapper"]
 voetbalzone.nl##.fco-openweb-ad
@@ -1808,6 +1812,7 @@ vandaaginside.nl##div[class^="Component-bannerTopWrapper-"]
 itnijs.frl##.last.widget
 itnijs.frl##.widget-5 > div.banner
 ||itnijs.frl/wp-content/uploads/2017/10/bannerItNijs
+tweakers.net##body .top-banner
 tweakers.net##.video-container > iframe[src^="https://ads.pexi.nl/"]
 spiele.spiegel.de##div[id^="ad-gamepage"]
 kieskeurig.nl##.advertisement

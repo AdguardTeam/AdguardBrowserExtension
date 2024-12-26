@@ -1,13 +1,13 @@
-! Checksum: QHOM3l+wpt1ppAW8htLbMw
+! Checksum: KEggO22Nd9XkrL5SZD0xfw
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.19.17
-! TimeUpdated: 2024-10-15T21:01:43+00:00
+! Version: 2.0.19.90
+! TimeUpdated: 2024-12-25T01:01:26+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2024.1015.2
+! OriginalVersion: 2024.1224.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -250,6 +250,10 @@
 ||awd.spochak.com^
 !
 ! DOMAIN-REFRESHER: END
+||planad.net^
+||aedi.ai^$third-party
+||mobon.net^$third-party
+||nhnace.com^$third-party
 ||splash-ad.classting.com^
 ||ad-files.classting.com^
 ||middlepoint.co.kr^$third-party
@@ -517,9 +521,20 @@
 /gnetwork/adforus.
 /studio_backend/adforus.
 /^https?:\/\/[a-z0-9-\.]*[a-z0-9-]+\.[a-z]+\/RealMedia\/ads\//
-/data/banner.json?$domain=~nintendo.com|~nintendo.ru|~nintendo.net|~nintendo.com.au|~nintendo.com.tr|~nintendo.co.uk|~nintendo.co|~nintendo.gr|~nintendo.ca|~nintendo.de|~nintendo.fr|~nintendo.me|~nintendo.by|~nintendo.jp|~nintendo.com.tw|~nintendo.co.za|~nintendo.co.il|~nintendo.eu|~nintendo.it|~nintendo.com.br|~nintendo.es|~nintendo.ch|~nintendo.co.in|~nintendo.nl|~nintendo.us|~nintendo.pl|~nintendo.cl|~nintendo.co.jp|~nintendo.co.nz|~nintendo.cn|~nintendo.co.kr|~nintendo.mx|~nintendo.se|~nintendo.cz|~nintendo.shop|~nintendo.tw|~nintendo.be|~nintendo.store|~nintendo.dk|~nintendo.hu|~nintendo.md|~nintendo.com.hk|~nintendo.no|~nintendo.pw|~nintendo.com.bd|~nintendo.ie|~nintendo.at|~nintendo.com.np|~nintendo.ph|~nintendo.fi|~nintendo.lv|~nintendo.pe|~nintendo.sk|~nintendo.hk|~nintendo.gov.bd|~nintendo.sa|~nintendo.pt|~nintendo.one|~nintendo.kg|~nintendo.com.pe|~nintendo.org.il|~nintendo.is|~nintendo.gov.np|~nintendo.work
+/data/banner.json?$domain=~nintendo.ai|~nintendo.al|~nintendo.app|~nintendo.at|~nintendo.be|~nintendo.biz|~nintendo.ca|~nintendo.ch|~nintendo.cl|~nintendo.cloud|~nintendo.cn|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.co|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.pe|~nintendo.com.tr|~nintendo.com.tw|~nintendo.cz|~nintendo.de|~nintendo.dev|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fm|~nintendo.fr|~nintendo.gr|~nintendo.hk|~nintendo.hu|~nintendo.ie|~nintendo.is|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.live|~nintendo.ma|~nintendo.me|~nintendo.mn|~nintendo.mobi|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.one|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.pw|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.shop|~nintendo.site|~nintendo.sk|~nintendo.space|~nintendo.store|~nintendo.su|~nintendo.tv|~nintendo.tw|~nintendo.website|~nintendo.xyz
 /ad-manager.min.js
 !
+||theceluv.com/banner/
+||celuvmedia.com/ad/
+||ibb.co^$domain=heye.kr,image
+||photo.jtbc.co.kr/news/cms/etc/
+||cdn.lol.ps/assets/img/bg-skins/
+||firebasestorage.googleapis.com/v0/b/kimchi-premium.appspot.com/o/banner-imgs
+||cdn.theddari.com/banner/
+||arca.live/static/assets/images/karisuma-point
+||boardlife.co.kr/data/adv_sponsor
+||boardlife.co.kr/data/adv_promote
+||dctrend.ai/widget/trendWidget.html$domain=dcinside.com
 ||imgdb.in/b/$domain=gnu.kilho.net
 ||moneypin.biz/_next/image/?url=https%3A%2F%2Fmoneypin-web.s3.ap-northeast-2.amazonaws.com%2Fbizno-ad%2F
 ||kilho.net/img/b/
@@ -1297,6 +1312,11 @@
 !
 ! DOMAIN-REFRESHER: START
 !
+||media.cokcok.vip/assets/images/
+/https:\/\/tvwiki[0-9]+\.com\/AD\//$domain=tvwiki4.com|tvwiki5.com|tvwiki6.com|tvwiki7.com|tvwiki8.com|tvwiki9.com|tvwiki10.com|tvwiki11.com|tvwiki12.com|tvwiki13.com|tvwiki14.com|tvwiki15.com|tvwiki16.com|tvwiki17.com
+||rj.filesbest.xyz/r/
+/^https:\/\/torrentrj[0-9]+\.com\/uploadfile\/up[0-9a-z]+\.gif/$domain=torrentrj174.com|torrentrj175.com|torrentrj176.com|torrentrj177.com|torrentrj178.com|torrentrj179.com|torrentrj180.com|torrentrj181.com|torrentrj182.com|torrentrj183.com
+||moeni.net/img/a/ad
 ||sptv-sportscdn.com/data/popup/
 ||images.request-support.com/br/
 /^https:\/\/cdn-[a-z]+-[0-9]+\.hasha\.in\/[a-zA-Z_0-9-]+\./$domain=hasha.in
@@ -1313,12 +1333,12 @@
 ||xn--vv4b11c.com/main/data/file/_sh_banner_/
 ||xn--vv4b11c.com/assets/img/banner_
 ||xn--vv4b11c.com/main/data/file/goodsite/
-||anilife.*/assets/images/banner/$domain=anilife.net|anilife.de|anilife.com.br|anilife.app|anilife.nl|anilife.live|anilife.com.bd|anilife.com.np|anilife.life|anilife.gov.bd|anilife.gov.np
-||tvzone.*/data/banner/$domain=tvzone.org|tvzone.ca|tvzone.me|tvzone.ua|tvzone.co.il|tvzone.co.in|tvzone.app|tvzone.cz|tvzone.shop|tvzone.com.bd|tvzone.com.np|tvzone.gov.bd|tvzone.gov.np
+||anilife.*/assets/images/banner/$domain=anilife.app|anilife.co.kr|anilife.com.bd|anilife.com.br|anilife.com.np|anilife.life|anilife.live|anilife.net
+||tvzone.*/data/banner/$domain=tvzone.app|tvzone.ca|tvzone.co.in|tvzone.co.za|tvzone.com|tvzone.com.bd|tvzone.com.br|tvzone.com.np|tvzone.cz|tvzone.info|tvzone.it|tvzone.me|tvzone.org|tvzone.site|tvzone.store|tvzone.ua|tvzone.xyz
 ||xvideos-kr.com/img/banner/
 ||telegra.ph/file/$domain=avguri4.com|avguri5.com|avguri6.com|avguri7.com|avguri8.com|avguri9.com|avguri10.com|avguri11.com|avguri12.com|avguri13.com|avguri14.com|avguri15.com
-||ohli365.*/data/apms/$domain=ohli365.net|ohli365.biz|ohli365.site|ohli365.com.bd|ohli365.com.np|ohli365.vip|ohli365.gov.bd|ohli365.gov.np
-||bbongtv.*/img/*.gif$domain=bbongtv.com|bbongtv.net|bbongtv.co.kr|bbongtv.com.bd|bbongtv.com.np|bbongtv.gov.bd|bbongtv.gov.np
+||ohli365.*/data/apms/$domain=ohli365.biz|ohli365.com|ohli365.com.bd|ohli365.com.np|ohli365.net|ohli365.site|ohli365.vip
+||bbongtv.*/img/*.gif$domain=bbongtv.co.kr|bbongtv.com|bbongtv.com.bd|bbongtv.com.np|bbongtv.net
 /^https:\/\/www\.ygy[0-9]+\.com\/upload_files\/banner\//$domain=ygy48.com|ygy49.com|ygy50.com|ygy51.com|ygy52.com|ygy53.com|ygy54.com|ygy55.com|ygy56.com|ygy57.com|ygy58.com|ygy59.com|ygy60.com|ygy61.com
 /^https:\/\/www\.ygy[0-9]+\.com\/upload_files\/popup\//$domain=ygy48.com|ygy49.com|ygy50.com|ygy51.com|ygy52.com|ygy53.com|ygy54.com|ygy55.com|ygy56.com|ygy57.com|ygy58.com|ygy59.com|ygy60.com|ygy61.com
 /^https:\/\/linkssakda\.com\/upload\/images\/[0-9]+\./$domain=linkssakda.com
@@ -1329,11 +1349,11 @@
 /^https:\/\/www\.ttking[0-9]+\.me\/ad\//
 /^https:\/\/nolgoga[0-9]+\.com\/data\/.+\.gif$/
 ||ohli24.com/img/
-||nanatv.*/resource/images/$domain=nanatv.net|nanatv.org|nanatv.cc|nanatv.com.bd|nanatv.com.np|nanatv.gov.bd|nanatv.gov.np
-||xn--cm2by8iw5h6xm8pc.*/data/banner/$domain=xn--cm2by8iw5h6xm8pc.com.bd|xn--cm2by8iw5h6xm8pc.com.np|xn--cm2by8iw5h6xm8pc.gov.bd|xn--cm2by8iw5h6xm8pc.gov.np
+||nanatv.*/resource/images/$domain=nanatv.com.bd|nanatv.com.np|nanatv.org
+||xn--cm2by8iw5h6xm8pc.*/data/banner/$domain=xn--cm2by8iw5h6xm8pc.com|xn--cm2by8iw5h6xm8pc.com.bd|xn--cm2by8iw5h6xm8pc.com.np
 ||imgbox.com/*.gif$domain=bontv59.com|bontv60.com|bontv61.com|bontv62.com|bontv63.com|bontv64.com|bontv65.com|bontv66.com|bontv67.com|bontv68.com|bontv69.com
 /^https:\/\/tor[0-9]+\.com\/data\/file\/test\//$domain=tvzota106.com|tvzota107.com|tvzota108.com|tvzota109.com|tvzota110.com|tvzota111.com|tvzota112.com|tvzota113.com|tvzota114.com|tvzota115.com|tvzota116.com
-||agitwebtoon.*/upload/$domain=agitwebtoon.xyz|agitwebtoon.com.bd|agitwebtoon.com.np|agitwebtoon.gov.bd|agitwebtoon.gov.np
+||agitwebtoon.*/upload/$domain=agitwebtoon.com.bd|agitwebtoon.com.np|agitwebtoon.xyz
 /^https:\/\/18moa[0-9]+\.com\/data\/file\/main_top_banner\/thumb-/
 ||topgirl.co/project/bm/js/nuevo.min.js
 ||wwwimageup.live-009.com/other/wx_app_admin/
@@ -1354,26 +1374,26 @@
 /^https:\/\/iabn[0-9]+\.net\//$domain=fxfx247.com|fxfx248.com|fxfx249.com|fxfx250.com|fxfx251.com|fxfx252.com|fxfx253.com|fxfx254.com|fxfx255.com|fxfx256.com|fxfx257.com|fxfx258.com|fxfx259.com|fxfx260.com|fxfx261.com|fxfx262.com|fxfx263.com|fxfx264.com|fxfx265.com
 /^https:\/\/mkmk[0-9]+\.com\/img\/[a-z]+[0-9]+x[0-9]+/
 /^https:\/\/mkmk[0-9]+\.com\/img\/[a-z0-9_-]+\.gif$/
-||agitnovel.*/data/file/novel/banner/$domain=agitnovel.xyz|agitnovel.com.bd|agitnovel.com.np|agitnovel.gov.bd|agitnovel.gov.np
+||agitnovel.*/data/file/novel/banner/$domain=agitnovel.com.bd|agitnovel.com.np|agitnovel.xyz
 ||cokcok.*/wp-json/jt-bad-ux-popup/list/
 ||cokcok.*/wp-admin/admin-ajax.php?action=jt_bad_ux_popup
 ||cokcok.*/wp-admin/admin-ajax.php?action=load_random_banners
 ||jmana.*/resouce/img/adimg/
 /^https:\/\/ww[0-9]+\.torrentdin[0-9]+\.com\/data\/editor\/[0-9]+\/[a-z0-9]+_[a-z0-9]+_[a-z0-9]+\./
 /^https:\/\/ww[0-9]+\.torrentdin[0-9]+\.com\/data\/file\/ad\//
-/^https:\/\/[a-z]+\.aniwolf\.com\/storage\/[A-z0-9]+\./$domain=aniwolf.com|aniwolf.com.bd|aniwolf.com.np|aniwolf.gov.bd|aniwolf.gov.np
-||tinypic.host^$domain=tvroom.org|tvroom.xyz|tvroom.top|tvroom.com.bd|tvroom.com.np|tvroom.gov.bd|tvroom.gov.np|mvking.com|mvking.org|mvking.com.bd|mvking.com.np|mvking.gov.bd|mvking.gov.np
+/^https:\/\/[a-z]+\.aniwolf\.com\/storage\/[A-z0-9]+\./$domain=aniwolf.com|aniwolf.com.bd|aniwolf.com.np
+||tinypic.host^$domain=tvroom.co|tvroom.co.kr|tvroom.com.bd|tvroom.com.np|tvroom.net|tvroom.org|tvroom.top|tvroom.xyz|mvking.com.bd|mvking.com.np|mvking.org
 /^https:\/\/www\.torrentreel[0-9]+\.site\/ad\//
 /^https:\/\/tvchak[0-9]+\.com\/img\/bbnn/
 /^https:\/\/agit[0-9]+\.com\/upload\/[0-9]+\/[0-9]+\/[0-9]+\./
 ||hoohootv*.*/static/bnner/$domain=hoohootv60.xyz|hoohootv61.xyz|hoohootv62.xyz|hoohootv63.xyz|hoohootv64.xyz|hoohootv65.xyz|hoohootv66.xyz|hoohootv67.xyz|hoohootv68.xyz|hoohootv69.xyz|hoohootv70.xyz|hoohootv71.xyz|hoohootv72.xyz|hoohootv73.xyz
-/^https:\/\/tv[0-9]+\.avsee\.[a-z]+\/imgs\//$domain=avsee.com|avsee.net|avsee.org|avsee.in|avsee.me|avsee.tv|avsee.biz|avsee.site|avsee.com.bd|avsee.com.np|avsee.gov.bd|avsee.gov.np
+/^https:\/\/tv[0-9]+\.avsee\.[a-z]+\/imgs\//$domain=avsee.cc|avsee.com|avsee.com.bd|avsee.com.np|avsee.in|avsee.live|avsee.me|avsee.site|avsee.tv|avsee.xyz
 ||tvhot.cc/b/
-/^https:\/\/sonagitv\.[a-z]+\/images\/banner\/(?!webtoon_)/$domain=sonagitv.tv|sonagitv.live|sonagitv.com.bd|sonagitv.com.np|sonagitv.gov.bd|sonagitv.gov.np
-||i.imgur.com^$domain=sonagitv.tv|sonagitv.live|sonagitv.com.bd|sonagitv.com.np|sonagitv.gov.bd|sonagitv.gov.np
-||xn--h10b90b998c.*/img/$domain=xn--h10b90b998c.com|xn--h10b90b998c.net|xn--h10b90b998c.org|xn--h10b90b998c.co|xn--h10b90b998c.site|xn--h10b90b998c.com.bd|xn--h10b90b998c.com.np|xn--h10b90b998c.gov.bd|xn--h10b90b998c.gov.np
-||i.imgur.com^$domain=newtoki.com|newtoki.net|newtoki.org|newtoki.co|newtoki.info|newtoki.me|newtoki.tv|newtoki.biz|newtoki.app|newtoki.pro|newtoki.club|newtoki.site|newtoki.ai|newtoki.com.bd|newtoki.com.ng|newtoki.com.np|newtoki.vip|newtoki.gov.bd|newtoki.kr|newtoki.gov.np|newtoki.work
-||newtoki.*/banner*/$domain=newtoki.com|newtoki.net|newtoki.org|newtoki.co|newtoki.info|newtoki.me|newtoki.tv|newtoki.biz|newtoki.app|newtoki.pro|newtoki.club|newtoki.site|newtoki.ai|newtoki.com.bd|newtoki.com.ng|newtoki.com.np|newtoki.vip|newtoki.gov.bd|newtoki.kr|newtoki.gov.np|newtoki.work
+/^https:\/\/sonagitv\.[a-z]+\/images\/banner\/(?!webtoon_)/$domain=sonagitv.co|sonagitv.com.bd|sonagitv.com.np|sonagitv.org|sonagitv.pro|sonagitv.tv
+||i.imgur.com^$domain=sonagitv.co|sonagitv.com.bd|sonagitv.com.np|sonagitv.org|sonagitv.pro|sonagitv.tv
+||xn--h10b90b998c.*/img/$domain=xn--h10b90b998c.com|xn--h10b90b998c.com.bd|xn--h10b90b998c.com.np|xn--h10b90b998c.guru|xn--h10b90b998c.org|xn--h10b90b998c.site
+||i.imgur.com^$domain=newtoki.ai|newtoki.biz|newtoki.blog|newtoki.cloud|newtoki.club|newtoki.co|newtoki.co.kr|newtoki.com|newtoki.com.bd|newtoki.com.ng|newtoki.com.np|newtoki.info|newtoki.kr|newtoki.link|newtoki.me|newtoki.net|newtoki.one|newtoki.org|newtoki.pro|newtoki.site|newtoki.tv|newtoki.vip|newtoki.work
+||newtoki.*/banner*/$domain=newtoki.ai|newtoki.biz|newtoki.blog|newtoki.cloud|newtoki.club|newtoki.co|newtoki.co.kr|newtoki.com|newtoki.com.bd|newtoki.com.ng|newtoki.com.np|newtoki.info|newtoki.kr|newtoki.link|newtoki.me|newtoki.net|newtoki.one|newtoki.org|newtoki.pro|newtoki.site|newtoki.tv|newtoki.vip|newtoki.work
 ||i.imgur.com^$domain=torrentqq332.com|torrentqq333.com|torrentqq334.com|torrentqq335.com|torrentqq336.com|torrentqq337.com|torrentqq338.com|torrentqq339.com|torrentqq340.com|torrentqq341.com|torrentqq342.com|torrentqq343.com|torrentqq344.com|torrentqq345.com|torrentqq346.com
 ||cdn.jjun.live/BANNER/*.gif
 ||tvmon.*/img/ba
@@ -1431,7 +1451,7 @@
 /^https:\/\/hohotoon[0-9]+\.com\/data\/banner\//
 /^https?:\/\/(www\.)?spotv[0-9]+\.com\/theme\/basic\/img\/[a-z]+_ad_/
 /^https:\/\/torrenthaja[0-9]*\.com\/data\/banner\//
-||anilife.*/imgs/banner/$domain=anilife.net|anilife.de|anilife.com.br|anilife.app|anilife.nl|anilife.live|anilife.com.bd|anilife.com.np|anilife.life|anilife.gov.bd|anilife.gov.np
+||anilife.*/imgs/banner/$domain=anilife.app|anilife.co.kr|anilife.com.bd|anilife.com.br|anilife.com.np|anilife.life|anilife.live|anilife.net
 /^https:\/\/xn--8-o68e16s35etqj\.com\/data\/editor\/[0-9]+\/[a-z0-9]+_[a-z0-9]+_[a-z0-9]+\./
 /^https:\/\/torrentmode[0-9]+\.com\/data\/zn_bimg\//
 ||az-cdn.com/banners/
@@ -1457,7 +1477,6 @@
 /^https:\/\/torrentbot[0-9]+\.com\/uploadfile\/up[a-z0-9]+\.gif$/
 ||imgbox.com^$domain=ktxtorrent121.com|ktxtorrent122.com|ktxtorrent123.com|ktxtorrent124.com|ktxtorrent125.com|ktxtorrent126.com|ktxtorrent127.com|ktxtorrent128.com|ktxtorrent129.com|ktxtorrent130.com|ktxtorrent131.com|ktxtorrent132.com|ktxtorrent133.com|ktxtorrent134.com|ktxtorrent135.com
 ||static.filesbest.xyz^$domain=ktxtorrent121.com|ktxtorrent122.com|ktxtorrent123.com|ktxtorrent124.com|ktxtorrent125.com|ktxtorrent126.com|ktxtorrent127.com|ktxtorrent128.com|ktxtorrent129.com|ktxtorrent130.com|ktxtorrent131.com|ktxtorrent132.com|ktxtorrent133.com|ktxtorrent134.com|ktxtorrent135.com
-||filesbest.xyz^$domain=torrentrj166.com|torrentrj167.com|torrentrj168.com|torrentrj169.com|torrentrj170.com|torrentrj171.com|torrentrj172.com|torrentrj173.com|torrentrj174com|torrentrj175.com|torrentrj176.com|torrentrj177.com|torrentrj178.com|torrentrj179.com|torrentrj180.com|torrentrj181.com
 ||i.imgur.com^$domain=bobaelink65.xyz|bobaelink66.xyz|bobaelink67.xyz|bobaelink68.xyz|bobaelink69.xyz|bobaelink70.xyz|bobaelink71.xyz|bobaelink72.xyz|bobaelink73.xyz|bobaelink74.xyz|bobaelink75.xyz|bobaelink76.xyz
 ||filetender.com/mobon.html|
 /^https:\/\/(www\.)?filetender\.com\/images\/[0-9]{3,}(X|x)[0-9]{3,}-[0-9]{4}/
@@ -1484,11 +1503,11 @@
 ! ##div[id^="ad_"]
 m.stock.naver.com,donga.com,ildaro.com,pann.nate.com,sportsseoul.com,seoulwire.com,r114.com,dprime.kr,zdnet.co.kr,fpn119.co.kr,serieamania.com,news.nate.com,m.nate.com,www.nate.com,m.edaily.co.kr,m.sedaily.com,m.thisisgame.com,planet-times.com,mobile.newsis.com,fnnews.com,mania.kr,mosen.mt.co.kr,ruliweb.com##div[id^="ad_"]
 ! ##div[class$="_ad"]
-munhwa.com,sportalkorea.com,imaeil.com,ichannela.com,happycampus.com,kwnews.co.kr,yes24.com,etoland.co.kr,theqoo.net,ent.sbs.co.kr,ddengle.com,jjan.kr,kick-off.co.kr,dnews.co.kr,auction.co.kr,m.gamemeca.com,bemil.chosun.com,aladin.co.kr,nesin.com,encar.com,fntimes.com,zdnet.co.kr,mbn.co.kr,goodgag.net,v.daum.net,ppomppu.co.kr,m.nocutnews.co.kr,news.naver.com,news.daum.net,asiae.co.kr,ohmynews.com,seoul.co.kr,dmitory.com,itcm.co.kr,clien.net##div[class$="_ad"]
+isplus.com,munhwa.com,sportalkorea.com,imaeil.com,ichannela.com,happycampus.com,kwnews.co.kr,yes24.com,etoland.co.kr,theqoo.net,ent.sbs.co.kr,ddengle.com,jjan.kr,kick-off.co.kr,dnews.co.kr,auction.co.kr,m.gamemeca.com,bemil.chosun.com,aladin.co.kr,nesin.com,encar.com,fntimes.com,zdnet.co.kr,mbn.co.kr,goodgag.net,v.daum.net,ppomppu.co.kr,m.nocutnews.co.kr,news.naver.com,news.daum.net,asiae.co.kr,ohmynews.com,seoul.co.kr,dmitory.com,itcm.co.kr,clien.net##div[class$="_ad"]
 ! ##div[class^="ad_"]
 investchosun.com,stoo.com,kyeongin.com,bemil.chosun.com,kjwwang.com,ggoorr.net,health.chosun.com,beautynury.com,donga.com,news.zum.com,m.heraldpop.com,m.jjang0u.com,compuzone.co.kr,dak.gg,osmanias.com,imnews.imbc.com,edaily.co.kr,mk.co.kr,v.daum.net,humoruniv.com,etoday.co.kr,kukinews.com,nesin.com,search.naver.com,dprime.kr,encar.com,m.todayhumor.co.kr,zdnet.co.kr,m.search.daum.net,teamblind.com,unsin.co.kr,m.mk.co.kr,m.cafe.naver.com,nocutnews.co.kr,news.sbs.co.kr,mbiz.heraldcorp.com,m.starnewskorea.com,etnews.com,sedaily.com,m.danawa.com,sportalkorea.com,news.jtbc.co.kr,ohmynews.com,hankyung.com,news1.kr,asiae.co.kr,khan.co.kr,kmib.co.kr,prod.danawa.com,news.v.daum.net,joongang.co.kr##div[class^="ad_"]
 ! ##div[class^="ad-"]
-shinailbo.co.kr,pointe.co.kr,dealsite.co.kr,besteleven.com,getnews.co.kr,tgdaily.co.kr,eanews.kr,lifedesk.co.kr,newdailyhealth.co.kr,daejonilbo.com,chungnamilbo.co.kr,incheonilbo.com,ggilbo.com,bloter.net,sportsseoul.com,nbnbiz.co.kr,enetnews.co.kr,newsnjoy.or.kr,mediaus.co.kr,ziksir.com,daily.hankooki.com,ccdailynews.com,topstarnews.net,spotvnews.co.kr,foodnews.co.kr,hankooki.com,spochoo.com,digitaltoday.co.kr,orbi.kr,weekly.chosun.com,nzkoreapost.com,pinpointnews.co.kr,huffingtonpost.kr,eroun.net,cnet.co.kr,hogangnono.com,ppomppu.co.kr,interfootball.co.kr,police112.co.kr,dpg.danawa.com,m.danawa.com,kimpga.com,youthassembly.kr,algumon.com,dailysecu.com,hankyung.com,m.etnews.com,hankookilbo.com,newspim.com##div[class^="ad-"]
+teamblind.com,shinailbo.co.kr,pointe.co.kr,dealsite.co.kr,besteleven.com,getnews.co.kr,tgdaily.co.kr,eanews.kr,lifedesk.co.kr,newdailyhealth.co.kr,daejonilbo.com,chungnamilbo.co.kr,incheonilbo.com,ggilbo.com,bloter.net,sportsseoul.com,nbnbiz.co.kr,enetnews.co.kr,newsnjoy.or.kr,mediaus.co.kr,ziksir.com,daily.hankooki.com,ccdailynews.com,topstarnews.net,spotvnews.co.kr,foodnews.co.kr,hankooki.com,spochoo.com,digitaltoday.co.kr,orbi.kr,weekly.chosun.com,nzkoreapost.com,pinpointnews.co.kr,huffingtonpost.kr,eroun.net,cnet.co.kr,hogangnono.com,ppomppu.co.kr,interfootball.co.kr,police112.co.kr,dpg.danawa.com,m.danawa.com,kimpga.com,youthassembly.kr,algumon.com,dailysecu.com,hankyung.com,m.etnews.com,hankookilbo.com,newspim.com##div[class^="ad-"]
 ! ##.banner
 lolchess.gg,healtho.co.kr,economist.co.kr,m.comic.naver.com,sports.news.naver.com,ebn.co.kr,paxnet.co.kr,ajl.co.kr,yhinews.com,funshop.co.kr,m.sedaily.com,bloter.net,mosen.mt.co.kr,hinfomax.kr,hinfomax.co.kr,pressian.com,kukinews.com##.banner
 ! ##div[class$="_banner"]
@@ -1540,6 +1559,36 @@ eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
 !
+teamblind.com##div[class^="adfit_"]
+maple.gg###content-container > div[class*=" "]:has(.VenatusAdContainer)
+m.search.naver.com##li[class^="productCard-mobile-module_"].undefined
+news1.kr##article div[style].mt-30
+news1.kr##.ads-article-warp
+heye.kr##.first.banner-wrap
+bbs.ruliweb.com###ti3
+yna.co.kr##.article > aside[class^="aside-article"]
+lottecinema.co.kr##.banner_box_login
+lottecinema.co.kr##.login260_btn
+damoang.net##.list-group > .da-link-block:has(.rcmd-box.step-pai)
+m.celuvmedia.com##.main_bnr
+m.celuvmedia.com###container > div[style="margin-top:10px"]
+celuvmedia.com###CmAdContent  > table[style]
+www.chosun.com##article.layout__article-main > .box--pad-bottom-lg
+www.chosun.com##article.layout__article-main > .box--pad-top-xl.box--hidden-sm:has(> .box--border-xs)
+chaoscube.co.kr##div[ad-size]
+chaoscube.co.kr##.venatus-container
+news.jtbc.co.kr##.MuiBox-root > .MuiBox-root > .swiper-initialized.swiper-backface-hidden:has([target="_blank"])
+news.jtbc.co.kr###ednp_wrap
+news.jtbc.co.kr##aside div[class*="my-"].e1ecreks0.MuiBox-root:has(> .MuiBox-root > div[id$="_AD"])
+kimpga.com##.ad-slot-vertical
+theddari.com##div[class]:has(> a[aria-label="side-ads"])
+etoland.co.kr##div[style*="margin-top:"] > a[href*="?bo_table=store&wr_id="]
+zod.kr##a[class*="zod-banner"]
+zod.kr##div.app-aside-content > div:has(> a.zod-banner--reward)
+zod.kr##.app-main-banner
+isplus.com##.rightEnd > .section_inner > div[style]
+boardlife.co.kr##.promote-box
+dcinside.com##.trend-rank
 gnu.kilho.net##div[id^="detect"]
 moneypin.biz##.flex > a[href][target="_blank"]
 chzzk.naver.com##div[class^="popup_cheat_key_container__"]
@@ -1584,6 +1633,7 @@ damoang.net##img[src*="/data/file/main/"]
 lee-master.tistory.com##.contents_style > blockquote:has(img[src*="coupangcdn.com/image/affiliate/banner/"]) ~ p:has(~ blockquote)
 lee-master.tistory.com##.contents_style > blockquote:has(img[src*="coupangcdn.com/image/affiliate/banner/"])
 damoang.net##a[data-dd-action-name*="Ads"]
+damoang.net##div[class$="banner"]
 ggeal.com###body_read > div[style^="margin:"] > div[class=""][style*="width:"]
 sejonghub.com##div[id^="carousel_"].carousel.carousel-fade
 ssodam.com##div[class^="col-lg-offset-"] > div[style*="height:"].hidden-xs
@@ -1634,13 +1684,12 @@ m.fishingseasons.co.kr##.contents .table_cls > li
 newsnjoy.or.kr###article-view.mobile .wrapper > .clearfix
 newsnjoy.or.kr###leftFloat
 tenbizt.com##div[class*="-adsense-"]
-g-enews.com,g-enews.com.bd,g-enews.com.np,g-enews.gov.bd,g-enews.gov.np##div[id^="tdn_"][style*="height:"]
+g-enews.com,g-enews.com.bd,g-enews.com.np##div[id^="tdn_"][style*="height:"]
 3277532532.reviewtoday.net##*[class*="-coupas-"]
 3277532532.reviewtoday.net##div[class^="Post_post__"] > .text-center:has(ins.adsbygoogle)
 search.naver.com##div[id^="power_link_together_"]
 namu.wiki,~board.namu.wiki##div[class] ~ div div + *[class]:not([class*=" "]) *[class*=" "] div[class]:has(> iframe[id^="google_ads_"])
 namu.wiki,~board.namu.wiki##div[class] ~ div div + *[class]:not([class*=" "]) *[class*=" "] div[class]:has(iframe[src*="arca.live/external/callad"])
-namu.wiki,~board.namu.wiki##div:not([class*=" "]) ~ div div + div[class]:has(> div[id][class]):not(:has(div[class*=" "] > span))
 namu.wiki,~board.namu.wiki##div[class]:not([class*=" "]) ~ div[class*=" "] > *[class*=" "] > *:has(iframe[id^="google_ads_iframe_"])
 namu.wiki,~board.namu.wiki##*[class]:not([class*=" "]) > div[class]:not([class*=" "]) ~ *:not([class]) > *[class]:has(iframe[id^="google_ads_iframe_"])
 namu.wiki,~board.namu.wiki##*[class]:not([class*=" "]) > div[class]:not([class*=" "]) ~ *:not([class]) > *[class]:has(iframe[src*="arca.live/external/callad"])
@@ -2188,7 +2237,7 @@ news.nate.com##.thisTimeNews > div[class^="bn"]
 search.naver.com##.brand_search
 search.naver.com##div[class*="_fashion"].more_prod
 m.search.naver.com##section[class*="ad_"]
-search.naver.com##li[data-nvmid]._ad
+search.naver.com##li._ad:has(> *[data-nvmid])
 ddaily.co.kr##.space_layout ~ div[class^="section_"] > div:not([style*="solid"]) + div[style]:not([class])
 kr-weathernews.com,view.nate.com,sportsseoul.com,enuri.com,newdaily.co.kr,koreatimes.net,nzkoreapost.com##div[class*="-ad-"]
 loawa.com##a[target="_blank"][data-href][data-banner-statics]
@@ -2477,7 +2526,7 @@ m.ytn.co.kr##div[class^="text_ad_"]
 nts.go.kr##.blockUI.blockOverlay
 nts.go.kr##.blockUI.blockMsg.blockPage
 noonnu.cc##div[data-fonts-target="fontsContainer"] > div.group.min-h-auto:not(.duration-300):not(.justify-between)
-dogdrip.net##.ddnad-board
+dogdrip.net##.ddnad
 epnc.co.kr,hellot.net##ins.dcmads
 bizwatch.co.kr##[class*="ad_bizwatch_"]
 autopostkorea.com##div[class^="floating_ad_"]
@@ -2646,7 +2695,7 @@ coupang.com###sdpAdsBottom
 coupang.com###sdp-mid-banner-btf
 besteleven.com,newspim.com##.topbanner
 mmzone.co.kr###main_premium_spon_block
-boannews.com,edu.donga.com,m.etoday.co.kr,mnews.sbs.co.kr,mbn.co.kr,cgv.co.kr,mmzone.co.kr##div[id$="_ad"]
+v.daum.net,boannews.com,edu.donga.com,m.etoday.co.kr,mnews.sbs.co.kr,mbn.co.kr,cgv.co.kr,mmzone.co.kr##div[id$="_ad"]
 2cpu.co.kr##a[href*="./bbs/banner_link.php?"]
 mlbpark.donga.com##div[class*="naver_power"]
 quasarzone.com##*:not(footer) > div[class^="main-"][class$="-banner"]
@@ -2669,9 +2718,26 @@ orbi.kr##div.panel.class-event-wrap
 orbi.kr##a[href^="https://ads.orbi.kr/"]
 osen.mt.co.kr##div#close_mask
 www.erdcloud.com##.erd-ads-area
+gall.dcinside.com##tr.list_trend
+dcinside.com##div.dctrend_ranking
+m.dcinside.com##div.key-trendbox
+dcinside.com##div.key_trendbox
+m.dcinside.com##ul.detail-top-lst.trend
+clien.net##div:has(> div[class="ad_banner"])
+etoland.co.kr##div#super_store_skin_v1
+etoland.co.kr##div.my_880_100_wrap
+koreaminecraft.net##tr.notice:not(:has(.wst_member_title))
 !
 ! DOMAIN-REFRESHER: START
 !
+tvroom5.org##div.banners_area
+tvroom5.org##div.banner_l
+tvroom5.org##.pop-up.iziModal
+tvroom5.org##.iziModal-overlay
+cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com###cpb-popup-banners
+cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com###custom_banner_wrap
+cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com##.custom_banner_wrap
+tvwiki4.com,tvwiki5.com,tvwiki6.com,tvwiki7.com,tvwiki8.com,tvwiki9.com,tvwiki10.com,tvwiki11.com,tvwiki12.com,tvwiki13.com,tvwiki14.com,tvwiki15.com,tvwiki16.com,tvwiki17.com##ul[class^="banner"]
 sptv24.com,sptv25.com,sptv26.com,sptv27.com,sptv28.com,sptv29.com,sptv30.com,sptv31.com,sptv32.com,sptv33.com,sptv34.com,sptv35.com,sptv36.com,sptv37.com##.modal_contents
 torrentpi144.com,torrentpi145.com,torrentpi146.com,torrentpi147.com,torrentpi148.com,torrentpi149.com,torrentpi150.com,torrentpi151.com,torrentpi152.com,torrentpi153.com,torrentpi154.com,torrentpi155.com,torrentpi156.com##style ~ .basic-post-gallery
 avguri4.com,avguri5.com,avguri6.com,avguri7.com,avguri8.com,avguri9.com,avguri10.com,avguri11.com,avguri12.com,avguri13.com,avguri14.com,avguri15.com##div[id$="_bn"]
@@ -2679,17 +2745,16 @@ avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.
 avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.com,avpink371.com,avpink372.com,avpink373.com###foogallery_widget-12
 avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.com,avpink371.com,avpink372.com,avpink373.com###foogallery_widget-13
 tv25.co##.code-block
-tv46.wiki,tv47.wiki,tv48.wiki,tv49.wiki,tv50.wiki,tv51.wiki,tv52.wiki,tv53.wiki,tv54.wiki,tv55.wiki,tv56.wiki,tv57.wiki,tv58.wiki,tv59.wiki##.partner-banner-flex
 xn--vv4b11c.com##.mp4-banner-view
 xn--vv4b11c.com###xcontent-goodsite
-anilife.net,anilife.de,anilife.com.br,anilife.app,anilife.nl,anilife.live,anilife.com.bd,anilife.com.np,anilife.life,anilife.gov.bd,anilife.gov.np##.MainBnnWrap
-anilife.net,anilife.de,anilife.com.br,anilife.app,anilife.nl,anilife.live,anilife.com.bd,anilife.com.np,anilife.life,anilife.gov.bd,anilife.gov.np##div[data-page] > div[class]:has(a[target="_blank"])
-tvzone.org,tvzone.ca,tvzone.me,tvzone.ua,tvzone.co.il,tvzone.co.in,tvzone.app,tvzone.cz,tvzone.shop,tvzone.com.bd,tvzone.com.np,tvzone.gov.bd,tvzone.gov.np##.main_banner
+anilife.app,anilife.co.kr,anilife.com.bd,anilife.com.br,anilife.com.np,anilife.life,anilife.live,anilife.net##.MainBnnWrap
+anilife.app,anilife.co.kr,anilife.com.bd,anilife.com.br,anilife.com.np,anilife.life,anilife.live,anilife.net##div[data-page] > div[class]:has(a[target="_blank"])
+tvzone.app,tvzone.ca,tvzone.co.in,tvzone.co.za,tvzone.com,tvzone.com.bd,tvzone.com.br,tvzone.com.np,tvzone.cz,tvzone.info,tvzone.it,tvzone.me,tvzone.org,tvzone.site,tvzone.store,tvzone.ua,tvzone.xyz##.main_banner
 xvideos-kr.com##.thumb-ad
 torrentnx17.com,torrentnx18.com,torrentnx19.com,torrentnx20.com,torrentnx21.com,torrentnx22.com,torrentnx23.com,torrentnx24.com,torrentnx25.com,torrentnx26.com,torrentnx27.com##a[href*="/bbs/link.php"]
-coktv.live,coktv.com.bd,coktv.com.np,coktv.gov.bd,coktv.gov.np##.custom_banner_wrap
+coktv.com,coktv.com.bd,coktv.com.np,coktv.live##.custom_banner_wrap
 avguri4.com,avguri5.com,avguri6.com,avguri7.com,avguri8.com,avguri9.com,avguri10.com,avguri11.com,avguri12.com,avguri13.com,avguri14.com,avguri15.com###hd_pop
-bbongtv.com,bbongtv.net,bbongtv.co.kr,bbongtv.com.bd,bbongtv.com.np,bbongtv.gov.bd,bbongtv.gov.np##img[src^="/img/"][src*=".gif"]
+bbongtv.co.kr,bbongtv.com,bbongtv.com.bd,bbongtv.com.np,bbongtv.net##img[src^="/img/"][src*=".gif"]
 ygy48.com,ygy49.com,ygy50.com,ygy51.com,ygy52.com,ygy53.com,ygy54.com,ygy55.com,ygy56.com,ygy57.com,ygy58.com,ygy59.com,ygy60.com,ygy61.com##.popup_wrap
 moeni.net##img[src^="/img/sp/"]
 av19.gg###page ~ div[style^="min-height:"]#content.row
@@ -2699,26 +2764,26 @@ bontv59.com,bontv60.com,bontv61.com,bontv62.com,bontv63.com,bontv64.com,bontv65.
 bontv59.com,bontv60.com,bontv61.com,bontv62.com,bontv63.com,bontv64.com,bontv65.com,bontv66.com,bontv67.com,bontv68.com,bontv69.com##div[class^="popup_"]
 tvzota106.com,tvzota107.com,tvzota108.com,tvzota109.com,tvzota110.com,tvzota111.com,tvzota112.com,tvzota113.com,tvzota114.com,tvzota115.com,tvzota116.com##div[class$="_ban"]
 tvzota106.com,tvzota107.com,tvzota108.com,tvzota109.com,tvzota110.com,tvzota111.com,tvzota112.com,tvzota113.com,tvzota114.com,tvzota115.com,tvzota116.com##div[class^="popup_"]
-agitwebtoon.xyz,agitwebtoon.com.bd,agitwebtoon.com.np,agitwebtoon.gov.bd,agitwebtoon.gov.np##.advx
-newtoki.com,newtoki.net,newtoki.org,newtoki.co,newtoki.info,newtoki.me,newtoki.tv,newtoki.biz,newtoki.app,newtoki.pro,newtoki.club,newtoki.site,newtoki.ai,newtoki.com.bd,newtoki.com.ng,newtoki.com.np,newtoki.vip,newtoki.gov.bd,newtoki.kr,newtoki.gov.np,newtoki.work##.banner2
+agitwebtoon.com.bd,agitwebtoon.com.np,agitwebtoon.xyz##.advx
+newtoki.ai,newtoki.biz,newtoki.blog,newtoki.cloud,newtoki.club,newtoki.co,newtoki.co.kr,newtoki.com,newtoki.com.bd,newtoki.com.ng,newtoki.com.np,newtoki.info,newtoki.kr,newtoki.link,newtoki.me,newtoki.net,newtoki.one,newtoki.org,newtoki.pro,newtoki.site,newtoki.tv,newtoki.vip,newtoki.work##.banner2
 opworlds18.com,opworlds19.com,opworlds20.com,opworlds21.com,opworlds22.com,opworlds23.com,opworlds24.com,opworlds25.com,opworlds26.com##.basic-banner-gallery
 jusoyo12.net,jusoyo13.net,jusoyo14.net,jusoyo15.net,jusoyo16.net,jusoyo17.net,jusoyo18.net,jusoyo19.net,jusoyo20.net,jusoyo21.net,jusoyo22.net##.hd_pops
 jusoyo12.net,jusoyo13.net,jusoyo14.net,jusoyo15.net,jusoyo16.net,jusoyo17.net,jusoyo18.net,jusoyo19.net,jusoyo20.net,jusoyo21.net,jusoyo22.net##.basic-banner-gallery
-agitnovel.xyz,agitnovel.com.bd,agitnovel.com.np,agitnovel.gov.bd,agitnovel.gov.np##.banner
+agitnovel.com.bd,agitnovel.com.np,agitnovel.xyz##.banner
 spochak.com##.list-webzine .list-item
 torrentdin4.com,torrentdin5.com,torrentdin6.com,torrentdin7.com,torrentdin8.com,torrentdin9.com,torrentdin10.com,torrentdin11.com,torrentdin12.com,torrentdin13.com,torrentdin14.com,torrentdin15.com###hd_pop
 torrentdin4.com,torrentdin5.com,torrentdin6.com,torrentdin7.com,torrentdin8.com,torrentdin9.com,torrentdin10.com,torrentdin11.com,torrentdin12.com,torrentdin13.com,torrentdin14.com,torrentdin15.com##div[class*="at-"] > .widget-box
 tvchak77.com,tvchak78.com,tvchak79.com,tvchak80.com,tvchak81.com,tvchak82.com,tvchak83.com,tvchak84.com,tvchak85.com,tvchak86.com,tvchak87.com,tvchak88.com,tvchak89.com,tvchak90.com,tvchak91.com,tvchak92.com,tvchak93.com,tvchak94.com,tvchak95.com,tvchak96.com,tvchak97.com,tvchak98.com##div[style].border-shadow
 tvchak77.com,tvchak78.com,tvchak79.com,tvchak80.com,tvchak81.com,tvchak82.com,tvchak83.com,tvchak84.com,tvchak85.com,tvchak86.com,tvchak87.com,tvchak88.com,tvchak89.com,tvchak90.com,tvchak91.com,tvchak92.com,tvchak93.com,tvchak94.com,tvchak95.com,tvchak96.com,tvchak97.com,tvchak98.com##.banner-box
-cokcok.net,cokcok.org,cokcok.com.tr,cokcok.me,cokcok.xyz,cokcok.club,cokcok.co.kr,cokcok.live,cokcok.top,cokcok.com.bd,cokcok.com.np,cokcok.gov.bd,cokcok.gov.np##.custom_banner_item
+cokcok.biz,cokcok.cn,cokcok.co,cokcok.co.kr,cokcok.com.bd,cokcok.com.np,cokcok.io,cokcok.me,cokcok.org,cokcok.pro,cokcok.vip,cokcok.xyz##.custom_banner_item
 agit359.com,agit360.com,agit361.com,agit362.com,agit363.com,agit364.com,agit365.com,agit367.com,agit368.com,agit369.com,agit370.com,agit371.com,agit372.com,agit373.com,agit374.com,agit375.com##.banner
 torrentqq332.com,torrentqq333.com,torrentqq334.com,torrentqq335.com,torrentqq336.com,torrentqq337.com,torrentqq338.com,torrentqq339.com,torrentqq340.com,torrentqq341.com,torrentqq342.com,torrentqq343.com,torrentqq344.com,torrentqq345.com,torrentqq346.com##.at-banner
-tvhot.org,tvhot.me,tvhot.pro,tvhot.club,tvhot.cc,tvhot.com.bd,tvhot.com.np,tvhot.vip,tvhot.gov.bd,tvhot.gov.np##div[id*="-banner-"]
-tvhot.org,tvhot.me,tvhot.pro,tvhot.club,tvhot.cc,tvhot.com.bd,tvhot.com.np,tvhot.vip,tvhot.gov.bd,tvhot.gov.np###body_wrap > div[class][style^="margin:"]
-sonagitv.tv,sonagitv.live,sonagitv.com.bd,sonagitv.com.np,sonagitv.gov.bd,sonagitv.gov.np##a[href][target="_blank"] > img[src^="/images/banner/"]:not([src^="/images/banner/webtoon_"])
-newtoki.com,newtoki.net,newtoki.org,newtoki.co,newtoki.info,newtoki.me,newtoki.tv,newtoki.biz,newtoki.app,newtoki.pro,newtoki.club,newtoki.site,newtoki.ai,newtoki.com.bd,newtoki.com.ng,newtoki.com.np,newtoki.vip,newtoki.gov.bd,newtoki.kr,newtoki.gov.np,newtoki.work##.ba_test
+tvhot.blog,tvhot.cc,tvhot.club,tvhot.com.bd,tvhot.com.np,tvhot.me,tvhot.org,tvhot.pro,tvhot.site,tvhot.vip##div[id*="-banner-"]
+tvhot.blog,tvhot.cc,tvhot.club,tvhot.com.bd,tvhot.com.np,tvhot.me,tvhot.org,tvhot.pro,tvhot.site,tvhot.vip###body_wrap > div[class][style^="margin:"]
+sonagitv.co,sonagitv.com.bd,sonagitv.com.np,sonagitv.org,sonagitv.pro,sonagitv.tv##a[href][target="_blank"] > img[src^="/images/banner/"]:not([src^="/images/banner/webtoon_"])
+newtoki.ai,newtoki.biz,newtoki.blog,newtoki.cloud,newtoki.club,newtoki.co,newtoki.co.kr,newtoki.com,newtoki.com.bd,newtoki.com.ng,newtoki.com.np,newtoki.info,newtoki.kr,newtoki.link,newtoki.me,newtoki.net,newtoki.one,newtoki.org,newtoki.pro,newtoki.site,newtoki.tv,newtoki.vip,newtoki.work##.ba_test
 torrentqq332.com,torrentqq333.com,torrentqq334.com,torrentqq335.com,torrentqq336.com,torrentqq337.com,torrentqq338.com,torrentqq339.com,torrentqq340.com,torrentqq341.com,torrentqq342.com,torrentqq343.com,torrentqq344.com,torrentqq345.com,torrentqq346.com##.row-banner
-sonagitv.tv,sonagitv.live,sonagitv.com.bd,sonagitv.com.np,sonagitv.gov.bd,sonagitv.gov.np##.popup_warp
+sonagitv.co,sonagitv.com.bd,sonagitv.com.np,sonagitv.org,sonagitv.pro,sonagitv.tv##.popup_warp
 kr.bb-tv.co##.banner
 torrenttip125.com,torrenttip126.com,torrenttip127.com,torrenttip128.com,torrenttip129.com,torrenttip130.com,torrenttip131.com,torrenttip132.com,torrenttip133.com,torrenttip134.com,torrenttip135.com,torrenttip136.com,torrenttip137.com,torrenttip138.com##a[href*="/ad/"]
 torrenttt130.com,torrenttt131.com,torrenttt132.com,torrenttt133.com,torrenttt134.com,torrenttt135.com,torrenttt136.com,torrenttt137.com,torrenttt138.com,torrenttt139.com,torrenttt140.com,torrenttt141.com,torrenttt142.com,torrenttt143.com##a[href*="/ad/"][target="_blank"]
@@ -2778,13 +2843,16 @@ manaboza62.com,manaboza63.com,manaboza64.com,manaboza65.com,manaboza66.com,manab
 torrentmode.com##a[href^="https://torrentmode.com/bbs/bannerhit.php"]
 newtoon224.com,newtoon225.com,newtoon226.com,newtoon227.com,newtoon228.com,newtoon229.com,newtoon230.com,newtoon231.com,newtoon232.com,newtoon233.com,newtoon234.com##.ad-form > .row > div[class^="col-md-"]
 blacktoon302.com,blacktoon303.com,blacktoon304.com,blacktoon305.com,blacktoon306.com,blacktoon307.com,blacktoon308.com,blacktoon309.com,blacktoon310.com,blacktoon311.com,blacktoon312.com,blacktoon313.com##.banner.container > .row > .col-6
-newtoki461.com,newtoki462.com,newtoki463.com,newtoki464.com,newtoki467.com,newtoki468.com,newtoki489.com,newtoki490.com,newtoki491.com,newtoki492.com,newtoki493.com,newtoki494.com###hd_pop
+newtoki464.com,newtoki465.com,newtoki466.com,newtoki467.com,newtoki468.com,newtoki469.com,newtoki470.com,newtoki471.com,newtoki472.com,newtoki473.com,newtoki474.com,newtoki475.com,newtoki476.com,newtoki475.com,newtoki477.com,newtoki478.com,newtoki479.com,newtoki480.com,newtoki481.com###hd_pop
+manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki469.net,manatoki470.net,manatoki471.net,manatoki472.net,manatoki473.net###hd_pop
 booktoki461.com,booktoki462.com,booktoki463.com,booktoki464.com,booktoki465.com,booktoki466.com,booktoki467.com,booktoki468.com,booktoki469.com,booktoki470.com,booktoki471.com,booktoki472.com,booktoki473.com,booktoki474.com,booktoki475.com,booktoki476.com###hd_pop
-newtoki461.com,newtoki462.com,newtoki463.com,newtoki464.com,newtoki467.com,newtoki468.com,newtoki489.com,newtoki490.com,newtoki491.com,newtoki492.com,newtoki493.com,newtoki494.com##div[id].col-15
+newtoki464.com,newtoki465.com,newtoki466.com,newtoki467.com,newtoki468.com,newtoki469.com,newtoki470.com,newtoki471.com,newtoki472.com,newtoki473.com,newtoki474.com,newtoki475.com,newtoki476.com,newtoki475.com,newtoki477.com,newtoki478.com,newtoki479.com,newtoki480.com,newtoki481.com##div.col-15.col-md-9
+newtoki464.com,newtoki465.com,newtoki466.com,newtoki467.com,newtoki468.com,newtoki469.com,newtoki470.com,newtoki471.com,newtoki472.com,newtoki473.com,newtoki474.com,newtoki475.com,newtoki476.com,newtoki475.com,newtoki477.com,newtoki478.com,newtoki479.com,newtoki480.com,newtoki481.com##.board-tail-banner
+newtoki464.com,newtoki465.com,newtoki466.com,newtoki467.com,newtoki468.com,newtoki469.com,newtoki470.com,newtoki471.com,newtoki472.com,newtoki473.com,newtoki474.com,newtoki475.com,newtoki476.com,newtoki475.com,newtoki477.com,newtoki478.com,newtoki479.com,newtoki480.com,newtoki481.com##.basic-banner
 booktoki461.com,booktoki462.com,booktoki463.com,booktoki464.com,booktoki465.com,booktoki466.com,booktoki467.com,booktoki468.com,booktoki469.com,booktoki470.com,booktoki471.com,booktoki472.com,booktoki473.com,booktoki474.com,booktoki475.com,booktoki476.com##img[src^="/tokinbtoki/"]
-manatoki461.net,manatoki362.net,manatoki363.net,manatoki364.net,manatoki365.net,manatoki366.net,manatoki367.net,manatoki368.net,manatoki369.net,manatoki370.net,manatoki371.net,manatoki372.net,manatoki373.net##[style="margin-bottom: 20px;"].row.row-15
-manatoki461.net,manatoki362.net,manatoki363.net,manatoki364.net,manatoki365.net,manatoki366.net,manatoki367.net,manatoki368.net,manatoki369.net,manatoki370.net,manatoki371.net,manatoki372.net,manatoki373.net##.basic-banner.row.row-10
-manatoki461.net,manatoki362.net,manatoki363.net,manatoki364.net,manatoki365.net,manatoki366.net,manatoki367.net,manatoki368.net,manatoki369.net,manatoki370.net,manatoki371.net,manatoki372.net,manatoki373.net##.board-tail-banner
+manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki489.net,manatoki490.net,manatoki491.net,manatoki492.net,manatoki493.net,manatoki494.net,manatoki495.net,manatoki496.net##[style="margin-bottom: 20px;"].row.row-15
+manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki489.net,manatoki490.net,manatoki491.net,manatoki492.net,manatoki493.net,manatoki494.net,manatoki495.net,manatoki496.net##.basic-banner.row.row-10
+manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki489.net,manatoki490.net,manatoki491.net,manatoki492.net,manatoki493.net,manatoki494.net,manatoki495.net,manatoki496.net##.board-tail-banner
 103.204.13.68##.product-banner
 103.204.13.68##div[class^="mobile-m ad720_"]
 !
@@ -2850,6 +2918,8 @@ tftps.gg#$##top-area > div[class*=" "] > div[class*=" "]:has( div:not([class]) ~
 fow.kr#$#div[style^="display:"] > div[style^="flex-basis"]:has(~ .fvideo) { width: 100% !important; }
 fow.kr#$#div[style^="display:"] > div[style^="flex-basis"]:has(~ .fvideo) .news_top { width: revert-layer !important; }
 fow.kr#$#div[style^="display:"] > div[style^="flex-basis"]:has(~ .fvideo) .news_box { width: revert-layer !important; }
+velog.io##div:has(> a > img[alt="post-custom-banner"])
+tvroom5.org##ul.menu:has(> li > a[class^="banner_"])
 bbs.ruliweb.com#$##board_top .best_list { width: 100% !important; }
 3277532532.reviewtoday.net#$#div[class^="Post_continue_coupang__"] { display: none !important; }
 3277532532.reviewtoday.net#$#.post-contents > div[style] { height: 100% !important; }
@@ -3042,7 +3112,7 @@ www.erdcloud.com#$#.erd-container { width: 100% !important; }
 ! DOMAIN-REFRESHER: START
 !
 spotv120.com,spotv121.com,spotv122.com,spotv123.com,spotv124.com,spotv125.com,spotv126.com,spotv127.com,spotv128.com,spotv129.com,spotv130.com,spotv131.com,spotv132.com,spotv133.com,spotv134.com,spotv135.com,spotv136.com,spotv137.com,spotv138.com#$#header { top: 0px !important; }
-newtoki461.com,newtoki462.com,newtoki463.com,newtoki464.com,newtoki467.com,newtoki468.com,newtoki489.com,newtoki490.com,newtoki491.com,newtoki492.com,newtoki493.com,newtoki494.com#$#body { overflow: auto !important; }
+newtoki466.com,newtoki467.com,newtoki468.com,newtoki489.com,newtoki490.com,newtoki491.com,newtoki492.com,newtoki493.com,newtoki494.com,newtoki495.com,newtoki496.com,newtoki497.com,newtoki498.com#$#body { overflow: auto !important; }
 !
 ! DOMAIN-REFRESHER: END
 2cpu.co.kr#$#header .row[style] { margin-bottom: 35px !important; }
@@ -3187,8 +3257,8 @@ spochak.com#?#table .basic-info-alert:has(a[href="/marble/"])
 avsee.*#?#.widget-side-box > .main-box:has(img[src^="/imgs/"])
 zzzz.lol#?#.widget-side .widget-title:has(+ div a[href^="/bbs/link.php?bo_table="][target="_blank"])
 booktoki461.com,booktoki462.com,booktoki463.com,booktoki464.com,booktoki465.com,booktoki466.com,booktoki467.com,booktoki468.com,booktoki469.com,booktoki470.com,booktoki471.com,booktoki472.com,booktoki473.com,booktoki474.com,booktoki475.com,booktoki476.com#?#ul[class] > li:has(> a[href*="tokkiweb.com"])
-manatoki461.net,manatoki362.net,manatoki363.net,manatoki364.net,manatoki365.net,manatoki366.net,manatoki367.net,manatoki368.net,manatoki369.net,manatoki370.net,manatoki371.net,manatoki372.net,manatoki373.net#?#ul[class] > li:has(> a[href^="/guarantee.php"])
-newtoki461.com,newtoki462.com,newtoki463.com,newtoki464.com,newtoki467.com,newtoki468.com,newtoki489.com,newtoki490.com,newtoki491.com,newtoki492.com,newtoki493.com,newtoki494.com#?#ul[class] > li:has(> a[href^="/guarantee.php"])
+manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki489.net,manatoki490.net,manatoki491.net,manatoki492.net,manatoki493.net,manatoki494.net,manatoki495.net,manatoki496.net#?#ul[class] > li:has(> a[href^="/guarantee.php"])
+newtoki466.com,newtoki467.com,newtoki468.com,newtoki489.com,newtoki490.com,newtoki491.com,newtoki492.com,newtoki493.com,newtoki494.com,newtoki495.com,newtoki496.com,newtoki497.com,newtoki498.com#?#ul[class] > li:has(> a[href^="/guarantee.php"])
 yagong76.com,yagong77.com,yagong78.com,yagong79.com,yagong80.com,yagong81.com,yagong82.com,yagong83.com,yagong84.com,yagong85.com,yagong86.com,yagong87.com,yagong88.com,yagong89.com,yagong90.com,yagong91.com,yagong92.com,yagong93.com,yagong94.com,yagong95.com,yagong96.com,yagong97.com,yagong98.com#?#div[class*="border"]:has(> a[href][target*="_blank"])
 !
 ! DOMAIN-REFRESHER: END
@@ -3344,7 +3414,6 @@ cfnews.kr#%#//scriptlet('abort-current-inline-script', 'window.open', '/gears/po
 sjtoday.kr#%#//scriptlet('abort-current-inline-script', 'window.open', 'notice_view_html.php')
 filetender.com#%#//scriptlet('prevent-setTimeout', '', '15000')
 pping.kr#%#//scriptlet('remove-attr', 'placeholder', 'input.search_input', 'asap stay')
-app.dcinside.com,m.dcinside.com#%#//scriptlet('set-constant', 'reple_dori', 'noopFunc')
 shoppinghow.kakao.com#%#//scriptlet('json-prune', 'ads')
 dpg.danawa.com#%#//scriptlet('abort-current-inline-script', '$', '/danawa-dpg-common-sponsorBanner-/')
 dpg.danawa.com#%#//scriptlet('abort-current-inline-script', '$', 'myScript[myScript.length - 1 ]')
@@ -3426,10 +3495,15 @@ t.hi098123.com#$#.tabad { top: -100px !important; }
 ! chzzk.naver.com
 ! The tusted scriptlet rule should be rechecked after https://github.com/AdguardTeam/Scriptlets/issues/419 is resolved.
 ! Check that PIP of a live streaming and chatting management of a channel work.
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/gfp')
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/call')
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/vas')
 naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
-@@||ssl.pstatic.net/tveta/libs/glad/prod/$script,domain=chzzk.naver.com
+@@||ssl.pstatic.net/tveta/libs/glad/prod/$script,xmlhttprequest,domain=chzzk.naver.com
 @@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
+dinfo.3dpchip.com#%#//scriptlet('set-constant', 'linkPass', 'true')
+boardlife.co.kr#$##top-sponsor { height: 60px !important; top: -60px !important; position: absolute !important; visibility: hidden !important; }
 klauncher.kr#%#//scriptlet('remove-node-text', 'script', '_0x')
 ||tistory1.daumcdn.net/tistory/3827361/skin/images/script3.js$domain=devjit.tistory.com
 hub.weirdhost.xyz#%#//scriptlet('prevent-fetch', 'adblockanalytics.com')

@@ -1,14 +1,14 @@
-! Checksum: LtLxL/iUzq5Ka8l3nko5lQ
+! Checksum: hEKirA7fHAXF4N6zG5eUAg
 ! Title: Hungarian filter
 ! Description: Hufilter. Filter list that specifically removes ads on websites in the Hungarian language.
-! Version: 2.0.3.11
-! TimeUpdated: 2024-10-01T17:01:21+00:00
+! Version: 2.0.3.19
+! TimeUpdated: 2024-12-17T01:01:20+00:00
 ! Expires: 10 days (update frequency)
 !
-! Checksum: IMpcFkynvAQaIqKSxB/uJw
-! OriginalVersion: 202410010856
+! Checksum: fyv/m3dE6mSsyKju3iG3mg
+! OriginalVersion: 202412161023
 ! Title: Hufilter for AdGuard
-! Last modified: 01 Oct 2024 08:56 UTC
+! Last modified: 16 Dec 2024 10:23 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://hufilter.hu
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -317,7 +317,6 @@ delmagyar.hu##[id*="banner"]
 delmagyar.hu##[id^="linkbox_article"]
 delmagyar.hu###billboard
 demokrata.hu##.region-header.region
-deres.tv##[class*="banner"]
 dictzone.com###a1
 dictzone.com###a2
 dijnet.hu##.jquery-modal.blocker.current
@@ -367,7 +366,6 @@ eletmod.hu##[id*="banner"]
 eletmod.hu##[id*="etarget"]
 epresso.hu##[class*="banner"]
 eredmenyek.com###onetrust-banner-sdk
-eron.hu##[id*="banner"]
 eropolis.hu##[class*="banner"]
 es.hu##[class*="banner"]
 es.hu##[id*="banner"]
@@ -763,7 +761,6 @@ magyarszo.com##[class*="reklam"]
 magyarszo.com##[id*="reklam"]
 mainap.hu##[class*="banner"]
 mandiner.hu##.real-estate-wrapper
-manus.hu##[class*="articleBanner"]
 marmalade.hu##[class*="Banner"]
 maszol.ro###article > section > div:not(.article_content)
 mavcsoport.hu###cboxOverlay
@@ -1319,7 +1316,6 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||ingyenweb.hu/felso/*.
 ||ingyenweb.hu/smsbanner/
 ||jogiforum.hu/files/partner/
-||keymedia.hu/keymediajs.cgi
 ||kiszamolo.hu/wp-content/uploads/*banner*.png$image
 ||kiszamolo.hu/wp-content/uploads/2016/09/Hitel-290x200-blog-jobb.gif$image
 ||kiszamolo.hu/wp-content/uploads/2019/11/550x104-02.jpg$image
@@ -1356,7 +1352,6 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||okmanyiroda.hu/banner.html
 ||p3k.hu/*_hatter*.$image
 ||p3k.hu/*szponz*.
-||partyzoo.hu/banner/$image
 ||pcguru.hu/uploads/banners/*.jpg$image
 ||pcpult.hu/*/banner/$image
 ||pcworld.hu/bannerek/$image
@@ -1754,6 +1749,7 @@ szeretlekmagyarorszag.hu##iframe[class*="my-fbrecommend"]
 tarhely.eu###sutik
 telekom.hu###app-cookie-policy
 telex.hu###modal--umbrella
+telex.hu###modal--you
 thaimatrac.hu##.border-top.p-4.bg-8.cookie-alert__inner
 titkokszigete.hu##.spu-bg
 titkokszigete.hu##.spu-box
@@ -1800,6 +1796,7 @@ infostart.hu#?##sitemodal:has(.fb-button)
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters ----------------------------------------------!
 !-------------------------------------------------------------------------------!
+dizajnkonyha.hu##body > div[data-elementor-type="footer"] ~ div[id][class*=" "]
 rtl.hu##.adblock-confirm
 777blog.hu##[href="https://777blog.hu/reklamblokkolo-kikapcsolasa/"]
 777blog.hu##div#rechtangle.widget:nth-of-type(5)
@@ -1851,9 +1848,10 @@ videa.hu,videaloop.hu##.top-video-container-banner
 ||beam.telex.hu^
 ||counter.megagroup.ru^
 ||doubleclick.net^
-||freestat.hu^
 ||gemius.hu^
 ||gemius.pl^
+! https://github.com/hufilter/hufilter/issues/480
+||px.blog.hu^
 ||smartadserver.com^
 ||tracker.azet.sk^
 ||tracking.binarypromos.com^
