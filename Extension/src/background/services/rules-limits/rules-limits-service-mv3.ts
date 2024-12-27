@@ -143,7 +143,7 @@ export class RulesLimitsService {
         }, {});
 
         // Quick fixes filter was disabled in mv3 to comply with CWR policies.
-        // TODO: remove code totaly later.
+        // TODO: remove code totally later.
 
         // // It is like "syntax sugar" for the quick fixes filter to emulate it
         // // like an "empty" ruleset, because it looks like usual filter

@@ -197,7 +197,7 @@ export class Engine implements TsWebExtensionEngine {
         };
 
         // Quick fixes filter was disabled in mv3 to comply with CWR policies.
-        // TODO: remove code totaly later.
+        // TODO: remove code totally later.
         // if (QuickFixesRulesApi.isEnabled()) {
         //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
         // }
@@ -219,7 +219,7 @@ export class Engine implements TsWebExtensionEngine {
             declarativeLogEnabled: filteringLogApi.isOpen(),
             customFilters,
             // Quick fixes filter was disabled in mv3 to comply with CWR policies.
-            // TODO: remove code totaly later.
+            // TODO: remove code totally later.
             quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA),
             logLevel: logger.currentLevel,

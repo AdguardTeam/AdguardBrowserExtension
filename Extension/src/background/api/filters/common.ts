@@ -82,7 +82,7 @@ export class CommonFilterApi {
             && filterId !== AntiBannerFiltersId.AllowlistFilterId;
 
         // Quick fixes filter was disabled in mv3 to comply with CWR policies.
-        // TODO: remove code totaly later.
+        // TODO: remove code totally later.
 
         // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
     }
@@ -152,7 +152,7 @@ export class CommonFilterApi {
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
 
         // Quick fixes filter was disabled in mv3 to comply with CWR policies.
-        // TODO: remove code totaly later.
+        // TODO: remove code totally later.
 
         // if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
         //     forceRemote = false;

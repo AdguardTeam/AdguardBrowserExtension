@@ -17,7 +17,7 @@
  */
 
 // Quick fixes filter was disabled in mv3 to comply with CWR policies.
-// TODO: remove code totaly later.
+// TODO: remove code totally later.
 
 // import { type PreprocessedFilterList } from '@adguard/tsurlfilter';
 

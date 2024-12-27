@@ -262,7 +262,7 @@ export class FiltersService {
         // metadata and then load filter from remote.
         if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
             // Quick fixes filter was disabled in mv3 to comply with CWR policies.
-            // TODO: remove code totaly later.
+            // TODO: remove code totally later.
 
             // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
