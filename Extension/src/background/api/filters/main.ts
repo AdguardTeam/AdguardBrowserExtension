@@ -17,7 +17,7 @@
  */
 
 import { logger } from '../../../common/logger';
-import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
+import { AntiBannerFiltersId, AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
 import { getErrorMessage } from '../../../common/error';
 import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
@@ -207,6 +207,12 @@ export class FiltersApi {
         }
 
         const tasks = filterIds.map(async (filterId) => {
+            if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
+                // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+                // TODO: remove code totally later.
+                return null;
+            }
+
             try {
                 // 'ignorePatches: true' here for loading filters without patches
                 const f = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, remote);
