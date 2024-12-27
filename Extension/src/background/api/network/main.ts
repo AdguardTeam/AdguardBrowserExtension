@@ -189,8 +189,8 @@ export class Network {
         if (__IS_MV3__) {
             url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterId}.txt`);
 
-            // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
-            // and custom filters
+            // `forceRemote` flag for MV3 can be used only for Custom filters which are not included in the extension
+            // and can only be manually added by the user.
             const isRemote = forceRemote && CustomFilterApi.isCustomFilter(filterId);
 
             if (isRemote) {
