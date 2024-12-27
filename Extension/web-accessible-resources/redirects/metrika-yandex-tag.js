@@ -9,8 +9,8 @@
     function metrikaYandexTag(source) {
         var asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
             var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-            var callback = options.callback;
-            var ctx = options.ctx;
+            var {callback: callback} = options;
+            var {ctx: ctx} = options;
             if (typeof callback === "function") {
                 callback = ctx !== undefined ? callback.bind(ctx) : callback;
                 setTimeout((function() {
@@ -59,8 +59,8 @@
             return api[funcName] && api[funcName](id, ...args);
         }
         function init(id) {
-            window["yaCounter".concat(id)] = api;
-            document.dispatchEvent(new Event("yacounter".concat(id, "inited")));
+            window[`yaCounter${id}`] = api;
+            document.dispatchEvent(new Event(`yacounter${id}inited`));
         }
         if (typeof window.ym === "undefined") {
             window.ym = ym;
@@ -82,17 +82,17 @@
         }
         try {
             var trace = console.trace.bind(console);
-            var label = "".concat(ADGUARD_PREFIX, " ");
+            var label = `${ADGUARD_PREFIX} `;
             if (source.engine === "corelibs") {
                 label += source.ruleText;
             } else {
                 if (source.domainName) {
-                    label += "".concat(source.domainName);
+                    label += `${source.domainName}`;
                 }
                 if (source.args) {
-                    label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                 } else {
-                    label += "#%#//scriptlet('".concat(source.name, "')");
+                    label += `#%#//scriptlet('${source.name}')`;
                 }
             }
             if (trace) {
