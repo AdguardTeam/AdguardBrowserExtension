@@ -99,9 +99,7 @@ export class Engine implements TsWebExtensionEngine {
          *
          * This is STEP 2.1: Local script rules are passed to the engine.
          */
-        if (__IS_MV3__) {
-            TsWebExtension.setLocalScriptRules(localScriptRules);
-        }
+        TsWebExtension.setLocalScriptRules(localScriptRules);
 
         const configuration = await Engine.getConfiguration();
 
