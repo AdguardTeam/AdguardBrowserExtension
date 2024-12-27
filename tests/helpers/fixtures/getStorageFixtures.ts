@@ -446,7 +446,7 @@ export const getStorageFixturesV7 = (expires: number): StorageData[] => {
         ).parse(JSON.parse(filtersStateData));
 
         // FIXME tests are working without quick fixes filter
-        // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
         // TODO: remove code totally later.
 
         // Added AdGuard Quick Fixes filter which should be enabled by default.

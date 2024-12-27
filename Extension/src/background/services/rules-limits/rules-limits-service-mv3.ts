@@ -142,7 +142,7 @@ export class RulesLimitsService {
             return acc;
         }, {});
 
-        // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
         // TODO: remove code totally later.
 
         // // It is like "syntax sugar" for the quick fixes filter to emulate it

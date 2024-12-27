@@ -187,7 +187,7 @@ export class Engine implements TsWebExtensionEngine {
             Object.assign(userrules, await UserRulesApi.getUserRules());
         }
 
-        // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
         // TODO: remove code totally later, and for now we just set it to empty.
         const quickFixesRules: Configuration['quickFixesRules'] = {
             ...emptyPreprocessedFilterList,
@@ -198,7 +198,7 @@ export class Engine implements TsWebExtensionEngine {
             trusted: true,
         };
 
-        // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
         // TODO: remove code totally later.
         // if (QuickFixesRulesApi.isEnabled()) {
         //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
@@ -220,7 +220,7 @@ export class Engine implements TsWebExtensionEngine {
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
             customFilters,
-            // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+            // Quick fixes filter was disabled in MV3 to comply with CWR policies.
             // TODO: remove code totally later.
             quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA),

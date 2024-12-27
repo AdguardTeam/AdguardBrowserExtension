@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Quick fixes filter was disabled in mv3 to comply with CWR policies.
+// Quick fixes filter was disabled in MV3 to comply with CWR policies.
 // TODO: remove code totally later.
 
 // import { type PreprocessedFilterList } from '@adguard/tsurlfilter';

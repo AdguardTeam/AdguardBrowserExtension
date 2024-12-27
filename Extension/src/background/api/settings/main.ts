@@ -522,7 +522,7 @@ export class SettingsApi {
         if (__IS_MV3__) {
             await SettingsApi.loadBuiltInFiltersMv3(builtInFilters);
 
-            // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+            // Quick fixes filter was disabled in MV3 to comply with CWR policies.
             // TODO: remove code totally later.
 
             // // forcibly enable Quick Fixes filter on import for MV3

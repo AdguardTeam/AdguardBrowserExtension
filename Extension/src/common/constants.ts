@@ -52,7 +52,7 @@ export enum AntiBannerFiltersId {
     SearchAndSelfPromoFilterId = 10,
     AnnoyancesCombinedFilterId = 14,
     UrlTrackingFilterId = 17,
-    // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+    // Quick fixes filter was disabled in MV3 to comply with CWR policies.
     // TODO: remove code totally later.
     QuickFixesFilterId = 24,
     AllowlistFilterId = 100,
