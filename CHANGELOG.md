@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
+<!-- FIXME: mention exact versions and maybe other libs -->
+- Updated [@adguard/tsurlfilter] to v3.x.x.
+- Updated [@adguard/tswebextension] to v2.x.x.
 
 ### Fixed
 
@@ -24,12 +27,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
 - URI encoded `$removeparam` value is not removed in MV3 [#3014].
+- Cosmetic rules injecting into `about:blank` iframes in MV2.
+- Scriptlets are injected too late on website reload or navigation [#2855].
 
 [#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
 [#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 [#3014]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3014
+[#2855]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2855
 
 ## [Unreleased] <!-- master -->
 
@@ -44,7 +50,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Handling missing children data in the deserializer for certain nodes.
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.49...HEAD
-
 
 ## [5.0.178] - 2024-12-24
 
