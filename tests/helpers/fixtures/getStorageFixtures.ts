@@ -445,6 +445,9 @@ export const getStorageFixturesV7 = (expires: number): StorageData[] => {
             }),
         ).parse(JSON.parse(filtersStateData));
 
+        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
+        // Here it was added to migrate the extension settings before the filter disabling.
+
         // Added AdGuard Quick Fixes filter which should be enabled by default.
         const addedAdGuardQuickFixesFilterId = 24;
         filtersState[addedAdGuardQuickFixesFilterId] = {
@@ -461,6 +464,51 @@ export const getStorageFixturesV7 = (expires: number): StorageData[] => {
         settings['adguard-settings'] = adgSettings;
         settings['raw_filterrules_24.txt'] = '';
         settings['schema-version'] = 7;
+
+        return settings;
+    });
+};
+
+export const getStorageFixturesV8 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV7 = getStorageFixturesV7(expires);
+
+    return storageSettingsFixturesV7.map((settings) => {
+        // For MV2 we don't need to change anything.
+        if (!__IS_MV3__) {
+            settings['schema-version'] = 8;
+
+            return settings;
+        }
+
+        const adgSettings = settings['adguard-settings'] as any;
+        const filtersStateData = adgSettings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        // FIXME tests are working without quick fixes filter
+        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
+        // TODO: remove code totally later.
+
+        // Deprecated AdGuard Quick Fixes filter which should be removed.
+        const deprecatedAdGuardQuickFixesFilterId = 24;
+        delete filtersState[deprecatedAdGuardQuickFixesFilterId];
+
+        adgSettings['filters-state'] = JSON.stringify(filtersState);
+        settings['adguard-settings'] = adgSettings;
+        settings['raw_filterrules_24.txt'] = undefined;
+        // delete settings['raw_filterrules_24.txt'];
+        settings['schema-version'] = 8;
 
         return settings;
     });

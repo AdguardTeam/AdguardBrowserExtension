@@ -11,6 +11,7 @@ import {
     getStorageFixturesV5,
     getStorageFixturesV6,
     getStorageFixturesV7,
+    getStorageFixturesV8,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -37,6 +38,7 @@ describe('Update Api', () => {
         const v5 = getStorageFixturesV5(expires);
         const v6 = getStorageFixturesV6(expires);
         const v7 = getStorageFixturesV7(expires);
+        const v8 = getStorageFixturesV8(expires);
 
         let setMultipleSpy: jest.SpyInstance;
 
@@ -92,13 +94,14 @@ describe('Update Api', () => {
             expect(settingsSchema.parse(settings)).toStrictEqual(settingsSchema.parse(data.to));
         };
 
-        it.each(getCases(v0, v7))('should update from v0 to v7', runCase);
-        it.each(getCases(v1, v7))('should update from v1 to v7', runCase);
-        it.each(getCases(v2, v7))('should update from v2 to v7', runCase);
-        it.each(getCases(v3, v7))('should update from v3 to v7', runCase);
-        it.each(getCases(v4, v7))('should update from v4 to v7', runCase);
-        it.each(getCases(v5, v7))('should update from v5 to v7', runCase);
-        it.each(getCases(v6, v7))('should update from v6 to v7', runCase);
+        it.each(getCases(v0, v8))('should update from v0 to v8', runCase);
+        it.each(getCases(v1, v8))('should update from v1 to v8', runCase);
+        it.each(getCases(v2, v8))('should update from v2 to v8', runCase);
+        it.each(getCases(v3, v8))('should update from v3 to v8', runCase);
+        it.each(getCases(v4, v8))('should update from v4 to v8', runCase);
+        it.each(getCases(v5, v8))('should update from v5 to v8', runCase);
+        it.each(getCases(v6, v8))('should update from v6 to v8', runCase);
+        it.each(getCases(v7, v8))('should update from v7 to v8', runCase);
 
         // Separate test for migration from V3 storage, because after this
         // version we moved from localStorage to hybridStorage.
