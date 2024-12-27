@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
+- Updated [@adguard/scriptlets] to v2.1.3-alpha.1.
 <!-- FIXME: mention exact versions and maybe other libs -->
 - Updated [@adguard/tsurlfilter] to v3.x.x.
 - Updated [@adguard/tswebextension] to v2.x.x.
