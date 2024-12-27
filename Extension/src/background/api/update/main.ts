@@ -68,6 +68,7 @@ export class UpdateApi {
         '4': UpdateApi.migrateFromV4toV5,
         '5': UpdateApi.migrateFromV5toV6,
         '6': UpdateApi.migrateFromV6toV7,
+        '7': UpdateApi.migrateFromV7toV8,
     };
 
     /**
@@ -151,6 +152,63 @@ export class UpdateApi {
 
             throw new Error(errMessage, { cause: e });
         }
+    }
+
+    /**
+     * Run data migration from schema v6 to schema v7.
+     *
+     * For MV2 version we will run empty migration since we don't need to do anything,
+     * just increase the schema version.
+     *
+     * For MV3 version we need to remove deprecated Quick Fixes filter state.
+     */
+    private static async migrateFromV7toV8(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const deprecatedQuickFixesFilter = filtersState[AntiBannerFiltersId.QuickFixesFilterId];
+
+        if (UpdateApi.isObject(deprecatedQuickFixesFilter)) {
+            // delete the deprecated filter state
+            delete filtersState[AntiBannerFiltersId.QuickFixesFilterId];
+        }
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Remove deprecated Quick Fixes filter from the storages.
+        await FiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
     }
 
     /**
