@@ -187,6 +187,8 @@ export class Engine implements TsWebExtensionEngine {
             Object.assign(userrules, await UserRulesApi.getUserRules());
         }
 
+        // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+        // TODO: remove code totally later, and for now we just set it to empty.
         const quickFixesRules: Configuration['quickFixesRules'] = {
             ...emptyPreprocessedFilterList,
             /**
