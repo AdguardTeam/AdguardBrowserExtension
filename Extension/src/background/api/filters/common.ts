@@ -79,8 +79,12 @@ export class CommonFilterApi {
     public static isCommonFilter(filterId: number): boolean {
         return !CustomFilterApi.isCustomFilter(filterId)
             && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId
-            && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
+            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
+
+        // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+        // TODO: remove code totaly later.
+
+        // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
     }
 
     /**
@@ -147,7 +151,14 @@ export class CommonFilterApi {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
 
-        if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+        // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+        // TODO: remove code totaly later.
+
+        // if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+        //     forceRemote = false;
+        // }
+
+        if (__IS_MV3__) {
             forceRemote = false;
         }
 

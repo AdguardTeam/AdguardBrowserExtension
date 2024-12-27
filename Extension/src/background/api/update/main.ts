@@ -195,6 +195,8 @@ export class UpdateApi {
             }),
         ).parse(JSON.parse(filtersStateData));
 
+        // FIXME add migration for removing quick fixes filter from users
+
         // Little hack to mark filter as enabled before it is actually loaded.
         Object.assign(filtersState, {
             [AntiBannerFiltersId.QuickFixesFilterId]: {

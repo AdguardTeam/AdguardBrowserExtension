@@ -36,6 +36,9 @@ export const DEFAULT_EXTENSION_CONFIG: Configuration = {
         ...emptyPreprocessedFilterList,
         trusted: true,
     },
+    // Quick fixes filter was disabled in mv3 to comply with CWR policies.
+    // TODO: remove code totaly later.
+
     quickFixesRules: {
         ...emptyPreprocessedFilterList,
         trusted: true,

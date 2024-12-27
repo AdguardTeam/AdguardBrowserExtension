@@ -24,7 +24,6 @@ import {
 } from '@adguard/filters-downloader/browser';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
-import { AntiBannerFiltersId } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -192,9 +191,7 @@ export class Network {
 
             // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
             // and custom filters
-            const isRemote = forceRemote
-                && (filterId === AntiBannerFiltersId.QuickFixesFilterId
-                    || CustomFilterApi.isCustomFilter(filterId));
+            const isRemote = forceRemote && CustomFilterApi.isCustomFilter(filterId);
 
             if (isRemote) {
                 if (useOptimizedFilters) {
