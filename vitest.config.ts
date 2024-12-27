@@ -51,6 +51,7 @@ export default defineConfig({
             },
         },
         reporters: [
+            ['default'],
             ['junit', { outputFile: `./tests-reports/unit-tests-mv${MANIFEST_ENV}.xml` }],
         ],
     },

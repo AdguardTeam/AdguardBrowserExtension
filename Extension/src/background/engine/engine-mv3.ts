@@ -46,6 +46,7 @@ import { UserRulesService } from '../services/userrules';
 import { FiltersStorage } from '../storages';
 import { emptyPreprocessedFilterList } from '../../common/constants';
 import { SettingOption } from '../schema/settings/main';
+import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 
 import { TsWebExtensionEngine } from './interface';
 
@@ -102,9 +103,7 @@ export class Engine implements TsWebExtensionEngine {
          *
          * This is STEP 2.1: Local script rules are passed to the engine.
          */
-        if (__IS_MV3__) {
-            TsWebExtension.setLocalScriptRules(localScriptRules);
-        }
+        TsWebExtension.setLocalScriptRules(localScriptRules);
 
         const configuration = await Engine.getConfiguration();
 
