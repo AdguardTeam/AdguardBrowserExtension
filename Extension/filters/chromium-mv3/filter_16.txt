@@ -1,8 +1,8 @@
-! Checksum: Oz0uZY+L5GvpDuV5lgTqlQ
+! Checksum: 7tk2orR7ecUpVhQzMngBvw
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.48.80
-! TimeUpdated: 2024-12-26T10:33:35+00:00
+! Version: 2.0.48.85
+! TimeUpdated: 2024-12-27T15:34:34+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -927,6 +927,12 @@ $xmlhttprequest,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com
 !
 !
 !
+autoplus.fr##.rwad-with-placeholder
+autoplus.fr###text-65
+autoplus.fr###text-51
+autoplus.fr###text-66
+autoplus.fr###text-16
+enigme-facile.fr##div[id^="customhtml-"]:has(> center > .pepsia_player)
 papadustream.*##.g-buttons
 lanouvellerepublique.fr##.dfp
 journaldesseniors.20minutes.fr##.ad
@@ -2137,13 +2143,6 @@ preciouslifemovie.com#@##tab-ad
 @@||wgplayer.com/friv5online.com/wgAds.*.conf.js$domain=friv5online.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/102922
 @@||trplus.com.tw/_ui/responsive/*/trplusLcatePage_ADV.js$domain=trplus.com.tw
-! https://github.com/AdguardTeam/AdguardFilters/issues/105339
-programme-tv.net#@#[data-ads-core]
-@@||tra.scds.pmdstatic.net/advertising-core/*/core-ads.js$domain=programme-tv.net
-@@||tra.scds.pmdstatic.net/advertising-core/*/prisma-prebid-plugin.js$domain=programme-tv.net
-@@||js-sec.indexww.com/ht/p/*.js$domain=programme-tv.net
-@@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=programme-tv.net
-@@||securepubads.g.doubleclick.net/gpt/pubads_impl_*.js$domain=programme-tv.net
 ! https://github.com/uBlockOrigin/uAssets/issues/11190
 kiosque.canardpc.com#@#.pub468
 ! https://github.com/AdguardTeam/AdguardFilters/issues/102873
@@ -2701,10 +2700,6 @@ alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#
 @@||amazonaws.com/homad-global-configs.schneevonmorgen.com/hd-main.js
 ! https://forum.adguard.com/index.php?threads/23680/
 @@||dev8.batiactu.com^$domain=maisonapart.com,image
-! https://forum.adguard.com/index.php?threads/twitter-video-consent-annoyance.23027/#post-143002
-! https://github.com/AdguardTeam/AdguardFilters/issues/20325
-@@||syndication.twitter.com/settings^
-@@||syndication.twitter.com/i/jot/syndication
 ! https://forum.adguard.com/index.php?threads/www-commentcamarche-net.22724/
 @@||player.ooyala.com/player_api/$domain=commentcamarche.net
 @@||player.ooyala.com/sas/player_api/$domain=commentcamarche.net

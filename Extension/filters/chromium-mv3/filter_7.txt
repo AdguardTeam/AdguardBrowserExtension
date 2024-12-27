@@ -1,8 +1,8 @@
-! Checksum: O5MTD8gzWGJ3QZSwHJIe1w
+! Checksum: UZvMGP2603if6GuGeg9tVA
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.60.67
-! TimeUpdated: 2024-12-26T10:33:12+00:00
+! Version: 2.0.60.71
+! TimeUpdated: 2024-12-27T16:33:16+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1531,6 +1531,7 @@ hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 /wp-content/uploads/2024/09/fanza_ad$image
 !
 ! Malware/Phishing
+.com/top/client/select_*.php|$document
 /all/firstSelect.php?$document
 ://viewsnet-*.cn/first_jalsuica-default/$document
 ://ucscard-*.cn/NetServe_login/$document
@@ -1545,18 +1546,14 @@ hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 ://jap.*/?cep=$document
 ://s3.*.amazonaws.com/*.*.*.*.*.*.*/index.html$document
 ://web-mbservice.*.*.top/login^$document
-||b-cdn.net/admin%20pop/$document
 .cn/member/login.php?aid=net-service$document
 .cn/ap/signin?openid.*&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp$document
 jcb*/tetsuzuki/login.htm|$document,domain=com|org
-/ortkwq.php?*&eptrsec=$document
 /0040/B/B/B/C100/KBC11BN000B000^$document
 /app/auth_login|$document,domain=bond|sbs
-/bg/jp-ty-goo-dynamic/?$document
 .cn/pc/wctxNBCW2101.doa.php$document
 .cn/phone/wctxNBCW2101.doa.php$document
 ://rakuten.*/rms/nid/logini$document
-.com/jp-tadashi-news-goo-*/?$document
 ://s3.*-1.amazonaws.com/*.z13.web.core.windows.net/*-*-*-*-*-*/*/index.html|$document
 ||s3.ap-southeast-1.amazonaws.com/*.html.html|$document
 /memberservice/login|$document,domain=sbs|xyz
@@ -1564,7 +1561,6 @@ jcb*/tetsuzuki/login.htm|$document,domain=com|org
 /M08Myr0hotline0JP07/*$document
 /W08Myr0hotline0JP07/*$document
 /?Rfunccode=*&nextfunc=$document,domain=cn
-.one/Sign|$document
 ://sm*/sp/index$document,domain=buzz|cfd
 .top/memx/force_login?acr_values=$document
 /?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=sign-in&path=home&ref_=nav_Account&signIn=1&useRedirectOnSuccess=1|$document,domain=cn|com
@@ -1585,7 +1581,6 @@ _co_jp.*.php$document,domain=cc|com
 ||z13.web.core.windows.net/index.html^$document
 .life/shopping/item/m*/$document
 .php?nbVVVsa^$document
-/DOC2024.apk^$document
 /login.php?yc/login/index.html?returnUrl=https%3A%2F%2Fwww.yodobashi.com$document,domain=cn
 ://rakuten-card.*.cn/Mobile/login.php$document
 ||web.core.windows.net/*Security0*/index.html$document
@@ -1593,12 +1588,10 @@ _co_jp.*.php$document,domain=cc|com
 .com/mart/detail/m*?zenid=$document
 .com/mart/pri/m*.html?zenid=$document
 count/login/?=id/log/*/login.asp$document,domain=cc|com
-/KDDI2024.apk^$document
 .top/nc/bbs22.php$document
 ?bcda=($document
 /?bcda=+$document
 ||azurestaticapps.net/*=(0101)-$document
-/Softbank2024.apk$document
 ://rakuten.*.cn/*/login.php^$document
 ://jp-*-*.s3.ap-*.amazonaws.com/*-*-*-*-*-*-*/index.html$document
 /?start=(0101)-$document
@@ -1614,14 +1607,8 @@ count/login/?=id/log/*/login.asp$document,domain=cc|com
 .com/ibg/client/*.php|$document
 ://smdc-$document,domain=cn|fit
 ://tokyodisney.*.com/*?lang=ja^$document
-.click/mac/^$document
-.click/win/^$document
-.xyz/mac/^$document
-.xyz/win/^$document
 ://smbc-$document,domain=cn|fit|shop|top
 /funccode.php|$document,domain=cfd|xyz
-/mos/?t=$document
-/wos/?t=$document
 /?type=lp001&afl=$document
 /?wt=*&adv=$document
 ://amazon-co-jp.*.com/$document
@@ -1690,10 +1677,11 @@ _ap/signin*?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=
 ://eki*.*.com/Personal/member/Login/index.php?oneTimeAccessID=$document
 .com/ae/login.php?openid.pape.max_auth_age=0&openid.return_to=%$document
 !
+/brand/detail/m*.html?zenid=$document,to=cfd|shop|space|top
 /shopping/item/m*/?zenid=$document,to=cfd|shop|space|top
 /mart/*.html?zenid=$document,to=cfd|shop|space|top
-/^https:\/\/(?!www)[a-z]{3,5}\.[a-z]{4,10}\.[a-z]{3,5}\/item-(?:(?=[a-z]*\d)[0-9a-z]{10}|\d{8})\.html$/$document,match-case,to=art|baby|biz|cc|cfd|click|cloud|club|fun|homes|info|lat|life|lol|me|mom|one|online|sbs|shop|site|skin|store|top|world|xyz
-/^https?:\/\/(?!www)[a-z]{3,5}\.[0-9a-z]{4,10}\.[a-z]{2,6}\/[a-z]{3,15}\/(?=[a-z]{0,9}[0-9A-Z])[0-9A-z]{10}\.html$/$document,match-case,to=art|baby|biz|cc|cfd|click|cloud|club|fun|homes|info|lat|life|lol|me|mom|one|online|sbs|shop|site|skin|store|top|world|xyz
+/^https:\/\/(?!www)[a-z]{3,5}\.[a-z]{4,10}\.[a-z]{2,5}\/item-(?:(?=[a-z]*\d)[0-9a-z]{10}|\d{8})\.html$/$document,match-case,to=art|baby|biz|blog|cc|cfd|click|cloud|club|eu|fun|homes|info|lat|life|lol|me|mom|one|online|sbs|shop|site|skin|store|top|world|xyz
+/^https?:\/\/(?!www)[a-z]{3,5}\.[0-9a-z]{4,10}\.[a-z]{2,6}\/[a-z]{3,15}\/(?=[a-z]{0,9}[0-9A-Z])[0-9A-z]{10}\.html$/$document,match-case,to=art|baby|biz|blog|cc|cfd|click|cloud|club|eu|fun|homes|info|lat|life|lol|me|mom|one|online|sbs|shop|site|skin|store|top|world|xyz
 /?AC=*&IC=$document,to=com|fun|online|site
 .asp?AC=*&IC=$document,to=com|fun|online|site
 /ap/signin/openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp$document,to=cn|top|xyz
@@ -1770,6 +1758,7 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+chobirich.com##.PcGame__mainColumn > h2.game_tit:has(+ div.ad_area)
 game.yomipo.yomiuri.co.jp##.c-modal-light-score__ad-frame
 books.j-cast.com##div[style^="display: flex; align-items: center; justify-content: space-around; margin: 2rem 0;"]
 autoby.jp##.gam
@@ -2923,6 +2912,9 @@ ge-soku.com###diver_widget_pcsp-5
 ge-soku.com###diver_widget_pcsp-16
 ge-soku.com###diver_widget_pcsp-14
 ge-soku.com###custom_html-108
+automaton-media.com#$?##custom-background-css { remove: true; }
+automaton-media.com###pc_all_header
+automaton-media.com##.ct-widget:has(> div.wp-block-greenshift-blocks-container > div > div.code-block > div[id^="pc_all_right_"])
 automaton-media.com##.td-ss-main-sidebar > aside.widget:has(> div.block-title > span)
 nbblog.jp##div[class^="napbiz_ad"]
 news.sukupara.jp#?#.adv2:has(div[id^="div-gpt-"])
@@ -6903,6 +6895,7 @@ hinapishi.com##iframe[width="320"][height="100"]
 vipsister23.com##a[href*="https://al.dmm.co"]
 vipsister23.com##a[href*="https://www.bybit.com/jpwelcome/"]
 ||digiket.net/blog/$script,third-party
+h1g.jp##.right-content > div.row:has(> div[id^="right-ad-"])
 h1g.jp##table[width="750"][height^="3"]
 h1g.jp##.mainbody-ad-top
 mindhack-media.jp##.articleRankingBlock__link[href^="https://k.zucks.net/"]
@@ -9432,7 +9425,7 @@ gendai.media##div.articleBottomSns + div[style="min-height: 250px; overflow: hid
 applion.jp##div[style="max-height:250px;margin-bottom:10px;"]
 applion.jp##a[href^="https://www.amazon.co.jp/exec/obidos/"][target="_blank"]
 ||gendai.media/common/bluebacks/images/sample/bnr_
-aba-net.com,2chan.net,shuminoengei.jp,bridalgown.work,liquidfoundation.work,tapestry.work,teaceremony.work,weddinghall.work,ceron.jp,nicovideo.jp##div[style^="width:300px;height:250px;"]
+h1g.jp,aba-net.com,2chan.net,shuminoengei.jp,bridalgown.work,liquidfoundation.work,tapestry.work,teaceremony.work,weddinghall.work,ceron.jp,nicovideo.jp##div[style^="width:300px;height:250px;"]
 gigaho.com,logworker.net##.box_drc
 gigaho.com,logworker.net##.amaw_box
 gigaho.com##.entry-content > span[style="display: block;"] > div[style="font-size:75%; color:#00BBDD;text-align: center;"]
@@ -10875,12 +10868,13 @@ blog.livedoor.jp#?#.plugin-memo > .side > a[href^="https://www.infotop.jp/click"
 ! Domain needing extra caution:
 ! ameblo.jp,2chblog.jp,blog.jp,blog.livedoor.jp,bloggeek.jp,blogism.jp,blogo.jp,blogstation.jp,blogto.jp,cafeblog.jp,corpblog.jp,diary.to,doorblog.jp,dreamlog.jp,gger.jp,golog.jp,ldblog.jp,liblo.jp,livedoor.biz,livedoor.blog,myjournal.jp,mynikki.jp,officeblog.jp,officialblog.jp,publog.jp,storeblog.jp,teamblog.jp,techblog.jp,weblog.to,xxxblog.jp,youblog.jp,seesaa.net,blog.fc2.com,blog.2nt.com
 ! specify subdomain or use unique and safe selector; for blog.livedoor.jp make your rule as specific as possible or use $path
-blog.livedoor.jp##div[class*="-outer"] div[class^="article-body"] span[style="font-family: \"MS PGothic\";"] > a[href^="https://al.dmm.co.jp/?"]
-blog.livedoor.jp##div[class*="-outer"] div[class^="article-body"] span[style="font-family: \"MS PGothic\";"] > a[href^="https://www.dlsite.com/maniax/dlaf/"][rel="noopener sponsored"]
+||livedoor.blogimg.jp/g_ogasawara/imgs/1/b/1bdab3ca.png
+blog.livedoor.jp##div[class*="-outer"] div[class^="article-body"] span[style="font-family: \"MS PGothic\";"] a[href^="https://al.dmm.co.jp/?"]
+blog.livedoor.jp##div[class*="-outer"] div[class^="article-body"] [style="font-family: \"MS PGothic\";"] a[href^="https://www.dlsite.com/"][rel="noopener sponsored"]
 blog.livedoor.jp##div[class*="-outer"] div[class^="article-body"] > a[style^="word-break: break-all;"][href^="https://affiliate.suruga-ya.jp/modules/af/af_jump.php"][rel="nofollow"]
 blog.livedoor.jp##div[class*="-outer"] div[class^="article-body"] > a[style^="word-break: break-all;"][href^="https://al.dmm.co.jp/?"][title]
-blog.livedoor.jp##div[class*="-outer"] div[class^="article-body"] > a[style^="word-break: break-all;"][href^="https://www.dlsite.com/maniax/dlaf/"][rel="noopener sponsored"]
-blog.livedoor.jp##div[class^="article-body"] > div > span[style="font-family: \"MS PGothic\";"] ~ div:not([class]) a[rel="noopener sponsored"][href^="https://www.dlsite.com/maniax/dlaf/"]
+blog.livedoor.jp##div[class*="-outer"] div[class^="article-body"] > a[style^="word-break: break-all;"][href^="https://www.dlsite.com/"][rel="noopener sponsored"]
+blog.livedoor.jp##div[class^="article-body"] > div > span[style="font-family: \"MS PGothic\";"] ~ div:not([class]) a[rel="noopener sponsored"][href^="https://www.dlsite.com/"]
 blog.livedoor.jp##div[class^="article-body"] > div[style="font-family: \"MS PGothic\";"] > a[href^="https://al.dmm.co.jp"]
 ||blog.livedoor.jp/goldennews/js/article_top_info.js
 blog.livedoor.jp###sidecolumnbody > a[href^="https://hb.afl.rakuten.co.jp/ichiba/"]

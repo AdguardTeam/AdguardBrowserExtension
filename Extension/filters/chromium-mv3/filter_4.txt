@@ -1,8 +1,8 @@
-! Checksum: R0aXj/fVhhYM9GQan57qyw
+! Checksum: rWp8vVeeZ89A4Cljfa3LCQ
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.8.85
-! TimeUpdated: 2024-12-25T20:34:28+00:00
+! Version: 2.1.8.92
+! TimeUpdated: 2024-12-27T12:34:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -715,6 +715,16 @@ mashable.com,pcmag.com,onefootball.com,ign.com,israelnationalnews.com,lifehacker
 !
 ! NOTE: Specific rules
 !
+lordiserials.ru##.fsha
+agazeta.com.br##.flex > ul:has(> li > button[onclick*="facebook.com/sharer"])
+agazeta.com.br##.widget-social > :not(.home)
+serielizados.com##.post_content > div.info_item:has(> div.social_share)
+urgente.bo##.socialmedialink
+urgente.bo##a[href=""] > i.icon-urgente-twitter
+urgente.bo##a[href=""] > i.icon-urgente-facebook
+autoplus.fr###text-42
+getcomics.org##.post-footer-shr
+is.fi##.share-menu__button
 enamae.net##.footer_social_box
 ipaidia.gr##.sharebtns
 evima.gr##.evimasocial-box
@@ -4748,7 +4758,7 @@ psychologies.ru##.test-block
 psychologies.ru##._invite-banner
 marieclaire.ru,ellegirl.ru,parents.ru,psychologies.ru##._hb-promo
 ye.ua##.share-set
-turkiyegazetesi.com.tr,tgrthaber.com.tr##.image-wrapper__social-sharing
+turkiyegazetesi.com.tr##.image-wrapper__social-sharing
 turkiyegazetesi.com.tr##.image-wrapper__social-sharing + div.text-center
 rd.ntt##.boxArticleShare
 rd.ntt##.fixed_sns

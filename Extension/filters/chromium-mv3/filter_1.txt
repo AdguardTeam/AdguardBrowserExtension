@@ -1,8 +1,8 @@
-! Checksum: M5outdtpEr4MDbChydfNsg
+! Checksum: D0GM4QYQgwJRkU7TcSzgQw
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.96.31
-! TimeUpdated: 2024-12-26T11:31:07+00:00
+! Version: 2.0.96.38
+! TimeUpdated: 2024-12-27T17:31:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1168,7 +1168,6 @@ ucoz.ru/informer/
 ###widget_floatbanner
 ###wsllc_rotator
 ###yahoo_ads_2010
-###yandex_ad
 ###zm_banner
 ~co-operative.coop##.AdBox
 ~backpage.com##.AdInfo
@@ -1724,7 +1723,7 @@ ucoz.ru/informer/
 ||lentainform.com^$third-party
 ||mpuls.ru^$third-party
 ||newseek.org^$third-party
-||rb.infox.sg^$third-party
+.infox.sg^$third-party
 ||sv-pr.ru^$third-party
 ||svitnews.com^$third-party
 ||uuidksinc.net^
@@ -7663,6 +7662,10 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+thebell.io##lib-december-banner
+thebell.io##img[width="1200"][height="400"][alt="true"]
+teenochka.xyz#?#div:has(> span:contains(/^Реклама:$/))
+smallville.fandom.com##.page__right-rail
 chehov-vid.ru##.container-fluid > div#events
 mumuplayer.com##.NIE-art-right > div.pc
 comss.ru##body > div.container:has(> div.row > div.col-md-9 > div[id^="id-"])
@@ -17874,6 +17877,7 @@ nnmclub.to##.btTbl > tbody > tr.row1 > td.genmed[align="center"] noindex
 nnmclub.to##.forumline > tbody > tr > td.spaceRow > center > a:not([href*="nnmclub."]) > img
 /forum/images/*_banner_$domain=nnmclub.to
 !
+flicksbar.mom##.topAdPad
 overclockers.ru##.pip-mat-inner
 forums.overclockers.ru#?##pagecontent > table.tablebg:has(> tbody > tr > td.profile_username > b.postauthor:contains(Реклама)):has(> tbody > tr > td.profile:contains(Партнер))
 overclockers.ru#$?#.material-inline-an { remove: true; }
@@ -18770,6 +18774,7 @@ adme.media##div[data-test-id="article-content"] > div[class*=" "]:not([tabindex]
 adme.media#?#div[data-test-id="article-bottom-recommended"] > div > div > div[style="position:relative"] > div > div:has(div:empty + div:empty + div:empty)
 !
 ! Start: vc.ru, dtf.ru, spark.ru
+vc.ru##.entry > div[class]:has(> a[href^="https://booster.osnova.io/a/redirect"])
 vc.ru##.content-list > div:has(> div.skeleton-content)
 vc.ru#?#.content-list > div.rotator:has(> div[class] > div[class] > a[href="/plus/Close%20Ad"])
 vc.ru##.entry-rotator
