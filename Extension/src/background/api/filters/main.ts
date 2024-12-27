@@ -17,7 +17,11 @@
  */
 
 import { logger } from '../../../common/logger';
-import { AntiBannerFiltersId, AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
+import {
+    AntiBannerFiltersId,
+    AntibannerGroupsId,
+    CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
+} from '../../../common/constants';
 import { getErrorMessage } from '../../../common/error';
 import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
@@ -513,7 +517,7 @@ export class FiltersApi {
                 // TODO: remove code totally later.
                 return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
             }),
-        }
+        };
 
         const i18nMetadata = i18nMetadataStorage.getData();
 
