@@ -554,37 +554,6 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + e);
         }
     },
-    '(()=>{const n={construct:(n,o,t)=>{const e=o[0];if(e&&e.includes("return typeof"))throw new ReferenceError;return Reflect.construct(n,o,t)}};window.Function=new Proxy(window.Function,n)})();': () => {
-        try {
-            (() => {
-                const r = {
-                    construct: (r, n, e) => {
-                        const o = n[0];
-                        if (o && o.includes("return typeof")) throw new ReferenceError;
-                        return Reflect.construct(r, n, e);
-                    }
-                };
-                window.Function = new Proxy(window.Function, r);
-            })();
-        } catch (r) {
-            console.error("Error executing AG js: " + r);
-        }
-    },
-    "!function(){const t={apply:(t,n,o)=>{if(n&&n.match?.(/_\\$_|DklzSoz|_adbn_/))throw Error();return Reflect.apply(t,n,o)}};window.String.prototype.split=new Proxy(window.String.prototype.split,t)}();": () => {
-        try {
-            !function() {
-                const r = {
-                    apply: (r, t, o) => {
-                        if (t && t.match?.(/_\$_|DklzSoz|_adbn_/)) throw Error();
-                        return Reflect.apply(r, t, o);
-                    }
-                };
-                window.String.prototype.split = new Proxy(window.String.prototype.split, r);
-            }();
-        } catch (r) {
-            console.error("Error executing AG js: " + r);
-        }
-    },
     "window.google_tag_manager = function() {};": () => {
         try {
             window.google_tag_manager = function() {};
@@ -1356,6 +1325,20 @@ export const localScriptRules = {
             }(Object.defineProperties);
         } catch (t) {
             console.error("Error executing AG js: " + t);
+        }
+    },
+    '(()=>{const d={getUserConsentStatusForVendor:()=>!0};window.didomiOnReady=window.didomiOnReady||[],window.didomiOnReady.push=n=>{"function"==typeof n&&n(d)}})();': () => {
+        try {
+            (() => {
+                const o = {
+                    getUserConsentStatusForVendor: () => !0
+                };
+                window.didomiOnReady = window.didomiOnReady || [], window.didomiOnReady.push = n => {
+                    "function" == typeof n && n(o);
+                };
+            })();
+        } catch (o) {
+            console.error("Error executing AG js: " + o);
         }
     },
     '(()=>{const e={apply:async(e,t,a)=>{if(a[0]&&a[0]?.match(/adsbygoogle|doubleclick|googlesyndication|static\\.cloudflareinsights\\.com\\/beacon\\.min\\.js/)){const e=(e="{}",t="",a="opaque")=>{const n=new Response(e,{statusText:"OK"}),o=String((s=50800,r=50900,Math.floor(Math.random()*(r-s+1)+s)));var s,r;return n.headers.set("Content-Length",o),Object.defineProperties(n,{type:{value:a},status:{value:0},statusText:{value:""},url:{value:""}}),Promise.resolve(n)};return e("{}",a[0])}return Reflect.apply(e,t,a)}};window.fetch=new Proxy(window.fetch,e)})();': () => {
@@ -5431,6 +5414,24 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + e);
         }
     },
+    '(()=>{const t={apply:(t,e,n)=>{const o=Reflect.apply(t,e,n);try{o instanceof HTMLIFrameElement&&"about:blank"===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch)}catch(t){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,t)})();': () => {
+        try {
+            (() => {
+                const e = {
+                    apply: (e, t, o) => {
+                        const n = Reflect.apply(e, t, o);
+                        try {
+                            n instanceof HTMLIFrameElement && "about:blank" === n.src && n.contentWindow && (n.contentWindow.fetch = window.fetch);
+                        } catch (e) {}
+                        return n;
+                    }
+                };
+                Node.prototype.appendChild = new Proxy(Node.prototype.appendChild, e);
+            })();
+        } catch (e) {
+            console.error("Error executing AG js: " + e);
+        }
+    },
     '(()=>{let t=document.location.href,e=[],n=[],o="",r=!1;const i=Array.prototype.push,a={apply:(t,o,a)=>(window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id&&a[0]&&a[0]!==window&&"number"==typeof a[0].start&&a[0].end&&"ssap"===a[0].namespace&&a[0].id&&(r||0!==a[0]?.start||n.includes(a[0].id)||(e.length=0,n.length=0,r=!0,i.call(e,a[0]),i.call(n,a[0].id)),r&&0!==a[0]?.start&&!n.includes(a[0].id)&&(i.call(e,a[0]),i.call(n,a[0].id))),Reflect.apply(t,o,a))};window.Array.prototype.push=new Proxy(window.Array.prototype.push,a),document.addEventListener("DOMContentLoaded",(function(){if(!window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id)return;const i=()=>{const t=document.querySelector("video");if(t&&e.length){const i=Math.round(t.duration),a=Math.round(e.at(-1).end/1e3),c=n.join(",");if(!1===t.loop&&o!==c&&i&&i===a){const n=e.at(-1).start/1e3;t.currentTime<n&&(t.currentTime=n,r=!1,o=c)}else if(!0===t.loop&&i&&i===a){const n=e.at(-1).start/1e3;t.currentTime<n&&(t.currentTime=n,r=!1,o=c)}}};i();new MutationObserver((()=>{t!==document.location.href&&(t=document.location.href,e.length=0,n.length=0,r=!1),i()})).observe(document,{childList:!0,subtree:!0})}))})();': () => {
         try {
             (() => {
@@ -7696,45 +7697,47 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + t);
         }
     },
-    '(()=>{let e="";const t="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",o="//widgets.outbrain.com/outbrain.js",n={apply:(n,r,a)=>{const p=a[1];return p&&(p.includes(t)||p.includes(o))&&(r.prevent=!0,e=p),Reflect.apply(n,r,a)}};window.XMLHttpRequest.prototype.open=new Proxy(window.XMLHttpRequest.prototype.open,n);const r={apply:async(n,r,a)=>{if(r.prevent){const n=()=>Promise.resolve(r).then((n=>{try{if(!n.responseText){let r="";e.includes(t)&&(r="google_plmetrics"),e.includes(o)&&(r="outbrain"),Object.defineProperty(n,"responseText",{value:r})}"function"==typeof n.onload&&n.onload(),"function"==typeof n.onreadystatechange&&(Object.defineProperty(n,"status",{value:200}),Object.defineProperty(n,"readyState",{value:4}),n.onreadystatechange())}catch(e){console.trace(e)}}));try{const t=await fetch(e);if((await t.text()).length<2e3)return n()}catch(e){return n()}}return Reflect.apply(n,r,a)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,r)})();': () => {
+    '(()=>{let e="";const t="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",n="//widgets.outbrain.com/outbrain.js",o="//s4.cdnpc.net/front/css/style.min.css",s="//s4.cdnpc.net/vite-bundle/main.css",c={apply:(c,a,r)=>{const p=r[1];return p&&(p.includes(t)||p.includes(n)||p.includes(o)||p.includes(s))&&(a.prevent=!0,e=p),Reflect.apply(c,a,r)}};window.XMLHttpRequest.prototype.open=new Proxy(window.XMLHttpRequest.prototype.open,c);const a={apply:async(c,a,r)=>{if(a.prevent){const c=()=>Promise.resolve(a).then((c=>{try{if(!c.responseText){let a="";e.includes(t)?a="google_plmetrics":e.includes(n)?a="outbrain":e.includes(o)?a="slider--features":e.includes(s)&&(a="data-v-d23a26c8"),Object.defineProperty(c,"responseText",{value:a})}"function"==typeof c.onload&&c.onload(),"function"==typeof c.onreadystatechange&&(Object.defineProperty(c,"status",{value:200}),Object.defineProperty(c,"readyState",{value:4}),c.onreadystatechange())}catch(e){console.trace(e)}}));try{const t=await fetch(e);if((await t.text()).length<2e3)return c()}catch(e){return c()}}return Reflect.apply(c,a,r)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,a)})();': () => {
         try {
             (() => {
                 let e = "";
-                const t = "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", o = "//widgets.outbrain.com/outbrain.js", n = {
-                    apply: (n, r, a) => {
-                        const s = a[1];
-                        return s && (s.includes(t) || s.includes(o)) && (r.prevent = !0, e = s), Reflect.apply(n, r, a);
+                const t = "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", n = "//widgets.outbrain.com/outbrain.js", o = "//s4.cdnpc.net/front/css/style.min.css", s = "//s4.cdnpc.net/vite-bundle/main.css", c = {
+                    apply: (c, r, a) => {
+                        const p = a[1];
+                        return p && (p.includes(t) || p.includes(n) || p.includes(o) || p.includes(s)) && (r.prevent = !0, 
+                        e = p), Reflect.apply(c, r, a);
                     }
                 };
-                window.XMLHttpRequest.prototype.open = new Proxy(window.XMLHttpRequest.prototype.open, n);
+                window.XMLHttpRequest.prototype.open = new Proxy(window.XMLHttpRequest.prototype.open, c);
                 const r = {
-                    apply: async (n, r, a) => {
+                    apply: async (c, r, a) => {
                         if (r.prevent) {
-                            const n = () => Promise.resolve(r).then((n => {
+                            const c = () => Promise.resolve(r).then((c => {
                                 try {
-                                    if (!n.responseText) {
+                                    if (!c.responseText) {
                                         let r = "";
-                                        e.includes(t) && (r = "google_plmetrics"), e.includes(o) && (r = "outbrain"), Object.defineProperty(n, "responseText", {
+                                        e.includes(t) ? r = "google_plmetrics" : e.includes(n) ? r = "outbrain" : e.includes(o) ? r = "slider--features" : e.includes(s) && (r = "data-v-d23a26c8"), 
+                                        Object.defineProperty(c, "responseText", {
                                             value: r
                                         });
                                     }
-                                    "function" == typeof n.onload && n.onload(), "function" == typeof n.onreadystatechange && (Object.defineProperty(n, "status", {
+                                    "function" == typeof c.onload && c.onload(), "function" == typeof c.onreadystatechange && (Object.defineProperty(c, "status", {
                                         value: 200
-                                    }), Object.defineProperty(n, "readyState", {
+                                    }), Object.defineProperty(c, "readyState", {
                                         value: 4
-                                    }), n.onreadystatechange());
+                                    }), c.onreadystatechange());
                                 } catch (e) {
                                     console.trace(e);
                                 }
                             }));
                             try {
                                 const t = await fetch(e);
-                                if ((await t.text()).length < 2e3) return n();
+                                if ((await t.text()).length < 2e3) return c();
                             } catch (e) {
-                                return n();
+                                return c();
                             }
                         }
-                        return Reflect.apply(n, r, a);
+                        return Reflect.apply(c, r, a);
                     }
                 };
                 window.XMLHttpRequest.prototype.send = new Proxy(window.XMLHttpRequest.prototype.send, r);

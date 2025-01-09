@@ -1,8 +1,8 @@
-! Checksum: kgoc7o1F6RVRqz415BD57Q
+! Checksum: HVyiuPG/uMYzZMXCoDCBTA
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.45.18
-! TimeUpdated: 2024-12-25T11:33:17+00:00
+! Version: 2.0.45.33
+! TimeUpdated: 2025-01-09T09:40:32+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1515,6 +1515,20 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+||joyn.somquery.sqrt-*.de/v*/ad-pod/
+||joyn.somquery.sqrt-*.de/v*/ad-pod/$script,xmlhttprequest,other,redirect=noopvast-3.0
+joyn.de#%#//scriptlet('prevent-fetch', '/joyn\.somquery\.sqrt-.*.\de\/v.\/ad-pod\//')
+billiger.de##div[data-puzzle-compoid^="advertising_"]
+stylebook.de##.w-auto > .float-lg-end:has(> #mrec)
+stylebook.de##.af-widget.is-style-advertisement-mark
+stylebook.de##section > .col-12 > .has-mark:has(> div[id^="billboard_btf_"])
+stylebook.de##section.fixed-bottom[data-type="sticky-bar"] > a[target="_blank"]
+myfanbase.de##div[id^="ad-"]
+freundin.de##li:has(> meta ~ div[class] > div[class] > .advtl-container)
+mydealz.de##div[id*="AdSlotPortal"]
+blick.ch##[class*="slot-code-"]
+oeffentlicher-dienst.info##div[class^="fallback-"]
+oeffentlicher-dienst.info##a[id^="fallback-"]
 willhaben.at##div[class*="Grid__GridArea-sc-"]> div:not(class) > div[class^="Box-sc-"]:has(> div#apn-medium-leaderboard)
 auto-motor-und-sport.de##.va-stroer-billboard
 pcgames.de##.innerArticleModule:has(> span.anzKenn)
@@ -2415,7 +2429,7 @@ nordbayern.de##div[id^="clsdiv_"]
 hallo-eltern.de,in-muenchen.de,24auto.de##.wv_story_el_topBeep
 hallo-eltern.de##.id-TBeepSlot--content
 hallo-eltern.de##.wv_story_el_target_video_contextual_player
-hallo-eltern.de,serienjunkies.de,rosenheim24.de,wa.de,sauerlandkurier.de,meine-anzeigenzeitung.de,ludwigshafen24.de,lokalo24.de,leinetal24.de,kurierverlag.de,kreisbote.de,in-muenchen.de,hanauer.de,hallo-muenchen.de,fehmarn24.de,echo24.de,dasgelbeblatt.de,costanachrichten.com,brokser-heiratsmarkt.de,az-online.de,24vita.de,24rhein.de,24hamburg.de,ingame.de,come-on.de,bw24.de,24auto.de,24garten.de,soester-anzeiger.de,buzzfeed.de,mannheim24.de,hersfelder-zeitung.de,op-online.de,wlz-online.de,werra-rundschau.de,wetterauer-zeitung.de,heidelberg24.de,fnp.de,giessener-allgemeine.de,kreiszeitung.de,fr.de,hna.de##.id-Recommendation
+ruhr24.de,hallo-eltern.de,serienjunkies.de,rosenheim24.de,wa.de,sauerlandkurier.de,meine-anzeigenzeitung.de,ludwigshafen24.de,lokalo24.de,leinetal24.de,kurierverlag.de,kreisbote.de,in-muenchen.de,hanauer.de,hallo-muenchen.de,fehmarn24.de,echo24.de,dasgelbeblatt.de,costanachrichten.com,brokser-heiratsmarkt.de,az-online.de,24vita.de,24rhein.de,24hamburg.de,ingame.de,come-on.de,bw24.de,24auto.de,24garten.de,soester-anzeiger.de,buzzfeed.de,mannheim24.de,hersfelder-zeitung.de,op-online.de,wlz-online.de,werra-rundschau.de,wetterauer-zeitung.de,heidelberg24.de,fnp.de,giessener-allgemeine.de,kreiszeitung.de,fr.de,hna.de##.id-Recommendation
 buzzfeed.at,wiesn.bayern,wa.de,volksfest-freising.de,sauerlandkurier.de,oktoberfest.bayern,news.bayern,meine-anzeigenzeitung.de,ludwigshafen24.de,lokalo24.de,leinetal24.de,kurierverlag.de,kreisbote.de,in-muenchen.de,hanauer.de,hallo-muenchen.de,fehmarn24.de,echo24.de,dasgelbeblatt.de,costanachrichten.com,brokser-heiratsmarkt.de,az-online.de,24vita.de,24rhein.de,24hamburg.de,extratipp.com,fr.de,ingame.de,come-on.de,bw24.de,24auto.de,merkur.de,fuldaerzeitung.de,buzzfeed.de,mannheim24.de,hna.de,hersfelder-zeitung.de,op-online.de,extratipp.com,wlz-online.de,werra-rundschau.de,wetterauer-zeitung.de,tz.de,24garten.de,soester-anzeiger.de,heidelberg24.de,fnp.de,giessener-allgemeine.de,kreiszeitung.de##.id-StoryElement-beepWrap
 augsburger-allgemeine.de##.aa-three-recommendations-space
 augsburger-allgemeine.de##.tickaroo-ad-items
@@ -7453,6 +7467,7 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||graltek.net/php/amzad_$xmlhttprequest
 ||griechenland.net/images/banners/
 ||grower.ch/partner/
+||gruender.de/wp-content/plugins/elementor/assets/lib/dialog/dialog.min.js
 ||gutesexfilme.com/cpanel/
 ||gwars.de/index.php?page=advertisingpage
 ||gwd-minden.de/inc/*/Melitta-Banner-Karriere-GWD.jpg
@@ -9204,6 +9219,7 @@ gartenjournal.net##._gartenjournal_leaderboard_oben
 gartenjournal.net##._gartenjournal_leaderboard_unten
 mallorcazeitung.es##._mo_recs
 1200grad.com,rotor-magazin.com##.a-single
+verben.de##.aAnz
 4kfilme.de,abenteuerfreundschaft.de,appgefahren.de,automatentest.de,autorevue.at,gameswirtschaft.de,gartenjournal.net,gebrauchtwagenberater.de,googlewatchblog.de,justnetwork.eu,kabel-blog.de,medienkuh.de,nachbelichtet.com,nat-games.de,pocketpc.ch,stadt-bremerhaven.de,technikshavo.de##.aawp
 drpornofilme.com##.abcn-footer
 com-magazin.de##.abo
@@ -9216,12 +9232,15 @@ ak-kurier.de##.ad + .uk-panel
 alpin.de,immobilienscout24.de##.ad-banner
 alpin.de##.ad-banner-billboard
 gebraucht-kaufen.de,it-daily.net,mixed.de,nebelspalter.ch,northdata.de,raetsel-hilfe.de,sueddeutsche.de,swissmom.ch,tt.com,watchtime.net,zeit.de##.ad-container
+heise.de##.ad-desktop-group-2
 stern.de##.ad-element
 hallo-minden.de##.ad-info
 xdate.ch##.ad-item
 augsburger-allgemeine.de##.ad-list_small-native-container
 diegrenzgaenger.lu##.ad-listing
 spiesser.de##.ad-mark
+heise.de##.ad-mobile-group-1
+heise.de##.ad-mobile-group-3
 finanztreff.de##.ad02p
 vsport.at##.ad1
 vsport.at##.ad2
@@ -9740,6 +9759,7 @@ nextpit.de##.gptSlot
 modernhifi.de##.grey-banner
 modernhifi.de##.grey-banner-bottom
 epd-film.de##.group-externe-links
+gruender.de##.gruender-banner
 seo-suedwest.de##.gruenebox2
 gelbeseiten.de##.gs-searchblock--adContainer
 my-homo.net##.gstsk
@@ -10714,6 +10734,7 @@ t-online.de##div[data-external-sdi-mark="banner-placeholder"]
 ingolstadt-today.de##div[data-ez-block-id="3324017"]
 alles-mahlsdorf.de##div[data-id="904ffeb"]
 kleinanzeigen.de##div[data-liberty-ad-loaded="true"]
+heise.de##div[data-module-name="AdModule"]
 giga.de##div[data-sdg-ad]
 augsburger-allgemeine.de##div[data-slot-name="banner"]
 augsburger-allgemeine.de##div[data-slot-name="banner2"]
@@ -11095,6 +11116,7 @@ saechsische.de##.article-box:has(> .article-box__text > .article-box__info > spa
 saechsische.de##.article-fill:has(.article-badge.article-badge--ad)
 gewinn.com##.article-latest.article-layout-0 > .row:has(.advertorial-icon)
 meinbezirk.at##.article-list-item.article-card.article-card-default:has(.commercial-tag)
+heise.de##.bg-gray-50:has(div[id*="_Incontent-"])
 laola1.at##.block.medium:has(a[href^="https://dt.sportradar.com/"])
 preis24.de##.box.box-style1:has(.notice)
 gesundheit.de##.box.img_link:has(.advertorial_hint)
@@ -11109,6 +11131,7 @@ all-electronics.de,automotiveit.eu,produktion.de##.ce_topicbox:has(.label-ad-hig
 ibooks.to##.code-block:has(i.fa-cloud-download-alt)
 feuerwehrmagazin.de##.excerpt-tile.cell.small-12.medium-6:has(.advertorials)
 print.de##.excerpt-tile.cell:has(.advertorials)
+vergleichswelt.app##.fads-zeile:has(.fads-anzeige-text)
 prad.de##.first-list > li:has(a[href^="https://bit.ly/"])
 prad.de##.first-list > li:has(a[href^="https://ipn.idealo.de/ts/"])
 prad.de##.first-list > li:has(a[href^="https://tracking.s24.com/"])
@@ -11187,6 +11210,7 @@ bauernzeitung.ch##div:has(> .advert)
 froheweihnachten.info,weihnachten.me,weihnachts-bilder.org,weihnachts-filme.com##div:has(> img[referrerpolicy="unsafe-url"])
 mediamarkt.at,mediamarkt.de,saturn.de##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
 chip.de##div[data-vr-zone^="hp-aquamarin-"] > article:has(img[src^="https://im.chip.de/"])
+chip.de##div[data-vr-zone^="hp-aquamarin-"] > article:has(img[src^="https://quadro.burda-forward.de/"])
 jungefreiheit.de##div[data-widget_type="shortcode.default"]:has(.adsbygoogle)
 mobile.de##div[style="min-height:250px"]:has(#SRP_BILLBOARD_ADSENSE)
 jungefreiheit.de##div[style="text-align: center;"]:has(.adsbygoogle)
@@ -11197,6 +11221,7 @@ dogforum.de##li:has(.wbbXdLocationPostList)
 jameda.de##li:has([data-testid="advertisementSign-flag"])
 baur.de##li:has(a[href^="https://b.fr3.eu.criteo.com/rm?"])
 golem.de##li[data-article-id]:has(.icon-addy)
+mediamarkt.de#?#li[data-index-number]:contains(Gesponsert)
 rewe.de#?#.rs-qa-product:contains(Gesponsert)
 mein-mmo.de##section.post:has([data-type="sponsored"])
 finanznachrichten.de##tr:has(span.sprite.h-w-c)

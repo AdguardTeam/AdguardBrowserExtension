@@ -1,8 +1,8 @@
-! Checksum: o25v1+sg6purkMlMgp24Xw
+! Checksum: W2KtWB9SvAqRD0pmqnrXhg
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.18.22
-! TimeUpdated: 2024-12-26T13:41:11+00:00
+! Version: 2.0.18.56
+! TimeUpdated: 2025-01-09T08:38:59+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -123,6 +123,42 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+tandem.net##div[class^="styles_getAppBanner"]
+giphy.com##a[href="https://giphy.page.link/home"]
+business-standard.com#%#//scriptlet('set-cookie', 'popupShown', 'true')
+kitaaa.net###submenu > ul.mb-4.font-weight-bold
+mybook.ru#?#div[class] + div[class]:has(> div[class] + p[class]:contains(мобильного приложения))
+zillow.com###local-app-upsell
+tubitv.com#%#//scriptlet('trusted-set-local-storage-item', 'isAppDownloadBannerDismissed', 'true')
+citilink.ru#?#div[class*="app-catalog-"] > div[class*="app-catalog-"]:has(> div[class*="app-catalog-"] > div[class*="app-catalog-"] > span:contains(Скачайте приложение))
+yourchannel.blog.jp###app-follow-banner > .app-button
+noticiasaominuto.com##.mb-8 > div.flex:has(> div.flex > a[href^="https://play.google.com/store/apps/"])
+autodoc.de##.app-block-wrap
+aliexpress.ru##div[class^="PseudoSmartBanner_"]
+informer.rs##.apps-box
+copilot.microsoft.com##main > .relative[style*="opacity"]:has(> .fixed .flex > button[title][aria-label])
+foxford.ru#?#.fox-Paper + div[class^="Spacer__Root-"]:has(> div[class^="styled__Root-"] div.fox-Text:contains(мобильное приложение))
+animego.ong##.b-dwnapp
+smartlog.jp###post-foot-pr
+m.tuttur.com#%#//scriptlet('trusted-set-local-storage-item', 'SmartBannerShowedDate', '$now$')
+akakce.com#%#//scriptlet('trusted-click-element', '#m-w div.app span.c-m')
+dns-shop.ru#%#//scriptlet('set-cookie', 'app_suggest-opened', '1')
+kinarino.jp##.p-press-banner-app
+chitai-gorod.ru##.chg-app-smart
+m.hoysport.tv##.van-floating-bubble
+regio-guide.de##.android-banner
+doktortakvimi.com,doctoralia.es,miodottore.it,znamylekar.cz,doctoralia.com.pt,doctoralia.com.mx,doctoralia.cl,doctoralia.com.br,doctoraliar.com,doctoralia.pe,doctoralia.co,znanylekarz.pl##.patient-app-banner-index
+money.udn.com##.open-on-app__link
+money.udn.com##.aside-btn-wrapper .aside-actvity
+m.inven.co.kr###invenAppSuggestion
+yaplakal.com###android-app
+tractorsupply.com###tsc-app-banner
+darkreader.org##darkreader-backers-side
+darkreader.org##darkreader-ios-static
+wionews.com##.gh-post-page__share > button[style*="background-color:"]
+pokemongo-get.com##.mt-40.mb-10
+books.yandex.ru##div[class^="YearResultBanner_container"]
+books.yandex.ru##div[class^="ContentLeftColumn_appContainer"]
 op.gg###__next > div[class^="mobile--"]:has(> div.banner-container)
 yatirimnedir.com##.container > div.row:has(> div.col-lg-12 > div.card-shadow > div.text-center > a[href^="https://play.google.com/store/apps/"])
 g-mh.org,godamh.com,manhuafree.com###PwaBarButton
@@ -3545,6 +3581,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 ! SECTION: Mobile apps - Allowlist
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195888
+yourchannel.blog.jp#@##app-follow-banner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/132674
 ! https://github.com/AdguardTeam/AdguardFilters/issues/118200 RECOMMEND not shown
 @@||fashion-headline.com/js/jquery.smartbanner.js

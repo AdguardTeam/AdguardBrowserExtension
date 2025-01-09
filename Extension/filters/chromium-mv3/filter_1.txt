@@ -1,8 +1,8 @@
-! Checksum: D0GM4QYQgwJRkU7TcSzgQw
+! Checksum: s30NkinaQ8eDOZu4TwVWtQ
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.96.38
-! TimeUpdated: 2024-12-27T17:31:10+00:00
+! Version: 2.0.96.58
+! TimeUpdated: 2025-01-09T09:31:07+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -890,6 +890,8 @@ ucoz.ru/informer/
 ! Bad: example.org##.adv (should be in specific.txt)
 !
 !
+! Yandex Browser promo on sites (usually useless mirror sites of apps)
+##a[href^="https://searchlnk.ru/r/"]
 ! rutor mirrors
 ###psyduckpockeball
 ! Browsers ads
@@ -1494,6 +1496,7 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||llet787bww.com^
 ||1463.info^$all
 ||prestich.shop^$all
 ||www.mir-stalkera.ru^$all
@@ -4225,6 +4228,7 @@ http://w7.ru^$third-party
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||ssp.rutube.ru^
 ||media-advcycle.imgsmail.ru^
 ||sdk.kokocads.com^$third-party
 ||r1.ati.su^
@@ -5582,6 +5586,8 @@ ya.ru,yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,y
 ya.ru,yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,yandex.cc,yandex.cl,yandex.cloud,yandex.cn,yandex.co,yandex.co.il,yandex.com,yandex.com.bd,yandex.com.np,yandex.com.tr,yandex.com.ua,yandex.de,yandex.dk,yandex.ee,yandex.es,yandex.eu,yandex.fi,yandex.fm,yandex.fr,yandex.ie,yandex.in,yandex.io,yandex.it,yandex.jp,yandex.kg,yandex.kz,yandex.lt,yandex.lv,yandex.ma,yandex.md,yandex.mobi,yandex.mx,yandex.net,yandex.news,yandex.no,yandex.org,yandex.pl,yandex.pro,yandex.pt,yandex.ro,yandex.rs,yandex.ru,yandex.se,yandex.shop,yandex.site,yandex.sk,yandex.store,yandex.su,yandex.top,yandex.ua,yandex.uk,yandex.us,yandex.uz,yandex.work,yandex.ws##li[class*="mini-suggest__item"] > a[href^="https://yabs."][href*="/count/"]
 ya.ru,yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,yandex.cc,yandex.cl,yandex.cloud,yandex.cn,yandex.co,yandex.co.il,yandex.com,yandex.com.bd,yandex.com.np,yandex.com.tr,yandex.com.ua,yandex.de,yandex.dk,yandex.ee,yandex.es,yandex.eu,yandex.fi,yandex.fm,yandex.fr,yandex.ie,yandex.in,yandex.io,yandex.it,yandex.jp,yandex.kg,yandex.kz,yandex.lt,yandex.lv,yandex.ma,yandex.md,yandex.mobi,yandex.mx,yandex.net,yandex.news,yandex.no,yandex.org,yandex.pl,yandex.pro,yandex.pt,yandex.ro,yandex.rs,yandex.ru,yandex.se,yandex.shop,yandex.site,yandex.sk,yandex.store,yandex.su,yandex.top,yandex.ua,yandex.uk,yandex.us,yandex.uz,yandex.work,yandex.ws##li[class*="mini-suggest__item"] > a[href^="http://yandex"][href*="/clck/"]
 yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,yandex.cc,yandex.cl,yandex.cloud,yandex.cn,yandex.co,yandex.co.il,yandex.com,yandex.com.bd,yandex.com.np,yandex.com.tr,yandex.com.ua,yandex.de,yandex.dk,yandex.ee,yandex.es,yandex.eu,yandex.fi,yandex.fm,yandex.fr,yandex.ie,yandex.in,yandex.io,yandex.it,yandex.jp,yandex.kg,yandex.kz,yandex.lt,yandex.lv,yandex.ma,yandex.md,yandex.mobi,yandex.mx,yandex.net,yandex.news,yandex.no,yandex.org,yandex.pl,yandex.pro,yandex.pt,yandex.ro,yandex.rs,yandex.ru,yandex.se,yandex.shop,yandex.site,yandex.sk,yandex.store,yandex.su,yandex.top,yandex.ua,yandex.uk,yandex.us,yandex.uz,yandex.work,yandex.ws##body:not([data-bem*="pogoda"]) .mini-suggest__popup-content > li[data-type="nav"]
+! In search results - not context ads
+ya.ru,yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,yandex.cc,yandex.cl,yandex.cloud,yandex.cn,yandex.co,yandex.co.il,yandex.com,yandex.com.bd,yandex.com.np,yandex.com.tr,yandex.com.ua,yandex.de,yandex.dk,yandex.ee,yandex.es,yandex.eu,yandex.fi,yandex.fm,yandex.fr,yandex.ie,yandex.in,yandex.io,yandex.it,yandex.jp,yandex.kg,yandex.kz,yandex.lt,yandex.lv,yandex.ma,yandex.md,yandex.mobi,yandex.mx,yandex.net,yandex.news,yandex.no,yandex.org,yandex.pl,yandex.pro,yandex.pt,yandex.ro,yandex.rs,yandex.ru,yandex.se,yandex.shop,yandex.site,yandex.sk,yandex.store,yandex.su,yandex.top,yandex.ua,yandex.uk,yandex.us,yandex.uz,yandex.work,yandex.ws###search-result > li:has(> div.Bno_isPromoSnippet)
 ! inline search ads
 [$path=/search]ya.ru,yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,yandex.cc,yandex.cl,yandex.cloud,yandex.cn,yandex.co,yandex.co.il,yandex.com,yandex.com.bd,yandex.com.np,yandex.com.tr,yandex.com.ua,yandex.de,yandex.dk,yandex.ee,yandex.es,yandex.eu,yandex.fi,yandex.fm,yandex.fr,yandex.ie,yandex.in,yandex.io,yandex.it,yandex.jp,yandex.kg,yandex.kz,yandex.lt,yandex.lv,yandex.ma,yandex.md,yandex.mobi,yandex.mx,yandex.net,yandex.news,yandex.no,yandex.org,yandex.pl,yandex.pro,yandex.pt,yandex.ro,yandex.rs,yandex.ru,yandex.se,yandex.shop,yandex.site,yandex.sk,yandex.store,yandex.su,yandex.top,yandex.ua,yandex.uk,yandex.us,yandex.uz,yandex.work,yandex.ws###search-result > [class][data-cid]:has(> div.Organic > div a[href][data-event-required])
 [$path=/search]ya.ru,yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,yandex.cc,yandex.cl,yandex.cloud,yandex.cn,yandex.co,yandex.co.il,yandex.com,yandex.com.bd,yandex.com.np,yandex.com.tr,yandex.com.ua,yandex.de,yandex.dk,yandex.ee,yandex.es,yandex.eu,yandex.fi,yandex.fm,yandex.fr,yandex.ie,yandex.in,yandex.io,yandex.it,yandex.jp,yandex.kg,yandex.kz,yandex.lt,yandex.lv,yandex.ma,yandex.md,yandex.mobi,yandex.mx,yandex.net,yandex.news,yandex.no,yandex.org,yandex.pl,yandex.pro,yandex.pt,yandex.ro,yandex.rs,yandex.ru,yandex.se,yandex.shop,yandex.site,yandex.sk,yandex.store,yandex.su,yandex.top,yandex.ua,yandex.uk,yandex.us,yandex.uz,yandex.work,yandex.ws###search-result > .serp-item:has(> div.Organic > div.VanillaReact > a[href][data-event-required])
@@ -5647,6 +5653,8 @@ market.yandex.al,market.yandex.app,market.yandex.asia,market.yandex.at,market.ya
 !
 ! Yandex.Video
 [$path=/video]ya.ru,yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,yandex.cc,yandex.cl,yandex.cloud,yandex.cn,yandex.co,yandex.co.il,yandex.com,yandex.com.bd,yandex.com.np,yandex.com.tr,yandex.com.ua,yandex.de,yandex.dk,yandex.ee,yandex.es,yandex.eu,yandex.fi,yandex.fm,yandex.fr,yandex.ie,yandex.in,yandex.io,yandex.it,yandex.jp,yandex.kg,yandex.kz,yandex.lt,yandex.lv,yandex.ma,yandex.md,yandex.mobi,yandex.mx,yandex.net,yandex.news,yandex.no,yandex.org,yandex.pl,yandex.pro,yandex.pt,yandex.ro,yandex.rs,yandex.ru,yandex.se,yandex.shop,yandex.site,yandex.sk,yandex.store,yandex.su,yandex.top,yandex.ua,yandex.uk,yandex.us,yandex.uz,yandex.work,yandex.ws##.Viewer-Content div[class$="Block_bottomRounded"]
+[$path=/video]ya.ru,yandex.*#%#//scriptlet('json-prune', 'rtb seatbid')
+[$path=/video]ya.ru,yandex.*#%#//scriptlet('set-constant', 'Object.prototype.renderDirect', 'throwFunc')
 ! Video ad
 ! ads near the player
 [$path=/video]ya.ru,yandex.al,yandex.app,yandex.asia,yandex.at,yandex.az,yandex.by,yandex.ca,yandex.cc,yandex.cl,yandex.cloud,yandex.cn,yandex.co,yandex.co.il,yandex.com,yandex.com.bd,yandex.com.np,yandex.com.tr,yandex.com.ua,yandex.de,yandex.dk,yandex.ee,yandex.es,yandex.eu,yandex.fi,yandex.fm,yandex.fr,yandex.ie,yandex.in,yandex.io,yandex.it,yandex.jp,yandex.kg,yandex.kz,yandex.lt,yandex.lv,yandex.ma,yandex.md,yandex.mobi,yandex.mx,yandex.net,yandex.news,yandex.no,yandex.org,yandex.pl,yandex.pro,yandex.pt,yandex.ro,yandex.rs,yandex.ru,yandex.se,yandex.shop,yandex.site,yandex.sk,yandex.store,yandex.su,yandex.top,yandex.ua,yandex.uk,yandex.us,yandex.uz,yandex.work,yandex.ws##.Viewer > div[style^="height:"]
@@ -7339,7 +7347,7 @@ yandex-video.naydex.net#%#//scriptlet('trusted-replace-xhr-response', '/(<VAST[\
 /script.js^$third-party,domain=rus-km.ru|progorodnn.ru|vestiprim.ru|4mlhn1ocg4.com|koolinar.ru|kyiv.media|pershij.com.ua|u-news.com.ua|crashplane.ru|cin-24.com|vikingi-online.info|hi-blog.ru|lifedon.com.ua|skuky.net|365news.biz|vklook.ru|tv-show.live|pt0zhwhc26.ru|mnogotolka.ru|gadget-apple.ru|kinovideo.cc|tarifec.com|amazingfacts.ru|womanvip.ru|evo-rus.com|kraj.by|shematok.ru|bargu.by|rivnepost.rv.ua|sobesednik.ru|comments.ua|pln-pskov.ru|lyricsonline.ru|amperof.ru|kapital-rus.ru|sport24tv.ru|militariorg.ucoz.ru|pravda-tv.ru|ianed.ru|progorod33.ru|solenka.info|inforuss.info|ufanotes.ru|togliatti24.ru|storinka.com.ua|moskva-obl.ru|reporter64.ru|gastrot.ru|yadelus.ru|telegraf.news|bnkomi.ru|myslo.ru
 !
 ! ##.ad
-liga.net,appstorrent.ru,graniru.org,3dnews.ru,zaks.ru,ukranews.com,mr-7.ru,ferra.ru,cont.ws,riavrn.ru,maanimo.com,begaem.com,passion.ru,gq.ru,agravery.com,appsgames.ru,buhgalteria.ru,dumskaya.net,hotcharts.xyz,klops.ru,mmovote.ru,molnet.ru,news.pn,newsru.co.il,shazoo.ru##.ad
+ru.citaty.net,liga.net,appstorrent.ru,graniru.org,3dnews.ru,zaks.ru,ukranews.com,mr-7.ru,ferra.ru,cont.ws,riavrn.ru,maanimo.com,begaem.com,passion.ru,gq.ru,agravery.com,appsgames.ru,buhgalteria.ru,dumskaya.net,hotcharts.xyz,klops.ru,mmovote.ru,molnet.ru,news.pn,newsru.co.il,shazoo.ru##.ad
 ! ##.adv
 progroshi.news,thepage.ua,newsru.co.il,freetone.org,infox.ru,internet-technologies.ru,xcadr.tv,dota2.ru,newkaliningrad.ru,reestr.rublacklist.net,ringon.site,glavcom.ua,qna.center,afanasy.biz,happymonday.ua,xcadr.org,dugtor.ru,trud.ru,amic.ru,dugtor.org,kinoafisha.info,niknews.mk.ua,sovety.net,vesti.uz,wotsite.net##.adv
 ! ##center > a[rel="nofollow"] > img
@@ -7374,6 +7382,10 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+1plus1.ua##.bannerPMU
+1plus1.ua##.bannerSmall
+1plus1.ua##.tabsNews__content-adv
+glavred.info##.light-block:has(> div.bnr-block__bnr)
 forbes.kz##.adv__section
 epravda.com.ua##.unit_level_banner
 gamak.tv###ima-ad-container
@@ -7662,6 +7674,17 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+liferbc.ru##div[data-qa="partners-news"]
+klerk.ru##main article ~ div.col-span-full:has(article.advertising-text-block)
+eastrussia.ru##.main-block > a[target="_blank"]
+history-lordfilm.ru##.wrap > div[style]:has(> div[class^="adfinity_"])
+||all-episodesfun.com/adpreroll/*.mp4
+onliner.by##.b-megabanner-layer
+mangalib.me##div[class="lp_b"][style="margin-top: 20px; margin-bottom: 20px;"]
+rg.ru##div[class^="EditorialPageArticle_partner"]
+pravda.ru##div[style="height:360px; overflow:hidden;"]
+pravda.ru##div[style="max-height:360px; overflow:hidden;"]
+klerk.ru##div[data-klad="1"]
 thebell.io##lib-december-banner
 thebell.io##img[width="1200"][height="400"][alt="true"]
 teenochka.xyz#?#div:has(> span:contains(/^Реклама:$/))
@@ -8327,7 +8350,6 @@ avtoradio.ru##.menu-setka-fix > div.menu-setka-block.x2:has(> a[href^="https://w
 kidshockey.ru##.khbus-wrap
 dzr.by##.advertisements
 dzr.by##.custom-html-widget > a[rel="noopener"] > img
-malosolka.com##a[href^="https://searchlnk.ru/"]
 downradar.ru##a[href="https://t.me/ZayavkaNaDostupBot"]
 videoredaktor.ru##.aaaOwner
 minecraft-inside.ru##div[style^="clear:both;"][style*="margin-bottom:"][style*="margin-top:"]
@@ -18929,6 +18951,8 @@ player.ex.co#@##ad-container
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! BUG: https://github.com/AdguardTeam/DisableAMP/issues/109
+! aglint-disable-next-line invalid-modifiers
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193702
 @@||yandex.ru/ads/system/adsdk.js$domain=player.mediavitrina.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193219
@@ -18945,7 +18969,7 @@ player.ex.co#@##ad-container
 @@||yandex.ru/ads/system/adsdk.js$domain=kino.tricolor.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187958
 @@||yastatic.net/vas-bundles/*/loader.bundle.js$domain=rutube.ru
-@@||yandex.ru/ads/system/adsdk.js$domain=rutube.ru
+! @@||yandex.ru/ads/system/adsdk.js$domain=rutube.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187234
 @@||ads.mybsk.ru^$~third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187130

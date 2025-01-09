@@ -1,8 +1,8 @@
-! Checksum: cQqwMgcQHQwKdSEgs1lMBQ
+! Checksum: 4J8KZV5483E0ZkJ6TI6Wkw
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.8
-! TimeUpdated: 2024-12-27T15:34:35+00:00
+! Version: 2.0.10.12
+! TimeUpdated: 2025-01-06T15:39:40+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -382,6 +382,8 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195101
+||klerk.ru^$removeparam=srsltid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195153
 ||vpnpay.io$removeparam=sr
 ||vpnpay.io$removeparam=pr
@@ -566,6 +568,7 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 $removeparam=nclid,domain=microsoft.com
 $removeparam=cvid,domain=microsoft.com|msn.com|bing.com
 $removeparam=epi,domain=microsoft.com|xbox.com
+$removeparam=FORM,domain=bing.com
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188889
 $removeparam=sub_rt,domain=comemo.nikkei.com|diehardtales.com|greenplanet.kaneka.co.jp|j-yokatsu2.edu.city.uruma.okinawa.jp|labo.rheos.jp|note-harumi.sbfoods.co.jp|note.basicinc.jp|note.bcnretail.com|note.calbee.jp|note.com|note.gallery.intage.com|note.kogakuin.ac.jp|note.jp|note.minne.com|note.montblanc.design|note.nhkso.or.jp|note.pokkasapporo-fb.jp|note.roxx.co.jp|note.smartnews-ads.com|note.universal-music.co.jp|note.yamap.com|note.zochang.com|refalover-note.mainichi.jp|shanaiho.itandi.co.jp|uragawa-note.jpn.panasonic.com|webtripper.jp
@@ -946,16 +949,17 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167273
 ||game-i.daa.jp/?cmd=ad_mode$removeparam=cmd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167051
+||slickdeals.net^$removeparam=sdtrk
 ||slickdeals.net^$removeparam=attr_track
 ||slickdeals.net^$removeparam=trd
+||slickdeals.net^$removeparam=sdtid
+||slickdeals.net^$removeparam=prop
 ||slickdeals.net^$removeparam=pv
 ||slickdeals.net^$removeparam=au
-||slickdeals.net^$removeparam=prop
-||slickdeals.net^$removeparam=sdtrk
+||slickdeals.net^$removeparam=peid
+||slickdeals.net^$removeparam=adobeRef
 ||slickdeals.net^$removeparam=attrsrc
 ||slickdeals.net^$removeparam=src
-||slickdeals.net/?adobeRef=$removeparam=adobeRef
-||slickdeals.net/*&sdtid=$removeparam=sdtid
 ||slickdeals.net/*&sdpid=$removeparam=sdpid
 ||slickdeals.net/*&sdfid=$removeparam=sdfid
 ||slickdeals.net/*&sdtrk=$removeparam=sdtrk
@@ -2199,6 +2203,17 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88784
 ||express.de^$removeparam=cb
 ||ksta.de^$removeparam=cb
+!
+! LinkedIn
+! Survey and self-promos
+||linkedin.com^$removeparam=courseClaim
+||linkedin.com^$removeparam=lipi
+||linkedin.com^$removeparam=trk
+! Premium upsell survey tracking
+||linkedin.com/premium/$removeparam=isSS
+||linkedin.com/premium/$removeparam=referenceId
+||linkedin.com/premium/$removeparam=upsellOrderOrigin
+||linkedin.com/premium/$removeparam=destRedirectURL
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-3262558
 ||linkedin.com^$removeparam=original_referer
 ||linkedin.com^$removeparam=refId
@@ -2208,6 +2223,7 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ||linkedin.com/authwall?$removeparam=originalReferer
 ! https://github.com/AdguardTeam/AdguardFilters/issues/110477
 ||linkedin.com^$removeparam=/^trk/
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/69722
 ||digikey.com^$removeparam=/^utm_cid/
 !
@@ -2243,6 +2259,7 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||cc.naver.com/cc?a$removeparam=sx
 ||cc.naver.com/cc?a$removeparam=sy
 ! Yandex
+||yandex.*/search/$removeparam=banerid
 ||yandex.*/search/$removeparam=suggest_reqid
 ||yandex.*/search/$removeparam=did
 ||yandex.*/promo/$removeparam=utm-term
@@ -2352,6 +2369,8 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/148958
 ! Breaks navigation and removes chosen seller id on the item's page
 ! ||amazon.*$removeparam=smid
+! Broken redirect to Amazon from stores
+! ||amazon.*$removeparam=ascsubtag
 !
 ! ||amazon.*$removeparam=sr - breaks automatic jump to review details
 ! ||amazon.*$removeparam=s - breaks URLs which includes it to sort
@@ -2367,7 +2386,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.ae|amazon.ai|amazon.al|ama
 ||amazon.*$removeparam=ref
 ||amazon.*$removeparam=ie
 ||amazon.*$removeparam=adgrpid
-||amazon.*$removeparam=ascsubtag
 ||amazon.*$removeparam=AssociateTag
 ||amazon.*/gp/buyagain$removeparam=ats
 ||amazon.*$removeparam=c

@@ -1,8 +1,8 @@
-! Checksum: i7H1u2NOOsnPT/8kzE+rDA
+! Checksum: AyusVMfly3b4Qq7rexJf1w
 ! Title: EasyList Czech and Slovak
 ! Description: Additional filter list for websites in Czech and Slovak.
-! Version: 2.0.2.73
-! TimeUpdated: 2024-12-27T13:01:06+00:00
+! Version: 2.0.2.82
+! TimeUpdated: 2025-01-08T17:01:07+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Homepage: http://adblock.sk
@@ -107,6 +107,7 @@ kurzy.cz#%#//scriptlet('abp-abort-on-property-write', 's_back')
 ||stat.novinky.cz^
 ||stat.super.cz^
 ||stobklub.cz/images/banners/maintop.jpg
+titulky.com/banaltr/
 ||tracker.cncenter.cz^
 ||uschovna.cz/branding
 ||vascak.cz/data/img/adblock.png$image
@@ -211,6 +212,7 @@ kurzy.cz#%#//scriptlet('abp-abort-on-property-write', 's_back')
 ||sda.online-systemy.cz^$third-party
 ||sda.un-42.com^$third-party
 ||storage.googleapis.com/adela-hb-platform.appspot.com/$third-party
+||titulky.com^$third-party
 ||trackad.cz^$third-party
 ||viadata.store^$third-party
 ||xzone.cz^$third-party
@@ -259,7 +261,8 @@ kurzy.cz#%#//scriptlet('abp-abort-on-property-write', 's_back')
 @@||warforum.cz/ads.js
 @@||api.youradio.cz/v2/ads/preroll$xmlhttprequest
 @@||zdopravy.cz^$generichide
-@@||titulky.com/ads/titulky-ads-banner.js
+@@||titulky.com/ads/titulkycom-ads-banner.js
+@@||titulky.com^$generichide
 !
 ! ---------- Czech Whitelisted hiding rules ---------- !
 !
@@ -271,7 +274,6 @@ novinky.cz#@#.g_ad
 www.parabola.cz#@#.rklm
 skrblik.cz#@##adsense
 sluzebnik.cz#@##adverts
-titulky.com#@#div#adBar
 !
 ! ---------- Slovak Whitelisted blocking rules ------------ !
 !
@@ -507,8 +509,8 @@ super.cz##a[data-dot="c_pozadi"]
 telekomunikace.cz##.Flagrow-Ads-under-header
 tipcars.com##.amalker
 tiscali.cz##.bbtitle
-titulky.com###pagefoot
-titulky.com###brny300x300
+titulky.com###bnn_nu300x300
+titulky.com##br + .pagefoot
 topzine.cz###vyjizdeciBoxikDiv
 tryhard.cz##[class*="sda-"]
 tv.seznam.cz##div[class^="branding-ad"]
@@ -684,8 +686,9 @@ search.seznam.cz,clanky.seznam.cz##div[data-e-b-n*="advert"]
 sreality.cz#%#//scriptlet('ubo-nosiif.js', 'checkRods')
 super.cz#%#//scriptlet('ubo-ra.js', 'style', 'body')
 svetandroida.cz#%#//scriptlet('ubo-aopr.js', 'detectAdBlocker')
-titulky.com#%#//scriptlet('ubo-ra.js', 'style', 'div[id^="head"]')
-||titulky.com/banalter/
+titulky.com#%#//scriptlet('ubo-set.js', 'sssp', '{}')
+titulky.com#%#//scriptlet('ubo-set.js', 'errSZ', 'undefined')
+titulky.com#%#//scriptlet('ubo-spoof-css.js', '#bnn_nu300x300', 'display', 'block')
 tn.nova.cz#%#//scriptlet('ubo-set.js', 'useSeznamAds', 'false')
 ||trackad.cz/adtrack.php$domain=nova.cz,script,redirect=noopjs
 uloz.to#$#div.l-wrapper { padding-top: 0px !important; }

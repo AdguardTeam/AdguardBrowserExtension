@@ -1,8 +1,8 @@
-! Checksum: ceU7hs/V9842WSXl/5VOAQ
+! Checksum: fbgfJRJcFxgMVGCX7/sV6w
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.23
-! TimeUpdated: 2024-12-26T09:01:45+00:00
+! Version: 2.0.5.28
+! TimeUpdated: 2025-01-07T17:01:38+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -117,6 +117,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 ||abzarfa.com/services/onlineusres^$script
 ||abzarfa.com/tools/ip^$script
 ! >> B <<
+blog.ir#%#//scriptlet('ubo-set.js', 'constant.copyText', '')
 ||binoads.ir^
 ||bl9.ir^
 ||backlink.ir^
@@ -243,6 +244,7 @@ niloblog.com##bloglinksblock
 ||on-click.ir^
 ||onclick.ir^
 ! >> P <<
+||perlika.com^
 ||pelikan-network.ir^
 ||pegah.tech^
 ||pushq.ir^
@@ -949,9 +951,11 @@ digikala.com#?#div.py-2:has(> div.items-center > div.swiper-container > div.swip
 ||divar.ir/g-scripts^$script,~third-party
 ||open-platform-redirect.divar.ir^$document,removeparam=source
 ||divarcdn.com/ssp/ads^$image,third-party,domain=divar.ir
+||api.divar.ir/v8/ad-auction^$xmlhttprequest,~third-party
 divar.ir#$#div.kt-modal__contents > div.kt-modal__body a.button-row-item[href^="https://open-platform-redirect.divar.ir?app_slug=karnameh_price_evaluation"] > div.kt-button > span.kt-text-truncate::after { content: ' (۱۰ هزار تومان)' !important; }
 divar.ir##div#post-list-container-id a[href^="https://a-banners.divar.ir/auction/?ext_link_data="]:has(> div.kt-inset-banner > picture.kt-image-block > source[data-srcset^="https://a-banners.divarcdn.com/ssp/ads/media/image"])
 divar.ir##main > div[class^="item"]:has(img[src*="divarcdn.com/ssp/ads/"])
+divar.ir##div[class^="post-list__items-container"] > div[class^="full-width"] > a[class=""][href^="https://a-banners.divar.ir/auction/"]
 doostihaa.com##div.adsfix_box
 doostihaa.com##aside.lefts_sides:has(> div.txt_letfs > ul.ads_txtcv)
 ! TODO: Change upera.shop/ref/3m8/ckAdbr90 to upera.shop/ckAdbr90 using urltransform to prevent tracking
@@ -1435,6 +1439,8 @@ jobinja.ir##div.c-forceToLogin__overlay
 jobinja.ir#$#div.c-forceToLogin__content { filter: none !important; opacity: 1 !important; }
 ||javanmobile.com/wp-content/cache/min/*/wp-content/plugins/adrotate
 ! >> K <<
+karbord.io#%#//scriptlet('ubo-no-fetch-if.js', 'SearchiaClick')
+||logapi.karbord.io^
 kamapress.com##div.ads-list
 ||kar-sentry.karnameh.com^$~third-party
 ! مقایسه با قیمت خودروهای مشابه
@@ -1576,6 +1582,8 @@ lahzeakhar.com#%#//scriptlet('ubo-set.js', 'customnotify', 'noopFunc')
 ||lahzeakhar.com/ShowAds
 ! ||lahzeakhar.com/sw.js
 ! >> M <<
+||melkana.com/ngx_pagespeed_beacon?url=$xmlhttprequest,~third-party
+melkana.com#$#div.sidebar { user-select: text !important; }
 ||skmusic.ir^$media,third-party,domain=music-irani.com
 mastertest.ir##div.post-content > div.fusion-builder-row-1 > div.fusion-row:has(> div.fusion-layout-column a[data-wpel-link="external"])
 ! https://github.com/MasterKia/PersianBlocker/pull/243
@@ -2537,6 +2545,7 @@ tasnimnews.com##.ad-item
 tasnimnews.com##.ads-footer
 tasnimnews.com#$#.col-md-9 { width: 100% !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88769
+tarafdari.com#%#//scriptlet('ubo-rmnt.js', 'script', 'showScrollAlert')
 ||tarafdari.com/advertise^$xmlhttprequest,~third-party
 ||tarafdari.com/sites/all/themes/hope/images/ad_home_page.jpg^$image,~third-party
 ||tarafdari.com/sites/all/themes/hope/images/advertise^$image,~third-party
@@ -2670,6 +2679,7 @@ vista.ir##a[href^="/ad/"][target="_blank"]
 vista.ir##a.textad
 ! >> W <<
 ||gateway.wisgoon.com/services/vast^$xmlhttprequest,image,~third-party
+||imasdk.googleapis.com/js/core/bridge*.html$subdocument,important,domain=wisgoon.com
 wisgoon.com##div.tb-box
 ||webgozar.com/adimg^$image,~third-party
 webgozar.com##div.topAds
@@ -2888,7 +2898,7 @@ zoomtech.org##div.zoomtech-banner
 ! https://shahrsakhtafzar.com/fa/news/security/42227-google-play-rubika-app-spy-users-personal-information
 ! https://farnet.io/1401/08/324594/rubika-is-detected-as-malware/
 ||rubika.ir^$domain=~web.rubika.ir|~m.rubika.ir
-||meashstis.ir^$all
+||mat-pnu.ir^$all
 !-------------------^ Malware/Phishing Sites ^-----------------!
 !-------------------------v Warning for video censorship sites v-----------------------!
 ! https://github.com/MasterKia/PersianBlocker/issues/119
