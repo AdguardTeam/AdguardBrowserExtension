@@ -298,7 +298,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                             options: {
                                 env: {
                                     targets: {
-                                        chrome: 79,
+                                        chrome: 106,
                                         firefox: 78,
                                         opera: 66,
                                     },
