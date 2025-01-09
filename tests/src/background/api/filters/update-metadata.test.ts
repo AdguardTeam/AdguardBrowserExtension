@@ -127,7 +127,12 @@ describe('tests filter metadata loading', () => {
         await FiltersApi.updateMetadata();
 
         const i18nMetadata = i18nMetadataStorage.getData();
-        expect(i18nMetadata).toStrictEqual(initI18nMetadata);
+        if (__IS_MV3__) {
+            // always use local assets in MV3 because remote resources loading is forbidden
+            expect(i18nMetadata).toStrictEqual(localI18nMetadata);
+        } else {
+            expect(i18nMetadata).toStrictEqual(initI18nMetadata);
+        }
     });
 
     it('remote metadata is not available, use local assets', async () => {

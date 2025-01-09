@@ -465,8 +465,18 @@ export class Network {
      * @param useOptimizedFilters If true, download optimized filters.
      *
      * @returns Url for filter downloading.
+     * @throws Error if filter rules URL is not defined or called in MV3.
      */
     public getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {
+        if (__IS_MV3__) {
+            throw new Error('MV3 does not support remote filter downloading');
+        }
+
+        if (!this.settings.filterRulesUrl
+            || !this.settings.optimizedFilterRulesUrl) {
+            throw new Error('Filter rules URL is not defined');
+        }
+
         const url = useOptimizedFilters ? this.settings.optimizedFilterRulesUrl : this.settings.filterRulesUrl;
         return url.replaceAll('{filter_id}', String(filterId));
     }

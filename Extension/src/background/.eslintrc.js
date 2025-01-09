@@ -37,7 +37,15 @@ module.exports = {
         // TODO: Enable this rule
         'jsdoc/no-undefined-types': 'off',
         'jsdoc/require-returns-check': 'error',
-        'jsdoc/require-description-complete-sentence': ['error'],
+        'jsdoc/require-description-complete-sentence': [
+            'error',
+            {
+                abbreviations: [
+                    'e.g.',
+                    'i.e.',
+                ],
+            },
+        ],
         'jsdoc/require-jsdoc': [
             'error',
             {

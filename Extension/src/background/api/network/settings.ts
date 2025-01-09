@@ -87,9 +87,11 @@ export class NetworkSettings {
     /**
      * Base url for downloading filter rules.
      *
+     * Can be null if remote resources loading is forbidden, e.g. in MV3.
+     *
      * @private
      */
-    private filtersRulesBaseUrl: string = '';
+    private filtersRulesBaseUrl: string | null = null;
 
     /**
      * Promise that resolves when the network settings are initialized.
@@ -130,17 +132,17 @@ export class NetworkSettings {
      * package and can be reviewed there. These safeguards can be found by
      * searching for 'JS_RULES_EXECUTION'.
      *
-     * @returns The base url for filter rules.
+     * @returns The base url for filter rules or null for MV3.
      */
-    private async getFilterRulesBaseUrl(): Promise<string> {
-        // We don't need to set base url in MV3 because we cannot update filters
-        // via patches.
+    private async getFilterRulesBaseUrl(): Promise<string | null> {
         // TODO: Remove check when filters will support patches in MV3.
-        if (!__IS_MV3__) {
-            const url = localStorage.getItem(this.FILTERS_BASE_URL_KEY);
-            if (url) {
-                return url;
-            }
+        if (__IS_MV3__) {
+            return null;
+        }
+
+        const url = localStorage.getItem(this.FILTERS_BASE_URL_KEY);
+        if (url) {
+            return url;
         }
 
         return this.DEFAULT_FILTER_RULES_BASE_URL;
@@ -149,10 +151,12 @@ export class NetworkSettings {
     /**
      * Returns the url from which the filters can be loaded.
      *
-     * @returns The url from which filters can be downloaded.
+     * @returns The url from which filters can be downloaded
+     * or null if remote resources loading is forbidden, e.g. in MV3.
+     * @throws Error if the filters rules base url is not initialized in non-MV3 build since it is required.
      */
     // eslint-disable-next-line class-methods-use-this
-    get filtersUrl(): string {
+    get filtersUrl(): string | null {
         // first of all check whether it is mv3-build
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
         if (__IS_MV3__) {
@@ -172,7 +176,12 @@ export class NetworkSettings {
              * package and can be reviewed there. These safeguards can be found by
              * searching for 'JS_RULES_EXECUTION'.
              */
-            return `${this.filtersRulesBaseUrl}/chromium-mv3`;
+            return null;
+        }
+
+        // for non-mv3 build it should be initialized
+        if (!__IS_MV3__ && !this.filtersRulesBaseUrl) {
+            throw new Error('Filters rules base url is not initialized but it is required');
         }
 
         if (UserAgent.isFirefox) {
@@ -193,19 +202,25 @@ export class NetworkSettings {
     /**
      * Returns URL for downloading AG filters.
      *
-     * @returns URL for downloading AG filters.
+     * @returns URL for downloading AG filters
+     * or null for MV3 since remote resource downloading is not allowed due to CWR.
      */
-    get filterRulesUrl(): string {
-        return `${this.filtersUrl}/filters/{filter_id}.txt`;
+    get filterRulesUrl(): string | null {
+        return !this.filtersUrl
+            ? null
+            : `${this.filtersUrl}/filters/{filter_id}.txt`;
     }
 
     /**
      * Returns URL for downloading optimized AG filters.
      *
-     * @returns URL for downloading optimized AG filters.
+     * @returns URL for downloading optimized AG filters
+     * or null for MV3 since remote resource downloading is not allowed dur to CWR.
      */
-    get optimizedFilterRulesUrl(): string {
-        return `${this.filtersUrl}/filters/{filter_id}_optimized.txt`;
+    get optimizedFilterRulesUrl(): string | null {
+        return !this.filtersUrl
+            ? null
+            : `${this.filtersUrl}/filters/{filter_id}_optimized.txt`;
     }
 
     /**
