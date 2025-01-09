@@ -29,14 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Notify user that rule was not applied because of the chrome limitations [#3004].
 - URI encoded `$removeparam` value is not removed in MV3 [#3014].
 - Cosmetic rules injecting into `about:blank` iframes in MV2.
-- Scriptlets are injected too late on website reload or navigation [#2855].
 
 [#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
 [#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 [#3014]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3014
-[#2855]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2855
 
 ## [Unreleased] <!-- master -->
 
