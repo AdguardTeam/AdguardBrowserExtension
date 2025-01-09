@@ -264,13 +264,15 @@ export class CommonFilterApi {
 
         // For MV3 version we have QuickFixes filter which does not have local
         // version and always should be updated from the server.
-        if (__IS_MV3__) {
-            await FiltersApi.loadAndEnableFilters(
-                [AntiBannerFiltersId.QuickFixesFilterId],
-                true, // Install from remote.
-                enableUntouchedGroups,
-            );
-        }
+        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
+        // TODO: remove code totally later.
+        // if (__IS_MV3__) {
+        //     await FiltersApi.loadAndEnableFilters(
+        //         [AntiBannerFiltersId.QuickFixesFilterId],
+        //         true, // Install from remote.
+        //         enableUntouchedGroups,
+        //     );
+        // }
     }
 
     /**

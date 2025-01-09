@@ -102,8 +102,24 @@ export class FiltersApi {
      */
     public static async updateMetadata(shouldUseLocalAssets = false): Promise<void> {
         try {
-            await FiltersApi.loadI18nMetadataFromBackend(true);
-            await FiltersApi.loadMetadataFromFromBackend(true);
+            /**
+             * MV3_REMOTE_POLICY.
+             * This keyword can be used to grep all code related to MV3 remote
+             * hosting policy.
+             *
+             * In MV3 extension we do not download anything from remote servers
+             * except custom filter lists which added by the users themselves.
+             * Having this logic is particularly important for an ad blocker since
+             * websites breakages can occur at any time and we need to be able to
+             * fix them ASAP.
+             *
+             * To ensure compliance with Chrome Store policies, we have safeguards
+             * that restrict execution to rules that are included into the extension
+             * package and can be reviewed there. These safeguards can be found by
+             * searching for 'JS_RULES_EXECUTION'.
+             */
+            await FiltersApi.loadI18nMetadataFromBackend(!__IS_MV3__);
+            await FiltersApi.loadMetadataFromFromBackend(!__IS_MV3__);
         } catch (e) {
             logger.debug('Cannot load remote metadata due to: ', getErrorMessage(e));
             // loading metadata from local assets is needed to avoid the extension init stopping after the install
