@@ -1,8 +1,8 @@
-! Checksum: H2yTB6I6DeOkLXRFTpiXPg
+! Checksum: qMr1yFin2aBsv+ZpgFeNOg
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.53
-! TimeUpdated: 2024-12-27T13:35:09+00:00
+! Version: 2.0.54.60
+! TimeUpdated: 2025-01-08T08:39:08+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -85,6 +85,7 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||ds.macellan.online^
 ||kops1.site^
 ||kingbaba.org^
 ||yelads2.life^
@@ -340,6 +341,8 @@ ankarakampkafasi.com,zamaninvarken.com,kredi.biz.tr,kriptoradar.com,bakimlikadin
 teknop.net,kirtkirtla.com,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195932
+sosyogaraj.com.tr#%#//scriptlet('prevent-setTimeout', 'adsbygoogle')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192653
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=blutv.com
 @@/reklamlar/web/player$xmlhttprequest,domain=blutv.com
@@ -1679,6 +1682,8 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+joymaxtr.com#%#//scriptlet('prevent-setTimeout', 'jsAd')
+merlininkazani.com##.detail > div[style*="min-height:"]:has(> div[id^="protag-MPU"])
 m-tr.net###reklamToggle
 onedio.com##.relative > div[class="sm:w-\[433px\] w-full"]
 gazeteipekyol.com##.prospeed_demo_banner
@@ -1700,8 +1705,7 @@ r10.net##.postList > ul > li:not(.post, [data-order])
 r10.net##div[data-cname*="rk"]
 r10.net##.rabdfe3
 sinefil.tv###psContainer
-sinefil.tv#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?Date[\s\S]*?getElementsByTagName/')
-||ds.macellan.online/*/?ts=$script,domain=sinefil.tv
+sinefil.tv#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?getElementsByTagName/')
 yenisafak.com##.gif-banner
 ||assets.yenisafak.com/yenisafak/wwwroot/images/gif-banner*.gif
 sporx.com###maintop ~ div[style^="margin-left:"]
@@ -1879,7 +1883,7 @@ fullindirsene.net##center > a[href^="https://yonderdim.com/"]
 tamindir.com##.band-banner
 rotaborsa.com#%#//scriptlet('trusted-replace-node-text', 'body', '-->', '/^-->$/', '')
 /\d+x\d+/$image,domain=giynikgazetesi.com
-.gif$~third-party,domain=giynikgazetesi.com
+.gif$~third-party,domain=giynikgazetesi.com|hdfilmcehennemi3.com
 ||hdfilmcehennemi*.net/rekla/
 hdfilmcehennemi1.biz,hdfilmcehennemi1.com,hdfilmcehennemi1.com.bd,hdfilmcehennemi1.com.np,hdfilmcehennemi1.net,hdfilmcehennemi1.pw,hdfilmcehennemi1.us,hdfilmcehennemi.app,hdfilmcehennemi.asia,hdfilmcehennemi.blog,hdfilmcehennemi.cc,hdfilmcehennemi.cloud,hdfilmcehennemi.com,hdfilmcehennemi.com.bd,hdfilmcehennemi.com.np,hdfilmcehennemi.de,hdfilmcehennemi.fun,hdfilmcehennemi.gen.tr,hdfilmcehennemi.guru,hdfilmcehennemi.icu,hdfilmcehennemi.io,hdfilmcehennemi.life,hdfilmcehennemi.live,hdfilmcehennemi.me,hdfilmcehennemi.mobi,hdfilmcehennemi.mx,hdfilmcehennemi.net,hdfilmcehennemi.nl,hdfilmcehennemi.one,hdfilmcehennemi.online,hdfilmcehennemi.org,hdfilmcehennemi.pw,hdfilmcehennemi.sh,hdfilmcehennemi.tech,hdfilmcehennemi.top,hdfilmcehennemi.tv,hdfilmcehennemi.us,hdfilmcehennemi.vip##.money
 diziwatch.net,hdfilmcehennemi1.biz,hdfilmcehennemi1.com,hdfilmcehennemi1.com.bd,hdfilmcehennemi1.com.np,hdfilmcehennemi1.net,hdfilmcehennemi1.pw,hdfilmcehennemi1.us,dizikorea.com,dizikorea.com.bd,dizikorea.com.np,dizikorea.info,dizikorea.net,dizikorea.org,dizikorea.tv,dizikorea.vip,hdfilmcehennemi.app,hdfilmcehennemi.asia,hdfilmcehennemi.blog,hdfilmcehennemi.cc,hdfilmcehennemi.cloud,hdfilmcehennemi.com,hdfilmcehennemi.com.bd,hdfilmcehennemi.com.np,hdfilmcehennemi.de,hdfilmcehennemi.fun,hdfilmcehennemi.gen.tr,hdfilmcehennemi.guru,hdfilmcehennemi.icu,hdfilmcehennemi.io,hdfilmcehennemi.life,hdfilmcehennemi.live,hdfilmcehennemi.me,hdfilmcehennemi.mobi,hdfilmcehennemi.mx,hdfilmcehennemi.net,hdfilmcehennemi.nl,hdfilmcehennemi.one,hdfilmcehennemi.online,hdfilmcehennemi.org,hdfilmcehennemi.pw,hdfilmcehennemi.sh,hdfilmcehennemi.tech,hdfilmcehennemi.top,hdfilmcehennemi.tv,hdfilmcehennemi.us,hdfilmcehennemi.vip##.money-text
@@ -2748,7 +2752,7 @@ enpolitik.com,ispartamhaber.com,bomba15.com,tarsusgazetesi.com##.reklam-metin
 fullindirsene.net###myButtonx
 ||kibrisgazetesi.com/kibrisgazetesi/index.php
 telegramgruplari.com##amp-carousel[aria-label="Reklam Alanı"]
-.gif$third-party,domain=filmgo.org
+.gif$third-party,domain=filmgo.org|hdfilmcehennemi3.com
 tele1.com.tr##.sagsutunaru
 tele1.com.tr###mansetust
 avmgezgini.com##.ust_reklam
@@ -4393,7 +4397,7 @@ duzceninsesi.com.tr##.haberDetay_reklam
 turkiyesanayigazetesi.com,perakendeisdunyasi.com##div[id^="advertising-"]
 turkiyesanayigazetesi.com,perakendeisdunyasi.com##.HeaderAdvertising
 turkiyesanayigazetesi.com,perakendeisdunyasi.com##.advertising728x90_MansetAlti
-dizipal.org,dizimom.co,dizimom.com,dizimom.com.bd,dizimom.com.np,dizimom.de,dizimom.live,dizimom.my,dizimom.one,dizimom.org,dizimom.pro,dizimom.tv,erosfilmizle.com.bd,erosfilmizle.com.np,erosfilmizle.info,erosfilmizle.net,erosfilmizle.org,erosfilmizle.xyz,enyenifilmizle.com.bd,enyenifilmizle.com.np##.body-clickable
+hdfilmcehennemi3.com,dizipal.org,dizimom.co,dizimom.com,dizimom.com.bd,dizimom.com.np,dizimom.de,dizimom.live,dizimom.my,dizimom.one,dizimom.org,dizimom.pro,dizimom.tv,erosfilmizle.com.bd,erosfilmizle.com.np,erosfilmizle.info,erosfilmizle.net,erosfilmizle.org,erosfilmizle.xyz,enyenifilmizle.com.bd,enyenifilmizle.com.np##.body-clickable
 sigortacigazetesi.com.tr##.Ads-L
 sigortacigazetesi.com.tr##.CS.Last > .CXL.Mag
 gazeddakibris.com##.widget_bt_banner_widget
@@ -4788,7 +4792,7 @@ kanalb.com.tr##div[class^="widget_banner_"]
 /images/site_reklam^$domain=kanalb.com.tr
 sporx.com##div[id^="dfp_"]
 aykiri.com.tr,megahaber27.com,bihavadis.com,kafakalem.com,thecruiselife.com.tr,takamedya.com,adalet.tv,haberasi.com,kadinveotesi.com,ajansgazetesi.com.tr,avcilarhabermerkezi.com,sanattanyansimalar.com,turgutluyanki.com,denizlidesiyaset.com,finans365.com,afyonhaber.com,malatyaozhaber.com,kulahaber.net,hayrankaldim.com,yenibakis.com.tr,habercicanakkale.com,haber16.com,karamanca.net,denizgazete.com,kaptanhaber.com,oncusehir.com,turgutlupostasi.com,gebzeyenigun.com,imaret.com.tr,rehbercanakkale.com,turkinfo.nl,habercuk.com,habersanliurfa.net,mizahdunyam.com,denizlikenthaber.com,tarihistan.org,haberturizm.com,gazete365.com##.detailp > .img_position_left
-gazetegercek.com.tr,aykiri.com.tr,afyonkenthaber.com,tamgaturk.com,ulusalhaber.com.tr##.post-body > .img_position_left
+turizmhabermerkezi.net,gazetegercek.com.tr,aykiri.com.tr,afyonkenthaber.com,tamgaturk.com,ulusalhaber.com.tr##.post-body > .img_position_left
 ||vidoza.net/rbs^$third-party
 sahibinden.com##.popular-products
 ozengen.com###text-html-widget-2
@@ -5563,6 +5567,18 @@ hdfilmcehennem.live#$##reki1 { display: none!important; }
 hdfilmcehennem.live#$##kendisi { display: block!important; }
 oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
+!
+! dizilla.club/dizilla.com  - frequently changed domains
+[$domain=/(^\|.+\.)dizilla\d+\.com/]###mPlayerFd
+[$domain=/(^\|.+\.)dizilla\d+\.com/]###psContainer
+[$domain=/(^\|.+\.)dizilla\d+\.com/]###footerFixedDivWrapper
+[$domain=/(^\|.+\.)dizilla\d+\.com/]##a[target="_blank"] > .alert
+[$domain=/(^\|.+\.)dizilla\d+\.com/]#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?getElementsByTagName/')
+dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com###mPlayerFd
+dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com###psContainer
+dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com###footerFixedDivWrapper
+dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com##a[target="_blank"] > .alert
+dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?getElementsByTagName/')
 !
 ! selcuksportshd*.xyz - frequently changed domains
 cinque.668a396e58bcbc27.click#%#//scriptlet('set-constant', 'config.advertisement.enabled', 'false')

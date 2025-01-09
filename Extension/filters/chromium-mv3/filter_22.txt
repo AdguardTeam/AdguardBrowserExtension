@@ -1,8 +1,8 @@
-! Checksum: 4b2r2utzP22wYZES/uHcBA
+! Checksum: K1VqV1kKEwYL4nBXF7WW9w
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.10.59
-! TimeUpdated: 2024-12-27T08:35:04+00:00
+! Version: 2.0.10.71
+! TimeUpdated: 2025-01-09T07:39:41+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -152,6 +152,10 @@ nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.livedoor.blog,kimamamatome.
 !
 ! NOTE: Blogroll specific rules
 !
+momon-ga.com##.blgo18-post-list
+koe-koe.com###nanmv
+shikotch.in###news
+matome-geinou.net##.widget_custom_html:has(> div > div[class^="rss-"])
 kh-pokemon-mc.com##aside.rss[id^="feedzy_wp_widget-"]
 hannoumatome.com##.blogcard
 kitimama-matome.net##.article-body-more > div[style="font-size:16px;line-height:23px;margin-bottom:40px;font-weight: bold;"]
@@ -1537,6 +1541,8 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (specific)
 !
+theporndude.vip,theporndude.com##.chat-widget
+pw.live##.sticky-call
 sanevv.com.ua###animate_btn_4
 ||repsoku.net/img_feeds/
 repsoku.net##.post .img_feed
@@ -1673,6 +1679,7 @@ wind10.ru###custom_html-7
 world-of-facts.com###leadia_science_widget
 youla.ru#?##app > div > div[class]:has(> div[class] > span[data-test-component="OnboardingTooltip"])
 yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
+||livechat.leaderos.net^$script
 ||salesiq.zohopublic.eu/widget
 ||static.arc.io/widget$third-party
 ||chat.bitkub.com/chat.js
@@ -1962,7 +1969,7 @@ litres.ru###call_support
 !
 ||amazonaws.com/cdn.ma-site.com/common/chatbots.js$domain=mastory.jp
 mastory.jp##.qualvaBtn
-aeza.net#?#div[class^="sc-"] > div[class^="sc-"]:has(> div[class^="sc-"]:contains(/^Support$/))
+aeza.net#?#header > div[class^="sc-"] > div[class^="sc-"] > div[class^="sc-"]:has(> div[class^="sc-"]:first-child:contains(/^Support$/))
 ||k-pilot.kariyer.net^
 ||assistant.watson.appdomain.cloud^$domain=smartmetertexas.com
 ||chester-tax.com/wp-chester-tax/wp-content/plugins/chester-chatbot/
@@ -2255,6 +2262,7 @@ pesni-tut.com##.r_m_genre_songs + div[id] + div:not([id])
 ||youtube.com/embed/?enablejsapi=1&origin=*3dnews.ru&widgetid=1
 ! Voting widget
 ! specific
+ign.com##div[data-cy="tierlist-view-trigger"]
 vg247.com##.poll_wrapper
 aerzteblatt.de##iframe#civey
 t-online.de#?#div[data-testid="StageLayout.StreamItem"]:has(> figure:only-child > iframe[src*="civey"])
@@ -2390,6 +2398,11 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+matrix.org##.post-content > div.callout
+vox.com#?##zephr-anchor > aside:has(> form > div[class] div[class] > .duet--cta--button > span:contains(Monthly))
+rsf.org###block-rsf-bandeaux-alerte-block
+holod.media##.a-donate-block
+montanafreepress.org##.newspack-popup-container
 ghostery.com##.ds-notification-donate-container
 ipauniverse.com###splash-screen:has(.donate-button)
 echofm.online##.wp-embed-responsive > a[href="/p/raise?ver=solid"]

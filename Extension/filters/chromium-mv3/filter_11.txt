@@ -1,8 +1,8 @@
-! Checksum: UFYQf5G67XOiKCvwGH6m6A
+! Checksum: HFQA9LrSiQ3/Cexm/U5CAA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.57.2
-! TimeUpdated: 2024-12-27T14:35:05+00:00
+! Version: 2.0.57.29
+! TimeUpdated: 2025-01-09T09:40:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -219,6 +219,7 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||dsp-api.moloco.com^
 ||ads.smrtbid.com^
 ||creative*.bidease.com^
 ||bidjora.com^
@@ -1263,6 +1264,8 @@ turbopages.org##.page__result > div[class*="type_native"]
 !-------JS----------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195011
+m.7days.ru#%#//scriptlet('remove-class', 'banners-brand', '#page_content')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/181118
 momon-ga.com#%#//scriptlet('prevent-addEventListener', 'load', 'document.cookie')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178931
@@ -1396,6 +1399,9 @@ tube8.com#%#//scriptlet('trusted-click-element', 'a[href].continue-to-video')
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195880
+m.yeniakit.com.tr#$#.dfp { display: none !important; }
+m.yeniakit.com.tr#$#.gallery-page { min-height: 2630px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194769
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193605
 pulzo.com#$#.container-headband-new { margin-top: 0 !important; }
@@ -1866,6 +1872,9 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! Repeated requests, two or more in one second if blocked - https://old.reddit.com/r/Adguard/comments/ztbv96/how_do_i_stop_this_my_phone_is_overheating_and/
 ! https://old.reddit.com/r/Adguard/comments/18s9snu/api2branch_causing_cpu_overheat/
 !
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/195788
+! https://github.com/AdguardTeam/AdguardFilters/issues/195582
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193869
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192893
 ! Fixing app update
@@ -2417,6 +2426,26 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+cardu.com.tw##.platinum-ph-ad
+wedge.ismedia.jp##.article-service > .visual-box
+lettuceclub.net##.content-container > section > div.pt-4:has(#lcn-s_all_mb_gam)
+dic.pixiv.net##div[id^="d-sp-itemarticle"]
+lovehotel.yapy.jp##.Ad_display_top
+the-3rd.net##.header_dlsite
+unite-db.com##div[id^="nn_mobile_"]
+op.gg##.w-full:has(> .flex:only-child > #mobile_takeover:only-child)
+cna.com.tw##.advertiseMobile
+sushi.ski##.xuKt2
+mobalytics.gg##main > div[class]:has(> div[class] > div#poe-2-video-all-pages-mobile)
+star-ettoday-net.cdn.ampproject.org##.adHint
+star-ettoday-net.cdn.ampproject.org##a[href^="https://ad.ettoday.net/adclick.php"]
+stars.glavred.info##.article-column > div[style^="height"]:has(> amp-ad)
+glavred.info##.infinite-item > div[style^="height"]:has(> div.bnr-block__ad)
+sbapp.net##.ads_sd100
+vedomosti.ru##.mobile-cards-list > div.mobile-cards-list__item--banner:has(> div.card-banner-messages div.adfox)
+probasket.pl###w2g-slot1-art-container
+yourstory.com##main > div[class^="fixed bottom-"]
+yourstory.com###mobile-banner-story-def
 kurashiru.com##.BlankSpace
 google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,google.be,google.bf,google.bg,google.bi,google.bj,google.bs,google.bt,google.by,google.ca,google.cat,google.cd,google.cf,google.cg,google.ch,google.ci,google.cl,google.cm,google.cn,google.co.ao,google.co.bw,google.co.ck,google.co.cr,google.co.id,google.co.il,google.co.in,google.co.jp,google.co.ke,google.co.kr,google.co.ls,google.co.ma,google.co.mz,google.co.nz,google.co.th,google.co.tz,google.co.ug,google.co.uk,google.co.uz,google.co.ve,google.co.vi,google.co.za,google.co.zm,google.co.zw,google.com,google.com.af,google.com.ag,google.com.ai,google.com.ar,google.com.au,google.com.bd,google.com.bh,google.com.bn,google.com.bo,google.com.br,google.com.bz,google.com.co,google.com.cu,google.com.cy,google.com.do,google.com.ec,google.com.eg,google.com.et,google.com.fj,google.com.gh,google.com.gi,google.com.gt,google.com.hk,google.com.jm,google.com.kh,google.com.kw,google.com.lb,google.com.ly,google.com.mm,google.com.mt,google.com.mx,google.com.my,google.com.na,google.com.nf,google.com.ng,google.com.ni,google.com.np,google.com.om,google.com.pa,google.com.pe,google.com.pg,google.com.ph,google.com.pk,google.com.pr,google.com.py,google.com.qa,google.com.sa,google.com.sb,google.com.sg,google.com.sl,google.com.sv,google.com.tj,google.com.tr,google.com.tw,google.com.ua,google.com.uy,google.com.vc,google.com.vn,google.cv,google.cz,google.de,google.dj,google.dk,google.dm,google.dz,google.ee,google.es,google.fi,google.fm,google.fr,google.ga,google.ge,google.gg,google.gl,google.gm,google.gp,google.gr,google.gy,google.hn,google.hr,google.ht,google.hu,google.ie,google.im,google.iq,google.is,google.it,google.je,google.jo,google.kg,google.ki,google.kz,google.la,google.li,google.lk,google.lt,google.lu,google.lv,google.md,google.me,google.mg,google.mk,google.ml,google.mn,google.ms,google.mu,google.mv,google.mw,google.ne,google.nl,google.no,google.nr,google.nu,google.pl,google.pn,google.ps,google.pt,google.ro,google.rs,google.ru,google.rw,google.sc,google.se,google.sh,google.si,google.sk,google.sm,google.sn,google.so,google.sr,google.st,google.td,google.tg,google.tk,google.tl,google.tm,google.tn,google.to,google.tt,google.vg,google.vu,google.ws##.commercial-unit-mobile-bottom
 gamerant.com###adsninja-below-main-pic
@@ -2647,7 +2676,6 @@ seikeidouga.blog.jp#%#//scriptlet('abort-current-inline-script', 'navigator.user
 haberler.com##div[id^="ana_mobile_336x280_"]
 cyberdaily.au##.tabletSkinBlock
 nikkansports.com###photoScrollText
-koe-koe.com##.ad_min_height
 transtxxx.com##.video-content > div[class]:first-child > div[class]:first-child > div[class]:first-child:has(> div[class] > div[id][class]:empty)
 beauty.biglobe.ne.jp##.anchorAdBox
 transfer.smt.docomo.ne.jp##.d2c_header[style="height:250px"]
@@ -2671,8 +2699,8 @@ honestjohn.co.uk##div[id^="floatingBanner"]
 baseballking.jp##div[style^="text-align:center; border-top: 1px solid #f3f3f3; border-bottom: 1px solid #f3f3f3; margin:"]
 nikkansports.com##p[style="margin-bottom: 1em;"] > span[style="color:#333;font-weight:bold;display:block;margin-top:1em;font-size:16px;"]
 mainichikirei.jp##.article__inner > div[style^="text-align:center; margin-top:"][style*="margin-bottom:0px; color: #595757; font-size: 0.9em; height: 1"]
-fuqster.com,bigtitbitches.com##.sponsors-mobile
-fuqster.com,bigtitbitches.com##.header__nav-item--adv-link
+babepump.com,fuqster.com,bigtitbitches.com##.sponsors-mobile
+babepump.com,fuqster.com,bigtitbitches.com##.header__nav-item--adv-link
 many.xxx##.avd_mob
 informator.ua##.inf_ua-content div[id][style^="min-height:"]:has(> ins)
 zozovideo.com##div[style^="position: absolute; width:"][style$=" top: 0px; left: 0px;"]
@@ -3417,7 +3445,7 @@ times.abema.tv##div[style="min-height: 100px;margin-bottom: 2vh; text-align: cen
 times.abema.tv##.article-banner
 upworthy.com##.mobile_ads
 cumhuriyet.com.tr#?#.container > div.row > div.row.mb20:has(> #sticky-player)
-18comic.org,jmcomic1.me##.div_sticky2
+18comic.org,jmcomic1.me##.hidden-lg > div[class$="_sticky2"]
 ehow.co.uk##.mobile-display-ad
 pcgames.de,gamesworld.de##.sdgSlotContainer
 pussyspace.com,pussyspace.net#?##main-area-box div[id]:has(> iframe[src*="/lazyload"])
@@ -4237,7 +4265,7 @@ mobilelaby.com##.AdsSingleLogoAft
 journaldesfemmes.fr##body .ccmcss_oas_top
 welt.de##div[data-qa="Commercial-Wrapper.Mobile.MediumRectangle"]
 esports.net##.parallax-container
-theporndude.com##.pdc-casting
+theporndude.vip,theporndude.com##.pdc-casting
 soccerdigestweb.com##div[class^="bnr_w3"]
 teleprogramma.pro##.header-bottom-wrapper
 nukemanga.com##.widget-text
@@ -7493,6 +7521,8 @@ livejournal.com##.mdspost-aside__item--banner
 ! END: Livejournal.com
 !
 !
+!+ NOT_OPTIMIZED
+koe-koe.com##.ad_min_height
 !+ NOT_OPTIMIZED
 biteki.com##.items > div.item:has(div[id^="logly-lift-"])
 !+ NOT_OPTIMIZED
