@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 5.0.184
 
+### Changed
+
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.9.
+
 ### Removed
 
 - Injection of remotely hosted scripts.
