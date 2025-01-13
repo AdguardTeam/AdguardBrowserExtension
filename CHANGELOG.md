@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 
 <!-- TODO: add release date and local link for the version -->
+
+## 5.0.184
+
+### Removed
+
+- Injection of remotely hosted scripts.
+
 ## 5.0.183
 
 ### Removed
