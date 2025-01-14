@@ -1886,6 +1886,26 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + e);
         }
     },
+    '(()=>{document.addEventListener(\'DOMContentLoaded\',()=>{const t=document.querySelector(\'a[href*="uploadmall.com/cgi-bin/dl.cgi/"]\');if(t){const e=t.getAttribute("href");t.addEventListener("click",(t=>{try{const t=`{"link":"${e}"}`,c=`https://mendationforc.info/?cc=${btoa(t)}`;window.open(c)}catch(t){console.debug(t)}}))}})})();': () => {
+        try {
+            document.addEventListener("DOMContentLoaded", (() => {
+                const e = document.querySelector('a[href*="uploadmall.com/cgi-bin/dl.cgi/"]');
+                if (e) {
+                    const t = e.getAttribute("href");
+                    e.addEventListener("click", (e => {
+                        try {
+                            const e = `{"link":"${t}"}`, o = `https://mendationforc.info/?cc=${btoa(e)}`;
+                            window.open(o);
+                        } catch (e) {
+                            console.debug(e);
+                        }
+                    }));
+                }
+            }));
+        } catch (e) {
+            console.error("Error executing AG js: " + e);
+        }
+    },
     '(()=>{const e={apply:(e,n,t)=>{const o=t[1];return o&&["adBlockingDetected","assessAdBlocking"].includes(o)&&t[2]&&"function"==typeof t[2].value&&(t[2].value=()=>{}),Reflect.apply(e,n,t)}};window.Object.defineProperty=new Proxy(window.Object.defineProperty,e)})();': () => {
         try {
             (() => {
@@ -4424,35 +4444,39 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + r);
         }
     },
-    '(()=>{const e=new MutationObserver(((e,t)=>{for(let t of e)if(t.target?.matches?.(".loadout-application-main")){t.target.querySelectorAll("div").forEach((e=>{if(e.shadowRoot&&e.shadowRoot.querySelector?.(\'.header > div[data-i18n="#advertisement"]\'))try{e.remove()}catch(e){console.error(e)}}))}})),t={apply:(t,o,r)=>{try{r[0].mode="open"}catch(e){console.error(e)}const a=Reflect.apply(t,o,r);return e.observe(a,{subtree:!0,childList:!0}),a}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,t)})();': () => {
+    '(()=>{const t=new MutationObserver((t=>{for(let e of t){const t=e.target;if(t?.querySelector?.("div:not([class], [id]):first-child + div:not([class], [id]):not([class], [id]):last-child")){const e=t.querySelector("div:not([class], [id]):last-child");if("#advertisement"===e?.shadowRoot?.querySelector?.("div:not([class], [id]) > div:not([class], [id])")?.textContent)try{e.remove()}catch(t){console.trace(t)}}}})),e={apply:(e,o,c)=>{try{c[0].mode="open"}catch(t){console.error(t)}const s=Reflect.apply(e,o,c);return t.observe(s,{subtree:!0,childList:!0}),s}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,e)})();': () => {
         try {
             (() => {
-                const e = new MutationObserver(((e, o) => {
-                    for (let o of e) o.target?.matches?.(".loadout-application-main") && o.target.querySelectorAll("div").forEach((e => {
-                        if (e.shadowRoot && e.shadowRoot.querySelector?.('.header > div[data-i18n="#advertisement"]')) try {
-                            e.remove();
-                        } catch (e) {
-                            console.error(e);
+                const t = new MutationObserver((t => {
+                    for (let e of t) {
+                        const o = e.target;
+                        if (o?.querySelector?.("div:not([class], [id]):first-child + div:not([class], [id]):not([class], [id]):last-child")) {
+                            const e = o.querySelector("div:not([class], [id]):last-child");
+                            if ("#advertisement" === e?.shadowRoot?.querySelector?.("div:not([class], [id]) > div:not([class], [id])")?.textContent) try {
+                                e.remove();
+                            } catch (t) {
+                                console.trace(t);
+                            }
                         }
-                    }));
-                })), o = {
-                    apply: (o, t, r) => {
+                    }
+                })), e = {
+                    apply: (e, o, r) => {
                         try {
                             r[0].mode = "open";
-                        } catch (e) {
-                            console.error(e);
+                        } catch (t) {
+                            console.error(t);
                         }
-                        const a = Reflect.apply(o, t, r);
-                        return e.observe(a, {
+                        const c = Reflect.apply(e, o, r);
+                        return t.observe(c, {
                             subtree: !0,
                             childList: !0
-                        }), a;
+                        }), c;
                     }
                 };
-                window.Element.prototype.attachShadow = new Proxy(window.Element.prototype.attachShadow, o);
+                window.Element.prototype.attachShadow = new Proxy(window.Element.prototype.attachShadow, e);
             })();
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
+        } catch (t) {
+            console.error("Error executing AG js: " + t);
         }
     },
     'document.cookie="vpn=1; path=/;";': () => {
@@ -5376,30 +5400,39 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + e);
         }
     },
-    '(()=>{const n="loader.min.js",e={includes:String.prototype.includes},o=()=>(new Error).stack,c={construct:(c,l,t)=>{const r=o();return e.includes.call(r,n)&&l[0]&&e.includes.call(l[0],"adshield")&&(l[0]=["(function(){})();"]),Reflect.construct(c,l,t)}};window.Blob=new Proxy(window.Blob,c);const l={apply:(c,l,t)=>{const r=o();return e.includes.call(r,n)&&t[0]&&e.includes.call(t[0],"throw new Error")&&(t[0]=()=>{}),Reflect.apply(c,l,t)}};window.setTimeout=new Proxy(window.setTimeout,l)})();': () => {
+    '(()=>{const e="loader.min.js",t={includes:String.prototype.includes,filter:Array.prototype.filter},l=()=>(new Error).stack,n={construct:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&o[0]&&t.includes.call(o[0],"adshield")&&(o[0]=["(function(){})();"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&t.includes.call(r[0],"new Error")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&o?.includes?.("setTimeout")&&(o=t.filter.call(o,(e=>!t.includes.call(e,"setTimeout")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();': () => {
         try {
             (() => {
-                const n = "loader.min.js", e = {
-                    includes: String.prototype.includes
-                }, o = () => (new Error).stack, c = {
-                    construct: (c, r, t) => {
-                        const l = o();
-                        return e.includes.call(l, n) && r[0] && e.includes.call(r[0], "adshield") && (r[0] = [ "(function(){})();" ]), 
-                        Reflect.construct(c, r, t);
+                const e = "loader.min.js", t = {
+                    includes: String.prototype.includes,
+                    filter: Array.prototype.filter
+                }, r = () => (new Error).stack, l = {
+                    construct: (l, o, n) => {
+                        const c = r();
+                        return t.includes.call(c, e) && o[0] && t.includes.call(o[0], "adshield") && (o[0] = [ "(function(){})();" ]), 
+                        Reflect.construct(l, o, n);
                     }
                 };
-                window.Blob = new Proxy(window.Blob, c);
-                const r = {
-                    apply: (c, r, t) => {
-                        const l = o();
-                        return e.includes.call(l, n) && t[0] && e.includes.call(t[0], "throw new Error") && (t[0] = () => {}), 
-                        Reflect.apply(c, r, t);
+                window.Blob = new Proxy(window.Blob, l);
+                const o = {
+                    apply: (l, o, n) => {
+                        const c = r();
+                        return t.includes.call(c, e) && n[0] && t.includes.call(n[0], "new Error") && (n[0] = () => {}), 
+                        Reflect.apply(l, o, n);
                     }
                 };
-                window.setTimeout = new Proxy(window.setTimeout, r);
+                window.setTimeout = new Proxy(window.setTimeout, o);
+                const n = {
+                    apply: (l, o, n) => {
+                        const c = r();
+                        return t.includes.call(c, e) && n[0] && o?.includes?.("setTimeout") && (o = t.filter.call(o, (e => !t.includes.call(e, "setTimeout")))), 
+                        Reflect.apply(l, o, n);
+                    }
+                };
+                window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, n);
             })();
-        } catch (n) {
-            console.error("Error executing AG js: " + n);
+        } catch (e) {
+            console.error("Error executing AG js: " + e);
         }
     },
     '(()=>{const e={apply:(e,l,o)=>"link"===o[0]||"style"===o[0]?[]:Reflect.apply(e,l,o)};window.document.querySelectorAll=new Proxy(window.document.querySelectorAll,e)})();': () => {
@@ -7697,50 +7730,72 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + t);
         }
     },
-    '(()=>{let e="";const t="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",n="//widgets.outbrain.com/outbrain.js",o="//s4.cdnpc.net/front/css/style.min.css",s="//s4.cdnpc.net/vite-bundle/main.css",c={apply:(c,a,r)=>{const p=r[1];return p&&(p.includes(t)||p.includes(n)||p.includes(o)||p.includes(s))&&(a.prevent=!0,e=p),Reflect.apply(c,a,r)}};window.XMLHttpRequest.prototype.open=new Proxy(window.XMLHttpRequest.prototype.open,c);const a={apply:async(c,a,r)=>{if(a.prevent){const c=()=>Promise.resolve(a).then((c=>{try{if(!c.responseText){let a="";e.includes(t)?a="google_plmetrics":e.includes(n)?a="outbrain":e.includes(o)?a="slider--features":e.includes(s)&&(a="data-v-d23a26c8"),Object.defineProperty(c,"responseText",{value:a})}"function"==typeof c.onload&&c.onload(),"function"==typeof c.onreadystatechange&&(Object.defineProperty(c,"status",{value:200}),Object.defineProperty(c,"readyState",{value:4}),c.onreadystatechange())}catch(e){console.trace(e)}}));try{const t=await fetch(e);if((await t.text()).length<2e3)return c()}catch(e){return c()}}return Reflect.apply(c,a,r)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,a)})();': () => {
+    '(()=>{let e="";const t={adsbygoogle:{url:"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",value:"google_plmetrics"},outbrain:{url:"//widgets.outbrain.com/outbrain.js",value:"outbrain"},cdnpcStyleMin:{url:"//s4.cdnpc.net/front/css/style.min.css",value:"slider--features"},cdnpcMain:{url:"//s4.cdnpc.net/vite-bundle/main.css",value:"data-v-d23a26c8"},taboola:{url:"//cdn.taboola.com/libtrc/san1go-network/loader.js",value:"feOffset"}},n=n=>{try{const o=n;if(!o.responseText){const n=(e=>{const n=Object.values(t).find((t=>e.includes(t.url)));return n?n.value:""})(e);Object.defineProperty(o,"responseText",{value:n})}"function"==typeof o.onload&&o.onload(),"function"==typeof o.onreadystatechange&&(Object.defineProperty(o,"status",{value:200}),Object.defineProperty(o,"readyState",{value:4}),o.onreadystatechange())}catch(e){console.trace(e)}},o={apply:(n,o,a)=>{const r=a[1];return r&&(e=>Object.values(t).some((t=>e.includes(t.url))))(r)&&(o.prevent=!0,e=r),Reflect.apply(n,o,a)}};window.XMLHttpRequest.prototype.open=new Proxy(window.XMLHttpRequest.prototype.open,o);const a={apply:async(t,o,a)=>{if(!o.prevent)return Reflect.apply(t,o,a);try{const t=await fetch(e);if((await t.text()).length<2e3)return n(o)}catch(e){return console.trace(e),n(o)}return Reflect.apply(t,o,a)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,a)})();': () => {
         try {
             (() => {
                 let e = "";
-                const t = "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", n = "//widgets.outbrain.com/outbrain.js", o = "//s4.cdnpc.net/front/css/style.min.css", s = "//s4.cdnpc.net/vite-bundle/main.css", c = {
-                    apply: (c, r, a) => {
-                        const p = a[1];
-                        return p && (p.includes(t) || p.includes(n) || p.includes(o) || p.includes(s)) && (r.prevent = !0, 
-                        e = p), Reflect.apply(c, r, a);
+                const t = {
+                    adsbygoogle: {
+                        url: "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+                        value: "google_plmetrics"
+                    },
+                    outbrain: {
+                        url: "//widgets.outbrain.com/outbrain.js",
+                        value: "outbrain"
+                    },
+                    cdnpcStyleMin: {
+                        url: "//s4.cdnpc.net/front/css/style.min.css",
+                        value: "slider--features"
+                    },
+                    cdnpcMain: {
+                        url: "//s4.cdnpc.net/vite-bundle/main.css",
+                        value: "data-v-d23a26c8"
+                    },
+                    taboola: {
+                        url: "//cdn.taboola.com/libtrc/san1go-network/loader.js",
+                        value: "feOffset"
                     }
-                };
-                window.XMLHttpRequest.prototype.open = new Proxy(window.XMLHttpRequest.prototype.open, c);
-                const r = {
-                    apply: async (c, r, a) => {
-                        if (r.prevent) {
-                            const c = () => Promise.resolve(r).then((c => {
-                                try {
-                                    if (!c.responseText) {
-                                        let r = "";
-                                        e.includes(t) ? r = "google_plmetrics" : e.includes(n) ? r = "outbrain" : e.includes(o) ? r = "slider--features" : e.includes(s) && (r = "data-v-d23a26c8"), 
-                                        Object.defineProperty(c, "responseText", {
-                                            value: r
-                                        });
-                                    }
-                                    "function" == typeof c.onload && c.onload(), "function" == typeof c.onreadystatechange && (Object.defineProperty(c, "status", {
-                                        value: 200
-                                    }), Object.defineProperty(c, "readyState", {
-                                        value: 4
-                                    }), c.onreadystatechange());
-                                } catch (e) {
-                                    console.trace(e);
-                                }
-                            }));
-                            try {
-                                const t = await fetch(e);
-                                if ((await t.text()).length < 2e3) return c();
-                            } catch (e) {
-                                return c();
-                            }
+                }, o = o => {
+                    try {
+                        const n = o;
+                        if (!n.responseText) {
+                            const o = (e => {
+                                const o = Object.values(t).find((t => e.includes(t.url)));
+                                return o ? o.value : "";
+                            })(e);
+                            Object.defineProperty(n, "responseText", {
+                                value: o
+                            });
                         }
-                        return Reflect.apply(c, r, a);
+                        "function" == typeof n.onload && n.onload(), "function" == typeof n.onreadystatechange && (Object.defineProperty(n, "status", {
+                            value: 200
+                        }), Object.defineProperty(n, "readyState", {
+                            value: 4
+                        }), n.onreadystatechange());
+                    } catch (e) {
+                        console.trace(e);
+                    }
+                }, n = {
+                    apply: (o, n, a) => {
+                        const r = a[1];
+                        return r && (e => Object.values(t).some((t => e.includes(t.url))))(r) && (n.prevent = !0, 
+                        e = r), Reflect.apply(o, n, a);
                     }
                 };
-                window.XMLHttpRequest.prototype.send = new Proxy(window.XMLHttpRequest.prototype.send, r);
+                window.XMLHttpRequest.prototype.open = new Proxy(window.XMLHttpRequest.prototype.open, n);
+                const a = {
+                    apply: async (t, n, a) => {
+                        if (!n.prevent) return Reflect.apply(t, n, a);
+                        try {
+                            const t = await fetch(e);
+                            if ((await t.text()).length < 2e3) return o(n);
+                        } catch (e) {
+                            return console.trace(e), o(n);
+                        }
+                        return Reflect.apply(t, n, a);
+                    }
+                };
+                window.XMLHttpRequest.prototype.send = new Proxy(window.XMLHttpRequest.prototype.send, a);
             })();
         } catch (e) {
             console.error("Error executing AG js: " + e);

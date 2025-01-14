@@ -1,8 +1,8 @@
-! Checksum: K1VqV1kKEwYL4nBXF7WW9w
+! Checksum: tuw26H+z5GoSdXmEUzPHjw
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.10.71
-! TimeUpdated: 2025-01-09T07:39:41+00:00
+! Version: 2.0.10.76
+! TimeUpdated: 2025-01-12T05:39:18+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -152,6 +152,9 @@ nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.livedoor.blog,kimamamatome.
 !
 ! NOTE: Blogroll specific rules
 !
+||pinkt.cocolog-nifty.com/pink/antenna.js
+gadget2ch.com#?#.posts-inner:contains(/他サイト様人気記事|こちらもオススメ/)
+oshiridaisuki.com##.article-header > div#text-4
 momon-ga.com##.blgo18-post-list
 koe-koe.com###nanmv
 shikotch.in###news
@@ -953,7 +956,7 @@ youtube5ch.com##.article-footer-rss
 /rss_$subdocument,domain=eegg.fun
 ||eegg.fun/rssline.html
 eegg.fun#?#.contents_main_area > div.innerframe:has(iframe[id^="frm_rss_"])
-umaumanews.com,karapaia.com,blog.fc2.com,blog.jp###blogroll
+umaumanews.com,blog.fc2.com,blog.jp###blogroll
 ssimas72.blog.jp##div[style^="width:990px;height:300px;"]
 footcalcio.com,tokimeki-s.com,rabitsokuhou.2chblog.jp###rss
 xn--gmq92kd2rm1kx34a.com###rssrole
@@ -1260,6 +1263,7 @@ beasoku.com##.l-rss-header
 ! 2chblog.jp,blog.jp,blog.livedoor.jp,bloggeek.jp,blogism.jp,blogo.jp,blogstation.jp,blogto.jp,cafeblog.jp,corpblog.jp,diary.to,doorblog.jp,dreamlog.jp,gger.jp,golog.jp,ldblog.jp,liblo.jp,livedoor.biz,livedoor.blog,myjournal.jp,mynikki.jp,officeblog.jp,officialblog.jp,publog.jp,storeblog.jp,teamblog.jp,techblog.jp,weblog.to,xxxblog.jp,youblog.jp,seesaa.net,blog.fc2.com,blog.2nt.com
 ! specify subdomain or use unique and safe selector; for blog.livedoor.jp make your rule as specific as possible or use $path
 !
+blog.livedoor.jp##iframe[id^="gazoupickup_"]
 ||blog.livedoor.jp/diet2channel/js/
 blog.livedoor.jp###hokanokiji + div#kijisaikabu
 blog.livedoor.jp##iframe[src^="http://blog.livedoor.jp/diet2channel/rss/"]
@@ -1916,6 +1920,7 @@ full-count.jp#?#section > div.c-heading:has(> p.c-heading__en:contains(RECOMMEND
 /js/chat/edu_chat.js
 /wp-content/plugins/creame-whatsapp-me/public/js/joinchat.
 !
+||ac-chatbot.freebie-ac.jp^$third-party
 ||decagon.ai^$third-party
 ||widget.hireaiva.com^$third-party
 ||ekr.zdassets.com/compose/zopim_chat/

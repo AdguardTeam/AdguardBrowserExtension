@@ -1,8 +1,8 @@
-! Checksum: IlLONFp0bmdMpRRPTOjW7w
+! Checksum: tcZ3FlNY0fJYmzVPumljxA
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.5.94
-! TimeUpdated: 2025-01-09T09:41:06+00:00
+! Version: 2.0.5.97
+! TimeUpdated: 2025-01-13T16:41:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -92,7 +92,6 @@
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175774
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175766
 /rtb/kodik_instream?$xmlhttprequest
-.com/vast.php?$xmlhttprequest
 ! https://github.com/AdguardTeam/AdguardFilters/issues/172328
 /load-xml/?id=*&roll=$xmlhttprequest
 ! AdFactor
@@ -4216,6 +4215,7 @@ http://w7.ru^$third-party
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
+||ad.cub.red^
 ||vst.videolink.host^
 ||exad.smi2.ru^
 ||tgb.hsmedia.ru^$third-party
@@ -4926,6 +4926,7 @@ citrus.ua,xsport.ua,zi.dn.ua,zi.ua##img[src^="/upload/rk/"]
 !
 !
 !
+gagadget.com##.post-links div.l-container:has(> .l-grid > div.l-inner > div[data-gpt-index])
 uaserials.pro###rek1
 ||cdn.hdvbua.pro/amedia/5/500x200_1.gif
 gsminfo.com.ua##aside .container-wrapper:has(> div > ins.adsbygoogle)
@@ -6275,6 +6276,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195971
+@@||a.abbyads.com/vast.php?spot=$xmlhttprequest,domain=qwiketube.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54436
 ! https://github.com/AdguardTeam/AdguardFilters/issues/67983
 @@/videojs-contrib-ads.min.js$domain=gamak.tv|telek.top
