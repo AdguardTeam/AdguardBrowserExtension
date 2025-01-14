@@ -1,8 +1,8 @@
-! Checksum: 4J8KZV5483E0ZkJ6TI6Wkw
+! Checksum: dgAKZy9cwKn94O9R/pRBsw
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.12
-! TimeUpdated: 2025-01-06T15:39:40+00:00
+! Version: 2.0.10.14
+! TimeUpdated: 2025-01-13T09:41:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -382,6 +382,9 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/196262
+||dailymail.co.uk^$removeparam=ns_mchannel
+||dailymail.co.uk^$removeparam=ns_campaign
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195101
 ||klerk.ru^$removeparam=srsltid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195153
@@ -2649,6 +2652,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/196067
+@@||video-shoper.ru^$removeparam=utm_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195040
 @@||glavnoe.life^$removeparam=utm_campaign
 @@||glavnoe.life^$removeparam=utm_content
