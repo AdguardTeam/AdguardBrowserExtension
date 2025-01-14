@@ -45,6 +45,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.49...HEAD
 
+## [5.0.183] - 2025-01-14
+
+### Removed
+
+- AdGuard Quick Fixes filter.
+- Filters metadata update on the extension install.
+
+[5.0.183]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.183
+
 ## [5.0.178] - 2024-12-24
 
 ### Changed
@@ -58,6 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Ability to execute new `AG_` script rules from *User rules* and *Custom filters* in MV3.
+
+[5.0.178]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.178
 
 ## [4.4.48] - 2024-11-25
 
