@@ -15,13 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 
-<!-- TODO: add release date and local link for the version -->
-## 5.0.183
+## [5.0.183] - 2025-01-14
 
 ### Removed
 
 - AdGuard Quick Fixes filter.
 - Filters metadata update on the extension install.
+
+[5.0.183]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.183
 
 ## [5.0.178] - 2024-12-24
 
