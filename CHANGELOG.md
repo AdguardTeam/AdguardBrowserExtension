@@ -102,7 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Memory leak caused by multiple script injections on the same pages
-  after a service worker or event page restart [#2594].
+  after a service worker or event page restart in MV3 [#2594].
 
 [5.0.170]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.170
 [#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
