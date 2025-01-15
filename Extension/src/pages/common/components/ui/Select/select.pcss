@@ -61,6 +61,16 @@
         padding: 16px;
         cursor: pointer;
 
+        &:first-child {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        &:last-child {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
         &-text {
             display: inline-block;
             font-size: 16px;
@@ -87,7 +97,7 @@
         &:focus-visible,
         &--focused {
             outline: 2px solid var(--outline);
-            outline-offset: -3px;
+            outline-offset: -2px;
         }
 
         &:hover {

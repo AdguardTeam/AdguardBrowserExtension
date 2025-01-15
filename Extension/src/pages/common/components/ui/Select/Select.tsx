@@ -109,9 +109,10 @@ export const Select = ({
     const listRef = useRef<HTMLDivElement>(null);
     const optionRefs = useRef<(HTMLElement | null)[]>([]);
 
-    const [searchString, setSearchString] = useState('');
-    const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | undefined>(undefined);
     const [focusedIndex, setFocusedIndex] = useState(0);
+    const searchString = useRef('');
+    const searchTimeoutId = useRef<NodeJS.Timeout | undefined>(undefined);
+    const ignoreBlur = useRef(false);
 
     const activeIndex = options.findIndex((option) => option.value === value);
     const activeOption = options[activeIndex];
@@ -130,17 +131,17 @@ export const Select = ({
     const listClasses = cn('select__list', hidden && 'select__list--hidden');
 
     const selectOption = useCallback((index: number) => {
-        if (index < 0 || index >= options.length) {
+        const option = options[index];
+        if (!option) {
             return;
         }
 
         setFocusedIndex(index);
-        handler(options[index]!.value);
+        handler(option.value);
     }, [handler, options]);
 
     const updateSelectState = useCallback((nextHidden: boolean, shouldFocus = true) => {
         const comboEl = comboRef.current;
-
         if (!comboEl || hidden === nextHidden) {
             return;
         }
@@ -168,6 +169,12 @@ export const Select = ({
 
         // do nothing if relatedTarget is contained within listboxEl
         if (!listEl || listEl.contains(event.relatedTarget)) {
+            return;
+        }
+
+        // do nothing if the blur event is ignored
+        if (ignoreBlur.current) {
+            ignoreBlur.current = false;
             return;
         }
 
@@ -201,18 +208,16 @@ export const Select = ({
     const getSearchString = (char: string) => {
         // reset typing timeout and start new timeout
         // this allows us to make multiple-letter matches, like a native select
-        if (searchTimeout !== undefined) {
-            clearTimeout(searchTimeout);
+        if (searchTimeoutId.current !== undefined) {
+            clearTimeout(searchTimeoutId.current);
         }
 
-        const timeoutId = setTimeout(() => {
-            setSearchString('');
+        searchTimeoutId.current = setTimeout(() => {
+            searchString.current = '';
         }, 500);
-        setSearchTimeout(timeoutId);
 
-        const newSearchString = searchString + char;
-        setSearchString(newSearchString);
-        return newSearchString;
+        searchString.current += char;
+        return searchString.current;
     };
 
     const onComboType = (letter: string) => {
@@ -220,10 +225,10 @@ export const Select = ({
         updateSelectState(false);
 
         // find the index of the first matching option
-        const searchString = getSearchString(letter);
+        const searchStringFromLetter = getSearchString(letter);
         const searchIndex = getIndexByLetter(
             options,
-            searchString,
+            searchStringFromLetter,
             focusedIndex + 1,
         );
 
@@ -232,8 +237,8 @@ export const Select = ({
             onOptionChange(searchIndex);
         } else {
             // if no matches, clear the timeout and search string
-            clearTimeout(searchTimeout);
-            setSearchString('');
+            clearTimeout(searchTimeoutId.current);
+            searchString.current = '';
         }
     };
 
@@ -271,7 +276,12 @@ export const Select = ({
     const onOptionClick = (event: React.MouseEvent<HTMLDivElement>, index: number) => {
         event.preventDefault();
         onOptionChange(index);
+        selectOption(index);
         updateSelectState(true);
+    };
+
+    const onOptionMouseDown = () => {
+        ignoreBlur.current = true;
     };
 
     useLayoutEffect(() => {
@@ -322,6 +332,7 @@ export const Select = ({
                 role="listbox"
                 className={listClasses}
                 aria-label={label}
+                aria-multiselectable="false"
                 tabIndex={-1}
             >
                 {options.map((option, index) => (
@@ -337,6 +348,7 @@ export const Select = ({
                         className={cn('select__item', index === focusedIndex && 'select__item--focused')}
                         aria-selected={index === activeIndex}
                         onClick={(event) => onOptionClick(event, index)}
+                        onMouseDown={onOptionMouseDown}
                     >
                         <span className="select__item-text">
                             {option.title}

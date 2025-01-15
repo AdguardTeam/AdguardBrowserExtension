@@ -60,7 +60,7 @@ export enum SelectAction {
  * @param exclude List of strings to exclude.
  * @returns Filtered options.
  */
-export function filterOptions(
+function filterOptions(
     options: SelectOption[],
     filter: string,
     exclude: string[] = [],
@@ -141,12 +141,13 @@ export function getActionFromKey(
 }
 
 /**
- * Check if all elements in an array are the same.
+ * Check if all characters in an string are the same.
  *
- * @param array Array to check.
- * @returns True if all elements are the same.
+ * @param str String to check.
+ * @returns True if all letters are the same.
  */
-function isAllSameLetter(array: string[]): boolean {
+function isAllSameLetter(str: string): boolean {
+    const array = str.split('');
     return array.every((letter) => letter === array[0]);
 }
 
@@ -165,6 +166,10 @@ export function getIndexByLetter(
     filter: string,
     startIndex = 0,
 ) {
+    if (filter === '') {
+        return -1;
+    }
+
     const orderedOptions = [
         ...options.slice(startIndex),
         ...options.slice(0, startIndex),
@@ -177,7 +182,7 @@ export function getIndexByLetter(
     }
 
     // if the same letter is being repeated, cycle through first-letter matches
-    if (isAllSameLetter(filter.split(''))) {
+    if (isAllSameLetter(filter)) {
         const matches = filterOptions(orderedOptions, filter[0] ?? '');
         return options.findIndex((option) => option.value === matches[0]?.value);
     }
@@ -199,8 +204,7 @@ export function getUpdatedIndex(
     currentIndex: number,
     maxIndex: number,
     action: SelectAction,
-    // FIXME: Update
-    pageSize = 10,
+    pageSize = 4,
 ) {
     switch (action) {
         case SelectAction.First:
