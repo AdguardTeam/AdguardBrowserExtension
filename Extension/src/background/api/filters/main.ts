@@ -84,6 +84,14 @@ export class FiltersApi {
         FiltersApi.loadFilteringStates();
 
         await FiltersApi.removeObsoleteFilters();
+
+        /**
+         * Update the metadata from the local source to force its update in the storage
+         * so after the browser language change, the metadata will be updated.
+         *
+         * Partially related: @see {@link https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2504}.
+         */
+        await FiltersApi.updateMetadataFromLocal();
     }
 
     /**
