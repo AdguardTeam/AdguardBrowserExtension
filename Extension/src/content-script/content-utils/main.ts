@@ -21,7 +21,13 @@ import { messageHandler } from './message-handler';
 import { Popups } from './popups';
 
 export class ContentUtils {
-    public static init(): void {
+    /**
+     * Initializes content utils.
+     *
+     * IMPORTANT! It is intentionally async so it can be called without await
+     * to not slow down frames loading in Firefox.
+     */
+    public static async init(): Promise<void> {
         if (window !== window.top) {
             return;
         }
