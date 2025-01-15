@@ -97,13 +97,14 @@ export class FiltersApi {
     /**
      * Updates metadata from remote source.
      *
-     * Needed mainly for MV2 version.
+     * If remote loading fails (due to server issues or network problems, etc.),
+     * and if `shouldUseLocalAssets` is true, the method loads metadata from local assets.
      *
      * @param shouldUseLocalAssets Whether to load metadata from local assets as a fallback.
      */
     private static async updateMetadataFromRemote(shouldUseLocalAssets = false): Promise<void> {
         try {
-            // there is no remove resource restriction in MV2
+            // there is no remote resource restriction in MV2
             await FiltersApi.loadI18nMetadataFromBackend(true);
             await FiltersApi.loadMetadataFromFromBackend(true);
         } catch (e) {
@@ -120,8 +121,6 @@ export class FiltersApi {
 
     /**
      * Updates metadata from local source.
-     *
-     * Needed mainly for MV3 version because.
      */
     private static async updateMetadataFromLocal(): Promise<void> {
         try {
