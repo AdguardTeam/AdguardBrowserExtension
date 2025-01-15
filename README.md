@@ -450,11 +450,13 @@ pnpm locales info
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 
+<!-- NOTE: see MIN_SUPPORTED_VERSION in ./constants.ts -->
+
 | Browser                     | Version |
 |---------------------------- |---------|
-| Chromium-based browsers MV2 | 106     |
-| Chromium-based browsers MV3 | 121     |
-| Firefox                     | 78      |
-| Firefox Mobile              | 113     |
-| Opera                       | 67      |
-| Edge                        | 80      |
+| Chromium-based browsers MV2 | ✅ 106  |
+| Chromium-based browsers MV3 | ✅ 121  |
+| Firefox                     | ✅ 78   |
+| Firefox Mobile              | ✅ 113  |
+| Opera                       | ✅ 66   |
+| Edge Legacy                 | ❌      |
