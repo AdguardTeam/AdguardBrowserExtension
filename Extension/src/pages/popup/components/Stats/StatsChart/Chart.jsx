@@ -256,5 +256,5 @@ export const Chart = ({
         });
     }, [range, type, stats, small]);
 
-    return <div className="chart" id="chart" />;
+    return <div className="chart" id="chart" aria-hidden="true" />;
 };
