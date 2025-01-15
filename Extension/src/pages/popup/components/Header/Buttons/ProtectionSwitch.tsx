@@ -43,7 +43,7 @@ export const ProtectionSwitch = observer(() => {
         <button
             type="button"
             role="switch"
-            title={translator.getMessage('context_protection')}
+            title={translator.getMessage('popup_protection_button')}
             className="button popup-header__button"
             aria-checked={!applicationFilteringPaused}
             onClick={buttonHandler}
