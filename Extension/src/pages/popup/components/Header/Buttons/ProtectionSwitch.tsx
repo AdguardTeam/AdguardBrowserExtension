@@ -27,27 +27,26 @@ import { popupStore } from '../../../stores/PopupStore';
  * Pause/Resume button component.
  */
 export const ProtectionSwitch = observer(() => {
-    // FIXME: Probably need to improve a11y for this button
     const store = useContext(popupStore);
 
     const { applicationFilteringPaused, pauseApplicationFiltering, resumeApplicationFiltering } = store;
 
-    let title = translator.getMessage('context_disable_protection');
     let iconId = '#pause';
     let buttonHandler = pauseApplicationFiltering;
 
     if (applicationFilteringPaused) {
-        title = translator.getMessage('context_enable_protection');
         iconId = '#start';
         buttonHandler = resumeApplicationFiltering;
     }
 
     return (
         <button
-            className="button popup-header__button"
             type="button"
+            role="switch"
+            title={translator.getMessage('context_protection')}
+            className="button popup-header__button"
+            aria-checked={!applicationFilteringPaused}
             onClick={buttonHandler}
-            title={title}
         >
             <Icon
                 id={iconId}
