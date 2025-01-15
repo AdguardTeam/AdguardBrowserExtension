@@ -16,54 +16,95 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useRef, useState } from 'react';
+import React, {
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../common/common-script';
 import { messenger } from '../../../../services/messenger';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
+import { Toasts } from '../../../../../background/api';
 
 export const UpdateButton = () => {
-    // FIXME: Probably need to improve a11y for this button
+    const refUpdatingBtn = useRef<HTMLButtonElement>(null);
+
+    const timeoutId = useRef<NodeJS.Timeout | null>(null);
     const [filtersUpdating, setFiltersUpdating] = useState(false);
+    const [updateMessage, setUpdateMessage] = useState('');
 
     const updateFiltersWithMinDuration = addMinDurationTime(
         messenger.updateFilters,
         MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS,
     );
 
-    const refUpdatingBtn = useRef<HTMLButtonElement>(null);
-
     const handleUpdateFiltersClick = async () => {
-        if (refUpdatingBtn.current) {
-            refUpdatingBtn.current.blur();
-        }
         // In MV3 we don't support update of filters.
         if (__IS_MV3__) {
             return;
         }
+
+        if (timeoutId.current) {
+            clearTimeout(timeoutId.current);
+            timeoutId.current = null;
+        }
+
         setFiltersUpdating(true);
-        await updateFiltersWithMinDuration();
+        setUpdateMessage('');
+
+        const updatedFilters = await updateFiltersWithMinDuration();
+        const { text } = Toasts.getFiltersUpdateResultMessage(true, updatedFilters as any[]);
+
+        setUpdateMessage(text);
         setFiltersUpdating(false);
+
+        // Hack used here: previously we updated content of aria-live with message
+        // which Screen Readers will announce to user after that we will remove it
+        // immediately to avoid having focus on this hidden element.
+        timeoutId.current = setTimeout(() => {
+            setUpdateMessage('');
+            timeoutId.current = null;
+        }, 1);
     };
 
+    useEffect(() => {
+        return () => {
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+                timeoutId.current = null;
+            }
+        };
+    }, []);
+
     return (
-        <button
-            className="button popup-header__button"
-            ref={refUpdatingBtn}
-            disabled={filtersUpdating}
-            type="button"
-            onClick={handleUpdateFiltersClick}
-            title={translator.getMessage('popup_header_update_filters')}
-        >
-            <Icon
-                id="#reload"
-                classname="icon--24 icon--header"
-                animationCondition={filtersUpdating}
-                animationClassname="icon--loading"
-                aria-hidden="true"
-            />
-        </button>
+        <>
+            <div
+                role="status"
+                className="sr-only"
+                aria-live="assertive"
+                tabIndex={-1}
+            >
+                {filtersUpdating ? translator.getMessage('options_popup_updating_filters') : updateMessage}
+            </div>
+            <button
+                className="button popup-header__button"
+                ref={refUpdatingBtn}
+                disabled={filtersUpdating}
+                type="button"
+                onClick={handleUpdateFiltersClick}
+                title={translator.getMessage('popup_header_update_filters')}
+            >
+                <Icon
+                    id="#reload"
+                    classname="icon--24 icon--header"
+                    animationCondition={filtersUpdating}
+                    animationClassname="icon--loading"
+                    aria-hidden="true"
+                />
+            </button>
+        </>
     );
 };
