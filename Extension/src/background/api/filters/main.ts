@@ -104,7 +104,6 @@ export class FiltersApi {
      */
     private static async updateMetadataFromRemote(shouldUseLocalAssets = false): Promise<void> {
         try {
-            // there is no remote resource restriction in MV2
             await FiltersApi.loadI18nMetadataFromBackend(true);
             await FiltersApi.loadMetadataFromFromBackend(true);
         } catch (e) {
@@ -124,22 +123,6 @@ export class FiltersApi {
      */
     private static async updateMetadataFromLocal(): Promise<void> {
         try {
-            /**
-             * MV3_REMOTE_POLICY.
-             * This keyword can be used to grep all code related to MV3 remote
-             * hosting policy.
-             *
-             * In MV3 extension we do not download anything from remote servers
-             * except custom filter lists which added by the users themselves.
-             * Having this logic is particularly important for an ad blocker since
-             * websites breakages can occur at any time and we need to be able to
-             * fix them ASAP.
-             *
-             * To ensure compliance with Chrome Store policies, we have safeguards
-             * that restrict execution to rules that are included into the extension
-             * package and can be reviewed there. These safeguards can be found by
-             * searching for 'JS_RULES_EXECUTION'.
-             */
             await FiltersApi.loadI18nMetadataFromBackend(false);
             await FiltersApi.loadMetadataFromFromBackend(false);
         } catch (e) {
@@ -163,8 +146,25 @@ export class FiltersApi {
      */
     public static async updateMetadata(shouldUseLocalAssets = false): Promise<void> {
         if (__IS_MV3__) {
+            /**
+             * MV3_REMOTE_POLICY.
+             * This keyword can be used to grep all code related to MV3 remote
+             * hosting policy.
+             *
+             * In MV3 extension we do not download anything from remote servers
+             * except custom filter lists which added by the users themselves.
+             * Having this logic is particularly important for an ad blocker since
+             * websites breakages can occur at any time and we need to be able to
+             * fix them ASAP.
+             *
+             * To ensure compliance with Chrome Store policies, we have safeguards
+             * that restrict execution to rules that are included into the extension
+             * package and can be reviewed there. These safeguards can be found by
+             * searching for 'JS_RULES_EXECUTION'.
+             */
             await FiltersApi.updateMetadataFromLocal();
         } else {
+            // there is no remote resource restriction in MV2
             await FiltersApi.updateMetadataFromRemote(shouldUseLocalAssets);
         }
 
