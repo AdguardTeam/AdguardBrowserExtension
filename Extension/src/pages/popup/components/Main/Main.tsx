@@ -38,12 +38,9 @@ import './main.pcss';
  */
 enum AppStateField {
     Title = 'Title',
-    TitleAriaVisible = 'TitleAriaVisible',
     Subtitle = 'Subtitle',
-    SubtitleAriaVisible = 'SubtitleAriaVisible',
     ButtonHandler = 'ButtonHandler',
     SwitcherOn = 'SwitcherOn',
-    Status = 'Status',
 }
 
 /**
@@ -56,19 +53,9 @@ type AppStateData = {
     [AppStateField.Title]: string;
 
     /**
-     * Flag for the title to be visible for screen readers.
-     */
-    [AppStateField.TitleAriaVisible]?: boolean;
-
-    /**
      * State subtitle.
      */
     [AppStateField.Subtitle]?: string;
-
-    /**
-     * Flag for the subtitle to be visible for screen readers.
-     */
-    [AppStateField.SubtitleAriaVisible]?: boolean;
 
     /**
      * Handler for the button.
@@ -79,15 +66,9 @@ type AppStateData = {
      * Flag for the main switcher. If it's not defined, the switcher is not shown.
      */
     [AppStateField.SwitcherOn]?: boolean;
-
-    /**
-     * Status of the state.
-     */
-    [AppStateField.Status]?: string;
 };
 
 export const Main = observer(() => {
-    // FIXME: Improve a11y
     const store = useContext(popupStore);
 
     const {
@@ -111,66 +92,43 @@ export const Main = observer(() => {
     const totalBlockedSubtitle = translator.getMessage('popup_tab_blocked_all_count', {
         num: totalBlocked.toLocaleString(),
     });
-    const pausedTitle = translator.getMessage('popup_site_filtering_state_paused');
-    const forAllWebsitesSubtitle = translator.getMessage('popup_site_filtering_state_subtitle_all_websites');
 
-    /**
-     * Map of the app states to the data to render.
-     *
-     * Notes about A11Y:
-     * - Do not show title and subtitle for screen readers if they represents information
-     *   about current state. It's already announced by the screen reader using `AppStateField.Status`.
-     *   Currently, we show only information about blocked requests for title and total blocked requests
-     *   for subtitle.
-     *
-     * - Do not add `AppStateField.Status` for intermediate states (eg. 'Enabling', 'Disabling', etc.),
-     *   because these actions happens pretty fast and screen reader will not have time to announce it.
-     *   You can add state if it takes a long time to complete (> 1s).
-     */
     const statesMap: Record<AppState, AppStateData | null> = {
         [AppState.Loading]: null,
         [AppState.Disabling]: {
             [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_disabling'),
             [AppStateField.Subtitle]: totalBlockedSubtitle,
-            [AppStateField.SubtitleAriaVisible]: true,
             [AppStateField.SwitcherOn]: false,
         },
         [AppState.Disabled]: {
             [AppStateField.Title]: currentDisabledTitle,
             [AppStateField.Subtitle]: totalBlockedSubtitle,
-            [AppStateField.SubtitleAriaVisible]: true,
             [AppStateField.ButtonHandler]: toggleAllowlisted,
             [AppStateField.SwitcherOn]: false,
-            [AppStateField.Status]: translator.getMessage('popup_site_filtering_state_disabled'), // FIXME: Secure page
         },
         [AppState.Enabling]: {
             [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_enabling'),
             [AppStateField.Subtitle]: totalBlockedSubtitle,
-            [AppStateField.SubtitleAriaVisible]: true,
             [AppStateField.SwitcherOn]: true,
         },
         [AppState.Enabled]: {
             [AppStateField.Title]: currentEnabledTitle,
-            [AppStateField.TitleAriaVisible]: true,
             [AppStateField.Subtitle]: totalBlockedSubtitle,
-            [AppStateField.SubtitleAriaVisible]: true,
             [AppStateField.ButtonHandler]: toggleAllowlisted,
             [AppStateField.SwitcherOn]: true,
-            [AppStateField.Status]: translator.getMessage('popup_site_filtering_state_enabled'), // FIXME: Secure page
         },
         [AppState.Pausing]: {
             [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_pausing'),
-            [AppStateField.Subtitle]: forAllWebsitesSubtitle,
+            [AppStateField.Subtitle]: translator.getMessage('popup_site_filtering_state_subtitle_all_websites'),
         },
         [AppState.Paused]: {
-            [AppStateField.Title]: pausedTitle,
-            [AppStateField.Subtitle]: forAllWebsitesSubtitle,
+            [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_paused'),
+            [AppStateField.Subtitle]: translator.getMessage('popup_site_filtering_state_subtitle_all_websites'),
             [AppStateField.ButtonHandler]: resumeApplicationFiltering,
-            [AppStateField.Status]: `${pausedTitle} ${forAllWebsitesSubtitle}`,
         },
         [AppState.Resuming]: {
             [AppStateField.Title]: translator.getMessage('popup_site_filtering_state_resuming'),
-            [AppStateField.Subtitle]: forAllWebsitesSubtitle,
+            [AppStateField.Subtitle]: translator.getMessage('popup_site_filtering_state_subtitle_all_websites'),
         },
     };
 
@@ -241,21 +199,15 @@ export const Main = observer(() => {
                 <div
                     className="main__header--current-status--title"
                     title={state[AppStateField.Title]}
-                    aria-hidden={!state[AppStateField.TitleAriaVisible]}
                 >
                     {state[AppStateField.Title]}
                 </div>
                 <div
                     className="main__header--current-status--subtitle"
                     title={state[AppStateField.Subtitle]}
-                    aria-hidden={!state[AppStateField.SubtitleAriaVisible]}
                 >
                     {state[AppStateField.Subtitle]}
                 </div>
-            </div>
-
-            <div role="status" className="sr-only" aria-live="polite">
-                {state[AppStateField.Status]}
             </div>
 
             <div className="main__control">{getCentralControlByState()}</div>
