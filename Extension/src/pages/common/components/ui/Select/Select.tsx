@@ -109,13 +109,13 @@ export const Select = ({
     const listRef = useRef<HTMLDivElement>(null);
     const optionRefs = useRef<(HTMLElement | null)[]>([]);
 
-    const [focusedIndex, setFocusedIndex] = useState(0);
+    const activeIndex = options.findIndex((option) => option.value === value);
+    const activeOption = options[activeIndex];
+
+    const [focusedIndex, setFocusedIndex] = useState(activeIndex === -1 ? 0 : activeIndex);
     const searchString = useRef('');
     const searchTimeoutId = useRef<NodeJS.Timeout | undefined>(undefined);
     const ignoreBlur = useRef(false);
-
-    const activeIndex = options.findIndex((option) => option.value === value);
-    const activeOption = options[activeIndex];
 
     const comboId = `${id}-combo`;
     const listId = `${id}-list`;
