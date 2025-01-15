@@ -56,6 +56,7 @@ import {
     AGTREE_VENDOR_OUTPUT,
     CSS_TOKENIZER_VENDOR_OUTPUT,
     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+    MIN_SUPPORTED_VERSION,
 } from '../../constants';
 
 import {
@@ -298,9 +299,9 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                             options: {
                                 env: {
                                     targets: {
-                                        chrome: 106,
-                                        firefox: 78,
-                                        opera: 66,
+                                        chrome: MIN_SUPPORTED_VERSION.CHROMIUM,
+                                        firefox: MIN_SUPPORTED_VERSION.FIREFOX,
+                                        opera: MIN_SUPPORTED_VERSION.OPERA,
                                     },
                                     mode: 'usage',
                                     coreJs: '3.32',

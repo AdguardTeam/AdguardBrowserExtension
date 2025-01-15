@@ -67,3 +67,16 @@ export const LOCAL_I18N_METADATA_FILE_NAME = 'filters_i18n.json';
  * `12` is absent because Safari filter if obsolete and not used anymore.
  */
 export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 224];
+
+/**
+ * Minimum supported browser versions.
+ *
+ * IMPORTANT! Update browser compatibility in the README.md file when changing these values
+ * and manifest files in the tools/bundle directory.
+ */
+export const MIN_SUPPORTED_VERSION = {
+    CHROMIUM: 106,
+    FIREFOX: 78,
+    FIREFOX_MOBILE: 113,
+    OPERA: 66,
+};
