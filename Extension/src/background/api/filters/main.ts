@@ -95,20 +95,35 @@ export class FiltersApi {
     }
 
     /**
-     * Tries to load metadata from remote source and reloads linked storages.
-     * Called before filters rules are updated or loaded from backend.
+     * Updates metadata from remote source.
      *
-     * The metadata cannot be loaded individually because the all metadata needs
-     * to be updated in order to, for example, update translations or track
-     * the removal/addition of filters.
+     * Needed mainly for MV2 version.
      *
-     * If remote loading fails (due to server issues or network problems, etc.),
-     * and if `shouldUseLocalAssets` is true, the method loads metadata from local assets.
-     *
-     * @param shouldUseLocalAssets Whether to load metadata from local assets
-     * if remote loading fails. Default is false.
+     * @param shouldUseLocalAssets Whether to load metadata from local assets as a fallback.
      */
-    public static async updateMetadata(shouldUseLocalAssets = false): Promise<void> {
+    private static async updateMetadataFromRemote(shouldUseLocalAssets = false): Promise<void> {
+        try {
+            // there is no remove resource restriction in MV2
+            await FiltersApi.loadI18nMetadataFromBackend(true);
+            await FiltersApi.loadMetadataFromFromBackend(true);
+        } catch (e) {
+            logger.debug('Cannot load remote metadata due to: ', getErrorMessage(e));
+            // loading metadata from local assets is needed to avoid the extension init stopping after the install
+            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
+            if (shouldUseLocalAssets) {
+                logger.debug('Trying to load metadata from local assets...');
+                await FiltersApi.loadI18nMetadataFromBackend(false);
+                await FiltersApi.loadMetadataFromFromBackend(false);
+            }
+        }
+    }
+
+    /**
+     * Updates metadata from local source.
+     *
+     * Needed mainly for MV3 version because.
+     */
+    private static async updateMetadataFromLocal(): Promise<void> {
         try {
             /**
              * MV3_REMOTE_POLICY.
@@ -126,17 +141,32 @@ export class FiltersApi {
              * package and can be reviewed there. These safeguards can be found by
              * searching for 'JS_RULES_EXECUTION'.
              */
-            await FiltersApi.loadI18nMetadataFromBackend(!__IS_MV3__);
-            await FiltersApi.loadMetadataFromFromBackend(!__IS_MV3__);
+            await FiltersApi.loadI18nMetadataFromBackend(false);
+            await FiltersApi.loadMetadataFromFromBackend(false);
         } catch (e) {
-            logger.debug('Cannot load remote metadata due to: ', getErrorMessage(e));
-            // loading metadata from local assets is needed to avoid the extension init stopping after the install
-            // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
-            if (shouldUseLocalAssets) {
-                logger.debug('Trying to load metadata from local assets...');
-                await FiltersApi.loadI18nMetadataFromBackend(false);
-                await FiltersApi.loadMetadataFromFromBackend(false);
-            }
+            logger.debug('Cannot load local metadata due to: ', getErrorMessage(e));
+        }
+    }
+
+    /**
+     * Tries to load metadata from remote source and reloads linked storages.
+     * Called before filters rules are updated or loaded from backend.
+     *
+     * The metadata cannot be loaded individually because the all metadata needs
+     * to be updated in order to, for example, update translations or track
+     * the removal/addition of filters.
+     *
+     * If remote loading fails (due to server issues or network problems, etc.),
+     * and if `shouldUseLocalAssets` is true, the method loads metadata from local assets.
+     *
+     * @param shouldUseLocalAssets Whether to load metadata from local assets
+     * if remote loading fails. Default is false.
+     */
+    public static async updateMetadata(shouldUseLocalAssets = false): Promise<void> {
+        if (__IS_MV3__) {
+            await FiltersApi.updateMetadataFromLocal();
+        } else {
+            await FiltersApi.updateMetadataFromRemote(shouldUseLocalAssets);
         }
 
         FiltersApi.loadFilteringStates();
