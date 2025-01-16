@@ -4,17 +4,14 @@
  *    (you can search the described steps by 'JS_RULES_EXECUTION' in the bundled background.js):
  *
  * 1. We collect and pre-build JS rules from the filters (which are pre-built into the extension)
- *    into the add-on (step 1). See 'updateLocalScriptRulesForChromiumMv3' in
+ *    into the add-on (STEP 1). See 'updateLocalScriptRulesForChromiumMv3' in
  *    https://github.com/AdguardTeam/AdguardBrowserExtension/blob/fix/AG-38557-001/tools/resources/update-local-script-rules.ts
  *    and the file called "local_script_rules.js".
- * 2. Collected local script rules are passed to the engine (step 2.1 and 2.2).
- * 3. At runtime we check every JS rule whether it is included in "local_script_rules.js" (step 3).
+ * 2. Collected local script rules are passed to the engine (STEP 2.1 and 2.2).
+ * 3. At runtime we check every JS rule whether it is included in "local_script_rules.js" (STEP 3).
  * 4. Execution of JS rules:
  *     - If the rule is included, we allow this rule to work since it is pre-built.
- *       Such rules are executed by chrome.scripting API (step 4.1). Other rules are discarded.
- *     - If the rule is added manually by the user (rules from "User rules" and "Custom filters"),
- *       we allow it to work as well. This way filters maintainers can test new rules before including them in the filters.
- *       Such rules are executed by script tag injection (step 4.2) as they are local because they were added by the user.
+ *       Such rules are executed by chrome.scripting API (STEP 4.1). Other rules are discarded.
  */
 export const localScriptRules = {
     '(function(){var a=document.currentScript,b=String.prototype.charCodeAt,c=function(){return true;};Object.defineProperty(String.prototype,"charCodeAt",{get:function(){return document.currentScript===a?b:c},set:function(a){}})})();': () => {
@@ -8248,6 +8245,18 @@ export const localScriptRules = {
             }();
         } catch (t) {
             console.error("Error executing AG js: " + t);
+        }
+    },
+    '!function(){let e=()=>{document.querySelector("#case-1-generichide > .test-banner1").style.width="200px"};"complete"===document.readyState?e():window.document.addEventListener("readystatechange",e)}();': () => {
+        try {
+            !function() {
+                let e = () => {
+                    document.querySelector("#case-1-generichide > .test-banner1").style.width = "200px";
+                };
+                "complete" === document.readyState ? e() : window.document.addEventListener("readystatechange", e);
+            }();
+        } catch (e) {
+            console.error("Error executing AG js: " + e);
         }
     }
 };
