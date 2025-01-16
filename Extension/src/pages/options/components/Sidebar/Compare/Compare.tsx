@@ -24,7 +24,14 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import './compare.pcss';
 
 export interface CompareProps {
+    /**
+     * Compare button click handler.
+     */
     onCompareClick: () => void;
+
+    /**
+     * Close button click handler.
+     */
     onCloseClick: () => void;
 }
 
