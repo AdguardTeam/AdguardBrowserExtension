@@ -208,6 +208,23 @@ export const updateLocalScriptRulesForChromiumMv3 = async () => {
         });
     }
 
+    /**
+     * This is a test case rule that is used for integration testing.
+     * It should be added explicitly to the list of rules.
+     *
+     * @see {@link https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt}
+     */
+    // eslint-disable-next-line max-len
+    const RAW_TESTCASE_RULE = 'testcases.agrd.dev,pages.dev#%#!function(){let e=()=>{document.querySelector("#case-1-generichide > .test-banner1").style.width="200px"};"complete"===document.readyState?e():window.document.addEventListener("readystatechange",e)}();';
+    const parsedTestcaseRule = CosmeticRuleParser.parse(RAW_TESTCASE_RULE);
+    if (!parsedTestcaseRule
+        || parsedTestcaseRule.category !== 'Cosmetic'
+        || parsedTestcaseRule.type !== 'JsInjectionRule') {
+        throw new Error('Invalid test rule');
+    }
+    const reGeneratedRule = CosmeticRuleParser.generateBody(parsedTestcaseRule);
+    jsRules.add(reGeneratedRule);
+
     const processedRules: string[] = [];
     const errors: string[] = [];
     const agFunctions: Map<string, string> = new Map();

@@ -15,6 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 
+## 5.0.185
+
+### Changed
+
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.9.
+
+### Removed
+
+- Injection of remotely hosted scripts.
+
 ## [5.0.183] - 2025-01-14
 
 ### Removed
