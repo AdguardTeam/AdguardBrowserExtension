@@ -210,6 +210,7 @@ export const Select = ({
         // this allows us to make multiple-letter matches, like a native select
         if (searchTimeoutId.current !== null) {
             clearTimeout(searchTimeoutId.current);
+            searchTimeoutId.current = null;
         }
 
         searchTimeoutId.current = setTimeout(() => {
@@ -240,6 +241,7 @@ export const Select = ({
             // if no matches, clear the timeout and search string
             if (searchTimeoutId.current !== null) {
                 clearTimeout(searchTimeoutId.current);
+                searchTimeoutId.current = null;
             }
             searchString.current = '';
         }

@@ -56,7 +56,7 @@ export const UpdateButton = () => {
         setUpdateMessage('');
 
         const updatedFilters = await updateFiltersWithMinDuration();
-        const { text } = Toasts.getFiltersUpdateResultMessage(true, updatedFilters as any[]);
+        const { text } = Toasts.getFiltersUpdateResultMessage(true, updatedFilters);
 
         setUpdateMessage(text);
         setFiltersUpdating(false);
