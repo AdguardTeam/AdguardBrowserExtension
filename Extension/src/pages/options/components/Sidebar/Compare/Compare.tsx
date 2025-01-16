@@ -23,9 +23,14 @@ import { Icon } from '../../../../common/components/ui/Icon';
 
 import './compare.pcss';
 
-export const Compare = ({ click, hide }) => {
+export interface CompareProps {
+    onCompareClick: () => void;
+    onCloseClick: () => void;
+}
+
+export const Compare = ({ onCompareClick, onCloseClick }: CompareProps) => {
     return (
-        <div className="compare">
+        <div role="alert" className="compare">
             <div className="compare__message">
                 {translator.getMessage('options_nav_better_than_extension')}
             </div>
@@ -33,7 +38,7 @@ export const Compare = ({ click, hide }) => {
                 type="button"
                 className="button button--green-bg button--m button--compare"
                 title={translator.getMessage('options_nav_compare')}
-                onClick={click}
+                onClick={onCompareClick}
             >
                 {translator.getMessage('options_nav_compare')}
             </button>
@@ -41,9 +46,13 @@ export const Compare = ({ click, hide }) => {
                 type="button"
                 className="compare__close"
                 aria-label={translator.getMessage('close_button_title')}
-                onClick={hide}
+                onClick={onCloseClick}
             >
-                <Icon id="#cross" classname="icon--24 icon--gray-default" />
+                <Icon
+                    id="#cross"
+                    classname="icon--24 icon--gray-default"
+                    aria-hidden="true"
+                />
             </button>
         </div>
     );

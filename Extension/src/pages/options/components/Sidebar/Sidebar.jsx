@@ -82,8 +82,8 @@ const Sidebar = observer(() => {
                 <Nav closeSidebar={closeSidebarWrapper} />
                 {settingsStore.showAdguardPromoInfo && (
                     <Compare
-                        click={handleCompareClick}
-                        hide={hideCompare}
+                        onCompareClick={handleCompareClick}
+                        onCloseClick={hideCompare}
                     />
                 )}
             </div>
