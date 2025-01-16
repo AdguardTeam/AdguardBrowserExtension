@@ -183,17 +183,6 @@ export class NetworkSettings {
     }
 
     /**
-     * Returns URL for user complaints on missed ads or malware/phishing websites.
-     *
-     * FIXME: Looks like not used, can be removed.
-     *
-     * @returns URL for user complaints on missed ads or malware/phishing websites.
-     */
-    get reportUrl(): string {
-        return `${this.backendUrl}/url-report.html`;
-    }
-
-    /**
      * URL for collecting filter rules statistics.
      * We do not collect it by default, unless user is willing to help.
      * Filter rules stats are covered in our privacy policy and on also here:
