@@ -114,7 +114,7 @@ export const Select = ({
 
     const [focusedIndex, setFocusedIndex] = useState(activeIndex === -1 ? 0 : activeIndex);
     const searchString = useRef('');
-    const searchTimeoutId = useRef<NodeJS.Timeout | undefined>(undefined);
+    const searchTimeoutId = useRef<NodeJS.Timeout | null>(null);
     const ignoreBlur = useRef(false);
 
     const comboId = `${id}-combo`;
@@ -130,7 +130,7 @@ export const Select = ({
     const classes = cn('select', popupModification && 'popup-modification');
     const listClasses = cn('select__list', hidden && 'select__list--hidden');
 
-    const selectOption = useCallback((index: number) => {
+    const updateOption = useCallback((index: number) => {
         const option = options[index];
         if (!option) {
             return;
@@ -180,12 +180,12 @@ export const Select = ({
 
         // select current option and close
         if (!hidden) {
-            selectOption(focusedIndex);
+            updateOption(focusedIndex);
             updateSelectState(true, false);
         }
-    }, [selectOption, updateSelectState, hidden, focusedIndex]);
+    }, [updateOption, updateSelectState, hidden, focusedIndex]);
 
-    const onOptionChange = (index: number) => {
+    const focusOnOption = (index: number) => {
         const listEl = listRef.current;
         const optionEl = optionRefs.current[index];
         if (!listEl || !optionEl) {
@@ -208,12 +208,13 @@ export const Select = ({
     const getSearchString = (char: string) => {
         // reset typing timeout and start new timeout
         // this allows us to make multiple-letter matches, like a native select
-        if (searchTimeoutId.current !== undefined) {
+        if (searchTimeoutId.current !== null) {
             clearTimeout(searchTimeoutId.current);
         }
 
         searchTimeoutId.current = setTimeout(() => {
             searchString.current = '';
+            searchTimeoutId.current = null;
         }, 500);
 
         searchString.current += char;
@@ -234,10 +235,12 @@ export const Select = ({
 
         if (searchIndex >= 0) {
             // if a match was found, go to it
-            onOptionChange(searchIndex);
+            focusOnOption(searchIndex);
         } else {
             // if no matches, clear the timeout and search string
-            clearTimeout(searchTimeoutId.current);
+            if (searchTimeoutId.current !== null) {
+                clearTimeout(searchTimeoutId.current);
+            }
             searchString.current = '';
         }
     };
@@ -255,10 +258,10 @@ export const Select = ({
             case SelectAction.PageUp:
             case SelectAction.PageDown:
                 event.preventDefault();
-                return onOptionChange(getUpdatedIndex(focusedIndex, options.length - 1, action));
-            case SelectAction.CloseSelect:
+                return focusOnOption(getUpdatedIndex(focusedIndex, options.length - 1, action));
+            case SelectAction.Select:
                 event.preventDefault();
-                selectOption(focusedIndex);
+                updateOption(focusedIndex);
                 // intentional fallthrough
             case SelectAction.Close:
                 event.preventDefault();
@@ -275,8 +278,8 @@ export const Select = ({
 
     const onOptionClick = (event: React.MouseEvent<HTMLDivElement>, index: number) => {
         event.preventDefault();
-        onOptionChange(index);
-        selectOption(index);
+        focusOnOption(index);
+        updateOption(index);
         updateSelectState(true);
     };
 

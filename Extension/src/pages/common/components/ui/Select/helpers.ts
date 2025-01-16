@@ -19,7 +19,7 @@
 import { type KeyboardEvent as ReactKeyboardEvent } from 'react';
 
 /**
- * Single option for select.
+ * Option of a select.
  */
 export type SelectOption = {
     /**
@@ -38,7 +38,7 @@ export type SelectOption = {
  */
 export enum SelectAction {
     Close,
-    CloseSelect,
+    Select,
     First,
     Last,
     Next,
@@ -46,7 +46,6 @@ export enum SelectAction {
     PageDown,
     PageUp,
     Previous,
-    Select,
     Type,
     None,
 }
@@ -119,7 +118,7 @@ export function getActionFromKey(
         let action: SelectAction = SelectAction.None;
 
         if (key === 'ArrowUp' && altKey) {
-            action = SelectAction.CloseSelect;
+            action = SelectAction.Select;
         } else if (key === 'ArrowDown' && !altKey) {
             action = SelectAction.Next;
         } else if (key === 'ArrowUp') {
@@ -131,7 +130,7 @@ export function getActionFromKey(
         } else if (key === 'Escape') {
             action = SelectAction.Close;
         } else if (key === 'Enter' || key === ' ') {
-            action = SelectAction.CloseSelect;
+            action = SelectAction.Select;
         }
 
         return action;
