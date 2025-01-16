@@ -16,9 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
 
 import { translator } from '../../../../common/translators/translator';
+import { rootStore } from '../../stores/RootStore';
 
 export interface SkipToContentButtonProps {
     /**
@@ -27,7 +29,9 @@ export interface SkipToContentButtonProps {
     mainRef: React.RefObject<HTMLElement>;
 }
 
-export const SkipToContentButton = ({ mainRef }: SkipToContentButtonProps) => {
+export const SkipToContentButton = observer(({ mainRef }: SkipToContentButtonProps) => {
+    const { settingsStore } = useContext(rootStore);
+
     const onSkipToContentClick = () => {
         const mainEl = mainRef.current;
         if (!mainEl) {
@@ -46,6 +50,11 @@ export const SkipToContentButton = ({ mainRef }: SkipToContentButtonProps) => {
         const focusableElements = mainEl.querySelectorAll(focusableSelector);
         if (focusableElements[0] && focusableElements[0] instanceof HTMLElement) {
             focusableElements[0].focus();
+
+            // We should close sidebar if it was opened
+            if (settingsStore.isSidebarOpen) {
+                settingsStore.closeSidebar();
+            }
         }
     };
 
@@ -58,4 +67,4 @@ export const SkipToContentButton = ({ mainRef }: SkipToContentButtonProps) => {
             {translator.getMessage('options_skip_to_main_content')}
         </button>
     );
-};
+});

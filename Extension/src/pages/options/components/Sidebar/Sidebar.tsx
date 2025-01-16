@@ -40,18 +40,18 @@ const Sidebar = observer(() => {
 
     const { isSidebarOpen, openSidebar, closeSidebar } = settingsStore;
 
-    const mobileMenuQuery = '(min-width: 640px)';
-    const [isMobileMenuHidden, setIsSmallTabletScreen] = useState(window.matchMedia(mobileMenuQuery).matches);
+    const desktopQuery = '(min-width: 640px)';
+    const [isTabletAndAboveScreen, setIsTabletAndAboveScreen] = useState(window.matchMedia(desktopQuery).matches);
 
     useLayoutEffect(() => {
-        const matchMedia = window.matchMedia(mobileMenuQuery);
+        const matchMedia = window.matchMedia(desktopQuery);
 
         const handleScreenChange = (e: MediaQueryListEvent) => {
-            setIsSmallTabletScreen(e.matches);
+            setIsTabletAndAboveScreen(e.matches);
         };
 
         // Triggered at the first client-side load and if query changes
-        setIsSmallTabletScreen(matchMedia.matches);
+        setIsTabletAndAboveScreen(matchMedia.matches);
 
         matchMedia.addEventListener('change', handleScreenChange);
 
@@ -60,12 +60,8 @@ const Sidebar = observer(() => {
         };
     }, []);
 
-    /**
-     * Lock sidebar from tab focus in following scenarios:
-     * - Any modal open
-     * - Sidebar closed on mobile screen
-     */
-    const isSidebarLocked = !isSidebarOpen && !isMobileMenuHidden;
+    // Lock sidebar from tab focus if sidebar is closed and it's below tablet screen size.
+    const isSidebarLocked = !isSidebarOpen && !isTabletAndAboveScreen;
 
     /**
      * Close sidebar and remove specific limit warning, e.g. on reaching dynamic rules limit on custom filter enabling.
