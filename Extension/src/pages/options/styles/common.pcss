@@ -114,6 +114,20 @@ label.checkbox-label {
     }
 }
 
+.skip-to-content-btn {
+    z-index: var(--z-idx-options-skip-to-content);
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    pointer-events: none;
+    opacity: 0;
+
+    &:focus-visible {
+        pointer-events: auto;
+        opacity: 1;
+    }
+}
+
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -447,7 +461,7 @@ select:focus {
 }
 
 .ReactModal__Overlay {
-    z-index: 10;
+    z-index: var(--z-idx-options-modals);
     display: flex;
     align-items: center;
     justify-content: center;
