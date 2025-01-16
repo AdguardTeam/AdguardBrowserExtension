@@ -27,6 +27,8 @@ import { type SingleActionParams } from './types';
 import '../actions.pcss';
 
 export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionParams) => {
+    const title = translator.getMessage('popup_block_site_ads_option');
+
     /**
      * Handle block ads action click.
      */
@@ -42,7 +44,7 @@ export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionP
         <button
             type="button"
             className={className}
-            title={translator.getMessage('popup_block_site_ads_option')}
+            title={title}
             onClick={handleBlockAds}
         >
             <Icon
@@ -51,7 +53,7 @@ export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionP
                 aria-hidden="true"
             />
             <span className="action__title">
-                {translator.getMessage('popup_block_site_ads_option')}
+                {title}
             </span>
         </button>
     );

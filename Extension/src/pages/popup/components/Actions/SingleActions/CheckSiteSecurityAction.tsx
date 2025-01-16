@@ -29,6 +29,8 @@ import { type SingleActionParams } from './types';
 import '../actions.pcss';
 
 export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
+    const title = translator.getMessage('popup_security_report');
+
     /**
      * Handle site security check action click.
      */
@@ -50,7 +52,7 @@ export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }:
         <button
             type="button"
             className={className}
-            title={translator.getMessage('popup_security_report')}
+            title={title}
             onClick={handleCheckSiteSecurity}
         >
             <Icon
@@ -59,7 +61,7 @@ export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }:
                 aria-hidden="true"
             />
             <span className="action__title">
-                {translator.getMessage('popup_security_report')}
+                {title}
             </span>
         </button>
     );

@@ -29,6 +29,8 @@ import { type SingleActionParams } from './types';
 import '../actions.pcss';
 
 export const ReportIssueAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
+    const title = translator.getMessage('popup_abuse_site');
+
     /**
      * Handle issue reporting action click.
      */
@@ -50,7 +52,7 @@ export const ReportIssueAction = ({ className, isFilteringPossible, url }: Singl
         <button
             type="button"
             className={className}
-            title={translator.getMessage('popup_abuse_site')}
+            title={title}
             onClick={handleAbuseSite}
         >
             <Icon
@@ -59,7 +61,7 @@ export const ReportIssueAction = ({ className, isFilteringPossible, url }: Singl
                 aria-hidden="true"
             />
             <span className="action__title">
-                {translator.getMessage('popup_abuse_site')}
+                {title}
             </span>
         </button>
     );

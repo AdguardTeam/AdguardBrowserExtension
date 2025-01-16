@@ -32,6 +32,8 @@ import '../actions.pcss';
 export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
     const [removingUserRules, clearingUserRules] = useState(false);
 
+    const title = translator.getMessage('popup_reset_page_user_rules');
+
     /**
      * Sends a message to the background to remove user rules for a page by `url`.
      */
@@ -69,7 +71,7 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
         <button
             type="button"
             className={className}
-            title={translator.getMessage('popup_reset_page_user_rules')}
+            title={title}
             disabled={removingUserRules}
             onClick={handlePageUserRulesReset}
         >
@@ -81,7 +83,7 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
                 aria-hidden="true"
             />
             <span className="action__title">
-                {translator.getMessage('popup_reset_page_user_rules')}
+                {title}
             </span>
         </button>
     );
