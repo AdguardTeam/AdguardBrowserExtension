@@ -20,7 +20,7 @@
         display: block;
         position: fixed;
         top: 0;
-        z-index: var(--z-idx6);
+        z-index: var(--z-idx5);
         height: 40px;
         width: 100%;
         background: var(--fills-backgrounds-page-background-additional-default);
@@ -39,21 +39,44 @@
     }
 
     &__open-button {
+        cursor: pointer;
         margin: 6px 9px;
         border: 0;
         background-color: transparent;
+    }
+
+    &__close-button {
+        cursor: pointer;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        border: 0;
+        padding: 0;
+        pointer-events: none;
+        background-color: transparent;
+        opacity: 0;
+
+        &:focus-visible {
+            pointer-events: auto;
+            opacity: 1;
+        }
     }
 
     &__overlay {
         height: 100%;
         width: 100%;
         position: fixed;
-        z-index: var(--z-idx5);
+        z-index: var(--z-idx6);
         left: 0;
         top: 0;
         background-color: var(--overlay-gray);
         overflow-x: hidden;
         animation-delay: 0.3s;
+        display: none;
+
+        &--visible {
+            display: block;
+        }
     }
 
     &--open {
