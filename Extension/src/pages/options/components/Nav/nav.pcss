@@ -8,11 +8,15 @@
         align-items: flex-start;
         margin: 0;
         padding: 0;
-        list-style-type: none;
+        list-style: none;
 
         &-item {
             display: inline-block;
             width: 100%;
+            margin: 0;
+            padding: 0;
+            /* To align 'li' height to children 'a' element */
+            line-height: 0;
         }
     }
 
@@ -41,7 +45,6 @@
             background-color: var(--fills-backgrounds-page-background-default);
             position: relative;
             font-weight: 600;
-            overflow: visible;
 
             &:hover {
                 background-color: var(--fills-backgrounds-page-background-default);
