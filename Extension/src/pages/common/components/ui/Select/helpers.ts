@@ -51,23 +51,35 @@ export enum SelectAction {
 }
 
 /**
- * Filter an array of options against an input string.
- * Returns an array of options that begin with the filter string, case-independent.
+ * Filter an array of options against an input string by using `option.title` property.
+ * The filter is case-insensitive and will match any option that starts with or contains the filter string.
+ * Filtering prioritizes:
+ * 1) Options that starts with filter string.
+ * 2) Options that contains filter string.
  *
  * @param options Options to filter.
  * @param filter Filter string.
- * @param exclude List of strings to exclude.
  * @returns Filtered options.
  */
 function filterOptions(
     options: SelectOption[],
     filter: string,
-    exclude: string[] = [],
 ): SelectOption[] {
-    return options.filter(({ value }) => {
-        const matches = value.toLowerCase().indexOf(filter.toLowerCase()) === 0;
-        return matches && exclude.indexOf(value) < 0;
+    const filterLower = filter.toLowerCase();
+    const startsWith: SelectOption[] = [];
+    const contains: SelectOption[] = [];
+
+    options.forEach((option) => {
+        const titleLower = option.title.toLowerCase();
+
+        if (titleLower.startsWith(filterLower)) {
+            startsWith.push(option);
+        } else if (titleLower.includes(filterLower)) {
+            contains.push(option);
+        }
     });
+
+    return [...startsWith, ...contains];
 }
 
 /**
@@ -145,7 +157,7 @@ export function getActionFromKey(
  * @param str String to check.
  * @returns True if all letters are the same.
  */
-function isAllSameLetter(str: string): boolean {
+function areAllLettersSame(str: string): boolean {
     const array = str.split('');
     return array.every((letter) => letter === array[0]);
 }
@@ -181,9 +193,13 @@ export function getIndexByLetter(
     }
 
     // if the same letter is being repeated, cycle through first-letter matches
-    if (isAllSameLetter(filter)) {
-        const matches = filterOptions(orderedOptions, filter[0] ?? '');
-        return options.findIndex((option) => option.value === matches[0]?.value);
+    if (areAllLettersSame(filter)) {
+        const firstMatchByLetter = filterOptions(orderedOptions, filter[0] ?? '')[0];
+        if (!firstMatchByLetter) {
+            return -1;
+        }
+
+        return options.findIndex(({ title }) => title === firstMatchByLetter.title);
     }
 
     // if no matches, return -1
