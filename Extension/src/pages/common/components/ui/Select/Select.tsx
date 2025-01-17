@@ -36,6 +36,7 @@ import {
     isScrollable,
     maintainScrollVisibility,
     SelectAction,
+    SelectKey,
     type SelectOption,
 } from './helpers';
 
@@ -213,13 +214,17 @@ export const Select = ({
     };
 
     /**
-     * Appends the typed character to the search string and returns it.
-     * Setups a timeout to clear the search string after a certain time.
+     * Depending on key it updates search string:
+     * - if key is a letter, it appends it to the search string
+     * - if key is backspace, it removes the last character from the search string
+     * - if key is clear, it clears the search string
      *
-     * @param char New character to append to the search string.
+     * And also setups a timeout to clear the search string after a certain time.
+     *
+     * @param key New character to append to the search string.
      * @returns The updated search string.
      */
-    const getSearchString = (char: string) => {
+    const getSearchString = (key: string) => {
         // reset typing timeout and start new timeout
         // this allows us to make multiple-letter matches, like a native select
         if (searchTimeoutId.current !== null) {
@@ -233,17 +238,23 @@ export const Select = ({
             searchTimeoutId.current = null;
         }, CLEAR_TIMEOUT);
 
-        searchString.current += char;
+        if (key === SelectKey.Backspace) {
+            searchString.current = searchString.current.slice(0, -1);
+        } else if (key === SelectKey.Clear) {
+            searchString.current = '';
+        } else {
+            searchString.current += key;
+        }
+
         return searchString.current;
     };
 
-    // FIXME: Add backspace / clear support
-    const onComboType = (letter: string) => {
+    const onComboType = (key: string) => {
         // open the listbox if it is closed
         updateSelectState(false);
 
         // find the index of the first matching option
-        const searchStringFromLetter = getSearchString(letter);
+        const searchStringFromLetter = getSearchString(key);
         const searchIndex = getIndexByLetter(
             options,
             searchStringFromLetter,
