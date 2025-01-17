@@ -34,13 +34,11 @@ import { promisify } from 'node:util';
 import assert from 'node:assert';
 
 import { minify } from 'terser';
-import * as _ from 'lodash';
+import { some } from 'lodash-es';
 
-import {
-    CosmeticRuleParser,
-    FilterListParser,
-    defaultParserOptions,
-} from '@adguard/agtree';
+import { defaultParserOptions, FilterListParser } from '@adguard/agtree/parser';
+import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
+import { CosmeticRuleType, RuleCategory } from '@adguard/agtree';
 
 import { ADGUARD_FILTERS_IDS } from '../../constants';
 import {
@@ -120,13 +118,15 @@ const updateLocalScriptRulesForBrowser = async (browser: AssetsFiltersBrowser) =
 
         filterListNode.children.forEach((ruleNode) => {
             if (
-                // TODO: use imported enum instead of strings
-                ruleNode.category === 'Cosmetic'
-                && (ruleNode.type === 'ScriptletInjectionRule' || ruleNode.type === 'JsInjectionRule')
+                ruleNode.category === RuleCategory.Cosmetic
+                && (
+                    ruleNode.type === CosmeticRuleType.ScriptletInjectionRule
+                    || ruleNode.type === CosmeticRuleType.JsInjectionRule
+                )
             ) {
                 // Re-generate raw body to make it consistent with TSUrlFilter rule instances
                 // (TSUrlFilter also re-generates body from AST in the cosmetic rule constructor)
-                const rawBody = CosmeticRuleParser.generateBody(ruleNode);
+                const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
                 const permittedDomains: string[] = [];
                 const restrictedDomains: string[] = [];
 
@@ -145,7 +145,7 @@ const updateLocalScriptRulesForBrowser = async (browser: AssetsFiltersBrowser) =
 
                 if (rules.rules[rawBody] === undefined) {
                     rules.rules[rawBody] = [toPush];
-                } else if (!_.some(rules.rules[rawBody], toPush)) {
+                } else if (!some(rules.rules[rawBody], toPush)) {
                     rules.rules[rawBody].push(toPush);
                 }
             }
@@ -198,11 +198,10 @@ export const updateLocalScriptRulesForChromiumMv3 = async () => {
 
         filterListNode.children.forEach((ruleNode) => {
             if (
-                // TODO: use imported enum instead of strings
-                ruleNode.category === 'Cosmetic'
-                && ruleNode.type === 'JsInjectionRule'
+                ruleNode.category === RuleCategory.Cosmetic
+                && ruleNode.type === CosmeticRuleType.JsInjectionRule
             ) {
-                const rawBody = CosmeticRuleParser.generateBody(ruleNode);
+                const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
                 jsRules.add(rawBody);
             }
         });
@@ -298,7 +297,7 @@ export const localScriptRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
 
         // Run validation with ES modules support
         const result = await exec(
-            `node -r @swc-node/register ${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`,
+            `npx tsx ${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`,
         );
         assert.ok(result.stderr === '', 'No errors during execution');
         assert.ok(result.stdout === '', 'No output during execution');
