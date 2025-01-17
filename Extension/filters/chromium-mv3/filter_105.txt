@@ -1,8 +1,8 @@
-! Checksum: daULh90SuPvMl0bGjaj1lQ
+! Checksum: Lj0EboEcfBWrl9OwuiD6kA
 ! Title: EasyList Czech and Slovak
 ! Description: Additional filter list for websites in Czech and Slovak.
-! Version: 2.0.2.88
-! TimeUpdated: 2025-01-13T21:01:24+00:00
+! Version: 2.0.2.90
+! TimeUpdated: 2025-01-16T21:01:17+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Homepage: http://adblock.sk
@@ -494,7 +494,11 @@ parabola.cz##.nav_sloupec h3.ridr
 parabola.cz##.nav_sloupec h3.ridr + a
 parabola.cz##.main_menu5 > .clear_both ~ a
 parabola.cz##.main_menu5 > .clear_both ~ img
+parlamentnilisty.cz###aoleaderboard
+parlamentnilisty.cz###aowallpaperone
 pctuning.cz##[class*="sda-"]
+playzone.cz##.aab-alert-wrap
+playzone.cz###ad-top-second
 pravidla.cz##.advtick
 pravopisne.cz,pravopisne.sk##.advert
 prehrajto.cz##.ad-leaderboard-alt-wrapper
@@ -555,6 +559,9 @@ webtrh.cz##.banner
 www.seznam.cz##div.ogm-sticky-repeater
 www.seznam.cz##div.ad-exclusive
 zakonyprolidi.cz##.SkyLeft.Banner
+zdopravy.cz##.otherAds
+zdopravy.cz##.otherAds#gm-outstream+div
+zdopravy.cz##ins.adsbygoogle
 zena-in.cz##div.main-top
 zena-in.cz##div.site-reklama
 zing.cz##[class*="sda-"]
@@ -695,8 +702,6 @@ navratdoreality.cz#%#//scriptlet('ubo-aeld.js', 'ended')
 navratdoreality.cz#%#//scriptlet('ubo-nobab.js')
 onlajny.com#%#//scriptlet('ubo-acis.js', '$', 'PartnerRedirectAction')
 parlamentnilisty.cz#%#//scriptlet('ubo-aopr.js', 'Ads')
-||playzone.cz^$csp=child-src *
-playzone.cz#%#//scriptlet('ubo-set-cookie.js', 'pl_aab_hide', '1')
 podcasty.seznam.cz#%#//scriptlet('ubo-set.js', 'sssp.config', 'noopFunc')
 podcasty.seznam.cz#%#//scriptlet('ubo-set.js', 'sssp', '{}')
 prehrajto.cz#$#.content { margin-top: 0px !important; }
@@ -713,10 +718,9 @@ super.cz#%#//scriptlet('ubo-ra.js', 'style', 'body')
 svetandroida.cz#%#//scriptlet('ubo-aopr.js', 'detectAdBlocker')
 titulky.com#%#//scriptlet('ubo-set.js', 'sssp', '{}')
 titulky.com#%#//scriptlet('ubo-set.js', 'errSZ', 'undefined')
-titulky.com#%#//scriptlet('ubo-spoof-css.js', '#bnn_nu300x300', 'display', 'block')
-titulky.com#$##martevax1 { height:1px!important;overflow:hidden }
-titulky.com#$##martevax2 { height:1px!important;overflow:hidden }
-titulky.com#$##martevax3 { height:1px!important;overflow:hidden }
+titulky.com#$##martevax1 { position:absolute;top:-100000px }
+titulky.com#$##martevax2 { position:absolute;top:-100000px }
+titulky.com#$##martevax3 { position:absolute;top:-100000px }
 tn.nova.cz#%#//scriptlet('ubo-set.js', 'useSeznamAds', 'false')
 ||trackad.cz/adtrack.php$domain=nova.cz,script,redirect=noopjs
 uloz.to#$#div.l-wrapper { padding-top: 0px !important; }
@@ -729,7 +733,7 @@ youradio.cz#%#//scriptlet('ubo-nofab.js')
 zing.cz#$#div.jeg_topbar { margin-bottom: 0px !important; }
 zive.cz#%#//scriptlet('ubo-acis.js', 'window.addEventListener', ':visible')
 zdopravy.cz#%#//scriptlet('ubo-aopr.js', 'atob')
-zdopravy.cz#%#//scriptlet('ubo-aopr.js', 'adBlockEnabled')
+zdopravy.cz#%#//scriptlet('ubo-set.js', 'hasUserActiveSubscription', 'true')
 @@||sbazar.cz^$generichide
 @@||seznam.cz^$generichide
 @@||seznamzpravy.cz^$generichide

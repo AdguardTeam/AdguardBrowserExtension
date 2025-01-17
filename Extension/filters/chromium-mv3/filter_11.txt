@@ -1,8 +1,8 @@
-! Checksum: b9u5cbPFxRbHwoxSjiy58g
+! Checksum: DetR8wJIWOSqA3iPxb2E6w
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.57.47
-! TimeUpdated: 2025-01-14T16:40:23+00:00
+! Version: 2.0.57.56
+! TimeUpdated: 2025-01-17T11:40:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -229,7 +229,6 @@
 ||tapulsads.ru^
 ||httpdns.bilivideo.com^
 ||dataflow.biliapi.com^
-||grpc.biliapi.net^
 ||ads.adinmotech.com^
 ||kvaedit.site^
 ||ads-ap-venues.yinzcam.com^
@@ -268,7 +267,6 @@
 ||vs-api.voodoo-tech.io^
 ||psvpromo.psvgamestudio.com^
 -adx-*.rayjump.com^
-||reachableads-av.*.amazonaws.com^
 ||static.timetreeads.com^
 ||kfvjdvjzhddhc.com^
 ||zgzxs.weathercn.com^
@@ -2049,8 +2047,8 @@ zeenews.india.com#@#div[class^="ads-box-"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175651
 bestech.sk#@#img[width="320"][height="50"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166753
-! unblock cookie popup
-@@||cmp.inmobi.com^$domain=hideout.co|fly4free.pl|travlerz.com|protothema.gr|cyprus-mail.com|wpolityce.pl
+! Unblock cmp.quantcast.com and cmp.inmobi.com cookie popup, where user's decision is required
+@@||cmp.inmobi.com^$domain=innpoland.pl|aszdziennik.pl|mamadu.pl|dadhero.pl|hideout.co|fly4free.pl|travlerz.com|protothema.gr|cyprus-mail.com|wpolityce.pl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159717
 semana.es##.sticky-ads-position
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159698
@@ -2427,6 +2425,19 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+upnorthlive-com.cdn.ampproject.org##div[data-testid="story-body"] div[style]:has(> div[style] > amp-ad)
+yahoo.com##div[data-article-body] > div.bg-marshmallow
+iko-yo.net##.ad--rectangle
+iko-yo.net##main > section.box:has(> ul.box__items--column > li > div[id^="div-gpt-sp"])
+iko-yo.net##main > div.box:has(> div[id^="div-gpt-sp"])
+iko-yo.net##main > section.box:has(> div#taboola-below-article-thumbnails)
+cinematoday.jp##body > div[style="position:relative;height: 80px; background: #efefef; "]
+pornhub.com##.eudsaLink
+pornhub.com##.ad-tabSplit
+zerohedge.com##.content > #footer:not(:has(> *))
+zerohedge.com##div[class^="NodeContent_body_"] > .in-content:empty
+bunshun.jp##.ats_custom_inarticle_wrapper
+bunshun.jp##div[id^="taboola-mid-article-thumbnails-"]
 pornhub.com##.watchpageAd
 h178.com###StickyAd
 f95zone.to##.sidePanel__tabPanels ul.offCanvasMenu-list > li:has(> div.offCanvasMenu-linkHolder > a.offCanvasMenu-link[target="_blank"])
@@ -2434,7 +2445,7 @@ gamewith.jp##.overlay-creative-ad
 trailrunner.jp##.side_banner_sm_box
 plaza.rakuten.co.jp##.blogBody > table[border="0"]:has(a[href^="https://hb.afl.rakuten.co.jp/ichiba/"][rel^="nofollow sponsored"] > img)
 plaza.rakuten.co.jp##div[id^="div-plaza-point-ad-"]
-api.flickr.com##.banner-ad-enabled
+flickr.com##.banner-ad-enabled
 ids.nan-net.jp##div[style="min-height:250px;"]:not([class],[id])
 recipe.rakuten.co.jp##.ads_header_billboard_pr
 league-funny.com##.relative:has(> a[href^="https://maplestorym.nexon.com/"])

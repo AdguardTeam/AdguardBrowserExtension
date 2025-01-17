@@ -1,13 +1,13 @@
-! Checksum: p25yvkJXqMHv35x/z4yzAg
+! Checksum: b5rjsWhw9VzeKt+IkHohuA
 ! Title: Frellwit's Swedish Filter
 ! Description: Filter that aims to remove regional Swedish ads, tracking, social media, annoyances, sponsored articles etc.
-! Version: 2.0.20.54
-! TimeUpdated: 2025-01-14T05:01:47+00:00
+! Version: 2.0.20.57
+! TimeUpdated: 2025-01-17T09:01:55+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Frellwit's Swedish Filter
 ! Expires: 4 days
-! Last modified: 2025-01-14 05:43:57 CET
+! Last modified: 2025-01-17 06:13:52 CET
 ! Homepage: https://github.com/lassekongo83/Frellwits-filter-lists
 ! Description: A filter for uBlock Origin that aims to remove regional Swedish ads, tracking, annoyances, scams + badware, and unnecessary bloat.
 ! License: GPL3 - https://github.com/lassekongo83/Frellwits-filter-lists/blob/master/LICENSE
@@ -380,7 +380,7 @@ dagenstv.com,kolla.tv##.grid-add-container
 dagensvimmerby.se,dagensvastervik.se,dagenskalmar.nu,dagenshultsfred.se#$#body { margin-top: 0 !important; }
 dagensvimmerby.se,dagensvastervik.se,dagenskalmar.nu,dagenshultsfred.se##.panoramaAnnons, .JobAdDiv, .annonsKolumn, .insideAd, .ingressAd, .familyAds, .annonsWrapper, #indexLinks
 dagens.se##.item:has(.prebid, div[data-ad-unit-id], a[href*="casino"])
-dagen.se##.video-annons, .native-box, .arcad-block-container
+dagen.se##.video-annons, .native-box, .arcad-block-container, #ribbon
 daisybeauty.com##div[class$="-insider"]
 daisybeauty.com#?#.single-post .content h5:contains(ANNONSSAMARBETE):upward(a.single-post)
 dansbandsnytt.se##.ai-rotate, .two-ads-wide-container
@@ -583,7 +583,7 @@ fotbollskanalen.se#?#div[class$="sponsortitle"]:upward(.desktop-side-widget)
 fotbollskanalen.se##.brand, .desktop-ad-web, a[href*="telia.se/privat/tv/sport"] img, .mobile-ad-web, .ad-banner, .fbk-ad-container
 fotbollskanalen.se##.notice:has(span[class$="sponsored"])
 fotbollskanalen.se#?#:is(.sponsored, .theme-news_sponsored_container):upward(.theme-news)
-fotbollsresultat.com#?#h2.fusion-responsive-typography-calculated:contains(Spel och dobbel) ~ p
+fotbollsresultat.com##.fusion-flex-container:has(a[href*="casino"])
 fotbollsthlm.se##.fotbollsthlm-image-container:has(.fotbollsthlm-ad-link)
 fotbolltransfers.com##div[class^="ad"], a[href^="https://ads."], .header_sponsored, .fresnel-greaterThanOrEqual-panorama, .fresnel-lessThan-panorama, a[rel*="sponsored"]
 fotbolltransfers.com##div[style^="min-height"]:has(div[id^="fotbolltransfers_mpu"], div[id^="fotbolltransfers_mobil"])
@@ -891,6 +891,8 @@ ljudochbild.se#$#.wp-caption { display:initial!important }
 ljungbysporten.se##section.widget_media_image, a[target="_blank"]:not([href*="ljungbysporten.se"])
 ljuskultur.se,bettips.se,spelo.se,skogsaktuellt.se,maskinbladet.se,entreprenadaktuellt.se,ja.se,husbilhusvagn.se,klassiker.nu,mopedgaraget.se,vibilagare.se,caroftheyear.se,automobil.se,endurobloggen.se,riksettan.net,frillesasbandy.se,dh.se,djungeltrumman.se,skik.se,omni.se,campingsverige.se,eniro.se,restaurangvarlden.se,naringslivetvgl.se,dalarnasaffarer.se,stockholmsaffarer.se,jamtlandsaffarer.se,hallandsnaringsliv.se,sjuharadsnaringsliv.se,nyheteridag.se,alekuriren.se,omniekonomi.se,sverigesindustri.se,onkologiisverige.se,svenskalag.se##.banner
 ljuskultur.se,hrnytt.se,aapl.se,inredningsarkitektur.se,inblick.se,matklubben.se##.cookies
+lokalfotboll.se###topbar, .really_simple_image_widget:empty
+lokalfotboll.se#?#.widget-title:contains(ANNONS:):upward(.really_simple_image_widget)
 lokalguiden.se##.applicant-match-container, .banner-item
 lokalnytt.se##.panoramaImageBox
 lokalti.se##div.has-post-thumbnail.category-extramaterial:has(a[href*="laneformed"], a[href*="casino"])
@@ -968,9 +970,9 @@ mmanytt.se##.img-featured-posts-image:has(a[href$="/annons/"])
 mmanytt.se##.tablepress:has(a[href*="expekt"])
 mobilanyheter.net##a[href*="rocketpot.io"], a[href*="casino"], a[href*="betting"], .a-wrap
 mobilanyheter.net#%#//scriptlet('ubo-set.js', 'ai_run_scripts', 'noopFunc')
-mobil.se,kamerabild.se##article:has(a[href*="/partner"])
+mobil.se,kamerabild.se##article:has(a[href*="/partner"], a[href*="casino"])
 mobil.se,kamerabild.se##a[href*="/partner"]
-mobil.se,kamerabild.se##.markupbox:has(a[href*="casino"])
+mobil.se,kamerabild.se##.markupbox:has(a[href*="casino"], .holidAds)
 modernalivet.se#$#body.modal-active { overflow:unset!important }
 modernalivet.se#?#.excerpt:contains(/annons/i):upward(article)
 modernalivet.se##.modal-wrap, .slide-in-box
@@ -1051,6 +1053,7 @@ obosdamallsvenskan.se,elitettan.se##.iframe-section-container:has(iframe[src*="b
 obosdamallsvenskan.se,elitettan.se##.linked-image-section:has(a[target="_blank"])
 obosdamallsvenskan.se,elitettan.se##.rmss_ap-top-ad + .rmss_t-ap-grid-stripe:has(a[href*="svenskaspel"])
 obosdamallsvenskan.se,elitettan.se##.rmss_module-sponsors, .rmss_ap-top-ad, .rmss_ad-panorama, .rmss_t-momenu__sponsors-area, a[target][href*="svenskaspel"], .sponsor-img
+obsid.se##aside .textwidget:has(a[href*="casino"], a[href*="betting"], a[href*="spel"])
 obsid.se##a[href*="casino"]
 offside.org###opab-modal, .opab-footer-offer
 omnihalsa.com,skanesport.se,sportpanelen.se##.stream-item
@@ -1179,6 +1182,7 @@ skargarden.se##.textwidget:has(.adtext)
 skellefteamedia.se###tdi_51, .td-content-more-articles-box
 skidspar.se###videoad
 skillingaryd.nu,xn--vrnamo-bua.nu###more-banners
+skillingaryd.nu,xn--vrnamo-bua.nu##.teaser-item:has(a[href*="casino"], img[src*="-Lanea-"])
 skippo.se##a[href*="/sponsra"]
 skk.se###cookie-button-banner, .campaigns, [id*="GlobalCampaigns"]
 skogen.se##.jobslider.up
@@ -1222,6 +1226,7 @@ sportbloggare.com##.partners-box, .cube-bonus-list, .section-featured-links-colu
 sportbloggare.com##.section-body-plus .body-block:has(a[href*="betting"])
 sporthalsa.se##a[href*="/annonsering"]
 sporthalsa.se##.header_top, #media_image-2, #text-6, article[class*="veckans-produkt"]
+sporthalsa.se##.textwidget:has(a[href*="casino"])
 sportlovin.se##div[style*="min-height"]:has(div[id^="sportlovin_"])
 sportpanelen.se##.textwidget:has(a[href*="casino"])
 sportsnews.se,xn--sporthnt-5za.se##a[href*="casino"]
@@ -1309,7 +1314,7 @@ tekniknytt.se##:is(.top-news, .big_article):has(img[src*="casino"], img[src*="su
 tekniksmart.se##.elementor-widget-container:has(a[href*="casino"])
 teknikveckan.se##.no-ad
 teknikveckan.se#?#.pill:contains(/spons/i):upward(.grid-item, .pinned, .articleFlow-item)
-teknikveckan.se,di.se,dn.se,skillingaryd.nu,xn--vrnamo-bua.nu,vardfokus.se,kamerabild.se,tripadvisor.se,swedroid.se,bettingstugan.se,expressen.se,dagensopinion.se,driva-eget.se,ifokus.se,sv.picmix.com,ifragasatt.se,sportbloggare.com,bovision.se,familjeliv.se,tidningenridsport.se,golflivet.se,vemringde.se,brollopstorget.se,fastighetsvarlden.se,borskollen.se,aktiespararna.se,receptfavoriter.se,tyda.se,mittforetag.com,lajvo.se,magazin24.se##.ad
+teknikveckan.se,di.se,dn.se,skillingaryd.nu,xn--vrnamo-bua.nu,tripadvisor.se,swedroid.se,bettingstugan.se,expressen.se,driva-eget.se,ifokus.se,sv.picmix.com,ifragasatt.se,sportbloggare.com,bovision.se,familjeliv.se,tidningenridsport.se,golflivet.se,vemringde.se,brollopstorget.se,fastighetsvarlden.se,borskollen.se,aktiespararna.se,receptfavoriter.se,tyda.se,mittforetag.com,lajvo.se,magazin24.se##.ad
 teknologiexperten.se##a[href*="casino"]
 teknologiexperten.se##.item:has(img[src*=".se-www"])
 temaarkiv.se##.md\:mt-\[100px\]:has(script[data-adfscript])
@@ -2776,6 +2781,7 @@ zeromagazine.nu##div[id^="ads"]
 ||d31djwpx7pcvsr.cloudfront.net/production/*/js/segment.js
 ||d2189b0dij3l7v.cloudfront.net/p/$domain=tv4play.se|tv4.se|fotbollskanalen.se|koket.se
 ||dackpartner-web.s3.amazonaws.com^$third-party
+||daxkryss.se^$third-party
 ||deals.innocode.no^$third-party
 ||delivery.youplay.se/api/player_metrics?
 ||destination.se^$third-party
@@ -3069,7 +3075,7 @@ zeromagazine.nu##div[id^="ads"]
 ||prismic.io/prismic-toolbar$domain=alltomarbetsmiljo.se
 ||privacypolicies.com^$domain=fl-net.se
 ||privacy-center.org^$domain=180.se|agriaffaires.se|truckscorner.se|machineryzone.se|stegforhalsa.se|netdoktor.se|netdoktorpro.se|news55.se|hastnet.se|kvd.se|dagensps.se|realtid.se|kpwebben.se
-||privacy-mgmt.com^$domain=radio.se|dagenstv.com|kolla.tv|computersweden.se|woxikon.se|dagen.se|filmtopp.se|upday.com|gaffa.se|handbollskanalen.se
+||privacy-mgmt.com^$domain=radio.se|dagenstv.com|kolla.tv|computersweden.se|woxikon.se|dagen.se|filmtopp.se|upday.com|gaffa.se|handbollskanalen.se|stayfriends.se
 ||proxyas.com^$third-party
 ||prylguiden.expressen.se^
 ||ptm.flowplayer.com^*/display$xmlhttprequest

@@ -334,208 +334,6 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + e);
         }
     },
-    "!function(){function b(){}function a(a){return{get:function(){return a},set:b}}function c(a){a(!1)}AG_defineProperty('_sp_.config.content_control_callback',a(b)),AG_defineProperty('_sp_.config.spid_control_callback',a(b)),AG_defineProperty('_sp_.config.vid_control_callback',a(b)),AG_defineProperty('_sp_.config.disableBlockerStyleSheets',a(!1)),AG_defineProperty('_sp_.checkState',a(c)),AG_defineProperty('_sp_.isAdBlocking',a(c)),AG_defineProperty('_sp_.isAdblocking',a(c)),AG_defineProperty('_sp_.isContentBlockerPresent',a(c)),AG_defineProperty('_sp_.getSafeUri',a(function(a){return a})),AG_defineProperty('_sp_.pageChange',a(b)),AG_defineProperty('_sp_.setupSmartBeacons',a(b)),AG_defineProperty('_sp_.msg.startMsg',a(b)),document.addEventListener('sp.blocking',function(a){a.stopImmediatePropagation(),a=document.createEvent('Event'),a.initEvent('sp.not_blocking',!0,!1),this.dispatchEvent(a)})}();": () => {
-        try {
-            var AG_defineProperty = function() {
-                var e, t = Object.defineProperty;
-                if ("function" == typeof WeakMap) e = WeakMap; else {
-                    var n = 0, r = function() {
-                        this.a = (n += Math.random()).toString();
-                    };
-                    r.prototype.set = function(e, n) {
-                        var r = e[this.a];
-                        r && r[0] === e ? r[1] = n : t(e, this.a, {
-                            value: [ e, n ],
-                            writable: !0
-                        });
-                        return this;
-                    };
-                    r.prototype.get = function(e) {
-                        var t;
-                        return (t = e[this.a]) && t[0] === e ? t[1] : void 0;
-                    };
-                    r.prototype.has = function(e) {
-                        var t = e[this.a];
-                        return !!t && t[0] === e;
-                    };
-                    e = r;
-                }
-                function i(e) {
-                    this.b = e;
-                    this.h = Object.create(null);
-                }
-                function o(e, t, n, r) {
-                    this.a = e;
-                    this.i = t;
-                    this.c = n;
-                    this.f = r;
-                }
-                function c() {
-                    this.g = /^([^\\\.]|\\.)*?\./;
-                    this.j = /\\(.)/g;
-                    this.a = new e;
-                }
-                function a(e, t) {
-                    var n = t.f;
-                    if (n && !("beforeGet" in n) && !("beforeSet" in n)) return b(n);
-                    var r = {
-                        get: function() {
-                            var n = t.f;
-                            n && n.beforeGet && n.beforeGet.call(this, t.a.b);
-                            e: if (n = t.g) n = p(n) ? n.value : n.get ? n.get.call(this) : void 0; else {
-                                n = t.a.b;
-                                if (t.i in n && null !== (n = P(n))) {
-                                    var r = A.call(n, t.i);
-                                    n = r ? r.call(this) : n[t.i];
-                                    break e;
-                                }
-                                n = void 0;
-                            }
-                            (this === t.a.b || G.call(t.a.b, this)) && s(e, n, t.c);
-                            return n;
-                        },
-                        set: function(n) {
-                            if (this === t.a.b || G.call(t.a.b, this)) {
-                                t.f && t.f.beforeSet && (n = t.f.beforeSet.call(this, n, this));
-                                var r = t.g;
-                                r && p(r) && r.value === n ? n = !0 : (r = l(t, n, this), O(n) && (n = u(e, n), 
-                                f(e, n, t.c)), n = r);
-                            } else n = l(t, n, this);
-                            return n;
-                        }
-                    };
-                    n && _(n, r, d);
-                    return r;
-                }
-                function f(e, n, r) {
-                    for (var c in r.h) {
-                        var l = r.h[c];
-                        if (n.h[c]) {
-                            var _ = e, v = n.h[c], g = l;
-                            !g.f || v.f || void 0 === v.a.b || v.g || (v.g = b(g.f));
-                            v.c && g.c && v.c !== g.c && f(_, v.c, g.c);
-                        } else {
-                            v = _ = void 0;
-                            g = e;
-                            var d = n, w = l.i, P = void 0 !== d.b, G = !1;
-                            P && (v = y(d.b, w)) && !v.configurable && (G = !0, _ = d.b[w]);
-                            var A = G ? u(g, _) : new i(l.c.b);
-                            f(g, A, l.c);
-                            A = new o(d, w, A, l.f);
-                            d.h[w] = A;
-                            P && (A.g = v, P = a(g, A), G ? s(g, _, l.c) : (t(d.b, w, P), v && p(v) && (h(P, v.value, d.b), 
-                            s(g, v.value, l.c))));
-                        }
-                    }
-                }
-                function s(e, t, n) {
-                    O(t) && f(e, t = u(e, t), n);
-                }
-                function l(e, t, n) {
-                    var r = e.g;
-                    if (!r) {
-                        if (null !== (r = P(e.a.b)) && (r = k.call(r, e.i))) return r.call(n, t);
-                        if (!w(e.a.b)) return !1;
-                        e.g = {
-                            value: t,
-                            configurable: !0,
-                            writable: !0,
-                            enumerable: !0
-                        };
-                        return !0;
-                    }
-                    return h(r, t, n);
-                }
-                function u(e, t) {
-                    var n = e.a.get(t);
-                    n || (n = new i(t), e.a.set(t, n));
-                    return n;
-                }
-                function p(e) {
-                    return void 0 !== e.writable;
-                }
-                function _(e, t, n) {
-                    for (var r = 0, i = n.length; r < i; r++) {
-                        var o = n[r];
-                        o in e && (t[o] = e[o]);
-                    }
-                }
-                function b(e) {
-                    if (e) {
-                        var t = {};
-                        _(e, t, g);
-                        return t;
-                    }
-                }
-                function h(e, t, n) {
-                    if (p(e)) return !!e.writable && (e.value = t, !0);
-                    if (!e.set) return !1;
-                    e.set.call(n, t);
-                    return !0;
-                }
-                var v, g = "configurable enumerable value get set writable".split(" "), d = g.slice(0, 2), y = Object.getOwnPropertyDescriptor, w = Object.isExtensible, P = Object.getPrototypeOf, G = Object.prototype.isPrototypeOf, A = Object.prototype.__lookupGetter__ || function(e) {
-                    return (e = j(this, e)) && e.get ? e.get : void 0;
-                }, k = Object.prototype.__lookupSetter__ || function(e) {
-                    return (e = j(this, e)) && e.set ? e.set : void 0;
-                };
-                function j(e, t) {
-                    if (t in e) {
-                        for (;!c.hasOwnProperty.call(e, t); ) e = P(e);
-                        return y(e, t);
-                    }
-                }
-                function O(e) {
-                    var t = typeof e;
-                    return "function" === t || "object" === t && null !== e;
-                }
-                return function(e, t, n) {
-                    v || (v = new c);
-                    var r = v;
-                    n = n || window;
-                    var a = new i;
-                    e += ".";
-                    for (var f, l, u, p = a || new i, _ = r.g, b = r.j; e; ) {
-                        if (null === (f = _.exec(e))) throw 1;
-                        f = f[0].length;
-                        l = e.slice(0, f - 1).replace(b, "$1");
-                        e = e.slice(f);
-                        (f = p.h[l]) ? u = f.c : (f = new o(p, l, u = new i), p.h[l] = f);
-                        p = u;
-                    }
-                    if (!f) throw 1;
-                    (e = f).f = t;
-                    s(r, n, a);
-                };
-            }();
-            !function() {
-                function e() {}
-                function t(t) {
-                    return {
-                        get: function() {
-                            return t;
-                        },
-                        set: e
-                    };
-                }
-                function n(e) {
-                    e(!1);
-                }
-                AG_defineProperty("_sp_.config.content_control_callback", t(e)), AG_defineProperty("_sp_.config.spid_control_callback", t(e)), 
-                AG_defineProperty("_sp_.config.vid_control_callback", t(e)), AG_defineProperty("_sp_.config.disableBlockerStyleSheets", t(!1)), 
-                AG_defineProperty("_sp_.checkState", t(n)), AG_defineProperty("_sp_.isAdBlocking", t(n)), 
-                AG_defineProperty("_sp_.isAdblocking", t(n)), AG_defineProperty("_sp_.isContentBlockerPresent", t(n)), 
-                AG_defineProperty("_sp_.getSafeUri", t((function(e) {
-                    return e;
-                }))), AG_defineProperty("_sp_.pageChange", t(e)), AG_defineProperty("_sp_.setupSmartBeacons", t(e)), 
-                AG_defineProperty("_sp_.msg.startMsg", t(e)), document.addEventListener("sp.blocking", (function(e) {
-                    e.stopImmediatePropagation(), (e = document.createEvent("Event")).initEvent("sp.not_blocking", !0, !1), 
-                    this.dispatchEvent(e);
-                }));
-            }();
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
-        }
-    },
     '!function(){const e={apply:(e,t,n)=>(n&&n[1]&&"useAdBlockerDetector"===n[1]&&n[2]&&n[2].get&&(n[2].get=function(){return function(){return!1}}),Reflect.apply(e,t,n))};window.Object.defineProperty=new Proxy(window.Object.defineProperty,e)}();': () => {
         try {
             !function() {
@@ -594,28 +392,6 @@ export const localScriptRules = {
                             writable: !0
                         }), t.view.top.document.dispatchEvent(e);
                     }), 100);
-                }));
-            }));
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
-        }
-    },
-    'AG_onLoad(function(){if(window.pmsCoreAds&&Array.isArray(pmsCoreAds)){window.pmsCoreAds=new Proxy(pmsCoreAds,{set:(a,b,c,d)=>{if("function"==typeof c)try{let a=!1;const b=b=>{var c=document.querySelector(".ads-core-video");c&&a?clearInterval(d):(b(),a=!0)},d=setInterval(b,1e3,c)}catch(a){}return Reflect.set(a,b,c,d)}})}});': () => {
-        try {
-            var AG_onLoad = function(e) {
-                "complete" === document.readyState || "interactive" === document.readyState ? e() : document.addEventListener ? document.addEventListener("DOMContentLoaded", e) : document.attachEvent && document.attachEvent("DOMContentLoaded", e);
-            };
-            AG_onLoad((function() {
-                window.pmsCoreAds && Array.isArray(pmsCoreAds) && (window.pmsCoreAds = new Proxy(pmsCoreAds, {
-                    set: (e, t, n, o) => {
-                        if ("function" == typeof n) try {
-                            let e = !1;
-                            const t = setInterval((n => {
-                                document.querySelector(".ads-core-video") && e ? clearInterval(t) : (n(), e = !0);
-                            }), 1e3, n);
-                        } catch (e) {}
-                        return Reflect.set(e, t, n, o);
-                    }
                 }));
             }));
         } catch (e) {
@@ -1643,197 +1419,6 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + r);
         }
     },
-    "!function(b,a){AG_defineProperty('CloudflareApps.installs',{get:function(){return a instanceof Object&&Object.getOwnPropertyNames(a).forEach(function(c){a[c].appId=='ziT6U3epKObS'&&Object.defineProperty(a[c],'URLPatterns',{value:b})}),a},set:function(b){a=b}})}(Object.seal([/(?!)/]));": () => {
-        try {
-            var AG_defineProperty = function() {
-                var t, e = Object.defineProperty;
-                if ("function" == typeof WeakMap) t = WeakMap; else {
-                    var r = 0, n = function() {
-                        this.a = (r += Math.random()).toString();
-                    };
-                    n.prototype.set = function(t, r) {
-                        var n = t[this.a];
-                        n && n[0] === t ? n[1] = r : e(t, this.a, {
-                            value: [ t, r ],
-                            writable: !0
-                        });
-                        return this;
-                    };
-                    n.prototype.get = function(t) {
-                        var e;
-                        return (e = t[this.a]) && e[0] === t ? e[1] : void 0;
-                    };
-                    n.prototype.has = function(t) {
-                        var e = t[this.a];
-                        return !!e && e[0] === t;
-                    };
-                    t = n;
-                }
-                function i(t) {
-                    this.b = t;
-                    this.h = Object.create(null);
-                }
-                function o(t, e, r, n) {
-                    this.a = t;
-                    this.i = e;
-                    this.c = r;
-                    this.f = n;
-                }
-                function a() {
-                    this.g = /^([^\\\.]|\\.)*?\./;
-                    this.j = /\\(.)/g;
-                    this.a = new t;
-                }
-                function c(t, e) {
-                    var r = e.f;
-                    if (r && !("beforeGet" in r) && !("beforeSet" in r)) return v(r);
-                    var n = {
-                        get: function() {
-                            var r = e.f;
-                            r && r.beforeGet && r.beforeGet.call(this, e.a.b);
-                            t: if (r = e.g) r = b(r) ? r.value : r.get ? r.get.call(this) : void 0; else {
-                                r = e.a.b;
-                                if (e.i in r && null !== (r = j(r))) {
-                                    var n = _.call(r, e.i);
-                                    r = n ? n.call(this) : r[e.i];
-                                    break t;
-                                }
-                                r = void 0;
-                            }
-                            (this === e.a.b || P.call(e.a.b, this)) && u(t, r, e.c);
-                            return r;
-                        },
-                        set: function(r) {
-                            if (this === e.a.b || P.call(e.a.b, this)) {
-                                e.f && e.f.beforeSet && (r = e.f.beforeSet.call(this, r, this));
-                                var n = e.g;
-                                n && b(n) && n.value === r ? r = !0 : (n = l(e, r, this), k(r) && (r = s(t, r), 
-                                f(t, r, e.c)), r = n);
-                            } else r = l(e, r, this);
-                            return r;
-                        }
-                    };
-                    r && h(r, n, y);
-                    return n;
-                }
-                function f(t, r, n) {
-                    for (var a in n.h) {
-                        var l = n.h[a];
-                        if (r.h[a]) {
-                            var h = t, g = r.h[a], w = l;
-                            !w.f || g.f || void 0 === g.a.b || g.g || (g.g = v(w.f));
-                            g.c && w.c && g.c !== w.c && f(h, g.c, w.c);
-                        } else {
-                            g = h = void 0;
-                            w = t;
-                            var y = r, d = l.i, j = void 0 !== y.b, P = !1;
-                            j && (g = O(y.b, d)) && !g.configurable && (P = !0, h = y.b[d]);
-                            var _ = P ? s(w, h) : new i(l.c.b);
-                            f(w, _, l.c);
-                            _ = new o(y, d, _, l.f);
-                            y.h[d] = _;
-                            j && (_.g = g, j = c(w, _), P ? u(w, h, l.c) : (e(y.b, d, j), g && b(g) && (p(j, g.value, y.b), 
-                            u(w, g.value, l.c))));
-                        }
-                    }
-                }
-                function u(t, e, r) {
-                    k(e) && f(t, e = s(t, e), r);
-                }
-                function l(t, e, r) {
-                    var n = t.g;
-                    if (!n) {
-                        if (null !== (n = j(t.a.b)) && (n = G.call(n, t.i))) return n.call(r, e);
-                        if (!d(t.a.b)) return !1;
-                        t.g = {
-                            value: e,
-                            configurable: !0,
-                            writable: !0,
-                            enumerable: !0
-                        };
-                        return !0;
-                    }
-                    return p(n, e, r);
-                }
-                function s(t, e) {
-                    var r = t.a.get(e);
-                    r || (r = new i(e), t.a.set(e, r));
-                    return r;
-                }
-                function b(t) {
-                    return void 0 !== t.writable;
-                }
-                function h(t, e, r) {
-                    for (var n = 0, i = r.length; n < i; n++) {
-                        var o = r[n];
-                        o in t && (e[o] = t[o]);
-                    }
-                }
-                function v(t) {
-                    if (t) {
-                        var e = {};
-                        h(t, e, w);
-                        return e;
-                    }
-                }
-                function p(t, e, r) {
-                    if (b(t)) return !!t.writable && (t.value = e, !0);
-                    if (!t.set) return !1;
-                    t.set.call(r, e);
-                    return !0;
-                }
-                var g, w = "configurable enumerable value get set writable".split(" "), y = w.slice(0, 2), O = Object.getOwnPropertyDescriptor, d = Object.isExtensible, j = Object.getPrototypeOf, P = Object.prototype.isPrototypeOf, _ = Object.prototype.__lookupGetter__ || function(t) {
-                    return (t = S(this, t)) && t.get ? t.get : void 0;
-                }, G = Object.prototype.__lookupSetter__ || function(t) {
-                    return (t = S(this, t)) && t.set ? t.set : void 0;
-                };
-                function S(t, e) {
-                    if (e in t) {
-                        for (;!a.hasOwnProperty.call(t, e); ) t = j(t);
-                        return O(t, e);
-                    }
-                }
-                function k(t) {
-                    var e = typeof t;
-                    return "function" === e || "object" === e && null !== t;
-                }
-                return function(t, e, r) {
-                    g || (g = new a);
-                    var n = g;
-                    r = r || window;
-                    var c = new i;
-                    t += ".";
-                    for (var f, l, s, b = c || new i, h = n.g, v = n.j; t; ) {
-                        if (null === (f = h.exec(t))) throw 1;
-                        f = f[0].length;
-                        l = t.slice(0, f - 1).replace(v, "$1");
-                        t = t.slice(f);
-                        (f = b.h[l]) ? s = f.c : (f = new o(b, l, s = new i), b.h[l] = f);
-                        b = s;
-                    }
-                    if (!f) throw 1;
-                    (t = f).f = e;
-                    u(n, r, c);
-                };
-            }();
-            !function(t, e) {
-                AG_defineProperty("CloudflareApps.installs", {
-                    get: function() {
-                        return e instanceof Object && Object.getOwnPropertyNames(e).forEach((function(r) {
-                            "ziT6U3epKObS" == e[r].appId && Object.defineProperty(e[r], "URLPatterns", {
-                                value: t
-                            });
-                        })), e;
-                    },
-                    set: function(t) {
-                        e = t;
-                    }
-                });
-            }(Object.seal([ /(?!)/ ]));
-        } catch (t) {
-            console.error("Error executing AG js: " + t);
-        }
-    },
     '(function(){var b=XMLHttpRequest.prototype.open,c=/[/.@](piguiqproxy\\.com|rcdn\\.pro|amgload\\.net|dsn-fishki\\.ru|v6t39t\\.ru|greencuttlefish\\.com|rgy1wk\\.ru|vt4dlx\\.ru|d38dub\\.ru)[:/]/i;XMLHttpRequest.prototype.open=function(d,a){if("GET"===d&&c.test(a))this.send=function(){return null},this.setRequestHeader=function(){return null},console.log("AG has blocked request: ",a);else return b.apply(this,arguments)}})();': () => {
         try {
             !function() {
@@ -2260,186 +1845,6 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + e);
         }
     },
-    "AG_defineProperty('exoDocumentProtocol', { value: window.document.location.protocol });": () => {
-        try {
-            var AG_defineProperty = function() {
-                var t, e = Object.defineProperty;
-                if ("function" == typeof WeakMap) t = WeakMap; else {
-                    var r = 0, n = function() {
-                        this.a = (r += Math.random()).toString();
-                    };
-                    n.prototype.set = function(t, r) {
-                        var n = t[this.a];
-                        n && n[0] === t ? n[1] = r : e(t, this.a, {
-                            value: [ t, r ],
-                            writable: !0
-                        });
-                        return this;
-                    };
-                    n.prototype.get = function(t) {
-                        var e;
-                        return (e = t[this.a]) && e[0] === t ? e[1] : void 0;
-                    };
-                    n.prototype.has = function(t) {
-                        var e = t[this.a];
-                        return !!e && e[0] === t;
-                    };
-                    t = n;
-                }
-                function i(t) {
-                    this.b = t;
-                    this.h = Object.create(null);
-                }
-                function o(t, e, r, n) {
-                    this.a = t;
-                    this.i = e;
-                    this.c = r;
-                    this.f = n;
-                }
-                function a() {
-                    this.g = /^([^\\\.]|\\.)*?\./;
-                    this.j = /\\(.)/g;
-                    this.a = new t;
-                }
-                function c(t, e) {
-                    var r = e.f;
-                    if (r && !("beforeGet" in r) && !("beforeSet" in r)) return b(r);
-                    var n = {
-                        get: function() {
-                            var r = e.f;
-                            r && r.beforeGet && r.beforeGet.call(this, e.a.b);
-                            t: if (r = e.g) r = h(r) ? r.value : r.get ? r.get.call(this) : void 0; else {
-                                r = e.a.b;
-                                if (e.i in r && null !== (r = O(r))) {
-                                    var n = P.call(r, e.i);
-                                    r = n ? n.call(this) : r[e.i];
-                                    break t;
-                                }
-                                r = void 0;
-                            }
-                            (this === e.a.b || _.call(e.a.b, this)) && u(t, r, e.c);
-                            return r;
-                        },
-                        set: function(r) {
-                            if (this === e.a.b || _.call(e.a.b, this)) {
-                                e.f && e.f.beforeSet && (r = e.f.beforeSet.call(this, r, this));
-                                var n = e.g;
-                                n && h(n) && n.value === r ? r = !0 : (n = l(e, r, this), m(r) && (r = s(t, r), 
-                                f(t, r, e.c)), r = n);
-                            } else r = l(e, r, this);
-                            return r;
-                        }
-                    };
-                    r && v(r, n, d);
-                    return n;
-                }
-                function f(t, r, n) {
-                    for (var a in n.h) {
-                        var l = n.h[a];
-                        if (r.h[a]) {
-                            var v = t, g = r.h[a], w = l;
-                            !w.f || g.f || void 0 === g.a.b || g.g || (g.g = b(w.f));
-                            g.c && w.c && g.c !== w.c && f(v, g.c, w.c);
-                        } else {
-                            g = v = void 0;
-                            w = t;
-                            var d = r, j = l.i, O = void 0 !== d.b, _ = !1;
-                            O && (g = y(d.b, j)) && !g.configurable && (_ = !0, v = d.b[j]);
-                            var P = _ ? s(w, v) : new i(l.c.b);
-                            f(w, P, l.c);
-                            P = new o(d, j, P, l.f);
-                            d.h[j] = P;
-                            O && (P.g = g, O = c(w, P), _ ? u(w, v, l.c) : (e(d.b, j, O), g && h(g) && (p(O, g.value, d.b), 
-                            u(w, g.value, l.c))));
-                        }
-                    }
-                }
-                function u(t, e, r) {
-                    m(e) && f(t, e = s(t, e), r);
-                }
-                function l(t, e, r) {
-                    var n = t.g;
-                    if (!n) {
-                        if (null !== (n = O(t.a.b)) && (n = G.call(n, t.i))) return n.call(r, e);
-                        if (!j(t.a.b)) return !1;
-                        t.g = {
-                            value: e,
-                            configurable: !0,
-                            writable: !0,
-                            enumerable: !0
-                        };
-                        return !0;
-                    }
-                    return p(n, e, r);
-                }
-                function s(t, e) {
-                    var r = t.a.get(e);
-                    r || (r = new i(e), t.a.set(e, r));
-                    return r;
-                }
-                function h(t) {
-                    return void 0 !== t.writable;
-                }
-                function v(t, e, r) {
-                    for (var n = 0, i = r.length; n < i; n++) {
-                        var o = r[n];
-                        o in t && (e[o] = t[o]);
-                    }
-                }
-                function b(t) {
-                    if (t) {
-                        var e = {};
-                        v(t, e, w);
-                        return e;
-                    }
-                }
-                function p(t, e, r) {
-                    if (h(t)) return !!t.writable && (t.value = e, !0);
-                    if (!t.set) return !1;
-                    t.set.call(r, e);
-                    return !0;
-                }
-                var g, w = "configurable enumerable value get set writable".split(" "), d = w.slice(0, 2), y = Object.getOwnPropertyDescriptor, j = Object.isExtensible, O = Object.getPrototypeOf, _ = Object.prototype.isPrototypeOf, P = Object.prototype.__lookupGetter__ || function(t) {
-                    return (t = k(this, t)) && t.get ? t.get : void 0;
-                }, G = Object.prototype.__lookupSetter__ || function(t) {
-                    return (t = k(this, t)) && t.set ? t.set : void 0;
-                };
-                function k(t, e) {
-                    if (e in t) {
-                        for (;!a.hasOwnProperty.call(t, e); ) t = O(t);
-                        return y(t, e);
-                    }
-                }
-                function m(t) {
-                    var e = typeof t;
-                    return "function" === e || "object" === e && null !== t;
-                }
-                return function(t, e, r) {
-                    g || (g = new a);
-                    var n = g;
-                    r = r || window;
-                    var c = new i;
-                    t += ".";
-                    for (var f, l, s, h = c || new i, v = n.g, b = n.j; t; ) {
-                        if (null === (f = v.exec(t))) throw 1;
-                        f = f[0].length;
-                        l = t.slice(0, f - 1).replace(b, "$1");
-                        t = t.slice(f);
-                        (f = h.h[l]) ? s = f.c : (f = new o(h, l, s = new i), h.h[l] = f);
-                        h = s;
-                    }
-                    if (!f) throw 1;
-                    (t = f).f = e;
-                    u(n, r, c);
-                };
-            }();
-            AG_defineProperty("exoDocumentProtocol", {
-                value: window.document.location.protocol
-            });
-        } catch (t) {
-            console.error("Error executing AG js: " + t);
-        }
-    },
     '(function(){window.adnPopConfig={zoneId:"149"}})();': () => {
         try {
             window.adnPopConfig = {
@@ -2496,32 +1901,6 @@ export const localScriptRules = {
             }));
         } catch (a) {
             console.error("Error executing AG js: " + a);
-        }
-    },
-    "AG_abortInlineScript(/adblock/, 'document.createElement');": () => {
-        try {
-            var AG_abortInlineScript = function(r, n, e) {
-                var t = function() {
-                    if ("currentScript" in document) return document.currentScript;
-                    var r = document.getElementsByTagName("script");
-                    return r[r.length - 1];
-                }, o = Math.random().toString(36).substr(2, 8), c = t();
-                AG_defineProperty(n, {
-                    beforeGet: function() {
-                        var n = t();
-                        if (n instanceof HTMLScriptElement && n !== c && "" === n.src && r.test(n.textContent)) throw e && console.warn("AdGuard aborted execution of an inline script"), 
-                        new ReferenceError(o);
-                    }
-                });
-                var i = window.onerror;
-                window.onerror = function(r) {
-                    return "string" == typeof r && -1 !== r.indexOf(o) ? (e && console.warn("AdGuard has caught window.onerror: " + n), 
-                    !0) : i instanceof Function ? i.apply(this, arguments) : void 0;
-                };
-            };
-            AG_abortInlineScript(/adblock/, "document.createElement");
-        } catch (r) {
-            console.error("Error executing AG js: " + r);
         }
     },
     "window.adsbygoogle = { loaded: !0 };": () => {
@@ -3227,6 +2606,35 @@ export const localScriptRules = {
             window.showAds = !0;
         } catch (r) {
             console.error("Error executing AG js: " + r);
+        }
+    },
+    '(()=>{const t={apply:(t,e,r)=>{const o=r[0]&&"href"===r[0],n=r[1];if(e&&e instanceof HTMLAnchorElement&&o&&n&&n.includes?.("https://wykop.pl/api/v3/ads/redirect?data="))try{const t=new URL(n).searchParams.get("data"),e=atob(t),o=JSON.parse(e),p=decodeURIComponent(o.target_url);(t=>{let e;try{e=new URL(t)}catch(t){return!1}return"http:"===e.protocol||"https:"===e.protocol})(p)&&(r[1]=p)}catch(o){return Reflect.apply(t,e,r)}return Reflect.apply(t,e,r)}};window.Element.prototype.setAttribute=new Proxy(window.Element.prototype.setAttribute,t)})();': () => {
+        try {
+            (() => {
+                const t = {
+                    apply: (t, e, r) => {
+                        const o = r[0] && "href" === r[0], n = r[1];
+                        if (e && e instanceof HTMLAnchorElement && o && n && n.includes?.("https://wykop.pl/api/v3/ads/redirect?data=")) try {
+                            const t = new URL(n).searchParams.get("data"), e = atob(t), o = JSON.parse(e), c = decodeURIComponent(o.target_url);
+                            (t => {
+                                let e;
+                                try {
+                                    e = new URL(t);
+                                } catch (t) {
+                                    return !1;
+                                }
+                                return "http:" === e.protocol || "https:" === e.protocol;
+                            })(c) && (r[1] = c);
+                        } catch (o) {
+                            return Reflect.apply(t, e, r);
+                        }
+                        return Reflect.apply(t, e, r);
+                    }
+                };
+                window.Element.prototype.setAttribute = new Proxy(window.Element.prototype.setAttribute, t);
+            })();
+        } catch (t) {
+            console.error("Error executing AG js: " + t);
         }
     },
     "window.uabpInject = function() {};": () => {
@@ -4482,186 +3890,6 @@ export const localScriptRules = {
             document.cookie = "vpn=1; path=/;";
         } catch (o) {
             console.error("Error executing AG js: " + o);
-        }
-    },
-    "AG_defineProperty('exoDocumentProtocol', { value: document.location.protocol });": () => {
-        try {
-            var AG_defineProperty = function() {
-                var t, e = Object.defineProperty;
-                if ("function" == typeof WeakMap) t = WeakMap; else {
-                    var r = 0, n = function() {
-                        this.a = (r += Math.random()).toString();
-                    };
-                    n.prototype.set = function(t, r) {
-                        var n = t[this.a];
-                        n && n[0] === t ? n[1] = r : e(t, this.a, {
-                            value: [ t, r ],
-                            writable: !0
-                        });
-                        return this;
-                    };
-                    n.prototype.get = function(t) {
-                        var e;
-                        return (e = t[this.a]) && e[0] === t ? e[1] : void 0;
-                    };
-                    n.prototype.has = function(t) {
-                        var e = t[this.a];
-                        return !!e && e[0] === t;
-                    };
-                    t = n;
-                }
-                function i(t) {
-                    this.b = t;
-                    this.h = Object.create(null);
-                }
-                function o(t, e, r, n) {
-                    this.a = t;
-                    this.i = e;
-                    this.c = r;
-                    this.f = n;
-                }
-                function a() {
-                    this.g = /^([^\\\.]|\\.)*?\./;
-                    this.j = /\\(.)/g;
-                    this.a = new t;
-                }
-                function c(t, e) {
-                    var r = e.f;
-                    if (r && !("beforeGet" in r) && !("beforeSet" in r)) return b(r);
-                    var n = {
-                        get: function() {
-                            var r = e.f;
-                            r && r.beforeGet && r.beforeGet.call(this, e.a.b);
-                            t: if (r = e.g) r = h(r) ? r.value : r.get ? r.get.call(this) : void 0; else {
-                                r = e.a.b;
-                                if (e.i in r && null !== (r = O(r))) {
-                                    var n = P.call(r, e.i);
-                                    r = n ? n.call(this) : r[e.i];
-                                    break t;
-                                }
-                                r = void 0;
-                            }
-                            (this === e.a.b || _.call(e.a.b, this)) && u(t, r, e.c);
-                            return r;
-                        },
-                        set: function(r) {
-                            if (this === e.a.b || _.call(e.a.b, this)) {
-                                e.f && e.f.beforeSet && (r = e.f.beforeSet.call(this, r, this));
-                                var n = e.g;
-                                n && h(n) && n.value === r ? r = !0 : (n = l(e, r, this), m(r) && (r = s(t, r), 
-                                f(t, r, e.c)), r = n);
-                            } else r = l(e, r, this);
-                            return r;
-                        }
-                    };
-                    r && v(r, n, y);
-                    return n;
-                }
-                function f(t, r, n) {
-                    for (var a in n.h) {
-                        var l = n.h[a];
-                        if (r.h[a]) {
-                            var v = t, g = r.h[a], w = l;
-                            !w.f || g.f || void 0 === g.a.b || g.g || (g.g = b(w.f));
-                            g.c && w.c && g.c !== w.c && f(v, g.c, w.c);
-                        } else {
-                            g = v = void 0;
-                            w = t;
-                            var y = r, j = l.i, O = void 0 !== y.b, _ = !1;
-                            O && (g = d(y.b, j)) && !g.configurable && (_ = !0, v = y.b[j]);
-                            var P = _ ? s(w, v) : new i(l.c.b);
-                            f(w, P, l.c);
-                            P = new o(y, j, P, l.f);
-                            y.h[j] = P;
-                            O && (P.g = g, O = c(w, P), _ ? u(w, v, l.c) : (e(y.b, j, O), g && h(g) && (p(O, g.value, y.b), 
-                            u(w, g.value, l.c))));
-                        }
-                    }
-                }
-                function u(t, e, r) {
-                    m(e) && f(t, e = s(t, e), r);
-                }
-                function l(t, e, r) {
-                    var n = t.g;
-                    if (!n) {
-                        if (null !== (n = O(t.a.b)) && (n = G.call(n, t.i))) return n.call(r, e);
-                        if (!j(t.a.b)) return !1;
-                        t.g = {
-                            value: e,
-                            configurable: !0,
-                            writable: !0,
-                            enumerable: !0
-                        };
-                        return !0;
-                    }
-                    return p(n, e, r);
-                }
-                function s(t, e) {
-                    var r = t.a.get(e);
-                    r || (r = new i(e), t.a.set(e, r));
-                    return r;
-                }
-                function h(t) {
-                    return void 0 !== t.writable;
-                }
-                function v(t, e, r) {
-                    for (var n = 0, i = r.length; n < i; n++) {
-                        var o = r[n];
-                        o in t && (e[o] = t[o]);
-                    }
-                }
-                function b(t) {
-                    if (t) {
-                        var e = {};
-                        v(t, e, w);
-                        return e;
-                    }
-                }
-                function p(t, e, r) {
-                    if (h(t)) return !!t.writable && (t.value = e, !0);
-                    if (!t.set) return !1;
-                    t.set.call(r, e);
-                    return !0;
-                }
-                var g, w = "configurable enumerable value get set writable".split(" "), y = w.slice(0, 2), d = Object.getOwnPropertyDescriptor, j = Object.isExtensible, O = Object.getPrototypeOf, _ = Object.prototype.isPrototypeOf, P = Object.prototype.__lookupGetter__ || function(t) {
-                    return (t = k(this, t)) && t.get ? t.get : void 0;
-                }, G = Object.prototype.__lookupSetter__ || function(t) {
-                    return (t = k(this, t)) && t.set ? t.set : void 0;
-                };
-                function k(t, e) {
-                    if (e in t) {
-                        for (;!a.hasOwnProperty.call(t, e); ) t = O(t);
-                        return d(t, e);
-                    }
-                }
-                function m(t) {
-                    var e = typeof t;
-                    return "function" === e || "object" === e && null !== t;
-                }
-                return function(t, e, r) {
-                    g || (g = new a);
-                    var n = g;
-                    r = r || window;
-                    var c = new i;
-                    t += ".";
-                    for (var f, l, s, h = c || new i, v = n.g, b = n.j; t; ) {
-                        if (null === (f = v.exec(t))) throw 1;
-                        f = f[0].length;
-                        l = t.slice(0, f - 1).replace(b, "$1");
-                        t = t.slice(f);
-                        (f = h.h[l]) ? s = f.c : (f = new o(h, l, s = new i), h.h[l] = f);
-                        h = s;
-                    }
-                    if (!f) throw 1;
-                    (t = f).f = e;
-                    u(n, r, c);
-                };
-            }();
-            AG_defineProperty("exoDocumentProtocol", {
-                value: document.location.protocol
-            });
-        } catch (t) {
-            console.error("Error executing AG js: " + t);
         }
     },
     "(()=>{document.addEventListener(\"DOMContentLoaded\",(()=>{ if(typeof jQuery) { jQuery('#SearchButtom').unbind('click'); } }));})();": () => {
@@ -6982,193 +6210,6 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + o);
         }
     },
-    'AG_defineProperty("navigator.getBattery",{value:function(){return Promise.resolve({addEventListener:EventTarget.prototype.addEventListener.bind(window),removeEventListener:EventTarget.prototype.removeEventListener.bind(window),dispatchEvent:EventTarget.prototype.dispatchEvent.bind(window),charging:!0})}});': () => {
-        try {
-            var AG_defineProperty = function() {
-                var e, t = Object.defineProperty;
-                if ("function" == typeof WeakMap) e = WeakMap; else {
-                    var r = 0, n = function() {
-                        this.a = (r += Math.random()).toString();
-                    };
-                    n.prototype.set = function(e, r) {
-                        var n = e[this.a];
-                        n && n[0] === e ? n[1] = r : t(e, this.a, {
-                            value: [ e, r ],
-                            writable: !0
-                        });
-                        return this;
-                    };
-                    n.prototype.get = function(e) {
-                        var t;
-                        return (t = e[this.a]) && t[0] === e ? t[1] : void 0;
-                    };
-                    n.prototype.has = function(e) {
-                        var t = e[this.a];
-                        return !!t && t[0] === e;
-                    };
-                    e = n;
-                }
-                function i(e) {
-                    this.b = e;
-                    this.h = Object.create(null);
-                }
-                function o(e, t, r, n) {
-                    this.a = e;
-                    this.i = t;
-                    this.c = r;
-                    this.f = n;
-                }
-                function a() {
-                    this.g = /^([^\\\.]|\\.)*?\./;
-                    this.j = /\\(.)/g;
-                    this.a = new e;
-                }
-                function c(e, t) {
-                    var r = t.f;
-                    if (r && !("beforeGet" in r) && !("beforeSet" in r)) return b(r);
-                    var n = {
-                        get: function() {
-                            var r = t.f;
-                            r && r.beforeGet && r.beforeGet.call(this, t.a.b);
-                            e: if (r = t.g) r = v(r) ? r.value : r.get ? r.get.call(this) : void 0; else {
-                                r = t.a.b;
-                                if (t.i in r && null !== (r = O(r))) {
-                                    var n = _.call(r, t.i);
-                                    r = n ? n.call(this) : r[t.i];
-                                    break e;
-                                }
-                                r = void 0;
-                            }
-                            (this === t.a.b || E.call(t.a.b, this)) && u(e, r, t.c);
-                            return r;
-                        },
-                        set: function(r) {
-                            if (this === t.a.b || E.call(t.a.b, this)) {
-                                t.f && t.f.beforeSet && (r = t.f.beforeSet.call(this, r, this));
-                                var n = t.g;
-                                n && v(n) && n.value === r ? r = !0 : (n = l(t, r, this), m(r) && (r = s(e, r), 
-                                f(e, r, t.c)), r = n);
-                            } else r = l(t, r, this);
-                            return r;
-                        }
-                    };
-                    r && h(r, n, w);
-                    return n;
-                }
-                function f(e, r, n) {
-                    for (var a in n.h) {
-                        var l = n.h[a];
-                        if (r.h[a]) {
-                            var h = e, g = r.h[a], d = l;
-                            !d.f || g.f || void 0 === g.a.b || g.g || (g.g = b(d.f));
-                            g.c && d.c && g.c !== d.c && f(h, g.c, d.c);
-                        } else {
-                            g = h = void 0;
-                            d = e;
-                            var w = r, j = l.i, O = void 0 !== w.b, E = !1;
-                            O && (g = y(w.b, j)) && !g.configurable && (E = !0, h = w.b[j]);
-                            var _ = E ? s(d, h) : new i(l.c.b);
-                            f(d, _, l.c);
-                            _ = new o(w, j, _, l.f);
-                            w.h[j] = _;
-                            O && (_.g = g, O = c(d, _), E ? u(d, h, l.c) : (t(w.b, j, O), g && v(g) && (p(O, g.value, w.b), 
-                            u(d, g.value, l.c))));
-                        }
-                    }
-                }
-                function u(e, t, r) {
-                    m(t) && f(e, t = s(e, t), r);
-                }
-                function l(e, t, r) {
-                    var n = e.g;
-                    if (!n) {
-                        if (null !== (n = O(e.a.b)) && (n = P.call(n, e.i))) return n.call(r, t);
-                        if (!j(e.a.b)) return !1;
-                        e.g = {
-                            value: t,
-                            configurable: !0,
-                            writable: !0,
-                            enumerable: !0
-                        };
-                        return !0;
-                    }
-                    return p(n, t, r);
-                }
-                function s(e, t) {
-                    var r = e.a.get(t);
-                    r || (r = new i(t), e.a.set(t, r));
-                    return r;
-                }
-                function v(e) {
-                    return void 0 !== e.writable;
-                }
-                function h(e, t, r) {
-                    for (var n = 0, i = r.length; n < i; n++) {
-                        var o = r[n];
-                        o in e && (t[o] = e[o]);
-                    }
-                }
-                function b(e) {
-                    if (e) {
-                        var t = {};
-                        h(e, t, d);
-                        return t;
-                    }
-                }
-                function p(e, t, r) {
-                    if (v(e)) return !!e.writable && (e.value = t, !0);
-                    if (!e.set) return !1;
-                    e.set.call(r, t);
-                    return !0;
-                }
-                var g, d = "configurable enumerable value get set writable".split(" "), w = d.slice(0, 2), y = Object.getOwnPropertyDescriptor, j = Object.isExtensible, O = Object.getPrototypeOf, E = Object.prototype.isPrototypeOf, _ = Object.prototype.__lookupGetter__ || function(e) {
-                    return (e = G(this, e)) && e.get ? e.get : void 0;
-                }, P = Object.prototype.__lookupSetter__ || function(e) {
-                    return (e = G(this, e)) && e.set ? e.set : void 0;
-                };
-                function G(e, t) {
-                    if (t in e) {
-                        for (;!a.hasOwnProperty.call(e, t); ) e = O(e);
-                        return y(e, t);
-                    }
-                }
-                function m(e) {
-                    var t = typeof e;
-                    return "function" === t || "object" === t && null !== e;
-                }
-                return function(e, t, r) {
-                    g || (g = new a);
-                    var n = g;
-                    r = r || window;
-                    var c = new i;
-                    e += ".";
-                    for (var f, l, s, v = c || new i, h = n.g, b = n.j; e; ) {
-                        if (null === (f = h.exec(e))) throw 1;
-                        f = f[0].length;
-                        l = e.slice(0, f - 1).replace(b, "$1");
-                        e = e.slice(f);
-                        (f = v.h[l]) ? s = f.c : (f = new o(v, l, s = new i), v.h[l] = f);
-                        v = s;
-                    }
-                    if (!f) throw 1;
-                    (e = f).f = t;
-                    u(n, r, c);
-                };
-            }();
-            AG_defineProperty("navigator.getBattery", {
-                value: function() {
-                    return Promise.resolve({
-                        addEventListener: EventTarget.prototype.addEventListener.bind(window),
-                        removeEventListener: EventTarget.prototype.removeEventListener.bind(window),
-                        dispatchEvent: EventTarget.prototype.dispatchEvent.bind(window),
-                        charging: !0
-                    });
-                }
-            });
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
-        }
-    },
     "(function(){window.swua={swEvent:function(){}}})();": () => {
         try {
             window.swua = {
@@ -8013,18 +7054,44 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + o);
         }
     },
-    'AG_onLoad(function(){try{"function"==typeof window.noobBypass&&noobBypass()}catch(b){}});': () => {
+    '(function(){if(-1<window.location.href.indexOf("o.php?l=")){var b=location.href.split("o.php?l=");if(b&&b[1]){b=b[1].replace(/\\|\\d/,\'\');for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();': () => {
         try {
-            var AG_onLoad = function(t) {
-                "complete" === document.readyState || "interactive" === document.readyState ? t() : document.addEventListener ? document.addEventListener("DOMContentLoaded", t) : document.attachEvent && document.attachEvent("DOMContentLoaded", t);
-            };
-            AG_onLoad((function() {
+            !function() {
+                if (-1 < window.location.href.indexOf("o.php?l=")) {
+                    var o = location.href.split("o.php?l=");
+                    if (o && o[1]) {
+                        o = o[1].replace(/\|\d/, "");
+                        for (var r = 0; 10 > r; r++) try {
+                            o = atob(o);
+                        } catch (r) {
+                            var a = decodeURIComponent(o);
+                            try {
+                                new URL(a);
+                                var c = !0;
+                            } catch (o) {
+                                c = !1;
+                            }
+                            if (c) {
+                                location.assign(a);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }();
+        } catch (o) {
+            console.error("Error executing AG js: " + o);
+        }
+    },
+    '(()=>{document.addEventListener("DOMContentLoaded",(()=>{try{"function"==typeof window.noobBypass&&noobBypass()}catch(b){}}));})();': () => {
+        try {
+            document.addEventListener("DOMContentLoaded", (() => {
                 try {
                     "function" == typeof window.noobBypass && noobBypass();
-                } catch (t) {}
+                } catch (o) {}
             }));
-        } catch (t) {
-            console.error("Error executing AG js: " + t);
+        } catch (o) {
+            console.error("Error executing AG js: " + o);
         }
     },
     '!function(){const e=e=>{const o=new XMLHttpRequest;o.open("POST","/check.php",!0),o.setRequestHeader("Content-type","application/x-www-form-urlencoded"),o.send("a");const t=atob(window.ext_site).replace(/[a-z]/gi,(e=>String.fromCharCode(e.charCodeAt(0)+(e.toLowerCase()<="m"?13:-13))));let n=e.replaceAll(\'\\\\"\',\'"\');n=n.replace("\'+ api_key+ \'",window.api_key),n=n.replace("\'+ link_out+ \\"",window.link_out),n=n.replace(/action="\'\\+ .*?\\+ \'"/,`action="${t}"`);var a;const i=(a=n,(new DOMParser).parseFromString(a,"text/html")).querySelector("form"),r=new FormData(i),c=new XMLHttpRequest;c.open("POST",t,!0),c.send(r),window.tab2=window,postMessage("_clicked_b",location.origin)},o={apply:(o,t,n)=>{if(n[1]&&n[1].includes("api_key")){const o=window.link_out,t=window.api_key,a=n[1].match(/window\\.open\\(.*?\\(atob\\(main_site\\)\\).*?("\\/.*\\.php\\?.*=").*?("&.*?=").*?(api_key),"view"/),i=a[1].replaceAll(\'"\',""),r=a[2].replaceAll(\'"\',""),c=n[1].match(/<form target=[\\s\\S]*?<\\/form>/)[0];if(n[1]=n[1].replace("window.location.href","var nulled"),n[1]=n[1].replace("window.open(f","location.assign(f"),n[1]=n[1].replace(/(parseInt\\(c\\.split\\("-"\\)\\[0\\]\\)<= 0).*?(\\)\\{)/,"$1$2"),o&&t&&i&&r&&c)try{"loading"===document.readyState?window.addEventListener("load",(()=>{e(c)}),{once:!0}):e(c)}catch(e){console.debug(e)}}return Reflect.apply(o,t,n)}};window.Function.prototype.constructor=new Proxy(window.Function.prototype.constructor,o)}();': () => {
