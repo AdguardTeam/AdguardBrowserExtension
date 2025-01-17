@@ -30,7 +30,7 @@ export interface SkipToContentButtonProps {
 }
 
 export const SkipToContentButton = observer(({ mainRef }: SkipToContentButtonProps) => {
-    const { settingsStore } = useContext(rootStore);
+    const { uiStore } = useContext(rootStore);
 
     const onSkipToContentClick = () => {
         const mainEl = mainRef.current;
@@ -50,13 +50,14 @@ export const SkipToContentButton = observer(({ mainRef }: SkipToContentButtonPro
         const focusableElements = mainEl.querySelectorAll(focusableSelector);
         if (focusableElements[0] && focusableElements[0] instanceof HTMLElement) {
             focusableElements[0].focus();
-
-            // We should close sidebar if it was opened
-            if (settingsStore.isSidebarOpen) {
-                settingsStore.closeSidebar();
-            }
         }
     };
+
+    // Do not render the button if the sidebar is open
+    // because main content is not focusable in this case
+    if (uiStore.isSidebarOpen) {
+        return null;
+    }
 
     return (
         <button

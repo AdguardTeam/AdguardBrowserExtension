@@ -213,8 +213,6 @@ class SettingsStore {
 
     @observable rulesLimits = DEFAULT_RULES_LIMITS;
 
-    @observable isSidebarOpen = false;
-
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
@@ -1015,16 +1013,6 @@ class SettingsStore {
         // consent modal for group
         return true;
     }
-
-    @action
-        openSidebar = () => {
-            this.isSidebarOpen = true;
-        };
-
-    @action
-        closeSidebar = () => {
-            this.isSidebarOpen = false;
-        };
 }
 
 export default SettingsStore;

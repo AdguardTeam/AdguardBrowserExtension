@@ -36,9 +36,9 @@ import { Compare } from './Compare';
 import './sidebar.pcss';
 
 const Sidebar = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
-    const { isSidebarOpen, openSidebar, closeSidebar } = settingsStore;
+    const { isSidebarOpen, openSidebar, closeSidebar } = uiStore;
 
     const desktopQuery = '(min-width: 640px)';
     const [isTabletAndAboveScreen, setIsTabletAndAboveScreen] = useState(window.matchMedia(desktopQuery).matches);

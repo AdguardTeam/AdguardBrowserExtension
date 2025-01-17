@@ -95,6 +95,11 @@ class UiStore {
      */
     @observable dynamicRulesLimitsWarning: string | null = null;
 
+    /**
+     * Sidebar visibility state. **Used only on mobile**.
+     */
+    @observable isSidebarOpen = false;
+
     @action
     addNotification({ description, type, extra }: Omit<Notification, 'id'>) {
         const id = nanoid();
@@ -164,6 +169,22 @@ class UiStore {
 
         this.dynamicRulesLimitsWarning = getDynamicWarningMessage(data);
     }
+
+    /**
+     * Opens the sidebar.
+     */
+    @action
+        openSidebar = () => {
+            this.isSidebarOpen = true;
+        };
+
+    /**
+     * Closes the sidebar.
+     */
+    @action
+        closeSidebar = () => {
+            this.isSidebarOpen = false;
+        };
 }
 
 export default UiStore;

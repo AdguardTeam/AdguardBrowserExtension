@@ -75,15 +75,20 @@ const createRouter = (children) => {
     );
 };
 
-const OptionsLayout = () => {
+const OptionsLayout = observer(() => {
     const mainRef = useRef(null);
+    const { uiStore } = useContext(rootStore);
 
     return (
         <>
             <SkipToContentButton mainRef={mainRef} />
             <Sidebar />
             <div className="inner">
-                <main ref={mainRef} className="content">
+                <main
+                    ref={mainRef}
+                    className="content"
+                    inert={uiStore.isSidebarOpen ? '' : undefined}
+                >
                     <Notifications />
                     <Outlet />
                 </main>
@@ -91,7 +96,7 @@ const OptionsLayout = () => {
             </div>
         </>
     );
-};
+});
 
 const Options = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
