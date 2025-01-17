@@ -47,6 +47,7 @@ import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from '../../.
 import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
 import { SettingOption } from '../../schema/settings/main';
+import { AntiBannerFiltersId } from '../../../common/constants';
 
 import type {
     StaticLimitsCheckResult,
@@ -142,18 +143,15 @@ export class RulesLimitsService {
             return acc;
         }, {});
 
-        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-        // TODO: remove code totally later.
-
-        // // It is like "syntax sugar" for the quick fixes filter to emulate it
-        // // like an "empty" ruleset, because it looks like usual filter
-        // // in the UI, but it actually applied dynamically, so enabling it will
-        // // never change quota of the used static rules.
-        // counters[AntiBannerFiltersId.QuickFixesFilterId] = {
-        //     filterId: AntiBannerFiltersId.QuickFixesFilterId,
-        //     rulesCount: 0,
-        //     regexpRulesCount: 0,
-        // };
+        // It is like "syntax sugar" for the quick fixes filter to emulate it
+        // like an "empty" ruleset, because it looks like usual filter
+        // in the UI, but it actually applied dynamically, so enabling it will
+        // never change quota of the used static rules.
+        counters[AntiBannerFiltersId.QuickFixesFilterId] = {
+            filterId: AntiBannerFiltersId.QuickFixesFilterId,
+            rulesCount: 0,
+            regexpRulesCount: 0,
+        };
 
         return counters;
     };

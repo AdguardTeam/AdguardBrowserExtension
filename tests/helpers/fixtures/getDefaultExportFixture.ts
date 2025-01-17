@@ -11,7 +11,7 @@ import {
 } from '../../../Extension/src/background/schema';
 import { UserAgent } from '../../../Extension/src/common/user-agent';
 
-export const getDefaultExportFixture = (): Config => ({
+export const getDefaultExportFixture = (isMv3: boolean): Config => ({
     [RootOption.ProtocolVersion]: PROTOCOL_VERSION,
     [RootOption.GeneralSettings]: {
         [GeneralSettingsOption.AllowAcceptableAds]: true,
@@ -31,7 +31,8 @@ export const getDefaultExportFixture = (): Config => ({
         [ExtensionSpecificSettingsOption.UserRulesEditorWrap]: false,
     },
     [RootOption.Filters]: {
-        [FiltersOption.EnabledFilters]: [2, 10],
+        // For MV3 we added AdGuard Quick Fixes filter enabled by default.
+        [FiltersOption.EnabledFilters]: isMv3 ? [2, 10, 24] : [2, 10],
         [FiltersOption.EnabledGroups]: [1, 6],
         [FiltersOption.CustomFilters]: [],
         [FiltersOption.UserFilter]: {

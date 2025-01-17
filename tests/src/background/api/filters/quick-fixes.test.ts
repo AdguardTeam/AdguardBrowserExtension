@@ -1,134 +1,127 @@
-// Quick fixes filter was disabled in MV3 to comply with CWR policies.
-// TODO: remove code totally later.
+import { Storage } from 'webextension-polyfill';
 
-// TODO: remove later
-// empty test
-test('', () => { });
+import { FiltersDownloader } from '@adguard/filters-downloader/browser';
 
-// import { Storage } from 'webextension-polyfill';
+import { App } from 'app';
 
-// import { FiltersDownloader } from '@adguard/filters-downloader/browser';
+import { fakeFilterV1 } from '../../../../helpers/fixtures/fake_filter_v1';
+import { QuickFixesRulesApi } from '../../../../../Extension/src/background/api';
+import { FiltersStorage } from '../../../../../Extension/src/background/storages/filters';
+import { RawFiltersStorage } from '../../../../../Extension/src/background/storages/raw-filters';
+import { metadataStorage } from '../../../../../Extension/src/background/storages';
+import { mockLocalStorage } from '../../../../helpers/mocks/storage';
+import { getStorageFixturesV7 } from '../../../../helpers/fixtures/getStorageFixtures';
+import { type Metadata } from '../../../../../Extension/src/background/schema';
+import { fakeFilterV2 } from '../../../../helpers/fixtures/fake_filter_v2';
 
-// import { App } from 'app';
+jest.mock('../../../../../Extension/src/background/engine');
+jest.mock('../../../../../Extension/src/background/api/ui/icons');
+jest.mock('../../../../../Extension/src/background/storages/notification');
 
-// import { fakeFilterV1 } from '../../../../helpers/fixtures/fake_filter_v1';
-// import { QuickFixesRulesApi } from '../../../../../Extension/src/background/api';
-// import { FiltersStorage } from '../../../../../Extension/src/background/storages/filters';
-// import { RawFiltersStorage } from '../../../../../Extension/src/background/storages/raw-filters';
-// import { metadataStorage } from '../../../../../Extension/src/background/storages';
-// import { mockLocalStorage } from '../../../../helpers/mocks/storage';
-// import { getStorageFixturesV7 } from '../../../../helpers/fixtures/getStorageFixtures';
-// import { type Metadata } from '../../../../../Extension/src/background/schema';
-// import { fakeFilterV2 } from '../../../../helpers/fixtures/fake_filter_v2';
+describe('Quick Fixes API should', () => {
+    let storage: Storage.StorageArea;
 
-// jest.mock('../../../../../Extension/src/background/engine');
-// jest.mock('../../../../../Extension/src/background/api/ui/icons');
-// jest.mock('../../../../../Extension/src/background/storages/notification');
+    const definedExpressions = {
+        'adguard': true,
+        'adguard_ext_chromium': true,
+        'adguard_ext_edge': false,
+        'adguard_ext_firefox': false,
+        'adguard_ext_opera': false,
+        'adguard_ext_safari': false,
+    };
 
-// describe('Quick Fixes API should', () => {
-//     let storage: Storage.StorageArea;
+    beforeEach(async () => {
+        storage = mockLocalStorage(getStorageFixturesV7(0)[0]);
+        await App.init();
+    });
 
-//     const definedExpressions = {
-//         'adguard': true,
-//         'adguard_ext_chromium': true,
-//         'adguard_ext_edge': false,
-//         'adguard_ext_firefox': false,
-//         'adguard_ext_opera': false,
-//         'adguard_ext_safari': false,
-//     };
+    afterEach(async () => {
+        await storage.clear();
+    });
 
-//     beforeEach(async () => {
-//         storage = mockLocalStorage(getStorageFixturesV7(0)[0]);
-//         await App.init();
-//     });
+    const updatedTimeWithHourOffset = new Date().toISOString()
+        .slice(0, -5)
+        .concat('+00:00');
 
-//     afterEach(async () => {
-//         await storage.clear();
-//     });
+    it('check for updates of Quick Fixes filter from remote and partially update metadata', async () => {
+        if (!__IS_MV3__) {
+            expect(true).toBeTruthy();
+            return;
+        }
 
-//     const updatedTimeWithHourOffset = new Date().toISOString()
-//         .slice(0, -5)
-//         .concat('+00:00');
+        const filterId = 24;
 
-//     it('check for updates of Quick Fixes filter from remote and partially update metadata', async () => {
-//         if (!__IS_MV3__) {
-//             expect(true).toBeTruthy();
-//             return;
-//         }
+        let mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            .mockImplementation(() => Promise.resolve({
+                filter: fakeFilterV1.split('\n'),
+                rawFilter: fakeFilterV1,
+            }));
 
-//         const filterId = 24;
+        // Read metadata from local storage.
+        const metadata: Metadata = JSON.parse(JSON.stringify(metadataStorage.getData()));
 
-//         let mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
-//             .mockImplementation(() => Promise.resolve({
-//                 filter: fakeFilterV1.split('\n'),
-//                 rawFilter: fakeFilterV1,
-//             }));
+        // First load and enable Quick Fixes.
+        await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
 
-//         // Read metadata from local storage.
-//         const metadata: Metadata = JSON.parse(JSON.stringify(metadataStorage.getData()));
+        // Check that filter has been updated.
+        expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
+            1,
+            `https://filters.adtidy.org/extension/chromium-mv3/filters/${filterId}.txt`,
+            {
+                force: true,
+                definedExpressions,
+                validateChecksum: true,
+                validateChecksumStrict: true,
+            },
+        );
+        expect(await FiltersStorage.getPreprocessedFilterList(filterId)).toEqual(fakeFilterV1);
+        expect(await RawFiltersStorage.get(filterId)).toEqual(fakeFilterV1);
 
-//         // First load and enable Quick Fixes.
-//         await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+        // Check that metadata was changed only for the Quick Fixes filter.
+        const filterMetatada = metadata.filters.find((f) => f.filterId === filterId)!;
+        Object.assign(filterMetatada, {
+            // Values from fake filter metadata.
+            diffPath: '',
+            expires: 345600,
+            homepage: '',
+            timeUpdated: '2023-02-01T00:00:00+00:00',
+            version: '1.0.0.0',
+        });
+        expect(metadataStorage.getData()).toStrictEqual(metadata);
 
-//         // Check that filter has been updated.
-//         expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
-//             1,
-//             `https://filters.adtidy.org/extension/chromium-mv3/filters/${filterId}.txt`,
-//             {
-//                 force: true,
-//                 definedExpressions,
-//                 validateChecksum: true,
-//                 validateChecksumStrict: true,
-//             },
-//         );
-//         expect(await FiltersStorage.getPreprocessedFilterList(filterId)).toEqual(fakeFilterV1);
-//         expect(await RawFiltersStorage.get(filterId)).toEqual(fakeFilterV1);
+        // Update mocked filter.
+        mock.mockRestore();
+        mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            .mockImplementation(() => Promise.resolve({
+                filter: fakeFilterV2.split('\n'),
+                rawFilter: fakeFilterV2,
+            }));
 
-//         // Check that metadata was changed only for the Quick Fixes filter.
-//         const filterMetatada = metadata.filters.find((f) => f.filterId === filterId)!;
-//         Object.assign(filterMetatada, {
-//             // Values from fake filter metadata.
-//             diffPath: '',
-//             expires: 345600,
-//             homepage: '',
-//             timeUpdated: '2023-02-01T00:00:00+00:00',
-//             version: '1.0.0.0',
-//         });
-//         expect(metadataStorage.getData()).toStrictEqual(metadata);
+        // Update Quick Fixes filter.
+        await QuickFixesRulesApi.updateQuickFixesFilter();
 
-//         // Update mocked filter.
-//         mock.mockRestore();
-//         mock = jest.spyOn(FiltersDownloader, 'downloadWithRaw')
-//             .mockImplementation(() => Promise.resolve({
-//                 filter: fakeFilterV2.split('\n'),
-//                 rawFilter: fakeFilterV2,
-//             }));
+        // Check that filter has been updated.
+        expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
+            1,
+            `https://filters.adtidy.org/extension/chromium-mv3/filters/${filterId}.txt`,
+            {
+                force: true,
+                definedExpressions,
+                validateChecksum: true,
+                validateChecksumStrict: true,
+            },
+        );
+        expect(await FiltersStorage.getPreprocessedFilterList(filterId)).toEqual(fakeFilterV2);
+        expect(await RawFiltersStorage.get(filterId)).toEqual(fakeFilterV2);
 
-//         // Update Quick Fixes filter.
-//         await QuickFixesRulesApi.updateQuickFixesFilter();
+        // Check that metadata was changed only for the Quick Fixes filter.
+        Object.assign(filterMetatada, {
+            timeUpdated: updatedTimeWithHourOffset,
+            version: '2.0.0.0',
+        });
 
-//         // Check that filter has been updated.
-//         expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
-//             1,
-//             `https://filters.adtidy.org/extension/chromium-mv3/filters/${filterId}.txt`,
-//             {
-//                 force: true,
-//                 definedExpressions,
-//                 validateChecksum: true,
-//                 validateChecksumStrict: true,
-//             },
-//         );
-//         expect(await FiltersStorage.getPreprocessedFilterList(filterId)).toEqual(fakeFilterV2);
-//         expect(await RawFiltersStorage.get(filterId)).toEqual(fakeFilterV2);
+        expect(metadataStorage.getData()).toStrictEqual(metadata);
 
-//         // Check that metadata was changed only for the Quick Fixes filter.
-//         Object.assign(filterMetatada, {
-//             timeUpdated: updatedTimeWithHourOffset,
-//             version: '2.0.0.0',
-//         });
-
-//         expect(metadataStorage.getData()).toStrictEqual(metadata);
-
-//         mock.mockRestore();
-//     });
-// });
+        mock.mockRestore();
+    });
+});

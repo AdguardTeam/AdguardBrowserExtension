@@ -54,6 +54,7 @@ import {
     UserRulesApi,
     AllowlistApi,
     annoyancesConsent,
+    QuickFixesRulesApi,
 } from '../filters';
 import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
 import { settingsEvents } from '../../events';
@@ -522,12 +523,9 @@ export class SettingsApi {
         if (__IS_MV3__) {
             await SettingsApi.loadBuiltInFiltersMv3(builtInFilters);
 
-            // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-            // TODO: remove code totally later.
-
-            // // forcibly enable Quick Fixes filter on import for MV3
-            // // because it is a must-have filter
-            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            // forcibly enable Quick Fixes filter on import for MV3
+            // because it is a must-have filter
+            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             await SettingsApi.loadBuiltInFiltersMv2(builtInFilters);
         }

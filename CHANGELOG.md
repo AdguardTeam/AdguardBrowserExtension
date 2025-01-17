@@ -17,9 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 5.0.185
 
+### Added
+
+- AdGuard Quick Fixes filter is back.
+
 ### Changed
 
-- Updated [@adguard/tswebextension] to v2.4.0-alpha.9.
+- Scriptlet rules are available only from the pre-built filters now.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.10.
 
 ### Removed
 

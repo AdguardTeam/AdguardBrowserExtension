@@ -116,20 +116,20 @@ Because of that, we use the following approach (that was accepted by AMO reviewe
 3. We also allow "User rules" and "Custom filters" to work since those rules are added manually by the user.
    This way filters maintainers can test new rules before including them in the filters.`;
 
-// FIXME (Slava) (in another PR): update the url after the merge
-export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `By the rules of Chrome Web Store, we cannot use remote scripts (and our JS rules can be counted as such).
+export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `By the rules of Chrome Web Store, we cannot use remote scripts (and our JS and Scriptlet rules can be counted as such).
    Because of that, we use the following approach
    (you can search the described steps by 'JS_RULES_EXECUTION' in the bundled background.js):
 
-1. We collect and pre-build JS rules from the filters (which are pre-built into the extension)
-   into the add-on (STEP 1). See 'updateLocalScriptRulesForChromiumMv3' in
-   https://github.com/AdguardTeam/AdguardBrowserExtension/blob/fix/AG-38557-001/tools/resources/update-local-script-rules.ts
-   and the file called "local_script_rules.js".
-2. Collected local script rules are passed to the engine (STEP 2.1 and 2.2).
-3. At runtime we check every JS rule whether it is included in "local_script_rules.js" (STEP 3).
-4. Execution of JS rules:
+1. We collect and pre-build JS and Scriptlet rules from the filters (which are pre-built into the extension)
+   into the add-on (STEP 1.1 and 1.2). See 'updateLocalResourcesForChromiumMv3' in
+   https://github.com/AdguardTeam/AdguardBrowserExtension/blob/release/mv3-filters/tools/resources/update-local-script-rules.ts
+   and the files called "local_script_rules.js" and "local_scriptlet_rules.js".
+2. Collected local script and scriptlet rules are passed to the engine (STEP 2.1 and 2.2).
+3. At runtime we check every JS or Scriptlet rule (separately)
+   whether it is included in "local_script_rules.js" or "local_scriptlet_rules.js" (STEP 3).
+4. Execution of JS and Scriptlet rules:
     - If the rule is included, we allow this rule to work since it is pre-built.
-      Such rules are executed by chrome.scripting API (STEP 4.1). Other rules are discarded.`;
+      Such rules are executed by chrome.scripting API (STEP 4.1 and 4.2). Other rules are discarded.`;
 
 // artifacts constants
 export const CHROME_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.xml';
