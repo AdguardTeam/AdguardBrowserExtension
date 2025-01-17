@@ -12,6 +12,7 @@ import {
     getStorageFixturesV6,
     getStorageFixturesV7,
     getStorageFixturesV8,
+    getStorageFixturesV9,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -39,6 +40,7 @@ describe('Update Api', () => {
         const v6 = getStorageFixturesV6(expires);
         const v7 = getStorageFixturesV7(expires);
         const v8 = getStorageFixturesV8(expires);
+        const v9 = getStorageFixturesV9(expires);
 
         let setMultipleSpy: jest.SpyInstance;
 
@@ -94,14 +96,15 @@ describe('Update Api', () => {
             expect(settingsSchema.parse(settings)).toStrictEqual(settingsSchema.parse(data.to));
         };
 
-        it.each(getCases(v0, v8))('should update from v0 to v8', runCase);
-        it.each(getCases(v1, v8))('should update from v1 to v8', runCase);
-        it.each(getCases(v2, v8))('should update from v2 to v8', runCase);
-        it.each(getCases(v3, v8))('should update from v3 to v8', runCase);
-        it.each(getCases(v4, v8))('should update from v4 to v8', runCase);
-        it.each(getCases(v5, v8))('should update from v5 to v8', runCase);
-        it.each(getCases(v6, v8))('should update from v6 to v8', runCase);
-        it.each(getCases(v7, v8))('should update from v7 to v8', runCase);
+        it.each(getCases(v0, v9))('should update from v0 to v9', runCase);
+        it.each(getCases(v1, v9))('should update from v1 to v9', runCase);
+        it.each(getCases(v2, v9))('should update from v2 to v9', runCase);
+        it.each(getCases(v3, v9))('should update from v3 to v9', runCase);
+        it.each(getCases(v4, v9))('should update from v4 to v9', runCase);
+        it.each(getCases(v5, v9))('should update from v5 to v9', runCase);
+        it.each(getCases(v6, v9))('should update from v6 to v9', runCase);
+        it.each(getCases(v7, v9))('should update from v7 to v9', runCase);
+        it.each(getCases(v8, v9))('should update from v8 to v9', runCase);
 
         // Separate test for migration from V3 storage, because after this
         // version we moved from localStorage to hybridStorage.
@@ -117,9 +120,11 @@ describe('Update Api', () => {
 
             await UpdateApi.update(runInfo);
 
-            // Once for migration filters from localStorage to hybridStorage
-            // and once for adding new Quick Fixes filter (added only in MV3).
-            expect(setMultipleSpy).toHaveBeenCalledTimes(__IS_MV3__ ? 2 : 1);
+            // there should be 3 calls in MV3 for:
+            // 1) migration filters from localStorage to hybridStorage
+            // 2) adding new Quick Fixes filter — in v5.0.91
+            // 3) re-adding Quick Fixes filter back (after temporary removal) — in v5.0.185
+            expect(setMultipleSpy).toHaveBeenCalledTimes(__IS_MV3__ ? 3 : 1);
             expect(setMultipleSpy).toHaveBeenCalledWith(
                 // An object that contains all filter-related keys from the old data
                 // If this test passes, it means that data was passed to the hybrid storage

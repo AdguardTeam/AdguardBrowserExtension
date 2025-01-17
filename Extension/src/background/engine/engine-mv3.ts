@@ -38,11 +38,13 @@ import {
     toasts,
     filteringLogApi,
     CommonFilterApi,
+    QuickFixesRulesApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { FiltersStorage } from '../storages';
 import { emptyPreprocessedFilterList } from '../../common/constants';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
+import { localScriptletRules } from '../../../filters/chromium-mv3/local_scriptlet_rules';
 
 import { TsWebExtensionEngine } from './interface';
 
@@ -97,9 +99,10 @@ export class Engine implements TsWebExtensionEngine {
          *
          * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
          *
-         * This is STEP 2.1: Local script rules are passed to the engine.
+         * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
          */
         TsWebExtension.setLocalScriptRules(localScriptRules);
+        TsWebExtension.setLocalScriptletRules(localScriptletRules);
 
         const configuration = await Engine.getConfiguration();
 
@@ -187,8 +190,6 @@ export class Engine implements TsWebExtensionEngine {
             Object.assign(userrules, await UserRulesApi.getUserRules());
         }
 
-        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-        // TODO: remove code totally later, and for now we just set it to empty.
         const quickFixesRules: Configuration['quickFixesRules'] = {
             ...emptyPreprocessedFilterList,
             /**
@@ -198,11 +199,9 @@ export class Engine implements TsWebExtensionEngine {
             trusted: true,
         };
 
-        // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-        // TODO: remove code totally later.
-        // if (QuickFixesRulesApi.isEnabled()) {
-        //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
-        // }
+        if (QuickFixesRulesApi.isEnabled()) {
+            Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
+        }
 
         const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
             .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
@@ -220,8 +219,6 @@ export class Engine implements TsWebExtensionEngine {
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
             customFilters,
-            // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-            // TODO: remove code totally later.
             quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA),
             logLevel: logger.currentLevel,

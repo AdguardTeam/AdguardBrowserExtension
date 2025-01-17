@@ -37,8 +37,10 @@ import { minify } from 'terser';
 import * as _ from 'lodash';
 
 import {
+    type AnyCosmeticRule,
     CosmeticRuleParser,
     FilterListParser,
+    RuleConverter,
     defaultParserOptions,
 } from '@adguard/agtree';
 
@@ -57,6 +59,16 @@ const AG_FUNCTION_REGEX = /var\s+(AG_[a-zA-Z0-9_]+)\s*=\s*function/;
 const AG_USAGE_REGEX = /AG_[a-zA-Z0-9_]+/g;
 
 const LF = '\n';
+
+/**
+ * File where JS rules from the pre-built filters are saved.
+ */
+const LOCAL_SCRIPT_RULES_FILE_NAME = 'local_script_rules.js';
+
+/**
+ * File where Scriptlet rules from the pre-built filters are saved.
+ */
+const LOCAL_SCRIPTLET_RULES_FILE_NAME = 'local_scriptlet_rules.js';
 
 /**
  * Extracts AG_ function name from the code.
@@ -172,41 +184,58 @@ ${rawComment.split(LF).map((line) => (line ? ` * ${line}` : ' *')).join(LF)}
 };
 
 /**
+ * Beautifies a raw js-file content, saves it to the file and runs validation.
+ *
+ * @param rawContent Raw content.
+ * @param fileName JS file name.
+ */
+const saveToJsFile = async (rawContent: string, fileName: string): Promise<void> => {
+    const beautifiedJsContent = (await minify(rawContent, {
+        mangle: false,
+        compress: false,
+        format: {
+            beautify: true,
+            comments: true,
+            indent_level: 4,
+        },
+    })).code;
+
+    if (!beautifiedJsContent) {
+        throw new Error(`Failed to minify JS content for saving to ${fileName}`);
+    }
+
+    try {
+        await fs.writeFile(
+            `${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
+            beautifiedJsContent,
+        );
+
+        // Run validation with ES modules support
+        const result = await exec(
+            // eslint-disable-next-line max-len
+            `node -r @swc-node/register ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
+        );
+        assert.ok(result.stderr === '', 'No errors during execution');
+        assert.ok(result.stdout === '', 'No output during execution');
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+};
+
+/**
  * Updates `local_script_rules.js` for Chromium MV3 based on JS rules from the pre-built filters.
  *
  * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
  *
- * This is STEP 1.
+ * This is STEP 1.1.
+ *
+ * @param jsRules Set of unique JS rules collected from the pre-built filters.
  */
-export const updateLocalScriptRulesForChromiumMv3 = async () => {
-    const browser = AssetsFiltersBrowser.ChromiumMv3;
-    const folder = FILTERS_DEST.replace('%browser', browser);
-    const filterFiles = await fs.readdir(folder);
-    const rawTxtFiles = filterFiles.filter((file) => file.endsWith('.txt') && file.startsWith('filter_'));
-    const jsRules: Set<string> = new Set();
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const file of rawTxtFiles) {
-        // eslint-disable-next-line no-await-in-loop
-        const rawFilterList = (await fs.readFile(`${folder}/${file}`)).toString();
-        const filterListNode = FilterListParser.parse(rawFilterList, {
-            ...defaultParserOptions,
-            includeRaws: false,
-            isLocIncluded: false,
-            tolerant: true,
-        });
-
-        filterListNode.children.forEach((ruleNode) => {
-            if (
-                // TODO: use imported enum instead of strings
-                ruleNode.category === 'Cosmetic'
-                && ruleNode.type === 'JsInjectionRule'
-            ) {
-                const rawBody = CosmeticRuleParser.generateBody(ruleNode);
-                jsRules.add(rawBody);
-            }
-        });
-    }
+export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>) => {
+    const processedRules: string[] = [];
+    const errors: string[] = [];
+    const agFunctions: Map<string, string> = new Map();
 
     /**
      * This is a test case rule that is used for integration testing.
@@ -224,10 +253,6 @@ export const updateLocalScriptRulesForChromiumMv3 = async () => {
     }
     const reGeneratedRule = CosmeticRuleParser.generateBody(parsedTestcaseRule);
     jsRules.add(reGeneratedRule);
-
-    const processedRules: string[] = [];
-    const errors: string[] = [];
-    const agFunctions: Map<string, string> = new Map();
 
     // First pass: extract AG_ functions
     jsRules.forEach((rule) => {
@@ -290,39 +315,159 @@ export const updateLocalScriptRulesForChromiumMv3 = async () => {
         }
     }
 
-    const jsContent = `${beautifyComment(LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3)}
+    const jsFileContent = `${beautifyComment(LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3)}
 export const localScriptRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
 
-    const beautifiedJsContent = (await minify(jsContent, {
-        mangle: false,
-        compress: false,
-        format: {
-            beautify: true,
-            comments: true,
-            indent_level: 4,
-        },
-    })).code;
+    await saveToJsFile(jsFileContent, LOCAL_SCRIPT_RULES_FILE_NAME);
+};
 
-    if (!beautifiedJsContent) {
-        throw new Error('Failed to minify JS content');
+/**
+ * Updates `local_scriptlet_rules.js` for Chromium MV3 based on Scriptlet rules from the pre-built filters.
+ *
+ * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
+ *
+ * This is STEP 1.2.
+ *
+ * @param scriptletRules Set of unique scriptlet rules collected from the pre-built filters.
+ */
+export const updateLocalScriptletRulesForChromiumMv3 = async (scriptletRules: Set<string>) => {
+    /**
+     * This is a test case rules that is used for integration testing.
+     * It should be added explicitly to the list of rules.
+     *
+     * @see {@link https://testcases.agrd.dev/Filters/scriptlet-rules/test-scriptlet-rules.txt}
+     * @see {@link https://testcases.agrd.dev/Filters/scriptlet-rules/allowlist-specific/test-scriptlet-allowlist-specific-rules.txt}
+     */
+    const TESTCASES_RULES = [
+        // https://testcases.agrd.dev/Filters/scriptlet-rules/test-scriptlet-rules.txt
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-on-property-write", "__testCase1")',
+        'testcases.agrd.dev,pages.dev##+js(abort-on-property-write.js, __testCase2)',
+        'testcases.agrd.dev,pages.dev#$#abort-on-property-write __testCase3',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-current-inline-script", "__testCase4")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-current-inline-script", "__testCase5")',
+        'testcases.agrd.dev,pages.dev#$#abort-current-inline-script __testCase6',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-current-inline-script", "__testCase7.__AG")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-current-inline-script", "__testCase8", "Case8")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-on-property-read", "propReadCaseAG")',
+        'testcases.agrd.dev,pages.dev##+js(abort-on-property-read.js, propReadCaseUBO)',
+        'testcases.agrd.dev,pages.dev#$#abort-on-property-read propReadCaseABP',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("nowebrtc")',
+        // eslint-disable-next-line max-len
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-addEventListener", "/^(?:click|focus)$/", "preventListenerCaseAG")',
+        'testcases.agrd.dev,pages.dev##+js(addEventListener-defuser.js, click, preventListenerCaseUBO)',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-bab")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-setInterval", "setIntervalAGSyntax")',
+        'testcases.agrd.dev,pages.dev##+js(setInterval-defuser.js, setIntervalUBOSyntax)',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-setTimeout", "setTimeoutAGSyntax")',
+        'testcases.agrd.dev,pages.dev##+js(setTimeout-defuser.js, setTimeoutUBOSyntax)',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "setConstantAGSyntax", "true")',
+        'testcases.agrd.dev,pages.dev##+js(set-constant.js, setConstantUBOSyntax, true)',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "trueProp", "true")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "falseProp", "false")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "undefinedProp", "undefined")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "nullProp", "null")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "noopFuncProp", "noopFunc")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "trueFuncProp", "trueFunc")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "falseFuncProp", "falseFunc")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "numberProp", "111")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "emptyStringProp", "")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "illegalNumberProp", "32768")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-window-open", "1", "window1")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-window-open", "1", "/window2/")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-window-open", "0", "window")',
+        'testcases.agrd.dev,pages.dev##+js(window.open-defuser.js, 0, window4)',
+        'testcases.agrd.dev,pages.dev##+js(window.open-defuser.js, 0, anyOther)',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-eval-if", "preventIfTest")',
+        'testcases.agrd.dev,pages.dev##+js(noeval-if.js, preventIfTest1)',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("remove-cookie")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-popads-net")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("trusted-set-cookie", "__Host-prefix", "host_prefix")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("trusted-set-cookie", "__Secure-prefix", "secure_prefix")',
+        // https://testcases.agrd.dev/Filters/scriptlet-rules/allowlist-specific/test-scriptlet-allowlist-specific-rules.txt
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "firstVal", "true")',
+        'testcases.agrd.dev,pages.dev#@%#//scriptlet("set-constant", "firstVal", "false")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "secondVal", "true")',
+        'testcases.agrd.dev,pages.dev#@%#//scriptlet("set-constant", "secondVal", "true")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "testVal", "true")',
+        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-eval-if", "preventIfTest")',
+        'testcases.agrd.dev,pages.dev#@%#//scriptlet("prevent-eval-if")',
+    ];
+
+    TESTCASES_RULES.forEach((rawRule) => {
+        const parsedRule = CosmeticRuleParser.parse(rawRule);
+        if (!parsedRule
+            || parsedRule.category !== 'Cosmetic'
+            || parsedRule.type !== 'ScriptletInjectionRule') {
+            throw new Error('Invalid test rule');
+        }
+        const agRule = RuleConverter.convertToAdg(parsedRule);
+        const reGeneratedRule = CosmeticRuleParser.generateBody(agRule.result[0] as AnyCosmeticRule);
+        scriptletRules.add(reGeneratedRule);
+    });
+
+    const processedRules: string[] = [];
+    const errors: string[] = [];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const rule of scriptletRules) {
+        try {
+            const ruleKey = JSON.stringify(rule);
+            processedRules.push(`${ruleKey}: true`);
+        } catch (error) {
+            errors.push(
+                `Skipping invalid rule: ${rule}; Error: ${error instanceof Error ? error.message : String(error)}`,
+            );
+        }
     }
 
-    try {
-        await fs.writeFile(
-            `${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`,
-            beautifiedJsContent,
-        );
+    const jsFileContent = `${beautifyComment(LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3)}
+export const localScriptletRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
 
-        // Run validation with ES modules support
-        const result = await exec(
-            `node -r @swc-node/register ${FILTERS_DEST.replace('%browser', browser)}/local_script_rules.js`,
-        );
-        assert.ok(result.stderr === '', 'No errors during execution');
-        assert.ok(result.stdout === '', 'No output during execution');
-    } catch (error) {
-        console.error('Error:', error);
-        throw error;
+    await saveToJsFile(jsFileContent, LOCAL_SCRIPTLET_RULES_FILE_NAME);
+};
+
+export const updateLocalResourcesForChromiumMv3 = async () => {
+    const folder = FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3);
+    const filterFiles = await fs.readdir(folder);
+    const rawTxtFiles = filterFiles.filter((file) => file.endsWith('.txt') && file.startsWith('filter_'));
+
+    const jsRules: Set<string> = new Set();
+    const scriptletRules: Set<string> = new Set();
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const file of rawTxtFiles) {
+        // eslint-disable-next-line no-await-in-loop
+        const rawFilterList = (await fs.readFile(`${folder}/${file}`)).toString();
+        const filterListNode = FilterListParser.parse(rawFilterList, {
+            ...defaultParserOptions,
+            includeRaws: false,
+            isLocIncluded: false,
+            tolerant: true,
+        });
+
+        filterListNode.children.forEach((ruleNode) => {
+            if (
+                // TODO: use imported enum instead of strings
+                ruleNode.category === 'Cosmetic'
+                && ruleNode.type === 'JsInjectionRule'
+            ) {
+                const rawBody = CosmeticRuleParser.generateBody(ruleNode);
+                jsRules.add(rawBody);
+            }
+
+            if (
+                // TODO: use imported enum instead of strings
+                ruleNode.category === 'Cosmetic'
+                && ruleNode.type === 'ScriptletInjectionRule'
+            ) {
+                const rawBody = CosmeticRuleParser.generateBody(ruleNode);
+                scriptletRules.add(rawBody);
+            }
+        });
     }
+
+    await updateLocalScriptRulesForChromiumMv3(jsRules);
+    await updateLocalScriptletRulesForChromiumMv3(scriptletRules);
 };
 
 export const updateLocalScriptRulesForFirefox = async () => {

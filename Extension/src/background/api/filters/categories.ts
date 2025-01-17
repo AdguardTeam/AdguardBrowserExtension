@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { UserAgent } from '../../../common/user-agent';
-import { AntiBannerFiltersId, RECOMMENDED_TAG_ID } from '../../../common/constants';
+import { RECOMMENDED_TAG_ID } from '../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,
@@ -82,11 +82,7 @@ export class Categories {
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
-        const filters = Categories.getFilters().filter((f) => {
-            // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-            // TODO: remove code totally later.
-            return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
-        });
+        const filters = Categories.getFilters();
 
         const categories = groups.map((group) => ({
             ...group,

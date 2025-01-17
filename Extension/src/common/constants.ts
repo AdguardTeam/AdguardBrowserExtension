@@ -25,7 +25,7 @@ import { type PreprocessedFilterList } from '@adguard/tswebextension';
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 8;
+export const APP_SCHEMA_VERSION = 9;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -52,8 +52,6 @@ export enum AntiBannerFiltersId {
     SearchAndSelfPromoFilterId = 10,
     AnnoyancesCombinedFilterId = 14,
     UrlTrackingFilterId = 17,
-    // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-    // TODO: remove code totally later.
     QuickFixesFilterId = 24,
     AllowlistFilterId = 100,
     MobileAdsFilterId = 11,

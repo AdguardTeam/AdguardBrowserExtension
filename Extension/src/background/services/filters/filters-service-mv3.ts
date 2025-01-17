@@ -36,6 +36,7 @@ import {
     FiltersApi,
     HitStatsApi,
     PageStatsApi,
+    QuickFixesRulesApi,
 } from '../../api';
 import { settingsEvents } from '../../events';
 import { SettingOption } from '../../schema';
@@ -261,10 +262,7 @@ export class FiltersService {
         // For quick fixes filter we have special logic with partially updating
         // metadata and then load filter from remote.
         if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
-            // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-            // TODO: remove code totally later.
-
-            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
         }
