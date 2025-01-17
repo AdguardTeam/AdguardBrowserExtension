@@ -1,8 +1,8 @@
-! Checksum: uraXTwYcbgaRaIL+QOY71Q
+! Checksum: 2eytNzVZ6sZMibmTTgzdKA
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.29.87
-! TimeUpdated: 2025-01-14T16:40:43+00:00
+! Version: 2.0.29.97
+! TimeUpdated: 2025-01-17T09:40:18+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -107,6 +107,8 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/196530
+today.com#%#//scriptlet('remove-class', 'jw-flag-floating', '.inline-video__player div.jwplayer.jw-flag-floating')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196307
 ||20.detik.com/embed/$subdocument,~third-party
 sport.detik.com##.detail__body-text > div.aevp:has(> div.pip-vid.sisip_video_ds)
@@ -3529,6 +3531,11 @@ habr.com##.tm-article-card-list > li.tm-article-card-list__item:has(> div.tm-pro
 habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Ближайшие события))
 !
 !
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/196126
+any.run##.regular-banner:has(> a[href*="intelligence.any.run"])
+! https://github.com/AdguardTeam/AdguardFilters/issues/196128
+flickr.com##.sub-photo-submoola-banner-view
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195919
 gameinn.jp##a[href*="gameinn.jp/gameranking"] > img
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193003
@@ -5359,6 +5366,19 @@ book.oricon.co.jp##a[href^="https://apay-up-banner.com?merchantId="] > img
 !
 ! SECTION: Self-promo - Regular rules
 !
+uyamaresort.com###block-25
+uyamaresort.com###block-33
+uyamaresort.com##.entry-content > p:has(> a[href="https://uyamaresort.net/lp/"])
+cnet.com##div[section="commerce-promo"]
+filmora.wondershare.jp##.ws-ad-new
+mediafire.com#$?#.lifetime-promo { remove: true; }
+peliculasgd.net###divFLRARight
+erogazou.gallery##.zoom-b
+blog.selfpub.ru##.t-rec:has(> div[class] > div[data-artboard-recid] > div[data-elem-id] > a[href^="https://selfpub.ru/account/registration?"])
+blog.selfpub.ru##.t-rec:has(> div[class] > div[class^="t-container_"] a[href^="https://selfpub.ru/account/registration"])
+blog.selfpub.ru#$#body.t-body_popupshowed { overflow: auto !important; }
+blog.selfpub.ru#$##rec751874288 { display: none !important; }
+zerohedge.com##.sidebar-left > a#store-promo
 krisp.ai##.post_banner
 bitchute.com##.q-banner
 dailymail.co.uk##.link-bogr2 > li[data-ad-marker-group]:has(> a[href^="/shopping-uk/"])
@@ -8293,6 +8313,9 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/196388
+alex71.com#%#//scriptlet('remove-attr', 'style', '#download-link')
+alex71.com#%#//scriptlet('remove-attr', 'disabled', '#download-btn')
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3089
 leakedpacks.com#%#//scriptlet('adjust-setInterval', 'counter', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195744

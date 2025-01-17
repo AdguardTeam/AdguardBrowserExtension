@@ -1,8 +1,8 @@
-! Checksum: VKunLJshhGqFc6cVxFKZtw
+! Checksum: aM/NRgmYuEjFl6Ic8qWE6g
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.29.94
-! TimeUpdated: 2025-01-14T12:40:58+00:00
+! Version: 2.1.30.10
+! TimeUpdated: 2025-01-17T11:41:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -358,6 +358,9 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/196174
+||174.127.195.98/bbs/include/javascript/adblock.js
+174.127.195.98#%#//scriptlet('abort-on-property-write', 'checkAdblock')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194998
 colamanga.com#@#.ADFooter
 colamanga.com#@#.ADInfo
@@ -2890,7 +2893,7 @@ netfly.ai,netfly.app,netfly.be,netfly.cn,netfly.com.bd,netfly.com.br,netfly.com.
 ! Do not hide .bili-video-card container to not mess up content, related - https://github.com/AdguardTeam/AdguardFilters/issues/147194#issuecomment-1500803042
 ! https://user-images.githubusercontent.com/3976203/273172163-25ff30a0-c988-4ec3-9e51-cf4722a90976.jpg
 ! bilibili.com#?#.bili-video-card.is-rcmd > div > a[href*="cm.bilibili.com"][data-target-url]:not([data-target-url*=".bili"]) + .bili-video-card__info:upward(2)
-bilibili.com#$?#.container > div[class*="-card"]:has(div[style="display: none !important;"]) { remove: true; }
+bilibili.com#$#.container > div[class*="-card"]:has(div[style="display: none !important;"]) { position: absolute !important; left: -3000px !important; }
 bilibili.com#$?#.container > div.feed-card:not(:has(> div > *)) { remove: true; }
 bilibili.com##.container > div.feed-card:not(:has(> div > *))
 bilibili.com#$?#.container > div.floor-single-card:has(> div.skeleton) { remove: true; }
@@ -3241,6 +3244,7 @@ bmvc2020-conference.com#@#div[id][style="width: 100%;"] > iframe[scrolling="no"]
 !---------------------------------------------------------------------------!
 -*-*-*-*.alpha^$script,third-party
 -*-*-*-*.as^$script,third-party
+.xyz:*?x=$script,third-party
 -*-*-*-*.panda^$script,third-party
 .tv/gg/
 /webAdvert.php?ad_name=
@@ -4951,9 +4955,33 @@ newduba.cn###jq_youxi
 ||23.231.151.252^
 ||38.33.15.*.gif
 ||51tongji.trafficmanager.net^
+||trafficmanager.net/o.js
 ||67.21.92.*.gif
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||lagzoids.com^
+||njnhzh.icu^
+||8u0.fun^
+||pheetuth.com^
+||ztgha.xyz^
+||djsxm.xyz^
+||0vc.fun^
+||cralphal.com^
+||ptrmnx.icu^
+||iwpkp.xyz^
+||4gu.fun^
+||krikului.com^
+||ed2.fun^
+||zxpaa.xyz^
+||etallkiq.com^
+||tbyfz.xyz^
+||rqvrbf.icu^
+||tovbus.cn^
+||17282.org^
+||btcili.top^
+||04o.fun^
+||nagvaxvy.com^
+||epxlt.xyz^
 ||lazzrv.icu^
 ||geinkroll.com^
 ||wusfa.xyz^
@@ -12999,6 +13027,7 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||httpcn.com^*-120
 ||aatv.app/sport/sport.js
 ||dangbei.net/2022/dbhezi.
+eastmoney.com##div[style^="position: fixed; z-index:"]
 85po.com##.asside-link
 cnbeta.com.tw##.cb-help
 cnbeta.com.tw##.meta > .fr
@@ -13046,7 +13075,6 @@ mydrivers.com###track-link
 eastmoney.com##div[style^="position: fixed; z-index: 100000; top:"]
 mydrivers.com##.i1vbApifa5
 mydrivers.com##.HSsRgYjfNn
-siguyy.tv##[style^="position: fixed;"]
 szxx.com.cn###A1
 szxx.com.cn###A2
 yahoo.com###ACT_crazy

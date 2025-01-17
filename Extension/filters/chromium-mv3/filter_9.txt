@@ -1,8 +1,8 @@
-! Checksum: f3CTKaasAXh6u6TlqmqLXg
+! Checksum: C+c9Q5J6q46TGAHFtm44ag
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.28.30
-! TimeUpdated: 2025-01-14T17:41:19+00:00
+! Version: 2.0.28.33
+! TimeUpdated: 2025-01-16T10:39:00+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -89,7 +89,7 @@
 ! https://forum.adguard.com/index.php?threads/ivoox-com-podcasts-issues.29530/
 ! ||addevweb.com^$third-party
 !
-diariobitcoin.com##div[class^="diari-"]
+||butlercdn.com^$third-party
 ||classic-bonus.com^
 ||assets.etus.digital^$third-party
 ||ncwabgl.com^
@@ -518,7 +518,9 @@ animeszone.net#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/160122
 megacanaisonline.me##div[id][class^="popup"][class$="wrap"][style]
 megacanaisonline.me#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
+! https://github.com/AdguardTeam/AdguardFilters/issues/196297
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159034
+acortados.com,notipostingt.com#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 acortados.com,acortalink.me#%#//scriptlet('prevent-fetch', '/ads-twitter\.com|pagead|googleads|doubleclick/', '', 'opaque')
 acortados.com,todoandroid.live,gadgetzona.net,qwanturankpro.com#%#//scriptlet('prevent-fetch', 'method:HEAD')
 ! https://github.com/uBlockOrigin/uAssets/issues/19312
@@ -1624,17 +1626,18 @@ estacio.br#%#//scriptlet('set-cookie', 'modal_promo', '1')
 multipaste.org#%#(()=>{document.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll('.count > li > a[href*="/#!"]').forEach((t=>{const e=(t=>{let e=t;for(let t=0;t<10;t++)try{e=atob(e)}catch(t){break}return e})(t.href.split("/#!")[1]);(t=>{let e=t;try{e=new URL(t)}catch(t){return!1}return"http:"===e.protocol||"https:"===e.protocol})(e)&&t.setAttribute("href",e)}))}));})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191026
 gourlpro.com#%#!function(){if(window.location.href.includes(".php?")&&window.location.href.includes("=")){const o=location.href.split("=");if(o&&o[1]){let t=o[1];for(let o=0;o<10;o++)try{t=atob(t)}catch(o){const n=decodeURIComponent(t);let c=!1;try{new URL(n),c=!0}catch(o){c=!1}if(c){location.assign(n);break}}}}}();
+! https://github.com/AdguardTeam/AdguardFilters/issues/196297
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178968
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178920
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171873
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167657
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159461
-myfirstdollar.org,gourlpro.com,adclic.es,adclic.org,mundopolo.net,jurisfera.com,adclicker.info,adclicker.io#%#//scriptlet('set-constant', 'global.noobMaxTry', '0')
-mundopolo.net,jurisfera.com,adclicker.info,adclicker.io#%#(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);g=g.split("&url=")[1];try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
+acortaz.es,myfirstdollar.org,gourlpro.com,adclic.es,adclic.org,mundopolo.net,adclicker.io#%#//scriptlet('set-constant', 'global.noobMaxTry', '0')
+mundopolo.net,adclicker.io#%#(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);g=g.split("&url=")[1];try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
 gourlpro.com#%#(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
 myfirstdollar.org,adclic.es,adclic.org#%#(function(){if(-1<window.location.href.indexOf("/#!")){var b=location.href.split("/#!");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
-! probably required. Cannot check if AG_onLoad may be replaced by `document.addEventListener("DOMContentLoaded"`
-myfirstdollar.org,gourlpro.com,adclic.es,adclic.org,mundopolo.net,jurisfera.com,adclicker.info,adclicker.io#%#AG_onLoad(function(){try{"function"==typeof window.noobBypass&&noobBypass()}catch(b){}});
+acortaz.es#%#(function(){if(-1<window.location.href.indexOf("o.php?l=")){var b=location.href.split("o.php?l=");if(b&&b[1]){b=b[1].replace(/\|\d/,'');for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
+acortaz.es,myfirstdollar.org,gourlpro.com,adclic.es,adclic.org,mundopolo.net,adclicker.io#%#(()=>{document.addEventListener("DOMContentLoaded",(()=>{try{"function"==typeof window.noobBypass&&noobBypass()}catch(b){}}));})();
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183355
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159665
@@ -2176,6 +2179,11 @@ c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,me
 !
 ! NOTE: Specific rules
 !
+eldiariodelapampa.com.ar##.banner-lateral
+eldiariodelapampa.com.ar##section[data-element="container"]:has(> article[data-element="content"] > div:not([class]) > ins.adsbygoogle[data-ad-slot])
+eldiariodelapampa.com.ar##section[data-element="container"]:has(> article[data-element="content"] > div > script[src^="https://www.butlercdn.com/"])
+eldiariodelapampa.com.ar##section[data-element="container"]:has(> article[data-element="content"] > div img[src^="https://www.eldiariodelapampa.com.ar/publipablo/"])
+diariobitcoin.com##div[class^="diari-"]
 climatempo.com.br##a[data-testid="share-button"]
 climatempo.com.br##div.MuiStack-root:has(> div.MuiStack-root > div[data-type="ad_space"])
 climatempo.com.br##div.accordion-card:has(> div.card > label#accordion-recommended)
@@ -3432,7 +3440,7 @@ puraciudad.com.ar###sidebar-primary-sidebar > .primary-sidebar-widget
 boainformacao.com.br##div[class*="sidebar"] .textwidget > p > a[href]:not([href*="boainformacao.com.br"]) > img
 boainformacao.com.br##div[class*="sidebar"] .textwidget > p ~ a[href]:not([href*="boainformacao.com.br"]) > img
 eldesmarque.com,jornaldeitapetininga.com.br##div[id^="banner_"]
-futemax.mx,minutouno.com,yapo.cl,ratingcero.com,ambito.com##.banner-container
+eldiariodelapampa.com.ar,futemax.mx,minutouno.com,yapo.cl,ratingcero.com,ambito.com##.banner-container
 tupornogratis.xxx##.lst_ft_bn
 globo.com##div[id^="banner_home"]
 globo.com###banner_vitrine_container
