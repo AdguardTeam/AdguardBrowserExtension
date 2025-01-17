@@ -21,6 +21,7 @@ import React, {
     useLayoutEffect,
     useCallback,
     useState,
+    useEffect,
 } from 'react';
 
 import cn from 'classnames';
@@ -35,6 +36,7 @@ import {
     isScrollable,
     maintainScrollVisibility,
     SelectAction,
+    SelectKey,
     type SelectOption,
 } from './helpers';
 
@@ -83,6 +85,11 @@ export type SelectProps = {
      * Label for the select (used only for screen readers).
      */
     label?: string,
+
+    /**
+     * Description id for the select (used only for screen readers).
+     */
+    descriptionId?: string,
 };
 
 /**
@@ -104,6 +111,7 @@ export const Select = ({
     setHidden,
     popupModification = false,
     label,
+    descriptionId,
 }: SelectProps) => {
     const comboRef = useRef<HTMLButtonElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
@@ -206,13 +214,17 @@ export const Select = ({
     };
 
     /**
-     * Appends the typed character to the search string and returns it.
-     * Setups a timeout to clear the search string after a certain time.
+     * Depending on key it updates search string:
+     * - if key is a letter, it appends it to the search string
+     * - if key is backspace, it removes the last character from the search string
+     * - if key is clear, it clears the search string
      *
-     * @param char New character to append to the search string.
+     * And also setups a timeout to clear the search string after a certain time.
+     *
+     * @param key New character to append to the search string.
      * @returns The updated search string.
      */
-    const getSearchString = (char: string) => {
+    const getSearchString = (key: string) => {
         // reset typing timeout and start new timeout
         // this allows us to make multiple-letter matches, like a native select
         if (searchTimeoutId.current !== null) {
@@ -226,16 +238,23 @@ export const Select = ({
             searchTimeoutId.current = null;
         }, CLEAR_TIMEOUT);
 
-        searchString.current += char;
+        if (key === SelectKey.Backspace) {
+            searchString.current = searchString.current.slice(0, -1);
+        } else if (key === SelectKey.Clear) {
+            searchString.current = '';
+        } else {
+            searchString.current += key;
+        }
+
         return searchString.current;
     };
 
-    const onComboType = (letter: string) => {
+    const onComboType = (key: string) => {
         // open the listbox if it is closed
         updateSelectState(false);
 
         // find the index of the first matching option
-        const searchStringFromLetter = getSearchString(letter);
+        const searchStringFromLetter = getSearchString(key);
         const searchIndex = getIndexByLetter(
             options,
             searchStringFromLetter,
@@ -282,7 +301,7 @@ export const Select = ({
                 event.preventDefault();
                 return updateSelectState(false);
             default:
-                // do nothing
+                break;
         }
     };
 
@@ -311,6 +330,17 @@ export const Select = ({
         };
     }, [onBlur]);
 
+    // cleanup refs after unmount
+    useEffect(() => {
+        return () => {
+            if (searchTimeoutId.current !== null) {
+                clearTimeout(searchTimeoutId.current);
+                searchTimeoutId.current = null;
+            }
+            searchString.current = '';
+        };
+    }, []);
+
     if (!activeOption) {
         return null;
     }
@@ -327,6 +357,7 @@ export const Select = ({
                 aria-expanded={!hidden}
                 aria-haspopup="listbox"
                 aria-label={label}
+                aria-describedby={descriptionId}
                 aria-activedescendant={hidden ? undefined : getOptionId(focusedIndex)}
                 onClick={onComboClick}
                 onBlur={onBlur}

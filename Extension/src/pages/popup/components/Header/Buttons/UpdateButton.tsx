@@ -70,6 +70,7 @@ export const UpdateButton = () => {
         }, 1);
     };
 
+    // cleanup timeout after unmount
     useEffect(() => {
         return () => {
             if (timeoutId.current) {

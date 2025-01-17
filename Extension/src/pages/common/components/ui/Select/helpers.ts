@@ -51,6 +51,60 @@ export enum SelectAction {
 }
 
 /**
+ * Keyboard keys supported by the select.
+ */
+export enum SelectKey {
+    Enter = 'Enter',
+    Space = ' ',
+    Escape = 'Escape',
+    ArrowDown = 'ArrowDown',
+    ArrowUp = 'ArrowUp',
+    Home = 'Home',
+    End = 'End',
+    PageUp = 'PageUp',
+    PageDown = 'PageDown',
+    Backspace = 'Backspace',
+    Clear = 'Clear',
+    Character = 'Character',
+}
+
+/**
+ * Map a key press to an action.
+ */
+const SELECT_KEY_TO_ACTION_MAP = new Map<SelectKey, SelectAction>([
+    [SelectKey.Home, SelectAction.First],
+    [SelectKey.End, SelectAction.Last],
+    [SelectKey.Backspace, SelectAction.Type],
+    [SelectKey.Clear, SelectAction.Type],
+    [SelectKey.Character, SelectAction.Type],
+]);
+
+/**
+ * Map a key press to an action when the select is closed.
+ */
+const SELECT_CLOSED_KEY_TO_ACTION_MAP = new Map<SelectKey, SelectAction>([
+    ...SELECT_KEY_TO_ACTION_MAP.entries(),
+    [SelectKey.ArrowDown, SelectAction.Open],
+    [SelectKey.ArrowUp, SelectAction.Open],
+    [SelectKey.Enter, SelectAction.Open],
+    [SelectKey.Space, SelectAction.Open],
+]);
+
+/**
+ * Map a key press to an action when the select is open.
+ */
+const SELECT_OPENED_KEY_TO_ACTION_MAP = new Map<SelectKey, SelectAction>([
+    ...SELECT_KEY_TO_ACTION_MAP.entries(),
+    [SelectKey.ArrowDown, SelectAction.Next],
+    [SelectKey.ArrowUp, SelectAction.Previous],
+    [SelectKey.PageUp, SelectAction.PageUp],
+    [SelectKey.PageDown, SelectAction.PageDown],
+    [SelectKey.Escape, SelectAction.Close],
+    [SelectKey.Enter, SelectAction.Select],
+    [SelectKey.Space, SelectAction.Select],
+]);
+
+/**
  * Filter an array of options against an input string by using `option.title` property.
  * The filter is case-insensitive and will match any option that starts with or contains the filter string.
  * Filtering prioritizes:
@@ -83,7 +137,36 @@ function filterOptions(
 }
 
 /**
+ * Get the select key from a keyboard event.
+ *
+ * @param event Keyboard event.
+ * @returns Select key.
+ */
+function getSelectKeyFromEvent(event: ReactKeyboardEvent<HTMLElement>): SelectKey | null {
+    const {
+        key,
+        altKey,
+        ctrlKey,
+        metaKey,
+    } = event;
+
+    // get matching key from enum, 'Character' not overlaps with any native key
+    if (Object.values(SelectKey).includes(key as SelectKey)) {
+        return key as SelectKey;
+    }
+
+    // check if key is a single character
+    if (key.length === 1 && key !== ' ' && !altKey && !ctrlKey && !metaKey) {
+        return SelectKey.Character;
+    }
+
+    return null;
+}
+
+/**
  * Map a key press to an action.
+ *
+ * @see {@link https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-select-only/ | Specs}
  *
  * @param event Event.
  * @param selectHidden Is select hidden.
@@ -93,62 +176,24 @@ export function getActionFromKey(
     event: ReactKeyboardEvent<HTMLElement>,
     selectHidden: boolean,
 ): SelectAction {
-    const {
-        key,
-        altKey,
-        ctrlKey,
-        metaKey,
-    } = event;
+    const selectKey = getSelectKeyFromEvent(event);
 
-    // all keys that will do the default open action
-    const openKeys = ['ArrowDown', 'ArrowUp', 'Enter', ' '];
-
-    // handle opening when closed
-    if (selectHidden && openKeys.includes(key)) {
-        return SelectAction.Open;
+    // if key is not supported, do nothing
+    if (!selectKey) {
+        return SelectAction.None;
     }
 
-    // home and end move the selected option when open or closed
-    if (key === 'Home') {
-        return SelectAction.First;
-    }
-    if (key === 'End') {
-        return SelectAction.Last;
+    // Special case: ArrowUp + Alt updates select value
+    if (!selectHidden && selectKey === SelectKey.ArrowUp && event.altKey) {
+        return SelectAction.Select;
     }
 
-    // handle typing characters when open or closed
-    if (
-        key === 'Backspace'
-        || key === 'Clear'
-        || (key.length === 1 && key !== ' ' && !altKey && !ctrlKey && !metaKey)
-    ) {
-        return SelectAction.Type;
-    }
+    // get action map based on select visibility
+    const map = selectHidden
+        ? SELECT_CLOSED_KEY_TO_ACTION_MAP
+        : SELECT_OPENED_KEY_TO_ACTION_MAP;
 
-    // handle keys when open
-    if (!selectHidden) {
-        let action: SelectAction = SelectAction.None;
-
-        if (key === 'ArrowUp' && altKey) {
-            action = SelectAction.Select;
-        } else if (key === 'ArrowDown' && !altKey) {
-            action = SelectAction.Next;
-        } else if (key === 'ArrowUp') {
-            action = SelectAction.Previous;
-        } else if (key === 'PageUp') {
-            action = SelectAction.PageUp;
-        } else if (key === 'PageDown') {
-            action = SelectAction.PageDown;
-        } else if (key === 'Escape') {
-            action = SelectAction.Close;
-        } else if (key === 'Enter' || key === ' ') {
-            action = SelectAction.Select;
-        }
-
-        return action;
-    }
-
-    return SelectAction.None;
+    return map.get(selectKey) ?? SelectAction.None;
 }
 
 /**
