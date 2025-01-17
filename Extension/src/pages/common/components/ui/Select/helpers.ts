@@ -51,8 +51,11 @@ export enum SelectAction {
 }
 
 /**
- * Filter an array of options against an input string.
- * Returns an array of options that begin with the filter string, case-independent.
+ * Filter an array of options against an input string by using `option.title` property.
+ * The filter is case-insensitive and will match any option that starts with or contains the filter string.
+ * Filtering prioritizes:
+ * 1) Options that starts with filter string.
+ * 2) Options that contains filter string.
  *
  * @param options Options to filter.
  * @param filter Filter string.
@@ -63,7 +66,20 @@ function filterOptions(
     filter: string,
 ): SelectOption[] {
     const filterLower = filter.toLowerCase();
-    return options.filter(({ title }) => title.toLowerCase().startsWith(filterLower));
+    const startsWith: SelectOption[] = [];
+    const contains: SelectOption[] = [];
+
+    options.forEach((option) => {
+        const titleLower = option.title.toLowerCase();
+
+        if (titleLower.startsWith(filterLower)) {
+            startsWith.push(option);
+        } else if (titleLower.includes(filterLower)) {
+            contains.push(option);
+        }
+    });
+
+    return [...startsWith, ...contains];
 }
 
 /**
