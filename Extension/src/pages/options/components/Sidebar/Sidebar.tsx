@@ -35,6 +35,8 @@ import { Compare } from './Compare';
 
 import './sidebar.pcss';
 
+const SIDEBAR_ID = 'sidebar';
+
 const Sidebar = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -63,6 +65,14 @@ const Sidebar = observer(() => {
     // Lock sidebar from tab focus if sidebar is closed and it's below tablet screen size.
     const isSidebarLocked = !isSidebarOpen && !isTabletAndAboveScreen;
 
+    const toggleSidebar = () => {
+        if (isSidebarOpen) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    };
+
     /**
      * Close sidebar and remove specific limit warning, e.g. on reaching dynamic rules limit on custom filter enabling.
      */
@@ -88,36 +98,29 @@ const Sidebar = observer(() => {
 
     return (
         <>
-            <div className="sidebar__menu" inert={isSidebarOpen ? '' : undefined}>
+            <div className="sidebar__menu">
                 <button
                     type="button"
-                    className="sidebar__open-button"
-                    aria-label={translator.getMessage('options_open_sidebar')}
-                    onClick={openSidebar}
+                    className="sidebar__menu-button"
+                    aria-label={translator.getMessage('options_navigation')}
+                    aria-expanded={isSidebarOpen}
+                    aria-controls={SIDEBAR_ID}
+                    onClick={toggleSidebar}
                 >
                     <Icon
-                        id="#menu"
-                        classname="icon--menu"
+                        id={isSidebarOpen ? '#cross' : '#menu'}
+                        classname={isSidebarOpen ? 'icon--24 icon--gray-default' : 'icon--menu'}
                         aria-hidden="true"
                     />
                 </button>
             </div>
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
-            <div className={overlayClassName} onClick={closeSidebar}>
-                <button
-                    type="button"
-                    className="sidebar__close-button"
-                    aria-label={translator.getMessage('close_button_title')}
-                    onClick={closeSidebar}
-                >
-                    <Icon
-                        id="#cross"
-                        classname="icon--24 icon--gray-default"
-                        aria-hidden="true"
-                    />
-                </button>
-            </div>
-            <div className={className} inert={isSidebarLocked ? '' : undefined}>
+            <div className={overlayClassName} onClick={closeSidebar} />
+            <div
+                id={SIDEBAR_ID}
+                className={className}
+                inert={isSidebarLocked ? '' : undefined}
+            >
                 <Icon
                     id="#logo"
                     classname="icon--logo sidebar__logo"

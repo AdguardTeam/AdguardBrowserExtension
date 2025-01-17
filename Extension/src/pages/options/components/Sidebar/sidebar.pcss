@@ -38,27 +38,25 @@
         margin: 16px 32px;
     }
 
-    &__open-button {
+    &__menu-button {
         cursor: pointer;
         margin: 6px 9px;
         border: 0;
         background-color: transparent;
-    }
 
-    &__close-button {
-        cursor: pointer;
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        border: 0;
-        padding: 0;
-        pointer-events: none;
-        background-color: transparent;
-        opacity: 0;
+        &[aria-expanded="true"] {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+            opacity: 0;
 
-        &:focus-visible {
-            pointer-events: auto;
-            opacity: 1;
+            &:focus-visible {
+                pointer-events: auto;
+                opacity: 1;
+            }
         }
     }
 
