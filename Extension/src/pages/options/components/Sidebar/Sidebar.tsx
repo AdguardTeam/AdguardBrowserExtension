@@ -92,7 +92,7 @@ const Sidebar = observer(() => {
                 <button
                     type="button"
                     className="sidebar__open-button"
-                    aria-label="FIXME: Open sidebar"
+                    aria-label={translator.getMessage('options_open_sidebar')}
                     onClick={openSidebar}
                 >
                     <Icon
