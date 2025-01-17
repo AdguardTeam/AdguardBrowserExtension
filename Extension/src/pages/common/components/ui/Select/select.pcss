@@ -87,7 +87,9 @@
         }
 
         &-icon {
-            display: none;
+            &, .select__item[aria-selected="false"] & {
+                display: none;
+            }
 
             .select__item[aria-selected="true"] & {
                 display: block;
