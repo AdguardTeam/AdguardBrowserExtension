@@ -63,7 +63,7 @@ function filterOptions(
     filter: string,
 ): SelectOption[] {
     const filterLower = filter.toLowerCase();
-    return options.filter(({ value }) => value.toLowerCase().startsWith(filterLower));
+    return options.filter(({ title }) => title.toLowerCase().startsWith(filterLower));
 }
 
 /**
@@ -179,7 +179,11 @@ export function getIndexByLetter(
     // if the same letter is being repeated, cycle through first-letter matches
     if (areAllLettersSame(filter)) {
         const matches = filterOptions(orderedOptions, filter[0] ?? '');
-        return options.findIndex((option) => option.value === matches[0]?.value);
+        if (matches.length === 0) {
+            return -1;
+        }
+
+        return options.findIndex(({ title }) => title === matches[0]!.title);
     }
 
     // if no matches, return -1
