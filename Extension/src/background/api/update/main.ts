@@ -66,6 +66,8 @@ export class UpdateApi {
         '4': UpdateApi.migrateFromV4toV5,
         '5': UpdateApi.migrateFromV5toV6,
         '6': UpdateApi.migrateFromV6toV7,
+        '7': UpdateApi.migrateFromV7toV8,
+        '8': UpdateApi.migrateFromV8toV9,
     };
 
     /**
@@ -152,7 +154,143 @@ export class UpdateApi {
     }
 
     /**
+     * Run data migration from schema v8 to schema v9.
+     *
+     * For the extension update to v5.0.185.
+     *
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
+     *
+     * In this update we re-added AdGuard Quick Fixes filter
+     * and want to enable it by default for all users.
+     */
+    private static async migrateFromV8toV9(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        // We cannot load and enable filter here, because filter's API is not
+        // initialized yet. So we just set the filter state to enabled
+        // and loaded.
+        // After that it will be renew from the local copy of filters
+        // - which will create all needed filter's objects in memory to correct
+        // work.
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        // Little hack to mark filter as enabled before it is actually loaded.
+        Object.assign(filtersState, {
+            [AntiBannerFiltersId.QuickFixesFilterId]: {
+                // Enabled by default.
+                enabled: true,
+                // Installed is false, because otherwise this filter state
+                // will be marked as "obsoleted" (because this filter not
+                // exists in metadata yet) and will be removed from the memory.
+                installed: false,
+                // Mark as loaded to update filter from local resources and
+                // create filter object in memory.
+                loaded: true,
+            },
+        });
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Set empty filter to create it in the memory.
+        // Right after launch it will be updated to the newest version from remote.
+        await FiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, []);
+        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
+     * Run data migration from schema v7 to schema v8.
+     *
+     * For the extension update to v5.0.183.
+     *
+     * For MV2 version we will run empty migration since we don't need to do anything,
+     * just increase the schema version.
+     *
+     * For MV3 version we need to remove deprecated Quick Fixes filter state.
+     */
+    private static async migrateFromV7toV8(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const deprecatedQuickFixesFilter = filtersState[AntiBannerFiltersId.QuickFixesFilterId];
+
+        if (UpdateApi.isObject(deprecatedQuickFixesFilter)) {
+            // delete the deprecated filter state
+            delete filtersState[AntiBannerFiltersId.QuickFixesFilterId];
+        }
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Remove deprecated Quick Fixes filter from the storages.
+        await FiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
      * Run data migration from schema v6 to schema v7.
+     *
+     * For the extension update to
+     * - v5.0.78-beta;
+     * - v5.0.91.
+     *
+     * IMPORTANT: should not be combined with {@link migrateFromV5toV6} just because it is
+     * for the same *release* version — the related changes became available
+     * in *different beta* versions, so they should be run separately.
      *
      * For MV2 version we will run empty migration since we don't need
      * to do anything, just increase the schema version.
@@ -220,6 +358,10 @@ export class UpdateApi {
 
     /**
      * Run data migration from schema v5 to schema v6.
+     *
+     * For the extension update to
+     * - v5.0.49-beta;
+     * - v5.0.91.
      */
     private static async migrateFromV5toV6(): Promise<void> {
         const rawOldPageStatistics = await browserStorage.get(PAGE_STATISTIC_KEY);
@@ -328,6 +470,10 @@ export class UpdateApi {
 
     /**
      * Run data migration from schema v4 to schema v5.
+     *
+     * For the extension update to:
+     * - v5.0.43-beta;
+     * - v5.0.91.
      */
     private static async migrateFromV4toV5(): Promise<void> {
         const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);

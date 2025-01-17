@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { PreprocessedFilterList } from '@adguard/tsurlfilter';
+import { type PreprocessedFilterList } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
 import { AntiBannerFiltersId, emptyPreprocessedFilterList } from '../../../common/constants';

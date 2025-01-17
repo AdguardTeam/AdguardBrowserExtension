@@ -47,6 +47,7 @@ import { FiltersStorage } from '../storages';
 import { emptyPreprocessedFilterList } from '../../common/constants';
 import { SettingOption } from '../schema/settings/main';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
+import { localScriptletRules } from '../../../filters/chromium-mv3/local_scriptlet_rules';
 
 import { TsWebExtensionEngine } from './interface';
 
@@ -101,9 +102,10 @@ export class Engine implements TsWebExtensionEngine {
          *
          * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
          *
-         * This is STEP 2.1: Local script rules are passed to the engine.
+         * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
          */
         TsWebExtension.setLocalScriptRules(localScriptRules);
+        TsWebExtension.setLocalScriptletRules(localScriptletRules);
 
         const configuration = await Engine.getConfiguration();
 

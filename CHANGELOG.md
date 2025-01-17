@@ -47,6 +47,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.49...HEAD
 
+<!-- TODO: add date if released -->
+## 5.0.185
+
+## Added
+
+- AdGuard Quick Fixes filter is back.
+
+### Changed
+
+- Scriptlet rules are available only from the pre-built filters now.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.10.
+
+### Removed
+
+- Injection of remotely hosted scripts.
+
 ## [5.0.183] - 2025-01-14
 
 ### Removed
