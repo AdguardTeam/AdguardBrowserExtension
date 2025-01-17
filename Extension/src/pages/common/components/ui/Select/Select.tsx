@@ -83,6 +83,11 @@ export type SelectProps = {
      * Label for the select (used only for screen readers).
      */
     label?: string,
+
+    /**
+     * Description id for the select (used only for screen readers).
+     */
+    descriptionId?: string,
 };
 
 /**
@@ -104,6 +109,7 @@ export const Select = ({
     setHidden,
     popupModification = false,
     label,
+    descriptionId,
 }: SelectProps) => {
     const comboRef = useRef<HTMLButtonElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
@@ -327,6 +333,7 @@ export const Select = ({
                 aria-expanded={!hidden}
                 aria-haspopup="listbox"
                 aria-label={label}
+                aria-describedby={descriptionId}
                 aria-activedescendant={hidden ? undefined : getOptionId(focusedIndex)}
                 onClick={onComboClick}
                 onBlur={onBlur}

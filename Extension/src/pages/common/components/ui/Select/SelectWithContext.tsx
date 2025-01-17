@@ -30,6 +30,7 @@ export const SelectWithContext = ({
     value,
     popupModification = false,
     label,
+    descriptionId,
 }: Omit<SelectWrapperProps, 'withContext'>) => {
     const [hidden, setHidden] = useSelect(id);
 
@@ -43,6 +44,7 @@ export const SelectWithContext = ({
             setHidden={setHidden}
             popupModification={popupModification}
             label={label}
+            descriptionId={descriptionId}
         />
     );
 };
