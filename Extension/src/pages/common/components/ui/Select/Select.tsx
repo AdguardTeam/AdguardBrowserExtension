@@ -21,6 +21,7 @@ import React, {
     useLayoutEffect,
     useCallback,
     useState,
+    useEffect,
 } from 'react';
 
 import cn from 'classnames';
@@ -236,6 +237,7 @@ export const Select = ({
         return searchString.current;
     };
 
+    // FIXME: Add backspace / clear support
     const onComboType = (letter: string) => {
         // open the listbox if it is closed
         updateSelectState(false);
@@ -288,7 +290,7 @@ export const Select = ({
                 event.preventDefault();
                 return updateSelectState(false);
             default:
-                // do nothing
+                break;
         }
     };
 
@@ -316,6 +318,17 @@ export const Select = ({
             listEl.removeEventListener('focusout', onBlur);
         };
     }, [onBlur]);
+
+    // cleanup refs after unmount
+    useEffect(() => {
+        return () => {
+            if (searchTimeoutId.current !== null) {
+                clearTimeout(searchTimeoutId.current);
+                searchTimeoutId.current = null;
+            }
+            searchString.current = '';
+        };
+    }, []);
 
     if (!activeOption) {
         return null;
