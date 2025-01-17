@@ -1,8 +1,8 @@
-! Checksum: 4I+/LybtXFBZVH0J0RGD1Q
+! Checksum: 5/xbLYMVBUYSjh093aYp0g
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.10
-! TimeUpdated: 2025-01-17T09:01:44+00:00
+! Version: 2.0.20.11
+! TimeUpdated: 2025-01-17T17:01:42+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
@@ -3604,9 +3604,4 @@ lover932.net,lover933.net,lover934.net,lover935.net,lover936.net,lover937.net,lo
 ||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=~investing.com
 ! This file contains the trusted rules
 ! chzzk.naver.com#%#//scriptlet('trusted-replace-xhr-response', ',"adFree":false', ',"adFree":true', 'my-info')
-tv.nate.com#%#AG_onLoad(() => { var BuildObs, PlayerObs; let PlayerCall = (mutationList, observer) => { mutationList.forEach((e) => { if (Array.from(e.target.classList).some((e) => { return e === "ntv-ad-playing" })) { player.trigger("adended"); PlayerObs.disconnect() }})}; let BuildCall = (mutationList, observer) => { mutationList.forEach((e) => { Array.from(e.addedNodes).filter((o) => { return o.id === "natePlayer" }).forEach((k) => { PlayerObs = new MutationObserver(PlayerCall); PlayerObs.observe(k, { attributes: true }); BuildObs.disconnect() })})}; BuildObs = new MutationObserver(BuildCall); BuildObs.observe(document.querySelector(".player-wrapper"), { childList: true }) })
-dealbada.com#%#AG_onLoad(() => { Array.from(document.querySelectorAll("a[href*='dealbada.com/bbs/link']")).forEach((e) => { e.href = e.innerText })})
-m.compuzone.co.kr#%#AG_onLoad(() => { if (document.querySelector("input#SearchTermAdTxt").value === "") { document.querySelector("input#SearchProductKey").value = ""; document.querySelector("input.m_gnb_search_input").value = ""; } })();
-~m.compuzone.co.kr,compuzone.co.kr#%#AG_onLoad(() => { if (document.querySelector("input[name=SearchProductKey]").value === "") { document.querySelector("input#HeadSearchKeyword").value = ""; document.querySelector("input#fixedSearchKeyword").value = ""; } })();
-quasarzone.com#%#AG_onLoad(() => { Array.from(document.querySelectorAll(".market-info-view-wrap table.market-info-view-table tbody > tr")).filter(element => element.querySelector("th").innerText === "링크" ).forEach((element) => { element.querySelector("td > a").href = element.querySelector("td > a").innerText; })})();
-! clien.net#%#AG_onLoad(() => { Array.from(document.querySelectorAll(".comment_content span.outlink")).filter(element => element.querySelector("button") !== null).forEach((element) => { element.querySelector("a").href = element.querySelector("a").innerText; element.querySelector("button").style.display = "none"; })})();
+tv.nate.com#%#//scriptlet('trusted-dispatch-event', 'adended', 'video')
