@@ -38,10 +38,6 @@ const SettingsSet = (props) => {
         'setting--hide-border': hideBorder,
     });
 
-    /**
-     * IMPORTANT: Title and description should be hidden from Screen Readers
-     * because it will be announced later with select / switch.
-     */
     return (
         <div className={settingClassName}>
             <div className="setting__container setting__container--vertical">
