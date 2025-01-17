@@ -24,6 +24,7 @@ import classNames from 'classnames';
 const SettingsSet = (props) => {
     const {
         title,
+        titleId,
         description,
         descriptionId,
         children,
@@ -46,14 +47,22 @@ const SettingsSet = (props) => {
             <div className="setting__container setting__container--vertical">
                 <div className="setting__container setting__container--horizontal">
                     <div className="setting__info">
-                        <div className="setting__title" aria-hidden="true">
+                        <div
+                            id={titleId}
+                            className="setting__title"
+                            // Hide title from Screen Readers if it was used as part
+                            // of the controls description (aria-labelledby).
+                            aria-hidden={!!titleId}
+                        >
                             {title}
                         </div>
                         {description && (
                             <div
                                 id={descriptionId}
                                 className="setting__desc"
-                                aria-hidden="true"
+                                // Hide description from Screen Readers if it was used as part
+                                // of the controls description (aria-describedby).
+                                aria-hidden={!!descriptionId}
                             >
                                 {description}
                             </div>
@@ -69,6 +78,7 @@ const SettingsSet = (props) => {
 
 SettingsSet.defaultProps = {
     title: '',
+    titleId: '',
     description: '',
     descriptionId: '',
     children: null,
@@ -78,8 +88,9 @@ SettingsSet.defaultProps = {
 
 SettingsSet.propTypes = {
     title: PropTypes.string,
-    descriptionId: PropTypes.string,
+    titleId: PropTypes.string,
     description: PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.node]),
+    descriptionId: PropTypes.string,
     children: PropTypes.oneOfType([
         PropTypes.element,
         PropTypes.arrayOf(PropTypes.element),

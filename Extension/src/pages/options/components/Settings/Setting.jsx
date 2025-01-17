@@ -65,7 +65,7 @@ export const Setting = (props) => {
                 handler,
                 options,
                 value,
-                title,
+                labelId,
                 descriptionId,
             } = props;
             const changeHandler = (currentValue) => {
@@ -82,7 +82,7 @@ export const Setting = (props) => {
                     handler={changeHandler}
                     options={options}
                     value={value}
-                    label={title}
+                    labelId={labelId}
                     descriptionId={descriptionId}
                     withContext
                 />

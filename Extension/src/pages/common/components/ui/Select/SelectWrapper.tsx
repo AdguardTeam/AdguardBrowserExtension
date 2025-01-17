@@ -35,6 +35,7 @@ export const SelectWrapper = ({
     // smaller text, using all the space of the parent element.
     popupModification,
     label,
+    labelId,
     descriptionId,
     withContext,
 }: SelectWrapperProps) => {
@@ -45,6 +46,7 @@ export const SelectWrapper = ({
         value,
         popupModification,
         label,
+        labelId,
         descriptionId,
     };
 

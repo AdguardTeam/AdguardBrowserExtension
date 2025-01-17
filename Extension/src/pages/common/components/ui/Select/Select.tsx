@@ -84,11 +84,18 @@ export type SelectProps = {
 
     /**
      * Label for the select (used only for screen readers).
+     * Use either `label` or `labelId`, not both.
      */
     label?: string,
 
     /**
-     * Description id for the select (used only for screen readers).
+     * Label ID for the select (used only for screen readers).
+     * Use either `label` or `labelId`, not both.
+     */
+    labelId?: string;
+
+    /**
+     * Description ID for the select (used only for screen readers).
      */
     descriptionId?: string,
 };
@@ -112,6 +119,7 @@ export const Select = ({
     setHidden,
     popupModification = false,
     label,
+    labelId,
     descriptionId,
 }: SelectProps) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -379,7 +387,8 @@ export const Select = ({
                 aria-controls={listId}
                 aria-expanded={!hidden}
                 aria-haspopup="listbox"
-                aria-label={label}
+                aria-label={labelId ? undefined : label}
+                aria-labelledby={labelId}
                 aria-describedby={descriptionId}
                 aria-activedescendant={hidden ? undefined : getOptionId(focusedIndex)}
                 onClick={onComboClick}
