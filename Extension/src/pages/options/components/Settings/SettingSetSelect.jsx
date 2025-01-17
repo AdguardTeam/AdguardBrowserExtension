@@ -31,6 +31,7 @@ export const SettingSetSelect = ({
     ...props
 }) => {
     const [hidden, setHidden] = useSelect(props.id);
+    const descriptionId = description ? `${props.id}-desc` : undefined;
 
     const handleSettingClick = (e) => {
         e.stopPropagation();
@@ -50,9 +51,12 @@ export const SettingSetSelect = ({
             <SettingsSet
                 title={title}
                 description={description}
+                descriptionId={descriptionId}
                 inlineControl={(
                     <Setting
                         type={SETTINGS_TYPES.SELECT}
+                        title={title}
+                        descriptionId={descriptionId}
                         {...props}
                     />
                 )}

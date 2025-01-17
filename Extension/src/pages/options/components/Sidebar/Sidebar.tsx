@@ -42,11 +42,11 @@ const Sidebar = observer(() => {
 
     const { isSidebarOpen, openSidebar, closeSidebar } = uiStore;
 
-    const desktopQuery = '(min-width: 640px)';
-    const [isTabletAndAboveScreen, setIsTabletAndAboveScreen] = useState(window.matchMedia(desktopQuery).matches);
+    const tabletAndAboveQuery = '(min-width: 640px)';
+    const [isTabletAndAboveScreen, setIsTabletAndAboveScreen] = useState(window.matchMedia(tabletAndAboveQuery).matches);
 
     useLayoutEffect(() => {
-        const matchMedia = window.matchMedia(desktopQuery);
+        const matchMedia = window.matchMedia(tabletAndAboveQuery);
 
         const handleScreenChange = (e: MediaQueryListEvent) => {
             setIsTabletAndAboveScreen(e.matches);

@@ -23,7 +23,13 @@ import classNames from 'classnames';
 
 const SettingsSet = (props) => {
     const {
-        title, description, children, disabled, inlineControl, hideBorder,
+        title,
+        description,
+        descriptionId,
+        children,
+        disabled,
+        inlineControl,
+        hideBorder,
     } = props;
     const settingClassName = classNames({
         setting: true,
@@ -31,13 +37,27 @@ const SettingsSet = (props) => {
         'setting--hide-border': hideBorder,
     });
 
+    /**
+     * IMPORTANT: Title and description should be hidden from Screen Readers
+     * because it will be announced later with select / switch.
+     */
     return (
         <div className={settingClassName}>
             <div className="setting__container setting__container--vertical">
                 <div className="setting__container setting__container--horizontal">
                     <div className="setting__info">
-                        <div className="setting__title">{title}</div>
-                        {description && <div className="setting__desc">{description}</div>}
+                        <div className="setting__title" aria-hidden="true">
+                            {title}
+                        </div>
+                        {description && (
+                            <div
+                                id={descriptionId}
+                                className="setting__desc"
+                                aria-hidden="true"
+                            >
+                                {description}
+                            </div>
+                        )}
                     </div>
                     {inlineControl && <div className="setting__container setting__container--inline setting__inline-control">{inlineControl}</div>}
                 </div>
@@ -50,6 +70,7 @@ const SettingsSet = (props) => {
 SettingsSet.defaultProps = {
     title: '',
     description: '',
+    descriptionId: '',
     children: null,
     disabled: false,
     inlineControl: null,
@@ -57,6 +78,7 @@ SettingsSet.defaultProps = {
 
 SettingsSet.propTypes = {
     title: PropTypes.string,
+    descriptionId: PropTypes.string,
     description: PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.node]),
     children: PropTypes.oneOfType([
         PropTypes.element,

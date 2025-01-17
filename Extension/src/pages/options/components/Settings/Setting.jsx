@@ -65,6 +65,8 @@ export const Setting = (props) => {
                 handler,
                 options,
                 value,
+                title,
+                descriptionId,
             } = props;
             const changeHandler = (currentValue) => {
                 let dataValue = parseInt(currentValue, 10);
@@ -80,6 +82,8 @@ export const Setting = (props) => {
                     handler={changeHandler}
                     options={options}
                     value={value}
+                    label={title}
+                    descriptionId={descriptionId}
                     withContext
                 />
             );
