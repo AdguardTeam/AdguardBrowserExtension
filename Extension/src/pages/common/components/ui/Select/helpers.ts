@@ -56,18 +56,14 @@ export enum SelectAction {
  *
  * @param options Options to filter.
  * @param filter Filter string.
- * @param exclude List of strings to exclude.
  * @returns Filtered options.
  */
 function filterOptions(
     options: SelectOption[],
     filter: string,
-    exclude: string[] = [],
 ): SelectOption[] {
-    return options.filter(({ value }) => {
-        const matches = value.toLowerCase().indexOf(filter.toLowerCase()) === 0;
-        return matches && exclude.indexOf(value) < 0;
-    });
+    const filterLower = filter.toLowerCase();
+    return options.filter(({ value }) => value.toLowerCase().startsWith(filterLower));
 }
 
 /**
@@ -145,7 +141,7 @@ export function getActionFromKey(
  * @param str String to check.
  * @returns True if all letters are the same.
  */
-function isAllSameLetter(str: string): boolean {
+function areAllLettersSame(str: string): boolean {
     const array = str.split('');
     return array.every((letter) => letter === array[0]);
 }
@@ -181,7 +177,7 @@ export function getIndexByLetter(
     }
 
     // if the same letter is being repeated, cycle through first-letter matches
-    if (isAllSameLetter(filter)) {
+    if (areAllLettersSame(filter)) {
         const matches = filterOptions(orderedOptions, filter[0] ?? '');
         return options.findIndex((option) => option.value === matches[0]?.value);
     }
