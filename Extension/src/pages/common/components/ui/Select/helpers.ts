@@ -178,12 +178,12 @@ export function getIndexByLetter(
 
     // if the same letter is being repeated, cycle through first-letter matches
     if (areAllLettersSame(filter)) {
-        const matches = filterOptions(orderedOptions, filter[0] ?? '');
-        if (matches.length === 0) {
+        const firstMatchByLetter = filterOptions(orderedOptions, filter[0] ?? '')[0];
+        if (!firstMatchByLetter) {
             return -1;
         }
 
-        return options.findIndex(({ title }) => title === matches[0]!.title);
+        return options.findIndex(({ title }) => title === firstMatchByLetter.title);
     }
 
     // if no matches, return -1
