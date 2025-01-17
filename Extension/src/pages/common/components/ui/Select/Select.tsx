@@ -205,6 +205,13 @@ export const Select = ({
         }
     };
 
+    /**
+     * Appends the typed character to the search string and returns it.
+     * Setups a timeout to clear the search string after a certain time.
+     *
+     * @param char New character to append to the search string.
+     * @returns The updated search string.
+     */
     const getSearchString = (char: string) => {
         // reset typing timeout and start new timeout
         // this allows us to make multiple-letter matches, like a native select
@@ -213,10 +220,11 @@ export const Select = ({
             searchTimeoutId.current = null;
         }
 
+        const CLEAR_TIMEOUT = 500;
         searchTimeoutId.current = setTimeout(() => {
             searchString.current = '';
             searchTimeoutId.current = null;
-        }, 500);
+        }, CLEAR_TIMEOUT);
 
         searchString.current += char;
         return searchString.current;
