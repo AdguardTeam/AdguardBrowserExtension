@@ -26,6 +26,7 @@ import React, {
 
 import cn from 'classnames';
 
+import { useOutsideClick } from '../../../hooks/useOutsideClick';
 import { Icon } from '../Icon';
 
 import {
@@ -113,6 +114,7 @@ export const Select = ({
     label,
     descriptionId,
 }: SelectProps) => {
+    const ref = useRef<HTMLDivElement>(null);
     const comboRef = useRef<HTMLButtonElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
     const optionRefs = useRef<(HTMLElement | null)[]>([]);
@@ -121,6 +123,7 @@ export const Select = ({
     const activeOption = options[activeIndex];
 
     const [focusedIndex, setFocusedIndex] = useState(activeIndex === -1 ? 0 : activeIndex);
+    const [keyboardUsed, setKeyboardUsed] = useState(false);
     const searchString = useRef('');
     const searchTimeoutId = useRef<NodeJS.Timeout | null>(null);
     const ignoreBlur = useRef(false);
@@ -137,6 +140,19 @@ export const Select = ({
 
     const classes = cn('select', popupModification && 'popup-modification');
     const listClasses = cn('select__list', hidden && 'select__list--hidden');
+    const getOptionClasses = (index: number) => cn(
+        'select__item',
+        index === focusedIndex && keyboardUsed && 'select__item--focused',
+    );
+
+    const openSelect = useCallback(() => {
+        setHidden(false);
+    }, [setHidden]);
+
+    const closeSelect = useCallback(() => {
+        setHidden(true);
+        setKeyboardUsed(false);
+    }, [setHidden]);
 
     const updateOption = useCallback((index: number) => {
         const option = options[index];
@@ -154,7 +170,11 @@ export const Select = ({
             return;
         }
 
-        setHidden(nextHidden);
+        if (nextHidden) {
+            closeSelect();
+        } else {
+            openSelect();
+        }
 
         if (nextHidden && !isElementInView(comboEl)) {
             comboEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -164,7 +184,7 @@ export const Select = ({
         if (shouldFocus) {
             comboEl.focus();
         }
-    }, [setHidden, hidden]);
+    }, [closeSelect, openSelect, hidden]);
 
     const onComboClick = () => {
         updateSelectState(!hidden, false);
@@ -276,6 +296,7 @@ export const Select = ({
 
     const onComboKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
         const action = getActionFromKey(event, hidden);
+        setKeyboardUsed(true);
 
         switch (action) {
             case SelectAction.Last:
@@ -316,6 +337,8 @@ export const Select = ({
         ignoreBlur.current = true;
     };
 
+    useOutsideClick(ref, closeSelect);
+
     useLayoutEffect(() => {
         const listEl = listRef.current;
         if (!listEl) {
@@ -346,7 +369,7 @@ export const Select = ({
     }
 
     return (
-        <div id={id} className={classes}>
+        <div ref={ref} id={id} className={classes}>
             <button
                 ref={comboRef}
                 id={comboId}
@@ -389,7 +412,7 @@ export const Select = ({
                         key={option.value}
                         id={getOptionId(index)}
                         role="option"
-                        className={cn('select__item', index === focusedIndex && 'select__item--focused')}
+                        className={getOptionClasses(index)}
                         aria-selected={index === activeIndex}
                         onClick={(event) => onOptionClick(event, index)}
                         onMouseDown={onOptionMouseDown}
