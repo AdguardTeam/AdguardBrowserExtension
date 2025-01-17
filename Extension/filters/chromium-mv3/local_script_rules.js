@@ -377,9 +377,6 @@ export const localScriptRules = {
     },
     '(()=>{document.location.href.includes("/pop_advisor")&&AG_onLoad((function(){const e=new CustomEvent("visibilitychange"),t=t=>{Object.defineProperty(t.view.top.document,"hidden",{value:!0,writable:!0}),t.view.top.document.dispatchEvent(e),setTimeout((()=>{Object.defineProperty(t.view.top.document,"hidden",{value:!1,writable:!0}),t.view.top.document.dispatchEvent(e)}),100)},n=document.querySelector("button.btn-continu");n&&n.addEventListener("click",t)}));})();': () => {
         try {
-            var AG_onLoad = function(e) {
-                "complete" === document.readyState || "interactive" === document.readyState ? e() : document.addEventListener ? document.addEventListener("DOMContentLoaded", e) : document.attachEvent && document.attachEvent("DOMContentLoaded", e);
-            };
             document.location.href.includes("/pop_advisor") && AG_onLoad((function() {
                 const e = new CustomEvent("visibilitychange"), t = document.querySelector("button.btn-continu");
                 t && t.addEventListener("click", (t => {
@@ -2606,35 +2603,6 @@ export const localScriptRules = {
             window.showAds = !0;
         } catch (r) {
             console.error("Error executing AG js: " + r);
-        }
-    },
-    '(()=>{const t={apply:(t,e,r)=>{const o=r[0]&&"href"===r[0],n=r[1];if(e&&e instanceof HTMLAnchorElement&&o&&n&&n.includes?.("https://wykop.pl/api/v3/ads/redirect?data="))try{const t=new URL(n).searchParams.get("data"),e=atob(t),o=JSON.parse(e),p=decodeURIComponent(o.target_url);(t=>{let e;try{e=new URL(t)}catch(t){return!1}return"http:"===e.protocol||"https:"===e.protocol})(p)&&(r[1]=p)}catch(o){return Reflect.apply(t,e,r)}return Reflect.apply(t,e,r)}};window.Element.prototype.setAttribute=new Proxy(window.Element.prototype.setAttribute,t)})();': () => {
-        try {
-            (() => {
-                const t = {
-                    apply: (t, e, r) => {
-                        const o = r[0] && "href" === r[0], n = r[1];
-                        if (e && e instanceof HTMLAnchorElement && o && n && n.includes?.("https://wykop.pl/api/v3/ads/redirect?data=")) try {
-                            const t = new URL(n).searchParams.get("data"), e = atob(t), o = JSON.parse(e), c = decodeURIComponent(o.target_url);
-                            (t => {
-                                let e;
-                                try {
-                                    e = new URL(t);
-                                } catch (t) {
-                                    return !1;
-                                }
-                                return "http:" === e.protocol || "https:" === e.protocol;
-                            })(c) && (r[1] = c);
-                        } catch (o) {
-                            return Reflect.apply(t, e, r);
-                        }
-                        return Reflect.apply(t, e, r);
-                    }
-                };
-                window.Element.prototype.setAttribute = new Proxy(window.Element.prototype.setAttribute, t);
-            })();
-        } catch (t) {
-            console.error("Error executing AG js: " + t);
         }
     },
     "window.uabpInject = function() {};": () => {
@@ -5971,96 +5939,6 @@ export const localScriptRules = {
             console.error("Error executing AG js: " + e);
         }
     },
-    'AG_onLoad(() => { var BuildObs, PlayerObs; let PlayerCall = (mutationList, observer) => { mutationList.forEach((e) => { if (Array.from(e.target.classList).some((e) => { return e === "ntv-ad-playing" })) { player.trigger("adended"); PlayerObs.disconnect() }})}; let BuildCall = (mutationList, observer) => { mutationList.forEach((e) => { Array.from(e.addedNodes).filter((o) => { return o.id === "natePlayer" }).forEach((k) => { PlayerObs = new MutationObserver(PlayerCall); PlayerObs.observe(k, { attributes: true }); BuildObs.disconnect() })})}; BuildObs = new MutationObserver(BuildCall); BuildObs.observe(document.querySelector(".player-wrapper"), { childList: true }) })': () => {
-        try {
-            var AG_onLoad = function(e) {
-                "complete" === document.readyState || "interactive" === document.readyState ? e() : document.addEventListener ? document.addEventListener("DOMContentLoaded", e) : document.attachEvent && document.attachEvent("DOMContentLoaded", e);
-            };
-            AG_onLoad((() => {
-                var e, t;
-                let r = (e, r) => {
-                    e.forEach((e => {
-                        if (Array.from(e.target.classList).some((e => "ntv-ad-playing" === e))) {
-                            player.trigger("adended");
-                            t.disconnect();
-                        }
-                    }));
-                };
-                (e = new MutationObserver(((a, n) => {
-                    a.forEach((a => {
-                        Array.from(a.addedNodes).filter((e => "natePlayer" === e.id)).forEach((a => {
-                            (t = new MutationObserver(r)).observe(a, {
-                                attributes: !0
-                            });
-                            e.disconnect();
-                        }));
-                    }));
-                }))).observe(document.querySelector(".player-wrapper"), {
-                    childList: !0
-                });
-            }));
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
-        }
-    },
-    "AG_onLoad(() => { Array.from(document.querySelectorAll(\"a[href*='dealbada.com/bbs/link']\")).forEach((e) => { e.href = e.innerText })})": () => {
-        try {
-            var AG_onLoad = function(e) {
-                "complete" === document.readyState || "interactive" === document.readyState ? e() : document.addEventListener ? document.addEventListener("DOMContentLoaded", e) : document.attachEvent && document.attachEvent("DOMContentLoaded", e);
-            };
-            AG_onLoad((() => {
-                Array.from(document.querySelectorAll("a[href*='dealbada.com/bbs/link']")).forEach((e => {
-                    e.href = e.innerText;
-                }));
-            }));
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
-        }
-    },
-    'AG_onLoad(() => { if (document.querySelector("input#SearchTermAdTxt").value === "") { document.querySelector("input#SearchProductKey").value = ""; document.querySelector("input.m_gnb_search_input").value = ""; } })();': () => {
-        try {
-            var AG_onLoad = function(e) {
-                "complete" === document.readyState || "interactive" === document.readyState ? e() : document.addEventListener ? document.addEventListener("DOMContentLoaded", e) : document.attachEvent && document.attachEvent("DOMContentLoaded", e);
-            };
-            AG_onLoad((() => {
-                if ("" === document.querySelector("input#SearchTermAdTxt").value) {
-                    document.querySelector("input#SearchProductKey").value = "";
-                    document.querySelector("input.m_gnb_search_input").value = "";
-                }
-            }))();
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
-        }
-    },
-    'AG_onLoad(() => { if (document.querySelector("input[name=SearchProductKey]").value === "") { document.querySelector("input#HeadSearchKeyword").value = ""; document.querySelector("input#fixedSearchKeyword").value = ""; } })();': () => {
-        try {
-            var AG_onLoad = function(e) {
-                "complete" === document.readyState || "interactive" === document.readyState ? e() : document.addEventListener ? document.addEventListener("DOMContentLoaded", e) : document.attachEvent && document.attachEvent("DOMContentLoaded", e);
-            };
-            AG_onLoad((() => {
-                if ("" === document.querySelector("input[name=SearchProductKey]").value) {
-                    document.querySelector("input#HeadSearchKeyword").value = "";
-                    document.querySelector("input#fixedSearchKeyword").value = "";
-                }
-            }))();
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
-        }
-    },
-    'AG_onLoad(() => { Array.from(document.querySelectorAll(".market-info-view-wrap table.market-info-view-table tbody > tr")).filter(element => element.querySelector("th").innerText === "링크" ).forEach((element) => { element.querySelector("td > a").href = element.querySelector("td > a").innerText; })})();': () => {
-        try {
-            var AG_onLoad = function(e) {
-                "complete" === document.readyState || "interactive" === document.readyState ? e() : document.addEventListener ? document.addEventListener("DOMContentLoaded", e) : document.attachEvent && document.attachEvent("DOMContentLoaded", e);
-            };
-            AG_onLoad((() => {
-                Array.from(document.querySelectorAll(".market-info-view-wrap table.market-info-view-table tbody > tr")).filter((e => "링크" === e.querySelector("th").innerText)).forEach((e => {
-                    e.querySelector("td > a").href = e.querySelector("td > a").innerText;
-                }));
-            }))();
-        } catch (e) {
-            console.error("Error executing AG js: " + e);
-        }
-    },
     "setTimeout(function() { var el = document.querySelector('input[name=\"dfp\"]'); if(el){el.value = '1234567890123456';} }, 300);": () => {
         try {
             setTimeout((function() {
@@ -6634,6 +6512,31 @@ export const localScriptRules = {
             }();
         } catch (t) {
             console.error("Error executing AG js: " + t);
+        }
+    },
+    '(()=>{let e=[];document.addEventListener("DOMContentLoaded",(()=>{const t=document.querySelector("body script").textContent.match(/"] = \'(.*?)\'/g);if(!t)return;t.forEach((t=>{const r=t.replace(/.*\'(.*?)\'/,"$1");e.push(r)}));const r=document.querySelector(\'.dl_button[href*="preview"]\').href.split("?")[1];e.includes(r)&&(e=e.filter((e=>e!==r)));document.querySelectorAll(".dl_button[href]").forEach((t=>{let r=t.cloneNode(!0);r.href=t.href.replace(/\\?.*/,`?${e[0]}`),t.after(r);let o=t.cloneNode(!0);o.href=t.href.replace(/\\?.*/,`?${e[1]}`),t.after(o)}))}))})();': () => {
+        try {
+            (() => {
+                let e = [];
+                document.addEventListener("DOMContentLoaded", (() => {
+                    const t = document.querySelector("body script").textContent.match(/"] = '(.*?)'/g);
+                    if (!t) return;
+                    t.forEach((t => {
+                        const r = t.replace(/.*'(.*?)'/, "$1");
+                        e.push(r);
+                    }));
+                    const r = document.querySelector('.dl_button[href*="preview"]').href.split("?")[1];
+                    e.includes(r) && (e = e.filter((e => e !== r)));
+                    document.querySelectorAll(".dl_button[href]").forEach((t => {
+                        let r = t.cloneNode(!0);
+                        r.href = t.href.replace(/\?.*/, `?${e[0]}`), t.after(r);
+                        let o = t.cloneNode(!0);
+                        o.href = t.href.replace(/\?.*/, `?${e[1]}`), t.after(o);
+                    }));
+                }));
+            })();
+        } catch (e) {
+            console.error("Error executing AG js: " + e);
         }
     },
     '!function(){const o={apply:(o,n,r)=>(new Error).stack.includes("refreshad")?0:Reflect.apply(o,n,r)};window.Math.floor=new Proxy(window.Math.floor,o)}();': () => {
