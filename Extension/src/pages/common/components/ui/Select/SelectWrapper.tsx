@@ -36,7 +36,6 @@ export const SelectWrapper = ({
     popupModification,
     label,
     labelId,
-    descriptionId,
     withContext,
 }: SelectWrapperProps) => {
     const props = {
@@ -47,7 +46,6 @@ export const SelectWrapper = ({
         popupModification,
         label,
         labelId,
-        descriptionId,
     };
 
     return withContext

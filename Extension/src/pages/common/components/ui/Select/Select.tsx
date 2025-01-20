@@ -93,11 +93,6 @@ export type SelectProps = {
      * Use either `label` or `labelId`, not both.
      */
     labelId?: string;
-
-    /**
-     * Description ID for the select (used only for screen readers).
-     */
-    descriptionId?: string,
 };
 
 /**
@@ -120,7 +115,6 @@ export const Select = ({
     popupModification = false,
     label,
     labelId,
-    descriptionId,
 }: SelectProps) => {
     const ref = useRef<HTMLDivElement>(null);
     const comboRef = useRef<HTMLButtonElement>(null);
@@ -389,7 +383,6 @@ export const Select = ({
                 aria-haspopup="listbox"
                 aria-label={labelId ? undefined : label}
                 aria-labelledby={labelId}
-                aria-describedby={descriptionId}
                 aria-activedescendant={hidden ? undefined : getOptionId(focusedIndex)}
                 onClick={onComboClick}
                 onBlur={onBlur}

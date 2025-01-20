@@ -26,46 +26,64 @@ const SettingsSet = (props) => {
         title,
         titleId,
         description,
-        descriptionId,
         children,
         disabled,
         inlineControl,
         hideBorder,
     } = props;
+
     const settingClassName = classNames({
         setting: true,
         'setting--disabled': disabled,
         'setting--hide-border': hideBorder,
+        // see renderContent method for detailed explanation
+        'setting--reversed': inlineControl,
     });
+
+    const info = (
+        <div className="setting__info">
+            <div
+                id={titleId}
+                className="setting__title"
+                // Hide title from Screen Readers if it was used as part
+                // of the controls title (aria-labelledby).
+                aria-hidden={!!titleId}
+            >
+                {title}
+            </div>
+            {description && (<div className="setting__desc">{description}</div>)}
+        </div>
+    );
+
+    const control = inlineControl && (
+        <div
+            className="setting__container setting__container--inline setting__inline-control"
+        >
+            {inlineControl}
+        </div>
+    );
+
+    /**
+     * If inlineControl is provided, we render control first and then info
+     * and also we reverse the order by using CSS. This is done to make sure
+     * that controls receives first focus when tabbing through the settings.
+     */
+    const renderContent = () => {
+        const content = inlineControl ? [control, info] : [info, control];
+
+        return (
+            <>
+                {content[0]}
+                {content[1]}
+            </>
+        );
+    };
 
     return (
         <div className={settingClassName}>
             <div className="setting__container setting__container--vertical">
                 <div className="setting__container setting__container--horizontal">
-                    <div className="setting__info">
-                        <div
-                            id={titleId}
-                            className="setting__title"
-                            // Hide title from Screen Readers if it was used as part
-                            // of the controls title (aria-labelledby).
-                            aria-hidden={!!titleId}
-                        >
-                            {title}
-                        </div>
-                        {description && (
-                            <div
-                                id={descriptionId}
-                                className="setting__desc"
-                                // Hide description from Screen Readers if it was used as part
-                                // of the controls description (aria-describedby).
-                                aria-hidden={!!descriptionId}
-                            >
-                                {/* FIXME: console error */}
-                                {description}
-                            </div>
-                        )}
-                    </div>
-                    {inlineControl && <div className="setting__container setting__container--inline setting__inline-control">{inlineControl}</div>}
+                    {renderContent()}
                 </div>
                 {children}
             </div>
@@ -77,7 +95,6 @@ SettingsSet.defaultProps = {
     title: '',
     titleId: '',
     description: '',
-    descriptionId: '',
     children: null,
     disabled: false,
     inlineControl: null,
@@ -87,7 +104,6 @@ SettingsSet.propTypes = {
     title: PropTypes.string,
     titleId: PropTypes.string,
     description: PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.node]),
-    descriptionId: PropTypes.string,
     children: PropTypes.oneOfType([
         PropTypes.element,
         PropTypes.arrayOf(PropTypes.element),

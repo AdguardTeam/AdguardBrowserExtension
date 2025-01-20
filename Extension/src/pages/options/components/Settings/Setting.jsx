@@ -43,7 +43,6 @@ export const Setting = (props) => {
                 value,
                 label,
                 labelId,
-                descriptionId,
                 className,
                 disabled,
                 optimistic,
@@ -56,7 +55,6 @@ export const Setting = (props) => {
                     value={value}
                     label={label}
                     labelId={labelId}
-                    descriptionId={descriptionId}
                     className={className}
                     disabled={disabled}
                     optimistic={optimistic}
@@ -70,7 +68,6 @@ export const Setting = (props) => {
                 options,
                 value,
                 labelId,
-                descriptionId,
             } = props;
             const changeHandler = (currentValue) => {
                 let dataValue = parseInt(currentValue, 10);
@@ -87,7 +84,6 @@ export const Setting = (props) => {
                     options={options}
                     value={value}
                     labelId={labelId}
-                    descriptionId={descriptionId}
                     withContext
                 />
             );

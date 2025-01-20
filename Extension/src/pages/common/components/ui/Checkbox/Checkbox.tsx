@@ -62,11 +62,6 @@ interface CheckboxProps {
     labelId?: string;
 
     /**
-     * Description ID for the checkbox (used only for screen readers).
-     */
-    descriptionId?: string;
-
-    /**
      * Additional CSS classes for customization
      */
     className?: string;
@@ -96,7 +91,6 @@ const Checkbox = (props: CheckboxProps) => {
         inverted = false,
         label = '',
         labelId,
-        descriptionId,
         value = false,
         className,
         disabled,
@@ -152,7 +146,6 @@ const Checkbox = (props: CheckboxProps) => {
                 tabIndex={0}
                 disabled={disabled || pending}
                 aria-labelledby={labelId}
-                aria-describedby={descriptionId}
             />
             <label
                 htmlFor={String(id)}
