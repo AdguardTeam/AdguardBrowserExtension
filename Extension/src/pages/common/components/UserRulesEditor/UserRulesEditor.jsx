@@ -444,6 +444,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 <div className="actions--grid actions--buttons">
                     <UserRulesSavingButton onClick={saveClickHandler} />
                     <div className="actions__file-input">
+                        {/* FIXME: console error */}
                         <input
                             type="file"
                             id="inputEl"

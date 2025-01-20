@@ -229,6 +229,7 @@ const Allowlist = observer(() => {
             <div className="actions actions--grid actions--buttons actions--allowlist">
                 <AllowlistSavingButton onClick={saveClickHandler} />
                 <div className="actions__file-input">
+                    {/* FIXME: console error */}
                     <input
                         type="file"
                         id="inputEl"

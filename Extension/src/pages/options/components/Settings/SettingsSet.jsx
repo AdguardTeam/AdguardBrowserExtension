@@ -60,6 +60,7 @@ const SettingsSet = (props) => {
                                 // of the controls description (aria-describedby).
                                 aria-hidden={!!descriptionId}
                             >
+                                {/* FIXME: console error */}
                                 {description}
                             </div>
                         )}
