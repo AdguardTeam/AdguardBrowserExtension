@@ -61,6 +61,7 @@ import type {
     UpdateFullscreenUserRulesThemeMessage,
     AddUrlToTrustedMessage,
     ExtractedMessage,
+    OpenSafebrowsingTrustedMessage,
 } from '../../common/messages';
 import { NotifierType } from '../../common/constants';
 import { CreateEventListenerResponse } from '../../background/services/event';
@@ -991,6 +992,18 @@ class Messenger {
      */
     async initializeFrameScript(): Promise<ExtractMessageResponse<MessageType.InitializeFrameScript>> {
         return this.sendMessage(MessageType.InitializeFrameScript);
+    }
+
+    /**
+     * Sends a message to the background page to mark url as trusted and ignore
+     * safebrowsing checks for it.
+     *
+     * @returns Promise that resolves with the initialization data for the frame script.
+     */
+    async openSafebrowsingTrusted(
+        url: OpenSafebrowsingTrustedMessage['data']['url'],
+    ): Promise<ExtractMessageResponse<MessageType.OpenSafebrowsingTrusted>> {
+        return this.sendMessage(MessageType.OpenSafebrowsingTrusted, { url });
     }
 }
 
