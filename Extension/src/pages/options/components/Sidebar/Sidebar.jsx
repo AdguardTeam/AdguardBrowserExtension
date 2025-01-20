@@ -48,7 +48,7 @@ const Sidebar = observer(() => {
     useLayoutEffect(() => {
         const matchMedia = window.matchMedia(tabletAndAboveQuery);
 
-        const handleScreenChange = (e: MediaQueryListEvent) => {
+        const handleScreenChange = (e) => {
             setIsTabletAndAboveScreen(e.matches);
         };
 

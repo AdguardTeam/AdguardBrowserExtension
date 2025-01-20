@@ -25,14 +25,7 @@ import { NavItem } from './NavItem';
 
 import './nav.pcss';
 
-export interface NavProps {
-    /**
-     * Callback called when nav link is clicked.
-     */
-    onLinkClick: () => void;
-}
-
-export const Nav = ({ onLinkClick }: NavProps) => {
+export const Nav = ({ onLinkClick }) => {
     return (
         <nav className="nav">
             <ul className="nav__list">

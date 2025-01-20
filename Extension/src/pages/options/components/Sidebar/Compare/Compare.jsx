@@ -23,19 +23,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 
 import './compare.pcss';
 
-export interface CompareProps {
-    /**
-     * Compare button click handler.
-     */
-    onCompareClick: () => void;
-
-    /**
-     * Close button click handler.
-     */
-    onCloseClick: () => void;
-}
-
-export const Compare = ({ onCompareClick, onCloseClick }: CompareProps) => {
+export const Compare = ({ onCompareClick, onCloseClick }) => {
     return (
         <div role="alert" className="compare">
             <div className="compare__message">
