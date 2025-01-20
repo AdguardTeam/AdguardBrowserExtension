@@ -61,9 +61,9 @@ const UserRules = observer(() => {
     return (
         <>
             <SettingsSection
+                id={id}
                 title={translator.getMessage('options_userfilter')}
                 titleId={titleId}
-                id={settingsStore.userFilterEnabledSettingId}
                 mode="smallContainer"
                 description={translator.getMessage('options_userfilter_subtitle_key')}
                 inlineControl={(<UserRulesSwitcher labelId={titleId} />)}

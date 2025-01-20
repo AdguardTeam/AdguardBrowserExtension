@@ -43,6 +43,7 @@ const SettingsSection = (props) => {
         'title__container--sub': mode === 'subTitle',
         'title__container--control': id,
         'title__container--custom': mode === 'custom',
+        // see renderContent method for detailed explanation
         'title__container--reversed': inlineControl,
     });
 
