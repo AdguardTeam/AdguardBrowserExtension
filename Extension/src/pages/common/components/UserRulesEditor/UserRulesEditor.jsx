@@ -443,22 +443,27 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 }
                 <div className="actions--grid actions--buttons">
                     <UserRulesSavingButton onClick={saveClickHandler} />
-                    <input
-                        type="file"
-                        id="inputEl"
-                        accept="text/plain"
-                        ref={inputRef}
-                        onChange={inputChangeHandler}
-                        style={{ display: 'none' }}
-                    />
-                    <button
-                        type="button"
-                        className="button button--l button--transparent actions__btn"
-                        onClick={importClickHandler}
-                        title={translator.getMessage('options_userfilter_import')}
-                    >
-                        {translator.getMessage('options_userfilter_import')}
-                    </button>
+                    <div className="actions__file-input">
+                        <input
+                            type="file"
+                            id="inputEl"
+                            accept="text/plain"
+                            ref={inputRef}
+                            onChange={inputChangeHandler}
+                            className="actions__input-file"
+                            aria-labelledby="labelEl"
+                        />
+                        <button
+                            id="labelEl"
+                            type="button"
+                            className="button button--l button--transparent actions__btn"
+                            onClick={importClickHandler}
+                            title={translator.getMessage('options_userfilter_import')}
+                            aria-hidden="true"
+                        >
+                            {translator.getMessage('options_userfilter_import')}
+                        </button>
+                    </div>
                     <button
                         type="button"
                         className="button button--l button--transparent actions__btn"
