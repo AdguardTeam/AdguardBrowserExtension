@@ -51,8 +51,8 @@
         };
         var recreateIframeForSlot = function recreateIframeForSlot(slot) {
             var _document$getElementB;
-            var eid = "google_ads_iframe_".concat(slot.getId());
-            (_document$getElementB = document.getElementById(eid)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.remove();
+            var eid = `google_ads_iframe_${slot.getId()}`;
+            (_document$getElementB = document.getElementById(eid)) === null || _document$getElementB === void 0 || _document$getElementB.remove();
             var node = document.getElementById(slot.getSlotElementId());
             if (node) {
                 var f = document.createElement("iframe");
@@ -131,7 +131,7 @@
         var defineSlot = function defineSlot(adUnitPath, creatives, optDiv) {
             if (slotsById.has(optDiv)) {
                 var _document$getElementB2;
-                (_document$getElementB2 = document.getElementById(optDiv)) === null || _document$getElementB2 === void 0 ? void 0 : _document$getElementB2.remove();
+                (_document$getElementB2 = document.getElementById(optDiv)) === null || _document$getElementB2 === void 0 || _document$getElementB2.remove();
                 return slotsById.get(optDiv);
             }
             var attributes = new Map;
@@ -154,7 +154,7 @@
             } ];
             var num = (slotsPerPath.get(adUnitPath) || 0) + 1;
             slotsPerPath.set(adUnitPath, num);
-            var id = "".concat(adUnitPath, "_").concat(num);
+            var id = `${adUnitPath}_${num}`;
             var clickUrl = "";
             var collapseEmptyDiv = null;
             var services = new Set;
@@ -328,8 +328,8 @@
             setVideoContent: noopThis,
             updateCorrelator: noopFunc
         };
-        var _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
-        var _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+        var {googletag: googletag = {}} = window;
+        var {cmd: cmd = []} = googletag;
         googletag.apiReady = true;
         googletag.cmd = [];
         googletag.cmd.push = function(a) {
@@ -385,17 +385,17 @@
         }
         try {
             var trace = console.trace.bind(console);
-            var label = "".concat(ADGUARD_PREFIX, " ");
+            var label = `${ADGUARD_PREFIX} `;
             if (source.engine === "corelibs") {
                 label += source.ruleText;
             } else {
                 if (source.domainName) {
-                    label += "".concat(source.domainName);
+                    label += `${source.domainName}`;
                 }
                 if (source.args) {
-                    label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                 } else {
-                    label += "#%#//scriptlet('".concat(source.name, "')");
+                    label += `#%#//scriptlet('${source.name}')`;
                 }
             }
             if (trace) {

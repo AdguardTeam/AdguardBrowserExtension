@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 1.12.1
+#    Version 2.1.3
 #
 - title: 1x1-transparent.gif
   added: v1.0.4
@@ -578,7 +578,7 @@
             if (originUrl.substring(questionMarkIndex).length === 1) {
               divider = '';
             }
-            return "".concat(originUrl).concat(divider).concat(unblockTokenName).concat(SEARCH_PARAMS_DIVIDER).concat(unblockTokenValue);
+            return `${originUrl}${divider}${unblockTokenName}${SEARCH_PARAMS_DIVIDER}${unblockTokenValue}`;
           };
           var extRun = function extRun() {
             var replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);
@@ -631,7 +631,7 @@
   # the sha256 value of the file is calculated and included in the yaml file
   # as the redirect is being used as a single file.
   # This will allow the extension to retrieve the value and add it to its CSP.
-  sha: sha256-V6YlOE9bOyY+M4IK09aRyFU+JOd1CoVBonoSL1qufBs=
+  sha: sha256-GH4MISem+XXlowF3M/QKqtfEOkhzt1IQoYAZCyE46YU=
 
 - title: amazon-apstag
   comment: Mocks Amazon's apstag.js
@@ -669,17 +669,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -805,17 +805,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -980,17 +980,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -1075,17 +1075,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -1161,17 +1161,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -1237,17 +1237,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -1375,17 +1375,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -1400,16 +1400,16 @@
         function logMessage(source, message) {
             var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            var name = source.name, verbose = source.verbose;
+            var {name: name, verbose: verbose} = source;
             if (!forced && !verbose) {
                 return;
             }
             var nativeConsole = console.log;
             if (!convertMessageToString) {
-                nativeConsole("".concat(name, ":"), message);
+                nativeConsole(`${name}:`, message);
                 return;
             }
-            nativeConsole("".concat(name, ": ").concat(message));
+            nativeConsole(`${name}: ${message}`);
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -1495,7 +1495,7 @@
                 queue.push = push;
                 queue.forEach(push);
             }
-            var _window = window, dataLayer = _window.dataLayer, google_optimize = _window.google_optimize;
+            var {dataLayer: dataLayer, google_optimize: google_optimize} = window;
             if (dataLayer instanceof Object === false) {
                 return;
             }
@@ -1541,17 +1541,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -1755,7 +1755,7 @@
                     for (var i = 0; i < types.length; i += 1) {
                         var _this$listeners$get;
                         var type = types[i];
-                        (_this$listeners$get = this.listeners.get(type)) === null || _this$listeners$get === void 0 ? void 0 : _this$listeners$get.delete(callback);
+                        (_this$listeners$get = this.listeners.get(type)) === null || _this$listeners$get === void 0 || _this$listeners$get.delete(callback);
                     }
                 };
             };
@@ -1845,7 +1845,7 @@
             AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
                 var _this = this;
                 requestAnimationFrame((function() {
-                    var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                    var {ADS_MANAGER_LOADED: ADS_MANAGER_LOADED} = AdsManagerLoadedEvent.Type;
                     var event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
                     _this._dispatch(event);
                 }));
@@ -2026,7 +2026,7 @@
                     return this.vastErrorCode;
                 };
                 this.toString = function() {
-                    return "AdError ".concat(this.errorCode, ": ").concat(this.message);
+                    return `AdError ${this.errorCode}: ${this.message}`;
                 };
             };
             AdError.ErrorCode = {};
@@ -2034,9 +2034,9 @@
             var isEngadget = function isEngadget() {
                 try {
                     for (var _i3 = 0, _Object$values = Object.values(window.vidible._getContexts()); _i3 < _Object$values.length; _i3++) {
-                        var _ctx$getPlayer, _ctx$getPlayer$div;
+                        var _ctx$getPlayer;
                         var ctx = _Object$values[_i3];
-                        if ((_ctx$getPlayer = ctx.getPlayer()) !== null && _ctx$getPlayer !== void 0 && (_ctx$getPlayer$div = _ctx$getPlayer.div) !== null && _ctx$getPlayer$div !== void 0 && _ctx$getPlayer$div.innerHTML.includes("www.engadget.com")) {
+                        if ((_ctx$getPlayer = ctx.getPlayer()) !== null && _ctx$getPlayer !== void 0 && (_ctx$getPlayer = _ctx$getPlayer.div) !== null && _ctx$getPlayer !== void 0 && _ctx$getPlayer.innerHTML.includes("www.engadget.com")) {
                             return true;
                         }
                     }
@@ -2209,17 +2209,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -2234,16 +2234,16 @@
         function logMessage(source, message) {
             var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            var name = source.name, verbose = source.verbose;
+            var {name: name, verbose: verbose} = source;
             if (!forced && !verbose) {
                 return;
             }
             var nativeConsole = console.log;
             if (!convertMessageToString) {
-                nativeConsole("".concat(name, ":"), message);
+                nativeConsole(`${name}:`, message);
                 return;
             }
-            nativeConsole("".concat(name, ": ").concat(message));
+            nativeConsole(`${name}: ${message}`);
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -2316,13 +2316,13 @@
                 if (!areIframesDefined) {
                     adElems[i].setAttribute(statusAttrName, "done");
                     var aswiftIframe = document.createElement("iframe");
-                    aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i);
+                    aswiftIframe.id = `${ASWIFT_IFRAME_MARKER}${i}`;
                     aswiftIframe.style = css;
                     adElems[i].appendChild(aswiftIframe);
                     var innerAswiftIframe = document.createElement("iframe");
                     aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
                     var googleadsIframe = document.createElement("iframe");
-                    googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i);
+                    googleadsIframe.id = `${GOOGLE_ADS_IFRAME_MARKER}${i}`;
                     googleadsIframe.style = css;
                     adElems[i].appendChild(googleadsIframe);
                     var innerGoogleadsIframe = document.createElement("iframe");
@@ -2341,17 +2341,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -2442,8 +2442,8 @@
             };
             var recreateIframeForSlot = function recreateIframeForSlot(slot) {
                 var _document$getElementB;
-                var eid = "google_ads_iframe_".concat(slot.getId());
-                (_document$getElementB = document.getElementById(eid)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.remove();
+                var eid = `google_ads_iframe_${slot.getId()}`;
+                (_document$getElementB = document.getElementById(eid)) === null || _document$getElementB === void 0 || _document$getElementB.remove();
                 var node = document.getElementById(slot.getSlotElementId());
                 if (node) {
                     var f = document.createElement("iframe");
@@ -2522,7 +2522,7 @@
             var defineSlot = function defineSlot(adUnitPath, creatives, optDiv) {
                 if (slotsById.has(optDiv)) {
                     var _document$getElementB2;
-                    (_document$getElementB2 = document.getElementById(optDiv)) === null || _document$getElementB2 === void 0 ? void 0 : _document$getElementB2.remove();
+                    (_document$getElementB2 = document.getElementById(optDiv)) === null || _document$getElementB2 === void 0 || _document$getElementB2.remove();
                     return slotsById.get(optDiv);
                 }
                 var attributes = new Map;
@@ -2545,7 +2545,7 @@
                 } ];
                 var num = (slotsPerPath.get(adUnitPath) || 0) + 1;
                 slotsPerPath.set(adUnitPath, num);
-                var id = "".concat(adUnitPath, "_").concat(num);
+                var id = `${adUnitPath}_${num}`;
                 var clickUrl = "";
                 var collapseEmptyDiv = null;
                 var services = new Set;
@@ -2719,8 +2719,8 @@
                 setVideoContent: noopThis,
                 updateCorrelator: noopFunc
             };
-            var _window = window, _window$googletag = _window.googletag, googletag = _window$googletag === void 0 ? {} : _window$googletag;
-            var _googletag$cmd = googletag.cmd, cmd = _googletag$cmd === void 0 ? [] : _googletag$cmd;
+            var {googletag: googletag = {}} = window;
+            var {cmd: cmd = []} = googletag;
             googletag.apiReady = true;
             googletag.cmd = [];
             googletag.cmd.push = function(a) {
@@ -2776,17 +2776,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -2868,17 +2868,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -2926,8 +2926,8 @@
         function metrikaYandexTag(source) {
             var asyncCallbackFromOptions = function asyncCallbackFromOptions(id, param) {
                 var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-                var callback = options.callback;
-                var ctx = options.ctx;
+                var {callback: callback} = options;
+                var {ctx: ctx} = options;
                 if (typeof callback === "function") {
                     callback = ctx !== undefined ? callback.bind(ctx) : callback;
                     setTimeout((function() {
@@ -2976,8 +2976,8 @@
                 return api[funcName] && api[funcName](id, ...args);
             }
             function init(id) {
-                window["yaCounter".concat(id)] = api;
-                document.dispatchEvent(new Event("yacounter".concat(id, "inited")));
+                window[`yaCounter${id}`] = api;
+                document.dispatchEvent(new Event(`yacounter${id}inited`));
             }
             if (typeof window.ym === "undefined") {
                 window.ym = ym;
@@ -2999,17 +2999,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3058,8 +3058,8 @@
             var cbName = "yandex_metrika_callbacks";
             var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
                 var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-                var callback = options.callback;
-                var ctx = options.ctx;
+                var {callback: callback} = options;
+                var {ctx: ctx} = options;
                 if (typeof callback === "function") {
                     callback = ctx !== undefined ? callback.bind(ctx) : callback;
                     setTimeout((function() {
@@ -3114,17 +3114,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3187,17 +3187,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3253,7 +3253,7 @@
         function noeval(source) {
             window.eval = function evalWrapper(s) {
                 hit(source);
-                logMessage(source, "AdGuard has prevented eval:\n".concat(s), true);
+                logMessage(source, `AdGuard has prevented eval:\n${s}`, true);
             }.bind();
         }
         function hit(source) {
@@ -3263,17 +3263,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3287,16 +3287,16 @@
         function logMessage(source, message) {
             var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            var name = source.name, verbose = source.verbose;
+            var {name: name, verbose: verbose} = source;
             if (!forced && !verbose) {
                 return;
             }
             var nativeConsole = console.log;
             if (!convertMessageToString) {
-                nativeConsole("".concat(name, ":"), message);
+                nativeConsole(`${name}:`, message);
                 return;
             }
-            nativeConsole("".concat(name, ": ").concat(message));
+            nativeConsole(`${name}: ${message}`);
         }
         const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
         try {
@@ -3363,17 +3363,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3438,17 +3438,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3538,17 +3538,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3663,17 +3663,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3728,7 +3728,7 @@
                 return;
             }
             var domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
-            var matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
+            var matchStr = `^https?://[\\w-]+\\.(${domainsStr})/.`;
             var domainsRegex = new RegExp(matchStr);
             if (domainsRegex.test(url) === false) {
                 return;
@@ -3743,17 +3743,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3875,17 +3875,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -3981,17 +3981,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -4053,17 +4053,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
@@ -4137,17 +4137,17 @@
             }
             try {
                 var trace = console.trace.bind(console);
-                var label = "".concat(ADGUARD_PREFIX, " ");
+                var label = `${ADGUARD_PREFIX} `;
                 if (source.engine === "corelibs") {
                     label += source.ruleText;
                 } else {
                     if (source.domainName) {
-                        label += "".concat(source.domainName);
+                        label += `${source.domainName}`;
                     }
                     if (source.args) {
-                        label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                        label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                     } else {
-                        label += "#%#//scriptlet('".concat(source.name, "')");
+                        label += `#%#//scriptlet('${source.name}')`;
                     }
                 }
                 if (trace) {
