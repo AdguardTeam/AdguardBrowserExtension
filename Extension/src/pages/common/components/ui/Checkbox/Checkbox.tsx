@@ -56,6 +56,17 @@ interface CheckboxProps {
     label: string;
 
     /**
+     * Label ID for the select (used only for screen readers).
+     * If not provided, the label will be used.
+     */
+    labelId?: string;
+
+    /**
+     * Description ID for the checkbox (used only for screen readers).
+     */
+    descriptionId?: string;
+
+    /**
      * Additional CSS classes for customization
      */
     className?: string;
@@ -84,6 +95,8 @@ const Checkbox = (props: CheckboxProps) => {
         handler,
         inverted = false,
         label = '',
+        labelId,
+        descriptionId,
         value = false,
         className,
         disabled,
@@ -138,10 +151,13 @@ const Checkbox = (props: CheckboxProps) => {
                 className="checkbox__in"
                 tabIndex={0}
                 disabled={disabled || pending}
+                aria-labelledby={labelId}
+                aria-describedby={descriptionId}
             />
             <label
                 htmlFor={String(id)}
                 className={cn('checkbox__label', className)}
+                aria-hidden={!!labelId}
             >
                 {label}
             </label>

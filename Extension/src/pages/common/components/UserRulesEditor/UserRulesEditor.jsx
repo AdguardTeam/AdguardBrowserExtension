@@ -430,6 +430,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                                 {translator.getMessage('fullscreen_user_rules_title')}
                             </div>
                             <div className="actions__control">
+                                {/* FIXME: Check A11Y */}
                                 <Checkbox
                                     id="user-filter-enabled"
                                     handler={handleUserRulesToggle}

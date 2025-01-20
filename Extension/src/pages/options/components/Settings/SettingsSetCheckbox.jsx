@@ -32,6 +32,9 @@ const SettingsSetCheckbox = (props) => {
         className,
     } = props;
 
+    const titleId = `${id}-title`;
+    const descriptionId = description ? `${id}-desc` : undefined;
+
     return (
         <label
             htmlFor={id}
@@ -39,7 +42,9 @@ const SettingsSetCheckbox = (props) => {
         >
             <SettingsSet
                 title={title}
+                titleId={titleId}
                 description={description}
+                descriptionId={descriptionId}
                 disabled={disabled}
                 inlineControl={(
                     <Setting
@@ -47,6 +52,8 @@ const SettingsSetCheckbox = (props) => {
                         type={SETTINGS_TYPES.CHECKBOX}
                         inverted={inverted}
                         label={label}
+                        labelId={titleId}
+                        descriptionId={descriptionId}
                         handler={handler}
                         value={value}
                         disabled={sectionDisabled}

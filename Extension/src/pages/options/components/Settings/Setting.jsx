@@ -42,6 +42,8 @@ export const Setting = (props) => {
                 inverted,
                 value,
                 label,
+                labelId,
+                descriptionId,
                 className,
                 disabled,
                 optimistic,
@@ -53,6 +55,8 @@ export const Setting = (props) => {
                     inverted={inverted}
                     value={value}
                     label={label}
+                    labelId={labelId}
+                    descriptionId={descriptionId}
                     className={className}
                     disabled={disabled}
                     optimistic={optimistic}
