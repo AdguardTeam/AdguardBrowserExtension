@@ -163,6 +163,10 @@ const Allowlist = observer(() => {
 
     const { AllowlistEnabled } = settings.names;
 
+    const id = AllowlistEnabled;
+    const titleId = `${id}-title`;
+    const descriptionId = `${id}-desc`;
+
     let shouldResetSize = false;
     if (settingsStore.allowlistSizeReset) {
         settingsStore.setAllowlistSizeReset(false);
@@ -172,8 +176,9 @@ const Allowlist = observer(() => {
     return (
         <>
             <SettingsSection
+                id={id}
                 title={translator.getMessage('options_allowlist')}
-                id={AllowlistEnabled}
+                titleId={titleId}
                 mode="smallContainer"
                 description={settings.values[DefaultAllowlistMode]
                     ? translator.getMessage('options_allowlist_desc')
@@ -193,7 +198,13 @@ const Allowlist = observer(() => {
                             </span>
                         </div>
                     )}
-                inlineControl={<AllowlistSwitcher />}
+                descriptionId={descriptionId}
+                inlineControl={(
+                    <AllowlistSwitcher
+                        labelId={titleId}
+                        descriptionId={descriptionId}
+                    />
+                )}
             />
             {__IS_MV3__ && (
                 <div className="settings__group__links">

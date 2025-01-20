@@ -47,7 +47,7 @@ const SettingsSet = (props) => {
                             id={titleId}
                             className="setting__title"
                             // Hide title from Screen Readers if it was used as part
-                            // of the controls description (aria-labelledby).
+                            // of the controls title (aria-labelledby).
                             aria-hidden={!!titleId}
                         >
                             {title}

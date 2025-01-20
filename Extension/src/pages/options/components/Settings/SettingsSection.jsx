@@ -23,7 +23,9 @@ import classNames from 'classnames';
 const SettingsSection = (props) => {
     const {
         title,
+        titleId,
         description,
+        descriptionId,
         renderBackButton,
         id,
         inlineControl,
@@ -59,8 +61,28 @@ const SettingsSection = (props) => {
                     ? renderBackButton()
                     : (
                         <div className="title__inner">
-                            {title && <h2 className={titleClass}>{title}</h2>}
-                            {description && <div className="title__desc">{description}</div>}
+                            {title && (
+                                <h2
+                                    id={titleId}
+                                    className={titleClass}
+                                    // Hide title from Screen Readers if it was used as part
+                                    // of the controls title (aria-labelledby).
+                                    aria-hidden={!!titleId}
+                                >
+                                    {title}
+                                </h2>
+                            )}
+                            {description && (
+                                <div
+                                    id={descriptionId}
+                                    className="title__desc"
+                                    // Hide description from Screen Readers if it was used as part
+                                    // of the controls description (aria-describedby).
+                                    aria-hidden={!!descriptionId}
+                                >
+                                    {description}
+                                </div>
+                            )}
                         </div>
                     )}
                 {inlineControl
