@@ -25,7 +25,6 @@ const SettingsSection = (props) => {
         title,
         titleId,
         description,
-        descriptionId,
         renderBackButton,
         id,
         inlineControl,
@@ -67,11 +66,7 @@ const SettingsSection = (props) => {
                         {title}
                     </h2>
                 )}
-                {description && (
-                    <div id={descriptionId} className="title__desc">
-                        {description}
-                    </div>
-                )}
+                {description && (<div className="title__desc">{description}</div>)}
             </div>
         );
 

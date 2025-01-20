@@ -184,7 +184,6 @@ const Allowlist = observer(() => {
 
     const id = AllowlistEnabled;
     const titleId = `${id}-title`;
-    const descriptionId = `${id}-desc`;
 
     let shouldResetSize = false;
     if (settingsStore.allowlistSizeReset) {
@@ -217,13 +216,7 @@ const Allowlist = observer(() => {
                             </span>
                         </div>
                     )}
-                descriptionId={descriptionId}
-                inlineControl={(
-                    <AllowlistSwitcher
-                        labelId={titleId}
-                        descriptionId={descriptionId}
-                    />
-                )}
+                inlineControl={(<AllowlistSwitcher labelId={titleId} />)}
             />
             {__IS_MV3__ && (
                 <div className="settings__group__links">

@@ -46,7 +46,6 @@ const UserRules = observer(() => {
 
     const id = settingsStore.userFilterEnabledSettingId;
     const titleId = `${id}-title`;
-    const descriptionId = `${id}-desc`;
 
     // When we close fullscreen editor we should update limits warning message.
     useEffect(() => {
@@ -67,13 +66,7 @@ const UserRules = observer(() => {
                 id={settingsStore.userFilterEnabledSettingId}
                 mode="smallContainer"
                 description={translator.getMessage('options_userfilter_subtitle_key')}
-                descriptionId={descriptionId}
-                inlineControl={(
-                    <UserRulesSwitcher
-                        labelId={titleId}
-                        descriptionId={descriptionId}
-                    />
-                )}
+                inlineControl={(<UserRulesSwitcher labelId={titleId} />)}
             />
             <div className={linksClassNames}>
                 <RuleSyntaxLink />

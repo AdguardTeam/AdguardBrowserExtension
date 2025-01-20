@@ -23,7 +23,7 @@ import { addMinDelayLoader } from '../../../common/components/helpers';
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
-export const AllowlistSwitcher = observer(({ labelId, descriptionId }) => {
+export const AllowlistSwitcher = observer(({ labelId }) => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const { settings } = settingsStore;
@@ -61,7 +61,6 @@ export const AllowlistSwitcher = observer(({ labelId, descriptionId }) => {
             handler={allowlistChangeHandler}
             optimistic={!__IS_MV3__}
             labelId={labelId}
-            descriptionId={descriptionId}
         />
     );
 });

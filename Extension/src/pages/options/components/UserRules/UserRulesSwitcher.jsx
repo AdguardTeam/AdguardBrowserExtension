@@ -23,7 +23,7 @@ import { addMinDelayLoader } from '../../../common/components/helpers';
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
-export const UserRulesSwitcher = observer(({ labelId, descriptionId }) => {
+export const UserRulesSwitcher = observer(({ labelId }) => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     /**
@@ -57,7 +57,6 @@ export const UserRulesSwitcher = observer(({ labelId, descriptionId }) => {
             handler={handleUserGroupToggle}
             optimistic={!__IS_MV3__}
             labelId={labelId}
-            descriptionId={descriptionId}
         />
     );
 });
