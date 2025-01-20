@@ -131,7 +131,7 @@ export const Select = ({
     const activeOption = options[activeIndex];
 
     const [focusedIndex, setFocusedIndex] = useState(activeIndex === -1 ? 0 : activeIndex);
-    const [keyboardUsed, setKeyboardUsed] = useState(false);
+    const [isKeyboardUsed, setIsKeyboardUsed] = useState(false);
     const searchString = useRef('');
     const searchTimeoutId = useRef<NodeJS.Timeout | null>(null);
     const ignoreBlur = useRef(false);
@@ -150,7 +150,7 @@ export const Select = ({
     const listClasses = cn('select__list', hidden && 'select__list--hidden');
     const getOptionClasses = (index: number) => cn(
         'select__item',
-        index === focusedIndex && keyboardUsed && 'select__item--focused',
+        index === focusedIndex && isKeyboardUsed && 'select__item--focused',
     );
 
     const openSelect = useCallback(() => {
@@ -159,7 +159,7 @@ export const Select = ({
 
     const closeSelect = useCallback(() => {
         setHidden(true);
-        setKeyboardUsed(false);
+        setIsKeyboardUsed(false);
     }, [setHidden]);
 
     const updateOption = useCallback((index: number) => {
@@ -304,7 +304,7 @@ export const Select = ({
 
     const onComboKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
         const action = getActionFromKey(event, hidden);
-        setKeyboardUsed(true);
+        setIsKeyboardUsed(true);
 
         switch (action) {
             case SelectAction.Last:
