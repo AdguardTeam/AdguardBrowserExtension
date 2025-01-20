@@ -319,24 +319,21 @@ export const General = observer(() => {
                 >
                     {translator.getMessage('options_export_settings')}
                 </button>
-                <div className="links-menu__item--wrapper">
+                <div className="links-menu__item--wrapper links-menu__item--file">
                     <input
                         id="inputEl"
                         type="file"
                         accept="application/json"
                         onChange={inputChangeHandlerWrapper}
                         className="actions__input-file"
+                        aria-labelledby="labelEl"
                     />
                     <label
+                        id="labelEl"
                         htmlFor="inputEl"
                         className="links-menu__item button--link--green"
+                        aria-hidden="true"
                     >
-                        <input
-                            type="file"
-                            accept="application/json"
-                            onChange={inputChangeHandlerWrapper}
-                            className="actions__input-file"
-                        />
                         {translator.getMessage('options_import_settings')}
                     </label>
                 </div>
