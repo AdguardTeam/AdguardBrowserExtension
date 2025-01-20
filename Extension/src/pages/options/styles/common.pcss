@@ -463,9 +463,15 @@ label.checkbox-label {
 
     &__file-input {
         position: relative;
+        /* To align 'div' height to children 'label' element */
+        line-height: 0;
 
-        button {
+        label {
             width: 100%;
+        }
+
+        input:focus-visible + label {
+            outline: 2px solid var(--outline);
         }
     }
 }

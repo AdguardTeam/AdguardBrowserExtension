@@ -40,8 +40,7 @@ const DEFAULT_EDITOR_SIZE = {
 const EDITOR_PADDING = 26;
 
 /**
- * FIXME: Add ability to exit editor by clicking ESC,
- * because TAB is used by editor.
+ * FIXME: Add aria-keyshortcuts to the editor
  */
 
 const Editor = ({

@@ -54,6 +54,7 @@ const Allowlist = observer(() => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+    const actionsRef = useRef(null);
 
     useEffect(() => {
         (async () => {
@@ -94,11 +95,6 @@ const Allowlist = observer(() => {
     const { settings } = settingsStore;
 
     const { DefaultAllowlistMode } = settings.names;
-
-    const importClickHandler = (e) => {
-        e.preventDefault();
-        inputRef.current.click();
-    };
 
     const exportClickHandler = () => {
         exportData(ExportTypes.Allowlist);
@@ -155,11 +151,34 @@ const Allowlist = observer(() => {
         settingsStore.setAllowlistEditorContentChangedState(settingsStore.allowlist !== value);
     };
 
-    const shortcuts = [{
-        name: 'save',
-        bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-        exec: saveClickHandler,
-    }];
+    // Focus on the first non-disabled button in the actions block
+    const focusFirstEnabledButton = () => {
+        const actionsEl = actionsRef.current;
+        if (!actionsEl) {
+            return;
+        }
+
+        const buttons = actionsEl.querySelectorAll('.actions__btn');
+        for (let i = 0; i < buttons.length; i += 1) {
+            if (!buttons[i].disabled) {
+                buttons[i].focus();
+                break;
+            }
+        }
+    };
+
+    const shortcuts = [
+        {
+            name: 'save',
+            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+            exec: saveClickHandler,
+        },
+        {
+            name: 'exit',
+            bindKey: { win: 'Esc', mac: 'Esc' },
+            exec: focusFirstEnabledButton,
+        },
+    ];
 
     const { AllowlistEnabled } = settings.names;
 
@@ -226,10 +245,12 @@ const Allowlist = observer(() => {
                     subtitle={unsavedChangesSubtitle}
                 />
             )}
-            <div className="actions actions--grid actions--buttons actions--allowlist">
+            <div
+                ref={actionsRef}
+                className="actions actions--grid actions--buttons actions--allowlist"
+            >
                 <AllowlistSavingButton onClick={saveClickHandler} />
                 <div className="actions__file-input">
-                    {/* FIXME: console error */}
                     <input
                         type="file"
                         id="inputEl"
@@ -239,16 +260,14 @@ const Allowlist = observer(() => {
                         className="actions__input-file"
                         aria-labelledby="labelEl"
                     />
-                    <button
+                    <label
                         id="labelEl"
-                        type="button"
+                        htmlFor="inputEl"
                         className="button button--l button--transparent actions__btn"
-                        onClick={importClickHandler}
-                        title={translator.getMessage('options_userfilter_import')}
                         aria-hidden="true"
                     >
                         {translator.getMessage('options_userfilter_import')}
-                    </button>
+                    </label>
                 </div>
                 <button
                     type="button"

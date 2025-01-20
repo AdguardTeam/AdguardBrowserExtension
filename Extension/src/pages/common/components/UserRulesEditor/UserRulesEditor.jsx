@@ -66,6 +66,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+    const actionsRef = useRef(null);
 
     let shouldResetSize = false;
     if (store.userRulesEditorPrefsDropped) {
@@ -288,11 +289,6 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         event.target.value = '';
     };
 
-    const importClickHandler = (e) => {
-        e.preventDefault();
-        inputRef.current.click();
-    };
-
     const saveClickHandler = async () => {
         if (!store.userRulesEditorContentChanged) {
             return;
@@ -305,6 +301,22 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const editorChangeHandler = async (value) => {
         const { content } = await messenger.getUserRules();
         store.setUserRulesEditorContentChangedState(content !== value);
+    };
+
+    // Focus on the first non-disabled button or label in the actions block
+    const focusFirstEnabledAction = () => {
+        const actionsEl = actionsRef.current;
+        if (!actionsEl) {
+            return;
+        }
+
+        const buttons = actionsEl.querySelectorAll('button, label');
+        for (let i = 0; i < buttons.length; i += 1) {
+            if (!buttons[i].disabled) {
+                buttons[i].focus();
+                break;
+            }
+        }
     };
 
     const shortcuts = [
@@ -344,6 +356,11 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     }
                 });
             },
+        },
+        {
+            name: 'exit',
+            bindKey: { win: 'Esc', mac: 'Esc' },
+            exec: focusFirstEnabledAction,
         },
     ];
 
@@ -415,6 +432,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 />
             )}
             <div
+                ref={actionsRef}
                 className={cn('actions actions--grid', {
                     'actions--fullscreen-user-rules': fullscreen,
                     'actions--user-rules': !fullscreen,
@@ -444,7 +462,6 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 <div className="actions--grid actions--buttons">
                     <UserRulesSavingButton onClick={saveClickHandler} />
                     <div className="actions__file-input">
-                        {/* FIXME: console error */}
                         <input
                             type="file"
                             id="inputEl"
@@ -454,16 +471,14 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                             className="actions__input-file"
                             aria-labelledby="labelEl"
                         />
-                        <button
+                        <label
                             id="labelEl"
-                            type="button"
+                            htmlFor="inputEl"
                             className="button button--l button--transparent actions__btn"
-                            onClick={importClickHandler}
-                            title={translator.getMessage('options_userfilter_import')}
                             aria-hidden="true"
                         >
                             {translator.getMessage('options_userfilter_import')}
-                        </button>
+                        </label>
                     </div>
                     <button
                         type="button"
