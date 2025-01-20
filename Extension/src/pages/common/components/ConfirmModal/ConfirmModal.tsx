@@ -142,10 +142,10 @@ export const ConfirmModal = ({
                         <button
                             type="button"
                             className="button modal__close"
-                            aria-label={translator.getMessage('close_button_title')}
+                            title={translator.getMessage('close_button_title')}
                             onClick={handleCancel}
                         >
-                            <Icon id="#cross" />
+                            <Icon id="#cross" aria-hidden="true" />
                         </button>
                     </div>
                     {subtitle && (
