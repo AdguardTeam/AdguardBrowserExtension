@@ -7229,5 +7229,12 @@ export const localScriptRules = {
         } catch (e) {
             console.error("Error executing AG js: " + e);
         }
+    },
+    "console.log(Date.now(), 'script rule is executed');": () => {
+        try {
+            console.log(Date.now(), "script rule is executed");
+        } catch (e) {
+            console.error("Error executing AG js: " + e);
+        }
     }
 };
