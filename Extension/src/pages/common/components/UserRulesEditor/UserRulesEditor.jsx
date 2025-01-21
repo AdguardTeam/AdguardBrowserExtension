@@ -31,9 +31,7 @@ import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
 import { Editor, EditorLeaveModal } from '../Editor';
 import { translator } from '../../../../common/translators/translator';
-import { Popover } from '../ui/Popover';
 import { Checkbox } from '../ui/Checkbox';
-import { Icon } from '../ui/Icon';
 import { messenger } from '../../../services/messenger';
 import {
     NotifierType,
@@ -53,6 +51,7 @@ import { NotificationType } from '../../../options/stores/UiStore';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../../options/constants';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
+import { ToggleFullscreenButton } from './ToggleFullscreenButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { userRulesEditorStore } from './UserRulesEditorStore';
 
@@ -380,6 +379,14 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         }
     };
 
+    const toggleFullscreen = async () => {
+        if (fullscreen) {
+            await closeEditorFullscreen();
+        } else {
+            await openEditorFullscreen();
+        }
+    };
+
     const openEditorFullscreen = async () => {
         // send dirty content to the storage only before switching editors
         if (store.userRulesEditorContentChanged) {
@@ -406,10 +413,6 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             store.updateSetting,
         )(id, data);
     };
-
-    const fullscreenTooltipText = fullscreen
-        ? translator.getMessage('options_editor_close_fullscreen_button_tooltip')
-        : translator.getMessage('options_editor_open_fullscreen_button_tooltip');
 
     return (
         <>
@@ -492,35 +495,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 </div>
                 <div className="actions--grid actions--icons">
                     <ToggleWrapButton onClick={toggleWrap} />
-                    <Popover text={fullscreenTooltipText}>
-                        {
-                            fullscreen ? (
-                                <button
-                                    type="button"
-                                    className="button actions__btn actions__btn--icon"
-                                    onClick={closeEditorFullscreen}
-                                    aria-label={translator.getMessage('options_editor_close_fullscreen_button_tooltip')}
-                                >
-                                    <Icon
-                                        id="#reduce"
-                                        classname="icon--24 icon--gray-default"
-                                    />
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="button actions__btn actions__btn--icon"
-                                    onClick={openEditorFullscreen}
-                                    aria-label={translator.getMessage('options_editor_open_fullscreen_button_tooltip')}
-                                >
-                                    <Icon
-                                        id="#extend"
-                                        classname="icon--24 icon--gray-default"
-                                    />
-                                </button>
-                            )
-                        }
-                    </Popover>
+                    <ToggleFullscreenButton fullscreen={fullscreen} onClick={toggleFullscreen} />
                 </div>
             </div>
         </>
