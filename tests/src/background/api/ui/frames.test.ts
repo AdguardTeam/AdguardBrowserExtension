@@ -15,7 +15,7 @@ import { NetworkRuleParser } from '@adguard/agtree/parser';
 import {
     TabContext,
     NetworkRule,
-    type TabInfo,
+    type TabInfoMV2,
     documentApi,
 } from '@adguard/tswebextension';
 
@@ -60,7 +60,7 @@ describe('Frames Api', () => {
         const rule = '@@||testcases.agrd.dev$document';
         const url = 'https://testcases.agrd.dev/test-important-vs-urlblock.html';
 
-        const info: TabInfo = {
+        const info: TabInfoMV2 = {
             url,
             id: 1,
             index: 0,
@@ -73,6 +73,8 @@ describe('Frames Api', () => {
         tabContext.mainFrameRule = new NetworkRule(NetworkRuleParser.parse(rule), AntiBannerFiltersId.UserFilterId);
         tabContext.blockedRequestCount = 0;
 
+        // TODO (Slava): fix later
+        // @ts-ignore
         const frameData = FramesApi.getMainFrameData(tabContext);
         const { documentAllowlisted, canAddRemoveRule } = frameData;
 

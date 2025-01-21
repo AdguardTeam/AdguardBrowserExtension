@@ -216,8 +216,7 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
 
         // Run validation with ES modules support
         const result = await exec(
-            // eslint-disable-next-line max-len
-            `node -r @swc-node/register ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
+            `npx tsx ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
         );
         assert.ok(result.stderr === '', 'No errors during execution');
         assert.ok(result.stdout === '', 'No output during execution');
