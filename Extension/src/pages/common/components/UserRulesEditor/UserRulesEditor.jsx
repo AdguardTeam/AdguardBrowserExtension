@@ -67,6 +67,9 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const inputRef = useRef(null);
     const actionsRef = useRef(null);
 
+    const userRulesId = 'user-filter-enabled';
+    const userRulesTitleId = `${userRulesId}-title`;
+
     let shouldResetSize = false;
     if (store.userRulesEditorPrefsDropped) {
         store.setUserRulesEditorPrefsDropped(false);
@@ -445,18 +448,18 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     fullscreen && (
                         <label
                             className="actions__label"
-                            htmlFor="user-filter-enabled"
+                            htmlFor={userRulesId}
                         >
-                            <div className="actions__title">
+                            <div id={userRulesTitleId} className="actions__title" aria-hidden="true">
                                 {translator.getMessage('fullscreen_user_rules_title')}
                             </div>
                             <div className="actions__control">
-                                {/* FIXME: Check A11Y */}
                                 <Checkbox
-                                    id="user-filter-enabled"
+                                    id={userRulesId}
                                     handler={handleUserRulesToggle}
                                     value={store.userFilterEnabled}
                                     className="checkbox__label--actions"
+                                    labelId={userRulesTitleId}
                                 />
                             </div>
                         </label>
