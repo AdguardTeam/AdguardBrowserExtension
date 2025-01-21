@@ -84,9 +84,10 @@ type FilterParams = {
         tagsDetails: TagMetadata[],
     },
     groupEnabled: boolean,
+    isScreenReader: boolean;
 };
 
-const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
+const Filter = observer(({ filter, groupEnabled, isScreenReader }: FilterParams) => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const [isOpenRemoveFilterModal, setIsOpenRemoveFilterModal] = useState(false);
@@ -104,6 +105,11 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
         enabled,
         tagsDetails = [],
     } = filter;
+
+    const formattedVersion = version ? `${translator.getMessage('options_filters_filter_version')} ${version}` : '';
+    const normalizedLastUpdated = lastUpdateTime ? formatDate(lastUpdateTime) : formatDate(lastCheckTime);
+    const formattedLastUpdated = `${translator.getMessage('options_filters_filter_updated')} ${normalizedLastUpdated}`;
+    const details = `${formattedVersion} | ${formattedLastUpdated}`;
 
     // Trusted tag can be only on custom filters,
     const tags = trusted
@@ -240,69 +246,77 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
 
     // We add prefix to avoid id collisions with group ids
     const prefixedFilterId = addPrefix(filterId);
+    const titleId = `${prefixedFilterId}-title`;
+
+    if (!groupEnabled && isScreenReader) {
+        const nameWithStatus = enabled
+            ? translator.getMessage('options_filters_filter_status_on', { filterName: name })
+            : translator.getMessage('options_filters_filter_status_off', { filterName: name });
+        const descriptionSuffix = description.endsWith('.') ? '' : '.';
+
+        return (
+            <li>
+                {`${nameWithStatus}. ${description}${descriptionSuffix} ${details}`}
+            </li>
+        );
+    }
 
     return (
-        <label htmlFor={prefixedFilterId} className="setting-checkbox">
-            <div className={filterClassName} role="presentation">
-                <div className="filter__info">
-                    <div className="setting__container setting__container--horizontal">
-                        <div className="setting__inner">
-                            <div className="filter__title">
-                                <Popover text={name}>
-                                    <div className="filter__title-constraint">
-                                        <span className="filter__title-in">
-                                            <HighlightSearch string={name} />
-                                        </span>
-                                    </div>
-                                </Popover>
+        <li className="filter-wrapper setting--reversed">
+            <label htmlFor={prefixedFilterId} className="setting-checkbox">
+                <div className={filterClassName} role="presentation">
+                    <div className="filter__info">
+                        <div className="setting__container setting__container--horizontal">
+                            <div className="filter__controls">
+                                {renderRemoveButton()}
+                                <div className="setting__inline-control">
+                                    <Setting
+                                        id={prefixedFilterId}
+                                        type={SETTINGS_TYPES.CHECKBOX}
+                                        label={name}
+                                        labelId={titleId}
+                                        value={!!enabled}
+                                        optimistic={!__IS_MV3__}
+                                        handler={handleFilterSwitch}
+                                    />
+                                </div>
                             </div>
+                            <div className="setting__inner">
+                                <div id={titleId} className="filter__title" aria-hidden="true">
+                                    <Popover text={name}>
+                                        <div className="filter__title-constraint">
+                                            <span className="filter__title-in">
+                                                <HighlightSearch string={name} />
+                                            </span>
+                                        </div>
+                                    </Popover>
+                                </div>
 
-                            <div className="filter__desc">
-                                <div>
-                                    {description}
+                                <div className="filter__desc">
+                                    <div>
+                                        {description}
+                                    </div>
+                                    <div>
+                                        {details}
+                                    </div>
                                 </div>
                                 <div>
-                                    {
-                                        version
-                                            ? `${translator.getMessage('options_filters_filter_version')} ${version} `
-                                            : ''
-                                    }
-                                    {translator.getMessage('options_filters_filter_updated')}
-                                    {' '}
-                                    {lastUpdateTime
-                                        ? formatDate(lastUpdateTime)
-                                        : formatDate(lastCheckTime)}
+                                    <a
+                                        className="filter__link"
+                                        href={homepage || customUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {translator.getMessage('options_filters_filter_link')}
+                                    </a>
                                 </div>
-                            </div>
-                            <div>
-                                <a
-                                    className="filter__link"
-                                    href={homepage || customUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {translator.getMessage('options_filters_filter_link')}
-                                </a>
-                            </div>
-                            <FilterTags tags={tags} />
-                        </div>
-                        <div className="filter__controls">
-                            {renderRemoveButton()}
-                            <div className="setting__inline-control">
-                                <Setting
-                                    id={prefixedFilterId}
-                                    type={SETTINGS_TYPES.CHECKBOX}
-                                    label={name}
-                                    value={!!enabled}
-                                    optimistic={!__IS_MV3__}
-                                    handler={handleFilterSwitch}
-                                />
+                                <FilterTags filterId={filterId} tags={tags} />
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </label>
+            </label>
+        </li>
     );
 });
 

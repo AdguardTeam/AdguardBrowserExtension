@@ -244,13 +244,16 @@ label.checkbox-label {
                     padding-top: 16px;
                 }
 
-                & .checkbox__label {
-                    @media (min-width: 640px) {
-                        padding: 16px;
+                & .checkbox__in {
+                    /* 16px (label padding) - 3px (default margin) */
+                    top: 13px;
+                }
 
-                        &:before {
-                            top: 0;
-                        }
+                & .checkbox__label {
+                    padding: 16px;
+
+                    &:before {
+                        top: 0;
                     }
                 }
             }
@@ -260,9 +263,7 @@ label.checkbox-label {
             }
 
             &--about {
-                @media (min-width: 640px) {
-                    padding: 16px 0 16px 16px;
-                }
+                padding: 16px 0 16px 16px;
             }
 
             &--custom {

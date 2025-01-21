@@ -165,7 +165,7 @@ const Stealth = observer(() => {
     return (
         <>
             <SettingsSection
-                id={DisableStealthMode}
+                id={id}
                 title={translator.getMessage('options_privacy_title')}
                 titleId={titleId}
                 description={translator.getMessage('options_privacy_desc')}
