@@ -620,11 +620,7 @@ export class FilteringLogApi {
 
         // Get rule text based on filter id and rule index
         if (data.requestRule) {
-            const { filterId, ruleIndex } = data.requestRule;
-            const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-            if (ruleTextData) {
-                data.requestRule = Object.assign(data.requestRule, ruleTextData);
-            }
+            data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
         }
 
         tabInfo.filteringEvents.push(data);
@@ -661,24 +657,15 @@ export class FilteringLogApi {
 
         if (event) {
             if (data.requestRule) {
-                const { filterId, ruleIndex } = data.requestRule;
-                const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                if (ruleTextData) {
-                    data.requestRule = Object.assign(data.requestRule, ruleTextData);
-                }
+                data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
             }
 
             if (data.replaceRules) {
-                data.replaceRules = await Promise.all(
-                    data.replaceRules.map(async (rule) => {
-                        const { filterId, ruleIndex } = rule;
-                        const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                        if (ruleTextData) {
-                            return Object.assign(rule, ruleTextData);
-                        }
-                        return rule;
-                    }),
-                );
+                data.replaceRules = await this.applyRuleTextToRuleDataArray(data.replaceRules);
+            }
+
+            if (data.stealthAllowlistRules) {
+                data.stealthAllowlistRules = await this.applyRuleTextToRuleDataArray(data.stealthAllowlistRules);
             }
 
             event = Object.assign(event, data);
@@ -686,6 +673,30 @@ export class FilteringLogApi {
             // TODO: Looks like not using. Maybe lost listener in refactoring.
             listeners.notifyListeners(listeners.LogEventAdded, tabInfo, event);
         }
+    }
+
+    /**
+     * Retrieves and applies rule text to a single rule data object.
+     *
+     * @param rule Rule data object containing filterId and ruleIndex.
+     * @returns Rule object with rule text applied.
+     */
+    private async applyRuleTextToRuleData(rule: FilteringEventRuleData): Promise<FilteringEventRuleData> {
+        const { filterId, ruleIndex } = rule;
+        const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+        return ruleTextData ? Object.assign(rule, ruleTextData) : rule;
+    }
+
+    /**
+     * Retrieves and applies rule text to an array of rule data objects.
+     *
+     * @param rules Array of rule data objects containing filterId and ruleIndex.
+     * @returns Array of rule objects with rule text applied.
+     */
+    private async applyRuleTextToRuleDataArray(rules: FilteringEventRuleData[]): Promise<FilteringEventRuleData[]> {
+        return Promise.all(
+            rules.map(async (rule) => this.applyRuleTextToRuleData(rule)),
+        );
     }
 
     /**

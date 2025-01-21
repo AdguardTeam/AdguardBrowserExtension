@@ -414,7 +414,9 @@ class LogStore {
                 return false;
             }
 
-            const isAllowlisted = filteringEvent.requestRule?.allowlistRule;
+            const isAllowlisted = filteringEvent.requestRule?.allowlistRule
+                || filteringEvent.stealthAllowlistRules?.length > 0;
+
             // blocked CSP reports should be filtered as blocked requests in the filtering log. AG-24613
             const isBlocked = filteringEvent.cspReportBlocked
                 || (filteringEvent.requestRule
