@@ -85,6 +85,7 @@ export const SavingButton = ({ onClick, savingState, contentChanged }: SavingBut
                 onClick={onClick}
                 title={translator.getMessage('options_editor_save')}
                 disabled={!contentChanged}
+                aria-keyshortcuts="Meta+S"
             >
                 {translator.getMessage('options_editor_save')}
             </button>

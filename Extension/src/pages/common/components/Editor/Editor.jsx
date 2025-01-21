@@ -39,10 +39,6 @@ const DEFAULT_EDITOR_SIZE = {
 
 const EDITOR_PADDING = 26;
 
-/**
- * FIXME: Add aria-keyshortcuts to the editor
- */
-
 const Editor = ({
     name,
     value,
