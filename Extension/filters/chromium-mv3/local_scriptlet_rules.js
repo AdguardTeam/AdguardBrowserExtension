@@ -7793,5 +7793,6 @@ export const localScriptletRules = {
     '//scriptlet("set-constant", "firstVal", "false")': true,
     '//scriptlet("set-constant", "secondVal", "true")': true,
     '//scriptlet("set-constant", "testVal", "true")': true,
-    '//scriptlet("prevent-eval-if")': true
+    '//scriptlet("prevent-eval-if")': true,
+    "//scriptlet('log', 'scriptlet rule is executed')": true
 };
