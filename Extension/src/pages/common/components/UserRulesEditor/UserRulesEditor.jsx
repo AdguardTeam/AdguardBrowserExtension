@@ -310,10 +310,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             return;
         }
 
-        const buttons = actionsEl.querySelectorAll('button, label');
-        for (let i = 0; i < buttons.length; i += 1) {
-            if (!buttons[i].disabled) {
-                buttons[i].focus();
+        const actions = actionsEl.querySelectorAll('button, label');
+        for (let i = 0; i < actions.length; i += 1) {
+            if (!actions[i].disabled) {
+                actions[i].focus();
                 break;
             }
         }
