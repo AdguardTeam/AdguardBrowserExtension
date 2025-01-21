@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Handling missing children data in the deserializer for certain nodes.
+- Allowlisted stealth rules are not shown in the filtering log [#2950].
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.49...HEAD
+[#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
 
 ## [5.0.183] - 2025-01-14
 
