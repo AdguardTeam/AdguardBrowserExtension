@@ -85,39 +85,49 @@ const Group = ({
         group: true,
         'group--disabled': !checkboxValue,
     });
+
+    const titleId = `setting-title-${groupId}`;
+    const descriptionId = `setting-desc-${groupId}`;
+    const iconId = `#setting-${groupId}`;
+
     return (
-        <div className={groupClassName}>
+        <li className={groupClassName}>
             <button
                 type="button"
+                role="link"
                 tabIndex={0}
                 className="setting__area setting__area_group"
                 onClick={groupClickHandler}
+                aria-labelledby={titleId}
+                aria-describedby={descriptionId}
             >
                 <Icon
-                    id={`#setting-${groupId}`}
+                    id={iconId}
                     classname="icon--24 setting__icon"
+                    aria-hidden="true"
                 />
-                <div className="setting__info">
-                    <div className="setting__title group__title">
+                <span className="setting__info">
+                    <span id={titleId} className="setting__title group__title">
                         {groupName}
-                    </div>
-                    <div className="setting__desc">
+                    </span>
+                    <span id={descriptionId} className="setting__desc">
                         {renderEnabledFilters(enabledFilters)}
-                    </div>
-                </div>
+                    </span>
+                </span>
             </button>
             <div className="setting__inline-control setting__inline-control_group">
                 <Setting
                     id={groupId}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={groupName}
+                    labelId={titleId}
                     value={checkboxValue}
                     handler={checkboxHandler}
                     optimistic={!__IS_MV3__}
                     className="group__checkbox"
                 />
             </div>
-        </div>
+        </li>
     );
 };
 
