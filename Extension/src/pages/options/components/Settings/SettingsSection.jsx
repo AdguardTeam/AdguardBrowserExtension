@@ -52,12 +52,14 @@ const SettingsSection = (props) => {
         'title--sub': mode === 'subTitle',
     });
 
+    const TitleTag = mode === 'subTitle' ? 'h3' : 'h2';
+
     const info = renderBackButton
         ? renderBackButton()
         : (
             <div className="title__inner">
                 {title && (
-                    <h2
+                    <TitleTag
                         id={titleId}
                         className={titleClass}
                         // Hide title from Screen Readers if it was used as part
@@ -65,7 +67,7 @@ const SettingsSection = (props) => {
                         aria-hidden={!!titleId}
                     >
                         {title}
-                    </h2>
+                    </TitleTag>
                 )}
                 {description && (<div className="title__desc">{description}</div>)}
             </div>
@@ -96,7 +98,7 @@ const SettingsSection = (props) => {
     };
 
     return (
-        <div className={settingGroupClassName} key={title}>
+        <div key={title} className={settingGroupClassName} inert={disabled ? '' : undefined}>
             <label
                 className={titleContainerClass}
                 htmlFor={id}
