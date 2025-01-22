@@ -258,7 +258,7 @@ export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>)
             || ruleNode.type !== CosmeticRuleType.JsInjectionRule) {
             throw new Error('Invalid test rule, expected JS rule');
         }
-        const reGeneratedRule = CosmeticRuleParser.generateBody(ruleNode);
+        const reGeneratedRule = CosmeticRuleBodyGenerator.generate(ruleNode);
         jsRules.add(reGeneratedRule);
     });
 
