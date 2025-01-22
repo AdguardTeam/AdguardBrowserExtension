@@ -220,6 +220,9 @@ export const General = observer(() => {
         AppearanceTheme,
     } = settings.names;
 
+    const importFileId = 'settings-import-file';
+    const importFileTitleId = `${importFileId}-title`;
+
     return (
         <>
             <SettingsSection title={translator.getMessage('options_general_settings')}>
@@ -321,16 +324,16 @@ export const General = observer(() => {
                 </button>
                 <div className="links-menu__item--wrapper links-menu__item--file">
                     <input
-                        id="inputEl"
+                        id={importFileId}
                         type="file"
                         accept="application/json"
                         onChange={inputChangeHandlerWrapper}
                         className="actions__input-file"
-                        aria-labelledby="labelEl"
+                        aria-labelledby={importFileTitleId}
                     />
                     <label
-                        id="labelEl"
-                        htmlFor="inputEl"
+                        id={importFileTitleId}
+                        htmlFor={importFileId}
                         className="links-menu__item button--link--green"
                         aria-hidden="true"
                     >

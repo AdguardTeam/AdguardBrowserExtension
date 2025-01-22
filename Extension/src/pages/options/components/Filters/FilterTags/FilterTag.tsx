@@ -53,6 +53,8 @@ export const FilterTag = observer(({ filterId, tag }: FilterTagParams) => {
                     aria-describedby={descriptionId}
                 >
                     <HighlightSearch string={tagString} />
+                    {/* Use separate text for Screen Readers, because HighlightSearch component splits
+                        description text into multiple spans which are not read correctly by screen readers */}
                     <span
                         id={descriptionId}
                         className="sr-only"

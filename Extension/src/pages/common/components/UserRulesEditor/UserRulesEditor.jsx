@@ -67,8 +67,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const inputRef = useRef(null);
     const actionsRef = useRef(null);
 
-    const userRulesId = 'user-filter-enabled';
-    const userRulesTitleId = `${userRulesId}-title`;
+    const switchId = 'user-filter-switch';
+    const switchTitleId = `${switchId}-title`;
+    const importFileId = 'user-filter-import-file';
+    const importFileTitleId = `${importFileId}-title`;
 
     let shouldResetSize = false;
     if (store.userRulesEditorPrefsDropped) {
@@ -305,7 +307,6 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         store.setUserRulesEditorContentChangedState(content !== value);
     };
 
-    // Focus on the first non-disabled button or label in the actions block
     const focusFirstEnabledAction = () => {
         const actionsEl = actionsRef.current;
         if (!actionsEl) {
@@ -314,8 +315,16 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
         const actions = actionsEl.querySelectorAll('button, label');
         for (let i = 0; i < actions.length; i += 1) {
-            if (!actions[i].disabled) {
-                actions[i].focus();
+            const action = actions[i];
+
+            if (
+                action instanceof HTMLElement
+                && (!('disabled' in action) || !action.disabled)
+            ) {
+                // Before focusing on element we need to add info about shortcut
+                // so Screen Reader can tell user that editor can be closed with Escape
+                action.ariaKeyShortcuts = 'Escape';
+                action.focus();
                 break;
             }
         }
@@ -324,6 +333,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const shortcuts = [
         {
             name: 'save',
+            // If changed, also change UserRulesSavingButton -> SavingButton
             bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
             exec: saveClickHandler,
         },
@@ -361,6 +371,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         },
         {
             name: 'exit',
+            // If changed, also change in focusFirstEnabledAction method
             bindKey: { win: 'Esc', mac: 'Esc' },
             exec: focusFirstEnabledAction,
         },
@@ -448,18 +459,18 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     fullscreen && (
                         <label
                             className="actions__label"
-                            htmlFor={userRulesId}
+                            htmlFor={switchId}
                         >
-                            <div id={userRulesTitleId} className="actions__title" aria-hidden="true">
+                            <div id={switchTitleId} className="actions__title" aria-hidden="true">
                                 {translator.getMessage('fullscreen_user_rules_title')}
                             </div>
                             <div className="actions__control">
                                 <Checkbox
-                                    id={userRulesId}
+                                    id={switchId}
                                     handler={handleUserRulesToggle}
                                     value={store.userFilterEnabled}
                                     className="checkbox__label--actions"
-                                    labelId={userRulesTitleId}
+                                    labelId={switchTitleId}
                                 />
                             </div>
                         </label>
@@ -470,16 +481,16 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     <div className="actions__file-input">
                         <input
                             type="file"
-                            id="inputEl"
+                            id={importFileId}
                             accept="text/plain"
                             ref={inputRef}
                             onChange={inputChangeHandler}
                             className="actions__input-file"
-                            aria-labelledby="labelEl"
+                            aria-labelledby={importFileTitleId}
                         />
                         <label
-                            id="labelEl"
-                            htmlFor="inputEl"
+                            id={importFileTitleId}
+                            htmlFor={importFileId}
                             className="button button--l button--transparent actions__btn"
                             aria-hidden="true"
                         >

@@ -66,6 +66,7 @@ const Search = observer(() => {
     } = settingsStore;
 
     useEffect(() => {
+        // If keys changed, change aria-keyshortcuts attributes
         const modifierKeyProperty = UserAgent.isMacOs ? 'metaKey' : 'ctrlKey';
         const handleSearchHotkey = (e) => {
             const { code } = e;

@@ -94,7 +94,12 @@ const Allowlist = observer(() => {
 
     const { settings } = settingsStore;
 
-    const { DefaultAllowlistMode } = settings.names;
+    const { AllowlistEnabled, DefaultAllowlistMode } = settings.names;
+
+    const switchId = AllowlistEnabled;
+    const switchTitleId = `${switchId}-title`;
+    const importFileId = 'allowlist-import-file';
+    const importFileTitleId = `${importFileId}-title`;
 
     const exportClickHandler = () => {
         exportData(ExportTypes.Allowlist);
@@ -151,7 +156,6 @@ const Allowlist = observer(() => {
         settingsStore.setAllowlistEditorContentChangedState(settingsStore.allowlist !== value);
     };
 
-    // Focus on the first non-disabled button in the actions block
     const focusFirstEnabledButton = () => {
         const actionsEl = actionsRef.current;
         if (!actionsEl) {
@@ -160,8 +164,16 @@ const Allowlist = observer(() => {
 
         const buttons = actionsEl.querySelectorAll('.actions__btn');
         for (let i = 0; i < buttons.length; i += 1) {
-            if (!buttons[i].disabled) {
-                buttons[i].focus();
+            const button = buttons[i];
+
+            if (
+                button instanceof HTMLElement
+                && (!('disabled' in button) || !button.disabled)
+            ) {
+                // Before focusing on element we need to add info about shortcut
+                // so Screen Reader can tell user that editor can be closed with Escape
+                button.ariaKeyShortcuts = 'Escape';
+                button.focus();
                 break;
             }
         }
@@ -170,20 +182,17 @@ const Allowlist = observer(() => {
     const shortcuts = [
         {
             name: 'save',
+            // If changed, also change AllowlistSavingButton -> SavingButton
             bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
             exec: saveClickHandler,
         },
         {
             name: 'exit',
+            // If changed, also change in focusFirstEnabledAction method
             bindKey: { win: 'Esc', mac: 'Esc' },
             exec: focusFirstEnabledButton,
         },
     ];
-
-    const { AllowlistEnabled } = settings.names;
-
-    const id = AllowlistEnabled;
-    const titleId = `${id}-title`;
 
     let shouldResetSize = false;
     if (settingsStore.allowlistSizeReset) {
@@ -194,9 +203,9 @@ const Allowlist = observer(() => {
     return (
         <>
             <SettingsSection
-                id={id}
+                id={switchId}
                 title={translator.getMessage('options_allowlist')}
-                titleId={titleId}
+                titleId={switchTitleId}
                 mode="smallContainer"
                 description={settings.values[DefaultAllowlistMode]
                     ? translator.getMessage('options_allowlist_desc')
@@ -216,7 +225,7 @@ const Allowlist = observer(() => {
                             </span>
                         </div>
                     )}
-                inlineControl={(<AllowlistSwitcher labelId={titleId} />)}
+                inlineControl={(<AllowlistSwitcher labelId={switchTitleId} />)}
             />
             {__IS_MV3__ && (
                 <div className="settings__group__links">
@@ -246,16 +255,16 @@ const Allowlist = observer(() => {
                 <div className="actions__file-input">
                     <input
                         type="file"
-                        id="inputEl"
+                        id={importFileId}
                         accept="text/plain"
                         ref={inputRef}
                         onChange={inputChangeHandlerWrapper}
                         className="actions__input-file"
-                        aria-labelledby="labelEl"
+                        aria-labelledby={importFileTitleId}
                     />
                     <label
-                        id="labelEl"
-                        htmlFor="inputEl"
+                        id={importFileTitleId}
+                        htmlFor={importFileId}
                         className="button button--l button--transparent actions__btn"
                         aria-hidden="true"
                     >

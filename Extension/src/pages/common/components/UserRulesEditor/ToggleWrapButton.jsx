@@ -55,8 +55,8 @@ export const ToggleWrapButton = observer(({ onClick }) => {
                 aria-label={translator.getMessage('options_userfilter_line_break')}
             >
                 <Icon
-                    classname="icon--24 icon--gray-default"
                     id={iconId}
+                    classname="icon--24 icon--gray-default"
                     aria-hidden="true"
                 />
             </button>

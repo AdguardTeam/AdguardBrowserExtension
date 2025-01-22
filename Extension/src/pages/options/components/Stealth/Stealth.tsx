@@ -159,15 +159,15 @@ const Stealth = observer(() => {
     const isThirdPartyCookiesEnabled = settings.values[SelfDestructThirdPartyCookies];
     const isFirstPartyCookiesEnabled = settings.values[SelfDestructFirstPartyCookies];
 
-    const id = DisableStealthMode;
-    const titleId = `${id}-title`;
+    const switchId = DisableStealthMode;
+    const switchTitleId = `${switchId}-title`;
 
     return (
         <>
             <SettingsSection
-                id={id}
+                id={switchId}
                 title={translator.getMessage('options_privacy_title')}
-                titleId={titleId}
+                titleId={switchTitleId}
                 description={translator.getMessage('options_privacy_desc')}
                 mode="smallContainer"
                 inlineControl={(
@@ -175,7 +175,7 @@ const Stealth = observer(() => {
                         id={DisableStealthMode}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_privacy_title')}
-                        labelId={titleId}
+                        labelId={switchTitleId}
                         inverted
                         value={settings.values[DisableStealthMode]}
                         handler={disableStealthChangeHandlerWrapper}

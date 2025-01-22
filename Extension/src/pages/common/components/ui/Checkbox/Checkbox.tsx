@@ -150,6 +150,7 @@ const Checkbox = (props: CheckboxProps) => {
             <label
                 htmlFor={String(id)}
                 className={cn('checkbox__label', className)}
+                // We hide from Screen Readers if labelId is provided to avoid duplication
                 aria-hidden={!!labelId}
             >
                 {label}
