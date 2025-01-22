@@ -216,8 +216,7 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
 
         // Run validation with ES modules support
         const result = await exec(
-            // eslint-disable-next-line max-len
-            `node -r @swc-node/register ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
+            `npx tsx ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
         );
         assert.ok(result.stderr === '', 'No errors during execution');
         assert.ok(result.stdout === '', 'No output during execution');
@@ -242,17 +241,26 @@ export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>)
      * It should be added explicitly to the list of rules.
      *
      * @see {@link https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt}
+     * @see {@link https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt}
      */
-    // eslint-disable-next-line max-len
-    const RAW_TESTCASE_RULE = 'testcases.agrd.dev,pages.dev#%#!function(){let e=()=>{document.querySelector("#case-1-generichide > .test-banner1").style.width="200px"};"complete"===document.readyState?e():window.document.addEventListener("readystatechange",e)}();';
-    const parsedTestcaseRule = CosmeticRuleParser.parse(RAW_TESTCASE_RULE);
-    if (!parsedTestcaseRule
-        || parsedTestcaseRule.category !== RuleCategory.Cosmetic
-        || parsedTestcaseRule.type !== CosmeticRuleType.JsInjectionRule) {
-        throw new Error('Invalid test rule');
-    }
-    const reGeneratedRule = CosmeticRuleBodyGenerator.generate(parsedTestcaseRule);
-    jsRules.add(reGeneratedRule);
+    const TESTCASES_RULES = [
+        // https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt
+        // eslint-disable-next-line max-len
+        'testcases.agrd.dev,pages.dev#%#!function(){let e=()=>{document.querySelector("#case-1-generichide > .test-banner1").style.width="200px"};"complete"===document.readyState?e():window.document.addEventListener("readystatechange",e)}();',
+        // https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt
+        "testcases.agrd.dev,pages.dev#%#console.log(Date.now(), 'script rule is executed');",
+    ];
+
+    TESTCASES_RULES.forEach((rawRule) => {
+        const ruleNode = CosmeticRuleParser.parse(rawRule);
+        if (!ruleNode
+            || ruleNode.category !== RuleCategory.Cosmetic
+            || ruleNode.type !== CosmeticRuleType.JsInjectionRule) {
+            throw new Error('Invalid test rule, expected JS rule');
+        }
+        const reGeneratedRule = CosmeticRuleParser.generateBody(ruleNode);
+        jsRules.add(reGeneratedRule);
+    });
 
     const processedRules: string[] = [];
     const errors: string[] = [];
@@ -341,6 +349,7 @@ export const updateLocalScriptletRulesForChromiumMv3 = async (scriptletRules: Se
      *
      * @see {@link https://testcases.agrd.dev/Filters/scriptlet-rules/test-scriptlet-rules.txt}
      * @see {@link https://testcases.agrd.dev/Filters/scriptlet-rules/allowlist-specific/test-scriptlet-allowlist-specific-rules.txt}
+     * @see {@link https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt}
      */
     const TESTCASES_RULES = [
         // https://testcases.agrd.dev/Filters/scriptlet-rules/test-scriptlet-rules.txt
@@ -395,14 +404,16 @@ export const updateLocalScriptletRulesForChromiumMv3 = async (scriptletRules: Se
         'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "testVal", "true")',
         'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-eval-if", "preventIfTest")',
         'testcases.agrd.dev,pages.dev#@%#//scriptlet("prevent-eval-if")',
+        // https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt
+        "testcases.agrd.dev,pages.dev#%#//scriptlet('log', 'scriptlet rule is executed')",
     ];
 
     TESTCASES_RULES.forEach((rawRule) => {
         const parsedRule = CosmeticRuleParser.parse(rawRule);
         if (!parsedRule
-            || parsedRule.category !== 'Cosmetic'
-            || parsedRule.type !== 'ScriptletInjectionRule') {
-            throw new Error('Invalid test rule');
+            || parsedRule.category !== RuleCategory.Cosmetic
+            || parsedRule.type !== CosmeticRuleType.ScriptletInjectionRule) {
+            throw new Error('Invalid test rule, expected Scriptlet rule');
         }
         const agRule = RuleConverter.convertToAdg(parsedRule);
         const reGeneratedRule = CosmeticRuleBodyGenerator.generate(agRule.result[0] as AnyCosmeticRule);
@@ -451,18 +462,16 @@ export const updateLocalResourcesForChromiumMv3 = async () => {
 
         filterListNode.children.forEach((ruleNode) => {
             if (
-                // TODO: use imported enum instead of strings
-                ruleNode.category === 'Cosmetic'
-                && ruleNode.type === 'JsInjectionRule'
+                ruleNode.category === RuleCategory.Cosmetic
+                && ruleNode.type === CosmeticRuleType.JsInjectionRule
             ) {
                 const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
                 jsRules.add(rawBody);
             }
 
             if (
-                // TODO: use imported enum instead of strings
-                ruleNode.category === 'Cosmetic'
-                && ruleNode.type === 'ScriptletInjectionRule'
+                ruleNode.category === RuleCategory.Cosmetic
+                && ruleNode.type === CosmeticRuleType.ScriptletInjectionRule
             ) {
                 const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
                 scriptletRules.add(rawBody);

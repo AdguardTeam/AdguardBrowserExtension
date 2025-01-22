@@ -8189,5 +8189,24 @@ export const localScriptRules = {
         } catch (t) {
             console.error("Error executing AG js: " + t);
         }
+    },
+    '!function(){let e=()=>{document.querySelector("#case-1-generichide > .test-banner1").style.width="200px"};"complete"===document.readyState?e():window.document.addEventListener("readystatechange",e)}();': () => {
+        try {
+            !function() {
+                let e = () => {
+                    document.querySelector("#case-1-generichide > .test-banner1").style.width = "200px";
+                };
+                "complete" === document.readyState ? e() : window.document.addEventListener("readystatechange", e);
+            }();
+        } catch (e) {
+            console.error("Error executing AG js: " + e);
+        }
+    },
+    "console.log(Date.now(), 'script rule is executed');": () => {
+        try {
+            console.log(Date.now(), "script rule is executed");
+        } catch (e) {
+            console.error("Error executing AG js: " + e);
+        }
     }
 };
