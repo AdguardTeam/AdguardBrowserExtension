@@ -122,7 +122,7 @@ export const Select = ({
 
     const [focusedIndex, setFocusedIndex] = useState(activeIndex === -1 ? 0 : activeIndex);
     const searchString = useRef('');
-    const searchTimeoutId = useRef<NodeJS.Timeout | null>(null);
+    const searchTimeoutId = useRef<NodeJS.Timeout | undefined>(undefined);
     const ignoreBlur = useRef(false);
 
     const comboId = `${id}-combo`;
@@ -148,7 +148,7 @@ export const Select = ({
         handler(option.value);
     }, [handler, options]);
 
-    const updateSelectState = useCallback((nextHidden: boolean, shouldFocus = true) => {
+    const updateSelectHiddenState = useCallback((nextHidden: boolean, shouldFocus = true) => {
         const comboEl = comboRef.current;
         if (!comboEl || hidden === nextHidden) {
             return;
@@ -167,7 +167,7 @@ export const Select = ({
     }, [setHidden, hidden]);
 
     const onComboClick = () => {
-        updateSelectState(!hidden, false);
+        updateSelectHiddenState(!hidden, false);
     };
 
     // We are using custom event type because this method
@@ -189,9 +189,9 @@ export const Select = ({
         // select current option and close
         if (!hidden) {
             updateOption(focusedIndex);
-            updateSelectState(true, false);
+            updateSelectHiddenState(true, false);
         }
-    }, [updateOption, updateSelectState, hidden, focusedIndex]);
+    }, [updateOption, updateSelectHiddenState, hidden, focusedIndex]);
 
     const focusOnOption = (index: number) => {
         const listEl = listRef.current;
@@ -227,15 +227,11 @@ export const Select = ({
     const getSearchString = (key: string) => {
         // reset typing timeout and start new timeout
         // this allows us to make multiple-letter matches, like a native select
-        if (searchTimeoutId.current !== null) {
-            clearTimeout(searchTimeoutId.current);
-            searchTimeoutId.current = null;
-        }
+        clearTimeout(searchTimeoutId.current);
 
         const CLEAR_TIMEOUT = 500;
         searchTimeoutId.current = setTimeout(() => {
             searchString.current = '';
-            searchTimeoutId.current = null;
         }, CLEAR_TIMEOUT);
 
         if (key === SelectKey.Backspace) {
@@ -251,7 +247,7 @@ export const Select = ({
 
     const onComboType = (key: string) => {
         // open the listbox if it is closed
-        updateSelectState(false);
+        updateSelectHiddenState(false);
 
         // find the index of the first matching option
         const searchStringFromLetter = getSearchString(key);
@@ -266,10 +262,7 @@ export const Select = ({
             focusOnOption(searchIndex);
         } else {
             // if no matches, clear the timeout and search string
-            if (searchTimeoutId.current !== null) {
-                clearTimeout(searchTimeoutId.current);
-                searchTimeoutId.current = null;
-            }
+            clearTimeout(searchTimeoutId.current);
             searchString.current = '';
         }
     };
@@ -280,7 +273,7 @@ export const Select = ({
         switch (action) {
             case SelectAction.Last:
             case SelectAction.First:
-                updateSelectState(false);
+                updateSelectHiddenState(false);
                 // intentional fallthrough
             case SelectAction.Next:
             case SelectAction.Previous:
@@ -294,12 +287,12 @@ export const Select = ({
                 // intentional fallthrough
             case SelectAction.Close:
                 event.preventDefault();
-                return updateSelectState(true);
+                return updateSelectHiddenState(true);
             case SelectAction.Type:
                 return onComboType(event.key);
             case SelectAction.Open:
                 event.preventDefault();
-                return updateSelectState(false);
+                return updateSelectHiddenState(false);
             default:
                 break;
         }
@@ -309,7 +302,7 @@ export const Select = ({
         event.preventDefault();
         focusOnOption(index);
         updateOption(index);
-        updateSelectState(true);
+        updateSelectHiddenState(true);
     };
 
     const onOptionMouseDown = () => {
@@ -333,10 +326,7 @@ export const Select = ({
     // cleanup refs after unmount
     useEffect(() => {
         return () => {
-            if (searchTimeoutId.current !== null) {
-                clearTimeout(searchTimeoutId.current);
-                searchTimeoutId.current = null;
-            }
+            clearTimeout(searchTimeoutId.current);
             searchString.current = '';
         };
     }, []);

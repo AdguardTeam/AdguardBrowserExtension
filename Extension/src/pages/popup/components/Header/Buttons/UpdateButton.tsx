@@ -32,7 +32,7 @@ import { Toasts } from '../../../../../background/api';
 export const UpdateButton = () => {
     const refUpdatingBtn = useRef<HTMLButtonElement>(null);
 
-    const timeoutId = useRef<NodeJS.Timeout | null>(null);
+    const timeoutId = useRef<NodeJS.Timeout | undefined>(undefined);
     const [filtersUpdating, setFiltersUpdating] = useState(false);
     const [updateMessage, setUpdateMessage] = useState('');
 
@@ -47,10 +47,7 @@ export const UpdateButton = () => {
             return;
         }
 
-        if (timeoutId.current) {
-            clearTimeout(timeoutId.current);
-            timeoutId.current = null;
-        }
+        clearTimeout(timeoutId.current);
 
         setFiltersUpdating(true);
         setUpdateMessage('');
@@ -66,17 +63,13 @@ export const UpdateButton = () => {
         // immediately to avoid having focus on this hidden element.
         timeoutId.current = setTimeout(() => {
             setUpdateMessage('');
-            timeoutId.current = null;
         }, 1);
     };
 
     // cleanup timeout after unmount
     useEffect(() => {
         return () => {
-            if (timeoutId.current) {
-                clearTimeout(timeoutId.current);
-                timeoutId.current = null;
-            }
+            clearTimeout(timeoutId.current);
         };
     }, []);
 
