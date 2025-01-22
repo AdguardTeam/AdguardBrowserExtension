@@ -146,7 +146,7 @@ const ruleAccessor = (props) => {
     if (stealthAllowlistRules && stealthAllowlistRules.length > 0) {
         const rulesCount = stealthAllowlistRules.length;
         if (rulesCount === 1) {
-            return stealthAllowlistRules[0].ruleText;
+            return stealthAllowlistRules[0].appliedRuleText;
         }
 
         ruleText = translator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
