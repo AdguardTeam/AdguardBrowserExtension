@@ -25,8 +25,6 @@ import { Notification } from './Notification';
 
 import './notifications.pcss';
 
-// FIXME: Add announcing notifications for screen readers
-
 export const Notifications = observer(() => {
     const { uiStore } = useContext(rootStore);
 
