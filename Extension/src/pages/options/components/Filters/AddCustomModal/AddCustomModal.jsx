@@ -296,7 +296,11 @@ const AddCustomModal = observer(({
                                 onChange={handleTrustedCheckbox}
                             />
                             <div className="custom-checkbox">
-                                <Icon id="#checked" classname="icon--18" />
+                                <Icon
+                                    id="#checked"
+                                    classname="icon--18"
+                                    aria-hidden="true"
+                                />
                             </div>
                             {translator.getMessage('options_add_custom_filter_modal_filter_trusted')}
                         </label>
@@ -343,7 +347,7 @@ const AddCustomModal = observer(({
                 )}
             >
                 <form>
-                    <div className="modal__desc">
+                    <div role="alert" className="modal__desc">
                         {error || translator.getMessage('options_add_custom_filter_modal_error_subtitle')}
                     </div>
                 </form>
