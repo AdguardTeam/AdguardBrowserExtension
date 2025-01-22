@@ -188,6 +188,10 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
     };
 
     const handleRemoveFilterClick = async (e: React.MouseEvent) => {
+        if (disabled) {
+            return;
+        }
+
         e.preventDefault();
         setIsOpenRemoveFilterModal(true);
     };
@@ -224,6 +228,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                         className="button filter__remove"
                         onClick={handleRemoveFilterClick}
                         title={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
+                        disabled={disabled}
                     >
                         <Icon
                             id="#trash"
