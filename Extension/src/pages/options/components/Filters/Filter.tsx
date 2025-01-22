@@ -223,10 +223,12 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                         type="button"
                         className="button filter__remove"
                         onClick={handleRemoveFilterClick}
+                        title={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
                     >
                         <Icon
                             id="#trash"
                             classname="icon icon--24 icon--red-default"
+                            aria-hidden="true"
                         />
                     </button>
                 </>
