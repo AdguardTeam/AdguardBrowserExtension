@@ -28,9 +28,10 @@ import { Popover } from '../../../../common/components/ui/Popover';
 type FilterTagParams = {
     filterId: number,
     tag: TagMetadata,
+    disabled?: boolean;
 };
 
-export const FilterTag = observer(({ filterId, tag }: FilterTagParams) => {
+export const FilterTag = observer(({ filterId, tag, disabled }: FilterTagParams) => {
     const { settingsStore } = useContext(rootStore);
 
     const tagString = `#${tag.keyword}`;
@@ -38,8 +39,11 @@ export const FilterTag = observer(({ filterId, tag }: FilterTagParams) => {
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        // we remove other content of search input when user clicks to tag
-        settingsStore.setSearchInput(tagString);
+
+        if (!disabled) {
+            // we remove other content of search input when user clicks to tag
+            settingsStore.setSearchInput(tagString);
+        }
     };
 
     return (
@@ -51,10 +55,9 @@ export const FilterTag = observer(({ filterId, tag }: FilterTagParams) => {
                     className="filter__tag"
                     onClick={handleClick}
                     aria-describedby={descriptionId}
+                    disabled={disabled}
                 >
                     <HighlightSearch string={tagString} />
-                    {/* Use separate text for Screen Readers, because HighlightSearch component splits
-                        description text into multiple spans which are not read correctly by screen readers */}
                     <span
                         id={descriptionId}
                         className="sr-only"

@@ -84,10 +84,10 @@ type FilterParams = {
         tagsDetails: TagMetadata[],
     },
     groupEnabled: boolean,
-    isScreenReader: boolean;
+    disabled?: boolean;
 };
 
-const Filter = observer(({ filter, groupEnabled, isScreenReader }: FilterParams) => {
+const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParams) => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const [isOpenRemoveFilterModal, setIsOpenRemoveFilterModal] = useState(false);
@@ -105,11 +105,6 @@ const Filter = observer(({ filter, groupEnabled, isScreenReader }: FilterParams)
         enabled,
         tagsDetails = [],
     } = filter;
-
-    const formattedVersion = version ? `${translator.getMessage('options_filters_filter_version')} ${version}` : '';
-    const normalizedLastUpdated = lastUpdateTime ? formatDate(lastUpdateTime) : formatDate(lastCheckTime);
-    const formattedLastUpdated = `${translator.getMessage('options_filters_filter_updated')} ${normalizedLastUpdated}`;
-    const details = `${formattedVersion} | ${formattedLastUpdated}`;
 
     // Trusted tag can be only on custom filters,
     const tags = trusted
@@ -245,25 +240,12 @@ const Filter = observer(({ filter, groupEnabled, isScreenReader }: FilterParams)
     });
 
     // We add prefix to avoid id collisions with group ids
-    const prefixedFilterId = addPrefix(filterId);
-    const titleId = `${prefixedFilterId}-title`;
-
-    if (!groupEnabled && isScreenReader) {
-        const nameWithStatus = enabled
-            ? translator.getMessage('options_filters_filter_status_on', { filterName: name })
-            : translator.getMessage('options_filters_filter_status_off', { filterName: name });
-        const descriptionSuffix = description.endsWith('.') ? '' : '.';
-
-        return (
-            <li>
-                {`${nameWithStatus}. ${description}${descriptionSuffix} ${details}`}
-            </li>
-        );
-    }
+    const prefixedFilterSwitchId = addPrefix(filterId);
+    const prefixedFilterTitleId = `${prefixedFilterSwitchId}-title`;
 
     return (
         <li className="filter-wrapper setting--reversed">
-            <label htmlFor={prefixedFilterId} className="setting-checkbox">
+            <label htmlFor={prefixedFilterSwitchId} className="setting-checkbox">
                 <div className={filterClassName} role="presentation">
                     <div className="filter__info">
                         <div className="setting__container setting__container--horizontal">
@@ -271,18 +253,19 @@ const Filter = observer(({ filter, groupEnabled, isScreenReader }: FilterParams)
                                 {renderRemoveButton()}
                                 <div className="setting__inline-control">
                                     <Setting
-                                        id={prefixedFilterId}
+                                        id={prefixedFilterSwitchId}
                                         type={SETTINGS_TYPES.CHECKBOX}
                                         label={name}
-                                        labelId={titleId}
+                                        labelId={prefixedFilterTitleId}
                                         value={!!enabled}
                                         optimistic={!__IS_MV3__}
+                                        disabled={disabled}
                                         handler={handleFilterSwitch}
                                     />
                                 </div>
                             </div>
                             <div className="setting__inner">
-                                <div id={titleId} className="filter__title" aria-hidden="true">
+                                <div id={prefixedFilterTitleId} className="filter__title" aria-hidden="true">
                                     <Popover text={name}>
                                         <div className="filter__title-constraint">
                                             <span className="filter__title-in">
@@ -297,7 +280,16 @@ const Filter = observer(({ filter, groupEnabled, isScreenReader }: FilterParams)
                                         {description}
                                     </div>
                                     <div>
-                                        {details}
+                                        {
+                                            version
+                                                ? `${translator.getMessage('options_filters_filter_version')} ${version} `
+                                                : ''
+                                        }
+                                        {translator.getMessage('options_filters_filter_updated')}
+                                        {' '}
+                                        {lastUpdateTime
+                                            ? formatDate(lastUpdateTime)
+                                            : formatDate(lastCheckTime)}
                                     </div>
                                 </div>
                                 <div>
@@ -306,11 +298,17 @@ const Filter = observer(({ filter, groupEnabled, isScreenReader }: FilterParams)
                                         href={homepage || customUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        tabIndex={disabled ? -1 : 0}
+                                        aria-hidden={disabled}
                                     >
                                         {translator.getMessage('options_filters_filter_link')}
                                     </a>
                                 </div>
-                                <FilterTags filterId={filterId} tags={tags} />
+                                <FilterTags
+                                    filterId={filterId}
+                                    tags={tags}
+                                    disabled={disabled}
+                                />
                             </div>
                         </div>
                     </div>

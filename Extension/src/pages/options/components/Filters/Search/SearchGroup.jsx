@@ -27,13 +27,13 @@ import { translator } from '../../../../../common/translators/translator';
 
 import '../group.pcss';
 
-const renderFilters = (matchedFilters, groupEnabled, isScreenReader) => {
+const renderFilters = (matchedFilters, groupEnabled) => {
     return matchedFilters.map((filter) => (
         <Filter
             key={filter.filterId}
             filter={filter}
             groupEnabled={groupEnabled}
-            isScreenReader={isScreenReader}
+            disabled={!groupEnabled}
         />
     ));
 };
@@ -52,8 +52,6 @@ const SearchGroup = ({
     });
 
     const titleId = `setting-title-${groupId}`;
-    const iconId = `#setting-${groupId}`;
-    const groupListTitle = translator.getMessage('options_filters_of_group', { groupName });
 
     return (
         <li className="search-group-list__item">
@@ -67,7 +65,7 @@ const SearchGroup = ({
                     aria-labelledby={titleId}
                 >
                     <Icon
-                        id={iconId}
+                        id={`#setting-${groupId}`}
                         classname="icon--24 setting__icon"
                         aria-hidden="true"
                     />
@@ -90,17 +88,11 @@ const SearchGroup = ({
                     />
                 </div>
             </div>
-            {!groupEnabled && (
-                <ul className="filters sr-only" aria-label={groupListTitle}>
-                    {renderFilters(filtersToShow, groupEnabled, true)}
-                </ul>
-            )}
             <ul
                 className={filtersClassName}
-                aria-label={groupListTitle}
-                inert={!groupEnabled ? '' : undefined}
+                aria-label={translator.getMessage('options_filters_of_group', { groupName })}
             >
-                {renderFilters(filtersToShow, groupEnabled, false)}
+                {renderFilters(filtersToShow, groupEnabled)}
             </ul>
         </li>
     );
