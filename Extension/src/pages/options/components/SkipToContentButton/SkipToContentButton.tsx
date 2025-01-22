@@ -54,7 +54,7 @@ export const SkipToContentButton = observer(({ mainRef }: SkipToContentButtonPro
             const element = focusableElements[i];
 
             if (
-                element instanceof HTMLInputElement
+                element instanceof HTMLElement
                 && (!('disabled' in element) || !element.disabled)
             ) {
                 element.focus();
