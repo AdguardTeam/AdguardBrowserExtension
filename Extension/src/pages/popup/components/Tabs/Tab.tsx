@@ -89,6 +89,10 @@ export const Tab = forwardRef<HTMLButtonElement, TabParams>((props, forwardedRef
         focus();
     };
 
+    const handleFocus = () => {
+        onClick();
+    };
+
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (Object.values(TabKey).includes(e.key as TabKey)) {
             e.preventDefault();
@@ -112,6 +116,7 @@ export const Tab = forwardRef<HTMLButtonElement, TabParams>((props, forwardedRef
             tabIndex={active ? undefined : -1}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
         >
             {title}
         </button>

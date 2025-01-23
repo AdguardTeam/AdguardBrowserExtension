@@ -80,6 +80,7 @@ export const UpdateButton = () => {
                 className="sr-only"
                 aria-live="assertive"
                 tabIndex={-1}
+                aria-hidden={!filtersUpdating && !updateMessage}
             >
                 {filtersUpdating ? translator.getMessage('options_popup_updating_filters') : updateMessage}
             </div>
