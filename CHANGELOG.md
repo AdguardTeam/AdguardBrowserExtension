@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - URI encoded `$removeparam` value is not removed in MV3 [#3014].
 - Shortened name translation in `pt_BR` locale [#3075].
 - Allowlisted stealth rules are not shown in the filtering log [#2950].
+- `$removeparam` incorrectly removes parameters from encoded URLs [#3076].
 
 [#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
 [#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3014]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3014
 [#3075]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3075
 [#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
+[#3076]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
 
 ## [Unreleased] <!-- master -->
 
