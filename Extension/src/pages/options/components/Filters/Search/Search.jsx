@@ -149,7 +149,7 @@ const Search = observer(() => {
                     ref={searchInputRef}
                     onChange={searchInputHandler}
                     value={searchInput}
-                    aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+K' : 'Ctrl+K'}
+                    aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
                 />
             </label>
             {searchInput && (
