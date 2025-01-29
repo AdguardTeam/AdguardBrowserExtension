@@ -1,8 +1,8 @@
-! Checksum: 6oALtXiMGpXrK9nE94h+Kg
+! Checksum: 2kEFcwCdYh+cCQlmkJ0e1w
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.58
-! TimeUpdated: 2025-01-17T14:41:16+00:00
+! Version: 2.0.7.59
+! TimeUpdated: 2025-01-22T13:41:01+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1458,6 +1458,7 @@ vakantieplaats.nl#@#.topAds
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||proxy.optoutadserving.com^
 ||cryptosplash.care^
 ||cryptobeneluxbanner.care^
 ||cdn.optoutadvertising.com^
@@ -1663,6 +1664,8 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+omroepbrabant.nl#%#//scriptlet('google-ima3')
+omroepbrabant.nl#%#//scriptlet('adjust-setTimeout', '[native code]', '6000', '0.001')
 9292.nl##:is(div, aside, astro-island):has(> div[data-testid="gpt-ad-root"])
 ||cdn-ster-nl.akamaized.net/STERAD_P_*.mp4^$media,redirect=noopmp4-1s,domain=nos.nl
 nos.nl#%#//scriptlet('json-prune', 'adUrl')

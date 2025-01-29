@@ -1,8 +1,8 @@
-! Checksum: NESJfVHJXDDI1VPe0s+0LQ
+! Checksum: 8ZsxeOdhcrdJVt81rlcmUQ
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.28.35
-! TimeUpdated: 2025-01-17T14:41:18+00:00
+! Version: 2.0.28.48
+! TimeUpdated: 2025-01-27T10:40:08+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -213,6 +213,8 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/196862
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=hunter.fm
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196093
 sussyscan.com#%#//scriptlet('prevent-fetch', 'www3.doubleclick.net')
 sussyscan.com#%#//scriptlet('prevent-element-src-loading', 'script', 'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')
@@ -247,8 +249,10 @@ gourlpro.com,casperhd.com,short.7hd.club#%#//scriptlet('prevent-fetch', 'pagead2
 ! file4go.net (Brazilian file hoster - window.alert adblock)
 file4go.net#%#//scriptlet('prevent-xhr', 'widgets.outbrain.com')
 ! https://github.com/uBlockOrigin/uAssets/issues/24987
-@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=animefire.info|animesonlinecc.us|animesup.info|animeyabu.net|animeyabu.org|drstonebr.com|goanimes.vip|goyabu.us|meuanime.info|otakuanimess.net
-@@||popads.net/js/adblock.js$xmlhttprequest,domain=animefire.info|animesonlinecc.us|animesup.info|animeyabu.net|animeyabu.org|drstonebr.com|goanimes.vip|goyabu.us|meuanime.info|otakuanimess.net
+! https://github.com/AdguardTeam/AdguardFilters/pull/197077
+animefire.info,animefire.plus,animesonlinecc.us,animesup.info,animeyabu.net,animeyabu.org,drstonebr.com,goanimes.vip,goyabu.us,meuanime.info,otakuanimess.net#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=animefire.info|animefire.plus|animesonlinecc.us|animesup.info|animeyabu.net|animeyabu.org|drstonebr.com|goanimes.vip|goyabu.us|meuanime.info|otakuanimess.net
+@@||popads.net/js/adblock.js$xmlhttprequest,domain=animefire.info|animefire.plus|animesonlinecc.us|animesup.info|animeyabu.net|animeyabu.org|drstonebr.com|goanimes.vip|goyabu.us|meuanime.info|otakuanimess.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186815
 @@||popads.net/js/adblock.js$xmlhttprequest,domain=isekaibrasil.com
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=isekaibrasil.com
@@ -556,7 +560,7 @@ nptmedia.tv#%#//scriptlet('prevent-fetch', '/pagead2\.googlesyndication\.com|ads
 ! https://github.com/AdguardTeam/AdguardFilters/issues/142462
 netcine.*,netcine3.la#%#//scriptlet('abort-on-stack-trace', 'alert', 'eval')
 netcine.*,netcine3.la#%#//scriptlet('abort-on-stack-trace', 'history.go', 'eval')
-@@$third-party,xmlhttprequest,domain=netcine.biz|netcine.cc|netcine.com|netcine.com.bd|netcine.com.br|netcine.com.np|netcine.fi|netcine.fun|netcine.info|netcine.io|netcine.me|netcine.net|netcine.one|netcine.shop|netcine.to|netcine.tv|netcine.us|netcine.vip|netcine.ws|netcine3.la
+@@$third-party,xmlhttprequest,domain=netcine.biz|netcine.cc|netcine.com|netcine.com.bd|netcine.com.br|netcine.com.np|netcine.fi|netcine.fun|netcine.info|netcine.io|netcine.me|netcine.one|netcine.shop|netcine.to|netcine.us|netcine.ws|netcine3.la
 ! https://github.com/AdguardTeam/AdguardFilters/issues/142265
 antoniomote.com#$#[id].adsbox.doubleclick.ad-placement { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/142266
@@ -593,9 +597,10 @@ impactoespananoticias.com#%#//scriptlet('set-constant', 'canRunAds', 'true')
 @@||impactoespananoticias.com/static/plugins/ads-prebid.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/137471
 themasterkramers.com#%#//scriptlet('prevent-element-src-loading', 'script', 'pagead2.googlesyndication.com')
-! https://github.com/AdguardTeam/AdguardFilters/issues/136826
-legendei.net#@#.adsBanner
-legendei.net#%#//scriptlet("set-constant", "eazy_ad_unblocker_msg_var", "")
+! https://github.com/AdguardTeam/AdguardFilters/issues/197068
+legendei.net###nonono
+legendei.net#%#//scriptlet('prevent-element-src-loading', 'script', 'pagead2.googlesyndication.com')
+||legendei.net/traduzidocodenew.min.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136480
 @@||phoenixkiller.com/assets/js/ad-provider.js$domain=csrevo.com
 csrevo.com#%#//scriptlet("abort-current-inline-script", "$", "!document.getElementById(")
@@ -791,9 +796,10 @@ audiotools.in#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototyp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186776
 ! https://github.com/AdguardTeam/AdguardFilters/issues/115301
 ! hinatasoul.com, anitube.biz
+@@||foodiesgallery.com^$generichide
 receitasdaora.online,foodiesgallery.com,caroloportunidades.com.br#$##player { display: block !important; }
 receitasdaora.online,foodiesgallery.com,caroloportunidades.com.br#%#//scriptlet('prevent-xhr', 'popads.net')
-receitasdaora.online,foodiesgallery.com,caroloportunidades.com.br#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
+receitasdaora.online,foodiesgallery.com,caroloportunidades.com.br#%#//scriptlet('prevent-setTimeout', '/hasAdblock|window\.getComputedStyle/')
 @@||popads.net/js/adblock.js$xmlhttprequest,domain=caroloportunidades.com.br|foodiesgallery.com|receitasdaora.online
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190058
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186902
@@ -955,7 +961,7 @@ minhasdelicias.com#%#//scriptlet("set-constant", "canRunAds", "true")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/58375
 ! https://github.com/AdguardTeam/AdguardFilters/issues/47337
 @@||anitube.*/*advert*.js
-@@||cdn.anicdn.net/*.js$domain=anitube.biz|anitube.com.bd|anitube.com.np|anitube.cz|anitube.in.ua|anitube.jp|anitube.life|anitube.news|anitube.org|anitube.pro|anitube.se|anitube.site|anitube.us|anitube.vip
+@@||cdn.anicdn.net/*.js$domain=anitube.biz|anitube.blog|anitube.com|anitube.com.bd|anitube.com.np|anitube.cz|anitube.eu|anitube.in.ua|anitube.info|anitube.life|anitube.my|anitube.news|anitube.one|anitube.org|anitube.pro|anitube.pw|anitube.se|anitube.site|anitube.top|anitube.us|anitube.vip
 anitube.*#%#//scriptlet("set-constant", "ATESTADO", "1")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/46694
 @@||luchaonline.com/*/js/adsbygoogle.js
@@ -2102,17 +2108,36 @@ http://adw.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
 /^(?!.*(bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispoptv.com|superflix.net|mangatigre.net|darkmahou.org|brjogostorrents.com
 ! Similar to regexp above, but using the denyallow modifier
-$script,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|cloudflare.net|x.com,_____,domain=anroll.net|monoschinos2.com|animeyt.es|leercapitulo.com|pelisflix2.green|darkmahou.org|comandotorrents.to|comandoplay.com|pelismax.one|seriesgod.cc|anime-jl.net
+$script,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|cloudflare.net|x.com,_____,domain=anroll.net|monoschinos2.com|animeyt.es|leercapitulo.com|pelisflix2.green|darkmahou.org|comandotorrents.to|comandoplay.com|pelismax.one|seriesgod.cc|anime-jl.net|zonatmo.com|recipesalba.com|ratiomotor.com|retiontech.com|ferromotor.com|motoratrium.com|recitma.com|flavourecipes.com|motorworten.com|techitan.com|loveteching.com
 !
 ! ##body .ad
-futuro.cl,solowrestling.mundodeportivo.com,meneame.net,3djuegos.com,meteoconsult.es,meuguia.tv,territoriosamsung.com,conjur.com.br,meups.com.br,elcorreogallego.es,3djuegos.lat,xatakandroid.com,nsctotal.com.br,noticiasdenavarra.com,informacion.es,applesfera.com,xatakamovil.com,espinof.com,mundoxiaomi.com,vidaextra.com,mediotiempo.com,elpais.com,olhardigital.com.br,atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##body .ad
+trendencias.com,futuro.cl,solowrestling.mundodeportivo.com,meneame.net,3djuegos.com,meteoconsult.es,meuguia.tv,territoriosamsung.com,conjur.com.br,meups.com.br,elcorreogallego.es,3djuegos.lat,xatakandroid.com,nsctotal.com.br,noticiasdenavarra.com,informacion.es,applesfera.com,xatakamovil.com,espinof.com,mundoxiaomi.com,vidaextra.com,mediotiempo.com,elpais.com,olhardigital.com.br,atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##body .ad
 ! ##.ads
-agazeta.com.br,lasexta.com,extra.ec,globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.com.br,tvhistoria.com.br,tribunapr.uol.com.br,diariodonordeste.verdesmares.com.br,sbt.com.br,link.estadao.com.br,atomixhq.com,atomixhq.com.bd,atomixhq.com.np,atomixhq.net,atomixhq.top,jc.ne10.uol.com.br,internetpasoapaso.com,acidadeon.com,leouve.com.br,larazon.es,infoescola.com,cbn.globoradio.globo.com,maxitorrent.com,abril.com.br,odia.ig.com.br,especiais.g1.globo.com,tribunapr.com.br,novelasd.com,anime-tube.tv##.ads
+agazeta.com.br,lasexta.com,extra.ec,globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.com.br,tvhistoria.com.br,tribunapr.uol.com.br,diariodonordeste.verdesmares.com.br,sbt.com.br,link.estadao.com.br,atomixhq.com,atomixhq.com.bd,atomixhq.com.np,atomixhq.link,atomixhq.top,jc.ne10.uol.com.br,internetpasoapaso.com,acidadeon.com,leouve.com.br,larazon.es,infoescola.com,cbn.globoradio.globo.com,maxitorrent.com,abril.com.br,odia.ig.com.br,especiais.g1.globo.com,tribunapr.com.br,novelasd.com,anime-tube.tv##.ads
 ! ##body .banner
-c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.mx,lapoliticaonline.com.np,lapoliticaonline.info,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
+c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.com,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.np,lapoliticaonline.info,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
 !
 ! NOTE: Specific rules
 !
+ver-peliculas-online.org##.content a[class^="button"][target="_blank"]
+anime-latino.com##.dce-animations:has(> .elementor-button-wrapper > a[target="_blank"])
+publico.pt##html > body .pubHorz:not(#style_important)
+infopedia.pt##.books-authors-widget
+||infopedia.pt/assets/Books/Widget/
+tvserieslatino.com##.the_content > div > p > a[href*="/partner/"] > img
+tvserieslatino.com#?#.the_content > div > p > span:contains(pesos al mes FULL HD)
+tvserieslatino.com#%#//scriptlet('abort-current-inline-script', 'setInterval', 'doTabUnder')
+||zonatmo.com/images/slotspilot.jpg
+eltiempo.es##section > div.modules:has(> div.mods-box-body)
+eltiempo.es##div[style]:has(> div.mods-box > .mods-box-body)
+serasa.com.br##.builder-blocks > div.builder-block:has(> div.et-bg-snow > div.ecs-container div[type="arroba"])
+peliseries.xyz##.pub_top
+peliseries.xyz#%#//scriptlet('set-constant', 'cnt1max', '0')
+peliseries.xyz#%#//scriptlet('set-constant', 'ifrconta', '0')
+peliseries.xyz#%#//scriptlet('set-constant', 'clickmax', '0')
+peliseries.xyz#%#//scriptlet('remove-attr', 'href', '#frm > a[href][onclick]')
+peliseries.xyz#%#//scriptlet('trusted-replace-node-text', 'script', 'btnplay', 'conta1();', 'conta1();Clicked();')
+peliplay.xyz##center > .dbutton:has(> button[data-url])
 profesionalreview.com##.main-content > .stream-item > a[target="_blank"] > img
 profesionalreview.com##.header-container .stream-item-top > a[target="_blank"] > img
 profesionalreview.com##.sidebar .stream-item-widget-content > a[target="_blank"] > img
@@ -2212,7 +2237,7 @@ toonscrab.com#%#//scriptlet('abort-current-inline-script', 'document.addEventLis
 allcalidad.pro#%#//scriptlet('prevent-addEventListener', 'click', 'window.open')
 calidadtorrent.com##.justify-center > a[target="_blank"] > img
 estrenosdivx.net#?#.noticia:has(> div.card-body > p:contains(Promociones))
-cinecalidad.ai,cinecalidad.al,cinecalidad.best,cinecalidad.biz,cinecalidad.cc,cinecalidad.cl,cinecalidad.club,cinecalidad.co,cinecalidad.com.bd,cinecalidad.com.mx,cinecalidad.com.np,cinecalidad.es,cinecalidad.fi,cinecalidad.fm,cinecalidad.fun,cinecalidad.gg,cinecalidad.icu,cinecalidad.is,cinecalidad.link,cinecalidad.live,cinecalidad.media,cinecalidad.mx,cinecalidad.net,cinecalidad.network,cinecalidad.online,cinecalidad.org,cinecalidad.pe,cinecalidad.pl,cinecalidad.pro,cinecalidad.pw,cinecalidad.ro,cinecalidad.rs,cinecalidad.today,cinecalidad.tv,cinecalidad.vip,cinecalidad.website,cinecalidad.win##.item.xfxx
+cinecalidad.ai,cinecalidad.app,cinecalidad.best,cinecalidad.biz,cinecalidad.cc,cinecalidad.cloud,cinecalidad.club,cinecalidad.com.bd,cinecalidad.com.mx,cinecalidad.com.np,cinecalidad.es,cinecalidad.fi,cinecalidad.fm,cinecalidad.fun,cinecalidad.gg,cinecalidad.in,cinecalidad.io,cinecalidad.is,cinecalidad.link,cinecalidad.live,cinecalidad.media,cinecalidad.mx,cinecalidad.my,cinecalidad.online,cinecalidad.org,cinecalidad.pe,cinecalidad.ph,cinecalidad.pro,cinecalidad.ro,cinecalidad.rs,cinecalidad.ru,cinecalidad.today,cinecalidad.tv,cinecalidad.vip,cinecalidad.win,cinecalidad.xyz##.item.xfxx
 cine-calidad.biz##div[class*="bannerAds"]
 forocoches.com###notice-wrapper
 seriesperu.com#%#//scriptlet('set-constant', 'redirigido', 'true')
@@ -2394,10 +2419,10 @@ rdnews.com.br##body > .header-mb-full.hidden-xs:has(> div[id^="div-gpt-"])
 swisscows.com##.item-a8r-web
 okpeliz.com#%#//scriptlet('prevent-window-open')
 mirandogratis.com##a[target="_blank"] > img
-yaske.org,zpelis.com,locopelis.com##div[class^="adsbutt_"]
+pelisxd.com,yaske.org,zpelis.com,locopelis.com##div[class^="adsbutt_"]
 hardwaresfera.com##.widget_aawp_widget_bestseller
 verseriehd.cc##.movie-xpb > a[rel]
-onlinegratis.cc,seriesgratis.cloud,seriesonline.cloud,veronline.cc,veronline.cloud,veronline.co,veronline.com.bd,veronline.com.br,veronline.com.np,veronline.in,veronline.info,veronline.net,veronline.pro,veronline.sh,veronline.site,veronline.top,verseries.cc,streamgratis.biz##.movie-xyz > a[rel]
+onlinegratis.cc,seriesgratis.cloud,seriesonline.cloud,veronline.cc,veronline.cloud,veronline.co,veronline.com,veronline.com.bd,veronline.com.br,veronline.com.np,veronline.in,veronline.org,veronline.pro,veronline.sh,veronline.site,veronline.top,verseries.cc,streamgratis.biz##.movie-xyz > a[rel]
 r7.com##aside > section[role="contentinfo"]:has(li > a[href^="https://cupons.r7.com/"])
 noticias.r7.com##div[id^="taboola-"]
 blocktrends.com.br###out-of-page-ad
@@ -2417,7 +2442,7 @@ grupoahora.net.br##.swiper-home
 grupoahora.net.br##.swiper-materia-interna
 grupoahora.net.br##.banner-horizontal
 brasilparalelo.com.br##.lateral-list
-cl1ca.com,4br.me,fir3.net,seulink.app,seulink.com,seulink.com.bd,seulink.com.np,seulink.digital,seulink.net,seulink.online,seulink.pro,seulink.site,seulink.xyz,encurtalink.com,encurtalink.com.bd,encurtalink.com.np,encurtalink.net,encurtalink.online##a[href^="https://ads.mundotutors.net/"]
+cl1ca.com,4br.me,fir3.net,seulink.app,seulink.com,seulink.com.bd,seulink.com.np,seulink.digital,seulink.link,seulink.net,seulink.online,seulink.xyz,encurtalink.com.bd,encurtalink.com.np,encurtalink.net,encurtalink.online##a[href^="https://ads.mundotutors.net/"]
 cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*#%#//scriptlet('prevent-refresh')
 publimetro.com.mx,metroworldnews.com.br##div[id^="arcad-"]
 coisasdaroca.com##div[style*="text-align"].code-block
@@ -2482,8 +2507,8 @@ mundodaeletrica.com.br##.ad-container-two-squares
 mundodaeletrica.com.br##div[id][class]:has(> iframe[id^="google_ads"])
 mundodaeletrica.com.br##div[id][class]:has(> ins.adsbygoogle)
 estadao.com.br##.OB-REACT-WRAPPER
-cuevana.app,cuevana.be,cuevana.best,cuevana.biz,cuevana.blog,cuevana.ch,cuevana.cloud,cuevana.club,cuevana.co,cuevana.com,cuevana.com.bd,cuevana.com.np,cuevana.com.pe,cuevana.com.ph,cuevana.es,cuevana.eu,cuevana.fm,cuevana.gg,cuevana.guru,cuevana.id,cuevana.in,cuevana.info,cuevana.io,cuevana.me,cuevana.media,cuevana.mobi,cuevana.my,cuevana.net,cuevana.online,cuevana.org,cuevana.org.uk,cuevana.pe,cuevana.pro,cuevana.pw,cuevana.sh,cuevana.si,cuevana.tv,cuevana.us,cuevana.vip,cuevana.work,cuevana.xyz##.backdrop > div[class] > a[rel][data-instant]
-cuevana.app,cuevana.be,cuevana.best,cuevana.biz,cuevana.blog,cuevana.ch,cuevana.cloud,cuevana.club,cuevana.co,cuevana.com,cuevana.com.bd,cuevana.com.np,cuevana.com.pe,cuevana.com.ph,cuevana.es,cuevana.eu,cuevana.fm,cuevana.gg,cuevana.guru,cuevana.id,cuevana.in,cuevana.info,cuevana.io,cuevana.me,cuevana.media,cuevana.mobi,cuevana.my,cuevana.net,cuevana.online,cuevana.org,cuevana.org.uk,cuevana.pe,cuevana.pro,cuevana.pw,cuevana.sh,cuevana.si,cuevana.tv,cuevana.us,cuevana.vip,cuevana.work,cuevana.xyz##main > div[class*=" show"]:has(> a[rel][data-instant])
+cuevana.ai,cuevana.asia,cuevana.be,cuevana.biz,cuevana.blog,cuevana.ch,cuevana.cloud,cuevana.club,cuevana.co,cuevana.co.uk,cuevana.com,cuevana.com.bd,cuevana.com.np,cuevana.eu,cuevana.fm,cuevana.in,cuevana.io,cuevana.is,cuevana.me,cuevana.mobi,cuevana.my,cuevana.net,cuevana.news,cuevana.online,cuevana.org.uk,cuevana.pe,cuevana.pl,cuevana.pro,cuevana.pw,cuevana.ru,cuevana.se,cuevana.sh,cuevana.store,cuevana.to,cuevana.tv,cuevana.us,cuevana.vip,cuevana.website##.backdrop > div[class] > a[rel][data-instant]
+cuevana.ai,cuevana.asia,cuevana.be,cuevana.biz,cuevana.blog,cuevana.ch,cuevana.cloud,cuevana.club,cuevana.co,cuevana.co.uk,cuevana.com,cuevana.com.bd,cuevana.com.np,cuevana.eu,cuevana.fm,cuevana.in,cuevana.io,cuevana.is,cuevana.me,cuevana.mobi,cuevana.my,cuevana.net,cuevana.news,cuevana.online,cuevana.org.uk,cuevana.pe,cuevana.pl,cuevana.pro,cuevana.pw,cuevana.ru,cuevana.se,cuevana.sh,cuevana.store,cuevana.to,cuevana.tv,cuevana.us,cuevana.vip,cuevana.website##main > div[class*=" show"]:has(> a[rel][data-instant])
 suapesquisa.com##.ga
 suapesquisa.com##.ga-block-left
 catracalivre.com.br##.mythdev
@@ -2909,8 +2934,8 @@ universohq.com##.barAds
 istoe.com.br##div[style^="width: 100%; min-height: 250px;"]
 laopinion.com.co##div[class^="pauta"]
 ||player.*/assets/vast_*.xml
-cuevana3.ai,cuevana3.al,cuevana3.be,cuevana3.biz,cuevana3.blog,cuevana3.ca,cuevana3.cc,cuevana3.ch,cuevana3.cloud,cuevana3.club,cuevana3.co,cuevana3.co.in,cuevana3.com,cuevana3.com.ar,cuevana3.com.bd,cuevana3.com.mx,cuevana3.com.np,cuevana3.de,cuevana3.dev,cuevana3.eu,cuevana3.fm,cuevana3.fr,cuevana3.gg,cuevana3.icu,cuevana3.in,cuevana3.info,cuevana3.io,cuevana3.is,cuevana3.it,cuevana3.life,cuevana3.live,cuevana3.me,cuevana3.media,cuevana3.mn,cuevana3.net,cuevana3.network,cuevana3.news,cuevana3.one,cuevana3.pe,cuevana3.pro,cuevana3.rs,cuevana3.site,cuevana3.tech,cuevana3.to,cuevana3.today,cuevana3.tv,cuevana3.vip,cuevana3.website,cuevana3.win,cuevana3.work,gnula.be,gnula.biz,gnula.cc,gnula.club,gnula.co,gnula.com,gnula.com.bd,gnula.com.co,gnula.com.np,gnula.de,gnula.fun,gnula.info,gnula.io,gnula.life,gnula.me,gnula.mobi,gnula.mx,gnula.my,gnula.net,gnula.one,gnula.org,gnula.se,gnula.su,gnula.vip,gnula.ws,poseidonhd2.co,cuevana2espanol.com,cuevana2espanol.com.bd,cuevana2espanol.com.np,cuevana2espanol.icu,cuevana2espanol.net,cuevana2espanol.tv,cuevana.app,cuevana.be,cuevana.best,cuevana.biz,cuevana.blog,cuevana.ch,cuevana.cloud,cuevana.club,cuevana.co,cuevana.com,cuevana.com.bd,cuevana.com.np,cuevana.com.pe,cuevana.com.ph,cuevana.es,cuevana.eu,cuevana.fm,cuevana.gg,cuevana.guru,cuevana.id,cuevana.in,cuevana.info,cuevana.io,cuevana.me,cuevana.media,cuevana.mobi,cuevana.my,cuevana.net,cuevana.online,cuevana.org,cuevana.org.uk,cuevana.pe,cuevana.pro,cuevana.pw,cuevana.sh,cuevana.si,cuevana.tv,cuevana.us,cuevana.vip,cuevana.work,cuevana.xyz##a[rel*="sponsored"] img
-/edgeSystem*.js$domain=cuevana.app|cuevana.be|cuevana.best|cuevana.biz|cuevana.blog|cuevana.ch|cuevana.cloud|cuevana.club|cuevana.co|cuevana.com|cuevana.com.bd|cuevana.com.np|cuevana.com.pe|cuevana.com.ph|cuevana.es|cuevana.eu|cuevana.fm|cuevana.gg|cuevana.guru|cuevana.id|cuevana.in|cuevana.info|cuevana.io|cuevana.me|cuevana.media|cuevana.mobi|cuevana.my|cuevana.net|cuevana.online|cuevana.org|cuevana.org.uk|cuevana.pe|cuevana.pro|cuevana.pw|cuevana.sh|cuevana.si|cuevana.tv|cuevana.us|cuevana.vip|cuevana.work|cuevana.xyz|cuevana2espanol.com|cuevana2espanol.com.bd|cuevana2espanol.com.np|cuevana2espanol.icu|cuevana2espanol.net|cuevana2espanol.tv|poseidonhd2.co|gnula.be|gnula.biz|gnula.cc|gnula.club|gnula.co|gnula.com|gnula.com.bd|gnula.com.co|gnula.com.np|gnula.de|gnula.fun|gnula.info|gnula.io|gnula.life|gnula.me|gnula.mobi|gnula.mx|gnula.my|gnula.net|gnula.one|gnula.org|gnula.se|gnula.su|gnula.vip|gnula.ws|cuevana3.ai|cuevana3.al|cuevana3.be|cuevana3.biz|cuevana3.blog|cuevana3.ca|cuevana3.cc|cuevana3.ch|cuevana3.cloud|cuevana3.club|cuevana3.co|cuevana3.co.in|cuevana3.com|cuevana3.com.ar|cuevana3.com.bd|cuevana3.com.mx|cuevana3.com.np|cuevana3.de|cuevana3.dev|cuevana3.eu|cuevana3.fm|cuevana3.fr|cuevana3.gg|cuevana3.icu|cuevana3.in|cuevana3.info|cuevana3.io|cuevana3.is|cuevana3.it|cuevana3.life|cuevana3.live|cuevana3.me|cuevana3.media|cuevana3.mn|cuevana3.net|cuevana3.network|cuevana3.news|cuevana3.one|cuevana3.pe|cuevana3.pro|cuevana3.rs|cuevana3.site|cuevana3.tech|cuevana3.to|cuevana3.today|cuevana3.tv|cuevana3.vip|cuevana3.website|cuevana3.win|cuevana3.work|pelispedia.life
+cuevana3.ai,cuevana3.asia,cuevana3.be,cuevana3.best,cuevana3.biz,cuevana3.cc,cuevana3.ch,cuevana3.cloud,cuevana3.club,cuevana3.co,cuevana3.com,cuevana3.com.ar,cuevana3.com.bd,cuevana3.com.co,cuevana3.com.mx,cuevana3.com.np,cuevana3.de,cuevana3.es,cuevana3.eu,cuevana3.fm,cuevana3.fr,cuevana3.gg,cuevana3.icu,cuevana3.in,cuevana3.info,cuevana3.io,cuevana3.is,cuevana3.it,cuevana3.life,cuevana3.live,cuevana3.me,cuevana3.media,cuevana3.mn,cuevana3.mobi,cuevana3.mx,cuevana3.net,cuevana3.network,cuevana3.news,cuevana3.one,cuevana3.pe,cuevana3.pro,cuevana3.rs,cuevana3.se,cuevana3.site,cuevana3.sk,cuevana3.tech,cuevana3.to,cuevana3.today,cuevana3.vip,cuevana3.website,cuevana3.win,cuevana3.ws,gnula.app,gnula.biz,gnula.blog,gnula.cc,gnula.club,gnula.co,gnula.com,gnula.com.bd,gnula.com.np,gnula.io,gnula.life,gnula.live,gnula.me,gnula.mx,gnula.my,gnula.net,gnula.no,gnula.one,gnula.org,gnula.ru,gnula.se,gnula.su,gnula.top,gnula.vip,gnula.work,poseidonhd2.co,cuevana2espanol.co,cuevana2espanol.com,cuevana2espanol.com.bd,cuevana2espanol.com.np,cuevana2espanol.icu,cuevana2espanol.net,cuevana2espanol.to,cuevana2espanol.tv,cuevana.ai,cuevana.asia,cuevana.be,cuevana.biz,cuevana.blog,cuevana.ch,cuevana.cloud,cuevana.club,cuevana.co,cuevana.co.uk,cuevana.com,cuevana.com.bd,cuevana.com.np,cuevana.eu,cuevana.fm,cuevana.in,cuevana.io,cuevana.is,cuevana.me,cuevana.mobi,cuevana.my,cuevana.net,cuevana.news,cuevana.online,cuevana.org.uk,cuevana.pe,cuevana.pl,cuevana.pro,cuevana.pw,cuevana.ru,cuevana.se,cuevana.sh,cuevana.store,cuevana.to,cuevana.tv,cuevana.us,cuevana.vip,cuevana.website##a[rel*="sponsored"] img
+/edgeSystem*.js$domain=cuevana.ai|cuevana.asia|cuevana.be|cuevana.biz|cuevana.blog|cuevana.ch|cuevana.cloud|cuevana.club|cuevana.co|cuevana.co.uk|cuevana.com|cuevana.com.bd|cuevana.com.np|cuevana.eu|cuevana.fm|cuevana.in|cuevana.io|cuevana.is|cuevana.me|cuevana.mobi|cuevana.my|cuevana.net|cuevana.news|cuevana.online|cuevana.org.uk|cuevana.pe|cuevana.pl|cuevana.pro|cuevana.pw|cuevana.ru|cuevana.se|cuevana.sh|cuevana.store|cuevana.to|cuevana.tv|cuevana.us|cuevana.vip|cuevana.website|cuevana2espanol.co|cuevana2espanol.com|cuevana2espanol.com.bd|cuevana2espanol.com.np|cuevana2espanol.icu|cuevana2espanol.net|cuevana2espanol.to|cuevana2espanol.tv|poseidonhd2.co|gnula.app|gnula.biz|gnula.blog|gnula.cc|gnula.club|gnula.co|gnula.com|gnula.com.bd|gnula.com.np|gnula.io|gnula.life|gnula.live|gnula.me|gnula.mx|gnula.my|gnula.net|gnula.no|gnula.one|gnula.org|gnula.ru|gnula.se|gnula.su|gnula.top|gnula.vip|gnula.work|cuevana3.ai|cuevana3.asia|cuevana3.be|cuevana3.best|cuevana3.biz|cuevana3.cc|cuevana3.ch|cuevana3.cloud|cuevana3.club|cuevana3.co|cuevana3.com|cuevana3.com.ar|cuevana3.com.bd|cuevana3.com.co|cuevana3.com.mx|cuevana3.com.np|cuevana3.de|cuevana3.es|cuevana3.eu|cuevana3.fm|cuevana3.fr|cuevana3.gg|cuevana3.icu|cuevana3.in|cuevana3.info|cuevana3.io|cuevana3.is|cuevana3.it|cuevana3.life|cuevana3.live|cuevana3.me|cuevana3.media|cuevana3.mn|cuevana3.mobi|cuevana3.mx|cuevana3.net|cuevana3.network|cuevana3.news|cuevana3.one|cuevana3.pe|cuevana3.pro|cuevana3.rs|cuevana3.se|cuevana3.site|cuevana3.sk|cuevana3.tech|cuevana3.to|cuevana3.today|cuevana3.vip|cuevana3.website|cuevana3.win|cuevana3.ws|pelispedia.life
 ffcv.es##.hidden-xs.zn_section
 dw-anime.net###custom_html-60
 autoscout24.es##.hf-top-old
@@ -3045,7 +3070,7 @@ noticias.uol.com.br###uolpd-video-inarticle
 todalamusica.es##.aoqpfsl-single
 todalamusica.es##*:not(aside) > div > .goqpfsl
 todalamusica.es##.pt-cv-page > div[data-pid^="ad-"]
-publimetro.cl,publimetro.co,publimetro.com.ar,publimetro.com.bd,publimetro.com.br,publimetro.com.mx,publimetro.com.np,publimetro.pe##.arcad-feature[class*="default__StyledAdUnit"]
+publimetro.cl,publimetro.co,publimetro.com.ar,publimetro.com.bd,publimetro.com.mx,publimetro.com.np,publimetro.pe##.arcad-feature[class*="default__StyledAdUnit"]
 sapo.pt##.block-pub
 sapo.pt##.tin-pub-inner
 impactoespananoticias.com###flotante-pie
@@ -3093,8 +3118,8 @@ record.com.mx##li[id^="publicDFP-"]
 record.com.mx##.publicidadBoxBanner300x75
 lacuerda.net##div[id^="ban"]:not([class])
 ||cdn.lacuerda.net/UTIL/pb*.js
-tempo.pt,tempo.com,tiempo.com,meteored.cl,meteored.com,meteored.com.ar,meteored.com.bd,meteored.com.np,meteored.com.uy,meteored.mx,meteored.pe##.tappx-ad
-tempo.pt,tempo.com,tiempo.com,meteored.cl,meteored.com,meteored.com.ar,meteored.com.bd,meteored.com.np,meteored.com.uy,meteored.mx,meteored.pe##.meteored-ads
+tempo.pt,tempo.com,tiempo.com,meteored.cl,meteored.cloud,meteored.com,meteored.com.ar,meteored.com.bd,meteored.com.np,meteored.com.uy,meteored.mx,meteored.pe##.tappx-ad
+tempo.pt,tempo.com,tiempo.com,meteored.cl,meteored.cloud,meteored.com,meteored.com.ar,meteored.com.bd,meteored.com.np,meteored.com.uy,meteored.mx,meteored.pe##.meteored-ads
 /js/adsUtils.js$domain=voydeviaje.com|viapais.com.ar|guarda14.com|losandes.com.ar
 depor.com##div[class^="content_gpt"]
 depor.com##.container-publicidad
@@ -3266,8 +3291,8 @@ colegioweb.com.br###colegioweb_header
 odia.ig.com.br###text-intext-ads
 odia.ig.com.br##.intext-ads
 coches.net##.mt-AdvertisingRoadblock-top
-||netcine.*/ad/*.js$domain=netcine.biz|netcine.cc|netcine.com|netcine.com.bd|netcine.com.br|netcine.com.np|netcine.fi|netcine.fun|netcine.info|netcine.io|netcine.me|netcine.net|netcine.one|netcine.shop|netcine.to|netcine.tv|netcine.us|netcine.vip|netcine.ws
-||netcine.*/first.js$domain=netcine.biz|netcine.cc|netcine.com|netcine.com.bd|netcine.com.br|netcine.com.np|netcine.fi|netcine.fun|netcine.info|netcine.io|netcine.me|netcine.net|netcine.one|netcine.shop|netcine.to|netcine.tv|netcine.us|netcine.vip|netcine.ws
+||netcine.*/ad/*.js$domain=netcine.biz|netcine.cc|netcine.com|netcine.com.bd|netcine.com.br|netcine.com.np|netcine.fi|netcine.fun|netcine.info|netcine.io|netcine.me|netcine.one|netcine.shop|netcine.to|netcine.us|netcine.ws
+||netcine.*/first.js$domain=netcine.biz|netcine.cc|netcine.com|netcine.com.bd|netcine.com.br|netcine.com.np|netcine.fi|netcine.fun|netcine.info|netcine.io|netcine.me|netcine.one|netcine.shop|netcine.to|netcine.us|netcine.ws
 computerhoy.com##.dfp-position
 playnewserie.xyz##div[style][onclick*="anunciotag()"]
 ||receitasdalu.net/js/burn.min.js
@@ -3290,7 +3315,7 @@ r7.com##.toolkit-ad-shell
 r7.com##div[id^="taboola-mid-article-category-"]
 ||radiopanamericana.com/images/*/BANNER_COM_
 radiopanamericana.com##.module-publicidad
-cuevana3.ai,cuevana3.al,cuevana3.be,cuevana3.biz,cuevana3.blog,cuevana3.ca,cuevana3.cc,cuevana3.ch,cuevana3.cloud,cuevana3.club,cuevana3.co,cuevana3.co.in,cuevana3.com,cuevana3.com.ar,cuevana3.com.bd,cuevana3.com.mx,cuevana3.com.np,cuevana3.de,cuevana3.dev,cuevana3.eu,cuevana3.fm,cuevana3.fr,cuevana3.gg,cuevana3.icu,cuevana3.in,cuevana3.info,cuevana3.io,cuevana3.is,cuevana3.it,cuevana3.life,cuevana3.live,cuevana3.me,cuevana3.media,cuevana3.mn,cuevana3.net,cuevana3.network,cuevana3.news,cuevana3.one,cuevana3.pe,cuevana3.pro,cuevana3.rs,cuevana3.site,cuevana3.tech,cuevana3.to,cuevana3.today,cuevana3.tv,cuevana3.vip,cuevana3.website,cuevana3.win,cuevana3.work##p[align="center"] > a[target="_blank"] > img
+cuevana3.ai,cuevana3.asia,cuevana3.be,cuevana3.best,cuevana3.biz,cuevana3.cc,cuevana3.ch,cuevana3.cloud,cuevana3.club,cuevana3.co,cuevana3.com,cuevana3.com.ar,cuevana3.com.bd,cuevana3.com.co,cuevana3.com.mx,cuevana3.com.np,cuevana3.de,cuevana3.es,cuevana3.eu,cuevana3.fm,cuevana3.fr,cuevana3.gg,cuevana3.icu,cuevana3.in,cuevana3.info,cuevana3.io,cuevana3.is,cuevana3.it,cuevana3.life,cuevana3.live,cuevana3.me,cuevana3.media,cuevana3.mn,cuevana3.mobi,cuevana3.mx,cuevana3.net,cuevana3.network,cuevana3.news,cuevana3.one,cuevana3.pe,cuevana3.pro,cuevana3.rs,cuevana3.se,cuevana3.site,cuevana3.sk,cuevana3.tech,cuevana3.to,cuevana3.today,cuevana3.vip,cuevana3.website,cuevana3.win,cuevana3.ws##p[align="center"] > a[target="_blank"] > img
 ||animesonlineup.com/codigo_de_pop.js
 canaistv.top###sticky-banner1
 player.repelis24.rs##body > a[target="_blank"]
@@ -3344,7 +3369,7 @@ culturageek.com.ar##.g-dyn > p[align="center"] > a[data-track][target="_blank"] 
 vitoriadaconquistanoticias.com.br###webtivaFloating
 vitoriadaconquistanoticias.com.br##.adcontainer
 vitoriadaconquistanoticias.com.br##.bsac-float-center
-hackstore.la,atomixhq.com,atomixhq.com.bd,atomixhq.com.np,atomixhq.net,atomixhq.top##a[href^="https://startgaming.net/"]
+hackstore.la,atomixhq.com,atomixhq.com.bd,atomixhq.com.np,atomixhq.link,atomixhq.top##a[href^="https://startgaming.net/"]
 atomtt.com##.ddl > ul > li.slide
 ||tcloudbase.com/access?
 ||pelistorrent.org/wp-content/uploads/*/pandabanner.png
@@ -3425,8 +3450,8 @@ elespanol.com##div[class^="article-inline"]
 comandotorrent.tv##center > a[target*="_blank"] > img
 pampaporno.com##.resumecard__banner
 pampaporno.com##.abcnn_
-||cloudfront.net^$domain=cuevana3.ai|cuevana3.al|cuevana3.be|cuevana3.biz|cuevana3.blog|cuevana3.ca|cuevana3.cc|cuevana3.ch|cuevana3.cloud|cuevana3.club|cuevana3.co|cuevana3.co.in|cuevana3.com|cuevana3.com.ar|cuevana3.com.bd|cuevana3.com.mx|cuevana3.com.np|cuevana3.de|cuevana3.dev|cuevana3.eu|cuevana3.fm|cuevana3.fr|cuevana3.gg|cuevana3.icu|cuevana3.in|cuevana3.info|cuevana3.io|cuevana3.is|cuevana3.it|cuevana3.life|cuevana3.live|cuevana3.me|cuevana3.media|cuevana3.mn|cuevana3.net|cuevana3.network|cuevana3.news|cuevana3.one|cuevana3.pe|cuevana3.pro|cuevana3.rs|cuevana3.site|cuevana3.tech|cuevana3.to|cuevana3.today|cuevana3.tv|cuevana3.vip|cuevana3.website|cuevana3.win|cuevana3.work|pelisplushd.net
-||amazonaws.com^$domain=cuevana3.ai|cuevana3.al|cuevana3.be|cuevana3.biz|cuevana3.blog|cuevana3.ca|cuevana3.cc|cuevana3.ch|cuevana3.cloud|cuevana3.club|cuevana3.co|cuevana3.co.in|cuevana3.com|cuevana3.com.ar|cuevana3.com.bd|cuevana3.com.mx|cuevana3.com.np|cuevana3.de|cuevana3.dev|cuevana3.eu|cuevana3.fm|cuevana3.fr|cuevana3.gg|cuevana3.icu|cuevana3.in|cuevana3.info|cuevana3.io|cuevana3.is|cuevana3.it|cuevana3.life|cuevana3.live|cuevana3.me|cuevana3.media|cuevana3.mn|cuevana3.net|cuevana3.network|cuevana3.news|cuevana3.one|cuevana3.pe|cuevana3.pro|cuevana3.rs|cuevana3.site|cuevana3.tech|cuevana3.to|cuevana3.today|cuevana3.tv|cuevana3.vip|cuevana3.website|cuevana3.win|cuevana3.work|pelisplushd.net
+||cloudfront.net^$domain=cuevana3.ai|cuevana3.asia|cuevana3.be|cuevana3.best|cuevana3.biz|cuevana3.cc|cuevana3.ch|cuevana3.cloud|cuevana3.club|cuevana3.co|cuevana3.com|cuevana3.com.ar|cuevana3.com.bd|cuevana3.com.co|cuevana3.com.mx|cuevana3.com.np|cuevana3.de|cuevana3.es|cuevana3.eu|cuevana3.fm|cuevana3.fr|cuevana3.gg|cuevana3.icu|cuevana3.in|cuevana3.info|cuevana3.io|cuevana3.is|cuevana3.it|cuevana3.life|cuevana3.live|cuevana3.me|cuevana3.media|cuevana3.mn|cuevana3.mobi|cuevana3.mx|cuevana3.net|cuevana3.network|cuevana3.news|cuevana3.one|cuevana3.pe|cuevana3.pro|cuevana3.rs|cuevana3.se|cuevana3.site|cuevana3.sk|cuevana3.tech|cuevana3.to|cuevana3.today|cuevana3.vip|cuevana3.website|cuevana3.win|cuevana3.ws|pelisplushd.net
+||amazonaws.com^$domain=cuevana3.ai|cuevana3.asia|cuevana3.be|cuevana3.best|cuevana3.biz|cuevana3.cc|cuevana3.ch|cuevana3.cloud|cuevana3.club|cuevana3.co|cuevana3.com|cuevana3.com.ar|cuevana3.com.bd|cuevana3.com.co|cuevana3.com.mx|cuevana3.com.np|cuevana3.de|cuevana3.es|cuevana3.eu|cuevana3.fm|cuevana3.fr|cuevana3.gg|cuevana3.icu|cuevana3.in|cuevana3.info|cuevana3.io|cuevana3.is|cuevana3.it|cuevana3.life|cuevana3.live|cuevana3.me|cuevana3.media|cuevana3.mn|cuevana3.mobi|cuevana3.mx|cuevana3.net|cuevana3.network|cuevana3.news|cuevana3.one|cuevana3.pe|cuevana3.pro|cuevana3.rs|cuevana3.se|cuevana3.site|cuevana3.sk|cuevana3.tech|cuevana3.to|cuevana3.today|cuevana3.vip|cuevana3.website|cuevana3.win|cuevana3.ws|pelisplushd.net
 tecnoblog.net###sidebanner_single
 shock.co##div[class^="GoogleDfpAd-"]
 elpais.com##.ad-giga
@@ -3501,7 +3526,7 @@ tvprime.ig.com.br##div[class^="tvpri"]
 uol.com.br##.cardAd
 uol.com.br##.advertisementArea--showLabel
 ||baixartorrents.org/subs/popup.js
-peliculasyserieslatino.me,biologianet.com,portugues.com.br##.pub-left
+peliseries.xyz,peliculasyserieslatino.me,biologianet.com,portugues.com.br##.pub-left
 preparaenem.com,portugues.com.br##.pub-300x250
 portugues.com.br##.pub_insert_content
 portugues.com.br##.publicidade-cima-container
@@ -3649,7 +3674,7 @@ gazetaesportiva.com,legendas.co##[id^="publicidade_"]
 correiobraziliense.com.br##.pub-hor
 ||webglobal.com.br/banner/$third-party
 techtudo.com.br##.black_banner_prop_desk
-lapoliticaonline.com,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.mx,lapoliticaonline.com.np,lapoliticaonline.info###header-banner-wrapper
+lapoliticaonline.com,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticaonline.com.np,lapoliticaonline.info###header-banner-wrapper
 1001juegos.com##div[style="height:250px;width:100%;display:block"]
 1001juegos.com##div[style="height: 250px; width: 100%; display: block;"]
 1001juegos.com##div[style="height: 90px; width: 100%; display: block;"]
@@ -3866,9 +3891,9 @@ zdescargas.org##center > a[href][target="_blank"]
 gazetadopovo.com.br##div[class^="box-ads-header"]
 emedemujer.com##.box-intext-ad
 tecmundo.com.br##.tec--ad
-lectulandia.app,lectulandia.club,lectulandia.co,lectulandia.com,lectulandia.com.bd,lectulandia.com.np,lectulandia.de,lectulandia.eu,lectulandia.live,lectulandia.me,lectulandia.site###rightPromo
-lectulandia.app,lectulandia.club,lectulandia.co,lectulandia.com,lectulandia.com.bd,lectulandia.com.np,lectulandia.de,lectulandia.eu,lectulandia.live,lectulandia.me,lectulandia.site##.perfbtns2
-lectulandia.app,lectulandia.club,lectulandia.co,lectulandia.com,lectulandia.com.bd,lectulandia.com.np,lectulandia.de,lectulandia.eu,lectulandia.live,lectulandia.me,lectulandia.site##.bloky > a > img
+lectulandia.app,lectulandia.cc,lectulandia.club,lectulandia.co,lectulandia.com,lectulandia.com.bd,lectulandia.com.np,lectulandia.info,lectulandia.live,lectulandia.me,lectulandia.online###rightPromo
+lectulandia.app,lectulandia.cc,lectulandia.club,lectulandia.co,lectulandia.com,lectulandia.com.bd,lectulandia.com.np,lectulandia.info,lectulandia.live,lectulandia.me,lectulandia.online##.perfbtns2
+lectulandia.app,lectulandia.cc,lectulandia.club,lectulandia.co,lectulandia.com,lectulandia.com.bd,lectulandia.com.np,lectulandia.info,lectulandia.live,lectulandia.me,lectulandia.online##.bloky > a > img
 canalporno.com##.publis-bottom
 canalporno.com##div[class^="right-player-"]
 verpornocomic.com###sidebar > #custom_html-2
@@ -4037,7 +4062,7 @@ superflix.net##aside.widget-area > #custom_html-16
 mastercuriosidadesbr.com##.conteudo[id^="adx"]
 ||ticotimes.net/*/*Banner*
 ticotimes.net##a[href^="https://ticotimes.net/linkout/"]
-yottytech.com,planetaneperian.com,recipestravelworld.com,recetasviaje.com,recetascuriosas.com,cocinaconlupita.com,worldrecipesu.com,planetaneperiano.com,chefac.com,recipesandcooker.com,recipeski.com,recipesnk.com,motornk.com,worldmangas.com,mangalong.com,mistermanga.com,anitoc.com,enginepassion.com,otakuteca.com##.pbl
+loveteching.com,techitan.com,motorworten.com,flavourecipes.com,recitma.com,motoratrium.com,ferromotor.com,retiontech.com,ratiomotor.com,recipesalba.com,yottytech.com,planetaneperian.com,recipestravelworld.com,recetasviaje.com,recetascuriosas.com,cocinaconlupita.com,worldrecipesu.com,planetaneperiano.com,chefac.com,recipesandcooker.com,recipeski.com,recipesnk.com,motornk.com,worldmangas.com,mangalong.com,mistermanga.com,anitoc.com,enginepassion.com,otakuteca.com##.pbl
 lavoz.com.ar##.bloque-ads
 lavoz.com.ar##.block-banner
 pivigames.blog##a[href="https://pivigames.blog/descargar.php"]
@@ -4062,7 +4087,7 @@ megawarez.org##.post-content > div[style=" margin:12px; text-align:center"] > a[
 supertelevisionhd.com##div[id="anuncio"]
 ||peliculas-dvdrip.com/wp-content/uploads/*descargar$image
 peliculas-dvdrip.com##.posts a[href*="/offer?"]
-mangatigre.net,fiuxy2.com,mega-mkv.com##center > a[target="_blank"] > img
+peliplay.xyz,mangatigre.net,fiuxy2.com,mega-mkv.com##center > a[target="_blank"] > img
 mkv-paste.com##p[style="text-align: center;"] > a[rel="noopener"] > img
 clubedohardware.com.br##.ipsModal
 clubedohardware.com.br##.ipsDialog_narrow
@@ -4535,7 +4560,7 @@ tvgol.biz###anuncio1
 seriesyonkis.com###auto_banner
 lanacion.com.py###ba_avanza
 lanacion.com.py###ba_interbanco
-dicasdereceitas.net,dicasgeeks.net,tvonline.global,ijuinews.com.br,peladas69.com,animeflv.net,cadenasuper.com,rcmpharma.com,terra.com.br###banner
+tvserieslatino.com,dicasdereceitas.net,dicasgeeks.net,tvonline.global,ijuinews.com.br,peladas69.com,animeflv.net,cadenasuper.com,rcmpharma.com,terra.com.br###banner
 braziliantimes.com###banner-topo
 vanguardia.com###banner0
 eleconomista.es,tudorondonia.com###banner1
