@@ -24,7 +24,6 @@ import {
 } from '@adguard/filters-downloader/browser';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
-import { AntiBannerFiltersId } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -35,7 +34,7 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
-import { CustomFilterApi, type FilterUpdateOptions } from '../filters';
+import { type FilterUpdateOptions } from '../filters';
 
 import { NetworkSettings } from './settings';
 
@@ -154,56 +153,24 @@ export class Network {
         }
 
         let isLocalFilter = false;
-        /**
-         * MV3_REMOTE_POLICY.
-         * This keyword can be used to grep all code related to MV3 remote
-         * hosting policy.
-         *
-         * In MV3 extension we download a so-called "Quick Fixes filter" which
-         * is used for fixing major issues without the need to update the
-         * extension or custom filter lists added by the users themselves.
-         * Having this logic is particularly important for an ad blocker since
-         * websites breakages can occur at any time and we need to be able to
-         * fix them ASAP.
-         *
-         * We make sure that all these rules that come from the filter
-         * were in compliance with CWS policies:
-         * "Fetching a remote configuration file for A/B testing or determining
-         * enabled features, where all logic for the functionality is contained
-         * within the extension package".
-         *
-         * 1. Network rules from the Quick Fixes filter is converted to DNR
-         *    rules and applied via dynamic rules.
-         * 2. Cosmetic rules are interpreted in the code. For example, hiding
-         *    elements OR on the contrary, unhiding them when it is necessary.
-         *    At the same time the cosmetic rules logic is contained in the
-         *    extension package.
-         *
-         * Quick Fixes filter contents can be examined here:
-         * https://filters.adtidy.org/extension/chromium-mv3/filters/24.txt.
-         *
-         * To ensure compliance with Chrome Store policies, we have safeguards
-         * that restrict execution to rules that are included into the extension
-         * package and can be reviewed there. These safeguards can be found by
-         * searching for 'JS_RULES_EXECUTION'.
-         */
         if (__IS_MV3__) {
             url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterId}.txt`);
 
-            // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
-            // and custom filters
-            const isRemote = forceRemote
-                && (filterId === AntiBannerFiltersId.QuickFixesFilterId
-                    || CustomFilterApi.isCustomFilter(filterId));
+            // TODO: Uncomment this block when Quick Fixes filter will return in another way
+            // // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
+            // // and custom filters
+            // const isRemote = forceRemote
+            //     && (filterId === AntiBannerFiltersId.QuickFixesFilterId
+            //         || CustomFilterApi.isCustomFilter(filterId));
 
-            if (isRemote) {
-                if (useOptimizedFilters) {
-                    logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
-                }
-                url = this.getUrlForDownloadFilterRules(filterId, false);
-            }
+            // if (isRemote) {
+            //     if (useOptimizedFilters) {
+            //         logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
+            //     }
+            //     url = this.getUrlForDownloadFilterRules(filterId, false);
+            // }
 
-            isLocalFilter = !isRemote;
+            isLocalFilter = true;
         } else if (forceRemote || this.settings.localFilterIds.indexOf(filterId) < 0) {
             url = this.getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
         } else {
@@ -485,8 +452,18 @@ export class Network {
      * @param useOptimizedFilters If true, download optimized filters.
      *
      * @returns Url for filter downloading.
+     * @throws Error if MV3 is used and remote filter downloading is not supported.
      */
     public getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {
+        if (__IS_MV3__) {
+            throw new Error('MV3 does not support remote filter downloading');
+        }
+
+        if (!this.settings.filterRulesUrl
+            || !this.settings.optimizedFilterRulesUrl) {
+            throw new Error('Filter rules URL is not defined');
+        }
+
         const url = useOptimizedFilters ? this.settings.optimizedFilterRulesUrl : this.settings.filterRulesUrl;
         return url.replaceAll('{filter_id}', String(filterId));
     }

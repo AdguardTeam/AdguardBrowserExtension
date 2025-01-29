@@ -69,29 +69,33 @@ export const getExportedSettingsV2 = () => ({
         'enabled-filters': __IS_MV3__
             // 14 - AdGuard Annoyances filter has been splitted into 5 other filters: Cookie Notices, Popups, Mobile
             // App Banners, Other Annoyances and Widgets
-            ? [1, 2, 3, 4, 6, 11, 16, 17, 24, 224, 1001, 1002]
-            : [1, 2, 3, 4, 6, 11, 14, 16, 17, 224, 1001, 1002],
+            // TODO: uncomment this when quick fixes filter and custom filters will be supported for MV3
+            // ? [1, 2, 3, 4, 6, 11, 16, 17, 24, 224, 1001, 1002]
+            ? [1, 2, 3, 4, 6, 11, 16, 17, 224]
+            // TODO: Uncomment this when we will return custom filters (AG-39385).
+            : [1, 2, 3, 4, 6, 11, 14, 16, 17, 224],
         'enabled-groups': [0, 1, 2, 3, 4, 5, 6, 7,
         ],
         'custom-filters': [
-            {
-                'customUrl': 'https://testcases.agrd.dev/Filters/css-rules/css-rules.txt',
-                'title': 'Rules for CSS tests',
-                'trusted': false,
-                'enabled': false,
-            },
-            {
-                'customUrl': 'https://testcases.agrd.dev/Filters/element-hiding-rules/test-element-hiding-rules.txt',
-                'title': 'Rules for element hiding rules test',
-                'trusted': false,
-                'enabled': true,
-            },
-            {
-                'customUrl': 'https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt',
-                'title': 'Rules for generic hide tests',
-                'trusted': true,
-                'enabled': true,
-            },
+            // TODO: Uncomment this when we will return custom filters (AG-39385).
+            // {
+            //     'customUrl': 'https://testcases.agrd.dev/Filters/css-rules/css-rules.txt',
+            //     'title': 'Rules for CSS tests',
+            //     'trusted': false,
+            //     'enabled': false,
+            // },
+            // {
+            //     'customUrl': 'https://testcases.agrd.dev/Filters/element-hiding-rules/test-element-hiding-rules.txt',
+            //     'title': 'Rules for element hiding rules test',
+            //     'trusted': false,
+            //     'enabled': true,
+            // },
+            // {
+            //     'customUrl': 'https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt',
+            //     'title': 'Rules for generic hide tests',
+            //     'trusted': true,
+            //     'enabled': true,
+            // },
         ],
         'user-filter': {
             'enabled': true,

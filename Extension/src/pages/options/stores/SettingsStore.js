@@ -852,6 +852,9 @@ class SettingsStore {
         }
 
         return selectedFilters
+            // TODO: Do not show custom filters in the list of filters, until
+            // we add them back. (AG-39385)
+            .filter(({ groupId }) => groupId !== AntibannerGroupsId.CustomFiltersGroupId)
             .filter((filter) => {
                 if (Number.isInteger(this.selectedGroupId)) {
                     return filter.groupId === this.selectedGroupId;

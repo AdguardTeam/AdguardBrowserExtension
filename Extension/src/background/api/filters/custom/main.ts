@@ -18,7 +18,7 @@
 import MD5 from 'crypto-js/md5';
 
 import { BrowserUtils } from '../../../utils/browser-utils';
-import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../../common/constants';
+import { CUSTOM_FILTERS_START_ID } from '../../../../common/constants';
 import { logger } from '../../../../common/logger';
 import { CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../../schema';
 import {
@@ -27,15 +27,14 @@ import {
     FiltersStorage,
     RawFiltersStorage,
     filterVersionStorage,
-    groupStateStorage,
 } from '../../../storages';
 import { network } from '../../network';
-import type { FilterUpdateOptions } from '../update';
 import { FilterParsedData, FilterParser } from '../parser';
 import { CustomFilterHelper } from '../../../../common/custom-filter-helper';
 import { type FilterMetadata } from '../main';
 
-import { CustomFilterLoader } from './loader';
+// TODO: Uncomment when custom filters will be supported for MV3 again
+// import { CustomFilterLoader } from './loader';
 
 /**
  * Data transfer object for {@link CustomFilterApi} methods.
@@ -185,96 +184,98 @@ export class CustomFilterApi {
      *
      * @returns Created filter metadata.
      */
-    public static async createFilter(filterData: CustomFilterDTO): Promise<CustomFilterMetadata> {
-        const { customUrl, trusted, enabled } = filterData;
+    // TODO: Uncomment when custom filters will be supported for MV3 again
+    // public static async createFilter(filterData: CustomFilterDTO): Promise<CustomFilterMetadata> {
+    //     const { customUrl, trusted, enabled } = filterData;
 
-        // download and parse custom filter data
-        const {
-            rawRules,
-            rules,
-            parsed,
-            checksum,
-        } = await CustomFilterApi.getRemoteFilterData(customUrl);
+    //     // download and parse custom filter data
+    //     const {
+    //         rawRules,
+    //         rules,
+    //         parsed,
+    //         checksum,
+    //     } = await CustomFilterApi.getRemoteFilterData(customUrl);
 
-        // create new filter id
-        const filterId = CustomFilterApi.genFilterId();
+    //     // create new filter id
+    //     const filterId = CustomFilterApi.genFilterId();
 
-        logger.info(`Create new custom filter with id ${filterId}`);
+    //     logger.info(`Create new custom filter with id ${filterId}`);
 
-        const name = filterData.title ? filterData.title : parsed.name;
+    //     const name = filterData.title ? filterData.title : parsed.name;
 
-        const {
-            description,
-            homepage,
-            expires,
-            timeUpdated,
-            version,
-            diffPath,
-        } = parsed;
+    //     const {
+    //         description,
+    //         homepage,
+    //         expires,
+    //         timeUpdated,
+    //         version,
+    //         diffPath,
+    //     } = parsed;
 
-        const filterMetadata: CustomFilterMetadata = {
-            filterId,
-            displayNumber: 0,
-            groupId: AntibannerGroupsId.CustomFiltersGroupId,
-            name,
-            description,
-            homepage,
-            version,
-            checksum,
-            tags: [0],
-            customUrl,
-            trusted,
-            expires: Number(expires),
-            timeUpdated: new Date(timeUpdated).getTime(),
-        };
+    //     const filterMetadata: CustomFilterMetadata = {
+    //         filterId,
+    //         displayNumber: 0,
+    //         groupId: AntibannerGroupsId.CustomFiltersGroupId,
+    //         name,
+    //         description,
+    //         homepage,
+    //         version,
+    //         checksum,
+    //         tags: [0],
+    //         customUrl,
+    //         trusted,
+    //         expires: Number(expires),
+    //         timeUpdated: new Date(timeUpdated).getTime(),
+    //     };
 
-        customFilterMetadataStorage.set(filterMetadata);
+    //     customFilterMetadataStorage.set(filterMetadata);
 
-        filterVersionStorage.set(filterId, {
-            version,
-            diffPath,
-            expires: filterMetadata.expires,
-            lastUpdateTime: filterMetadata.timeUpdated,
-            lastCheckTime: Date.now(),
-            lastScheduledCheckTime: Date.now(),
-        });
+    //     filterVersionStorage.set(filterId, {
+    //         version,
+    //         diffPath,
+    //         expires: filterMetadata.expires,
+    //         lastUpdateTime: filterMetadata.timeUpdated,
+    //         lastCheckTime: Date.now(),
+    //         lastScheduledCheckTime: Date.now(),
+    //     });
 
-        filterStateStorage.set(filterId, {
-            loaded: true,
-            installed: true,
-            enabled,
-        });
+    //     filterStateStorage.set(filterId, {
+    //         loaded: true,
+    //         installed: true,
+    //         enabled,
+    //     });
 
-        await FiltersStorage.set(filterId, rules);
-        await RawFiltersStorage.set(filterId, rawRules);
+    //     await FiltersStorage.set(filterId, rules);
+    //     await RawFiltersStorage.set(filterId, rawRules);
 
-        const group = groupStateStorage.get(filterMetadata.groupId);
+    //     const group = groupStateStorage.get(filterMetadata.groupId);
 
-        // If group has never been enabled - enables it.
-        if (group && !group.touched) {
-            groupStateStorage.enableGroups([filterMetadata.groupId]);
-        }
+    //     // If group has never been enabled - enables it.
+    //     if (group && !group.touched) {
+    //         groupStateStorage.enableGroups([filterMetadata.groupId]);
+    //     }
 
-        return filterMetadata;
-    }
+    //     return filterMetadata;
+    // }
 
     /**
      * Creates new custom filters from the passed DTO array.
      *
      * @param filtersData Array of {@link CustomFilterDTO}.
      */
-    public static async createFilters(filtersData: CustomFilterDTO[]): Promise<void> {
-        const tasks = filtersData.map((filterData) => CustomFilterApi.createFilter(filterData));
+    // TODO: Uncomment when custom filters will be supported for MV3 again
+    // public static async createFilters(filtersData: CustomFilterDTO[]): Promise<void> {
+    //     const tasks = filtersData.map((filterData) => CustomFilterApi.createFilter(filterData));
 
-        const promises = await Promise.allSettled(tasks);
+    //     const promises = await Promise.allSettled(tasks);
 
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                logger.error('Cannot create filter due to: ', promise.reason);
-            }
-        });
-    }
+    //     // Handles errors
+    //     promises.forEach((promise) => {
+    //         if (promise.status === 'rejected') {
+    //             logger.error('Cannot create filter due to: ', promise.reason);
+    //         }
+    //     });
+    // }
 
     /**
      * Updates custom filter data by id.
@@ -289,35 +290,36 @@ export class CustomFilterApi {
      * @returns Updated filter metadata or null, if filter is not existed
      * or new version is not available.
      */
-    public static async updateFilter(
-        filterUpdateOptions: FilterUpdateOptions,
-    ): Promise<CustomFilterMetadata | null> {
-        logger.info(`Update Custom filter ${filterUpdateOptions.filterId} ...`);
+    // TODO: Uncomment when custom filters will be supported for MV3 again
+    // public static async updateFilter(
+    //     filterUpdateOptions: FilterUpdateOptions,
+    // ): Promise<CustomFilterMetadata | null> {
+    //     logger.info(`Update Custom filter ${filterUpdateOptions.filterId} ...`);
 
-        const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOptions.filterId);
+    //     const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOptions.filterId);
 
-        if (!filterMetadata) {
-            logger.error(`Cannot find custom filter ${filterUpdateOptions.filterId} metadata`);
-            return null;
-        }
+    //     if (!filterMetadata) {
+    //         logger.error(`Cannot find custom filter ${filterUpdateOptions.filterId} metadata`);
+    //         return null;
+    //     }
 
-        const { customUrl } = filterMetadata;
+    //     const { customUrl } = filterMetadata;
 
-        const rawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
-        const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
-            customUrl,
-            rawFilter,
-            filterUpdateOptions.ignorePatches,
-        );
+    //     const rawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
+    //     const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
+    //         customUrl,
+    //         rawFilter,
+    //         filterUpdateOptions.ignorePatches,
+    //     );
 
-        if (!CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {
-            logger.info(`Custom filter ${filterUpdateOptions.filterId} is already updated`);
-            return null;
-        }
+    //     if (!CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {
+    //         logger.info(`Custom filter ${filterUpdateOptions.filterId} is already updated`);
+    //         return null;
+    //     }
 
-        logger.info(`Successfully update custom filter ${filterUpdateOptions.filterId}`);
-        return CustomFilterApi.updateFilterData(filterMetadata, filterRemoteData);
-    }
+    //     logger.info(`Successfully update custom filter ${filterUpdateOptions.filterId}`);
+    //     return CustomFilterApi.updateFilterData(filterMetadata, filterRemoteData);
+    // }
 
     /**
      * Removes custom filter data from storages,
@@ -539,28 +541,29 @@ export class CustomFilterApi {
      * @param force If true filter data will be downloaded directly, not through patches.
      * @returns Downloaded and parsed filter data.
      */
-    private static async getRemoteFilterData(
-        url: string,
-        rawFilter?: string,
-        force?: boolean,
-    ): Promise<GetRemoteCustomFilterResult> {
-        logger.info(`Get custom filter data from ${url}`);
+    // TODO: Uncomment when custom filters will be supported for MV3 again
+    // private static async getRemoteFilterData(
+    //     url: string,
+    //     rawFilter?: string,
+    //     force?: boolean,
+    // ): Promise<GetRemoteCustomFilterResult> {
+    //     logger.info(`Get custom filter data from ${url}`);
 
-        const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
+    //     const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
 
-        const parsed = FilterParser.parseFilterDataFromHeader(downloadResult.filter);
+    //     const parsed = FilterParser.parseFilterDataFromHeader(downloadResult.filter);
 
-        const { version } = parsed;
+    //     const { version } = parsed;
 
-        const checksum = !version || !BrowserUtils.isSemver(version)
-            ? CustomFilterApi.getChecksum(downloadResult.filter)
-            : null;
+    //     const checksum = !version || !BrowserUtils.isSemver(version)
+    //         ? CustomFilterApi.getChecksum(downloadResult.filter)
+    //         : null;
 
-        return {
-            rawRules: downloadResult.rawFilter,
-            rules: downloadResult.filter,
-            parsed,
-            checksum,
-        };
-    }
+    //     return {
+    //         rawRules: downloadResult.rawFilter,
+    //         rules: downloadResult.filter,
+    //         parsed,
+    //         checksum,
+    //     };
+    // }
 }
