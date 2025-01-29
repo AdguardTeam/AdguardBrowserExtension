@@ -38,6 +38,7 @@ import {
     NEWLINE_CHAR_UNIX,
     NEWLINE_CHAR_REGEX,
 } from '../../../../common/constants';
+import { getFirstNonDisabledElement } from '../../utils/dom';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
@@ -313,20 +314,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             return;
         }
 
-        const actions = actionsEl.querySelectorAll('button, label');
-        for (let i = 0; i < actions.length; i += 1) {
-            const action = actions[i];
-
-            if (
-                action instanceof HTMLElement
-                && (!('disabled' in action) || !action.disabled)
-            ) {
-                // Before focusing on element we need to add info about shortcut
-                // so Screen Reader can tell user that editor can be closed with Escape
-                action.ariaKeyShortcuts = 'Escape';
-                action.focus();
-                break;
-            }
+        const firstNonDisabledButton = getFirstNonDisabledElement(actionsEl, '.actions__btn');
+        if (firstNonDisabledButton) {
+            // Before focusing on element we need to add info about shortcut
+            // so Screen Reader can tell user that editor can be closed with Escape
+            firstNonDisabledButton.ariaKeyShortcuts = 'Escape';
+            firstNonDisabledButton.focus();
         }
     };
 

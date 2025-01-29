@@ -35,6 +35,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { exportData, ExportTypes } from '../../../common/utils/export';
+import { getFirstNonDisabledElement } from '../../../common/utils/dom';
 import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { DynamicRulesLimitsWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
@@ -162,20 +163,12 @@ const Allowlist = observer(() => {
             return;
         }
 
-        const buttons = actionsEl.querySelectorAll('.actions__btn');
-        for (let i = 0; i < buttons.length; i += 1) {
-            const button = buttons[i];
-
-            if (
-                button instanceof HTMLElement
-                && (!('disabled' in button) || !button.disabled)
-            ) {
-                // Before focusing on element we need to add info about shortcut
-                // so Screen Reader can tell user that editor can be closed with Escape
-                button.ariaKeyShortcuts = 'Escape';
-                button.focus();
-                break;
-            }
+        const firstNonDisabledButton = getFirstNonDisabledElement(actionsEl, '.actions__btn');
+        if (firstNonDisabledButton) {
+            // Before focusing on element we need to add info about shortcut
+            // so Screen Reader can tell user that editor can be closed with Escape
+            firstNonDisabledButton.ariaKeyShortcuts = 'Escape';
+            firstNonDisabledButton.focus();
         }
     };
 

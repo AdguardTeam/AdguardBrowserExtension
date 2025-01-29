@@ -20,6 +20,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { translator } from '../../../../common/translators/translator';
+import { getFirstNonDisabledElement } from '../../../common/utils/dom';
 import { rootStore } from '../../stores/RootStore';
 
 export interface SkipToContentButtonProps {
@@ -47,19 +48,9 @@ export const SkipToContentButton = observer(({ mainRef }: SkipToContentButtonPro
             [tabindex]:not([tabindex="-1"]),
             [contenteditable="true"]`;
 
-        const focusableElements = mainEl.querySelectorAll(focusableSelector);
-
-        // focus on first non-disabled element
-        for (let i = 0; i < focusableElements.length; i += 1) {
-            const element = focusableElements[i];
-
-            if (
-                element instanceof HTMLElement
-                && (!('disabled' in element) || !element.disabled)
-            ) {
-                element.focus();
-                break;
-            }
+        const firstNonDisabledElement = getFirstNonDisabledElement(mainEl, focusableSelector);
+        if (firstNonDisabledElement) {
+            firstNonDisabledElement.focus();
         }
     };
 
