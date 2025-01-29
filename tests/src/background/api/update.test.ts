@@ -23,6 +23,7 @@ import {
     getStorageFixturesV7,
     getStorageFixturesV8,
     getStorageFixturesV9,
+    getStorageFixturesV10,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -51,6 +52,7 @@ describe('Update Api', () => {
         const v7 = getStorageFixturesV7(expires);
         const v8 = getStorageFixturesV8(expires);
         const v9 = getStorageFixturesV9(expires);
+        const v10 = getStorageFixturesV10(expires);
 
         let setMultipleSpy: MockInstance;
 
@@ -106,15 +108,16 @@ describe('Update Api', () => {
             expect(settingsSchema.parse(settings)).toStrictEqual(settingsSchema.parse(data.to));
         };
 
-        it.each(getCases(v0, v9))('should update from v0 to v9', runCase);
-        it.each(getCases(v1, v9))('should update from v1 to v9', runCase);
-        it.each(getCases(v2, v9))('should update from v2 to v9', runCase);
-        it.each(getCases(v3, v9))('should update from v3 to v9', runCase);
-        it.each(getCases(v4, v9))('should update from v4 to v9', runCase);
-        it.each(getCases(v5, v9))('should update from v5 to v9', runCase);
-        it.each(getCases(v6, v9))('should update from v6 to v9', runCase);
-        it.each(getCases(v7, v9))('should update from v7 to v9', runCase);
-        it.each(getCases(v8, v9))('should update from v8 to v9', runCase);
+        it.each(getCases(v0, v10))('should update from v0 to v10', runCase);
+        it.each(getCases(v1, v10))('should update from v1 to v10', runCase);
+        it.each(getCases(v2, v10))('should update from v2 to v10', runCase);
+        it.each(getCases(v3, v10))('should update from v3 to v10', runCase);
+        it.each(getCases(v4, v10))('should update from v4 to v10', runCase);
+        it.each(getCases(v5, v10))('should update from v5 to v10', runCase);
+        it.each(getCases(v6, v10))('should update from v6 to v10', runCase);
+        it.each(getCases(v7, v10))('should update from v7 to v10', runCase);
+        it.each(getCases(v8, v10))('should update from v8 to v10', runCase);
+        it.each(getCases(v9, v10))('should update from v9 to v10', runCase);
 
         // Separate test for migration from V3 storage, because after this
         // version we moved from localStorage to hybridStorage.

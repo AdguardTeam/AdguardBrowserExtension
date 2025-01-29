@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cosmetic rules injecting into `about:blank` iframes in MV2.
 - Shortened name translation in `pt_BR` locale [#3075].
 - Allowlisted stealth rules are not shown in the filtering log [#2950].
+- `$removeparam` incorrectly removes parameters from encoded URLs [#3076].
 
 [#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
 [#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020
@@ -39,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3014]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3014
 [#3075]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3075
 [#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
+[#3076]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
 
 ## [Unreleased] <!-- master -->
 
@@ -54,8 +56,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.49...HEAD
 
-<!-- TODO: add date if released -->
-## 5.0.185
+## [5.0.188]
+
+### Changed
+
+- Scriptlet rules are not limited to ones from the pre-built filters.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.11.
+
+### Removed
+
+- AdGuard Quick Fixes filter.
+- Custom filters are not available temporarily.
+
+[5.0.188]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.188
+
+## [5.0.185] - 2025-01-22
 
 ## Added
 
@@ -69,6 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Injection of remotely hosted scripts.
+
+[5.0.185]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.185
 
 ## [5.0.183] - 2025-01-14
 

@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FilterUpdateApi, QuickFixesRulesApi } from '../api';
+import { FilterUpdateApi } from '../api';
 import { browserStorage } from '../storages';
 import { isNumber } from '../../common/guards';
 import { logger } from '../../common/logger';
@@ -88,7 +88,8 @@ export class FilterUpdateService {
         if (shouldCheckUpdates) {
             try {
                 if (__IS_MV3__) {
-                    await QuickFixesRulesApi.updateQuickFixesFilter();
+                    // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
+                    // await QuickFixesRulesApi.updateQuickFixesFilter();
                 } else {
                     await FilterUpdateApi.autoUpdateFilters();
                 }

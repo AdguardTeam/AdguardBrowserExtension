@@ -19,7 +19,6 @@ import { SettingsApi, SettingsData } from '../../../../Extension/src/background/
 import { App } from '../../../../Extension/src/background/app';
 import {
     ExtensionSpecificSettingsOption,
-    FiltersOption,
     RootOption,
     SettingOption,
 } from '../../../../Extension/src/background/schema';
@@ -34,7 +33,6 @@ import {
     getExportedSettingsProtocolV2Fixture,
     getImportedSettingsFromV1Fixture,
     mockLocalStorage,
-    filterNameFixture,
     getSettingsV1,
     getExportedSettingsV2,
 } from '../../../helpers';
@@ -185,7 +183,8 @@ describe('Settings Api', () => {
 
             const importedSettingsString = await SettingsApi.export();
             // Fill up optional fields
-            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+            // TODO: Uncomment this when we will return custom filters (AG-39385).
+            // userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
             expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
         }, EXTENDED_TIMEOUT_MS);
 
