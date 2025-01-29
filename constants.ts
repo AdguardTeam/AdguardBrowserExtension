@@ -78,5 +78,5 @@ export const MIN_SUPPORTED_VERSION = {
     CHROMIUM: 106,
     FIREFOX: 78,
     FIREFOX_MOBILE: 113,
-    OPERA: 66,
+    OPERA: 82,
 };

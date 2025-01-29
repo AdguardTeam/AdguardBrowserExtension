@@ -458,5 +458,6 @@ pnpm locales info
 | Chromium-based browsers MV3 | ✅ 121  |
 | Firefox                     | ✅ 78   |
 | Firefox Mobile              | ✅ 113  |
-| Opera                       | ✅ 66   |
+| Opera                       | ✅ 82   |
+| Edge Chromium               | ✅ 106   |
 | Edge Legacy                 | ❌      |
