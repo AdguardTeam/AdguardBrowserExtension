@@ -34,6 +34,7 @@ import {
     SCRIPTLETS_VENDOR_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
+    SUBSCRIBE_OUTPUT,
 } from '../../constants';
 
 import {
@@ -42,6 +43,7 @@ import {
     CONTENT_SCRIPT_START_PATH,
     htmlTemplatePluginCommonOptions,
     SAFEBROWSING_PATH,
+    SUBSCRIBE_PATH,
     type BrowserConfig,
 } from './common-constants';
 import { genCommonConfig } from './webpack.common';
@@ -76,6 +78,12 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
             },
             [CONTENT_SCRIPT_START_OUTPUT]: {
                 import: path.resolve(CONTENT_SCRIPT_START_PATH, 'mv2.ts'),
+                runtime: false,
+            },
+            // Subscribe to custom filters works only for MV2 version, since MV3
+            // doesn't support any kind of scripts due to CWS policy.
+            [SUBSCRIBE_OUTPUT]: {
+                import: SUBSCRIBE_PATH,
                 runtime: false,
             },
         },

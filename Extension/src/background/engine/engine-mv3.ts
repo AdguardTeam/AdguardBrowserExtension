@@ -24,6 +24,7 @@ import {
     Configuration,
     TsWebExtension,
     type MessagesHandlerMV3,
+    type LocalScriptFunctionData,
 } from '@adguard/tswebextension/mv3';
 
 import { logger } from '../../common/logger';
@@ -34,23 +35,60 @@ import {
     AllowlistApi,
     UserRulesApi,
     SettingsApi,
-    CustomFilterApi,
     toasts,
     filteringLogApi,
     CommonFilterApi,
-    QuickFixesRulesApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
-import { FiltersStorage } from '../storages';
 import { emptyPreprocessedFilterList } from '../../common/constants';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
-import { localScriptletRules } from '../../../filters/chromium-mv3/local_scriptlet_rules';
 
 import { TsWebExtensionEngine } from './interface';
 
 // Because this file is already MV3 replacement module, we can import directly
 // from mv3 tswebextension without using aliases.
 export type { Message as EngineMessage } from '@adguard/tswebextension/mv3';
+
+/**
+ * Raw local script rules data where key is a script rule text.
+ */
+type RawLocalScriptRulesData = {
+    [key: string]: {
+        /**
+         * Unique identifier of the local script rule.
+         */
+        uniqueId: string;
+
+        /**
+         * Local script rule function.
+         */
+        func: () => void;
+    };
+};
+
+/**
+ * Prepares local script rules for the engine.
+ *
+ * @param rawLocalScriptRules Raw local script rules data previously built from the pre-built filters.
+ *
+ * @returns Local script rules for the engine.
+ */
+const prepareLocalScriptRules = (rawLocalScriptRules: RawLocalScriptRulesData): LocalScriptFunctionData => {
+    const result: LocalScriptFunctionData = {};
+
+    Object.keys(rawLocalScriptRules).forEach((key) => {
+        const data = rawLocalScriptRules[key];
+        if (
+            typeof data !== 'undefined'
+            && typeof data.func === 'function'
+        ) {
+            const { func } = data;
+            result[key] = func;
+        }
+    });
+
+    return result;
+};
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
@@ -95,14 +133,13 @@ export class Engine implements TsWebExtensionEngine {
      */
     async start(): Promise<void> {
         /**
-         * By the rules of Chrome Web Store, we cannot use remote scripts (and our JS rules can be counted as such).
+         * By the rules of Chrome Web Store, we cannot use remote remotely hosted scripts, thats why we prebuild them.
          *
          * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
          *
          * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
          */
-        TsWebExtension.setLocalScriptRules(localScriptRules);
-        TsWebExtension.setLocalScriptletRules(localScriptletRules);
+        TsWebExtension.setLocalScriptRules(prepareLocalScriptRules(localScriptRules));
 
         const configuration = await Engine.getConfiguration();
 
@@ -199,26 +236,29 @@ export class Engine implements TsWebExtensionEngine {
             trusted: true,
         };
 
-        if (QuickFixesRulesApi.isEnabled()) {
-            Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
-        }
+        // TODO Uncomment this block when Quick Fixes filter will be supported for MV3
+        // if (QuickFixesRulesApi.isEnabled()) {
+        //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
+        // }
 
-        const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
-            .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
+        // TODO: uncomment code bellow when custom filters support will be added back
+        // const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
+        //     .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
-        const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-            const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
+        // const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
+        //     const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
 
-            return {
-                filterId,
-                trusted,
-                ...(preprocessedFilterList || emptyPreprocessedFilterList),
-            };
-        }));
+        //     return {
+        //         filterId,
+        //         trusted,
+        //         ...(preprocessedFilterList || emptyPreprocessedFilterList),
+        //     };
+        // }));
 
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
-            customFilters,
+            // TODO: revert to actual customFilters when their support will be added back
+            customFilters: [],
             quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA),
             logLevel: logger.currentLevel,

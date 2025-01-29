@@ -476,29 +476,8 @@ export const getStorageFixturesV8 = (expires: number): StorageData[] => {
             return settings;
         }
 
-        const adgSettings = settings['adguard-settings'] as any;
-        const filtersStateData = adgSettings['filters-state'];
+        settings = removeQuickFixesFilter(settings);
 
-        if (typeof filtersStateData !== 'string') {
-            throw new Error('Cannot read filters state data');
-        }
-
-        const filtersState = zod.record(
-            zod.string(),
-            zod.object({
-                enabled: zod.boolean(),
-                installed: zod.boolean(),
-                loaded: zod.boolean(),
-            }),
-        ).parse(JSON.parse(filtersStateData));
-
-        // Deprecated AdGuard Quick Fixes filter which should be removed.
-        const deprecatedAdGuardQuickFixesFilterId = 24;
-        delete filtersState[deprecatedAdGuardQuickFixesFilterId];
-
-        adgSettings['filters-state'] = JSON.stringify(filtersState);
-        settings['adguard-settings'] = adgSettings;
-        settings['raw_filterrules_24.txt'] = undefined;
         settings['schema-version'] = 8;
 
         return settings;
@@ -550,4 +529,53 @@ export const getStorageFixturesV9 = (expires: number): StorageData[] => {
 
         return settings;
     });
+};
+
+export const getStorageFixturesV10 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV9 = getStorageFixturesV9(expires);
+
+    return storageSettingsFixturesV9.map((settings) => {
+        // For MV2 we need to change schema version only.
+        if (!__IS_MV3__) {
+            settings['schema-version'] = 10;
+            return settings;
+        }
+
+        settings = removeQuickFixesFilter(settings);
+
+        settings['schema-version'] = 10;
+
+        return settings;
+    });
+};
+
+const removeQuickFixesFilter = (settings: StorageData): StorageData => {
+    const adgSettings = settings['adguard-settings'] as any;
+    const filtersStateData = adgSettings['filters-state'];
+
+    if (typeof filtersStateData !== 'string') {
+        throw new Error('Cannot read filters state data');
+    }
+
+    const filtersState = zod.record(
+        zod.string(),
+        zod.object({
+            enabled: zod.boolean(),
+            installed: zod.boolean(),
+            loaded: zod.boolean(),
+        }),
+    ).parse(JSON.parse(filtersStateData));
+
+    // Quick fixes filter was disabled in MV3 to comply with CWR policies.
+    // TODO: remove code totally later.
+
+    // Deprecated AdGuard Quick Fixes filter which should be removed.
+    const deprecatedAdGuardQuickFixesFilterId = 24;
+    delete filtersState[deprecatedAdGuardQuickFixesFilterId];
+
+    adgSettings['filters-state'] = JSON.stringify(filtersState);
+    settings['adguard-settings'] = adgSettings;
+    delete settings['raw_filterrules_24.txt'];
+
+    return settings;
 };

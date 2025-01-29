@@ -185,7 +185,7 @@ export class NetworkSettings {
      * @returns The url from which filters can be downloaded.
      */
     // eslint-disable-next-line class-methods-use-this
-    get filtersUrl(): string {
+    get filtersUrl(): string | null {
         // first of all check whether it is mv3-build
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
         if (__IS_MV3__) {
@@ -222,7 +222,7 @@ export class NetworkSettings {
              * package and can be reviewed there. These safeguards can be found by
              * searching for 'JS_RULES_EXECUTION'.
              */
-            return `${this.filtersRulesBaseUrl}/chromium-mv3`;
+            return null;
         }
 
         if (UserAgent.isFirefox) {
@@ -241,21 +241,25 @@ export class NetworkSettings {
     }
 
     /**
-     * Returns URL for downloading AG filters.
+     * Returns URL for downloading AG filters or null if downloading
+     * is not allowed.
      *
-     * @returns URL for downloading AG filters.
+     * @returns URL for downloading AG filters or null if downloading
+     * is not allowed.
      */
-    get filterRulesUrl(): string {
-        return `${this.filtersUrl}/filters/{filter_id}.txt`;
+    get filterRulesUrl(): string | null {
+        return !this.filtersUrl ? null : `${this.filtersUrl}/filters/{filter_id}.txt`;
     }
 
     /**
-     * Returns URL for downloading optimized AG filters.
+     * Returns URL for downloading optimized AG filters or null if downloading
+     * is not allowed.
      *
-     * @returns URL for downloading optimized AG filters.
+     * @returns URL for downloading optimized AG filters or null if downloading
+     * is not allowed.
      */
-    get optimizedFilterRulesUrl(): string {
-        return `${this.filtersUrl}/filters/{filter_id}_optimized.txt`;
+    get optimizedFilterRulesUrl(): string | null {
+        return !this.filtersUrl ? null : `${this.filtersUrl}/filters/{filter_id}_optimized.txt`;
     }
 
     /**

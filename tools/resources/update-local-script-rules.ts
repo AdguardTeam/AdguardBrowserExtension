@@ -32,17 +32,16 @@ import { promises as fs } from 'node:fs';
 import { exec as execCallback } from 'node:child_process';
 import { promisify } from 'node:util';
 import assert from 'node:assert';
+import crypto from 'node:crypto';
 
 import { minify } from 'terser';
 import * as _ from 'lodash';
 
 import {
-    type AnyCosmeticRule,
     CosmeticRuleParser,
     CosmeticRuleType,
     FilterListParser,
     RuleCategory,
-    RuleConverter,
     defaultParserOptions,
 } from '@adguard/agtree';
 
@@ -66,11 +65,6 @@ const LF = '\n';
  * File where JS rules from the pre-built filters are saved.
  */
 const LOCAL_SCRIPT_RULES_FILE_NAME = 'local_script_rules.js';
-
-/**
- * File where Scriptlet rules from the pre-built filters are saved.
- */
-const LOCAL_SCRIPTLET_RULES_FILE_NAME = 'local_scriptlet_rules.js';
 
 /**
  * Extracts AG_ function name from the code.
@@ -136,7 +130,7 @@ const updateLocalScriptRulesForBrowser = async (browser: AssetsFiltersBrowser) =
             if (
                 // TODO: use imported enum instead of strings
                 ruleNode.category === 'Cosmetic'
-                && (ruleNode.type === 'ScriptletInjectionRule' || ruleNode.type === 'JsInjectionRule')
+                && ruleNode.type === 'JsInjectionRule'
             ) {
                 // Re-generate raw body to make it consistent with TSUrlFilter rule instances
                 // (TSUrlFilter also re-generates body from AST in the cosmetic rule constructor)
@@ -183,6 +177,44 @@ const beautifyComment = (rawComment: string): string => {
     return `/**
 ${rawComment.split(LF).map((line) => (line ? ` * ${line}` : ' *')).join(LF)}
  */`;
+};
+
+/**
+ * Calculates unique ID for the text.
+ *
+ * @param text Text to calculate unique ID for.
+ *
+ * @returns Unique ID.
+ */
+const calculateUniqueId = (text: string): string => {
+    return crypto.createHash('md5').update(text).digest('hex');
+};
+
+/**
+ * Wraps the script code with a try-catch block and a check to avoid multiple executions of it.
+ *
+ * @param uniqueId Unique ID for the script.
+ * @param code Script code.
+ *
+ * @returns Wrapped script code.
+ */
+const wrapScriptCode = (uniqueId: string, code: string): string => {
+    return `
+        try {
+            const flag = 'done';
+            if (Window.prototype.toString["${uniqueId}"] !== flag) {
+                ${code}
+                Object.defineProperty(Window.prototype.toString, "${uniqueId}", {
+                    value: flag,
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
+        } catch (error) {
+            console.error('Error executing AG js rule with uniqueId "${uniqueId}" due to: ' + error);
+        }
+    `;
 };
 
 /**
@@ -298,10 +330,17 @@ export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>)
                 processedCode = `${requiredFunctions.join(LF)}${LF}${rule}`;
             }
 
-            // wrap the code into try-catch block
-            processedCode = `try {
-                ${processedCode}
-            } catch(e) { console.error('Error executing AG js: ' + e) }`;
+            /**
+             * Unique ID is needed to prevent multiple execution of the same script.
+             *
+             * It may happen when script rules are being applied on WebRequest.onResponseStarted
+             * and WebNavigation.onCommitted events which are independent of each other,
+             * so we need to make sure that the script is executed only once.
+             */
+            const uniqueId = calculateUniqueId(rule);
+
+            // wrap the code with a try-catch block with extra checking to avoid multiple executions
+            processedCode = wrapScriptCode(uniqueId, processedCode);
 
             // eslint-disable-next-line no-await-in-loop
             const minified = await minify(processedCode, {
@@ -315,7 +354,12 @@ export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>)
             });
 
             if (minified.code) {
-                processedRules.push(`${ruleKey}: () => {${minified.code}}`);
+                processedRules.push(
+                    `${ruleKey}: {
+                        uniqueId: '${uniqueId}',
+                        func: () => {${minified.code}},
+                    }`,
+                );
             } else {
                 errors.push(`Was not able to minify rule: ${rule}`);
             }
@@ -332,121 +376,12 @@ export const localScriptRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
     await saveToJsFile(jsFileContent, LOCAL_SCRIPT_RULES_FILE_NAME);
 };
 
-/**
- * Updates `local_scriptlet_rules.js` for Chromium MV3 based on Scriptlet rules from the pre-built filters.
- *
- * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
- *
- * This is STEP 1.2.
- *
- * @param scriptletRules Set of unique scriptlet rules collected from the pre-built filters.
- */
-export const updateLocalScriptletRulesForChromiumMv3 = async (scriptletRules: Set<string>) => {
-    /**
-     * This is a test case rules that is used for integration testing.
-     * It should be added explicitly to the list of rules.
-     *
-     * @see {@link https://testcases.agrd.dev/Filters/scriptlet-rules/test-scriptlet-rules.txt}
-     * @see {@link https://testcases.agrd.dev/Filters/scriptlet-rules/allowlist-specific/test-scriptlet-allowlist-specific-rules.txt}
-     * @see {@link https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt}
-     */
-    const TESTCASES_RULES = [
-        // https://testcases.agrd.dev/Filters/scriptlet-rules/test-scriptlet-rules.txt
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-on-property-write", "__testCase1")',
-        'testcases.agrd.dev,pages.dev##+js(abort-on-property-write.js, __testCase2)',
-        'testcases.agrd.dev,pages.dev#$#abort-on-property-write __testCase3',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-current-inline-script", "__testCase4")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-current-inline-script", "__testCase5")',
-        'testcases.agrd.dev,pages.dev#$#abort-current-inline-script __testCase6',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-current-inline-script", "__testCase7.__AG")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-current-inline-script", "__testCase8", "Case8")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("abort-on-property-read", "propReadCaseAG")',
-        'testcases.agrd.dev,pages.dev##+js(abort-on-property-read.js, propReadCaseUBO)',
-        'testcases.agrd.dev,pages.dev#$#abort-on-property-read propReadCaseABP',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("nowebrtc")',
-        // eslint-disable-next-line max-len
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-addEventListener", "/^(?:click|focus)$/", "preventListenerCaseAG")',
-        'testcases.agrd.dev,pages.dev##+js(addEventListener-defuser.js, click, preventListenerCaseUBO)',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-bab")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-setInterval", "setIntervalAGSyntax")',
-        'testcases.agrd.dev,pages.dev##+js(setInterval-defuser.js, setIntervalUBOSyntax)',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-setTimeout", "setTimeoutAGSyntax")',
-        'testcases.agrd.dev,pages.dev##+js(setTimeout-defuser.js, setTimeoutUBOSyntax)',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "setConstantAGSyntax", "true")',
-        'testcases.agrd.dev,pages.dev##+js(set-constant.js, setConstantUBOSyntax, true)',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "trueProp", "true")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "falseProp", "false")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "undefinedProp", "undefined")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "nullProp", "null")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "noopFuncProp", "noopFunc")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "trueFuncProp", "trueFunc")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "falseFuncProp", "falseFunc")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "numberProp", "111")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "emptyStringProp", "")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "illegalNumberProp", "32768")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-window-open", "1", "window1")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-window-open", "1", "/window2/")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-window-open", "0", "window")',
-        'testcases.agrd.dev,pages.dev##+js(window.open-defuser.js, 0, window4)',
-        'testcases.agrd.dev,pages.dev##+js(window.open-defuser.js, 0, anyOther)',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-eval-if", "preventIfTest")',
-        'testcases.agrd.dev,pages.dev##+js(noeval-if.js, preventIfTest1)',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("remove-cookie")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-popads-net")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("trusted-set-cookie", "__Host-prefix", "host_prefix")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("trusted-set-cookie", "__Secure-prefix", "secure_prefix")',
-        // https://testcases.agrd.dev/Filters/scriptlet-rules/allowlist-specific/test-scriptlet-allowlist-specific-rules.txt
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "firstVal", "true")',
-        'testcases.agrd.dev,pages.dev#@%#//scriptlet("set-constant", "firstVal", "false")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "secondVal", "true")',
-        'testcases.agrd.dev,pages.dev#@%#//scriptlet("set-constant", "secondVal", "true")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("set-constant", "testVal", "true")',
-        'testcases.agrd.dev,pages.dev#%#//scriptlet("prevent-eval-if", "preventIfTest")',
-        'testcases.agrd.dev,pages.dev#@%#//scriptlet("prevent-eval-if")',
-        // https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt
-        "testcases.agrd.dev,pages.dev#%#//scriptlet('log', 'scriptlet rule is executed')",
-    ];
-
-    TESTCASES_RULES.forEach((rawRule) => {
-        const parsedRule = CosmeticRuleParser.parse(rawRule);
-        if (!parsedRule
-            || parsedRule.category !== RuleCategory.Cosmetic
-            || parsedRule.type !== CosmeticRuleType.ScriptletInjectionRule) {
-            throw new Error('Invalid test rule, expected Scriptlet rule');
-        }
-        const agRule = RuleConverter.convertToAdg(parsedRule);
-        const reGeneratedRule = CosmeticRuleParser.generateBody(agRule.result[0] as AnyCosmeticRule);
-        scriptletRules.add(reGeneratedRule);
-    });
-
-    const processedRules: string[] = [];
-    const errors: string[] = [];
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const rule of scriptletRules) {
-        try {
-            const ruleKey = JSON.stringify(rule);
-            processedRules.push(`${ruleKey}: true`);
-        } catch (error) {
-            errors.push(
-                `Skipping invalid rule: ${rule}; Error: ${error instanceof Error ? error.message : String(error)}`,
-            );
-        }
-    }
-
-    const jsFileContent = `${beautifyComment(LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3)}
-export const localScriptletRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
-
-    await saveToJsFile(jsFileContent, LOCAL_SCRIPTLET_RULES_FILE_NAME);
-};
-
 export const updateLocalResourcesForChromiumMv3 = async () => {
     const folder = FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3);
     const filterFiles = await fs.readdir(folder);
     const rawTxtFiles = filterFiles.filter((file) => file.endsWith('.txt') && file.startsWith('filter_'));
 
     const jsRules: Set<string> = new Set();
-    const scriptletRules: Set<string> = new Set();
 
     // eslint-disable-next-line no-restricted-syntax
     for (const file of rawTxtFiles) {
@@ -467,19 +402,10 @@ export const updateLocalResourcesForChromiumMv3 = async () => {
                 const rawBody = CosmeticRuleParser.generateBody(ruleNode);
                 jsRules.add(rawBody);
             }
-
-            if (
-                ruleNode.category === RuleCategory.Cosmetic
-                && ruleNode.type === CosmeticRuleType.ScriptletInjectionRule
-            ) {
-                const rawBody = CosmeticRuleParser.generateBody(ruleNode);
-                scriptletRules.add(rawBody);
-            }
         });
     }
 
     await updateLocalScriptRulesForChromiumMv3(jsRules);
-    await updateLocalScriptletRulesForChromiumMv3(scriptletRules);
 };
 
 export const updateLocalScriptRulesForFirefox = async () => {

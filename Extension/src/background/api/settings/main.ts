@@ -54,7 +54,6 @@ import {
     UserRulesApi,
     AllowlistApi,
     annoyancesConsent,
-    QuickFixesRulesApi,
 } from '../filters';
 import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
 import { settingsEvents } from '../../events';
@@ -507,10 +506,13 @@ export class SettingsApi {
 
     /**
      * Imports filters settings from object of {@link FiltersConfig}.
+     * Ignoring custom filters since AG-39385.
+     * TODO: uncomment when custom filters will be supported for MV3.
      */
     private static async importFilters({
         [FiltersOption.EnabledFilters]: enabledFilters,
         [FiltersOption.EnabledGroups]: enabledGroups,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         [FiltersOption.CustomFilters]: customFilters,
         [FiltersOption.UserFilter]: userFilter,
         [FiltersOption.Allowlist]: allowlist,
@@ -523,14 +525,16 @@ export class SettingsApi {
         if (__IS_MV3__) {
             await SettingsApi.loadBuiltInFiltersMv3(builtInFilters);
 
+            // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
             // forcibly enable Quick Fixes filter on import for MV3
             // because it is a must-have filter
-            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             await SettingsApi.loadBuiltInFiltersMv2(builtInFilters);
         }
 
-        await CustomFilterApi.createFilters(customFilters);
+        // TODO: Uncomment this block when custom filters will be supported for MV3
+        // await CustomFilterApi.createFilters(customFilters);
 
         groupStateStorage.enableGroups(enabledGroups);
 

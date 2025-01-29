@@ -36,7 +36,6 @@ import {
     FiltersApi,
     HitStatsApi,
     PageStatsApi,
-    QuickFixesRulesApi,
 } from '../../api';
 import { settingsEvents } from '../../events';
 import { SettingOption } from '../../schema';
@@ -262,7 +261,8 @@ export class FiltersService {
         // For quick fixes filter we have special logic with partially updating
         // metadata and then load filter from remote.
         if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
-            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
+            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
         }
