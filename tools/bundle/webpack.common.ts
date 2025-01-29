@@ -35,7 +35,6 @@ import {
 import { updateLocalesMSGName } from '../helpers';
 import {
     WEB_ACCESSIBLE_RESOURCES_OUTPUT,
-    SUBSCRIBE_OUTPUT,
     CONTENT_SCRIPT_END_OUTPUT,
     OPTIONS_OUTPUT,
     POST_INSTALL_OUTPUT,
@@ -69,7 +68,6 @@ import {
     OPTIONS_PATH,
     POPUP_PATH,
     POST_INSTALL_PATH,
-    SUBSCRIBE_PATH,
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf } from './helpers';
@@ -123,10 +121,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             },
             [CONTENT_SCRIPT_END_OUTPUT]: {
                 import: CONTENT_SCRIPT_END_PATH,
-                runtime: false,
-            },
-            [SUBSCRIBE_OUTPUT]: {
-                import: SUBSCRIBE_PATH,
                 runtime: false,
             },
             [THANKYOU_OUTPUT]: {

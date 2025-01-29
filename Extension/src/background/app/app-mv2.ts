@@ -55,7 +55,6 @@ import {
     FiltersService,
     AllowlistService,
     UserRulesService,
-    CustomFiltersService,
     FilteringLogService,
     eventService,
     DocumentBlockService,
@@ -220,7 +219,8 @@ export class App {
         await FiltersService.init();
 
         // Adds listeners specified for custom filters
-        CustomFiltersService.init();
+        // TODO: Uncomment this class when custom filters will be supported for MV3.
+        // CustomFiltersService.init();
 
         // Adds listeners for allowlist events
         AllowlistService.init();
