@@ -159,7 +159,7 @@ export class UpdateApi {
     /**
      * Run data migration from schema v9 to schema v10.
      *
-     * For the extension update to v5.0.187.
+     * For the extension update to v5.0.188.
      *
      * For MV2 version we will run empty migration since we don't need
      * to do anything, just increase the schema version.

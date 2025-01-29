@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 
-## [5.0.187] - 2025-01-29
+## [5.0.188] - 2025-01-29
 
 ### Changed
 
@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AdGuard Quick Fixes filter.
 - Custom filters are not available temporarily.
 
-[5.0.187]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.187
+[5.0.188]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.188
 
 ## [5.0.185] - 2025-01-22
 
