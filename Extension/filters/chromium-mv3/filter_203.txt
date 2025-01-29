@@ -1,14 +1,14 @@
-! Checksum: U0KSUoNgwgINPQUHuoC/DA
+! Checksum: e/+a83CNrBu88c29iSq4qg
 ! Title: Hungarian filter
 ! Description: Hufilter. Filter list that specifically removes ads on websites in the Hungarian language.
-! Version: 2.0.3.28
-! TimeUpdated: 2025-01-09T21:01:39+00:00
+! Version: 2.0.3.32
+! TimeUpdated: 2025-01-29T01:01:27+00:00
 ! Expires: 10 days (update frequency)
 !
-! Checksum: QAIYw1atrmcWN+IjA/EVrQ
-! OriginalVersion: 202501091134
+! Checksum: 8FV1P/kgnhSrDEevtk6RRg
+! OriginalVersion: 202501281036
 ! Title: Hufilter for AdGuard
-! Last modified: 09 Jan 2025 11:34 UTC
+! Last modified: 28 Jan 2025 10:36 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://hufilter.hu
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -1569,6 +1569,8 @@ csaladinet.hu###cikkajanlo
 csaladinet.hu###CookieAcceptLayer
 csupasport.hu##.enews-article-content .endless-shared-area
 cyberpress.hu###cookie-law-info-bar
+! https://github.com/hufilter/hufilter/issues/511
+e-cegjegyzek.hu###suti_uzenet
 egeszsegkalauz.hu###articleOfferFlag
 ! https://github.com/hufilter/hufilter/issues/248
 egeszsegkalauz.hu###pe_confirm_optin_1
@@ -1778,7 +1780,7 @@ infostart.hu#?##sitemodal:has(.fb-button)
 ||medinfo.ocdn.eu/hu/consent_v2/choice.js^$script,domain=egeszsegkalauz.hu
 ||quantcast.mgr.consensu.org^$script,domain=agrarszektor.hu|autoszektor.hu|bpiautosok.hu|g7.hu|hazipatika.com|hellovidek.hu|hrportal.hu|magyarnarancs.hu|index.hu|pestisracok.hu|portfolio.hu|telex.hu|totalcar.hu|totalbike.hu|szeretlekmagyarorszag.hu|port.hu|player.hu|mandiner.hu|budapestkornyeke.hu|bacsmegye.hu|civishir.hu|baon.hu|bama.hu|beol.hu|boon.hu|delmagyar.hu|duol.hu|feol.hu|kisalfold.hu|haon.hu|heol.hu|szoljon.hu|kemma.hu|nool.hu|sonline.hu|szon.hu|teol.hu|vaol.hu|veol.hu|zaol.hu|twice.hu|sassy.hu|pcwplus.hu|gsplus.hu|myonlineradio.hu|blikk.hu
 ||static.quantcast.mgr.consensu.org/v30/cmpui-popup.js^$script,domain=szeretlekmagyarorszag.hu
-||cmp.inmobi.com^$third-party,script,domain=telex.hu|origo.hu|atlatszo.hu|rtl.hu|videa.hu|myonlineradio.hu|hvg.hu|femina.hu|prohardver.hu|itcafe.hu|mobilarena.hu|gamepod.hu|logout.hu|fototrend.hu
+||cmp.inmobi.com^$third-party,script,domain=telex.hu|origo.hu|atlatszo.hu|rtl.hu|videa.hu|myonlineradio.hu|hvg.hu|femina.hu|prohardver.hu|itcafe.hu|mobilarena.hu|gamepod.hu|logout.hu|fototrend.hu|hardverapro.hu
 !-------------------------------------------------------------------------------!
 !------ Generic network filters ------------------------------------------------!
 !-------------------------------------------------------------------------------!
@@ -1914,6 +1916,7 @@ mandiner.hu#%#//scriptlet('remove-class', 'modal-open', 'body', 'stay')
 mindmegette.hu#%#//scriptlet('remove-attr', 'href', '[href*="ad.adverticum.net"]')
 ! https://github.com/hufilter/hufilter/issues/8
 napiszar.com#%#//scriptlet('abort-current-inline-script', 'document.createElement', 'setTimeout')
+otpportalok.hu#%#//scriptlet('remove-class', 'body', 'no_scroll', 'complete')
 traffihunter.hu#%#//scriptlet('remove-class', 'darken', 'body')
 vezess.hu#%#//scriptlet('prevent-addEventListener', 'mouseleave', 'showFbPopup')
 vezess.hu#%#//scriptlet('prevent-setTimeout', 'FbExit', '3000')
@@ -1932,6 +1935,7 @@ hetek.hu###nyeremenyModal
 kektura.hu###cookie-consent-dialog
 ! https://github.com/hufilter/hufilter/issues/11
 filmvilag.me##[style]:has(.adslot_1)
+otpportalok.hu###pop_1:has(> .suti)
 ! This section file contains rules for bypassing anti-adblock protections.
 ! The rules in this section should be AdGuard-specific, but cross-compabible rules are also allowed, if they are
 ! not working properly without the AdGuard-specific rules.

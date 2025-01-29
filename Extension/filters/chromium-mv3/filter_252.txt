@@ -1,14 +1,14 @@
-! Checksum: m86aWgHW4/87eC0ew7bAGA
+! Checksum: eIqxppvzlPd6hqyBYiecSA
 ! Title: Dandelion Sprout's Serbo-Croatian List
 ! Description: A filter list for websites in Serbian, Montenegrin, Croatian, and Bosnian.
-! Version: 2.0.0.55
-! TimeUpdated: 2024-11-14T21:02:10+00:00
+! Version: 2.0.0.56
+! TimeUpdated: 2025-01-22T17:02:11+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏀 Dandelion Sprout's Serbo-Croatian filters
 ! Title 🇭🇷 🇧🇦: Srpskohrvatski filtri Dandelion Sprouta
 ! Title 🇷🇸: Српскохрватски филтери Dandelion Sprout-а
-! OriginalVersion: 14November2024v1-Beta
+! OriginalVersion: 22January2025v2-Beta
 ! Expires: 3 days
 ! Description: For the first time in known history, this is a filterlist for websites in Serbian, Montenegrin, Croatian, and Bosnian. This means that all significant language groups in Europe now have filterlists for them.
 ! Description 🇭🇷: Prvi put u povijesti dostupna je lista filtara za web-lokacije na srpskom, hrvatskom, bosanskom i crnogorskom. Sad sve veće skupine jezika u Europi imaju svoje liste.
@@ -267,6 +267,8 @@ arhivanalitika.hr##div[data-href*="blog.bon.hr/"]
 rtl.hr##.banner
 net.hr##.article__listalica
 tportal.hr##.banner
+24sata.hr##.js_admiralAdsReplacement
+24sata.hr##.js_bannerInArticle
 ||glasistre.hr/SliderBanner^
 ||avalaads.com^$third-party
 ||linker.hr^
@@ -309,49 +311,52 @@ tportal.hr##.banner
 ||cxpublic.com^$third-party
 ! ——————————
 ! Generic entries with sources
-! 24sataHR, vecernjiHR (19/10/2020)
+! 24sataHR, vecernjiHR (19. 10. 2020.)
 ##.fold_home__pasica_banner:not(html,body,:empty)
-! bit•me (11/11/2020)
+! bit•me (11. 11. 2020.)
 /image/baneri^$image
-! dan•co•me (11/11/2020)
+! dan•co•me (11. 11. 2020.)
 ###googleglava
 ###googledesnovertikalna
 ###googleispodteksta
 ###googledolje
-! pravdaRS (11/11/2020)
+! pravdaRS (11. 11. 2020.)
 /avala-press/*
-! planplusRS (11/11/2020)
+! planplusRS (11. 11. 2020.)
 /ad-space-right.html^
 /bannerright/*
 /MicroBanner^
-! avazBA (22/03/2022)
+! avazBA (22. 3. 2022.)
 ##.reklama-na-indexu:not(html,body,:empty)
-! sasomangeRS (27/03/2022)
+! sasomangeRS (27. 3. 2022.)
 ##.homepage-top-google-banner:not(html,body,:empty)
-! https://stvarukusa•mondo•rs/posna-jela/post-na-ulju/a35058/Posne-palacinke•html (27/03/2022)
+! https://stvarukusa•mondo•rs/posna-jela/post-na-ulju/a35058/Posne-palacinke•html (27. 3. 2022.)
 ##.js-gpt-ad:not(html,body,:empty)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/126965
 @@||sodalive.ba^$generichide
 sodalive.ba##.widget-ad-image
 sodalive.ba##section[data-settings]:first-of-type
-! tuzlanskiBA (15/01/2023)
+! tuzlanskiBA (15. 1. 2023.)
 ##.banner-izdvojeno:not(html,body,:empty)
-! pvportalME (29/03/2023), dalmacijadanasHR
+! pvportalME (29. 3. 2023.), dalmacijadanasHR
 ##.elementor-widget-smartmag-codes:not(html,body,:empty)
-! pulsonlineRS, zena•blic•rs (21/05/2023)
+! pulsonlineRS, zena•blic•rs (21. 5. 2023.)
 ##.banner__placeholder:not(html,body,:empty)
-! snizenjaBA (17/06/2023)
+! snizenjaBA (17. 6. 2023.)
 ||ba/images/banners^
-! telegramHR (26/10/2023)
+! telegramHR (26. 10. 2023.)
 ! (lalibreBE)
 ##.cxenseignore:not(html,body,:empty,[id])
-! https://vecer•com/pogledi/pogled-izza-meje-mejne-kontrole-v-rimu-ocitno-mislijo-da-lahko-s-slovenijo-pocnejo-kar-se-jim-zljubi-10342894 (28/10/2023)
+! https://vecer•com/pogledi/pogled-izza-meje-mejne-kontrole-v-rimu-ocitno-mislijo-da-lahko-s-slovenijo-pocnejo-kar-se-jim-zljubi-10342894 (28/10/2023.)
 ##div[data-ocm-ad]
-! vinoRS (03/11/2023)
+! vinoRS (3. 11. 2023.)
 ||rs/images/banners^
-! glasistreHR (13/11/2023)
+! glasistreHR (13. 11. 2023.)
 ||hr/content/banner^
 ||hr/Portal/Banner?
+! https://github.com/AdguardTeam/AdguardFilters/issues/196848 (22. 1. 2025.)
+##div.lesnina_widget
+/scripts/admiral_widget.min.js^$~third-party
 ! ——————————
 ! Whitelistings to fix sites
 @@||ads.api.24ur.si/adserver/adblock.$subdocument

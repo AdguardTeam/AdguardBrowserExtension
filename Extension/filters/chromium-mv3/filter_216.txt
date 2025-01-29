@@ -1,8 +1,8 @@
-! Checksum: NQcumYTR8cNvPg6EX58ulQ
+! Checksum: dXpQaaBM1ApoPG3YkUIS7A
 ! Title: Official Polish filters for AdBlock, uBlock Origin & AdGuard
 ! Description: Additional filter list for websites in Polish.
-! Version: 2.0.15.69
-! TimeUpdated: 2025-01-14T17:01:35+00:00
+! Version: 2.0.15.71
+! TimeUpdated: 2025-01-24T13:01:35+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Official Polish Filters for AdBlock, uBlock Origin & AdGuard
@@ -13,9 +13,9 @@
 ! Works best with EasyList - be sure to subscribe it as well!
 ! Działa najlepiej z EasyList - pamiętaj aby zasubskrybować!
 !   Patronite ==> https://patronite.pl/polskiefiltry
-! Last modified: 14 January 2025
+! Last modified: 24 January 2025
 ! Expires: 1 day
-! OriginalVersion: 2025011401
+! OriginalVersion: 2025012401
 ! Support:
 !   Email >> errorsfilters@certyficate.it
 !   Github >> https://github.com/MajkiIT/polish-ads-filter/issues
@@ -23,7 +23,7 @@
 ! License: https://creativecommons.org/licenses/by-nc-sa/4.0/
 ! Copyright © 2025 Certyficate IT
 ! Najnowsza wersja zawsze na: https://www.certyficate.it/adblock
-! v.2025011401 aktualizacja: wt, 14 stycznia 2025, 16:05:00
+! v.2025012401 aktualizacja: ptk, 24 stycznia 2025, 14:00:00
 !
 !
 !1#-----------------------General advert blocking filters-----------------------!
@@ -3026,6 +3026,7 @@ przegladsportowy.onet.pl##aside[class^="Rectangle_placeholderRectangle__"]
 przegladsportowy.onet.pl##aside[class^="FlatBoxLeft_"]
 przegladsportowy.onet.pl##aside[class^="FlatBoxRight_"]
 przegladsportowy.onet.pl##aside[class^="Left_placeholderLeft_"]
+przegladsportowy.onet.pl##.onet-ad.dlapi-placeholder
 www.auto-swiat.pl,www.komputerswiat.pl,businessinsider.com.pl,facet.onet.pl,fakt.pl,gotowanie.onet.pl,kobieta.onet.pl,kodyrabatowe.onet.pl,kultura.onet.pl,magia.onet.pl,plejada.pl,podroze.onet.pl,pogoda.onet.pl,wiadomosci.onet.pl,zapytaj.onet.pl##.adsContainer, .adPlaceholder, .ad-placeholder, .asideAds, .dlapi-placeholder.onet-ad, .placeholder.onet-ad, #onet-ad-flat-belkagorna, #extraAdsBlock, #googleAdsCont
 przekrojlokalny.pl##.banner_zone
 przemysl24.pl###banner-top, .fbaner
@@ -3249,6 +3250,9 @@ sci24.pl##.g-dyn
 scie24.pl##A[target="blank_"] > IMG[src^="/uploads/baners/"]
 se.pl,poradnikzdrowie.pl,eska.pl##.zpr_m_inside_top.active, div[class*="zpr_m_inside"].active, div[class*="zpr_inside"].active, div[class*="zpr_box"].active > div[class*="zpr_"]
 se.pl,~sport.se.pl,~www.se.pl,~superseriale.se.pl##.video
+www.se.pl##.zpr_box_side_1_noscroll
+www.se.pl##.zpr_box_top_1
+www.se.pl##.zpr_box_inside_1
 seciki.pl##.crek
 sejny.net##.l-box--25.l-box, .l-box > p > A
 sekrety-zdrowia.org##[class^="rekwrap"]
@@ -4389,6 +4393,7 @@ zywiecinfo.pl##[href*="/component/banners/click/"]
 ||burdaffi.burdadigital.pl^
 ||businessclick.*/$script
 ||buzz.give5.pl^
+||burdaffi.burdamedia.pl/script/$script
 ||czasdzieci.pl/b-2-d-2/r1234/$image
 ||cdnt.onnetwork.tv/bra/$image
 ||cda.pl/player.php
@@ -5140,6 +5145,10 @@ mecz.tv,ipilka.info##[class$="_right"]
 ||www.wykop.pl/img/campaign/$image,domain=www.wykop.pl
 ||www.wykop.pl/*/adblock_$image
 ||wykop.pl/adverts^
+||wykop.pl/paylink/emiter/$image,domain=www.wykop.pl
+||wykop.pl/tracker
+||wykop.pl/api/v*/ads
+@@||wykop.pl/api/v*/ads/redirect$~third-party
 streamable.com##.stm-ad-player
 wykop.pl##a[href*="wykop.pl/tracker"]
 wykop.pl###autopromotion
@@ -5157,13 +5166,10 @@ wykop.pl#?#li.link:has(a[href*='wykop.pl/market'])
 wykop.pl#?#li.link:has(a[href*='wykop.pl/paylink'])
 wykop.pl#?#li.link:has(a[href*='wykop.pl/reklama'])
 wykop.pl##.m-hide.screening
-||wykop.pl/paylink/emiter/$image,domain=www.wykop.pl
 wykop.pl#?#.r-block:has(a[href*="wykop.pl/tracker"])
 wykop.pl##.screening-displace.r-block
-||wykop.pl/tracker
 wykop.pl###wpladbottom, .stm-ad-player
 wykop.pl##.m-hide.m-reset-width.m-reset-margin.m-reset-float.grid-right > div.r-block > div > A > IMG
-||wykop.pl/api/v*/ads
 wykop.pl##.pub-slot-wrapper
 wykop.pl##.ski-jumping-slider
 !
@@ -6135,7 +6141,7 @@ filmy69.pl#?#li.videoblock iframe[id][src*="/www/delivery/"]:upward(li)
 filmyporno.tv###playerOverlay
 !
 ! trojmiasto.pl
-/v\.s\-trojmiasto\.pl\/flv\/\d+/\d+.*(peugeot|preroll|_muz_).*960x\.mp4$/$media,redirect=noopmp4-1s,domain=trojmiasto.com|trojmiasto.com.bd|trojmiasto.com.np|trojmiasto.pl|trojmiasto.us
+/v\.s\-trojmiasto\.pl\/flv\/\d+/\d+.*(peugeot|preroll|_muz_).*960x\.mp4$/$media,redirect=noopmp4-1s,domain=trojmiasto.biz|trojmiasto.com|trojmiasto.com.bd|trojmiasto.com.np|trojmiasto.info|trojmiasto.it|trojmiasto.net|trojmiasto.pl
 !
 ! tekstowo.pl
 tekstowo.pl#@##advSong
