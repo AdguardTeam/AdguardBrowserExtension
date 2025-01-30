@@ -19,17 +19,16 @@
 /**
  * Retrieves first non-disabled element from parent element
  *
- * @param parent Parent element to search for elements
- * @param selector Selector elements
+ * @param root Root element to search for descendant elements
+ * @param selectors Descendants selector
  * @returns First non-disabled element or null if not found
  */
 export function getFirstNonDisabledElement(
-    parent: HTMLElement,
-    selector: string,
+    root: HTMLElement,
+    selectors: string,
 ): HTMLElement | null {
-    const elements = parent.querySelectorAll(selector);
+    const elements = root.querySelectorAll(selectors);
 
-    // focus on first non-disabled element
     for (let i = 0; i < elements.length; i += 1) {
         const element = elements[i];
 
@@ -37,7 +36,6 @@ export function getFirstNonDisabledElement(
             element instanceof HTMLElement
             && (!('disabled' in element) || !element.disabled)
         ) {
-            element.focus();
             return element;
         }
     }
