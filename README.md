@@ -161,7 +161,6 @@ pnpm test:integration <MODE> [-d <TEST_ID>]
 # TEST_ID can be extracted from https://testcases.agrd.dev/data.json
 ```
 
-
 Run the following command to build the dev version:
 
 ```shell
@@ -459,5 +458,5 @@ pnpm locales info
 | Firefox                     | ✅ 78   |
 | Firefox Mobile              | ✅ 113  |
 | Opera                       | ✅ 82   |
-| Edge Chromium               | ✅ 106   |
+| Edge Chromium               | ✅ 106  |
 | Edge Legacy                 | ❌      |
