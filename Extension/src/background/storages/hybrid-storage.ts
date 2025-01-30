@@ -5,7 +5,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import * as idb from 'idb';
+import { openDB, deleteDB } from 'idb';
 import { isObject } from 'lodash-es';
 
 import { ExtendedStorageInterface } from '../../common/storage';
@@ -69,9 +69,9 @@ export class HybridStorage implements ExtendedStorageInterface<string, unknown, 
     private static async isIDBSupported(): Promise<boolean> {
         try {
             const testDbName = `${TEST_IDB_NAME_PREFIX}${nanoid()}`;
-            const testDb = await idb.openDB(testDbName, 1);
+            const testDb = await openDB(testDbName, 1);
             testDb.close();
-            await idb.deleteDB(testDbName);
+            await deleteDB(testDbName);
             return true;
         } catch (e) {
             return false;

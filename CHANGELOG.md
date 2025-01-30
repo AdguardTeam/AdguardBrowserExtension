@@ -5,16 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased <!-- version 5.1 -->
+## [5.1.X] Unreleased <!-- version 5.1 -->
 
 ### Added
 
-- Unsafe dynamic rules limit for MV3.
+- Unsafe dynamic rules limit for MV3 with value 5000.
 
 ### Changed
 
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
+- Updated [@adguard/agtree] to v3.0.0-alpha.3.
+- Updated [@adguard/tsurlfilter] to v3.1.0-alpha.8.
+- Updated [@adguard/tswebextension] to v3.0.0-alpha.1.
 
 ### Fixed
 
@@ -36,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3075]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3075
 [#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
 [#3076]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
+[5.1.X]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
 
 ## [Unreleased] <!-- master -->
 

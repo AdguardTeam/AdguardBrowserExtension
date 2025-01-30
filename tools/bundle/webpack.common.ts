@@ -23,7 +23,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-// Define plugin is not named exported by webpack.
+// webpack.DefinePlugin is not named exported by webpack.
 import webpack, { Configuration, type EntryObject } from 'webpack';
 
 import {
@@ -55,6 +55,7 @@ import {
     AGTREE_VENDOR_OUTPUT,
     CSS_TOKENIZER_VENDOR_OUTPUT,
     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+    BACKGROUND_OUTPUT,
 } from '../../constants';
 
 import {
@@ -81,6 +82,52 @@ const config = getEnvConf(BUILD_ENV);
 
 const OUTPUT_PATH = config.outputPath;
 
+/**
+ * Separately described chunks for large entry points to avoid missing some
+ * chunk dependencies in the final bundle, because we list chunks in two places:
+ * - `entry.dependOn` option,
+ * - `HtmlWebpackPlugin.chunks` option.
+ */
+export const ENTRY_POINTS_CHUNKS = {
+    [BACKGROUND_OUTPUT]: [
+        TSWEBEXTENSION_VENDOR_OUTPUT,
+        TSURLFILTER_VENDOR_OUTPUT,
+        SCRIPTLETS_VENDOR_OUTPUT,
+        AGTREE_VENDOR_OUTPUT,
+        CSS_TOKENIZER_VENDOR_OUTPUT,
+        TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+    ],
+    [OPTIONS_OUTPUT]: [
+        SCRIPTLETS_VENDOR_OUTPUT,
+        TSURLFILTER_VENDOR_OUTPUT,
+        CSS_TOKENIZER_VENDOR_OUTPUT,
+        AGTREE_VENDOR_OUTPUT,
+        REACT_VENDOR_OUTPUT,
+        MOBX_VENDOR_OUTPUT,
+        XSTATE_VENDOR_OUTPUT,
+        SHARED_EDITOR_OUTPUT,
+    ],
+    [FILTERING_LOG_OUTPUT]: [
+        SCRIPTLETS_VENDOR_OUTPUT,
+        TSURLFILTER_VENDOR_OUTPUT,
+        AGTREE_VENDOR_OUTPUT,
+        CSS_TOKENIZER_VENDOR_OUTPUT,
+        TSWEBEXTENSION_VENDOR_OUTPUT,
+        TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+        REACT_VENDOR_OUTPUT,
+        MOBX_VENDOR_OUTPUT,
+        XSTATE_VENDOR_OUTPUT,
+    ],
+    [FULLSCREEN_USER_RULES_OUTPUT]: [
+        CSS_TOKENIZER_VENDOR_OUTPUT,
+        AGTREE_VENDOR_OUTPUT,
+        REACT_VENDOR_OUTPUT,
+        MOBX_VENDOR_OUTPUT,
+        XSTATE_VENDOR_OUTPUT,
+        SHARED_EDITOR_OUTPUT,
+    ],
+};
+
 export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = false): Configuration => {
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
     const manifestVersion = browserConfig.browser === Browser.ChromeMv3 ? 3 : 2;
@@ -88,21 +135,19 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
     const configuration: Configuration = {
         mode: config.mode,
         target: 'web',
+        stats: 'verbose',
         optimization: {
             minimize: false,
             runtimeChunk: 'single',
+            usedExports: true,
+            sideEffects: true,
         },
         cache: isDev,
         devtool: isDev ? 'eval-source-map' : false,
         entry: {
             [OPTIONS_OUTPUT]: {
                 import: OPTIONS_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    SHARED_EDITOR_OUTPUT,
-                ],
+                dependOn: ENTRY_POINTS_CHUNKS[OPTIONS_OUTPUT],
             },
             [POPUP_OUTPUT]: {
                 import: POPUP_PATH,
@@ -129,26 +174,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             },
             [FULLSCREEN_USER_RULES_OUTPUT]: {
                 import: FULLSCREEN_USER_RULES_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    SHARED_EDITOR_OUTPUT,
-                ],
+                dependOn: ENTRY_POINTS_CHUNKS[FULLSCREEN_USER_RULES_OUTPUT],
             },
             [FILTERING_LOG_OUTPUT]: {
                 import: FILTERING_LOG_PATH,
-                dependOn: [
-                    SCRIPTLETS_VENDOR_OUTPUT,
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    AGTREE_VENDOR_OUTPUT,
-                    CSS_TOKENIZER_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                ],
+                dependOn: ENTRY_POINTS_CHUNKS[FILTERING_LOG_OUTPUT],
             },
             [SHARED_EDITOR_OUTPUT]: {
                 import: EDITOR_PATH,
@@ -156,19 +186,15 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     REACT_VENDOR_OUTPUT,
                 ],
             },
-            [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
-            [MOBX_VENDOR_OUTPUT]: ['mobx'],
-            [XSTATE_VENDOR_OUTPUT]: ['xstate'],
-            [SCRIPTLETS_VENDOR_OUTPUT]: ['@adguard/scriptlets'],
+            // Library vendors
             [TSURLFILTER_VENDOR_OUTPUT]: {
                 import: '@adguard/tsurlfilter',
                 dependOn: [
+                    AGTREE_VENDOR_OUTPUT,
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
                     SCRIPTLETS_VENDOR_OUTPUT,
                 ],
             },
-            [CSS_TOKENIZER_VENDOR_OUTPUT]: ['@adguard/css-tokenizer'],
-            [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
-            [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: ['text-encoding'],
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
                 dependOn: [
@@ -177,6 +203,13 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                 ],
             },
+            [SCRIPTLETS_VENDOR_OUTPUT]: ['@adguard/scriptlets'],
+            [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
+            [CSS_TOKENIZER_VENDOR_OUTPUT]: ['@adguard/css-tokenizer'],
+            [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: ['text-encoding'],
+            [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
+            [MOBX_VENDOR_OUTPUT]: ['mobx'],
+            [XSTATE_VENDOR_OUTPUT]: ['xstate'],
         },
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
@@ -186,20 +219,22 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             modules: [
                 'node_modules',
 
-                // By default, package managers like Yarn and NPM create a flat structure in the `node_modules` folder,
-                // placing all dependencies directly in the root `node_modules`.
-                // For instance, when we install `@adguard/agtree` in this project, both it and its dependency,
-                // `@adguard/css-tokenizer`, are typically placed in the root `node_modules` folder.
-                //
-                // However, pnpm follows a different, nested structure where dependencies are stored
-                // under `node_modules/.pnpm/node_modules`.
-                // This structure helps reduce duplication but also means that dependencies of dependencies
-                // are not directly accessible in the root.
-                //
-                // As a result, Webpack may fail to resolve these "nested" dependencies in pnpm's setup,
-                // since they are not in the root `node_modules`.
-                // To ensure Webpack can locate dependencies correctly in a pnpm project,
-                // we add `node_modules/.pnpm/node_modules` to the module resolution path as a fallback.
+                /**
+                 * By default, package managers like Yarn and NPM create a flat structure in the `node_modules` folder,
+                 * placing all dependencies directly in the root `node_modules`.
+                 * For instance, when we install `@adguard/agtree` in this project, both it and its dependency,
+                 * `@adguard/css-tokenizer`, are typically placed in the root `node_modules` folder.
+                 *
+                 * However, pnpm follows a different, nested structure where dependencies are stored
+                 * under `node_modules/.pnpm/node_modules`.
+                 * This structure helps reduce duplication but also means that dependencies of dependencies
+                 * are not directly accessible in the root.
+                 *
+                 * As a result, Webpack may fail to resolve these "nested" dependencies in pnpm's setup,
+                 * since they are not in the root `node_modules`.
+                 * To ensure Webpack can locate dependencies correctly in a pnpm project,
+                 * we add `node_modules/.pnpm/node_modules` to the module resolution path as a fallback.
+                 */
                 'node_modules/.pnpm/node_modules',
             ],
             fallback: {
@@ -334,14 +369,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 template: path.join(OPTIONS_PATH, 'index.html'),
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
-                    SCRIPTLETS_VENDOR_OUTPUT,
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    CSS_TOKENIZER_VENDOR_OUTPUT,
-                    AGTREE_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    SHARED_EDITOR_OUTPUT,
+                    ...ENTRY_POINTS_CHUNKS[OPTIONS_OUTPUT],
                     OPTIONS_OUTPUT,
                 ],
             }),
@@ -362,12 +390,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
-                    CSS_TOKENIZER_VENDOR_OUTPUT,
-                    AGTREE_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
-                    SHARED_EDITOR_OUTPUT,
+                    ...ENTRY_POINTS_CHUNKS[FULLSCREEN_USER_RULES_OUTPUT],
                     FULLSCREEN_USER_RULES_OUTPUT,
                 ],
             }),
@@ -376,15 +399,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 template: path.join(FILTERING_LOG_PATH, 'index.html'),
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
-                    SCRIPTLETS_VENDOR_OUTPUT,
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    CSS_TOKENIZER_VENDOR_OUTPUT,
-                    AGTREE_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
-                    REACT_VENDOR_OUTPUT,
-                    MOBX_VENDOR_OUTPUT,
-                    XSTATE_VENDOR_OUTPUT,
+                    ...ENTRY_POINTS_CHUNKS[FILTERING_LOG_OUTPUT],
                     FILTERING_LOG_OUTPUT,
                 ],
             }),

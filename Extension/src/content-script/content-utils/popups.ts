@@ -16,15 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import {
-    ShowAlertPopupMessage,
-    ShowVersionUpdatedPopupMessage,
+    type ShowAlertPopupMessage,
+    type ShowVersionUpdatedPopupMessage,
+    type ShowRuleLimitsAlertMessage,
     sendMessage,
     MessageType,
-    ShowRuleLimitsAlertMessage,
 } from '../../common/messages';
-import { SettingOption } from '../../background/schema/settings';
+import { SettingOption } from '../../background/schema/settings/enum';
 
-import { Alerts, AppendAlertElementProps } from './alerts';
+import { Alerts, type AppendAlertElementProps } from './alerts';
 import { Elements } from './elements';
 
 // !Important! Direct import to avoid side effects on tree shaking.

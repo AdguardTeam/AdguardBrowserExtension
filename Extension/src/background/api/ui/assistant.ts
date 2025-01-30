@@ -29,14 +29,15 @@ export class AssistantApi {
     static async openAssistant(): Promise<void> {
         const activeTab = await TabsApi.getActive();
 
-        if (activeTab?.id) {
-            try {
-                engine.api.openAssistant(activeTab.id);
-            } catch (e) {
-                logger.warn('Cannot open assistant in active tab due to: ', e);
-            }
-        } else {
+        if (!activeTab?.id) {
             logger.warn('Cannot open assistant in active tab');
+            return;
+        }
+
+        try {
+            await engine.api.openAssistant(activeTab.id);
+        } catch (e) {
+            logger.warn('Cannot open assistant in active tab due to: ', e);
         }
     }
 }

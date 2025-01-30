@@ -29,7 +29,7 @@ import {
 import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { FILTER_KEY_PREFIX, SbCache } from '../../../../Extension/src/background/storages';
 import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
-import { SettingOption } from '../../../../Extension/src/background/schema/settings/main';
+import { SettingOption } from '../../../../Extension/src/background/schema/settings/enum';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 
 vi.mock('../../../../Extension/src/background/engine');

@@ -63,6 +63,28 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
         throw new Error('commonConfig.output.path is undefined');
     }
 
+    const transformManifest = (content: Buffer) => {
+        const filters = fs
+            .readdirSync(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3))
+            .filter((filter) => filter.match(/filter_\d+\.txt/));
+
+        return updateManifestBuffer(
+            BUILD_ENV,
+            browserConfig.browser,
+            content,
+            rulesetsInjector.applyRulesets(
+                (id) => `filters/declarative/${id}/${id}.json`,
+                chromeMv3Manifest,
+                filters,
+                {
+                    forceUpdate: true,
+                    enable: [BASE_FILTER_ID],
+                    rulesetPrefix: RULESET_NAME_PREFIX,
+                },
+            ),
+        );
+    };
+
     const chromeMv3Config: Configuration = {
         devtool: BUILD_ENV === 'dev' ? 'inline-source-map' : false,
         entry: {
@@ -85,27 +107,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
                     {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
-                        transform: (content) => {
-                            const filters = fs
-                                .readdirSync(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3))
-                                .filter((filter) => filter.match(/filter_\d+\.txt/));
-
-                            return updateManifestBuffer(
-                                BUILD_ENV,
-                                browserConfig.browser,
-                                content,
-                                rulesetsInjector.applyRulesets(
-                                    (id) => `filters/declarative/${id}/${id}.json`,
-                                    chromeMv3Manifest,
-                                    filters,
-                                    {
-                                        forceUpdate: true,
-                                        enable: [BASE_FILTER_ID],
-                                        rulesetPrefix: RULESET_NAME_PREFIX,
-                                    },
-                                ),
-                            );
-                        },
+                        transform: transformManifest,
                     },
                     {
                         context: 'Extension',

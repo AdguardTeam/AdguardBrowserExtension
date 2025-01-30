@@ -15,8 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Windows } from 'webextension-polyfill';
-import { z } from 'zod';
+
+/**
+ * Important: do not use z.inferOf, because it brings a lot of side effects with
+ * many dependencies to the bundle.
+ *
+ * Also please try, if possible, to not import here external modules
+ * other that types.
+ */
+import { type Windows } from 'webextension-polyfill';
 
 import { type ForwardFrom } from '../forward';
 import type {
@@ -42,19 +49,16 @@ import type { GetAllowlistDomainsResponse } from '../../background/services/allo
 import type { GetUserRulesEditorDataResponse, GetUserRulesResponse } from '../../background/services/userrules';
 import type { GetCustomFilterInfoResult } from '../../background/api';
 
-import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from './schema';
-
-/**
- * Message types used for message passing between extension contexts
- * (popup, filtering log, content scripts, background)
- */
-
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 
 export type MessageCommonProps = {
     handlerName: typeof APP_MESSAGE_HANDLER_NAME;
 };
 
+/**
+ * Message types used for message passing between extension contexts
+ * (popup, filtering log, content scripts, background)
+ */
 export enum MessageType {
     CreateEventListener = 'createEventListener',
     RemoveListener = 'removeListener',
@@ -571,9 +575,19 @@ export type ShowVersionUpdatedPopupMessage = {
     }
 };
 
-export type CanEnableStaticFilterMv3Message = z.infer<typeof canEnableStaticFilterSchema>;
+export type CanEnableStaticFilterMv3Message = {
+    type: MessageType.CanEnableStaticFilterMv3,
+    data: {
+        filterId: number,
+    }
+};
 
-export type CanEnableStaticGroupMv3Message = z.infer<typeof canEnableStaticGroupSchema>;
+export type CanEnableStaticGroupMv3Message = {
+    type: MessageType.CanEnableStaticGroupMv3,
+    data: {
+        groupId: number,
+    }
+};
 
 export type CurrentLimitsMv3Message = {
     type: MessageType.CurrentLimitsMv3;

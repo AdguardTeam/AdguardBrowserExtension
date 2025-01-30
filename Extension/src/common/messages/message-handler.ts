@@ -20,11 +20,11 @@ import browser, { Runtime } from 'webextension-polyfill';
 import { type EngineMessage } from 'engine';
 
 import {
-    MessageType,
-    Message,
-    ExtractedMessage,
-    ValidMessageTypes,
-    ExtractMessageResponse,
+    type MessageType,
+    type Message,
+    type ExtractedMessage,
+    type ValidMessageTypes,
+    type ExtractMessageResponse,
     APP_MESSAGE_HANDLER_NAME,
 } from './constants';
 

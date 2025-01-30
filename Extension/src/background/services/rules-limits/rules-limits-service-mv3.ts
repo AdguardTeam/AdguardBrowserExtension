@@ -42,12 +42,11 @@ import { filterStateStorage, settingsStorage } from '../../storages';
 import { rulesLimitsStorage } from '../../storages/rules-limits';
 import { rulesLimitsStorageDataValidator } from '../../schema/rules-limits';
 import { logger } from '../../../common/logger';
-import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from '../../../common/messages/schema';
 // Note: due to circular dependencies, import message-handler.ts after all
 // other imports.
 import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
-import { SettingOption } from '../../schema/settings/main';
+import { SettingOption } from '../../schema/settings/enum';
 
 import type {
     StaticLimitsCheckResult,
@@ -768,8 +767,6 @@ export class RulesLimitsService {
      * @returns Promise that resolves with the result of the check — {@link StaticLimitsCheckResult}.
      */
     private async canEnableStaticFilter(message: CanEnableStaticFilterMv3Message): Promise<StaticLimitsCheckResult> {
-        canEnableStaticFilterSchema.parse(message);
-
         const { filterId } = message.data;
 
         if (CustomFilterApi.isCustomFilter(filterId)) {
@@ -874,8 +871,6 @@ export class RulesLimitsService {
      * @returns Promise that resolves with the result of the check.
      */
     private async canEnableStaticGroup(message: CanEnableStaticGroupMv3Message): Promise<StaticLimitsCheckResult> {
-        canEnableStaticGroupSchema.parse(message);
-
         const { groupId } = message.data;
 
         const group = Categories.getGroupState(groupId);

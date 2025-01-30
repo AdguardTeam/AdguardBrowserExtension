@@ -23,8 +23,9 @@ import {
     MESSAGE_HANDLER_NAME,
     Configuration,
     TsWebExtension,
+    type MessageHandler,
+    type Message as EngineMessage,
     type ConfigurationResult,
-    type MessagesHandlerMV3,
     type LocalScriptFunctionData,
 } from '@adguard/tswebextension/mv3';
 
@@ -43,14 +44,12 @@ import {
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
 import { emptyPreprocessedFilterList } from '../../common/constants';
-import { SettingOption } from '../schema/settings/main';
+import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 
-import { TsWebExtensionEngine } from './interface';
+import { type TsWebExtensionEngine } from './interface';
 
-// Because this file is already MV3 replacement module, we can import directly
-// from mv3 tswebextension without using aliases.
-export type { Message as EngineMessage } from '@adguard/tswebextension/mv3';
+export { type EngineMessage };
 
 /**
  * Raw local script rules data where key is a script rule text.
@@ -101,7 +100,7 @@ const prepareLocalScriptRules = (rawLocalScriptRules: RawLocalScriptRulesData): 
 export class Engine implements TsWebExtensionEngine {
     readonly api: TsWebExtension;
 
-    readonly handleMessage: MessagesHandlerMV3;
+    readonly handleMessage: MessageHandler;
 
     private static readonly UPDATE_TIMEOUT_MS = 1000;
 

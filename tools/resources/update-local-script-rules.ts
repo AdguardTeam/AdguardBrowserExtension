@@ -37,12 +37,12 @@ import crypto from 'node:crypto';
 import { minify } from 'terser';
 import { some } from 'lodash-es';
 
+import { CosmeticRuleType, RuleCategory } from '@adguard/agtree';
 import {
     CosmeticRuleParser,
-    CosmeticRuleType,
-    RuleCategory,
-} from '@adguard/agtree';
-import { defaultParserOptions, FilterListParser } from '@adguard/agtree/parser';
+    defaultParserOptions,
+    FilterListParser,
+} from '@adguard/agtree/parser';
 import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
 
 import { ADGUARD_FILTERS_IDS } from '../../constants';

@@ -23,6 +23,7 @@ import {
     ConfigurationMV2,
     MESSAGE_HANDLER_NAME,
     createTsWebExtension,
+    type Message as EngineMessage,
 } from '@adguard/tswebextension';
 
 import { logger } from '../../common/logger';
@@ -40,11 +41,9 @@ import {
     CustomFilterApi,
 } from '../api';
 
-import { TsWebExtensionEngine } from './interface';
+import { type TsWebExtensionEngine } from './interface';
 
-// Because this file is already MV2 replacement module, we can import directly
-// from basic MV2 tswebextension without using aliases.
-export type { Message as EngineMessage } from '@adguard/tswebextension';
+export { type EngineMessage };
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
