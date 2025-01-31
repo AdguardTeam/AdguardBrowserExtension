@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
 
-## [5.0.188] - 2025-01-29
+<!-- TODO: add date when released on github -->
+## [5.0.188]
 
 ### Changed
 
