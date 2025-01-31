@@ -55,5 +55,5 @@ export const edgeManifest = {
     'optional_permissions': [
         'privacy',
     ],
-    'minimum_chrome_version': String(MIN_SUPPORTED_VERSION.CHROMIUM),
+    'minimum_chrome_version': String(MIN_SUPPORTED_VERSION.EDGE_CHROMIUM),
 };

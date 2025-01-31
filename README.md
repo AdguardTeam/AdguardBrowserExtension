@@ -453,10 +453,10 @@ pnpm locales info
 
 | Browser                     | Version |
 |---------------------------- |---------|
-| Chromium-based browsers MV2 | ✅ 106  |
+| Chromium-based browsers MV2 | ✅ 79   |
 | Chromium-based browsers MV3 | ✅ 121  |
 | Firefox                     | ✅ 78   |
 | Firefox Mobile              | ✅ 113  |
-| Opera                       | ✅ 82   |
-| Edge Chromium               | ✅ 106  |
+| Opera                       | ✅ 67   |
+| Edge Chromium               | ✅ 80   |
 | Edge Legacy                 | ❌      |
