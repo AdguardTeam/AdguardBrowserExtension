@@ -18,7 +18,7 @@
 
 import '@adguard/tswebextension/content-script';
 
-import { ContentUtils } from '../../src/content-script/content-utils';
+import { ContentUtils } from '../../src/content-script/content-utils/main';
 import { SubscribeToScriptlets } from '../../src/content-script/subscribe-to-scriptlets';
 
 /**

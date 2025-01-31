@@ -19,7 +19,8 @@ import { Runtime } from 'webextension-polyfill';
 
 import { MessageType } from '@adguard/tswebextension';
 
-import { MessageHandler, Message } from '../../common/messages';
+import { MessageHandler } from '../../common/messages/message-handler';
+import { type Message } from '../../common/messages/constants';
 import { logger } from '../../common/logger';
 
 export class ContentScriptMessageHandler extends MessageHandler {
@@ -29,10 +30,6 @@ export class ContentScriptMessageHandler extends MessageHandler {
      */
     private static ExcludedAssistantMessages = new Set([
         MessageType.InitAssistant,
-        /**
-         * We do not use this message in browser extension, but it is used
-         * in the tswebextension.
-         */
         MessageType.CloseAssistant,
     ]);
 

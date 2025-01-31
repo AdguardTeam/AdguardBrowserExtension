@@ -19,60 +19,13 @@ import zod from 'zod';
 
 import { SchemaPreprocessor } from '../preprocessor';
 
-export enum SettingOption {
-    // General settings.
-    AppearanceTheme = 'appearance-theme',
-    DisableShowPageStats = 'disable-show-page-statistic',
-    DisableDetectFilters = 'detect-filters-disabled',
-    DisableSafebrowsing = 'safebrowsing-disabled',
-    FiltersUpdatePeriod = 'filters-update-period',
-    // Is filtering disabled or not.
-    DisableFiltering = 'adguard-disabled',
-
-    // Extension specific settings.
-    UseOptimizedFilters = 'use-optimized-filters',
-    DisableCollectHits = 'hits-count-disabled',
-    DisableShowContextMenu = 'context-menu-disabled',
-    // Flag used to show link to comparison of desktop and browser extension versions.
-    DisableShowAdguardPromoInfo = 'show-info-about-adguard-disabled',
-    DisableShowAppUpdatedNotification = 'show-app-updated-disabled',
-    HideRateBlock = 'hide-rate-block',
-    UserRulesEditorWrap = 'user-rules-editor-wrap',
-
-    // Allowlist section.
-    AllowlistDomains = 'allowlist-domains',
-    InvertedAllowlistDomains = 'block-list-domains',
-    AllowlistEnabled = 'allowlist-enabled',
-    DefaultAllowlistMode = 'default-allowlist-mode',
-
-    // Tracking protection (formerly Stealth mode).
-    DisableStealthMode = 'stealth-disable-stealth-mode',
-    HideReferrer = 'stealth-hide-referrer',
-    HideSearchQueries = 'stealth-hide-search-queries',
-    SendDoNotTrack = 'stealth-send-do-not-track',
-    RemoveXClientData = 'stealth-remove-x-client',
-    BlockWebRTC = 'stealth-block-webrtc',
-    SelfDestructThirdPartyCookies = 'stealth-block-third-party-cookies',
-    SelfDestructThirdPartyCookiesTime = 'stealth-block-third-party-cookies-time',
-    SelfDestructFirstPartyCookies = 'stealth-block-first-party-cookies',
-    SelfDestructFirstPartyCookiesTime = 'stealth-block-first-party-cookies-time',
-
-    // Filters' statuses and states.
-    FiltersState = 'filters-state',
-    FiltersVersion = 'filters-version',
-    GroupsState = 'groups-state',
-    UserFilterEnabled = 'user-filter-enabled',
-
-    // Filters metadata.
-    Metadata = 'filters-metadata',
-    I18nMetadata = 'filters-i18n-metadata',
-    CustomFilters = 'custom-filters',
-}
+import { SettingOption } from './enum';
 
 export const appearanceValidator = zod.enum(['system', 'dark', 'light']);
 
-// Setting options may be stringified, use preprocessors for correct type casting
-
+/**
+ * Setting options may be stringified, use preprocessors for correct type casting.
+ */
 export const settingsValidator = zod.object({
     // ----- General settings section -----
     /**

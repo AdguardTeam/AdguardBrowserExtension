@@ -16,8 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type MessageHandlerMV2 } from '@adguard/tswebextension';
-import { type MessagesHandlerMV3 } from '@adguard/tswebextension/mv3';
+import { type MessageHandler } from '@adguard/tswebextension/mv3';
 
 export interface TsWebExtensionEngine {
     /**
@@ -33,7 +32,7 @@ export interface TsWebExtensionEngine {
      * @param message - Message from the tswebextension.
      * @returns Promise<void>.
      */
-    handleMessage: MessageHandlerMV2 | MessagesHandlerMV3;
+    handleMessage: MessageHandler;
 
     /**
      * Starts the tswebextension and updates the counter of active rules.

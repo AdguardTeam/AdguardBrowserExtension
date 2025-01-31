@@ -2,7 +2,7 @@
  * @file IndexedDB storage implementation.
  */
 
-import * as idb from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
 
 import { ExtendedStorageInterface } from '../../common/storage';
 import { logger } from '../../common/logger';
@@ -19,7 +19,7 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
     /**
      * Holds the instance of the IndexedDB database.
      */
-    private db: idb.IDBPDatabase | null = null;
+    private db: IDBPDatabase | null = null;
 
     /**
      * The name of the database.
@@ -55,9 +55,9 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
      *
      * @returns The opened database instance.
      */
-    private async getOpenedDb(): Promise<idb.IDBPDatabase> {
+    private async getOpenedDb(): Promise<IDBPDatabase> {
         if (!this.db) {
-            this.db = await idb.openDB(this.name, this.version, {
+            this.db = await openDB(this.name, this.version, {
                 upgrade: (db) => {
                     // make sure the store exists
                     if (!db.objectStoreNames.contains(this.store)) {

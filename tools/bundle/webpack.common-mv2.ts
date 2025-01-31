@@ -23,17 +23,11 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { merge } from 'webpack-merge';
 
 import {
-    AGTREE_VENDOR_OUTPUT,
     BACKGROUND_OUTPUT,
     CONTENT_SCRIPT_START_OUTPUT,
-    CSS_TOKENIZER_VENDOR_OUTPUT,
     DOCUMENT_BLOCK_OUTPUT,
     REACT_VENDOR_OUTPUT,
     SAFEBROWSING_OUTPUT,
-    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
-    SCRIPTLETS_VENDOR_OUTPUT,
-    TSURLFILTER_VENDOR_OUTPUT,
-    TSWEBEXTENSION_VENDOR_OUTPUT,
     SUBSCRIBE_OUTPUT,
 } from '../../constants';
 
@@ -46,7 +40,7 @@ import {
     SUBSCRIBE_PATH,
     type BrowserConfig,
 } from './common-constants';
-import { genCommonConfig } from './webpack.common';
+import { ENTRY_POINTS_CHUNKS, genCommonConfig } from './webpack.common';
 
 export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = false): Configuration => {
     const commonConfig = genCommonConfig(browserConfig, isWatchMode);
@@ -55,14 +49,7 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
         entry: {
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
-                dependOn: [
-                    SCRIPTLETS_VENDOR_OUTPUT,
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    CSS_TOKENIZER_VENDOR_OUTPUT,
-                    AGTREE_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
-                ],
+                dependOn: ENTRY_POINTS_CHUNKS[BACKGROUND_OUTPUT],
             },
             [SAFEBROWSING_OUTPUT]: {
                 import: SAFEBROWSING_PATH,
@@ -96,12 +83,7 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
                 },
                 filename: `${BACKGROUND_OUTPUT}.html`,
                 chunks: [
-                    SCRIPTLETS_VENDOR_OUTPUT,
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    CSS_TOKENIZER_VENDOR_OUTPUT,
-                    AGTREE_VENDOR_OUTPUT,
-                    TSWEBEXTENSION_VENDOR_OUTPUT,
-                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+                    ...ENTRY_POINTS_CHUNKS[BACKGROUND_OUTPUT],
                     BACKGROUND_OUTPUT,
                 ],
             }),

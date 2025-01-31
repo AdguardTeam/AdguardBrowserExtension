@@ -65,6 +65,8 @@ process.env.PW_EXPERIMENTAL_SERVICE_WORKER_NETWORK_EVENTS = '1';
 
 const TESTS_TIMEOUT_MS = 5 * 1000;
 
+const EXTENSION_INITIALIZATION_TIMEOUT_MS = 10 * 1000;
+
 const TEST_REPORT_PATH = 'tests-reports/integration-tests.xml';
 
 const PRODUCT_MV3 = Product.Mv3;
@@ -346,10 +348,21 @@ const runTests = async (
         backgroundPage = await browserContext.waitForEvent('serviceworker');
     }
 
-    await backgroundPage.evaluate<void, string>(
-        waitUntilExtensionInitialized,
-        EXTENSION_INITIALIZED_EVENT,
-    );
+    try {
+        await Promise.race([
+            await backgroundPage.evaluate<void, string>(
+                waitUntilExtensionInitialized,
+                EXTENSION_INITIALIZED_EVENT,
+            ),
+            new Promise((resolve, reject) => {
+                setTimeout(reject, EXTENSION_INITIALIZATION_TIMEOUT_MS);
+            }),
+        ]);
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Extension initialization failed (possible due to timeout)', e);
+        return false;
+    }
 
     const page = await browserContext.newPage();
 
