@@ -52,15 +52,18 @@
             userParams: userParams,
             destruct: destruct
         };
+        function init(id) {
+            window[`yaCounter${id}`] = api;
+            document.dispatchEvent(new Event(`yacounter${id}inited`));
+        }
         function ym(id, funcName) {
+            if (funcName === "init") {
+                return init(id);
+            }
             for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
                 args[_key - 2] = arguments[_key];
             }
             return api[funcName] && api[funcName](id, ...args);
-        }
-        function init(id) {
-            window[`yaCounter${id}`] = api;
-            document.dispatchEvent(new Event(`yacounter${id}inited`));
         }
         if (typeof window.ym === "undefined") {
             window.ym = ym;
