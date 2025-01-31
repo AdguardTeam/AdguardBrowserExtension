@@ -26,7 +26,6 @@ import {
     type MessageHandler,
     type Message as EngineMessage,
     type ConfigurationResult,
-    type LocalScriptFunctionData,
 } from '@adguard/tswebextension/mv3';
 
 import { logger } from '../../common/logger';
@@ -50,47 +49,6 @@ import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rul
 import { type TsWebExtensionEngine } from './interface';
 
 export { type EngineMessage };
-
-/**
- * Raw local script rules data where key is a script rule text.
- */
-type RawLocalScriptRulesData = {
-    [key: string]: {
-        /**
-         * Unique identifier of the local script rule.
-         */
-        uniqueId: string;
-
-        /**
-         * Local script rule function.
-         */
-        func: () => void;
-    };
-};
-
-/**
- * Prepares local script rules for the engine.
- *
- * @param rawLocalScriptRules Raw local script rules data previously built from the pre-built filters.
- *
- * @returns Local script rules for the engine.
- */
-const prepareLocalScriptRules = (rawLocalScriptRules: RawLocalScriptRulesData): LocalScriptFunctionData => {
-    const result: LocalScriptFunctionData = {};
-
-    Object.keys(rawLocalScriptRules).forEach((key) => {
-        const data = rawLocalScriptRules[key];
-        if (
-            typeof data !== 'undefined'
-            && typeof data.func === 'function'
-        ) {
-            const { func } = data;
-            result[key] = func;
-        }
-    });
-
-    return result;
-};
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
@@ -141,7 +99,7 @@ export class Engine implements TsWebExtensionEngine {
          *
          * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
          */
-        TsWebExtension.setLocalScriptRules(prepareLocalScriptRules(localScriptRules));
+        TsWebExtension.setLocalScriptRules(localScriptRules);
 
         const configuration = await Engine.getConfiguration();
 
