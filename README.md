@@ -161,7 +161,6 @@ pnpm test:integration <MODE> [-d <TEST_ID>]
 # TEST_ID can be extracted from https://testcases.agrd.dev/data.json
 ```
 
-
 Run the following command to build the dev version:
 
 ```shell
@@ -450,11 +449,14 @@ pnpm locales info
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 
+<!-- NOTE: see MIN_SUPPORTED_VERSION in ./constants.ts -->
+
 | Browser                     | Version |
-|---------------------------- |:-------:|
-| Chromium-based browsers MV2 | 79      |
-| Chromium-based browsers MV3 | 121     |
-| Firefox                     | 78      |
-| Firefox Mobile              | 113     |
-| Opera                       | 67      |
-| Edge                        | 80      |
+|---------------------------- |---------|
+| Chromium-based browsers MV2 | ✅ 79   |
+| Chromium-based browsers MV3 | ✅ 121  |
+| Firefox                     | ✅ 78   |
+| Firefox Mobile              | ✅ 113  |
+| Opera                       | ✅ 67   |
+| Edge Chromium               | ✅ 80   |
+| Edge Legacy                 | ❌      |

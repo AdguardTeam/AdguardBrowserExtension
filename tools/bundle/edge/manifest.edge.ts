@@ -18,6 +18,7 @@
 import {
     BACKGROUND_OUTPUT,
     DEVTOOLS_OUTPUT,
+    MIN_SUPPORTED_VERSION,
     POPUP_OUTPUT,
 } from '../../../constants';
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
@@ -54,4 +55,5 @@ export const edgeManifest = {
     'optional_permissions': [
         'privacy',
     ],
+    'minimum_chrome_version': String(MIN_SUPPORTED_VERSION.EDGE_CHROMIUM),
 };

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error throwing for empty modifier list in network rules.
 - Store filter data in ruleset files exclusively for the MV3 extension to allow updates where only the rulesets are modified.
 - Updated [@adguard/agtree] to v3.0.0-alpha.3.
+- Updated [@adguard/scriptlets] to v2.1.4.
 - Updated [@adguard/tsurlfilter] to v3.1.0-alpha.8.
 - Updated [@adguard/tswebextension] to v3.0.0-alpha.1.
 
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
 - URI encoded `$removeparam` value is not removed in MV3 [#3014].
+- Cosmetic rules injecting into `about:blank` iframes in MV2.
 - Shortened name translation in `pt_BR` locale [#3075].
 - Allowlisted stealth rules are not shown in the filtering log [#2950].
 - `$removeparam` incorrectly removes parameters from encoded URLs [#3076].

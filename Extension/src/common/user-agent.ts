@@ -18,6 +18,8 @@
 
 import UAParser from 'ua-parser-js';
 
+import { MIN_SUPPORTED_VERSION } from '../../../constants';
+
 /**
  * Helper class for user agent data.
  *
@@ -232,11 +234,11 @@ export class UserAgent {
 
     static isFirefoxMobile = UserAgent.isFirefox && UserAgent.isMobileDevice;
 
-    static isSupportedBrowser = (UserAgent.isChrome && Number(UserAgent.version) >= 79)
-        || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= 79)
-        || (UserAgent.isFirefox && Number(UserAgent.version) >= 78)
-        || (UserAgent.isFirefoxMobile && Number(UserAgent.version) >= 113)
-        || (UserAgent.isOpera && Number(UserAgent.version) >= 66);
+    static isSupportedBrowser = (UserAgent.isChrome && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.CHROMIUM)
+        || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.CHROMIUM)
+        || (UserAgent.isFirefox && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.FIREFOX)
+        || (UserAgent.isFirefoxMobile && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.FIREFOX_MOBILE)
+        || (UserAgent.isOpera && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.OPERA);
 
     static browserName = UserAgent.getBrowserName();
 }
