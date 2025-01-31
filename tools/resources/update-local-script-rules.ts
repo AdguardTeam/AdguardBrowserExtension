@@ -32,6 +32,7 @@ import { promises as fs } from 'node:fs';
 import { exec as execCallback } from 'node:child_process';
 import { promisify } from 'node:util';
 import assert from 'node:assert';
+import path from 'node:path';
 import crypto from 'node:crypto';
 
 import { minify } from 'terser';
@@ -52,6 +53,8 @@ import {
     LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3,
     LOCAL_SCRIPT_RULES_COMMENT,
 } from '../constants';
+
+import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-extractor';
 
 const exec = promisify(execCallback);
 
@@ -375,16 +378,20 @@ export const localScriptRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
 };
 
 export const updateLocalResourcesForChromiumMv3 = async () => {
-    const folder = FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3);
-    const filterFiles = await fs.readdir(folder);
-    const rawTxtFiles = filterFiles.filter((file) => file.endsWith('.txt') && file.startsWith('filter_'));
+    const folder = path.join(
+        FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3),
+        'declarative',
+    );
+
+    const metadataRuleSet = await readMetadataRuleSet(folder);
+    const ruleSetIds = metadataRuleSet.getRuleSetIds();
 
     const jsRules: Set<string> = new Set();
 
     // eslint-disable-next-line no-restricted-syntax
-    for (const file of rawTxtFiles) {
+    for (const ruleSetId of ruleSetIds) {
         // eslint-disable-next-line no-await-in-loop
-        const rawFilterList = (await fs.readFile(`${folder}/${file}`)).toString();
+        const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, metadataRuleSet, folder);
         const filterListNode = FilterListParser.parse(rawFilterList, {
             ...defaultParserOptions,
             includeRaws: false,

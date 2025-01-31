@@ -8,6 +8,10 @@ import {
     it,
     vi,
 } from 'vitest';
+import escapeStringRegexp from 'escape-string-regexp';
+
+import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
+import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 
 import { APP_VERSION_KEY } from '../../../../../Extension/src/common/constants';
 import { mockLocalStorage } from '../../../../helpers';
@@ -66,6 +70,11 @@ const localI18nMetadata: I18nMetadata = i18nMetadataValidator.parse({
     tags: {},
 });
 
+const metadataRuleSet = new MetadataRuleSet();
+metadataRuleSet.setAdditionalProperty('metadata', initMetadata);
+const serializedMetadataRuleSet = metadataRuleSet.serialize();
+const metadataRuleSetPath = getRuleSetPath(METADATA_RULESET_ID, 'filters/declarative');
+
 /**
  * Mocks initial test metadata for server to respond with.
  */
@@ -82,6 +91,14 @@ const mockInitMetadata = () => {
         { 'Content-Type': 'application/json' },
         JSON.stringify(initMetadata),
     ]);
+
+    if (__IS_MV3__) {
+        server.respondWith('GET', new RegExp(escapeStringRegexp(metadataRuleSetPath)), [
+            200,
+            { 'Content-Type': 'application/json' },
+            serializedMetadataRuleSet,
+        ]);
+    }
 };
 
 let storage: Storage.StorageArea;

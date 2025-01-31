@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
+- Store filter data in ruleset files exclusively for the MV3 extension to allow updates where only the rulesets are modified.
 - Updated [@adguard/agtree] to v3.0.0-alpha.3.
 - Updated [@adguard/scriptlets] to v2.1.4.
 - Updated [@adguard/tsurlfilter] to v3.1.0-alpha.8.
@@ -32,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Shortened name translation in `pt_BR` locale [#3075].
 - Allowlisted stealth rules are not shown in the filtering log [#2950].
 - `$removeparam` incorrectly removes parameters from encoded URLs [#3076].
+
+### Removed
+
+- Storage classes, because they were moved to the `@adguard/tswebextension` package.
 
 [#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
 [#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020

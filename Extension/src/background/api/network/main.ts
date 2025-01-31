@@ -17,11 +17,14 @@
  */
 import browser from 'webextension-polyfill';
 
+import { FiltersApi } from '@adguard/tswebextension/mv3';
 import {
     FiltersDownloader,
     DefinedExpressions,
     type DownloadResult,
 } from '@adguard/filters-downloader/browser';
+import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
 import { logger } from '../../../common/logger';
@@ -35,6 +38,7 @@ import {
     localScriptRulesValidator,
 } from '../../schema';
 import { type FilterUpdateOptions } from '../filters';
+import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 
 import { NetworkSettings } from './settings';
 
@@ -183,6 +187,17 @@ export class Network {
 
         // local filters do not support patches, that is why we always download them fully
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
+            // TODO: Revert when Quick Fixes filter will return in another way
+            if (__IS_MV3__ /* && filterId !== AntiBannerFiltersId.QuickFixesFilterId */) {
+                // TODO: Check if its needed
+                const rawFilterList = await FiltersApi.getRawFilterList(filterId, 'filters/declarative');
+
+                return {
+                    filter: rawFilterList.split(NEWLINE_CHAR_REGEX),
+                    rawFilter: rawFilterList,
+                };
+            }
+
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
                 {
@@ -270,14 +285,29 @@ export class Network {
     }
 
     /**
-     * Loads filter groups metadata.
+     * Loads filters metadata from local file.
+     * For MV3, it loads metadata from the metadata ruleset file.
      *
      * @throws Error if metadata is invalid.
      *
      * @returns Object of {@link Metadata}.
      */
     public async getLocalFiltersMetadata(): Promise<Metadata> {
-        const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_METADATA_FILE_NAME}`);
+        let url: string;
+
+        if (__IS_MV3__) {
+            // For MV3, the filters metadata is stored in the metadata ruleset.
+            // The reason for this is that it allows us to perform extension updates
+            // where only the JSON files of the rulesets are changed.
+            const metadataRuleSetPath = getRuleSetPath(
+                METADATA_RULESET_ID,
+                `${this.settings.localFiltersFolder}/declarative`,
+            );
+            url = browser.runtime.getURL(metadataRuleSetPath);
+        } else {
+            // Otherwise, metadata is stored in a separate JSON file.
+            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_METADATA_FILE_NAME}`);
+        }
 
         let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
@@ -293,7 +323,14 @@ export class Network {
         }
 
         try {
-            const metadata = JSON.parse(response.responseText);
+            let metadata: unknown;
+            if (__IS_MV3__) {
+                const metadataRuleSet = MetadataRuleSet.deserialize(response.responseText);
+                // Filters metadata is stored as an additional property in the metadata ruleset.
+                metadata = metadataRuleSet.getAdditionalProperty('metadata');
+            } else {
+                metadata = JSON.parse(response.responseText);
+            }
             return metadataValidator.parse(metadata);
         } catch (e: unknown) {
             // TODO: Return regular error
