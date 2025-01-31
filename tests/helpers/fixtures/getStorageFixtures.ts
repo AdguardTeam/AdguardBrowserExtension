@@ -1,9 +1,14 @@
 /* eslint-disable max-len */
 import zod from 'zod';
+import SuperJSON from 'superjson';
 
 import { pageStatsValidator } from '../../../Extension/src/background/schema/page-stats';
 
-const FILTER_KEY_PREFIX = 'filterrules_';
+export const RAW_FILTER_KEY_PREFIX = 'raw_filterrules_';
+export const FILTER_KEY_PREFIX = 'filterrules_';
+export const BINARY_FILTER_KEY_PREFIX = 'binaryfilterrules_';
+export const CONVERSION_MAP_PREFIX = 'conversionmap_';
+export const SOURCE_MAP_PREFIX = 'sourcemap_';
 
 export type StorageData = Record<string, unknown>;
 
@@ -578,4 +583,26 @@ const removeQuickFixesFilter = (settings: StorageData): StorageData => {
     delete settings['raw_filterrules_24.txt'];
 
     return settings;
+};
+
+export const getStorageFixturesV11 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV10 = getStorageFixturesV10(expires);
+
+    return storageSettingsFixturesV10.map((settings) => {
+        const keys = Object.keys(settings).filter((key) => [
+            RAW_FILTER_KEY_PREFIX,
+            BINARY_FILTER_KEY_PREFIX,
+            FILTER_KEY_PREFIX,
+            CONVERSION_MAP_PREFIX,
+            SOURCE_MAP_PREFIX,
+        ].some((prefix) => key.startsWith(prefix)));
+
+        keys.forEach((key) => {
+            settings[key] = SuperJSON.serialize(settings[key]);
+        });
+
+        settings['schema-version'] = 11;
+
+        return settings;
+    });
 };

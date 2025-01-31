@@ -22,7 +22,7 @@ import {
     TooManyRegexpRulesError,
     TooManyUnsafeRulesError,
     TooManyRulesError,
-    RULE_SET_NAME_PREFIX,
+    RULESET_NAME_PREFIX,
     type ConfigurationResult,
 } from '@adguard/tswebextension/mv3';
 
@@ -139,7 +139,7 @@ export class RulesLimitsService {
      */
     private static getRuleSetsCountersMap = (result: ConfigurationResult): RuleSetCountersMap => {
         const counters = result.staticFilters.reduce((acc: { [key: number]: RuleSetCounter }, ruleset) => {
-            const filterId = Number(ruleset.getId().slice(RULE_SET_NAME_PREFIX.length));
+            const filterId = Number(ruleset.getId().slice(RULESET_NAME_PREFIX.length));
 
             acc[filterId] = {
                 filterId,
@@ -396,7 +396,7 @@ export class RulesLimitsService {
     private static async getActuallyEnabledFilters(): Promise<number[]> {
         const enabledRuleSetsIds = await chrome.declarativeNetRequest.getEnabledRulesets();
 
-        return enabledRuleSetsIds.map((id) => Number.parseInt(id.slice(RULE_SET_NAME_PREFIX.length), 10));
+        return enabledRuleSetsIds.map((id) => Number.parseInt(id.slice(RULESET_NAME_PREFIX.length), 10));
     }
 
     /**

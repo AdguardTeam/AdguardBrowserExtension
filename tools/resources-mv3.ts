@@ -21,13 +21,6 @@ import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
 import { updateLocalResourcesForChromiumMv3 } from './resources/update-local-script-rules';
 
-const DEFAULT_OPENAI_API_TOKEN = '<openai_api_key>';
-
-const isOpenAiTokenProvided = () => {
-    const token = process.env.OPENAI_API_KEY;
-    return token !== undefined && token !== DEFAULT_OPENAI_API_TOKEN;
-};
-
 // TODO: worth refactoring since this function is separated from ./resources.ts
 
 /**
@@ -43,9 +36,9 @@ const resourcesMv3 = async () => {
     await updateLocalResourcesForChromiumMv3();
     console.log('Local resources for MV3 updated');
 
-    if (isOpenAiTokenProvided()) {
+    if (process.env.OPENAI_API_KEY) {
         console.log('Finding dangerous rules...');
-        await findDangerousRules();
+        await findDangerousRules(process.env.OPENAI_API_KEY);
         console.log('Dangerous rules check completed');
     } else {
         console.log('OpenAI API key is not provided, skipping dangerous rules check');

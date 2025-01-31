@@ -1,79 +1,13 @@
-! Checksum: jcUDYUx0jkHn5uLRFBqmzw
-! Diff-Path: ../patches/20/20-s-1732110026-3600.patch
+! Checksum: FURwkKJ5Xv0Hh7hmoml4tg
+! Diff-Path: ../patches/20/20-s-1737557225-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.17.80
-! TimeUpdated: 2024-11-20T13:36:25+00:00
+! Version: 2.0.18.74
+! TimeUpdated: 2025-01-22T14:43:00+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
 !
-!-------------------------------------------------------------------!
-!------------------ General JS API ---------------------------------!
-!-------------------------------------------------------------------!
-! JS API START
-#%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
-#%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
-#%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
-#%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
-#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-!
-! AG_removeCookie
-! Examples: AG_removeCookie('/REGEX/') or AG_removeCookie('part of the cookie name')
-!
-#%#var AG_removeCookie=function(a){var e=/./;/^\/.+\/$/.test(a)?e=new RegExp(a.slice(1,-1)):""!==a&&(e=new RegExp(a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));a=function(){for(var a=document.cookie.split(";"),g=a.length;g--;){cookieStr=a[g];var d=cookieStr.indexOf("=");if(-1!==d&&(d=cookieStr.slice(0,d).trim(),e.test(d)))for(var h=document.location.hostname.split("."),f=0;f<h.length-1;f++){var b=h.slice(f).join(".");if(b){var c=d+"=",k="; domain="+b;b="; domain=."+b;document.cookie=c+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+k+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+b+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+k+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+b+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"}}}};a();window.addEventListener("beforeunload",a)};
-!
-! AG_defineProperty
-! See https://github.com/AdguardTeam/deep-override
-!
-#%#var AG_defineProperty=function(){var p,q=Object.defineProperty;if("function"==typeof WeakMap)p=WeakMap;else{var r=0,t=function(){this.a=(r+=Math.random()).toString()};t.prototype.set=function(a,b){var d=a[this.a];d&&d[0]===a?d[1]=b:q(a,this.a,{value:[a,b],writable:!0});return this};t.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};t.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};p=t}function u(a){this.b=a;this.h=Object.create(null)}function v(a,b,d,e){this.a=a;this.i=b;this.c=d;this.f=e}function w(){this.g=/^([^\\\.]|\\.)*?\./;this.j=/\\(.)/g;this.a=new p}function x(a,b){var d=b.f;if(d&&!("beforeGet"in d||"beforeSet"in d))return z(d);var e={get:function(){var c=b.f;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.g)c=A(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=B(c),null!==c)){var d=C.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||D.call(b.a.b,this))&&E(a,c,b.c);return c},set:function(c){if(this===b.a.b||D.call(b.a.b,this)){b.f&&b.f.beforeSet&&(c=b.f.beforeSet.call(this,c,this));var d=b.g;d&&A(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c}};d&&J(d,e,K);return e}function I(a,b,d){for(var e in d.h){var c=d.h[e];if(b.h[e]){var h=a,g=b.h[e],k=c;!k.f||g.f||"undefined"===typeof g.a.b||g.g||(g.g=z(k.f));g.c&&k.c&&g.c!==k.c&&I(h,g.c,k.c)}else{g=h=void 0;k=a;var f=b,l=c.i,m="undefined"!==typeof f.b,y=!1;m&&(g=L(f.b,l))&&!g.configurable&&(y=!0,h=f.b[l]);var n=y?H(k,h):new u(c.c.b);I(k,n,c.c);n=new v(f,l,n,c.f);f.h[l]=n;m&&(n.g=g,m=x(k,n),y?E(k,h,c.c):(q(f.b,l,m),g&&A(g)&&(M(m,g.value,f.b),E(k,g.value,c.c))))}}}function E(a,b,d){G(b)&&(b=H(a,b),I(a,b,d))}function F(a,b,d){var e=a.g;if(!e){e=B(a.a.b);if(null!==e&&(e=N.call(e,a.i)))return e.call(d,b);if(!O(a.a.b))return!1;a.g={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return M(e,b,d)}function H(a,b){var d=a.a.get(b);d||(d=new u(b),a.a.set(b,d));return d}function A(a){return"undefined"!==typeof a.writable}function J(a,b,d){for(var e=0,c=d.length;e<c;e++){var h=d[e];h in a&&(b[h]=a[h])}}function z(a){if(a){var b={};J(a,b,P);return b}}function M(a,b,d){if(A(a))return a.writable?(a.value=b,!0):!1;if(!a.set)return!1;a.set.call(d,b);return!0}var P="configurable enumerable value get set writable".split(" "),K=P.slice(0,2),L=Object.getOwnPropertyDescriptor,O=Object.isExtensible,B=Object.getPrototypeOf,D=Object.prototype.isPrototypeOf,C=Object.prototype.__lookupGetter__||function(a){return(a=Q(this,a))&&a.get?a.get:void 0},N=Object.prototype.__lookupSetter__||function(a){return(a=Q(this,a))&&a.set?a.set:void 0};function Q(a,b){if(b in a){for(;!w.hasOwnProperty.call(a,b);)a=B(a);return L(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var R;return function(a,b,d){R||(R=new w);var e=R;d=d||window;var c=new u;a+=".";var h=c||new u;for(var g=e.g,k=e.j,f,l,m;a;){f=g.exec(a);if(null===f)throw 1;f=f[0].length;l=a.slice(0,f-1).replace(k,"$1");a=a.slice(f);(f=h.h[l])?m=f.c:(m=new u,f=new v(h,l,m),h.h[l]=f);h=m}if(!f)throw 1;a=f;a.f=b;E(e,d,c)};}();
-!
-! AG_abortOnPropertyWrite(property, debug)
-! Aborts execution of a script when it attempts to write the specified property.
-! Based on AG_defineProperty (https://github.com/AdguardTeam/deep-override)
-!
-! Examples:
-! AG_abortOnPropertyWrite('String.fromCharCode');
-!
-! @param property property or properties chain
-! @param debug optional, if true - we will print warning when script is aborted.
-!
-#%#var AG_abortOnPropertyWrite=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeSet:function(){b&&console.warn("AdGuard aborted property write: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
-!
-! AG_abortOnPropertyRead(property, debug)
-! Aborts execution of a script when it attempts to read the specified property.
-! Based on AG_defineProperty (https://github.com/AdguardTeam/deep-override)
-!
-! Examples:
-! AG_abortOnPropertyRead('String.fromCharCode');
-!
-! @param property property or properties chain
-! @param debug optional, if true - we will print warning when script is aborted.
-!
-#%#var AG_abortOnPropertyRead=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeGet:function(){b&&console.warn("AdGuard aborted property read: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
-!
-! AG_abortInlineScript(regex, property, debug)
-! Aborts execution of an inline script when it attempts to access the specified property
-! AND content of the <script> element matches specified regular expression.
-! Based on AG_defineProperty (https://github.com/AdguardTeam/deep-override)
-!
-! Examples:
-! AG_abortInlineScript(/zfgloadedpopup|zfgloadedpushopt/, 'String.fromCharCode');
-!
-! @param regex regular expression that the inline script contents must match
-! @param property property or properties chain
-! @param debug optional, if true - we will print warning when script is aborted.
-!
-#%#var AG_abortInlineScript=function(g,b,c){var d=function(){if("currentScript"in document)return document.currentScript;var a=document.getElementsByTagName("script");return a[a.length-1]},e=Math.random().toString(36).substr(2,8),h=d();AG_defineProperty(b,{beforeGet:function(){var a=d();if(a instanceof HTMLScriptElement&&a!==h&&""===a.src&&g.test(a.textContent))throw c&&console.warn("AdGuard aborted execution of an inline script"),new ReferenceError(e);}});var f=window.onerror;window.onerror=function(a){if("string"===typeof a&&-1!==a.indexOf(e))return c&&console.warn("AdGuard has caught window.onerror: "+b),!0;if(f instanceof Function)return f.apply(this,arguments)}};
-!
-! AG_setConstant('property.chain', 'true') // defines boolean (true), same for false;
-! AG_setConstant('property.chain', '123') // defines Number 123;
-! AG_setConstant('property.chain', 'noopFunc') // defines function(){};
-! AG_setConstant('property.chain', 'trueFunc') // defines function(){return true};
-! AG_setConstant('property.chain', 'falseFunc') // defines function(){return false};
-!
-#%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
-! JS API FINISH
 !---------------------- MobileApp ----------------------------------!
 !-------------------------------------------------------------------!
 !
@@ -124,6 +58,93 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+iko-yo.net##.card--icon-text--app-link
+oferty.praca.gov.pl#%#//scriptlet('set-local-storage-item', 'mobileAppDialogVisited', 'true')
+health.harvard.edu##div[x-show="mobilePopupShow"]
+trustpilot.com#%#//scriptlet('trusted-set-local-storage-item', 'app-modal-dismissed-date', '$now$')
+cantata.ru###__next > div[class^="sc-"]:has(> div[class^="sc-"] > a[href*="app"] + div[color="green"])
+univision.com###smartAppBanner
+javcup.com##.open-app-banner
+tandem.net##div[class^="styles_getAppBanner"]
+giphy.com##a[href="https://giphy.page.link/home"]
+business-standard.com#%#//scriptlet('set-cookie', 'popupShown', 'true')
+kitaaa.net###submenu > ul.mb-4.font-weight-bold
+mybook.ru#?#div[class] + div[class]:has(> div[class] + p[class]:contains(мобильного приложения))
+zillow.com###local-app-upsell
+tubitv.com#%#//scriptlet('trusted-set-local-storage-item', 'isAppDownloadBannerDismissed', 'true')
+citilink.ru##div[class*="app-catalog-"] > div[class*="app-catalog-"]:has(> div[class*="app-catalog-"] > div[class*="app-catalog-"] > span:contains(Скачайте приложение))
+yourchannel.blog.jp###app-follow-banner > .app-button
+noticiasaominuto.com##.mb-8 > div.flex:has(> div.flex > a[href^="https://play.google.com/store/apps/"])
+autodoc.de##.app-block-wrap
+aliexpress.ru##div[class^="PseudoSmartBanner_"]
+informer.rs##.apps-box
+copilot.microsoft.com##main > .relative[style*="opacity"]:has(> .fixed .flex > button[title][aria-label])
+foxford.ru##.fox-Paper + div[class^="Spacer__Root-"]:has(> div[class^="styled__Root-"] div.fox-Text:contains(мобильное приложение))
+animego.ong##.b-dwnapp
+smartlog.jp###post-foot-pr
+m.tuttur.com#%#//scriptlet('trusted-set-local-storage-item', 'SmartBannerShowedDate', '$now$')
+akakce.com#%#//scriptlet('trusted-click-element', '#m-w div.app span.c-m')
+dns-shop.ru#%#//scriptlet('set-cookie', 'app_suggest-opened', '1')
+kinarino.jp##.p-press-banner-app
+chitai-gorod.ru##.chg-app-smart
+m.hoysport.tv##.van-floating-bubble
+regio-guide.de##.android-banner
+doktortakvimi.com,doctoralia.es,miodottore.it,znamylekar.cz,doctoralia.com.pt,doctoralia.com.mx,doctoralia.cl,doctoralia.com.br,doctoraliar.com,doctoralia.pe,doctoralia.co,znanylekarz.pl##.patient-app-banner-index
+money.udn.com##.open-on-app__link
+money.udn.com##.aside-btn-wrapper .aside-actvity
+m.inven.co.kr###invenAppSuggestion
+yaplakal.com###android-app
+tractorsupply.com###tsc-app-banner
+darkreader.org##darkreader-backers-side
+darkreader.org##darkreader-ios-static
+wionews.com##.gh-post-page__share > button[style*="background-color:"]
+pokemongo-get.com##.mt-40.mb-10
+books.yandex.ru##div[class^="YearResultBanner_container"]
+books.yandex.ru##div[class^="ContentLeftColumn_appContainer"]
+op.gg###__next > div[class^="mobile--"]:has(> div.banner-container)
+yatirimnedir.com##.container > div.row:has(> div.col-lg-12 > div.card-shadow > div.text-center > a[href^="https://play.google.com/store/apps/"])
+g-mh.org,godamh.com,manhuafree.com###PwaBarButton
+wzstats.gg##app-download-app-banner
+bing.com###id_mobpoppos
+dyxs.sbs##.popup-ts
+etstur.com###appStoreContentForm
+m.olx.ua###hydrate-root div[class^="css-"]:has(> button[data-testid="app-install-banner-close"])
+lavka.yandex.ru###root > button[style*="avatars.mds.yandex.net/get-bunker/"]
+lavka.yandex.ru#%#//scriptlet('trusted-set-cookie', 'lavka__install_app_modal_shown_at', '2734447881099')
+||animatebookstore.com/js/smartbanner/smart-app-banner.js
+m365.cloud.microsoft##.hero-section--mobile-banner
+tenbin.ai##.p-WorkspacePWAInstallBanner
+studysmarter.*##.va-welcome
+studysmarter.*##.va-footer-sticky-banner
+studysmarter.*##.va-intent-banner
+studysmarter.*##.va-flashcards-list:has(> div[class] > div[class] > a[href*="app.studysmarter.de/signup"])
+studysmarter.*##.bottom-blue-gradient
+studysmarter.*##img[alt*="Download"]
+studysmarter.*##div[data-ai-flashcard]
+studysmarter.*##.va-intent-premium
+thesportstak.com##aside > div.flex:has(> a[href^="https://onelink.to/"])
+thesportstak.com##.block > div.my-4:has(> div.flex > img[title="Sportstak"])
+live.vkvideo.ru##div[class^="NativeAppBannerBase_root_"]
+newsbreak.com#%#//scriptlet('set-local-storage-item', 'readMoreButtonShow', 'true')
+comfy.ua##.footer-download-app__wrapper
+media.wear.jp##.wear-app-download
+podcastaddict.com##.aspect-ratio-box-foo
+upscale.media##a[class^="HeaderRight__AppLink"]
+mundolucha.com##a[href="https://play.google.com/store/apps/details?id=com.mlw.app"] > img
+sixty-percent.com,m.sporx.com##a[href^="https://app.adjust.com/"]
+sporx.com##.pgContainer > a[title*="uygulamamızı"]
+sporx.com##.pgContainer > img[alt="Sporx Mobil uygulamaları"]
+||reddit.com^$removeparam=recap_redirect
+mangaraw.plus##.fixed.bottom-0.standalone\:hidden
+radio.de,radio.net,radio.at###always-visible-banner-desktop-banner
+radio.de,radio.net,radio.at##section[data-testid="home-app-dl-section"]
+store.onstove.com##.inds-gnb-banner
+eda.yandex.ru##.DesktopTrackingPageIndex_appLinks
+otto.de###sp_smartAppBanner
+sportler.com##div[id="arealayoutrowarea-row-4"]
+sportler.com##div[id="arealayoutrowarea-row-5"]
+m.avito.ru#%#//scriptlet('trusted-click-element', '#splash-banner-click-negative-cross')
+pokemontcgpocket.com##div[class*="lang__card_frame"]:has(> div[class*="lang__card_inner"] > div[class^="downloads_wrapper"])
 9db.jp##data_body > table.wiki_t_blue:has(> tbody a[href^="https://play.google.com/"])
 nperf.com#%#//scriptlet('set-session-storage-item', 'modalDownloadAppShown', 'true')
 nperf.com##.row > div.justify-content-center:has(> div.card > div.mobile-app)
@@ -430,7 +451,7 @@ truecaller.com#%#//scriptlet('set-cookie', 'tc:dismissexitintentpopup', 'true')
 wurth.fr###smart_banner_bx
 kakuyomu.jp##div[class^="CompactWorkFooter_openInAppLink"]
 ya.ru###search-result > div.serp-item:has(> div.Organic-App)
-zeflix.online##noindex > div[id]:has(> div > a[href="https://zetflix.app/"])
+zetflix-online.*,zeflix.online##noindex > div[id]:has(> div > a[href="https://zetflix.app/"])
 manga-up.com##footer > section.select-none
 pracazarogiem.pl,pracezarohem.cz,pracazarohom.sk##div[class*="MobileBannerDownloadApp_mobileBanner_"]
 search.brave.com##.download-button
@@ -569,7 +590,7 @@ bbcgoodfood.com##.piano-inline-template__content
 makc.ru###main-mobile-app
 finance.yahoo.com#$#body > div.wafer-lightbox-overlay:has(> div.wafer-ligthbox-source-subscription-monalixa-overlay-lightbox) { display: none !important; }
 finance.yahoo.com#$#html { overflow: auto !important; }
-telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
+lescon.com.tr,telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
 telekom.de#%#//scriptlet('trusted-set-cookie', 'mma-banner', 'viewed')
 cod.tracker.gg,halotracker.com##.app-promo-section
 tracker.gg##.profile-hint
@@ -603,7 +624,6 @@ glavcom.ua##.banner_amp
 blove.jp##.app-store-link
 crmeb.com##body > div#side
 crmeb.com##.floatWindow
-973kkrc.com,mooseradio.com##.newsletter-overlay
 shafa.ua##.js-catalog-apps-promotion-banner
 kijiji.ca##section[aria-labelledby="app-marketing-title"]
 rikunabi.com##.guiding-app-dl
@@ -989,10 +1009,10 @@ tokyo-calendar.jp#?#.sub-contents > div.sidebar-panel:has(> div > img[alt="東�
 tokyo-calendar.jp#?#.sub-contents > div.sidebar-panel:has(> div > img[alt="東京カレンダーアプリ"]) + div.app-dl-buttons
 androeed.ru##.our_app
 medicalnote.jp##.p-app-area
-hornet.com##.homepage__form > h3.homepage__form-title
-hornet.com##.homepage__form > h3.homepage__form-title + div.app-store-badges
-hornet.com##.homepage__last-cta
-hornet.com##.app-download-cta
+hornetapp.com,hornet.com##.homepage__form > h3.homepage__form-title
+hornetapp.com,hornet.com##.homepage__form > h3.homepage__form-title + div.app-store-badges
+hornetapp.com,hornet.com##.homepage__last-cta
+hornetapp.com,hornet.com##.app-download-cta
 m.yicai.com##.linkapp
 m.yicai.com###appdownload
 ranker.com##div[class^="container_innerContainer__"] > a[href^="https://go.watchworthy.app/"]
@@ -1510,7 +1530,6 @@ atlasbus.*#%#(function(){-1==document.cookie.indexOf("native-app-topper")&&(docu
 dolap.com#?#.fancybox-overlay > .fancybox-wrap:has(div.fancybox-inner > div.redirectToDownloadApp)
 dolap.com#$#.fancybox-lock { overflow: auto !important }
 tripmydream.com#?#.mediaSP__center > div.mediaIncut:has(> div.mediaIncut__content > p > a[data-type="iosapp"])
-appledaily.com.tw##a[href="https://feature.appledaily.com.tw/apppromo/"]
 mzh.moegirl.org.cn#?#.header > div:not([class]) > button.download-app:upward(1)
 mzh.moegirl.org.cn###open-in-app-wrapper
 mojagazetka.com##article[data-cy="FeatureMobileAppAdvertisement"]
@@ -1633,7 +1652,7 @@ forums.oneplus.com##.app-recommand-layer
 oneplus.com##.side-download-dialog
 semana.com##.footer-store
 semana.com##.footer-store + hr
-locondo.jp###anime_sab
+magaseek.com,locondo.jp###anime_sab
 swarmapp.com#%#//scriptlet("set-cookie", "hasShownSwarmUpsell", "true")
 swarmapp.com##.fixedUpsellTop
 swarmapp.com#%#//scriptlet('remove-class', 'pushDown', '#container.pushDown')
@@ -2292,7 +2311,7 @@ genius.com##.apple_music_player_container
 680news.com##.div-app-alerts
 duzcerota.com##.app-area
 news.tv-asahi.co.jp##.sp-app-banner
-ck101.com,av.movie,ettoday.net,portal.librus.pl###app-download
+rei.com,ck101.com,av.movie,ettoday.net,portal.librus.pl###app-download
 portal.librus.pl##picture > img[src="https://portal.librus.pl/images/base/aplikacjamobilna.jpg"]
 ||portal.librus.pl/images/base/aplikacjamobilna.jpg
 ||portal.librus.pl/images/base/aplikacjamobilna_mobile.jpg
@@ -2318,7 +2337,7 @@ www-hindustantimes-com.cdn.ampproject.org,hindustantimes.com##.openAppButton
 m.gamer.com.tw,noin.shop,india.com##.open-app
 commaful.com##.suggested-story-section > div.desktop-only.float-left
 commaful.com##.ios-app-promo
-m.wanben.org,jingwuhotel.com##.appguide-wrap
+qushucheng.com,m.wanben.org,jingwuhotel.com##.appguide-wrap
 lylcrc.cn,jingwuhotel.com##.aznav
 flipkart.com#?#div[class*=" "] > div[class]:has(> div > img[src*="flipkart_app_icon-"])
 microsoftedgewelcome.microsoft.com##.mobile-banner__unexpanded
@@ -3151,7 +3170,7 @@ m.nivod2.com,m.nivod2.tv,m.nivod4.com,m.nivod4.tv,m.nivod5.com,m.nivod5.tv,m.niv
 m.nivod2.com,m.nivod2.tv,m.nivod4.com,m.nivod4.tv,m.nivod5.com,m.nivod5.tv,m.nivod7.com,m.nivod7.tv,m.nivod8.com,m.nivod8.tv,m.nivod9.com,m.nivod9.tv##.bottom-bar
 !
 ! Hdrezka
-hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-dwnapp
+hello-rezka.tv,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-dwnapp
 !
 ! UKRadioLive
 irishradiolive.com,myonlineradio.at,myonlineradio.de,myonlineradio.hu,myonlineradio.nl,myonlineradio.sk,myradioendirect.fr,myradioenvivo.ar,myradioenvivo.mx,myradioonline.cl,myradioonline.es,myradioonline.it,myradioonline.pl,myradioonline.ro,ukradiolive.com#$#.mobileAffiliateAdblock { display: none !important; }
@@ -3504,6 +3523,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 ! SECTION: Mobile apps - Allowlist
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/195888
+yourchannel.blog.jp#@##app-follow-banner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/132674
 ! https://github.com/AdguardTeam/AdguardFilters/issues/118200 RECOMMEND not shown
 @@||fashion-headline.com/js/jquery.smartbanner.js

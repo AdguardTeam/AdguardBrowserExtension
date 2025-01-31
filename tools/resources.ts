@@ -21,13 +21,6 @@ import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadFilters } from './resources/download-filters';
 import { updateLocalScriptRulesForFirefox } from './resources/update-local-script-rules';
 
-const DEFAULT_OPENAI_API_TOKEN = '<openai_api_key>';
-
-const isOpenAiTokenProvided = () => {
-    const token = process.env.OPENAI_API_KEY;
-    return token !== undefined && token !== DEFAULT_OPENAI_API_TOKEN;
-};
-
 const resources = async () => {
     console.log('Downloading resources...');
     await downloadFilters();
@@ -37,9 +30,9 @@ const resources = async () => {
     await updateLocalScriptRulesForFirefox();
     console.log('Local script rules updated');
 
-    if (isOpenAiTokenProvided()) {
+    if (process.env.OPENAI_API_KEY) {
         console.log('Finding dangerous rules...');
-        await findDangerousRules();
+        await findDangerousRules(process.env.OPENAI_API_KEY);
         console.log('Dangerous rules check completed');
     } else {
         console.log('OpenAI API key is not provided, skipping dangerous rules check');

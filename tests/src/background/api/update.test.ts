@@ -10,6 +10,8 @@ import {
     type MockInstance,
 } from 'vitest';
 
+import { HybridStorage } from '@adguard/tswebextension/core-storages';
+
 import { UpdateApi } from '../../../../Extension/src/background/api';
 import {
     mockLocalStorage,
@@ -24,11 +26,11 @@ import {
     getStorageFixturesV8,
     getStorageFixturesV9,
     getStorageFixturesV10,
+    getStorageFixturesV11,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { FILTER_KEY_PREFIX, SbCache } from '../../../../Extension/src/background/storages';
-import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
 import { SettingOption } from '../../../../Extension/src/background/schema/settings/enum';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 
@@ -53,6 +55,7 @@ describe('Update Api', () => {
         const v8 = getStorageFixturesV8(expires);
         const v9 = getStorageFixturesV9(expires);
         const v10 = getStorageFixturesV10(expires);
+        const v11 = getStorageFixturesV11(expires);
 
         let setMultipleSpy: MockInstance;
 
@@ -108,16 +111,17 @@ describe('Update Api', () => {
             expect(settingsSchema.parse(settings)).toStrictEqual(settingsSchema.parse(data.to));
         };
 
-        it.each(getCases(v0, v10))('should update from v0 to v10', runCase);
-        it.each(getCases(v1, v10))('should update from v1 to v10', runCase);
-        it.each(getCases(v2, v10))('should update from v2 to v10', runCase);
-        it.each(getCases(v3, v10))('should update from v3 to v10', runCase);
-        it.each(getCases(v4, v10))('should update from v4 to v10', runCase);
-        it.each(getCases(v5, v10))('should update from v5 to v10', runCase);
-        it.each(getCases(v6, v10))('should update from v6 to v10', runCase);
-        it.each(getCases(v7, v10))('should update from v7 to v10', runCase);
-        it.each(getCases(v8, v10))('should update from v8 to v10', runCase);
-        it.each(getCases(v9, v10))('should update from v9 to v10', runCase);
+        it.each(getCases(v0, v11))('should update from v0 to v11', runCase);
+        it.each(getCases(v1, v11))('should update from v1 to v11', runCase);
+        it.each(getCases(v2, v11))('should update from v2 to v11', runCase);
+        it.each(getCases(v3, v11))('should update from v3 to v11', runCase);
+        it.each(getCases(v4, v11))('should update from v4 to v11', runCase);
+        it.each(getCases(v5, v11))('should update from v5 to v11', runCase);
+        it.each(getCases(v6, v11))('should update from v6 to v11', runCase);
+        it.each(getCases(v7, v11))('should update from v7 to v11', runCase);
+        it.each(getCases(v8, v11))('should update from v8 to v11', runCase);
+        it.each(getCases(v9, v11))('should update from v9 to v11', runCase);
+        it.each(getCases(v10, v11))('should update from v9 to v11', runCase);
 
         // Separate test for migration from V3 storage, because after this
         // version we moved from localStorage to hybridStorage.

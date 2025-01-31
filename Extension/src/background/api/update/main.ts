@@ -18,6 +18,9 @@
 import zod from 'zod';
 import isString from 'lodash-es/isString';
 import isUndefined from 'lodash-es/isUndefined';
+import isObject from 'lodash-es/isObject';
+
+import { HybridStorage } from '@adguard/tswebextension/core-storages';
 
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
@@ -29,6 +32,9 @@ import {
     hybridStorage,
     browserStorage,
     RawFiltersStorage,
+    BINARY_FILTER_KEY_PREFIX,
+    CONVERSION_MAP_PREFIX,
+    SOURCE_MAP_PREFIX,
 } from '../../storages';
 import {
     ADGUARD_SETTINGS_KEY,
@@ -69,6 +75,7 @@ export class UpdateApi {
         '7': UpdateApi.migrateFromV7toV8,
         '8': UpdateApi.migrateFromV8toV9,
         '9': UpdateApi.migrateFromV9toV10,
+        '10': UpdateApi.migrateFromV10toV11,
     };
 
     /**
@@ -171,6 +178,83 @@ export class UpdateApi {
         }
 
         await UpdateApi.removeQuickFixesFilter();
+    }
+
+    /**
+     * Legacy deserialization function for Uint8Array.
+     *
+     * Helper function to deserialize Uint8Array members of an object.
+     * This workaround is needed because by default chrome.storage API doesn't support Uint8Array,
+     * and we use it to store serialized filter lists.
+     *
+     * @param value Object to deserialize.
+     * @returns Deserialized object.
+     */
+    private static deserialize = (value: unknown): unknown => {
+        const isObj = isObject(value);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (isObj && (value as any).__type === 'Uint8Array') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return new Uint8Array((value as any).data);
+        }
+
+        if (Array.isArray(value)) {
+            return value.map(this.deserialize);
+        }
+
+        if (isObj) {
+            const deserializedObject: { [key: string]: unknown } = {};
+            // eslint-disable-next-line no-restricted-syntax
+            for (const [key, val] of Object.entries(value)) {
+                deserializedObject[key] = this.deserialize(val);
+            }
+            return deserializedObject;
+        }
+
+        return value;
+    };
+
+    /**
+     * Run data migration from schema v10 to schema v11.
+     */
+    private static async migrateFromV10toV11(): Promise<void> {
+        // Only relevant if IDB is not available.
+        if (await HybridStorage.isIDBSupported()) {
+            logger.debug('IDB is supported, skipping migration');
+            return;
+        }
+
+        const entries = await browserStorage.entries();
+
+        const keys = Object.keys(entries).filter((key) => [
+            RAW_FILTER_KEY_PREFIX,
+            BINARY_FILTER_KEY_PREFIX,
+            FILTER_KEY_PREFIX,
+            CONVERSION_MAP_PREFIX,
+            SOURCE_MAP_PREFIX,
+        ].some((prefix) => key.startsWith(prefix)));
+
+        if (keys.length === 0) {
+            logger.debug('No data to migrate');
+            return;
+        }
+
+        const migrationData: Record<string, unknown> = {};
+
+        keys.forEach((key) => {
+            const val = entries[key];
+
+            if (!Object.prototype.hasOwnProperty.call(val, 'json')) {
+                migrationData[key] = HybridStorage.serialize(UpdateApi.deserialize(entries[key]));
+            }
+        });
+
+        const transactionResult = await browserStorage.setMultiple(migrationData);
+
+        if (!transactionResult) {
+            logger.error('Failed to save migrated data');
+        }
     }
 
     /**

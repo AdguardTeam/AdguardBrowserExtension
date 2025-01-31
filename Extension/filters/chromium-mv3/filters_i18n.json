@@ -10780,6 +10780,10 @@
 				"description": "Створений спеціально для блокування реклами на сайтах македонською мовою",
 				"name": "Блокування реклами македонською мовою"
 			},
+			"vi": {
+				"description": "Được thiết kế đặc biệt để chặn quảng cáo trên các trang web bằng tiếng Macedonia",
+				"name": "Chặn quảng cáo dành riêng cho ngôn ngữ Macedonia"
+			},
 			"zh": {
 				"description": "专门设计用于屏蔽马其顿语网页上的广告",
 				"name": "专为马其顿语定制的广告拦截"
@@ -12351,8 +12355,8 @@
 				"description": "Filter som avblockerar sökannonser i Google, DuckDuckGo, Bing eller Yahoo och egenreklam på webbplatser."
 			},
 			"tr": {
-				"name": "Arama motoru reklamları ve öz tanıtımına izin veren filtre",
-				"description": "Google, DuckDuckGo, Bing veya Yahoo'daki arama ağı reklamlarının ve web sitelerinde kendi kendini tanıtmanın engellemesini kaldıran filtre."
+				"name": "Arama motoru reklamları ve öz tanıtıma izin veren filtre",
+				"description": "Google, DuckDuckGo, Bing veya Yahoo'daki arama motoru reklamlarının ve sitelerdeki öz tanıtıma izin veren filtre."
 			},
 			"uk": {
 				"name": "Фільтр розблокування корисної реклами",
@@ -13300,7 +13304,7 @@
 			},
 			"tr": {
 				"name": "AdGuard Açılır Pencereler filtresi",
-				"description": "Filtre politikamıza göre Web siteleri için gerekli olmayan her türlü açılır pencereleri engeller."
+				"description": "Filtre politikamıza göre sitelerin çalışması için gerekli olmayan her türlü açılır pencereyi engeller."
 			},
 			"uk": {
 				"name": "Фільтр спливних сповіщень AdGuard",
@@ -14001,8 +14005,8 @@
 				"description": "Filtro per risolvere rapidamente i problemi di filtraggio dei contenuti nei siti web più popolari senza aggiornare l'estensione."
 			},
 			"ja": {
-				"name": "AdGuard クイックフィックスフィルター",
-				"description": "拡張機能を更新せずに、人気のある Web サイトのコンテンツ フィルタリングの問題をすばやく解決するフィルター。"
+				"name": "AdGuard 臨時修正用フィルタ",
+				"description": "AdGuard ブラウザ拡張機能をアップデートする必要なく、人気Webサイトでのコンテンツフィルタリング問題をすばやく解決するためのフィルタです。"
 			},
 			"ko": {
 				"name": "AdGuard 퀵픽스 필터",
@@ -14011,6 +14015,10 @@
 			"nl": {
 				"name": "AdGuard Quick Fixes filter",
 				"description": "Filter om snel problemen met het filteren van inhoud op populaire websites op te lossen zonder de uitbreiding bij te werken."
+			},
+			"pl": {
+				"name": "AdGuard Quick Fixes filter",
+				"description": "Filtr umożliwiający szybkie rozwiązanie problemów z filtrowaniem na popularnych stronach bez konieczności aktualizacji rozszerzenia."
 			},
 			"pt": {
 				"name": "Filtro AdGuard Quick Fixes",
@@ -15263,7 +15271,7 @@
 				"description": "Blokkeert advertenties op Thaise websites."
 			},
 			"pl": {
-				"name": "EasyList Tajlandia",
+				"name": "EasyList Thailand",
 				"description": "Filtr blokujący reklamy w witrynach tajskich."
 			},
 			"pt": {
@@ -15401,7 +15409,7 @@
 				"description": "Filter dat specifiek advertenties op websites in de Hongaarse taal verwijdert."
 			},
 			"pl": {
-				"name": "Filtr węgierski",
+				"name": "Hungarian filter",
 				"description": "Hufilter. Lista filtrów, która usuwa reklamy na stronach w języku węgierskim."
 			},
 			"pt": {
@@ -15770,6 +15778,10 @@
 				"name": "Filtros polacos oficiales para AdBlock, uBlock Origin y AdGuard",
 				"description": "Lista de filtros adicionales para sitios web en polaco."
 			},
+			"fa": {
+				"name": "Official Polish filters for AdBlock, uBlock Origin & AdGuard",
+				"description": "فهرست فیلتر اضافی برای وب‌سایت‌ها به زبان اندونزیایی."
+			},
 			"fi": {
 				"name": "Viralliset puolankielen suodattimet AdBlockille, uBlock Originille ja AdGuardille",
 				"description": "Lisäsuodatinlista puolankielisille verkkosivustoille."
@@ -15815,7 +15827,7 @@
 				"description": "Extra filterlijst voor websites in het Pools."
 			},
 			"pl": {
-				"name": "Oficjalne polskie filtry dla AdBlock, uBlock Origin i AdGuard",
+				"name": "Official Polish filters for AdBlock, uBlock Origin & AdGuard",
 				"description": "Polski dodatek do EasyList."
 			},
 			"pt": {
@@ -15849,6 +15861,10 @@
 			"sr": {
 				"name": "Zvanični poljski filteri za AdBlock, uBlock Origin i AdGuard",
 				"description": "Poljski dodatak za EasyList."
+			},
+			"sv": {
+				"name": "Official Polish filters for AdBlock, uBlock Origin & AdGuard",
+				"description": "Extra filterlista för webbplatser på polska."
 			},
 			"tr": {
 				"name": "Official Polish filters for AdBlock, uBlock Origin & AdGuard",
@@ -15953,7 +15969,7 @@
 				"description": "Poolse filterlijst voor het blokkeren van cookies."
 			},
 			"pl": {
-				"name": "Polskie Filtry Ciasteczkowe",
+				"name": "Polish GDPR-Cookies Filters",
 				"description": "Polska lista filtrów do blokowania plików cookie."
 			},
 			"pt": {
@@ -16091,7 +16107,7 @@
 				"description": "Filter voor advertentie blokkering op Estse websites."
 			},
 			"pl": {
-				"name": "Lista estońska",
+				"name": "Estonian List",
 				"description": "Filtr do blokowania reklam na stronach estońskich."
 			},
 			"pt": {
@@ -16529,7 +16545,7 @@
 				"description": "Finsk reklameblokkeringsfilterliste."
 			},
 			"pl": {
-				"name": "Adblock List dla Finlandii",
+				"name": "Adblock List for Finland",
 				"description": "Fińska lista filtrów blokujących reklamy."
 			},
 			"pt": {
@@ -16805,7 +16821,7 @@
 				"description": "Officiële Poolse filters tegen Adblock waarschuwingen."
 			},
 			"pl": {
-				"name": "Polski filtr przeciwko alertom o Adblocku",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Oficjalne polskie filtry przeciwko alertom Adblock."
 			},
 			"pt": {
@@ -16907,7 +16923,7 @@
 				"description": "Suodatin, joka pyrkii poistamaan ruotsinkieliset mainokset, seurannat, ärsykkeet, sponsoroidut artikkelit yms."
 			},
 			"fr": {
-				"name": "Filtre Suédois par Frellwit",
+				"name": "Frellwit's Swedish Filter",
 				"description": "Un filtre qui vise à supprimer les publicités régionales Suédoises, le suivi, les médias sociaux, les nuisances, les articles sponsorisés, etc."
 			},
 			"he": {
@@ -17053,7 +17069,7 @@
 				"description": "Tämä lista kattaa norjan-, tanskan-, islanninkieliset alueet, sekä saamenkielisen alkuperäisväestön."
 			},
 			"fr": {
-				"name": "Filtres nordiques de Dandelion Sprout",
+				"name": "Dandelion Sprout's Nordic Filters",
 				"description": "Cette liste couvre les sites Web de la Norvège, du Danemark, de l'Islande, des territoires danois et de la population autochtone Sami."
 			},
 			"he": {
@@ -17073,7 +17089,7 @@
 				"description": "Daftar ini mencakup situs web untuk Norwegia, Denmark, Islandia, wilayah Denmark, dan penduduk asli Sami."
 			},
 			"it": {
-				"name": "Filtri Dandelion Sprout Nordic",
+				"name": "Dandelion Sprout's Nordic Filters",
 				"description": "Questo elenco copre siti web per Norvegia, Danimarca, Islanda, territori olandesi e popolazione indigena Sami."
 			},
 			"ja": {
@@ -17247,7 +17263,7 @@
 				"description": "Een filterlijst voor websites in het Servisch, Montenegrijns, Kroatisch en Bosnisch."
 			},
 			"pl": {
-				"name": "Serbsko-chorwacka lista Dandelion Sprout",
+				"name": "Dandelion Sprout's Serbo-Croatian List",
 				"description": "Lista filtrów dla stron w języku serbskim, czarnogórskim, chorwackim i bośniackim."
 			},
 			"pt": {
@@ -17527,7 +17543,7 @@
 				"description": "Blokkeert advertenties en volgers op verschillende Macedonische websites."
 			},
 			"pl": {
-				"name": "Macedońskie filtry adBlock",
+				"name": "Macedonian adBlock Filters",
 				"description": "Blokuje reklamy i moduły śledzące na różnych macedońskich stronach internetowych."
 			},
 			"pt": {

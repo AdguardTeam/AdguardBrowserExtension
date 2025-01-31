@@ -65,8 +65,13 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
 
     const transformManifest = (content: Buffer) => {
         const filters = fs
-            .readdirSync(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3))
-            .filter((filter) => filter.match(/filter_\d+\.txt/));
+            .readdirSync(
+                FILTERS_DEST.replace(
+                    '%browser',
+                    path.join(AssetsFiltersBrowser.ChromiumMv3, '/declarative'),
+                ),
+            )
+            .filter((filter) => filter.match(/ruleset_\d+/));
 
         return updateManifestBuffer(
             BUILD_ENV,
