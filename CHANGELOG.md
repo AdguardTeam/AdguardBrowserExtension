@@ -19,6 +19,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.49...HEAD
 
+<!-- FIXME: add date when released on github -->
+## [5.0.188]
+
+### Changed
+
+- Scriptlet rules are not limited to ones from the pre-built filters.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.11.
+
+### Removed
+
+- AdGuard Quick Fixes filter.
+- Custom filters are not available temporarily.
+
+[5.0.188]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.188
+
+## [5.0.185] - 2025-01-22
+
+### Added
+
+- AdGuard Quick Fixes filter is back.
+
+### Changed
+
+- Scriptlet rules are available only from the pre-built filters now.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.10.
+
+### Removed
+
+- Injection of remotely hosted scripts.
+
+[5.0.185]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.185
+
 ## [5.0.183] - 2025-01-14
 
 ### Removed
