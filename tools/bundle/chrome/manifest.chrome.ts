@@ -55,5 +55,5 @@ export const chromeManifest = {
     'optional_permissions': [
         'privacy',
     ],
-    'minimum_chrome_version': String(MIN_SUPPORTED_VERSION.CHROMIUM),
+    'minimum_chrome_version': String(MIN_SUPPORTED_VERSION.CHROMIUM_MV2),
 };

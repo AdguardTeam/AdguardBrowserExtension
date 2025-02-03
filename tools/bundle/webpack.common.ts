@@ -328,7 +328,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                             options: {
                                 env: {
                                     targets: {
-                                        chrome: MIN_SUPPORTED_VERSION.CHROMIUM,
+                                        chrome: MIN_SUPPORTED_VERSION.CHROMIUM_MV2,
                                         firefox: MIN_SUPPORTED_VERSION.FIREFOX,
                                         opera: MIN_SUPPORTED_VERSION.OPERA,
                                     },
