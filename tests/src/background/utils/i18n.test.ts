@@ -1,3 +1,9 @@
+import {
+    describe,
+    it,
+    expect,
+} from 'vitest';
+
 import { I18n } from '../../../../Extension/src/background/utils';
 
 describe('I18n utility', () => {

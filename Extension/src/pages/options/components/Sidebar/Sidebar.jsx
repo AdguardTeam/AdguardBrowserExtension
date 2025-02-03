@@ -38,6 +38,13 @@ const Sidebar = observer(() => {
     const openSidebar = () => setOpen(true);
     const closeSidebar = () => setOpen(false);
 
+    /**
+     * Close sidebar and remove specific limit warning, e.g. on reaching dynamic rules limit on custom filter enabling.
+     */
+    const closeSidebarWrapper = () => {
+        closeSidebar();
+    };
+
     const handleCompareClick = async () => {
         await messenger.openComparePage();
     };
@@ -58,8 +65,8 @@ const Sidebar = observer(() => {
                     <div
                         role="menu"
                         tabIndex={0}
-                        onClick={closeSidebar}
-                        onKeyUp={closeSidebar}
+                        onClick={closeSidebarWrapper}
+                        onKeyUp={closeSidebarWrapper}
                         className="sidebar__overlay"
                     />
                 )
@@ -72,7 +79,7 @@ const Sidebar = observer(() => {
                 )}
             <div className={className}>
                 <Icon id="#logo" classname="icon--logo sidebar__logo" />
-                <Nav closeSidebar={closeSidebar} />
+                <Nav closeSidebar={closeSidebarWrapper} />
                 {settingsStore.showAdguardPromoInfo && (
                     <Compare
                         click={handleCompareClick}

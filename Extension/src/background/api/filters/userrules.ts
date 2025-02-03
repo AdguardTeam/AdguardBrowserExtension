@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import {
-    AnyRule,
-    InputByteBuffer,
-    RuleParser,
-} from '@adguard/agtree';
+import { AnyRule, InputByteBuffer } from '@adguard/agtree';
+import { RuleParser } from '@adguard/agtree/parser';
+import { RuleDeserializer } from '@adguard/agtree/deserializer';
 import { PreprocessedFilterList, RuleSyntaxUtils } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
-import { AntiBannerFiltersId } from '../../../common/constants';
+import { AntiBannerFiltersId, emptyPreprocessedFilterList } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { listeners } from '../../notifier';
 import {
@@ -90,7 +88,7 @@ export class UserRulesApi {
             let ruleNode: AnyRule;
             // If the next byte is 0, it means that there's nothing to read.
             while (buffer.peekUint8() !== 0) {
-                RuleParser.deserialize(buffer, ruleNode = {} as AnyRule);
+                RuleDeserializer.deserialize(buffer, ruleNode = {} as AnyRule);
                 if (RuleSyntaxUtils.isRuleForUrl(ruleNode, url)) {
                     return true;
                 }
@@ -111,12 +109,7 @@ export class UserRulesApi {
         const data = await FiltersStorage.getAllFilterData(AntiBannerFiltersId.UserFilterId);
 
         if (!data) {
-            return {
-                rawFilterList: '',
-                filterList: [],
-                sourceMap: {},
-                conversionMap: {},
-            };
+            return { ...emptyPreprocessedFilterList };
         }
 
         return data;
@@ -127,7 +120,7 @@ export class UserRulesApi {
      *
      * @note This may include converted rules and does not include syntactically invalid rules.
      *
-     * @returns User rules list.
+     * @returns User rules list in binary format.
      */
     public static async getBinaryUserRules(): Promise<Uint8Array[]> {
         const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);

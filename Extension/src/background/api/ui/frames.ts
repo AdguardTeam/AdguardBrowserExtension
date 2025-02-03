@@ -17,16 +17,15 @@
  */
 
 import {
-    type TabContext,
-    isHttpRequest,
     getDomain,
+    isHttpRequest,
     MAIN_FRAME_ID,
-} from '@adguard/tswebextension';
-
+    type TabContext,
+} from '../../tswebextension';
 import { AntiBannerFiltersId } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';
-import { PageStatsApi } from '../filters';
+import { PageStatsApi } from '../page-stats';
 import { SettingsApi } from '../settings';
 
 export type FrameRule = {
@@ -35,18 +34,63 @@ export type FrameRule = {
 };
 
 export type FrameData = {
+    /**
+     * Url of the tab.
+     */
     url: string | null,
+
+    /**
+     * Domain of the tab's url.
+     */
     domainName: string | null,
-    applicationAvailable: boolean,
+
+    /**
+     * Is background already started and filtering is possible.
+     */
+    isFilteringPossible: boolean,
+
+    /**
+     * Is filtering disabled or enabled in extension settings.
+     */
     applicationFilteringDisabled: boolean,
+
+    /**
+     * If url of current tab is not http.
+     */
     urlFilteringDisabled: boolean,
+
+    /**
+     * If main frame rule disabled filtering in current tab.
+     */
     documentAllowlisted: boolean,
+
+    /**
+     * If main frame rule from user rules or from allowlist.
+     */
     userAllowlisted: boolean,
+
+    /**
+     * Is current url of the tab in the exceptions or not.
+     */
     canAddRemoveRule: boolean,
+
+    /**
+     * Main frame rule - rule which applied to entire frame, e.g. $document, $all, etc.
+     */
     frameRule: FrameRule | null,
+
+    /**
+     * Number of blocked request for current tab.
+     */
     totalBlockedTab: number,
+
+    /**
+     * Number of blocked request for entire extension.
+     */
     totalBlocked: number,
 };
+
+type MainFrameDataInfo = Pick<TabContext, 'info' | 'frames' | 'blockedRequestCount' | 'mainFrameRule'>;
 
 /**
  * Helper class for retrieving main frame data from both tswebextension and app state.
@@ -70,7 +114,7 @@ export class FramesApi {
         frames,
         blockedRequestCount,
         mainFrameRule,
-    }: TabContext): FrameData {
+    }: MainFrameDataInfo): FrameData {
         const mainFrame = frames.get(MAIN_FRAME_ID);
 
         const url = info?.url
@@ -81,7 +125,7 @@ export class FramesApi {
 
         const urlFilteringDisabled = !url || !isHttpRequest(url);
 
-        const applicationAvailable = appContext.get(AppContextKey.IsInit) && !urlFilteringDisabled;
+        const isFilteringPossible = appContext.get(AppContextKey.IsInit) && !urlFilteringDisabled;
 
         let frameRule: FrameRule | null = null;
         let documentAllowlisted = false;
@@ -93,18 +137,16 @@ export class FramesApi {
         const totalBlockedTab = blockedRequestCount;
         const applicationFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
 
-        if (applicationAvailable) {
+        if (isFilteringPossible) {
             documentAllowlisted = !!mainFrameRule && mainFrameRule.isFilteringDisabled();
             if (documentAllowlisted && mainFrameRule) {
-                const rule = mainFrameRule;
-
-                const filterId = rule.getFilterListId();
+                const filterId = mainFrameRule.getFilterListId();
 
                 userAllowlisted = filterId === AntiBannerFiltersId.UserFilterId
                        || filterId === AntiBannerFiltersId.AllowlistFilterId;
                 frameRule = {
                     filterId,
-                    ruleText: rule.getText(),
+                    ruleText: mainFrameRule.getText(),
                 };
             }
             // It means site in exception
@@ -113,7 +155,7 @@ export class FramesApi {
 
         return {
             url,
-            applicationAvailable,
+            isFilteringPossible,
             domainName,
             applicationFilteringDisabled,
             urlFilteringDisabled,

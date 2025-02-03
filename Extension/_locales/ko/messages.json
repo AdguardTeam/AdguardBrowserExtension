@@ -89,6 +89,30 @@
     "options_popup_check_false_description": {
         "message": "시용자 지정 필터 추가 중 오류가 발생했습니다."
     },
+    "options_add_custom_filter_modal_title": {
+        "message": "사용자 지정 필터 추가"
+    },
+    "options_add_custom_filter_modal_checking_filter": {
+        "message": "필터를 확인하는 중..."
+    },
+    "options_add_custom_filter_modal_error_title": {
+        "message": "사용자 정의 필터를 추가하지 못했습니다."
+    },
+    "options_add_custom_filter_modal_error_subtitle": {
+        "message": "다시 시도하거나 고객 지원에 문의해 주세요."
+    },
+    "options_add_custom_filter_modal_add_button": {
+        "message": "추가"
+    },
+    "options_add_custom_filter_modal_filter_name": {
+        "message": "필터 이름:"
+    },
+    "options_add_custom_filter_modal_filter_trusted": {
+        "message": "신뢰함"
+    },
+    "options_add_custom_filter_modal_filter_trusted_description": {
+        "message": "신뢰할 수 있는 필터는 강력한 규칙 수정자를 사용할 수 있습니다. 신뢰할 수 있는 개발자의 필터를 사용해야 합니다."
+    },
     "options_popup_try_again_button": {
         "message": "다시 시도해보세요"
     },
@@ -117,8 +141,8 @@
         "message": "AdGuard 광고차단기"
     },
     "description": {
-        "description": "TEXT MAX LENGTH: 132",
-        "message": "광고, 팝업, Facebook이나 YouTube 등 사이트의 광고를 차단하는 타의 추종을 불허하는 광고 차단 확장 프로그램입니다."
+        "message": "광고, 팝업, Facebook이나 YouTube 등 사이트의 광고를 차단하는 타의 추종을 불허하는 광고 차단 확장 프로그램입니다.",
+        "description": "TEXT MAX LENGTH: 132"
     },
     "background_tab_title": {
         "message": "백그라운드 탭"
@@ -127,7 +151,7 @@
         "message": "허용 목록"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard는 허용 목록에 있는 웹 사이트를 필터링하지 않습니다."
+        "message": "AdGuard는 허용 목록에 있는 웹사이트를 필터링하지 않습니다."
     },
     "options_allowlist_invert": {
         "message": "허용 목록 반전"
@@ -137,6 +161,9 @@
     },
     "options_allowlist_alert_invert": {
         "message": "허용 목록이 반전되었습니다. 허용 목록에 추가된 웹 사이트에서만 광고가 차단됩니다. <a>비활성화<\/a>"
+    },
+    "options_allowlist_leave_subtitle": {
+        "message": "허용 목록에 대한 변경 사항이 손실됩니다."
     },
     "options_userfilter": {
         "message": "사용자 규칙"
@@ -193,7 +220,7 @@
         "message": "필터 규칙 개수: %rules_count%"
     },
     "options_antibanner_custom_group": {
-        "message": "사용자 정의"
+        "message": "사용자 정의 필터"
     },
     "options_filters_enabled": {
         "message": "활성화 됨:"
@@ -213,11 +240,11 @@
     "options_filters_info_mv3_total_rules": {
         "message": "전체 규칙: %num%"
     },
-    "options_filters_info_mv3_specs": {
-        "message": "Github의 사양"
-    },
     "options_add_custom_filter": {
         "message": "사용자 정의 필터 추가"
+    },
+    "options_filters_custom_disabled_cws": {
+        "message": "사용자 지정 필터는 곧 다시 돌아올 예정입니다. 블로그에서 자세히 알아보세요."
     },
     "options_empty_custom_filter": {
         "message": "아직 사용자 지정 필터가 없습니다"
@@ -235,10 +262,10 @@
         "message": "이 설정 파일을 불러오기 위해 AdGuard가 개인정보 보호 관련 설정을 변경하도록 허용하세요."
     },
     "options_popup_import_success_title": {
-        "message": "설정을 성공적으로 불러왔습니다!"
+        "message": "설정을 가져왔습니다."
     },
     "options_popup_import_error_title": {
-        "message": "설정을 불러오는 도중에 에러가 발생했습니다!"
+        "message": "설정을 가져오지 못했습니다."
     },
     "options_popup_import_error_file_description": {
         "message": "무엇인가 잘못되었습니다."
@@ -286,10 +313,28 @@
         "message": "차단: %num%개"
     },
     "popup_tab_blocked_all_count": {
-        "message": "총: %num%개"
+        "message": "총 차단됨: %num%"
     },
     "popup_statistics_total": {
         "message": "합계"
+    },
+    "popup_statistics_all_categories": {
+        "message": "모두"
+    },
+    "popup_statistics_category_advertising": {
+        "message": "광고"
+    },
+    "popup_statistics_category_trackers": {
+        "message": "트래커"
+    },
+    "popup_statistics_category_social_media": {
+        "message": "SNS"
+    },
+    "popup_statistics_category_cdn": {
+        "message": "CDN"
+    },
+    "popup_statistics_category_other": {
+        "message": "기타"
     },
     "popup_statistics_week_days_mon": {
         "message": "월"
@@ -382,7 +427,7 @@
         "message": "더 알아보기"
     },
     "popup_block_site_ads_option": {
-        "message": "이 웹 사이트에서 광고 차단"
+        "message": "수동으로 광고 차단"
     },
     "popup_security_report": {
         "message": "웹사이트 보안 확인"
@@ -391,16 +436,16 @@
         "message": "이 웹사이트에 대한 사용자 규칙 삭제"
     },
     "context_block_site_ads": {
-        "message": "이 웹사이트에서 광고 차단..."
+        "message": "수동으로 광고 차단"
     },
     "context_security_report": {
-        "message": "웹사이트 보안 확인..."
+        "message": "웹사이트 보안 확인"
     },
     "context_complaint_website": {
-        "message": "문제 신고하기..."
+        "message": "문제 신고"
     },
     "context_site_filtering_disabled": {
-        "message": "이 도메인에서 AdGuard 실행할 수 없음"
+        "message": "AdGuard가 이 페이지를 필터링할 수 없습니다."
     },
     "context_disable_protection": {
         "message": "AdGuard 보호 일시 정지"
@@ -412,10 +457,10 @@
         "message": "AdGuard 보호 일시 정지됨"
     },
     "context_open_settings": {
-        "message": "AdGuard 설정..."
+        "message": "AdGuard 설정"
     },
     "context_open_log": {
-        "message": "필터링 로그..."
+        "message": "필터링 로그 열기"
     },
     "context_site_exception": {
         "message": "이 웹사이트는 예외 목록에 있음"
@@ -441,6 +486,9 @@
     "filters_download_loading": {
         "message": "필터 데이터베이스를 불러오는 동안 기다려주세요..."
     },
+    "post_install_loading": {
+        "message": "확장 프로그램 로딩 중..."
+    },
     "filtering_modal_element": {
         "message": "요소"
     },
@@ -460,10 +508,10 @@
         "message": "탭 검색"
     },
     "filtering_log_preserve_log_off": {
-        "message": "로그 보존: 꺼짐"
+        "message": "로그를 기록하지 않음"
     },
     "filtering_log_preserve_log_on": {
-        "message": "로그 보존: 켜짐"
+        "message": "로그를 기록"
     },
     "filtering_refresh_tab_short": {
         "message": "새로고침"
@@ -493,7 +541,7 @@
         "message": "필터"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "필터링 이벤트 로그를 확인하려면 <reset>필터를 비활성화하거나<\/reset> 페이지를 <refresh>새로고침<\/refresh> 하세요."
+        "message": "찾을 수 없습니다. 로그 기록을 보려면 <reset>필터를 비활성화<\/reset>하거나 <refresh>페이지를 새로 고침<\/refresh>하세요."
     },
     "filtering_modal_info_title": {
         "message": "요청 세부 사항"
@@ -544,7 +592,7 @@
         "message": "상태:"
     },
     "filtering_modal_status_text_error": {
-        "message": "수신된 응답이 없습니다"
+        "message": "미리보기를 로드하는 데 실패했습니다. 다시 시도해 주세요."
     },
     "filtering_modal_status_text_loading": {
         "message": "로딩 중..."
@@ -643,7 +691,7 @@
         "message": "검색 광고 및 웹 사이트 광고홍보 차단"
     },
     "options_block_acceptable_ads_desc": {
-        "message": "검색 결과에 표시되는 <a>컨텍스트 기반 광고와 자체 홍보 광고를<\/a> 차단하세요."
+        "message": "웹사이트에서 자체 홍보 광고를 제거하고 검색 결과에서 문맥별 광고를 제거합니다. <a>자세히 알아보기<\/a>"
     },
     "options_show_blocked_ads_count_title": {
         "message": "차단된 광고의 수를 AdGuard 확장 프로그램 아이콘에 표시"
@@ -702,17 +750,32 @@
     "options_editor_save": {
         "message": "저장"
     },
+    "options_editor_leave_title": {
+        "message": "저장하지 않고 종료하시겠습니까?"
+    },
+    "options_editor_leave_confirm": {
+        "message": "네, 종료합니다"
+    },
+    "options_editor_leave_cancel": {
+        "message": "편집으로 돌아가기"
+    },
     "options_userfilter_import": {
         "message": "가져오기"
     },
     "options_userfilter_description_key": {
         "message": "자신만의 규칙을 추가할 수 있습니다. 이 설정은 HTML\/CSS에 익숙한 고급 사용자에게 권장합니다. <a>필터 규칙 튜토리얼<\/a>을 읽어보고 사용자 지정 필터 규칙을 어떻게 만드는지 알아보세요."
     },
+    "options_userfilter_subtitle_key": {
+        "message": "나만의 필터링 규칙으로 광고 차단을 세밀하게 조정하세요."
+    },
     "options_userfilter_line_break_off": {
-        "message": "개행: 꺼짐"
+        "message": "줄바꿈: 비활성화됨"
     },
     "options_userfilter_line_break_on": {
-        "message": "개행: 켜짐"
+        "message": "줄바꿈: 활성화됨"
+    },
+    "options_userfilter_leave_subtitle": {
+        "message": "규칙에 대한 변경 사항이 손실됩니다."
     },
     "options_open_changelog": {
         "message": "변경사항"
@@ -738,20 +801,20 @@
     "options_miscellaneous_settings": {
         "message": "추가 설정"
     },
+    "options_rule_syntax": {
+        "message": "규칙 구문"
+    },
     "options_rule_limits": {
         "message": "규칙 제한"
     },
     "options_rule_limits_description": {
-        "message": "이 확장 프로그램은 매니페스트 V3를 따릅니다."
-    },
-    "options_rule_limits_description_link": {
-        "message": "매니페스트 V3에 대해 자세히 알아보기"
+        "message": "Chrome은 적용할 수 있는 규칙의 수를 제한합니다."
     },
     "options_rule_limits_dynamic": {
         "message": "동적 규칙"
     },
     "options_rule_limits_dynamic_user_rules": {
-        "message": "사용자 정의 규칙이나 필터처럼 사용자가 추가한 규칙"
+        "message": "<user_rules>사용자 규칙<\/user_rules>, <allowlist>허용 목록 웹사이트<\/allowlist>, <custom_filters>사용자 정의 필터<\/custom_filters>, <quick_fixes>퀵픽스 필터<\/quick_fixes>와 같은 규칙을 사용자가 추가할 수 있습니다."
     },
     "options_rule_limits_dynamic_regex": {
         "message": "정규 표현식 규칙 (위에 포함되어 있음)"
@@ -760,13 +823,13 @@
         "message": "정적 규칙 집합"
     },
     "options_rule_limits_static_rulesets_builtin": {
-        "message": "방해 요소 차단 또는 언어별 필터와 같은 내장된 필터"
+        "message": "<a>내장 필터<\/a>: 방해 요소 차단 또는 언어별 필터"
     },
     "options_rule_limits_static_rules": {
         "message": "정적 규칙"
     },
     "options_rule_limits_static_rules_all": {
-        "message": "내장 필터의 규칙"
+        "message": "<a>내장 필터<\/a>의 규칙"
     },
     "options_rule_limits_static_rules_regex": {
         "message": "정규 표현식 규칙 (위에 포함되어 있음)"
@@ -850,7 +913,7 @@
         "message": "AdGuard 필터 개발을 도와주세요"
     },
     "options_collect_hit_stats_desc": {
-        "message": "저희가 필터를 개선하고 최적화하는 데 도움을 주는 <a>광고 필터 사용에 대한 익명 통계<\/a>를 전송합니다."
+        "message": "<a>광고 필터 사용량에 대한 익명의 통계<\/a>를 전송하여 AdGuard가 필터를 개선하는 데 도움을 받을 수 있습니다."
     },
     "options_show_context_menu_title": {
         "message": "AdGuard 항목을 브라우저 콘텍스트 메뉴에 추가"
@@ -865,25 +928,25 @@
         "message": "추적 보호"
     },
     "options_privacy_desc": {
-        "message": "다수의 추적 장치들을 차단함으로써 수천 개의 온라인 추적 장치로부터 당신의 신원과 민감한 개인정보를 보호합니다."
+        "message": "가장 널리 사용되는 추적 방법을 차단하여 수천 개의 온라인 추적기로부터 신원과 민감한 개인정보를 보호하세요."
     },
     "options_hide_referrer_title": {
         "message": "제 3자로부터 리퍼러 숨기기"
     },
     "options_hide_referrer_desc": {
-        "message": "방문하는 웹 사이트를 제3자가 알 수 없도록 합니다."
+        "message": "방문하는 웹사이트를 제3자가 알 수 없도록 합니다."
     },
     "options_hide_search_queries_title": {
         "message": "검색어 숨기기"
     },
     "options_hide_search_queries_desc": {
-        "message": "검색 엔진에서 방문한 웹 사이트의 검색어 숨깁니다."
+        "message": "검색 엔진에서 방문한 웹사이트의 검색어 숨깁니다."
     },
     "options_send_not_track_title": {
         "message": "귀하를 추적하지 않도록 웹사이트에 요청"
     },
     "options_send_not_track_desc": {
-        "message": "방문하는 웹 사이트에 <gpc>Global Privacy Control<\/gpc> 및 <dnt>Do Not Track<\/dnt> 신호를 보냅니다."
+        "message": "방문하는 웹사이트에 <gpc>글로벌 개인정보 보호<\/gpc> 및 <dnt>Do Not Track<\/dnt> 신호를 보냅니다."
     },
     "options_stripped_tracking_parameters": {
         "message": "추적 매개변수 제거"
@@ -898,37 +961,37 @@
         "message": "X-Client-Data 헤더 제거"
     },
     "options_remove_client_data_desc": {
-        "message": "Google Chrome이 Google 도메인으로 버전 및 수정 정보를 보내지 못하도록 차단합니다."
+        "message": "Google Chrome이 버전 및 수정 정보를 Google 도메인으로 전송하지 못하도록 차단합니다."
     },
     "options_disable_webrtc_title": {
         "message": "WebRTC 비활성화"
     },
     "options_disable_webrtc_desc": {
-        "message": "WebRTC는 프록시나 VPN을 사용하더라도 IP 주소를 유출할 수 있습니다. WebRTC를 비활성화하면 일부 사이트가 제대로 작동하지 않습니다."
+        "message": "WebRTC는 프록시 또는 VPN을 사용하더라도 IP 주소를 유출할 수 있습니다. WebRTC를 비활성화하면 일부 웹사이트가 손상될 수 있습니다."
     },
     "options_strip_tracking_params_title": {
         "message": "추적 매개 변수 제거"
     },
     "options_strip_tracking_params_description": {
-        "message": "AdGuard URL 추적 필터를 사용하여 웹 요청에서 매개변수를 제거합니다."
+        "message": "AdGuard URL 추적 필터를 사용하여 웹 요청에서 매개 변수를 제거합니다."
     },
     "options_block_known_trackers_title": {
         "message": "추적기 차단"
     },
     "options_block_known_trackers_description": {
-        "message": "AdGuard 추적 방지 필터를 사용하여 추적기 및 웹 분석 도구를 차단합니다."
+        "message": "AdGuard 추적 보호 필터로 사용하여 추적기 및 웹 분석 도구를 차단합니다."
     },
     "options_third_party_title": {
         "message": "서드파티 쿠키 자동 파괴"
     },
     "options_third_party_desc": {
-        "message": "제 3자 쿠키 유지 제한 시간 (분)."
+        "message": "타사 쿠키 유지 제한 시간 (분)"
     },
     "options_first_party_title": {
         "message": "퍼스트 파티 쿠키 자동 파괴 (권장하지 않음)"
     },
     "options_first_party_desc": {
-        "message": "퍼스트 파티 쿠키 유지 제한 시간 (분)."
+        "message": "퍼스트 파티 쿠키 유지 제한 시간 (분)"
     },
     "popup_abuse_site": {
         "message": "문제 신고하기"
@@ -959,6 +1022,9 @@
     },
     "popup_limits_exceeded_warning": {
         "message": "브라우저에서 활성 내장 필터 목록을 수정했습니다."
+    },
+    "snack_on_websites_limits_exceeded_warning": {
+        "message": "AdGuard 확장 프로그램에서 규칙 제한이 초과되었습니다. 필터를 확인하고 필요 없는 필터를 비활성화하세요."
     },
     "short_name": {
         "message": "AdGuard"
@@ -1003,16 +1069,16 @@
         "message": "배너, 팝업, 동영상 광고 등을 차단하려면 여기에서 광고 차단을 설정하세요."
     },
     "group_description_stealth": {
-        "message": "알려진 모든 추적 방법을 차단하여 온라인 추적기로부터 개인정보를 보호하세요."
+        "message": "널리 알려진 모든 추적 방법을 차단하여 수천 개의 온라인 추적기로부터 사용자의 신원과 민감한 개인정보를 보호하세요."
     },
     "group_description_social": {
         "message": "'좋아요'\/'공유' 버튼 및 기타 SNS 위젯을 숨깁니다."
     },
     "group_description_annoyances": {
-        "message": "팝업 창 및 쿠키와 같은 기타 알림을 제거합니다."
+        "message": "팝업 창 및 쿠키 알림과 같은 기타 성가신 알림을 제거하세요."
     },
     "group_description_security": {
-        "message": "맬웨어, 피싱 및 기타 온라인 위협으로부터 자신을 보호하세요."
+        "message": "맬웨어, 피싱 및 기타 온라인 위협으로부터 자신을 보호하세요"
     },
     "group_description_miscellaneous": {
         "message": "더 많은 AdGuard 설정을 통해 웹 서핑을 더 잘 제어하세요."
@@ -1021,13 +1087,16 @@
         "message": "자신만의 필터를 원하는 대로 만들어 세세하게 웹을 필터링하세요."
     },
     "group_description_lang": {
-        "message": "한계를 두지 마세요 — 어떤 언어로 된 웹 사이트에서든 광고를 차단하세요."
+        "message": "모든 언어로 웹사이트의 광고를 차단하세요."
     },
     "fullscreen_user_rules_title": {
         "message": "사용자 규칙"
     },
     "options_user_rules_editor_stub_title": {
-        "message": "편집기가 이미 열려 있습니다"
+        "message": "다른 창에서 편집기가 열렸습니다."
+    },
+    "options_user_rules_editor_stub_subtitle": {
+        "message": "규칙을 닫으면 여기에 규칙이 표시됩니다."
     },
     "options_user_rules_editor_stub_go_to_editor_button": {
         "message": "편집기로 이동"
@@ -1063,25 +1132,25 @@
         "message": "다시 시도"
     },
     "filtering_log_tag_tooltip_first_party": {
-        "message": "퍼스트 파티 요청만 표시"
+        "message": "퍼스트 파티 요청"
     },
     "filtering_log_tag_tooltip_third_party": {
-        "message": "제 3자 요청만 표시"
+        "message": "써드 파티 요청"
     },
     "filtering_log_tag_tooltip_regular": {
-        "message": "필터링 없이 처리된 요청만 표시"
+        "message": "필터링 없이 처리된 요청"
     },
     "filtering_log_tag_tooltip_allowed": {
-        "message": "허용 요청 및 차단 해제된 요청만 허용"
+        "message": "허용 및 차단 해제된 요청"
     },
     "filtering_log_tag_tooltip_blocked": {
-        "message": "차단된 요청만 표시"
+        "message": "차단된 요청"
     },
     "filtering_log_tag_tooltip_modified": {
-        "message": "수정된 요청만 표시"
+        "message": "수정된 요청"
     },
     "filtering_log_tag_tooltip_user_rules": {
-        "message": "사용자 규칙에 의해 변경된 요청만 표시"
+        "message": "사용자 규칙에 관련된 요청"
     },
     "filtering_log_tag_tooltip_html": {
         "message": "문서 및 하위 문서"
@@ -1102,7 +1171,7 @@
         "message": "미디어"
     },
     "filtering_log_tag_tooltip_other": {
-        "message": "폰트, 핑, WebRTC, WebSocket 등"
+        "message": "글꼴, 핑, WebRTC, 웹소켓 등"
     },
     "filtering_log_badge_tooltip_third_party": {
         "message": "제 3자 요청"
@@ -1112,6 +1181,9 @@
     },
     "filtering_log_badge_tooltip_http_status_code": {
         "message": "HTTP 상태 코드"
+    },
+    "filtering_log_assumed_rule_description": {
+        "message": "이는 가상의 규칙입니다. 자세한 내용은 <a>지식 창고<\/a>를 참고하세요."
     },
     "options_stealth_general_title": {
         "message": "일반"
@@ -1165,11 +1237,18 @@
         "message": "닫기"
     },
     "filtering_modal_applied_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "| 적용된 규칙"
+        "message": "| 적용된 규칙:",
+        "description": "WARNING: correct number of plural forms is required"
+    },
+    "filtering_modal_assumed_rules": {
+        "message": "| 가정 규칙:",
+        "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_original_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "| 원본 규칙"
+        "message": "| 원본 규칙:",
+        "description": "WARNING: correct number of plural forms is required"
+    },
+    "filtering_modal_declarative_rule": {
+        "message": "DNR 규칙:"
     }
 }

@@ -41,6 +41,7 @@ const SettingsSection = (props) => {
         'title__container--back': renderBackButton,
         'title__container--sub': mode === 'subTitle',
         'title__container--control': id,
+        'title__container--custom': mode === 'custom',
     });
 
     const titleClass = classNames('title', {

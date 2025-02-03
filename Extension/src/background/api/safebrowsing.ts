@@ -21,15 +21,19 @@ import SHA256 from 'crypto-js/sha256';
 import { logger } from '../../common/logger';
 import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
 import {
-    browserStorage,
     sbCache,
     sbRequestCache,
     SbCache,
-} from '../storages';
+} from '../storages/safebrowsing';
+import { browserStorage } from '../storages/shared-instances';
 import { UrlUtils } from '../utils/url';
 import { SAFEBROWSING_OUTPUT } from '../../../../constants';
 
-import { type ExtensionXMLHttpRequest, network } from './network';
+import {
+    type ExtensionXMLHttpRequest,
+    network,
+    ResponseLikeXMLHttpRequest,
+} from './network/main';
 
 /**
  * The Safe Browsing API checks whether a site is in a database of potentially
@@ -148,7 +152,7 @@ export class SafebrowsingApi {
             return SafebrowsingApi.createResponse(SbCache.SB_ALLOW_LIST);
         }
 
-        let response: ExtensionXMLHttpRequest;
+        let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
         try {
             response = await network.lookupSafebrowsing(shortHashes);

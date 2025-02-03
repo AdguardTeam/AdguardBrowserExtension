@@ -77,9 +77,10 @@ export class PromoNotificationApi {
         }
 
         if (withDelay) {
-            window.clearTimeout(this.timeoutId);
+            clearTimeout(this.timeoutId);
 
-            this.timeoutId = window.setTimeout(() => {
+            // eslint-disable-next-line no-restricted-globals
+            this.timeoutId = self.setTimeout(() => {
                 this.setNotificationViewed(false);
             }, PromoNotificationApi.DELAY_MS);
 

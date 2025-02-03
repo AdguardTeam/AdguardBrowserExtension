@@ -33,6 +33,7 @@ import cn from 'classnames';
 
 import { rootStore } from '../../stores/RootStore';
 import { getRequestEventType } from '../RequestWizard/utils';
+import { translator } from '../../../../common/translators/translator';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AntiBannerFiltersId, SCROLLBAR_WIDTH } from '../../../../common/constants';
 import { passiveEventSupported } from '../../../helpers';
@@ -123,12 +124,13 @@ const ruleAccessor = (props) => {
         requestRule,
         replaceRules,
         stealthAllowlistRules,
+        declarativeRuleInfo,
     } = props;
 
     let ruleText = '';
     if (requestRule) {
         if (requestRule.filterId === AntiBannerFiltersId.AllowlistFilterId) {
-            ruleText = reactTranslator.getMessage('filtering_log_in_allowlist');
+            ruleText = translator.getMessage('filtering_log_in_allowlist');
         } else {
             ruleText = requestRule.appliedRuleText;
         }
@@ -136,7 +138,7 @@ const ruleAccessor = (props) => {
 
     if (replaceRules) {
         const rulesCount = replaceRules.length;
-        ruleText = `${reactTranslator.getMessage('filtering_log_modified_rules', {
+        ruleText = `${translator.getMessage('filtering_log_modified_rules', {
             rules_count: rulesCount,
         })}`;
     }
@@ -144,13 +146,64 @@ const ruleAccessor = (props) => {
     if (stealthAllowlistRules && stealthAllowlistRules.length > 0) {
         const rulesCount = stealthAllowlistRules.length;
         if (rulesCount === 1) {
-            return stealthAllowlistRules[0].ruleText;
+            return stealthAllowlistRules[0].appliedRuleText;
         }
 
-        ruleText = reactTranslator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
+        ruleText = translator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
     }
 
-    return ruleText;
+    // If this is a cosmetic rule - we should not check declarative source rules,
+    // because they works only with network part.
+    const isCosmeticRule = requestRule?.cssRule || requestRule?.scriptRule;
+    if (isCosmeticRule) {
+        return ruleText;
+    }
+
+    // If we have exact matched rule - show it.
+    if (declarativeRuleInfo?.sourceRules.length > 0) {
+        // But for allowlisted sited we do not needed to show source rule,
+        // only show "this site is allowlisted".
+        if (declarativeRuleInfo.sourceRules[0].filterId === AntiBannerFiltersId.AllowlistFilterId) {
+            return translator.getMessage('filtering_log_in_allowlist');
+        }
+
+        const exactMatchedRules = declarativeRuleInfo.sourceRules
+            .map(({ sourceRule }) => sourceRule)
+            .join('; ');
+        if (!ruleText) {
+            return exactMatchedRules;
+        }
+
+        const { sourceRules } = declarativeRuleInfo;
+
+        // Note: source rules contains text from already preprocessed rules,
+        // that's why we checked appliedRuleText, but not originalRuleText.
+        const matchedRulesContainsAssumed = sourceRules.some(({ sourceRule }) => sourceRule === ruleText);
+
+        // If exactly matched rules do not contain assumed rule - we render
+        // attention mark for this request.
+        const attention = !matchedRulesContainsAssumed && (
+            <span>❗</span>
+        );
+
+        return (
+            <>
+                {attention}
+                {exactMatchedRules}
+            </>
+        );
+    }
+
+    // Otherwise show assumed (for MV3, but for MV2 it will be exact) rule,
+    // if found any.
+    const isAssumedRule = __IS_MV3__ && ruleText && !isCosmeticRule;
+
+    return (
+        <>
+            {isAssumedRule && <span className="red-dot">*</span>}
+            {ruleText}
+        </>
+    );
 };
 
 const statusAccessor = (props) => {

@@ -33,7 +33,7 @@ import './mode-adguard.js';
 import './editor.pcss';
 
 const DEFAULT_EDITOR_SIZE = {
-    width: '610px',
+    width: '618px',
     height: '300px',
 };
 

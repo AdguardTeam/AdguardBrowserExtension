@@ -15,8 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { logger } from '../../../common/logger';
-import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
+import {
+    AntiBannerFiltersId,
+    AntibannerGroupsId,
+    CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
+} from '../../../common/constants';
 import { getErrorMessage } from '../../../common/error';
 import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
@@ -50,8 +55,6 @@ import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
 import { CommonFilterApi } from './common';
 import { CustomFilterApi } from './custom';
-import { PageStatsApi } from './page-stats';
-import { HitStatsApi } from './hit-stats';
 import { FilterUpdateApi } from './update';
 import { Categories } from './categories';
 
@@ -74,9 +77,7 @@ export class FiltersApi {
         await FiltersApi.initI18nMetadata();
         await FiltersApi.initMetadata();
 
-        await PageStatsApi.init();
-        await HitStatsApi.init();
-        CustomFilterApi.init();
+        CustomFilterApi.init(network);
         AllowlistApi.init();
         await UserRulesApi.init(isInstall);
 
@@ -164,6 +165,19 @@ export class FiltersApi {
     }
 
     /**
+     * Checks if group is enabled.
+     *
+     * @param groupId Group id.
+     *
+     * @returns True, if group is enabled, else returns false.
+     */
+    public static isGroupEnabled(groupId: number): boolean {
+        const groupState = groupStateStorage.get(groupId);
+
+        return !!groupState?.enabled;
+    }
+
+    /**
      * Update metadata from local or remote source and download rules for filters.
      *
      * If loading filters from remote failed, try to load from local resources,
@@ -197,6 +211,12 @@ export class FiltersApi {
         }
 
         const tasks = filterIds.map(async (filterId) => {
+            if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
+                // Quick fixes filter was disabled in MV3 to comply with CWR policies.
+                // TODO: remove code totally later.
+                return null;
+            }
+
             try {
                 // 'ignorePatches: true' here for loading filters without patches
                 const f = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, remote);
@@ -243,7 +263,11 @@ export class FiltersApi {
      * @param filterIds Array of filter ids to load and enable.
      * @param remote Whether to download metadata and filter rules from remote
      * resources or from local resources.
-     * @param enableGroups Whether to enable groups that were not touched by users
+     * **IMPORTANT NOTE:** We don't want to update the filters in MV3 version,
+     * because it will lead to situation, where extension will use old rulesets
+     * from local resources, but newest filter with text rules from remote resources
+     * (which will be loaded to tsurlfilter for cosmetic rules).
+     * @param enableGroups Should enable groups that were not touched by users
      * or by code.
      */
     public static async loadAndEnableFilters(
@@ -254,12 +278,12 @@ export class FiltersApi {
         // Ignore already loaded filters
         // Custom filters always have a loaded state, so we don't need additional checks
         const unloadedFiltersIds = filterIds.filter((id) => !FiltersApi.isFilterLoaded(id));
-        const loadedPreviously = filterIds.filter((id) => FiltersApi.isFilterLoaded(id));
+        const alreadyLoadedFilterIds = filterIds.filter((id) => FiltersApi.isFilterLoaded(id));
 
         const loadedFilters = await FiltersApi.loadFilters(unloadedFiltersIds, remote);
 
         // Concatenate filters loaded just now with already loaded filters
-        loadedFilters.push(...loadedPreviously);
+        loadedFilters.push(...alreadyLoadedFilterIds);
 
         filterStateStorage.enableFilters(loadedFilters);
 
@@ -268,10 +292,10 @@ export class FiltersApi {
             // When loading from remote resources, the filters are already up-to-date,
             // except for the previously loaded filters, which we update below
             await FilterUpdateApi.checkForFiltersUpdates(loadedFilters);
-        } else if (loadedPreviously.length > 0) {
+        } else if (alreadyLoadedFilterIds.length > 0) {
             // Update previously loaded filters because they won't be loaded,
             // but still need to be updated to the latest versions
-            await FilterUpdateApi.checkForFiltersUpdates(loadedPreviously);
+            await FilterUpdateApi.checkForFiltersUpdates(alreadyLoadedFilterIds);
         }
 
         if (enableGroups) {
@@ -284,10 +308,49 @@ export class FiltersApi {
      * Disables specified filters.
      * Called on filter option switch.
      *
+     * Note: this method **does not update the engine**.
+     *
      * @param filtersIds Filters ids.
      */
     public static disableFilters(filtersIds: number[]): void {
         filterStateStorage.disableFilters(filtersIds);
+    }
+
+    /**
+     * Reload filters and their metadata from local storage.
+     * Needed only in MV3 version because we don't update filters from remote,
+     * we use bundled filters from local resources and their converted rulesets.
+     *
+     * @returns List of loaded filter IDs.
+     */
+    public static async reloadFiltersFromLocal(): Promise<number[]> {
+        try {
+            await FiltersApi.loadI18nMetadataFromBackend(false);
+            await FiltersApi.loadMetadataFromFromBackend(false);
+        } catch (e) {
+            logger.error('Cannot load local metadata due to: ', getErrorMessage(e));
+        }
+
+        FiltersApi.loadFilteringStates();
+
+        await FiltersApi.removeObsoleteFilters();
+
+        const filterIds = filterStateStorage.getLoadFilters();
+
+        // Ignore custom filters, user-rules, allowlist
+        // and quick fixes filter (used only in MV3).
+        const commonFiltersIds = filterIds.filter((id) => CommonFilterApi.isCommonFilter(id));
+
+        try {
+            // Only re-load filters without changed their states: enabled or disabled.
+            const loadedFiltersIds = await FiltersApi.loadFilters(commonFiltersIds, false);
+
+            return loadedFiltersIds;
+        } catch (e) {
+            logger.error('Cannot load local filters due to: ', getErrorMessage(e));
+
+            return [];
+        }
     }
 
     /**
@@ -358,6 +421,17 @@ export class FiltersApi {
     }
 
     /**
+     * Returns enabled filters with metadata.
+     *
+     * @returns Enabled filters metadata array.
+     */
+    public static getEnabledFiltersWithMetadata(): FilterMetadata[] {
+        return FiltersApi.getEnabledFilters()
+            .map((f) => FiltersApi.getFilterMetadata(f))
+            .filter((f): f is FilterMetadata => f !== undefined);
+    }
+
+    /**
      * Enable filters groups that were not touched by users or by code.
      *
      * Called on filter enabling.
@@ -397,11 +471,17 @@ export class FiltersApi {
     private static updateMetadataWithI18nMetadata(metadata: Metadata, i18nMetadata: I18nMetadata): void {
         const localizedMetadata = MetadataStorage.applyI18nMetadata(metadata, i18nMetadata);
 
-        localizedMetadata.groups.push({
-            groupId: AntibannerGroupsId.CustomFiltersGroupId,
-            displayNumber: CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
-            groupName: translator.getMessage('options_antibanner_custom_group'),
+        const customFiltersGroup = localizedMetadata.groups.find((group) => {
+            return group.groupId === AntibannerGroupsId.CustomFiltersGroupId;
         });
+
+        if (!customFiltersGroup) {
+            localizedMetadata.groups.push({
+                groupId: AntibannerGroupsId.CustomFiltersGroupId,
+                displayNumber: CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
+                groupName: translator.getMessage('options_antibanner_custom_group'),
+            });
+        }
 
         metadataStorage.setData(localizedMetadata);
     }
@@ -426,9 +506,18 @@ export class FiltersApi {
      * @param remote If true, download data from backend, else load it from local files.
      */
     private static async loadMetadataFromFromBackend(remote: boolean): Promise<void> {
-        const metadata = remote
+        const rawMetadata = remote
             ? await network.downloadMetadataFromBackend()
             : await network.getLocalFiltersMetadata();
+
+        const metadata = {
+            ...rawMetadata,
+            filters: rawMetadata.filters.filter((f) => {
+                // Quick fixes filter was disabled in MV3 to comply with CWR policies.
+                // TODO: remove code totally later.
+                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
+            }),
+        };
 
         const i18nMetadata = i18nMetadataStorage.getData();
 
@@ -595,6 +684,33 @@ export class FiltersApi {
                 logger.error('Cannot remove obsoleted filter from storage due to: ', promise.reason);
             }
         });
+    }
+
+    /**
+     * Partially updates metadata for one specified not custom filter without
+     * changing metadata with translations for the filter.
+     *
+     * @param filterMetadata Filter metadata.
+     */
+    public static partialUpdateMetadataForFilter(filterMetadata: RegularFilterMetadata): void {
+        // i18n metadata not changed, but it is needed for updating metadata
+        // via one method (without creating new methods) with translations.
+        const oldMetadata = metadataStorage.getData();
+
+        const { filterId } = filterMetadata;
+
+        const oldMetadataFilterIdx = oldMetadata.filters.findIndex((f) => f.filterId === filterId);
+        if (oldMetadataFilterIdx !== -1) {
+            oldMetadata.filters[oldMetadataFilterIdx] = filterMetadata;
+        } else {
+            oldMetadata.filters.push(filterMetadata);
+        }
+
+        FiltersApi.updateMetadataWithI18nMetadata(
+            oldMetadata,
+            // i18n metadata not changed.
+            i18nMetadataStorage.getData(),
+        );
     }
 
     /**

@@ -36,6 +36,8 @@ enum StylesAssetsPath {
     AlertPopup = '/assets/css/alert-popup.css',
     AlertContainer = '/assets/css/alert-container.css',
     UpdateContainer = '/assets/css/update-container.css',
+    RulesLimitsPopup = '/assets/css/rules-limits-popup.css',
+    RulesLimitsContainer = '/assets/css/rules-limits-container.css',
 }
 
 /**
@@ -64,6 +66,56 @@ export class Toasts {
     }
 
     /**
+     * Shows alert message about rule limits exceeded.
+     *
+     * @param triesCount Number of tries to show. If this value exceeds {@link Toasts#maxTries}
+     * then the window will not be displayed.
+     */
+    public async showRuleLimitsAlert(triesCount = 1): Promise<void> {
+        try {
+            if (triesCount > Toasts.MAX_TRIES) {
+                // Give up
+                logger.warn('Reached max tries on attempts to show rule limits alert popup');
+                return;
+            }
+
+            const alertStyles = this.styles.get(StylesAssetsPath.RulesLimitsPopup);
+            const alertContainerStyles = this.styles.get(StylesAssetsPath.RulesLimitsContainer);
+
+            if (!alertStyles || !alertContainerStyles) {
+                logger.error('Alert assets is not loaded!');
+                return;
+            }
+
+            const tab = await TabsApi.getActive();
+            if (tab?.id) {
+                const mainText = translator.getMessage('snack_on_websites_limits_exceeded_warning');
+                const linkText = translator.getMessage('options_rule_limits');
+
+                await sendTabMessage(tab.id, {
+                    type: MessageType.ShowRuleLimitsAlert,
+                    data: {
+                        // TODO: Remove isAdguardTab because we don't inject content-script
+                        // in our settings page and so that we don't have listener
+                        // for these messages.
+                        isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
+                        mainText,
+                        linkText,
+                        alertStyles,
+                        alertContainerStyles,
+                    },
+                });
+            }
+        } catch (e) {
+            // eslint-disable-next-line no-restricted-globals
+            self.setTimeout(() => {
+                this.showRuleLimitsAlert(triesCount + 1);
+            }, Toasts.TRIES_TIMEOUT_MS);
+        }
+    }
+
+    /**
+     * TODO: Continue to use only one method for showing alerts (with new design).
      * Shows alert message.
      *
      * @param title Title.
@@ -92,6 +144,9 @@ export class Toasts {
                 await sendTabMessage(tab.id, {
                     type: MessageType.ShowAlertPopup,
                     data: {
+                        // TODO: Remove isAdguardTab because we don't inject content-script
+                        // in our settings page and so that we don't have listener
+                        // for these messages.
                         isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
                         title,
                         text,
@@ -101,7 +156,8 @@ export class Toasts {
                 });
             }
         } catch (e) {
-            setTimeout(() => {
+            // eslint-disable-next-line no-restricted-globals
+            self.setTimeout(() => {
                 this.showAlertMessage(title, text, triesCount + 1);
             }, Toasts.TRIES_TIMEOUT_MS);
         }
@@ -142,16 +198,14 @@ export class Toasts {
         previousVersion: string,
         triesCount = 1,
     ): Promise<void> {
+        const { getMajorVersionNumber, getMinorVersionNumber } = BrowserUtils;
+
         const promoNotification = await promoNotificationApi.getCurrentNotification();
-        if (!promoNotification
-            && BrowserUtils.getMajorVersionNumber(
-                currentVersion,
-            ) === BrowserUtils.getMajorVersionNumber(previousVersion)
-            && BrowserUtils.getMinorVersionNumber(
-                currentVersion,
-            ) === BrowserUtils.getMinorVersionNumber(previousVersion)
-        ) {
-            // In case of no promo available or versions equivalence
+        const majorVersionNotChanged = getMajorVersionNumber(currentVersion) === getMajorVersionNumber(previousVersion);
+        const minorVersionNotChanged = getMinorVersionNumber(currentVersion) === getMinorVersionNumber(previousVersion);
+
+        if (!promoNotification && majorVersionNotChanged && minorVersionNotChanged) {
+            // In case of no promo available or versions equivalence (major and minor).
             return;
         }
 
@@ -185,7 +239,7 @@ export class Toasts {
                     // dynamically load svg image if offer should look different for different locales; AG-31141
                     const response = await fetch(bgImageOnUpdate);
                     const svgStr = await response.text();
-                    offerBgImage = `data:image/svg+xml;base64,${window.btoa(svgStr)}`;
+                    offerBgImage = `data:image/svg+xml;base64,${btoa(svgStr)}`;
                 } catch (e) {
                     logger.warn('Failed to load promo notification background image', e);
                 }
@@ -212,6 +266,9 @@ export class Toasts {
                 await sendTabMessage(tab.id, {
                     type: MessageType.ShowVersionUpdatedPopup,
                     data: {
+                        // TODO: Remove isAdguardTab because we don't inject content-script
+                        // in our settings page and so that we don't have listener
+                        // for these messages.
                         isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
                         title: translator.getMessage(
                             'options_popup_version_update_title_text',
@@ -238,7 +295,8 @@ export class Toasts {
                 });
             }
         } catch (e) {
-            setTimeout(() => {
+            // eslint-disable-next-line no-restricted-globals
+            self.setTimeout(() => {
                 this.showApplicationUpdatedPopup(currentVersion, previousVersion, triesCount + 1);
             }, Toasts.TRIES_TIMEOUT_MS);
         }

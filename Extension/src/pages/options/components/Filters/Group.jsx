@@ -22,7 +22,10 @@ import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
+import { CUSTOM_FILTERS_DISABLED_IN_MV3_DUE_TO_CWS } from '../../constants';
+import { AntibannerGroupsId } from '../../../../common/constants';
 
 import './group.pcss';
 
@@ -72,6 +75,51 @@ const renderEnabledFilters = (enabledFilters) => {
     return reactTranslator.getMessage('options_filters_no_enabled');
 };
 
+const CustomFiltersGroup = ({
+    groupName,
+    groupId,
+    enabledFilters,
+}) => {
+    const groupClassName = classNames({
+        setting: true,
+        group: true,
+        'group--disabled': true,
+    });
+
+    return (
+        <div className={groupClassName}>
+            <a
+                href={CUSTOM_FILTERS_DISABLED_IN_MV3_DUE_TO_CWS}
+                target="_blank"
+                rel="noreferrer"
+                className="setting__area setting__area_group link_like_setting_area"
+            >
+                <div className="container">
+                    <Icon
+                        id={`#setting-${groupId}`}
+                        classname="icon--24 setting__icon"
+                    />
+                    <div className="setting__info">
+                        <div className="setting__title group__title">
+                            {groupName}
+                        </div>
+                        <div className="setting__desc">
+                            {renderEnabledFilters(enabledFilters)}
+                        </div>
+                        <span className="warning">
+                            {translator.getMessage('options_filters_custom_disabled_cws')}
+                        </span>
+                    </div>
+                </div>
+                <Icon
+                    id="#link"
+                    classname="icon icon--24 icon--green-default link"
+                />
+            </a>
+        </div>
+    );
+};
+
 const Group = ({
     groupName,
     groupId,
@@ -85,40 +133,51 @@ const Group = ({
         group: true,
         'group--disabled': !checkboxValue,
     });
+
+    if (groupId === AntibannerGroupsId.CustomFiltersGroupId) {
+        return (
+            <CustomFiltersGroup
+                groupName={groupName}
+                groupId={AntibannerGroupsId.CustomFiltersGroupId}
+                enabledFilters={enabledFilters}
+            />
+        );
+    }
+
     return (
-        <>
-            <div className={groupClassName}>
-                <button
-                    type="button"
-                    tabIndex={0}
-                    className="setting__area setting__area_group"
-                    onClick={groupClickHandler}
-                >
-                    <Icon
-                        id={`#setting-${groupId}`}
-                        classname="icon--setting setting__icon"
-                    />
-                    <div className="setting__info">
-                        <div className="setting__title group__title">
-                            {groupName}
-                        </div>
-                        <div className="setting__desc">
-                            {renderEnabledFilters(enabledFilters)}
-                        </div>
+        <div className={groupClassName}>
+            <button
+                type="button"
+                tabIndex={0}
+                className="setting__area setting__area_group"
+                onClick={groupClickHandler}
+                disabled={groupId === AntibannerGroupsId.CustomFiltersGroupId}
+            >
+                <Icon
+                    id={`#setting-${groupId}`}
+                    classname="icon--24 setting__icon"
+                />
+                <div className="setting__info">
+                    <div className="setting__title group__title">
+                        {groupName}
                     </div>
-                </button>
-                <div className="setting__inline-control setting__inline-control_group">
-                    <Setting
-                        id={groupId}
-                        type={SETTINGS_TYPES.CHECKBOX}
-                        label={groupName}
-                        value={checkboxValue}
-                        handler={checkboxHandler}
-                        className="group__checkbox"
-                    />
+                    <div className="setting__desc">
+                        {renderEnabledFilters(enabledFilters)}
+                    </div>
                 </div>
+            </button>
+            <div className="setting__inline-control setting__inline-control_group">
+                <Setting
+                    id={groupId}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={groupName}
+                    value={checkboxValue}
+                    handler={checkboxHandler}
+                    optimistic={!__IS_MV3__}
+                    className="group__checkbox"
+                />
             </div>
-        </>
+        </div>
     );
 };
 

@@ -1,89 +1,43 @@
 .actions {
-    background-color: transparent;
     border: 0;
-    height: 168px;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    min-height: 120px;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     max-width: 320px;
 
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--black);
-    }
-
     .action {
         width: 100%;
         display: flex;
         align-items: center;
-        padding: 0 20px;
+        padding: 0 16px;
         cursor: pointer;
         transition: 0.3s ease background-color;
-        height: 35px;
+        height: 40px;
 
         &:hover {
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--grayDark);
-            }
+            background-color: var(--fills-backgrounds-page-background-hovered);
         }
 
-        &_disabled {
-            cursor: initial;
+        &--disabled {
+            cursor: not-allowed;
             opacity: 0.5;
 
             &:hover {
-                background-color: inherit;
+                background-color: transparent;
+                cursor: not-allowed;
             }
         }
 
-        .action-title {
-            padding-left: 15px;
-            font-size: 13px;
-            color: var(--gray900);
+        &__title {
+            padding-left: 12px;
+            font-size: 14px;
+            line-height: 18px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 100%;
-
-            @media (prefers-color-scheme: dark) {
-                color: var(--gray300);
-            }
-        }
-    }
-}
-
-.light-mode {
-    & .actions {
-        background-color: var(--white);
-
-        .action {
-            &:hover {
-                background-color: var(--gray100);
-            }
-
-            .action-title {
-                color: var(--gray900);
-            }
-        }
-    }
-}
-
-.dark-mode {
-    & .actions {
-        background-color: var(--black);
-
-        .action {
-            &:hover {
-                background-color: var(--grayDark);
-            }
-
-            .action-title {
-                color: var(--gray300);
-            }
         }
     }
 }

@@ -12,19 +12,19 @@
         margin-right: 8px;
 
         &--red {
-            color: var(--red400);
+            color: var(--text-links-error-link-default);
         }
 
         &--gray {
-            color: var(--gray700);
+            color: var(--stroke-icons-gray-icons-default);
         }
 
         &--green {
-            color: var(--green400);
+            color: var(--stroke-icons-product-icon-default);
         }
 
         &--orange {
-            color: var(--orange400);
+            color: var(--orange-50);
         }
 
         &_width60 {
@@ -52,64 +52,43 @@
     &__icon {
         width: 16px;
         height: 16px;
+
+        &--wrapper {
+            display: flex;
+        }
     }
 
     &__badge {
-        padding: 0 4px;
-        min-width: 28px;
-        height: 18px;
+        padding: 2px 8px;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 12px;
-        border-radius: 4px;
+        line-height: 14px;
+        border-radius: 16px;
+        max-height: 20px;
 
         &--green {
-            color: var(--white);
-            background-color: var(--green400);
+            color: var(--text-buttons-primary-default);
+            background-color: var(--fills-buttons-main-button-default);
+            border: 1px solid var(--fills-buttons-main-button-default);
         }
 
         &--gray {
-            color: var(--white);
-            background-color: var(--gray400);
+            color: var(--text-buttons-primary-default);
+            background-color: var(--fills-buttons-main-button-default-inactive);
+            border: 1px solid var(--fills-buttons-main-button-default-inactive);
         }
 
         &--orange {
-            color: var(--white);
-            background-color: var(--orange400);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--black);
+            color: var(--text-buttons-primary-default);
+            background-color: var(--orange-50);
+            border: 1px solid var(--orange-50);
         }
 
         &--transparent {
-            color: var(--gray400);
-            border: 1px solid var(--gray400);
-
-            @media (prefers-color-scheme: dark) {
-                color: var(--gray400);
-            }
-        }
-    }
-}
-
-.light-mode {
-    .status__badge {
-        color: var(--white);
-
-        &--transparent {
-            color: var(--gray400);
-        }
-    }
-}
-
-.dark-mode {
-    .status__badge {
-        color: var(--black);
-
-        &--transparent {
-            color: var(--gray400);
+            color: var(--text-description-description-default);
+            border: 1px solid var(--stroke-icons-gray-icons-default);
         }
     }
 }

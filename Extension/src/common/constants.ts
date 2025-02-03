@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { type PreprocessedFilterList } from '@adguard/tswebextension';
+
 /**
  * Current version of app storage data schema.
  *
@@ -23,7 +25,7 @@
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 4;
+export const APP_SCHEMA_VERSION = 11;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -38,6 +40,7 @@ export const LAST_NOTIFICATION_TIME_KEY = 'viewed-notification-time';
 export const FILTERING_LOG_WINDOW_STATE = 'filtering-log-window-state';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
+export const RULES_LIMITS_KEY = 'rules-limits';
 
 // Filter ids used in the code on the background page and filtering log page
 export enum AntiBannerFiltersId {
@@ -49,6 +52,7 @@ export enum AntiBannerFiltersId {
     SearchAndSelfPromoFilterId = 10,
     AnnoyancesCombinedFilterId = 14,
     UrlTrackingFilterId = 17,
+    QuickFixesFilterId = 24,
     AllowlistFilterId = 100,
     MobileAdsFilterId = 11,
 }
@@ -68,7 +72,11 @@ export const enum AntibannerGroupsId {
     LanguageFiltersGroupId = 7,
 }
 
-// https://github.com/AdguardTeam/FiltersRegistry/blob/4528f7ae6b38aec90111a27efb0a7e0958d0cf37/tags/metadata.json#L40
+/**
+ * Recommended filters tag ID.
+ *
+ * @see https://github.com/AdguardTeam/FiltersRegistry/blob/4528f7ae6b38aec90111a27efb0a7e0958d0cf37/tags/metadata.json#L40
+ */
 export const RECOMMENDED_TAG_ID = 10;
 
 // TODO: Add types checking for messages payload, because it many messages data
@@ -92,8 +100,6 @@ export enum NotifierType {
     FullscreenUserRulesEditorUpdated = 'event.user.rules.editor.updated',
 }
 
-export const FULLSCREEN_USER_RULES_EDITOR = 'fullscreen_user_rules_editor' as const;
-export const FILTERING_LOG = 'filtering-log' as const;
 export const KEEP_ALIVE_PORT_NAME = 'keep-alive' as const;
 
 export const enum NavigationTag {
@@ -104,7 +110,12 @@ export const enum NavigationTag {
 /**
  * Trusted tag for custom filters
  */
-export const TRUSTED_TAG = 'trusted' as const;
+export const TRUSTED_TAG_KEYWORD = 'trusted' as const;
+
+/**
+ * Trusted tag id for custom filters.
+ */
+export const TRUSTED_TAG_ID = 999 as const;
 
 /**
  * Custom filters group display number
@@ -113,8 +124,6 @@ export const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99 as const;
 
 /**
  * Custom filters identifiers starts from this number
- *
- * @type {number}
  */
 export const CUSTOM_FILTERS_START_ID = 1000 as const;
 
@@ -125,6 +134,8 @@ export const WASTE_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
 export const SCROLLBAR_WIDTH = 12 as const;
 
 export const BACKGROUND_TAB_ID = -1 as const;
+
+export const TOTAL_BLOCKED_STATS_GROUP_ID = 'total';
 
 /**
  *  Time interval between filter updates.
@@ -145,3 +156,20 @@ export const NEWLINE_CHAR_REGEX = /\r?\n/;
 export const OPTIONS_PAGE = 'pages/options.html';
 
 export const FILTER_LIST_EXTENSION = '.txt';
+
+/**
+ * Special event name for extension initialization, needed for run automatic
+ * integration tests.
+ */
+export const EXTENSION_INITIALIZED_EVENT = 'initialized';
+
+/**
+ * This is just a syntax sugar for setting default value if we not have
+ * preprocessed list for user rules or for custom filters.
+ */
+export const emptyPreprocessedFilterList: PreprocessedFilterList = {
+    filterList: [],
+    sourceMap: {},
+    rawFilterList: '',
+    conversionMap: {},
+};

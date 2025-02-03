@@ -92,7 +92,24 @@ export const BUG_REPORT_URL = Forward.get({
     from: ForwardFrom.Options,
 });
 
+export const BUG_REPORT_MV3_URL = Forward.get({
+    action: ForwardAction.BugReportMv3,
+    from: ForwardFrom.Options,
+});
+
+export const FILTERING_LOG_ASSUMED_RULE_URL = Forward.get({
+    action: ForwardAction.FilteringLogAssumedRule,
+    from: ForwardFrom.FilteringLog,
+});
+
 export const COLLECT_HITS_LEARN_MORE_URL = Forward.get({
     action: ForwardAction.CollectHitsLearnMore,
     from: ForwardFrom.Options,
 });
+
+export const CUSTOM_FILTERS_DISABLED_IN_MV3_DUE_TO_CWS = Forward.get({
+    action: ForwardAction.CustomFiltersMv3Disabled,
+    from: ForwardFrom.Options,
+});
+
+export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';

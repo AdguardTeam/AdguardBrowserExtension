@@ -6,11 +6,12 @@
     min-height: 70px;
 
     &__title {
-        display: inline-block;
+        display: flex;
+        align-items: flex-end;
 
-        font-weight: 500;
+        font-weight: 600;
         font-size: 16px;
-        margin-bottom: 4px;
+        line-height: 24px;
     }
 
     &__title-in {
@@ -25,24 +26,26 @@
         max-width: 420px;
     }
 
-
     &__search {
-        background-color: var(--orange400);
+        background-color: var(--fills-backgrounds-recent-activity-request-changed-default);
     }
-
 
     &:last-child {
         box-shadow: none;
     }
 
     &__link {
-        color: var(--gray700);
+        color: var(--text-links-link-default);
         display: inline-block;
         font-size: 14px;
+        line-height: 18px;
+        text-decoration: none;
     }
 
     &__controls {
-        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        height: 24px;
     }
 
     &__info {
@@ -56,48 +59,36 @@
 
     &__desc {
         margin-right: 55px;
-        color: var(--grayd8);
+        color: var(--text-description-description-default);
         font-size: 14px;
+        line-height: 18px;
         word-break: break-word;
 
         & a {
-            color: var(--green74);
+            color: var(--text-links-link-default);
             text-decoration: underline;
         }
-    }
-
-    &__desc-item {
-        margin-bottom: 4px;
     }
 
     &__tags {
         display: flex;
         font-size: 14px;
+        line-height: 18px;
         flex-wrap: wrap;
+        padding: 4px 0 0;
     }
 
     &__tag {
         position: relative;
         cursor: pointer;
-        margin-right: 20px;
-        margin-top: 6px;
-        color: var(--green74);
+        margin-right: 8px;
+        color: var(--text-links-link-default);
         word-break: break-word;
-
-        & .filter__search {
-            color: var(--gray-base);
-
-            @media (prefers-color-scheme: dark) {
-                color: var(--gray300);
-            }
-        }
     }
 
     &__remove {
-        color: var(--red400);
         position: relative;
-        top: -2px;
-        cursor: pointer;
+        right: -16px;
     }
 
     &__empty {
@@ -108,26 +99,6 @@
 
         @media (min-width: 640px) {
             padding-top: 120px;
-        }
-    }
-}
-
-.light-mode {
-    .filter {
-        &__tag {
-            & .filter__search {
-                color: var(--gray-base);
-            }
-        }
-    }
-}
-
-.dark-mode {
-    .filter {
-        &__tag {
-            & .filter__search {
-                color: var(--gray300);
-            }
         }
     }
 }

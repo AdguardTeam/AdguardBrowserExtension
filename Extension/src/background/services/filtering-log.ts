@@ -37,14 +37,15 @@ import {
     CspReportBlockedEvent,
     getDomain,
     ApplyPermissionsRuleEvent,
-} from '@adguard/tswebextension';
+    DeclarativeRuleEvent,
+} from 'tswebextension';
 
 import { messageHandler } from '../message-handler';
 import {
     ClearEventsByTabIdMessage,
     GetFilteringInfoByTabIdMessage,
     MessageType,
-    PageRefreshMessage,
+    type RefreshPageMessage,
     SetFilteringLogWindowStateMessage,
     SetPreserveLogStateMessage,
 } from '../../common/messages';
@@ -63,7 +64,7 @@ import {
 import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
 
-type GetFilteringLogDataResponse = {
+export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[],
     settings: SettingsData,
     preserveLogEnabled: boolean,
@@ -80,21 +81,16 @@ export class FilteringLogService {
      * Creates handlers for all possible actions.
      */
     public static init(): void {
+        /* eslint-disable max-len */
         messageHandler.addListener(MessageType.GetFilteringLogData, FilteringLogService.onGetFilteringLogData);
         messageHandler.addListener(MessageType.SynchronizeOpenTabs, FilteringLogService.onSyncOpenTabs);
-        messageHandler.addListener(
-            MessageType.GetFilteringInfoByTabId,
-            FilteringLogService.onGetFilteringLogInfoById,
-        );
+        messageHandler.addListener(MessageType.GetFilteringInfoByTabId, FilteringLogService.onGetFilteringLogInfoById);
         messageHandler.addListener(MessageType.OnOpenFilteringLogPage, filteringLogApi.onOpenFilteringLogPage);
         messageHandler.addListener(MessageType.OnCloseFilteringLogPage, filteringLogApi.onCloseFilteringLogPage);
         messageHandler.addListener(MessageType.ClearEventsByTabId, FilteringLogService.onClearEventsByTabId);
         messageHandler.addListener(MessageType.RefreshPage, FilteringLogService.onRefreshPage);
         messageHandler.addListener(MessageType.SetPreserveLogState, FilteringLogService.onSetPreserveLogState);
-        messageHandler.addListener(
-            MessageType.SetFilteringLogWindowState,
-            FilteringLogService.onSetFilteringLogWindowState,
-        );
+        messageHandler.addListener(MessageType.SetFilteringLogWindowState, FilteringLogService.onSetFilteringLogWindowState);
 
         tsWebExtTabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
         tsWebExtTabsApi.onUpdate.subscribe(FilteringLogService.onTabUpdate);
@@ -102,53 +98,25 @@ export class FilteringLogService {
 
         defaultFilteringLog.addEventListener(FilteringEventType.SendRequest, FilteringLogService.onSendRequest);
         defaultFilteringLog.addEventListener(FilteringEventType.TabReload, FilteringLogService.onTabReload);
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ReceiveResponse,
-            FilteringLogService.onReceiveResponse,
-        );
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ApplyBasicRule,
-            FilteringLogService.onApplyBasicRule,
-        );
-
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ApplyCspRule,
-            FilteringLogService.onApplyCspRule,
-        );
-
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ApplyPermissionsRule,
-            FilteringLogService.onApplyPermissionsRule,
-        );
-
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.ApplyCosmeticRule,
-            FilteringLogService.onApplyCosmeticRule,
-        );
+        defaultFilteringLog.addEventListener(FilteringEventType.ReceiveResponse, FilteringLogService.onReceiveResponse);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, FilteringLogService.onApplyBasicRule);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyCspRule, FilteringLogService.onApplyCspRule);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyPermissionsRule, FilteringLogService.onApplyPermissionsRule);
+        defaultFilteringLog.addEventListener(FilteringEventType.ApplyCosmeticRule, FilteringLogService.onApplyCosmeticRule);
         defaultFilteringLog.addEventListener(FilteringEventType.RemoveParam, FilteringLogService.onRemoveParam);
         defaultFilteringLog.addEventListener(FilteringEventType.RemoveHeader, FilteringLogService.onRemoveheader);
-
         defaultFilteringLog.addEventListener(FilteringEventType.Cookie, FilteringLogService.onCookie);
-
         defaultFilteringLog.addEventListener(FilteringEventType.JsInject, FilteringLogService.onScriptInjection);
-
         defaultFilteringLog.addEventListener(FilteringEventType.StealthAction, FilteringLogService.onStealthAction);
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.StealthAllowlistAction,
-            FilteringLogService.onStealthAllowlistAction,
-        );
-
-        defaultFilteringLog.addEventListener(
-            FilteringEventType.CspReportBlocked,
-            FilteringLogService.onCspReportBlocked,
-        );
+        defaultFilteringLog.addEventListener(FilteringEventType.StealthAllowlistAction, FilteringLogService.onStealthAllowlistAction);
+        defaultFilteringLog.addEventListener(FilteringEventType.CspReportBlocked, FilteringLogService.onCspReportBlocked);
+        // Will fire only in unpacked extension.
+        defaultFilteringLog.addEventListener(FilteringEventType.MatchedDeclarativeRule, FilteringLogService.onMatchedDeclarativeRule);
 
         if (UserAgent.isFirefox) {
-            defaultFilteringLog.addEventListener(
-                FilteringEventType.ReplaceRuleApply,
-                FilteringLogService.onReplaceRuleApply,
-            );
+            defaultFilteringLog.addEventListener(FilteringEventType.ReplaceRuleApply, FilteringLogService.onReplaceRuleApply);
         }
+        /* eslint-enable max-len */
     }
 
     /**
@@ -198,6 +166,11 @@ export class FilteringLogService {
             advancedModifier,
         } = data;
 
+        // This can happened only if event fired from webRequest.onErrorOccurred
+        if (filterId === null || ruleIndex === null) {
+            return;
+        }
+
         filteringLogApi.updateEventData(tabId, eventId, {
             requestRule: {
                 filterId,
@@ -215,6 +188,22 @@ export class FilteringLogService {
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
             HitStatsApi.addRuleHit(filterId, ruleIndex);
         }
+    }
+
+    /**
+     * Records the application of declarative rule.
+     *
+     * @param ruleEvent Item of {@link matchedDeclarativeRule}.
+     * @param ruleEvent.data Data for this event: tabId, eventId and applied declarative rule in JSON.
+     */
+    private static async onMatchedDeclarativeRule({ data }: DeclarativeRuleEvent): Promise<void> {
+        const {
+            tabId,
+            eventId,
+            declarativeRuleInfo,
+        } = data;
+
+        filteringLogApi.attachDeclarativeRuleToEventData(tabId, eventId, declarativeRuleInfo);
     }
 
     /**
@@ -656,7 +645,7 @@ export class FilteringLogService {
      * @param message Message with type {@link PageRefreshMessage}.
      * @param message.data Tab id from {@link PageRefreshMessage}.
      */
-    private static async onRefreshPage({ data }: PageRefreshMessage): Promise<void> {
+    private static async onRefreshPage({ data }: RefreshPageMessage): Promise<void> {
         const { tabId } = data;
         await TabsApi.reload(tabId);
     }

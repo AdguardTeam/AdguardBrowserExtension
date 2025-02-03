@@ -17,24 +17,26 @@
  */
 import { Tabs } from 'webextension-polyfill';
 
+import { RuleGenerator } from '@adguard/agtree/generator';
+import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
+
 import {
     BACKGROUND_TAB_ID,
     ContentType,
     CookieEvent,
     isExtensionUrl,
     StealthActionEvent,
+    getDomain,
     getRuleSourceText,
     getRuleSourceIndex,
     PreprocessedFilterList,
-    ConfigurationMV2,
-} from '@adguard/tswebextension';
-import { RuleParser } from '@adguard/agtree';
-import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
+    type DeclarativeRuleInfo,
+} from 'tswebextension';
 
 import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import { FiltersStorage, settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
@@ -43,7 +45,6 @@ import { AntiBannerFiltersId } from '../../common/constants';
 export type FilteringEventRuleData = {
     filterId: number,
     ruleIndex: number,
-    originalRuleText?: string,
     isImportant?: boolean,
     documentLevelRule?: boolean,
     isStealthModeRule?: boolean,
@@ -56,9 +57,12 @@ export type FilteringEventRuleData = {
     contentRule?: boolean,
     cssRule?: boolean,
     scriptRule?: boolean,
-    appliedRuleText?: string,
-};
+} & Partial<RuleText>;
 
+/**
+ * This is raw filtering log event type which we added or update when received
+ * some filtering log event type from tswebextension.
+ */
 export type FilteringLogEvent = {
     eventId: string,
     requestUrl?: string,
@@ -75,6 +79,7 @@ export type FilteringLogEvent = {
     removeHeader?: boolean,
     headerName?: string,
     element?: string,
+    script?: boolean,
     cookieName?: string,
     cookieValue?: string,
     isModifyingCookieRule?: boolean,
@@ -82,13 +87,44 @@ export type FilteringLogEvent = {
     replaceRules?: FilteringEventRuleData[],
     stealthAllowlistRules?: FilteringEventRuleData[],
     stealthActions?: StealthActionEvent['data']['stealthActions'],
+    declarativeRuleInfo?: DeclarativeRuleInfo,
 };
 
+/**
+ * This is {@link FilteringLogEvent} type extended with added rules source texts.
+ */
+export type UIFilteringLogEvent = FilteringLogEvent
+    & RuleText
+    & { filterName?: string | null };
+
+/**
+ * Filtering log tab info.
+ */
 export type FilteringLogTabInfo = {
+    /**
+     * Tab id.
+     */
     tabId: number,
+
+    /**
+     * Tab title.
+     */
     title: string,
+
+    /**
+     * Indicates if this tab is an extension page (e.g. Options, filtering log).
+     */
     isExtensionTab: boolean,
+
+    /**
+     * Filtering events.
+     */
     filteringEvents: FilteringLogEvent[],
+
+    /**
+     * Domain of the tab.
+     */
+    domain: string | null,
 };
 
 /**
@@ -96,13 +132,25 @@ export type FilteringLogTabInfo = {
  */
 interface RuleText {
     /**
-     * Applied rule text, always present.
+     * Applied rule text. Will be extracted from @see {@link FilteringLogEvent.requestRule}.
+     *
+     * NOTE:
+     * In MV3 it will be not "exactly applied", but "assumed applied" rule text,
+     * because exactly applied rule can be received only in unpacked extension with
+     * listener to matched declarative rules, from which we can extract source
+     * text rules.
      */
-    appliedRuleText: string;
+    appliedRuleText?: string;
 
     /**
      * Original rule text. Present if the applied rule is a converted rule.
      * If not present, the applied rule text is the same as the original rule text.
+     *
+     * NOTE:
+     * In MV3 it will be not "exactly  applied", but "assumed applied" rule text,
+     * because exactly applied rule can be received only in unpacked extension with
+     * listener to matched declarative rules, from which we can extract source
+     * text rules.
      */
     originalRuleText?: string;
 }
@@ -128,6 +176,9 @@ export class FilteringLogApi {
         AntiBannerFiltersId.AllowlistFilterId,
     ]);
 
+    /**
+     * Flag to enable/disable preserve log.
+     */
     private preserveLogEnabled = false;
 
     private openedFilteringLogsPages = 0;
@@ -138,6 +189,7 @@ export class FilteringLogApi {
             title: translator.getMessage('background_tab_title'),
             isExtensionTab: false,
             filteringEvents: [],
+            domain: null,
         }],
     ]);
 
@@ -204,10 +256,10 @@ export class FilteringLogApi {
     /**
      * Called when the engine is updated.
      *
-     * @param configuration TSWebExtension configuration.
+     * @param allowlistInverted Whether allowlist mode is inverted.
      */
-    public onEngineUpdated(configuration: ConfigurationMV2): void {
-        this.allowlistInverted = configuration.settings.allowlistInverted ?? false;
+    public onEngineUpdated(allowlistInverted: boolean): void {
+        this.allowlistInverted = allowlistInverted;
 
         if (!this.isOpen()) {
             return;
@@ -288,6 +340,7 @@ export class FilteringLogApi {
      *
      * @param filterId Filter id.
      * @param ruleIndex Rule index.
+     *
      * @returns Rule text or null if the rule is not found.
      */
     public async getRuleText(filterId: number, ruleIndex: number): Promise<RuleText | null> {
@@ -305,14 +358,14 @@ export class FilteringLogApi {
         // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
         // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
         if (FilteringLogApi.DYNAMIC_FILTER_LISTS.has(filterId)) {
-            const ruleNode = Engine.api.retrieveDynamicRuleNode(filterId, ruleIndex);
+            const ruleNode = engine.api.retrieveDynamicRuleNode(filterId, ruleIndex);
 
             if (!ruleNode) {
                 logger.error(`Failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
             }
 
-            const ruleText = RuleParser.generate(ruleNode);
+            const ruleText = RuleGenerator.generate(ruleNode);
 
             if (!ruleText) {
                 logger.error(`Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
@@ -405,17 +458,17 @@ export class FilteringLogApi {
     /**
      * We collect filtering events if opened at least one page of log.
      */
-    public async onOpenFilteringLogPage(): Promise<void> {
+    public onOpenFilteringLogPage(): void {
         this.openedFilteringLogsPages += 1;
 
         try {
-            Engine.api.setDebugScriptlets(true);
+            engine.api.setDebugScriptlets(true);
         } catch (e) {
             logger.error('Failed to enable `verbose scriptlets logging` option', e);
         }
 
         try {
-            Engine.api.setCollectHitStats(true);
+            engine.api.setCollectHitStats(true);
         } catch (e) {
             logger.error('Failed to enable `collect hit stats` option', e);
         }
@@ -437,14 +490,14 @@ export class FilteringLogApi {
             });
 
             try {
-                Engine.api.setDebugScriptlets(false);
+                engine.api.setDebugScriptlets(false);
             } catch (e) {
                 logger.error('Failed to disable `verbose scriptlets logging` option', e);
             }
 
             if (settingsStorage.get(SettingOption.DisableCollectHits)) {
                 try {
-                    Engine.api.setCollectHitStats(false);
+                    engine.api.setCollectHitStats(false);
                 } catch (e) {
                     logger.error('Failed to disable `collect hit stats` option', e);
                 }
@@ -476,6 +529,7 @@ export class FilteringLogApi {
             title,
             isExtensionTab: isExtensionUrl(url),
             filteringEvents: [],
+            domain: getDomain(url),
         };
 
         this.tabsInfoMap.set(id, tabInfo);
@@ -620,11 +674,7 @@ export class FilteringLogApi {
 
         // Get rule text based on filter id and rule index
         if (data.requestRule) {
-            const { filterId, ruleIndex } = data.requestRule;
-            const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-            if (ruleTextData) {
-                data.requestRule = Object.assign(data.requestRule, ruleTextData);
-            }
+            data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
         }
 
         tabInfo.filteringEvents.push(data);
@@ -660,31 +710,100 @@ export class FilteringLogApi {
         let event = filteringEvents.find((e) => e.eventId === eventId);
 
         if (event) {
-            if (data.requestRule) {
-                const { filterId, ruleIndex } = data.requestRule;
-                const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                if (ruleTextData) {
-                    data.requestRule = Object.assign(data.requestRule, ruleTextData);
-                }
+            if (data.requestRule && !event.requestRule?.appliedRuleText) {
+                data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
             }
 
             if (data.replaceRules) {
-                data.replaceRules = await Promise.all(
-                    data.replaceRules.map(async (rule) => {
-                        const { filterId, ruleIndex } = rule;
-                        const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                        if (ruleTextData) {
-                            return Object.assign(rule, ruleTextData);
-                        }
-                        return rule;
-                    }),
-                );
+                data.replaceRules = await this.applyRuleTextToRuleDataArray(data.replaceRules);
+            }
+
+            if (data.stealthAllowlistRules) {
+                data.stealthAllowlistRules = await this.applyRuleTextToRuleDataArray(data.stealthAllowlistRules);
             }
 
             event = Object.assign(event, data);
 
             // TODO: Looks like not using. Maybe lost listener in refactoring.
             listeners.notifyListeners(listeners.LogEventAdded, tabInfo, event);
+        }
+    }
+
+    /**
+     * Retrieves and applies rule text to a single rule data object.
+     *
+     * @param rule Rule data object containing filterId and ruleIndex.
+     * @returns Rule object with rule text applied.
+     */
+    private async applyRuleTextToRuleData(rule: FilteringEventRuleData): Promise<FilteringEventRuleData> {
+        const { filterId, ruleIndex } = rule;
+        const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+        return ruleTextData ? Object.assign(rule, ruleTextData) : rule;
+    }
+
+    /**
+     * Retrieves and applies rule text to an array of rule data objects.
+     *
+     * @param rules Array of rule data objects containing filterId and ruleIndex.
+     * @returns Array of rule objects with rule text applied.
+     */
+    private async applyRuleTextToRuleDataArray(rules: FilteringEventRuleData[]): Promise<FilteringEventRuleData[]> {
+        return Promise.all(
+            rules.map(async (rule) => this.applyRuleTextToRuleData(rule)),
+        );
+    }
+
+    /**
+     * Updates the event data for an already recorded event.
+     *
+     * @param tabId Tab id.
+     * @param eventId Event id.
+     * @param declarativeRuleInfo Applied declarative rule in JSON and it`s source rule and filter id.
+     */
+    public async attachDeclarativeRuleToEventData(
+        tabId: number,
+        eventId: string,
+        declarativeRuleInfo: DeclarativeRuleInfo,
+    ): Promise<void> {
+        const tabInfo = this.getFilteringInfoByTabId(tabId);
+        if (!tabInfo || !this.isOpen()) {
+            return;
+        }
+
+        const { filteringEvents } = tabInfo;
+
+        const event = filteringEvents.find((e) => e.eventId === eventId);
+
+        if (!event) {
+            logger.debug('Not found event in filtering log to update: ', eventId);
+            return;
+        }
+
+        /**
+         * Search for matching request event inside of filtering events.
+         * If found matching event we assign declarative rule to that event,
+         * otherwise assign it to original event.
+         */
+        const { sourceRules } = declarativeRuleInfo;
+
+        const matchedFilteringEvent = filteringEvents.find((event) => {
+            if (!event.requestRule) {
+                return false;
+            }
+
+            const { originalRuleText, appliedRuleText, filterId } = event.requestRule;
+            const ruleText = originalRuleText || appliedRuleText;
+
+            return ruleText && sourceRules.some((rule) => (
+                rule.sourceRule === ruleText
+                && rule.filterId === filterId
+            ));
+        });
+
+        if (matchedFilteringEvent) {
+            matchedFilteringEvent.declarativeRuleInfo = declarativeRuleInfo;
+        } else {
+            event.declarativeRuleInfo = declarativeRuleInfo;
         }
     }
 

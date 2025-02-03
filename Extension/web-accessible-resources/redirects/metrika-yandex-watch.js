@@ -10,8 +10,8 @@
         var cbName = "yandex_metrika_callbacks";
         var asyncCallbackFromOptions = function asyncCallbackFromOptions() {
             var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var callback = options.callback;
-            var ctx = options.ctx;
+            var {callback: callback} = options;
+            var {ctx: ctx} = options;
             if (typeof callback === "function") {
                 callback = ctx !== undefined ? callback.bind(ctx) : callback;
                 setTimeout((function() {
@@ -66,17 +66,17 @@
         }
         try {
             var trace = console.trace.bind(console);
-            var label = "".concat(ADGUARD_PREFIX, " ");
+            var label = `${ADGUARD_PREFIX} `;
             if (source.engine === "corelibs") {
                 label += source.ruleText;
             } else {
                 if (source.domainName) {
-                    label += "".concat(source.domainName);
+                    label += `${source.domainName}`;
                 }
                 if (source.args) {
-                    label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                 } else {
-                    label += "#%#//scriptlet('".concat(source.name, "')");
+                    label += `#%#//scriptlet('${source.name}')`;
                 }
             }
             if (trace) {
