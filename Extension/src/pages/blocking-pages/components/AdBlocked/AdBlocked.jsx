@@ -20,13 +20,12 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useCallback } from 'react';
 
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import {
     Forward,
     ForwardAction,
     ForwardFrom,
 } from '../../../../common/forward';
-import { MessageType } from '../../../../common/messages';
 import { getParams } from '../../getParams';
 import { messenger } from '../../../services/messenger';
 
@@ -47,7 +46,7 @@ export const AdBlocked = () => {
 
     const handleProceed = useCallback((e) => {
         e.preventDefault();
-        messenger.sendMessage(MessageType.AddUrlToTrusted, { url });
+        messenger.addUrlToTrusted(url);
     }, [url]);
 
     return (
@@ -55,7 +54,7 @@ export const AdBlocked = () => {
             <div className="alert__in">
                 <div className="alert__header alert__header--gold">
                     <div className="alert__header-title">
-                        {reactTranslator.getMessage('blocking_pages_rule_header_title')}
+                        {translator.getMessage('blocking_pages_rule_header_title')}
                     </div>
                 </div>
                 <div className="alert__body">
@@ -63,7 +62,7 @@ export const AdBlocked = () => {
                     <div className="hero hero--green" />
                     <div className="alert__body-title">
                         <span>
-                            {reactTranslator.getMessage('blocking_pages_rule_content_title')}
+                            {translator.getMessage('blocking_pages_rule_content_title')}
                         </span>
                     </div>
                     <div className="alert__rule">
@@ -75,10 +74,10 @@ export const AdBlocked = () => {
                             onClick={handleGoBack}
                             className="button button--green alert__btn"
                         >
-                            {reactTranslator.getMessage('blocking_pages_btn_go_back')}
+                            {translator.getMessage('blocking_pages_btn_go_back')}
                         </button>
                         <button type="button" onClick={handleProceed} className="button button--white alert__btn">
-                            {reactTranslator.getMessage('blocking_pages_btn_proceed')}
+                            {translator.getMessage('blocking_pages_btn_proceed')}
                         </button>
                     </div>
                 </div>

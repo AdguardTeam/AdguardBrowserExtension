@@ -143,22 +143,26 @@ const Search = observer(() => {
                     onBlur={onSearchInputBlur}
                     className="search__input"
                     type="text"
+                    autoComplete="off"
                     placeholder={reactTranslator.getMessage('options_filters_search')}
                     ref={searchInputRef}
                     onChange={searchInputHandler}
                     value={searchInput}
                 />
             </label>
-            {searchInput ? (
+            {searchInput && (
                 <button
                     type="button"
                     className="button"
                     aria-label={reactTranslator.getMessage('close_button_title')}
                     onClick={searchCloseHandler}
                 >
-                    <Icon id="#cross" classname="search__cross" />
+                    <Icon
+                        id="#cross"
+                        classname="icon--24 icon--gray-default"
+                    />
                 </button>
-            ) : <Icon id="#magnifying" classname="icon--magnifying" />}
+            )}
             <div className="search__select">
                 <Select
                     id="search-select"

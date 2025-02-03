@@ -30,7 +30,6 @@ export * from './raw-filters';
 export * from './group-state';
 export * from './i18n-metadata';
 export * from './inverted-allowlist';
-export * from './browser-storage';
 export * from './metadata';
 export * from './settings';
 export * from './safebrowsing';

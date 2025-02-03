@@ -17,7 +17,7 @@
  */
 import { debounce, isEmpty } from 'lodash-es';
 
-import { getRuleSourceIndex, getRuleSourceText } from '@adguard/tswebextension';
+import { getRuleSourceIndex, getRuleSourceText } from 'tswebextension';
 
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';

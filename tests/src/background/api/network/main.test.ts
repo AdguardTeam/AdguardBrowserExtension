@@ -1,3 +1,9 @@
+import {
+    describe,
+    expect,
+    it,
+} from 'vitest';
+
 import { network } from '../../../../../Extension/src/background/api/network';
 import { mockFilterPath } from '../../../../helpers';
 

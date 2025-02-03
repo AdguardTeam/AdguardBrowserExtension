@@ -18,9 +18,11 @@
 
 import React, { useContext, useEffect } from 'react';
 import {
-    HashRouter,
+    createHashRouter,
+    createRoutesFromElements,
+    Outlet,
     Route,
-    Switch,
+    RouterProvider,
 } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
@@ -33,16 +35,55 @@ import { UserRules } from '../UserRules';
 import { Miscellaneous } from '../Miscellaneous';
 import { About } from '../About';
 import { Footer } from '../Footer';
+import { RulesLimits } from '../RulesLimits';
 import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
 import { updateFilterDescription } from '../../../helpers';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
-import { Icons } from '../../../common/components/ui/Icons';
+import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
+import { Loader } from '../../../common/components/Loader';
 import { NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
+import { OptionsPageSections } from '../../../../common/nav';
+import { translator } from '../../../../common/translators/translator';
+import { Icons } from '../ui/Icons';
+import { NotificationType } from '../../stores/UiStore';
 
 import '../../styles/styles.pcss';
+
+const createRouter = (children) => {
+    return createHashRouter(
+        createRoutesFromElements(children),
+        // We are opting out these features and hiding the warning messages by setting it to false.
+        // TODO: Remove this when react-router-dom is updated to v7
+        // https://github.com/remix-run/react-router/issues/12250
+        {
+            future: {
+                v7_relativeSplatPath: false,
+                v7_fetcherPersist: false,
+                v7_normalizeFormMethod: false,
+                v7_partialHydration: false,
+                v7_skipActionErrorRevalidation: false,
+            },
+        },
+    );
+};
+
+const OptionsLayout = () => {
+    return (
+        <>
+            <Sidebar />
+            <div className="inner">
+                <div className="content">
+                    <Notifications />
+                    <Outlet />
+                </div>
+                <Footer />
+            </div>
+        </>
+    );
+};
 
 const Options = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
@@ -87,7 +128,7 @@ const Options = observer(() => {
                         }
                         case NotifierType.FullscreenUserRulesEditorUpdated: {
                             const [isOpen] = message.data;
-                            await settingsStore.setFullscreenUserRulesEditorState(isOpen);
+                            settingsStore.setFullscreenUserRulesEditorState(isOpen);
                             break;
                         }
                         default: {
@@ -100,7 +141,25 @@ const Options = observer(() => {
         };
 
         (async () => {
-            await settingsStore.requestOptionsData(true);
+            const { areFilterLimitsExceeded } = await settingsStore.requestOptionsData(true);
+
+            // Show notification about changed filter list by browser only once.
+            if (__IS_MV3__ && areFilterLimitsExceeded) {
+                uiStore.addNotification({
+                    description: translator.getMessage('popup_limits_exceeded_warning'),
+                    extra: {
+                        link: translator.getMessage('options_rule_limits'),
+                    },
+                    type: NotificationType.ERROR,
+                });
+            }
+
+            // Note: Is it important to check the limits after the request for
+            // options data is completed, because the request for options data
+            // will wait until the background service worker wakes up.
+            if (__IS_MV3__) {
+                await settingsStore.checkLimitations();
+            }
 
             await subscribeToMessages();
         })();
@@ -115,28 +174,39 @@ const Options = observer(() => {
     }
 
     return (
-        <HashRouter hashType="noslash">
+        <>
+            <CommonIcons />
             <Icons />
+            <Loader showLoader={uiStore.showLoader} />
             <div className="page">
-                <Sidebar />
-                <div className="inner">
-                    <div className="content">
-                        <Notifications />
-                        <Switch>
-                            <Route path="/" exact component={General} />
-                            <Route path="/filters" component={Filters} />
-                            <Route path="/stealth" component={Stealth} />
-                            <Route path="/allowlist" component={Allowlist} />
-                            <Route path="/user-filter" component={UserRules} />
-                            <Route path="/miscellaneous" component={Miscellaneous} />
-                            <Route path="/about" component={About} />
-                            <Route component={General} />
-                        </Switch>
-                    </div>
-                    <Footer />
-                </div>
+                <RouterProvider
+                    // We are opting out these features and hiding the warning messages by setting it to false.
+                    // TODO: Remove this when react-router-dom is updated to v7
+                    // https://github.com/remix-run/react-router/issues/12250
+                    future={{
+                        v7_relativeSplatPath: false,
+                        v7_startTransition: false,
+                    }}
+                    router={(
+                        createRouter(
+                            <Route path="/" element={<OptionsLayout />}>
+                                <Route index element={<General />} />
+                                <Route path={OptionsPageSections.filters} element={<Filters />} />
+                                <Route path={OptionsPageSections.stealth} element={<Stealth />} />
+                                <Route path={OptionsPageSections.allowlist} element={<Allowlist />} />
+                                <Route path={OptionsPageSections.userFilter} element={<UserRules />} />
+                                <Route path={OptionsPageSections.miscellaneous} element={<Miscellaneous />} />
+                                {__IS_MV3__ && (
+                                    <Route path={OptionsPageSections.ruleLimits} element={<RulesLimits />} />
+                                )}
+                                <Route path={OptionsPageSections.about} element={<About />} />
+                                <Route path="*" element={<General />} />
+                            </Route>,
+                        )
+                    )}
+                />
             </div>
-        </HashRouter>
+        </>
     );
 });
 

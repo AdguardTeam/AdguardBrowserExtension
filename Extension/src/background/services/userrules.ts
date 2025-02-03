@@ -15,16 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+// it is okay to import directly from `@adguard/tswebextension/mv3` without using manifest-dependant alias,
+// because checkUserRulesRegexpErrors use only in engine-mv3
+import { type ConfigurationResult, UnsupportedRegexpError } from '@adguard/tswebextension/mv3';
+
+import type { Engine } from 'engine';
+
 import {
     AddUserRuleMessage,
     MessageType,
     RemoveUserRuleMessage,
-    ResetCustomRulesForPageMessage,
+    ResetUserRulesForPageMessage,
     SaveUserRulesMessage,
     SetEditorStorageContentMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
-import { Engine } from '../engine';
 import { SettingOption } from '../schema';
 import {
     SettingsApi,
@@ -34,6 +40,8 @@ import {
 } from '../api';
 import { settingsEvents } from '../events';
 import { Prefs } from '../prefs';
+import { logger } from '../../common/logger';
+import { NEWLINE_CHAR_UNIX } from '../../common/constants';
 
 export type GetUserRulesResponse = {
     content: string,
@@ -49,10 +57,16 @@ export type GetUserRulesEditorDataResponse = {
  * Service for handling user rules: reading, adding, deleting.
  */
 export class UserRulesService {
+    private static engine: Engine;
+
     /**
      * Initializes UserRulesService: creates handlers for operations on user rules.
+     *
+     * @param engine Engine instance.
      */
-    public static async init(): Promise<void> {
+    public static async init(engine: Engine): Promise<void> {
+        UserRulesService.engine = engine;
+
         messageHandler.addListener(MessageType.GetUserRules, UserRulesService.getUserRules);
         messageHandler.addListener(MessageType.GetUserRulesEditorData, UserRulesService.getUserRulesEditorData);
         messageHandler.addListener(MessageType.SaveUserRules, UserRulesService.handleUserRulesSave);
@@ -60,9 +74,9 @@ export class UserRulesService {
         messageHandler.addListener(MessageType.RemoveUserRule, UserRulesService.handleUserRuleRemove);
         messageHandler.addListener(MessageType.GetEditorStorageContent, UserRulesService.getEditorStorageContent);
         messageHandler.addListener(MessageType.SetEditorStorageContent, UserRulesService.setEditorStorageContent);
-        messageHandler.addListener(MessageType.ResetCustomRulesForPage, UserRulesService.resetCustomRulesForPage);
+        messageHandler.addListener(MessageType.ResetUserRulesForPage, UserRulesService.resetUserRulesForPage);
 
-        Engine.api.onAssistantCreateRule.subscribe(UserRulesService.addUserRule);
+        UserRulesService.engine.api.onAssistantCreateRule.subscribe(UserRulesService.addUserRule);
 
         settingsEvents.addListener(
             SettingOption.UserFilterEnabled,
@@ -106,7 +120,11 @@ export class UserRulesService {
      */
     private static async addUserRule(rule: string): Promise<void> {
         await UserRulesApi.addUserRule(rule);
-        Engine.debounceUpdate();
+
+        // update the engine only if the module is enabled
+        if (UserRulesApi.isEnabled()) {
+            UserRulesService.engine.debounceUpdate();
+        }
     }
 
     /**
@@ -117,8 +135,11 @@ export class UserRulesService {
     private static async handleUserRulesSave(message: SaveUserRulesMessage): Promise<void> {
         const { value } = message.data;
 
-        await UserRulesApi.setUserRules(value.split('\n'));
-        await Engine.update();
+        await UserRulesApi.setUserRules(value.split(NEWLINE_CHAR_UNIX));
+        // update the engine only if the module is enabled
+        if (UserRulesApi.isEnabled()) {
+            await UserRulesService.engine.update();
+        }
     }
 
     /**
@@ -130,7 +151,11 @@ export class UserRulesService {
         const { ruleText } = message.data;
 
         await UserRulesApi.addUserRule(ruleText);
-        Engine.debounceUpdate();
+
+        // update the engine only if the module is enabled
+        if (UserRulesApi.isEnabled()) {
+            UserRulesService.engine.debounceUpdate();
+        }
     }
 
     /**
@@ -142,28 +167,38 @@ export class UserRulesService {
         const { ruleText } = message.data;
 
         await UserRulesApi.removeUserRule(ruleText);
-        Engine.debounceUpdate();
+
+        // update the engine only if the module is enabled
+        if (UserRulesApi.isEnabled()) {
+            UserRulesService.engine.debounceUpdate();
+        }
     }
 
     /**
      * Updates the tswebextension engine on {@link SettingOption.UserFilterEnabled} setting change.
      * This setting can be changed by the switch ui element, so it is important to update the engine config
-     * via debounce function, as this is a heavyweight call.
+     * via debounce function for MV2, as this is a heavyweight call.
+     * For MV3 we should wait for the engine to be ready and then check for
+     * possible exceeding the limits.
      */
-    private static handleEnableStateChange(): void {
-        Engine.debounceUpdate();
+    private static async handleEnableStateChange(): Promise<void> {
+        if (__IS_MV3__) {
+            await UserRulesService.engine.update();
+        } else {
+            UserRulesService.engine.debounceUpdate();
+        }
     }
 
     /**
      * Removes user rules for provided url on the specified tab.
      *
-     * @param message Message of type {@link ResetCustomRulesForPageMessage} with url and tab info.
+     * @param message Message of type {@link ResetUserRulesForPageMessage} with url and tab info.
      */
-    private static async resetCustomRulesForPage(message: ResetCustomRulesForPageMessage): Promise<void> {
+    private static async resetUserRulesForPage(message: ResetUserRulesForPageMessage): Promise<void> {
         const { url, tabId } = message.data;
 
         await UserRulesApi.removeRulesByUrl(url);
-        await Engine.update();
+        await UserRulesService.engine.update();
         await TabsApi.reload(tabId);
     }
 
@@ -185,5 +220,28 @@ export class UserRulesService {
         const { content } = message.data;
 
         UserRulesApi.setEditorStorageData(content);
+    }
+
+    /**
+     * Checks for user rules parsing errors in the configuration result.
+     *
+     * @param result Configuration result from the engine.
+     */
+    public static checkUserRulesRegexpErrors(result: ConfigurationResult): void {
+        if (!UserRulesApi.isEnabled()) {
+            return;
+        }
+
+        const errors = result.dynamicRules?.errors?.filter((error) => error instanceof UnsupportedRegexpError) || [];
+
+        if (errors.length > 0) {
+            errors.forEach((error) => {
+                logger.error(
+                    'User rule parsing error:',
+                    `\nRule: ${error.networkRule.getText()}`,
+                    `\nReason: ${error.reason}`,
+                );
+            });
+        }
     }
 }

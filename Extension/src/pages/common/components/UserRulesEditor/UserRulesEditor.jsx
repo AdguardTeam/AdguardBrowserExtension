@@ -25,15 +25,16 @@ import React, {
 import { observer } from 'mobx-react';
 
 import { Range } from 'ace-builds';
+import cn from 'classnames';
+
 import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
-import { Editor } from '../Editor';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { Editor, EditorLeaveModal } from '../Editor';
+import { translator } from '../../../../common/translators/translator';
 import { Popover } from '../ui/Popover';
 import { Checkbox } from '../ui/Checkbox';
 import { Icon } from '../ui/Icon';
 import { messenger } from '../../../services/messenger';
-import { MessageType } from '../../../../common/messages';
 import {
     NotifierType,
     NEWLINE_CHAR_UNIX,
@@ -42,6 +43,14 @@ import {
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
+import { addMinDelayLoader } from '../helpers';
+// TODO: Continue to remove dependency on the root store via adding loader and
+// notifications to own 'user-rules-editor' store.
+import { rootStore } from '../../../options/stores/RootStore';
+import { usePreventUnload } from '../../hooks/usePreventUnload';
+import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
+import { NotificationType } from '../../../options/stores/UiStore';
+import { FILE_WRONG_EXTENSION_CAUSE } from '../../../options/constants';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
@@ -51,8 +60,9 @@ import { userRulesEditorStore } from './UserRulesEditorStore';
  * This module is placed in the common directory because it is used in the options page
  * and fullscreen-user-rules page
  */
-export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
+export const UserRulesEditor = observer(({ fullscreen }) => {
     const store = useContext(userRulesEditorStore);
+    const { uiStore, settingsStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
@@ -78,6 +88,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                     const { type } = message;
 
                     switch (type) {
+                        // This event will be triggered when the user rules status is toggled.
                         case NotifierType.SettingUpdated: {
                             await store.requestSettingsData();
                             break;
@@ -110,16 +121,17 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                 resetInfoThatContentChanged = true;
             }
 
-            editorRef.current.editor.setValue(editorContent, 1);
-            editorRef.current.editor.session.getUndoManager().reset();
+            if (editorRef.current) {
+                editorRef.current.editor.setValue(editorContent, CURSOR_POSITION_AFTER_INSERT);
+                editorRef.current.editor.session.getUndoManager().reset();
+            }
+
             if (resetInfoThatContentChanged) {
                 store.setUserRulesEditorContentChangedState(false);
             }
 
             // initial export button state
-            const { userRules } = await messenger.sendMessage(
-                MessageType.GetUserRulesEditorData,
-            );
+            const { userRules } = await messenger.getUserRulesEditorData();
             if (userRules.length > 0) {
                 store.setUserRulesExportAvailableState(true);
             } else {
@@ -135,13 +147,11 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
      * @returns {Promise<void>}
      */
     const handleUserFilterUpdated = useCallback(async () => {
-        const { userRules } = await messenger.sendMessage(
-            MessageType.GetUserRulesEditorData,
-        );
+        const { userRules } = await messenger.getUserRulesEditorData();
 
         if (!store.userRulesEditorContentChanged) {
             if (editorRef.current) {
-                editorRef.current.editor.setValue(userRules, 1);
+                editorRef.current.editor.setValue(userRules, CURSOR_POSITION_AFTER_INSERT);
             }
             store.setUserRulesEditorContentChangedState(false);
             await messenger.setEditorStorageContent(null);
@@ -204,19 +214,29 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         }
     }, [store.userRulesEditorContentChanged, fullscreen]);
 
-    // subscribe to editor changes, to update editor storage content
-    useEffect(() => {
-        const changeHandler = () => {
-            store.setUserRulesEditorContentChangedState(true);
-        };
-
-        editorRef.current.editor.session.on('change', changeHandler);
-    }, [store]);
-
     // set initial wrap mode
     useEffect(() => {
         editorRef.current.editor.session.setUseWrapMode(store.userRulesEditorWrapState);
     }, [store.userRulesEditorWrapState]);
+
+    const isSaving = store.savingUserRulesState === SavingFSMState.Saving;
+    const hasUnsavedChanges = !isSaving && store.userRulesEditorContentChanged;
+    const unsavedChangesTitle = translator.getMessage('options_editor_leave_title');
+    const unsavedChangesSubtitle = translator.getMessage('options_userfilter_leave_subtitle');
+    usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
+
+    const saveUserRules = async (userRules) => {
+        // For MV2 version we don't show loader and don't check limits.
+        if (!__IS_MV3__) {
+            await store.saveUserRules(userRules);
+        } else {
+            uiStore.setShowLoader(true);
+            await store.saveUserRules(userRules);
+            await settingsStore.checkLimitations();
+            uiStore.setShowLoader(false);
+        }
+        store.setUserRulesEditorContentChangedState(false);
+    };
 
     const inputChangeHandler = async (event) => {
         event.persist();
@@ -248,13 +268,19 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             const rulesUnionString = rulesUnion.join(NEWLINE_CHAR_UNIX).trim();
 
             if (oldRulesString !== rulesUnionString) {
-                editorRef.current.editor.setValue(rulesUnionString, 1);
-                await store.saveUserRules(rulesUnionString);
+                editorRef.current.editor.setValue(rulesUnionString, CURSOR_POSITION_AFTER_INSERT);
+
+                await saveUserRules(rulesUnionString);
             }
         } catch (e) {
-            logger.debug(e.message);
-            if (uiStore?.addNotification) {
-                uiStore.addNotification({ description: e.message });
+            logger.debug(e);
+            if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
+                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+            } else {
+                uiStore.addNotification({
+                    description: translator('options_popup_import_error_file_description'),
+                    type: NotificationType.ERROR,
+                });
             }
         }
 
@@ -268,10 +294,17 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
     };
 
     const saveClickHandler = async () => {
-        if (store.userRulesEditorContentChanged) {
-            const value = editorRef.current.editor.getValue();
-            await store.saveUserRules(value);
+        if (!store.userRulesEditorContentChanged) {
+            return;
         }
+
+        const value = editorRef.current.editor.getValue();
+        await saveUserRules(value);
+    };
+
+    const editorChangeHandler = async (value) => {
+        const { content } = await messenger.getUserRules();
+        store.setUserRulesEditorContentChangedState(content !== value);
     };
 
     const shortcuts = [
@@ -315,15 +348,19 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
     ];
 
     const exportClickHandler = () => {
-        exportData(ExportTypes.USER_FILTER);
+        exportData(ExportTypes.UserFilter);
     };
 
     // We set wrap mode directly in order to avoid editor re-rendering
     // Otherwise editor would remove all unsaved content
-    const toggleWrap = () => {
+    const toggleWrap = async () => {
         const toggledWrapMode = !store.userRulesEditorWrapState;
         editorRef.current.editor.session.setUseWrapMode(toggledWrapMode);
-        store.toggleUserRulesEditorWrapMode(toggledWrapMode);
+        await store.toggleUserRulesEditorWrapMode(toggledWrapMode);
+
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
     };
 
     const openEditorFullscreen = async () => {
@@ -333,7 +370,7 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
             await messenger.setEditorStorageContent(content);
         }
 
-        await messenger.sendMessage(MessageType.OpenFullscreenUserRules);
+        await messenger.openFullscreenUserRules();
     };
 
     const closeEditorFullscreen = async () => {
@@ -346,13 +383,16 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
         window.close();
     };
 
-    const handleUserRulesToggle = (e) => {
-        store.updateSetting(e.id, e.data);
+    const handleUserRulesToggle = async ({ id, data }) => {
+        await addMinDelayLoader(
+            uiStore.setShowLoader,
+            store.updateSetting,
+        )(id, data);
     };
 
     const fullscreenTooltipText = fullscreen
-        ? reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')
-        : reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip');
+        ? translator.getMessage('options_editor_close_fullscreen_button_tooltip')
+        : translator.getMessage('options_editor_open_fullscreen_button_tooltip');
 
     return (
         <>
@@ -362,28 +402,45 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                 shortcuts={shortcuts}
                 fullscreen={fullscreen}
                 shouldResetSize={shouldResetSize}
+                onChange={editorChangeHandler}
                 highlightRules
             />
-            <div className="actions actions--divided">
-                <div className="actions__group">
-                    {
-                        fullscreen && (
-                            <label
-                                className="actions__label"
-                                htmlFor="user-filter-enabled"
-                            >
-                                <div className="actions__title">
-                                    {reactTranslator.getMessage('fullscreen_user_rules_title')}
-                                </div>
+            {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}
+            {/* We are hiding it because only Options page has router, and there is no point of using it */}
+            {/* on FullscreenUserRules page, for that we are using `useBlockUnload` hook on top */}
+            {!fullscreen && hasUnsavedChanges && (
+                <EditorLeaveModal
+                    title={unsavedChangesTitle}
+                    subtitle={unsavedChangesSubtitle}
+                />
+            )}
+            <div
+                className={cn('actions actions--grid', {
+                    'actions--fullscreen-user-rules': fullscreen,
+                    'actions--user-rules': !fullscreen,
+                })}
+            >
+                {
+                    fullscreen && (
+                        <label
+                            className="actions__label"
+                            htmlFor="user-filter-enabled"
+                        >
+                            <div className="actions__title">
+                                {translator.getMessage('fullscreen_user_rules_title')}
+                            </div>
+                            <div className="actions__control">
                                 <Checkbox
                                     id="user-filter-enabled"
                                     handler={handleUserRulesToggle}
                                     value={store.userFilterEnabled}
                                     className="checkbox__label--actions"
                                 />
-                            </label>
-                        )
-                    }
+                            </div>
+                        </label>
+                    )
+                }
+                <div className="actions--grid actions--buttons">
                     <UserRulesSavingButton onClick={saveClickHandler} />
                     <input
                         type="file"
@@ -395,21 +452,23 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                     />
                     <button
                         type="button"
-                        className="button button--m button--transparent actions__btn"
+                        className="button button--l button--transparent actions__btn"
                         onClick={importClickHandler}
+                        title={translator.getMessage('options_userfilter_import')}
                     >
-                        {reactTranslator.getMessage('options_userfilter_import')}
+                        {translator.getMessage('options_userfilter_import')}
                     </button>
                     <button
                         type="button"
-                        className="button button--m button--transparent actions__btn"
+                        className="button button--l button--transparent actions__btn"
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
+                        title={translator.getMessage('options_userfilter_export')}
                     >
-                        {reactTranslator.getMessage('options_userfilter_export')}
+                        {translator.getMessage('options_userfilter_export')}
                     </button>
                 </div>
-                <div className="actions__group">
+                <div className="actions--grid actions--icons">
                     <ToggleWrapButton onClick={toggleWrap} />
                     <Popover text={fullscreenTooltipText}>
                         {
@@ -418,18 +477,24 @@ export const UserRulesEditor = observer(({ fullscreen, uiStore }) => {
                                     type="button"
                                     className="button actions__btn actions__btn--icon"
                                     onClick={closeEditorFullscreen}
-                                    aria-label={reactTranslator.getMessage('options_editor_close_fullscreen_button_tooltip')}
+                                    aria-label={translator.getMessage('options_editor_close_fullscreen_button_tooltip')}
                                 >
-                                    <Icon classname="icon--extend" id="#reduce" />
+                                    <Icon
+                                        id="#reduce"
+                                        classname="icon--24 icon--gray-default"
+                                    />
                                 </button>
                             ) : (
                                 <button
                                     type="button"
                                     className="button actions__btn actions__btn--icon"
                                     onClick={openEditorFullscreen}
-                                    aria-label={reactTranslator.getMessage('options_editor_open_fullscreen_button_tooltip')}
+                                    aria-label={translator.getMessage('options_editor_open_fullscreen_button_tooltip')}
                                 >
-                                    <Icon classname="icon--extend" id="#extend" />
+                                    <Icon
+                                        id="#extend"
+                                        classname="icon--24 icon--gray-default"
+                                    />
                                 </button>
                             )
                         }

@@ -22,6 +22,8 @@ export * from './allowlist';
 export * from './userrules';
 export * from './update';
 export * from './categories';
-export * from './page-stats';
 export * from './hit-stats';
 export * from './annoyances-consent';
+// TODO: support for quick fixes filter was disabled in MV3 to comply with CWR policies,
+// so we need to revert this block when quick fixes filter will be back
+// export * from './quick-fixes';

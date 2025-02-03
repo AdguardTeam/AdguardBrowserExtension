@@ -15,37 +15,20 @@
     &__info {
         flex-shrink: 1;
         font-size: 14px;
-        color: var(--gray700);
+        line-height: 21px;
+        color: var(--text-description-description-default);
         display: flex;
         flex-direction: column;
+        justify-content: space-around;
         margin: 0 5px 8px 0;
 
         @media (min-width: 640px) {
             margin: 0 8px 0 0;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            opacity: 0.5;
-            color: var(--white);
         }
     }
 
     &__btn {
         flex-shrink: 0;
         min-width: 200px;
-    }
-}
-
-.light-mode {
-    .filters-update__info {
-        opacity: 1;
-        color: var(--gray700);
-    }
-}
-
-.dark-mode {
-    .filters-update__info {
-        color: var(--white);
-        opacity: 0.5;
     }
 }

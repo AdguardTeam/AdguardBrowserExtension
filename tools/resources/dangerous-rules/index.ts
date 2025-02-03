@@ -18,16 +18,19 @@
  */
 
 import { scanner } from './scanner';
-import { safetyChecker } from './safety-checker';
+import { SafetyChecker } from './safety-checker';
 
 const FILTERS_PATH = './Extension/filters';
 
 /**
  * Validator function to check for potentially dangerous rules.
  *
+ * @param openAiKey - OpenAI API key.
+ *
  * @throws Error if dangerous rules are found.
  */
-export const findDangerousRules = async (): Promise<void> => {
+export const findDangerousRules = async (openAiKey: string): Promise<void> => {
+    const safetyChecker = new SafetyChecker(openAiKey);
     const potentialDangerousRules = await scanner(FILTERS_PATH);
 
     // Extracting script text from each rule for analysis with the OpenAI API

@@ -202,7 +202,7 @@
         if (originUrl.substring(questionMarkIndex).length === 1) {
           divider = '';
         }
-        return "".concat(originUrl).concat(divider).concat(unblockTokenName).concat(SEARCH_PARAMS_DIVIDER).concat(unblockTokenValue);
+        return `${originUrl}${divider}${unblockTokenName}${SEARCH_PARAMS_DIVIDER}${unblockTokenValue}`;
       };
       var extRun = function extRun() {
         var replaceUrl = getReplaceUrl(originUrl, EXT_UNBLOCK_PARAM, extUnblockToken);

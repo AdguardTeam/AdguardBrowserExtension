@@ -3,13 +3,36 @@
 
     &--disabled {
         & .setting__icon {
-            color: var(--gray400);
+            color: var(--stroke-icons-gray-icons-default);
         }
     }
 
     &__checkbox {
         @media (min-width: 640px) {
             border-radius: 8px;
+        }
+    }
+
+    /* TODO: Remove when custom filters will be available. */
+    .link_like_setting_area {
+        text-decoration: none;
+        width: 100%;
+
+        .container {
+            /* To match layout with upper groups. */
+            width: 80%;
+            display: flex;
+        }
+
+        @media (min-width: 640px) {
+            padding: 16px;
+        }
+
+        .link {
+            margin-left: auto;
+            /* To match checkbox width for correct vertical positioning. */
+            width: 40px;
+            text-align: center;
         }
     }
 }

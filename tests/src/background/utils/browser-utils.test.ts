@@ -1,3 +1,9 @@
+import {
+    describe,
+    it,
+    expect,
+} from 'vitest';
+
 import { BrowserUtils } from '../../../../Extension/src/background/utils/browser-utils';
 
 describe('browserUtils', () => {

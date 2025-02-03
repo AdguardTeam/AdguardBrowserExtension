@@ -18,6 +18,10 @@
 
 /**
  * !IMPORTANT Only chrome based browsers support devtools, we cut off devtools for other browsers
+ *
+ * TODO: We can merge content-script-end and content-script-start into one file,
+ * because content-script-end has 50kb while content-script-start has 500kb - so
+ * it would not significantly increase the size of the content-script file.
  */
 /* @if devtools == true */
 import { devtools } from '../../src/content-script/devtools/devtools';

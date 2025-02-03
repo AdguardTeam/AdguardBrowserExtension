@@ -17,11 +17,10 @@
  */
 import { throttle } from 'lodash-es';
 
-import { tabsApi as tsWebExtTabsApi } from '@adguard/tswebextension';
-import type { TabContext } from '@adguard/tswebextension';
-
+import { tabsApi as tsWebExtTabsApi, type TabContext } from '../../tswebextension';
 import { MessageType, sendMessage } from '../../../common/messages';
 import { TabsApi } from '../../../common/api/extension';
+import { logger } from '../../../common/logger';
 
 import { ContextMenuApi } from './context-menu';
 import { FrameData, FramesApi } from './frames';
@@ -53,7 +52,7 @@ export class UiApi {
      */
     private static throttledUpdateAction = throttle((tabId: number, frameData: FrameData): void => {
         iconsApi.updateTabAction(tabId, frameData);
-        UiApi.broadcastTotalBlockedMessage(frameData);
+        UiApi.broadcastTotalBlockedMessage(tabId, frameData);
     }, UiApi.THROTTLE_DELAY_MS);
 
     /**
@@ -91,21 +90,28 @@ export class UiApi {
     /**
      * Sends message with updated counters of blocked requests.
      *
+     * @param tabId Tab's id.
      * @param frameData Broadcasted {@link FrameData}.
      * @param frameData.totalBlocked Total count of blocked requests.
      * @param frameData.totalBlockedTab Number of blocked requests.
      */
-    private static async broadcastTotalBlockedMessage({ totalBlocked, totalBlockedTab }: FrameData): Promise<void> {
+    private static async broadcastTotalBlockedMessage(tabId: number, frameData: FrameData): Promise<void> {
+        const {
+            totalBlocked,
+            totalBlockedTab,
+        } = frameData;
+
         try {
             await sendMessage({
                 type: MessageType.UpdateTotalBlocked,
                 data: {
+                    tabId,
                     totalBlocked,
                     totalBlockedTab,
                 },
             });
         } catch (e) {
-            // do nothing
+            logger.info('Failed to broadcast total blocked message:', e);
         }
     }
 }

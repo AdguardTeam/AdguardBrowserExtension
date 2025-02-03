@@ -89,6 +89,30 @@
     "options_popup_check_false_description": {
         "message": "Chyba při přidávání vlastního filtru"
     },
+    "options_add_custom_filter_modal_title": {
+        "message": "Přidat vlastní filtr"
+    },
+    "options_add_custom_filter_modal_checking_filter": {
+        "message": "Kontrola filtru..."
+    },
+    "options_add_custom_filter_modal_error_title": {
+        "message": "Nepodařilo se přidat vlastní filtr"
+    },
+    "options_add_custom_filter_modal_error_subtitle": {
+        "message": "Zkuste to znovu nebo kontaktujte podporu"
+    },
+    "options_add_custom_filter_modal_add_button": {
+        "message": "Přidat"
+    },
+    "options_add_custom_filter_modal_filter_name": {
+        "message": "Název filtru:"
+    },
+    "options_add_custom_filter_modal_filter_trusted": {
+        "message": "Důvěryhodný"
+    },
+    "options_add_custom_filter_modal_filter_trusted_description": {
+        "message": "Důvěryhodné filtry mohou používat výkonné modifikátory pravidel – ujistěte se, že používáte filtr od důvěryhodných vývojářů"
+    },
     "options_popup_try_again_button": {
         "message": "Zkusit znovu"
     },
@@ -117,8 +141,8 @@
         "message": "Blokátor reklam AdGuard"
     },
     "description": {
-        "description": "TEXT MAX LENGTH: 132",
-        "message": "Nepřekonané rozšíření proti reklamám a vyskakovacím oknům. Blokuje reklamy na Facebooku, YouTube a všech ostatních stránkách."
+        "message": "Nepřekonané rozšíření proti reklamám a vyskakovacím oknům. Blokuje reklamy na Facebooku, YouTube a všech ostatních stránkách.",
+        "description": "TEXT MAX LENGTH: 132"
     },
     "background_tab_title": {
         "message": "Karta pozadí"
@@ -127,16 +151,19 @@
         "message": "Seznam povolených"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard nefiltruje stránky v seznamu povolených."
+        "message": "AdGuard nefiltruje stránky v seznamu povolených"
     },
     "options_allowlist_invert": {
         "message": "Invertovat seznam povolených"
     },
     "options_allowlist_invert_desc": {
-        "message": "Odblokujte reklamy všude kromě seznamu povolených."
+        "message": "Odblokujte reklamy všude kromě seznamu povolených webů"
     },
     "options_allowlist_alert_invert": {
         "message": "Seznam povolených je obrácený. Reklamy jsou blokovány pouze na webech z tohoto seznamu. <a>Vypnout<\/a>"
+    },
+    "options_allowlist_leave_subtitle": {
+        "message": "Vaše změny v seznamu povolených budou ztraceny"
     },
     "options_userfilter": {
         "message": "Uživatelská pravidla"
@@ -213,9 +240,6 @@
     "options_filters_info_mv3_total_rules": {
         "message": "Celkem pravidel: %num%"
     },
-    "options_filters_info_mv3_specs": {
-        "message": "Specifikace na GitHubu"
-    },
     "options_add_custom_filter": {
         "message": "Přidat vlastní filtr"
     },
@@ -235,10 +259,10 @@
         "message": "Chcete-li importovat tento soubor s nastavením, povolte AdGuardu změnit nastavení týkající se ochrany osobních údajů."
     },
     "options_popup_import_success_title": {
-        "message": "Nastavení byla úspěšně načtena"
+        "message": "Nastavení importována"
     },
     "options_popup_import_error_title": {
-        "message": "Chyba při načítání nastavení"
+        "message": "Nastavení se nepodařilo importovat"
     },
     "options_popup_import_error_file_description": {
         "message": "Něco se pokazilo."
@@ -286,10 +310,28 @@
         "message": "Blokováno: %num%"
     },
     "popup_tab_blocked_all_count": {
-        "message": "Celkem: %num%"
+        "message": "Celkem zablokováno: %num%"
     },
     "popup_statistics_total": {
         "message": "Celkem"
+    },
+    "popup_statistics_all_categories": {
+        "message": "Vše"
+    },
+    "popup_statistics_category_advertising": {
+        "message": "Reklama"
+    },
+    "popup_statistics_category_trackers": {
+        "message": "Slídiče"
+    },
+    "popup_statistics_category_social_media": {
+        "message": "Sociální média"
+    },
+    "popup_statistics_category_cdn": {
+        "message": "CDN"
+    },
+    "popup_statistics_category_other": {
+        "message": "Ostatní"
     },
     "popup_statistics_week_days_mon": {
         "message": "Pondělí"
@@ -382,7 +424,7 @@
         "message": "ZJISTIT VÍCE"
     },
     "popup_block_site_ads_option": {
-        "message": "Zablokovat reklamy na této stránce"
+        "message": "Blokovat reklamy ručně"
     },
     "popup_security_report": {
         "message": "Zkontrolovat bezpečnost webové stránky"
@@ -391,16 +433,16 @@
         "message": "Vymazat uživatelská pravidla pro tento web"
     },
     "context_block_site_ads": {
-        "message": "Zablokovat reklamy na této stránce..."
+        "message": "Blokovat reklamy ručně"
     },
     "context_security_report": {
-        "message": "Zkontrolovat bezpečnost webové stránky..."
+        "message": "Zkontrolovat bezpečnost webové stránky"
     },
     "context_complaint_website": {
-        "message": "Nahlásit problém..."
+        "message": "Nahlásit problém"
     },
     "context_site_filtering_disabled": {
-        "message": "AdGuard nefunguje na této doméně"
+        "message": "AdGuard nemůže filtrovat tuto stránku"
     },
     "context_disable_protection": {
         "message": "Pozastavit ochranu AdGuard"
@@ -412,10 +454,10 @@
         "message": "Ochrana AdGuard je pozastavena"
     },
     "context_open_settings": {
-        "message": "Nastavení AdGuardu..."
+        "message": "Nastavení AdGuardu"
     },
     "context_open_log": {
-        "message": "Záznam filtrování..."
+        "message": "Záznam filtrování"
     },
     "context_site_exception": {
         "message": "Tato webová stránka je ve vyjímkách"
@@ -441,6 +483,9 @@
     "filters_download_loading": {
         "message": "Prosím čekejte, databáze filtrů se načítá..."
     },
+    "post_install_loading": {
+        "message": "Načítání rozšíření..."
+    },
     "filtering_modal_element": {
         "message": "Prvek:"
     },
@@ -460,10 +505,10 @@
         "message": "Hledat v kartách"
     },
     "filtering_log_preserve_log_off": {
-        "message": "Zachovat záznam: VYP."
+        "message": "Nezaznamenávat protokol"
     },
     "filtering_log_preserve_log_on": {
-        "message": "Zachovat záznam: ZAP."
+        "message": "Zaznamenat protokol"
     },
     "filtering_refresh_tab_short": {
         "message": "Obnovit"
@@ -493,7 +538,7 @@
         "message": "Filtr"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "Chcete-li zobrazit záznamy událostí filtrování, <reset>zakažte filtry<\/reset> nebo <refresh>obnovte stránku<\/refresh>."
+        "message": "Nic nebylo nalezeno. <reset>Vypněte filtry<\/reset> nebo <refresh>znovu načtěte stránku<\/refresh> a zobrazte záznamy protokolu."
     },
     "filtering_modal_info_title": {
         "message": "Detaily požadavku"
@@ -544,7 +589,7 @@
         "message": "Stav:"
     },
     "filtering_modal_status_text_error": {
-        "message": "Žádná odezva nebyla přijata"
+        "message": "Náhled se nepodařilo načíst. Zkuste to prosím znovu"
     },
     "filtering_modal_status_text_loading": {
         "message": "Načítání..."
@@ -577,7 +622,7 @@
         "message": "Přidat výjimku."
     },
     "filtering_modal_open_in_new_tab": {
-        "message": "Otevřít v nové záložce"
+        "message": "Otevřít na nové kartě"
     },
     "filtering_modal_show_full_url": {
         "message": "Zobrazit celou URL"
@@ -643,7 +688,7 @@
         "message": "Blokovat reklamy ve vyhledávání a méně rušivé reklamy na webových stránkách"
     },
     "options_block_acceptable_ads_desc": {
-        "message": "Zbavte se <a>kontextových reklam a vlastní propagace na webových stránkách<\/a>, které se zobrazují ve výsledcích vyhledávání."
+        "message": "Odstraňte reklamy vlastní propagace z webových stránek a kontextové reklamy z výsledků vyhledávání. <a>Další informace<\/a>"
     },
     "options_show_blocked_ads_count_title": {
         "message": "Uvést počet blokovaných reklam na ikoně rozšíření AdGuard"
@@ -652,7 +697,7 @@
         "message": "Aktivovat nejvhodnější filtry automaticky"
     },
     "options_enable_autodetect_filter_desc": {
-        "message": "Jazykově specifické filtry se zapnou v závislosti na jazyce stránky."
+        "message": "Jazykově specifické filtry se zapnou v závislosti na jazyce stránky"
     },
     "options_select_theme": {
         "message": "Motiv"
@@ -694,7 +739,7 @@
         "message": "Automatická aktualizace filtrů"
     },
     "options_set_update_interval_desc": {
-        "message": "Pro efektivnější blokování je třeba filtry pravidelně aktualizovat."
+        "message": "Pro efektivnější blokování je třeba filtry pravidelně aktualizovat"
     },
     "options_userfilter_export": {
         "message": "Exportovat"
@@ -702,17 +747,32 @@
     "options_editor_save": {
         "message": "Uložit"
     },
+    "options_editor_leave_title": {
+        "message": "Odejít bez uložení?"
+    },
+    "options_editor_leave_confirm": {
+        "message": "Ano, odejít"
+    },
+    "options_editor_leave_cancel": {
+        "message": "Zpět k úpravám"
+    },
     "options_userfilter_import": {
         "message": "Importovat"
     },
     "options_userfilter_description_key": {
         "message": "Zde můžete přidat svá vlastní pravidla. Tato možnost je doporučena pro pokročilé uživatele obeznámené s HTML\/CSS. Přečtěte si <a>návod pravidel filtrován <\/a>, kde se dozvíte, jak napsat vlastní pravidla filtrování."
     },
+    "options_userfilter_subtitle_key": {
+        "message": "Vylaďte si blokování reklam pomocí vlastních pravidel filtrování"
+    },
     "options_userfilter_line_break_off": {
-        "message": "Zalomení řádků: VYP."
+        "message": "Zalomení řádku: povoleno"
     },
     "options_userfilter_line_break_on": {
-        "message": "Zalomení řádků: ZAP."
+        "message": "Zalomení řádku: povoleno"
+    },
+    "options_userfilter_leave_subtitle": {
+        "message": "Vaše změny pravidel budou ztraceny"
     },
     "options_open_changelog": {
         "message": "Seznam změn"
@@ -738,20 +798,20 @@
     "options_miscellaneous_settings": {
         "message": "Další nastavení"
     },
+    "options_rule_syntax": {
+        "message": "Syntaxe pravidel"
+    },
     "options_rule_limits": {
         "message": "Limity pravidel"
     },
     "options_rule_limits_description": {
-        "message": "Toto rozšíření je v souladu s Manifest V3"
-    },
-    "options_rule_limits_description_link": {
-        "message": "Další informace o Manifest V3"
+        "message": "Chrome omezuje počet pravidel, která lze použít"
     },
     "options_rule_limits_dynamic": {
         "message": "Dynamická pravidla"
     },
     "options_rule_limits_dynamic_user_rules": {
-        "message": "Pravidla přidaná uživatelem, například uživatelská pravidla a vlastní filtry"
+        "message": "Pravidla přidaná uživateli, jako jsou <user_rules>uživatelská pravidla<\/user_rules>, <allowlist>seznam povolených webů<\/allowlist> a <custom_filters>vlastní filtry<\/custom_filters> a <quick_fixes>filtry rychlých oprav<\/quick_fixes>"
     },
     "options_rule_limits_dynamic_regex": {
         "message": "Pravidla regex — zahrnuta výše"
@@ -760,13 +820,13 @@
         "message": "Statické sady pravidel"
     },
     "options_rule_limits_static_rulesets_builtin": {
-        "message": "Vestavěné filtry, například Blokování obtěžování nebo Jazykově specifické filtry"
+        "message": "<a>Vestavěné filtry<\/a>, například Blokování obtěžování nebo Jazykově specifické filtry"
     },
     "options_rule_limits_static_rules": {
         "message": "Statická pravidla"
     },
     "options_rule_limits_static_rules_all": {
-        "message": "Pravidla z vestavěných filtrů"
+        "message": "Pravidla z <a>vestavěných filtrů<\/a>"
     },
     "options_rule_limits_static_rules_regex": {
         "message": "Pravidla regex — zahrnuta výše"
@@ -850,7 +910,7 @@
         "message": "Pomoc s vývojem filtrů AdGuard"
     },
     "options_collect_hit_stats_desc": {
-        "message": "Odesílat <a>anonymní statistiky používání filtrů reklam<\/a>, které nám je pomohou vylepšit a optimalizovat."
+        "message": "Odešlete <a>anonymní statistiky o používání filtru reklam<\/a> a pomozte AdGuardu vylepšit filtry"
     },
     "options_show_context_menu_title": {
         "message": "Přidat položku AdGuard do kontextového menu prohlížeče"
@@ -865,25 +925,25 @@
         "message": "Ochrana před sledováním"
     },
     "options_privacy_desc": {
-        "message": "Režim utajení chrání vaši identitu a citlivé osobní informace od tisíců online slídičů."
+        "message": "Režim utajení chrání vaši identitu a citlivé osobní informace od tisíců online slídičů"
     },
     "options_hide_referrer_title": {
         "message": " Skrýt třetím stranám referenční ID"
     },
     "options_hide_referrer_desc": {
-        "message": "Zabraňuje třetím stranám rozpoznat, které webové stránky jste navštívili."
+        "message": "Zabraňuje třetím stranám rozpoznat, které webové stránky jste navštívili"
     },
     "options_hide_search_queries_title": {
         "message": "Skrýt vyhledávací dotazy"
     },
     "options_hide_search_queries_desc": {
-        "message": "Skrýt vyhledávací fráze ze stránek navštívených skrze vyhledávače."
+        "message": "Skrýt vyhledávací fráze ze stránek navštívených skrze vyhledávače"
     },
     "options_send_not_track_title": {
         "message": "Požádat webové stránky, aby vás nesledovaly"
     },
     "options_send_not_track_desc": {
-        "message": "Odešle webovým stránkám, které jste navštívili signály <gpc>Global Privacy Control<\/gpc> a <dnt>Do Not Track<\/dnt>."
+        "message": "Odešle webovým stránkám, které jste navštívili signály <gpc>Global Privacy Control<\/gpc> a <dnt>Do Not Track<\/dnt>"
     },
     "options_stripped_tracking_parameters": {
         "message": "Sledovací parametry odstraněny"
@@ -898,37 +958,37 @@
         "message": "Odstranit X-Client-Data hlavičku"
     },
     "options_remove_client_data_desc": {
-        "message": "Zabraňuje prohlížeči Google Chrome odesílat informace o jeho verzích a změnách doménám Google."
+        "message": "Zabraňuje prohlížeči Google Chrome odesílat informace o jeho verzích a změnách doménám Google"
     },
     "options_disable_webrtc_title": {
         "message": "Zakázat WebRTC"
     },
     "options_disable_webrtc_desc": {
-        "message": "Umožňuje jiným uživatelům zjistit vaši skutečnou IP adresu, i když používáte proxy nebo VPN."
+        "message": "Umožňuje jiným uživatelům zjistit vaši skutečnou IP adresu, i když používáte proxy nebo VPN"
     },
     "options_strip_tracking_params_title": {
         "message": "Odstranit sledovací identifikátory"
     },
     "options_strip_tracking_params_description": {
-        "message": "Odebrat parametry z webových požadavků pomocí AdGuard filtru sledování URL."
+        "message": "Odebrat parametry z webových požadavků pomocí AdGuard filtru sledování URL"
     },
     "options_block_known_trackers_title": {
         "message": "Blokovat slídiče"
     },
     "options_block_known_trackers_description": {
-        "message": "Blokovat slídiče a nástroje pro webovou analýzu pomocí AdGuard filtru ochrany sledování."
+        "message": "Blokovat slídiče a nástroje pro webovou analýzu pomocí AdGuard filtru ochrany sledování"
     },
     "options_third_party_title": {
         "message": "Automatické odstranění cookies třetích stran"
     },
     "options_third_party_desc": {
-        "message": "Omezuje životnost cookies třetích stran (v minutách)."
+        "message": "Omezuje životnost cookies třetích stran (v minutách)"
     },
     "options_first_party_title": {
         "message": "Autodestrukce vlastních cookies (není doporučeno)"
     },
     "options_first_party_desc": {
-        "message": "Omezuje životnost vlastních cookies (v minutách)."
+        "message": "Omezuje životnost vlastních cookies (v minutách)"
     },
     "popup_abuse_site": {
         "message": "Nahlásit problém"
@@ -959,6 +1019,9 @@
     },
     "popup_limits_exceeded_warning": {
         "message": "Váš prohlížeč upravil seznam aktivních vestavěných filtrů"
+    },
+    "snack_on_websites_limits_exceeded_warning": {
+        "message": "V rozšíření prohlížeče AdGuard byl překročen limit pravidla. Zkontrolujte prosím své filtry a deaktivujte ty, které nepotřebujete"
     },
     "short_name": {
         "message": "AdGuard"
@@ -1000,34 +1063,37 @@
         "message": "Rozšíření prohlížeče AdGuard"
     },
     "group_description_adblocking": {
-        "message": "Zde nakonfigurujte blokování reklam, abyste mohli jednou provždy zapomenout na otravné bannery, vyskakovací okna, videoreklamy atd."
+        "message": "Zde nakonfigurujte blokování reklam, abyste mohli jednou provždy zapomenout na otravné bannery, vyskakovací okna, videoreklamy atd"
     },
     "group_description_stealth": {
-        "message": "Režim utajení chrání vaši identitu a citlivé osobní informace od tisíců online slídičů blokováním všech známých populárních metod sledování."
+        "message": "Režim utajení chrání vaši identitu a citlivé osobní informace od tisíců online slídičů blokováním všech známých populárních metod sledování"
     },
     "group_description_social": {
-        "message": "Skrýt nechtěná tlačítka \"Like\"\/\"Share\" a další widgety sociálních sítí."
+        "message": "Skrýt nechtěná tlačítka \"Like\"\/\"Share\" a další widgety sociálních sítí"
     },
     "group_description_annoyances": {
-        "message": "Odstranit vyskakovací okna a další nepříjemná oznámení, jako jsou upozornění na soubory cookie."
+        "message": "Odstranit vyskakovací okna a další nepříjemná oznámení, jako jsou upozornění na soubory cookie"
     },
     "group_description_security": {
-        "message": "Chraňte se před škodlivým kódem, krádeží identity a dalšími online hrozbami."
+        "message": "Chraňte se před škodlivým kódem, krádeží identity a dalšími online hrozbami"
     },
     "group_description_miscellaneous": {
-        "message": "Další nastavení pro ještě lepší konfiguraci Vašeho procházení webu s AdGuardem."
+        "message": "Další nastavení pro ještě lepší konfiguraci Vašeho procházení webu s AdGuardem"
     },
     "group_description_custom": {
         "message": "Vytvořte si vlastní filtry, které doladí filtrování webu podle vašich preferencí."
     },
     "group_description_lang": {
-        "message": "Neomezujte se — blokujte reklamy na webech v jakýchkoli jazycích."
+        "message": "Neomezujte se — blokujte reklamy na webech v jakýchkoli jazycích"
     },
     "fullscreen_user_rules_title": {
         "message": "Uživatelská pravidla"
     },
     "options_user_rules_editor_stub_title": {
-        "message": "Editor je již otevřen"
+        "message": "Editor otevřený v jiném okně"
+    },
+    "options_user_rules_editor_stub_subtitle": {
+        "message": "Po zavření se zde zobrazí vaše pravidla"
     },
     "options_user_rules_editor_stub_go_to_editor_button": {
         "message": "Přejít do editoru"
@@ -1063,25 +1129,25 @@
         "message": "Zkusit znovu"
     },
     "filtering_log_tag_tooltip_first_party": {
-        "message": "Pouze vlastní požadavky"
+        "message": "Vlastní požadavky"
     },
     "filtering_log_tag_tooltip_third_party": {
-        "message": "Pouze požadavky třetích stran"
+        "message": "Požadavky třetích stran"
     },
     "filtering_log_tag_tooltip_regular": {
-        "message": "Pouze požadavky zpracované bez filtrování"
+        "message": "Požadavky zpracované bez filtrování"
     },
     "filtering_log_tag_tooltip_allowed": {
-        "message": "Pouze povolené a odblokované požadavky"
+        "message": "Povolené a odblokované požadavky"
     },
     "filtering_log_tag_tooltip_blocked": {
-        "message": "Pouze blokované požadavky"
+        "message": "Blokované požadavky"
     },
     "filtering_log_tag_tooltip_modified": {
-        "message": "Pouze modifikované požadavky"
+        "message": "Modifikované požadavky"
     },
     "filtering_log_tag_tooltip_user_rules": {
-        "message": "Pouze požadavky upravené podle uživatelských pravidel"
+        "message": "Požadavky ovlivněné uživatelskými pravidly"
     },
     "filtering_log_tag_tooltip_html": {
         "message": "Dokumenty a subdokumenty"
@@ -1102,7 +1168,7 @@
         "message": "Média"
     },
     "filtering_log_tag_tooltip_other": {
-        "message": "Písma, odezvy, WebRTC, WebSocket atd."
+        "message": "Písma, odezvy, WebRTC, WebSocket..."
     },
     "filtering_log_badge_tooltip_third_party": {
         "message": "Požadavky třetích stran"
@@ -1112,6 +1178,9 @@
     },
     "filtering_log_badge_tooltip_http_status_code": {
         "message": "Kód HTTP stavu"
+    },
+    "filtering_log_assumed_rule_description": {
+        "message": "Jedná se o předpokládané pravidlo. Podrobnosti naleznete v naší <a>databázi znalostí<\/a>"
     },
     "options_stealth_general_title": {
         "message": "Obecné"
@@ -1165,11 +1234,18 @@
         "message": "Zavřít"
     },
     "filtering_modal_applied_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "| Použité pravidlo | Použitá pravidla | Použitá pravidla"
+        "message": "| Použité pravidlo: | Použitá pravidla: | Použitá pravidla:",
+        "description": "WARNING: correct number of plural forms is required"
+    },
+    "filtering_modal_assumed_rules": {
+        "message": "| Předpokládané pravidlo: | Předpokládaná pravidla: | Předpokládaná pravidla:",
+        "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_original_rules": {
-        "description": "WARNING: correct number of plural forms is required",
-        "message": "| Původní pravidlo | Původní pravidla | Původní pravidla"
+        "message": "| Původní pravidlo: | Původní pravidla: | Původní pravidla:",
+        "description": "WARNING: correct number of plural forms is required"
+    },
+    "filtering_modal_declarative_rule": {
+        "message": "DNR pravidlo:"
     }
 }

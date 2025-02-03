@@ -25,3 +25,4 @@ export * from './install';
 export * from './update';
 export * from './safebrowsing';
 export * from './document-block';
+export * from './page-stats';

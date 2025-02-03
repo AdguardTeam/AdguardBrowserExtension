@@ -18,12 +18,11 @@
 import browser from 'webextension-polyfill';
 
 import {
-    ApplyBasicRuleEvent,
+    tabsApi as tsWebExtTabsApi,
     defaultFilteringLog,
     FilteringEventType,
-    tabsApi as tsWebExtTabApi,
-} from '@adguard/tswebextension';
-
+    type ApplyBasicRuleEvent,
+} from '../../tswebextension';
 import { logger } from '../../../common/logger';
 import { messageHandler } from '../../message-handler';
 import {
@@ -32,7 +31,7 @@ import {
     OpenSiteReportTabMessage,
 } from '../../../common/messages';
 import { UserAgent } from '../../../common/user-agent';
-import { Engine } from '../../engine';
+import { engine } from '../../engine';
 import { AntiBannerFiltersId, NotifierType } from '../../../common/constants';
 import { listeners } from '../../notifier';
 import {
@@ -42,11 +41,11 @@ import {
     SettingsApi,
     PagesApi,
     AssistantApi,
-    UiApi,
-    PageStatsApi,
     SettingsData,
     FilterMetadata,
     ContextMenuApi,
+    UiApi,
+    PageStatsApi,
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
@@ -87,48 +86,64 @@ export class UiService {
     private static blockedCountIncrement = 1;
 
     /**
-     * Initialize linked services and register listeners.
+     * Initializes **sync** UI services and registers listeners.
+     *
+     * For MV3, handlers should be registered on the top level in sync functions,
+     * otherwise they may not work or work incorrectly.
      */
-    public static async init(): Promise<void> {
-        await toasts.init();
-        await UiApi.init();
-
+    public static syncInit(): void {
         // TODO add better handling for AdGuard for Firefox
         // Do not init context menu for mobile browsers
         if (browser.contextMenus) {
             ContextMenuApi.init();
         }
 
-        messageHandler.addListener(MessageType.OpenSettingsTab, PagesApi.openSettingsPage);
         contextMenuEvents.addListener(ContextMenuAction.OpenSettings, PagesApi.openSettingsPage);
+        contextMenuEvents.addListener(ContextMenuAction.OpenLog, PagesApi.openFilteringLogPage);
+        contextMenuEvents.addListener(ContextMenuAction.ComplaintWebsite, UiService.openAbusePageForActiveTab);
+        contextMenuEvents.addListener(ContextMenuAction.SecurityReport, UiService.openSiteReportPageForActiveTab);
+        contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, AssistantApi.openAssistant);
+    }
+
+    /**
+     * Initialize linked **async** services and register listeners.
+     */
+    public static async init(): Promise<void> {
+        await toasts.init();
+        await UiApi.init();
+
+        // TODO: consider moving the following to syncInit()
+        messageHandler.addListener(MessageType.OpenSettingsTab, PagesApi.openSettingsPage);
 
         messageHandler.addListener(MessageType.OpenFilteringLog, PagesApi.openFilteringLogPage);
-        contextMenuEvents.addListener(ContextMenuAction.OpenLog, PagesApi.openFilteringLogPage);
 
         messageHandler.addListener(MessageType.OpenAbuseTab, UiService.openAbusePage);
-        contextMenuEvents.addListener(ContextMenuAction.ComplaintWebsite, UiService.openAbusePageForActiveTab);
 
         messageHandler.addListener(MessageType.OpenSiteReportTab, UiService.openSiteReportPage);
-        contextMenuEvents.addListener(ContextMenuAction.SecurityReport, UiService.openSiteReportPageForActiveTab);
 
         messageHandler.addListener(MessageType.OpenThankyouPage, PagesApi.openThankYouPage);
         messageHandler.addListener(MessageType.OpenExtensionStore, PagesApi.openExtensionStorePage);
         messageHandler.addListener(MessageType.OpenComparePage, PagesApi.openComparePage);
         messageHandler.addListener(MessageType.OpenFullscreenUserRules, PagesApi.openFullscreenUserRulesPage);
         messageHandler.addListener(
+            MessageType.UpdateFullscreenUserRulesTheme,
+            PagesApi.updateFullscreenUserRulesPageTheme,
+        );
+        messageHandler.addListener(
             MessageType.AddFilteringSubscription,
             PagesApi.openSettingsPageWithCustomFilterModal,
         );
 
         messageHandler.addListener(MessageType.OpenAssistant, AssistantApi.openAssistant);
-        contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, AssistantApi.openAssistant);
+
+        messageHandler.addListener(MessageType.OpenRulesLimitsTab, PagesApi.openRulesLimitsPage);
 
         messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
         messageHandler.addListener(MessageType.ScriptletCloseWindow, PagesApi.closePage);
 
-        tsWebExtTabApi.onCreate.subscribe(UiApi.update);
-        tsWebExtTabApi.onUpdate.subscribe(UiApi.update);
-        tsWebExtTabApi.onActivate.subscribe(UiApi.update);
+        tsWebExtTabsApi.onCreate.subscribe(UiApi.update);
+        tsWebExtTabsApi.onUpdate.subscribe(UiApi.update);
+        tsWebExtTabsApi.onActivate.subscribe(UiApi.update);
 
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
     }
@@ -202,7 +217,7 @@ export class UiService {
             enabledFilters,
             filtersMetadata: FiltersApi.getFiltersMetadata(),
             requestFilterInfo: {
-                rulesCount: Engine.api.getRulesCount(),
+                rulesCount: engine.api.getRulesCount(),
             },
             environmentOptions: {
                 isMacOs: UserAgent.isMacOs,
@@ -237,17 +252,23 @@ export class UiService {
      * @param event.data Event data.
      */
     private static async onBasicRuleApply({ data }: ApplyBasicRuleEvent): Promise<void> {
-        const { filterId, isAllowlist, tabId } = data;
+        const {
+            isAllowlist,
+            tabId,
+            companyCategoryName,
+        } = data;
 
         // If rule is not blocking, ignore it
         if (isAllowlist) {
             return;
         }
 
-        await PageStatsApi.updateStats(filterId, UiService.blockedCountIncrement);
-        PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
+        if (companyCategoryName) {
+            await PageStatsApi.updateStats(companyCategoryName, UiService.blockedCountIncrement);
+            PageStatsApi.incrementTotalBlocked(UiService.blockedCountIncrement);
+        }
 
-        const tabContext = tsWebExtTabApi.getTabContext(tabId);
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         // If tab context is not found, do not update request blocking counter and icon badge for tab
         if (!tabContext) {

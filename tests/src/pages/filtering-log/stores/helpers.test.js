@@ -1,3 +1,9 @@
+import {
+    describe,
+    it,
+    expect,
+} from 'vitest';
+
 import { matchesSearch } from '../../../../../Extension/src/pages/filtering-log/stores/helpers';
 
 describe('helpers', () => {

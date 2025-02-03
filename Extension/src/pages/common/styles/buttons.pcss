@@ -1,0 +1,102 @@
+.button {
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    border: 0;
+    background-color: transparent;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    &--l {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
+        padding: 16px;
+        border-radius: 8px;
+        max-height: 56px;
+
+        @media (max-width: 640px) {
+            max-width: 100%;
+        }
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+        /*
+         * Do not add "pointer-events: none;" to disabled buttons,
+         * otherwise button title will not be displayed on hover
+         * if button text is too long
+         */
+    }
+
+    &--green-bg {
+        color: var(--text-buttons-primary-default);
+        background-color: var(--fills-buttons-main-button-default);
+        transition: 0.3s ease background-color;
+
+        &:hover {
+            background-color: var(--fills-buttons-main-button-hovered);
+
+            &:disabled {
+                background-color: var(--fills-buttons-main-button-default);
+            }
+        }
+    }
+
+    &--red-bg {
+        color: var(--text-buttons-primary-default);
+        background-color: var(--fills-buttons-danger-button-default);
+        transition: 0.3s ease background-color;
+
+        &:hover {
+            background-color: var(--fills-buttons-danger-button-hovered);
+        }
+    }
+
+    &--transparent {
+        box-shadow: 0 0 0 1px var(--stroke-buttons-secondary-default);
+        color: var(--text-main-text-main-default);
+        background-color: transparent;
+        transition: var(--t3) box-shadow, var(--t3) color;
+
+        &:hover {
+            box-shadow: 0 0 0 1px var(--gray-50);
+            color: var(--gray-50);
+
+            &:disabled {
+                box-shadow: 0 0 0 1px var(--stroke-buttons-secondary-default);
+                color: var(--text-main-text-main-default);
+            }
+        }
+    }
+
+    &--link {
+        overflow: visible;
+        font-size: inherit;
+        line-height: inherit;
+
+        &--green {
+            color: var(--text-links-link-default);
+
+            &:hover {
+                color: var(--text-links-link-hovered);
+            }
+        }
+
+        &--red {
+            color: var(--text-links-error-link-default);
+
+            &:hover {
+                color: var(--text-links-error-link-hovered);
+            }
+        }
+
+        &--underlined {
+            text-decoration: underline;
+        }
+    }
+}

@@ -21,13 +21,17 @@
  */
 export const enum ForwardAction {
     UninstallExtension = 'adguard_uninstal_ext',
+    // used for thank you page
     ThankYou = 'thank_you_page',
+    // used for thank you page for MV3
+    ThankYouMv3 = 'thank_you_page_mv3',
     // used for "More information" on the page blocked by Safebrowsing
     SiteReport = 'site_report_page',
     // used for "Report an issue" in popup or context menu on the page
     IssueReport = 'report',
     // used for "Report a bug" on options page in General section
     BugReport = 'bug_report',
+    BugReportMv3 = 'bug_report_mv3',
     Privacy = 'privacy',
     Acknowledgments = 'acknowledgments',
     Github = 'github_options',
@@ -45,14 +49,38 @@ export const enum ForwardAction {
     CollectHitsLearnMore = 'filter_rules',
     OperaStore = 'opera_store',
     FirefoxStore = 'firefox_store',
+
+    /**
+     * Main supported release version — "AdGuard AdBlocker".
+     */
     ChromeStore = 'chrome_store',
+
+    // TODO: can be removed in few months after v5.0 MV3 release
+    // since it will no longer be used
+    /**
+     * Supported MV3 beta version.
+     *
+     * Previously known as "AdGuard AdBlocker MV3 Experimental",
+     * currently — "AdGuard AdBlocker (MV3 Beta)".
+     */
+    ChromeMv3Store = 'chrome_mv3_store',
+
+    /**
+     * Supported MV2 release version.
+     *
+     * Previously known as "AdGuard AdBlocker (Beta)".
+     */
+    ChromeMv2Store = 'chrome_mv2_store',
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',
+    GetTheApp = 'get_the_app',
     GithubVersion = 'github_version_popup',
     GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',
-    BlackFriday24 = 'black_friday_24',
+    FilteringLogAssumedRule = 'filtering_log_assumed_rule',
+    Christmas24 = 'christmas_24',
+    CustomFiltersMv3Disabled = 'custom_mv3_disabled',
 }
 
 export const enum ForwardFrom {
@@ -64,6 +92,7 @@ export const enum ForwardFrom {
     Safebrowsing = 'safebrowsing',
     Adblocker = 'adblocked',
     VersionPopup = 'version_popup',
+    FilteringLog = 'filtering_log',
 }
 
 export const enum ForwardApp {

@@ -1,7 +1,14 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+import {
+    describe,
+    it,
+    vi,
+    expect,
+    beforeEach,
+} from 'vitest';
 
-import { DocumentBlockApi } from '../../../../Extension/src/background/api';
+import { DocumentBlockApi } from '../../../../Extension/src/background/api/document-block';
 import { TRUSTED_DOCUMENTS_CACHE_KEY } from '../../../../Extension/src/common/constants';
 import { mockLocalStorage } from '../../../helpers';
 
@@ -60,7 +67,7 @@ describe('document block api', () => {
 
         await DocumentBlockApi.init();
 
-        jest.spyOn(Date, 'now').mockImplementation(() => 0);
+        vi.spyOn(Date, 'now').mockImplementation(() => 0);
 
         await DocumentBlockApi.setTrustedDomain(url);
 

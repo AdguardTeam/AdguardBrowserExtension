@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createMachine, assign } from 'xstate';
+import { assign, setup } from 'xstate';
 
 export const FetchStates = {
     IDLE: 'idle',
@@ -30,8 +30,10 @@ export const FetchEvents = {
     RETRY: 'RETRY',
 };
 
+const FETCH_MACHINE_ID = 'fetchMachine';
+
 const fetchMachineConfig = {
-    id: 'fetch',
+    id: FETCH_MACHINE_ID,
     initial: FetchStates.IDLE,
     context: {
         data: null,
@@ -46,13 +48,14 @@ const fetchMachineConfig = {
         [FetchStates.LOADING]: {
             invoke: {
                 src: 'fetchData',
+                input: ({ event }) => event,
                 onDone: {
                     target: FetchStates.SUCCESS,
-                    actions: ['setData'],
+                    actions: 'setData',
                 },
                 onError: {
                     target: FetchStates.FAILURE,
-                    actions: ['setError'],
+                    actions: 'setError',
                 },
             },
         },
@@ -69,13 +72,13 @@ const fetchMachineConfig = {
 
 const fetchMachineOptions = {
     actions: {
-        setData: assign((ctx, event) => ({
-            data: event.data,
+        setData: assign(({ event }) => ({
+            data: event.output,
         })),
-        setError: assign((ctx, event) => ({
-            error: event.data,
+        setError: assign(({ event }) => ({
+            error: event.output,
         })),
     },
 };
 
-export const fetchMachine = createMachine(fetchMachineConfig, fetchMachineOptions);
+export const fetchMachine = setup(fetchMachineOptions).createMachine(fetchMachineConfig);

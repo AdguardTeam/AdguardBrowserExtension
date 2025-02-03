@@ -1,3 +1,9 @@
+import {
+    describe,
+    it,
+    expect,
+} from 'vitest';
+
 import { findChunks } from '../../../Extension/src/pages/helpers';
 
 describe('helpers', () => {

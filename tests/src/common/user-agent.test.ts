@@ -1,8 +1,16 @@
+import {
+    beforeEach,
+    describe,
+    expect,
+    test,
+    vi,
+} from 'vitest';
+
 /* eslint-disable max-len */
 describe('UserAgent', () => {
     beforeEach(() => {
         // Clear the require cache for modules to avoid state persisting between tests
-        jest.resetModules();
+        vi.resetModules();
     });
 
     const testCases = [
@@ -63,14 +71,14 @@ describe('UserAgent', () => {
         expectedSystemInfo,
     }) => {
         // Create a spy on window.navigator.userAgent and provide a mock return value
-        jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(userAgent);
+        vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(userAgent);
 
         // The require function is used here to avoid ES6 import hoisting issue. It is placed after
         // the mock setup so that when the module is required, the mock is already in place. This is
         // necessary because ES6 imports would be hoisted above the mock and use an unmocked value.
 
         // eslint-disable-next-line global-require
-        const { UserAgent } = require('../../../Extension/src/common/user-agent');
+        const { UserAgent } = await import('../../../Extension/src/common/user-agent');
 
         expect(UserAgent.browserName).toBe(expectedBrowserName);
         expect(UserAgent.version).toBe(expectedVersion);

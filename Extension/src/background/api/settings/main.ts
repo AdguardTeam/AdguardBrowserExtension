@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import type { SettingsConfig } from '@adguard/tswebextension';
+import type { SettingsConfig as SettingsConfigMV3 } from '@adguard/tswebextension/mv3';
+import type { SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
-import { defaultSettings } from '../../../common/settings';
+import { type AppearanceTheme, defaultSettings } from '../../../common/settings';
 import {
     AllowlistConfig,
     AllowlistOption,
@@ -58,8 +59,14 @@ import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/const
 import { settingsEvents } from '../../events';
 import { listeners } from '../../notifier';
 import { Unknown } from '../../../common/unknown';
+import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
-import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../../constants';
+import {
+    ASSISTANT_INJECT_OUTPUT,
+    DOCUMENT_BLOCK_OUTPUT,
+    GPC_SCRIPT_OUTPUT,
+    HIDE_DOCUMENT_REFERRER_OUTPUT,
+} from '../../../../../constants';
 import { filteringLogApi } from '../filtering-log';
 import { network } from '../network';
 
@@ -141,22 +148,33 @@ export class SettingsApi {
     /**
      * Collects {@link SettingsConfig} for tswebextension from current extension settings.
      *
+     * @param isMV3 Is the extension in MV3 mode.
      * @returns Collected {@link SettingsConfig} for tswebextension.
      */
-    public static getTsWebExtConfiguration(): SettingsConfig {
+    public static getTsWebExtConfiguration<T extends boolean>(
+        isMV3: T,
+    ): T extends true ? SettingsConfigMV3 : SettingsConfigMV2 {
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
             documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
+            ...(isMV3 && {
+                gpcScriptUrl: `/${GPC_SCRIPT_OUTPUT}.js`,
+                hideDocumentReferrerScriptUrl: `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
+            }),
             collectStats: !settingsStorage.get(SettingOption.DisableCollectHits) || filteringLogApi.isOpen(),
-            debugScriptlets: filteringLogApi.isOpen(),
+            debugScriptlets: !isMV3 && filteringLogApi.isOpen(),
             allowlistInverted: !settingsStorage.get(SettingOption.DefaultAllowlistMode),
             allowlistEnabled: settingsStorage.get(SettingOption.AllowlistEnabled),
             stealthModeEnabled: !settingsStorage.get(SettingOption.DisableStealthMode),
             filteringEnabled: !settingsStorage.get(SettingOption.DisableFiltering),
             stealth: {
                 blockChromeClientData: settingsStorage.get(SettingOption.RemoveXClientData),
-                hideReferrer: settingsStorage.get(SettingOption.HideReferrer),
-                hideSearchQueries: settingsStorage.get(SettingOption.HideSearchQueries),
+                // TODO: revert when will be found a better way to add exclusions for $stealth=referrer
+                // AG-34765
+                // Setting to false so that it will remove already added session rules.
+                hideReferrer: isMV3 ? false : settingsStorage.get(SettingOption.HideReferrer),
+                // TODO: revert when will be found a better way to add exclusions for $stealth=searchqueries
+                hideSearchQueries: isMV3 ? false : settingsStorage.get(SettingOption.HideSearchQueries),
                 sendDoNotTrack: settingsStorage.get(SettingOption.SendDoNotTrack),
                 blockWebRTC: settingsStorage.get(SettingOption.BlockWebRTC),
                 selfDestructThirdPartyCookies: settingsStorage.get(SettingOption.SelfDestructThirdPartyCookies),
@@ -270,11 +288,16 @@ export class SettingsApi {
 
         settingsStorage.set(SettingOption.DisableShowPageStats, !showBlockedAdsCount);
         settingsStorage.set(SettingOption.DisableDetectFilters, !autodetectFilters);
-        settingsStorage.set(SettingOption.DisableSafebrowsing, !safebrowsingEnabled);
-        settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);
+        if (!__IS_MV3__) {
+            settingsStorage.set(SettingOption.DisableSafebrowsing, !safebrowsingEnabled);
+            settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);
+        }
 
         if (appearanceTheme) {
             settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme);
+
+            // Config is already validated in the upper level.
+            await messenger.updateFullscreenUserRulesTheme(appearanceTheme as AppearanceTheme);
         }
 
         if (allowAcceptableAds) {
@@ -363,27 +386,29 @@ export class SettingsApi {
 
     /**
      * Loads built-in filters and enables them.
-     * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
      *
-     * @param builtInFilters Array of built-in filters ids.
+     * Firstly, tries to load filters from the backend:
+     * - if loaded successfully, enables them;
+     * - if loading fails, returns the array of filters that were not loaded
+     *   to try to load them from the local storage later.
+     *
+     * @param filterIds Array of built-in filters ids.
+     * @returns Array of filters that were not loaded from the backend.
      * @private
      */
-    private static async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
-        const tasks = builtInFilters.map(async (filterId: number) => {
+    private static async loadBuiltInFiltersRemote(filterIds: number[]): Promise<number[]> {
+        const failedFilterIds: number[] = [];
+        const filterIdsToEnable: number[] = [];
+
+        const tasks = filterIds.map(async (filterId: number) => {
             try {
+                // eslint-disable-next-line no-await-in-loop
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, true);
+                filterIdsToEnable.push(filterId);
             } catch (e) {
                 logger.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
-                // eslint-disable-next-line max-len
-                if (!network.isFilterHasLocalCopy(filterId)) {
-                    // eslint-disable-next-line max-len
-                    throw new Error(`Filter rules were not loaded from backend and there is no local copy of the filter with id ${filterId}.`, { cause: e });
-                }
-                logger.debug('Trying to load from storage.');
-                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+                failedFilterIds.push(filterId);
             }
-
-            filterStateStorage.enableFilters([filterId]);
         });
 
         const promises = await Promise.allSettled(tasks);
@@ -394,14 +419,100 @@ export class SettingsApi {
                 logger.error(promise.reason);
             }
         });
+
+        filterStateStorage.enableFilters(filterIdsToEnable);
+
+        return failedFilterIds;
+    }
+
+    /**
+     * Loads built-in filters from the local storage, and enables them.
+     *
+     * @param filterIds Ids of filters to load and enable.
+     * @private
+     */
+    private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
+        const tasks = filterIds.map(async (filterId: number) => {
+            await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+        });
+
+        const promises = await Promise.allSettled(tasks);
+
+        filterStateStorage.enableFilters(filterIds);
+
+        // Handles errors
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                logger.error(promise.reason);
+            }
+        });
+    }
+
+    /**
+     * Loads built-in filters and enables them **for MV2**.
+     * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
+     *
+     * @param builtInFilters Array of built-in filters ids.
+     * @private
+     */
+    private static async loadBuiltInFiltersMv2(builtInFilters: number[]): Promise<void> {
+        const remoteFailedFilterIds = await SettingsApi.loadBuiltInFiltersRemote(builtInFilters);
+
+        if (remoteFailedFilterIds.length === 0) {
+            return;
+        }
+
+        const filterIdsToLoadLocal: number[] = [];
+        const filterIdsWithNoLocalCopy: number[] = [];
+
+        remoteFailedFilterIds.forEach((filterId) => {
+            if (network.isFilterHasLocalCopy(filterId)) {
+                filterIdsToLoadLocal.push(filterId);
+            } else {
+                filterIdsWithNoLocalCopy.push(filterId);
+            }
+        });
+
+        if (filterIdsWithNoLocalCopy.length > 0) {
+            throw new Error(`There is no local copy of filters with ids: ${filterIdsWithNoLocalCopy.join(', ')}`);
+        }
+
+        logger.debug(`Trying to load from storage filters with ids: ${filterIdsToLoadLocal.join(', ')}`);
+        await SettingsApi.loadBuiltInFiltersLocal(filterIdsToLoadLocal);
+    }
+
+    /**
+     * Loads built-in filters and enables them **for MV3**.
+     *
+     * Checks whether the filter is supported by MV3.
+     * Tries to load them from the storage only.
+     *
+     * @param builtInFilters Array of built-in filters ids.
+     * @private
+     */
+    private static async loadBuiltInFiltersMv3(builtInFilters: number[]): Promise<void> {
+        const filtersToLoad: number[] = [];
+
+        builtInFilters.forEach((filterId) => {
+            if (CommonFilterApi.isMv3Supported(filterId)) {
+                filtersToLoad.push(filterId);
+            } else {
+                logger.debug(`MV3 extension does not support filter with id ${filterId}`);
+            }
+        });
+
+        await SettingsApi.loadBuiltInFiltersLocal(filtersToLoad);
     }
 
     /**
      * Imports filters settings from object of {@link FiltersConfig}.
+     * Ignoring custom filters since AG-39385.
+     * TODO: uncomment when custom filters will be supported for MV3.
      */
     private static async importFilters({
         [FiltersOption.EnabledFilters]: enabledFilters,
         [FiltersOption.EnabledGroups]: enabledGroups,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         [FiltersOption.CustomFilters]: customFilters,
         [FiltersOption.UserFilter]: userFilter,
         [FiltersOption.Allowlist]: allowlist,
@@ -409,10 +520,21 @@ export class SettingsApi {
         await SettingsApi.importUserFilter(userFilter);
         SettingsApi.importAllowlist(allowlist);
 
-        const builtInFilters = enabledFilters.filter((filterId: number) => !CustomFilterApi.isCustomFilter(filterId));
-        await SettingsApi.loadBuiltInFilters(builtInFilters);
+        const builtInFilters = enabledFilters.filter((filterId: number) => CommonFilterApi.isCommonFilter(filterId));
 
-        await CustomFilterApi.createFilters(customFilters);
+        if (__IS_MV3__) {
+            await SettingsApi.loadBuiltInFiltersMv3(builtInFilters);
+
+            // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
+            // forcibly enable Quick Fixes filter on import for MV3
+            // because it is a must-have filter
+            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+        } else {
+            await SettingsApi.loadBuiltInFiltersMv2(builtInFilters);
+        }
+
+        // TODO: Uncomment this block when custom filters will be supported for MV3
+        // await CustomFilterApi.createFilters(customFilters);
 
         groupStateStorage.enableGroups(enabledGroups);
 
@@ -554,13 +676,15 @@ export class SettingsApi {
         }
 
         if (stripTrackingParam) {
-            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.UrlTrackingFilterId]);
+            const remote = !__IS_MV3__;
+            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.UrlTrackingFilterId], remote);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.UrlTrackingFilterId]);
         }
 
         if (blockKnownTrackers) {
-            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.TrackingFilterId]);
+            const remote = !__IS_MV3__;
+            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.TrackingFilterId], remote);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.TrackingFilterId]);
         }

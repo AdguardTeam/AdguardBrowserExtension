@@ -1,12 +1,28 @@
 import browser from 'sinon-chrome';
 import { Storage } from 'webextension-polyfill';
+import {
+    vi,
+    describe,
+    afterEach,
+    it,
+    expect,
+    beforeEach,
+} from 'vitest';
 
-import { ASSISTANT_INJECT_OUTPUT, DOCUMENT_BLOCK_OUTPUT } from '../../../../constants';
-import { SettingsApi, SettingsData } from '../../../../Extension/src/background/api';
+import {
+    ASSISTANT_INJECT_OUTPUT,
+    DOCUMENT_BLOCK_OUTPUT,
+    GPC_SCRIPT_OUTPUT,
+    HIDE_DOCUMENT_REFERRER_OUTPUT,
+} from '../../../../constants';
+import {
+    Network,
+    SettingsApi,
+    SettingsData,
+} from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
 import {
     ExtensionSpecificSettingsOption,
-    FiltersOption,
     RootOption,
     SettingOption,
 } from '../../../../Extension/src/background/schema';
@@ -15,20 +31,31 @@ import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants
 import { defaultSettings } from '../../../../Extension/src/common/settings';
 import {
     getDefaultExportFixture,
-    getDefaultSettingsConfigFixture,
+    getDefaultSettingsConfigFixtureMV2,
+    getDefaultSettingsConfigFixtureMV3,
     getExportedSettingsProtocolV1Fixture,
     getExportedSettingsProtocolV2Fixture,
     getImportedSettingsFromV1Fixture,
     mockLocalStorage,
-    filterNameFixture,
     getSettingsV1,
     getExportedSettingsV2,
 } from '../../../helpers';
 
-jest.mock('../../../../Extension/src/background/engine');
+vi.mock('../../../../Extension/src/background/engine');
+vi.mock('../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Settings Api', () => {
     let storage: Storage.StorageArea;
+
+    vi.spyOn(Network.prototype, 'downloadFilterRules').mockImplementation(async () => {
+        const content = 'Title: foo\n||example.com^$third-party';
+
+        return {
+            filter: content.split('\n'),
+            rawFilter: content,
+        };
+    });
 
     afterEach(() => {
         storage.clear();
@@ -89,23 +116,39 @@ describe('Settings Api', () => {
         });
 
         it('Gets tswebextension config', async () => {
-            const expected = getDefaultSettingsConfigFixture(
-                browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
-                `/${ASSISTANT_INJECT_OUTPUT}.js`,
-                false,
-            );
-            expect(SettingsApi.getTsWebExtConfiguration()).toStrictEqual(expected);
+            const expected = __IS_MV3__
+                ? getDefaultSettingsConfigFixtureMV3(
+                    browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                    `/${ASSISTANT_INJECT_OUTPUT}.js`,
+                    `/${GPC_SCRIPT_OUTPUT}.js`,
+                    `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
+                    false,
+                )
+                : getDefaultSettingsConfigFixtureMV2(
+                    browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                    `/${ASSISTANT_INJECT_OUTPUT}.js`,
+                    false,
+                );
+
+            expect(SettingsApi.getTsWebExtConfiguration(__IS_MV3__)).toStrictEqual(expected);
         });
     });
 
     describe('imports, exports and resets app data', () => {
+        /**
+         * Default timeout for tests is 5000 ms, but we need more time for these
+         * tests. Because at some point CI became execute tests slower
+         * than before.
+         */
+        const EXTENDED_TIMEOUT_MS = 10000;
+
         beforeEach(async () => {
             storage = mockLocalStorage();
             await App.init();
         });
 
         it('Import settings', async () => {
-            const userConfig = getDefaultExportFixture();
+            const userConfig = getDefaultExportFixture(__IS_MV3__);
 
             // eslint-disable-next-line max-len
             userConfig[RootOption.ExtensionSpecificSettings][ExtensionSpecificSettingsOption.UseOptimizedFilters] = true;
@@ -114,13 +157,13 @@ describe('Settings Api', () => {
 
             expect(importResult).toBeTruthy();
             expect(SettingsApi.getSetting(SettingOption.UseOptimizedFilters)).toBe(true);
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Export settings', async () => {
             const exportedSettings = await SettingsApi.export();
 
-            expect(exportedSettings).toStrictEqual(JSON.stringify(getDefaultExportFixture()));
-        }, 10000);
+            expect(JSON.parse(exportedSettings)).toStrictEqual(getDefaultExportFixture(__IS_MV3__));
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Imports exported settings for protocol v1', async () => {
             const userConfig = getExportedSettingsProtocolV1Fixture();
@@ -138,7 +181,7 @@ describe('Settings Api', () => {
             const importedSettings = getImportedSettingsFromV1Fixture();
 
             expect(JSON.parse(importedSettingsString)).toStrictEqual(importedSettings);
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Imports exported settings for protocol v2', async () => {
             const userConfig = getExportedSettingsProtocolV2Fixture();
@@ -153,9 +196,10 @@ describe('Settings Api', () => {
 
             const importedSettingsString = await SettingsApi.export();
             // Fill up optional fields
-            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+            // TODO: Uncomment this when we will return custom filters (AG-39385).
+            // userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
             expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Imports settings from 4.1.X version', async () => {
             const settings = getSettingsV1();
@@ -171,7 +215,7 @@ describe('Settings Api', () => {
             const exportedSettingsString = await SettingsApi.export();
             const EXPORTED_SETTINGS_V_2_0 = getExportedSettingsV2();
             expect(exportedSettingsString).toStrictEqual(JSON.stringify(EXPORTED_SETTINGS_V_2_0));
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
 
         it('Reset default settings', async () => {
             await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
@@ -179,6 +223,6 @@ describe('Settings Api', () => {
             await SettingsApi.reset(true);
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
-        }, 10000);
+        }, EXTENDED_TIMEOUT_MS);
     });
 });

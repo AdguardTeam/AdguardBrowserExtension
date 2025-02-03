@@ -16,90 +16,129 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable max-len */
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../constants';
 
-export const ENVS = {
-    DEV: 'dev',
-    BETA: 'beta',
-    RELEASE: 'release',
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/**
+ * Environment types for build target.
+ */
+export enum BuildTargetEnv {
+    Dev = 'dev',
+    Beta = 'beta',
+    Release = 'release',
+}
+
+/**
+ * Environment types for manifest version.
+ */
+export enum ManifestVersionEnv {
+    Second = '2',
+    Third = '3',
+}
+
+const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
+    return Object.values(BuildTargetEnv).includes(buildEnv as BuildTargetEnv);
 };
 
-export const ENV_CONF = {
-    [ENVS.DEV]: { outputPath: 'dev', mode: 'development' },
-    [ENVS.BETA]: { outputPath: 'beta', mode: 'production' },
-    [ENVS.RELEASE]: { outputPath: 'release', mode: 'production' },
+export const BUILD_ENV = process.env.BUILD_ENV as BuildTargetEnv || BuildTargetEnv.Dev;
+
+// By default we use the third version of the manifest.
+export const MANIFEST_ENV = process.env.MANIFEST_ENV as ManifestVersionEnv || ManifestVersionEnv.Third;
+
+if (!isValidBuildEnv(BUILD_ENV)) {
+    throw new Error(`Invalid BUILD_ENV: ${BUILD_ENV}`);
+}
+
+export type EnvConfig = {
+    outputPath: string;
+    mode: 'development' | 'production';
 };
 
-export const BROWSERS = {
-    CHROME: 'chrome',
-    FIREFOX_AMO: 'firefox-amo',
-    FIREFOX_STANDALONE: 'firefox-standalone',
-    OPERA: 'opera',
-    EDGE: 'edge',
-    ADGUARD_API: 'adguard-api',
-};
-
-export const BROWSERS_CONF = {
-    [BROWSERS.CHROME]: {
-        browser: BROWSERS.CHROME,
-        devtools: true,
-        buildDir: BROWSERS.CHROME,
+export const ENV_CONF: Record<BuildTargetEnv, EnvConfig> = {
+    [BuildTargetEnv.Dev]: {
+        outputPath: 'dev',
+        mode: 'development',
     },
-    [BROWSERS.FIREFOX_STANDALONE]: {
-        browser: BROWSERS.FIREFOX_STANDALONE,
-        devtools: false,
-        buildDir: BROWSERS.FIREFOX_STANDALONE,
+    [BuildTargetEnv.Beta]: {
+        outputPath: 'beta',
+        mode: 'production',
     },
-    [BROWSERS.FIREFOX_AMO]: {
-        browser: BROWSERS.FIREFOX_AMO,
-        devtools: false,
-        buildDir: BROWSERS.FIREFOX_AMO,
-    },
-    [BROWSERS.OPERA]: {
-        browser: BROWSERS.OPERA,
-        devtools: true,
-        buildDir: BROWSERS.OPERA,
-    },
-    [BROWSERS.EDGE]: {
-        browser: BROWSERS.EDGE,
-        devtools: true,
-        buildDir: BROWSERS.EDGE,
-    },
-    [BROWSERS.ADGUARD_API]: {
-        browser: BROWSERS.ADGUARD_API,
-        devtools: false,
-        buildDir: BROWSERS.ADGUARD_API,
+    [BuildTargetEnv.Release]: {
+        outputPath: 'release',
+        mode: 'production',
     },
 };
 
-export const FIREFOX_APP_IDS_MAP = {
-    [ENVS.DEV]: 'adguardadblockerdev@adguard.com',
-    [ENVS.BETA]: 'adguardadblockerbeta@adguard.com',
-    [ENVS.RELEASE]: 'adguardadblocker@adguard.com',
+export const enum Browser {
+    Chrome = 'chrome',
+    ChromeMv3 = 'chrome-mv3',
+    FirefoxAmo = 'firefox-amo',
+    FirefoxStandalone = 'firefox-standalone',
+    Opera = 'opera',
+    Edge = 'edge',
+}
+
+/**
+ * List of browsers which has its own filters assets directory.
+ */
+export const enum AssetsFiltersBrowser {
+    Chromium = 'chromium',
+    ChromiumMv3 = 'chromium-mv3',
+    Edge = 'edge',
+    Firefox = 'firefox',
+    Opera = 'opera',
+}
+
+export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
+    [BuildTargetEnv.Dev]: 'adguardadblockerdev@adguard.com',
+    [BuildTargetEnv.Beta]: 'adguardadblockerbeta@adguard.com',
+    [BuildTargetEnv.Release]: 'adguardadblocker@adguard.com',
 };
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');
 
+/* eslint-disable max-len */
 // filters constants
 export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';
 export const METADATA_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_METADATA_FILE_NAME}`;
 export const FILTERS_DEST = 'Extension/filters/%browser';
+export const DECLARATIVE_FILTERS_DEST = 'Extension/filters/%browser/declarative';
 export const METADATA_I18N_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_I18N_METADATA_FILE_NAME}`;
 export const FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%filter.txt`;
 export const OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%s_optimized.txt`;
-export const LOCAL_SCRIPT_RULES_COMMENT = `By the rules of AMO we cannot use remote scripts (and our JS rules can be counted as such). Because of that we use the following approach (that was accepted by AMO reviewers):
+export const LOCAL_SCRIPT_RULES_COMMENT = `By the rules of AMO, we cannot use remote scripts (and our JS rules can be counted as such).
+Because of that, we use the following approach (that was accepted by AMO reviewers):
 
 1. We pre-build JS rules from AdGuard filters into the add-on (see the file called "local_script_rules.json").
-2. At runtime we check every JS rule if it's included into "local_script_rules.json". If it is included we allow this rule to work since it's pre-built. Other rules are discarded.
-3. We also allow "User rules" to work since those rules are added manually by the user. This way filters maintainers can test new rules before including them in the filters.`;
+2. At runtime we check every JS rule if it is included into "local_script_rules.json".
+   If it is included we allow this rule to work since it is pre-built. Other rules are discarded.
+3. We also allow "User rules" and "Custom filters" to work since those rules are added manually by the user.
+   This way filters maintainers can test new rules before including them in the filters.`;
+
+export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `By the rules of Chrome Web Store, we cannot use remote scripts.
+   Because of that, we use the following approach
+   (you can search the described steps by 'JS_RULES_EXECUTION' in the bundled background.js):
+
+1. We collect and pre-build script rules from the filters (which are pre-built into the extension)
+   into the add-on (STEP 1.1 and 1.2). See 'updateLocalResourcesForChromiumMv3' in
+   https://github.com/AdguardTeam/AdguardBrowserExtension/blob/release/mv3-filters/tools/resources/update-local-script-rules.ts
+   and the files called "local_script_rules.js".
+2. Collected local scripts are passed to the engine (STEP 2.1 and 2.2).
+3. At runtime we check every script rule whether it is included in "local_script_rules.js" (STEP 3).
+4. Execution of script rules:
+    - If the rule is included, we allow this rule to be executed.
+      Such rules are executed by chrome.scripting API (STEP 4.1 and 4.2). Other rules are discarded.`;
 
 // artifacts constants
 export const CHROME_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.xml';
 export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');
 export const CHROME_CODEBASE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/chrome.crx';
-export const FIREFOX_CREDENTIALS = path.resolve(__dirname, '../private/AdguardBrowserExtension/mozilla_credentials.json');
 export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
 export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.json';

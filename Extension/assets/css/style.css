@@ -150,12 +150,6 @@
   padding-right: 48px;
   cursor: pointer;
 }
-.settings-actions--update-filters {
-  position: absolute;
-  margin: 0;
-  right: 0;
-  top: calc(50% - 10px);
-}
 .settings-actions__update-button {
   font-size: 0;
   display: block;
@@ -351,10 +345,7 @@ li.active .block-type__desc-title {
 .block-type:hover .block-type__desc-title {
   text-decoration: underline;
 }
-.desc--filters {
-  color: #888888;
-  font-size: 12px;
-}
+
 .opts-list .opt-state {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -499,9 +490,6 @@ li.active .toggler:before {
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
-}
-.opts-list--filters .toggler-wr {
-  align-items: flex-start;
 }
 .settings-footer {
   margin-top: auto;
@@ -1005,23 +993,23 @@ li.active .toggler:before {
   line-height: 0;
   height: 0;
 }
-.filter-download {
+.post-install {
   color: #4d4d4d;
   background-color: #fff;
 }
 @media (prefers-color-scheme: dark) {
-  .filter-download {
+  .post-install {
     color: #d8d8d8;
     background-color: #131313;
   }
 }
-.filter-download__header{
-  padding: 26px 0;
+.post-install__header{
+  padding-bottom: 16px;
 }
-.filter-download__header-logo{
+.post-install__header-logo{
   float: left;
-  width: 206px;
-  height: 45px;
+  width: 242px;
+  height: 53px;
   padding: 12px 0 0;
   margin: 1px 0 0 35px;
   font: 0/0 a;
@@ -1033,15 +1021,20 @@ li.active .toggler:before {
   text-align: right;
 }
 @media (prefers-color-scheme: dark) {
-  .filter-download__header-logo{
+  .post-install__header-logo{
     background-image: url(../images/logo-dark.svg);
   }
+
+  .post-install__descr {
+    color: #c0c0c0;
+  }
 }
-.filter-download__descr {
-  margin-bottom: 60px;
-  font-style: italic;
+.post-install__descr {
+  font-size: 16px;
+  line-height: 21px;
+  color: #7f7f7f
 }
-.wrap{ /* filter-download & th */
+.wrap{ /* post-install & th */
   width: 1020px;
   margin: 0 auto;
 }
@@ -1063,11 +1056,10 @@ li.active .toggler:before {
   margin: 0 35px 17px;
 }
 
-.filter-download__header.downloading .filter-download__header-logo {
+.post-install__header.downloading .post-install__header-logo {
   float: none;
   display: block;
   margin: 0 auto 0 auto;
-  width: 206px;
 }
 .option-popup {
   display: none;

@@ -1,3 +1,9 @@
+import {
+    describe,
+    test,
+    expect,
+} from 'vitest';
+
 import { isMatchingCriteria } from '../../../../tools/resources/dangerous-rules/scanner';
 
 describe('scanner', () => {

@@ -1,5 +1,11 @@
 /* eslint-disable max-len */
 import {
+    describe,
+    it,
+    expect,
+} from 'vitest';
+
+import {
     createDocumentLevelBlockRule,
     createExceptionCookieRules,
     createExceptionCssRule,

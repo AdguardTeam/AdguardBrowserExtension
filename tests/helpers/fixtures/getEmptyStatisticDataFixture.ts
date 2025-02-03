@@ -1,5 +1,6 @@
 import { GetStatisticsDataResponse } from '../../../Extension/src/background/api';
 import { PageStatsStorage } from '../../../Extension/src/background/storages/page-stats';
+import { translator } from '../../../Extension/src/common/translators/translator';
 
 export const getEmptyStatisticDataFixture = (): GetStatisticsDataResponse => {
     const emptyStats = { [PageStatsStorage.TOTAL_GROUP_ID]: 0 };
@@ -10,16 +11,16 @@ export const getEmptyStatisticDataFixture = (): GetStatisticsDataResponse => {
         lastMonth: Array(30).fill(emptyStats),
         lastYear: Array(3).fill(emptyStats),
         overall: Array(3).fill(emptyStats),
-        blockedGroups: [
-            { groupId: 'total', groupName: 'popup_statistics_total' },
-            { displayNumber: 1, groupId: 1, groupName: 'Ad Blocking' },
-            { displayNumber: 2, groupId: 2, groupName: 'Privacy' },
-            { displayNumber: 3, groupId: 3, groupName: 'Social Widgets' },
-            { displayNumber: 4, groupId: 4, groupName: 'Annoyances' },
-            { displayNumber: 5, groupId: 5, groupName: 'Security' },
-            { displayNumber: 6, groupId: 6, groupName: 'Other' },
-            { displayNumber: 7, groupId: 7, groupName: 'Language-specific' },
-            { displayNumber: 99, groupId: 0, groupName: 'options_antibanner_custom_group' },
+        blockedCategories: [
+            { categoryId: 'total', categoryName: translator.getMessage('popup_statistics_all_categories') },
+            { categoryId: 'Advertising', categoryName: translator.getMessage('popup_statistics_category_advertising') },
+            { categoryId: 'Trackers', categoryName: translator.getMessage('popup_statistics_category_trackers') },
+            {
+                categoryId: 'SocialMedia',
+                categoryName: translator.getMessage('popup_statistics_category_social_media'),
+            },
+            { categoryId: 'Cdn', categoryName: translator.getMessage('popup_statistics_category_cdn') },
+            { categoryId: 'Other', categoryName: translator.getMessage('popup_statistics_category_other') },
         ],
     };
 };

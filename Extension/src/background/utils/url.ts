@@ -213,4 +213,22 @@ export class UrlUtils {
 
         return path.substring(lastSeparatorIndex);
     }
+
+    /**
+     * Extracts upper level domain from domain.
+     *
+     * @param domain Domain.
+     *
+     * @example getUpperLevelDomain('www.example.com') => 'example.com'
+     * @example getUpperLevelDomain('test.pages.dev') => 'pages.dev'
+     * @example getUpperLevelDomain('allowlist.test.pages.dev') => 'test.pages.dev'
+     *
+     * @returns Upper level domain.
+     */
+    static getUpperLevelDomain(domain: string): string {
+        const parts = domain.split('.');
+        parts.shift();
+
+        return parts.join('.');
+    }
 }

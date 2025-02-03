@@ -1,77 +1,20 @@
 .icon {
-    display: inline-block;
-    vertical-align: middle;
-    flex-shrink: 0;
-
-    &--contain {
-        width: 100%;
-        height: 100%;
-    }
+    /* 'display' property for 'icon' class should be set in specific page style files */
 
     &--24 {
         width: 24px;
         height: 24px;
     }
 
-    &--setting {
-        width: 24px;
-        height: 24px;
-    }
-
-    &--back {
-        width: 10px;
+    &--18 {
+        width: 18px;
         height: 18px;
     }
 
-    &--checked {
-        width: 13px;
-        height: 12px;
-    }
-
-    &--empty {
-        width: 82px;
-        height: 104px;
-    }
-
-    &--link {
-        width: 14px;
-        height: 14px;
-        color: var(--green400);
-    }
-
     &--logo {
-        width: 126px;
-        height: 28px;
-        color: #232323;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
-    }
-
-    &--magnifying {
-        width: 20px;
-        height: 20px;
-        color: var(--gray400);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray700);
-        }
-    }
-
-    &--trash {
-        width: 14px;
-        height: 17px;
-    }
-
-    &--reload {
-        width: 22px;
-        height: 15px;
-    }
-
-    &--menu {
-        width: 24px;
-        height: 26px;
+        width: 107px;
+        height: 24px;
+        color: var(--fills-logo-key-color-default);
     }
 
     &--select {
@@ -84,62 +27,30 @@
         }
     }
 
-    &--filters {
-        width: 14px;
-        height: 13px;
+    &--gray-default {
+        color: var(--stroke-icons-gray-icons-default);
     }
 
-    &--like {
-        color: var(--gray900);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
+    &--green-default {
+        color: var(--stroke-icons-product-icon-default);
     }
 
-    &--extend {
-        width: 24px;
-        height: 24px;
-        color: var(--gray700);
+    &--red-default {
+        color: var(--stroke-icons-error-icon-default);
     }
-}
 
-.light-mode {
-    .icon {
-        &--logo {
-            color: #232323;
-        }
-
-        &--like {
-            color: var(--gray900);
-        }
-
-        &--magnifying {
-            color: var(--gray400);
-        }
-
-        &--extend {
-            color: var(--gray700);
-        }
+    &--loading {
+        pointer-events: none;
+        animation: loader-spin 1s infinite linear;
+        animation-fill-mode: forwards;
     }
-}
 
-.dark-mode {
-    .icon {
-        &--logo {
-            color: var(--gray300);
+    @keyframes loader-spin {
+        from {
+            -webkit-transform: rotate(0deg);
         }
-
-        &--like {
-            color: var(--gray300);
-        }
-
-        &--magnifying {
-            color: var(--gray700);
-        }
-
-        &--extend {
-            color: var(--gray300);
+        to {
+            -webkit-transform: rotate(360deg);
         }
     }
 }

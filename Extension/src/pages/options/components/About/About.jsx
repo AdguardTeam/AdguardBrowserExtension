@@ -65,6 +65,12 @@ const About = observer(() => {
                         {`Scriptlets v${libVersions.scriptlets}`}
                         <br />
                         {`ExtendedCss v${libVersions.extendedCss}`}
+                        {libVersions.dnrRulesets && (
+                            <>
+                                <br />
+                                {`DNR-Rulesets v${libVersions.dnrRulesets}`}
+                            </>
+                        )}
                     </p>
                 </div>
                 <div className="about__copyright">
@@ -80,7 +86,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={CHANGELOG_URL}
-                        className="links-menu__item"
+                        className="links-menu__item button--link--green"
                     >
                         {reactTranslator.getMessage('options_open_changelog')}
                     </a>
@@ -88,7 +94,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={PRIVACY_URL}
-                        className="links-menu__item"
+                        className="links-menu__item button--link--green"
                     >
                         {reactTranslator.getMessage('options_privacy_policy')}
                     </a>
@@ -96,7 +102,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={WEBSITE_URL}
-                        className="links-menu__item"
+                        className="links-menu__item button--link--green"
                     >
                         {reactTranslator.getMessage('options_site')}
                     </a>
@@ -104,7 +110,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={DISCUSS_URL}
-                        className="links-menu__item"
+                        className="links-menu__item button--link--green"
                     >
                         {reactTranslator.getMessage('options_discuss')}
                     </a>
@@ -112,7 +118,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={ACKNOWLEDGMENTS_URL}
-                        className="links-menu__item"
+                        className="links-menu__item button--link--green"
                     >
                         {reactTranslator.getMessage('options_acknowledgment')}
                     </a>
@@ -120,7 +126,7 @@ const About = observer(() => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={GITHUB_URL}
-                        className="links-menu__item"
+                        className="links-menu__item button--link--green"
                     >
                         {reactTranslator.getMessage('options_github')}
                     </a>

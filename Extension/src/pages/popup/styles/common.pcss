@@ -14,11 +14,9 @@ body,
     height: 100%;
     min-height: 100%;
     width: auto;
-    background-color: var(--white);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--black);
-    }
+    min-width: 320px;
+    color: var(--text-main-text-main-default);
+    background-color: var(--fills-backgrounds-page-background-default);
 }
 
 /*
@@ -31,11 +29,7 @@ body,
 
 html {
     font-size: 10px;
-    background-color: var(--white);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--black);
-    }
+    background-color: var(--fills-backgrounds-page-background-default);
 }
 
 body {
@@ -53,6 +47,12 @@ ul {
 
 .hidden {
     display: none;
+}
+
+.disabled {
+    opacity: .5;
+    pointer-events: none;
+    cursor: help;
 }
 
 a {
@@ -76,20 +76,8 @@ select {
 
 .light-mode {
     color-scheme: light;
-    background-color: var(--white);
-
-    body,
-    #root {
-        background-color: var(--white);
-    }
 }
 
 .dark-mode {
     color-scheme: dark;
-    background-color: var(--black);
-
-    body,
-    #root {
-        background-color: var(--black);
-    }
 }

@@ -15,10 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Runtime, Windows } from 'webextension-polyfill';
+import browser, { type Runtime, type Windows } from 'webextension-polyfill';
 
 import { UserAgent } from '../../../common/user-agent';
-import { AddFilteringSubscriptionMessage, ScriptletCloseWindowMessage } from '../../../common/messages';
+import {
+    type AddFilteringSubscriptionMessage,
+    type ScriptletCloseWindowMessage,
+    type UpdateFullscreenUserRulesThemeMessage,
+} from '../../../common/messages';
 import { getErrorMessage } from '../../../common/error';
 import {
     Forward,
@@ -26,21 +30,29 @@ import {
     ForwardFrom,
     ForwardParams,
 } from '../../../common/forward';
-import { Engine } from '../../engine';
 import { UrlUtils } from '../../utils/url';
-import { browserStorage, settingsStorage } from '../../storages';
+import {
+    browserStorage,
+    groupStateStorage,
+    settingsStorage,
+} from '../../storages';
 import { SettingOption } from '../../schema';
 import { BrowserUtils } from '../../utils/browser-utils';
-import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
+import {
+    AntiBannerFiltersId,
+    AntibannerGroupsId,
+    FILTERING_LOG_WINDOW_STATE,
+} from '../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../common/api/extension';
 import { Prefs } from '../../prefs';
-import { CustomFilterApi } from '../filters';
+import { CustomFilterApi, FiltersApi } from '../filters';
 import {
     FILTERING_LOG_OUTPUT,
-    FILTER_DOWNLOAD_OUTPUT,
+    POST_INSTALL_OUTPUT,
     FULLSCREEN_USER_RULES_OUTPUT,
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
+import { OptionsPageSections } from '../../../common/nav';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
@@ -76,13 +88,21 @@ export class PagesApi {
     /**
      * Filters download page url.
      */
-    public static readonly filtersDownloadPageUrl = PagesApi.getExtensionPageUrl(FILTER_DOWNLOAD_OUTPUT);
+    public static readonly postInstallPageUrl = PagesApi.getExtensionPageUrl(POST_INSTALL_OUTPUT);
 
     /**
-     * Thank you page page url.
+     * Thank you page url.
      */
     public static readonly thankYouPageUrl = Forward.get({
         action: ForwardAction.ThankYou,
+        from: ForwardFrom.Background,
+    });
+
+    /**
+     * Thank you page url for mv3.
+     */
+    public static readonly thankYouPageUrlMv3 = Forward.get({
+        action: ForwardAction.ThankYouMv3,
         from: ForwardFrom.Background,
     });
 
@@ -118,15 +138,15 @@ export class PagesApi {
      * If the page has been already opened, focus on window instead creating new one.
      */
     public static async openFullscreenUserRulesPage(): Promise<void> {
-        const theme = settingsStorage.get(SettingOption.AppearanceTheme);
-        const url = `${PagesApi.fullscreenUserRulesPageUrl}?theme=${theme}`;
-
         const tab = await TabsApi.findOne({ url: `${PagesApi.fullscreenUserRulesPageUrl}*` });
 
         if (tab) {
             await TabsApi.focus(tab);
             return;
         }
+
+        const theme = settingsStorage.get(SettingOption.AppearanceTheme);
+        const url = `${PagesApi.fullscreenUserRulesPageUrl}?theme=${theme}`;
 
         // Open a new tab without type to get it as a new tab in a new window
         // with the ability to move and attach it to the current browser window.
@@ -135,6 +155,28 @@ export class PagesApi {
             focused: true,
             ...PagesApi.defaultPopupWindowState,
         });
+    }
+
+    /**
+     * Updated the theme for the fullscreen user rules page
+     * by updating the query parameter with the new theme value.
+     *
+     * @param message Message of type {@link UpdateFullscreenUserRulesThemeMessage}.
+     * @param message.data Contains new theme value.
+     */
+    public static async updateFullscreenUserRulesPageTheme(
+        { data }: UpdateFullscreenUserRulesThemeMessage,
+    ): Promise<void> {
+        const tab = await TabsApi.findOne({ url: `${PagesApi.fullscreenUserRulesPageUrl}*` });
+
+        if (!tab) {
+            return;
+        }
+
+        const { theme } = data;
+        const url = `${PagesApi.fullscreenUserRulesPageUrl}?theme=${theme}`;
+
+        await browser.tabs.update(tab.id, { url });
     }
 
     /**
@@ -200,18 +242,14 @@ export class PagesApi {
             browserName = 'Other';
         }
 
-        const commonFilterIds = (Engine.api.configuration?.filters || [])
-            .filter((id: number) => !CustomFilterApi.isCustomFilter(id));
-
-        const customFilterUrls = CustomFilterApi.getFiltersData()
-            .filter(({ enabled }) => !!enabled)
-            .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+        const commonFilterIds = FiltersApi.getEnabledFilters()
+            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
 
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
             product_type: 'Ext',
-            manifest_version: '2',
+            manifest_version: __IS_MV3__ ? '3' : '2',
             product_version: encodeURIComponent(browser.runtime.getManifest().version),
             url: encodeURIComponent(siteUrl),
         };
@@ -233,8 +271,15 @@ export class PagesApi {
             params.filters = encodeURIComponent(commonFilterIds.join('.'));
         }
 
-        if (customFilterUrls.length > 0) {
-            params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
+        const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
+        if (isCustomFiltersEnabled) {
+            const customFilterUrls = CustomFilterApi.getFiltersData()
+                .filter(({ enabled }) => enabled)
+                .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+
+            if (customFilterUrls.length > 0) {
+                params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
+            }
         }
 
         Object.assign(
@@ -276,14 +321,15 @@ export class PagesApi {
      * Create full extension page url, based on precomputed values from webextension API.
      *
      * @param filename Page html filename.
-     * @param optionalPart Url query string or/and hash.
+     * @param urlQuery Url query string or/and hash.
+     *
      * @returns Full extension page url.
      */
-    public static getExtensionPageUrl(filename: string, optionalPart?: string): string {
+    public static getExtensionPageUrl(filename: string, urlQuery?: string): string {
         let url = `${Prefs.baseUrl}${filename}.html`;
 
-        if (typeof optionalPart === 'string') {
-            url += optionalPart;
+        if (typeof urlQuery === 'string') {
+            url += urlQuery;
         }
 
         return url;
@@ -292,8 +338,8 @@ export class PagesApi {
     /**
      * Opens filters download page.
      */
-    public static async openFiltersDownloadPage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApi.filtersDownloadPageUrl });
+    public static async openPostInstallPage(): Promise<void> {
+        await browser.tabs.create({ url: PagesApi.postInstallPageUrl });
     }
 
     /**
@@ -309,12 +355,14 @@ export class PagesApi {
     public static async openThankYouPage(): Promise<void> {
         const params = BrowserUtils.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(browser.i18n.getUILanguage())}`);
-        const thankYouUrl = `${PagesApi.thankYouPageUrl}?${params.join('&')}`;
 
-        const filtersDownloadPage = await TabsApi.findOne({ url: PagesApi.filtersDownloadPageUrl });
+        const pageUrl = __IS_MV3__ ? PagesApi.thankYouPageUrlMv3 : PagesApi.thankYouPageUrl;
+        const thankYouUrl = `${pageUrl}?${params.join('&')}`;
 
-        if (filtersDownloadPage) {
-            await browser.tabs.update(filtersDownloadPage.id, { url: thankYouUrl });
+        const postInstallPage = await TabsApi.findOne({ url: PagesApi.postInstallPageUrl });
+
+        if (postInstallPage) {
+            await browser.tabs.update(postInstallPage.id, { url: thankYouUrl });
         } else {
             await browser.tabs.create({ url: thankYouUrl });
         }
@@ -325,6 +373,25 @@ export class PagesApi {
      */
     public static async openExtensionStorePage(): Promise<void> {
         await browser.tabs.create({ url: PagesApi.extensionStoreUrl });
+    }
+
+    /**
+     * Opens specified path on settings page.
+     *
+     * @param url URL path to open on settings page.
+     *
+     * @returns Opened or updated Tab object.
+     */
+    private static async openTabOnSettingsPage(url: string): Promise<browser.Tabs.Tab> {
+        const tab = await TabsApi.findOne({ url: `${PagesApi.settingsUrl}*` });
+
+        if (!tab) {
+            const newTab = await browser.tabs.create({ url });
+            return newTab;
+        }
+
+        const updatedTab = await browser.tabs.update(tab.id, { url });
+        return updatedTab;
     }
 
     /**
@@ -344,17 +411,26 @@ export class PagesApi {
 
         const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, optionalPart);
 
-        const tab = await TabsApi.findOne({ url: `${PagesApi.settingsUrl}*` });
+        const tab = await PagesApi.openTabOnSettingsPage(path);
 
-        if (!tab) {
-            await browser.tabs.create({ url: path });
-            return;
-        }
+        await TabsApi.focus(tab);
 
-        await browser.tabs.update(tab.id, { url: path });
         // Reload option page for force modal window rerender
         // TODO: track url update in frontend and remove force reloading via webextension API
         await TabsApi.reload(tab.id);
+    }
+
+    /**
+     * Opens rules limits section on settings page.
+     * If the page has been already opened, focus on it.
+     */
+    public static async openRulesLimitsPage(): Promise<void> {
+        const queryPart = `#${OptionsPageSections.ruleLimits}`;
+
+        const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, queryPart);
+
+        const tab = await PagesApi.openTabOnSettingsPage(path);
+
         await TabsApi.focus(tab);
     }
 
@@ -389,6 +465,8 @@ export class PagesApi {
             action = ForwardAction.FirefoxStore;
         } else if (UserAgent.isEdge) {
             action = ForwardAction.EdgeStore;
+        } else if (!__IS_MV3__) {
+            action = ForwardAction.ChromeMv2Store;
         }
 
         return Forward.get({
@@ -403,6 +481,10 @@ export class PagesApi {
      * @returns Browser security url params record.
      */
     private static getBrowserSecurityParams(): { [key: string]: string } {
+        if (__IS_MV3__) {
+            return {};
+        }
+
         const isEnabled = !settingsStorage.get(SettingOption.DisableSafebrowsing);
         return { 'browsing_security.enabled': String(isEnabled) };
     }

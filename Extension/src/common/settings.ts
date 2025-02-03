@@ -37,11 +37,12 @@ export const DEFAULT_ALLOWLIST = [];
 export const DEFAULT_INVERTED_ALLOWLIST = [];
 
 export const defaultSettings: Settings = {
-    [SettingOption.DisableShowAdguardPromoInfo]: (!UserAgent.isWindows && !UserAgent.isMacOs) || UserAgent.isEdge,
+    [SettingOption.DisableShowAdguardPromoInfo]: !(UserAgent.isWindows || UserAgent.isMacOs) || UserAgent.isEdge,
     [SettingOption.DisableSafebrowsing]: true,
     [SettingOption.DisableCollectHits]: true,
     [SettingOption.DefaultAllowlistMode]: true,
     [SettingOption.AllowlistEnabled]: true,
+    // TODO: consider ditching optimized filters for mobile mv3 builds if (or when) they become available
     [SettingOption.UseOptimizedFilters]: UserAgent.isAndroid,
     [SettingOption.DisableDetectFilters]: false,
     [SettingOption.DisableShowAppUpdatedNotification]: false,

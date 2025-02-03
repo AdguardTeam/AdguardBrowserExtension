@@ -16,6 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { filteringLog } from '../../src/pages/filtering-log';
+import { filteringLog } from '../../src/pages/filtering-log/index';
 
 filteringLog.init();

@@ -15,20 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import browser from 'webextension-polyfill';
 
-import { isHttpRequest } from '@adguard/tswebextension';
+import { executeScript } from 'scripting-service';
 
 import { logger } from '../common/logger';
 import { UserAgent } from '../common/user-agent';
 import { KEEP_ALIVE_PORT_NAME } from '../common/constants';
 import { messenger } from '../pages/services/messenger';
-import { MessageType } from '../common/messages';
+
+import { isHttpRequest } from './tswebextension';
 
 /**
  * Code which is injected into the page as content-script to keep the connection alive.
  */
-const code = `
+const keepAliveCode = `
 (() => {
     // used to avoid multiple connections from the same tab
     if (window.keepAlive) {
@@ -43,6 +45,14 @@ const code = `
             });
     }
 
+    // AG-37908
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            // The page is restored from BFCache, set up a new connection.
+            connect();
+        }
+    });
+
     connect();
 
     window.keepAlive = true;
@@ -50,22 +60,62 @@ const code = `
 `;
 
 /**
- * Class used to keep firefox event page alive.
- * It connects to the port, which handler can be found here {@link ConnectionHandler}
- * We use it to avoid ads blinking when the event page was terminated.
- * It will be removed once we implement faster engine initialization.
+ * Function to keep the connection alive by reconnecting if disconnected.
+ */
+function keepAliveFunc(): void {
+    // We avoid adding a global type declaration to prevent confusion with the service worker,
+    // as this will be used only on this page.
+    // @ts-ignore
+    if (window.keepAlive) {
+        return;
+    }
+
+    /**
+     * Connects to the background script and reconnects if disconnected.
+     */
+    function connect(): void {
+        // not in the constant, because it is injected into the page, and it will lose the context of this variable
+        // @see KEEP_ALIVE_PORT_NAME
+        chrome.runtime.connect({ name: 'keep-alive' })
+            .onDisconnect
+            .addListener(() => {
+                connect();
+            });
+    }
+
+    // AG-37908
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            // The page is restored from BFCache, set up a new connection.
+            connect();
+        }
+    });
+
+    connect();
+
+    // We avoid adding a global type declaration to prevent confusion with the service worker,
+    // as this will be used only on this page.
+    // @ts-ignore
+    window.keepAlive = true;
+}
+
+/**
+ * Class responsible for keeping the Chrome service worker or Firefox service worker page alive.
+ * It connects to a port, with its handler located in {@link ConnectionHandler}.
+ * This is used to prevent ad blinking caused by the termination of the service worker or event page.
+ * This implementation is temporary and will be removed once a faster engine initialization mechanism is in place.
  */
 export class KeepAlive {
     /**
      * Adds listeners to tabs updates and finds the first tab to inject the script.
      */
     static init(): void {
-        if (UserAgent.isFirefox) {
-            KeepAlive.keepServiceWorkerAlive();
+        if (UserAgent.isFirefox || __IS_MV3__) {
             /**
              * When tab updates, we try to inject the content script to it.
              */
             browser.tabs.onUpdated.addListener(KeepAlive.onUpdate);
+            KeepAlive.keepServiceWorkerAlive();
 
             KeepAlive.executeScriptOnTab();
         }
@@ -80,10 +130,10 @@ export class KeepAlive {
      */
     static async resyncEventSubscriptions(): Promise<void> {
         try {
-            await messenger.sendMessage(MessageType.UpdateListeners);
+            await messenger.updateListeners();
         } catch (e) {
-            // This error occurs if there is no pages able to handle this listener.
-            // It could happen if background page reloaded, when option page was not open.
+            // This error occurs if there are no pages able to handle this listener.
+            // It could happen if the background page reloaded when the options page was not open.
             logger.debug(e);
         }
     }
@@ -91,7 +141,7 @@ export class KeepAlive {
     /**
      * Executes a script on one of the open tabs.
      *
-     * @param tabs - Tabs to execute a script on or null by default.
+     * @param tabs Tabs to execute a script on or null by default.
      */
     static async executeScriptOnTab(tabs: browser.Tabs.Tab[] | null = null): Promise<void> {
         tabs = tabs || await browser.tabs.query({ url: '*://*/*' });
@@ -99,8 +149,17 @@ export class KeepAlive {
         // eslint-disable-next-line no-restricted-syntax
         for (const tab of tabs) {
             try {
-                // eslint-disable-next-line no-await-in-loop
-                await browser.tabs.executeScript(tab.id, { code });
+                if (__IS_MV3__) {
+                    // TODO - remove ts-ignore for mv3 version
+                    // @ts-ignore
+                    // eslint-disable-next-line no-await-in-loop
+                    await executeScript(tab.id, { func: keepAliveFunc });
+                } else {
+                    // TODO - remove ts-ignore for mv2 version
+                    // @ts-ignore
+                    // eslint-disable-next-line no-await-in-loop
+                    await executeScript(tab.id, { code: keepAliveCode });
+                }
                 return;
             } catch (e) {
                 logger.error(e);
@@ -128,9 +187,9 @@ export class KeepAlive {
     /**
      * On tab update event handler.
      *
-     * @param tabId - Tab id, not used in the code. Required by API.
-     * @param info - Tab update info.
-     * @param tab - Tab details.
+     * @param tabId Tab id, not used in the code. Required by API.
+     * @param info Tab update info.
+     * @param tab Tab details.
      */
     private static onUpdate = (
         tabId: number,

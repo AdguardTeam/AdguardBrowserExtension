@@ -17,18 +17,20 @@
  */
 
 import fs from 'fs/promises';
-import path from 'path';
+import path from 'node:path';
 
 import fse from 'fs-extra';
 
-import { BUILD_PATH, FIREFOX_UPDATE_TEMPLATE } from '../../constants';
+import {
+    BUILD_ENV,
+    BUILD_PATH,
+    FIREFOX_UPDATE_TEMPLATE,
+} from '../../constants';
 import { version } from '../../../package.json';
-import { getEnvConf } from '../../helpers';
+import { getEnvConf } from '../helpers';
 
 export const buildUpdateJson = async () => {
-    const buildEnv = process.env.BUILD_ENV;
-
-    const envConf = getEnvConf(buildEnv);
+    const envConf = getEnvConf(BUILD_ENV);
 
     const buildDir = path.join(BUILD_PATH, envConf.outputPath);
     await fse.ensureDir(buildDir);

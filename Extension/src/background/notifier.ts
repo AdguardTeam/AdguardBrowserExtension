@@ -26,8 +26,6 @@ type Listener = (...args: unknown[]) => unknown;
  * as well as manages the work with them: add, delete, notify.
  */
 class Notifier {
-    private static readonly NOTIFY_TIMEOUT_MS = 500;
-
     private listenerId = 0;
 
     private eventNotifierEventsMap: Record<string, string> = {};

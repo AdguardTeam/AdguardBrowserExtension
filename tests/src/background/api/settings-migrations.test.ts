@@ -1,3 +1,9 @@
+import {
+    describe,
+    it,
+    expect,
+} from 'vitest';
+
 import { SettingsMigrations } from '../../../../Extension/src/background/api/settings/migrations';
 import { getSettingsV1, getSettingsV2 } from '../../../helpers';
 

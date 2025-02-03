@@ -18,6 +18,8 @@
 
 import React from 'react';
 
+import cn from 'classnames';
+
 import { useSelect } from '../../../common/components/ui/Select/SelectProvider';
 
 import { SettingsSet } from './SettingsSet';
@@ -42,7 +44,7 @@ export const SettingSetSelect = ({
         // eslint-disable-next-line max-len
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
         <div
-            className="setting-checkbox setting-checkbox--button"
+            className={cn('setting-checkbox', 'setting-checkbox--button', props.className)}
             onClick={handleSettingClick}
         >
             <SettingsSet

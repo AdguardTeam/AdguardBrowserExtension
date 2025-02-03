@@ -15,13 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { MessageType } from '../../common/messages';
+import { MessageType } from '../../common/messages/constants';
 
 import { messageHandler } from './message-handler';
 import { Popups } from './popups';
 
 export class ContentUtils {
-    public static init(): void {
+    /**
+     * Initializes content utils.
+     *
+     * IMPORTANT! It is intentionally async so it can be called without await
+     * to not slow down frames loading in Firefox.
+     */
+    public static async init(): Promise<void> {
         if (window !== window.top) {
             return;
         }
@@ -34,5 +40,6 @@ export class ContentUtils {
 
         messageHandler.addListener(MessageType.ShowAlertPopup, Popups.showAlertPopup);
         messageHandler.addListener(MessageType.ShowVersionUpdatedPopup, Popups.showVersionUpdatedPopup);
+        messageHandler.addListener(MessageType.ShowRuleLimitsAlert, Popups.showRuleLimitsAlert);
     }
 }

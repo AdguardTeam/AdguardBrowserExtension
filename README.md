@@ -60,6 +60,7 @@ You can learn more about [the difference](https://adguard.com/compare.html) here
         - [Building the beta and release versions](#dev-beta-and-release)
         - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
         - [Analyzing bundle size](#dev-bundle-size)
+        - [Debug MV3 declarative rules](#dev-debug-mv3)
     - [Linter](#dev-linter)
     - [Update localizations](#dev-localizations)
 - [Minimum supported browser versions](#browser-compatibility)
@@ -98,7 +99,7 @@ community. So, what can you do?
 ### <a name="contribution-translating"></a> Translating AdGuard
 
 If you want to help with AdGuard translations, please learn more about
-translating our products here: <https://kb.adguard.com/en/general/adguard-translations>
+translating our products here: <https://adguard.com/kb/miscellaneous/contribute/translate/program/>
 
 ### <a name="contribution-testing"></a> Testing AdGuard
 
@@ -128,20 +129,36 @@ are willing to contribute.
 - [node.js LTS](https://nodejs.org/en/download/)
 - [pnpm v8](https://pnpm.io/installation)
 
+### <a name="dev-build"></a> How to build
+
+#### <a name="dev-tests-and-build"></a> Tests and dev build
+
 Install local dependencies by running:
 
 ```shell
 pnpm install
 ```
 
-### <a name="dev-build"></a> How to build
-
-#### <a name="dev-tests-and-build"></a> Tests and dev build
-
-Running tests:
+Running unit tests:
 
 ```shell
 pnpm test
+```
+
+Running integration tests:
+
+```shell
+pnpm test:integration <MODE>
+# MODE can be 'dev', 'beta', 'release', same as build targets.
+```
+
+Running integration tests with enabling debug mode (page will be stopped after
+tests execution) for one of them:
+
+```shell
+pnpm test:integration <MODE> [-d <TEST_ID>]
+# MODE can be 'dev', 'beta', 'release', same as build targets.
+# TEST_ID can be extracted from https://testcases.agrd.dev/data.json
 ```
 
 Run the following command to build the dev version:
@@ -166,7 +183,7 @@ To make a dev build for a specific browser, run:
 pnpm dev <browser>
 ```
 
-Where `<browser>` is one of the following: `chrome`, `edge`, `opera`, `firefox`,
+Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `firefox`,
 `firefox-standalone`, like this:
 
 ```shell
@@ -188,14 +205,14 @@ pnpm dev <browser> --watch
 #### <a name="dev-link"></a> Linking with the developer build of tsurlfilter/tswebextension
 
 Since version v4.0, AdGuard browser extension uses an open source library
-[tsurlfilter][tsurlfilter] that implements
+[tsurlfilter] that implements
 the filtering engine.
 
 While developing the browser extension it may be required to test the changes
 to `tsurlfilter`. Here's what you need to do to link your local dev build
 to the local dev build of `tsurlfilter`.
 
-1. Clone and build [tsurlfilter][tsurlfilter] libraries.
+1. Clone and build [tsurlfilter] libraries.
 
 1. You have two options to link the packages:
 
@@ -240,8 +257,10 @@ regardless of the linking option you chose.
 1. Build the browser extension in the watch mode:
 
     ```shell
-    pnpm dev <browser> --watch
+    pnpm dev <browser> --watch --no-cache
     ```
+
+    `--no-cache` flag is required to rebuild the extension on changes in the linked packages.
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
 
@@ -253,6 +272,9 @@ resources that will be included into the build: filters and public suffix list.
 ```shell
 pnpm resources
 ```
+
+> [!TIP]
+> Run `pnpm resources:mv3` to download resources for MV3 version.
 
 This command also checks if there are dangerous rules in the filters.
 See [dangerous rules](tools/resources/dangerous-rules/README.md)
@@ -283,7 +305,7 @@ build will create unpacked extensions and then pack them (crx for Chrome).
 
 1. Compare the generated `firefox.zip` file with the uploaded one.
 
-#### <a name="dev-bundle-size"> Analyzing bundle size
+#### <a name="dev-bundle-size"></a> Analyzing bundle size
 
 If you want to analyze the bundle size, run build with the `ANALYZE` environment:
 
@@ -309,6 +331,70 @@ Analyzer will generate reports to the `./build/analyze-reports` directory in the
 build/analyze-reports
 ├── <browser-name>-<build-type>.html
 ```
+
+#### <a name="dev-debug-mv3"></a> Debug MV3 declarative rules
+
+If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper [How to build](#dev-build) section, but for specified branch, in which we develop MV3 version.
+
+Then install extension via developer mode, make requests and see applied declarative rules in the filtering log.
+
+##### How to build MV3 extension
+
+1. Switch to the `v5.0` branch:
+
+    ```shell
+    git checkout v5.0
+    ```
+
+1. Run the following command in the terminal:
+
+    ```shell
+    pnpm dev chrome-mv3
+    ```
+
+1. The built extension will be located in the directory:
+
+    ```shell
+    ./build/dev/chrome-mv3
+    ```
+
+##### How to install unpacked in the browser
+
+1. Turn on developer mode:
+
+    ![Developer mode](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/developer_mode.png)
+
+1. Click *Load unpacked*:
+
+    ![Load unpacked](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/load_unpacked.png)
+
+1. Select the extension directory and click `Select`:
+
+    ![Select](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/select.png)
+
+That’s it!
+
+##### How to debug rules
+
+1. Find and modify the rule you need in the `./Extension/filters/chromium-mv3` directory in the `.txt` files.
+
+1. Convert the rules from txt to declarative form:
+
+    ```shell
+    pnpm convert-declarative
+    ```
+
+1. Build the extension again:
+
+    ```shell
+    pnpm dev chrome-mv3
+    ```
+
+1. Reload the extension in the browser:
+
+    ![Reload extension](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/reload_extension.png)
+
+1. If you see an ❗ mark - it means that assumed rule (which we calculated with our tsurlfilter engine, which performed applying rules in MV2) and actually applied rule (from which we converted to DNR rule) are not the same. And this can be a problem of conversion. <br/> Otherwise, if assumed and applied rules are the same - only applied rule (in text and declarative ways) will be shown.
 
 ### <a name="dev-linter"></a> Linter
 
@@ -348,13 +434,29 @@ To show locales info run:
 pnpm locales info
 ```
 
+## <a name="permissions-required"></a> Permissions required
+
+- `tabs`                          - this permission is required in order to get the URL of the options page tab
+- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
+- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime.
+- `contextMenus`                  - this permission is required in order to create a context menu
+- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
+- `storage`                       - this permission is required in order to save user settings, user rules and custom filters
+- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
+- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
+- `unlimitedStorage`              - this permission is required in order to save large filters
+- `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 
+<!-- NOTE: see MIN_SUPPORTED_VERSION in ./constants.ts -->
+
 | Browser                     | Version |
-|---------------------------- |:-------:|
-| Chromium-based browsers MV2 | 79      |
-| Chromium-based browsers MV3 | 121     |
-| Firefox                     | 78      |
-| Firefox Mobile              | 113     |
-| Opera                       | 67      |
-| Edge                        | 80      |
+|---------------------------- |---------|
+| Chromium-based browsers MV2 | ✅ 79   |
+| Chromium-based browsers MV3 | ✅ 121  |
+| Firefox                     | ✅ 78   |
+| Firefox Mobile              | ✅ 113  |
+| Opera                       | ✅ 67   |
+| Edge Chromium               | ✅ 80   |
+| Edge Legacy                 | ❌      |

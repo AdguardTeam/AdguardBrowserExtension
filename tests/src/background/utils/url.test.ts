@@ -1,3 +1,9 @@
+import {
+    describe,
+    it,
+    expect,
+} from 'vitest';
+
 import { UrlUtils } from '../../../../Extension/src/background/utils';
 
 describe('trimFilterFilepath', () => {

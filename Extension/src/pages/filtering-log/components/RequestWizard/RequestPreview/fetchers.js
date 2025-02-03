@@ -20,19 +20,33 @@
 // https://xstate.js.org/docs/guides/communication.html#invoking-promises
 
 /**
- * @param {object} ctx - state machine context
- * @param {*} payload - state machine event payload
+ * Fetches text.
+ *
+ * @param {object} eventObj Event object.
+ * @param {object} eventObj.input Event input property with data object which contains url.
+ *
+ * @returns {Promise<string>} Text content.
  */
-export const fetchText = async (ctx, { url }) => {
+export const fetchText = async ({ input }) => {
+    const { data } = input;
+    const { url } = data;
+
     const res = await fetch(url);
     return res.text();
 };
 
 /**
- * @param {object} ctx - state machine context
- * @param {*} payload - state machine event payload
+ * Fetches image.
+ *
+ * @param {object} eventObj Event object.
+ * @param {object} eventObj.input Event input property with data object which contains url.
+ *
+ * @returns {Promise<string>} Image data URL.
  */
-export const fetchImage = async (ctx, { url }) => {
+export const fetchImage = async ({ input }) => {
+    const { data } = input;
+    const { url } = data;
+
     const res = await fetch(url);
     const blob = await res.blob();
     const dataUrl = URL.createObjectURL(blob);

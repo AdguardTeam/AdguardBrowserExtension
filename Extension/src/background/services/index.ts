@@ -19,12 +19,13 @@ export * from './filtering-log';
 export * from './settings';
 export * from './allowlist';
 export * from './fullscreen-user-rules-editor';
-export * from './custom-filter';
+export * from './custom-filters';
 export * from './userrules';
 export * from './event';
 export * from './ui';
-export * from './safebrowsing';
 export * from './filters';
 export * from './locale-detect';
 export * from './document-block';
 export * from './filter-update';
+// Do not export SafebrowsingService here, because it will break MV3 build
+// because of dependencies with window object.

@@ -19,7 +19,7 @@ import browser from 'webextension-polyfill';
 
 import { AddUrlToTrustedMessage, MessageType } from '../../common/messages';
 import { DocumentBlockApi, TabsApi } from '../api';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import { messageHandler } from '../message-handler';
 
 /**
@@ -47,7 +47,7 @@ export class DocumentBlockService {
         const { url } = data;
 
         await DocumentBlockApi.setTrustedDomain(url);
-        await Engine.update();
+        await engine.update();
 
         const tab = await TabsApi.getActive();
 

@@ -1,10 +1,17 @@
+import {
+    describe,
+    it,
+    vi,
+    expect,
+} from 'vitest';
+
 import { ExportTypes, getExportedSettingsFilename } from '../../../../../Extension/src/pages/common/utils/export';
 
-const SETTINGS_TYPE = ExportTypes.SETTINGS;
+const SETTINGS_TYPE = ExportTypes.Settings;
 
 describe('export', () => {
     it('exports settings file name correctly', () => {
-        const dateNowSpy = jest.spyOn(Date, 'now')
+        const dateNowSpy = vi.spyOn(Date, 'now')
             // date is hardcoded to avoid timezone offset
             .mockImplementation(() => new Date(2020, 0, 2, 1, 2, 3).getTime());
 

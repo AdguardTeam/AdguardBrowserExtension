@@ -16,33 +16,51 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FIREFOX_APP_IDS_MAP, FIREFOX_WEBEXT_UPDATE_URL } from '../../constants';
+import {
+    BUILD_ENV,
+    FIREFOX_APP_IDS_MAP,
+    FIREFOX_WEBEXT_UPDATE_URL,
+} from '../../constants';
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
+import {
+    BACKGROUND_OUTPUT,
+    MIN_SUPPORTED_VERSION,
+    POPUP_OUTPUT,
+} from '../../../constants';
 
-const buildEnv = process.env.BUILD_ENV;
-
-if (buildEnv === undefined) {
-    throw new Error('BUILD_ENV is not set in the environment variables.');
-}
-
-const appId = FIREFOX_APP_IDS_MAP[buildEnv];
+const appId = FIREFOX_APP_IDS_MAP[BUILD_ENV];
 
 if (appId === undefined) {
-    throw new Error(`App ID not found for BUILD_ENV: ${buildEnv}`);
+    throw new Error(`App ID not found for BUILD_ENV: ${BUILD_ENV}`);
 }
+
+const MIN_SUPPORTED_DESKTOP_VERSION_STR = `${String(MIN_SUPPORTED_VERSION.FIREFOX)}.0`;
+
+const MIN_SUPPORTED_ANDROID_VERSION_STR = `${String(MIN_SUPPORTED_VERSION.FIREFOX_MOBILE)}.0`;
 
 export const firefoxManifest = {
     'background': {
-        'page': 'pages/background.html',
+        'page': `${BACKGROUND_OUTPUT}.html`,
         'persistent': false,
     },
+    'browser_action': {
+        'default_icon': {
+            '19': 'assets/icons/on-19.png',
+            '38': 'assets/icons/on-38.png',
+        },
+        'default_title': '__MSG_name__',
+        'default_popup': `${POPUP_OUTPUT}.html`,
+    },
+    'web_accessible_resources': [
+        '/web-accessible-resources/*',
+    ],
     'browser_specific_settings': {
         'gecko': {
             'id': appId,
-            'strict_min_version': '78.0',
+            'strict_min_version': MIN_SUPPORTED_DESKTOP_VERSION_STR,
         },
         'gecko_android': {
-            'strict_min_version': '113.0',
+            'strict_min_version': MIN_SUPPORTED_ANDROID_VERSION_STR,
         },
     },
     'options_ui': {

@@ -67,16 +67,19 @@ const Search = forwardRef(({
         }
     };
 
-    const Control = () => {
+    const renderControl = () => {
         if (value && !select) {
             return (
                 <button
                     type="button"
-                    className="search__clear"
+                    className="button search__clear"
                     aria-label={reactTranslator.getMessage('close_button_title')}
                     onClick={onClear}
                 >
-                    <Icon id="#cross" classname="search__cross" />
+                    <Icon
+                        id="#cross"
+                        classname="icon--24 icon--gray-default"
+                    />
                 </button>
             );
         }
@@ -89,9 +92,9 @@ const Search = forwardRef(({
                     className="search__btn"
                 >
                     <Icon
-                        id="#arrow-bottom"
+                        id="#arrow-down"
                         classname={cn(
-                            'search__ico',
+                            'icon--24 icon--gray-default search__ico',
                             onOpenSelect ? 'search__arrow-up' : 'search__arrow-down',
                         )}
                     />
@@ -99,7 +102,12 @@ const Search = forwardRef(({
             );
         }
 
-        return <Icon id="#magnifying" classname="search__ico" />;
+        return (
+            <Icon
+                id="#magnifying"
+                classname="icon--24 icon--gray-default search__ico"
+            />
+        );
     };
 
     return (
@@ -107,7 +115,7 @@ const Search = forwardRef(({
             className="search"
             onSubmit={onSubmit}
         >
-            <Control />
+            { renderControl() }
             <input
                 type="text"
                 id="log-search"

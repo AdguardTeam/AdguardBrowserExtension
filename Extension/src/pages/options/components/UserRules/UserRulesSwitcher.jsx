@@ -19,14 +19,34 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 
 export const UserRulesSwitcher = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
-    const handleUserGroupToggle = (e) => {
-        settingsStore.updateSetting(e.id, e.data);
+    /**
+     * Check if user rules can be enabled (due to dynamic rules limit)
+     * and if so, update the setting. Otherwise, sets a specific limit warning to show.
+     *
+     * @param {object} updateSettingData Data to update the setting.
+     * @param {string} updateSettingData.id Setting ID.
+     * @param {boolean} updateSettingData.data New setting value.
+     */
+    const updateUserRulesSetting = async ({ id, data }) => {
+        await settingsStore.updateSetting(id, data);
+
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
+    };
+
+    const handleUserGroupToggle = async (updateSettingData) => {
+        await addMinDelayLoader(
+            uiStore.setShowLoader,
+            updateUserRulesSetting,
+        )(updateSettingData);
     };
 
     return (
@@ -35,6 +55,7 @@ export const UserRulesSwitcher = observer(() => {
             type={SETTINGS_TYPES.CHECKBOX}
             value={settingsStore.userFilterEnabled}
             handler={handleUserGroupToggle}
+            optimistic={!__IS_MV3__}
         />
     );
 });

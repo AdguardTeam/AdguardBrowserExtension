@@ -17,10 +17,11 @@
  */
 
 /* eslint-disable no-await-in-loop,no-restricted-syntax,no-console */
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { uniq, xor } from 'lodash';
+import { uniq, xor } from 'lodash-es';
 
 import { cliLog } from '../cli-log';
 import { getLocaleTranslations } from '../helpers';
@@ -33,6 +34,11 @@ import {
     SRC_FILENAME_EXTENSIONS,
     PERSISTENT_MESSAGES,
 } from './locales-constants';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
 const SRC_DIR = path.resolve(__dirname, SRC_RELATIVE_PATH);
