@@ -204,15 +204,16 @@ const wrapScriptCode = (uniqueId: string, code: string): string => {
     return `
         try {
             const flag = 'done';
-            if (Window.prototype.toString["${uniqueId}"] !== flag) {
-                ${code}
-                Object.defineProperty(Window.prototype.toString, "${uniqueId}", {
-                    value: flag,
-                    enumerable: false,
-                    writable: false,
-                    configurable: false
-                });
+            if (Window.prototype.toString["${uniqueId}"] === flag) {
+                return;
             }
+            ${code}
+            Object.defineProperty(Window.prototype.toString, "${uniqueId}", {
+                value: flag,
+                enumerable: false,
+                writable: false,
+                configurable: false
+            });
         } catch (error) {
             console.error('Error executing AG js rule with uniqueId "${uniqueId}" due to: ' + error);
         }
@@ -347,6 +348,9 @@ export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>)
             const minified = await minify(processedCode, {
                 compress: {
                     sequences: false,
+                },
+                parse: {
+                    bare_returns: true,
                 },
                 format: {
                     beautify: true,
