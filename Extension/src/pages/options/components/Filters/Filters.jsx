@@ -23,18 +23,25 @@ import React, {
     useMemo,
     useCallback,
 } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
 import { sortBy } from 'lodash-es';
 
+import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { SettingsSection } from '../Settings/SettingsSection';
+import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Icon } from '../../../common/components/ui/Icon';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { AntibannerGroupsId } from '../../../../common/constants';
+import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnings';
+import { OptionsPageSections } from '../../../../common/nav';
+import { messenger } from '../../../services/messenger';
+import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
+import { getStaticWarningMessage } from '../Warnings/messages';
+import { NotificationType } from '../../stores/UiStore';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
 import { Group } from './Group';
@@ -53,9 +60,9 @@ const QUERY_PARAM_NAMES = {
 };
 
 const Filters = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const location = useLocation();
     const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -68,14 +75,13 @@ const Filters = observer(() => {
     const [groupDetermined, setGroupDetermined] = useState(false);
 
     const GROUP_DESCRIPTION = {
-        [AntibannerGroupsId.CustomFiltersGroupId]: reactTranslator.getMessage('group_description_custom'),
-        [AntibannerGroupsId.AdBlockingFiltersGroupId]: reactTranslator.getMessage('group_description_adblocking'),
-        [AntibannerGroupsId.PrivacyFiltersGroupId]: reactTranslator.getMessage('group_description_stealth'),
-        [AntibannerGroupsId.SocialFiltersGroupId]: reactTranslator.getMessage('group_description_social'),
-        [AntibannerGroupsId.AnnoyancesFiltersGroupId]: reactTranslator.getMessage('group_description_annoyances'),
-        [AntibannerGroupsId.SecurityFiltersGroupId]: reactTranslator.getMessage('group_description_security'),
-        [AntibannerGroupsId.OtherFiltersGroupId]: reactTranslator.getMessage('group_description_miscellaneous'),
-        [AntibannerGroupsId.LanguageFiltersGroupId]: reactTranslator.getMessage('group_description_lang'),
+        [AntibannerGroupsId.AdBlockingFiltersGroupId]: translator.getMessage('group_description_adblocking'),
+        [AntibannerGroupsId.PrivacyFiltersGroupId]: translator.getMessage('group_description_stealth'),
+        [AntibannerGroupsId.SocialFiltersGroupId]: translator.getMessage('group_description_social'),
+        [AntibannerGroupsId.AnnoyancesFiltersGroupId]: translator.getMessage('group_description_annoyances'),
+        [AntibannerGroupsId.SecurityFiltersGroupId]: translator.getMessage('group_description_security'),
+        [AntibannerGroupsId.OtherFiltersGroupId]: translator.getMessage('group_description_miscellaneous'),
+        [AntibannerGroupsId.LanguageFiltersGroupId]: translator.getMessage('group_description_lang'),
     };
 
     const {
@@ -90,6 +96,56 @@ const Filters = observer(() => {
         settingsStore.setSearchInput('');
         settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
     }, [location.search, query, settingsStore]);
+
+    const updateGroupSettingsWithLoader = addMinDelayLoader(
+        uiStore.setShowLoader,
+        async (groupId, enabled) => {
+            // Custom filters is part of dynamic rules, we first enable
+            // them and then check if they exceed the limit.
+            if (groupId === AntibannerGroupsId.CustomFiltersGroupId) {
+                await settingsStore.updateGroupSetting(groupId, enabled);
+
+                if (__IS_MV3__) {
+                    await settingsStore.checkLimitations();
+                }
+
+                return;
+            }
+
+            // For static filters we first check if they exceed the limit,
+            // because we know rules count for static filter and then enable them.
+            if (enabled) {
+                const result = await messenger.canEnableStaticGroup(groupId);
+                if (!result.ok && result.data) {
+                    const staticFiltersLimitsWarning = getStaticWarningMessage(result.data);
+
+                    if (staticFiltersLimitsWarning) {
+                        uiStore.addNotification({
+                            description: staticFiltersLimitsWarning,
+                            extra: {
+                                link: translator.getMessage('options_rule_limits'),
+                            },
+                            type: NotificationType.ERROR,
+                        });
+                    }
+
+                    // We don't enable the group if it exceeds the limit.
+                    // [revert-checkbox] is used to revert the checkbox state.
+                    throw new Error('Group will exceed the limit. [revert-checkbox]');
+                }
+            }
+
+            await settingsStore.updateGroupSetting(groupId, enabled);
+
+            if (__IS_MV3__) {
+                await settingsStore.checkLimitations();
+            }
+        },
+    );
+
+    const updateGroupSettings = __IS_MV3__
+        ? updateGroupSettingsWithLoader
+        : settingsStore.updateGroupSetting;
 
     const handleGroupSwitch = async ({ id, data }) => {
         const groupId = Number.parseInt(id, 10);
@@ -107,16 +163,21 @@ const Filters = observer(() => {
             return;
         }
 
-        await settingsStore.updateGroupSetting(groupId, data);
+        await updateGroupSettings(groupId, data);
     };
 
     const groupClickHandler = (groupId) => () => {
         settingsStore.setSelectedGroupId(groupId);
-        history.push(`/filters?group=${groupId}`);
+        navigate(`/filters?group=${groupId}`);
     };
 
     const getEnabledFiltersByGroup = (group) => (
         filters.filter((filter) => filter.groupId === group.groupId && filter.enabled)
+    );
+
+    const handleFilterConsentConfirmWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        settingsStore.handleFilterConsentConfirm,
     );
 
     const renderGroups = (groups) => {
@@ -140,16 +201,16 @@ const Filters = observer(() => {
     };
 
     const handleReturnToGroups = () => {
-        history.push('/filters');
+        navigate(`/${OptionsPageSections.filters}`);
         settingsStore.setSelectedGroupId(null);
         settingsStore.setSearchInput('');
         settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
         settingsStore.sortFilters();
     };
 
-    const renderFilters = (filtersList) => {
+    const renderFilters = (filtersList, groupEnabled) => {
         return filtersList
-            .map((filter) => <Filter key={filter.filterId} filter={filter} />);
+            .map((filter) => <Filter key={filter.filterId} filter={filter} groupEnabled={groupEnabled} />);
     };
 
     const renderGroupsOnSearch = (matchedFilters) => {
@@ -176,17 +237,17 @@ const Filters = observer(() => {
                         key={group.groupId}
                         groupName={group.groupName}
                         groupId={group.groupId}
+                        groupEnabled={!!group.enabled}
                         filtersToShow={filtersToShow}
                         groupClickHandler={groupClickHandler(group.groupId)}
                         checkboxHandler={handleGroupSwitch}
-                        checkboxValue={!!group.enabled}
                     />
                 );
             });
         }
         return (
             <div className="filter__empty">
-                {reactTranslator.getMessage('options_filters_empty_title')}
+                {translator.getMessage('options_filters_empty_title')}
             </div>
         );
     };
@@ -204,7 +265,7 @@ const Filters = observer(() => {
         if (query.has(QUERY_PARAM_NAMES.TITLE) || query.has(QUERY_PARAM_NAMES.SUBSCRIBE)) {
             query.delete(QUERY_PARAM_NAMES.TITLE);
             query.delete(QUERY_PARAM_NAMES.SUBSCRIBE);
-            history.push(`${history.location.pathname}?${decodeURIComponent(query.toString())}`);
+            navigate(`${location.pathname}?${decodeURIComponent(query.toString())}`);
         }
     };
 
@@ -215,7 +276,7 @@ const Filters = observer(() => {
     }, [urlToSubscribe, openModalHandler]);
 
     const renderAddFilterBtn = (isEmpty) => {
-        const buttonClass = classNames('button button--m button--green', {
+        const buttonClass = classNames('button button--l button--green-bg', {
             'button--empty-custom-filter': isEmpty,
             'button--add-custom-filter': !isEmpty,
         });
@@ -226,7 +287,7 @@ const Filters = observer(() => {
                 onClick={openModalHandler}
                 className={buttonClass}
             >
-                {reactTranslator.getMessage('options_add_custom_filter')}
+                {translator.getMessage('options_add_custom_filter')}
             </button>
         );
     };
@@ -240,18 +301,19 @@ const Filters = observer(() => {
             return group.groupId === settingsStore.selectedGroupId;
         });
 
-        // eslint-disable-next-line max-len
         const isCustom = settingsStore.selectedGroupId === AntibannerGroupsId.CustomFiltersGroupId;
         const isEmpty = filtersToRender.length === 0;
+        const description = GROUP_DESCRIPTION[selectedGroup.groupId];
 
         const renderBackButton = () => (
             <>
                 <button
                     type="button"
+                    aria-label="Back"
                     className="button setting__back"
                     onClick={handleReturnToGroups}
                 >
-                    <Icon id="#arrow-back" classname="icon--back" />
+                    <Icon id="#arrow-left" classname="icon--24" />
                 </button>
                 <div className="title__inner">
                     <button
@@ -261,7 +323,7 @@ const Filters = observer(() => {
                     >
                         {selectedGroup.groupName}
                     </button>
-                    <div className="title__desc title__desc--back">{GROUP_DESCRIPTION[selectedGroup.groupId]}</div>
+                    {description && <div className="title__desc title__desc--back">{description}</div>}
                 </div>
             </>
         );
@@ -269,24 +331,38 @@ const Filters = observer(() => {
         return (
             <SettingsSection
                 title={selectedGroup.groupName}
-                description={GROUP_DESCRIPTION[selectedGroup.groupId]}
+                description={description}
                 inlineControl={(
                     <Setting
                         id={selectedGroup.groupId}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_privacy_title')}
+                        label={translator.getMessage('options_privacy_title')}
                         value={selectedGroup.enabled}
                         handler={handleGroupSwitch}
+                        optimistic={!__IS_MV3__}
                     />
                 )}
                 renderBackButton={renderBackButton}
+                mode={isCustom ? 'custom' : undefined}
             >
+                {
+                    isCustom && __IS_MV3__ && (
+                        <div className="settings__group__links settings__group__links--custom">
+                            <RuleLimitsLink />
+                        </div>
+                    )
+                }
+                {
+                    isCustom
+                        ? <DynamicRulesLimitsWarning />
+                        : <StaticFiltersLimitsWarning />
+                }
                 {isEmpty && isCustom && !settingsStore.isSearching
                     ? <EmptyCustom />
                     : (
                         <>
                             <Search />
-                            {renderFilters(filtersToRender)}
+                            {renderFilters(filtersToRender, selectedGroup.enabled)}
                         </>
                     )}
                 {isCustom && (
@@ -304,7 +380,7 @@ const Filters = observer(() => {
                     <AnnoyancesConsent
                         isOpen={settingsStore.isAnnoyancesConsentModalOpen}
                         setIsOpen={settingsStore.setIsAnnoyancesConsentModalOpen}
-                        onConfirm={settingsStore.handleFilterConsentConfirm}
+                        onConfirm={handleFilterConsentConfirmWrapper}
                         onCancel={settingsStore.handleFilterConsentCancel}
                         shouldShowFilterPolicy={settingsStore.shouldShowFilterPolicy}
                     />
@@ -315,9 +391,11 @@ const Filters = observer(() => {
 
     return (
         <SettingsSection
-            title={reactTranslator.getMessage('options_filters')}
+            title={translator.getMessage('options_filters')}
         >
-            <FiltersUpdate />
+            <StaticFiltersLimitsWarning useWrapper />
+            <DynamicRulesLimitsWarning useWrapper />
+            {!__IS_MV3__ && <FiltersUpdate />}
             <Search />
             {settingsStore.isSearching
                 ? renderGroupsOnSearch(filtersToRender)
@@ -326,7 +404,7 @@ const Filters = observer(() => {
                 <AnnoyancesConsent
                     isOpen={settingsStore.isAnnoyancesConsentModalOpen}
                     setIsOpen={settingsStore.setIsAnnoyancesConsentModalOpen}
-                    onConfirm={settingsStore.handleFilterConsentConfirm}
+                    onConfirm={handleFilterConsentConfirmWrapper}
                     onCancel={settingsStore.handleFilterConsentCancel}
                     shouldShowFilterPolicy={settingsStore.shouldShowFilterPolicy}
                 />

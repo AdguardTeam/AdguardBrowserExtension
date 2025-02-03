@@ -5,8 +5,137 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- TODO: add release version and date -->
-## [Unreleased]
+## [5.1.X] Unreleased <!-- version 5.1 -->
+
+### Added
+
+- Unsafe dynamic rules limit for MV3 with value 5000.
+- Display dnr-rulesets version on About tab [#3054].
+- Ability to search tabs by domain in the Filtering log [#3028].
+- Ability to add filters from Google Drive [#2908].
+
+### Changed
+
+- Increased all dynamic rules limit to 30000 for MV3.
+- Error throwing for empty modifier list in network rules.
+- Store filter data in ruleset files exclusively for the MV3 extension
+  to allow updates where only the rulesets are modified.
+- Updated [@adguard/agtree] to v3.0.0-alpha.3.
+- Updated [@adguard/scriptlets] to v2.1.4.
+- Updated [@adguard/tsurlfilter] to v3.1.0-alpha.8.
+- Updated [@adguard/tswebextension] to v3.0.0-alpha.1.
+
+### Fixed
+
+- Wrong protection state is shown after navigating from excluded website to another one [#3048].
+- Once allowlisted tab considers all following websites in the tab as allowlisted [#3020].
+- Handling missing children data in the deserializer for certain nodes.
+- A rule from a disabled filter list disables another rule [#3002].
+- Notify user that rule was not applied because of the chrome limitations [#3004].
+- URI encoded `$removeparam` value is not removed in MV3 [#3014].
+- Cosmetic rules injecting into `about:blank` iframes in MV2.
+- Shortened name translation in `pt_BR` locale [#3075].
+- Allowlisted stealth rules are not shown in the filtering log [#2950].
+- `$removeparam` incorrectly removes parameters from encoded URLs [#3076].
+- Update extension icon on engine update.
+- Closing rule limits warning updates the extension icon for MV3.
+- Blocked counter on the popup updates for blocked requests from other tabs [#3050].
+- `$popup,third-party` modifiers cause document blocking [#3012].
+- Don't show lines for absent metadata when adding a custom filter [#3057].
+
+### Removed
+
+- Storage classes, because they were moved to the `@adguard/tswebextension` package.
+
+[#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
+[#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
+[#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
+[#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
+[#3012]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3012
+[#3014]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3014
+[#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020
+[#3028]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3028
+[#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
+[#3050]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3050
+[#3054]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3054
+[#3057]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3057
+[#3075]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3075
+[#3076]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
+<!-- TODO: place correct last released version from master -->
+[5.1.X]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
+
+## [Unreleased] <!-- master -->
+
+### Changed
+
+- Error throwing for empty modifier list in network rules.
+- Updated [@adguard/agtree] to v2.1.4.
+- Updated [@adguard/tsurlfilter] to v3.0.8.
+
+### Fixed
+
+- Handling missing children data in the deserializer for certain nodes.
+
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.49...HEAD
+
+<!-- TODO: add date when released on github -->
+## [5.0.188]
+
+### Changed
+
+- Scriptlet rules are not limited to ones from the pre-built filters.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.11.
+
+### Removed
+
+- AdGuard Quick Fixes filter.
+- Custom filters are not available temporarily.
+
+[5.0.188]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.188
+
+## [5.0.185] - 2025-01-22
+
+### Added
+
+- AdGuard Quick Fixes filter is back.
+
+### Changed
+
+- Scriptlet rules are available only from the pre-built filters now.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.10.
+
+### Removed
+
+- Injection of remotely hosted scripts.
+
+[5.0.185]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.185
+
+## [5.0.183] - 2025-01-14
+
+### Removed
+
+- AdGuard Quick Fixes filter.
+- Filters metadata update on the extension install.
+
+[5.0.183]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.183
+
+## [5.0.178] - 2024-12-24
+
+### Changed
+
+- Remade JS rules injections in MV3:
+    - use `chrome.scripting` API for injecting functions for script rules from the pre-built filters,
+    - use script tag injection only for script rules manually added by users —
+      rules from *User rules* and *Custom filters*.
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.8.
+
+### Removed
+
+- Ability to execute new `AG_` script rules from *User rules* and *Custom filters* in MV3.
+
+[5.0.178]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.178
+
+## [4.4.48] - 2024-11-25
 
 ### Added
 
@@ -25,9 +154,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Memory leak caused by multiple script injections on the same pages
   after an event page in Firefox restarts in MV2 [#2594].
 
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.41...HEAD
+[4.4.48]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.41...v4.4.48
 [#2962]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2962
 [#3015]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3015
+
+## [5.0.170] - 2024-10-30
+
+### Changed
+
+- Updated [@adguard/tswebextension] to v2.4.0-alpha.7.
+
+### Fixed
+
+- Memory leak caused by multiple script injections on the same pages
+  after a service worker or event page restart in MV3 [#2594].
+
+[5.0.170]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.0.170
 [#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
 
 ## [5.0.162] - 2024-10-30

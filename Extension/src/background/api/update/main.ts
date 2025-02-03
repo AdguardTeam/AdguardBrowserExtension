@@ -18,6 +18,9 @@
 import zod from 'zod';
 import isString from 'lodash-es/isString';
 import isUndefined from 'lodash-es/isUndefined';
+import isObject from 'lodash-es/isObject';
+
+import { HybridStorage } from '@adguard/tswebextension/core-storages';
 
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
@@ -29,17 +32,24 @@ import {
     hybridStorage,
     browserStorage,
     RawFiltersStorage,
+    BINARY_FILTER_KEY_PREFIX,
+    CONVERSION_MAP_PREFIX,
+    SOURCE_MAP_PREFIX,
 } from '../../storages';
 import {
     ADGUARD_SETTINGS_KEY,
     APP_VERSION_KEY,
+    AntiBannerFiltersId,
     CLIENT_ID_KEY,
     NEWLINE_CHAR_REGEX,
+    PAGE_STATISTIC_KEY,
+    RULES_LIMITS_KEY,
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import {
-    type SafebrowsingCacheData,
-    type SafebrowsingStorageData,
+    appearanceValidator,
+    type PageStats,
+    pageStatsValidator,
     SchemaPreprocessor,
     SettingOption,
 } from '../../schema';
@@ -47,6 +57,7 @@ import type { RunInfo } from '../../utils/run-info';
 import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
+import { PopupStatsCategories } from '../page-stats';
 
 /**
  * Update API is a facade for handling migrations for the settings object from
@@ -58,6 +69,13 @@ export class UpdateApi {
         '1': UpdateApi.migrateFromV1toV2,
         '2': UpdateApi.migrateFromV2toV3,
         '3': UpdateApi.migrateFromV3toV4,
+        '4': UpdateApi.migrateFromV4toV5,
+        '5': UpdateApi.migrateFromV5toV6,
+        '6': UpdateApi.migrateFromV6toV7,
+        '7': UpdateApi.migrateFromV7toV8,
+        '8': UpdateApi.migrateFromV8toV9,
+        '9': UpdateApi.migrateFromV9toV10,
+        '10': UpdateApi.migrateFromV10toV11,
     };
 
     /**
@@ -144,12 +162,489 @@ export class UpdateApi {
     }
 
     /**
+     * Run data migration from schema v9 to schema v10.
+     *
+     * For the extension update to v5.0.187.
+     *
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
+     *
+     * For MV3 version we need to again remove Quick Fixes filter state.
+     */
+    private static async migrateFromV9toV10(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        await UpdateApi.removeQuickFixesFilter();
+    }
+
+    /**
+     * Legacy deserialization function for Uint8Array.
+     *
+     * Helper function to deserialize Uint8Array members of an object.
+     * This workaround is needed because by default chrome.storage API doesn't support Uint8Array,
+     * and we use it to store serialized filter lists.
+     *
+     * @param value Object to deserialize.
+     * @returns Deserialized object.
+     */
+    private static deserialize = (value: unknown): unknown => {
+        const isObj = isObject(value);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (isObj && (value as any).__type === 'Uint8Array') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return new Uint8Array((value as any).data);
+        }
+
+        if (Array.isArray(value)) {
+            return value.map(this.deserialize);
+        }
+
+        if (isObj) {
+            const deserializedObject: { [key: string]: unknown } = {};
+            // eslint-disable-next-line no-restricted-syntax
+            for (const [key, val] of Object.entries(value)) {
+                deserializedObject[key] = this.deserialize(val);
+            }
+            return deserializedObject;
+        }
+
+        return value;
+    };
+
+    /**
+     * Run data migration from schema v10 to schema v11.
+     */
+    private static async migrateFromV10toV11(): Promise<void> {
+        // Only relevant if IDB is not available.
+        if (await HybridStorage.isIDBSupported()) {
+            logger.debug('IDB is supported, skipping migration');
+            return;
+        }
+
+        const entries = await browserStorage.entries();
+
+        const keys = Object.keys(entries).filter((key) => [
+            RAW_FILTER_KEY_PREFIX,
+            BINARY_FILTER_KEY_PREFIX,
+            FILTER_KEY_PREFIX,
+            CONVERSION_MAP_PREFIX,
+            SOURCE_MAP_PREFIX,
+        ].some((prefix) => key.startsWith(prefix)));
+
+        if (keys.length === 0) {
+            logger.debug('No data to migrate');
+            return;
+        }
+
+        const migrationData: Record<string, unknown> = {};
+
+        keys.forEach((key) => {
+            const val = entries[key];
+
+            if (!Object.prototype.hasOwnProperty.call(val, 'json')) {
+                migrationData[key] = HybridStorage.serialize(UpdateApi.deserialize(entries[key]));
+            }
+        });
+
+        const transactionResult = await browserStorage.setMultiple(migrationData);
+
+        if (!transactionResult) {
+            logger.error('Failed to save migrated data');
+        }
+    }
+
+    /**
+     * Run data migration from schema v8 to schema v9.
+     *
+     * For the extension update to v5.0.185.
+     *
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
+     *
+     * In this update we re-added AdGuard Quick Fixes filter
+     * and want to enable it by default for all users.
+     */
+    private static async migrateFromV8toV9(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        // We cannot load and enable filter here, because filter's API is not
+        // initialized yet. So we just set the filter state to enabled
+        // and loaded.
+        // After that it will be renew from the local copy of filters
+        // - which will create all needed filter's objects in memory to correct
+        // work.
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        // Little hack to mark filter as enabled before it is actually loaded.
+        Object.assign(filtersState, {
+            [AntiBannerFiltersId.QuickFixesFilterId]: {
+                // Enabled by default.
+                enabled: true,
+                // Installed is false, because otherwise this filter state
+                // will be marked as "obsoleted" (because this filter not
+                // exists in metadata yet) and will be removed from the memory.
+                installed: false,
+                // Mark as loaded to update filter from local resources and
+                // create filter object in memory.
+                loaded: true,
+            },
+        });
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Set empty filter to create it in the memory.
+        // Right after launch it will be updated to the newest version from remote.
+        await FiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, []);
+        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
+     * Run data migration from schema v7 to schema v8.
+     *
+     * For the extension update to v5.0.183.
+     *
+     * For MV2 version we will run empty migration since we don't need to do anything,
+     * just increase the schema version.
+     *
+     * For MV3 version we need to remove deprecated Quick Fixes filter state.
+     */
+    private static async migrateFromV7toV8(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        await UpdateApi.removeQuickFixesFilter();
+    }
+
+    /**
+     * Run data migration from schema v6 to schema v7.
+     *
+     * For the extension update to
+     * - v5.0.78-beta;
+     * - v5.0.91.
+     *
+     * IMPORTANT: should not be combined with {@link migrateFromV5toV6} just because it is
+     * for the same *release* version — the related changes became available
+     * in *different beta* versions, so they should be run separately.
+     *
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
+     *
+     * In this update we added new filter - AdGuard Quick Fixes and want
+     * to enable it by default for all users.
+     */
+    private static async migrateFromV6toV7(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        // We cannot load and enable filter here, because filter's API is not
+        // initialized yet. So we just set the filter state to enabled
+        // and loaded.
+        // After that it will be renew from the local copy of filters
+        // - which will create all needed filter's objects in memory to correct
+        // work.
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        // Little hack to mark filter as enabled before it is actually loaded.
+        Object.assign(filtersState, {
+            [AntiBannerFiltersId.QuickFixesFilterId]: {
+                // Enabled by default.
+                enabled: true,
+                // Installed is false, because otherwise this filter state
+                // will be marked as "obsoleted" (because this filter not
+                // exists in metadata yet) and will be removed from the memory.
+                installed: false,
+                // Mark as loaded to update filter from local resources and
+                // create filter object in memory.
+                loaded: true,
+            },
+        });
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Set empty filter to create it in the memory.
+        // Right after launch it will be updated to the newest version from remote.
+        await FiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, []);
+        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
+     * Run data migration from schema v5 to schema v6.
+     *
+     * For the extension update to
+     * - v5.0.49-beta;
+     * - v5.0.91.
+     */
+    private static async migrateFromV5toV6(): Promise<void> {
+        const rawOldPageStatistics = await browserStorage.get(PAGE_STATISTIC_KEY);
+
+        if (typeof rawOldPageStatistics !== 'string') {
+            logger.debug('Missing page statistics, nothing to migrate');
+            return;
+        }
+
+        let oldPageStatisticsStr = rawOldPageStatistics;
+        if (
+            (oldPageStatisticsStr.startsWith('"') && oldPageStatisticsStr.endsWith('"'))
+            || (oldPageStatisticsStr.startsWith("'") && oldPageStatisticsStr.endsWith("'"))
+        ) {
+            // beautify the string before parsing
+            oldPageStatisticsStr = oldPageStatisticsStr.slice(1, -1);
+        }
+
+        let oldPageStatistics: PageStats;
+        try {
+            const oldPageStatisticsObj = JSON.parse(oldPageStatisticsStr);
+            oldPageStatistics = pageStatsValidator.parse(oldPageStatisticsObj);
+        } catch (e: unknown) {
+            logger.debug('Nothing to migrate, since page statistics cannot be parsed:', getErrorMessage(e));
+            return;
+        }
+
+        if (!oldPageStatistics.data) {
+            logger.debug('No page statistics data to migrate');
+            return;
+        }
+
+        /**
+         * Mapping of old group ids to new categories: where
+         * - key — filters group id (old stats format),
+         * - value — category name (new stats format).
+         */
+        const STATS_CATEGORIES_MIGRATION_MAP: Record<string, string> = {
+            '0': PopupStatsCategories.Advertising,
+            '1': PopupStatsCategories.Advertising,
+            '2': PopupStatsCategories.Trackers,
+            '3': PopupStatsCategories.SocialMedia,
+            '4': PopupStatsCategories.Advertising,
+            '5': PopupStatsCategories.Advertising,
+            '6': PopupStatsCategories.Advertising,
+            '7': PopupStatsCategories.Advertising,
+        };
+
+        /**
+         * Migrate old stats data item (where filters group ids were used)
+         * to the new format (where stats categories are used based on companiesdb).
+         *
+         * @param oldDataItem Old stats data item for `hours`, `days`, and `months`.
+         *
+         * @returns Migrated stats data item.
+         *
+         * @example
+         * `{"0":10,"1":10,"2":10,"3":10,"4":10,"5":10,"6":10,"7":10,"total":80}`
+         * ↓↓↓
+         * `{"Advertising":60,"Trackers":10,"SocialMedia":10,"total":80}`
+         */
+        const migrateStatsDataItem = (oldDataItem: Record<string, number>): Record<string, number> => {
+            let total = 0;
+            const newDataItem: Record<string, number> = {};
+
+            const oldKeys = Object.keys(oldDataItem);
+            oldKeys.forEach((key) => {
+                if (key !== 'total') {
+                    const statsCount = oldDataItem[key];
+                    if (typeof statsCount === 'undefined') {
+                        return;
+                    }
+
+                    const category = STATS_CATEGORIES_MIGRATION_MAP[key];
+                    if (category) {
+                        newDataItem[category] = (newDataItem[category] || 0) + statsCount;
+                    } else {
+                        logger.debug(`Unknown category for old group id: ${key}, migrated into "Other"`);
+                        // eslint-disable-next-line max-len
+                        newDataItem[PopupStatsCategories.Other] = (newDataItem[PopupStatsCategories.Other] || 0) + statsCount;
+                    }
+
+                    total += statsCount;
+                }
+            });
+
+            newDataItem.total = total;
+
+            return newDataItem;
+        };
+
+        const newPageStatisticsData = {
+            hours: oldPageStatistics.data.hours.map(migrateStatsDataItem),
+            days: oldPageStatistics.data.days.map(migrateStatsDataItem),
+            months: oldPageStatistics.data.months.map(migrateStatsDataItem),
+            updated: oldPageStatistics.data.updated,
+        };
+
+        const newPageStatistics = {
+            totalBlocked: oldPageStatistics.totalBlocked,
+            data: newPageStatisticsData,
+        };
+
+        await browserStorage.set(PAGE_STATISTIC_KEY, JSON.stringify(newPageStatistics));
+    }
+
+    /**
+     * Run data migration from schema v4 to schema v5.
+     *
+     * For the extension update to:
+     * - v5.0.43-beta;
+     * - v5.0.91.
+     */
+    private static async migrateFromV4toV5(): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const groupsState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                touched: zod.boolean(),
+            }),
+        ).parse(JSON.parse(groupsStateData));
+
+        // AdGuard Annoyances filters group id.
+        const annoyancesGroupId = '4';
+
+        /**
+         * AdGuard Annoyances filter has been splitted into 5 other filters:
+         * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+         * and Widgets - which we should enable if the Annoyances filter is enabled.
+         */
+        const deprecatedAnnoyancesFilterId = '14';
+
+        /**
+         * AdGuard Annoyances filter has been splitted into 5 other filters:
+         * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+         * and Widgets - which we should enable if the Annoyances filter is enabled.
+         */
+        const annoyancesFiltersIds = ['18', '19', '20', '21', '22'];
+
+        // AdGuard Annoyances filters group state.
+        const annoyancesGroup = groupsState[annoyancesGroupId] ?? {
+            enabled: false,
+            touched: false,
+        };
+
+        // AdGuard Annoyances filters states.
+        const annoyancesFiltersState = Object.fromEntries(
+            annoyancesFiltersIds.map((filterId) => {
+                const state = filtersState[filterId] ?? {
+                    loaded: false,
+                    enabled: false,
+                    touched: false,
+                };
+                return [filterId, state];
+            }),
+        );
+
+        const deprecatedAnnoyancesFilter = filtersState[deprecatedAnnoyancesFilterId];
+
+        if (UpdateApi.isObject(deprecatedAnnoyancesFilter)) {
+            // If the deprecated Annoyances filter is enabled, we should enable new groups and filters.
+            if (deprecatedAnnoyancesFilter.enabled) {
+                annoyancesGroup.enabled = true;
+                annoyancesFiltersIds.forEach((id) => {
+                    annoyancesFiltersState[id]!.enabled = true;
+                });
+            }
+            // delete deprecated filter state;
+            delete filtersState[deprecatedAnnoyancesFilterId];
+        }
+
+        // Set updated states and new metadata to the settings.
+
+        groupsState[annoyancesGroupId] = annoyancesGroup;
+        Object.assign(filtersState, annoyancesFiltersState);
+
+        settings['groups-state'] = JSON.stringify(groupsState);
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+
+        // Sets default rules limits.
+        await browserStorage.set(RULES_LIMITS_KEY, JSON.stringify([]));
+    }
+
+    /**
      * Run data migration from schema v3 to schema v4.
      *
      * @throws If previous data schema is invalid or saving data to the hybrid storage fails.
      */
     private static async migrateFromV3toV4(): Promise<void> {
-        // Get all entries from the `browser.storage.local`.
+        // Get all entries from the `browser.browserStorage.local`.
         const entries = await browserStorage.entries();
 
         // Find all keys that are related to filters.
@@ -223,7 +718,7 @@ export class UpdateApi {
             throw new Error('Failed to migrate filters from storage to hybrid storage, transaction failed');
         }
 
-        // Delete filters from the `browser.storage.local` after successful migration.
+        // Delete filters from the `browser.browserStorage.local` after successful migration.
         await browserStorage.removeMultiple([...rawFilterKeys, ...filterKeys]);
 
         logger.debug('Filters successfully migrated from storage to hybrid storage');
@@ -360,9 +855,19 @@ export class UpdateApi {
 
         const now = Date.now();
 
+        type SafeBrowsingDataV2 = {
+            list: string;
+            expires?: number;
+        };
+
+        type SafeBrowsingStorageDataV2 = {
+            key: string;
+            value: SafeBrowsingDataV2;
+        }[];
+
         // transform v1 safebrowsing storage data to v2
-        const sbStorageDataV2: SafebrowsingStorageData = sbStorageDataV1.map(({ key, value }) => {
-            const safebrowsingCacheRecord: SafebrowsingCacheData = { list: value };
+        const sbStorageDataV2: SafeBrowsingStorageDataV2 = sbStorageDataV1.map(({ key, value }) => {
+            const safebrowsingCacheRecord: SafeBrowsingDataV2 = { list: value };
 
             if (safebrowsingCacheRecord.list !== 'allowlist') {
                 safebrowsingCacheRecord.expires = now + SbCache.CACHE_TTL_MS;
@@ -384,8 +889,11 @@ export class UpdateApi {
         // In the v4.0.171 we have littered window.localStorage with proms used in the promo notifications module,
         // now we are clearing them
 
-        window.localStorage.removeItem('viewed-notifications');
-        window.localStorage.removeItem('viewed-notification-time');
+        if (typeof window !== 'undefined') {
+            // there is no window in the mv3 extension service worker
+            window.localStorage.removeItem('viewed-notifications');
+            window.localStorage.removeItem('viewed-notification-time');
+        }
 
         // In the v4.2.0 we are refactoring storage data structure
 
@@ -543,7 +1051,7 @@ export class UpdateApi {
                     return JSON.parse(value);
                 }
                 return value;
-            }, zod.enum(['system', 'dark', 'light'])),
+            }, appearanceValidator),
             'disable-show-page-statistic': SchemaPreprocessor.booleanValidator,
             'detect-filters-disabled': SchemaPreprocessor.booleanValidator,
             'safebrowsing-disabled': SchemaPreprocessor.booleanValidator,
@@ -585,7 +1093,58 @@ export class UpdateApi {
     }
 
     /**
-     * Moves data from settings to root storage.
+     * Removes the deprecated Quick Fixes filter from settings and storages.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
+     *
+     * @returns A promise that resolves when complete.
+     */
+    private static async removeQuickFixesFilter(): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const deprecatedQuickFixesFilter = filtersState[AntiBannerFiltersId.QuickFixesFilterId];
+
+        if (UpdateApi.isObject(deprecatedQuickFixesFilter)) {
+            // delete the deprecated filter state
+            delete filtersState[AntiBannerFiltersId.QuickFixesFilterId];
+        }
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Remove deprecated Quick Fixes filter from the storages.
+        await FiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
+     * Moves data from settings to root browserStorage.
      *
      * @param key Settings key.
      * @param currentSettings Current settings object.
@@ -600,5 +1159,15 @@ export class UpdateApi {
             delete currentSettings[key];
             await browserStorage.set(key, data);
         }
+    }
+
+    /**
+     * Checks if value is an object.
+     *
+     * @param value Unknown value to check.
+     * @returns True if value is an object, false otherwise.
+     */
+    private static isObject(value: unknown): value is Record<string, unknown> {
+        return value != null && value.constructor.name === 'Object';
     }
 }

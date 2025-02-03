@@ -1,20 +1,10 @@
 @keyframes notify-show {
     0% {
-        transform: translateY(200px);
+        transform: translateY(100%);
     }
 
     100% {
         transform: translateY(0);
-    }
-}
-
-@keyframes notify-show-reverse {
-    0% {
-        transform: translateY(0);
-    }
-
-    100% {
-        transform: translateY(200px);
     }
 }
 
@@ -31,10 +21,15 @@
     animation: notify-show 0.3s ease-in;
     transition: 0.3s ease transform;
 
+    &--closing {
+        transform: translateY(100%);
+        pointer-events: none;
+    }
+
     &__close {
         position: absolute;
-        top: 4px;
-        right: 4px;
+        top: 8px;
+        right: 8px;
         cursor: pointer;
         padding: 0;
         color: var(--gray-30);

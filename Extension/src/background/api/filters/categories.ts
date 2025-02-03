@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { UserAgent } from '../../../common/user-agent';
-import { RECOMMENDED_TAG_ID } from '../../../common/constants';
+import { AntiBannerFiltersId, RECOMMENDED_TAG_ID } from '../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,
@@ -34,6 +34,7 @@ import {
     CustomFilterMetadata,
 } from '../../schema';
 import { logger } from '../../../common/logger';
+import { CustomFilterHelper } from '../../../common/custom-filter-helper';
 
 import { CommonFilterApi } from './common';
 import { FilterMetadata, FiltersApi } from './main';
@@ -82,7 +83,12 @@ export class Categories {
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
-        const filters = Categories.getFilters();
+        const filters = Categories.getFilters().filter((f) => {
+            // Exclude Quick Fixes filter and custom filters from filters list
+            // TODO: remove this check when Quick Fixes Filter and custom filters will be supported for MV3 again
+            return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId
+                && !CustomFilterHelper.isCustomFilter(f.filterId);
+        });
 
         const categories = groups.map((group) => ({
             ...group,
@@ -112,16 +118,25 @@ export class Categories {
      * that will be loaded end enabled before update checking.
      *
      * @param groupId Id of group of filters.
-     * @param recommendedFiltersIds Array of filters ids to enable on first time the group has been activated.
+     * @param update Whether to download metadata and filter rules from remote
+     * resources or from local resources and should it to check for updates.
+     * @param recommendedFiltersIds Array of filters ids to enable on first time
+     * the group has been activated after enabling.
      */
-    public static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
+    public static async enableGroup(
+        groupId: number,
+        update: boolean,
+        recommendedFiltersIds: number[] = [],
+    ): Promise<void> {
         if (recommendedFiltersIds.length > 0) {
-            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds, true);
+            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds, update);
         }
 
-        // Always checks updates for enabled filters of the group.
-        const enabledFiltersIds = Categories.getEnabledFiltersIdsByGroupId(groupId);
-        await FilterUpdateApi.checkForFiltersUpdates(enabledFiltersIds);
+        if (update) {
+            // Always checks updates for enabled filters of the group.
+            const enabledFiltersIds = Categories.getEnabledFiltersIdsByGroupId(groupId);
+            await FilterUpdateApi.checkForFiltersUpdates(enabledFiltersIds);
+        }
 
         groupStateStorage.enableGroups([groupId]);
     }
@@ -139,7 +154,7 @@ export class Categories {
      * Returns specified group metadata by filter id.
      *
      * @param filterId Filter id.
-     * @returns {GroupMetadata | undefined} Specified {@link GroupMetadata | group metadata }
+     * @returns Specified {@link GroupMetadata | group metadata }
      * or undefined.
      */
     public static getGroupByFilterId(filterId: number): GroupMetadata | undefined {

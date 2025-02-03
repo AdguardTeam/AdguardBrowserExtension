@@ -20,7 +20,7 @@ Build:
   docker:
     image: ${bamboo.dockerNode}
     volumes:
-      ${system.YARN_DIR}: "${bamboo.cacheYarn}"
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
         force-clean-build: 'true'
@@ -40,9 +40,11 @@ Build:
 
             ls -la
 
-            # don't use --ignore-optional flag, because swc requires optional deps
-            yarn install --silent --ignore-engines --ignore-platform --ignore-scripts
-            yarn beta
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+            pnpm beta
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
@@ -50,12 +52,10 @@ Build:
             # Copy all artifacts to the artifacts directory
             cp build/beta/build.txt artifacts/
             cp build/beta/chrome.zip artifacts/
+            cp build/beta/chrome-mv3.zip artifacts/
             cp build/beta/edge.zip artifacts/
             cp build/beta/chrome.crx artifacts/
             cp build/beta/update.xml artifacts/
-
-            # Create an empty artifact in master branch which will be filled in v5.0 branch
-            echo "empty" > artifacts/chrome-mv3.zip
     - inject-variables:
         file: artifacts/build.txt
         scope: RESULT

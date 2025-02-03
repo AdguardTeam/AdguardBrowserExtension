@@ -18,6 +18,7 @@
 import zod from 'zod';
 
 import { FiltersUpdateTime } from '../../../common/constants';
+import { appearanceValidator } from '../settings';
 
 // General settings configuration
 
@@ -72,7 +73,7 @@ export const generalSettingsConfigValidator = zod.object({
     /**
      * Appearance theme of the application.
      */
-    [GeneralSettingsOption.AppearanceTheme]: zod.enum(['system', 'dark', 'light']).optional(),
+    [GeneralSettingsOption.AppearanceTheme]: appearanceValidator.optional(),
 });
 
 /**

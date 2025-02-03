@@ -16,7 +16,6 @@
     <a href="https://twitter.com/AdGuard">Twitter</a> |
     <a href="https://t.me/adguard_en">Telegram</a>
     <br /><br />
-    </a>
     <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases">
         <img src="https://img.shields.io/github/release/AdguardTeam/AdguardBrowserExtension/all.svg" alt="Latest release" />
     </a>
@@ -44,62 +43,51 @@ You can learn more about [the difference](https://adguard.com/compare.html) here
 > The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 - [Installation](#installation)
-    - [Chrome and Chromium-based browsers](#chrome-and-chromium-based-browsers)
-    - [Firefox](#firefox)
-    - [Opera](#opera)
-    - [Microsoft Edge](#microsoft-edge)
-    - [Contribution](#contribution)
-    - [Translating AdGuard](#translating-adguard)
-    - [Testing AdGuard](#testing-adguard)
-    - [Reporting issues](#reporting-issues)
-    - [Other options](#other-options)
-    - [Development](#development)
-    - [Requirements](#requirements)
-    - [How to build](#how-to-build)
-        - [Tests and dev build](#tests-and-dev-build)
-        - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
-        - [Building the beta and release versions](#building-the-beta-and-release-versions)
-        - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
-        - [Analyzing bundle size](#analyzing-bundle-size)
-    - [Linter](#linter)
-    - [Update localizations](#update-localizations)
-- [Minimum supported browser versions](#minimum-supported-browser-versions)
+    - [Chrome and Chromium-based browsers](#installation-chrome)
+    - [Firefox](#installation-firefox)
+    - [Opera](#installation-opera)
+    - [Microsoft Edge](#installation-edge)
+- [Contribution](#contribution)
+    - [Translating AdGuard](#contribution-translating)
+    - [Testing AdGuard](#contribution-testing)
+    - [Reporting issues](#contribution-reporting)
+    - [Other options](#contribution-other)
+- [Development](#dev)
+    - [Requirements](#dev-requirements)
+    - [How to build](#dev-build)
+        - [Tests and dev build](#dev-tests-and-build)
+        - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
+        - [Building the beta and release versions](#dev-beta-and-release)
+        - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
+        - [Analyzing bundle size](#dev-bundle-size)
+        - [Debug MV3 declarative rules](#dev-debug-mv3)
+    - [Linter](#dev-linter)
+    - [Update localizations](#dev-localizations)
+- [Minimum supported browser versions](#browser-compatibility)
 
-<a id="installation"></a>
+## <a name="installation"></a> Installation
 
-## Installation
-
-<a id="installation-chrome"></a>
-
-### Chrome and Chromium-based browsers
+### <a name="installation-chrome"></a> Chrome and Chromium-based browsers
 
 You can get the latest available AdGuard Extension version from the
 [Chrome Web Store](https://agrd.io/extension_chrome).
 
-<a id="installation-firefox"></a>
-
-### Firefox
+### <a name="installation-firefox"></a> Firefox
 
 You can get the latest version of AdGuard Extension from the
 [Mozilla Add-ons website](https://agrd.io/extension_firefox).
 
-<a id="installation-opera"></a>
-
-### Opera
+### <a name="installation-opera"></a> Opera
 
 Opera is basically a Chromium browser, but it maintains its own add-ons store.
 You can get AdGuard Extension [from there](https://agrd.io/extension_opera).
 
-<a id="installation-edge"></a>
-
-### Microsoft Edge
+### <a name="installation-edge"></a> Microsoft Edge
 
 The latest stable version of AdGuard browser extension is available in
 [Microsoft Store](https://agrd.io/extension_edge).
 
-<a id="contribution"></a>
-
-## Contribution
+## <a name="contribution"></a> Contribution
 
 We are blessed to have a community that does not only love AdGuard, but also
 gives back. A lot of people volunteer in various ways to make other users'
@@ -108,24 +96,18 @@ experience with AdGuard better, and you can join them!
 We, on our part, can only be happy to reward the most active members of the
 community. So, what can you do?
 
-<a id="contribution-translating"></a>
-
-### Translating AdGuard
+### <a name="contribution-translating"></a> Translating AdGuard
 
 If you want to help with AdGuard translations, please learn more about
-translating our products here: <https://kb.adguard.com/en/general/adguard-translations>
+translating our products here: <https://adguard.com/kb/miscellaneous/contribute/translate/program/>
 
-<a id="contribution-testing"></a>
-
-### Testing AdGuard
+### <a name="contribution-testing"></a> Testing AdGuard
 
 You can get a beta version of AdGuard Browser Extension for any browser.
 All necessary information on this topic can be found on a
 [dedicated page on our website](https://adguard.com/beta.html).
 
-<a id="contribution-reporting"></a>
-
-### Reporting issues
+### <a name="contribution-reporting"></a> Reporting issues
 
 GitHub can be used to report a bug or to submit a feature request. To do so, go
 to [this page](https://github.com/AdguardTeam/AdguardBrowserExtension/issues)
@@ -135,143 +117,184 @@ and click the *New issue* button.
 > For the filter-related issues (missed ads, false positives etc.) use
 > the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters).
 
-<a id="contribution-other"></a>
-
-### Other options
+### <a name="contribution-other"></a> Other options
 
 Here is a [dedicated page](https://adguard.com/contribute.html) for those who
 are willing to contribute.
 
-<a id="dev"></a>
+## <a name="dev"></a> Development
 
-## Development
-
-<a id="dev-requirements"></a>
-
-### Requirements
+### <a name="dev-requirements"></a> Requirements
 
 - [node.js LTS](https://nodejs.org/en/download/)
-- NPM v8
-- [yarn v1.22](https://yarnpkg.com/en/docs/install/)
+- [pnpm v8](https://pnpm.io/installation)
+
+### <a name="dev-build"></a> How to build
+
+#### <a name="dev-tests-and-build"></a> Tests and dev build
 
 Install local dependencies by running:
 
 ```shell
-  yarn install
+pnpm install
 ```
 
-<a id="dev-build"></a>
-
-### How to build
-
-#### Tests and dev build
-
-Running tests:
+Running unit tests:
 
 ```shell
-  yarn test
+pnpm test
+```
+
+Running integration tests:
+
+```shell
+pnpm test:integration <MODE>
+# MODE can be 'dev', 'beta', 'release', same as build targets.
+```
+
+Running integration tests with enabling debug mode (page will be stopped after
+tests execution) for one of them:
+
+```shell
+pnpm test:integration <MODE> [-d <TEST_ID>]
+# MODE can be 'dev', 'beta', 'release', same as build targets.
+# TEST_ID can be extracted from https://testcases.agrd.dev/data.json
 ```
 
 Run the following command to build the dev version:
 
 ```shell
-  yarn dev
+pnpm dev
 ```
 
 This will create a build directory with unpacked extensions for all browsers:
 
 ```shell
-  build/dev/chrome
-  build/dev/edge
-  build/dev/firefox-amo
-  build/dev/firefox-standalone
-  build/dev/opera
+build/dev/chrome
+build/dev/edge
+build/dev/firefox-amo
+build/dev/firefox-standalone
+build/dev/opera
 ```
 
 To make a dev build for a specific browser, run:
 
 ```shell
-  yarn dev <browser>
+pnpm dev <browser>
 ```
 
-Where `<browser>` is one of the following: `chrome`, `edge`, `opera`, `firefox`,
+Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `firefox`,
 `firefox-standalone`, like this:
 
 ```shell
-  yarn dev chrome
+pnpm dev chrome
 ```
 
 To run dev build in watch mode, run:
 
 ```shell
-  yarn dev --watch
+pnpm dev --watch
 ```
 
 Or for a specific browser:
 
 ```shell
-  yarn dev <browser> --watch
+pnpm dev <browser> --watch
 ```
 
-#### Linking with the developer build of tsurlfilter/tswebextension
+#### <a name="dev-link"></a> Linking with the developer build of tsurlfilter/tswebextension
 
 Since version v4.0, AdGuard browser extension uses an open source library
-[tsurlfilter][tsurlfilter] that implements
+[tsurlfilter] that implements
 the filtering engine.
 
 While developing the browser extension it may be required to test the changes
 to `tsurlfilter`. Here's what you need to do to link your local dev build
 to the local dev build of `tsurlfilter`.
 
-1. Clone and build [tsurlfilter][tsurlfilter] libraries.
-1. Go to the `tsurlfilter/packages/tsurlfilter` and
-`tsurlfilter/packages/tswebextension` directories and run `yarn link`.
+1. Clone and build [tsurlfilter] libraries.
 
-1. Now you can link these packages to the browser extension. To do that run
-`yarn link` commands in the root directory of the browser extension root
-directory:
+1. You have two options to link the packages:
 
-  ```shell
-  yarn link @adguard/tsurlfilter
-  yarn link @adguard/tswebextension
-  ```
+    - **Option 1**: Link the packages globally:
+
+        1. Go to the `tsurlfilter/packages/tsurlfilter` or `tsurlfilter/packages/tswebextension` directory.
+
+        1. Run the following command:
+
+            ```shell
+            pnpm link --global
+            ```
+
+            This command will create a symlink to the package in the global `node_modules` directory.
+
+        1. Once you have the packages linked globally, you can link them to the browser extension.
+        Just run the following command in the root directory of the browser extension:
+
+            ```shell
+            pnpm link @adguard/tsurlfilter
+            ```
+
+    - **Option 2**: Link the packages by path:
+
+        1. Just run the following command in the root directory of the browser extension:
+
+            ```shell
+            pnpm link <path-to-tsurlfilter/packages/tsurlfilter>
+            ```
+
+1. If you want to unlink the packages, just run `pnpm unlink @adguard/tsurlfilter`
+or `pnpm unlink @adguard/tswebextension` in the root directory of the browser extension
+regardless of the linking option you chose.
+
+    > [!WARNING]
+    > pnpm will modify the lock file when linking packages. See <https://github.com/pnpm/pnpm/issues/4219>.
+
+    > [!NOTE]
+    > If you want to list linked packages, run `pnpm list --depth 0` in the root directory of the browser extension
+    > which will show you all dependencies. Linked packages have a version like `link:../path/to/package`.
 
 1. Build the browser extension in the watch mode:
 
-  ```shell
-  yarn dev <browser> --watch
-  ```
+    ```shell
+    pnpm dev <browser> --watch --no-cache
+    ```
+
+    `--no-cache` flag is required to rebuild the extension on changes in the linked packages.
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
 
-#### Building the beta and release versions
+#### <a name="dev-beta-and-release"></a> Building the beta and release versions
 
 Before building the release version, you should manually download the necessary
 resources that will be included into the build: filters and public suffix list.
 
 ```shell
-  yarn resources
+pnpm resources
 ```
+
+> [!TIP]
+> Run `pnpm resources:mv3` to download resources for MV3 version.
 
 This command also checks if there are dangerous rules in the filters.
 See [dangerous rules](tools/resources/dangerous-rules/README.md)
 
 ```shell
-  yarn beta
-  yarn release
+pnpm beta
+pnpm release
 ```
 
 You will need to put certificate.pem file to the `./private` directory. This
 build will create unpacked extensions and then pack them (crx for Chrome).
 
-#### Special building instructions for Firefox reviewers
+#### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
 
-1. Ensure you have installed Node.js and Yarn.
+1. Ensure you have installed Node.js and pnpm.
 
 1. To build the **BETA** version, run:
 
     ```shell
-    yarn beta firefox-standalone
+    pnpm beta firefox-standalone
     ```
 
 1. Navigate to the build directory:
@@ -282,83 +305,158 @@ build will create unpacked extensions and then pack them (crx for Chrome).
 
 1. Compare the generated `firefox.zip` file with the uploaded one.
 
-#### Analyzing bundle size
+#### <a name="dev-bundle-size"></a> Analyzing bundle size
 
 If you want to analyze the bundle size, run build with the `ANALYZE` environment:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn <build command>
+pnpm cross-env ANALYZE=true pnpm <build command>
 ```
 
 So, for example, if you want to analyze the beta build for Chrome, run:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn beta chrome
+pnpm cross-env ANALYZE=true pnpm beta chrome
 ```
 
 Or if you want to analyze all beta builds, run:
 
 ```shell
-  yarn cross-env ANALYZE=true yarn beta
+pnpm cross-env ANALYZE=true pnpm beta
 ```
 
 Analyzer will generate reports to the `./build/analyze-reports` directory in the following format:
 
 ```shell
-  build/analyze-reports
-  ├── <browser-name>-<build-type>.html
+build/analyze-reports
+├── <browser-name>-<build-type>.html
 ```
 
-<a id="dev-linter"></a>
+#### <a name="dev-debug-mv3"></a> Debug MV3 declarative rules
 
-### Linter
+If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper [How to build](#dev-build) section, but for specified branch, in which we develop MV3 version.
+
+Then install extension via developer mode, make requests and see applied declarative rules in the filtering log.
+
+##### How to build MV3 extension
+
+1. Switch to the `v5.0` branch:
+
+    ```shell
+    git checkout v5.0
+    ```
+
+1. Run the following command in the terminal:
+
+    ```shell
+    pnpm dev chrome-mv3
+    ```
+
+1. The built extension will be located in the directory:
+
+    ```shell
+    ./build/dev/chrome-mv3
+    ```
+
+##### How to install unpacked in the browser
+
+1. Turn on developer mode:
+
+    ![Developer mode](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/developer_mode.png)
+
+1. Click *Load unpacked*:
+
+    ![Load unpacked](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/load_unpacked.png)
+
+1. Select the extension directory and click `Select`:
+
+    ![Select](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/select.png)
+
+That’s it!
+
+##### How to debug rules
+
+1. Find and modify the rule you need in the `./Extension/filters/chromium-mv3` directory in the `.txt` files.
+
+1. Convert the rules from txt to declarative form:
+
+    ```shell
+    pnpm convert-declarative
+    ```
+
+1. Build the extension again:
+
+    ```shell
+    pnpm dev chrome-mv3
+    ```
+
+1. Reload the extension in the browser:
+
+    ![Reload extension](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/reload_extension.png)
+
+1. If you see an ❗ mark - it means that assumed rule (which we calculated with our tsurlfilter engine, which performed applying rules in MV2) and actually applied rule (from which we converted to DNR rule) are not the same. And this can be a problem of conversion. <br/> Otherwise, if assumed and applied rules are the same - only applied rule (in text and declarative ways) will be shown.
+
+### <a name="dev-linter"></a> Linter
 
 Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
-<a id="dev-localizations"></a>
-
-### Update localizations
+### <a name="dev-localizations"></a> Update localizations
 
 To download and append localizations run:
 
 ```shell
-    yarn locales download
+pnpm locales download
 ```
 
 To upload new phrases to crowdin you need the file with phrases
 `./Extension/_locales/en/messages.json`. Then run:
 
 ```shell
-    yarn locales upload
+pnpm locales upload
 ```
 
 To remove old messages from locale messages run:
 
 ```shell
-  yarn locales renew
+pnpm locales renew
 ```
 
 To validate translations run:
 
 ```shell
-  yarn locales validate
+pnpm locales validate
 ```
 
 To show locales info run:
 
-```bash
-  yarn locales info
+```shell
+pnpm locales info
 ```
 
-<a id="minimum-supported-browser-versions"></a>
+## <a name="permissions-required"></a> Permissions required
 
-## Minimum supported browser versions
+- `tabs`                          - this permission is required in order to get the URL of the options page tab
+- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
+- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime.
+- `contextMenus`                  - this permission is required in order to create a context menu
+- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
+- `storage`                       - this permission is required in order to save user settings, user rules and custom filters
+- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
+- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
+- `unlimitedStorage`              - this permission is required in order to save large filters
+- `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
 
-| Browser                  | Version  |
-|------------------------- |:--------:|
-| Chromium Based Browsers  |  80      |
-| Firefox                  |  78      |
-| Firefox Mobile           | 113      |
-| Opera                    |  67      |
-| Edge                     |  80      |
+## <a name="browser-compatibility"></a> Minimum supported browser versions
+
+<!-- NOTE: see MIN_SUPPORTED_VERSION in ./constants.ts -->
+
+| Browser                     | Version |
+|---------------------------- |---------|
+| Chromium-based browsers MV2 | ✅ 79   |
+| Chromium-based browsers MV3 | ✅ 121  |
+| Firefox                     | ✅ 78   |
+| Firefox Mobile              | ✅ 113  |
+| Opera                       | ✅ 67   |
+| Edge Chromium               | ✅ 80   |
+| Edge Legacy                 | ❌      |

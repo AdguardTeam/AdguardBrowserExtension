@@ -1,7 +1,8 @@
 .input {
     &__in {
         height: 32px;
-        border: 1px solid var(--gray300);
+        border: 1px solid var(--stroke-inputs-active-input-stroke-default);
+        background-color: var(--fills-inputs-input-background-disabled);
         padding: 2px 12px;
         margin-top: 20px;
         margin-bottom: 4px;
@@ -9,22 +10,18 @@
         border-radius: 4px;
         outline: none;
 
-        @media (prefers-color-scheme: dark) {
-            border: 1px solid var(--gray900);
-            background-color: var(--black);
-            color: var(--gray300);
+        &:focus {
+            outline: none;
+            border: 1px solid var(--stroke-inputs-active-input-stroke-default);
         }
 
         &:invalid {
-            border: 1px solid var(--red-editor);
+            border: 1px solid var(--stroke-inputs-error-input-stroke-default);
 
             &:focus-visible {
-                border: 1px solid var(--gray300);
-                outline: 2px solid var(--red-editor);
-
-                @media (prefers-color-scheme: dark) {
-                    border: 1px solid var(--gray900);
-                }
+                background-color: var(--fills-inputs-input-background-disabled);
+                border: 1px solid var(--stroke-inputs-error-input-stroke-default);
+                outline: none;
             }
         }
 
@@ -37,26 +34,6 @@
         /* Firefox */
         &[type=number] {
             -moz-appearance: textfield;
-        }
-    }
-}
-
-.light-mode {
-    .input {
-        &__in {
-            border: 1px solid var(--gray88);
-            background-color: transparent;
-            color: var(--gray-base);
-        }
-    }
-}
-
-.dark-mode {
-    .input {
-        &__in {
-            border: 1px solid var(--gray900);
-            background-color: var(--black);
-            color: var(--gray300);
         }
     }
 }

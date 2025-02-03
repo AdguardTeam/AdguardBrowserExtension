@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
+import path from 'node:path';
 
 import { filesize } from 'filesize';
 
@@ -95,12 +95,10 @@ export class SizeLimitPlugin {
             }
 
             if (problematicFiles.length) {
-                callback(
-                    new Error(
-                        // eslint-disable-next-line max-len
-                        `Size limit exceeded for the following files: ${problematicFiles.map(({ filename, sizeInBytes }) => `${filename} (${filesize(sizeInBytes)})`).join(', ')}`,
-                    ),
-                );
+                const filesWithSizes = problematicFiles.map(({ filename, sizeInBytes }) => {
+                    return `${filename} (${filesize(sizeInBytes)})`;
+                });
+                callback(new Error(`Size limit exceeded for the following files: ${filesWithSizes.join(', ')}`));
             } else {
                 callback();
             }

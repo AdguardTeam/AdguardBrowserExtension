@@ -3,99 +3,51 @@
     vertical-align: middle;
     flex-shrink: 0;
 
-    &--loading {
-        pointer-events: none;
-        animation: loader-spin 1.7s infinite linear;
-        animation-fill-mode: forwards;
-    }
+    &--header {
+        color: var(--stroke-icons-gray-icons-default);
 
-    &--button {
-        width: 24px;
-        height: 24px;
-    }
-
-    &--update-filters {
-        width: 22px;
-        height: 22px;
-    }
-
-    &--settings {
-        width: 22px;
-        height: 22px;
-    }
-
-    &--pause {
-        width: 22px;
-        height: 22px;
-    }
-
-    &--logo {
-        width: 113px;
-        height: 25px;
-        color: #232323;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
+        &:hover {
+            color: var(--stroke-icons-product-icon-default);
         }
+    }
+
+    &--no-filtering {
+        width: 48px;
+        height: 48px;
+        color: var(--stroke-icons-product-icon-default);
     }
 
     &--action {
-        width: 17px;
-        height: 17px;
-    }
+        &--block-ad {
+            color: var(--stroke-icons-error-icon-default);
+        }
 
-    &--cross {
-        width: 15px;
-        height: 15px;
-    }
+        &--sandwich {
+            color: var(--stroke-icons-product-icon-default);
+        }
 
-    &--play {
-        width: 24px;
-        height: 24px;
-    }
+        &--thumb-down {
+            color: var(--stroke-icons-attention-icon-default);
+        }
 
-    &--circle {
-        width: 24px;
-        height: 24px;
-    }
+        &--info {
+            color: var(--stroke-icons-gray-icons-default);
+        }
 
-    &--checkmark {
-        width: 24px;
-        height: 24px;
-    }
+        &--small-cross {
+            color: var(--stroke-icons-error-icon-default);
+        }
 
-    &--exclamation {
-        width: 4px;
-        height: 24px;
-    }
-
-    &--select {
-        width: 14px;
-        height: 8px;
-    }
-}
-
-.light-mode {
-    .icon {
-        &--logo {
-            color: #232323;
+        &--loading {
+            color: var(--stroke-icons-product-icon-default);
         }
     }
-}
 
-.dark-mode {
-    .icon {
-        &--logo {
-            color: var(--gray300);
+    &--footer {
+        color: var(--stroke-icons-gray-icons-default);
+
+        &:hover {
+            color: var(--stroke-icons-product-icon-default);
         }
-    }
-}
-
-@keyframes loader-spin {
-    from {
-        -webkit-transform: rotate(0deg);
-    } 
-    to {
-        -webkit-transform: rotate(360deg);
     }
 }

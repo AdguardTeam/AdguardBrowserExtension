@@ -16,6 +16,25 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// In this file we doing only lazy-load assistant and place it to global scope
-// of the current content-script.
+/**
+ * In the content script of tswebextension, we need access to @adguard/assistant
+ * only when the user clicks 'block ad manually'.
+ * Therefore, we exclude @adguard/assistant from the bundled content-script code
+ * and load it on-demand. We also added a required field to the configuration
+ * object to ensure the assistant is bundled inside the final extension,
+ * allowing tswebextension to load it on-demand.
+ *
+ * Schema:
+ * - Buildtime:
+ *  -- [tswebext]  Script to inject assistant from the URL provided by the extension.
+ *  -- [tswebext]  Assistant management script for interacting with the assistant.
+ *  -- [tswebext]  Assistant messages listener on the content-script side.
+ *  -- [extension] Entry point script for injecting the assistant <--- current file.
+ * - Runtime:
+ *  -- [tswebext] Content script injects into every new tab without the assistant.
+ *  -- [tswebext] On-demand content script dynamically injects the assistant.
+ *  -- [tswebext] After injection, the content script interacts with the assistant.
+ *
+ * Reference code: ASSISTANT_INJECT.
+ */
 import '@adguard/tswebextension/assistant-inject';

@@ -19,6 +19,7 @@ import browser from 'webextension-polyfill';
 
 import { Forward, ForwardAction } from '../../common/forward';
 import { NotificationTextRecord } from '../schema';
+import { defaultIconVariants } from '../api/ui/icons';
 
 /**
  * Icon data for different sizes.
@@ -48,6 +49,11 @@ export type IconVariants = {
      * Disabled state icon variants (when AdGuard is disabled).
      */
     disabled: IconData;
+
+    /**
+     * State icon variants when MV3 limitations are exceeded.
+     */
+    warning: IconData;
 };
 
 export type PromoNotification = {
@@ -95,7 +101,7 @@ const christmas24Notification: PromoNotification = {
         },
         de: {
             title: 'Weihnachten bei AdGuard',
-            btn: 'Öffnen',
+            btn: 'Geschenk öffnen',
         },
         ru: {
             title: 'Новый год в AdGuard',
@@ -103,19 +109,19 @@ const christmas24Notification: PromoNotification = {
         },
         es: {
             title: 'Navidad en AdGuard',
-            btn: 'Abrir',
+            btn: 'Ven a ver',
         },
         es_419: {
             title: 'Navidad en AdGuard',
             btn: 'Abre',
         },
         pt_pt: {
-            title: 'É Natal no AdGuard',
-            btn: 'Abrir',
+            title: 'Natal no AdGuard',
+            btn: 'Vem ver',
         },
         pt_br: {
-            title: 'É Natal no AdGuard',
-            btn: 'Abrir',
+            title: 'Natal no AdGuard',
+            btn: 'Vem ver',
         },
         zh_cn: {
             title: 'AdGuard Christmas',
@@ -182,8 +188,8 @@ const christmas24Notification: PromoNotification = {
             btn: 'Otvoren',
         },
         hu: {
-            title: 'Új év az AdGuardban',
-            btn: 'Nyisd ki',
+            title: 'Karácsony az AdGuard-nál',
+            btn: 'Kinyit',
         },
         hy: {
             title: 'Ամանորը AdGuard-ում',
@@ -274,6 +280,7 @@ const christmas24Notification: PromoNotification = {
             '19': browser.runtime.getURL('assets/icons/christmas24-off-19.png'),
             '38': browser.runtime.getURL('assets/icons/christmas24-off-38.png'),
         },
+        warning: defaultIconVariants.warning,
     },
 };
 

@@ -16,14 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import path from 'path';
-import { promises as fsp } from 'fs';
+import path from 'node:path';
+import { promises as fsp } from 'node:fs';
 
-import { BUILD_PATH } from '../constants';
+import { BUILD_ENV, BUILD_PATH } from '../constants';
 import packageJson from '../../package.json';
-import { getEnvConf } from '../helpers';
 
-const config = getEnvConf(process.env.BUILD_ENV);
+import { getEnvConf } from './helpers';
+
+const config = getEnvConf(BUILD_ENV);
 const OUTPUT_PATH = config.outputPath;
 
 const content = `version=${packageJson.version}`;

@@ -7,43 +7,36 @@
         white-space: nowrap;
         font-size: 16px;
         text-align-last: right;
-        color: var(--gray-base);
+        color: var(--text-main-text-main-default);
         padding-right: 25px;
         cursor: pointer;
         border: 0;
         background-color: transparent;
         -webkit-appearance: none;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-        }
     }
 
     &__ico {
         position: absolute;
         pointer-events: none;
         right: 5px;
-        top: calc(50% - 4px);
+        top: calc(50% - 3px);
     }
 
     &__list {
+        display: flex;
+        flex-direction: column;
         position: absolute;
         right: 0;
         z-index: 10;
-        border: 1px solid var(--gray700);
-        border-radius: 4px;
+        border-radius: 8px;
         max-height: 265px;
-        min-width: 160px;
-        max-width: 220px;
+        min-width: 240px;
+        max-width: 280px;
         overflow-y: auto;
-        box-shadow: 0 0 7px 3px rgba(0, 0, 0, 0.1);
-        margin: 13px 0 0 0;
-        background-color: var(--white);
+        box-shadow: 8px 8px 24px 0px var(--shadow-0-1);
+        margin: 18px 0 0 0;
+        background-color: var(--fills-menus-dropdown-menu-background-default);
         scrollbar-width: thin;
-
-        @media (prefers-color-scheme: dark) {
-            background-color: var(--black);
-        }
 
         &[hidden] {
             display: none;
@@ -60,101 +53,67 @@
     }
 
     &__item {
-        font-size: 15px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         max-width: 100%;
-        padding: 16px 25px;
+        padding: 16px;
         cursor: pointer;
-        border: 0;
-        background-color: transparent;
-        color: var(--gray900);
-        width: 100%;
-        text-align: left;
+
+        &--text {
+            display: inline-block;
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &--active {
+                font-weight: 600;
+                padding-right: 16px;
+            }
+        }
 
         &:focus-visible {
             outline: none;
             box-shadow: inset 0 0 0 2px var(--outline);
         }
 
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
+        &:hover {
+            background-color: var(--fills-menus-dropdown-menu-background-hovered);
         }
 
-        &:hover {
-            background-color: var(--gray100);
-
-            @media (prefers-color-scheme: dark) {
-                background-color: var(--gray900);
-            }
+        &:active {
+            background-color: var(--fills-menus-dropdown-menu-background-pressed);
         }
     }
 
-    /* Reverse order of icon, smaller text, using full space of parent element */
+    /* Smaller text, using full space of parent element */
     &.popup-modification {
-        width: 100%;
-        height: 100%;
-        display: flex;
-
-        .select__ico {
-            position: absolute;
-            pointer-events: none;
-            left: 5px;
-            top: calc(50% - 4px);
+        .select__ico,
+        .select__value {
+            color: var(--text-description-description-default);
         }
 
         .select__value {
             width: 100%;
-            font-size: 12px;
+            font-size: 14px;
+            line-height: 24px;
             text-align-last: left;
-            padding-left: 25px;
+            padding: 0 28px 0 6px;
         }
 
         .select__list {
+            margin-top: 24px;
+            min-width: 180px;
+            max-height: none;
+        }
+
+        &:first-child .select__list {
+            right: auto;
             left: 0;
-            right: initial;
-        }
-    }
-}
-
-.light-mode {
-    .select {
-        &__value {
-            color: var(--gray-base);
-        }
-
-        &__list {
-            background-color: var(--white);
-        }
-
-        &__item {
-            color: var(--gray900);
-
-            &:hover {
-                background-color: var(--gray100);
-                color: var(--gray900);
-            }
-        }
-    }
-}
-
-.dark-mode {
-    .select {
-        &__value {
-            color: var(--gray300);
-        }
-
-        &__list {
-            background-color: var(--black);
-        }
-
-        &__item {
-            color: var(--gray300);
-
-            &:hover {
-                background-color: var(--gray900);
-            }
         }
     }
 }

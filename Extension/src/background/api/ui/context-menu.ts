@@ -16,8 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { Menus } from 'webextension-polyfill';
-import { throttle } from 'lodash-es';
 import { nanoid } from 'nanoid';
+import { throttle } from 'lodash-es';
 
 import { translator } from '../../../common/translators/translator';
 import {
@@ -135,8 +135,10 @@ export class ContextMenuApi {
                 await ContextMenuApi.addMenuItem(ContextMenuAction.SecurityReport);
                 await ContextMenuApi.addMenuItem(ContextMenuAction.ComplaintWebsite);
                 await ContextMenuApi.addSeparator();
-                await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
-                await ContextMenuApi.addSeparator();
+                if (!__IS_MV3__) {
+                    await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
+                    await ContextMenuApi.addSeparator();
+                }
                 if (!isOptionsPage) {
                     await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
                 }
@@ -165,7 +167,9 @@ export class ContextMenuApi {
     private static async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
         await ContextMenuApi.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
         await ContextMenuApi.addSeparator();
-        await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        if (!__IS_MV3__) {
+            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        }
         if (!isOptionsPage) {
             await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
         }
@@ -178,13 +182,18 @@ export class ContextMenuApi {
      * @param isOptionsPage Is current page options page.
      */
     private static async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
-        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled);
+        // Disabled because it's just informational inactive button
+        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
         await ContextMenuApi.addSeparator();
-        await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        if (!__IS_MV3__) {
+            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        }
         if (!isOptionsPage) {
             await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
         }
-        await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
+        if (!__IS_MV3__) {
+            await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
+        }
     }
 
     /**

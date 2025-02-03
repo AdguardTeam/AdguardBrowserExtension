@@ -17,14 +17,16 @@
  */
 import { Runtime } from 'webextension-polyfill';
 
+import { Engine, type EngineMessage } from 'engine';
+
 import {
     Message,
     APP_MESSAGE_HANDLER_NAME,
     MessageHandler,
-    MessageListener,
 } from '../common/messages';
+import { logger } from '../common/logger';
 
-import { Engine, EngineMessage } from './engine';
+import { engine } from './engine';
 
 /**
  * Common message handler {@link MessageHandler} specified for background
@@ -42,19 +44,36 @@ export class BackgroundMessageHandler extends MessageHandler {
      * @returns {Promise<unknown> | undefined} The result from the listener,
      * if the listener was found. If not found, an undefined value is returned.
      */
-    protected handleMessage<T extends Message | EngineMessage>(
-        message: T,
+    protected handleMessage(
+        message: Message | EngineMessage,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
         if (message.handlerName === Engine.messageHandlerName) {
-            return Engine.handleMessage(message, sender);
+            return engine.handleMessage(message, sender);
         }
 
         if (message.handlerName === APP_MESSAGE_HANDLER_NAME) {
-            const listener = this.listeners.get(message.type) as MessageListener<T>;
-            if (listener) {
-                return Promise.resolve(listener(message, sender));
+            // Check type
+            if (!BackgroundMessageHandler.isValidMessageType(message)) {
+                logger.error('Invalid message in BackgroundMessageHandler:', message);
+                return;
             }
+
+            const listener = this.listeners.get(message.type);
+            if (!listener) {
+                return;
+            }
+
+            const fn = (async (): Promise<unknown> => {
+                try {
+                    return await listener(message, sender);
+                } catch (e) {
+                    logger.error('An error occurred while handling message:', message, 'error:', e);
+
+                    throw e;
+                }
+            });
+            return fn();
         }
     }
 }

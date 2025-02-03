@@ -101,13 +101,14 @@ export class TabsApi {
     }
 
     /**
-     * Reload tab without cache by specified id.
+     * Reloads a tab without cache by specified id.
+     *
      * Clearing the cache on reload is necessary for correct application of the rules on pages with service workers.
      *
      * @param id Tab id.
      */
     public static async reload(id: number | undefined): Promise<void> {
-        return browser.tabs.reload(id, {
+        await browser.tabs.reload(id, {
             bypassCache: true,
         });
     }

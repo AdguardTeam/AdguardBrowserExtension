@@ -17,18 +17,49 @@
  */
 import { Runtime } from 'webextension-polyfill';
 
-import {
-    MessageHandler,
-    MessageListener,
-    Message,
-} from '../../common/messages';
+import { MessageType } from '@adguard/tswebextension';
+
+import { MessageHandler } from '../../common/messages/message-handler';
+import { type Message } from '../../common/messages/constants';
+import { logger } from '../../common/logger';
 
 export class ContentScriptMessageHandler extends MessageHandler {
-    protected handleMessage<T extends Message>(
-        message: T,
+    /**
+     * For these messages we have separate handlers in the content script,
+     * provided from tswebextension.
+     */
+    private static ExcludedAssistantMessages = new Set([
+        MessageType.InitAssistant,
+        MessageType.CloseAssistant,
+    ]);
+
+    /**
+     * Checks if the message is internal assistant message. If it is, we should
+     * not handle it in the content script.
+     *
+     * @param message Message to check.
+     * @param message.type Type of the message.
+     *
+     * @returns {boolean} True if the message is internal assistant message.
+     */
+    private static isInternalAssistantMessage(message: { type: MessageType }): boolean {
+        return ContentScriptMessageHandler.ExcludedAssistantMessages.has(message.type);
+    }
+
+    protected handleMessage(
+        message: Message,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
-        const listener = this.listeners.get(message.type) as MessageListener<T>;
+        // Check type.
+        if (!ContentScriptMessageHandler.isValidMessageType(message)) {
+            // Do not print errors for internal assistant messages.
+            if (!ContentScriptMessageHandler.isInternalAssistantMessage(message)) {
+                logger.error('Invalid message in ContentScriptMessageHandler:', message);
+            }
+            return;
+        }
+
+        const listener = this.listeners.get(message.type);
 
         if (listener) {
             return Promise.resolve(listener(message, sender));

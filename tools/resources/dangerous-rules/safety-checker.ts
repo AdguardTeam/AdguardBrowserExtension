@@ -102,7 +102,7 @@ class SafetyChecker {
     async checkScriptText(scriptText: string): Promise<AIResponse> {
         const prompt = SafetyChecker.buildPrompt();
         const chatCompletion = await this.openai.chat.completions.create({
-            model: 'gpt-4',
+            model: 'gpt-4o',
             messages: [
                 {
                     role: 'system',
@@ -187,13 +187,6 @@ ${getRulesText(safeRules.slice(0, SAFE_RULES_COUNT))}
     }
 }
 
-if (!process.env.OPENAI_API_KEY) {
-    console.error('OPENAI_API_KEY environment variable is not set.');
-    process.exit(1);
-}
-
-const safetyChecker = new SafetyChecker(process.env.OPENAI_API_KEY);
-
 // // Example how the checker can be used to check one rule for safety. Uncomment to run.
 // const rule = 'AG_onLoad(function(){document.querySelectorAll(\'iframe[src^="https://hdfilmesonlinegratis.com/"][src*="php?url=http"]\').forEach(function(a){var b=a.getAttribute("src").split("?url=");b[1]&&a.setAttribute("src",b[1])})});';
 //
@@ -208,4 +201,4 @@ const safetyChecker = new SafetyChecker(process.env.OPENAI_API_KEY);
 //     }
 // })();
 
-export { safetyChecker };
+export { SafetyChecker };

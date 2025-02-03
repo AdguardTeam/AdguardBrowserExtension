@@ -16,10 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { WebRequest } from 'webextension-polyfill';
-import { RequestType } from '@adguard/tsurlfilter/es/request-type';
 
+import { RequestType } from '@adguard/tsurlfilter/es/request-type';
+// Note: we don't use alias here, because we don't use safebrowsing service in MV3.
 import {
-    RequestData,
+    type RequestData,
     RequestEvents,
     tabsApi as tsWebExtTabsApi,
 } from '@adguard/tswebextension';

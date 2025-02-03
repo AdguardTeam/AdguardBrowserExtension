@@ -157,7 +157,7 @@
                 for (var i = 0; i < types.length; i += 1) {
                     var _this$listeners$get;
                     var type = types[i];
-                    (_this$listeners$get = this.listeners.get(type)) === null || _this$listeners$get === void 0 ? void 0 : _this$listeners$get.delete(callback);
+                    (_this$listeners$get = this.listeners.get(type)) === null || _this$listeners$get === void 0 || _this$listeners$get.delete(callback);
                 }
             };
         };
@@ -247,7 +247,7 @@
         AdsLoader.prototype.requestAds = function(adsRequest, userRequestContext) {
             var _this = this;
             requestAnimationFrame((function() {
-                var ADS_MANAGER_LOADED = AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED;
+                var {ADS_MANAGER_LOADED: ADS_MANAGER_LOADED} = AdsManagerLoadedEvent.Type;
                 var event = new ima.AdsManagerLoadedEvent(ADS_MANAGER_LOADED, adsRequest, userRequestContext);
                 _this._dispatch(event);
             }));
@@ -428,7 +428,7 @@
                 return this.vastErrorCode;
             };
             this.toString = function() {
-                return "AdError ".concat(this.errorCode, ": ").concat(this.message);
+                return `AdError ${this.errorCode}: ${this.message}`;
             };
         };
         AdError.ErrorCode = {};
@@ -436,9 +436,9 @@
         var isEngadget = function isEngadget() {
             try {
                 for (var _i3 = 0, _Object$values = Object.values(window.vidible._getContexts()); _i3 < _Object$values.length; _i3++) {
-                    var _ctx$getPlayer, _ctx$getPlayer$div;
+                    var _ctx$getPlayer;
                     var ctx = _Object$values[_i3];
-                    if ((_ctx$getPlayer = ctx.getPlayer()) !== null && _ctx$getPlayer !== void 0 && (_ctx$getPlayer$div = _ctx$getPlayer.div) !== null && _ctx$getPlayer$div !== void 0 && _ctx$getPlayer$div.innerHTML.includes("www.engadget.com")) {
+                    if ((_ctx$getPlayer = ctx.getPlayer()) !== null && _ctx$getPlayer !== void 0 && (_ctx$getPlayer = _ctx$getPlayer.div) !== null && _ctx$getPlayer !== void 0 && _ctx$getPlayer.innerHTML.includes("www.engadget.com")) {
                         return true;
                     }
                 }
@@ -611,17 +611,17 @@
         }
         try {
             var trace = console.trace.bind(console);
-            var label = "".concat(ADGUARD_PREFIX, " ");
+            var label = `${ADGUARD_PREFIX} `;
             if (source.engine === "corelibs") {
                 label += source.ruleText;
             } else {
                 if (source.domainName) {
-                    label += "".concat(source.domainName);
+                    label += `${source.domainName}`;
                 }
                 if (source.args) {
-                    label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                 } else {
-                    label += "#%#//scriptlet('".concat(source.name, "')");
+                    label += `#%#//scriptlet('${source.name}')`;
                 }
             }
             if (trace) {
@@ -636,16 +636,16 @@
     function logMessage(source, message) {
         var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
         var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-        var name = source.name, verbose = source.verbose;
+        var {name: name, verbose: verbose} = source;
         if (!forced && !verbose) {
             return;
         }
         var nativeConsole = console.log;
         if (!convertMessageToString) {
-            nativeConsole("".concat(name, ":"), message);
+            nativeConsole(`${name}:`, message);
             return;
         }
-        nativeConsole("".concat(name, ": ").concat(message));
+        nativeConsole(`${name}: ${message}`);
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {

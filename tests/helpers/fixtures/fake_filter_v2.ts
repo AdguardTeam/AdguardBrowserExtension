@@ -2,7 +2,7 @@ import { calculateChecksum } from '../../../tools/resources/download-filters';
 
 const currentDateWithoutMS = new Date().toISOString().slice(0, -5);
 const fakeFilterWithoutChecksum = `! Title: Fake filter
-! Description: Fake filter
+! Description: Fake filter updated
 ! Version: 2.0.0.0
 ! TimeUpdated: ${currentDateWithoutMS}+00:00
 ! Expires: 4 days (update frequency)

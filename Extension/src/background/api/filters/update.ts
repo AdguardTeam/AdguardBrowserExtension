@@ -24,7 +24,7 @@ import {
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
 import { logger } from '../../../common/logger';
 import { FiltersUpdateTime } from '../../../common/constants';
-import { Engine } from '../../engine';
+import { engine } from '../../engine';
 import { getErrorMessage } from '../../../common/error';
 
 import { FilterMetadata, FiltersApi } from './main';
@@ -76,6 +76,12 @@ export class FilterUpdateApi {
      * @returns List of metadata for updated filters.
      */
     public static async checkForFiltersUpdates(filterIds: number[]): Promise<FilterMetadata[]> {
+        // TODO: We can add update filters in MV3 via patches via using
+        // dynamic conversion of these patches, but it can be done later.
+        if (__IS_MV3__) {
+            return [];
+        }
+
         const filtersToCheck = FilterUpdateApi.selectFiltersIdsToUpdate(filterIds);
 
         // We update filters without patches when we enable groups.
@@ -182,7 +188,7 @@ export class FilterUpdateApi {
 
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
-            Engine.debounceUpdate();
+            engine.debounceUpdate();
         }
 
         return updatedFilters;
@@ -224,10 +230,11 @@ export class FilterUpdateApi {
         const updatedFiltersMetadata: FilterMetadata[] = [];
 
         const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
-            let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null;
+            let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null = null;
 
             if (CustomFilterApi.isCustomFilter(filterData.filterId)) {
-                filterMetadata = await CustomFilterApi.updateFilter(filterData);
+                // TODO: Uncomment this block when custom filters will be supported for MV3
+                // filterMetadata = await CustomFilterApi.updateFilter(filterData);
             } else {
                 filterMetadata = await CommonFilterApi.updateFilter(filterData);
             }
@@ -340,7 +347,13 @@ export class FilterUpdateApi {
     }
 }
 
-// TODO remove later
+// TODO: remove later
 // This method is exposed for the testing purposes.
-// @ts-ignore
-window.autoUpdate = FilterUpdateApi.autoUpdateFilters;
+// eslint-disable-next-line no-restricted-globals
+Object.assign(self, {
+    adguard: {
+        // eslint-disable-next-line no-restricted-globals
+        ...self.adguard,
+        autoUpdate: FilterUpdateApi.autoUpdateFilters,
+    },
+});

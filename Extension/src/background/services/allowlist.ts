@@ -19,11 +19,11 @@ import { logger } from '../../common/logger';
 import {
     MessageType,
     SaveAllowlistDomainsMessage,
-    AddAllowlistDomainPopupMessage,
+    AddAllowlistDomainMessage,
     RemoveAllowlistDomainMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
-import { Engine } from '../engine';
+import { engine } from '../engine';
 import { SettingOption } from '../schema';
 import { AllowlistApi, TabsApi } from '../api';
 import {
@@ -48,11 +48,11 @@ export class AllowlistService {
     public static init(): void {
         messageHandler.addListener(MessageType.GetAllowlistDomains, AllowlistService.onGetAllowlistDomains);
         messageHandler.addListener(MessageType.SaveAllowlistDomains, AllowlistService.handleDomainsSave);
-        messageHandler.addListener(MessageType.AddAllowlistDomainPopup, AllowlistService.onAddAllowlistDomain);
+        messageHandler.addListener(MessageType.AddAllowlistDomain, AllowlistService.onAddAllowlistDomain);
         messageHandler.addListener(MessageType.RemoveAllowlistDomain, AllowlistService.onRemoveAllowlistDomain);
 
-        settingsEvents.addListener(SettingOption.AllowlistEnabled, Engine.debounceUpdate);
-        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, Engine.debounceUpdate);
+        settingsEvents.addListener(SettingOption.AllowlistEnabled, AllowlistService.updateEngine);
+        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, AllowlistService.updateEngine);
 
         contextMenuEvents.addListener(
             ContextMenuAction.SiteFilteringOn,
@@ -82,9 +82,9 @@ export class AllowlistService {
     /**
      * The listener for the allowlist domain addition event from popup.
      *
-     * @param message Message of type {@link AddAllowlistDomainPopupMessage}.
+     * @param message Message of type {@link AddAllowlistDomainMessage}.
      */
-    private static async onAddAllowlistDomain(message: AddAllowlistDomainPopupMessage): Promise<void> {
+    private static async onAddAllowlistDomain(message: AddAllowlistDomainMessage): Promise<void> {
         const { tabId } = message.data;
 
         await AllowlistApi.disableTabFiltering(tabId);
@@ -117,7 +117,10 @@ export class AllowlistService {
             AllowlistApi.setAllowlistDomains(domains);
         }
 
-        await Engine.update();
+        // update the engine only if the module is enabled
+        if (AllowlistApi.isEnabled()) {
+            await engine.update();
+        }
     }
 
     /**
@@ -143,6 +146,23 @@ export class AllowlistService {
             await AllowlistApi.disableTabFiltering(activeTab.id);
         } else {
             logger.warn('Cannot open site report page for active tab');
+        }
+    }
+
+    /**
+     * Updates the tswebextension engine on {@link SettingOption.AllowlistEnabled}
+     * or {@link SettingOption.DefaultAllowlistMode} setting change.
+     * This setting can be changed by the switch ui element, so it is important
+     * to update the engine config via debounce function for MV2, as this
+     * is a heavyweight call.
+     * For MV3 we should wait for the engine to be ready and then check for
+     * possible exceeding the limits.
+     */
+    private static async updateEngine(): Promise<void> {
+        if (__IS_MV3__) {
+            await engine.update();
+        } else {
+            engine.debounceUpdate();
         }
     }
 }

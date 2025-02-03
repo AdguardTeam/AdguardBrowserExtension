@@ -37,22 +37,32 @@ export const COMPARE_URL = Forward.get({
     from: ForwardFrom.Popup,
 });
 
-export const VIEW_STATES = {
-    ACTIONS: 'actions',
-    STATS: 'stats',
-};
+export const enum ViewState {
+    Actions = 'actions',
+    Stats = 'stats',
+}
 
-export const POPUP_STATES = {
-    APPLICATION_ENABLED: 'application.enabled',
-    APPLICATION_FILTERING_DISABLED: 'application.filtering.disabled',
-    APPLICATION_UNAVAILABLE: 'application.unavailable',
-    SITE_IN_EXCEPTION: 'site.in.exception',
-    SITE_ALLOWLISTED: 'site.allowlisted',
-};
+/**
+ * Describes specific popup states for:
+ * - secure pages where filtering is unavailable;
+ * - websites with exceptions in filters.
+ */
+export const enum SpecificPopupState {
+    /**
+     * Protection is unavailable, e.g. secure page.
+     */
+    FilteringUnavailable = 'filtering.unavailable',
 
-export const TIME_RANGES = {
-    DAY: 'day',
-    WEEK: 'week',
-    MONTH: 'month',
-    YEAR: 'year',
-};
+    /**
+     * Protection is disabled for a website due to an exception in filters,
+     * i.e. document exception rule — `@@||example.com^$document` in some filter, **not used rules**.
+     */
+    SiteInException = 'site.in.exception',
+}
+
+export const enum TimeRange {
+    Day = 'day',
+    Week = 'week',
+    Month = 'month',
+    Year = 'year',
+}

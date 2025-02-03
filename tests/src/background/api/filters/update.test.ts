@@ -1,8 +1,13 @@
 import { Storage } from 'webextension-polyfill';
-// Fake timers from jest didn't work with fetch polyfill wrapper around xhr
-// (because of setTimeout before send response).
-// See https://github.com/mswjs/msw/issues/448
-import FakeTimers from '@sinonjs/fake-timers';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi,
+} from 'vitest';
+
 import { FiltersDownloader } from '@adguard/filters-downloader/browser';
 
 import {
@@ -17,7 +22,6 @@ import {
     filterVersionStorage,
     RawFiltersStorage,
 } from '../../../../../Extension/src/background/storages';
-import { server } from '../../../../../testSetup';
 import { fakeFilterV2 } from '../../../../helpers/fixtures/fake_filter_v2';
 import { fakeFilterV1 } from '../../../../helpers/fixtures/fake_filter_v1';
 import { getMetadataFixture } from '../../../../helpers/fixtures';
@@ -31,9 +35,16 @@ import { SettingOption } from '../../../../../Extension/src/background/schema';
 import { fakeFilterWithVersion } from '../../../../helpers/fixtures/fake-filter-with-version';
 import { fakeFilterV4WithDiffPath } from '../../../../helpers/fixtures/fake_filter_v4_with_diff_path';
 
-jest.mock('../../../../../Extension/src/background/engine');
+vi.mock('../../../../../Extension/src/background/engine');
+vi.mock('../../../../../Extension/src/background/api/ui/icons');
+vi.mock('../../../../../Extension/src/background/storages/notification');
 
-describe('Filter Update API should', () => {
+declare global {
+    let sinonFakeServer: sinon.SinonFakeServer;
+}
+
+// We do not support filter updates in MV3 yet.
+describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
     const metadata = getMetadataFixture();
 
     const fakeFilter999 = {
@@ -59,7 +70,7 @@ describe('Filter Update API should', () => {
     const filterId3Index = metadata.filters.findIndex((f) => f.filterId === 3);
     metadata.filters[filterId3Index]!.version = '1.0.0.0';
     // Fake local metadata
-    server.respondWith('GET', /\/filters.js(on)?/, [
+    sinonFakeServer.respondWith('GET', /\/filters.js(on)?/, [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(metadata),
@@ -70,7 +81,7 @@ describe('Filter Update API should', () => {
     remoteMetadata.filters[newFilterIdx - 1]!.version = '2.0.0.0';
     remoteMetadata.filters[filterId3Index]!.version = '2.0.0.0';
     // Fake remote metadata
-    server.respondWith('GET', /filters\.adtidy\.org.*\/filters.js(on)?/, [
+    sinonFakeServer.respondWith('GET', /filters\.adtidy\.org.*\/filters.js(on)?/, [
         200,
         { 'Content-Type': 'application/json' },
         JSON.stringify(remoteMetadata),
@@ -89,7 +100,7 @@ describe('Filter Update API should', () => {
         filter.version = version;
 
         // Fake remote metadata
-        server.respondWith('GET', /filters\.adtidy\.org.*\/filters.js(on)?/, [
+        sinonFakeServer.respondWith('GET', /filters\.adtidy\.org.*\/filters.js(on)?/, [
             200,
             { 'Content-Type': 'application/json' },
             JSON.stringify(remoteMetadata),
@@ -119,7 +130,7 @@ describe('Filter Update API should', () => {
 
             const v2 = '2.0.0.0';
 
-            server.respondWith('GET', /\/filters\/999\.txt/, [
+            sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
                 200,
                 { 'Content-Type': 'text/plain' },
                 fakeFilterWithVersion(v2),
@@ -145,11 +156,11 @@ describe('Filter Update API should', () => {
             // Note: can't use `jest.useFakeTimers().setSystemTime(forwardTime)`
             // because it that case implementation of fetch will not resolve promise
             // with zero setTimeout and execution will freeze.
-            Date.now = jest.fn(() => forwardTime);
+            Date.now = vi.fn(() => forwardTime);
 
             const v3 = '3.0.0.0';
             returnMetadataWithVersion(filterId, v3, fakeFilter999);
-            server.respondWith('GET', /\/filters\/999\.txt/, [
+            sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
                 200,
                 { 'Content-Type': 'text/plain' },
                 fakeFilterWithVersion(v3),
@@ -164,7 +175,7 @@ describe('Filter Update API should', () => {
         it('download latest filter from remote resources', async () => {
             const filterId = 999;
 
-            server.respondWith('GET', /\/filters\/999\.txt/, [
+            sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
                 200,
                 { 'Content-Type': 'text/plain' },
                 fakeFilterV2,
@@ -182,13 +193,14 @@ describe('Filter Update API should', () => {
             const groupId = AntibannerGroupsId.PrivacyFiltersGroupId;
             const recommendedPrivacyFilterId = 3;
 
-            server.respondWith('GET', /\/filter_3\.txt/, [
+            sinonFakeServer.respondWith('GET', /\/filter_3\.txt/, [
                 200,
                 { 'Content-Type': 'text/plain' },
                 fakeFilterV1,
             ]);
 
-            await Categories.enableGroup(groupId);
+            const recommendedFiltersIds = Categories.getRecommendedFilterIdsByGroupId(groupId);
+            await Categories.enableGroup(groupId, true, recommendedFiltersIds);
 
             const filterVersion = filterVersionStorage.get(recommendedPrivacyFilterId);
             expect(filterVersion?.version).toStrictEqual('1.0.0.0');
@@ -196,22 +208,21 @@ describe('Filter Update API should', () => {
     });
 
     it('update filters after 60 minutes delay', async () => {
-        const clock = FakeTimers.install();
-        let promise = App.init();
-        await clock.tickAsync(10);
-        await promise;
+        vi.useFakeTimers();
+
+        await App.init();
 
         const filterId = 999;
+        const filterExpirationTimeOneHourMs = 1000 * 60 * 60;
+        const oneMinuteMs = 1000 * 60;
 
-        server.respondWith('GET', /\/filters\/999\.txt/, [
+        sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
             200,
             { 'Content-Type': 'text/plain' },
             fakeFilterV2,
         ]);
 
-        promise = FiltersApi.loadAndEnableFilters([filterId], true);
-        await clock.tickAsync(10);
-        await promise;
+        await FiltersApi.loadAndEnableFilters([filterId], true);
 
         let filterVersion = filterVersionStorage.get(filterId);
         expect(filterVersion?.version).toStrictEqual('2.0.0.0');
@@ -223,26 +234,33 @@ describe('Filter Update API should', () => {
         expect(filterVersion?.version).toStrictEqual('2.0.0.0');
         expect(updatedFilters.length).toBe(0);
 
-        // Wait for 31 minutes
-        await clock.tickAsync(1000 * 60 * 61);
+        // Wait for first check after filter expired = 1 hour filter ttl
+        // + 100 ms for run checker + some time for check itself.
+        // Note: important to use async version of advanceTimersByTimeAsync,
+        // because it waits for all promises to resolve.
+        await vi.advanceTimersByTime(filterExpirationTimeOneHourMs + oneMinuteMs);
         filterVersion = filterVersionStorage.get(filterId);
         // Filter version still the same because filter didn't expired
         expect(filterVersion?.version).toStrictEqual('2.0.0.0');
 
         const v3 = '3.0.0.0';
         returnMetadataWithVersion(filterId, v3, fakeFilter999);
-        server.respondWith('GET', /\/filters\/999\.txt/, [
+        sinonFakeServer.respondWith('GET', /\/filters\/999\.txt/, [
             200,
             { 'Content-Type': 'text/plain' },
             fakeFilterWithVersion(v3),
         ]);
         // Set period update to 100ms
         await SettingsApi.setSetting(SettingOption.FiltersUpdatePeriod, 100);
-        // Wait for first check after filter expired
-        await clock.tickAsync(1000 * 60 * 61);
+        // Wait for first check after filter expired = 1 hour filter ttl
+        // + 100 ms for run checker + some time for check itself.
+        // Note: important to use async version of advanceTimersByTimeAsync,
+        // because it waits for all promises to resolve.
+        await vi.advanceTimersByTimeAsync(filterExpirationTimeOneHourMs + oneMinuteMs);
         filterVersion = filterVersionStorage.get(filterId);
         expect(filterVersion?.version).toStrictEqual(v3);
-        clock.uninstall();
+
+        vi.useRealTimers();
     });
 
     describe('autoUpdateFilters', () => {
@@ -262,7 +280,7 @@ describe('Filter Update API should', () => {
             });
             await App.init();
 
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV1.split('\n'),
                     rawFilter: fakeFilterV1,
@@ -271,21 +289,21 @@ describe('Filter Update API should', () => {
 
         afterEach(async () => {
             await storage.clear();
-            jest.clearAllMocks();
-            jest.restoreAllMocks();
+            vi.clearAllMocks();
+            vi.restoreAllMocks();
         });
 
         it('calls downloadWithRaw', async () => {
             const filterId = 1;
 
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV1.split('\n'),
                     rawFilter: fakeFilterV1,
                 }));
 
             await FiltersApi.loadAndEnableFilters([filterId]);
-            await Categories.enableGroup(7);
+            await Categories.enableGroup(7, true);
             // after load and enable it downloads filters embedded into the extension
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
                 1,
@@ -293,7 +311,10 @@ describe('Filter Update API should', () => {
                 {
                     force: true,
                     definedExpressions,
-                    validateChecksum: true,
+                    // Local filters loaded without checking checksum, because
+                    // we store preprocessed filters and filter checksum can be
+                    // changed.
+                    validateChecksum: false,
                     validateChecksumStrict: true,
                 },
             );
@@ -319,7 +340,7 @@ describe('Filter Update API should', () => {
             filterVersionData[1]!.lastCheckTime = 0;
 
             // return filter with diff path
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV4WithDiffPath.split('\n'),
                     rawFilter: fakeFilterV4WithDiffPath,
@@ -327,7 +348,8 @@ describe('Filter Update API should', () => {
 
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
-                3,
+                // note: vi.spyOn resets call count
+                1,
                 'https://filters.adtidy.org/extension/chromium/filters/1.txt',
                 {
                     force: true,
@@ -341,7 +363,7 @@ describe('Filter Update API should', () => {
 
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
-                4,
+                2,
                 'https://filters.adtidy.org/extension/chromium/filters/1.txt',
                 {
                     definedExpressions,
@@ -357,7 +379,7 @@ describe('Filter Update API should', () => {
         it('Filters with diff path get full (force) update on expiring', async () => {
             const filterId = 1;
 
-            jest.spyOn(FiltersDownloader, 'downloadWithRaw')
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw')
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV4WithDiffPath.split('\n'),
                     rawFilter: fakeFilterV4WithDiffPath,
@@ -365,14 +387,17 @@ describe('Filter Update API should', () => {
 
             // Trigger full (force) filter update on filter load
             await FiltersApi.loadAndEnableFilters([filterId]);
-            await Categories.enableGroup(7);
+            await Categories.enableGroup(7, true);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
                 1,
                 'chrome-extension://test/filters/filter_1.txt',
                 {
                     definedExpressions,
                     force: true,
-                    validateChecksum: true,
+                    // Local filters loaded without checking checksum, because
+                    // we store preprocessed filters and filter checksum can be
+                    // changed.
+                    validateChecksum: false,
                     validateChecksumStrict: true,
                 },
             );

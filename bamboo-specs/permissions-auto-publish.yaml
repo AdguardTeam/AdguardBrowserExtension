@@ -1,0 +1,23 @@
+---
+version: 2
+deployment:
+  name: browser extension - auto-publish
+deployment-permissions:
+  - groups:
+      - extensions-developers
+      - adguard-qa
+    permissions:
+      - view
+environment-permissions:
+  - AutoDeployAndPublish Release:
+      - groups:
+          - extensions-developers
+        permissions:
+          - view
+          - deploy
+  - AutoDeployAndPublish Beta:
+      - groups:
+          - extensions-developers
+        permissions:
+          - view
+          - deploy

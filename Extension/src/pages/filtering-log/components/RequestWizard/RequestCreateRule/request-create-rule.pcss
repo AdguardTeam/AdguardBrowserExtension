@@ -12,17 +12,11 @@
 .request-modal {
     &__rule-text {
         font-size: 16px;
-        color: var(--gray900);
-        border: 1px solid var(--regular-row-active);
         border-radius: 4px;
         padding: 8px;
-        width: 100%;
+        border: 1px solid var(--stroke-inputs-active-input-stroke-default);
+        background-color: var(--fills-inputs-input-background-default);
         resize: vertical;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--gray300);
-            background-color: var(--black);
-        }
     }
 
     &__view {
@@ -37,12 +31,7 @@
 .patterns,
 .options {
     font-size: 16px;
-    color: var(--gray900);
     word-break: break-all;
-
-    @media (prefers-color-scheme: dark) {
-        color: var(--gray300);
-    }
 
     & > .request-info__key {
         margin-bottom: 16px;
@@ -81,30 +70,4 @@
 
 .request-info.patterns {
     word-break: break-all;
-}
-
-.light-mode {
-    & .request-modal {
-        &__rule-text {
-            color: var(--gray900);
-            background-color: transparent;
-        }
-    }
-
-    & .options {
-        color: var(--gray900);
-    }
-}
-
-.dark-mode {
-    & .request-modal {
-        &__rule-text {
-            color: var(--gray300);
-            background-color: var(--black);
-        }
-    }
-
-    & .options {
-        color: var(--gray300);
-    }
 }
