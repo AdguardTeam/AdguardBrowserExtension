@@ -137,7 +137,7 @@ export class CustomFiltersService {
 
     //     try {
     //         await executeScript(tabId, {
-    //             file: `/${SUBSCRIBE_OUTPUT}.js`,
+    //             files: [`/${SUBSCRIBE_OUTPUT}.js`],
     //             runAt: 'document_start',
     //             frameId,
     //         });
