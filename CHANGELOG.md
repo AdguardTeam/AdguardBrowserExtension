@@ -5,39 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased <!-- version 5.2 -->
-
-### Added
-
-- Display dnr-rulesets version on About tab [#3054].
-- Ability to search tabs by domain in the Filtering log [#3028].
-- Ability to add filters from Google Drive [#2908].
-
-### Changed
-
-<!-- FIXME: probably should be updated to newer version -->
-- Updated [@adguard/agtree] to v2.2.0.
-
-### Fixed
-
-- Update extension icon on engine update.
-- Closing rule limits warning updates the extension icon for MV3.
-- Blocked counter on the popup updates for blocked requests from other tabs [#3050].
-- `$popup,third-party` modifiers cause document blocking [#3012].
-- Don't show lines for absent metadata when adding a custom filter [#3057].
-
-[#3057]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3057
-[#3054]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3054
-[#3050]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3050
-[#3028]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3028
-[#3012]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3012
-[#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
-
 ## [5.1.X] Unreleased <!-- version 5.1 -->
 
 ### Added
 
 - Unsafe dynamic rules limit for MV3 with value 5000.
+- Display dnr-rulesets version on About tab [#3054].
+- Ability to search tabs by domain in the Filtering log [#3028].
+- Ability to add filters from Google Drive [#2908].
 
 ### Changed
 
@@ -62,19 +37,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Shortened name translation in `pt_BR` locale [#3075].
 - Allowlisted stealth rules are not shown in the filtering log [#2950].
 - `$removeparam` incorrectly removes parameters from encoded URLs [#3076].
+- Update extension icon on engine update.
+- Closing rule limits warning updates the extension icon for MV3.
+- Blocked counter on the popup updates for blocked requests from other tabs [#3050].
+- `$popup,third-party` modifiers cause document blocking [#3012].
+- Don't show lines for absent metadata when adding a custom filter [#3057].
 
 ### Removed
 
 - Storage classes, because they were moved to the `@adguard/tswebextension` package.
 
-[#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
-[#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020
+[#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
+[#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
 [#3004]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3004
+[#3012]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3012
 [#3014]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3014
+[#3020]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3020
+[#3028]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3028
+[#3048]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3048
+[#3050]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3050
+[#3054]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3054
+[#3057]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3057
 [#3075]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3075
-[#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
 [#3076]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
+<!-- TODO: place correct last released version from master -->
 [5.1.X]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
 
 ## [Unreleased] <!-- master -->
