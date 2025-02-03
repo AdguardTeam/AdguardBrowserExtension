@@ -74,7 +74,8 @@ export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 1
  * IMPORTANT! Update browser compatibility in the README.md file when changing the versions.
  */
 export const MIN_SUPPORTED_VERSION = {
-    CHROMIUM: 79,
+    CHROMIUM_MV2: 79,
+    CHROMIUM_MV3: 121,
     FIREFOX: 78,
     FIREFOX_MOBILE: 113,
     OPERA: 67,
