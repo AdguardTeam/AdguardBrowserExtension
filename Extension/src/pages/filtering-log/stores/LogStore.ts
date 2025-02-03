@@ -245,11 +245,31 @@ const matchesFilter = (
     return filter.enabled && check;
 };
 
+/**
+ * Tabs map type where:
+ * - key is tabId,
+ * - value is {@link FilteringLogTabInfo}.
+ */
 type TabsMap = Record<string, FilteringLogTabInfo>;
 
+/**
+ * Selector tab type.
+ */
 type SelectorTab = {
+    /**
+     * Tab title.
+     */
     title: string;
+
+    /**
+     * Tab id.
+     */
     tabId: number;
+
+    /**
+     * Tab domain or null if it is not defined.
+     */
+    domain: string | null;
 };
 
 class LogStore {
@@ -388,9 +408,15 @@ class LogStore {
         const MAX_TITLE_LENGTH = 60;
         return Object.values(this.tabsMap)
             .filter((tab) => !tab.isExtensionTab)
-            .map(({ title, tabId }) => {
+            .map((tab) => {
+                const { title, tabId, domain } = tab;
                 const updatedTitle = truncate(title, { length: MAX_TITLE_LENGTH });
-                return { title: updatedTitle, tabId };
+
+                return {
+                    title: updatedTitle,
+                    tabId,
+                    domain,
+                };
             });
     };
 

@@ -37,6 +37,7 @@ import {
     CustomFilterApi,
     type FilterMetadata,
     FiltersApi,
+    iconsApi,
 } from '../../api';
 import { filterStateStorage, settingsStorage } from '../../storages';
 import { rulesLimitsStorage } from '../../storages/rules-limits';
@@ -114,7 +115,7 @@ export class RulesLimitsService {
         // Drop warning.
         messageHandler.addListener(
             MessageType.ClearRulesLimitsWarningMv3,
-            RulesLimitsService.cleanExpectedEnabledFilters,
+            RulesLimitsService.clearRulesLimitsWarning,
         );
 
         // First read from storage and set data to cache.
@@ -129,6 +130,19 @@ export class RulesLimitsService {
     private static getStaticEnabledFiltersCount(): number {
         return FiltersApi.getEnabledFiltersWithMetadata()
             .filter((f) => !CustomFilterApi.isCustomFilter(f.filterId)).length;
+    }
+
+    /**
+     * Clears the rules limits warning by resetting the expected enabled filters.
+     * This function is intended to be used when the user acknowledges the warning
+     * and wants to reset the state to avoid further notifications.
+     */
+    public static async clearRulesLimitsWarning(): Promise<void> {
+        // Reset the warning state by clearing the list of expected enabled filters.
+        await RulesLimitsService.cleanExpectedEnabledFilters();
+        // Force update the icon state immediately
+        // to ensure it reflects the current status without waiting for user actions.
+        await iconsApi.update();
     }
 
     /**

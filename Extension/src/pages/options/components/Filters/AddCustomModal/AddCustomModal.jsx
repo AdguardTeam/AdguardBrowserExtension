@@ -188,8 +188,16 @@ const AddCustomModal = observer(({
 
     const renderApproveStep = () => {
         const {
-            description, version, rulesCount, homepage, customUrl,
+            description,
+            version,
+            rulesCount,
+            homepage,
+            customUrl,
         } = filterToAdd;
+
+        const trimmedDescription = description?.trim();
+        const trimmedVersion = version?.trim();
+        const trimmedHomepage = homepage?.trim();
 
         return (
             <ModalContentWrapper
@@ -221,22 +229,26 @@ const AddCustomModal = observer(({
                     />
 
                     <div className="modal__filter--info">
-                        <div>
-                            <span className="modal__filter--info-item">
-                                {translator.getMessage('options_popup_filter_description')}
-                            </span>
-                            <span className="modal__filter--info-item">
-                                {description}
-                            </span>
-                        </div>
-                        <div>
-                            <span className="modal__filter--info-item">
-                                {translator.getMessage('options_popup_filter_version')}
-                            </span>
-                            <span className="modal__filter--info-item">
-                                {version}
-                            </span>
-                        </div>
+                        {trimmedDescription && (
+                            <div>
+                                <span className="modal__filter--info-item">
+                                    {translator.getMessage('options_popup_filter_description')}
+                                </span>
+                                <span className="modal__filter--info-item">
+                                    {trimmedDescription}
+                                </span>
+                            </div>
+                        )}
+                        {trimmedVersion && (
+                            <div>
+                                <span className="modal__filter--info-item">
+                                    {translator.getMessage('options_popup_filter_version')}
+                                </span>
+                                <span className="modal__filter--info-item">
+                                    {trimmedVersion}
+                                </span>
+                            </div>
+                        )}
                         <div>
                             <span className="modal__filter--info-item">
                                 {translator.getMessage('options_popup_filter_rules_count')}
@@ -245,19 +257,21 @@ const AddCustomModal = observer(({
                                 {rulesCount}
                             </span>
                         </div>
-                        <div>
-                            <span className="modal__filter--info-item">
-                                {translator.getMessage('options_popup_filter_homepage')}
-                            </span>
-                            <a
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href={homepage}
-                                className="modal__filter--info-item modal__filter--info-item--url"
-                            >
-                                {homepage}
-                            </a>
-                        </div>
+                        {trimmedHomepage && (
+                            <div>
+                                <span className="modal__filter--info-item">
+                                    {translator.getMessage('options_popup_filter_homepage')}
+                                </span>
+                                <a
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href={trimmedHomepage}
+                                    className="modal__filter--info-item modal__filter--info-item--url"
+                                >
+                                    {trimmedHomepage}
+                                </a>
+                            </div>
+                        )}
                         <div>
                             <span className="modal__filter--info-item">
                                 {translator.getMessage('options_popup_filter_url')}

@@ -70,13 +70,25 @@ class IconsApi {
         }
     }
 
-    // TODO: use the update method for icon updating on engine update
     /**
      * Updates the icon state.
      */
     public async update(): Promise<void> {
         const icon = await this.pickIconVariant();
-        await IconsApi.setActionIcon(icon);
+        // Update all tabs icons
+        const allTabs = await browser.tabs.query({});
+        const results = await Promise.allSettled(allTabs.map(async (tab) => {
+            if (tab.id) {
+                await IconsApi.setActionIcon(icon, tab.id);
+            }
+        }));
+
+        // Log any failures for debugging
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                logger.debug(`Failed to update icon for tab ${allTabs[index]?.id}:`, result.reason);
+            }
+        });
     }
 
     /**

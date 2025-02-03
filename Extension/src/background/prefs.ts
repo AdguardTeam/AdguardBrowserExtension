@@ -19,8 +19,11 @@ import browser from 'webextension-polyfill';
 
 import { TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
+import dnrRulesetsPackageJson from '@adguard/dnr-rulesets/package.json';
 
 import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from 'tswebextension';
+
+const DNR_RULESETS_VERSION = dnrRulesetsPackageJson.version;
 
 /**
  * Extension global preferences.
@@ -39,5 +42,6 @@ export class Prefs {
         tsurlfilter: TSURLFILTER_VERSION,
         scriptlets: SCRIPTLETS_VERSION,
         extendedCss: EXTENDED_CSS_VERSION,
+        dnrRulesets: __IS_MV3__ ? DNR_RULESETS_VERSION : null,
     };
 }

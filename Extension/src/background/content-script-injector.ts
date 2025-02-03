@@ -104,9 +104,7 @@ export class ContentScriptInjector {
 
             const { id } = tab;
 
-            ContentScriptInjector.contentScripts.forEach((src) => {
-                tasks.push(ContentScriptInjector.inject(id, src));
-            });
+            tasks.push(ContentScriptInjector.inject(id, ContentScriptInjector.contentScripts));
         });
 
         // Loading order is not matter,
@@ -116,7 +114,7 @@ export class ContentScriptInjector {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                logger.error('Cannot inject script to tab due to: ', promise.reason);
+                logger.error('Cannot inject scripts to tab due to: ', promise.reason);
             }
         });
     }
@@ -125,12 +123,12 @@ export class ContentScriptInjector {
      * Inject content-script into specified tab.
      *
      * @param tabId The ID of the tab to inject the content script into.
-     * @param src Path to content-script src.
+     * @param files The path of the JS files to inject, relative to the extension's root directory.
      * @throws Error if the content script injection times out or fails for another reason.
      */
     private static async inject(
         tabId: number,
-        src: string,
+        files: string[],
     ): Promise<void> {
         try {
             /**
@@ -140,14 +138,16 @@ export class ContentScriptInjector {
             await createPromiseWithTimeout(
                 executeScript(tabId, {
                     allFrames: true,
-                    file: src,
+                    files,
                 }),
                 ContentScriptInjector.INJECTION_LIMIT_MS,
                 `Content script inject timeout because tab with id ${tabId} does not respond`,
             );
         } catch (error: unknown) {
             // re-throw error with custom message
-            throw new Error(`Cannot inject ${src} to tab with id ${tabId}. Error: ${getErrorMessage(error)}`);
+            throw new Error(
+                `Cannot inject ${files.join(', ')} to tab with id ${tabId}. Error: ${getErrorMessage(error)}`,
+            );
         }
     }
 

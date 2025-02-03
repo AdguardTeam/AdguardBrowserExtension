@@ -116,7 +116,7 @@ export class CustomFilterApi {
     /**
      * Custom filter rules downloading limit in ms.
      */
-    private static readonly DOWNLOAD_LIMIT_MS = 3 * 1000;
+    private static readonly DOWNLOAD_LIMIT_MS = 10 * 1000;
 
     /**
      * Reads stringified {@link CustomFilterMetadata} array from persisted storage

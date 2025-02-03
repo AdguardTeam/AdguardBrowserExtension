@@ -52,7 +52,7 @@ export class UiApi {
      */
     private static throttledUpdateAction = throttle((tabId: number, frameData: FrameData): void => {
         iconsApi.updateTabAction(tabId, frameData);
-        UiApi.broadcastTotalBlockedMessage(frameData);
+        UiApi.broadcastTotalBlockedMessage(tabId, frameData);
     }, UiApi.THROTTLE_DELAY_MS);
 
     /**
@@ -90,15 +90,22 @@ export class UiApi {
     /**
      * Sends message with updated counters of blocked requests.
      *
+     * @param tabId Tab's id.
      * @param frameData Broadcasted {@link FrameData}.
      * @param frameData.totalBlocked Total count of blocked requests.
      * @param frameData.totalBlockedTab Number of blocked requests.
      */
-    private static async broadcastTotalBlockedMessage({ totalBlocked, totalBlockedTab }: FrameData): Promise<void> {
+    private static async broadcastTotalBlockedMessage(tabId: number, frameData: FrameData): Promise<void> {
+        const {
+            totalBlocked,
+            totalBlockedTab,
+        } = frameData;
+
         try {
             await sendMessage({
                 type: MessageType.UpdateTotalBlocked,
                 data: {
+                    tabId,
                     totalBlocked,
                     totalBlockedTab,
                 },

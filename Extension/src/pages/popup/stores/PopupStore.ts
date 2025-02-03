@@ -49,6 +49,7 @@ import { asyncWrapper } from '../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 
 type BlockedStatsInfo = {
+    tabId: number;
     totalBlocked: number;
     totalBlockedTab: number;
 };
@@ -546,8 +547,10 @@ class PopupStore {
 
     @action
         updateBlockedStats = (tabInfo: BlockedStatsInfo) => {
-            this.totalBlocked = tabInfo.totalBlocked;
-            this.totalBlockedTab = tabInfo.totalBlockedTab;
+            if (this.currentTabId === tabInfo.tabId) {
+                this.totalBlockedTab = tabInfo.totalBlockedTab;
+                this.totalBlocked = tabInfo.totalBlocked;
+            }
         };
 
     @computed

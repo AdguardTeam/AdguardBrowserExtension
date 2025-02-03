@@ -18,30 +18,12 @@
 
 import { logger } from '../../../common/logger';
 
+import { type ExecuteScriptOptionsCommon } from './types';
+
 /**
- * Options for executing a script.
+ * ExecuteScriptOptionsCommon with MV3 specific fields.
  */
-type ExecuteScriptOptions = {
-    /**
-     * The frame ID.
-     */
-    frameId?: number;
-
-    /**
-     * Whether the script should be executed in all frames.
-     */
-    allFrames?: boolean;
-
-    /**
-     * The time at which the script should be executed.
-     */
-    runAt?: string;
-
-    /**
-     * The file to execute.
-     */
-    file?: string;
-
+type ExecuteScriptOptionsMv3 = ExecuteScriptOptionsCommon & {
     /**
      * The function to execute.
      */
@@ -50,55 +32,63 @@ type ExecuteScriptOptions = {
 
 /**
  * Executes a script in the context of a given tab.
+ *
  * @param tabId The tab ID.
  * @param options The options for the script execution.
- * @returns The result of the script execution.
+ * @throws Basic {@link Error} if passed options contains invalid or unsupported fields.
  */
 export const executeScript = async (
     tabId: number | undefined,
-    options: ExecuteScriptOptions,
-): Promise<chrome.scripting.InjectionResult<unknown>[]> => {
+    options: ExecuteScriptOptionsMv3,
+): Promise<void> => {
     if (!tabId) {
         logger.debug('Tab id is not provided');
-        return [];
+        return;
     }
 
     const {
-        file,
+        frameId,
+        allFrames,
+        files = [],
         func,
     } = options;
 
-    // Ensure that at least one of 'file' or 'func' is provided
-    if (!file && !func) {
-        throw new Error('Neither file nor func are provided');
+    const hasFiles = files.length !== 0;
+    const hasFunc = func !== undefined;
+
+    // Ensure that at least one and not both of the 'files' or 'func' is provided
+    if (hasFiles === hasFunc) {
+        throw new Error('Provide either "files" or "func", but not both.');
     }
 
-    // Check for mutually exclusive options
-    if (file && func) {
-        throw new Error('Provide either "file" or "func", not both.');
-    }
+    const frameIds = frameId !== undefined ? [frameId] : undefined;
+
+    const target: chrome.scripting.InjectionTarget = {
+        tabId,
+        allFrames,
+        frameIds,
+    };
 
     let executeScriptOptions: chrome.scripting.ScriptInjection<unknown[], unknown>;
-
-    if (file) {
+    if (hasFiles) {
         executeScriptOptions = {
-            target: { tabId },
-            files: [file],
+            target,
+            files,
         };
-    } else if (func) {
+    } else if (hasFunc) {
         executeScriptOptions = {
-            target: { tabId },
+            target,
             func,
         };
     }
 
     return new Promise((resolve, reject) => {
-        chrome.scripting.executeScript(executeScriptOptions, (result) => {
+        chrome.scripting.executeScript(executeScriptOptions, () => {
             if (chrome.runtime.lastError) {
                 reject(new Error(chrome.runtime.lastError.message));
                 return;
             }
-            resolve(result);
+            resolve();
         });
     });
 };

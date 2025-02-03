@@ -171,10 +171,10 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
         }
         case Browser.ChromeMv3: {
             if (buildEnv === BuildTargetEnv.Beta) {
-                return ' (MV3 Beta)';
+                return ' (Beta)';
             }
             if (buildEnv === BuildTargetEnv.Dev) {
-                return ' (MV3 Dev)';
+                return ' (Dev)';
             }
             break;
         }

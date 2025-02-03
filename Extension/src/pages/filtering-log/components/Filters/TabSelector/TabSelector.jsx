@@ -155,8 +155,9 @@ const TabSelector = observer(() => {
     const renderSearchResult = () => {
         const searchValueString = searchValue.replace(WASTE_CHARACTERS, '\\$&');
         const searchQuery = new RegExp(searchValueString, 'ig');
+
         return tabs.map((tab) => {
-            const { title, tabId } = tab;
+            const { title, tabId, domain } = tab;
 
             const isActive = tabId === selectedTabId;
 
@@ -165,7 +166,10 @@ const TabSelector = observer(() => {
                 { 'tab-selector__result-item--text--active': isActive },
             );
 
-            if (title.match(searchQuery)) {
+            if (
+                title.match(searchQuery)
+                || (domain && domain.match(searchQuery))
+            ) {
                 return (
                     <div
                         key={tabId}

@@ -26,6 +26,7 @@ import {
     CookieEvent,
     isExtensionUrl,
     StealthActionEvent,
+    getDomain,
     getRuleSourceText,
     getRuleSourceIndex,
     PreprocessedFilterList,
@@ -96,11 +97,34 @@ export type UIFilteringLogEvent = FilteringLogEvent
     & RuleText
     & { filterName?: string | null };
 
+/**
+ * Filtering log tab info.
+ */
 export type FilteringLogTabInfo = {
+    /**
+     * Tab id.
+     */
     tabId: number,
+
+    /**
+     * Tab title.
+     */
     title: string,
+
+    /**
+     * Indicates if this tab is an extension page (e.g. Options, filtering log).
+     */
     isExtensionTab: boolean,
+
+    /**
+     * Filtering events.
+     */
     filteringEvents: FilteringLogEvent[],
+
+    /**
+     * Domain of the tab.
+     */
+    domain: string | null,
 };
 
 /**
@@ -165,6 +189,7 @@ export class FilteringLogApi {
             title: translator.getMessage('background_tab_title'),
             isExtensionTab: false,
             filteringEvents: [],
+            domain: null,
         }],
     ]);
 
@@ -504,6 +529,7 @@ export class FilteringLogApi {
             title,
             isExtensionTab: isExtensionUrl(url),
             filteringEvents: [],
+            domain: getDomain(url),
         };
 
         this.tabsInfoMap.set(id, tabInfo);
