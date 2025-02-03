@@ -355,12 +355,7 @@ export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>)
             });
 
             if (minified.code) {
-                processedRules.push(
-                    `${ruleKey}: {
-                        uniqueId: '${uniqueId}',
-                        func: () => {${minified.code}},
-                    }`,
-                );
+                processedRules.push(`${ruleKey}: () => {${minified.code}}`);
             } else {
                 errors.push(`Was not able to minify rule: ${rule}`);
             }
