@@ -34,6 +34,7 @@ export class BrowserUtils {
      * @see PagesApi.openThankYouPage
      *
      * @returns Extension specified query params array.
+     *
      * @throws Error if client id is undefined.
      */
     public static getExtensionParams(): string[] {

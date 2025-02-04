@@ -28,6 +28,7 @@ const cache = new Map<string, ImageData>();
  *
  * @param size Icon size in px.
  * @param url Icon url.
+ *
  * @returns Image pixel data.
  */
 function loadImageData(size: number, url: string): Promise<ImageData> {
@@ -61,7 +62,9 @@ function loadImageData(size: number, url: string): Promise<ImageData> {
  *
  * @param size Icon size in px.
  * @param url Icon url.
+ *
  * @returns Image pixel data.
+ *
  * @throws Error if image cannot be loaded.
  */
 const loadImageDataMv3 = async (size: number, url: string) => {
@@ -116,6 +119,7 @@ async function getImageData(size: string, url: string) : Promise<[string, ImageD
  * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/setIcon
  *
  * @param path Browser.browserAction.setIcon 'path' property.
+ *
  * @returns Browser.browserAction.setIcon 'imageData' property.
  */
 export async function getIconImageData(path: Record<string, string>): Promise<Record<string, Action.ImageDataType>> {

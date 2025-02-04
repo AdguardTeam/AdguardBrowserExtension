@@ -148,6 +148,7 @@ const getStealthActionNames = (actions: number | undefined): string | null => {
  * Returns type of the event
  *
  * @param selectedEvent
+ *
  * @returns {string}
  */
 const getType = (selectedEvent: FilteringLogEvent) => {
@@ -159,6 +160,7 @@ const getType = (selectedEvent: FilteringLogEvent) => {
  *
  * @param {FilteringEvent} event Event object to get the rule(s) from.
  * @param {RegularFilterMetadata} filtersMetadata Filters metadata.
+ *
  * @returns An object with the following properties:
  * - `appliedRuleTexts` - an array of rule texts that were applied to the request.
  *   If there are multiple rules, each rule text is followed by the filter name in parentheses.

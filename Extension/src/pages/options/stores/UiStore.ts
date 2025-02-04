@@ -126,9 +126,9 @@ class UiStore {
     /**
      * Sets a specific limit warning message to be displayed about static filters.
      *
-     * @throws Error if the warning type is incorrect.
-     *
      * @param data Result of limits check of static rules.
+     *
+     * @throws Error if the warning type is incorrect.
      */
     @action
     setStaticFiltersLimitsWarning(data?: InvalidStaticResultData | undefined) {
@@ -147,9 +147,9 @@ class UiStore {
     /**
      * Sets a specific limit warning message to be displayed about dynamic section with user rules.
      *
-     * @throws Error if the warning type is incorrect.
-     *
      * @param data Result of limits check of dynamic rules.
+     *
+     * @throws Error if the warning type is incorrect.
      */
     @action
     setDynamicRulesLimitsWarning(data?: InvalidDynamicResultData | undefined) {

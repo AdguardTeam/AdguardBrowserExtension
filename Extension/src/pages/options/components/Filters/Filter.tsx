@@ -69,6 +69,7 @@ const addPrefix = (filterId: number): string => {
  * Removes prefix from filter id.
  *
  * @param extendedFilterId Filter id with prefix.
+ *
  * @returns Filter id without prefix.
  */
 const removePrefix = (extendedFilterId: string): string => {

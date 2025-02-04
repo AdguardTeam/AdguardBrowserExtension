@@ -58,6 +58,7 @@ class Notifier {
      * @param listener Listener callback.
      *
      * @returns Listener id.
+     *
      * @throws Error if listener is not a function.
      */
     addSpecifiedListener(events: unknown[], listener: Listener): number {
@@ -75,7 +76,9 @@ class Notifier {
      * Subscribe specified listener to all events.
      *
      * @param listener Listener callback.
+     *
      * @returns Listener id.
+     *
      * @throws Error if listener is not a function.
      */
     addListener(listener: Listener): number {

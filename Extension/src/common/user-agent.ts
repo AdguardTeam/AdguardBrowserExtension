@@ -167,6 +167,7 @@ export class UserAgent {
      * Check if the current browser is as given.
      *
      * @param browserName Browser Name.
+     *
      * @returns true, if current browser has specified name.
      */
     static isTargetBrowser(browserName: string): boolean {
@@ -177,6 +178,7 @@ export class UserAgent {
      * Check if current platform is as given.
      *
      * @param platformName Platform name.
+     *
      * @returns true, if current browser has specified name.
      */
     static isTargetPlatform(platformName: string): boolean {
@@ -187,6 +189,7 @@ export class UserAgent {
      * Check if current engine is as given.
      *
      * @param engineName Engine name.
+     *
      * @returns true, if current engine has specified name.
      */
     static isTargetEngine(engineName: string): boolean {

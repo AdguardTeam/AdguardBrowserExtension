@@ -55,6 +55,7 @@ export class Elements {
      * @param props.target - Node where to append iframe with html
      * @param props.html - html string to write inside iframe
      * @param props.styles - iframe styles text
+     *
      * @returns iframe element
      */
     public static appendIframe({
@@ -81,6 +82,7 @@ export class Elements {
      * @param props - {@link AppendDivProps}
      * @param props.target - Node where to append div with html
      * @param props.html - Html string to write inside div
+     *
      * @returns div element
      */
     public static appendDiv({

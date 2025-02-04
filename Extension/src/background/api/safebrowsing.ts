@@ -210,6 +210,7 @@ export class SafebrowsingApi {
      * @param requestUrl    Request URL.
      * @param referrerUrl   Referrer URL.
      * @param sbList        Safebrowsing list.
+     *
      * @returns Page URL.
      */
     private static getErrorPageURL(
@@ -237,8 +238,9 @@ export class SafebrowsingApi {
     /**
      * Parses safebrowsing service response.
      *
-     * @param responseText  Response text.
-     * @param hashesMap  Hashes hosts map.
+     * @param responseText Response text.
+     * @param hashesMap Hashes hosts map.
+     *
      * @returns Safebrowsing list or null.
      */
     private static async processSbResponse(
@@ -287,6 +289,7 @@ export class SafebrowsingApi {
      * Creates lookup callback parameter.
      *
      * @param sbList Safebrowsing list we've detected or null.
+     *
      * @returns Safebrowsing list or null if this list is SB_ALLOW_LIST (means that site was allowlisted).
      */
     private static createResponse(sbList: string): string | null {

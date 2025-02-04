@@ -75,6 +75,7 @@ export class Subscribe {
      * If event target is anchor element, returns it, else search anchor in parent nodes.
      *
      * @param e - document mouse event
+     *
      * @returns anchor element or null, if target is not found
      */
     private static getAnchorElement(e: MouseEvent): HTMLAnchorElement | null {
@@ -95,6 +96,7 @@ export class Subscribe {
      * Checks if anchor element has subscription link.
      *
      * @param element - anchor element
+     *
      * @returns true, if anchor element has subscription link, else returns false
      */
     private static hasSubscriptionLink(element: HTMLAnchorElement): boolean {
@@ -117,6 +119,7 @@ export class Subscribe {
      *
      * @param element - anchor element
      * @param element.search - link url query string
+     *
      * @returns subscription data payload
      */
     private static getSubscriptionData({ search }: HTMLAnchorElement): SubscriptionData | null {

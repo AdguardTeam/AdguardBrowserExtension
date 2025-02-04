@@ -42,7 +42,9 @@ export class FilterVersionStorage extends StringStorage<
      * Returns specified filter version.
      *
      * @param filterId Filter id.
+     *
      * @returns Specified filter state or undefined, if it is not found.
+     *
      * @throws Error if filter version data is not initialized.
      */
     public get(filterId: number): FilterVersionData | undefined {
@@ -58,6 +60,7 @@ export class FilterVersionStorage extends StringStorage<
      *
      * @param filterId Filter id.
      * @param data Filter version data.
+     *
      * @throws Error if filter version data is not initialized.
      */
     public set(filterId: number, data: FilterVersionData): void {
@@ -74,6 +77,7 @@ export class FilterVersionStorage extends StringStorage<
      * Deletes specified filter version.
      *
      * @param filterId Filter id.
+     *
      * @throws Error if filter version data is not initialized.
      */
     public delete(filterId: number): void {
@@ -90,6 +94,7 @@ export class FilterVersionStorage extends StringStorage<
      * Update last check time stamp for specified filters with current time.
      *
      * @param filterDetails List of filter details to update check time for.
+     *
      * @throws Error if filter version data is not initialized.
      */
     public refreshLastCheckTime(filterDetails: FilterUpdateOptionsList): void {
@@ -130,6 +135,7 @@ export class FilterVersionStorage extends StringStorage<
      *
      * @param data Current {@link FilterVersionStorageData}.
      * @param metadata App {@link Metadata}.
+     *
      * @returns Updated {@link FilterVersionStorageData}.
      */
     public static applyMetadata(

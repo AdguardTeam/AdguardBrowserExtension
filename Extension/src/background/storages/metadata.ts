@@ -47,6 +47,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      * Returns regular filters metadata.
      *
      * @returns Regular filters metadata.
+     *
      * @throws Error if metadata is not initialized.
      */
     public getFilters(): RegularFilterMetadata[] {
@@ -61,7 +62,9 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      * Returns specified regular filter metadata.
      *
      * @param filterId Filter id.
+     *
      * @returns Specified regular filter metadata.
+     *
      * @throws Error if metadata is not initialized.
      */
     public getFilter(filterId: number): RegularFilterMetadata | undefined {
@@ -76,6 +79,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      * Returns groups metadata.
      *
      * @returns Groups metadata.
+     *
      * @throws Error if metadata is not initialized.
      */
     public getGroups(): GroupMetadata[] {
@@ -90,7 +94,9 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      * Returns specified group metadata.
      *
      * @param groupId Group id.
+     *
      * @returns Specified group metadata.
+     *
      * @throws Error if metadata is not initialized.
      */
     public getGroup(groupId: number): GroupMetadata | undefined {
@@ -105,6 +111,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      * Returns tags metadata.
      *
      * @returns Tags metadata.
+     *
      * @throws Error if metadata is not initialized.
      */
     public getTags(): TagMetadata[] {
@@ -119,7 +126,9 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      * Returns specified tag metadata.
      *
      * @param tagId Tag id.
+     *
      * @returns Specified tag metadata.
+     *
      * @throws Error if metadata is not initialized.
      */
     public getTag(tagId: number): TagMetadata | undefined {
@@ -134,6 +143,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      * Returns list of filters for the specified languages.
      *
      * @param locale Locale string.
+     *
      * @returns List of language specific filters ids.
      */
     public getFilterIdsForLanguage(locale: string): number[] {
@@ -276,6 +286,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      * Normalizes localization object.
      *
      * @param localization Input localization object.
+     *
      * @returns Normalized localization object.
      */
     private static normalizeLocalization<T extends RegularFilterI18nMetadata | GroupI18nMetadata | TagI18nMetadata>(

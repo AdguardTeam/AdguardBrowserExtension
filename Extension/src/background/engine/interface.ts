@@ -30,6 +30,7 @@ export interface TsWebExtensionEngine {
      * Handles messages from the tswebextension.
      *
      * @param message - Message from the tswebextension.
+     *
      * @returns Promise<void>.
      */
     handleMessage: MessageHandler;

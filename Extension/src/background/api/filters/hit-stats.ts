@@ -124,6 +124,7 @@ export class HitStatsApi {
          *
          * @param filterId Filter list id.
          * @param stats Filter list stats.
+         *
          * @returns Transformed filter list data.
          */
         const transformFilterHits = async (

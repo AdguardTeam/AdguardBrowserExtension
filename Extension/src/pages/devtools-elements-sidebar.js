@@ -302,6 +302,7 @@ export const devtoolsElementsSidebar = (() => {
      * related with messages from content script
      *
      * @param {string} ruleText
+     *
      * @returns {Promise<void>}
      */
     const addRule = async (ruleText) => {

@@ -214,6 +214,7 @@ export const getCookieData = (event: FilteringLogEvent): string | null => {
  *
  * @param selectedEvent filtering event
  * @param {RegularFilterMetadata} filtersMetadata filters metadata
+ *
  * @returns {string|null} filter name or null, if filter is not found or there are multiple rules
  */
 export const getRuleFilterName = (selectedEvent: FilteringLogEvent, filtersMetadata: FilterMetadata[] | null) => {

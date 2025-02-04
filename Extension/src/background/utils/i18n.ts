@@ -25,6 +25,7 @@ export class I18n {
      *
      * @param locales Array of locale codes represented as strings.
      * @param locale Target locale.
+     *
      * @returns Normalized locale code if found, otherwise null.
      */
     public static find(locales: string[], locale: string): string | null {

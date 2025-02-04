@@ -282,6 +282,7 @@ export class LocaleDetect {
      * to auto-enable filter for this language.
      *
      * @param language Page language.
+     *
      * @private
      */
     private async detectLanguage(language: string): Promise<void> {
@@ -322,6 +323,7 @@ export class LocaleDetect {
      * Called when LocaleDetector has detected language-specific filters we can enable.
      *
      * @param filterIds List of detected language-specific filter identifiers.
+     *
      * @private
      */
     private static async onFilterDetectedByLocale(filterIds: number[]): Promise<void> {

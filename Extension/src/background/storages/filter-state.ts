@@ -54,7 +54,9 @@ export class FilterStateStorage extends StringStorage<
      * Returns specified filter state.
      *
      * @param filterId Filter id.
+     *
      * @returns Specified filter state.
+     *
      * @throws Error if filter state data is not initialized.
      */
     public get(filterId: number): FilterStateData | undefined {
@@ -70,6 +72,7 @@ export class FilterStateStorage extends StringStorage<
      *
      * @param filterId Filter id.
      * @param state Filter state.
+     *
      * @throws Error if filter state data is not initialized.
      */
     public set(filterId: number, state: FilterStateData): void {
@@ -86,6 +89,7 @@ export class FilterStateStorage extends StringStorage<
      * Deletes specified filter state.
      *
      * @param filterId Filter id.
+     *
      * @throws Error if filter state data is not initialized.
      */
     public delete(filterId: number): void {
@@ -102,6 +106,7 @@ export class FilterStateStorage extends StringStorage<
      * Returns list of enabled filters ids.
      *
      * @returns List of enabled filters ids.
+     *
      * @throws Error if filter state data is not initialized.
      */
     public getEnabledFilters(): number[] {
@@ -119,6 +124,7 @@ export class FilterStateStorage extends StringStorage<
      * Returns list of loaded into browserStorage filters ids.
      *
      * @returns List of loaded into browserStorage filters ids.
+     *
      * @throws Error if filter state data is not initialized.
      */
     public getLoadFilters(): number[] {
@@ -136,6 +142,7 @@ export class FilterStateStorage extends StringStorage<
      * Returns list of installed filters ids.
      *
      * @returns List of installed filters ids.
+     *
      * @throws Error if filter state data is not initialized.
      */
     public getInstalledFilters(): number[] {
@@ -153,6 +160,7 @@ export class FilterStateStorage extends StringStorage<
      * Enables specified filters.
      *
      * @param filterIds List of filter ids to enable.
+     *
      * @throws Error if filter state data is not initialized.
      */
     public enableFilters(filterIds: number[]): void {
@@ -181,6 +189,7 @@ export class FilterStateStorage extends StringStorage<
      * Disables specified filters.
      *
      * @param filtersIds List of filters to disable.
+     *
      * @throws Error if filter state data is not initialized.
      */
     public disableFilters(filtersIds: number[]): void {
@@ -209,6 +218,7 @@ export class FilterStateStorage extends StringStorage<
      *
      * @param states Current {@link FilterStateStorageData}.
      * @param metadata App {@link Metadata}.
+     *
      * @returns Updated {@link FilterStateStorageData}.
      */
     public static applyMetadata(

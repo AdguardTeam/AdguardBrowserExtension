@@ -48,6 +48,7 @@ export class Alerts {
      * If {@link isAdguardTab}, append div, else we append iframe
      *
      * @param props - {@link AppendAlertElementProps}
+     *
      * @returns {HTMLElement}
      */
     public static appendAlertElement(props: AppendAlertElementProps): HTMLDivElement | HTMLIFrameElement {
@@ -79,6 +80,7 @@ export class Alerts {
      * Generates alert html.
      *
      * @param props - {@link GenAlertHtmlProps}
+     *
      * @returns html string
      */
     public static genAlertHtml(props: GenAlertHtmlProps): string {

@@ -124,6 +124,7 @@ export class ContentScriptInjector {
      *
      * @param tabId The ID of the tab to inject the content script into.
      * @param files The path of the JS files to inject, relative to the extension's root directory.
+     *
      * @throws Error if the content script injection times out or fails for another reason.
      */
     private static async inject(
@@ -155,6 +156,7 @@ export class ContentScriptInjector {
      * Creates content-script relative url.
      *
      * @param output Content script output path.
+     *
      * @returns Content-script relative url.
      */
     private static createContentScriptUrl(output: string): string {

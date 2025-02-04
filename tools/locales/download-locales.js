@@ -79,6 +79,7 @@ const promiseBatchMap = async (arr, batchSize, handler) => {
  * Extracts the error message from the error object.
  *
  * @param {Error} error - The error object.
+ *
  * @returns {object} An object containing the extracted error message.
  */
 const extractErrorMessage = (error) => {
@@ -93,8 +94,11 @@ const extractErrorMessage = (error) => {
  * Downloads messages from a given URL.
  *
  * @async
+ *
  * @param {string} url - The URL to download the messages from.
+ *
  * @returns {Promise<Buffer>} The downloaded data as an array buffer.
+ *
  * @throws {Error} When the download fails.
  */
 const downloadMessagesByUrl = async (url) => {
@@ -114,6 +118,7 @@ const downloadMessagesByUrl = async (url) => {
  * Determines if a download attempt should be retried based on the error details.
  *
  * @param {string} errorMessage - The details of the error.
+ *
  * @returns {boolean} True if the download should be retried, false otherwise.
  */
 const shouldRetry = (errorMessage) => {
@@ -128,6 +133,7 @@ const shouldRetry = (errorMessage) => {
  * Delays the execution for a specific time.
  *
  * @param {number} delay - Time in milliseconds to delay.
+ *
  * @returns {Promise<void>} Resolves after the specified delay.
  */
 const delayExecution = (delay) => {
@@ -138,11 +144,14 @@ const delayExecution = (delay) => {
  * Downloads a URL with retries and exponentially increasing delays in case of errors.
  *
  * @async
+ *
  * @param {string} url - The URL to download from.
  * @param {number} [retries=100] - The number of times to retry the download.
  * @param {number} [initialDelay=2000] - The initial delay in milliseconds between retries.
  * @param {number} [factor=1.5] - The multiplier to increase the delay between retries.
+ *
  * @returns {Promise<Buffer|null>} The downloaded data as an array buffer, or null if retries exhausted.
+ *
  * @throws {Error} When max retries are reached or a non-retryable error occurs.
  */
 const downloadUrlWithRetry = async (url, retries = 100, initialDelay = 2000, factor = 1.5) => {

@@ -65,6 +65,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
      * @param value Number of total blocked requests.
      *
      * @returns Promise, resolved when total blocked requests number is successfully set.
+     *
      * @throws Error if page stats data is not initialized.
      */
     public setTotalBlocked(value: number): Promise<void> {
@@ -83,6 +84,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
      * @param data Page stats data.
      *
      * @returns Promise, resolved when data is successfully set.
+     *
      * @throws Error if page stats data is not initialized.
      */
     public setStatisticsData(data: PageStatsData): Promise<void> {
@@ -99,6 +101,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
      * If page statistics data is not defined, creates new.
      *
      * @returns Page statistics data.
+     *
      * @throws Error if page stats data is not initialized.
      */
     public getStatisticsData(): PageStatsData {

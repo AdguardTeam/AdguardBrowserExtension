@@ -114,6 +114,7 @@ export const splitToPatterns = (requestUrl: string, domain: string, isAllowlist:
  *      blocking rule would be " @@||example.org^$urlblock,badfilter"
  *
  * @param rule
+ *
  * @returns {string}
  */
 export const createDocumentLevelBlockRule = (rule: FilteringEventRuleData) => {
@@ -150,6 +151,7 @@ const generateExceptionRule = (appliedRuleText: string, mask: CosmeticRuleMarker
  *
  * @param rule Css rule.
  * @param event Filtering log event.
+ *
  * @returns Exception rule for css rule.
  */
 export const createExceptionCssRule = (
@@ -197,6 +199,7 @@ export const createExceptionCssRule = (
  *
  * @param rule
  * @param event
+ *
  * @returns {string}
  */
 export const createExceptionScriptRule = (
@@ -238,6 +241,7 @@ const getUnblockDomainRule = (rawDomain: string | undefined, ruleOption: string)
  * Creates exception rules for cookie event.
  *
  * @param event Filtering log event.
+ *
  * @returns Array of patterns.
  */
 export const createExceptionCookieRules = (event: FilteringLogEvent): string[] => {
@@ -311,6 +315,7 @@ export const createExceptionCspRules = (event: FilteringLogEvent): string[] => {
  * Creates blocking rule for cookie event
  *
  * @param event
+ *
  * @returns {string}
  */
 export const createBlockingCookieRule = (event: FilteringLogEvent) => {

@@ -93,6 +93,7 @@ export class FiltersStorage {
      *
      * @param filterId Filter id.
      * @param filter Filter rules strings.
+     *
      * @returns Record with data to set to the storage.
      */
     static prepareFilterForStorage(filterId: number, filter: string[]): Record<string, unknown> {
@@ -132,6 +133,7 @@ export class FiltersStorage {
      * @param logError If `true`, logs error if it occurs.
      *
      * @returns Promise, resolved with filter rules strings.
+     *
      * @throws Error, if filter list data is not valid.
      */
     static async get(filterId: number, logError = true): Promise<Uint8Array[]> {
@@ -154,7 +156,9 @@ export class FiltersStorage {
      * Returns raw preprocessed filter list for the specified filter id.
      *
      * @param filterId Filter id.
+     *
      * @returns Promise, resolved with preprocessed filter list.
+     *
      * @throws Error, if filter list data is not valid.
      */
     static async getPreprocessedFilterList(filterId: number): Promise<string> {
@@ -173,7 +177,9 @@ export class FiltersStorage {
      * Returns source map for the specified filter list.
      *
      * @param filterId Filter id.
+     *
      * @returns Promise, resolved with source map.
+     *
      * @throws Error, if source map data is not valid.
      */
     static async getSourceMap(filterId: number): Promise<Record<string, number>> {
@@ -192,7 +198,9 @@ export class FiltersStorage {
      * Returns conversion map for the specified filter list.
      *
      * @param filterId Filter id.
+     *
      * @returns Promise, resolved with conversion map.
+     *
      * @throws Error, if conversion map data is not valid.
      */
     static async getConversionMap(filterId: number): Promise<Record<string, string>> {
@@ -210,7 +218,9 @@ export class FiltersStorage {
      * Returns original user rules from {@link hybridStorage}.
      *
      * @param filterId Filter id.
+     *
      * @returns Promise, resolved with original user rules strings.
+     *
      * @throws Error, if filter list data is not valid.
      */
     static async getOriginalRules(filterId: number): Promise<string[]> {
@@ -229,7 +239,9 @@ export class FiltersStorage {
      * Returns original filter list text for the specified filter id.
      *
      * @param filterId Filter id.
+     *
      * @returns Promise, resolved with original filter list text.
+     *
      * @throws Error, if filter list data is not valid.
      */
     static async getOriginalFilterListText(filterId: number): Promise<string> {
@@ -292,6 +304,7 @@ export class FiltersStorage {
      * Returns {@link hybridStorage} key from specified filter list.
      *
      * @param filterId Filter id.
+     *
      * @returns Storage key from specified filter list.
      */
     private static getFilterKey(filterId: number): string {
@@ -302,6 +315,7 @@ export class FiltersStorage {
      * Helper method to extract filter id from the key.
      *
      * @param key Storage key.
+     *
      * @returns Filter id or `null` if the key is invalid.
      */
     static extractFilterIdFromFilterKey(key: string): number | null {
@@ -313,6 +327,7 @@ export class FiltersStorage {
      * Returns {@link hybridStorage} key to conversion map from specified filter list.
      *
      * @param filterId Filter id.
+     *
      * @returns Storage key to conversion map from specified filter list.
      */
     private static getConversionMapKey(filterId: number): string {
@@ -323,6 +338,7 @@ export class FiltersStorage {
      * Returns {@link hybridStorage} key to source map from specified filter list.
      *
      * @param filterId Filter id.
+     *
      * @returns Storage key to source map from specified filter list.
      */
     private static getSourceMapKey(filterId: number): string {
@@ -333,6 +349,7 @@ export class FiltersStorage {
      * Returns {@link hybridStorage} key to binary filter list from specified filter list.
      *
      * @param filterId Filter id.
+     *
      * @returns Storage key to binary filter list from specified filter list.
      */
     private static getBinaryFilterKey(filterId: number): string {
