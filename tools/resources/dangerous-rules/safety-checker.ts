@@ -97,6 +97,7 @@ class SafetyChecker {
      * Checks if a script text is safe or dangerous via OpenAI API.
      *
      * @param scriptText Script text to check.
+     *
      * @returns Response from the API.
      */
     async checkScriptText(scriptText: string): Promise<AIResponse> {
@@ -173,8 +174,9 @@ class SafetyChecker {
     /**
      * Builds the prompt for the OpenAI API.
      *
-     * @private
      * @returns Prompt string.
+     *
+     * @private
      */
     private static buildPrompt(): string {
         // Rule examples and explanation as system context

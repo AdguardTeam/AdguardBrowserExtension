@@ -62,6 +62,7 @@ export class RawFiltersStorage {
      * valid or undefined otherwise.
      *
      * @param filterId Filter id.
+     *
      * @returns Promise, resolved with filter rules strings or undefined if data is invalid.
      */
     static async get(filterId: number): Promise<string | undefined> {
@@ -95,6 +96,7 @@ export class RawFiltersStorage {
      * Returns {@link hybridStorage} key from specified filter list.
      *
      * @param filterId Filter id.
+     *
      * @returns Storage key from specified filter list.
      */
     private static getFilterKey(filterId: number): string {
@@ -105,6 +107,7 @@ export class RawFiltersStorage {
      * Helper method to extract filter id from the key.
      *
      * @param key Storage key.
+     *
      * @returns Filter id or `null` if the key is invalid.
      */
     static extractFilterIdFromFilterKey(key: string): number | null {

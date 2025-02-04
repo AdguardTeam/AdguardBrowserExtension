@@ -188,6 +188,7 @@ export class UpdateApi {
      * and we use it to store serialized filter lists.
      *
      * @param value Object to deserialize.
+     *
      * @returns Deserialized object.
      */
     private static deserialize = (value: unknown): unknown => {
@@ -1095,9 +1096,9 @@ export class UpdateApi {
     /**
      * Removes the deprecated Quick Fixes filter from settings and storages.
      *
-     * @throws Error if settings are invalid or data cannot be read.
-     *
      * @returns A promise that resolves when complete.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
      */
     private static async removeQuickFixesFilter(): Promise<void> {
         const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
@@ -1165,6 +1166,7 @@ export class UpdateApi {
      * Checks if value is an object.
      *
      * @param value Unknown value to check.
+     *
      * @returns True if value is an object, false otherwise.
      */
     private static isObject(value: unknown): value is Record<string, unknown> {

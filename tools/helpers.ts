@@ -51,9 +51,9 @@ type WebExtensionManifest = Manifest.WebExtensionManifest;
  * i.e. it inherits the CSP of the parent page.
  * It may disable the inline script inside unless an exclusion is specified in the manifest.
  *
- * @throws Error when click2load.html redirect source not found.
- *
  * @returns Hash of click2load.html redirect resource.
+ *
+ * @throws Error when click2load.html redirect source not found.
  */
 const getClickToLoadSha = () => {
     const redirectsYamlPath = path.resolve(__dirname, `../Extension/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}.yml`);
@@ -93,6 +93,7 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
  * @param browser
  * @param targetPart
  * @param addedPart
+ *
  * @returns {*&{content_security_policy: string, version: string}}
  */
 export const updateManifest = (
@@ -129,6 +130,7 @@ export const updateManifest = (
  * @param browser The target browser.
  * @param targetPart The existing manifest content as a buffer.
  * @param addedPart The additional manifest content to merge.
+ *
  * @returns A buffer containing the updated manifest.
  */
 export const updateManifestBuffer = (
@@ -207,7 +209,9 @@ export const updateLocalesMSGName = (content: Buffer, env: BuildTargetEnv, brows
  *
  * @param arr The array to be split into chunks.
  * @param size The size of each chunk.
+ *
  * @returns An array of chunks.
+ *
  * @throws Error if size is less than or equal to 0.
  */
 export const chunkArray = <T>(arr: T[], size: number): T[][] => {
@@ -232,7 +236,9 @@ export const chunkArray = <T>(arr: T[], size: number): T[][] => {
  * Retrieves translations for a specific locale.
  *
  * @param locale - The locale identifier (e.g., 'en', 'fr') to fetch translations for.
+ *
  * @returns A promise that resolves to an object containing key-value pairs of translation strings.
+ *
  * @throws If the file for the specified locale cannot be read or parsed.
  */
 export const getLocaleTranslations = async (locale: string) => {
@@ -246,6 +252,7 @@ export const getLocaleTranslations = async (locale: string) => {
  *
  * @param arr1 - First array
  * @param arr2 - Second array
+ *
  * @returns Returns true if arrays are equal, else false
  */
 export const areArraysEqual = <T>(arr1: T[], arr2: T[]): boolean => {

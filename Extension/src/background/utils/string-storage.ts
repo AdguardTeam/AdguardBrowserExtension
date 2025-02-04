@@ -48,6 +48,7 @@ export class StringStorage<K extends string | number | symbol, V, Mode extends '
      * Returns cached data.
      *
      * @returns Cached data.
+     *
      * @throws Error, if cache is not initialized.
      */
     public getData(): V {

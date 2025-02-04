@@ -73,6 +73,7 @@ const writeInFile = (filename, body) => {
  *
  * @param {string} dir
  * @param {string} filesReg
+ *
  * @returns {Promise<*>}
  */
 const findFilesPaths = async (dir, filesReg) => {

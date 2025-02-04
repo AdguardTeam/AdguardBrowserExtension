@@ -39,6 +39,7 @@ export class CustomFilterMetadataStorage extends StringStorage<
      * Returns custom filter metadata by filter id.
      *
      * @param filterId Filter id.
+     *
      * @returns Custom filter metadata.
      */
     public getById(filterId: number): CustomFilterMetadata | undefined {
@@ -49,6 +50,7 @@ export class CustomFilterMetadataStorage extends StringStorage<
      * Returns custom filter metadata by filter subscription url.
      *
      * @param url Subscription url.
+     *
      * @returns Custom filter metadata or undefined, if metadata is not found.
      */
     public getByUrl(url: string): CustomFilterMetadata | undefined {

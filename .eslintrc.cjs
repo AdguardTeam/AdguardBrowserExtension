@@ -190,7 +190,6 @@ module.exports = {
         // types described in ts
         'jsdoc/require-param-type': 'off',
         'jsdoc/require-returns-type': 'off',
-        'jsdoc/tag-lines': 'off',
         'jsdoc/require-throws': 'error',
         'jsdoc/require-file-overview': 'error',
 
@@ -217,6 +216,60 @@ module.exports = {
             },
         ],
         'jsdoc/no-defaults': 'off',
+        'jsdoc/tag-lines': [
+            'error',
+            'any',
+            {
+                startLines: 1,
+            },
+        ],
+        'jsdoc/sort-tags': ['error', {
+            linesBetween: 1,
+            tagSequence: [
+                {
+                    tags: [
+                        'file',
+                    ],
+                },
+                {
+                    tags: [
+                        'template',
+                        'class',
+                        'async',
+                    ],
+                },
+                {
+                    tags: [
+                        'note',
+                    ],
+                },
+                {
+                    tags: [
+                        'see',
+                    ],
+                },
+                {
+                    tags: [
+                        'param',
+                    ],
+                },
+                {
+                    tags: [
+                        'returns',
+                    ],
+                },
+                {
+                    tags: [
+                        'throws',
+                    ],
+                },
+                {
+                    tags: [
+                        'example',
+                    ],
+                },
+            ],
+        }],
     },
     'ignorePatterns': [
         'node_modules',

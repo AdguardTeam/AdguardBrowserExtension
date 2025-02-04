@@ -29,6 +29,7 @@ export class WindowsApi {
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536
      *
      * @param createData Browser.windows.create argument.
+     *
      * @returns Created window, tab or null, if no calls were made.
      */
     public static async create(

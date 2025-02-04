@@ -169,6 +169,7 @@ class IconsApi {
      * Fallbacks to default icon variants if the current icon variants are not provided.
      *
      * @param isDisabled Is website allowlisted or app filtering disabled.
+     *
      * @returns Icon variant to display.
      */
     private async pickIconVariant(isDisabled = false): Promise<IconData> {
@@ -190,6 +191,7 @@ class IconsApi {
      *
      * @param totalBlockedTab Number of blocked requests.
      * @param isDisabled Is website allowlisted or app filtering disabled.
+     *
      * @returns Badge text to display.
      */
     private static getBadgeText(totalBlockedTab: number, isDisabled: boolean): string {

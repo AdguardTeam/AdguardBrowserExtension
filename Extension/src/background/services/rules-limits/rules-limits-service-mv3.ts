@@ -149,6 +149,7 @@ export class RulesLimitsService {
      * Returns a map of ruleset counters.
      *
      * @param result Configuration result.
+     *
      * @returns A map of ruleset counters.
      */
     private static getRuleSetsCountersMap = (result: ConfigurationResult): RuleSetCountersMap => {
@@ -183,6 +184,7 @@ export class RulesLimitsService {
      *
      * @param filters List of filters with metadata.
      * @param ruleSetsCounters A map of ruleset counters.
+     *
      * @returns An array of ruleset counters by filters ids.
      */
     private static getRuleSetCounters(
@@ -200,7 +202,9 @@ export class RulesLimitsService {
      *
      * @param result Configuration result.
      * @param filterId Filter id.
+     *
      * @returns The static ruleset counter.
+     *
      * @throws Error if the ruleset counter is not found.
      */
     private static getStaticRuleSetCounter(result: ConfigurationResult, filterId: number): RuleSetCounter {
@@ -217,6 +221,7 @@ export class RulesLimitsService {
      *
      * @param result Configuration result.
      * @param filters Filters with metadata.
+     *
      * @returns The number of static rules enabled.
      */
     private static getStaticRulesEnabledCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
@@ -234,6 +239,7 @@ export class RulesLimitsService {
      *
      * @param result Configuration result.
      * @param filters Filters with metadata.
+     *
      * @returns Count of the regexp rules.
      */
     private static getStaticRulesRegexpsCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
@@ -250,6 +256,7 @@ export class RulesLimitsService {
      * Finds first found limitation error about unsafe rules limit.
      *
      * @param result Configuration result.
+     *
      * @returns Limitation error.
      */
     private static getUnsafeRulesLimitExceedErr = (
@@ -263,6 +270,7 @@ export class RulesLimitsService {
      * Finds first found limitation error.
      *
      * @param result Configuration result.
+     *
      * @returns Limitation error.
      */
     private static getRegexpRulesLimitExceedErr = (
@@ -276,6 +284,7 @@ export class RulesLimitsService {
      * Finds first too many rules error.
      *
      * @param result Configuration result.
+     *
      * @returns Too many rules error.
      */
     private static getRulesLimitExceedErr = (
@@ -289,6 +298,7 @@ export class RulesLimitsService {
      * How many dynamic rules are enabled.
      *
      * @param result Configuration result.
+     *
      * @returns Count of enabled dynamic rules.
      */
     private static getDynamicRulesEnabledCount(result: ConfigurationResult): number {
@@ -301,6 +311,7 @@ export class RulesLimitsService {
      * How many dynamic rules are excluded and cannot be enabled.
      *
      * @param result Configuration result.
+     *
      * @returns Count of excluded rules.
      */
     private static getDynamicRulesExcludedCount(result: ConfigurationResult): number {
@@ -312,6 +323,7 @@ export class RulesLimitsService {
      * Returns number of maximum possible dynamic rules.
      *
      * @param result Configuration result.
+     *
      * @returns Count of rules.
      */
     private static getDynamicRulesMaximumCount(result: ConfigurationResult): number {
@@ -323,6 +335,7 @@ export class RulesLimitsService {
      * Returns how much dynamic regex rules are enabled.
      *
      * @param result Configuration result.
+     *
      * @returns Number rules.
      */
     private static getDynamicRegexpRulesEnabledCount(result: ConfigurationResult): number {
@@ -338,6 +351,7 @@ export class RulesLimitsService {
      * Returns maximum count of the dynamic regexp rules.
      *
      * @param result Configuration result.
+     *
      * @returns Rules count.
      */
     private static getDynamicRegexpRulesMaximumCount(result: ConfigurationResult): number {
@@ -349,6 +363,7 @@ export class RulesLimitsService {
      * How many dynamic **unsafe** rules are enabled.
      *
      * @param result Configuration result.
+     *
      * @returns Count of enabled dynamic unsafe rules.
      */
     private static getDynamicUnsafeRulesEnabledCount(result: ConfigurationResult): number {
@@ -364,6 +379,7 @@ export class RulesLimitsService {
      * Returns number of maximum possible dynamic **unsafe** rules.
      *
      * @param result Configuration result.
+     *
      * @returns Count of rules.
      */
     private static getDynamicUnsafeRulesMaximumCount(result: ConfigurationResult): number {
@@ -882,6 +898,7 @@ export class RulesLimitsService {
      * Checks if the static group can be enabled.
      *
      * @param message Message with group id.
+     *
      * @returns Promise that resolves with the result of the check.
      */
     private async canEnableStaticGroup(message: CanEnableStaticGroupMv3Message): Promise<StaticLimitsCheckResult> {

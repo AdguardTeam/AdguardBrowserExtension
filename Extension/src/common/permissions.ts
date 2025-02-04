@@ -30,7 +30,9 @@ export class Permissions implements Permissions {
      * Checks if browser has permission.
      *
      * @param permission One of optional permissions.
+     *
      * @returns Boolean flag
+     *
      * @throws Error failed to check
      */
     static async hasPermission(permission: OptionalPermission): Promise<boolean> {
@@ -52,7 +54,9 @@ export class Permissions implements Permissions {
      * Requests optional permissions from user.
      *
      * @param permission One of optional permissions.
+     *
      * @returns True if permission granted, otherwise false.
+     *
      * @throws Error if failed to request permission, due to browser error or user
      */
     static async addPermission(permission: OptionalPermission): Promise<boolean> {

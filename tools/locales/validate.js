@@ -94,11 +94,11 @@ const printCriticalResults = (criticals) => {
  *
  * @param {string} rawLocale Locale code to normalize.
  *
+ * @returns {string} Normalized locale code.
+ *
  * @example
  * 'pt_BR' -> 'pt_br'
  * 'es_419' -> 'es'
- *
- * @returns {string} Normalized locale code.
  */
 const normalizeLocale = (rawLocale) => {
     // locale should be lowercase, e.g. 'pt_br', not 'pt_BR'
@@ -195,6 +195,7 @@ const validateMessage = (baseKey, baseLocaleTranslations, rawLocale, localeTrans
  *
  * @param {string[]} locales - list of locales
  * @param {ValidationFlags} flags
+ *
  * @returns {Result[]} array of object with such properties:
  * locale, level of translation readiness, untranslated strings array and array of invalid translations
  */

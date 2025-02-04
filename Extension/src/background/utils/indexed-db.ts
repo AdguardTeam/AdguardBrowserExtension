@@ -25,7 +25,9 @@ export class IDBUtils {
      * Connects to IndexedDB database.
      *
      * @param name Name of the database to connect to.
+     *
      * @returns Promise, resolved with IndexedDB API interface provides a connection to a database.
+     *
      * @throws Error, if database is not opened after limit.
      */
     public static async connect(name: string): Promise<IDBDatabase> {
@@ -47,7 +49,9 @@ export class IDBUtils {
      *
      * @param db IndexedDB API.
      * @param storeName IndexedDB Object store name.
+     *
      * @returns Promise, resolved with data from object store.
+     *
      * @throws Error, if request is not resolved after limit.
      */
     public static async getAll(db: IDBDatabase, storeName: string): Promise<unknown> {

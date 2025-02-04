@@ -113,6 +113,7 @@ export class SbCache {
      * Returns value from {@link this.cache}.
      *
      * @param key Cache key.
+     *
      * @returns Cache value.
      */
     public get(key: string): string | undefined {
@@ -124,6 +125,7 @@ export class SbCache {
      *
      * @param key Cache key.
      * @param list Cache list value.
+     *
      * @returns Updated {@link this.cache} instance.
      */
     public async set(key: string, list: string): Promise<SbCache> {

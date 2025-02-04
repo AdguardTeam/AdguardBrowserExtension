@@ -26,6 +26,7 @@ export const NO_SIZE_LIMIT = 0;
  * Convert megabytes to bytes.
  *
  * @param {number} mb The size in megabytes.
+ *
  * @returns {number} The size in bytes.
  */
 export const megabytesToBytes = (mb) => mb * 1024 * 1024;
@@ -59,7 +60,9 @@ export class SizeLimitPlugin {
      * Get the size limit for a file.
      *
      * @param {string} filename The name of the file.
+     *
      * @returns {number} The size limit in MB or 0 if no limit is set.
+     *
      * @private
      */
     getLimitForFile(filename) {

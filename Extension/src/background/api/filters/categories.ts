@@ -105,6 +105,7 @@ export class Categories {
      * Gets group state data from storage.
      *
      * @param groupId Id of group of filters.
+     *
      * @returns Group state data if group is found, else returns undefined.
      */
     public static getGroupState(groupId: number): GroupStateData | undefined {
@@ -154,6 +155,7 @@ export class Categories {
      * Returns specified group metadata by filter id.
      *
      * @param filterId Filter id.
+     *
      * @returns Specified {@link GroupMetadata | group metadata }
      * or undefined.
      */
@@ -373,6 +375,7 @@ export class Categories {
      *
      * @param groupId Group id.
      * @param filters Aggregated filters data.
+     *
      * @returns Aggregated filters data for specified group.
      */
     private static selectFiltersByGroupId(groupId: number, filters: CategoriesFilterData[]): CategoriesFilterData[] {

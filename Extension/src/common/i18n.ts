@@ -172,6 +172,7 @@ export class I18n {
      *
      * @param element - page element
      * @param attributeName - name of element attribute
+     *
      * @returns translated attribute value
      */
     private static getI18nMessage(element: Element, attributeName: string): string | null {

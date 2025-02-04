@@ -46,7 +46,9 @@ export class GroupStateStorage extends StringStorage<
      * Returns specified group state.
      *
      * @param groupId Group id.
+     *
      * @returns Specified group state.
+     *
      * @throws Error if group state data is not initialized.
      */
     public get(groupId: number): GroupStateData | undefined {
@@ -62,6 +64,7 @@ export class GroupStateStorage extends StringStorage<
      *
      * @param groupId Group id.
      * @param state Group state.
+     *
      * @throws Error if group state data is not initialized.
      */
     public set(groupId: number, state: GroupStateData): void {
@@ -78,6 +81,7 @@ export class GroupStateStorage extends StringStorage<
      * Delete specified group state.
      *
      * @param groupId Group id.
+     *
      * @throws Error if group state data is not initialized.
      */
     public delete(groupId: number): void {
@@ -94,6 +98,7 @@ export class GroupStateStorage extends StringStorage<
      * Returns list of enabled groups ids.
      *
      * @returns List of enabled groups ids.
+     *
      * @throws Error if group state data is not initialized.
      */
     public getEnabledGroups(): number[] {
@@ -112,6 +117,7 @@ export class GroupStateStorage extends StringStorage<
      *
      * @param groupIds List of groups to enable.
      * @param touched Mark groups as touched on enabling.
+     *
      * @throws Error if group state data is not initialized.
      */
     public enableGroups(groupIds: number[], touched = true): void {
@@ -138,6 +144,7 @@ export class GroupStateStorage extends StringStorage<
      *
      * @param groupIds List of groups to disable.
      * @param touched Mark groups as touched on disabling.
+     *
      * @throws Error if group state data is not initialized.
      */
     public disableGroups(groupIds: number[], touched = true): void {
@@ -164,6 +171,7 @@ export class GroupStateStorage extends StringStorage<
      *
      * @param states Current {@link GroupStateStorageData}.
      * @param metadata App {@link Metadata}.
+     *
      * @returns Updated {@link GroupStateStorageData}.
      */
     public static applyMetadata(

@@ -275,6 +275,7 @@ export class FilteringLogApi {
      * It handles a cache internally to speed up requests for the same filter next time.
      *
      * @param filterId Filter id.
+     *
      * @returns Filter data or undefined if the filter is not found.
      */
     private async getFilterData(filterId: number): Promise<CachedFilterData | undefined> {
@@ -314,6 +315,7 @@ export class FilteringLogApi {
      * Tries to sync the cached filter data with the storage.
      *
      * @param filterId Filter id.
+     *
      * @returns Returns false if the filter was synced within the last
      * {@link FilteringLogApi.SYNC_ATTEMPTS_INTERVAL_MS} milliseconds.
      * Otherwise, returns true.
@@ -733,6 +735,7 @@ export class FilteringLogApi {
      * Retrieves and applies rule text to a single rule data object.
      *
      * @param rule Rule data object containing filterId and ruleIndex.
+     *
      * @returns Rule object with rule text applied.
      */
     private async applyRuleTextToRuleData(rule: FilteringEventRuleData): Promise<FilteringEventRuleData> {
@@ -745,6 +748,7 @@ export class FilteringLogApi {
      * Retrieves and applies rule text to an array of rule data objects.
      *
      * @param rules Array of rule data objects containing filterId and ruleIndex.
+     *
      * @returns Array of rule objects with rule text applied.
      */
     private async applyRuleTextToRuleDataArray(rules: FilteringEventRuleData[]): Promise<FilteringEventRuleData[]> {
@@ -812,6 +816,7 @@ export class FilteringLogApi {
      *
      * @param cookieEvent Cookie event.
      * @param cookieEvent.data Cookie event data.
+     *
      * @returns True if a cookie with the same frame domain, name and value
      * has already been written, and false otherwise.
      */

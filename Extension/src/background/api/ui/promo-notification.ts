@@ -194,6 +194,7 @@ export class PromoNotificationApi {
      * Scans notification locales and returns the one matching navigator.language.
      *
      * @param notification Promo notification object.
+     *
      * @returns {NotificationTextRecord | undefined} Matching notification text settings or undefined.
      */
     private static getNotificationText(notification: PromoNotification): NotificationTextRecord | undefined {

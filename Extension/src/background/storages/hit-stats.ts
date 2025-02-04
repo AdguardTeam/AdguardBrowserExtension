@@ -61,6 +61,7 @@ export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, Hit
      *
      * @param filterId Filter id.
      * @param ruleIndex Rule index.
+     *
      * @throws Error, if storage is not initialized.
      */
     addRuleHitToCache(

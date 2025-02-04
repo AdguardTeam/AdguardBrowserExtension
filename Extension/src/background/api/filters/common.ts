@@ -238,7 +238,6 @@ export class CommonFilterApi {
      *
      * @param enableUntouchedGroups - Should enable untouched groups related to
      * the default filters or not.
-     *
      */
     public static async initDefaultFilters(enableUntouchedGroups: boolean): Promise<void> {
         const filterIds = [
@@ -318,6 +317,7 @@ export class CommonFilterApi {
      * Checks whether the filter is supported for MV3.
      *
      * @param filterId Filter id.
+     *
      * @returns True if filter is supported for MV3, false otherwise.
      */
     public static isMv3Supported(filterId: number): boolean {

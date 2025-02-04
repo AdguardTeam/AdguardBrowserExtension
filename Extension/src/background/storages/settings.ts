@@ -59,7 +59,9 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
      * Returns setting from storage.
      *
      * @param key Setting key.
+     *
      * @returns Setting value.
+     *
      * @throws Error if settings are not initialized.
      */
     public get<T extends SettingOption>(key: T): Settings[T] {
@@ -74,6 +76,7 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
      * Remove setting from storage.
      *
      * @param key Setting key.
+     *
      * @throws Error if settings are not initialized.
      */
     public remove(key: SettingOption): void {
@@ -91,6 +94,7 @@ export class SettingsStorage implements StorageInterface<SettingOption, Settings
      * Returns current settings.
      *
      * @returns Current settings.
+     *
      * @throws Error if settings are not initialized.
      */
     public getData(): Settings {

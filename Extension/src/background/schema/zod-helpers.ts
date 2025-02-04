@@ -25,6 +25,7 @@ import { logger } from '../../common/logger';
  * Does not throw an error if one of the objects in the array is invalid.
  *
  * @param schema Zod schema.
+ *
  * @returns Zod array schema.
  */
 export function filteredArray<T>(schema: z.ZodType<T>): z.ZodEffects<z.ZodArray<z.ZodAny>, T[], T[]> {

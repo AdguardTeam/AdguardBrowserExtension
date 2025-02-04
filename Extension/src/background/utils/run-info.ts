@@ -40,6 +40,7 @@ export type RunInfo = {
  *
  * @param key Storage key.
  * @param fallback If true, try to get data from legacy destination.
+ *
  * @returns Specified storage value.
  */
 async function getData(key: string, fallback = true): Promise<unknown | null> {

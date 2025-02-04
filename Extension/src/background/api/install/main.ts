@@ -47,7 +47,6 @@ export class InstallApi {
      *
      * @param runInfo Info about extension start up.
      * @param runInfo.currentSchemaVersion Current data schema version.
-     *
      */
     public static async install({ currentSchemaVersion }: RunInfo): Promise<void> {
         const clientId = InstallApi.genClientId();

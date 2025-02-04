@@ -46,6 +46,7 @@ export class AppContext {
      * Returns app context value.
      *
      * @param key Context key.
+     *
      * @returns Context value.
      */
     public get<T extends AppContextKey>(key: T): AppContextData[T] {

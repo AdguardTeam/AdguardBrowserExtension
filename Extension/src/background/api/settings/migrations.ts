@@ -44,12 +44,13 @@ export class SettingsMigrations {
     /**
      * Migrates settings from any outdated version and returns settings of the latest version.
      *
-     * @throws Error when not found migration for current version or
-     * not found action for migrate.
-     *
      * @param protocolVersion Protocol version of provided JSON settings.
      * @param settings JSON settings with outdated version.
+     *
      * @returns JSON settings of the latest version.
+     *
+     * @throws Error when not found migration for current version or
+     * not found action for migrate.
      */
     public static async migrateSettings(protocolVersion: string, settings: unknown): Promise<unknown> {
         // Create copy to not modify arg value
@@ -80,10 +81,11 @@ export class SettingsMigrations {
     /**
      * Migrates settings from version 1.0 to version 2.0.
      *
-     * @throws Error when not found field 'filters.whitelist' to rename it.
-     *
      * @param settings JSON settings with version 1.0.
+     *
      * @returns JSON settings of version 2.0.
+     *
+     * @throws Error when not found field 'filters.whitelist' to rename it.
      */
     private static async migrateFromV1_0toV2_0(settings: unknown): Promise<unknown> {
         if (!settings

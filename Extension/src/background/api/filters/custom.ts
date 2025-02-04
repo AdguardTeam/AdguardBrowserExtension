@@ -382,6 +382,7 @@ export class CustomFilterApi {
      * Check if filter is custom.
      *
      * @param filter Filter metadata.
+     *
      * @returns True, if filter is custom, else returns false.
      */
     public static isCustomFilterMetadata(filter: FilterMetadata): filter is CustomFilterMetadata {
@@ -554,9 +555,9 @@ export class CustomFilterApi {
      * Loads filter data from specified url and parse it.
      *
      * @param url Custom filter subscription url.
-     *
      * @param rawFilter Optional raw filter rules.
      * @param force If true filter data will be downloaded directly, not through patches.
+     *
      * @returns Downloaded and parsed filter data.
      */
     // TODO: Uncomment when custom filters will be supported for MV3 again

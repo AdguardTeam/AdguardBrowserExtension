@@ -42,6 +42,7 @@ type ExecuteScriptOptionsMv2 = ExecuteScriptOptionsCommon & {
  *
  * @param tabId The tab ID.
  * @param options The options for the script execution.
+ *
  * @throws Basic {@link Error} if passed options contains invalid or unsupported fields.
  */
 export const executeScript = async (

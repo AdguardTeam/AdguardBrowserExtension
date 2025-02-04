@@ -288,9 +288,9 @@ export class Network {
      * Loads filters metadata from local file.
      * For MV3, it loads metadata from the metadata ruleset file.
      *
-     * @throws Error if metadata is invalid.
-     *
      * @returns Object of {@link Metadata}.
+     *
+     * @throws Error if metadata is invalid.
      */
     public async getLocalFiltersMetadata(): Promise<Metadata> {
         let url: string;
@@ -342,9 +342,9 @@ export class Network {
     /**
      * Loads filter groups metadata from local file.
      *
-     * @throws Error if metadata is invalid.
-     *
      * @returns Object of {@link I18nMetadata}.
+     *
+     * @throws Error if metadata is invalid.
      */
     public async getLocalFiltersI18nMetadata(): Promise<I18nMetadata> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_I18N_METADATA_FILE_NAME}`);
@@ -376,9 +376,9 @@ export class Network {
      * Loads script rules from local file.
      * This method should be called only in the Firefox AMO.
      *
-     * @throws Error if metadata is invalid.
-     *
      * @returns Array of string script rules.
+     *
+     * @throws Error if metadata is invalid.
      */
     public async getLocalScriptRules(): Promise<LocalScriptRules> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/local_script_rules.json`);
@@ -430,9 +430,9 @@ export class Network {
     /**
      * Downloads i18n metadata from backend and returns it.
      *
-     * @throws Error if metadata is invalid.
-     *
      * @returns Object of {@link I18nMetadata}.
+     *
+     * @throws Error if metadata is invalid.
      */
     public async downloadI18nMetadataFromBackend(): Promise<I18nMetadata> {
         const response = await Network.fetchJson(this.settings.filtersI18nMetadataUrl);
@@ -489,6 +489,7 @@ export class Network {
      * @param useOptimizedFilters If true, download optimized filters.
      *
      * @returns Url for filter downloading.
+     *
      * @throws Error if MV3 is used and remote filter downloading is not supported.
      */
     public getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {

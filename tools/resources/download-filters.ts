@@ -124,6 +124,7 @@ const getUrlsOfFiltersResources = (browser: AssetsFiltersBrowser): DownloadResou
  * Normalizes a response.
  *
  * @param response Filter rules response.
+ *
  * @returns Normalized response.
  */
 const normalizeResponse = (response: string): string => {

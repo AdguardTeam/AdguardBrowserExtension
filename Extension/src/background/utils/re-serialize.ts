@@ -77,6 +77,7 @@ const getAllFilterIds = async (): Promise<number[]> => {
  * causing AGTree to become incompatible with the old schema.
  *
  * @param filterId Filter ID.
+ *
  * @returns Promise that resolves when the filter list is re-serialized.
  */
 const reSerializeFilterList = async (filterId: number): Promise<void> => {

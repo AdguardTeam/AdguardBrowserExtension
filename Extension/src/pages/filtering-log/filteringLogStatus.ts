@@ -77,6 +77,7 @@ export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInf
  * Returns filtering log status
  *
  * @param {object} event - filtering log event
+ *
  * @returns {string}
  */
 export const getStatusMode = (event: UIFilteringLogEvent) => {

@@ -149,6 +149,7 @@ export class SettingsApi {
      * Collects {@link SettingsConfig} for tswebextension from current extension settings.
      *
      * @param isMV3 Is the extension in MV3 mode.
+     *
      * @returns Collected {@link SettingsConfig} for tswebextension.
      */
     public static getTsWebExtConfiguration<T extends boolean>(
@@ -393,7 +394,9 @@ export class SettingsApi {
      *   to try to load them from the local storage later.
      *
      * @param filterIds Array of built-in filters ids.
+     *
      * @returns Array of filters that were not loaded from the backend.
+     *
      * @private
      */
     private static async loadBuiltInFiltersRemote(filterIds: number[]): Promise<number[]> {
@@ -429,6 +432,7 @@ export class SettingsApi {
      * Loads built-in filters from the local storage, and enables them.
      *
      * @param filterIds Ids of filters to load and enable.
+     *
      * @private
      */
     private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
@@ -453,6 +457,7 @@ export class SettingsApi {
      * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
      *
      * @param builtInFilters Array of built-in filters ids.
+     *
      * @private
      */
     private static async loadBuiltInFiltersMv2(builtInFilters: number[]): Promise<void> {
@@ -488,6 +493,7 @@ export class SettingsApi {
      * Tries to load them from the storage only.
      *
      * @param builtInFilters Array of built-in filters ids.
+     *
      * @private
      */
     private static async loadBuiltInFiltersMv3(builtInFilters: number[]): Promise<void> {
