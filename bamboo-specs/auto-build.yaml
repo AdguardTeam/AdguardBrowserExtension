@@ -9,6 +9,8 @@ variables:
   dockerPlaywright: adguard/playwright-runner:1.48.2--0
   # Node.js is needed for build and tests.
   dockerNode: adguard/extension-builder:18.19.0--0.1.3
+  # Stable branch name for auto-update only filters.
+  stableBranchName: release/mv3-filters
 
 stages:
   - Tests:
@@ -43,6 +45,11 @@ Lint:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
+    - checkout: &checkout
+        force-clean-build: true
+        branch: ${bamboo.stableBranchName}
+        # Fetches only recent commits
+        shallow-clone: true
     - script:
         interpreter: SHELL
         scripts:
@@ -77,6 +84,7 @@ Unit tests:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
+    - checkout: *checkout
     - script:
         interpreter: SHELL
         scripts:
@@ -114,6 +122,7 @@ Locales check:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
+    - checkout: *checkout
     - script:
         interpreter: SHELL
         scripts:
@@ -149,8 +158,7 @@ Update filters:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
-    - checkout:
-        force-clean-build: true
+    - checkout: *checkout
     - script:
         interpreter: SHELL
         scripts:
@@ -163,7 +171,12 @@ Update filters:
             ls -la
 
             # Validate that current branch is valid for build.
-            ./bamboo-specs/scripts/validate_branch.sh
+            if [ "${bamboo.planRepository.branchName}" != "${bamboo.stableBranchName}" ]; then
+                # Throw error if current branch is not ${bamboo.stableBranchName},
+                # because we do not deploy new releases not from release branch.
+                echo "auto-build is not supported on branch ${bamboo.stableBranchName}"
+                exit 1;
+            fi
 
             # Set cache directory
             pnpm config set store-dir ${bamboo.cachePnpm}
@@ -194,8 +207,7 @@ AutoBuild:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
-    - checkout:
-        force-clean-build: true
+    - checkout: *checkout
     - script:
         interpreter: SHELL
         scripts:
