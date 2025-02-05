@@ -1,8 +1,8 @@
-! Checksum: TJ1bXULSNzQGf/DS+zWlnA
+! Checksum: o+IXgIoZOBF9mimFpIESqQ
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.97.36
-! TimeUpdated: 2025-02-05T10:31:14+00:00
+! Version: 2.0.97.5
+! TimeUpdated: 2025-01-29T08:31:14+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1430,7 +1430,6 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
-||cdn-t.b5c1d2e8c9982e3b965a27ac72ru7284cc.com^
 ||cdn.dmtgvn.com^
 ||llet787bww.com^
 ||1463.info^$all
@@ -5685,6 +5684,7 @@ yandex.*#?#div[class^="layout__top"] > div[class^="layout_"]:has(> div[style] > 
 ||yandex.ru/portal/ntp/banner$redirect=nooptext
 !
 ! Kinopoisk
+www.kinopoisk.ru#%#//scriptlet('set-constant', 'Object.prototype.renderTo', 'undefined')
 www.kinopoisk.ru##.underheader-superbanner-wrapper
 www.kinopoisk.ru##div[class*="__AMNhR styles_"]
 www.kinopoisk.ru##div[id*="direct_R-A-"]
@@ -5699,6 +5699,8 @@ auto.ru###app .ym-hide-content
 !
 ! Common rules
 widgets.kinopoisk.ru,www.kinopoisk.ru,yandex.*#%#//scriptlet('abort-on-property-write', 'Object.prototype.adSystem')
+! TODO: remove the domain from the rule below or leave it after reviewing the task
+! https://github.com/AdguardTeam/Scriptlets/issues/406
 !
 ! END: Yandex
 !
@@ -7609,17 +7611,6 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
-nashe.ru##.banner__horizontal
-nashe.ru##.news__item_banner
-nashe.ru##.news__tile > .news__item:has(> div[id^="adfox_"])
-vuzopedia.ru###vsplyvokno
-vuzopedia.ru###nulol
-vuzopedia.ru##.mainReclame
-||repack.me/uploads/posts/2025-02/1503.webp
-repack.me##.col-xs-12 > div.panel:has(> div.panel-body > div > div > p > a[href^="https://aeza.net/"])
-daily.afisha.ru##div[class^="PartnersNewsBlock_Block__"]
-sport24.ru##.right-scroll-bar-position
-russian.rt.com##.js-setka-media
 ysia.ru##.theme-ads
 ysia.ru##.theme-grid > div.theme-grid-row:has(> div.theme-grid-col > div.theme-ads)
 ysia.ru#?#.theme-grid > div.theme-grid-row:has(> div.theme-grid-col > script:contains(Sparrow))
@@ -7688,8 +7679,8 @@ smart-lab.ru##.slide-sidebar__banner
 smart-lab.ru##.post-page__banner
 smart-lab.ru##.lower-banner
 ||smart-lab.ru/*/images/banners/
-brestcity.com##center > a[target][rel="nofollow"]
-brestcity.com##script ~ p > a[target="_blank"][rel="nofollow"] > img
+brestcity.com###page > a[target="_blank"]
+brestcity.com###page > a[target="_new"] > img
 brestcity.com###page > center > table
 russianfood.com###bigBanner
 litvek.com##div[id^="adsline"]
@@ -8274,7 +8265,7 @@ apad2.top##.post_wrap > center#rkn > center
 apad2.top##.post_wrap > center > a[href^="/go2.php"]
 youandme.chat###play-banner
 sharlib.com##.abs_row
-gramota.ru,zelenograd.ru,rulaws.ru##.adfox
+zelenograd.ru,rulaws.ru##.adfox
 kanobu.ru##aside[class^="AgGamesOnline_"]
 wday.ru#?#section > div[class^="article"]:has(div.product-set-block)
 wday.ru#?#section > div[class^="article"]:has(div[data-block-after="productSet"])
@@ -8365,7 +8356,7 @@ afftimes.com##div[data-banner_id]
 afftimes.com##.float-popup
 afftimes.com##.post_banners_slider
 afftimes.com##.site-header__flex > a[data-wpel-link]:not([href^="https://afftimes.com"])
-tgstat.com,tgstat.ru##.slider-editors-choice
+tgstat.ru##.slider-editors-choice
 kinonews.ru##div[style="text-align: center;height:280px;"]
 vgr.by##.dmi-header-ads
 ||banco.az/ru/simpleads/
@@ -13057,7 +13048,7 @@ isroe.co.il###text-39
 multforum.ru,pcgramota.ru###text-4
 virtmachine.ru,kermo.info###text-5
 voyagist.ru###text-8
-ntr-games.com,itechua.com,poddavleniem.ru###text-9
+itechua.com,poddavleniem.ru###text-9
 newgrodno.by###theme-header > div[class="g g-4"] > div.g-dyn
 newgrodno.by###tie-block_1372
 sovets.net###tiser
@@ -18140,7 +18131,7 @@ trackeroc.org,trackeroc.info###page_footer > center > a[target="_blank"] > img
 ||rutrk.org/bn/
 ||static.t-ru.org/templates/v1/images/vpn/vpn_button_
 ||static.t-ru.org/images/ali/
-/^(?!.*(brave\.com|google\.com|gstatic\.com|googleapis\.com|recaptcha\.net|ytimg\.com|dmca\.com|:\/\/static.)).*$/$third-party,script,_____,domain=rutracker.appspot.com|rutracker.cr|rutracker.lib|rutracker.net|rutracker.nl|rutracker.org
+/^(?!.*(google\.com|gstatic\.com|googleapis\.com|recaptcha\.net|ytimg\.com|dmca\.com|:\/\/static.)).*$/$third-party,script,_____,domain=rutracker.appspot.com|rutracker.cr|rutracker.lib|rutracker.net|rutracker.nl|rutracker.org
 /^https:\/\/rutrk.org(?!.*(\/logo\/)).*$/$domain=rutracker.appspot.com|rutracker.cr|rutracker.lib|rutracker.net|rutracker.nl|rutracker.org
 rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.dl-btn-text-ad
 rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.bn-bottom
@@ -18394,11 +18385,9 @@ youla.ru##.product_item--ad
 vfokuse.mail.ru##a[class^="rb-"][class*="branding"]
 !
 ! VK
-vk.com,vk.ru#%#//scriptlet('trusted-replace-xhr-response', '/banner:/g', '_banner:', '.php', 'true')
-vk.com,vk.ru###feed_rows > div[class="feed_row "]:has(div[class^="PostHeaderTitle "] > div.PostHeaderTitle__authorBlock span.PostHeaderTitle__authorName)
-vk.com,vk.ru#?##feed_rows > div:has(div[class] > *:matches-css(before, content: /[Реклама]|^•$/))
-vk.com,vk.ru#?##feed_rows > div:has(div[class] > *:matches-css(after, content: /[Реклама]|^•$/))
-vk.com,vk.ru#?##feed_rows > div[class^="feed_row"]:has(> div[class] .PostHeaderSubtitle:contains(/[Реклама]/))
+vk.com#$##feed_rows > div[class="feed_row "]:has(div[class^="PostHeaderTitle "] + div[class^="PostHeaderSubtitle PostHeaderSubtitle--layoutDefault"]) { transform: rotate3d(1, 1, 0, 90deg) !important; position: absolute !important; }
+vk.com,vk.ru#?##feed_rows > div[class^="feed_row"] > div[class] .PostHeaderSubtitle:matches-css(before, content: /[Реклама]/):upward(#feed_rows > div[class^="feed_row"])
+vk.com,vk.ru#?##feed_rows > div[class^="feed_row"] > div[class] .PostHeaderSubtitle:contains(/[Реклама]/):upward(#feed_rows > div[class^="feed_row"])
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div[class*="ads_block_data"])
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div.page_block > div._post_content div.ads_ad_snippet)
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div.page_block > div._post_content span.ads_ad_avatar)
@@ -18410,13 +18399,13 @@ vk.com,vk.ru###ads_left
 vk.com,vk.ru###apps_ads_wrap
 vk.com,vk.ru###system_msg
 vk.com,vk.ru##div#left_ads
-vk.com,vk.ru##div[data-ad]
 ! vk.com,vk.ru###feed_rows > div[class="feed_row "] > div[class^="feed_repost-"]:has(div[class="wall_marked_as_ads"])
 ! vk.com,vk.ru##[class^="ads_ad_"]
 ! vk.com,vk.ru###page_wall_posts > div.post_marked_as_ads
 ! vk.com,vk.ru##div[id^="postadsite_"]
 ! vk.com,vk.ru###ads_special_promo_wrap
 ! vk.com,vk.ru##div[data-ad-view]
+! vk.com,vk.ru##div[data-ad]
 ! vk.com,vk.ru##.post[data-ad]
 ! vk.com,vk.ru##._ads_promoted_post_data_w
 ! vk.com,vk.ru##.ads_ads_news_wrap
