@@ -20,16 +20,11 @@ stages:
         - Lint
         - Unit tests
         - Locales check
-  - Update filters:
+  - Update filters & build:
       manual: false
       final: false
       jobs:
-        - Update filters
-  - AutoBuild:
-      manual: false
-      final: false
-      jobs:
-        - AutoBuild
+        - Update filters & build
   - Integration tests:
       manual: false
       final: false
@@ -148,8 +143,8 @@ Locales check:
     - adg-docker: 'true'
 
 
-Update filters:
-  key: UPDATEFILTERS
+Update filters & build:
+  key: UPDATEFILTERSANDBUILD
   other:
     clean-working-dir: true
   docker:
@@ -188,65 +183,6 @@ Update filters:
 
             # Update filters before build.
             OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          commitMessage: 'skipci: Filters update & increment patch version'
-          selectedRepository: defaultRepository
-  final-tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - ./bamboo-specs/scripts/cleanup.sh
-  requirements:
-    - adg-docker: 'true'
-
-AutoBuild:
-  key: AUTOBUILD
-  other:
-    clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-  tasks:
-    - checkout:
-        force-clean-build: true
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            # Validate that current branch is valid for build.
-            if [ "${bamboo.planRepository.branchName}" != "${bamboo.stableBranchName}" ]; then
-                # Throw error if current branch is not ${bamboo.stableBranchName},
-                # because we do not deploy new releases not from release branch.
-                echo "auto-build is not supported on branch ${bamboo.stableBranchName}"
-                exit 1;
-            fi
-
-            # Force checkout, because Bamboo checks out the repository in
-            # detached mode by default to ensure that the pipeline doesn't
-            # accidentally alter the branch it is working on.
-            git checkout ${bamboo.planRepository.branchName}
-
-            # Ensure we are on the latest commit after the previous stage's
-            # commit since Bamboo caching the repository state at the start of
-            # the build plan.
-            git fetch origin ${bamboo.planRepository.branchName}
-            git reset --hard origin/${bamboo.planRepository.branchName}
-
-            ls -la
-
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
-
-            pnpm install ${bamboo.varsPnpm}
 
             # Create artifacts directory if it doesn't exist.
             mkdir -p artifacts
@@ -265,6 +201,11 @@ AutoBuild:
         file: build/release/build.txt
         scope: RESULT
         namespace: inject
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          commitMessage: 'skipci: Filters update & increment patch version'
+          selectedRepository: defaultRepository
   final-tasks:
     - script:
         interpreter: SHELL
