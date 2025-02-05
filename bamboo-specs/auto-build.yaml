@@ -222,6 +222,19 @@ AutoBuild:
             # Fix mixed logs
             exec 2>&1
 
+            # Validate that current branch is valid for build.
+            if [ "${bamboo.planRepository.branchName}" != "${bamboo.stableBranchName}" ]; then
+                # Throw error if current branch is not ${bamboo.stableBranchName},
+                # because we do not deploy new releases not from release branch.
+                echo "auto-build is not supported on branch ${bamboo.stableBranchName}"
+                exit 1;
+            fi
+
+            # Force checkout, because Bamboo checks out the repository in
+            # detached mode by default to ensure that the pipeline doesn't
+            # accidentally alter the branch it is working on.
+            git checkout ${bamboo.planRepository.branchName}
+
             # Ensure we are on the latest commit after the previous stage's
             # commit since Bamboo caching the repository state at the start of
             # the build plan.
