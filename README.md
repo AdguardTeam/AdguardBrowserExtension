@@ -58,6 +58,8 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
         - [Debug MV3 declarative rules](#dev-debug-mv3)
     - [Linter](#dev-linter)
     - [Update localizations](#dev-localizations)
+- [Permissions required](#permissions-required)
+- [Auto-publish builds](#auto-publish-builds)
 - [Minimum supported browser versions](#browser-compatibility)
 
 ## <a name="installation"></a> Installation
@@ -442,6 +444,15 @@ pnpm locales info
 - `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+
+
+
+## <a name="auto-publish-builds"></a> Auto-publish builds
+Due to the transition from MV2 to MV3, we cannot update our filters remotely. To keep the filters as fresh as possible, we have configured automated tasks in our CI plans. These tasks will build a new version of the extension with only the updated `@adguard/dnr-rulesets` package, which contains new static rulesets.
+
+These automated tasks will run all necessary checks: unit tests, translation checks, and linter. After that, they will update resources, including filters and local script rules, create a build, and run integration tests to ensure the update is safe.
+
+Finally, the new version of the extension will be published to the Chrome Web Store.
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 
