@@ -1,8 +1,8 @@
-! Checksum: S2Hc2MW0ttg9C3RJfwFViA
+! Checksum: agZMj7fb4q0J+48vq+LqHg
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.31
-! TimeUpdated: 2025-02-01T21:01:56+00:00
+! Version: 2.0.5.29
+! TimeUpdated: 2025-01-29T09:02:08+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -117,7 +117,6 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 ||abzarfa.com/services/onlineusres^$script
 ||abzarfa.com/tools/ip^$script
 ! >> B <<
-||bitad.ir^
 blog.ir#%#//scriptlet('ubo-set.js', 'constant.copyText', '')
 ||binoads.ir^
 ||bl9.ir^
@@ -850,13 +849,16 @@ digiro.ir#?#.main-term-none > .listing > .type-post > .item-inner > .featured > 
 ! https://github.com/AdguardTeam/AdguardFilters/issues/42827
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131661
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159968
+||dlfox.com/wp-admin/admin-ajax.php?action=adwised_$xmlhttprequest,~third-party
 .gif^$image,third-party,domain=dlfox.com
-||dlfox.com/wp-content/uploads/2015/10/dlfox300.png^$image,~third-party
-dlfox.com##div.ads_area_small_banner > div.col-xs-12:has(> div.shbanner_cover)
+dlfox.com#?#header.recent_news_wrapper > ul.news_text > li:contains(تبلیغ :)
+dlfox.com##a:has(> img.ads_pic)
+dlfox.com##a:has(> img.shbanner)
+dlfox.com##div.shbanner_cover
 dlfox.com##div.ADS_wrapper
-dlfox.com##div.blog_wrapper
-dlfox.com##div.single_post_small_banner
-dlfox.com##div.single_post_banner
+dlfox.com##a[href="https://farsisaz.com/"][target="_blank"][rel="noopener"]
+dlfox.com##div.widget_content:has(> ul.blog_list)
+dlfox.com#$?#form#captch_form > input[name="_wp_http_referer"] { remove: true; }
 ||tadv.didestan.net
 ||didestan.com/*/script/vast
 ||didestan.com/stats
@@ -2047,7 +2049,6 @@ rastannews.ir##.all_ads
 ||rajanews.com/sites/default/files/superadmin/*.gif
 rajanews.com###block-block-22.ads
 ! >> S <<
-||solahangs.com/popup.js^$script,~third-party
 ! https://github.com/MasterKia/PersianBlocker/issues/278
 shahrebours.com##div.shortcode-wrapper > p > a.backlink-into
 shahrebours.com#@#.box_ads
@@ -3016,8 +3017,6 @@ www.google.com#$#.g a[href*="filmdoon.com"]> h3::after { content: ' [دارای 
 www.google.com#$#.g a[href*="zaminmovie.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="danofilm.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 www.google.com#$#.g a[href*="yoozmovie.com"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-www.google.com#$#.g a[href*="upko.ir"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-www.google.com#$#.g a[href*="filmzi.ir"]> h3::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="filmr.ir"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="doostihaa.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="uptvs.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
@@ -3134,8 +3133,6 @@ duckduckgo.com#$#a[data-testid="result-title-a"][href*="filmdoon.com"]::after { 
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="zaminmovie.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="danofilm.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 duckduckgo.com#$#a[data-testid="result-title-a"][href*="yoozmovie.com"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-duckduckgo.com#$#a[data-testid="result-title-a"][href*="upko.ir"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-duckduckgo.com#$#a[data-testid="result-title-a"][href*="filmzi.ir"]::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="filmr.ir"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="doostihaa.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="uptvs.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
@@ -3252,8 +3249,6 @@ search.brave.com#$#div#results > div.snippet > a.result-header[href*="filmdoon.c
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="zaminmovie.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="danofilm.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 search.brave.com#$#div#results > div.snippet > a.result-header[href*="yoozmovie.com"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-search.brave.com#$#div#results > div.snippet > a.result-header[href*="upko.ir"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
-search.brave.com#$#div#results > div.snippet > a.result-header[href*="filmzi.ir"] > span.snippet-title::after { content: ' [دارای حذفیات] ' !important; color: #E6000D !important; }
 ! اشتراکی
 www.google.com#$#.g a[href*="mygolchindl.top"]> h3::after { content: ' [اشتراکی] ' !important; color: #64b502 !important; font-weight: bold !important; }
 www.google.com#$#.g a[href*="//golchindl"]> h3::after { content: ' [اشتراکی] ' !important; color: #64b502 !important; font-weight: bold !important; }
