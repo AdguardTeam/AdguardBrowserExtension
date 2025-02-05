@@ -47,7 +47,8 @@ Lint:
   tasks:
     - checkout: &checkout
         force-clean-build: true
-        branch: ${bamboo.stableBranchName}
+        # Fetches only recent commits
+        shallow-clone: true
     - script:
         interpreter: SHELL
         scripts:
