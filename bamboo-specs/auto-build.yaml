@@ -183,12 +183,15 @@ Update filters:
 
             pnpm install ${bamboo.varsPnpm}
 
+            # Update patch version because resources was changed.
+            pnpm increment
+
             # Update filters before build.
             OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
-          commitMessage: 'skipci: Filters update'
+          commitMessage: 'skipci: Filters update & increment patch version'
           selectedRepository: defaultRepository
   final-tasks:
     - script:
@@ -229,9 +232,6 @@ AutoBuild:
             # Create artifacts directory if it doesn't exist.
             mkdir -p artifacts
 
-            # Before build we increment patch version.
-            pnpm increment
-
             # Build release and beta versions of the extension.
             pnpm beta chrome-mv3
             pnpm release chrome-mv3
@@ -240,11 +240,6 @@ AutoBuild:
             # publish zip versions of the extension.
             mv build/beta/chrome-mv3.zip artifacts/chrome-mv3-beta.zip
             mv build/release/chrome-mv3.zip artifacts/chrome-mv3-release.zip
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          commitMessage: 'skipci: Automatic increment build number'
-          selectedRepository: defaultRepository
     - inject-variables:
         # Doesn't matter which channel we use, because version is the same
         # for both channels.
