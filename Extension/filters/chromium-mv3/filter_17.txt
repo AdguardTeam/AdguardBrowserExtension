@@ -1,8 +1,8 @@
-! Checksum: KGVHiOq3N6wmPaewtBPkLQ
+! Checksum: Sl5Wc7+LDMuMi4kMc73GpQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.39
-! TimeUpdated: 2025-02-05T01:38:30+00:00
+! Version: 2.0.10.29
+! TimeUpdated: 2025-01-28T11:43:06+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,10 +20,6 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
-! https://www.weblio.jp/ranking/?from=glia player.gliacloud.com anywhere
-?from=glia^$removeparam=from
-! Google Merchant Center tracking
-$removeparam=srsltid
 ! Segmentify
 $removeparam=_sgm_campaign
 $removeparam=_sgm_term
@@ -389,30 +385,6 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/197784
-||gaming.amazon.com^$removeparam=ref_
-||gaming.amazon.com^$removeparam=twitchReferral
-||gaming.amazon.com^$removeparam=yTwchPos
-! https://github.com/AdguardTeam/AdguardFilters/issues/197733
-||allegro.pl^$removeparam=clickId
-! blog.naver.com
-||blog.naver.com^$removeparam=trackingCode
-||blog.naver.com^$removeparam=proxyReferer
-||blog.naver.com^$removeparam=referrerCode
-! https://github.com/AdguardTeam/AdguardFilters/issues/197358
-||fiverr.com^$removeparam=context_referrer
-||fiverr.com^$removeparam=context_type
-||fiverr.com^$removeparam=filtered_price
-||fiverr.com^$removeparam=funnel
-||fiverr.com^$removeparam=imp_id
-||fiverr.com^$removeparam=pckg_id
-||fiverr.com^$removeparam=pos
-||fiverr.com^$removeparam=ref
-||fiverr.com^$removeparam=ref_ctx_id
-||fiverr.com^$removeparam=source
-! https://github.com/AdguardTeam/AdguardFilters/issues/197081
-||muskelmacher-shop.de$removeparam=sv_campaign_id
-||muskelmacher-shop.de$removeparam=sv1
 ! redirecting link on mobile from mydealz.de to Metro
 ||rd.bizrate.com$removeparam=af_creative_id
 ||rd.bizrate.com$removeparam=af_assettype_id
@@ -436,6 +408,8 @@ $removeparam=fb_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196262
 ||dailymail.co.uk^$removeparam=ns_mchannel
 ||dailymail.co.uk^$removeparam=ns_campaign
+! https://github.com/AdguardTeam/AdguardFilters/issues/195101
+||klerk.ru^$removeparam=srsltid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195153
 ||vpnpay.io$removeparam=sr
 ||vpnpay.io$removeparam=pr
@@ -1733,7 +1707,7 @@ $removeparam=stm_medium,domain=shopee.ph|shopee.co.th|shopee.co.id
 $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131093
 ||adguard.$removeparam=clid
-$removeparam=clid,domain=adguard-vpn.*|adguardvpn-help.info
+||adguard-vpn.$removeparam=clid
 ! Cognativex
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
@@ -2190,6 +2164,7 @@ $removeparam=dt_dapp,domain=douban.com|163.com
 ||coupang.com/*/products/$removeparam=settlement
 ||coupang.com/*/products/$removeparam=adType
 ||coupang.com/*/products/$removeparam=sourceType
+||coupang.com/*/products/$removeparam=vendorItemId
 ||coupang.com/*/products/$removeparam=wTrackId
 ||coupang.com/*/products/$removeparam=filterKey
 ||coupang.com/*/products/$removeparam=TrackId
@@ -2740,7 +2715,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/197733
 ! redirecting link on mobile from mydealz.de to Metro
 @@||rd.bizrate.com^$removeparam=utm_campaign
 @@||rd.bizrate.com^$removeparam=utm_medium
