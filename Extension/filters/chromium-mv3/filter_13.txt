@@ -1,8 +1,8 @@
-! Checksum: bOjqiNARhWpogyEJa/f4Mg
+! Checksum: cvGObhmLU+ESq+rheLtWAg
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.83
-! TimeUpdated: 2025-01-29T10:39:46+00:00
+! Version: 2.0.54.93
+! TimeUpdated: 2025-02-04T15:39:57+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -698,6 +698,8 @@ dizipal1.cloud,dizipal2.cloud,dizipal3.cloud,dizipal4.cloud,dizipal5.cloud,dizip
 ##.fuck-ivr
 ##.fuck-ivr ~ p[style^="background-color:"]
 !
+###footerFixedDivWrapper
+###mPlayerFd
 ##.hrklm_oblong
 ##body > div[style^="bottom:0;height:50px;left:0;position:fixed;right:0;"][style$="width:100%;z-index:999999"]
 ###footer_fad
@@ -909,7 +911,7 @@ eldermanga.com,promy.pro,vkfilmizlet.net,diziyoutv.com,guneykoresinemasi.com,jet
 fullfilmizlebaba.com,superfilmgeldi.biz,vkfilmizlet.*,supernaturalizle.com,sinemakolik.net,hdsinemax.com,diziyo.*,fullhdabifilm.com,bettercallsaulizle.com,superfilmgeldi.net,fullhdfilmizlett1.com,fullhdfilmcibaba2.com,filmsezonu.com,fullhdfilmizleabi.com,hdfreeizle.com,hdmixfilim.com,fullhdfilmizlepala.com#%#//scriptlet('abort-on-property-read', 'initAd')
 !
 720pfilmizleme1.com,720pfilmizletir.com,1080pfilmizletir.com,720pfilmizlesene.com,filmmakinesi1.*,fullhd720pizle.live,filmizlemax.*,videoseyred.in,hdfilmcehennem.live#%#//scriptlet("prevent-addEventListener", "click", "checkTarget")
-dizimag.org,filmizlehdizle.com,yabancidiziizlesene.*,roketdizi.co,1080hdfilmizle.com#%#//scriptlet("abort-on-property-read", "initPop")
+dizimag.org,filmizlehdizle.com,yabancidiziizlesene.*,1080hdfilmizle.com#%#//scriptlet("abort-on-property-read", "initPop")
 shirl.club,altporno.xyz#%#//scriptlet("abort-on-property-read", "oV1")
 agarz.com#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/RTCPeerConnection[\s\S]*?new MouseEvent\("click"/.test(a.toString()))return b(a,c)};})();
 ! END: Clickunders
@@ -1593,7 +1595,7 @@ worldofturkiye.com,eksisozluk.com,filmizlekral.com,ogznet.com,ajanstekirdag.com,
 ! ##.footer-sticky
 fulltimehdfilmizle.com,fulltimehdfilmizle.com.bd,fulltimehdfilmizle.com.np,fulltimehdfilmizle.net,jetfilmizletv.net,evrenselfilm1.com,altyazilifilmizle3.com,indirmedenfilmizle.vip,fullfilmizle.cc,fullfilmizle.com.bd,fullfilmizle.com.np,fullfilmizle.icu,fullfilmizle.net,fullfilmizle.org,fullfilmizle.pro,fullfilmizle.tv,fullfilmizle.us,izlehdfilm.net,1080pizle.net,tekparthdfilmizle.com,fullhdizle.com.bd,fullhdizle.com.np,fullhdizle.me,fullhdizle.net,fullhdizle.one,fullhizlifilmizlesen.com##.footer-sticky
 ! ##.rek
-kandiraninsesi.com,oyunrota.com,davahaber.com,sabahhaberi.com,canlihaber.com,milligazete.com.tr,bidunyahaber.net,kadikoygazetesi.com,kartalgazetesi.com,kirkbir.com,cagdaskocaeli.com.tr,kocaelihaberdunyasi.com##.rek
+antalyahakkinda.com,kandiraninsesi.com,oyunrota.com,davahaber.com,sabahhaberi.com,canlihaber.com,milligazete.com.tr,bidunyahaber.net,kadikoygazetesi.com,kartalgazetesi.com,kirkbir.com,cagdaskocaeli.com.tr,kocaelihaberdunyasi.com##.rek
 ! div[class*="reklam"]
 lidergazete.com,bilecik11.com,liderbursa.com,mebehliyetsinavsorulari.com,haberler33.com,mygazete.com,kastamonuguncel.com,elazigonline.com,gazetecin.com,kocaelidenge.com##div[class*="reklam"]
 ! ##.ad
@@ -1624,6 +1626,14 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+sondakika.com###head_box
+sondakika.com#%#//scriptlet('set-constant', 'manset_adv_imp', 'noopFunc')
+||veryansintv.com/wp-content/uploads/2025/01/o4yrakp.png
+veryansintv.com#$?#.screen-cover { remove: true; }
+veryansintv.com#?#.slick-dots > li[role="presentation"]:has(> button:not([aria-label^="2 of"]):matches-css(after, content: /^R$/))
+haberler.com##.desktop-reklam-card
+haberler.com##.bik-ilan
+haberler.com#$?##slides > div.new3slide:has(> div > a.rekkklam) { remove: true; }
 evrensel.net##.full-reklam
 ||dizirix.pro/js/popp5.js
 ||jetfilmizletv.info/papa.js
@@ -1991,7 +2001,7 @@ diziyou.co##.video > a
 manga-tr.com##.col-lg-4 > div.well3:has(> div.panel > center > a[href="https://medyabayim.com"])
 ||erotikfilmtube.com/pop$script
 ||milyonertvseyret.com/Uploads/*_milyo-page.jpg
-tv8bucuk.com,tabii.com,trtizle.com###daion-overlay-container > #single-ad-timer ~ #daion-c2a-std
+ntv.com.tr,tlctv.com.tr,dmax.com.tr,haberturk.com,bloomberght.com,aspor.com.tr,atv.com.tr,beyaztv.com.tr,kanal7.com,kanald.com.tr,showtv.com.tr,startv.com.tr,teve2.com.tr,tv8.com.tr,tv8bucuk.com,tabii.com,trtizle.com###daion-overlay-container > #single-ad-timer ~ #daion-c2a-std
 pllsfored.com##img[alt="iptv satın al"]
 mgviagrtoomuch.com##.wpb_wrapper > a[target="_blank"][rel="noopener"] > img
 ||cumhuriyet.com.tr/arc.dev.js
@@ -2207,7 +2217,6 @@ itemci.com##.banner-effect
 kraloyun.com##div[class*="header-ads"]
 kraloyun.com##.alice-adslot
 fanatik.com.tr##.topBandBanner
-roketdizi.co##.poster.min-w-\[280px\] > div.bx-sidebar.mb-4
 itemci.com##.modal#siteLoginContentContent
 itemci.com##.modal#modalContentContent
 itemci.com##.fade.show:empty
@@ -2228,11 +2237,7 @@ yenimesaj.com.tr##body > div[style="margin: auto; width: 100%; height: 250px; te
 fulltimehdfilmizle.com,fulltimehdfilmizle.com.bd,fulltimehdfilmizle.com.np,fulltimehdfilmizle.net##a[href^="https://azureiptv1.site/"]
 ||storj-cloud.cdn.ampproject.org/i/s/storj.cloud/f/fv/*.gif$domain=sinefy2.com
 720pizle.ai,720pizle.club,720pizle.com,720pizle.com.bd,720pizle.com.np,720pizle.net,720pizle.org,720pizle.vip,720pizle.xyz##.top-bnr
-sinefil.tv,sinefy3.com,yabancidizi.io,dizipub.club,filmmodu.co,roketdizi.co,sinefy2.com,dizilla.app,dizilla.club,dizilla.com,dizilla.com.bd,dizilla.com.np,dizilla.me,dizilla.net,dizilla.org,dizilla.xyz,diziroll.club,diziroll.co,diziroll.com.bd,diziroll.com.np,diziroll.me,720pizle.ai,720pizle.club,720pizle.com,720pizle.com.bd,720pizle.com.np,720pizle.net,720pizle.org,720pizle.vip,720pizle.xyz###mPlayerFd
 diziroll.club,diziroll.co,diziroll.com.bd,diziroll.com.np,diziroll.me##.series-watch-player a[target="_blank"] > img
-||storj-cloud.cdn.ampproject.org^$domain=roketdizi.co|diziroll.club|diziroll.co|diziroll.com.bd|diziroll.com.np|diziroll.me|720pizle.ai|720pizle.club|720pizle.com|720pizle.com.bd|720pizle.com.np|720pizle.net|720pizle.org|720pizle.vip|720pizle.xyz
-||storj-cloud.cdn.ampproject.org/i/s/storj.cloud/f/fv/hovardahatfoot.gif
-||storj-cloud.cdn.ampproject.org/i/s/storj.cloud/f/fv/300_250-king-b.gif
 ||pembetv18.*/pop.js
 ||bayraklibelediyesporkulubu.com/chie.js
 sinekolik.com##a[href^="https://bit.ly/"]
@@ -2369,7 +2374,7 @@ hacoos.com##.yazicireklam
 anizle.com,puffytr.com,anizm.net##.animeUrunleriBanner
 ||tasarimcim.net/bannersetleri/
 fullhdfilm.pro##div[style="margin:8px 0px;"]
-yeniasir.com.tr,ahaber.com.tr,apara.com.tr,aspor.com.tr,takvim.com.tr##.sub-board-frame
+sabah.com.tr,fotomac.com.tr,yeniasir.com.tr,ahaber.com.tr,apara.com.tr,aspor.com.tr,takvim.com.tr##.sub-board-frame
 ||cdn.discordapp.com/attachments/*/mario.mp4
 ||viagna.com/imgs/*.gif
 ||zitinger*.cfd/sport*/imgs/tablo/*.gif
@@ -2422,12 +2427,11 @@ dosya.co##form > a[target="_blank"] > img
 kimkimdir.net.tr##.back-ads
 kimkimdir.net.tr###board-ads
 kitapyurdu.com##.ad-large
-roketdizi.co###header-o > a[target="_blank"]
 biliyo.org##div[style^="float:left;"][style$="min-width:336px;min-height:250px;"]
 afroditscans.com###footer > p > span[style]
 ||trplayer.site/vast.php
 jetfilmizle.biz,jetfilmizle.club,jetfilmizle.com,jetfilmizle.com.bd,jetfilmizle.com.np,jetfilmizle.de,jetfilmizle.eu,jetfilmizle.fun,jetfilmizle.icu,jetfilmizle.info,jetfilmizle.link,jetfilmizle.live,jetfilmizle.me,jetfilmizle.media,jetfilmizle.mobi,jetfilmizle.my,jetfilmizle.net,jetfilmizle.online,jetfilmizle.org,jetfilmizle.pro,jetfilmizle.pw,jetfilmizle.shop,jetfilmizle.space,jetfilmizle.to,jetfilmizle.top,jetfilmizle.vip,jetfilmizle.ws,jetfilmizle.xyz##body > div[id] > [style^="position:fixed;inset:"][style*="z-index:"][style*="height:100%;width:100%"]
-justintvizlehd.xyz,hdfilmcehennemi2.cc,hdfilmcehennemi2.club,hdfilmcehennemi2.co,hdfilmcehennemi2.com.bd,hdfilmcehennemi2.com.np,hdfilmcehennemi2.de,hdfilmcehennemi2.info,hdfilmcehennemi2.net,hdfilmcehennemi2.nl,hdfilmcehennemi2.one,hdfilmcehennemi2.online,hdfilmcehennemi2.org,hdfilmcehennemi2.pro,hdfilmcehennemi2.pw,hdfilmcehennemi2.tv,hdfilmcehennemi2.vip,hdfilmcehennemi2.ws,hdfilmcehennemi2.xyz,sinefil.tv,diziroll.club,roketdizi.co,dizilla.club,birasyadizi.com,goodfilmizle.com,zitinger11.cfd,zitinger5.cfd##a[href^="https://cutt.ly/"]
+justintvizlehd.xyz,hdfilmcehennemi2.cc,hdfilmcehennemi2.club,hdfilmcehennemi2.co,hdfilmcehennemi2.com.bd,hdfilmcehennemi2.com.np,hdfilmcehennemi2.de,hdfilmcehennemi2.info,hdfilmcehennemi2.net,hdfilmcehennemi2.nl,hdfilmcehennemi2.one,hdfilmcehennemi2.online,hdfilmcehennemi2.org,hdfilmcehennemi2.pro,hdfilmcehennemi2.pw,hdfilmcehennemi2.tv,hdfilmcehennemi2.vip,hdfilmcehennemi2.ws,hdfilmcehennemi2.xyz,sinefil.tv,diziroll.club,dizilla.club,birasyadizi.com,goodfilmizle.com,zitinger11.cfd,zitinger5.cfd##a[href^="https://cutt.ly/"]
 anizm.net##div[style^="text-align: center;"] > a[target="_blank"]:not([href="https://anizm.net/"])
 ||cdn-dfj.pages.dev/*.gif
 veryansintv.com##.screen-stream
@@ -2545,7 +2549,6 @@ ehliyettestleri.com,testlericoz.com##.yazialtireklam
 ||yeniufukgazetesi.com.tr/wp-content/uploads/2021/04/800.gif
 sabah.com.tr##div[data-wbzone-loaded="728x90"]
 ||isbh.tmgrup.com.tr/sbh/site/v3/apara/*/bitay-
-720pizle.ai,720pizle.club,720pizle.com,720pizle.com.bd,720pizle.com.np,720pizle.net,720pizle.org,720pizle.vip,720pizle.xyz,diziroll.club,diziroll.co,diziroll.com.bd,diziroll.com.np,diziroll.me,roketdizi.co###footerFixedDivWrapper
 ye-mek.net##.addForMainPage
 donanimhaber.com##.giydirme-container
 gartic.io###videoContainer
@@ -2960,7 +2963,7 @@ fullprogramlarindir.net,buyurindir.org##center a[onclick*="window.open("]
 ||filmkuzusu1.com/pops5.js
 mynet.com##.ad-home-masthead-wrapper
 paratic.com##.p-bnr
-apara.com.tr,sabah.com.tr,aspor.com.tr##.adbImg
+fotomac.com.tr,apara.com.tr,sabah.com.tr,aspor.com.tr##.adbImg
 beyaztv.com.tr##div[id^="tv-ads-"]
 dizimag.eu,dizimodu.com###adContentWrapper
 ||dizimodu.com/olderfolder/
@@ -5532,14 +5535,10 @@ oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
 !
 ! dizilla.club/dizilla.com  - frequently changed domains
-[$domain=/(^\|.+\.)dizilla\d+\.com/]###mPlayerFd
 [$domain=/(^\|.+\.)dizilla\d+\.com/]###psContainer
-[$domain=/(^\|.+\.)dizilla\d+\.com/]###footerFixedDivWrapper
 [$domain=/(^\|.+\.)dizilla\d+\.com/]##a[target="_blank"] > .alert
 [$domain=/(^\|.+\.)dizilla\d+\.com/]#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?getElementsByTagName/')
-dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com###mPlayerFd
 dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com###psContainer
-dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com###footerFixedDivWrapper
 dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com##a[target="_blank"] > .alert
 dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?getElementsByTagName/')
 !
@@ -5614,17 +5613,26 @@ fullhdizle.*,filmizlehdfilm.com,filmizletv.*,fullfilmizle.*,fullfilmizle.cc,full
 !
 ! dizipal*.com - frequently changed domains
 ! https://x.com/dizipalSx
+||dizipal*.com/wp-content/uploads/*/maxi.gif
+||dizipal*.com/wp-content/uploads/*/rbe.gif
+||dizipal*.com/wp-content/uploads/*/nfsbon.gif
 dplayer80.site##pjsdiv[id*="betzulabanner"]
-[$domain=/dizipal\d+.com/]###mPlayerFds
-[$domain=/dizipal\d+.com/]##.alert
+[$domain=/dizipal\d+.com/]##.duzyazibar
+[$domain=/dizipal\d+.com/]##center > a[href][target="_blank"]
+[$domain=/dizipal\d+.com/]##a[href^="https://heylink.me/"]
 [$domain=/dizipal\d+.com/]##a[target="_blank"][rel="nofollow"]
+[$domain=/dizipal\d+.com/]##header-o > .px-5:has(> a[target="_blank"])
+[$domain=/dizipal\d+.com/]##.alert
 [$domain=/dizipal\d+.com/]##.rounded.m-auto .bg-black > a[href][target="_blank"]
-[$domain=/dizipal\d+.com/]###header-o > .px-5:has(> a[target="_blank"])
-dizipal811.com,dizipal812.com,dizipal813.com,dizipal814.com,dizipal815.com,dizipal816.com,dizipal817.com,dizipal818.com,dizipal819.com,dizipal820.com,dizipal821.com,dizipal822.com,dizipal823.com,dizipal824.com,dizipal825.com###mPlayerFds
-dizipal811.com,dizipal812.com,dizipal813.com,dizipal814.com,dizipal815.com,dizipal816.com,dizipal817.com,dizipal818.com,dizipal819.com,dizipal820.com,dizipal821.com,dizipal822.com,dizipal823.com,dizipal824.com,dizipal825.com##.alert
-dizipal811.com,dizipal812.com,dizipal813.com,dizipal814.com,dizipal815.com,dizipal816.com,dizipal817.com,dizipal818.com,dizipal819.com,dizipal820.com,dizipal821.com,dizipal822.com,dizipal823.com,dizipal824.com,dizipal825.com##a[target="_blank"][rel="nofollow"]
-dizipal811.com,dizipal812.com,dizipal813.com,dizipal814.com,dizipal815.com,dizipal816.com,dizipal817.com,dizipal818.com,dizipal819.com,dizipal820.com,dizipal821.com,dizipal822.com,dizipal823.com,dizipal824.com,dizipal825.com##.rounded.m-auto .bg-black > a[href][target="_blank"]
-dizipal811.com,dizipal812.com,dizipal813.com,dizipal814.com,dizipal815.com,dizipal816.com,dizipal817.com,dizipal818.com,dizipal819.com,dizipal820.com,dizipal821.com,dizipal822.com,dizipal823.com,dizipal824.com,dizipal825.com###header-o > .px-5:has(> a[target="_blank"])
+[$domain=/dizipal\d+.com/]###mPlayerFds
+dizipal836.com,dizipal840.com,dizipal841.com,dizipal842.com,dizipal843.com,dizipal844.com,dizipal845.com,dizipal846.com,dizipal847.com,dizipal848.com,dizipal849.com,dizipal850.com,dizipal851.com,dizipal852.com,dizipal853.com,dizipal854.com,dizipal855.com,dizipal856.com,dizipal857.com,dizipal858.com,dizipal859.com,dizipal860.com,dizipal861.com,dizipal862.com,dizipal863.com,dizipal864.com,dizipal865.com,dizipal866.com,dizipal867.com,dizipal868.com,dizipal869.com,dizipal870.com,dizipal871.com,dizipal872.com,dizipal873.com,dizipal874.com,dizipal875.com,dizipal876.com,dizipal877.com,dizipal878.com,dizipal879.com,dizipal880.com,dizipal881.com,dizipal882.com,dizipal883.com,dizipal884.com,dizipal885.com,dizipal886.com,dizipal887.com,dizipal888.com,dizipal889.com,dizipal890.com,dizipal891.com,dizipal892.com,dizipal893.com,dizipal894.com,dizipal895.com,dizipal896.com,dizipal897.com,dizipal898.com,dizipal899.com,dizipal900.com###mPlayerFds
+dizipal836.com,dizipal840.com,dizipal841.com,dizipal842.com,dizipal843.com,dizipal844.com,dizipal845.com,dizipal846.com,dizipal847.com,dizipal848.com,dizipal849.com,dizipal850.com,dizipal851.com,dizipal852.com,dizipal853.com,dizipal854.com,dizipal855.com,dizipal856.com,dizipal857.com,dizipal858.com,dizipal859.com,dizipal860.com,dizipal861.com,dizipal862.com,dizipal863.com,dizipal864.com,dizipal865.com,dizipal866.com,dizipal867.com,dizipal868.com,dizipal869.com,dizipal870.com,dizipal871.com,dizipal872.com,dizipal873.com,dizipal874.com,dizipal875.com,dizipal876.com,dizipal877.com,dizipal878.com,dizipal879.com,dizipal880.com,dizipal881.com,dizipal882.com,dizipal883.com,dizipal884.com,dizipal885.com,dizipal886.com,dizipal887.com,dizipal888.com,dizipal889.com,dizipal890.com,dizipal891.com,dizipal892.com,dizipal893.com,dizipal894.com,dizipal895.com,dizipal896.com,dizipal897.com,dizipal898.com,dizipal899.com,dizipal900.com##.rounded.m-auto .bg-black > a[href][target="_blank"]
+dizipal836.com,dizipal840.com,dizipal841.com,dizipal842.com,dizipal843.com,dizipal844.com,dizipal845.com,dizipal846.com,dizipal847.com,dizipal848.com,dizipal849.com,dizipal850.com,dizipal851.com,dizipal852.com,dizipal853.com,dizipal854.com,dizipal855.com,dizipal856.com,dizipal857.com,dizipal858.com,dizipal859.com,dizipal860.com,dizipal861.com,dizipal862.com,dizipal863.com,dizipal864.com,dizipal865.com,dizipal866.com,dizipal867.com,dizipal868.com,dizipal869.com,dizipal870.com,dizipal871.com,dizipal872.com,dizipal873.com,dizipal874.com,dizipal875.com,dizipal876.com,dizipal877.com,dizipal878.com,dizipal879.com,dizipal880.com,dizipal881.com,dizipal882.com,dizipal883.com,dizipal884.com,dizipal885.com,dizipal886.com,dizipal887.com,dizipal888.com,dizipal889.com,dizipal890.com,dizipal891.com,dizipal892.com,dizipal893.com,dizipal894.com,dizipal895.com,dizipal896.com,dizipal897.com,dizipal898.com,dizipal899.com,dizipal900.com##.alert
+dizipal836.com,dizipal840.com,dizipal841.com,dizipal842.com,dizipal843.com,dizipal844.com,dizipal845.com,dizipal846.com,dizipal847.com,dizipal848.com,dizipal849.com,dizipal850.com,dizipal851.com,dizipal852.com,dizipal853.com,dizipal854.com,dizipal855.com,dizipal856.com,dizipal857.com,dizipal858.com,dizipal859.com,dizipal860.com,dizipal861.com,dizipal862.com,dizipal863.com,dizipal864.com,dizipal865.com,dizipal866.com,dizipal867.com,dizipal868.com,dizipal869.com,dizipal870.com,dizipal871.com,dizipal872.com,dizipal873.com,dizipal874.com,dizipal875.com,dizipal876.com,dizipal877.com,dizipal878.com,dizipal879.com,dizipal880.com,dizipal881.com,dizipal882.com,dizipal883.com,dizipal884.com,dizipal885.com,dizipal886.com,dizipal887.com,dizipal888.com,dizipal889.com,dizipal890.com,dizipal891.com,dizipal892.com,dizipal893.com,dizipal894.com,dizipal895.com,dizipal896.com,dizipal897.com,dizipal898.com,dizipal899.com,dizipal900.com##header-o > .px-5:has(> a[target="_blank"])
+dizipal836.com,dizipal840.com,dizipal841.com,dizipal842.com,dizipal843.com,dizipal844.com,dizipal845.com,dizipal846.com,dizipal847.com,dizipal848.com,dizipal849.com,dizipal850.com,dizipal851.com,dizipal852.com,dizipal853.com,dizipal854.com,dizipal855.com,dizipal856.com,dizipal857.com,dizipal858.com,dizipal859.com,dizipal860.com,dizipal861.com,dizipal862.com,dizipal863.com,dizipal864.com,dizipal865.com,dizipal866.com,dizipal867.com,dizipal868.com,dizipal869.com,dizipal870.com,dizipal871.com,dizipal872.com,dizipal873.com,dizipal874.com,dizipal875.com,dizipal876.com,dizipal877.com,dizipal878.com,dizipal879.com,dizipal880.com,dizipal881.com,dizipal882.com,dizipal883.com,dizipal884.com,dizipal885.com,dizipal886.com,dizipal887.com,dizipal888.com,dizipal889.com,dizipal890.com,dizipal891.com,dizipal892.com,dizipal893.com,dizipal894.com,dizipal895.com,dizipal896.com,dizipal897.com,dizipal898.com,dizipal899.com,dizipal900.com##.duzyazibar
+dizipal836.com,dizipal840.com,dizipal841.com,dizipal842.com,dizipal843.com,dizipal844.com,dizipal845.com,dizipal846.com,dizipal847.com,dizipal848.com,dizipal849.com,dizipal850.com,dizipal851.com,dizipal852.com,dizipal853.com,dizipal854.com,dizipal855.com,dizipal856.com,dizipal857.com,dizipal858.com,dizipal859.com,dizipal860.com,dizipal861.com,dizipal862.com,dizipal863.com,dizipal864.com,dizipal865.com,dizipal866.com,dizipal867.com,dizipal868.com,dizipal869.com,dizipal870.com,dizipal871.com,dizipal872.com,dizipal873.com,dizipal874.com,dizipal875.com,dizipal876.com,dizipal877.com,dizipal878.com,dizipal879.com,dizipal880.com,dizipal881.com,dizipal882.com,dizipal883.com,dizipal884.com,dizipal885.com,dizipal886.com,dizipal887.com,dizipal888.com,dizipal889.com,dizipal890.com,dizipal891.com,dizipal892.com,dizipal893.com,dizipal894.com,dizipal895.com,dizipal896.com,dizipal897.com,dizipal898.com,dizipal899.com,dizipal900.com##center > a[href][target="_blank"]
+dizipal836.com,dizipal840.com,dizipal841.com,dizipal842.com,dizipal843.com,dizipal844.com,dizipal845.com,dizipal846.com,dizipal847.com,dizipal848.com,dizipal849.com,dizipal850.com,dizipal851.com,dizipal852.com,dizipal853.com,dizipal854.com,dizipal855.com,dizipal856.com,dizipal857.com,dizipal858.com,dizipal859.com,dizipal860.com,dizipal861.com,dizipal862.com,dizipal863.com,dizipal864.com,dizipal865.com,dizipal866.com,dizipal867.com,dizipal868.com,dizipal869.com,dizipal870.com,dizipal871.com,dizipal872.com,dizipal873.com,dizipal874.com,dizipal875.com,dizipal876.com,dizipal877.com,dizipal878.com,dizipal879.com,dizipal880.com,dizipal881.com,dizipal882.com,dizipal883.com,dizipal884.com,dizipal885.com,dizipal886.com,dizipal887.com,dizipal888.com,dizipal889.com,dizipal890.com,dizipal891.com,dizipal892.com,dizipal893.com,dizipal894.com,dizipal895.com,dizipal896.com,dizipal897.com,dizipal898.com,dizipal899.com,dizipal900.com##a[href^="https://heylink.me/"]
+dizipal836.com,dizipal840.com,dizipal841.com,dizipal842.com,dizipal843.com,dizipal844.com,dizipal845.com,dizipal846.com,dizipal847.com,dizipal848.com,dizipal849.com,dizipal850.com,dizipal851.com,dizipal852.com,dizipal853.com,dizipal854.com,dizipal855.com,dizipal856.com,dizipal857.com,dizipal858.com,dizipal859.com,dizipal860.com,dizipal861.com,dizipal862.com,dizipal863.com,dizipal864.com,dizipal865.com,dizipal866.com,dizipal867.com,dizipal868.com,dizipal869.com,dizipal870.com,dizipal871.com,dizipal872.com,dizipal873.com,dizipal874.com,dizipal875.com,dizipal876.com,dizipal877.com,dizipal878.com,dizipal879.com,dizipal880.com,dizipal881.com,dizipal882.com,dizipal883.com,dizipal884.com,dizipal885.com,dizipal886.com,dizipal887.com,dizipal888.com,dizipal889.com,dizipal890.com,dizipal891.com,dizipal892.com,dizipal893.com,dizipal894.com,dizipal895.com,dizipal896.com,dizipal897.com,dizipal898.com,dizipal899.com,dizipal900.com##a[target="_blank"][rel="nofollow"]
 ! dizipal*.com - frequently changed domains (probably another similar)
 [$domain=/dizipal\d+.com/]#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/manageAds\(video_urls\[activeItem\]\, video_seconds\[activeItem\]\, ad_urls\[activeItem]\,true\);/', 'playVideo();')
 !
