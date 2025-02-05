@@ -1,8 +1,8 @@
-! Checksum: v+c65G51xETo8PXH0wvRKw
+! Checksum: roMNtYKBfLduZvHZSmZ0KA
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.30.25
-! TimeUpdated: 2025-01-29T11:41:12+00:00
+! Version: 2.0.30.41
+! TimeUpdated: 2025-02-04T17:42:09+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -41,6 +41,8 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/196958
+ctvnews.ca##.b-alert-bar-wrapper-custom
 ! Google Search - AI Overview
 ://www.google.*/async/folsrch?*&async=_basejs:*,_basecomb:*&q=$xmlhttprequest
 google.adult,google.ae,google.ai,google.al,google.am,google.app,google.at,google.az,google.ba,google.be,google.bg,google.biz,google.blog,google.by,google.ca,google.cc,google.ch,google.ci,google.cl,google.cloud,google.cn,google.co,google.co.id,google.co.il,google.co.in,google.co.jp,google.co.ke,google.co.kr,google.co.nz,google.co.th,google.co.uk,google.co.za,google.com,google.com.ar,google.com.au,google.com.bd,google.com.br,google.com.co,google.com.hk,google.com.mx,google.com.my,google.com.ng,google.com.np,google.com.pe,google.com.ph,google.com.pk,google.com.sa,google.com.sg,google.com.tr,google.com.tw,google.com.ua,google.com.uy,google.com.vn,google.cz,google.de,google.dev,google.dk,google.dz,google.ee,google.es,google.eu,google.fi,google.fm,google.fr,google.ga,google.ge,google.gg,google.gr,google.hk,google.hr,google.hu,google.id,google.ie,google.in,google.in.th,google.in.ua,google.info,google.io,google.ir,google.is,google.it,google.jp,google.kg,google.kr,google.kz,google.lk,google.lt,google.lv,google.ma,google.md,google.me,google.mk,google.ml,google.mn,google.mx,google.my,google.net,google.news,google.ng,google.nl,google.no,google.one,google.or.id,google.org,google.pe,google.ph,google.pk,google.pl,google.pt,google.ro,google.rs,google.ru,google.sa,google.se,google.sg,google.sh,google.shop,google.si,google.site,google.sk,google.store,google.su,google.tk,google.tn,google.to,google.tv,google.tw,google.ua,google.uk,google.us,google.uz,google.vn,google.website,google.ws##div[data-q][data-al]
@@ -91,9 +93,6 @@ flowgpt.com##main > div.rounded-lg > div > div.relative:has(> div.swiper)
 ladepeche.fr#%#//scriptlet('set-constant', 'ultimediaVisiblePlayer.scrollVisiblePlayer', 'noopFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191550
 player.fm##.sponsored-content
-! https://github.com/AdguardTeam/AdguardFilters/issues/190980
-store.steampowered.com##div[data-featuretarget="broadcast-embed"]
-||store.cloudflare.steamstatic.com/public/javascript/applications/store/broadcast.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190881
 kod.ru##div[class^="Share_wrapper"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190219
@@ -1280,6 +1279,8 @@ digitalvidya.com###text-13
 digitalvidya.com###text-8
 digitalvidya.com###text-21
 ! "Foreign agents" / "Иностранные агенты"
+kavkaz-uzel.eu##.inoagenty
+kavkaz-uzel.eu#?#.text-block > p:contains(КАСАЕТСЯ ДЕЯТЕЛЬНОСТИ ИНОСТРАННОГО АГЕНТА)
 levada.ru###ebala
 nasiliu.net###headWarning
 verstka.media#?#.vm-single-post-content > p:contains(ИНОСТРАННЫМ АГЕНТОМ)
@@ -1830,6 +1831,7 @@ money.pl##a[data-st-area="gotosg"][href="https://www.wp.pl/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136773
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54035
 wp.pl##a[data-st-area="goToSG"][href="https://www.wp.pl"]
+kuchnia.wp.pl##.content div[class*=" "] > div[class] > div[class*=" "]:has(> a[data-st-area="goToSG"][href="https://www.wp.pl"]:only-child)
 kuchnia.wp.pl##tr[data-reactid]:not([class]):not([id]) > td[class] > div[class*=" "]:has(> div[class*=" "] > iframe[src^="https://forms.freshmail.io/"])
 ! TODO: remove the hint below when a new version of the extension for Firefox and Opera will be released, current version is 4.1.53
 ! Related to - https://github.com/AdguardTeam/Scriptlets/issues/266
@@ -2962,6 +2964,7 @@ yasir252.com#%#document.addEventListener('DOMContentLoaded', function(){setTimeo
 ||trimay.ru/?
 !
 !
+kare11.com#$?#.header__mini-live-video { remove: true; }
 bel.ru,rosbalt.ru##.tg-banner_mobile
 ||cinemaxxl.de/js/detectIncognito.min.js
 cinemaxxl.de#%#//scriptlet('set-constant', 'detectIncognito', 'noopFunc')
@@ -3476,6 +3479,12 @@ habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Бл
 !
 !
 !
+! telepolis.de - self-promo in article
+telepolis.de##div[data-module-name="AdModule"]
+telepolis.de##a-with-access[access-right="telepolis-unterstuetzer"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/197001
+nknews.org###single-advert
+nknews.org##.sidebarBanner
 ! adac.de - self-promo in article
 adac.de##div[data-tracking*="ANZEIGE"][data-tracking*="adac"]
 adac.de##div[medium]:has(> div[data-tracking*="ANZEIGE"][data-tracking*="adac"])
@@ -5319,6 +5328,17 @@ book.oricon.co.jp##a[href^="https://apay-up-banner.com?merchantId="] > img
 !
 ! SECTION: Self-promo - Regular rules
 !
+watchmojo.com##.trivia-status-mobile
+profi.ru###about_banner
+wiz.io##.prose > div.group:has(> a[href="https://wiz.io/demo"])
+u.gg##.content-section > div.relative:has(> div > a[href^="/app?"])
+loungegamejoin.site##div[id^="idGoogleAd"]
+meteoblue.com##.wrapper-sda
+wallpapers.com##.download-block-prem
+slate.com##.slate-plus-promo
+mobalytics.gg##picture > source[media][srcset^="https://cdn.mobalytics.gg/assets/lol/images/banner-system/"]
+mobalytics.gg##picture > source[media][srcset^="https://cdn.mobalytics.gg/assets/lol/images/banner-system/"] + img
+code.visualstudio.com##.updates-banner
 mvideo.ru##mvid-banners-container
 deepl.com##div[data-testid="write-advertisement-banner"]
 asuracomic.net##body > div > a[href="/subscription"] > img
@@ -7919,7 +7939,7 @@ theverge.com#$#.mt-80 { margin-top: 50px !important; }
 theverge.com#$#.md\:mb-40 { margin-bottom: 20px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159669
 ! https://github.com/AdguardTeam/AdguardFilters/issues/148098
-forgee.xyz,monafes.site,regenzi.site,hegra.cam,migration.cam,reviewpalace.net,techplanet.cam,techland.live,gameplanet.cam,topgames.cam,techsoul.cam,gamehub.cam,gameland.click,gamestation.cam,gamezone.cam,gamesera.online,free-games.cam,top-games.live,reviewhub.vip,reviewtech.me,pcreview.me,reviewstation.me#$#.downloadbtn { display: block !important; }
+kalosha.site,ofre15.online,forgee.xyz,monafes.site,regenzi.site,hegra.cam,migration.cam,reviewpalace.net,techplanet.cam,techland.live,gameplanet.cam,topgames.cam,techsoul.cam,gamehub.cam,gameland.click,gamestation.cam,gamezone.cam,gamesera.online,free-games.cam,top-games.live,reviewhub.vip,reviewtech.me,pcreview.me,reviewstation.me#$#.downloadbtn { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/146297
 oneslidephotography.com,apasih.my.id,financekami.com#$##wpsafe-wait1 { display: none !important; }
 oneslidephotography.com,apasih.my.id,financekami.com#$##wpsafe-generate { display: block !important; }
@@ -8286,12 +8306,15 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/197355
+ranoz.gg#%#//scriptlet('trusted-click-element', 'div[class^="page_box_wrapper"] a[aria-label="Download button"]:not([href])', '', '500')
+! https://github.com/AdguardTeam/AdguardFilters/issues/197130
+wp2hostt.com,blogmystt.com#%#//scriptlet('adjust-setInterval', 'countdown', '*', '0.001')
+wp2hostt.com,blogmystt.com#%#//scriptlet('adjust-setTimeout', 'nextPageForm', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197048
 osmanonline.me#%#//scriptlet('adjust-setTimeout', 'redirectButton', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197068
 legendei.net#%#//scriptlet('adjust-setInterval', 'countdown', '*', '0.001')
-! https://github.com/AdguardTeam/AdguardFilters/issues/196802
-howdyho.net#%#//scriptlet('trusted-set-attr', '#progress-value', 'data-timer', '0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196388
 alex71.com#%#//scriptlet('remove-attr', 'style', '#download-link')
 alex71.com#%#//scriptlet('remove-attr', 'disabled', '#download-btn')
@@ -9377,7 +9400,7 @@ filerio.in#%#//scriptlet("adjust-setTimeout", "tick()", "", "0.02")
 retrostic.com#%#//scriptlet("adjust-setInterval", "timeLeft--", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53145
 ! #%#//scriptlet("set-constant", "blurred", "false")
-upfiles.app,exe-urls.com,cuty.me,link.codevn.net,oii.la,upfiles-urls.com,tpi.li,evernia.site,falpus.com,cloutgist.com,plknu.com,nexnoo.com,tvi.la,iir.la,oei.la,clk.kim,ijvam.com,adpaylink.com,exuce.com,yoykp.com,pwrpa.cc,kiddyshort.com,cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*,link.paid4link.com,cutyurls.com,linkmo.net,doshrink.com,link.almaftuchin.com,easycut.io,linkpoi.me,adpayl.ink,news.speedynews.xyz,casperhd.com,exego.app,rewayatcafe.com,link4earn.com,safelink.asia,cravesandflames.com,xpshort.com,exalink.fun,infotamizhan.xyz,novelsapps.com,animerigel.com,megaurl.in,megafly.in,linx.cc,reqlinks.net,rgl.vn,wu8.in,upfilesurls.com,mgnetu.com,shorturl.unityassets4free.com,financerites.in,paid4file.com,atglinks.com,tii.la,exeo.app,smallinfo.in,cutty.app,adrinolinks.in,shareus.site,disheye.com,veganab.co,kinemaster.cc,faucetcrypto.net,download.windowslite.net,oko.sh,ckk.ai,forex-trnd.com,paylinnk.com,loptelink.com,short2fly.xyz,adslink.pw,shortx.net,du-link.in,haonguyen.top,pandaznetwork.com,bestcash2020.com,theconomy.me,wealthystyle.online,easysky.in,techgeek.digital,csd.xmod.in,defaultfreeshort.in,adsafelink.com,akashort.com,insurance-space.xyz,rajsayt.xyz,insurglobal.xyz,usanewstoday.club,clk.asia,cookdov.com,wplink.*,onroid.com,filmyzilla-in.xyz,zirof.com,katflys.com,samaa-pro.com,earnme.club,myshrinker.com,adshort.*,seulink.online,encurta.eu,adurly.cc,linkjust.com,crazyblog.in,swzz.xyz,try2link.com,baominh.tech,bblink.com,za.uy,gtlink.co,upshrink.com,upfiles.io,link.turkdown.com,beingtek.com,insuranceblog.xyz,linkfly.*,link1s.com,enagato.com,dl.tech-story.net,123link.biz,rancah.com,go.gets4link.com,clikern.com,musicc.xyz,xfiles.io,upfiles.com,dz-linkk.com,cslink.in,shrink.icu,hoastie.com,tei.ai,exey.*,birdurls.com,claimfreebits.com,shrlink.top,zshort.io,nerdy.vn,jameeltips.us,payskip.org,yxoshort.com,shrinke.me,oncehelp.com,enrt.eu,tui.click,adfloz.co,shrx.in,short.food-royal.com,adpop.me,galaxy-link.space,linkebr.com,smoner.com,charexempire.com,gplinks.co,adomainscan.com,linkshorts.*,cuts-url.com,gainbtc.click,cashearn.cc,cryptoads.space,modapk.link,gplinks.co,miklpro.com,sanoybonito.club,afly.pro,cutlink.link,exe.app,adcorto.xyz,cuturl.in,womenhaircolors.review,paidtomoney.com,apkshrt.com,linkshorts.me,pureshort.link,droplink.co,lite-link.com,bdnewsx.com,earnfasts.com,linksfire.co,pslfive.com,linksly.co,trinddz.com,ilinks.in,bitfly.io,imagenesderopaparaperros.com,c-ut.com,shrinkme.in,fir3.net,link1s.net,cashurl.in,clk.ink,apksvip.com,pkr.pw,todaynewspk.win,try2link.net,stfly.me,real-sky.com,bolssc.com,short2.cash,cutdl.xyz,shrinkurl.org,exee.io,srt.leechpremium.link,adsrt.live,tmearn.com,samapro.me,mondainai.moe,popimed.com,aii.sh,sekilastekno.com,miuiku.com,intothelink.com,slink.bid,7r6.com,loptelink.vip,iir.ai,biroads.com,win10.vn,mitly.us,afly.us,tii.ai,linkviet.xyz,coredp.com,linkrex.net,bit-url.com,adsrt.org,shorterall.com,fc.lc,shrinkme.io#%#//scriptlet("set-constant", "blurred", "false")
+zovo.ink,upfiles.app,exe-urls.com,cuty.me,link.codevn.net,oii.la,upfiles-urls.com,tpi.li,evernia.site,falpus.com,cloutgist.com,plknu.com,nexnoo.com,tvi.la,iir.la,oei.la,clk.kim,ijvam.com,adpaylink.com,exuce.com,yoykp.com,pwrpa.cc,kiddyshort.com,cl1ca.com,4br.me,fir3.net,seulink.*,encurtalink.*,link.paid4link.com,cutyurls.com,linkmo.net,doshrink.com,link.almaftuchin.com,easycut.io,linkpoi.me,adpayl.ink,news.speedynews.xyz,casperhd.com,exego.app,rewayatcafe.com,link4earn.com,safelink.asia,cravesandflames.com,xpshort.com,exalink.fun,infotamizhan.xyz,novelsapps.com,animerigel.com,megaurl.in,megafly.in,linx.cc,reqlinks.net,rgl.vn,wu8.in,upfilesurls.com,mgnetu.com,shorturl.unityassets4free.com,financerites.in,paid4file.com,atglinks.com,tii.la,exeo.app,smallinfo.in,cutty.app,adrinolinks.in,shareus.site,disheye.com,veganab.co,kinemaster.cc,faucetcrypto.net,download.windowslite.net,oko.sh,ckk.ai,forex-trnd.com,paylinnk.com,loptelink.com,short2fly.xyz,adslink.pw,shortx.net,du-link.in,haonguyen.top,pandaznetwork.com,bestcash2020.com,theconomy.me,wealthystyle.online,easysky.in,techgeek.digital,csd.xmod.in,defaultfreeshort.in,adsafelink.com,akashort.com,insurance-space.xyz,rajsayt.xyz,insurglobal.xyz,usanewstoday.club,clk.asia,cookdov.com,wplink.*,onroid.com,filmyzilla-in.xyz,zirof.com,katflys.com,samaa-pro.com,earnme.club,myshrinker.com,adshort.*,seulink.online,encurta.eu,adurly.cc,linkjust.com,crazyblog.in,swzz.xyz,try2link.com,baominh.tech,bblink.com,za.uy,gtlink.co,upshrink.com,upfiles.io,link.turkdown.com,beingtek.com,insuranceblog.xyz,linkfly.*,link1s.com,enagato.com,dl.tech-story.net,123link.biz,rancah.com,go.gets4link.com,clikern.com,musicc.xyz,xfiles.io,upfiles.com,dz-linkk.com,cslink.in,shrink.icu,hoastie.com,tei.ai,exey.*,birdurls.com,claimfreebits.com,shrlink.top,zshort.io,nerdy.vn,jameeltips.us,payskip.org,yxoshort.com,shrinke.me,oncehelp.com,enrt.eu,tui.click,adfloz.co,shrx.in,short.food-royal.com,adpop.me,galaxy-link.space,linkebr.com,smoner.com,charexempire.com,gplinks.co,adomainscan.com,linkshorts.*,cuts-url.com,gainbtc.click,cashearn.cc,cryptoads.space,modapk.link,gplinks.co,miklpro.com,sanoybonito.club,afly.pro,cutlink.link,exe.app,adcorto.xyz,cuturl.in,womenhaircolors.review,paidtomoney.com,apkshrt.com,linkshorts.me,pureshort.link,droplink.co,lite-link.com,bdnewsx.com,earnfasts.com,linksfire.co,pslfive.com,linksly.co,trinddz.com,ilinks.in,bitfly.io,imagenesderopaparaperros.com,c-ut.com,shrinkme.in,fir3.net,link1s.net,cashurl.in,clk.ink,apksvip.com,pkr.pw,todaynewspk.win,try2link.net,stfly.me,real-sky.com,bolssc.com,short2.cash,cutdl.xyz,shrinkurl.org,exee.io,srt.leechpremium.link,adsrt.live,tmearn.com,samapro.me,mondainai.moe,popimed.com,aii.sh,sekilastekno.com,miuiku.com,intothelink.com,slink.bid,7r6.com,loptelink.vip,iir.ai,biroads.com,win10.vn,mitly.us,afly.us,tii.ai,linkviet.xyz,coredp.com,linkrex.net,bit-url.com,adsrt.org,shorterall.com,fc.lc,shrinkme.io#%#//scriptlet("set-constant", "blurred", "false")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/53141
 4shared.com#%#(function(){-1==document.cookie.indexOf("exUserId")&&(document.cookie="exUserId=1; domain=.4shared.com; path=/;")})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/52387

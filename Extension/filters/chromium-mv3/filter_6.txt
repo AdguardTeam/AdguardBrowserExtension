@@ -1,8 +1,8 @@
-! Checksum: okfPX4LFbm4uN9hE5CCteQ
+! Checksum: I9NDSAU7kuRkUQS5vHLaRA
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.45.71
-! TimeUpdated: 2025-01-28T15:40:43+00:00
+! Version: 2.0.45.79
+! TimeUpdated: 2025-02-04T14:42:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1452,6 +1452,13 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+aktionspreis.de##.mj-pf-widget:not(:has(> *))
+windowsarea.de###post-sidebar > .widget_saxon_text
+windowsarea.de##.saxon-block:has(> .row:only-child > .windo-top-werbung)
+t-online.de##article > div > div:has( > div[data-testid^="Nativendo"])
+telepolis.de##.ad-ldb-container
+telepolis.de##.inread-cls-reduc
+telepolis.de##.a-article-teaser--sponsored
 spiegel.de##section[data-advertisement]
 digitalkamera.de##.sticky-footer
 digitalkamera.de###workshopWidgets
@@ -6349,7 +6356,7 @@ finanzen.ch#@#.adnz-ad-placeholder
 rtl.de#@#.adslot
 az.com.na#@#.adverts
 wetter.de#@#.base-ad-slot
-petbook.de,welt.de#@#.cnx-player-wrapper
+fitbook.de,petbook.de,welt.de#@#.cnx-player-wrapper
 openlimit.com#@#.content_ad
 di.fm,kellertheater.at#@#.firstload
 wallstreet-online.de#@#.footer-advertising
@@ -6460,7 +6467,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||chatntr.com^$third-party
 ||ci-marketing.de^$third-party
 ||cmadserver.de^$third-party
-||codes.wai.it^$third-party
 ||conative.de^$third-party
 ||connects.ch^$third-party
 ||cpdsrv.de^$third-party
@@ -6565,7 +6571,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||quality-channel.de^$third-party
 ||qualitymedianetwork.de^$third-party
 ||quartermedia.de^$third-party
-||quarterserver.de^$third-party
 ||rapidads.de^$third-party
 ||revresrennab.de^$third-party
 ||rgadvert.com^$third-party
@@ -6576,10 +6581,8 @@ wetter.com#@#div[id^="div-gpt-"]
 ||selfpuc.com^$third-party
 ||server4ads.com^$third-party
 ||servote.de^
-||sexgoesmobile.com^$third-party
 ||solads.media^$third-party
 ||sparkads.ws^$third-party
-||sparkassen-partner.de^$third-party
 ||sponsortown.de^$third-party
 ||spoods.io^$third-party
 ||stilanzeigen.net^$third-party
@@ -6617,7 +6620,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||wwm24.de^$third-party
 ||www.p.de^$third-party
 ||wz-werbewelt.de^$third-party
-||xaded.de^$third-party
 ||xiji.de^$third-party
 ||xtreff69.com^$third-party
 ||yoomedia.de^$third-party
@@ -6885,7 +6887,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||shuuz.de/banner/
 ||silbertresor.de^*/banner/$third-party
 ||sims-3.net/xbox.jpg
-||slotkings.de/img/banner/$third-party
 ||smskontakt.ch/images/$third-party
 ||sn-multimedia.de/weitereangebote-v2/$third-party
 ||sn-multimedia.de/weitereangebote/$third-party
@@ -6897,7 +6898,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||start.amateurcommunity.com^
 ||start.sexpartnercommunity.com^
 ||starting6.de/dyn_banner/$third-party
-||startparadies.de/banner/$third-party
 ||storage.googleapis.com/ba_utils/
 ||suchebiete.com/bilder/allgemein_kleinanzeigen.png
 ||suedtirol.live/delivery.js
@@ -7939,7 +7939,6 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||sex-infos.ch^*/clubBannerPremium/
 ||sex-inserate.ch/filestore/view/seco/
 ||sex4u.ch/img/banner_
-||sexeldorado.ch/banner/
 ||sexente.com/img/linklist2/
 ||sexforum.ch/ForumPics/BaPics/
 ||sexgeschichten.com/kosmonaut/
@@ -8386,7 +8385,6 @@ $csp=script-src 'self' data: 'unsafe-inline' 'unsafe-hashes' 'unsafe-eval' stati
 /lp/chip-$popup,domain=chip.de
 ^utm_medium=popunder^$popup,domain=hilfreich.de
 ||amazon.de^*^tag=$popup,domain=rheinlandpfalz-news.de
-||bitporno.to/api/direct/$popup
 ||count.shopping.t-online.de/RE?ID=$popup,domain=t-online.de
 ||data-load.me/partner/$popup
 ||ddownload.com/free$popup,domain=ibooks.to
@@ -9430,6 +9428,7 @@ designtagebuch.de##.billbo
 baupool.com,bundesliga.com,fnweb.de,formel1.de,laborjournal.de,ligaportal.at,linux-community.de,linux-magazin.de,mannheimer-morgen.de,tarnkappe.info,traktorpool.de,winfuture.de##.billboard
 android-hilfe.de##.billboard-ad-footer
 android-hilfe.de##.billboard-ad-top
+finanzfluss.de##.billboard-card
 infranken.de##.billboard-wrapper
 computerbild.de##.billboardBtfContainer
 djmag.de##.billboardbanner
@@ -9844,6 +9843,7 @@ zfans.de##.logo_rechts_mitte
 thsv-eisenach.de##.logos
 tv.herthabsc.com##.logos-partner-holder
 basic-tutorials.de##.losgehts-widget
+meteoaachen.de##.lshowcase-logos
 wallstreet-online.de##.lynxAds
 4investors.de##.lynxanzeige + .lynxcontainer
 stuttgarter-nachrichten.de##.m-weekli
@@ -9986,6 +9986,7 @@ gmx.net,web.de##.partner-links
 esports.ch##.partner-logos
 herthabsc.com##.partner-main-footer
 finanzfluss.de##.partner-news-card
+finanzfluss.de##.partner-suggestion
 bhc06.de##.partner-teaser
 eintracht.com##.partner-wrapper
 wallstreet-online.de##.partnerNews > a[target="_blank"]
@@ -10708,6 +10709,8 @@ giga.de##div[data-sdg-ad]
 augsburger-allgemeine.de##div[data-slot-name="banner"]
 augsburger-allgemeine.de##div[data-slot-name="banner2"]
 t-online.de##div[data-testid="TaboolaFeeds.Feed"]
+mobile.de##div[data-testid="VIP_BODY_1"]
+mobile.de##div[data-testid="VIP_BODY_CONTACT"]
 willhaben.at##div[data-testid="ad-detail-widget"]
 berliner-kurier.de,evangelische-zeitung.de##div[data-testid="article-billboard-advertisement"]
 sport1.de##div[data-testid="better-collective"]
@@ -11085,6 +11088,7 @@ boersennews.de###bnTickerContainer:has(#bnTickerAdNotice)
 chip.de###dlcharts-list + div:has(a[title*="Avast Free Antivirus"])
 chip.de##.Button__Wrapper:has(a[href^="https://x.chip.de/linktrack/button/"][href*="&type=text&"])
 baur.de##.MuiBox-root:has(a[href^="//b.fr3.eu.criteo.com/rm?"])
+mobile.de##.Q8G_R:has(div[data-testid="SRP_BILLBOARD-container"])
 berlinstadtservice.de##.a.block04:has(a[href^="https://www.awin1.com/"])
 saechsische.de##.article-box:has(> .article-box__text > .article-box__info > span.article-badge--ad)
 saechsische.de##.article-fill:has(.article-badge.article-badge--ad)
@@ -11265,6 +11269,7 @@ mediamarkt.de#?#[data-test="mms-search-flagship-sba"]:contains(Gesponsert)
 mediamarkt.de#?#[data-test="mms-search-showcase"] + div:contains(Gesponsert)
 meissen-fernsehen.de#?#.text-center:contains(- Werbung -)
 mmnews.de#?#.sp-module:has(span:contains(Kleinanzeigen))
+mobile.de#?#[data-testid="home-brand-portal-section-container"]:contains(Gesponsert)
 motorsport-total.com#?#.teaser_container.teaser-htmlcode.relative.row:has(.f1de-container-title:contains(Die besten Leasing-Deals))
 notebookcheck.com#?#.introa_news:contains(Anzeige)
 nur-positive-nachrichten.de#?#.moduletable.text-center:has(.bildunterschrift:contains(Anzeige))
@@ -11419,22 +11424,22 @@ zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + div
 @@||welt.de^$generichide
 @@||www.t-online.de^$generichide
 @@||amazon-adsystem.com/aax2/amzn_ads.js$domain=autobild.de
-@@||asadcdn.com/adlib/$domain=petbook.de|welt.de
-@@||capi.connatix.com^$domain=petbook.de|welt.de
-@@||cd.connatix.com/connatix.player.js?$domain=petbook.de|welt.de
-@@||cds.connatix.com^$domain=petbook.de|welt.de
+@@||asadcdn.com/adlib/$domain=fitbook.de|petbook.de|welt.de
+@@||capi.connatix.com^$domain=fitbook.de|petbook.de|welt.de
+@@||cd.connatix.com/connatix.player.js?$domain=fitbook.de|petbook.de|welt.de
+@@||cds.connatix.com^$domain=fitbook.de|petbook.de|welt.de
 @@||g.doubleclick.net/gampad/ads?$script,xmlhttprequest,domain=brigitte.de|eltern.de
 @@||g.doubleclick.net/gampad/ads?$xmlhttprequest,domain=geo.de
 @@||g.doubleclick.net/gampad/adx?$script,domain=gala.de
 @@||g.doubleclick.net/gampad/adx?*/wetter_direct_toolbar$document,subdocument,domain=wetter.com
 @@||g.doubleclick.net/gpt/pubads_$script,domain=wetter.com
 @@||g.doubleclick.net/gpt/pubads_impl_$script,domain=brigitte.de|eltern.de|geo.de
-@@||g.doubleclick.net/pagead/managed/js/gpt/*/pubads_impl.js$domain=petbook.de|welt.de
+@@||g.doubleclick.net/pagead/managed/js/gpt/*/pubads_impl.js$domain=fitbook.de|petbook.de|welt.de
 @@||g.doubleclick.net/static/glade.js$domain=autobild.de
 @@||g.doubleclick.net/static/glade/extra_$script,domain=autobild.de
-@@||g.doubleclick.net/tag/js/gpt.js$domain=brigitte.de|eltern.de|geo.de|petbook.de|welt.de
+@@||g.doubleclick.net/tag/js/gpt.js$domain=brigitte.de|eltern.de|fitbook.de|geo.de|petbook.de|welt.de
 @@||googlesyndication.com/pagead/imgad?$image,domain=auto-motor-und-sport.de
-@@||ib.adnxs.com/ut/v3$domain=petbook.de|welt.de
+@@||ib.adnxs.com/ut/v3$domain=fitbook.de|petbook.de|welt.de
 @@||sascdn.com/diff/251/*/Abo-Teaser_fuer_ab.de-Home.png$image,domain=autobild.de
 @@||sascdn.com/diff/251/*/aktionen_191x108.jpg$image,domain=autobild.de
 @@||sascdn.com/diff/251/*/gebrauchtwagenmarkt.png$image,domain=autobild.de
