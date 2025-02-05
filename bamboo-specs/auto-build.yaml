@@ -45,10 +45,8 @@ Lint:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
-    - checkout: &checkout
+    - checkout:
         force-clean-build: true
-        # Fetches only recent commits
-        shallow-clone: true
     - script:
         interpreter: SHELL
         scripts:
@@ -83,7 +81,8 @@ Unit tests:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
-    - checkout: *checkout
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -121,7 +120,8 @@ Locales check:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
-    - checkout: *checkout
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -157,7 +157,8 @@ Update filters:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
-    - checkout: *checkout
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -206,7 +207,8 @@ AutoBuild:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
-    - checkout: *checkout
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
