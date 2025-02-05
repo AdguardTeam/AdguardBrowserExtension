@@ -222,6 +222,12 @@ AutoBuild:
             # Fix mixed logs
             exec 2>&1
 
+            # Ensure we are on the latest commit after the previous stage's
+            # commit since Bamboo caching the repository state at the start of
+            # the build plan.
+            git fetch origin ${bamboo.planRepository.branchName}
+            git reset --hard origin/${bamboo.planRepository.branchName}
+
             ls -la
 
             # Set cache directory
