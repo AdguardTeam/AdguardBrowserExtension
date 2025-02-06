@@ -321,6 +321,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 },
                 {
                     test: /\.(js|ts)x?$/,
+                    // TODO: Check, maybe it can be removed. Added in AG-28996.
                     exclude: /node_modules\/(?!@adguard\/tswebextension)/,
                     use: [
                         {

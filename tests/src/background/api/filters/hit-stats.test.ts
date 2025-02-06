@@ -166,7 +166,7 @@ describe('Hit Stats Api', () => {
         // Add a hit to the first filter again to trigger the sending of stats
         HitStatsApi.addRuleHit(FIRST_FILTER_ID, ruleIndex);
 
-        // addRuleHit is a sync method, but it calls saveAndSaveHitStats which is async,
+        // addRuleHit is a sync method, but it calls saveAndSendHitStats which is async,
         // so we need wait for it to be called
         await waitForExpect(
             () => {

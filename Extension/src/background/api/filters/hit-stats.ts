@@ -53,8 +53,8 @@ export class HitStatsApi {
     /**
      * Saves and sends hit stats with {@link saveTimeoutMs} debounce.
      */
-    private static debounceSaveAndSaveHitStats = debounce(() => {
-        HitStatsApi.saveAndSaveHitStats();
+    private static debounceSaveAndSendHitStats = debounce(() => {
+        HitStatsApi.saveAndSendHitStats();
     }, HitStatsApi.saveTimeoutMs);
 
     /**
@@ -92,7 +92,7 @@ export class HitStatsApi {
         }
 
         hitStatsStorage.addRuleHitToCache(filterId, ruleIndex);
-        HitStatsApi.debounceSaveAndSaveHitStats();
+        HitStatsApi.debounceSaveAndSendHitStats();
     }
 
     /**
@@ -209,7 +209,7 @@ export class HitStatsApi {
     /**
      * Saves and sends hit stats.
      */
-    private static async saveAndSaveHitStats(): Promise<void> {
+    private static async saveAndSendHitStats(): Promise<void> {
         await hitStatsStorage.save();
         await HitStatsApi.sendStats();
     }
