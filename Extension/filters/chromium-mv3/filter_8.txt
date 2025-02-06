@@ -1,8 +1,8 @@
-! Checksum: 2kEFcwCdYh+cCQlmkJ0e1w
+! Checksum: 68ZNZHztNHoh2mW/D9uOLA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.59
-! TimeUpdated: 2025-01-22T13:41:01+00:00
+! Version: 2.0.7.62
+! TimeUpdated: 2025-02-03T11:42:29+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1497,6 +1497,9 @@ vakantieplaats.nl#@#.topAds
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/197442
+hartvannederland.nl#@##topbanner_ad
+@@||assets.prod.webx.talpa.digital/ad/view/$domain=hartvannederland.nl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178088
 topkleurplaat.nl#%#//scriptlet('prevent-setTimeout', '.height() === 0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177923
@@ -1664,6 +1667,8 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+hartvannederland.nl##div[data-advert-slot-state]
+hartvannederland.nl#?#div:has(> span:first-child:contains(Advert))
 omroepbrabant.nl#%#//scriptlet('google-ima3')
 omroepbrabant.nl#%#//scriptlet('adjust-setTimeout', '[native code]', '6000', '0.001')
 9292.nl##:is(div, aside, astro-island):has(> div[data-testid="gpt-ad-root"])
@@ -1694,7 +1699,7 @@ iphoned.nl##div[data-name="dynamic-content"]:has(> div[id^="div-gpt-"])
 iphoned.nl##div[data-name="featured-header-container"] > header[data-campaign]
 iphoned.nl##article > .no-content-styles:has(> div[data-nosnippet] > div[data-name="dynamic-content-injected"][data-campaign])
 rtl.nl##div[data-adslot-variant]
-bright.nl##body .ad
+bright.nl##html > body .ad:not(#style_important)
 nieuwsblad.be##.cba_container_grid
 dumpert.nl##div[class^="css-"]:has(> div[class^="css-"]:only-child > .ad)
 402online.com##.bannerblock
@@ -1903,6 +1908,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/197520
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177361
 marktnet.nl#@#.ad-description
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165229

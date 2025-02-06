@@ -12,12 +12,10 @@ environments:
   - AutoDeployAndPublish Beta
 
 AutoDeployAndPublish Release:
-  triggers: []
-  # TODO: Uncomment after first successful build.
   # run auto-deploy only after successful build
-  # triggers:
-  #   - build-success:
-  #       branch: release/mv3-filters
+  triggers:
+    - build-success:
+        branch: release-mv3-filters
   tasks:
     - clean
     - checkout:
@@ -64,12 +62,10 @@ AutoDeployAndPublish Release:
             url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
 
 AutoDeployAndPublish Beta:
-  triggers: []
-  # TODO: Uncomment after first successful build.
   # run auto-deploy only after successful build
-  # triggers:
-  #   - build-success:
-  #       branch: release/mv3-filters
+  triggers:
+    - build-success:
+        branch: release-mv3-filters
   tasks:
     - clean
     - checkout:
