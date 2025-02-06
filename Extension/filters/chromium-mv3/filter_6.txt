@@ -1,8 +1,8 @@
-! Checksum: ri42yn3/E3j8TT9/xsmnYQ
+! Checksum: NWeI1Fq/Si39Vb0oApK2AA
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.45.80
-! TimeUpdated: 2025-02-05T17:39:33+00:00
+! Version: 2.0.45.84
+! TimeUpdated: 2025-02-06T00:38:53+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -344,7 +344,7 @@ wize.life#@#.Ads_4
 !+ NOT_OPTIMIZED
 watson.de#@#.advertisement-banner
 !+ NOT_OPTIMIZED
-watson.de#@#.ad-placeholder
+watson.de#@#.ad-placeholder:not(#filter_ads_by_classname):not(#detect_ad_empire):not(#detect):not(.adsbox)
 !+ NOT_OPTIMIZED
 motorsport-total.com#@#.werbeblock
 !+ NOT_OPTIMIZED
@@ -1452,6 +1452,11 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+dasheimwerkerforum.de##body > #fh-div
+dasheimwerkerforum.de##.p-body-sidebar > .block:has( [id*="_mpu_"])
+dasheimwerkerforum.de###fh-inside-bottom
+fachwerk.de##.js-replyNewMessageContainer > article:not([id^="js-post"])
+bauexpertenforum.de##.signatureAdBot
 aktionspreis.de##.mj-pf-widget:not(:has(> *))
 windowsarea.de###post-sidebar > .widget_saxon_text
 windowsarea.de##.saxon-block:has(> .row:only-child > .windo-top-werbung)
@@ -1491,7 +1496,10 @@ blick.ch##[class*="slot-code-"]
 oeffentlicher-dienst.info##div[class^="fallback-"]
 oeffentlicher-dienst.info##a[id^="fallback-"]
 willhaben.at##div[class*="Grid__GridArea-sc-"]> div:not(class) > div[class^="Box-sc-"]:has(> div#apn-medium-leaderboard)
-auto-motor-und-sport.de##.va-stroer-billboard
+menshealth.de,auto-motor-und-sport.de##.va-stroer-billboard
+menshealth.de,auto-motor-und-sport.de##div:has(> div:only-child > div[data-mps_adname])
+menshealth.de##div:has(> div:only-child > .OUTBRAIN)
+menshealth.de,auto-motor-und-sport.de##div:has(> div[id^="div-gpt-ad"]:only-child)
 pcgames.de##.innerArticleModule:has(> span.anzKenn)
 4investors.de##.lynxanzeige
 4investors.de##.mittig
@@ -7334,6 +7342,10 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||finanzen.net/images/b_aktien/UBS_Partneraktionen_655x255_statisch.svg
 ||finanzen.net/images/b_devisen/p500-krypto.png
 ||finanzen.net/images/b_euro_eurams/banner_wiki_eas.png
+||finanzen.net/images/b_home/bitpanda-integration-
+||finanzen.net/images/b_home/invesco-integration.
+||finanzen.net/images/b_home/philoro-integration-
+||finanzen.net/images/b_home/vontobel-integration.
 ||finanzen.net/images/b_partner/
 ||finanzen.net/images/b_realtime/hsbctopflop.png
 ||finanzen.net/images/b_realtime/ubspassendeprodukte.png
@@ -11197,6 +11209,11 @@ jungefreiheit.de##div[data-widget_type="shortcode.default"]:has(.adsbygoogle)
 mobile.de##div[style="min-height:250px"]:has(#SRP_BILLBOARD_ADSENSE)
 jungefreiheit.de##div[style="text-align: center;"]:has(.adsbygoogle)
 windowspro.de##div[style]:has(a[onclick])
+finanzen.*###HomepageIssuerNews
+finanzen.*##.adnz-ad-placeholder--google
+finanzen.*##.adnz-ad-placeholder--wideboard
+finanzen.*##.page-layout__ad-content
+finanzen.*##div[class^="ad-wrapper-"]
 mein-mmo.de##li.article:has([data-type="sponsored"])
 dogforum.de##li:has(.wbbXdLocationAfter1stPostAsPost)
 dogforum.de##li:has(.wbbXdLocationPostList)

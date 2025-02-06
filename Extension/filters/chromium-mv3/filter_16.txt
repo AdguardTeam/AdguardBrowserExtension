@@ -1,8 +1,8 @@
-! Checksum: wVsLubZLLf/T56akBnL2oA
+! Checksum: 5LX6AcmXDRGLwGcm1iUTfA
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.49.99
-! TimeUpdated: 2025-02-05T11:41:48+00:00
+! Version: 2.0.50.3
+! TimeUpdated: 2025-02-06T01:39:08+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -99,8 +99,6 @@ sekai.one###adblock-modal
 ||statics.liberation.fr/newsite/js/cmp/gtm.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185935
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192538
-equinoxmagazine.fr,adala-news.fr#@#.sidebar-ad
-equinoxmagazine.fr,adala-news.fr#@#.Ad-Container
 equinoxmagazine.fr,adala-news.fr#%#//scriptlet('abort-current-inline-script', 'jQuery', 'adblocker')
 equinoxmagazine.fr,adala-news.fr#%#//scriptlet('set-constant', 'penci_options_set.ad_blocker_detector', 'false')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183492s
@@ -177,7 +175,7 @@ cosmopolitan.fr#@#.AdsBox
 ! https://github.com/AdguardTeam/AdguardFilters/issues/151986
 malekal.com#%#//scriptlet('prevent-fetch', 'js.sddan.com')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/150608
-ebookdz.com#@#.ad-placeholder
+ebookdz.com#@#.ad-placeholder:not(#filter_ads_by_classname):not(#detect_ad_empire):not(#detect):not(.adsbox)
 ebookdz.com#$#body { overflow-y: auto !important; }
 ebookdz.com#$##abDetectorModal { display: none !important; }
 ebookdz.com#%#//scriptlet('abort-on-property-read', 'ABDetector')
@@ -1882,6 +1880,7 @@ geo.fr#@#[data-ads-core]
 @@||securepubads.g.doubleclick.net/pagead/ppub_config?$domain=ozap.com
 @@||securepubads.g.doubleclick.net/gampad/ads?$domain=ozap.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/145593
+@@||asuscomm.com/popup.js
 @@||demoui.asus.com/popup.js
 @@||asusrouter.com/popup.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/143136
@@ -2295,7 +2294,7 @@ spark.adobe.com#@#div[id^="PostAd"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/65742
 @@||c.disquscdn.com/next/embed/$domain=gogoanimes.tv
 ! https://github.com/AdguardTeam/AdguardFilters/issues/65616
-@@||assets.alicdn.com/*/source/pages/affiliate.js$domain=aliexpress.com|aliexpress.ru
+@@||assets.alicdn.com/*/source/pages/affiliate.js$domain=aliexpress.com|aliexpress.us|aliexpress.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/65214
 faststonecapture.cn#@#.pub_left
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64946
@@ -2620,8 +2619,6 @@ tubedupe.com#@#.is-ad-visible
 tennisactu.net#@##bgclicable
 ! https://github.com/AdguardTeam/AdguardFilters/issues/16198
 @@||sonycrackle.com/vendor/crypto-js/crypto-js.js
-! https://forum.adguard.com/index.php?threads/28700/
-||aliexpress.com^*&aff_platform=$popup,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/15407
 porngem.com#@#.is-ad-visible
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14912
@@ -2977,8 +2974,6 @@ alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#
 /pub/bannieres/*
 /pub/bg.php?
 /pub/habillage-
-/pub/pub-
-/pub/pub_
 /pub_250_
 /pub_title.
 /publicidadsetup/*
@@ -15954,7 +15949,6 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshr.ink|adshr
 ##div[id^="lsadvert-"]
 ##div[id^="meloAd-"]
 ##div[id^="nativeAds_"]
-##div[id^="optidigital-adslot-"]
 ##div[id^="parent-arcAds-"]
 ##div[id^="pub-dfp-"]
 ##div[id^="rafael_side_ads_widget-"]
@@ -16480,8 +16474,6 @@ nouvelobs.com##.ObsPartners
 bienpublic.com,lalsace.fr##.OffreHabitat
 outlook.live.com##.Ogt7j[id*="-"]
 essonneinfo.fr##.Partenaire
-jardiner-malin.fr##.Pblc
-jardiner-malin.fr##.Pblc2
 radiofrance.fr##.PopSlot
 marmiton.org##.RCP__sc-i1pqes-4
 marmiton.org##.SHRD__sc-juz8gd-2
@@ -16967,6 +16959,7 @@ lefigaro.fr##.pane-bloc-ad
 lesoir.be##.pane-bloc-partenaires
 monbestseller.com##.pane-mbspush
 lesoir.be##.pane-vacances-web-box
+jardiner-malin.fr##.parent-billboard
 leparisien.fr##.parisien-section.pratique
 lequotidiendupharmacien.fr##.parntners-holder
 jeuxvideo.com##.part-boutique

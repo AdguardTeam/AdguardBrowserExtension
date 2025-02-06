@@ -1,8 +1,8 @@
-! Checksum: 12AnGjgkQ/8Kw6jXg1xBmQ
+! Checksum: uAIqadu5tnNHPOGteZLIBQ
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.49.91
-! TimeUpdated: 2025-02-05T15:40:44+00:00
+! Version: 2.0.49.95
+! TimeUpdated: 2025-02-06T08:43:50+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1722,6 +1722,10 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+hilites.today#$#body { overflow: auto !important; }
+hilites.today#$##adBlockerPopup { display: none !important; }
+hilites.today#$#.modal-backdrop { display: none !important; }
+hilites.today#%#//scriptlet('abort-on-property-write', 'showAdBlockPopUp')
 iphoned.nl##article > div.text-center:has(> div.adblock-detect)
 u.gg#%#//scriptlet('set-constant', 'Object.prototype.bannerIds', 'emptyArr')
 retail.ru##.c1-retail
@@ -3305,7 +3309,6 @@ crainsdetroit.com#@#.ad01
 deine-tierwelt.de#@#.adunit
 dhd24.com#@#.adunit
 diariodenavarra.es#@##AdBanner
-diariodenavarra.es#@#.Ad-Container
 digitalcameraworld.com#@#.googleAd
 digitalsynopsis.com#@#.ad_slot
 digitaltrends.com#@#.ad_container
@@ -3316,7 +3319,7 @@ dumpert.nl#@#.ads_box
 express.co.uk,androidpolice.com#@#.div-gpt-ad
 fr.de,innsalzach24.de,bgland24.de#@#div[id^="traffective-ad-"]
 game-debate.com#@#.sponsored-ad
-globalnews.ca#@#.ad-placeholder
+globalnews.ca#@#.ad-placeholder:not(#filter_ads_by_classname):not(#detect_ad_empire):not(#detect):not(.adsbox)
 haberturk.com#@#.div-gpt-ad
 hardware.info#@#.advertorial
 hentaidude.com#@#.adsArea
@@ -4352,6 +4355,8 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+fanyi.baidu.com###multiContainer > div[style*="background-color:"]
+fanyi.baidu.com##.ant-tooltip
 siecobywatelska.pl###pum-38941
 folha.uol.com.br###top-signup-close
 booking.design##div[role="dialog"] ~ div[class]:has(> div[style^="bottom:"] > div[class] > div[class] > div[class] > img[src^="https://miro.medium.com/"] ~ div[class] > div[class] > div[class] > span > a[href^="https://medium.com/m/signin?"])
@@ -11991,6 +11996,7 @@ macwelt.de,pcwelt.de#%#//scriptlet("set-constant", "firebase.messaging", "noopFu
 !
 ! SECTION: Push notifications - Regular rules
 !
+/webpush-ui.js$domain=aliexpress.com|aliexpress.us
 crocs.pl##.webpush-wrapper
 fastpic.org#%#//scriptlet('remove-node-text', 'script', 'crWEbPushEl')
 menland.pl#%#//scriptlet('set-constant', 'Notification.permission', 'undefined')
@@ -12233,7 +12239,6 @@ tycsports.com###modalCognitoPush
 eltiempo.com##.signwall-notificacion
 voici.fr,gala.fr##.showPush
 voici.fr,gala.fr##.showPush + div.genericModal-overlay
-||assets.alicdn.com/*/webpush-ui.js
 lifebursa.com##body div#notificationPopup
 einvestidor.estadao.com.br###push-notification-prompt-container
 girafa.com.br#%#//scriptlet('set-cookie', 'saiupagina', 'true')
@@ -12869,6 +12874,10 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+qodo.ai##.blog-article-footer-newsletter-wrapper
+qodo.ai##.icw-sticky
+qodo.ai##.blog-article-sidebar-newsletter
+qodo.ai#?#.blog-article-sidebar-title:has(> strong:only-child:contains(newsletter))
 xronos.gr##.has-google-news
 mozilla.org###newsletter-banner
 crocs.pl##.snrs-modal-wrapper

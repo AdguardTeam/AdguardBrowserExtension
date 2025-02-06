@@ -1,8 +1,8 @@
-! Checksum: v4b8KuSmVRhx0Q6/9rSLIw
+! Checksum: 3BnLb2nhJSmaZGw4+uxIAg
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.97.39
-! TimeUpdated: 2025-02-05T15:31:20+00:00
+! Version: 2.0.97.41
+! TimeUpdated: 2025-02-06T05:31:06+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -18395,9 +18395,8 @@ youla.ru##.product_item--ad
 vfokuse.mail.ru##a[class^="rb-"][class*="branding"]
 !
 ! VK
-vk.com,vk.ru#%#//scriptlet('trusted-replace-xhr-response', '/banner:/g', '_banner:', '.php', 'true')
+vk.com##.feed_rovv
 vk.com,vk.ru###feed_rows > div[class="feed_row "]:has(div[class^="PostHeaderTitle "] > div.PostHeaderTitle__authorBlock span.PostHeaderTitle__authorName)
-vk.com,vk.ru#?##feed_rows > div:has(> div:not([tabindex]):matches-attr("/[a-z0-9]{7}/"))
 vk.com,vk.ru#?##feed_rows > div:has(div[class] > *:matches-css(before, content: /[Реклама]|^•$/))
 vk.com,vk.ru#?##feed_rows > div:has(div[class] > *:matches-css(after, content: /[Реклама]|^•$/))
 vk.com,vk.ru#?##feed_rows > div[class^="feed_row"]:has(> div[class] .PostHeaderSubtitle:contains(/[Реклама]/))
@@ -18413,6 +18412,7 @@ vk.com,vk.ru###apps_ads_wrap
 vk.com,vk.ru###system_msg
 vk.com,vk.ru##div#left_ads
 vk.com,vk.ru##div[data-ad]
+! vk.com,vk.ru#%#//scriptlet('trusted-replace-xhr-response', '/banner:/g', '_banner:', '.php', 'true')
 ! vk.com,vk.ru###feed_rows > div[class="feed_row "] > div[class^="feed_repost-"]:has(div[class="wall_marked_as_ads"])
 ! vk.com,vk.ru##[class^="ads_ad_"]
 ! vk.com,vk.ru###page_wall_posts > div.post_marked_as_ads
