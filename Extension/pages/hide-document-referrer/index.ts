@@ -16,4 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * We do not inject this scripts manually from extension, because it will be
+ * dynamically registered and unregistered by the tswebextension when the
+ * stealth option is enabled/disabled.
+ */
 import '@adguard/tswebextension/mv3/hide-document-referrer';
