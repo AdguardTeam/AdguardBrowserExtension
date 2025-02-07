@@ -14,7 +14,8 @@ environments:
 AutoDeployAndPublish Release:
   # run auto-deploy only after successful build
   triggers:
-    - build-success:
+    - stage-success:
+        stage: Integration tests
         branch: release-mv3-filters
   tasks:
     - clean
@@ -49,8 +50,6 @@ AutoDeployAndPublish Release:
         configuration:
           selectedRepository: '26051221'
           tagName: v${bamboo.inject.version}-release
-  final-tasks: []
-  variables: {}
   requirements:
     - adg-docker: 'true'
   notifications:
@@ -64,7 +63,8 @@ AutoDeployAndPublish Release:
 AutoDeployAndPublish Beta:
   # run auto-deploy only after successful build
   triggers:
-    - build-success:
+    - stage-success:
+        stage: Integration tests
         branch: release-mv3-filters
   tasks:
     - clean
@@ -99,8 +99,6 @@ AutoDeployAndPublish Beta:
         configuration:
           selectedRepository: '26051221'
           tagName: v${bamboo.inject.version}-beta
-  final-tasks: []
-  variables: {}
   requirements:
     - adg-docker: 'true'
   notifications:
