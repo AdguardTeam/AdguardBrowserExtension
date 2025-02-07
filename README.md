@@ -33,14 +33,9 @@
     </picture>
 </p>
 
-AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads
-and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers,
-but prevent web sites from building your shadow profile.
-Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source.
-You can learn more about [the difference](https://adguard.com/compare.html) here.
+AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers, but prevent web sites from building your shadow profile. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
 
-> AdGuard does not collect any information about you, and does not participate in any acceptable ads program.
-> The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
+> AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
 - [Installation](#installation)
     - [Chrome and Chromium-based browsers](#installation-chrome)
@@ -63,6 +58,8 @@ You can learn more about [the difference](https://adguard.com/compare.html) here
         - [Debug MV3 declarative rules](#dev-debug-mv3)
     - [Linter](#dev-linter)
     - [Update localizations](#dev-localizations)
+- [Permissions required](#permissions-required)
+- [Auto-publish builds](#auto-publish-builds)
 - [Minimum supported browser versions](#browser-compatibility)
 
 ## <a name="installation"></a> Installation
@@ -446,6 +443,14 @@ pnpm locales info
 - `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+
+## <a name="auto-publish-builds"></a> Auto-publish builds
+
+Due to the transition from MV2 to MV3, we cannot update our filters remotely. To keep the filters as fresh as possible, we have configured automated tasks in our CI plans. These tasks will build a new version of the extension with only the updated `@adguard/dnr-rulesets` package, which contains new static rulesets.
+
+These automated tasks will run all necessary checks: unit tests, translation checks, and linter. After that, they will update resources, including filters and local script rules, create a build, and run integration tests to ensure the update is safe.
+
+Finally, the new version of the extension will be published to the Chrome Web Store.
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 
