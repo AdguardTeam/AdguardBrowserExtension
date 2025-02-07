@@ -1,8 +1,8 @@
-! Checksum: cKMc18cylhueAH5sgI0YJQ
+! Checksum: LiIHtxkCVjzsprSDnTcAQg
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.58.3
-! TimeUpdated: 2025-02-06T03:42:32+00:00
+! Version: 2.0.58.8
+! TimeUpdated: 2025-02-06T20:38:15+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2368,6 +2368,21 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+m.humoruniv.com###read > div[style*="z-index"]:not([class],[id],[style="clear:both;"])
+m.humoruniv.com###read > div[id]:has(> p[class=""]:first-child + div[id*="_div"])
+m.humoruniv.com##body > #read_ok_desc_div ~ div[id][style^="min-height:"]
+m.humoruniv.com##body #comment div[id]:has(> div[id] > img[src^="/images/zdr.gif"])
+m.humoruniv.com#%#//scriptlet("set-constant", "list_end_run_center_boom", "noopFunc")
+m.humoruniv.com#%#//scriptlet("set-constant", "list_end_run_comment_bottom_boom", "noopFunc")
+m.humoruniv.com#%#//scriptlet("set-constant", "list_end_run_pds_notice_boom", "noopFunc")
+m.humoruniv.com#%#//scriptlet("set-constant", "list_end_run", "noopFunc")
+m.humoruniv.com#%#//scriptlet("set-constant", "list_end_run_read_top_boom", "noopFunc")
+m.humoruniv.com###pnut_ad_bottom
+m.humoruniv.com##div[id][style^="min-height"]:empty
+m.humoruniv.com##body > span[id]:has(> div[class]:first-child > div[class]:only-child > table img + div > span[onclick])
+mediacourant.nl##div[id^="ada-inread-"]
+apnews.com###mobile-entitlements
+apnews.com##.LeaderBoardAd-Mobile
 ||navitime.co.jp/static/pc/l/202502041800/img/sp/transfer/searchlist/banner-s-ride-sp-last-train.png
 canal26.com##nav > .top-0.h-10.z-20
 peing.net##body > button.close-button[style^="position: fixed; left: 50%; background: none;"]
@@ -3873,6 +3888,7 @@ g-journal.jp##div[style*="min-height: 250px;"]
 e1.ru##div[data-test="sticky-header"] + div[class]
 friday.kodansha.co.jp##div[class^="styles_period"] > ol[class^="styles_rankingList"] > li:not([data-cx-position])
 moqlog.jp##.spbill
+cityheaven.net##.noguide_banner
 cityheaven.net##.adm-layoutshift-loading
 m.ura.news##div[class$="placeholder"]
 search.yahoo.co.jp##.TSg_Ad

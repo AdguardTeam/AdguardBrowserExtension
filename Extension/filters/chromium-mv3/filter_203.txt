@@ -1,14 +1,14 @@
-! Checksum: e/+a83CNrBu88c29iSq4qg
+! Checksum: sSFbYLUxSiPpGCBWMjrNmQ
 ! Title: Hungarian filter
 ! Description: Hufilter. Filter list that specifically removes ads on websites in the Hungarian language.
-! Version: 2.0.3.32
-! TimeUpdated: 2025-01-29T01:01:27+00:00
+! Version: 2.0.3.33
+! TimeUpdated: 2025-02-07T01:01:28+00:00
 ! Expires: 10 days (update frequency)
 !
-! Checksum: 8FV1P/kgnhSrDEevtk6RRg
-! OriginalVersion: 202501281036
+! Checksum: O9gkISTB4FBfczu74MqZkg
+! OriginalVersion: 202502060907
 ! Title: Hufilter for AdGuard
-! Last modified: 28 Jan 2025 10:36 UTC
+! Last modified: 06 Feb 2025 09:07 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://hufilter.hu
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -1148,6 +1148,9 @@ vg.hu##div[class*="hirdetes"]
 vg.hu##div[class="fej_felett cf"]
 vg.hu##div[id*="etarget"]
 videa.hu###sitemessage
+! https://github.com/AdguardTeam/AdguardFilters/issues/197485
+videa.hu###videa-video-overlay
+videa.hu##.ad-manager-container
 videoklinika.hu##div[id*="Banner"]
 vidget.hu##[class*="banner"]
 vilagszam.hu##[class^="adv"]
@@ -1906,6 +1909,9 @@ dehir.hu#$#body { overflow: auto !important; }
 !-------------------------------------------------------------------------------!
 ! https://github.com/hufilter/hufilter/issues/8
 blikk.hu#%#//scriptlet('set-cookie', 'isLeavingPopUpReady', '3')
+! https://github.com/hufilter/hufilter/issues/520
+fizz.hu#%#//scriptlet('set-cookie', 'cookie.consent.finished', '1')
+fizz.hu#%#//scriptlet('set-cookie', 'gdpr_level', '1')
 hetek.hu#%#//scriptlet('remove-class', 'modal-open', 'body')
 hosszupuskasub.com#%#//scriptlet('prevent-window-open')
 lifestory.hu#%#//scriptlet('remove-attr', 'oncontextmenu')

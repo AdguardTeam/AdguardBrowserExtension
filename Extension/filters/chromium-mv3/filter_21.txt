@@ -1,8 +1,8 @@
-! Checksum: bshdTGbEiKL2FawAeqxoUg
+! Checksum: IR0eXeaMQ34MjhoGfPnMuw
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.30.43
-! TimeUpdated: 2025-02-06T08:43:51+00:00
+! Version: 2.0.30.46
+! TimeUpdated: 2025-02-06T20:38:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1279,6 +1279,7 @@ digitalvidya.com###text-13
 digitalvidya.com###text-8
 digitalvidya.com###text-21
 ! "Foreign agents" / "Иностранные агенты"
+music.yandex.ru##.page-artist__agent
 kavkaz-uzel.eu##.inoagenty
 kavkaz-uzel.eu#?#.text-block > p:contains(КАСАЕТСЯ ДЕЯТЕЛЬНОСТИ ИНОСТРАННОГО АГЕНТА)
 levada.ru###ebala
@@ -3479,6 +3480,9 @@ habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Бл
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/197618
+pixelcut.ai#$#div[class*="radix"] { display: none !important; }
+pixelcut.ai#$?#body { pointer-events: auto !important; }
 ! telepolis.de - self-promo in article
 telepolis.de##div[data-module-name="AdModule"]
 telepolis.de##a-with-access[access-right="telepolis-unterstuetzer"]
@@ -5328,6 +5332,7 @@ book.oricon.co.jp##a[href^="https://apay-up-banner.com?merchantId="] > img
 !
 ! SECTION: Self-promo - Regular rules
 !
+opovo.com.br##.cta__assine
 watchmojo.com##.trivia-status-mobile
 profi.ru###about_banner
 wiz.io##.prose > div.group:has(> a[href="https://wiz.io/demo"])
