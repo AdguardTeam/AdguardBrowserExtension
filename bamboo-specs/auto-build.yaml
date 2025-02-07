@@ -9,6 +9,8 @@ variables:
   dockerPlaywright: adguard/playwright-runner:1.48.2--0
   # Node.js is needed for build and tests.
   dockerNode: adguard/extension-builder:18.19.0--0.1.3
+  # Stable branch name for auto-update only filters.
+  stableBranchName: release/mv3-filters
 
 stages:
   - Tests:
@@ -18,16 +20,11 @@ stages:
         - Lint
         - Unit tests
         - Locales check
-  - Update filters:
+  - Update filters and build:
       manual: false
       final: false
       jobs:
-        - Update filters
-  - AutoBuild:
-      manual: false
-      final: false
-      jobs:
-        - AutoBuild
+        - Update filters and build
   - Integration tests:
       manual: false
       final: false
@@ -43,6 +40,8 @@ Lint:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -77,6 +76,8 @@ Unit tests:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -97,7 +98,8 @@ Unit tests:
   final-tasks:
     - test-parser:
         type: junit
-        test-results: 'tests-reports/unit-tests.xml'
+        # mv3 postfix because we run auto-builds only for mv3 branch.
+        test-results: 'tests-reports/unit-tests-mv3.xml'
     - script:
         interpreter: SHELL
         scripts:
@@ -114,6 +116,8 @@ Locales check:
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -140,8 +144,8 @@ Locales check:
     - adg-docker: 'true'
 
 
-Update filters:
-  key: UPDATEFILTERS
+Update filters and build:
+  key: UPDATEFILTERSANDBUILD
   other:
     clean-working-dir: true
   docker:
@@ -163,61 +167,26 @@ Update filters:
             ls -la
 
             # Validate that current branch is valid for build.
-            ./bamboo-specs/scripts/validate_branch.sh
+            if [ "${bamboo.planRepository.branchName}" != "${bamboo.stableBranchName}" ]; then
+                # Throw error if current branch is not ${bamboo.stableBranchName},
+                # because we do not deploy new releases not from release branch.
+                echo "auto-build is not supported on branch ${bamboo.stableBranchName}"
+                exit 1;
+            fi
 
             # Set cache directory
             pnpm config set store-dir ${bamboo.cachePnpm}
 
             pnpm install ${bamboo.varsPnpm}
+
+            # Update patch version because resources was changed.
+            pnpm increment
 
             # Update filters before build.
             OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          commitMessage: 'skipci: Filters update'
-          selectedRepository: defaultRepository
-  final-tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - ./bamboo-specs/scripts/cleanup.sh
-  requirements:
-    - adg-docker: 'true'
-
-AutoBuild:
-  key: AUTOBUILD
-  other:
-    clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-  tasks:
-    - checkout:
-        force-clean-build: true
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
-
-            pnpm install ${bamboo.varsPnpm}
 
             # Create artifacts directory if it doesn't exist.
             mkdir -p artifacts
-
-            # Before build we increment patch version.
-            pnpm increment
 
             # Build release and beta versions of the extension.
             pnpm beta chrome-mv3
@@ -230,7 +199,7 @@ AutoBuild:
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
-          commitMessage: 'skipci: Automatic increment build number'
+          commitMessage: 'skipci: Filters update & increment patch version'
           selectedRepository: defaultRepository
     - inject-variables:
         # Doesn't matter which channel we use, because version is the same
@@ -292,13 +261,11 @@ Integration tests:
   requirements:
     - adg-docker: 'true'
 
-# Currently empty triggers to run the build manually.
-triggers: []
-# run release build at 11:00 every Tuesday, Thursday
+# run release build at 7:00 every Monday, Wednesday, Friday
 # https://confluence.atlassian.com/bamboo/constructing-a-cron-expression-in-bamboo-289277372.html
-# TODO: Uncomment after first couple of test runs.
-#   - cron:
-#       expression: 0 0 11 ? * TUE,THU
+triggers:
+  - cron:
+      expression: 0 0 7 ? * MON,WED,FRI
 
 branches:
   create: manually
