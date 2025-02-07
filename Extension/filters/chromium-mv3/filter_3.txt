@@ -1,8 +1,8 @@
-! Checksum: /EeXwPjzY5yvJJ3MCs6I/g
+! Checksum: vKpifs+lSapiZgbWSgvYxg
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.80.6
-! TimeUpdated: 2025-02-06T08:43:06+00:00
+! Version: 2.0.80.9
+! TimeUpdated: 2025-02-06T20:37:49+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1133,7 +1133,6 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ||views.2222.ro^
 ||signalayer.com^$third-party
 ||tags.refinery89.com^
-||statsigapi.net^
 ||hermes.allo-media.net^
 ||cdn.cohesionapps.com^$third-party
 ||c212.net^$third-party
@@ -50050,6 +50049,7 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||events.statsigapi.net^
 ||fourier.aliexpress.com^
 ||sofire.1024tera.com^
 ||ad-events.flashtalking.com^
@@ -136450,6 +136450,8 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 ! NOTE: Specific rules
 !
+||streams.bestbuy.com/customer/web-streams/v1/events/cj-page-visits
+||apnews.com/blaize/datalayer
 ||ultimahora.es/sfCounter/
 ||biv.gazeta.pl^
 ||alicdn.com/AWSC/et/
@@ -136525,7 +136527,7 @@ coomer.su,kemono.su#%#//scriptlet('set-local-storage-item', 'plausible_ignore', 
 ||cdn-assets.dzcdn.net/common/js/gdpr-appliance.js
 ||cdn.builder.io/api/v1/pixel
 ||dell.com/*/clickstream/collect
-/\.coupang\.com\/(?!resources)[A-Za-z0-9-_]{5,}\/(?!cart)(?!product)[A-Za-z0-9-_]+\/(?!api)(?!user)[A-Za-z0-9-_]+\/[A-Za-z0-9-_]+\/(?!products)[A-Za-z0-9-_]+/$domain=coupang.com|~mc.coupang.com,script,xmlhttprequest,method=get
+/\.coupang\.com\/(?!resources)(?!vp)[A-Za-z0-9-_]{5,}\/(?!cart)(?!product)[A-Za-z0-9-_]+\/(?!api)(?!user)[A-Za-z0-9-_]+\/[A-Za-z0-9-_]+\/(?!products)[A-Za-z0-9-_]+/$domain=coupang.com|~mc.coupang.com,script,xmlhttprequest,method=get,match-case
 ||tripadvisor.*/wm/record
 ||tripadvisor.*/PVLog
 nike.com#%#//scriptlet('set-local-storage-item', 'pi_pageview_count', '$remove$')
@@ -139318,7 +139320,6 @@ dokonline.com###Counters + div[class="block"]
 ||rtb.loopa.net.au^$domain=junkmail.co.za
 ||imp.snapdeal.biz/pub/imp?$domain=snapdeal.com
 ||airunit.taobao.com/tracker.*.gif^
-||bestbuy.com/*/analytics-*/
 ||assets.bbystatic.com/analytics-dotcom/
 ||shopclues.com/assets/js/sc_tracker.js
 ||shopclues.com/assets/js/slick.js
@@ -143570,6 +143571,8 @@ inapps.appsflyersdk.com^
 !
 ! For platforms which do not support $redirect rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/197966
+@@||pub.pixels.ai/wrap-independent-no-prebid-lib.js$domain=the-independent.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197641
 @@||polarbyte.com^$domain=cambridgeenglish.org
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197647
