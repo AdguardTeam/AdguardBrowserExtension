@@ -1,8 +1,8 @@
-! Checksum: KGVHiOq3N6wmPaewtBPkLQ
+! Checksum: e11s/q1ZXUjsulgywfVI7A
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.39
-! TimeUpdated: 2025-02-05T01:38:30+00:00
+! Version: 2.0.10.41
+! TimeUpdated: 2025-02-08T05:38:51+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -389,6 +389,8 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/197899
+||marketplace.navitime.co.jp^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197784
 ||gaming.amazon.com^$removeparam=ref_
 ||gaming.amazon.com^$removeparam=twitchReferral
@@ -400,6 +402,7 @@ $removeparam=fb_source
 ||blog.naver.com^$removeparam=proxyReferer
 ||blog.naver.com^$removeparam=referrerCode
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197358
+! https://github.com/AdguardTeam/AdguardFilters/issues/197918
 ||fiverr.com^$removeparam=context_referrer
 ||fiverr.com^$removeparam=context_type
 ||fiverr.com^$removeparam=filtered_price
@@ -407,7 +410,6 @@ $removeparam=fb_source
 ||fiverr.com^$removeparam=imp_id
 ||fiverr.com^$removeparam=pckg_id
 ||fiverr.com^$removeparam=pos
-||fiverr.com^$removeparam=ref
 ||fiverr.com^$removeparam=ref_ctx_id
 ||fiverr.com^$removeparam=source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197081

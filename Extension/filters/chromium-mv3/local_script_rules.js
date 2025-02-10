@@ -3092,6 +3092,25 @@ export const localScriptRules = {
             }
         }
     },
+    "(()=>{window.AdscoreInit=function(ta,F){};})();": {
+        uniqueId: "b45d84107955116514e169fdba5cb3cc",
+        func: () => {
+            try {
+                const e = "done";
+                if (Window.prototype.toString.b45d84107955116514e169fdba5cb3cc !== e) {
+                    window.AdscoreInit = function(e, o) {};
+                    Object.defineProperty(Window.prototype.toString, "b45d84107955116514e169fdba5cb3cc", {
+                        value: e,
+                        enumerable: !1,
+                        writable: !1,
+                        configurable: !1
+                    });
+                }
+            } catch (e) {
+                console.error('Error executing AG js rule with uniqueId "b45d84107955116514e169fdba5cb3cc" due to: ' + e);
+            }
+        }
+    },
     '(()=>{const t={apply:(t,n,e)=>{if(e[0]&&null===e[0].html?.detected&&"function"==typeof e[0].html?.instance?.start&&"function"==typeof e[0].env?.instance?.start&&"function"==typeof e[0].http?.instance?.start){const t=function(){Object.keys(this).forEach((t=>{"boolean"==typeof this[t]&&(this[t]=!1)}))};["html","env","http"].forEach((n=>{e[0][n].instance.start=t}))}return Reflect.apply(t,n,e)}};window.Object.keys=new Proxy(window.Object.keys,t)})();': {
         uniqueId: "8e5af140bb8ff6dfac87d2aa8a7181a7",
         func: () => {

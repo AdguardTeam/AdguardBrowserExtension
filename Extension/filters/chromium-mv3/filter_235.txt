@@ -1,8 +1,8 @@
-! Checksum: S2Hc2MW0ttg9C3RJfwFViA
+! Checksum: VRtILEdH61/IsQ8PiTfnPA
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.31
-! TimeUpdated: 2025-02-01T21:01:56+00:00
+! Version: 2.0.5.33
+! TimeUpdated: 2025-02-09T21:01:55+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -25,7 +25,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 !! basirat.ir, khootoot.ir, didarnews.ir, 598.ir
 /files/adv^$image,~third-party,domain=ir|asrkhabar.com|bultannews.com|yektapress.com|roozno.com|fararu.com|iraneconomist.com|khordad.news
 ! digiro.ir, gahar.ir, jobsacademy.ir, mihand.ir, modirnameh.ir, pedal.ir, softsaaz.ir, technet24.ir, appiroid.ir
-/wp-content/uploads/*.gif^$image,~third-party,domain=ir|~ifixit.ir|bazdeh.org|charbzaban.com|chetor.com|dlfox.com|filmin.info|ghatar.com|itresan.com|konkur.info|learnparsi.com|movienama.com|netpaak.com|parsfootball.com|p30konkor.com|rozmusic.com|shanbemag.com|sakhtafzar.com|techrato.com|bazicenter.com|avalnews.com|gamefa.com|takskin.com|avapedia.com|honarfardi.com|graphiran.com|tasvirezendegi.com|par30dl.net|par30games.net|elmefarda.com|asbe-bokhar.com|binaopt.com|farachart.com|farsiro.com|techtik.com|androidtime.com|baarzesh.net|p30world.com|shahrebours.com|kamapress.com|kaliboys.com
+/wp-content/uploads/*.gif^$image,~third-party,domain=ir|~ifixit.ir|bazdeh.org|charbzaban.com|chetor.com|dlfox.com|filmin.info|ghatar.com|itresan.com|konkur.info|learnparsi.com|movienama.com|netpaak.com|parsfootball.com|p30konkor.com|rozmusic.com|shanbemag.com|sakhtafzar.com|techrato.com|bazicenter.com|avalnews.com|gamefa.com|takskin.com|avapedia.com|honarfardi.com|graphiran.com|tasvirezendegi.com|par30dl.net|par30games.net|elmefarda.com|asbe-bokhar.com|binaopt.com|farachart.com|farsiro.com|techtik.com|androidtime.com|baarzesh.net|p30world.com|shahrebours.com|kamapress.com|kaliboys.com|fontchi.com
 ! itna.ir, migna.ir
 /images/advertise^$image,~third-party,domain=ir|bazimag.com|jahannews.com
 ! https://publicwww.com/websites/%22var+socketAccess+%3D%22/
@@ -117,6 +117,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 ||abzarfa.com/services/onlineusres^$script
 ||abzarfa.com/tools/ip^$script
 ! >> B <<
+||blogix.ir/stat?referer=$xmlhttprequest,~third-party
 ||bitad.ir^
 blog.ir#%#//scriptlet('ubo-set.js', 'constant.copyText', '')
 ||binoads.ir^
@@ -1061,6 +1062,8 @@ estekhtam.com#@#.ads-bottom
 ||api.enama.ir/demo//vast.js^$script
 enama.ir##div.avdDiv
 ! >> F <<
+fontchi.com#%#//scriptlet('ubo-href-sanitizer.js', 'a[href^="/goto/"]', '?url -base64')
+fontchi.com#%#//scriptlet('ubo-rmnt.js', 'script', 'document.body.oncopy')
 filmekade.ir##div.banner-ads
 ||analytics.fam.ir^$~third-party
 ||fam.ir/ngx_pagespeed_beacon^$xmlhttprequest,~third-party,method=post

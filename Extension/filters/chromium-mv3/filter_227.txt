@@ -1,13 +1,13 @@
-! Checksum: NC4uySqRIJN73xgs5wtMDA
+! Checksum: VViRemcUjAXyLV/cZaNblw
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.37
-! TimeUpdated: 2025-02-07T05:01:31+00:00
+! Version: 2.0.20.40
+! TimeUpdated: 2025-02-10T01:01:35+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0207.0
+! OriginalVersion: 2025.0209.1
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -1568,6 +1568,7 @@ jobkorea.co.kr##div[id^="Banner"]
 eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
+mlbpark.donga.com##div[id^="naver_cont"]
 namechart.kr##.container ~ .border-t:has(ins.adsbygoogle)
 dogdrip.net##.board-list .list > li:has(> #dogdripPowerLink)
 m.search.naver.com##.square_tile_area .tile_area > .tile_list:has(._ad_icon)
@@ -3548,7 +3549,8 @@ svrforum.com##body > div[class][style*="box-shadow:"]
 luckyquiz3.blogspot.com#%#//scriptlet('prevent-xhr', 'adsbygoogle')
 sbs.co.kr#%#//scriptlet('prevent-element-src-loading', 'script', 'imasdk.googleapis.com/js/sdkloader/ima3.js')
 deokhu.com,3dpchip.com#%#//scriptlet('abort-current-inline-script', 'chp_ads_blocker_detector')
-3dpchip.com#%#//scriptlet('prevent-xhr', '/compass.adop.cc|adsbygoogle/')
+3dpchip.com#%#//scriptlet('prevent-xhr', '/(compass.adop.cc|adsbygoogle)/', 'emptyStr')
+3dpchip.com#%#//scriptlet('prevent-element-src-loading', 'script', 'compass.adop.cc')
 3dpchip.com#%#//scriptlet('abort-on-property-write', 'HTMLAnchorElement.prototype.onclick')
 sysnet.pe.kr#%#//scriptlet('prevent-setTimeout', 'banner_book')
 !#safari_cb_affinity(privacy)

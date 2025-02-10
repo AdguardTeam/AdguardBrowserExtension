@@ -1,8 +1,8 @@
-! Checksum: dZg4eoKwFPXvEl7leZ0tzA
+! Checksum: 4/Mrdzj7G6GqiGrpokwpaw
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.80.10
-! TimeUpdated: 2025-02-07T08:38:34+00:00
+! Version: 2.0.80.18
+! TimeUpdated: 2025-02-09T14:38:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -36,6 +36,9 @@ spletnik.ru#%#//scriptlet('set-local-storage-item', '/^_ym/', '$remove$')
 spletnik.ru#%#//scriptlet('set-local-storage-item', 'adrcid', '$remove$')
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/197996
+tangiblewp.com#%#//scriptlet('set-constant', 'fathom', 'emptyObj')
+tangiblewp.com#%#//scriptlet('set-constant', 'fathom.trackEvent', 'noopFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197312
 newegg.com#%#//scriptlet('set-constant', 'GA4LPHandler', 'noopFunc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197259
@@ -538,6 +541,13 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 !
 !
 !
+||collector.snplow.net^
+||squeezely.tech^$third-party
+||d5yoctgpv4cpx.cloudfront.net^
+||clickguard.com^$third-party
+||ct.beslist.nl^
+||tvpixel.com^
+.tvp.tv^$third-party
 ||applicationinsights.azure.com^
 ||analytics.sve.cc^
 ||api.taboola.sve.cc^
@@ -50049,6 +50059,10 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||evts.ecocart.io^
+||e.fomo.com^
+||iq.afterpay.com^
+||events.attentivemobile.com^
 ||events.statsigapi.net^
 ||fourier.aliexpress.com^
 ||sofire.1024tera.com^
@@ -136450,6 +136464,15 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 ! NOTE: Specific rules
 !
+||pelisfree.site/cdn-cgi/trace
+||liquipedia.net/mm.js
+||terabox.app/api/analytics?
+||terabox.app/nodeapi/reporterror?*HTMLScriptElement
+||ampere.shop/apps/multipixel/v1/a/ampere-tech.myshopify.com/PageView
+||squarecdn.com/square-marketplace-js/chunk-analytics-vendors.js
+||squarecdn.com/square-marketplace-js/chunk-analytics.js
+||webview.quickreply.ai/whatsapp/analytics/script.min.js
+||web.ultra-soccer.jp/js/analytics.js
 ||streams.bestbuy.com/customer/web-streams/v1/events/cj-page-visits
 ||apnews.com/blaize/datalayer
 ||ultimahora.es/sfCounter/
@@ -142694,6 +142717,7 @@ inapps.appsflyersdk.com^
 !
 ! NOTE: Regular rules
 !
+||gnsnpaw.com^
 ||log.jackpotmasterslots.com^
 ||jpush.io^
 ||datacollector-drru.dt.dbankcloud.ru^
@@ -143571,6 +143595,8 @@ inapps.appsflyersdk.com^
 !
 ! For platforms which do not support $redirect rules
 !
+! https://www.rikejo.jp/article/31080
+@@||api.cxense.com/public/widget/data$domain=rikejo.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197996
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197966
 @@||pub.pixels.ai/wrap-independent-no-prebid-lib.js$domain=the-independent.com
