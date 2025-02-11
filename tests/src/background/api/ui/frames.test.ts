@@ -15,7 +15,7 @@ import { NetworkRuleParser } from '@adguard/agtree/parser';
 import {
     TabContext,
     NetworkRule,
-    type TabInfoMV2,
+    type TabInfo,
     documentApi,
 } from '@adguard/tswebextension';
 
@@ -60,7 +60,7 @@ describe('Frames Api', () => {
         const rule = '@@||testcases.agrd.dev$document';
         const url = 'https://testcases.agrd.dev/test-important-vs-urlblock.html';
 
-        const info: TabInfoMV2 = {
+        const info: TabInfo = {
             url,
             id: 1,
             index: 0,
