@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.1.X] Unreleased <!-- version 5.1 -->
+## [Unreleased]
 
 ### Added
 
@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Handling missing children data in the deserializer for certain nodes.
 - Wrong protection state is shown after navigating from excluded website to another one [#3048].
 - Once allowlisted tab considers all following websites in the tab as allowlisted [#3020].
 - Handling missing children data in the deserializer for certain nodes.
@@ -47,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Storage classes, because they were moved to the `@adguard/tswebextension` package.
 
+<!-- TODO: place correct last released version from master, i.e. v5.0.xxx -->
+[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
 [#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
 [#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002
@@ -61,25 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3057]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3057
 [#3075]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3075
 [#3076]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
-<!-- TODO: place correct last released version from master -->
-[5.1.X]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
 
-## [Unreleased] <!-- master -->
-
-### Changed
-
-- Error throwing for empty modifier list in network rules.
-- Updated [@adguard/agtree] to v2.1.4.
-- Updated [@adguard/tsurlfilter] to v3.0.8.
-
-### Fixed
-
-- Handling missing children data in the deserializer for certain nodes.
-
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.4.49...HEAD
-
-<!-- TODO: add date when released on github -->
-## [5.0.188]
+## [5.0.188] - 2025-02-05
 
 ### Changed
 
