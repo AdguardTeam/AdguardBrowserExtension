@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error throwing for empty modifier list in network rules.
 - Store filter data in ruleset files exclusively for the MV3 extension
   to allow updates where only the rulesets are modified.
-- Updated [@adguard/agtree] to v3.0.0-alpha.3.
+- Updated [@adguard/agtree] to v3.0.0-alpha.5.
 - Updated [@adguard/scriptlets] to v2.1.4.
 - Updated [@adguard/tsurlfilter] to v3.1.0-alpha.8.
 - Updated [@adguard/tswebextension] to v3.0.0-alpha.1.
