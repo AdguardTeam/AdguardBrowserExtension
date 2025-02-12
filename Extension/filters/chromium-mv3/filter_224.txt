@@ -1,8 +1,8 @@
-! Checksum: L9u9Ed77Zp2fuFvucVdpDg
+! Checksum: hGo+lOKmCkD0KfJR3Vldvw
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.31.30
-! TimeUpdated: 2025-02-09T23:39:03+00:00
+! Version: 2.1.31.42
+! TimeUpdated: 2025-02-12T02:38:23+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -515,10 +515,12 @@ pcbeta.com#%#//scriptlet('abort-on-stack-trace', 'document.createElement', 'make
 ruanyifeng.com#%#//scriptlet('prevent-setTimeout', 'checker')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/52546
 pansci.asia#@#.ad-container
+! https://github.com/AdguardTeam/AdguardFilters/issues/198349
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185856
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166247
 ! https://github.com/AdguardTeam/AdguardFilters/issues/120356
 ! https://github.com/AdguardTeam/AdguardFilters/issues/26883
+@@||linetv.tw^$generichide
 linetv.tw#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 linetv.tw#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 linetv.tw##.aspect-ratio > img.object-cover + .aspect-ratio-content + div[class^="absolute inset-"][class*="bg-brand"]
@@ -1101,6 +1103,8 @@ $script,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixclou
 !
 ! NOTE: Specific rules
 !
+115cdn.com##a[href="https://vip.115.com/"] > img
+115cdn.com##.feature-float
 papalah.com##.sponsor-outer
 ||4275.com/css/91kf.gif
 4275.com##div[style="width:580px;margin:0 auto;"]
@@ -4912,6 +4916,15 @@ newduba.cn###jq_youxi
 ||67.21.92.*.gif
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||traukvan.com^
+||20wx.com^
+||vitqzd.icu^
+||fuuksew.com^
+||xfxvpt.icu^
+||s31u.com^
+||ccinmaf.top^
+||inzoiwe.com^
+||hcinmau.top^
 ||tmvirr.icu^
 ||udinmat.top^
 ||odinmak.top^
@@ -4920,6 +4933,7 @@ newduba.cn###jq_youxi
 ##a[href*="/dk35.cc"]
 ||strakuty.com^
 ||zcrddj.icu^
+||nonguds.com^
 ||vjzqfh.icu^
 ||8ff0.cn^
 ||tdinmai.top^
@@ -13955,7 +13969,7 @@ dmzj.com###khdDown
 0597kk.com###kk_head_ad
 0597kk.com###kk_oTransContainer2
 1m3d.com###klp_adtop
-zn511.cc###klp_hdp
+zn513.cc###klp_hdp
 baidu.com###knowledge-answer
 csdn.net###kp_box_476
 csdn.net###kp_box_58
@@ -14597,7 +14611,7 @@ yahoo.com##.GeminiPortalStreamAd_handleViewport
 3dmgame.com##.Gmaeinfobtn_tab > span
 zhihu.com##.GoodsRecommendCard
 downg.com##.Gs_d[href$=".exe"]
-52fzwg.com,79tao.com,hqol.cn,icabbs.com,k7d.com,kxdao.net,sunwy.org,twunbbs.com,wnflb.com,wnflb2023.com,wnflb66.com,xkeba.com,zn511.cc##.GzList
+52fzwg.com,79tao.com,hqol.cn,icabbs.com,k7d.com,kxdao.net,sunwy.org,twunbbs.com,wnflb.com,wnflb2023.com,wnflb66.com,xkeba.com,zn513.cc##.GzList
 le.com##.H-tg
 chinaz.com##.HeaderAdvert
 diyifanwen.com##.Hzh1
@@ -18501,7 +18515,7 @@ itkeyword.com##p[style="line-height:1.4; margin-top:8px; margin-bottom:10px;"]
 ruanyifeng.com##p[style="text-align:center;font-size: 16px;"]
 zzkdhb.com##p[style^="width: 100%; margin: 0px;"]
 isiyuan.net#?##page-list > ul > .layui-row:has(.ad)
-zn511.cc#?##portal_block_69_content > li:has(a[href^="http"])
+zn513.cc#?##portal_block_69_content > li:has(a[href^="http"])
 ruanyifeng.com#?#.asset-content > p:contains(/二维|助教|0 元|报名费|原价/) + p + p > img
 ruanyifeng.com#?#.asset-content > p:contains(/二维|助教|0 元|报名费|原价/) + p > img
 runoob.com#?#.sidebar-box:has(.re-600160)
@@ -18608,7 +18622,6 @@ ypojie.com#?#.excerpt:has(>.focus[href^="http"]:not([href*="ypojie"]))
 yyets.click#?#.MuiBadge-root:has(>a[href*="/maomao.cloud/"])
 zhihu.com#?#.TopstoryItem:has(.Popover > .TopstoryItem-advertButton)
 ||mydrivers.com/img/2005/202112011849.png
-on.cc#@##CONTENTAD
 the-sun.on.cc#@##ContentAd1
 hubei.gov.cn#@##ad-side
 hkcards.com#@##ad-slot
@@ -18753,6 +18766,7 @@ gohome.com.hk#@#div[id^="div-gpt-ad"]
 android-doc.com,apk.tw,chaojizhibo.net,chtoen.com,dizhishengcheng.com,doitwell.tw,epinv.com,ff14angler.com,fxpan.com,haoweichi.com,logi.im,lspdfrcn.com,moa.tw,moe48.com,numberempire.com,playok.com,reh.tw,shenfendaquan.com,vaptcha.com#@#ins.adsbygoogle
 android-doc.com,apk.tw,chaojizhibo.net,chtoen.com,dizhishengcheng.com,doitwell.tw,epinv.com,ff14angler.com,fxpan.com,haoweichi.com,logi.im,lspdfrcn.com,moa.tw,moe48.com,numberempire.com,playok.com,reh.tw,shenfendaquan.com,vaptcha.com#@#ins.adsbygoogle[data-ad-slot]
 @@.adserver.$domain=litv.tv
+@@||linetv.tw^$generichide
 @@||googleads.g.doubleclick.net^$domain=wandhi.com
 @@||am730.com.hk^$generichide
 @@||mvcat.com^$generichide
@@ -19290,7 +19304,7 @@ android-doc.com,apk.tw,chaojizhibo.net,chtoen.com,dizhishengcheng.com,doitwell.t
 @@||ozabc.com^$generichide
 @@||pagead2.googlesyndication.com/pagead/js/*/show_ads_impl$domain=ff14angler.com|logi.im
 @@||pagead2.googlesyndication.com/pagead/js/*/show_ads_impl.js$domain=doitwell.tw
-@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=uiadmin.net|4horlover.com|23qb.net|4spaces.org|aboluowang.com|assbbs.com|bilinovel.com|chaojizhibo.net|chtoen.com|daxiaamu.com|demo.ama.pub|dizhishengcheng.com|doitwell.tw|ekamus.info|eu4cn.com|ff14angler.com|freedidi.com|fsbot.xyz|haoweichi.com|it365.abctool.info|linovelib.com|logi.im|mens1069.com|monnsutogatya.com|mpyit.com|myqqjd.com|numberempire.com|ozabc.com|pansearch.me|patch.ali213.net|pc3mag.com|reh.tw|shenfendaquan.com|sistersbedroom.com|sto520.com|vaptcha.com|wandhi.com|wenxuecity.com|wuyong.fun|xbeibeix.com|xiebruce.top|xugaoxiang.com|xxxxx520.com|yodu.org|yummy.best|zaixianjisuan.com
+@@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=docsmall.com|uiadmin.net|4horlover.com|23qb.net|4spaces.org|aboluowang.com|assbbs.com|bilinovel.com|chaojizhibo.net|chtoen.com|daxiaamu.com|demo.ama.pub|dizhishengcheng.com|doitwell.tw|ekamus.info|eu4cn.com|ff14angler.com|freedidi.com|fsbot.xyz|haoweichi.com|it365.abctool.info|linovelib.com|logi.im|mens1069.com|monnsutogatya.com|mpyit.com|myqqjd.com|numberempire.com|ozabc.com|pansearch.me|patch.ali213.net|pc3mag.com|reh.tw|shenfendaquan.com|sistersbedroom.com|sto520.com|vaptcha.com|wandhi.com|wenxuecity.com|wuyong.fun|xbeibeix.com|xiebruce.top|xugaoxiang.com|xxxxx520.com|yodu.org|yummy.best|zaixianjisuan.com
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=duelmeta.com|linetv.tw|liout.com|moneysave.info|raenonx.cc|zxmee.com
 @@||pagead2.googlesyndication.com/pagead/js/google_top_exp.js$domain=ebb.io
 @@||pagead2.googlesyndication.com/pagead/show_ads.js$domain=knowlet3389.blogspot.com|knowlet3389.blogspot.hk|knowlet3389.blogspot.jp|knowlet3389.blogspot.tw|mnighthk.net|weithenn.org

@@ -178,7 +178,7 @@
 				"name": "Privacy"
 			},
 			"ja": {
-				"name": "プライバシー"
+				"name": "追跡防止"
 			},
 			"ko": {
 				"name": "프라이버시"
@@ -1850,7 +1850,7 @@
 			},
 			"nl": {
 				"description": "Ontwikkeld om specifiek advertenties op een Engelstalige website te blokkeren",
-				"name": "Specifiek Engelstalige adblocking "
+				"name": "Advertentieblokkering specifiek voor de Engelse taal"
 			},
 			"no": {
 				"description": "Designet spesielt for å blokkere annonser på engelske nettsider",

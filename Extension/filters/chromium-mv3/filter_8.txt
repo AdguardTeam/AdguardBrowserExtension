@@ -1,8 +1,8 @@
-! Checksum: TnRuLjZo5+F14DxMLCS+0w
+! Checksum: Opd5O+YlG+wAYiUH2Z8EgA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.64
-! TimeUpdated: 2025-02-07T09:45:44+00:00
+! Version: 2.0.7.66
+! TimeUpdated: 2025-02-11T20:38:32+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1494,7 +1494,7 @@ vakantieplaats.nl#@#.topAds
 !
 ! Prevent AdFender detection
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
-@@||tweakers.net/i^
+@@||tweakers.net/i^$image
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
 !
@@ -1668,6 +1668,7 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+dailybuzz.nl#%#//scriptlet("set-constant", "cookie", "true")
 mediacourant.nl##.mg-slot
 avrotros.nl#%#//scriptlet('json-prune', 'assets.preroll')
 hartvannederland.nl##div[data-advert-slot-state]

@@ -1,8 +1,8 @@
-! Checksum: I8KEvL4rd3ZKGwiB2CxW2Q
+! Checksum: 3TzmN12s6l/PgHvKGZAx0g
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.28.71
-! TimeUpdated: 2025-02-07T07:38:09+00:00
+! Version: 2.0.28.73
+! TimeUpdated: 2025-02-11T07:39:42+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1569,18 +1569,19 @@ estacio.br#%#//scriptlet('set-cookie', 'modal_promo', '1')
 multipaste.org#%#(()=>{document.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll('.count > li > a[href*="/#!"]').forEach((t=>{const e=(t=>{let e=t;for(let t=0;t<10;t++)try{e=atob(e)}catch(t){break}return e})(t.href.split("/#!")[1]);(t=>{let e=t;try{e=new URL(t)}catch(t){return!1}return"http:"===e.protocol||"https:"===e.protocol})(e)&&t.setAttribute("href",e)}))}));})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191026
 gourlpro.com#%#!function(){if(window.location.href.includes(".php?")&&window.location.href.includes("=")){const o=location.href.split("=");if(o&&o[1]){let t=o[1];for(let o=0;o<10;o++)try{t=atob(t)}catch(o){const n=decodeURIComponent(t);let c=!1;try{new URL(n),c=!0}catch(o){c=!1}if(c){location.assign(n);break}}}}}();
+! https://github.com/AdguardTeam/AdguardFilters/issues/198257
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196297
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178968
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178920
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171873
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167657
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159461
-acortaz.es,myfirstdollar.org,gourlpro.com,adclic.es,adclic.org,mundopolo.net,adclicker.io#%#//scriptlet('set-constant', 'global.noobMaxTry', '0')
-mundopolo.net,adclicker.io#%#(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);g=g.split("&url=")[1];try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
+eldiario24hrs.com,constanteonline.com,acortaz.es,myfirstdollar.org,gourlpro.com,adclic.es,adclic.org,mundopolo.net,adclicker.io#%#//scriptlet('set-constant', 'global.noobMaxTry', '0')
+eldiario24hrs.com,constanteonline.com,mundopolo.net,adclicker.io#%#(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);g=g.split("&url=")[1];try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
 gourlpro.com#%#(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
 myfirstdollar.org,adclic.es,adclic.org#%#(function(){if(-1<window.location.href.indexOf("/#!")){var b=location.href.split("/#!");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
 acortaz.es#%#(function(){if(-1<window.location.href.indexOf("o.php?l=")){var b=location.href.split("o.php?l=");if(b&&b[1]){b=b[1].replace(/\|\d/,'');for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();
-acortaz.es,myfirstdollar.org,gourlpro.com,adclic.es,adclic.org,mundopolo.net,adclicker.io#%#(()=>{document.addEventListener("DOMContentLoaded",(()=>{try{"function"==typeof window.noobBypass&&noobBypass()}catch(b){}}));})();
+eldiario24hrs.com,constanteonline.com,acortaz.es,myfirstdollar.org,gourlpro.com,adclic.es,adclic.org,mundopolo.net,adclicker.io#%#(()=>{document.addEventListener("DOMContentLoaded",(()=>{try{"function"==typeof window.noobBypass&&noobBypass()}catch(b){}}));})();
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183355
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159665
@@ -2122,6 +2123,8 @@ c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,me
 !
 ! NOTE: Specific rules
 !
+lapaginamillonaria.com###primis-player-container
+||statics.lapaginamillonaria.com/js/set-global-ads-config.js
 reduno.com.bo##.contenedor__publicidad
 elpais.bo##.elpaisbo-ads
 ||elpais.bo/img/banners/
@@ -2347,7 +2350,7 @@ okpeliz.com###directAds
 wuolah.com##div[class^="Aside"][class*="Ad"]
 bandaancha.eu##.adDsBlAt
 inteh.biz##div[id^="downpart"] > #block
-lasexta.com##div[id^="taboola-container-"]
+flooxernow.com,lasexta.com##div[id^="taboola-container-"]
 poder360.com.br##aside > .box-advertising
 ||impactoespananoticias.com/download/publicidades.video.*.mp4$media,redirect=noopmp4-1s,domain=impactoespananoticias.com
 geniol.com.br##.ads-margin-both
@@ -3737,7 +3740,7 @@ lapoliticaonline.com,lapoliticaonline.com.ar,lapoliticaonline.com.bd,lapoliticao
 onepieceex.net##.banner-resposivo
 tecmundo.com.br##p > a[href^="https://bit.ly/"][target="_blank"] > span > img
 ||img.ibxk.com.br/*/banner-*.png$domain=tecmundo.com.br
-e-noticies.cat,econodata.com.br,edatv.news,tomatazos.com,wapa.pe,sicnoticias.pt,g24.gal,levelup.com,eldiario.es,tuasaude.com,globo.com,eltiempo.com,gauchazh.clicrbs.com.br,hobbyconsolas.com,larepublica.pe,vozpopuli.com##.ad-container
+lapaginamillonaria.com,e-noticies.cat,econodata.com.br,edatv.news,tomatazos.com,wapa.pe,sicnoticias.pt,g24.gal,levelup.com,eldiario.es,tuasaude.com,globo.com,eltiempo.com,gauchazh.clicrbs.com.br,hobbyconsolas.com,larepublica.pe,vozpopuli.com##.ad-container
 hobbyconsolas.com##div[class^="ad-slot_"]
 hobbyconsolas.com##div[class^="placeholder_placeholder"]
 vozpopuli.com##.home_1_ad
@@ -4406,7 +4409,7 @@ torrentbrazil.org##a[href^="https://goo.gl/"] > img
 jn.pt##div[class^="t-pub-box-"]
 televalltv.net###floatLayer6
 elconfidencial.com##.hide-div
-antena3.com,elindependiente.com,culturageek.com.ar,clarin.com,poder360.com.br,globo.com,elespanol.com##.adv
+flooxernow.com,antena3.com,elindependiente.com,culturageek.com.ar,clarin.com,poder360.com.br,globo.com,elespanol.com##.adv
 elespanol.com##.article-adv
 atresplayer.com##.mod_ad_top
 atresplayer.com###bannerTop

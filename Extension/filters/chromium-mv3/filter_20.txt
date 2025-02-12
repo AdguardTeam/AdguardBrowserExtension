@@ -1,8 +1,8 @@
-! Checksum: 43t8Bho31tp/IkV8fXhQiw
+! Checksum: sc6mZM2kLNfPVY7zcxXIuw
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.19.0
-! TimeUpdated: 2025-02-06T19:39:05+00:00
+! Version: 2.0.19.7
+! TimeUpdated: 2025-02-11T20:38:57+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -57,6 +57,14 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+kitco.com##img[alt*="AppStore"]
+kitco.com##img[alt*="GooglePlay"]
+kitco.com##img[alt*="QR Code"]
+republicworld.com##a[href^="https://republicworld.page.link/"]
+terabox.app#?#.action-bar > div.action-bar-view:has(> div.btn-text:contains(View on Mobile))
+terabox.app##.share-base > div.btns-box:has(> div.operation-block > div#openNaBtn)
+terabox.app###openNaMessageBar > div.right > div.btn
+terabox.app##.to-app-container
 apkfab.com##.tip-extension
 domclick.ru##div[class*="MobileBanner-mobileBanner"]
 lesfrontaliers.lu###side-column > div.col-sm-12:has(> div.content > div#iosApp)
@@ -1624,7 +1632,6 @@ buyma.com##.js-app-download-url
 shopch.jp###informApp
 news.kodansha.co.jp##.spaceSp .inlineC
 apkpure.ai,apkpure.biz,apkpure.ca,apkpure.ch,apkpure.cloud,apkpure.co,apkpure.co.id,apkpure.co.in,apkpure.com,apkpure.com.bd,apkpure.com.br,apkpure.com.co,apkpure.com.np,apkpure.com.pk,apkpure.cz,apkpure.de,apkpure.dk,apkpure.es,apkpure.eu,apkpure.fr,apkpure.icu,apkpure.io,apkpure.it,apkpure.live,apkpure.me,apkpure.mx,apkpure.net,apkpure.nl,apkpure.ph,apkpure.pro,apkpure.vn,apkpure.world##.aegon-link
-dokuha.jp##.app-item
 calend.ru##.banner2
 tieba.baidu.com##.app_download_box
 suruga-ya.jp#$#.alert-top-page { display: none!important; }
@@ -1963,7 +1970,6 @@ newsdigest.jp##.post-inarticle-banner
 voicy.jp##.leftmenu-app-leading
 track24.ru#?#.row > div[class^="col-"]:has(> div > div[class^="col-"] > a[href="https://track24.ru/?g=track24-android-app"])
 101soundboards.com##.appStoresContainer
-dokuha.jp###smart-banner-pr-app
 m.jd.com##.j_curtain_yinliu
 m.jd.com###m_common_tip
 m.jd.com##div[id^="imk2Fixed"]
@@ -2447,7 +2453,7 @@ outlook.live.com#?#.react-tel-input > input.form-control:upward(4)
 m.hindustantimes.com##.openappbutton-main
 toppr.com##div[class^="question_suggestionsAppBannerWrapper__"]
 profile.ru##div[class="read-yzd mobile-only"]
-angielskieespresso.pl,allwish.me,teknowebim.com,op.gg,cameralabs.org##a[href^="https://play.google.com/store/apps/details?id="]
+track24.net,angielskieespresso.pl,allwish.me,teknowebim.com,op.gg,cameralabs.org##a[href^="https://play.google.com/store/apps/details?id="]
 blocket.se##div[class^="AppLinks__"]
 m2o.it##.player > section.player-wrapper + div.footer_player
 drugs.com##.promo-content
@@ -3480,7 +3486,7 @@ akindo-sushiro.co.jp,oceans-nadia.com##.l-footer__app
 !+ NOT_OPTIMIZED
 girlschannel.net##.footer-banner
 !+ NOT_OPTIMIZED
-kurashiru.com##.header-app-banner
+navitime.co.jp,kurashiru.com##.header-app-banner
 !+ NOT_OPTIMIZED
 cosme.com##.header-app
 !+ NOT_OPTIMIZED

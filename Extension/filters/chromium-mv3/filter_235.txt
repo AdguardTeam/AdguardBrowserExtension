@@ -1,8 +1,8 @@
-! Checksum: VRtILEdH61/IsQ8PiTfnPA
+! Checksum: 4rdsAPYUL+DkO0L0UMTYkg
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.33
-! TimeUpdated: 2025-02-09T21:01:55+00:00
+! Version: 2.0.5.36
+! TimeUpdated: 2025-02-11T09:02:04+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -25,7 +25,7 @@ artmusics.top,musicpars3.ir,musicguitars.ir,subf2m.ir,zeemusic.ir,najiremix.ir,m
 !! basirat.ir, khootoot.ir, didarnews.ir, 598.ir
 /files/adv^$image,~third-party,domain=ir|asrkhabar.com|bultannews.com|yektapress.com|roozno.com|fararu.com|iraneconomist.com|khordad.news
 ! digiro.ir, gahar.ir, jobsacademy.ir, mihand.ir, modirnameh.ir, pedal.ir, softsaaz.ir, technet24.ir, appiroid.ir
-/wp-content/uploads/*.gif^$image,~third-party,domain=ir|~ifixit.ir|bazdeh.org|charbzaban.com|chetor.com|dlfox.com|filmin.info|ghatar.com|itresan.com|konkur.info|learnparsi.com|movienama.com|netpaak.com|parsfootball.com|p30konkor.com|rozmusic.com|shanbemag.com|sakhtafzar.com|techrato.com|bazicenter.com|avalnews.com|gamefa.com|takskin.com|avapedia.com|honarfardi.com|graphiran.com|tasvirezendegi.com|par30dl.net|par30games.net|elmefarda.com|asbe-bokhar.com|binaopt.com|farachart.com|farsiro.com|techtik.com|androidtime.com|baarzesh.net|p30world.com|shahrebours.com|kamapress.com|kaliboys.com|fontchi.com
+/wp-content/uploads/*.gif^$image,~third-party,domain=ir|~ifixit.ir|bazdeh.org|charbzaban.com|chetor.com|dlfox.com|filmin.info|ghatar.com|itresan.com|konkur.info|learnparsi.com|movienama.com|netpaak.com|parsfootball.com|p30konkor.com|rozmusic.com|shanbemag.com|sakhtafzar.com|techrato.com|bazicenter.com|avalnews.com|gamefa.com|takskin.com|avapedia.com|honarfardi.com|graphiran.com|tasvirezendegi.com|par30dl.net|par30games.net|elmefarda.com|asbe-bokhar.com|binaopt.com|farachart.com|farsiro.com|techtik.com|androidtime.com|baarzesh.net|p30world.com|shahrebours.com|kamapress.com|kaliboys.com|fontchi.com|namnak.com
 ! itna.ir, migna.ir
 /images/advertise^$image,~third-party,domain=ir|bazimag.com|jahannews.com
 ! https://publicwww.com/websites/%22var+socketAccess+%3D%22/
@@ -233,9 +233,8 @@ eramblog.com##div.main_content[style="border-radius:10px;"]:has(> div[style="pad
 ||niloblog.com/js/web.gif^$image,~third-party
 niloblog.com##bloglinkdumpblock
 niloblog.com##bloglinksblock
-||nastooh.ir^$third-party
 ||analytics.nastooh.ir^
-! Example: sahebkhabar.ir
+! Example: sahebkhabar.ir, TTS on behzisti.ir
 ||newswidget.net^
 ||vidomusic.org^
 ||pantatec.ae^
@@ -1550,7 +1549,11 @@ ketabesabz.com#%#//scriptlet('ubo-set.js', 'KetabrahPopup', 'noopFunc')
 ketabesabz.com##div.white-block:nth-of-type(2)
 kalakamuz.ir##div.main > div.box:has(> p > a[href="http://botsaz.com/"])
 kalakamuz.ir#?#div.sidebar > div.box:has(div.row:contains(تبلیغات))
-kafebook.ir##.im-header-ad
+! https://github.com/MasterKia/PersianBlocker/pull/288
+kafebook.ir##div.im-header-ad
+kafebook.ir##div.im-top-ad
+kafebook.ir##div.im-entry-top-ad
+kafebook.ir##div.ribp-banners
 k2cod.com###table4 > tbody > tr > td > table > tbody > tr > td > center
 k2cod.com##table#table9.bgtable:nth-of-type(13)
 k2cod.com###table10 > tbody > tr > .textBoldColor
@@ -1820,7 +1823,8 @@ niksalehi.com##.box-custom.box_other
 ||nex1music.ir/bnr/
 ||via.placeholder.com^$domain=nex1music.ir
 @@||nex1music.ir/upload/ads/$image,~third-party
-namnak.com##.Dr.D2.Cu.o
+||namnak.com/statistics/update^$xmlhttprequest,~third-party
+namnak.com##aside > div.border-t:has(> div#ads-sidebar-top, > div.backlinks)
 ||namakstan.net/wp-content/cache/busting/1/gtm-
 ! >> O <<
 ! https://github.com/MasterKia/PersianBlocker/issues/93
@@ -2680,6 +2684,8 @@ video-learn.ir#@#.header-adv
 vista.ir##a[href^="/ad/"][target="_blank"]
 vista.ir##a.textad
 ! >> W <<
+! https://github.com/MasterKia/PersianBlocker/pull/288
+||ahlolbait.com/ads/script.js^$script,~third-party
 ||gateway.wisgoon.com/services/vast^$xmlhttprequest,image,~third-party
 ||imasdk.googleapis.com/js/core/bridge*.html$subdocument,important,domain=wisgoon.com
 wisgoon.com##div.tb-box

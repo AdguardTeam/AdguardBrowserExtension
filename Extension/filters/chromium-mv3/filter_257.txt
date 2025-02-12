@@ -1,8 +1,8 @@
-! Checksum: BjYwX3fovpBd/m8BmaHn5Q
+! Checksum: hB3y3u0mZoKUm52Xyder3Q
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.6.10
-! TimeUpdated: 2025-02-09T17:02:03+00:00
+! Version: 2.0.6.14
+! TimeUpdated: 2025-02-12T01:02:02+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -797,6 +797,8 @@ thepiratebay3.com^$all
 ||wholenicefeed.com^$all
 !+ NOT_OPTIMIZED
 ^s=*&ssk=*&svar=*&z=$document
+!+ NOT_OPTIMIZED
+^s=*&z=*&svar=*&ssk=$document
 !+ NOT_OPTIMIZED
 /?cid=*&dom=$document
 !+ NOT_OPTIMIZED
@@ -9806,6 +9808,14 @@ webflow.io##html.w-mod-js:not(.wf-active) > body:not([class]):not([id]) > a[clas
 !+ NOT_OPTIMIZED
 ||macgsapptrck.com^$all
 !+ NOT_OPTIMIZED
+||debridleech.com^$document
+!+ NOT_OPTIMIZED
+||trckkkk.com^$all
+!+ NOT_OPTIMIZED
+||fastorfar.com^$all
+!+ NOT_OPTIMIZED
+||hopgp.com^$all
+!+ NOT_OPTIMIZED
 ||d12zgccgt6pwjz.cloudfront.net^
 !+ NOT_OPTIMIZED
 ||d1myn4ixnn41tz.cloudfront.net^
@@ -10192,6 +10202,9 @@ uploadfox.net###ad-gs-05
 ! https://github.com/uBlockOrigin/uAssets/issues/26919
 !+ NOT_OPTIMIZED
 ||glousism.co.in^$all
+! https://www.reddit.com/r/antivirus/comments/1imiwam/should_i_be_worried/
+!+ NOT_OPTIMIZED
+||tryrichleads.top^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/26722
 !+ NOT_OPTIMIZED
 ||maxsecurityultimate.com^$all
@@ -10321,3 +10334,14 @@ uploadfox.net###ad-gs-05
 ||deepseekapk.download^$all,to=~deepseek.com
 !+ NOT_OPTIMIZED
 ||deepseekapp.download^$all,to=~deepseek.com
+! https://www.reddit.com/r/phishing/comments/1iln9ux/is_this_a_new_scam/
+! https://www.virustotal.com/gui/url/dd2c16c95013aa1a20b35b50301b1116d582be01d346dc048a894b480fbbee59
+!+ NOT_OPTIMIZED
+||paytoll*.top/ezdrivema^$all,to=~mass.gov
+! https://blog.sucuri.net/2025/02/google-tag-manager-skimmer-steals-credit-card-info-from-magento-site.html
+! https://www.virustotal.com/gui/url/d75d7ece986f58c9b63c56e5a753158c2fa9dc927e9cc6a2ca5f2c1cfa2bde3a
+!+ NOT_OPTIMIZED
+||eurowebmonitortool.com^$all
+! https://www.reddit.com/r/Scams/comments/1in9l8t/be_careful_posting_your_resume_on_job_boards/
+!+ NOT_OPTIMIZED
+||sunpass.com-$document,to=~sunpass.com

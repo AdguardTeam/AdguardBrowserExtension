@@ -1,8 +1,8 @@
-! Checksum: tRwEKPXhtjcC4r0ijEDeIw
+! Checksum: y+9+D2O4qHUi+vIcP3pxAA
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.97.49
-! TimeUpdated: 2025-02-07T16:31:09+00:00
+! Version: 2.0.97.53
+! TimeUpdated: 2025-02-11T14:31:16+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -17,7 +17,8 @@
 ! Good: .org/ads/
 ! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
 !
-||yandex.ru/ads/adfox/
+! https://github.com/AdguardTeam/AdguardFilters/issues/198009
+||aj*.bid/*?vpaid=$xmlhttprequest
 ! Email spam. Example: http://leonases.shop/tb/#nl91dOC
 ! Both rules are required - the first is for extensions, the second - for apps
 .shop/tb/#$all
@@ -1446,7 +1447,6 @@ ucoz.ru/informer/
 ||dosawes.com^
 ||lusupodum.com^
 ||clairpixum.com^
-||octo25.me^
 ||bmmwa.info^
 ||iwrcoct.info^
 ||hfnuqljjnt.com^
@@ -1482,7 +1482,6 @@ ucoz.ru/informer/
 ||cdn.tameti.com^
 ||eehhabacgieacfjeaacg.world^
 ||bidmatic.io^$third-party
-||vidscriptshark.com^
 ||1qe.info^
 ||23oct2023.site^
 ||fcepahafyq.com^
@@ -7317,6 +7316,7 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+||yandex.ru/ads/adfox/
 findh.org###ads-sidebar-block
 1plus1.ua##.bannerPMU
 1plus1.ua##.bannerSmall
@@ -7610,6 +7610,9 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+fanfics.me###inform_top_728
+fanfics.me###inform_top_adaptive
+ast.ru##.banners-carousel
 atorus.ru#$#.layout-container { padding-top: 0 !important; }
 atorus.ru##[id^="adfox_"]
 flb.ru##.other-partners-news-three

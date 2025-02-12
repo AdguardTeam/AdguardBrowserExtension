@@ -7669,6 +7669,41 @@ export const localScriptRules = {
             }
         }
     },
+    '(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll(\'div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"])\');for(const s of n){const n=Object.keys(s).find((e=>e.includes("__reactFiber")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit"))return s.style.display="none",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();': {
+        uniqueId: "0d29cd6deee8427cefd59ea7de8154f3",
+        func: () => {
+            try {
+                const e = "done";
+                if (Window.prototype.toString["0d29cd6deee8427cefd59ea7de8154f3"] !== e) {
+                    (() => {
+                        const e = new MutationObserver((() => {
+                            const t = document.querySelectorAll('div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"])');
+                            for (const d of t) {
+                                const t = Object.keys(d).find((e => e.includes("__reactFiber")));
+                                if (t) {
+                                    const n = d[t];
+                                    if (n?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return d.style.display = "none", 
+                                    void e.disconnect();
+                                }
+                            }
+                        }));
+                        e.observe(document.documentElement, {
+                            childList: !0,
+                            subtree: !0
+                        });
+                    })();
+                    Object.defineProperty(Window.prototype.toString, "0d29cd6deee8427cefd59ea7de8154f3", {
+                        value: e,
+                        enumerable: !1,
+                        writable: !1,
+                        configurable: !1
+                    });
+                }
+            } catch (e) {
+                console.error('Error executing AG js rule with uniqueId "0d29cd6deee8427cefd59ea7de8154f3" due to: ' + e);
+            }
+        }
+    },
     '!function(){(new MutationObserver(function(){window.location.href.includes("/watch")&&document.querySelectorAll(\'#watch_feed div:not([class]):not([id]) > div[class*=" "]:not([style*="display: none !important"]) div[class^="_"] > div[class*=" "]\').forEach(function(b){Object.keys(b).forEach(function(a){if(a.includes("__reactFiber")){a=b[a];try{var c,d,e,f;if(null==(c=a)?0:null==(d=c["return"])?0:null==(e=d.memoizedProps)?0:null==(f=e.story)?0:f.sponsored_data){var g=b.closest(\'#watch_feed div[class*=" "] div:not([class]):not([id]) > div[class*=" "]:not([style*="display: none !important"])\');g.style="display: none !important;"}}catch(h){}}})})})).observe(document,{childList:!0,subtree:!0,attributeFilter:["style"]})}();': {
         uniqueId: "21d8e78f9157f1f1188b26cd68182732",
         func: () => {
