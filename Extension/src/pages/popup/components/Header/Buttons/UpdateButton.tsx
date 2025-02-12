@@ -32,7 +32,7 @@ import { Toasts } from '../../../../../background/api';
 export const UpdateButton = () => {
     const refUpdatingBtn = useRef<HTMLButtonElement>(null);
 
-    const timeoutId = useRef<NodeJS.Timeout | undefined>(undefined);
+    const timeoutId = useRef<NodeJS.Timeout>();
     const [filtersUpdating, setFiltersUpdating] = useState(false);
     const [updateMessage, setUpdateMessage] = useState('');
 
