@@ -18,10 +18,18 @@
 import { AnyRule, InputByteBuffer } from '@adguard/agtree';
 import { RuleParser } from '@adguard/agtree/parser';
 import { RuleDeserializer } from '@adguard/agtree/deserializer';
-import { PreprocessedFilterList, RuleSyntaxUtils } from '@adguard/tsurlfilter';
+import {
+    FilterListPreprocessor,
+    PreprocessedFilterList,
+    RuleSyntaxUtils,
+} from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
-import { AntiBannerFiltersId, emptyPreprocessedFilterList } from '../../../common/constants';
+import {
+    AntiBannerFiltersId,
+    NEWLINE_CHAR_REGEX,
+    NEWLINE_CHAR_UNIX,
+} from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { listeners } from '../../notifier';
 import {
@@ -29,6 +37,7 @@ import {
     settingsStorage,
     editorStorage,
 } from '../../storages';
+import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 
 /**
  * API for managing user rules list.
@@ -45,7 +54,10 @@ export class UserRulesApi {
         try {
             // Check if user filter is present in the storage to avoid errors.
             if (!(await FiltersStorage.has(AntiBannerFiltersId.UserFilterId))) {
-                await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
+                await FiltersStorage.set(
+                    AntiBannerFiltersId.UserFilterId,
+                    FilterListPreprocessor.createEmptyPreprocessedFilterList(),
+                );
             } else {
                 // In this case zod will validate the data.
                 await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
@@ -57,7 +69,10 @@ export class UserRulesApi {
                     e,
                 );
             }
-            await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, []);
+            await FiltersStorage.set(
+                AntiBannerFiltersId.UserFilterId,
+                FilterListPreprocessor.createEmptyPreprocessedFilterList(),
+            );
         }
     }
 
@@ -106,10 +121,10 @@ export class UserRulesApi {
      * @returns User rules list.
      */
     public static async getUserRules(): Promise<PreprocessedFilterList> {
-        const data = await FiltersStorage.getAllFilterData(AntiBannerFiltersId.UserFilterId);
+        const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
 
         if (!data) {
-            return { ...emptyPreprocessedFilterList };
+            return FilterListPreprocessor.createEmptyPreprocessedFilterList();
         }
 
         return data;
@@ -123,10 +138,10 @@ export class UserRulesApi {
      * @returns User rules list in binary format.
      */
     public static async getBinaryUserRules(): Promise<Uint8Array[]> {
-        const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+        const data = await FiltersStorage.getFilterList(AntiBannerFiltersId.UserFilterId);
 
         if (!data) {
-            return [];
+            return FilterListPreprocessor.createEmptyPreprocessedFilterList().filterList;
         }
 
         return data;
@@ -142,8 +157,8 @@ export class UserRulesApi {
      *
      * @returns User rules list.
      */
-    public static async getOriginalUserRules(): Promise<string[]> {
-        return FiltersStorage.getOriginalRules(AntiBannerFiltersId.UserFilterId);
+    public static async getOriginalUserRules(): Promise<string> {
+        return (await FiltersStoragesAdapter.getOriginalFilterList(AntiBannerFiltersId.UserFilterId)) ?? '';
     }
 
     /**
@@ -152,11 +167,15 @@ export class UserRulesApi {
      * @param rule Rule text.
      */
     public static async addUserRule(rule: string): Promise<void> {
-        const userRules = await UserRulesApi.getOriginalUserRules();
+        let userRulesFilter = await UserRulesApi.getOriginalUserRules();
 
-        userRules.push(rule);
+        if (!userRulesFilter.endsWith(NEWLINE_CHAR_UNIX)) {
+            userRulesFilter += NEWLINE_CHAR_UNIX;
+        }
 
-        await UserRulesApi.setUserRules(userRules);
+        userRulesFilter += rule;
+
+        await UserRulesApi.setUserRules(userRulesFilter);
     }
 
     /**
@@ -165,9 +184,13 @@ export class UserRulesApi {
      * @param rule Rule text.
      */
     public static async removeUserRule(rule: string): Promise<void> {
-        const userRules = await UserRulesApi.getOriginalUserRules();
+        const userRulesTest = await UserRulesApi.getOriginalUserRules();
 
-        await UserRulesApi.setUserRules(userRules.filter((r) => r !== rule));
+        const userRulesToSave = userRulesTest.split(NEWLINE_CHAR_REGEX)
+            .filter((r) => r !== rule)
+            .join(NEWLINE_CHAR_UNIX);
+
+        await UserRulesApi.setUserRules(userRulesToSave);
     }
 
     /**
@@ -176,28 +199,31 @@ export class UserRulesApi {
      * @param url Page url.
      */
     public static async removeRulesByUrl(url: string): Promise<void> {
-        const userRules = await UserRulesApi.getOriginalUserRules();
+        const userRulesTest = await UserRulesApi.getOriginalUserRules();
 
         await UserRulesApi.setUserRules(
-            userRules.filter((rule) => {
-                try {
-                    return !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url);
-                } catch (e) {
-                    // Possible parsing error here.
-                    // Keep invalid rules in the list, because we need to keep everything that user added.
-                    return true;
-                }
-            }),
+            userRulesTest
+                .split(NEWLINE_CHAR_REGEX)
+                .filter((rule) => {
+                    try {
+                        return !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url);
+                    } catch (e) {
+                        // Possible parsing error here.
+                        // Keep invalid rules in the list, because we need to keep everything that user added.
+                        return true;
+                    }
+                })
+                .join(NEWLINE_CHAR_UNIX),
         );
     }
 
     /**
      * Sets user rule list to storage.
      *
-     * @param rules List of rule strings.
+     * @param rulesText Rule text.
      */
-    public static async setUserRules(rules: string[]): Promise<void> {
-        await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, rules);
+    public static async setUserRules(rulesText: string): Promise<void> {
+        await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, rulesText);
 
         listeners.notifyListeners(listeners.UserFilterUpdated);
     }

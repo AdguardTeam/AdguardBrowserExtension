@@ -224,7 +224,9 @@ export class CommonFilterApi {
             shouldWaitFullUpdate: isPatchUpdateFailed,
         });
 
-        await FiltersStorage.set(filterUpdateOptions.filterId, filter);
+        // Note: we should array of rules here, because they contain preprocessed directives,
+        // e.g. including another filter via `!#include` directive.
+        await FiltersStorage.set(filterUpdateOptions.filterId, filter.join('\n'));
         await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
 
         return filterMetadata;

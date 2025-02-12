@@ -1,15 +1,18 @@
-import { Storage } from 'webextension-polyfill';
+import browser, { type Storage } from 'webextension-polyfill';
 import waitForExpect from 'wait-for-expect';
 import { merge } from 'lodash-es';
 import {
+    afterEach,
     beforeEach,
     describe,
     expect,
     it,
+    type MockInstance,
     vi,
 } from 'vitest';
 
 import { FilterListPreprocessor } from '@adguard/tswebextension';
+import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 
 import { network } from '../../../../../Extension/src/background/api/network';
 import { HitStatsApi } from '../../../../../Extension/src/background/api/filters/hit-stats';
@@ -21,6 +24,12 @@ import {
 } from '../../../../../Extension/src/common/constants';
 import { mockLocalStorage } from '../../../../helpers';
 import { FiltersStorage, filterVersionStorage } from '../../../../../Extension/src/background/storages';
+import { FiltersStoragesAdapter } from '../../../../../Extension/src/background/storages/filters-adapter';
+
+const preprocessedFilter = FilterListPreprocessor.preprocess([
+    'example.com##h1',
+    '||example.org^$document',
+].join('\n'));
 
 describe('Hit Stats Api', () => {
     let storage: Storage.StorageArea;
@@ -37,13 +46,35 @@ describe('Hit Stats Api', () => {
         lastCheckTime: currentDate,
     };
 
-    const preprocessedFilter = FilterListPreprocessor.preprocess([
-        'example.com##h1',
-        '||example.org^$document',
-    ].join('\n'));
+    let getFilterSpy: MockInstance;
+    let getManifestSpy: MockInstance | undefined;
 
     beforeEach(async () => {
         storage = mockLocalStorage();
+        getFilterSpy = vi.spyOn(FiltersStoragesAdapter, 'get').mockResolvedValue(preprocessedFilter);
+
+        if (__IS_MV3__) {
+            getManifestSpy = vi.spyOn(browser.runtime, 'getManifest').mockReturnValue({
+                ...browser.runtime.getManifest(),
+                declarative_net_request: {
+                    rule_resources: [
+                        {
+                            id: getRuleSetId(filterId),
+                            enabled: true,
+                            path: getRuleSetPath(filterId),
+                        },
+                    ],
+                },
+            });
+        }
+    });
+
+    afterEach(() => {
+        getFilterSpy.mockRestore();
+
+        if (__IS_MV3__ && getManifestSpy) {
+            getManifestSpy.mockRestore();
+        }
     });
 
     it('inits', async () => {
@@ -137,7 +168,7 @@ describe('Hit Stats Api', () => {
 
         const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
         const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
-        vi.spyOn(FiltersStorage, 'getAllFilterData').mockResolvedValue(preprocessedFilter);
+        vi.spyOn(FiltersStorage, 'get').mockResolvedValue(preprocessedFilter);
 
         await HitStatsApi.init();
 

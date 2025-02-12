@@ -128,9 +128,19 @@ export class Engine implements TsWebExtensionEngine {
             .map(async (filterId) => {
                 try {
                     const [content, sourceMap] = await Promise.all([
-                        FiltersStorage.get(filterId),
+                        FiltersStorage.getFilterList(filterId),
                         FiltersStorage.getSourceMap(filterId),
                     ]);
+
+                    if (!content) {
+                        logger.error(`Failed to get filter ${filterId}`);
+                        return;
+                    }
+
+                    if (!sourceMap) {
+                        logger.warn(`Source map is not found for filter ${filterId}`);
+                    }
+
                     const trusted = FiltersApi.isFilterTrusted(filterId);
 
                     filters.push({

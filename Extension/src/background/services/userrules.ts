@@ -41,7 +41,6 @@ import {
 import { settingsEvents } from '../events';
 import { Prefs } from '../prefs';
 import { logger } from '../../common/logger';
-import { NEWLINE_CHAR_UNIX } from '../../common/constants';
 
 export type GetUserRulesResponse = {
     content: string,
@@ -90,11 +89,10 @@ export class UserRulesService {
      * @returns All user rules concatenated via '\n' divider.
      */
     private static async getUserRules(): Promise<GetUserRulesResponse> {
-        const userRules = await UserRulesApi.getOriginalUserRules();
-
-        const content = userRules.join('\n');
-
-        return { content, appVersion: Prefs.version };
+        return {
+            content: await UserRulesApi.getOriginalUserRules(),
+            appVersion: Prefs.version,
+        };
     }
 
     /**
@@ -103,12 +101,8 @@ export class UserRulesService {
      * @returns User rules editor content and settings.
      */
     private static async getUserRulesEditorData(): Promise<GetUserRulesEditorDataResponse> {
-        const userRules = await UserRulesApi.getOriginalUserRules();
-
-        const content = userRules.join('\n');
-
         return {
-            userRules: content,
+            userRules: await UserRulesApi.getOriginalUserRules(),
             settings: SettingsApi.getData(),
         };
     }
@@ -135,7 +129,7 @@ export class UserRulesService {
     private static async handleUserRulesSave(message: SaveUserRulesMessage): Promise<void> {
         const { value } = message.data;
 
-        await UserRulesApi.setUserRules(value.split(NEWLINE_CHAR_UNIX));
+        await UserRulesApi.setUserRules(value);
         // update the engine only if the module is enabled
         if (UserRulesApi.isEnabled()) {
             await UserRulesService.engine.update();

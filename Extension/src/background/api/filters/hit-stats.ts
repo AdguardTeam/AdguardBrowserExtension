@@ -22,17 +22,14 @@ import { getRuleSourceIndex, getRuleSourceText } from 'tswebextension';
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { hitStatsStorageDataValidator } from '../../schema';
-import {
-    FiltersStorage,
-    filterVersionStorage,
-    hitStatsStorage,
-} from '../../storages';
+import { filterVersionStorage, hitStatsStorage } from '../../storages';
 import {
     FilterHitStats,
     FiltersHitStats,
     network,
 } from '../network';
 import { getErrorMessage } from '../../../common/error';
+import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 
 /**
  * This API is used to store and track ad filters usage stats.
@@ -142,7 +139,7 @@ export class HitStatsApi {
                 return [filterId, {}];
             }
 
-            const filterData = await FiltersStorage.getAllFilterData(filterIdNumber);
+            const filterData = await FiltersStoragesAdapter.get(filterIdNumber);
 
             if (!filterData) {
                 return [filterId, {}];
@@ -161,6 +158,7 @@ export class HitStatsApi {
 
                 // During normal operation, this should not happen
                 if (lineStartIndex === -1) {
+                    logger.warn(`[HitStatsApi] Cannot find rule source index for rule index ${ruleIndex}`);
                     return null;
                 }
 
@@ -168,6 +166,7 @@ export class HitStatsApi {
 
                 // During normal operation, this should not happen
                 if (!appliedRuleText) {
+                    logger.warn(`[HitStatsApi] Cannot find rule text for rule index ${ruleIndex}`);
                     return null;
                 }
 

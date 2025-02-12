@@ -27,8 +27,8 @@ dependencies:
     specifier: https://github.com/AdguardTeam/tsurlfilter/raw/0c7ad0622d84aec7047f085b77da2ce537929897/packages/tsurlfilter/tsurlfilter.tgz
     version: '@github.com/AdguardTeam/tsurlfilter/raw/0c7ad0622d84aec7047f085b77da2ce537929897/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)'
   '@adguard/tswebextension':
-    specifier: https://github.com/AdguardTeam/tsurlfilter/raw/0c7ad0622d84aec7047f085b77da2ce537929897/packages/tswebextension/tswebextension.tgz
-    version: '@github.com/AdguardTeam/tsurlfilter/raw/0c7ad0622d84aec7047f085b77da2ce537929897/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)'
+    specifier: https://github.com/AdguardTeam/tsurlfilter/raw/1a5d94c02a293856265a1a2126fbf78052b37a41/packages/tswebextension/tswebextension.tgz
+    version: '@github.com/AdguardTeam/tsurlfilter/raw/1a5d94c02a293856265a1a2126fbf78052b37a41/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)'
   '@xstate/react':
     specifier: ^4.1.3
     version: 4.1.3(@types/react@17.0.83)(react@17.0.2)(xstate@5.19.0)
@@ -59,9 +59,6 @@ dependencies:
   date-fns:
     specifier: ^2.29.3
     version: 2.29.3
-  idb:
-    specifier: ^8.0.0
-    version: 8.0.0
   js-beautify:
     specifier: ^1.14.7
     version: 1.14.7
@@ -277,6 +274,9 @@ devDependencies:
   husky:
     specifier: ^7.0.4
     version: 7.0.4
+  idb:
+    specifier: ^8.0.2
+    version: 8.0.2
   jsdom:
     specifier: ^25.0.1
     version: 25.0.1
@@ -382,7 +382,7 @@ packages:
       clone-deep: 4.0.1
       is-ip: 3.1.0
       json5: 2.2.3
-      semver: 7.7.1
+      semver: 7.6.3
       sprintf-js: 1.1.3
       tldts: 5.7.112
       xregexp: 5.1.1
@@ -2240,7 +2240,7 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.7.1
+      semver: 7.6.3
       ts-api-utils: 1.4.3(typescript@5.6.3)
       typescript: 5.6.3
     transitivePeerDependencies:
@@ -3107,8 +3107,8 @@ packages:
     engines: {node: '>=6.0'}
     dev: true
 
-  /chrome-types@0.1.336:
-    resolution: {integrity: sha512-o/SMyCSt7moPtT78ey9iE7iXWbwU1J9tY4eBjIuVdPtjD9deXsrI0CSAiD58JmUvet0W7iH42xr5+/gTr5bGjg==}
+  /chrome-types@0.1.325:
+    resolution: {integrity: sha512-ZBYwAoUa/piEK3RSFuN21PP0gXmtlkTfaq1UdowkRQTmoNT4w31MbmwckVYnyrUV36YCGAtpLFqVphIQtBqYFQ==}
     dev: false
 
   /cidr-regex@3.1.1:
@@ -3491,7 +3491,7 @@ packages:
       postcss-modules-scope: 3.0.0(postcss@8.4.49)
       postcss-modules-values: 4.0.0(postcss@8.4.49)
       postcss-value-parser: 4.2.0
-      semver: 7.7.1
+      semver: 7.6.3
       webpack: 5.97.1(@swc/core@1.9.3)
     dev: true
 
@@ -4278,7 +4278,7 @@ packages:
       espree: 10.2.0
       esquery: 1.6.0
       parse-imports: 2.2.1
-      semver: 7.7.1
+      semver: 7.6.3
       spdx-expression-parse: 4.0.0
       synckit: 0.9.1
     transitivePeerDependencies:
@@ -5122,9 +5122,8 @@ packages:
       postcss: 8.4.49
     dev: true
 
-  /idb@8.0.0:
-    resolution: {integrity: sha512-l//qvlAKGmQO31Qn7xdzagVPPaHTxXx199MhrAFuVBTPqydcPYBWjkrbv4Y0ktB+GmWOiwHl237UUOrLmQxLvw==}
-    dev: false
+  /idb@8.0.2:
+    resolution: {integrity: sha512-CX70rYhx7GDDQzwwQMDwF6kDRQi5vVs6khHUumDrMecBylKkwvZ8HWvKV08AGb7VbpoGCWUQ4aHzNDgoUiOIUg==}
 
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -6714,7 +6713,7 @@ packages:
       cosmiconfig: 9.0.0(typescript@5.6.3)
       jiti: 1.21.7
       postcss: 8.4.49
-      semver: 7.7.1
+      semver: 7.6.3
       webpack: 5.97.1(@swc/core@1.9.3)
     transitivePeerDependencies:
       - typescript
@@ -7472,8 +7471,8 @@ packages:
     hasBin: true
     dev: true
 
-  /semver@7.7.1:
-    resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
+  /semver@7.6.3:
+    resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -8825,9 +8824,9 @@ packages:
       zod-validation-error: 3.4.0(zod@3.21.4)
     dev: false
 
-  '@github.com/AdguardTeam/tsurlfilter/raw/0c7ad0622d84aec7047f085b77da2ce537929897/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)':
-    resolution: {tarball: https://github.com/AdguardTeam/tsurlfilter/raw/0c7ad0622d84aec7047f085b77da2ce537929897/packages/tswebextension/tswebextension.tgz}
-    id: '@github.com/AdguardTeam/tsurlfilter/raw/0c7ad0622d84aec7047f085b77da2ce537929897/packages/tswebextension/tswebextension.tgz'
+  '@github.com/AdguardTeam/tsurlfilter/raw/1a5d94c02a293856265a1a2126fbf78052b37a41/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)':
+    resolution: {tarball: https://github.com/AdguardTeam/tsurlfilter/raw/1a5d94c02a293856265a1a2126fbf78052b37a41/packages/tswebextension/tswebextension.tgz}
+    id: '@github.com/AdguardTeam/tsurlfilter/raw/1a5d94c02a293856265a1a2126fbf78052b37a41/packages/tswebextension/tswebextension.tgz'
     name: '@adguard/tswebextension'
     version: 3.0.0-alpha.1
     engines: {node: '>=20'}
@@ -8840,10 +8839,10 @@ packages:
       '@adguard/scriptlets': 2.1.4
       '@adguard/tsurlfilter': '@github.com/AdguardTeam/tsurlfilter/raw/0c7ad0622d84aec7047f085b77da2ce537929897/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)'
       bowser: 2.11.0
-      chrome-types: 0.1.336
+      chrome-types: 0.1.325
       commander: 11.0.0
       fs-extra: 11.1.1
-      idb: 8.0.0
+      idb: 8.0.2
       lodash-es: 4.17.21
       lru-cache: 11.0.2
       nanoid: 5.0.9

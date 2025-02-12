@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import type { SettingsConfig as SettingsConfigMV3 } from '@adguard/tswebextension/mv3';
-import type { SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextension';
+import { type SettingsConfig as SettingsConfigMV3 } from '@adguard/tswebextension/mv3';
+import { type SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 import { type AppearanceTheme, defaultSettings } from '../../../common/settings';
@@ -193,7 +193,7 @@ export class SettingsApi {
      * the default filters or not.
      */
     public static async reset(enableUntouchedGroups: boolean): Promise<void> {
-        await UserRulesApi.setUserRules([]);
+        await UserRulesApi.setUserRules('');
 
         // Set settings store to defaults
         settingsStorage.setData({
@@ -577,7 +577,7 @@ export class SettingsApi {
      */
     private static async importUserFilter({
         [UserFilterOption.Enabled]: enabled,
-        [UserFilterOption.Rules]: rules,
+        [UserFilterOption.Rules]: rulesText,
     }: UserFilterConfig): Promise<void> {
         if (typeof enabled === 'boolean') {
             settingsStorage.set(SettingOption.UserFilterEnabled, enabled);
@@ -585,7 +585,7 @@ export class SettingsApi {
             settingsStorage.set(SettingOption.UserFilterEnabled, true);
         }
 
-        await UserRulesApi.setUserRules(rules.split('\n'));
+        await UserRulesApi.setUserRules(rulesText);
     }
 
     /**
@@ -596,7 +596,7 @@ export class SettingsApi {
     private static async exportUserFilter(): Promise<UserFilterConfig> {
         return {
             [UserFilterOption.Enabled]: settingsStorage.get(SettingOption.UserFilterEnabled),
-            [UserFilterOption.Rules]: (await UserRulesApi.getOriginalUserRules()).join('\n'),
+            [UserFilterOption.Rules]: (await UserRulesApi.getOriginalUserRules()),
             [UserFilterOption.DisabledRules]: '',
         };
     }
