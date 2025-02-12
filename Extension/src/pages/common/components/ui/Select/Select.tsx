@@ -127,7 +127,7 @@ export const Select = ({
     const [focusedIndex, setFocusedIndex] = useState(activeIndex === -1 ? 0 : activeIndex);
     const [isKeyboardUsed, setIsKeyboardUsed] = useState(false);
     const searchString = useRef('');
-    const searchTimeoutId = useRef<NodeJS.Timeout | undefined>(undefined);
+    const searchTimeoutId = useRef<NodeJS.Timeout>();
     const ignoreBlur = useRef(false);
 
     const comboId = `${id}-combo`;
