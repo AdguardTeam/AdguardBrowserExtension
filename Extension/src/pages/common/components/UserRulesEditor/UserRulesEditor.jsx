@@ -323,52 +323,38 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         }
     };
 
-    const shortcuts = [
-        {
-            name: 'save',
-            // If changed, also change UserRulesSavingButton -> SavingButton
-            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-            exec: saveClickHandler,
-        },
-        {
-            name: 'togglecomment',
-            bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
-            exec: (editor) => {
-                const selection = editor.getSelection();
-                const ranges = selection.getAllRanges();
+    const shortcuts = [{
+        name: 'togglecomment',
+        bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
+        exec: (editor) => {
+            const selection = editor.getSelection();
+            const ranges = selection.getAllRanges();
 
-                const rowsSelected = ranges
-                    .map((range) => {
-                        const [start, end] = [range.start.row, range.end.row];
-                        return Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
-                    })
-                    .flat();
+            const rowsSelected = ranges
+                .map((range) => {
+                    const [start, end] = [range.start.row, range.end.row];
+                    return Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
+                })
+                .flat();
 
-                const allRowsCommented = rowsSelected.every((row) => {
-                    const rowLine = editor.session.getLine(row);
-                    return rowLine.trim().startsWith(SimpleRegex.MASK_COMMENT);
-                });
+            const allRowsCommented = rowsSelected.every((row) => {
+                const rowLine = editor.session.getLine(row);
+                return rowLine.trim().startsWith(SimpleRegex.MASK_COMMENT);
+            });
 
-                rowsSelected.forEach((row) => {
-                    const rawLine = editor.session.getLine(row);
-                    // if all lines start with comment mark we remove it
-                    if (allRowsCommented) {
-                        const lineWithRemovedComment = rawLine.replace(SimpleRegex.MASK_COMMENT, '');
-                        editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
-                        // otherwise we add it
-                    } else {
-                        editor.session.insert({ row, column: 0 }, SimpleRegex.MASK_COMMENT);
-                    }
-                });
-            },
+            rowsSelected.forEach((row) => {
+                const rawLine = editor.session.getLine(row);
+                // if all lines start with comment mark we remove it
+                if (allRowsCommented) {
+                    const lineWithRemovedComment = rawLine.replace(SimpleRegex.MASK_COMMENT, '');
+                    editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
+                    // otherwise we add it
+                } else {
+                    editor.session.insert({ row, column: 0 }, SimpleRegex.MASK_COMMENT);
+                }
+            });
         },
-        {
-            name: 'exit',
-            // If changed, also change in focusFirstEnabledAction method
-            bindKey: { win: 'Esc', mac: 'Esc' },
-            exec: focusFirstEnabledAction,
-        },
-    ];
+    }];
 
     const exportClickHandler = () => {
         exportData(ExportTypes.UserFilter);
@@ -430,6 +416,8 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 fullscreen={fullscreen}
                 shouldResetSize={shouldResetSize}
                 onChange={editorChangeHandler}
+                onSave={saveClickHandler}
+                onExit={focusFirstEnabledAction}
                 highlightRules
             />
             {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}

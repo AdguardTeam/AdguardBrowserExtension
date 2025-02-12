@@ -172,21 +172,6 @@ const Allowlist = observer(() => {
         }
     };
 
-    const shortcuts = [
-        {
-            name: 'save',
-            // If changed, also change AllowlistSavingButton -> SavingButton
-            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-            exec: saveClickHandler,
-        },
-        {
-            name: 'exit',
-            // If changed, also change in focusFirstEnabledAction method
-            bindKey: { win: 'Esc', mac: 'Esc' },
-            exec: focusFirstEnabledButton,
-        },
-    ];
-
     let shouldResetSize = false;
     if (settingsStore.allowlistSizeReset) {
         settingsStore.setAllowlistSizeReset(false);
@@ -229,10 +214,11 @@ const Allowlist = observer(() => {
             <Editor
                 name="allowlist"
                 editorRef={editorRef}
-                shortcuts={shortcuts}
                 onChange={editorChangeHandler}
                 wrapEnabled={settingsStore.allowlistEditorWrap}
                 shouldResetSize={shouldResetSize}
+                onSave={saveClickHandler}
+                onExit={focusFirstEnabledButton}
             />
             {hasUnsavedChanges && (
                 <EditorLeaveModal
