@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
 import zod from 'zod';
 import SuperJSON from 'superjson';
+import { isObject, trimEnd } from 'lodash-es';
+
+import { FilterListPreprocessor } from '@adguard/tsurlfilter';
 
 import { pageStatsValidator } from '../../../Extension/src/background/schema/page-stats';
 
@@ -11,6 +14,74 @@ export const CONVERSION_MAP_PREFIX = 'conversionmap_';
 export const SOURCE_MAP_PREFIX = 'sourcemap_';
 
 export type StorageData = Record<string, unknown>;
+
+/**
+ * Legacy serialization function for Uint8Array.
+ *
+ * Helper function to serialize Uint8Array members of an object.
+ * This workaround is needed because by default chrome.storage API doesn't support Uint8Array,
+ * and we use it to store serialized filter lists.
+ *
+ * @param value Object to serialize.
+ *
+ * @returns Serialized object.
+ */
+const serialize = (value: unknown): unknown => {
+    if (value instanceof Uint8Array) {
+        return { __type: 'Uint8Array', data: Array.from(value) };
+    }
+
+    if (Array.isArray(value)) {
+        return value.map(serialize);
+    }
+
+    if (isObject(value)) {
+        const serializedObject: { [key: string]: unknown } = {};
+        // eslint-disable-next-line no-restricted-syntax
+        for (const [key, val] of Object.entries(value)) {
+            serializedObject[key] = serialize(val);
+        }
+        return serializedObject;
+    }
+
+    return value;
+};
+
+/**
+ * Legacy deserialization function for Uint8Array.
+ *
+ * Helper function to deserialize Uint8Array members of an object.
+ * This workaround is needed because by default chrome.storage API doesn't support Uint8Array,
+ * and we use it to store serialized filter lists.
+ *
+ * @param value Object to deserialize.
+ *
+ * @returns Deserialized object.
+ */
+const deserialize = (value: unknown): unknown => {
+    const isObj = isObject(value);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (isObj && (value as any).__type === 'Uint8Array') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return new Uint8Array((value as any).data);
+    }
+
+    if (Array.isArray(value)) {
+        return value.map(deserialize);
+    }
+
+    if (isObj) {
+        const deserializedObject: { [key: string]: unknown } = {};
+        // eslint-disable-next-line no-restricted-syntax
+        for (const [key, val] of Object.entries(value)) {
+            deserializedObject[key] = deserialize(val);
+        }
+        return deserializedObject;
+    }
+
+    return value;
+};
 
 export const getStorageFixturesV0 = (): StorageData[] => ([{
     'adguard-settings': {
@@ -288,6 +359,44 @@ export const getStorageFixturesV4 = (expires: number): StorageData[] => {
         const result = Object.fromEntries(
             Object.entries(storageSettings).filter(([key]) => !filterRelatedKeys.includes(key)),
         );
+
+        const idExtractor = /filterrules_(?<id>\d+)\.txt/;
+
+        const filterSchema = zod.union([
+            zod.string(),
+            zod.array(zod.string()),
+        ]);
+
+        filterRelatedKeys.forEach((key) => {
+            const id = idExtractor.exec(key)?.groups?.id;
+
+            if (!id) {
+                throw new Error('Cannot extract filter id');
+            }
+
+            const filterParsingResult = filterSchema.safeParse(storageSettings[key]);
+
+            if (!filterParsingResult.success) {
+                throw new Error('Cannot parse filter');
+            }
+
+            // merge user filter from array of rules to a single string
+            const rawFilter = Array.isArray(filterParsingResult.data)
+                ? filterParsingResult.data.join('\n')
+                : filterParsingResult.data;
+
+            const {
+                rawFilterList,
+                filterList,
+                conversionMap,
+                sourceMap,
+            } = FilterListPreprocessor.preprocess(rawFilter);
+
+            result[`filterrules_${id}.txt`] = rawFilterList;
+            result[`binaryfilterrules_${id}.txt`] = serialize(filterList);
+            result[`conversionmap_${id}.txt`] = conversionMap;
+            result[`sourcemap_${id}.txt`] = sourceMap;
+        });
 
         // Add lastScheduledCheckTime to filters-version entries based on lastCheckTime
         const adgSettings = result['adguard-settings'] as any;
@@ -590,7 +699,19 @@ export const getStorageFixturesV11 = (expires: number): StorageData[] => {
     const storageSettingsFixturesV10 = getStorageFixturesV10(expires);
 
     return storageSettingsFixturesV10.map((settings) => {
-        const keys = Object.keys(settings).filter((key) => [
+        const keys = Object.keys(settings);
+
+        // Part 1. Migrate serialized data.
+        // Some date, like typed arrays, are not JSON serializable. In IDB, we can store such data without any problems.
+        // But if IDB is not supported, hybrid storage falls back to browser.storage.local,
+        // where we only can store JSON-serializable data.
+        // To be able to store such data in browser.storage.local, we serialize such data when using hybrid storage.
+        // However, in the latest version, we introduced a more robust way to serialize data:
+        // instead of the legacy custom implementation, we use SuperJSON.
+        // We migrate old serialized data to the new format in this migration, but only if IDB is not supported.
+
+        // Get relevant keys.
+        const filterRelatedKeys = keys.filter((key) => [
             RAW_FILTER_KEY_PREFIX,
             BINARY_FILTER_KEY_PREFIX,
             FILTER_KEY_PREFIX,
@@ -598,8 +719,43 @@ export const getStorageFixturesV11 = (expires: number): StorageData[] => {
             SOURCE_MAP_PREFIX,
         ].some((prefix) => key.startsWith(prefix)));
 
+        filterRelatedKeys.forEach((key) => {
+            const val = settings[key];
+            // Deserialize data using the legacy deserialization function.
+            const deserializeResult = deserialize(val);
+            // Serialize data using SuperJSON, imitating the behavior of hybrid storage.
+            const serializeResult = SuperJSON.serialize(deserializeResult);
+
+            // If 'meta' key is present in the result, it means that the data contains non-JSON-serializable data.
+            // If 'meta' key is not present in the result, it means that the data is JSON-serializable,
+            // and we don't need to change it.
+            if ('meta' in serializeResult) {
+                settings[key] = serializeResult;
+            }
+        });
+
+        // Part 2. Migrate filters keys.
+        // To provide better integration with preprocessed filters, we changed keys for filters data:
+        // filterrules_<id>.txt -> rawFilterList_<id>
+        // binaryfilterrules_<id>.txt -> filterList_<id>
+        // conversionmap_<id>.txt -> conversionMap_<id>
+        // sourcemap_<id>.txt -> sourceMap_<id>
+        const filtersKeyPrefixesMap: ReadonlyMap<string, string> = new Map<string, string>([
+            ['filterrules_', 'rawFilterList_'],
+            ['binaryfilterrules_', 'filterList_'],
+            ['conversionmap_', 'conversionMap_'],
+            ['sourcemap_', 'sourceMap_'],
+        ]);
+        const filtersKeyPrefixesEntries = Array.from(filtersKeyPrefixesMap.entries());
+
         keys.forEach((key) => {
-            settings[key] = SuperJSON.serialize(settings[key]);
+            filtersKeyPrefixesEntries.forEach(([oldPrefix, newPrefix]) => {
+                if (key.startsWith(oldPrefix)) {
+                    const newKey = trimEnd(key.replace(oldPrefix, newPrefix), '.txt');
+                    settings[newKey] = settings[key];
+                    delete settings[key];
+                }
+            });
         });
 
         settings['schema-version'] = 11;

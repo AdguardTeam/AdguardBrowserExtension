@@ -29,7 +29,7 @@ import {
     getDomain,
     getRuleSourceText,
     getRuleSourceIndex,
-    PreprocessedFilterList,
+    type PreprocessedFilterList,
     type DeclarativeRuleInfo,
 } from 'tswebextension';
 
@@ -37,10 +37,11 @@ import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
 import { listeners } from '../notifier';
 import { engine } from '../engine';
-import { FiltersStorage, settingsStorage } from '../storages';
+import { settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
 import { AntiBannerFiltersId } from '../../common/constants';
+import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 
 export type FilteringEventRuleData = {
     filterId: number,
@@ -284,15 +285,20 @@ export class FilteringLogApi {
         }
 
         try {
-            const [rawFilterList, conversionMap, sourceMap] = await Promise.all([
-                FiltersStorage.getPreprocessedFilterList(filterId),
-                FiltersStorage.getConversionMap(filterId),
-                FiltersStorage.getSourceMap(filterId),
+            // eslint-disable-next-line prefer-const
+            let [rawFilterList, conversionMap, sourceMap] = await Promise.all([
+                FiltersStoragesAdapter.getRawFilterList(filterId),
+                FiltersStoragesAdapter.getConversionMap(filterId),
+                FiltersStoragesAdapter.getSourceMap(filterId),
             ]);
 
             // Raw filter list and source map are required to get rule texts
             if (!rawFilterList || !sourceMap) {
                 return undefined;
+            }
+
+            if (!conversionMap) {
+                conversionMap = {};
             }
 
             const filterData: CachedFilterData = {

@@ -7,6 +7,7 @@ import {
     it,
     vi,
 } from 'vitest';
+import escapeStringRegexp from 'escape-string-regexp';
 
 import { FiltersDownloader } from '@adguard/filters-downloader/browser';
 
@@ -32,8 +33,14 @@ import {
     CLIENT_ID_KEY,
 } from '../../../../../Extension/src/common/constants';
 import { SettingOption } from '../../../../../Extension/src/background/schema';
+import { FiltersStoragesAdapter } from '../../../../../Extension/src/background/storages/filters-adapter';
 import { fakeFilterWithVersion } from '../../../../helpers/fixtures/fake-filter-with-version';
 import { fakeFilterV4WithDiffPath } from '../../../../helpers/fixtures/fake_filter_v4_with_diff_path';
+import {
+    fakeFilterWithInclude,
+    includedFakeFilter,
+    includedFakeFilterName,
+} from '../../../../helpers/fixtures/fake-filter-with-include';
 
 vi.mock('../../../../../Extension/src/background/engine');
 vi.mock('../../../../../Extension/src/background/api/ui/icons');
@@ -208,7 +215,13 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
     });
 
     it('update filters after 60 minutes delay', async () => {
-        vi.useFakeTimers();
+        vi.useFakeTimers({
+            // Note: We need to enable this option because our IndexedDB mock (fake-indexeddb)
+            // uses `setTimeout` internally with a 0ms delay.
+            // Enabling `shouldAdvanceTime` ensures that these timers run automatically, preventing
+            // potential deadlocks in tests. The ±20ms time advancement is negligible for our use case.
+            shouldAdvanceTime: true,
+        });
 
         await App.init();
 
@@ -332,7 +345,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV1);
+            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV1);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1);
 
             returnMetadataWithVersion(filterId, '4.0.0.0');
@@ -358,7 +371,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             await FilterUpdateApi.autoUpdateFilters(false);
@@ -372,7 +385,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStorage.getPreprocessedFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
         });
 
@@ -401,7 +414,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect((await FiltersStorage.getAllFilterData(1))?.rawFilterList).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             // Auto update filter to get a diff patch
@@ -461,6 +474,52 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
             lastCheckTime = filterVersionData[1]!.lastCheckTime;
             lastScheduledCheckTime = filterVersionData[1]!.lastScheduledCheckTime;
             expect(lastScheduledCheckTime).toBeGreaterThanOrEqual(lastCheckTime);
+        });
+    });
+
+    describe('Should handle included content correctly', () => {
+        const filterId = 999;
+
+        beforeEach(async () => {
+            storage = mockLocalStorage({
+                [APP_VERSION_KEY]: '4.2.0.0',
+                [CLIENT_ID_KEY]: 'id',
+            });
+
+            sinonFakeServer.respondWith('GET', new RegExp(`${escapeStringRegexp(`/filters/${filterId}.txt`)}`), [
+                200,
+                { 'Content-Type': 'text/plain' },
+                fakeFilterWithInclude,
+            ]);
+
+            sinonFakeServer.respondWith('GET', new RegExp(`${escapeStringRegexp('/included-fake-filter.txt')}`), [
+                200,
+                { 'Content-Type': 'text/plain' },
+                includedFakeFilter,
+            ]);
+
+            returnMetadataWithVersion(filterId, '1.0.0.0', fakeFilter999);
+
+            await App.init();
+        });
+
+        afterEach(async () => {
+            await storage.clear();
+
+            vi.clearAllMocks();
+            vi.restoreAllMocks();
+        });
+
+        it('should update filter with include', async () => {
+            await FiltersApi.loadAndEnableFilters([filterId], true);
+
+            const rawFilterFromStorage = await FiltersStorage.getRawFilterList(filterId);
+
+            // Raw filter from storage should contain included content,
+            // and not the `!#include` directive.
+            expect(rawFilterFromStorage).toEqual(
+                fakeFilterWithInclude.replace(`!#include ./${includedFakeFilterName}`, includedFakeFilter),
+            );
         });
     });
 });

@@ -445,8 +445,8 @@ export class CustomFilterApi {
     private static async updateFilterData(
         filterMetadata: CustomFilterMetadata,
         {
-            rawRules,
             rules,
+            rawRules,
             checksum,
             parsed,
         }: GetRemoteCustomFilterResult,
@@ -477,7 +477,9 @@ export class CustomFilterApi {
 
         customFilterMetadataStorage.set(newFilterMetadata);
 
-        await FiltersStorage.set(filterId, rules);
+        // Note: we should array of rules here, because they contain preprocessed directives,
+        // e.g. including another filter via `!#include` directive.
+        await FiltersStorage.set(filterId, rules.join('\n'));
         await RawFiltersStorage.set(filterId, rawRules);
 
         return newFilterMetadata;

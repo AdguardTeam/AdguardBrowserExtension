@@ -41,6 +41,7 @@ export default defineConfig({
     test: {
         setupFiles: [
             // Setup all needed stuff: mocks, etc.
+            'fake-indexeddb/auto',
             './vitest.setup.ts',
         ],
         environment: 'jsdom', // Enables jsdom environment for tests.
