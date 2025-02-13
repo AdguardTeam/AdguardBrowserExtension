@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Send last filters update time during issue reporting [#3055].
+
+<!-- FIXME: move local link down -->
+[#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
+
 ### Removed
 
 ## [Unreleased]
