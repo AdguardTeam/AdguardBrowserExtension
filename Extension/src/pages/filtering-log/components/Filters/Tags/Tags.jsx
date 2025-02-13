@@ -20,14 +20,24 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { translator } from '../../../../../common/translators/translator';
 import { Popover } from '../../../../common/components/ui/Popover';
 import { UserAgent } from '../../../../../common/user-agent';
+
+function getTagClassName({ id, type, active }) {
+    return classNames(
+        'tag',
+        id && `tag--${id}`,
+        type && `tag--${type}`,
+        active && 'active',
+    );
+}
 
 export const Tags = ({
     tags,
     setTags,
     type,
+    label,
 }) => {
     const { allButtonEnabled, filters } = tags;
 
@@ -123,18 +133,24 @@ export const Tags = ({
                 enabled,
                 tooltip,
             } = tag;
+
+            const active = !allButtonEnabled && enabled;
+
             const button = (
                 <button
-                    className={classNames(`tag tag--${id}`, type && `tag--${type}`, { active: !allButtonEnabled && enabled })}
-                    type="button"
-                    onClick={handleTagClick}
-                    value={id}
                     key={id}
+                    role="radio"
+                    type="button"
+                    value={id}
+                    className={getTagClassName({ id, type, active })}
+                    aria-checked={active}
+                    onClick={handleTagClick}
                     aria-label={tooltip}
                 >
                     {title}
                 </button>
             );
+
             return tooltip
                 ? (
                     <Popover text={tooltip} key={id}>
@@ -146,15 +162,19 @@ export const Tags = ({
     };
 
     return (
-        <>
-            <button
-                className={classNames('tag', type && `tag--${type}`, { active: allButtonEnabled })}
-                type="button"
-                onClick={handleAllClick}
-            >
-                {reactTranslator.getMessage('filtering_type_all')}
-            </button>
+        <div role="radiogroup" aria-label={label}>
+            <div className="tag-wrapper">
+                <button
+                    role="radio"
+                    type="button"
+                    className={getTagClassName({ type, active: allButtonEnabled })}
+                    aria-checked={allButtonEnabled}
+                    onClick={handleAllClick}
+                >
+                    {translator.getMessage('filtering_type_all')}
+                </button>
+            </div>
             {renderTypes()}
-        </>
+        </div>
     );
 };
