@@ -262,6 +262,73 @@ span.red-dot {
     margin-right: 4px;
 }
 
+.search {
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 20;
+    width: 100%;
+    background-color: var(--fills-inputs-input-background-disabled);
+    border: 1px solid var(--stroke-inputs-inactive-input-stroke-default);
+    border-radius: 8px;
+
+    @media (max-width: 640px) {
+        margin-right: 0;
+    }
+
+    & input {
+        border: none;
+        width: 100%;
+        height: 40px;
+        padding: 0 24px 0 56px;
+        background: none;
+        text-overflow: ellipsis;
+        color: var(--text-main-text-main-default);
+        font-size: 14px;
+        line-height: 18px;
+
+        &:placeholder {
+            opacity: 1;
+            color: var(--text-placeholder-placeholder-default);
+        }
+    }
+
+    &__input {
+        border-radius: 8px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__clear {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        position: absolute;
+        left: 16px;
+        max-height: 24px;
+    }
+
+    &__ico {
+        position: absolute;
+        left: 16px;
+        top: calc(50% - 12px);
+    }
+
+    &__arrow-up {
+        transform: rotate(180deg);
+    }
+
+    &__btn {
+        cursor: pointer;
+        background-color: transparent;
+        border: 0;
+        padding: 0;
+    }
+}
+
+
 .sr-only {
     position: absolute;
     width: 1px;
