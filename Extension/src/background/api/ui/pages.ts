@@ -245,12 +245,14 @@ export class PagesApi {
         const commonFilterIds = FiltersApi.getEnabledFilters()
             .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
 
+        const manifestDetails = browser.runtime.getManifest();
+
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            product_type: 'Ext',
-            manifest_version: __IS_MV3__ ? '3' : '2',
-            product_version: encodeURIComponent(browser.runtime.getManifest().version),
+            product_type: 'Extension',
+            manifest_version: encodeURIComponent(manifestDetails.manifest_version),
+            product_version: encodeURIComponent(manifestDetails.version),
             url: encodeURIComponent(siteUrl),
         };
 
