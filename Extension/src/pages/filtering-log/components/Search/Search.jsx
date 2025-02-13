@@ -31,7 +31,13 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import './search.pcss';
 
 const Search = forwardRef(({
-    changeHandler, handleClear, onFocus, value, placeholder, select, onOpenSelect,
+    changeHandler,
+    handleClear,
+    onFocus,
+    value,
+    placeholder,
+    select,
+    onOpenSelect,
 }, passedRef) => {
     const localSearchInputRef = useRef(null);
 
@@ -73,12 +79,13 @@ const Search = forwardRef(({
                 <button
                     type="button"
                     className="button search__clear"
-                    aria-label={reactTranslator.getMessage('close_button_title')}
+                    title={reactTranslator.getMessage('clear_button_title')}
                     onClick={onClear}
                 >
                     <Icon
                         id="#cross"
                         classname="icon--24 icon--gray-default"
+                        aria-hidden="true"
                     />
                 </button>
             );
@@ -86,6 +93,7 @@ const Search = forwardRef(({
 
         // Render with tab selector search in drop-down menu
         if (select) {
+            // FIXME: Improve a11y
             return (
                 <button
                     type="button"
@@ -97,6 +105,7 @@ const Search = forwardRef(({
                             'icon--24 icon--gray-default search__ico',
                             onOpenSelect ? 'search__arrow-up' : 'search__arrow-down',
                         )}
+                        aria-hidden="true"
                     />
                 </button>
             );
@@ -106,6 +115,7 @@ const Search = forwardRef(({
             <Icon
                 id="#magnifying"
                 classname="icon--24 icon--gray-default search__ico"
+                aria-hidden="true"
             />
         );
     };
@@ -115,7 +125,6 @@ const Search = forwardRef(({
             className="search"
             onSubmit={onSubmit}
         >
-            { renderControl() }
             <input
                 type="text"
                 id="log-search"
@@ -128,6 +137,7 @@ const Search = forwardRef(({
                 value={value}
                 autoComplete="off"
             />
+            {renderControl()}
         </form>
     );
 });
