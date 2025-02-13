@@ -135,6 +135,7 @@ export const Tags = ({
             } = tag;
 
             const active = !allButtonEnabled && enabled;
+            const descriptionId = `tag-description-${id}`;
 
             const button = (
                 <button
@@ -145,9 +146,15 @@ export const Tags = ({
                     className={getTagClassName({ id, type, active })}
                     aria-checked={active}
                     onClick={handleTagClick}
-                    aria-label={tooltip}
+                    aria-label={title}
+                    aria-describedby={descriptionId}
                 >
                     {title}
+                    {tooltip && (
+                        <span id={descriptionId} className="sr-only">
+                            {tooltip}
+                        </span>
+                    )}
                 </button>
             );
 
