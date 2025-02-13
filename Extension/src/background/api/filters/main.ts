@@ -510,13 +510,16 @@ export class FiltersApi {
             ? await network.downloadMetadataFromBackend()
             : await network.getLocalFiltersMetadata();
 
+        const filters = rawMetadata.filters
+            // Quick fixes filter was disabled in MV3 to comply with CWR policies.
+            // TODO: remove code totally later.
+            .filter((f) => f.filterId !== AntiBannerFiltersId.QuickFixesFilterId)
+            // deprecated filters should not be used. AG-29276
+            .filter((f) => !f.deprecated);
+
         const metadata = {
             ...rawMetadata,
-            filters: rawMetadata.filters.filter((f) => {
-                // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-                // TODO: remove code totally later.
-                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
-            }),
+            filters,
         };
 
         const i18nMetadata = i18nMetadataStorage.getData();
