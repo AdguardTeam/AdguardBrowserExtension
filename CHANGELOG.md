@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased <!-- release/v5.2 -->
 
+### Removed
+
+- AdGuard DNS filter and AdGuard Annoyances filter as deprecated.
+
 ## [Unreleased]
 
 ### Added
@@ -49,7 +53,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Storage classes, because they were moved to the `@adguard/tswebextension` package.
-- AdGuard DNS filter and AdGuard Annoyances filter as deprecated.
 
 <!-- TODO: place correct last released version from master, i.e. v5.0.xxx -->
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
