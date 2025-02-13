@@ -17,6 +17,8 @@
  */
 import { debounce, isEmpty } from 'lodash-es';
 
+import { RuleGenerator } from '@adguard/agtree';
+
 import { getRuleSourceIndex, getRuleSourceText } from 'tswebextension';
 
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
@@ -30,6 +32,7 @@ import {
 } from '../network';
 import { getErrorMessage } from '../../../common/error';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
+import { engine } from '../../engine';
 
 /**
  * This API is used to store and track ad filters usage stats.
@@ -68,7 +71,7 @@ export class HitStatsApi {
             }
         } catch (e) {
             // eslint-disable-next-line max-len
-            logger.warn(`Cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error: `, e);
+            logger.error(`Cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error: `, e);
             hitStatsStorage.setData({});
         }
     }
@@ -158,7 +161,18 @@ export class HitStatsApi {
 
                 // During normal operation, this should not happen
                 if (lineStartIndex === -1) {
-                    logger.warn(`[HitStatsApi] Cannot find rule source index for rule index ${ruleIndex}`);
+                    let baseMessage = `[HitStatsApi] Cannot find rule source index for rule index ${ruleIndex}`;
+
+                    const ruleNode = engine.api.retrieveRuleNode(Number(filterId), Number(ruleIndex));
+
+                    // Note: during normal operation, ruleNode should not be null,
+                    // but we handle this case just in case, and to provide type safety
+                    if (ruleNode) {
+                        const generatedRuleText = RuleGenerator.generate(ruleNode);
+                        baseMessage += `, generated rule text: ${generatedRuleText}`;
+                    }
+
+                    logger.error(baseMessage);
                     return null;
                 }
 
@@ -166,7 +180,18 @@ export class HitStatsApi {
 
                 // During normal operation, this should not happen
                 if (!appliedRuleText) {
-                    logger.warn(`[HitStatsApi] Cannot find rule text for rule index ${ruleIndex}`);
+                    let baseMessage = `[HitStatsApi] Cannot find rule text for rule index ${ruleIndex}`;
+
+                    const ruleNode = engine.api.retrieveRuleNode(Number(filterId), Number(ruleIndex));
+
+                    // Note: during normal operation, ruleNode should not be null,
+                    // but we handle this case just in case, and to provide type safety
+                    if (ruleNode) {
+                        const generatedRuleText = RuleGenerator.generate(ruleNode);
+                        baseMessage += `, generated rule text: ${generatedRuleText}`;
+                    }
+
+                    logger.error(baseMessage);
                     return null;
                 }
 

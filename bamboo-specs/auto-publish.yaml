@@ -90,7 +90,18 @@ AutoDeployAndPublish Beta:
             mv chrome-mv3-beta.zip chrome-mv3.zip
 
             # Deploying and publishing beta in Chrome Web Store.
-            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
+            # This script attempts to deploy the browser extension to the webstore with expedited review.
+            # If the expedited review deployment fails (i.e., the exit status is non-zero),
+            # it catches the error and attempts to deploy with a normal review process.
+            # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
+            # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
+            set +e
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish-expedited-review
+            if [ $? -ne 0 ]; then
+              echo "Expedited review failed, trying normal review"
+              ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
+            fi
+            set -e
     - checkout: browser-extension
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
