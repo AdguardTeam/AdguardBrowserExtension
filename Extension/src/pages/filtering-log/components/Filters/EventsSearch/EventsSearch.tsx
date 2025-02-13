@@ -31,12 +31,12 @@ import { rootStore } from '../../../stores/RootStore';
 export const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);
 
-    const ref = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const value = logStore.eventsSearchValue;
 
     useEffect(() => {
-        const element = ref.current;
-        if (!element) {
+        const input = inputRef.current;
+        if (!input) {
             return;
         }
 
@@ -45,8 +45,8 @@ export const EventsSearch = observer(() => {
 
             if (e[modifierKeyProperty] && e.code === 'KeyF') {
                 e.preventDefault();
-                element.focus();
-                element.select();
+                input.focus();
+                input.select();
             }
         };
 
@@ -61,14 +61,19 @@ export const EventsSearch = observer(() => {
     };
 
     const handleClear = () => {
-        ref.current?.focus();
+        const input = inputRef.current;
+        if (!input) {
+            return;
+        }
+
         logStore.setEventsSearchValue('');
+        input.focus();
     };
 
     return (
         <div className="search">
             <input
-                ref={ref}
+                ref={inputRef}
                 type="text"
                 className="search__input"
                 placeholder={translator.getMessage('filtering_log_search_string')}
