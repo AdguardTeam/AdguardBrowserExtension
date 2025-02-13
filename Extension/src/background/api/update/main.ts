@@ -1191,7 +1191,6 @@ export class UpdateApi {
          * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
          * and Widgets - which we should enable if the Annoyances filter is enabled.
          */
-        // const annoyancesFiltersIds = ['18', '19', '20', '21', '22'];
         const SEPARATED_ANNOYANCES_FILTERS_IDS = [
             AntiBannerFiltersId.AnnoyancesCookieNoticesFilterId,
             AntiBannerFiltersId.AnnoyancesPopupsFilterId,
@@ -1244,7 +1243,7 @@ export class UpdateApi {
     }
 
     /**
-     * Removes the deprecated DNS filter from settings and storages.
+     * Removes the deprecated DNS filter from settings.
      *
      * @param settings The settings object.
      *
