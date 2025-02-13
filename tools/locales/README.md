@@ -1,28 +1,32 @@
-## Locales script
+# Locales script
 
-### Synopsis
-```
+## Synopsis
+
+```text
 pnpm locales [download | upload | renew | validate | info]
 ```
 
-- `download` — download, save and validate translations; defaults to download **all** locales and run `validate --min` after that; locales can be specified:
-  - **-l**, **--locales** — for specific list of space-separated locales
-    - **<list_of_locales>...** — locales to download
+- `download` — download, save and validate translations;
+  defaults to download *all* locales and run `validate --min` after that;
+  locales can be specified:
+    - **-l** or **--locales** — for specific list of space-separated locales
+        - **<list_of_locales>...** — locales to download
 
 - `upload` — upload base locale
 
 - `renew` — renew base locale
 
-- `validate` — validate locales translations (defaults to **all** locales):
-  - **-R**, **--min** — for critical errors of all locales and translations readiness of required ones
-  - **-l**, **--locales** — for specific list of space-separated locales
-    - **<list_of_locales>...** — locales to validate
+- `validate` — validate locales translations (defaults to validate *all* locales):
+    - **-R**, **--min** — for critical errors of all locales and translations readiness of required ones
+    - **-l** or **--locales** — for specific list of space-separated locales
+        - **<list_of_locales>...** — locales to validate
 
-- `info` — shows info about unused base-lang strings and all locales translations readiness; in other words, defaults to `-N -s` which can be used separately:
-  - **-N**, **--unused** — for unused base-lang strings
-  - **-s**, **--summary** — for all locales translations readiness
+- `info` — shows info about unused base-lang strings and all locales translations readiness;
+  in other words, defaults to `-N -s` which can be used separately:
+    - **-N** or **--unused** — for unused base-lang strings
+    - **-s** or **--summary** — for all locales translations readiness
 
-### Examples
+## Examples
 
 ```bash
 # to download and save all locales
@@ -42,8 +46,6 @@ pnpm locales validate
 pnpm locales validate --min
 # or just 'es', 'ja' and 'ko' locales
 pnpm locales validate -l es ja ko
-# critical errors validation
-pnpm locales validate -X
 
 # show info about translations readiness and unused strings
 pnpm locales info
@@ -52,6 +54,7 @@ pnpm locales info
 After download you'll find the locales in the `src/_locales/` folder.
 
 List of minimum required locales and other input data are in `config.json`. There are such properties defined:
+
 - `twosky_config_path` — relative path to twosky config file
 - `api_url` — twosky api url
 - `source_relative_path` — relative path to source files — where translation strings are used
