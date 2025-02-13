@@ -22,37 +22,52 @@ export const baseMetadataValidator = zod.object({
      * Description of the filter.
      */
     description: zod.string(),
+
     /**
      * Display number is used to arrange the filters in the layout.
      */
     displayNumber: zod.number(),
+
+    /**
+     * Whether the filter is deprecated.
+     *
+     * @see {@link https://github.com/AdguardTeam/FiltersRegistry#metadata}
+     */
+    deprecated: zod.boolean().optional(),
+
     /**
      * The time in seconds during which the filter content remains fresh
      * and does not need to be updated. Used to auto-renew filters if the user
      * has not selected a custom update period for filters.
      */
     expires: zod.number(),
+
     /**
      * Id of the filter.
      */
     filterId: zod.number(),
+
     /**
      * Id of the filter's group.
      */
     groupId: zod.number(),
+
     /**
      * URL address of the filter's homepage.
      */
     homepage: zod.string(),
+
     /**
      * Name of the filter.
      */
     name: zod.string(),
+
     /**
      * Filter tags are used to group filters by different characteristics:
      * language, target, platform, etc.
      */
     tags: zod.number().array(),
+
     /**
      * Version filter. Supports up to {@link Version.MAX_LENGTH} parts per
      * version.
