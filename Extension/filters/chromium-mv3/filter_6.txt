@@ -1,8 +1,8 @@
-! Checksum: V/XwC9v1pCkyHLQW9asKZw
+! Checksum: fB1aRGqBp/zIEmI2DEPPGg
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.45.95
-! TimeUpdated: 2025-02-11T22:38:19+00:00
+! Version: 2.0.45.99
+! TimeUpdated: 2025-02-12T17:38:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -962,6 +962,17 @@ fitforfun.de,plus.rtl.de#%#//scriptlet('trusted-replace-xhr-response', 'true', '
 fitforfun.de,brigitte.de#%#//scriptlet('trusted-replace-xhr-response', 'true', 'false', 'global_config.json')
 fitforfun.de,plus.rtl.de#%#//scriptlet('abort-on-stack-trace', 'Object.prototype.adReinsertion', 'createSdk')
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198374
+! It looks like that PHPSESSID is checked on the server side
+! I guess that it works like that - if specific PHPSESSID was registered and few/several seconds passed (I suppose 10 seconds or so)
+! then it redirects to video content, otherwise it displays ads
+! So, as a workaround a PHPSESSID is set to 1 for every video
+! and it checks if the video content is available, if not, it tries again after 10 seconds,
+! if it's available, it redirects to the video content
+filstalwelle.de#$##mejsplayer:has(> video > source[src^="/video/content/a/"]) { display: none !important; }
+filstalwelle.de#%#//scriptlet('trusted-replace-node-text', 'div', 'WERBUNG', 'WERBUNG', 'Trying to skip ads...')
+filstalwelle.de#%#//scriptlet("trusted-replace-node-text", "script", "doPostRoll", "/\?PHPSESSID=.*?'/", "?PHPSESSID=1'")
+filstalwelle.de#%#//scriptlet("trusted-create-element", "head", "script", "", "(()=>{if(!location.pathname.includes('/video/video'))return;let e=0;const t=async o=>{const n=await fetch(o);!(await n.text()).match(/src=.content\//)||document.querySelector('.mejs__video video > source[src^=\"content/\"]')?e<=2&&(e++,setTimeout(t,1e4,o)):location.replace(o)};window.addEventListener('load',(()=>{const e=document.querySelector('body > :is(.mejs__video, #mejsplayer) ~ script:not([type], [src])'),o=e?.textContent.match(/\$\('#bodyTarget'\)\.load\('(.+?)'.+?\);/)?.[1];if(o){let e=location.href.replace(/videoin\.php\?video=.*/,o);e=e.replace(/PHPSESSID=.*/,'PHPSESSID=1'),t(e)}else console.debug('Required part not found in the script.')}))})();")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190034
 promiflash.de#%#//scriptlet('set-constant', 'adHandler.service', 'emptyObj')
 promiflash.de#%#//scriptlet('set-constant', 'adHandler.service.destroy', 'noopFunc')
@@ -9608,6 +9619,7 @@ volksblatt.li##.divAdd_Banner
 tieronline.ch##.djslider-in
 kachelmannwetter.com##.dkpw
 gload.to##.dl2019main
+chip.de##.dlcharts + div:not(.List)
 express.de,ksta.de,rundschau-online.de##.dm-slot
 rundschau-online.de##.dm-slot__skyContainer
 ksta.de##.dm_ta300x300.sold_content
@@ -9699,6 +9711,7 @@ fruchtportal.de##.fp-banner
 arboe.at##.frame-type-mask_toolboxcontentad1
 freenet.de##.frn_contAmazon
 woz.ch##.frontpage-card-banner
+chip.de##.ft-charts-main > div:not(.List):not(.caps)
 puls24.at##.fullbanner-wrapper
 raidrush.net##.funbox
 99ers.at##.fusion-builder-row-14
@@ -10809,7 +10822,7 @@ wasserburger-stimme.de##div[id^="stimm-"]
 supermarktblog.com,supertipp-online.de##div[id^="super-"]
 teltarif.de##div[id^="tarifSlider"]
 tippscout.de##div[id^="tipps-"]
-bbheute.de,berliner-kurier.de,berliner-zeitung.de,bietigheimerzeitung.de,blick.de,donaukurier.de,evangelische-zeitung.de,frankenpost.de,ingolstadt-today.de,krzbb.de,mittelbayerische.de,mopo.de,np-coburg.de,pnp.de,schwarzwaelder-bote.de,stuttgarter-nachrichten.de,stuttgarter-zeitung.de##div[id^="traffective-ad-"]
+bbheute.de,berliner-kurier.de,berliner-zeitung.de,bietigheimerzeitung.de,blick.de,donaukurier.de,evangelische-zeitung.de,frankenpost.de,ingolstadt-today.de,krzbb.de,main-echo.de,mittelbayerische.de,mopo.de,np-coburg.de,pnp.de,schwarzwaelder-bote.de,stuttgarter-nachrichten.de,stuttgarter-zeitung.de##div[id^="traffective-ad-"]
 galeria.de##div[id^="viewHomeDesktop-outGrid-sponsored_products-"]
 galeria.de##div[id^="viewSearchResultDesktop-inGrid-sponsored_products-"]
 20min.ch##div[id^="wettbewerbe__inside-"]
@@ -10976,6 +10989,7 @@ gmx.ch,gmx.net,web.de##list-programmatic-inbox-ad-item
 nau.ch##nau-external-content-lazy
 areadvd.de##onehr
 windowspro.de##section#block-viewscontent-block
+chip.de##section[data-vr-zone="hp-neongelb"] [data-vr-zone]
 ariva.de##span[onpointerdown^="countClickOnGAorEs("]
 ariva.de##span[onpointerup*="prgAnalyticsEvent("]
 erogeschichten.com##table[align-center][cellpadding="13"][border="0"][bgcolor="lightgrey"]
@@ -11223,7 +11237,6 @@ computerbase.de#?#div.text-asset.text-width:has(p.text-width:contains(Anzeige))
 computerbild.de#?#article.gridArea__teaserM:has(div.teaserBlock__label:contains(Anzeige))
 cyclingmagazine.de#?#p:contains(Anzeige) > strong > a[target="_blank"][rel="noopener"] > picture
 dkamera.de#?#.node.teaser:has(a:contains(Anzeige))
-chip.de#?##dlcharts-list + div:contains(Bezahlte Empfehlung)
 ebay.de#?#.b-module:has(h2:contains(Anzeigen))
 ebay.de#?#.mfe-lex:has(h2:contains(Anzeigen))
 emotion.de#?#.node--article:has(span:contains(Anzeige))

@@ -1,8 +1,8 @@
-! Checksum: y+9+D2O4qHUi+vIcP3pxAA
+! Checksum: oG2s0cw8PAsv3ax7J7coug
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.97.53
-! TimeUpdated: 2025-02-11T14:31:16+00:00
+! Version: 2.0.97.58
+! TimeUpdated: 2025-02-13T08:31:34+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -17,6 +17,8 @@
 ! Good: .org/ads/
 ! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
 !
+! Nadavi ads
+/nadavi-api/?p4g3=js/api/widget.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198009
 ||aj*.bid/*?vpaid=$xmlhttprequest
 ! Email spam. Example: http://leonases.shop/tb/#nl91dOC
@@ -5500,6 +5502,9 @@ gismeteo.by#%#//scriptlet("abort-on-property-write", "yaads")
 !
 womanhit.ru#%#//scriptlet("abort-on-property-read", "Object.prototype.AdblockCookieMatchingType")
 echo.msk.ru,kakprosto.ru#%#//scriptlet('abort-on-property-read', 'Object.prototype.AdvManagerLoaderRender')
+! https://github.com/AdguardTeam/AdguardFilters/issues/198288
+shedevrum.ai#%#//scriptlet('set-constant', 'window.yaContextCb', 'emptyArr')
+shedevrum.ai##.flex.items-center.justify-center.relative.w-full:has(> div[id]:empty)
 !
 !
 ! START: Yandex
@@ -7610,6 +7615,9 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+onlineradiobox.me##div[style]:has(> div[class^="adfinity"])
+topasnew24.com##.fbnr-line
+topasnew24.com##div[style]:has(> div[id^="yandex_rtb"])
 fanfics.me###inform_top_728
 fanfics.me###inform_top_adaptive
 ast.ru##.banners-carousel

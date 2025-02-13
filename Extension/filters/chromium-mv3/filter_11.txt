@@ -1,8 +1,8 @@
-! Checksum: 9Y0V0TgHbZvczNC9w4+lpw
+! Checksum: pH0PDKojAiBM5au9KXmV9w
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.58.25
-! TimeUpdated: 2025-02-11T20:38:38+00:00
+! Version: 2.0.58.28
+! TimeUpdated: 2025-02-12T14:40:30+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -312,7 +312,7 @@
 ||itdsmr.com^
 ||displayio.cloud^
 ||external-api.impression-neo.naver.com^
-||mobiadvert.livesportmedia.eu^
+||mobiadvert*.livesportmedia.eu^
 ||sdkv2.imaginationunwired.com^
 ||api-ad-adapter.wps.com^
 ||jtbo*.nqxvevk.cn^
@@ -2371,6 +2371,13 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+fmworld.net##.advertisementright_sp
+||navitime.jp/scripts/media/web/infeed/realestate/
+||kyujin.navitime.co.jp/view/platform/banner?
+navitime.co.jp##.kyujin-control-banner-container
+navitime.co.jp###kyujin-banner-offer-container
+hikaku.kurashiru.com##aside[class^="wrapper_"]:has(> div[class^="sp-only"])
+itc.ua##a[href="#"][target="_blank"] > img
 vipergirls.to###page-home > div[style="text-align:center;"]
 vipergirls.to##.forumbit_post:has(> div:only-child > .ui-btn-text > h3 > a[rel="external"])
 republicworld.com##.lbmobile

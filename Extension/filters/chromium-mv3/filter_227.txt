@@ -1,13 +1,13 @@
-! Checksum: IGhYVlCl0Esj9MicaDj44g
+! Checksum: aF6UgpUVAqRWQ6RJOIu1Rw
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.42
-! TimeUpdated: 2025-02-11T17:01:48+00:00
+! Version: 2.0.20.46
+! TimeUpdated: 2025-02-13T05:01:39+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0211.1
+! OriginalVersion: 2025.0212.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -15,6 +15,7 @@
 !
 ! Version must be UTC format.
 !
+||recoshopping.naver.com^
 ||ad-creative.pstatic.net^
 ||centaurs-rest.coupang.com^
 ||ad.cashdoc.io^
@@ -526,6 +527,7 @@
 /data/banner.json?$domain=~nintendo.ai|~nintendo.at|~nintendo.be|~nintendo.bg|~nintendo.biz|~nintendo.by|~nintendo.ca|~nintendo.cc|~nintendo.ch|~nintendo.cl|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.ke|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.tr|~nintendo.com.ua|~nintendo.de|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fr|~nintendo.gr|~nintendo.hu|~nintendo.ie|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.lt|~nintendo.md|~nintendo.me|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.sh|~nintendo.shop|~nintendo.sk|~nintendo.tw|~nintendo.uz|~nintendo.vn|~nintendo.website
 /ad-manager.min.js
 !
+||www.naver.com/nvhaproxy/*/lazy?*&target=PC-MEDIA-SHOPPING-TODAY
 ||content.livesportmedia.eu/media?name=
 ||10000recipe.com/common/sc_banner.html
 ||url.kr/banner/admin/uploads/banners/
@@ -3325,6 +3327,7 @@ mule.co.kr#$?#.section-lefttop-center:has(> .mule-today) { width: 100% !importan
 zzzz.lol#$?#.ent_wrapper.slide-vertical-effect .ent_news:not(:has(.ent_prefix:contains(ZZAPFLIX))) { remove: true; }
 !
 ! DOMAIN-REFRESHER: END
+www.naver.com#?#ul[class^="ContentHeaderView-"][role="tablist"] > li:has(> a:contains(쇼핑투데이))
 m.bunjang.co.kr#?#div[class^="sc-"] > div[class*=" "]:has(> a[href^="/products/"]):contains(AD)
 m.bunjang.co.kr#?#div[class^="sc-"] > div[class*=" "]:has(> a[href^="https://"]):contains(광고)
 search.tmon.co.kr#?#.deallist_wrap li[data-d].item:has(span[role="presentation"] > button:contains(AD))

@@ -1,8 +1,8 @@
-! Checksum: b5ipEJx9Z47UtamiypVjiA
+! Checksum: E5V2GTOQvrV8Mk1gim3++Q
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.10.87
-! TimeUpdated: 2025-02-11T19:37:59+00:00
+! Version: 2.1.10.94
+! TimeUpdated: 2025-02-13T07:38:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -654,6 +654,10 @@ esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israel
 !
 ! NOTE: Specific rules
 !
+championat.com##.article-footer > div.article-footer__row:has(> div > div.social-sharing)
+fastcompany.com##div[class~="top-[12px]"].absolute:has(use[href$="#share-icon-grey"])
+topasnew24.com##.fstblock:has(> div.ya-share2)
+topasnew24.com##center:has(> div[style] > div.ya-share2)
 purelovers.com##.k_row:has(> div.k_col > a[href^="https://twitter.com/share?"])
 ranking.net##.flex:has(> div[class] > a.bg-twitter)
 ranking.net##.p-4:has(> a.bg-twitter)
@@ -3746,7 +3750,7 @@ paypay.ne.jp##.footerVer2__share
 en-gage.net##.floatBtn
 weekly.chosun.com##.kakaostory
 m.segye.com,weekly.chosun.com,topclass.chosun.com##.kakao
-jp.topcarweb.com,idaegu.com,etoday.co.kr,suruga-ya.jp##.share_icon
+francoischarron.com,jp.topcarweb.com,idaegu.com,etoday.co.kr,suruga-ya.jp##.share_icon
 appmedia.jp##.new_share
 tvguide.or.jp##.p--archives-singleSns-share
 booking.design,blog.stackademic.com,blog.neufund.org,uxdesign.cc,javascript.plainenglish.io,medium.com##div[aria-describedby="postFooterSocialMenu"]
@@ -9180,7 +9184,7 @@ cnn.co.jp##div[class^="story-sns"]
 cnn.co.jp##li[id^="snsbtn_"]
 cbssports.com##.ShareBar-wrapper
 j-cast.com##.entry-share-btns
-watchseinfeld.com,eropasture.com##.social_box
+posfie.com,togetter.com,watchseinfeld.com,eropasture.com##.social_box
 artstation.com##ul.s-bar
 withnews.jp##.sns_menu_bottom
 withnews.jp##.snsBox > ul > li[class^="twitter"]
@@ -12917,8 +12921,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !+ NOT_OPTIMIZED
-##a[href^="https://x.com/share"]
-!+ NOT_OPTIMIZED
 ~kooapp.com##a[href^="https://kooapp.com/create?title="]
 !+ NOT_OPTIMIZED
 ~whatsapp.com##a[href^="whatsapp://send"]
@@ -12968,6 +12970,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! hide share button in youtube player
 ##.ytp-share-button
 ! X (formerly Twitter)
+~twitter.com,~x.com##a[href^="//x.com/share"]
 ~twitter.com,~x.com##input.tweet
 ~twitter.com,~x.com##a[href^="https://twitter.com/home/?"]
 ~twitter.com,~x.com##a[href^="https://twitter.com/home?"]
@@ -12979,7 +12982,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ##a[href^="https://twitter.com/intent/tweet?"]
 ##a[href^="https://x.com/intent/tweet?"]
 ##body .twitter-share-button
-##a[href^="https://x.com/share"]
 ##a[href^="https://twitter.com.com/share"]
 ##a[href^="https://x.com/intent/tweet/?"]
 ##a[onclick*="window.open"][onclick*="'https://twitter.com/intent/tweet?"]

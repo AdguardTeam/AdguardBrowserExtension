@@ -1,8 +1,8 @@
-! Checksum: 3TzmN12s6l/PgHvKGZAx0g
+! Checksum: jZC8BabLF31naCRD/wZN+g
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.28.73
-! TimeUpdated: 2025-02-11T07:39:42+00:00
+! Version: 2.0.28.77
+! TimeUpdated: 2025-02-13T07:38:25+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -254,7 +254,10 @@ file4go.net#%#//scriptlet('prevent-xhr', 'widgets.outbrain.com')
 animefire.info,animefire.plus,animesonlinecc.us,animesup.info,animeyabu.net,animeyabu.org,drstonebr.com,goanimes.vip,goyabu.us,meuanime.info,otakuanimess.net#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=animefire.info|animefire.plus|animesonlinecc.us|animesup.info|animeyabu.net|animeyabu.org|drstonebr.com|goanimes.vip|goyabu.us|meuanime.info|otakuanimess.net
 @@||popads.net/js/adblock.js$xmlhttprequest,domain=animefire.info|animefire.plus|animesonlinecc.us|animesup.info|animeyabu.net|animeyabu.org|drstonebr.com|goanimes.vip|goyabu.us|meuanime.info|otakuanimess.net
+! https://github.com/AdguardTeam/AdguardFilters/issues/198393
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186815
+isekaibrasil.com#%#//scriptlet('prevent-xhr', 'widgets.outbrain.com/outbrain.js')
+@@||widgets.outbrain.com/outbrain.js$xmlhttprequest,domain=isekaibrasil.com
 @@||popads.net/js/adblock.js$xmlhttprequest,domain=isekaibrasil.com
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,domain=isekaibrasil.com
 @@||ads.anitube.vip^|$xmlhttprequest
@@ -2123,6 +2126,8 @@ c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,me
 !
 ! NOTE: Specific rules
 !
+player.malfollado.com#%#//scriptlet('prevent-window-open')
+xnalgas.com##.list-group
 lapaginamillonaria.com###primis-player-container
 ||statics.lapaginamillonaria.com/js/set-global-ads-config.js
 reduno.com.bo##.contenedor__publicidad
@@ -2450,9 +2455,9 @@ hobbyconsolas.com###megaad-wrapper
 hobbyconsolas.com##.lazyload-wrapper:has(> div[class^="embed-card"] > a.product-button)
 hobbyconsolas.com##div[data-piano-position^="recomendado-ada-"]
 otakustv.com##div[id^="public_"]
-homecine.cc,seriesmetro.net,flixseries.org,homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#%#//scriptlet('set-cookie', 'player', '1')
-homecine.cc,seriesmetro.net,flixseries.org,homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#$##playx { display: none !important; }
-homecine.cc,seriesmetro.net,flixseries.org,homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#$##plays { display: block !important; }
+pelis1.com,homecine.cc,seriesmetro.net,flixseries.org,homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#%#//scriptlet('set-cookie', 'player', '1')
+pelis1.com,homecine.cc,seriesmetro.net,flixseries.org,homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#$##playx { display: none !important; }
+pelis1.com,homecine.cc,seriesmetro.net,flixseries.org,homecine.tv,homecine.to,metroseries.net,smartpelis.tv,seriesbanana.com#$##plays { display: block !important; }
 guiadasemana.com.br#$#main#site-main { margin-top: 0px !important; }
 guiadasemana.com.br###content-column div[class].placement
 spanish.visorsmr.com##div[id^="ad-container"]
@@ -2478,7 +2483,7 @@ rdnews.com.br##body > .header-mb-full.hidden-xs:has(> div[id^="div-gpt-"])
 swisscows.com##.item-a8r-web
 okpeliz.com#%#//scriptlet('prevent-window-open')
 mirandogratis.com##a[target="_blank"] > img
-pelisxd.com,yaske.org,zpelis.com,locopelis.com##div[class^="adsbutt_"]
+peliscom.com,pelisxd.com,yaske.org,zpelis.com,locopelis.com##div[class^="adsbutt_"]
 hardwaresfera.com##.widget_aawp_widget_bestseller
 verseriehd.cc##.movie-xpb > a[rel]
 onlinegratis.cc,seriesgratis.cloud,seriesonline.cloud,veronline.cc,veronline.cloud,veronline.co,veronline.com,veronline.com.bd,veronline.com.br,veronline.com.np,veronline.in,veronline.org,veronline.pro,veronline.sh,veronline.site,veronline.top,verseries.cc,streamgratis.biz##.movie-xyz > a[rel]
@@ -4025,8 +4030,6 @@ dvdgayonline.com###clickfakeplayer
 dvdgayonline.com##.asgdc
 dvdgayonline.com##.custom-html-widget > a[rel="noopener noreferrer"] > img
 pornocarioca.com##.list > #postnativesingle
-xnalgas.com##.container > .native
-xnalgas.com##.sectionWrapper > .container > .media.sidebar.visible-lg
 adslayuda.com##body ins.adsbygoogle
 download3k.es###dl_google_1
 followmanga.com##.jumbotron
