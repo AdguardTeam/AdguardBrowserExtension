@@ -366,8 +366,10 @@ export class FilteringLogApi {
         // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
         // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
         if (FilteringLogApi.DYNAMIC_FILTER_LISTS.has(filterId)) {
-            const ruleNode = engine.api.retrieveDynamicRuleNode(filterId, ruleIndex);
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
 
+            // The following error messages should not be displayed during normal operation,
+            // but we handle them just in case, and to provide type safety
             if (!ruleNode) {
                 logger.error(`Failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
@@ -398,7 +400,16 @@ export class FilteringLogApi {
         const lineStartIndex = getRuleSourceIndex(ruleIndex, sourceMap);
 
         if (lineStartIndex === -1) {
-            const baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+
+            // Note: during normal operation, ruleNode should not be null,
+            // but we handle this case just in case, and to provide type safety
+            if (ruleNode) {
+                const generatedRuleText = RuleGenerator.generate(ruleNode);
+                baseMessage += `, generated rule text: ${generatedRuleText}`;
+            }
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
@@ -413,7 +424,16 @@ export class FilteringLogApi {
         const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
 
         if (!appliedRuleText) {
-            const baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+
+            // Note: during normal operation, ruleNode should not be null,
+            // but we handle this case just in case, and to provide type safety
+            if (ruleNode) {
+                const generatedRuleText = RuleGenerator.generate(ruleNode);
+                baseMessage += `, generated rule text: ${generatedRuleText}`;
+            }
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
