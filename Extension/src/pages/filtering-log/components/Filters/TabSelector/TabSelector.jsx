@@ -42,6 +42,7 @@ import { Search } from '../../Search';
 
 import './tab-selector.pcss';
 
+// FIXME: Improve a11y
 const TabSelector = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
     const refSelector = useRef(null);
