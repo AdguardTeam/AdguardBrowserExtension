@@ -187,8 +187,8 @@ const getRuleSourceText = (lineStartIndex: number, source: string): string | nul
 
     // FIXME: Choose option:
 
-    return ruleSourceText.split('').join(''); // memory leak protection
-    // return ruleSourceText; // no memory leak protection
+    // return ruleSourceText.split('').join(''); // memory leak protection
+    return ruleSourceText; // no memory leak protection
 };
 
 /**
