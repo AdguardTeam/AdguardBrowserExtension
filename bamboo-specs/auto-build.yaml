@@ -58,7 +58,7 @@ Lint:
 
             pnpm install ${bamboo.varsPnpm}
 
-            pnpm lint
+            ./bamboo-specs/scripts/timeout-wrapper.sh 80s pnpm lint
   final-tasks:
     - script:
         interpreter: SHELL
@@ -94,7 +94,7 @@ Unit tests:
 
             pnpm install ${bamboo.varsPnpm}
 
-            pnpm test
+            ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test
   final-tasks:
     - test-parser:
         type: junit
@@ -248,8 +248,8 @@ Integration tests:
         scripts:
           - |-
             # Call the common script for both release and beta.
-            ./bamboo-specs/scripts/integration-tests.sh release
-            ./bamboo-specs/scripts/integration-tests.sh beta
+            ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh release
+            ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh beta
   final-tasks:
     - test-parser:
         type: junit
