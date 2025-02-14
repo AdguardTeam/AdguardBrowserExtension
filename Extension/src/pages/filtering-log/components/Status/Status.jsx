@@ -35,6 +35,7 @@ import { getStatusTitle } from './statusTitles';
 
 import './status.pcss';
 
+// FIXME: Improve a11y
 export const Status = (props) => {
     const {
         statusCode,
