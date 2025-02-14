@@ -45,6 +45,7 @@ import {
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
 import { OptionsPageSections } from '../../../common/nav';
+import { FilterUpdateService } from '../../services/filter-update';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
@@ -282,6 +283,20 @@ export class PagesApi {
         //         params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
         //     }
         // }
+
+        const filtersLastUpdate = await FilterUpdateService.getLastUpdateTimeMs();
+        if (filtersLastUpdate) {
+            params.filters_last_update = encodeURIComponent(
+                PagesApi.convertTimestampToTimeString(filtersLastUpdate),
+            );
+        }
+
+        const filtersLastFullUpdate = await FilterUpdateService.getLastFullUpdateTimeMs();
+        if (filtersLastFullUpdate) {
+            params.filters_last_full_update = encodeURIComponent(
+                PagesApi.convertTimestampToTimeString(filtersLastFullUpdate),
+            );
+        }
 
         Object.assign(
             params,
@@ -572,5 +587,30 @@ export class PagesApi {
         }
 
         return Object.fromEntries(stealthOptionsEntries);
+    }
+
+    /**
+     * Converts timestamp in milliseconds to time string.
+     *
+     * Needed for `filters_last_update` and `filters_last_full_update` query parameters.
+     *
+     * @see {@link https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters}
+     *
+     * @param timestampMs Timestamp in milliseconds.
+     *
+     * @returns Time string in format `YYYY-MM-DD-HH-mm-ss`.
+     */
+    private static convertTimestampToTimeString(timestampMs: number): string {
+        const isoStr = new Date(timestampMs).toISOString();
+        // '2025-01-10T12:13:17.950Z' -> '2025-01-10-12-13-17'
+        const strChunks = isoStr
+            // remove milliseconds, i.e. '.950Z'
+            .slice(0, isoStr.indexOf('.'))
+            .split('T')
+            .join('-')
+            .split(':')
+            .join('-');
+
+        return strChunks;
     }
 }
