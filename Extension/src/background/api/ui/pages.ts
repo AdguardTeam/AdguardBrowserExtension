@@ -31,18 +31,10 @@ import {
     ForwardParams,
 } from '../../../common/forward';
 import { UrlUtils } from '../../utils/url';
-import {
-    browserStorage,
-    groupStateStorage,
-    settingsStorage,
-} from '../../storages';
+import { browserStorage, settingsStorage } from '../../storages';
 import { SettingOption } from '../../schema';
 import { BrowserUtils } from '../../utils/browser-utils';
-import {
-    AntiBannerFiltersId,
-    AntibannerGroupsId,
-    FILTERING_LOG_WINDOW_STATE,
-} from '../../../common/constants';
+import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../common/api/extension';
 import { Prefs } from '../../prefs';
 import { CustomFilterApi, FiltersApi } from '../filters';
@@ -245,12 +237,14 @@ export class PagesApi {
         const commonFilterIds = FiltersApi.getEnabledFilters()
             .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
 
+        const manifestDetails = browser.runtime.getManifest();
+
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            product_type: 'Ext',
-            manifest_version: __IS_MV3__ ? '3' : '2',
-            product_version: encodeURIComponent(browser.runtime.getManifest().version),
+            product_type: 'Extension',
+            manifest_version: encodeURIComponent(manifestDetails.manifest_version),
+            product_version: encodeURIComponent(manifestDetails.version),
             url: encodeURIComponent(siteUrl),
         };
 
@@ -271,16 +265,18 @@ export class PagesApi {
             params.filters = encodeURIComponent(commonFilterIds.join('.'));
         }
 
-        const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
-        if (isCustomFiltersEnabled) {
-            const customFilterUrls = CustomFilterApi.getFiltersData()
-                .filter(({ enabled }) => enabled)
-                .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+        // Ignoring custom filters since AG-39385.
+        // TODO: uncomment when custom filters will be supported again.
+        // const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
+        // if (isCustomFiltersEnabled) {
+        //     const customFilterUrls = CustomFilterApi.getFiltersData()
+        //         .filter(({ enabled }) => enabled)
+        //         .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
 
-            if (customFilterUrls.length > 0) {
-                params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
-            }
-        }
+        //     if (customFilterUrls.length > 0) {
+        //         params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
+        //     }
+        // }
 
         Object.assign(
             params,
