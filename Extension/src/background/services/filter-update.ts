@@ -16,11 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { getVersionTimestampMs } from '@adguard/dnr-rulesets/utils';
+
 import { FilterUpdateApi } from '../api';
 import { browserStorage } from '../storages';
 import { isNumber } from '../../common/guards';
 import { logger } from '../../common/logger';
-import { Prefs } from '../prefs';
 
 /**
  * Service for scheduling filters update checks.
@@ -89,9 +90,8 @@ export class FilterUpdateService {
         await this.update();
 
         if (__IS_MV3__) {
-            await FilterUpdateService.setLastFullUpdateTimeMs(
-                FilterUpdateService.getDnrRulesetsBuildTimestampMs(),
-            );
+            const dnrRulesetsBuildTimestampMs = getVersionTimestampMs();
+            await FilterUpdateService.setLastFullUpdateTimeMs(dnrRulesetsBuildTimestampMs);
         } else {
             await FilterUpdateService.setLastFullUpdateTimeMs(Date.now());
         }
@@ -184,44 +184,6 @@ export class FilterUpdateService {
         this.schedulerTimerId = self.setTimeout(async () => {
             await this.update();
         }, FilterUpdateService.CHECK_PERIOD_MS);
-    }
-
-    /**
-     * Gets the timestamp in ms of the used dnr-rulesets build.
-     *
-     * @returns The timestamp in milliseconds.
-     *
-     * @throws Error if dnr-rulesets version is not set.
-     */
-    private static getDnrRulesetsBuildTimestampMs(): number {
-        const { dnrRulesets } = Prefs.libVersions;
-        if (!dnrRulesets) {
-            throw new Error('DNR rulesets version is not set');
-        }
-
-        // dnr-rulesets patch versions is date and time (UTC+0) in format `yyyymmddhhMMss`
-        // TODO: consider moving this logic to dnr-rulesets package as a separate export
-        const patchVersion = dnrRulesets.split('.').pop();
-        if (!patchVersion || patchVersion.length !== 14) {
-            return Date.now();
-        }
-
-        const timestampChunks = [
-            patchVersion.slice(0, 4), // yyyy
-            '-',
-            patchVersion.slice(4, 6), // mm
-            '-',
-            patchVersion.slice(6, 8), // dd
-            ' ',
-            patchVersion.slice(8, 10), // hh
-            ':',
-            patchVersion.slice(10, 12), // MM
-            ':',
-            patchVersion.slice(12, 14), // ss
-            ' UTC+0',
-        ].join('');
-
-        return Date.parse(timestampChunks);
     }
 }
 
