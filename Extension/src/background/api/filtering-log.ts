@@ -18,7 +18,7 @@
 import { Tabs } from 'webextension-polyfill';
 
 import { RuleGenerator } from '@adguard/agtree/generator';
-import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
+import { findNextLineBreakIndex, RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
 import {
     BACKGROUND_TAB_ID,
@@ -27,7 +27,6 @@ import {
     isExtensionUrl,
     StealthActionEvent,
     getDomain,
-    getRuleSourceText,
     getRuleSourceIndex,
     type PreprocessedFilterList,
     type DeclarativeRuleInfo,
@@ -162,6 +161,37 @@ interface RuleText {
 type CachedFilterData = Pick<PreprocessedFilterList, 'rawFilterList' | 'conversionMap' | 'sourceMap'>;
 
 /**
+ * Helper function to get the rule source text from the source string by its line start index.
+ *
+ * @param lineStartIndex Rule start index.
+ * @param source Raw filter list source.
+ *
+ * @returns Rule string or null if the rule couldn't be found.
+ */
+const getRuleSourceText = (lineStartIndex: number, source: string): string | null => {
+    // note: checking for LF is enough, because we transform source before storing it, and it's always LF
+    let [lineEndIndex] = findNextLineBreakIndex(source, lineStartIndex);
+
+    // If the line end index is not found, we assume that the rule is the last line in the source.
+    if (lineEndIndex === -1) {
+        lineEndIndex = source.length;
+    }
+
+    // If the rule start index is equal to or greater than the rule end index, we return null,
+    // and the rule is considered not found.
+    if (lineStartIndex >= lineEndIndex) {
+        return null;
+    }
+
+    const ruleSourceText = source.slice(lineStartIndex, lineEndIndex);
+
+    // FIXME: Choose option:
+
+    return ruleSourceText.split('').join(''); // memory leak protection
+    // return ruleSourceText; // no memory leak protection
+};
+
+/**
  * The filtering log collects all available information about requests
  * and the rules applied to them.
  */
@@ -221,6 +251,16 @@ export class FilteringLogApi {
      * Flag to invert allowlist mode.
      */
     private allowlistInverted = false;
+
+    /**
+     * Constructor.
+     */
+    constructor() {
+        // FIXME: Purge filtering log cache in every 5 seconds, simulating a filter update
+        setInterval(() => {
+            this.purgeFiltersCache();
+        }, 5000);
+    }
 
     /**
      * Purges filters cache.
