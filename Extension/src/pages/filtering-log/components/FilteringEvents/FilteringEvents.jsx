@@ -227,14 +227,15 @@ const Row = observer(({
     );
 
     return (
-        <button
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus
+        <div
+            role="row"
             style={{
                 ...style,
                 top: `${parseFloat(style.top) + ITEM_HEIGHT_PX}px`,
             }}
             id={event.eventId}
             onClick={onClick}
-            type="button"
             className={className}
         >
             {
@@ -249,6 +250,7 @@ const Row = observer(({
 
                     return (
                         <div
+                            role="cell"
                             className="td"
                             key={column.id}
                             style={{ width: column.getWidth() }}
@@ -258,7 +260,14 @@ const Row = observer(({
                     );
                 })
             }
-        </button>
+            {/* This cell is available only for screen readers to notify
+                users that they can open details of this log with keyboard. */}
+            <div role="cell" className="td sr-only">
+                <button type="button" onClick={onClick}>
+                    {translator.getMessage('filtering_table_open_details')}
+                </button>
+            </div>
+        </div>
     );
 });
 
@@ -289,6 +298,7 @@ const TableHeader = ({ style }) => {
 
     return (
         <div
+            role="row"
             className="thead"
             style={style}
         >
@@ -296,13 +306,14 @@ const TableHeader = ({ style }) => {
                 {
                     columns.map((column) => (
                         <div
+                            role="columnheader"
                             className="th"
                             key={column.id}
                             style={{ width: column.getWidth() }}
                         >
                             {column.Header}
                             <div
-                                role="separator"
+                                aria-hidden="true"
                                 className="resizer"
                                 key={column.id}
                                 style={{ cursor: 'col-resize' }}
@@ -311,6 +322,11 @@ const TableHeader = ({ style }) => {
                         </div>
                     ))
                 }
+                {/* This column is available only for screen readers to notify
+                    users that they can open details of this log with keyboard. */}
+                <div role="columnheader" className="sr-only">
+                    {translator.getMessage('filtering_table_action')}
+                </div>
             </div>
         </div>
     );
@@ -572,7 +588,14 @@ const FilteringEvents = observer(() => {
     const columns = addMethods(columnsData);
 
     return (
-        <div className="filtering-log">
+        <div
+            role="grid"
+            className="filtering-log"
+            aria-label={translator.getMessage('filtering_log_title')}
+            // Because table is virtualized, explicitly set the number of columns and rows
+            aria-colcount={columns.length}
+            aria-rowcount={logStore.events.length}
+        >
             <div
                 style={{ minWidth: `${minTableWidth}px` }}
                 className="table filtering-log__inner"
