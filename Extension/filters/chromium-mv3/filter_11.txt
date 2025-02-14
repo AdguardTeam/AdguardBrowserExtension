@@ -1,8 +1,8 @@
-! Checksum: xbRffu+SBYB6+3dWtekzjA
+! Checksum: ebPNiq+NKhxtra/oJPkATQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.58.13
-! TimeUpdated: 2025-02-08T14:38:23+00:00
+! Version: 2.0.58.30
+! TimeUpdated: 2025-02-13T17:38:02+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -108,8 +108,12 @@
 ||criteo.com^
 ||criteo.net^
 !
+! Appodeal
 ||appodeal.com^
-||a.320981a9244924ef86ebdbb9eb877e9f21ce83f1e3cc89b2c5e7c3ff.com^
+! ||a.320981a9244924ef86ebdbb9eb877e9f21ce83f1e3cc89b2c5e7c3ff.com^
+/^https:\/\/a\.[0-9a-f]{56}\.com$/
+! For DNS filtering
+/^a\.[0-9a-f]{56}\.com$/
 !
 ||ad.buzzvil.com^
 ||screen.buzzvil.com^
@@ -153,6 +157,8 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||ads.appbundledownload.com^
+||san.myadssupport.com^
 ||api.youngle.tech^
 ||api.myadsget.com^
 ||api.sve.cc^
@@ -190,8 +196,6 @@
 ||news-cdn.site^
 ||mossru.com^
 ||jjpp.lmtjapi.com^
-||a.07aa269c0e76550c929640c170af557c7371753ba1b580236d7fa0a4.com^
-||a.64e98469810bd13e2b45e52d19d6fddfe333b3528350d8cfa792d478.com^
 ||ad.zijieapi.com^
 ||ads*-normal-*.zijieapi.com^
 ||frontier100-toutiao-lf.fqnovel.com^
@@ -306,12 +310,12 @@
 ||ads-server.mxplay.com^
 ||mxaserver.mxplay.com^
 ||contextualadv.com^
-||prebid-cache.ifunny.co^
+||prebid-cache*.ifunny.co^
 ||tk0x1.com^
 ||itdsmr.com^
 ||displayio.cloud^
 ||external-api.impression-neo.naver.com^
-||mobiadvert.livesportmedia.eu^
+||mobiadvert*.livesportmedia.eu^
 ||sdkv2.imaginationunwired.com^
 ||api-ad-adapter.wps.com^
 ||jtbo*.nqxvevk.cn^
@@ -1345,6 +1349,8 @@ tube8.com#%#//scriptlet('trusted-click-element', 'a[href].continue-to-video')
 !-------CSS---------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198342
+lapaginamillonaria.com#$#header { top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195880
 m.yeniakit.com.tr#$#.dfp { display: none !important; }
 m.yeniakit.com.tr#$#.gallery-page { min-height: 2630px !important; }
@@ -2368,6 +2374,30 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+fmworld.net##.advertisementright_sp
+||navitime.jp/scripts/media/web/infeed/realestate/
+||kyujin.navitime.co.jp/view/platform/banner?
+navitime.co.jp##.kyujin-control-banner-container
+navitime.co.jp###kyujin-banner-offer-container
+hikaku.kurashiru.com##aside[class^="wrapper_"]:has(> div[class^="sp-only"])
+itc.ua##a[href="#"][target="_blank"] > img
+vipergirls.to###page-home > div[style="text-align:center;"]
+vipergirls.to##.forumbit_post:has(> div:only-child > .ui-btn-text > h3 > a[rel="external"])
+republicworld.com##.lbmobile
+republicworld.com##div.py-6:has(> .adWidget)
+esse-online.jp##.ats-glia-ad
+zaxid.net##.mobile-branding-wrapper
+lapaginamillonaria.com##.bg-adContainerHeaderMobile
+lapaginamillonaria.com###__next > div#top-sticky:has(> div.ad-container)
+brow2ing.com##iframe[src^="//brow2ing.up.seesaa.net/"]
+dnes.bg##div[class^="article-"][class*="-banner"]
+dnes.bg##.top-megaboard
+foodnetwork.com##.o-Recipe > div[id^="mod-dynamic-bigbox-"]
+mydealz.de##.listLayout-main > div[class^="hide--from"]
+news.careerconnection.jp###sp_article_inarticle
+news.careerconnection.jp###JP_CNS_SP_article_head
+labaq.com###article-contents > div[style="margin-left:-10px;text-align:center"]
+seventeen-web.jp##.sp_headerbanner
 mindhack2ch.com###container > center:has(> ins[id^="zucks-widget"])
 mindhack2ch.com##div[id^="interstitial-ad"]
 nikkansports.com#$#body #ContentsArea { padding-top: 0 !important; }
@@ -2795,7 +2825,7 @@ zeenews.india.com##.ads-placeholder-internal
 zeenews.india.com##.first-ad
 zeenews.india.com##.ads-box-300x250::before
 st.benesse.ne.jp##.text_c
-rawstory.com##div[id^="banner-"]
+kitco.com,rawstory.com##div[id^="banner-"]
 mama.smt.docomo.ne.jp##div[class^="ads-"]
 news.audee.jp###mainColumn > section#intro_tagInner:has(> div.appnone)
 news.audee.jp##section[class="appnone"][style="text-align: center; margin-top: 5px"]
@@ -4691,7 +4721,6 @@ eromanga-life.com,eromanga-moeerolibrar.com,eromanga-life.com,moeero-library.com
 eromanga-select.com,doujin-night.com##.sp_adwidget
 free-erobooks.com,free-erobooks.com.bd,free-erobooks.com.np,free-erobooks.net##.abox
 free-erobooks.com,free-erobooks.com.bd,free-erobooks.com.np,free-erobooks.net##.pbox
-dokuha.jp##.ad-size-rect
 wired.com##amp-subscriptions-dialog
 am-our.com##div[style="min-height: 100px"]
 abendzeitung-muenchen.de##.ad-widebox
@@ -7639,6 +7668,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 ! Yandex ads in mobile apps
+! Less dangerous: 77.88.55.88, 77.88.44.55, 5.255.255.77
 ! BUG: https://github.com/AdguardTeam/CoreLibs/issues/1951
 ! Don't add more than 200 apps per rule
 ! TODO: merge app lists of the same rules after fixing
@@ -7676,7 +7706,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134473
 ! https://github.com/AdguardTeam/AdguardFilters/issues/133274
 ! https://github.com/AdguardTeam/AdguardFilters/issues/129011
-! https://github.com/AdguardTeam/AdguardFilters/issues/124995
 ! https://github.com/AdguardTeam/AdguardFilters/issues/121406
 ! https://github.com/AdguardTeam/AdguardFilters/issues/119448
 ! https://github.com/AdguardTeam/AdguardFilters/issues/119419

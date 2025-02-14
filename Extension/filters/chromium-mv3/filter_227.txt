@@ -1,13 +1,13 @@
-! Checksum: VViRemcUjAXyLV/cZaNblw
+! Checksum: PomqUvkRDfdjCoXC6ta5sw
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.40
-! TimeUpdated: 2025-02-10T01:01:35+00:00
+! Version: 2.0.20.47
+! TimeUpdated: 2025-02-13T09:01:56+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0209.1
+! OriginalVersion: 2025.0213.2
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -15,6 +15,7 @@
 !
 ! Version must be UTC format.
 !
+||recoshopping.naver.com^
 ||ad-creative.pstatic.net^
 ||centaurs-rest.coupang.com^
 ||ad.cashdoc.io^
@@ -526,6 +527,8 @@
 /data/banner.json?$domain=~nintendo.ai|~nintendo.at|~nintendo.be|~nintendo.bg|~nintendo.biz|~nintendo.by|~nintendo.ca|~nintendo.cc|~nintendo.ch|~nintendo.cl|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.ke|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.tr|~nintendo.com.ua|~nintendo.de|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fr|~nintendo.gr|~nintendo.hu|~nintendo.ie|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.lt|~nintendo.md|~nintendo.me|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.sh|~nintendo.shop|~nintendo.sk|~nintendo.tw|~nintendo.uz|~nintendo.vn|~nintendo.website
 /ad-manager.min.js
 !
+||eyejokerdb.com/assets/banners/
+||www.naver.com/nvhaproxy/*/lazy?*&target=PC-MEDIA-SHOPPING-TODAY
 ||content.livesportmedia.eu/media?name=
 ||10000recipe.com/common/sc_banner.html
 ||url.kr/banner/admin/uploads/banners/
@@ -1318,6 +1321,7 @@
 !
 ! DOMAIN-REFRESHER: START
 !
+/^https:\/\/aniwolf\.com\/storage\/[A-Za-z0-9]+\./$domain=aniwolf.com|aniwolf.com.bd|aniwolf.com.np
 ||hoduhodu.com/_next/image?url=https%3A*.hoduhodu.com%2Fbanner%2F%
 ||mzgtoon.com/_next/image?url=https%*.mzgtoon.com%2Fbanner%2F%
 ||cdn.ksportscdn.com/data/popup/
@@ -1573,7 +1577,7 @@ namechart.kr##.container ~ .border-t:has(ins.adsbygoogle)
 dogdrip.net##.board-list .list > li:has(> #dogdripPowerLink)
 m.search.naver.com##.square_tile_area .tile_area > .tile_list:has(._ad_icon)
 m.search.naver.com##.square_tile_area .tile_area > ._ad
-m.search.naver.com##li:is([data-nmb_hpl-doc-id*="_nad-"], [data-loc_plce-doc-id*="_nad-"])
+m.search.naver.com##li:is([data-nmb_hpl-doc-id*="_nad-"], [data-loc_plce-doc-id*="_nad-"], [data-slog-content*=":nad-"])
 search.naver.com###sub_pack > .brand_new_ui.searching_view
 url.kr##body > header ~ .py-4 ~ .container:has(~  .mt-5)
 url.kr##.alert-danger ~ .container
@@ -2674,7 +2678,7 @@ m.naver.com##div.brick-vowel > div[data-block-code="AD-SMART-CHANNEL"].MM_DA_SMA
 m.coupang.com##.plp-default__item.search-product__cmg-badge
 m.coupang.com##div[data-page-type="brandSDP"][id$="carousel-products"]
 slist.kr##.ad-template
-sports-g.com,goodmorningcc.com,daily.hankooki.com,slist.kr###wingBanner
+popsci.co.kr,sports-g.com,goodmorningcc.com,daily.hankooki.com,slist.kr###wingBanner
 fow.kr##.neo_top_center
 ggoorr.net###content > div.bd > div.bd_lst_wrp > center
 ggoorr.net##.content > div.bd > div.clear > div > center
@@ -2754,6 +2758,8 @@ koreaminecraft.net##tr.notice:not(:has(.wst_member_title))
 !
 ! DOMAIN-REFRESHER: START
 !
+ntnt.tv##a[data-testid="linkElement"][href^="http"][target="_blank"]:has(> wow-image)
+aniwolf.com,aniwolf.com.bd,aniwolf.com.np##.banner-area
 anilife.app,anilife.com,anilife.com.bd,anilife.com.np,anilife.life,anilife.live,anilife.my,anilife.net##div[class] > a[class][href^="http"][target="_blank"]
 tvwiki13.com,tvwiki14.com,tvwiki15.com,tvwiki16.com,tvwiki17.com,tvwiki4.com,tvwiki18.com,tvwiki19.com,tvwiki20.com,tvwiki21.com,tvwiki22.com,tvwiki23.com,tvwiki24.com,tvwiki25.com##div[id] > ul:has(a[herf] > img[src^="/AD/"])
 hoduhodu.com##.relative > .bottom-0.bg-black
@@ -3325,6 +3331,7 @@ mule.co.kr#$?#.section-lefttop-center:has(> .mule-today) { width: 100% !importan
 zzzz.lol#$?#.ent_wrapper.slide-vertical-effect .ent_news:not(:has(.ent_prefix:contains(ZZAPFLIX))) { remove: true; }
 !
 ! DOMAIN-REFRESHER: END
+www.naver.com#?#ul[class^="ContentHeaderView-"][role="tablist"] > li:has(> a:contains(쇼핑투데이))
 m.bunjang.co.kr#?#div[class^="sc-"] > div[class*=" "]:has(> a[href^="/products/"]):contains(AD)
 m.bunjang.co.kr#?#div[class^="sc-"] > div[class*=" "]:has(> a[href^="https://"]):contains(광고)
 search.tmon.co.kr#?#.deallist_wrap li[data-d].item:has(span[role="presentation"] > button:contains(AD))

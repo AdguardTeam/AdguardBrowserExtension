@@ -1,8 +1,8 @@
-! Checksum: B3c1H0gv6pjx4Na/pmzEsQ
+! Checksum: BBrAKIpGCLi5UReY+i7sGQ
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.6.9
-! TimeUpdated: 2025-02-07T11:42:35+00:00
+! Version: 2.0.6.14
+! TimeUpdated: 2025-02-13T20:39:19+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -17,7 +17,10 @@
 ! Good: .org/ads/
 ! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
 !
-||yandex.ru/ads/adfox/
+! Nadavi ads
+/nadavi-api/?p4g3=js/api/widget.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/198009
+||aj*.bid/*?vpaid=$xmlhttprequest
 ! Email spam. Example: http://leonases.shop/tb/#nl91dOC
 ! Both rules are required - the first is for extensions, the second - for apps
 .shop/tb/#$all
@@ -1446,7 +1449,6 @@ ucoz.ru/informer/
 ||dosawes.com^
 ||lusupodum.com^
 ||clairpixum.com^
-||octo25.me^
 ||bmmwa.info^
 ||iwrcoct.info^
 ||hfnuqljjnt.com^
@@ -1482,7 +1484,6 @@ ucoz.ru/informer/
 ||cdn.tameti.com^
 ||eehhabacgieacfjeaacg.world^
 ||bidmatic.io^$third-party
-||vidscriptshark.com^
 ||1qe.info^
 ||23oct2023.site^
 ||fcepahafyq.com^
@@ -4576,6 +4577,8 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+unian.ua##div[style^="height:"][style*="overflow: hidden;"]
+||yandex.ru/ads/adfox/
 findh.org###ads-sidebar-block
 1plus1.ua##.bannerPMU
 1plus1.ua##.bannerSmall
@@ -4602,7 +4605,7 @@ pravda.com.ua##.unit_news_banner_list
 pravda.com.ua,epravda.com.ua##body .nts-ad
 pravda.com.ua##.container_sub_adv_news
 pravda.com.ua##.unit_news_banner_bottom
-pravda.com.ua##body div.advtext
+eurointegration.com.ua,pravda.com.ua##body div.advtext
 pravda.com.ua##.unit_header_banner
 pravda.com.ua##.article_wide_banner_mobile
 pravda.com.ua##div[class^="block_banner_"]

@@ -1,14 +1,14 @@
-! Checksum: EFyJ+pGboGWFbdb7ykgM1A
+! Checksum: Elonp9cqlxhUHwWhHbxGSw
 ! Title: Adblock List for Finland
 ! Description: Finnish ad blocking filter list.
-! Version: 2.0.11.27
-! TimeUpdated: 2025-02-03T17:02:04+00:00
+! Version: 2.0.11.29
+! TimeUpdated: 2025-02-13T01:01:44+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Adblock List for Finland
 ! Description: Finnish adblock list
 ! Expires: 4 days
-! Last modified: Mon, 03 Feb 2025 15:16:35 +0000
+! Last modified: Wed, 12 Feb 2025 21:01:14 +0000
 ! Homepage: https://github.com/finnish-easylist-addition/finnish-easylist-addition
 ! License: https://unlicense.org/
 ! Raportoi mainoksenestoon liittyvistä ongelmista tai estämättömistä mainoksista täällä / Please report adblocking related issues or unblocked ads at:
@@ -346,8 +346,7 @@ como.fi,episodi.fi,fum.fi,inferno.fi,rumba.fi,soundi.fi,tilt.fi##.border-bottom.
 como.fi,tilt.fi,rumba.fi##body:not(.post-type-archive-advertoriaali) .bg-white.p-3.mb-6:has(a[href*=".fi/advertoriaali/"])
 dailyfinland.fi##.wrepper.mx-auto > .row[style="margin-bottom:20px"]
 deitti.net##.ad-article
-demokraatti.fi##div[class^=AdStyles__Wrapper]
-demokraatti.fi##div[class^=OrderMagazinestyles__Container]
+demokraatti.fi##div[class]:has(> .ad)
 digi-kuva.fi##[data-banner-horseshoe]
 download.fi##.ni_holder
 duunitori.fi##.js-fragment-web-lazy_carousel
@@ -1159,6 +1158,7 @@ tilannehuone.fi###cnt_lista tr:has(.mainosinline) + tr:has(> .divid)
 tilannehuone.fi#?##cnt_lista tr:contains(/^\s$/):has(+ tr:has(.mainosinline))
 tilannehuone.fi##.contentti:has(> .mainos-mob:only-child)
 tilannehuone.fi##.contentti:has(> .mainos_yla:only-child)
+tilannemedia.fi##.tdc-row:not(.td-stretch-content):has([data-ad-unit-id]):not([itemtype="https://schema.org/Article"] .tdc-row)
 tilisanomat.fi##.ctaad
 tinderinparhaat.com##.adf-placement-top
 tivi.fi##aside > div[class] > a[href^="https://www.tivi.fi/kumppanisisallot/"]
