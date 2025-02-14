@@ -22,6 +22,7 @@ import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import { SettingOption, RegularFilterMetadata } from '../../schema';
 import { AntiBannerFiltersId } from '../../../common/constants';
+import { FilterUpdateService } from '../../services/filter-update';
 import {
     metadataStorage,
     filterStateStorage,
@@ -228,6 +229,11 @@ export class CommonFilterApi {
         // e.g. including another filter via `!#include` directive.
         await FiltersStorage.set(filterUpdateOptions.filterId, filter.join('\n'));
         await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
+
+        // if patch update is not failed, set last update time for MV2
+        if (!__IS_MV3__ && !isPatchUpdateFailed) {
+            await FilterUpdateService.setLastUpdateTimeMs(Date.now());
+        }
 
         return filterMetadata;
     }

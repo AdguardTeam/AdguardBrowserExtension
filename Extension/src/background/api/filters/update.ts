@@ -26,6 +26,7 @@ import { logger } from '../../../common/logger';
 import { FiltersUpdateTime } from '../../../common/constants';
 import { engine } from '../../engine';
 import { getErrorMessage } from '../../../common/error';
+import { FilterUpdateService } from '../../services/filter-update';
 
 import { FilterMetadata, FiltersApi } from './main';
 import { CustomFilterApi } from './custom';
@@ -189,6 +190,20 @@ export class FilterUpdateApi {
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
             engine.debounceUpdate();
+        }
+
+        // get filter ids that were supposed to be updated fully
+        const filterIdsSupposedToBeUpdatedFully = filterUpdateDetailsToUpdate
+            .filter((filter) => !filter.ignorePatches)
+            .map(({ filterId }) => filterId);
+
+        // if at least one filter (which was supposed to be updated fully) was updated,
+        // we should set the last full update time for MV2
+        if (
+            filterIdsSupposedToBeUpdatedFully.length > 0
+            && updatedFilters.some(({ filterId }) => filterIdsSupposedToBeUpdatedFully.includes(filterId))
+        ) {
+            await FilterUpdateService.setLastFullUpdateTimeMs(Date.now());
         }
 
         return updatedFilters;

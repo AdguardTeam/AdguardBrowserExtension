@@ -29,9 +29,30 @@ import { logger } from '../../common/logger';
  */
 export class FilterUpdateService {
     /**
-     * Storage key for storing last update check time in the storage.
+     * Storage key for storing last update *check* time in the storage.
      */
-    private static STORAGE_KEY = 'updateCheckTimeMs';
+    private static UPDATE_CHECK_TIME_KEY = 'updateCheckTimeMs';
+
+    /**
+     * Storage key for storing last *full* update check time in the storage.
+     *
+     * Should be used in:
+     * - MV2 — as a full update check time;
+     * - MV3 — due to dnr-rulesets version.
+     *
+     * Needed to send `filters_last_update` during issue reporting.
+     */
+    private static LAST_FULL_UPDATE_KEY = 'filters-last-full-update';
+
+    /**
+     * Storage key for storing last *patch* update time in the storage.
+     *
+     * Should be used only in MV2.
+     * And since patch updates are not supported yet in MV3, should not be used in MV3.
+     *
+     * Needed to send `filters_last_update` during issue reporting.
+     */
+    private static LAST_UPDATE_KEY = 'filters-last-update';
 
     /**
      * Checking period
@@ -65,6 +86,61 @@ export class FilterUpdateService {
      */
     public async init(): Promise<void> {
         await this.update();
+
+        if (__IS_MV3__) {
+            // FIXME (Slava): get dnr-rulesets version
+            // await FilterUpdateService.setLastFullUpdateTimeMs(ms);
+        } else {
+            await FilterUpdateService.setLastFullUpdateTimeMs(Date.now());
+        }
+    }
+
+    /**
+     * Sets the last filters **patch update** (not just *check*) time in the storage.
+     *
+     * @param timestampMs The timestamp in milliseconds.
+     */
+    public static async setLastUpdateTimeMs(timestampMs: number): Promise<void> {
+        await browserStorage.set(FilterUpdateService.LAST_UPDATE_KEY, timestampMs);
+    }
+
+    /**
+     * Gets the last filters **patch update** (not just *check*) time from the storage.
+     *
+     * @returns The timestamp in milliseconds or `null` if the value is not set.
+     */
+    public static async getLastUpdateTimeMs(): Promise<number | null> {
+        const lastUpdateTimeMs = await browserStorage.get(FilterUpdateService.LAST_UPDATE_KEY);
+
+        if (lastUpdateTimeMs === undefined) {
+            return null;
+        }
+
+        return Number(lastUpdateTimeMs);
+    }
+
+    /**
+     * Sets the last filters **full update** (not just *check*) time in the storage.
+     *
+     * @param timestampMs The timestamp in milliseconds.
+     */
+    public static async setLastFullUpdateTimeMs(timestampMs: number): Promise<void> {
+        await browserStorage.set(FilterUpdateService.LAST_FULL_UPDATE_KEY, timestampMs);
+    }
+
+    /**
+     * Gets the last filters **full update** (not just *check*) time from the storage.
+     *
+     * @returns The timestamp in milliseconds or `null` if the value is not set.
+     */
+    public static async getLastFullUpdateTimeMs(): Promise<number | null> {
+        const lastFullUpdateTimeMs = await browserStorage.get(FilterUpdateService.LAST_FULL_UPDATE_KEY);
+
+        if (lastFullUpdateTimeMs === undefined) {
+            return null;
+        }
+
+        return Number(lastFullUpdateTimeMs);
     }
 
     /**
@@ -75,7 +151,7 @@ export class FilterUpdateService {
         // eslint-disable-next-line no-restricted-globals
         self.clearTimeout(this.schedulerTimerId);
 
-        const prevCheckTimeMs = await browserStorage.get(FilterUpdateService.STORAGE_KEY);
+        const prevCheckTimeMs = await browserStorage.get(FilterUpdateService.UPDATE_CHECK_TIME_KEY);
 
         /**
          * Check updates if prevCheckTimeMs is not set or
@@ -99,7 +175,7 @@ export class FilterUpdateService {
             // Saving current time to storage is required in the cases
             // when background page is often unloaded,
             // for example, in the cases of service workers.
-            await browserStorage.set(FilterUpdateService.STORAGE_KEY, Date.now());
+            await browserStorage.set(FilterUpdateService.UPDATE_CHECK_TIME_KEY, Date.now());
         }
 
         // eslint-disable-next-line no-restricted-globals
