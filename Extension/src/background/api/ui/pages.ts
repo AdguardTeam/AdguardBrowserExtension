@@ -53,6 +53,11 @@ import { OptionsPageSections } from '../../../common/nav';
  */
 export class PagesApi {
     /**
+     * Product type.
+     */
+    private static readonly PRODUCT_TYPE = 'Ext';
+
+    /**
      * Settings page url.
      */
     public static readonly settingsUrl = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT);
@@ -242,7 +247,7 @@ export class PagesApi {
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            product_type: 'Extension',
+            product_type: PagesApi.PRODUCT_TYPE,
             manifest_version: encodeURIComponent(manifestDetails.manifest_version),
             product_version: encodeURIComponent(manifestDetails.version),
             url: encodeURIComponent(siteUrl),
