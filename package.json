@@ -14,7 +14,7 @@
     "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
     "locales": "tsx tools/locales.js",
     "resources": "tsx tools/resources.ts",
-    "resources:mv3": "pnpm add -D https://github.com/AdguardTeam/tsurlfilter/raw/6f4e1c026de36ba9d424cbc1e191a86c4cfd212d/packages/dnr-rulesets/adguard-dnr-rulesets.tgz && tsx tools/resources-mv3.ts",
+    "resources:mv3": "pnpm add -D https://github.com/AdguardTeam/tsurlfilter/raw/c9345721a3c1e59e72485e7c64d5a0c801633aa9/packages/dnr-rulesets/dnr-rulesets.tgz && tsx tools/resources-mv3.ts",
     "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
     "increment": "pnpm version patch --no-git-tag-version",
     "prepare": "husky install",
@@ -31,7 +31,7 @@
   "author": "adguard@adguard.com",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@adguard/dnr-rulesets": "https://github.com/AdguardTeam/tsurlfilter/raw/6f4e1c026de36ba9d424cbc1e191a86c4cfd212d/packages/dnr-rulesets/adguard-dnr-rulesets.tgz",
+    "@adguard/dnr-rulesets": "https://github.com/AdguardTeam/tsurlfilter/raw/c9345721a3c1e59e72485e7c64d5a0c801633aa9/packages/dnr-rulesets/dnr-rulesets.tgz",
     "@adguard/re2-wasm": "^1.2.0",
     "@types/chrome": "^0.0.268",
     "@types/crypto-js": "^4.1.1",
