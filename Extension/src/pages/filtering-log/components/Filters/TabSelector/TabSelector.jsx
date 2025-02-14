@@ -38,11 +38,9 @@ import { rootStore } from '../../../stores/RootStore';
 import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
 import { useOutsideFocus } from '../../../../common/hooks/useOutsideFocus';
 import { useKeyDown } from '../../../../common/hooks/useKeyDown';
-import { Search } from '../../Search';
 
 import './tab-selector.pcss';
 
-// FIXME: Improve a11y
 const TabSelector = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
     const refSelector = useRef(null);
@@ -56,6 +54,9 @@ const TabSelector = observer(() => {
     const [currentStep, setCurrentStep] = useState(0);
 
     const SELECTED_CLASS_NAME = 'selected';
+    const INPUT_ID = 'tabs-selector-input';
+    const LISTBOX_ID = 'tabs-selector-listbox';
+    const LABEL = translator.getMessage('filtering_log_search_tabs_placeholder');
 
     useEffect(() => {
         if (refResult.current?.childNodes) {
@@ -172,13 +173,14 @@ const TabSelector = observer(() => {
                 || (domain && domain.match(searchQuery))
             ) {
                 return (
-                    <div
+                    <button
                         key={tabId}
                         id={tabId}
-                        role="button"
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
                         className="tab-selector__result-item"
                         onClick={() => { selectionHandlerSearch(tabId); }}
-                        tabIndex={0}
                     >
                         <span className={itemTextClassName}>
                             {title}
@@ -187,9 +189,10 @@ const TabSelector = observer(() => {
                             <Icon
                                 id="#tick"
                                 classname="icon icon--24 icon--green-default"
+                                aria-hidden="true"
                             />
                         )}
-                    </div>
+                    </button>
                 );
             }
 
@@ -223,22 +226,52 @@ const TabSelector = observer(() => {
             ref={refSelector}
         >
             <div onFocus={onTabSelectorFocus}>
-                <Search
-                    select
-                    ref={searchInputRef}
-                    changeHandler={searchChangeHandler}
-                    value={searchValue}
-                    placeholder={translator.getMessage('filtering_log_search_tabs_placeholder')}
-                    handleClear={handleClear}
-                    onFocus={handleClear}
-                    onOpenSelect={selectIsOpen}
-                />
-            </div>
-            {selectIsOpen && (
-                <div className="tab-selector__result" ref={refResult}>
-                    {renderSearchResult()}
+                <div className="search">
+                    <input
+                        ref={searchInputRef}
+                        id={INPUT_ID}
+                        type="text"
+                        role="combobox"
+                        className="search__input"
+                        placeholder={LABEL}
+                        value={searchValue}
+                        autoComplete="off"
+                        aria-autocomplete="list"
+                        aria-expanded={selectIsOpen}
+                        aria-controls={LISTBOX_ID}
+                        onChange={searchChangeHandler}
+                        onFocus={handleClear}
+                    />
+                    <button
+                        type="button"
+                        className="search__btn"
+                        tabIndex={-1}
+                        aria-label={LABEL}
+                        aria-expanded={selectIsOpen}
+                        aria-controls={LISTBOX_ID}
+                    >
+                        <Icon
+                            id="#arrow-down"
+                            classname={cn(
+                                'icon--24 icon--gray-default search__ico',
+                                selectIsOpen ? 'search__arrow-up' : 'search__arrow-down',
+                            )}
+                            aria-hidden="true"
+                        />
+                    </button>
                 </div>
-            )}
+            </div>
+            <div
+                ref={refResult}
+                id={LISTBOX_ID}
+                role="listbox"
+                className={cn(
+                    'tab-selector__result',
+                    selectIsOpen && 'tab-selector__result--open',
+                )}
+            >
+                {renderSearchResult()}
+            </div>
         </div>
     );
 });
