@@ -1,13 +1,13 @@
-! Checksum: W6QRWjlXWmVlWYAetjPcwQ
+! Checksum: bKq3gCAsmEQCkGJUDn9GEQ
 ! Title: Frellwit's Swedish Filter
 ! Description: Filter that aims to remove regional Swedish ads, tracking, social media, annoyances, sponsored articles etc.
-! Version: 2.0.20.78
-! TimeUpdated: 2025-02-12T05:01:44+00:00
+! Version: 2.0.20.79
+! TimeUpdated: 2025-02-13T09:02:07+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Frellwit's Swedish Filter
 ! Expires: 4 days
-! Last modified: 2025-02-12 05:08:24 CET
+! Last modified: 2025-02-13 07:13:33 CET
 ! Homepage: https://github.com/lassekongo83/Frellwits-filter-lists
 ! Description: A filter for uBlock Origin that aims to remove regional Swedish ads, tracking, annoyances, scams + badware, and unnecessary bloat.
 ! License: GPL3 - https://github.com/lassekongo83/Frellwits-filter-lists/blob/master/LICENSE
@@ -131,7 +131,7 @@ agriaffaires.se,truckscorner.se,machineryzone.se##.dp--mb, .dp--pave, .dp--ga, b
 aikfotboll.se,vaken.se,tidningen.djurskyddet.se,aktavara.org,kullaliv.se##.banners
 aikhockey.se,almtuna.com,bikkarlskoga.se,bjorkloven.com,brynas.se,difhockey.se,frolundahockey.com,farjestadbk.se,hockeyallsvenskan.se,hv71.se,ikoskarshamn.se,kalmarhockey.com,leksandsif.se,lhc.eu,luleahockey.se,malmoredhawks.com,modohockey.se,moraik.se,nybrovikings.com,orebrohockey.se,roglebk.se,shl.se,skellefteaaik.se,sodertaljesk.se,taif.nu,timraik.se,vaxjolakers.se,vik.se,ostersundik.com,fbclerum.se##a[href*="svenskaspel.se"][target]
 aip.nu##[class*="feed-ad"]
-aip.nu,funktionshinderpolitik.se,sjostadsbladet.se,fotbollsresultat.com,lansposten.se,dalabygden.se,sormlandsbygden.se,skaneplus.se###cookie-notice
+aip.nu,funktionshinderpolitik.se,sjostadsbladet.se,fotbollsresultat.com,lansposten.se,dalabygden.se,sormlandsbygden.se,skaneplus.se,innovationslandet.se###cookie-notice
 aip.nu,lansposten.se,dalabygden.se,sormlandsbygden.se#$#body.cookies-not-set { overflow:unset!important }
 akaviaaspekt.se##.article-list-item--native, a.article-topic__list-item[href^="/annons"]
 aktavara.org##.banner-start
@@ -296,6 +296,8 @@ bukefalos.se,thaisnack.se,rollspel.nu,husbilsklubben.se,friaordet.org,xn--lnforu
 bulletin.nu#?#div[class*="section-preview"]:contains(/betalt samarbete/i):upward(4)
 bulletin.nu##[class^="newsletter-subscribe"], div[class^="cookie-message"], div[role="presentation"]
 bulletin.nu,inredningsarkitektur.se,fof.se,allas.se,elle.se,femina.se,hant.se,mabra.com,residencemagazine.se,svenskdam.se,motherhood.se,aftonbladet.se,lchfarkivet.se,kollega.se,folkofolk.se,skyscanner.se,dagensarena.se,bokadirekt.se,barometern.se,blt.se,bt.se,kristianstadsbladet.se,olandsbladet.se,smp.se,sydostran.se,trelleborgsallehanda.se,ut.se,ystadsallehanda.se,vaxjobladet.se,nsk.se,klt.nu,samnytt.se,sjofartstidningen.se#$#body { overflow:initial!important }
+businesstories.se#$?#.carousel-item:has(.sponsored) { remove: true; }
+businesstories.se##:is(.single-equal, .single-loop):has(.sponsored)
 bussmagasinet.se###page > div:not(.left):not(.right)
 bussmagasinet.se###titlebanner
 bussmagasinet.se,byggteknikforlaget.se,dialasen.com,torbjornstips.se,backpacking.se,kanadaresa.se,usa.se,sporthalsa.se,ravarumarknaden.se,livetsgoda.se,opulens.se,radiotreby.se,nyadagbladet.se,fiskemagasinet.se,etunanytt.se##.textwidget a[target="_blank"]
@@ -768,6 +770,7 @@ inet.se#%#//scriptlet('ubo-set-cookie.js', 'allow-marketing-cookies', '0')
 ingenjorsjobb.se##.advert-take-over
 inkopsradet.se##div[id^="inkop-"]
 innebandy.se##[class*="banner-container"], .sponsorsswipeblock
+innovationslandet.se#?#.text-xs.font-bold:contains(Sponsrat inlägg):upward(a)
 inredningsarkitektur.se#?#.article:contains(/sponsrad artikel/i)
 internetmedicin.se##[itemtype="https://schema.org/WPAdBlock"]
 internetodontologi.se##.overlay
@@ -1871,6 +1874,7 @@ zeromagazine.nu##div[id^="ads"]
 /ads/*?track_this=1
 /ads?$domain=cirkulation.se
 /adtracker$domain=beernews.se
+/adtrax/imp?
 /advertisement-dfp$script
 /ad-render$domain=internetmedicin.se
 /ad-takeover
@@ -1917,12 +1921,11 @@ zeromagazine.nu##div[id^="ads"]
 /app.php/adsview$xmlhttprequest
 /article-analytics$domain=bulletin.nu
 /artikelannons/*
-/arto/api/event$domain=arkitekten.se|natursidan.se|svenskfarmaci.se|revisionsvarlden.se
+/arto/api/event
 /assets/DynamicAds-
 /assets/partnerstat.php?partner=$xmlhttprequest
 /assets/site/modules/GTM_
 /assets/site/modules/ctm-
-/assets/tracking$domain=hornbach.se
 /assets/yb_$domain=vackertvader.se
 /ast.$script,domain=blocket.se
 /async-gdpr$domain=matochpyssel.nu
@@ -2592,7 +2595,6 @@ zeromagazine.nu##div[id^="ads"]
 /_graphics/annons
 /_papers_media/banners
 /_sites_media/*/uploads/Banners
-/_t/se.js$domain=hornbach.se
 /_vercel/insights/*
 /__tm.gif$domain=svenskalag.se
 ://gtm.*.js?id=GTM
@@ -2711,6 +2713,7 @@ zeromagazine.nu##div[id^="ads"]
 ||aventyret.se^$third-party
 ||aweber.com^$third-party
 ||azurewebsites.net/partnerArticle
+||a.delivery.consentmanager.net^$image
 ||bannerutbyte.se^$third-party
 ||barbours.com.se^
 ||barnebys.sh/js/btag
@@ -3337,7 +3340,7 @@ zeromagazine.nu##div[id^="ads"]
 /tapatalkdetect$script,~third-party
 /themes/Jaz/inc/js/*nicescroll
 /smart-app-banner*/banner.js
-lundagard.se,boktugg.se,morotsliv.com,affarsstaden.se,kurera.se,nyfiknainvesterare.se#%#//scriptlet('ubo-aeld.js', 'wheel')
+lundagard.se,boktugg.se,morotsliv.com,affarsstaden.se,kurera.se,nyfiknainvesterare.se,allagodating.se#%#//scriptlet('ubo-aeld.js', 'wheel')
 home2tiny.se#%#//scriptlet('ubo-aeld.js', '/mousewheel|DOMMouseScroll/', 'smoothScrollEvent')
 veterinarmagazinet.se##.banner-spacer
 !

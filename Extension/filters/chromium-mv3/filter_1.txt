@@ -1,8 +1,8 @@
-! Checksum: oG2s0cw8PAsv3ax7J7coug
+! Checksum: o4dVjKvGBa+FlfqpC9lyEQ
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.97.58
-! TimeUpdated: 2025-02-13T08:31:34+00:00
+! Version: 2.0.97.65
+! TimeUpdated: 2025-02-13T21:31:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -5510,6 +5510,7 @@ shedevrum.ai##.flex.items-center.justify-center.relative.w-full:has(> div[id]:em
 ! START: Yandex
 !
 !
+! Add Yandex owned sites to `jsonprune` rule
 yandex.*#%#//scriptlet('remove-cookie', '/blcrm|bltsr|zmFQeXtI|JPIqApiY|computer/')
 $cookie=/blcrm|bltsr|zmFQeXtI|JPIqApiY|computer/,domain=yandex.adult|yandex.ac.id|yandex.ae|yandex.al|yandex.app|yandex.asia|yandex.at|yandex.az|yandex.ba|yandex.be|yandex.by|yandex.ca|yandex.cc|yandex.cl|yandex.cloud|yandex.club|yandex.co|yandex.co.il|yandex.com|yandex.com.bd|yandex.com.cn|yandex.com.np|yandex.com.tr|yandex.de|yandex.dev|yandex.ee|yandex.es|yandex.eu|yandex.fi|yandex.fm|yandex.fr|yandex.ge|yandex.gr|yandex.hu|yandex.in|yandex.io|yandex.jp|yandex.kg|yandex.kr|yandex.kz|yandex.lt|yandex.lv|yandex.md|yandex.me|yandex.mobi|yandex.net|yandex.news|yandex.nl|yandex.org|yandex.pk|yandex.pl|yandex.pro|yandex.ro|yandex.rs|yandex.ru|yandex.se|yandex.site|yandex.su|yandex.tech|yandex.ua|yandex.uk|yandex.us|yandex.uz|yandex.work
 ! ad on chrome://newtab
@@ -7321,6 +7322,7 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+unian.ua##div[style^="height:"][style*="overflow: hidden;"]
 ||yandex.ru/ads/adfox/
 findh.org###ads-sidebar-block
 1plus1.ua##.bannerPMU
@@ -7348,7 +7350,7 @@ pravda.com.ua##.unit_news_banner_list
 pravda.com.ua,epravda.com.ua##body .nts-ad
 pravda.com.ua##.container_sub_adv_news
 pravda.com.ua##.unit_news_banner_bottom
-pravda.com.ua##body div.advtext
+eurointegration.com.ua,pravda.com.ua##body div.advtext
 pravda.com.ua##.unit_header_banner
 pravda.com.ua##.article_wide_banner_mobile
 pravda.com.ua##div[class^="block_banner_"]
@@ -7615,6 +7617,13 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+forum.abok.ru##tr[align="center"] > td:has(> span[style^="color: #4F4F4F; font-size: 6pt;"])
+forum.abok.ru##td > div.borderwrap:has(> span[style^="color: #4F4F4F; font-size: 6pt;"])
+forum.abok.ru##span[style^="color: #4F4F4F; font-size: 6pt;"]
+forum.abok.ru##img[title^="Реклама"]
+forum.abok.ru##img[width="740px"][height="100px"]
+betnews.by##a[href^="https://l.betera.by/"] > img
+esports.ru##div[data-name^="ads/"]
 onlineradiobox.me##div[style]:has(> div[class^="adfinity"])
 topasnew24.com##.fbnr-line
 topasnew24.com##div[style]:has(> div[id^="yandex_rtb"])

@@ -1,8 +1,8 @@
-! Checksum: fB1aRGqBp/zIEmI2DEPPGg
+! Checksum: rYX9zdv8LlRdV05OFPTdGw
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.45.99
-! TimeUpdated: 2025-02-12T17:38:36+00:00
+! Version: 2.0.46.6
+! TimeUpdated: 2025-02-13T19:39:56+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -972,7 +972,7 @@ fitforfun.de,plus.rtl.de#%#//scriptlet('abort-on-stack-trace', 'Object.prototype
 filstalwelle.de#$##mejsplayer:has(> video > source[src^="/video/content/a/"]) { display: none !important; }
 filstalwelle.de#%#//scriptlet('trusted-replace-node-text', 'div', 'WERBUNG', 'WERBUNG', 'Trying to skip ads...')
 filstalwelle.de#%#//scriptlet("trusted-replace-node-text", "script", "doPostRoll", "/\?PHPSESSID=.*?'/", "?PHPSESSID=1'")
-filstalwelle.de#%#//scriptlet("trusted-create-element", "head", "script", "", "(()=>{if(!location.pathname.includes('/video/video'))return;let e=0;const t=async o=>{const n=await fetch(o);!(await n.text()).match(/src=.content\//)||document.querySelector('.mejs__video video > source[src^=\"content/\"]')?e<=2&&(e++,setTimeout(t,1e4,o)):location.replace(o)};window.addEventListener('load',(()=>{const e=document.querySelector('body > :is(.mejs__video, #mejsplayer) ~ script:not([type], [src])'),o=e?.textContent.match(/\$\('#bodyTarget'\)\.load\('(.+?)'.+?\);/)?.[1];if(o){let e=location.href.replace(/videoin\.php\?video=.*/,o);e=e.replace(/PHPSESSID=.*/,'PHPSESSID=1'),t(e)}else console.debug('Required part not found in the script.')}))})();")
+filstalwelle.de#%#//scriptlet("trusted-create-element", "head", "script", "", "(()=>{if(!location.pathname.includes('/video/video'))return;let e=0;const t=async o=>{const c=await fetch(o);!(await c.text()).match(/src=.content\//)||document.querySelector('.mejs__video video > source[src^=\"content/\"]')?e<=2&&(e++,setTimeout(t,1e4,o)):location.replace(o)};window.addEventListener('load',(()=>{const e=document.querySelector('body > :is(.mejs__video, #mejsplayer) ~ script:not([type], [src])'),o=e?.textContent.match(/\$\('#bodyTarget'\)\.load\('(.+?)'.+?\);/)?.[1];if(o){let e=location.href.replace(/videoin\.php\?video=.*/,o);e=e.replace(/PHPSESSID=.*/,'PHPSESSID=1');const c=document.querySelector('.mejs__video video:has(> source[src^=\"/video/content/a/\"])');c&&(c.muted=!0),t(e)}else console.debug('Required part not found in the script.')}))})();")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/190034
 promiflash.de#%#//scriptlet('set-constant', 'adHandler.service', 'emptyObj')
 promiflash.de#%#//scriptlet('set-constant', 'adHandler.service.destroy', 'noopFunc')
@@ -1392,7 +1392,9 @@ lkz.de##.nfy-row-ad
 !https://github.com/AdguardTeam/AdguardFilters/issues/158944
 ! breaks download button at https://www.chip.de/news/Google-verschenkt-praktische-Organizer-App-Werbefreie-Pro-Version-statt-369-Euro-jetzt-kostenlos_161805364.html
 ! chip.de##li > a[href*="chip.de/downloads/"][target="_blank"]:has(img[src*="hash"])
-chip.de#?#a[href*="chip.de/downloads/"]:has(img[src*="hash"]:not([class], [data-src]))
+chip.de##main > section.wrapper-safe:has(> .Downloads-Alternative[style="display: none !important;"]:only-child)
+chip.de##main > section.wrapper-safe:has(> h3:first-child + .Downloads-Alternative[style="display: none !important;"]:last-child)
+chip.de##a[href*="chip.de/downloads/"]:has(img[src*="hash"]:not([class], [data-src]))
 chip.de##a[href*="chip.de/downloads/"] img[src*="hash"]:not([class], [data-src])
 chip.de##li > a[href*="chip.de/downloads/"][class]:not([class*=" "]) img[src*="hash"]
 chip.de#?#li > a[href*="chip.de/downloads/"][class]:not([class*=" "]):has(img[src*="hash"])
@@ -1434,6 +1436,8 @@ welt.de##.c-inline-element--has-commercials
 welt.de##.c-page-container--has-commercials
 !+ NOT_OPTIMIZED
 bild.de##.outstreamAd
+!+ NOT_OPTIMIZED
+myhomebook.de,techbook.de,petbook.de,fitbook.de,bild.de,rollingstone.de,bz-berlin.de,weser-kurier.de###banner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176792
 !+ NOT_PLATFORM(android, ios, ext_android_cb)
 giga.de#$#div[class*="ad--top"] { display: block !important; min-height: 40px !important; }
@@ -1463,6 +1467,16 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+it-boltwise.de#?#.widget_wonderwall_magazine_posts_list_widget:has(> h6:contains(AD))
+it-boltwise.de#?#.blog-post-single-share > strong:contains(#Werbung)
+it-boltwise.de##.rfw-class
+it-boltwise.de##a[rel="sponsored"]
+it-boltwise.de##.blog-post-single-meta > center:has(> small:only-child > em > a[rel="sponsored"])
+it-boltwise.de##ul > li:has(> strong a[rel="sponsored"])
+it-boltwise.de##.blog-post-single-content > center:has(> a[rel="sponsored"])
+it-boltwise.de###block-15
+wochenanzeiger.de##div[class*="media-"]
+wochenanzeiger.de##div[app-preview-holder]:has(> div:only-child > div[class*="media-"])
 bild.de##article:has(> a[href*="campaign"]:not([href*="marktplatz"]) > figure > img)
 dasheimwerkerforum.de##body > #fh-div
 dasheimwerkerforum.de##.p-body-sidebar > .block:has( [id*="_mpu_"])
@@ -2630,7 +2644,6 @@ autozeitung.de,lecker.de###ads_pb
 prad.de##div[data-tpl="Flat_box_horizontal_prad"]
 badische-zeitung.de##div[class$="-ad-holder"]
 kachelmannwetter.com##.dkpw-billboard-margin-fixed
-myhomebook.de,techbook.de,petbook.de,fitbook.de,bild.de,rollingstone.de,bz-berlin.de,weser-kurier.de###banner
 mannheimer-morgen.de##.trf-billboardcontainer
 rhein-zeitung.de##.teaserad
 rhein-zeitung.de##.page__billboard
@@ -7886,6 +7899,7 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||readersdigest.de/images/banner/
 ||realtotal.de/data/betrugstest-com.jpg
 ||rechtsdepesche.de/wordpress/wp-content/banners/
+||redensarten-index.de/az/shwbnnr.php
 ||redensarten-index.de/az/shwbnnr.php?*&bild=b/notesafloat/
 ||redensarten-index.de/bnnr/
 ||redhocks.de^*/floorballes.png
@@ -8400,6 +8414,7 @@ $csp=script-src 'self' data: 'unsafe-inline' 'unsafe-hashes' 'unsafe-eval' stati
 /lp/chip-$popup,domain=chip.de
 ^utm_medium=popunder^$popup,domain=hilfreich.de
 ||amazon.de^*^tag=$popup,domain=rheinlandpfalz-news.de
+||brainberries.co^$popup,domain=chip.de
 ||count.shopping.t-online.de/RE?ID=$popup,domain=t-online.de
 ||data-load.me/partner/$popup
 ||ddownload.com/free$popup,domain=ibooks.to
@@ -8603,6 +8618,7 @@ haustec.de###block-network
 windowspro.de###block-views-sponsoredcontent-block
 windowspro.de###block-views-sponsoredpromo-block
 boersennews.de###bnBanner
+redensarten-index.de###bnnr_u_suchfeld
 trendyone.de###bottom-blocks
 esport.cologne###brands
 kleinanzeigen.de###brws_banner-supersize
@@ -8916,6 +8932,7 @@ adspecials.sevenonemedia.de###promobalken
 fanfiktion.de###qql
 infoheute.de###r89-desktop-billboard-atf-0-wrapper
 infoheute.de###r89-desktop-incontent-0-wrapper
+raidrush.net###raidrush_net_1000x100_sticky_acnhorad_responsive
 tarnkappe.info###rectangle
 gamestar.de###rectangle-container-desktop
 kurier.de###rectangle_1
@@ -8963,6 +8980,7 @@ pinksugar-kessy.de###sidebar_right > #HTML9
 finanznachrichten.de###sideteaser
 ariva.de###siteTeaserBox
 wallstreet-online.de###siteteaser
+redensarten-index.de###skbnnr
 gamereactor.de,hardwareluxx.de,itmagazine.ch,mopo.de###sky
 nextpit.de###sky-left-container
 clever-tanken.de###sky-tisoomi-wrapper
@@ -9007,6 +9025,7 @@ finanzen.net###sticky-superbanner
 nydus.org###stickyaside
 studis-online.de###ston-billboard
 bafoeg-rechner.de,studis-online.de###ston-footer-ad
+raidrush.net###stpd_close
 eu-vertretung.de###stream-item-widget-2
 eu-vertretung.de###stream-item-widget-3
 allgaeuer-zeitung.de###stroeer-container-banner2
@@ -9103,6 +9122,7 @@ ifun.de,iphone-ticker.de###verbraucherhinweis-970
 ifun.de,iphone-ticker.de###verbraucherhinweis-970x250
 ifun.de,iphone-ticker.de###verbraucherhinweis-latest
 ifun.de,iphone-ticker.de###verbraucherhinweis-single-300x250
+raidrush.net###vidcrunch
 drpornofilme.com###video-right
 kleinanzeigen.de###vip-billboard
 digitalphoto.de###vlybyOneByOneWrapper
