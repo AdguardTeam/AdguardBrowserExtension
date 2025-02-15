@@ -198,7 +198,8 @@ export class FilterUpdateApi {
             .map(({ filterId }) => filterId);
 
         // if at least one filter (which was supposed to be updated fully) was updated,
-        // we should set the last full update time for MV2
+        // we consider that the full update was successful
+        // so the last full update time for MV2 should be set
         if (
             filterIdsSupposedToBeUpdatedFully.length > 0
             && updatedFilters.some(({ filterId }) => filterIdsSupposedToBeUpdatedFully.includes(filterId))
