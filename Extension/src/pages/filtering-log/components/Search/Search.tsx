@@ -105,7 +105,6 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
 
     return (
         <div className="search">
-            {renderControl()}
             <input
                 ref={localRef}
                 type="text"
@@ -115,6 +114,7 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
                 className={inputClasses}
                 {...inputProps}
             />
+            {renderControl()}
         </div>
     );
 });
