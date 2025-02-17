@@ -20,7 +20,7 @@ import zod from 'zod';
 import { tabsApi as tsWebExtTabsApi, getDomain } from '../../tswebextension';
 import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
-import { listeners } from '../../notifier';
+import { notifier } from '../../notifier';
 import {
     settingsStorage,
     allowlistDomainsStorage,
@@ -28,7 +28,7 @@ import {
 } from '../../storages';
 import { engine } from '../../engine';
 import { TabsApi } from '../../../common/api/extension';
-import { AntiBannerFiltersId } from '../../../common/constants';
+import { AntiBannerFiltersId, NotifierType } from '../../../common/constants';
 import { UrlUtils } from '../../utils';
 
 import { UserRulesApi } from './userrules';
@@ -374,7 +374,7 @@ export class AllowlistApi {
 
         storage.setData(domains);
 
-        listeners.notifyListeners(listeners.UpdateAllowlistFilterRules);
+        notifier.notifyListeners(NotifierType.UpdateAllowlistFilterRules);
     }
 
     /**

@@ -33,7 +33,7 @@ import {
 import { UserAgent } from '../../../common/user-agent';
 import { engine } from '../../engine';
 import { AntiBannerFiltersId, NotifierType } from '../../../common/constants';
-import { listeners } from '../../notifier';
+import { notifier } from '../../notifier';
 import {
     toasts,
     FiltersApi,
@@ -72,6 +72,7 @@ export type PageInitAppData = {
     },
     constants: {
         AntiBannerFiltersId: typeof AntiBannerFiltersId,
+        // TODO: Seems like deprecated, can be removed.
         EventNotifierType: typeof NotifierType,
     },
 };
@@ -240,7 +241,7 @@ export class UiService {
             },
             constants: {
                 AntiBannerFiltersId,
-                EventNotifierType: listeners.events,
+                EventNotifierType: notifier.events,
             },
         };
     }

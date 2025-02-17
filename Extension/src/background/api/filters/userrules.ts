@@ -29,9 +29,10 @@ import {
     AntiBannerFiltersId,
     NEWLINE_CHAR_REGEX,
     NEWLINE_CHAR_UNIX,
+    NotifierType,
 } from '../../../common/constants';
 import { SettingOption } from '../../schema';
-import { listeners } from '../../notifier';
+import { notifier } from '../../notifier';
 import {
     FiltersStorage,
     settingsStorage,
@@ -225,7 +226,7 @@ export class UserRulesApi {
     public static async setUserRules(rulesText: string): Promise<void> {
         await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, rulesText);
 
-        listeners.notifyListeners(listeners.UserFilterUpdated);
+        notifier.notifyListeners(NotifierType.UserFilterUpdated);
     }
 
     /**

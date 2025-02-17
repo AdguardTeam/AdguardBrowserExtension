@@ -30,7 +30,7 @@ import {
 
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../../../constants';
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import {
     FiltersApi,
     AllowlistApi,
@@ -43,7 +43,7 @@ import {
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
-import { emptyPreprocessedFilterList } from '../../common/constants';
+import { emptyPreprocessedFilterList, NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 
@@ -115,7 +115,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
 
@@ -164,7 +164,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         if (!skipLimitsCheck) {
             await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));

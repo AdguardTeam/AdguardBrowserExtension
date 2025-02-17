@@ -44,7 +44,8 @@ import {
     contextMenuEvents,
     settingsEvents,
 } from '../../events';
-import { listeners } from '../../notifier';
+import { notifier } from '../../notifier';
+import { NotifierType } from '../../../common/constants';
 
 /**
  * FiltersService creates handlers for messages that relate to filters.
@@ -209,12 +210,12 @@ export class FiltersService {
             const updatedFilters = await FilterUpdateApi.autoUpdateFilters(true);
 
             toasts.showFiltersUpdatedAlertMessage(true, updatedFilters);
-            listeners.notifyListeners(listeners.FiltersUpdateCheckReady, updatedFilters);
+            notifier.notifyListeners(NotifierType.FiltersUpdateCheckReady, updatedFilters);
 
             return updatedFilters;
         } catch (e) {
             toasts.showFiltersUpdatedAlertMessage(false);
-            listeners.notifyListeners(listeners.FiltersUpdateCheckReady);
+            notifier.notifyListeners(NotifierType.FiltersUpdateCheckReady);
         }
     }
 

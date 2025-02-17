@@ -159,13 +159,13 @@ class Messenger {
 
             port.onMessage.addListener((message) => {
                 if (!messageHasTypeField(message)) {
-                    logger.warn('Received message in Messenger.createLongLivedConnection has no type field: ', message);
+                    logger.error('Received message in Messenger.createLongLivedConnection has no type field: ', message);
                     return;
                 }
 
                 if (message.type === MessageType.NotifyListeners) {
                     if (!messageHasTypeAndDataFields(message)) {
-                        logger.warn('Received message with type MessageType.NotifyListeners has no data: ', message);
+                        logger.error('Received message with type MessageType.NotifyListeners has no data: ', message);
                         return;
                     }
 
@@ -218,30 +218,31 @@ class Messenger {
     ): Promise<UnloadCallback> => {
         let listenerId: number | null;
 
-        const response = await this.sendMessage(
+        const response: CreateEventListenerResponse = await this.sendMessage(
             MessageType.CreateEventListener,
             { events },
-        ) as CreateEventListenerResponse;
+        );
+
         listenerId = response.listenerId;
 
         const onUpdateListeners = async (): Promise<void> => {
-            const updatedResponse = await this.sendMessage(
+            const updatedResponse: CreateEventListenerResponse = await this.sendMessage(
                 MessageType.CreateEventListener,
                 { events },
-            ) as CreateEventListenerResponse;
+            );
 
             listenerId = updatedResponse.listenerId;
         };
 
         browser.runtime.onMessage.addListener((message) => {
             if (!messageHasTypeField(message)) {
-                logger.warn('Received message in Messenger.createEventListener has no type field: ', message);
+                logger.error('Received message in Messenger.createEventListener has no type field: ', message);
                 return undefined;
             }
 
             if (message.type === MessageType.NotifyListeners) {
                 if (!messageHasTypeAndDataFields(message)) {
-                    logger.warn('Received message with type MessageType.NotifyListeners has no data: ', message);
+                    logger.error('Received message with type MessageType.NotifyListeners has no data: ', message);
                     return undefined;
                 }
 

@@ -79,8 +79,10 @@ export const enum AntibannerGroupsId {
  */
 export const RECOMMENDED_TAG_ID = 10;
 
-// TODO: Add types checking for messages payload, because it many messages data
-// are not used in the fronted code, except FiltersUpdateCheckReady and FullscreenUserRulesEditorUpdated.
+/**
+ * Enum with the list of the messages which are sent from the background
+ * to notify UI about some events, e.g. some field in settings was updated.
+ */
 export enum NotifierType {
     RequestFilterUpdated = 'event.request.filter.updated',
     UserFilterUpdated = 'event.user.filter.updated',
@@ -88,14 +90,11 @@ export enum NotifierType {
     UpdateAllowlistFilterRules = 'event.update.allowlist.filter.rules',
     SettingUpdated = 'event.update.setting.value',
     FiltersUpdateCheckReady = 'event.update.filters.check',
-    // Log events
+    // Filtering log events.
     TabAdded = 'log.tab.added',
     TabClose = 'log.tab.close',
     TabUpdate = 'log.tab.update',
     TabReset = 'log.tab.reset',
-    LogEventAdded = 'log.event.added',
-    // Sync events
-    SettingsUpdated = 'event.sync.finished',
     // Fullscreen user rules events
     FullscreenUserRulesEditorUpdated = 'event.user.rules.editor.updated',
 }
