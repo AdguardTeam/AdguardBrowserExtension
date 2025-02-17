@@ -235,6 +235,9 @@ const TabSelector = observer(() => {
                         className="search__input"
                         placeholder={LABEL}
                         value={searchValue}
+                        // Take a not that `autoComplete` and `aria-autocomplete` are different attributes
+                        // `autoComplete` is for the browser to suggest the input value
+                        // `aria-autocomplete` is for the screen reader to announce that the input has a list of tabs
                         autoComplete="off"
                         aria-autocomplete="list"
                         aria-expanded={selectIsOpen}
