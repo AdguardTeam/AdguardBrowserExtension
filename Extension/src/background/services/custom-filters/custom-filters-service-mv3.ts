@@ -34,7 +34,7 @@
 // } from '../../../common/messages';
 // import { CustomFilterApi, GetCustomFilterInfoResult } from '../../api/filters/custom';
 // import { messageHandler } from '../../message-handler';
-// import { listeners } from '../../notifier';
+// import { notifier } from '../../notifier';
 // import { engine } from '../../engine';
 // import type { CustomFilterMetadata } from '../../schema';
 
@@ -90,7 +90,7 @@ export class CustomFiltersService {
 
     //     await engine.update();
 
-    //     listeners.notifyListeners(NotifierType.CustomFilterAdded);
+    //     notifier.notifyListeners(NotifierType.CustomFilterAdded);
     //     return filterMetadata;
     // }
 

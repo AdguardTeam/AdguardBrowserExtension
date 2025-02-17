@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocked counter on the popup updates for blocked requests from other tabs [#3050].
 - `$popup,third-party` modifiers cause document blocking [#3012].
 - Don't show lines for absent metadata when adding a custom filter [#3057].
+- Filtering log does not observe tab changes, openings, or closings.
 
 ### Removed
 
