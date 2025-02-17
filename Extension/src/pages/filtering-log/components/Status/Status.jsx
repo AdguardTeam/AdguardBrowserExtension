@@ -59,7 +59,7 @@ export const Status = (props) => {
     let requestStatusSummary = `${timeString}.`;
 
     if (areNetworkBadgesVisible) {
-        requestStatusSummary += ` ${translator.getMessage('filtering_log_status', { status: statusTooltipText })}`;
+        requestStatusSummary += ` ${translator.getMessage('filtering_log_tag_request_status')}: ${statusTooltipText}.`;
 
         if (!isBlocked) {
             requestStatusSummary += ` ${translator.getMessage('filtering_log_badge_tooltip_http_status_code')}: ${statusCodeToShow}.`;
