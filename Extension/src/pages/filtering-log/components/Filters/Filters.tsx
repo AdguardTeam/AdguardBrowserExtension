@@ -116,7 +116,7 @@ const Filters = () => {
                             type="button"
                             onClick={scrollLeft}
                             className="filters__arrow filters__arrow--left"
-                            // Hide from keyboard navigation or screen readers
+                            // Hide from keyboard navigation and screen readers
                             // Because they can access rest of filters without
                             // scrolling block to the left
                             aria-hidden="true"
@@ -132,7 +132,7 @@ const Filters = () => {
                             type="button"
                             onClick={scrollRight}
                             className="filters__arrow filters__arrow--right"
-                            // Hide from keyboard navigation or screen readers
+                            // Hide from keyboard navigation and screen readers
                             // Because they can access rest of filters without
                             // scrolling block to the right
                             aria-hidden="true"
