@@ -213,6 +213,7 @@ const statusAccessor = (props) => {
 };
 
 const Row = observer(({
+    index,
     event,
     columns,
     onClick,
@@ -237,6 +238,10 @@ const Row = observer(({
             id={event.eventId}
             onClick={onClick}
             className={className}
+            // Set row index explicitly for screen readers, because table
+            // is virtualized and not all of the rows are rendered at the same time.
+            // Add 2 to index to include the header row and make it 1-based index.
+            aria-rowindex={index + 2}
         >
             {
                 columns.map((column) => {
@@ -281,6 +286,7 @@ const VirtualizedRow = ({
 
     return (
         <Row
+            index={index}
             event={event}
             columns={columns}
             onClick={handleRowClick}
@@ -301,6 +307,10 @@ const TableHeader = ({ style }) => {
             role="row"
             className="thead"
             style={style}
+            // Set row index explicitly for screen readers, because table
+            // is virtualized and not all of the rows are rendered at the same time.
+            // Header row is always first row in the table (1-based index).
+            aria-rowindex={1}
         >
             <div className="tr">
                 {
@@ -593,8 +603,9 @@ const FilteringEvents = observer(() => {
             className="filtering-log"
             aria-label={translator.getMessage('filtering_log_title')}
             // Set number of rows explicitly for screen readers, because table
-            // is virtualized and not all of the rows are rendered at the same time
-            aria-rowcount={logStore.events.length}
+            // is virtualized and not all of the rows are rendered at the same time.
+            // Add 1 to the number of rows to include the header row.
+            aria-rowcount={logStore.events.length + 1}
         >
             <div
                 style={{ minWidth: `${minTableWidth}px` }}
