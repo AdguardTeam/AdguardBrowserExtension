@@ -1,8 +1,8 @@
-! Checksum: nN36CB5KwQs5SdLOKSMNLQ
+! Checksum: Pjnqt4yLOSIO0kLgaB9DNg
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.50.46
-! TimeUpdated: 2025-02-14T02:38:23+00:00
+! Version: 2.0.50.53
+! TimeUpdated: 2025-02-16T08:38:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1729,6 +1729,7 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+lewdzone.com##main > div.alert:has(> a[href="https://lzmods.com/68/how-to-whitelist-an-website-in-adblock-plugins/"])
 tv.latinlucha.es##.zak-overlay-wrapper + div[id][class*=" "]
 androidworld.nl#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'adBlocker')
 androidworld.nl##div[class]:has(> div.adblock-detect)
@@ -4363,6 +4364,9 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+t-online.de##.transition-opacity
+t-online.de##.z-overlay-content
+book-ye.com.ua##.free-del-wrapper
 conobas.net###pum-20494
 91porna.com###tip_modal
 bo3.gg#%#//scriptlet('set-local-storage-item', 'scoresPopUpInformed', 'true')
@@ -4696,7 +4700,7 @@ cyberghostvpn.com#%#//scriptlet("abort-current-inline-script", "eiDisplayed")
 turbovpn.com##.container > div.daily-popup.show-daily-popup
 serienjunkies.de,come-on.de##div[class*="-dockInnerWrapperDocked"]
 ural-meridian.ru##div.mypopup-modal-container[data-options*="cookies_enabled"]
-igromania.ru##.knb-grid-container a[class^="YoutubeChannel_"]
+kanobu.ru,igromania.ru##.knb-grid-container a[class^="YoutubeChannel_"]
 goetheweb.jp##.p-magazine-latest-bottom
 finance.mail.ru,hi-tech.mail.ru##.rb--recommendation-link
 youla.ru###app > div:has(> div[class^="sc-"] > div[class^="sc-"] > svg + span > a[href^="https://help.mail.ru/legal/terms/youla/recommendation?"])
@@ -6262,7 +6266,6 @@ xs.studiodahu.com###mainshadow
 telerama.fr##.overlay-popin
 telerama.fr##div[class^="popin-autopromo"]
 4ddig.tenorshare.com###seasonal-banner
-passnavi.evidus.com##.module__adheadion
 pagina12.com.ar###stickyBarBottomContainer
 pagina12.com.ar###stickyBarCloseBtnContainer
 zoom.earth##.instagram
@@ -12686,6 +12689,8 @@ aol.com#$#.banner-active { margin-top: 0 !important; }
 !
 ! SECTION: Push notifications - Allowlist
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198644
+@@||onesignal.com^$domain=oshibuta.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196878
 @@||a.lmcdn.ru/static/*/assets/pushwoosh-$script,domain=lamoda.by
 ! comfy.ua - broken recommendations
@@ -12889,6 +12894,9 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+delfi.lt##.justify-content-lg-between a[href="https://t.me/rudelfi"]
+valenciaplaza.com##.module_newsletter
+escharts.com##.col-span-3 > .bg-card:has(> .relative > button[x-on\:click*="get-pro"])
 fastcompany.com##section[data-testid="newsletter-subscription-form"]
 ast.ru##.telegram__wrapper
 statnews.com##.wp-block-stat-article-newsletter-signup-sidebar

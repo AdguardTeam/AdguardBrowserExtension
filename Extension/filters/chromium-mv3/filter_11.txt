@@ -1,8 +1,8 @@
-! Checksum: ebPNiq+NKhxtra/oJPkATQ
+! Checksum: psJer/1dXDD+WNG7wo3P1g
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.58.30
-! TimeUpdated: 2025-02-13T17:38:02+00:00
+! Version: 2.0.58.33
+! TimeUpdated: 2025-02-16T08:37:54+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2078,8 +2078,6 @@ mrmoneymustache.com#@#.custom-ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/58752
 ! https://github.com/AdguardTeam/AdguardFilters/issues/57107
 @@||snssdk.com/video/drm/v*/play_licenses
-! https://github.com/AdguardTeam/AdguardFilters/issues/56041
-@@||ala.durasite.net/DuraUidSegmentMap.js$domain=passnavi.evidus.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/59127#issuecomment-658119835
 ||yads.c.yimg.jp/js/yads-async.js$script,redirect=noopjs,important,domain=map.yahoo.co.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54357
@@ -2374,6 +2372,8 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+114117.com##.bn_top_vernis
+productreview.com.au##div[class]:has(> div[class]:only-child > a[rel="sponsored"]:only-child)
 fmworld.net##.advertisementright_sp
 ||navitime.jp/scripts/media/web/infeed/realestate/
 ||kyujin.navitime.co.jp/view/platform/banner?
@@ -3243,7 +3243,7 @@ motortrend.com##section[data-c="body"] > div[class]:has(.lazyload-placeholder)
 motortrend.com###content *[class]:not([class=""]):has(> div[class=""] div[id][class]):not(:has(> div[class=""] ~ *))
 rollingstone.de###bannerWrapper
 cruxnow.com##.grid > div.w-full > div[class^="flex"]:has(> div[class] > div[id^="div-gpt-ad"])
-||d-load.org^$script,domain=2ch-c.net|get2ch.net
+||d-load.org^$domain=2ch-c.net|get2ch.net
 ||2ch-c.net/mgs/
 2ch-c.net##.cdt_wrapper
 2ch-c.net##a[href="mgs/mgs.php"]

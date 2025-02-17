@@ -1,13 +1,13 @@
-! Checksum: PomqUvkRDfdjCoXC6ta5sw
+! Checksum: TgtJSMVTqhGoU3vEkt3TyA
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.47
-! TimeUpdated: 2025-02-13T09:01:56+00:00
+! Version: 2.0.20.48
+! TimeUpdated: 2025-02-14T05:01:38+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0213.2
+! OriginalVersion: 2025.0214.1
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -659,8 +659,8 @@
 ||shopapi.interpark.com/advertisement/
 ||shopping.interpark.com/resources/js/plugin/powerLinkLoad.js
 ||openimage.interpark.com/dia/images/
-||hash.kr/images/main/*_banner
-||wiki.hash.kr/images/thumb/e/ef/
+||wiki1.kr/images/main/*_banner
+||wiki1.kr/images/thumb/e/ef/
 ||ruliweb.com/banneriframe
 ||forwarder.kr/data/file/banner/
 /^https?:\/\/5l\.co\.kr\/img\/[0-9A-z]+_[0-9]+X[0-9]+\./$domain=5l.co.kr
@@ -1577,7 +1577,7 @@ namechart.kr##.container ~ .border-t:has(ins.adsbygoogle)
 dogdrip.net##.board-list .list > li:has(> #dogdripPowerLink)
 m.search.naver.com##.square_tile_area .tile_area > .tile_list:has(._ad_icon)
 m.search.naver.com##.square_tile_area .tile_area > ._ad
-m.search.naver.com##li:is([data-nmb_hpl-doc-id*="_nad-"], [data-loc_plce-doc-id*="_nad-"], [data-slog-content*=":nad-"])
+m.search.naver.com##li:is([data-nmb_hpl-doc-id*="_nad-"], [data-loc_plce-doc-id*="_nad-"], [data-slog-content*=":nad-"], [data-rbp_lpa-doc-id*="nad-"])
 search.naver.com###sub_pack > .brand_new_ui.searching_view
 url.kr##body > header ~ .py-4 ~ .container:has(~  .mt-5)
 url.kr##.alert-danger ~ .container
@@ -1852,7 +1852,7 @@ shopping.interpark.com##.AdvertisingList
 shopping.interpark.com###btnlist > #listChoiceScope
 shopping.interpark.com##.productSortingList > .choice
 shopping.interpark.com##.productListWrap > #serviceKeywordId
-hash.kr##table[border="0"] > tbody > tr > td:not(td > div:not(div.noresize) + b > a:not([target="_blank"]))
+wiki1.kr##table:has(.noresize img[alt*="배너"])
 mlbpark.donga.com##.left_cont > div[style^="width:"]
 ruliweb.com##.adrr
 forwarder.kr###aside > div[style^="background-color:"]
@@ -2297,7 +2297,7 @@ m.mimint.co.kr,m.dailian.co.kr,uwayapply.com,ypbooks.co.kr##div[id$="Banner"]
 ypbooks.co.kr##div[style]#cenArea > .today
 lawtalknews.co.kr##.tdn-inventory
 www.tmon.co.kr##ul#_dealListContainer.list > li.item.type_admon[data-maincategoryno]
-wiki.hash.kr##.wkbn_bk.tp
+wiki1.kr##.wkbn_bk.tp
 m.eye.seoul.co.kr,m.seoul.co.kr###Article > .Line_gray ~ div[style]:not([class]):not([id])
 m.fpn119.co.kr###top_src > div[style]
 fpn119.co.kr###r_aside > center > .bn
@@ -2364,8 +2364,8 @@ cmobile.g-enews.com,m.g-enews.com##.mwrap > div[style]:not([class])
 cmobile.g-enews.com,asiatime.co.kr,m.g-enews.com##div[class*="AD"]
 hyundaenews.com##a[href^="/ad_link.php?"]
 quasarplay.com##[class^="img_wrapper"]
-hash.kr##div[class^="bann_"]
-hash.kr##div[class^="bnn_"]
+wiki1.kr##div[class^="bann_"]
+wiki1.kr##div[class^="bnn_"]
 all-mice.co.kr###main_visual
 hotword.site,g-enews.com,cgv.co.kr##div[class$="ad"][style]
 cgv.co.kr##div[id$="_PlaceHolderContent_divMovieSelection_wrap"][class]

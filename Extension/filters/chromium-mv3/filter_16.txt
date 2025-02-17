@@ -1,8 +1,8 @@
-! Checksum: oT2TNsfyis9SZFalgqB7Kw
+! Checksum: c+L4K6V6TvNmvvDW3TosiQ
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.50.20
-! TimeUpdated: 2025-02-13T21:38:38+00:00
+! Version: 2.0.50.27
+! TimeUpdated: 2025-02-15T21:37:47+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -865,6 +865,14 @@ $xmlhttprequest,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com
 !
 !
 !
+ouedkniss.com##.promo-loader:has(> .o-link + .promo-skeleton-loader)
+ouedkniss.com##.__sidebar .promo-loader > .promo-skeleton-loader:empty
+ouedkniss.com##.__sidebar .promo-loader:has(> .promo-skeleton-loader:only-child)
+ouedkniss.com##.o-section-heading:has(+ .promo-loader > .o-link + .promo-skeleton-loader)
+ouedkniss.com##.promo-loader:has(> .o-link > a[href^="https://okn.is/"] > picture > source)
+ouedkniss.com##.o-section-heading:has(+ .promo-loader > .o-link > a[href^="https://okn.is/"] > picture > source)
+ouedkniss.com#$#html.v-overlay-scroll-blocked { position: static !important; }
+ouedkniss.com#$#body > .v-overlay-container:has(> div[aria-label="Interstitiel"]) { display: none !important; }
 actu.fr##.ac-embed--dailymotion
 senpai-stream.net#$#div[x-show="!cf_turnstile_response"] { display: none !important; }
 senpai-stream.net#$#div[wire\:click="watching"] { display: flex !important; }
@@ -1629,6 +1637,8 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198592
+ouedkniss.com#@?#.v-container:has(.o-section-heading:contains(/Ad|Publicité|Sponsored|Sponsorisées|Stores à la une|إعلان|إعلانات في المقدمة|متاجر في المقدمة/))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193329
 $script,third-party,domain=veev.to,badfilter
 $third-party,xmlhttprequest,domain=veev.to,badfilter
@@ -4574,6 +4584,7 @@ _build=iclick-$popup
 ||ablazesubconsciousadulate.com^
 ||ablecheap.com^
 ||ablyglossmartyr.com^
+||abmagbychan.com^
 ||abnegateexcavator.com^
 ||abnormalearphones.com^
 ||abnormalrebel.com^
@@ -4854,6 +4865,7 @@ _build=iclick-$popup
 ||airsnowking.live^
 ||aiservice.vn^
 ||aisleovershoe.com^
+||aitarsou.com^
 ||aitchdiets.click^
 ||aitraykui.xyz^
 ||aitsouty.top^
@@ -4865,6 +4877,7 @@ _build=iclick-$popup
 ||ajjkmoyjloew.top^
 ||ajjkmozrlqew.top^
 ||ajsyxphfpr.com^
+||akdigolema.com^
 ||akinwrecking.com^
 ||akjoyjkjbaqam.top^
 ||akjoyjkrwalaa.top^
@@ -5054,6 +5067,7 @@ _build=iclick-$popup
 ||aozoiekopoaka.shop^
 ||apartgamble.com^
 ||apartmentsellerprotest.com^
+||apauzauxauls.net^
 ||apeletoxgate.top^
 ||apeobservedoverlook.com^
 ||apercusdimly.com^
@@ -5115,6 +5129,7 @@ _build=iclick-$popup
 ||arenitezill.com^
 ||arfobkorfa.com^
 ||argondenial.com^
+||argrowlitheor.com^
 ||ariessifts.click^
 ||arioiundated.com^
 ||arithmeticrobust.com^
@@ -5156,6 +5171,7 @@ _build=iclick-$popup
 ||assneaselchan.com^
 ||assumeditch.com^
 ||assurancedangerous.com^
+||astjigglypuffchan.com^
 ||astonishing-service.com^
 ||astylararsines.com^
 ||atadsoalsuget.net^
@@ -5184,6 +5200,7 @@ _build=iclick-$popup
 ||aughoomsoushy.com^
 ||augraisto.com^
 ||augrezoa.net^
+||aukroaze.xyz^
 ||auntresodamid.com^
 ||auphawhu.net^
 ||auptefee.net^
@@ -5193,12 +5210,14 @@ _build=iclick-$popup
 ||authoacmou.com^
 ||authoritativepartedusher.com^
 ||authorsradius.com^
+||autigexistoafie.net^
 ||automaticdrown.com^
 ||automatizuj.cz^
 ||autopsyextendedyou.com^
 ||autopsyjam.com^
 ||autopsytan.com^
 ||autorekrb.bid^
+||auxissouckie.net^
 ||avehistoric.com^
 ||avehospitablestrangers.com^
 ||avelozpranky.click^
@@ -5253,6 +5272,7 @@ _build=iclick-$popup
 ||bafflecouriernoble.com^
 ||baggydistribution.com^
 ||baihaimauve.net^
+||baishaip.net^
 ||baitdyed.com^
 ||baiwhoavita.net^
 ||bakeryflowerbed.com^
@@ -5279,6 +5299,7 @@ _build=iclick-$popup
 ||baseearsh.com^
 ||basereflect.com^
 ||basetts.com^
+||batchazee.net^
 ||bathfoot.com^
 ||bauderylysines.com^
 ||bawbeescrolly.shop^
@@ -5304,6 +5325,7 @@ _build=iclick-$popup
 ||beerenslavearena.com^
 ||beergeneralization.com^
 ||befoulsusaunce.click^
+||begengaron.com^
 ||begetshowder.shop^
 ||beggingparagraph.com^
 ||beguessbents.com^
@@ -5366,6 +5388,7 @@ _build=iclick-$popup
 ||biroacitups.net^
 ||birthdependentmillennium.com^
 ||bitonlyana.live^
+||bixoabsoams.com^
 ||bjyc6868.com^
 ||bkrkv.com^
 ||bladdersruinousalternative.com^
@@ -5392,6 +5415,7 @@ _build=iclick-$popup
 ||bluishalmosterror.com^
 ||blukavsup.online^
 ||blunderfluffy.com^
+||blushingbackup.com^
 ||blusterflintbig.com^
 ||blusterhawspontaneous.com^
 ||blwyruirj.xyz^
@@ -5417,6 +5441,7 @@ _build=iclick-$popup
 ||bookwormtiger.com^
 ||boomarmoryscattered.com^
 ||borascafaconne.click^
+||borghjism.com^
 ||bosscrystudious.com^
 ||bosselinorrummage.com^
 ||bossymassive.com^
@@ -5539,6 +5564,7 @@ _build=iclick-$popup
 ||cablepaddle.com^
 ||caesarporch.com^
 ||caicaipoop.com^
+||caicaulaip.com^
 ||cakesdenyconventional.com^
 ||cakesinventory.com^
 ||cakiestfeted.top^
@@ -5580,6 +5606,7 @@ _build=iclick-$popup
 ||cathyimemediate.com^
 ||catwoodflewit.click^
 ||causingalapa.com^
+||cawauwhod.top^
 ||cbbvi.com^
 ||cc5c5a5c56.com^
 ||cdb670d960.com^
@@ -5594,6 +5621,7 @@ _build=iclick-$popup
 ||cedeimprovise.com^
 ||ceechuwaukah.com^
 ||ceehipsy.com^
+||ceesauchoodaph.net^
 ||ceewhooho.net^
 ||celaenomash.com^
 ||celeminmorally.shop^
@@ -5627,6 +5655,7 @@ _build=iclick-$popup
 ||chaxensa.net^
 ||checkmymedia.biz^
 ||cheesedrabat.shop^
+||chertouz.net^
 ||chetsal.com^
 ||chetsoamta.net^
 ||chichblunder.shop^
@@ -5648,6 +5677,7 @@ _build=iclick-$popup
 ||chottsunmarry.com^
 ||choubsebsu.com^
 ||chougail.net^
+||choumoltily.net^
 ||choutikie.net^
 ||chozeers.xyz^
 ||chudaids.com^
@@ -5758,6 +5788,7 @@ _build=iclick-$popup
 ||curvedheldideal.com^
 ||cxmolk.com^
 ||cyathijozy.shop^
+||cystspingo.shop^
 ||d0a2e8bccf.com^
 ||d0e564588b.com^
 ||d0e7d68ceb.com^
@@ -5779,8 +5810,10 @@ _build=iclick-$popup
 ||da5ac5f203.com^
 ||dad524dd40.com^
 ||dahkexes.com^
+||daichukoah.net^
 ||daicutha.net^
 ||dailycaller.com^
+||daiwhesho.com^
 ||dalethsplicae.website^
 ||dalita.org^
 ||damageddistance.com^
@@ -5797,6 +5830,7 @@ _build=iclick-$popup
 ||datingllfes.com^
 ||datlnglife.net^
 ||datlngllfes.net^
+||daugrugli.net^
 ||davielyedith.com^
 ||dazzlingdelay.com^
 ||dazzlinggain.com^
@@ -5917,6 +5951,7 @@ _build=iclick-$popup
 ||dollinwurleys.com^
 ||domewtwotor.com^
 ||donfailrank.live^
+||dongeelrajak.net^
 ||doodlerrebuked.shop^
 ||doordishow.live^
 ||dornpush.com^
@@ -5999,10 +6034,12 @@ _build=iclick-$popup
 ||eeboazurg.net^
 ||eechodsoamt.net^
 ||eecmauks.net^
+||eedsiwhussiy.net^
 ||eemgl.com^
 ||eepholseeb.net^
 ||eetazicmee.net^
 ||eetsooltaihob.net^
+||eewodromti.net^
 ||eeyuchkookier.com^
 ||ef04c43935.com^
 ||ef1dd1776c.com^
@@ -6037,6 +6074,7 @@ _build=iclick-$popup
 ||enviousthread.com^
 ||enzymescapitan.click^
 ||eonads.com^
+||ephraimguntub.com^
 ||epicsambari.click^
 ||equaleddunair.click^
 ||eraidaigoumt.net^
@@ -6093,6 +6131,7 @@ _build=iclick-$popup
 ||falseframe.com^
 ||famitaa.com^
 ||fancifuidates.com^
+||faphomtotapt.com^
 ||farawayinstallation.com^
 ||farbankthy.live^
 ||farflung-switch.com^
@@ -6102,6 +6141,7 @@ _build=iclick-$popup
 ||fastlycdn.com^
 ||fat-flex.ru^
 ||fatemedflat.live^
+||faucaipheeg.net^
 ||faufainive.com^
 ||favorbort.guru^
 ||favousjanapan.top^
@@ -6139,6 +6179,7 @@ _build=iclick-$popup
 ||filespicy.com^
 ||fillmapmovepea.live^
 ||filmoljupci.com^
+||fimenoubsaud.net^
 ||financcesurv.com^
 ||findyouramour.com^
 ||findyourhalf.online^
@@ -6164,9 +6205,11 @@ _build=iclick-$popup
 ||focusporn.com^
 ||follripup.com^
 ||fondonberake.com^
+||forabomasnowan.com^
 ||forducklettr.com^
 ||forgivenessdaresuck.com^
 ||formalhood.com^
+||forsceptileon.com^
 ||forstarlyor.com^
 ||fortiesgaudy.top^
 ||foundtr.com^
@@ -6258,9 +6301,12 @@ _build=iclick-$popup
 ||glaiweer.xyz^
 ||glashanburg.com^
 ||gleemahortus.com^
+||gleergeessoos.net^
 ||gleetresis.com^
 ||gliceebe.xyz^
+||gloacoogeegrou.net^
 ||gloghipusto.xyz^
+||gloochie.com^
 ||glooghalty.net^
 ||gloupa.com^
 ||gloxoussoogy.net^
@@ -6295,6 +6341,8 @@ _build=iclick-$popup
 ||granddadgigwarehouse.com^
 ||grauptogaimp.net^
 ||greeckoamseebo.net^
+||greelsadrir.net^
+||greelseesse.net^
 ||greenbluefrog.click^
 ||greengaming.de^
 ||greesseeghoas.net^
@@ -6322,6 +6370,7 @@ _build=iclick-$popup
 ||gruhodiksaipt.net^
 ||grujeeroowie.com^
 ||grurducuze.com^
+||grutcheecolr.net^
 ||grwtyolb.org^
 ||grytjbjdyqcahmy.xyz^
 ||gshopuchcom.xyz^
@@ -6394,6 +6443,7 @@ _build=iclick-$popup
 ||hermaturse.com^
 ||heukpiroot.com^
 ||hhsp2.com^
+||hiltanseen.net^
 ||himselve.info^
 ||hipercontas.com.br^
 ||hipnoticrec.biz^
@@ -6411,6 +6461,7 @@ _build=iclick-$popup
 ||homyanus.com^
 ||honkoutsing.com^
 ||hontestmere.live^
+||hooglidi.net^
 ||hooligapps.com^
 ||hoopoesredone.com^
 ||hooshoushach.com^
@@ -6520,6 +6571,7 @@ _build=iclick-$popup
 ||inyoketuber.com^
 ||iodinsbezette.com^
 ||iodolruddock.com^
+||ionlylove.net^
 ||ionlyloves.com^
 ||iorbcqjykdwiji.com^
 ||iowanseck.com^
@@ -6551,6 +6603,7 @@ _build=iclick-$popup
 ||jacquieetmichel-contacts.com^
 ||jaifoptafoog.com^
 ||jailabridge.com^
+||jaimirozadair.net^
 ||jalbcmc.click^
 ||jalopymisly.click^
 ||jambosaettled.click^
@@ -6582,6 +6635,8 @@ _build=iclick-$popup
 ||joindetox.info^
 ||joogaipseed.net^
 ||jooneetak.net^
+||joothasofacauwu.net^
+||jostegroossu.net^
 ||jotchidoun.net^
 ||jotpoolwarren.com^
 ||jpwbvlensjmp.xyz^
@@ -6596,8 +6651,10 @@ _build=iclick-$popup
 ||juicyads.rocks^
 ||julyhadchose.com^
 ||jumpers.mobi^
+||juponrerope.com^
 ||justenantrum.com^
 ||justpush.biz^
+||jxbqurpezx.com^
 ||kadam.net^
 ||kadrireeziz.net^
 ||kadxin.net^
@@ -6625,6 +6682,7 @@ _build=iclick-$popup
 ||koaptoah.net^
 ||kodmagic1.me^
 ||kombr.ru^
+||koocheepton.net^
 ||kookypeach.com^
 ||koophoogloophie.net^
 ||koosheew.com^
@@ -6634,6 +6692,8 @@ _build=iclick-$popup
 ||krhmerjhbsjng.xyz^
 ||kstream.xyz^
 ||kubsaishon.net^
+||kukidsaidree.com^
+||kuptaigroo.net^
 ||kurbashfactor.com^
 ||kvevv.com^
 ||kvhaaa.top^
@@ -6646,8 +6706,10 @@ _build=iclick-$popup
 ||lactolwant.com^
 ||ladenapp.com^
 ||lagbondhas.live^
+||laichegloavy.com^
 ||laichsisogony.com^
 ||laithauptaip.net^
+||laizoochey.com^
 ||lamourronline.com^
 ||landing-push.net^
 ||landlordmexicansole.com^
@@ -6672,6 +6734,7 @@ _build=iclick-$popup
 ||leafingcoitus.website^
 ||leechpremium.link^
 ||leetmenllew.com^
+||leezunikoohauh.net^
 ||leftishburgout.com^
 ||lend-rb.bid^
 ||lenzmx.com^
@@ -6721,9 +6784,11 @@ _build=iclick-$popup
 ||lousoozi.net^
 ||louthicoozit.net^
 ||loveafairs.net^
+||loveaflairs.com^
 ||lovedatee.com^
 ||lovedatng.com^
 ||loveeonline.com^
+||loveiswe.net^
 ||lovellydate.net^
 ||loveonlinee.com^
 ||loveonlliine.com^
@@ -6805,6 +6870,7 @@ _build=iclick-$popup
 ||meheartslove.com^
 ||mellowads.com^
 ||melovehere.com^
+||menthandurgen.com^
 ||menwinecop.live^
 ||mepirtedic.com^
 ||messard.com^
@@ -6867,10 +6933,12 @@ _build=iclick-$popup
 ||monetizze.com.br^
 ||moohoostoamie.net^
 ||moonlitturbots.com^
+||moopoachoarail.net^
 ||moopsazijop.com^
 ||moozeezak.net^
 ||morinavotarius.top^
 ||mors22.com^
+||mostazoaptoare.net^
 ||motivesbreastchopped.com^
 ||mousheen.net^
 ||movementshereafter.com^
@@ -6883,6 +6951,7 @@ _build=iclick-$popup
 ||muchadmiredin.info
 ||muddedcarboys.com^
 ||muellfrei.de^
+||muffled-active.com^
 ||mughaymil.site^
 ||multiphoo.com^
 ||multiupload.com^
@@ -6913,14 +6982,17 @@ _build=iclick-$popup
 ||n1g459ky7y.com^
 ||n1major.com^
 ||nablabee.com^
+||nachoomto.net^
 ||nahnoji.cz^
 ||naichootikie.com^
 ||nailumaihogo.com^
 ||naivetychelas.click^
+||namultoptoab.net^
 ||nannieslamaic.com^
 ||nanouwho.com^
 ||native.com^
 ||naufauzo.net^
+||naughtybureau.com^
 ||nauloapt.com^
 ||nauthaugroce.net^
 ||nawhaurgoas.com^
@@ -6967,6 +7039,7 @@ _build=iclick-$popup
 ||nogautssvjlh.com^
 ||noopsaithu.net^
 ||nopetsou.net^
+||noradown.bid^
 ||normalexchange.com^
 ||normour.com^
 ||noseculretab.xyz^
@@ -7001,6 +7074,7 @@ _build=iclick-$popup
 ||oacechoo.com^
 ||oadramezu.com^
 ||oadsalsauck.net^
+||oafoocmisa.net^
 ||oaghupha.xyz^
 ||oagnalsaftob.net^
 ||oakapsot.com^
@@ -7011,7 +7085,9 @@ _build=iclick-$popup
 ||oashoard.net^
 ||oasiticalgodon.com^
 ||oatchaudu.net^
+||oathoolroo.net^
 ||oavisailaimt.com^
+||oaweekoorsew.net^
 ||obeyroman.com^
 ||observationsolution10.com^
 ||observationsolution5.com^
@@ -7048,6 +7124,7 @@ _build=iclick-$popup
 ||ondate.xyz^
 ||onduskullr.com^
 ||onetypecdn.com^
+||onkirliaom.com^
 ||onlygamesforme.com^
 ||onlyneedtoreadnotebook.buzz^
 ||onmagbyan.com^
@@ -7058,7 +7135,9 @@ _build=iclick-$popup
 ||onwardclick.com^
 ||onxatutor.com^
 ||oofteonaft.work^
+||ooftilra.net^
 ||oohirdoadi.com^
+||oolsashasicho.net^
 ||oophaiwhemt.net^
 ||oophooptoa.net^
 ||oopsiksaicki.com^
@@ -7083,6 +7162,8 @@ _build=iclick-$popup
 ||ossreuniclusr.com^
 ||othersides.top^
 ||ouabecrib.com^
+||oucmaimsackool.net^
+||oucouksirt.com^
 ||oudrirginso.com^
 ||oultoheboalte.net^
 ||ourjunior.com^
@@ -7102,6 +7183,7 @@ _build=iclick-$popup
 ||oversnubbulltor.com^
 ||ovularlinkup.com^
 ||owhaptih.net^
+||owheezoatoaphoo.net^
 ||oxidsinertly.digital^
 ||ozjga.top^
 ||ozonerrebuoy.com^
@@ -7123,6 +7205,8 @@ _build=iclick-$popup
 ||parchicky.com^
 ||pardetheezan.com^
 ||parkaariosi.shop^
+||paroasse.xyz^
+||parsiheep.net^
 ||partanssear.com^
 ||pasheeheghie.net^
 ||pashmfordeal.com^
@@ -7146,13 +7230,17 @@ _build=iclick-$popup
 ||pertholin.com^
 ||petuneaffrap.click^
 ||pfanuqdrsvvw.xyz^
+||phaignothug.net^
 ||phaiksuwhy.net^
 ||phansefooda.net^
 ||pharteewhi.xyz^
 ||phegnauxoudsez.xyz^
 ||pheksousi.net^
 ||phenver.com^
+||phepaivezaukr.net^
 ||phimordap.net^
+||phithoophuly.net^
+||phoajoamampou.net^
 ||phognult.com^
 ||phomefoeker.info^
 ||phoptockaz.net^
@@ -7207,6 +7295,7 @@ _build=iclick-$popup
 ||poolfeecop.live^
 ||poomeecebe.net^
 ||poorgasillago.click^
+||poovichamowi.net^
 ||popcorntime.com.br^
 ||popetechs.com^
 ||popeyeraia.com^
@@ -7263,6 +7352,8 @@ _build=iclick-$popup
 ||psailsee.com^
 ||psaimpoop.net^
 ||psaunaishedroax.net^
+||psebsoumsuy.com^
+||pseeltaimpu.net^
 ||psegreew.net^
 ||pseleedrax.net^
 ||psizouns.com^
@@ -7275,6 +7366,7 @@ _build=iclick-$popup
 ||ptaizees.net^
 ||ptashoossagnewe.net^
 ||ptcong.com^
+||pteecengi.com^
 ||pteghoucmaub.com^
 ||ptephowoop.net^
 ||ptikodso.net^
@@ -7287,6 +7379,7 @@ _build=iclick-$popup
 ||ptooftouss.net^
 ||ptouchibsee.com^
 ||ptougliy.com^
+||ptuloagrou.net^
 ||ptumsess.com^
 ||puertojambs.com^
 ||pulquesfarinas.guru^
@@ -7331,6 +7424,7 @@ _build=iclick-$popup
 ||raisedcubera.guru^
 ||raivoabu.com^
 ||ralodithas.com^
+||raltauwilrehu.net^
 ||rambeercase.live^
 ||rambleconcernedscar.com^
 ||rambograntee.com^
@@ -7435,6 +7529,7 @@ _build=iclick-$popup
 ||romanceafairs.net^
 ||romanceafalr.net^
 ||romanceaffair.net^
+||romanceaffairs.com^
 ||romanceaffalr.com^
 ||romanceaffalrs.com^
 ||romancedale.com^
@@ -7461,7 +7556,9 @@ _build=iclick-$popup
 ||rottemuckna.com^
 ||roughbelligerency.com^
 ||rouillecpu.shop^
+||rousunfloraer.com^
 ||routinato.shop^
+||rouzebstrikaor.com^
 ||rsuuc.com^
 ||rtasnkonws.com^
 ||rtbanalytics.com^
@@ -7548,6 +7645,7 @@ _build=iclick-$popup
 ||sh.st^
 ||shacsda.name^
 ||shaiksuk.net^
+||shaishet.xyz^
 ||shalseey.com^
 ||sharkedmarque.com^
 ||shassheld.live^
@@ -7561,6 +7659,7 @@ _build=iclick-$popup
 ||shlnlngdate.com^
 ||shoagoup.net^
 ||shoagrauphee.net^
+||shoathofte.net^
 ||shoddy-review.com^
 ||shoftoussees.com^
 ||shohipsoalr.top^
@@ -7597,6 +7696,8 @@ _build=iclick-$popup
 ||skeesisoxime.com^
 ||skreelkowtows.shop^
 ||skymedia7.me^
+||slaitottawa.com^
+||slantlyvivda.shop^
 ||sledgedcooping.com^
 ||slftps.com^
 ||slideslive.at^
@@ -7636,6 +7737,7 @@ _build=iclick-$popup
 ||sorceryfalda.life^
 ||sorghumfranger.com^
 ||souffloutoven.digital^
+||sougoapha.com^
 ||sourcecode.pro^
 ||sourcefatcake.com^
 ||sovietcontaminate.com^
@@ -7669,6 +7771,7 @@ _build=iclick-$popup
 ||stablesunflower.com^
 ||staiderkha.com^
 ||staidlycaffoy.com^
+||staiwaich.net^
 ||staiwoob.xyz^
 ||stapespotherb.com^
 ||stardomcoit.com^
@@ -7722,6 +7825,7 @@ _build=iclick-$popup
 ||superbportal.life^
 ||supportxmr.com^
 ||surestisis.com^
+||surfcountor.com^
 ||surtul.life^
 ||sveto-sharik.ru^
 ||swardflawed.click^
@@ -8046,10 +8150,12 @@ _build=iclick-$popup
 ||wantmuchmorenews.com^
 ||wantsomenews.com^
 ||wantyoudate.net^
+||warypool.com^
 ||wateryinspection.com^
 ||watsaira.net^
 ||wbmppowvqrcfn.com^
 ||webazilla.com^
+||webbedfunding.com^
 ||webmaghome.com^
 ||webmine.cz^
 ||webmine.pro^
@@ -8084,6 +8190,7 @@ _build=iclick-$popup
 ||wheejooh.com^
 ||wheengesurrept.com^
 ||whegadry.com^
+||whehilru.com^
 ||wheputch.net^
 ||whimsrehash.com^
 ||whistdarking.com^
@@ -15869,7 +15976,7 @@ gmx.fr,lebonguide.com,online-image-editor.com##.add
 agroligne.com##.add-inner
 vinyculture.com##.addLink
 lejsl.com##.addPic
-actustar.com,antoineguilbert.fr,clubic.com,cnews.fr,cvya.dz,floriankarmen.com,footespagnol.fr,fourchette-et-bikini.fr,hentaihaven.org,hostinger.fr,huffingtonpost.fr,jeune-independant.net,jooble.org,ldlc.com,leparisien.fr,lephpfacile.com,lequipe.fr,oujdacity.net,over-blog.com,p30day.com,pokestrat.com,raje.fr,replay.fr,shemsfm.net,sortiesdvd.com,stars-portraits.com,supertoinette.com,televiseurs.net,tonmanga.com,universalis.fr,viamichelin.be,viamichelin.ch,viamichelin.com,viamichelin.fr,webstar-auto.com,webstar-electro.com##.ads
+actustar.com,antoineguilbert.fr,clubic.com,cnews.fr,cvya.dz,floriankarmen.com,footespagnol.fr,fourchette-et-bikini.fr,hentaihaven.org,hostinger.fr,huffingtonpost.fr,jeune-independant.net,jooble.org,ldlc.com,leparisien.fr,lephpfacile.com,lequipe.fr,motors-addict.com,oujdacity.net,over-blog.com,p30day.com,pokestrat.com,raje.fr,replay.fr,shemsfm.net,sortiesdvd.com,stars-portraits.com,supertoinette.com,televiseurs.net,tonmanga.com,universalis.fr,viamichelin.be,viamichelin.ch,viamichelin.com,viamichelin.fr,webstar-auto.com,webstar-electro.com##.ads
 fusac.fr,laposte.fr,lebonfap.com,lefigaro.fr,letagparfait.com,rajacasablanca.com##.adv
 frenchweb.fr##.adv-link
 fipradio.fr,francemusique.fr,girlsgogames.fr,jeu.fr,lesoir.be,lestrepublicain.com,midilibre.fr,monpetitforfait.com##.advert
@@ -17000,9 +17107,12 @@ wiflix-catalogue.com,wiflix-catalogue.com.bd,wiflix-catalogue.com.np,wiflix-cata
 ##iframe[style="border: 0; width: 970px; height: 110px;"]
 planetegrandesecoles.com##.elementor-element:has(picture.attachment-full.size-full)
 auchan.fr##.hp-banner:has(.hp-banner__message-sponsored)
+frandroid.com##.is-hidden-mobile:has([class^="Billboard"])
 zebulon.fr##.penci-feed:has(a[href*="/sponso-"])
+frandroid.com##.post-card:has(a[href^="https://native.humanoid.fr/"])
 fr.shopping.rakuten.com##.prd_side:has(.gtm_ads_caption)
 nocibe.fr##.product-grid-column:has(.product-tile__sponsored)
+frandroid.com##.sticky-content:has([class^="HalfpageAd"])
 20min.ch#?#.clusterTop:has(.teaser:has(h3:contains(Paid Post)))
 2ememain.be#?#.hz-Listing--list-item:has(.hz-Listing-priority:contains(Pub au top))
 fr.shopping.rakuten.com##[data-productid]:has([class^="style_sponsoredAds"])

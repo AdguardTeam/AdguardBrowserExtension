@@ -1,8 +1,8 @@
-! Checksum: 2APinw0P4qFMlnIkFaDLaQ
+! Checksum: v0jrOR6D2ii+U9tVCJmGeg
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.30.66
-! TimeUpdated: 2025-02-13T18:37:28+00:00
+! Version: 2.0.30.71
+! TimeUpdated: 2025-02-16T08:38:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -41,6 +41,12 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198300
+sq.jbr.co.jp##.l-banner
+sq.jbr.co.jp##.spt-library
+! https://github.com/AdguardTeam/AdguardFilters/issues/198389
+forbes.com#$##forbes-dv { display: none !important; }
+[$path=/\/sites/]forbes.com#%#//scriptlet('prevent-element-src-loading', 'script', 'cds.elements.video/a/player.hls')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196958
 ctvnews.ca##.b-alert-bar-wrapper-custom
 ! Google Search - AI Overview
@@ -4147,7 +4153,6 @@ support.microsoft.com##.ucsPromotionContainer
 ||techplay.jp/tp-images/ad/
 techplay.jp##.prBanner
 dot.asahi.com##.info
-dot.asahi.com##.leafs-pr-under
 123pan.com##.login-vip-banner
 nifty.com##.newsList > li > a[href^="https://setsuzoku.nifty.com/"]
 askona.ee###catalog > div.main-catalog-box-full-width
@@ -5605,7 +5610,6 @@ goldsilver.com##.carousel
 os1.ru#?#div[class^="grid-"] > div.cell:has(> div[class^="company-mark"])
 tempo.co##video[width="468"][height="60"]
 ||img.news.goo.ne.jp/image_proxy/resize/*/topics/*/s_banner/
-||image.infoseek.rakuten.co.jp/content/MNO_banner/MNO_PC_300x125_$domain=news.infoseek.co.jp
 ||script.softcube.com^$domain=foxtrot.com.ua
 getmailbird.com##.post-floating-banner
 digitimes.com.tw##.leader_board
@@ -6051,7 +6055,7 @@ brighteon.social#?#.sticky-inner-wrapper > .announcements:has(> .announcements__
 ! https://github.com/AdguardTeam/AdguardFilters/issues/174055
 vas3k.blog##.post-footer > a[href="/donate/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/172827
-igromania.ru##div[class^="AdFoxBannerFooter_footer"]
+kanobu.ru,igromania.ru##div[class^="AdFoxBannerFooter_footer"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/172791
 dtf.ru##div.view > div:has(> div[class][style] > a[href^="https://booster.osnova.io/a/"])
 dtf.ru##div.view > div.entry > div:has(> div[class][style] > a[href^="https://booster.osnova.io/a/"])
@@ -7811,6 +7815,8 @@ ficbook.net##.help-box
 ficbook.net##a[class^="global-banner"][href^="https://t.me/"]
 ficbook.net##.ficfan-banner
 !
+!+ NOT_OPTIMIZED
+dot.asahi.com##.leafs-pr-under
 !+ NOT_OPTIMIZED
 paperpaper.ru##.stk-post > div.stk-grid:has(> div[class] > a[href^="https://papersupport.ru/"])
 !+ NOT_OPTIMIZED

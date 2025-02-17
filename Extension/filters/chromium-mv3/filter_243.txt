@@ -1,13 +1,13 @@
-! Checksum: bKq3gCAsmEQCkGJUDn9GEQ
+! Checksum: JuAzAxjeXUOcLAhJFB6Hvg
 ! Title: Frellwit's Swedish Filter
 ! Description: Filter that aims to remove regional Swedish ads, tracking, social media, annoyances, sponsored articles etc.
-! Version: 2.0.20.79
-! TimeUpdated: 2025-02-13T09:02:07+00:00
+! Version: 2.0.20.81
+! TimeUpdated: 2025-02-15T09:01:57+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Frellwit's Swedish Filter
 ! Expires: 4 days
-! Last modified: 2025-02-13 07:13:33 CET
+! Last modified: 2025-02-15 07:31:25 CET
 ! Homepage: https://github.com/lassekongo83/Frellwits-filter-lists
 ! Description: A filter for uBlock Origin that aims to remove regional Swedish ads, tracking, annoyances, scams + badware, and unnecessary bloat.
 ! License: GPL3 - https://github.com/lassekongo83/Frellwits-filter-lists/blob/master/LICENSE
@@ -589,7 +589,8 @@ forvaltarforum.se#$?#:is(.topwidget, .video-banner) { remove: true; }
 fotbolldirekt.se,hockeysverige.se,innebandymagazinet.se,motivation.se,fiskejournalen.se,alba.nu,padeldirekt.se,formeldirekt.se,dagensopinion.se,golfing.se##.annons
 fotbolldirekt.se,innebandymagazinet.se,padeldirekt.se,formeldirekt.se##.Odds_Widget_Ad, .c-partners, div[class*="_panorama"], div[class*="_insider"]
 fotbollskanalen.se#?#div[class$="sponsortitle"]:upward(.desktop-side-widget)
-fotbollskanalen.se##.brand, .desktop-ad-web, a[href*="telia.se/privat/tv/sport"] img, .mobile-ad-web, .fbk-ad-container
+fotbollskanalen.se##.brand, .desktop-ad-web, a[href*="telia.se/privat/tv/sport"] img, .mobile-ad-web, .fbk-ad-container, a[href^="https://www.atg.se/"][target]
+fotbollskanalen.se##.news-list li:has(span[style="color:#6ab6ff"])
 fotbollskanalen.se##.notice:has(span[class$="sponsored"])
 fotbollskanalen.se#?#:is(.sponsored, .theme-news_sponsored_container):upward(.theme-news)
 fotbollsresultat.com##.fusion-flex-container:has(a[href*="casino"])
@@ -720,8 +721,8 @@ hemnet.se##:is(article, li):has([class*="SponsoredLabel"], .article-card__sponso
 hemnet.se##:is(div[class^="Carousel"], #top_listing):has(div[class^="PaidPlacementLabel"])
 hemtrevligt.se##div[id^="hj-"], div[id^="ik-"], #banner-container
 hemtrevligt.se,tidningenhalsa.se##.article:has(.annons)
-hifitorget.se##.billboard_container, .billboard-style
-hifitorget.se##.row[style^="min-height"]:has(.adsbygoogle, .billboard_container)
+hifitorget.se##.billboard_container, .billboard-style, a[href*="utm_"][target] img
+hifitorget.se##:is(.row[style^="min-height"], .row .h-100):has(.adsbygoogle, .billboard_container)
 hippson.se##.my-8:empty
 hippson.se##:is(.rounded-xl, .main-article-container):has(a[href="/sponsrad-artikel"])
 hitta.se##a[data-trackimp][target], .hitta-map .integration-txt, .section-details--alb, [class*="dummyAd"], [class*="StyledAdSlot"], [data-bind*="Ad"], div[class^="GraphicAd_"], [class*="adContainer"], [id*="_panorama"], [id*="_skyscraper"], div[style="min-height: 250px;"], div[data-track="displayplacering-customer"], a[data-test="boostAdLink"], div[class^="style_bannerContainer"], [data-track="click-promotion-banner"], div[class*="adWrapper"], div[class*="hittaAdContainer"]
@@ -2088,6 +2089,7 @@ zeromagazine.nu##div[id^="ads"]
 /google-universal-analytics$script
 /gpAnalytics$script
 /gplus.php$script,domain=fria.nu|stockholmsfria.se
+/growth-analytics$domain=mindoktor.se
 /gtagEventTracker.js
 /gtm-sokande.js$domain=antagning.se|universityadmissions.se
 /gtm-*.appspot.com
@@ -2144,7 +2146,6 @@ zeromagazine.nu##div[id^="ads"]
 /links/*casino*.$domain=emocore.se
 /live/radarmagazine.se.js
 /loada.forum.$script
-/load_ads.js$domain=koket.se
 /logger/logger?
 /logotyper/sponsorer-partners
 /logs/client$domain=swebbtv.se
@@ -2758,7 +2759,7 @@ zeromagazine.nu##div[id^="ads"]
 ||casinoutankonto.net^$third-party
 ||casono.se^$third-party
 ||ccpa.sp-prod.net^$domain=m3.se|pcforalla.se|macworld.se|computersweden.se
-||cdn-cookieyes.com^$domain=lokalti.se|jarnvagar.nu|senses.se|norrmejerier.se|temadagar.se|tekniknytt.se|nordigt.se|autonytt.se|vm-fotboll.se|kak.se|smhi.se|borattforum.se|mis.se|universitetslararen.se|em-fotboll.se|lakemedelsvarlden.se|samfalligheterna.se|husbilsplats.se|katerinamagasin.se|dagenslogistik.se|biostock.se|skellefteaworks.se|datormagazin.se|travnet.se|malarbok.nu|barn-filmer.se|matmenyer.se|sunnenytt.se|kristendate.se|hockeynews.se|swe3.se|spelbloggen.se|matinspo.se|trendenser.se|kattannonser.se|56kilo.se|horisontmagasin.se|automobilly.com|nordicmanufacturing.net|nationalekonomi.se|storynews.se
+||cdn-cookieyes.com^$domain=lokalti.se|jarnvagar.nu|senses.se|norrmejerier.se|temadagar.se|tekniknytt.se|nordigt.se|autonytt.se|vm-fotboll.se|kak.se|smhi.se|borattforum.se|mis.se|universitetslararen.se|em-fotboll.se|lakemedelsvarlden.se|samfalligheterna.se|husbilsplats.se|katerinamagasin.se|dagenslogistik.se|biostock.se|skellefteaworks.se|datormagazin.se|travnet.se|malarbok.nu|barn-filmer.se|matmenyer.se|sunnenytt.se|kristendate.se|hockeynews.se|swe3.se|spelbloggen.se|matinspo.se|trendenser.se|kattannonser.se|56kilo.se|horisontmagasin.se|automobilly.com|nordicmanufacturing.net|nationalekonomi.se|storynews.se|alltomhobby.se|upptackrattvik.se
 ||cdn.adt*/atag.js?$third-party
 ||cdn.adt*/jsTag?$third-party
 ||cdn.advisible.com/accl
@@ -3138,7 +3139,6 @@ zeromagazine.nu##div[id^="ads"]
 ||rabble-res.cloudinary.com^$third-party
 ||radio.se/iomm
 ||ramses.nu^$third-party
-||raygun.io^$domain=koket.se
 ||reaktion.se^$third-party
 ||recirculation.spot.im^$third-party
 ||reco.se/widget/analytics
@@ -3159,6 +3159,7 @@ zeromagazine.nu##div[id^="ads"]
 ||res.se/js/ad.js
 ||revrelations.com^$third-party
 ||richmediastudio.com^$third-party
+||richrelevance.com^$domain=koket.se
 ||riedta.com^$third-party
 ||routy.app^$third-party
 ||royapp.com^$third-party

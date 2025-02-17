@@ -1,8 +1,8 @@
-! Checksum: jijiVhGqOG7Uc8WhMAj5Mw
+! Checksum: l8CeI5Y+ijSwArYVh7+uFQ
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.54.98
-! TimeUpdated: 2025-02-12T14:40:32+00:00
+! Version: 2.0.54.99
+! TimeUpdated: 2025-02-14T11:43:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2125,8 +2125,9 @@ neredekal.com#?#.facility-list-item + div[class^="css-"]:has(> div[class^="css-"
 canlidoviz.com#?#.grid > div[class*="hidden-"]:has(div#right-video-banner)
 wanhaber.com#$?#.swiper-wrapper > div.swiper-slide:has(> a[title="advert"]) { remove: true; }
 timeturk.com#$?#.swiper-wrapper > div:has(> a > figure.manset-reklam) { remove: true; }
-haber7.com#$?#a[href^="https://www.haber7.com/advertorial/"].headline-slider-item { remove: true; }
-haber7.com#$?#.slick-dots > li:has(> a[href^="https://www.haber7.com/advertorial/"]) { remove: true; }
+haber7.com#%#//scriptlet('remove-attr', 'href', 'a[href^="https://www.haber7.com/advertorial/"].headline-slider-item')
+haber7.com#%#//scriptlet('remove-attr', 'href', '.slick-dots > li > a[href^="https://www.haber7.com/advertorial/"]')
+haber7.com##.slick-dots > li:has(> a:not([href]))
 medyabar.com#$?##s-spotmanset-dots > .row > li:has(> a[href="https://www.letstr.com/"]) { remove: true; }
 medyabar.com#$?##s-spotmanset-dots > .row > li:has(> a[href="https://www.dermansut.com.tr/"]) { remove: true; }
 cimri.com#?##cimri-product ~ section:has(> div[id^="adslot-"])
