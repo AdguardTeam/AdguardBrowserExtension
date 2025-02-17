@@ -20,10 +20,16 @@ import React, { forwardRef } from 'react';
 
 import classNames from 'classnames';
 
+import { Icon } from '../../../common/components/ui/Icon';
+
 import './search.pcss';
 
 export interface SearchProps extends React.ComponentPropsWithoutRef<'input'> {
-    controls: React.ReactNode;
+    /**
+     * Optional controls to be rendered inside the search input.
+     * If not provided, a default magnifying glass icon will be rendered.
+     */
+    controls?: React.ReactNode;
 }
 
 export const Search = forwardRef<HTMLInputElement, SearchProps>(({
@@ -42,7 +48,13 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
                 className={inputClasses}
                 {...inputProps}
             />
-            {controls}
+            {controls || (
+                <Icon
+                    id="#magnifying"
+                    classname="icon--24 icon--gray-default search__ico"
+                    aria-hidden="true"
+                />
+            )}
         </div>
     );
 });

@@ -78,7 +78,7 @@ const EventsSearch = observer(() => {
             placeholder={translator.getMessage('filtering_log_search_string')}
             onChange={changeHandler}
             aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
-            controls={value ? (
+            controls={value && (
                 <button
                     type="button"
                     className="button search__clear"
@@ -91,12 +91,6 @@ const EventsSearch = observer(() => {
                         aria-hidden="true"
                     />
                 </button>
-            ) : (
-                <Icon
-                    id="#magnifying"
-                    classname="icon--24 icon--gray-default search__ico"
-                    aria-hidden="true"
-                />
             )}
         />
     );
