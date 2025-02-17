@@ -17,11 +17,9 @@
  */
 import browser from 'webextension-polyfill';
 
-import {
-    BrowserStorage,
-    HybridStorage,
-    IDBStorage,
-} from '@adguard/tswebextension/core-storages';
+import { BrowserStorage } from './browser-storage';
+import { HybridStorage } from './hybrid-storage';
+import { IDBStorage } from './idb-storage';
 
 /**
  * Storage instance for accessing `browser.storage.local`.
