@@ -80,7 +80,7 @@ const EventsSearch = observer(() => {
                 onChange={changeHandler}
                 value={value}
                 autoComplete="off"
-                aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+K' : 'Ctrl+K'}
+                aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
             />
             {value ? (
                 <button
