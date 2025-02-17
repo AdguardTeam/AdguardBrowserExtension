@@ -53,7 +53,6 @@ export const Status = (props) => {
     const isModified = mode === StatusMode.MODIFIED;
     const areNetworkBadgesVisible = requestUrl && !isModified;
     const statusTooltipText = getStatusTitle(mode);
-    const statusCodeToShow = statusCode || '----';
 
     // This text is rendered only for Screen readers as summary of the status
     let requestStatusSummary = `${timeString}.`;
@@ -61,8 +60,8 @@ export const Status = (props) => {
     if (areNetworkBadgesVisible) {
         requestStatusSummary += ` ${translator.getMessage('filtering_log_tag_request_status')}: ${statusTooltipText}.`;
 
-        if (!isBlocked) {
-            requestStatusSummary += ` ${translator.getMessage('filtering_log_badge_tooltip_http_status_code')}: ${statusCodeToShow}.`;
+        if (!isBlocked && statusCode) {
+            requestStatusSummary += ` ${translator.getMessage('filtering_log_badge_tooltip_http_status_code')}: ${statusCode}.`;
         }
     }
 
@@ -76,9 +75,7 @@ export const Status = (props) => {
 
     return (
         <div className="status-wrapper">
-            <span className="sr-only">
-                {requestStatusSummary}
-            </span>
+            <span className="sr-only">{requestStatusSummary}</span>
             <div className="status" aria-hidden="true">
                 {/* Time string may have different width
                     Preventing layout shift with fixed value
@@ -113,7 +110,7 @@ export const Status = (props) => {
                             ) : (
                                 <Popover text={translator.getMessage('filtering_log_badge_tooltip_http_status_code')}>
                                     <div className={badgeClassNames}>
-                                        {statusCodeToShow}
+                                        {statusCode || '----'}
                                     </div>
                                 </Popover>
                             )}

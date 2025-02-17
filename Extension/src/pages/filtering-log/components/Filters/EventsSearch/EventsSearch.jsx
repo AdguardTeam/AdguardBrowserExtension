@@ -31,11 +31,11 @@ import { UserAgent } from '../../../../../common/user-agent';
 const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);
 
-    const inputRef = useRef(null);
-
     const changeHandler = (value) => {
         logStore.setEventsSearchValue(value);
     };
+
+    const inputRef = useRef(null);
 
     useEffect(() => {
         const input = inputRef.current;
@@ -61,11 +61,11 @@ const EventsSearch = observer(() => {
 
     return (
         <Search
-            ref={inputRef}
+            onChange={changeHandler}
             value={logStore.eventsSearchValue}
             placeholder={translator.getMessage('filtering_log_search_string')}
             aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
-            onChange={changeHandler}
+            ref={inputRef}
         />
     );
 });
