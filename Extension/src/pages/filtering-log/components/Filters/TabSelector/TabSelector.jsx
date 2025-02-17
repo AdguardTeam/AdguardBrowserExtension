@@ -236,7 +236,7 @@ const TabSelector = observer(() => {
                     aria-controls={LISTBOX_ID}
                     onChange={searchChangeHandler}
                     onFocus={handleClear}
-                    controls={(
+                    control={(
                         <button
                             type="button"
                             className="search__btn"

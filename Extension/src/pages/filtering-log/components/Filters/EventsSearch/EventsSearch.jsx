@@ -32,7 +32,10 @@ const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);
 
     const inputRef = useRef(null);
-    const value = logStore.eventsSearchValue;
+
+    const changeHandler = (value) => {
+        logStore.setEventsSearchValue(value);
+    };
 
     useEffect(() => {
         const input = inputRef.current;
@@ -56,17 +59,13 @@ const EventsSearch = observer(() => {
         };
     }, []);
 
-    const changeHandler = (value) => {
-        logStore.setEventsSearchValue(value);
-    };
-
     return (
         <Search
             ref={inputRef}
-            onChange={changeHandler}
-            value={value}
+            value={logStore.eventsSearchValue}
             placeholder={translator.getMessage('filtering_log_search_string')}
             aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
+            onChange={changeHandler}
         />
     );
 });

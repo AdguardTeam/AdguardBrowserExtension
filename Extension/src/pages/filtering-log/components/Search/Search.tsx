@@ -47,8 +47,8 @@ export interface SearchProps extends InputPropsWithoutOnChange {
 
 export const Search = forwardRef<HTMLInputElement, SearchProps>(({
     value,
-    control,
     className,
+    control,
     onChange,
     ...inputProps
 }, passedRef) => {
@@ -78,18 +78,20 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
         }
 
         if (value) {
-            <button
-                type="button"
-                className="button search__clear"
-                title={translator.getMessage('clear_button_title')}
-                onClick={handleClearClick}
-            >
-                <Icon
-                    id="#cross"
-                    classname="icon--24 icon--gray-default"
-                    aria-hidden="true"
-                />
-            </button>;
+            return (
+                <button
+                    type="button"
+                    className="button search__clear"
+                    title={translator.getMessage('clear_button_title')}
+                    onClick={handleClearClick}
+                >
+                    <Icon
+                        id="#cross"
+                        classname="icon--24 icon--gray-default"
+                        aria-hidden="true"
+                    />
+                </button>
+            );
         }
 
         return (
@@ -103,6 +105,7 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
 
     return (
         <div className="search">
+            {renderControl()}
             <input
                 ref={localRef}
                 type="text"
@@ -112,7 +115,6 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
                 className={inputClasses}
                 {...inputProps}
             />
-            {renderControl()}
         </div>
     );
 });
