@@ -28,7 +28,7 @@ import { UserAgent } from '../../../../../common/user-agent';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 
-export const EventsSearch = observer(() => {
+const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);
 
     const inputRef = useRef(null);
@@ -57,7 +57,7 @@ export const EventsSearch = observer(() => {
     }, []);
 
     const changeHandler = (e) => {
-        logStore.setEventsSearchValue(e.target.value);
+        logStore.setEventsSearchValue(e.currentTarget.value);
     };
 
     const handleClear = () => {
@@ -105,3 +105,5 @@ export const EventsSearch = observer(() => {
         </div>
     );
 });
+
+export { EventsSearch };
