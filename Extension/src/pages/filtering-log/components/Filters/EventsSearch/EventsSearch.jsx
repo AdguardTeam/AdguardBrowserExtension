@@ -26,7 +26,6 @@ import { observer } from 'mobx-react';
 import { rootStore } from '../../../stores/RootStore';
 import { translator } from '../../../../../common/translators/translator';
 import { Search } from '../../Search';
-import { Icon } from '../../../../common/components/ui/Icon';
 import { UserAgent } from '../../../../../common/user-agent';
 
 const EventsSearch = observer(() => {
@@ -57,41 +56,17 @@ const EventsSearch = observer(() => {
         };
     }, []);
 
-    const changeHandler = (e) => {
-        logStore.setEventsSearchValue(e.currentTarget.value);
-    };
-
-    const handleClearClick = () => {
-        const input = inputRef.current;
-        if (!input) {
-            return;
-        }
-
-        logStore.setEventsSearchValue('');
-        input.focus();
+    const changeHandler = (value) => {
+        logStore.setEventsSearchValue(value);
     };
 
     return (
         <Search
             ref={inputRef}
+            onChange={changeHandler}
             value={value}
             placeholder={translator.getMessage('filtering_log_search_string')}
-            onChange={changeHandler}
             aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
-            controls={value && (
-                <button
-                    type="button"
-                    className="button search__clear"
-                    title={translator.getMessage('clear_button_title')}
-                    onClick={handleClearClick}
-                >
-                    <Icon
-                        id="#cross"
-                        classname="icon--24 icon--gray-default"
-                        aria-hidden="true"
-                    />
-                </button>
-            )}
         />
     );
 });

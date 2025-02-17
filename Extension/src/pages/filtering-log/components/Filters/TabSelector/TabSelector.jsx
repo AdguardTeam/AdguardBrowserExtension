@@ -196,9 +196,9 @@ const TabSelector = observer(() => {
         });
     };
 
-    const searchChangeHandler = (e) => {
+    const searchChangeHandler = (value) => {
         setCurrentStep(0);
-        setSearchValue(e.currentTarget.value);
+        setSearchValue(value);
     };
 
     const handleClear = () => {
