@@ -49,6 +49,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocked counter on the popup updates for blocked requests from other tabs [#3050].
 - `$popup,third-party` modifiers cause document blocking [#3012].
 - Don't show lines for absent metadata when adding a custom filter [#3057].
+- Filtering log does not observe tab changes, openings, or closings.
+- Scriptlets and scripts are executed too late on website reload or navigation in MV2 [#2855].
+- Do not inject cosmetic rules into the Assistant frame in MV3.
 
 ### Removed
 
@@ -56,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- TODO: place correct last released version from master, i.e. v5.0.xxx -->
 [Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
+[#2855]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2855
 [#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
 [#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002

@@ -10,8 +10,7 @@ import {
     type MockInstance,
 } from 'vitest';
 
-import { HybridStorage } from '@adguard/tswebextension/core-storages';
-
+import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
 import { UpdateApi } from '../../../../Extension/src/background/api';
 import {
     mockLocalStorage,
@@ -148,7 +147,7 @@ describe('Update Api (without indexedDB)', () => {
 
             await UpdateApi.update(runInfo);
 
-            const settings = await storage.get();
+            const settings = await storage.get(null);
 
             // Some properties in the data are stored as strings, but we need to compare them as objects, not as strings
             expect(deepJsonParse(settings)).toStrictEqual(deepJsonParse(data.to));

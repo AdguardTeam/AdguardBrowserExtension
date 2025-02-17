@@ -35,12 +35,12 @@ import {
 
 import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import { engine } from '../engine';
 import { settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
-import { AntiBannerFiltersId } from '../../common/constants';
+import { AntiBannerFiltersId, NotifierType } from '../../common/constants';
 import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 
 export type FilteringEventRuleData = {
@@ -562,7 +562,7 @@ export class FilteringLogApi {
 
         this.tabsInfoMap.set(id, tabInfo);
 
-        listeners.notifyListeners(listeners.TabAdded, tabInfo);
+        notifier.notifyListeners(NotifierType.TabAdded, tabInfo);
     }
 
     /**
@@ -592,7 +592,7 @@ export class FilteringLogApi {
         tabInfo.title = title;
         tabInfo.isExtensionTab = isExtensionUrl(url);
 
-        listeners.notifyListeners(listeners.TabUpdate, tabInfo);
+        notifier.notifyListeners(NotifierType.TabUpdate, tabInfo);
     }
 
     /**
@@ -609,7 +609,7 @@ export class FilteringLogApi {
         const tabInfo = this.tabsInfoMap.get(id);
 
         if (tabInfo) {
-            listeners.notifyListeners(listeners.TabClose, tabInfo);
+            notifier.notifyListeners(NotifierType.TabClose, tabInfo);
         }
 
         this.tabsInfoMap.delete(id);
@@ -683,7 +683,7 @@ export class FilteringLogApi {
 
         if (tabInfo && !preserveLog) {
             tabInfo.filteringEvents = [];
-            listeners.notifyListeners(listeners.TabReset, tabInfo);
+            notifier.notifyListeners(NotifierType.TabReset, tabInfo);
         }
     }
 
@@ -711,9 +711,6 @@ export class FilteringLogApi {
             // don't remove first item, cause it's request to main frame
             tabInfo.filteringEvents.splice(1, 1);
         }
-
-        // TODO: Looks like not using. Maybe lost listener in refactoring.
-        listeners.notifyListeners(listeners.LogEventAdded, tabInfo, data);
     }
 
     /**
@@ -737,24 +734,23 @@ export class FilteringLogApi {
 
         let event = filteringEvents.find((e) => e.eventId === eventId);
 
-        if (event) {
-            if (data.requestRule && !event.requestRule?.appliedRuleText) {
-                data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
-            }
-
-            if (data.replaceRules) {
-                data.replaceRules = await this.applyRuleTextToRuleDataArray(data.replaceRules);
-            }
-
-            if (data.stealthAllowlistRules) {
-                data.stealthAllowlistRules = await this.applyRuleTextToRuleDataArray(data.stealthAllowlistRules);
-            }
-
-            event = Object.assign(event, data);
-
-            // TODO: Looks like not using. Maybe lost listener in refactoring.
-            listeners.notifyListeners(listeners.LogEventAdded, tabInfo, event);
+        if (!event) {
+            return;
         }
+
+        if (data.requestRule && !event.requestRule?.appliedRuleText) {
+            data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
+        }
+
+        if (data.replaceRules) {
+            data.replaceRules = await this.applyRuleTextToRuleDataArray(data.replaceRules);
+        }
+
+        if (data.stealthAllowlistRules) {
+            data.stealthAllowlistRules = await this.applyRuleTextToRuleDataArray(data.stealthAllowlistRules);
+        }
+
+        event = Object.assign(event, data);
     }
 
     /**
