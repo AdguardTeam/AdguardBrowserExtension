@@ -262,7 +262,7 @@ const Row = observer(({
             }
             {/* This cell is available only for screen readers to notify
                 users that they can open details of this log with keyboard. */}
-            <div role="cell" className="td sr-only">
+            <div role="cell" className="sr-only">
                 <button type="button" onClick={onClick}>
                     {translator.getMessage('filtering_table_open_details')}
                 </button>
@@ -589,11 +589,11 @@ const FilteringEvents = observer(() => {
 
     return (
         <div
-            role="grid"
+            role="table"
             className="filtering-log"
             aria-label={translator.getMessage('filtering_log_title')}
-            // Because table is virtualized, explicitly set the number of columns and rows
-            aria-colcount={columns.length}
+            // Set number of rows explicitly for screen readers, because table
+            // is virtualized and not all of the rows are rendered at the same time
             aria-rowcount={logStore.events.length}
         >
             <div
