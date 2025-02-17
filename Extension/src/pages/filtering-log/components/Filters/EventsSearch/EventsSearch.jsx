@@ -23,10 +23,11 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 
-import { translator } from '../../../../../common/translators/translator';
-import { UserAgent } from '../../../../../common/user-agent';
-import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
+import { translator } from '../../../../../common/translators/translator';
+import { Search } from '../../Search';
+import { Icon } from '../../../../common/components/ui/Icon';
+import { UserAgent } from '../../../../../common/user-agent';
 
 const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);
@@ -60,7 +61,7 @@ const EventsSearch = observer(() => {
         logStore.setEventsSearchValue(e.currentTarget.value);
     };
 
-    const handleClear = () => {
+    const handleClearClick = () => {
         const input = inputRef.current;
         if (!input) {
             return;
@@ -71,23 +72,18 @@ const EventsSearch = observer(() => {
     };
 
     return (
-        <div className="search">
-            <input
-                ref={inputRef}
-                type="text"
-                className="search__input"
-                placeholder={translator.getMessage('filtering_log_search_string')}
-                onChange={changeHandler}
-                value={value}
-                autoComplete="off"
-                aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
-            />
-            {value ? (
+        <Search
+            ref={inputRef}
+            value={value}
+            placeholder={translator.getMessage('filtering_log_search_string')}
+            onChange={changeHandler}
+            aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
+            controls={value ? (
                 <button
                     type="button"
                     className="button search__clear"
                     title={translator.getMessage('clear_button_title')}
-                    onClick={handleClear}
+                    onClick={handleClearClick}
                 >
                     <Icon
                         id="#cross"
@@ -102,7 +98,7 @@ const EventsSearch = observer(() => {
                     aria-hidden="true"
                 />
             )}
-        </div>
+        />
     );
 });
 

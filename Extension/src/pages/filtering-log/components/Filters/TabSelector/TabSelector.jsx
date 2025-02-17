@@ -16,11 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
-eslint-disable jsx-a11y/click-events-have-key-events,
-jsx-a11y/no-noninteractive-element-interactions
-*/
-
 import React, {
     useContext,
     useEffect,
@@ -38,6 +33,7 @@ import { rootStore } from '../../../stores/RootStore';
 import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
 import { useOutsideFocus } from '../../../../common/hooks/useOutsideFocus';
 import { useKeyDown } from '../../../../common/hooks/useKeyDown';
+import { Search } from '../../Search';
 
 import './tab-selector.pcss';
 
@@ -226,43 +222,40 @@ const TabSelector = observer(() => {
             ref={refSelector}
         >
             <div onFocus={onTabSelectorFocus}>
-                <div className="search">
-                    <input
-                        ref={searchInputRef}
-                        id={INPUT_ID}
-                        type="text"
-                        role="combobox"
-                        className="search__input"
-                        placeholder={LABEL}
-                        value={searchValue}
-                        // Take a not that `autoComplete` and `aria-autocomplete` are different attributes
-                        // `autoComplete` is for the browser to suggest the input value
-                        // `aria-autocomplete` is for the screen reader to announce that the input has a list of tabs
-                        autoComplete="off"
-                        aria-autocomplete="list"
-                        aria-expanded={selectIsOpen}
-                        aria-controls={LISTBOX_ID}
-                        onChange={searchChangeHandler}
-                        onFocus={handleClear}
-                    />
-                    <button
-                        type="button"
-                        className="search__btn"
-                        tabIndex={-1}
-                        aria-label={LABEL}
-                        aria-expanded={selectIsOpen}
-                        aria-controls={LISTBOX_ID}
-                    >
-                        <Icon
-                            id="#arrow-down"
-                            classname={cn(
-                                'icon--24 icon--gray-default search__ico',
-                                selectIsOpen ? 'search__arrow-up' : 'search__arrow-down',
-                            )}
-                            aria-hidden="true"
-                        />
-                    </button>
-                </div>
+                <Search
+                    ref={searchInputRef}
+                    id={INPUT_ID}
+                    role="combobox"
+                    value={searchValue}
+                    placeholder={LABEL}
+                    // Take a not that `autoComplete` and `aria-autocomplete` are different attributes
+                    // `autoComplete` is for the browser to suggest the input value
+                    // `aria-autocomplete` is for the screen reader to announce that the input has a list of tabs
+                    aria-autocomplete="list"
+                    aria-expanded={selectIsOpen}
+                    aria-controls={LISTBOX_ID}
+                    onChange={searchChangeHandler}
+                    onFocus={handleClear}
+                    controls={(
+                        <button
+                            type="button"
+                            className="search__btn"
+                            tabIndex={-1}
+                            aria-label={LABEL}
+                            aria-expanded={selectIsOpen}
+                            aria-controls={LISTBOX_ID}
+                        >
+                            <Icon
+                                id="#arrow-down"
+                                classname={cn(
+                                    'icon--24 icon--gray-default search__ico',
+                                    selectIsOpen ? 'search__arrow-up' : 'search__arrow-down',
+                                )}
+                                aria-hidden="true"
+                            />
+                        </button>
+                    )}
+                />
             </div>
             <div
                 ref={refResult}
