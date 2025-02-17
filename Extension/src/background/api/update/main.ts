@@ -21,8 +21,6 @@ import isUndefined from 'lodash-es/isUndefined';
 import isObject from 'lodash-es/isObject';
 import { trimEnd } from 'lodash-es';
 
-import { HybridStorage } from '@adguard/tswebextension/core-storages';
-
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
 import {
@@ -56,6 +54,7 @@ import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 import { PopupStatsCategories } from '../page-stats';
+import { HybridStorage } from '../../storages/hybrid-storage';
 
 import {
     FiltersStorage as FiltersStorageV1,

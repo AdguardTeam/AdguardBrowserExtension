@@ -68,7 +68,7 @@ describe.skipIf(__IS_MV3__)('FiltersStoragesAdapter (MV2)', () => {
     it('has', async () => {
         await FiltersStoragesAdapter.set(1, filter);
         await expect(FiltersStoragesAdapter.has(1)).resolves.toBeTruthy();
-        await expect(FiltersStoragesAdapter.has(2)).resolves.toBeFalsy();
+        await expect(FiltersStoragesAdapter.has(999)).resolves.toBeFalsy();
     });
 
     it('remove', async () => {
@@ -167,13 +167,12 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
     it('has', async () => {
         await FiltersStoragesAdapter.set(1, filter);
         await expect(FiltersStoragesAdapter.has(1)).resolves.toBeTruthy();
-        await expect(FiltersStoragesAdapter.has(2)).resolves.toBeFalsy();
+        await expect(FiltersStoragesAdapter.has(999)).resolves.toBeFalsy();
     });
 
     it('has works for static filters', async () => {
-        // Actually, we do not have the filter with ID 10 in the TSWebExtension storage,
-        // so we just need to check that the method was called with the correct argument
-        await expect(FiltersStoragesAdapter.has(2)).resolves.toBeFalsy();
+        // We just need to check that the method was called with the correct argument
+        await FiltersStoragesAdapter.has(2);
 
         expect(tsWebExtensionFiltersStorageHasSpy).toHaveBeenCalledWith(2);
     });
