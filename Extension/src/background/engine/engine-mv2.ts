@@ -28,7 +28,7 @@ import {
 
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import { FiltersStorage } from '../storages';
 import {
     FiltersApi,
@@ -40,6 +40,7 @@ import {
     filteringLogApi,
     CustomFilterApi,
 } from '../api';
+import { NotifierType } from '../../common/constants';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -89,7 +90,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
@@ -107,7 +108,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }

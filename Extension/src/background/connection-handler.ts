@@ -18,11 +18,15 @@
 import browser, { Runtime } from 'webextension-polyfill';
 
 import { KEEP_ALIVE_PORT_NAME } from '../common/constants';
-import { messageHasTypeAndDataFields, MessageType } from '../common/messages';
+import {
+    messageHasTypeAndDataFields,
+    MessageType,
+    type NotifyListenersMessage,
+} from '../common/messages';
 import { logger } from '../common/logger';
 import { Page } from '../pages/services/messenger';
 
-import { listeners } from './notifier';
+import { notifier } from './notifier';
 import { filteringLogApi } from './api';
 import { fullscreenUserRulesEditor } from './services';
 import { KeepAlive } from './keep-alive';
@@ -53,7 +57,7 @@ export class ConnectionHandler {
         port.onMessage.addListener((message) => {
             if (!messageHasTypeAndDataFields(message)) {
                 // eslint-disable-next-line max-len
-                logger.warn('Received message in ConnectionHandler.handleConnection has no type or data field: ', message);
+                logger.error('Received message in ConnectionHandler.handleConnection has no type or data field: ', message);
                 return;
             }
 
@@ -63,9 +67,13 @@ export class ConnectionHandler {
 
             const { data: { events } } = message;
 
-            listenerId = listeners.addSpecifiedListener(events, async (...args) => {
+            listenerId = notifier.addSpecifiedListener(events, async (...data) => {
                 try {
-                    port.postMessage({ type: MessageType.NotifyListeners, args });
+                    const message: NotifyListenersMessage = {
+                        type: MessageType.NotifyListeners,
+                        data,
+                    };
+                    port.postMessage(message);
                 } catch (e) {
                     logger.error('Failed to send message to the port due to an error:', e);
                 }
@@ -77,7 +85,7 @@ export class ConnectionHandler {
                 logger.debug('An error occurred on disconnect', browser.runtime.lastError);
             }
             ConnectionHandler.onPortDisconnection(port);
-            listeners.removeListener(listenerId);
+            notifier.removeListener(listenerId);
             logger.info(`Port: "${port.name}" disconnected`);
         });
     }

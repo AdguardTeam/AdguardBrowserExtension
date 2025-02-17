@@ -10,11 +10,13 @@
     "beta": "cross-env BUILD_ENV=beta tsx tools/bundle.ts",
     "release": "cross-env BUILD_ENV=release tsx tools/bundle.ts",
     "adguard-api": "cross-env BUILD_ENV=dev tsx tools/bundle.ts adguard-api",
-    "test": "mkdir -p tests-reports && cross-env MANIFEST_ENV=2 vitest run && cross-env MANIFEST_ENV=3 vitest run",
+    "test:mv2": "cross-env MANIFEST_ENV=2 vitest run",
+    "test:mv3": "cross-env MANIFEST_ENV=3 vitest run",
+    "test": "tsx tools/run-tests.ts",
     "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
     "locales": "tsx tools/locales.js",
     "resources": "tsx tools/resources.ts",
-    "resources:mv3": "pnpm add -D https://github.com/AdguardTeam/tsurlfilter/raw/6f4e1c026de36ba9d424cbc1e191a86c4cfd212d/packages/dnr-rulesets/adguard-dnr-rulesets.tgz && tsx tools/resources-mv3.ts",
+    "resources:mv3": "pnpm add -D https://github.com/AdguardTeam/tsurlfilter/raw/494becc192bbbcc12431af85e5758c1c217333a7/packages/dnr-rulesets/adguard-dnr-rulesets.tgz && tsx tools/resources-mv3.ts",
     "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
     "increment": "pnpm version patch --no-git-tag-version",
     "prepare": "husky install",
@@ -31,7 +33,7 @@
   "author": "adguard@adguard.com",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@adguard/dnr-rulesets": "https://github.com/AdguardTeam/tsurlfilter/raw/6f4e1c026de36ba9d424cbc1e191a86c4cfd212d/packages/dnr-rulesets/adguard-dnr-rulesets.tgz",
+    "@adguard/dnr-rulesets": "https://github.com/AdguardTeam/tsurlfilter/raw/494becc192bbbcc12431af85e5758c1c217333a7/packages/dnr-rulesets/adguard-dnr-rulesets.tgz",
     "@adguard/re2-wasm": "^1.2.0",
     "@types/chrome": "^0.0.268",
     "@types/crypto-js": "^4.1.1",
@@ -71,13 +73,13 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "execa": "^9.5.2",
     "fake-indexeddb": "^6.0.0",
     "filesize": "^10.1.2",
     "form-data": "^4.0.0",
     "fs-extra": "^10.1.0",
     "html-webpack-plugin": "^5.6.3",
     "husky": "^7.0.4",
-    "idb": "^8.0.2",
     "jsdom": "^25.0.1",
     "junit-report-builder": "^5.1.1",
     "lint-staged": "^13.2.1",
@@ -112,7 +114,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@adguard/tswebextension>@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/77d0db1b4a7d5e34c4c29186e5312fdfc6e18d8c/packages/tsurlfilter/tsurlfilter.tgz"
+      "@adguard/tswebextension>@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/b2459633394916300bce024390fc758c33f473a2/packages/tsurlfilter/tsurlfilter.tgz"
     }
   },
   "dependencies": {
@@ -121,8 +123,8 @@
     "@adguard/logger": "^1.1.1",
     "@adguard/scriptlets": "^2.1.4",
     "@adguard/translate": "^1.0.2",
-    "@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/77d0db1b4a7d5e34c4c29186e5312fdfc6e18d8c/packages/tsurlfilter/tsurlfilter.tgz",
-    "@adguard/tswebextension": "https://github.com/AdguardTeam/tsurlfilter/raw/77d0db1b4a7d5e34c4c29186e5312fdfc6e18d8c/packages/tswebextension/tswebextension.tgz",
+    "@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/b2459633394916300bce024390fc758c33f473a2/packages/tsurlfilter/tsurlfilter.tgz",
+    "@adguard/tswebextension": "https://github.com/AdguardTeam/tsurlfilter/raw/b2459633394916300bce024390fc758c33f473a2/packages/tswebextension/tswebextension.tgz",
     "@xstate/react": "^4.1.3",
     "ace-builds": "^1.17.0",
     "assert": "^2.0.0",
@@ -133,6 +135,7 @@
     "crypto-browserify": "^3.12.0",
     "crypto-js": "^4.2.0",
     "date-fns": "^2.29.3",
+    "idb": "^8.0.2",
     "js-beautify": "^1.14.7",
     "lodash-es": "^4.17.21",
     "lru-cache": "^11.0.2",
@@ -158,5 +161,6 @@
     "xstate": "^5.19.0",
     "zod": "^3.21.4",
     "zod-validation-error": "^3.4.0"
-  }
+  },
+  "packageManager": "pnpm@8.15.1+sha512.831cf4c5f8b8374af71521d4d153db49d7086de615c2af7cb5e9d7eb8ba630ddac46fea495d643e552ef2e68a3aa99a3e5e9fbee8696702967504df5c59cb273"
 }

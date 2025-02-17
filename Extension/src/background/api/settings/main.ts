@@ -55,9 +55,13 @@ import {
     AllowlistApi,
     annoyancesConsent,
 } from '../filters';
-import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
+import {
+    ADGUARD_SETTINGS_KEY,
+    AntiBannerFiltersId,
+    NotifierType,
+} from '../../../common/constants';
 import { settingsEvents } from '../../events';
-import { listeners } from '../../notifier';
+import { notifier } from '../../notifier';
 import { Unknown } from '../../../common/unknown';
 import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
@@ -115,7 +119,7 @@ export class SettingsApi {
         await settingsEvents.publishEvent(key, value);
 
         // legacy event mediator for frontend
-        listeners.notifyListeners(listeners.SettingUpdated, {
+        notifier.notifyListeners(NotifierType.SettingUpdated, {
             propertyName: key,
             propertyValue: value,
         });
