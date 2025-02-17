@@ -31,7 +31,7 @@ import { rootStore } from '../../../stores/RootStore';
 export const EventsSearch = observer(() => {
     const { logStore } = useContext(rootStore);
 
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef(null);
     const value = logStore.eventsSearchValue;
 
     useEffect(() => {
@@ -40,7 +40,7 @@ export const EventsSearch = observer(() => {
             return;
         }
 
-        const handleKeyDown = (e: KeyboardEvent) => {
+        const handleKeyDown = (e) => {
             const modifierKeyProperty = UserAgent.isMacOs ? 'metaKey' : 'ctrlKey';
 
             if (e[modifierKeyProperty] && e.code === 'KeyF') {
@@ -56,7 +56,7 @@ export const EventsSearch = observer(() => {
         };
     }, []);
 
-    const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const changeHandler = (e) => {
         logStore.setEventsSearchValue(e.target.value);
     };
 
