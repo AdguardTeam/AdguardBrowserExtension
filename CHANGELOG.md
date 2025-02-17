@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Don't show lines for absent metadata when adding a custom filter [#3057].
 - Filtering log does not observe tab changes, openings, or closings.
 - Scriptlets and scripts are executed too late on website reload or navigation in MV2 [#2855].
+- Do not inject cosmetic rules into the Assistant frame in MV3.
 
 ### Removed
 
