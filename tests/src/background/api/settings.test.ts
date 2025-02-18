@@ -23,6 +23,7 @@ import {
 import { App } from '../../../../Extension/src/background/app';
 import {
     ExtensionSpecificSettingsOption,
+    FiltersOption,
     RootOption,
     SettingOption,
 } from '../../../../Extension/src/background/schema';
@@ -39,6 +40,7 @@ import {
     mockLocalStorage,
     getSettingsV1,
     getExportedSettingsV2,
+    filterNameFixture,
 } from '../../../helpers';
 
 vi.mock('../../../../Extension/src/background/engine');
@@ -196,8 +198,10 @@ describe('Settings Api', () => {
 
             const importedSettingsString = await SettingsApi.export();
             // Fill up optional fields
-            // TODO: Uncomment this when we will return custom filters (AG-39385).
-            // userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+            // TODO: Remove this condition when we will return custom filters to MV3(AG-39385).
+            if (!__IS_MV3__) {
+                userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+            }
             expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
         }, EXTENDED_TIMEOUT_MS);
 

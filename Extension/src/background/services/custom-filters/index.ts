@@ -27,4 +27,5 @@
  *
  * By default, MV3 will be used.
  */
-export { CustomFiltersService } from 'custom-filters-service';
+// TODO: Uncomment this line when custom filters will be supported for MV3.
+// export { CustomFiltersService } from 'custom-filters-service';
