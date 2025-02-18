@@ -31,10 +31,18 @@ import {
     ForwardParams,
 } from '../../../common/forward';
 import { UrlUtils } from '../../utils/url';
-import { browserStorage, settingsStorage } from '../../storages';
+import {
+    browserStorage,
+    groupStateStorage,
+    settingsStorage,
+} from '../../storages';
 import { SettingOption } from '../../schema';
 import { BrowserUtils } from '../../utils/browser-utils';
-import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../../common/constants';
+import {
+    AntiBannerFiltersId,
+    AntibannerGroupsId,
+    FILTERING_LOG_WINDOW_STATE,
+} from '../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../common/api/extension';
 import { Prefs } from '../../prefs';
 import { CustomFilterApi, FiltersApi } from '../filters';
@@ -242,7 +250,7 @@ export class PagesApi {
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            product_type: 'Extension',
+            product_type: 'Ext',
             manifest_version: encodeURIComponent(manifestDetails.manifest_version),
             product_version: encodeURIComponent(manifestDetails.version),
             url: encodeURIComponent(siteUrl),
@@ -265,18 +273,18 @@ export class PagesApi {
             params.filters = encodeURIComponent(commonFilterIds.join('.'));
         }
 
-        // Ignoring custom filters since AG-39385.
-        // TODO: uncomment when custom filters will be supported again.
-        // const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
-        // if (isCustomFiltersEnabled) {
-        //     const customFilterUrls = CustomFilterApi.getFiltersData()
-        //         .filter(({ enabled }) => enabled)
-        //         .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+        const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
+        // Ignoring custom filters in MV3 since AG-39385.
+        // TODO: fix the condition when custom filters will be supported for MV3
+        if (isCustomFiltersEnabled && !__IS_MV3__) {
+            const customFilterUrls = CustomFilterApi.getFiltersData()
+                .filter(({ enabled }) => enabled)
+                .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
 
-        //     if (customFilterUrls.length > 0) {
-        //         params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
-        //     }
-        // }
+            if (customFilterUrls.length > 0) {
+                params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
+            }
+        }
 
         Object.assign(
             params,
