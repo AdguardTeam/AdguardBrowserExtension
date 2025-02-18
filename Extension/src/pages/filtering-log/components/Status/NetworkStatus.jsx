@@ -67,7 +67,7 @@ export const NetworkStatus = ({ method, statusCode, isThirdParty }) => {
                         </span>
                         <Popover text={thirdPartyTooltipText}>
                             <div className="tag tag--third_party tag--party tag--third_party--info" aria-hidden="true">
-                        3P
+                                3P
                             </div>
                         </Popover>
                     </div>
