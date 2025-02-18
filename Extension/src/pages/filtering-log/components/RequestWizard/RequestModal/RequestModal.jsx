@@ -42,7 +42,6 @@ import './request-modal.pcss';
 
 Modal.setAppElement('#root');
 
-// FIXME: Improve a11y
 const RequestModal = observer(() => {
     const { wizardStore } = useContext(rootStore);
     const onKeyUp = useCallback((e) => {
@@ -143,6 +142,7 @@ const RequestModal = observer(() => {
                 ref={dragBar}
                 className="request-modal__dragbar"
                 onMouseDown={mouseDownHandler}
+                aria-hidden="true"
             />
             {modalContent}
         </Modal>

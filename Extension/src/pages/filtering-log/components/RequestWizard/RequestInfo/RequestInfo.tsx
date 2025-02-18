@@ -482,6 +482,7 @@ const RequestInfo = observer(() => {
                         <Icon
                             id="#question"
                             classname="icon icon--24 icon--green-default"
+                            aria-hidden="true"
                         />
                     </Popover>
                 );
@@ -680,6 +681,7 @@ const RequestInfo = observer(() => {
                     <Icon
                         id="#cross"
                         classname="icon--24 icon--gray-default"
+                        aria-hidden="true"
                     />
                 </button>
                 <span className="request-modal__header">
