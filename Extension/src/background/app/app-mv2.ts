@@ -178,13 +178,13 @@ export class App {
         await UiApi.init();
 
         /**
-         * Injects content scripts into already open tabs.
+         * Injects content scripts into already opened tabs.
          *
          * Does injection when all requirements are met:
-         * - Statistics collection is disabled.
-         * - Content scripts have not been injected in the current session.
-         *
-         * This prevents conflicts from multiple `cssHitCounters` and avoids unnecessary injections.
+         * - Statistics collection is disabled - prevents conflicts from multiple
+         * `cssHitCounters`;
+         * - Content scripts have not been injected in the current session -
+         * avoids unnecessary injections.
          */
         if (
             SettingsApi.getSetting(SettingOption.DisableCollectHits)
