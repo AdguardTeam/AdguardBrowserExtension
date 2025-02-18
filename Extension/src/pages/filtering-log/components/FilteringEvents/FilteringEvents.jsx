@@ -300,17 +300,23 @@ const ColumnsContext = React.createContext({});
 const ColumnsProvider = ColumnsContext.Provider;
 
 const TableHeader = ({ style }) => {
-    const { columns } = useContext(ColumnsContext);
+    const { columns, isLogEventsEmpty } = useContext(ColumnsContext);
 
+    /**
+     * WAI ARIA attributes are hidden if the table is empty, this needed
+     * to properly announce FilteringEventsEmpty component, otherwise
+     * screen readers will ignore this block.
+     */
     return (
         <div
             role="row"
             className="thead"
             style={style}
+            aria-hidden={isLogEventsEmpty}
             // Set row index explicitly for screen readers, because table
             // is virtualized and not all of the rows are rendered at the same time.
             // Header row is always first row in the table (1-based index).
-            aria-rowindex={1}
+            aria-rowindex={isLogEventsEmpty ? undefined : 1}
         >
             <div className="tr">
                 {
@@ -364,6 +370,7 @@ const FilteringEventsRows = observer(({
     handleRowClick,
 }) => {
     const { events } = logStore;
+    const isLogEventsEmpty = logStore.events.length === 0;
 
     return (
         /**
@@ -372,7 +379,7 @@ const FilteringEventsRows = observer(({
          *
          * @see {@link https://github.com/bvaughn/react-window/issues/404}
          */
-        <ColumnsProvider value={{ columns }}>
+        <ColumnsProvider value={{ columns, isLogEventsEmpty }}>
             <AutoSizer>
                 {({
                     height,
@@ -404,6 +411,8 @@ const MIN_COLUMN_WIDTH = 50;
 
 const FilteringEvents = observer(() => {
     const { logStore } = useContext(rootStore);
+
+    const isLogEventsEmpty = logStore.events.length === 0;
 
     const tableRef = useRef(null);
 
@@ -597,15 +606,20 @@ const FilteringEvents = observer(() => {
 
     const columns = addMethods(columnsData);
 
+    /**
+     * WAI ARIA attributes are hidden if the table is empty, this needed
+     * to properly announce FilteringEventsEmpty component, otherwise
+     * screen readers will ignore this block.
+     */
     return (
         <div
-            role="table"
+            role={isLogEventsEmpty ? undefined : 'table'}
             className="filtering-log"
-            aria-label={translator.getMessage('filtering_log_title')}
+            aria-label={isLogEventsEmpty ? undefined : translator.getMessage('filtering_log_title')}
             // Set number of rows explicitly for screen readers, because table
             // is virtualized and not all of the rows are rendered at the same time.
             // Add 1 to the number of rows to include the header row.
-            aria-rowcount={logStore.events.length + 1}
+            aria-rowcount={isLogEventsEmpty ? undefined : logStore.events.length + 1}
         >
             <div
                 style={{ minWidth: `${minTableWidth}px` }}
