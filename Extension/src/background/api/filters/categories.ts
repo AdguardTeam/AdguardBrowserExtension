@@ -83,12 +83,16 @@ export class Categories {
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
-        const filters = Categories.getFilters().filter((f) => {
-            // Exclude Quick Fixes filter and custom filters from filters list
-            // TODO: remove this check when Quick Fixes Filter and custom filters will be supported for MV3 again
-            return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId
-                && !CustomFilterHelper.isCustomFilter(f.filterId);
-        });
+        let filters = Categories.getFilters();
+
+        // Exclude Quick Fixes filter and custom filters from filters list
+        // TODO: remove this check when Quick Fixes Filter and custom filters will be supported for MV3 again
+        if (__IS_MV3__) {
+            filters = filters.filter((f) => {
+                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId
+                    && !CustomFilterHelper.isCustomFilter(f.filterId);
+            });
+        }
 
         const categories = groups.map((group) => ({
             ...group,

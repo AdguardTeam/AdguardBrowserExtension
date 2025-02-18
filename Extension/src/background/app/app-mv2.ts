@@ -67,6 +67,7 @@ import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
+import { CustomFiltersService } from '../services/custom-filters/custom-filters-service-mv2';
 
 /**
  * Logs initialization times for debugging purposes.
@@ -219,8 +220,7 @@ export class App {
         await FiltersService.init();
 
         // Adds listeners specified for custom filters
-        // TODO: Uncomment this class when custom filters will be supported for MV3.
-        // CustomFiltersService.init();
+        CustomFiltersService.init();
 
         // Adds listeners for allowlist events
         AllowlistService.init();
