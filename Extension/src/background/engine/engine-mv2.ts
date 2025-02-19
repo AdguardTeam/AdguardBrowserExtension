@@ -38,7 +38,6 @@ import {
     DocumentBlockApi,
     network,
     filteringLogApi,
-    CustomFilterApi,
 } from '../api';
 import { NotifierType } from '../../common/constants';
 
@@ -123,37 +122,34 @@ export class Engine implements TsWebExtensionEngine {
 
         const filters: ConfigurationMV2['filters'] = [];
 
-        const tasks = enabledFilters
-            // TODO: Remove filtering when support of custom filters will be added back.
-            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId))
-            .map(async (filterId) => {
-                try {
-                    const [content, sourceMap] = await Promise.all([
-                        FiltersStorage.getFilterList(filterId),
-                        FiltersStorage.getSourceMap(filterId),
-                    ]);
+        const tasks = enabledFilters.map(async (filterId) => {
+            try {
+                const [content, sourceMap] = await Promise.all([
+                    FiltersStorage.getFilterList(filterId),
+                    FiltersStorage.getSourceMap(filterId),
+                ]);
 
-                    if (!content) {
-                        logger.error(`Failed to get filter ${filterId}`);
-                        return;
-                    }
-
-                    if (!sourceMap) {
-                        logger.warn(`Source map is not found for filter ${filterId}`);
-                    }
-
-                    const trusted = FiltersApi.isFilterTrusted(filterId);
-
-                    filters.push({
-                        filterId,
-                        content,
-                        trusted,
-                        sourceMap,
-                    });
-                } catch (e) {
-                    logger.error(`Failed to get filter ${filterId}`, e);
+                if (!content) {
+                    logger.error(`Failed to get filter ${filterId}`);
+                    return;
                 }
-            });
+
+                if (!sourceMap) {
+                    logger.warn(`Source map is not found for filter ${filterId}`);
+                }
+
+                const trusted = FiltersApi.isFilterTrusted(filterId);
+
+                filters.push({
+                    filterId,
+                    content,
+                    trusted,
+                    sourceMap,
+                });
+            } catch (e) {
+                logger.error(`Failed to get filter ${filterId}`, e);
+            }
+        });
 
         await Promise.all(tasks);
 
