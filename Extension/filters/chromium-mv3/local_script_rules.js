@@ -3092,6 +3092,27 @@ export const localScriptRules = {
             }
         }
     },
+    "(()=>{window.detectIncognito=()=>new Promise((e=>e({isPrivate:!0})));})();": {
+        uniqueId: "b8746b82569fc49e330a8e697f35c050",
+        func: () => {
+            try {
+                const e = "done";
+                if (Window.prototype.toString.b8746b82569fc49e330a8e697f35c050 !== e) {
+                    window.detectIncognito = () => new Promise((e => e({
+                        isPrivate: !0
+                    })));
+                    Object.defineProperty(Window.prototype.toString, "b8746b82569fc49e330a8e697f35c050", {
+                        value: e,
+                        enumerable: !1,
+                        writable: !1,
+                        configurable: !1
+                    });
+                }
+            } catch (e) {
+                console.error('Error executing AG js rule with uniqueId "b8746b82569fc49e330a8e697f35c050" due to: ' + e);
+            }
+        }
+    },
     "(()=>{window.AdscoreInit=function(ta,F){};})();": {
         uniqueId: "b45d84107955116514e169fdba5cb3cc",
         func: () => {

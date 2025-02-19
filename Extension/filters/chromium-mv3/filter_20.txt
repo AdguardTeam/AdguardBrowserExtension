@@ -1,8 +1,8 @@
-! Checksum: vOHOb3vxCreBcGkTFcnCIw
+! Checksum: TzOkrytuz7qfbS5hO3JpZw
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.19.10
-! TimeUpdated: 2025-02-13T12:41:29+00:00
+! Version: 2.0.19.18
+! TimeUpdated: 2025-02-18T16:38:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -57,6 +57,17 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+evroopt.by##a[href="/app-eplus/"]
+navitime.co.jp##a[href^="https://lp.koteihyo-cloud.navitime.co.jp"]
+navitime.co.jp##a[onclick*="app.adjust.com"]
+navitime.co.jp##.button:has(> a[onclick*="app.adjust.com"]:only-child)
+livedoor.com##.bg-mobile_app
+asahi.com##img[src^="/plasma/assets/Newsbnr_SP"]
+evroopt.by##div[id^="block-allWidthBanner-"]
+etsy.com##.wt-animated--slide-from-bottom
+etsy.com##.chrome-footer__app-link
+etsy.com#$#div[data-web2app-prompt] { display: none !important; }
+etsy.com#$#.wt-body-no-scroll { overflow: auto !important; position: unset !important; }
 11st.co.kr#$##banner-gnb { display: none !important; }
 11st.co.kr#%#//scriptlet('remove-class', 'header-fixed--banner', '#wrap')
 m.map.kakao.com###daumWrap > div.comm_layer
@@ -3278,26 +3289,6 @@ m.youtube.com#%#//scriptlet('trusted-click-element', '.ytm-bottom-sheet-overlay-
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178173
 ! TODO: use scriptlet when it will be added - https://github.com/AdguardTeam/Scriptlets/issues/426
 wear.jp#%#(()=>{try{"undefined"!=typeof sessionStorage&&sessionStorage.setItem('status_of_app_redirect_half_modal_on_coordinate_list','{"displayed":true}')}catch(e){}})();
-! https://github.com/AdguardTeam/AdguardFilters/issues/128317
-check24.de##.c24m-fallback-app-banner
-check24.de##.c24m-ls-ap
-check24.de##.c24AppSplash
-check24.de##.bottomSmartAppBanner
-check24.de#$##c24asle { display: none !important; }
-check24.de#$#.qa-splash-screen { display: none !important; }
-check24.de#$##splashScreenContainer { display: none !important; }
-check24.de#$#c24m-app-splash-banner { display: none !important; }
-check24.de#$#.tko-app-splash-banner { display: none !important; }
-check24.de#$#.u-cv--hidden { content-visibility: auto !important }
-check24.de#$#html > body[class] { overflow: auto !important; }
-check24.de#%#//scriptlet('set-cookie', 'app_promo_splash_screen_close', '1')
-check24.de#%#//scriptlet('set-cookie', 'c24FlugSplashApp', '1')
-check24.de#%#//scriptlet('set-cookie', 'appsplash', '1')
-check24.de#%#//scriptlet('set-cookie', 'dslsplash', '1')
-!+ NOT_OPTIMIZED
-check24.de#$#.c24m-asb { display: none !important; }
-!+ NOT_OPTIMIZED
-check24.de#$#.c24m-asb-visible { position: absolute !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171775
 !+ NOT_OPTIMIZED
 3sat.de#$#.smartbanner { display: none !important; }

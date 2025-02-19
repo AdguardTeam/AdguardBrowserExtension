@@ -1,13 +1,13 @@
-! Checksum: 6hTLe10qatqe9UPNM5QE5g
+! Checksum: oCt+NuC83Ckb2L8Jh7wEVQ
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.89
-! TimeUpdated: 2025-02-14T01:01:50+00:00
+! Version: 2.0.7.90
+! TimeUpdated: 2025-02-18T09:02:13+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! Last modified: 13February2025v5
+! Last modified: 17February2025v1
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -1262,6 +1262,10 @@ flashscore.app,flashscore.at,flashscore.bg,flashscore.biz,flashscore.ca,flashsco
 politiken.dk##.space-y-gutter > div:not([id])
 politiken.dk##section[class*=MegaboardAd i]
 denoffentlige.dk##.generic-widget:has([data-ad-unit-id])
+nordsoeposten.dk##.jeg_sticky_sidebar
+nordsoeposten.dk##.langbanner
+lastbilmagasinet.dk##.rotating-mowgli
+sonderborgnyt.dk###sidebar > section:has(> .add)
 ! — — — — — — — — —
 ! 🇳🇴: Oppføringer for minst 3 nettsteder
 ! 🇬🇧: Entries for at least 3 websites
@@ -1464,6 +1468,8 @@ _visittkortannonse_$image
 /annonser-vert.gif^
 ! https://www•motorhobby•no/no/events/arr-etter-type/item/6-stjordal-motorshow-trondheim-mai-2025-stjordal-motorshow-i-abrahallen (13/09/2024)
 .no/images/banners/$image
+! nordsoepostenDK (17/02/2025)
+.dk/wp-content/uploads/ap-plugin-upload^$image
 ! — — — — —
 ! 🇳🇴: Domenefokuserte blokkeringsoppføringer
 ! 🇳🇴🏞: Domenefokuserande bloknadsoppføringar
@@ -1710,6 +1716,7 @@ _1170x400.$domain=eyjafrettir.is,image,~third-party
 ||ukenr.no/bobs/iframe.php^$subdocument
 ||ugenr.dk/bobs/iframe.php^$subdocument
 ||cdplanet.no/images/previews/*_app_preview.png^
+||infohelgeland.no/banner^
 ! — — — — — — —
 ! 🇳🇴: Filtjener- eller nettstedsspesifikke oppføringer med kilder
 ! 🇳🇴🏞: Filtenar- eller nettstadsspesifikke oppføringar med kildar
@@ -1728,7 +1735,7 @@ _1170x400.$domain=eyjafrettir.is,image,~third-party
 ! building-supplyDK
 ||f.nordiskemedier.dk/banner^
 ! metalsupplyNO, licitationenDK
-/://f\.nordiskemedier\.dk/2[a-z0-9]{12,}\.(jpg|png|jpeg)/$third-party
+/^.*://f\.nordiskemedier\.dk/2[a-z0-9]{12,}\.(jpe?g|png)((\?|&).*)?$/$third-party
 ! viivillaNO (10/11/2020)
 ||bcm.interactives.dk/script/
 ! adressaNO (10/11/2020)
@@ -2059,6 +2066,8 @@ _980banner_
 ! politikenDK (08/02/2025)
 ://aj2*.online^$xmlhttprequest
 ://aj2*.bid^$xmlhttprequest
+! gatNO, drivaNO (18/02/2025)
+##div.gridnetboard
 ! — — — — — — —
 ! 🇳🇴: Oppføringer med spesielle omstendigheter
 ! 🇬🇧: Entries with special circumstances
