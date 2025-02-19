@@ -1,8 +1,8 @@
-! Checksum: +t0w7eADTQzgPXfZ4l+QtA
+! Checksum: uROG5yk9mdVqhPGwDDM7Aw
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.97.71
-! TimeUpdated: 2025-02-16T13:31:08+00:00
+! Version: 2.0.97.76
+! TimeUpdated: 2025-02-18T17:31:18+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -4168,6 +4168,7 @@ http://w7.ru^$third-party
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||auraodin.com^
 ||ssp.rutube.ru^
 ||media-advcycle.imgsmail.ru^
 ||sdk.kokocads.com^$third-party
@@ -5236,7 +5237,6 @@ forums.overclockers.ru#@##yandex_ad_1
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top##div[id^="jetta"]
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top###chess2day
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top###as2_script
-$cookie=/[0-9a-f]{32}/,domain=game4you.top|monna2.top|apad2.top|games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|rustorka.top|naylo.top|zannn.top|innal.top
 $removeheader=location,domain=zannn.top|innal.top
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top#%#//scriptlet('remove-node-text', 'script', '/ads_script|checkCookie|chess/')
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top#%#//scriptlet('trusted-set-cookie-reload', 'godbayadblock', 'godbayadblock')
@@ -7615,6 +7615,11 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+vtomske.ru##.sidebar > div:has(> div.sidebar_block > div.i-smi2)
+vtomske.ru#?#.mb-20:has(> div.container-md > h2:contains(Смотрите также))
+||fayllar1.ru/player/*roll*.xml
+||fayllar1.ru/catfish/
+asilmedia.org##.Catfish
 fastpic.org#%#//scriptlet('abort-current-inline-script', 'addEventListener', 'adManager')
 fastpic.org#%#//scriptlet('abort-on-property-read', 'exoNoExternalUI38djdkjDDJsio96')
 ||fastpic.org/view/$script
@@ -9913,6 +9918,8 @@ webmath.ru,roskomsvoboda.org##.promo-banner
 leninogorsk-rt.ru##div[id^="stickyAd"]
 leninogorsk-rt.ru##.sidebar__scroll > div.widget-any-content
 trovo.live##div[style="height: 110px; position: absolute;"]
+metaratings.ru##div[class^="Button_button"]:has(> a.js-seo)
+metaratings.ru##div[class^="BonusesItem"]
 metaratings.ru##div[class^="DefaultType_banner"]
 metaratings.ru##.header-bk
 metaratings.ru##a[class*="Header_headerPromo"]
@@ -18451,7 +18458,7 @@ vk.com,vk.ru###apps_ads_wrap
 vk.com,vk.ru###system_msg
 vk.com,vk.ru##div#left_ads
 vk.com,vk.ru##div[data-ad]
-! vk.com,vk.ru#%#//scriptlet('trusted-replace-xhr-response', '/banner:/g', '_banner:', '.php', 'true')
+vk.com,vk.ru#%#//scriptlet('trusted-replace-xhr-response', '/banner:/g', '_banner:', 'feed')
 ! vk.com,vk.ru###feed_rows > div[class="feed_row "] > div[class^="feed_repost-"]:has(div[class="wall_marked_as_ads"])
 ! vk.com,vk.ru##[class^="ads_ad_"]
 ! vk.com,vk.ru###page_wall_posts > div.post_marked_as_ads
@@ -18770,12 +18777,10 @@ forum.ixbt.com##.mainpage_table > tbody > tr > td[align="center"]
 ||ixbt.com/cgi-bin/banqs.cgi
 !
 ! sdamgia.ru
+sdamgia.ru#$#.menu > div[style^="height:"] { position: absolute !important; top: -9999px !important; }
+sdamgia.ru#$?#div[role="main"] > div[style]:has(> script:contains(blockId: 'R-A)) { position: absolute !important; top: -9999px !important; }
 sdamgia.ru#$?#main > div:has(> div > div > script:contains(blockId: 'R-A)) { position: absolute !important; top: -9999px !important; }
 sdamgia.ru#$?#div > aside > div:has(script:contains(blockId: 'R-A)) { position: absolute !important; top: -9999px !important; }
-sdamgia.ru##iframe[src*="sdamgia.ru/adv/"]
-sdamgia.ru##main > div:not([class]):has(> div > div > div[style] > iframe[src*="sdamgia.ru/adv/"])
-sdamgia.ru##main > div:not([class]):has(> div[class] > div > div > div[class^="r_"])
-sdamgia.ru##aside > div:not([class*=" "]):has(> div[style] > a[target="_blank"] > img)
 sdamgia.ru##a[target="_blank"] > img[src^="data:"]
 sdamgia.ru##.con_warper > div[class$="t_block"]
 !

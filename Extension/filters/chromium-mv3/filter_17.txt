@@ -1,8 +1,8 @@
-! Checksum: dNtRu44ZvRl39/Qxabt3CQ
+! Checksum: Oa0Oormsm97UeBMEuXQfLg
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.46
-! TimeUpdated: 2025-02-14T05:37:56+00:00
+! Version: 2.0.10.48
+! TimeUpdated: 2025-02-18T09:38:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -389,6 +389,12 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://kitbash3d.com
+||kitbash3d.com^$removeparam=campaign_id
+||kitbash3d.com^$removeparam=ad_id
+! ExpressVPN
+||expressvpn.com^$removeparam=xvcid
+||expressvpn.com^$removeparam=shareid
 ! links on www.golfdigest.co.jp
 ||golfdigest.co.jp^$removeparam=car
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-12099447
@@ -2750,6 +2756,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198365
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197733
 ! redirecting link on mobile from mydealz.de to Metro
 @@||rd.bizrate.com^$removeparam=utm_campaign

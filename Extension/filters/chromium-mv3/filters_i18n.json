@@ -2,13 +2,13 @@
 	"groups": {
 		"1": {
 			"ar": {
-				"name": "حظر الإعلانات"
+				"name": "مانع الاعلانات"
 			},
 			"be": {
-				"name": "Блакіроўка рэкламы"
+				"name": "Блакаваць рэкламу і ўсплывальныя банары"
 			},
 			"bg": {
-				"name": "Блокиране на рекламите"
+				"name": "Блокиране на реклами"
 			},
 			"ca": {
 				"name": "Bloqueig d'anuncis"
@@ -20,13 +20,13 @@
 				"name": "Adblocking"
 			},
 			"de": {
-				"name": "Werbeblockierung"
+				"name": "Sperren von Werbung"
 			},
 			"el": {
 				"name": "Αποκλεισμός διαφημίσεων"
 			},
 			"en": {
-				"name": "Ad Blocking"
+				"name": "Ad blocking"
 			},
 			"es": {
 				"name": "Bloqueo de anuncios"
@@ -35,16 +35,16 @@
 				"name": "Bloqueo de anuncios"
 			},
 			"fa": {
-				"name": "مسدود کننده تبلیغات"
+				"name": "مسدودسازی تبلیغ"
 			},
 			"fi": {
 				"name": "Mainosesto"
 			},
 			"fr": {
-				"name": "Blocage des publicités"
+				"name": "Blocage de pub"
 			},
 			"he": {
-				"name": "חסימת פרסומות"
+				"name": "חסימת פרסומות "
 			},
 			"hr": {
 				"name": "Blokiranje oglasa"
@@ -53,37 +53,37 @@
 				"name": "Hirdetésblokkolás"
 			},
 			"id": {
-				"name": "Pemblokiran Iklan"
+				"name": "Pemblokiran iklan"
 			},
 			"it": {
-				"name": "Blocca-annunci"
+				"name": "Blocco degli annunci"
 			},
 			"ja": {
-				"name": "広告ブロッキング"
+				"name": "広告やポップアップをブロック"
 			},
 			"ko": {
-				"name": "광고 차단"
+				"name": "광고와 팝업 차단"
 			},
 			"mk": {
 				"name": "Блокирање на реклами"
 			},
 			"nl": {
-				"name": "Advertentie blokkering"
+				"name": "Advertentieblokkering"
 			},
 			"no": {
-				"name": "Annonseblokkeringer"
+				"name": "Annonseblokkering"
 			},
 			"pl": {
 				"name": "Blokowanie reklam"
 			},
 			"pt": {
-				"name": "Bloqueio de Anúncios"
+				"name": "Bloqueador de publicidade"
 			},
 			"pt_BR": {
-				"name": "Bloqueio de Anúncios"
+				"name": "Bloqueio de anúncios"
 			},
 			"pt_PT": {
-				"name": "Bloqueio de Anúncios"
+				"name": "Bloqueador de publicidade"
 			},
 			"ro": {
 				"name": "Blocare reclame"
@@ -92,25 +92,25 @@
 				"name": "Блокировка рекламы"
 			},
 			"sk": {
-				"name": "Blokovanie reklám"
+				"name": "Blokovať reklám"
 			},
 			"sl": {
 				"name": "Zaviranje oglasov"
 			},
 			"sr": {
-				"name": "Blokiranje reklame"
+				"name": "Blokator reklama"
 			},
 			"sv": {
 				"name": "Annonsblockering"
 			},
 			"tr": {
-				"name": "Reklam Engelleme"
+				"name": "Reklam engelleme"
 			},
 			"uk": {
 				"name": "Блокування реклами"
 			},
 			"vi": {
-				"name": "Chặn Quảng Cáo"
+				"name": "Chặn quảng cáo và popup"
 			},
 			"zh": {
 				"name": "广告拦截"
@@ -240,13 +240,13 @@
 		},
 		"3": {
 			"ar": {
-				"name": "التطبيقات الاجتماعية"
+				"name": "وسائل التواصل الاجتماعية"
 			},
 			"be": {
 				"name": "Віджэты сацыяльных сетак"
 			},
 			"bg": {
-				"name": "Социални добавки"
+				"name": "Социални уиджети"
 			},
 			"ca": {
 				"name": "Ginys socials"
@@ -255,7 +255,7 @@
 				"name": "Sociální widgety"
 			},
 			"da": {
-				"name": "Sociale Widgets"
+				"name": "Sociale widgets"
 			},
 			"de": {
 				"name": "Soziale Widgets"
@@ -264,7 +264,7 @@
 				"name": "Widgets κοινωνικών δικτύων"
 			},
 			"en": {
-				"name": "Social Widgets"
+				"name": "Social widgets"
 			},
 			"es": {
 				"name": "Widgets de redes sociales"
@@ -273,7 +273,7 @@
 				"name": "Widgets de redes sociales"
 			},
 			"fa": {
-				"name": "سايرویدجت های اجتماعی"
+				"name": "ویدجت اجتماعی"
 			},
 			"fi": {
 				"name": "Sosiaaliset widgetit"
@@ -285,16 +285,16 @@
 				"name": "יישומונים חברתיים"
 			},
 			"hr": {
-				"name": "Društveni widget-i"
+				"name": "Widgeti društvenih mreža"
 			},
 			"hu": {
-				"name": "Közösségi Widgetek"
+				"name": "Közösségi widgetek"
 			},
 			"id": {
-				"name": "Gawit Sosial"
+				"name": "Widget sosial"
 			},
 			"it": {
-				"name": "Widget social"
+				"name": "Widget delle reti social"
 			},
 			"ja": {
 				"name": "SNSウィジェット"
@@ -309,7 +309,7 @@
 				"name": "Sociale widgets"
 			},
 			"no": {
-				"name": "Sosiale skjermelementer"
+				"name": "Sosiale widgets"
 			},
 			"pl": {
 				"name": "Widżety społecznościowe"
@@ -324,13 +324,13 @@
 				"name": "Widgets sociais"
 			},
 			"ro": {
-				"name": "Widget-uri"
+				"name": "Widget-uri sociale"
 			},
 			"ru": {
 				"name": "Виджеты социальных сетей"
 			},
 			"sk": {
-				"name": "Sociálne miniaplikácie"
+				"name": "Sociálne widgety"
 			},
 			"sl": {
 				"name": "Družbeni dodatki"
@@ -339,19 +339,19 @@
 				"name": "Vidžeti društvenih mreža"
 			},
 			"sv": {
-				"name": "Sociala Widgetar"
+				"name": "Sociala widgetar"
 			},
 			"tr": {
-				"name": "Sosyal Ağ Araçları"
+				"name": "Sosyal araçları"
 			},
 			"uk": {
 				"name": "Віджети соціальних мереж"
 			},
 			"vi": {
-				"name": "Tiện ích Xã hội"
+				"name": "Tiện ích xã hội"
 			},
 			"zh": {
-				"name": "社交插件"
+				"name": "社交小工具"
 			},
 			"zh_TW": {
 				"name": "社群小工具"
@@ -16339,7 +16339,7 @@
 				"description": "Filter, der fjerner annoncer og forskellige scripts fra websteder med koreansk indhold. Kombineret og forstærket med AdGuard-specifikke regler til forbedret filtrering. Dette filter antages brugt sammen med AdGuard Basisfilter."
 			},
 			"de": {
-				"name": "List-KR (Korea)",
+				"name": "List-KR",
 				"description": "Filter, der Werbung und verschiedene Skripte von Websites mit koreanischen Inhalten entfernt. Kombiniert und erweitert mit AdGuard-spezifischen Regeln für verbesserte Filterung. Sollte zusammen mit AdGuard Basisfilter verwendet werden."
 			},
 			"el": {
@@ -16383,7 +16383,7 @@
 				"description": "Filter yang menghapus iklan dan berbagai skrip dari situs web dengan konten Korea. Berdasarkan Korset, filter Adblock Korea, Youslist. Dikombinasikan dan ditambah dengan aturan khusus AdGuard untuk pemfilteran yang disempurnakan. Filter ini diharapkan dapat digunakan bersama dengan filter AdGuard Base."
 			},
 			"it": {
-				"name": "Elenco KR",
+				"name": "List-KR",
 				"description": "Filtro che rimuove annunci e vari script da siti web con contenuto coreano. Combinato e potenziato con regole specifiche di AdGuard per un filtraggio avanzato. Questo filtro dovrebbe essere utilizzato insieme al filtro AdGuard di Base."
 			},
 			"ja": {
@@ -16395,7 +16395,7 @@
 				"description": "한국어 콘텐츠가 포함된 웹 사이트에서 광고와 다양한 스크립트를 제거하는 필터입니다. 필터링 향상을 위해 AdGuard 관련 규칙과 결합 및 보강되었습니다. 이 필터는 AdGuard 베이스 필터와 함께 사용하는 것이 좋습니다."
 			},
 			"mk": {
-				"name": "Корејска листа",
+				"name": "List-KR",
 				"description": "Филтер што отстранува реклами и разни скрипти од веб-локации со корејска содржина. Комбинирани и надополнети со правилата специфични за AdGuard за подобрено филтрирање. Овој филтер се очекува да се користи заедно со филтерот Основниот филтер на AdGuard."
 			},
 			"nl": {
@@ -16431,7 +16431,7 @@
 				"description": "Filter, ktorý odstraňuje reklamy a rôzne skripty z webových stránok s kórejským obsahom. Kombinované a rozšírené o pravidlá špecifické pre AdGuard pre vylepšenú filtráciu. Očakáva sa, že tento filter sa bude používať spolu s filtrom AdGuard Base."
 			},
 			"sl": {
-				"name": "Seznam-KR",
+				"name": "List-KR",
 				"description": "Filter, ki odstrani oglase in različne skripte s spletnih strani s korejsko vsebino. Kombinirano in razširjeno s posebnimi pravili AdGuard za izboljšano filtriranje. Ta filter naj bi se uporabljal skupaj s filtrom AdGuard Base."
 			},
 			"sr": {
@@ -16465,7 +16465,7 @@
 				"description": "قائمة فلاتر لمنع الإعلانات الفنلندية."
 			},
 			"be": {
-				"name": "Adblock спіс для Фінляндыі",
+				"name": "Adblock List for Finland",
 				"description": "Фінскі фільтр для блакавання рэкламы."
 			},
 			"cs": {
@@ -16477,7 +16477,7 @@
 				"description": "Finsk filterliste til adblocking."
 			},
 			"de": {
-				"name": "Adblock Filterliste für Finnland",
+				"name": "Adblock List for Finland",
 				"description": "Finnische Filterliste für Werbeblockierung."
 			},
 			"el": {
@@ -16489,11 +16489,11 @@
 				"description": "Finnish ad blocking filter list."
 			},
 			"es": {
-				"name": "Lista Adblock para Finlandia",
+				"name": "Adblock List for Finland",
 				"description": "Lista de filtros finés para bloqueo de anuncios."
 			},
 			"es_ES": {
-				"name": "Lista Adblock para Finlandia",
+				"name": "Adblock List for Finland",
 				"description": "Lista de filtros finés para bloqueo de anuncios."
 			},
 			"fi": {
@@ -16501,7 +16501,7 @@
 				"description": "Suodatin mainosestoon suomenkielisillä sivustoilla."
 			},
 			"fr": {
-				"name": "Liste Adblock pour la Finlande",
+				"name": "Adblock List for Finland",
 				"description": "Liste Finlandaise des filtres bloqueurs."
 			},
 			"he": {
@@ -16521,7 +16521,7 @@
 				"description": "Daftar filter pemblokiran iklan Finlandia."
 			},
 			"it": {
-				"name": "Elenco Blocca-Annunci finlandese",
+				"name": "Adblock List for Finland",
 				"description": "Elenco di filtri per il blocca-annunci finlandesi."
 			},
 			"ja": {
@@ -16549,19 +16549,19 @@
 				"description": "Fińska lista filtrów blokujących reklamy."
 			},
 			"pt": {
-				"name": "Lista de bloqueio de publicidade para Finlândia",
+				"name": "Adblock List for Finland",
 				"description": "Lista de filtros de bloqueio de anúncios finlandês."
 			},
 			"pt_BR": {
-				"name": "Lista de bloqueio de anúncios para Finlândia",
+				"name": "Adblock List for Finland",
 				"description": "Lista de filtros de bloqueio de anúncios finlandês."
 			},
 			"pt_PT": {
-				"name": "Lista de bloqueio de publicidade para Finlândia",
+				"name": "Adblock List for Finland",
 				"description": "Lista de filtros de bloqueio de anúncios finlandês."
 			},
 			"ro": {
-				"name": "Adblock List pentru Finlanda",
+				"name": "Adblock List for Finland",
 				"description": "Listă de filtre de blocare a reclamelor finlandeze."
 			},
 			"ru": {
@@ -16573,11 +16573,11 @@
 				"description": "Fínsky zoznam pre blokovanie reklám."
 			},
 			"sl": {
-				"name": "Seznam zaviranja oglasov za Finsko",
+				"name": "Adblock List for Finland",
 				"description": "Finski seznam filtrov za zaviranje oglasov."
 			},
 			"sr": {
-				"name": "Adblock List za Finsku",
+				"name": "Adblock List for Finland",
 				"description": "Lista filtera za blokiranje reklama u Finskoj."
 			},
 			"tr": {
@@ -16603,11 +16603,11 @@
 		},
 		"235": {
 			"ar": {
-				"name": "مانع فارسي",
+				"name": "Persian Blocker",
 				"description": "قائمة الفلاتر لمنع الإعلانات والمتتبعات على مواقع الويب باللغة الفارسية."
 			},
 			"be": {
-				"name": "Іранскі фільтр",
+				"name": "Persian Blocker",
 				"description": "Спіс фільтраў для блакіроўкі рэкламы і трэкераў на вэб-сайтах на фарсі."
 			},
 			"cs": {
@@ -16638,6 +16638,10 @@
 				"name": "Persian Blocker",
 				"description": "Lista de filtros para bloquear anuncios y rastreadores en sitios web en persa."
 			},
+			"fa": {
+				"name": "Persian Blocker",
+				"description": "فهرست پالایش‌ها برای مسدودسازی تبلیغات و ردیاب‌ها در تارنماها به زبان فارسی."
+			},
 			"fi": {
 				"name": "Persian Blocker",
 				"description": "Suodatinlista mainosten ja seurantojen estoon persiankielisillä sivustoilla."
@@ -16659,7 +16663,7 @@
 				"description": "Szűrőlista a hirdetések és nyomkövetők blokkolásához a perzsa nyelvű webhelyeken."
 			},
 			"id": {
-				"name": "Pemblokir Persia",
+				"name": "Persian Blocker",
 				"description": "Daftar filter untuk memblokir iklan dan pelacak di situs web dalam bahasa Persia."
 			},
 			"it": {
@@ -16675,7 +16679,7 @@
 				"description": "페르시아어 웹 사이트에서 광고 및 추적기를 차단하기 위한 필터 목록입니다."
 			},
 			"mk": {
-				"name": "Персиски блокатор",
+				"name": "Persian Blocker",
 				"description": "Список со филтри за блокирање реклами и тракери на веб-локации на персиски јазик."
 			},
 			"nl": {
@@ -16707,15 +16711,15 @@
 				"description": "Фильтр для блокировки рекламы и трекеров на персидских сайтах."
 			},
 			"sk": {
-				"name": "Perzský blokovač",
+				"name": "Persian Blocker",
 				"description": "Zoznam filtrov na blokovanie reklám a sledovačov na webových stránkach v perzštine."
 			},
 			"sl": {
-				"name": "Perzijski zaviralec",
+				"name": "Persian Blocker",
 				"description": "Seznam filtrov za zaviranje oglasov in sledilnikov na spletnih straneh v perzijščini."
 			},
 			"sr": {
-				"name": "Iranski blokator",
+				"name": "Persian Blocker",
 				"description": "Filter lista za blokiranje reklama i tragača na Veb lokacijama na persijskom."
 			},
 			"tr": {
@@ -16727,7 +16731,7 @@
 				"description": "Фільтр для блокування реклами та стеження на вебсайтах перською мовою."
 			},
 			"vi": {
-				"name": "Iranian filter",
+				"name": "Persian Blocker",
 				"description": "Bộ lọc chặn quảng cáo tiếng Iran/Ba Tư."
 			},
 			"zh": {
@@ -16745,7 +16749,7 @@
 				"description": "الفلاتر البولندية الرسمية ضد تنبيهات Adblock."
 			},
 			"be": {
-				"name": "Польскі фільтр супраць папярэджанняў Adblock",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Афіцыйныя польскія фільтры ад паведамленняў AdBlock."
 			},
 			"cs": {
@@ -16757,7 +16761,7 @@
 				"description": "Officielle polske filtre mod Adblock-alarmer."
 			},
 			"de": {
-				"name": "Anti-Adblock-Filter auf polnischen Websites",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Offizielle polnische Filter gegen Adblock-Warnhinweise."
 			},
 			"el": {
@@ -16781,11 +16785,11 @@
 				"description": "Viralliset puolalaiset suodattimet mainosestoilmoituksia vastaan."
 			},
 			"fr": {
-				"name": "Filtres Polonais Anti-Adblock",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Filtres Polonais officiels contre les alertes Adblock."
 			},
 			"he": {
-				"name": "מסננים פולניים של נגד חסימת פרסומות",
+				"name": "Polish Anti Adblock Filters",
 				"description": "מסננים פולניים רשמיים נגד אזהרות לגבי חסימת פרסומות."
 			},
 			"hr": {
@@ -16801,7 +16805,7 @@
 				"description": "Filter Polandia resmi terhadap peringatan Adblock."
 			},
 			"it": {
-				"name": "Filtri polacchi Anti Blocca-annunci",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Filtri ufficiali polacchi contro gli avvisi di disattivazione del Blocca-annunci."
 			},
 			"ja": {
@@ -16813,7 +16817,7 @@
 				"description": "애드블록 경고에 대한 공식 폴란드어 필터."
 			},
 			"mk": {
-				"name": "Полски филтри против adblock",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Официјални полски филтри против предупредувањата за користење Adblock."
 			},
 			"nl": {
@@ -16849,11 +16853,11 @@
 				"description": "Oficiálne poľské filtre proti upozorneniam Adblock."
 			},
 			"sl": {
-				"name": "Poljski filtri proti zaviranju oglasov",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Uradni poljski filtri proti opozorilom zaviranja oglasov."
 			},
 			"sr": {
-				"name": "Poljski filteri za blokiranje upozorenja",
+				"name": "Polish Anti Adblock Filters",
 				"description": "Zvanični poljski filteri protiv upozorenja o blokiranju reklama."
 			},
 			"tr": {
@@ -16883,7 +16887,7 @@
 				"description": "فلتر يهدف إلى إزالة الإعلانات السويدية الإقليمية والتتبع ووسائل التواصل الاجتماعي والمضايقات والمقالات الدعائية وما إلى ذلك."
 			},
 			"be": {
-				"name": "Шведскі фільтр Фрэльвіта",
+				"name": "Frellwit's Swedish Filter",
 				"description": "Фільтр, накіраваны на выдаленне рэгіянальнай шведскай рэкламы, адсочвання, сацыяльных сетак, раздражнення, спонсарскіх артыкулаў і г. д."
 			},
 			"cs": {
@@ -16895,7 +16899,7 @@
 				"description": "Filter designet til at fjerne regionale svenske annoncer, sporing, sociale medier, irritationer, sponsorerede artikler mv."
 			},
 			"de": {
-				"name": "Frellwit's Swedish Filter (Schweden)",
+				"name": "Frellwit's Swedish Filter",
 				"description": "Dieser Filter entfernt regionale schwedische Werbung, Tracking, Soziale Netzwerke, Belästigungen, gesponserte Artikel usw."
 			},
 			"el": {
@@ -16927,7 +16931,7 @@
 				"description": "Un filtre qui vise à supprimer les publicités régionales Suédoises, le suivi, les médias sociaux, les nuisances, les articles sponsorisés, etc."
 			},
 			"he": {
-				"name": "מסנן שוודי של Frellwit",
+				"name": "Frellwit's Swedish Filter",
 				"description": "מסנן עבור השפה השוודית שמכוון להסיר פרסומות אזוריות, מעקב, מדיה חברתית, מטרדים, מאמרים ממומנים וכו'."
 			},
 			"hr": {
@@ -16955,7 +16959,7 @@
 				"description": "스웨덴 광고, 추적, 소셜 미디어 요소, 방해 요소, 후원 기사 등을 제거하는 필터입니다."
 			},
 			"mk": {
-				"name": "Шведски филтер на Frellwit",
+				"name": "Frellwit's Swedish Filter",
 				"description": "Филтер кој има за цел да ги отстрани регионалните шведски реклами, следењето, социјалните медиуми, досадите, спонзорираните статии итн."
 			},
 			"nl": {
@@ -16991,7 +16995,7 @@
 				"description": "Filter pre uBlock Origin, ktorého cieľom je odstrániť regionálne švédske reklamy, sledovanie, sociálne médiá, obťažujúce prvky, sponzorované články atď."
 			},
 			"sl": {
-				"name": "Frellwitov švedski filter",
+				"name": "Frellwit's Swedish Filter",
 				"description": "Filter, katerega namen je odstraniti regionalne švedske oglase, sledenje, družbene medije, motnje, sponzorirane članke itd."
 			},
 			"sr": {
@@ -17041,7 +17045,7 @@
 				"description": "Denne liste dækker websteder for Danmark, Norge, Island, Færøerne, Grønland og den indfødte samiske befolkning."
 			},
 			"de": {
-				"name": "Dandelion Sprout's Nordic Filters (Skandinavien)",
+				"name": "Dandelion Sprout's Nordic Filters",
 				"description": "Diese Filterliste umfasst Websites für Norwegen, Dänemark, Island, dänische Gebiete und die samische Urbevölkerung."
 			},
 			"el": {
@@ -17141,7 +17145,7 @@
 				"description": "Tento zoznam zahŕňa webové stránky pre Nórsko, Dánsko, Island, dánske územia a domorodé obyvateľstvo Sámov."
 			},
 			"sl": {
-				"name": "Nordijski filtri Dandelion Sprouta",
+				"name": "Dandelion Sprout's Nordic Filters",
 				"description": "Ta seznam zajema spletne strani za Norveško, Dansko, Islandijo, danska ozemlja in domorodno prebivalstvo Sami."
 			},
 			"sr": {

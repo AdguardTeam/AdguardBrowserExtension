@@ -1,8 +1,8 @@
-! Checksum: XSk1/sohoOm2bs408fCBQA
+! Checksum: DdvW7WZygB7M0KMhtqflUA
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.11.9
-! TimeUpdated: 2025-02-14T14:39:27+00:00
+! Version: 2.0.11.11
+! TimeUpdated: 2025-02-18T19:37:53+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -87,6 +87,10 @@ ityouchannel.livedoor.blog,nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.
 !
 ! NOTE: Blogroll specific rules
 !
+morikinoko.com##div[class^="img_link"]
+morikinoko.com##.headline-wrap:has(> div.card-body > div.blogroll-wrap)
+syurabahazard.com##.kotei-link
+girlsreport.net###more > .top_link
 everydayissunday.livedoor.blog##.article-body span:has(> div[style="font-size: 16px; padding: 8px; border-radius: 5px; margin: 5px; border: 1px solid rgb(0, 0, 128); background-color: rgb(255, 255, 255); text-indent: 0px;"])
 nogizaka46chronicle.com###pc_text-2
 news.tokimeki-s.com##.osusume_link_iframe02
@@ -1218,8 +1222,6 @@ keyakizaka46matomerabo.com##.rssFeed
 beasoku.com##.l-rss-header_title
 beasoku.com##.rss-flex
 beasoku.com##.rss-block
-!+ NOT_PLATFORM(android, ios, ext_android_cb)
-beasoku.com##.l-rss-header
 !
 ! generichide fix for https://github.com/AdguardTeam/AdguardFilters/issues/189518#issuecomment-2395510540
 !
@@ -1781,6 +1783,9 @@ indoxxi.show##.tawkto-btn
 !
 !   SECTION: Widgets - Suggestion widgets
 !
+gall.dcinside.com##.dctrend_ranking
+gall.dcinside.com##.r_dcmedia
+||dctrend.ai/widget^$third-party
 fontech.startitup.sk##div[class^="fon-plista_widget_"]
 otv.co.jp##.o_recommend__together
 otv.co.jp##.o_recommend

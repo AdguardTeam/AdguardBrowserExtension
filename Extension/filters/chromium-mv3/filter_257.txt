@@ -1,8 +1,8 @@
-! Checksum: 1gqrBaOX8M/AyCK9+y0nIw
+! Checksum: uagiQVDqHVHYq48R99GCIg
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.6.20
-! TimeUpdated: 2025-02-16T13:02:00+00:00
+! Version: 2.0.6.22
+! TimeUpdated: 2025-02-19T01:02:02+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -9576,6 +9576,8 @@ webflow.io##html.w-mod-js:not(.wf-active) > body:not([class]):not([id]) > a[clas
 ! https://d1myn4ixnn41tz.cloudfront.net/public/external/v2/htmlxf.4151823.2951e.0.js
 ! https://d390icj1ta4x0p.cloudfront.net/public/ct?cpguid=&pr=0&it=4151823&w=1920&h=1080&key=2951e&m=0&r=
 !+ NOT_OPTIMIZED
+/cloudfront\.net\/(?=[a-z]{0,6}\d)[a-f0-9]{7}\.js$/$script,third-party,match-case
+!+ NOT_OPTIMIZED
 ||freesoftwarecreative.com^$document
 !+ NOT_OPTIMIZED
 ||cloudtrks.com^$all
@@ -9590,38 +9592,9 @@ webflow.io##html.w-mod-js:not(.wf-active) > body:not([class]):not([id]) > a[clas
 !+ NOT_OPTIMIZED
 ||hopgp.com^$all
 !+ NOT_OPTIMIZED
-||d12zgccgt6pwjz.cloudfront.net^
+||fast2cloud.com^$all
 !+ NOT_OPTIMIZED
-||d1myn4ixnn41tz.cloudfront.net^
-!+ NOT_OPTIMIZED
-||duh0b8nl8uhfn.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d1ftkft7iiluq6.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d390icj1ta4x0p.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d3ept9mddcbuhi.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d1ieffz9zqrn09.cloudfront.net^
-!+ NOT_OPTIMIZED
-||du002iv2rxh4h.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d1i1d9hx0883rq.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d3srxd2wvksmqd.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d13uyjvmsvkesh.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d3gi4w10ruedfh.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d3lwdybbvxc4v9.cloudfront.net^
-! https://dojy0dg181308.cloudfront.net/f999531.js
-!+ NOT_OPTIMIZED
-||dojy0dg181308.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d1mikxzr3lp4va.cloudfront.net^
-!+ NOT_OPTIMIZED
-||d9cshxmf0qazr.cloudfront.net^
+||safesendclub.com^$all
 ! https://www.malwarebytes.com/blog/scams/2024/11/crooks-bank-on-microsofts-search-engine-to-phish-customers
 !+ NOT_OPTIMIZED
 ||ixxx-blognew.com^$all,to=~ibx.key.com
@@ -10099,3 +10072,6 @@ uploadfox.net###ad-gs-05
 ! https://www.reddit.com/r/Scams/comments/1in9l8t/be_careful_posting_your_resume_on_job_boards/
 !+ NOT_OPTIMIZED
 ||sunpass.com-$document,to=~sunpass.com
+! https://github.com/uBlockOrigin/uAssets/issues/27237
+!+ NOT_OPTIMIZED
+||blau-sicherheit.info^$all
