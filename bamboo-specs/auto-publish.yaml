@@ -97,11 +97,19 @@ AutoDeployAndPublish Beta:
             # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
             set +e
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish-expedited-review
-            if [ $? -ne 0 ]; then
+
+            # Capture exit code
+            EXIT_CODE=$?
+
+            # Enable errexit as it was set before
+            set -e
+
+            # If expedited review process exited with non-zero status,
+            # try normal review.
+            if [ $EXIT_CODE -ne 0 ]; then
               echo "Expedited review failed, trying normal review"
               ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
             fi
-            set -e
     - checkout: browser-extension
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
