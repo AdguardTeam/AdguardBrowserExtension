@@ -232,6 +232,7 @@ export class UserRulesService {
             errors.forEach((error) => {
                 logger.error(
                     'User rule parsing error:',
+                    // FIXME: Waits for updating declarative converter
                     `\nRule: ${error.networkRule.getText()}`,
                     `\nReason: ${error.reason}`,
                 );

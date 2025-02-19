@@ -202,8 +202,7 @@ export class AllowlistApi {
         const filterId = mainFrameRule.getFilterListId();
 
         if (filterId === AntiBannerFiltersId.UserFilterId) {
-            const ruleText = mainFrameRule.getText();
-            await AllowlistApi.removeAllowlistRuleFromUserList(ruleText, tabId, tabRefresh);
+            await AllowlistApi.removeAllowlistRuleFromUserList(mainFrameRule.getIndex(), tabId, tabRefresh);
             return;
         }
 
@@ -303,17 +302,17 @@ export class AllowlistApi {
      *
      * Updates {@link Engine} and reloads the tab if {@link tabRefresh} is true.
      *
-     * @param ruleText Tab document rule text.
+     * @param ruleIndex Rule index.
      * @param tabId Tab id.
      * @param tabRefresh Is tab refresh needed after removing rule from the user list.
      * We do not refresh the tab after rule deletion via the filtering log.
      */
     private static async removeAllowlistRuleFromUserList(
-        ruleText: string,
+        ruleIndex: number,
         tabId: number,
         tabRefresh: boolean = false,
     ): Promise<void> {
-        await UserRulesApi.removeUserRule(ruleText);
+        await UserRulesApi.removeUserRuleByIndex(ruleIndex);
 
         await engine.update();
 

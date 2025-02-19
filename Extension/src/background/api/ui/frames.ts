@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { RuleGenerator } from '@adguard/agtree';
+
 import {
     getDomain,
     isHttpRequest,
@@ -27,6 +29,7 @@ import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';
 import { PageStatsApi } from '../page-stats';
 import { SettingsApi } from '../settings';
+import { engine } from '../../engine';
 
 export type FrameRule = {
     filterId: number,
@@ -144,9 +147,21 @@ export class FramesApi {
 
                 userAllowlisted = filterId === AntiBannerFiltersId.UserFilterId
                        || filterId === AntiBannerFiltersId.AllowlistFilterId;
+
+                const ruleNode = engine.api.retrieveRuleNode(
+                    mainFrameRule.getFilterListId(),
+                    mainFrameRule.getIndex(),
+                );
+
+                let ruleText = '<Cannot retrieve rule text>';
+
+                if (ruleNode) {
+                    ruleText = RuleGenerator.generate(ruleNode);
+                }
+
                 frameRule = {
                     filterId,
-                    ruleText: mainFrameRule.getText(),
+                    ruleText,
                 };
             }
             // It means site in exception
