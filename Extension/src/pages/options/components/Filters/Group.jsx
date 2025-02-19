@@ -75,7 +75,7 @@ const renderEnabledFilters = (enabledFilters) => {
     return reactTranslator.getMessage('options_filters_no_enabled');
 };
 
-const CustomFiltersGroup = ({
+const DisabledCustomFiltersGroup = ({
     groupName,
     groupId,
     enabledFilters,
@@ -134,9 +134,10 @@ const Group = ({
         'group--disabled': !checkboxValue,
     });
 
-    if (groupId === AntibannerGroupsId.CustomFiltersGroupId) {
+    // TODO: Remove this component when custom filters will be supported for MV3.
+    if (__IS_MV3__ && groupId === AntibannerGroupsId.CustomFiltersGroupId) {
         return (
-            <CustomFiltersGroup
+            <DisabledCustomFiltersGroup
                 groupName={groupName}
                 groupId={AntibannerGroupsId.CustomFiltersGroupId}
                 enabledFilters={enabledFilters}
@@ -151,7 +152,6 @@ const Group = ({
                 tabIndex={0}
                 className="setting__area setting__area_group"
                 onClick={groupClickHandler}
-                disabled={groupId === AntibannerGroupsId.CustomFiltersGroupId}
             >
                 <Icon
                     id={`#setting-${groupId}`}
