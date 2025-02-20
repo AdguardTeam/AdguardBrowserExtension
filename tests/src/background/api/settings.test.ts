@@ -118,14 +118,14 @@ describe('Settings Api', () => {
         it('Gets tswebextension config', async () => {
             const expected = __IS_MV3__
                 ? getDefaultSettingsConfigFixtureMV3(
-                    browser.runtime.getURL(`${BLOCKING_BLOCKED_OUTPUT}.html`),
+                    browser.runtime.getURL(`${BLOCKING_BLOCKED_OUTPUT}.html?_locale=en`),
                     `/${ASSISTANT_INJECT_OUTPUT}.js`,
                     `/${GPC_SCRIPT_OUTPUT}.js`,
                     `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
                     false,
                 )
                 : getDefaultSettingsConfigFixtureMV2(
-                    browser.runtime.getURL(`${BLOCKING_BLOCKED_OUTPUT}.html`),
+                    browser.runtime.getURL(`${BLOCKING_BLOCKED_OUTPUT}.html?_locale=en`),
                     `/${ASSISTANT_INJECT_OUTPUT}.js`,
                     false,
                 );
