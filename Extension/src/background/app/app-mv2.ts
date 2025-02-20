@@ -118,21 +118,17 @@ export class App {
     });
 
     /**
-     * Initializes all app services
-     * and handle webextension API events for first install and update scenario.
+     * Initializes all app services and handle webextension API events for first
+     * install and update scenario.
      */
     public static async init(): Promise<void> {
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
 
-        await App.asyncInit();
-    }
+        // This call is moved to top in order to keep consistent with MV3 version,
+        // where it's needed to register critical event handlers in a sync way.
+        UiService.syncInit();
 
-    /**
-     * Initializes all app services
-     * and handle webextension API events for first install and update scenario.
-     */
-    private static async asyncInit(): Promise<void> {
         await trackInitTimesForDebugging();
 
         // TODO: Remove after migration to MV3

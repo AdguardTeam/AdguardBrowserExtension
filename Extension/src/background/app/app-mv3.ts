@@ -92,14 +92,19 @@ export class App {
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
 
+        // First initialize critical sync event handlers.
         App.syncInit();
+
+        // Then "lazy" call for all other stuff.
         await App.asyncInit();
     }
 
     /**
      * Initializes **sync** modules.
      *
-     * Important: should be called before {@link App.init}.
+     * Important: should be called before async part inside {@link App.init},
+     * because in MV3 handlers should be registered on the top level in sync
+     * functions.
      */
     private static syncInit(): void {
         UiService.syncInit();

@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+import { logger } from '../../common/logger';
+
 export const enum ContextMenuAction {
     SiteProtectionDisabled = 'context_site_protection_disabled',
     SiteFilteringDisabled = 'context_site_filtering_disabled',
@@ -48,7 +51,7 @@ export class ContextMenuEvents {
      *
      * @throws Basic {@link Error} if a listener was registered for the event.
      */
-    public addListener<T extends ContextMenuAction>(event: T, listener: ContextMenuListener): void {
+    public addListener(event: ContextMenuAction, listener: ContextMenuListener): void {
         if (this.listenersMap.has(event)) {
             throw new Error(`${event} listener has already been registered`);
         }
@@ -62,11 +65,15 @@ export class ContextMenuEvents {
      *
      * @returns Promise with the result of the listener.
      */
-    public async publishEvent<T extends ContextMenuAction>(event: T): Promise<unknown> {
+    public async publishEvent(event: ContextMenuAction): Promise<unknown> {
         const listener = this.listenersMap.get(event);
-        if (listener) {
-            return Promise.resolve(listener());
+
+        if (!listener) {
+            logger.error(`ContextMenuEvent not found listener for ${event}!`);
+            return;
         }
+
+        return Promise.resolve(listener());
     }
 
     /**
