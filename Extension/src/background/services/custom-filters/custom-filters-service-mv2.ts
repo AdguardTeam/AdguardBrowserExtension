@@ -16,15 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser, { type WebNavigation } from 'webextension-polyfill';
-
-import {
-    MAIN_FRAME_ID,
-    isHttpOrWsRequest,
-    tabsApi as tsWebExtTabsApi,
-} from '../../tswebextension';
-import { SUBSCRIBE_OUTPUT } from '../../../../../constants';
-import { NotifierType, BACKGROUND_TAB_ID } from '../../../common/constants';
+import { NotifierType } from '../../../common/constants';
 import {
     MessageType,
     LoadCustomFilterInfoMessage,
@@ -36,11 +28,9 @@ import { messageHandler } from '../../message-handler';
 import { notifier } from '../../notifier';
 import { engine } from '../../engine';
 import type { CustomFilterMetadata } from '../../schema';
-import { executeScript } from '../scripting/scripting-service-mv2';
 
 /**
  * Service for processing events with custom filters.
- * TODO: Uncomment this class when custom filters will be supported for MV3.
  */
 export class CustomFiltersService {
     /**
@@ -51,8 +41,6 @@ export class CustomFiltersService {
         // eslint-disable-next-line max-len
         messageHandler.addListener(MessageType.SubscribeToCustomFilter, CustomFiltersService.onCustomFilterSubscription);
         messageHandler.addListener(MessageType.RemoveAntiBannerFilter, CustomFiltersService.onCustomFilterRemove);
-
-        browser.webNavigation.onCommitted.addListener(CustomFiltersService.injectSubscriptionScript);
     }
 
     /**
@@ -107,41 +95,6 @@ export class CustomFiltersService {
         const wasEnabled = await CustomFilterApi.removeFilter(filterId);
         if (wasEnabled) {
             engine.debounceUpdate();
-        }
-    }
-
-    /**
-     * Inject custom filter subscription content script to tab.
-     *
-     * @param details OnCommitted event request details.
-     */
-    static async injectSubscriptionScript(details: WebNavigation.OnCommittedDetailsType): Promise<void> {
-        const { tabId, frameId } = details;
-
-        if (tabId === BACKGROUND_TAB_ID) {
-            return;
-        }
-
-        const frame = tsWebExtTabsApi.getTabFrame(tabId, frameId);
-
-        if (!frame) {
-            return;
-        }
-
-        const isDocumentFrame = frameId === MAIN_FRAME_ID;
-
-        if (!isDocumentFrame || !isHttpOrWsRequest(frame.url)) {
-            return;
-        }
-
-        try {
-            await executeScript(tabId, {
-                files: [`/${SUBSCRIBE_OUTPUT}.js`],
-                runAt: 'document_start',
-                frameId,
-            });
-        } catch (e) {
-            // do nothing
         }
     }
 }

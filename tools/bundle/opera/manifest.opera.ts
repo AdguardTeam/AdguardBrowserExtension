@@ -20,6 +20,7 @@ import {
     DEVTOOLS_OUTPUT,
     MIN_SUPPORTED_VERSION,
     POPUP_OUTPUT,
+    SUBSCRIBE_OUTPUT,
 } from '../../../constants';
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
 
@@ -32,6 +33,18 @@ export const operaManifest = {
         'default_title': '__MSG_name__',
         'default_popup': `${POPUP_OUTPUT}.html`,
     },
+    'content_scripts': [{
+        'all_frames': true,
+        'js': [
+            `${SUBSCRIBE_OUTPUT}.js`,
+        ],
+        'matches': [
+            'http://*/*',
+            'https://*/*',
+        ],
+        'match_about_blank': false,
+        'run_at': 'document_end',
+    }],
     'web_accessible_resources': [
         '/web-accessible-resources/*',
     ],
