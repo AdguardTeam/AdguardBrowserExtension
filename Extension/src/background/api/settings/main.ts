@@ -159,9 +159,15 @@ export class SettingsApi {
     public static getTsWebExtConfiguration<T extends boolean>(
         isMV3: T,
     ): T extends true ? SettingsConfigMV3 : SettingsConfigMV2 {
+        const documentBlockingPageUrl = [
+            `${Prefs.baseUrl}${BLOCKING_BLOCKED_OUTPUT}.html`,
+            // pass the locale explicitly as a part of the url
+            `?_locale=${Prefs.language}`,
+        ].join('');
+
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
-            documentBlockingPageUrl: `${Prefs.baseUrl}${BLOCKING_BLOCKED_OUTPUT}.html`,
+            documentBlockingPageUrl,
             ...(isMV3 && {
                 gpcScriptUrl: `/${GPC_SCRIPT_OUTPUT}.js`,
                 hideDocumentReferrerScriptUrl: `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,

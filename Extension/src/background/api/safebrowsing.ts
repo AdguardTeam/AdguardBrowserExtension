@@ -21,6 +21,7 @@ import SHA256 from 'crypto-js/sha256';
 import { BLOCKING_SAFEBROWSING_OUTPUT } from '../../../../constants';
 import { logger } from '../../common/logger';
 import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
+import { Prefs } from '../prefs';
 import {
     sbCache,
     sbRequestCache,
@@ -245,6 +246,8 @@ export class SafebrowsingApi {
 
         url += `&url=${encodeURIComponent(requestUrl)}`;
         url += `&ref=${encodeURIComponent(referrerUrl)}`;
+
+        url += `&_locale=${encodeURIComponent(Prefs.language)}`;
 
         return browser.runtime.getURL(url);
     }
