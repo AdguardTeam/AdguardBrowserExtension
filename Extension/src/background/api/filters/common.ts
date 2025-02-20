@@ -231,11 +231,6 @@ export class CommonFilterApi {
         await FiltersStorage.set(filterUpdateOptions.filterId, filter.join('\n'));
         await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
 
-        // if patch update is not failed, set last update time for MV2
-        if (!__IS_MV3__ && !isPatchUpdateFailed) {
-            await FilterUpdateService.setLastUpdateTimeMs(Date.now());
-        }
-
         return filterMetadata;
     }
 

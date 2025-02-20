@@ -93,12 +93,13 @@ export class FilterUpdateService {
             const dnrRulesetsBuildTimestampMs = getVersionTimestampMs();
             await FilterUpdateService.setLastFullUpdateTimeMs(dnrRulesetsBuildTimestampMs);
         } else {
-            await FilterUpdateService.setLastFullUpdateTimeMs(Date.now());
+            await FilterUpdateService.setLastUpdateTimeMs(Date.now());
         }
     }
 
     /**
-     * Sets the last filters **patch update** (not just *check*) time in the storage.
+     * Sets the last filters **update** (not just *check*) time in the storage
+     * for version which supports diff updates, i.e. MV2.
      *
      * @param timestampMs The timestamp in milliseconds.
      */
@@ -107,7 +108,8 @@ export class FilterUpdateService {
     }
 
     /**
-     * Gets the last filters **patch update** (not just *check*) time from the storage.
+     * Gets the last filters **update** (not just *check*) time from the storage
+     * for version which supports diff updates, i.e. MV2.
      *
      * @returns The timestamp in milliseconds or `null` if the value is not set.
      */
@@ -124,6 +126,8 @@ export class FilterUpdateService {
     /**
      * Sets the last filters **full update** (not just *check*) time in the storage.
      *
+     * Needed for MV3 since it does not support patch updates yet.
+     *
      * @param timestampMs The timestamp in milliseconds.
      */
     public static async setLastFullUpdateTimeMs(timestampMs: number): Promise<void> {
@@ -132,6 +136,8 @@ export class FilterUpdateService {
 
     /**
      * Gets the last filters **full update** (not just *check*) time from the storage.
+     *
+     * Needed for MV3 since it does not support patch updates yet.
      *
      * @returns The timestamp in milliseconds or `null` if the value is not set.
      */

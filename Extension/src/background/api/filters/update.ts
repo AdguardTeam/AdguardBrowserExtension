@@ -190,21 +190,12 @@ export class FilterUpdateApi {
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
             engine.debounceUpdate();
-        }
 
-        // get filter ids that were supposed to be updated fully
-        const filterIdsSupposedToBeUpdatedFully = filterUpdateDetailsToUpdate
-            .filter((filter) => !filter.ignorePatches)
-            .map(({ filterId }) => filterId);
-
-        // if at least one filter (which was supposed to be updated fully) was updated,
-        // we consider that the full update was successful
-        // so the last full update time for MV2 should be set
-        if (
-            filterIdsSupposedToBeUpdatedFully.length > 0
-            && updatedFilters.some(({ filterId }) => filterIdsSupposedToBeUpdatedFully.includes(filterId))
-        ) {
-            await FilterUpdateService.setLastFullUpdateTimeMs(Date.now());
+            // set last update time only for MV2
+            // because there is no ability to update filters with patches in MV3
+            if (!__IS_MV3__) {
+                await FilterUpdateService.setLastUpdateTimeMs(Date.now());
+            }
         }
 
         return updatedFilters;

@@ -292,6 +292,7 @@ export class PagesApi {
             }
         }
 
+        // for version which supports diff updates, i.e. MV2
         const filtersLastUpdate = await FilterUpdateService.getLastUpdateTimeMs();
         if (filtersLastUpdate) {
             params.filters_last_update = encodeURIComponent(
@@ -299,6 +300,7 @@ export class PagesApi {
             );
         }
 
+        // for version which does not support diff updates yet, i.e. MV3
         const filtersLastFullUpdate = await FilterUpdateService.getLastFullUpdateTimeMs();
         if (filtersLastFullUpdate) {
             params.filters_last_full_update = encodeURIComponent(
