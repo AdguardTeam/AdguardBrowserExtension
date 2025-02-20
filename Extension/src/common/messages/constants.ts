@@ -91,7 +91,8 @@ export enum MessageType {
     OpenComparePage = 'openComparePage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
     RemoveAllowlistDomain = 'removeAllowlistDomain',
-    AddAllowlistDomain = 'addAllowlistDomain',
+    AddAllowlistDomainForTabId = 'addAllowlistDomainForTabId',
+    AddAllowlistDomainForUrl = 'addAllowlistDomainForUrl',
     OnOpenFilteringLogPage = 'onOpenFilteringLogPage',
     GetFilteringLogData = 'getFilteringLogData',
     InitializeFrameScript = 'initializeFrameScript',
@@ -372,10 +373,17 @@ export type SetEditorStorageContentMessage = {
     }
 };
 
-export type AddAllowlistDomainMessage = {
-    type: MessageType.AddAllowlistDomain
+export type AddAllowlistDomainForTabIdMessage = {
+    type: MessageType.AddAllowlistDomainForTabId
     data: {
         tabId: number,
+    }
+};
+
+export type AddAllowlistDomainForUrlMessage = {
+    type: MessageType.AddAllowlistDomainForUrl
+    data: {
+        url: string,
     }
 };
 
@@ -764,8 +772,12 @@ export type MessageMap = {
         message: RemoveAllowlistDomainMessage;
         response: void;
     }
-    [MessageType.AddAllowlistDomain]: {
-        message: AddAllowlistDomainMessage;
+    [MessageType.AddAllowlistDomainForTabId]: {
+        message: AddAllowlistDomainForTabIdMessage;
+        response: void;
+    }
+    [MessageType.AddAllowlistDomainForUrl]: {
+        message: AddAllowlistDomainForUrlMessage;
         response: void;
     }
     [MessageType.LoadCustomFilterInfo]: {

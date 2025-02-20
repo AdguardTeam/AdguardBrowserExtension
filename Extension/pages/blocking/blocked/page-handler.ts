@@ -23,7 +23,7 @@ import { logger } from '../../../src/common/logger';
 import { getFilterName } from '../../../src/pages/helpers';
 
 const PROCEED_ANYWAY_BTN_ID = 'adgAccessBlockedProceed';
-
+const ADD_TO_ALLOWLIST_BTN_ID = 'adgAccessAllowToWhiteList';
 const PLACEHOLDER_URL_ID = 'adgAccessBlockedUrl';
 const PLACEHOLDER_FILTER_ID = 'adgAccessBlockingFilterName';
 const PLACEHOLDER_RULE_ID = 'adgAccessBlockingRule';
@@ -85,6 +85,28 @@ const handleProceedAnyway = (url: string): void => {
 };
 
 /**
+ * Handles adding a domain (based on `url`) to the allowlist and proceeding to the page by `url`.
+ *
+ * @param url URL of blocked request.
+ */
+const handleAddToAllowlist = async (url: string): Promise<void> => {
+    const addToAllowlist = document.getElementById(ADD_TO_ALLOWLIST_BTN_ID);
+
+    if (!addToAllowlist) {
+        logger.debug(`${ADD_TO_ALLOWLIST_BTN_ID} button not found`);
+        return;
+    }
+
+    addToAllowlist.addEventListener('click', async (e: Event) => {
+        e.preventDefault();
+
+        await messenger.addAllowlistDomainForUrl(url);
+
+        window.location.href = url;
+    });
+};
+
+/**
  * Initializes the page controller.
  *
  * @param response Response from the background page.
@@ -128,6 +150,7 @@ function PageController(response: PageInitAppData) {
         updateTheme(environmentOptions.theme);
         updatePlaceholders(url, filterName, rule);
         handleProceedAnyway(url);
+        handleAddToAllowlist(url);
     };
 
     return {
