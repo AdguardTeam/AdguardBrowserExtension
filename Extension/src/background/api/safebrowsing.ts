@@ -18,6 +18,7 @@
 import browser from 'webextension-polyfill';
 import SHA256 from 'crypto-js/sha256';
 
+import { BLOCKING_SAFEBROWSING_OUTPUT } from '../../../../constants';
 import { logger } from '../../common/logger';
 import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
 import {
@@ -27,7 +28,6 @@ import {
 } from '../storages/safebrowsing';
 import { browserStorage } from '../storages/shared-instances';
 import { UrlUtils } from '../utils/url';
-import { SAFEBROWSING_OUTPUT } from '../../../../constants';
 
 import {
     type ExtensionXMLHttpRequest,
@@ -234,11 +234,11 @@ export class SafebrowsingApi {
     ): string {
         const listName = sbList || 'malware';
         const isMalware = listName.includes('malware');
-        let url = `${SAFEBROWSING_OUTPUT}.html`;
+
+        let url = `${BLOCKING_SAFEBROWSING_OUTPUT}.html`;
         url += `?malware=${isMalware}`;
 
         const host = UrlUtils.getHost(requestUrl);
-
         if (host) {
             url += `&host=${encodeURIComponent(host)}`;
         }

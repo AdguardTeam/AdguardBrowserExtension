@@ -67,7 +67,7 @@ import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
 import {
     ASSISTANT_INJECT_OUTPUT,
-    DOCUMENT_BLOCK_OUTPUT,
+    BLOCKING_BLOCKED_OUTPUT,
     GPC_SCRIPT_OUTPUT,
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../../constants';
@@ -161,7 +161,7 @@ export class SettingsApi {
     ): T extends true ? SettingsConfigMV3 : SettingsConfigMV2 {
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
-            documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
+            documentBlockingPageUrl: `${Prefs.baseUrl}${BLOCKING_BLOCKED_OUTPUT}.html`,
             ...(isMV3 && {
                 gpcScriptUrl: `/${GPC_SCRIPT_OUTPUT}.js`,
                 hideDocumentReferrerScriptUrl: `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
