@@ -20,7 +20,10 @@ import { logger } from '../../../src/common/logger';
 import { messenger } from '../../../src/pages/services/messenger';
 import { getParams } from '../get-params';
 
-const handleProceedAnyway = () => {
+/**
+ * Handles the "Proceed Anyway" button click.
+ */
+const handleProceedAnyway = (): void => {
     const proceedAnywayBtn = document.getElementById('adblockerSafebrowsingProceed');
 
     if (!proceedAnywayBtn) {
@@ -42,9 +45,9 @@ const handleProceedAnyway = () => {
     });
 };
 
-export const initProceedAnywayHandler = async () => {
+export const initSafebrowsingPageHandler = async () => {
     if (document.readyState === 'loading') {
-        const listener = () => {
+        const listener = (): void => {
             handleProceedAnyway();
             document.removeEventListener('DOMContentLoaded', listener);
         };

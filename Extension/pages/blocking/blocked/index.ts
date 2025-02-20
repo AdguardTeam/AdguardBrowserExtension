@@ -16,18 +16,16 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// import { adBlocked } from '../../src/pages/blocking-pages';
-
-// adBlocked.init();
-
+// FIXME (Slava): import one script file (previously downloaded from remote source)
+// which shall be provided by web team.
 import './imported-chunks/back-btn.js';
 import './imported-chunks/first.js';
 import './imported-chunks/theme-manager.js';
 import './imported-chunks/locales.js';
-import { initBlockerPageHandler } from './page-handler';
+import { initBlockedPageHandler } from './page-handler';
 
-// FIXME: remove later
+// FIXME (Slava): remove later
 // eslint-disable-next-line no-console
 console.log('BLOCKED TEST');
 
-initBlockerPageHandler();
+initBlockedPageHandler();

@@ -28,28 +28,47 @@ const PLACEHOLDER_URL_ID = 'adgAccessBlockedUrl';
 const PLACEHOLDER_FILTER_ID = 'adgAccessBlockingFilterName';
 const PLACEHOLDER_RULE_ID = 'adgAccessBlockingRule';
 
-// FIXME (Slava): add jsdoc
-const updateTheme = (theme: string) => {
+/**
+ * Updates the theme of the page.
+ *
+ * @param theme The theme to set.
+ */
+const updateTheme = (theme: string): void => {
     // @ts-ignore
     window.themeManager.switchTheme(theme);
 };
 
-// FIXME (Slava): add jsdoc
-const updatePlaceholder = (elementId: string, text: string) => {
+/**
+ * Updates the text content of an element with the given ID.
+ *
+ * @param elementId The ID of the element to update.
+ * @param text The text to set in the element.
+ */
+const updatePlaceholder = (elementId: string, text: string): void => {
     const element = document.getElementById(elementId);
     if (element) {
         element.textContent = text;
     }
 };
 
-// FIXME (Slava): add jsdoc
-const updatePlaceholders = (url: string, filterName: string, rule: string) => {
+/**
+ * Updates the placeholders of the page.
+ *
+ * @param url URL to set in the placeholder.
+ * @param filterName Filter name to set in the placeholder.
+ * @param rule Rule to set in the placeholder.
+ */
+const updatePlaceholders = (url: string, filterName: string, rule: string): void => {
     updatePlaceholder(PLACEHOLDER_URL_ID, url);
     updatePlaceholder(PLACEHOLDER_FILTER_ID, filterName);
     updatePlaceholder(PLACEHOLDER_RULE_ID, rule);
 };
 
-// FIXME (Slava): add jsdoc
+/**
+ * Handles the "Proceed Anyway" button click.
+ *
+ * @param url URL to add to trusted.
+ */
 const handleProceedAnyway = (url: string): void => {
     const proceedAnywayBtn = document.getElementById(PROCEED_ANYWAY_BTN_ID);
 
@@ -65,7 +84,13 @@ const handleProceedAnyway = (url: string): void => {
     });
 };
 
-// FIXME (Slava): add jsdoc
+/**
+ * Initializes the page controller.
+ *
+ * @param response Response from the background page.
+ *
+ * @returns The page controller.
+ */
 function PageController(response: PageInitAppData) {
     const {
         filtersMetadata,
@@ -93,12 +118,20 @@ function PageController(response: PageInitAppData) {
         filterName = filterId;
     }
 
+    /**
+     * Initializes the page controller:
+     * - updates the theme
+     * - updates the placeholders
+     * - adds listener to handle "Proceed Anyway" button click
+     */
+    const init = (): void => {
+        updateTheme(environmentOptions.theme);
+        updatePlaceholders(url, filterName, rule);
+        handleProceedAnyway(url);
+    };
+
     return {
-        init: () => {
-            updateTheme(environmentOptions.theme);
-            handleProceedAnyway(url);
-            updatePlaceholders(url, filterName, rule);
-        },
+        init,
     };
 }
 
@@ -107,14 +140,16 @@ let counter = 0;
 const MAX_WAIT_RETRY = 10;
 const RETRY_TIMEOUT_MS = 100;
 
-// FIXME (Slava): add jsdoc
-export const initBlockerPageHandler = async () => {
+/**
+ * Initializes the blocker page handler.
+ */
+export const initBlockedPageHandler = async (): Promise<void> => {
     if (typeof messenger === 'undefined') {
         if (counter > MAX_WAIT_RETRY) {
             window.clearTimeout(timeoutId);
             return;
         }
-        timeoutId = window.setTimeout(initBlockerPageHandler, RETRY_TIMEOUT_MS);
+        timeoutId = window.setTimeout(initBlockedPageHandler, RETRY_TIMEOUT_MS);
         counter += 1;
         return;
     }

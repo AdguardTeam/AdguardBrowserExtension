@@ -16,19 +16,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// import { safeBrowsing } from '../../src/pages/blocking-pages';
-
-// safeBrowsing.init();
-
+// FIXME (Slava): import one script file (previously downloaded from remote source)
+// which shall be provided by web team.
 import './imported-chunks/back-btn.js';
 import './imported-chunks/first.js';
 import './imported-chunks/theme-manager.js';
 import './imported-chunks/dropdown.js';
 import './imported-chunks/locales.js';
-import { initProceedAnywayHandler } from './page-handler';
+import { initSafebrowsingPageHandler } from './page-handler';
 
-// FIXME: remove later
+// FIXME (Slava): remove later
 // eslint-disable-next-line no-console
 console.log('SAFEBROWSING TEST');
 
-initProceedAnywayHandler();
+initSafebrowsingPageHandler();
