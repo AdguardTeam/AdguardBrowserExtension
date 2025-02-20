@@ -27,9 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Handling missing children data in the deserializer for certain nodes.
-- Wrong protection state is shown after navigating from excluded website to another one [#3048].
-- Once allowlisted tab considers all following websites in the tab as allowlisted [#3020].
+- Once allowlisted tab considers all following websites in the tab as allowlisted [#3020] [#3048].
 - Handling missing children data in the deserializer for certain nodes.
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
