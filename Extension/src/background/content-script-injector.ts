@@ -36,7 +36,8 @@ import { TabsApi } from '../common/api/extension/tabs';
 import { createPromiseWithTimeout } from './utils/timeouts';
 
 /**
- * Helper class for injecting content script into tabs, opened before extension initialization.
+ * Helper class for injecting content script into tabs, opened before extension
+ * initialization.
  */
 export class ContentScriptInjector {
     /**
@@ -212,10 +213,29 @@ export class ContentScriptInjector {
     }
 
     /**
+     * Checks if session storage is available in the browser. If session storage
+     * is available then we suppose that background (event page for firefox or
+     * service worker for chromium) can die and we need to check if content
+     * scripts were injected to exclude double injection.
+     *
+     * If session storage is not available (in MV2), we suppose that background
+     * will not die and we don't need to check if content scripts were injected.
+     *
+     * @returns `true` if session storage is available, otherwise `false`.
+     */
+    private static isSessionStorageAvailable(): boolean {
+        return browser.storage?.session !== undefined;
+    }
+
+    /**
      * Sets the injected flag in session storage.
      * This method updates the session storage to indicate that content scripts have been injected.
      */
     public static async setInjected(): Promise<void> {
+        if (!ContentScriptInjector.isSessionStorageAvailable()) {
+            return;
+        }
+
         try {
             await browser.storage.session.set({ [ContentScriptInjector.INJECTED_KEY]: true });
         } catch (e) {
@@ -232,6 +252,10 @@ export class ContentScriptInjector {
      * @returns True if content scripts were injected; otherwise, false.
      */
     public static async isInjected(): Promise<boolean> {
+        if (!ContentScriptInjector.isSessionStorageAvailable()) {
+            return false;
+        }
+
         let isInjected = false;
         try {
             const result = await browser.storage.session.get(ContentScriptInjector.INJECTED_KEY);

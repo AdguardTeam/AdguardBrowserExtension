@@ -55,9 +55,13 @@ import {
     AllowlistApi,
     annoyancesConsent,
 } from '../filters';
-import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
+import {
+    ADGUARD_SETTINGS_KEY,
+    AntiBannerFiltersId,
+    NotifierType,
+} from '../../../common/constants';
 import { settingsEvents } from '../../events';
-import { listeners } from '../../notifier';
+import { notifier } from '../../notifier';
 import { Unknown } from '../../../common/unknown';
 import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
@@ -115,7 +119,7 @@ export class SettingsApi {
         await settingsEvents.publishEvent(key, value);
 
         // legacy event mediator for frontend
-        listeners.notifyListeners(listeners.SettingUpdated, {
+        notifier.notifyListeners(NotifierType.SettingUpdated, {
             propertyName: key,
             propertyValue: value,
         });
@@ -512,13 +516,10 @@ export class SettingsApi {
 
     /**
      * Imports filters settings from object of {@link FiltersConfig}.
-     * Ignoring custom filters since AG-39385.
-     * TODO: uncomment when custom filters will be supported for MV3.
      */
     private static async importFilters({
         [FiltersOption.EnabledFilters]: enabledFilters,
         [FiltersOption.EnabledGroups]: enabledGroups,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         [FiltersOption.CustomFilters]: customFilters,
         [FiltersOption.UserFilter]: userFilter,
         [FiltersOption.Allowlist]: allowlist,
@@ -539,8 +540,11 @@ export class SettingsApi {
             await SettingsApi.loadBuiltInFiltersMv2(builtInFilters);
         }
 
-        // TODO: Uncomment this block when custom filters will be supported for MV3
-        // await CustomFilterApi.createFilters(customFilters);
+        // TODO: Uncomment this block when custom filters will be supported for MV3.
+        // Ignoring custom filters for MV3 since AG-39385.
+        if (!__IS_MV3__) {
+            await CustomFilterApi.createFilters(customFilters);
+        }
 
         groupStateStorage.enableGroups(enabledGroups);
 
