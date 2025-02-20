@@ -18,6 +18,7 @@
 
 // FIXME (Slava): import one script file (previously downloaded from remote source)
 // which shall be provided by web team.
+import './imported-chunks/adg-blocked.js';
 import './imported-chunks/back-btn.js';
 import './imported-chunks/first.js';
 import './imported-chunks/theme-manager.js';
