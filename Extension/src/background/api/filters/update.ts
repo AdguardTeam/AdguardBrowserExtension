@@ -230,11 +230,15 @@ export class FilterUpdateApi {
         const updatedFiltersMetadata: FilterMetadata[] = [];
 
         const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
+            // TODO: Remove this block when custom filters will be supported for MV3
+            if (__IS_MV3__) {
+                return;
+            }
+
             let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null = null;
 
             if (CustomFilterApi.isCustomFilter(filterData.filterId)) {
-                // TODO: Uncomment this block when custom filters will be supported for MV3
-                // filterMetadata = await CustomFilterApi.updateFilter(filterData);
+                filterMetadata = await CustomFilterApi.updateFilter(filterData);
             } else {
                 filterMetadata = await CommonFilterApi.updateFilter(filterData);
             }
