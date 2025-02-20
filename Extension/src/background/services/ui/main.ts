@@ -49,6 +49,7 @@ import {
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
+import { SettingOption } from '../../schema';
 
 /**
  * Init app data for extension pages.
@@ -61,6 +62,7 @@ export type PageInitAppData = {
         rulesCount: number,
     },
     environmentOptions: {
+        theme: string,
         isMacOs: boolean,
         canBlockWebRTC: boolean,
         isChrome: boolean,
@@ -221,6 +223,7 @@ export class UiService {
                 rulesCount: engine.api.getRulesCount(),
             },
             environmentOptions: {
+                theme: SettingsApi.getSetting(SettingOption.AppearanceTheme),
                 isMacOs: UserAgent.isMacOs,
                 /**
                  * Browsers api doesn't allow to get optional permissions
