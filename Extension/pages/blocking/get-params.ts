@@ -16,7 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const getParams = () => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
+/**
+ * Parses 'window.location.search' value passed as `locationSearch`.
+ *
+ * @param locationSearch Value of `window.location.search` to parse.
+ *
+ * @returns Object with parsed search parameters.
+ */
+export const getParams = (locationSearch: string): Record<string, string> => {
+    const urlSearchParams = new URLSearchParams(locationSearch);
     return Object.fromEntries(urlSearchParams.entries());
 };
