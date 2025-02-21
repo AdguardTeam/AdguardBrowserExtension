@@ -22,7 +22,7 @@ import 'dotenv/config';
 
 import { dangerousRules } from './samples/dangerous';
 import { safeRules } from './samples/safe';
-import { RuleSample } from './samples/samples-types';
+import { type RuleSample } from './samples/samples-types';
 
 /**
  * Result type.

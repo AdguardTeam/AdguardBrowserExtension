@@ -28,9 +28,9 @@ import {
 import { PAGE_STATISTIC_KEY, TOTAL_BLOCKED_STATS_GROUP_ID } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
 import {
-    PageStats,
-    PageStatsData,
-    PageStatsDataItem,
+    type PageStats,
+    type PageStatsData,
+    type PageStatsDataItem,
 } from '../schema';
 
 import { browserStorage } from './shared-instances';

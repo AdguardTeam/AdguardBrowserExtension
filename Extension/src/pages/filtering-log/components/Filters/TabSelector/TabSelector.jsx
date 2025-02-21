@@ -176,7 +176,7 @@ const TabSelector = observer(() => {
                         id={tabId}
                         role="button"
                         className="tab-selector__result-item"
-                        onClick={() => { selectionHandlerSearch(tabId); }}
+                        onClick={() => selectionHandlerSearch(tabId)}
                         tabIndex={0}
                     >
                         <span className={itemTextClassName}>

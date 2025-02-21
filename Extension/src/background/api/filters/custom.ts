@@ -17,12 +17,12 @@
  */
 import MD5 from 'crypto-js/md5';
 
-import { DownloadResult } from '@adguard/filters-downloader/browser';
+import { type DownloadResult } from '@adguard/filters-downloader/browser';
 
 import { BrowserUtils } from '../../utils/browser-utils';
 import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';
-import { CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../schema';
+import { type CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../schema';
 import { customFilterMetadataStorage } from '../../storages/custom-filter-metadata';
 import { filterStateStorage } from '../../storages/filter-state';
 import { groupStateStorage } from '../../storages/group-state';
@@ -33,8 +33,8 @@ import { type Network } from '../network/main';
 import { CustomFilterHelper } from '../../../common/custom-filter-helper';
 import { createPromiseWithTimeout } from '../../utils/timeouts';
 
-import type { FilterUpdateOptions } from './update';
-import { FilterParsedData, FilterParser } from './parser';
+import { type FilterUpdateOptions } from './update';
+import { type FilterParsedData, FilterParser } from './parser';
 import { type FilterMetadata } from './main';
 import { CustomFilterLoader } from './custom/loader';
 
@@ -53,8 +53,8 @@ export type CustomFilterDTO = {
  * in 'Add custom filter' modal window if filter was not added before.
  */
 export type CustomFilterInfo = FilterParsedData & {
-    customUrl: string,
-    rulesCount: number,
+    customUrl: string;
+    rulesCount: number;
 };
 
 /**
@@ -62,7 +62,7 @@ export type CustomFilterInfo = FilterParsedData & {
  * returned on creating new custom filter.
  */
 export type CreateCustomFilterResponse = {
-    filter: CustomFilterInfo
+    filter: CustomFilterInfo;
 };
 
 /**
@@ -70,7 +70,7 @@ export type CreateCustomFilterResponse = {
  * returned if custom filter with subscription url has already existed.
  */
 export type CustomFilterAlreadyExistResponse = {
-    errorAlreadyExists: boolean
+    errorAlreadyExists: boolean;
 };
 
 /**
@@ -83,10 +83,10 @@ export type GetCustomFilterInfoResult = CreateCustomFilterResponse | CustomFilte
  * It is downloaded while creating and updating custom filter in {@link CustomFilterApi.getRemoteFilterData}.
  */
 export type GetRemoteCustomFilterResult = {
-    rawRules: string,
-    rules: string[],
-    checksum: string | null,
-    parsed: FilterParsedData,
+    rawRules: string;
+    rules: string[];
+    checksum: string | null;
+    parsed: FilterParsedData;
 };
 
 const emptyDownloadResult: DownloadResult = {

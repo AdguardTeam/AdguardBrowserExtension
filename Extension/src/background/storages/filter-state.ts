@@ -19,9 +19,9 @@ import { AntiBannerFiltersId } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
 import {
     SettingOption,
-    Metadata,
-    FilterStateData,
-    FilterStateStorageData,
+    type Metadata,
+    type FilterStateData,
+    type FilterStateStorageData,
 } from '../schema';
 
 import { settingsStorage } from './settings';

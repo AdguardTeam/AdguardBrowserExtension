@@ -25,7 +25,7 @@ import {
 } from '../../../common/constants';
 import { defaultSettings } from '../../../common/settings';
 import { browserStorage } from '../../storages';
-import { RunInfo } from '../../utils';
+import { type RunInfo } from '../../utils';
 
 /**
  * The Install API should set the base version of the schema and application,

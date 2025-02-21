@@ -20,7 +20,7 @@ import { ContentType as RequestType } from 'tswebextension';
 import { AntiBannerFiltersId } from '../../../../common/constants';
 import { strings } from '../../../../common/strings';
 import { translator } from '../../../../common/translators/translator';
-import type { FilteringLogEvent, FilterMetadata } from '../../../../background/api';
+import { type FilteringLogEvent, type FilterMetadata } from '../../../../background/api';
 
 /**
  * Url utils

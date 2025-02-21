@@ -20,7 +20,7 @@ import browser from 'webextension-polyfill';
 import { FiltersApi } from '@adguard/tswebextension/mv3';
 import {
     FiltersDownloader,
-    DefinedExpressions,
+    type DefinedExpressions,
     type DownloadResult,
 } from '@adguard/filters-downloader/browser';
 import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';

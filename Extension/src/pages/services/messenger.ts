@@ -25,46 +25,44 @@ import {
     MessageType,
     messageHasTypeAndDataFields,
     messageHasTypeField,
+    type MessageWithoutHandlerName,
+    type ChangeUserSettingMessage,
+    type AddAndEnableFilterMessage,
+    type DisableFilterMessage,
+    type ApplySettingsJsonMessage,
+    type SetFilteringLogWindowStateMessage,
+    type SaveUserRulesMessage,
+    type SetConsentedFiltersMessage,
+    type GetIsConsentedFilterMessage,
+    type LoadCustomFilterInfoMessage,
+    type SubscribeToCustomFilterMessage,
+    type RemoveAntiBannerFilterMessage,
+    type GetTabInfoForPopupMessage,
+    type ChangeApplicationFilteringPausedMessage,
+    type OpenAbuseTabMessage,
+    type OpenSiteReportTabMessage,
+    type ResetUserRulesForPageMessage,
+    type RemoveAllowlistDomainMessage,
+    type AddAllowlistDomainMessage,
+    type GetFilteringInfoByTabIdMessage,
+    type ClearEventsByTabIdMessage,
+    type RefreshPageMessage,
+    type AddUserRuleMessage,
+    type RemoveUserRuleMessage,
+    type SetPreserveLogStateMessage,
+    type SetEditorStorageContentMessage,
+    type CanEnableStaticFilterMv3Message,
+    type CanEnableStaticGroupMv3Message,
+    type ExtractMessageResponse,
+    type ValidMessageTypes,
+    type SetNotificationViewedMessage,
+    type UpdateFullscreenUserRulesThemeMessage,
+    type AddUrlToTrustedMessage,
+    type ExtractedMessage,
+    type OpenSafebrowsingTrustedMessage,
 } from '../../common/messages';
-import type {
-    MessageWithoutHandlerName,
-    ChangeUserSettingMessage,
-    AddAndEnableFilterMessage,
-    DisableFilterMessage,
-    ApplySettingsJsonMessage,
-    SetFilteringLogWindowStateMessage,
-    SaveUserRulesMessage,
-    SetConsentedFiltersMessage,
-    GetIsConsentedFilterMessage,
-    LoadCustomFilterInfoMessage,
-    SubscribeToCustomFilterMessage,
-    RemoveAntiBannerFilterMessage,
-    GetTabInfoForPopupMessage,
-    ChangeApplicationFilteringPausedMessage,
-    OpenAbuseTabMessage,
-    OpenSiteReportTabMessage,
-    ResetUserRulesForPageMessage,
-    RemoveAllowlistDomainMessage,
-    AddAllowlistDomainMessage,
-    GetFilteringInfoByTabIdMessage,
-    ClearEventsByTabIdMessage,
-    RefreshPageMessage,
-    AddUserRuleMessage,
-    RemoveUserRuleMessage,
-    SetPreserveLogStateMessage,
-    SetEditorStorageContentMessage,
-    CanEnableStaticFilterMv3Message,
-    CanEnableStaticGroupMv3Message,
-    ExtractMessageResponse,
-    ValidMessageTypes,
-    SetNotificationViewedMessage,
-    UpdateFullscreenUserRulesThemeMessage,
-    AddUrlToTrustedMessage,
-    ExtractedMessage,
-    OpenSafebrowsingTrustedMessage,
-} from '../../common/messages';
-import { NotifierType } from '../../common/constants';
-import { CreateEventListenerResponse } from '../../background/services/event';
+import { type NotifierType } from '../../common/constants';
+import { type CreateEventListenerResponse } from '../../background/services/event';
 
 /**
  * @typedef {import('../../common/messages').MessageMap} MessageMap
@@ -77,12 +75,12 @@ export type LongLivedConnectionCallbackMessage = {
     /**
      * Type of notifier.
      */
-    type: NotifierType,
+    type: NotifierType;
 
     /**
      * Data of notifier.
      */
-    data: any,
+    data: any;
 };
 
 export const enum Page {
@@ -159,7 +157,10 @@ class Messenger {
 
             port.onMessage.addListener((message) => {
                 if (!messageHasTypeField(message)) {
-                    logger.error('Received message in Messenger.createLongLivedConnection has no type field: ', message);
+                    logger.error(
+                        'Received message in Messenger.createLongLivedConnection has no type field: ',
+                        message,
+                    );
                     return;
                 }
 
@@ -940,7 +941,9 @@ class Messenger {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async addUrlToTrusted(url: AddUrlToTrustedMessage['data']['url']): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> {
+    async addUrlToTrusted(
+        url: AddUrlToTrustedMessage['data']['url'],
+    ): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> {
         return this.sendMessage(MessageType.AddUrlToTrusted, { url });
     }
 

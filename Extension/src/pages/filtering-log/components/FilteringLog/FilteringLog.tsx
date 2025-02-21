@@ -25,7 +25,7 @@ import { Filters } from '../Filters';
 import {
     Messenger,
     messenger,
-    LongLivedConnectionCallbackMessage,
+    type LongLivedConnectionCallbackMessage,
     Page,
 } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';

@@ -103,7 +103,7 @@ export type ForwardParams = {
     action: ForwardAction;
     from?: ForwardFrom;
     app?: ForwardApp;
-} & { [key: string] : string; };
+} & { [key: string] : string };
 
 /**
  * Class for creating forward links

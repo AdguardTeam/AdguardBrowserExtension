@@ -39,12 +39,12 @@ import {
     getRuleText,
 } from '../components/RequestWizard/ruleCreators';
 import { messenger } from '../../services/messenger';
-import { AddedRuleState, WizardRequestState } from '../constants';
-import type { RuleCreationOptions } from '../types';
-import type { FilteringLogEvent } from '../../../background/api/filtering-log';
+import { type AddedRuleState, WizardRequestState } from '../constants';
+import { type RuleCreationOptions } from '../types';
+import { type FilteringLogEvent } from '../../../background/api/filtering-log';
 import { logger } from '../../../common/logger';
 
-import type { RootStore } from './RootStore';
+import { type RootStore } from './RootStore';
 
 const defaultRuleOptions: RuleCreationOptions = {
     [RULE_CREATION_OPTION.DOMAIN]: { checked: false },

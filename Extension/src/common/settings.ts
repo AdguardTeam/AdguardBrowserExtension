@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { SettingOption, Settings } from '../background/schema';
+import { SettingOption, type Settings } from '../background/schema';
 
 import { UserAgent } from './user-agent';
 

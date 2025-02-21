@@ -28,11 +28,11 @@ import { find, truncate } from 'lodash-es';
 
 import { ContentType as RequestType } from 'tswebextension';
 
-import type {
-    FilteringLogTabInfo,
-    FilterMetadata,
-    SettingsData,
-    UIFilteringLogEvent,
+import {
+    type FilteringLogTabInfo,
+    type FilterMetadata,
+    type SettingsData,
+    type UIFilteringLogEvent,
 } from '../../../background/api';
 import { translator } from '../../../common/translators/translator';
 import { messenger } from '../../services/messenger';
@@ -42,7 +42,7 @@ import { getStatusMode, StatusMode } from '../filteringLogStatus';
 import { logger } from '../../../common/logger';
 
 import { matchesSearch } from './helpers';
-import type { RootStore } from './RootStore';
+import { type RootStore } from './RootStore';
 
 const enum MiscellaneousFilters {
     Regular = 'regular',
@@ -533,7 +533,8 @@ class LogStore {
             // blocked CSP reports should be filtered as blocked requests in the filtering log. AG-24613
             const filteringEventType = getStatusMode(filteringEvent);
 
-            const isAllowlisted = filteringEventType === StatusMode.ALLOWED || filteringEventType === StatusMode.ALLOWED_STEALTH;
+            const isAllowlisted = filteringEventType === StatusMode.ALLOWED
+                || filteringEventType === StatusMode.ALLOWED_STEALTH;
             const isBlocked = filteringEventType === StatusMode.BLOCKED;
             const isModified = filteringEventType === StatusMode.MODIFIED;
             const isRegular = !isAllowlisted && !isBlocked && !isModified;

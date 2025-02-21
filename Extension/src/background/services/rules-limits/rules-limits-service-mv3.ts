@@ -49,11 +49,11 @@ import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
 import { SettingOption } from '../../schema/settings/enum';
 
-import type {
-    StaticLimitsCheckResult,
-    IRulesLimits,
-    DynamicLimitsCheckResult,
-    Mv3LimitsCheckResult,
+import {
+    type StaticLimitsCheckResult,
+    type IRulesLimits,
+    type DynamicLimitsCheckResult,
+    type Mv3LimitsCheckResult,
 } from './interface';
 
 const {

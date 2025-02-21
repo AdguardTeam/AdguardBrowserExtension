@@ -20,7 +20,7 @@ import browser from 'webextension-polyfill';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
-import { SettingOption, RegularFilterMetadata } from '../../schema';
+import { SettingOption, type RegularFilterMetadata } from '../../schema';
 import { AntiBannerFiltersId } from '../../../common/constants';
 import {
     metadataStorage,
@@ -34,7 +34,7 @@ import { network } from '../network';
 
 import { CustomFilterApi } from './custom';
 import { FiltersApi } from './main';
-import type { FilterUpdateOptions } from './update';
+import { type FilterUpdateOptions } from './update';
 import { FilterParser } from './parser';
 
 /**

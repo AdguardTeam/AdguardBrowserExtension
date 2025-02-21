@@ -25,7 +25,7 @@ import { rootStore } from '../../../stores/RootStore';
 import { HighlightSearch } from '../Search/HighlightSearch';
 
 type FilterTagParams = {
-    tag: TagMetadata,
+    tag: TagMetadata;
 };
 
 export const FilterTag = observer(({ tag }: FilterTagParams) => {
