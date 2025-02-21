@@ -1,14 +1,14 @@
-! Checksum: tIvZ64clmEC8xGtfEgiwUw
+! Checksum: cnjKS0QEt9Q4Eu8jXWYiuw
 ! Title: Hungarian filter
 ! Description: Hufilter. Filter list that specifically removes ads on websites in the Hungarian language.
-! Version: 2.0.3.35
-! TimeUpdated: 2025-02-18T21:01:48+00:00
+! Version: 2.0.3.44
+! TimeUpdated: 2025-02-21T09:01:43+00:00
 ! Expires: 10 days (update frequency)
 !
-! Checksum: lSS2PDfflTtTN1TQoD8HXw
-! OriginalVersion: 202502180949
+! Checksum: FqzdCdCEta0S4p2VdFzm5g
+! OriginalVersion: 202502210855
 ! Title: Hufilter for AdGuard
-! Last modified: 18 Feb 2025 09:49 UTC
+! Last modified: 21 Feb 2025 08:55 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://hufilter.hu
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -17,7 +17,7 @@
 !-------------- Description, Terms of use, Issue management ----------------!
 !---------------------------------------------------------------------------!
 ! Hufilter - The Hungarian Adblock List
-! Author: Hufilter Team (https://github.com/hufilter)
+! Author: Hufilter Contributors (https://github.com/hufilter/hufilter/graphs/contributors)
 !
 ! Please report any unblocked adverts or problems in the GitHub issue tracker.
 ! About filter policy and usage terms please see the homepage above.
@@ -162,6 +162,7 @@ aranyoldalak.hu##.showLink.reveal
 aranyoldalak.hu##[class*=" adH"]
 arukereso.hu##.brandbox
 atlatszo.hu##.tamogatoi
+atv.hu##.ad__cont
 atv.hu##.plus-wrapper
 automotor.hu###_cikk_jobbhasab_2
 automotor.hu###_cikk_jobbhasab_3
@@ -819,6 +820,7 @@ motorrevu.hu##[class*="hirdetes"]
 mozinet.me###adserving-tag-hb
 mozinet.me###pa_sticky_ad_box_middle_left
 mozinet.me##iframe[id^="postbid_if_"]
+mozinet.me,online-filmek.ac##[href^="https://gamesspot.live/"]
 mozinezo.hu###header
 mozishop.hu##.om-holder
 muhelynet.hu###exposeMask
@@ -888,6 +890,7 @@ offline.hu##.ads
 olcsobbat.hu##[class*="Advert"]
 olcsobbat.hu##[id*="hirdetes"]
 olcsobbat.hu###datasheetNavHelp
+online-filmek.ac##[href^="https://wdtyl.xyz/"]
 online-filmek.me##.hover_bkgr_fricc
 onlinecegjegyzek.hu##[class*="hirdetes"]
 ! https://github.com/hufilter/hufilter/issues/254
@@ -915,6 +918,7 @@ pcforum.hu,prog.hu###zone-roaddblock
 pcforum.hu,prog.hu###zone-titleheader
 pcforum.hu##.zone[data-zoneid]
 pcforum.hu###zone-titleheader
+pcforum.hu##.loaded[rel="swappable"]
 pcguru.hu##.banner-content
 pcguru.hu##a[href*="banner_click"]
 pdafanclub.com##[id*="banner"]
@@ -1288,6 +1292,7 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||femcafe.hu/*/sponsoration/
 ||femcafe.hu/*/szponzoracio/
 ||femcafe.hu/spike-ad/
+||filmvilag.me/*.gif$image
 ||fototrend.hu/design/hatter.jpg$image
 ||freeweb.hu/*_banner*.
 ||gamepod.hu/ajanlo/lapcsalad.html
@@ -1452,6 +1457,7 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||szemezgeto*.ingatlan.com^
 ||up-banner.wavecdn.de^
 ||vid4u.org^
+||wdtyl.xyz^
 ||wstat.ozon.ru^
 ||abmr.net^$third-party
 ||ad.hu^$third-party
@@ -1574,6 +1580,7 @@ csupasport.hu##.enews-article-content .endless-shared-area
 cyberpress.hu###cookie-law-info-bar
 ! https://github.com/hufilter/hufilter/issues/511
 e-cegjegyzek.hu###suti_uzenet
+economx.hu##.mobilsticky
 egeszsegkalauz.hu###articleOfferFlag
 ! https://github.com/hufilter/hufilter/issues/248
 egeszsegkalauz.hu###pe_confirm_optin_1
@@ -1706,6 +1713,7 @@ origo.hu##div.facebook-layer-box
 paleomedicina.com###kpopup
 pannonrtv.com###sliding-popup
 pcforum.hu##.slidein.popup.closeablenotification.scripted
+pcforum.hu###pushsubscriptionwnd
 penzcentrum.hu###ajanlo
 penzcentrum.hu###recommend
 pestisracok.hu###onesignal-bell-container
@@ -1784,7 +1792,7 @@ infostart.hu#?##sitemodal:has(.fb-button)
 ||medinfo.ocdn.eu/hu/consent_v2/choice.js^$script,domain=egeszsegkalauz.hu
 ||quantcast.mgr.consensu.org^$script,domain=agrarszektor.hu|autoszektor.hu|bpiautosok.hu|g7.hu|hazipatika.com|hellovidek.hu|hrportal.hu|magyarnarancs.hu|index.hu|pestisracok.hu|portfolio.hu|telex.hu|totalcar.hu|totalbike.hu|szeretlekmagyarorszag.hu|port.hu|player.hu|mandiner.hu|budapestkornyeke.hu|bacsmegye.hu|civishir.hu|baon.hu|bama.hu|beol.hu|boon.hu|delmagyar.hu|duol.hu|feol.hu|kisalfold.hu|haon.hu|heol.hu|szoljon.hu|kemma.hu|nool.hu|sonline.hu|szon.hu|teol.hu|vaol.hu|veol.hu|zaol.hu|twice.hu|sassy.hu|pcwplus.hu|gsplus.hu|myonlineradio.hu|blikk.hu
 ||static.quantcast.mgr.consensu.org/v30/cmpui-popup.js^$script,domain=szeretlekmagyarorszag.hu
-||cmp.inmobi.com^$third-party,script,domain=telex.hu|origo.hu|atlatszo.hu|rtl.hu|videa.hu|myonlineradio.hu|hvg.hu|femina.hu|prohardver.hu|itcafe.hu|mobilarena.hu|gamepod.hu|logout.hu|fototrend.hu|hardverapro.hu|vg.hu|portfolio.hu|noizz.hu
+||cmp.inmobi.com^$third-party,script,domain=telex.hu|origo.hu|atlatszo.hu|rtl.hu|videa.hu|myonlineradio.hu|hvg.hu|femina.hu|prohardver.hu|itcafe.hu|mobilarena.hu|gamepod.hu|logout.hu|fototrend.hu|hardverapro.hu|vg.hu|portfolio.hu|noizz.hu|economx.hu|budapestkornyeke.hu|bpiautosok.hu|magyarnemzet.hu
 !-------------------------------------------------------------------------------!
 !------ Generic network filters ------------------------------------------------!
 !-------------------------------------------------------------------------------!
@@ -1974,6 +1982,8 @@ pcworld.hu#%#//scriptlet('remove-class', 'have-ad', 'body')
 port.hu#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'window.ado.blocked')
 ! https://github.com/uBlockOrigin/uAssets/issues/25482
 online-filmek.ac#%#//scriptlet('prevent-fetch', 'api')
+! https://github.com/uBlockOrigin/uAssets/issues/27256#issuecomment-2670818969
+rubyvidhub.com#%#//scriptlet('remove-node-text', 'script', 'undefined')
 karpathir.com##[class^="k"][class*="-container"][class*="-2"][class$="-hide"]
 !-------------------------------------------------------------------------------!
 !------ Specific network filters -----------------------------------------------!

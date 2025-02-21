@@ -1,8 +1,8 @@
-! Checksum: itYV/rpsGtjl5wEE8tkJPw
+! Checksum: pndhmEIUwHX7+v+oOk4COA
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.31.78
-! TimeUpdated: 2025-02-19T01:38:00+00:00
+! Version: 2.1.31.93
+! TimeUpdated: 2025-02-21T02:39:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -785,7 +785,7 @@ m.91zww.com#%#//scriptlet('abort-on-property-write', 'delCookie')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/150387
 pornbest.org#%#//scriptlet('abort-current-inline-script', 'jQuery', 'injectPops')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/141657
-axutongxue.com,axutongxue.net#%#//scriptlet('prevent-setTimeout', 'checkCookie')
+axutongxue.vip,axutongxue.com,axutongxue.net#%#//scriptlet('prevent-setTimeout', '/getCookie|checkCK|checkCookie/')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/135612
 hamivideo.hinet.net#%#//scriptlet("set-constant", "myPlayer.adDisplay", "undefined")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134441
@@ -1117,6 +1117,7 @@ $script,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixclou
 !
 ! NOTE: Specific rules
 !
+fuliba2025.net##a[href^="https://www.kezyw.com/"] > img
 91porna.com#%#//scriptlet('remove-attr', 'data-ads_url', '[data-ads_url]')
 91porna.com##div[class^="aspect-"]:has(> div > .swiper-backface-hidden)
 91porna.com##.video-items > li:has(> a.checkNum)
@@ -1736,8 +1737,8 @@ wnflb2023.com##.GzList
 bdys03.com##.artplayer-plugin-ads
 ||u10*.com/*.gif$domain=bhuai.top
 ||ll.ibiqiuge.com/m.js
-axutongxue.com,axutongxue.net##body > div[id]:has(> ul[class] > li > img.icon + a[href])
-axutongxue.com,axutongxue.net#%#//scriptlet('trusted-suppress-native-method', 'document.write', '/ul class.*icon.*href/', 'prevent')
+axutongxue.vip,axutongxue.com,axutongxue.net##body > :is(div, aside)[id]:has(> ul[class] > li > img.icon + a[href])
+axutongxue.vip,axutongxue.com,axutongxue.net#%#//scriptlet('trusted-suppress-native-method', 'document.write', '/ul class.*icon.*href/', 'prevent')
 sstv.pw##.container > a > img[style="width: 100%;"]
 cupfox.app##.t-img-box > a[target="_blank"] > img
 olevod.com##div[class^="ad"][style="margin-top: 0.05rem;"]
@@ -3225,6 +3226,7 @@ bmvc2020-conference.com#@#div[id][style="width: 100%;"] > iframe[scrolling="no"]
 .xyz/z/*/code.js$script,third-party
 -*-*-*-*.as^$script,third-party
 .xyz:*?x=$script,third-party
+.xyz:*?c=$script,third-party
 -*-*-*-*.panda^$script,third-party
 .tv/gg/
 /webAdvert.php?ad_name=
@@ -4939,11 +4941,32 @@ newduba.cn###jq_youxi
 ||67.21.92.*.gif
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||fttxhcua.icu^
+||crazodsxx.com^
+||kcinvdd.top^
+||xxsmad6.com^
+||bjtlzv.icu^
+||nljyjt.icu^
+||fngmeat.top^
+||2ueb.cn^
+||scinvdb.top^
+||stildell.com^
+||dtntnl.icu^
+||hvddxj.icu^
+||ssydquy.top^
+||qgaxkkv.top^
+||sg7.pw^
+||jcinvda.top^
+||dbdophuz.icu^
+||qogrux.com^
 ||dhannaq.com^
 ||xqrydt.icu^
 ||rsohvot.xyz^
 ||o4q.fun^
 ||jshilr.icu^
+||hcinvdu.top^
+||fesnaed.com^
+||icinvdo.top^
 ||zavgrj.icu^
 ||stogmos.com^
 ||zooj.cn^$third-party
@@ -12854,6 +12877,9 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||ixkw3.cc/wp-content/themes/wpMyTube/assets/js/mobile.
 ||52xkdy.com/pmc/
 ||dfcfw.com/download/D25411840164398846730_w690h389.
+||178.com/misc/self/*_ads
+||xlmp4.cc/js/wcount.js
+178.com,nga.cn,ngabbs.com##[style^="background"][style*="vertical-align"]
 eastmoney.com##div[style^="position: fixed; z-index:"]
 g-mh.org,godamh.com##.adshow
 nodejs.cn###pagead0
@@ -20018,7 +20044,7 @@ ipv6.baidu.com,www.baidu.com,www1.baidu.com,xueshu.baidu.com##style[id^="s-"] + 
 ||rc.ie13.com^
 ||rdbd.xsread.com^
 ||redmx.cn^$third-party
-||res.pinpai8.cn^
+||res*.pinpai8.cn^
 ||retrieval-bd.duote.com^
 ||richh.cn^
 ||ruiwen.com/css_
@@ -20522,6 +20548,8 @@ _rony.js$script,third-party
 .okpp0*.xyz/$script,third-party
 .fun/nd389.js
 .fun/In390hG2.js
+.pw/nd389.js
+.pw/In390hG2.js
 .com:1*/static/lbsite/*/*.js?v=$script,third-party
 .com:2*/static/lbsite/*/*.js?v=$script,third-party
 .com:3*/static/lbsite/*/*.js?v=$script,third-party

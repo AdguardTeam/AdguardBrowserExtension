@@ -1,13 +1,13 @@
-! Checksum: HEDMakte+PG4zKkRS0WPWA
+! Checksum: gmrUCRfFdAsy1L7VodQFMg
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.51
-! TimeUpdated: 2025-02-18T09:01:58+00:00
+! Version: 2.0.20.54
+! TimeUpdated: 2025-02-20T09:02:11+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0218.4
+! OriginalVersion: 2025.0220.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -15,6 +15,7 @@
 !
 ! Version must be UTC format.
 !
+||ad.api.adwiser.kr^
 ||recoshopping.naver.com^
 ||ad-creative.pstatic.net^
 ||centaurs-rest.coupang.com^
@@ -527,6 +528,8 @@
 /data/banner.json?$domain=~nintendo.ai|~nintendo.at|~nintendo.be|~nintendo.bg|~nintendo.biz|~nintendo.by|~nintendo.ca|~nintendo.cc|~nintendo.ch|~nintendo.cl|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.ke|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.tr|~nintendo.com.ua|~nintendo.de|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fr|~nintendo.gr|~nintendo.hu|~nintendo.ie|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.lt|~nintendo.md|~nintendo.me|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.sh|~nintendo.shop|~nintendo.sk|~nintendo.tw|~nintendo.uz|~nintendo.vn|~nintendo.website
 /ad-manager.min.js
 !
+||cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/
+/^https:\/\/biz\.chosun\.com\/resizer\/v[0-9]+\/[A-Z0-9]+\.[a-z]+\?auth=.+&width=/$domain=biz.chosun.com,header=x-edgeconnect-cache-status
 ||biz.sbs.co.kr/ad/article/
 ||wimg.heraldcorp.com/svc/banner/
 ||product.kyobobook.co.kr/api/gw/onk/ad/
@@ -1324,6 +1327,7 @@
 !
 ! DOMAIN-REFRESHER: START
 !
+||365tvda.com/data/file/bojng/
 ||xn--hy1bm2ltmr.com/img/banner/
 ||xn--9i2bm5b28j1sr.com/img/banner/
 /^https:\/\/aniwolf\.com\/storage\/[A-Za-z0-9]+\./$domain=aniwolf.com|aniwolf.com.bd|aniwolf.com.np
@@ -1577,6 +1581,8 @@ jobkorea.co.kr##div[id^="Banner"]
 eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
+biz.chosun.com##.article-print-sty1:has(> .box--position-absolute-left > a[href^="https://biz.chosun.com/money"])
+biz.heraldcorp.com##.hbanner
 ohmynews.com##.aside > div[style^="height:"]
 dealsite.co.kr##a[class^="main-banner"]
 m.humoruniv.com###read > div[style*="z-index"]:not([class],[id],[style="clear:both;"])

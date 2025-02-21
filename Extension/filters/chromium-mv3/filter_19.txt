@@ -1,8 +1,8 @@
-! Checksum: cDYsUJgx3t6uX3qg28KWhA
+! Checksum: 307KXoguR3tWi6F0ktSK9A
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.50.65
-! TimeUpdated: 2025-02-19T02:37:38+00:00
+! Version: 2.0.50.77
+! TimeUpdated: 2025-02-21T10:39:48+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -389,6 +389,8 @@ reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#@#.Sid
 !
 ! Add without $third-party, so apps are blocking them too
 !
+||newartreview.com^
+||thejavalane.com^
 ||curbminers.com^
 ||punyplant.com^
 ||jubilanttempest.com^
@@ -1727,6 +1729,8 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+925-1000.com#%#//scriptlet('abort-on-property-read', 'justDetectAdblock')
+925-1000.com###phpbb-aJHwDeoSqLhW
 lewdzone.com##main > div.alert:has(> a[href="https://lzmods.com/68/how-to-whitelist-an-website-in-adblock-plugins/"])
 tv.latinlucha.es##.zak-overlay-wrapper + div[id][class*=" "]
 androidworld.nl#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'adBlocker')
@@ -2119,7 +2123,7 @@ rentanadviser.com##.reklamcontainer
 ||forumnulled.com/uploads/set_resources_8/*_zozEabb204.js
 ||blink.net/iframe.html$domain=dailyprincetonian.com
 18comic.*#%#//scriptlet("set-constant", "nerverblock_callback", "noopFunc")
-multiup.eu,multiup.org#?#.content-body > .text-center:has(> a[href*="list_adblock.txt&"])
+goflix.sbs,multiup.eu,multiup.org##.content-body > .text-center:has(> a[href*="list_adblock.txt&"])
 ||cdn.iphoneincanada.ca/wp-content/themes/iphone/js/JDAB.js
 craftpip.github.io#%#//scriptlet('set-local-storage-item', 'adsok', 'true')
 redark.pl##[class^="adBlockDetector"]
@@ -2585,7 +2589,7 @@ multifilemirror.com,smplace.com##.blockContainer
 multifilemirror.com##.jbanner
 multifilemirror.com##.noticeContainer
 multiup.org##.alert.alert-success
-multiup.io,multiup.org#$#.mfp-ready { display: none !important; }
+goflix.sbs,multiup.io,multiup.org#$#.mfp-ready { display: none !important; }
 myshows.me##.likewiki
 mysmsbox.ru##div[ng-if="status.adBlockerActive"]
 nachrichten.at###iab_overlay
@@ -3998,8 +4002,6 @@ promote.telegram.org#$#.pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_
 ! script checks these elements even if rules changed
 ! .responsive-sky-scraper
 ! .header-link-exaroton
-aternos.org#$#.header-link-exaroton-link > div > div { transform: rotate3d(1, 1, 0, 90deg) !important; pointer-events: none !important; }
-aternos.org#$#.header-link-exaroton-link { background-color: unset !important; }
 @@||aternos.org^$generichide
 !#safari_cb_affinity(general)
 @@||securepubads.g.doubleclick.net/gampad/ads?pvsid=$domain=aternos.org
@@ -4362,6 +4364,9 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+m.ok.ru##.invite-banner
+azbooka.ru##._1wDzjU2f
+oblikbudget.com.ua##.id3-login-root
 m.coupang.com###MWEB_PRODUCT_DETAIL_SPLASH_BOTTOM_SHEET
 medonet.pl##.ods-c-exit-intent__wrapper
 cs.money#$#body { overflow: auto !important; }
@@ -4469,8 +4474,6 @@ puck.news##.sticky-paywall.js-is-sticky
 animatebookstore.com##.stamp_section
 hackernoon.com##div[style*="ad-assets"]
 novayagazeta.eu##main > div[class][style]:has(> a[href^="/donate"])
-vseinstrumenti.ru#$#body > div[data-v-47b0f060] { display: none !important; }
-vseinstrumenti.ru#$#body { overflow: auto !important; }
 live.vkvideo.ru##div[class^="RecommendationTechnologiesAlert_root__"]
 live.vkvideo.ru##div[class^="App_app_"] > div[class^="ScrollableComponent_container_"]:has(> div[class*="NewsPopup_root_"])
 plus.nhk.jp##div[class="overlay -dialog"]
@@ -12389,7 +12392,7 @@ amarujala.com###auwnotificationpopup
 ||gizbot.com/common/build/js/site-notification-desk.min.js
 investing.com##.allow-notifications-popup-wrapper
 ||games.mail.ru/hotbox/gem_static/content/frontend/sw.js
-||kp.ru/push/
+.ru/push/$domain=vm.ru|kp.ru
 ||smartworld.it/wp-content/plugins/push_notification/
 ||dcnews.ro/sm-sw.js
 ||redditstatic.com/*/PushNotifications.
@@ -12895,6 +12898,11 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+journal.sovcombank.ru##astro-island[component-export="Mindbox"] + div:has( > div > div > a[href="https://t.me/sovcomblog"])
+journal.sovcombank.ru##astro-island[component-export="Mindbox"]
+khelnow.com##.MuiBox-root > button.MuiButtonBase-root[aria-label="follow us"]
+azbooka.ru##._26wxVNOj
+shop.prevention.com##div[data-testid="fs-overlay"]:has(> div[class^="PopupNewsletter_PopupNewsletter_"])
 belveb.by##a[href="https://t.me/BelVEBby"] > img
 dota2.ru##.news-news__main-footer > div[style]:has(> a[href="//t.me/dota2_russia"])
 daily.afisha.ru##.infinite-scroll-component > div[class^="SocialPlate_Container"]
@@ -13118,9 +13126,6 @@ voicendata.com##.subscribe-div-body-right-side
 golem.de##.htmlinline
 sports.ru##.structured-body-wrapper > a[href^="https://t.me/"]
 theglobeandmail.com###zephr-zone-footer
-theverge.com#$##zephr-zone-footer { display: none !important; }
-theverge.com#$##zephr-overlay { display: none !important; }
-theverge.com#$#body { overflow: auto !important; }
 disgustingmen.com##.widget-area .widget_custom_html:has(> .custom-html-widget a[href="https://telegram.me/disgustingmen"])
 ||loader-cdn.azureedge.net/prod/cosprings/loader.min.js$domain=coloradopolitics.com|denvergazette.com
 selfie.iol.pt##.barNewsletter
@@ -13872,7 +13877,6 @@ securityaffairs.com##.right-sidebar > div.newsletter-form
 discover24.ru###multi-button-ean
 autodesk.com###uf-cta-beside
 winaero.com###ebpa
-winaero.com##.ebpa-close
 vadimkravcenko.com##.custom-backdrop-show
 ubuntu.com###main-content div[class^="row-"] > .col:has(>  form[onsubmit*="newsletter signup"])
 ubuntu.com##.blog-p-card--muted:has(> .blog-p-card__content > form[onsubmit*="newsletter signup"])
