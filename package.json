@@ -9,7 +9,7 @@
     "beta": "cross-env BUILD_ENV=beta node -r @swc-node/register tools/bundle.ts",
     "release": "cross-env BUILD_ENV=release node -r @swc-node/register tools/bundle.ts",
     "adguard-api": "cross-env BUILD_ENV=dev node -r @swc-node/register tools/bundle.ts adguard-api",
-    "test": "mkdir -p tests-reports && MANIFEST_ENV=2 jest && MANIFEST_ENV=3 jest",
+    "test": "mkdir -p tests-reports && MANIFEST_ENV=2 jest --logHeapUsage --detectOpenHandles && MANIFEST_ENV=3 jest --logHeapUsage --detectOpenHandles",
     "test:integration": "rimraf tmp && mkdir -p tests-reports && node -r @swc-node/register tools/browser-test/index.ts",
     "locales": "node -r @swc-node/register tools/locales.js",
     "resources": "node -r @swc-node/register tools/resources.ts",
