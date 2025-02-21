@@ -19,11 +19,11 @@
 import { NotifierType } from '../../../common/constants';
 import {
     MessageType,
-    LoadCustomFilterInfoMessage,
-    SubscribeToCustomFilterMessage,
-    RemoveAntiBannerFilterMessage,
+    type LoadCustomFilterInfoMessage,
+    type SubscribeToCustomFilterMessage,
+    type RemoveAntiBannerFilterMessage,
 } from '../../../common/messages';
-import { CustomFilterApi, GetCustomFilterInfoResult } from '../../api/filters/custom';
+import { CustomFilterApi, type GetCustomFilterInfoResult } from '../../api/filters/custom';
 import { messageHandler } from '../../message-handler';
 import { notifier } from '../../notifier';
 import { engine } from '../../engine';

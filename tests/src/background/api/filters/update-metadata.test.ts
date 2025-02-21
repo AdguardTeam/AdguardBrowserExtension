@@ -1,4 +1,4 @@
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import sinon from 'sinon';
 import {
     afterEach,

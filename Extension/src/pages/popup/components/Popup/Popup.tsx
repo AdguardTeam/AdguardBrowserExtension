@@ -32,7 +32,7 @@ import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import {
-    ExtractedMessage,
+    type ExtractedMessage,
     messageHasTypeAndDataFields,
     messageHasTypeField,
     MessageType,

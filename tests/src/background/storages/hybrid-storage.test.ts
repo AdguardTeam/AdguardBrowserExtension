@@ -1,4 +1,4 @@
-import browser, { Storage } from 'webextension-polyfill';
+import browser, { type Storage } from 'webextension-polyfill';
 import { cloneDeep } from 'lodash-es';
 import {
     afterEach,

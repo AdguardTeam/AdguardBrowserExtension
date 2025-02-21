@@ -21,25 +21,25 @@ import { type SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextensio
 import { logger } from '../../../common/logger';
 import { type AppearanceTheme, defaultSettings } from '../../../common/settings';
 import {
-    AllowlistConfig,
+    type AllowlistConfig,
     AllowlistOption,
     configValidator,
-    ExtensionSpecificSettingsConfig,
+    type ExtensionSpecificSettingsConfig,
     ExtensionSpecificSettingsOption,
-    FiltersConfig,
+    type FiltersConfig,
     FiltersOption,
-    GeneralSettingsConfig,
+    type GeneralSettingsConfig,
     GeneralSettingsOption,
     RootOption,
     PROTOCOL_VERSION,
-    StealthConfig,
+    type StealthConfig,
     StealthOption,
-    UserFilterConfig,
+    type UserFilterConfig,
     UserFilterOption,
     SettingOption,
-    Settings,
+    type Settings,
     settingsValidator,
-    Config,
+    type Config,
 } from '../../schema';
 import {
     filterStateStorage,
@@ -77,9 +77,9 @@ import { network } from '../network';
 import { SettingsMigrations } from './migrations';
 
 export type SettingsData = {
-    names: typeof SettingOption,
-    defaultValues: Settings,
-    values: Settings,
+    names: typeof SettingOption;
+    defaultValues: Settings;
+    values: Settings;
 };
 
 /**

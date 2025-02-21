@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { merge } from 'webpack-merge';
-import { WebpackPluginInstance } from 'webpack';
+import { type WebpackPluginInstance } from 'webpack';
 
 import { genMv2CommonConfig } from '../webpack.common-mv2';
 import { updateManifestBuffer } from '../../helpers';

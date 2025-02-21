@@ -18,8 +18,8 @@
 import { filterVersionStorage, settingsStorage } from '../../storages';
 import {
     SettingOption,
-    RegularFilterMetadata,
-    CustomFilterMetadata,
+    type RegularFilterMetadata,
+    type CustomFilterMetadata,
 } from '../../schema';
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
 import { logger } from '../../../common/logger';
@@ -27,7 +27,7 @@ import { FiltersUpdateTime } from '../../../common/constants';
 import { engine } from '../../engine';
 import { getErrorMessage } from '../../../common/error';
 
-import { FilterMetadata, FiltersApi } from './main';
+import { type FilterMetadata, FiltersApi } from './main';
 import { CustomFilterApi } from './custom';
 import { CommonFilterApi } from './common';
 
@@ -38,11 +38,11 @@ export type FilterUpdateOptions = {
     /**
      * Filter identifier.
      */
-    filterId: number,
+    filterId: number;
     /**
      * Should we update filters fully without patch updates or load patches to filters.
      */
-    ignorePatches: boolean,
+    ignorePatches: boolean;
 };
 
 /**

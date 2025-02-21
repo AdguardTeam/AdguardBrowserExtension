@@ -19,7 +19,7 @@
 import {
     useState,
     useCallback,
-    RefObject,
+    type RefObject,
 } from 'react';
 
 import { useResizeObserver } from './useResizeObserver';

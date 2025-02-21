@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import cn from 'classnames';
 
@@ -24,17 +24,17 @@ type SvgParams = {
     /**
      * SVG id.
      */
-    id: string,
+    id: string;
 
     /**
      * SVG class name.
      */
-    classname: string,
+    classname: string;
 
     /**
      * SVG title.
      */
-    title?: string,
+    title?: string;
 };
 
 const Svg = ({
@@ -49,8 +49,8 @@ const Svg = ({
 );
 
 type AnimatedWrapperParams = {
-    children: ReactNode,
-    className: string,
+    children: ReactNode;
+    className: string;
 };
 
 /**
@@ -62,27 +62,27 @@ type IconParams = {
     /**
      * Icon id.
      */
-    id: string,
+    id: string;
 
     /**
      * Icon class name.
      */
-    classname?: string,
+    classname?: string;
 
     /**
      * Icon title.
      */
-    title?: string,
+    title?: string;
 
     /**
      * Animation condition.
      */
-    animationCondition?: boolean,
+    animationCondition?: boolean;
 
     /**
      * Animation class name.
      */
-    animationClassname?: string,
+    animationClassname?: string;
 };
 
 export const Icon = ({

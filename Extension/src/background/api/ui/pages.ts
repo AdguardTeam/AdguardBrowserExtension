@@ -28,7 +28,7 @@ import {
     Forward,
     ForwardAction,
     ForwardFrom,
-    ForwardParams,
+    type ForwardParams,
 } from '../../../common/forward';
 import { UrlUtils } from '../../utils/url';
 import {

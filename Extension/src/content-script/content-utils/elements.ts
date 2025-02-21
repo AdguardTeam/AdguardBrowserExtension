@@ -23,14 +23,14 @@
 const MAX_Z_INDEX = '2147483647';
 
 export type AppendIframeProps = {
-    target: Element,
-    html: string,
-    styles: string,
+    target: Element;
+    html: string;
+    styles: string;
 };
 
 export type AppendDivProps = {
-    target: Element,
-    html: string
+    target: Element;
+    html: string;
 };
 
 /**

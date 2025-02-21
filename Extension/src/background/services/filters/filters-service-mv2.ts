@@ -32,7 +32,7 @@ import { engine } from '../../engine';
 import {
     annoyancesConsent,
     Categories,
-    FilterMetadata,
+    type FilterMetadata,
     FiltersApi,
     FilterUpdateApi,
     HitStatsApi,

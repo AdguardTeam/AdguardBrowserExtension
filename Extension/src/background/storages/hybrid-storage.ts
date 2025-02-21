@@ -21,7 +21,7 @@
  * providing a unified API for storage operations. It automatically chooses between IndexedDB storage and
  * a fallback storage mechanism based on the environment's capabilities.
  */
-import type { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import { nanoid } from 'nanoid';
 import { SuperJSON, type SuperJSONResult } from 'superjson';
 import { deleteDB, openDB } from 'idb';

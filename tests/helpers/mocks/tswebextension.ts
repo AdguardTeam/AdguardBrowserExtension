@@ -2,9 +2,9 @@ import { vi } from 'vitest';
 
 // TODO: Use 'tswebextension' alias to work with mv3 version. AG-37302
 import {
-    EventChannel,
-    FilteringLogEvent,
-    ConfigurationMV2Context,
+    type EventChannel,
+    type FilteringLogEvent,
+    type ConfigurationMV2Context,
 } from '@adguard/tswebextension';
 
 import { MockedEventCannel } from './event-channel';

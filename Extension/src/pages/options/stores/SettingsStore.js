@@ -234,6 +234,12 @@ class SettingsStore {
 
     @action
     async getRulesLimitsCounters() {
+        // This method should only be called for MV3-based extensions
+        // AG-40166
+        if (!__IS_MV3__) {
+            return;
+        }
+
         const rulesLimits = await fetchDataWithRetry(messenger.getRulesLimitsCounters.bind(messenger));
 
         // Will use default rules limits if the background service is not ready.
@@ -293,13 +299,14 @@ class SettingsStore {
             } else {
                 // on the next filters updates, we update filters keeping order
                 /**
-                 * TODO (v.zhelvis): Updating filters on background service response can cause filter enable state mismatch,
-                 * because we toggle switches on frontend side first, but cannot determine when action
-                 * in background service is completed and final result of user action.
-                 * It seems that we need to use a new approach with atomic updates instead of global state synchronization
-                 * to avoid this kind of problems. This task can be split into two parts:
+                 * TODO: Updating filters on background service response can cause filter enable
+                 * state mismatch, because we toggle switches on frontend side first, but cannot determine when
+                 * action in background service is completed and final result of user action.
+                 * It seems that we need to use a new approach with atomic updates instead of global
+                 * state synchronization to avoid this kind of problems. This task can be split into two parts:
                  * - Moving specific logic from the background to the settings page.
-                 * - Integrate a transparent transaction model with simple collision resolution to prevent race conditions.
+                 * - Integrate a transparent transaction model with simple collision resolution to prevent
+                 * race conditions.
                  */
                 this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
             }

@@ -221,18 +221,15 @@ export const Miscellaneous = observer(() => {
                     {translator.getMessage('options_open_log')}
                 </button>
 
-                {
-                    isOpenResetStatsModal
-                            && (
-                                <ConfirmModal
-                                    title={translator.getMessage('options_clear_stats_confirm_modal_title')}
-                                    isOpen={isOpenResetStatsModal}
-                                    setIsOpen={setIsOpenResetStatsModal}
-                                    onConfirm={handleResetStatisticsConfirm}
-                                    customConfirmTitle={translator.getMessage('options_clear_stats_confirm_modal_clear_button')}
-                                />
-                            )
-                }
+                {isOpenResetStatsModal && (
+                    <ConfirmModal
+                        title={translator.getMessage('options_clear_stats_confirm_modal_title')}
+                        isOpen={isOpenResetStatsModal}
+                        setIsOpen={setIsOpenResetStatsModal}
+                        onConfirm={handleResetStatisticsConfirm}
+                        customConfirmTitle={translator.getMessage('options_clear_stats_confirm_modal_clear_button')}
+                    />
+                )}
 
                 <button
                     type="button"
@@ -242,18 +239,17 @@ export const Miscellaneous = observer(() => {
                     {translator.getMessage('options_reset_stats')}
                 </button>
 
-                {
-                    isOpenResetSettingsModal
-                        && (
-                            <ConfirmModal
-                                title={translator.getMessage('options_reset_settings_confirm_modal_title')}
-                                isOpen={isOpenResetSettingsModal}
-                                setIsOpen={setIsOpenResetSettingsModal}
-                                onConfirm={handleResetSettingsConfirmWrapper}
-                                customConfirmTitle={translator.getMessage('options_reset_settings_confirm_modal_clear_button')}
-                            />
-                        )
-                }
+                {isOpenResetSettingsModal && (
+                    <ConfirmModal
+                        title={translator.getMessage('options_reset_settings_confirm_modal_title')}
+                        isOpen={isOpenResetSettingsModal}
+                        setIsOpen={setIsOpenResetSettingsModal}
+                        onConfirm={handleResetSettingsConfirmWrapper}
+                        customConfirmTitle={
+                            translator.getMessage('options_reset_settings_confirm_modal_clear_button')
+                        }
+                    />
+                )}
                 <button
                     type="button"
                     className="links-menu__item button--link--red"

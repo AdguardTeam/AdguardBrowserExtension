@@ -24,7 +24,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 // webpack.DefinePlugin is not named exported by webpack.
-import webpack, { Configuration, type EntryObject } from 'webpack';
+import webpack, { type Configuration, type EntryObject } from 'webpack';
 
 import {
     BUILD_PATH,

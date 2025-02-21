@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Runtime } from 'webextension-polyfill';
+import browser, { type Runtime } from 'webextension-polyfill';
 
 import { notifier } from '../notifier';
 import { messageHandler } from '../message-handler';
 import {
-    RemoveListenerMessage,
-    CreateEventListenerMessage,
+    type RemoveListenerMessage,
+    type CreateEventListenerMessage,
     MessageType,
-    NotifyListenersMessage,
+    type NotifyListenersMessage,
 } from '../../common/messages';
 
 export type CreateEventListenerResponse = {
-    listenerId: number,
+    listenerId: number;
 };
 
 /**

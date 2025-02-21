@@ -26,7 +26,6 @@ module.exports = {
         ],
 
         'import/prefer-default-export': 'off',
-        'max-len': 'off',
         'no-use-before-define': 'off',
         'indent': 'off',
         'arrow-body-style': 'off',

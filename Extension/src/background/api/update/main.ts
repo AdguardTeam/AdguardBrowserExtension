@@ -50,7 +50,7 @@ import {
     SchemaPreprocessor,
     SettingOption,
 } from '../../schema';
-import type { RunInfo } from '../../utils/run-info';
+import { type RunInfo } from '../../utils/run-info';
 import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';

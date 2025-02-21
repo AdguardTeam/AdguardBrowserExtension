@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Product } from './product';
+import { type Product } from './product';
 
 /**
  * Key is a product name,
@@ -30,14 +30,14 @@ export type TestcaseException = {
  * Describes object from https://testcases.agrd.dev/data.json.
  */
 export interface Testcase {
-    id: number,
-    title: string,
-    link: string,
-    rulesUrl?: string,
-    readmeUrl?: string,
-    compatibility: Product[],
-    manual?: boolean,
-    exceptions?: TestcaseException[],
+    id: number;
+    title: string;
+    link: string;
+    rulesUrl?: string;
+    readmeUrl?: string;
+    compatibility: Product[];
+    manual?: boolean;
+    exceptions?: TestcaseException[];
 }
 
 /**
