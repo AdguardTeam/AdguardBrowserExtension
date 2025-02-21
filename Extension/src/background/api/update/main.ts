@@ -83,6 +83,7 @@ export class UpdateApi {
         '8': UpdateApi.migrateFromV8toV9,
         '9': UpdateApi.migrateFromV9toV10,
         '10': UpdateApi.migrateFromV10toV11,
+        '11': UpdateApi.migrateFromV11toV12,
     };
 
     /**
@@ -205,9 +206,34 @@ export class UpdateApi {
     };
 
     /**
+     * Run data migration from schema v11 to schema v12.
+     *
+     * For the extension update to v5.2.x // TODO: specify version after release.
+     */
+    private static async migrateFromV11toV12(): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        let updatedSettings = await UpdateApi.replaceCombinedAnnoyancesFilterWithSeparateOnes(settings);
+
+        updatedSettings = await UpdateApi.removeDnsFilter(updatedSettings);
+
+        await FiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
+
+        await FiltersStorage.remove(AntiBannerFiltersId.DnsFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.DnsFilterId);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, updatedSettings);
+    }
+
+    /**
      * Run data migration from schema v10 to schema v11.
      *
-     * For the extension update to v5.x.x // TODO: specify version after release.
+     * For the extension update to v5.1.x // TODO: specify version after release.
      */
     private static async migrateFromV10toV11(): Promise<void> {
         let entries: Record<string, unknown> = {};
@@ -296,23 +322,6 @@ export class UpdateApi {
         if (keysToRemove.length > 0) {
             await hybridStorage.removeMultiple(keysToRemove);
         }
-
-        const settings = await hybridStorage.get(ADGUARD_SETTINGS_KEY);
-
-        if (!UpdateApi.isObject(settings)) {
-            throw new Error('Settings is not an object');
-        }
-
-        let updatedSettings = await UpdateApi.replaceCombinedAnnoyancesFilterWithSeparateOnes(settings);
-        updatedSettings = await UpdateApi.removeDnsFilter(updatedSettings);
-
-        // Remove deprecated filters from the storages.
-        // FIXME (Slava): use correct storages
-        // await FiltersStorageV1.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
-        // await RawFiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
-        // FIXME (Slava): remove dns filter
-
-        await hybridStorage.set(ADGUARD_SETTINGS_KEY, updatedSettings);
     }
 
     /**
@@ -1140,6 +1149,10 @@ export class UpdateApi {
 
     /**
      * Replaces the deprecated combined Annoyances filter with separate ones.
+     *
+     * Please note that separated annoyances filters will
+     * - be marked as 'enabled'
+     * - not be marked as 'loaded'.
      *
      * @param settings The settings object.
      *
