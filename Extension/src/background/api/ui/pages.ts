@@ -61,6 +61,11 @@ import { OptionsPageSections } from '../../../common/nav';
  */
 export class PagesApi {
     /**
+     * Product type.
+     */
+    private static readonly PRODUCT_TYPE = 'Ext';
+
+    /**
      * Settings page url.
      */
     public static readonly settingsUrl = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT);
@@ -245,12 +250,14 @@ export class PagesApi {
         const commonFilterIds = FiltersApi.getEnabledFilters()
             .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
 
+        const manifestDetails = browser.runtime.getManifest();
+
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            product_type: 'Ext',
-            manifest_version: __IS_MV3__ ? '3' : '2',
-            product_version: encodeURIComponent(browser.runtime.getManifest().version),
+            product_type: PagesApi.PRODUCT_TYPE,
+            manifest_version: encodeURIComponent(manifestDetails.manifest_version),
+            product_version: encodeURIComponent(manifestDetails.version),
             url: encodeURIComponent(siteUrl),
         };
 
@@ -272,7 +279,9 @@ export class PagesApi {
         }
 
         const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
-        if (isCustomFiltersEnabled) {
+        // Ignoring custom filters in MV3 since AG-39385.
+        // TODO: fix the condition when custom filters will be supported for MV3
+        if (isCustomFiltersEnabled && !__IS_MV3__) {
             const customFilterUrls = CustomFilterApi.getFiltersData()
                 .filter(({ enabled }) => enabled)
                 .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));

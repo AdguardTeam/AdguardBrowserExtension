@@ -35,12 +35,12 @@ import {
 
 import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import { engine } from '../engine';
 import { settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
-import { AntiBannerFiltersId } from '../../common/constants';
+import { AntiBannerFiltersId, NotifierType } from '../../common/constants';
 import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 
 export type FilteringEventRuleData = {
@@ -366,8 +366,10 @@ export class FilteringLogApi {
         // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
         // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
         if (FilteringLogApi.DYNAMIC_FILTER_LISTS.has(filterId)) {
-            const ruleNode = engine.api.retrieveDynamicRuleNode(filterId, ruleIndex);
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
 
+            // The following error messages should not be displayed during normal operation,
+            // but we handle them just in case, and to provide type safety
             if (!ruleNode) {
                 logger.error(`Failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
@@ -398,7 +400,16 @@ export class FilteringLogApi {
         const lineStartIndex = getRuleSourceIndex(ruleIndex, sourceMap);
 
         if (lineStartIndex === -1) {
-            const baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+
+            // Note: during normal operation, ruleNode should not be null,
+            // but we handle this case just in case, and to provide type safety
+            if (ruleNode) {
+                const generatedRuleText = RuleGenerator.generate(ruleNode);
+                baseMessage += `, generated rule text: ${generatedRuleText}`;
+            }
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
@@ -413,7 +424,16 @@ export class FilteringLogApi {
         const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
 
         if (!appliedRuleText) {
-            const baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+
+            // Note: during normal operation, ruleNode should not be null,
+            // but we handle this case just in case, and to provide type safety
+            if (ruleNode) {
+                const generatedRuleText = RuleGenerator.generate(ruleNode);
+                baseMessage += `, generated rule text: ${generatedRuleText}`;
+            }
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
@@ -542,7 +562,7 @@ export class FilteringLogApi {
 
         this.tabsInfoMap.set(id, tabInfo);
 
-        listeners.notifyListeners(listeners.TabAdded, tabInfo);
+        notifier.notifyListeners(NotifierType.TabAdded, tabInfo);
     }
 
     /**
@@ -572,7 +592,7 @@ export class FilteringLogApi {
         tabInfo.title = title;
         tabInfo.isExtensionTab = isExtensionUrl(url);
 
-        listeners.notifyListeners(listeners.TabUpdate, tabInfo);
+        notifier.notifyListeners(NotifierType.TabUpdate, tabInfo);
     }
 
     /**
@@ -589,7 +609,7 @@ export class FilteringLogApi {
         const tabInfo = this.tabsInfoMap.get(id);
 
         if (tabInfo) {
-            listeners.notifyListeners(listeners.TabClose, tabInfo);
+            notifier.notifyListeners(NotifierType.TabClose, tabInfo);
         }
 
         this.tabsInfoMap.delete(id);
@@ -663,7 +683,7 @@ export class FilteringLogApi {
 
         if (tabInfo && !preserveLog) {
             tabInfo.filteringEvents = [];
-            listeners.notifyListeners(listeners.TabReset, tabInfo);
+            notifier.notifyListeners(NotifierType.TabReset, tabInfo);
         }
     }
 
@@ -691,9 +711,6 @@ export class FilteringLogApi {
             // don't remove first item, cause it's request to main frame
             tabInfo.filteringEvents.splice(1, 1);
         }
-
-        // TODO: Looks like not using. Maybe lost listener in refactoring.
-        listeners.notifyListeners(listeners.LogEventAdded, tabInfo, data);
     }
 
     /**
@@ -717,24 +734,23 @@ export class FilteringLogApi {
 
         let event = filteringEvents.find((e) => e.eventId === eventId);
 
-        if (event) {
-            if (data.requestRule && !event.requestRule?.appliedRuleText) {
-                data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
-            }
-
-            if (data.replaceRules) {
-                data.replaceRules = await this.applyRuleTextToRuleDataArray(data.replaceRules);
-            }
-
-            if (data.stealthAllowlistRules) {
-                data.stealthAllowlistRules = await this.applyRuleTextToRuleDataArray(data.stealthAllowlistRules);
-            }
-
-            event = Object.assign(event, data);
-
-            // TODO: Looks like not using. Maybe lost listener in refactoring.
-            listeners.notifyListeners(listeners.LogEventAdded, tabInfo, event);
+        if (!event) {
+            return;
         }
+
+        if (data.requestRule && !event.requestRule?.appliedRuleText) {
+            data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
+        }
+
+        if (data.replaceRules) {
+            data.replaceRules = await this.applyRuleTextToRuleDataArray(data.replaceRules);
+        }
+
+        if (data.stealthAllowlistRules) {
+            data.stealthAllowlistRules = await this.applyRuleTextToRuleDataArray(data.stealthAllowlistRules);
+        }
+
+        event = Object.assign(event, data);
     }
 
     /**
