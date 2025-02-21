@@ -29,9 +29,9 @@ import {
 } from 'mobx';
 import punycode from 'punycode/';
 
-import type { GetStatisticsDataResponse, SettingsData } from '../../../background/api';
+import { type GetStatisticsDataResponse, type SettingsData } from '../../../background/api';
 import { type GetTabInfoForPopupResponse } from '../../../background/services';
-import type { PageStatsDataItem } from '../../../background/schema';
+import { type PageStatsDataItem } from '../../../background/schema';
 import { messenger } from '../../services/messenger';
 import {
     SpecificPopupState,

@@ -27,11 +27,11 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
-import type {
-    CustomFilterMetadata,
-    FilterVersionData,
-    RegularFilterMetadata,
-    TagMetadata,
+import {
+    type CustomFilterMetadata,
+    type FilterVersionData,
+    type RegularFilterMetadata,
+    type TagMetadata,
 } from '../../../../background/schema';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
@@ -81,10 +81,10 @@ type FilterParams = {
     & FilterVersionData
     & CustomFilterMetadata
     & {
-        enabled: boolean,
-        tagsDetails: TagMetadata[],
-    },
-    groupEnabled: boolean,
+        enabled: boolean;
+        tagsDetails: TagMetadata[];
+    };
+    groupEnabled: boolean;
 };
 
 const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
@@ -155,7 +155,7 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
 
     const updateFilterSetting = __IS_MV3__ ? updateFilterSettingMV3 : updateFilterSettingMV2;
 
-    const handleFilterSwitch = async ({ id, data }: { id: string, data: boolean }) => {
+    const handleFilterSwitch = async ({ id, data }: { id: string; data: boolean }) => {
         // remove prefix from filter id and parse it to number
         const filterId = Number.parseInt(removePrefix(id), 10);
         const annoyancesFilter = settingsStore.annoyancesFilters

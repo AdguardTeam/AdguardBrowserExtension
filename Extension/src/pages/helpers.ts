@@ -20,7 +20,7 @@ import { type FilterMetadata } from '../background/api';
 import { translator } from '../common/translators/translator';
 
 import { FILE_WRONG_EXTENSION_CAUSE } from './options/constants';
-import { Notification, NotificationType } from './options/stores/UiStore';
+import { type Notification, NotificationType } from './options/stores/UiStore';
 
 export const getFilenameExtension = (filename: string): string | undefined => {
     if (!filename) {

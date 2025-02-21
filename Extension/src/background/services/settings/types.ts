@@ -16,8 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AntiBannerFiltersId } from '../../../common/constants';
-import type { CategoriesData, SettingsData } from '../../api';
+import { type AntiBannerFiltersId } from '../../../common/constants';
+import { type CategoriesData, type SettingsData } from '../../api';
 
 /**
  * Settings data to be exported.
@@ -26,12 +26,12 @@ export type ExportMessageResponse = {
     /**
      * Stringified JSON with the exported data.
      */
-    content: string,
+    content: string;
 
     /**
      * Extension version.
      */
-    appVersion: string,
+    appVersion: string;
 };
 
 /**
@@ -42,12 +42,12 @@ export type GetOptionsDataResponse = {
     /**
      * Settings data.
      */
-    settings: SettingsData,
+    settings: SettingsData;
 
     /**
      * Extension version.
      */
-    appVersion: string,
+    appVersion: string;
 
     /**
      * Versions of the libraries used in the extension.
@@ -56,23 +56,23 @@ export type GetOptionsDataResponse = {
         /**
          * Version of the TSWebExtension library.
          */
-        tswebextension: string,
+        tswebextension: string;
 
         /**
          * Version of the TSUrlFilter library.
          */
-        tsurlfilter: string,
+        tsurlfilter: string;
 
         /**
          * Version of the Scriptlets library.
          */
-        scriptlets: string,
+        scriptlets: string;
 
         /**
          * Version of the ExtendedCss library.
          */
-        extendedCss: string,
-    },
+        extendedCss: string;
+    };
 
     /**
      * Environment data.
@@ -81,8 +81,8 @@ export type GetOptionsDataResponse = {
         /**
          * Whether the extension is running in Chrome.
          */
-        isChrome: boolean,
-    },
+        isChrome: boolean;
+    };
 
     /**
      * Constants needed for the options page.
@@ -91,8 +91,8 @@ export type GetOptionsDataResponse = {
         /**
          * Filters IDs.
          */
-        AntiBannerFiltersId: typeof AntiBannerFiltersId,
-    },
+        AntiBannerFiltersId: typeof AntiBannerFiltersId;
+    };
 
     /**
      * Info about filters.
@@ -101,18 +101,18 @@ export type GetOptionsDataResponse = {
         /**
          * Number of rules in the filters. Used in MV2.
          */
-        rulesCount: number,
-    },
+        rulesCount: number;
+    };
 
     /**
      * Metadata for filters and groups.
      */
-    filtersMetadata: CategoriesData,
+    filtersMetadata: CategoriesData;
 
     /**
      * Whether the user filter editor is open in the fullscreen mode.
      */
-    fullscreenUserRulesEditorIsOpen: boolean,
+    fullscreenUserRulesEditorIsOpen: boolean;
 
     /**
      * Whether the rule limits are exceeded
@@ -120,5 +120,5 @@ export type GetOptionsDataResponse = {
      *
      * Used in MV3.
      */
-    areFilterLimitsExceeded: boolean,
+    areFilterLimitsExceeded: boolean;
 };

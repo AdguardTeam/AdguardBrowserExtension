@@ -53,13 +53,13 @@ type SaveDataParams = {
         /**
          * Value to be saved.
          */
-        value: string,
+        value: string;
 
         /**
          * Callback to be called afterwards.
          */
-        callback: () => void,
-    },
+        callback: () => void;
+    };
 };
 
 const SAVED_DISPLAY_TIMEOUT_MS = 1000;
@@ -68,7 +68,7 @@ type SavingServiceParams = {
     /**
      * Identifier.
      */
-    id: string,
+    id: string;
 
     /**
      * Services to be used in the state machine.
@@ -79,8 +79,8 @@ type SavingServiceParams = {
          *
          * @param params Save data parameters.
          */
-        saveData: (params: SaveDataParams) => Promise<void>,
-    },
+        saveData: (params: SaveDataParams) => Promise<void>;
+    };
 };
 
 const SAVE_DATA_ACTOR_NAME = 'saveDataActor';

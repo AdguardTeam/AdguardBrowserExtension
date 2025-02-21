@@ -17,9 +17,9 @@
  */
 import {
     SettingOption,
-    Metadata,
-    GroupStateData,
-    GroupStateStorageData,
+    type Metadata,
+    type GroupStateData,
+    type GroupStateStorageData,
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
 

@@ -19,8 +19,8 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 
 import React, {
-    ChangeEventHandler,
-    HTMLInputTypeAttribute,
+    type ChangeEventHandler,
+    type HTMLInputTypeAttribute,
     useRef,
 } from 'react';
 

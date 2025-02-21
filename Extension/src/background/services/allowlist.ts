@@ -18,9 +18,9 @@
 import { logger } from '../../common/logger';
 import {
     MessageType,
-    SaveAllowlistDomainsMessage,
-    AddAllowlistDomainMessage,
-    RemoveAllowlistDomainMessage,
+    type SaveAllowlistDomainsMessage,
+    type AddAllowlistDomainMessage,
+    type RemoveAllowlistDomainMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
 import { engine } from '../engine';
@@ -34,8 +34,8 @@ import {
 import { Prefs } from '../prefs';
 
 export type GetAllowlistDomainsResponse = {
-    content: string,
-    appVersion: string,
+    content: string;
+    appVersion: string;
 };
 
 /**

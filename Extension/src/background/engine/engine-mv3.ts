@@ -21,7 +21,7 @@ import { debounce } from 'lodash-es';
 // from mv3 tswebextension without using aliases.
 import {
     MESSAGE_HANDLER_NAME,
-    Configuration,
+    type Configuration,
     TsWebExtension,
     type MessageHandler,
     type Message as EngineMessage,

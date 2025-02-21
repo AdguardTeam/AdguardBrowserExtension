@@ -21,7 +21,7 @@ import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebex
 import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 import { METADATA_RULESET_ID } from '@adguard/tsurlfilter/es/declarative-converter';
 
-import { FilterListPreprocessor, PreprocessedFilterList } from 'tswebextension';
+import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextension';
 
 import { logger } from '../../common/logger';
 

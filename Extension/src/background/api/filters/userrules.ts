@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { AnyRule, InputByteBuffer } from '@adguard/agtree';
+import { type AnyRule, InputByteBuffer } from '@adguard/agtree';
 import { RuleParser } from '@adguard/agtree/parser';
 import { RuleDeserializer } from '@adguard/agtree/deserializer';
 import {
     FilterListPreprocessor,
-    PreprocessedFilterList,
+    type PreprocessedFilterList,
     RuleSyntaxUtils,
 } from '@adguard/tsurlfilter';
 

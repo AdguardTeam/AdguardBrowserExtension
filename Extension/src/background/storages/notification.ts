@@ -18,7 +18,7 @@
 import browser from 'webextension-polyfill';
 
 import { Forward, ForwardAction } from '../../common/forward';
-import { NotificationTextRecord } from '../schema';
+import { type NotificationTextRecord } from '../schema';
 import { defaultIconVariants } from '../api/ui/icons';
 
 /**
@@ -57,29 +57,29 @@ export type IconVariants = {
 };
 
 export type PromoNotification = {
-    id: string,
-    locales: Record<string, NotificationTextRecord>
-    url: string,
-    text: string | NotificationTextRecord | null,
-    from: string,
-    to: string,
-    type: string,
+    id: string;
+    locales: Record<string, NotificationTextRecord>;
+    url: string;
+    text: string | NotificationTextRecord | null;
+    from: string;
+    to: string;
+    type: string;
 
     /**
      * Path to the background image for the promo.
      * May be needed for different promos for different locales at the same time.
      */
 
-    bgImage: string,
+    bgImage: string;
     /**
      * Update popup background image may have a bit different width.
      */
-    bgImageOnUpdate?: string,
-    bgColor?: string,
-    textColor?: string,
-    badgeBgColor?: string,
-    badgeText?: string,
-    icons?: IconVariants,
+    bgImageOnUpdate?: string;
+    bgColor?: string;
+    textColor?: string;
+    badgeBgColor?: string;
+    badgeText?: string;
+    icons?: IconVariants;
 };
 
 const CHRISTMAS_24_ID = 'christmas24';

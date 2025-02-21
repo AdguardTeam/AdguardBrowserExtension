@@ -24,17 +24,17 @@ type TabParams = {
     /**
      * Tab title.
      */
-    title: string,
+    title: string;
 
     /**
      * Whether the tab is active.
      */
-    active: boolean,
+    active: boolean;
 
     /**
      * Click handler.
      */
-    onClick: () => void,
+    onClick: () => void;
 };
 
 export const Tab = ({

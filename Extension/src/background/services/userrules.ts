@@ -20,21 +20,21 @@
 // because checkUserRulesRegexpErrors use only in engine-mv3
 import { type ConfigurationResult, UnsupportedRegexpError } from '@adguard/tswebextension/mv3';
 
-import type { Engine } from 'engine';
+import { type Engine } from 'engine';
 
 import {
-    AddUserRuleMessage,
+    type AddUserRuleMessage,
     MessageType,
-    RemoveUserRuleMessage,
-    ResetUserRulesForPageMessage,
-    SaveUserRulesMessage,
-    SetEditorStorageContentMessage,
+    type RemoveUserRuleMessage,
+    type ResetUserRulesForPageMessage,
+    type SaveUserRulesMessage,
+    type SetEditorStorageContentMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
 import { SettingOption } from '../schema';
 import {
     SettingsApi,
-    SettingsData,
+    type SettingsData,
     UserRulesApi,
     TabsApi,
 } from '../api';
@@ -43,13 +43,13 @@ import { Prefs } from '../prefs';
 import { logger } from '../../common/logger';
 
 export type GetUserRulesResponse = {
-    content: string,
-    appVersion: string,
+    content: string;
+    appVersion: string;
 };
 
 export type GetUserRulesEditorDataResponse = {
-    userRules: string,
-    settings: SettingsData,
+    userRules: string;
+    settings: SettingsData;
 };
 
 /**

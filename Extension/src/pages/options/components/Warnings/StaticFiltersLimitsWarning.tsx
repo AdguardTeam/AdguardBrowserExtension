@@ -24,7 +24,7 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 
-import type { LimitWarningProps } from './types';
+import { type LimitWarningProps } from './types';
 
 import './limit-warning.pcss';
 

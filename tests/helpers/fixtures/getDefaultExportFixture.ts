@@ -1,5 +1,5 @@
 import {
-    Config,
+    type Config,
     RootOption,
     PROTOCOL_VERSION,
     GeneralSettingsOption,

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { SettingOption, Settings } from '../schema';
+import { type SettingOption, type Settings } from '../schema';
 
 export type SettingsListener<T extends keyof Settings> = (value: Settings[T]) => void | Promise<void>;
 

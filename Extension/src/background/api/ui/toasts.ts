@@ -22,7 +22,7 @@ import { BrowserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { notificationTextRecordValidator } from '../../schema';
 import { TabsApi } from '../../../common/api/extension';
-import { FilterMetadata } from '../filters';
+import { type FilterMetadata } from '../filters';
 import { sendTabMessage, MessageType } from '../../../common/messages';
 import {
     Forward,
@@ -310,8 +310,8 @@ export class Toasts {
      * @returns Title and text lines for message.
      */
     private static getFiltersEnabledResultMessage(enabledFilters: FilterMetadata[]): {
-        title: string,
-        text: string[],
+        title: string;
+        text: string[];
     } {
         const title = translator.getMessage('alert_popup_filter_enabled_title');
 
@@ -337,8 +337,8 @@ export class Toasts {
         success: boolean,
         updatedFilters?: FilterMetadata[],
     ): {
-        title: string,
-        text: string,
+        title: string;
+        text: string;
     } {
         if (!success || !updatedFilters) {
             return {

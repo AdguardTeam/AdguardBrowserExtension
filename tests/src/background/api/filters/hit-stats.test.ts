@@ -16,7 +16,7 @@ import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarativ
 
 import { network } from '../../../../../Extension/src/background/api/network';
 import { HitStatsApi } from '../../../../../Extension/src/background/api/filters/hit-stats';
-import { FilterVersionData, HitStatsStorageData } from '../../../../../Extension/src/background/schema';
+import { type FilterVersionData, type HitStatsStorageData } from '../../../../../Extension/src/background/schema';
 import {
     AntiBannerFiltersId,
     CUSTOM_FILTERS_START_ID,

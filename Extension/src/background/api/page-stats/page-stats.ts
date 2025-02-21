@@ -30,32 +30,32 @@ export type GetStatisticsDataResponse = {
     /**
      * Statistics for today.
      */
-    today: PageStatsDataItem[],
+    today: PageStatsDataItem[];
 
     /**
      * Statistics for the last week.
      */
-    lastWeek: PageStatsDataItem[],
+    lastWeek: PageStatsDataItem[];
 
     /**
      * Statistics for the last month.
      */
-    lastMonth: PageStatsDataItem[],
+    lastMonth: PageStatsDataItem[];
 
     /**
      * Statistics for the last year.
      */
-    lastYear: PageStatsDataItem[],
+    lastYear: PageStatsDataItem[];
 
     /**
      * Overall statistics.
      */
-    overall: PageStatsDataItem[],
+    overall: PageStatsDataItem[];
 
     /**
      * Blocked categories data.
      */
-    blockedCategories: GetCategoriesResponse,
+    blockedCategories: GetCategoriesResponse;
 };
 
 /**

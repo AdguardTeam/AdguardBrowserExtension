@@ -15,17 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Tabs } from 'webextension-polyfill';
+import { type Tabs } from 'webextension-polyfill';
 
 import { RuleGenerator } from '@adguard/agtree/generator';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
 import {
     BACKGROUND_TAB_ID,
-    ContentType,
-    CookieEvent,
+    type ContentType,
+    type CookieEvent,
     isExtensionUrl,
-    StealthActionEvent,
+    type StealthActionEvent,
     getDomain,
     getRuleSourceText,
     getRuleSourceIndex,
@@ -44,20 +44,20 @@ import { AntiBannerFiltersId, NotifierType } from '../../common/constants';
 import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 
 export type FilteringEventRuleData = {
-    filterId: number,
-    ruleIndex: number,
-    isImportant?: boolean,
-    documentLevelRule?: boolean,
-    isStealthModeRule?: boolean,
-    allowlistRule?: boolean,
-    allowlistStealthRule?: boolean,
-    cspRule?: boolean,
-    permissionsRule?: boolean,
-    modifierValue?: string,
-    cookieRule?: boolean,
-    contentRule?: boolean,
-    cssRule?: boolean,
-    scriptRule?: boolean,
+    filterId: number;
+    ruleIndex: number;
+    isImportant?: boolean;
+    documentLevelRule?: boolean;
+    isStealthModeRule?: boolean;
+    allowlistRule?: boolean;
+    allowlistStealthRule?: boolean;
+    cspRule?: boolean;
+    permissionsRule?: boolean;
+    modifierValue?: string;
+    cookieRule?: boolean;
+    contentRule?: boolean;
+    cssRule?: boolean;
+    scriptRule?: boolean;
 } & Partial<RuleText>;
 
 /**
@@ -65,30 +65,30 @@ export type FilteringEventRuleData = {
  * some filtering log event type from tswebextension.
  */
 export type FilteringLogEvent = {
-    eventId: string,
-    requestUrl?: string,
-    requestDomain?: string,
-    frameUrl?: string,
-    frameDomain?: string,
-    requestType?: ContentType,
-    timestamp?: number,
-    requestThirdParty?: boolean,
-    method?: string,
-    statusCode?: number,
-    requestRule?: FilteringEventRuleData,
-    removeParam?: boolean,
-    removeHeader?: boolean,
-    headerName?: string,
-    element?: string,
-    script?: boolean,
-    cookieName?: string,
-    cookieValue?: string,
-    isModifyingCookieRule?: boolean,
-    cspReportBlocked?: boolean,
-    replaceRules?: FilteringEventRuleData[],
-    stealthAllowlistRules?: FilteringEventRuleData[],
-    stealthActions?: StealthActionEvent['data']['stealthActions'],
-    declarativeRuleInfo?: DeclarativeRuleInfo,
+    eventId: string;
+    requestUrl?: string;
+    requestDomain?: string;
+    frameUrl?: string;
+    frameDomain?: string;
+    requestType?: ContentType;
+    timestamp?: number;
+    requestThirdParty?: boolean;
+    method?: string;
+    statusCode?: number;
+    requestRule?: FilteringEventRuleData;
+    removeParam?: boolean;
+    removeHeader?: boolean;
+    headerName?: string;
+    element?: string;
+    script?: boolean;
+    cookieName?: string;
+    cookieValue?: string;
+    isModifyingCookieRule?: boolean;
+    cspReportBlocked?: boolean;
+    replaceRules?: FilteringEventRuleData[];
+    stealthAllowlistRules?: FilteringEventRuleData[];
+    stealthActions?: StealthActionEvent['data']['stealthActions'];
+    declarativeRuleInfo?: DeclarativeRuleInfo;
 };
 
 /**
@@ -105,27 +105,27 @@ export type FilteringLogTabInfo = {
     /**
      * Tab id.
      */
-    tabId: number,
+    tabId: number;
 
     /**
      * Tab title.
      */
-    title: string,
+    title: string;
 
     /**
      * Indicates if this tab is an extension page (e.g. Options, filtering log).
      */
-    isExtensionTab: boolean,
+    isExtensionTab: boolean;
 
     /**
      * Filtering events.
      */
-    filteringEvents: FilteringLogEvent[],
+    filteringEvents: FilteringLogEvent[];
 
     /**
      * Domain of the tab.
      */
-    domain: string | null,
+    domain: string | null;
 };
 
 /**

@@ -28,11 +28,11 @@ import { Prefs } from '../prefs';
 import { browserStorage } from '../storages';
 
 export type RunInfo = {
-    currentAppVersion: string,
-    previousAppVersion: string | null,
-    currentSchemaVersion: number,
-    previousSchemaVersion: number
-    clientId: string | null,
+    currentAppVersion: string;
+    previousAppVersion: string | null;
+    currentSchemaVersion: number;
+    previousSchemaVersion: number;
+    clientId: string | null;
 };
 
 /**

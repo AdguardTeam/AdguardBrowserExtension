@@ -32,7 +32,7 @@ import { buildInfo } from './bundle/build-info';
 import { buildUpdateJson } from './bundle/firefox/updateJson';
 
 type CommanderOptions = {
-    [key: string]: any,
+    [key: string]: any;
 };
 
 const bundleChrome = (options: CommanderOptions) => {

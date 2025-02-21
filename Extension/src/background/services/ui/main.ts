@@ -27,12 +27,12 @@ import { logger } from '../../../common/logger';
 import { messageHandler } from '../../message-handler';
 import {
     MessageType,
-    OpenAbuseTabMessage,
-    OpenSiteReportTabMessage,
+    type OpenAbuseTabMessage,
+    type OpenSiteReportTabMessage,
 } from '../../../common/messages';
 import { UserAgent } from '../../../common/user-agent';
 import { engine } from '../../engine';
-import { AntiBannerFiltersId, NotifierType } from '../../../common/constants';
+import { AntiBannerFiltersId, type NotifierType } from '../../../common/constants';
 import { notifier } from '../../notifier';
 import {
     toasts,
@@ -41,8 +41,8 @@ import {
     SettingsApi,
     PagesApi,
     AssistantApi,
-    SettingsData,
-    FilterMetadata,
+    type SettingsData,
+    type FilterMetadata,
     ContextMenuApi,
     UiApi,
     PageStatsApi,
@@ -54,27 +54,27 @@ import { ForwardFrom } from '../../../common/forward';
  * Init app data for extension pages.
  */
 export type PageInitAppData = {
-    userSettings: SettingsData,
-    enabledFilters: Record<string, boolean>,
-    filtersMetadata: FilterMetadata[],
+    userSettings: SettingsData;
+    enabledFilters: Record<string, boolean>;
+    filtersMetadata: FilterMetadata[];
     requestFilterInfo: {
-        rulesCount: number,
-    },
+        rulesCount: number;
+    };
     environmentOptions: {
-        isMacOs: boolean,
-        canBlockWebRTC: boolean,
-        isChrome: boolean,
+        isMacOs: boolean;
+        canBlockWebRTC: boolean;
+        isChrome: boolean;
         Prefs: {
-            locale: string,
-            mobile: boolean,
-        },
-        appVersion: string,
-    },
+            locale: string;
+            mobile: boolean;
+        };
+        appVersion: string;
+    };
     constants: {
-        AntiBannerFiltersId: typeof AntiBannerFiltersId,
+        AntiBannerFiltersId: typeof AntiBannerFiltersId;
         // TODO: Seems like deprecated, can be removed.
-        EventNotifierType: typeof NotifierType,
-    },
+        EventNotifierType: typeof NotifierType;
+    };
 };
 
 /**

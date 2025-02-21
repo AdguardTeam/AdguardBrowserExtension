@@ -68,7 +68,9 @@ const Filters = observer(() => {
     const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(query.get(QUERY_PARAM_NAMES.SUBSCRIBE) || ''));
+    const [urlToSubscribe, setUrlToSubscribe] = useState(decodeURIComponent(
+        query.get(QUERY_PARAM_NAMES.SUBSCRIBE) || '',
+    ));
     const [customFilterTitle, setCustomFilterTitle] = useState(query.get(QUERY_PARAM_NAMES.TITLE));
 
     // This state used to remove blinking while filters to render were not selected

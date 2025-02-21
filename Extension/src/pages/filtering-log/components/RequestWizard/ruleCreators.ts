@@ -23,10 +23,10 @@ import {
     OPTIONS_DELIMITER,
 } from '@adguard/tsurlfilter';
 
-import type { FilteringEventRuleData, FilteringLogEvent } from '../../../../background/api';
+import { type FilteringEventRuleData, type FilteringLogEvent } from '../../../../background/api';
 import { strings } from '../../../../common/strings';
 import { logger } from '../../../../common/logger';
-import type { RuleCreationOptions } from '../../types';
+import { type RuleCreationOptions } from '../../types';
 
 import { COMMA_DELIMITER } from './constants';
 import { UrlUtils } from './utils';

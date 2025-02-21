@@ -139,8 +139,8 @@ describe('Update Api (without indexedDB)', () => {
         };
 
         const runCase = async (data: {
-            from: StorageData,
-            to: StorageData,
+            from: StorageData;
+            to: StorageData;
         }) => {
             const storage = mockLocalStorage(data.from);
             const runInfo = await getRunInfo();

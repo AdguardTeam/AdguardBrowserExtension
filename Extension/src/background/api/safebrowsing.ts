@@ -32,7 +32,7 @@ import { SAFEBROWSING_OUTPUT } from '../../../../constants';
 import {
     type ExtensionXMLHttpRequest,
     network,
-    ResponseLikeXMLHttpRequest,
+    type ResponseLikeXMLHttpRequest,
 } from './network/main';
 
 /**
@@ -252,7 +252,7 @@ export class SafebrowsingApi {
         }
 
         try {
-            const data: { hash: string, list: string }[] = [];
+            const data: { hash: string; list: string }[] = [];
 
             responseText.split('\n')
                 // filter empty lines

@@ -23,7 +23,7 @@ import {
     RuleSetByteRangeCategory,
 } from '@adguard/tsurlfilter/es/declarative-converter';
 import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
-import { ByteRange } from '@adguard/tsurlfilter';
+import { type ByteRange } from '@adguard/tsurlfilter';
 
 /**
  * Reads a specific byte range from a file.

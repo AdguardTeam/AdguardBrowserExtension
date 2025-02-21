@@ -29,65 +29,65 @@ import { PageStatsApi } from '../page-stats';
 import { SettingsApi } from '../settings';
 
 export type FrameRule = {
-    filterId: number,
-    ruleText: string,
+    filterId: number;
+    ruleText: string;
 };
 
 export type FrameData = {
     /**
      * Url of the tab.
      */
-    url: string | null,
+    url: string | null;
 
     /**
      * Domain of the tab's url.
      */
-    domainName: string | null,
+    domainName: string | null;
 
     /**
      * Is background already started and filtering is possible.
      */
-    isFilteringPossible: boolean,
+    isFilteringPossible: boolean;
 
     /**
      * Is filtering disabled or enabled in extension settings.
      */
-    applicationFilteringDisabled: boolean,
+    applicationFilteringDisabled: boolean;
 
     /**
      * If url of current tab is not http.
      */
-    urlFilteringDisabled: boolean,
+    urlFilteringDisabled: boolean;
 
     /**
      * If main frame rule disabled filtering in current tab.
      */
-    documentAllowlisted: boolean,
+    documentAllowlisted: boolean;
 
     /**
      * If main frame rule from user rules or from allowlist.
      */
-    userAllowlisted: boolean,
+    userAllowlisted: boolean;
 
     /**
      * Is current url of the tab in the exceptions or not.
      */
-    canAddRemoveRule: boolean,
+    canAddRemoveRule: boolean;
 
     /**
      * Main frame rule - rule which applied to entire frame, e.g. $document, $all, etc.
      */
-    frameRule: FrameRule | null,
+    frameRule: FrameRule | null;
 
     /**
      * Number of blocked request for current tab.
      */
-    totalBlockedTab: number,
+    totalBlockedTab: number;
 
     /**
      * Number of blocked request for entire extension.
      */
-    totalBlocked: number,
+    totalBlocked: number;
 };
 
 type MainFrameDataInfo = Pick<TabContext, 'info' | 'frames' | 'blockedRequestCount' | 'mainFrameRule'>;

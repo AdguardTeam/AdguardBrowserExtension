@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
-import { Configuration } from 'webpack';
+import { type Configuration } from 'webpack';
 
 import { genMv2CommonConfig } from '../webpack.common-mv2';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';

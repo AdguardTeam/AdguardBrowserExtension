@@ -26,8 +26,8 @@ import { logger } from '../../../common/logger';
 import { hitStatsStorageDataValidator } from '../../schema';
 import { filterVersionStorage, hitStatsStorage } from '../../storages';
 import {
-    FilterHitStats,
-    FiltersHitStats,
+    type FilterHitStats,
+    type FiltersHitStats,
     network,
 } from '../network';
 import { getErrorMessage } from '../../../common/error';

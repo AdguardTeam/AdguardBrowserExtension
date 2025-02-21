@@ -5,7 +5,7 @@ import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/de
 import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 
 import metadataMv2 from '../../../Extension/filters/chromium/filters.json';
-import { metadataValidator, Metadata } from '../../../Extension/src/background/schema';
+import { metadataValidator, type Metadata } from '../../../Extension/src/background/schema';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = path.dirname(new URL(import.meta.url).pathname);

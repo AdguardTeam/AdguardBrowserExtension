@@ -18,12 +18,12 @@
 import { logger } from '../../common/logger';
 import {
     SettingOption,
-    Metadata,
-    FilterVersionStorageData,
-    FilterVersionData,
+    type Metadata,
+    type FilterVersionStorageData,
+    type FilterVersionData,
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
-import type { FilterUpdateOptionsList } from '../api';
+import { type FilterUpdateOptionsList } from '../api';
 
 import { settingsStorage } from './settings';
 

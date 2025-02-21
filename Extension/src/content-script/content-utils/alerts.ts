@@ -21,23 +21,23 @@ export type AppendAlertElementProps = {
     /**
      * Node where to append alert with html
      */
-    target: Element,
+    target: Element;
 
     // Html string to write inside alert
-    html: string,
+    html: string;
     // Is adguard tab
-    isAdguardTab: boolean,
+    isAdguardTab: boolean;
     // Alert css
-    alertStyles: string,
+    alertStyles: string;
     // Alert container css
-    alertContainerStyles: string,
+    alertContainerStyles: string;
 };
 
 export type GenAlertHtmlProps = {
     //  Alert title
-    title: string,
+    title: string;
     // Alert text
-    text: string,
+    text: string;
 };
 
 /**

@@ -19,7 +19,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+import type HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { Browser } from '../constants';
 

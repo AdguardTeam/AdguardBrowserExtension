@@ -19,7 +19,7 @@
 import axios from 'axios';
 
 import { TESTCASES_BASE_URL, TESTCASES_DATA_PATH } from './test-constants';
-import { Testcase } from './testcase';
+import { type Testcase } from './testcase';
 
 axios.defaults.baseURL = TESTCASES_BASE_URL;
 
