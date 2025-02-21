@@ -73,6 +73,7 @@ const config: Config = {
         IS_BETA: false,
         __IS_MV3__: MANIFEST_ENV === '3',
     },
+    // disabled in AG-40097 since it follows to memory leaks.
     // reporters: [
     //     'default',
     //     [
