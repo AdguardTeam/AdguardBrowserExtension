@@ -93,8 +93,7 @@ branch-overrides:
               - Unit tests
               - Locales check
         - Update filters and build:
-            # FIXME: Manual for tests.
-            manual: true
+            manual: false
             final: false
             jobs:
               - Update filters and build
@@ -169,6 +168,7 @@ branch-overrides:
 
                   ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test
         final-tasks:
+          # disabled in AG-40097 since it follows to memory leaks.
           # - test-parser:
           #     type: junit
           #     # mv3 postfix because we run auto-builds only for mv3 branch.
