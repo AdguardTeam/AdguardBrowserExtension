@@ -1,9 +1,9 @@
-! Checksum: YpQn7Qp+vGTNm7arPWub9Q
-! Diff-Path: ../patches/23/23-s-1737557220-3600.patch
+! Checksum: 26/LDaYz1CokJ+9OuWfgfA
+! Diff-Path: ../patches/23/23-s-1739468529-3600.patch
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.6.1
-! TimeUpdated: 2025-01-22T14:43:05+00:00
+! Version: 2.0.6.13
+! TimeUpdated: 2025-02-13T17:38:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -18,7 +18,10 @@
 ! Good: .org/ads/
 ! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
 !
-||yandex.ru/ads/adfox/
+! Nadavi ads
+/nadavi-api/?p4g3=js/api/widget.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/198009
+||aj*.bid/*?vpaid=$xmlhttprequest
 ! Email spam. Example: http://leonases.shop/tb/#nl91dOC
 ! Both rules are required - the first is for extensions, the second - for apps
 .shop/tb/#$all
@@ -1431,6 +1434,9 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||7kprtners.com^
+||cdn-t.b5c1d2e8c9982e3b965a27ac72ru7284cc.com^
+||cdn.dmtgvn.com^
 ||llet787bww.com^
 ||1463.info^$all
 ||prestich.shop^$all
@@ -1444,7 +1450,6 @@ ucoz.ru/informer/
 ||dosawes.com^
 ||lusupodum.com^
 ||clairpixum.com^
-||octo25.me^
 ||bmmwa.info^
 ||iwrcoct.info^
 ||hfnuqljjnt.com^
@@ -1480,7 +1485,6 @@ ucoz.ru/informer/
 ||cdn.tameti.com^
 ||eehhabacgieacfjeaacg.world^
 ||bidmatic.io^$third-party
-||vidscriptshark.com^
 ||1qe.info^
 ||23oct2023.site^
 ||fcepahafyq.com^
@@ -4580,6 +4584,8 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+||yandex.ru/ads/adfox/
+findh.org###ads-sidebar-block
 1plus1.ua##.bannerPMU
 1plus1.ua##.bannerSmall
 1plus1.ua##.tabsNews__content-adv
@@ -4605,7 +4611,7 @@ pravda.com.ua##.unit_news_banner_list
 pravda.com.ua,epravda.com.ua##body .nts-ad
 pravda.com.ua##.container_sub_adv_news
 pravda.com.ua##.unit_news_banner_bottom
-pravda.com.ua##body div.advtext
+eurointegration.com.ua,pravda.com.ua##body div.advtext
 pravda.com.ua##.unit_header_banner
 pravda.com.ua##.article_wide_banner_mobile
 pravda.com.ua##div[class^="block_banner_"]
@@ -4868,6 +4874,10 @@ citrus.ua,xsport.ua,zi.dn.ua,zi.ua##img[src^="/upload/rk/"]
 !
 !
 !
+budport.com.ua##.banner_bg
+budport.com.ua##.tm-banner-slider
+budport.com.ua#$#header.page-head { height: fit-content !important; }
+minfin.com.ua###special-product-offer
 gagadget.com##.post-links div.l-container:has(> .l-grid > div.l-inner > div[data-gpt-index])
 uaserials.pro###rek1
 ||cdn.hdvbua.pro/amedia/5/500x200_1.gif
@@ -6218,6 +6228,10 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198042
+@@||widget.getwhelp.com/init.js$domain=baktelecom.az
+! https://github.com/AdguardTeam/AdguardFilters/issues/197245
+flypgs.com#@#div[data-banner-name]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195971
 @@||a.abbyads.com/vast.php?spot=$xmlhttprequest,domain=qwiketube.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54436

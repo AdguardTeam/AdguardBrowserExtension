@@ -1,9 +1,9 @@
-! Checksum: 2BhJF5h+jTlmwCm5DSgKXg
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1737553514-3600.patch
+! Checksum: DCTisiB5g16SZGhXJwxwcw
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1739468537-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.59
-! TimeUpdated: 2025-01-22T13:41:01+00:00
+! Version: 2.0.7.68
+! TimeUpdated: 2025-02-13T17:37:56+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -450,7 +450,6 @@ _advertentieleaderboardhome.
 @@||cdn.bluebillywig.com/scripts/prebid/*/bluebillywig_pbjs.js$script,domain=autoblog.bbvms.com
 @@||cdn.spotxcdn.com/integration/easi/v1/easi.js$script,domain=radioluisteren.fm
 @@||files.skoften.net/website/lib/vjs/plugins/ads/videojs.ads.min.js$script,~third-party
-@@||imasdk.googleapis.com/js/core/bridge*.html$subdocument,domain=vtm.be
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=crime-nieuws.nl|dailybuzz.nl|skoften.net|sportnieuws.nl|vtm.be|weerplaza.nl
 @@||improvedigital.com/pbw/headerlift.min.js$domain=spelletjes.nl
 @@||js.spotx.tv/ados/v1/106185.js$script,domain=radioluisteren.fm
@@ -756,7 +755,6 @@ rivierenland-radio.nl##.aba
 newsbit.nl##.acf-block-cta-conversion-rating
 autozine.nl,banden.autoweek.nl,beleggersbelangen.nl,besteproduct.nl,bright.nl,dumpert.nl,eurosport.nl,gpblog.com,hetnieuwsvandaag.be,indebuurt.nl,koopplein.nl,limburger.nl,persinfo.org,rd.nl,sport.be,tellows.nl,tradeidee.nl,tripadvisor.nl,voetbalnieuws.nl,voetbalprimeur.nl,wijlimburg.nl,xgn.nl##.ad
 crypto-insiders.nl##.ad-category
-filmtotaal.nl##.ad-centering
 babybytes.nl,bruzz.be,omroepflevoland.nl,pu.nl,sportuitslagen.org,trendalert.nl##.ad-container
 voetbal.com##.adbox
 sozio.nl##.adchannel
@@ -950,7 +948,6 @@ musicmeter.nl##.external
 escortgirls.be,sexguide.nl,topescort.nl##.fBanners
 voetbalzone.nl##.fco-openweb-ad
 fd.nl##.fd-message
-heracles.nl##.fixed-ads
 ml5.nl##.fl-module-uabb-image-carousel
 id.nl##.flex.items-center.justify-center.mx-auto.min-h-\[280px\].md\:my-2.w-\[336px\].h-\[280px\].md\:w-\[970px\].md\:h-\[250px\]
 webcam-aalsmeer.nl,webcam-airport.nl,webcam-binnenvaart.nl,webcam-blokzijl.nl,webcam-brandaris.nl,webcam-delfzijl.nl,webcam-denhelder.nl,webcam-denoever.nl,webcam-dokkum.nl,webcam-dordrecht.nl,webcam-enkhuizen.nl,webcam-friesemeren.nl,webcam-grou.nl,webcam-havenijmuiden.nl,webcam-hindeloopen.nl,webcam-hoekvanholland.nl,webcam-kampen.nl,webcam-lauwersoog.nl,webcam-leeuwarden.nl,webcam-lelystad.nl,webcam-maassluis.nl,webcam-marken.nl,webcam-monnickendam.nl,webcam-rotterdam.nl,webcam-sneek.nl,webcam-terneuzen.nl,webcam-vlaardingen.nl,webcam-volendam.nl,webcam-workum.nl,webcam-zaanzicht.nl,webcam-zoutkamp.nl,webcam-zwartsluis.nl,webcams-ameland.nl,webcams-scheveningen.nl,webcams-texel.nl,webcams-vlissingen.nl,webcamschiermonnikoog.nl,webcamvlieland.nl##.flexslider
@@ -1256,6 +1253,7 @@ beurs.nl##.wrapper--topbanner
 voetbalprimeur.nl##[class^="Ad_"]
 bright.nl##[class^="Ad_ad_"]
 gamer.nl##[component-export="Ad"]
+9292.nl##[data-testid^="gpt-ad"]
 indeleiderstrui.nl##[data-ub-carousel]
 delhaize.be##[id*="sponsored_products"]
 regionoordkop.nl##[id^="regio-"]
@@ -1449,6 +1447,7 @@ vakantieplaats.nl#@#.topAds
 ||cdn.optoutadvertising.com^
 ||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
+||x9t7g4m2qk2.azurewebsites.net^
 ||kjdsfjisdfjr23.azurewebsites.net^
 ||content2.nrc.nl^
 ||aa.hwigroup.com^
@@ -1456,9 +1455,11 @@ vakantieplaats.nl#@#.topAds
 ||aa.tweakers.nl^
 ||ab.tweakers.nl^
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
-@@||tweakers.net/i^
+@@||tweakers.net/i^$image
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
+hartvannederland.nl#@##topbanner_ad
+@@||assets.prod.webx.talpa.digital/ad/view/$domain=hartvannederland.nl
 topkleurplaat.nl#%#//scriptlet('prevent-setTimeout', '.height() === 0')
 filmvandaag.nl#%#//scriptlet('prevent-fetch', 'securepubads.g.doubleclick.net')
 @@||looopings.nl/*.js$script,~third-party
@@ -1515,6 +1516,11 @@ gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px 
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+dailybuzz.nl#%#//scriptlet("set-constant", "cookie", "true")
+mediacourant.nl##.mg-slot
+avrotros.nl#%#//scriptlet('json-prune', 'assets.preroll')
+hartvannederland.nl##div[data-advert-slot-state]
+hartvannederland.nl##div:has(> span:first-child:contains(Advert))
 omroepbrabant.nl#%#//scriptlet('google-ima3')
 omroepbrabant.nl#%#//scriptlet('adjust-setTimeout', '[native code]', '6000', '0.001')
 9292.nl##:is(div, aside, astro-island):has(> div[data-testid="gpt-ad-root"])
@@ -1545,7 +1551,7 @@ iphoned.nl##div[data-name="dynamic-content"]:has(> div[id^="div-gpt-"])
 iphoned.nl##div[data-name="featured-header-container"] > header[data-campaign]
 iphoned.nl##article > .no-content-styles:has(> div[data-nosnippet] > div[data-name="dynamic-content-injected"][data-campaign])
 rtl.nl##div[data-adslot-variant]
-bright.nl##body .ad
+bright.nl##html > body .ad:not(#style_important)
 nieuwsblad.be##.cba_container_grid
 dumpert.nl##div[class^="css-"]:has(> div[class^="css-"]:only-child > .ad)
 402online.com##.bannerblock
