@@ -217,7 +217,7 @@ export class UpdateApi {
             throw new Error('Settings is not an object');
         }
 
-        let updatedSettings = await UpdateApi.replaceCombinedAnnoyancesFilterWithSeparateOnes(settings);
+        let updatedSettings = await UpdateApi.migrateCombinedAnnoyancesFilter(settings);
 
         updatedSettings = await UpdateApi.removeDnsFilter(updatedSettings);
 
@@ -632,7 +632,7 @@ export class UpdateApi {
             throw new Error('Settings is not an object');
         }
 
-        const updatedSettings = await UpdateApi.replaceCombinedAnnoyancesFilterWithSeparateOnes(settings);
+        const updatedSettings = await UpdateApi.migrateCombinedAnnoyancesFilter(settings);
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, updatedSettings);
 
@@ -1148,10 +1148,11 @@ export class UpdateApi {
     }
 
     /**
-     * Replaces the deprecated combined Annoyances filter with separate ones.
+     * Replaces the deprecated combined big Annoyances filter
+     * with separate smaller annoyances filters.
      *
-     * Please note that separated annoyances filters will
-     * - be marked as 'enabled'
+     * Please note that separated annoyances filters will:
+     * - be marked as 'enabled';
      * - not be marked as 'loaded'.
      *
      * @param settings The settings object.
@@ -1160,10 +1161,11 @@ export class UpdateApi {
      *
      * @throws Error if settings are invalid or data cannot be read.
      */
-    private static async replaceCombinedAnnoyancesFilterWithSeparateOnes(
+    private static async migrateCombinedAnnoyancesFilter(
         settings: Record<string, unknown>,
     ): Promise<Record<string, unknown>> {
-        const filtersStateData = settings['filters-state'];
+        const newSettings = { ...settings };
+        const filtersStateData = newSettings['filters-state'];
 
         if (typeof filtersStateData !== 'string') {
             throw new Error('Cannot read filters state data');
@@ -1178,7 +1180,7 @@ export class UpdateApi {
             }),
         ).parse(JSON.parse(filtersStateData));
 
-        const groupsStateData = settings['groups-state'];
+        const groupsStateData = newSettings['groups-state'];
 
         if (typeof groupsStateData !== 'string') {
             throw new Error('Cannot read groups state data');
@@ -1248,10 +1250,10 @@ export class UpdateApi {
         groupsState[AntibannerGroupsId.AnnoyancesFiltersGroupId] = annoyancesGroup;
         Object.assign(filtersState, annoyancesFiltersState);
 
-        settings['groups-state'] = JSON.stringify(groupsState);
-        settings['filters-state'] = JSON.stringify(filtersState);
+        newSettings['groups-state'] = JSON.stringify(groupsState);
+        newSettings['filters-state'] = JSON.stringify(filtersState);
 
-        return settings;
+        return newSettings;
     }
 
     /**
@@ -1264,7 +1266,8 @@ export class UpdateApi {
      * @throws Error if settings are invalid or data cannot be read.
      */
     private static async removeDnsFilter(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
-        const filtersStateData = settings['filters-state'];
+        const newSettings = { ...settings };
+        const filtersStateData = newSettings['filters-state'];
 
         if (typeof filtersStateData !== 'string') {
             throw new Error('Cannot read filters state data');
@@ -1279,7 +1282,7 @@ export class UpdateApi {
             }),
         ).parse(JSON.parse(filtersStateData));
 
-        const groupsStateData = settings['groups-state'];
+        const groupsStateData = newSettings['groups-state'];
 
         if (typeof groupsStateData !== 'string') {
             throw new Error('Cannot read groups state data');
@@ -1292,9 +1295,9 @@ export class UpdateApi {
             delete filtersState[AntiBannerFiltersId.DnsFilterId];
         }
 
-        settings['filters-state'] = JSON.stringify(filtersState);
+        newSettings['filters-state'] = JSON.stringify(filtersState);
 
-        return settings;
+        return newSettings;
     }
 
     /**
