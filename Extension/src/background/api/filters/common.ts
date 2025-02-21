@@ -22,7 +22,6 @@ import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import { SettingOption, RegularFilterMetadata } from '../../schema';
 import { AntiBannerFiltersId } from '../../../common/constants';
-import { FilterUpdateService } from '../../services/filter-update';
 import {
     metadataStorage,
     filterStateStorage,
