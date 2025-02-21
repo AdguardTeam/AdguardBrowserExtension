@@ -234,6 +234,12 @@ class SettingsStore {
 
     @action
     async getRulesLimitsCounters() {
+        // This method should only be called for MV3-based extensions
+        // AG-40166
+        if (!__IS_MV3__) {
+            return;
+        }
+
         const rulesLimits = await fetchDataWithRetry(messenger.getRulesLimitsCounters.bind(messenger));
 
         // Will use default rules limits if the background service is not ready.
