@@ -1,8 +1,8 @@
-! Checksum: 9lTShRkeLs1BB4wI5Do/ow
+! Checksum: SO2FTAUKiB+J4vNKXy/xhw
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.80.73
-! TimeUpdated: 2025-02-18T19:37:11+00:00
+! Version: 2.0.80.85
+! TimeUpdated: 2025-02-20T15:41:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -543,6 +543,9 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 !
 !
 !
+||collector-pxebumdlwe.pxchk.net^
+||sc.sc-analytics.jp^
+||c.bazo.io^
 ||mdhv.io^
 ||nmrodam.com^
 ||appia.com^
@@ -48874,6 +48877,11 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||mon-va.capcutapi.com^
+||pbc.realtor.com^
+||apihorizon.nnmtools.com^
+||cdnhorizon.nnmtools.com^
+||px-intl.ucweb.com^
 ||telemetry.vaultdcr.com^
 ||lighthouse.edoinc.com^
 ||staging-*.ispot.tv^
@@ -132798,6 +132806,7 @@ zmail.happycustomer.io$image
 ! Cloudflare permormance monitoring
 /cdn-cgi/rum?
 !
+||cdn.amplitude.com/libs/plugin-session-replay-browser-$third-party
 /wpm@*/web-pixel-
 /shopifycloud/media-analytics/v*/analytics.js
 /shopifycloud/shopify/assets/shop_events_listener-*.js
@@ -133322,7 +133331,11 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 ||googletagservices.com/tag/js/gpt.js$xmlhttprequest,script,redirect=googletagservices-gpt
 ! fix https://golf.com/news/tour-confidential-match-play-concession-augusta-womens-am/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/152328
+!+ NOT_OPTIMIZED
 ||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=~golf.com|~today.line.me|~inmuebles24.com|~inside.com.tw|~investing.com|~olx.com.eg|~eksisozluk.com|~heycar.co.uk|~gizmodo.jp
+! When Base filter breaks website and an exclusion has to be added to Base
+!+ NOT_OPTIMIZED
+||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,important,domain=turbo.pt
 ! https://github.com/AdguardTeam/AdguardFilters/issues/152079
 ! aglint-disable-next-line no-excluded-rules
 !||staff-start.com/js/track/
@@ -138954,6 +138967,8 @@ $cookie=bf_visit
 ! Bad:  ||monerominer.rocks^$third-party (should be in adservers.txt)
 !
 !
+! realtor.com
+||realtor.com^$cookie=__vst
 ! wish.com
 ||wish.com^$cookie=visitor_id
 ||wish.com^$cookie=logged_out_tracker
@@ -139559,6 +139574,8 @@ $cookie=ev_did,domain=diariovasco.com
 ||analytics.qoqa.com^
 !
 ! Appsflyer
+||privacy-sandbox.appsflyersdk.com^
+-pia.appsflyersdk.com^
 -skadsdkless.appsflyersdk.com^
 -adrevenue.appsflyersdk.com^
 -attr.appsflyersdk.com^
@@ -139630,6 +139647,19 @@ inapps.appsflyersdk.com^
 !
 ! NOTE: Regular rules
 !
+||insights.alibaba.com^
+||mssdk-boot.cpacutapi.com^
+||collect.ureca-lab.com^
+||api.abcsinsights.com^
+||tracking.carbonatixaudio.com^
+||issuepcdn.freeterabox.com/issue/terabox/TeraBox_cdn_resource\pic\video_accelerate_guide_new.gif
+||issuepcdn.freeterabox.com/issue/terabox/TeraBox_cdn_resource\pic\bg_video_quality_privilege.gif
+||data.terabox.com/issue/terabox/TeraBox_cdn_resource\pic\video_accelerate_guide_new.gif
+||data.terabox.com/issue/terabox/TeraBox_cdn_resource\pic\bg_video_quality_privilege.gif
+||adashx.ut.alibaba.com^
+||h-adashx.ut.alibaba.com^
+||stats.calldorado.com^
+||traffic.calldorado.com^
 ||track.aieic.com^
 ||tracker.str-nrg.com^
 ||ced-ns.sascdn.com^
@@ -140528,6 +140558,8 @@ inapps.appsflyersdk.com^
 !
 ! For platforms which do not support $redirect rules
 !
+! https://github.com/easylist/easylist/commit/af6a79c85
+@@||googletagmanager.com/gtm.js$domain=kitamura.jp|net-chuko.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198595
 @@||googletagmanager.com/gtag/js$domain=dizzylab.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196703
@@ -140873,8 +140905,10 @@ newton.by#%#//scriptlet('set-constant', 'ga', 'noopFunc')
 @@||googletagmanager.com/gtm.js$domain=sportingnews.com
 ! https://www.redstoneonline.jp/event/transfer blank page
 @@||s.yimg.jp/images/listing/tool/cv/ytag.js$domain=redstoneonline.jp
-@@||googletagmanager.com/gtag/js?$xmlhttprequest,domain=redstoneonline.jp
-||googletagmanager.com/gtag/js?$xmlhttprequest,redirect=google-analytics,domain=redstoneonline.jp,important
+@@||googletagmanager.com/gtm.js$domain=redstoneonline.jp
+@@||googletagmanager.com/gtag/js$domain=redstoneonline.jp
+||googletagmanager.com/gtm.js$script,redirect=google-analytics,domain=redstoneonline.jp,important
+||googletagmanager.com/gtag/js$script,xmlhttprequest,redirect=google-analytics,domain=redstoneonline.jp,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/173467
 @@||googletagservices.com/tag/js/gpt.js$xmlhttprequest,script,redirect=googletagservices-gpt,domain=wuzzuf.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/173516

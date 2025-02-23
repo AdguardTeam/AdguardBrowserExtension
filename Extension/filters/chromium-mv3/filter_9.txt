@@ -1,8 +1,8 @@
-! Checksum: N5Z0e29IwDSAU9T9y+2jqQ
+! Checksum: QxBzaKkQH4EoOFdkaFOpxw
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.28.89
-! TimeUpdated: 2025-02-18T18:37:23+00:00
+! Version: 2.0.28.96
+! TimeUpdated: 2025-02-21T07:38:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -214,6 +214,11 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199021
+firepaste.com##.popSc
+firepaste.com#%#//scriptlet('abort-on-property-write', 'checkAdsStatus')
+! https://github.com/AdguardTeam/AdguardFilters/issues/198826
+/^https:\/\/hunterscomics\.com\/wp-content\/themes(\/[a-f]{6}){2}\.js\?ver=/$script,domain=hunterscomics.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196862
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=hunter.fm
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196093
@@ -2126,6 +2131,11 @@ c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,me
 !
 ! NOTE: Specific rules
 !
+turbo.pt#%#//scriptlet('googletagservices-gpt')
+turbo.pt#%#//scriptlet('prevent-element-src-loading', 'script', 'securepubads.g.doubleclick.net/tag/js/gpt.js')
+megafire.net,url.firepaste.com#%#//scriptlet('prevent-window-open')
+megafire.net,firepaste.com#%#//scriptlet('prevent-addEventListener', '', '/abrirVentanasEmergentes|abrirNuevaVentana|Popunder/')
+megafire.net#?##list-downloadlinks > li:has(> a[target="_blank"]:contains(Descargar))
 la-razon.com##.genosha_ads
 la-razon.com##.genosha_ads_fixed_bottom
 ||pagina7.cl/js/ads.js
@@ -3548,7 +3558,7 @@ otempo.com.br##div.cf.slot-item.count-2.slot-count-20
 otempo.com.br##div[id^="ATF_"]
 ||elsiglodetorreon.com.mx/desplegados/banners/
 reforma.com##div[id^="zonapublicidad"]
-bnews.com.br,jcconcursos.uol.com.br,contigo.uol.com.br,tycsports.com,tvpop.com.br,midiamax.uol.com.br##div[id^="banner-"]
+social1.ne10.uol.com.br,bnews.com.br,jcconcursos.uol.com.br,contigo.uol.com.br,tycsports.com,tvpop.com.br,midiamax.uol.com.br##div[id^="banner-"]
 atresplayer.com##.adpause
 minha.exame.com##div[class^="AdContainer"]
 arquitecturaydiseno.es##.header-megabanner > *
@@ -4534,6 +4544,9 @@ hentaixtremist.com###player > #ap
 redeszone.net###NEWS_RELATED
 pelisr.com###text-6.widget_text
 popfilmeshd.net,pelisr.com###playerads
+latinohentai.vip,latinohentai.com#%#//scriptlet('remove-attr', 'href', 'a[href]#clickfakeplayer')
+latinohentai.vip,latinohentai.com#%#//scriptlet('prevent-window-open')
+latinohentai.vip,latinohentai.com#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', '/Popunder|Popup/')
 peliculaxd.com,latinohentai.com,popfilmeshd.net,pelisr.com,pepeliculas.com##.contadorads
 peliculaxd.com,pepeliculas.com,latinohentai.com,playview.io##.ads_player
 redeszone.net,tabletzona.es,movilzona.es,adslzone.net,androidayuda.com,softzone.es,hardzone.es###GLOBAL_BD_TOP
@@ -5747,6 +5760,12 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198804
+@@||amazonaws.com/*uol.com.br/publicidade-legal/json/ultimas.json$domain=uol.com.br
+! https://github.com/AdguardTeam/AdguardFilters/issues/199029
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=cnnbrasil.com.br
+! https://github.com/AdguardTeam/AdguardFilters/issues/198711
+@@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=turbo.pt
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198901
 paste1c.ru#@#.share-panel
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194055

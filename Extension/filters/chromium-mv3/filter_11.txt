@@ -1,8 +1,8 @@
-! Checksum: EHNzgCeN4SxEE9QAgR6UqQ
+! Checksum: G7KeJn4/ktaNFdG7pCwayQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.58.41
-! TimeUpdated: 2025-02-18T14:40:42+00:00
+! Version: 2.0.58.51
+! TimeUpdated: 2025-02-20T17:38:29+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2376,6 +2376,13 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+gulfnews.com##div[id^="top-component-section-page-row-ad"]
+gulfnews.com##div[style^="border-right:"] > div:has(> div[class] > div[class] > div[id^="top-component-section-page-native-ad"])
+m.sabah.com.tr##div:has(> div[data-mbzone-loaded]:only-child)
+pornhub.com##.middleAdContainer
+therepublic.com#$#.tdc-row:has(img[title*="_digital_ad_mobile"]) { display: none !important; }
+||therepublic.com/wp-content/uploads/*/KM_digital_ad_mobile_
+m.mobile01.com##div[class*="ad-prestitial-"]
 db.animanch.com###recents > div.inner
 nana-press.com###ad_area_01
 0115765.com##.sticky-banner
@@ -2389,7 +2396,7 @@ gori.me##div[style*="min-height:250px;"]
 114117.com##.bn_top_vernis
 productreview.com.au##div[class]:has(> div[class]:only-child > a[rel="sponsored"]:only-child)
 fmworld.net##.advertisementright_sp
-||navitime.jp/scripts/media/web/infeed/realestate/
+||static.media.cld.navitime.jp/scripts/media/web/infeed/realestate/
 ||kyujin.navitime.co.jp/view/platform/banner?
 navitime.co.jp##.kyujin-control-banner-container
 navitime.co.jp###kyujin-banner-offer-container
@@ -4718,7 +4725,7 @@ amp.vip.de,rtl.de##amp-iframe[src^="https://video-library.showheroes.com/spot/"]
 4travel.jp##.u_magazine4tModule
 ||niji-gazo.com/api/dmm/affiliate/
 niji-gazo.com##.partner-rotate-block
-elog-ch.com,elog-ch.com.bd,elog-ch.com.np,elog-ch.net,elog-ch.org##.sp_banner
+news.golfdigest.co.jp,elog-ch.com,elog-ch.com.bd,elog-ch.com.np,elog-ch.net,elog-ch.org##.sp_banner
 eromanga-life.com,eromanga-moeerolibrar.com,eromanga-life.com,moeero-library.com,ero-manga-platinum.net##iframe[src^="https://ad-cheers.com/"]
 eromanga-select.com,doujin-night.com##.sp_adwidget
 free-erobooks.com,free-erobooks.com.bd,free-erobooks.com.np,free-erobooks.net##.abox
@@ -7673,6 +7680,25 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Don't add more than 200 apps per rule
 ! TODO: merge app lists of the same rules after fixing
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198022
+||games.tresensa.com^
+||api.plyair.com^
+||us.*.qwadro.com^
+||gwbudgetali.iymedia.me^
+||notifiy.rtbuniverse.com^
+||cdn.wtshare.com^
+||gamaibids.com^
+||gamerplay67.space^
+||bjsvp*.space^
+||imprdom.com^
+||loganmedia.mobi^
+||lqm.io^
+||mangomob.net^
+||pn.ybp.yahoo.com^
+||funpavo.com^
+||pavoboxapp.com^
+||staticcc.com^
+||teraverseapp.com^
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195708
 ! loads by HTTP, no root required
 ||interface3.music.163.com/eapi/ad/

@@ -1,8 +1,8 @@
-! Checksum: N4Afk3pCH0iAErKkHO5fGA
+! Checksum: PuEhsXGV26Y/NOIEAtyFuQ
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.70
-! TimeUpdated: 2025-02-18T09:38:11+00:00
+! Version: 2.0.7.71
+! TimeUpdated: 2025-02-19T12:38:55+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1731,7 +1731,9 @@ knack.be##.c-header__ad
 serietotaal.nl##div[class*="banner"]
 serietotaal.nl##div[id^="ad"]
 serietotaal.nl##.rect-in-headlines
-marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):has(> .mp-Listings__admarktTitle)
+marktplaats.nl##.hz-Banner
+marktplaats.nl##.bannerContainerLoading
+marktplaats.nl##.mp-Page-element > .mp-Listings + div:not([class]):not([id]):has(> .mp-Listings__admarktTitle)
 marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:has(> .mp-Listing-coverLink > .mp-Listing-group > .mp-Listing-group--price-date-feature > span.mp-Listing-priority > span:contains(/^Topadvertentie$/))
 turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
 androidplanet.nl#?#.sidebar > .widget_static_device_widget:has(.device-ad)

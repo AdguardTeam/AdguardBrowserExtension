@@ -1,8 +1,8 @@
-! Checksum: DdvW7WZygB7M0KMhtqflUA
+! Checksum: ktcWi1BfHpS9MPMhfR3aeQ
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.11.11
-! TimeUpdated: 2025-02-18T19:37:53+00:00
+! Version: 2.0.11.15
+! TimeUpdated: 2025-02-21T10:39:49+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -87,6 +87,16 @@ ityouchannel.livedoor.blog,nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.
 !
 ! NOTE: Blogroll specific rules
 !
+||alfalfalfa.com/js/rss/
+||alfalfalfa.com/js/blogparts/otakamu_articles.js
+alfalfalfa.com##[class$="-related"][id="mainmore"]
+alfalfalfa.com###related-title
+||bakufu.jp/wp-content/uploads/2023/09/rss7d.html
+tyoieronews.blog.jp##div[class^="article-body"] > blockquote:last-child
+tyoieronews.blog.jp##table[summary="画像RSS"]
+lamsect.jp##.antena
+lamsect.jp###main_line > div.content:has(> div[style] > script[src*="blogroll"])
+lamsect.jp###main_line > div.content:has(> div.cate > script[src*="google.com/jsapi"])
 morikinoko.com##div[class^="img_link"]
 morikinoko.com##.headline-wrap:has(> div.card-body > div.blogroll-wrap)
 syurabahazard.com##.kotei-link
