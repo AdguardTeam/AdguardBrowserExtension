@@ -64,7 +64,7 @@ export class FiltersStorage {
         let preprocessed: PreprocessedFilterList;
 
         if (typeof filter === 'string') {
-            preprocessed = FilterListPreprocessor.preprocess(filter, false);
+            preprocessed = FilterListPreprocessor.preprocess(filter);
         } else {
             preprocessed = filter;
         }
