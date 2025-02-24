@@ -337,12 +337,6 @@ Then install extension via developer mode, make requests and see applied declara
 
 ##### How to build MV3 extension
 
-1. Switch to the `v5.0` branch:
-
-    ```shell
-    git checkout v5.0
-    ```
-
 1. Run the following command in the terminal:
 
     ```shell

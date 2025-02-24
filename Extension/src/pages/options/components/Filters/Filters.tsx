@@ -42,16 +42,18 @@ import { messenger } from '../../../services/messenger';
 import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { getStaticWarningMessage } from '../Warnings/messages';
 import { NotificationType } from '../../stores/UiStore';
+import type { CategoriesGroupData } from '../../../../background/api';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
 import { Group } from './Group';
 import { SearchGroup } from './Search/SearchGroup';
 import { Filter } from './Filter';
-import { EmptyCustom } from './EmptyCustom';
+import { NoFiltersFound, NoFiltersYet } from './NoFilters';
 import { Search } from './Search';
 import { FiltersUpdate } from './FiltersUpdate';
 import { AddCustomModal } from './AddCustomModal';
 import { SEARCH_FILTERS } from './Search/constants';
+import type { RenderedFilterType } from './types';
 
 const QUERY_PARAM_NAMES = {
     GROUP: 'group',
@@ -77,6 +79,7 @@ const Filters = observer(() => {
     const [groupDetermined, setGroupDetermined] = useState(false);
 
     const GROUP_DESCRIPTION = {
+        [AntibannerGroupsId.CustomFiltersGroupId]: null,
         [AntibannerGroupsId.AdBlockingFiltersGroupId]: translator.getMessage('group_description_adblocking'),
         [AntibannerGroupsId.PrivacyFiltersGroupId]: translator.getMessage('group_description_stealth'),
         [AntibannerGroupsId.SocialFiltersGroupId]: translator.getMessage('group_description_social'),
@@ -90,6 +93,10 @@ const Filters = observer(() => {
         categories,
         filters,
         filtersToRender,
+    }: {
+        categories: CategoriesGroupData[];
+        filters: RenderedFilterType[];
+        filtersToRender: RenderedFilterType[];
     } = settingsStore;
 
     useEffect(() => {
@@ -149,7 +156,7 @@ const Filters = observer(() => {
         ? updateGroupSettingsWithLoader
         : settingsStore.updateGroupSetting;
 
-    const handleGroupSwitch = async ({ id, data }) => {
+    const handleGroupSwitch = async ({ id, data }: { id: string; data: boolean }) => {
         const groupId = Number.parseInt(id, 10);
 
         // get user consent about recommended filters for the first time user enables annoyances filter group. AG-29161
@@ -168,12 +175,12 @@ const Filters = observer(() => {
         await updateGroupSettings(groupId, data);
     };
 
-    const groupClickHandler = (groupId) => () => {
+    const groupClickHandler = (groupId: AntibannerGroupsId) => () => {
         settingsStore.setSelectedGroupId(groupId);
         navigate(`/filters?group=${groupId}`);
     };
 
-    const getEnabledFiltersByGroup = (group) => (
+    const getEnabledFiltersByGroup = (group: CategoriesGroupData) => (
         filters.filter((filter) => filter.groupId === group.groupId && filter.enabled)
     );
 
@@ -182,7 +189,7 @@ const Filters = observer(() => {
         settingsStore.handleFilterConsentConfirm,
     );
 
-    const renderGroups = (groups) => {
+    const renderGroups = (groups: CategoriesGroupData[]) => {
         // TODO: use 'displayNumber' as a const
         // or add sorting by it to a separate helper as it is used in several places
         const sortedGroups = sortBy(groups, 'displayNumber');
@@ -210,16 +217,20 @@ const Filters = observer(() => {
         settingsStore.sortFilters();
     };
 
-    const renderFilters = (filtersList, groupEnabled) => {
+    const renderFilters = (filtersList: RenderedFilterType[], groupEnabled: boolean) => {
+        if (filtersList.length === 0) {
+            return null;
+        }
+
         return filtersList
             .map((filter) => <Filter key={filter.filterId} filter={filter} groupEnabled={groupEnabled} />);
     };
 
-    const renderGroupsOnSearch = (matchedFilters) => {
+    const renderGroupsOnSearch = (matchedFilters: RenderedFilterType[]) => {
         // collect search data as object where
         // key is group id and value is searched filters
         const searchData = matchedFilters
-            .reduce((acc, filter) => {
+            .reduce((acc: { [key: number]: RenderedFilterType[] }, filter) => {
                 const { groupId } = filter;
                 if (typeof acc[groupId] === 'undefined') {
                     acc[groupId] = [filter];
@@ -248,9 +259,7 @@ const Filters = observer(() => {
             });
         }
         return (
-            <div className="filter__empty">
-                {translator.getMessage('options_filters_empty_title')}
-            </div>
+            <NoFiltersFound />
         );
     };
 
@@ -277,7 +286,7 @@ const Filters = observer(() => {
         }
     }, [urlToSubscribe, openModalHandler]);
 
-    const renderAddFilterBtn = (isEmpty) => {
+    const renderAddFilterBtn = (isEmpty: boolean) => {
         const buttonClass = classNames('button button--l button--green-bg', {
             'button--empty-custom-filter': isEmpty,
             'button--add-custom-filter': !isEmpty,
@@ -303,9 +312,13 @@ const Filters = observer(() => {
             return group.groupId === settingsStore.selectedGroupId;
         });
 
+        if (!selectedGroup) {
+            throw new Error(`Group id ${settingsStore.selectedGroupId} is incorrect`);
+        }
+
         const isCustom = settingsStore.selectedGroupId === AntibannerGroupsId.CustomFiltersGroupId;
         const isEmpty = filtersToRender.length === 0;
-        const description = GROUP_DESCRIPTION[selectedGroup.groupId];
+        const description = GROUP_DESCRIPTION[selectedGroup.groupId as AntibannerGroupsId];
 
         const renderBackButton = () => (
             <>
@@ -329,6 +342,22 @@ const Filters = observer(() => {
                 </div>
             </>
         );
+
+        const renderEmptyFiltersMessage = () => {
+            if (!isEmpty) {
+                return null;
+            }
+
+            if (settingsStore.isSearching) {
+                return <NoFiltersFound />;
+            }
+
+            if (isCustom) {
+                return <NoFiltersYet />;
+            }
+
+            return null;
+        };
 
         return (
             <SettingsSection
@@ -359,15 +388,10 @@ const Filters = observer(() => {
                         ? <DynamicRulesLimitsWarning />
                         : <StaticFiltersLimitsWarning />
                 }
-                {isEmpty && isCustom && !settingsStore.isSearching
-                    ? <EmptyCustom />
-                    : (
-                        <>
-                            <Search />
-                            {renderFilters(filtersToRender, selectedGroup.enabled)}
-                        </>
-                    )}
-                {isCustom && (
+                <Search />
+                {renderFilters(filtersToRender, selectedGroup.enabled)}
+                {renderEmptyFiltersMessage()}
+                {isCustom && !settingsStore.isSearching && (
                     <>
                         {renderAddFilterBtn(isEmpty && !settingsStore.isSearching)}
                         <AddCustomModal
