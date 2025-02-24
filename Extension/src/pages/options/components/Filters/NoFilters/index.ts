@@ -16,4 +16,5 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { EmptyCustom } from './EmptyCustom';
+export { NoFiltersFound } from './NoFiltersFound';
+export { NoFiltersYet } from './NoFiltersYet';
