@@ -18,6 +18,7 @@
 import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextension';
 
 import { CustomFilterHelper } from '../../common/custom-filter-helper';
+import { AntiBannerFiltersId } from '../../common/constants';
 
 import { hybridStorage } from './shared-instances';
 
@@ -66,8 +67,12 @@ export class FiltersStorage {
         let preprocessed: PreprocessedFilterList;
 
         if (typeof filter === 'string') {
-            // Log all issues in dev mode, or only for custom filters in production
-            const shouldLogIssues = (!IS_BETA && !IS_RELEASE) || CustomFilterHelper.isCustomFilter(filterId);
+            // Log all issues:
+            // - for all filters in dev mode, or
+            // - for user filter and custom filters in prod mode
+            const shouldLogIssues = (!IS_BETA && !IS_RELEASE)
+                || filterId === AntiBannerFiltersId.UserFilterId
+                || CustomFilterHelper.isCustomFilter(filterId);
             preprocessed = FilterListPreprocessor.preprocess(filter, false, shouldLogIssues);
         } else {
             preprocessed = filter;
