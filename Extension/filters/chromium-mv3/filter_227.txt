@@ -1,13 +1,13 @@
-! Checksum: gmrUCRfFdAsy1L7VodQFMg
+! Checksum: j2tcM++iniXPS8TWc2SCZg
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.54
-! TimeUpdated: 2025-02-20T09:02:11+00:00
+! Version: 2.0.20.56
+! TimeUpdated: 2025-02-22T17:01:35+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0220.0
+! OriginalVersion: 2025.0223.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -1602,7 +1602,7 @@ newdaily.co.kr##.header-banner
 kgnews.co.kr###news_body_area > div[style*="height:"]
 mlbpark.donga.com##div[id^="naver_cont"]
 namechart.kr##.container ~ .border-t:has(ins.adsbygoogle)
-dogdrip.net##.board-list .list > li:has(> #dogdripPowerLink)
+dogdrip.net##.board-list .list > li:has(> #dogdripPowerLink, > #npl-list)
 m.search.naver.com##.square_tile_area .tile_area > .tile_list:has(._ad_icon)
 m.search.naver.com##.square_tile_area .tile_area > ._ad
 m.search.naver.com##li:is([data-nmb_hpl-doc-id*="_nad-"], [data-loc_plce-doc-id*="_nad-"], [data-slog-content*=":nad-"], [data-rbp_lpa-doc-id*="nad-"])
@@ -3571,6 +3571,10 @@ naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
 @@||ssl.pstatic.net/tveta/libs/glad/prod/$script,xmlhttprequest,domain=chzzk.naver.com
 @@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
+tabriz.kr#@##AdHeader
+tabriz.kr#@##AD_Top
+tabriz.kr#@##ad-lead
+tabriz.kr#@##homead
 namechart.kr,eftlibrary.com#%#//scriptlet('prevent-fetch', 'www3.doubleclick.net')
 dinfo.3dpchip.com#%#//scriptlet('set-constant', 'linkPass', 'true')
 boardlife.co.kr#$##top-sponsor { height: 60px !important; top: -60px !important; position: absolute !important; visibility: hidden !important; }

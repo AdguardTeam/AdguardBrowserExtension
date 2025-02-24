@@ -1,8 +1,8 @@
-! Checksum: 1Yj+MZNmOmDhiEpAm8+qzg
+! Checksum: Nc7z04wD5u+4A/HGvZFjMQ
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.13
-! TimeUpdated: 2025-02-20T20:38:45+00:00
+! Version: 2.0.46.16
+! TimeUpdated: 2025-02-22T00:38:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1467,7 +1467,9 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
-myhomebook.de##.gaiaWrapper
+||scout.data.funkedigital.de/orders.json
+kicker.de##.kick__ad-pos_wrapper
+fitbook.de,myhomebook.de##.gaiaWrapper
 thinkpad-forum.de##.firstbn
 thinkpad-forum.de#?#.p-body-inner > h1:contains(Werbung)
 ||cdn.lineaget.com/widget/widget.js$domain=thinkpad-forum.de
@@ -1720,6 +1722,7 @@ mopo.de#?#div[data-tb-region-item]:has(> .main-preview__content > .main-preview_
 jolie.de##article:has(> .teaser__media > .teaser__adtype)
 freundin.de##div[class]:has(> div[class] > div[class] > div[class] > div[class] > a[href*="e-commerce-artikel"])
 freundin.de##div[class]:has(> div[class]:last-child > div[class] > div[class] > a[href*="e-commerce"])
+freundin.de#?#div[class^="sc-"]:has(> div[class]:only-child > div:first-child:contains(Anzeige) + div)
 !freundin.de##div[class]:has(> div[class]:only-child > div[class] > a + div[class] > div[class] > div[class] > svg)
 !freundin.de##.ab-content_teaser-entityType_not_set > div[class] > div[class]:has(> div[class] > div[class] > div[class] > .adv)
 !freundin.de##.ab-content_teaser-entityType_not_set > div[class]:only-child > div[class]:has( > div:last-child .advertisement)
@@ -2614,7 +2617,7 @@ esut.de##.widebanner-post-content
 esut.de##img[src^="/wp-content/banners/"]
 esut.de##a[onclick^="_paq.push(['trackEvent'"][onclick*="'Adverts'"]
 ||esut.de/wp-content/banners/
-freundin.de##.ab-ad_placement-article
+freundin.de##div[class^="ab-ad_placement"]
 harpersbazaar.de,freundin.de##.placeholdercontainer
 harpersbazaar.de,freundin.de##.ab-products-entityType_not_set
 gesundheitswissen.de,womenshealth.de,gevestor.de##.commercial

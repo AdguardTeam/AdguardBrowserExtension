@@ -1,8 +1,8 @@
-! Checksum: MEUTkLyisnFUK+DdD8kMtw
+! Checksum: 2OFylXGPNcbWjzSQ3+faYQ
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.30.85
-! TimeUpdated: 2025-02-21T10:39:49+00:00
+! Version: 2.0.30.93
+! TimeUpdated: 2025-02-22T06:38:00+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -41,6 +41,8 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! meteoblue.com - news in the sidebar
+meteoblue.com##.fixity > div#news
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198300
 sq.jbr.co.jp##.l-banner
 sq.jbr.co.jp##.spt-library
@@ -522,7 +524,8 @@ igromania.ru##a[class^="KanobuSocialCommunities_twitter"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/153021
 forbes.ua##.c-post-subscribe
 ! https://privatter.net/p/9889173
-x.com,twitter.com#?#section[aria-labelledby^="accessible-list"] div[style^="transform"]:has(div[data-testid="card.wrapper"] + a:contains(/bokepchudai[0-9A-z]+\.blogspot|jpquiz\.|zen-cock\.com|zennnews\.com/))
+x.com,twitter.com##section[aria-labelledby^="accessible-list"] div[style^="transform"]:has(div[data-testid="tweetText"] > a:is([href^="https://jp.cookie-food.com/"],[href^="https://jp.cookicway.com/"]))
+x.com,twitter.com#?#section[aria-labelledby^="accessible-list"] div[style^="transform"]:has(div[data-testid="card.wrapper"] + a:contains(/bokepchudai[0-9A-z]+\.blogspot|jp\.cookie-food\.com|jp\.cookicway\.com|zennnews\.com/))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/152867
 posta.com.tr##.content-box > a[href^="https://flipboard.com/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/151928
@@ -1005,6 +1008,7 @@ appget.com###side_right > div[style="margin: 0 0 20px 25px;"]
 ejje.weblio.jp##.mainBlock[style="min-height: 270px;"]
 ##.gliaplayer-container
 weblio.jp##.firstDictVideoAd
+gendai.media##div[data-testid="firework-storyblock-ad"]
 maquia.hpplus.jp##.section-fireworkTag
 fudge.jp##.ratio-wrapper
 blogto.com##.fire_video_style
@@ -3466,6 +3470,15 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 !
 ! SECTION: Self-promo - Regular rules
 !
+bild.de#$?#article:has(> a:only-child[target="_blank"][href*="source"]) { remove: true; }
+[$path=/file]tezfiles.com##.premium
+[$path=/file]tezfiles.com##.premium + .section-question
+securelist.com##a[href^="https://xtraining.kaspersky.com/"]
+securelist.ru,securelist.com##a[data-element-id="main-page-banner"]
+bogsfootwear.com##.weblayer--box-subscription-sms-email-signup--exit
+bogsfootwear.com###upSellPop
+komaki2.jp###sidebar-inner > a[href^="https://komaki2.jp/ad/ad-"]
+komaki2.jp###sidebar-inner > br
 journal.sovcombank.ru##astro-island:has( > div > div > div > span.bg-red + div > div.wysiwyg-markup > p > a[href*="utm_medium=referral"][target="_blank"])
 journal.sovcombank.ru##a[data-event^="bannerClick_"]
 jorudan.co.jp###js_bnr_right_block3_parent
@@ -3580,7 +3593,7 @@ book24.ru##div[data-b24-banner-slot="top-banner"]
 r34.app##figure.-mx-1.mt-4:has(> a[href*="&utm_"])
 klerk.ru##.advertising-text-block
 klerk.ru##.w-full > section:has(> ul > li > a[href^="/learn/event/"])
-dzen.ru##div[class*="__bannerContainer-"]
+dzen.ru##div[class^="content--corner-banner__root-"]
 vegasslotsonline.com#$#footer + dialog[data-dialog-type="showModal"] { display: none !important; }
 vegasslotsonline.com#$#body.overflow-hidden { overflow: auto !important; }
 live-theater.net##div[data-sticky-container-header-height] div[data-sticky-container-header-height] ._margin + div[class] div[class] > div[class]:not([class*=" "]):has(> div:not([id],[class]) > div[class] > a[target="_blank"][rel="nofollow noopener"] > img:not([src*="live-theater.net"]) + button)
@@ -7806,6 +7819,7 @@ habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Бл
 ! Clones like movies123.video, primewire.pics
 ##html[data-lt-installed="true"] > body[style=""] a[href="/user/profile/premium-membership"] > img
 ##html[data-lt-installed="true"] > body[style=""] > main + script ~ div[class^="_"]
+!
 ! 2gis
 2gis.*#?#div[style="justify-content:flex-end"] button:has(> div:contains(Ваши друзья на карте))
 2gis.ae,2gis.am,2gis.az,2gis.biz,2gis.by,2gis.cl,2gis.com,2gis.com.bd,2gis.com.np,2gis.com.ua,2gis.cz,2gis.dev,2gis.ge,2gis.io,2gis.it,2gis.kg,2gis.kz,2gis.one,2gis.ru,2gis.tech,2gis.ua,2gis.uz,2gis.world##div[class^="_im"]
@@ -7853,6 +7867,9 @@ eiga.com##.header-pure-banner
 !##############################
 ! SECTION: Tweaks - CSS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198152
+iseekgames.com#$#.wfl_pretimer { display: none !important; }
+iseekgames.com#$#.wfl_active-timer { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199020
 megafire.net#$#.show_download_links { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196638

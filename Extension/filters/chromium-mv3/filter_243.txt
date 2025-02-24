@@ -1,13 +1,13 @@
-! Checksum: +f48NVqtJd6w9edB5/O/4A
+! Checksum: J2p5to+rl7vConfROte/9w
 ! Title: Frellwit's Swedish Filter
 ! Description: Filter that aims to remove regional Swedish ads, tracking, social media, annoyances, sponsored articles etc.
-! Version: 2.0.20.85
-! TimeUpdated: 2025-02-20T09:02:24+00:00
+! Version: 2.0.20.86
+! TimeUpdated: 2025-02-22T09:01:59+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Frellwit's Swedish Filter
 ! Expires: 4 days
-! Last modified: 2025-02-20 07:29:30 CET
+! Last modified: 2025-02-22 07:23:32 CET
 ! Homepage: https://github.com/lassekongo83/Frellwits-filter-lists
 ! Description: A filter for uBlock Origin that aims to remove regional Swedish ads, tracking, annoyances, scams + badware, and unnecessary bloat.
 ! License: GPL3 - https://github.com/lassekongo83/Frellwits-filter-lists/blob/master/LICENSE
@@ -443,6 +443,7 @@ doktorn.com##.js-banner-wrapper
 doktorn.com##.js-cookie-disclaimer
 doon.se##.doon-promotion, a.link[target="_blank"]
 driva-eget.se##.sponsored_content
+driva-eget.se##:is(.articles-swiper-item, .article-content, .articles-masonry-item):has(.bgcolor-ad-card)
 drugnews.se##:is(#sidebarleft, #sidebarright) .widget:has(.ad-swiper-container)
 dust2.se#$#.main-page-content { background-image:none!important; }
 dust2.se##.target-banner, div[data-type="BANNER"]
@@ -472,7 +473,8 @@ eniro.se##article:has(#marketing)
 eniro.se##div.rounded-4xl:has(a[href$="/firma#marketing"])
 eniro.se##:is(.grid.place-items-center, div[style^="height"].items-center, div[style^="min-height"].items-center):has(div[id*="LeaderBoard"], div[id*="Leaderboard"], div[id^="LandingPage"])
 enkelteknik.se##.wpb_wrapper > .vc_row_inner:has(script[data-bid])
-enterprisemagazine.se###ew-cookiebar-full, #ew-cookiebar-manage, .text-ads
+enterprisemagazine.se##.text-ads
+enterprisemagazine.se,driva-eget.se###ew-cookiebar-full, #ew-cookiebar-manage
 epochtimes.se##.fixed.bottom-0, a[target="_blank"][href*="utm_campaign"]
 esportare.se##a[href*="utm_campaign"]
 esportare.se#?#p[style^="text-align: center;"] em:contains(Annonser):upward(2)
@@ -1133,7 +1135,7 @@ pussad.se##.g1-popup-newsletter, .g1-slideup-wrap
 qasa.se##div[data-state="open"]:empty
 qasa.se#%#//scriptlet('ubo-aeld.js', 'wheel')
 quizza.nu,elbilen.se###takeover
-qx.se##.qxa-container
+qx.se##.qxa-container, .leaky-popup-banner, .qxasection
 racemagazine.se##article + div.bg-white:has(.ad-inner)
 racemagazine.se###sidebar > .h-full:has(#asideAD)
 racemagazine.se##.landing-ad
@@ -1691,6 +1693,7 @@ zeromagazine.nu##div[id^="ads"]
 ##div.td-a-rec-id-custom-spot
 ##div.td-banner-bg
 ##div.topmost-banner
+##div.top-advert-wrapper
 ##div.top-annons
 ##div.tower-annonser
 ##div.uder-tags-ad
@@ -1715,12 +1718,14 @@ zeromagazine.nu##div[id^="ads"]
 ##div[id^="borka-panorama"]
 ##div[id^="borka-widescreen"]
 ##div[id^="matchads-"]
+##dynamic-ad
 ##footer .sponsors-area
 ##gwd-google-ad
 ##iframe#compricer_iframe
 ##img[alt="Leovegas"]
 ##img[alt="Spela på Betsson"]
 ##img[src*="/track.adtraction"]
+##section.bgcolor-ad
 ##td#reklam
 ##ul.adsmodern
 ###RightOuterBannerDiv
@@ -1824,7 +1829,7 @@ zeromagazine.nu##div[id^="ads"]
 /AudienceTarget$script,domain=morningstar.se
 /Banners/webbannons
 /BlogPortal/view/Statistics
-/CookieBar$script,domain=morningstar.se
+/CookieBar$script,domain=morningstar.se|driva-eget.se
 /DAC.js$domain=swedroid.se
 /DO-theme/ads.js
 /DynamicGAFunctions$script,domain=morningstar.se
@@ -1907,6 +1912,7 @@ zeromagazine.nu##div[id^="ads"]
 /annonslinje_
 /annonssamarbete$xmlhttprequest
 /annons$image,domain=dagensvimmerby.se|dagensvastervik.se|dagenskalmar.nu|dagenshultsfred.se|filmtopp.se|webbkameror.se|omkonst.com
+/annons$xmlhttprequest,domain=driva-eget.se
 /annons-banner
 /annons.aspx?
 /annons/banner
