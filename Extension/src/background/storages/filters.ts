@@ -17,6 +17,8 @@
  */
 import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextension';
 
+import { CustomFilterHelper } from '../../common/custom-filter-helper';
+
 import { hybridStorage } from './shared-instances';
 
 /**
@@ -64,7 +66,9 @@ export class FiltersStorage {
         let preprocessed: PreprocessedFilterList;
 
         if (typeof filter === 'string') {
-            preprocessed = FilterListPreprocessor.preprocess(filter);
+            // Log all issues in dev mode, or only for custom filters in production
+            const shouldLogIssues = (!IS_BETA && !IS_RELEASE) || CustomFilterHelper.isCustomFilter(filterId);
+            preprocessed = FilterListPreprocessor.preprocess(filter, false, shouldLogIssues);
         } else {
             preprocessed = filter;
         }
