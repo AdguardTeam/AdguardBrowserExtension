@@ -17,28 +17,42 @@
  */
 import path from 'node:path';
 
-import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import {
+    defineProject,
+    defineWorkspace,
+    type WorkspaceProjectConfiguration,
+} from 'vitest/config';
 
-import { MANIFEST_ENV } from './tools/constants';
 import { loadAliases } from './tools/typescript';
+import { ManifestVersionEnv } from './tools/constants';
 
-export default defineConfig({
+/**
+ * Creates a test configuration for a specific manifest version.
+ *
+ * @param manifestVersion The manifest version to create the test for.
+ *
+ * @returns The test configuration.
+ */
+const createWorkspaceConfigForManifestVersion = (
+    manifestVersion: ManifestVersionEnv,
+): WorkspaceProjectConfiguration => defineProject({
     define: {
         IS_FIREFOX_AMO: false,
         // For run tests like it's release.
         IS_RELEASE: true,
         IS_BETA: false,
-        __IS_MV3__: MANIFEST_ENV === '3',
+        __IS_MV3__: manifestVersion === ManifestVersionEnv.Third,
     },
     plugins: [tsconfigPaths()],
     resolve: {
         alias: loadAliases(
             path.resolve(__dirname),
-            `./tsconfig.with_types_mv${MANIFEST_ENV}.json`,
+            `./tsconfig.with_types_mv${manifestVersion}.json`,
         ),
     },
     test: {
+        name: `mv${manifestVersion}`,
         setupFiles: [
             // Setup all needed stuff: mocks, etc.
             'fake-indexeddb/auto',
@@ -51,9 +65,10 @@ export default defineConfig({
                 userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 YaBrowser/22.11.0.2468 Yowser/2.5 Safari/537.36',
             },
         },
-        reporters: [
-            ['default'],
-            ['junit', { outputFile: `./tests-reports/unit-tests-mv${MANIFEST_ENV}.xml` }],
-        ],
     },
 });
+
+export default defineWorkspace([
+    createWorkspaceConfigForManifestVersion(ManifestVersionEnv.Second),
+    createWorkspaceConfigForManifestVersion(ManifestVersionEnv.Third),
+]);
