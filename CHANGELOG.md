@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Minimum supported Chromium-based MV2 browsers version now 106+ for support
+  prerender requests.
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
 - Store filter data in ruleset files exclusively for the MV3 extension
