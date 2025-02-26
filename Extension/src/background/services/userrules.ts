@@ -19,6 +19,7 @@
 // it is okay to import directly from `@adguard/tswebextension/mv3` without using manifest-dependant alias,
 // because checkUserRulesRegexpErrors use only in engine-mv3
 import { type ConfigurationResult, UnsupportedRegexpError } from '@adguard/tswebextension/mv3';
+import { RuleGenerator } from '@adguard/agtree/generator';
 
 import type { Engine } from 'engine';
 
@@ -232,8 +233,7 @@ export class UserRulesService {
             errors.forEach((error) => {
                 logger.error(
                     'User rule parsing error:',
-                    // FIXME: Waits for updating declarative converter
-                    `\nRule: ${error.networkRule.getText()}`,
+                    `\nRule: ${RuleGenerator.generate(error.networkRule.node)}`,
                     `\nReason: ${error.reason}`,
                 );
             });
