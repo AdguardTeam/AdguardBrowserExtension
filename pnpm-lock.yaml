@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@adguard/tswebextension>@adguard/tsurlfilter': https://github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tsurlfilter/tsurlfilter.tgz
+
 dependencies:
   '@adguard/agtree':
     specifier: 3.0.1
@@ -21,11 +24,11 @@ dependencies:
     specifier: ^1.0.2
     version: 1.0.2
   '@adguard/tsurlfilter':
-    specifier: 3.2.1
-    version: 3.2.1(@adguard/re2-wasm@1.2.0)
+    specifier: https://github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tsurlfilter/tsurlfilter.tgz
+    version: '@github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)'
   '@adguard/tswebextension':
-    specifier: 3.0.1
-    version: 3.0.1(@adguard/re2-wasm@1.2.0)
+    specifier: https://github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tswebextension/tswebextension.tgz
+    version: '@github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)'
   '@xstate/react':
     specifier: ^4.1.3
     version: 4.1.3(@types/react@17.0.83)(react@17.0.2)(xstate@5.19.0)
@@ -138,7 +141,7 @@ dependencies:
 devDependencies:
   '@adguard/dnr-rulesets':
     specifier: ^2.0.20250307180115
-    version: 2.0.20250307180115
+    version: 2.0.20250312150115
   '@adguard/re2-wasm':
     specifier: ^1.2.0
     version: 1.2.0
@@ -395,15 +398,14 @@ packages:
 
   /@adguard/diff-builder@1.0.17:
     resolution: {integrity: sha512-pKM8oUQcl8IrVyJIlqwiAUMX4manZrfe2S/a9Np3VDbnaQFbGTwW1cmQoKffmdFUwk7dEKzQ83ILm1OuOu6kZw==}
-    hasBin: true
     dependencies:
       commander: 11.1.0
       crypto-js: 4.2.0
       diff: github.com/105th/jsdiff/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a
     dev: false
 
-  /@adguard/dnr-rulesets@2.0.20250307180115:
-    resolution: {integrity: sha512-qxsknrH7yBVkE+Kc3s3AoGoZfZmfKDwIIfMJbpg9LDdHn/nSEbgUyYQ5RG5ljYR8koZQELqqWHa7RI5Y3BViRQ==}
+  /@adguard/dnr-rulesets@2.0.20250312150115:
+    resolution: {integrity: sha512-jlzhJBxZ2qwWItTvQUs7DjoRQMAaGnt4VGiqoD3RH9dxdvVULAScVdoADtT0Ix3leTPJK2VQG9kee9bEh/NTrQ==}
     hasBin: true
     dependencies:
       '@adguard/logger': 1.1.1
@@ -446,58 +448,6 @@ packages:
 
   /@adguard/translate@1.0.2:
     resolution: {integrity: sha512-TeQV4ngse/fcpFDCrtU5VqjZfQsdytSuGT8wF4biIM6c6v6W/tkUdrTDhNItq126hAZe65V8QgipTAp8qHdeZw==}
-    dev: false
-
-  /@adguard/tsurlfilter@3.2.1(@adguard/re2-wasm@1.2.0):
-    resolution: {integrity: sha512-BIQ+GgUyMlSGeCsPG8n6WoATlwlepKSkEZEZnS1NOpNmGY5Vcv3lL5BpptA5fArJpmafh7orzmbevtRiIsrVRQ==}
-    engines: {node: '>=20'}
-    hasBin: true
-    peerDependencies:
-      '@adguard/re2-wasm': 1.2.0
-    dependencies:
-      '@adguard/agtree': 3.0.1
-      '@adguard/css-tokenizer': 1.2.0
-      '@adguard/re2-wasm': 1.2.0
-      '@adguard/scriptlets': 2.1.6
-      cidr-tools: 6.4.2
-      commander: 9.4.1
-      is-cidr: 4.0.2
-      is-ip: 3.1.0
-      jsonpos: 4.1.2
-      lru-cache: 11.0.2
-      punycode: 2.3.1
-      tldts: 5.7.112
-      zod: 3.21.4
-      zod-validation-error: 3.4.0(zod@3.21.4)
-    dev: false
-
-  /@adguard/tswebextension@3.0.1(@adguard/re2-wasm@1.2.0):
-    resolution: {integrity: sha512-U4+kcHs+2B9n7vZhc5uNEQDMDVkdU08QACNdIVC14f+jL0tAeW0RORsYak6fAc9+Mb+ZlDH+nl3TcvT4+pn4UA==}
-    engines: {node: '>=20'}
-    hasBin: true
-    dependencies:
-      '@adguard/agtree': 3.0.1
-      '@adguard/assistant': 4.3.70
-      '@adguard/extended-css': 2.1.1
-      '@adguard/logger': 1.1.1
-      '@adguard/scriptlets': 2.1.6
-      '@adguard/tsurlfilter': 3.2.1(@adguard/re2-wasm@1.2.0)
-      bowser: 2.11.0
-      chrome-types: 0.1.343
-      commander: 11.0.0
-      fs-extra: 11.1.1
-      idb: 8.0.2
-      lodash-es: 4.17.21
-      lru-cache: 11.0.2
-      nanoid: 5.1.2
-      superjson: 2.2.2
-      text-encoding: '@github.com/AdguardTeam/text-encoding/tarball/v0.8.0'
-      tldts: 5.7.112
-      tslib: 2.5.3
-      webextension-polyfill: 0.12.0
-      zod: 3.21.4
-    transitivePeerDependencies:
-      - '@adguard/re2-wasm'
     dev: false
 
   /@babel/code-frame@7.21.4:
@@ -1481,7 +1431,6 @@ packages:
   /@humanwhocodes/config-array@0.13.0:
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
     engines: {node: '>=10.10.0'}
-    deprecated: Use @eslint/config-array instead
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
       debug: 4.3.7
@@ -1497,7 +1446,6 @@ packages:
 
   /@humanwhocodes/object-schema@2.0.3:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
-    deprecated: Use @eslint/object-schema instead
     dev: true
 
   /@isaacs/cliui@8.0.2:
@@ -2509,7 +2457,6 @@ packages:
 
   /abab@2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
-    deprecated: Use your platform's native atob() and btoa() methods instead
     dev: true
 
   /abbrev@1.1.1:
@@ -2545,13 +2492,11 @@ packages:
   /acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
     engines: {node: '>=0.4.0'}
-    hasBin: true
     dev: true
 
   /acorn@8.14.0:
     resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
     engines: {node: '>=0.4.0'}
-    hasBin: true
     dev: true
 
   /agent-base@7.1.3:
@@ -3002,7 +2947,6 @@ packages:
   /browserslist@4.24.3:
     resolution: {integrity: sha512-1CPmv8iobE2fyRMV97dAcMVegvvWKxmq94hkLiAkUGwKVTyDLw33K+ZxiFrREKmmps4rIw6grcCFCnTMSZ/YiA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001689
       electron-to-chromium: 1.5.73
@@ -3447,7 +3391,6 @@ packages:
   /cross-env@7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
     engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
-    hasBin: true
     dependencies:
       cross-spawn: 7.0.3
     dev: true
@@ -3464,7 +3407,6 @@ packages:
   /crx@5.0.1:
     resolution: {integrity: sha512-n/PzBx/fR1+xZCiJBats9y5zw/a+YBcoJ0ABnUaY56xb1RpXuFhsiCMpNY6WjVtylLzhUUXSWsbitesVg7v2vg==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       archiver: 3.1.1
       commander: 2.20.3
@@ -3604,7 +3546,6 @@ packages:
   /cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
-    hasBin: true
     dev: true
 
   /csso@4.2.0:
@@ -3886,7 +3827,6 @@ packages:
 
   /editorconfig@0.15.3:
     resolution: {integrity: sha512-M9wIMFx96vq0R4F+gRpY3o2exzb8hEj/n9S8unZtHSvYjibBp/iMufSzvmOcV/laG0ZtuTVGtiJggPOSW2r93g==}
-    hasBin: true
     dependencies:
       commander: 2.20.3
       lru-cache: 4.1.5
@@ -4071,7 +4011,6 @@ packages:
   /esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
     engines: {node: '>=12'}
-    hasBin: true
     requiresBuild: true
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.21.5
@@ -4102,7 +4041,6 @@ packages:
   /esbuild@0.23.1:
     resolution: {integrity: sha512-VVNz/9Sa0bs5SELtn3f7qhJCDPCF5oMEl5cO9/SSinpE9hbPVvxbd572HH5AKiP7WD8INO53GgfDDhRjkylHEg==}
     engines: {node: '>=18'}
-    hasBin: true
     requiresBuild: true
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.23.1
@@ -4412,8 +4350,6 @@ packages:
   /eslint@8.57.1:
     resolution: {integrity: sha512-ypowyDxpVSYpkXr9WPv2PAZCtNip1Mv5KTW0SCurXv/9iOpcrH9PaqUElksqEB6pChqHGDRCFTyrZlGhnLNGiA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
-    hasBin: true
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.1)
       '@eslint-community/regexpp': 4.12.1
@@ -4478,7 +4414,6 @@ packages:
   /esprima@4.0.1:
     resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
     engines: {node: '>=4'}
-    hasBin: true
 
   /esquery@1.6.0:
     resolution: {integrity: sha512-ca9pw9fomFcKPvFLXhBKUK90ZvGibiGOvRJNbjljY7s7uq/5YO4BOzcYtJqExdx99rF6aAcnRxHmcUHcz6sQsg==}
@@ -4638,7 +4573,6 @@ packages:
 
   /flat@5.0.2:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
-    hasBin: true
     dev: true
 
   /flatted@3.2.7:
@@ -4647,7 +4581,6 @@ packages:
 
   /flatten@1.0.3:
     resolution: {integrity: sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==}
-    deprecated: flatten is deprecated in favor of utility frameworks such as lodash.
     dev: true
 
   /follow-redirects@1.15.3:
@@ -4841,7 +4774,6 @@ packages:
 
   /glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
-    hasBin: true
     dependencies:
       foreground-child: 3.3.0
       jackspeak: 3.4.3
@@ -4853,7 +4785,6 @@ packages:
 
   /glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -4866,7 +4797,6 @@ packages:
   /glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
-    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -5044,7 +4974,6 @@ packages:
 
   /he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
-    hasBin: true
     dev: true
 
   /hmac-drbg@1.0.1:
@@ -5069,7 +4998,6 @@ packages:
   /html-minifier-terser@6.1.0:
     resolution: {integrity: sha512-YXxSlJBZTP7RS3tWnQw74ooKa6L9b9i9QYXY21eUEvhZ3u9XLfv6OnFsQq6RxkhHygsaUMvYsZRV5rU/OVNZxw==}
     engines: {node: '>=12'}
-    hasBin: true
     dependencies:
       camel-case: 4.1.2
       clean-css: 5.3.2
@@ -5143,7 +5071,6 @@ packages:
   /husky@7.0.4:
     resolution: {integrity: sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==}
     engines: {node: '>=12'}
-    hasBin: true
     dev: true
 
   /iconv-lite@0.6.3:
@@ -5203,7 +5130,6 @@ packages:
 
   /inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
-    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
@@ -5303,7 +5229,6 @@ packages:
   /is-docker@2.2.1:
     resolution: {integrity: sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ==}
     engines: {node: '>=8'}
-    hasBin: true
     dev: true
 
   /is-extglob@2.1.1:
@@ -5528,13 +5453,11 @@ packages:
 
   /jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
-    hasBin: true
     dev: true
 
   /js-beautify@1.14.7:
     resolution: {integrity: sha512-5SOX1KXPFKx+5f6ZrPsIPEY7NwKeQz47n3jm2i+XeHx9MoRsfQenlOP13FQhWvg8JRS0+XLO6XYUQ2GX+q+T9A==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       config-chain: 1.1.13
       editorconfig: 0.15.3
@@ -5547,14 +5470,12 @@ packages:
 
   /js-yaml@3.14.1:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
-    hasBin: true
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
 
   /js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
-    hasBin: true
     dependencies:
       argparse: 2.0.1
     dev: true
@@ -5629,7 +5550,6 @@ packages:
 
   /json5@1.0.2:
     resolution: {integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==}
-    hasBin: true
     dependencies:
       minimist: 1.2.8
     dev: true
@@ -5637,7 +5557,6 @@ packages:
   /json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
-    hasBin: true
     dev: false
 
   /jsonfile@6.1.0:
@@ -5720,7 +5639,6 @@ packages:
   /lint-staged@13.2.1:
     resolution: {integrity: sha512-8gfzinVXoPfga5Dz/ZOn8I2GOhf81Wvs+KwbEXQn/oWZAvCVS2PivrXfVbFJc93zD16uC0neS47RXHIjXKYZQw==}
     engines: {node: ^14.13.1 || >=16.0.0}
-    hasBin: true
     dependencies:
       chalk: 5.2.0
       cli-truncate: 3.1.0
@@ -5840,7 +5758,6 @@ packages:
 
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
-    hasBin: true
     dependencies:
       js-tokens: 4.0.0
 
@@ -5944,7 +5861,6 @@ packages:
 
   /miller-rabin@4.0.1:
     resolution: {integrity: sha512-115fLhvZVqWwHPbClyntxEVfVDfl9DLLTuJvq3g2O/Oxi8AiNouAHvDSzHS0viUJc+V5vm3eq91Xwqn9dp4jRA==}
-    hasBin: true
     dependencies:
       bn.js: 4.12.0
       brorand: 1.1.0
@@ -6009,7 +5925,6 @@ packages:
 
   /mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
-    hasBin: true
     dependencies:
       minimist: 1.2.8
     dev: true
@@ -6071,13 +5986,11 @@ packages:
   /nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
     dev: false
 
   /nanoid@3.3.8:
     resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
     dev: true
 
   /nanoid@5.1.2:
@@ -6155,7 +6068,6 @@ packages:
   /nopt@6.0.0:
     resolution: {integrity: sha512-ZwLpbTgdhuZUnZzjd7nb1ZV+4DoiC6/sfiVKok72ym/4Tlf+DFdlHYmT2JPmcNNWV6Pi3SDf1kT+A4r9RTuT9g==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-    hasBin: true
     dependencies:
       abbrev: 1.1.1
     dev: false
@@ -6295,7 +6207,6 @@ packages:
 
   /openai@4.26.0:
     resolution: {integrity: sha512-HPC7tgYdeP38F3uHA5WgnoXZyGbAp9jgcIo23p6It+q/07u4C+NZ8xHKlMShsPbDDmFRpPsa3vdbXYpbhJH3eg==}
-    hasBin: true
     dependencies:
       '@types/node': 18.19.10
       '@types/node-fetch': 2.6.11
@@ -6312,7 +6223,6 @@ packages:
 
   /opener@1.5.2:
     resolution: {integrity: sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==}
-    hasBin: true
     dev: true
 
   /optionator@0.9.4:
@@ -6480,7 +6390,6 @@ packages:
 
   /pbf@3.2.1:
     resolution: {integrity: sha512-ClrV7pNOn7rtmoQVF4TS1vyU0WhYRnP92fzbfF75jAIwpnzdJXf8iTd4CMEqO4yUenH6NDqLiwjqlh6QgZzgLQ==}
-    hasBin: true
     dependencies:
       ieee754: 1.2.1
       resolve-protobuf-schema: 2.1.0
@@ -6517,7 +6426,6 @@ packages:
   /pidtree@0.6.0:
     resolution: {integrity: sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==}
     engines: {node: '>=0.10'}
-    hasBin: true
     dev: true
 
   /pify@2.3.0:
@@ -6545,13 +6453,11 @@ packages:
   /playwright-core@1.48.2:
     resolution: {integrity: sha512-sjjw+qrLFlriJo64du+EK0kJgZzoQPsabGF4lBvsid+3CNIZIYLgnMj9V6JY5VhM2Peh20DJWIVpVljLLnlawA==}
     engines: {node: '>=18'}
-    hasBin: true
     dev: true
 
   /playwright@1.48.2:
     resolution: {integrity: sha512-NjYvYgp4BPmiwfe31j4gHLa3J7bD2WiBz8Lk2RoSsmX38SVIARZ18VYjxLjAcDsAhA+F4iSEXTSGgjua0rrlgQ==}
     engines: {node: '>=18'}
-    hasBin: true
     dependencies:
       playwright-core: 1.48.2
     optionalDependencies:
@@ -7101,10 +7007,6 @@ packages:
   /q@1.5.1:
     resolution: {integrity: sha512-kV/CThkXo6xyFEZUugw/+pIOywXcDbFYgSct5cT3gqlbkBE1SJdwy6UQoZvodiWF/ckQLZyDE/Bu1M6gVu5lVw==}
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
-    deprecated: |-
-      You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
-
-      (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
     dev: true
 
   /queue-microtask@1.2.3:
@@ -7320,7 +7222,6 @@ packages:
 
   /resolve@1.22.2:
     resolution: {integrity: sha512-Sb+mjNHOULsBv818T40qSPeRiuWLyaGMa5ewydRLFimneixmVy2zdivRl+AF6jaYPC8ERxGDmFSiqui6SfPd+g==}
-    hasBin: true
     dependencies:
       is-core-module: 2.12.0
       path-parse: 1.0.7
@@ -7329,7 +7230,6 @@ packages:
 
   /resolve@2.0.0-next.4:
     resolution: {integrity: sha512-iMDbmAWtfU+MHpxt/I5iWI7cY6YVEZUQ3MBgPQ++XD1PELuJHIl82xBmObyP2KyQmkNB2dsqF7seoQQiAn5yDQ==}
-    hasBin: true
     dependencies:
       is-core-module: 2.12.0
       path-parse: 1.0.7
@@ -7355,23 +7255,18 @@ packages:
 
   /rimraf@2.7.1:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
-    hasBin: true
     dependencies:
       glob: 7.2.3
     dev: true
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
-    deprecated: Rimraf versions prior to v4 are no longer supported
-    hasBin: true
     dependencies:
       glob: 7.2.3
     dev: true
 
   /rimraf@5.0.10:
     resolution: {integrity: sha512-l0OE8wL34P4nJH/H2ffoaniAokM2qSmrtXHmlpvYr5AVVX8msAyW0l8NVJFDxlSK4u3Uh/f41cQheDVdnYijwQ==}
-    hasBin: true
     dependencies:
       glob: 10.4.5
     dev: true
@@ -7386,7 +7281,6 @@ packages:
   /rollup@4.28.1:
     resolution: {integrity: sha512-61fXYl/qNVinKmGSTHAZ6Yy8I3YIJC/r2m9feHo6SwVAVcLT5MPwOUFe7EuURA/4m0NR8lXG4BBXuo/IZEsjMg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    hasBin: true
     dependencies:
       '@types/estree': 1.0.6
     optionalDependencies:
@@ -7504,18 +7398,15 @@ packages:
 
   /semver@5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
-    hasBin: true
     dev: false
 
   /semver@6.3.0:
     resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
-    hasBin: true
     dev: true
 
   /semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
-    hasBin: true
     dev: true
 
   /serialize-javascript@6.0.2:
@@ -7526,7 +7417,6 @@ packages:
 
   /sha.js@2.4.11:
     resolution: {integrity: sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==}
-    hasBin: true
     dependencies:
       inherits: 2.0.4
       safe-buffer: 5.2.1
@@ -7596,7 +7486,6 @@ packages:
 
   /sinon@7.5.0:
     resolution: {integrity: sha512-AoD0oJWerp0/rY9czP/D6hDTTUYGpObhZjMpd7Cl/A6+j0xBE+ayL/ldfggkBXUs0IkvIiM1ljM8+WkOc5k78Q==}
-    deprecated: 16.1.1
     dependencies:
       '@sinonjs/commons': 1.8.6
       '@sinonjs/formatio': 3.2.2
@@ -7724,7 +7613,6 @@ packages:
 
   /stable@0.1.8:
     resolution: {integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==}
-    deprecated: 'Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility'
     dev: true
 
   /stackback@0.0.2:
@@ -7898,8 +7786,6 @@ packages:
   /svgo@1.3.2:
     resolution: {integrity: sha512-yhy/sQYxR5BkC98CY7o31VGsg014AKLEPxdfhora76l36hD9Rdy5NZA/Ocn6yayNPgSamYdtX2rFJdcv07AYVw==}
     engines: {node: '>=4.0.0'}
-    deprecated: This SVGO version is no longer supported. Upgrade to v2.x.x.
-    hasBin: true
     dependencies:
       chalk: 2.4.2
       coa: 2.0.2
@@ -7990,7 +7876,6 @@ packages:
   /terser@5.37.0:
     resolution: {integrity: sha512-B8wRRkmre4ERucLM/uXx4MOV5cbnOlVAqUst+1+iLKPI0dOgFO28f84ptoQt9HEI537PMzfYa/d+GEPKTRXmYA==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       '@jridgewell/source-map': 0.3.3
       acorn: 8.14.0
@@ -8046,14 +7931,12 @@ packages:
 
   /tldts@5.7.112:
     resolution: {integrity: sha512-6VSJ/C0uBtc2PQlLsp4IT8MIk2UUh6qVeXB1HZtK+0HiXlAPzNcfF3p2WM9RqCO/2X1PIa4danlBLPoC2/Tc7A==}
-    hasBin: true
     dependencies:
       tldts-core: 5.7.112
     dev: false
 
   /tldts@6.1.61:
     resolution: {integrity: sha512-rv8LUyez4Ygkopqn+M6OLItAOT9FF3REpPQDkdMx5ix8w4qkuE7Vo2o/vw1nxKQYmJDV8JpAMJQr1b+lTKf0FA==}
-    hasBin: true
     dependencies:
       tldts-core: 6.1.61
     dev: true
@@ -8162,7 +8045,6 @@ packages:
   /tsx@4.19.2:
     resolution: {integrity: sha512-pOUl6Vo2LUq/bSa8S5q7b91cgNSjctn9ugq/+Mvow99qW6x/UZYwzxy/3NmqoT66eHYfCVvFvACC58UBPFf28g==}
     engines: {node: '>=18.0.0'}
-    hasBin: true
     dependencies:
       esbuild: 0.23.1
       get-tsconfig: 4.8.1
@@ -8213,7 +8095,6 @@ packages:
   /typescript@5.6.3:
     resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
     engines: {node: '>=14.17'}
-    hasBin: true
     dev: true
 
   /ua-parser-js@1.0.36:
@@ -8339,7 +8220,6 @@ packages:
   /vite-node@2.1.8(@types/node@22.10.2)(terser@5.37.0):
     resolution: {integrity: sha512-uPAwSr57kYjAUux+8E2j0q0Fxpn8M9VoyfGiRI8Kfktz9NcYMCenwY5RnZxnF1WTu3TGiYipirIzacLL3VVGFg==}
     engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
     dependencies:
       cac: 6.7.14
       debug: 4.3.7
@@ -8528,7 +8408,6 @@ packages:
   /webpack-bundle-analyzer@4.10.2:
     resolution: {integrity: sha512-vJptkMm9pk5si4Bv922ZbKLV8UTT4zib4FPgXMhgzUny0bfDDkLXAVQs3ly3fS4/TN9ROFtb0NFrm04UXFE/Vw==}
     engines: {node: '>= 10.13.0'}
-    hasBin: true
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
       acorn: 8.12.1
@@ -8659,7 +8538,6 @@ packages:
   /which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
-    hasBin: true
     dependencies:
       isexe: 2.0.0
     dev: true
@@ -8667,7 +8545,6 @@ packages:
   /why-is-node-running@2.3.0:
     resolution: {integrity: sha512-hUrmaWBdVDcxvYqnyh09zunKzROWjbZTiNy8dBEjkS7ehEDQibXJ7XvlmtbwuTclUiIyN+CyXQD4Vmko8fNm8w==}
     engines: {node: '>=8'}
-    hasBin: true
     dependencies:
       siginfo: 2.0.0
       stackback: 0.0.2
@@ -8838,6 +8715,64 @@ packages:
     resolution: {tarball: https://github.com/AdguardTeam/text-encoding/tarball/v0.8.0}
     name: text-encoding
     version: 0.8.0
+    dev: false
+
+  '@github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)':
+    resolution: {tarball: https://github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tsurlfilter/tsurlfilter.tgz}
+    id: '@github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tsurlfilter/tsurlfilter.tgz'
+    name: '@adguard/tsurlfilter'
+    version: 3.2.1
+    engines: {node: '>=20'}
+    hasBin: true
+    peerDependencies:
+      '@adguard/re2-wasm': 1.2.0
+    dependencies:
+      '@adguard/agtree': 3.0.1
+      '@adguard/css-tokenizer': 1.2.0
+      '@adguard/re2-wasm': 1.2.0
+      '@adguard/scriptlets': 2.1.6
+      cidr-tools: 6.4.2
+      commander: 9.4.1
+      is-cidr: 4.0.2
+      is-ip: 3.1.0
+      jsonpos: 4.1.2
+      lru-cache: 11.0.2
+      punycode: 2.3.1
+      tldts: 5.7.112
+      zod: 3.21.4
+      zod-validation-error: 3.4.0(zod@3.21.4)
+    dev: false
+
+  '@github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)':
+    resolution: {tarball: https://github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tswebextension/tswebextension.tgz}
+    id: '@github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tswebextension/tswebextension.tgz'
+    name: '@adguard/tswebextension'
+    version: 3.0.1
+    engines: {node: '>=20'}
+    hasBin: true
+    dependencies:
+      '@adguard/agtree': 3.0.1
+      '@adguard/assistant': 4.3.70
+      '@adguard/extended-css': 2.1.1
+      '@adguard/logger': 1.1.1
+      '@adguard/scriptlets': 2.1.6
+      '@adguard/tsurlfilter': '@github.com/AdguardTeam/tsurlfilter/raw/7c7194c04cd5c21254bd141bd91cb4602ef53a3f/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)'
+      bowser: 2.11.0
+      chrome-types: 0.1.343
+      commander: 11.0.0
+      fs-extra: 11.1.1
+      idb: 8.0.2
+      lodash-es: 4.17.21
+      lru-cache: 11.0.2
+      nanoid: 5.1.2
+      superjson: 2.2.2
+      text-encoding: '@github.com/AdguardTeam/text-encoding/tarball/v0.8.0'
+      tldts: 5.7.112
+      tslib: 2.5.3
+      webextension-polyfill: 0.12.0
+      zod: 3.21.4
+    transitivePeerDependencies:
+      - '@adguard/re2-wasm'
     dev: false
 
   github.com/105th/jsdiff/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a:
