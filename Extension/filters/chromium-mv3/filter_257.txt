@@ -1,8 +1,8 @@
-! Checksum: O5NRBXdMk7od2aMeH7riow
+! Checksum: vDcMA5i7fhR4X9C6aH6mGA
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.6.28
-! TimeUpdated: 2025-02-22T17:02:00+00:00
+! Version: 2.0.6.30
+! TimeUpdated: 2025-02-25T13:02:17+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -9229,6 +9229,9 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 !+ NOT_OPTIMIZED
 ||guide-orientation.tn/go_page.php?$document
 ! https://github.com/uBlockOrigin/uAssets/issues/26798
+! https://github.com/AdguardTeam/AdguardFilters/issues/199381
+!+ NOT_OPTIMIZED
+@@||toss.onelink.me/*service.toss.im$document,~third-party
 ! https://krebsonsecurity.com/2024/09/scam-funeral-streaming-groups-thrive-on-facebook/
 !+ NOT_OPTIMIZED
 ||livestreaming24.xyz^$document
@@ -10104,3 +10107,6 @@ uploadfox.net###ad-gs-05
 ! https://www.reddit.com/r/phishing/comments/1irz2ck/bro_really/
 !+ NOT_OPTIMIZED
 ||e-navy*.weebly.com^$document,to=~navyfederal.org
+! https://github.com/uBlockOrigin/uAssets/issues/27298
+!+ NOT_OPTIMIZED
+||informationpolicy.cloud^$all

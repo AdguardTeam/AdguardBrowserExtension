@@ -1,8 +1,8 @@
-! Checksum: ht0K/chq7g3jq9+34e0KVA
+! Checksum: wzjECf3C+CmQjHcDYiPXtw
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.19.24
-! TimeUpdated: 2025-02-21T16:38:41+00:00
+! Version: 2.0.19.30
+! TimeUpdated: 2025-02-25T14:40:51+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -57,9 +57,15 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+forklog.com##.post_content > p:has(> a[href="https://play.google.com/store/apps/details?id=com.forklog.app"])
+dropbox.com##div.dig-Banner[role="alert"]
+web.joongna.com#$#@media (max-width: 480px) { .max-\[480px\]\:mt-\[73px\] { margin-top: 0 !important; } }
+web.joongna.com#$#.min-h-screen > button[class^="py-[17px] px-[20px] bg-[#F1F4F6] hidden justify-between max"] { display: none !important; }
+web.joongna.com#$#.carouselWrapper + div > div.fixed.bg-white.justify-between.lg\:hidden.top-\[136px\] { top: 63px !important; }
+web.joongna.com##reach-portal > div.modal-root.fixed.bg-black.bg-opacity-70.cursor-pointer[style*="opacity:"]:has(div#appinstall_msg)
 b.glamov.com##.appList
 sportsbull.jp##.haruko_promotion-banner
-evroopt.by##a[href="/app-eplus/"]
+evroopt.by#$#a[href="/app-eplus/"] { visibility: hidden !important; }
 navitime.co.jp##a[href^="https://lp.koteihyo-cloud.navitime.co.jp"]
 navitime.co.jp##a[onclick*="app.adjust.com"]
 navitime.co.jp##.button:has(> a[onclick*="app.adjust.com"]:only-child)
@@ -506,6 +512,7 @@ mydealz.de##.browserExtension-promotionBanner
 duckduckgo.com##div[class^="mobile-homepage_atbBadge"]
 cloud.mail.ru#%#//scriptlet('set-session-storage-item', 'downloadAppModalShown', 'true')
 cloud.mail.ru##div[class^="MobilePublicPage__appButton"]
+cloud.mail.ru##.swiper > .swiper-wrapper > div[class*="WelcomeNewPromo__slide"]:has(> div[data-qa-id="phone"])
 store.pokemongolive.com##.app-downloads-banner__container
 stolichki.ru##div[data-hint="app"]
 relax-job.com##.p-category-app-banner__outer--bottom
@@ -3454,8 +3461,6 @@ clubdam.com##.bnr-app
 ameblo.jp#$?#.skinBody2.skinTextColor > div[class^="_"][role="navigation"] { top: 0!important; }
 !+ NOT_OPTIMIZED
 ameblo.jp#?#aside[class^="_"] > a[class^="_"][href$="app-download-upper"]:upward(1)
-!+ NOT_OPTIMIZED
-s.tabelog.com#$#.js-modal-overlay-clickarea { display: none !important; }
 !+ NOT_OPTIMIZED
 s.tabelog.com#$#html.is-overlay-visible { overflow-y: auto !important; }
 !+ NOT_OPTIMIZED

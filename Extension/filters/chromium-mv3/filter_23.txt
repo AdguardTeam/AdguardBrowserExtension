@@ -1,8 +1,8 @@
-! Checksum: H+MVQiPZ6tOZpcbwKnigUw
+! Checksum: JCgcGz5QLkPHZY28ItIxHQ
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.6.18
-! TimeUpdated: 2025-02-19T21:38:00+00:00
+! Version: 2.0.6.20
+! TimeUpdated: 2025-02-25T16:38:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -360,6 +360,7 @@ http://*.ru/leftunit.pl?
 ! Kadam ads
 /kadam.base.min.js?
 !
+.php?vast=
 ?sid=*&t=*&jsD=$xmlhttprequest,third-party
 .ru/vast/$xmlhttprequest
 /?bid=&sid=
@@ -1433,6 +1434,9 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||video.agenteimmobiliare.info^
+||wrapper.bracdn.online^
+||bolayaros.com^
 ||adlook.tech^$third-party
 ||showsclick.com^
 ||7kprtners.com^
@@ -1531,7 +1535,7 @@ ucoz.ru/informer/
 ||igbfwa.com^
 ||ippstuet.com^
 ||aigenstud.com^
-||vst.videolink.site^
+||vst.videolink.
 ||ippscriptbear.com^
 ||roomrentpast.com^
 ||builthuosefor.com^
@@ -4157,7 +4161,6 @@ http://w7.ru^$third-party
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 ||ad.cub.red^
-||vst.videolink.host^
 ||exad.smi2.ru^
 ||tgb.hsmedia.ru^$third-party
 !

@@ -1,8 +1,8 @@
-! Checksum: 2OFylXGPNcbWjzSQ3+faYQ
+! Checksum: TFF4AfPKIhHXUJA4m+SSLg
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.30.93
-! TimeUpdated: 2025-02-22T06:38:00+00:00
+! Version: 2.0.31.1
+! TimeUpdated: 2025-02-26T08:39:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2975,6 +2975,7 @@ yasir252.com#%#document.addEventListener('DOMContentLoaded', function(){setTimeo
 ||trimay.ru/?
 !
 !
+bestlifeonline.com##.posts-wrapper p:has(> strong > .rm-stats-tracked)
 115cdn.com##.promptbar-caution
 kare11.com#$?#.header__mini-live-video { remove: true; }
 bel.ru,rosbalt.ru##.tg-banner_mobile
@@ -3470,6 +3471,11 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 !
 ! SECTION: Self-promo - Regular rules
 !
+qwant.com#%#//scriptlet('set-cookie', 'hide_push_extension_notification', 'true')
+zyuken.net#?#.index.sub > div.index > dt:has(> a:contains([PR]))
+books.com.tw##div[class^="flash_pic"]
+books.com.tw##div[class^="header_box"] > div.figure_img
+filepuma.com##.ad-gu-wrap
 bild.de#$?#article:has(> a:only-child[target="_blank"][href*="source"]) { remove: true; }
 [$path=/file]tezfiles.com##.premium
 [$path=/file]tezfiles.com##.premium + .section-question
@@ -3633,7 +3639,6 @@ m.e-mansion.co.jp###bbsBoardBody > p > a[href^="https://www.sumu-lab.com/archive
 www.e-mansion.co.jp##.entry-body > p > a[href="https://www.sumu-log.com/"]
 www.e-mansion.co.jp##.entry-body > p > a[href^="https://www.sumu-lab.com/archives/category/"]
 time.is###toppromotion
-time.is###recover a[href="/ad-free"]
 ashampoo.com###pdf-pro-4-brandnew
 ccleaner.com###bannerModule
 onedio.com##.kesfet_promotion
@@ -7868,6 +7873,7 @@ eiga.com##.header-pure-banner
 ! SECTION: Tweaks - CSS
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198152
+iseekgames.com#%#//scriptlet('trusted-click-element', '.wfl_button')
 iseekgames.com#$#.wfl_pretimer { display: none !important; }
 iseekgames.com#$#.wfl_active-timer { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199020
@@ -8359,6 +8365,8 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199388
+talksport.com#%#//scriptlet('remove-class', 'pip-active', '#featured-video-cta')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199072
 ziggame.com#%#//scriptlet('prevent-addEventListener', 'blur', 'counter')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198980

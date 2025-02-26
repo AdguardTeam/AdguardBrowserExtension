@@ -1,8 +1,8 @@
-! Checksum: x6Bnb6sy0jOAr4NhNd6Fow
+! Checksum: hZ4KjG3i47iD4PvzRSPjTw
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.51
-! TimeUpdated: 2025-02-21T12:39:55+00:00
+! Version: 2.0.10.54
+! TimeUpdated: 2025-02-25T15:40:06+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -389,6 +389,8 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199414
+||ure.pia.co.jp^$removeparam=c
 ! realtor.com
 ||realtor.com^$removeparam=rdc_visitor_id
 ||realtor.com^$removeparam=cid
@@ -748,7 +750,7 @@ $removeparam=sub_rt,domain=comemo.nikkei.com|diehardtales.com|greenplanet.kaneka
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-10238857
 ref=producthunt^$removeparam=ref
 ! igromania.ru
-||igromania.ru^$removeparam=from
+||igromania.ru^$removeparam=from_button_waterfall_knb
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185179
 ||fikfapcams.com^$removeparam=referrer
 ||fikfapcams.com^$removeparam=realDomain
@@ -2765,6 +2767,9 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199306#issuecomment-2678167845
+! BUG: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
+! TODO: remove when this issue is fixed in MV2 extension
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198365
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199110
 ! TODO: remove when this issue is fixed - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076

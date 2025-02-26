@@ -1,8 +1,8 @@
-! Checksum: gwjNBsdIUYO8R2pEUiUIJQ
+! Checksum: z0QMEThNkdghE8lUWGgbNQ
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.55.2
-! TimeUpdated: 2025-02-20T14:39:24+00:00
+! Version: 2.0.55.6
+! TimeUpdated: 2025-02-26T06:37:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1626,9 +1626,12 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+eksisozluk.com##.under-top-ad
+||video.twimg.com/ext_tw_video/*/*.m3u8$domain=main.uxsyplayer8d1f6edba292.click
+||cdn.shopify.com/s/files/*/files/*x*_ad$domain=havaforum.com
 yatsan.com##.personaclick-recommend
 sabah.com.tr##body > .header-top:has(> .malker:only-child)
-sabah.com.tr##.malker
+sabah.com.tr##div.malker
 ||wfilmizle.my/wp-content/uploads/*/wfilmizle.jpg
 wfilmizle.my###onp
 fotospor.com##div[class="flex center"]
@@ -1894,7 +1897,7 @@ hdfilmcehennemi2.cc,hdfilmcehennemi2.club,hdfilmcehennemi2.co,hdfilmcehennemi2.c
 dizigom1.tv###header ~ div[class][id][style] img
 ||dizigom1.tv/*.gif
 ||dizigom1-tv.cdn.ampproject.org/i/dizigom1.tv/gif2-min.gif
-justintvizlehd.xyz###ad-container
+havaforum.com,justintvizlehd.xyz###ad-container
 justintvizlehd.xyz##a[href^="https://heylink.me/"]
 ||bizlergeldikk.babalargeldii1.workers.dev/*/pop.js
 ||bizlergeldikk.babalargeldii1.workers.dev/*/betmatik.mp4$redirect=noopmp4-1s

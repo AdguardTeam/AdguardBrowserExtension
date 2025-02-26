@@ -1,8 +1,8 @@
-! Checksum: IaZq+y7s8hj+dOzhJkA8Gg
+! Checksum: f40Fhru6FfTlsSHnwba3dQ
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.97.79
-! TimeUpdated: 2025-02-21T11:31:26+00:00
+! Version: 2.0.97.85
+! TimeUpdated: 2025-02-25T22:31:05+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -360,6 +360,7 @@ http://*.ru/leftunit.pl?
 ! Kadam ads
 /kadam.base.min.js?
 !
+.php?vast=
 ?sid=*&t=*&jsD=$xmlhttprequest,third-party
 .ru/vast/$xmlhttprequest
 /?bid=&sid=
@@ -1433,6 +1434,9 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||video.agenteimmobiliare.info^
+||wrapper.bracdn.online^
+||bolayaros.com^
 ||adlook.tech^$third-party
 ||showsclick.com^
 ||7kprtners.com^
@@ -1531,7 +1535,7 @@ ucoz.ru/informer/
 ||igbfwa.com^
 ||ippstuet.com^
 ||aigenstud.com^
-||vst.videolink.site^
+||vst.videolink.
 ||ippscriptbear.com^
 ||roomrentpast.com^
 ||builthuosefor.com^
@@ -4157,7 +4161,6 @@ http://w7.ru^$third-party
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 ||ad.cub.red^
-||vst.videolink.host^
 ||exad.smi2.ru^
 ||tgb.hsmedia.ru^$third-party
 !
@@ -7616,6 +7619,8 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+vbr.ru##.rates-table-banner-tr
+rashator.xyz##a[href^="https://ya-browser.ru/"]
 vtomske.ru##.sidebar > div:has(> div.sidebar_block > div.i-smi2)
 vtomske.ru#?#.mb-20:has(> div.container-md > h2:contains(Смотрите также))
 ||fayllar1.ru/player/*roll*.xml
@@ -7625,8 +7630,8 @@ fastpic.org#%#//scriptlet('abort-current-inline-script', 'addEventListener', 'ad
 fastpic.org#%#//scriptlet('abort-on-property-read', 'exoNoExternalUI38djdkjDDJsio96')
 ||fastpic.org/view/$script
 ||ggscore.com/media/a/banner
-igromania.ru##div[class^="AdLink_link"]
-igromania.ru##section[class^="LentaAdFox_"]
+kanobu.ru,igromania.ru##div[class^="AdLink_link"]
+kanobu.ru,igromania.ru##section[class^="LentaAdFox_"]
 glavnoe.life###look-also
 forum.abok.ru##tr[align="center"] > td:has(> span[style^="color: #4F4F4F; font-size: 6pt;"])
 forum.abok.ru##td > div.borderwrap:has(> span[style^="color: #4F4F4F; font-size: 6pt;"])
@@ -11442,7 +11447,6 @@ klaksona.net##.main > center center > a[target="_blank"] > img
 synonymizer.ru##.b-modal
 synonymizer.ru###topcontent
 synonymizer.ru##div[style="border:1px solid #FFAAAA; background:#FFEEEE; font-size:16px; padding:20px; margin:5px; font-family: Arial;"]
-||pornfappy.com/player/html.php?aid=
 ||player.twitch.tv^$domain=animedia.pro
 kinoafisha.info##.okkoFixedBtn
 animemobi.ru,ua.news,cybersport.ru,topvideo.tj##body > a[target="_blank"]
@@ -16272,10 +16276,8 @@ webware.ru/*/clients/
 ||booking.com/searchbox.html$domain=awd.ru
 ||bp.blogspot.com^$image,domain=shpargalkablog.ru
 ||brandings.kanobu.ru^
-||bravopornru.com/player/html.php?aid=
 ||bravopornru.com/v/if*/*.html
 ||bravopornrus.com/*/ssu.*.js
-||bravopornrus.com/player/html.php
 ||brd24.com/up/banner/
 ||bryansknovosti.ru/wp-content/uploads/2016/05/%D0%B1%D0%B0%D0%BD%D0%BD%D0%B5%D1%80-.jpg
 ||bs-meta.yandex.$other,script,xmlhttprequest,domain=pik-tv.com
@@ -16701,7 +16703,6 @@ webware.ru/*/clients/
 ||kinopictures.net/240x480.png
 ||kinoprosmotr.net/rtk/brand.js
 ||kinorun.com/pic/one46080.png
-||kinosalo.com/player/html.php
 ||kinotochka.net/templates/tochka/images/fon.jpg
 ||kirovnet.ru/*/bs/api/get
 ||kokosik.com/kokrx.html
@@ -17044,7 +17045,6 @@ webware.ru/*/clients/
 ||pornk.in/tn.php?b=
 ||porno-chiks.com/contents/other/player/VID_*.mp4
 ||porno-chiks.com/contents/other/player/prerol.mp4
-||porno-chiks.com/player/html.php?aid=pause
 ||porno-kino.online/*.php?q=$script
 ||pornoboss.tv/video/adv.gif
 ||pornohi.net/js/640.js
@@ -18446,7 +18446,6 @@ vk.com##.feed_rovv
 vk.com,vk.ru###feed_rows > div[class="feed_row "]:has(div[class^="PostHeaderTitle "] > div.PostHeaderTitle__authorBlock span.PostHeaderTitle__authorName)
 vk.com,vk.ru#?##feed_rows > div:has(div[class] > *:matches-css(before, content: /[Реклама]|^•$/))
 vk.com,vk.ru#?##feed_rows > div:has(div[class] > *:matches-css(after, content: /[Реклама]|^•$/))
-vk.com,vk.ru#?##feed_rows > div[class^="feed_row"]:has(> div[class] .PostHeaderSubtitle:contains(/[Реклама]/))
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div[class*="ads_block_data"])
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div.page_block > div._post_content div.ads_ad_snippet)
 vk.com,vk.ru###feed_rows > div[class^="feed_row"]:has(> div.page_block > div._post_content span.ads_ad_avatar)
@@ -18459,6 +18458,9 @@ vk.com,vk.ru###apps_ads_wrap
 vk.com,vk.ru###system_msg
 vk.com,vk.ru##div#left_ads
 vk.com,vk.ru##div[data-ad]
+! https://github.com/AdguardTeam/AdguardFilters/issues/198603#issuecomment-2683352478
+! Вероятно проблемное
+! vk.com,vk.ru#?##feed_rows > div[class^="feed_row"]:has(> div[class] .PostHeaderSubtitle:contains(/[Реклама]/))
 vk.com,vk.ru#%#//scriptlet('trusted-replace-xhr-response', '/banner:/g', '_banner:', 'feed')
 ! vk.com,vk.ru###feed_rows > div[class="feed_row "] > div[class^="feed_repost-"]:has(div[class="wall_marked_as_ads"])
 ! vk.com,vk.ru##[class^="ads_ad_"]
