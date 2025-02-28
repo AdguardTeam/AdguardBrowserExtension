@@ -1,8 +1,8 @@
-! Checksum: MEUTkLyisnFUK+DdD8kMtw
+! Checksum: GoHI9pXEOo7UxC5pO4cF8A
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.30.85
-! TimeUpdated: 2025-02-21T10:39:49+00:00
+! Version: 2.0.31.9
+! TimeUpdated: 2025-02-27T15:38:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -41,6 +41,8 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! meteoblue.com - news in the sidebar
+meteoblue.com##.fixity > div#news
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198300
 sq.jbr.co.jp##.l-banner
 sq.jbr.co.jp##.spt-library
@@ -522,7 +524,8 @@ igromania.ru##a[class^="KanobuSocialCommunities_twitter"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/153021
 forbes.ua##.c-post-subscribe
 ! https://privatter.net/p/9889173
-x.com,twitter.com#?#section[aria-labelledby^="accessible-list"] div[style^="transform"]:has(div[data-testid="card.wrapper"] + a:contains(/bokepchudai[0-9A-z]+\.blogspot|jpquiz\.|zen-cock\.com|zennnews\.com/))
+x.com,twitter.com##section[aria-labelledby^="accessible-list"] div[style^="transform"]:has(div[data-testid="tweetText"] > a:is([href^="https://jp.cookie-food.com/"],[href^="https://jp.cookicway.com/"]))
+x.com,twitter.com#?#section[aria-labelledby^="accessible-list"] div[style^="transform"]:has(div[data-testid="card.wrapper"] + a:contains(/bokepchudai[0-9A-z]+\.blogspot|jp\.cookie-food\.com|jp\.cookicway\.com|zennnews\.com/))
 ! https://github.com/AdguardTeam/AdguardFilters/issues/152867
 posta.com.tr##.content-box > a[href^="https://flipboard.com/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/151928
@@ -1005,6 +1008,7 @@ appget.com###side_right > div[style="margin: 0 0 20px 25px;"]
 ejje.weblio.jp##.mainBlock[style="min-height: 270px;"]
 ##.gliaplayer-container
 weblio.jp##.firstDictVideoAd
+gendai.media##div[data-testid="firework-storyblock-ad"]
 maquia.hpplus.jp##.section-fireworkTag
 fudge.jp##.ratio-wrapper
 blogto.com##.fire_video_style
@@ -1155,7 +1159,7 @@ qanda.ai##img + div[class^="Picture__Cover-"]
 ! adguard.com and mirrors - social links in comment section
 adguard.info,adguard.app,adguard.com##.blog-comments__social
 ! adguard-dns.io, adguard-vpn.com, adguard.com - common rule for all annoyances on the site
-adguard-vpn.com,adguard-vpn.info,adguard-vpn.net,adguardvpn-help.com,adguardvpn-help.info,adguardvpn-help.org,adguard-dns.io,adguard-vpn.net,adguard.info,adguard.app,adguard.com##.annoyance
+adguard-vpn.*,adguardvpn-help.*,adguard-dns.io,adguard.info,adguard.app,adguard.com##.annoyance
 ! native-ad PRs
 j-town.net##.advertisement-list
 j-town.net##aside.section_content > div.section_title > h2.pr-list
@@ -1331,9 +1335,6 @@ notion.so##.spacer + div.signup-wrap
 laprovence.com#%#//scriptlet('prevent-refresh')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89747
 ||brief.pl/wp-content/uploads/2021/06/baner-www-750x100px.png
-! https://github.com/AdguardTeam/AdguardFilters/issues/90105
-gaziantepgunes.com##.block-pano
-gaziantepgunes.com###_ws_fan
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89384
 dreamstime.com##.top-banner--covid19
 ! livemint.com - newsletter
@@ -2450,8 +2451,6 @@ foerderland.de###footerFlyout
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9761
 blickamabend.ch##.rightElement > .widget_maxiteaser + h3
 blickamabend.ch##.rightElement > .widget_maxiteaser + h3 + div[style]
-! https://github.com/AdguardTeam/AdguardFilters/issues/9590
-instela.com##.stripe-warning
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9546
 videonette.com###konumuz a[href^="https://www.facebook.com"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/9420
@@ -2971,6 +2970,7 @@ yasir252.com#%#document.addEventListener('DOMContentLoaded', function(){setTimeo
 ||trimay.ru/?
 !
 !
+bestlifeonline.com##.posts-wrapper p:has(> strong > .rm-stats-tracked)
 115cdn.com##.promptbar-caution
 kare11.com#$?#.header__mini-live-video { remove: true; }
 bel.ru,rosbalt.ru##.tg-banner_mobile
@@ -3466,6 +3466,28 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 !
 ! SECTION: Self-promo - Regular rules
 !
+news.abplive.com##.premium-banner
+foxford.ru##a[href*="foxford.ru/?erid="]
+iworld.com##.send_form
+iworld.com##.banner_sidebar__wrap
+iworld.com##div[onclick^="document.location='#popup'"]
+city-journal.org##.m_banner:not([id])
+newsbeast.gr##you-may-be-interested
+influence.co##.seo-cta
+qwant.com#%#//scriptlet('set-cookie', 'hide_push_extension_notification', 'true')
+zyuken.net#?#.index.sub > div.index > dt:has(> a:contains([PR]))
+books.com.tw##div[class^="flash_pic"]
+books.com.tw##div[class^="header_box"] > div.figure_img
+filepuma.com##.ad-gu-wrap
+bild.de#$?#article:has(> a:only-child[target="_blank"][href*="source"]) { remove: true; }
+[$path=/file]tezfiles.com##.premium
+[$path=/file]tezfiles.com##.premium + .section-question
+securelist.com##a[href^="https://xtraining.kaspersky.com/"]
+securelist.ru,securelist.com##a[data-element-id="main-page-banner"]
+bogsfootwear.com##.weblayer--box-subscription-sms-email-signup--exit
+bogsfootwear.com###upSellPop
+komaki2.jp###sidebar-inner > a[href^="https://komaki2.jp/ad/ad-"]
+komaki2.jp###sidebar-inner > br
 journal.sovcombank.ru##astro-island:has( > div > div > div > span.bg-red + div > div.wysiwyg-markup > p > a[href*="utm_medium=referral"][target="_blank"])
 journal.sovcombank.ru##a[data-event^="bannerClick_"]
 jorudan.co.jp###js_bnr_right_block3_parent
@@ -3580,7 +3602,7 @@ book24.ru##div[data-b24-banner-slot="top-banner"]
 r34.app##figure.-mx-1.mt-4:has(> a[href*="&utm_"])
 klerk.ru##.advertising-text-block
 klerk.ru##.w-full > section:has(> ul > li > a[href^="/learn/event/"])
-dzen.ru##div[class*="__bannerContainer-"]
+dzen.ru##div[class^="content--corner-banner__root-"]
 vegasslotsonline.com#$#footer + dialog[data-dialog-type="showModal"] { display: none !important; }
 vegasslotsonline.com#$#body.overflow-hidden { overflow: auto !important; }
 live-theater.net##div[data-sticky-container-header-height] div[data-sticky-container-header-height] ._margin + div[class] div[class] > div[class]:not([class*=" "]):has(> div:not([id],[class]) > div[class] > a[target="_blank"][rel="nofollow noopener"] > img:not([src*="live-theater.net"]) + button)
@@ -3620,7 +3642,6 @@ m.e-mansion.co.jp###bbsBoardBody > p > a[href^="https://www.sumu-lab.com/archive
 www.e-mansion.co.jp##.entry-body > p > a[href="https://www.sumu-log.com/"]
 www.e-mansion.co.jp##.entry-body > p > a[href^="https://www.sumu-lab.com/archives/category/"]
 time.is###toppromotion
-time.is###recover a[href="/ad-free"]
 ashampoo.com###pdf-pro-4-brandnew
 ccleaner.com###bannerModule
 onedio.com##.kesfet_promotion
@@ -6037,8 +6058,6 @@ menshealth.de##div[class*="inlinePaidShopify"]
 menshealth.de##article strong > a[matomo-tracking-link="true"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178970
 tactiq.io##div:has( > img[src*="-promo"])
-! https://github.com/AdguardTeam/AdguardFilters/issues/178996
-||news.google.com/swg$domain=premierguitar.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178433
 cpt.com.br##.banner-relacionado
 ! mimikama.org - support popup
@@ -7806,6 +7825,7 @@ habr.com#?#section.tm-block_spacing-around:has(> header > div > h2:contains(Бл
 ! Clones like movies123.video, primewire.pics
 ##html[data-lt-installed="true"] > body[style=""] a[href="/user/profile/premium-membership"] > img
 ##html[data-lt-installed="true"] > body[style=""] > main + script ~ div[class^="_"]
+!
 ! 2gis
 2gis.*#?#div[style="justify-content:flex-end"] button:has(> div:contains(Ваши друзья на карте))
 2gis.ae,2gis.am,2gis.az,2gis.biz,2gis.by,2gis.cl,2gis.com,2gis.com.bd,2gis.com.np,2gis.com.ua,2gis.cz,2gis.dev,2gis.ge,2gis.io,2gis.it,2gis.kg,2gis.kz,2gis.one,2gis.ru,2gis.tech,2gis.ua,2gis.uz,2gis.world##div[class^="_im"]
@@ -7853,6 +7873,10 @@ eiga.com##.header-pure-banner
 !##############################
 ! SECTION: Tweaks - CSS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198152
+iseekgames.com#%#//scriptlet('trusted-click-element', '.wfl_button')
+iseekgames.com#$#.wfl_pretimer { display: none !important; }
+iseekgames.com#$#.wfl_active-timer { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199020
 megafire.net#$#.show_download_links { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196638
@@ -8342,6 +8366,10 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199056
+hosttbuzz.com#%#//scriptlet('adjust-setInterval', 'countdown', '*', '0.001')
+! https://github.com/AdguardTeam/AdguardFilters/issues/199388
+talksport.com#%#//scriptlet('remove-class', 'pip-active', '#featured-video-cta')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199072
 ziggame.com#%#//scriptlet('prevent-addEventListener', 'blur', 'counter')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198980

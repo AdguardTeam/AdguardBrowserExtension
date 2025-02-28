@@ -1,14 +1,14 @@
-! Checksum: R/tC1wWFqDY/KyVQBddfKQ
+! Checksum: l3o21QrQo61xhrH+hJ+aRw
 ! Title: AdBlockID
 ! Description: Additional filter list for websites in Indonesian.
-! Version: 2.0.23.23
-! TimeUpdated: 2025-02-20T21:01:41+00:00
+! Version: 2.0.23.27
+! TimeUpdated: 2025-02-27T17:01:19+00:00
 ! Expires: 10 days (update frequency)
 !
-! OriginalVersion: 25.2.12
+! OriginalVersion: 25.2.16
 ! Title: AdBlockID
 ! Description: Filter list that specifically removes adverts on Indonesian language websites.
-! Last modified: 20 Feb 2025 18:19 UTC
+! Last modified: 27 Feb 2025 15:05 UTC
 ! Expires: 1 days
 ! Homepage: https://github.com/realodix/AdBlockID
 .id^*/bnr/$domain=~kalbarprov.go.id
@@ -1393,7 +1393,6 @@ _TimAds_$image
 ##gmn-companion-ad-renderer
 ##img[data-permalink^="/apps/iklan-"]
 ##.happy-inside-player
-##div[id^="teaser"][style^="width:autopx;"]
 ##iframe[width="728"][height="90"]
 ##img[alt="banner 325x300"]
 ##img[style="width: 728px; height: 90px;"]
@@ -1430,15 +1429,16 @@ _TimAds_$image
 ~bankbjb.co.id##[href^="https://www.bankbjb.co.id/promo/"] > img
 passatworld.ru#@##ad_global_below_navbar
 ||p.jwpcdn.com/*/vast.js$script
-/^https?:\/\/(?:ak\.)?[a-z]{6,12}\.(?:com|net)\/4\/\d{7}/$document,subdocument,popup
+/^https?:\/\/(?:ak\.)?[a-z]{6,15}\.(?:com|net)\/4\/\d{7}/$document,subdocument,popup
 /\/assets\/jquery\/jquery-\d\.\d\.(?:\d\.)?min\.js\?(?:v=2)?&?type=(?:adult|mainstream)$/$~third-party,script
 /^https:\/\/[a-z]{3,5}\.[a-z]{10,14}\.top\/[a-z]{10,16}\/[a-z]{5,6}(?:\?d=\d)?$/$third-party,match-case,script,xmlhttprequest,to=top
 /\/t\/[0-9]{3}\/[0-9]{3}\/a[0-9]{4,9}\.js$/$script
 /^https:\/\/[0-9a-f]{10}\.[0-9a-f]{10}\.com\/[0-9a-f]{32}\.js$/$third-party,script,to=com
-/^https?:\/\/(?:[a-z]{2}\.)?[0-9a-z]{5,16}\.[a-z]{3,7}\/[a-z](?=[a-z]{0,25}[0-9A-Z])[0-9a-zA-Z]{3,26}\/\d{4,5}(?:\?[_v]=\d+)?$/$third-party,match-case,script,redirect=noopjs
-/^https?:\/\/(?:[a-z]{2}\.)?[0-9a-z]{7,16}\.com\/[a-z](?=[a-z]{0,25}[0-9A-Z])[0-9a-zA-Z]{3,26}\/\d{4,5}\??(?:_=\d+|v=\d)?$/$third-party,subdocument,match-case,popup,xmlhttprequest,to=com
-/^https?:\/\/(?:[a-z]{2}\.)?[0-9a-z]{7,16}\.website\/[a-z](?=[a-z]{0,25}[0-9A-Z])[0-9a-zA-Z]{3,26}\/\d{4,5}\??(?:_=\d+|v=\d)?$/$third-party,subdocument,match-case,popup,xmlhttprequest
-/^https?:\/\/(?:www\.|[0-9a-z]{7,10}\.)?[-0-9a-z]{5,}\.com\/\/?(?:[0-9a-f]{2}\/){2,3}[0-9a-f]{32}\.js/$third-party,script,xmlhttprequest,redirect=noopjs,to=com
+/^https:\/\/[0-9a-f]{10}\.[0-9a-f]{10}\.com\/[0-9a-f]{32}\/\d{6}\b/$third-party,match-case,xmlhttprequest,to=com
+/^https?:\/\/(?:[a-z]{2}\.)?[0-9a-z]{5,16}\.[a-z]{3,7}\/[a-z](?=[a-z]{0,25}[0-9A-Z])[0-9a-zA-Z]{3,26}\/\d{4,6}(?:\?[_a-z]=[-0-9a-z]+)?$/$third-party,match-case,script,redirect=noopjs
+/^https?:\/\/(?:[a-z]{2}\.)?[0-9a-z]{7,16}\.com\/[a-z](?=[a-z]{0,25}[0-9A-Z])[0-9a-zA-Z]{3,26}\/\d{4,6}(?:\?[_a-z]=[-0-9a-z]+)?$/$third-party,subdocument,match-case,popup,xmlhttprequest,to=com
+/^https?:\/\/(?:[a-z]{2}\.)?[0-9a-z]{7,16}\.website\/[a-z](?=[a-z]{0,25}[0-9A-Z])[0-9a-zA-Z]{3,26}\/\d{4,6}(?:\?[_a-z]=[-0-9a-z]+)?$/$third-party,subdocument,match-case,popup,xmlhttprequest
+/^https?:\/\/(?:www\.|[0-9a-z]{7,10}\.)?[-0-9a-z]{5,}\.com\/\/?(?:[0-9a-z]{2}\/){2,3}[0-9a-f]{32}\.js/$third-party,script,xmlhttprequest,redirect=noopjs,to=com
 /^https?:\/\/[0-9a-z]{13,14}\.cloudfront\.net\/\?[a-z]{3,5}=\d{6,7}$/$third-party,script,xmlhttprequest
 /^https?:\/\/[0-9a-f]{50,}\.s3\.amazonaws\.com\/[0-9a-f]{10}$/$third-party,xmlhttprequest
 /^https?:\/\/s3\.us-east-1\.amazonaws\.com\/[0-9a-f]{50,}\/[0-9a-f]{10}$/$third-party,xmlhttprequest
@@ -1456,12 +1456,13 @@ passatworld.ru#@##ad_global_below_navbar
 /^https?:\/\/[-a-z]{6,}\.info\/[a-d][-\.\/_A-Za-z][DHWXm][-\.\/_A-Za-z][59FVZ][-\.\/_A-Za-z][6swyz][-\.\/_A-Za-z][-\/_0-9a-zA-Z][-\.\/_A-Za-z][-\/_0-9a-zA-Z]{22,162}$/$third-party,match-case,script,xmlhttprequest,to=info
 /^https?:\/\/[-a-z]{6,}\.pro\/[a-d][-\.\/_A-Za-z][DHWXm][-\.\/_A-Za-z][59FVZ][-\.\/_A-Za-z][6swyz][-\.\/_A-Za-z][-\/_0-9a-zA-Z][-\.\/_A-Za-z][-\/_0-9a-zA-Z]{22,162}$/$third-party,match-case,script,xmlhttprequest,to=pro
 /^https?:\/\/[-a-z]{6,}\.xyz\/[a-d][-\.\/_A-Za-z][DHWXm][-\.\/_A-Za-z][59FVZ][-\.\/_A-Za-z][6swyz][-\.\/_A-Za-z][-\/_0-9a-zA-Z][-\.\/_A-Za-z][-\/_0-9a-zA-Z]{22,162}$/$third-party,match-case,script,xmlhttprequest,to=xyz
-/^https?:\/\/[-a-z]{8,15}\.(?:com|net)\/400\/\d{7}$/$third-party,script
-/^https?:\/\/[-a-z]{8,15}\.(?:com|net)\/401\/\d{7}$/$third-party,script
+/^https?:\/\/[-a-z]{8,15}\.(?:com|net)\/400\/\d{7}(?:\?v=\d+)?$/$third-party,script
+/^https?:\/\/[-a-z]{8,15}\.(?:com|net)\/401\/\d{7}(?:\?v=\d+)?$/$third-party,script
 /^https?:\/\/[-a-z]{8,15}\.(?:com|net)\/500\/\d{7}\?/$third-party,xmlhttprequest
+/^https?:\/\/[a-z]{6,15}\.[a-z]{2,3}\/5\/\d{6,7}(?:\?_=\d+|\/\??)?$/$third-party,script,xmlhttprequest
 /^https?:\/\/[a-z]{8,15}\.(?:com|net)\/tag\.min\.js$/$third-party,script
-/^https?:\/\/[a-z]{8,15}\.[a-z]{2,3}\/5\/\d{6,7}(?:\?_=\d+)?$/$third-party,script,xmlhttprequest
-/^https?:\/\/[a-z]{8,15}\.[a-z]{3}\/5\/\d{7}\/\?/$third-party,xmlhttprequest
+/^https?:\/\/[a-z]{8,15}\.com\/$/$third-party,header=access-control-expose-headers:/x-directionpartner-id/,xmlhttprequest,to=com,method=head
+/^https?:\/\/[a-z]{8,15}\.xyz\/$/$third-party,header=access-control-expose-headers:/x-directionpartner-id/,xmlhttprequest,to=xyz,method=head
 /get/*?zoneid=$script
 /lv/esnk/*$third-party,script
 /pfe/current/*$third-party,script
@@ -2045,6 +2046,8 @@ _970-x-90-$image,domain=teropongmedia.id
 ||yourjavascript.com^*/lompatin.js$script
 akhwatmuslimah.net###AT__popup-Ads
 bincangsyariah.com###AdAAnchor
+fajar.co.id###WipeAd-Place
+fajar.co.id###WipeAd-Place2
 carakami.com###ad-header
 ftnews.co.id###ad-mobile
 rgol.id###ads
@@ -2107,6 +2110,7 @@ amartha.com###sticky-banner
 jurnalnusa.com###sticky-bottom-ad2
 kapanlagi.com###v5-marcommpromotion
 kapanlagi.com###v5-marcommpromotion2
+fajar.co.id###vidAdsPlace
 ewarta.co###views-bootstrap-promotion-block-1
 wahananews.co###wahanaHeroAds
 kotakgame.com###wrap_banner_btm_pop
@@ -3667,11 +3671,11 @@ nobartv.cc,nobartv99.com.bd,nobartv99.com.np,nobartv99.xyz,tvbersama.bond##.inli
 ||cfcdn.apcqwd.com/prod/svimg/*.gif|$image
 /tigoals\d+\.com/##.banner
 rbtv77.icu###divFLRAbottom
-[$path=/id]alikewhethervi1t1gd.shop,animalwesternteurn76.shop,aroundreturn1m4b1p.shop,backfielddnk465.shop,beautyfog6pr5nqj.shop,brokenbrownbko7jyx.cfd,cannotasleepe9j26r.shop,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,farmbodyzmgdtss.shop,fatherhopel6bex.shop,flowerregionxtaqe.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,involvedbusyv14ja.shop,jarneighborxmst9g.cfd,landsad63u07j.shop,levelsweetqpv8mo.shop,lieice7d0j0.shop,lineswept7nnc9t5.shop,majorcelljtm5j.cfd,metalso18q58e.shop,morefinishxeb3o.shop,musicalcorrectywn2m.cfd,ortentppspe.shop,ownenemytajxx.shop,pitchtreeextssp.shop,planetchief0ud1x.cfd,rbtv77.agency,rbtv77.app,rbtv77.asia,rbtv77.blog,rbtv77.cc,rbtv77.cloud,rbtv77.club,rbtv77.co.id,rbtv77.com,rbtv77.com.bd,rbtv77.com.np,rbtv77.digital,rbtv77.icu,rbtv77.in,rbtv77.link,rbtv77.live,rbtv77.me,rbtv77.mobi,rbtv77.one,rbtv77.org,rbtv77.pro,rbtv77.pw,rbtv77.site,rbtv77.space,rbtv77.store,rbtv77.us,rbtv77.vip,rbtv77.website,rbtv77.win,rbtv77.work,rbtv77.ws,rbtv77.xyz,repliedfacingn0gxyes.shop,rocktillkcf6zow.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,soilhunterywmcluu.shop,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typeaboutkf22lfg.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,valuableworezrz6a90.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,zulunaturefb323o6.shop#?#.__layout-inside div:matches-css(position: fixed):has(> img)
-[$path=/id]alikewhethervi1t1gd.shop,animalwesternteurn76.shop,aroundreturn1m4b1p.shop,backfielddnk465.shop,beautyfog6pr5nqj.shop,brokenbrownbko7jyx.cfd,cannotasleepe9j26r.shop,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,farmbodyzmgdtss.shop,fatherhopel6bex.shop,flowerregionxtaqe.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,involvedbusyv14ja.shop,jarneighborxmst9g.cfd,landsad63u07j.shop,levelsweetqpv8mo.shop,lieice7d0j0.shop,lineswept7nnc9t5.shop,majorcelljtm5j.cfd,metalso18q58e.shop,morefinishxeb3o.shop,musicalcorrectywn2m.cfd,ortentppspe.shop,ownenemytajxx.shop,pitchtreeextssp.shop,planetchief0ud1x.cfd,rbtv77.agency,rbtv77.app,rbtv77.asia,rbtv77.blog,rbtv77.cc,rbtv77.cloud,rbtv77.club,rbtv77.co.id,rbtv77.com,rbtv77.com.bd,rbtv77.com.np,rbtv77.digital,rbtv77.icu,rbtv77.in,rbtv77.link,rbtv77.live,rbtv77.me,rbtv77.mobi,rbtv77.one,rbtv77.org,rbtv77.pro,rbtv77.pw,rbtv77.site,rbtv77.space,rbtv77.store,rbtv77.us,rbtv77.vip,rbtv77.website,rbtv77.win,rbtv77.work,rbtv77.ws,rbtv77.xyz,repliedfacingn0gxyes.shop,rocktillkcf6zow.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,soilhunterywmcluu.shop,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typeaboutkf22lfg.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,valuableworezrz6a90.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,zulunaturefb323o6.shop#?#.iframe-wrapper > iframe + div:matches-css(position: absolute):has(> img)
-[$path=/id]alikewhethervi1t1gd.shop,animalwesternteurn76.shop,aroundreturn1m4b1p.shop,backfielddnk465.shop,beautyfog6pr5nqj.shop,brokenbrownbko7jyx.cfd,cannotasleepe9j26r.shop,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,farmbodyzmgdtss.shop,fatherhopel6bex.shop,flowerregionxtaqe.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,involvedbusyv14ja.shop,jarneighborxmst9g.cfd,landsad63u07j.shop,levelsweetqpv8mo.shop,lieice7d0j0.shop,lineswept7nnc9t5.shop,majorcelljtm5j.cfd,metalso18q58e.shop,morefinishxeb3o.shop,musicalcorrectywn2m.cfd,ortentppspe.shop,ownenemytajxx.shop,pitchtreeextssp.shop,planetchief0ud1x.cfd,rbtv77.agency,rbtv77.app,rbtv77.asia,rbtv77.blog,rbtv77.cc,rbtv77.cloud,rbtv77.club,rbtv77.co.id,rbtv77.com,rbtv77.com.bd,rbtv77.com.np,rbtv77.digital,rbtv77.icu,rbtv77.in,rbtv77.link,rbtv77.live,rbtv77.me,rbtv77.mobi,rbtv77.one,rbtv77.org,rbtv77.pro,rbtv77.pw,rbtv77.site,rbtv77.space,rbtv77.store,rbtv77.us,rbtv77.vip,rbtv77.website,rbtv77.win,rbtv77.work,rbtv77.ws,rbtv77.xyz,repliedfacingn0gxyes.shop,rocktillkcf6zow.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,soilhunterywmcluu.shop,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typeaboutkf22lfg.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,valuableworezrz6a90.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,zulunaturefb323o6.shop#?#div:matches-css(position: relative):has(> img + div:matches-css(position: absolute))
-[$path=/id]alikewhethervi1t1gd.shop,animalwesternteurn76.shop,aroundreturn1m4b1p.shop,backfielddnk465.shop,beautyfog6pr5nqj.shop,brokenbrownbko7jyx.cfd,cannotasleepe9j26r.shop,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,farmbodyzmgdtss.shop,fatherhopel6bex.shop,flowerregionxtaqe.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,involvedbusyv14ja.shop,jarneighborxmst9g.cfd,landsad63u07j.shop,levelsweetqpv8mo.shop,lieice7d0j0.shop,lineswept7nnc9t5.shop,majorcelljtm5j.cfd,metalso18q58e.shop,morefinishxeb3o.shop,musicalcorrectywn2m.cfd,ortentppspe.shop,ownenemytajxx.shop,pitchtreeextssp.shop,planetchief0ud1x.cfd,rbtv77.*,repliedfacingn0gxyes.shop,rocktillkcf6zow.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,soilhunterywmcluu.shop,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typeaboutkf22lfg.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,valuableworezrz6a90.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,zulunaturefb323o6.shop#$#img { width: auto!important; }
-alikewhethervi1t1gd.shop,animalwesternteurn76.shop,aroundreturn1m4b1p.shop,backfielddnk465.shop,beautyfog6pr5nqj.shop,brokenbrownbko7jyx.cfd,cannotasleepe9j26r.shop,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,farmbodyzmgdtss.shop,fatherhopel6bex.shop,fctv77.*,flowerregionxtaqe.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,involvedbusyv14ja.shop,jarneighborxmst9g.cfd,landsad63u07j.shop,levelsweetqpv8mo.shop,lieice7d0j0.shop,lineswept7nnc9t5.shop,majorcelljtm5j.cfd,metalso18q58e.shop,morefinishxeb3o.shop,musicalcorrectywn2m.cfd,ortentppspe.shop,ownenemytajxx.shop,pitchtreeextssp.shop,planetchief0ud1x.cfd,rbsports77.*,rbtv77.*,repliedfacingn0gxyes.shop,rocktillkcf6zow.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,soilhunterywmcluu.shop,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typeaboutkf22lfg.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,valuableworezrz6a90.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,zulunaturefb323o6.shop#$#* { scrollbar-width: thin!important; }
+[$path=/id]activityrearfvk2sk.cfd,animalwesternteurn76.shop,birthdaywool84becv.shop,bravejungle96gfe.cfd,brokenbrownbko7jyx.cfd,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,fatherhopel6bex.shop,fctv77.cc,fctv77.com,fctv77.com.bd,fctv77.com.np,fctv77.live,fctv77.one,fctv77.xyz,fightfloorwt4ea5l.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,jarneighborxmst9g.cfd,levelsweetqpv8mo.shop,lookblockw5z2r.cfd,majorcelljtm5j.cfd,mensugar03pe4.cfd,musicalcorrectywn2m.cfd,packringqd99oe.cfd,planetchief0ud1x.cfd,rbsports77.com,rbsports77.com.bd,rbsports77.com.np,rbsports77.live,rbsports77.net,rbtv77.agency,rbtv77.app,rbtv77.asia,rbtv77.blog,rbtv77.cc,rbtv77.cloud,rbtv77.club,rbtv77.co.id,rbtv77.com,rbtv77.com.bd,rbtv77.com.np,rbtv77.digital,rbtv77.icu,rbtv77.in,rbtv77.link,rbtv77.live,rbtv77.me,rbtv77.mobi,rbtv77.one,rbtv77.org,rbtv77.pro,rbtv77.pw,rbtv77.site,rbtv77.space,rbtv77.store,rbtv77.us,rbtv77.vip,rbtv77.website,rbtv77.win,rbtv77.work,rbtv77.ws,rbtv77.xyz,repliedfacingn0gxyes.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,sleptvictoryno22p.cfd,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,unusualscience6ezlg79.cfd,valuableworezrz6a90.cfd,watermostlyzd36qw.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,wrongfoughtizki7zm.cfd#?#.__layout-inside div:matches-css(position: fixed):has(> img)
+[$path=/id]activityrearfvk2sk.cfd,animalwesternteurn76.shop,birthdaywool84becv.shop,bravejungle96gfe.cfd,brokenbrownbko7jyx.cfd,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,fatherhopel6bex.shop,fctv77.cc,fctv77.com,fctv77.com.bd,fctv77.com.np,fctv77.live,fctv77.one,fctv77.xyz,fightfloorwt4ea5l.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,jarneighborxmst9g.cfd,levelsweetqpv8mo.shop,lookblockw5z2r.cfd,majorcelljtm5j.cfd,mensugar03pe4.cfd,musicalcorrectywn2m.cfd,packringqd99oe.cfd,planetchief0ud1x.cfd,rbsports77.com,rbsports77.com.bd,rbsports77.com.np,rbsports77.live,rbsports77.net,rbtv77.agency,rbtv77.app,rbtv77.asia,rbtv77.blog,rbtv77.cc,rbtv77.cloud,rbtv77.club,rbtv77.co.id,rbtv77.com,rbtv77.com.bd,rbtv77.com.np,rbtv77.digital,rbtv77.icu,rbtv77.in,rbtv77.link,rbtv77.live,rbtv77.me,rbtv77.mobi,rbtv77.one,rbtv77.org,rbtv77.pro,rbtv77.pw,rbtv77.site,rbtv77.space,rbtv77.store,rbtv77.us,rbtv77.vip,rbtv77.website,rbtv77.win,rbtv77.work,rbtv77.ws,rbtv77.xyz,repliedfacingn0gxyes.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,sleptvictoryno22p.cfd,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,unusualscience6ezlg79.cfd,valuableworezrz6a90.cfd,watermostlyzd36qw.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,wrongfoughtizki7zm.cfd#?#.iframe-wrapper > iframe + div:matches-css(position: absolute):has(> img)
+[$path=/id]activityrearfvk2sk.cfd,animalwesternteurn76.shop,birthdaywool84becv.shop,bravejungle96gfe.cfd,brokenbrownbko7jyx.cfd,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,fatherhopel6bex.shop,fctv77.cc,fctv77.com,fctv77.com.bd,fctv77.com.np,fctv77.live,fctv77.one,fctv77.xyz,fightfloorwt4ea5l.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,jarneighborxmst9g.cfd,levelsweetqpv8mo.shop,lookblockw5z2r.cfd,majorcelljtm5j.cfd,mensugar03pe4.cfd,musicalcorrectywn2m.cfd,packringqd99oe.cfd,planetchief0ud1x.cfd,rbsports77.com,rbsports77.com.bd,rbsports77.com.np,rbsports77.live,rbsports77.net,rbtv77.agency,rbtv77.app,rbtv77.asia,rbtv77.blog,rbtv77.cc,rbtv77.cloud,rbtv77.club,rbtv77.co.id,rbtv77.com,rbtv77.com.bd,rbtv77.com.np,rbtv77.digital,rbtv77.icu,rbtv77.in,rbtv77.link,rbtv77.live,rbtv77.me,rbtv77.mobi,rbtv77.one,rbtv77.org,rbtv77.pro,rbtv77.pw,rbtv77.site,rbtv77.space,rbtv77.store,rbtv77.us,rbtv77.vip,rbtv77.website,rbtv77.win,rbtv77.work,rbtv77.ws,rbtv77.xyz,repliedfacingn0gxyes.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,sleptvictoryno22p.cfd,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,unusualscience6ezlg79.cfd,valuableworezrz6a90.cfd,watermostlyzd36qw.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,wrongfoughtizki7zm.cfd#?#div:matches-css(position: relative):has(> img + div:matches-css(position: absolute))
+[$path=/id]activityrearfvk2sk.cfd,animalwesternteurn76.shop,birthdaywool84becv.shop,bravejungle96gfe.cfd,brokenbrownbko7jyx.cfd,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,fatherhopel6bex.shop,fctv77.*,fightfloorwt4ea5l.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,jarneighborxmst9g.cfd,levelsweetqpv8mo.shop,lookblockw5z2r.cfd,majorcelljtm5j.cfd,mensugar03pe4.cfd,musicalcorrectywn2m.cfd,packringqd99oe.cfd,planetchief0ud1x.cfd,rbsports77.*,rbtv77.*,repliedfacingn0gxyes.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,sleptvictoryno22p.cfd,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,unusualscience6ezlg79.cfd,valuableworezrz6a90.cfd,watermostlyzd36qw.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,wrongfoughtizki7zm.cfd#$#img { width: auto!important; }
+activityrearfvk2sk.cfd,animalwesternteurn76.shop,birthdaywool84becv.shop,bravejungle96gfe.cfd,brokenbrownbko7jyx.cfd,distancesummerz2j6at0.cfd,dollarformergm3hp.shop,dreamdiseasepmoxuq7.shop,especiallyalonel9ryx.cfd,fatherhopel6bex.shop,fctv77.*,fightfloorwt4ea5l.shop,gasolineblocky24tje.cfd,globefeel426f5.cfd,grandmothermistakeqlzqd.cfd,imaginewhistle2hyp0.shop,jarneighborxmst9g.cfd,levelsweetqpv8mo.shop,lookblockw5z2r.cfd,majorcelljtm5j.cfd,mensugar03pe4.cfd,musicalcorrectywn2m.cfd,packringqd99oe.cfd,planetchief0ud1x.cfd,rbsports77.*,rbtv77.*,repliedfacingn0gxyes.shop,ropedeerrrwsrfj.cfd,runget8zpbsv.cfd,silverobservez709y.cfd,sleptvictoryno22p.cfd,soldexact1ghd6u.cfd,somethingbelongfprpb.shop,southernmouthcwmgm.shop,specialsensenopwgy.cfd,stripmighty13vgw.cfd,supportmind0fmb51.shop,threadstudentbiala.cfd,trackcoming32mbun.shop,typicalnumbers2t27yp.cfd,unknowngooselod3im.cfd,unusualscience6ezlg79.cfd,valuableworezrz6a90.cfd,watermostlyzd36qw.cfd,wheregather0qtaa3o.shop,wooldrinkpwru0.cfd,writingdriverkegcm48.shop,wrongfoughtizki7zm.cfd#$#* { scrollbar-width: thin!important; }
 apabeda.com,membedakan.com#%#//scriptlet('ubo-aopr.js', 'SGPB_POPUP_PARAMS')
 apabeda.com,membedakan.com#%#//scriptlet('ubo-window.open-defuser.js')
 bogordaily.net,mojok.co##.code-block > .voucher_at
@@ -3943,10 +3947,10 @@ idxxi.buzz,indodb21.blog###btm_banner
 movieku.ink###close-teaser
 kuramanime.app,kuramanime.biz,kuramanime.cloud,kuramanime.club,kuramanime.co,kuramanime.com,kuramanime.com.bd,kuramanime.com.np,kuramanime.dev,kuramanime.fun,kuramanime.icu,kuramanime.link,kuramanime.net,kuramanime.one,kuramanime.pro,kuramanime.top,kuramanime.vip,kuramanime.win,kuramanime.work,kuramanime.xyz###close-teaser-footer
 drakorid.icu,indodrama21.net###floatbanner-bottom
-anikun.cfd,hepinime.id,indodb21.blog,isekaisubs.web.id,kazefuri.cloud,kazefuri.live###floatcenter
+anikun.cfd,hepinime.id,indodb21.blog,isekaisubs.web.id,kazefuri.cloud,kazefuri.info###floatcenter
 drakorid.icu,rebahin21.biz###floating-banner
-bribristrong.com,illinoisarrestwarrants.com,surgerycenterattanasbourne.com,torontofoodfilmfest.com###floating_banner_bot1
-bribristrong.com,ics-hs.com,illinoisarrestwarrants.com,montereymasonry.com,nontonfilmgratis.club,ragihospitalkukatpally.com,surgerycenterattanasbourne.com,torontofoodfilmfest.com###floating_banner_bot2
+bribristrong.com,illinoisarrestwarrants.com,parkerhillfarm.com,surgerycenterattanasbourne.com,torontofoodfilmfest.com###floating_banner_bot1
+bribristrong.com,ics-hs.com,illinoisarrestwarrants.com,montereymasonry.com,nontonfilmgratis.club,parkerhillfarm.com,ragihospitalkukatpally.com,surgerycenterattanasbourne.com,torontofoodfilmfest.com###floating_banner_bot2
 bk21.pro###floating_banner_bottom
 lk21official.club###floating_banner_top
 kebioskop21.one###top-banner
@@ -3954,13 +3958,13 @@ kebioskop21.one###top-banner
 movieku.ink##.adsx
 idlix.asia##.asgdc
 kuramanime.app,kuramanime.biz,kuramanime.cloud,kuramanime.club,kuramanime.co,kuramanime.com,kuramanime.com.bd,kuramanime.com.np,kuramanime.dev,kuramanime.fun,kuramanime.icu,kuramanime.link,kuramanime.net,kuramanime.one,kuramanime.pro,kuramanime.top,kuramanime.vip,kuramanime.win,kuramanime.work,kuramanime.xyz##.floating__footer
-anichin.email,anichin.rest,anikun.cfd,animeindo.info,animekhor.org,animekompi.pro,animekompi.top,hepinime.id,indodb21.blog,isekaisubs.web.id,kazefuri.cloud,kazefuri.live,kazesub.com,melongmovie.site,movepizz.site,oppadrama.art,sokuja.uk##.kln
+anichin.email,anichin.rest,anikun.cfd,animeindo.info,animekhor.org,animekompi.pro,animekompi.top,hepinime.id,indodb21.blog,isekaisubs.web.id,kazefuri.cloud,kazefuri.info,kazesub.com,melongmovie.site,movepizz.site,oppadrama.art,sokuja.uk##.kln
 beedrive.link##.popUpBannerBox
 drivenime.com##.stickywrap
 176.119.30.88,anichin.rest,ics-hs.com,montereymasonry.com,movieku.ink,nontonfilmgratis.club,ragihospitalkukatpally.com,torontofoodfilmfest.com,wibudesu.co##a:has(> img[src$=".gif"])
 sokuja.uk##a[rel*="sponsored"]:has(> img)
 anoboy.app##a[target*="blank"]:has(> amp-img)
-01nonton.link,109.123.239.86,123moviesmy.site,176.119.30.88,adikfilm.click,anibatch.moe,anichin.email,anikun.cfd,animebatch.id,animekompi.pro,animekompi.top,animexin.dev,anixverse.com,anoboy.app,anoboy.be,axials.xyz,bk21.pro,boscinema21.space,bosku21.art,bribristrong.com,brooklynjazzcafe.com,cinemaemas6.com,cinemakeren6.id,dramaserial.id,dramaserial21.site,filmblurayku.pics,freethemes.pw,gudangmovies21.chat,hepinime.id,ics-hs.com,idlix.asia,idxxi.buzz,illinoisarrestwarrants.com,indodb21.blog,indodrama21.net,jasaepoxylantai.xyz,kawanfilm21.cc,kazefuri.cloud,kazefuri.live,kazesub.com,kebioskop21.one,kopajasubs.info,kuramanime.app,kuramanime.biz,kuramanime.cloud,kuramanime.club,kuramanime.co,kuramanime.com,kuramanime.com.bd,kuramanime.com.np,kuramanime.dev,kuramanime.fun,kuramanime.icu,kuramanime.link,kuramanime.net,kuramanime.one,kuramanime.pro,kuramanime.top,kuramanime.vip,kuramanime.win,kuramanime.work,kuramanime.xyz,kusonime.com,layardrama21.cfd,layarkeren.pro,levendeur-lefilm.com,lk21live.com,lk21official.club,lk21online.mom,manganime.live,melongmovie.site,montereymasonry.com,movepizz.site,movieku.ink,ngefilm21.guru,ngefilm21.yachts,nimegami.id,nomat.top,nonton-gudangfilm.com,nonton168-tv.cfd,nontonfilmgratis.club,nontonsbo.com,omanga.net,otakudesu.cloud,ragihospitalkukatpally.com,rebahan21.com,rebahin.lol,rebahin21.biz,sarangfilm.com,savefilm21.digital,sk212.xyz,sobatgo.site,surgerycenterattanasbourne.com,torontofoodfilmfest.com,tukangnonton.shop,tv-gudangfilm.fun##a[target*="blank"]:has(> img)
+01nonton.link,109.123.239.86,123moviesmy.site,176.119.30.88,adikfilm.click,anibatch.moe,anichin.email,anikun.cfd,animebatch.id,animekompi.pro,animekompi.top,animexin.dev,anixverse.com,anoboy.app,anoboy.be,axials.xyz,bk21.pro,boscinema21.space,bosku21.art,bribristrong.com,brooklynjazzcafe.com,cinemaemas6.com,cinemakeren6.id,dramaserial.id,dramaserial21.site,filmblurayku.pics,freethemes.pw,gudangmovies21.chat,hepinime.id,ics-hs.com,idlix.asia,idxxi.buzz,illinoisarrestwarrants.com,indodb21.blog,indodrama21.net,kawanfilm21.cc,kazefuri.cloud,kazefuri.info,kazesub.com,kebioskop21.one,kopajasubs.info,kuramanime.app,kuramanime.biz,kuramanime.cloud,kuramanime.club,kuramanime.co,kuramanime.com,kuramanime.com.bd,kuramanime.com.np,kuramanime.dev,kuramanime.fun,kuramanime.icu,kuramanime.link,kuramanime.net,kuramanime.one,kuramanime.pro,kuramanime.top,kuramanime.vip,kuramanime.win,kuramanime.work,kuramanime.xyz,kusonime.com,layardrama21.cfd,layarkeren.pro,levendeur-lefilm.com,lk21live.com,lk21official.club,lk21online.mom,manganime.live,melongmovie.site,montereymasonry.com,movepizz.site,movieku.ink,ngefilm21.guru,ngefilm21.yachts,nimegami.id,nomat.top,nonton-gudangfilm.com,nonton168-tv.cfd,nontonfilmgratis.club,nontonsbo.com,omanga.net,otakudesu.cloud,parkerhillfarm.com,ragihospitalkukatpally.com,rebahan21.com,rebahin.lol,rebahin21.biz,sarangfilm.com,savefilm21.digital,sk212.xyz,sobatgo.site,surgerycenterattanasbourne.com,torontofoodfilmfest.com,tukangnonton.shop,tv-gudangfilm.fun##a[target*="blank"]:has(> img)
 anixverse.com,hepinime.id,lendrive.web.id,melongmovie.site,sokuja.uk##body > div[id^="teaser"]
 boscinema21.space##img[alt*="iklan"]
 kebioskop21.one#$?#a[target*="blank"] > video { remove: true; }
@@ -3983,11 +3987,11 @@ layardrama21.cfd#@#.idmuvi-topbanner-aftermenu
 adikanime.com##.adik-warning
 dramaserial.id#%#//scriptlet('ubo-aopr.js', '$.magnificPopup.open')
 checast.com,gudangmovies21.chat,sattorrent.com#%#//scriptlet('ubo-aopr.js', 'SGPB_POPUP_PARAMS')
-5.189.142.212,anibatch.moe,animebatch.id,animekompi.pro,animekompi.top,brooklynjazzcafe.com,kawanfilm21.cc,kazefuri.cloud,kazefuri.live,kazesub.com,layarkeren.pro,manganime.live,nimegami.id,otakudesu.cloud,rebahan21.com,rebahin.lol,sk212.xyz,sobatgo.site,sokuja.uk,tukangnonton.shop#%#//scriptlet('ubo-nowoif.js')
+5.189.142.212,anibatch.moe,animebatch.id,animekompi.pro,animekompi.top,brooklynjazzcafe.com,kawanfilm21.cc,kazefuri.cloud,kazefuri.info,kazesub.com,layarkeren.pro,manganime.live,nimegami.id,otakudesu.cloud,rebahan21.com,rebahin.lol,sk212.xyz,sobatgo.site,sokuja.uk,tukangnonton.shop#%#//scriptlet('ubo-nowoif.js')
 godriveplayer.com#%#//scriptlet('ubo-nowoif.js')
 boscinema21.space,bosku21.art,dramaserial21.site###fadeinbox
 kopajasubs.info###fb-fanbox
-anichin.email,anikun.cfd,animeindo.info,animekhor.org,animekompi.pro,animekompi.top,animexin.dev,anoboy.be,hepinime.id,isekaisubs.web.id,kazefuri.cloud,kazefuri.live###overplay
+anichin.email,anikun.cfd,animeindo.info,animekhor.org,animekompi.pro,animekompi.top,animexin.dev,anoboy.be,hepinime.id,isekaisubs.web.id,kazefuri.cloud,kazefuri.info###overplay
 levendeur-lefilm.com###popupOverlay
 176.119.30.88###tv-play
 animekompi.pro,animekompi.top##.ays-pb-modals
@@ -4107,16 +4111,16 @@ anikor.mom,anikor.my.id,anikor.pics#%#//scriptlet('ubo-aopr.js', 'app_url')
 layarkaca21.hair##a[target*="blank"]:has(> img)
 layarkaca21.hair###ouibounce-modal
 layarkaca21.hair#%#//scriptlet('ubo-nowoif.js')
-cnycta.com,corme.net,onnano.tv,teosofi-fyn.org###custom-popup
-cnycta.com,corme.net,onnano.tv,teosofi-fyn.org#%#//scriptlet('ubo-nowoif.js')
-cnycta.com,corme.net,onnano.tv,teosofi-fyn.org##a[target*="blank"]:has(> img)
+laziofortourist.com,marshacoleman-adebayo.com###custom-popup
+laziofortourist.com,marshacoleman-adebayo.com#%#//scriptlet('ubo-nowoif.js')
+laziofortourist.com,marshacoleman-adebayo.com##a[target*="blank"]:has(> img)
 ##[href^="https://pintuisekai.com/ads/"] > img
 mirrorkomik.net###aplikasi
-cosmic345.co,mangaindo.cc,soulscans.my.id###floatcenter
+ainzscans.net,cosmic345.co,mangaindo.cc,soulscans.my.id###floatcenter
 crotpedia.net,shirodoujin.com,yuramanga.my.id##.ads
 mangacanblog.com##.entry-content > center:has(> a > img)
 komikindo1.com##.gulai_asam_manis
-cosmic1.co,cosmic345.co,ikiru.one,kanzenin.info,komikdewasa.art,komikindo.work,komikindo1.com,komikmu.fun,komiksin.id,mangacanblog.com,mangaindo.cc,mangakita.id,mangasusuku.com,mangayaro.id,manhwadesu.co.in,manhwadesu.ws,manhwalist.xyz,mihentai.com,mirrorkomik.net,sektedoujin.cc,soulscans.my.id##.kln
+cosmic1.co,cosmic345.co,ikiru.world,kanzenin.info,komikdewasa.art,komikindo.work,komikindo1.com,komikmu.fun,komiksin.id,mangacanblog.com,mangaindo.cc,mangakita.id,mangasusuku.com,mangayaro.id,manhwadesu.co.in,manhwadesu.ws,manhwalist.xyz,mihentai.com,mirrorkomik.net,sektedoujin.cc,siikomik.art,soulscans.my.id##.kln
 pojokmanga.net##.main-sidebar .textwidget:has(> a > img)
 mangakita.id,mangatale.co,tooncubus-read.my.id,tooncubus.top##a:has(> img[src$=".gif"])
 gudangkomik.com,komik-cast.com,komik18.xyz,komikdewasa.art,komikindo.work,komikindo1.com,komikmu.fun,komiksin.id,komikstation.co,komikzoid.id,kuroshireader.com,kyumik.com,mangacanblog.com,mangasusuku.com,manhwadesu.co.in,manhwadesu.ws,manhwalist.xyz,mihentai.com,mirrorkomik.net,ngomik.net,sekaikomik.guru,sektedoujin.cc,siikomik.com,soulscans.my.id,tenshi.id##a[target*="blank"]:has(> img)
@@ -4140,7 +4144,7 @@ mangakita.id#%#//scriptlet('ubo-aopr.js', 'popup_custom_data')
 bacamanga.id,komikstation.co,ngomik.net#%#//scriptlet('ubo-acis.js', 'JSON.parse', 'break;case $.')
 mangahentai.me,sekaikomik.guru,warungkomik.com#$#* { user-select:text!important; }
 mangacanblog.com#%#//scriptlet('ubo-aeld.js', '/^(?:contextmenu|selectstart)$/')
-ainzscans.net,bacamanga.id,dojing.net,ikiru.one,komik18.xyz,komikdewasa.art,komikindo.work,komikmu.fun,komikremaja.icu,komiksin.id,komikstation.co,kumapoi.info,kuroshireader.com,kyumik.com,mangakita.id,mangasusuku.com,mangatale.co,mangayaro.id,manhwadesu.co.in,manhwadesu.ws,mihentai.com,mirrorkomik.net,ngomik.net,noromax.my.id,rawkuma.com,sekaikomik.guru,sektedoujin.cc,siikomik.com,softkomik.com,soulscans.my.id,tenshi.id#%#//scriptlet('ubo-aeld.js', 'contextmenu')
+ainzscans.net,bacamanga.id,dojing.net,ikiru.world,komik18.xyz,komikdewasa.art,komikindo.work,komikmu.fun,komikremaja.icu,komiksin.id,komikstation.co,kumapoi.info,kuroshireader.com,kyumik.com,mangakita.id,mangasusuku.com,mangatale.co,mangayaro.id,manhwadesu.co.in,manhwadesu.ws,mihentai.com,mirrorkomik.net,ngomik.net,noromax.my.id,rawkuma.com,sekaikomik.guru,sektedoujin.cc,siikomik.com,softkomik.com,soulscans.my.id,tenshi.id#%#//scriptlet('ubo-aeld.js', 'contextmenu')
 mangahentai.me,tooncubus-read.my.id,tooncubus.top#%#//scriptlet('ubo-aopr.js', 'document.oncontextmenu')
 mangacanblog.com#%#//scriptlet('ubo-aopr.js', 'document.onkeydown')
 sekaikomik.guru,warungkomik.com#%#//scriptlet('ubo-aopr.js', 'nocontextmenu')
@@ -4243,8 +4247,8 @@ hencop.com,heppinn.id,minioppai.org,nontonhentai.net,nontonhentai.org###floatcen
 rumahperjaka.blog,rumahperjaka.co,rumahperjaka.com,rumahperjaka.com.bd,rumahperjaka.com.np,rumahperjaka.live,rumahperjaka.net,rumahperjaka.online,rumahperjaka.org,rumahperjaka.site,rumahperjaka.store,rumahperjaka.tech,rumahperjaka.top,rumahperjaka.website###floating_banner_top
 gocrot.org###gocrot_i_b_3
 gocrot.org###gocrot_i_b_4
-bokepvir.net###sticky-banner
-bokepvir.net###sticky-banner-footer
+bokepvir.net,bokepvir.org###sticky-banner
+bokepvir.net,bokepvir.org###sticky-banner-footer
 doooood.co##.ad-container
 bokepvir.net##.banner-place-top
 indojavstream.biz,indojavstream.club,indojavstream.co,indojavstream.com,indojavstream.com.bd,indojavstream.com.np,indojavstream.fun,indojavstream.icu,indojavstream.info,indojavstream.live,indojavstream.me,indojavstream.my,indojavstream.one,indojavstream.online,indojavstream.org,indojavstream.site,indojavstream.store,indojavstream.top,indojavstream.vip,indojavstream.website,indojavstream.xyz##.box_item_ads_popup
@@ -4259,7 +4263,7 @@ erocafe.net##.td-a-rec
 indoporntv.com,indoporntv.com.bd,indoporntv.com.np,indoporntv.info##.vertbars-300
 agenbokep.com,agenbokep.com.bd,agenbokep.com.np,agenbokep.info,agenbokep.live,agenbokep.org,agenbokep.space,agenbokep.vip,agenbokep.website,agenbokep.xyz,bandarbokep.asia,bandarbokep.com.bd,bandarbokep.com.np,bandarbokep.fun,bandarbokep.live,bandarbokep.online,bandarbokep.org,bandarbokep.site,bandarbokep.space,bandarbokep.top,bandarbokep.vip,duniabokep.com,duniabokep.com.bd,duniabokep.com.np,duniabokep.fun,duniabokep.icu,duniabokep.net,duniabokep.online,duniabokep.space,duniabokep.top,duniabokep.web.id,duniabokep.xyz,indobokepin.com,indobokepin.com.bd,indobokepin.com.np,javsubindo.asia,javsubindo.best,javsubindo.biz,javsubindo.club,javsubindo.co,javsubindo.com,javsubindo.com.bd,javsubindo.com.np,javsubindo.guru,javsubindo.id,javsubindo.io,javsubindo.me,javsubindo.my,javsubindo.net,javsubindo.online,javsubindo.org,javsubindo.tv,javsubindo.vip,javsubindo.ws,javsubindo.xyz,nontonbokep.blog,nontonbokep.com,nontonbokep.com.bd,nontonbokep.com.np,nontonbokep.net,nontonbokep.online,nontonbokep.org,nontonbokep.store,nontonbokep.web.id,pascol.cn,pascol.com.bd,pascol.com.np,pascol.fun,pascol.id,pascol.online,pascol.site,pascol.website##a:has(> img[src$=".gif"])
 pejuanglendir.com##a:not([href="https://www.pejuanglendir.com/"]):has(> img)
-agenbokep.com,agenbokep.com.bd,agenbokep.com.np,agenbokep.info,agenbokep.live,agenbokep.org,agenbokep.space,agenbokep.vip,agenbokep.website,agenbokep.xyz,bandarbokep.asia,bandarbokep.com.bd,bandarbokep.com.np,bandarbokep.fun,bandarbokep.live,bandarbokep.online,bandarbokep.org,bandarbokep.site,bandarbokep.space,bandarbokep.top,bandarbokep.vip,bandarsub.com,bokepindo.best,bokepindo.blog,bokepindo.cc,bokepindo.cloud,bokepindo.club,bokepindo.co,bokepindo.com,bokepindo.com.bd,bokepindo.com.co,bokepindo.com.np,bokepindo.digital,bokepindo.fun,bokepindo.info,bokepindo.io,bokepindo.link,bokepindo.live,bokepindo.me,bokepindo.net,bokepindo.one,bokepindo.org,bokepindo.pro,bokepindo.pw,bokepindo.site,bokepindo.today,bokepindo.tv,bokepindo.vip,bokepindo.web.id,bokepindo.win,bokepindo.xyz,bokepindo21.biz,bokepindo21.com,bokepindo21.com.bd,bokepindo21.com.np,bokepindo21.fun,bokepindo21.guru,bokepindo21.live,bokepindo21.net,bokepindo21.online,bokepindo21.site,bokepindo21.store,bokepindo21.top,bokepindo21.vip,bokepindo21.web.id,bokepindo21.xyz,bokepjilbab.cc,bokepjilbab.com,bokepjilbab.com.bd,bokepjilbab.com.np,bokepjilbab.online,bokepjilbab.site,cctvbokep.com.bd,cctvbokep.com.np,dosensesat.pw,duniabokep.com,duniabokep.com.bd,duniabokep.com.np,duniabokep.fun,duniabokep.icu,duniabokep.net,duniabokep.online,duniabokep.space,duniabokep.top,duniabokep.web.id,duniabokep.xyz,duniaseksi.com,erocafe.net,filmnikmat.com.bd,filmnikmat.com.np,filmnikmat.space,gocrot.org,hencop.com,igobokep.com.bd,igobokep.com.np,igobokep.fun,igobokep.icu,igobokep.my,igobokep.net,igobokep.shop,igobokep.xyz,javindo.co,javindo.com,javindo.com.bd,javindo.com.np,javindo.id,javindo.net,javindo.online,javindo.site,javsubindo.asia,javsubindo.best,javsubindo.biz,javsubindo.club,javsubindo.co,javsubindo.com,javsubindo.com.bd,javsubindo.com.np,javsubindo.guru,javsubindo.id,javsubindo.io,javsubindo.me,javsubindo.my,javsubindo.net,javsubindo.online,javsubindo.org,javsubindo.tv,javsubindo.vip,javsubindo.ws,javsubindo.xyz,javxxi-a.site,kimcilonlyofc.com,kiyowo.icu,lendirpedia.com,lendirpedia.com.bd,lendirpedia.com.np,lendirpedia.icu,malayporntube.net,melayuboleh.me,minioppai.org,myhdjav.me,nekopoi.care,ngentub.cc,nontonbokep.blog,nontonbokep.com,nontonbokep.com.bd,nontonbokep.com.np,nontonbokep.net,nontonbokep.online,nontonbokep.org,nontonbokep.store,nontonbokep.web.id,nontonhentai.net,nontonhentai.org,omahbokep.com,omahbokep.com.bd,omahbokep.com.np,omahbokep.me,omahbokep.org,pascol.cn,pascol.com.bd,pascol.com.np,pascol.fun,pascol.id,pascol.online,pascol.site,pascol.website,pascol18.xyz,rumahperjaka.blog,rumahperjaka.co,rumahperjaka.com,rumahperjaka.com.bd,rumahperjaka.com.np,rumahperjaka.live,rumahperjaka.net,rumahperjaka.online,rumahperjaka.org,rumahperjaka.site,rumahperjaka.store,rumahperjaka.tech,rumahperjaka.top,rumahperjaka.website,semikeren.online,sibokepjepang.com.bd,sibokepjepang.com.np,sintube.icu,yabaisub.com##a[target*="blank"]:has(> img)
+agenbokep.com,agenbokep.com.bd,agenbokep.com.np,agenbokep.info,agenbokep.live,agenbokep.org,agenbokep.space,agenbokep.vip,agenbokep.website,agenbokep.xyz,bandarbokep.asia,bandarbokep.com.bd,bandarbokep.com.np,bandarbokep.fun,bandarbokep.live,bandarbokep.online,bandarbokep.org,bandarbokep.site,bandarbokep.space,bandarbokep.top,bandarbokep.vip,bandarsub.com,bokepindo.best,bokepindo.blog,bokepindo.cc,bokepindo.cloud,bokepindo.club,bokepindo.co,bokepindo.com,bokepindo.com.bd,bokepindo.com.co,bokepindo.com.np,bokepindo.digital,bokepindo.fun,bokepindo.info,bokepindo.io,bokepindo.link,bokepindo.live,bokepindo.me,bokepindo.net,bokepindo.one,bokepindo.org,bokepindo.pro,bokepindo.pw,bokepindo.site,bokepindo.today,bokepindo.tv,bokepindo.vip,bokepindo.web.id,bokepindo.win,bokepindo.xyz,bokepindo21.biz,bokepindo21.com,bokepindo21.com.bd,bokepindo21.com.np,bokepindo21.fun,bokepindo21.guru,bokepindo21.live,bokepindo21.net,bokepindo21.online,bokepindo21.site,bokepindo21.store,bokepindo21.top,bokepindo21.vip,bokepindo21.web.id,bokepindo21.xyz,bokepjilbab.cc,bokepjilbab.com,bokepjilbab.com.bd,bokepjilbab.com.np,bokepjilbab.online,bokepjilbab.site,bokepvir.org,cctvbokep.com.bd,cctvbokep.com.np,dosensesat.pw,duniabokep.com,duniabokep.com.bd,duniabokep.com.np,duniabokep.fun,duniabokep.icu,duniabokep.net,duniabokep.online,duniabokep.space,duniabokep.top,duniabokep.web.id,duniabokep.xyz,duniaseksi.com,erocafe.net,filmnikmat.com.bd,filmnikmat.com.np,filmnikmat.space,gocrot.org,hencop.com,igobokep.com.bd,igobokep.com.np,igobokep.fun,igobokep.icu,igobokep.my,igobokep.net,igobokep.shop,igobokep.xyz,javindo.co,javindo.com,javindo.com.bd,javindo.com.np,javindo.id,javindo.net,javindo.online,javindo.site,javsubindo.asia,javsubindo.best,javsubindo.biz,javsubindo.club,javsubindo.co,javsubindo.com,javsubindo.com.bd,javsubindo.com.np,javsubindo.guru,javsubindo.id,javsubindo.io,javsubindo.me,javsubindo.my,javsubindo.net,javsubindo.online,javsubindo.org,javsubindo.tv,javsubindo.vip,javsubindo.ws,javsubindo.xyz,javxxi-a.site,kimcilonlyofc.com,kiyowo.icu,lendirpedia.com,lendirpedia.com.bd,lendirpedia.com.np,lendirpedia.icu,malayporntube.net,melayuboleh.me,minioppai.org,myhdjav.me,nekopoi.care,ngentub.cc,nontonbokep.blog,nontonbokep.com,nontonbokep.com.bd,nontonbokep.com.np,nontonbokep.net,nontonbokep.online,nontonbokep.org,nontonbokep.store,nontonbokep.web.id,nontonhentai.net,nontonhentai.org,omahbokep.com,omahbokep.com.bd,omahbokep.com.np,omahbokep.me,omahbokep.org,pascol.cn,pascol.com.bd,pascol.com.np,pascol.fun,pascol.id,pascol.online,pascol.site,pascol.website,pascol18.xyz,rumahperjaka.blog,rumahperjaka.co,rumahperjaka.com,rumahperjaka.com.bd,rumahperjaka.com.np,rumahperjaka.live,rumahperjaka.net,rumahperjaka.online,rumahperjaka.org,rumahperjaka.site,rumahperjaka.store,rumahperjaka.tech,rumahperjaka.top,rumahperjaka.website,semikeren.online,seponghub.online,sibokepjepang.com.bd,sibokepjepang.com.np,sintube.icu,yabaisub.com##a[target*="blank"]:has(> img)
 bokep360.club,bokep360.com,bokep360.com.bd,bokep360.com.np,bokep360.net,bokep360.xyz##a[title="banner" i]:has(> img)
 hencop.com,javsubindo.asia,javsubindo.best,javsubindo.biz,javsubindo.club,javsubindo.co,javsubindo.com,javsubindo.com.bd,javsubindo.com.np,javsubindo.guru,javsubindo.id,javsubindo.io,javsubindo.me,javsubindo.my,javsubindo.net,javsubindo.online,javsubindo.org,javsubindo.tv,javsubindo.vip,javsubindo.ws,javsubindo.xyz,kiyowo.icu,lendirpedia.com,lendirpedia.com.bd,lendirpedia.com.np,lendirpedia.icu,minioppai.org,onlyvid.icu,pascol.cn,pascol.com.bd,pascol.com.np,pascol.fun,pascol.id,pascol.online,pascol.site,pascol.website,pemersatu.link,sintube.icu,starjepang.live##body > div[id^="teaser"]
 indoporn.co,indoporn.com,indoporn.com.bd,indoporn.com.np,indoporn.live,indoporn.mobi,indoporn.pro,indoporn.site##div:has(> .adsbyexoclick)
@@ -4292,7 +4296,7 @@ rumahperjaka.blog,rumahperjaka.co,rumahperjaka.com,rumahperjaka.com.bd,rumahperj
 nontonjavid.net##.popbox
 gocrot.org##.popup-cr7
 kawai.vip,pusatporn18.com#%#//scriptlet('ubo-aeld.js', '/^(?:load|click)$/', 'popMagic')
-bokepvir.net,javsubindo.my#%#//scriptlet('ubo-aopr.js', 'window.pum_popups')
+bokepvir.net,bokepvir.org,javsubindo.my#%#//scriptlet('ubo-aopr.js', 'window.pum_popups')
 agenbokep.*,bandarbokep.*,bandarsub.com,bokepindo.*,doooood.co,duniabokep.*,erocafe.net,gocrot.org,hencop.com,indobokepin.*,javindo.*,javsubindo.*,javxxi-a.site,kimcilonlyofc.com,malayporntube.net,melayuboleh.me,minioppai.org,myhdjav.me,nekopoi.care,ngentub.cc,nontonbokep.*,sibokepjepang.*,sintube.icu,yabaisub.com#%#//scriptlet('ubo-nowoif.js')
 erocafe.net#%#//scriptlet('ubo-aopr.js', 'document.onselectstart')
 erocafe.net#%#//scriptlet('ubo-aopr.js', 'protected_links')
@@ -4876,6 +4880,7 @@ _topbandar_$image
 ##[href="https://cek.to/gudangbp"]
 ##[href="https://cek.to/idlixkik1"]
 ##[href="https://cek.to/idlixreffklik"]
+##[href="https://cek.to/ikiruhoki"]
 ##[href="https://cek.to/kazehoki"]
 ##[href="https://cek.to/koenime180"]
 ##[href="https://cek.to/koenime180nex"]
@@ -4944,6 +4949,7 @@ _topbandar_$image
 ##[href="https://gacor.vin/anoboy"]
 ##[href="https://gacor.vin/bioskopbm"]
 ##[href="https://gacor.vin/bioskopjp"]
+##[href="https://gacor.vin/ikirubm88"]
 ##[href="https://gacor.vin/komikcast"]
 ##[href="https://gacor.vin/mangabm"]
 ##[href="https://gacor.vin/mangajp"]
@@ -4952,6 +4958,7 @@ _topbandar_$image
 ##[href="https://gacor.vin/samehada"]
 ##[href="https://gacor.vin/samehjp"]
 ##[href="https://gacor.zone/anichin"]
+##[href="https://gacor.zone/ikirukko"]
 ##[href="https://gacor.zone/mangaindo"]
 ##[href="https://gacor22.me/opads"]
 ##[href="https://gacor66.me/same"]
@@ -4983,6 +4990,7 @@ _topbandar_$image
 ##[href="https://hoki.mu/cimax21-bandar36"]
 ##[href="https://hoki.mu/cimax21-klikhoki"]
 ##[href="https://jali.me/cukupgacor/"]
+##[href="https://jali.me/ularslot2025"]
 ##[href="https://join.gratis/IDGACORR"]
 ##[href="https://joy.link/unggul88"]
 ##[href="https://keraskale.me/rebahin"]
@@ -4999,6 +5007,7 @@ _topbandar_$image
 ##[href="https://klik.best/filmapik"]
 ##[href="https://klik.best/hencop"]
 ##[href="https://klik.best/ibodm21"]
+##[href="https://klik.best/ikiru"]
 ##[href="https://klik.best/indolk21"]
 ##[href="https://klik.best/kompi"]
 ##[href="https://klik.best/konflxjp"]
@@ -5053,6 +5062,8 @@ _topbandar_$image
 ##[href="https://klik.top/anichinh"]
 ##[href="https://klik.top/anichinid"]
 ##[href="https://klik.top/dutamovie21"]
+##[href="https://klik.top/ikihd"]
+##[href="https://klik.top/ikiruid"]
 ##[href="https://klik.top/komikcast"]
 ##[href="https://kuy.me/drbokepasia77"]
 ##[href="https://kuy.me/drbokepyes77"]
@@ -5370,6 +5381,7 @@ _topbandar_$image
 ##[href="https://t.ly/WebAnichin"]
 ##[href="https://t.ly/XxktpxX"]
 ##[href="https://t.ly/adsagb"]
+##[href="https://t.ly/bokepidnet"]
 ##[href="https://t.ly/cimax21"]
 ##[href="https://t.ly/evo303"]
 ##[href="https://t.ly/goCuan717"]

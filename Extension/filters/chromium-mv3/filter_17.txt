@@ -1,8 +1,8 @@
-! Checksum: Bg0nieuno/3hpAuI4KscDQ
+! Checksum: 3c8rVmb8bh/2GJNNRxUMAQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.50
-! TimeUpdated: 2025-02-19T16:38:05+00:00
+! Version: 2.0.10.58
+! TimeUpdated: 2025-02-27T15:38:09+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -389,6 +389,24 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! comic.k-manga.jp
+||comic.k-manga.jp^$removeparam=xuid
+||comic.k-manga.jp^$removeparam=ad
+||comic.k-manga.jp^$removeparam=adtype
+||comic.k-manga.jp^$removeparam=ad_flag
+! https://github.com/AdguardTeam/AdguardFilters/issues/197415
+||sharepoint.com^$removeparam=referrerScenario
+||sharepoint.com^$removeparam=referrer
+||sharepoint.com^$removeparam=xsdata
+||sharepoint.com^$removeparam=sdata
+||sharepoint.com^$removeparam=clickparams
+||sharepoint.com^$removeparam=ovuser
+||sharepoint.com^$removeparam=OR
+||sharepoint.com^$removeparam=CT
+||sharepoint.com^$removeparam=e
+||sharepoint.com^$removeparam=CID
+! https://github.com/AdguardTeam/AdguardFilters/issues/199414
+||ure.pia.co.jp^$removeparam=c
 ! realtor.com
 ||realtor.com^$removeparam=rdc_visitor_id
 ||realtor.com^$removeparam=cid
@@ -748,7 +766,7 @@ $removeparam=sub_rt,domain=comemo.nikkei.com|diehardtales.com|greenplanet.kaneka
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-10238857
 ref=producthunt^$removeparam=ref
 ! igromania.ru
-||igromania.ru^$removeparam=from
+||igromania.ru^$removeparam=from_button_waterfall_knb
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185179
 ||fikfapcams.com^$removeparam=referrer
 ||fikfapcams.com^$removeparam=realDomain
@@ -1758,7 +1776,7 @@ $removeparam=stm_medium,domain=shopee.ph|shopee.co.th|shopee.co.id
 $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131093
 ||adguard.$removeparam=clid
-$removeparam=clid,domain=adguard-vpn.*|adguardvpn-help.info|adguardvpn-help.org
+$removeparam=clid,domain=adguard-vpn.*|adguardvpn-help.*
 ! Cognativex
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
@@ -2158,7 +2176,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ! https://github.com/uBlockOrigin/uAssets/issues/10867
 ||adweek.com^$removeparam=traffic_source
 ! AdGuard
-$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adgardvpn-help.info
+$removeparam=aid,domain=adguard-vpn.*|adguard-dns.io|adguard.com|adguard.info|adgardvpn-help.*
 ! https://github.com/AdguardTeam/AdguardFilters/pull/102144
 ||kitbag.com^$removeparam=_ref
 ||kitbag.com^$removeparam=ab
@@ -2693,7 +2711,6 @@ $removeparam=s,domain=twitter.com|x.com
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
 ! Bilibili
 ||bilibili.com^$removeparam=from_spmid
-||bilibili.com^$removeparam=from
 ||bilibili.com^$removeparam=msource
 ||bilibili.com^$removeparam=csource
 ||bilibili.com^$removeparam=source
@@ -2765,8 +2782,14 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199306#issuecomment-2678167845
+! BUG: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
+! TODO: remove when this issue is fixed in MV2 extension
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198365
+! https://github.com/AdguardTeam/AdguardFilters/issues/199110
+! TODO: remove when this issue is fixed - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197733
+! TODO: remove when this issue is fixed - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
 ! redirecting link on mobile from mydealz.de to Metro
 @@||rd.bizrate.com^$removeparam=utm_campaign
 @@||rd.bizrate.com^$removeparam=utm_medium

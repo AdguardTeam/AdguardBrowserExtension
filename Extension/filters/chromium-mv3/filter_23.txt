@@ -1,8 +1,8 @@
-! Checksum: H+MVQiPZ6tOZpcbwKnigUw
+! Checksum: agOcy4+XNiL5tAAtKAJILA
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.6.18
-! TimeUpdated: 2025-02-19T21:38:00+00:00
+! Version: 2.0.6.24
+! TimeUpdated: 2025-02-27T15:38:16+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -360,11 +360,11 @@ http://*.ru/leftunit.pl?
 ! Kadam ads
 /kadam.base.min.js?
 !
+.php?vast=
 ?sid=*&t=*&jsD=$xmlhttprequest,third-party
 .ru/vast/$xmlhttprequest
 /?bid=&sid=
 .bid/pjs/$script
-&adtype=
 &afftraf=
 &clientype=*&adid=
 &foiffs=
@@ -924,7 +924,6 @@ ucoz.ru/informer/
 ~ping-timeout.de###advertisement
 ~letidor.ru,~uscbookstore.com###advertising
 ###advertising_floater
-###advertisment
 ~markt.de###adverts
 ###advrich
 ###advunder-top
@@ -1433,6 +1432,9 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||video.agenteimmobiliare.info^
+||wrapper.bracdn.online^
+||bolayaros.com^
 ||adlook.tech^$third-party
 ||showsclick.com^
 ||7kprtners.com^
@@ -1531,7 +1533,7 @@ ucoz.ru/informer/
 ||igbfwa.com^
 ||ippstuet.com^
 ||aigenstud.com^
-||vst.videolink.site^
+||vst.videolink.
 ||ippscriptbear.com^
 ||roomrentpast.com^
 ||builthuosefor.com^
@@ -2371,7 +2373,6 @@ ucoz.ru/informer/
 ||fqwgi.com^$third-party
 ||admediator.ru^$third-party
 ||cdn.hunteryvely.com^$third-party
-||threedrive.su^$third-party
 ||skwstat.ru^$third-party
 ||kinoaction.ru^$third-party
 ||onemontay.ru^$third-party
@@ -4157,7 +4158,6 @@ http://w7.ru^$third-party
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 ||ad.cub.red^
-||vst.videolink.host^
 ||exad.smi2.ru^
 ||tgb.hsmedia.ru^$third-party
 !
@@ -4343,7 +4343,7 @@ classicalmusicnews.ru,agroreview.com,agronews.ua#%#//scriptlet("abort-on-propert
 ! uCoz/clan.su popup(+ rules in 'general_url.txt')
 legion-rus.clan.su,narod.ru,at.ua,clan.su,igrul-ka.ru,selezen.net,my1.ru,do.am,moy.su,jetvis.ru,fanofnfs.3dn.ru,kubik3.ru,paravozik.tv,greenflash.su,play-force.ru,megomult.ru,rub.org.ua,elektronika56.ru,staroetv.su,pro-zakupki.ru,kino-torrent.net,tc-image.3dn.ru,pokatushki-pmr.ru#%#//scriptlet("abort-on-property-read", "u_global_data")
 ! popups - `ads_script`
-tapochek.net,sht.at.ua,rustorka.com,rustorka.net,naylo.top,kinosvit.net,fanofnfs.3dn.ru#%#//scriptlet("abort-on-property-read", "ads_script")
+tapochek.net,sht.at.uaбkinosvit.net,fanofnfs.3dn.ru#%#//scriptlet("abort-on-property-read", "ads_script")
 ! utarget
 jetvis.ru#%#//scriptlet("abort-on-property-read", "u_global_data")
 narod.ru,at.ua#%#//scriptlet("abort-current-inline-script", "u_global_data")
@@ -6243,8 +6243,6 @@ consumer.huawei.com#@#div[data-banner-name]
 @@||tds.fandom.com/load.php
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171080
 oztech.ru#@##bottomBanners
-! https://github.com/AdguardTeam/AdguardFilters/issues/163594
-ewybory.eu#@##advertisment
 ! thestreet.com - player not showing
 thestreet.com#@##ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161446

@@ -1,13 +1,13 @@
-! Checksum: gmrUCRfFdAsy1L7VodQFMg
+! Checksum: RTyzOPblyrzSKKapPt7BSQ
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.54
-! TimeUpdated: 2025-02-20T09:02:11+00:00
+! Version: 2.0.20.64
+! TimeUpdated: 2025-02-28T01:01:36+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0220.0
+! OriginalVersion: 2025.0228.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -479,6 +479,7 @@
 ##ins.kakao_ad_area
 ##iframe[src*="//www.mediacategory.com/servlet/"]
 ##div[id^="targetpushAd_"]
+##iframe[src*="clickon.kr"]
 !
 [$path=/(&|\\.|\\?)clubid=10912875(&|$)/]~m.cafe.naver.com,cafe.naver.com###editorMainContent tr:has(~ tr img[id="userImg8967591"])
 [$path=/ca-fe\\/web\\/cafes\\/(drhp|11196414)(\\/|\\?)/]m.cafe.naver.com##.banner_add
@@ -528,6 +529,8 @@
 /data/banner.json?$domain=~nintendo.ai|~nintendo.at|~nintendo.be|~nintendo.bg|~nintendo.biz|~nintendo.by|~nintendo.ca|~nintendo.cc|~nintendo.ch|~nintendo.cl|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.ke|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.tr|~nintendo.com.ua|~nintendo.de|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fr|~nintendo.gr|~nintendo.hu|~nintendo.ie|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.lt|~nintendo.md|~nintendo.me|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.sh|~nintendo.shop|~nintendo.sk|~nintendo.tw|~nintendo.uz|~nintendo.vn|~nintendo.website
 /ad-manager.min.js
 !
+||dogdrip.net/modules/dnad/
+||edge-live.joongna.com/api/web-ads/
 ||cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/
 /^https:\/\/biz\.chosun\.com\/resizer\/v[0-9]+\/[A-Z0-9]+\.[a-z]+\?auth=.+&width=/$domain=biz.chosun.com,header=x-edgeconnect-cache-status
 ||biz.sbs.co.kr/ad/article/
@@ -1581,6 +1584,9 @@ jobkorea.co.kr##div[id^="Banner"]
 eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
+dogdrip.net##div[id^="npl-content-"]
+quasarzone.com##div[class^="venatus-wrapper-view-"]
+web.joongna.com##.mx-auto.px-4.box-content:has(> .text-red-600)
 biz.chosun.com##.article-print-sty1:has(> .box--position-absolute-left > a[href^="https://biz.chosun.com/money"])
 biz.heraldcorp.com##.hbanner
 ohmynews.com##.aside > div[style^="height:"]
@@ -1602,7 +1608,7 @@ newdaily.co.kr##.header-banner
 kgnews.co.kr###news_body_area > div[style*="height:"]
 mlbpark.donga.com##div[id^="naver_cont"]
 namechart.kr##.container ~ .border-t:has(ins.adsbygoogle)
-dogdrip.net##.board-list .list > li:has(> #dogdripPowerLink)
+dogdrip.net##.board-list .list > li:has(> #dogdripPowerLink, > #npl-list)
 m.search.naver.com##.square_tile_area .tile_area > .tile_list:has(._ad_icon)
 m.search.naver.com##.square_tile_area .tile_area > ._ad
 m.search.naver.com##li:is([data-nmb_hpl-doc-id*="_nad-"], [data-loc_plce-doc-id*="_nad-"], [data-slog-content*=":nad-"], [data-rbp_lpa-doc-id*="nad-"])
@@ -1644,6 +1650,7 @@ boardlife.co.kr##.promote-box
 dcinside.com##.trend-rank
 dcinside.com##iframe[src^="https://tm.interworksmedia.co.kr"]
 gall.dcinside.com##tr[data-type="icon_fnews"]
+hansbiz.co.kr##div.ad-view
 gnu.kilho.net##div[id^="detect"]
 moneypin.biz##.flex > a[href][target="_blank"]
 chzzk.naver.com##div[class^="popup_cheat_key_container__"]
@@ -3571,6 +3578,10 @@ naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
 @@||ssl.pstatic.net/tveta/libs/glad/prod/$script,xmlhttprequest,domain=chzzk.naver.com
 @@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
+tabriz.kr#@##AdHeader
+tabriz.kr#@##AD_Top
+tabriz.kr#@##ad-lead
+tabriz.kr#@##homead
 namechart.kr,eftlibrary.com#%#//scriptlet('prevent-fetch', 'www3.doubleclick.net')
 dinfo.3dpchip.com#%#//scriptlet('set-constant', 'linkPass', 'true')
 boardlife.co.kr#$##top-sponsor { height: 60px !important; top: -60px !important; position: absolute !important; visibility: hidden !important; }
