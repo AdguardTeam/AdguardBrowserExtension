@@ -1,13 +1,13 @@
-! Checksum: 9v6HWTd+24bGQMlMciRaYA
+! Checksum: RTyzOPblyrzSKKapPt7BSQ
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.62
-! TimeUpdated: 2025-02-25T09:02:16+00:00
+! Version: 2.0.20.64
+! TimeUpdated: 2025-02-28T01:01:36+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0225.2
+! OriginalVersion: 2025.0228.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -529,6 +529,7 @@
 /data/banner.json?$domain=~nintendo.ai|~nintendo.at|~nintendo.be|~nintendo.bg|~nintendo.biz|~nintendo.by|~nintendo.ca|~nintendo.cc|~nintendo.ch|~nintendo.cl|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.ke|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.tr|~nintendo.com.ua|~nintendo.de|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fr|~nintendo.gr|~nintendo.hu|~nintendo.ie|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.lt|~nintendo.md|~nintendo.me|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.sh|~nintendo.shop|~nintendo.sk|~nintendo.tw|~nintendo.uz|~nintendo.vn|~nintendo.website
 /ad-manager.min.js
 !
+||dogdrip.net/modules/dnad/
 ||edge-live.joongna.com/api/web-ads/
 ||cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/
 /^https:\/\/biz\.chosun\.com\/resizer\/v[0-9]+\/[A-Z0-9]+\.[a-z]+\?auth=.+&width=/$domain=biz.chosun.com,header=x-edgeconnect-cache-status
@@ -1583,6 +1584,7 @@ jobkorea.co.kr##div[id^="Banner"]
 eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
+dogdrip.net##div[id^="npl-content-"]
 quasarzone.com##div[class^="venatus-wrapper-view-"]
 web.joongna.com##.mx-auto.px-4.box-content:has(> .text-red-600)
 biz.chosun.com##.article-print-sty1:has(> .box--position-absolute-left > a[href^="https://biz.chosun.com/money"])

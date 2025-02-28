@@ -1,8 +1,8 @@
-! Checksum: f40Fhru6FfTlsSHnwba3dQ
+! Checksum: xZCZggARsZMpqWnl4LTcog
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.97.85
-! TimeUpdated: 2025-02-25T22:31:05+00:00
+! Version: 2.0.97.93
+! TimeUpdated: 2025-02-27T17:31:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -365,7 +365,6 @@ http://*.ru/leftunit.pl?
 .ru/vast/$xmlhttprequest
 /?bid=&sid=
 .bid/pjs/$script
-&adtype=
 &afftraf=
 &clientype=*&adid=
 &foiffs=
@@ -925,7 +924,6 @@ ucoz.ru/informer/
 ~ping-timeout.de###advertisement
 ~letidor.ru,~uscbookstore.com###advertising
 ###advertising_floater
-###advertisment
 ~markt.de###adverts
 ###advrich
 ###advunder-top
@@ -2375,7 +2373,6 @@ ucoz.ru/informer/
 ||fqwgi.com^$third-party
 ||admediator.ru^$third-party
 ||cdn.hunteryvely.com^$third-party
-||threedrive.su^$third-party
 ||skwstat.ru^$third-party
 ||kinoaction.ru^$third-party
 ||onemontay.ru^$third-party
@@ -4385,6 +4382,8 @@ modsforwot.ru,helpsetup.ru,vargr.ru,trialkeys.ru#%#//scriptlet("abort-on-propert
 modsforwot.ru,helpsetup.ru,vargr.ru,trialkeys.ru#%#//scriptlet("abort-on-property-read", "ad_nodes")
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199584
+ritsatv.ru#%#//scriptlet('remove-node-text', 'script', 'script.onerror')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196802
 howdyho.net#$##nevermind { display: block !important; }
 howdyho.net#$##rustrover { display: none !important; }
@@ -5242,10 +5241,7 @@ game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustork
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top###chess2day
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top###as2_script
 $removeheader=location,domain=zannn.top|innal.top
-game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top#%#//scriptlet('remove-node-text', 'script', '/ads_script|checkCookie|chess/')
-game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top#%#//scriptlet('trusted-set-cookie-reload', 'godbayadblock', 'godbayadblock')
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top#$##e7af0de8b4 { height: 16px !important; }
-game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top#%#//scriptlet('prevent-setTimeout', 'chessday')
 game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustorkacom.lib,rustorka.top,naylo.top,zannn.top,innal.top##div[id^="epom-"]
 !
 @@/clickheat.js$~third-party,domain=game4you.top|games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
@@ -5761,7 +5757,7 @@ classicalmusicnews.ru,agroreview.com,agronews.ua#%#//scriptlet("abort-on-propert
 ! uCoz/clan.su popup(+ rules in 'general_url.txt')
 legion-rus.clan.su,narod.ru,at.ua,clan.su,igrul-ka.ru,selezen.net,my1.ru,do.am,moy.su,jetvis.ru,fanofnfs.3dn.ru,kubik3.ru,paravozik.tv,greenflash.su,play-force.ru,megomult.ru,rub.org.ua,elektronika56.ru,staroetv.su,pro-zakupki.ru,kino-torrent.net,tc-image.3dn.ru,pokatushki-pmr.ru#%#//scriptlet("abort-on-property-read", "u_global_data")
 ! popups - `ads_script`
-tapochek.net,sht.at.ua,rustorka.com,rustorka.net,naylo.top,kinosvit.net,fanofnfs.3dn.ru#%#//scriptlet("abort-on-property-read", "ads_script")
+tapochek.net,sht.at.uaбkinosvit.net,fanofnfs.3dn.ru#%#//scriptlet("abort-on-property-read", "ads_script")
 ! utarget
 jetvis.ru#%#//scriptlet("abort-on-property-read", "u_global_data")
 narod.ru,at.ua#%#//scriptlet("abort-current-inline-script", "u_global_data")
@@ -6540,11 +6536,6 @@ fclmnews.ru#$#body > div.site { margin: 0 auto 0 auto!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/44603
 sovetromantica.com#$#.sbrand--back { background-image: none !important; }
 sovetromantica.com#$#.mainContainer { padding-top: 0 !important; }
-! https://github.com/AdguardTeam/AdguardFilters/issues/43330
-vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$#.menu { top: 0 !important; }
-vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$##wrap > div[class^="headbgnew"] { height: 53px !important; }
-vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$#.menu > ul > li > div.sar { z-index: 9999 !important; bottom: -200px !important; }
-vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$#.menu > ul > li > span.sar { z-index: 9999 !important; bottom: -150px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/42562
 zombie-film.com#$#body { padding-top: 0!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/42099
@@ -6622,8 +6613,6 @@ pcpro100.info#$#.top-line { margin-bottom: 0px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/30672
 magcity74.ru#$#.bmobile { display: none !important; }
 magcity74.ru#$#body { overflow: visible!important; }
-! https://github.com/AdguardTeam/AdguardFilters/issues/30304
-vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$#div[class^="headbg"] { background: transparent !important; }
 ! mediananny.com - удаление брендированного фона, отступа сверху
 mediananny.com#$#body { background: none!important; padding-top: 0!important; cursor: default!important; }
 ! aif.ru - удаление отступа сверху
@@ -7619,6 +7608,14 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+retail.ru#$#.header-wrapper { height: auto !important; }
+retail.ru#$#.header-wrapper > header { margin-top: 0 !important; }
+forbes.ru##.IQXal
+championat.com##._tournament
+championat.com##.match-video
+weacom.ru##.header_wrap
+||banki24.by/static/js/ads*.js
+banki24.by###menu > li:has(> a[href^="https://insnc.onelink.me/"])
 vbr.ru##.rates-table-banner-tr
 rashator.xyz##a[href^="https://ya-browser.ru/"]
 vtomske.ru##.sidebar > div:has(> div.sidebar_block > div.i-smi2)
@@ -7988,7 +7985,7 @@ sport-express.net###_ad_container_
 sport-express.net##.se-banner
 sport-express.net##div[data-component="se-game-app"]
 chirik.info##body > div.left-center
-motor.ru##.smi24__informer
+liferbc.ru,motor.ru##.smi24__informer
 ||parnuha21.com/images/r7.jpg
 ||parnuha21.com/images/1win.jpg
 parnuha21.com##center > a[href][target="_blank"]
@@ -17961,6 +17958,11 @@ vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animero
 vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org##div[class^="headbg"] > a[target="_blank"]
 vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#?##centerBlock > div:has(> center > a[target="_blank"])
 vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#?#div[id^="moduleLeft"]:has(> div[class] center)
+vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$#div[class^="headbg"] { background: transparent !important; }
+vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$#.menu { top: 0 !important; }
+vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$##wrap > div[class^="headbgnew"] { height: 53px !important; }
+vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$#.menu > ul > li > div.sar { z-index: 9999 !important; bottom: -200px !important; }
+vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animerost.org,animevost.am,agorov.org#$#.menu > ul > li > span.sar { z-index: 9999 !important; bottom: -150px !important; }
 !
 4pda.to##a[href*="//4pda.to/honor/?utm_"]
 ||4pda.*/st/ztm?
@@ -17988,7 +17990,7 @@ vost.pw,animevost.am,smotret-anime-365.ru,animevost.online,animevost.org,animero
 xn--90awu.xn--j1amh##a[href^="/component/banners/"]
 !
 ! autonews.ru,rbc.ru,rbcplus.ru,sportrbc.ru
-rbc.ru##.js-rbcslider-slide .g-banner__news-footer:has(> div.js-rbcslider-multi-news > div.readmore > div.smi24__informer)
+rbc.ru##.js-rbcslider-slide .g-banner__news-footer:has(> div.js-rbcslider-multi-news div[class*="_informer"])
 rbc.ru##.js-index-central-column > div[data-publisher-index]:has(a[href*="?erid="] ~ div.showcase-video__description)
 rbc.ru##.main__inner > div.main__feed:has(> div.main__feed__link > div[class="fox-tail"])
 rbc.ru##.item_promo-card
@@ -18975,8 +18977,6 @@ consumer.huawei.com#@#div[data-banner-name]
 @@||tds.fandom.com/load.php
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171080
 oztech.ru#@##bottomBanners
-! https://github.com/AdguardTeam/AdguardFilters/issues/163594
-ewybory.eu#@##advertisment
 ! thestreet.com - player not showing
 thestreet.com#@##ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161446

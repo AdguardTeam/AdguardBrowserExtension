@@ -1,8 +1,8 @@
-! Checksum: 59Kq/jLSXifXGz2aL2/jZg
+! Checksum: bc2GGI5DYncPjbRWmWTKcA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.58.63
-! TimeUpdated: 2025-02-26T04:41:26+00:00
+! Version: 2.0.58.71
+! TimeUpdated: 2025-02-27T21:37:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1993,6 +1993,8 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199147
+@@||cmp.inmobi.com/geoip$domain=express.co.uk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197717
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192392
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188534
@@ -2378,6 +2380,14 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+babycenter.com##.edentdj0
+kino.de##.alice-adslot
+m.winfuture.de#%#//scriptlet('trusted-replace-node-text', '#text', 'Anzeige','(Anzeige)', '')
+m.winfuture.de#?##articleBody > b:contains(Spartipp)
+m.winfuture.de###articleBody > b[style="display: none !important;"] + a
+forbes.com##.inlineAdMobileContainer
+forbes.com##div[data-testid="ad-container"]
+express.co.uk##.stories > ul > li:has(> div.native-slot)
 visualcapitalist.com##div[id^="IC_"][id*="x"]
 mamagirl.jp###sp_all_instream
 39mag.benesse.ne.jp###ad-gallery
@@ -7713,6 +7723,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ||pn.ybp.yahoo.com^
 ||funpavo.com^
 ||staticcc.com^
+! https://github.com/AdguardTeam/AdguardFilters/issues/199526
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195708
 ! loads by HTTP, no root required
 ||interface3.music.163.com/eapi/ad/

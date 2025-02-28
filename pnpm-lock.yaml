@@ -149,8 +149,8 @@ dependencies:
 
 devDependencies:
   '@adguard/dnr-rulesets':
-    specifier: ^1.2.20250226090108
-    version: 1.2.20250226090108
+    specifier: ^1.2.20250228030107
+    version: 1.2.20250228030107
   '@adguard/re2-wasm':
     specifier: ^1.2.0
     version: 1.2.0
@@ -159,7 +159,7 @@ devDependencies:
     version: 13.0.5
   '@swc-node/register':
     specifier: ^1.9.1
-    version: 1.10.9(@swc/core@1.9.3)(@swc/types@0.1.17)(typescript@5.6.3)
+    version: 1.10.9(@swc/core@1.9.3)(@swc/types@0.1.19)(typescript@5.6.3)
   '@swc/core':
     specifier: ^1.5.24
     version: 1.9.3
@@ -429,8 +429,8 @@ packages:
       diff: github.com/105th/jsdiff/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a
     dev: false
 
-  /@adguard/dnr-rulesets@1.2.20250226090108:
-    resolution: {integrity: sha512-SAWCRlztQpkQj4Yc0UhJaiFiKLs277F1ouD0mJJ2X7/i3EN9r2QeK8uHKOmZWQJ5VmcF5tA1PKQcXZ2dlwDosw==}
+  /@adguard/dnr-rulesets@1.2.20250228030107:
+    resolution: {integrity: sha512-Fs3EtIrVsDk/bRXNZQj++n+Q04ZROsUSjtqMLbOKy7Mp9bOc049j3+cgknHoMtGqRHm1AmPrvrhqfsJu1GuMiw==}
     hasBin: true
     dependencies:
       '@adguard/logger': 1.1.1
@@ -1599,7 +1599,7 @@ packages:
     resolution: {integrity: sha512-sXXKG+uL9IrKqViTtao2Ws6dy0znu9sOaP1di/jKGW1M6VssO8vlpXCQcpZ+jisQ1tTFAC5Jo/EOzFbggBagFQ==}
     dev: true
 
-  /@swc-node/core@1.13.3(@swc/core@1.9.3)(@swc/types@0.1.17):
+  /@swc-node/core@1.13.3(@swc/core@1.9.3)(@swc/types@0.1.19):
     resolution: {integrity: sha512-OGsvXIid2Go21kiNqeTIn79jcaX4l0G93X2rAnas4LFoDyA9wAwVK7xZdm+QsKoMn5Mus2yFLCc4OtX2dD/PWA==}
     engines: {node: '>= 10'}
     peerDependencies:
@@ -1607,16 +1607,16 @@ packages:
       '@swc/types': '>= 0.1'
     dependencies:
       '@swc/core': 1.9.3
-      '@swc/types': 0.1.17
+      '@swc/types': 0.1.19
     dev: true
 
-  /@swc-node/register@1.10.9(@swc/core@1.9.3)(@swc/types@0.1.17)(typescript@5.6.3):
+  /@swc-node/register@1.10.9(@swc/core@1.9.3)(@swc/types@0.1.19)(typescript@5.6.3):
     resolution: {integrity: sha512-iXy2sjP0phPEpK2yivjRC3PAgoLaT4sjSk0LDWCTdcTBJmR4waEog0E6eJbvoOkLkOtWw37SB8vCkl/bbh4+8A==}
     peerDependencies:
       '@swc/core': '>= 1.4.13'
       typescript: '>= 4.3'
     dependencies:
-      '@swc-node/core': 1.13.3(@swc/core@1.9.3)(@swc/types@0.1.17)
+      '@swc-node/core': 1.13.3(@swc/core@1.9.3)(@swc/types@0.1.19)
       '@swc-node/sourcemap-support': 0.5.1
       '@swc/core': 1.9.3
       colorette: 2.0.20
@@ -1770,6 +1770,12 @@ packages:
 
   /@swc/types@0.1.17:
     resolution: {integrity: sha512-V5gRru+aD8YVyCOMAjMpWR1Ui577DD5KSJsHP8RAxopAH22jFz6GZd/qxqjO6MJHQhcsjvjOFXyDhyLQUnMveQ==}
+    dependencies:
+      '@swc/counter': 0.1.3
+    dev: true
+
+  /@swc/types@0.1.19:
+    resolution: {integrity: sha512-WkAZaAfj44kh/UFdAQcrMP1I0nwRqpt27u+08LMBYMqmQfwwMofYoMh/48NGkMMRfC4ynpfwRbJuu8ErfNloeA==}
     dependencies:
       '@swc/counter': 0.1.3
     dev: true
