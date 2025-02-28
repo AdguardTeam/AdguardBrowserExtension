@@ -1,9 +1,9 @@
-! Checksum: we2jgr/utiStQrGnJ7yNng
-! Diff-Path: ../patches/23/23-s-1737557232-3600.patch
+! Checksum: MxkiqYYHKRsCvkTfvUNoVQ
+! Diff-Path: ../patches/23/23-s-1740750187-3600.patch
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.6.1
-! TimeUpdated: 2025-01-22T14:43:05+00:00
+! Version: 2.0.6.25
+! TimeUpdated: 2025-02-28T13:38:52+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -18,7 +18,10 @@
 ! Good: .org/ads/
 ! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
 !
-||yandex.ru/ads/adfox/
+! Nadavi ads
+/nadavi-api/?p4g3=js/api/widget.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/198009
+||aj*.bid/*?vpaid=$xmlhttprequest
 ! Email spam. Example: http://leonases.shop/tb/#nl91dOC
 ! Both rules are required - the first is for extensions, the second - for apps
 .shop/tb/#$all
@@ -358,11 +361,11 @@ http://*.ru/leftunit.pl?
 ! Kadam ads
 /kadam.base.min.js?
 !
+.php?vast=
 ?sid=*&t=*&jsD=$xmlhttprequest,third-party
 .ru/vast/$xmlhttprequest
 /?bid=&sid=
 .bid/pjs/$script
-&adtype=
 &afftraf=
 &clientype=*&adid=
 &foiffs=
@@ -922,7 +925,6 @@ ucoz.ru/informer/
 ~ping-timeout.de###advertisement
 ~letidor.ru,~uscbookstore.com###advertising
 ###advertising_floater
-###advertisment
 ~markt.de###adverts
 ###advrich
 ###advunder-top
@@ -1431,6 +1433,14 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||video.agenteimmobiliare.info^
+||wrapper.bracdn.online^
+||bolayaros.com^
+||adlook.tech^$third-party
+||showsclick.com^
+||7kprtners.com^
+||cdn-t.b5c1d2e8c9982e3b965a27ac72ru7284cc.com^
+||cdn.dmtgvn.com^
 ||llet787bww.com^
 ||1463.info^$all
 ||prestich.shop^$all
@@ -1444,7 +1454,6 @@ ucoz.ru/informer/
 ||dosawes.com^
 ||lusupodum.com^
 ||clairpixum.com^
-||octo25.me^
 ||bmmwa.info^
 ||iwrcoct.info^
 ||hfnuqljjnt.com^
@@ -1480,7 +1489,6 @@ ucoz.ru/informer/
 ||cdn.tameti.com^
 ||eehhabacgieacfjeaacg.world^
 ||bidmatic.io^$third-party
-||vidscriptshark.com^
 ||1qe.info^
 ||23oct2023.site^
 ||fcepahafyq.com^
@@ -1526,7 +1534,7 @@ ucoz.ru/informer/
 ||igbfwa.com^
 ||ippstuet.com^
 ||aigenstud.com^
-||vst.videolink.site^
+||vst.videolink.
 ||ippscriptbear.com^
 ||roomrentpast.com^
 ||builthuosefor.com^
@@ -2366,7 +2374,6 @@ ucoz.ru/informer/
 ||fqwgi.com^$third-party
 ||admediator.ru^$third-party
 ||cdn.hunteryvely.com^$third-party
-||threedrive.su^$third-party
 ||skwstat.ru^$third-party
 ||kinoaction.ru^$third-party
 ||onemontay.ru^$third-party
@@ -4152,7 +4159,6 @@ http://w7.ru^$third-party
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 ||ad.cub.red^
-||vst.videolink.host^
 ||exad.smi2.ru^
 ||tgb.hsmedia.ru^$third-party
 !
@@ -4258,6 +4264,7 @@ budport.com.ua##body > div[style*="text-align:center"][style*="z-index:9999"]
 ||pubads.g.doubleclick.net/gampad/ads?*1plus1.video$xmlhttprequest,domain=imasdk.googleapis.com,redirect=noopvast-3.0
 ||gaua.hit.gemius.pl/gemiuslib.js$script,xmlhttprequest,redirect=noopjs,domain=1plus1.video|1plus1.ua,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89348
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=unian.net
 @@||unian.net/static/pubads.ad
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=unian.net|unian.ua
 !#safari_cb_affinity(general,privacy)
@@ -4342,7 +4349,7 @@ classicalmusicnews.ru,agroreview.com,agronews.ua#%#//scriptlet("abort-on-propert
 ! uCoz/clan.su popup(+ rules in 'general_url.txt')
 legion-rus.clan.su,narod.ru,at.ua,clan.su,igrul-ka.ru,selezen.net,my1.ru,do.am,moy.su,jetvis.ru,fanofnfs.3dn.ru,kubik3.ru,paravozik.tv,greenflash.su,play-force.ru,megomult.ru,rub.org.ua,elektronika56.ru,staroetv.su,pro-zakupki.ru,kino-torrent.net,tc-image.3dn.ru,pokatushki-pmr.ru#%#//scriptlet("abort-on-property-read", "u_global_data")
 ! popups - `ads_script`
-tapochek.net,sht.at.ua,rustorka.com,rustorka.net,naylo.top,kinosvit.net,fanofnfs.3dn.ru#%#//scriptlet("abort-on-property-read", "ads_script")
+tapochek.net,sht.at.uaбkinosvit.net,fanofnfs.3dn.ru#%#//scriptlet("abort-on-property-read", "ads_script")
 ! utarget
 jetvis.ru#%#//scriptlet("abort-on-property-read", "u_global_data")
 narod.ru,at.ua#%#//scriptlet("abort-current-inline-script", "u_global_data")
@@ -4578,6 +4585,9 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+unian.ua##div[style^="height:"][style*="overflow: hidden;"]
+||yandex.ru/ads/adfox/
+findh.org###ads-sidebar-block
 1plus1.ua##.bannerPMU
 1plus1.ua##.bannerSmall
 1plus1.ua##.tabsNews__content-adv
@@ -4603,7 +4613,7 @@ pravda.com.ua##.unit_news_banner_list
 pravda.com.ua,epravda.com.ua##body .nts-ad
 pravda.com.ua##.container_sub_adv_news
 pravda.com.ua##.unit_news_banner_bottom
-pravda.com.ua##body div.advtext
+eurointegration.com.ua,pravda.com.ua##body div.advtext
 pravda.com.ua##.unit_header_banner
 pravda.com.ua##.article_wide_banner_mobile
 pravda.com.ua##div[class^="block_banner_"]
@@ -4839,7 +4849,8 @@ hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnire
 hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#$#body.has-brand:not(.b-theme__template__night) { background: #efefef !important; }
 hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#$#.b-post__rating_table { margin-left: -30px !important; }
 hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#%#//scriptlet('remove-class', 'active-brand', 'body')
-punisher-hdrezka.net##.ad-branding
+punisher-hdrezka.net,punisher-hdrezka.net,abw.by##.ad-branding
+[$domain=/hdrezka.net/]##.ad-branding
 !
 ! Группа компаний Актион
 kom-dir.ru,gd.ru,buhsoft.ru,dirklinik.ru,fd.ru,business.ru,pro-personal.ru,trudohrana.ru##.ASE_brandImage
@@ -4866,6 +4877,12 @@ citrus.ua,xsport.ua,zi.dn.ua,zi.ua##img[src^="/upload/rk/"]
 !
 !
 !
+glavcom.ua##.sunsite_actions
+glavcom.ua##.banner_in
+budport.com.ua##.banner_bg
+budport.com.ua##.tm-banner-slider
+budport.com.ua#$#header.page-head { height: fit-content !important; }
+minfin.com.ua###special-product-offer
 gagadget.com##.post-links div.l-container:has(> .l-grid > div.l-inner > div[data-gpt-index])
 uaserials.pro###rek1
 ||cdn.hdvbua.pro/amedia/5/500x200_1.gif
@@ -6221,6 +6238,10 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/198042
+@@||widget.getwhelp.com/init.js$domain=baktelecom.az
+! https://github.com/AdguardTeam/AdguardFilters/issues/197245
+flypgs.com#@#div[data-banner-name]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195971
 @@||a.abbyads.com/vast.php?spot=$xmlhttprequest,domain=qwiketube.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/54436
@@ -6233,8 +6254,6 @@ consumer.huawei.com#@#div[data-banner-name]
 @@||tds.fandom.com/load.php
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171080
 oztech.ru#@##bottomBanners
-! https://github.com/AdguardTeam/AdguardFilters/issues/163594
-ewybory.eu#@##advertisment
 ! thestreet.com - player not showing
 thestreet.com#@##ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161446

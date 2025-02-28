@@ -1,10 +1,12 @@
-! Checksum: xODqwhfWE2lAJsU/tKHfJg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1737459960-3600.patch
+! Checksum: mToa6Y5uhMc+j7aCpXyr1Q
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1740739541-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.24
-! TimeUpdated: 2025-01-21T11:41:41+00:00
+! Version: 2.0.10.59
+! TimeUpdated: 2025-02-28T10:40:51+00:00
 ! Expires: 10 days (update frequency)
+?from=glia^$removeparam=from
+$removeparam=srsltid
 $removeparam=_sgm_campaign
 $removeparam=_sgm_term
 $removeparam=_sgm_pinned
@@ -249,12 +251,73 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||comic.k-manga.jp^$removeparam=xuid
+||comic.k-manga.jp^$removeparam=ad
+||comic.k-manga.jp^$removeparam=adtype
+||comic.k-manga.jp^$removeparam=ad_flag
+||sharepoint.com^$removeparam=referrerScenario
+||sharepoint.com^$removeparam=referrer
+||sharepoint.com^$removeparam=xsdata
+||sharepoint.com^$removeparam=sdata
+||sharepoint.com^$removeparam=clickparams
+||sharepoint.com^$removeparam=ovuser
+||sharepoint.com^$removeparam=OR
+||sharepoint.com^$removeparam=CT
+||sharepoint.com^$removeparam=e
+||sharepoint.com^$removeparam=CID
+||ure.pia.co.jp^$removeparam=c
+||realtor.com^$removeparam=rdc_visitor_id
+||realtor.com^$removeparam=cid
+||realtor.com^$removeparam=flow
+||meetup.com^$removeparam=eventOrigin
+||meetup.com^$removeparam=recSource
+||meetup.com^$removeparam=recId
+||meetup.com^$removeparam=searchId
+||kitbash3d.com^$removeparam=campaign_id
+||kitbash3d.com^$removeparam=ad_id
+||expressvpn.com^$removeparam=xvcid
+||expressvpn.com^$removeparam=shareid
+||golfdigest.co.jp^$removeparam=car
+||ho-mobile.it^$removeparam=icmp
+||semrush.com^$removeparam=source
+||bookshop.org^$removeparam=affiliate
+||marketplace.navitime.co.jp^$removeparam=from
+||gaming.amazon.com^$removeparam=ref_
+||gaming.amazon.com^$removeparam=twitchReferral
+||gaming.amazon.com^$removeparam=yTwchPos
+||allegro.pl^$removeparam=clickId
+||blog.naver.com^$removeparam=trackingCode
+||blog.naver.com^$removeparam=proxyReferer
+||blog.naver.com^$removeparam=referrerCode
+||fiverr.com^$removeparam=context_referrer
+||fiverr.com^$removeparam=context_type
+||fiverr.com^$removeparam=filtered_price
+||fiverr.com^$removeparam=funnel
+||fiverr.com^$removeparam=imp_id
+||fiverr.com^$removeparam=pckg_id
+||fiverr.com^$removeparam=pos
+||fiverr.com^$removeparam=ref_ctx_id
+||fiverr.com^$removeparam=source
+||muskelmacher-shop.de$removeparam=sv_campaign_id
+||muskelmacher-shop.de$removeparam=sv1
+||rd.bizrate.com$removeparam=af_creative_id
+||rd.bizrate.com$removeparam=af_assettype_id
+||rd.bizrate.com$removeparam=rf_code
+||rd.bizrate.com$removeparam=af_placement_id
+||rd.bizrate.com$removeparam=cobrand
+||rd.bizrate.com$removeparam=af_permalink_id
+||rd.bizrate.com$removeparam=af_rid
+||rd.bizrate.com$removeparam=af_id
+||rd.bizrate.com$removeparam=bidType
+||rd.bizrate.com$removeparam=bId
+||rd.bizrate.com$removeparam=tokenId
+||rd.bizrate.com$removeparam=dMid
+||metro.*$removeparam=cnxclid
 ||ehon.alphapolis.co.jp^$removeparam=from
 ||liferbc.ru^$removeparam=from
 ||luisaviaroma.com/*/p$removeparam=lvrid
 ||dailymail.co.uk^$removeparam=ns_mchannel
 ||dailymail.co.uk^$removeparam=ns_campaign
-||klerk.ru^$removeparam=srsltid
 ||vpnpay.io$removeparam=sr
 ||vpnpay.io$removeparam=pr
 ||vpnpay.io$removeparam=arf
@@ -449,7 +512,7 @@ $removeparam=sub_rt,domain=comemo.nikkei.com|diehardtales.com|greenplanet.kaneka
 ||audible.$removeparam=ref
 ||camcam.cc^$removeparam=ref
 ref=producthunt^$removeparam=ref
-||igromania.ru^$removeparam=from
+||igromania.ru^$removeparam=from_button_waterfall_knb
 ||fikfapcams.com^$removeparam=referrer
 ||fikfapcams.com^$removeparam=realDomain
 ||fikfapcams.com^$removeparam=affiliateId
@@ -1140,7 +1203,7 @@ $removeparam=promotionId,domain=shopee.ph|shopee.co.th|shopee.co.id
 $removeparam=stm_medium,domain=shopee.ph|shopee.co.th|shopee.co.id
 $removeparam=stm_source,domain=shopee.ph|shopee.co.th|shopee.co.id
 ||adguard.$removeparam=clid
-||adguard-vpn.$removeparam=clid
+$removeparam=clid,domain=adguard-vpn.*|adguardvpn-help.*
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=history_postids
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=device_code
 ||campaigns-serving.cognativex.com^$xmlhttprequest,removeparam=exc_ads
@@ -1420,7 +1483,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||nordvpn.com^$removeparam=data1
 ||upgrad.com^$removeparam=UTM_MEDIUM
 ||adweek.com^$removeparam=traffic_source
-$removeparam=aid,domain=adguard-vpn.com|adguard-dns.io|adguard.com|adguard.info|adgardvpn-help.info
+$removeparam=aid,domain=adguard-vpn.*|adguard-dns.io|adguard.com|adguard.info|adgardvpn-help.*
 ||kitbag.com^$removeparam=_ref
 ||kitbag.com^$removeparam=ab
 ||web.vstat.info^$removeparam=guid
@@ -1462,7 +1525,6 @@ $removeparam=dt_dapp,domain=douban.com|163.com
 ||coupang.com/*/products/$removeparam=settlement
 ||coupang.com/*/products/$removeparam=adType
 ||coupang.com/*/products/$removeparam=sourceType
-||coupang.com/*/products/$removeparam=vendorItemId
 ||coupang.com/*/products/$removeparam=wTrackId
 ||coupang.com/*/products/$removeparam=filterKey
 ||coupang.com/*/products/$removeparam=TrackId
@@ -1476,7 +1538,7 @@ $removeparam=dt_dapp,domain=douban.com|163.com
 ||coupang.com^$removeparam=wPcid
 ||weidian.com^$removeparam=/distributorid|wfr|ifr|share_relation/
 ||jasonsavard.com^$removeparam=/cUrl|ref/
-$removeparam=a_aid,domain=expressvpn.com|vpnarea.com
+$removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt
 ||hog.*^$removeparam=ad
 ||lcs.naver.com/m?u=$removeparam=os
 ||lcs.naver.com/m?u=$removeparam=ln
@@ -1639,6 +1701,10 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||google.*/maps$removeparam=source
 ||google.*/maps$removeparam=g_ep
 ||google.$removeparam=subid
+||www.ebay.$removeparam=epid
+||www.ebay.$removeparam=itmmeta
+||www.ebay.$removeparam=hash
+||www.ebay.$removeparam=itmprp
 ||www.ebay.$removeparam=ssspo
 ||www.ebay.$removeparam=sssrc
 ||www.ebay.$removeparam=ssuid
@@ -1662,7 +1728,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 ||amazon.*/gp/buyagain$removeparam=ats
 ||amazon.*$removeparam=c
 ||amazon.*$removeparam=camp
-||amazon.*$removeparam=content-id
 ||amazon.*$removeparam=creative
 ||amazon.*$removeparam=creativeASIN
 ||amazon.*$removeparam=dchild
@@ -1823,7 +1888,6 @@ $removeparam=s,domain=twitter.com|x.com
 ||flipkart.com^$removeparam=store
 ||daraz.*$removeparam=/spm=|scm=|from=|keyori=|sugg=|search=|mp=|c=|^abtest|^abbucket|pos=|themeID=|algArgs=|clickTrackInfo=|acm=|item_id=|version=|up_id=|pvid=/
 ||bilibili.com^$removeparam=from_spmid
-||bilibili.com^$removeparam=from
 ||bilibili.com^$removeparam=msource
 ||bilibili.com^$removeparam=csource
 ||bilibili.com^$removeparam=source
@@ -1864,6 +1928,19 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+!+ PLATFORM(ext_ff, ext_opera, ext_chromium)
+@@||google.*/url?*%26srsltid%3D$removeparam=srsltid
+@@||bywiola.com^$removeparam=tagtag_uid
+@@||converti.se/click/$removeparam=wgexpiry
+@@||dashboard.wedare.pl^$removeparam
+@@||pl-pepper.digidip.net/visit$removeparam
+@@||tc.tradetracker.net/?*=ppr-pl-$removeparam
+@@||allegro.pl/affiliate?redirect_url=$removeparam=clickId
+@@||allegro.pl/affiliate?redirect_url=$removeparam=utm_source
+@@||allegro.pl/affiliate?redirect_url=$removeparam=utm_campaign
+@@||rd.bizrate.com^$removeparam=utm_campaign
+@@||rd.bizrate.com^$removeparam=utm_medium
+@@||reddit.app.link^$removeparam=utm_content,domain=reddit.app.link
 @@||video-shoper.ru^$removeparam=utm_source
 @@||glavnoe.life^$removeparam=utm_campaign
 @@||glavnoe.life^$removeparam=utm_content
@@ -1922,6 +1999,9 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 @@||sendgb.com/*/?utm_source=$removeparam=utm_source
 @@||img*.nga$removeparam=cmpid
 @@||mywot.com/*/confirmNewEmail/$removeparam
+@@||app.plex.tv/auth-form/$removeparam=utm_source,domain=app.plex.tv
+@@||app.plex.tv/auth-form/$removeparam=utm_content,domain=app.plex.tv
+@@||app.plex.tv/auth-form/$removeparam=utm_medium,domain=app.plex.tv
 @@||plex.tv/api/v*/users/*?utm_source=$removeparam=utm_source,domain=watch.plex.tv
 @@/embed/comments^$removeparam,~third-party,domain=clickhole.com|lifehacker.com|splinternews.com|avclub.com|deadspin.com|gizmodo.com|jalopnik.com|jezebel.com|kotaku.com|qz.com|theinventory.com|theonion.com|theroot.com|thetakeout.com
 @@||urldefense.com^$removeparam
