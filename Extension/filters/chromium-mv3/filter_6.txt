@@ -1,8 +1,8 @@
-! Checksum: 34idounqmEYI2hMCplqHQg
+! Checksum: oEHD0Pv/Rk9NC1top7tvCQ
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.25
-! TimeUpdated: 2025-02-27T12:39:46+00:00
+! Version: 2.0.46.30
+! TimeUpdated: 2025-03-02T14:37:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -372,6 +372,8 @@ kryptografie.de,coolsoftware.de,wetter-vorhersage.de,photo-alben.de,gps-cache.de
 kryptografie.de,coolsoftware.de,wetter-vorhersage.de,photo-alben.de,gps-cache.de,web-spiele.de,fun-seiten.de,cool-web.de#%#//scriptlet("set-constant", "vgpx", "1")
 kryptografie.de,coolsoftware.de,wetter-vorhersage.de,photo-alben.de,gps-cache.de,web-spiele.de,fun-seiten.de,cool-web.de#%#//scriptlet("set-constant", "show_Hinweis", "false")
 kryptografie.de,coolsoftware.de,wetter-vorhersage.de,photo-alben.de,gps-cache.de,web-spiele.de,fun-seiten.de,cool-web.de#%#//scriptlet("set-constant", "wbDeadHinweis", "noopFunc")
+kryptografie.de,coolsoftware.de,wetter-vorhersage.de,photo-alben.de,gps-cache.de,web-spiele.de,fun-seiten.de,cool-web.de#%#//scriptlet("set-constant", "PBRAN", "1")
+kryptografie.de,coolsoftware.de,wetter-vorhersage.de,photo-alben.de,gps-cache.de,web-spiele.de,fun-seiten.de,cool-web.de#%#//scriptlet("set-constant", "CHRAN", "1")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198270
 traderepublic.community#%#//scriptlet('prevent-eval-if', 'adsbygoogle.js')
 traderepublic.community##body > script[src*="pagead2.googlesyndication.com"] + div[id][style*="display:"]
@@ -1477,6 +1479,8 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+hoerzu.de##div[id^="ad-"]
+pixabay.com##.container--Kkxxi
 freenet.de##.grid-container:has(> div[id^="taboola-homepage-placement"]:only-child)
 boerse.cx##.promo-container
 tz.de##.wv_story_el_cxo:has(> #ECR-IN_ARTICLE > div > div > .animate-in > div[data-id-av-dev*="AdSlide"])
@@ -2974,7 +2978,7 @@ radfahren.de##.wide-banner
 radfahren.de##.in-article-ad-wrapper
 xnxx-porno.com##div[data-ga_category="WhatsApp Widget"]
 techgeek360.com,ekiwi-blog.de##.widget_aawp_widget_bestseller
-ekiwi-blog.de##.aawp
+tkp.at,ekiwi-blog.de##.aawp
 praxisvita.de##.aside > .box > a[href$="&utm_campaign=PraxisVita_Bild_Textanzeige"]
 gut-erklaert.de##.noContentBannerWb
 praxistipps.focus.de,chip.de##aside.FC > .FC__Item
@@ -10512,6 +10516,7 @@ german-bash.org##.zitat > div[style="width:300px;"]
 3drei3.de##.zona_publi
 lifeverde.de##.zusatz_billboard
 heise.de##A-PATERNOSTER
+home24.de##[data-cnstrc-sl-campaign-owner]
 mediamarkt.de##[data-test="mms-search-showcase"]
 fitbook.de,petbook.de##[data-view-track="stickybar.display.Skyscanner"]
 pornhutdeutsch.com##[href^="https://start.amateurcommunity.com/"]
@@ -11222,12 +11227,15 @@ elektrobike-online.com,roadbike.de##.v-A_-topteaser__article:has(.v-A_-teaser__t
 motorradonline.de,outdoor-magazin.com##.v-A_-topteaser__rotationbox__item:has(.v-A_-teaser__tag--ad)
 mountainbike-magazin.de,outdoor-magazin.com,roadbike.de##.v-A_-white__tile:has(.v-A_-teaser__tag--ad)
 windowspro.de##.view-idcontent:has(a[href^="/sponsored/"])
+notebooksbilliger.de##.vue-cherry:has(a[href*="/adnuntius"])
 connect.de##.wkTeaser:has(.promolabel)
 gebrauchtwagenberater.de##.wp-block-group:has(.wp-block-button__link)
 berlinstadtservice.de##.wrap-col.box4:has(a[href^="https://www.awin1.com/"])
 zeit.de##.zett-teaser-trio:has(.zett-teaser-trio__kicker--ad-anzeige)
+dm.de##[data-dmid="product-tile"]:has([data-dmid="sponsored-marker"])
 expert.de##[data-key-id]:has([src^="//b.nl3.eu.criteo.com/rm?"])
 flaconi.de##[data-product-list-id]:has([data-badge-type="sponsored"])
+shop-apotheke.com##[data-qa-id="cross-sell-widget"] li:has(> [data-as-xsell-product-id])
 ariva.de##a.background-red-bright:has(span.anzeige)
 hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##article.card:has(.with-ad-marker)
 shop-apotheke.com##article.o-CompactProductListItem:has(a[href^="https://retail-api.sa-tech.de/api/"])
@@ -11271,6 +11279,7 @@ obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.
 obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-find-artikelnummer]:has([data-ui-name="find-artikelkachel-gesponsert-marker"])
 obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-track-section^="home-topteaser"]:has(hobi-advertiser-tag)
 mein-mmo.de##section.post:has([data-type="sponsored"])
+breuninger.com##suchen-produkt:has(.suchen-produkt--gesponsert)
 finanznachrichten.de##tr:has(span.sprite.h-w-c)
 wallstreet-online.de##tr:has(td > .float-end > span[title="Anzeige"])
 wallstreet-online.de##tr:has(td.right:has(img[alt="Anzeige"]))
@@ -11351,6 +11360,7 @@ rewe.de#?#.rs-qa-product:contains(Gesponsert)
 satvision.de#?#.fc_bloglist_item:has(a:contains(Advertorial))
 satvision.de#?#.mod_flexicontent_standard_wrapper:has(span:contains(Advertorial))
 seo-suedwest.de#?#.moduletable:has(span:contains(Anzeige))
+shop-apotheke.at#?#[data-qa-id="result-list-entry"]:contains(Gesponsert)
 skodacommunity.de#?#article.message--post:has(a:contains(Anzeige))
 smartphonemag.de#?#.td_module_wrap:has(.td-post-author-name:contains(Werbung))
 sportdeutschland.tv#?#.text-right.text-white.col-6:contains(präsentiert von)

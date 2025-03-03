@@ -1,8 +1,8 @@
-! Checksum: zli6zzUEBvTNeRPaSM6W1g
+! Checksum: C/uuWbq4l8qWEHuV1cuT0A
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.32.30
-! TimeUpdated: 2025-02-28T02:38:10+00:00
+! Version: 2.1.32.46
+! TimeUpdated: 2025-03-03T02:38:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -19,6 +19,7 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||sm-cloud.yunsafe.top^
 ||dwyeuy.com^
 ||ziweuu.com^
 ||dkweuy.com^
@@ -1064,6 +1065,7 @@ _click*(com?
 /js/profit.js$~third-party
 /db.js?_dc=
 !
+/tj/tongji.js?v=$third-party
 .xyz:9002/*?x=$websocket,script,third-party
 /template/jable/angular.min.js$~third-party
 /template/jable/tj.js$~third-party
@@ -1118,6 +1120,7 @@ $script,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixclou
 !
 ! NOTE: Specific rules
 !
+.gif$third-party,domain=zxc.dongludi.top
 fuliba2025.net##a[href^="https://www.kezyw.com/"] > img
 91porna.com#%#//scriptlet('remove-attr', 'data-ads_url', '[data-ads_url]')
 91porna.com##div[class^="aspect-"]:has(> div > .swiper-backface-hidden)
@@ -4915,6 +4918,8 @@ newduba.cn###jq_youxi
 ##.content > .small-icon-container > a.small-icon-div[target="_blank"]
 ##.content > .module > .small-icon-container > a.small-icon-div[target="_blank"]
 ##.video-ad-item
+###kp-hid-sport.uk-alert
+###side_promo.bc_dp
 ##body[ontouchstart] > .wrap > div[id^="content_"][style="display: block;"]
 ##body[ontouchstart] > div[id^="content_"][style="display: block;"]
 ##.relative > div > img[sizes="100vh"][width="0"]
@@ -4940,12 +4945,35 @@ newduba.cn###jq_youxi
 ||67.21.92.*.gif
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||flixfiend.top^
+||pkvjrb.icu^
+||oqea.cn^
+||vaykjwn.top^
+||sinkrersf.com^
+||ffjevt.icu^
+||bimnodstz.com^
+||odxh.cn^
+||rhzofr.icu^
+||wumd.cn^
+||gmwqpgq.top^
+||aillaeuyn.com^
+||pjwk.cn^
+||difzhd.icu^
+||eelkeageg.com^
+||kczq.cn^
+||zcnmjb.icu^
+||ledwtz.icu^
+||aa03010iiko.com^
+||iyqbsst.top^
+||bhoscopop.com^
 ||derwbl.icu^
 ||nievolmqn.com^
 ||sikvoilst.com^
 ||pghglj.icu^
 ||trohycv.top^
 ||riym.cn^
+||bhohreatz.com^
+||wrth.cn^
 ||shatielsu.com^
 ||rdllzz.icu^
 ||fbvbrb.icu^
@@ -12946,6 +12974,7 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||kmeiju.cc/kangeqiu.
 ||dzbhdm.com/wp-content/uploads/2021/10/c278390aead8a2f7caea15eb42b36314.
 ||i8tq.com/adImg/
+||csgola.com/Public/img/lala/1.jpg
 weather.com.cn##.guanggao
 178.com,nga.cn,ngabbs.com##[style^="background"][style*="vertical-align"]
 eastmoney.com##div[style^="position: fixed; z-index:"]

@@ -1,8 +1,8 @@
-! Checksum: QSzHoNsxOe9qEML4z6ucoA
+! Checksum: MT28rfg/Qo4w7htergZkCA
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.39
-! TimeUpdated: 2025-02-24T17:01:42+00:00
+! Version: 2.0.5.40
+! TimeUpdated: 2025-03-02T13:01:37+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -2074,13 +2074,10 @@ soorban.com##div.ecbox:has(div.ads_text, div.text-ads)
 ||static.shahrekhabar.com/banner/*.gif^$image,~third-party
 shahrekhabar.com##a[target="_blank"][href*="utm_content=shahrekhabar"] > img[style="margin-top: 0px;margin-bottom: 0px;margin-left: auto;margin-right: auto;"]
 ! https://github.com/uBlockOrigin/uBlock-issues/issues/3061
-subkade.ir#%#//scriptlet('ubo-aeld.js', 'click', 'return"undefined"', 'elements', 'a.indirect[data-get]')
-subkade.ir#%#//scriptlet('ubo-set-attr.js', 'a.indirect[data-get]', 'href', '[data-get]')
-subkade.ir#%#//scriptlet('ubo-ra.js', 'oncontextmenu', 'a.indirect[data-get]')
+subkade.ir#%#//scriptlet('ubo-nano-sib.js', 'countdown')
+subkade.ir#?#div.sk-side:has(> div.sk-side-title:contains(/لینک‌های پیشنهادی|منتخب پیشنهاد امروز|روز/))
+subkade.ir##div.sk-section:has(> div[class*="sponsor-"])
 subkade.ir#$#html { -webkit-touch-callout: default !important; -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
-subkade.ir##div.sk-side:has(> div.sk-side-body ul > li > a[href]:is([href="https://49tinymovie.site/"], [href="https://zarfilm.com/"], [href="https://anime-list.net/"]))
-subkade.ir#?#aside.widget-area > div > div.sk-side:has(> div.sk-side-title > h2:contains(دانلود فیلم و سریال جدید))
-subkade.ir#?#aside.widget-area > div > div.sk-side:has(> div.sk-side-title > h2:contains(لوازم جانبی کامپیوتر و موبایل))
 ! https://github.com/MasterKia/PersianBlocker/issues/213
 7sobh.com##div.container-ads
 7sobh.com##div.left-ads
@@ -2914,6 +2911,9 @@ zoomtech.org##div.zoomtech-banner
 ! https://support.google.com/chrome/thread/292146023?hl=en&msgid=292530924
 ! https://storage.googleapis.com/support-forums-api/attachment/thread-292146023-803929150591620091.jpg
 ||androidupdate.download^$all
+! AdlIran scam
+||159.100.22.89^$all
+||ewpb.site^$all
 !-------------------^ Malware/Phishing Sites ^-----------------!
 !-------------------------v Warning for video censorship sites v-----------------------!
 ! https://github.com/MasterKia/PersianBlocker/issues/119

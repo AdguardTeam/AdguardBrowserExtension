@@ -1,8 +1,8 @@
-! Checksum: y0AnTFyeGJFnz6jMvvGd6A
+! Checksum: ldYgNza1rnUm+cgQdb8waQ
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.51.23
-! TimeUpdated: 2025-02-27T20:38:35+00:00
+! Version: 2.0.51.31
+! TimeUpdated: 2025-03-02T11:37:19+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -170,6 +170,8 @@ drive2.ru##.js-page > div[class*=" "] > div[itemscope] ~ div[class]:not([id], [d
 drive2.ru#?#.js-page > div > div[class="x-box x-box--mh o-f"]:has(> script)
 ! cont.ws
 ||cont.ws/*?target-ref=
+! playhop.com
+playhop.com#%#//scriptlet('json-prune', 'direct rtb')
 !   NOTE: Yandex direct end ⬆️
 !   !SECTION: Anti-adblock - Yandex direct
 !
@@ -1703,7 +1705,7 @@ scitechdaily.com,thewindowsclub.com#%#//scriptlet("set-constant", "ezAardvarkDet
 scitechdaily.com,thewindowsclub.com#@#.banner_ads
 scitechdaily.com,thewindowsclub.com#@#.banner-ads
 scitechdaily.com,thewindowsclub.com#@#.ad-zone
-scitechdaily.com,thewindowsclub.com#@#.ad-unit
+scitechdaily.com,thewindowsclub.com#@#.ad-unit:not(.textads)
 scitechdaily.com,thewindowsclub.com#@#.ad-space
 !#safari_cb_affinity
 ! NOTE: ezAardvark end ⬆️
@@ -3279,7 +3281,7 @@ animenewsnetwork.com#@##Adbanner
 timeanddate.com#@##ad-wrap2
 lite.liiingo.com#%#//scriptlet('prevent-setTimeout', 'ad_blocker_detector_modal')
 fastfoodmenupreise.de#@#.ad-zone
-fastfoodmenupreise.de#@#.ad-unit
+fastfoodmenupreise.de#@#.ad-unit:not(.textads)
 fastfoodmenupreise.de#@#.ad-space
 megogo.net#@#.ad-placement
 startpage.com#@#.ad.widget
@@ -3288,7 +3290,7 @@ startpage.com#@#.widget.ad
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=slideshare.net
 ||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=slideshare.net,redirect=googlesyndication-adsbygoogle,important
 slideshare.net#@#.ad-zone
-slideshare.net#@#.ad-unit
+slideshare.net#@#.ad-unit:not(.textads)
 gohatori.com#@##adframe:not(frameset)
 @@||asadcdn.com/adlib/pages/sport1.js$domain=sport1.de
 op.gg#@#.AdSense
@@ -4379,6 +4381,15 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+pngtree.com###__lazy > astro-island + div[class^="_"][style^="color:"]
+theverge.com###zephr-footer-container
+bybit.com##.art-layer-signUpTips
+bybit.com##.user-guide-modal
+seekingalpha.com##.flex > div.sticky:has(> div.bg-share-modal-container > div.relative form > div > label > div > input[placeholder="Enter email address"])
+rikon.asahi.com#$#.footer-fixed { display: none !important; }
+rikon.asahi.com#%#//scriptlet('remove-class', 'has-footer-fixed', 'body')
+globalnews.ca##.c-snackbar
+futbolnews.pl##.legal
 master-plus.com.ua##.popup_alert
 cu.ntv.co.jp#%#//scriptlet('set-local-storage-item', 'tver_data', 'emptyObj')
 ! t-online.de##.transition-opacity - breaks audio button
@@ -12932,6 +12943,12 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+theverge.com##.duet--layout--rail > div[class]:has(> div > form > div.duet--cta--newsletter)
+||kuntarekry.fi/dist-standalone/dist/search-guard-*.js
+remontka.pro##aside > .uk-article-meta:has(> a[href="https://remontka.pro/subscribe/"])
+tribuneindia.com##.article-social-icons
+globalnews.ca##.c-inlineSignup
+grandoptical.cz##section[data-role="newsletter-subscription"]
 liferbc.ru##article > div.card-wrapper:has(> p.paragraph > a[href^="https://t.me/"])
 secrets.tbank.ru##div[style*="-grid-column-"] > div[data-testid="spacer"]:has(> div > a[class^="components_PromoBanner"])
 lifehacker.com##section[data-ga-module="content-header"] > div.custom-background-image:has(div[data-ga-module="newsletter-signup"])

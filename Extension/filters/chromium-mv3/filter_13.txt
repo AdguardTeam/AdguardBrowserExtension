@@ -1,8 +1,8 @@
-! Checksum: EK56U42UtUn5dKKyxqBFqg
+! Checksum: s60OWcPJ3i8OSttoPwjYQQ
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.55.9
-! TimeUpdated: 2025-02-27T12:40:00+00:00
+! Version: 2.0.55.10
+! TimeUpdated: 2025-02-28T11:39:51+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -283,6 +283,8 @@ sosyogaraj.com.tr#%#//scriptlet('prevent-setTimeout', 'adsbygoogle')
 @@/favicon.ico|$domain=gecmisi.com.tr
 @@||gecmisi.com.tr^$cookie=_ga
 @@||gecmisi.com.tr^$cookie=/^_ga_/
+gecmisi.com.tr#@#ins.adsbygoogle[data-ad-slot]
+gecmisi.com.tr#@#ins.adsbygoogle[data-ad-client]
 gecmisi.com.tr#%#//scriptlet('prevent-setInterval', 'showAdBlockMessage')
 gecmisi.com.tr#%#//scriptlet('prevent-setTimeout', '/adElement\.innerHTML|=document\[_0x/')
 gecmisi.com.tr#%#(()=>{let e="";const a=`GA1.1.${Math.floor(Date.now()/1e3)}.${Math.floor(Date.now()/1e3)}`;let o=!1;const t=()=>{e=e.replace("G-",""),document.cookie=`_ga_${e}=${a}`};window.dataLayer=window.dataLayer||[],dataLayer.push=new Proxy(window.dataLayer.push,{apply:(a,d,n)=>("config"===n[0][0]&&(e=n[0][1],"complete"===document.readyState?t():o||(window.addEventListener("load",t),o=!0)),Reflect.apply(a,d,n))})})();
