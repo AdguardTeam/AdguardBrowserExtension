@@ -1,8 +1,8 @@
-! Checksum: ldYgNza1rnUm+cgQdb8waQ
+! Checksum: dzN7JPtneNqYufmcSWbMOQ
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.51.31
-! TimeUpdated: 2025-03-02T11:37:19+00:00
+! Version: 2.0.51.40
+! TimeUpdated: 2025-03-04T08:39:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1738,6 +1738,7 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+moto100.de#%#//scriptlet('prevent-setTimeout', 'Adblocker')
 retail.ru##.news__c1
 btcut.io#%#//scriptlet('set-constant', 'Object.prototype.initUnblocker', 'noopFunc')
 btcut.io##.unblocker-container
@@ -3402,10 +3403,10 @@ wholicab.com#@##adContent
 wp.pl#@#.ad_container
 wp.pl#@#.pub_300x250
 wp.pl#@#.text_ads
-wvgazettemail.com,ceogelisim.com#@#.ad-text
-wvgazettemail.com,ceogelisim.com#@#.adBlock
-wvgazettemail.com,ceogelisim.com#@#.adContent
-wvgazettemail.com,ceogelisim.com#@#.adSense
+wvgazettemail.com#@#.ad-text
+wvgazettemail.com#@#.adBlock
+wvgazettemail.com#@#.adContent
+wvgazettemail.com#@#.adSense
 @@.it/rcs_data-tracking/v*/distro/openx/gazzetta/openx_async.js$domain=gazzetta.it
 @@/ads/ads.js|$domain=nltimes.nl
 @@/advert.js$domain=remont-aud.net|spilcloud.com
@@ -3982,6 +3983,13 @@ web.de,gmx.net,gmx.at,gmx.ch,gmx.com#$##abd-container { display: block !importan
 !
 ! SECTION: Anti-adblock - Grouped rules for specific sites
 !
+! chzzk.naver.com
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/gfp')
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/call')
+chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/vas')
+naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
+@@||ssl.pstatic.net/tveta/libs/glad/prod/$script,xmlhttprequest,domain=chzzk.naver.com
+@@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185974
 grabify.link#%#//scriptlet('set-cookie', 'ckstp', '1')
 grabify.link###ab
@@ -4381,6 +4389,10 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+the-race.com##.viously-sticked
+softwarekeep.com#$#body { overflow: auto !important; }
+softwarekeep.com#$#div[aria-label="Alia popup"] { display: none !important; }
+matsukiyococokara-online.com##.sg_footerfixed
 pngtree.com###__lazy > astro-island + div[class^="_"][style^="color:"]
 theverge.com###zephr-footer-container
 bybit.com##.art-layer-signUpTips
@@ -4533,7 +4545,7 @@ flicksbar.mom###tgWrapper
 flicksbar.mom###TopAdMb
 landyzone.co.uk##.u-bottomFixer
 perplexity.ai#%#//scriptlet('prevent-addEventListener', '/^(?:wheel|touchmove)$/', '/===.\)\{var .="deltaY"in .\?./')
-perplexity.ai#$#body > div:not([class]):not([id]):not([role]):has(> div.items-stretch + div.flex.items-center .space-y-sm > button.border) { display: none !important; }
+perplexity.ai#$?#body > div:not([class], [id], [role]):has(> div.items-stretch + div.flex.items-center:not(:has(.right-sm > button[data-testid="close-modal"])) .space-y-sm > button.border) { display: none !important; }
 context.reverso.net##body > div#popups-container:has(> div.signin)
 daily.dev##.start-reading-popover
 semianalysis.com#%#//scriptlet('set-cookie', 'SemiAnalysis_splash-screen', 'true')
@@ -5857,7 +5869,7 @@ testbook.com#$##leaving-popup { display: none !important; }
 testbook.com#$##landing-popup { display: none !important; }
 testbook.com#$#body.modal-show { overflow: auto !important; }
 polsatsport.pl##.news__read-more-button
-abc7.com,abc7news.com##.dock.StickyVideoPlayer
+abcnews.go.com,abc7.com,abc7news.com##.dock.StickyVideoPlayer
 it-actual.ru##.xcdzla
 ebookstore.sony.jp###pwaBalloon
 trovo.live##.login-guide-footer
@@ -12943,6 +12955,11 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+babylonbee.com##.my-6.bg-primary-orange
+babylonbee.com#%#//scriptlet('set-cookie-reload', '_geps', 'true')
+moneycontrol.com##.header_telegram_icon
+khelnow.com##.posts-content > p:has(> a[href="https://t.me/khelNow"])
+theporndude.com##.drawer
 theverge.com##.duet--layout--rail > div[class]:has(> div > form > div.duet--cta--newsletter)
 ||kuntarekry.fi/dist-standalone/dist/search-guard-*.js
 remontka.pro##aside > .uk-article-meta:has(> a[href="https://remontka.pro/subscribe/"])

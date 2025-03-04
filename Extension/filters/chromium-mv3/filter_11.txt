@@ -1,8 +1,8 @@
-! Checksum: 1I2tNAdEFwhRqpB3bXDOWw
+! Checksum: LkbEVMeYERD1H1vywLriuQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.58.75
-! TimeUpdated: 2025-02-28T18:39:48+00:00
+! Version: 2.0.58.81
+! TimeUpdated: 2025-03-04T08:38:54+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -308,7 +308,6 @@
 ||skt-asum.com^
 ||bdapi-in-ads.realmemobile.com^
 ||bjads.bejbej.ca^
-||external-ad.bunjang.co.kr^
 ||hellay.net^
 ||rqmob.com^
 ||ads-server.mxplay.com^
@@ -1815,8 +1814,13 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ||smart.tinyhoneybee.com/log/
 ||tb.beeline.ru/Scripts/App/AnchorCompiled.min.js
 ||youtube.com/api/stats/ads
+!
+! For blocking ads in mobile apps with HTTPS filtering on Android
 ! Facebook Ad Choices
 ||graph.facebook.com/network_ads
+! Yandex Ads
+://yandex.ru/appcry|
+!
 !---------------------------------------------------------------------------!
 !-------------- Fixing filtration errors (false-positive) ------------------!
 !---------------------------------------------------------------------------!
@@ -1833,6 +1837,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! Yandex ads in mobile apps
 !
 !
+! https://x.com/monmimami/status/1896441545177661923
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195788
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195582
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193869
@@ -2380,6 +2385,15 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+maquia.hpplus.jp##.SP_inarticle
+m.tub5exer.com##.info-holder > center
+m.tub5exer.com##.advertising
+pepper.pl##div[class*="hide--fromW"] > .bRad--a:has(> .ad--bg)
+mydealz.de##.js-threadList  > .hide--fromW3
+m.humoruniv.com##.bg0:has(div > img[height="200"][width="300"])
+m.humoruniv.com###pnut_ad_bottom
+m.humoruniv.com##div[style="min-height:100px;"]
+m.humoruniv.com##tr > td:has(> div[id] > div[style] > img[src="/images/zdr.gif"])
 gamewith.jp##.ad-sp-header
 arty-matome.com##div[style="padding-top: 10px; padding-bottom: 10px; margin-bottom: 30px; margin-top: 30px;background: whitesmoke;"]
 seekingalpha.com##section[data-test-id="recommended-section"]
@@ -2660,7 +2674,7 @@ overwatch2-news.apexlegends-leaksnews.com##.ad_inserter_08
 car.motor-fan.jp###sp_article_billboard
 sippo.asahi.com##.u-mb48.foot
 jyoseisama.com###article-contents > center:has(> a[target="_blank"][href])
-valorantns.com##.ad_sp
+vr18.jp,valorantns.com##.ad_sp
 kahoku.news###kahoku_sp_article_underarticle
 kahoku.news###kahoku_sp_article_under_recommend_4th
 rtl.de##div[class^="group-grid-combi-ad"]

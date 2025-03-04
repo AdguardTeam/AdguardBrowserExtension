@@ -1,13 +1,13 @@
-! Checksum: L5p0Ya0xaWQq8z28F24ArA
+! Checksum: lC49QbBi1+vyuHmX3+5Ppg
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.66
-! TimeUpdated: 2025-02-28T21:01:57+00:00
+! Version: 2.0.20.68
+! TimeUpdated: 2025-03-04T05:01:31+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0228.1
+! OriginalVersion: 2025.0304.3
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -1559,7 +1559,7 @@ mediatoday.co.kr,newsworker.co.kr##div[id^="AD"]
 ! ##div[class^="Banner"]
 moyoplan.com##div[class^="Banner"]
 ! ##div[class*="_ad"]
-kyeongin.com,www.daum.net,m.health.chosun.com,hani.co.kr,asiatime.co.kr,kizmom.hankyung.com,cgv.co.kr,zum.com,kyeonggi.com,medicaltimes.com,kpanews.co.kr,donga.com,busan.com,fnnews.com,m.munhwa.com,m.kmib.co.kr##div[class*="_ad"]
+kyeongin.com,www.daum.net,m.health.chosun.com,hani.co.kr,asiatime.co.kr,kizmom.hankyung.com,www.cgv.co.kr,zum.com,kyeonggi.com,medicaltimes.com,kpanews.co.kr,donga.com,busan.com,fnnews.com,m.munhwa.com,m.kmib.co.kr##div[class*="_ad"]
 ! ##div[id*="Banner"]
 evape.kr,kin.naver.com##div[id*="Banner"]
 ! ##div[class*="_AD"]
@@ -2937,6 +2937,7 @@ manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,
 @@||cdn.kbmaeil.com/bannerpop/uploads/js/976.js
 @@||cdn.kbmaeil.com/bannerpop/uploads/image/16224295341851316158.png
 @@||whosaeng.com/data/whosaeng_com/banner/2024010357483891
+@@||fortune-api.adop.cc^$domain=asp.jeomsin.co.kr
 @@||ssl.pstatic.net/tveta/libs/ssp-video/prod/ssp.web.sdk_$script,domain=weverse.io
 @@||www.besteleven.com/bannerpop/uploads/image/
 besteleven.com#@#img[src^="/bannerpop/"]
@@ -3570,15 +3571,6 @@ t.hi098123.com#@#ins.adsbygoogle[data-ad-slot]
 @@||googletagmanager.com/gtag/js$domain=t.hi098123.com,script
 !#safari_cb_affinity
 t.hi098123.com#$#.tabad { top: -100px !important; }
-! chzzk.naver.com
-! The tusted scriptlet rule should be rechecked after https://github.com/AdguardTeam/Scriptlets/issues/419 is resolved.
-! Check that PIP of a live streaming and chatting management of a channel work.
-chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/gfp')
-chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/call')
-chzzk.naver.com#%#//scriptlet('prevent-xhr', 'veta.naver.com/vas')
-naver.com#%#//scriptlet('set-cookie', 'ba.uuid', '0', '/', 'naver.com')
-@@||ssl.pstatic.net/tveta/libs/glad/prod/$script,xmlhttprequest,domain=chzzk.naver.com
-@@||nam.veta.naver.com/vas$xmlhttprequest,domain=chzzk.naver.com
 !
 tabriz.kr#@##AdHeader
 tabriz.kr#@##AD_Top

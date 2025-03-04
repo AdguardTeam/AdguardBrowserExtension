@@ -2960,6 +2960,38 @@ export const localScriptRules = {
             }
         }
     },
+    '(()=>{const a=function(a){"function"==typeof a&&a()};window.aiptag={adplayer:"",cmd:[]},window.aiptag.cmd.player=[],window.aiptag.cmd.display=[],window.aiptag.cmd.push=a,window.aiptag.cmd.player.push=a,window.aiptag.cmd.display.push=a,window.aipDisplayTag={display:function(){}},window.aipPlayer=function(a){a&&a.AIP_COMPLETE&&(this.startPreRoll=a.AIP_COMPLETE)}})();': {
+        uniqueId: "8e9df515585941ac85187baf28cedac1",
+        func: () => {
+            try {
+                const a = "done";
+                if (Window.prototype.toString["8e9df515585941ac85187baf28cedac1"] !== a) {
+                    (() => {
+                        const a = function(a) {
+                            "function" == typeof a && a();
+                        };
+                        window.aiptag = {
+                            adplayer: "",
+                            cmd: []
+                        }, window.aiptag.cmd.player = [], window.aiptag.cmd.display = [], window.aiptag.cmd.push = a, 
+                        window.aiptag.cmd.player.push = a, window.aiptag.cmd.display.push = a, window.aipDisplayTag = {
+                            display: function() {}
+                        }, window.aipPlayer = function(a) {
+                            a && a.AIP_COMPLETE && (this.startPreRoll = a.AIP_COMPLETE);
+                        };
+                    })();
+                    Object.defineProperty(Window.prototype.toString, "8e9df515585941ac85187baf28cedac1", {
+                        value: a,
+                        enumerable: !1,
+                        writable: !1,
+                        configurable: !1
+                    });
+                }
+            } catch (a) {
+                console.error('Error executing AG js rule with uniqueId "8e9df515585941ac85187baf28cedac1" due to: ' + a);
+            }
+        }
+    },
     '(()=>{const e={breakStatus:"done"},o=["beforeReward","adViewed","adBreakDone"];window.adsbygoogle=window.adsbygoogle||[],window.adsbygoogle.push=function(d){var a;d&&"object"==typeof d&&(a=d,o.every((e=>e in a&&"function"==typeof a[e])))&&(d.beforeReward(),d.adViewed(),d.adBreakDone(e))}})();': {
         uniqueId: "36fd3167269f896e4009a009ae54edb3",
         func: () => {
