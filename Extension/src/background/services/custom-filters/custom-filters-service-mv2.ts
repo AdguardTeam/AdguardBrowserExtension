@@ -16,8 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser, { type WebNavigation } from 'webextension-polyfill';
-
+<<<<<<<< HEAD:Extension/src/background/services/custom-filters/custom-filters-service-mv3.ts
 import {
     MAIN_FRAME_ID,
     isHttpOrWsRequest,
@@ -36,7 +35,21 @@ import { messageHandler } from '../../message-handler';
 import { listeners } from '../../notifier';
 import { engine } from '../../engine';
 import type { CustomFilterMetadata } from '../../schema';
-import { executeScript } from '../scripting/scripting-service-mv2';
+import { executeScript } from '../scripting/scripting-service-mv3';
+========
+import { NotifierType } from '../../../common/constants';
+import {
+    MessageType,
+    type LoadCustomFilterInfoMessage,
+    type SubscribeToCustomFilterMessage,
+    type RemoveAntiBannerFilterMessage,
+} from '../../../common/messages';
+import { CustomFilterApi, type GetCustomFilterInfoResult } from '../../api/filters/custom';
+import { messageHandler } from '../../message-handler';
+import { notifier } from '../../notifier';
+import { engine } from '../../engine';
+import type { CustomFilterMetadata } from '../../schema';
+>>>>>>>> release/v5.2:Extension/src/background/services/custom-filters/custom-filters-service-mv2.ts
 
 /**
  * Service for processing events with custom filters.
@@ -50,8 +63,11 @@ export class CustomFiltersService {
         // eslint-disable-next-line max-len
         messageHandler.addListener(MessageType.SubscribeToCustomFilter, CustomFiltersService.onCustomFilterSubscription);
         messageHandler.addListener(MessageType.RemoveAntiBannerFilter, CustomFiltersService.onCustomFilterRemove);
+<<<<<<<< HEAD:Extension/src/background/services/custom-filters/custom-filters-service-mv3.ts
 
         browser.webNavigation.onCommitted.addListener(CustomFiltersService.injectSubscriptionScript);
+========
+>>>>>>>> release/v5.2:Extension/src/background/services/custom-filters/custom-filters-service-mv2.ts
     }
 
     /**
@@ -87,9 +103,13 @@ export class CustomFiltersService {
             enabled: true,
         });
 
+<<<<<<<< HEAD:Extension/src/background/services/custom-filters/custom-filters-service-mv3.ts
+        await engine.update();
+========
         engine.debounceUpdate();
+>>>>>>>> release/v5.2:Extension/src/background/services/custom-filters/custom-filters-service-mv2.ts
 
-        listeners.notifyListeners(NotifierType.CustomFilterAdded);
+        notifier.notifyListeners(NotifierType.CustomFilterAdded);
         return filterMetadata;
     }
 
@@ -105,7 +125,8 @@ export class CustomFiltersService {
 
         const wasEnabled = await CustomFilterApi.removeFilter(filterId);
         if (wasEnabled) {
-            engine.debounceUpdate();
+<<<<<<<< HEAD:Extension/src/background/services/custom-filters/custom-filters-service-mv3.ts
+            await engine.update();
         }
     }
 
@@ -136,11 +157,13 @@ export class CustomFiltersService {
         try {
             await executeScript(tabId, {
                 files: [`/${SUBSCRIBE_OUTPUT}.js`],
-                runAt: 'document_start',
                 frameId,
             });
         } catch (e) {
             // do nothing
+========
+            engine.debounceUpdate();
+>>>>>>>> release/v5.2:Extension/src/background/services/custom-filters/custom-filters-service-mv2.ts
         }
     }
 }

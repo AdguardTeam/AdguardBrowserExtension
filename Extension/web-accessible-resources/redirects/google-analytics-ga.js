@@ -87,17 +87,17 @@
         }
         try {
             var trace = console.trace.bind(console);
-            var label = "".concat(ADGUARD_PREFIX, " ");
+            var label = `${ADGUARD_PREFIX} `;
             if (source.engine === "corelibs") {
                 label += source.ruleText;
             } else {
                 if (source.domainName) {
-                    label += "".concat(source.domainName);
+                    label += `${source.domainName}`;
                 }
                 if (source.args) {
-                    label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                 } else {
-                    label += "#%#//scriptlet('".concat(source.name, "')");
+                    label += `#%#//scriptlet('${source.name}')`;
                 }
             }
             if (trace) {
@@ -112,16 +112,16 @@
     function logMessage(source, message) {
         var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
         var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-        var name = source.name, verbose = source.verbose;
+        var {name: name, verbose: verbose} = source;
         if (!forced && !verbose) {
             return;
         }
         var nativeConsole = console.log;
         if (!convertMessageToString) {
-            nativeConsole("".concat(name, ":"), message);
+            nativeConsole(`${name}:`, message);
             return;
         }
-        nativeConsole("".concat(name, ": ").concat(message));
+        nativeConsole(`${name}: ${message}`);
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {

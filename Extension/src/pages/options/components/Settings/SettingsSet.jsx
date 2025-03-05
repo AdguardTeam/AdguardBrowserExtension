@@ -39,7 +39,11 @@ const SettingsSet = (props) => {
                         <div className="setting__title">{title}</div>
                         {description && <div className="setting__desc">{description}</div>}
                     </div>
-                    {inlineControl && <div className="setting__container setting__container--inline setting__inline-control">{inlineControl}</div>}
+                    {inlineControl && (
+                        <div className="setting__container setting__container--inline setting__inline-control">
+                            {inlineControl}
+                        </div>
+                    )}
                 </div>
                 {children}
             </div>

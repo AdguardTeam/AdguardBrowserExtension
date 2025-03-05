@@ -327,7 +327,8 @@ const Stealth = observer(() => {
                 mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
-                {/* TODO revert this option when will be found a way to disable referrer rule with stealth exclusion AG-34765 */}
+                {/* TODO revert this option when will be found a way to disable
+                    referrer rule with stealth exclusion AG-34765 */}
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript

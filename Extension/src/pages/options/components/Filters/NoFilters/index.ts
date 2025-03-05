@@ -16,5 +16,5 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Content script entry point
-export { ContentUtils } from './main';
+export { NoFiltersFound } from './NoFiltersFound';
+export { NoFiltersYet } from './NoFiltersYet';

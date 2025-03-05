@@ -18,12 +18,13 @@
 import zod from 'zod';
 import isString from 'lodash-es/isString';
 import isUndefined from 'lodash-es/isUndefined';
+import isObject from 'lodash-es/isObject';
+import { trimEnd } from 'lodash-es';
 
 import { logger } from '../../../common/logger';
 import { getErrorMessage } from '../../../common/error';
 import {
     RAW_FILTER_KEY_PREFIX,
-    FILTER_KEY_PREFIX,
     FiltersStorage,
     SbCache,
     hybridStorage,
@@ -35,6 +36,7 @@ import {
     APP_VERSION_KEY,
     AntiBannerFiltersId,
     CLIENT_ID_KEY,
+    FILTER_LIST_EXTENSION,
     NEWLINE_CHAR_REGEX,
     PAGE_STATISTIC_KEY,
     RULES_LIMITS_KEY,
@@ -47,11 +49,21 @@ import {
     SchemaPreprocessor,
     SettingOption,
 } from '../../schema';
-import type { RunInfo } from '../../utils/run-info';
+import { type RunInfo } from '../../utils/run-info';
 import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 import { PopupStatsCategories } from '../page-stats';
+import { HybridStorage } from '../../storages/hybrid-storage';
+
+import {
+    FiltersStorage as FiltersStorageV1,
+    BINARY_FILTER_KEY_PREFIX,
+    CONVERSION_MAP_PREFIX,
+    FILTER_KEY_PREFIX,
+    SOURCE_MAP_PREFIX,
+} from './assets/old-filters-storage-v1';
+import { HybridStorage as HybridStorageV1 } from './assets/old-hybrid-storage-v1';
 
 /**
  * Update API is a facade for handling migrations for the settings object from
@@ -66,6 +78,10 @@ export class UpdateApi {
         '4': UpdateApi.migrateFromV4toV5,
         '5': UpdateApi.migrateFromV5toV6,
         '6': UpdateApi.migrateFromV6toV7,
+        '7': UpdateApi.migrateFromV7toV8,
+        '8': UpdateApi.migrateFromV8toV9,
+        '9': UpdateApi.migrateFromV9toV10,
+        '10': UpdateApi.migrateFromV10toV11,
     };
 
     /**
@@ -152,7 +168,250 @@ export class UpdateApi {
     }
 
     /**
+     * Legacy deserialization function for Uint8Array.
+     *
+     * Helper function to deserialize Uint8Array members of an object.
+     * This workaround is needed because by default chrome.storage API doesn't support Uint8Array,
+     * and we use it to store serialized filter lists.
+     *
+     * @param value Object to deserialize.
+     *
+     * @returns Deserialized object.
+     */
+    private static deserialize = (value: unknown): unknown => {
+        const isObj = isObject(value);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (isObj && (value as any).__type === 'Uint8Array') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return new Uint8Array((value as any).data);
+        }
+
+        if (Array.isArray(value)) {
+            return value.map(this.deserialize);
+        }
+
+        if (isObj) {
+            const deserializedObject: { [key: string]: unknown } = {};
+            // eslint-disable-next-line no-restricted-syntax
+            for (const [key, val] of Object.entries(value)) {
+                deserializedObject[key] = this.deserialize(val);
+            }
+            return deserializedObject;
+        }
+
+        return value;
+    };
+
+    /**
+     * Run data migration from schema v10 to schema v11.
+     */
+    private static async migrateFromV10toV11(): Promise<void> {
+        let entries: Record<string, unknown> = {};
+
+        // Part 1. Migrate serialized data.
+        // Some date, like typed arrays, are not JSON serializable. In IDB, we can store such data without any problems.
+        // But if IDB is not supported, hybrid storage falls back to browser.storage.local,
+        // where we only can store JSON-serializable data.
+        // To be able to store such data in browser.storage.local, we serialize such data when using hybrid storage.
+        // However, in the latest version, we introduced a more robust way to serialize data:
+        // instead of the legacy custom implementation, we use SuperJSON.
+        // We migrate old serialized data to the new format in this migration, but only if IDB is not supported.
+        if (!await HybridStorage.isIDBSupported()) {
+            entries = await browserStorage.entries();
+
+            // Get relevant keys.
+            const keys = Object.keys(entries).filter((key) => [
+                RAW_FILTER_KEY_PREFIX,
+                BINARY_FILTER_KEY_PREFIX,
+                FILTER_KEY_PREFIX,
+                CONVERSION_MAP_PREFIX,
+                SOURCE_MAP_PREFIX,
+            ].some((prefix) => key.startsWith(prefix)));
+
+            if (keys.length > 0) {
+                const migrationData: Record<string, unknown> = {};
+
+                keys.forEach((key) => {
+                    const val = entries[key];
+                    // Deserialize data using the legacy deserialization function.
+                    const deserializeResult = UpdateApi.deserialize(val);
+
+                    migrationData[key] = deserializeResult;
+                });
+
+                // This will automatically serialize data using SuperJSON.
+                const transactionResult = await hybridStorage.setMultiple(migrationData);
+
+                if (!transactionResult) {
+                    logger.error('Failed to save migrated data');
+                }
+            } else {
+                logger.debug('No serialized data to migrate');
+            }
+        } else {
+            logger.debug('IDB is supported, no need to migrate serialized data');
+        }
+
+        // Part 2. Migrate filters keys.
+        // To provide better integration with preprocessed filters, we changed keys for filters data:
+        // filterrules_<id>.txt -> rawFilterList_<id>
+        // binaryfilterrules_<id>.txt -> filterList_<id>
+        // conversionmap_<id>.txt -> conversionMap_<id>
+        // sourcemap_<id>.txt -> sourceMap_<id>
+        entries = await hybridStorage.entries();
+
+        /**
+         * Mapping of old key prefixes to new key prefixes.
+         */
+        const filtersKeyPrefixesMap: ReadonlyMap<string, string> = new Map<string, string>([
+            [FILTER_KEY_PREFIX, FiltersStorage.KEY_RAW_FILTER_LIST],
+            [BINARY_FILTER_KEY_PREFIX, FiltersStorage.KEY_FILTER_LIST],
+            [CONVERSION_MAP_PREFIX, FiltersStorage.KEY_CONVERSION_MAP],
+            [SOURCE_MAP_PREFIX, FiltersStorage.KEY_SOURCE_MAP],
+        ]);
+        const filtersKeyPrefixesEntries = Array.from(filtersKeyPrefixesMap.entries());
+        const migrationData: Record<string, unknown> = {};
+        const keysToRemove: string[] = [];
+        const keys = Object.keys(entries);
+
+        keys.forEach((key) => {
+            filtersKeyPrefixesEntries.forEach(([oldPrefix, newPrefix]) => {
+                if (key.startsWith(oldPrefix)) {
+                    const newKey = trimEnd(
+                        key.replace(oldPrefix, `${newPrefix}${FiltersStorage.KEY_COMBINER}`),
+                        FILTER_LIST_EXTENSION,
+                    );
+                    migrationData[newKey] = entries[key];
+                    keysToRemove.push(key);
+                }
+            });
+        });
+
+        await hybridStorage.setMultiple(migrationData);
+
+        if (keysToRemove.length > 0) {
+            await hybridStorage.removeMultiple(keysToRemove);
+        }
+    }
+
+    /**
+     * Run data migration from schema v9 to schema v10.
+     *
+     * For the extension update to v5.0.187.
+     *
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
+     *
+     * For MV3 version we need to again remove Quick Fixes filter state.
+     */
+    private static async migrateFromV9toV10(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        await UpdateApi.removeQuickFixesFilter();
+    }
+
+    /**
+     * Run data migration from schema v8 to schema v9.
+     *
+     * For the extension update to v5.0.185.
+     *
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
+     *
+     * In this update we re-added AdGuard Quick Fixes filter
+     * and want to enable it by default for all users.
+     */
+    private static async migrateFromV8toV9(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        // We cannot load and enable filter here, because filter's API is not
+        // initialized yet. So we just set the filter state to enabled
+        // and loaded.
+        // After that it will be renew from the local copy of filters
+        // - which will create all needed filter's objects in memory to correct
+        // work.
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        // Little hack to mark filter as enabled before it is actually loaded.
+        Object.assign(filtersState, {
+            [AntiBannerFiltersId.QuickFixesFilterId]: {
+                // Enabled by default.
+                enabled: true,
+                // Installed is false, because otherwise this filter state
+                // will be marked as "obsoleted" (because this filter not
+                // exists in metadata yet) and will be removed from the memory.
+                installed: false,
+                // Mark as loaded to update filter from local resources and
+                // create filter object in memory.
+                loaded: true,
+            },
+        });
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Set empty filter to create it in the memory.
+        // Right after launch it will be updated to the newest version from remote.
+        await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
+        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
+     * Run data migration from schema v7 to schema v8.
+     *
+     * For the extension update to v5.0.183.
+     *
+     * For MV2 version we will run empty migration since we don't need to do anything,
+     * just increase the schema version.
+     *
+     * For MV3 version we need to remove deprecated Quick Fixes filter state.
+     */
+    private static async migrateFromV7toV8(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        await UpdateApi.removeQuickFixesFilter();
+    }
+
+    /**
      * Run data migration from schema v6 to schema v7.
+     *
+     * For the extension update to
+     * - v5.0.78-beta;
+     * - v5.0.91.
+     *
+     * IMPORTANT: should not be combined with {@link migrateFromV5toV6} just because it is
+     * for the same *release* version — the related changes became available
+     * in *different beta* versions, so they should be run separately.
      *
      * For MV2 version we will run empty migration since we don't need
      * to do anything, just increase the schema version.
@@ -212,7 +471,7 @@ export class UpdateApi {
 
         // Set empty filter to create it in the memory.
         // Right after launch it will be updated to the newest version from remote.
-        await FiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, []);
+        await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
         await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
@@ -220,6 +479,10 @@ export class UpdateApi {
 
     /**
      * Run data migration from schema v5 to schema v6.
+     *
+     * For the extension update to
+     * - v5.0.49-beta;
+     * - v5.0.91.
      */
     private static async migrateFromV5toV6(): Promise<void> {
         const rawOldPageStatistics = await browserStorage.get(PAGE_STATISTIC_KEY);
@@ -328,6 +591,10 @@ export class UpdateApi {
 
     /**
      * Run data migration from schema v4 to schema v5.
+     *
+     * For the extension update to:
+     * - v5.0.43-beta;
+     * - v5.0.91.
      */
     private static async migrateFromV4toV5(): Promise<void> {
         const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
@@ -458,7 +725,7 @@ export class UpdateApi {
 
         // Migrate filters.
         filterKeys.forEach((key) => {
-            const filterId = FiltersStorage.extractFilterIdFromFilterKey(key);
+            const filterId = FiltersStorageV1.extractFilterIdFromFilterKey(key);
             if (filterId === null) {
                 logger.debug(`Failed to extract filter ID from the key: ${key}, skipping`);
                 return;
@@ -478,7 +745,7 @@ export class UpdateApi {
                 ? filterParsingResult.data
                 : filterParsingResult.data.split(NEWLINE_CHAR_REGEX);
 
-            Object.assign(migrationData, FiltersStorage.prepareFilterForStorage(filterId, lines));
+            Object.assign(migrationData, FiltersStorageV1.prepareFilterForStorage(filterId, lines));
         });
 
         // Migrate raw filters.
@@ -502,14 +769,16 @@ export class UpdateApi {
             migrationData[key] = filterParsingResult.data;
         });
 
+        // Delete filters from the `browser.browserStorage.local` after successful migration.
+        await browserStorage.removeMultiple([...rawFilterKeys, ...filterKeys]);
+
+        const hybridStorageV1 = new HybridStorageV1();
+
         // Save migrated data to the hybrid storage with a single transaction.
-        const transactionResult = await hybridStorage.setMultiple(migrationData);
+        const transactionResult = await hybridStorageV1.setMultiple(migrationData);
         if (!transactionResult) {
             throw new Error('Failed to migrate filters from storage to hybrid storage, transaction failed');
         }
-
-        // Delete filters from the `browser.browserStorage.local` after successful migration.
-        await browserStorage.removeMultiple([...rawFilterKeys, ...filterKeys]);
 
         logger.debug('Filters successfully migrated from storage to hybrid storage');
 
@@ -883,6 +1152,57 @@ export class UpdateApi {
     }
 
     /**
+     * Removes the deprecated Quick Fixes filter from settings and storages.
+     *
+     * @returns A promise that resolves when complete.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
+     */
+    private static async removeQuickFixesFilter(): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const deprecatedQuickFixesFilter = filtersState[AntiBannerFiltersId.QuickFixesFilterId];
+
+        if (UpdateApi.isObject(deprecatedQuickFixesFilter)) {
+            // delete the deprecated filter state
+            delete filtersState[AntiBannerFiltersId.QuickFixesFilterId];
+        }
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Remove deprecated Quick Fixes filter from the storages.
+        await FiltersStorageV1.remove(AntiBannerFiltersId.QuickFixesFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
      * Moves data from settings to root browserStorage.
      *
      * @param key Settings key.
@@ -904,6 +1224,7 @@ export class UpdateApi {
      * Checks if value is an object.
      *
      * @param value Unknown value to check.
+     *
      * @returns True if value is an object, false otherwise.
      */
     private static isObject(value: unknown): value is Record<string, unknown> {

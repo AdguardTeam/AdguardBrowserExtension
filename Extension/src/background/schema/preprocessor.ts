@@ -38,6 +38,7 @@ export class SchemaPreprocessor {
      * If {@link value} is string, cast it to number, else returns original value.
      *
      * @param value Preprocessed value.
+     *
      * @returns Number value, if string passed, else returns original value.
      */
     private static castStringToNumber(value: unknown): number | unknown {
@@ -52,6 +53,7 @@ export class SchemaPreprocessor {
      * If {@link value} is string, cast it to boolean, else returns original value.
      *
      * @param value Preprocessed value.
+     *
      * @returns Boolean value, if string passed, else returns original value.
      */
     private static castStringToBoolean(value: unknown): boolean | unknown {

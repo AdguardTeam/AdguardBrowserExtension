@@ -40,6 +40,7 @@ export class Unknown {
      *
      * @param obj An unknown object.
      * @param key All possible keys of the object.
+     *
      * @returns True if property exists, otherwise false.
      */
     public static hasProp<K extends PropertyKey>(obj: unknown, key: K): obj is Record<K, unknown> {

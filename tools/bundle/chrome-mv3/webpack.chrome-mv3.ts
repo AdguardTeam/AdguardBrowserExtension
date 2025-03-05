@@ -22,14 +22,18 @@ import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
-import type { Configuration } from 'webpack';
+import { type Configuration } from 'webpack';
 
 import { RulesetsInjector } from '@adguard/dnr-rulesets';
 
 import { genMv3CommonConfig } from '../webpack.common-mv3';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import { BUILD_ENV, FILTERS_DEST } from '../../constants';
+import {
+    AssetsFiltersBrowser,
+    BUILD_ENV,
+    FILTERS_DEST,
+} from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
 
@@ -59,6 +63,33 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
         throw new Error('commonConfig.output.path is undefined');
     }
 
+    const transformManifest = (content: Buffer) => {
+        const filters = fs
+            .readdirSync(
+                FILTERS_DEST.replace(
+                    '%browser',
+                    path.join(AssetsFiltersBrowser.ChromiumMv3, '/declarative'),
+                ),
+            )
+            .filter((filter) => filter.match(/ruleset_\d+/));
+
+        return updateManifestBuffer(
+            BUILD_ENV,
+            browserConfig.browser,
+            content,
+            rulesetsInjector.applyRulesets(
+                (id) => `filters/declarative/${id}/${id}.json`,
+                chromeMv3Manifest,
+                filters,
+                {
+                    forceUpdate: true,
+                    enable: [BASE_FILTER_ID],
+                    rulesetPrefix: RULESET_NAME_PREFIX,
+                },
+            ),
+        );
+    };
+
     const chromeMv3Config: Configuration = {
         devtool: BUILD_ENV === 'dev' ? 'inline-source-map' : false,
         entry: {
@@ -81,27 +112,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
                     {
                         from: path.resolve(__dirname, '../manifest.common.json'),
                         to: 'manifest.json',
-                        transform: (content) => {
-                            const filters = fs
-                                .readdirSync(FILTERS_DEST.replace('%browser', 'chromium-mv3'))
-                                .filter((filter) => filter.match(/filter_\d+\.txt/));
-
-                            return updateManifestBuffer(
-                                BUILD_ENV,
-                                browserConfig.browser,
-                                content,
-                                rulesetsInjector.applyRulesets(
-                                    (id) => `filters/declarative/${id}/${id}.json`,
-                                    chromeMv3Manifest,
-                                    filters,
-                                    {
-                                        forceUpdate: true,
-                                        enable: [BASE_FILTER_ID],
-                                        rulesetPrefix: RULESET_NAME_PREFIX,
-                                    },
-                                ),
-                            );
-                        },
+                        transform: transformManifest,
                     },
                     {
                         context: 'Extension',

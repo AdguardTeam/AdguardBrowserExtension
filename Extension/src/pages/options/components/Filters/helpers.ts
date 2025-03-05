@@ -18,7 +18,7 @@
 
 import { sortBy } from 'lodash-es';
 
-import type { CategoriesFilterData, CategoriesGroupData } from '../../../../background/api';
+import { type CategoriesFilterData, type CategoriesGroupData } from '../../../../background/api';
 
 /**
  * Sorts filters by enabled status and displayNumber

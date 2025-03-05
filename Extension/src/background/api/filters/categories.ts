@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { UserAgent } from '../../../common/user-agent';
-import { RECOMMENDED_TAG_ID } from '../../../common/constants';
+import { AntiBannerFiltersId, RECOMMENDED_TAG_ID } from '../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,
@@ -25,18 +25,19 @@ import {
     customFilterMetadataStorage,
 } from '../../storages';
 import {
-    GroupMetadata,
-    TagMetadata,
-    RegularFilterMetadata,
-    GroupStateData,
-    FilterStateData,
-    FilterVersionData,
-    CustomFilterMetadata,
+    type GroupMetadata,
+    type TagMetadata,
+    type RegularFilterMetadata,
+    type GroupStateData,
+    type FilterStateData,
+    type FilterVersionData,
+    type CustomFilterMetadata,
 } from '../../schema';
 import { logger } from '../../../common/logger';
+import { CustomFilterHelper } from '../../../common/custom-filter-helper';
 
 import { CommonFilterApi } from './common';
-import { FilterMetadata, FiltersApi } from './main';
+import { type FilterMetadata, FiltersApi } from './main';
 import { FilterUpdateApi } from './update';
 
 /**
@@ -65,8 +66,8 @@ export type CategoriesGroupData = (
  * Aggregated data for options page.
  */
 export type CategoriesData = {
-    categories: CategoriesGroupData[],
-    filters: CategoriesFilterData[]
+    categories: CategoriesGroupData[];
+    filters: CategoriesFilterData[];
 };
 
 /**
@@ -82,7 +83,16 @@ export class Categories {
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
-        const filters = Categories.getFilters();
+        let filters = Categories.getFilters();
+
+        // Exclude Quick Fixes filter and custom filters from filters list
+        // TODO: remove this check when Quick Fixes Filter and custom filters will be supported for MV3 again
+        if (__IS_MV3__) {
+            filters = filters.filter((f) => {
+                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId
+                    && !CustomFilterHelper.isCustomFilter(f.filterId);
+            });
+        }
 
         const categories = groups.map((group) => ({
             ...group,
@@ -99,6 +109,7 @@ export class Categories {
      * Gets group state data from storage.
      *
      * @param groupId Id of group of filters.
+     *
      * @returns Group state data if group is found, else returns undefined.
      */
     public static getGroupState(groupId: number): GroupStateData | undefined {
@@ -148,6 +159,7 @@ export class Categories {
      * Returns specified group metadata by filter id.
      *
      * @param filterId Filter id.
+     *
      * @returns Specified {@link GroupMetadata | group metadata }
      * or undefined.
      */
@@ -367,6 +379,7 @@ export class Categories {
      *
      * @param groupId Group id.
      * @param filters Aggregated filters data.
+     *
      * @returns Aggregated filters data for specified group.
      */
     private static selectFiltersByGroupId(groupId: number, filters: CategoriesFilterData[]): CategoriesFilterData[] {

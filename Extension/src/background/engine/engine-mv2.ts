@@ -20,14 +20,15 @@ import { debounce } from 'lodash-es';
 // Because this file is already MV2 replacement module, we can import directly
 // from basic MV2 tswebextension without using aliases.
 import {
-    ConfigurationMV2,
+    type ConfigurationMV2,
     MESSAGE_HANDLER_NAME,
     createTsWebExtension,
+    type Message as EngineMessage,
 } from '@adguard/tswebextension';
 
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import { FiltersStorage } from '../storages';
 import {
     FiltersApi,
@@ -38,12 +39,11 @@ import {
     network,
     filteringLogApi,
 } from '../api';
+import { NotifierType } from '../../common/constants';
 
-import { TsWebExtensionEngine } from './interface';
+import { type TsWebExtensionEngine } from './interface';
 
-// Because this file is already MV2 replacement module, we can import directly
-// from basic MV2 tswebextension without using aliases.
-export type { Message as EngineMessage } from '@adguard/tswebextension';
+export { type EngineMessage };
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
@@ -66,14 +66,14 @@ export class Engine implements TsWebExtensionEngine {
      */
     async start(): Promise<void> {
         /**
-         * By the rules of Firefox AMO we cannot use remote scripts (and our JS rules can be counted as such).
-         * Because of that we use the following approach (that was accepted by AMO reviewers):
+         * By the rules of Firefox AMO, we cannot use remote scripts (and our JS rules can be counted as such).
+         * Because of that, we use the following approach (that was accepted by AMO reviewers):
          *
          * 1. We pre-build JS rules from AdGuard filters into the JSON file.
-         * 2. At runtime we check every JS rule if it's included into JSON.
-         *  If it is included we allow this rule to work since it's pre-built. Other rules are discarded.
-         * 3. We also allow "User rules" to work since those rules are added manually by the user.
-         *  This way filters maintainers can test new rules before including them in the filters.
+         * 2. At runtime we check every JS rule if it is included into JSON.
+         *    If it is included we allow this rule to work since it is pre-built. Other rules are discarded.
+         * 3. We also allow "User rules" and "Custom filters" to work since those rules are added manually by the user.
+         *    This way filters maintainers can test new rules before including them in the filters.
          */
         if (IS_FIREFOX_AMO) {
             const localScriptRules = await network.getLocalScriptRules();
@@ -89,7 +89,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
@@ -107,7 +107,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
@@ -125,9 +125,19 @@ export class Engine implements TsWebExtensionEngine {
         const tasks = enabledFilters.map(async (filterId) => {
             try {
                 const [content, sourceMap] = await Promise.all([
-                    FiltersStorage.get(filterId),
+                    FiltersStorage.getFilterList(filterId),
                     FiltersStorage.getSourceMap(filterId),
                 ]);
+
+                if (!content) {
+                    logger.error(`Failed to get filter ${filterId}`);
+                    return;
+                }
+
+                if (!sourceMap) {
+                    logger.warn(`Source map is not found for filter ${filterId}`);
+                }
+
                 const trusted = FiltersApi.isFilterTrusted(filterId);
 
                 filters.push({

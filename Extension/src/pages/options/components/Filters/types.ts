@@ -16,4 +16,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { EmptyCustom } from './EmptyCustom';
+import type {
+    RegularFilterMetadata,
+    FilterVersionData,
+    CustomFilterMetadata,
+    TagMetadata,
+} from '../../../../background/schema';
+
+export type RenderedFilterType = RegularFilterMetadata
+& FilterVersionData
+& CustomFilterMetadata
+& {
+    enabled: boolean;
+    tagsDetails: TagMetadata[];
+};

@@ -9,7 +9,13 @@ deployment-permissions:
     permissions:
       - view
 environment-permissions:
-  - AutoDeployAndPublish:
+  - AutoDeployAndPublish Release:
+      - groups:
+          - extensions-developers
+        permissions:
+          - view
+          - deploy
+  - AutoDeployAndPublish Beta:
       - groups:
           - extensions-developers
         permissions:

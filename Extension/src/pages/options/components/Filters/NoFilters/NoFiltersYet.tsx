@@ -18,16 +18,19 @@
 
 import React from 'react';
 
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 
-import './empty-custom.pcss';
+import './no-filters.pcss';
 
-const EmptyCustom = () => (
-    <div className="empty-custom">
-        <Icon id="#empty" classname="icon--empty empty-custom__ico" />
-        <div className="empty-custom__desc">{reactTranslator.getMessage('options_empty_custom_filter')}</div>
+/**
+ * Custom filters tab: Text and icon displayed when user has 0 total custom filters
+ */
+const NoFiltersYet = () => (
+    <div className="no-filters">
+        <Icon id="#no-filters-yet" classname="no-filters__no-filters-yet-icon icon--gray-default" />
+        <div>{translator.getMessage('options_empty_custom_filter')}</div>
     </div>
 );
 
-export { EmptyCustom };
+export { NoFiltersYet };

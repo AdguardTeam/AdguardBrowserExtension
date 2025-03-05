@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { StorageInterface } from '../../common/storage';
+import { type StorageInterface } from '../../common/storage';
 
 /**
  * Class for managing data that is persisted as string in another key value storage.
@@ -48,6 +48,7 @@ export class StringStorage<K extends string | number | symbol, V, Mode extends '
      * Returns cached data.
      *
      * @returns Cached data.
+     *
      * @throws Error, if cache is not initialized.
      */
     public getData(): V {

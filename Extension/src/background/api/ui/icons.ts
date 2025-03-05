@@ -19,13 +19,16 @@ import browser from 'webextension-polyfill';
 
 import { RulesLimitsService } from 'rules-limits-service';
 
-import { settingsStorage } from '../../storages';
+import {
+    settingsStorage,
+    type IconData,
+    type IconVariants,
+} from '../../storages';
 import { SettingOption } from '../../schema';
 import { getIconImageData } from '../../../common/api/extension';
-import type { IconData, IconVariants } from '../../storages';
 import { logger } from '../../../common/logger';
 
-import { FrameData } from './frames';
+import { type FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
 import { browserAction } from './browser-action';
 
@@ -169,6 +172,7 @@ class IconsApi {
      * Fallbacks to default icon variants if the current icon variants are not provided.
      *
      * @param isDisabled Is website allowlisted or app filtering disabled.
+     *
      * @returns Icon variant to display.
      */
     private async pickIconVariant(isDisabled = false): Promise<IconData> {
@@ -190,6 +194,7 @@ class IconsApi {
      *
      * @param totalBlockedTab Number of blocked requests.
      * @param isDisabled Is website allowlisted or app filtering disabled.
+     *
      * @returns Badge text to display.
      */
     private static getBadgeText(totalBlockedTab: number, isDisabled: boolean): string {

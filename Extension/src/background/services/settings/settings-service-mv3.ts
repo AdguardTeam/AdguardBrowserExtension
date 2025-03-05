@@ -44,7 +44,7 @@ import {
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
 
-import type { ExportMessageResponse, GetOptionsDataResponse } from './types';
+import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
 
 /**
  * SettingsService handles all setting-related messages and

@@ -23,11 +23,11 @@ import {
 } from 'mobx';
 import { nanoid } from 'nanoid';
 
-import type { InvalidStaticResultData, InvalidDynamicResultData } from '../../../background/services/rules-limits';
+import { type InvalidStaticResultData, type InvalidDynamicResultData } from '../../../background/services/rules-limits';
 // TODO: Maybe not import from components folder here?
 import { getDynamicWarningMessage, getStaticWarningMessage } from '../components/Warnings/messages';
 
-import type { RootStore } from './RootStore';
+import { type RootStore } from './RootStore';
 
 export enum NotificationType {
     SUCCESS = 'success',
@@ -51,7 +51,7 @@ export type Notification = {
     /**
      * Notification type
      */
-    type: NotificationType
+    type: NotificationType;
 
     /**
      * Some additional data, e.g. links.
@@ -126,9 +126,9 @@ class UiStore {
     /**
      * Sets a specific limit warning message to be displayed about static filters.
      *
-     * @throws Error if the warning type is incorrect.
-     *
      * @param data Result of limits check of static rules.
+     *
+     * @throws Error if the warning type is incorrect.
      */
     @action
     setStaticFiltersLimitsWarning(data?: InvalidStaticResultData | undefined) {
@@ -147,9 +147,9 @@ class UiStore {
     /**
      * Sets a specific limit warning message to be displayed about dynamic section with user rules.
      *
-     * @throws Error if the warning type is incorrect.
-     *
      * @param data Result of limits check of dynamic rules.
+     *
+     * @throws Error if the warning type is incorrect.
      */
     @action
     setDynamicRulesLimitsWarning(data?: InvalidDynamicResultData | undefined) {

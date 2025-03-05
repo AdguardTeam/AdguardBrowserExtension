@@ -17,7 +17,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { RuleSample } from './samples-types';
+import { type RuleSample } from './samples-types';
 
 /**
  * List of the rules, which are considered to be safe. It used to prepare prompt to open ai api.

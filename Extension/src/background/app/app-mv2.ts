@@ -55,7 +55,6 @@ import {
     FiltersService,
     AllowlistService,
     UserRulesService,
-    CustomFiltersService,
     FilteringLogService,
     eventService,
     DocumentBlockService,
@@ -68,6 +67,7 @@ import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
+import { CustomFiltersService } from '../services/custom-filters/custom-filters-service-mv2';
 
 /**
  * Logs initialization times for debugging purposes.
@@ -118,21 +118,17 @@ export class App {
     });
 
     /**
-     * Initializes all app services
-     * and handle webextension API events for first install and update scenario.
+     * Initializes all app services and handle webextension API events for first
+     * install and update scenario.
      */
     public static async init(): Promise<void> {
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
 
-        await App.asyncInit();
-    }
+        // This call is moved to top in order to keep consistent with MV3 version,
+        // where it's needed to register critical event handlers in a sync way.
+        UiService.syncInit();
 
-    /**
-     * Initializes all app services
-     * and handle webextension API events for first install and update scenario.
-     */
-    private static async asyncInit(): Promise<void> {
         await trackInitTimesForDebugging();
 
         // TODO: Remove after migration to MV3
@@ -178,13 +174,13 @@ export class App {
         await UiApi.init();
 
         /**
-         * Injects content scripts into already open tabs.
+         * Injects content scripts into already opened tabs.
          *
          * Does injection when all requirements are met:
-         * - Statistics collection is disabled.
-         * - Content scripts have not been injected in the current session.
-         *
-         * This prevents conflicts from multiple `cssHitCounters` and avoids unnecessary injections.
+         * - Statistics collection is disabled - prevents conflicts from multiple
+         * `cssHitCounters`;
+         * - Content scripts have not been injected in the current session -
+         * avoids unnecessary injections.
          */
         if (
             SettingsApi.getSetting(SettingOption.DisableCollectHits)

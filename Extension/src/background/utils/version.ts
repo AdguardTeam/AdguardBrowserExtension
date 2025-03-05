@@ -24,8 +24,10 @@
  * If there are less than {@link Version.MAX_LENGTH} parts in the version, the missing ones are filled with zeros
  * For example, entry string `1.1` will be parsed as `[1, 1, 0, 0]`.
  *
- * @param version Semver string.
  * @class
+ *
+ * @param version Semver string.
+ *
  * @throws Error, if passed string cannot be parsed.
  */
 export class Version {
@@ -65,7 +67,9 @@ export class Version {
      * Compare current semver with passed.
      *
      * @param version Instance of {@link Version}.
+     *
      * @returns Number, indicates the result of the comparison (1 greater, -1 less, 0 equals).
+     *
      * @throws Error, if some version data is invalid.
      */
     public compare(version: Version): number {

@@ -16,6 +16,21 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// In this file we doing only lazy-load assistant and place it to global scope
-// of the current content-script.
-import '@adguard/tswebextension/assistant-inject';
+import React from 'react';
+
+import { translator } from '../../../../../common/translators/translator';
+import { Icon } from '../../../../common/components/ui/Icon';
+
+import './no-filters.pcss';
+
+/**
+ * All filter tabs: Text and icon displayed when no filters are found after search using the searchbar
+ */
+const NoFiltersFound = () => (
+    <div className="no-filters">
+        <Icon id="#no-filters-found" classname="icon--48 icon--gray-default" />
+        <div>{translator.getMessage('options_filters_empty_title')}</div>
+    </div>
+);
+
+export { NoFiltersFound };
