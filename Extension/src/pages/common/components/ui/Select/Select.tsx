@@ -84,12 +84,12 @@ export type SelectProps = {
     /**
      * Label for the select (used only for screen readers).
      */
-    label?: string,
+    label?: string;
 
     /**
      * Description id for the select (used only for screen readers).
      */
-    descriptionId?: string,
+    descriptionId?: string;
 };
 
 /**
@@ -222,6 +222,7 @@ export const Select = ({
      * And also setups a timeout to clear the search string after a certain time.
      *
      * @param key New character to append to the search string.
+     *
      * @returns The updated search string.
      */
     const getSearchString = (key: string) => {

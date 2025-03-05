@@ -35,7 +35,7 @@ type TabParams = {
     /**
      * Tab id.
      */
-    id: string,
+    id: string;
 
     /**
      * Tab title.
