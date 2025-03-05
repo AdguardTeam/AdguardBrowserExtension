@@ -20,7 +20,7 @@ import browser from 'webextension-polyfill';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
-import { SettingOption, RegularFilterMetadata } from '../../schema';
+import { SettingOption, type RegularFilterMetadata } from '../../schema';
 import { AntiBannerFiltersId } from '../../../common/constants';
 import {
     metadataStorage,
@@ -34,7 +34,7 @@ import { network } from '../network';
 
 import { CustomFilterApi } from './custom';
 import { FiltersApi } from './main';
-import type { FilterUpdateOptions } from './update';
+import { type FilterUpdateOptions } from './update';
 import { FilterParser } from './parser';
 
 /**
@@ -79,8 +79,10 @@ export class CommonFilterApi {
     public static isCommonFilter(filterId: number): boolean {
         return !CustomFilterApi.isCustomFilter(filterId)
             && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId
-            && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
+            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
+
+        // TODO: Uncomment this line when Quick Fixes filter will be supported for MV3
+        // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
     }
 
     /**
@@ -147,7 +149,13 @@ export class CommonFilterApi {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
 
-        if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
+        // if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+        //     forceRemote = false;
+        // }
+
+        // TODO: remove this block when we revert support for custom and quick fixes filters
+        if (__IS_MV3__) {
             forceRemote = false;
         }
 
@@ -216,7 +224,10 @@ export class CommonFilterApi {
             shouldWaitFullUpdate: isPatchUpdateFailed,
         });
 
-        await FiltersStorage.set(filterUpdateOptions.filterId, filter);
+        // Note: we should join array of rules here, because they contain
+        // preprocessed directives, e.g. including another filter via `!#include`
+        // directive.
+        await FiltersStorage.set(filterUpdateOptions.filterId, filter.join('\n'));
         await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
 
         return filterMetadata;
@@ -230,7 +241,6 @@ export class CommonFilterApi {
      *
      * @param enableUntouchedGroups - Should enable untouched groups related to
      * the default filters or not.
-     *
      */
     public static async initDefaultFilters(enableUntouchedGroups: boolean): Promise<void> {
         const filterIds = [
@@ -251,15 +261,16 @@ export class CommonFilterApi {
         const remote = !__IS_MV3__;
         await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
 
-        // For MV3 version we have QuickFixes filter which does not have local
-        // version and always should be updated from the server.
-        if (__IS_MV3__) {
-            await FiltersApi.loadAndEnableFilters(
-                [AntiBannerFiltersId.QuickFixesFilterId],
-                true, // Install from remote.
-                enableUntouchedGroups,
-            );
-        }
+        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
+        // // For MV3 version we have QuickFixes filter which does not have local
+        // // version and always should be updated from the server.
+        // if (__IS_MV3__) {
+        //     await FiltersApi.loadAndEnableFilters(
+        //         [AntiBannerFiltersId.QuickFixesFilterId],
+        //         true, // Install from remote.
+        //         enableUntouchedGroups,
+        //     );
+        // }
     }
 
     /**
@@ -309,6 +320,7 @@ export class CommonFilterApi {
      * Checks whether the filter is supported for MV3.
      *
      * @param filterId Filter id.
+     *
      * @returns True if filter is supported for MV3, false otherwise.
      */
     public static isMv3Supported(filterId: number): boolean {

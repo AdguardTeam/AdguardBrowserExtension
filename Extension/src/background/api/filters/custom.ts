@@ -17,12 +17,12 @@
  */
 import MD5 from 'crypto-js/md5';
 
-import { DownloadResult } from '@adguard/filters-downloader/browser';
+import { type DownloadResult } from '@adguard/filters-downloader/browser';
 
 import { BrowserUtils } from '../../utils/browser-utils';
 import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';
-import { CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../schema';
+import { type CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../schema';
 import { customFilterMetadataStorage } from '../../storages/custom-filter-metadata';
 import { filterStateStorage } from '../../storages/filter-state';
 import { groupStateStorage } from '../../storages/group-state';
@@ -33,9 +33,10 @@ import { type Network } from '../network/main';
 import { CustomFilterHelper } from '../../../common/custom-filter-helper';
 import { createPromiseWithTimeout } from '../../utils/timeouts';
 
-import type { FilterUpdateOptions } from './update';
-import { FilterParsedData, FilterParser } from './parser';
+import { type FilterUpdateOptions } from './update';
+import { type FilterParsedData, FilterParser } from './parser';
 import { type FilterMetadata } from './main';
+import { CustomFilterLoader } from './custom/loader';
 
 /**
  * Data transfer object for {@link CustomFilterApi} methods.
@@ -52,8 +53,8 @@ export type CustomFilterDTO = {
  * in 'Add custom filter' modal window if filter was not added before.
  */
 export type CustomFilterInfo = FilterParsedData & {
-    customUrl: string,
-    rulesCount: number,
+    customUrl: string;
+    rulesCount: number;
 };
 
 /**
@@ -61,7 +62,7 @@ export type CustomFilterInfo = FilterParsedData & {
  * returned on creating new custom filter.
  */
 export type CreateCustomFilterResponse = {
-    filter: CustomFilterInfo
+    filter: CustomFilterInfo;
 };
 
 /**
@@ -69,7 +70,7 @@ export type CreateCustomFilterResponse = {
  * returned if custom filter with subscription url has already existed.
  */
 export type CustomFilterAlreadyExistResponse = {
-    errorAlreadyExists: boolean
+    errorAlreadyExists: boolean;
 };
 
 /**
@@ -82,10 +83,10 @@ export type GetCustomFilterInfoResult = CreateCustomFilterResponse | CustomFilte
  * It is downloaded while creating and updating custom filter in {@link CustomFilterApi.getRemoteFilterData}.
  */
 export type GetRemoteCustomFilterResult = {
-    rawRules: string,
-    rules: string[],
-    checksum: string | null,
-    parsed: FilterParsedData,
+    rawRules: string;
+    rules: string[];
+    checksum: string | null;
+    parsed: FilterParsedData;
 };
 
 const emptyDownloadResult: DownloadResult = {
@@ -262,7 +263,10 @@ export class CustomFilterApi {
             enabled,
         });
 
-        await FiltersStorage.set(filterId, rules);
+        // Note: we should join array of rules here, because they contain
+        // preprocessed directives, e.g. including another filter via `!#include`
+        // directive.
+        await FiltersStorage.set(filterId, rules.join('\n'));
         await RawFiltersStorage.set(filterId, rawRules);
 
         const group = groupStateStorage.get(filterMetadata.groupId);
@@ -379,6 +383,7 @@ export class CustomFilterApi {
      * Check if filter is custom.
      *
      * @param filter Filter metadata.
+     *
      * @returns True, if filter is custom, else returns false.
      */
     public static isCustomFilterMetadata(filter: FilterMetadata): filter is CustomFilterMetadata {
@@ -441,8 +446,8 @@ export class CustomFilterApi {
     private static async updateFilterData(
         filterMetadata: CustomFilterMetadata,
         {
-            rawRules,
             rules,
+            rawRules,
             checksum,
             parsed,
         }: GetRemoteCustomFilterResult,
@@ -473,7 +478,10 @@ export class CustomFilterApi {
 
         customFilterMetadataStorage.set(newFilterMetadata);
 
-        await FiltersStorage.set(filterId, rules);
+        // Note: we should join array of rules here, because they contain
+        // preprocessed directives, e.g. including another filter via `!#include`
+        // directive.
+        await FiltersStorage.set(filterId, rules.join('\n'));
         await RawFiltersStorage.set(filterId, rawRules);
 
         return newFilterMetadata;
@@ -551,9 +559,9 @@ export class CustomFilterApi {
      * Loads filter data from specified url and parse it.
      *
      * @param url Custom filter subscription url.
-     *
      * @param rawFilter Optional raw filter rules.
      * @param force If true filter data will be downloaded directly, not through patches.
+     *
      * @returns Downloaded and parsed filter data.
      */
     private static async getRemoteFilterData(
@@ -563,7 +571,7 @@ export class CustomFilterApi {
     ): Promise<GetRemoteCustomFilterResult> {
         logger.info(`Get custom filter data from ${url}`);
 
-        const downloadResult = await CustomFilterApi.downloadRulesWithTimeout(url, rawFilter, force);
+        const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
 
         const parsed = FilterParser.parseFilterDataFromHeader(downloadResult.filter);
 
@@ -587,8 +595,10 @@ export class CustomFilterApi {
      * @param url Custom filter download url.
      * @param rawFilter Optional raw filter rules.
      * @param force Optional flag to choose download filter in whole or by patches.
-     * @throws Error if filter was not downloaded in {@link DOWNLOAD_LIMIT_MS}.
+     *
      * @returns Downloaded custom filter rules.
+     *
+     * @throws Error if filter was not downloaded in {@link DOWNLOAD_LIMIT_MS}.
      */
     public static async downloadRulesWithTimeout(
         url: string,

@@ -21,38 +21,35 @@ import { debounce } from 'lodash-es';
 // from mv3 tswebextension without using aliases.
 import {
     MESSAGE_HANDLER_NAME,
-    Configuration,
+    type Configuration,
     TsWebExtension,
-    type MessagesHandlerMV3,
-    ConfigurationResult,
+    type MessageHandler,
+    type Message as EngineMessage,
+    type ConfigurationResult,
 } from '@adguard/tswebextension/mv3';
 
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../../../constants';
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import {
     FiltersApi,
     AllowlistApi,
     UserRulesApi,
     SettingsApi,
-    CustomFilterApi,
     toasts,
     filteringLogApi,
     CommonFilterApi,
-    QuickFixesRulesApi,
     iconsApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
-import { FiltersStorage } from '../storages';
-import { emptyPreprocessedFilterList } from '../../common/constants';
-import { SettingOption } from '../schema/settings/main';
+import { emptyPreprocessedFilterList, NotifierType } from '../../common/constants';
+import { SettingOption } from '../schema/settings/enum';
+import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 
-import { TsWebExtensionEngine } from './interface';
+import { type TsWebExtensionEngine } from './interface';
 
-// Because this file is already MV3 replacement module, we can import directly
-// from mv3 tswebextension without using aliases.
-export type { Message as EngineMessage } from '@adguard/tswebextension/mv3';
+export { type EngineMessage };
 
 /**
  * Engine is a wrapper around the tswebextension to provide a better public
@@ -62,7 +59,7 @@ export type { Message as EngineMessage } from '@adguard/tswebextension/mv3';
 export class Engine implements TsWebExtensionEngine {
     readonly api: TsWebExtension;
 
-    readonly handleMessage: MessagesHandlerMV3;
+    readonly handleMessage: MessageHandler;
 
     private static readonly UPDATE_TIMEOUT_MS = 1000;
 
@@ -96,6 +93,15 @@ export class Engine implements TsWebExtensionEngine {
      * to use MV3 in Firefox.
      */
     async start(): Promise<void> {
+        /**
+         * By the rules of Chrome Web Store, we cannot use remote remotely hosted scripts, thats why we prebuild them.
+         *
+         * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
+         *
+         * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
+         */
+        TsWebExtension.setLocalScriptRules(localScriptRules);
+
         const configuration = await Engine.getConfiguration();
 
         logger.info('Start tswebextension...');
@@ -109,7 +115,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
 
@@ -158,7 +164,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         if (!skipLimitsCheck) {
             await RulesLimitsService.checkFiltersLimitsChange(this.update.bind(this));
@@ -215,26 +221,29 @@ export class Engine implements TsWebExtensionEngine {
             trusted: true,
         };
 
-        if (QuickFixesRulesApi.isEnabled()) {
-            Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
-        }
+        // TODO Uncomment this block when Quick Fixes filter will be supported for MV3
+        // if (QuickFixesRulesApi.isEnabled()) {
+        //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
+        // }
 
-        const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
-            .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
+        // TODO: uncomment code bellow when custom filters support will be added back
+        // const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
+        //     .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
-        const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-            const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
+        // const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
+        //     const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
 
-            return {
-                filterId,
-                trusted,
-                ...(preprocessedFilterList || emptyPreprocessedFilterList),
-            };
-        }));
+        //     return {
+        //         filterId,
+        //         trusted,
+        //         ...(preprocessedFilterList || emptyPreprocessedFilterList),
+        //     };
+        // }));
 
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
-            customFilters,
+            // TODO: revert to actual customFilters when their support will be added back
+            customFilters: [],
             quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA) || logger.isVerbose(),
             logLevel: logger.currentLevel,

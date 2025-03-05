@@ -55,6 +55,7 @@ type ScanResult = {
  * Function to check if a line matches the criteria for a potentially dangerous rule.
  *
  * @param rowLine Line to check.
+ *
  * @returns True if the line matches the criteria, false otherwise.
  */
 export function isMatchingCriteria(rowLine: string): boolean {
@@ -82,6 +83,7 @@ export function isMatchingCriteria(rowLine: string): boolean {
  * Searches for potentially dangerous rules in a file and returns an array of matches.
  *
  * @param filePath Path to the file to search in.
+ *
  * @returns Promise with an array of matches.
  */
 async function searchInFile(filePath: string): Promise<ScanResult[]> {
@@ -105,6 +107,7 @@ async function searchInFile(filePath: string): Promise<ScanResult[]> {
  * Recursively scans a directory for potentially dangerous rules and returns an array of matches.
  *
  * @param directory Directory to scan.
+ *
  * @returns Promise with an array of matches.
  */
 async function scanDirectory(directory: string): Promise<ScanResult[]> {

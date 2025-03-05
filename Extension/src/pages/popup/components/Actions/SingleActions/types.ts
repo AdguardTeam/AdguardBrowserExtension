@@ -20,17 +20,17 @@ export type SingleActionParams = {
     /**
      * Action class name.
      */
-    className: string,
+    className: string;
 
     /**
      * Is filtering possible.
      */
-    isFilteringPossible?: boolean,
+    isFilteringPossible?: boolean;
 
     /**
      * Action click handler url.
      *
      * Needed for issue reporting or site security checking.
      */
-    url?: string | null,
+    url?: string | null;
 };

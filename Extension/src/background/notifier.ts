@@ -58,6 +58,7 @@ class Notifier {
      * @param listener Listener callback.
      *
      * @returns Listener id.
+     *
      * @throws Error if listener is not a function.
      */
     addSpecifiedListener(events: unknown[], listener: Listener): number {
@@ -75,7 +76,9 @@ class Notifier {
      * Subscribe specified listener to all events.
      *
      * @param listener Listener callback.
+     *
      * @returns Listener id.
+     *
      * @throws Error if listener is not a function.
      */
     addListener(listener: Listener): number {
@@ -105,15 +108,13 @@ class Notifier {
      *
      * @throws Error if some event is illegal.
      */
-    notifyListeners(...args: [string, ...unknown[]]): void {
+    notifyListeners(...args: [NotifierType, ...unknown[]]): void {
         const [event] = args;
         if (!event || !(event in this.eventNotifierEventsMap)) {
             throw new Error(`Illegal event: ${event}`);
         }
 
-        Object.entries(
-            this.listenersMap as Record<string, Listener>,
-        ).forEach(([listenerId, listener]) => {
+        Object.entries(this.listenersMap).forEach(([listenerId, listener]) => {
             const events = this.listenersEventsMap[Number(listenerId)];
             if (events && events.length > 0 && events.indexOf(event) < 0) {
                 return;
@@ -127,4 +128,4 @@ class Notifier {
     }
 }
 
-export const listeners = new Notifier() as Notifier & typeof NotifierType;
+export const notifier = new Notifier();

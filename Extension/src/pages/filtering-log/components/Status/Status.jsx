@@ -68,7 +68,10 @@ export const Status = (props) => {
                         <div className={itemClassNames}>
                             <Popover text={statusTooltipText}>
                                 <div className="status__icon--wrapper">
-                                    <Icon id={statusCode ? '#transfer-status' : '#arrow-status'} classname="status__icon" />
+                                    <Icon
+                                        id={statusCode ? '#transfer-status' : '#arrow-status'}
+                                        classname="status__icon"
+                                    />
                                 </div>
                             </Popover>
                         </div>

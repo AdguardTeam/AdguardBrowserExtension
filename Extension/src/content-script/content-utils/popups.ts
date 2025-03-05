@@ -16,15 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import {
-    ShowAlertPopupMessage,
-    ShowVersionUpdatedPopupMessage,
+    type ShowAlertPopupMessage,
+    type ShowVersionUpdatedPopupMessage,
+    type ShowRuleLimitsAlertMessage,
     sendMessage,
     MessageType,
-    ShowRuleLimitsAlertMessage,
 } from '../../common/messages';
-import { SettingOption } from '../../background/schema/settings';
+import { SettingOption } from '../../background/schema/settings/enum';
 
-import { Alerts, AppendAlertElementProps } from './alerts';
+import { Alerts, type AppendAlertElementProps } from './alerts';
 import { Elements } from './elements';
 
 // !Important! Direct import to avoid side effects on tree shaking.
@@ -36,39 +36,39 @@ export type AppendPopupProps = {
     /**
      * Content css string.
      */
-    alertStyles: string,
+    alertStyles: string;
 
     /**
      * Iframe container html string.
      */
-    iframeHtml: string,
+    iframeHtml: string;
 
     /**
      * Iframe container css string.
      */
-    iframeStyles: string,
+    iframeStyles: string;
 
     /**
      * Iframe container css class name.
      */
-    iframeClassName: string,
+    iframeClassName: string;
 
     /**
      * Is Adguard tab.
      */
-    isAdguardTab: boolean,
+    isAdguardTab: boolean;
 
     /**
      * Should show promo notification.
      */
-    showPromoNotification: boolean,
+    showPromoNotification: boolean;
 
     /**
      * Callback to execute after iframe is injected.
      *
      * @param iframe Iframe element.
      */
-    onIframeInjected?: (iframe: HTMLIFrameElement) => void,
+    onIframeInjected?: (iframe: HTMLIFrameElement) => void;
 };
 
 /**

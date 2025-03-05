@@ -101,6 +101,7 @@ export const strings = (() => {
          * @param str   String to search
          * @param chars Chars to search for
          * @param start Start index (optional, inclusive)
+         *
          * @returns int Index of the element found or null
          */
         indexOfAny(str, chars, start) {
@@ -191,6 +192,7 @@ export const strings = (() => {
          * @param str - String to check
          * @param startIndex - Index to start checking from
          * @param substr - Substring to check
+         *
          * @returns boolean true if it does start
          */
         startsAtIndexWith(str, startIndex, substr) {

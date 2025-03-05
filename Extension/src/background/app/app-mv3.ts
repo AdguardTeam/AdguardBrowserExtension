@@ -57,7 +57,6 @@ import {
     FiltersService,
     AllowlistService,
     UserRulesService,
-    CustomFiltersService,
     FilteringLogService,
     eventService,
     DocumentBlockService,
@@ -93,14 +92,19 @@ export class App {
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
 
+        // First initialize critical sync event handlers.
         App.syncInit();
+
+        // Then "lazy" call for all other stuff.
         await App.asyncInit();
     }
 
     /**
      * Initializes **sync** modules.
      *
-     * Important: should be called before {@link App.init}.
+     * Important: should be called before async part inside {@link App.init},
+     * because in MV3 handlers should be registered on the top level in sync
+     * functions.
      */
     private static syncInit(): void {
         UiService.syncInit();
@@ -154,13 +158,13 @@ export class App {
         await rulesLimitsService.init();
 
         /**
-         * Injects content scripts into already open tabs.
+         * Injects content scripts into already opened tabs.
          *
          * Does injection when all requirements are met:
-         * - Statistics collection is disabled.
-         * - Content scripts have not been injected in the current session.
-         *
-         * This prevents conflicts from multiple `cssHitCounters` and avoids unnecessary injections.
+         * - Statistics collection is disabled - prevents conflicts from multiple
+         * `cssHitCounters`;
+         * - Content scripts have not been injected in the current session -
+         * avoids unnecessary injections.
          */
         if (
             SettingsApi.getSetting(SettingOption.DisableCollectHits)
@@ -205,7 +209,8 @@ export class App {
         await FiltersService.init();
 
         // Adds listeners specified for custom filters
-        CustomFiltersService.init();
+        // TODO: Uncomment this class when custom filters will be supported for MV3.
+        // CustomFiltersService.init();
 
         // Adds listeners for allowlist events
         AllowlistService.init();

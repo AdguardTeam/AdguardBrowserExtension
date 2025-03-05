@@ -20,6 +20,6 @@
  * Rules samples type.
  */
 export type RuleSample = {
-    rule: string,
-    reason: string,
+    rule: string;
+    reason: string;
 };

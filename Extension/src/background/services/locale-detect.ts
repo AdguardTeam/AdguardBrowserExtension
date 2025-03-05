@@ -16,11 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser, { Tabs } from 'webextension-polyfill';
+import browser, { type Tabs } from 'webextension-polyfill';
 
 import { getDomain, isHttpRequest } from '../tswebextension';
 import { UserAgent } from '../../common/user-agent';
-import { RegularFilterMetadata, SettingOption } from '../schema';
+import { type RegularFilterMetadata, SettingOption } from '../schema';
 import {
     groupStateStorage,
     metadataStorage,
@@ -33,8 +33,8 @@ import { CommonFilterApi } from '../api/filters/common';
 import { AntibannerGroupsId } from '../../common/constants';
 
 export type BrowsingLanguage = {
-    language: string,
-    time: number,
+    language: string;
+    time: number;
 };
 
 /**
@@ -282,6 +282,7 @@ export class LocaleDetect {
      * to auto-enable filter for this language.
      *
      * @param language Page language.
+     *
      * @private
      */
     private async detectLanguage(language: string): Promise<void> {
@@ -322,6 +323,7 @@ export class LocaleDetect {
      * Called when LocaleDetector has detected language-specific filters we can enable.
      *
      * @param filterIds List of detected language-specific filter identifiers.
+     *
      * @private
      */
     private static async onFilterDetectedByLocale(filterIds: number[]): Promise<void> {

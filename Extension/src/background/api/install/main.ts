@@ -25,7 +25,7 @@ import {
 } from '../../../common/constants';
 import { defaultSettings } from '../../../common/settings';
 import { browserStorage } from '../../storages';
-import { RunInfo } from '../../utils';
+import { type RunInfo } from '../../utils';
 
 /**
  * The Install API should set the base version of the schema and application,
@@ -47,7 +47,6 @@ export class InstallApi {
      *
      * @param runInfo Info about extension start up.
      * @param runInfo.currentSchemaVersion Current data schema version.
-     *
      */
     public static async install({ currentSchemaVersion }: RunInfo): Promise<void> {
         const clientId = InstallApi.genClientId();

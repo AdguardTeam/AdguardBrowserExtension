@@ -19,7 +19,7 @@
 import React from 'react';
 
 import { Popover } from '../../../../common/components/ui/Popover';
-import { TagMetadata } from '../../../../../background/schema';
+import { type TagMetadata } from '../../../../../background/schema';
 
 import { FilterTag } from './FilterTag';
 

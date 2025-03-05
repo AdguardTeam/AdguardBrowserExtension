@@ -35,6 +35,10 @@ export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: bo
 
     return merge(commonConfig, {
         entry: {
+            // Don't needed to specify chunks for MV3, because Service workers
+            // in MV3 must be a single file as they run in a short-lived
+            // execution environment (they are terminated when idle) and cannot
+            // use eval, importScripts, or external scripts dynamically
             [BACKGROUND_OUTPUT]: {
                 import: BACKGROUND_PATH,
                 runtime: false,

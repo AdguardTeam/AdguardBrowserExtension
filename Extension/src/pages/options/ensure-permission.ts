@@ -24,6 +24,7 @@ import { getErrorMessage } from '../../common/error';
  * Handles privacy permission request.
  *
  * @param enable Flag is permission should be enabled.
+ *
  * @returns True if operation was successful, false if permission was not granted, or an error
  * occurred.
  */
