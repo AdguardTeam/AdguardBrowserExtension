@@ -90,6 +90,8 @@ export const firefoxManifest = {
         'contextMenus',
         'cookies',
         'privacy',
+        'clipboardRead',
+        'clipboardWrite',
     ],
 };
 
