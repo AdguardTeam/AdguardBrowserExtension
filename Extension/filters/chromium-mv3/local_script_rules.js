@@ -4043,25 +4043,6 @@ export const localScriptRules = {
             }
         }
     },
-    "window.adBlockDetected = false;": {
-        uniqueId: "654b042c99f20d931a52ae0161bc01cd",
-        func: () => {
-            try {
-                const e = "done";
-                if (Window.prototype.toString["654b042c99f20d931a52ae0161bc01cd"] !== e) {
-                    window.adBlockDetected = !1;
-                    Object.defineProperty(Window.prototype.toString, "654b042c99f20d931a52ae0161bc01cd", {
-                        value: e,
-                        enumerable: !1,
-                        writable: !1,
-                        configurable: !1
-                    });
-                }
-            } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "654b042c99f20d931a52ae0161bc01cd" due to: ' + e);
-            }
-        }
-    },
     "window.adsEnabled = true;": {
         uniqueId: "62d14321dc3e190666318c2f0ddfdcac",
         func: () => {

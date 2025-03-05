@@ -1,13 +1,13 @@
-! Checksum: lC49QbBi1+vyuHmX3+5Ppg
+! Checksum: Vxt6e2YTtBJ0+WY9dvEv9w
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.68
-! TimeUpdated: 2025-03-04T05:01:31+00:00
+! Version: 2.0.20.73
+! TimeUpdated: 2025-03-05T01:01:37+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0304.3
+! OriginalVersion: 2025.0305.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -58,7 +58,6 @@
 ||iadsdk.apple.com^
 ||skt-asum.com^
 ||iad-*.braze.com^
-||external-ad.bunjang.co.kr^
 ||epnt.ebay.com^
 ||img.side.mythiell.com^
 ||static.tpmn.co.kr^
@@ -529,6 +528,7 @@
 /data/banner.json?$domain=~nintendo.ai|~nintendo.at|~nintendo.be|~nintendo.bg|~nintendo.biz|~nintendo.by|~nintendo.ca|~nintendo.cc|~nintendo.ch|~nintendo.cl|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.ke|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.tr|~nintendo.com.ua|~nintendo.de|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fr|~nintendo.gr|~nintendo.hu|~nintendo.ie|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.lt|~nintendo.md|~nintendo.me|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.sh|~nintendo.shop|~nintendo.sk|~nintendo.tw|~nintendo.uz|~nintendo.vn|~nintendo.website
 /ad-manager.min.js
 !
+||dcinside.com/ads/reload/
 ||dogdrip.net/modules/dnad/
 ||edge-live.joongna.com/api/web-ads/
 ||cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/
@@ -3193,7 +3193,7 @@ newtoki466.com,newtoki467.com,newtoki468.com,newtoki489.com,newtoki490.com,newto
 ! DOMAIN-REFRESHER: END
 2cpu.co.kr#$#header .row[style] { margin-bottom: 35px !important; }
 sign.dcinside.com#$#.login_inputbox { width: 100% !important; }
-m.search.naver.com#?#li:matches-attr("/-doc-id$/"="*_nad-*")
+search.naver.com#?#li:matches-attr("/-[a-z]+-[a-z]+$/"="*nad-*")
 namu.wiki#?##app div[class*=" "] > div[class*=" "]:is(:has(div[id][class]:empty), :has(iframe[id^="google_ads_iframe_"])):matches-css(margin-bottom: /[0-9]{2,}/)
 news.tvchosun.com#?#.rnb > .rnb_cont:matches-css(height: 0px):matches-css(padding-top: 30px)
 humorpick.com#?#.item-list > .on:has(.ad-wrap-text)
