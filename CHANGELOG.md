@@ -11,7 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Improved accessibility for visually impaired users [#3035], [#2315].
+
 ### Removed
+
+[#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
+[#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
 
 ## [Unreleased]
 
