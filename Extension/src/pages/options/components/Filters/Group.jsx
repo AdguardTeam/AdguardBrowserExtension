@@ -98,6 +98,7 @@ const DisabledCustomFiltersGroup = ({
                     <Icon
                         id={`#setting-${groupId}`}
                         classname="icon--24 setting__icon"
+                        aria-hidden="true"
                     />
                     <div className="setting__info">
                         <div className="setting__title group__title">
@@ -114,6 +115,7 @@ const DisabledCustomFiltersGroup = ({
                 <Icon
                     id="#link"
                     classname="icon icon--24 icon--green-default link"
+                    aria-hidden="true"
                 />
             </a>
         </div>
