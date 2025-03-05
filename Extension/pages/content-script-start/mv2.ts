@@ -18,8 +18,12 @@
 
 import '@adguard/tswebextension/content-script';
 
-import { ContentUtils } from '../../src/content-script/content-utils';
+import { ContentUtils } from '../../src/content-script/content-utils/main';
 import { SubscribeToScriptlets } from '../../src/content-script/subscribe-to-scriptlets';
 
+/**
+ * Following methods are async BUT called without await **intentionally*
+ * because if they are called as sync, they can slow down frames loading in Firefox.
+ */
 ContentUtils.init();
 SubscribeToScriptlets.init();

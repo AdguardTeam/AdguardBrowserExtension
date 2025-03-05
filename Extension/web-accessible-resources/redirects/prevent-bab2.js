@@ -16,7 +16,7 @@
             return;
         }
         var domainsStr = [ "adclixx\\.net", "adnetasia\\.com", "adtrackers\\.net", "bannertrack\\.net" ].join("|");
-        var matchStr = "^https?://[\\w-]+\\.(".concat(domainsStr, ")/.");
+        var matchStr = `^https?://[\\w-]+\\.(${domainsStr})/.`;
         var domainsRegex = new RegExp(matchStr);
         if (domainsRegex.test(url) === false) {
             return;
@@ -31,17 +31,17 @@
         }
         try {
             var trace = console.trace.bind(console);
-            var label = "".concat(ADGUARD_PREFIX, " ");
+            var label = `${ADGUARD_PREFIX} `;
             if (source.engine === "corelibs") {
                 label += source.ruleText;
             } else {
                 if (source.domainName) {
-                    label += "".concat(source.domainName);
+                    label += `${source.domainName}`;
                 }
                 if (source.args) {
-                    label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                 } else {
-                    label += "#%#//scriptlet('".concat(source.name, "')");
+                    label += `#%#//scriptlet('${source.name}')`;
                 }
             }
             if (trace) {

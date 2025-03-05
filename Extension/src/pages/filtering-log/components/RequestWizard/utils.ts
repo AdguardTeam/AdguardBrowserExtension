@@ -20,7 +20,7 @@ import { ContentType as RequestType } from 'tswebextension';
 import { AntiBannerFiltersId } from '../../../../common/constants';
 import { strings } from '../../../../common/strings';
 import { translator } from '../../../../common/translators/translator';
-import type { FilteringLogEvent, FilterMetadata } from '../../../../background/api';
+import { type FilteringLogEvent, type FilterMetadata } from '../../../../background/api';
 
 /**
  * Url utils
@@ -214,6 +214,7 @@ export const getCookieData = (event: FilteringLogEvent): string | null => {
  *
  * @param selectedEvent filtering event
  * @param {RegularFilterMetadata} filtersMetadata filters metadata
+ *
  * @returns {string|null} filter name or null, if filter is not found or there are multiple rules
  */
 export const getRuleFilterName = (selectedEvent: FilteringLogEvent, filtersMetadata: FilterMetadata[] | null) => {

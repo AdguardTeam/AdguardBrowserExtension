@@ -22,7 +22,7 @@ import {
     TooManyRegexpRulesError,
     TooManyUnsafeRulesError,
     TooManyRulesError,
-    RULE_SET_NAME_PREFIX,
+    RULESET_NAME_PREFIX,
     type ConfigurationResult,
 } from '@adguard/tswebextension/mv3';
 
@@ -43,19 +43,17 @@ import { filterStateStorage, settingsStorage } from '../../storages';
 import { rulesLimitsStorage } from '../../storages/rules-limits';
 import { rulesLimitsStorageDataValidator } from '../../schema/rules-limits';
 import { logger } from '../../../common/logger';
-import { canEnableStaticFilterSchema, canEnableStaticGroupSchema } from '../../../common/messages/schema';
 // Note: due to circular dependencies, import message-handler.ts after all
 // other imports.
 import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
-import { SettingOption } from '../../schema/settings/main';
-import { AntiBannerFiltersId } from '../../../common/constants';
+import { SettingOption } from '../../schema/settings/enum';
 
-import type {
-    StaticLimitsCheckResult,
-    IRulesLimits,
-    DynamicLimitsCheckResult,
-    Mv3LimitsCheckResult,
+import {
+    type StaticLimitsCheckResult,
+    type IRulesLimits,
+    type DynamicLimitsCheckResult,
+    type Mv3LimitsCheckResult,
 } from './interface';
 
 const {
@@ -151,11 +149,12 @@ export class RulesLimitsService {
      * Returns a map of ruleset counters.
      *
      * @param result Configuration result.
+     *
      * @returns A map of ruleset counters.
      */
     private static getRuleSetsCountersMap = (result: ConfigurationResult): RuleSetCountersMap => {
         const counters = result.staticFilters.reduce((acc: { [key: number]: RuleSetCounter }, ruleset) => {
-            const filterId = Number(ruleset.getId().slice(RULE_SET_NAME_PREFIX.length));
+            const filterId = Number(ruleset.getId().slice(RULESET_NAME_PREFIX.length));
 
             acc[filterId] = {
                 filterId,
@@ -166,15 +165,16 @@ export class RulesLimitsService {
             return acc;
         }, {});
 
-        // It is like "syntax sugar" for the quick fixes filter to emulate it
-        // like an "empty" ruleset, because it looks like usual filter
-        // in the UI, but it actually applied dynamically, so enabling it will
-        // never change quota of the used static rules.
-        counters[AntiBannerFiltersId.QuickFixesFilterId] = {
-            filterId: AntiBannerFiltersId.QuickFixesFilterId,
-            rulesCount: 0,
-            regexpRulesCount: 0,
-        };
+        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
+        // // It is like "syntax sugar" for the quick fixes filter to emulate it
+        // // like an "empty" ruleset, because it looks like usual filter
+        // // in the UI, but it actually applied dynamically, so enabling it will
+        // // never change quota of the used static rules.
+        // counters[AntiBannerFiltersId.QuickFixesFilterId] = {
+        //     filterId: AntiBannerFiltersId.QuickFixesFilterId,
+        //     rulesCount: 0,
+        //     regexpRulesCount: 0,
+        // };
 
         return counters;
     };
@@ -184,6 +184,7 @@ export class RulesLimitsService {
      *
      * @param filters List of filters with metadata.
      * @param ruleSetsCounters A map of ruleset counters.
+     *
      * @returns An array of ruleset counters by filters ids.
      */
     private static getRuleSetCounters(
@@ -201,7 +202,9 @@ export class RulesLimitsService {
      *
      * @param result Configuration result.
      * @param filterId Filter id.
+     *
      * @returns The static ruleset counter.
+     *
      * @throws Error if the ruleset counter is not found.
      */
     private static getStaticRuleSetCounter(result: ConfigurationResult, filterId: number): RuleSetCounter {
@@ -218,6 +221,7 @@ export class RulesLimitsService {
      *
      * @param result Configuration result.
      * @param filters Filters with metadata.
+     *
      * @returns The number of static rules enabled.
      */
     private static getStaticRulesEnabledCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
@@ -235,6 +239,7 @@ export class RulesLimitsService {
      *
      * @param result Configuration result.
      * @param filters Filters with metadata.
+     *
      * @returns Count of the regexp rules.
      */
     private static getStaticRulesRegexpsCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
@@ -251,6 +256,7 @@ export class RulesLimitsService {
      * Finds first found limitation error about unsafe rules limit.
      *
      * @param result Configuration result.
+     *
      * @returns Limitation error.
      */
     private static getUnsafeRulesLimitExceedErr = (
@@ -264,6 +270,7 @@ export class RulesLimitsService {
      * Finds first found limitation error.
      *
      * @param result Configuration result.
+     *
      * @returns Limitation error.
      */
     private static getRegexpRulesLimitExceedErr = (
@@ -277,6 +284,7 @@ export class RulesLimitsService {
      * Finds first too many rules error.
      *
      * @param result Configuration result.
+     *
      * @returns Too many rules error.
      */
     private static getRulesLimitExceedErr = (
@@ -290,6 +298,7 @@ export class RulesLimitsService {
      * How many dynamic rules are enabled.
      *
      * @param result Configuration result.
+     *
      * @returns Count of enabled dynamic rules.
      */
     private static getDynamicRulesEnabledCount(result: ConfigurationResult): number {
@@ -302,6 +311,7 @@ export class RulesLimitsService {
      * How many dynamic rules are excluded and cannot be enabled.
      *
      * @param result Configuration result.
+     *
      * @returns Count of excluded rules.
      */
     private static getDynamicRulesExcludedCount(result: ConfigurationResult): number {
@@ -313,6 +323,7 @@ export class RulesLimitsService {
      * Returns number of maximum possible dynamic rules.
      *
      * @param result Configuration result.
+     *
      * @returns Count of rules.
      */
     private static getDynamicRulesMaximumCount(result: ConfigurationResult): number {
@@ -324,6 +335,7 @@ export class RulesLimitsService {
      * Returns how much dynamic regex rules are enabled.
      *
      * @param result Configuration result.
+     *
      * @returns Number rules.
      */
     private static getDynamicRegexpRulesEnabledCount(result: ConfigurationResult): number {
@@ -339,6 +351,7 @@ export class RulesLimitsService {
      * Returns maximum count of the dynamic regexp rules.
      *
      * @param result Configuration result.
+     *
      * @returns Rules count.
      */
     private static getDynamicRegexpRulesMaximumCount(result: ConfigurationResult): number {
@@ -350,6 +363,7 @@ export class RulesLimitsService {
      * How many dynamic **unsafe** rules are enabled.
      *
      * @param result Configuration result.
+     *
      * @returns Count of enabled dynamic unsafe rules.
      */
     private static getDynamicUnsafeRulesEnabledCount(result: ConfigurationResult): number {
@@ -365,6 +379,7 @@ export class RulesLimitsService {
      * Returns number of maximum possible dynamic **unsafe** rules.
      *
      * @param result Configuration result.
+     *
      * @returns Count of rules.
      */
     private static getDynamicUnsafeRulesMaximumCount(result: ConfigurationResult): number {
@@ -411,7 +426,7 @@ export class RulesLimitsService {
     private static async getActuallyEnabledFilters(): Promise<number[]> {
         const enabledRuleSetsIds = await chrome.declarativeNetRequest.getEnabledRulesets();
 
-        return enabledRuleSetsIds.map((id) => Number.parseInt(id.slice(RULE_SET_NAME_PREFIX.length), 10));
+        return enabledRuleSetsIds.map((id) => Number.parseInt(id.slice(RULESET_NAME_PREFIX.length), 10));
     }
 
     /**
@@ -782,8 +797,6 @@ export class RulesLimitsService {
      * @returns Promise that resolves with the result of the check — {@link StaticLimitsCheckResult}.
      */
     private async canEnableStaticFilter(message: CanEnableStaticFilterMv3Message): Promise<StaticLimitsCheckResult> {
-        canEnableStaticFilterSchema.parse(message);
-
         const { filterId } = message.data;
 
         if (CustomFilterApi.isCustomFilter(filterId)) {
@@ -885,11 +898,10 @@ export class RulesLimitsService {
      * Checks if the static group can be enabled.
      *
      * @param message Message with group id.
+     *
      * @returns Promise that resolves with the result of the check.
      */
     private async canEnableStaticGroup(message: CanEnableStaticGroupMv3Message): Promise<StaticLimitsCheckResult> {
-        canEnableStaticGroupSchema.parse(message);
-
         const { groupId } = message.data;
 
         const group = Categories.getGroupState(groupId);

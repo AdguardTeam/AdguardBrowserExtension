@@ -20,37 +20,36 @@
 // because checkUserRulesRegexpErrors use only in engine-mv3
 import { type ConfigurationResult, UnsupportedRegexpError } from '@adguard/tswebextension/mv3';
 
-import type { Engine } from 'engine';
+import { type Engine } from 'engine';
 
 import {
-    AddUserRuleMessage,
+    type AddUserRuleMessage,
     MessageType,
-    RemoveUserRuleMessage,
-    ResetUserRulesForPageMessage,
-    SaveUserRulesMessage,
-    SetEditorStorageContentMessage,
+    type RemoveUserRuleMessage,
+    type ResetUserRulesForPageMessage,
+    type SaveUserRulesMessage,
+    type SetEditorStorageContentMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
 import { SettingOption } from '../schema';
 import {
     SettingsApi,
-    SettingsData,
+    type SettingsData,
     UserRulesApi,
     TabsApi,
 } from '../api';
 import { settingsEvents } from '../events';
 import { Prefs } from '../prefs';
 import { logger } from '../../common/logger';
-import { NEWLINE_CHAR_UNIX } from '../../common/constants';
 
 export type GetUserRulesResponse = {
-    content: string,
-    appVersion: string,
+    content: string;
+    appVersion: string;
 };
 
 export type GetUserRulesEditorDataResponse = {
-    userRules: string,
-    settings: SettingsData,
+    userRules: string;
+    settings: SettingsData;
 };
 
 /**
@@ -90,11 +89,10 @@ export class UserRulesService {
      * @returns All user rules concatenated via '\n' divider.
      */
     private static async getUserRules(): Promise<GetUserRulesResponse> {
-        const userRules = await UserRulesApi.getOriginalUserRules();
-
-        const content = userRules.join('\n');
-
-        return { content, appVersion: Prefs.version };
+        return {
+            content: await UserRulesApi.getOriginalUserRules(),
+            appVersion: Prefs.version,
+        };
     }
 
     /**
@@ -103,12 +101,8 @@ export class UserRulesService {
      * @returns User rules editor content and settings.
      */
     private static async getUserRulesEditorData(): Promise<GetUserRulesEditorDataResponse> {
-        const userRules = await UserRulesApi.getOriginalUserRules();
-
-        const content = userRules.join('\n');
-
         return {
-            userRules: content,
+            userRules: await UserRulesApi.getOriginalUserRules(),
             settings: SettingsApi.getData(),
         };
     }
@@ -135,7 +129,7 @@ export class UserRulesService {
     private static async handleUserRulesSave(message: SaveUserRulesMessage): Promise<void> {
         const { value } = message.data;
 
-        await UserRulesApi.setUserRules(value.split(NEWLINE_CHAR_UNIX));
+        await UserRulesApi.setUserRules(value);
         // update the engine only if the module is enabled
         if (UserRulesApi.isEnabled()) {
             await UserRulesService.engine.update();

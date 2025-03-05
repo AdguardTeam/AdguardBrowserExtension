@@ -17,7 +17,7 @@
  */
 import { HIT_STATISTIC_KEY } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
-import { HitStatsStorageData } from '../schema';
+import { type HitStatsStorageData } from '../schema';
 
 import { browserStorage } from './shared-instances';
 import { filterVersionStorage } from './filter-version';
@@ -61,6 +61,7 @@ export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, Hit
      *
      * @param filterId Filter id.
      * @param ruleIndex Rule index.
+     *
      * @throws Error, if storage is not initialized.
      */
     addRuleHitToCache(

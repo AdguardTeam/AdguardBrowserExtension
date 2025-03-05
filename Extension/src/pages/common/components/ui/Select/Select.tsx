@@ -50,43 +50,43 @@ export type SelectProps = {
     /**
      * Select id.
      */
-    id: string,
+    id: string;
 
     /**
      * Select change handler.
      */
-    handler: (value: string) => void,
+    handler: (value: string) => void;
 
     /**
      * List of select options.
      */
-    options: SelectOption[],
+    options: SelectOption[];
 
     /**
      * Current select value.
      */
-    value: string,
+    value: string;
 
     /**
      * Select visibility.
      */
-    hidden: boolean,
+    hidden: boolean;
 
     /**
      * Set select visibility.
      */
-    setHidden: (value: boolean) => void,
+    setHidden: (value: boolean) => void;
 
     /**
      * Flag whether the select is used in popup.
      */
-    popupModification?: boolean,
+    popupModification?: boolean;
 
     /**
      * Label for the select (used only for screen readers).
      * Use either `label` or `labelId`, not both.
      */
-    label?: string,
+    label?: string;
 
     /**
      * Label ID for the select (used only for screen readers).
@@ -102,7 +102,7 @@ export type SelectWrapperProps = Omit<SelectProps, 'hidden' | 'setHidden'> & {
     /**
      * Use react context or not
      */
-    withContext?: boolean
+    withContext?: boolean;
 };
 
 export const Select = ({
@@ -244,6 +244,7 @@ export const Select = ({
      * And also setups a timeout to clear the search string after a certain time.
      *
      * @param key New character to append to the search string.
+     *
      * @returns The updated search string.
      */
     const getSearchString = (key: string) => {

@@ -15,16 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Runtime } from 'webextension-polyfill';
+import browser, { type Runtime } from 'webextension-polyfill';
 
 import { type EngineMessage } from 'engine';
 
 import {
-    MessageType,
-    Message,
-    ExtractedMessage,
-    ValidMessageTypes,
-    ExtractMessageResponse,
+    type MessageType,
+    type Message,
+    type ExtractedMessage,
+    type ValidMessageTypes,
+    type ExtractMessageResponse,
     APP_MESSAGE_HANDLER_NAME,
 } from './constants';
 
@@ -35,6 +35,7 @@ export type MessageListener<T extends ValidMessageTypes> = (
 
 /**
  * Type guard for messages that have a 'type' field with possible {@link MessageType}.
+ *
  * @note Added to no bring here huge zod library.
  *
  * @param message Unknown message.
@@ -47,6 +48,7 @@ export const messageHasTypeField = (message: unknown): message is { type: Messag
 
 /**
  * Type guard for messages that have a 'type' field and 'data' field and looks like {@link Message}.
+ *
  * @note Added to no bring here huge zod library.
  *
  * @param message Unknown message.
@@ -80,6 +82,7 @@ export abstract class MessageHandler {
      *
      * @param type - {@link ValidMessageTypes}
      * @param listener - {@link MessageListener}
+     *
      * @throws error, if message listener already added
      */
     public addListener<T extends ValidMessageTypes>(

@@ -1,5 +1,5 @@
 import browser from 'sinon-chrome';
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import {
     vi,
     describe,
@@ -15,7 +15,11 @@ import {
     GPC_SCRIPT_OUTPUT,
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../constants';
-import { SettingsApi, SettingsData } from '../../../../Extension/src/background/api';
+import {
+    Network,
+    SettingsApi,
+    type SettingsData,
+} from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
 import {
     ExtensionSpecificSettingsOption,
@@ -34,9 +38,9 @@ import {
     getExportedSettingsProtocolV2Fixture,
     getImportedSettingsFromV1Fixture,
     mockLocalStorage,
-    filterNameFixture,
     getSettingsV1,
     getExportedSettingsV2,
+    filterNameFixture,
 } from '../../../helpers';
 
 vi.mock('../../../../Extension/src/background/engine');
@@ -45,6 +49,15 @@ vi.mock('../../../../Extension/src/background/storages/notification');
 
 describe('Settings Api', () => {
     let storage: Storage.StorageArea;
+
+    vi.spyOn(Network.prototype, 'downloadFilterRules').mockImplementation(async () => {
+        const content = 'Title: foo\n||example.com^$third-party';
+
+        return {
+            filter: content.split('\n'),
+            rawFilter: content,
+        };
+    });
 
     afterEach(() => {
         storage.clear();
@@ -185,7 +198,10 @@ describe('Settings Api', () => {
 
             const importedSettingsString = await SettingsApi.export();
             // Fill up optional fields
-            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+            // TODO: Remove this condition when we will return custom filters to MV3(AG-39385).
+            if (!__IS_MV3__) {
+                userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+            }
             expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
         }, EXTENDED_TIMEOUT_MS);
 

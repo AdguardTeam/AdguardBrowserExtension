@@ -18,6 +18,8 @@
 
 import UAParser from 'ua-parser-js';
 
+import { MIN_SUPPORTED_VERSION } from '../../../constants';
+
 /**
  * Helper class for user agent data.
  *
@@ -165,6 +167,7 @@ export class UserAgent {
      * Check if the current browser is as given.
      *
      * @param browserName Browser Name.
+     *
      * @returns true, if current browser has specified name.
      */
     static isTargetBrowser(browserName: string): boolean {
@@ -175,6 +178,7 @@ export class UserAgent {
      * Check if current platform is as given.
      *
      * @param platformName Platform name.
+     *
      * @returns true, if current browser has specified name.
      */
     static isTargetPlatform(platformName: string): boolean {
@@ -185,6 +189,7 @@ export class UserAgent {
      * Check if current engine is as given.
      *
      * @param engineName Engine name.
+     *
      * @returns true, if current engine has specified name.
      */
     static isTargetEngine(engineName: string): boolean {
@@ -232,11 +237,11 @@ export class UserAgent {
 
     static isFirefoxMobile = UserAgent.isFirefox && UserAgent.isMobileDevice;
 
-    static isSupportedBrowser = (UserAgent.isChrome && Number(UserAgent.version) >= 79)
-        || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= 79)
-        || (UserAgent.isFirefox && Number(UserAgent.version) >= 78)
-        || (UserAgent.isFirefoxMobile && Number(UserAgent.version) >= 113)
-        || (UserAgent.isOpera && Number(UserAgent.version) >= 66);
+    static isSupportedBrowser = (UserAgent.isChrome && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.CHROMIUM_MV2)
+        || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.EDGE_CHROMIUM)
+        || (UserAgent.isFirefox && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.FIREFOX)
+        || (UserAgent.isFirefoxMobile && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.FIREFOX_MOBILE)
+        || (UserAgent.isOpera && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.OPERA);
 
     static browserName = UserAgent.getBrowserName();
 }

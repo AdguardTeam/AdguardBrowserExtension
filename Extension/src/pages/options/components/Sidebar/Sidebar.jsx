@@ -43,7 +43,9 @@ const Sidebar = observer(() => {
     const { isSidebarOpen, openSidebar, closeSidebar } = uiStore;
 
     const tabletAndAboveQuery = '(min-width: 640px)';
-    const [isTabletAndAboveScreen, setIsTabletAndAboveScreen] = useState(window.matchMedia(tabletAndAboveQuery).matches);
+    const [isTabletAndAboveScreen, setIsTabletAndAboveScreen] = useState(
+        window.matchMedia(tabletAndAboveQuery).matches,
+    );
 
     useLayoutEffect(() => {
         const matchMedia = window.matchMedia(tabletAndAboveQuery);
@@ -114,6 +116,7 @@ const Sidebar = observer(() => {
                     />
                 </button>
             </div>
+            {/* eslint-disable-next-line max-len */}
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
             <div className={overlayClassName} onClick={closeSidebar} />
             <div

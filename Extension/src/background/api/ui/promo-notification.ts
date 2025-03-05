@@ -23,7 +23,7 @@ import {
     notificationStorage,
     browserStorage,
 } from '../../storages';
-import { NotificationTextRecord } from '../../schema';
+import { type NotificationTextRecord } from '../../schema';
 import { LAST_NOTIFICATION_TIME_KEY, VIEWED_NOTIFICATIONS_KEY } from '../../../common/constants';
 import { I18n } from '../../utils';
 
@@ -194,6 +194,7 @@ export class PromoNotificationApi {
      * Scans notification locales and returns the one matching navigator.language.
      *
      * @param notification Promo notification object.
+     *
      * @returns {NotificationTextRecord | undefined} Matching notification text settings or undefined.
      */
     private static getNotificationText(notification: PromoNotification): NotificationTextRecord | undefined {

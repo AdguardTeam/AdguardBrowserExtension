@@ -33,8 +33,10 @@ const uiLanguage = browser.i18n.getUILanguage();
  * Retrieves the localized message for the given key.
  *
  * @param key - The key corresponding to the message in the localization files
+ *
  * @returns The localized message, or an empty string if the message is the same as the base locale (indicating no
  * translation)
+ *
  * @throws {Error} If there is no such key in the messages
  */
 const getMessage = (key: string) => {

@@ -23,7 +23,9 @@ interface FetchPolyfillResponse {
 
 /**
  * Helper function to parse raw header strings into a key-value map.
+ *
  * @param rawHeaders - The string of raw headers from XHR.
+ *
  * @returns The parsed headers as an object.
  */
 function parseResponseHeaders(rawHeaders: string): Record<string, string> {

@@ -17,14 +17,16 @@
  */
 import browser from 'webextension-polyfill';
 
+import { FiltersApi } from '@adguard/tswebextension/mv3';
 import {
     FiltersDownloader,
-    DefinedExpressions,
+    type DefinedExpressions,
     type DownloadResult,
 } from '@adguard/filters-downloader/browser';
+import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
-import { AntiBannerFiltersId } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -35,8 +37,8 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
-import { CustomFilterApi } from '../filters/custom';
-import { type FilterUpdateOptions } from '../filters/update';
+import { type FilterUpdateOptions } from '../filters';
+import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 
 import { NetworkSettings } from './settings';
 
@@ -158,20 +160,21 @@ export class Network {
         if (__IS_MV3__) {
             url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterId}.txt`);
 
-            // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
-            // and custom filters
-            const isRemote = forceRemote
-                && (filterId === AntiBannerFiltersId.QuickFixesFilterId
-                    || CustomFilterApi.isCustomFilter(filterId));
+            // TODO: Uncomment this block when Quick Fixes filter will return in another way
+            // // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
+            // // and custom filters
+            // const isRemote = forceRemote
+            //     && (filterId === AntiBannerFiltersId.QuickFixesFilterId
+            //         || CustomFilterApi.isCustomFilter(filterId));
 
-            if (isRemote) {
-                if (useOptimizedFilters) {
-                    logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
-                }
-                url = this.getUrlForDownloadFilterRules(filterId, false);
-            }
+            // if (isRemote) {
+            //     if (useOptimizedFilters) {
+            //         logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
+            //     }
+            //     url = this.getUrlForDownloadFilterRules(filterId, false);
+            // }
 
-            isLocalFilter = !isRemote;
+            isLocalFilter = true;
         } else if (forceRemote || this.settings.localFilterIds.indexOf(filterId) < 0) {
             url = this.getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
         } else {
@@ -184,6 +187,17 @@ export class Network {
 
         // local filters do not support patches, that is why we always download them fully
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
+            // TODO: Revert when Quick Fixes filter will return in another way
+            if (__IS_MV3__ /* && filterId !== AntiBannerFiltersId.QuickFixesFilterId */) {
+                // TODO: Check if its needed
+                const rawFilterList = await FiltersApi.getRawFilterList(filterId, 'filters/declarative');
+
+                return {
+                    filter: rawFilterList.split(NEWLINE_CHAR_REGEX),
+                    rawFilter: rawFilterList,
+                };
+            }
+
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
                 {
@@ -271,14 +285,29 @@ export class Network {
     }
 
     /**
-     * Loads filter groups metadata.
-     *
-     * @throws Error if metadata is invalid.
+     * Loads filters metadata from local file.
+     * For MV3, it loads metadata from the metadata ruleset file.
      *
      * @returns Object of {@link Metadata}.
+     *
+     * @throws Error if metadata is invalid.
      */
     public async getLocalFiltersMetadata(): Promise<Metadata> {
-        const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_METADATA_FILE_NAME}`);
+        let url: string;
+
+        if (__IS_MV3__) {
+            // For MV3, the filters metadata is stored in the metadata ruleset.
+            // The reason for this is that it allows us to perform extension updates
+            // where only the JSON files of the rulesets are changed.
+            const metadataRuleSetPath = getRuleSetPath(
+                METADATA_RULESET_ID,
+                `${this.settings.localFiltersFolder}/declarative`,
+            );
+            url = browser.runtime.getURL(metadataRuleSetPath);
+        } else {
+            // Otherwise, metadata is stored in a separate JSON file.
+            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_METADATA_FILE_NAME}`);
+        }
 
         let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
@@ -294,7 +323,14 @@ export class Network {
         }
 
         try {
-            const metadata = JSON.parse(response.responseText);
+            let metadata: unknown;
+            if (__IS_MV3__) {
+                const metadataRuleSet = MetadataRuleSet.deserialize(response.responseText);
+                // Filters metadata is stored as an additional property in the metadata ruleset.
+                metadata = metadataRuleSet.getAdditionalProperty('metadata');
+            } else {
+                metadata = JSON.parse(response.responseText);
+            }
             return metadataValidator.parse(metadata);
         } catch (e: unknown) {
             // TODO: Return regular error
@@ -306,9 +342,9 @@ export class Network {
     /**
      * Loads filter groups metadata from local file.
      *
-     * @throws Error if metadata is invalid.
-     *
      * @returns Object of {@link I18nMetadata}.
+     *
+     * @throws Error if metadata is invalid.
      */
     public async getLocalFiltersI18nMetadata(): Promise<I18nMetadata> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_I18N_METADATA_FILE_NAME}`);
@@ -340,9 +376,9 @@ export class Network {
      * Loads script rules from local file.
      * This method should be called only in the Firefox AMO.
      *
-     * @throws Error if metadata is invalid.
-     *
      * @returns Array of string script rules.
+     *
+     * @throws Error if metadata is invalid.
      */
     public async getLocalScriptRules(): Promise<LocalScriptRules> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/local_script_rules.json`);
@@ -394,9 +430,9 @@ export class Network {
     /**
      * Downloads i18n metadata from backend and returns it.
      *
-     * @throws Error if metadata is invalid.
-     *
      * @returns Object of {@link I18nMetadata}.
+     *
+     * @throws Error if metadata is invalid.
      */
     public async downloadI18nMetadataFromBackend(): Promise<I18nMetadata> {
         const response = await Network.fetchJson(this.settings.filtersI18nMetadataUrl);
@@ -453,8 +489,19 @@ export class Network {
      * @param useOptimizedFilters If true, download optimized filters.
      *
      * @returns Url for filter downloading.
+     *
+     * @throws Error if MV3 is used and remote filter downloading is not supported.
      */
     public getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {
+        if (__IS_MV3__) {
+            throw new Error('MV3 does not support remote filter downloading');
+        }
+
+        if (!this.settings.filterRulesUrl
+            || !this.settings.optimizedFilterRulesUrl) {
+            throw new Error('Filter rules URL is not defined');
+        }
+
         const url = useOptimizedFilters ? this.settings.optimizedFilterRulesUrl : this.settings.filterRulesUrl;
         return url.replaceAll('{filter_id}', String(filterId));
     }

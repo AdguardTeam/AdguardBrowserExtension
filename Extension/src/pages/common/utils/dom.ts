@@ -21,6 +21,7 @@
  *
  * @param root Root element to search for descendant elements
  * @param selectors Descendants selector
+ *
  * @returns First non-disabled element or null if not found
  */
 export function getFirstNonDisabledElement(

@@ -176,7 +176,8 @@ const TabSelector = observer(() => {
                         role="option"
                         aria-selected={isActive}
                         className="tab-selector__result-item"
-                        onClick={() => { selectionHandlerSearch(tabId); }}
+                        onClick={() => selectionHandlerSearch(tabId)}
+                        tabIndex={0}
                     >
                         <span className={itemTextClassName}>
                             {title}

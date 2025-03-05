@@ -15,31 +15,31 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import type { SettingsConfig as SettingsConfigMV3 } from '@adguard/tswebextension/mv3';
-import type { SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextension';
+import { type SettingsConfig as SettingsConfigMV3 } from '@adguard/tswebextension/mv3';
+import { type SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 import { type AppearanceTheme, defaultSettings } from '../../../common/settings';
 import {
-    AllowlistConfig,
+    type AllowlistConfig,
     AllowlistOption,
     configValidator,
-    ExtensionSpecificSettingsConfig,
+    type ExtensionSpecificSettingsConfig,
     ExtensionSpecificSettingsOption,
-    FiltersConfig,
+    type FiltersConfig,
     FiltersOption,
-    GeneralSettingsConfig,
+    type GeneralSettingsConfig,
     GeneralSettingsOption,
     RootOption,
     PROTOCOL_VERSION,
-    StealthConfig,
+    type StealthConfig,
     StealthOption,
-    UserFilterConfig,
+    type UserFilterConfig,
     UserFilterOption,
     SettingOption,
-    Settings,
+    type Settings,
     settingsValidator,
-    Config,
+    type Config,
 } from '../../schema';
 import {
     filterStateStorage,
@@ -54,11 +54,14 @@ import {
     UserRulesApi,
     AllowlistApi,
     annoyancesConsent,
-    QuickFixesRulesApi,
 } from '../filters';
-import { ADGUARD_SETTINGS_KEY, AntiBannerFiltersId } from '../../../common/constants';
+import {
+    ADGUARD_SETTINGS_KEY,
+    AntiBannerFiltersId,
+    NotifierType,
+} from '../../../common/constants';
 import { settingsEvents } from '../../events';
-import { listeners } from '../../notifier';
+import { notifier } from '../../notifier';
 import { Unknown } from '../../../common/unknown';
 import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
@@ -74,9 +77,9 @@ import { network } from '../network';
 import { SettingsMigrations } from './migrations';
 
 export type SettingsData = {
-    names: typeof SettingOption,
-    defaultValues: Settings,
-    values: Settings,
+    names: typeof SettingOption;
+    defaultValues: Settings;
+    values: Settings;
 };
 
 /**
@@ -116,7 +119,7 @@ export class SettingsApi {
         await settingsEvents.publishEvent(key, value);
 
         // legacy event mediator for frontend
-        listeners.notifyListeners(listeners.SettingUpdated, {
+        notifier.notifyListeners(NotifierType.SettingUpdated, {
             propertyName: key,
             propertyValue: value,
         });
@@ -150,6 +153,7 @@ export class SettingsApi {
      * Collects {@link SettingsConfig} for tswebextension from current extension settings.
      *
      * @param isMV3 Is the extension in MV3 mode.
+     *
      * @returns Collected {@link SettingsConfig} for tswebextension.
      */
     public static getTsWebExtConfiguration<T extends boolean>(
@@ -193,7 +197,7 @@ export class SettingsApi {
      * the default filters or not.
      */
     public static async reset(enableUntouchedGroups: boolean): Promise<void> {
-        await UserRulesApi.setUserRules([]);
+        await UserRulesApi.setUserRules('');
 
         // Set settings store to defaults
         settingsStorage.setData({
@@ -394,7 +398,9 @@ export class SettingsApi {
      *   to try to load them from the local storage later.
      *
      * @param filterIds Array of built-in filters ids.
+     *
      * @returns Array of filters that were not loaded from the backend.
+     *
      * @private
      */
     private static async loadBuiltInFiltersRemote(filterIds: number[]): Promise<number[]> {
@@ -430,6 +436,7 @@ export class SettingsApi {
      * Loads built-in filters from the local storage, and enables them.
      *
      * @param filterIds Ids of filters to load and enable.
+     *
      * @private
      */
     private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
@@ -454,6 +461,7 @@ export class SettingsApi {
      * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
      *
      * @param builtInFilters Array of built-in filters ids.
+     *
      * @private
      */
     private static async loadBuiltInFiltersMv2(builtInFilters: number[]): Promise<void> {
@@ -489,6 +497,7 @@ export class SettingsApi {
      * Tries to load them from the storage only.
      *
      * @param builtInFilters Array of built-in filters ids.
+     *
      * @private
      */
     private static async loadBuiltInFiltersMv3(builtInFilters: number[]): Promise<void> {
@@ -523,14 +532,19 @@ export class SettingsApi {
         if (__IS_MV3__) {
             await SettingsApi.loadBuiltInFiltersMv3(builtInFilters);
 
+            // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
             // forcibly enable Quick Fixes filter on import for MV3
             // because it is a must-have filter
-            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             await SettingsApi.loadBuiltInFiltersMv2(builtInFilters);
         }
 
-        await CustomFilterApi.createFilters(customFilters);
+        // TODO: Uncomment this block when custom filters will be supported for MV3.
+        // Ignoring custom filters for MV3 since AG-39385.
+        if (!__IS_MV3__) {
+            await CustomFilterApi.createFilters(customFilters);
+        }
 
         groupStateStorage.enableGroups(enabledGroups);
 
@@ -567,7 +581,7 @@ export class SettingsApi {
      */
     private static async importUserFilter({
         [UserFilterOption.Enabled]: enabled,
-        [UserFilterOption.Rules]: rules,
+        [UserFilterOption.Rules]: rulesText,
     }: UserFilterConfig): Promise<void> {
         if (typeof enabled === 'boolean') {
             settingsStorage.set(SettingOption.UserFilterEnabled, enabled);
@@ -575,7 +589,7 @@ export class SettingsApi {
             settingsStorage.set(SettingOption.UserFilterEnabled, true);
         }
 
-        await UserRulesApi.setUserRules(rules.split('\n'));
+        await UserRulesApi.setUserRules(rulesText);
     }
 
     /**
@@ -586,7 +600,7 @@ export class SettingsApi {
     private static async exportUserFilter(): Promise<UserFilterConfig> {
         return {
             [UserFilterOption.Enabled]: settingsStorage.get(SettingOption.UserFilterEnabled),
-            [UserFilterOption.Rules]: (await UserRulesApi.getOriginalUserRules()).join('\n'),
+            [UserFilterOption.Rules]: (await UserRulesApi.getOriginalUserRules()),
             [UserFilterOption.DisabledRules]: '',
         };
     }

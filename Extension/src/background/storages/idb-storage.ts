@@ -1,25 +1,58 @@
 /**
- * @file IndexedDB storage implementation.
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as idb from 'idb';
+import { type IDBPDatabase, openDB } from 'idb';
 
-import { ExtendedStorageInterface } from '../../common/storage';
 import { logger } from '../../common/logger';
-import { getErrorMessage } from '../../common/error';
 
-const DEFAULT_STORE_NAME = 'defaultStore';
-const DEFAULT_IDB_NAME = 'adguardIDB';
+import { type ExtendedStorageInterface } from './storage-interface';
 
 /**
  * Provides a storage mechanism using IndexedDB. This class implements the
  * StorageInterface with asynchronous methods to interact with the database.
+ *
+ * @template Data The type of the value stored in the storage.
  */
-export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'async'> {
+export class IDBStorage<Data = unknown> implements ExtendedStorageInterface<string, Data, 'async'> {
+    /**
+     * The default name of the store within the database.
+     */
+    public static readonly DEFAULT_STORE_NAME = 'defaultStore';
+
+    /**
+     * The default version of the database.
+     */
+    public static readonly DEFAULT_IDB_VERSION = 1;
+
+    /**
+     * The default name of the database.
+     */
+    public static readonly DEFAULT_IDB_NAME = 'adguardIDB';
+
     /**
      * Holds the instance of the IndexedDB database.
      */
-    private db: idb.IDBPDatabase | null = null;
+    private db: IDBPDatabase | null = null;
+
+    /**
+     * Promise to get IndexedDB database.
+     */
+    private dbGetterPromise: Promise<IDBPDatabase> | null = null;
 
     /**
      * The name of the database.
@@ -39,11 +72,15 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
     /**
      * Constructs an instance of the IDBStorage class.
      *
-     * @param name The name of the database.
+     * @param [name=IDBStorage.DEFAULT_IDB_NAME] The name of the database.
      * @param [version=1] The version of the database.
-     * @param [store=DEFAULT_STORE_NAME] The name of the store.
+     * @param [store=IDBStorage.DEFAULT_STORE_NAME] The name of the store within the database.
      */
-    constructor(name = DEFAULT_IDB_NAME, version = 1, store = DEFAULT_STORE_NAME) {
+    constructor(
+        name = IDBStorage.DEFAULT_IDB_NAME,
+        version = IDBStorage.DEFAULT_IDB_VERSION,
+        store = IDBStorage.DEFAULT_STORE_NAME,
+    ) {
         this.name = name;
         this.version = version;
         this.store = store;
@@ -55,28 +92,41 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
      *
      * @returns The opened database instance.
      */
-    private async getOpenedDb(): Promise<idb.IDBPDatabase> {
-        if (!this.db) {
-            this.db = await idb.openDB(this.name, this.version, {
+    private async getOpenedDb(): Promise<IDBPDatabase> {
+        if (this.db) {
+            return this.db;
+        }
+
+        if (this.dbGetterPromise) {
+            return this.dbGetterPromise;
+        }
+
+        this.dbGetterPromise = (async (): Promise<IDBPDatabase> => {
+            this.db = await openDB(this.name, this.version, {
                 upgrade: (db) => {
-                    // make sure the store exists
+                    // Make sure the store exists
                     if (!db.objectStoreNames.contains(this.store)) {
                         db.createObjectStore(this.store);
                     }
                 },
             });
-        }
 
-        return this.db;
+            this.dbGetterPromise = null;
+
+            return this.db;
+        })();
+
+        return this.dbGetterPromise;
     }
 
     /**
      * Retrieves a value by key from the store.
      *
      * @param key The key of the value to retrieve.
+     *
      * @returns The value associated with the key.
      */
-    public async get(key: string): Promise<unknown> {
+    public async get(key: string): Promise<Data | undefined> {
         const db = await this.getOpenedDb();
         return db.get(this.store, key);
     }
@@ -120,7 +170,7 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
      * });
      * ```
      */
-    public async setMultiple(data: Record<string, unknown>): Promise<boolean> {
+    public async setMultiple(data: Record<string, Data>): Promise<boolean> {
         const db = await this.getOpenedDb();
         const tx = db.transaction(this.store, 'readwrite');
 
@@ -128,7 +178,7 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
             await Promise.all(Object.entries(data).map(([key, value]) => tx.store.put(value, key)));
             await tx.done;
         } catch (e) {
-            logger.error('Error while setting multiple keys in the storage:', getErrorMessage(e));
+            logger.error('Error while setting multiple keys in the storage:', e);
             tx.abort();
             return false;
         }
@@ -151,7 +201,7 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
             await Promise.all(keys.map((key) => tx.store.delete(key)));
             await tx.done;
         } catch (e) {
-            logger.error('Error while removing multiple keys from the storage:', getErrorMessage(e));
+            logger.error('Error while removing multiple keys from the storage:', e);
             tx.abort();
             return false;
         }
@@ -164,9 +214,9 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
      *
      * @returns Promise that resolves with the entire contents of the storage.
      */
-    public async entries(): Promise<Record<string, unknown>> {
+    public async entries(): Promise<Record<string, Data>> {
         const db = await this.getOpenedDb();
-        const entries: Record<string, unknown> = {};
+        const entries: Record<string, Data> = {};
         const tx = db.transaction(this.store, 'readonly');
 
         // eslint-disable-next-line no-restricted-syntax
@@ -198,6 +248,15 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
      */
     public async has(key: string): Promise<boolean> {
         const db = await this.getOpenedDb();
-        return db.getKey(this.store, key).then((result) => result !== undefined);
+        const idbKey = await db.getKey(this.store, key);
+        return idbKey !== undefined;
+    }
+
+    /**
+     * Clears the storage.
+     */
+    public async clear(): Promise<void> {
+        const db = await this.getOpenedDb();
+        await db.clear(this.store);
     }
 }

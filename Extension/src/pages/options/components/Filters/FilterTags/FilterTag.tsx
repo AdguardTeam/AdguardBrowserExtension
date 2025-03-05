@@ -26,8 +26,8 @@ import { HighlightSearch } from '../Search/HighlightSearch';
 import { Popover } from '../../../../common/components/ui/Popover';
 
 type FilterTagParams = {
-    filterId: number,
-    tag: TagMetadata,
+    filterId: number;
+    tag: TagMetadata;
     disabled?: boolean;
 };
 

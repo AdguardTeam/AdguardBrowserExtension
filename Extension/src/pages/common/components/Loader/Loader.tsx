@@ -28,7 +28,7 @@ type LoaderParams = {
     /**
      * Flag whether to show loader or not.
      */
-    showLoader: boolean,
+    showLoader: boolean;
 };
 
 export const Loader = ({ showLoader }: LoaderParams) => {

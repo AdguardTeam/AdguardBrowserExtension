@@ -18,7 +18,7 @@
 
 import React from 'react';
 
-import { TagMetadata } from '../../../../../background/schema';
+import { type TagMetadata } from '../../../../../background/schema';
 import { translator } from '../../../../../common/translators/translator';
 
 import { FilterTag } from './FilterTag';

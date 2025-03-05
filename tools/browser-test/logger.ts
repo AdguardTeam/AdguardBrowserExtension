@@ -30,30 +30,30 @@ import {
  * Describes test details object from QUnit.
  */
 export interface TestDetails {
-    name: string,
+    name: string;
     tests: {
-        name: string,
-        status: TestStatus,
+        name: string;
+        status: TestStatus;
         /**
          * @note IMPORTANT: Time in MS.
          */
-        runtime: number,
+        runtime: number;
         errors: {
-            message: string,
-            stack: string,
-        }[]
-    }[],
-    status: TestStatus,
+            message: string;
+            stack: string;
+        }[];
+    }[];
+    status: TestStatus;
     testCounts: {
-        passed: number,
-        failed: number,
-        skipped: number,
-        total: number
-    },
+        passed: number;
+        failed: number;
+        skipped: number;
+        total: number;
+    };
     /**
      * @note IMPORTANT: Time in MS.
      */
-    runtime: number
+    runtime: number;
 }
 
 /**
