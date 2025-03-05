@@ -234,6 +234,12 @@ class SettingsStore {
 
     @action
     async getRulesLimitsCounters() {
+        // This method should only be called for MV3-based extensions
+        // AG-40166
+        if (!__IS_MV3__) {
+            return;
+        }
+
         const rulesLimits = await fetchDataWithRetry(messenger.getRulesLimitsCounters.bind(messenger));
 
         // Will use default rules limits if the background service is not ready.
@@ -293,13 +299,14 @@ class SettingsStore {
             } else {
                 // on the next filters updates, we update filters keeping order
                 /**
-                 * TODO (v.zhelvis): Updating filters on background service response can cause filter enable state mismatch,
-                 * because we toggle switches on frontend side first, but cannot determine when action
-                 * in background service is completed and final result of user action.
-                 * It seems that we need to use a new approach with atomic updates instead of global state synchronization
-                 * to avoid this kind of problems. This task can be split into two parts:
+                 * TODO: Updating filters on background service response can cause filter enable
+                 * state mismatch, because we toggle switches on frontend side first, but cannot determine when
+                 * action in background service is completed and final result of user action.
+                 * It seems that we need to use a new approach with atomic updates instead of global
+                 * state synchronization to avoid this kind of problems. This task can be split into two parts:
                  * - Moving specific logic from the background to the settings page.
-                 * - Integrate a transparent transaction model with simple collision resolution to prevent race conditions.
+                 * - Integrate a transparent transaction model with simple collision resolution to prevent
+                 * race conditions.
                  */
                 this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
             }
@@ -853,36 +860,41 @@ class SettingsStore {
             selectedFilters = this.filters;
         }
 
-        return selectedFilters
-            .filter((filter) => {
-                if (Number.isInteger(this.selectedGroupId)) {
-                    return filter.groupId === this.selectedGroupId;
-                }
+        return selectedFilters.filter((filter) => {
+            // TODO: Do not show custom filters in MV3 in the list of filters,
+            // until we add them back. (AG-39385)
+            if (__IS_MV3__ && filter.groupId === AntibannerGroupsId.CustomFiltersGroupId) {
+                return false;
+            }
+
+            // If selected group of filters, prevent showing filters from
+            // other groups.
+            if (Number.isInteger(this.selectedGroupId) && filter.groupId !== this.selectedGroupId) {
+                return false;
+            }
+
+            const nameIsMatching = filter.name.match(searchQuery);
+            if (nameIsMatching) {
                 return true;
-            })
-            .filter((filter) => {
-                const nameIsMatching = filter.name.match(searchQuery);
-                if (nameIsMatching) {
+            }
+
+            if (filter.tagsDetails) {
+                const tagKeywordIsMatching = filter.tagsDetails.some((tag) => `#${tag.keyword}`.match(searchQuery));
+                if (tagKeywordIsMatching) {
                     return true;
                 }
+            }
 
-                if (filter.tagsDetails) {
-                    const tagKeywordIsMatching = filter.tagsDetails.some((tag) => `#${tag.keyword}`.match(searchQuery));
-                    if (tagKeywordIsMatching) {
-                        return true;
-                    }
+            // AG-10491
+            if (filter.trusted) {
+                const trustedTagMatching = `#${TRUSTED_TAG_KEYWORD}`.match(searchQuery);
+                if (trustedTagMatching) {
+                    return true;
                 }
+            }
 
-                // AG-10491
-                if (filter.trusted && filter.trusted === true) {
-                    const trustedTagMatching = `#${TRUSTED_TAG_KEYWORD}`.match(searchQuery);
-                    if (trustedTagMatching) {
-                        return true;
-                    }
-                }
-
-                return false;
-            });
+            return false;
+        });
     }
 
     @computed

@@ -17,7 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
-import { AddUrlToTrustedMessage, MessageType } from '../../common/messages';
+import { type AddUrlToTrustedMessage, MessageType } from '../../common/messages';
 import { DocumentBlockApi, TabsApi } from '../api';
 import { engine } from '../engine';
 import { messageHandler } from '../message-handler';

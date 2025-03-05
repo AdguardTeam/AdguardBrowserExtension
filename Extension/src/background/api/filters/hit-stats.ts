@@ -17,22 +17,22 @@
  */
 import { debounce, isEmpty } from 'lodash-es';
 
+import { RuleGenerator } from '@adguard/agtree';
+
 import { getRuleSourceIndex, getRuleSourceText } from 'tswebextension';
 
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { hitStatsStorageDataValidator } from '../../schema';
+import { filterVersionStorage, hitStatsStorage } from '../../storages';
 import {
-    FiltersStorage,
-    filterVersionStorage,
-    hitStatsStorage,
-} from '../../storages';
-import {
-    FilterHitStats,
-    FiltersHitStats,
+    type FilterHitStats,
+    type FiltersHitStats,
     network,
 } from '../network';
 import { getErrorMessage } from '../../../common/error';
+import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
+import { engine } from '../../engine';
 
 /**
  * This API is used to store and track ad filters usage stats.
@@ -53,8 +53,8 @@ export class HitStatsApi {
     /**
      * Saves and sends hit stats with {@link saveTimeoutMs} debounce.
      */
-    private static debounceSaveAndSaveHitStats = debounce(() => {
-        HitStatsApi.saveAndSaveHitStats();
+    private static debounceSaveAndSendHitStats = debounce(() => {
+        HitStatsApi.saveAndSendHitStats();
     }, HitStatsApi.saveTimeoutMs);
 
     /**
@@ -71,7 +71,7 @@ export class HitStatsApi {
             }
         } catch (e) {
             // eslint-disable-next-line max-len
-            logger.warn(`Cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error: `, e);
+            logger.error(`Cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error: `, e);
             hitStatsStorage.setData({});
         }
     }
@@ -92,7 +92,7 @@ export class HitStatsApi {
         }
 
         hitStatsStorage.addRuleHitToCache(filterId, ruleIndex);
-        HitStatsApi.debounceSaveAndSaveHitStats();
+        HitStatsApi.debounceSaveAndSendHitStats();
     }
 
     /**
@@ -124,6 +124,7 @@ export class HitStatsApi {
          *
          * @param filterId Filter list id.
          * @param stats Filter list stats.
+         *
          * @returns Transformed filter list data.
          */
         const transformFilterHits = async (
@@ -141,7 +142,7 @@ export class HitStatsApi {
                 return [filterId, {}];
             }
 
-            const filterData = await FiltersStorage.getAllFilterData(filterIdNumber);
+            const filterData = await FiltersStoragesAdapter.get(filterIdNumber);
 
             if (!filterData) {
                 return [filterId, {}];
@@ -160,6 +161,18 @@ export class HitStatsApi {
 
                 // During normal operation, this should not happen
                 if (lineStartIndex === -1) {
+                    let baseMessage = `[HitStatsApi] Cannot find rule source index for rule index ${ruleIndex}`;
+
+                    const ruleNode = engine.api.retrieveRuleNode(Number(filterId), Number(ruleIndex));
+
+                    // Note: during normal operation, ruleNode should not be null,
+                    // but we handle this case just in case, and to provide type safety
+                    if (ruleNode) {
+                        const generatedRuleText = RuleGenerator.generate(ruleNode);
+                        baseMessage += `, generated rule text: ${generatedRuleText}`;
+                    }
+
+                    logger.error(baseMessage);
                     return null;
                 }
 
@@ -167,6 +180,18 @@ export class HitStatsApi {
 
                 // During normal operation, this should not happen
                 if (!appliedRuleText) {
+                    let baseMessage = `[HitStatsApi] Cannot find rule text for rule index ${ruleIndex}`;
+
+                    const ruleNode = engine.api.retrieveRuleNode(Number(filterId), Number(ruleIndex));
+
+                    // Note: during normal operation, ruleNode should not be null,
+                    // but we handle this case just in case, and to provide type safety
+                    if (ruleNode) {
+                        const generatedRuleText = RuleGenerator.generate(ruleNode);
+                        baseMessage += `, generated rule text: ${generatedRuleText}`;
+                    }
+
+                    logger.error(baseMessage);
                     return null;
                 }
 
@@ -208,7 +233,7 @@ export class HitStatsApi {
     /**
      * Saves and sends hit stats.
      */
-    private static async saveAndSaveHitStats(): Promise<void> {
+    private static async saveAndSendHitStats(): Promise<void> {
         await hitStatsStorage.save();
         await HitStatsApi.sendStats();
     }

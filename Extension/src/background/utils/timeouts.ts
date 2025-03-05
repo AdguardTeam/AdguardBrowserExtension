@@ -22,7 +22,9 @@
  * @param promise Promise to execute.
  * @param timeoutMs Promise execution limit in milliseconds. Reject promise after it.
  * @param errorMessage Message of error, thrown after timeout.
+ *
  * @returns Resolved promise.
+ *
  * @throws Error, if promise is not resolved after limit.
  */
 export async function createPromiseWithTimeout<T>(
@@ -41,6 +43,7 @@ export async function createPromiseWithTimeout<T>(
  *
  * @param timeoutMs Timeout in milliseconds.
  * @param message Message of error, thrown after timeout.
+ *
  * @throws Error after timeout.
  */
 async function rejectAfterTimeout(timeoutMs: number, message: string): Promise<never> {

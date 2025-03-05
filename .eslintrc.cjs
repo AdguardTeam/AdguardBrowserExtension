@@ -56,6 +56,12 @@ module.exports = {
         '@typescript-eslint/indent': 'off',
         '@typescript-eslint/no-shadow': 'off',
         '@typescript-eslint/dot-notation': 'off',
+        '@typescript-eslint/member-delimiter-style': 'error',
+        '@typescript-eslint/consistent-type-imports': [
+            'error', {
+                fixStyle: 'inline-type-imports',
+            },
+        ],
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
         'import/prefer-default-export': 'off',
@@ -123,11 +129,12 @@ module.exports = {
                         'position': 'after',
                     },
                     // Place custom-filters-service alias after internal
-                    {
-                        'pattern': 'custom-filters-service',
-                        'group': 'internal',
-                        'position': 'after',
-                    },
+                    // TODO: Uncomment this block when custom filters will be supported for MV3.
+                    // {
+                    //     'pattern': 'custom-filters-service',
+                    //     'group': 'internal',
+                    //     'position': 'after',
+                    // },
                     // Place rules-limits-service alias after internal
                     {
                         'pattern': 'rules-limits-service',
@@ -157,6 +164,7 @@ module.exports = {
             'ignoreUrls': true,
             'ignoreTrailingComments': false,
             'ignoreComments': false,
+            'ignoreTemplateLiterals': true,
         }],
         'indent': [
             'error',
@@ -169,7 +177,9 @@ module.exports = {
         'wrap-iife': 'off',
         'func-names': 'off',
         'prefer-destructuring': 'off',
+        'brace-style': ['error', '1tbs', { 'allowSingleLine': false }],
         'consistent-return': 'off',
+        'curly': ['error', 'all'],
         'dot-notation': 'off',
         'quote-props': 'off',
         'arrow-body-style': 'off',
@@ -190,7 +200,6 @@ module.exports = {
         // types described in ts
         'jsdoc/require-param-type': 'off',
         'jsdoc/require-returns-type': 'off',
-        'jsdoc/tag-lines': 'off',
         'jsdoc/require-throws': 'error',
         'jsdoc/require-file-overview': 'error',
 
@@ -217,6 +226,60 @@ module.exports = {
             },
         ],
         'jsdoc/no-defaults': 'off',
+        'jsdoc/tag-lines': [
+            'error',
+            'any',
+            {
+                startLines: 1,
+            },
+        ],
+        'jsdoc/sort-tags': ['error', {
+            linesBetween: 1,
+            tagSequence: [
+                {
+                    tags: [
+                        'file',
+                    ],
+                },
+                {
+                    tags: [
+                        'template',
+                        'class',
+                        'async',
+                    ],
+                },
+                {
+                    tags: [
+                        'note',
+                    ],
+                },
+                {
+                    tags: [
+                        'see',
+                    ],
+                },
+                {
+                    tags: [
+                        'param',
+                    ],
+                },
+                {
+                    tags: [
+                        'returns',
+                    ],
+                },
+                {
+                    tags: [
+                        'throws',
+                    ],
+                },
+                {
+                    tags: [
+                        'example',
+                    ],
+                },
+            ],
+        }],
     },
     'ignorePatterns': [
         'node_modules',

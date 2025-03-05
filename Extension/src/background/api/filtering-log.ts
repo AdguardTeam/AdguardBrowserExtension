@@ -15,48 +15,49 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Tabs } from 'webextension-polyfill';
+import { type Tabs } from 'webextension-polyfill';
 
 import { RuleGenerator } from '@adguard/agtree/generator';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
 import {
     BACKGROUND_TAB_ID,
-    ContentType,
-    CookieEvent,
+    type ContentType,
+    type CookieEvent,
     isExtensionUrl,
-    StealthActionEvent,
+    type StealthActionEvent,
     getDomain,
     getRuleSourceText,
     getRuleSourceIndex,
-    PreprocessedFilterList,
+    type PreprocessedFilterList,
     type DeclarativeRuleInfo,
 } from 'tswebextension';
 
 import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import { engine } from '../engine';
-import { FiltersStorage, settingsStorage } from '../storages';
+import { settingsStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { TabsApi } from '../../common/api/extension/tabs';
-import { AntiBannerFiltersId } from '../../common/constants';
+import { AntiBannerFiltersId, NotifierType } from '../../common/constants';
+import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 
 export type FilteringEventRuleData = {
-    filterId: number,
-    ruleIndex: number,
-    isImportant?: boolean,
-    documentLevelRule?: boolean,
-    isStealthModeRule?: boolean,
-    allowlistRule?: boolean,
-    allowlistStealthRule?: boolean,
-    cspRule?: boolean,
-    permissionsRule?: boolean,
-    modifierValue?: string,
-    cookieRule?: boolean,
-    contentRule?: boolean,
-    cssRule?: boolean,
-    scriptRule?: boolean,
+    filterId: number;
+    ruleIndex: number;
+    isImportant?: boolean;
+    documentLevelRule?: boolean;
+    isStealthModeRule?: boolean;
+    allowlistRule?: boolean;
+    allowlistStealthRule?: boolean;
+    cspRule?: boolean;
+    permissionsRule?: boolean;
+    modifierValue?: string;
+    cookieRule?: boolean;
+    contentRule?: boolean;
+    cssRule?: boolean;
+    scriptRule?: boolean;
 } & Partial<RuleText>;
 
 /**
@@ -64,30 +65,30 @@ export type FilteringEventRuleData = {
  * some filtering log event type from tswebextension.
  */
 export type FilteringLogEvent = {
-    eventId: string,
-    requestUrl?: string,
-    requestDomain?: string,
-    frameUrl?: string,
-    frameDomain?: string,
-    requestType?: ContentType,
-    timestamp?: number,
-    requestThirdParty?: boolean,
-    method?: string,
-    statusCode?: number,
-    requestRule?: FilteringEventRuleData,
-    removeParam?: boolean,
-    removeHeader?: boolean,
-    headerName?: string,
-    element?: string,
-    script?: boolean,
-    cookieName?: string,
-    cookieValue?: string,
-    isModifyingCookieRule?: boolean,
-    cspReportBlocked?: boolean,
-    replaceRules?: FilteringEventRuleData[],
-    stealthAllowlistRules?: FilteringEventRuleData[],
-    stealthActions?: StealthActionEvent['data']['stealthActions'],
-    declarativeRuleInfo?: DeclarativeRuleInfo,
+    eventId: string;
+    requestUrl?: string;
+    requestDomain?: string;
+    frameUrl?: string;
+    frameDomain?: string;
+    requestType?: ContentType;
+    timestamp?: number;
+    requestThirdParty?: boolean;
+    method?: string;
+    statusCode?: number;
+    requestRule?: FilteringEventRuleData;
+    removeParam?: boolean;
+    removeHeader?: boolean;
+    headerName?: string;
+    element?: string;
+    script?: boolean;
+    cookieName?: string;
+    cookieValue?: string;
+    isModifyingCookieRule?: boolean;
+    cspReportBlocked?: boolean;
+    replaceRules?: FilteringEventRuleData[];
+    stealthAllowlistRules?: FilteringEventRuleData[];
+    stealthActions?: StealthActionEvent['data']['stealthActions'];
+    declarativeRuleInfo?: DeclarativeRuleInfo;
 };
 
 /**
@@ -104,27 +105,27 @@ export type FilteringLogTabInfo = {
     /**
      * Tab id.
      */
-    tabId: number,
+    tabId: number;
 
     /**
      * Tab title.
      */
-    title: string,
+    title: string;
 
     /**
      * Indicates if this tab is an extension page (e.g. Options, filtering log).
      */
-    isExtensionTab: boolean,
+    isExtensionTab: boolean;
 
     /**
      * Filtering events.
      */
-    filteringEvents: FilteringLogEvent[],
+    filteringEvents: FilteringLogEvent[];
 
     /**
      * Domain of the tab.
      */
-    domain: string | null,
+    domain: string | null;
 };
 
 /**
@@ -275,6 +276,7 @@ export class FilteringLogApi {
      * It handles a cache internally to speed up requests for the same filter next time.
      *
      * @param filterId Filter id.
+     *
      * @returns Filter data or undefined if the filter is not found.
      */
     private async getFilterData(filterId: number): Promise<CachedFilterData | undefined> {
@@ -283,15 +285,20 @@ export class FilteringLogApi {
         }
 
         try {
-            const [rawFilterList, conversionMap, sourceMap] = await Promise.all([
-                FiltersStorage.getPreprocessedFilterList(filterId),
-                FiltersStorage.getConversionMap(filterId),
-                FiltersStorage.getSourceMap(filterId),
+            // eslint-disable-next-line prefer-const
+            let [rawFilterList, conversionMap, sourceMap] = await Promise.all([
+                FiltersStoragesAdapter.getRawFilterList(filterId),
+                FiltersStoragesAdapter.getConversionMap(filterId),
+                FiltersStoragesAdapter.getSourceMap(filterId),
             ]);
 
             // Raw filter list and source map are required to get rule texts
             if (!rawFilterList || !sourceMap) {
                 return undefined;
+            }
+
+            if (!conversionMap) {
+                conversionMap = {};
             }
 
             const filterData: CachedFilterData = {
@@ -314,6 +321,7 @@ export class FilteringLogApi {
      * Tries to sync the cached filter data with the storage.
      *
      * @param filterId Filter id.
+     *
      * @returns Returns false if the filter was synced within the last
      * {@link FilteringLogApi.SYNC_ATTEMPTS_INTERVAL_MS} milliseconds.
      * Otherwise, returns true.
@@ -358,8 +366,10 @@ export class FilteringLogApi {
         // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
         // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
         if (FilteringLogApi.DYNAMIC_FILTER_LISTS.has(filterId)) {
-            const ruleNode = engine.api.retrieveDynamicRuleNode(filterId, ruleIndex);
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
 
+            // The following error messages should not be displayed during normal operation,
+            // but we handle them just in case, and to provide type safety
             if (!ruleNode) {
                 logger.error(`Failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
@@ -390,7 +400,16 @@ export class FilteringLogApi {
         const lineStartIndex = getRuleSourceIndex(ruleIndex, sourceMap);
 
         if (lineStartIndex === -1) {
-            const baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+
+            // Note: during normal operation, ruleNode should not be null,
+            // but we handle this case just in case, and to provide type safety
+            if (ruleNode) {
+                const generatedRuleText = RuleGenerator.generate(ruleNode);
+                baseMessage += `, generated rule text: ${generatedRuleText}`;
+            }
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
@@ -405,7 +424,16 @@ export class FilteringLogApi {
         const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
 
         if (!appliedRuleText) {
-            const baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+
+            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+
+            // Note: during normal operation, ruleNode should not be null,
+            // but we handle this case just in case, and to provide type safety
+            if (ruleNode) {
+                const generatedRuleText = RuleGenerator.generate(ruleNode);
+                baseMessage += `, generated rule text: ${generatedRuleText}`;
+            }
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
@@ -534,7 +562,7 @@ export class FilteringLogApi {
 
         this.tabsInfoMap.set(id, tabInfo);
 
-        listeners.notifyListeners(listeners.TabAdded, tabInfo);
+        notifier.notifyListeners(NotifierType.TabAdded, tabInfo);
     }
 
     /**
@@ -564,7 +592,7 @@ export class FilteringLogApi {
         tabInfo.title = title;
         tabInfo.isExtensionTab = isExtensionUrl(url);
 
-        listeners.notifyListeners(listeners.TabUpdate, tabInfo);
+        notifier.notifyListeners(NotifierType.TabUpdate, tabInfo);
     }
 
     /**
@@ -581,7 +609,7 @@ export class FilteringLogApi {
         const tabInfo = this.tabsInfoMap.get(id);
 
         if (tabInfo) {
-            listeners.notifyListeners(listeners.TabClose, tabInfo);
+            notifier.notifyListeners(NotifierType.TabClose, tabInfo);
         }
 
         this.tabsInfoMap.delete(id);
@@ -655,7 +683,7 @@ export class FilteringLogApi {
 
         if (tabInfo && !preserveLog) {
             tabInfo.filteringEvents = [];
-            listeners.notifyListeners(listeners.TabReset, tabInfo);
+            notifier.notifyListeners(NotifierType.TabReset, tabInfo);
         }
     }
 
@@ -674,11 +702,7 @@ export class FilteringLogApi {
 
         // Get rule text based on filter id and rule index
         if (data.requestRule) {
-            const { filterId, ruleIndex } = data.requestRule;
-            const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-            if (ruleTextData) {
-                data.requestRule = Object.assign(data.requestRule, ruleTextData);
-            }
+            data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
         }
 
         tabInfo.filteringEvents.push(data);
@@ -687,9 +711,6 @@ export class FilteringLogApi {
             // don't remove first item, cause it's request to main frame
             tabInfo.filteringEvents.splice(1, 1);
         }
-
-        // TODO: Looks like not using. Maybe lost listener in refactoring.
-        listeners.notifyListeners(listeners.LogEventAdded, tabInfo, data);
     }
 
     /**
@@ -714,36 +735,48 @@ export class FilteringLogApi {
         let event = filteringEvents.find((e) => e.eventId === eventId);
 
         if (!event) {
-            logger.debug('Not found event in filtering log to update: ', eventId);
             return;
         }
 
-        // To not overwrite appliedRuleText check if it is already exists.
         if (data.requestRule && !event.requestRule?.appliedRuleText) {
-            const { filterId, ruleIndex } = data.requestRule;
-            const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-            if (ruleTextData) {
-                data.requestRule = Object.assign(data.requestRule, ruleTextData);
-            }
+            data.requestRule = await this.applyRuleTextToRuleData(data.requestRule);
         }
 
         if (data.replaceRules) {
-            data.replaceRules = await Promise.all(
-                data.replaceRules.map(async (rule) => {
-                    const { filterId, ruleIndex } = rule;
-                    const ruleTextData = await this.getRuleText(filterId, ruleIndex);
-                    if (ruleTextData) {
-                        return Object.assign(rule, ruleTextData);
-                    }
-                    return rule;
-                }),
-            );
+            data.replaceRules = await this.applyRuleTextToRuleDataArray(data.replaceRules);
+        }
+
+        if (data.stealthAllowlistRules) {
+            data.stealthAllowlistRules = await this.applyRuleTextToRuleDataArray(data.stealthAllowlistRules);
         }
 
         event = Object.assign(event, data);
+    }
 
-        // TODO: Looks like not using. Maybe lost listener in refactoring.
-        listeners.notifyListeners(listeners.LogEventAdded, tabInfo, event);
+    /**
+     * Retrieves and applies rule text to a single rule data object.
+     *
+     * @param rule Rule data object containing filterId and ruleIndex.
+     *
+     * @returns Rule object with rule text applied.
+     */
+    private async applyRuleTextToRuleData(rule: FilteringEventRuleData): Promise<FilteringEventRuleData> {
+        const { filterId, ruleIndex } = rule;
+        const ruleTextData = await this.getRuleText(filterId, ruleIndex);
+        return ruleTextData ? Object.assign(rule, ruleTextData) : rule;
+    }
+
+    /**
+     * Retrieves and applies rule text to an array of rule data objects.
+     *
+     * @param rules Array of rule data objects containing filterId and ruleIndex.
+     *
+     * @returns Array of rule objects with rule text applied.
+     */
+    private async applyRuleTextToRuleDataArray(rules: FilteringEventRuleData[]): Promise<FilteringEventRuleData[]> {
+        return Promise.all(
+            rules.map(async (rule) => this.applyRuleTextToRuleData(rule)),
+        );
     }
 
     /**
@@ -805,6 +838,7 @@ export class FilteringLogApi {
      *
      * @param cookieEvent Cookie event.
      * @param cookieEvent.data Cookie event data.
+     *
      * @returns True if a cookie with the same frame domain, name and value
      * has already been written, and false otherwise.
      */

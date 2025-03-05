@@ -17,7 +17,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { RuleSample } from './samples-types';
+import { type RuleSample } from './samples-types';
 
 /**
  * This is the list of dangerous rules used for creating prompt to open ai api.

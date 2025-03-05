@@ -149,7 +149,9 @@ export const devtoolsElementsSidebar = (() => {
     };
 
     const updatePanelElements = function () {
-        const checkboxes = document.querySelectorAll('#one-domain-checkbox, #create-full-css-path, .attribute-check-box');
+        const checkboxes = document.querySelectorAll(
+            '#one-domain-checkbox, #create-full-css-path, .attribute-check-box',
+        );
 
         // All checkboxes should be disabled if block by url is checked
         if (document.querySelector('#block-by-url-checkbox').checked) {
@@ -220,7 +222,11 @@ export const devtoolsElementsSidebar = (() => {
                     }
                 }
             } else {
-                placeholder.appendChild(createAttributeElement(attribute.name, attribute.value, attribute.name === 'id'));
+                placeholder.appendChild(createAttributeElement(
+                    attribute.name,
+                    attribute.value,
+                    attribute.name === 'id',
+                ));
             }
         }
 
@@ -302,6 +308,7 @@ export const devtoolsElementsSidebar = (() => {
      * related with messages from content script
      *
      * @param {string} ruleText
+     *
      * @returns {Promise<void>}
      */
     const addRule = async (ruleText) => {

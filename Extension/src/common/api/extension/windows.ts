@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { type Windows, Tabs } from 'webextension-polyfill';
+import browser, { type Windows, type Tabs } from 'webextension-polyfill';
 
 /**
  * Helper class for browser.windows API.
@@ -29,6 +29,7 @@ export class WindowsApi {
      * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536
      *
      * @param createData Browser.windows.create argument.
+     *
      * @returns Created window, tab or null, if no calls were made.
      */
     public static async create(

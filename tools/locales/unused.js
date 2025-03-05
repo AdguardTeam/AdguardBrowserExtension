@@ -43,6 +43,7 @@ const SRC_DIR = path.resolve(__dirname, SRC_RELATIVE_PATH);
  * Checks file extension is it one of source files
  *
  * @param {string} filePath path to file
+ *
  * @returns {boolean}
  */
 const canContainLocalesStrings = (filePath) => {
@@ -63,6 +64,7 @@ const canContainLocalesStrings = (filePath) => {
  *
  * @param {string} dirPath path to dir
  * @param {Array} [contents=[]] result acc
+ *
  * @returns {Array}
  */
 const getSrcFilesContents = (dirPath, contents = []) => {

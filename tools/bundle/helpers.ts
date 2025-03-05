@@ -17,8 +17,8 @@
  */
 
 import {
-    Browser,
-    BuildTargetEnv,
+    type Browser,
+    type BuildTargetEnv,
     ENV_CONF,
     type EnvConfig,
 } from '../constants';

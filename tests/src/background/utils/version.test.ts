@@ -20,15 +20,15 @@ describe('version', () => {
     });
 
     describe('throws parse error', () => {
-        const createFoundEmptyPartCase = (value: string): { value: string, expected: string } => {
+        const createFoundEmptyPartCase = (value: string): { value: string; expected: string } => {
             return { value, expected: `Found empty part in string '${value}'` };
         };
 
-        const createCannotParseCase = (value: string): { value: string, expected: string } => {
+        const createCannotParseCase = (value: string): { value: string; expected: string } => {
             return { value, expected: `Can not parse '${value}' string` };
         };
 
-        const createCannotParseLeadingZero = (value: string): { value: string, expected: string } => {
+        const createCannotParseLeadingZero = (value: string): { value: string; expected: string } => {
             return { value, expected: `Can not parse ${value}. Leading zeros are not allowed in the version parts` };
         };
 

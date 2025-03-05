@@ -29,9 +29,12 @@ export class SubscribeToScriptlets {
     private static subscribedToCloseWindowEventName = 'adguard:subscribed-to-close-window';
 
     /**
-     * Initializing content script
+     * Initializing content script.
+     *
+     * IMPORTANT! It is intentionally async so it can be called without await
+     * to not slow down frames loading in Firefox.
      */
-    public static init(): void {
+    public static async init(): Promise<void> {
         SubscribeToScriptlets.subscribeToCloseWindow();
     }
 

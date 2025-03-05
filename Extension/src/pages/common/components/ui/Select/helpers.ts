@@ -25,12 +25,12 @@ export type SelectOption = {
     /**
      * Option value.
      */
-    value: string,
+    value: string;
 
     /**
      * Option title.
      */
-    title: string,
+    title: string;
 };
 
 /**
@@ -113,6 +113,7 @@ const SELECT_OPENED_KEY_TO_ACTION_MAP = new Map<SelectKey, SelectAction>([
  *
  * @param options Options to filter.
  * @param filter Filter string.
+ *
  * @returns Filtered options.
  */
 function filterOptions(
@@ -140,6 +141,7 @@ function filterOptions(
  * Get the select key from a keyboard event.
  *
  * @param event Keyboard event.
+ *
  * @returns Select key.
  */
 function getSelectKeyFromEvent(event: ReactKeyboardEvent<HTMLElement>): SelectKey | null {
@@ -170,6 +172,7 @@ function getSelectKeyFromEvent(event: ReactKeyboardEvent<HTMLElement>): SelectKe
  *
  * @param event Event.
  * @param selectHidden Is select hidden.
+ *
  * @returns Select action to perform.
  */
 export function getActionFromKey(
@@ -200,6 +203,7 @@ export function getActionFromKey(
  * Check if all characters in an string are the same.
  *
  * @param str String to check.
+ *
  * @returns True if all letters are the same.
  */
 function areAllLettersSame(str: string): boolean {
@@ -215,6 +219,7 @@ function areAllLettersSame(str: string): boolean {
  * @param options Options to filter.
  * @param filter Filter string.
  * @param startIndex Start index.
+ *
  * @returns Index of the option.
  */
 export function getIndexByLetter(
@@ -258,6 +263,7 @@ export function getIndexByLetter(
  * @param maxIndex Maximum index.
  * @param action Action to perform.
  * @param pageSize Page size.
+ *
  * @returns Updated index.
  */
 export function getUpdatedIndex(
@@ -288,6 +294,7 @@ export function getUpdatedIndex(
  * Check if element is visible in browser view port.
  *
  * @param element Element to check.
+ *
  * @returns True if element is visible.
  */
 export function isElementInView(element: HTMLElement) {
@@ -305,6 +312,7 @@ export function isElementInView(element: HTMLElement) {
  * Check if an element is currently scrollable.
  *
  * @param element Element to check.
+ *
  * @returns True if element is scrollable.
  */
 export function isScrollable(element: HTMLElement) {

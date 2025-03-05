@@ -18,6 +18,7 @@
 import {
     BACKGROUND_OUTPUT,
     DEVTOOLS_OUTPUT,
+    MIN_SUPPORTED_VERSION,
     POPUP_OUTPUT,
 } from '../../../constants';
 import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
@@ -38,7 +39,7 @@ export const chromeMv3Manifest = {
     'host_permissions': [
         '<all_urls>',
     ],
-    'minimum_chrome_version': '121.0',
+    'minimum_chrome_version': String(MIN_SUPPORTED_VERSION.CHROMIUM_MV3),
     'web_accessible_resources': [
         {
             'resources': ['web-accessible-resources/*'],

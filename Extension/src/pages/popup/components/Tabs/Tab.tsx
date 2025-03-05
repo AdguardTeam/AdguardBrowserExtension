@@ -35,34 +35,34 @@ type TabParams = {
     /**
      * Tab id.
      */
-    id: string,
+    id: string;
 
     /**
      * Tab title.
      */
-    title: string,
+    title: string;
 
     /**
      * Whether the tab is active.
      */
-    active: boolean,
+    active: boolean;
 
     /**
      * Panel id.
      */
-    panelId: string,
+    panelId: string;
 
     /**
      * Click handler.
      */
-    onClick: () => void,
+    onClick: () => void;
 
     /**
      * Keyboard navigation handler.
      *
      * @param key - Pressed key.
      */
-    onKeyNavigate: (key: TabKey) => void,
+    onKeyNavigate: (key: TabKey) => void;
 };
 
 export const Tab = forwardRef<HTMLButtonElement, TabParams>((props, forwardedRef) => {

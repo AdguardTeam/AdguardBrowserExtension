@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Tabs } from 'webextension-polyfill';
+import browser, { type Tabs } from 'webextension-polyfill';
 
 import { Prefs } from '../../../background/prefs';
 
@@ -27,6 +27,7 @@ export class TabsApi {
      * Returns first matched tab for passed {@link Tabs.QueryQueryInfoType}.
      *
      * @param queryInfo Browser.tabs.query argument.
+     *
      * @returns First matched tab or undefined.
      */
     public static async findOne(queryInfo: Tabs.QueryQueryInfoType): Promise<Tabs.Tab | undefined> {
@@ -74,6 +75,7 @@ export class TabsApi {
      * Check, if page in tab is extension page.
      *
      * @param tab {@link Tabs.Tab} Data.
+     *
      * @returns True if it is extension page, else returns false.
      */
     public static isAdguardExtensionTab(tab: Tabs.Tab): boolean {

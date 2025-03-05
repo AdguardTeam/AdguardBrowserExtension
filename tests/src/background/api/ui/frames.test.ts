@@ -73,6 +73,8 @@ describe('Frames Api', () => {
         tabContext.mainFrameRule = new NetworkRule(NetworkRuleParser.parse(rule), AntiBannerFiltersId.UserFilterId);
         tabContext.blockedRequestCount = 0;
 
+        // TODO (Slava): fix later
+        // @ts-ignore
         const frameData = FramesApi.getMainFrameData(tabContext);
         const { documentAllowlisted, canAddRemoveRule } = frameData;
 

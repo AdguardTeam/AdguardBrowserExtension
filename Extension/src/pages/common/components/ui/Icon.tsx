@@ -24,17 +24,17 @@ type SvgParams = Pick<AriaAttributes, 'aria-hidden'> & {
     /**
      * SVG id.
      */
-    id: string,
+    id: string;
 
     /**
      * SVG class name.
      */
-    className: string,
+    className: string;
 
     /**
      * SVG title.
      */
-    title?: string,
+    title?: string;
 };
 
 const Svg = ({
@@ -53,12 +53,12 @@ type AnimatedWrapperParams = Pick<AriaAttributes, 'aria-hidden'> & {
     /**
      * Wrapper children.
      */
-    children: ReactNode,
+    children: ReactNode;
 
     /**
      * Wrapper class name.
      */
-    className: string,
+    className: string;
 };
 
 /**
@@ -78,27 +78,27 @@ type IconParams = Pick<AriaAttributes, 'aria-hidden'> & {
     /**
      * Icon id.
      */
-    id: string,
+    id: string;
 
     /**
      * Icon class name.
      */
-    classname?: string,
+    classname?: string;
 
     /**
      * Icon title.
      */
-    title?: string,
+    title?: string;
 
     /**
      * Animation condition.
      */
-    animationCondition?: boolean,
+    animationCondition?: boolean;
 
     /**
      * Animation class name.
      */
-    animationClassname?: string,
+    animationClassname?: string;
 };
 
 export const Icon = ({

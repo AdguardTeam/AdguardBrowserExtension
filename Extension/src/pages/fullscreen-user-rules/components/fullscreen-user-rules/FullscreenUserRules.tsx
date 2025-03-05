@@ -26,7 +26,7 @@ import { NotifierType } from '../../../../common/constants';
 import { rootStore } from '../../../options/stores/RootStore';
 import {
     Messenger,
-    LongLivedConnectionCallbackMessage,
+    type LongLivedConnectionCallbackMessage,
     Page,
 } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';

@@ -42,13 +42,13 @@
             if (!areIframesDefined) {
                 adElems[i].setAttribute(statusAttrName, "done");
                 var aswiftIframe = document.createElement("iframe");
-                aswiftIframe.id = "".concat(ASWIFT_IFRAME_MARKER).concat(i);
+                aswiftIframe.id = `${ASWIFT_IFRAME_MARKER}${i}`;
                 aswiftIframe.style = css;
                 adElems[i].appendChild(aswiftIframe);
                 var innerAswiftIframe = document.createElement("iframe");
                 aswiftIframe.contentWindow.document.body.appendChild(innerAswiftIframe);
                 var googleadsIframe = document.createElement("iframe");
-                googleadsIframe.id = "".concat(GOOGLE_ADS_IFRAME_MARKER).concat(i);
+                googleadsIframe.id = `${GOOGLE_ADS_IFRAME_MARKER}${i}`;
                 googleadsIframe.style = css;
                 adElems[i].appendChild(googleadsIframe);
                 var innerGoogleadsIframe = document.createElement("iframe");
@@ -67,17 +67,17 @@
         }
         try {
             var trace = console.trace.bind(console);
-            var label = "".concat(ADGUARD_PREFIX, " ");
+            var label = `${ADGUARD_PREFIX} `;
             if (source.engine === "corelibs") {
                 label += source.ruleText;
             } else {
                 if (source.domainName) {
-                    label += "".concat(source.domainName);
+                    label += `${source.domainName}`;
                 }
                 if (source.args) {
-                    label += "#%#//scriptlet('".concat(source.name, "', '").concat(source.args.join("', '"), "')");
+                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
                 } else {
-                    label += "#%#//scriptlet('".concat(source.name, "')");
+                    label += `#%#//scriptlet('${source.name}')`;
                 }
             }
             if (trace) {

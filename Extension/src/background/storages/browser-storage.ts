@@ -15,16 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 
-import { ExtendedStorageInterface } from '../../common/storage';
+import { type ExtendedStorageInterface } from './storage-interface';
 
 /**
- * Wrapper for browser.storage.local with dev-friendly interface.
+ * Wrapper for StorageArea with dev-friendly interface.
+ *
+ * @template Data The type of the value stored in the storage.
  */
-export class BrowserStorage implements ExtendedStorageInterface<string, unknown, 'async'> {
-    // extension storage API
-    private storage = browser.storage.local;
+export class BrowserStorage<Data = unknown> implements ExtendedStorageInterface<string, Data, 'async'> {
+    private storage: Storage.StorageArea;
+
+    /**
+     * Constructs an instance of the BrowserStorage class.
+     *
+     * @param storage The storage area to use.
+     */
+    constructor(storage: Storage.StorageArea) {
+        this.storage = storage;
+    }
 
     /**
      * Sets data to storage.
@@ -32,7 +42,7 @@ export class BrowserStorage implements ExtendedStorageInterface<string, unknown,
      * @param key Storage key.
      * @param value Storage value.
      */
-    public async set(key: string, value: unknown): Promise<void> {
+    public async set(key: string, value: Data): Promise<void> {
         await this.storage.set({ [key]: value });
     }
 
@@ -40,10 +50,11 @@ export class BrowserStorage implements ExtendedStorageInterface<string, unknown,
      * Returns data from storage.
      *
      * @param key Storage key.
+     *
      * @returns Storage value.
      */
-    public async get(key: string): Promise<unknown> {
-        return (await this.storage.get(key))?.[key];
+    public async get(key: string): Promise<Data | undefined> {
+        return this.storage.get(key).then((data) => data[key] as Data);
     }
 
     /**
@@ -73,7 +84,7 @@ export class BrowserStorage implements ExtendedStorageInterface<string, unknown,
      */
     // TODO: Implement some kind of transaction to ensure atomicity, if possible
     // Note: We only use this method for Firefox if "Never Remember History" is enabled
-    public async setMultiple(data: Record<string, unknown>): Promise<boolean> {
+    public async setMultiple(data: Record<string, Data>): Promise<boolean> {
         try {
             await this.storage.set(data);
             return true;
@@ -99,8 +110,8 @@ export class BrowserStorage implements ExtendedStorageInterface<string, unknown,
      *
      * @returns Promise that resolves with the entire contents of the storage.
      */
-    public async entries(): Promise<Record<string, unknown>> {
-        return this.storage.get(null);
+    public async entries(): Promise<Record<string, Data>> {
+        return this.storage.get(null) as Promise<Record<string, Data>>;
     }
 
     /**
@@ -124,7 +135,7 @@ export class BrowserStorage implements ExtendedStorageInterface<string, unknown,
     }
 
     /**
-     * Clears storage.
+     * Clears the storage.
      */
     public async clear(): Promise<void> {
         await this.storage.clear();

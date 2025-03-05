@@ -21,6 +21,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import axios from 'axios';
+import FormData from 'form-data';
 
 import {
     PROJECT_ID,
@@ -41,7 +42,6 @@ const LOCALES_UPLOAD_URL = `${API_URL}/upload`;
 const LOCALES_DIR = path.resolve(__dirname, LOCALES_RELATIVE_PATH);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const FormData = require('form-data');
 
 const prepare = (locale) => {
     const formData = new FormData();

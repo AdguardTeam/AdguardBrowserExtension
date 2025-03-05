@@ -22,7 +22,7 @@ import 'dotenv/config';
 
 import { dangerousRules } from './samples/dangerous';
 import { safeRules } from './samples/safe';
-import { RuleSample } from './samples/samples-types';
+import { type RuleSample } from './samples/samples-types';
 
 /**
  * Result type.
@@ -97,6 +97,7 @@ class SafetyChecker {
      * Checks if a script text is safe or dangerous via OpenAI API.
      *
      * @param scriptText Script text to check.
+     *
      * @returns Response from the API.
      */
     async checkScriptText(scriptText: string): Promise<AIResponse> {
@@ -173,8 +174,9 @@ class SafetyChecker {
     /**
      * Builds the prompt for the OpenAI API.
      *
-     * @private
      * @returns Prompt string.
+     *
+     * @private
      */
     private static buildPrompt(): string {
         // Rule examples and explanation as system context
@@ -186,13 +188,6 @@ ${getRulesText(safeRules.slice(0, SAFE_RULES_COUNT))}
 ---`;
     }
 }
-
-if (!process.env.OPENAI_API_KEY) {
-    console.error('OPENAI_API_KEY environment variable is not set.');
-    process.exit(1);
-}
-
-const safetyChecker = new SafetyChecker(process.env.OPENAI_API_KEY);
 
 // // Example how the checker can be used to check one rule for safety. Uncomment to run.
 // const rule = 'AG_onLoad(function(){document.querySelectorAll(\'iframe[src^="https://hdfilmesonlinegratis.com/"][src*="php?url=http"]\').forEach(function(a){var b=a.getAttribute("src").split("?url=");b[1]&&a.setAttribute("src",b[1])})});';
@@ -208,4 +203,4 @@ const safetyChecker = new SafetyChecker(process.env.OPENAI_API_KEY);
 //     }
 // })();
 
-export { safetyChecker };
+export { SafetyChecker };

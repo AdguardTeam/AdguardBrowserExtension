@@ -25,45 +25,44 @@ import {
     MessageType,
     messageHasTypeAndDataFields,
     messageHasTypeField,
+    type MessageWithoutHandlerName,
+    type ChangeUserSettingMessage,
+    type AddAndEnableFilterMessage,
+    type DisableFilterMessage,
+    type ApplySettingsJsonMessage,
+    type SetFilteringLogWindowStateMessage,
+    type SaveUserRulesMessage,
+    type SetConsentedFiltersMessage,
+    type GetIsConsentedFilterMessage,
+    type LoadCustomFilterInfoMessage,
+    type SubscribeToCustomFilterMessage,
+    type RemoveAntiBannerFilterMessage,
+    type GetTabInfoForPopupMessage,
+    type ChangeApplicationFilteringPausedMessage,
+    type OpenAbuseTabMessage,
+    type OpenSiteReportTabMessage,
+    type ResetUserRulesForPageMessage,
+    type RemoveAllowlistDomainMessage,
+    type AddAllowlistDomainMessage,
+    type GetFilteringInfoByTabIdMessage,
+    type ClearEventsByTabIdMessage,
+    type RefreshPageMessage,
+    type AddUserRuleMessage,
+    type RemoveUserRuleMessage,
+    type SetPreserveLogStateMessage,
+    type SetEditorStorageContentMessage,
+    type CanEnableStaticFilterMv3Message,
+    type CanEnableStaticGroupMv3Message,
+    type ExtractMessageResponse,
+    type ValidMessageTypes,
+    type SetNotificationViewedMessage,
+    type UpdateFullscreenUserRulesThemeMessage,
+    type AddUrlToTrustedMessage,
+    type ExtractedMessage,
+    type OpenSafebrowsingTrustedMessage,
 } from '../../common/messages';
-import type {
-    MessageWithoutHandlerName,
-    ChangeUserSettingMessage,
-    AddAndEnableFilterMessage,
-    DisableFilterMessage,
-    ApplySettingsJsonMessage,
-    SetFilteringLogWindowStateMessage,
-    SaveUserRulesMessage,
-    SetConsentedFiltersMessage,
-    GetIsConsentedFilterMessage,
-    LoadCustomFilterInfoMessage,
-    SubscribeToCustomFilterMessage,
-    RemoveAntiBannerFilterMessage,
-    GetTabInfoForPopupMessage,
-    ChangeApplicationFilteringPausedMessage,
-    OpenAbuseTabMessage,
-    OpenSiteReportTabMessage,
-    ResetUserRulesForPageMessage,
-    RemoveAllowlistDomainMessage,
-    AddAllowlistDomainMessage,
-    GetFilteringInfoByTabIdMessage,
-    ClearEventsByTabIdMessage,
-    RefreshPageMessage,
-    AddUserRuleMessage,
-    RemoveUserRuleMessage,
-    SetPreserveLogStateMessage,
-    SetEditorStorageContentMessage,
-    CanEnableStaticFilterMv3Message,
-    CanEnableStaticGroupMv3Message,
-    ExtractMessageResponse,
-    ValidMessageTypes,
-    SetNotificationViewedMessage,
-    UpdateFullscreenUserRulesThemeMessage,
-    AddUrlToTrustedMessage,
-    ExtractedMessage,
-} from '../../common/messages';
-import { NotifierType } from '../../common/constants';
-import { CreateEventListenerResponse } from '../../background/services/event';
+import { type NotifierType } from '../../common/constants';
+import { type CreateEventListenerResponse } from '../../background/services/event';
 
 /**
  * @typedef {import('../../common/messages').MessageMap} MessageMap
@@ -76,12 +75,12 @@ export type LongLivedConnectionCallbackMessage = {
     /**
      * Type of notifier.
      */
-    type: NotifierType,
+    type: NotifierType;
 
     /**
      * Data of notifier.
      */
-    data: any,
+    data: any;
 };
 
 export const enum Page {
@@ -158,13 +157,16 @@ class Messenger {
 
             port.onMessage.addListener((message) => {
                 if (!messageHasTypeField(message)) {
-                    logger.warn('Received message in Messenger.createLongLivedConnection has no type field: ', message);
+                    logger.error(
+                        'Received message in Messenger.createLongLivedConnection has no type field: ',
+                        message,
+                    );
                     return;
                 }
 
                 if (message.type === MessageType.NotifyListeners) {
                     if (!messageHasTypeAndDataFields(message)) {
-                        logger.warn('Received message with type MessageType.NotifyListeners has no data: ', message);
+                        logger.error('Received message with type MessageType.NotifyListeners has no data: ', message);
                         return;
                     }
 
@@ -217,30 +219,31 @@ class Messenger {
     ): Promise<UnloadCallback> => {
         let listenerId: number | null;
 
-        const response = await this.sendMessage(
+        const response: CreateEventListenerResponse = await this.sendMessage(
             MessageType.CreateEventListener,
             { events },
-        ) as CreateEventListenerResponse;
+        );
+
         listenerId = response.listenerId;
 
         const onUpdateListeners = async (): Promise<void> => {
-            const updatedResponse = await this.sendMessage(
+            const updatedResponse: CreateEventListenerResponse = await this.sendMessage(
                 MessageType.CreateEventListener,
                 { events },
-            ) as CreateEventListenerResponse;
+            );
 
             listenerId = updatedResponse.listenerId;
         };
 
         browser.runtime.onMessage.addListener((message) => {
             if (!messageHasTypeField(message)) {
-                logger.warn('Received message in Messenger.createEventListener has no type field: ', message);
+                logger.error('Received message in Messenger.createEventListener has no type field: ', message);
                 return undefined;
             }
 
             if (message.type === MessageType.NotifyListeners) {
                 if (!messageHasTypeAndDataFields(message)) {
-                    logger.warn('Received message with type MessageType.NotifyListeners has no data: ', message);
+                    logger.error('Received message with type MessageType.NotifyListeners has no data: ', message);
                     return undefined;
                 }
 
@@ -343,6 +346,7 @@ class Messenger {
      * Sends a message to the background page to enable a filter by filter id.
      *
      * @param filterId Filter identifier.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async enableFilter(
@@ -355,6 +359,7 @@ class Messenger {
      * Sends a message to the background page to disable a filter by filter id.
      *
      * @param filterId Filter identifier.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async disableFilter(
@@ -367,6 +372,7 @@ class Messenger {
      * Sends a message to the background page to apply settings from a JSON object.
      *
      * @param json JSON object representing the settings to apply.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async applySettingsJson(
@@ -397,6 +403,7 @@ class Messenger {
      * Sends a message to the background page to set the filtering log window state.
      *
      * @param windowState State of the filtering log window.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async setFilteringLogWindowState(
@@ -427,6 +434,7 @@ class Messenger {
      * Sends a message to the background page to save user rules.
      *
      * @param value User rules value to save.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async saveUserRules(
@@ -457,6 +465,7 @@ class Messenger {
      * Sends a message to the background page to save the allowlist domains.
      *
      * @param value Allowlist domains value to save.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async saveAllowlist(
@@ -469,6 +478,7 @@ class Messenger {
      * Sends a message to the background page to mark a notification as viewed.
      *
      * @param withDelay Whether the notification should be marked as viewed after a delay.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async setNotificationViewed(
@@ -496,6 +506,7 @@ class Messenger {
      *
      * @param id Group identifier.
      * @param enabled Whether the group should be enabled or disabled.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async updateGroupStatus(
@@ -512,6 +523,7 @@ class Messenger {
      * Sends a message to the background page to set consented filters.
      *
      * @param filterIds List of filter identifiers.
+     *
      * @returns Promise that resolves after the message is sent.
      */
     async setConsentedFilters(
@@ -524,6 +536,7 @@ class Messenger {
      * Sends a message to the background page to check if a filter is consented.
      *
      * @param filterId Filter identifier.
+     *
      * @returns Promise that resolves with the result of the check.
      */
     async getIsConsentedFilter(
@@ -536,6 +549,7 @@ class Messenger {
      * Sends a message to the background page to check a custom filter URL.
      *
      * @param url Custom filter URL.
+     *
      * @returns Promise that resolves with the result of the check.
      */
     async checkCustomUrl(
@@ -880,6 +894,7 @@ class Messenger {
      * @param filterId Filter ID to check.
      *
      * @returns Promise that resolves with the result of the static filter check.
+     *
      * @throws Error If the filter is not static.
      */
     async canEnableStaticFilter(
@@ -926,7 +941,9 @@ class Messenger {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async addUrlToTrusted(url: AddUrlToTrustedMessage['data']['url']): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> {
+    async addUrlToTrusted(
+        url: AddUrlToTrustedMessage['data']['url'],
+    ): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> {
         return this.sendMessage(MessageType.AddUrlToTrusted, { url });
     }
 
@@ -991,6 +1008,18 @@ class Messenger {
      */
     async initializeFrameScript(): Promise<ExtractMessageResponse<MessageType.InitializeFrameScript>> {
         return this.sendMessage(MessageType.InitializeFrameScript);
+    }
+
+    /**
+     * Sends a message to the background page to mark url as trusted and ignore
+     * safebrowsing checks for it.
+     *
+     * @returns Promise that resolves with the initialization data for the frame script.
+     */
+    async openSafebrowsingTrusted(
+        url: OpenSafebrowsingTrustedMessage['data']['url'],
+    ): Promise<ExtractMessageResponse<MessageType.OpenSafebrowsingTrusted>> {
+        return this.sendMessage(MessageType.OpenSafebrowsingTrusted, { url });
     }
 }
 
