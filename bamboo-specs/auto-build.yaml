@@ -271,8 +271,13 @@ branch-overrides:
           - any-task:
               plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
               configuration:
-                commitMessage: 'skipci: Filters update & increment patch version'
                 selectedRepository: defaultRepository
+                commitMessage: 'skipci: Filters update & increment patch version'
+          - any-task:
+              plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
+              configuration:
+                selectedRepository: defaultRepository
+                tagName: autobuild-v${bamboo.inject.version}
           - inject-variables:
               # Doesn't matter which channel we use, because version is the same
               # for both channels.
