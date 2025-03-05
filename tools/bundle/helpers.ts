@@ -15,47 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-<<<<<<<< HEAD:tools/bundle/chrome/manifest.chrome.ts
-import {
-    BACKGROUND_OUTPUT,
-    DEVTOOLS_OUTPUT,
-    POPUP_OUTPUT,
-} from '../../../constants';
-import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
-
-export const chromeManifest = {
-    'browser_action': {
-        'default_icon': {
-            '19': 'assets/icons/on-19.png',
-            '38': 'assets/icons/on-38.png',
-        },
-        'default_title': '__MSG_name__',
-        'default_popup': `${POPUP_OUTPUT}.html`,
-    },
-    'web_accessible_resources': [
-        '/web-accessible-resources/*',
-    ],
-    'background': {
-        'page': `${BACKGROUND_OUTPUT}.html`,
-        'persistent': true,
-    },
-    'options_page': OPTIONS_PAGE,
-    'devtools_page': `${DEVTOOLS_OUTPUT}.html`,
-    'permissions': [
-        'tabs',
-        '<all_urls>',
-        'webRequest',
-        'webRequestBlocking',
-        'webNavigation',
-        'storage',
-        'unlimitedStorage',
-        'contextMenus',
-        'cookies',
-    ],
-    'optional_permissions': [
-        'privacy',
-    ],
-========
 
 import {
     type Browser,
@@ -80,5 +39,4 @@ export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
         throw new Error(`No env config for: "${env}"`);
     }
     return envConfig;
->>>>>>>> release/v5.2:tools/bundle/helpers.ts
 };

@@ -16,27 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-<<<<<<<< HEAD:Extension/src/background/services/custom-filters/custom-filters-service-mv3.ts
-import {
-    MAIN_FRAME_ID,
-    isHttpOrWsRequest,
-    tabsApi as tsWebExtTabsApi,
-} from '../../tswebextension';
-import { SUBSCRIBE_OUTPUT } from '../../../../../constants';
-import { NotifierType, BACKGROUND_TAB_ID } from '../../../common/constants';
-import {
-    MessageType,
-    LoadCustomFilterInfoMessage,
-    SubscribeToCustomFilterMessage,
-    RemoveAntiBannerFilterMessage,
-} from '../../../common/messages';
-import { CustomFilterApi, GetCustomFilterInfoResult } from '../../api/filters/custom';
-import { messageHandler } from '../../message-handler';
-import { listeners } from '../../notifier';
-import { engine } from '../../engine';
-import type { CustomFilterMetadata } from '../../schema';
-import { executeScript } from '../scripting/scripting-service-mv3';
-========
 import { NotifierType } from '../../../common/constants';
 import {
     MessageType,
@@ -49,7 +28,6 @@ import { messageHandler } from '../../message-handler';
 import { notifier } from '../../notifier';
 import { engine } from '../../engine';
 import type { CustomFilterMetadata } from '../../schema';
->>>>>>>> release/v5.2:Extension/src/background/services/custom-filters/custom-filters-service-mv2.ts
 
 /**
  * Service for processing events with custom filters.
@@ -63,11 +41,6 @@ export class CustomFiltersService {
         // eslint-disable-next-line max-len
         messageHandler.addListener(MessageType.SubscribeToCustomFilter, CustomFiltersService.onCustomFilterSubscription);
         messageHandler.addListener(MessageType.RemoveAntiBannerFilter, CustomFiltersService.onCustomFilterRemove);
-<<<<<<<< HEAD:Extension/src/background/services/custom-filters/custom-filters-service-mv3.ts
-
-        browser.webNavigation.onCommitted.addListener(CustomFiltersService.injectSubscriptionScript);
-========
->>>>>>>> release/v5.2:Extension/src/background/services/custom-filters/custom-filters-service-mv2.ts
     }
 
     /**
@@ -103,11 +76,7 @@ export class CustomFiltersService {
             enabled: true,
         });
 
-<<<<<<<< HEAD:Extension/src/background/services/custom-filters/custom-filters-service-mv3.ts
-        await engine.update();
-========
         engine.debounceUpdate();
->>>>>>>> release/v5.2:Extension/src/background/services/custom-filters/custom-filters-service-mv2.ts
 
         notifier.notifyListeners(NotifierType.CustomFilterAdded);
         return filterMetadata;
@@ -125,45 +94,7 @@ export class CustomFiltersService {
 
         const wasEnabled = await CustomFilterApi.removeFilter(filterId);
         if (wasEnabled) {
-<<<<<<<< HEAD:Extension/src/background/services/custom-filters/custom-filters-service-mv3.ts
-            await engine.update();
-        }
-    }
-
-    /**
-     * Inject custom filter subscription content script to tab.
-     *
-     * @param details OnCommitted event request details.
-     */
-    static async injectSubscriptionScript(details: WebNavigation.OnCommittedDetailsType): Promise<void> {
-        const { tabId, frameId } = details;
-
-        if (tabId === BACKGROUND_TAB_ID) {
-            return;
-        }
-
-        const frame = tsWebExtTabsApi.getTabFrame(tabId, frameId);
-
-        if (!frame) {
-            return;
-        }
-
-        const isDocumentFrame = frameId === MAIN_FRAME_ID;
-
-        if (!isDocumentFrame || !isHttpOrWsRequest(frame.url)) {
-            return;
-        }
-
-        try {
-            await executeScript(tabId, {
-                files: [`/${SUBSCRIBE_OUTPUT}.js`],
-                frameId,
-            });
-        } catch (e) {
-            // do nothing
-========
             engine.debounceUpdate();
->>>>>>>> release/v5.2:Extension/src/background/services/custom-filters/custom-filters-service-mv2.ts
         }
     }
 }

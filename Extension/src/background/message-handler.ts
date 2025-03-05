@@ -19,8 +19,6 @@ import { type Runtime } from 'webextension-polyfill';
 
 import { Engine, type EngineMessage } from 'engine';
 
-import { Engine, type EngineMessage } from 'engine';
-
 import {
     type Message,
     APP_MESSAGE_HANDLER_NAME,

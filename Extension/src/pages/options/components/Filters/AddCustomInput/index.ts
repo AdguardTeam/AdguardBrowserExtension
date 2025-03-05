@@ -16,8 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-<<<<<<<< HEAD:Extension/pages/gpc/index.ts
-import '@adguard/tswebextension/mv3/gpc';
-========
 export { AddCustomInput } from './AddCustomInput';
->>>>>>>> release/v5.2:Extension/src/pages/options/components/Filters/AddCustomInput/index.ts
