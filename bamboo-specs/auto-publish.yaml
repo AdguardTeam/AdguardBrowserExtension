@@ -43,12 +43,6 @@ AutoDeployAndPublish Release:
 
             # Deploying and publishing release in Chrome Web Store.
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
-    - checkout: browser-extension
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
-        configuration:
-          selectedRepository: '26051221'
-          tagName: v${bamboo.inject.version}-release
   requirements:
     - adg-docker: 'true'
   notifications:
@@ -112,12 +106,6 @@ AutoDeployAndPublish Beta:
             #   echo "Expedited review failed, trying normal review"
             #   ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
             # fi
-    - checkout: browser-extension
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
-        configuration:
-          selectedRepository: '26051221'
-          tagName: v${bamboo.inject.version}-beta
   requirements:
     - adg-docker: 'true'
   notifications:
