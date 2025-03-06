@@ -1,8 +1,8 @@
-! Checksum: 879myvUb3q74goUwcbgNcw
+! Checksum: CyLtFo4mYCY/oCTtdmdjTA
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.19.41
-! TimeUpdated: 2025-03-04T12:39:32+00:00
+! Version: 2.0.19.46
+! TimeUpdated: 2025-03-06T07:38:56+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -57,6 +57,8 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+microsoft.com##.rail-cta-prefix-container
+mobalytics.gg##main > div > div:has(> div > img[alt="Mobalytics"])
 sportsinjuryclinic.net###media_image-10
 zexy.net###kikaku_tklp_banner_generalTop
 scribd.com##div[style] > a[href^="https://www.scribd.com/oauth/signup"]:has(> span[style^="position:absolute;"])
@@ -111,7 +113,6 @@ digitalocean.com##div[class^="SocialSidebarStyles__StyledCTA-"]
 snapinst.app##.download-footer > .btn-app
 appbrain.com###pwa-install
 desport.ru##div[class^="PopupAppDesktop_"]
-donanimhaber.com##span[class^="open-with-app-"]
 iko-yo.net##.card--icon-text--app-link
 oferty.praca.gov.pl#%#//scriptlet('set-local-storage-item', 'mobileAppDialogVisited', 'true')
 health.harvard.edu##div[x-show="mobilePopupShow"]
@@ -3306,8 +3307,7 @@ reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#$#div[
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193153
 m.youtube.com#%#//scriptlet('trusted-click-element', '.ytm-bottom-sheet-overlay-renderer-container > .ytm-bottom-sheet-overlay-renderer-header[style*="m.youtube.com/static/open-app."] > ytm-button-renderer.icon-close button.yt-spec-button-shape-next', '', '2000')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178173
-! TODO: use scriptlet when it will be added - https://github.com/AdguardTeam/Scriptlets/issues/426
-wear.jp#%#(()=>{try{"undefined"!=typeof sessionStorage&&sessionStorage.setItem('status_of_app_redirect_half_modal_on_coordinate_list','{"displayed":true}')}catch(e){}})();
+wear.jp#%#//scriptlet('trusted-set-session-storage-item', 'status_of_app_redirect_half_modal_on_coordinate_list', '{"displayed":true}')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171775
 !+ NOT_OPTIMIZED
 3sat.de#$#.smartbanner { display: none !important; }
@@ -3324,6 +3324,8 @@ wear.jp#%#(()=>{try{"undefined"!=typeof sessionStorage&&sessionStorage.setItem('
 !
 ! Misc rules, removed during optimization. If some rules are in groups, no need to move them here
 !
+!+ NOT_OPTIMIZED
+donanimhaber.com##span[class^="open-with-app-"]
 !+ NOT_OPTIMIZED
 amazon.ae,amazon.agency,amazon.ai,amazon.al,amazon.at,amazon.az,amazon.ba,amazon.be,amazon.best,amazon.bg,amazon.by,amazon.ca,amazon.cc,amazon.ch,amazon.cl,amazon.cloud,amazon.club,amazon.cn,amazon.co,amazon.co.il,amazon.co.in,amazon.co.jp,amazon.co.ke,amazon.co.kr,amazon.co.nz,amazon.co.th,amazon.co.uk,amazon.co.za,amazon.com,amazon.com.ar,amazon.com.au,amazon.com.bd,amazon.com.br,amazon.com.cn,amazon.com.co,amazon.com.hk,amazon.com.mx,amazon.com.ng,amazon.com.np,amazon.com.pe,amazon.com.sa,amazon.com.sg,amazon.com.tr,amazon.com.tw,amazon.com.ua,amazon.com.vn,amazon.cz,amazon.de,amazon.desi,amazon.dev,amazon.digital,amazon.dk,amazon.ee,amazon.es,amazon.eu,amazon.fi,amazon.fr,amazon.ge,amazon.gg,amazon.gr,amazon.hk,amazon.hr,amazon.hu,amazon.icu,amazon.id,amazon.ie,amazon.in,amazon.io,amazon.ir,amazon.is,amazon.it,amazon.jp,amazon.kr,amazon.kz,amazon.life,amazon.link,amazon.lt,amazon.lv,amazon.ma,amazon.md,amazon.me,amazon.media,amazon.mk,amazon.ml,amazon.mn,amazon.mobi,amazon.mx,amazon.my,amazon.net,amazon.net.au,amazon.news,amazon.ng,amazon.nl,amazon.no,amazon.online,amazon.org,amazon.org.uk,amazon.pe,amazon.ph,amazon.pk,amazon.pl,amazon.pt,amazon.ro,amazon.rs,amazon.ru,amazon.sa,amazon.se,amazon.sg,amazon.sh,amazon.shop,amazon.si,amazon.site,amazon.sk,amazon.space,amazon.su,amazon.tech,amazon.tn,amazon.to,amazon.tv,amazon.tw,amazon.ua,amazon.uk,amazon.us,amazon.uz,amazon.vn,amazon.website,amazon.work,amazon.ws,amazon.xyz###native-app-upsell
 !+ NOT_OPTIMIZED

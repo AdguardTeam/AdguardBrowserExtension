@@ -1,13 +1,13 @@
-! Checksum: Vxt6e2YTtBJ0+WY9dvEv9w
+! Checksum: wb4flJLjrWagmAJlDGuVrQ
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.73
-! TimeUpdated: 2025-03-05T01:01:37+00:00
+! Version: 2.0.20.77
+! TimeUpdated: 2025-03-06T05:01:30+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0305.0
+! OriginalVersion: 2025.0305.4
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -114,7 +114,6 @@
 ||cyad.nate.com^
 ||ads.gamemeca.com^
 ||adcdn.gamemeca.com^
-||trendpick.shopping.naver.com^$document
 ||powerclick.about.co.kr^
 ||ads.tapzin.com^
 ||advod.sbs.co.kr^
@@ -1584,6 +1583,9 @@ jobkorea.co.kr##div[id^="Banner"]
 eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
+shopping.naver.com##ul[class^="compositeCardList_product_list_"] > li:has(div[class*="_advertisement_area__"])
+shopping.naver.com##div[class^="brandCRMProductList_"] li[class^="brandCRMProductList_item_"]:has(svg[class^="advertisementTag_"])
+search.naver.com##div[data-foryou-append-target] > .box:has(.store_ad)
 www.daum.net##div[style^="min-height:"].box_g
 m.ppomppu.co.kr##li[id$="_ad"]
 dogdrip.net##div[id^="npl-content-"]
@@ -1613,7 +1615,7 @@ namechart.kr##.container ~ .border-t:has(ins.adsbygoogle)
 dogdrip.net##.board-list .list > li:has(> #dogdripPowerLink, > #npl-list)
 m.search.naver.com##.square_tile_area .tile_area > .tile_list:has(._ad_icon)
 m.search.naver.com##.square_tile_area .tile_area > ._ad
-m.search.naver.com##li:is([data-nmb_hpl-doc-id*="_nad-"], [data-loc_plce-doc-id*="_nad-"], [data-slog-content*=":nad-"], [data-rbp_lpa-doc-id*="nad-"])
+search.naver.com##li:is([data-nmb_hpl-doc-id*="_nad-"], [data-loc_plce-doc-id*="_nad-"], [data-slog-content*=":nad-"], [data-rbp_lpa-doc-id*="nad-"])
 search.naver.com###sub_pack > .brand_new_ui.searching_view
 url.kr##body > header ~ .py-4 ~ .container:has(~  .mt-5)
 url.kr##.alert-danger ~ .container
@@ -2796,7 +2798,8 @@ koreaminecraft.net##tr.notice:not(:has(.wst_member_title))
 !
 ! DOMAIN-REFRESHER: START
 !
-ntnt.tv##a[data-testid="linkElement"][href^="http"][target="_blank"]:has(> wow-image)
+jusokorea5.com,jusokorea6.com,jusokorea7.com,jusokorea8.com,jusokorea9.com,jusokorea10.com,jusokorea11.com,jusokorea12.com,jusokorea13.com,jusokorea14.com,jusokorea15.com,jusokorea16.com,jusokorea17.com,jusokorea18.com##div[class*="-ad-banner"]
+ntnt1.tv##a[data-testid="linkElement"][href^="http"][target="_blank"]:has(> wow-image)
 aniwolf.com,aniwolf.com.bd,aniwolf.com.np##.banner-area
 anilife.app,anilife.com,anilife.com.bd,anilife.com.np,anilife.life,anilife.live,anilife.my,anilife.net##div[class] > a[class][href^="http"][target="_blank"]
 tvwiki13.com,tvwiki14.com,tvwiki15.com,tvwiki16.com,tvwiki17.com,tvwiki4.com,tvwiki18.com,tvwiki19.com,tvwiki20.com,tvwiki21.com,tvwiki22.com,tvwiki23.com,tvwiki24.com,tvwiki25.com##div[id] > ul:has(a[herf] > img[src^="/AD/"])
