@@ -1,8 +1,8 @@
-! Checksum: rQDJU1hjPNKngEtSGSgz4g
+! Checksum: MC1zwNW0t2z5hDkBnN/w9A
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.11.85
-! TimeUpdated: 2025-03-04T17:43:47+00:00
+! Version: 2.1.11.89
+! TimeUpdated: 2025-03-06T07:38:17+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -654,6 +654,12 @@ esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israel
 !
 ! NOTE: Specific rules
 !
+premium.sbs.co.kr##.buttonShare_w
+premium.sbs.co.kr##.shareButton_w
+deltiasgaming.com##.outer-container
+microsoft.com##a[data-bi-ecn="Share"]
+news.microsoft.com##.social-share-networks
+world-nuclear-news.org##.share_buttons_cont
 cabedelo.pb.gov.br##.containerNewspaper-social
 doisongphapluat.com.vn##.button-social
 thestandard.co##.hidden-xs:has(> iframe[src^="https://www.facebook.com"])
@@ -14751,6 +14757,8 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200030
+drive.weixin.qq.com#@#.shareWrapper
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198684
 iyf.tv#@#.share-top
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198332

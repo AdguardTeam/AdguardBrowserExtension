@@ -1,8 +1,8 @@
-! Checksum: 5tMSej0vUy0p7DetYQTshg
+! Checksum: zlH6W5ygJwdl8gcpVCB69g
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.51.49
-! TimeUpdated: 2025-03-04T22:37:53+00:00
+! Version: 2.0.51.58
+! TimeUpdated: 2025-03-06T06:39:02+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1738,6 +1738,8 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+mobisystems.com#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')
+yularihappysmile.com###adblock-modal
 moto100.de#%#//scriptlet('prevent-setTimeout', 'Adblocker')
 retail.ru##.news__c1
 btcut.io#%#//scriptlet('set-constant', 'Object.prototype.initUnblocker', 'noopFunc')
@@ -4389,6 +4391,8 @@ api.flocktory.com
 !
 ! SECTION: Popups - Regular rules
 !
+repubblica.it##gdwc-video-component[type="sticky"] > div.video-frame__wrapper
+e.mail.ru,octavius.mail.ru##.setting-promo
 m.youtube.com#%#//scriptlet('json-prune', 'overlay.bottomSheetOverlayRenderer', 'overlay.bottomSheetOverlayRenderer.displayImmediately')
 the-race.com##.viously-sticked
 softwarekeep.com#$#body { overflow: auto !important; }
@@ -12957,6 +12961,10 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+dorsetecho.co.uk###po-inline-article-above
+deltiasgaming.com###block-7
+wheresyoured.at##main + section:has(> div.section-cta__content)
+lifehacker.jp##div[class^="article_pArticle_mailMagazine"]
 doisongphapluat.com.vn##a[href^="https://news.google.com/publications/"]
 mathebibel.de##div[id^="overlay-newsletter"]
 mathebibel.de##.relative:has(> form.newsletter-form)
@@ -15139,7 +15147,7 @@ app.getbeamer.com##div.notificationsPrompt
 rustica.fr#?##insidedroite > div.mb-3:has(> form.inscription-nl)
 businessinsider.com,insider.com##.homepage-newsletter-module
 ground.news#?#body div.react-responsive-modal-overlay:has(> div.react-responsive-modal-modal > div.relative > div[class^="gap-"] > a#LSF-popup-cta-fathersDay23)
-dw.com##.dw-widget
+dw.com##.content-area .render-container:has(> .dw-widget > [src$="/61300799"][src^="/webapi/iframes/widget/"])
 my1035.com,xlcountry.com,kyssfm.com#?#section.bottom-components > div.modals:has(div.newsletter-overlay)
 fanday.net##.g-news-link
 zmina.info##.article_controls > a.subcribe
