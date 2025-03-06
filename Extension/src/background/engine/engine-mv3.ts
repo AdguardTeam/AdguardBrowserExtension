@@ -45,6 +45,7 @@ import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits
 import { UserRulesService } from '../services/userrules';
 import { emptyPreprocessedFilterList, NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
+import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -99,6 +100,11 @@ export class Engine implements TsWebExtensionEngine {
          *
          * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
          */
+        // If userScripts is available, we don't need to set local script rules
+        if (!chrome.userScripts) {
+            TsWebExtension.setLocalScriptRules(localScriptRules);
+        }
+
         const configuration = await Engine.getConfiguration();
 
         logger.info('Start tswebextension...');
