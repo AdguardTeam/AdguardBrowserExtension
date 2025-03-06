@@ -100,8 +100,8 @@ export class Engine implements TsWebExtensionEngine {
          *
          * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
          */
-        // If userScripts is available, we don't need to set local script rules
-        if (!chrome.userScripts) {
+        // If userScripts are available, we don't need to set local script rules.
+        if (!TsWebExtension.areUserScriptsSupported) {
             TsWebExtension.setLocalScriptRules(localScriptRules);
         }
 
