@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+### Fixed
+
+- Unable to paste text into user rules input field on Android [#3061]
+
+[#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
+
 ## [Unreleased]
 
 ### Added
