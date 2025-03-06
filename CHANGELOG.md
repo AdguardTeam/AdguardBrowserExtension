@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [5.1.62] - 2025-02-28
 
 ### Added
 
@@ -16,20 +16,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Minimum supported Chromium-based MV2 browsers version now 106+ for support
+  prerender requests.
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
 - Store filter data in ruleset files exclusively for the MV3 extension
   to allow updates where only the rulesets are modified.
-- Updated [@adguard/agtree] to v3.0.0-alpha.5.
-- Updated [@adguard/scriptlets] to v2.1.4.
-- Updated [@adguard/tsurlfilter] to v3.1.0-alpha.8.
-- Updated [@adguard/tswebextension] to v3.0.0-alpha.1.
+- Updated [@adguard/agtree] to v3.0.1.
+- Updated [@adguard/scriptlets] to v2.1.5.
+- Updated [@adguard/tsurlfilter] to v3.2.0.
+- Updated [@adguard/tswebextension] to v3.0.0.
 
 ### Fixed
 
-- Handling missing children data in the deserializer for certain nodes.
-- Wrong protection state is shown after navigating from excluded website to another one [#3048].
-- Once allowlisted tab considers all following websites in the tab as allowlisted [#3020].
+- Once allowlisted tab considers all following websites in the tab as allowlisted [#3020] [#3048].
 - Handling missing children data in the deserializer for certain nodes.
 - A rule from a disabled filter list disables another rule [#3002].
 - Notify user that rule was not applied because of the chrome limitations [#3004].
@@ -43,13 +43,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocked counter on the popup updates for blocked requests from other tabs [#3050].
 - `$popup,third-party` modifiers cause document blocking [#3012].
 - Don't show lines for absent metadata when adding a custom filter [#3057].
+- Filtering log does not observe tab changes, openings, or closings.
+- Scriptlets and scripts are executed too late on website reload or navigation in MV2 [#2855].
+- Do not inject cosmetic rules into the Assistant frame in MV3.
 
 ### Removed
 
 - Storage classes, because they were moved to the `@adguard/tswebextension` package.
 
-<!-- TODO: place correct last released version from master, i.e. v5.0.xxx -->
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
+[5.1.62]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...v5.1.62
+[#2855]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2855
 [#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
 [#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
 [#3002]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3002

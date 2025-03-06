@@ -28,7 +28,7 @@ import {
 
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import { FiltersStorage } from '../storages';
 import {
     FiltersApi,
@@ -38,8 +38,8 @@ import {
     DocumentBlockApi,
     network,
     filteringLogApi,
-    CustomFilterApi,
 } from '../api';
+import { NotifierType } from '../../common/constants';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -89,7 +89,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
@@ -107,7 +107,7 @@ export class Engine implements TsWebExtensionEngine {
         const rulesCount = this.api.getRulesCount();
         logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
-        listeners.notifyListeners(listeners.RequestFilterUpdated);
+        notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
@@ -122,27 +122,34 @@ export class Engine implements TsWebExtensionEngine {
 
         const filters: ConfigurationMV2['filters'] = [];
 
-        const tasks = enabledFilters
-            // TODO: Remove filtering when support of custom filters will be added back.
-            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId))
-            .map(async (filterId) => {
-                try {
-                    const [content, sourceMap] = await Promise.all([
-                        FiltersStorage.get(filterId),
-                        FiltersStorage.getSourceMap(filterId),
-                    ]);
-                    const trusted = FiltersApi.isFilterTrusted(filterId);
+        const tasks = enabledFilters.map(async (filterId) => {
+            try {
+                const [content, sourceMap] = await Promise.all([
+                    FiltersStorage.getFilterList(filterId),
+                    FiltersStorage.getSourceMap(filterId),
+                ]);
 
-                    filters.push({
-                        filterId,
-                        content,
-                        trusted,
-                        sourceMap,
-                    });
-                } catch (e) {
-                    logger.error(`Failed to get filter ${filterId}`, e);
+                if (!content) {
+                    logger.error(`Failed to get filter ${filterId}`);
+                    return;
                 }
-            });
+
+                if (!sourceMap) {
+                    logger.warn(`Source map is not found for filter ${filterId}`);
+                }
+
+                const trusted = FiltersApi.isFilterTrusted(filterId);
+
+                filters.push({
+                    filterId,
+                    content,
+                    trusted,
+                    sourceMap,
+                });
+            } catch (e) {
+                logger.error(`Failed to get filter ${filterId}`, e);
+            }
+        });
 
         await Promise.all(tasks);
 

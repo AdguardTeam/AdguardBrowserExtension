@@ -15,344 +15,195 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import zod from 'zod';
-
 import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextension';
 
-import { FILTER_LIST_EXTENSION } from '../../common/constants';
-import { logger } from '../../common/logger';
-import { getErrorMessage } from '../../common/error';
-
 import { hybridStorage } from './shared-instances';
-
-/**
- * Storage prefix for raw preprocessed filter lists.
- */
-export const FILTER_KEY_PREFIX = 'filterrules_';
-
-/**
- * Storage prefix for binary serialized preprocessed filter lists.
- */
-export const BINARY_FILTER_KEY_PREFIX = 'binaryfilterrules_';
-
-/**
- * Storage prefix for conversion map.
- * Conversion map is used to get original user rules from the preprocessed filter list.
- */
-export const CONVERSION_MAP_PREFIX = 'conversionmap_';
-
-/**
- * Storage prefix for source map.
- * Source map is used to map binary serialized rules to the raw preprocessed filter list.
- */
-export const SOURCE_MAP_PREFIX = 'sourcemap_';
-
-/**
- * Schema for the conversion map.
- */
-const CONVERSION_MAP_SCHEMA = zod.record(zod.string(), zod.string()).default({});
-
-/**
- * Schema for the source map.
- */
-const SOURCE_MAP_SCHEMA = zod.record(zod.string(), zod.number()).default({});
-
-/**
- * Regular expression that helps to extract filter id from the key.
- */
-const RE_FILTER_KEY = new RegExp(
-    `^(${FILTER_KEY_PREFIX})(?<filterId>\\d+)${FILTER_LIST_EXTENSION}$`,
-);
 
 /**
  * Encapsulates interaction with stored filter rules.
  */
 export class FiltersStorage {
+    public static readonly KEY_COMBINER = '_';
+
     /**
-     * Sets specified filter list to {@link storage}.
+     * Key for the filter list.
+     * Should be the same as in `PreprocessedFilterList`.
+     */
+    public static readonly KEY_FILTER_LIST = 'filterList';
+
+    public static readonly KEY_RAW_FILTER_LIST = 'rawFilterList';
+
+    public static readonly KEY_CONVERSION_MAP = 'conversionMap';
+
+    public static readonly KEY_SOURCE_MAP = 'sourceMap';
+
+    /**
+     * Returns key with prefix.
+     * Key format: <prefix>_<filterId>, e.g. `filterList_1`.
+     *
+     * @param keyPrefix Key prefix.
+     * @param filterId Filter id.
+     *
+     * @returns Key with prefix.
+     */
+    public static getKey(keyPrefix: string, filterId: number | string): string {
+        return `${keyPrefix}${FiltersStorage.KEY_COMBINER}${filterId}`;
+    }
+
+    /**
+     * Sets specified filter list with the specified ID in the storage.
      *
      * @param filterId Filter id.
-     * @param filter Filter rules strings.
+     * @param filter Raw filter list or preprocessed filter list.
+     *
+     * @throws Error if the transaction failed.
      */
-    static async set(filterId: number, filter: string[]): Promise<void> {
-        try {
-            const data = FiltersStorage.prepareFilterForStorage(filterId, filter);
-            const succeeded = await hybridStorage.setMultiple(data);
+    static async set(filterId: number, filter: string | PreprocessedFilterList): Promise<void> {
+        const data: Record<string, unknown> = {};
 
-            if (!succeeded) {
-                throw new Error('Transaction failed');
-            }
-        } catch (e) {
-            logger.error(`Failed to set filter list for filter id ${filterId}, got error:`, getErrorMessage(e));
-            throw e;
+        let preprocessed: PreprocessedFilterList;
+
+        if (typeof filter === 'string') {
+            preprocessed = FilterListPreprocessor.preprocess(filter);
+        } else {
+            preprocessed = filter;
+        }
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const [key, value] of Object.entries(preprocessed)) {
+            const storageKey = FiltersStorage.getKey(key, filterId);
+            data[storageKey] = value;
+        }
+
+        const succeeded = await hybridStorage.setMultiple(data);
+
+        if (!succeeded) {
+            throw new Error('Transaction failed');
         }
     }
 
     /**
-     * Helper method to get data to set to the storage for the specified filter list.
-     *
-     * @param filterId Filter id.
-     * @param filter Filter rules strings.
-     *
-     * @returns Record with data to set to the storage.
-     */
-    static prepareFilterForStorage(filterId: number, filter: string[]): Record<string, unknown> {
-        const {
-            rawFilterList,
-            filterList,
-            conversionMap,
-            sourceMap,
-        } = FilterListPreprocessor.preprocess(filter.join('\n'));
-
-        const result: Record<string, unknown> = {
-            [FiltersStorage.getFilterKey(filterId)]: rawFilterList,
-            [FiltersStorage.getBinaryFilterKey(filterId)]: filterList,
-            [FiltersStorage.getConversionMapKey(filterId)]: conversionMap,
-            [FiltersStorage.getSourceMapKey(filterId)]: sourceMap,
-        };
-
-        return result;
-    }
-
-    /**
-     * Checks if specified filter list is in {@link hybridStorage}.
+     * Checks if the filter list with the specified ID exists in the storage.
      *
      * @param filterId Filter id.
      *
-     * @returns Promise, resolved with `true` if filter list is in storage, `false` otherwise.
+     * @returns `true` if the filter list exists, `false` otherwise.
      */
     public static async has(filterId: number): Promise<boolean> {
-        const key = FiltersStorage.getFilterKey(filterId);
-        return hybridStorage.has(key);
+        const storageKey = FiltersStorage.getKey(FiltersStorage.KEY_FILTER_LIST, filterId);
+        return hybridStorage.has(storageKey);
     }
 
     /**
-     * Returns specified filter list from {@link hybridStorage}.
-     *
-     * @param filterId Filter id.
-     * @param logError If `true`, logs error if it occurs.
-     *
-     * @returns Promise, resolved with filter rules strings.
-     *
-     * @throws Error, if filter list data is not valid.
-     */
-    static async get(filterId: number, logError = true): Promise<Uint8Array[]> {
-        try {
-            const binaryFilterKey = FiltersStorage.getBinaryFilterKey(filterId);
-            const data = await hybridStorage.get(binaryFilterKey);
-            return zod.array(zod.instanceof(Uint8Array)).parse(data);
-        } catch (e) {
-            if (logError) {
-                logger.error(
-                    `Failed to get binary filter data for filter id ${filterId}, got error:`,
-                    getErrorMessage(e),
-                );
-            }
-            throw e;
-        }
-    }
-
-    /**
-     * Returns raw preprocessed filter list for the specified filter id.
+     * Gets the whole preprocessed filter list for the specified filter ID.
      *
      * @param filterId Filter id.
      *
-     * @returns Promise, resolved with preprocessed filter list.
-     *
-     * @throws Error, if filter list data is not valid.
+     * @returns Preprocessed filter list or `undefined` if the filter list does not exist.
      */
-    static async getPreprocessedFilterList(filterId: number): Promise<string> {
-        try {
-            const filterKey = FiltersStorage.getFilterKey(filterId);
-            const data = await hybridStorage.get(filterKey);
-            return zod.string().parse(data);
-        } catch (e) {
-            // eslint-disable-next-line max-len
-            logger.error(`Failed to get preprocessed raw filter list for filter id ${filterId}, got error:`, getErrorMessage(e));
-            throw e;
-        }
-    }
-
-    /**
-     * Returns source map for the specified filter list.
-     *
-     * @param filterId Filter id.
-     *
-     * @returns Promise, resolved with source map.
-     *
-     * @throws Error, if source map data is not valid.
-     */
-    static async getSourceMap(filterId: number): Promise<Record<string, number>> {
-        try {
-            const sourceMapKey = FiltersStorage.getSourceMapKey(filterId);
-            const data = await hybridStorage.get(sourceMapKey);
-            return SOURCE_MAP_SCHEMA.parse(data);
-        } catch (e) {
-            // eslint-disable-next-line max-len
-            logger.error(`Failed to get source map for filter id '${filterId}', ${filterId}, got error:`, getErrorMessage(e));
-            throw e;
-        }
-    }
-
-    /**
-     * Returns conversion map for the specified filter list.
-     *
-     * @param filterId Filter id.
-     *
-     * @returns Promise, resolved with conversion map.
-     *
-     * @throws Error, if conversion map data is not valid.
-     */
-    static async getConversionMap(filterId: number): Promise<Record<string, string>> {
-        try {
-            const conversionMapKey = FiltersStorage.getConversionMapKey(filterId);
-            const data = await hybridStorage.get(conversionMapKey);
-            return CONVERSION_MAP_SCHEMA.parse(data);
-        } catch (e) {
-            logger.error(`Failed to get conversion map for filter id ${filterId}, got error:`, getErrorMessage(e));
-            throw e;
-        }
-    }
-
-    /**
-     * Returns original user rules from {@link hybridStorage}.
-     *
-     * @param filterId Filter id.
-     *
-     * @returns Promise, resolved with original user rules strings.
-     *
-     * @throws Error, if filter list data is not valid.
-     */
-    static async getOriginalRules(filterId: number): Promise<string[]> {
-        const [rawFilterList, conversionMap] = await Promise.all([
-            FiltersStorage.getPreprocessedFilterList(filterId),
+    static async get(filterId: number): Promise<PreprocessedFilterList | undefined> {
+        // eslint-disable-next-line prefer-const
+        let [rawFilterList, filterList, conversionMap, sourceMap] = await Promise.all([
+            FiltersStorage.getRawFilterList(filterId),
+            FiltersStorage.getFilterList(filterId),
             FiltersStorage.getConversionMap(filterId),
+            FiltersStorage.getSourceMap(filterId),
         ]);
 
-        return FilterListPreprocessor.getOriginalRules({
-            rawFilterList,
-            conversionMap,
-        });
-    }
-
-    /**
-     * Returns original filter list text for the specified filter id.
-     *
-     * @param filterId Filter id.
-     *
-     * @returns Promise, resolved with original filter list text.
-     *
-     * @throws Error, if filter list data is not valid.
-     */
-    static async getOriginalFilterListText(filterId: number): Promise<string> {
-        const [rawFilterList, conversionMap] = await Promise.all([
-            FiltersStorage.getPreprocessedFilterList(filterId),
-            FiltersStorage.getConversionMap(filterId),
-        ]);
-
-        return FilterListPreprocessor.getOriginalFilterListText({
-            rawFilterList,
-            conversionMap,
-        });
-    }
-
-    /**
-     * Get all filter data, including conversion map and source map.
-     *
-     * @param filterId Filter id.
-     *
-     * @returns Promise, resolved with filter data or `null` if filter is not
-     * found or some part of the data is missing.
-     */
-    static async getAllFilterData(filterId: number): Promise<PreprocessedFilterList | null> {
-        try {
-            const [filterList, rawFilterList, conversionMap, sourceMap] = await Promise.all([
-                FiltersStorage.get(filterId),
-                FiltersStorage.getPreprocessedFilterList(filterId),
-                FiltersStorage.getConversionMap(filterId),
-                FiltersStorage.getSourceMap(filterId),
-            ]);
-
-            return {
-                filterList,
-                rawFilterList,
-                conversionMap,
-                sourceMap,
-            };
-        } catch (e) {
-            logger.error('Failed to get all filter data', e);
-
-            return null;
+        if (rawFilterList === undefined || filterList === undefined || sourceMap === undefined) {
+            return undefined;
         }
+
+        if (conversionMap === undefined) {
+            conversionMap = {};
+        }
+
+        return {
+            filterList,
+            rawFilterList,
+            conversionMap,
+            sourceMap,
+        };
     }
 
     /**
-     * Removes specified filter list from {@link hybridStorage}.
+     * Removes the filter list with the specified ID from the storage.
+     *
+     * @note This method does nothing in MV3 version if the filter ID is a static filter ID,
+     * because static filters are managed by TSWebExtension.
      *
      * @param filterId Filter id.
      */
     static async remove(filterId: number): Promise<void> {
         await hybridStorage.removeMultiple([
-            FiltersStorage.getBinaryFilterKey(filterId),
-            FiltersStorage.getFilterKey(filterId),
-            FiltersStorage.getConversionMapKey(filterId),
-            FiltersStorage.getSourceMapKey(filterId),
+            FiltersStorage.getKey(FiltersStorage.KEY_FILTER_LIST, filterId),
+            FiltersStorage.getKey(FiltersStorage.KEY_RAW_FILTER_LIST, filterId),
+            FiltersStorage.getKey(FiltersStorage.KEY_CONVERSION_MAP, filterId),
+            FiltersStorage.getKey(FiltersStorage.KEY_SOURCE_MAP, filterId),
         ]);
     }
 
     /**
-     * Returns {@link hybridStorage} key from specified filter list.
+     * Gets the raw filter list for the specified filter ID.
      *
      * @param filterId Filter id.
      *
-     * @returns Storage key from specified filter list.
+     * @returns Raw filter list or `undefined` if the filter list does not exist.
      */
-    private static getFilterKey(filterId: number): string {
-        return `${FILTER_KEY_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    public static async getRawFilterList(
+        filterId: number,
+    ): Promise<PreprocessedFilterList['rawFilterList'] | undefined> {
+        const storageKey = FiltersStorage.getKey(FiltersStorage.KEY_RAW_FILTER_LIST, filterId);
+        return hybridStorage.get(
+            storageKey,
+        ) as Promise<PreprocessedFilterList[typeof FiltersStorage.KEY_RAW_FILTER_LIST] | undefined>;
     }
 
     /**
-     * Helper method to extract filter id from the key.
-     *
-     * @param key Storage key.
-     *
-     * @returns Filter id or `null` if the key is invalid.
-     */
-    static extractFilterIdFromFilterKey(key: string): number | null {
-        const match = key.match(RE_FILTER_KEY);
-        return match ? parseInt(match.groups?.filterId ?? '', 10) : null;
-    }
-
-    /**
-     * Returns {@link hybridStorage} key to conversion map from specified filter list.
+     * Gets the byte array of the filter list for the specified filter ID.
      *
      * @param filterId Filter id.
      *
-     * @returns Storage key to conversion map from specified filter list.
+     * @returns Byte array of the filter list or `undefined` if the filter list does not exist.
      */
-    private static getConversionMapKey(filterId: number): string {
-        return `${CONVERSION_MAP_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    public static async getFilterList(
+        filterId: number,
+    ): Promise<PreprocessedFilterList['filterList'] | undefined> {
+        const storageKey = FiltersStorage.getKey(FiltersStorage.KEY_FILTER_LIST, filterId);
+        return hybridStorage.get(
+            storageKey,
+        ) as Promise<PreprocessedFilterList[typeof FiltersStorage.KEY_FILTER_LIST] | undefined>;
     }
 
     /**
-     * Returns {@link hybridStorage} key to source map from specified filter list.
+     * Gets the conversion map for the specified filter ID.
      *
      * @param filterId Filter id.
      *
-     * @returns Storage key to source map from specified filter list.
+     * @returns Conversion map or `undefined` if the filter list does not exist.
      */
-    private static getSourceMapKey(filterId: number): string {
-        return `${SOURCE_MAP_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    public static async getConversionMap(
+        filterId: number,
+    ): Promise<PreprocessedFilterList['conversionMap'] | undefined> {
+        const storageKey = FiltersStorage.getKey(FiltersStorage.KEY_CONVERSION_MAP, filterId);
+        return hybridStorage.get(
+            storageKey,
+        ) as Promise<PreprocessedFilterList[typeof FiltersStorage.KEY_CONVERSION_MAP] | undefined>;
     }
 
     /**
-     * Returns {@link hybridStorage} key to binary filter list from specified filter list.
+     * Gets the source map for the specified filter ID.
      *
      * @param filterId Filter id.
      *
-     * @returns Storage key to binary filter list from specified filter list.
+     * @returns Source map or `undefined` if the filter list does not exist.
      */
-    private static getBinaryFilterKey(filterId: number): string {
-        return `${BINARY_FILTER_KEY_PREFIX}${filterId}${FILTER_LIST_EXTENSION}`;
+    public static async getSourceMap(
+        filterId: number,
+    ): Promise<PreprocessedFilterList['sourceMap'] | undefined> {
+        const storageKey = FiltersStorage.getKey(FiltersStorage.KEY_SOURCE_MAP, filterId);
+        return hybridStorage.get(
+            storageKey,
+        ) as Promise<PreprocessedFilterList[typeof FiltersStorage.KEY_SOURCE_MAP] | undefined>;
     }
 }

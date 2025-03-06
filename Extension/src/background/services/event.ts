@@ -17,12 +17,13 @@
  */
 import browser, { Runtime } from 'webextension-polyfill';
 
-import { listeners } from '../notifier';
+import { notifier } from '../notifier';
 import { messageHandler } from '../message-handler';
 import {
     RemoveListenerMessage,
     CreateEventListenerMessage,
     MessageType,
+    NotifyListenersMessage,
 } from '../../common/messages';
 
 export type CreateEventListenerResponse = {
@@ -67,14 +68,18 @@ export class EventService {
     ): CreateEventListenerResponse {
         const { events } = message.data;
 
-        const listenerId = listeners.addSpecifiedListener(events, (...args) => {
+        const listenerId = notifier.addSpecifiedListener(events, (...data) => {
             const sender = this.eventListeners.get(listenerId);
-            if (sender) {
-                browser.tabs.sendMessage(sender.tab.id, {
-                    type: MessageType.NotifyListeners,
-                    data: args,
-                });
+            if (!sender) {
+                return;
             }
+
+            const message: NotifyListenersMessage = {
+                type: MessageType.NotifyListeners,
+                data,
+            };
+
+            browser.tabs.sendMessage(sender.tab.id, message);
         });
 
         this.eventListeners.set(listenerId, sender);
@@ -89,7 +94,7 @@ export class EventService {
     private removeEventListener(message: RemoveListenerMessage): void {
         const { listenerId } = message.data;
 
-        listeners.removeListener(listenerId);
+        notifier.removeListener(listenerId);
         this.eventListeners.delete(listenerId);
     }
 }
