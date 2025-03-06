@@ -269,6 +269,12 @@ branch-overrides:
                   # publish zip versions of the extension.
                   mv build/beta/chrome-mv3.zip artifacts/chrome-mv3-beta.zip
                   mv build/release/chrome-mv3.zip artifacts/chrome-mv3-release.zip
+          - inject-variables:
+              # Doesn't matter which channel we use, because version is the same
+              # for both channels.
+              file: build/release/build.txt
+              scope: RESULT
+              namespace: inject
           - any-task:
               plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
               configuration:
@@ -279,12 +285,6 @@ branch-overrides:
               configuration:
                 selectedRepository: defaultRepository
                 tagName: autobuild-v${bamboo.inject.version}
-          - inject-variables:
-              # Doesn't matter which channel we use, because version is the same
-              # for both channels.
-              file: build/release/build.txt
-              scope: RESULT
-              namespace: inject
         final-tasks:
           - script:
               interpreter: SHELL
