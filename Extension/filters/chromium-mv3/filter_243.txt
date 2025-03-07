@@ -1,13 +1,13 @@
-! Checksum: /rohRL2ZEOaVKBJvv6I1Lg
+! Checksum: ldycvDM6oAAd6d7oDmCJfg
 ! Title: Frellwit's Swedish Filter
 ! Description: Filter that aims to remove regional Swedish ads, tracking, social media, annoyances, sponsored articles etc.
-! Version: 2.0.20.96
-! TimeUpdated: 2025-03-05T17:01:41+00:00
+! Version: 2.0.20.97
+! TimeUpdated: 2025-03-06T09:02:14+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Frellwit's Swedish Filter
 ! Expires: 4 days
-! Last modified: 2025-03-05 17:44:51 CET
+! Last modified: 2025-03-06 07:28:40 CET
 ! Homepage: https://github.com/lassekongo83/Frellwits-filter-lists
 ! Description: A filter for uBlock Origin that aims to remove regional Swedish ads, tracking, annoyances, scams + badware, and unnecessary bloat.
 ! License: GPL3 - https://github.com/lassekongo83/Frellwits-filter-lists/blob/master/LICENSE
@@ -308,7 +308,7 @@ businesstories.se#$?#.carousel-item:has(.sponsored) { remove: true; }
 businesstories.se##:is(.single-equal, .single-loop):has(.sponsored)
 bussmagasinet.se###page > div:not(.left):not(.right)
 bussmagasinet.se###titlebanner
-bussmagasinet.se,byggteknikforlaget.se,dialasen.com,torbjornstips.se,backpacking.se,kanadaresa.se,usa.se,sporthalsa.se,ravarumarknaden.se,livetsgoda.se,opulens.se,radiotreby.se,nyadagbladet.se,fiskemagasinet.se,etunanytt.se##.textwidget a[target="_blank"]
+bussmagasinet.se,byggteknikforlaget.se,dialasen.com,torbjornstips.se,backpacking.se,kanadaresa.se,usa.se,sporthalsa.se,ravarumarknaden.se,livetsgoda.se,opulens.se,radiotreby.se,nyadagbladet.se,fiskemagasinet.se##.textwidget a[target="_blank"]
 butiksnytt.se##a[target="_blank"]:not([href^="/"], [href*="butiksnytt.se"]), #tdi_57
 butikstrender.se##a[target="_blank"] picture, div[data-settings*="sticky"], div[id^="butik-"]
 butikstrender.se#?#body > .elementor > .elementor-section:first-child:contains(Annons)
@@ -496,7 +496,6 @@ etc.se#$#:is(.prose .hidden, .prose.hidden) { display:unset!important; }
 etc.se##[data-controller="ad-container"], .bg-gradient-white
 etfmarknaden.se##.mvp-side-widget a[_blank\"]
 etn.se,uppsalanyheter.se,rotter.se##.banneritem
-etunanytt.se##.textwidget:has(a[target="_blank"], img[alt="kfum"])
 etunawebben.se#%#//scriptlet('ubo-nostif.js', 'ad')
 europaportalen.se##.view-multiply-top, .frontpage-multiply-main, .right-column-multiply-container
 eventeffect.se###secondary > .widget:nth-child(2)
@@ -636,6 +635,7 @@ freeride.se#?#.mark:contains(/spons/i):upward(.post)
 freeride.se##.sidebar-front .widget_text.dark ~ p
 freeride.se##.visible-xs:has(a[href*="casino"])
 freeride.se,gamereactor.se,happyride.se,hockeyettan.se##.sponsor
+fria.nu,stockholmsfria.se#?#.holidAds:upward(1)
 fria.nu,stockholmsfria.se##[class*="annonser"], #cboxOverlay, #cboxWrapper, a[href*="banner"][target]
 frihetsnytt.se##a[href^="https://frihetsnytt.se/annonsera"]
 frihetsnytt.se#?#.td-block-title-wrap:contains(/annons/i):upward(1)
@@ -823,7 +823,7 @@ karinrahm.se#$#.thb-page-transition-on { opacity:1!important }
 karlskogavaxer.se#?#.elementor-heading-title:contains(/annons/i):upward(.elementor-column)
 karriarlakare.se##a[target][onclick], #cliSettingsPopup
 karriarlakare.se#?#.annons-label:upward(a)
-karriarlakare.se,livinguppsala.se,battrestadsdel.se,butikstrender.se,forskning.se,vardfokus.se,varvat.se,smaspararguiden.se,sjostadsbladet.se,tidningenridsport.se,cookaholic.se,vinliv.se,raa.se,svenskfilmdatabas.se,hockeybladet.nu,frihetsnytt.se,alltomhusbilen.se,etunanytt.se###cookie-law-info-bar
+karriarlakare.se,livinguppsala.se,battrestadsdel.se,butikstrender.se,forskning.se,vardfokus.se,varvat.se,smaspararguiden.se,sjostadsbladet.se,tidningenridsport.se,cookaholic.se,vinliv.se,raa.se,svenskfilmdatabas.se,hockeybladet.nu,frihetsnytt.se,alltomhusbilen.se###cookie-law-info-bar
 kartor.eniro.se##.e-banner
 kb.se,dansportalen.se,hh.se,vr.se,viss.nu#$#body { overflow:unset!important; position:unset!important; }
 kb.se,dansportalen.se,hh.se,vr.se,viss.nu,tidningencurie.se##.sv-marketplace-sitevision-cookie-consent, .sv-cookie-consent-modal, .env-modal-dialog__backdrop, .env-modal-dialog__backdrop--in
@@ -2087,6 +2087,7 @@ zeromagazine.nu##div[id^="ads"]
 /fb_pixel.js
 /featured/promotion$domain=borskollen.se
 /filarkiv/bilderbanner/*
+/files/annonser$domain=fria.nu|stockholmsfria.se
 /firebase-analytics.js$domain=stoppapressarna.se|zeinaskitchen.se|jennysmatblogg.nu|filippoon.se|lindasbakskola.se
 /firehose/batch
 /flex-mag/js/dfp.js
@@ -2428,7 +2429,7 @@ zeromagazine.nu##div[id^="ads"]
 /qc_cmp$domain=reseguiden.se
 /questback.popup$script
 /rantekartan$subdocument,domain=expressen.se
-/raven$script,domain=mitti.se|travnet.se|nyheter24.se|tyda.se|devote.se|egoinas.se|hemtrevligt.se|alltforforaldrar.se|familjeliv.se|brollopstorget.se|blogg.se|nouw.com|lchfarkivet.se|fotbolltransfers.com|norrahalland.se|svenskgolf.se|vimedbarn.se|modette.se|vf.se|hjotidning.se|kt.se|kt-kuriren.se|sla.se|mariestadstidningen.se|filipstadstidning.se|fryksdalsbygden.se|nwt.se|arvikanyheter.se|nkp.se|saffletidningen.se|provinstidningen.se|dalslanningen.se|nlt.se|skaraborgsbygden.se|alltomnorrtalje.se|fragbite.se|ljudochbild.se|vk.se|folkbladet.nu|nordsverige.se|mellanbygden.nu|vasterbottningen.se|lokaltidningen.nu
+/raven$script,domain=mitti.se|travnet.se|nyheter24.se|tyda.se|devote.se|egoinas.se|hemtrevligt.se|alltforforaldrar.se|familjeliv.se|brollopstorget.se|blogg.se|nouw.com|lchfarkivet.se|fotbolltransfers.com|norrahalland.se|svenskgolf.se|vimedbarn.se|modette.se|vf.se|hjotidning.se|kt.se|kt-kuriren.se|sla.se|mariestadstidningen.se|filipstadstidning.se|fryksdalsbygden.se|nwt.se|arvikanyheter.se|nkp.se|saffletidningen.se|provinstidningen.se|dalslanningen.se|nlt.se|skaraborgsbygden.se|alltomnorrtalje.se|fragbite.se|ljudochbild.se|vk.se|folkbladet.nu|nordsverige.se|mellanbygden.nu|vasterbottningen.se|lokaltidningen.nu|svenskafans.com
 /recommendations$xmlhttprequest,domain=expressen.se
 /registerhit?$image
 /renderBanner.do?zoneId=
@@ -2441,7 +2442,6 @@ zeromagazine.nu##div[id^="ads"]
 /scripts/js3caf.js
 /scripts/leeads-
 /scripts/opt/view.analytics.js
-/script.js$third-party,domain=spelkritik.se
 /seenthis-hub$script
 /se-ads-microservice
 /se-calico/bundle.js

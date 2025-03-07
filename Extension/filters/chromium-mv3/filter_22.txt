@@ -1,8 +1,8 @@
-! Checksum: i1B1zdWk2gg/p+etheSIHg
+! Checksum: OGfmcMJCZ62va7EM1vGfzA
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.11.24
-! TimeUpdated: 2025-03-05T22:39:55+00:00
+! Version: 2.0.11.25
+! TimeUpdated: 2025-03-06T13:40:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -25,6 +25,7 @@
 ! SECTION: Widgets (sougo RSS) - Blogroll
 !
 ! NOTE: Blogroll generic
+||re.trigs-sockets.com^
 ||feedgrabbr.com^$third-party
 ||rss.solty.biz^
 ||yameyou.com^$third-party
@@ -87,6 +88,7 @@ ityouchannel.livedoor.blog,nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.
 !
 ! NOTE: Blogroll specific rules
 !
+yoi.shueisha.co.jp##main >section.section:has(> div.section-container > div#sp_sockets_recommend)
 squallchannel.com###hg78d
 ||alfalfalfa.com/js/rss/
 ||alfalfalfa.com/js/blogparts/otakamu_articles.js

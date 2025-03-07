@@ -473,33 +473,26 @@ export const localScriptRules = {
             }
         }
     },
-    '(()=>{let e="";const a=`GA1.1.${Math.floor(Date.now()/1e3)}.${Math.floor(Date.now()/1e3)}`;let o=!1;const t=()=>{e=e.replace("G-",""),document.cookie=`_ga_${e}=${a}`};window.dataLayer=window.dataLayer||[],dataLayer.push=new Proxy(window.dataLayer.push,{apply:(a,d,n)=>("config"===n[0][0]&&(e=n[0][1],"complete"===document.readyState?t():o||(window.addEventListener("load",t),o=!0)),Reflect.apply(a,d,n))})})();': {
-        uniqueId: "705ae313f8102fef541d8350d8376e37",
+    '(()=>{const o=Math.floor(1e5+9e5*Math.random()),a=`${Date.now()}${o}`;var t,e,m,$;t="_ym_uid",e=a,m="/",$=".gecmisi.com.tr",document.cookie=`${t}=${e};path=${m};domain=${$};`})();': {
+        uniqueId: "0104074ac36239af0632fc0f2aa96707",
         func: () => {
             try {
-                const e = "done";
-                if (Window.prototype.toString["705ae313f8102fef541d8350d8376e37"] !== e) {
+                const o = "done";
+                if (Window.prototype.toString["0104074ac36239af0632fc0f2aa96707"] !== o) {
                     (() => {
-                        let e = "";
-                        const o = `GA1.1.${Math.floor(Date.now() / 1e3)}.${Math.floor(Date.now() / 1e3)}`;
-                        let t = !1;
-                        const a = () => {
-                            e = e.replace("G-", ""), document.cookie = `_ga_${e}=${o}`;
-                        };
-                        window.dataLayer = window.dataLayer || [], dataLayer.push = new Proxy(window.dataLayer.push, {
-                            apply: (o, r, d) => ("config" === d[0][0] && (e = d[0][1], "complete" === document.readyState ? a() : t || (window.addEventListener("load", a), 
-                            t = !0)), Reflect.apply(o, r, d))
-                        });
+                        const o = Math.floor(1e5 + 9e5 * Math.random());
+                        var e;
+                        e = `${Date.now()}${o}`, document.cookie = `_ym_uid=${e};path=/;domain=.gecmisi.com.tr;`;
                     })();
-                    Object.defineProperty(Window.prototype.toString, "705ae313f8102fef541d8350d8376e37", {
-                        value: e,
+                    Object.defineProperty(Window.prototype.toString, "0104074ac36239af0632fc0f2aa96707", {
+                        value: o,
                         enumerable: !1,
                         writable: !1,
                         configurable: !1
                     });
                 }
-            } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "705ae313f8102fef541d8350d8376e37" due to: ' + e);
+            } catch (o) {
+                console.error('Error executing AG js rule with uniqueId "0104074ac36239af0632fc0f2aa96707" due to: ' + o);
             }
         }
     },

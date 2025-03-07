@@ -1,8 +1,8 @@
-! Checksum: B/5h9kJO3NozQ5WZirVKTQ
+! Checksum: 8EtACAarcsMMCkRsSwNGJA
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.62.71
-! TimeUpdated: 2025-03-06T07:38:28+00:00
+! Version: 2.0.62.74
+! TimeUpdated: 2025-03-06T13:39:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -436,6 +436,10 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/199758
+chobirich.com#$#.Enquete { display: block !important; }
+chobirich.com#@#.ad_image
+chobirich.com#@#.img_ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198779
 ||rkd3.dev/detectadblocker.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176057
@@ -1720,6 +1724,9 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+shopping-now.jp##.Enquete__adBox
+roboin.io###affiliate-card-container
+roboin.io##pubtag
 ||talk.jp/api/ads?
 alba.co.jp##li[class*="RecommendArticlesWithAds_adsBanner__"]
 tumadouga.jp##.container > div.index_banner_space:has(> div.text-md-center > div.ad-sp)
@@ -6490,7 +6497,6 @@ lyrical-nonsense.com##.playblocktop
 lyrical-nonsense.com##div[class^="responsive"][class$="inc"]
 kakaku.com##.c-jackSkinAd
 kakaku.com##.c-ad_frameWrap
-beauty.yahoo.co.jp##.Banner
 otanew.jp###extra > div.column-inner > div.column-inner-2 > div.plugin-memo:last-of-type
 how-to-inc.com##.adblocks
 5chan.jp##.socialandbanner
