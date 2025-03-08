@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 2.1.4
+#    Version 2.1.6
 #
 - title: 1x1-transparent.gif
   added: v1.0.4
@@ -3658,6 +3658,7 @@
                 }
             };
             window.eval = evalWrapper.bind(window);
+            window.eval.toString = nativeEval.toString.bind(nativeEval);
         }
         function hit(source) {
             var ADGUARD_PREFIX = "[AdGuard]";
