@@ -15,11 +15,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Unable to paste text into user rules input field on Android [#3061]
+- Unable to paste text into user rules input field on Android [#3061].
 
 [#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
 
-## [Unreleased]
+## [5.1.68] - 2025-03-07
+
+### Changed
+
+- Updated [@adguard/scriptlets] to v2.1.6.
+- Updated [@adguard/tsurlfilter] to v3.2.1.
+- Updated [@adguard/tswebextension] to v3.0.1.
+
+[5.1.68]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.1.62...v5.1.68
+
+## [5.1.62] - 2025-02-28
 
 ### Added
 
@@ -30,14 +40,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Minimum supported Chromium-based MV2 browsers version now 106+ for support
+  prerender requests.
 - Increased all dynamic rules limit to 30000 for MV3.
 - Error throwing for empty modifier list in network rules.
 - Store filter data in ruleset files exclusively for the MV3 extension
   to allow updates where only the rulesets are modified.
-- Updated [@adguard/agtree] to v3.0.0-alpha.5.
-- Updated [@adguard/scriptlets] to v2.1.4.
-- Updated [@adguard/tsurlfilter] to v3.1.0-alpha.8.
-- Updated [@adguard/tswebextension] to v3.0.0-alpha.1.
+- Updated [@adguard/agtree] to v3.0.1.
+- Updated [@adguard/scriptlets] to v2.1.5.
+- Updated [@adguard/tsurlfilter] to v3.2.0.
+- Updated [@adguard/tswebextension] to v3.0.0.
 
 ### Fixed
 
@@ -63,8 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Storage classes, because they were moved to the `@adguard/tswebextension` package.
 
-<!-- TODO: place correct last released version from master, i.e. v5.0.xxx -->
-[Unreleased]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...HEAD
+[5.1.62]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.0.188...v5.1.62
 [#2855]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2855
 [#2908]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2908
 [#2950]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2950
