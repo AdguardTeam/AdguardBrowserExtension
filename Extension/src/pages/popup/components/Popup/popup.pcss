@@ -6,4 +6,12 @@
     justify-content: flex-start;
     align-items: stretch;
     flex-direction: column;
+
+    /*
+     * Limit width of header with popup width.
+     * Because url of current site is non-breakable string and in Firefox it renders
+     * with following width: 16px padding left + string width + 16px padding right
+     * and introduces inconsistent popup width.
+     */
+    max-width: var(--popup-width);
 }

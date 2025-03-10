@@ -1,6 +1,28 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# Exit immediately if a command fails
+set -e
+
 # npx cross-env FORCE_COLOR=1 to enable colors in the output when running
 # a command from husky just as if it were run manually from the terminal
 npx cross-env FORCE_COLOR=1 pnpm lint-staged
+
+if git diff --cached --name-only | grep -q "package.json"; then
+    echo "package.json is being committed. Checking if packageManager field is present..."
+
+    if pnpm pkg get packageManager > /dev/null 2>&1; then
+        echo "packageManager field in package.json is present, need to remove it before committing"
+
+        PACKAGE_JSON_HASH=$(git hash-object -w package.json)
+
+        pnpm pkg delete packageManager
+        echo "packageManager field removed from package.json"
+
+        git add package.json
+        echo "modified package.json staged for commit"
+
+        git cat-file -p "$PACKAGE_JSON_HASH" > package.json
+        echo "package.json content restored"
+    fi
+fi
