@@ -1,8 +1,8 @@
-! Checksum: Wr1J24m/UEK1rikxNOKIwQ
+! Checksum: TZFNqeOmgv51Laa3idyE5w
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.41
-! TimeUpdated: 2025-03-06T09:02:08+00:00
+! Version: 2.0.5.43
+! TimeUpdated: 2025-03-09T09:02:14+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -1366,9 +1366,8 @@ iranjib.ir##div[id^="pos-article-display-"][style="min-height:400px"]
 iranjib.ir#?#div#column3 > table.sidea > tbody > tr:has(> td > div.mybox > h4:contains(تبلیغات متنی))
 ||irannaz.com/ax/*.gif^$image,~third-party
 irannaz.com##div.CenterBlock:has(> div.Tadsb2)
-||itresan.com/wp-content/cache/busting^
-itresan.com###NR-Ads
-itresan.com##.listing-item-blog:has(a[href*="/author/ads/"])
+! https://github.com/MasterKia/PersianBlocker/issues/293
+itresan.com##div.tabligh
 ! https://github.com/MasterKia/PersianBlocker/issues/22
 ||cdn.ilna.ir/servev2/*.gif^$image,~third-party
 ilna.ir##div.zxc_mb
@@ -1999,6 +1998,7 @@ forum.p30world.com##div#ad_global_above_footer
 qnama.ir##div#ads1
 ||sentry.querastaff.ir^
 ! >> R <<
+play.radiojavan.com#%#//scriptlet('ubo-set.js', 'appConfig.skips_limit', '60000')
 rebec.ir#%#//scriptlet('ubo-aeld.js', '/contextmenu|keydown|dragstart|mousemove/', 'return"undefined"')
 ! https://github.com/MasterKia/PersianBlocker/issues/285
 rasmio.com##div[class*="company_company__ads--ab"]
@@ -2782,9 +2782,9 @@ zohur12.ir##.sideads
 ! https://github.com/MasterKia/PersianBlocker/issues/4
 ||analytics.zoomit.ir^
 ||theforge.ir/intake/v2/rum/events^$xmlhttprequest,third-party,domain=zoomit.ir|zoomg.ir
-/ads^$xmlhttprequest,~third-party,domain=zoomit.ir|zoomg.ir
+/ads^$xmlhttprequest,~third-party,domain=zoomit.ir|zoomg.ir|kojaro.com
 /editorial/api/articles/*/visit^$xmlhttprequest,~third-party,domain=zoomit.ir|zoomg.ir
-zoomit.ir,zoomg.ir##div[class^="sc-"]:has(> div[class^="sc-"][rowcount][columncount] > div[class^="sc-"][maxwidth][maxheight])
+zoomit.ir,zoomg.ir,kojaro.com##div[class^="sc-"]:has(> div[class^="sc-"][rowcount][columncount] > div[class^="sc-"][maxwidth][maxheight])
 zoomtech.org##div.zoomtech-banner
 !-------------------------^ Site-Specific Filters ^-----------------------!
 !-------------------------v WebAmooz Warning List v-----------------------!

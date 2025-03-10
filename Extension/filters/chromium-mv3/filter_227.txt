@@ -1,13 +1,13 @@
-! Checksum: wb4flJLjrWagmAJlDGuVrQ
+! Checksum: SAR3KFsmaiIbHTgPIbpFyA
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.77
-! TimeUpdated: 2025-03-06T05:01:30+00:00
+! Version: 2.0.20.81
+! TimeUpdated: 2025-03-08T01:01:55+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0305.4
+! OriginalVersion: 2025.0308.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -1583,13 +1583,14 @@ jobkorea.co.kr##div[id^="Banner"]
 eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
+m.search.naver.com##.sp_brand
 shopping.naver.com##ul[class^="compositeCardList_product_list_"] > li:has(div[class*="_advertisement_area__"])
 shopping.naver.com##div[class^="brandCRMProductList_"] li[class^="brandCRMProductList_item_"]:has(svg[class^="advertisementTag_"])
 search.naver.com##div[data-foryou-append-target] > .box:has(.store_ad)
 www.daum.net##div[style^="min-height:"].box_g
 m.ppomppu.co.kr##li[id$="_ad"]
 dogdrip.net##div[id^="npl-content-"]
-quasarzone.com##div[class^="venatus-wrapper-view-"]
+quasarzone.com##div[class^="venatus-wrapper-"]
 web.joongna.com##.mx-auto.px-4.box-content:has(> .text-red-600)
 biz.chosun.com##.article-print-sty1:has(> .box--position-absolute-left > a[href^="https://biz.chosun.com/money"])
 biz.heraldcorp.com##.hbanner
@@ -3374,6 +3375,7 @@ mule.co.kr#$?#.section-lefttop-center:has(> .mule-today) { width: 100% !importan
 zzzz.lol#$?#.ent_wrapper.slide-vertical-effect .ent_news:not(:has(.ent_prefix:contains(ZZAPFLIX))) { remove: true; }
 !
 ! DOMAIN-REFRESHER: END
+m.ruliweb.com#?#.TimelineHeaderMargin ~ div .infinite-scroll-component > div:has(span[style*="max-height:"]:contains(AD))
 www.naver.com#?#ul[class^="ContentHeaderView-"][role="tablist"] > li:has(> a:contains(쇼핑투데이))
 m.bunjang.co.kr#?#div[class^="sc-"] > div[class*=" "]:has(> a[href^="/products/"]):contains(AD)
 m.bunjang.co.kr#?#div[class^="sc-"] > div[class*=" "]:has(> a[href^="https://"]):contains(광고)
@@ -3480,7 +3482,6 @@ aannm.cafe24.com,beomil09121.cafe24.com#%#//scriptlet('abort-current-inline-scri
 actingbaum.co.kr,picknpicker.com,moneyissues.co.kr,sotrychatter.com,skysky138.com,keela.co.kr,jiwootube.com,news.ssongyi.co.kr,xn--wh1b751afvcpsb.com#%#//scriptlet('abort-current-inline-script', 'jQuery.prototype.on', 'is_coupang')
 fun-iyagi.co.kr,timecoffee.co.kr,333aaa.site#%#//scriptlet('set-constant', 'pum_vars', 'undefined')
 inven.co.kr#%#//scriptlet('remove-attr', 'placeholder', '#webzineHeadmenuF1 input[placeholder][autocomplete="off"]')
-comic.naver.com#%#//scriptlet('json-prune', 'adBannerList')
 hashnews.cafe24.com#%#//scriptlet('abort-on-property-read', 'pum_popups')
 enuri.com#%#//scriptlet('json-prune', 'data.supertopADNos')
 sbs.co.kr#%#//scriptlet('set-constant', 'player.renderAdSequence', 'undefined')

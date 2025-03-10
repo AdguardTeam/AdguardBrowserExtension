@@ -1,8 +1,8 @@
-! Checksum: uXYnGESJDHW5b24GttuG1A
+! Checksum: 60QubfQ+4kQWtzy5P07elQ
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.82
-! TimeUpdated: 2025-03-04T19:36:48+00:00
+! Version: 2.0.7.85
+! TimeUpdated: 2025-03-07T18:38:50+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -85,6 +85,7 @@ _advertentieleaderboardhome.
 ||cloudfront.net/Assets/images/partners/$domain=feyenoord.nl
 ||cloudfront.net/banners/$domain=eredivisie.nl
 ||feenstra-internetservices.nl/?_dnid=$third-party
+||flexwebhosting.nl/banners/
 ||fx.nl/_ext/widget/$third-party
 ||go2.go2cloud.org^
 ||infotalia.com/worktalia_promo_
@@ -1268,6 +1269,7 @@ beurs.nl##.wrapper--topbanner
 voetbalprimeur.nl##[class^="Ad_"]
 bright.nl##[class^="Ad_ad_"]
 gamer.nl##[component-export="Ad"]
+androidplanet.nl##[data-name="featured-header"]
 9292.nl##[data-testid^="gpt-ad"]
 indeleiderstrui.nl##[data-ub-carousel]
 delhaize.be##[id*="sponsored_products"]
@@ -1403,6 +1405,7 @@ basketballbelgium.be##img[width="970"][height="250"]
 bol.com##section.js_slot-sponsored-products
 landenweb.nl##table[style="margin-left: auto; margin-right: auto; border: 1px solid; width: 100%; margin-bottom: 10px;"]
 radiocaramba.nl##table[width="120"][height="600"]
+androidplanet.nl##.group.relative.flex-shrink-0.lg\:flex-shrink.lg\:first\:col-span-2.lg\:first\:row-span-2.w-\[300px\].lg\:w-auto.flex:has(div[data-name="sponsor-logo"])
 investmentofficer.nl##.io-tape-card__wrap:has(.io-tape-card__label__sponsored)
 weer.nl##.items-center.w-full.justify-center:has(div[data-advert-placeholder-collapses])
 indebuurt.nl##.list-item.list-item--aagje:has(.list-item__sponsor)
@@ -1411,6 +1414,7 @@ ah.nl##.product-card-portrait_root__ZiRpZ:has(.promotion_root__pAAlu)
 tvgids.nl##.square-item:has( > .banner)
 agconnect.nl#?#.c-teaser:has(.c-pill--partner)
 delhaize.be#?#.product-item:contains(Gesponsord)
+androidplanet.nl##div[data-name="post"]:has(div[data-name="sponsor-logo"])
 krefel.be#?#div[class^="Flex-styled__StyledFlex-"]:has(h3:contains(Gesponsorde producten))
 bol.com##li.js_item_root:has(.dsa__list-padding)
 marktplaats.nl#?#.hz-Listing--list-item:contains(Topadvertentie)
@@ -1680,6 +1684,9 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+crypto-insiders.nl##.article-content > p > a.btn--highlighted.external-link
+crypto-insiders.nl##.affiliate-dropdown:not(#style_important)
+crypto-insiders.nl##.exp-banner-global
 dailybuzz.nl#%#//scriptlet("set-constant", "cookie", "true")
 mediacourant.nl##.mg-slot
 avrotros.nl#%#//scriptlet('json-prune', 'assets.preroll')

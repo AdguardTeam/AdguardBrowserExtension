@@ -1,8 +1,8 @@
-! Checksum: aaYc9cYIx+PPWvUTW7CQwA
+! Checksum: AEdBoE2BqAj8evRwUitKEw
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.11.91
-! TimeUpdated: 2025-03-06T12:37:29+00:00
+! Version: 2.1.11.95
+! TimeUpdated: 2025-03-10T00:37:22+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -654,6 +654,24 @@ esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israel
 !
 ! NOTE: Specific rules
 !
+nld.com.vn##.detail-fb-like-share
+nld.com.vn##.detail-bot-social
+nld.com.vn##.box-network-flex
+h2ch.com#?#.data-role-page > h2.toplabel:contains(このページを共有する)
+h2ch.com#?#.data-role-page > h2.toplabel:contains(このページを共有する) + div[align="center"]
+crypto-insiders.nl##.exp-sharing__list
+crypto-insiders.nl##.exp-sharing__title
+buh.ru##.detail_article__share
+delafil.se##h2:has(+ .table-bordered.table-striped .a2a_button_facebook)
+delafil.se##.table-bordered.table-striped:has(.a2a_button_facebook)
+vtcnews.vn##ul.sticky-scroll > li:has(> a[class^="act-share"])
+vtcnews.vn##ul.sticky-scroll > li:has(> a.btn-copy-link)
+vtcnews.vn##.socical-vtc
+thanhnien.vn##.send-messenger
+buzzfeed.com##div[class^="post_discussionShare"]
+baotintuc.vn##div.link > a[href="javascript:void(0)"][onclick="return sf();"]
+economist.com##div[data-test-id="sharing-modal"]
+rutube.ru##div[class^="freyja_char-share-url__buttons_"]
 premium.sbs.co.kr##.buttonShare_w
 premium.sbs.co.kr##.shareButton_w
 deltiasgaming.com##.outer-container
@@ -3748,7 +3766,7 @@ suomenmaa.fi##.social-meta
 80.lv##div[data-widget="author"] button[title="Flipboard"]
 80.lv##div[data-widget="author"] a[href^="mailto:"]
 soranews24.com##li[id^="share-"]
-funq.jp,kosodatemap.gakken.jp,report.iko-yo.net,sakigake.jp##.p-article-share
+yolo.style,funq.jp,kosodatemap.gakken.jp,report.iko-yo.net,sakigake.jp##.p-article-share
 okuyami-info.com##.cc-m-twitter
 okuyami-info.com###flexsocialbuttons
 russian.rt.com##body .article__share_article-page
@@ -8482,7 +8500,7 @@ vmo24.ru##.b-list-soc-share
 mgronline.com##.csl-share
 paginasiete.bo##.inner-share-bar > .item > a[href]:not([href="#ancla-comentarios"])
 nld.com.vn,tuoitre.vn##a[onclick^="fbClient.shareClick"]
-thanhnien.vn##.sendsocial
+nld.com.vn,thanhnien.vn##.sendsocial
 zakazany-humor.pl##.sidebar > .widget-wrap > aside#text-2
 1plus1.ua##.social-likes--small
 okezone.com##.totshare
@@ -12986,7 +13004,6 @@ gazeta.ru##.article-share-name
 kakprosto.ru##.content__share
 ! https://github.com/AdguardTeam/AdguardFilters/issues/168228
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179384
-! TODO: remove the directive, a similar rule above after the release of AdGuard extension 4.3
 ! Not visible on desktop - so should be NOT_OPTIMIZED
 !+ NOT_OPTIMIZED
 betanews.com##.social-links-wrap
