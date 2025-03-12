@@ -39,7 +39,7 @@ import {
 } from '../../constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
-import { SettingHandler } from '../../types';
+import { type SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';

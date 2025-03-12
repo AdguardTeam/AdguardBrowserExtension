@@ -24,9 +24,9 @@ import { StealthOption } from '../../schema';
  * when migration from version 'from' to version 'to'.
  */
 type Migration = {
-    from: string,
-    to: string,
-    action: (settings: unknown) => Promise<unknown>
+    from: string;
+    to: string;
+    action: (settings: unknown) => Promise<unknown>;
 };
 
 /**

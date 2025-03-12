@@ -20,7 +20,7 @@ import { debounce } from 'lodash-es';
 // Because this file is already MV2 replacement module, we can import directly
 // from basic MV2 tswebextension without using aliases.
 import {
-    ConfigurationMV2,
+    type ConfigurationMV2,
     MESSAGE_HANDLER_NAME,
     createTsWebExtension,
     type Message as EngineMessage,

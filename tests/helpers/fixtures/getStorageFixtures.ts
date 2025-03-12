@@ -309,7 +309,7 @@ export const getStorageFixturesV1 = (): StorageData[] => ([{
     'viewed-notification-time': 123456789,
 }]);
 
-type SafebrowsingCacheDataV1 = { key: string, value: string };
+type SafebrowsingCacheDataV1 = { key: string; value: string };
 
 export const getStorageFixturesV2 = (expires: number): StorageData[] => {
     const storageSettingsFixturesV1 = getStorageFixturesV1();

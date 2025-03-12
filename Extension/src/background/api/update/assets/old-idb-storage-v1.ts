@@ -6,7 +6,7 @@ import * as idb from 'idb';
 
 import { logger } from '../../../../common/logger';
 import { getErrorMessage } from '../../../../common/error';
-import { ExtendedStorageInterface } from '../../../../common/storage';
+import { type ExtendedStorageInterface } from '../../../../common/storage';
 
 const DEFAULT_STORE_NAME = 'defaultStore';
 const DEFAULT_IDB_NAME = 'adguardIDB';

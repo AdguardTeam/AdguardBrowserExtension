@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
-import type { Configuration } from 'webpack';
+import { type Configuration } from 'webpack';
 
 import { RulesetsInjector } from '@adguard/dnr-rulesets';
 

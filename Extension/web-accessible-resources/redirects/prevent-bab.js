@@ -56,6 +56,7 @@
             }
         };
         window.eval = evalWrapper.bind(window);
+        window.eval.toString = nativeEval.toString.bind(nativeEval);
     }
     function hit(source) {
         var ADGUARD_PREFIX = "[AdGuard]";

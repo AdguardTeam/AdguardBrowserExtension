@@ -19,8 +19,8 @@
 import { MessageType, sendMessage } from '../common/messages';
 
 export type SubscriptionData = {
-    url: string,
-    title: string,
+    url: string;
+    title: string;
 };
 
 /**

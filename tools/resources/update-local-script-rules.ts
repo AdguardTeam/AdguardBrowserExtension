@@ -111,7 +111,7 @@ const updateLocalScriptRulesForBrowser = async (browser: AssetsFiltersBrowser) =
             [key: string]: {
                 permittedDomains: string[];
                 restrictedDomains: string[];
-            }[],
+            }[];
         };
     } = {
         comment: LOCAL_SCRIPT_RULES_COMMENT,

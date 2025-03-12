@@ -1,5 +1,5 @@
 import browser from 'sinon-chrome';
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import {
     vi,
     describe,
@@ -18,7 +18,7 @@ import {
 import {
     Network,
     SettingsApi,
-    SettingsData,
+    type SettingsData,
 } from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
 import {

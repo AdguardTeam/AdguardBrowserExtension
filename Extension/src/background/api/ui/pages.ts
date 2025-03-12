@@ -28,7 +28,7 @@ import {
     Forward,
     ForwardAction,
     ForwardFrom,
-    ForwardParams,
+    type ForwardParams,
 } from '../../../common/forward';
 import { UrlUtils } from '../../utils/url';
 import {
@@ -60,6 +60,11 @@ import { OptionsPageSections } from '../../../common/nav';
  * Pages API provides methods for managing browser pages.
  */
 export class PagesApi {
+    /**
+     * Product type.
+     */
+    private static readonly PRODUCT_TYPE = 'Ext';
+
     /**
      * Settings page url.
      */
@@ -250,7 +255,7 @@ export class PagesApi {
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            product_type: 'Ext',
+            product_type: PagesApi.PRODUCT_TYPE,
             manifest_version: encodeURIComponent(manifestDetails.manifest_version),
             product_version: encodeURIComponent(manifestDetails.version),
             url: encodeURIComponent(siteUrl),

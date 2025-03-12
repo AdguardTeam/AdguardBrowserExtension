@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import type { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 
 import { type ExtendedStorageInterface } from './storage-interface';
 

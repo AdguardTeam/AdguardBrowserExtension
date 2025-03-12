@@ -25,19 +25,19 @@ import {
     customFilterMetadataStorage,
 } from '../../storages';
 import {
-    GroupMetadata,
-    TagMetadata,
-    RegularFilterMetadata,
-    GroupStateData,
-    FilterStateData,
-    FilterVersionData,
-    CustomFilterMetadata,
+    type GroupMetadata,
+    type TagMetadata,
+    type RegularFilterMetadata,
+    type GroupStateData,
+    type FilterStateData,
+    type FilterVersionData,
+    type CustomFilterMetadata,
 } from '../../schema';
 import { logger } from '../../../common/logger';
 import { CustomFilterHelper } from '../../../common/custom-filter-helper';
 
 import { CommonFilterApi } from './common';
-import { FilterMetadata, FiltersApi } from './main';
+import { type FilterMetadata, FiltersApi } from './main';
 import { FilterUpdateApi } from './update';
 
 /**
@@ -66,8 +66,8 @@ export type CategoriesGroupData = (
  * Aggregated data for options page.
  */
 export type CategoriesData = {
-    categories: CategoriesGroupData[],
-    filters: CategoriesFilterData[]
+    categories: CategoriesGroupData[];
+    filters: CategoriesFilterData[];
 };
 
 /**
