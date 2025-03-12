@@ -1,8 +1,8 @@
-! Checksum: NELReDaAV3RN5mQgtseYUg
+! Checksum: AhlAeRaxRRoDYNE/7TVVKw
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.65
-! TimeUpdated: 2025-03-07T18:39:13+00:00
+! Version: 2.0.10.67
+! TimeUpdated: 2025-03-11T17:39:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -389,6 +389,8 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200495
+||eventbrite.ca^$removeparam=aff
 ! accounts.adblockplus.org
 ||accounts.adblockplus.org^$removeparam=an
 ||accounts.adblockplus.org^$removeparam=av
@@ -2427,7 +2429,6 @@ $removeparam=search_domain,domain=ya.ru|yandex.adult|yandex.ac.id|yandex.ae|yand
 ||market.yandex.$removeparam=offerid
 ||market.yandex.$removeparam=show-uid
 ||market.yandex.$removeparam=uniqueId
-||market.yandex.$removeparam=do-waremd5
 ||market.yandex.$removeparam=vid
 ||market.yandex.$removeparam=mclid
 ||market.yandex.$removeparam=clid

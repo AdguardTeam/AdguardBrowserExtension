@@ -8419,6 +8419,53 @@ export const localScriptRules = {
             }
         }
     },
+    '(()=>{const e="loader.min.js",t={includes:String.prototype.includes,filter:Array.prototype.filter},l=()=>(new Error).stack,n={construct:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&o[0]&&t.includes.call(o[0],"adshield")&&(o[0]=["(function(){})();"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&t.includes.call(r[0],"new Error")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&o?.includes?.("setTimeout")&&(o=t.filter.call(o,(e=>!t.includes.call(e,"setTimeout")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();': {
+        uniqueId: "10c10bf4c1c0b9946b322ae5e709306d",
+        func: () => {
+            try {
+                const e = "done";
+                if (Window.prototype.toString["10c10bf4c1c0b9946b322ae5e709306d"] !== e) {
+                    (() => {
+                        const e = "loader.min.js", t = {
+                            includes: String.prototype.includes,
+                            filter: Array.prototype.filter
+                        }, o = () => (new Error).stack, r = {
+                            construct: (r, c, n) => {
+                                const l = o();
+                                return t.includes.call(l, e) && c[0] && t.includes.call(c[0], "adshield") && (c[0] = [ "(function(){})();" ]), 
+                                Reflect.construct(r, c, n);
+                            }
+                        };
+                        window.Blob = new Proxy(window.Blob, r);
+                        const c = {
+                            apply: (r, c, n) => {
+                                const l = o();
+                                return t.includes.call(l, e) && n[0] && t.includes.call(n[0], "new Error") && (n[0] = () => {}), 
+                                Reflect.apply(r, c, n);
+                            }
+                        };
+                        window.setTimeout = new Proxy(window.setTimeout, c);
+                        const n = {
+                            apply: (r, c, n) => {
+                                const l = o();
+                                return t.includes.call(l, e) && n[0] && c?.includes?.("setTimeout") && (c = t.filter.call(c, (e => !t.includes.call(e, "setTimeout")))), 
+                                Reflect.apply(r, c, n);
+                            }
+                        };
+                        window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, n);
+                    })();
+                    Object.defineProperty(Window.prototype.toString, "10c10bf4c1c0b9946b322ae5e709306d", {
+                        value: e,
+                        enumerable: !1,
+                        writable: !1,
+                        configurable: !1
+                    });
+                }
+            } catch (e) {
+                console.error('Error executing AG js rule with uniqueId "10c10bf4c1c0b9946b322ae5e709306d" due to: ' + e);
+            }
+        }
+    },
     '(()=>{const e={apply:(e,l,o)=>"link"===o[0]||"style"===o[0]?[]:Reflect.apply(e,l,o)};window.document.querySelectorAll=new Proxy(window.document.querySelectorAll,e)})();': {
         uniqueId: "5662f0dae824e1b38f13e27f256c2066",
         func: () => {

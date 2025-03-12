@@ -1,8 +1,8 @@
-! Checksum: SD+rJDtzjNwzHsajj32/7w
+! Checksum: 17t7RJKjYALZ4lP3eJVs0w
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.39
-! TimeUpdated: 2025-03-08T12:37:43+00:00
+! Version: 2.0.46.43
+! TimeUpdated: 2025-03-11T17:38:42+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1481,6 +1481,10 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+autoplenum.de##div[class^="list-ad-margin-"]
+autoplenum.de##div[data-sort-in-place-skip]:has(.third-party-ad-container)
+autoplenum.de##div[style^="min-height:"]:has(> .third-party-ad-container)
+autoplenum.de##.third-party-ad-container
 ||publicfiles-studysmarter.b-cdn.net/campaigns/
 app.studysmarter.de##app-enigma-media
 aerzteblatt.de##.ad-container-dont-remove-me
@@ -6932,6 +6936,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||prospekt38.de^*/widget.php?anbieter_id=$subdocument,third-party
 ||publisher.outtra.com^$third-party
 ||questler.de/gfx/banner/$third-party
+||qvid2.b-cdn.net^
 ||rabattcorner.ch/iframe/$subdocument,third-party
 ||ranksider.de/img/banner/$third-party
 ||rastplatzsex.com/banner/$third-party
@@ -6981,7 +6986,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||venus-community.com/banner/$third-party
 ||verleihshop.de/gfx/partner/$third-party
 ||versandtarif.de^*?partnerid=$third-party
-||vesalia.de/af.gif$third-party
 ||view.autoscout24.de^$third-party
 ||visit-x.net/001/$third-party
 ||viversum.de/partnerprogramm/$third-party
@@ -7314,7 +7318,6 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||dreambox.info/banner/
 ||drehscheibe-online.de/ds_cms/banner/
 ||druckerchannel.de/script/dc/ofr_single.php
-||drumsundpercussion.de^*/banner/
 ||dslr-forum.de/banner.
 ||dtb-tennis.de^*/banner-
 ||dtb-tennis.de^*/partner-
@@ -7706,6 +7709,7 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||lowbeats.de/site/wp-content/banners/
 ||loz-news.de/images/banners/
 ||lustvollesgeheimnis.com/banner/
+||m.queer.de^$image
 ||macgadget.de/mgbanner/
 ||mailcdn.de/w.php?$domain=mail.de
 ||mainpost.de/storage/image/*_kickers-sponsor-
@@ -9029,7 +9033,7 @@ ad-hoc-news.de###skyL_wrapper
 ad-hoc-news.de###skyR_wrapper
 aktionspreis.de###skyScraper
 videoaktiv.de###skypos
-anrufer.info,beobachter-online.de,drumsundpercussion.de,eurogamer.de,firmenwissen.de,fussballdaten.de,halle.de,neuelandschaft.de,stereo.de,tourenfahrer.de###skyscraper
+anrufer.info,beobachter-online.de,eurogamer.de,firmenwissen.de,fussballdaten.de,halle.de,neuelandschaft.de,stereo.de,tourenfahrer.de###skyscraper
 it-production.com###skyscraper-group
 it-production.com###skyscraper-group-left
 stuttgarter-zeitung.de###slider
@@ -9373,6 +9377,7 @@ musiker-board.de##.anzC
 ntg24.de##.anzeige + .slider
 ntg24.de##.anzeige + p
 designtagebuch.de##.anzeige-links
+meerwasser-lexikon.de##.anzeigeInfo
 ariva.de##.anzeigeText
 lippe-news.de##.anzeige_content
 motorsport-total.com##.anzeige_teas_rect
@@ -10493,7 +10498,7 @@ usa-info.net##.widget_atkp_widget
 zueri6.ch##.widget_banner
 heimatreport.de##.widget_cfac
 diesachsen.de##.widget_commerce
-autogazette.de,cyclingmagazine.de,radio-aktiv.de,schmunzelseite.de,signal-online.de,solaranlage-ratgeber.de,szene.link,unzensiert.ru,xxx-amateur.eu##.widget_custom_html
+amigaland.de,autogazette.de,cyclingmagazine.de,radio-aktiv.de,schmunzelseite.de,signal-online.de,solaranlage-ratgeber.de,szene.link,unzensiert.ru,xxx-amateur.eu##.widget_custom_html
 nibelungen-kurier.de##.widget_dkge_wrapper
 freiluft-blog.de##.widget_links
 hebelschein-spekulant.de,lokalo.de,mdz-moskau.eu,skynews.ch,werbestandard.de##.widget_media_image
@@ -11351,7 +11356,7 @@ ibooks.to#?#form:has(button:contains(Download))
 imsueden.de#?#.swiper:has(.headline:contains(Partner))
 kajak-magazin.com#?#.custom:has(span:contains(Anzeige))
 kaufland.*#?#.recommender-wrapper:contains(Gesponsert)
-knuspr.de#?#div[data-test^="productCard"]:contains(Gesponsert)
+knuspr.de#?#div[data-test="whisperer-product-wrapper"]:contains(Gesponsert)
 koeln.de#?#.gb-container:contains(Anzeige)
 la-palma24.info#?#article[class^="dvs-ad-tyblqtres-uno"]:has(div:contains(AD))
 la-palma24.info#?#div[class^="dvbloqbasic"]:has(div:contains(Ad))

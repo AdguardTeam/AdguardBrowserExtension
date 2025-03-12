@@ -1,8 +1,8 @@
-! Checksum: TZFNqeOmgv51Laa3idyE5w
+! Checksum: M40htBs3n+bI9KZ8YXyZjw
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.43
-! TimeUpdated: 2025-03-09T09:02:14+00:00
+! Version: 2.0.5.46
+! TimeUpdated: 2025-03-11T09:02:20+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -561,7 +561,6 @@ androidgozar.com##.ag-agah
 ||aparat.com^$xmlhttprequest,removeparam=referer
 aparat.com#?#div.video-list:has(> div > div:has(span.ad:contains(AD)))
 aparat.com##.announce
-aparat.com#$#header { position: absolute !important; }
 aparat.com##div[type="aparat"]:has(> .link)
 aparat.com##.dsp-ad
 aparat.com##.side-ads
@@ -951,7 +950,7 @@ digikala.com#?#div.py-2:has(> div.items-center > div.swiper-container > div.swip
 ||divarcdn.com/ssp/ads^$image,third-party,domain=divar.ir
 ||api.divar.ir/v8/ad-auction^$xmlhttprequest,~third-party
 divar.ir#$#div.kt-modal__contents > div.kt-modal__body a.button-row-item[href^="https://open-platform-redirect.divar.ir?app_slug=karnameh_price_evaluation"] > div.kt-button > span.kt-text-truncate::after { content: ' (۱۰ هزار تومان)' !important; }
-divar.ir##div#post-list-container-id a[href^="https://a-banners.divar.ir/auction/?ext_link_data="]:has(> div.kt-inset-banner > picture.kt-image-block > source[data-srcset^="https://a-banners.divarcdn.com/ssp/ads/media/image"])
+divar.ir##div.kt-inset-banner
 divar.ir##main > div[class^="item"]:has(img[src*="divarcdn.com/ssp/ads/"])
 divar.ir##div[class^="post-list__items-container"] > div[class^="full-width"] > a[class=""][href^="https://a-banners.divar.ir/auction/"]
 doostihaa.com##div.adsfix_box
@@ -1560,6 +1559,7 @@ k2cod.com###table10 > tbody > tr > .textBoldColor
 k2cod.com##.bgleftmenu > div > div
 k2cod.com###table10
 ! >> L <<
+lennamusic.ir##div.btn-app
 lenz.ir#%#//scriptlet('ubo-aeld.js', 'contextmenu', 'preventDefault', 'elements', 'div#rmpPlayer')
 ||lenz.ir/api/v3/frequents/playrecord^$xmlhttprequest,~third-party,method=post
 ||lenz.ir/api/v3/frequents/playheartbit^$xmlhttprequest,~third-party,method=post
@@ -1640,8 +1640,6 @@ magbazi.com##div.text_ads_box
 ||maxstars.ir/ajax/chat.codes^$xmlhttprequest,~third-party
 maxstars.ir##a[href="https://www.tarhpardaz.ir"]
 maxstars.ir##a[href="http://www.asalchat.skin"]
-! To counter Online Malicious URL Blocklist
-||mehtikahrizi.ir^$badfilter
 musickhone.com#%#//scriptlet('ubo-nowoif.js')
 my.mci.ir,pwa.mci.ir#%#//scriptlet('ubo-set.js', 'window.screen.width', '0')
 my.mci.ir,pwa.mci.ir#%#//scriptlet('ubo-set.js', 'window.screen.height', '0')
@@ -2579,8 +2577,6 @@ tamin.ir#@#.ads2
 ! >> U <<
 upsara.com##img[alt="ads"]
 upsara.com##div.ads
-! To counter Online Malicious URL Blocklist
-||uploadkon.ir^$badfilter
 uploadkon.ir##div.ads
 uploadkon.ir##li.ad-link
 uploadgoogle.ir#%#//scriptlet('ubo-nowoif.js')
