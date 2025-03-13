@@ -43,7 +43,7 @@ export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
 
 /**
- * Filter ids used in the code on the background page and filtering log page
+ * Filter ids used in the code on the background page and filtering log page.
  */
 export enum AntiBannerFiltersId {
     StealthModeFilterId = -1,
@@ -66,7 +66,7 @@ export enum AntiBannerFiltersId {
 }
 
 /**
- * Group ids used in the code on the multiple entry points
+ * Group ids used in the code on the multiple entry points.
  */
 export const enum AntibannerGroupsId {
     /**
