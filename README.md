@@ -337,12 +337,6 @@ Then install extension via developer mode, make requests and see applied declara
 
 ##### How to build MV3 extension
 
-1. Switch to the `v5.0` branch:
-
-    ```shell
-    git checkout v5.0
-    ```
-
 1. Run the following command in the terminal:
 
     ```shell
@@ -458,7 +452,7 @@ Finally, the new version of the extension will be published to the Chrome Web St
 
 | Browser                     | Version |
 |---------------------------- |---------|
-| Chromium-based browsers MV2 | ✅ 79   |
+| Chromium-based browsers MV2 | ✅ 106  |
 | Chromium-based browsers MV3 | ✅ 121  |
 | Firefox                     | ✅ 78   |
 | Firefox Mobile              | ✅ 113  |
