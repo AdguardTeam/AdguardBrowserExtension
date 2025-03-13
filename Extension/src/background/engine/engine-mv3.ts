@@ -101,7 +101,7 @@ export class Engine implements TsWebExtensionEngine {
          * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
          */
         // If userScripts are available, we don't need to set local script rules.
-        if (!TsWebExtension.areUserScriptsSupported) {
+        if (!TsWebExtension.isUserScriptsApiSupported) {
             TsWebExtension.setLocalScriptRules(localScriptRules);
         }
 
