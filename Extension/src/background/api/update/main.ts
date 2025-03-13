@@ -35,7 +35,6 @@ import {
     ADGUARD_SETTINGS_KEY,
     APP_VERSION_KEY,
     AntiBannerFiltersId,
-    AntibannerGroupsId,
     CLIENT_ID_KEY,
     FILTER_LIST_EXTENSION,
     NEWLINE_CHAR_REGEX,
@@ -1213,12 +1212,6 @@ export class UpdateApi {
             AntiBannerFiltersId.AnnoyancesWidgetsFilterId,
         ];
 
-        // AdGuard Annoyances filters group state.
-        const annoyancesGroup = groupsState[AntibannerGroupsId.AnnoyancesFiltersGroupId] ?? {
-            enabled: false,
-            touched: false,
-        };
-
         // AdGuard Annoyances filters states.
         const annoyancesFiltersState = Object.fromEntries(
             SEPARATED_ANNOYANCES_FILTERS_IDS.map((filterId) => {
@@ -1236,7 +1229,6 @@ export class UpdateApi {
         if (UpdateApi.isObject(deprecatedAnnoyancesFilter)) {
             // If the deprecated Annoyances filter is enabled, we should enable new groups and filters.
             if (deprecatedAnnoyancesFilter.enabled) {
-                annoyancesGroup.enabled = true;
                 SEPARATED_ANNOYANCES_FILTERS_IDS.forEach((id) => {
                     annoyancesFiltersState[id]!.enabled = true;
                 });
@@ -1247,7 +1239,6 @@ export class UpdateApi {
 
         // Set updated states and new metadata to the settings.
 
-        groupsState[AntibannerGroupsId.AnnoyancesFiltersGroupId] = annoyancesGroup;
         Object.assign(filtersState, annoyancesFiltersState);
 
         newSettings['groups-state'] = JSON.stringify(groupsState);
