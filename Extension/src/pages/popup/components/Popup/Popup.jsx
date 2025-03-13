@@ -80,14 +80,14 @@ export const Popup = observer(() => {
     /**
      * Handle popup resize.
      *
-     * @param newHeight New height of the popup.
+     * @param newPopupHeight New height of the popup.
      */
-    const handleResize = (newHeight) => {
-        document.documentElement.style.setProperty(POPUP_HEIGHT_PROP, `${newHeight}px`);
+    const handleResize = (newPopupHeight) => {
+        document.documentElement.style.setProperty(POPUP_HEIGHT_PROP, `${newPopupHeight}px`);
     };
 
     /**
-     * Cleanup popup resize.
+     * Handle popup resize cleanup.
      */
     const handleResizeCleanUp = () => {
         document.documentElement.style.removeProperty(POPUP_HEIGHT_PROP);

@@ -31,12 +31,12 @@ import {
  *
  * 70% of 785px = 550px
  */
-const POPUP_MIN_HEIGHT = 550;
+export const POPUP_MIN_HEIGHT = 550;
 
 /**
  * Base height of popup in desktop extension.
  */
-const POPUP_DEFAULT_HEIGHT = 600;
+export const POPUP_DEFAULT_HEIGHT = 600;
 
 /**
  * Hook to observe popup height on Android browsers.
@@ -48,7 +48,7 @@ const POPUP_DEFAULT_HEIGHT = 600;
  */
 export function useObservePopupHeight(
     isAndroidBrowser: boolean,
-    callback: (newHeight: number, baseHeight: number) => void,
+    callback: (newHeight: number) => void,
     androidCleanUpCallback: () => void,
     cleanUpCallback?: () => void,
 ) {
@@ -98,7 +98,7 @@ export function useObservePopupHeight(
             const isHeightChanged = prevHeight.current !== window.innerHeight;
             if (isHeightChanged) {
                 prevHeight.current = window.innerHeight;
-                callbackRef.current(window.innerHeight, POPUP_DEFAULT_HEIGHT);
+                callbackRef.current(window.innerHeight);
             }
         };
 

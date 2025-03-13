@@ -23,7 +23,7 @@ import 'c3/c3.css';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { TIME_RANGES } from '../../../constants';
-import { useObservePopupHeight } from '../../../hooks/useObservePopupHeight';
+import { useObservePopupHeight, POPUP_DEFAULT_HEIGHT } from '../../../hooks/useObservePopupHeight';
 
 import './chart.pcss';
 
@@ -157,23 +157,43 @@ const getCategoriesLines = (statsData, range) => {
     };
 };
 
+/**
+ * Calculate chart height based on popup height.
+ *
+ * Adjust height of chart proportionally if actual height of popup (popupHeight)
+ * becomes smaller that default height of popup in desktops (POPUP_DEFAULT_HEIGHT).
+ * Design specified height with value DEFAULT_CHART_HEIGHT will be base
+ * with min MIN_CHART_HEIGHT height.
+ * This is needed for extension running on mobile browsers where popup height is dynamic.
+ *
+ * @param popupHeight Height of the popup (Default: window.innerHeight).
+ *
+ * @returns Height of the chart.
+ */
+const calculateChartHeight = (popupHeight = window.innerHeight) => {
+    /**
+     * Default size of chart in desktop extension.
+     */
+    const DEFAULT_CHART_HEIGHT = 218;
+
+    /**
+     * Min height of chart.
+     */
+    const MIN_CHART_HEIGHT = 168;
+
+    return Math.max(
+        MIN_CHART_HEIGHT,
+        DEFAULT_CHART_HEIGHT - (POPUP_DEFAULT_HEIGHT - popupHeight),
+    );
+};
+
 export const Chart = ({
     stats,
     range,
     type,
     isAndroidBrowser,
 }) => {
-    /**
-     * Default size of chart in desktop extension.
-     */
-    const DEFAULT_CHART_HEIGHT = 230;
-
-    /**
-     * Min height of chart.
-     */
-    const MIN_CHART_HEIGHT = 180;
-
-    const [chartHeight, setChartHeight] = useState(DEFAULT_CHART_HEIGHT);
+    const [chartHeight, setChartHeight] = useState(calculateChartHeight());
 
     useEffect(() => {
         const statsData = selectRequestsStatsData(stats, range, type);
@@ -272,25 +292,17 @@ export const Chart = ({
     /**
      * Handle popup resize.
      *
-     * Adjust height of chart proportionally if actual height of popup (newHeight)
-     * becomes smaller that default height of popup in desktops (baseHeight).
-     * Design specified height with value DEFAULT_CHART_HEIGHT will be base
-     * with min MIN_CHART_HEIGHT height.
-     * This is needed for extension running on mobile browsers where popup height is dynamic.
-     *
-     * @param newHeight New height of the popup.
-     * @param baseHeight Base height of the popup.
+     * @param newPopupHeight New height of the popup.
      */
-    const handleResize = (newHeight, baseHeight) => {
-        const newChartHeight = Math.max(
-            MIN_CHART_HEIGHT,
-            DEFAULT_CHART_HEIGHT - (baseHeight - newHeight),
-        );
-        setChartHeight(newChartHeight);
+    const handleResize = (newPopupHeight) => {
+        setChartHeight(calculateChartHeight(newPopupHeight));
     };
 
+    /**
+     * Handle popup resize cleanup.
+     */
     const handleCleanUp = () => {
-        setChartHeight(DEFAULT_CHART_HEIGHT);
+        setChartHeight(calculateChartHeight());
     };
 
     /**
