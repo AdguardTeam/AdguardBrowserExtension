@@ -233,7 +233,7 @@ export class UpdateApi {
     /**
      * Run data migration from schema v10 to schema v11.
      *
-     * For the extension update to v5.1.x // TODO: specify version after release.
+     * For the extension update to v5.1.62.
      */
     private static async migrateFromV10toV11(): Promise<void> {
         let entries: Record<string, unknown> = {};
