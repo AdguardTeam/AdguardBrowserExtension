@@ -78,7 +78,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
             browserConfig.browser,
             content,
             rulesetsInjector.applyRulesets(
-                (id) => `filters/declarative/${id}/${id}.json`,
+                (id: string) => `filters/declarative/${id}/${id}.json`,
                 chromeMv3Manifest,
                 filters,
                 {
