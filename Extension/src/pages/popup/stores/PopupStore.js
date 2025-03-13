@@ -37,6 +37,7 @@ import {
 } from '../constants';
 import { reactTranslator } from '../../../common/translators/reactTranslator';
 import { MessageType } from '../../../common/messages';
+import { UserAgent } from '../../../common/user-agent';
 
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
@@ -82,6 +83,9 @@ class PopupStore {
     isEdgeBrowser = false;
 
     @observable
+    isAndroidBrowser = false;
+
+    @observable
     stats = null;
 
     @observable
@@ -107,6 +111,16 @@ class PopupStore {
 
     @action
     getPopupData = async () => {
+        /**
+         * Get android data first because our styles depends on it,
+         * and UI might shift because it was loaded too late.
+         */
+        const isAndroidBrowser = await UserAgent.getIsAndroid();
+
+        runInAction(() => {
+            this.isAndroidBrowser = isAndroidBrowser;
+        });
+
         // get current tab id
         const tabs = await browser.tabs.query({
             active: true,

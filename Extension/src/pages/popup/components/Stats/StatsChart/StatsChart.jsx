@@ -29,7 +29,7 @@ import './stats-chart.pcss';
 export const StatsChart = observer(() => {
     const store = useContext(popupStore);
 
-    const { stats } = store;
+    const { stats, isAndroidBrowser } = store;
 
     if (!stats) {
         return null;
@@ -42,6 +42,7 @@ export const StatsChart = observer(() => {
                 stats={stats}
                 range={store.selectedTimeRange}
                 type={store.selectedBlockedType}
+                isAndroidBrowser={isAndroidBrowser}
             />
         </div>
     );

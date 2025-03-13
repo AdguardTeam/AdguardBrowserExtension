@@ -16,13 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { TIME_RANGES } from '../../../constants';
+import { useObservePopupHeight } from '../../../hooks/useObservePopupHeight';
 
 import './chart.pcss';
 
@@ -156,7 +157,24 @@ const getCategoriesLines = (statsData, range) => {
     };
 };
 
-export const Chart = ({ stats, range, type }) => {
+export const Chart = ({
+    stats,
+    range,
+    type,
+    isAndroidBrowser,
+}) => {
+    /**
+     * Default size of chart in desktop extension.
+     */
+    const DEFAULT_CHART_HEIGHT = 230;
+
+    /**
+     * Min height of chart.
+     */
+    const MIN_CHART_HEIGHT = 180;
+
+    const [chartHeight, setChartHeight] = useState(DEFAULT_CHART_HEIGHT);
+
     useEffect(() => {
         const statsData = selectRequestsStatsData(stats, range, type);
         const categoriesLines = getCategoriesLines(statsData, range);
@@ -172,7 +190,7 @@ export const Chart = ({ stats, range, type }) => {
         c3.generate({
             bindTo: '#chart',
             size: {
-                height: 230,
+                height: chartHeight,
             },
             data: {
                 columns: [
@@ -249,7 +267,36 @@ export const Chart = ({ stats, range, type }) => {
                 this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
             },
         });
-    }, [range, type, stats]);
+    }, [range, type, stats, chartHeight]);
+
+    /**
+     * Handle popup resize.
+     *
+     * Adjust height of chart proportionally if actual height of popup (newHeight)
+     * becomes smaller that default height of popup in desktops (baseHeight).
+     * Design specified height with value DEFAULT_CHART_HEIGHT will be base
+     * with min MIN_CHART_HEIGHT height.
+     * This is needed for extension running on mobile browsers where popup height is dynamic.
+     *
+     * @param newHeight New height of the popup.
+     * @param baseHeight Base height of the popup.
+     */
+    const handleResize = (newHeight, baseHeight) => {
+        const newChartHeight = Math.max(
+            MIN_CHART_HEIGHT,
+            DEFAULT_CHART_HEIGHT - (baseHeight - newHeight),
+        );
+        setChartHeight(newChartHeight);
+    };
+
+    const handleCleanUp = () => {
+        setChartHeight(DEFAULT_CHART_HEIGHT);
+    };
+
+    /**
+     * Update chart height on Android browsers based on window height.
+     */
+    useObservePopupHeight(isAndroidBrowser, handleResize, handleCleanUp);
 
     return <div className="chart" id="chart" />;
 };
