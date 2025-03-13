@@ -26,6 +26,7 @@ import { logger } from '../../../common/logger';
 import { FiltersUpdateTime } from '../../../common/constants';
 import { engine } from '../../engine';
 import { getErrorMessage } from '../../../common/error';
+import { FilterUpdateService } from '../../services/filter-update';
 
 import { type FilterMetadata, FiltersApi } from './main';
 import { CustomFilterApi } from './custom';
@@ -189,6 +190,12 @@ export class FilterUpdateApi {
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
             engine.debounceUpdate();
+
+            // set last update time only for MV2
+            // because there is no ability to update filters with patches in MV3
+            if (!__IS_MV3__) {
+                await FilterUpdateService.setLastUpdateTimeMs(Date.now());
+            }
         }
 
         return updatedFilters;

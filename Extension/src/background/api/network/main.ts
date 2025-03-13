@@ -198,6 +198,7 @@ export class Network {
                 };
             }
 
+            // full remote filter update for MV2
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
                 {
