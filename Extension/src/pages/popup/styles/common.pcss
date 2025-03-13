@@ -11,31 +11,15 @@
 html,
 body,
 #root {
-    height: 100%;
-    min-height: 100%;
-    width: auto;
     background-color: var(--white);
 
     @media (prefers-color-scheme: dark) {
         background-color: var(--black);
     }
-}
-
-/*
- * #root needs to be separated otherwise popup page will be broken in Firefox Nightly v129.
- * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2817
- */
-#root {
-    min-width: 320px;
 }
 
 html {
     font-size: 10px;
-    background-color: var(--white);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--black);
-    }
 }
 
 body {
@@ -44,6 +28,8 @@ body {
     line-height: 1.4;
     font-family: 'Roboto Flex', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Ubuntu, Arial, sans-serif;
     font-optical-sizing: none;
+    width: var(--popup-width);
+    height: var(--popup-height);
 }
 
 ul {

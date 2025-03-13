@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useLayoutEffect,
+} from 'react';
 import { observer } from 'mobx-react';
 
 import { Tabs } from '../Tabs';
@@ -28,6 +32,7 @@ import { PromoNotification } from '../PromoNotification';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
+import { useObservePopupHeight } from '../../hooks/useObservePopupHeight';
 
 import '../../styles/main.pcss';
 import './popup.pcss';
@@ -37,6 +42,7 @@ export const Popup = observer(() => {
         appearanceTheme,
         getPopupData,
         updateBlockedStats,
+        isAndroidBrowser,
     } = useContext(popupStore);
 
     useAppearanceTheme(appearanceTheme);
@@ -47,6 +53,58 @@ export const Popup = observer(() => {
             await getPopupData();
         })();
     }, [getPopupData]);
+
+    /**
+     * We are adding "android" class to html element
+     * in order to apply android specific styles.
+     */
+    useLayoutEffect(() => {
+        const ANDROID_CLASS = 'android';
+
+        if (isAndroidBrowser) {
+            document.documentElement.classList.add(ANDROID_CLASS);
+        } else {
+            document.documentElement.classList.remove(ANDROID_CLASS);
+        }
+
+        return () => {
+            document.documentElement.classList.remove(ANDROID_CLASS);
+        };
+    }, [isAndroidBrowser]);
+
+    /**
+     * Popup height CSS var name.
+     */
+    const POPUP_HEIGHT_PROP = '--popup-height';
+
+    /**
+     * Handle popup resize.
+     *
+     * @param newHeight New height of the popup.
+     */
+    const handleResize = (newHeight) => {
+        document.documentElement.style.setProperty(POPUP_HEIGHT_PROP, `${newHeight}px`);
+    };
+
+    /**
+     * Cleanup popup resize.
+     */
+    const handleResizeCleanUp = () => {
+        document.documentElement.style.removeProperty(POPUP_HEIGHT_PROP);
+    };
+
+    /**
+     * Update popup height on Android browsers based on window height.
+     * This is required because Android browser's popup does not support 100vh properly.
+     *
+     * NOTE: Same cleanup for both Android and non-Android browsers.
+     */
+    useObservePopupHeight(
+        isAndroidBrowser,
+        handleResize,
+        handleResizeCleanUp,
+        handleResizeCleanUp,
+    );
 
     // subscribe to stats change
     useEffect(() => {
@@ -73,13 +131,13 @@ export const Popup = observer(() => {
     }, [updateBlockedStats, getPopupData]);
 
     return (
-        <div className="popup">
+        <>
             <Icons />
             <Header />
             <MainContainer />
             <Tabs />
             <Footer />
             <PromoNotification />
-        </div>
+        </>
     );
 });

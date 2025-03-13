@@ -1,3 +1,10 @@
 .main-container {
-    height: 300px;
+    /* Adjust height proportionally if actual height of popup (--popup-height) */
+    /* becomes smaller that default height of popup in desktops (--popup-default-height). */
+    /* Design specified height with value 300px will be base with min 250px height. */
+    /* This is needed for extension running on mobile browsers where popup height is dynamic. */
+    height: max(
+        250px,
+        calc(300px - var(--popup-default-height) + var(--popup-height))
+    );
 }
