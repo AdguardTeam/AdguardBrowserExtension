@@ -12,9 +12,9 @@ export const getEmptyStatisticDataFixture = (): GetStatisticsDataResponse => {
         overall: Array(3).fill(emptyStats),
         blockedGroups: [
             { groupId: 'total', groupName: 'popup_statistics_total' },
-            { displayNumber: 1, groupId: 1, groupName: 'Ad Blocking' },
+            { displayNumber: 1, groupId: 1, groupName: 'Ad blocking' },
             { displayNumber: 2, groupId: 2, groupName: 'Privacy' },
-            { displayNumber: 3, groupId: 3, groupName: 'Social Widgets' },
+            { displayNumber: 3, groupId: 3, groupName: 'Social widgets' },
             { displayNumber: 4, groupId: 4, groupName: 'Annoyances' },
             { displayNumber: 5, groupId: 5, groupName: 'Security' },
             { displayNumber: 6, groupId: 6, groupName: 'Other' },
