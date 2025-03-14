@@ -32,11 +32,10 @@ import { getFilterName } from '../../../src/pages/helpers';
  */
 const BLOCKED_PROCEED_ANYWAY_BTN_ID = 'adgAccessBlockedProceed';
 
-// FIXME (Slava): check the id used on the page
 /**
  * Id of the "Go Back" button.
  */
-const BLOCKED_GO_BACK_BTN_ID = 'adgAccessBlockedGoBack';
+const BLOCKED_GO_BACK_BTN_ID = 'blockedPageBackBtn';
 
 /**
  * Id of the "Add this site to Allowlist" button.
