@@ -1,8 +1,8 @@
-! Checksum: xQTaIi9pKi0P4PFYzLpDsA
+! Checksum: 6hs2XwMpVwFTJjJ3PDQvvw
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.32.91
-! TimeUpdated: 2025-03-12T01:37:04+00:00
+! Version: 2.1.33.1
+! TimeUpdated: 2025-03-14T01:41:31+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -298,6 +298,9 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200617
+445nan.com#@#.ad-box:not(#ad-banner):not(:empty)
+445nan.com#%#//scriptlet('prevent-setTimeout', '.offsetHeight == 0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196174
 ||174.127.195.98/bbs/include/javascript/adblock.js
 174.127.195.98#%#//scriptlet('abort-on-property-write', 'checkAdblock')
@@ -1121,6 +1124,13 @@ $script,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixclou
 !
 ! NOTE: Specific rules
 !
+||445nan.com/ad/
+445nan.com###appBox
+445nan.com#%#//scriptlet('set-constant', 'appData', 'emptyArr')
+445nan.com#%#//scriptlet('set-constant', 'topData', 'emptyArr')
+445nan.com#%#//scriptlet('set-constant', 'midData', 'emptyArr')
+445nan.com#%#//scriptlet('set-constant', 'btmData', 'emptyArr')
+445nan.com#%#//scriptlet('set-constant', 'coupletData', 'emptyArr')
 ||m.iyinghua.com/bar/guding.js
 ||m.iyinghua.com/js/js/historr.js
 ||m.iyinghua.com/bar/yhding.js
@@ -4953,12 +4963,28 @@ newduba.cn###jq_youxi
 ||67.21.92.*.gif
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||lmeurbnjs.com^
+||xielloltv.com^
+||lqfctb.icu^
+||fpxhdx.icu^
+||xbfk.cn^
+||pdochgl.top^
+||straldrier.com^
+||fajkhr.icu^
+||hmbprf.icu^
+||qkax.cn^
+||apiiksn.top^
+||zogzoldop.com^
+||fqbr.cn^
 ||hxnpxh.icu^
 ||ecatqefal.com^
 ||jjfufv.icu^
 ||scesqoikq.com^
 ||oajv.cn^
 ||cigoqcq.top^
+||sbqg7jylmzsym.top^
+||istraxuhh.com^
+||orup.cn^
 ||dtjcvd.icu^
 ||vragridsn.com^
 ||tpkv.cn^
@@ -12736,6 +12762,11 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||i8tq.com/adImg/
 ||csgola.com/Public/img/lala/1.jpg
 ||adasset.flixfiend.top^
+||2345.com/guess/v1/adList
+2345.com##.search-right-swiper-news
+2345.com##._isFirstAd
+2345.com##.part-banner > .part-ppt
+2345.com##.lian-meng-box
 6parknews.com##.ad-view
 appinn.com#?#.featured-section > .test:has(>.post-img>a[href^="http"]:not([href*="appinn."]))
 mydrivers.com##.baidu_left

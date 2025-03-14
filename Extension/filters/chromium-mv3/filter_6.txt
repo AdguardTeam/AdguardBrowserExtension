@@ -1,8 +1,8 @@
-! Checksum: 17t7RJKjYALZ4lP3eJVs0w
+! Checksum: CqPazeqDsihwmRd2mfbMPg
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.43
-! TimeUpdated: 2025-03-11T17:38:42+00:00
+! Version: 2.0.46.46
+! TimeUpdated: 2025-03-13T16:39:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1484,7 +1484,7 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 autoplenum.de##div[class^="list-ad-margin-"]
 autoplenum.de##div[data-sort-in-place-skip]:has(.third-party-ad-container)
 autoplenum.de##div[style^="min-height:"]:has(> .third-party-ad-container)
-autoplenum.de##.third-party-ad-container
+12gebrauchtwagen.de,autoplenum.de##.third-party-ad-container
 ||publicfiles-studysmarter.b-cdn.net/campaigns/
 app.studysmarter.de##app-enigma-media
 aerzteblatt.de##.ad-container-dont-remove-me
@@ -6765,6 +6765,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||booking.com^$subdocument,domain=italien.de|travelguide-en.org|unser-seenland.de
 ||brandenburger-salzgrotte.de/webbanner/
 ||bumskontakte.ch/banner/
+||cdn.daydeal.ch/xml/daydeal/$third-party
 ||cdn.plus500.com/media/banners/
 ||cect-shop.com/CMBannerCECT-SHOP.gif
 ||ced.sascdn.com^
@@ -7912,6 +7913,7 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||portugalforum.org/data/ads/
 ||pr.t-online.de^
 ||pragerzeitung.cz/wp-content/uploads/*_300x450px_
+||preispirat.ch^*/partner-ads/
 ||prispi.de/images/bluvista-cam1.gif
 ||privater.sex/images/banner/
 ||production-livingdocs-bluewin-ch.imgix.net^*/6f3cdbc0-2a58-4a7e-933f-9077769c899b.png$domain=bluewin.ch
@@ -11276,7 +11278,9 @@ nydus.org##div:has(> #nydus_org_970x300_billboard_responsive)
 bauernzeitung.ch##div:has(> .advert)
 froheweihnachten.info,weihnachten.me,weihnachts-bilder.org,weihnachts-filme.com##div:has(> img[referrerpolicy="unsafe-url"])
 onvista.de##div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:has(span[class="mt-xxsmall block"])
+preispirat.ch##div[class="vc_row wpb_row vc_inner vc_row-fluid"]:has(#responsiveAd)
 mediamarkt.at,mediamarkt.de,saturn.de##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
+docmorris.de##div[data-testid="search-grid-product-card-wrapper"]:has(a[data-testid="product-card-sponsored"])
 jungefreiheit.de##div[data-widget_type="shortcode.default"]:has(.adsbygoogle)
 mobile.de##div[style="min-height:250px"]:has(#SRP_BILLBOARD_ADSENSE)
 jungefreiheit.de##div[style="text-align: center;"]:has(.adsbygoogle)
@@ -11406,12 +11410,6 @@ welt.de#?#div[id][data-qa]:has(.c-buelent-linkbox__label:contains(Anzeige))
 winfuture-forum.de#?#div.ExtraPostBlock:has(div.post_block:contains(Anzeige)):not(.with_rep)
 zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + button
 zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + div
-kaufland.*##.exp-vision__ext-wrapper--spad
-kaufland.*##.product--spa
-kaufland.*##.product--sponsored
-kaufland.*##.spads-recommender
-kaufland.*##.sponsored-brand-products-container
-kaufland.*##.teaser-orchestration__wrapper--online
 @@/iqadcontroller.$script,domain=manager-magazin.de
 @@||a.bf-ad.net/adengine/chip/adengine.js$xmlhttprequest,domain=chip.de
 @@||acdn.adnxs.com/ast/ast.js$script,domain=finanzen.ch

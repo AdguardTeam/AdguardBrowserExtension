@@ -1,8 +1,8 @@
-! Checksum: /mT/i+dsSbibRgG7LGYGCA
+! Checksum: hd1Fwh5g9XlU0llz5d0N1Q
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.31.39
-! TimeUpdated: 2025-03-11T16:37:17+00:00
+! Version: 2.0.31.45
+! TimeUpdated: 2025-03-13T12:46:46+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -3471,6 +3471,13 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 !
 ! SECTION: Self-promo - Regular rules
 !
+hh.ru##.work-in-company-banner
+apidog.com##section > div.w-full:has(> div.mx-auto > div.text-white > div > a[href="https://app.apidog.com"])
+apidog.com##.grid > div.hidden > div.sticky > div.relative:has(> div > a[href="https://app.apidog.com"])
+apidog.com##download-app-button
+kusurinomadoguchi.com##.sp-campaign-on-article
+financial-field.com##a[href="https://financial-field.com/tax-return-diagnostic-special-page"] > img
+finuslugi.ru##.rating-table__banner
 ||api.k2s.cc/v1/files/*/recommended?
 k2s.cc##a[href="/recommended"]
 k2s.cc#%#//scriptlet('prevent-xhr', 'api.k2s.cc/v1/users/me/plans?returnUrl=')
@@ -3886,7 +3893,7 @@ ozon.ru###layoutPage div[data-widget-disallow] > div[data-widget="freshIsland"]:
 service.smt.docomo.ne.jp##.bnr_area
 dns-shop.ru###top-banner
 zielonyogrodek.pl##article .shoper-recommended
-civitai.com##div[class^="mantine-"][style^="grid-template-columns:"] > div.flex-col.border.p-2
+civitai.green,civitai.com##div[class^="mantine-"][style^="grid-template-columns:"] > div.flex-col.border.p-2
 beeline.ru##.desktopOnlyElement > div > div[style^="background-color:"]:has(> div > button[aria-label="Скрыть баннер"])
 fotosklad.ru##div[class^="HeaderTopline_topline__"]
 epicentrk.ua##._PhbwaI
@@ -7931,9 +7938,9 @@ chip.de#$#.Button--Download { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183581 - copy/right text
 ||i38.ru/templates/teleinform/js/cprgt.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183012
-9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#%#//scriptlet('remove-attr', 'disabled', 'button')
-9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#.text-center > div[id][style^="display:"] { display: block !important; }
-9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#form[id][style^="display:"] { display: block !important; }
+dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#%#//scriptlet('remove-attr', 'disabled', 'button')
+dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#.text-center > div[id][style^="display:"] { display: block !important; }
+dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#form[id][style^="display:"] { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179738 (left-over)
 forbes.com##.for-you__component:empty
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177560
