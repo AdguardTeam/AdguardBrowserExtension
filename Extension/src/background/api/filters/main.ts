@@ -189,7 +189,7 @@ export class FiltersApi {
      *
      * @returns List of loaded filters ids.
      */
-    public static async loadFilters(filterIds: number[], remote: boolean): Promise<number[]> {
+    private static async loadFilters(filterIds: number[], remote: boolean): Promise<number[]> {
         if (filterIds.length === 0) {
             return [];
         }

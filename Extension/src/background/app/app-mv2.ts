@@ -303,7 +303,7 @@ export class App {
              * And they should be loaded before the engine start,
              * otherwise we will not be able to enable them later.
              */
-            await CommonFilterApi.loadEnabledFilters();
+            await FiltersApi.reloadEnabledFilters();
         }
 
         // Runs tswebextension

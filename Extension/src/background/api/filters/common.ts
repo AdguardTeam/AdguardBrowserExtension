@@ -274,19 +274,6 @@ export class CommonFilterApi {
     }
 
     /**
-     * Loads enabled filters from remote.
-     *
-     * It may be needed during the update when some filters are marked as 'enabled'
-     * but they are not 'loaded' yet, e.g. when deprecated combined annoyances filter is disabled
-     * and separate annoyances filters are enabled.
-     */
-    public static async loadEnabledFilters(): Promise<void> {
-        const enabledFilters = FiltersApi.getEnabledFilters();
-
-        await FiltersApi.loadFilters(enabledFilters, true);
-    }
-
-    /**
      * Returns language-specific filters by user locale.
      *
      * @returns List of language-specific filters ids.
