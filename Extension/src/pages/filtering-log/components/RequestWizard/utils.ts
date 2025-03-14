@@ -17,10 +17,9 @@
  */
 import { ContentType as RequestType } from 'tswebextension';
 
-import { AntiBannerFiltersId } from '../../../../common/constants';
 import { strings } from '../../../../common/strings';
-import { translator } from '../../../../common/translators/translator';
 import { type FilteringLogEvent, type FilterMetadata } from '../../../../background/api';
+import { getFilterName } from '../../../helpers';
 
 /**
  * Url utils
@@ -91,35 +90,6 @@ export const UrlUtils = {
             ? frameDomain.substring(1)
             : frameDomain;
     },
-};
-
-/**
- * Returns filter name for filterId.
- *
- * @param filterId Filter id.
- * @param filtersMetadata Filters metadata.
- *
- * @returns Filter name for filterId
- */
-export const getFilterName = (
-    filterId: number | undefined,
-    filtersMetadata: FilterMetadata[] | null,
-): string | null => {
-    if (filterId === undefined) {
-        return null;
-    }
-
-    if (filterId === AntiBannerFiltersId.UserFilterId) {
-        return translator.getMessage('options_userfilter');
-    }
-
-    if (filterId === AntiBannerFiltersId.AllowlistFilterId) {
-        return translator.getMessage('options_allowlist');
-    }
-
-    const filterMetadata = filtersMetadata?.filter((el) => el.filterId === filterId)[0];
-
-    return filterMetadata ? filterMetadata.name : null;
 };
 
 /**

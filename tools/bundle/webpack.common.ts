@@ -57,6 +57,7 @@ import {
     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
     BACKGROUND_OUTPUT,
     MIN_SUPPORTED_VERSION,
+    INDEX_HTML_FILE_NAME,
 } from '../../constants';
 
 import {
@@ -369,7 +370,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(OPTIONS_PATH, 'index.html'),
+                template: path.join(OPTIONS_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
                     ...ENTRY_POINTS_CHUNKS[OPTIONS_OUTPUT],
@@ -378,19 +379,19 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(POPUP_PATH, 'index.html'),
+                template: path.join(POPUP_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${POPUP_OUTPUT}.html`,
                 chunks: [REACT_VENDOR_OUTPUT, MOBX_VENDOR_OUTPUT, POPUP_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(POST_INSTALL_PATH, 'index.html'),
+                template: path.join(POST_INSTALL_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${POST_INSTALL_OUTPUT}.html`,
                 chunks: [POST_INSTALL_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
+                template: path.join(FULLSCREEN_USER_RULES_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
                     ...ENTRY_POINTS_CHUNKS[FULLSCREEN_USER_RULES_OUTPUT],
@@ -399,7 +400,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(FILTERING_LOG_PATH, 'index.html'),
+                template: path.join(FILTERING_LOG_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
                     ...ENTRY_POINTS_CHUNKS[FILTERING_LOG_OUTPUT],
@@ -448,6 +449,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
     const isNotFirefoxBuild = browserConfig.browser !== Browser.FirefoxAmo
         && browserConfig.browser !== Browser.FirefoxStandalone;
     if (!isWatchMode && configuration.plugins && isNotFirefoxBuild) {
+        // @ts-ignore
         configuration.plugins.push(new ZipWebpackPlugin({
             path: '../',
             filename: `${browserConfig.browser}.zip`,

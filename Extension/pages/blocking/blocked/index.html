@@ -1,0 +1,1773 @@
+<!--
+ * blocking-pages - Blocking pages for AdGuard projects
+ * @version v2.0.38
+ * @link
+ * @license Proprietary
+ --><!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title data-id="adgAccessBlockedTitle"></title>
+        <link rel="shortcut icon" type="image/png" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACxUlEQVR42sWXT0gUYRTAPwgiiCjoGHSqY4fOHfIWdIrAexjsNyNWM7azs5tmhaVIh+ogdZDCMKIi0HVnc/32T7VagVFklv0xM/+kKZrWhiuj+5p3+EzQnW/Gdtzf8mBhl3k/3nsz7xtih4/p26WoJlNDb5ai+nMa0WelSMik4eASbQ/maDgEUlw15biakRPqpPV9mMaVtMyUy1K8kkpMKSlrC2wjbrASHqBG4CEmwwSCQAEn0W2JnS7vUPeQtSi9X7rJStoktQdN+4RiAXEoYzSuHsecBJGMQDcvJ4bXAjwsiYzE1Hpim8BDAR7FF8DyF0sA7x6Cg1fECgwRGglmvBKIDSXg/fRHu//0WAL6uBcCj0e6YH4xC1VdtfkFmNpqCQTShRbo/JYE5Mabm/YtYMpFIhlaQyEFwl8eAYIVEM1AeVI5SqRocL8oSezzEzCXTJj6MwMN6et5BR58agVk5NcoVCQ18RAm1F0EweViJ9A5kAbOwuICnEteWSXQ0n+P/877LoofhEONwGvbMofPwMuxXuDMzM+CFqtbFrjVdwdy1gdpenvb6S14bYWAVi1qg9xeBR+mBoAzOjcOFUYNYMJcLgdI19gL588Aph4mHFEbeGDCrz9HgDM4M7yc/HtmgvfdXfk5PkNnTqa+sqMWJjPTsBIc0JpndW5W8tlVAmUdgZ1Ob70Qa4C57G/gNL+76+oR7I/5t5I1wFkIO5W4kLoK82YWeiZeuUqOJyNig6v1XP+0EU6mdFcCRASNajUebUM++WKoofd6INBInHIsdX4LjQSzBRNIqP3WIXQzcYMv6j9RIAFTTqoHyXqghj/03wLs1CHiGPeVEO37ElIIZOY/kmcm8p35+3xM3UcKiY/pu/H4JhRgSpuSUnYQr8A3KRuBS8R7UEKr9/17OwbK1GlsE9lIaGf1Xmrog1K8sgUX2Xqv8xeiHfjtkgd1aQAAAABJRU5ErkJggg&#x3D;&#x3D;" />
+      
+      <style rel="stylesheet" crossorigin>:root {
+    --product-primary-0: #f7fbf8;
+    --product-primary-10: #d9ecde;
+    --product-primary-20: #bedfc6;
+    --product-primary-30: #a2d0ad;
+    --product-primary-40: #84c193;
+    --product-primary-50: #67b279;
+    --product-primary-60: #5b9f6b;
+    --product-primary-70: #4e8c5d;
+    --product-primary-80: #42794f;
+    --product-primary-90: #366642;
+    --product-primary-100: #22482c;
+    --product-secondary-0: #f5edf5;
+    --product-secondary-10: #dec8e1;
+    --product-secondary-20: #ccaad1;
+    --product-secondary-30: #c096c7;
+    --product-secondary-40: #b586be;
+    --product-secondary-50: #a870b2;
+    --product-secondary-60: #9f61aa;
+    --product-secondary-70: #92549c;
+    --product-secondary-80: #804886;
+    --product-secondary-90: #6d3e72;
+    --product-secondary-100: #502d53;
+    --gray-0: #ffffff;
+    --gray-10: #f6f6f6;
+    --gray-20: #e4e4e4;
+    --gray-30: #d2d2d2;
+    --gray-40: #c0c0c0;
+    --gray-50: #a4a4a4;
+    --gray-60: #7f7f7f;
+    --gray-70: #5b5b5b;
+    --gray-80: #3d3d3d;
+    --gray-90: #1f1f1f;
+    --gray-100: #0a0a0a;
+    --orange-0: #fdf9f2;
+    --orange-10: #f5e2c1;
+    --orange-20: #eecb92;
+    --orange-30: #e5b460;
+    --orange-40: #de9e33;
+    --orange-50: #d58500;
+    --orange-60: #c77901;
+    --orange-70: #b76c01;
+    --orange-80: #a85f01;
+    --orange-90: #985201;
+    --orange-100: #803d00;
+    --red-0: #fcece6;
+    --red-10: #f6c2b1;
+    --red-20: #f2a288;
+    --red-30: #ef9071;
+    --red-40: #ec7b55;
+    --red-50: #e9653a;
+    --red-60: #e75727;
+    --red-70: #dc4918;
+    --red-80: #bc3f15;
+    --red-90: #a13612;
+    --red-100: #77280d;
+}
+
+:root {
+    /* Page background */
+    --default-page-background: var(--gray-0);
+    --hovered-page-background: var(--gray-10);
+    --pressed-page-background: var(--gray-20);
+    /* Cards background */
+    --default-cards-background: var(--gray-0);
+    /* Popup background */
+    --default-popup-background: var(--gray-0);
+    /* Footer background */
+    --default-footer-background: var(--gray-80);
+    /* Item divider */
+    --default-item-divider: var(--gray-30);
+    /* Main text */
+    --default-main-text: var(--gray-80);
+    --disabled-main-text: var(--gray-50);
+    /* Description text */
+    --default-description-text: var(--gray-60);
+    /* Forms */
+    --default-labels: var(--gray-70);
+    /* Input */
+    --default-input-background: var(--gray-10);
+    --default-active-input-stroke: var(--gray-50);
+    --default-inactive-input-stroke: var(--gray-30);
+    --default-placeholder: var(--gray-50);
+    --default-input-on-card-background: var(--gray-10);
+    --disabled-input-on-card-background: var(--gray-10);
+    /* Dropdown */
+    --default-dropdown-menu-background: var(--gray-0);
+    --hovered-dropdown-menu-background: var(--gray-10);
+    /* Main button */
+    --default-main-button: var(--product-primary-50);
+    --hovered-main-button: var(--product-primary-60);
+    --pressed-main-button: var(--product-primary-70);
+    --disabled-main-button: var(--product-primary-30);
+    --default-primary-button-text: var(--gray-0);
+    --disabled-primary-button-text: var(--product-primary-0);
+    --default-primary-button-icon: var(--gray-0);
+    /* Secondary button */
+    --default-secondary-button: var(--gray-0);
+    --hovered-secondary-button: var(--gray-10);
+    --pressed-secondary-button: var(--gray-20);
+    --disabled-secondary-button: var(--gray-0);
+    --default-secondary-button-stroke: var(--gray-80);
+    --disabled-secondary-button-stroke: var(--gray-50);
+    /* Secondary card button */
+    --default-secondary-card-button: var(--gray-0);
+    --hovered-secondary-card-button: var(--gray-10);
+    --pressed-secondary-card-button: var(--gray-20);
+    --disabled-secondary-card-button: var(--gray-0);
+    /* Danger button */
+    --default-danger-button: var(--red-50);
+    --hovered-danger-button: var(--red-60);
+    --pressed-danger-button: var(--red-70);
+    --disabled-danger-button: var(--red-30);
+    /* Link */
+    --default-link: var(--product-primary-50);
+    --hovered-link: var(--product-primary-60);
+    --pressed-link: var(--product-primary-70);
+    --visited-link: var(--product-primary-80);
+    /* Attention link */
+    --default-attention-link: var(--orange-50);
+    --hovered-attention-link: var(--orange-60);
+    --pressed-attention-link: var(--orange-70);
+    --disabled-attention-link: var(--orange-30);
+    /* Error link */
+    --default-error-link: var(--red-50);
+    /* Product icon */
+    --default-product-icon: var(--product-primary-50);
+    /* Black icon */
+    --default-black-icons: var(--gray-80);
+    /* Gray icon */
+    --default-gray-icons: var(--gray-60);
+    --disabled-gray-icons: var(--gray-30);
+    /* Error icon */
+    --default-error-icon: var(--red-50);
+    /* Stat */
+    --default-stats-background: var(--gray-20);
+    --default-red-stat: var(--red-50);
+    /* Modal */
+    --modal-iframe-overlay: #ffffff50;
+    --modal-overlay: #00000050;
+    /* Notifications */
+    --default-notifications-attention: var(--orange-10);
+    /* Logo key */
+    --default-logo-key-color: var(--gray-90);
+    /* Loaders */
+    --default-loaders-background: var(--gray-20);
+    --default-loaders-background-dark: var(--gray-70);
+    --default-loaders-primary: var(--product-primary-50);
+    /* Toplines */
+    --default-text-toplines-main: var(--gray-0);
+    --disabled-text-toplines-main: var(--gray-20);
+    --default-fills-toplines-adblocker: var(--gray-100);
+    --default-fills-toplines-vpn: var(--gray-10);
+    /* Breadcrumbs */
+    --default-breadcrumbs: var(--gray-50);
+    --fills-snacks-desktop-snacks-default: var(--gray-10);
+}
+
+[data-theme='dark'] {
+    /* Page background */
+    --default-page-background: var(--gray-90);
+    --hovered-page-background: var(--gray-80);
+    --pressed-page-background: var(--gray-70);
+    /* Cards background */
+    --default-cards-background: var(--gray-80);
+    /* Popup background */
+    --default-popup-background: var(--gray-90);
+    /* Footer background */
+    --default-footer-background: var(--gray-80);
+    /* Item divider */
+    --default-item-divider: var(--gray-70);
+    /* Main text */
+    --default-main-text: var(--gray-20);
+    --disabled-main-text: var(--gray-50);
+    /* Description text */
+    --default-description-text: var(--gray-40);
+    /* Forms */
+    --default-labels: var(--gray-30);
+    /* Input */
+    --default-input-background: var(--gray-80);
+    --default-active-input-stroke: var(--gray-50);
+    --default-inactive-input-stroke: var(--gray-70);
+    --default-placeholder: var(--gray-50);
+    --default-input-on-card-background: var(--gray-70);
+    --disabled-input-on-card-background: var(--gray-70);
+    /* Dropdown */
+    --default-dropdown-menu-background: var(--gray-80);
+    --hovered-dropdown-menu-background: var(--gray-70);
+    /* Main button */
+    --default-main-button: var(--product-primary-50);
+    --hovered-main-button: var(--product-primary-60);
+    --pressed-main-button: var(--product-primary-70);
+    --disabled-main-button: var(--product-primary-90);
+    --default-primary-button-text: var(--gray-0);
+    --disabled-primary-button-text: var(--product-primary-20);
+    --default-primary-button-icon: var(--gray-0);
+    /* Secondary button */
+    --default-secondary-button: var(--gray-90);
+    --hovered-secondary-button: var(--gray-80);
+    --pressed-secondary-button: var(--gray-70);
+    --disabled-secondary-button: var(--gray-90);
+    --default-secondary-button-stroke: var(--gray-20);
+    --disabled-secondary-button-stroke: var(--gray-50);
+    /* Secondary card button */
+    --default-secondary-card-button: var(--gray-80);
+    --hovered-secondary-card-button: var(--gray-70);
+    --pressed-secondary-card-button: var(--gray-60);
+    --disabled-secondary-card-button: var(--gray-80);
+    /* Danger button */
+    --default-danger-button: var(--red-50);
+    --hovered-danger-button: var(--red-60);
+    --pressed-danger-button: var(--red-70);
+    --disabled-danger-button: var(--red-30);
+    /* Link */
+    --default-link: var(--product-primary-50);
+    --hovered-link: var(--product-primary-60);
+    --pressed-link: var(--product-primary-70);
+    --visited-link: var(--product-primary-30);
+    /* Attention link */
+    --default-attention-link: var(--orange-50);
+    --hovered-attention-link: var(--orange-60);
+    --pressed-attention-link: var(--orange-70);
+    --disabled-attention-link: var(--orange-30);
+    /* Error link */
+    --default-error-link: var(--red-50);
+    /* Product icon */
+    --default-product-icon: var(--product-primary-50);
+    /* Black icon */
+    --default-black-icons: var(--gray-20);
+    /* Gray icon */
+    --default-gray-icons: var(--gray-40);
+    --disabled-gray-icons: var(--gray-70);
+    /* Error icon */
+    --default-error-icon: var(--red-50);
+    /* Stat */
+    --default-stats-background: var(--gray-70);
+    --default-red-stat: var(--red-50);
+    /* Modal */
+    --modal-iframe-overlay: #00000075;
+    --modal-overlay: #00000075;
+    /* Notifications */
+    --default-notifications-attention: var(--orange-100);
+    /* Logo key */
+    --default-logo-key-color: var(--gray-10);
+    /* Loaders */
+    --default-loaders-background: var(--gray-70);
+    --default-loaders-background-dark: var(--gray-70);
+    --default-loaders-primary: var(--product-primary-50);
+    /* Toplines */
+    --default-text-toplines-main: var(--gray-0);
+    --disabled-text-toplines-main: var(--gray-20);
+    --default-fills-toplines-adblocker: var(--gray-100);
+    --default-fills-toplines-vpn: var(--gray-80);
+    /* Breadcrumbs */
+    --default-breadcrumbs: var(--gray-50);
+    --fills-snacks-desktop-snacks-default: var(--gray-80);
+}
+
+:root {
+    --dns-blue50: #3c81f6;
+    --dns-red50: #f04444;
+    --dns-orange50: #f59e10;
+    --adg-green30: #a2d0ad;
+    --adg-green50: #67b279;
+    --adg-green60: #5b9f6b;
+    --adg-green70: #4e8c5d;
+    --vpn-green30: #b2cc9e;
+    --vpn-green50: #74a352;
+    --vpn-green60: #68924a;
+    --vpn-green70: #5c8141;
+    --t2: 0.2s ease;
+    --t3: 0.3s ease;
+    --t4: 0.4s ease;
+}
+
+*,
+*::before,
+*::after {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    min-width: 360px;
+    min-height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    margin: 0;
+    font-family:
+        'Roboto',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Ubuntu,
+        Arial,
+        sans-serif;
+    font-weight: 400;
+    color: var(--default-main-text);
+    background-color: var(--default-page-background);
+}
+
+body.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-weight: 700;
+}
+
+p,
+ul,
+li {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    list-style: none;
+}
+
+button {
+    margin: 0;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    background-color: transparent;
+}
+
+svg {
+    display: block;
+}
+
+.main {
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+
+.page-block {
+    padding: 40px 0;
+}
+
+@media (min-width: 768px) {
+
+.page-block {
+        padding: 80px 0
+}
+    }
+
+.container {
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+@media (min-width: 1024px) {
+
+.container {
+        padding: 0 24px
+}
+    }
+
+.grid {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+
+@media (min-width: 1024px) {
+
+.grid {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+                flex-direction: row;
+        -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
+        -webkit-box-align: start;
+            -ms-flex-align: start;
+                align-items: flex-start
+}
+    }
+
+.column {
+    width: 100%;
+    max-width: 476px;
+}
+
+.column--hide-tablet {
+        display: none;
+    }
+
+@media (min-width: 1024px) {
+
+.column--hide-tablet {
+            display: block
+    }
+        }
+
+.title {
+    font-size: 24px;
+    line-height: 120%;
+}
+
+@media (min-width: 768px) {
+
+.title {
+        font-size: 32px
+}
+    }
+
+.subtitle {
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.product-title {
+    font-size: 18px;
+    line-height: 20px;
+}
+
+.text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+
+.text-left-tablet {
+        text-align: left
+}
+    }
+
+.flex-center {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+
+.button {
+    width: 100%;
+    height: 56px;
+    display: block;
+    border-radius: 8px;
+    padding-left: 24px;
+    padding-right: 24px;
+    font-size: 16px;
+    line-height: 130%;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button[data-type='filled'] {
+        -webkit-transition: var(--t2) background-color;
+        transition: var(--t2) background-color;
+        background-color: var(--default-main-button);
+        color: var(--default-primary-button-text);
+    }
+
+.button[data-type='filled']:hover,
+        .button[data-type='filled']:focus {
+            background-color: var(--hovered-main-button);
+        }
+
+.button[data-type='filled']:active {
+            background-color: var(--pressed-main-button);
+        }
+
+.button[data-type='filled']:disabled {
+            background-color: var(--disabled-main-button);
+            color: var(--disabled-primary-button-text);
+        }
+
+.button[data-type='transparent'] {
+        -webkit-transition: var(--t2) background-color;
+        transition: var(--t2) background-color;
+        background-color: var(--default-secondary-button);
+        color: var(--default-main-text);
+        -webkit-box-shadow: 0 0 0 1px inset var(--default-secondary-button-stroke);
+                box-shadow: 0 0 0 1px inset var(--default-secondary-button-stroke);
+    }
+
+.button[data-type='transparent']:hover,
+        .button[data-type='transparent']:focus {
+            background-color: var(--hovered-secondary-button);
+        }
+
+.button[data-type='transparent']:active {
+            background-color: var(--pressed-secondary-button);
+        }
+
+.button[data-type='transparent']:disabled {
+            background-color: var(--disabled-secondary-button);
+            -webkit-box-shadow: 0 0 0 1px inset var(--disabled-secondary-button-stroke);
+                    box-shadow: 0 0 0 1px inset var(--disabled-secondary-button-stroke);
+        }
+
+.button[data-size='medium'] {
+        padding-top: 18px;
+        padding-bottom: 18px;
+    }
+
+.button:active {
+        -webkit-transition: none;
+        transition: none;
+    }
+
+.button:disabled {
+        cursor: default;
+    }
+
+.input {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    position: relative;
+}
+
+.input__container {
+        width: 100%;
+    }
+
+.input__container--multifunctional .input__field {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                gap: 16px;
+                -webkit-box-pack: justify;
+                    -ms-flex-pack: justify;
+                        justify-content: space-between;
+                padding: 16px;
+            }
+
+@media (min-width: 768px) {
+
+.input__container--multifunctional .input__field {
+                    background-color: transparent
+            }
+                }
+
+@media (min-width: 768px) {
+
+.input__container--multifunctional .input__field:hover {
+                        background-color: var(--default-input-background)
+                }
+                    }
+
+.input__container--multifunctional .input__text {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                gap: 3px;
+                overflow: hidden;
+            }
+
+.input__label {
+        margin-bottom: 8px;
+        font-size: 14px;
+        line-height: 1.285;
+        color: var(--default-labels);
+    }
+
+.input__label--disabled {
+            opacity: 0.5;
+        }
+
+.input__field-in {
+        position: relative;
+    }
+
+.input__field {
+        width: 100%;
+        position: relative;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 16px 56px 16px 16px;
+        font-size: 16px;
+        font-family: inherit;
+        line-height: 1.375;
+        background-color: var(--default-input-background);
+        color: var(--default-main-text);
+        outline: none;
+        -webkit-transition:
+            var(--t3) border-color,
+            var(--t3) background-color;
+        transition:
+            var(--t3) border-color,
+            var(--t3) background-color;
+        z-index: 1;
+    }
+
+.input__field--textarea {
+            min-height: 100px;
+            max-height: 144px;
+            resize: vertical;
+        }
+
+.input__field::-webkit-input-placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field::-moz-placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field:-ms-input-placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field::-ms-input-placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field::placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field:focus {
+            border-color: var(--default-active-input-stroke);
+        }
+
+.input__field:disabled {
+            opacity: 0.5;
+        }
+
+.input__field:disabled + .input__btn {
+                display: none;
+            }
+
+.input__field--error {
+            border-color: var(--default-error-icon);
+        }
+
+.input__field--error + .input__error {
+                display: inline;
+            }
+
+.input__error {
+        display: none;
+        margin-top: 4px;
+        font-size: 14px;
+        line-height: 1.15;
+        color: var(--default-error-link);
+    }
+
+.input__field-value {
+        font-size: 16px;
+        line-height: inherit;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+.input__field-value--modal {
+            margin: 0 0 32px;
+            max-height: 600px;
+            min-height: 24px;
+            word-break: break-word;
+            white-space: normal;
+            white-space: initial;
+            overflow-y: auto;
+        }
+
+.input__text-value {
+        font-weight: 600;
+    }
+
+.input__text-value:after {
+            content: ':';
+        }
+
+.input__actions {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        gap: 16px;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+    }
+
+.input__action {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+    }
+
+.input__actions-divider {
+        display: block;
+        width: 1px;
+        height: 24px;
+        background-color: var(--default-item-divider);
+    }
+
+.content {
+    display: block;
+}
+
+@media (min-width: 768px) {
+
+.content--dns {
+            padding-left: 32px
+    }
+        }
+
+.content__title span {
+            display: block;
+        }
+
+.content__title--red span {
+                color: var(--dns-red50);
+            }
+
+.content__title--blue span {
+                color: var(--dns-blue50);
+            }
+
+.content__title--orange span {
+                color: var(--dns-orange50);
+            }
+
+.content__text {
+        padding-top: 8px;
+    }
+
+.content__text--mb {
+            margin: 0 0 24px;
+        }
+
+@media (min-width: 768px) {
+
+.content__text--mb {
+                margin: 0 0 32px
+        }
+            }
+
+.content__text strong {
+            font-weight: 700;
+        }
+
+.content__parental-input {
+        display: none;
+        margin-top: 48px;
+    }
+
+.content__parental-input--show {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+        }
+
+.content__parental-proceed {
+        display: none;
+    }
+
+.content__buttons {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-column-gap: 24px;
+           -moz-column-gap: 24px;
+                column-gap: 24px;
+        margin: 24px 0 40px;
+    }
+
+@media (min-width: 768px) {
+
+.content__buttons {
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: row;
+                    flex-direction: row;
+            margin: 32px 0 40px
+    }
+        }
+
+.content__buttons .button {
+            max-width: 400px;
+        }
+
+@media (min-width: 768px) {
+
+.content__buttons .button {
+                width: auto;
+                max-width: none;
+                max-width: initial;
+                min-width: 200px
+        }
+            }
+
+.content__buttons .button + .button {
+            margin-top: 16px;
+        }
+
+@media (min-width: 768px) {
+
+.content__buttons .button + .button {
+                margin-top: 0
+        }
+            }
+
+.content__inputs {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        gap: 16px;
+        margin: 0 auto;
+        max-width: 400px;
+    }
+
+@media (min-width: 768px) {
+
+.content__inputs {
+            gap: 0;
+            max-width: none
+    }
+        }
+
+@media (min-width: 1024px) {
+
+.content__inputs {
+            margin: 0
+    }
+        }
+
+.pic--dns {
+        padding-right: 32px;
+    }
+
+.pic--adg {
+        padding-bottom: 8px;
+    }
+
+@media (min-width: 768px) {
+
+.pic--adg {
+            padding-bottom: 48px
+    }
+        }
+
+@media (min-width: 1024px) {
+
+.pic--adg {
+            padding-bottom: 0;
+            padding-right: 100px
+    }
+        }
+
+.pic--hide-tablet {
+        display: none;
+    }
+
+@media (min-width: 1024px) {
+
+.pic--hide-tablet {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex
+    }
+        }
+
+@media (min-width: 1024px) {
+
+.pic--hide-desktop {
+            display: none
+    }
+        }
+
+.faq__item {
+        margin: 0 0 40px;
+    }
+
+.faq__item:last-child {
+            margin: 0;
+        }
+
+.faq-item--open .faq-item__content {
+            grid-template-rows: none;
+            opacity: 1;
+        }
+
+.faq-item--always-open .faq-item__content {
+            grid-template-rows: none;
+            opacity: 1;
+        }
+
+.faq-item--always-open .faq-item__toggle-btn {
+            cursor: default;
+        }
+
+.faq-item__toggle {
+        position: relative;
+    }
+
+.faq-item__toggle-btn {
+        width: 100%;
+        display: block;
+        padding-right: 32px;
+        font-weight: inherit;
+        font-size: inherit;
+        text-align: left;
+        color: inherit;
+        cursor: pointer;
+    }
+
+.faq-item__toggle-btn.active + .faq-item__toggle-btn-icon {
+                -webkit-transform: scaleY(-1);
+                    -ms-transform: scaleY(-1);
+                        transform: scaleY(-1);
+            }
+
+.faq-item__toggle-btn--star {
+            padding-right: 64px;
+        }
+
+@media (min-width: 768px) {
+
+.faq-item__toggle-btn--star {
+                padding-right: 32px
+        }
+            }
+
+.faq-item__star-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 32px;
+    }
+
+@media (min-width: 768px) {
+
+.faq-item__star-icon {
+            right: 0;
+            left: -32px
+    }
+        }
+
+.faq-item__toggle-btn-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        -webkit-transition: var(--t2) transform;
+        transition: var(--t2) transform;
+        z-index: -1;
+    }
+
+.faq-item__content {
+        display: block;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+    }
+
+@supports (display: grid) {
+
+.faq-item__content {
+            max-height: none;
+            max-height: initial;
+            display: grid;
+            grid-template-rows: 0fr;
+            -webkit-transition:
+                var(--t3) grid-template-rows,
+                var(--t3) opacity;
+            transition:
+                var(--t3) grid-template-rows,
+                var(--t3) opacity
+    }
+        }
+
+.faq-item__content.active {
+            max-height: 1200px;
+            opacity: 1;
+            -webkit-transition: var(--t3) opacity;
+            transition: var(--t3) opacity;
+        }
+
+@supports (display: grid) {
+
+.faq-item__content.active {
+                max-height: none;
+                max-height: initial;
+                grid-template-rows: 1fr;
+                -webkit-transition:
+                    var(--t3) grid-template-rows,
+                    var(--t3) opacity;
+                transition:
+                    var(--t3) grid-template-rows,
+                    var(--t3) opacity
+        }
+            }
+
+.faq-item__desc {
+        overflow: hidden;
+    }
+
+.faq-item__text {
+        padding-top: 21px;
+    }
+
+.faq-item__text:first-child {
+            padding-top: 8px;
+        }
+
+.faq-item__text a,
+        .faq-item__text button {
+            font-size: inherit;
+            line-height: inherit;
+            color: var(--default-link);
+            -webkit-transition: var(--t2) background-color;
+            transition: var(--t2) background-color;
+            cursor: pointer;
+        }
+
+.faq-item__text a:hover,
+            .faq-item__text a:focus,
+            .faq-item__text button:hover,
+            .faq-item__text button:focus {
+                color: var(--hovered-link);
+            }
+
+.faq-item__text a:active, .faq-item__text button:active {
+                -webkit-transition: none;
+                transition: none;
+                color: var(--pressed-link);
+            }
+
+.faq-item__text a {
+            text-decoration: underline;
+        }
+
+.faq-item__text button {
+            text-decoration: none;
+        }
+
+.faq-item__text--gray {
+            color: var(--default-description-text);
+        }
+
+.faq-item__text--code {
+            padding-top: 8px;
+            word-wrap: break-word;
+        }
+
+.faq-item__product {
+        margin-top: 24px;
+    }
+
+.faq-item__product:last-child {
+            margin-top: 48px;
+        }
+
+.product__header {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+.product__header-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+.product__header-content {
+        margin-left: 16px;
+    }
+
+.product__header-promo {
+        color: var(--default-description-text);
+        line-height: 20px;
+    }
+
+.product__desc {
+        margin-top: 16px;
+    }
+
+.product__features {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+    }
+
+.product__features-item {
+        width: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        margin-top: 16px;
+    }
+
+@media (min-width: 768px) {
+
+.product__features-item {
+            width: 50%;
+            padding-right: 24px
+    }
+        }
+
+.product__features-text {
+        margin-left: 8px;
+        padding-top: 3px;
+        line-height: 18px;
+    }
+
+.product__btn {
+        margin-top: 24px;
+    }
+
+.product__btn a {
+            width: 100%;
+            max-width: 400px;
+            display: inline-block;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 16px;
+            line-height: 130%;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            -webkit-transition: var(--t2) background-color;
+            transition: var(--t2) background-color;
+            cursor: pointer;
+        }
+
+@media (min-width: 1024px) {
+
+.product__btn a {
+                width: auto;
+                max-width: none;
+                max-width: initial;
+                min-width: 168px
+        }
+            }
+
+.product__btn a:active {
+                -webkit-transition: none;
+                transition: none;
+            }
+
+.product__btn a:disabled {
+                cursor: default;
+            }
+
+.product__btn[data-color='adg-green'] a {
+            background-color: var(--adg-green50);
+            color: var(--default-primary-button-text);
+        }
+
+.product__btn[data-color='adg-green'] a:hover,
+            .product__btn[data-color='adg-green'] a:focus {
+                background-color: var(--adg-green60);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='adg-green'] a:active {
+                background-color: var(--adg-green70);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='adg-green'] a:disabled {
+                background-color: var(--adg-green30);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='vpn-green'] a {
+            background-color: var(--vpn-green50);
+            color: var(--default-primary-button-text);
+        }
+
+.product__btn[data-color='vpn-green'] a:hover,
+            .product__btn[data-color='vpn-green'] a:focus {
+                background-color: var(--vpn-green60);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='vpn-green'] a:active {
+                background-color: var(--vpn-green70);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='vpn-green'] a:disabled {
+                background-color: var(--vpn-green30);
+                color: var(--default-primary-button-text);
+            }
+
+.modal {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    top: 0;
+    left: 0;
+    padding: 24px 16px 88px;
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: var(--t3) opacity var(--t3) visibility;
+    transition: var(--t3) opacity var(--t3) visibility;
+    z-index: 1;
+}
+
+.modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+.modal__in {
+        width: 100%;
+        max-width: 480px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        position: relative;
+        border-radius: 8px;
+        -webkit-box-shadow: 8px 8px 24px 0 rgba(0, 0, 0, 0.1);
+                box-shadow: 8px 8px 24px 0 rgba(0, 0, 0, 0.1);
+        padding: 24px 16px;
+        background-color: var(--default-page-background);
+        color: var(--default-main-text);
+        overflow-y: auto;
+    }
+
+@media (min-width: 768px) {
+
+.modal__in {
+            max-width: 720px;
+            padding: 32px
+    }
+        }
+
+.modal__title {
+        margin: 0 0 12px;
+    }
+
+.modal__content {
+        margin: 0 0 32px;
+        max-width: 600px;
+        word-break: break-word;
+        overflow-y: auto;
+    }
+
+.modal__actions {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        gap: 16px;
+    }
+
+@media (min-width: 768px) {
+
+.modal__actions {
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: row;
+                    flex-direction: row
+    }
+        }
+
+@media (min-width: 768px) {
+
+.modal__actions .button {
+                width: auto;
+                min-width: 200px
+        }
+            }
+
+.modal__close {
+        width: 24px;
+        height: 24px;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        position: absolute;
+        right: 16px;
+        top: 16px;
+    }
+
+.notify {
+    width: calc(100% - 32px);
+    max-width: 612px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    gap: 8px;
+    position: fixed;
+    -webkit-box-shadow: 4px 4px 8px 0 #0000001a;
+            box-shadow: 4px 4px 8px 0 #0000001a;
+    bottom: 16px;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(calc(100% + 16px));
+        -ms-transform: translateX(-50%) translateY(calc(100% + 16px));
+            transform: translateX(-50%) translateY(calc(100% + 16px));
+    border-radius: 4px;
+    padding: 16px;
+    background-color: var(--fills-snacks-desktop-snacks-default);
+    z-index: 2;
+}
+
+.notify.active {
+        -webkit-transition: var(--t3) transform;
+        transition: var(--t3) transform;
+        -webkit-transform: translateX(-50%) translateY(0);
+            -ms-transform: translateX(-50%) translateY(0);
+                transform: translateX(-50%) translateY(0);
+    }
+
+.notify__close {
+        width: 24px;
+        height: 24px;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+    }</style>
+    </head>
+
+    <body>
+        <main class="main">
+            <div class="page-block">
+                <div class="container">
+                    <div class="grid">
+                        <div class="column">
+                            <div class="pic pic--adg pic--hide-tablet flex-center">
+                                <svg width="320" height="320" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".25" d="M213.18 172.67a81.67 81.67 0 1 0 0-163.34 81.67 81.67 0 0 0 0 163.34Z" fill="#E8EDEF"/><path d="M213.18 154.3a63.3 63.3 0 1 0 0-126.6 63.3 63.3 0 0 0 0 126.6Z" fill="#E8EDEF"/><path d="M213.18 127.4a36.4 36.4 0 1 0 0-72.8 36.4 36.4 0 0 0 0 72.8Z" fill="#FF6652"/><path d="M199.03 109.08a3.93 3.93 0 0 1-2.79-6.72l28.28-28.27a3.93 3.93 0 0 1 5.57 5.56l-28.28 28.28a3.91 3.91 0 0 1-2.79 1.15h.01Z" fill="#fff"/><path d="M227.32 109.08a3.91 3.91 0 0 1-2.78-1.15l-28.28-28.28a3.94 3.94 0 0 1 5.56-5.56l28.28 28.27a3.93 3.93 0 0 1-2.79 6.72h.01Z" fill="#fff"/><path d="M82.52 138.24c5.3-10.16 11.45-22.04 16.26-43.28 3.07-10.55 1.3-26.1 8.11-35.72 3.96-6.24 13.06-10.73 18.3-10.69 9.05-.99 20.38-.37 26.24 8.2C155.9 62.4 159 96.97 159 96.97c1.48 11.36 9.48 28.8 16.38 41.28H82.52v-.01Z" fill="#CE8000"/><path d="M104.54 100.83h53.94c-.12 3.28 1.32 24.86 4.52 33.43 0 0-68.64-2.95-69.6-2.02.63-6.79 6.63-11.33 9.19-17.31 1.43-4.64 1.5-9.33 1.95-14.1Z" fill="#C07500"/><path d="M153.93 134.03c-.24-14.17 4.48-25.75 4.48-25.75 1.07 9.45 5.19 18.5 9.55 25.75h-14.03Z" fill="#C07500"/><path opacity=".6" d="M98.94 135.96h22.89c.18-8.3-.1-16.6-1.35-24.82-.47-3.08-1.14-6.1-1.8-9.14-.47-2.23-.89-4.48-1.41-6.7-.47-2-.99-4.01-1.71-5.94a5.51 5.51 0 0 0-1.75.13c-2.2.49-4.21 1.81-5.83 3.38-.4.4-.79.77-1.15 1.16.57 2.73.66 5.57.42 8.39a48.9 48.9 0 0 1-1.19 7.1c-2.6 10.97-6.32 12.88-6.19 18.02.02.88.74 4.31-.95 8.43h.02Z" fill="#A05A07"/><path d="M158.44 111.83c-.2 4.81.82 14.33 2.97 23.35h-19.6c-.21-2.12 1.11-18.13 3.03-23.35h13.6Z" fill="#A05A07"/><path d="M105.5 124.5c.03 1.1.1 2.16.37 2.97.61 1.88 1.62 3.23 2.73 3.56-.13-.78-.24-1.5-.33-2.18 1.7 1.17 3.6 1.58 3.78 1.62.33-.26-.34-11.6-.3-11.35l-3.23-.08c-.69-.03-1.2.21-1.83 1.05-.73 1.25-.98 2.78-1.2 4.41Z" fill="#B4B296"/><path d="M102.32 139.85c9.2-5.2 8.02-46.93 8.06-46.98 3.48-3.57 13.13 2.15 16.87 3.62 1.89.75 18.92 6.9 18.8 8.35-2.31 24.97 2 29.1 11.52 40.75 17.62 21.6-30.92 10.37-56.55-.41-.47-.2-1-.48-1.12-.98-.08-.37 2.11-4.16 2.44-4.35h-.02Z" fill="#E8D4BA"/><path opacity=".4" d="M101 145.18c-.46-.2-1-.48-1.1-.98-.08-.37 2.1-4.16 2.44-4.35 2.65-1.5 4.44-6.04 5.64-11.75.14.16.3.3.45.44 1.07 1 2.44 1.87 3.95 1.96 1.15.06 1.75-.73 1.87-1.8a6.74 6.74 0 0 0-.17-2.02 32.1 32.1 0 0 0-.87-3.27 35.54 35.54 0 0 0-2.1-5.42c-.43-.82-.9-1.6-1.42-2.38.98-11.52.67-22.71.7-22.74 3.48-3.57 13.12 2.15 16.86 3.62 1.9.75 18.93 6.9 18.8 8.35-2.31 24.97 2 29.1 11.52 40.75 17.61 21.6-30.92 10.37-56.55-.41H101Z" fill="#CEB79B"/><path opacity=".4" d="M157.56 145.6c17.62 21.6-30.92 10.37-56.55-.41-.47-.21-1-.48-1.11-.98-.08-.38 2.1-4.17 2.44-4.36 2.45-1.39 4.16-5.39 5.36-10.5.75.8 1.6 1.55 2.52 2.17 1.36.9 3.01 1.55 4.67 1.28 2.15-.36 2.27-2.67 2.05-4.43-.3-2.48-1.2-4.9-2.1-7.21-.31-.83-.66-1.64-.98-2.47-.48-1.25-.9-2.52-1.41-3.76a20.8 20.8 0 0 0-1.9-3.7c-.15-.26-.33-.5-.52-.74.54-9.5.32-17.6.33-17.62 3.48-3.57 13.13 2.15 16.87 3.62 1.9.75 18.93 6.9 18.8 8.35-2.31 24.97 2 29.1 11.51 40.75l.02.01Z" fill="#CEB79B"/><path d="M229.55 293.78a168.04 168.04 0 0 1-21.54 7.84c-1.32-23.85-2.77-47.57-5.4-71.22-3.04-27.93-7.45-14.96 14.03-34.06 5.86 32.35 9.82 65.16 12.91 97.44Z" fill="#3E8E5B"/><path opacity=".65" d="M229.55 293.78c-3.03 1.31-6.19 2.64-9.49 3.88-1.9-9.35-6.92-29.38-14.1-28.86-.72-10.73-14.23-52.24 10.67-72.46 5.87 32.34 9.82 65.15 12.91 97.43h.01Z" fill="#3B754B"/><path d="M60.23 306.02c-9.89-2.24-19.13-2.75-30.1-7.46 1.38-11.99 10.08-88.21 12.91-114.24 3.16.53 34.58-1.13 39.98-.08.53 2.1-22.27 120.93-22.8 121.79Z" fill="#3B754B"/><path d="M214.58 299.55c-10.15 4.28-84.86 21.54-169.45 3.62l18.12-87.5 138.81-7.7c1.32 10.2 14.56 83.2 12.52 91.57Z" fill="#245B34"/><path d="m83.15 277.48-1.46 1.78s.93 2.63 2.64 1.84c1.85-.79-1.18-3.62-1.18-3.62Z" fill="#06B253"/><path d="M97.51 151.18c-2.3-5.1-.46-12.88-1.51-18.18-.2-1.54 4.4-2.08 5.53-3.02a16.83 16.83 0 0 0 8.1-6.84c7.65 11.47 25.9 12.88 39.08 10.26 2.5-.47-52.38 36.7-51.2 17.78Z" fill="#C8CBB8"/><path d="M97.38 148.63c-1.31.47 5.47 8.72 11.2 8.72 11.6-.53 24.44-6.44 27.34-18.85-13.57 9.47-27.34 7.92-31.88-9.8a32.51 32.51 0 0 1-8.11 3.1c-.6.13-.86 11.8 1.45 16.83Z" fill="#C2C2AC"/><path d="M102.39 129.58c-1.59.8-3.96 1.54-6.33 2.15-.46.13 1.9 23.21 4.35 24.36 1.98.94 8.9 1.2 9.29 1.2.4-9.19-4.94-23.89-7.31-27.71Z" fill="#BBB99D"/><path d="M195.08 154.27c-.26 31.4-.26 63.4-16.47 91.19-2.77 8.31-6 17.78-3.36 26.36 2.97 9.13 14.3 23.36 16.34 30.06-1.06.54-1.85 3.56-3.03 3.83-42.62 8.99-101.72 4.7-116.54 2-1.51-12.47 10.87-22.94 13.38-34.54 6.78-11.88-5.87-48.64-6.59-55.3-7.97-13.81-4.87-44.27-7.05-50.64 2.3-4.03 16.08-17.18 21.61-16.17 6.92 4.22 14.76 7.64 23 5.56 21.8-5.1 12.71-24.15 38.54-24.35 7.77 1.34 40.19 20 40.19 22h-.02Z" fill="#C6C7B3"/><path d="M159.37 162.73c3.1 6.84 10.74 23.01 1.85 40.99-24.24 49.11-80.7 28.52-81.23 28.38.27 1.68 5.93 17.31 7.51 28.31 15.16 2.62 80.64 5.17 86.44 4.56 0-4.9 13.04-40.39 13.83-41.93 3.82-7.91 6.13-22.07 6.73-30.46-1.12-6.38.52-38.18.52-38.3-.2-2.02-37.3 4.89-35.64 8.45Z" fill="#C2C2AC"/><path d="M170.38 162.59c21.47 52.53-17.92 75.95-30.77 84.88C137.36 249 173.67 259 174.85 259c.73-2.95 12.85-32.6 13.97-35.56 8.76-23.21 6.26-69.1 6.2-69.25-.2-1.94-25.24 7.05-24.65 8.39Z" fill="#BDBCA2"/><path d="M180.85 241.63c-7.97-16.3-24.83-23.89-39.66-32.47-12-8.72-24.05-17.38-34.58-27.71-1.65-1.75-5-3.22-6.06-4.97 2.56-4.36 13.5-17.51 8.3-18.98-20.62-2.89-23.32 2.81-37.22 9.8 6.12 13.68 2.96 29.25 1.65 33 .59.94-5.8 9.37-1.52 15.34 1.32-3.89 8.56-5.68 15.09-8.35-3.56-.27-8.37-16.24-5.27-19.46 1.45-1.82 16.67-6.3 22.73-.07 12.45 15.37-27.6 23.96-24.7 40.6.46 13.4 10.14 26.22 7.57 39.84-2.05 3.03 60.41 3.56 88.14 4.3-2.7-10.4.33-21.4 5.54-30.86Zm-13.24 4.83c-19.64 1.6-39.47-1.34-59.1-2.22-10.47-3.02-15.15 2.48-21.47-10.67-5-9.32 10.14-21.27 28.6-38.37-.47-.2 23.18 16.7 32.6 21.4.6.26 1.25 0 1.31-.14 0 0-1.11 1.94-.12 4.23.52 1.27 5 5.1 12.78 6.17 2.3 2.81 3.82 6.64 3.49 9.32 3.62.94 13.9 8.26 1.9 10.27Z" fill="#BBB99D"/><path d="M125.58 211.9c-3.1-2.94-4.94-7.78-9.16-9.25-5.4-1.81-8.83 4.09-10.93 8.66-1.32 2.28-3.3 4.09-5 6.1-4.62 4.77-4.29 12.22 2.17 14.97 3.3 1.6 6.78.14 10.14-.4 3.56-.6 7.25 1.14 10.61-.47 7.05-3.83 7.57-14.16 2.17-19.6ZM88.42 187.82c-1.7-.13-3.95-1.34-5.07.54-.33 2.01-.72 12.75 4.94 8.32.86-1.61 2.64-2.29 3.56-3.7 1-2.34-.99-4.95-3.43-5.16ZM155.88 177.69c-5.73-2.41-30.64-2.08-32.55-5.57-5.66-4.5-7.11.94-1.64 3.56 5.4 2.15 8.7 7.11 13.63 10 2.97 1.74 13.5 9.11 16.47 9.52 8.17.54 11.27-13.96 4.09-17.52v.01Z" fill="#CCD1C0"/><path d="M193.3 304.79c0 .07-1.24.24-2.77.5-2.5.48-5.07 1.02-7.7 1.49-6.33-5.3-16.94-14.7-23.99-18.18-18.32-8.53-38.54-1.68-57.65-1.35-8.9.61-9.29-8.99-17.85-8.19.79-1.94 1.18-3.89 2.24-5.7l93.59 1.12s13.4 26.48 14.13 30.3Z" fill="#BBB99D"/><path d="M70.88 307.57c.68-8.7 5.54-15.9 8.84-21.86 4.95 1.2 10.74 7.18 14.57 10.74 16.14 15.23 32.15 1.68 55.2 14.02-25.56 1.75-59.44.25-78.6-2.9h-.01Z" fill="#CCD1C0"/><path d="M110.1 179.83c-8.3 8.66-26.6 26.23-31.55 30.13-2.96 2.34-4.35 5.97-4.35 9.8 0 1.27 4.75 4.22 4.88 5.23.2 1.47 1.78 7.51 1.78 7.51-1.26-9.19 5.27-6.24 38.47-41.32.2-.27-8.83-11.68-9.22-11.34Z" fill="#D58500"/><path d="M110.3 179.9c-2.76 2.22-5.98 5.97-7.5 7.38 5.46 7.45-5.8 15.3-10.81 20-3.63 3.42-14.76 12.94-15.35 4.7-3.04 4.09-3.24 9.8.98 13.34 1 2.22.13 6.58 3.17 7.25-1.58-8.25 14.16-14.29 38.34-41.13.27-.33-8.63-11.67-8.83-11.54Z" fill="#C57802"/><path d="M107.87 182.12c-2.17 2.21-2.17 2.14-4.28 4.36 2.57 1.27 2.97 4.76 2.24 6.84-1.7 5.17-9.94 11.95-12.58 14.22-8.24 6.98-12 9.6-13.7 9.73-4.03.27-3.5-4.16-3.5-4.43a14.17 14.17 0 0 0-1.9 6.97c0 1.28.26 2.62 1.05 3.63.6.8 3.7 1.6 3.43 4.89.2 1.48.33 3.96 1.98 4.23h.2c-.47-2.69.79-4.7 2.64-6.98-.27-.47-3.76-4.77 3.75-10.8.8-.61 8.44-7.25 10.15-8.72 3.22-2.89 6.13-6.11 9.62-8.66 1.65-1.2 4.15-3.02 8.5-1.88.2-.2 2.44-2.42 3.82-4.23.27-.4-11.06-9.53-11.4-9.19l-.02.02Z" fill="#BA6F04"/><path d="M107.94 182.12c-1.78 1.88-1.52 1.34-3.3 3.21.2.2.92 3.42 4.48 6.64 2.3 1.82 4.55.61 6.66 3.02.12-.13 2.04-2 3.42-3.75.27-.27-10.93-9.47-11.27-9.13Z" fill="#B26905"/><path d="M80.66 223.1c.07-1.34 1.18-3.41 0-4.22-1.39-.87-3.96 1.61-4.75 1.81-.59.14-1.18.14-1.7-.13.06 1 .39 2.08.98 2.88.6.8 1.45 1.41 1.98 2.35.46.88.52 1.95.72 3.02.2 1.48 1.25 3.76 2.97 3.76 0 0-.4-2.75 1.31-5.23 0-.07-1.65-.74-1.51-4.23Z" fill="#AB6306"/><path d="M183.28 234.14c-3.11-8.3-9.94-14.83-16.72-20.62-21.3-18.47-44.07-35.09-66.9-51.56-.8-.55-10.43 10.59-10.1 10.8l62.5 45.73c8.55 6.28 17.29 12.71 23.5 21.38 0 0 8.03-4.8 7.71-5.73h.01Zm-36.8-26.2c.03-2.41 3.53-2.84 4.49-.81 1.02 2.43-2.5 4.4-4.11 2.1a1.48 1.48 0 0 1-.38-1.3ZM114 182c.37-2.75 4.83-1.89 3.81.79-.69 2.14-4.57 2.15-3.81-.8Zm20.64 13.36c-.23 2.48-3.92 2.77-4.15.08-.74-3.5 4.2-2.9 4.15-.08Z" fill="#D58500"/><path d="M99.83 178.66a48.6 48.6 0 0 1 6.75-11.78c-3.85-2.67-9-7.17-10.6-6.05-.4 0 3.78 18.1 3.85 17.83ZM148.19 198.3c-3.77.62-11.03 1.53-14.68-1.2-.47.25-1.06.38-1.6.3-.39-.07-.71-.34-.9-.6-.85-1.1-1.01-3.3.64-3.62-.1-2.95 1.66-6.02 1.8-6.29-7.24-5.66-14.16-10.52-18.6-13.87 1.12 4.78-4.09 10.14-15.63 6.84 2.28 1.57 10.23 7.65 13.37 9.77 7.71-.3 15.02 9.8 15.08 11 3.9 2.74 22.64 16.62 22.64 16.62 1.6-2.06 6.76-8.3 8.44-10.43 0 0-9.52-7.78-10.56-8.53Zm-30.8-17.45c1.55 1.83-.78 4.35-2.75 3.18-1.95-1.64.73-4.96 2.75-3.18Zm29.08 27.09c0-.2.08-.47.15-.67.62-1.87 3.51-1.76 4.28-.07.95 2.3-2.23 4-3.85 2.43-.13-.07-.2-.2-.26-.27-.26-.41-.38-.88-.3-1.41l-.02-.01Z" fill="#C77500"/><path d="M115.96 184.32c-1.12.11-2.37-.37-1.95-2.18.14-.73.81-1.53 1.6-1.72 0 0-2.01 2.72.34 3.89ZM133.5 197.1c-.79.46-1.85.51-2.5-.37-.25-.4-.44-.81-.5-1.28-.25-1.41.35-2.14 1.15-2.33 0 0-1.44 3.67 1.85 3.98Z" fill="#A05A07"/><path opacity=".15" d="M85.89 175.73s3.41 24.53 14.4 30.3c11 5.77 15.42-6.24 15.42-6.24l-29.82-24.06Z" fill="#151916"/><path d="M178.58 262.7c-1.2 2.72.43 5.2 2.04 7.33 2.07 3.56 5.14 10.53-1.63 9.08-2.05.56-4 .81-6.11.43-3.17-.22-5.89 1.07-8.87 1.62-12.37 2.27-3.75-.83-20.73 1.27-3.06.38-6.1 1.38-9.21 1.39-6.2-.86-12.31-1.3-18.55-.42-7.9.27-14.33-1.11-19.87-1.33-6.66-.07-7.36-6.03-13.76-2.83-2.87-2.18 1.37-2.77 1.78-4.75.19-.84.05-1.71.3-2.54 2.65-4.37 2.33-6.96-.58-11.1-1.93-2.77-.48-6.2-2.28-9.01-1.8-2.66-1.34-7.5 1.2-6.28 2.88 2.53 6.16-.08 9.38-.08 3.33.44 5.61 2.93 8.88 3.7 11.45 1.04 23.35-.58 34.78 1.3 3.06 1.1 6.3 1.08 9.43.3 6.52-.91 13.13.38 19.63-1.03 2.95-.15 5.73 1.23 8.66.54 5.38-1 12.08-3.87 10.3.3-4.72 6.24-2.9 5.4-4.8 12.1Z" fill="#3E8E5B"/><path d="M180.63 270.03c-3.46-3.6-2.24-6.71-1.1-10.9-.46-3.5 2.35-5.77 3.86-8.54-.3-5-24.74.78-27.54-.03-5.47 16.73-27.96 10.38-41.38 11.69-3.36.4-2.87 3.12-14.58.7-21.41-4.43-15.5-1.78-15.5-1.78-.32-.08-.63-.16-.94-.26 2.9 4.11 3.13 6.74.55 11.03-.2 1.94-.29 3.66-2.29 4.7 8.75-1.15 17.67.94 26.34 2 6.76.86 12.72 4.24 19.42 4.35 2.9-4.9 10.12-4.82 13.15-.12 15.35-2.73 12.49.44 23.4-1.72 4.29-1.46 8.61-1.6 13.1-1.59 1.87-1.29 6.22 1.31 5.98-2.63a15.19 15.19 0 0 0-2.47-6.91v.01h-.01Z" fill="#3B754B"/><path d="M180.9 271.3c-15.44 5.8-98.23 1-97.42-5.35.11-.83.1-1.56 0-2.24-1.07-.84-1.9-2.6-.15-3.23 1.73-.6 3.62.15 5.1.94.8.42 2.08.83 3.8 1.23h.01c14.2 3.3 57.23 5.57 86.3 2.45.55-.05.92.23 1.05.57.21.17.37.4.43.7.1.38.11.71.02 1.1-.02.08-.37.45-.19.54 2.55 1.25 1.32 1.61.85 2.01v.02c.67.18 1 .97.2 1.27Z" fill="#D58500"/><path opacity=".3" d="M180.69 270.03c.48-.4 1.7-.77-.85-2.02-.19-.08.16-.45.18-.54.1-.39.08-.72-.02-1.1a1.23 1.23 0 0 0-.43-.7c-.13-.33-.5-.62-1.04-.57-20.65 2.22-48.33 1.71-67.73.05a63.03 63.03 0 0 1-20.56 2.1 74.12 74.12 0 0 1-6.62-.71c3.31 4.9 55.2 8.67 82.77 6.95.8-1.11 2.03-2 3.38-2.58a10.32 10.32 0 0 1 6.39-.7c1.18.28 2.16.86 2.86 1.66.7-.17 1.33-.37 1.86-.56.78-.3.46-1.1-.2-1.28h.01Z" fill="#A05A07"/><path opacity=".3" d="M181.14 271.17c.46-.35.13-.98-.44-1.14.47-.4 1.7-.77-.85-2.02-.19-.08.16-.45.18-.54.1-.39.07-.72-.02-1.1a1.23 1.23 0 0 0-.43-.7c-.12-.33-.5-.62-1.04-.57-14.6 1.57-32.73 1.78-48.95 1.17-3.2.96-6.5 1.66-9.79 2.34-6.34 1.3-12.9 2.33-19.43 2.27 17.55 2.33 44.99 3.62 63.45 2.74 3.37-3.68 12.98-6.21 17.31-2.46h.02l-.01.01Z" fill="#A05A07"/><path d="M178.55 265.11c-6.89.74-14.56 1.17-22.45 1.37l-.63.5a40.7 40.7 0 0 1-12.22 5.69l-1 .22c-.07.3-.13.61-.15.93 5.98.13 11.8.13 17.08-.01 2.3-.71 4.56-1.52 6.75-2.37 2.56-1 5.13-1.95 7.6-3.06 1.3-.58 2.6-1.17 3.76-1.9.65-.42 1.25-.85 1.89-1.25a1.07 1.07 0 0 0-.62-.1v-.02h-.01Z" fill="#A05A07"/><path d="M85.67 267.3c-.7-.16-1.46.15-1.9.62-.7.73-.79 2.34-1.07 3.25-.3.96.44 2 1.46 2.56 1.03.56 2.28.75 3.5.94 32.65 4.78 72.5-1.34 89.86-9.34 1.68-.76 3.55-2.07 2.98-3.57-.1-.28-.3-.54-.29-.81.02-.74 1.21-1.2 1.11-1.93-.06-.5-.78-.8-1.4-.76-.63.05-1.17.35-1.68.64-12 6.51-61.45 15.35-92.58 8.43v-.04Z" fill="#D58500"/><path d="M180.23 260.92c.01-.73 1.21-1.2 1.1-1.93-.06-.5-.78-.8-1.4-.76a4.1 4.1 0 0 0-1.68.64c-4.79 2.6-15.52 5.56-28.69 7.75-.64.87-1.3 1.73-2 2.55a21.93 21.93 0 0 1-4.29 3.81c-.73.5-1.47 1-2.23 1.46 15.09-1.98 28.29-5.34 36.48-9.11 1.68-.77 3.55-2.08 2.98-3.57-.1-.28-.3-.54-.29-.82v-.02h.02Z" fill="#D58500"/><path opacity=".3" d="M180.23 260.92c.01-.73 1.21-1.2 1.1-1.93-.06-.5-.78-.8-1.4-.76a4.1 4.1 0 0 0-1.68.64 46.72 46.72 0 0 1-8.15 3.16c-.03.01-.11.64-.14.71a4.22 4.22 0 0 1-1.17 1.87c-.36.32-.89.72-1.4.82-.47.1-1.04.1-1.29.56-.07.14-.1.3-.11.47-.07.35-.18.7-.48.95a.7.7 0 0 1-.45.17.74.74 0 0 1-.39-.14c-.43-.27-.61-.75-.7-1.22-.08-.46-.1-.95-.28-1.39-.13-.32-.5-.87-.94-.87-.17 0-.37.11-.53.16l-.67.15c-3.43.8-6.88 1.47-10.36 2.07-3.85.67-7.73 1.25-11.62 1.72-12.93 7.3-44.33 10.31-53.37-.32l-.34-.41-.17-.04a1.84 1.84 0 0 0-.82.01h-.01l-.15.05-.14.05-.03.01a.79.79 0 0 1-.11.04c-.02 0-.02.02-.04.03l-.11.05-.06.03a.4.4 0 0 1-.06.04l-.06.04a1.62 1.62 0 0 0-.33.27c-.7.74-.8 2.35-1.08 3.26-.18.57.01 1.17.42 1.68l.11.13.02.02.11.11.03.03.1.1.06.03.1.1.07.04c.02.03.06.05.1.07l.09.06.07.05.18.11c4.42 2.42 48.56 5.35 80.72-3.81-.3-.47-.15-1.32.51-1.4.63-.06.88.44 1.01.96a86.27 86.27 0 0 0 11.11-4.13c1.68-.78 3.55-2.08 2.98-3.58-.1-.28-.3-.54-.29-.82h.03Z" fill="#A05A07"/><path opacity=".3" d="M163.57 268.9a2.62 2.62 0 0 1-.8-1.31.71.71 0 0 1 .1-.56c.18-.25.05-.68-.09-.92-.4-.43-.51-.97-.33-1.53.05-.17.12-.38.24-.58l-1.8.42a3 3 0 0 0-.48.82c-.38 1.05-.06 2.2.48 3.15a4.06 4.06 0 0 0 2.4 1.96c.98-.26 1.96-.54 2.92-.84-.95.03-1.95-.02-2.62-.6h-.01ZM180.23 260.92c.01-.73 1.21-1.2 1.1-1.93-.06-.5-.78-.8-1.4-.76a4.1 4.1 0 0 0-1.68.64c-1.6.87-3.88 1.78-6.69 2.7.3.34.52.74.62 1.2.1.48.04.94-.1 1.41a3.78 3.78 0 0 0-.15 1.79c.1.52.2 1.03.1 1.55l-.02.07c1.91-.7 3.75-1.46 5.52-2.27 1.69-.77 3.56-2.07 2.98-3.58-.1-.27-.29-.54-.28-.82h-.01ZM82.95 272.5c.02-1.02.9-1.34 1.72-1.8.65-.35 1.19-.95.93-1.68-.2-.55-.68-.96-.88-1.51l-.05-.16-.11.04-.04.01-.1.05-.03.01a.8.8 0 0 1-.11.06l-.06.04-.06.03-.07.04-.04.03c-.11.07-.2.15-.29.24-.7.74-.8 2.35-1.08 3.26-.15.48-.03.98.25 1.44v-.1h.02Z" fill="#A05A07"/><path opacity=".3" d="M163.44 266.06c-.4-.42-1.17-.47-1.72-.25-.45.17-.7.52-.71.9-.13.43.09.92.46 1.24.54.46 1.48.62 2.07.15.7-.54.44-1.5-.1-2.04Z" fill="#A05A07"/><path d="M163.24 266.26c-.33-.32-.94-.37-1.38-.2a.82.82 0 0 0-.57.72c-.1.35.07.74.37 1 .43.36 1.18.5 1.66.11.55-.44.35-1.2-.08-1.63Z" fill="#A05A07"/><path d="M164.87 269.75c.01.04.03.1.06.13-3 1-6.44-4.08-2.43-5.98l.07.13 1.52-.37c-.3-.75-.72-1.39-1.3-1.22-7.45 2.19-1.86 11.11 3.33 8.34.58-.3.5-.7.23-1.44l-1.46.4h-.02v.01Z" fill="#CCD1C0"/><path d="M162.78 262.44a6.6 6.6 0 0 0-1.96.93c.47.14.88.47 1.09.87.18-.12.37-.23.6-.34l.06.13 1.52-.36c-.3-.75-.72-1.39-1.3-1.23ZM160.9 270.03c.26-.4.65-.76 1.07-.92a3.67 3.67 0 0 1-1.29-2.89 1.4 1.4 0 0 1-.53 0 2.1 2.1 0 0 1-.94-.4c-.23 1.5.49 3.12 1.69 4.2v.01ZM166.34 269.34c-.49.15-.97.28-1.47.41.02.04.03.1.06.14a2.6 2.6 0 0 1-1.29.07 2 2 0 0 1 .08.65 2 2 0 0 1-.12.68c.8.08 1.66-.06 2.5-.5.58-.31.5-.72.23-1.45Z" fill="#C2C2AC"/><path d="m162.69 264 1.4-.33c-.3-.74-.73-1.38-1.3-1.22-.28.08-.53.17-.76.27.39.32.63.8.66 1.3V264ZM161.39 268.47a3.7 3.7 0 0 1-.53-1c-.5.1-.96.22-1.44.34.15.43.36.84.62 1.23.29-.32.83-.53 1.35-.58v.01ZM166.33 269.34c-.48.15-.97.28-1.46.41.01.04.02.1.06.14a2.44 2.44 0 0 1 .35 1.24c.28-.08.56-.2.82-.34.58-.3.5-.71.23-1.45Z" fill="#BBB99D"/><path d="M163.65 267.23c.01-.35-.15-.72-.41-.98a.84.84 0 0 0-.23-.15c-1.26.36-3.56.7-4.63 1.23-.64.32-.23.98.37 1.07.22.04 2.87-.54 4.88-1.16l.02-.01Z" fill="#CCD1C0"/><path d="M163.24 266.26a.96.96 0 0 0-.22-.15l-1.38.32c-.19.5-.72.96-1.18 1.18-.7.34-1.56.53-2.34.36.1.2.36.38.64.43.22.03 2.88-.55 4.88-1.16l.02-.02c0-.34-.16-.7-.42-.97v.01Z" fill="#C2C2AC"/><path opacity=".3" d="M169.67 263.83c-.73-.2-1.58.45-1.62 1.1-.04.58.46 1.18 1.13 1.4.43.13.86.04 1.19-.18.98-.55.44-2-.69-2.32h-.01Z" fill="#A05A07"/><path d="M169.61 264.16c-.54-.15-1.16.34-1.18.8-.03.44.34.87.83 1.03.31.1.63.03.86-.12.73-.4.32-1.46-.5-1.7Z" fill="#A05A07"/><path opacity=".3" d="M177.16 261.82c-.2-.38-.6-.68-1.19-.67-1.72 0-1.91 2-.69 2.55.1.05.23.1.36.13 1.21.28 2.18-.96 1.52-2.01Z" fill="#A05A07"/><path d="M176.82 262a.95.95 0 0 0-.87-.49.97.97 0 0 0-.5 1.85l.26.1c.88.2 1.57-.7 1.1-1.46Z" fill="#A05A07"/><path opacity=".3" d="M154.7 267.8a1.99 1.99 0 0 0-1.62-.1c-.62.2-.85.81-.7 1.32.36 1.3 2.34 1.48 2.91.23.25-.55-.05-1.11-.6-1.45Z" fill="#A05A07"/><path d="M154.5 268.04a1.5 1.5 0 0 0-1.24-.08.83.83 0 0 0-.54 1c.28 1 1.78 1.15 2.23.19.19-.42-.04-.86-.46-1.1Z" fill="#A05A07"/><path opacity=".3" d="M144.95 269.24h-.06c-.62-.14-1.28-.09-1.68.39a.82.82 0 0 0-.2.5c-.18.64.12 1.29.76 1.68.38.23.83.27 1.3.22.55-.05.9-.47 1.1-.84.5-.97-.36-1.84-1.22-1.95Z" fill="#A05A07"/><path d="M144.87 269.6h-.05c-.47-.1-.94-.06-1.24.28-.1.11-.14.25-.15.38-.13.47.08.94.56 1.23.27.17.62.2.95.17.4-.04.66-.35.8-.61.37-.71-.26-1.35-.88-1.44Z" fill="#A05A07"/><path d="M82.31 258.07c-.15-.89-.1-1.77-.13-2.66a7.84 7.84 0 0 0-1.06-3.57 11.7 11.7 0 0 1-.91-2.25c1.31.7 3.48 1.85 5.1 2.76 2.47 1.39-3 5.72-3 5.72ZM154.26 250.48c-6.7 13.5-37.08 1.97-46.43.4-7.49-2.45-23.33 4.5-25.5-5.32 8.1 4 3.37-4.32 18.24 3.62 11.46 1.05 23.37-.58 34.8 1.3 6.15 2.19 12.5-.97 18.88 0Z" fill="#3B754B"/><path opacity=".3" d="M84.61 262.66c1.2 1.72-1.13 3.3-1.13 3.3.11-.83.1-1.56 0-2.25-1.07-.83-1.9-2.6-.15-3.22 1.73-.6 3.62.15 5.1.93.8.42 2.08.83 3.8 1.24-.36-.07-8.79-1.69-7.61 0Z" fill="#A05A07"/><path d="M227.34 272.06c-3.23-.3-30.93 17.03-67.54-15.47-2.98-2.64-17.82-15.83-27.25-22.87-8.85 7.03-24.57 20.75-30.1 25.28-37.89 31.01-66.06 12.76-69.28 13.06l3.07-27.12 98.38-34.16a52838.9 52838.9 0 0 0 89.97 35.17l2.75 26.1Z" fill="#151916" opacity=".25"/><path d="M185.02 208.8s-12 30.97-2.38 41.25c2.38 3.72 31.07 4.6 35.86 4.4 8.2-.32 16.4-29.34 9.3-45.52-14.24-32.48-4.52-35.5-15.44-53.44-1.88-3.95-33.09.94-33.53 5.93-.53 5.8-2.1 43.04 6.2 47.37h-.01Z" fill="#CCD1C0"/><path d="M228.12 240.57s-43.33-6.77-45.98-12.69c-1.3-7.12 2.88-19.08 2.88-19.08a4.97 4.97 0 0 1-1.47-1.22c9.87-3.06 21.45 6.58 26.82 6.92 5.69.37 6.01-11.2-4.76-16.57-9-4.48-20.16 4.17-23.59 7.15-1.88-4.1-2.84-10.78-3.3-17.72l40.07-11.05c.71 7.13 1.74 16.04 9.02 32.63 3.92 8.95 3.17 21.85.3 31.63Z" fill="#C6C7B3"/><path d="M218.5 254.46c-4.79.2-33.48-.69-35.86-4.4-8.62-9.23.13-35.07 2.03-40.32 16.34 4.07 40.4 26.39 37.82 16.12-2.92-11.6 11.66-26.7-11.4-37.38-19.23-8.9-27.95 7.42-30.32 13.08-3.4-12.33-2.36-35.66-1.95-40.13.45-4.98 31.65-9.88 33.54-5.93 10.92 17.96 1.2 20.96 15.45 53.44 7.1 16.18-1.1 45.2-9.31 45.53Z" fill="#C2C2AC"/><path d="m185.63 211.6 6.33 42.8c7.78-.1 18.27-.13 23.64.07 2.75-27.78-29.97-42.86-29.97-42.86Z" fill="#BBB99D"/><path d="M93.9 153.55c4.4 18.58 56.19 28.94 78.71 22.3 17.23-5.07 28.39-13.88 43.34-13.34-2.76-6.71-4.7-7.53-4.7-7.53-22.8-4.38-102.12 5.34-103.99 5.22-.99-.06-12.91-6.19-13.38-6.65h.01Z" fill="#B5B39E"/><path d="M215.77 157.63s1.79 2.38.75 6.4c0 0-1.69-4.33-3.13-6.63-1.45-2.3 2.38.23 2.38.23Z" fill="#2B6B40"/><path d="M215.7 157.56c-17.86-1.88-39.75 15.77-59.5 14.62-17.8-1-38.88-5.97-52.58-11.34 0 0-2.35-.73-1.81-1.34 0 0 .13-5.7.2-5.64 10.81 2.22 46.67-25.43 48.55-26.9 1.82-1.48 1.82-1.27 2.96-1.27 3.62-.07 8.6 5.57 28.06 7.24 1.61.14 3.23.61 4.7 1.35 13.63 6.77 23.23 12.68 29.41 23.28Z" fill="#3D8455"/><path d="M119.47 149.37c1.95-1.08 22.83-9.93 27.6-13.55 3.42-2.62 7.18-5.7 9.47-9.33-2.9-1.41-4.1-1-5.04-.26-8.53 6.5-49.3 36.43-50.7 25.22.26 2.22.67 8.66 1.2 8.86 2.36.87 6.18 2.28 8.4 3.02.06-9.26 7.18-13.02 9.06-13.96h.01Z" fill="#3C7E51"/><path d="M171.32 155.68c-5.85-3.89 5.44-9.25 2.21-14.02-4.43-7.11-17.32 15.37-8.53 21.67 4.84 2.08 15.72-4.16 6.32-7.65Z" fill="#3E8E5B"/><path d="M186.62 154c-2.42 1.02-13.63 2.7-12.56-3.89.94-6.7 13.57-14.56 13.9-15.09 2.22.8 15.92 8.19 21.1 13.89 0 .07-11.16.54-22.44 5.1ZM134.85 154.54c-3.7-5.84 9.54-12.61 15.18-14.76 4.97-1.88 13.96-4.7 14.44-10.06 3.22 1 7.11 2 10.6 2.48 0-.07-31.5 36.16-40.22 22.34Z" fill="#3B754B"/><path d="M215.77 157.63c-13.77-2.48-40.09 15.7-59.23 14.56-8-.47-20.69-1.34-39.82-6.98 3.29.13 6.38.94 9.6.67 16.25-1.61 33.28 15.04 79.85-14.57 2.89-1.83 4.57-.4 4.7-.4 1.2 1.14 3.48 4.3 4.9 6.71Z" fill="#3B754B"/><path d="M208.05 147.97s-7.05 1.94-12.5-.4c-6.3-2.76-2.28-6.58-3.01-10.2 3.82 2 12.82 7.5 15.5 10.6ZM109.73 158.64a3.3 3.3 0 0 1 .14-2.35c.4-1.14.07-2.69.14-3.82-6.92 2.75-9 .94-9.2-.61.27 2.21.47 8.25 1.01 8.45 1.95.67 5.44 1.95 7.25 2.55 0-.07 1.14-2.95.67-4.22Z" fill="#2B6B40"/><path d="M128.08 158.1c-2.5 2.15-5.54.94-8.3 1.14-1.72.66-1.59 3.02 1.65 3.28 15.15 3.16 12.38-7.18 6.65-4.43Z" fill="#3E8E5B"/><path d="m37.85 173.91-13.18 3.8s9.2 13.94 15.7 10.44c6.56-3.38-2.52-14.24-2.52-14.24Z" fill="#9EA58E"/><path d="m38.33 173.58-13.21 3.86s9.2 13.93 15.69 10.44c6.54-3.47-2.48-14.3-2.48-14.3Z" fill="#676D54"/><path d="m40.85 180.63-13.18 3.78s9.1 13.94 15.66 10.5c6.53-3.4-2.48-14.28-2.48-14.28Z" fill="#9EA58E"/><path d="m41.31 180.27-13.18 3.79s9.1 13.93 15.66 10.49c6.53-3.39-2.48-14.28-2.48-14.28Z" fill="#676D54"/><path d="M36.61 155.19c-.44.21-11.35 3.89-11.35 3.89s7.3 24.73 19.94 19.86c12.7-4.87-8.58-23.75-8.58-23.75Z" fill="#9EA58E"/><path d="M37.18 154.85c-.44.22-11.35 3.9-11.35 3.9s7.3 24.72 19.94 19.85c12.7-4.86-8.58-23.75-8.58-23.75Z" fill="#676D54"/><path d="m43.32 139.12-12.45 3.75s-1.23 5.87-.47 12.48l11.45-2.39 1.48-13.84h-.01Z" fill="#9EA58E"/><path d="m44.07 138.97-12.45 3.76s-5.26 25.36 12.63 30.7c17.97 5.23-.18-34.46-.18-34.46Z" fill="#676D54"/><path d="M73.23 210.38c-5.3 11.01 7.95 29.39-1.27 39.77-2.25 3.72-29.23 5.35-33.96 5.31-8.11-.05-15.7-24.83-9.73-44.1 7.5-24.32 1.99-40.96 19.87-67.92 1.75-3.93 27.14 18.26 27.72 23.12.67 5.66 5.3 27.5-2.63 43.81v.01Z" fill="#CCD1C0"/><path d="M46.33 214.16c5.57-.35 17.94-10.91 27.94-6.13-.2.43-.38.86-.59 1.28-2.35 4.96-1.09 11.4.29 17.95a93.36 93.36 0 0 1-5.65 10.59l-40.76 1.9c-2.05-8.76-2.37-19.78.57-29.46 3.87-12.75 4.32-23.45 6.22-34.56l43.94 12.12c-.18 5.92-1.03 12.2-3.16 18.02 0 0-13.57-13.18-24.13-7.93-10.56 5.25-10.24 16.58-4.67 16.22Z" fill="#C6C7B3"/><path d="M34.46 225.27c-2.85 11.35 23.99-17.55 39.22-15.96-5.35 11.33 8.07 30.26-1.26 40.94-2.27 3.83-29.62 5.5-34.4 5.46-8.23-.06-15.92-25.58-9.89-45.42 7.6-25.03 2-42.16 20.1-69.9 1.78-4.05 27.51 18.81 28.1 23.82.6 5.15 4.35 23.32-.34 39.07 0 0-7.79-25.04-30.37-14.6-22.58 10.45-8.3 25.24-11.16 36.6v-.01Z" fill="#C2C2AC"/><path d="m70.56 211.32-6.2 41.9c-7.7 1.46-18.8 2.24-24.06 2.43-2.7-27.2 30.26-44.34 30.26-44.34v.01Z" fill="#BBB99D"/><path d="M156.32 132.74c1.55 4.04-2.92 10.06-5.3 9.3a8.1 8.1 0 0 1-1.67 7.37c1.27 2.08 2.93 6.43.48 7.06-.06 2.37.92 7.24-2.6 7.24 0 0 1.94 5.36-1.37 5.72 0 0 4.35 12.6-6.8 18.01.59-.28-6.21-47-6.47-47.48.07-.07 17.3-13.08 17.3-13.08s.86-.7 1.32-.97a3.4 3.4 0 0 1 2.89-.35c1.06.41 3.22 1.22 5.28 2.26.53 2.78-1.6 3.74-3.06 4.92Z" fill="#333331" opacity=".25"/><path d="M61.65 176.98 37.48 157.4c-5.35 1.04-9.12 21.78-9.6 27.33 3.76-2.3 16.44 3.4 23.99 7.4l.21-.07 6.44-8.7a45.8 45.8 0 0 0 3.13-6.38Z" fill="#9EA58E"/><path d="M61.4 176.57 37.22 157c-5.36 1.05-9.18 21.95-9.71 27.48 6.2-2.28 17.1 3.55 24.64 7.55.08-.04 8.84-14.2 9.23-15.45Z" fill="#9EA58E"/><path d="M35.2 179.53c-2.9-1.42-5.3 1.66-5.52 4.4 1.82-.25 4.36.26 7.27 1.22.66-3.25-.4-4.99-1.75-5.63v.01Z" fill="#B1B7A5"/><path d="M61.4 176.57 37.22 157c-2.34.47-4.38 4.85-5.96 10.03 9.66 2.4 16.48 11.94 14.35 21.66 2.42 1.13 4.67 2.33 6.54 3.34 2.24-2.6 7.19-7.6 9.23-15.45Z" fill="#9AA08A"/><path d="M72.95 172.3 48.62 145.2c-.8-.11-20.15 11.95-23.42 32.93 13.16-6.21 33.68-.57 41.32 4.8l6.43-10.65Z" fill="#9EA58E"/><path d="M66.69 183.08c1.11-1.05 6.35-8.21 7-9.8l-25.49-28.4c-.79-.13-20.14 11.94-23.42 32.92 13.47-6.32 34.76-.2 41.91 5.28Z" fill="#9EA58E"/><path d="M38.25 165.8c-4 0-8.81 4.43-11.32 11.15 4.52-1.65 9.7-2.06 14.9-1.73.43-3.97.34-9.35-3.58-9.42Z" fill="#B1B7A5"/><path d="M73.7 173.29c-.88 2.13-6.42 9.28-7 9.8-2.11-1.64-5.5-3.35-9.59-4.75-9.84-13.38-19.05-16.36-26.51-15.78h-.12c6.9-11.44 17.19-17.77 17.8-17.67l.51.6 24.9 27.8Z" fill="#9AA08A"/><path d="m73.7 173.29-25.5-28.41c-.48-.04-8.14 4.6-14.62 13.12 13.63 1.81 27.77 10.36 36.92 20.2.2-.3 2.49-3.52 3.2-4.92Z" fill="#949984"/><path d="M73.7 173.29c-.71 1.39-1.59 2.71-2.52 3.96-.14.17-.27.35-.4.54-7.18-10.97-18.86-21.42-31.3-25.73a55.15 55.15 0 0 1 9.24-6.53l24.97 27.75Z" fill="#929783"/><path d="M91.32 172.67c-.76 1.26-14.84 10.61-15.2 10.58C65.02 168.91 46 156.18 25.46 159.6c6.73-12.44 21.5-19.93 34.95-23.06.28.46 25.8 24.37 30.9 36.13Z" fill="#9EA58E"/><path d="M91.05 172.09a24.94 24.94 0 0 1-14.75 11.17c-11.8-15.52-31.13-27.58-51.04-24.18 6.67-12.45 21.56-19.92 34.95-23.06.34.53 25.11 23.57 30.84 36.07Z" fill="#9EA58E"/><path d="M41.65 152.14c-4.2-.71-11.07 3.35-13.12 6.53 5.93-.5 11.65.25 17.07 1.98 1.22-3.92-.19-7.9-3.95-8.51Z" fill="#B1B7A5"/><path d="M85.49 178.54a25.1 25.1 0 0 1-9.14 4.73 72.5 72.5 0 0 0-14.22-14.05c-3.1-13.2-16.24-20.12-27.27-21.4 7.42-5.9 16.26-9.76 25.41-11.85.95 1.5 27.16 40.96 25.22 42.58Z" fill="#9AA08A"/><path d="M90.93 172.08c-1.7 3.52-4.94 6.3-8.2 8.4-8.29-15.66-33.26-35.6-45.81-34.16 6.94-4.99 15-8.34 23.29-10.24 8.03 8.02 30.8 34.5 30.72 36Z" fill="#949984"/><path d="M91.31 172.73c-.94 3.38-5.27 4.73-7.62 7.2-7.1-15.97-27.56-36.48-39.88-37.85 5.3-2.28 10.63-5 16.46-6 8.39 8.11 29.9 32.5 31.04 36.65Z" fill="#929783"/><path d="M31.5 142.73c-.45.22-.1.56-.5.85 21.54-3.8 44.01 10.97 53.84 37.3h.13l10.13-2.15-10.43-52.12c-13.34.2-37.41 7.27-53.19 16.12h.01Z" fill="#9EA58E"/><path d="M97.1 179.3c3.64-12.15 6.08-40.37-3.68-51.2-5.91-6.57-41.86 2.8-62.56 14.77 21.72-3.79 44.43 11.18 54.05 37.94 5.3-.15 9-.66 12.2-1.52Z" fill="#9EA58E"/><path d="M59.92 143.7c-3.46-1.61-6.95-.77-8.22-1.04-2.9-.87-3.3-4.15-5.46-4.91-2.83-1.06-11.76 3.55-13.57 4.87 10.08-1.29 20.35 1.45 29.3 7.46.89-2.32-.15-5.26-2.05-6.39Z" fill="#B1B7A5"/><path d="M93.42 128.1c-2.99-3.31-13.6-2.56-26.06.5 6.11 15.22-1.69 22.22-2.63 23.46 8.61 6.62 15.8 16.47 20.24 28.76 5.23-.16 8.95-.67 12.13-1.59 3.64-12.08 6.08-40.3-3.68-51.13Z" fill="#9AA08A"/><path d="M99.04 178.8c-.62.14-6.91 1.61-10.25 1.83 5.51-18.4.67-44.09-4.44-54.67 1.4-.03 2.64-.01 3.8.12 3.74.06 6.51.8 7.83 2.2 10.05 11.15 6.83 38.07 3.05 50.52Z" fill="#949984"/><path d="M113.25 85.51c1.19 8.65 1.6 18 8.06 24.69 7.05 7.37 20.64 12.9 29.43 5.72 6.1-5.19 4.8-15.56 6.2-22.28 1.64-4.49.35-9.46.1-14.11-.37-3.24-.47-7.39-1.81-10.46-4.65-10.3-11.55-5.13-19.68-6.2-9.98-1.14-17.65-3.1-23.25 5.58-2.26 4.25-2.45 10.01-2.63 11.9-.68 2.9 2.89 2.49 3.58 5.16Z" fill="#E8D4BA"/><path opacity=".4" d="M136.21 79.03h-13.2c-1.52.6-2.83 1.2-2.68 1.55.28.7 5.2.54 11.57 3.58 1.01.48 2.28 2.1 3.43 4.12.65 1.14 4.88-1.8 1.86-7.09-.38-.69-.5-1.5-.98-2.17Z" fill="#CEB79B"/><path opacity=".4" d="M149.56 107.18c.77.02 1.53 0 2.3-.05a31.47 31.47 0 0 1-1.77 3.18c-3.04 4.8-7.86 9.28-13.97 8.28-2.98-.48-5.81-1.87-8.44-3.32a24.18 24.18 0 0 1-6.38-5.06 29.65 29.65 0 0 1-6.81-14.67c-.57-3.4-.47-6.76-.67-10.18-.2-3.42-4.83-2.1-4.15-5 .32-12.16 4.21-16.21 9.03-19.02.8-.47 4.95.37 6.01 1.3-.1.58-6.27 3.93-7.23 13.51-.55 7.02 4.82 47.48 25.92 23.73 2.18-2.46 2.86 7.22 6.15 7.3h.01Z" fill="#CEB79B"/><path opacity=".4" d="M151.91 107c-6.76 15.42-20.05 14.11-30.6 3.22-8.36-9.14-6.83-18.5-5.79-29.64 3.12 11.89 7.75 23.67 17.75 14.6-2.62 6.79 5.03 2.1 7.8 6.28-5.72 2.87 8.16 3.14 9.89 1.8-.12.55.44 3.13.95 3.73v.01Z" fill="#CEB79B"/><path opacity=".4" d="M133.5 99.08c.1 1.34 5 4.46 4.59 5.47.88.69 2.4 1.09 3.8 1.61 3.13 1.08 6.37 1.98 9.47 3.08.15.07.42.17.52.26 1.22-1.66 2.35 2.08 3.1-2.09 1.76-9.63 2.6-19.16 1.9-28.94v-.14c-.3-.15.07-1.17-.25-1.37-3.26-.11-6.26 1.11-9.2 2.33-8.86.7-4.01 6.27-4.89 12.12.9 2.11 2.88 4.27 2.43 6.68-.3.82-1.5 1.04-1.9 1.77a1.7 1.7 0 0 1-.68.79c-1.35.75-3.05-.1-4.3-1.1-1.16-1.06-3.35-1.11-4.6-.48Zm10.46-12.16c-.92-4.74 8.26-5.03 10.6-2.56 2.17 3.25-.64 8.86-2.95 9.34-1.98.4-7.32-1.9-7.65-6.76v-.02Z" fill="#CEB79B"/><path opacity=".4" d="M113.83 85.36c1.86 2.88.1 6.79.67 10.19.42 2.47 1.13 4.9 2.12 7.2.76-.22 1.55-.34 2.33-.47-1.78-8.59-2.38-21.98 6.03-22.39 9.43-1.22 9.26 2.05 9.32 2.56 1.5.69 1.5 4.45 2.25 3.8 2.88-2.46 4.39-5.63 6.36-.7 1.32.9 3.79-3.45 6.42-4.08 1.98-.47 5.43-.5 6.62-.36l.34.05c.34.05.34-.07.67 0l-.19-5.6v-.01c-.14-.27-.04-.55-.2-.8-.18-.5-.55-.86-.57-1.19-.94-13.28-21.88-9.58-23.43-9.7-19.59.72-22.71 14.5-22.9 16.5-.68 2.88 2.96 3.13 4.16 4.98v.02Z" fill="#CEB79B"/><path d="m102.12 87.57.08 1.13.02.28.06.5.02.24.01.03c.03.29.14.7.29 1.16.02.11.07.23.1.34.35 1.07.82 2.26.9 2.61l.31 1.37.29 1.1.04.14c0 .05.02.1.03.14l.16.55.1.3.01.06a.1.1 0 0 1 .01.06l.02.04.02.03a12.54 12.54 0 0 0 .52.73 5.56 5.56 0 0 0 .87.9l.07.06.09.06.25.19.05.03c.1.07.22.15.34.2.05.04.1.06.16.09l.17.07c.25.1.5.16.74.2l.07.02.3.03c.05.02.09 0 .14 0h.2c.1 0 .2 0 .3-.02h.11l.38-.07.09-.02.06-.02h.03l.03-.01h.05l.4-.13.22-.08a2.68 2.68 0 0 0 .6-.3l.2-.11a4.12 4.12 0 0 0 .78-.6l.03-.04c.16-.13.3-.27.43-.42l.27-.31a5.58 5.58 0 0 0 .42-.61l.05-.1a9.5 9.5 0 0 0 .91-2.02c.15-.43.27-.89.37-1.36V94l.01-.02v-.03c.05-.2.08-.39.11-.6.02-.11.05-.23.06-.35.1-.76.16-1.56.17-2.35v-.55l-.02-.71v-.06l-.01-.06v-.07c-.05-.8-.14-1.57-.29-2.34v-.08a3.62 3.62 0 0 0-.09-.41v-.12l-.06-.22-.07-.34c-.08-.37-.18-.72-.29-1.07-.06-.2-.12-.42-.2-.62l-.01-.02-.01-.05-.04-.1-.05-.13c0-.02 0-.03-.02-.05l-.02-.04c-.03-.12-.08-.22-.13-.34l-.06-.16-.29-.66-.07-.14-.02-.06-.03-.05c-.04-.09-.1-.17-.13-.25a15.03 15.03 0 0 0-.46-.81c-.07-.1-.13-.2-.2-.28a5.64 5.64 0 0 0-.35-.46l-.16-.2-.3-.3-.05-.07-.2-.2c-.02 0-.03-.02-.06-.05a4.2 4.2 0 0 0-.64-.47l-.05-.02-.1-.06-.1-.05a3.5 3.5 0 0 0-.77-.3l-.27-.05a2.07 2.07 0 0 0-.41-.03c-.12 0-.25 0-.37.02a2.2 2.2 0 0 0-.36.06l-.03.01c-.14.03-.28.07-.41.12l-.15.04c-.63.24-1.17.4-1.73.6-.05 0-.1.03-.14.05-.06 0-.13.04-.2.05-.21.07-.45.14-.68.23-.29.11-.56.25-.75.48-.2.23-.38.49-.55.76l-.02.04v.02c-.16.26-.29.54-.4.82l-.05.08c0 .04-.02.08-.04.12a8.44 8.44 0 0 0-.41 1.59c0 .03 0 .05-.02.07a13.2 13.2 0 0 0-.19 1.9c-.02.66 0 1.3.02 1.91v.02h-.01Z" fill="#E8D4BA"/><path d="m104.21 96.32.04.14.03.14.16.55.1.3.01.06.02.06.01.04.02.02a9.6 9.6 0 0 0 .7.96l.02.02c.07.08.14.16.22.22a3.02 3.02 0 0 0 .45.43l.07.06.04.02a3.24 3.24 0 0 0 .69.46l.16.08.17.07a3.21 3.21 0 0 0 1.25.26h.2l.42-.03.36-.07.1-.02c.05 0 .1-.02.14-.04l.03-.01a10.04 10.04 0 0 0 1-.37l.22-.13a4.98 4.98 0 0 0 1-.74c.17-.13.3-.27.44-.42.1-.1.17-.2.26-.32a6.6 6.6 0 0 0 .48-.7A10.9 10.9 0 0 0 114.3 94c.52-2.5.43-5.38-.14-7.99l-.08-.34a15.47 15.47 0 0 0-1.24-3.48l-.22-.44-.37-.61c-.06-.1-.12-.2-.19-.28l-.1-.16a5.23 5.23 0 0 0-.7-.82l-.07-.06-.2-.19a4.22 4.22 0 0 0-.5-.4l-.2-.12c-.08-.06-.16-.1-.24-.14-.25-.13-.5-.22-.77-.3-.09 0-.18-.03-.27-.04a3.15 3.15 0 0 0-1.13.04h-.05l-.18.06-.19.05-.04.01-.06.02a.35.35 0 0 1-.08.03c-.63.23-1.17.39-1.72.58 3.11.44 5.03 4.16 5.5 6.95.1.52.13 1.02.12 1.44v.17c-.08 2.46-.48 7.97-1.95 9.77-.32.4-2.07-.2-3.5-.78-.61-.25-1.17-.5-1.52-.66v.02Z" fill="#CEB79B"/><path opacity=".4" d="M108.08 85.69c.37.54.15 1.51-.21 2.47.02.26.02.5.02.73a25.19 25.19 0 0 1-.54 4.2 12.43 12.43 0 0 1-1.03 2.96 5.58 5.58 0 0 1-1.08 1.48c-.13.12-.35.14-.63.1a12.54 12.54 0 0 0 .45.64l.07.1.2.24.21.22a2.95 2.95 0 0 0 .46.43l.07.06.04.02c.01.01.03.03.05.03l.25.2c.02 0 .03.01.05.03l.34.2.16.08.17.07.18-.03.67-.13c.36-.08.7-.18 1.02-.3l.06-.02a7.21 7.21 0 0 0 3.79-3.27c.17-.28.32-.57.45-.87 1.1-2.43 1.23-5.48.63-8.32V87s0-.03-.02-.05l-.01-.06v-.07l-.24-.93c-.04-.1-.07-.22-.1-.35l-.05-.12c-.1-.32-.21-.63-.33-.94a2.29 2.29 0 0 1-.1-.27l-.02-.01-.01-.03s0-.02-.02-.02v-.01l-.02-.06-.24-.54-.08-.17-.05-.08a7.58 7.58 0 0 0-4.73-4.62h-.05l-.18.05-.19.05-.04.02-.07.02a.35.35 0 0 1-.07.02c-.63.23-1.17.4-1.73.58 3.12.44 5.03 4.16 5.51 6.96-.73-3.08-4.21-6.6-7.8-5.3-.16.28-.3.57-.41.87l-.02.04c.28.09.55.17.8.28a6.76 6.76 0 0 1 3.47 3.18c.2-.1.38-.16.53-.1.2.07.34.19.44.34h-.03v.02Z" fill="#CEB79B"/><path d="M104.32 86.55c.37 1.57 1.78-.55 2.78-1.1.2-.1.38-.16.54-.1.94.35.68 1.6.22 2.81-.38 1.01-.9 2-1.04 2.45-.24.8.1 1.67.52 2.48.16.32.34.62.5.9.38.74 1.12.77 1.62.18.17-.2.28-.43.37-.68-.44-.66-1.77-1.06-1.55-1.96a6.82 6.82 0 0 1 2.08-3.09c-.04-.77.14-1.46-.28-2.3-1.13-2.24-2.14-2.81-4.28-3.5-.34-.12-.64.04-.87.34-.6.77-.87 2.53-.62 3.57h.01Z" fill="#CEB79B"/><path opacity=".4" d="M102.12 87.57a24.68 24.68 0 0 0 .1 1.4l.06.51.02.24.01.03c.03.29.14.7.29 1.16 1.25-1.8 3.9-6.14 5.24-5.47 1.06.52-.57 6.46-.2 6.01.9-1.05 2.18-3.37 2.72-3 1.5-2.82-2.74-8.96-7.16-7.38-.15.27-.28.54-.4.82l-.07.2c-.17.45-.29.91-.38 1.4l-.04.2-.01.07a14.84 14.84 0 0 0-.17 1.47c-.02.14-.02.28-.03.43-.02.66-.01 1.3.02 1.91Z" fill="#CEB79B"/><path d="M107.89 100.24c-.07.8-.27 4.03-1.55 3.5 0 .8 1.21 1.88 1.62 1.2.87-1.47 1.2-3.97 1.34-5.04-.33.14-.68.2-1.41.34Z" fill="#474C2F"/><path d="M108.42 100.73c-.09.8-.53 2.61-1.8 2.04-1.47-.7 2.14-5.33 2.14-5.33s-1.88-3.28-4.6 1.24c-3.57 5.98 2.35 8.87 4.1 5.95.9-1.46.74-2.95.9-4.02l-.75.11Z" fill="#676D54"/><path d="M106.63 102.77c-1.47-.7 2.14-5.33 2.14-5.33s-.13-.28-.46-.56c-.42.8-3.36 5.72-5.3 5.07-.22 3.63 3.86 5 5.26 2.68.9-1.46.9-4.15.16-4.04 0-.07-.6 2.75-1.8 2.18Z" fill="#5A6045"/><path d="M106.63 102.77c-1.47-.7 2.14-5.33 2.14-5.33s-.06-.14-.2-.28c-.61.4-5.28 6.95-1.88 8.58a2.2 2.2 0 0 0 1.58-1.11c.9-1.46 1.3-3.68 1.45-4.75-.34.13-.67.19-1.35.24-.07 0-.54 3.22-1.74 2.65Z" fill="#474C2F"/><path d="M106.51 99a6.67 6.67 0 0 0 1.27-2.46c-.8-.49-2.14-.52-3.68 2.14-.35.6-.57 1.14-.78 1.6 1.34.56 2.64-.61 3.19-1.28Z" fill="#868B75"/><path d="M129 83.25c1 .42.7 1.83-.06 2.42-.85.66-2.23.81-3.14.18-.75-.53-1.46-1.85-.85-2.7.09-.12.2-.17.33-.17.58-.24 1.36-.07 1.94-.01.56.05 1.25.05 1.77.28Z" fill="#3E875B"/><path d="M128.99 83.24c1 .42.7 1.83-.06 2.42-.64.5-1.59.71-2.4.5.07 0 .15-.03.22-.04.51-.12 1.43-.39 1.5-1.04.08-.85-.99-1.24-3.53-.98-.04-.33.02-.66.22-.94.09-.12 3.52-.12 4.04.1v-.02Z" fill="#3B754B"/><path d="M133.6 85.93c-.23-.07-5.5-4.57-11.44-1.75-.52.25-.94-.54-.42-.79 6.72-3.2 11.67 1.52 12.14 1.68.55.18.28 1.04-.28.86Z" fill="#676D54"/><path d="M146.4 83.75c.5-.16 1.15-.12 1.67-.13.55 0 1.28-.1 1.8.16.12.01.22.07.3.18.51.84-.25 2.02-.99 2.45-.9.53-2.17.28-2.91-.4-.66-.6-.85-1.94.13-2.26Z" fill="#3E875B"/><path d="M149.32 86.41c-.64.38-1.48.38-2.18.11l.04-.01c.43-.14 1.09-.4 1.05-.95-.05-.93-1.46-.74-2.48-.56-.1-.57.06-1.16.67-1.36.52-.17 3.85.1 3.93.22.53.87-.26 2.1-1.04 2.55Z" fill="#3B754B"/><path d="M143.4 85.93c.22-.06 5.4-4.15 10.62-.87.46.28.9-.48.44-.77-5.9-3.7-10.79.64-11.24.76-.52.13-.33 1.01.2.88h-.01Z" fill="#676D54"/><path d="M134.83 99.88c.39.27.03.92-.37.64-.97-.68-1.8-1.75-1.87-2.97-.06-.88.02-1.98.8-2.53.4-.27.78.36.39.64-.52.36-.52 1.33-.46 1.88.1.95.73 1.8 1.5 2.34h.01Z" fill="#CEB79B"/><path d="M145 95.6c.2.78 1.43 2.74.23 3.27-3.55 1.55-1.67 3.02-5.63 2.33-.44-.08-1.57-2.41-4.45-1.93-.46.07-.68-.63-.2-.7 2.83-.48 4.16 1.26 5.01 1.95 2.21.35 3.02-.64 3.12-2.97a6.85 6.85 0 0 0-.5-3.28c-.21-.43.42-.82.63-.39.68 1.43.73 3.1.5 4.69 1.65-1.5 1.58 1.16.57-2.76-.11-.47.6-.67.71-.2ZM142.9 88.1c-.07 1.09-.13 2.23.05 3.3a.4.4 0 0 1-.09.34.46.46 0 0 1-.33.17c-.18 0-.3-.11-.34-.29-.16-1.02-.1-2.03-.06-3.02.04-.68.08-1.38.03-2.09a5.76 5.76 0 0 0-.26-1.3 5.37 5.37 0 0 1 0-3.42.36.36 0 0 1 .37-.28c.13 0 .26.05.34.16.07.09.1.2.06.32a4.83 4.83 0 0 0 0 2.85c.21.71.3 1.37.29 2.07l-.05 1.19h-.02Z" fill="#CEB79B"/><path d="M106.86 132.27c7.22 9.9 16.98 10.64 25.5 5.8a55.53 55.53 0 0 0 2.14-5c-4.76-1.3-8.84-2.47-12.29-3.58-7.98-2.57-12.58-4.86-14.27-8.05-.61-1.44-.9-1.94.49-2.4-.75-.09-1.37.28-1.82 1.03-.74 1.25-.99 2.78-1.2 4.41-.43 2.38.88 6.98 1.45 7.77v.02Z" fill="#CCD1C0"/><path opacity=".4" d="M106.86 132.27c7.22 9.9 16.98 10.64 25.5 5.8a55.68 55.68 0 0 0 2.14-5c-4.76-1.3-8.84-2.47-12.29-3.58-3 .76-16.7 3.75-16.8-5-.43 2.38.88 6.98 1.45 7.77Z" fill="#C2C2AC"/><path d="M109.47 102.27c.35 2.81 1.47 5.7 1.46 8.6.32 3.75 1.3 16.4 6.52 14.82.04.08.6 1.37 1.4 2.66.34.58.73 1.16 1.13 1.64.79.93 1.62 1.47 2.3.86.8 2.4 1.8 4.85 3.39 6.89a7.41 7.41 0 0 0 2.48 2.22l.26.15.05.02.24.13c1.25.6 2.67 1 4.16 1.2 3.18.49 6.63.2 9.05-.3l.25-.06a8.95 8.95 0 0 0 4-1.94c3.6-3.12 3.2-8.54 3.27-10.38.9-.46 3.26-.56 4.03-4.65l.12-.17c2.85-3.85 4.33-8.63 5.09-12.89.17-2.67.18-5.81.74-10.29l.04-.4-.06.02c-.06-1.3-.17-2.61-.32-3.94-.31-2.89-.79-5.86-1.2-8.85v-.01a89.91 89.91 0 0 1-.8-7.98v-.05a46.1 46.1 0 0 1-.05-3.22 24.02 24.02 0 0 0-.6-4.32c-.18-.8-.33-1.37-.35-1.46-.32-.82-.58-1.67-.92-2.18l.1.67c.12.84.3 1.7.47 2.57l.25 1.26c.27 1.33.52 2.68.66 4.03.1 1 .14 1.97.08 2.95-.06 1.1-.27 2.2-.66 3.27.14.1.27.22.4.38.2.27.42.6.65.98l.38.63-.37-.26-.8-.56-.22-.16.02 1.33v.65c.26.2.6 1.05.65 1.35l-.65-.45c-.47 4.17 1.25 10.1-1.37 13.48a.18.18 0 0 0-.04.05l-.26.3c.57 2.32-.56 5.17-1.78 7.2.72-1.7-1.49-5.44-3.78-5.91.57.25.57 1.41.58 1.45-.15-.3-1.24-2.03-1.82-2.18l-.15.05c-2.79.74-5.86 1-9.31.75a46.34 46.34 0 0 1-4.97-.63l-2.16 1.5a2.2 2.2 0 0 1 1-1.52c-6.45-1.37-8.4 5.03-8.88 7.12-.94-2.17-2.54-3.58-2.1-5.64-5.76-.92-3.95-11.73-4.18-14.76l-1.56 1.03c.72-.88 1.69-2.6 1.34-4l-1.07.7c.28-.29.82-1.21 1.01-1.56l-.03-.93-1.16-.7-4.08-2.47a.58.58 0 0 1-.06-.04c1.5 1.68 2.4 4.08 2.7 6.65V87c.17 1.3.18 2.63.05 3.95-.22 2.29-.87 4.5-1.92 6.26a8.29 8.29 0 0 1-2.61 2.82l-.1.06c-.04.72 0 1.44.09 2.17l-.02.02Z" fill="#CE8000"/><path opacity=".3" d="M128.7 140.26c1.24.6 2.67 1 4.15 1.2 3.19.49 6.63.2 9.06-.31.08-.02.17-.03.25-.06a9 9 0 0 0 3.99-1.93c3.6-3.12 3.2-8.55 3.28-10.4.89-.45 3.25-.55 4.02-4.64l.12-.17c2.86-3.85 4.34-8.63 5.1-12.89.86-4.86.78-9.04.73-10.28 0-.26-.02-.39-.02-.39-.06-1.3-.17-2.6-.31-3.94-.32-2.89-.8-5.85-1.2-8.84v-.02a89.53 89.53 0 0 1-.81-7.98v-.05a45.5 45.5 0 0 1-.05-3.22 24.02 24.02 0 0 0-.6-4.32c-.17-.8-.33-1.37-.35-1.46-.31-.82-.57-1.66-.91-2.18a47.46 47.46 0 0 0 .57 3.25l.24 1.25c.27 1.33.52 2.69.66 4.04.1.98.14 1.97.09 2.95-.07 1.1-.28 2.2-.66 3.26.13.1.26.23.4.38.2.27.41.6.65.99l.37.62-.37-.26-.8-.56-.22-.16.03 1.33v.65c.25.2.59 1.05.64 1.35l-.64-.44c-.48 4.16 1.24 10.1-1.39 13.47a.2.2 0 0 0-.03.05l.02.33c.05.94.1 1.87.12 2.81a70.7 70.7 0 0 1 0 4l-.01.37v.02l-.06 1.37a62.52 62.52 0 0 1-.77 6.97c-.4-1.23-.73-2.11-.9-3.34-.1-.68-.14-1.48-.13-2.5a32.56 32.56 0 0 1-.16 2.96c-.95 9.72-6.1 12.67-10.7 19.18 1.25-3.94 2.99-9.06 2.4-13.73-.07-.54-.17-1.08-.31-1.6a29.83 29.83 0 0 1-9.51 18.48l-.87.78c-.4.35-.83.7-1.26 1.03l-.42.33-.78.56-.2.14c-.64.45-1.3.87-1.97 1.27-.04.02-.1.04-.13.07l-.34.2h-.02ZM115.4 82.8l-4.12-2.51 1.24 1.64c.4.52.7 1.12.88 1.76l.02.02.1.4.1.4.1.4.07.42a21.73 21.73 0 0 1-1.86 12.26l-.16.32-.23.4c-.54.86-1.08 1.43-1.6 1.6-.19.08-.36.12-.56.16l-.05.04-.03.07a2.2 2.2 0 0 0-.08.53c-.02.28-.05.4-.04.54a46.57 46.57 0 0 1 .35 1.2l.14.54.12.5.01.06.06.25.03.18.03.08v.03l.05.24.06.3.06.29.13.69s1-.16 2.17-2.63c.64-1.34 1.34-3.39 1.95-6.48.56-2.85.77-8.63 1.07-13.7Z" fill="#A05A07"/><path d="M132.3 106.73c-.81 0-1.09.57-.5.75 1.5.47 11.38-.04 13.9-.36.57-.08.37-.96-.2-.88-5.96-.28-13.2.49-13.2.49ZM137.8 109.63c.3.36 1.28.22 1.69.2.58-.03 1.2-.09 1.75-.3.54-.22.77.65.24.87-.73.28-1.58.32-2.35.36-.6.02-1.55.04-1.97-.48-.37-.44.25-1.08.63-.64v-.02.01Z" fill="#995A07"/><path d="M129.81 155.9c-.1 1.26.55 2.48 1.07 3.56.1 3.8 1.6 7.1 4.32 9.46.97.63 1.48-.15 2.65.2 1.93.24 3.83-1.77 4.77-3.35a7.73 7.73 0 0 0 1.08-4.22 9.9 9.9 0 0 0-.3-2.21c.08-.08.2-.08.27-.15 2.05-1.63 1.86-5.47.23-7.4a7.68 7.68 0 0 0 .1-8.04c.43-.8 1.08-1.46 1.51-1.9l-15.1-.24c-.28.98-.04 1.86.36 2.85l-.2.34c-1.1 2.19-.64 5.2.45 7.52-.71 1.13-1.27 2.6-1.22 3.58h.01Z" fill="#BA6F04"/><path d="M135.74 184.76c4.46-2.64 8.12-9.2 4.53-13.53-.07-.53.29-1.13-.43-1.22-3.99.18-5.76 1.4-6.33 3.13-.85 2.64 1.12 6.48 2.35 9.62.22.6.2 1.37-.12 2Z" fill="#D58500"/><path opacity=".3" d="M135.9 182.72c.18.68.16 1.48-.2 2.04 4.46-2.64 8.12-9.2 4.53-13.53-.07-.53.29-1.13-.43-1.22-3.99.18-5.76 1.4-6.33 3.13.3.09 6.94 4.29 2.42 9.58h.01Z" fill="#A05A07"/><path d="M140.04 175.2a9.39 9.39 0 0 1-1.24 5.03c-.28.53-1.07.06-.79-.47a8.54 8.54 0 0 0 1.08-4.37c-.05-.95-.03-2.47-1-2.87-.53-.2-.06-1 .47-.8 1.28.49 1.5 2.28 1.48 3.49ZM135.59 175.91c-.43.41-1.13-.18-.71-.62.89-.93 2.31-1.96 1.59-3.35-.26-.53.47-1.05.72-.51.95 1.88-.4 3.17-1.6 4.48ZM130.1 134.63c.01-.61.96-.6.95.02-.1 1.4.55 2.66 1.44 3.67.78.81 1.91 1.25 2.97 1.66-1.11-1.24-1.8-2.5-1.78-4.22.02-.6.97-.58.95.02.04 1.75.74 2.87 1.97 4.03.4.35-.1.88-.47.79-.01.34-.2.6-.54.44-1.4-.56-2.8-1.04-3.83-2.2a5.77 5.77 0 0 1-1.66-4.22ZM139.33 139.6c1.25.1 2.5-1.81 2.53-2.95.01-.53.88-.51.8.01-.1 1.22-1.01 2.83-2.2 3.49.46-.18.95-.25 1.41-.5a5.44 5.44 0 0 0 1.7-1.38c.97-1.04 1.83-2.54 1.68-4.03-.07-.53.73-.7.8-.17.23 1.68-.6 3.18-1.58 4.41-.47.6-1.01 1.12-1.63 1.56-.35.26-.7.45-1.08.6-.34.13-.69.13-1 .31-.45.19-.78-.44-.51-.7-.35.15-.69.26-.99.18-.49-.05-.48-.85.06-.84Z" fill="#995A07"/><path d="M145.35 143.93c-8.4.17-6.72.13-16.18.39-1.31-.56-1.41-3.22-.78-4.72 8.93-.28 6.39-.3 17.51-.44.66 1.46.71 4.1-.55 4.77Z" fill="#00C55E"/><path d="M145.35 143.93c-.6-.01-1.21.05-1.75.04 1.84-4.48-11.29-4.48-11.93-4.42 7.52-.26 3.72-.2 14.16-.4.73 1.47.79 4.13-.48 4.78Z" fill="#06B253"/><path d="M135.39 146.73c1.12 1.16 2.5 3.58 1.57 4.54-.97.97-3.98-.08-5.02-1.16-1.04-1.09-1.2-2.76-.2-3.73 1.02-.96 2.6-.81 3.64.35ZM141.22 147.41c-.9.86-2.18 2.8-1.48 3.58.7.73 3.1.06 4.07-.87.97-.93 1.03-2.18.33-2.92-.7-.8-2-.69-2.92.2v.01ZM140.4 154.46c-.9.85-1.94 3.34-1.16 4.22.78.81 3.88-.26 4.73-1.12.85-.85 1-2.25.22-3.1-.78-.86-2.83-.9-3.8 0ZM135.61 154.1c1.11 1.15 2.51 3.58 1.58 4.54-.97.97-3.98-.08-5.03-1.16-1.04-1.09-.75-2.22.22-3.11.94-.97 2.12-1.44 3.23-.28ZM139.93 162.15c-.56 1.24-1.5 4.22.24 4.52.88.17 2.1-1.97 2.73-3.2.55-1.24.19-2-.64-2.33-.86-.32-1.78-.23-2.34 1.01ZM136.14 161.8c1.11 1.16 2.49 4.5 1.23 4.89-1.08.32-3.1-1.05-4.21-2.21-1.12-1.16-1.2-2.3-.27-3.2.92-.84 2.2-.55 3.25.53Z" fill="#C57802"/><path d="M141.32 146.36c-.7.7-1.25 1.57-1.8 2.35-.62.93-.38 2.2-.33 3.33-.01.61-1.07.78-1.12-.74-.06-1.14.2-2.27-.01-2.92-.6-1-1.68-3.23-2.8-2.98-.6.13-.7-.81-.16-.96 1.4-.24 2.87 2.38 3.72 3.53.7-.86 1.29-1.64 2.17-2.23 1.07-.7.71.25.32.62h.01Z" fill="#995A07"/><path d="M141.03 153.14c.54-.18 1.52-.12 1.13.37-.2.18-1.26.39-1.8 1.1-1.02 1.31-1.06 2.98-1.05 4.5-.02.6-.76 1.76-.8-.1.47-2.27-1.88-6.3-2.94-6.17-.61.06-.59-.88.02-.95 1.25-.12 2.62 2 3.28 3.07.7-1.05 1.09-1.42 2.16-1.81Z" fill="#995A07"/><path d="M141 161.26c-2.22.94-.95 4.04-2.07 6.68.14.6-.74 1.2-.88.58.92-2.18.49-3.63-.08-5.31 0 0-.89-3.1-2.8-2.9-.6.13-.78-.74-.24-.88 2.13-.04 3.3 1.93 3.59 2.91.54-.67.55-1.12 1.28-1.49.54-.33 2.02-.37 1.2.4v.01Z" fill="#995A07"/><path d="M140.79 171.85c-3.27 0-2.66.02-6.72.05-.51-.54-.62-3.02-.32-4.45 3.72-.11 2.85-.13 7.67-.1.3 1.44-.09 3.97-.63 4.5Z" fill="#00C55E"/><path d="m140.79 171.85-.95-.02c.6-3.37-4.62-4.43-4.62-4.43 3-.09 1.8-.11 6.2-.06.3 1.45-.09 3.98-.63 4.5Z" fill="#06B253"/><path d="M133.84 150.07c1.66.64 2.47.05 2.14-.67-.33-.73-1.35-2.5-2.41-2.52-1.06-.02-2.55 2.08.27 3.2ZM134.28 158.12c2.04.77 3 .07 2.56-.81-.44-.88-1.68-3.04-2.93-3.06-1.29.04-3.06 2.55.37 3.87ZM135.53 165.59c1.5.56 2.05-.3 1.62-1.1-.44-.8-1.62-2.77-2.5-2.64-.86.14-1.64 2.85.88 3.74ZM141.66 164.66c-1.08.66-1.6.11-1.39-.64.2-.71.77-2.45 1.53-2.43.72.05 1.63 2-.14 3.07ZM142.22 157.91c-1.95.84-2.85.13-2.53-.73.36-.87 1.54-2.9 2.72-2.94 1.25-.05 3.03 2.34-.19 3.67ZM142.64 150.25c-1.6.69-2.39.1-2.04-.57.28-.68 1.27-2.44 2.34-2.5 1.02-.02 2.39 1.91-.3 3.07Z" fill="#D58500"/><path d="M129.3 42.35s-3.29.1-5.99.9c-2.2.66-2.59 3.72-2.59 3.72l8.57-4.63v.01Z" fill="#BBB99D"/><path d="M130.87 44.42c-7.07-2.07-27.6-1.6-30.83 29.7 0 0 59.27 1.1 59.2.6-4.28-33.76-28.06-30.2-28.38-30.3Z" fill="#979E87"/><path opacity=".4" d="M116.63 48.1c-3.12-.33-9.5 5.23-7.6 8.5.55.95 1.71 1.19 2.73 1.12 4.69-.28 8.57-6 7.08-8.23a3.18 3.18 0 0 0-2.21-1.39Z" fill="#C5CAB9"/><path d="m147.87 57.85.02-.16a.56.56 0 0 1-.1.12l.07.04Zm0 0 .02-.16a.56.56 0 0 1-.1.12l.07.04Zm-47.78 15.79c0 .16-.04.32-.05.48 7.3.07 15.4.18 22.94.26 11.5.13 24.39.3 35.43.4 1.68.41.14-3.05.21-4-1.1-5.88-3.07-11.73-6.65-16.59a28.09 28.09 0 0 0-1.62-1.97c-5.98-7.19-15.76-8.3-24.5-8.35h-3.07l-.03.02h-.01c4.93 5.52 1.34 14-3.86 18.15h-.01s-.02.03-.03.02l-.4.36-.13.12c-4.25 3.64-13.4 4.9-15.24-1.86a52.35 52.35 0 0 0-2.96 12.98v-.02h-.02Zm27.62-12.19h-.01c-.67.92-2.75 1.32-2.48-.32.47-2.78 4.86-2.52 2.49.32ZM144.3 51.2c-.59-1.71-.8-2.41 2.92-.7 1.35.5 1.52 2.11 1.63 3.36.3 1.83-.95 5.88-3.38 4.25-.7-2.18 0-4.9-1.17-6.91Zm3.56 6.66c.02-.04.02-.1.03-.16a.56.56 0 0 1-.1.12l.07.04Z" fill="#949984"/><path opacity=".4" d="M121.36 68.94c-13.17-.74-19.5 4.84-20 5.21 4.8.1 21.88.4 36.26.57-.2-.14-6.18-5.09-16.27-5.78ZM139.44 67.73c7.05-2.81 4.8-15.56.91-22.13a23.85 23.85 0 0 0-5.03-1.1c.64 1.21 3.97 20.96 4.13 23.23ZM150.35 52.2c.6 8.36-1 14.03-11.07 22.53 11 .13 19.47.2 19.44 0-1.4-10.99-4.32-18.04-8.37-22.53Z" fill="#676D54"/><path d="M141.76 55.04c-2.38-11.6-6.62-13.8-13.26-12.85-3.91.56-5.77 1.33-6.37 1.76.68-.1 2.7-.35 3.3 0 1.8 1.06 3.48 3.12 4.62 4.94 5.1 8.2 3.82 14.05 5.2 16.8.67 1.34 2.42 2.47 3.86 2.1 2-.52 4.38-4.35 2.66-12.75Z" fill="#BBB99D"/><path d="m122.74 43.83-.05.05c.86-.1 2.16-.2 2.67.05-.93-.52-1.96-.77-2.62-.1Z" fill="#676D54"/><path d="M142.36 55.05c1.73 8.4-.92 12.16-2.92 12.68-1.45.38-2.93-.7-3.6-2.03-1.37-2.75-.1-8.6-5.2-16.8-1.69-2.72-4.6-5.96-7.32-5.64 9.94-2.72 16.06-2.78 19.05 11.79Z" fill="#C2C2AC"/><path d="M129.72 47.53c1.57.28 3.24.06 4.6-.75a5.06 5.06 0 0 0 2.41-3.34c-3.31-2.42-7.75-1.74-13.43-.18 2.28-.27 4.69 1.95 6.41 4.29v-.02Z" fill="#C5CAB9"/><path d="M134.12 55.88c1.34 4.53.87 7.71 1.8 9.6.68 1.33 2.09 2.62 3.52 2.25 1.92-.5 4.44-4.01 3.1-11.76-3.05 2-6.05 1.75-8.43-.1h.01Z" fill="#BBB99D"/><path d="M140.5 59.22c-.71-.88-1.93-.62-2.43-.1-1.13 1.16-.17 3.77 1.66 3.08 1-.37 1.45-2.12.77-2.98Z" fill="#979E87"/><path d="M140.5 59.22c-.31-.38-.7-.55-1.1-.58 1.59.69.86 3.68-.85 3.54 1.6.8 2.93-1.71 1.94-2.96Z" fill="#949984"/><path d="M137.13 49.07c-.5-.2-1.05-.08-1.47.3-1.87 1.74 2.27 4.49 2.83 1.86.2-.92-.52-1.87-1.36-2.16Z" fill="#979E87"/><path d="m137.13 49.07-.05-.02c.62.42 1.05 1.18.9 1.93-.23 1.04-1.02 1.24-1.78.98.87.56 2.03.57 2.3-.73.2-.92-.51-1.86-1.36-2.16h-.01Z" fill="#949984"/><path d="M133.33 43.21c-.51-.63-2.63-1.06-2.73.5.01 2.5 4.63 1.93 2.73-.5Z" fill="#979E87"/><path d="M133.33 43.21c-.37-.46-1.58-.81-2.26-.38 1.53-.44 3.28 1.44 1.8 2.5 1-.22 1.13-1.47.45-2.12h.01Z" fill="#949984"/><path d="M100 79.5c-.8-.5-1.2-3.55-.93-5.58 6.85-2.38 59.97-.4 60.4-.03.55.5.5 3.74.42 4.69-7.83-.3-59.9.91-59.9.91h.02Z" fill="#C2C2AC"/><path d="M120.1 79.06c5.27-.1 11-.22 16.46-.31-8.34-5.9-16.24-.16-16.46.3ZM159.47 73.89c-.17-.14-8.18-.53-18.35-.8.71 2.99-.36 4.77-.99 5.6 9.21-.14 17.1-.21 19.79-.11.07-.95.13-4.19-.44-4.7h-.01Z" fill="#BBB99D"/><path d="M125.86 72.8c-11.74-.12-22.89.08-26.4 1 4.43 4.42 18.39 4.42 26.4-1Z" fill="#C5CAB9"/><path d="M105.32 75.33c-.33-1.54-3.14-1.16-2.99.6.18 2.7 3.61 1.23 3-.6Z" fill="#979E87"/><path opacity=".4" d="M104.1 74.37c-.92-.1-1.84.59-1.77 1.56.09 1.32.94 1.63 1.73 1.42-2.31-.56-.52-3.06.04-2.97Z" fill="#676D54"/><path d="M118.25 74.7c-1.15-.89-3.76 1-2.47 2.36 1.24 1.53 4.3-.8 2.46-2.37v.02h.01Z" fill="#979E87"/><path opacity=".4" d="M116.08 77.06a1.2 1.2 0 0 1-.3-1.17c.23-.73 1.13-1.34 1.92-1.4-.85-.1-1.95.57-2.21 1.39-.14.42.01.86.3 1.17.3.34.82.5 1.33.47-.42-.02-.8-.19-1.05-.46Z" fill="#676D54"/><path d="M129.14 74.93c-1.15 1.14.37 3.88 2.37 2.2 1.77-1.48-1-3.53-2.37-2.2Z" fill="#979E87"/><path opacity=".4" d="M128.75 76.04c.07 1.16 1.29 2.33 2.77 1.1.23-.2.38-.4.47-.61-.15-.04-2.57-.6-3.24-.49Z" fill="#676D54"/><path opacity=".4" d="M129.47 74.96c.39-.32.86-.42 1.32-.37a1.59 1.59 0 0 0-1.65.34c-.9.88-.18 2.72 1.12 2.73-1.17-.25-1.76-1.88-.79-2.7Z" fill="#676D54"/><path d="M144.12 74.95c-2.12-.41-2.8 2.9-.41 2.84.66-.02 1.3-.47 1.36-1.63.03-.57-.39-1.1-.95-1.2v-.01Z" fill="#979E87"/><path opacity=".4" d="M144.12 74.95a1.74 1.74 0 0 0-.62-.02c.12 0 1.19.06 1.31 1.25.1 1.02-.56 1.5-1.14 1.6h.03c.67 0 1.3-.46 1.36-1.62.03-.57-.39-1.1-.94-1.2v-.01Z" fill="#676D54"/><path d="M156.8 74.75c-2.47-.12-1.37 4.17.74 2.84 1.63-.56.68-2.73-.75-2.84Z" fill="#979E87"/><path opacity=".4" d="M156.8 74.75c-.19-.02-.37 0-.53.07 1.64.34 2.09 2.54.3 2.99 2.3.18 2.45-2.7.23-3.06Z" fill="#676D54"/><path d="M125.16 85.43c-.49.02-.9-.2-.9-.47 0-.28.38-.52.87-.54.49-.02.9.2.9.47 0 .28-.38.52-.87.54ZM146.4 86.05c-.49.01-.89-.2-.9-.48 0-.28.39-.5.88-.52.49-.02.9.2.9.48 0 .28-.38.5-.88.52Z" fill="#fff"/><path d="m154.31 81.47-1.16-1.03s1.55.08 2.33.66c.58-.22 1.1-.43 1.42-.66.13-.08-.2-3.74-1.1-3.37a28.4 28.4 0 0 1-9.25 1.17c-.51 0-1.87.8-1.87.8l.2-.95c-.32-.08-1.56-.3-1.81-.3-.91-.21-1.36 1.69-1.36 3.23.06 1.98 1.16 1.68 2.84 1.68 2.52-.07 6.53-.36 9.77-1.24Z" fill="#CE8000"/><path d="M147.13 82.57c-3.42-.74-3.68-3.67-3.3-4.62-.25-.07-.57-.07-.83-.15-.91-.22-1.36 1.69-1.36 3.23.06 1.97.2 1.83 2.65 1.83.71-.07 1.82-.22 2.85-.3Z" fill="#B26804"/><path d="M121.13 80c4.91 2.27 11.59 2.64 11.59 2.64 1.17.15 2.2.15 3.08.22 1.68.08 1.97-.51 1.76-1.83 0-.15-.08-.3-.08-.45-.73-3.15-.51-2.79-1.39-2.93-.74.08-.8.08-1.76.22-.3.59-.95 1.54-.95 1.54l-.14-1.62c-3.9 0-9.83-.8-11.73-1.61-.45.22-1.62 3.08-.37 3.81V80Z" fill="#CE8000"/><path d="M121.13 80c1.18.66 2.94 1.25 4.91 1.62-2.05-.96-2.64-4.84-2.64-4.9a10.4 10.4 0 0 1-1.9-.6c-.45.3-1.62 3.15-.37 3.89ZM132.7 82.64l3.1.22c1.82.08 2.04-.66 1.67-2.27-.72-3.15-.5-2.79-1.39-2.93-.07.66 1.1 4.03-3.37 4.98Z" fill="#B26804"/><path d="M160.75 212.07s11.9-4.03 13.97-11.75c2.08-7.72 10.3-6.98 12.45-11.61 2.15-4.63-.51-4.66-2.3-4.54-1.8.11-32.18 19.04-32.18 19.04l8.07 8.86h-.01Z" fill="#B5B39E"/><path d="M149.03 204.87s11.81 4.74 21.34-6.39c0 0 5.2-4.4 9.17-5.74 3.97-1.34 9.85-6.16 7.51-9.2-2.34-3.05-7.18 1.46-9.5 2.27-2.31.81-9.45 5.97-8.21-2.97.3-2.21-20.95 8.01-25.8 13.13-2.81 2.98 5.49 8.9 5.49 8.9Z" fill="#E8D4BA"/><path opacity=".4" d="M180.54 192.35c-1.38.55-2.66 1-4.05 1.83-3.24-8.82.2-2.15-4.63 3.12-9.7 10.58-18.18 8.46-18.18 8.46 11.28-9.42 15.66-22.93 15.66-22.92-1.32 9.4 7.26 3.31 10.44 1.79 1.84-1.01 3.98-2.64 6.14-1.96 0 0-6.87 2.03-5.38 9.68Z" fill="#CEB79B"/><path d="M170.98 187.88c-.04.85-.09 1.68-.68 3.35-1.19 3.33-8.45 8.06-6.99 4.43.16-.39 3.2-5.2 4.42-8.34v-.02c1.13-2.7 1.6-4.46 1.6-4.46-.46 3.32.3 4.72 1.65 5.04Z" fill="#CEB79B"/><path d="m126.03 201.04 16.3-8.29 10.82 13.27-18.68 12.75-8.44-17.73Z" fill="#E8D4BA"/><path d="m153.15 206.02-18.68 12.75-8.44-17.73 6.46-3.29 9.85-5 10.53 12.94.28.33Z" fill="#E8D4BA"/><path d="M140.65 194.37s13.66-16.09 18.04-18.82c4.38-2.73 8.77-9.01 12.63-11.85 3.86-2.84 10.24-11.64 12.55-11.8 2.31-.16 3.2 2.69-.24 8.26-3.46 5.58-14.28 22.68-14.28 22.68s-6.5 7.66-7.12 9.98c-.63 2.32-16.05 5.15-21.57 1.55Z" fill="#E8D4BA"/><path opacity=".4" d="m183.63 160.16-3.27 5.22c-7.57 5.53-17.8 11.05-19.23 11.9-2.37 1.41-4.86-.63 1.32-3.65 6.17-3.02 4.18-5.5 4.18-5.5a38.99 38.99 0 0 1 4.7-4.44c.6-.45 1.27-1.05 1.98-1.73 10.86-1.5 10.56-10.07 10.56-10.07 2.3-.15 3.2 2.69-.24 8.27Z" fill="#CEB79B"/><path d="M182.95 155.8s1.84.48 1.76 2.41l-1.5 2.8-.26-5.21Z" fill="#CEB79B"/><path d="M179.29 156.63s4.71.96 4.61-3.37c0 0-1.34 3.35-4.61 3.37ZM178.35 160.46s-10.41 8.7-12.34 11.5c-1.92 2.8-6.61 4.2-6.06 5.2.54 1 3.82-1.58 6.02-2.9 2.2-1.31 12.38-13.8 12.38-13.8Z" fill="#CEB79B"/><path d="M157.62 180.64s9.87-9.43 10.3-9.76c.45-.33 3.46-4.4 6.62-6.6 3.16-2.2 6.06-7.83 7.62-8.42 1.55-.6 3.21 2.86.77 7.06-2.44 4.21-6.94 11.68-7.2 11.83-.27.15-13.32 14.15-18.11 5.89Z" fill="#E8D4BA"/><path opacity=".4" d="M182.93 162.92c-2.44 4.2-6.94 11.68-7.21 11.83-.07.04-1.2 1.22-2.88 2.69-5.43 2.1-10.85 3.68-12 4.17-2.08.88-4 .16 4.16-5.07 8.17-5.22 5.39-8.45 5.39-8.45a26.18 26.18 0 0 1 4.15-3.81c11.33-2.27 7.62-8.42 7.62-8.42l.56-.04c1.34.3 2.35 3.42.21 7.1Z" fill="#CEB79B"/><path d="M178.66 170c.75-.66 1.3-3.18-.85-2.09-3.04 1.55-9.78 7.22-11.04 8.76-2.15 2.62-6.94 3.63-6.48 4.68.47 1.05 3.94-1.26 6.25-2.4 2.3-1.12 12.11-8.94 12.11-8.94ZM178.88 161.3s4.82-.04 3.8-4.26c0 0-.6 3.56-3.8 4.27Z" fill="#CEB79B"/><path d="M157 186.18s1.57-3.64 8.35-8.35c6.78-4.72 14.5-13 16-12.88 1.5.12 2.07 4.01-1.06 7.97a50.44 50.44 0 0 1-8.85 8.92s-.57 5.04-5.71 6.06c-5.15 1.02-8.72-1.72-8.72-1.72Z" fill="#E8D4BA"/><path opacity=".4" d="M179.33 174.1c-2.82 3.2-5.42 5.87-7.9 7.74 0 0-.19 3.23-3.7 5.46-.55 2.77 10.99 8.93-14.58 18.72-4.56 1.75-7.13.28-8.8-2.56 13.02-1.62 18.35-16.03 20.5-17.58 6.6-4.77 3.77-10.53 3.77-10.53l4.06-3.43c8.07 1.22 8.66-6.96 8.66-6.96 2.28.57 1.22 5.46-2.02 9.14Z" fill="#CEB79B"/><path d="M177.37 169.58s4.7 0 3.68-3.88c0 0-.56 3.26-3.68 3.88ZM153.15 206.02l-18.68 12.75-8.44-17.73 6.46-3.29s10.77 6.94 20.38 7.94l.28.33Z" fill="#CEB79B"/><path opacity=".4" d="M144.13 194.96a7.4 7.4 0 0 1-1.84.2c-1.86 0-3.68-.52-3.68-.52l3.21-1.64 3.13-3.58c.79.38 1.34 1.11 1.44 2.38.14 1.92-.9 2.8-2.25 3.16Z" fill="#CEB79B"/><path d="M178.07 169.13c-1.1.34-.92-1.25.2-1.8 1.13-.57 1.86 1.18-.2 1.8ZM179.74 160.74c-1.4.47-.75-1.6.64-2.37 1.4-.76 1.93 1.52-.64 2.37ZM180.55 156.22c-1.4.46-.75-1.61.64-2.38 1.4-.76 1.93 1.52-.64 2.38Z" fill="#EDDAC5"/><path d="M73.7 211.15s-29.2 16.12-29.28 46.47c0 1.1.72 2.1 1.78 2.41 8.2 2.45 40.98 8.95 64.09-11.94 16.26-14.69 30.76-29.91 30.76-29.91L128.7 197.3s-18.6 8.31-55 13.85Z" fill="#9EA58E"/><path d="M128.77 230.58a605.6 605.6 0 0 1-18.5 17.51c-23.1 20.89-55.87 14.38-64.07 11.94a2.52 2.52 0 0 1-1.78-2.41c.09-30.35 29.26-46.47 29.26-46.47 5.55-.84 10.67-1.75 15.38-2.69h.01s9.33 17.78 39.7 22.12Z" fill="#949984"/><path d="M109.95 210.3c.45 1.2-1.94 2.25-2.82 2.19a1.25 1.25 0 0 1-1.02-.59c-1.55-1.73 2.81-4.38 3.84-1.6Z" fill="#676D54"/><path d="M105.96 210.45c.68-1.3 3.24-2.2 4-.16.17.48-.1.94-.56 1.31.1-.21.12-.44.03-.67-.62-1.68-2.45-1.38-3.47-.5v.01Z" fill="#474C2F"/><g opacity=".6"><path opacity=".14" d="m105.9 210.54.26-.17c.27-.52 1.47-.43 1.8-.4.72.03 2.36.03 1.98 1.16-.45 1.32-2.32 2.02-3.3 1.9-1-.13-1.1-1.6-.74-2.48Z" fill="#474C2F"/></g><path d="M92.2 212.58c.85-1.81 3.23-1.88 4.17-.84.43.47.3 1.16-.1 1.57-1.02 1.06-3.1 1.3-3.88.45-.26-.28-.36-.8-.19-1.19v.01Z" fill="#676D54"/><path d="M96.38 211.74c.42.47.3 1.16-.1 1.57l-.13.13c.1-.35.05-.74-.22-1.04-.81-.88-2.66-.96-3.7.16.84-1.8 3.2-1.86 4.15-.82Z" fill="#474C2F"/><g opacity=".6"><path opacity=".14" d="M92.75 211.86c.06-.04.1.52.08.48.28-.13.65-.03.9 0 .35.06.72.04 1.09.03.5-.01 1.24-.45 1.64-.18.39.25.14.93.05 1.24-.42 1.44-4.77 2.61-4.6.07.02-.5.47-1.43.83-1.66v.01h.01Z" fill="#474C2F"/></g><path d="M78.48 215.29c.3-.34.67-.6 1.04-.8.81-.51 1.74-.44 2.35.31a1.58 1.58 0 0 1 0 1.71c-.4.63-1.72 1.27-2.53 1.14-.9-.02-1.7-1.47-.86-2.37Z" fill="#676D54"/><path d="M78.48 215.29c.31-.34.66-.6 1.04-.8.81-.51 1.74-.44 2.35.31a1.58 1.58 0 0 1 0 1.71c-.01.04-.04.06-.06.1.07-.31.03-.63-.08-.9a.64.64 0 0 0-.14-.27c-.62-.75-1.54-.83-2.36-.3-.37.18-.73.46-1.04.79l-.05.05c.04-.23.14-.48.34-.7Z" fill="#474C2F"/><g opacity=".14"><path opacity=".6" d="M78.25 215.69c1-.29 2.14-.57 3-.08.32.18.81-.4.89.03.68 3.47-5.83 3.17-3.9.05Z" fill="#474C2F"/></g><path d="M64.6 219.11c1.32-1.63 3.13-1.82 4.02-1.28 1.27.77.13 4.11-3.29 3.23-.97-.26-1.55-.94-.73-1.96v.01Z" fill="#676D54"/><path d="M64.61 219.1c1.32-1.63 3.13-1.81 4.02-1.28.6.37.66 1.32.19 2.12.13-.6-.01-1.18-.46-1.45-.9-.54-2.7-.36-4.02 1.28l-.13.16c.03-.24.15-.52.4-.82Z" fill="#474C2F"/><g opacity=".6"><path opacity=".14" d="M69.07 219.06c-.16 3.8-5.37 4.18-4.84.84.18-1.18 1.73-1.52 2.66-1.78.47-.13.62-.57 1.05-.42.68.25 1.16.55 1.12 1.35Z" fill="#474C2F"/></g><path opacity=".14" d="M141.05 218.17s-14.52 15.23-30.78 29.92c-23.1 20.89-55.87 14.38-64.07 11.94a2.52 2.52 0 0 1-1.78-2.41l.01-.73c.46.13 22.51 6.19 41.16.69 24.42-7.2 39.45-26.08 53.81-42.18l1.65 2.77Z" fill="#474C2F"/><path opacity=".14" d="M104.6 252.57c-22.49 15.4-50.86 9.71-58.4 7.46a2.52 2.52 0 0 1-1.78-2.41c.04-16.38 8.57-28.62 16.4-36.4.02.66 1.03 40.75 43.77 31.35Z" fill="#474C2F"/><path opacity=".15" d="M100.3 206.03s2.06 11.7 16.42 13.52l13.16 9.94 4.08-4.08-21.31-22.2-12.35 2.82Z" fill="#151916"/><path d="M110.65 177.36s-5.67-1.93-9.53-5.72c-3.85-3.8-8.14-9.02-8.76-9.9-.62-.88-6.45-7.97-8.08-8.06-1.64-.09-2.4 2.7-1.02 6 1.38 3.31 24.18 24.77 24.18 24.77s4.7-3.47 3.2-7.09Z" fill="#E8D4BA"/><path d="M101.6 178.89c-6.84-6.6-17.42-17-18.35-19.21-1.38-3.3-.61-6.09 1.02-6 0 0-2.7 3.62 8.09 8.06.33.47 1.77 2.26 3.64 4.4l.01.02c.14.34 2.5 5.81 6.66 8.14 3.62 2.03 1.81 5.56-1.06 4.59Z" fill="#DEC8AE"/><path d="M83.93 154.87s-.16 4.2 3.78 3.55c0 0-3.26-.72-3.78-3.55ZM86.55 159.84s1.94-.47 5.8 5.16c.86 1.24 6.2 5.74 5.94 6.57-.26.82-11.61-10.01-11.73-11.72h-.01ZM127.91 218.53l-11.19-7.7 11.98-14.94 12.29 5.1-13.08 17.54Z" fill="#CEB79B"/><path d="M120.82 211.87s-10.25 5.1-27.68-20.52c-17.43-25.6 18.72-12.25 20.98-9.5 2.27 2.74 8.06 11.72 14.57 14.03 6.52 2.31-7.87 15.98-7.87 15.98Z" fill="#E8D4BA"/><path d="M85.23 157.77s-4.39-5.06-6.07-5.06c-1.69 0-2.86 2.4-.87 6.02 2 3.61 24.16 27.54 24.16 27.54l5.74-4.43s-21.88-22.61-22.96-24.06v-.01Z" fill="#E8D4BA"/><path d="M78.99 153.98s.49 4.99 4.52 3.52c0 0-3.54-.27-4.52-3.52Z" fill="#CEB79B"/><path d="M102.34 178.76c-.67.44-.87-1.12-3.5-2.24-6.52-7.17-19.37-15.67-20.54-17.79-1.98-3.62-.81-6.02.87-6.02 0 0-1.57 7.46 10.54 10.15l.32.07a1456 1456 0 0 0 5.6 5.86s-.48.3-.51.7c-.16 1.75 2.05 2.59 4.72 4.72 2.66 2.14 3.32 4.01 2.5 4.54v.01Z" fill="#DEC8AE"/><path d="M96.82 174.55c1.55 1.03 3.42 3.83 4.27 2.58.85-1.25-7.67-7.53-8.44-7.56-.77-.03 4.17 4.98 4.17 4.98ZM84.69 162.3s-2.07-3.1-1.18-2.98c2.08.28 4.86 4.44 4.97 5.3.12.86-1.44.29-3.8-2.32Z" fill="#CEB79B"/><path d="M109.84 183.11s-3.34-7.6-1.44-14.4c1-3.56 3.05-4.25 3.75-3.2.91 1.35 1.18 5.48 2.3 9.1 0 0 3.83 5.62 6.59 10.28 1.82 3.1 3.15 5.63 2.27 10.8-.89 5.18-13.47-12.59-13.47-12.59v.01Z" fill="#E8D4BA"/><path d="M123.3 195.7c-.88 5.17-13.46-12.59-13.46-12.59s-.3-.69-.67-1.85c-.87-2.66-2.1-7.8-.77-12.54.84-2.97 2.4-3.95 3.3-3.59.19.08.34.2.45.38.84 1.25 1.14 4.82 2.05 8.2l.25.9.89 1.31c1.3 1.96 3.77 5.7 5.7 8.97 1.83 3.1 3.15 5.63 2.27 10.8Z" fill="#E8D4BA"/><path d="M117.47 183.06c.06.92-4.54 5.18-8.3-1.8-.87-2.66-2.1-7.8-.77-12.54.84-2.97 2.4-3.95 3.3-3.59 0 0-1.54 3.53.84 6.84.59.83 1.16 1.38 1.67 1.74.07.3.16.6.25.9l.89 1.31c-1.09 2.77 1.94 4 2.13 7.14Z" fill="#DEC8AE"/><path d="M92.23 188.6s-7.84-10.02-8.84-13.57c0 0-5.38-3.71-3.8-8.9 0 0 1.05-2.99 3.97.24C86.48 169.6 99.83 184 99.83 184l-7.6 4.6Z" fill="#E8D4BA"/><path d="M113.68 179.06c.57 1.75-5.66-2.82-5.66-2.82s4.8.15 5.66 2.82Z" fill="#CEB79B"/><path d="M80.56 155.88s-2.83.39-2.36 4.15c.46 3.75 8.67 12.6 8.67 12.6l12.68 14.63 2.3-2.63a4.16 4.16 0 0 0-.05-5.54l-21.25-23.22Z" fill="#E8D4BA"/><path d="M98.12 182.15c-1.4-1.5-9.08-8.5-14.86-13.72l-.02-.02c-2.27-2.81-4.8-6.35-5.05-8.39-.28-2.3.68-3.35 1.45-3.8 0 0-.74 7.6 4.48 9.74 5.22 2.14 6.04.4 6.04.4l2.63 2.87c-.65.95-1.89 2-.12 4.28 2.3 2.97 7.03 5.3 7.63 7.34.6 2.05.1 3.77-2.18 1.3Z" fill="#DEC8AE"/><path d="M85.82 169.28s11.94 12.7 12.67 13.41c1.34 1.3 1.55-.75 0-1.86-2.27-1.65-7.5-6.58-8.76-8.6-1.25-2.01-3.92-2.94-3.92-2.94ZM80.04 157.95s.46 4.99 4.18 3.52c0 0-3.27-.27-4.18-3.52Z" fill="#CEB79B"/><path d="m99.83 183.99-5.18 3.14-2.4 1.46s-7.86-10.02-8.86-13.57c0 0-5.37-3.7-3.8-8.9 0 0 .23-.62.75-.98.61-.44 1.65-.52 3.23 1.23A4325.8 4325.8 0 0 0 99.84 184h-.01Z" fill="#E8D4BA"/><path opacity=".4" d="M120.82 211.87s-10.25 5.1-27.68-20.51a38.15 38.15 0 0 1-3.64-6.4c-2.36-3.23-5.5-7.77-6.12-9.94 0 0-5.37-3.7-3.8-8.89 0 0 .23-.62.74-.98 0 0-.47 5.72 3.97 7.3 4.45 1.57 1.25 5.4 5.17 9.47 3.07 3.17 7.17 8.5 7.9 11.27.01.02 3.6-9.7 7.12 0 5.72 15.8 22.97 3.2 23.3 2.33.3.13.6.26.9.37 6.53 2.3-7.87 15.98-7.87 15.98h.01Z" fill="#CEB79B"/><path d="M80.56 165.96s.46 5 4.18 3.53c0 0-3.27-.27-4.18-3.53ZM129.88 200.32c-1.98 4.82-9.06 11.54-9.06 11.54s-6.6 3.28-18.2-8.65c.5.26 13.56 6.64 23.9-1.15 1.72-1.3 2.79-1.8 3.36-1.74Z" fill="#CEB79B"/><path d="M82.66 166.7c-.33.46-.6 1.92 1.22 2.03 1.82.11-.7-2.73-1.22-2.02ZM81.84 158.5c-.25.65-.25 2.61 1.62 2.49 1.87-.13-1.22-3.5-1.62-2.5ZM81.09 154.55c-.25.66-.25 2.61 1.61 2.49 1.87-.12-1.22-3.5-1.61-2.49ZM85.79 155.53c-.26.66-.26 2.62 1.61 2.5 1.87-.13-1.22-3.5-1.61-2.5Z" fill="#EDDAC5"/><path d="M185.02 210.65s24.95 13.38 25.01 44.3c0 1.25-.94 2.3-2.18 2.42-8.28.86-38.56 2.74-55.96-13.3-19.43-17.89-32.2-26.86-32.2-26.86 3.26-17.67 12.34-21.48 12.34-21.48s16.6 9.22 52.99 14.92Z" fill="#9EA58E"/><path d="M123.28 205.8c3.89-8.03 8.75-10.07 8.75-10.07s5.23 2.9 16.26 6.46c1.81 11.63-23.05 4.2-25 3.6Z" fill="#B1B7A5"/><path d="M210.03 254.94c0 1.25-.94 2.3-2.18 2.43-8.28.86-38.56 2.73-55.96-13.3a427.37 427.37 0 0 0-24.95-21.38s42.22 10.75 51.41-13.16c2.14.39 4.37.76 6.67 1.12 0 0 24.95 13.38 25.01 44.3Z" fill="#949984"/><path opacity=".14" d="M210.03 254.95c.01 1.24-.94 2.3-2.18 2.42-7.63.8-33.95 2.44-51.65-9.86 0 0 45.87 1.94 45.66-20.52a50.67 50.67 0 0 1 8.17 27.96Z" fill="#474C2F"/><path opacity=".14" d="M210.03 254.94s0 2.24-2.18 2.43c-8.29.75-38.56 2.73-55.96-13.3-19.43-17.89-32.2-26.86-32.2-26.86.16-.93.35-1.81.55-2.67 0 0 18.91 14.63 27.5 22.49 10.38 9.51 27.4 20.55 62.3 17.91Z" fill="#474C2F"/><path d="M133.36 200.92c-.07 2.92 2.87 2.64 3.44 1.4.82-1.76-3.38-3.86-3.44-1.4Z" fill="#676D54"/><path d="M133.35 200.92c-.02.73.14 1.25.42 1.61-.09-.27-.12-.59-.11-.97.04-1.8 2.34-1.15 3.2.03-.33-1.53-3.47-2.8-3.51-.67Z" fill="#474C2F"/><g opacity=".14"><path opacity=".6" d="M136.34 203.47c.75-.36.87-1.52.36-2.29-.38-.33-.96-.1-1.4-.23-.37-.1-.96-.44-1.34-.48-1.05-.13-.6 1.6 0 2.45.6.85 1.72.87 2.37.55h.01Z" fill="#474C2F"/></g><path d="M148.07 205.7c-.55 1.16 1.72 2.42 2.61 2.44.44 0 .84-.17 1.06-.5 1.7-1.57-2.4-4.6-3.67-1.94Z" fill="#676D54"/><path d="M152.03 206.22c-.57-1.37-3.03-2.5-3.96-.52-.22.46.01.94.44 1.35a.85.85 0 0 1 .03-.67c.76-1.61 2.56-1.14 3.5-.17h-.01Z" fill="#474C2F"/><g opacity=".6"><path opacity=".14" d="M152.08 206.31s-.24-.18-.23-.2c-.23-.54-1.43-.56-1.76-.57-.72-.03-2.35-.18-2.08.98.33 1.36 2.12 2.22 3.12 2.19 1-.03 1.24-1.5.96-2.4h-.01Z" fill="#474C2F"/></g><path d="M166.56 210.52c-.66-1.88-3.04-2.17-4.07-1.22-.46.43-.4 1.13-.04 1.58.92 1.15 2.97 1.57 3.83.8.28-.25.43-.76.3-1.16h-.02Z" fill="#676D54"/><path d="M162.49 209.31c-.47.43-.4 1.13-.05 1.57l.12.15c-.07-.36.02-.74.3-1.01.9-.81 2.74-.72 3.7.49-.68-1.86-3.04-2.15-4.07-1.2Z" fill="#474C2F"/><g opacity=".6"><path opacity=".14" d="M166.09 209.76c-.06-.04-.15.5-.13.47-.27-.15-.64-.09-.89-.07-.36.02-.73-.04-1.1-.08-.5-.06-1.19-.56-1.62-.33-.4.2-.22.91-.16 1.23.28 1.47 4.5 3.03 4.58.5.02-.51-.34-1.47-.68-1.73v.01Z" fill="#474C2F"/></g><path d="M178.96 213.54c-.28-.36-.6-.66-.97-.88-.76-.59-1.69-.61-2.37.09a1.6 1.6 0 0 0-.17 1.7c.34.65 1.6 1.42 2.42 1.36.9.06 1.82-1.3 1.07-2.28h.02Z" fill="#676D54"/><path d="M178.96 213.54c-.29-.36-.6-.66-.97-.88-.76-.59-1.69-.61-2.37.09a1.6 1.6 0 0 0-.17 1.7l.06.1c-.03-.31.03-.63.16-.88.04-.1.1-.2.17-.26.68-.7 1.61-.69 2.37-.1.35.23.69.53.97.9l.04.05c-.02-.25-.1-.5-.28-.72h.02Z" fill="#474C2F"/><g opacity=".14"><path opacity=".6" d="M179.16 213.95c-.98-.37-2.08-.76-2.98-.35-.34.16-.78-.47-.9-.05-1 3.39 5.52 3.67 3.88.4Z" fill="#474C2F"/></g><path d="M192.43 218.6c-1.16-1.75-2.95-2.1-3.88-1.63-1.34.65-.5 4.08 2.98 3.5 1-.16 1.63-.78.9-1.88v.01Z" fill="#676D54"/><path d="M192.42 218.6c-1.16-1.75-2.95-2.1-3.88-1.64-.63.31-.77 1.25-.38 2.08-.07-.6.12-1.17.59-1.4.94-.45 2.72-.1 3.88 1.64l.1.17c0-.24-.09-.53-.3-.85Z" fill="#474C2F"/><g opacity=".6"><path opacity=".14" d="M188 218.14c-.2 3.8 4.96 4.65 4.74 1.27-.08-1.18-1.6-1.66-2.49-2-.46-.18-.57-.63-1-.52-.7.18-1.2.44-1.25 1.24Z" fill="#474C2F"/></g></svg>
+                            </div>
+
+                            <div class="pic pic--adg pic--hide-desktop flex-center">
+                                <svg width="124" height="124" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".25" d="M62 124A62 62 0 1 0 62 0a62 62 0 0 0 0 124Z" fill="#E8EDEF"/><path d="M62 110.05a48.05 48.05 0 1 0 0-96.1 48.05 48.05 0 0 0 0 96.1Z" fill="#E8EDEF"/><path d="M62 89.63a27.63 27.63 0 1 0 0-55.26 27.63 27.63 0 0 0 0 55.26Z" fill="#FF6652"/><path d="M51.26 75.73a2.99 2.99 0 0 1-2.12-5.1l21.47-21.47a2.99 2.99 0 0 1 4.22 4.22L53.37 74.85c-.6.59-1.35.88-2.12.88Z" fill="#fff"/><path d="M72.73 75.73c-.76 0-1.52-.3-2.11-.88L49.15 53.38a2.99 2.99 0 0 1 4.22-4.22l21.47 21.47a2.99 2.99 0 0 1-2.11 5.1Z" fill="#fff"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="column">
+                            <div class="content">
+                                <h1
+                                    data-id="adgAccessBlockedTitle"
+                                    class="title text-center text-left-tablet content__title content__title--blue"
+                                >
+                                </h1>
+
+                                <div
+                                    data-id="extAccessBlockedDesc"
+                                    class="text text-center text-left-tablet content__text content__text--mb"
+                                >
+                                </div>
+
+                                <div class="content__inputs">
+                                    <div class="input__container input__container--multifunctional">
+                                        <div class="input__field">
+                                            <span class="input__text">
+                                                <span class="input__text-value">URL</span>
+
+                                                <span
+                                                    id="adgAccessBlockedUrl"
+                                                    class="input__field-value js-url-field"
+                                                >
+                                                </span>
+                                            </span>
+
+                                            <div class="input__actions">
+                                                <button
+                                                    type="button"
+                                                    class="input__action js-copy-button"
+                                                    data-copy-field-classname="js-url-field"
+                                                >
+                                                    <svg
+                                                        width="24"
+                                                        height="24"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <rect
+                                                            x="4"
+                                                            y="8"
+                                                            width="12"
+                                                            height="12"
+                                                            rx="2"
+                                                            stroke="#7F7F7F"
+                                                            stroke-width="1.5"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        />
+                                                        <path
+                                                            d="M8 5.5C8 4.67157 8.67157 4 9.5 4H18C19.1046 4 20 4.89543 20 6V14C20 14.5523 19.7761 15.0523 19.4142 15.4142C19.23 15.5984 19.01 15.7469 18.7655 15.8483C18.6458 15.8979 18.5203 15.9362 18.3902 15.962"
+                                                            stroke="#7F7F7F"
+                                                            stroke-width="1.5"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        />
+                                                    </svg>
+                                                </button>
+
+                                                <span class="input__actions-divider"></span>
+
+                                                <button
+                                                    type="button"
+                                                    class="input__action input__action--modal js-button-url-modal"
+                                                    data-modal-id="urlModal"
+                                                >
+                                                    <svg
+                                                        width="24"
+                                                        height="24"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <path
+                                                            d="M6 10L6 6L10 6M6 14L6 18H10M18 10V6L14 6M18 14V18H14"
+                                                            stroke="#7F7F7F"
+                                                            stroke-width="1.5"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="input__container input__container--multifunctional">
+                                        <div class="input__field">
+                                                <span class="input__text">
+                                                    <span
+                                                        class="input__text-value"
+                                                        data-id="filter"
+                                                    >
+                                                    </span>
+
+                                                    <span
+                                                        id="adgAccessBlockingFilterName"
+                                                        class="input__field-value js-filter-name"
+                                                    >
+                                                    </span>
+                                                </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="input__container input__container--multifunctional">
+                                        <div class="input__field">
+                                                <span class="input__text">
+                                                    <span
+                                                        class="input__text-value"
+                                                        data-id="rule"
+                                                    >
+                                                    </span>
+
+                                                    <span
+                                                        id="adgAccessBlockingRule"
+                                                        class="input__field-value js-rule-field"
+                                                    >
+                                                    </span>
+                                                </span>
+
+                                            <div class="input__actions">
+                                                <button
+                                                    type="button"
+                                                    class="input__action js-copy-button"
+                                                    data-copy-field-classname="js-rule-field"
+                                                >
+                                                    <svg
+                                                        width="24"
+                                                        height="24"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <rect
+                                                            x="4"
+                                                            y="8"
+                                                            width="12"
+                                                            height="12"
+                                                            rx="2"
+                                                            stroke="#7F7F7F"
+                                                            stroke-width="1.5"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        />
+                                                        <path
+                                                            d="M8 5.5C8 4.67157 8.67157 4 9.5 4H18C19.1046 4 20 4.89543 20 6V14C20 14.5523 19.7761 15.0523 19.4142 15.4142C19.23 15.5984 19.01 15.7469 18.7655 15.8483C18.6458 15.8979 18.5203 15.9362 18.3902 15.962"
+                                                            stroke="#7F7F7F"
+                                                            stroke-width="1.5"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        />
+                                                    </svg>
+                                                </button>
+
+                                                <span class="input__actions-divider"></span>
+
+                                                <button
+                                                    type="button"
+                                                    class="input__action input__action--modal js-button-rule-modal"
+                                                    data-modal-id="ruleModal"
+                                                >
+                                                    <svg
+                                                        width="24"
+                                                        height="24"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <path
+                                                            d="M6 10L6 6L10 6M6 14L6 18H10M18 10V6L14 6M18 14V18H14"
+                                                            stroke="#7F7F7F"
+                                                            stroke-width="1.5"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="content__buttons">
+                                    <button
+                                        type="button"
+                                        id="adgAccessBlockedGoBack"
+                                        class="button"
+                                        data-size="medium"
+                                        data-type="filled"
+                                        data-id="backBtn"
+                                        data-back-btn
+                                    ></button>
+
+                                    <button
+                                        id="adgAccessBlockedProceed"
+                                        type="button"
+                                        class="button js-blocked-proceed"
+                                        data-size="medium"
+                                        data-type="transparent"
+                                        data-id="proceedAnyway"
+                                    >
+                                    </button>
+                                </div>
+
+                                <div class="content__dropdown">
+                                    <ul class="faq">
+                                        <li class="faq__item">
+                                            <div class="faq-item faq-item--always-open">
+                                                <h2 class="subtitle faq-item__toggle">
+                                                    <button
+                                                        type="button"
+                                                        data-id="adgAccessBlockedFaqTitle1"
+                                                        class="text faq-item__toggle-btn"
+                                                    ></button>
+                                                </h2>
+                                    
+                                                <div class="faq-item__content">
+                                                    <div class="faq-item__desc">
+                                                        <div
+                                                            id="adgAccessBlockedFaqDesc"
+                                                            data-id="adgAccessBlockedFaqDesc1"
+                                                            class="text faq-item__text"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="modal js-modal"
+                id="urlModal"
+            >
+                <div class="modal__in">
+                    <h3 class="title modal__title">URL</h3>
+
+                    <div class="input__field-value input__field-value--modal js-modal-url-field"></div>
+
+                    <div class="modal__actions">
+                        <button
+                            type="button"
+                            class="button js-copy-button"
+                            data-size="medium"
+                            data-type="filled"
+                            data-id="copy"
+                            data-copy-field-classname="js-modal-url-field"
+                        >
+                        </button>
+
+                        <button
+                            type="button"
+                            class="button js-modal-close"
+                            data-size="medium"
+                            data-type="transparent"
+                            data-id="close"
+                        >
+                        </button>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="modal__close js-modal-close"
+                    >
+                        <svg
+                            fill="none"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            width="24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <g stroke="#7f7f7f" stroke-linecap="round" stroke-width="1.5">
+                                <path d="m6.42857 6.42857 11.17573 11.17573" />
+                                <path d="m6.42857 17.5715 11.17573-11.17575" />
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div
+                class="modal js-modal"
+                id="ruleModal"
+            >
+                <div class="modal__in">
+                    <h3 class="title modal__title" data-id="rule"></h3>
+
+                    <div class="input__field-value input__field-value--modal js-modal-rule-field"></div>
+
+                    <div class="modal__actions">
+                        <button
+                            type="button"
+                            class="button js-copy-button"
+                            data-size="medium"
+                            data-type="filled"
+                            data-id="copy"
+                            data-copy-field-classname="js-modal-rule-field"
+                        >
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="button js-modal-close"
+                            data-size="medium"
+                            data-type="transparent"
+                            data-id="close"
+                        >
+                        </button>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="modal__close js-modal-close"
+                    >
+                        <svg
+                            fill="none"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            width="24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <g stroke="#7f7f7f" stroke-linecap="round" stroke-width="1.5">
+                                <path d="m6.42857 6.42857 11.17573 11.17573" />
+                                <path d="m6.42857 17.5715 11.17573-11.17575" />
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
+

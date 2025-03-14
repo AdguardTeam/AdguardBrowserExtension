@@ -39,8 +39,8 @@ export const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/
 export const SUBSCRIBE_PATH = path.resolve(__dirname, '../../Extension/pages/subscribe');
 export const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
 export const FULLSCREEN_USER_RULES_PATH = path.resolve(__dirname, '../../Extension/pages/fullscreen-user-rules');
-export const SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extension/pages/safebrowsing');
-export const AD_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/ad-blocked');
+export const BLOCKING_SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extension/pages/blocking/safebrowsing');
+export const BLOCKING_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/blocking/blocked');
 export const EDITOR_PATH = path.resolve(__dirname, '../../Extension/src/pages/common/components/Editor');
 
 export const htmlTemplatePluginCommonOptions: Partial<HtmlWebpackPlugin.Options> = {

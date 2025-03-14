@@ -36,10 +36,11 @@ import {
 } from '../../../background/api';
 import { translator } from '../../../common/translators/translator';
 import { messenger } from '../../services/messenger';
-import { getFilterName, getRuleFilterName } from '../components/RequestWizard/utils';
+import { getRuleFilterName } from '../components/RequestWizard/utils';
 import { BACKGROUND_TAB_ID } from '../../../common/constants';
 import { getStatusMode, StatusMode } from '../filteringLogStatus';
 import { logger } from '../../../common/logger';
+import { getFilterName } from '../../helpers';
 
 import { matchesSearch } from './helpers';
 import { type RootStore } from './RootStore';

@@ -18,8 +18,10 @@
 import browser from 'webextension-polyfill';
 import SHA256 from 'crypto-js/sha256';
 
+import { BLOCKING_SAFEBROWSING_OUTPUT } from '../../../../constants';
 import { logger } from '../../common/logger';
 import { SB_SUSPENDED_CACHE_KEY } from '../../common/constants';
+import { Prefs } from '../prefs';
 import {
     sbCache,
     sbRequestCache,
@@ -27,7 +29,6 @@ import {
 } from '../storages/safebrowsing';
 import { browserStorage } from '../storages/shared-instances';
 import { UrlUtils } from '../utils/url';
-import { SAFEBROWSING_OUTPUT } from '../../../../constants';
 
 import {
     type ExtensionXMLHttpRequest,
@@ -51,6 +52,16 @@ export class SafebrowsingApi {
      * Domain hash length.
      */
     private static readonly DOMAIN_HASH_LENGTH = 4;
+
+    /**
+     * No content response status code.
+     */
+    private static readonly NO_CONTENT_STATUS_CODE = 204;
+
+    /**
+     * Server error response status code.
+     */
+    private static readonly SERVER_ERROR_STATUS_CODE = 500;
 
     /**
      * Initialize new safebrowsing cache from {@link Storage}.
@@ -86,7 +97,7 @@ export class SafebrowsingApi {
     /**
      * Checks URL with safebrowsing filter.
      *
-     * @see {@link http://adguard.com/en/how-malware-blocked.html#extension}
+     * @see {@link https://adguard.com/kb/general/browsing-security/#extensions}
      *
      * @param requestUrl Request URL.
      * @param referrerUrl Referrer URL.
@@ -94,7 +105,7 @@ export class SafebrowsingApi {
      * @returns Safebrowsing list we've detected or null.
      */
     public static async checkSafebrowsingFilter(requestUrl: string, referrerUrl: string): Promise<string | undefined> {
-        logger.debug('Checking safebrowsing filter for', requestUrl);
+        logger.debug(`Checking safebrowsing filter for ${requestUrl}...`);
 
         const sbList = await SafebrowsingApi.lookupUrl(requestUrl);
 
@@ -103,7 +114,7 @@ export class SafebrowsingApi {
             return;
         }
 
-        logger.debug('Following safebrowsing filter has been fired:', sbList);
+        logger.debug('Following safebrowsing filter has been matched:', sbList);
         return SafebrowsingApi.getErrorPageURL(requestUrl, referrerUrl, sbList);
     }
 
@@ -157,12 +168,12 @@ export class SafebrowsingApi {
         try {
             response = await network.lookupSafebrowsing(shortHashes);
         } catch (e) {
-            logger.error('Error response from safebrowsing lookup server for', host);
+            logger.error(`Error response from safebrowsing lookup server for ${host}. Original error: ${e}`);
             await SafebrowsingApi.suspendSafebrowsing();
             return null;
         }
 
-        if (response && response.status >= 500) {
+        if (response && response.status >= SafebrowsingApi.SERVER_ERROR_STATUS_CODE) {
             // Error on server side, suspend request
             logger.error(`Error response status ${response.status} received from safebrowsing lookup server.`);
             await SafebrowsingApi.suspendSafebrowsing();
@@ -182,9 +193,9 @@ export class SafebrowsingApi {
 
         sbList = SbCache.SB_ALLOW_LIST;
 
-        if (response.status !== 204) {
+        if (response.status !== SafebrowsingApi.NO_CONTENT_STATUS_CODE) {
             sbList = await SafebrowsingApi.processSbResponse(response.responseText, hashesMap)
-            || SbCache.SB_ALLOW_LIST;
+                || SbCache.SB_ALLOW_LIST;
         }
 
         await sbCache.set(SafebrowsingApi.createHash(host), sbList);
@@ -220,17 +231,19 @@ export class SafebrowsingApi {
     ): string {
         const listName = sbList || 'malware';
         const isMalware = listName.includes('malware');
-        let url = `${SAFEBROWSING_OUTPUT}.html`;
+
+        let url = `${BLOCKING_SAFEBROWSING_OUTPUT}.html`;
         url += `?malware=${isMalware}`;
 
         const host = UrlUtils.getHost(requestUrl);
-
         if (host) {
             url += `&host=${encodeURIComponent(host)}`;
         }
 
         url += `&url=${encodeURIComponent(requestUrl)}`;
         url += `&ref=${encodeURIComponent(referrerUrl)}`;
+
+        url += `&_locale=${encodeURIComponent(Prefs.language)}`;
 
         return browser.runtime.getURL(url);
     }
@@ -280,8 +293,9 @@ export class SafebrowsingApi {
 
             return null;
         } catch (ex) {
-            logger.error('Error parse safebrowsing response, cause', ex);
+            logger.error(`Error parse safebrowsing response. Original error: ${ex}`);
         }
+
         return null;
     }
 

@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const getParams = () => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    return Object.fromEntries(urlSearchParams.entries());
-};
+import './imported-script';
+import { initBlockedPageHandler } from './page-handler';
+
+initBlockedPageHandler();
