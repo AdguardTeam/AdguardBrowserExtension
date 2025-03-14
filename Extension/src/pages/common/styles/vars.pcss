@@ -57,6 +57,7 @@
     /* Other variables */
     --popup-width: 320px;
     --popup-height: 600px;
+    --popup-default-height: 600px; /* Size of popup in desktop browsers */
 
     /* Base colors: */
 
@@ -291,4 +292,9 @@
     --text-lables-labels-default: var(--gray-70);
     --text-main-text-main-default: var(--gray-80);
     --text-placeholder-placeholder-disabled: var(--gray-40);
+}
+
+.android {
+    /* In android browsers popup size is dynamic, so we need to adjust its size */
+    --popup-width: 100%;
 }
