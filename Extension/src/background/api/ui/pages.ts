@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { type Runtime, type Windows } from 'webextension-polyfill';
+import { format } from 'date-fns';
+import { UTCDate } from '@date-fns/utc';
 
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -53,6 +55,7 @@ import {
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
 import { OptionsPageSections } from '../../../common/nav';
+import { FilterUpdateService } from '../../services/filter-update';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
@@ -289,6 +292,13 @@ export class PagesApi {
             if (customFilterUrls.length > 0) {
                 params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
             }
+        }
+
+        const filtersLastUpdate = await FilterUpdateService.getLastUpdateTimeMs();
+        if (filtersLastUpdate) {
+            params.filters_last_update = encodeURIComponent(
+                PagesApi.convertTimestampToTimeString(filtersLastUpdate),
+            );
         }
 
         Object.assign(
@@ -580,5 +590,20 @@ export class PagesApi {
         }
 
         return Object.fromEntries(stealthOptionsEntries);
+    }
+
+    /**
+     * Converts timestamp in milliseconds to time string.
+     *
+     * Needed for `filters_last_update` query parameters.
+     *
+     * @see {@link https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters}
+     *
+     * @param timestampMs Timestamp in milliseconds.
+     *
+     * @returns Time string in format `YYYY-MM-DD-HH-mm-ss` in **UTC+0**.
+     */
+    private static convertTimestampToTimeString(timestampMs: number): string {
+        return format(new UTCDate(timestampMs), 'yyyy-MM-dd-HH-mm-ss');
     }
 }
