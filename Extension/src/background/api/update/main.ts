@@ -41,6 +41,7 @@ import {
     PAGE_STATISTIC_KEY,
     RULES_LIMITS_KEY,
     SCHEMA_VERSION_KEY,
+    SEPARATED_ANNOYANCES_FILTERS_IDS,
 } from '../../../common/constants';
 import {
     appearanceValidator,
@@ -1191,19 +1192,6 @@ export class UpdateApi {
                 touched: zod.boolean(),
             }),
         ).parse(JSON.parse(groupsStateData));
-
-        /**
-         * AdGuard Annoyances filter has been splitted into 5 other filters:
-         * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
-         * and Widgets - which we should enable if the Annoyances filter is enabled.
-         */
-        const SEPARATED_ANNOYANCES_FILTERS_IDS = [
-            AntiBannerFiltersId.AnnoyancesCookieNoticesFilterId,
-            AntiBannerFiltersId.AnnoyancesPopupsFilterId,
-            AntiBannerFiltersId.AnnoyancesMobileAppBannersFilterId,
-            AntiBannerFiltersId.AnnoyancesOtherAnnoyancesFilterId,
-            AntiBannerFiltersId.AnnoyancesWidgetsFilterId,
-        ];
 
         // AdGuard Annoyances filters states.
         const annoyancesFiltersState = Object.fromEntries(

@@ -66,6 +66,19 @@ export enum AntiBannerFiltersId {
 }
 
 /**
+ * AdGuard Annoyances filter has been splitted into 5 other filters:
+ * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+ * and Widgets - which we should enabled instead of the Annoyances filter.
+ */
+export const SEPARATED_ANNOYANCES_FILTERS_IDS = [
+    AntiBannerFiltersId.AnnoyancesCookieNoticesFilterId,
+    AntiBannerFiltersId.AnnoyancesPopupsFilterId,
+    AntiBannerFiltersId.AnnoyancesMobileAppBannersFilterId,
+    AntiBannerFiltersId.AnnoyancesOtherAnnoyancesFilterId,
+    AntiBannerFiltersId.AnnoyancesWidgetsFilterId,
+];
+
+/**
  * Group ids used in the code on the multiple entry points.
  */
 export const enum AntibannerGroupsId {

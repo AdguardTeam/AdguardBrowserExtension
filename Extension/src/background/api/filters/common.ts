@@ -141,6 +141,8 @@ export class CommonFilterApi {
      * dynamically.
      *
      * @returns Filter metadata — {@link RegularFilterMetadata}.
+     *
+     * @throws Error if filter is deprecated and should not be used.
      */
     public static async loadFilterRulesFromBackend(
         filterUpdateOptions: FilterUpdateOptions,
@@ -194,7 +196,13 @@ export class CommonFilterApi {
             expires,
             timeUpdated,
             diffPath,
+            deprecated,
+            filterId,
         } = filterMetadata;
+
+        if (deprecated) {
+            throw new Error(`Filter with id ${filterId} is deprecated and shall not be used`);
+        }
 
         const filterVersion = filterVersionStorage.get(filterUpdateOptions.filterId);
 

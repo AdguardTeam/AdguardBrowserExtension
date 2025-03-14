@@ -42,7 +42,7 @@ export const getExportedSettingsProtocolV1Fixture = () => ({
         'user-rules-editor-wrap': false,
     },
     'filters': {
-        'enabled-filters': [1, 2, 3, 4, 7, 13, 14, 15, 17, 241, 1000],
+        'enabled-filters': [1, 2, 3, 4, 7, 13, 17, 18, 19, 20, 21, 22, 241, 1000],
         'enabled-groups': [0, 1, 2, 3, 4, 5, 6, 7],
         'custom-filters': [{
             'customUrl': 'https://testcases.agrd.dev/Filters/element-hiding-rules/test-element-hiding-rules.txt',
@@ -193,7 +193,7 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
             // TODO: Insert 24 if we will return Quick Fixes filter again to MV3 (AG-39385).
             // TODO: Insert 1000, 1001 if we will return support for custom filters again to MV3 (AG-39385).
             ? [1, 2, 3, 4, 7, 13, 17]
-            : [1, 2, 3, 4, 7, 13, 14, 15, 17, 241, 1000, 1001],
+            : [1, 2, 3, 4, 7, 13, 17, 18, 19, 20, 21, 22, 241, 1000, 1001],
         [FiltersOption.EnabledGroups]: [0, 1, 2, 3, 4, 5, 6, 7],
         // TODO: Uncomment this condition when we will return support for custom filters again to MV3 (AG-39385).
         [FiltersOption.CustomFilters]: __IS_MV3__

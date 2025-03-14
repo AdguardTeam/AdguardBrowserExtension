@@ -510,18 +510,28 @@ export class FiltersApi {
             ? await network.downloadMetadataFromBackend()
             : await network.getLocalFiltersMetadata();
 
-        const filters = rawMetadata.filters
-            .filter((f) => {
-                // deprecated filters should not be used. AG-29276
-                return !f.deprecated
-                    // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-                    // TODO: remove code totally later.
-                    && f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
-            });
+        const validFilters: RegularFilterMetadata[] = [];
+
+        rawMetadata.filters.forEach((filter) => {
+            const { filterId, deprecated } = filter;
+
+            // Quick fixes filter was disabled in MV3 to comply with CWR policies.
+            // TODO: remove code totally later.
+            if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
+                return;
+            }
+
+            if (deprecated) {
+                logger.info(`Filter with id ${filterId} is deprecated and shall not be used.`);
+                // do not filter out deprecated filter metadata as it may be needed during settings import
+            }
+
+            validFilters.push(filter);
+        });
 
         const metadata = {
             ...rawMetadata,
-            filters,
+            filters: validFilters,
         };
 
         const i18nMetadata = i18nMetadataStorage.getData();
