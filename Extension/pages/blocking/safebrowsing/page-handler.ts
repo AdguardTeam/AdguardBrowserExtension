@@ -43,11 +43,10 @@ const SAFEBROWSING_PROCEED_BTN_ID = 'adblockerSafebrowsingProceed';
  */
 const SAFEBROWSING_UNSAFE_LINK_ID = 'adgSafebrowsingUnsafeLink';
 
-// FIXME (Slava): check the id used on the page
 /**
  * Id of the "Go Back" button.
  */
-const SAFEBROWSING_GO_BACK_BTN_ID = 'adblockerSafebrowsingGoBack';
+const SAFEBROWSING_GO_BACK_BTN_ID = 'safebrowsingPageBackBtn';
 
 /**
  * Adds listener to handle "Proceed Anyway" button click.
