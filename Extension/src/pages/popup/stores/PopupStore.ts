@@ -411,7 +411,7 @@ class PopupStore {
                 await asyncWrapper(messenger.removeAllowlistDomain, this.currentTabId, true);
                 isAllowlisted = false;
             } else {
-                await asyncWrapper(messenger.addAllowlistDomain, this.currentTabId);
+                await asyncWrapper(messenger.addAllowlistDomainForTabId, this.currentTabId);
                 isAllowlisted = true;
             }
 
