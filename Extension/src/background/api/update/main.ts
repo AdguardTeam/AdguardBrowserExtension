@@ -1198,12 +1198,6 @@ export class UpdateApi {
          * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
          * and Widgets - which we should enable if the Annoyances filter is enabled.
          */
-
-        /**
-         * AdGuard Annoyances filter has been splitted into 5 other filters:
-         * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
-         * and Widgets - which we should enable if the Annoyances filter is enabled.
-         */
         const SEPARATED_ANNOYANCES_FILTERS_IDS = [
             AntiBannerFiltersId.AnnoyancesCookieNoticesFilterId,
             AntiBannerFiltersId.AnnoyancesPopupsFilterId,
