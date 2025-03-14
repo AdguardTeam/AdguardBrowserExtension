@@ -1163,8 +1163,7 @@ export class UpdateApi {
     private static async migrateCombinedAnnoyancesFilter(
         settings: Record<string, unknown>,
     ): Promise<Record<string, unknown>> {
-        const newSettings = { ...settings };
-        const filtersStateData = newSettings['filters-state'];
+        const filtersStateData = settings['filters-state'];
 
         if (typeof filtersStateData !== 'string') {
             throw new Error('Cannot read filters state data');
@@ -1179,7 +1178,7 @@ export class UpdateApi {
             }),
         ).parse(JSON.parse(filtersStateData));
 
-        const groupsStateData = newSettings['groups-state'];
+        const groupsStateData = settings['groups-state'];
 
         if (typeof groupsStateData !== 'string') {
             throw new Error('Cannot read groups state data');
@@ -1235,10 +1234,10 @@ export class UpdateApi {
 
         Object.assign(filtersState, annoyancesFiltersState);
 
-        newSettings['groups-state'] = JSON.stringify(groupsState);
-        newSettings['filters-state'] = JSON.stringify(filtersState);
+        settings['groups-state'] = JSON.stringify(groupsState);
+        settings['filters-state'] = JSON.stringify(filtersState);
 
-        return newSettings;
+        return settings;
     }
 
     /**
@@ -1251,8 +1250,7 @@ export class UpdateApi {
      * @throws Error if settings are invalid or data cannot be read.
      */
     private static async removeDnsFilter(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
-        const newSettings = { ...settings };
-        const filtersStateData = newSettings['filters-state'];
+        const filtersStateData = settings['filters-state'];
 
         if (typeof filtersStateData !== 'string') {
             throw new Error('Cannot read filters state data');
@@ -1267,7 +1265,7 @@ export class UpdateApi {
             }),
         ).parse(JSON.parse(filtersStateData));
 
-        const groupsStateData = newSettings['groups-state'];
+        const groupsStateData = settings['groups-state'];
 
         if (typeof groupsStateData !== 'string') {
             throw new Error('Cannot read groups state data');
@@ -1280,9 +1278,9 @@ export class UpdateApi {
             delete filtersState[AntiBannerFiltersId.DnsFilterId];
         }
 
-        newSettings['filters-state'] = JSON.stringify(filtersState);
+        settings['filters-state'] = JSON.stringify(filtersState);
 
-        return newSettings;
+        return settings;
     }
 
     /**
