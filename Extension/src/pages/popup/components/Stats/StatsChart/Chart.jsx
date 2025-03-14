@@ -16,13 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { TimeRange } from '../../../constants';
+import { useObservePopupHeight, POPUP_DEFAULT_HEIGHT } from '../../../hooks/useObservePopupHeight';
 
 import './chart.pcss';
 
@@ -156,12 +157,45 @@ const getCategoriesLines = (statsData, range) => {
     };
 };
 
+/**
+ * Calculate chart height based on popup height.
+ *
+ * Adjust height of chart proportionally if actual height of popup (popupHeight)
+ * becomes smaller that default height of popup in desktops (POPUP_DEFAULT_HEIGHT).
+ * Design specified height with value DEFAULT_CHART_HEIGHT will be base
+ * with min MIN_CHART_HEIGHT height.
+ * This is needed for extension running on mobile browsers where popup height is dynamic.
+ *
+ * @param popupHeight Height of the popup (Default: window.innerHeight).
+ *
+ * @returns Height of the chart.
+ */
+const calculateChartHeight = (popupHeight = window.innerHeight) => {
+    /**
+     * Default size of chart in desktop extension.
+     */
+    const DEFAULT_CHART_HEIGHT = 218;
+
+    /**
+     * Min height of chart.
+     */
+    const MIN_CHART_HEIGHT = 168;
+
+    return Math.max(
+        MIN_CHART_HEIGHT,
+        DEFAULT_CHART_HEIGHT - (POPUP_DEFAULT_HEIGHT - popupHeight),
+    );
+};
+
 export const Chart = ({
     stats,
     range,
     type,
     small,
+    isAndroidBrowser,
 }) => {
+    const [chartHeight, setChartHeight] = useState(calculateChartHeight());
+
     useEffect(() => {
         const statsData = selectRequestsStatsData(stats, range, type);
         const categoriesLines = getCategoriesLines(statsData, range);
@@ -174,10 +208,16 @@ export const Chart = ({
             + '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'
             + '</linearGradient>';
 
+        /**
+         * Amount of pixel to subtract from chart height.
+         * 40px is based on height of one action button.
+         */
+        const heightDiff = small ? 40 : 0;
+
         c3.generate({
             bindTo: '#chart',
             size: {
-                height: small ? 178 : 218,
+                height: chartHeight - heightDiff,
             },
             data: {
                 columns: [
@@ -254,7 +294,28 @@ export const Chart = ({
                 this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
             },
         });
-    }, [range, type, stats, small]);
+    }, [range, type, stats, small, chartHeight]);
+
+    /**
+     * Handle popup resize.
+     *
+     * @param newPopupHeight New height of the popup.
+     */
+    const handleResize = (newPopupHeight) => {
+        setChartHeight(calculateChartHeight(newPopupHeight));
+    };
+
+    /**
+     * Handle popup resize cleanup.
+     */
+    const handleCleanUp = () => {
+        setChartHeight(calculateChartHeight());
+    };
+
+    /**
+     * Update chart height on Android browsers based on window height.
+     */
+    useObservePopupHeight(isAndroidBrowser, handleResize, handleCleanUp);
 
     return <div className="chart" id="chart" />;
 };

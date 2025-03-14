@@ -215,20 +215,46 @@ export class AllowlistApi {
     }
 
     /**
+     * Disables filtering for specified url by adding domain to the allowlist.
+     *
+     * Please note that this method does not reload the tab.
+     *
+     * @param url Tab document url.
+     */
+    public static async disableFilteringForUrl(url: string): Promise<void> {
+        const domain = getDomain(url);
+
+        if (!domain) {
+            logger.debug(`[disableFilteringForUrl] No domain in url "${url}"`);
+            return;
+        }
+
+        if (AllowlistApi.isInverted()) {
+            AllowlistApi.removeInvertedAllowlistDomain(domain);
+        } else {
+            AllowlistApi.addAllowlistDomain(domain);
+        }
+
+        await engine.update();
+    }
+
+    /**
      * Disable filtering for specified tab by adding url to the allowlist.
      *
      * @param tabId Tab id.
      */
-    public static async disableTabFiltering(tabId: number): Promise<void> {
+    public static async disableTabFilteringForTabId(tabId: number): Promise<void> {
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
         if (!tabContext) {
             return;
         }
 
         const { info: { url } } = tabContext;
-        if (url) {
-            await AllowlistApi.disableTabUrlFiltering(url, tabId);
+        if (!url) {
+            return;
         }
+
+        await AllowlistApi.disableTabUrlFiltering(url, tabId);
     }
 
     /**
@@ -251,6 +277,7 @@ export class AllowlistApi {
         const domain = getDomain(url);
 
         if (!domain) {
+            logger.debug(`[enableTabUrlFiltering] No domain in url "${url}" of tab ${tabId}`);
             return;
         }
 
@@ -281,19 +308,7 @@ export class AllowlistApi {
         url: string,
         tabId: number,
     ): Promise<void> {
-        const domain = getDomain(url);
-
-        if (!domain) {
-            return;
-        }
-
-        if (AllowlistApi.isInverted()) {
-            AllowlistApi.removeInvertedAllowlistDomain(domain);
-        } else {
-            AllowlistApi.addAllowlistDomain(domain);
-        }
-
-        await engine.update();
+        AllowlistApi.disableFilteringForUrl(url);
 
         await TabsApi.reload(tabId);
     }

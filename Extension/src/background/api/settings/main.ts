@@ -67,7 +67,7 @@ import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
 import {
     ASSISTANT_INJECT_OUTPUT,
-    DOCUMENT_BLOCK_OUTPUT,
+    BLOCKING_BLOCKED_OUTPUT,
     GPC_SCRIPT_OUTPUT,
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../../constants';
@@ -159,9 +159,12 @@ export class SettingsApi {
     public static getTsWebExtConfiguration<T extends boolean>(
         isMV3: T,
     ): T extends true ? SettingsConfigMV3 : SettingsConfigMV2 {
+        // pass the locale explicitly as a part of the url
+        const documentBlockingPageUrl = `${Prefs.baseUrl}${BLOCKING_BLOCKED_OUTPUT}.html?_locale=${Prefs.language}`;
+
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
-            documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
+            documentBlockingPageUrl,
             ...(isMV3 && {
                 gpcScriptUrl: `/${GPC_SCRIPT_OUTPUT}.js`,
                 hideDocumentReferrerScriptUrl: `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
