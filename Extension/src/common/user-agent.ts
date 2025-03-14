@@ -17,6 +17,7 @@
  */
 
 import UAParser from 'ua-parser-js';
+import browser from 'webextension-polyfill';
 
 import { MIN_SUPPORTED_VERSION } from '../../../constants';
 
@@ -33,6 +34,8 @@ export class UserAgent {
     static PLATFORM_VERSION = 'platformVersion';
 
     static MIN_WINDOWS_11_PLATFORM_VERSION = 13;
+
+    static ANDROID_OS_NAME = 'android';
 
     static parser = new UAParser(navigator.userAgent);
 
@@ -161,6 +164,23 @@ export class UserAgent {
         }
 
         return systemInfo;
+    }
+
+    /**
+     * Check if the current platform is Android.
+     * This method is more accurate than using UserAgent string,
+     * because it uses the browser API to get the platform info.
+     *
+     * @returns True if the current platform is Android.
+     */
+    static async getIsAndroid(): Promise<boolean> {
+        try {
+            const { os } = await browser.runtime.getPlatformInfo();
+            return os === UserAgent.ANDROID_OS_NAME;
+        } catch {
+            // If runtime.getPlatformInfo() is not supported, we fallback to the UserAgent string.
+            return UserAgent.isAndroid;
+        }
     }
 
     /**

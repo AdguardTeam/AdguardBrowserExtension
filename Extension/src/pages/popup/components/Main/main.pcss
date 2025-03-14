@@ -5,6 +5,29 @@
     flex-direction: column;
     align-items: center;
 
+    &--has-user-rules {
+        /* 1. min(24px, max(4px, calc)) = clamp(calc, 4px, 24px) */
+        /* Which means that vertical padding will be between 4px <= calc <= 24px. */
+
+        /* 2. Equation inside of calc: */
+        /* Adjust vertical padding proportionally if actual height of popup (--popup-height) */
+        /* becomes smaller that default height of popup in desktops (--popup-default-height). */
+        /* Design specified vertical padding with value 24px will be base. */
+
+        /* 3. Combination of clamp and calc allows us to specify buffer size of 15px. */
+        /* It means that first 15px padding will not shrink, or in other words */
+        /* padding will not shrink until popup height reaches var(--popup-default-height) - 15px. */
+
+        /* This is needed for extension running on mobile browsers where popup height is dynamic. */
+        padding: min(
+            24px,
+            max(
+                4px,
+                calc(24px - var(--popup-default-height) + var(--popup-height) + 15px)
+            )
+        ) 0;
+    }
+
     &__header {
         width: 100%;
         padding: 0 16px;

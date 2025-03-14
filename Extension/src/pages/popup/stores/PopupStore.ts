@@ -47,6 +47,7 @@ import {
 } from '../state-machines/app-state-machine';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
+import { UserAgent } from '../../../common/user-agent';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -124,6 +125,9 @@ class PopupStore {
         isEdgeBrowser = false;
 
     @observable
+        isAndroidBrowser = false;
+
+    @observable
         stats: GetStatisticsDataResponse | null = null;
 
     @observable
@@ -198,7 +202,17 @@ class PopupStore {
 
     @action
         getPopupData = async (): Promise<GetTabInfoForPopupResponse | undefined> => {
-        // get current tab id
+            /**
+             * Get android data first because our styles depends on it,
+             * and UI might shift because it was loaded too late.
+             */
+            const isAndroidBrowser = await UserAgent.getIsAndroid();
+
+            runInAction(() => {
+                this.isAndroidBrowser = isAndroidBrowser;
+            });
+
+            // get current tab id
             const tabs = await browser.tabs.query({
                 active: true,
                 currentWindow: true,
