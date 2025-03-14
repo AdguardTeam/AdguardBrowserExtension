@@ -17,6 +17,9 @@
  */
 import browser, { type Windows, Tabs } from 'webextension-polyfill';
 
+import { UserAgent } from '../../user-agent';
+import { getErrorMessage } from '../../error';
+
 /**
  * Helper class for browser.windows API.
  */
@@ -25,8 +28,11 @@ export class WindowsApi {
      * Calls browser.windows.create with fallback to browser.tabs.create.
      * In case of fallback, compatible data will be reused.
      *
-     * This covers cases like Firefox for Android, where browser.windows API is not available.
-     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536
+     *
+     * This covers cases:
+     * - Firefox for Android, where browser.windows API is not available.
+     *   https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536
+     * - Edge for Android, for some reason browser.windows.create does not open a new tab.
      *
      * @param createData Browser.windows.create argument.
      *
@@ -35,27 +41,39 @@ export class WindowsApi {
     public static async create(
         createData?: Windows.CreateCreateDataType,
     ): Promise<Windows.Window | Tabs.Tab | null> {
-        if (browser.windows) {
+        const isAndroid = await UserAgent.getIsAndroid();
+
+        // Do not use browser.windows API on Android, as it is not supported (Firefox) / does not work (Edge).
+        if (browser.windows && !isAndroid) {
             return browser.windows.create(createData);
         }
 
         const createProperties = createData || {};
         const { url, cookieStoreId } = createProperties;
 
-        if (typeof url === 'string') {
-            return browser.tabs.create({
-                url,
-                cookieStoreId,
-            });
-        }
+        const firstUrl = Array.isArray(url) ? url[0] : url;
+        const isUrlSpecified = typeof firstUrl === 'string';
 
-        if (Array.isArray(url)) {
-            return browser.tabs.create({
-                url: url[0],
-                cookieStoreId,
-            });
-        }
+        try {
+            if (isUrlSpecified) {
+                return await browser.tabs.create({
+                    url: firstUrl,
+                    cookieStoreId,
+                });
+            }
 
-        return null;
+            return null;
+        } catch (e) {
+            const message = getErrorMessage(e);
+
+            // Android Edge does not support cookieStoreId property.
+            if (message.includes("Unexpected property: 'cookieStoreId'") && isUrlSpecified) {
+                return browser.tabs.create({
+                    url: Array.isArray(url) ? url[0] : url,
+                });
+            }
+
+            return null;
+        }
     }
 }
