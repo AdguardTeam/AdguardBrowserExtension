@@ -20,6 +20,8 @@ import { RuleParser } from '@adguard/agtree/parser';
 import { RuleDeserializer } from '@adguard/agtree/deserializer';
 import {
     FilterListPreprocessor,
+    getRuleSourceIndex,
+    getRuleSourceText,
     type PreprocessedFilterList,
     RuleSyntaxUtils,
 } from '@adguard/tsurlfilter';
@@ -192,6 +194,37 @@ export class UserRulesApi {
             .join(NEWLINE_CHAR_UNIX);
 
         await UserRulesApi.setUserRules(userRulesToSave);
+    }
+
+    /**
+     * Removes rule from user list by index.
+     *
+     * @param index Rule index.
+     *
+     * @returns True, if rule was removed, else returns false.
+     */
+    public static async removeUserRuleByIndex(index: number): Promise<boolean> {
+        const [rawFilterList, sourceMap, conversionMap] = await Promise.all([
+            FiltersStoragesAdapter.getRawFilterList(AntiBannerFiltersId.UserFilterId),
+            FiltersStoragesAdapter.getSourceMap(AntiBannerFiltersId.UserFilterId),
+            FiltersStoragesAdapter.getConversionMap(AntiBannerFiltersId.UserFilterId),
+        ]);
+
+        if (!sourceMap || !conversionMap || !rawFilterList) {
+            return false;
+        }
+
+        const lineStartIndex = getRuleSourceIndex(index, sourceMap);
+
+        const ruleText = conversionMap[lineStartIndex] ?? getRuleSourceText(index, rawFilterList);
+
+        if (!ruleText) {
+            return false;
+        }
+
+        await UserRulesApi.removeUserRule(ruleText);
+
+        return true;
     }
 
     /**
