@@ -1,8 +1,8 @@
-! Checksum: CqPazeqDsihwmRd2mfbMPg
+! Checksum: CFb5MdjsVdu7mpS/ULSOEQ
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.46
-! TimeUpdated: 2025-03-13T16:39:20+00:00
+! Version: 2.0.46.50
+! TimeUpdated: 2025-03-16T13:31:52+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1481,6 +1481,7 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+chip.de#$##M1:has(> [Ue99pU13]) { margin-top: 0px !important; }
 autoplenum.de##div[class^="list-ad-margin-"]
 autoplenum.de##div[data-sort-in-place-skip]:has(.third-party-ad-container)
 autoplenum.de##div[style^="min-height:"]:has(> .third-party-ad-container)
@@ -6460,6 +6461,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||f11-ads.com^
 ||fantecio.com^
 ||gayads.biz^
+||kctag.net^
 ||swissadserver.ch^
 ||windows-pro.net^
 ||wixnm.com^
@@ -8777,6 +8779,7 @@ tennis.de###footer-partner
 americaurlaub.de,kremser-sc.at###footer-widgets
 b2run.de###footerpartners
 dforum.net###forumbanner
+heilfastenkur.de###fragenflex
 mufa.de###freikarten
 freenet.de###frnBanner
 sportdeutschland.tv###fullbanner2
@@ -10481,6 +10484,7 @@ wetter.com##.werbung:not(.toolbar-wrapper)
 weltwoche.ch##.werbungSmall
 weltwoche.ch##.werbungWide
 winfuture-forum.de##.wf_gcsi
+heilfastenkur.de##.whinweis
 bikesport-emtb.de,radfahren.de,radsport-rennrad.de##.wide-banner
 1000ps.ch##.wideboard-cad
 nau.ch##.wideboard-top
@@ -10800,6 +10804,8 @@ willhaben.at##div[data-testid="ad-detail-widget"]
 berliner-kurier.de,evangelische-zeitung.de##div[data-testid="article-billboard-advertisement"]
 sport1.de##div[data-testid="better-collective"]
 kabeleins.de,prosieben.de,ran.de,sat1.de,sixx.de##div[data-testid="display-ad"]
+docmorris.de##div[data-testid="sponsored-flagship"]
+docmorris.de##div[data-testid="sponsored-showcase"]
 suchen.mobile.de##div[data-testid^="SRP_SBANNER_"]
 suchen.mobile.de##div[data-testid^="SRP_TABLECELL_"]
 sportbild.bild.de##div[data-tr-doc-type="dt=InlineAd|st=BTOAdTag"]
@@ -11277,6 +11283,7 @@ nydus.org##div.ui-tabs:has(#nydus_org_300x600_desktop_1)
 nydus.org##div:has(> #nydus_org_970x300_billboard_responsive)
 bauernzeitung.ch##div:has(> .advert)
 froheweihnachten.info,weihnachten.me,weihnachts-bilder.org,weihnachts-filme.com##div:has(> img[referrerpolicy="unsafe-url"])
+onvista.de##div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:has(span[class="mt-1 block"])
 onvista.de##div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:has(span[class="mt-xxsmall block"])
 preispirat.ch##div[class="vc_row wpb_row vc_inner vc_row-fluid"]:has(#responsiveAd)
 mediamarkt.at,mediamarkt.de,saturn.de##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])

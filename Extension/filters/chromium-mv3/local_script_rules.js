@@ -3138,22 +3138,34 @@ export const localScriptRules = {
             }
         }
     },
-    "(()=>{window.AdscoreInit=function(ta,F){};})();": {
-        uniqueId: "b45d84107955116514e169fdba5cb3cc",
+    '(()=>{const t=((t,o)=>{const a="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",n=Math.floor(Math.random()*(o-t+1))+t;let c="";for(let t=0;t<n;t++)c+=a.charAt(Math.floor(64*Math.random()));return c})(890,920);window.AdscoreInit=function(o,a){a&&"function"==typeof a.callback&&a.callback({signature:t})}})();': {
+        uniqueId: "17269bc17a4320184ce746f202354638",
         func: () => {
             try {
-                const e = "done";
-                if (Window.prototype.toString.b45d84107955116514e169fdba5cb3cc !== e) {
-                    window.AdscoreInit = function(e, o) {};
-                    Object.defineProperty(Window.prototype.toString, "b45d84107955116514e169fdba5cb3cc", {
-                        value: e,
+                const t = "done";
+                if (Window.prototype.toString["17269bc17a4320184ce746f202354638"] !== t) {
+                    (() => {
+                        const t = (() => {
+                            const t = Math.floor(31 * Math.random()) + 890;
+                            let o = "";
+                            for (let e = 0; e < t; e++) o += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".charAt(Math.floor(64 * Math.random()));
+                            return o;
+                        })();
+                        window.AdscoreInit = function(o, e) {
+                            e && "function" == typeof e.callback && e.callback({
+                                signature: t
+                            });
+                        };
+                    })();
+                    Object.defineProperty(Window.prototype.toString, "17269bc17a4320184ce746f202354638", {
+                        value: t,
                         enumerable: !1,
                         writable: !1,
                         configurable: !1
                     });
                 }
-            } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "b45d84107955116514e169fdba5cb3cc" due to: ' + e);
+            } catch (t) {
+                console.error('Error executing AG js rule with uniqueId "17269bc17a4320184ce746f202354638" due to: ' + t);
             }
         }
     },
@@ -3240,6 +3252,33 @@ export const localScriptRules = {
                 }
             } catch (e) {
                 console.error('Error executing AG js rule with uniqueId "44c722190e3d03dbed05660dc5040600" due to: ' + e);
+            }
+        }
+    },
+    '(()=>{const n=window.String.prototype.includes,o={apply:(o,t,i)=>{const c=i[0];return!(!i||!n.call(c,"function onclick(lczxsusin)"))||Reflect.apply(o,t,i)}};window.String.prototype.includes=new Proxy(window.String.prototype.includes,o)})();': {
+        uniqueId: "2e3a208e2520b56c4a151edf4ed886f4",
+        func: () => {
+            try {
+                const e = "done";
+                if (Window.prototype.toString["2e3a208e2520b56c4a151edf4ed886f4"] !== e) {
+                    (() => {
+                        const e = window.String.prototype.includes, o = {
+                            apply: (o, t, n) => {
+                                const r = n[0];
+                                return !(!n || !e.call(r, "function onclick(lczxsusin)")) || Reflect.apply(o, t, n);
+                            }
+                        };
+                        window.String.prototype.includes = new Proxy(window.String.prototype.includes, o);
+                    })();
+                    Object.defineProperty(Window.prototype.toString, "2e3a208e2520b56c4a151edf4ed886f4", {
+                        value: e,
+                        enumerable: !1,
+                        writable: !1,
+                        configurable: !1
+                    });
+                }
+            } catch (e) {
+                console.error('Error executing AG js rule with uniqueId "2e3a208e2520b56c4a151edf4ed886f4" due to: ' + e);
             }
         }
     },
@@ -7692,20 +7731,20 @@ export const localScriptRules = {
             }
         }
     },
-    '(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll(\'div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"])\');for(const s of n){const n=Object.keys(s).find((e=>e.includes("__reactFiber")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit"))return s.style.display="none",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();': {
-        uniqueId: "0d29cd6deee8427cefd59ea7de8154f3",
+    '(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll(\'div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"])\');for(const s of n){const n=Object.keys(s).find((e=>e.includes("__reactFiber")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit"))return s.style.display="none",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();': {
+        uniqueId: "9eb4c69c348d43b1acbc388555cfd9d2",
         func: () => {
             try {
                 const e = "done";
-                if (Window.prototype.toString["0d29cd6deee8427cefd59ea7de8154f3"] !== e) {
+                if (Window.prototype.toString["9eb4c69c348d43b1acbc388555cfd9d2"] !== e) {
                     (() => {
                         const e = new MutationObserver((() => {
-                            const t = document.querySelectorAll('div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"])');
-                            for (const d of t) {
-                                const t = Object.keys(d).find((e => e.includes("__reactFiber")));
-                                if (t) {
-                                    const n = d[t];
-                                    if (n?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return d.style.display = "none", 
+                            const c = document.querySelectorAll('div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"])');
+                            for (const n of c) {
+                                const c = Object.keys(n).find((e => e.includes("__reactFiber")));
+                                if (c) {
+                                    const t = n[c];
+                                    if (t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return n.style.display = "none", 
                                     void e.disconnect();
                                 }
                             }
@@ -7715,7 +7754,7 @@ export const localScriptRules = {
                             subtree: !0
                         });
                     })();
-                    Object.defineProperty(Window.prototype.toString, "0d29cd6deee8427cefd59ea7de8154f3", {
+                    Object.defineProperty(Window.prototype.toString, "9eb4c69c348d43b1acbc388555cfd9d2", {
                         value: e,
                         enumerable: !1,
                         writable: !1,
@@ -7723,7 +7762,7 @@ export const localScriptRules = {
                     });
                 }
             } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "0d29cd6deee8427cefd59ea7de8154f3" due to: ' + e);
+                console.error('Error executing AG js rule with uniqueId "9eb4c69c348d43b1acbc388555cfd9d2" due to: ' + e);
             }
         }
     },

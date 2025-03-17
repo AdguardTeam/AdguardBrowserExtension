@@ -1,8 +1,8 @@
-! Checksum: Lk70uclWF/6971fwx2CCGw
+! Checksum: HL5q8LYLd7Pee/pjPyQQhg
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.98.13
-! TimeUpdated: 2025-03-13T18:31:14+00:00
+! Version: 2.0.98.20
+! TimeUpdated: 2025-03-16T14:31:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1432,6 +1432,7 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||adwadvert.com.ua^
 ||nanthou.life^
 ||video.agenteimmobiliare.info^
 ||wrapper.bracdn.online^
@@ -7311,6 +7312,8 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+unian.net,unian.ua##.bnr-block
+unian.net,unian.ua##.newsfeed__ad
 almaty.tv##.lentainform
 informburo.kz##.uk-container > div.uk-grid:has(> div.uk-width-1-1 div[id*="ScriptRoot"])
 fin-calc.org.ua##.ad-page
@@ -7609,6 +7612,11 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+download.my-chrome.ru##.modal
+auto.ru##div[class^="RecommendationsItem__ad"]
+nashaniva.com##.pos-market
+nashaniva.com##.subjects__inner:has(> .adsbygoogle)
+vkplay.ru##div[id^="slot_"]
 gtorrent.*##.blog_fullstory > center:has(> a[target="_blank"])
 ||gtorrent.*/uploads/ya/
 spot.uz#$##header { padding-top: 0 !important; }

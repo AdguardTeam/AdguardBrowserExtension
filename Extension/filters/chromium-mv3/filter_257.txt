@@ -1,8 +1,8 @@
-! Checksum: esvTA5zDnXQOlOpOg4ufOw
+! Checksum: 9WxRhkSih+BEptYxkcay1Q
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.6.41
-! TimeUpdated: 2025-03-12T21:02:42+00:00
+! Version: 2.0.6.46
+! TimeUpdated: 2025-03-16T05:02:05+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -2101,6 +2101,9 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://x.com/masaomi346/status/1886438624067223795
 !+ NOT_OPTIMIZED
 ||clasm.live^$all
+! https://x.com/AP_Zenmashi/status/1900801671384678793
+!+ NOT_OPTIMIZED
+||fklngauc.com^$all
 ! scam sites
 !+ NOT_OPTIMIZED
 ||webuzz.me^$document
@@ -7182,6 +7185,9 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/d6ccb1aaa8c9c09ee68643561506c91f9ae7e0e744e2fef45132c4b4b419a1b0
 !+ NOT_OPTIMIZED
 ||contact-supportbusinessmanager.ubpages.com^$all,to=~facebook.com
+! https://www.virustotal.com/gui/url/1eb22b0b60fcb61de6eee104b561163ee316cb267625a786d3503da0bd63b359
+!+ NOT_OPTIMIZED
+||counselschambers.co.uk^$document,to=~facebook.com
 ! shopping sites
 !+ NOT_OPTIMIZED
 /api/user/do_login|$xmlhttprequest,~third-party,to=com|info,method=post,header=access-control-allow-headers:/authorization\,content-type\,if-match\,if-modified-since\,if-none-match\,if-unmodified-since\,x-requested-with/i
@@ -8086,6 +8092,8 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 !+ NOT_OPTIMIZED
 ||scszdm.com^$all,to=~token.im
 !+ NOT_OPTIMIZED
+||imtoken-bl.click^$all,to=~token.im
+!+ NOT_OPTIMIZED
 app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([class])
 ! pancakeswap
 !+ NOT_OPTIMIZED
@@ -8240,6 +8248,9 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 ! https://www.virustotal.com/gui/url/489f451f1e42d3bf60b3736cd04d836d6f798cd1adb3232f90fc752d04afd878
 !+ NOT_OPTIMIZED
 ||allegro*/aukcja/$document,to=buzz|icu|shop
+! https://www.virustotal.com/gui/url/3ff7013630ec52ca97ead99e456af477f027dbb7fb75a529536c35714d91d8d7
+!+ NOT_OPTIMIZED
+||shop/au/uqmobile^$document
 ! docusign.com
 !+ NOT_OPTIMIZED
 ||signature-rho.vercel.app^$all,to=~docusign.com
@@ -10155,3 +10166,10 @@ uploadfox.net###ad-gs-05
 ! https://www.reddit.com/r/antivirus/comments/1iy3ndw/bruh_all_i_was_doing_was_looking_stuff_bc_im/
 !+ NOT_OPTIMIZED
 ||apple-protect.com^$all
+! https://github.com/AdguardTeam/CoreLibs/issues/1966 Can be removed if it's fixed
+! https://www.reddit.com/r/Scams/comments/1iyqpsn/new_digital_fearscam_unlocked_zoom_phishing/
+!+ NOT_OPTIMIZED
+||zoom.us*web.us^$document,to=~zoom.com
+! https://www.reddit.com/r/phishing/comments/1j2yegj/finally_got_one/
+!+ NOT_OPTIMIZED
+||e-zpass.com-$document

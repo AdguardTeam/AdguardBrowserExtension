@@ -1,8 +1,8 @@
-! Checksum: 6hs2XwMpVwFTJjJ3PDQvvw
+! Checksum: UTRdMlFGfDMxAd3ztPwEkw
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.33.1
-! TimeUpdated: 2025-03-14T01:41:31+00:00
+! Version: 2.1.33.15
+! TimeUpdated: 2025-03-17T01:32:29+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -298,6 +298,13 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200668
+@@.php?id=$script,domain=surirt.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/200773
+@@||520click.com/ad.php?id=$script,domain=surirt.com
+@@||surirt.com/ad/ads.php?id=$script,domain=surirt.com
+surirt.com#%#//scriptlet('set-constant', 'ad_id_for_555', '')
+surirt.com#%#//scriptlet('set-constant', 'all520dddaaa2022ccc', 'true')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200617
 445nan.com#@#.ad-box:not(#ad-banner):not(:empty)
 445nan.com#%#//scriptlet('prevent-setTimeout', '.offsetHeight == 0')
@@ -736,6 +743,7 @@ popbee.com##.adblocker
 ! Bad: example.org##.adv (should be in specific.txt)
 !
 !
+##body > div#inplayer[align="center"]
 ##.Zi_ad_a_H
 ##a[href^="https://adm.beimg.com/"]
 ! 91porny
@@ -1124,6 +1132,10 @@ $script,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixclou
 !
 ! NOTE: Specific rules
 !
+finance.eastmoney.com###ContentBody > p[style="text-align:center;"]:has(> a[href^="https://acttg.eastmoney.com/pub/"])
+xn--p3tv7h.com###floating-image-container
+||xn--p3tv7h.com/imgs/Uxuan2.jpg
+520cc.cc##div[id^="myad_alert_"]
 ||445nan.com/ad/
 445nan.com###appBox
 445nan.com#%#//scriptlet('set-constant', 'appData', 'emptyArr')
@@ -2082,7 +2094,7 @@ zhidao.baidu.com###qb-content div.businessvip-wrapper
 ||trxs123.com/skin/default/js/jque.js
 888fuq.com##div[class*="-bnslist-"]
 sogi.com.tw##div[class="row my-2 ad-slot-970"]
-520cc.cc,v.5278.mobi,jizz99.com,bonbonyou.com,in99.org,av99.us,jav777.xyz,520call.me,hboav.com###inplayer
+surirt.com,520cc.cc,v.5278.mobi,jizz99.com,bonbonyou.com,in99.org,av99.us,jav777.xyz,520call.me,hboav.com###inplayer
 finance.sina.com.cn##div[data-sudaclick="right_ads2_p"]
 finance.sina.com.cn##.tg_bank_top
 finance.sina.com.cn##.side-btns-jifengame2021
@@ -4961,14 +4973,38 @@ newduba.cn###jq_youxi
 ||51tongji.trafficmanager.net^
 ||trafficmanager.net/o.js
 ||67.21.92.*.gif
+.z.dkt-ib.com
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||vnbbrx.top^
+||hylplj.icu^
+||naukreatn.com^
+||nmtkbv.icu^
+||tmdqlk.top^
+||bkox.cn^
+||uoqc.cn^
+||xaiqrania.com^
+||jipxzz.icu^
+||mstmsbz.com^
+||hwxprd.icu^
+||nrqrbwi.top^
+||cfwlvmg.top^
+||kodwaqepr.com^
+||ajua.cn^
+||mvxh.cn^
+||lftcph.icu^
+||ak03150hou.com^
+||guqransoq.com^
+||ghegaintp.com^
+||vmjr.cn^
 ||lmeurbnjs.com^
 ||xielloltv.com^
 ||lqfctb.icu^
 ||fpxhdx.icu^
 ||xbfk.cn^
 ||pdochgl.top^
+||cokudsvit.com^
+||tpjw.cn^
 ||straldrier.com^
 ||fajkhr.icu^
 ||hmbprf.icu^
@@ -8817,7 +8853,7 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||51ztzj.com/res/web/img/pic/inshow.jpg
 ||520call.me/ad/ad_
 ||520cc.tw/AD/
-||520click.com/ad.$domain=~video.520cc.cc
+||520click.com/ad.$domain=~video.520cc.cc|~surirt.com
 ||520xingyun.com/images/188*.gif
 ||520xs.la/js/dianrui-
 ||520z-2.com/uploadfile/sucai/

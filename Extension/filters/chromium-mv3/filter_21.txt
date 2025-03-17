@@ -1,8 +1,8 @@
-! Checksum: hd1Fwh5g9XlU0llz5d0N1Q
+! Checksum: m4k5NEQ9/G7jDfnDDOzX1w
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.31.45
-! TimeUpdated: 2025-03-13T12:46:46+00:00
+! Version: 2.0.31.51
+! TimeUpdated: 2025-03-15T16:32:25+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -3471,6 +3471,15 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 !
 ! SECTION: Self-promo - Regular rules
 !
+mail.proton.me##.bg-promotion
+ig-store.ru##.banner-one-item
+ig-store.ru##.banner-gl
+ig-store.ru##.banner-3000-points-trigger
+ig-store.ru#$#.news-bg { display: none !important; }
+ig-store.ru#$#body { overflow: auto !important; }
+tidal.com##.floating-wrapper
+fnn.jp##.js-piano-right-banner01
+finuslugi.ru##.card-banner
 hh.ru##.work-in-company-banner
 apidog.com##section > div.w-full:has(> div.mx-auto > div.text-white > div > a[href="https://app.apidog.com"])
 apidog.com##.grid > div.hidden > div.sticky > div.relative:has(> div > a[href="https://app.apidog.com"])
@@ -3643,7 +3652,8 @@ book24.ru##div[data-b24-banner-slot="top-banner"]
 r34.app##figure.-mx-1.mt-4:has(> a[href*="&utm_"])
 klerk.ru##.advertising-text-block
 klerk.ru##.w-full > section:has(> ul > li > a[href^="/learn/event/"])
-dzen.ru##div[class^="content--corner-banner__root-"]
+dzen.ru##div[data-testid="dzenpro-banner"]
+dzen.ru##div[class^="dzen-desktop--corner-banner__"]
 vegasslotsonline.com#$#footer + dialog[data-dialog-type="showModal"] { display: none !important; }
 vegasslotsonline.com#$#body.overflow-hidden { overflow: auto !important; }
 live-theater.net##div[data-sticky-container-header-height] div[data-sticky-container-header-height] ._margin + div[class] div[class] > div[class]:not([class*=" "]):has(> div:not([id],[class]) > div[class] > a[target="_blank"][rel="nofollow noopener"] > img:not([src*="live-theater.net"]) + button)
@@ -4504,7 +4514,6 @@ comics888.com#?##divMain > div.post:has(> a[href="http://rawdl.net/rapidgator.ht
 iplocation.net#?##ip-placeholder span:has(> a[href^="/go/hide-ip-with-vpn/"])
 iplocation.net##.iptable a[href^="/go/hide-ip-with-vpn/"]
 apowersoft.jp##.ad
-373news.com##.ad-area-jack-absolute
 outdoorlife.com,popsci.com##.PromotionalStripe
 best-legal.jp###consultation-sp
 best-legal.jp##.consultation-more

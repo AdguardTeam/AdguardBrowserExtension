@@ -1,8 +1,8 @@
-! Checksum: /S0kNYG+O7qSCrsmiGQSxA
+! Checksum: 2IL46HRQTm1UhDFmh5zNSQ
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.50.97
-! TimeUpdated: 2025-03-13T18:37:25+00:00
+! Version: 2.0.51.9
+! TimeUpdated: 2025-03-16T16:32:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -38,6 +38,7 @@
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||masdak.epsilonsoft.to^
 ||adserve.lasentinelle.mu^
 ||adserver.icimedias.ca^
 !---------------------------------------------------------------------------!
@@ -193,7 +194,7 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/1478420
-japscan.lol#%#//scriptlet('set-constant', 'RoTPu', '1')
+japscan.lol#%#//scriptlet('set-constant', 'YugiYo', '1')
 japscan.lol#@#div.container > [href]
 japscan.lol#@##main > .card:has(a[href*="/manga/?type="][href*="&content="][target="_blank"])
 japscan.lol#%#//scriptlet('prevent-element-src-loading', 'script', 'acscdn.com')
@@ -872,6 +873,7 @@ $xmlhttprequest,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com
 !
 !
 !
+campingcarlesite.com##div[id^="fancybox-"]
 ||bnbchain.org^$domain=observalgerie.com
 observalgerie.com#%#//scriptlet('abort-current-inline-script', 'fetch', 'Uint8Array')
 fsmirror93.lol###ad-banner
@@ -1651,6 +1653,8 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200191
+$popup,domain=vidply.com,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200517
 $popup,domain=vidmoly.to,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198955
@@ -2726,6 +2730,7 @@ alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#
 -970x250.
 -ad-content-
 -banner-728.
+-banners/ads/
 -content-ads-
 -iframe/?zoneId=
 -native-ad-
@@ -4815,6 +4820,7 @@ _build=iclick-$popup
 ||aidsbecry.click^
 ||aidsideused.live^
 ||aidsoamsaiphu.net^
+||aifuwgcygccfp.com^
 ||ailcloister.com^
 ||ailkeyair.com^
 ||ailtodsookr.com^
@@ -5196,6 +5202,7 @@ _build=iclick-$popup
 ||avehospitablestrangers.com^
 ||avelozpranky.click^
 ||aversionatrocious.com^
+||aveyuxooeub.com^
 ||avhxnasqeo.com^
 ||avidsink.com^
 ||avisionhunh.shop^
@@ -5816,6 +5823,7 @@ _build=iclick-$popup
 ||crozzleembrew.shop^
 ||cryptolabpro.com^
 ||cstwpush.com^
+||ctralokppdug.com^
 ||ctsncobxuteqvcs.com^
 ||cubcogons.click^
 ||cubiboak.com^
@@ -5830,6 +5838,7 @@ _build=iclick-$popup
 ||curiescores.com^
 ||currepush.com^
 ||curvedheldideal.com^
+||cwhwdhamljp.com^
 ||cxmolk.com^
 ||cyaneaimpales.shop^
 ||cyathijozy.shop^
@@ -5952,6 +5961,7 @@ _build=iclick-$popup
 ||dewbeambeslash.com^
 ||df077d05e6.com^
 ||df86fe80e6.com^
+||dfpghxkw.com^
 ||dhobeynandi.com^
 ||dhobiegrouse.click^
 ||dhoqlmlvdr.xyz^
@@ -6092,6 +6102,7 @@ _build=iclick-$popup
 ||ecaecc3e17.com^
 ||ecomedtorg.ru^
 ||ecudisrush.live^
+||eddnxllt.com^
 ||ediva.gr^
 ||edmasskin.live^
 ||ee3d8d5c76.com^
@@ -6351,6 +6362,7 @@ _build=iclick-$popup
 ||gauvouni.com^
 ||gay-hotvideo.net^
 ||gayseatmot.live^
+||gbpqxghe.xyz^
 ||gearthedoe.live^
 ||geeburouje.net^
 ||geejofeecher.top^
@@ -6375,6 +6387,7 @@ _build=iclick-$popup
 ||gggtrenks.com^
 ||ghaityastajib.store^
 ||ghaytebanc.store^
+||ghnomovudiqybo.com^
 ||gigboost.me^
 ||giggitchao.click^
 ||gigroocickax.net^
@@ -6415,6 +6428,7 @@ _build=iclick-$popup
 ||gmrfgejkhqfsr.com^
 ||gnatterciphers.com^
 ||gneoewuhkwzd.com^
+||gntwnasiofqjypk.com^
 ||go.epn.bz^
 ||go2yd.com^
 ||goavoafu.com^
@@ -6485,6 +6499,7 @@ _build=iclick-$popup
 ||gus.host^
 ||gussiespiffler.website^
 ||guxiezhuang.top^
+||gwirlrvb.com^
 ||gxxcbj.com^
 ||gypsouspatron.com^
 ||gypsyrysmarter.com^
@@ -6608,6 +6623,7 @@ _build=iclick-$popup
 ||hyahyalay.com^
 ||hydrax.net^
 ||hypnaleshow.shop^
+||iakixtnaln.com^
 ||iambistbiuret.life^
 ||iblayiqi.xyz^
 ||ichlnk.com^
@@ -6693,6 +6709,7 @@ _build=iclick-$popup
 ||iowanseck.com^
 ||ipmtermon.top^
 ||ipnyx.com^
+||ipyefimivc.com^
 ||iqbhhitp.xyz^
 ||iqcjbsti.com^
 ||iqcxhe04fnic.com^
@@ -6713,6 +6730,7 @@ _build=iclick-$popup
 ||itopgirll.net^
 ||iucksforyou.net^
 ||iuckyluck.net^
+||iwyedjscpql.com^
 ||j0ss4np1c5.site^
 ||jaapsubsume.top^
 ||jacquieetmichel-contact.com^
@@ -6750,6 +6768,7 @@ _build=iclick-$popup
 ||jiglikeshilla.com^
 ||jikungudubber.live^
 ||jithethos.net^
+||jivmjdpmq.com^
 ||jkolp.com^
 ||jljhiampirfh.com^
 ||jlxctoig.top^
@@ -6810,6 +6829,7 @@ _build=iclick-$popup
 ||kissoffering.com^
 ||kitchiepreppie.com^
 ||kkfdajrsqehl.com^
+||kklfbucxmylnbdv.xyz^
 ||klclick.com^
 ||kmisln.com^
 ||knowbetnow.live^
@@ -6994,6 +7014,7 @@ _build=iclick-$popup
 ||manomincasaque.com^
 ||mansostowce.com^
 ||manteelclanned.com^
+||mapiolaviwrba.com^
 ||marasgumpus.com^
 ||marciaarmata.com^
 ||maremmewived.shop^
@@ -7013,6 +7034,7 @@ _build=iclick-$popup
 ||mbeuerretch.top^
 ||mbidpp.com^
 ||mbno.ca^
+||mcheaprjnve.com^
 ||measlydamage.com^
 ||meathmjew.live^
 ||meatiererogate.com^
@@ -7077,6 +7099,7 @@ _build=iclick-$popup
 ||mk-cdn.net^
 ||mkgydsrqygntk.com^
 ||mkjigsaw.com^
+||mkklhtmgrbp.xyz^
 ||mlllllllmmm.ovh^
 ||mllllllmmm.ovh^
 ||mlllllmmmm.ovh^
@@ -7200,6 +7223,7 @@ _build=iclick-$popup
 ||newtabtv.com^
 ||newup.bid^
 ||nfwebminer.com^
+||nhkughssuu.com^
 ||niatapray.com^
 ||nicherblit.top^
 ||nicholasparcel.com^
@@ -7218,6 +7242,7 @@ _build=iclick-$popup
 ||noapeveety.top^
 ||nobbiermonepic.com^
 ||nobleypanacea.shop^
+||noboqsmoqof.com^
 ||nogautssvjlh.com^
 ||nonseertoux.net^
 ||noopsaithu.net^
@@ -10731,6 +10756,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||1maxdegay.com^$subdocument,~third-party
 ||1movies.*/site/$xmlhttprequest
 ||1parrainage.com/logos/habillage
+||2ememain.be/lrp/api/complementary-listings?
 ||3dnatives.com/wp-content/uploads/$script
 ||3dnatives.com/wp-content/uploads/*-bannie
 ||3dnatives.com/wp-content/uploads/*/banniere
@@ -16119,6 +16145,7 @@ quick-tutoriel.com###the-post .warning
 phpsources.org###titre_librairie
 plancul-gratuit.fr,plancul-gratuit.org###toast-container
 viewsurf.com###top-ban
+2ememain.be###top-banner-root
 liligo.fr###top-banner-smart
 webgirondins.com###top-pub-header
 itele.fr###topBanner
@@ -16264,6 +16291,7 @@ bismirabbika.com,orientation-chabab.com##.bann
 jizzbunker.com##.banner-popup
 lareclame.fr##.banner-url
 judgehype.com##.bannerATF_container
+2ememain.be##.bannerContainerLoading
 darjadida.com##.banner_125x125
 wheregoes.com##.banner_leaderboard
 roadsexe.com##.banner_right
@@ -16493,6 +16521,7 @@ valeursactuelles.com##.horizons-va-sidebar
 clubpronostics.com##.horizontal-banner
 meteosun.com##.hotelteaser
 rakuten.com##.hp--categories-populaires--pub
+2ememain.be##.hz-Banner
 vide-greniers.org##.iad
 lexpress.fr##.immo
 pagesblanches.be,rtbf.be##.imu
@@ -16973,7 +17002,6 @@ delhaize.be##[id*="sponsored_products"]
 blick.ch##[id^="appnexus-placement"]
 comarketing-news.fr##[id^="comar-"]
 boulanger.com##[id^="criteo_pageListe"]
-carrefour.fr##[id^="data-advertising"]
 3dnatives.com##[id^="dnati-"]
 commentcamarche.com,commentcamarche.net,free.fr,journaldesfemmes.com,orange.fr,turf-fr.com##[id^="lig_"]
 jeuxvideomoinschers.fr,tahiti-infos.com##[id^="pub_"]
@@ -17342,8 +17370,11 @@ nocibe.fr##.product-grid-column:has(.product-tile__sponsored)
 frandroid.com##.sticky-content:has([class^="HalfpageAd"])
 20min.ch#?#.clusterTop:has(.teaser:has(h3:contains(Paid Post)))
 2ememain.be#?#.hz-Listing--list-item:has(.hz-Listing-priority:contains(Pub au top))
+2ememain.be#?#.hz-Listing--list-item:has(.hz-Listing-seller-link:contains(Visiter le site internet))
+boulanger.com##[class*="kamino"]:has(.product-list__product-sponsored)
 cleanrider.com##[class*="min-h-"]:has([id^="optidigital-ad"])
 fr.shopping.rakuten.com##[data-productid]:has([class^="style_sponsoredAds"])
+boulanger.com##[id*="kamino"]:has(.product-list__product-sponsored)
 algerie-eco.com#?#.td_block_wrap:has(.block-title:contains(sponsorisés))
 aliexpress.com,aliexpress.us#?#._2FypS:has(._1rKqn:contains(/AD|Annonce|إعلان/))
 aliexpress.com,aliexpress.us#?#.search-item-card-wrapper-gallery:has([class^="multi--ax"]:contains(/AD|Annonce|إعلان/))
@@ -17354,6 +17385,7 @@ android-mt.com#?#.boutonlink:has(a:contains(/VPN|rencontre/))
 android-mt.com#?#.bp-fin:has(a:contains(/VPN|rencontre/))
 annonces.nc#?#annonces-post-detail:has(.bg-boosted)
 auchan.fr##article.product-thumbnail:has(.product-thumbnail__sponsored)
+french-stream.*#?##banning
 betaseries.com#?#.blockSearch:has(.adsbygoogle)
 blogdumoderateur.com#?#.breve:has(.breve-info:contains(Sponsorisé))
 blogdumoderateur.com#?#.sticky:has(.sponsorise)
@@ -17376,7 +17408,6 @@ ebay.fr#?#[id^="nume_html_"]:has(.mfe-card-group:has(.mfe-card-group-title:conta
 ebay.fr#?#[id^="nume_html_"]:has(.mfe-header:has(.mfe-pull-left:contains(sponsorisés)))
 extreme-down.party,mega-torrent1.com,nextorrent.cz,nortorrent.com,nortorrent1.com,rantop.my#?#a:contains(/ANONYME|Anonyme|anonyme|PREMIUM|Premium|premium|RAPIDE|Rapide|Usenet|VPN|Vpn/)
 flaticon.com#?#.soul-p:has(.footer-sponsor)
-french-stream.*#?##banning
 futura-sciences.com#?#.postcontainer:has(.username:contains(Publicité))
 gameblog.fr#?#.highlight-item:has(.word-wrapper:contains(sponso))
 gameblog.fr#?#.item.full.gameblog:has(.post-details:contains(sponsorisé))

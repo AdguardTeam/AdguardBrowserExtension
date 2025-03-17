@@ -1,8 +1,8 @@
-! Checksum: pklTyqZoqw3LPVnQRoGA2w
+! Checksum: 082zNhA9x2Jx0L8FbtAdjw
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.62.93
-! TimeUpdated: 2025-03-13T15:37:57+00:00
+! Version: 2.0.63.1
+! TimeUpdated: 2025-03-16T12:31:55+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1647,15 +1647,17 @@ _ap/signin*?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=
 /brand/detail/m*.html?zenid=$document,to=cfd|fun|shop|space|top|xyz
 /shopping/item/m*/?zenid=$document,to=cfd|fun|shop|space|top|xyz
 /mart/*.html?zenid=$document,to=cfd|fun|shop|space|top|xyz
-/^https:\/\/(?!www)[a-z]{3,5}\.[a-z]{4,10}\.[a-z]{2,6}\/item-(?:(?=[a-z]*\d)[0-9a-z]{10}|\d{8})\.html$/$document,match-case,to=art|baby|biz|blog|cc|cfd|click|cloud|club|eu|fit|fun|hair|homes|info|ink|lat|life|lol|me|mom|one|online|sbs|shop|site|skin|store|top|world|xyz
-/^https?:\/\/(?!www)[a-z]{3,5}\.[0-9a-z]{4,10}\.[a-z]{2,6}\/[a-z]{3,15}\/(?=[a-z]{0,9}[0-9A-Z])[0-9A-z]{10}\.html$/$document,match-case,to=art|baby|biz|blog|cc|cfd|click|cloud|club|eu|fit|fun|hair|homes|info|ink|lat|life|lol|me|mom|one|online|sbs|shop|site|skin|store|top|world|xyz|~livedoor.biz|~livedoor.blog
+/^https:\/\/(?!www)[a-z]{3,5}\.[a-z]{4,10}\.[a-z]{2,6}\/item-(?:(?=[a-z]*\d)[0-9a-z]{10}|\d{8})\.html$/$document,match-case,to=art|baby|biz|blog|cc|cfd|click|cloud|club|eu|fit|fun|hair|homes|info|ink|lat|life|lol|me|mom|my|one|online|sbs|shop|site|skin|space|store|top|world|xyz
+/^https?:\/\/(?!www)[a-z]{3,5}\.[0-9a-z]{4,10}\.[a-z]{2,6}\/[a-z]{3,15}\/(?=[a-z]{0,9}[0-9A-Z])[0-9A-z]{10}\.html$/$document,match-case,to=art|baby|biz|blog|cc|cfd|click|cloud|club|eu|fit|fun|hair|homes|info|ink|lat|life|lol|me|mom|my|one|online|sbs|shop|site|skin|space|store|top|world|xyz|~livedoor.biz|~livedoor.blog
 /?AC=*&IC=$document,to=com|fun|online|site
 .asp?AC=*&IC=$document,to=com|fun|online|site
 /ap/signin/openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.co.jp$document,to=cn|top|xyz
 /index.php?route=product/product&product_id=$document,to=cyou|life|live|shop|xyz|~ocam.live
-/index.php?main_page=product_info*&cPath=$document,to=asia|bar|beauty|best|biz|bond|buzz|cam|cfd|click|cloud|club|cyou|fit|fun|gay|homes|icu|ink|life|live|ltd|me|monster|my|one|online|pics|quest|rest|ru.com|sa.com|sbs|shop|site|space|store|tokyo|top|website|wiki|work|xyz|za.com
-/index.php?main_page=product_info&products_id=$document,to=asia|bar|beauty|best|biz|bond|buzz|cam|cfd|click|cloud|club|cyou|fit|fun|gay|homes|icu|ink|life|live|ltd|me|monster|my|one|online|pics|quest|rest|ru.com|sa.com|sbs|shop|site|space|store|tokyo|top|website|wiki|work|xyz|za.com
+/index.php?main_page=product_info*&cPath=$document,to=asia|bar|beauty|best|biz|bond|buzz|cam|cfd|click|cloud|club|cyou|fit|fun|gay|homes|icu|ink|life|live|ltd|me|monster|my|one|online|pics|pro|qpon|quest|rest|ru.com|sa.com|sbs|shop|site|skin|space|store|tokyo|top|website|wiki|work|xyz|za.com
+/index.php?main_page=product_info&products_id=$document,to=asia|bar|beauty|best|biz|bond|buzz|cam|cfd|click|cloud|club|cyou|fit|fun|gay|homes|icu|ink|life|live|ltd|me|monster|my|one|online|pics|pro|qpon|quest|rest|ru.com|sa.com|sbs|shop|site|skin|space|store|tokyo|top|website|wiki|work|xyz|za.com
 /\.(?:club|cn|icu|top|pro|site|work)\/Personal\/member\/Login\/index\.php\?oneTimeAccessID=/$document,to=club|cn|icu|top|pro|site|work
+/^https:\/\/[a-z]{3,5}\.[a-z]{4,10}\.[a-z]{2,6}\/item-(?:[0-9a-z]{10}|\d{8})\.html$/$document,match-case,to=art|baby|cfd|click|eu|fit|fun|hair|homes|ink|lat|lol|mom|my|sbs|skin|top|world|xyz
+/^https:\/\/[a-z]{4,5}\.[a-z]{4,10}\.[a-z]{2,6}\/item-(?:[0-9a-z]{10}|\d{8})\.html$/$document,match-case,to=biz|blog|cc|cloud|club|info|life|me|one|online|shop|site|space|store
 !
 /^https:\/\/[a-z]{4,8}\.[a-z]{7,10}\.shop\/product\/\d{4,7}$/$document,match-case
 /^https:\/\/[-0-9a-z]{6,20}\.com\/item-[0-9a-z]{10}\.html$/$document,match-case
@@ -1725,6 +1727,13 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+373news.com##.components-core-blocks-contents-ad-footer
+373news.com##.components-core-blocks-contents-ad-news-detail
+373news.com##.components-core-blocks-contents-ad-text-pr
+373news.com##div[id^="pc_all_rightside"]
+||oita-press.co.jp/css2024/z_kyujinboxad.css
+||oita-press.co.jp/gateapi/kyujinboxad
+nenshuu.net##div[class^="g_b"]
 tool.e-medi.info##.h-amazon
 kusurinomadoguchi.com##.kanpo_sleepiness
 financial-field.com##div[class^="logly-"]
@@ -6008,7 +6017,7 @@ blkt.net##.mkjAd
 locari.jp##section[class*="posts-ad"]
 living.jp###bottom-banner
 living.jp,mondotv.jp###header-banner
-living.jp###billboard
+living.jp,373news.com###billboard
 living.jp###post_content_banner
 city.living.jp###top-footer-banner
 mrs.living.jp##.top-fbnr-area
@@ -9162,9 +9171,6 @@ hamusoku.com###sub div.plugin-recent_articles + div.plugin-memo
 hamusoku.com##span[style="font-size: 125%;"] > b > a[href^="https://amzn.to/"]
 gundamlog.com,kichimamasenki.com,jiji-kue.com,en.user-info.net,girlsvip-matome.com,asianoneta.blog.jp,hamusoku.com##.plugin-memo:first-child
 hamusoku.com##.topbox
-373news.com##.mns_bn_text
-373news.com###header_billboard
-373news.com##.mns_bn[style$="height:250px"]
 ||sponichi.co.jp/*_banner_new_v3.webp
 ||sponichi.co.jp/*_register_btn_new_$image,~third-party
 ||sponichi.co.jp/adds/*/shopping/sannex_
@@ -10850,7 +10856,7 @@ ibarakinews.jp#?##_popIn_recommend_carousel2_div > div._popIn_recommend_articles
 25ans.jp,cosmopolitan.com,elle.com,ellegirl.jp,esquire.com,fujingaho.jp,harpersbazaar.com,womenshealthmag.com#?#div[id^="_popIn_recommend_"] ul._popIn_infinite_page > li > a[class*="_popIn_recommend_article_ad"]:upward(1)
 topics.or.jp#?##_popIn_recommend ul._popIn_infinite_page > li > a._popIn_recommend_article_ad:upward(2)
 daily.co.jp#?#._popIn_recommend_container a._popIn_recommend_article_ad:upward(._popIn_recommend_container)
-nishi2.jp,basketball-zine.com,encount.press,otonano-shumatsu.com,otv.co.jp,tss-tv.co.jp,knb.ne.jp,dime.jp,qjweb.jp,jocr.jp,projectdesign.jp,fujitv-view.jp,fishingjapan.jp,bepal.net,mbs.jp,oricon.co.jp,hira2.jp,ameblo.jp,sitakke.jp,numero.jp,am-our.com,animageplus.jp,animeanime.jp,asahi.com,autocar.jp,books.j-cast.com,cafend.net,careerconnection.jp,cinemacafe.net,curazy.com,dailyportalz.jp,gamespark.jp,getnavi.jp,hinata.me,inside-games.jp,intojapanwaraku.com,japanese.joins.com,kanaloco.jp,matome.response.jp,mensnonno.jp,moneyforward.com,mynavi.jp,news.nifty.com,news.tv-asahi.co.jp,ryukyushimpo.jp,saitama-np.co.jp,smt.docomo.ne.jp,taishu.jp,uhb.jp,uta-net.com,yamahack.com,yukawanet.com,zigsow.jp##._popIn_infinite_page > li:has(> a[class*="_popIn_recommend_article_ad"])
+moment.nikkan-gendai.com,nishi2.jp,basketball-zine.com,encount.press,otonano-shumatsu.com,otv.co.jp,tss-tv.co.jp,knb.ne.jp,dime.jp,qjweb.jp,jocr.jp,projectdesign.jp,fujitv-view.jp,fishingjapan.jp,bepal.net,mbs.jp,oricon.co.jp,hira2.jp,ameblo.jp,sitakke.jp,numero.jp,am-our.com,animageplus.jp,animeanime.jp,asahi.com,autocar.jp,books.j-cast.com,cafend.net,careerconnection.jp,cinemacafe.net,curazy.com,dailyportalz.jp,gamespark.jp,getnavi.jp,hinata.me,inside-games.jp,intojapanwaraku.com,japanese.joins.com,kanaloco.jp,matome.response.jp,mensnonno.jp,moneyforward.com,mynavi.jp,news.nifty.com,news.tv-asahi.co.jp,ryukyushimpo.jp,saitama-np.co.jp,smt.docomo.ne.jp,taishu.jp,uhb.jp,uta-net.com,yamahack.com,yukawanet.com,zigsow.jp##._popIn_infinite_page > li:has(> a[class*="_popIn_recommend_article_ad"])
 sp.uta-net.com,otonasalone.jp#?#._popIn_infinite_page > a._popIn_recommend_article_ad:upward(1)
 otonasalone.jp#?#._popIn_infinite_page > a._popIn_recommend_article_ad_reserved:upward(1)
 !
@@ -11102,6 +11108,7 @@ vip-front.video.g.fc2.com,video.laxd.com,video.fc2.com##[class^="c-ad"]:not(.c-a
 ! itest.5ch.net,itest.bbspink.com
 ||itest.5ch.net/assets/js/ad-manager-5ch.js
 ||itest.bbspink.com/assets/js/ad-manager-bbs.js
+itest.bbspink.com##.ad_subb_ls
 itest.bbspink.com##div[id^="ad_special"]
 itest.5ch.net#?#.ad_nth
 itest.5ch.net#?#.ad_nth_li
