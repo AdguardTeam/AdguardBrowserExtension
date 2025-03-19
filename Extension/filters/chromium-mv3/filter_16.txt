@@ -1,8 +1,8 @@
-! Checksum: 2IL46HRQTm1UhDFmh5zNSQ
+! Checksum: 1v94MmJUkkOi6vJzgY782Q
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.51.9
-! TimeUpdated: 2025-03-16T16:32:20+00:00
+! Version: 2.0.51.15
+! TimeUpdated: 2025-03-18T11:32:35+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -194,7 +194,7 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/1478420
-japscan.lol#%#//scriptlet('set-constant', 'YugiYo', '1')
+japscan.lol#%#//scriptlet('set-constant', 'KissYou', '1')
 japscan.lol#@#div.container > [href]
 japscan.lol#@##main > .card:has(a[href*="/manga/?type="][href*="&content="][target="_blank"])
 japscan.lol#%#//scriptlet('prevent-element-src-loading', 'script', 'acscdn.com')
@@ -657,13 +657,14 @@ occasions.decathlon.fr#%#//scriptlet('set-constant', 'FastClick.attach', 'noopFu
 lessentiel.lu,20min.ch#%#//scriptlet('adjust-setTimeout', 'setTimeoutIds_', '*', '0.001')
 lessentiel.lu,20min.ch#%#(()=>{window.TATM=window.TATM||{},TATM.init=()=>{},TATM.initAdUnits=()=>{},TATM.pageReady=()=>{},TATM.getVast=function(n){return new Promise((n=>{n()}))},TATM.push=function(n){if("function"==typeof n)try{n()}catch(n){console.debug(n)}};})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182538
+empire-streaming.*#%#//scriptlet('remove-attr', 'href', '.content-propose > a[href].btn-ad-iframe')
 empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('trusted-create-element', 'body', 'iframe')
 empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.isAdbActive', 'false')
 empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.directHideAds', 'undefined')
 empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.countpremium.film', '0')
 empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.countpremium.serie', '0')
-empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.countpremiumMore.film', '0')
-empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.countpremiumMore.serie', '0')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.countpremiumMore.film.count', '0')
+empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.countpremiumMore.serie.count', '0')
 empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.countpremiumaccount.film', '0')
 empire-streaming.*,empire-anime.com,empire-streamz.fr,empire-stream.*#%#//scriptlet('set-constant', 'empire.countpremiumaccount.serie', '0')
 ! empire-anime.com
@@ -675,7 +676,8 @@ empire-streaming.*,empire-anime.com#%#//scriptlet('set-constant', 'empire.mediaD
 ! Rule below adds "click" event listener to the button that opens the popup and then dispatches "visibilitychange" event to the top document,
 ! and then changes "document.hidden" to "true" and then back to "false" after 100ms
 ! TODO: maybe find a better way to change "document.hidden" value
-empire-anime.com#%#(()=>{document.location.href.includes("/pop_advisor")&&AG_onLoad((function(){const e=new CustomEvent("visibilitychange"),t=t=>{Object.defineProperty(t.view.top.document,"hidden",{value:!0,writable:!0}),t.view.top.document.dispatchEvent(e),setTimeout((()=>{Object.defineProperty(t.view.top.document,"hidden",{value:!1,writable:!0}),t.view.top.document.dispatchEvent(e)}),100)},n=document.querySelector("button.btn-continu");n&&n.addEventListener("click",t)}));})();
+empire-anime.com#%#(()=>{document.location.href.includes("/pop_advisor")&&window.addEventListener("load",()=>{const e=new CustomEvent("visibilitychange"),t=t=>{Object.defineProperty(t.view.top.document,"hidden",{value:!0,writable:!0}),t.view.top.document.dispatchEvent(e),setTimeout((()=>{Object.defineProperty(t.view.top.document,"hidden",{value:!1,writable:!0}),t.view.top.document.dispatchEvent(e)}),100)},n=document.querySelector("button.btn-continu");n&&n.addEventListener("click",t)});})();
+empire-streaming.*#%#(()=>{document.location.href.includes("/iframe_ad")&&window.addEventListener("load",(()=>{const e=new CustomEvent("visibilitychange"),t=()=>{Object.defineProperty(document,"hidden",{value:!0,writable:!0}),document.dispatchEvent(e),setTimeout((()=>{Object.defineProperty(document,"hidden",{value:!1,writable:!0}),document.dispatchEvent(e)}),100)},n=document.querySelector("a.btn-ad-iframe");n&&n.addEventListener("click",t)}));})();
 ! https://github.com/uBlockOrigin/uAssets/issues/19339
 e-player-stream.*#%#//scriptlet('set-constant', 'adsConfig', 'emptyArr')
 empire-anime.com,empire-streamz.fr,empire-streaming.*,empire-stream.*#%#//scriptlet('prevent-window-open')
@@ -1653,6 +1655,12 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200835
+$popup,domain=oii.la,badfilter
+! https://github.com/AdguardTeam/AdguardFilters/issues/182538
+$popup,third-party,domain=empire-anime.com,badfilter
+! https://github.com/AdguardTeam/AdguardFilters/issues/200952
+$popup,domain=luluvdo.com,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200191
 $popup,domain=vidply.com,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200517
@@ -7277,6 +7285,7 @@ _build=iclick-$popup
 ||nvjqm.com^
 ||nwmum.com^
 ||nwwkstynowv.xyz^
+||nwymrgwdtwcagn.xyz^
 ||nymssslyish.website^
 ||nzurlmq.com^
 ||o000oo.com^
@@ -7385,6 +7394,7 @@ _build=iclick-$popup
 ||orlglnaldate.net^
 ||ossreuniclusr.com^
 ||othersides.top^
+||otoemkbrfja.com^
 ||otttqmhdutxgxuy.com^
 ||ouabecrib.com^
 ||oucmaimsackool.net^
@@ -7638,13 +7648,16 @@ _build=iclick-$popup
 ||pycnictouchup.click^
 ||pywymyplyg.com^
 ||qadmgtutqkkyjm.xyz^
+||qarooqom.com^
 ||qatro.ru^
 ||qeedgyoligl.xyz^
 ||qfihdr.com^
 ||qgksqshmibx.com^
 ||qgxlldywbcfrjoj.com^
 ||qidblight.top^
+||qnuqbltvlsfrr.xyz^
 ||qractv.com^
+||qrbbugsex.com^
 ||qsseigsxafuwjnq.xyz^
 ||quaichsliman.com^
 ||quaighwoomera.click^
@@ -7709,6 +7722,7 @@ _build=iclick-$popup
 ||realbig.online^
 ||realrb.bid^
 ||realsstoned.com^
+||reanwpdxtvspa.com^
 ||reasulty.com^
 ||rebsoapo.com^
 ||recharsemiarc.com^
@@ -7825,6 +7839,7 @@ _build=iclick-$popup
 ||rustyexquisite.com^
 ||rvfrm2005.com^
 ||rxagedomnmjkiaf.com^
+||rxeidfylt.com^
 ||rxjfh.com^
 ||sahkumthmk.com^
 ||saiticcording.com^
@@ -7844,6 +7859,7 @@ _build=iclick-$popup
 ||scareshortnovel.com^
 ||scented-leather.com^
 ||schmalzgarniec.com^
+||scixlyampavogxp.com^
 ||sckxppzdm.com^
 ||scorchsorchic.com^
 ||scraichchoroid.com^
@@ -7933,6 +7949,7 @@ _build=iclick-$popup
 ||shownews.tv^
 ||showyourevent.com^
 ||shriftskats.com^
+||shrill-definition.com^
 ||shuffele.com^
 ||shungawy.com^
 ||shushagri.net^
@@ -8400,6 +8417,7 @@ _build=iclick-$popup
 ||viralstrangers.com^
 ||visio-x.fr^
 ||vmbhlbmgkh.site^
+||vmuid.com^
 ||voagloupt.net^
 ||vogulprecast.com^
 ||voir.host^
@@ -8477,6 +8495,7 @@ _build=iclick-$popup
 ||wishedverde.com^
 ||wlnasijdhg.xyz^
 ||woarlegpyuf.com^
+||woeful-trash.pro^
 ||wofulsamixee.net^
 ||wokoez.com^
 ||woltarty.com^
@@ -9226,6 +9245,9 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||3dxbucks.com^*/banners/
 ||46.105.62.117/vador/
 ||4j.com/images/banners/
+||4k.video/*.htm
+||4k.video/*.php?
+||4k.video/b.js
 ||50centfreedom.us^$image,third-party
 ||a7.org^$subdocument
 ||abc-du-gratuit.com^$image,third-party
@@ -9583,7 +9605,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||fsx.i-run.fr^
 ||fuckandcdn.com^*/ads/
 ||full-wallpaper.com/wallpaperday.js$third-party
-||full.video/*.htm#
+||full.video/*.htm
 ||full.video/*.php?
 ||full.video/btn.js
 ||fullqurandownload.com^$subdocument
@@ -12883,6 +12905,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ###ad-inread
 ###ad-inread-load
 ###ad-interstitial
+###ad-intro-text
 ###ad-lb-bottom
 ###ad-lb-top
 ###ad-ligatus-article-load
@@ -15953,6 +15976,7 @@ madstef.com###idkey2ban
 mega-p2p.net###imCell_259
 mega-p2p.net###imStickyBar_imObjectButton_03
 ladepeche.fr,midilibre.fr###immobilier
+walfoot.be###imu
 freenews.fr###insidepic_widget
 loisirados.com###intersticiel
 conseils-courseapied.com###ja-banner
@@ -16564,7 +16588,7 @@ faclic.com##.lbx_content
 faclic.com##.lbx_overlay
 lefigaro.fr##.le-figaro-ad-bar-custom
 nouvelobs.com##.leGuideContainer
-alvinet.com,hotmixradio.fr,jeu.fr,marques.expert,meteovista.be,radiox.com,rtbf.be##.leaderboard
+alvinet.com,hotmixradio.fr,jeu.fr,marques.expert,meteovista.be,radiox.com,rtbf.be,walfoot.be##.leaderboard
 mappy.com##.leftHabillage
 actualitte.com##.lienExterne
 laptopspirit.fr,prix-portables.fr##.lien_hab
@@ -16976,7 +17000,6 @@ doctissimo.fr##[class^="doc-ad-"]
 forumconstruire.com##[class^="habillage"]
 igen.fr,macg.co,orange.fr,watchgeneration.fr##[class^="lig_"]
 voyageforum.com##[class^="offers"]
-fulltv.tv##[class^="pub"]
 ambiance-noel.fr,guide-piscine.fr##[class^="pub_"]
 guide-piscine.fr##[class^="regie_"]
 dl-protect.link,extreme-down.party,gktorrent.cz##[class^="trust"]

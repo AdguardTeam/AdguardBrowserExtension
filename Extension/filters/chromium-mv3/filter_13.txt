@@ -1,8 +1,8 @@
-! Checksum: smU6hNXXA0d7JLChU2+zAg
+! Checksum: HZ4j7wEu+9Q/mH2xBwtDNw
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.55.27
-! TimeUpdated: 2025-03-14T19:37:09+00:00
+! Version: 2.0.55.32
+! TimeUpdated: 2025-03-18T08:32:29+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -4545,7 +4545,7 @@ sahibinden.com##.header-banners
 yenisafak.com##.ads.dev-detail-ad-template
 ||pasizle*.com/assets/uploads/banners/
 ||pasizle*.com/assets/uploads/settings/player_bg_*.jpg
-forum.turkmmo.com,kadinlarkulubu.com,gezenbilir.com,isgfrm.com,forum.miuiturkiye.net##.samCodeUnit
+forum.turkmmo.com,kadinlarkulubu.com,gezenbilir.com,isgfrm.com,forum.miuiturkiye.net,techolay.net##.samCodeUnit
 ||*mac24.tv/*.gif
 ||macizlee*.com/images/pia2/*.gif
 businessht.bloomberght.com##.rightColWrap > div[class="col-sm-12 col-xs-12 pad0 border1 pad30 marTB20 text-center"]
@@ -5453,13 +5453,15 @@ hdfilmcehennem.live#$##kendisi { display: block!important; }
 oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
 !
-! dizilla.club/dizilla.com  - frequently changed domains
-[$domain=/(^\|.+\.)dizilla\d+\.com/]###psContainer
-[$domain=/(^\|.+\.)dizilla\d+\.com/]##a[target="_blank"] > .alert
-[$domain=/(^\|.+\.)dizilla\d+\.com/]#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?getElementsByTagName/')
-dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com###psContainer
-dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com##a[target="_blank"] > .alert
-dizilla.club,dizilla10.com,dizilla11.com,dizilla12.com,dizilla13.com,dizilla14.com,dizilla15.com,dizilla16.com,dizilla17.com,dizilla18.com,dizilla19.com,dizilla20.com#%#//scriptlet('abort-current-inline-script', 'document.createElement', '/\.src=[\s\S]*?getElementsByTagName/')
+! dizilla.*(club|com|nl)  - frequently changed domains
+[$domain=/dizilla\d+\.nl/]###playerLsDizilla > div.flex:not(.player)
+[$domain=/dizilla\d+\.nl/]##a[href^="https://diken.xyz/"]
+[$domain=/dizilla\d+\.nl/]##.relative:has(> div[class] > ad)
+dizilla.nl,dizilla10.nl,dizilla11.nl,dizilla12.nl,dizilla13.nl,dizilla14.nl,dizilla15.nl,dizilla16.nl,dizilla17.nl,dizilla18.nl,dizilla19.nl,dizilla20.nl###playerLsDizilla > div.flex:not(.player)
+dizilla.nl,dizilla10.nl,dizilla11.nl,dizilla12.nl,dizilla13.nl,dizilla14.nl,dizilla15.nl,dizilla16.nl,dizilla17.nl,dizilla18.nl,dizilla19.nl,dizilla20.nl##a[href^="https://diken.xyz/"]
+dizilla.nl,dizilla10.nl,dizilla11.nl,dizilla12.nl,dizilla13.nl,dizilla14.nl,dizilla15.nl,dizilla16.nl,dizilla17.nl,dizilla18.nl,dizilla19.nl,dizilla20.nl##.relative:has(> div[class] > ad)
+dizilla.nl##.player > .flex:has(> div:only-child > img[alt*="ad"])
+dizilla.nl###router-view > div > div > div[class]:has(> div:only-child > ad)
 !
 ! selcuksportshd*.xyz - frequently changed domains
 ! aglint-disable-next-line invalid-modifiers
@@ -5586,6 +5588,14 @@ yabancidizi.biz,yabancidizi.cc,yabancidizi.cloud,yabancidizi.co,yabancidizi.com.
 ! (com|info|click)
 ||webteizle*.*/malker
 ||webteizle*.*/i/vid-onu-*.mp4$media,redirect=noopmp3-0.1s
+webteizle.xyz,webteizle1.xyz,webteizle2.xyz,webteizle3.xyz,webteizle4.xyz,webteizle5.xyz,webteizle6.xyz,webteizle7.xyz,webteizle8.xyz,webteizle9.xyz,webteizle10.xyz###malker-vid-alti
+webteizle.xyz,webteizle1.xyz,webteizle2.xyz,webteizle3.xyz,webteizle4.xyz,webteizle5.xyz,webteizle6.xyz,webteizle7.xyz,webteizle8.xyz,webteizle9.xyz,webteizle10.xyz###site > div[id="header"]
+webteizle.xyz,webteizle1.xyz,webteizle2.xyz,webteizle3.xyz,webteizle4.xyz,webteizle5.xyz,webteizle6.xyz,webteizle7.xyz,webteizle8.xyz,webteizle9.xyz,webteizle10.xyz#$?##sol > #embed:has(iframe) ~ #video-onu2 { remove: true; }
+webteizle.xyz,webteizle1.xyz,webteizle2.xyz,webteizle3.xyz,webteizle4.xyz,webteizle5.xyz,webteizle6.xyz,webteizle7.xyz,webteizle8.xyz,webteizle9.xyz,webteizle10.xyz##img[alt="reklam"]
+webteizle.xyz,webteizle1.xyz,webteizle2.xyz,webteizle3.xyz,webteizle4.xyz,webteizle5.xyz,webteizle6.xyz,webteizle7.xyz,webteizle8.xyz,webteizle9.xyz,webteizle10.xyz#$#body { background-image: none !important; }
+webteizle.xyz,webteizle1.xyz,webteizle2.xyz,webteizle3.xyz,webteizle4.xyz,webteizle5.xyz,webteizle6.xyz,webteizle7.xyz,webteizle8.xyz,webteizle9.xyz,webteizle10.xyz#$#body #site { margin-top: 0px !important; }
+webteizle.xyz,webteizle1.xyz,webteizle2.xyz,webteizle3.xyz,webteizle4.xyz,webteizle5.xyz,webteizle6.xyz,webteizle7.xyz,webteizle8.xyz,webteizle9.xyz,webteizle10.xyz#%#//scriptlet('trusted-replace-node-text', 'script', 'money_current', '(money_current+1 == money_vids.length)', '(true)')
+webteizle.xyz,webteizle1.xyz,webteizle2.xyz,webteizle3.xyz,webteizle4.xyz,webteizle5.xyz,webteizle6.xyz,webteizle7.xyz,webteizle8.xyz,webteizle9.xyz,webteizle10.xyz#%#//scriptlet('set-constant', 'isShow', 'true')
 webteizle.click,webteizle1.click,webteizle2.click,webteizle3.click,webteizle4.click,webteizle5.click,webteizle6.click,webteizle7.click,webteizle8.click,webteizle9.click,webteizle10.click###malker-vid-alti
 webteizle.click,webteizle1.click,webteizle2.click,webteizle3.click,webteizle4.click,webteizle5.click,webteizle6.click,webteizle7.click,webteizle8.click,webteizle9.click,webteizle10.click###site > div[id="header"]
 webteizle.click,webteizle1.click,webteizle2.click,webteizle3.click,webteizle4.click,webteizle5.click,webteizle6.click,webteizle7.click,webteizle8.click,webteizle9.click,webteizle10.click#$?##sol > #embed:has(iframe) ~ #video-onu2 { remove: true; }
@@ -5611,6 +5621,13 @@ webteizle.info,webteizle1.info,webteizle2.info,webteizle3.info,webteizle4.info,w
 webteizle.info,webteizle1.info,webteizle2.info,webteizle3.info,webteizle4.info,webteizle5.info,webteizle6.info,webteizle7.info,webteizle8.info,webteizle9.info,webteizle10.info#%#//scriptlet('trusted-replace-node-text', 'script', 'money_current', '(money_current+1 == money_vids.length)', '(true)')
 webteizle.info,webteizle1.info,webteizle2.info,webteizle3.info,webteizle4.info,webteizle5.info,webteizle6.info,webteizle7.info,webteizle8.info,webteizle9.info,webteizle10.info#%#//scriptlet('set-constant', 'isShow', 'true')
 ! currently regexp with `(com|info)` does not work
+[$domain=/^webteizle\d+\.xyz/]###site > div[id="header"]
+[$domain=/^webteizle\d+\.xyz/]#$?##sol > #embed:has(iframe) ~ #video-onu2 { remove: true; }
+[$domain=/^webteizle\d+\.xyz/]##img[alt="reklam"]
+[$domain=/^webteizle\d+\.xyz/]#$#body { background-image: none !important; }
+[$domain=/^webteizle\d+\.xyz/]#$#body #site { margin-top: 0px !important; }
+[$domain=/^webteizle\d+\.xyz/]#%#//scriptlet('trusted-replace-node-text', 'script', 'money_current', '(money_current+1 == money_vids.length)', '(true)')
+[$domain=/^webteizle\d+\.xyz/]#%#//scriptlet('set-constant', 'isShow', 'true')
 [$domain=/^webteizle\d+\.com/]###site > div[id="header"]
 [$domain=/^webteizle\d+\.com/]#$?##sol > #embed:has(iframe) ~ #video-onu2 { remove: true; }
 [$domain=/^webteizle\d+\.com/]##img[alt="reklam"]

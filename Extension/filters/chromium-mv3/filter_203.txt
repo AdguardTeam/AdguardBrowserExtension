@@ -1,14 +1,14 @@
-! Checksum: iW4HHpe8F3/BsbQdjKQgDA
+! Checksum: 1Ly5p8RZ7ieY/FRg3f4CAw
 ! Title: Hungarian filter
 ! Description: Hufilter. Filter list that specifically removes ads on websites in the Hungarian language.
-! Version: 2.0.3.52
-! TimeUpdated: 2025-03-06T13:01:27+00:00
+! Version: 2.0.3.57
+! TimeUpdated: 2025-03-18T09:02:16+00:00
 ! Expires: 10 days (update frequency)
 !
-! Checksum: WqoZjLjZ1ETVh/XEH8DYOQ
-! OriginalVersion: 202503061131
+! Checksum: i5YPCUfgDDZqUl19BLKztw
+! OriginalVersion: 202503171858
 ! Title: Hufilter for AdGuard
-! Last modified: 06 Mar 2025 11:31 UTC
+! Last modified: 17 Mar 2025 18:58 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://hufilter.hu
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -121,6 +121,8 @@ hu##[class*="overlayBg"]
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters ----------------------------------------------!
 !-------------------------------------------------------------------------------!
+online-filmek.ac,online-filmek.me#%#//scriptlet('set-constant', 'document.write', 'undefined')
+online-filmek.ac,online-filmek.me##a[onclick^="window.open"]
 online-filmek.ac,online-filmek.me##div[align="center"] > a[onclick]
 online-filmek.ac,online-filmek.me##span[class^="adslot_"]
 hdmozi.hu##.asgdc
@@ -1682,6 +1684,7 @@ magyarnemzet.hu##div.gdprBoxContainer
 mandiner.hu##app-calendar
 mandiner.hu##app-facebook-popup
 mandiner.hu##app-newsletter-popup
+media1.hu##.elementor-popup-modal
 mediacenter.hu###cookie-msg
 medicalonline.hu##.accept-cookies
 merce.hu##.cookie-bar
@@ -1798,7 +1801,7 @@ infostart.hu#?##sitemodal:has(.fb-button)
 ||medinfo.ocdn.eu/hu/consent_v2/choice.js^$script,domain=egeszsegkalauz.hu
 ||quantcast.mgr.consensu.org^$script,domain=agrarszektor.hu|autoszektor.hu|bpiautosok.hu|g7.hu|hazipatika.com|hellovidek.hu|hrportal.hu|magyarnarancs.hu|index.hu|pestisracok.hu|portfolio.hu|telex.hu|totalcar.hu|totalbike.hu|szeretlekmagyarorszag.hu|port.hu|player.hu|mandiner.hu|budapestkornyeke.hu|bacsmegye.hu|civishir.hu|baon.hu|bama.hu|beol.hu|boon.hu|delmagyar.hu|duol.hu|feol.hu|kisalfold.hu|haon.hu|heol.hu|szoljon.hu|kemma.hu|nool.hu|sonline.hu|szon.hu|teol.hu|vaol.hu|veol.hu|zaol.hu|twice.hu|sassy.hu|pcwplus.hu|gsplus.hu|myonlineradio.hu|blikk.hu
 ||static.quantcast.mgr.consensu.org/v30/cmpui-popup.js^$script,domain=szeretlekmagyarorszag.hu
-||cmp.inmobi.com^$third-party,script,domain=telex.hu|origo.hu|atlatszo.hu|rtl.hu|videa.hu|myonlineradio.hu|hvg.hu|femina.hu|prohardver.hu|itcafe.hu|mobilarena.hu|gamepod.hu|logout.hu|fototrend.hu|hardverapro.hu|vg.hu|portfolio.hu|noizz.hu|economx.hu|budapestkornyeke.hu|bpiautosok.hu|magyarnemzet.hu|blikk.hu|nepszava.hu|magyarnarancs.hu|hirtv.hu|pestisracok.hu|autoszektor.hu|penzcentrum.hu|index.hu
+||cmp.inmobi.com^$third-party,script,domain=telex.hu|origo.hu|atlatszo.hu|rtl.hu|videa.hu|myonlineradio.hu|hvg.hu|femina.hu|prohardver.hu|itcafe.hu|mobilarena.hu|gamepod.hu|logout.hu|fototrend.hu|hardverapro.hu|vg.hu|portfolio.hu|noizz.hu|economx.hu|budapestkornyeke.hu|bpiautosok.hu|magyarnemzet.hu|blikk.hu|nepszava.hu|magyarnarancs.hu|hirtv.hu|pestisracok.hu|autoszektor.hu|penzcentrum.hu|index.hu|media1.hu
 !-------------------------------------------------------------------------------!
 !------ Generic network filters ------------------------------------------------!
 !-------------------------------------------------------------------------------!
@@ -1853,8 +1856,6 @@ videa.hu,videaloop.hu##.top-video-container-banner
 !-------------------------------------------------------------------------------!
 /gemius.js^$script
 /gemius.min.js^$script
-/traffic.js$script
-/traffic.min.js$script
 /xgemius.js^$script
 /xgemius.min.js^$script
 ||*.hu/userip.php

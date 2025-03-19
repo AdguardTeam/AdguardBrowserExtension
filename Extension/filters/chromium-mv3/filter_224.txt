@@ -1,8 +1,8 @@
-! Checksum: UTRdMlFGfDMxAd3ztPwEkw
+! Checksum: +Z4OFI2KCAT7RyWqN/y3Cw
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.33.15
-! TimeUpdated: 2025-03-17T01:32:29+00:00
+! Version: 2.1.33.30
+! TimeUpdated: 2025-03-19T02:32:22+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -798,8 +798,6 @@ yfsp.tv,aiyifan.tv,iyf.tv#%#//scriptlet('abort-on-property-read', 'Object.protot
 m.91zww.com#%#//scriptlet('abort-on-property-write', 'delCookie')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/150387
 pornbest.org#%#//scriptlet('abort-current-inline-script', 'jQuery', 'injectPops')
-! https://github.com/AdguardTeam/AdguardFilters/issues/141657
-axutongxue.vip,axutongxue.com,axutongxue.net#%#//scriptlet('prevent-setTimeout', '/getCookie|checkCK|checkCookie/')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/135612
 hamivideo.hinet.net#%#//scriptlet("set-constant", "myPlayer.adDisplay", "undefined")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/134441
@@ -1132,6 +1130,7 @@ $script,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixclou
 !
 ! NOTE: Specific rules
 !
+3dmgame.com#$#body > div.content { margin-top: 0 !important; }
 finance.eastmoney.com###ContentBody > p[style="text-align:center;"]:has(> a[href^="https://acttg.eastmoney.com/pub/"])
 xn--p3tv7h.com###floating-image-container
 ||xn--p3tv7h.com/imgs/Uxuan2.jpg
@@ -1771,8 +1770,9 @@ wnflb2023.com##.GzList
 bdys03.com##.artplayer-plugin-ads
 ||u10*.com/*.gif$domain=bhuai.top
 ||ll.ibiqiuge.com/m.js
-axutongxue.vip,axutongxue.com,axutongxue.net##body > :is(div, aside)[id]:has(> ul[class] > li > img.icon + a[href])
-axutongxue.vip,axutongxue.com,axutongxue.net#%#//scriptlet('trusted-suppress-native-method', 'document.write', '/ul class.*icon.*href/', 'prevent')
+axutongxue.cn,axu.pages.dev,axutongxue.vip,axutongxue.com,axutongxue.net#%#//scriptlet('prevent-setTimeout', '/getCookie|checkCK|checkCookie/')
+axutongxue.cn,axu.pages.dev,axutongxue.vip,axutongxue.com,axutongxue.net##body > :is(div, aside)[id]:has(> ul[class] > li > img.icon + a[href])
+axutongxue.cn,axu.pages.dev,axutongxue.vip,axutongxue.com,axutongxue.net#%#//scriptlet('trusted-suppress-native-method', 'document.write', '/ul class.*icon.*href/', 'prevent')
 sstv.pw##.container > a > img[style="width: 100%;"]
 cupfox.app##.t-img-box > a[target="_blank"] > img
 olevod.com##div[class^="ad"][style="margin-top: 0.05rem;"]
@@ -3026,6 +3026,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! ! temporary
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3031
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200865
+video4k.cc#@#a[href*="/?aff="][target="_blank"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197816
 linovelib.com#@#.ads_box
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194197
@@ -3261,6 +3263,7 @@ bmvc2020-conference.com#@#div[id][style="width: 100%;"] > iframe[scrolling="no"]
 .xyz:*?c=$script,third-party
 -*-*-*-*.panda^$script,third-party
 .tv/gg/
+.top/api.php?mod=ad&
 /webAdvert.php?ad_name=
 /js/adv-slide-toggle.
 -1316632262.cos.
@@ -4976,12 +4979,34 @@ newduba.cn###jq_youxi
 .z.dkt-ib.com
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||xunqrutsl.com^
+||jslxzx.icu^
+||xeccotftw.com^
+||ledfjl.icu^
+||xrlzhk.top^
+||nogogey.top^
+||fbhkxt.icu^
+||lppfnf.icu^
+||shedranfd.com^
+||quyr.cn^
+||vljkjx.top^
+||yaaumqa.top^
+||ancelsqpv.com^
+||bxhm.cn^
 ||vnbbrx.top^
 ||hylplj.icu^
 ||naukreatn.com^
 ||nmtkbv.icu^
 ||tmdqlk.top^
 ||bkox.cn^
+||amyapad.top^
+||political-effort.com^
+||tubingacater.com^
+||chorninsm.com^
+||phuustikd.com^
+||togmoxwnw.com^
+||rdoq.cn^
+||srootshare.com^
 ||uoqc.cn^
 ||xaiqrania.com^
 ||jipxzz.icu^
@@ -12799,6 +12824,9 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||csgola.com/Public/img/lala/1.jpg
 ||adasset.flixfiend.top^
 ||2345.com/guess/v1/adList
+||ttdm.me/upload/files/sss/
+ttdm.me##.dds_w
+fhxy-a.top##.sd_recpic
 2345.com##.search-right-swiper-news
 2345.com##._isFirstAd
 2345.com##.part-banner > .part-ppt
