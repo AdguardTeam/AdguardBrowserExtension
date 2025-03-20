@@ -16,9 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { translator } from '../../../../../common/translators/translator';
 import { NavigationTag } from '../../../../../common/constants';
 import { rootStore } from '../../../stores/RootStore';
 import { Tags } from '../Tags';
@@ -26,8 +27,6 @@ import { Tags } from '../Tags';
 import './miscellaneous-filters.pcss';
 
 const MiscellaneousFilters = observer(() => {
-    const ref = useRef(null);
-
     const { logStore } = useContext(rootStore);
 
     const {
@@ -39,15 +38,13 @@ const MiscellaneousFilters = observer(() => {
 
     return (
         <div className="miscellaneous-filters">
-            <div
-                className="miscellaneous-filters__filters"
-                ref={ref}
-            >
+            <div className="miscellaneous-filters__filters">
                 <div className="miscellaneous-filters__section">
                     <Tags
                         type={NavigationTag.Party}
                         tags={requestSourceFilters}
                         setTags={setRequestSourceFilters}
+                        label={translator.getMessage('filtering_log_tag_request_source')}
                     />
                 </div>
                 <div className="miscellaneous-filters__section">
@@ -55,6 +52,7 @@ const MiscellaneousFilters = observer(() => {
                         type={NavigationTag.Regular}
                         tags={miscellaneousFilters}
                         setTags={setMiscellaneousFilters}
+                        label={translator.getMessage('filtering_log_tag_request_status')}
                     />
                 </div>
             </div>

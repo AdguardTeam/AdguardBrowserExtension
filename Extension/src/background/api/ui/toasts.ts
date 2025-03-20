@@ -333,7 +333,7 @@ export class Toasts {
      *
      * @returns Title and text lines for message.
      */
-    private static getFiltersUpdateResultMessage(
+    public static getFiltersUpdateResultMessage(
         success: boolean,
         updatedFilters?: FilterMetadata[],
     ): {

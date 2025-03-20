@@ -193,20 +193,25 @@ const Filters = observer(() => {
         // TODO: use 'displayNumber' as a const
         // or add sorting by it to a separate helper as it is used in several places
         const sortedGroups = sortBy(groups, 'displayNumber');
-        return sortedGroups.map((group) => {
-            const enabledFilters = getEnabledFiltersByGroup(group);
-            return (
-                <Group
-                    key={group.groupId}
-                    groupName={group.groupName}
-                    groupId={group.groupId}
-                    enabledFilters={enabledFilters}
-                    groupClickHandler={groupClickHandler(group.groupId)}
-                    checkboxHandler={handleGroupSwitch}
-                    checkboxValue={!!group.enabled}
-                />
-            );
-        });
+
+        return (
+            <ul className="group-list">
+                {sortedGroups.map((group) => {
+                    const enabledFilters = getEnabledFiltersByGroup(group);
+                    return (
+                        <Group
+                            key={group.groupId}
+                            groupName={group.groupName}
+                            groupId={group.groupId}
+                            enabledFilters={enabledFilters}
+                            groupClickHandler={groupClickHandler(group.groupId)}
+                            checkboxHandler={handleGroupSwitch}
+                            checkboxValue={!!group.enabled}
+                        />
+                    );
+                })}
+            </ul>
+        );
     };
 
     const handleReturnToGroups = () => {
@@ -222,8 +227,17 @@ const Filters = observer(() => {
             return null;
         }
 
-        return filtersList
-            .map((filter) => <Filter key={filter.filterId} filter={filter} groupEnabled={groupEnabled} />);
+        return (
+            <ul className="group-list">
+                {filtersList.map((filter) => (
+                    <Filter
+                        key={filter.filterId}
+                        filter={filter}
+                        groupEnabled={groupEnabled}
+                    />
+                ))}
+            </ul>
+        );
     };
 
     const renderGroupsOnSearch = (matchedFilters: RenderedFilterType[]) => {
@@ -242,24 +256,30 @@ const Filters = observer(() => {
         const affectedGroupsIds = Object.keys(searchData).map((id) => Number(id));
         const groupsToRender = categories
             .filter((group) => affectedGroupsIds.includes(group.groupId));
-        if (groupsToRender.length) {
-            return groupsToRender.map((group) => {
-                const filtersToShow = searchData[group.groupId];
-                return (
-                    <SearchGroup
-                        key={group.groupId}
-                        groupName={group.groupName}
-                        groupId={group.groupId}
-                        groupEnabled={!!group.enabled}
-                        filtersToShow={filtersToShow}
-                        groupClickHandler={groupClickHandler(group.groupId)}
-                        checkboxHandler={handleGroupSwitch}
-                    />
-                );
-            });
+
+        if (!groupsToRender.length) {
+            return (
+                <NoFiltersFound />
+            );
         }
+
         return (
-            <NoFiltersFound />
+            <ul className="search-group-list">
+                {groupsToRender.map((group) => {
+                    const filtersToShow = searchData[group.groupId];
+                    return (
+                        <SearchGroup
+                            key={group.groupId}
+                            groupName={group.groupName}
+                            groupId={group.groupId}
+                            groupEnabled={!!group.enabled}
+                            filtersToShow={filtersToShow}
+                            groupClickHandler={groupClickHandler(group.groupId)}
+                            checkboxHandler={handleGroupSwitch}
+                        />
+                    );
+                })}
+            </ul>
         );
     };
 
@@ -319,27 +339,40 @@ const Filters = observer(() => {
         const isCustom = settingsStore.selectedGroupId === AntibannerGroupsId.CustomFiltersGroupId;
         const isEmpty = filtersToRender.length === 0;
         const description = GROUP_DESCRIPTION[selectedGroup.groupId as AntibannerGroupsId];
+        const titleId = `filter-title-${selectedGroup.groupId}`;
 
         const renderBackButton = () => (
+            // Order should remain the same to keep the focus order
+            // Filter checkbox -> Filter description -> Back button
             <>
-                <button
-                    type="button"
-                    aria-label="Back"
-                    className="button setting__back"
-                    onClick={handleReturnToGroups}
-                >
-                    <Icon id="#arrow-left" classname="icon--24" />
-                </button>
                 <div className="title__inner">
                     <button
                         type="button"
                         onClick={handleReturnToGroups}
                         className="title title--back-btn"
+                        // This button must be hidden for keyboard navigation and Screen Readers,
+                        // because we already have a back button below, main reason for this button is to
+                        // provide larger area of click for mouse users.
+                        tabIndex={-1}
+                        aria-hidden="true"
                     >
-                        {selectedGroup.groupName}
+                        <span id={titleId}>{selectedGroup.groupName}</span>
                     </button>
                     {description && <div className="title__desc title__desc--back">{description}</div>}
                 </div>
+                <button
+                    role="link"
+                    type="button"
+                    aria-label={translator.getMessage('options_filters_back_button')}
+                    className="button setting__back"
+                    onClick={handleReturnToGroups}
+                >
+                    <Icon
+                        id="#arrow-left"
+                        classname="icon--24"
+                        aria-hidden="true"
+                    />
+                </button>
             </>
         );
 
@@ -368,6 +401,7 @@ const Filters = observer(() => {
                         id={selectedGroup.groupId}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_privacy_title')}
+                        labelId={titleId}
                         value={selectedGroup.enabled}
                         handler={handleGroupSwitch}
                         optimistic={!__IS_MV3__}

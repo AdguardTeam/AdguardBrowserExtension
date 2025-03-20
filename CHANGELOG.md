@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Send last filters update time during issue reporting [#3055].
+- Ability to exit editor by pressing `Escape` keyboard button [#2333].
 
 ### Changed
 
 - Updated Safebrowsing and blocked by rules blocking pages.
+- Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
 
 ### Removed
 
@@ -25,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
 [#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
 [#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
+[#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
+[#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
+[#2332]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2332
+[#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
 
 ## [5.1.68] - 2025-03-07
 

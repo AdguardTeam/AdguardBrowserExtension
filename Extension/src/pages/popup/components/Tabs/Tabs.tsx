@@ -16,19 +16,27 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
 import { translator } from '../../../../common/translators/translator';
 import { isTransitionAppState } from '../../state-machines/app-state-machine';
-import { Actions } from '../Actions';
-import { StatsTable } from '../Stats/StatsTable';
+import {
+    Actions,
+    ACTIONS_TAB_ID,
+    ACTIONS_PANEL_ID,
+} from '../Actions';
+import {
+    StatsTable,
+    STATS_TAB_ID,
+    STATS_PANEL_ID,
+} from '../Stats/StatsTable';
 import { ViewState } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
 
-import { Tab } from './Tab';
+import { Tab, TabKey } from './Tab';
 
 import './tabs.pcss';
 
@@ -36,6 +44,9 @@ export const Tabs = observer(() => {
     const store = useContext(popupStore);
 
     const { viewState, appState } = store;
+
+    const actionsTabRef = useRef<HTMLButtonElement>(null);
+    const statsTabRef = useRef<HTMLButtonElement>(null);
 
     const contentMap = {
         [ViewState.Actions]: Actions,
@@ -53,6 +64,34 @@ export const Tabs = observer(() => {
         store.setViewState(viewState);
     };
 
+    const handleTabNavigation = (key: TabKey) => {
+        const tabs = [ViewState.Actions, ViewState.Stats];
+        const tabsRefs = [actionsTabRef, statsTabRef];
+
+        const currentTabIndex = tabs.indexOf(viewState);
+
+        let nextTabIndex = currentTabIndex;
+        switch (key) {
+            case TabKey.Left:
+                nextTabIndex = (currentTabIndex - 1 + tabs.length) % tabs.length;
+                break;
+            case TabKey.Right:
+                nextTabIndex = (currentTabIndex + 1) % tabs.length;
+                break;
+            case TabKey.Home:
+                nextTabIndex = 0;
+                break;
+            case TabKey.End:
+                nextTabIndex = tabs.length - 1;
+                break;
+            default:
+                break;
+        }
+
+        tabsRefs[nextTabIndex]!.current?.focus();
+        store.setViewState(tabs[nextTabIndex]!);
+    };
+
     return (
         <div
             className={cn('tabs', {
@@ -60,23 +99,33 @@ export const Tabs = observer(() => {
             })}
         >
             <div className="tabs__panel">
-                <div className="tabs__panel-wrapper">
+                <div
+                    role="tablist"
+                    className="tabs__panel-wrapper"
+                    aria-label={translator.getMessage('popup_tabs')}
+                    aria-orientation="horizontal"
+                >
                     <Tab
+                        ref={actionsTabRef}
+                        id={ACTIONS_TAB_ID}
                         title={translator.getMessage('popup_tab_actions')}
                         active={viewState === ViewState.Actions}
+                        panelId={ACTIONS_PANEL_ID}
                         onClick={handleTabClick(ViewState.Actions)}
+                        onKeyNavigate={handleTabNavigation}
                     />
                     <Tab
+                        ref={statsTabRef}
+                        id={STATS_TAB_ID}
                         title={translator.getMessage('popup_tab_statistics')}
                         active={viewState === ViewState.Stats}
+                        panelId={STATS_PANEL_ID}
                         onClick={handleTabClick(ViewState.Stats)}
+                        onKeyNavigate={handleTabNavigation}
                     />
                 </div>
             </div>
-            <div
-                className={tabContentClassName}
-                tabIndex={TabContent === contentMap[ViewState.Stats] ? 0 : -1}
-            >
+            <div className={tabContentClassName}>
                 <TabContent />
             </div>
         </div>

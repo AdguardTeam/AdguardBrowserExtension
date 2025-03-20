@@ -38,6 +38,7 @@ export const RuleSyntaxLink = () => {
             <Icon
                 id="#question"
                 classname="icon icon--24 icon--green-default"
+                aria-hidden="true"
             />
             <span className="link_with_icon__text">
                 {translator.getMessage('options_rule_syntax')}
