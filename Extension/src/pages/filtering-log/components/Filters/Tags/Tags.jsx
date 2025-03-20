@@ -16,20 +16,24 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 
-import classNames from 'classnames';
+import { translator } from '../../../../../common/translators/translator';
 
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import { Popover } from '../../../../common/components/ui/Popover';
-import { UserAgent } from '../../../../../common/user-agent';
+import { Tag, TagKeyAction } from './Tag';
+
+const ALL_TAG_ID = 'all';
 
 export const Tags = ({
     tags,
     setTags,
     type,
+    label,
 }) => {
     const { allButtonEnabled, filters } = tags;
+
+    // Store references to tag elements (key is tagId, value is tagRef)
+    const tagsRefs = useRef({});
 
     const enableOne = (tagId) => {
         const updatedTags = filters.map((tag) => {
@@ -48,6 +52,21 @@ export const Tags = ({
         });
 
         setTags({ filters: updatedTags, allButtonEnabled: true });
+    };
+
+    const enableAndFocus = (tagId) => {
+        const element = tagsRefs.current[tagId];
+        if (!element) {
+            return;
+        }
+
+        if (tagId === ALL_TAG_ID) {
+            enableAll();
+        } else {
+            enableOne(tagId);
+        }
+
+        element.focus();
     };
 
     const toggleMultiple = (tagId) => {
@@ -103,11 +122,11 @@ export const Tags = ({
         }
     };
 
-    const handleTagClick = (e) => {
-        if (UserAgent.isMacOs ? e.metaKey : e.ctrlKey) {
-            toggleMultiple(e.target.value);
+    const handleTagClick = (tagId, isMetaPressed) => {
+        if (isMetaPressed) {
+            toggleMultiple(tagId);
         } else {
-            enableOne(e.target.value);
+            enableOne(tagId);
         }
     };
 
@@ -115,46 +134,65 @@ export const Tags = ({
         enableAll();
     };
 
-    const renderTypes = () => {
-        return filters.map((tag) => {
-            const {
-                id,
-                title,
-                enabled,
-                tooltip,
-            } = tag;
-            const button = (
-                <button
-                    className={classNames(`tag tag--${id}`, type && `tag--${type}`, { active: !allButtonEnabled && enabled })}
-                    type="button"
-                    onClick={handleTagClick}
-                    value={id}
-                    key={id}
-                    aria-label={tooltip}
-                >
-                    {title}
-                </button>
-            );
-            return tooltip
-                ? (
-                    <Popover text={tooltip} key={id}>
-                        {button}
-                    </Popover>
-                )
-                : button;
-        });
+    const moveSelection = (tagId, isPrev) => {
+        if (tagId === ALL_TAG_ID) {
+            const targetIndex = isPrev ? filters.length - 1 : 0;
+            enableAndFocus(filters[targetIndex].id);
+            return;
+        }
+
+        const currentIndex = filters.findIndex((tag) => tag.id === tagId);
+        const edgeIndex = isPrev ? 0 : filters.length - 1;
+
+        if (currentIndex === edgeIndex) {
+            enableAndFocus(ALL_TAG_ID);
+        } else if (currentIndex !== -1) {
+            const targetIndex = isPrev ? currentIndex - 1 : currentIndex + 1;
+            enableAndFocus(filters[targetIndex].id);
+        }
+    };
+
+    const onKeyDown = (tagId, action) => {
+        switch (action) {
+            case TagKeyAction.Prev:
+                moveSelection(tagId, true);
+                break;
+            case TagKeyAction.Next:
+                moveSelection(tagId, false);
+                break;
+            default:
+                break;
+        }
     };
 
     return (
-        <>
-            <button
-                className={classNames('tag', type && `tag--${type}`, { active: allButtonEnabled })}
-                type="button"
+        <div role="radiogroup" aria-label={label}>
+            <Tag
+                ref={(ref) => {
+                    tagsRefs.current[ALL_TAG_ID] = ref;
+                }}
+                type={type}
+                id={ALL_TAG_ID}
+                title={translator.getMessage('filtering_type_all')}
+                checked={allButtonEnabled}
                 onClick={handleAllClick}
-            >
-                {reactTranslator.getMessage('filtering_type_all')}
-            </button>
-            {renderTypes()}
-        </>
+                onKeyDown={onKeyDown}
+            />
+            {filters.map((tag) => (
+                <Tag
+                    ref={(ref) => {
+                        tagsRefs.current[tag.id] = ref;
+                    }}
+                    key={tag.id}
+                    type={type}
+                    id={tag.id}
+                    title={tag.title}
+                    tooltip={tag.tooltip}
+                    checked={!allButtonEnabled && tag.enabled}
+                    onClick={handleTagClick}
+                    onKeyDown={onKeyDown}
+                />
+            ))}
+        </div>
     );
 };

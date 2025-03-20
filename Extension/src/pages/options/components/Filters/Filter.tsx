@@ -75,9 +75,10 @@ const removePrefix = (extendedFilterId: string): string => {
 type FilterParams = {
     filter: RenderedFilterType;
     groupEnabled: boolean;
+    disabled?: boolean;
 };
 
-const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
+const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParams) => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const [isOpenRemoveFilterModal, setIsOpenRemoveFilterModal] = useState(false);
@@ -178,6 +179,10 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
     };
 
     const handleRemoveFilterClick = async (e: React.MouseEvent) => {
+        if (disabled) {
+            return;
+        }
+
         e.preventDefault();
         setIsOpenRemoveFilterModal(true);
     };
@@ -213,10 +218,13 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                         type="button"
                         className="button filter__remove"
                         onClick={handleRemoveFilterClick}
+                        title={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
+                        disabled={disabled}
                     >
                         <Icon
                             id="#trash"
                             classname="icon icon--24 icon--red-default"
+                            aria-hidden="true"
                         />
                     </button>
                 </>
@@ -230,70 +238,81 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
     });
 
     // We add prefix to avoid id collisions with group ids
-    const prefixedFilterId = addPrefix(filterId);
+    const prefixedFilterSwitchId = addPrefix(filterId);
+    const prefixedFilterTitleId = `${prefixedFilterSwitchId}-title`;
 
     return (
-        <label htmlFor={prefixedFilterId} className="setting-checkbox">
-            <div className={filterClassName} role="presentation">
-                <div className="filter__info">
-                    <div className="setting__container setting__container--horizontal">
-                        <div className="setting__inner">
-                            <div className="filter__title">
-                                <Popover text={name}>
-                                    <div className="filter__title-constraint">
-                                        <span className="filter__title-in">
-                                            <HighlightSearch string={name} />
-                                        </span>
-                                    </div>
-                                </Popover>
+        <li className="filter-wrapper setting--reversed">
+            <label htmlFor={prefixedFilterSwitchId} className="setting-checkbox">
+                <div className={filterClassName} role="presentation">
+                    <div className="filter__info">
+                        <div className="setting__container setting__container--horizontal">
+                            <div className="filter__controls">
+                                {renderRemoveButton()}
+                                <div className="setting__inline-control">
+                                    <Setting
+                                        id={prefixedFilterSwitchId}
+                                        type={SETTINGS_TYPES.CHECKBOX}
+                                        label={name}
+                                        labelId={prefixedFilterTitleId}
+                                        value={!!enabled}
+                                        optimistic={!__IS_MV3__}
+                                        disabled={disabled}
+                                        handler={handleFilterSwitch}
+                                    />
+                                </div>
                             </div>
+                            <div className="setting__inner">
+                                <div id={prefixedFilterTitleId} className="filter__title" aria-hidden="true">
+                                    <Popover text={name}>
+                                        <div className="filter__title-constraint">
+                                            <span className="filter__title-in">
+                                                <HighlightSearch string={name} />
+                                            </span>
+                                        </div>
+                                    </Popover>
+                                </div>
 
-                            <div className="filter__desc">
-                                <div>
-                                    {description}
+                                <div className="filter__desc">
+                                    <div>
+                                        {description}
+                                    </div>
+                                    <div>
+                                        {
+                                            version
+                                                ? `${translator.getMessage('options_filters_filter_version')} ${version} `
+                                                : ''
+                                        }
+                                        {translator.getMessage('options_filters_filter_updated')}
+                                        {' '}
+                                        {lastUpdateTime
+                                            ? formatDate(lastUpdateTime)
+                                            : formatDate(lastCheckTime)}
+                                    </div>
                                 </div>
                                 <div>
-                                    {
-                                        version
-                                            ? `${translator.getMessage('options_filters_filter_version')} ${version} `
-                                            : ''
-                                    }
-                                    {translator.getMessage('options_filters_filter_updated')}
-                                    {' '}
-                                    {lastUpdateTime
-                                        ? formatDate(lastUpdateTime)
-                                        : formatDate(lastCheckTime)}
+                                    <a
+                                        className="filter__link"
+                                        href={homepage || customUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        tabIndex={disabled ? -1 : 0}
+                                        aria-hidden={disabled}
+                                    >
+                                        {translator.getMessage('options_filters_filter_link')}
+                                    </a>
                                 </div>
-                            </div>
-                            <div>
-                                <a
-                                    className="filter__link"
-                                    href={homepage || customUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {translator.getMessage('options_filters_filter_link')}
-                                </a>
-                            </div>
-                            <FilterTags tags={tags} />
-                        </div>
-                        <div className="filter__controls">
-                            {renderRemoveButton()}
-                            <div className="setting__inline-control">
-                                <Setting
-                                    id={prefixedFilterId}
-                                    type={SETTINGS_TYPES.CHECKBOX}
-                                    label={name}
-                                    value={!!enabled}
-                                    optimistic={!__IS_MV3__}
-                                    handler={handleFilterSwitch}
+                                <FilterTags
+                                    filterId={filterId}
+                                    tags={tags}
+                                    disabled={disabled}
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </label>
+            </label>
+        </li>
     );
 });
 

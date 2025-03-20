@@ -25,7 +25,8 @@ body {
     overflow-y: scroll;
 }
 
-h2 {
+h2,
+h3 {
     margin: 0;
     font-size: inherit;
 }
@@ -114,6 +115,20 @@ label.checkbox-label {
     }
 }
 
+.skip-to-content-btn {
+    z-index: var(--z-idx-options-skip-to-content);
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    pointer-events: none;
+    opacity: 0;
+
+    &:focus-visible {
+        pointer-events: auto;
+        opacity: 1;
+    }
+}
+
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -150,10 +165,6 @@ label.checkbox-label {
         line-height: 21px;
         font-weight: 600;
         cursor: pointer;
-
-        &--wrapper {
-            margin: 16px 0;
-        }
     }
 }
 
@@ -202,6 +213,10 @@ label.checkbox-label {
                 }
             }
         }
+
+        &--reversed {
+            flex-direction: row-reverse;
+        }
     }
 
     @media (min-width: 640px) {
@@ -221,13 +236,16 @@ label.checkbox-label {
                     padding-top: 16px;
                 }
 
-                & .checkbox__label {
-                    @media (min-width: 640px) {
-                        padding: 16px;
+                & .checkbox__in {
+                    /* 16px (label padding) - 3px (default margin) */
+                    top: 13px;
+                }
 
-                        &:before {
-                            top: 0;
-                        }
+                & .checkbox__label {
+                    padding: 16px;
+
+                    &:before {
+                        top: 0;
                     }
                 }
             }
@@ -237,9 +255,7 @@ label.checkbox-label {
             }
 
             &--about {
-                @media (min-width: 640px) {
-                    padding: 16px 0 16px 16px;
-                }
+                padding: 16px 0 16px 16px;
             }
 
             &--custom {
@@ -408,12 +424,7 @@ label.checkbox-label {
     }
 
     &__input-file {
-        position: absolute;
-        clip: rect(1px, 1px, 1px, 1px);
-
-        &:focus + .links-menu__item {
-            outline: 2px solid var(--outline);
-        }
+        display: none;
     }
 
     &__label {
@@ -447,7 +458,7 @@ select:focus {
 }
 
 .ReactModal__Overlay {
-    z-index: 10;
+    z-index: var(--z-idx-options-modals);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -522,4 +533,16 @@ select:focus {
     .ace_cursor {
         color: var(--gray300)!important;
     }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }

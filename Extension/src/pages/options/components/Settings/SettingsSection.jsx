@@ -23,6 +23,7 @@ import classNames from 'classnames';
 const SettingsSection = (props) => {
     const {
         title,
+        titleId,
         description,
         renderBackButton,
         id,
@@ -42,6 +43,8 @@ const SettingsSection = (props) => {
         'title__container--sub': mode === 'subTitle',
         'title__container--control': id,
         'title__container--custom': mode === 'custom',
+        // see renderContent method for detailed explanation
+        'title__container--reversed': inlineControl,
     });
 
     const titleClass = classNames('title', {
@@ -49,28 +52,58 @@ const SettingsSection = (props) => {
         'title--sub': mode === 'subTitle',
     });
 
+    const TitleTag = mode === 'subTitle' ? 'h3' : 'h2';
+
+    const info = renderBackButton
+        ? renderBackButton()
+        : (
+            <div className="title__inner">
+                {title && (
+                    <TitleTag
+                        id={titleId}
+                        className={titleClass}
+                        // Hide title from Screen Readers if it was used as part
+                        // of the controls title (aria-labelledby).
+                        aria-hidden={!!titleId}
+                    >
+                        {title}
+                    </TitleTag>
+                )}
+                {description && (<div className="title__desc">{description}</div>)}
+            </div>
+        );
+
+    const control = inlineControl && (
+        <div
+            className="setting__container setting__container--inline setting__inline-control"
+        >
+            {inlineControl}
+        </div>
+    );
+
+    /**
+     * If inlineControl is provided, we render control first and then info
+     * and also we reverse the order by using CSS. This is done to make sure
+     * that controls receives first focus when tabbing through the settings.
+     */
+    const renderContent = () => {
+        const content = inlineControl ? [control, info] : [info, control];
+
+        return (
+            <>
+                {content[0]}
+                {content[1]}
+            </>
+        );
+    };
+
     return (
-        <div className={settingGroupClassName} key={title}>
+        <div key={title} className={settingGroupClassName} inert={disabled ? '' : undefined}>
             <label
                 className={titleContainerClass}
                 htmlFor={id}
             >
-                {renderBackButton
-                    ? renderBackButton()
-                    : (
-                        <div className="title__inner">
-                            {title && <h2 className={titleClass}>{title}</h2>}
-                            {description && <div className="title__desc">{description}</div>}
-                        </div>
-                    )}
-                {inlineControl
-                    && (
-                        <div
-                            className="setting__container setting__container--inline setting__inline-control"
-                        >
-                            {inlineControl}
-                        </div>
-                    )}
+                {renderContent()}
             </label>
             <div>
                 {children}

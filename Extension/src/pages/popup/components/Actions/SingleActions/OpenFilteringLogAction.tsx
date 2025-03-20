@@ -27,6 +27,8 @@ import { type SingleActionParams } from './types';
 import '../actions.pcss';
 
 export const OpenFilteringLogAction = ({ className }: SingleActionParams) => {
+    const title = translator.getMessage('popup_open_filtering_log');
+
     /**
      * Handle open filtering log action click.
      */
@@ -39,15 +41,17 @@ export const OpenFilteringLogAction = ({ className }: SingleActionParams) => {
         <button
             type="button"
             className={className}
+            title={title}
             onClick={handleOpenFilteringLog}
         >
             <Icon
                 id="#sandwich"
                 classname="icon--24 icon--action--sandwich"
+                aria-hidden="true"
             />
-            <div className="action__title">
-                {translator.getMessage('popup_open_filtering_log')}
-            </div>
+            <span className="action__title">
+                {title}
+            </span>
         </button>
     );
 };
