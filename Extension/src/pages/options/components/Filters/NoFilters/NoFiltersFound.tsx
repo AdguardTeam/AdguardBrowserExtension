@@ -28,7 +28,11 @@ import './no-filters.pcss';
  */
 const NoFiltersFound = () => (
     <div className="no-filters">
-        <Icon id="#no-filters-found" classname="icon--48 icon--gray-default" />
+        <Icon
+            id="#no-filters-found"
+            classname="icon--48 icon--gray-default"
+            aria-hidden="true"
+        />
         <div>{translator.getMessage('options_filters_empty_title')}</div>
     </div>
 );

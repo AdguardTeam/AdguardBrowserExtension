@@ -32,16 +32,25 @@ export const FilterStatus = ({ statusCode, method, mode }) => {
     const itemClassNames = getItemClassName(color);
     const isBlocked = mode === StatusMode.BLOCKED;
 
+    let iconId;
+    if (isBlocked) {
+        iconId = '#ban';
+    } else if (method) {
+        iconId = statusCode ? '#transfer-status' : '#arrow-status';
+    }
+
     return (
         <div className="status">
             <div className={itemClassNames}>
                 {title}
             </div>
             <div className={itemClassNames}>
-                {isBlocked ? (
-                    <Icon id="#ban" classname="status__icon" />
-                ) : (
-                    method && <Icon id={statusCode ? '#transfer-status' : '#arrow-status'} classname="status__icon" />
+                {iconId && (
+                    <Icon
+                        id={iconId}
+                        classname="status__icon"
+                        aria-hidden="true"
+                    />
                 )}
             </div>
         </div>

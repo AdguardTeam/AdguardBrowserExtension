@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useRef,
+} from 'react';
 import {
     createHashRouter,
     createRoutesFromElements,
@@ -49,6 +53,7 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { Icons } from '../ui/Icons';
 import { NotificationType } from '../../stores/UiStore';
+import { SkipToContentButton } from '../SkipToContentButton';
 
 import '../../styles/styles.pcss';
 
@@ -70,20 +75,28 @@ const createRouter = (children) => {
     );
 };
 
-const OptionsLayout = () => {
+const OptionsLayout = observer(() => {
+    const mainRef = useRef(null);
+    const { uiStore } = useContext(rootStore);
+
     return (
         <>
+            <SkipToContentButton mainRef={mainRef} />
             <Sidebar />
             <div className="inner">
-                <div className="content">
+                <main
+                    ref={mainRef}
+                    className="content"
+                    inert={uiStore.isSidebarOpen ? '' : undefined}
+                >
                     <Notifications />
                     <Outlet />
-                </div>
+                </main>
                 <Footer />
             </div>
         </>
     );
-};
+});
 
 const Options = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);

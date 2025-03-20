@@ -18,27 +18,35 @@
 
 import React from 'react';
 
-import { Popover } from '../../../../common/components/ui/Popover';
 import { type TagMetadata } from '../../../../../background/schema';
+import { translator } from '../../../../../common/translators/translator';
 
 import { FilterTag } from './FilterTag';
 
 type FilterTagsParams = {
+    filterId: number;
     tags: TagMetadata[];
+    disabled?: boolean;
 };
 
-export const FilterTags = ({ tags }: FilterTagsParams) => {
+export const FilterTags = ({ filterId, tags, disabled }: FilterTagsParams) => {
     if (tags.length === 0) {
         return null;
     }
 
     return (
-        <div className="filter__tags">
+        <ul
+            className="filter__tags"
+            aria-label={translator.getMessage('options_filters_filter_tags')}
+        >
             {tags.map((tag) => (
-                <Popover text={tag.description} key={tag.tagId}>
-                    <FilterTag tag={tag} />
-                </Popover>
+                <FilterTag
+                    key={tag.tagId}
+                    filterId={filterId}
+                    tag={tag}
+                    disabled={disabled}
+                />
             ))}
-        </div>
+        </ul>
     );
 };

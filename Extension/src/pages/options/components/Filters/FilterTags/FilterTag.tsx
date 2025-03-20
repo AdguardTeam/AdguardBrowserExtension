@@ -23,28 +23,50 @@ import { observer } from 'mobx-react';
 import { type TagMetadata } from '../../../../../background/schema';
 import { rootStore } from '../../../stores/RootStore';
 import { HighlightSearch } from '../Search/HighlightSearch';
+import { Popover } from '../../../../common/components/ui/Popover';
 
 type FilterTagParams = {
+    filterId: number;
     tag: TagMetadata;
+    disabled?: boolean;
 };
 
-export const FilterTag = observer(({ tag }: FilterTagParams) => {
+export const FilterTag = observer(({ filterId, tag, disabled }: FilterTagParams) => {
     const { settingsStore } = useContext(rootStore);
 
     const tagString = `#${tag.keyword}`;
+    const descriptionId = `filter-tag-desc-${filterId}-${tag.tagId}`;
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        // we remove other content of search input when user clicks to tag
-        settingsStore.setSearchInput(tagString);
+
+        if (!disabled) {
+            // we remove other content of search input when user clicks to tag
+            settingsStore.setSearchInput(tagString);
+        }
     };
 
     return (
-        <div
-            className="filter__tag"
-            onClick={handleClick}
-        >
-            <HighlightSearch string={tagString} />
-        </div>
+        <li className="filter__tag-wrapper">
+            <Popover text={tag.description}>
+                <button
+                    type="button"
+                    role="link"
+                    className="filter__tag"
+                    onClick={handleClick}
+                    aria-describedby={descriptionId}
+                    disabled={disabled}
+                >
+                    <HighlightSearch string={tagString} />
+                    <span
+                        id={descriptionId}
+                        className="sr-only"
+                        aria-hidden="true"
+                    >
+                        {tag.description}
+                    </span>
+                </button>
+            </Popover>
+        </li>
     );
 });

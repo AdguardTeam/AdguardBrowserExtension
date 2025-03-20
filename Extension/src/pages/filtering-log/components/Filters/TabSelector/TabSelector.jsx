@@ -16,11 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
-eslint-disable jsx-a11y/click-events-have-key-events,
-jsx-a11y/no-noninteractive-element-interactions
-*/
-
 import React, {
     useContext,
     useEffect,
@@ -55,6 +50,9 @@ const TabSelector = observer(() => {
     const [currentStep, setCurrentStep] = useState(0);
 
     const SELECTED_CLASS_NAME = 'selected';
+    const INPUT_ID = 'tabs-selector-input';
+    const LISTBOX_ID = 'tabs-selector-listbox';
+    const LABEL = translator.getMessage('filtering_log_search_tabs_placeholder');
 
     useEffect(() => {
         if (refResult.current?.childNodes) {
@@ -171,10 +169,12 @@ const TabSelector = observer(() => {
                 || (domain && domain.match(searchQuery))
             ) {
                 return (
-                    <div
+                    <button
                         key={tabId}
                         id={tabId}
-                        role="button"
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
                         className="tab-selector__result-item"
                         onClick={() => selectionHandlerSearch(tabId)}
                         tabIndex={0}
@@ -186,9 +186,10 @@ const TabSelector = observer(() => {
                             <Icon
                                 id="#tick"
                                 classname="icon icon--24 icon--green-default"
+                                aria-hidden="true"
                             />
                         )}
-                    </div>
+                    </button>
                 );
             }
 
@@ -196,9 +197,9 @@ const TabSelector = observer(() => {
         });
     };
 
-    const searchChangeHandler = (e) => {
+    const searchChangeHandler = (value) => {
         setCurrentStep(0);
-        setSearchValue(e.currentTarget.value);
+        setSearchValue(value);
     };
 
     const handleClear = () => {
@@ -223,21 +224,51 @@ const TabSelector = observer(() => {
         >
             <div onFocus={onTabSelectorFocus}>
                 <Search
-                    select
                     ref={searchInputRef}
-                    changeHandler={searchChangeHandler}
+                    id={INPUT_ID}
+                    role="combobox"
                     value={searchValue}
-                    placeholder={translator.getMessage('filtering_log_search_tabs_placeholder')}
-                    handleClear={handleClear}
+                    placeholder={LABEL}
+                    // Take a not that `autoComplete` and `aria-autocomplete` are different attributes
+                    // `autoComplete` is for the browser to suggest the input value
+                    // `aria-autocomplete` is for the screen reader to announce that the input has a list of tabs
+                    aria-autocomplete="list"
+                    aria-expanded={selectIsOpen}
+                    aria-controls={LISTBOX_ID}
+                    onChange={searchChangeHandler}
                     onFocus={handleClear}
-                    onOpenSelect={selectIsOpen}
+                    control={(
+                        <button
+                            type="button"
+                            className="search__btn"
+                            tabIndex={-1}
+                            aria-label={LABEL}
+                            aria-expanded={selectIsOpen}
+                            aria-controls={LISTBOX_ID}
+                        >
+                            <Icon
+                                id="#arrow-down"
+                                classname={cn(
+                                    'icon--24 icon--gray-default search__ico',
+                                    selectIsOpen ? 'search__arrow-up' : 'search__arrow-down',
+                                )}
+                                aria-hidden="true"
+                            />
+                        </button>
+                    )}
                 />
             </div>
-            {selectIsOpen && (
-                <div className="tab-selector__result" ref={refResult}>
-                    {renderSearchResult()}
-                </div>
-            )}
+            <div
+                ref={refResult}
+                id={LISTBOX_ID}
+                role="listbox"
+                className={cn(
+                    'tab-selector__result',
+                    selectIsOpen && 'tab-selector__result--open',
+                )}
+            >
+                {renderSearchResult()}
+            </div>
         </div>
     );
 });

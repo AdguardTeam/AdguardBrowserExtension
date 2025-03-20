@@ -28,7 +28,7 @@ import {
     WEBSITE_URL,
     DISCUSS_URL,
 } from '../../constants';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 
 import './about-page.pcss';
 
@@ -42,44 +42,49 @@ const About = observer(() => {
     }
 
     const currentYear = new Date().getFullYear();
-    const copyRightText = `© 2009-${currentYear} AdGuard Software Ltd.`;
+    const copyRightText = `© 2009-${currentYear} Adguard Software Ltd.`;
 
     return (
         <>
             <div className="title__container title__container--about">
                 <h2 className="title">
-                    {reactTranslator.getMessage('options_about')}
+                    {translator.getMessage('options_about')}
                 </h2>
             </div>
             <div className="about">
                 <div className="about__title">
-                    {reactTranslator.getMessage('options_about_title')}
+                    {translator.getMessage('options_about_title')}
                 </div>
                 <div className="about__version">
-                    {`${reactTranslator.getMessage('options_about_version')} ${version}`}
-                    <p>
-                        {`TSWebExtension v${libVersions.tswebextension}`}
-                        <br />
-                        {`TSUrlFilter v${libVersions.tsurlfilter}`}
-                        <br />
-                        {`Scriptlets v${libVersions.scriptlets}`}
-                        <br />
-                        {`ExtendedCss v${libVersions.extendedCss}`}
-                        {libVersions.dnrRulesets && (
-                            <>
-                                <br />
-                                {`DNR-Rulesets v${libVersions.dnrRulesets}`}
-                            </>
-                        )}
-                    </p>
+                    {`${translator.getMessage('options_about_version')} ${version}`}
                 </div>
+                <ul
+                    className="about__libs"
+                    aria-label={translator.getMessage('options_about_libs')}
+                >
+                    <li className="about__version">
+                        {`TSWebExtension v${libVersions.tswebextension}`}
+                    </li>
+                    <li className="about__version">
+                        {`TSUrlFilter v${libVersions.tsurlfilter}`}
+                    </li>
+                    <li className="about__version">
+                        {`Scriptlets v${libVersions.scriptlets}`}
+                    </li>
+                    <li className="about__version">
+                        {`ExtendedCss v${libVersions.extendedCss}`}
+                    </li>
+                    {libVersions.dnrRulesets && (
+                        <li className="about__version">
+                            {`DNR-Rulesets v${libVersions.dnrRulesets}`}
+                        </li>
+                    )}
+                </ul>
                 <div className="about__copyright">
-                    <div className="about__copyright-item">
-                        {copyRightText}
-                    </div>
-                    <div className="about__copyright-item">
-                        {reactTranslator.getMessage('options_copyright')}
-                    </div>
+                    {copyRightText}
+                    {/* Hide following br tag so Screen Reader will read text together */}
+                    <br aria-hidden="true" />
+                    {translator.getMessage('options_copyright')}
                 </div>
                 <div className="links-menu">
                     <a
@@ -88,7 +93,7 @@ const About = observer(() => {
                         href={CHANGELOG_URL}
                         className="links-menu__item button--link--green"
                     >
-                        {reactTranslator.getMessage('options_open_changelog')}
+                        {translator.getMessage('options_open_changelog')}
                     </a>
                     <a
                         target="_blank"
@@ -96,7 +101,7 @@ const About = observer(() => {
                         href={PRIVACY_URL}
                         className="links-menu__item button--link--green"
                     >
-                        {reactTranslator.getMessage('options_privacy_policy')}
+                        {translator.getMessage('options_privacy_policy')}
                     </a>
                     <a
                         target="_blank"
@@ -104,7 +109,7 @@ const About = observer(() => {
                         href={WEBSITE_URL}
                         className="links-menu__item button--link--green"
                     >
-                        {reactTranslator.getMessage('options_site')}
+                        {translator.getMessage('options_site')}
                     </a>
                     <a
                         target="_blank"
@@ -112,7 +117,7 @@ const About = observer(() => {
                         href={DISCUSS_URL}
                         className="links-menu__item button--link--green"
                     >
-                        {reactTranslator.getMessage('options_discuss')}
+                        {translator.getMessage('options_discuss')}
                     </a>
                     <a
                         target="_blank"
@@ -120,7 +125,7 @@ const About = observer(() => {
                         href={ACKNOWLEDGMENTS_URL}
                         className="links-menu__item button--link--green"
                     >
-                        {reactTranslator.getMessage('options_acknowledgment')}
+                        {translator.getMessage('options_acknowledgment')}
                     </a>
                     <a
                         target="_blank"
@@ -128,7 +133,7 @@ const About = observer(() => {
                         href={GITHUB_URL}
                         className="links-menu__item button--link--green"
                     >
-                        {reactTranslator.getMessage('options_github')}
+                        {translator.getMessage('options_github')}
                     </a>
                 </div>
             </div>

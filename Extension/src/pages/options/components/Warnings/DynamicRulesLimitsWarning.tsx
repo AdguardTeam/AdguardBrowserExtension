@@ -54,7 +54,7 @@ export const DynamicRulesLimitsWarning = observer(({ useWrapper = false }: Limit
     }
 
     const filterLimitWarning = (
-        <div className="limit-warning">
+        <div role="alert" className="limit-warning">
             <span>
                 {dynamicRulesLimitsWarning}
             </span>

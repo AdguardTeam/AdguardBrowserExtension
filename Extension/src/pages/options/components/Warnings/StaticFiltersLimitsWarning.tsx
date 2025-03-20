@@ -51,7 +51,7 @@ export const StaticFiltersLimitsWarning = observer(({ useWrapper = false }: Limi
     }
 
     const filterLimitWarning = (
-        <div className="limit-warning">
+        <div role="alert" className="limit-warning">
             <span>
                 {staticFiltersLimitsWarning}
             </span>

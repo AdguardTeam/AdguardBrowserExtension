@@ -34,6 +34,8 @@ export const SelectWrapper = ({
     // Context.Provider), but a different layout: reverse order of icons,
     // smaller text, using all the space of the parent element.
     popupModification,
+    label,
+    labelId,
     withContext,
 }: SelectWrapperProps) => {
     const props = {
@@ -42,6 +44,8 @@ export const SelectWrapper = ({
         options,
         value,
         popupModification,
+        label,
+        labelId,
     };
 
     return withContext

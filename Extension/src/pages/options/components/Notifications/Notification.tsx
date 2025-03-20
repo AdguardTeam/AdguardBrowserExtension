@@ -28,6 +28,7 @@ import { rootStore } from '../../stores/RootStore';
 import { Icon } from '../../../common/components/ui/Icon';
 import { messenger } from '../../../services/messenger';
 import { type Notification as INotification } from '../../stores/UiStore';
+import { translator } from '../../../../common/translators/translator';
 
 /**
  * Notification component props
@@ -110,24 +111,37 @@ export const Notification = (props: NotificationProps) => {
             className={notificationClassnames}
             onMouseEnter={handleMouseOver}
         >
-            <Icon id="#info" classname="icon--24" />
-            <div className="notification__content">
+            <Icon
+                id="#info"
+                classname="icon--24"
+                aria-hidden="true"
+            />
+            <div
+                role="status"
+                className="notification__content"
+                aria-live="assertive"
+            >
                 <p>{description}</p>
                 { isNotificationWithLink && (
-                    <button type="button" onClick={handleRuleLimitsClick}>
+                    <button
+                        type="button"
+                        role="link"
+                        onClick={handleRuleLimitsClick}
+                    >
                         {extra.link}
                     </button>
                 )}
             </div>
             <button
-                aria-label="close"
                 type="button"
                 className="notification__btn-close"
                 onClick={handleCloseClick}
+                aria-label={translator.getMessage('close_button_title')}
             >
                 <Icon
                     id="#cross"
                     classname="icon--24 icon--gray-default"
+                    aria-hidden="true"
                 />
             </button>
         </div>
