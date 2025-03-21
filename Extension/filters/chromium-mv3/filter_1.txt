@@ -1,8 +1,8 @@
-! Checksum: 2RFnIGp+V3/E8VlnT+osvA
+! Checksum: elDsMQqCGJP7pKT9c47upQ
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.98.21
-! TimeUpdated: 2025-03-17T08:31:15+00:00
+! Version: 2.0.98.29
+! TimeUpdated: 2025-03-20T21:31:19+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1432,6 +1432,7 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||vvdrhe.win^
 ||adwadvert.com.ua^
 ||nanthou.life^
 ||video.agenteimmobiliare.info^
@@ -4131,6 +4132,8 @@ http://w7.ru^$third-party
 ||хельга.рф^$third-party
 ||эхх.рф^
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200915
+! t.setAttribute("data-mrmn-tag"
 ! AD Factor
 ||193.200.64.24^
 !
@@ -7609,6 +7612,10 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+vecherka-spb.ru##section > div.flex:has(> div[class^="_smi24Container"])
+trychatgpt.ru##.container:has(> div > div[id^="mp_custom_"])
+holod.media##.partners-news
+afisha.ru##div[class^="BillboardBanner_Container"]
 download.my-chrome.ru##.modal
 auto.ru##div[class^="RecommendationsItem__ad"]
 nashaniva.com##.pos-market
@@ -10185,7 +10192,7 @@ interfax.ru##.i_desktop_only
 place.ge##div[class^="advertisement"]
 playground.ru###fullscreenContainer
 ||gagauzinfo.md/uploads/promo/
-golos-naroda.kz,horoscopes.rambler.ru##.partner-news
+popcake.tv,holod.media,golos-naroda.kz,horoscopes.rambler.ru##.partner-news
 rainbowsky.ru##.mad
 kanalukraina.tv##.article_idealmedia
 poncy.ru##.media-ad
@@ -17997,7 +18004,7 @@ rbc.ru##.item_promo-card
 rbc.ru##.js-index-central-column > div[data-publisher-index]:has(div[data-yandex-show-event] > div.showcase-collection__footer > p)
 rbc.ru##div[data-placement]
 rbc.ru#?#.l-col-100h-parent > div.l-col-100h:has(> div.l-sticky > div.fox-tail > a.banner__container__link)
-autonews.ru,rbc.ru##.topline__branding__wrapper
+autodaily.ru,autonews.ru,rbc.ru##.topline__branding__wrapper
 rbc.ru##.fox-tail
 rbc.ru#?#.js-index-central-column > div.js-index-doscroll > div.item_content-cards-block:has(div[data-yandex-show^="commercial_cards"])
 rbc.ru#?#div[class*="g-banner_"]:has(> div[class^="js-rbcslider-"] > div.readmore > div[class^="smi24_"])
@@ -18206,6 +18213,7 @@ rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutr
 rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.ref-topic-guest
 rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org###main-nav > ul.floatR
 rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.attach td[colspan="3"] > ul.middot-separated > li:has(> a[href="viewtopic.php?t=6529617"])
+rutracker.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net,rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org###logo-td + td
 rutracker.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net,rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org###page_header > div#main-nav + div[style] > a[target="_blank"][style]
 rutracker.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net,rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.t-body-txt-ad
 rutracker.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net,rutracker.appspot.com,rutracker.cr,rutracker.lib,rutracker.net,rutracker.nl,rutracker.org##.attach > tbody > tr[class="row3 tCenter"]:last-child

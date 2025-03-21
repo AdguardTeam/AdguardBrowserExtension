@@ -7823,20 +7823,20 @@ export const localScriptRules = {
             }
         }
     },
-    '(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll(\'div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"])\');for(const s of n){const n=Object.keys(s).find((e=>e.includes("__reactFiber")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit"))return s.style.display="none",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();': {
-        uniqueId: "9eb4c69c348d43b1acbc388555cfd9d2",
+    '(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll(\'div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"]), div[role="complementary"] div:has(+ div[data-visualcompletion]) > div:not([style*="display: none"])\');for(const s of n){const n=Object.keys(s).find((e=>e.includes("__reactFiber")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit"))return s.style.display="none",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();': {
+        uniqueId: "e5520b88f1ab8a8177c19ea7ed1eea60",
         func: () => {
             try {
                 const e = "done";
-                if (Window.prototype.toString["9eb4c69c348d43b1acbc388555cfd9d2"] !== e) {
+                if (Window.prototype.toString.e5520b88f1ab8a8177c19ea7ed1eea60 !== e) {
                     (() => {
                         const e = new MutationObserver((() => {
-                            const c = document.querySelectorAll('div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"])');
-                            for (const n of c) {
-                                const c = Object.keys(n).find((e => e.includes("__reactFiber")));
-                                if (c) {
-                                    const t = n[c];
-                                    if (t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return n.style.display = "none", 
+                            const n = document.querySelectorAll('div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"]), div[role="complementary"] div:has(+ div[data-visualcompletion]) > div:not([style*="display: none"])');
+                            for (const o of n) {
+                                const n = Object.keys(o).find((e => e.includes("__reactFiber")));
+                                if (n) {
+                                    const t = o[n];
+                                    if (t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return o.style.display = "none", 
                                     void e.disconnect();
                                 }
                             }
@@ -7846,7 +7846,7 @@ export const localScriptRules = {
                             subtree: !0
                         });
                     })();
-                    Object.defineProperty(Window.prototype.toString, "9eb4c69c348d43b1acbc388555cfd9d2", {
+                    Object.defineProperty(Window.prototype.toString, "e5520b88f1ab8a8177c19ea7ed1eea60", {
                         value: e,
                         enumerable: !1,
                         writable: !1,
@@ -7854,7 +7854,7 @@ export const localScriptRules = {
                     });
                 }
             } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "9eb4c69c348d43b1acbc388555cfd9d2" due to: ' + e);
+                console.error('Error executing AG js rule with uniqueId "e5520b88f1ab8a8177c19ea7ed1eea60" due to: ' + e);
             }
         }
     },
@@ -8621,25 +8621,26 @@ export const localScriptRules = {
             }
         }
     },
-    '(()=>{const t={apply:(t,e,n)=>{const o=Reflect.apply(t,e,n);try{o instanceof HTMLIFrameElement&&"about:blank"===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch)}catch(t){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,t)})();': {
-        uniqueId: "3edea1aee9b3bb859f95e08c6a1229c1",
+    '(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&"about:blank"===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch,o.contentWindow.Request=window.Request)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();': {
+        uniqueId: "b2938935474adeb9fa9f991bc00ad666",
         func: () => {
             try {
                 const e = "done";
-                if (Window.prototype.toString["3edea1aee9b3bb859f95e08c6a1229c1"] !== e) {
+                if (Window.prototype.toString.b2938935474adeb9fa9f991bc00ad666 !== e) {
                     (() => {
                         const e = {
                             apply: (e, t, o) => {
                                 const n = Reflect.apply(e, t, o);
                                 try {
-                                    n instanceof HTMLIFrameElement && "about:blank" === n.src && n.contentWindow && (n.contentWindow.fetch = window.fetch);
+                                    n instanceof HTMLIFrameElement && "about:blank" === n.src && n.contentWindow && (n.contentWindow.fetch = window.fetch, 
+                                    n.contentWindow.Request = window.Request);
                                 } catch (e) {}
                                 return n;
                             }
                         };
                         Node.prototype.appendChild = new Proxy(Node.prototype.appendChild, e);
                     })();
-                    Object.defineProperty(Window.prototype.toString, "3edea1aee9b3bb859f95e08c6a1229c1", {
+                    Object.defineProperty(Window.prototype.toString, "b2938935474adeb9fa9f991bc00ad666", {
                         value: e,
                         enumerable: !1,
                         writable: !1,
@@ -8647,7 +8648,7 @@ export const localScriptRules = {
                     });
                 }
             } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "3edea1aee9b3bb859f95e08c6a1229c1" due to: ' + e);
+                console.error('Error executing AG js rule with uniqueId "b2938935474adeb9fa9f991bc00ad666" due to: ' + e);
             }
         }
     },
@@ -11323,25 +11324,6 @@ export const localScriptRules = {
                 }
             } catch (e) {
                 console.error('Error executing AG js rule with uniqueId "28268c21993e00b00d4bd15a3332c6e1" due to: ' + e);
-            }
-        }
-    },
-    "navigator.getBattery = undefined;": {
-        uniqueId: "69dbc095579f2637c25f1636d4bd7a84",
-        func: () => {
-            try {
-                const e = "done";
-                if (Window.prototype.toString["69dbc095579f2637c25f1636d4bd7a84"] !== e) {
-                    navigator.getBattery = void 0;
-                    Object.defineProperty(Window.prototype.toString, "69dbc095579f2637c25f1636d4bd7a84", {
-                        value: e,
-                        enumerable: !1,
-                        writable: !1,
-                        configurable: !1
-                    });
-                }
-            } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "69dbc095579f2637c25f1636d4bd7a84" due to: ' + e);
             }
         }
     },

@@ -1,8 +1,8 @@
-! Checksum: 5GSnu/eHXeyoT0EeXAvRaQ
+! Checksum: O8a+5ZyvjxSg/JPcdDKjYg
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.47
-! TimeUpdated: 2025-03-17T05:01:47+00:00
+! Version: 2.0.5.48
+! TimeUpdated: 2025-03-20T01:01:53+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -1293,6 +1293,9 @@ hamshahrionline.ir##.ads.box
 hamshahrionline.ir#?##ads-container > .box > header:contains(وبگردی):upward(.box)
 hamshahrionline.ir#@##ads-container
 ! >> I <<
+||ivnanews.ir/storage//photos/*.gif^$image,~third-party
+ivnanews.ir##div.advertising
+ivnanews.ir##div.responsive-image:has(> a[rel$="sponsored"])
 ||iica.ir/images/*.gif^$image,~third-party
 iica.ir##div.t3-contentwindows1:has(a[target="_blank"] > img[src$=".gif"])
 ifixit.ir#@#.advert-image
@@ -2659,6 +2662,9 @@ virgool.io##div.is-justify-content-flex-end > a#js-register-button + div[style]:
 ! https://github.com/MasterKia/PersianBlocker/pull/10
 ! https://github.com/MasterKia/PersianBlocker/pull/15
 vgdl.ir##div#ads__start_of_the_post
+||sahandpress.ir^$script,third-party
+! ivnanews.ir, vazeh.com
+||jaarchee.ir^$script,third-party
 ||vazeh.com/banners/us/*.gif^$image,~third-party
 vazeh.com#?#div.main > div.mainx1 > div:has(> span.side-title:contains(تبلیغات))
 ||up.varoone.ir/view/*/adv

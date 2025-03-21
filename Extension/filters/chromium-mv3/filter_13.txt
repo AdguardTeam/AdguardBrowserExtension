@@ -1,8 +1,8 @@
-! Checksum: HZ4j7wEu+9Q/mH2xBwtDNw
+! Checksum: y/8Ef/zQyd1ktZEdIL/eRA
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.55.32
-! TimeUpdated: 2025-03-18T08:32:29+00:00
+! Version: 2.0.55.36
+! TimeUpdated: 2025-03-20T06:32:09+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -681,6 +681,7 @@ dizipal1.cloud,dizipal2.cloud,dizipal3.cloud,dizipal4.cloud,dizipal5.cloud,dizip
 ##.fuck-ivr
 ##.fuck-ivr ~ p[style^="background-color:"]
 !
+###preRollBd
 ###footerFixedDivWrapper
 ###mPlayerFd
 ##.hrklm_oblong
@@ -1586,6 +1587,9 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+naxcivanxeberleri.com##header > a[href^="https://"][target="_blank"]
+emlakjet.com##div[class^="styles_ad"]
+fanatik.com.tr##.article-ads-container
 t24.com.tr##div[style]:has(> div[id^="div-gpt-ad"]:only-child)
 filmmodu.io#$#.embed-responsive { display: block !important; }
 filmmodu.io#$##mobile-preroll { display: none !important; }
@@ -1599,7 +1603,7 @@ yatsan.com##.personaclick-recommend
 sabah.com.tr##body > .header-top:has(> .malker:only-child)
 sabah.com.tr##div.malker
 ||wfilmizle.my/wp-content/uploads/*/wfilmizle.jpg
-wfilmizle.my###onp
+izlekolik.pro,wfilmizle.my###onp
 fotospor.com##div[class="flex center"]
 erotizimfilmizle.com##.happy-sidebar
 sondakika.com###head_box
@@ -4180,7 +4184,6 @@ yenienerji.com##.header-img > a[href][target="_blank"].block > img
 coin-turk.com##a[rel="noopener noreferrer nofollow"] > img
 artfulliving.com.tr,coinotag.com##div[style*="width: 970px;height: 250px;"]
 fotomac.com.tr,coinotag.com##div[style^="width: 728px; height: 90px;"]
-dafflix.net###preRollBd
 ||dizimov.*/taksi.js
 konhaber.com##.sagSabitKose
 konhaber.com##.ziledoviz

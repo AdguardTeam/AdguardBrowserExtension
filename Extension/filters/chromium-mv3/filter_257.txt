@@ -1,8 +1,8 @@
-! Checksum: slqvMYQlDlKqARA+abCYXQ
+! Checksum: Xas9vYfrGo4hNhOpiB96Eg
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.6.50
-! TimeUpdated: 2025-03-18T17:02:25+00:00
+! Version: 2.0.6.51
+! TimeUpdated: 2025-03-20T17:02:26+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -7087,6 +7087,9 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ! https://www.virustotal.com/gui/url/1eb22b0b60fcb61de6eee104b561163ee316cb267625a786d3503da0bd63b359
 !+ NOT_OPTIMIZED
 ||counselschambers.co.uk^$document,to=~facebook.com
+! https://www.virustotal.com/gui/url/2422c2d5d78436b9f6510865c617237e98f04c2cc69db8f566c23e24d0922f3c
+!+ NOT_OPTIMIZED
+||identityconfirrmpage.com^$all,to=~facebook.com
 ! shopping sites
 !+ NOT_OPTIMIZED
 /api/user/do_login|$xmlhttprequest,~third-party,to=com|info,method=post,header=access-control-allow-headers:/authorization\,content-type\,if-match\,if-modified-since\,if-none-match\,if-unmodified-since\,x-requested-with/i
@@ -7124,9 +7127,9 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 ||steam.workshop*.com^$document
 ! https://github.com/uBlockOrigin/uBOL-home/issues/156
 !+ NOT_OPTIMIZED
-/^https:\/\/s[ctz]y?[ace][aemnu][a-z]{1,4}o[mn][a-z]{4,8}[iy][a-z]?\.com\//$document,to=com|~steamcommunity.com
+/^https:\/\/s[cftz]y?[ace][aemnu][a-z]{1,4}o[mn][a-z]{4,8}[iy][a-z]?\.com\//$document,to=com|~steamcommunity.com
 !+ NOT_OPTIMIZED
-/^https:\/\/s[ctz]y?[ace][aemnu][a-z]{1,4}o[mn][a-z]{4,8}[iy][a-z]?\.ru\//$document,to=ru|~steamcommunity.com
+/^https:\/\/s[cftz]y?[ace][aemnu][a-z]{1,4}o[mn][a-z]{4,8}[iy][a-z]?\.ru\//$document,to=ru|~steamcommunity.com
 !+ NOT_OPTIMIZED
 /^https:\/\/steam\.(?:community)?workshop-?[a-z]+\.com\//$document,to=com|~steamcommunity.com
 ! https://www.virustotal.com/gui/url/d16f07ca49e9334d080d427294630f22f10d8925de8ae73df2128e0bdbd434a9

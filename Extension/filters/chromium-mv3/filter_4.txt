@@ -1,8 +1,8 @@
-! Checksum: VSnXY75DuH1A+N3HYrMGxg
+! Checksum: k1zUjFwtfB8XKe/7d1MJ9A
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.12.39
-! TimeUpdated: 2025-03-18T16:31:51+00:00
+! Version: 2.1.12.56
+! TimeUpdated: 2025-03-20T20:31:48+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -654,6 +654,22 @@ esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israel
 !
 ! NOTE: Specific rules
 !
+tvinsider.com##.story-metadata > ul.social-icons
+vecherka-spb.ru##section > div[class^="_container_"]:has(> div[class^="_blockIcons_"])
+dramago.in##.wrap-content > div.text-center:has(> div.textwidget a[href="https://www.facebook.com/groups/dramago.in"])
+mistral.ai##aside > div:has(> div.flex > a[href^="https://www.facebook.com/sharer/"])
+asianetnews.com##.socialIcons
+asianetnews.com#$#.articlepublish { min-height: 0 !important; }
+semafor.com##div[class=""] > div[class^="css-"]:has(> a[aria-label^="Share with"])
+hatarako.net##div[class^="SnsButton"]
+jo-katsu.com##.single-sns-box
+career-ch.com##.banner_add_LINE
+hobbyhall.fi###product-share
+lebonlogiciel.com##.box-network
+musee-pla.com##.wrap_share_btn
+shopstaff.jp##.mb-8.mt-6
+news.northeastern.edu##.author-sidebar__share
+store.tenga.co.jp##.c-product_info__share
 osce.org##.pane-social-sharing
 design-ac.net#?#.template-description-container > button.ant-btn:has(> span:contains(シェア))
 whatsnew.libreoffice.org##header > div > ul.nav:has(> li > a[href*="share"])
@@ -8097,7 +8113,7 @@ rmf24.pl##.flBox > ul > li.wykop
 krytykapolityczna.pl##.essb-like
 rottentomatoes.com###social-tools-widget
 niusdiario.es##.article__shared_bar_article-Pkjv
-lenta.ua##.new-social
+indiatimes.com,lenta.ua##.new-social
 the74million.org,klymenko-time.com,sekurak.pl##.single_share
 kartal24.com##.a-header > .qpr.cf > li[class]:not(.c-open)
 niezalezna.pl###articleBody > center > a[href][onclick^="fbshare"]
@@ -8173,7 +8189,7 @@ sadalskij.livejournal.com##.b-sharethis-livejournal
 ifeng.com##div[class^="share_box-"]
 androidmakaleniz.blogspot.com##.ikonz-social
 7news.com.au##button[class^="gtm-"][class*="-share-button"][class*="StyledButton"]
-anime-jl.com,anime-sharing.com,onemileatatime.com,keeplinks.org,h1g.jp,qiita.com,real.discount,m.vesty.co.il,happiness.com,animeflv.net,republika.id,zfile.in.ua,cj3z.com,bookmix.ru,meleklermekani.com,sukabumiupdate.com##.fa-share-alt
+hentaijl.com,anime-jl.com,anime-sharing.com,onemileatatime.com,keeplinks.org,h1g.jp,qiita.com,real.discount,m.vesty.co.il,happiness.com,animeflv.net,republika.id,zfile.in.ua,cj3z.com,bookmix.ru,meleklermekani.com,sukabumiupdate.com##.fa-share-alt
 serokell.io,sukabumiupdate.com##.share-popup
 cmjornal.pt##.social_stick > li > a[href]:not(.save)
 delivembed.cc##.controls-top-right
@@ -8914,7 +8930,7 @@ businessinsider.com,mustget.ru##.share-toggle
 mustget.ru##.sticky-sidebar .widget_boombox_social
 cinemablend.com##.share-toggle > div.contents
 ntv.com.tr,digi24.ro##.social-link
-autonews.ru,rbc.ru,sportrbc.ru##.article__header__share-block
+autodaily.ru,autonews.ru,rbc.ru,sportrbc.ru##.article__header__share-block
 rbc.ru##.article__header__counter-block > .article__header__after
 rtl.be##.vpl_SharingBut
 rtl.be##.w-content-details-article-extra-sharing
@@ -14300,6 +14316,8 @@ designboom.com,livescience.com,pbtech.co.nz,peoplesworld.org,space.com##.fa-face
 ||mailget.net^$third-party
 ||my.hellobar.com^$third-party
 !
+agenziaentrate.gov.it#%#//scriptlet('set-cookie', 'first-visit-entrate', 'false')
+jo-katsu.com###CampusCtaBanner
 quins.us###youtubeFollowStepModal
 movieshd.watch#%#//scriptlet('set-cookie', 'show_share', 'true')
 flicksbar.mom###tgWrapper
@@ -14804,6 +14822,8 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201252
+pressherald.com#@#.share-text
 ! https://x.com/nio_ug/status/1901251853746426122
 ensemble-stars-welcome-2025-diagnosis.belugacpn.jp#@#a[href^="https://x.com/intent/tweet?"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200926
