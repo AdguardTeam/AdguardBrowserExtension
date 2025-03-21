@@ -19,7 +19,7 @@
 import { type BlockingPageInitAppData } from '../../../src/background/services';
 import { messenger } from '../../../src/pages/services/messenger';
 import {
-    addGoBackButtonFallbackListener,
+    addGoBackButtonListener,
     getElementById,
     getParams,
     updatePlaceholder,
@@ -165,7 +165,7 @@ const runInit = ({
     filterId: string;
     rule: string;
 }): void => {
-    const { filtersMetadata, theme, isFirefox } = response;
+    const { filtersMetadata, theme } = response;
 
     let filterName = getFilterName(Number(filterId), filtersMetadata);
     if (!filterName) {
@@ -177,7 +177,7 @@ const runInit = ({
     updatePlaceholders({ url, filterName, rule });
     addProceedAnywayListener(url);
     addAddToAllowlistListener(url);
-    addGoBackButtonFallbackListener(isFirefox, BLOCKED_GO_BACK_BTN_ID);
+    addGoBackButtonListener(BLOCKED_GO_BACK_BTN_ID);
 };
 
 /**

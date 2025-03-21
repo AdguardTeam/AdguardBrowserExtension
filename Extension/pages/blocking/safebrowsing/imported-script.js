@@ -251,18 +251,3 @@ const initTranslations = () => {
   document.querySelectorAll("[data-id]").forEach(translateNode);
 };
 initTranslations();
-const backBtns = document.querySelectorAll("[data-back-btn]");
-const MIN_BLOCKED_PAGE_HISTORY_LENGTH = 2;
-backBtns.forEach((el) => {
-  el.addEventListener("click", (event) => {
-    if (window.history.length > MIN_BLOCKED_PAGE_HISTORY_LENGTH) {
-      try {
-        window.history.back();
-      } catch (e) {
-        console.error(`Error while going back: ${e}`);
-      }
-    } else {
-      window.close();
-    }
-  });
-});
