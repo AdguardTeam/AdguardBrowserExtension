@@ -162,7 +162,7 @@ export class KeepAlive {
                 }
                 return;
             } catch (e) {
-                logger.error(e);
+                logger.error(`[KeepAlive.executeScriptOnTab] Tab ${tab.id} error: ${e}`);
             }
         }
     }
