@@ -35,6 +35,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2332]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2332
 [#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
 
+## [5.1.70] - 2025-03-19
+
+### Fixed
+
+- Popup size issues in Android Edge.
+
+[5.1.70]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.1.68...v5.1.70
+
 ## [5.1.68] - 2025-03-07
 
 ### Changed
