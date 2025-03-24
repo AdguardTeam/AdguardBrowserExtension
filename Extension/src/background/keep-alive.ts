@@ -162,7 +162,8 @@ export class KeepAlive {
                 }
                 return;
             } catch (e) {
-                logger.error(`[KeepAlive.executeScriptOnTab] Tab ${tab.id} error: ${e}`);
+                // use debug level to avoid extension errors when blocking pages is loading
+                logger.debug(`[KeepAlive.executeScriptOnTab] Tab ${tab.id} error: ${e}`);
             }
         }
     }

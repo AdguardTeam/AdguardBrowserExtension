@@ -110,15 +110,20 @@ const updatePlaceholders = ({ url, filterName, rule }: PlaceholdersData): void =
 /**
  * Adds listener to handle "Proceed Anyway" button click.
  *
- * @param url URL to add to trusted.
+ * @param url In MV2 — URL to add to trusted, in MV3 — URL to proceed to.
+ * @param rule In MV2 — not needed, in MV3 — rule that blocked the page and should be badfiltered.
  */
-const addProceedAnywayListener = (url: string): void => {
+const addProceedAnywayListener = (url: string, rule: string): void => {
     const proceedAnywayBtn = getElementById(BLOCKED_PROCEED_ANYWAY_BTN_ID);
 
     proceedAnywayBtn.addEventListener('click', (e: Event) => {
         e.preventDefault();
 
-        messenger.addUrlToTrusted(url);
+        if (__IS_MV3__) {
+            messenger.badfilterRuleAsTrusted(rule, url);
+        } else {
+            messenger.addUrlToTrusted(url);
+        }
     });
 };
 
@@ -175,7 +180,7 @@ const runInit = ({
 
     updateTheme(theme);
     updatePlaceholders({ url, filterName, rule });
-    addProceedAnywayListener(url);
+    addProceedAnywayListener(url, rule);
     addAddToAllowlistListener(url);
     addGoBackButtonListener(BLOCKED_GO_BACK_BTN_ID);
 };
