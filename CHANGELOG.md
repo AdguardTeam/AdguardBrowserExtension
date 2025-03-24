@@ -10,13 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Send last filters update time during issue reporting [#3055].
+- Ability to exit editor by pressing `Escape` keyboard button [#2333].
 - Blocked by `$document` rules blocking page for MV3.
 
 ### Changed
 
 - Updated blocking pages for MV2 — Safebrowsing and blocked by `$document` rules.
-- Ability to exit editor by pressing `Escape` keyboard button [#2333].
-- Updated Safebrowsing and blocked by rules blocking pages.
 - Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
 
 ### Removed
