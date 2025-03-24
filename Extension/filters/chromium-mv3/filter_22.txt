@@ -1,8 +1,8 @@
-! Checksum: b0QM53vegdVBYwOw2OOIZg
+! Checksum: 66TjTlBwGpPwLsXtVLOWhA
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.11.35
-! TimeUpdated: 2025-03-20T14:32:54+00:00
+! Version: 2.0.11.38
+! TimeUpdated: 2025-03-21T16:32:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -88,6 +88,7 @@ ityouchannel.livedoor.blog,nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.
 !
 ! NOTE: Blogroll specific rules
 !
+himasoku.com##.himajin-headline
 kalender.se##.hidden.justify-center > div[class*="min-h-[800px]"]
 ||karukantimes.com/rss_top3.html
 karukantimes.com##iframe[src^="https://karukantimes.com/rss_top3.html"]
@@ -1364,6 +1365,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 ~sinoptik.ua###SinoptikInformer
 ##a[title="WhatsApp Newsletter Marketing"]
 !
+||client.contents-search-windows.com^
 ||affilizz.com^$third-party
 ||mbp-japan.com/information/$script,third-party
 ||chat*-ce.chatdealer.jp^
@@ -1536,6 +1538,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (specific)
 !
+zakzak.co.jp###main-column > .lazyload-wrapper:has(> header + .story-card-feed > span > a[data-gtm-category="contents"][data-gtm-action])
 asus.com#%#//scriptlet('hide-in-shadow-dom', '#brandAssistant-root')
 theporndude.vip,theporndude.com##.chat-widget
 pw.live##.sticky-call

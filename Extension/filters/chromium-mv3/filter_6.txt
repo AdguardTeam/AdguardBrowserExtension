@@ -1,8 +1,8 @@
-! Checksum: YYR0ZkcYoOm/JM2BATi37w
+! Checksum: L+CFhP2HAEUQx3d9x0TCjg
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.56
-! TimeUpdated: 2025-03-20T23:31:57+00:00
+! Version: 2.0.46.60
+! TimeUpdated: 2025-03-23T19:31:54+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1481,7 +1481,9 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
-chip.de#$##M1:has(> [Ue99pU13]) { margin-top: 0px !important; }
+carwow.de##.google-ad__disclaimer
+||www-assets.carwow.de/assets/google_ads-*.js
+chip.de#$##M1:has(> section[style="display: none !important;"]) { margin-top: 0px !important; }
 autoplenum.de##div[class^="list-ad-margin-"]
 autoplenum.de##div[data-sort-in-place-skip]:has(.third-party-ad-container)
 autoplenum.de##div[style^="min-height:"]:has(> .third-party-ad-container)
@@ -5581,6 +5583,9 @@ amateurbusters.com#?#.sb_area > .sb_area_headline:contains(Urlaub)
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201488
+[$path=/themenwelten]lvz.de#@#div[class^="Adstyled__AdWrapper"]
+[$path=/themenwelten]lvz.de#@#div[class^="Adstyled__AdWrapper-"]
 ! nordbayern.de - unlock ads on schnaeppchen page
 [$path=/schnaeppchen]nordbayern.de#@?#article:has(> a.box > div > .topline > .modul__teaser__dachzeile:contains([Anzeige]))
 [$path=/schnaeppchen]nordbayern.de#@#article:has(> a > .modul__teaser > .modul__teaser__anzeige)
@@ -11182,13 +11187,10 @@ ratehase.de##div[style="height: 90px; margin: 30px 0 20px 0; text-align: center;
 ratehase.de##div[style="height: 90px; margin: 30px 0 30px 0; text-align: center; width: 100%;"]
 ratehase.de##div[style="text-align:center; min-height: 260px; height: 260px; margin: 0 auto 0 auto;"]
 t-online.de##section[data-stage-layout^="custom_nativendo_"]
-finanzen.*###HomepageIssuerNews
 boersennews.de###bnTickerContainer:has(#bnTickerAdNotice)
 baur.de##.MuiBox-root:has(a[href^="//b.fr3.eu.criteo.com/rm?"])
 mobile.de##.Q8G_R:has(div[data-testid="SRP_BILLBOARD-container"])
 berlinstadtservice.de##.a.block04:has(a[href^="https://www.awin1.com/"])
-finanzen.*##.adnz-ad-placeholder--google
-finanzen.*##.adnz-ad-placeholder--wideboard
 saechsische.de##.article-box:has(> .article-box__text > .article-box__info > span.article-badge--ad)
 saechsische.de##.article-fill:has(.article-badge.article-badge--ad)
 gewinn.com##.article-latest.article-layout-0 > .row:has(.advertorial-icon)
@@ -11231,7 +11233,6 @@ onvista.de##.ov-article-teaser:has(.ov-article-teaser__onvistaCustomer)
 onvista.de##.ov-carousel__item:has(span[class="block text-sm text-ellipsis text-grey-700 mb-1 mt-4"])
 fertigung.de##.owl-carousel.owl-loaded.owl-drag:has(.label-ad-highlight)
 heise.de##.p-3.-mx-3.bg-gray-50:has(a[data-component="TeaserLinkContainer"]:not(a[href^="https://www.heise.de/api/accountservice/subscribe/"]))
-finanzen.*##.page-layout__ad-content
 prad.de##.pd-teaser:has(a[href^="https://bit.ly/"])
 expert.de##.pm-items > [widget-child]:has([ping^="//b.nl3.eu.criteo.com/rm?"])
 running-magazin.com##.post-grid-item.grid-item:has(.ad-badge)
@@ -11302,8 +11303,8 @@ bauernzeitung.ch##div:has(> .advert)
 froheweihnachten.info,weihnachten.me,weihnachts-bilder.org,weihnachts-filme.com##div:has(> img[referrerpolicy="unsafe-url"])
 onvista.de##div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:has(span[class="mt-1 block"])
 onvista.de##div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:has(span[class="mt-xxsmall block"])
+docmorris.de##div[class="min-h-[420px] px-2"]:has(a[data-testid="product-card-sponsored"])
 preispirat.ch##div[class="vc_row wpb_row vc_inner vc_row-fluid"]:has(#responsiveAd)
-finanzen.*##div[class^="ad-wrapper-"]
 mediamarkt.at,mediamarkt.de,saturn.de##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
 docmorris.de##div[data-testid="search-grid-product-card-wrapper"]:has(a[data-testid="product-card-sponsored"])
 jungefreiheit.de##div[data-widget_type="shortcode.default"]:has(.adsbygoogle)
@@ -11421,6 +11422,11 @@ welt.de#?#div[id][data-qa]:has(.c-buelent-linkbox__label:contains(Anzeige))
 winfuture-forum.de#?#div.ExtraPostBlock:has(div.post_block:contains(Anzeige)):not(.with_rep)
 zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + button
 zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + div
+finanzen.*###HomepageIssuerNews
+finanzen.*##.adnz-ad-placeholder--google
+finanzen.*##.adnz-ad-placeholder--wideboard
+finanzen.*##.page-layout__ad-content
+finanzen.*##div[class^="ad-wrapper-"]
 obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-ae-slot="pdp_old_banner"]
 @@/iqadcontroller.$script,domain=manager-magazin.de
 @@||a.bf-ad.net/adengine/chip/adengine.js$xmlhttprequest,domain=chip.de

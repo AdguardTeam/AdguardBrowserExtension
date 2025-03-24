@@ -1,8 +1,8 @@
-! Checksum: fn5wcNiLThzByHfXIJrciA
+! Checksum: jPyRXN6Zmj8vuIh1/n2uuQ
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.52.48
-! TimeUpdated: 2025-03-20T20:32:28+00:00
+! Version: 2.0.52.58
+! TimeUpdated: 2025-03-22T12:32:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -38,6 +38,9 @@
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201179
 ! https://github.com/AdguardTeam/Scriptlets/issues/482
 ! TODO: remove this when the new MV2 extension is released, current version is 5.1.62
+!
+! Yandex.Maps
+[$path=/maps]ya.ru,yandex.*#%#//scriptlet('set-constant', 'Object.prototype.isStickyAd', 'undefined')
 !
 ! Yandex.Music
 music.yandex.adult,music.yandex.ac.id,music.yandex.ae,music.yandex.al,music.yandex.app,music.yandex.asia,music.yandex.at,music.yandex.az,music.yandex.ba,music.yandex.be,music.yandex.by,music.yandex.ca,music.yandex.cc,music.yandex.cl,music.yandex.cloud,music.yandex.club,music.yandex.co,music.yandex.co.il,music.yandex.com,music.yandex.com.bd,music.yandex.com.cn,music.yandex.com.np,music.yandex.com.tr,music.yandex.de,music.yandex.dev,music.yandex.ee,music.yandex.es,music.yandex.eu,music.yandex.fi,music.yandex.fm,music.yandex.fr,music.yandex.ge,music.yandex.gr,music.yandex.hu,music.yandex.in,music.yandex.io,music.yandex.jp,music.yandex.kg,music.yandex.kr,music.yandex.kz,music.yandex.lt,music.yandex.lv,music.yandex.md,music.yandex.me,music.yandex.mobi,music.yandex.net,music.yandex.news,music.yandex.nl,music.yandex.org,music.yandex.pk,music.yandex.pl,music.yandex.pro,music.yandex.ro,music.yandex.rs,music.yandex.ru,music.yandex.se,music.yandex.site,music.yandex.su,music.yandex.tech,music.yandex.ua,music.yandex.uk,music.yandex.us,music.yandex.uz,music.yandex.work##.notify > div.deco-tooltip_notify.notify_shown
@@ -197,7 +200,7 @@ mail.ru##div[slot="main-column"] > div.stripe-wrapper
 ! e.mail.ru
 e.mail.ru,octavius.mail.ru#%#//scriptlet('prevent-setTimeout', 'adman_')
 news.mail.ru,e.mail.ru,octavius.mail.ru#%#//scriptlet('abort-on-stack-trace', 'Promise', 'onSlotRender')
-e.mail.ru,octavius.mail.ru#%#//scriptlet('remove-class', 'letter-list_top-line-adv-2pane|letter-list_top-line-adv-2pane_pony-mode|letter-list_topline-touch-adv', '.letter-list')
+e.mail.ru,octavius.mail.ru#%#//scriptlet('remove-class', 'letter-list_top-line-adv-2pane|letter-list_top-line-adv-2pane_pony-mode|letter-list_topline-touch-adv|letter-list_top-line-adv-2pane_high-block', '.letter-list')
 mail.ru#?#body > div > style + div:has(> div > div.description:contains(/До[баба]вьт[ее] Mail в исключения/))
 news.mail.ru#?#body > div:has(> div[id] > div > div.title:contains(блокировщика рекламы))
 ! dzen.ru
@@ -2005,7 +2008,7 @@ workingdays.org#%#//scriptlet('set-constant', 'isadblocking', 'false')
 nartag.com##.w-help
 pisupisu.pl###bear_wrap
 torrentgalaxy.to,torrentgalaxy.mx###blockalert
-interxh.site,xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.desi,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.guru,hamsterix.online,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.desi,xhamster14.com,xhamster15.com,xhamster17.com,xhamster17.com.bd,xhamster17.com.np,xhamster17.desi,xhamster18.com,xhamster18.com.bd,xhamster18.com.np,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.co,xhamster3.com.bd,xhamster3.com.np,xhamster3.desi,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##aside[data-role$="ab-message"]
+interxh.site,xhspot.com,xhwide5.com,xhchannel.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,valuexh.life,xhdate.world,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,xhamster42.desi,xhvid.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.desi,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.desi,xhamster14.com,xhamster15.com,xhamster17.com,xhamster17.com.bd,xhamster17.com.np,xhamster17.desi,xhamster18.com,xhamster18.com.bd,xhamster18.com.np,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.co,xhamster3.com.bd,xhamster3.com.np,xhamster3.desi,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##aside[data-role$="ab-message"]
 animefenix.tv###my-modal
 olarila.com##.__b-popup1__
 olarila.com##.__b-popup1__ + div.esPopupWrapper
@@ -4421,6 +4424,9 @@ aol.com#$#.ad__tile { height: 10px!important; position: absolute!important; left
 !
 ! SECTION: Popups - Regular rules
 !
+pro-golfacademy.com##.float-area[style^="bottom:"]
+sp-jp.fujifilm.com##.float-banner
+playground.ru###onetap_google_intermediate_iframe
 wikimedia.org##.banner-container
 wikimedia.org##.vector-sitenotice-container
 apsiyon.com###whatsapp-chat
@@ -4893,7 +4899,7 @@ store.steampowered.com#%#//scriptlet('trusted-click-element', '.broadcast_embed_
 ew.com#%#//scriptlet('trusted-click-element', '.jwplayer > .jw-wrapper > .jw-float-bar > div[class*="jw-button-color"][aria-label="Close"]')
 carseven.co.jp##.fix_box
 communities.win###app > main ~ div:has(> div > button[aria-label="Close"])
-edumail.icu##.fixed.bottom-0
+novapost.com,edumail.icu##.fixed.bottom-0
 wenku.baidu.com##.wk-chat-modal
 smclinic.ru#%#//scriptlet('set-constant', 'popup.showWin', 'noopFunc')
 mydown.yesky.com##.bottom_fc
@@ -11098,9 +11104,6 @@ www.kinopoisk.ru#$#body[class*="styles_body"] { overflow: auto !important; }
 !
 ! END: Yandex
 !
-! xhamster.com
-interxh.site,xhspot.com,xhwide5.com,xhchannel.com,xhchannel2.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,xhxh3.xyz,valuexh.life,xhdate.world,xhtab4.com,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,xhamster42.desi,xhvid.com,xhtab2.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,megaxh.com,xhamster16.com,xhamster16.com.bd,xhamster16.com.np,xhamster16.desi,hamsterix.club,hamsterix.com.bd,hamsterix.com.np,hamsterix.guru,hamsterix.online,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.com,xhamster13.com.bd,xhamster13.com.np,xhamster13.desi,xhamster14.com,xhamster15.com,xhamster17.com,xhamster17.com.bd,xhamster17.com.np,xhamster17.desi,xhamster18.com,xhamster18.com.bd,xhamster18.com.np,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.co,xhamster3.com.bd,xhamster3.com.np,xhamster3.desi,xhamster4.desi,xhamster20.com,xhamster22.com,xhamster23.com,xhamster25.com,xhamster26.com,xhamster27.com,openxh.com,xhamster31.com,xhamster32.com,xhamster34.com,xhamster36.com,xhamster37.com,xhamster38.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster39.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##div[class^="popup-"][class*="withShadow"]
-!
 ! Tegna Inc.
 myfoxzone.com,wtol.com,5newsonline.com,fox61.com,wthr.com,wqad.com,fox43.com,10tv.com,localmemphis.com,newswest9.com,weareiowa.com,krem.com,kcentv.com,cbs19.tv,kiiitv.com,12newsnow.com,cbs8.com,kvue.com,wbir.com,wltx.com,wgrz.com,newscentermaine.com,whas11.com,ktvb.com,13wmaz.com,firstcoastnews.com,wnep.com,wtsp.com,wfaa.com,kgw.com,king5.com,wcnc.com,kens5.com,ksdk.com,khou.com,wusa9.com,abc10.com,wwltv.com,11alive.com,wfmynews2.com,thv11.com,9news.com,wkyc.com,wzzm13.com,kare11.com,13newsnow.com,12news.com#$?#div[data-module="grid"] > dialog[data-name="exitInterstitial"] { remove: true; }
 !
@@ -13024,6 +13027,10 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+mathrubhumi.com##.whatsapp_follow
+mathrubhumi.com##.mpp-story-bottom-updates
+myglo.com.ua###telegram_button
+sonxeber.az##.telegram_klas
 sourceforge.net###get-updates
 skillbox.ru##.stk-post > div.stk-grid:has(> .stk-grid-col > div[data-ce-tag="grid"] a[data-container-name="Telegram"])
 uu.se##.card-move-margin:has(> .card-body > .sv-skip-spacer > .sv-linked-portlet > form[action^="https://ui.ungpd.com/Api/Subscriptions/"])
@@ -13226,7 +13233,6 @@ clickhouse.com##.duration-300.ease-in-out.rounded-lg:has(iframe[src^="/marketo-f
 securityweek.com##.security-newsletter-container
 hartvannederland.nl##div[class]:not([id]):has(> div + form > input[type="email"])
 winaero.com###dcpa
-winaero.com##.dcpa-close
 fxstreet.es##div[id^="subscribetonewsletter"]
 modcombo.com##.box-discord
 boundless.com##.o-block:has(> form[data-lead-magnet-name="bit-newsletter"])
@@ -13732,7 +13738,7 @@ skdesu.com##.inside-article > div.gb-container:has(> div.gb-container a[id="face
 bumbutter.co.uk##.shopui--modal[data-newsletterpopup]
 rawstory.com##.body-description > div[id^="lightbox-inline-form-"]
 news.zoom.us##.zm-newsletter-section
-liverpoolecho.co.uk##div[data-testid="newsletter-signup-inline"]
+mirror.co.uk,liverpoolecho.co.uk##div[data-testid="newsletter-signup-inline"]
 tsunagujapan.com#$##js-modalWrap.active { display: none !important; }
 tsunagujapan.com#$#.is-modalOpen { overflow: auto !important; }
 tsunagujapan.com##.sns_links_newsletter
