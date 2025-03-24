@@ -317,5 +317,5 @@ export const Chart = ({
      */
     useObservePopupHeight(isAndroidBrowser, handleResize, handleCleanUp);
 
-    return <div className="chart" id="chart" />;
+    return <div className="chart" id="chart" aria-hidden="true" />;
 };

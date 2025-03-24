@@ -42,6 +42,7 @@ export const Setting = (props) => {
                 inverted,
                 value,
                 label,
+                labelId,
                 className,
                 disabled,
                 optimistic,
@@ -53,6 +54,7 @@ export const Setting = (props) => {
                     inverted={inverted}
                     value={value}
                     label={label}
+                    labelId={labelId}
                     className={className}
                     disabled={disabled}
                     optimistic={optimistic}
@@ -65,6 +67,7 @@ export const Setting = (props) => {
                 handler,
                 options,
                 value,
+                labelId,
             } = props;
             const changeHandler = (currentValue) => {
                 let dataValue = parseInt(currentValue, 10);
@@ -80,6 +83,7 @@ export const Setting = (props) => {
                     handler={changeHandler}
                     options={options}
                     value={value}
+                    labelId={labelId}
                     withContext
                 />
             );

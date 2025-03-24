@@ -1,8 +1,24 @@
 .nav {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
     padding: 8px 0;
+    margin-bottom: 40px;
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        &-item {
+            display: inline-block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            /* To align 'li' height to children 'a' element */
+            line-height: 0;
+        }
+    }
 
     &__item {
         padding: 16px 32px;
@@ -21,20 +37,19 @@
             background-color: var(--fills-backgrounds-page-background-additional-hovered);
         }
 
+        &:focus-visible {
+            outline-offset: -2px;
+        }
+
         &--active {
             background-color: var(--fills-backgrounds-page-background-default);
             position: relative;
             font-weight: 600;
-            overflow: visible;
 
             &:hover {
                 background-color: var(--fills-backgrounds-page-background-default);
                 cursor: default;
             }
-        }
-
-        &:last-child {
-            margin-bottom: 40px;
         }
     }
 

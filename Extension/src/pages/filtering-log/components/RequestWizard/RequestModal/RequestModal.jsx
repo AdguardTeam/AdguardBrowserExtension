@@ -142,6 +142,7 @@ const RequestModal = observer(() => {
                 ref={dragBar}
                 className="request-modal__dragbar"
                 onMouseDown={mouseDownHandler}
+                aria-hidden="true"
             />
             {modalContent}
         </Modal>

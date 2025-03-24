@@ -50,7 +50,7 @@ export async function sleepIfNecessary(
  */
 export function addMinDurationTime<
     T extends (...args: any[]) => Promise<R>,
-    R,
+    R = Awaited<ReturnType<T>>,
 >(fn: T, minDurationMs: number): (...args: Parameters<T>) => Promise<R> {
     return async (...args: Parameters<T>): Promise<R> => {
         const start = Date.now();

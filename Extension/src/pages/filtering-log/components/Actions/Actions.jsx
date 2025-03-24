@@ -77,7 +77,7 @@ const Actions = observer(() => {
                         id={preserveLogInputId}
                         onChange={preserveLogHandler}
                         checked={preserveLogEnabled}
-                        aria-label={preserveLogTooltipText}
+                        aria-label={translator.getMessage('filtering_log_preserve_log_on')}
                     />
                     {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <label
@@ -86,7 +86,11 @@ const Actions = observer(() => {
                     >
                         <Popover text={preserveLogTooltipText}>
                             <div className={preserveLogClassName}>
-                                <Icon id="#record" classname="icon--24" />
+                                <Icon
+                                    id="#record"
+                                    classname="icon--24"
+                                    aria-hidden="true"
+                                />
                             </div>
                         </Popover>
                     </label>
@@ -99,7 +103,11 @@ const Actions = observer(() => {
                             aria-label={translator.getMessage('filtering_clear_log_events')}
                             onClick={clearLogHandler}
                         >
-                            <Icon id="#trash" classname="icon--24 icon--red-default" />
+                            <Icon
+                                id="#trash"
+                                classname="icon--24 icon--red-default"
+                                aria-hidden="true"
+                            />
                         </button>
                     </Popover>
                 </div>
@@ -109,7 +117,11 @@ const Actions = observer(() => {
                         type="button"
                         onClick={refreshPage}
                     >
-                        <Icon id="#reload" classname="icon--24 actions__refresh--icon" />
+                        <Icon
+                            id="#reload"
+                            classname="icon--24 actions__refresh--icon"
+                            aria-hidden="true"
+                        />
                         <span className="actions__refresh--text">
                             {translator.getMessage('filtering_refresh_tab_short')}
                         </span>

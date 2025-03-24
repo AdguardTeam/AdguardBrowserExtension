@@ -25,6 +25,7 @@ import React, {
 } from 'react';
 
 import { Icon } from '../../../../common/components/ui/Icon';
+import { translator } from '../../../../../common/translators/translator';
 
 import './add-custom-input.pcss';
 
@@ -90,13 +91,13 @@ const AddCustomInput = ({
                     <button
                         type="button"
                         className="button add-custom-input__clear-btn"
-                        // TODO: Probably we need add new aria-label text for clearing input?
-                        // aria-label={reactTranslator.getMessage('clear_input_title')}
+                        aria-label={translator.getMessage('clear_button_title')}
                         onClick={clearHandler}
                     >
                         <Icon
                             id="#cross"
                             classname="icon--24 icon--gray-default"
+                            aria-hidden="true"
                         />
                     </button>
                 )}

@@ -15,17 +15,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated blocking pages for MV2 — Safebrowsing and blocked by `$document` rules.
+- Ability to exit editor by pressing `Escape` keyboard button [#2333].
+- Updated Safebrowsing and blocked by rules blocking pages.
+- Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
 
 ### Removed
 
 ### Fixed
 
+- Cannot maximize Filtering log in Firefox for Windows [#2464].
 - Unable to paste text into user rules input field on Android [#3061].
 - Invalid HTML rule selectors are breaking site loading [#2646].
 
+[#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
 [#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
 [#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
 [#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
+[#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
+[#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
+[#2332]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2332
+[#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
 
 ## [5.1.68] - 2025-03-07
 
