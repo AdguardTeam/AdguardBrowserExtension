@@ -256,7 +256,7 @@ export class Engine implements TsWebExtensionEngine {
             settings,
             filtersPath: 'filters/',
             ruleSetsPath: 'filters/declarative',
-            blockingTrustedRules,
+            blockingTrustedRules: blockingTrustedRules || [],
         };
     }
 
