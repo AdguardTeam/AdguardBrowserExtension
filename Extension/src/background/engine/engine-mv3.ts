@@ -155,6 +155,11 @@ export class Engine implements TsWebExtensionEngine {
         if (skipLimitsCheck) {
             logger.info('With skip limits check.');
         }
+
+        if (configuration) {
+            throw new Error(`TEST123: ${configuration.blockingTrustedRules}`);
+        }
+
         const result = await this.api.configure(configuration);
 
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
@@ -241,8 +246,6 @@ export class Engine implements TsWebExtensionEngine {
         //     };
         // }));
 
-        await DocumentBlockApi.init();
-
         const blockingTrustedRules = await DocumentBlockApi.getTrustedDomains();
 
         return {
@@ -258,7 +261,7 @@ export class Engine implements TsWebExtensionEngine {
             settings,
             filtersPath: 'filters/',
             ruleSetsPath: 'filters/declarative',
-            blockingTrustedRules: blockingTrustedRules || [],
+            blockingTrustedRules,
         };
     }
 
