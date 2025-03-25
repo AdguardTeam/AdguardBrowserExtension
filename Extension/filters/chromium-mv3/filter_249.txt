@@ -1,13 +1,13 @@
-! Checksum: 4LbgoPIaBy0DjDJfn+D5vw
+! Checksum: gyzJ7nyIoEjODNH4S7ukHg
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.92
-! TimeUpdated: 2025-03-02T21:02:24+00:00
+! Version: 2.0.7.94
+! TimeUpdated: 2025-03-24T01:01:57+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! Last modified: 02March2025v3
+! Last modified: 21March2025v2
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -130,7 +130,7 @@ vredens-gnag.no##.ab-appnexus-ads-wrapper
 spillespill.no##.banner-leaderboard
 tvkampen.com,tvsporten.dk###clickable-bg
 tvsporten.dk##a[href^="/_c/"][rel=nofollow]
-tvsporten.dk##.odds
+tvkampen.com,tvsporten.dk##.odds
 aftenposten.no##.container > div[class=block]
 xstra.no##.td-fix-index
 tek.no#?#main > section > section:contains(/^an{2}onse$/)
@@ -204,7 +204,6 @@ gamer.no##div[data-unit$=banner]
 sysla.no##.ad-nexus-ad
 bilasolur.is##*:has(>div[class*=advertisement-spot])
 filmweb.no##[class^=ad_adWrapper]
-tvkampen.com##.odds
 elbil24.no#?#.preview:has(.kicker:contains(/^.*an{2}onse.*$/i))
 tvkampen.com,tvsporten.dk###event_banner
 pulze.dk###topads
@@ -223,7 +222,6 @@ nettavisen.no,www-nettavisen-no.translate.goog##*:has(>amedia-include[param-edit
 sundhedslex.dk##.boxl
 costume.no##.teaser--link:has(.teaser__cat--sponsorlabel)
 mytastenor.com,mytastednk.com##.affiliate
-itavisen.no##.td-adspot-title
 byggfakta.no##.sponsor-row
 nattogdag.no##.category-annonse
 norskemagasinet.com##a[href*=nett][href*=spill]
@@ -519,7 +517,7 @@ bilgalleri.dk##.container-featured + .container:last-of-type
 180.ae,180.agency,180.co.il,180.co.jp,180.co.nz,180.com,180.com.bd,180.com.np,180.com.tw,180.com.uy,180.cz,180.dk,180.fi,180.gg,180.gr,180.in,180.it,180.kz,180.me,180.mx,180.net,180.net.au,180.no,180.se,180.tw##.cc-top-ad-outer
 jyllands-posten.dk,jyllands--posten-dk.translate.goog##div[id^=MediumRectangle]
 verktoy24.no,inputmag.dk##.stream-item
-vielskerserier.dk,udeoghjemme.dk##div.hidden.justify-center
+udeoghjemme.dk,vielskerserier.dk##div.hidden.justify-center
 gunnarandreassen.com#?#a:contains(/^.*[kc]as\ino.*$/i)
 parcferme.no##.code-block > p
 boligdebatten.dk###selvsalg-reklame
@@ -1270,6 +1268,11 @@ sonderborgnyt.dk###sidebar > section:has(> .add)
 dagbladet.no###svelte-app-articlestickytopbar:has(div[class*=addwrapper i])
 tara.no##div[type=inserted_code]
 senest.dk##.d-none-mobile.generic-widget
+itavisen.no##:is(h3,figure):has(> a[data-lasso-id])
+itavisen.no#?#p:contains(/^Annonse$/i):has(+ h3 > a[data-lasso-id])
+itavisen.no##.clearfix > .code-block:has([data-ad-unit-id])
+itavisen.no##p:has(> em > a[data-lasso-id])
+vg.no##section[class*=articles_zulis]
 ! — — — — — — — — —
 ! 🇳🇴: Oppføringer for minst 3 nettsteder
 ! 🇬🇧: Entries for at least 3 websites
@@ -1509,16 +1512,6 @@ _visittkortannonse_$image
 @@||n247.no/salg/karusell_17
 @@||radiohallingdal.no/abanners/img/facebook.
 @@||siglo.is/static/strevda/*upphafssida$image
-@@||storfjordnytt.no/wp-content/uploads/*/alfred.jpg^
-@@||storfjordnytt.no/wp-content/uploads/*/dame.jpg^
-@@||storfjordnytt.no/wp-content/uploads/*/komentar*.jpg^
-@@||storfjordnytt.no/wp-content/uploads/*/les*bilete*.jpg^
-@@||storfjordnytt.no/wp-content/uploads/*/m_vinje.jpg^
-@@||storfjordnytt.no/wp-content/uploads/*/tafjord*.jpg^
-@@||storfjordnytt.no/wp-content/uploads/*300x300.jpg^
-@@||storfjordnytt.no/wp-content/uploads/2*/1*.jpg^
-@@||storfjordnytt.no/wp-content/uploads/2*/2*.jpg^
-@@||storfjordnytt.no/wp-content/uploads/2*/3*.jpg^
 _300x250px-*.gif^$domain=ilaks.no
 _300x500pix$domain=rykindribe.dk,image
 _930x180pix$domain=rykindribe.dk,image
@@ -1653,12 +1646,7 @@ contentMarketing$xmlhttprequest,domain=sol.no|sol-no.translate.goog
 ||ssl.p.jwpcdn.com^*/sharing.js$important,script,domain=eurosport.at|eurosport.bg|eurosport.co.in|eurosport.co.uk|eurosport.co.za|eurosport.com|eurosport.com.ar|eurosport.com.bd|eurosport.com.np|eurosport.com.tr|eurosport.cz|eurosport.de|eurosport.dk|eurosport.es|eurosport.fi|eurosport.fr|eurosport.hu|eurosport.in|eurosport.in.ua|eurosport.io|eurosport.it|eurosport.jp|eurosport.net|eurosport.nl|eurosport.no|eurosport.pl|eurosport.pt|eurosport.ro|eurosport.rs|eurosport.ru|eurosport.se|eurosport.shop|eurosport.su|eurosport.tv|gamereactor.asia|gamereactor.biz|gamereactor.cn|gamereactor.com|gamereactor.com.bd|gamereactor.com.np|gamereactor.com.tr|gamereactor.cz|gamereactor.de|gamereactor.dk|gamereactor.es|gamereactor.eu|gamereactor.fi|gamereactor.fr|gamereactor.gr|gamereactor.id|gamereactor.it|gamereactor.jp|gamereactor.kr|gamereactor.me|gamereactor.mobi|gamereactor.nl|gamereactor.no|gamereactor.pl|gamereactor.pt|gamereactor.ru|gamereactor.se|gamereactor.vn
 ||ssl.p.jwpcdn.com^*/vast.js$important,script,domain=eurosport.at|eurosport.bg|eurosport.co.in|eurosport.co.uk|eurosport.co.za|eurosport.com|eurosport.com.ar|eurosport.com.bd|eurosport.com.np|eurosport.com.tr|eurosport.cz|eurosport.de|eurosport.dk|eurosport.es|eurosport.fi|eurosport.fr|eurosport.hu|eurosport.in|eurosport.in.ua|eurosport.io|eurosport.it|eurosport.jp|eurosport.net|eurosport.nl|eurosport.no|eurosport.pl|eurosport.pt|eurosport.ro|eurosport.rs|eurosport.ru|eurosport.se|eurosport.shop|eurosport.su|eurosport.tv|gamereactor.asia|gamereactor.biz|gamereactor.cn|gamereactor.com|gamereactor.com.bd|gamereactor.com.np|gamereactor.com.tr|gamereactor.cz|gamereactor.de|gamereactor.dk|gamereactor.es|gamereactor.eu|gamereactor.fi|gamereactor.fr|gamereactor.gr|gamereactor.id|gamereactor.it|gamereactor.jp|gamereactor.kr|gamereactor.me|gamereactor.mobi|gamereactor.nl|gamereactor.no|gamereactor.pl|gamereactor.pt|gamereactor.ru|gamereactor.se|gamereactor.vn|vg.no
 ||static.finncdn.no/*/FINNExternalDistribution.js^$domain=aftenbladet.no|aftenposten.no
-||static.vg.no/css/admark_top.gif
-||storfjordnytt.no/wp-content/uploads/*.jpg^
-||storfjordnytt.no/wp-content/uploads/*/26_hh.png^
-||storfjordnytt.no/wp-content/uploads/*_bilsenter.jpg^$important
-||storfjordnytt.no/wp-content/uploads/*_hovleriet.jpg^$important
-||storfjordnytt.no/wp-content/uploads/*_muri.jpg^$important
+||static.vg.no/css/admark_top.gif^
 ||stream.fo/wp-content/uploads/*-300x111.jpg^
 ||teknologiskmatforum.no/ViewImage.aspx?*width=343^$image
 ||tvsporten.dk/media/tvchannels/100x60_logo.png^
@@ -2072,6 +2060,10 @@ _980banner_
 ://aj2*.bid^$xmlhttprequest
 ! gatNO, drivaNO (18/02/2025)
 ##div.gridnetboard
+! https://www•tv2•no/livesport/vintersport/oversikt (09/03/2025)
+tv2.no##.aside > .ad-container
+! TV2dk's feeds on phones (11/03/2025)
+##div.tc_adwrap
 ! — — — — — — —
 ! 🇳🇴: Oppføringer med spesielle omstendigheter
 ! 🇬🇧: Entries with special circumstances

@@ -1,8 +1,8 @@
-! Checksum: r25E60rDVtosnkS5CI7ezA
+! Checksum: RCLU9RZQ1JesUFUYOPJgBw
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.64
-! TimeUpdated: 2025-03-05T14:40:32+00:00
+! Version: 2.0.10.76
+! TimeUpdated: 2025-03-22T22:32:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -389,6 +389,43 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201324
+||read.amazon.$removeparam=ref
+! bluestacks.com
+||support.bluestacks.com^$removeparam=email
+||support.bluestacks.com^$removeparam=guid
+||support.bluestacks.com^$removeparam=oem
+||support.bluestacks.com^$removeparam=client_ver
+||support.bluestacks.com^$removeparam=install_id
+||support.bluestacks.com^$removeparam=country
+! https://github.com/AdguardTeam/AdguardFilters/issues/200852
+||carwow.de^$removeparam=utm_group
+||carwow.de^$removeparam=affiliate_ref
+||carwow.de^$removeparam=impact_ad_id
+||carwow.de^$removeparam=impact_click_id
+||carwow.de^$removeparam=impact_product_sku
+! unity.com
+||assetstore.unity.com^$removeparam=aid
+! airvpn.org
+||airvpn.org^$removeparam=referred_by
+! protonvpn.com
+||go.getproton.me^$removeparam=aff_c
+! purevpn.com
+||billing.purevpn.com/aff.php$removeparam=aff
+! strongvpn.com
+||strongvpn.com$removeparam=tr_aid
+! trustzonevpn.info
+||trustzonevpn.info/r.php$removeparam=RID
+! https://github.com/AdguardTeam/AdguardFilters/issues/200391
+||get.surfshark.net^$removeparam=aff_c
+||get.surfshark.net^$removeparam=aff_id
+||get.surfshark.net^$removeparam=offer_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/200392
+||hide.me^$removeparam=friend
+! https://github.com/AdguardTeam/AdguardFilters/issues/200262
+||weareholy.com^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/200495
+||eventbrite.ca^$removeparam=aff
 ! accounts.adblockplus.org
 ||accounts.adblockplus.org^$removeparam=an
 ||accounts.adblockplus.org^$removeparam=av
@@ -631,7 +668,8 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 ||puma.com^$removeparam=sc_eh
 ! reddit.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191029
-||reddit.com^$removeparam=/deep_link|3p/
+||reddit.com^$removeparam=%243p
+||reddit.com^$removeparam=%24deep_link
 ||reddit.com^$removeparam=post_index
 ! reddit.com - email tracking
 ||reddit.com^$removeparam=post_fullname
@@ -2268,7 +2306,7 @@ $removeparam=dt_dapp,domain=douban.com|163.com
 ||jasonsavard.com^$removeparam=/cUrl|ref/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196606
 ! https://www.expressvpn.com/tfk?a_aid=tf, https://vpnarea.com/front/member/signup?a_aid=torrentgalaxy
-$removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt
+$removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt|affiliate.privatevpn.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97742
 ||hog.*^$removeparam=ad
 ! https://github.com/AdguardTeam/AdguardFilters/pull/95024
@@ -2427,7 +2465,6 @@ $removeparam=search_domain,domain=ya.ru|yandex.adult|yandex.ac.id|yandex.ae|yand
 ||market.yandex.$removeparam=offerid
 ||market.yandex.$removeparam=show-uid
 ||market.yandex.$removeparam=uniqueId
-||market.yandex.$removeparam=do-waremd5
 ||market.yandex.$removeparam=vid
 ||market.yandex.$removeparam=mclid
 ||market.yandex.$removeparam=clid
@@ -2654,7 +2691,6 @@ $removeparam=s,domain=twitter.com|x.com
 !
 ||realitykings.com^$removeparam=ats
 ||marktjagd.de^$removeparam=client
-||kaspersky.com^$removeparam=icid
 ||coursera.org^$removeparam=siteID
 ||mag2.com^$removeparam=trflg
 ||dailymail.co.uk^$removeparam=ito
@@ -2807,6 +2843,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199306#issuecomment-2678167845
 ! BUG: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
 ! TODO: remove when this issue is fixed in MV2 extension
+! https://github.com/AdguardTeam/AdguardFilters/issues/200080
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198365
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199110
 ! TODO: remove when this issue is fixed - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076

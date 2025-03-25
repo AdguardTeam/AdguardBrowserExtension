@@ -1,8 +1,8 @@
-! Checksum: i1B1zdWk2gg/p+etheSIHg
+! Checksum: 66TjTlBwGpPwLsXtVLOWhA
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.11.24
-! TimeUpdated: 2025-03-05T22:39:55+00:00
+! Version: 2.0.11.38
+! TimeUpdated: 2025-03-21T16:32:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -25,6 +25,7 @@
 ! SECTION: Widgets (sougo RSS) - Blogroll
 !
 ! NOTE: Blogroll generic
+||re.trigs-sockets.com^
 ||feedgrabbr.com^$third-party
 ||rss.solty.biz^
 ||yameyou.com^$third-party
@@ -87,6 +88,11 @@ ityouchannel.livedoor.blog,nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.
 !
 ! NOTE: Blogroll specific rules
 !
+himasoku.com##.himajin-headline
+kalender.se##.hidden.justify-center > div[class*="min-h-[800px]"]
+||karukantimes.com/rss_top3.html
+karukantimes.com##iframe[src^="https://karukantimes.com/rss_top3.html"]
+yoi.shueisha.co.jp##main >section.section:has(> div.section-container > div#sp_sockets_recommend)
 squallchannel.com###hg78d
 ||alfalfalfa.com/js/rss/
 ||alfalfalfa.com/js/blogparts/otakamu_articles.js
@@ -409,7 +415,7 @@ yokohama-sports.com##.antenna-midashi
 yokohama-sports.com##.text-rss-list
 hmangamatome.net##.rssbox_midashi
 hmangamatome.net,sexytvcap.com,erodoujinjohoukan.com###toprss
-/wp-content/plugins/chaty/*$domain=canadaglobalinfo.com
+/wp-content/plugins/chaty/*$domain=krx18.com|canadaglobalinfo.com|mkvcinemas.kim
 ||vippers.jp/2ch-c_iframe_
 netouyonews.net,gameinn.jp##.wp-rss-template-container
 gameinn.jp#?#.article-under-box > p.sidetop_p:has(+ .wp-rss-template-container)
@@ -1240,6 +1246,8 @@ beasoku.com##.rss-block
 ! 2chblog.jp,blog.jp,blog.livedoor.jp,bloggeek.jp,blogism.jp,blogo.jp,blogstation.jp,blogto.jp,cafeblog.jp,corpblog.jp,diary.to,doorblog.jp,dreamlog.jp,gger.jp,golog.jp,ldblog.jp,liblo.jp,livedoor.biz,livedoor.blog,myjournal.jp,mynikki.jp,officeblog.jp,officialblog.jp,publog.jp,storeblog.jp,teamblog.jp,techblog.jp,weblog.to,xxxblog.jp,youblog.jp,seesaa.net,blog.fc2.com,blog.2nt.com
 ! specify subdomain or use unique and safe selector; for blog.livedoor.jp make your rule as specific as possible or use $path
 !
+[$path=/g_ogasawara]blog.livedoor.jp##[style^="font-family:"]:has(> a[href^="https://dlaf.jp/"])
+[$path=/g_ogasawara]blog.livedoor.jp##a[href^="https://dlaf.jp/"][href*="/books/dlaf/"]
 [$path=/misopan_news]blog.livedoor.jp###headline, .article-outer-3 > div#ad2 + div.article-option
 blog.livedoor.jp##.article-body-more > div.t_b[style="font-weight:bold;font-size:18px;line-height:27px;margin-bottom:30px;"] ~ span[style="font-size: 125%;"] > b
 blog.livedoor.jp##.article-body-more > div.t_b[style="font-weight:bold;font-size:18px;line-height:27px;margin-bottom:30px;"] ~ span[style="font-size: 125%;"] + div:not([class]) > span[style="font-size: 125%;"]
@@ -1357,6 +1365,9 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 ~sinoptik.ua###SinoptikInformer
 ##a[title="WhatsApp Newsletter Marketing"]
 !
+||client.contents-search-windows.com^
+||affilizz.com^$third-party
+||mbp-japan.com/information/$script,third-party
 ||chat*-ce.chatdealer.jp^
 .az/livechat/
 /crm/site_button/loader_*.js$domain=~tvoe.live
@@ -1527,6 +1538,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (specific)
 !
+zakzak.co.jp###main-column > .lazyload-wrapper:has(> header + .story-card-feed > span > a[data-gtm-category="contents"][data-gtm-action])
 asus.com#%#//scriptlet('hide-in-shadow-dom', '#brandAssistant-root')
 theporndude.vip,theporndude.com##.chat-widget
 pw.live##.sticky-call
@@ -2393,6 +2405,12 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+tvrepublika.pl###block-tv-republika-reklamanaglowek
+tokfm.pl##how_much-component
+dramago.in##.halim--notice
+nashaniva.com##iframe[name="donorbox"]
+videogameschronicle.com##.vgc-patreon-promo
+videogameschronicle.com##.vgc-layout div[class^="house--"]
 svtv.org##.sidebars__block--footer
 svtv.org##.post-fullpage-support
 dailymaverick.co.za###ribbon-container
@@ -2407,7 +2425,6 @@ matrix.org##.post-content > div.callout
 vox.com#?##zephr-anchor > aside:has(> form > div[class] div[class] > .duet--cta--button > span:contains(Monthly))
 rsf.org###block-rsf-bandeaux-alerte-block
 holod.media##.a-donate-block
-montanafreepress.org##.newspack-popup-container
 ghostery.com##.ds-notification-donate-container
 ipauniverse.com###splash-screen:has(.donate-button)
 echofm.online##.wp-embed-responsive > a[href="/p/raise?ver=solid"]
@@ -2490,7 +2507,6 @@ echofm.online##main > article.wp-embed-responsive ~ div[class^="sc-"]:has(> div[
 proekt.media##proekt-blocks > proekt-block:has(span#donateButton)
 verstka.media##.verstka-post-content > p.has-background:has(> em + a[href="https://boosty.to/verstkamedia/donate"])
 gigazine.net###donation_wrapper
-montanafreepress.org##.newspack-popup-container:has(a[href^="https://montanafreepress.org/donate?"])
 vsquare.org##.section-blocks div.elements > a[href="https://vsquare.org/support-us/"]
 getcomics.org##.wpfront-notification-bar-spacer
 insideclimatenews.org##.icn-donate-block
@@ -2632,6 +2648,10 @@ hromadske.ua#$#body { overflow: visible !important; }
 ! NOTE: Widgets - Another end ⬆️
 ! !SECTION: Widgets - Another
 !
+!+ NOT_OPTIMIZED
+montanafreepress.org##.newspack-popup-container
+!+ NOT_OPTIMIZED
+montanafreepress.org##.newspack-popup-container:has(a[href^="https://montanafreepress.org/donate?"])
 !+ NOT_OPTIMIZED
 bi-girl.net##.top_link_text_sp
 !+ NOT_OPTIMIZED
