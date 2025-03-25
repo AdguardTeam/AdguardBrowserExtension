@@ -242,7 +242,7 @@ export class PagesApi {
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            product_type: 'Extension',
+            product_type: 'Ext',
             manifest_version: encodeURIComponent(manifestDetails.manifest_version),
             product_version: encodeURIComponent(manifestDetails.version),
             url: encodeURIComponent(siteUrl),
