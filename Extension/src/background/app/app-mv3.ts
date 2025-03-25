@@ -247,7 +247,7 @@ export class App {
 
         /**
          * Initializes Document block module
-         * - Initializes persisted cache for trusted domains
+         * - Initializes persisted cache for trusted rules (to badfilter them temporarily)
          * - Adds listener for "add trusted domain" message.
          */
         await DocumentBlockService.init();
