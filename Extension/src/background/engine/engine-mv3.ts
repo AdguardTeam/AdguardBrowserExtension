@@ -156,10 +156,6 @@ export class Engine implements TsWebExtensionEngine {
             logger.info('With skip limits check.');
         }
 
-        if (configuration) {
-            throw new Error(`TEST123: ${configuration.blockingTrustedRules}`);
-        }
-
         const result = await this.api.configure(configuration);
 
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
