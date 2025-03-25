@@ -241,6 +241,8 @@ export class Engine implements TsWebExtensionEngine {
         //     };
         // }));
 
+        await DocumentBlockApi.init();
+
         const blockingTrustedRules = await DocumentBlockApi.getTrustedDomains();
 
         return {
