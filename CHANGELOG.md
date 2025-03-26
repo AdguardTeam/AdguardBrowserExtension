@@ -21,10 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Cursor moves to the end when saving user rules [#3145].
 - Cannot maximize Filtering log in Firefox for Windows [#2464].
 - Unable to paste text into user rules input field on Android [#3061].
 - Invalid HTML rule selectors are breaking site loading [#2646].
 
+[#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
 [#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
 [#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055

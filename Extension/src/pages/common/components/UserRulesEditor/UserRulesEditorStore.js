@@ -46,6 +46,8 @@ class UserRulesEditorStore {
 
     @observable specificLimitWarningData = null;
 
+    @observable cursorPosition = null;
+
     savingService = createSavingService({
         id: 'userRules',
         services: {
@@ -101,6 +103,11 @@ class UserRulesEditorStore {
         };
 
     @action
+        setCursorPosition = (position) => {
+            this.cursorPosition = position;
+        };
+
+    @action
     async updateSetting(settingId, value) {
         if (this.settings) {
             this.settings.values[settingId] = value;
@@ -147,6 +154,10 @@ class UserRulesEditorStore {
             return this.settings.values[this.userFilterEnabledSettingId];
         }
         return false;
+    }
+
+    getCursorPosition() {
+        return this.cursorPosition;
     }
 
     saveUserRules(value) {

@@ -156,6 +156,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         if (!store.userRulesEditorContentChanged) {
             if (editorRef.current) {
                 editorRef.current.editor.setValue(userRules, CURSOR_POSITION_AFTER_INSERT);
+
+                const cursorPosition = store.getCursorPosition();
+                if (cursorPosition) {
+                    editorRef.current.editor.moveCursorTo(cursorPosition.row, cursorPosition.column);
+                    store.setCursorPosition(null);
+                }
             }
             store.setUserRulesEditorContentChangedState(false);
             await messenger.setEditorStorageContent(null);
@@ -230,6 +236,8 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
     const saveUserRules = async (userRules) => {
+        store.setCursorPosition(editorRef.current.editor.getCursorPosition());
+
         // For MV2 version we don't show loader and don't check limits.
         if (!__IS_MV3__) {
             await store.saveUserRules(userRules);
@@ -240,6 +248,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             uiStore.setShowLoader(false);
         }
         store.setUserRulesEditorContentChangedState(false);
+        store.setCursorPosition(null);
     };
 
     const inputChangeHandler = async (event) => {
