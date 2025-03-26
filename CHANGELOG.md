@@ -24,8 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cannot maximize Filtering log in Firefox for Windows [#2464].
 - Unable to paste text into user rules input field on Android [#3061].
 - Invalid HTML rule selectors are breaking site loading [#2646].
-- [Firefox for Android] Types of the blocked requests are not displayed in the popup [#3157].
-- [Edge for Android] Switching to the "Statistics" tab shifts the "Actions" and "Statistics" buttons [#3158].
+- Types of the blocked requests are not displayed in the popup (Firefox for Android) [#3157].
+- Switching to the "Statistics" tab shifts the "Actions" and "Statistics" buttons (Edge for Android) [#3158].
 
 [#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
 [#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
