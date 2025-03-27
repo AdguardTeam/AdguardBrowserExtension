@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Send last filters update time during issue reporting [#3055].
 - Ability to exit editor by pressing `Escape` keyboard button [#2333].
+- Compatibility of `$header` modifier with `$match-case`
+  and `$third-party` modifiers in MV2 [#2942].
 
 ### Changed
 
@@ -21,12 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Cursor moves to the end when saving user rules [#3145].
 - Cannot maximize Filtering log in Firefox for Windows [#2464].
 - Unable to paste text into user rules input field on Android [#3061].
 - Invalid HTML rule selectors are breaking site loading [#2646].
 - Types of the blocked requests are not displayed in the popup (Firefox for Android) [#3157].
 - Switching to the "Statistics" tab shifts the "Actions" and "Statistics" buttons (Edge for Android) [#3158].
 
+[#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
 [#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
 [#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
@@ -35,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
 [#2332]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2332
 [#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
+[#2942]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2942
 [#3157]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3157
 [#3158]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3158
 
