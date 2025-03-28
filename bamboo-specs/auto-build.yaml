@@ -325,8 +325,10 @@ branch-overrides:
         requirements:
           - adg-docker: 'true'
 
-      # run release build at 7:00 every Monday, Wednesday, Friday
+      # run release build at 22:00 (UTC+3) every Monday, Wednesday, Friday
       # https://confluence.atlassian.com/bamboo/constructing-a-cron-expression-in-bamboo-289277372.html
+      # it is needed in the end of the day to collect all changes
+      # made by filter list maintainers during the workday
       triggers:
         - cron:
-            expression: 0 0 7 ? * MON,WED,FRI
+            expression: 0 0 22 ? * MON,WED,FRI
