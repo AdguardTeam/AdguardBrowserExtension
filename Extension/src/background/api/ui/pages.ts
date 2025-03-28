@@ -236,13 +236,15 @@ export class PagesApi {
     }
 
     /**
-     * Opens abuse page tab.
+     * Creates an url with settings in query parameters needed for issue reporting.
      * Query parameters are described here: https://github.com/AdguardTeam/ReportsWebApp.
      *
      * @param siteUrl Target site url.
      * @param from UI which user is forwarded from.
+     *
+     * @returns Issue report url.
      */
-    public static async openAbusePage(siteUrl: string, from: ForwardFrom): Promise<void> {
+    public static async getIssueReportUrl(siteUrl: string, from: ForwardFrom): Promise<string> {
         let browserName = UserAgent.browserName;
         let browserDetails: string | undefined;
 
@@ -302,6 +304,18 @@ export class PagesApi {
         );
 
         const reportUrl = Forward.get(params);
+
+        return reportUrl;
+    }
+
+    /**
+     * Opens abuse page tab.
+     *
+     * @param siteUrl Target site url.
+     * @param from UI which user is forwarded from.
+     */
+    public static async openAbusePage(siteUrl: string, from: ForwardFrom): Promise<void> {
+        const reportUrl = await PagesApi.getIssueReportUrl(siteUrl, from);
 
         await browser.tabs.create({ url: reportUrl });
     }
