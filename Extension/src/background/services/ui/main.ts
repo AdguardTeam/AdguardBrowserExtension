@@ -89,11 +89,6 @@ export type BlockingPageInitAppData = {
     theme: AppearanceTheme;
 
     /**
-     * Whether the extension is running in Firefox.
-     */
-    isFirefox: boolean;
-
-    /**
      * Filters metadata. Needed for displaying localized filter name.
      */
     filtersMetadata: FilterMetadata[];
@@ -280,7 +275,6 @@ export class UiService {
         return {
             theme: SettingsApi.getSetting(SettingOption.AppearanceTheme) as AppearanceTheme,
             filtersMetadata: FiltersApi.getFiltersMetadata(),
-            isFirefox: UserAgent.isFirefox,
         };
     }
 

@@ -17,7 +17,11 @@
  */
 import browser from 'webextension-polyfill';
 
-import { type AddUrlToTrustedMessage, MessageType } from '../../common/messages';
+import {
+    type AddUrlToTrustedMessage,
+    type BadfilterRuleAsTrustedMessage,
+    MessageType,
+} from '../../common/messages';
 import { DocumentBlockApi, TabsApi } from '../api';
 import { engine } from '../engine';
 import { messageHandler } from '../message-handler';
@@ -34,8 +38,30 @@ export class DocumentBlockService {
     public static async init(): Promise<void> {
         await DocumentBlockApi.init();
 
-        messageHandler.addListener(MessageType.AddUrlToTrusted, DocumentBlockService.onAddUrlToTrusted);
+        if (__IS_MV3__) {
+            messageHandler.addListener(
+                MessageType.BadfilterRuleAsTrusted,
+                DocumentBlockService.onBadfilterRuleAsTrusted,
+            );
+        } else {
+            messageHandler.addListener(MessageType.AddUrlToTrusted, DocumentBlockService.onAddUrlToTrusted);
+        }
     }
+
+    /**
+     * Updates the active tab with the provided URL.
+     *
+     * @param url The URL to update the active tab with.
+     */
+    private static updateActiveTab = async (url: string): Promise<void> => {
+        const tab = await TabsApi.getActive();
+
+        if (!tab?.id) {
+            return;
+        }
+
+        await browser.tabs.update(tab.id, { url });
+    };
 
     /**
      * Listener for the event of adding a domain to trusted domains.
@@ -49,10 +75,21 @@ export class DocumentBlockService {
         await DocumentBlockApi.setTrustedDomain(url);
         await engine.update();
 
-        const tab = await TabsApi.getActive();
+        DocumentBlockService.updateActiveTab(url);
+    }
 
-        if (tab?.id) {
-            await browser.tabs.update(tab.id, { url });
-        }
+    /**
+     * Listener for the event of adding a domain to trusted domains.
+     *
+     * @param message Message of type {@link AddUrlToTrustedMessage}.
+     * @param message.data Contains string url domain.
+     */
+    private static async onBadfilterRuleAsTrusted({ data }: BadfilterRuleAsTrustedMessage): Promise<void> {
+        const { rule, url } = data;
+
+        await DocumentBlockApi.storeTrustedDomain(rule);
+        await engine.update();
+
+        DocumentBlockService.updateActiveTab(url);
     }
 }

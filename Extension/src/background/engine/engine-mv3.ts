@@ -40,6 +40,7 @@ import {
     filteringLogApi,
     CommonFilterApi,
     iconsApi,
+    DocumentBlockApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
@@ -240,6 +241,8 @@ export class Engine implements TsWebExtensionEngine {
         //     };
         // }));
 
+        const blockingTrustedRules = await DocumentBlockApi.getTrustedDomains();
+
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
             // TODO: revert to actual customFilters when their support will be added back
@@ -253,6 +256,7 @@ export class Engine implements TsWebExtensionEngine {
             settings,
             filtersPath: 'filters/',
             ruleSetsPath: 'filters/declarative',
+            blockingTrustedRules,
         };
     }
 
