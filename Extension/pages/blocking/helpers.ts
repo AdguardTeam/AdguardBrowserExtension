@@ -27,6 +27,13 @@ declare global {
 }
 
 /**
+ * Minimal value of `window.history.length` for a blocked page in MV3 —
+ * when a new tab is opened (+1) and the blocked page is shown after redirection (+1).
+ * That's why it is not usual `1` but `2`.
+ */
+const MIN_BLOCKED_PAGE_HISTORY_LENGTH_MV3 = 2;
+
+/**
  * Supported themes for blocking pages.
  *
  * Check them in the imported-script.js file.
@@ -101,23 +108,39 @@ export const updatePlaceholder = (elementId: string, text: string): void => {
 };
 
 /**
- * Adds "fallback" listener to handle "Go back" button click.
+ * Goes back for MV2.
+ */
+const goBackMv2 = (): void => {
+    window.history.back();
+};
+
+/**
+ * Goes back for MV3.
+ */
+const goBackMv3 = (): void => {
+    if (window.history.length > MIN_BLOCKED_PAGE_HISTORY_LENGTH_MV3) {
+        try {
+            window.history.go(-MIN_BLOCKED_PAGE_HISTORY_LENGTH_MV3);
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.debug(`Error while going back: ${e instanceof Error ? e.message : e}`);
+        }
+    } else {
+        window.close();
+    }
+};
+
+/**
+ * Adds listener to handle "Go back" button click.
  *
- * In Firefox imported-script.js may not handle "Go back" button click properly
- * because of restriction: "Scripts may only close windows that were opened by a script".
- * That's why we need to ensure that "Go back" button is handled by the page itself.
- *
- * @param isFirefox Whether the current browser is Firefox.
  * @param id The ID of the "Go back" button.
  */
-export const addGoBackButtonFallbackListener = (isFirefox: boolean, id: string): void => {
-    if (!isFirefox) {
-        return;
-    }
-
+export const addGoBackButtonListener = (id: string): void => {
     const backBtn = getElementById(id);
 
-    backBtn.addEventListener('click', () => {
-        window.history.back();
-    });
+    if (__IS_MV3__) {
+        backBtn.addEventListener('click', goBackMv3);
+    } else {
+        backBtn.addEventListener('click', goBackMv2);
+    }
 };

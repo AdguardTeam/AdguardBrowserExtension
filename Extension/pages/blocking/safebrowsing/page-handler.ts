@@ -21,7 +21,7 @@ import { ForwardFrom } from '../../../src/common/forward';
 import { logger } from '../../../src/common/logger';
 import { messenger } from '../../../src/pages/services/messenger';
 import {
-    addGoBackButtonFallbackListener,
+    addGoBackButtonListener,
     getElementById,
     getParams,
     updatePlaceholder,
@@ -99,13 +99,13 @@ const runInit = ({
     response: BlockingPageInitAppData;
     url: string;
 }): void => {
-    const { theme, isFirefox } = response;
+    const { theme } = response;
 
     updateTheme(theme);
     updatePlaceholder(PLACEHOLDER_HOST_ID, new URL(url).host);
     addProceedAnywayListener(url);
     addCheckWebsiteSecurityListener(url);
-    addGoBackButtonFallbackListener(isFirefox, SAFEBROWSING_GO_BACK_BTN_ID);
+    addGoBackButtonListener(SAFEBROWSING_GO_BACK_BTN_ID);
 };
 
 /**
