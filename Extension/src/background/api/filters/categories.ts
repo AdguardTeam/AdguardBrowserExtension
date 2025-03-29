@@ -320,7 +320,8 @@ export class Categories {
             let filterVersion = filterVersionStorage.get(filterId);
             if (!filterVersion) {
                 // TODO: remove this hack after we find how to reproduce this issue
-                // Sometimes filter version data might be missing https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
+                // Sometimes filter version data might be missing
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
                 // so we set it to values from metadata
                 logger.info(`Cannot find filter ${filterId} version data, restoring it from metadata`);
                 const dayAgoMs = Date.now() - 1000 * 60 * 60 * 24; // 24 hours

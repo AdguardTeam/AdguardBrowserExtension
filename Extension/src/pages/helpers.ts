@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type FilterMetadata } from '../background/api';
+import { type FilterMetadata } from '../background/api/filters/main';
 import { AntiBannerFiltersId } from '../common/constants';
 import { translator } from '../common/translators/translator';
 
