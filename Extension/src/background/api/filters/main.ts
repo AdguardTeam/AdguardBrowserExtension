@@ -676,7 +676,10 @@ export class FiltersApi {
     }
 
     /**
-     * Remove if necessary obsolete filters.
+     * Removes obsolete filters if there is any.
+     *
+     * Obsolete filters are those that are not present in the metadata
+     * but are installed in the storage.
      */
     private static async removeObsoleteFilters(): Promise<void> {
         const installedFiltersIds = filterStateStorage.getInstalledFilters();
@@ -690,7 +693,7 @@ export class FiltersApi {
                 await FiltersStorage.remove(id);
                 await RawFiltersStorage.remove(id);
 
-                logger.info(`Filter with id: ${id} removed from the storage`);
+                logger.info(`Filter with id ${id} removed from the storage`);
             });
 
         const promises = await Promise.allSettled(tasks);
