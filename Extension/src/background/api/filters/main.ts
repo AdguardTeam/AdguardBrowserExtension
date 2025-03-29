@@ -523,7 +523,8 @@ export class FiltersApi {
 
             if (deprecated) {
                 logger.info(`Filter with id ${filterId} is deprecated and shall not be used.`);
-                // do not filter out deprecated filter metadata as it may be needed during settings import
+                // do not filter out deprecated filter metadata as it may be needed later
+                // e.g. during settings import
             }
 
             validFilters.push(filter);
