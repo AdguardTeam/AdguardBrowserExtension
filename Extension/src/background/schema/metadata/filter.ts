@@ -88,17 +88,20 @@ export const regularFilterMetadataValidator = baseMetadataValidator.merge(
          * Two-letter language codes that are associated with the filter.
          */
         languages: zod.string().array(),
+
         /**
          * Timestamp of adding filters in MS.
          * String format, since these values are retrieved from the backend.
          */
         timeAdded: zod.string(),
+
         /**
          * When the filter was last updated in milliseconds since the start of
          * the UNIX epoch.
          * String format, since these values are retrieved from the backend.
          */
         timeUpdated: zod.string(),
+
         /**
          * The filter subscription URL from which the application retrieved
          * the rules when adding the filter and should retrieve the rules when
