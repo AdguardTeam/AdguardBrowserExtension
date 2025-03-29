@@ -42,7 +42,9 @@ export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
 
-// Filter ids used in the code on the background page and filtering log page
+/**
+ * Filter ids used in the code on the background page and filtering log page.
+ */
 export enum AntiBannerFiltersId {
     StealthModeFilterId = -1,
     UserFilterId = 0,
@@ -57,18 +59,28 @@ export enum AntiBannerFiltersId {
     MobileAdsFilterId = 11,
 }
 
-// Group ids used in the code on the multiple entry points
+/**
+ * Group ids used in the code on the multiple entry points.
+ */
 export const enum AntibannerGroupsId {
-    // custom filters group identifier
+    /**
+     * Custom filters group identifier.
+     */
     CustomFiltersGroupId = 0,
     AdBlockingFiltersGroupId = 1,
     PrivacyFiltersGroupId = 2,
     SocialFiltersGroupId = 3,
     AnnoyancesFiltersGroupId = 4,
     SecurityFiltersGroupId = 5,
-    // other filters group identifier
+
+    /**
+     * Other filters group identifier.
+     */
     OtherFiltersGroupId = 6,
-    // language-specific group identifier
+
+    /**
+     * Language-specific group identifier.
+     */
     LanguageFiltersGroupId = 7,
 }
 
