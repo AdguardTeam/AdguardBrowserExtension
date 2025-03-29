@@ -209,6 +209,14 @@ export class PagesApi {
 
         const windowStateString = await browserStorage.get(FILTERING_LOG_WINDOW_STATE);
 
+        // Firefox does not allow to maximize popup windows on Windows operating system.
+        // For more details, see the Bugzilla report:
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1756507
+        // As a temporary solution, we open the window in a normal state for Firefox on Windows
+        // to fix issue reported to us:
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
+        const windowType = UserAgent.isFirefox && UserAgent.isWindows ? 'normal' : 'popup';
+
         try {
             const options = typeof windowStateString === 'string'
                 ? JSON.parse(windowStateString)
@@ -216,7 +224,7 @@ export class PagesApi {
 
             await WindowsApi.create({
                 url,
-                type: 'popup',
+                type: windowType,
                 ...options,
             });
         } catch (e) {
@@ -227,7 +235,7 @@ export class PagesApi {
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2100
                 await WindowsApi.create({
                     url,
-                    type: 'popup',
+                    type: windowType,
                     ...PagesApi.defaultPopupWindowState,
                 });
             }

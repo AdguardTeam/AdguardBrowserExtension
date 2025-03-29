@@ -136,11 +136,23 @@
             }
         }
 
-        &--trusted-desc {
-            color: var(--text-description-description-default);
-            font-size: 14px;
-            line-height: 18px;
-            padding-left: 32px;
+        &--trusted {
+            label.checkbox-label {
+                &:focus-within {
+                    outline: 2px solid var(--outline);
+                }
+
+                input[type="checkbox"] {
+                    display: block;
+                }
+            }
+
+            &-desc {
+                color: var(--text-description-description-default);
+                font-size: 14px;
+                line-height: 18px;
+                padding-left: 32px;
+            }
         }
     }
 }

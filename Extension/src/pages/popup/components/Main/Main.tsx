@@ -90,6 +90,8 @@ export const Main = observer(() => {
         'main--has-user-rules': hasUserRulesToReset,
     });
 
+    const currentSiteLabel = `${translator.getMessage('popup_tab_current_website')}: `;
+
     if (!currentSite) {
         logger.debug('Current site is not defined yet');
     }
@@ -196,8 +198,9 @@ export const Main = observer(() => {
             <div className="main__header">
                 <div
                     className="main__header--current-site"
-                    title={currentSite}
+                    title={`${currentSiteLabel}${currentSite}`}
                 >
+                    <span className="sr-only">{currentSiteLabel}</span>
                     {currentSite}
                 </div>
                 <div

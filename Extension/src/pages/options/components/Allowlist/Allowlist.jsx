@@ -35,6 +35,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { exportData, ExportTypes } from '../../../common/utils/export';
+import { getFirstNonDisabledElement } from '../../../common/utils/dom';
 import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { DynamicRulesLimitsWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
@@ -54,6 +55,7 @@ const Allowlist = observer(() => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+    const actionsRef = useRef(null);
 
     useEffect(() => {
         (async () => {
@@ -93,10 +95,18 @@ const Allowlist = observer(() => {
 
     const { settings } = settingsStore;
 
-    const { DefaultAllowlistMode } = settings.names;
+    const { AllowlistEnabled, DefaultAllowlistMode } = settings.names;
+
+    const switchId = AllowlistEnabled;
+    const switchTitleId = `${switchId}-title`;
 
     const importClickHandler = (e) => {
         e.preventDefault();
+
+        if (!inputRef.current) {
+            return;
+        }
+
         inputRef.current.click();
     };
 
@@ -155,13 +165,20 @@ const Allowlist = observer(() => {
         settingsStore.setAllowlistEditorContentChangedState(settingsStore.allowlist !== value);
     };
 
-    const shortcuts = [{
-        name: 'save',
-        bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-        exec: saveClickHandler,
-    }];
+    const focusFirstEnabledButton = () => {
+        const actionsEl = actionsRef.current;
+        if (!actionsEl) {
+            return;
+        }
 
-    const { AllowlistEnabled } = settings.names;
+        const firstNonDisabledButton = getFirstNonDisabledElement(actionsEl, '.actions__btn');
+        if (firstNonDisabledButton) {
+            // Before focusing on element we need to add info about shortcut
+            // so Screen Reader can tell user that editor can be closed with Escape
+            firstNonDisabledButton.ariaKeyShortcuts = 'Escape';
+            firstNonDisabledButton.focus();
+        }
+    };
 
     let shouldResetSize = false;
     if (settingsStore.allowlistSizeReset) {
@@ -172,8 +189,9 @@ const Allowlist = observer(() => {
     return (
         <>
             <SettingsSection
+                id={switchId}
                 title={translator.getMessage('options_allowlist')}
-                id={AllowlistEnabled}
+                titleId={switchTitleId}
                 mode="smallContainer"
                 description={settings.values[DefaultAllowlistMode]
                     ? translator.getMessage('options_allowlist_desc')
@@ -193,7 +211,7 @@ const Allowlist = observer(() => {
                             </span>
                         </div>
                     )}
-                inlineControl={<AllowlistSwitcher />}
+                inlineControl={(<AllowlistSwitcher labelId={switchTitleId} />)}
             />
             {__IS_MV3__ && (
                 <div className="settings__group__links">
@@ -204,10 +222,11 @@ const Allowlist = observer(() => {
             <Editor
                 name="allowlist"
                 editorRef={editorRef}
-                shortcuts={shortcuts}
                 onChange={editorChangeHandler}
                 wrapEnabled={settingsStore.allowlistEditorWrap}
                 shouldResetSize={shouldResetSize}
+                onSave={saveClickHandler}
+                onExit={focusFirstEnabledButton}
             />
             {hasUnsavedChanges && (
                 <EditorLeaveModal
@@ -215,15 +234,17 @@ const Allowlist = observer(() => {
                     subtitle={unsavedChangesSubtitle}
                 />
             )}
-            <div className="actions actions--grid actions--buttons actions--allowlist">
+            <div
+                ref={actionsRef}
+                className="actions actions--grid actions--buttons actions--allowlist"
+            >
                 <AllowlistSavingButton onClick={saveClickHandler} />
                 <input
                     type="file"
-                    id="inputEl"
                     accept="text/plain"
                     ref={inputRef}
                     onChange={inputChangeHandlerWrapper}
-                    style={{ display: 'none' }}
+                    className="actions__input-file"
                 />
                 <button
                     type="button"

@@ -44,6 +44,7 @@ export const FilteringEventsEmpty = observer(() => {
                 <Icon
                     id="#empty-box"
                     classname="icon--gray-default filtering-log__empty-img"
+                    aria-hidden="true"
                 />
                 <div className="filtering-log__desc">
                     {reactTranslator.getMessage(

@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { Actions } from './Actions';
+export { Actions, ACTIONS_TAB_ID, ACTIONS_PANEL_ID } from './Actions';

@@ -39,9 +39,9 @@ export const Footer = observer(() => {
     };
 
     return (
-        <div className="footer">
+        <footer className="footer">
             {settingsStore.footerRateShowState && (
-                <div className="footer__rate">
+                <div role="alert" className="footer__rate">
                     <div className="footer__in footer__in--rate container">
                         <div className="footer__rate-desc">
                             {translator.getMessage('options_do_you_like_question')}
@@ -59,11 +59,15 @@ export const Footer = observer(() => {
                             onClick={hideRate}
                             aria-label={translator.getMessage('close_button_title')}
                         >
-                            <Icon id="#cross" classname="icon--24 icon--gray-default" />
+                            <Icon
+                                id="#cross"
+                                classname="icon--24 icon--gray-default"
+                                aria-hidden="true"
+                            />
                         </button>
                     </div>
                 </div>
             )}
-        </div>
+        </footer>
     );
 });

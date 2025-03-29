@@ -43,6 +43,7 @@ export const Header = observer(() => {
             <Icon
                 id="#logo"
                 classname="icon--logo"
+                aria-hidden="true"
             />
             <div
                 className={cn('popup-header__buttons', {

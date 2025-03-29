@@ -61,6 +61,25 @@ export class DocumentBlockApi {
     }
 
     /**
+     * Stores trusted domain in the storage.
+     * Removes expired domains and duplicates.
+     *
+     * @param input A trusted domain to add.
+     */
+    public static async storeTrustedDomain(input: string): Promise<void> {
+        const now = Date.now();
+
+        // remove expired and duplicates
+        const data = trustedDomainsStorage
+            .getData()
+            .filter(({ expires, domain }) => (now < expires) && (domain !== input));
+
+        data.push({ domain: input, expires: DocumentBlockApi.TRUSTED_TTL_MS + now });
+
+        await trustedDomainsStorage.setData(data);
+    }
+
+    /**
      * Adds the domain to the list of trusted domains with DocumentBlockApi#TRUSTED_TTL_MS timeout.
      *
      * @param url A trusted domain to add.
@@ -68,15 +87,6 @@ export class DocumentBlockApi {
     public static async setTrustedDomain(url: string): Promise<void> {
         const { hostname } = new URL(url);
 
-        const now = Date.now();
-
-        // remove expired and duplicates
-        const data = trustedDomainsStorage
-            .getData()
-            .filter(({ expires, domain }) => (now < expires) && (domain !== hostname));
-
-        data.push({ domain: hostname, expires: DocumentBlockApi.TRUSTED_TTL_MS + now });
-
-        await trustedDomainsStorage.setData(data);
+        DocumentBlockApi.storeTrustedDomain(hostname);
     }
 }

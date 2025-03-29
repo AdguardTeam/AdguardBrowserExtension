@@ -21,6 +21,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Icon } from '../../../../common/components/ui/Icon';
+import { translator } from '../../../../../common/translators/translator';
 
 const ModalContentWrapper = ({
     closeModalHandler,
@@ -41,8 +42,9 @@ const ModalContentWrapper = ({
                         type="button"
                         className="button modal__close"
                         onClick={closeModalHandler}
+                        title={translator.getMessage('close_button_title')}
                     >
-                        <Icon id="#cross" />
+                        <Icon id="#cross" aria-hidden="true" />
                     </button>
                 </div>
                 {children}
