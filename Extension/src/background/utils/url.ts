@@ -59,11 +59,12 @@ export class UrlUtils {
     static getHost(url: string): string | null {
         let firstIdx = url.indexOf('//');
         if (firstIdx === -1) {
-        /**
-         * It's non hierarchical structured URL (e.g. Stun: or turn:)
-         * https://tools.ietf.org/html/rfc4395#section-2.2
-         * https://tools.ietf.org/html/draft-nandakumar-rtcweb-stun-uri-08#appendix-B.
-         */
+            /**
+             * It is non-hierarchical structured URL, e.g. `stun:` or `turn:`.
+             *
+             * @see {@link https://tools.ietf.org/html/rfc4395#section-2.2}
+             * @see {@link https://tools.ietf.org/html/draft-nandakumar-rtcweb-stun-uri-08#appendix-B}
+             */
             firstIdx = url.indexOf(':');
             if (firstIdx === -1) {
                 return null;

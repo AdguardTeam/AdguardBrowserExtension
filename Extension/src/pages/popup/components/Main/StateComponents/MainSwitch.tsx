@@ -62,11 +62,13 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
     return (
         <button
             type="button"
+            role="switch"
             className={cn('switcher', {
                 'non-active': isTransition,
             })}
             onClick={clickHandler}
             title={translator.getMessage('popup_switch_button')}
+            aria-checked={isEnabled}
         >
             <div
                 className={cn('switcher__track', {
@@ -82,11 +84,13 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
                 <Icon
                     id="#checkmark"
                     classname="icon--24 switcher__icon switcher__icon--on"
+                    aria-hidden="true"
                 />
                 {/* disabled switcher state */}
                 <Icon
                     id="#circle"
                     classname="icon--24 switcher__icon switcher__icon--off"
+                    aria-hidden="true"
                 />
             </div>
         </button>

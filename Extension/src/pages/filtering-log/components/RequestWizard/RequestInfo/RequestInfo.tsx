@@ -39,7 +39,6 @@ import { FILTERING_LOG_ASSUMED_RULE_URL } from '../../../../options/constants';
 import { translator } from '../../../../../common/translators/translator';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import {
-    getFilterName,
     getRequestEventType,
     getCookieData,
     getRuleFilterName,
@@ -58,6 +57,7 @@ import { AddedRuleState } from '../../../constants';
 import { type FilteringLogEvent, type FilteringEventRuleData } from '../../../../../background/api/filtering-log';
 import { type FilterMetadata } from '../../../../../background/api';
 import { Popover } from '../../../../common/components/ui/Popover/Popover';
+import { getFilterName } from '../../../../helpers';
 
 import './request-info.pcss';
 
@@ -493,6 +493,7 @@ const RequestInfo = observer(() => {
                         <Icon
                             id="#question"
                             classname="icon icon--24 icon--green-default"
+                            aria-hidden="true"
                         />
                     </Popover>
                 );
@@ -691,6 +692,7 @@ const RequestInfo = observer(() => {
                     <Icon
                         id="#cross"
                         classname="icon--24 icon--gray-default"
+                        aria-hidden="true"
                     />
                 </button>
                 <span className="request-modal__header">

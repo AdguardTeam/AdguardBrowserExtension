@@ -16,4 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { SafeBrowsing } from './SafeBrowsing';
+import './imported-script';
+import { initSafebrowsingPageHandler } from './page-handler';
+
+initSafebrowsingPageHandler();

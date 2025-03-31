@@ -21,6 +21,26 @@ import {
 vi.mock('../../../../Extension/src/background/engine');
 vi.mock('../../../../Extension/src/background/api/ui/icons');
 vi.mock('../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../Extension/src/background/storages/settings', () => ({
+    SettingsStorage: {
+        init: vi.fn().mockResolvedValue(undefined),
+        get: vi.fn().mockReturnValue({}),
+        isInitialized: vi.fn().mockReturnValue(true),
+    },
+    settingsStorage: {
+        init: vi.fn().mockResolvedValue(undefined),
+        get: vi.fn().mockReturnValue({}),
+        set: vi.fn().mockResolvedValue(undefined),
+        isInitialized: vi.fn().mockReturnValue(true),
+    },
+}));
+vi.mock('../../../../Extension/src/background/api/settings/main', () => ({
+    SettingsApi: {
+        init: vi.fn().mockResolvedValue(undefined),
+        getSettings: vi.fn().mockResolvedValue({}),
+        getSetting: vi.fn().mockReturnValue(false),
+    },
+}));
 
 describe('Page Stats Api', () => {
     let storage: Storage.StorageArea;

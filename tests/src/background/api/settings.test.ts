@@ -11,7 +11,7 @@ import {
 
 import {
     ASSISTANT_INJECT_OUTPUT,
-    DOCUMENT_BLOCK_OUTPUT,
+    BLOCKING_BLOCKED_OUTPUT,
     GPC_SCRIPT_OUTPUT,
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../constants';
@@ -120,14 +120,14 @@ describe('Settings Api', () => {
         it('Gets tswebextension config', async () => {
             const expected = __IS_MV3__
                 ? getDefaultSettingsConfigFixtureMV3(
-                    browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                    browser.runtime.getURL(`${BLOCKING_BLOCKED_OUTPUT}.html?_locale=en`),
                     `/${ASSISTANT_INJECT_OUTPUT}.js`,
                     `/${GPC_SCRIPT_OUTPUT}.js`,
                     `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
                     false,
                 )
                 : getDefaultSettingsConfigFixtureMV2(
-                    browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                    browser.runtime.getURL(`${BLOCKING_BLOCKED_OUTPUT}.html?_locale=en`),
                     `/${ASSISTANT_INJECT_OUTPUT}.js`,
                     false,
                 );

@@ -23,6 +23,7 @@ import classnames from 'classnames';
 import { SavingFSMState } from '../Editor/savingFSM';
 import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../ui/Icon';
+import { UserAgent } from '../../../../common/user-agent';
 
 const renderSavingState = (savingRulesState: SavingFSMState) => {
     type IndicatorTextMapType = {
@@ -51,6 +52,7 @@ const renderSavingState = (savingRulesState: SavingFSMState) => {
             <Icon
                 id="#tick"
                 classname="icon--18 icon--green-default editor__icon"
+                aria-hidden="true"
             />
             {indicatorText}
         </div>
@@ -84,6 +86,7 @@ export const SavingButton = ({ onClick, savingState, contentChanged }: SavingBut
                 onClick={onClick}
                 title={translator.getMessage('options_editor_save')}
                 disabled={!contentChanged}
+                aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+S' : 'Ctrl+S'}
             >
                 {translator.getMessage('options_editor_save')}
             </button>

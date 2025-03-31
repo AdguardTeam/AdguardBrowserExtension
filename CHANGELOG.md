@@ -11,15 +11,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for Chrome's User Scripts API that allows more reliable script
   injection in MV3 if developer mode is enabled.
 
+- Send last filters update time during issue reporting [#3055].
+- Ability to exit editor by pressing `Escape` keyboard button [#2333].
+- Blocking page for requests blocked by `$document` rules in MV3.
+- Compatibility of `$header` modifier with `$match-case`
+  and `$third-party` modifiers in MV2 [#2942].
+
 ### Changed
+
+- Updated blocking pages for MV2 — Safebrowsing and blocked by `$document` rules.
+- Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
 
 ### Removed
 
 ### Fixed
 
+- Cursor moves to the end when saving user rules [#3145].
+- Cannot maximize Filtering log in Firefox for Windows [#2464].
 - Unable to paste text into user rules input field on Android [#3061].
+- Invalid HTML rule selectors are breaking site loading [#2646].
 
+[#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
+[#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
+[#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
+[#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
 [#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
+[#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
+[#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
+[#2332]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2332
+[#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
+[#2942]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2942
+
+## [5.1.70] - 2025-03-19
+
+### Fixed
+
+- Popup size issues in Android Edge.
+
+[5.1.70]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.1.68...v5.1.70
 
 ## [5.1.68] - 2025-03-07
 

@@ -19,6 +19,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import classNames from 'classnames';
+
 import { logger } from '../../../../common/logger';
 import { translator } from '../../../../common/translators/translator';
 import { popupStore } from '../../stores/PopupStore';
@@ -79,9 +81,16 @@ export const Main = observer(() => {
         specificPopupState,
         showInfoAboutFullVersion,
         appState,
+        hasUserRulesToReset,
         toggleAllowlisted,
         resumeApplicationFiltering,
     } = store;
+
+    const classes = classNames('main', {
+        'main--has-user-rules': hasUserRulesToReset,
+    });
+
+    const currentSiteLabel = `${translator.getMessage('popup_tab_current_website')}: `;
 
     if (!currentSite) {
         logger.debug('Current site is not defined yet');
@@ -185,12 +194,13 @@ export const Main = observer(() => {
     };
 
     return (
-        <div className="main">
+        <div className={classes}>
             <div className="main__header">
                 <div
                     className="main__header--current-site"
-                    title={currentSite}
+                    title={`${currentSiteLabel}${currentSite}`}
                 >
+                    <span className="sr-only">{currentSiteLabel}</span>
                     {currentSite}
                 </div>
                 <div

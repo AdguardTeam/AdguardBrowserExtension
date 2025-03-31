@@ -16,7 +16,30 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const getParams = () => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    return Object.fromEntries(urlSearchParams.entries());
-};
+/**
+ * Retrieves first non-disabled element from parent element
+ *
+ * @param root Root element to search for descendant elements
+ * @param selectors Descendants selector
+ *
+ * @returns First non-disabled element or null if not found
+ */
+export function getFirstNonDisabledElement(
+    root: HTMLElement,
+    selectors: string,
+): HTMLElement | null {
+    const elements = root.querySelectorAll(selectors);
+
+    for (let i = 0; i < elements.length; i += 1) {
+        const element = elements[i];
+
+        if (
+            element instanceof HTMLElement
+            && (!('disabled' in element) || !element.disabled)
+        ) {
+            return element;
+        }
+    }
+
+    return null;
+}

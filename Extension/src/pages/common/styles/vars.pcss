@@ -44,11 +44,11 @@
     --overlay-gray: rgba(137, 137, 137, 0.5);
     --light-shadow: rgba(0, 0, 0, 0.05);
     --sidebar-transition: 0.3s ease;
-    --z-idx5: 5;
-    --z-idx6: 6;
-    --z-idx7: 7;
-    --z-idx8: 8;
-    --z-idx10-options-notifications: 10;
+    /* z-index: 4 reserved by Ace Editor */
+    --z-idx-options-sidebar: 5;
+    --z-idx-options-skip-to-content: 6;
+    --z-idx-options-notifications: 10;
+    --z-idx-options-modals: 11;
 
     --shadow-0-1: rgba(0, 0, 0, 0.1);
 
@@ -57,6 +57,7 @@
     /* Other variables */
     --popup-width: 320px;
     --popup-height: 600px;
+    --popup-default-height: 600px; /* Size of popup in desktop browsers */
 
     /* Base colors: */
 
@@ -291,4 +292,9 @@
     --text-lables-labels-default: var(--gray-70);
     --text-main-text-main-default: var(--gray-80);
     --text-placeholder-placeholder-disabled: var(--gray-40);
+}
+
+.android {
+    /* In android browsers popup size is dynamic, so we need to adjust its size */
+    --popup-width: 100%;
 }

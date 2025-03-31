@@ -41,7 +41,7 @@ import {
     type Mv3LimitsCheckResult,
     type StaticLimitsCheckResult,
 } from '../../background/services/rules-limits/interface';
-import { type PageInitAppData } from '../../background/services/ui/main';
+import { type BlockingPageInitAppData, type PageInitAppData } from '../../background/services/ui/main';
 import { type ExportMessageResponse, type GetOptionsDataResponse } from '../../background/services/settings/types';
 import { type CreateEventListenerResponse } from '../../background/services/event';
 import { type FilterMetadata } from '../../background/api/filters/main';
@@ -91,10 +91,12 @@ export enum MessageType {
     OpenComparePage = 'openComparePage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
     RemoveAllowlistDomain = 'removeAllowlistDomain',
-    AddAllowlistDomain = 'addAllowlistDomain',
+    AddAllowlistDomainForTabId = 'addAllowlistDomainForTabId',
+    AddAllowlistDomainForUrl = 'addAllowlistDomainForUrl',
     OnOpenFilteringLogPage = 'onOpenFilteringLogPage',
     GetFilteringLogData = 'getFilteringLogData',
     InitializeFrameScript = 'initializeFrameScript',
+    InitializeBlockingPageScript = 'initializeBlockingPageScript',
     OnCloseFilteringLogPage = 'onCloseFilteringLogPage',
     GetFilteringInfoByTabId = 'getFilteringInfoByTabId',
     SynchronizeOpenTabs = 'synchronizeOpenTabs',
@@ -121,6 +123,7 @@ export enum MessageType {
     SaveCookieLogEvent = 'saveCookieRuleEvent',
     LoadSettingsJson = 'loadSettingsJson',
     AddUrlToTrusted = 'addUrlToTrusted',
+    BadfilterRuleAsTrusted = 'badfilterRuleAsTrusted',
     SetPreserveLogState = 'setPreserveLogState',
     GetUserRulesEditorData = 'getUserRulesEditorData',
     GetEditorStorageContent = 'getEditorStorageContent',
@@ -372,10 +375,17 @@ export type SetEditorStorageContentMessage = {
     };
 };
 
-export type AddAllowlistDomainMessage = {
-    type: MessageType.AddAllowlistDomain;
+export type AddAllowlistDomainForTabIdMessage = {
+    type: MessageType.AddAllowlistDomainForTabId;
     data: {
         tabId: number;
+    };
+};
+
+export type AddAllowlistDomainForUrlMessage = {
+    type: MessageType.AddAllowlistDomainForUrl;
+    data: {
+        url: string;
     };
 };
 
@@ -495,6 +505,10 @@ export type InitializeFrameScriptMessage = {
     type: MessageType.InitializeFrameScript;
 };
 
+export type InitializeBlockingPageScript = {
+    type: MessageType.InitializeBlockingPageScript;
+};
+
 export type SetConsentedFiltersMessage = {
     type: MessageType.SetConsentedFilters;
     data: {
@@ -519,6 +533,14 @@ export type OpenSafebrowsingTrustedMessage = {
 export type AddUrlToTrustedMessage = {
     type: MessageType.AddUrlToTrusted;
     data: {
+        url: string;
+    };
+};
+
+export type BadfilterRuleAsTrustedMessage = {
+    type: MessageType.BadfilterRuleAsTrusted;
+    data: {
+        rule: string;
         url: string;
     };
 };
@@ -764,8 +786,12 @@ export type MessageMap = {
         message: RemoveAllowlistDomainMessage;
         response: void;
     };
-    [MessageType.AddAllowlistDomain]: {
-        message: AddAllowlistDomainMessage;
+    [MessageType.AddAllowlistDomainForTabId]: {
+        message: AddAllowlistDomainForTabIdMessage;
+        response: void;
+    };
+    [MessageType.AddAllowlistDomainForUrl]: {
+        message: AddAllowlistDomainForUrlMessage;
         response: void;
     };
     [MessageType.LoadCustomFilterInfo]: {
@@ -880,6 +906,10 @@ export type MessageMap = {
         message: AddUrlToTrustedMessage;
         response: void;
     };
+    [MessageType.BadfilterRuleAsTrusted]: {
+        message: BadfilterRuleAsTrustedMessage;
+        response: void;
+    };
     [MessageType.CurrentLimitsMv3]: {
         message: CurrentLimitsMv3Message;
         response: Mv3LimitsCheckResult;
@@ -907,6 +937,10 @@ export type MessageMap = {
     [MessageType.InitializeFrameScript]: {
         message: InitializeFrameScriptMessage;
         response: PageInitAppData;
+    };
+    [MessageType.InitializeBlockingPageScript]: {
+        message: InitializeBlockingPageScript;
+        response: BlockingPageInitAppData;
     };
 };
 

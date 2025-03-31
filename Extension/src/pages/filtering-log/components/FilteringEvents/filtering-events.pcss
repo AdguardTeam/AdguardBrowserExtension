@@ -39,6 +39,12 @@
             text-align: left;
             padding: 0;
             width: 100%;
+            outline-offset: -2px;
+
+            /* Use `focus-within` because button to open details is located inside of row */
+            &:focus-within {
+                outline: 2px solid var(--outline);
+            }
 
             &:focus {
                 z-index: 1;

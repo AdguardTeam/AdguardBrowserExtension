@@ -43,7 +43,8 @@ import {
     type OpenSiteReportTabMessage,
     type ResetUserRulesForPageMessage,
     type RemoveAllowlistDomainMessage,
-    type AddAllowlistDomainMessage,
+    type AddAllowlistDomainForTabIdMessage,
+    type AddAllowlistDomainForUrlMessage,
     type GetFilteringInfoByTabIdMessage,
     type ClearEventsByTabIdMessage,
     type RefreshPageMessage,
@@ -58,6 +59,7 @@ import {
     type SetNotificationViewedMessage,
     type UpdateFullscreenUserRulesThemeMessage,
     type AddUrlToTrustedMessage,
+    type BadfilterRuleAsTrustedMessage,
     type ExtractedMessage,
     type OpenSafebrowsingTrustedMessage,
 } from '../../common/messages';
@@ -104,7 +106,8 @@ class Messenger {
         this.resetUserRulesForPage = this.resetUserRulesForPage.bind(this);
         this.updateFilters = this.updateFilters.bind(this);
         this.removeAllowlistDomain = this.removeAllowlistDomain.bind(this);
-        this.addAllowlistDomain = this.addAllowlistDomain.bind(this);
+        this.addAllowlistDomainForTabId = this.addAllowlistDomainForTabId.bind(this);
+        this.addAllowlistDomainForUrl = this.addAllowlistDomainForUrl.bind(this);
     }
 
     /**
@@ -729,16 +732,32 @@ class Messenger {
     }
 
     /**
-     * Sends a message to the background page to add an allowlist domain.
+     * Sends a message to the background page to add an allowlist domain for a specific tab.
      *
      * @param tabId The ID of the tab.
      *
      * @returns Promise that resolves after the domain is added.
      */
-    async addAllowlistDomain(
-        tabId: AddAllowlistDomainMessage['data']['tabId'],
-    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomain>> {
-        return this.sendMessage(MessageType.AddAllowlistDomain, { tabId });
+    async addAllowlistDomainForTabId(
+        tabId: AddAllowlistDomainForTabIdMessage['data']['tabId'],
+    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomainForTabId>> {
+        return this.sendMessage(MessageType.AddAllowlistDomainForTabId, { tabId });
+    }
+
+    /**
+     * Sends a message to the background page to add an allowlist domain for a specific URL.
+     *
+     * Please note that after adding an allowlist domain, the tab will not be reloaded,
+     * it should be done separately later if needed.
+     *
+     * @param url The URL of the page.
+     *
+     * @returns Promise that resolves after the domain is added.
+     */
+    async addAllowlistDomainForUrl(
+        url: AddAllowlistDomainForUrlMessage['data']['url'],
+    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomainForUrl>> {
+        return this.sendMessage(MessageType.AddAllowlistDomainForUrl, { url });
     }
 
     /**
@@ -948,6 +967,22 @@ class Messenger {
     }
 
     /**
+     * Sends a message to the background page to badfilter specific rule as trusted temporarily
+     * and url is needed to update the tab url after blocking page display.
+     *
+     * @param rule Rule to badfilter.
+     * @param url Url to update for the tab.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    async badfilterRuleAsTrusted(
+        rule: BadfilterRuleAsTrustedMessage['data']['rule'],
+        url: BadfilterRuleAsTrustedMessage['data']['url'],
+    ): Promise<ExtractMessageResponse<MessageType.BadfilterRuleAsTrusted>> {
+        return this.sendMessage(MessageType.BadfilterRuleAsTrusted, { rule, url });
+    }
+
+    /**
      * Sends a message to the background page to get user rules editor data.
      *
      * @returns Promise that resolves with the user rules editor data.
@@ -1008,6 +1043,15 @@ class Messenger {
      */
     async initializeFrameScript(): Promise<ExtractMessageResponse<MessageType.InitializeFrameScript>> {
         return this.sendMessage(MessageType.InitializeFrameScript);
+    }
+
+    /**
+     * Sends a message to the background page to initialize the blocking page script.
+     *
+     * @returns Promise that resolves with the initialization data for the blocking page script.
+     */
+    async initializeBlockingPageScript(): Promise<ExtractMessageResponse<MessageType.InitializeBlockingPageScript>> {
+        return this.sendMessage(MessageType.InitializeBlockingPageScript);
     }
 
     /**

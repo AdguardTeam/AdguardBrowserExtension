@@ -59,6 +59,11 @@
             &_group {
                 margin-left: 0;
 
+                & .checkbox__in {
+                    /* 16px (label padding) - 3px (default margin) */
+                    top: 13px;
+                }
+
                 & .checkbox__label {
                     padding: 16px;
 
@@ -86,6 +91,10 @@
 
         &--inline {
             display: block;
+        }
+
+        .setting--reversed &--horizontal {
+            flex-direction: row-reverse;
         }
     }
 

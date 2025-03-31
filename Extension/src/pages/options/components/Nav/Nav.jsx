@@ -17,84 +17,73 @@
  */
 
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 
 import { OptionsPageSections } from '../../../../common/nav';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
+
+import { NavItem } from './NavItem';
 
 import './nav.pcss';
 
-export const Nav = ({ closeSidebar }) => {
-    const onClick = () => {
-        closeSidebar();
-    };
-
-    const getNavLinkClassName = (navData) => (navData.isActive ? 'nav__item nav__item--active' : 'nav__item');
-
+export const Nav = ({ onLinkClick }) => {
     return (
-        <div className="nav">
-            <NavLink
-                className={getNavLinkClassName}
-                to="/"
-                onClick={onClick}
-                end
-            >
-                {reactTranslator.getMessage('options_general_settings')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.filters}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_filters')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.stealth}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_privacy')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.allowlist}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_allowlist')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.userFilter}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_userfilter')}
-            </NavLink>
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.miscellaneous}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_miscellaneous_settings')}
-            </NavLink>
-            {
-                __IS_MV3__
+        <nav className="nav">
+            <ul className="nav__list">
+                <NavItem
+                    to="/"
+                    onClick={onLinkClick}
+                    end
+                >
+                    {translator.getMessage('options_general_settings')}
+                </NavItem>
+                <NavItem
+                    to={`/${OptionsPageSections.filters}`}
+                    onClick={onLinkClick}
+                >
+                    {translator.getMessage('options_filters')}
+                </NavItem>
+                <NavItem
+                    to={`/${OptionsPageSections.stealth}`}
+                    onClick={onLinkClick}
+                >
+                    {translator.getMessage('options_privacy')}
+                </NavItem>
+                <NavItem
+                    to={`/${OptionsPageSections.allowlist}`}
+                    onClick={onLinkClick}
+                >
+                    {translator.getMessage('options_allowlist')}
+                </NavItem>
+                <NavItem
+                    to={`/${OptionsPageSections.userFilter}`}
+                    onClick={onLinkClick}
+                >
+                    {translator.getMessage('options_userfilter')}
+                </NavItem>
+                <NavItem
+                    to={`/${OptionsPageSections.miscellaneous}`}
+                    onClick={onLinkClick}
+                >
+                    {translator.getMessage('options_miscellaneous_settings')}
+                </NavItem>
+                {
+                    __IS_MV3__
                     && (
-                        <NavLink
-                            className={getNavLinkClassName}
+                        <NavItem
                             to={`/${OptionsPageSections.ruleLimits}`}
-                            onClick={onClick}
+                            onClick={onLinkClick}
                         >
-                            {reactTranslator.getMessage('options_rule_limits')}
-                        </NavLink>
+                            {translator.getMessage('options_rule_limits')}
+                        </NavItem>
                     )
-            }
-            <NavLink
-                className={getNavLinkClassName}
-                to={`/${OptionsPageSections.about}`}
-                onClick={onClick}
-            >
-                {reactTranslator.getMessage('options_about')}
-            </NavLink>
-        </div>
+                }
+                <NavItem
+                    to={`/${OptionsPageSections.about}`}
+                    onClick={onLinkClick}
+                >
+                    {translator.getMessage('options_about')}
+                </NavItem>
+            </ul>
+        </nav>
     );
 };
