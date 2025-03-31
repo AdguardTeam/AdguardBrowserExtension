@@ -1,13 +1,13 @@
-! Checksum: rbHoj2PCi6SFBHLeDHRLPQ
+! Checksum: /P79krzcKw5SxSSWHDmLHg
 ! Title: Dandelion Sprout's Nordic Filters
 ! Description: This list covers websites for Norway, Denmark, Iceland, Danish territories, and the Sami indigenous population.
-! Version: 2.0.7.95
-! TimeUpdated: 2025-03-26T01:02:03+00:00
+! Version: 2.0.7.96
+! TimeUpdated: 2025-03-30T08:36:32+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏔️ Dandelion Sprouts nordiske filtre for ryddigere nettsider (for AdGuard)
 ! Title 🇬🇧: Dandelion Sprout's Nordic filters for tidier websites
-! Last modified: 25March2025v1
+! Last modified: 29March2025v1
 ! Expires: 18 hours
 ! Lisens / Licence: https://github.com/DandelionSprout/adfilt/blob/master/LICENSE.md
 ! Homepage: https://github.com/DandelionSprout/adfilt/blob/master/Wiki/General-info.md
@@ -1274,6 +1274,17 @@ itavisen.no#?#p:contains(/^Annonse$/i):has(+ h3 > a[data-lasso-id])
 itavisen.no##.clearfix > .code-block:has([data-ad-unit-id])
 itavisen.no##p:has(> em > a[data-lasso-id])
 vg.no##section[class*=articles_zulis]
+fotballen.eu##a[href*="//sports.betway.com/?s="]
+fotballen.eu##table[width^="20"]:not(:first-of-type) + table[width^="20"]:last-of-type:has(script[src*="/tracking.php?"])
+fotballen.eu##a[href*="//media."][href*="/tracking.php?"]
+fotballen.eu##a[href*="//record."]
+fotballen.eu##select ~ div[align*=center][class^=auto]:last-of-type:has(a[href*="://record."])
+fotballen.eu##table:not([align=center]) + table[align=center]:last-of-type:has(script[src*=kindredp])
+fotballen.eu##table:not([align=center],[class]) + table[align=center]:not([class]):last-of-type:has(img[src*=betting])
+fotballen.eu##td[align=left] + td[rowspan="3"]
+fotballen.eu##td[class^=auto]:has(>ins.adsbygoogle)
+fotballen.eu##tr tr tr:not(:first-of-type) + tr:last-of-type:has(a[href^="//record."])
+fotballen.eu##tr:has(>td>a[href*=casino])
 ! — — — — — — — — —
 ! 🇳🇴: Oppføringer for minst 3 nettsteder
 ! 🇬🇧: Entries for at least 3 websites
@@ -1710,6 +1721,13 @@ _1170x400.$domain=eyjafrettir.is,image,~third-party
 ||ugenr.dk/bobs/iframe.php^$subdocument
 ||cdplanet.no/images/previews/*_app_preview.png^
 ||infohelgeland.no/banner^
+||fotballen.eu/*468*.gif^
+||fotballen.eu/20*/bet$image
+||fotballen.eu/20*/chips.jpg|
+||fotballen.eu/20*/folkeriket.jpg|
+||fotballen.eu/20*/html/images/jack.jpg^
+||fotballen.eu/20*/vaiplay$image
+||fotballen.eu/20*casino.$image
 ! — — — — — — —
 ! 🇳🇴: Filtjener- eller nettstedsspesifikke oppføringer med kilder
 ! 🇳🇴🏞: Filtenar- eller nettstadsspesifikke oppføringar med kildar
@@ -1745,6 +1763,12 @@ _1170x400.$domain=eyjafrettir.is,image,~third-party
 no##section.noHeader:has(amedia-include[param-url*=innocode])
 ! flashscoreDK (06/02/2024)
 ||content.livesportmedia.eu/api/v*/banners^$third-party
+! fotballenEU (29/03/2025)
+||eu/annonse/$image
+||kindredplc.com/ad.
+||media.comeon.com/tracking.
+||media.folkeautomaten.com/tracking.
+||media.getlucky.com/tracking.
 ! — — — — —
 ! 🇳🇴: Generelle oppføringer med kilder
 ! 🇬🇧: Generic entries that have sources

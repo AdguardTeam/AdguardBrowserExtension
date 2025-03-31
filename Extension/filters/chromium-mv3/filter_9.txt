@@ -1,8 +1,8 @@
-! Checksum: Q9jKtr1aTFXgQugSorRMHQ
+! Checksum: HN6m9kokKLboW8EeqQGjbA
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.29.36
-! TimeUpdated: 2025-03-26T16:28:03+00:00
+! Version: 2.0.29.40
+! TimeUpdated: 2025-03-31T13:13:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -23,6 +23,7 @@
 ! https://forum.adguard.com/index.php?threads/ivoox-com-podcasts-issues.29530/
 ! ||addevweb.com^$third-party
 !
+||adspublicidades.agency^
 ||t.babelmedia.global^
 ||butlercdn.com^$third-party
 ||classic-bonus.com^
@@ -214,6 +215,11 @@
 !
 !
 !
+! https://github.com/uBlockOrigin/uAssets/issues/27759
+! https://github.com/uBlockOrigin/uAssets/issues/27744
+! https://github.com/AdguardTeam/AdguardFilters/issues/201768
+redecanaistv.ps,redecanais.*#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'loadAdScript')
+redecanaistv.ps,redecanais.*#%#//scriptlet('abort-on-property-read', 'close')
 ! https://github.com/uBlockOrigin/uAssets/issues/27651
 sport.es###_an_cmp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199215
@@ -1524,7 +1530,7 @@ beautyskincarebrasil.com#%#//scriptlet('prevent-window-open')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177537
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177524
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161356
-investimentosfacil.online,fomedereceitas.online,blog.whatsappgb.top,infoinvest.org,receitastop.click,receitasvegana.com,megacurioso.online,gastroponto.com,nossoprato.online,receitasdafazenda.com#%#//scriptlet('set-local-storage-item', 'last_ads', 'yes')
+meufinanceiro.org,investimentosfacil.online,fomedereceitas.online,blog.whatsappgb.top,infoinvest.org,receitastop.click,receitasvegana.com,megacurioso.online,gastroponto.com,nossoprato.online,receitasdafazenda.com#%#//scriptlet('set-local-storage-item', 'last_ads', 'yes')
 receitasnatural.com,financastop.online,cryptobr.biz,modsimuladores.com,assistirfilmesdaluna.com,vejaideias.com.br,jogoscompleto.xyz#%#//scriptlet('adjust-setTimeout', '/atualizar|hided/', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161249
 fazercurriculo.online,usandoapp.com#%#//scriptlet('adjust-setTimeout', '.delay', '*', '0.001')
@@ -1824,7 +1830,7 @@ pulzo.com#$##pulzo-header { position: static !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186165
 ! https://github.com/AdguardTeam/AdguardFilters/issues/185949
 ! TODO: consider to add generic rule, something like #$##colunas #framed > #player.hided { display: block !important; } or similar
-investimentosfacil.online,receitasnatural.com,fomedereceitas.online,financastop.online,blog.whatsappgb.top,cryptobr.biz,infoinvest.org,receitastop.click#$#.hided { display: block !important; }
+meufinanceiro.org,investimentosfacil.online,receitasnatural.com,fomedereceitas.online,financastop.online,blog.whatsappgb.top,cryptobr.biz,infoinvest.org,receitastop.click#$#.hided { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177517
 elmueble.com#$#header { top: 0 !important; }
 elmueble.com#$#.admobile { display: none !important; }
@@ -2145,6 +2151,12 @@ c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,me
 !
 ! NOTE: Specific rules
 !
+boraflix.com##div[id^="AADIV"]
+olx.com.br##div[width="300px"][height="250px"]
+olx.com.br##div[width="970px"][height="250px"]
+||mundohentaioficial.com/banner/
+||mundohentaioficial.com/open.js
+mundohentaioficial.com#%#//scriptlet('prevent-addEventListener', '', 'popunder')
 subtituladas.org##a[href^="https://api.powerafftrky.com/"]
 dust2.com.br##div[data-controller^="ad-impression-tracking-controller"]
 tabelafipebrasil.com##div:has(> ins.adsbygoogle)
@@ -3308,7 +3320,7 @@ eltiempo.es##div[style="min-height:600px;"]
 elpais.com##div[id^="ad-"]
 ||static.elpais.com/dist/resources/js/*/ENP-outbrain.js
 elmundo.es##.ue-c-subscription-ad
-mhscans.com,listas.pro###orquidea-slideup
+meufinanceiro.org,mhscans.com,listas.pro###orquidea-slideup
 ouniversodatv.com,animerikosuper.blogspot.com###HTML1
 animerikosuper.blogspot.com###HTML260
 tecnoscann.com,mhscans.com,animerikosuper.blogspot.com##div[class^="fixed-"][class$="Sd"]
@@ -4960,7 +4972,7 @@ todoanimes.com##.anime-pub
 tecnologia.ig.com.br##.anugoogle.ver
 tvgazeta.com.br,redesuldenoticias.com.br,cbnmaringa.com.br,melissabenoist.com.br,botinnifit.com,engeplus.com.br,libertaddigital.tv##.anuncio
 elcolombiano.com##.anuncioPrincipal
-desenhosanimados.site,esradio.fm,libertaddigital.com,libertaddigital.tv##.anuncios
+mundohentaioficial.com,desenhosanimados.site,esradio.fm,libertaddigital.com,libertaddigital.tv##.anuncios
 futnet.com.br##.area_anuncios_topo
 futnet.com.br##.area_banner_125x125
 futnet.com.br##.area_banner_arroba

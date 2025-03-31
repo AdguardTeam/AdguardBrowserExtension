@@ -1,8 +1,8 @@
-! Checksum: jxZp/4MQPptvWPZGs3n3MQ
+! Checksum: DNrllqMWfyfz8bz14DX6HQ
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.55.42
-! TimeUpdated: 2025-03-26T16:28:07+00:00
+! Version: 2.0.55.52
+! TimeUpdated: 2025-03-31T12:10:49+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -932,9 +932,10 @@ mislink3.com#%#//scriptlet('trusted-replace-node-text', 'script', 'saniye--', 'v
 yeppuu.com#%#//scriptlet('abort-on-property-write', 'openRandomUrl')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167825
 pllsfored.com#%#//scriptlet("set-constant", "window.config.adv", "emptyObj")
+! https://github.com/AdguardTeam/AdguardFilters/issues/201457
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165655
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197202
-webdramaturkey.net,afroditscans.com#%#//scriptlet("abort-on-property-read", "openPopup")
+webdramaturkey.*,afroditscans.com#%#//scriptlet("abort-on-property-read", "openPopup")
 ! https://github.com/uBlockOrigin/uAssets/issues/19921
 dizipia.com#%#//scriptlet('abort-on-property-write', 'popURL')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/161599
@@ -1111,10 +1112,10 @@ mackolik.com,sahadan.com#%#setTimeout ("HideFloatAdBanner()", 1000);
 !------- CSS fixes --------------------!
 !--------------------------------------!
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201457
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197202
-webdramaturkey.net#$#.container { margin-top: 0px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182860
-webdramaturkey.com#$#body > .container { margin-top: 0 !important; }
+webdramaturkey.*#$#body > .container { margin-top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182795
 dizikorea.*#$#.wrapper { margin-top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/182537
@@ -1557,7 +1558,7 @@ antalyahakkinda.com,kandiraninsesi.com,oyunrota.com,davahaber.com,sabahhaberi.co
 ! div[class*="reklam"]
 lidergazete.com,bilecik11.com,liderbursa.com,mebehliyetsinavsorulari.com,haberler33.com,mygazete.com,kastamonuguncel.com,elazigonline.com,gazetecin.com,kocaelidenge.com##div[class*="reklam"]
 ! ##.ad
-korkusuz.com.tr,szctv.com.tr,bursa.com,sozcu.com.tr,megahaber27.com,yemektarifleri.org,lifebursa.com,mshowto.org,dunyaatlasi.com,ensonhaber.com,gayrimenkulhaber.com,internethaber.com,gercekgundem.com,cinemadran.com,ranini.tv,oggito.com,kocaeligazetesi.com.tr,rumma.org,aydindenge.com.tr,gecmisgazete.com##.ad
+sozcu.com.tr,korkusuz.com.tr,szctv.com.tr,bursa.com,sozcu.com.tr,megahaber27.com,yemektarifleri.org,lifebursa.com,mshowto.org,dunyaatlasi.com,ensonhaber.com,gayrimenkulhaber.com,internethaber.com,gercekgundem.com,cinemadran.com,ranini.tv,oggito.com,kocaeligazetesi.com.tr,rumma.org,aydindenge.com.tr,gecmisgazete.com##.ad
 ! ##div[id^="ad_"]
 gelirkapisi.com##div[id^="ad_"]
 ! ##.stream-item
@@ -1584,7 +1585,12 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
-naxcivanxeberleri.com##header > a[href^="https://"][target="_blank"]
+startv.com.tr##div[class*="dyg-"]
+sozcu.com.tr##.row div.sozcu-ramazan-imsakiye > a[target="_blank"]
+parselsorgu.tkgm.gov.tr###custom-popup
+onedio.com##div[id^="before-infinite-scroll-thumbnails"]
+selcukflix.com##.player > .flex:has(> div > img[alt="ad image"])
+dizifon.com##[data-mayd="moon_ayd"]
 emlakjet.com##div[class^="styles_ad"]
 fanatik.com.tr##.article-ads-container
 t24.com.tr##div[style]:has(> div[id^="div-gpt-ad"]:only-child)
@@ -1981,7 +1987,7 @@ softonic.com.tr##.black-friday-ads
 sinefy3.com##.bg-cover-faker > div:not([class]):not([id]) > center
 ||storage.oyungezer.com.tr/ogz-public/ads/
 ||webdramaturkey.com/*/*.mp4
-animeizlesene.com,webdramaturkey.com##.ads-embed
+animeizlesene.com,webdramaturkey.*##.ads-embed
 ntv.com.tr#?#.slick-track > div.slick-slide > div > div.ntv-main-slider-item:has(> a[href^="http://pubads.g.doubleclick.net/"])
 ntv.com.tr#?#.slick-track > div.slick-slide > div > li.ntv-main-slider-pagination-item:has(> a[href^="http://pubads.g.doubleclick.net/"])
 /^https:\/\/www\.donanimhaber\.com\/images\/images\/[a-z_-]+[0-9]+x[0-9]+(_|-)/$domain=donanimhaber.com
@@ -5453,6 +5459,10 @@ hdfilmcehennem.live#$##kendisi { display: block!important; }
 oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
 !
+! diziyou*.com - frequently changed domains
+! https://t.me/diziyoucom
+||cdn.diziyou*.com/wp-content/*.gif
+!
 ! dizilla.*(club|com|nl)  - frequently changed domains
 [$domain=/dizilla\d+\.nl/]###playerLsDizilla > div.flex:not(.player)
 [$domain=/dizilla\d+\.nl/]##a[href^="https://diken.xyz/"]
@@ -5466,6 +5476,11 @@ dizilla.nl###router-view > div > div > div[class]:has(> div:only-child > ad)
 ! selcuksportshd*.xyz - frequently changed domains
 ! aglint-disable-next-line invalid-modifiers
 ||googleusercontent.com/img/*/crt$domain=/selcuksportshd\d+\.xyz/
+! TODO: remove "NOT_VALIDATE" hint when this issue is fixed - https://github.com/AdguardTeam/FiltersCompiler/issues/237
+! aglint-disable unknown-hints-and-platforms
+!+ NOT_VALIDATE
+[$url=/^https?:\/\/(?:cinque|due|tre)\.(?=.*[0-9])[a-z0-9]{16}\.click\/.*\/player\.html/]#%#//scriptlet('set-constant', 'config.advertisement.enabled', 'false')
+! aglint-enable unknown-hints-and-platforms
 [$domain=/^i\[a-z\]*\.strmrdr\[a-z0-9\]+\..*/]#%#//scriptlet('set-constant', 'adscfg.enabled', 'false')
 cinque.668a396e58bcbc27.click#%#//scriptlet('set-constant', 'config.advertisement.enabled', 'false')
 [$domain=/selcuksportshd\d+\.xyz/]##.banner
@@ -5535,7 +5550,7 @@ fullhdizle.*,filmizlehdfilm.com,filmizletv.*,fullfilmizle.*,fullfilmizle.cc,full
 ! dizipal*.com - frequently changed domains
 ! https://x.com/dizipalSx
 ||dizipal*.com/wp-content/uploads/*.gif
-dplayer80.site##pjsdiv[id*="betzulabanner"]
+[$domain=/dplayer\d+.site/]##pjsdiv[id*="betzulabanner"]
 [$domain=/dizipal\d+.com/]##.duzyazibar
 [$domain=/dizipal\d+.com/]##center > a[href][target="_blank"]
 [$domain=/dizipal\d+.com/]##a[href^="https://heylink.me/"]
@@ -5544,14 +5559,6 @@ dplayer80.site##pjsdiv[id*="betzulabanner"]
 [$domain=/dizipal\d+.com/]##.alert
 [$domain=/dizipal\d+.com/]##.rounded.m-auto .bg-black > a[href][target="_blank"]
 [$domain=/dizipal\d+.com/]###mPlayerFds
-dizipal851,dizipal852,dizipal853,dizipal854,dizipal855,dizipal856,dizipal857,dizipal858,dizipal859,dizipal860,dizipal861,dizipal862,dizipal863,dizipal864,dizipal865,dizipal866,dizipal867,dizipal868,dizipal869,dizipal870,dizipal871,dizipal872,dizipal873,dizipal874,dizipal875,dizipal876,dizipal877,dizipal878,dizipal879,dizipal880,dizipal881,dizipal882,dizipal883,dizipal884,dizipal885,dizipal886,dizipal887,dizipal888,dizipal889,dizipal890,dizipal891,dizipal892,dizipal893,dizipal894,dizipal895,dizipal896,dizipal897,dizipal898,dizipal899,dizipal900,dizipal901,dizipal902,dizipal903,dizipal904,dizipal905,dizipal906,dizipal907,dizipal908,dizipal909,dizipal910,dizipal911,dizipal912,dizipal913,dizipal914,dizipal915,dizipal916,dizipal917,dizipal918,dizipal919,dizipal920,dizipal921,dizipal922,dizipal923,dizipal924,dizipal925,dizipal926,dizipal927,dizipal928,dizipal929,dizipal930,dizipal931,dizipal932,dizipal933,dizipal934,dizipal935,dizipal936,dizipal937,dizipal938,dizipal939,dizipal940,dizipal941,dizipal942,dizipal943,dizipal944,dizipal945,dizipal946,dizipal947,dizipal948,dizipal949,dizipal950###mPlayerFds
-dizipal851,dizipal852,dizipal853,dizipal854,dizipal855,dizipal856,dizipal857,dizipal858,dizipal859,dizipal860,dizipal861,dizipal862,dizipal863,dizipal864,dizipal865,dizipal866,dizipal867,dizipal868,dizipal869,dizipal870,dizipal871,dizipal872,dizipal873,dizipal874,dizipal875,dizipal876,dizipal877,dizipal878,dizipal879,dizipal880,dizipal881,dizipal882,dizipal883,dizipal884,dizipal885,dizipal886,dizipal887,dizipal888,dizipal889,dizipal890,dizipal891,dizipal892,dizipal893,dizipal894,dizipal895,dizipal896,dizipal897,dizipal898,dizipal899,dizipal900,dizipal901,dizipal902,dizipal903,dizipal904,dizipal905,dizipal906,dizipal907,dizipal908,dizipal909,dizipal910,dizipal911,dizipal912,dizipal913,dizipal914,dizipal915,dizipal916,dizipal917,dizipal918,dizipal919,dizipal920,dizipal921,dizipal922,dizipal923,dizipal924,dizipal925,dizipal926,dizipal927,dizipal928,dizipal929,dizipal930,dizipal931,dizipal932,dizipal933,dizipal934,dizipal935,dizipal936,dizipal937,dizipal938,dizipal939,dizipal940,dizipal941,dizipal942,dizipal943,dizipal944,dizipal945,dizipal946,dizipal947,dizipal948,dizipal949,dizipal950##.rounded.m-auto .bg-black > a[href][target="_blank"]
-dizipal851,dizipal852,dizipal853,dizipal854,dizipal855,dizipal856,dizipal857,dizipal858,dizipal859,dizipal860,dizipal861,dizipal862,dizipal863,dizipal864,dizipal865,dizipal866,dizipal867,dizipal868,dizipal869,dizipal870,dizipal871,dizipal872,dizipal873,dizipal874,dizipal875,dizipal876,dizipal877,dizipal878,dizipal879,dizipal880,dizipal881,dizipal882,dizipal883,dizipal884,dizipal885,dizipal886,dizipal887,dizipal888,dizipal889,dizipal890,dizipal891,dizipal892,dizipal893,dizipal894,dizipal895,dizipal896,dizipal897,dizipal898,dizipal899,dizipal900,dizipal901,dizipal902,dizipal903,dizipal904,dizipal905,dizipal906,dizipal907,dizipal908,dizipal909,dizipal910,dizipal911,dizipal912,dizipal913,dizipal914,dizipal915,dizipal916,dizipal917,dizipal918,dizipal919,dizipal920,dizipal921,dizipal922,dizipal923,dizipal924,dizipal925,dizipal926,dizipal927,dizipal928,dizipal929,dizipal930,dizipal931,dizipal932,dizipal933,dizipal934,dizipal935,dizipal936,dizipal937,dizipal938,dizipal939,dizipal940,dizipal941,dizipal942,dizipal943,dizipal944,dizipal945,dizipal946,dizipal947,dizipal948,dizipal949,dizipal950##.alert
-dizipal851,dizipal852,dizipal853,dizipal854,dizipal855,dizipal856,dizipal857,dizipal858,dizipal859,dizipal860,dizipal861,dizipal862,dizipal863,dizipal864,dizipal865,dizipal866,dizipal867,dizipal868,dizipal869,dizipal870,dizipal871,dizipal872,dizipal873,dizipal874,dizipal875,dizipal876,dizipal877,dizipal878,dizipal879,dizipal880,dizipal881,dizipal882,dizipal883,dizipal884,dizipal885,dizipal886,dizipal887,dizipal888,dizipal889,dizipal890,dizipal891,dizipal892,dizipal893,dizipal894,dizipal895,dizipal896,dizipal897,dizipal898,dizipal899,dizipal900,dizipal901,dizipal902,dizipal903,dizipal904,dizipal905,dizipal906,dizipal907,dizipal908,dizipal909,dizipal910,dizipal911,dizipal912,dizipal913,dizipal914,dizipal915,dizipal916,dizipal917,dizipal918,dizipal919,dizipal920,dizipal921,dizipal922,dizipal923,dizipal924,dizipal925,dizipal926,dizipal927,dizipal928,dizipal929,dizipal930,dizipal931,dizipal932,dizipal933,dizipal934,dizipal935,dizipal936,dizipal937,dizipal938,dizipal939,dizipal940,dizipal941,dizipal942,dizipal943,dizipal944,dizipal945,dizipal946,dizipal947,dizipal948,dizipal949,dizipal950##header-o > .px-5:has(> a[target="_blank"])
-dizipal851,dizipal852,dizipal853,dizipal854,dizipal855,dizipal856,dizipal857,dizipal858,dizipal859,dizipal860,dizipal861,dizipal862,dizipal863,dizipal864,dizipal865,dizipal866,dizipal867,dizipal868,dizipal869,dizipal870,dizipal871,dizipal872,dizipal873,dizipal874,dizipal875,dizipal876,dizipal877,dizipal878,dizipal879,dizipal880,dizipal881,dizipal882,dizipal883,dizipal884,dizipal885,dizipal886,dizipal887,dizipal888,dizipal889,dizipal890,dizipal891,dizipal892,dizipal893,dizipal894,dizipal895,dizipal896,dizipal897,dizipal898,dizipal899,dizipal900,dizipal901,dizipal902,dizipal903,dizipal904,dizipal905,dizipal906,dizipal907,dizipal908,dizipal909,dizipal910,dizipal911,dizipal912,dizipal913,dizipal914,dizipal915,dizipal916,dizipal917,dizipal918,dizipal919,dizipal920,dizipal921,dizipal922,dizipal923,dizipal924,dizipal925,dizipal926,dizipal927,dizipal928,dizipal929,dizipal930,dizipal931,dizipal932,dizipal933,dizipal934,dizipal935,dizipal936,dizipal937,dizipal938,dizipal939,dizipal940,dizipal941,dizipal942,dizipal943,dizipal944,dizipal945,dizipal946,dizipal947,dizipal948,dizipal949,dizipal950##.duzyazibar
-dizipal851,dizipal852,dizipal853,dizipal854,dizipal855,dizipal856,dizipal857,dizipal858,dizipal859,dizipal860,dizipal861,dizipal862,dizipal863,dizipal864,dizipal865,dizipal866,dizipal867,dizipal868,dizipal869,dizipal870,dizipal871,dizipal872,dizipal873,dizipal874,dizipal875,dizipal876,dizipal877,dizipal878,dizipal879,dizipal880,dizipal881,dizipal882,dizipal883,dizipal884,dizipal885,dizipal886,dizipal887,dizipal888,dizipal889,dizipal890,dizipal891,dizipal892,dizipal893,dizipal894,dizipal895,dizipal896,dizipal897,dizipal898,dizipal899,dizipal900,dizipal901,dizipal902,dizipal903,dizipal904,dizipal905,dizipal906,dizipal907,dizipal908,dizipal909,dizipal910,dizipal911,dizipal912,dizipal913,dizipal914,dizipal915,dizipal916,dizipal917,dizipal918,dizipal919,dizipal920,dizipal921,dizipal922,dizipal923,dizipal924,dizipal925,dizipal926,dizipal927,dizipal928,dizipal929,dizipal930,dizipal931,dizipal932,dizipal933,dizipal934,dizipal935,dizipal936,dizipal937,dizipal938,dizipal939,dizipal940,dizipal941,dizipal942,dizipal943,dizipal944,dizipal945,dizipal946,dizipal947,dizipal948,dizipal949,dizipal950##center > a[href][target="_blank"]
-dizipal851,dizipal852,dizipal853,dizipal854,dizipal855,dizipal856,dizipal857,dizipal858,dizipal859,dizipal860,dizipal861,dizipal862,dizipal863,dizipal864,dizipal865,dizipal866,dizipal867,dizipal868,dizipal869,dizipal870,dizipal871,dizipal872,dizipal873,dizipal874,dizipal875,dizipal876,dizipal877,dizipal878,dizipal879,dizipal880,dizipal881,dizipal882,dizipal883,dizipal884,dizipal885,dizipal886,dizipal887,dizipal888,dizipal889,dizipal890,dizipal891,dizipal892,dizipal893,dizipal894,dizipal895,dizipal896,dizipal897,dizipal898,dizipal899,dizipal900,dizipal901,dizipal902,dizipal903,dizipal904,dizipal905,dizipal906,dizipal907,dizipal908,dizipal909,dizipal910,dizipal911,dizipal912,dizipal913,dizipal914,dizipal915,dizipal916,dizipal917,dizipal918,dizipal919,dizipal920,dizipal921,dizipal922,dizipal923,dizipal924,dizipal925,dizipal926,dizipal927,dizipal928,dizipal929,dizipal930,dizipal931,dizipal932,dizipal933,dizipal934,dizipal935,dizipal936,dizipal937,dizipal938,dizipal939,dizipal940,dizipal941,dizipal942,dizipal943,dizipal944,dizipal945,dizipal946,dizipal947,dizipal948,dizipal949,dizipal950##a[href^="https://heylink.me/"]
-dizipal851,dizipal852,dizipal853,dizipal854,dizipal855,dizipal856,dizipal857,dizipal858,dizipal859,dizipal860,dizipal861,dizipal862,dizipal863,dizipal864,dizipal865,dizipal866,dizipal867,dizipal868,dizipal869,dizipal870,dizipal871,dizipal872,dizipal873,dizipal874,dizipal875,dizipal876,dizipal877,dizipal878,dizipal879,dizipal880,dizipal881,dizipal882,dizipal883,dizipal884,dizipal885,dizipal886,dizipal887,dizipal888,dizipal889,dizipal890,dizipal891,dizipal892,dizipal893,dizipal894,dizipal895,dizipal896,dizipal897,dizipal898,dizipal899,dizipal900,dizipal901,dizipal902,dizipal903,dizipal904,dizipal905,dizipal906,dizipal907,dizipal908,dizipal909,dizipal910,dizipal911,dizipal912,dizipal913,dizipal914,dizipal915,dizipal916,dizipal917,dizipal918,dizipal919,dizipal920,dizipal921,dizipal922,dizipal923,dizipal924,dizipal925,dizipal926,dizipal927,dizipal928,dizipal929,dizipal930,dizipal931,dizipal932,dizipal933,dizipal934,dizipal935,dizipal936,dizipal937,dizipal938,dizipal939,dizipal940,dizipal941,dizipal942,dizipal943,dizipal944,dizipal945,dizipal946,dizipal947,dizipal948,dizipal949,dizipal950##a[target="_blank"][rel="nofollow"]
 ! dizipal*.com - frequently changed domains (probably another similar)
 [$domain=/dizipal\d+.com/]#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/manageAds\(video_urls\[activeItem\]\, video_seconds\[activeItem\]\, ad_urls\[activeItem]\,true\);/', 'playVideo();')
 ! dizipal*.com - fake dizipal
@@ -5734,6 +5741,7 @@ ugurfilm7.com,ugurfilm8.com,ugurfilm9.com,ugurfilm10.com,ugurfilm11.com,ugurfilm
 ugurfilm7.com,ugurfilm8.com,ugurfilm9.com,ugurfilm10.com,ugurfilm11.com,ugurfilm12.com,ugurfilm13.com,ugurfilm14.com,ugurfilm15.com,ugurfilm16.com##a[href="https://ucuncusinema.com/"]
 /reklampopup*.js$domain=ugurfilm7.com|ugurfilm8.com|ugurfilm9.com|ugurfilm10.com|ugurfilm11.com|ugurfilm12.com|ugurfilm13.com|ugurfilm14.com|ugurfilm15.com|ugurfilm16.com
 ugurfilm7.com,ugurfilm8.com,ugurfilm9.com,ugurfilm10.com,ugurfilm11.com,ugurfilm12.com,ugurfilm13.com,ugurfilm14.com,ugurfilm15.com,ugurfilm16.com##img[alt="Reklam"]
+||ugurfilm*.com/wp-content/cache/autoptimize/autoptimize_single_*.php
 ! avrupabettv*.com - frequently changed domains
 ||avrupabettv*.com/wp-content/uploads/
 avrupabettv1.com,avrupabettv2.com,avrupabettv3.com,avrupabettv4.com,avrupabettv5.com,avrupabettv6.com,avrupabettv7.com,avrupabettv8.com,avrupabettv9.com,avrupabettv10.com,avrupabettv11.com,avrupabettv12.com,avrupabettv13.com,avrupabettv14.com,avrupabettv15.com,avrupabettv16.com,avrupabettv17.com,avrupabettv18.com,avrupabettv19.com,avrupabettv20.com,avrupabettv21.com,avrupabettv22.com##.pageskin
