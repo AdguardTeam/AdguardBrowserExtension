@@ -29,13 +29,6 @@ export const baseMetadataValidator = zod.object({
     displayNumber: zod.number(),
 
     /**
-     * Whether the filter is deprecated.
-     *
-     * @see {@link https://github.com/AdguardTeam/FiltersRegistry#metadata}
-     */
-    deprecated: zod.boolean().optional(),
-
-    /**
      * The time in seconds during which the filter content remains fresh
      * and does not need to be updated. Used to auto-renew filters if the user
      * has not selected a custom update period for filters.
@@ -108,6 +101,13 @@ export const regularFilterMetadataValidator = baseMetadataValidator.merge(
          * updating it.
          */
         subscriptionUrl: zod.string(),
+
+        /**
+         * Whether the filter is deprecated.
+         *
+         * @see {@link https://github.com/AdguardTeam/FiltersRegistry#metadata}
+         */
+        deprecated: zod.boolean().optional(),
     }),
 );
 

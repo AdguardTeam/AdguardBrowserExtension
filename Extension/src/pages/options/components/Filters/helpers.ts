@@ -18,7 +18,11 @@
 
 import { sortBy } from 'lodash-es';
 
-import { type CategoriesFilterData, type CategoriesGroupData } from '../../../../background/api';
+import {
+    CommonFilterApi,
+    type CategoriesFilterData,
+    type CategoriesGroupData,
+} from '../../../../background/api';
 
 /**
  * Sorts filters by enabled status and displayNumber.
@@ -59,7 +63,12 @@ export const sortFilters = (filters: CategoriesFilterData[]) => {
             return 0;
         })
         // do not display deprecated filters
-        .filter((filter) => !filter.deprecated);
+        .filter((filter) => {
+            // only _regular_ filters can be deprecated, not custom ones
+            return CommonFilterApi.isRegularFilterMetadata(filter)
+                ? !filter.deprecated
+                : true;
+        });
 
     return sorted;
 };
