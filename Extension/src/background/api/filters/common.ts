@@ -33,7 +33,7 @@ import {
 import { network } from '../network';
 
 import { CustomFilterApi } from './custom';
-import { FiltersApi } from './main';
+import { type FilterMetadata, FiltersApi } from './main';
 import { type FilterUpdateOptions } from './update';
 import { FilterParser } from './parser';
 
@@ -83,6 +83,17 @@ export class CommonFilterApi {
 
         // TODO: Uncomment this line when Quick Fixes filter will be supported for MV3
         // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
+    }
+
+    /**
+     * Checks whether the filter is a regular filter.
+     *
+     * @param filter Filter metadata.
+     *
+     * @returns True if filter is a regular filter, false otherwise.
+     */
+    public static isRegularFilterMetadata(filter: FilterMetadata): filter is RegularFilterMetadata {
+        return CommonFilterApi.isCommonFilter(filter.filterId);
     }
 
     /**
