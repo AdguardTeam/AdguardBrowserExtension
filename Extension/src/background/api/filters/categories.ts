@@ -301,6 +301,12 @@ export class Categories {
         const result: CategoriesFilterData[] = [];
 
         filtersMetadata.forEach((filterMetadata) => {
+            // skip deprecated filters
+            if (CommonFilterApi.isRegularFilterMetadata(filterMetadata)
+                && filterMetadata.deprecated) {
+                return;
+            }
+
             const {
                 filterId,
                 tags,
@@ -309,7 +315,6 @@ export class Categories {
                 timeUpdated,
                 diffPath,
             } = filterMetadata;
-            const tagsDetails = Categories.getTagsDetails(tags);
 
             const filterState = filterStateStorage.get(filterId);
             if (!filterState) {
@@ -336,6 +341,8 @@ export class Categories {
                 };
                 filterVersionStorage.set(filterId, filterVersion);
             }
+
+            const tagsDetails = Categories.getTagsDetails(tags);
 
             result.push({
                 ...filterMetadata,

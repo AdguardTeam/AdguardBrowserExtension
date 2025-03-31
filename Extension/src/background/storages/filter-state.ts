@@ -103,6 +103,23 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
+     * Checks if filter is installed.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns True if filter is installed, false otherwise.
+     *
+     * @throws Error if filter state data is not initialized.
+     */
+    public isInstalled(filterId: number): boolean {
+        if (!this.data) {
+            throw FilterStateStorage.createNotInitializedError();
+        }
+
+        return !!this.data[filterId]?.installed;
+    }
+
+    /**
      * Returns list of enabled filters ids.
      *
      * @returns List of enabled filters ids.

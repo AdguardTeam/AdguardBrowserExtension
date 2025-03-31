@@ -551,6 +551,20 @@ export class SettingsApi {
     }
 
     /**
+     * Migrates deprecated filters and filters them out of the list of enabled filters.
+     *
+     * @param inputFilterIds Input filter ids to import.
+     *
+     * @returns Filter ids to enable.
+     */
+    private static async migrateDeprecatedFilters(inputFilterIds: number[]): Promise<number[]> {
+        const deprecatedFilters = await FiltersApi.migrateDeprecatedFilters();
+
+        return SettingsApi.migrateCombinedAnnoyanceFilter(inputFilterIds)
+            .filter((filterId) => !deprecatedFilters.includes(filterId));
+    }
+
+    /**
      * Imports filters settings from object of {@link FiltersConfig}.
      */
     private static async importFilters({
@@ -565,7 +579,7 @@ export class SettingsApi {
 
         const builtInFilters = enabledFilters.filter((filterId: number) => CommonFilterApi.isCommonFilter(filterId));
 
-        const filtersToEnable = SettingsApi.migrateCombinedAnnoyanceFilter(builtInFilters);
+        const filtersToEnable = await SettingsApi.migrateDeprecatedFilters(builtInFilters);
 
         if (__IS_MV3__) {
             await SettingsApi.loadBuiltInFiltersMv3(filtersToEnable);

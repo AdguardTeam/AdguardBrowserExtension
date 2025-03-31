@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { filterVersionStorage, settingsStorage } from '../../storages';
+import { filterStateStorage } from '../../storages/filter-state';
 import {
     SettingOption,
     type RegularFilterMetadata,
@@ -89,6 +90,7 @@ export class FilterUpdateApi {
         const filterDetails = filtersToCheck.map((id) => ({ filterId: id, ignorePatches: true }));
 
         const updatedFilters = await FilterUpdateApi.updateFilters(filterDetails);
+
         filterVersionStorage.refreshLastCheckTime(filterDetails);
 
         return updatedFilters;
@@ -239,6 +241,13 @@ export class FilterUpdateApi {
         const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
             // TODO: Remove this block when custom filters will be supported for MV3
             if (__IS_MV3__) {
+                return;
+            }
+
+            // deprecated filters is to be uninstalled during the migration,
+            // skip up for them to avoid unnecessary errors
+            const isFilterInstalled = filterStateStorage.isInstalled(filterData.filterId);
+            if (!isFilterInstalled) {
                 return;
             }
 

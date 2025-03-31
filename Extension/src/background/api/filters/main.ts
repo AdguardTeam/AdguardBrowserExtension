@@ -83,6 +83,8 @@ export class FiltersApi {
 
         FiltersApi.loadFilteringStates();
 
+        await FiltersApi.migrateDeprecatedFilters();
+
         await FiltersApi.removeObsoleteFilters();
     }
 
@@ -116,6 +118,8 @@ export class FiltersApi {
         }
 
         FiltersApi.loadFilteringStates();
+
+        await FiltersApi.migrateDeprecatedFilters();
 
         await FiltersApi.removeObsoleteFilters();
     }
@@ -677,6 +681,72 @@ export class FiltersApi {
     }
 
     /**
+     * Removes regular filter from the storage.
+     *
+     * @param filterId Filter id.
+     */
+    private static removeRegularFilter(filterId: number): void {
+        filterVersionStorage.delete(filterId);
+        filterStateStorage.delete(filterId);
+        FiltersStorage.remove(filterId);
+        RawFiltersStorage.remove(filterId);
+    }
+
+    /**
+     * Migrates deprecated filters:
+     * - if they are ***installed*** (which always happens for regular filters)
+     *   but **not *enabled*** — removes them from the list of regular filters;
+     * - if they are ***enabled*** — moves them to custom filters group.
+     *
+     * @returns Array of deprecated filters ids.
+     */
+    public static async migrateDeprecatedFilters(): Promise<number[]> {
+        const commonFiltersMetadata = CommonFilterApi.getFiltersMetadata();
+
+        const installedFiltersIds = filterStateStorage.getInstalledFilters();
+        const enabledFilters = FiltersApi.getEnabledFilters();
+
+        const deprecatedFilterIds: number[] = [];
+
+        const installedDeprecatedFilters = commonFiltersMetadata.filter((filter) => {
+            if (!filter.deprecated) {
+                return false;
+            }
+
+            deprecatedFilterIds.push(filter.filterId);
+
+            return installedFiltersIds.includes(filter.filterId);
+        });
+
+        const tasks = installedDeprecatedFilters.map(async ({ filterId, subscriptionUrl }) => {
+            FiltersApi.removeRegularFilter(filterId);
+            logger.info(
+                `Filter with id ${filterId} removed from the regular filters storage`,
+                'since it is deprecated, it is to be moved to custom group',
+            );
+
+            // move filter to custom group if is enabled
+            if (enabledFilters.includes(filterId)) {
+                await CustomFilterApi.createFilter({
+                    customUrl: subscriptionUrl,
+                    trusted: true,
+                    enabled: true,
+                });
+            }
+        });
+
+        const promises = await Promise.allSettled(tasks);
+
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                logger.error('Cannot remove obsoleted filter from storage due to: ', promise.reason);
+            }
+        });
+
+        return deprecatedFilterIds;
+    }
+
+    /**
      * Removes obsolete filters if there is any.
      *
      * Obsolete filters are those that are not present in the metadata
@@ -689,12 +759,8 @@ export class FiltersApi {
         const tasks = installedFiltersIds
             .filter((id) => !metadataFiltersIds.includes(id))
             .map(async (id) => {
-                filterVersionStorage.delete(id);
-                filterStateStorage.delete(id);
-                await FiltersStorage.remove(id);
-                await RawFiltersStorage.remove(id);
-
-                logger.info(`Filter with id ${id} removed from the storage`);
+                FiltersApi.removeRegularFilter(id);
+                logger.info(`Filter with id ${id} removed from the storage since it is obsolete`);
             });
 
         const promises = await Promise.allSettled(tasks);

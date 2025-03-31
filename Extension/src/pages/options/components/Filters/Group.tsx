@@ -17,7 +17,6 @@
  */
 
 import React from 'react';
-import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
 
@@ -209,7 +208,7 @@ const DisabledCustomFiltersGroup = ({
     );
 };
 
-const Group = observer(({
+const Group = ({
     groupName,
     groupId,
     enabledFilters,
@@ -279,6 +278,6 @@ const Group = observer(({
             </div>
         </li>
     );
-});
+};
 
 export { Group };
