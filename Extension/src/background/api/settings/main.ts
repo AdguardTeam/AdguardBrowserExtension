@@ -565,7 +565,7 @@ export class SettingsApi {
 
         const builtInFilters = enabledFilters.filter((filterId: number) => CommonFilterApi.isCommonFilter(filterId));
 
-        const filtersToEnable = await SettingsApi.migrateCombinedAnnoyanceFilter(builtInFilters);
+        const filtersToEnable = SettingsApi.migrateCombinedAnnoyanceFilter(builtInFilters);
 
         if (__IS_MV3__) {
             await SettingsApi.loadBuiltInFiltersMv3(filtersToEnable);
