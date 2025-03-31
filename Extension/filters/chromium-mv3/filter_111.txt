@@ -1,16 +1,16 @@
-! Checksum: EsOXuVG96hpt/szjYoP8jA
+! Checksum: 3pyYpUrnLTMq7eIjssnbiw
 ! Title: Latvian List
 ! Description: Additional filter list for websites in Latvian.
-! Version: 2.0.0.59
-! TimeUpdated: 2024-04-16T17:01:03+00:00
+! Version: 2.0.0.60
+! TimeUpdated: 2025-03-25T17:01:29+00:00
 ! Expires: 10 days (update frequency)
 !
-! Checksum: RaR9NdfdhK9Glku8NS06Yg
+! Checksum: 4hktfkWMJ6WqnK0MZp92Qw
 ! Title: Latvian List
 ! Homepage: https://github.com/Latvian-List/adblock-latvian
 ! Expires: 4 days
-! OriginalVersion: 202404161656
-! Last modified: 2024-04-16 16:56 UTC
+! OriginalVersion: 202503251402
+! Last modified: 2025-03-25 14:02 UTC
 ! Licence: CC BY-SA 4.0  https://creativecommons.org/licenses/by-sa/4.0/
 !
 ! Lūdzu paziņojiet par nebloķētām reklāmām vai problēmām vienā no šiem veidiem:
@@ -106,6 +106,7 @@
 ||salidzini.lv/*_1200x150$subdocument
 ||salidzini.lv/*_190x600$subdocument
 ||salidzini.lv/*_320x120$subdocument
+||salidzini.lv^$script,domain=salidzini.lv
 ||semicom.lv/admin/files/$object
 ||serveris.lv/images/Baners/
 ||signe.lv/userfiles/image/main%20page%20banners/
@@ -136,7 +137,6 @@
 ||agk.lv^$third-party
 ||airbalticblog.com/shared/$third-party
 ||alida.lv/upload/banner/
-||anymedia.lv^$third-party
 ||apollo.lv/article/feed/iframe/$third-party
 ||apollo.lv/upload/city24
 ||apps.lv/timthumb.php?*/uploads/shop_images/
@@ -345,6 +345,11 @@ kurzemnieks.lv##.banner-container.header
 la.lv##.side-banner
 lasi.lv##.article-advertisement
 lattelecom.lv##[id^="fixme_"]
+liepajniekiem.lv#%#//scriptlet('ubo-nano-setInterval-booster.js')
+liepajniekiem.lv#%#//scriptlet('ubo-set.js', 'window.LIEPAJNIEKIEM_ADBLOCK', 'null')
+liepajniekiem.lv#%#//scriptlet('ubo-set.js', 'window.LIEPAJNIEKIEM_ADBLOCK_COUNTER', '999')
+liepajniekiem.lv#%#//scriptlet('ubo-set.js', 'window.LIEPAJNIEKIEM_HAS_ADBLOCK', '0')
+liepajniekiem.lv#%#//scriptlet('ubo-set.js', 'window.liepajniekiemStats.event', 'function() {}')
 lsm.lv##.adbox
 mail.inbox.lv##tr[id^="row"]
 miljons.com###opencredit
@@ -383,7 +388,14 @@ salidzini.lv###AM_tower_div
 salidzini.lv###AM_tower_sub
 salidzini.lv##.item_link[href^="/rekred.php"]
 salidzini.lv##.item_link[href^="/rekred1click"]
+salidzini.lv##[class*="fall15back"]
+salidzini.lv##[id^="fall15back"]
 salidzini.lv##[id^="media_place"]
+salidzini.lv##div:has(a[href*="fall15back"])
+salidzini.lv#?#div:has(div:contains(Reklāma)):upward(div.item_box_main)
+salidzini.lv##div[id^="am"]:empty
+salidzini.lv##div[id^="am"][id*="giga"]
+salidzini.lv##div[id^="am"][id*="tower"]
 skaties.lv##[id^="_fw_frame_"]
 spoki.tvnet.lv###spec_head
 sportacentrs.com##.r_article
@@ -442,12 +454,8 @@ zz.lv,staburags.lv,aluksniesiem.lv,bauskasdzive.lv,dzirkstele.lv,ziemellatvija.l
 !
 apollo.lv#@#.article-ad-placeholder
 apollo.lv#@#.dfp-ad
-atverskapi.delfi.lv#@#.ad-placement
 atverskapi.delfi.lv#@#.adocean
 tvnet.lv#@#.article-ad-placeholder
 tvnet.lv#@#.dfp-ad
-tvnet.lv,apollo.lv#@#.ad01
-tvnet.lv,apollo.lv#@#.adBanner
-tvnet.lv,apollo.lv#@#.dfp_ad
 varianti.lv#@##ad_table
 varianti.lv#@#.single_ad

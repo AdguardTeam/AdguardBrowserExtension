@@ -186,9 +186,10 @@ Unit tests:
 
             ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test
   final-tasks:
-    - test-parser:
-        type: junit
-        test-results: 'tests-reports/unit-tests-mv*.xml'
+    #   # disabled in AG-40097 since it follows to memory leaks.
+    # - test-parser:
+    #     type: junit
+    #     test-results: 'tests-reports/unit-tests-mv*.xml'
     - script:
         interpreter: SHELL
         scripts:
@@ -226,10 +227,9 @@ Integration tests:
             # Call the common script with timeout
             ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh dev
   final-tasks:
-    # disabled in AG-40097 since it follows to memory leaks.
-    # - test-parser:
-    #     type: junit
-    #     test-results: 'tests-reports/integration-tests-*.xml'
+    - test-parser:
+        type: junit
+        test-results: 'tests-reports/integration-tests-*.xml'
     - script:
         interpreter: SHELL
         scripts:

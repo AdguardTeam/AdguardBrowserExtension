@@ -1,8 +1,8 @@
-! Checksum: O8a+5ZyvjxSg/JPcdDKjYg
+! Checksum: /V+OcV4y37uUPLTJcWqt3A
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.48
-! TimeUpdated: 2025-03-20T01:01:53+00:00
+! Version: 2.0.5.49
+! TimeUpdated: 2025-03-24T05:01:47+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -2791,6 +2791,12 @@ zohur12.ir##.sideads
 /editorial/api/articles/*/visit^$xmlhttprequest,~third-party,domain=zoomit.ir|zoomg.ir
 zoomit.ir,zoomg.ir,kojaro.com##div[class^="sc-"]:has(> div[class^="sc-"][rowcount][columncount] > div[class^="sc-"][maxwidth][maxheight])
 zoomtech.org##div.zoomtech-banner
+! zoomit.ir/product
+zoomit.ir#%#//scriptlet('ubo-href-sanitizer.js', 'a[variant="contained"][href^="https://api2.zoomit.ir/catalog/store-links/"][href*="/click?url=http"]', '?url')
+||api2.zoomit.ir/catalog/api/products/*/visit^$xmlhttprequest,~third-party,method=post
+zoomit.ir#$?#div#price div.bg-card:has(> div[role="button"] > div.relative div[variant="subhead"][font-weight="bold"][lineheight="1.6"]) { opacity: 0.5 !important; filter: blur(0.4px) !important; transition: border .3s ease, opacity .3s ease !important; }
+zoomit.ir#$?#div#price div.bg-card:has(> div[role="button"] > div.relative div[variant="subhead"][font-weight="bold"][lineheight="1.6"]):hover { opacity: 1 !important; filter: blur(0) !important; }
+zoomit.ir#$?#div#price div.bg-card:has(> div[role="button"] > div.relative div[variant="subhead"][font-weight="bold"][lineheight="1.6"]):active { opacity: 1 !important; filter: blur(0) !important; }
 !-------------------------^ Site-Specific Filters ^-----------------------!
 !-------------------------v WebAmooz Warning List v-----------------------!
 ! https://webamoozcom.github.io/warning-list/
@@ -2903,6 +2909,8 @@ zoomtech.org##div.zoomtech-banner
 ||chancx.io^$all
 ! https://github.com/Webamoozcom/warning-list/discussions/185
 ||falixa.com^$all
+! https://github.com/Webamoozcom/warning-list/discussions/192
+||izonekala.com^$all
 ! https://github.com/MasterKia/PersianBlocker/pull/201
 ! https://webamooz.com/1402/06/25/%D9%84%D8%A7%DA%A9%D8%B3%D9%88%D9%86-laxxson-%DA%A9%D9%84%D8%A7%D9%87%D8%A8%D8%B1%D8%AF%D8%A7%D8%B1%DB%8C-%D9%BE%D8%A7%D9%86%D8%B2%DB%8C-%D8%A7%D8%B3%D8%AA/
 ||laxsson.com^$all
