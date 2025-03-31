@@ -17,30 +17,111 @@
  */
 
 import React from 'react';
+import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { CUSTOM_FILTERS_DISABLED_IN_MV3_DUE_TO_CWS } from '../../constants';
 import { AntibannerGroupsId } from '../../../../common/constants';
+import { type FilterMetadata } from '../../../../background/api/filters';
 
 import './group.pcss';
 
-const renderEnabledFilters = (enabledFilters) => {
+/**
+ * Number of filters to render in the group.
+ */
+const FILTERS_NUMBER_TO_RENDER = 3;
+
+/**
+ * Parameters for the {@link Group} component.
+ */
+type GroupParams = {
+    /**
+     * Group name.
+     */
+    groupName: string;
+
+    /**
+     * Group id.
+     */
+    groupId: number;
+
+    /**
+     * List of enabled filters in the group.
+     */
+    enabledFilters: FilterMetadata[];
+
+    /**
+     * Handler for group click event.
+     */
+    groupClickHandler: () => void;
+
+    /**
+     * Handler for checkbox change event.
+     *
+     * @param id Group id.
+     * @param data Checkbox value.
+     */
+    checkboxHandler: ({ id, data }: { id: string; data: boolean }) => void;
+
+    /**
+     * Checkbox value.
+     */
+    checkboxValue: boolean;
+};
+
+type DisabledCustomFiltersGroupParams = {
+    /**
+     * Group name.
+     */
+    groupName: string;
+
+    /**
+     * Group id.
+     */
+    groupId: number;
+
+    /**
+     * List of enabled filters in the group.
+     */
+    enabledFilters: FilterMetadata[];
+
+    /**
+     * Title id.
+     */
+    titleId: string;
+
+    /**
+     * Description id.
+     */
+    descriptionId: string;
+};
+
+/**
+ * Renders a list of enabled filters for the group.
+ *
+ * If there are more than {@link FILTERS_NUMBER_TO_RENDER},
+ * it shows the names of first {@link FILTERS_NUMBER_TO_RENDER} and the count of the rest.
+ *
+ * @param enabledFilters List of enabled filters.
+ *
+ * @returns Rendered list of enabled filters.
+ */
+const renderEnabledFilters = (enabledFilters: FilterMetadata[]) => {
     const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
-    const SLICE_POINT = 3;
-    const displayable = enabledFiltersNames.slice(0, SLICE_POINT);
-    const countable = enabledFiltersNames.slice(SLICE_POINT);
+
+    const displayable = enabledFiltersNames.slice(0, FILTERS_NUMBER_TO_RENDER);
+    const countable = enabledFiltersNames.slice(FILTERS_NUMBER_TO_RENDER);
 
     if (countable.length > 0) {
         return (
             <>
-                {reactTranslator.getMessage('options_filters_enabled')}
+                {translator.getMessage('options_filters_enabled')}
                 {' '}
-                {reactTranslator.getMessage(
+                {translator.getMessage(
                     'options_filters_enabled_and_more',
                     { enabled: displayable.join(', '), more: countable.length },
                 )}
@@ -52,9 +133,9 @@ const renderEnabledFilters = (enabledFilters) => {
         const [last, ...rest] = displayable.reverse();
         return (
             <>
-                {reactTranslator.getMessage('options_filters_enabled')}
+                {translator.getMessage('options_filters_enabled')}
                 {' '}
-                {reactTranslator.getMessage(
+                {translator.getMessage(
                     'options_filters_enabled_and_last',
                     { enabled: rest.join(', '), last },
                 )}
@@ -65,14 +146,14 @@ const renderEnabledFilters = (enabledFilters) => {
     if (displayable.length === 1) {
         return (
             <>
-                {reactTranslator.getMessage('options_filters_enabled')}
+                {translator.getMessage('options_filters_enabled')}
                 {' '}
                 {displayable[0]}
             </>
         );
     }
 
-    return reactTranslator.getMessage('options_filters_no_enabled');
+    return translator.getMessage('options_filters_no_enabled');
 };
 
 const DisabledCustomFiltersGroup = ({
@@ -81,7 +162,7 @@ const DisabledCustomFiltersGroup = ({
     groupName,
     groupId,
     enabledFilters,
-}) => {
+}: DisabledCustomFiltersGroupParams) => {
     const groupClassName = classNames({
         setting: true,
         group: true,
@@ -128,14 +209,14 @@ const DisabledCustomFiltersGroup = ({
     );
 };
 
-const Group = ({
+const Group = observer(({
     groupName,
     groupId,
     enabledFilters,
     groupClickHandler,
     checkboxHandler,
     checkboxValue,
-}) => {
+}: GroupParams) => {
     const groupClassName = classNames({
         setting: true,
         group: true,
@@ -198,6 +279,6 @@ const Group = ({
             </div>
         </li>
     );
-};
+});
 
 export { Group };
