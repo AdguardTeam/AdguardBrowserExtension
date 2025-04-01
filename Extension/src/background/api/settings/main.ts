@@ -317,7 +317,9 @@ export class SettingsApi {
                     false,
                 );
             } catch (e) {
-                logger.error(`Failed to load Search and Self Promo filter due to ${e}`);
+                logger.error(
+                    `Failed to load filter with id ${AntiBannerFiltersId.SearchAndSelfPromoFilterId} due to ${e}`,
+                );
             }
             filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
         } else {
