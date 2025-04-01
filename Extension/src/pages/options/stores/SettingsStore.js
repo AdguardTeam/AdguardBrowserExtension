@@ -193,6 +193,8 @@ class SettingsStore {
 
     @observable isChrome = null;
 
+    @observable isUserScriptsApiSupported = false;
+
     @observable searchInput = '';
 
     @observable searchSelect = SEARCH_FILTERS.ALL;
@@ -324,6 +326,7 @@ class SettingsStore {
             this.setBlockKnownTrackers(data.filtersMetadata.filters);
             this.setStripTrackingParameters(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
+            this.isUserScriptsApiSupported = data.isUserScriptsApiSupported;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         });

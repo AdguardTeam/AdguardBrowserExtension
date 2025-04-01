@@ -18,6 +18,8 @@
 
 import browser from 'webextension-polyfill';
 
+import { TsWebExtension } from 'tswebextension';
+
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
@@ -130,6 +132,7 @@ export class SettingsService {
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
             areFilterLimitsExceeded,
+            isUserScriptsApiSupported: TsWebExtension.isUserScriptsApiSupported,
         };
     }
 

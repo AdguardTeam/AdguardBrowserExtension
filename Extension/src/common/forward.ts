@@ -80,7 +80,11 @@ export const enum ForwardAction {
     LearnAboutAdGuard = 'learn_about_adguard',
     FilteringLogAssumedRule = 'filtering_log_assumed_rule',
     Christmas24 = 'christmas_24',
+    // TODO: Delete from here and TDS after release
     CustomFiltersMv3Disabled = 'custom_mv3_disabled',
+
+    // FIXME: Add TDS link
+    DeveloperModeRequired = 'developer_mode_required',
 }
 
 export const enum ForwardFrom {

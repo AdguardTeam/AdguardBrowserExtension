@@ -95,13 +95,16 @@ export class Engine implements TsWebExtensionEngine {
      */
     async start(): Promise<void> {
         /**
-         * By the rules of Chrome Web Store, we cannot use remote remotely hosted scripts, thats why we prebuild them.
+         * By the rules of Chrome Web Store, we cannot use remotely hosted scripts,
+         * which is why we prebuild them.
          *
          * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
          *
-         * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
+         * This is STEP 2: Local script and scriptlet rules are passed to the engine.
+         *
+         * If userScripts API is available, we don't need to set local script rules,
+         * because we will use browser API to inject them.
          */
-        // If userScripts are available, we don't need to set local script rules.
         if (!TsWebExtension.isUserScriptsApiSupported) {
             TsWebExtension.setLocalScriptRules(localScriptRules);
         }

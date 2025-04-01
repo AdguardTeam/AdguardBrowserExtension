@@ -403,6 +403,13 @@ export class PagesApi {
     }
 
     /**
+     * Opens Chrome's extensions settings page.
+     */
+    public static async openChromeExtensionsSettingsPage(): Promise<void> {
+        await browser.tabs.create({ url: 'chrome://extensions' });
+    }
+
+    /**
      * Opens specified path on settings page.
      *
      * @param url URL path to open on settings page.

@@ -229,13 +229,9 @@ const Stealth = observer(() => {
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_send_not_track_title')}
                     description={reactTranslator.getMessage('options_send_not_track_desc', {
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
-                        gpc: (chunks) => (
+                        gpc: (chunks: string) => (
                             <a
                                 className="desc--link"
                                 href={GLOBAL_PRIVACY_CONTROL_URL}
@@ -245,9 +241,7 @@ const Stealth = observer(() => {
                                 {chunks}
                             </a>
                         ),
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
-                        dnt: (chunks) => (
+                        dnt: (chunks: string) => (
                             <a
                                 className="desc--link"
                                 href={DO_NOT_TRACK_URL}
