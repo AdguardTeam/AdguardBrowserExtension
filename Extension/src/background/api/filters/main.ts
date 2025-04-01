@@ -708,14 +708,18 @@ export class FiltersApi {
 
         const deprecatedFilterIds: number[] = [];
 
-        const installedDeprecatedFilters = commonFiltersMetadata.filter((filter) => {
+        const installedDeprecatedFilters: RegularFilterMetadata[] = [];
+
+        commonFiltersMetadata.forEach((filter) => {
             if (!filter.deprecated) {
-                return false;
+                return;
             }
 
             deprecatedFilterIds.push(filter.filterId);
 
-            return installedFiltersIds.includes(filter.filterId);
+            if (installedFiltersIds.includes(filter.filterId)) {
+                installedDeprecatedFilters.push(filter);
+            }
         });
 
         const tasks = installedDeprecatedFilters.map(async ({ filterId, subscriptionUrl }) => {
