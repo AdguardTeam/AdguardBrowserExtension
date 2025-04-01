@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated blocking pages for MV2 — Safebrowsing and blocked by `$document` rules.
 - Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
+- Updated [@adguard/agtree] to v3.1.0.
 
 ### Removed
 
