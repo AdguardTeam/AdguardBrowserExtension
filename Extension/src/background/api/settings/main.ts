@@ -454,6 +454,7 @@ export class SettingsApi {
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
                 filtersToEnable.push(filterId);
             } catch (e) {
+                // error may be thrown if filter is deprecated and its local copy no longer exists
                 logger.debug(`Filter rules were not loaded from local storage for filter: ${filterId}, error: ${e}`);
             }
         });
