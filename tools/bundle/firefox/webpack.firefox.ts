@@ -17,7 +17,6 @@
  */
 
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
@@ -33,13 +32,9 @@ import {
 } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { megabytesToBytes, SizeLimitPlugin } from '../size-limit-plugin';
+import { commonManifest } from '../manifest.common';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
-
-/* eslint-disable @typescript-eslint/naming-convention */
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-/* eslint-enable @typescript-eslint/naming-convention */
 
 const SIZE_LIMITS_MB = {
     // Need to be less than 4 MB, because Firefox Extensions Store has a limit of 4 MB for .js files.
@@ -64,7 +59,7 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: path.resolve(__dirname, '../manifest.common.json'),
+                    from: JSON.stringify(commonManifest),
                     to: 'manifest.json',
                     transform: (content) => {
                         content = updateManifestBuffer(

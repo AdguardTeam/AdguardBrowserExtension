@@ -37,7 +37,7 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
-import { type FilterUpdateOptions } from '../filters';
+import { CustomFilterApi, type FilterUpdateOptions } from '../filters';
 import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 
 import { NetworkSettings } from './settings';
@@ -160,19 +160,19 @@ export class Network {
         if (__IS_MV3__) {
             url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterId}.txt`);
 
+            // `forceRemote` flag for MV3 built-in filters can be used only for
+            // custom filters.
+            const isRemote = forceRemote && CustomFilterApi.isCustomFilter(filterId);
             // TODO: Uncomment this block when Quick Fixes filter will return in another way
-            // // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
-            // // and custom filters
-            // const isRemote = forceRemote
-            //     && (filterId === AntiBannerFiltersId.QuickFixesFilterId
-            //         || CustomFilterApi.isCustomFilter(filterId));
+            // && (filterId === AntiBannerFiltersId.QuickFixesFilterId
+            //     || CustomFilterApi.isCustomFilter(filterId));
 
-            // if (isRemote) {
-            //     if (useOptimizedFilters) {
-            //         logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
-            //     }
-            //     url = this.getUrlForDownloadFilterRules(filterId, false);
-            // }
+            if (isRemote) {
+                if (useOptimizedFilters) {
+                    logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
+                }
+                url = this.getUrlForDownloadFilterRules(filterId, false);
+            }
 
             isLocalFilter = true;
         } else if (forceRemote || this.settings.localFilterIds.indexOf(filterId) < 0) {

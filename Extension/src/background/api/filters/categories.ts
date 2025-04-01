@@ -85,12 +85,11 @@ export class Categories {
         const groups = Categories.getGroups();
         let filters = Categories.getFilters();
 
-        // Exclude Quick Fixes filter and custom filters from filters list
-        // TODO: remove this check when Quick Fixes Filter and custom filters will be supported for MV3 again
+        // Exclude Quick Fixes filter from filters list
+        // TODO: remove this check when Quick Fixes Filter will be supported for MV3 again
         if (__IS_MV3__) {
             filters = filters.filter((f) => {
-                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId
-                    && !CustomFilterHelper.isCustomFilter(f.filterId);
+                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
             });
         }
 

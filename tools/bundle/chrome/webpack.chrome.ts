@@ -17,7 +17,6 @@
  */
 
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
@@ -28,13 +27,9 @@ import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../w
 import { updateManifestBuffer } from '../../helpers';
 import { BUILD_ENV } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
+import { commonManifest } from '../manifest.common';
 
 import { chromeManifest } from './manifest.chrome';
-
-/* eslint-disable @typescript-eslint/naming-convention */
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode: boolean) => {
     const commonConfig = genMv2CommonConfig(browserConfig, isWatchMode);
@@ -52,7 +47,7 @@ export const genChromeConfig = (browserConfig: BrowserConfig, isWatchMode: boole
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: path.resolve(__dirname, '../manifest.common.json'),
+                        from: JSON.stringify(commonManifest),
                         to: 'manifest.json',
                         transform: (content: Buffer) => updateManifestBuffer(
                             BUILD_ENV,

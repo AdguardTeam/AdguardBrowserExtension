@@ -36,6 +36,7 @@ import {
 } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
+import { commonManifest } from '../manifest.common';
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
@@ -110,7 +111,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: path.resolve(__dirname, '../manifest.common.json'),
+                        from: JSON.stringify(commonManifest),
                         to: 'manifest.json',
                         transform: transformManifest,
                     },

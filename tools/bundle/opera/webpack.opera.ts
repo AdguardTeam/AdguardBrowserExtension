@@ -17,7 +17,6 @@
  */
 
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
@@ -27,13 +26,9 @@ import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../w
 import { updateManifestBuffer } from '../../helpers';
 import { type BrowserConfig } from '../common-constants';
 import { BUILD_ENV } from '../../constants';
+import { commonManifest } from '../manifest.common';
 
 import { operaManifest } from './manifest.opera';
-
-/* eslint-disable @typescript-eslint/naming-convention */
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-/* eslint-enable @typescript-eslint/naming-convention */
 
 export const genOperaConfig = (browserConfig: BrowserConfig) => {
     const commonConfig = genMv2CommonConfig(browserConfig);
@@ -51,7 +46,7 @@ export const genOperaConfig = (browserConfig: BrowserConfig) => {
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: path.resolve(__dirname, '../manifest.common.json'),
+                        from: JSON.stringify(commonManifest),
                         to: 'manifest.json',
                         transform: (content) => updateManifestBuffer(
                             BUILD_ENV,

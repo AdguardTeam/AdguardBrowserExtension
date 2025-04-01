@@ -18,6 +18,8 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
+import { CustomFiltersService } from 'custom-filters-service';
+
 import { rulesLimitsService } from 'rules-limits-service';
 
 import { engine } from '../engine';
@@ -209,8 +211,7 @@ export class App {
         await FiltersService.init();
 
         // Adds listeners specified for custom filters
-        // TODO: Uncomment this class when custom filters will be supported for MV3.
-        // CustomFiltersService.init();
+        CustomFiltersService.init();
 
         // Adds listeners for allowlist events
         AllowlistService.init();

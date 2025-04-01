@@ -18,6 +18,8 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
+import { CustomFiltersService } from 'custom-filters-service';
+
 import { engine } from '../engine';
 import { MessageType, sendMessage } from '../../common/messages';
 import { logger } from '../../common/logger';
@@ -67,7 +69,6 @@ import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
-import { CustomFiltersService } from '../services/custom-filters/custom-filters-service-mv2';
 
 /**
  * Logs initialization times for debugging purposes.

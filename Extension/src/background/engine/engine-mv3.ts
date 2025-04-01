@@ -41,12 +41,14 @@ import {
     CommonFilterApi,
     iconsApi,
     DocumentBlockApi,
+    CustomFilterApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
 import { emptyPreprocessedFilterList, NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
+import { FiltersStorage } from '../storages/filters';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -228,31 +230,29 @@ export class Engine implements TsWebExtensionEngine {
             trusted: true,
         };
 
-        // TODO Uncomment this block when Quick Fixes filter will be supported for MV3
+        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
         // if (QuickFixesRulesApi.isEnabled()) {
         //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
         // }
 
-        // TODO: uncomment code bellow when custom filters support will be added back
-        // const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
-        //     .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
+        const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
+            .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
-        // const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-        //     const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
+        const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
+            const preprocessedFilterList = await FiltersStorage.get(filterId);
 
-        //     return {
-        //         filterId,
-        //         trusted,
-        //         ...(preprocessedFilterList || emptyPreprocessedFilterList),
-        //     };
-        // }));
+            return {
+                filterId,
+                trusted,
+                ...(preprocessedFilterList || emptyPreprocessedFilterList),
+            };
+        }));
 
         const blockingTrustedRules = await DocumentBlockApi.getTrustedDomains();
 
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
-            // TODO: revert to actual customFilters when their support will be added back
-            customFilters: [],
+            customFilters,
             quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA) || logger.isVerbose(),
             logLevel: logger.currentLevel,
