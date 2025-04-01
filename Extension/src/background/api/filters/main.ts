@@ -685,11 +685,11 @@ export class FiltersApi {
      *
      * @param filterId Filter id.
      */
-    private static removeRegularFilter(filterId: number): void {
+    private static async removeRegularFilter(filterId: number): Promise<void> {
         filterVersionStorage.delete(filterId);
         filterStateStorage.delete(filterId);
-        FiltersStorage.remove(filterId);
-        RawFiltersStorage.remove(filterId);
+        await FiltersStorage.remove(filterId);
+        await RawFiltersStorage.remove(filterId);
     }
 
     /**
@@ -719,7 +719,7 @@ export class FiltersApi {
         });
 
         const tasks = installedDeprecatedFilters.map(async ({ filterId, subscriptionUrl }) => {
-            FiltersApi.removeRegularFilter(filterId);
+            await FiltersApi.removeRegularFilter(filterId);
             logger.info(
                 `Filter with id ${filterId} removed from the regular filters storage`,
                 'since it is deprecated, it is to be moved to custom group',
@@ -759,7 +759,7 @@ export class FiltersApi {
         const tasks = installedFiltersIds
             .filter((id) => !metadataFiltersIds.includes(id))
             .map(async (id) => {
-                FiltersApi.removeRegularFilter(id);
+                await FiltersApi.removeRegularFilter(id);
                 logger.info(`Filter with id ${id} removed from the storage since it is obsolete`);
             });
 
