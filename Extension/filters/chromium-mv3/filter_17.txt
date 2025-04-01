@@ -1,8 +1,8 @@
-! Checksum: yCurwKiiB6JjD3k1KjwSHA
+! Checksum: bTy62T/bRB1FVBwEa9T6lg
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.77
-! TimeUpdated: 2025-03-25T18:32:32+00:00
+! Version: 2.0.10.81
+! TimeUpdated: 2025-03-29T04:08:34+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -389,6 +389,10 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201849
+||autodaily.ru^$removeparam=from
+! Yandex.Practicum
+||practicum.yandex.*$removeparam=from
 ! shop.asus.com
 ||shop.asus.com^$removeparam=campaign_id
 ||shop.asus.com^$removeparam=ad_id
@@ -2579,8 +2583,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.ae|amazon.agency|amazon.ai
 ||amazon.*/*dp/$removeparam=dib_tag
 ||amazon.*/*dp/$removeparam=keywords
 ||amazon.*$removeparam=tag
-||amazon.*$removeparam=ref
-||amazon.*$removeparam=ie
 ||amazon.*$removeparam=adgrpid
 ||amazon.*$removeparam=AssociateTag
 ||amazon.*/gp/buyagain$removeparam=ats
@@ -2600,7 +2602,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.ae|amazon.agency|amazon.ai
 ||amazon.*$removeparam=hvtargid
 ||amazon.*$removeparam=hydadcr
 ||amazon.*$removeparam=initialIssue
-||amazon.*$removeparam=ingress
 ||amazon.*$removeparam=linkCode
 ||amazon.*$removeparam=linkId
 ||amazon.*$removeparam=pd_rd_i
@@ -2843,6 +2844,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/uBlockOrigin/uAssets/issues/27751
+@@||tix.axs.com^$removeparam=irclickid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199306#issuecomment-2678167845
 ! BUG: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
 ! TODO: remove when this issue is fixed in MV2 extension

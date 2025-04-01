@@ -1,8 +1,8 @@
-! Checksum: OSQtuAO87eNxbvGVyJsH6A
+! Checksum: EysGs9HvApp76IaU2cDW4g
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.65
-! TimeUpdated: 2025-03-25T19:31:57+00:00
+! Version: 2.0.46.75
+! TimeUpdated: 2025-03-31T14:07:06+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -172,7 +172,7 @@ n-tv.de#%#//scriptlet("set-constant", "embedAddefend", "noopFunc")
 !+ NOT_OPTIMIZED
 @@||p*.focus.de/img/
 !+ NOT_OPTIMIZED
-@@||sueddeutsche.de/image/
+@@||sueddeutsche.de/image/$image
 !+ NOT_OPTIMIZED
 @@||stuttgarter-zeitung.de/*/*$image
 !+ NOT_OPTIMIZED
@@ -364,6 +364,8 @@ essen-und-trinken.de#%#//scriptlet('prevent-setTimeout', 's.call(null)', '10')
 schnittmuster-datenbank.de#%#//scriptlet("abort-on-property-read", "adsBlocked")
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201926
+karoqforum.de#%#//scriptlet('prevent-eval-if', 'adsbygoogle.js')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199400
 /js/adbl_checkvg.js$domain=cool-web.de|fun-seiten.de|web-spiele.de|gps-cache.de|photo-alben.de|wetter-vorhersage.de|coolsoftware.de|kryptografie.de
 /js/wb_ban.js$domain=cool-web.de|fun-seiten.de|web-spiele.de|gps-cache.de|photo-alben.de|wetter-vorhersage.de|coolsoftware.de|kryptografie.de
@@ -1482,6 +1484,10 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+||sueddeutsche.de/image/*/*x*?v=*&format=webp$script
+||shop.apotal.de/images/generic_attachments/attachments/apotal/skyscraper
+mein-schoener-garten.de##.chakra-container > div[class]:has(> div[class] > svg:only-child > g:only-child > #logo\.green:only-child)
+zdnet.de###default-popup
 carwow.de##.google-ad__disclaimer
 ||www-assets.carwow.de/assets/google_ads-*.js
 chip.de#$##M1:has(> section[style="display: none !important;"]) { margin-top: 0px !important; }
@@ -6265,7 +6271,6 @@ _woz_banner_vote.
 ##.contentwerbung4
 ##.dk-ad-ident
 ##.ecom_werbung
-##.firstload
 ##.fullbanner_werbung
 ##.funkedigital-ad
 ##.fusszeile_ads
@@ -10056,6 +10061,7 @@ finanznachrichten.de##.on-click--partner
 onmeda.de##.on-top-banner-wrapper
 klappeauf.de##.opa
 autoscout24.at,autoscout24.de##.osa-as24-placeholder
+onvista.de##.ov-carousel--table-fixed-cells .bg-premium
 onvista.de##.ov-interaction
 onvista.de##.ov-interaction-slot
 onvista.de##.ov-table-sponsored-row
@@ -11198,6 +11204,7 @@ ratehase.de##div[style="height: 90px; margin: 30px 0 30px 0; text-align: center;
 ratehase.de##div[style="text-align:center; min-height: 260px; height: 260px; margin: 0 auto 0 auto;"]
 t-online.de##section[data-stage-layout^="custom_nativendo_"]
 boersennews.de###bnTickerContainer:has(#bnTickerAdNotice)
+rewe.de###productlist_1__flagship:has(.fsr-Header__AdInfo)
 baur.de##.MuiBox-root:has(a[href^="//b.fr3.eu.criteo.com/rm?"])
 mobile.de##.Q8G_R:has(div[data-testid="SRP_BILLBOARD-container"])
 berlinstadtservice.de##.a.block04:has(a[href^="https://www.awin1.com/"])
@@ -11254,6 +11261,7 @@ metager.de##.result:has(a[href^="https://metager.de/partner/r?"])
 metager.de##.result:has(a[href^="https://r.search.yahoo.com/"])
 finanzen.net##.row.d-flex.align-items-center:has(a[href^="http://g.finanzen.net/allvest-fonds-home-intelligent-invest"])
 zwischengas.com##.row.mt-0.mb-3.d-print-none:has(.fa-ad)
+rewe.de##.rs-qa-product:has(meso-data[data-sponsored="true"])
 wallstreet-online.de##.sbteaser:has(span.generalAdTag)
 rewe.de##.search-service-product:has(.sponsoredBadge)
 prad.de##.second-list > li:has(a[href^="https://amzn.to/"])
@@ -11285,6 +11293,7 @@ connect.de##.wkTeaser:has(.promolabel)
 gebrauchtwagenberater.de##.wp-block-group:has(.wp-block-button__link)
 berlinstadtservice.de##.wrap-col.box4:has(a[href^="https://www.awin1.com/"])
 zeit.de##.zett-teaser-trio:has(.zett-teaser-trio__kicker--ad-anzeige)
+willhaben.at##[aria-hidden="true"]:has(#apn-large-leaderboard)
 dm.de##[data-dmid="product-tile"]:has([data-dmid="sponsored-marker"])
 obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-find-artikelnummer]:has(.artikelkachel__gesponsortmarker)
 obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-find-artikelnummer]:has([data-ui-name="find-artikelkachel-gesponsert-marker"])
@@ -11310,6 +11319,7 @@ bauernzeitung.ch##div:has(> .advert)
 froheweihnachten.info,weihnachten.me,weihnachts-bilder.org,weihnachts-filme.com##div:has(> img[referrerpolicy="unsafe-url"])
 onvista.de##div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:has(span[class="mt-1 block"])
 onvista.de##div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:has(span[class="mt-xxsmall block"])
+onvista.de##div[class="col py-0"]:has(span[class="block -mb-1 mt-1 text-sm text-ellipsis text-foreground-300"])
 docmorris.de##div[class="min-h-[420px] px-2"]:has(a[data-testid="product-card-sponsored"])
 preispirat.ch##div[class="vc_row wpb_row vc_inner vc_row-fluid"]:has(#responsiveAd)
 mediamarkt.at,mediamarkt.de,saturn.de##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
@@ -11404,7 +11414,6 @@ pcwelt.de#?#div.box:has(span.banner-text + h4:contains(/Partner-Angebot|Angebote
 pollenflug.de#?#.services-item:contains(bei Amazon)
 produktion.de#?#.postlist-item:has(.label:contains(Gesponsert))
 report-d.de#?#.content-view-containerbox:contains(SONDER-VERÖFFENTLICHUNG)
-rewe.de#?#.rs-qa-product:contains(Gesponsert)
 satvision.de#?#.fc_bloglist_item:has(a:contains(Advertorial))
 satvision.de#?#.mod_flexicontent_standard_wrapper:has(span:contains(Advertorial))
 seo-suedwest.de#?#.moduletable:has(span:contains(Anzeige))

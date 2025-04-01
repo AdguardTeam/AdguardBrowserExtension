@@ -1,8 +1,8 @@
-! Checksum: xgcMZR6OUFonj/mVi75arQ
+! Checksum: 7Ykry/T/92+kezL6LXozRg
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.19.74
-! TimeUpdated: 2025-03-26T07:32:32+00:00
+! Version: 2.0.19.80
+! TimeUpdated: 2025-03-31T15:07:49+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -57,6 +57,12 @@ turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-
 !
 !
 !
+bestbuy.com###smartbannerContainer
+education.yandex.ru##body > section[class*="styles_prompt__"]:has(> div[class] > div[class] + button)
+newsmax.com###dtnmapp
+calendar.yandex.ru###CalendarBanner
+antalya.bel.tr##.mobile-info
+rohlik.cz##section[data-test="app-promo-wrapper"]
 m.dcinside.com##.app-info-ban
 m.dcinside.com##.layer-bottom-popup
 wetransfer.com##.AppInstallBanner
@@ -2718,6 +2724,7 @@ hepsiburada.com##.downloadapp-modal
 i2symbol.com#$##myModal { display: none!important; }
 academia.edu,raysigorta.com.tr,i2symbol.com#$#.modal-backdrop { display: none!important; }
 zhihu.com,vprok.ru,raysigorta.com.tr,m.sportmaster.ru,i2symbol.com#$#body { overflow: visible!important; }
+zhihu.com#$#.MobileModal-wrapper { display: none !important; }
 msn.com###ahsbanner
 profile.ru#?#.right-side > div.cell:has(> a[href$="mobilnye-prilozheniya"])
 asna.ru#?##header > div:has(> div > a[href^="https://play.google.com"] + a[href^="https://itunes.apple.com"])
@@ -3313,7 +3320,7 @@ bookmate.ru##.app-banner
 !
 fredmeyer.com#%#//scriptlet('trusted-set-local-storage-item', 'modal_boost_free_trial_p4w1', 'true')
 !
-reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#%#//scriptlet('hide-in-shadow-dom', 'xpromo-viral-community')
+reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion##[id^="xpromo-"]
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#$#shreddit-async-loader[paint-group="xpromo"][bundlename="app_selector"] { display: none !important; }
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#%#//scriptlet('hide-in-shadow-dom', 'faceplate-tracker[source="xpromo"] #get-app')
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#$#body:not([style^="overflow:"]):not([class="rpl-scroll-lock"]) { pointer-events: auto !important; overflow: auto !important; }

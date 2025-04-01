@@ -1,13 +1,13 @@
-! Checksum: P37B+D+5d1g5ax87FlGbWw
+! Checksum: lGJK2xOv00MBVJaVUsQ9JQ
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.20.96
-! TimeUpdated: 2025-03-26T16:37:46+00:00
+! Version: 2.0.20.98
+! TimeUpdated: 2025-03-28T08:37:57+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0326.2
+! OriginalVersion: 2025.0328.2
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -530,6 +530,7 @@
 /data/banner.json?$domain=~nintendo.ai|~nintendo.at|~nintendo.be|~nintendo.bg|~nintendo.biz|~nintendo.by|~nintendo.ca|~nintendo.cc|~nintendo.ch|~nintendo.cl|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.ke|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.tr|~nintendo.com.ua|~nintendo.de|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fr|~nintendo.gr|~nintendo.hu|~nintendo.ie|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.lt|~nintendo.md|~nintendo.me|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.sh|~nintendo.shop|~nintendo.sk|~nintendo.tw|~nintendo.uz|~nintendo.vn|~nintendo.website
 /ad-manager.min.js
 !
+||c.011st.com/img/common/sprites/sp_ad_2x.png
 ||conist-cdn.com/*/iV/BO/
 ||conist-cdn.com/*/9j/4A/
 ||conist-cdn.com/dd/ad/
@@ -1590,11 +1591,12 @@ jobkorea.co.kr##div[id^="Banner"]
 eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
+instiz.net##.responsive_main > div[id][style*=";min-height:250px;"]
+instiz.net###topfixed ~ div[class]:has(> div[id^="sense"][style])
 zod.kr##a[href^="https://zod.kr/go/"]
 instiz.net##div[id^="sense"][style]
 webtoonguide.com##.ticket-banner
 webtoonguide.com##.webtoonguide-pick-swiper-container:not(:has(a[href^="/ko/db/"]))
-instiz.net###topfixed ~ .view_top
 m.search.naver.com##.sp_brand
 shopping.naver.com##ul[class^="compositeCardList_product_list_"] > li:has(div[class*="_advertisement_area__"])
 shopping.naver.com##div[class^="brandCRMProductList_"] li[class^="brandCRMProductList_item_"]:has(svg[class^="advertisementTag_"])
@@ -2048,7 +2050,7 @@ m.humoruniv.com##body > .adsbygoogle
 bizhankook.com##a[href^="/b/c/NPM"]
 mobile.newsis.com##div[style~="padding:10px"][style~="10px;"] > div[style^="height:"]
 starnewskorea.com##div[itemprop="articleBody"] > div[style^="float:"]
-m.slrclub.com,m.sportschosun.com,m.starnewskorea.com##div[id$="ad"][style]
+m.slrclub.com,m.sportschosun.com,m.starnewskorea.com##div[id$="ad"][style]:not(#menu-head)
 heraldpop.com##.article_area .list_r
 heraldpop.com##div[id*="_ad"]
 heraldpop.com##.article_wrap div[class^="ad"]
@@ -2813,6 +2815,11 @@ koreaminecraft.net##tr.notice:not(:has(.wst_member_title))
 !
 ! DOMAIN-REFRESHER: START
 !
+yako.gg##.banner_grid
+v119.com##.zone-right > *:has(~ .no-pd):not(:has(> .tabbox))
+v119.com##.at-boxed .zone-center > .widget-box ~ *
+! aglint-disable-next-line
+newtoki359.com,newtoki360.com,newtoki361.com,newtoki362.com,newtoki363.com,newtoki364.com,newtoki365.com,newtoki366.com,newtoki367.com,newtoki368.com,newtoki369.com,newtoki370.com,newtoki371.com,newtoki372.com,newtoki373.com,newtoki374.com,newtoki375.com##img[title="소울_뉴토끼_이벤트_배너"]
 itrulli.com##div.elementor-widget-shortcode
 avjoa69.com##img[onclick]
 avjoa69.com##.happy-header
@@ -3626,7 +3633,8 @@ bera.world,sellas.ink,1412.live#%#//scriptlet('prevent-element-src-loading', 'sc
 @@||cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js$script,domain=typing.works
 !#safari_cb_affinity
 m.search.naver.com#%#//scriptlet('prevent-element-src-loading', 'script', 'ssl.pstatic.net/tveta/libs/glad/prod/gfp-core.js')
-avdbs.com#%#//scriptlet('abort-on-property-read', 'ad_blk')
+avdbs.com#%#//scriptlet('abort-current-inline-script', '$', 'ad_blk')
+avdbs.com#@#.ad-btn
 genshin.gamedot.org#%#//scriptlet('prevent-setTimeout', 'blockCheck2022')
 errornight.com#%#//scriptlet('abort-on-stack-trace', 'alert', 'chk_adBlock')
 ||ssl.pstatic.net/tveta/libs/ssp-video/prod/ssp.web.sdk_$script,redirect=noopjs,domain=m.sports.naver.com

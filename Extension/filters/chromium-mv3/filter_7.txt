@@ -1,8 +1,8 @@
-! Checksum: jCOcHl/aiKU0aS77xxd83Q
+! Checksum: 12+0lbxbZ8Z0Treg89Y4sg
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.63.19
-! TimeUpdated: 2025-03-26T16:27:59+00:00
+! Version: 2.0.63.28
+! TimeUpdated: 2025-03-31T11:06:23+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -438,8 +438,12 @@
 !
 !
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/200905
-qrcodemonkey.net#%#//scriptlet('prevent-setTimeout', '#ad_blocker_detector')
+! anti-adb
+pokegonews.net#%#//scriptlet('prevent-eval-if', '広告')
+pokegonews.net##body > [id][style^="display: block; width: 99"]
+! https://github.com/AdguardTeam/AdguardFilters/issues/201598
+video.tv-tokyo.co.jp#$##detect.ad-container { display: block !important; }
+video.tv-tokyo.co.jp#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199758
 chobirich.com#$#.Enquete { display: block !important; }
 chobirich.com#@#.ad_image
@@ -1468,6 +1472,8 @@ hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 /blogparts/?w=$script
 /clog_ad.js
 /g_ad.js?
+/images/caribian.jpg|$image,~third-party,domain=~jp
+/inc/aJ5N7n.js
 /js/dlvRequest_
 /js/fix_ad.js?
 /js/fixed_ad.js
@@ -1492,6 +1498,11 @@ hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 /wp-content/uploads/2024/09/fanza_ad$image
 !
 ! Malware/Phishing
+?ph0nq=010$document
+?ph0ne=(050)-$document
+||web.core.windows.net/media/jp.mp4
+://dhl-*/portal_login_exp/getQuoteTab/$document
+.com/ETGate/accountData?redirectToken=$document
 ://apple-*.cn/account_int/
 .top/aple/$document
 ://eki-net.*/co.jp/$document
@@ -1649,6 +1660,7 @@ _ap/signin*?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=
 /?Rfunccode=*&nextfunc=$document,to=cn|top
 /brand/detail/m*.html?zenid=$document,to=cfd|fun|shop|space|top|xyz
 /shopping/item/m*/?zenid=$document,to=cfd|fun|shop|space|top|xyz
+/mall/*.html?zenid=$document,to=cfd|fun|shop|space|top|xyz
 /mart/*.html?zenid=$document,to=cfd|fun|shop|space|top|xyz
 /^https:\/\/(?!www)[a-z]{3,5}\.[a-z]{4,10}\.[a-z]{2,6}\/item-(?:(?=[a-z]*\d)[0-9a-z]{10}|\d{8})\.html$/$document,match-case,to=art|baby|biz|blog|cc|cfd|click|cloud|club|eu|fit|fun|hair|homes|info|ink|lat|life|lol|me|mom|my|one|online|sbs|shop|site|skin|space|store|top|world|xyz
 /^https?:\/\/(?!www)[a-z]{3,5}\.[0-9a-z]{4,10}\.[a-z]{2,6}\/[a-z]{3,15}\/(?=[a-z]{0,9}[0-9A-Z])[0-9A-z]{10}\.html$/$document,match-case,to=art|baby|biz|blog|cc|cfd|click|cloud|club|eu|fit|fun|hair|homes|info|ink|lat|life|lol|me|mom|my|one|online|sbs|shop|site|skin|space|store|top|world|xyz|~livedoor.biz|~livedoor.blog
@@ -1730,6 +1742,15 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+||2219.net/js/adbata_
+||2219.net/js/index_adbata_
+||hdouga.com/wordpress/wp-content/uploads/side2_01.gif
+hdouga.com##.ad_main
+hdouga.com##.w-frontTop
+hdouga.com##.w-header__inner
+asg.to###ad_cvlb + div.box160
+asg.to###ad_cvlb + div.box160 + div.boxbottom160
+financial-field.com###side > div.mb10:has(> a[href^="https://financial-field.com/pr_post/"] > img)
 formula1-data.com##.articleLists > article:has(> a.mdlListing--resp > p.listing__adMedia)
 game-0.net##.adw
 appget.com###side_right > div[style="margin: 0 0 20px 25px;"]
@@ -2189,7 +2210,6 @@ geitopi.com##.rankbanner
 lucky318b.com###g_floating_area2
 lucky318b.com###content > center > a[href^="https://www.dlsite.com/maniax/dlaf/"]
 koe-koe.com##.rss_c
-||pixel-vault.com^$domain=wiki.yjsnpi.nu
 ||gallerieshub.com^$subdocument,third-party
 j-cast.com##.entry_under_adunit
 j-cast.com##.entry-header__ad-bottom
@@ -3916,7 +3936,6 @@ backsi.com,berotuber.com##.custom-html-widget > p > small
 berotuber.com##.custom-html-widget a[href^="https://www.sokmil.com"]
 h-sextaiken.org##.widget-above-single-content-title
 shicony.com,h-sextaiken.org###sidebar > aside.widget_text
-||pixel-vault.com/image/$domain=adultangel.com
 ||adultangel.com/image/pickup.gif
 ||adultangel.com/image/recommend.gif
 adultangel.com##.d-lg-inline.col-lg-3 > iframe[src$="/new.php"] ~ br
@@ -4215,7 +4234,7 @@ buttobi.net##div[style="position: relative; z-index:255;"]
 b.ibbs.info###carousel-banner
 b.ibbs.info##.main-box > div[align="center"] > a[target="_blank"] > img
 b.ibbs.info##a[href="http://adulttoys.jp/info/"][target="_blank"]
-fc2ppv.mhx.jp,news2019.biz,kagoshima-gourmet.jp,fpsjp.net##.w-singleTop
+hdouga.com,fc2ppv.mhx.jp,news2019.biz,kagoshima-gourmet.jp,fpsjp.net##.w-singleTop
 kiwi-english.net##.adsensearea
 bsj-k.com##.adsense-table
 game-pc-bu.com,i486.mods.jp###block-4
@@ -4855,8 +4874,6 @@ russianbeauties.jp##.recommended-giko
 jiwachan.net###ad884-div-id
 jiwachan.net###links > div.sidetitle:last-of-type
 ||fc2.com/b/i/k/bikyakudaimaou/ad-$subdocument
-hdouga.com##.fmrect
-hdouga.com##div[class^="d_"][style^="display: flex"]
 hadasirori.blog.jp###container > table
 hadasirori.blog.jp##.article-body-more > a[href*="dmm.co.jp/"]
 hadasirori.blog.jp##.article-body-more > a[href*="dmm.co.jp/"] + br
@@ -6883,7 +6900,6 @@ watch.impress.co.jp,news.denfaminicogamer.jp##.amazon-ranking
 news.denfaminicogamer.jp###pc_article_billboard
 record-now.com##.my_ads
 fukafuka295.jp##.link-unit-adjust
-/caribian.jpg$image,domain=erry.one|hikaritube.com|iqoo.me|nukistream.com|poyopara.com|sugirl.info|animember.net
 erry.one,hikaritube.com,iqoo.me,nukistream.com,poyopara.com,sugirl.info##.atop
 ||ero-video.net/advert/
 matomeblade.com,gundamlog.com,ge-sewa-news.blog.jp,sunri2525.blog.jp##.plugin-memo:last-of-type
