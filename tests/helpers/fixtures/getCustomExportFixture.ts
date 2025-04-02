@@ -10,7 +10,6 @@ import {
     StealthOption,
     CustomFilterOption,
 } from '../../../Extension/src/background/schema';
-import { CUSTOM_FILTERS_START_ID } from '../../../Extension/src/common/constants';
 
 import { filterNameFixture } from './filterWithMetadata';
 
@@ -91,20 +90,11 @@ export const getImportedSettingsFromV1Fixture = () => {
     configV1[RootOption.GeneralSettings][GeneralSettingsOption.AppearanceTheme] = JSON.parse(configV1['general-settings']['appearance-theme']);
     // eslint-disable-next-line max-len
     configV1[RootOption.Stealth][StealthOption.SelfDestructThirdPartyCookiesTime] = JSON.parse(configV1['stealth']['stealth-block-third-party-cookies-time']);
-    // Fill up optional fields
 
+    // Fill up optional fields
     configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
     configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.trusted = false;
     configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.enabled = false;
-
-    const enabledFilters = configV1[RootOption.Filters][FiltersOption.EnabledFilters];
-
-    // TODO: Remove this filtering when we will return custom filters. (AG-39385).
-    if (__IS_MV3__) {
-        // Exclude custom filters from enabled filters.
-        configV1[RootOption.Filters][FiltersOption.EnabledFilters] = enabledFilters
-            .filter((id) => id < CUSTOM_FILTERS_START_ID);
-    }
 
     Object.assign(
         configV1[RootOption.Filters],

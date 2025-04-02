@@ -43,7 +43,6 @@ export const firefoxManifest = {
         'page': `${BACKGROUND_OUTPUT}.html`,
         'persistent': false,
     },
-
     'browser_action': {
         'default_icon': {
             '19': 'assets/icons/on-19.png',

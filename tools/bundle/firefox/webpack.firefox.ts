@@ -17,6 +17,7 @@
  */
 
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
@@ -35,6 +36,11 @@ import { megabytesToBytes, SizeLimitPlugin } from '../size-limit-plugin';
 import { commonManifest } from '../manifest.common';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 const SIZE_LIMITS_MB = {
     // Need to be less than 4 MB, because Firefox Extensions Store has a limit of 4 MB for .js files.
@@ -59,20 +65,25 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: JSON.stringify(commonManifest),
+                    /**
+                     * This is a dummy import to keep "clean" usage of
+                     * `CopyWebpackPlugin`. We actually use `commonManifest`
+                     * imported above.
+                     */
+                    from: path.resolve(__dirname, '../manifest.common.ts'),
                     to: 'manifest.json',
-                    transform: (content) => {
-                        content = updateManifestBuffer(
+                    transform: () => {
+                        let content = updateManifestBuffer(
                             BUILD_ENV,
                             browserConfig.browser,
-                            content,
+                            Buffer.from(JSON.stringify(commonManifest)),
                             firefoxManifest,
                         );
                         if (browserConfig.browser === Browser.FirefoxStandalone) {
                             content = updateManifestBuffer(
                                 BUILD_ENV,
                                 browserConfig.browser,
-                                content,
+                                Buffer.from(JSON.stringify(commonManifest)),
                                 firefoxManifestStandalone,
                             );
                         }

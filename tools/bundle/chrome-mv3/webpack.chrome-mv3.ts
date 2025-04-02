@@ -111,9 +111,16 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: JSON.stringify(commonManifest),
+                        /**
+                         * This is a dummy import to keep "clean" usage of
+                         * `CopyWebpackPlugin`. We actually use `commonManifest`
+                         * imported above.
+                         */
+                        from: path.resolve(__dirname, '../manifest.common.ts'),
                         to: 'manifest.json',
-                        transform: transformManifest,
+                        transform: () => {
+                            return transformManifest(Buffer.from(JSON.stringify(commonManifest)));
+                        },
                     },
                     {
                         context: 'Extension',

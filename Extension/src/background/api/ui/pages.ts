@@ -128,6 +128,11 @@ export class PagesApi {
     public static readonly extensionStoreUrl = PagesApi.getExtensionStoreUrl();
 
     /**
+     * Chrome's extensions settings page url.
+     */
+    public static readonly chromeExtensionsSettingsUrl = 'chrome://extensions';
+
+    /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
      * Otherwise only focuses on the open setting tab.
      */
@@ -406,7 +411,7 @@ export class PagesApi {
      * Opens Chrome's extensions settings page.
      */
     public static async openChromeExtensionsSettingsPage(): Promise<void> {
-        await browser.tabs.create({ url: 'chrome://extensions' });
+        await browser.tabs.create({ url: PagesApi.chromeExtensionsSettingsUrl });
     }
 
     /**

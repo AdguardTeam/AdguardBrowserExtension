@@ -18,8 +18,6 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
-import { CustomFiltersService } from 'custom-filters-service';
-
 import { engine } from '../engine';
 import { MessageType, sendMessage } from '../../common/messages';
 import { logger } from '../../common/logger';
@@ -57,6 +55,7 @@ import {
     FiltersService,
     AllowlistService,
     UserRulesService,
+    CustomFiltersService,
     FilteringLogService,
     eventService,
     DocumentBlockService,

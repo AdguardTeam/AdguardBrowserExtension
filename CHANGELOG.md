@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support for Chrome's User Scripts API that allows more reliable script
   injection in MV3 if developer mode is enabled.
-
 - Send last filters update time during issue reporting [#3055].
 - Ability to exit editor by pressing `Escape` keyboard button [#2333].
 - Blocking page for requests blocked by `$document` rules in MV3.

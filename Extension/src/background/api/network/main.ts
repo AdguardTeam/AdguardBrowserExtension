@@ -164,8 +164,7 @@ export class Network {
             // custom filters.
             const isRemote = forceRemote && CustomFilterApi.isCustomFilter(filterId);
             // TODO: Uncomment this block when Quick Fixes filter will return in another way
-            // && (filterId === AntiBannerFiltersId.QuickFixesFilterId
-            //     || CustomFilterApi.isCustomFilter(filterId));
+            // && (CustomFilterApi.isCustomFilter(filterId) || filterId === AntiBannerFiltersId.QuickFixesFilterId);
 
             if (isRemote) {
                 if (useOptimizedFilters) {
@@ -174,7 +173,7 @@ export class Network {
                 url = this.getUrlForDownloadFilterRules(filterId, false);
             }
 
-            isLocalFilter = true;
+            isLocalFilter = !isRemote;
         } else if (forceRemote || this.settings.localFilterIds.indexOf(filterId) < 0) {
             url = this.getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
         } else {
@@ -491,13 +490,9 @@ export class Network {
      *
      * @returns Url for filter downloading.
      *
-     * @throws Error if MV3 is used and remote filter downloading is not supported.
+     * @throws Error if filter rules URL is not defined.
      */
     public getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {
-        if (__IS_MV3__) {
-            throw new Error('MV3 does not support remote filter downloading');
-        }
-
         if (!this.settings.filterRulesUrl
             || !this.settings.optimizedFilterRulesUrl) {
             throw new Error('Filter rules URL is not defined');

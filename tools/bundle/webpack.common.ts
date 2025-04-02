@@ -58,6 +58,7 @@ import {
     BACKGROUND_OUTPUT,
     MIN_SUPPORTED_VERSION,
     INDEX_HTML_FILE_NAME,
+    SUBSCRIBE_OUTPUT,
 } from '../../constants';
 
 import {
@@ -71,6 +72,7 @@ import {
     OPTIONS_PATH,
     POPUP_PATH,
     POST_INSTALL_PATH,
+    SUBSCRIBE_PATH,
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf } from './helpers';
@@ -187,6 +189,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 dependOn: [
                     REACT_VENDOR_OUTPUT,
                 ],
+            },
+            [SUBSCRIBE_OUTPUT]: {
+                import: SUBSCRIBE_PATH,
+                runtime: false,
             },
             // Library vendors
             [TSURLFILTER_VENDOR_OUTPUT]: {

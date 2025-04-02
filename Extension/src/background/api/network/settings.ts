@@ -60,7 +60,6 @@ export class NetworkSettings {
      *
      * @private
      */
-
     private readonly DEFAULT_FILTER_RULES_BASE_URL = 'https://filters.adtidy.org/extension';
 
     /**

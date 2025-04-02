@@ -34,7 +34,6 @@ import {
     type CustomFilterMetadata,
 } from '../../schema';
 import { logger } from '../../../common/logger';
-import { CustomFilterHelper } from '../../../common/custom-filter-helper';
 
 import { CommonFilterApi } from './common';
 import { type FilterMetadata, FiltersApi } from './main';

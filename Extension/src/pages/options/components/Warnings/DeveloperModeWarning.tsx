@@ -36,32 +36,38 @@ import './limit-warning.pcss';
  * limited or unavailable.
  */
 export const DeveloperModeWarning = observer(() => {
-    let { settingsStore: { isUserScriptsApiSupported } } = useContext(rootStore);
-
-    // Actually, this flag inside library check if developer mode is enabled and
-    // user scripts API with 'execute' method is supported.
-    const isUserScriptsApiEnabled = isUserScriptsApiSupported;
+    const {
+        settingsStore: {
+            // Actually, this flag inside library check if developer mode is enabled and
+            // user scripts API with 'execute' method is supported.
+            isUserScriptsApiSupported: isUserScriptsApiEnabled,
+        },
+    } = useContext(rootStore);
 
     // User scripts API with needed 'execute' method is supported in Chrome 136+.
-    isUserScriptsApiSupported = UserAgent.isChromium && Number(UserAgent.version) >= 136;
+    const isSuitableChromeVersion = UserAgent.isChromium && Number(UserAgent.version) >= 136;
 
-    if (!__IS_MV3__ || !UserAgent.isChromium || !isUserScriptsApiSupported || isUserScriptsApiEnabled) {
+    if (!__IS_MV3__ || !isSuitableChromeVersion || isUserScriptsApiEnabled) {
         return null;
     }
 
-    const openChromeExtensionsSettings = async () => {
+    const openChromeExtensionsSettings = async (e: React.MouseEvent) => {
+        e.preventDefault();
         await PagesApi.openChromeExtensionsSettingsPage();
     };
 
     const message = reactTranslator.getMessage('options_developer_mode_required', {
         'settings-link': (text: string) => (
-            <button
-                type="button"
-                className="link-button"
-                onClick={() => openChromeExtensionsSettings()}
+            <a
+                // Note: Chrome will prevent opening the settings page via href,
+                // so we need to open it via the API.
+                href={PagesApi.chromeExtensionsSettingsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={openChromeExtensionsSettings}
             >
                 {text}
-            </button>
+            </a>
         ),
         'external-link': (text: string) => (
             <a

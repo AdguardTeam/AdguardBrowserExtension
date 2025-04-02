@@ -17,6 +17,7 @@
  */
 
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
@@ -30,6 +31,11 @@ import { type BrowserConfig } from '../common-constants';
 import { commonManifest } from '../manifest.common';
 
 import { edgeManifest } from './manifest.edge';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export const genEdgeConfig = (browserConfig: BrowserConfig) => {
     const commonConfig = genMv2CommonConfig(browserConfig);
@@ -47,12 +53,17 @@ export const genEdgeConfig = (browserConfig: BrowserConfig) => {
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: JSON.stringify(commonManifest),
+                        /**
+                         * This is a dummy import to keep "clean" usage of
+                         * `CopyWebpackPlugin`. We actually use `commonManifest`
+                         * imported above.
+                         */
+                        from: path.resolve(__dirname, '../manifest.common.ts'),
                         to: 'manifest.json',
-                        transform: (content) => updateManifestBuffer(
+                        transform: () => updateManifestBuffer(
                             BUILD_ENV,
                             browserConfig.browser,
-                            content,
+                            Buffer.from(JSON.stringify(commonManifest)),
                             edgeManifest,
                         ),
                     },

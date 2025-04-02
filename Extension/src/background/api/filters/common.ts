@@ -154,8 +154,8 @@ export class CommonFilterApi {
         //     forceRemote = false;
         // }
 
-        // TODO: remove this block when we revert support for custom and quick fixes filters
-        if (__IS_MV3__) {
+        // TODO: remove this block when we revert support for quick fixes filters
+        if (__IS_MV3__ && forceRemote) {
             forceRemote = false;
         }
 

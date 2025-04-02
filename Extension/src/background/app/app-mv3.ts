@@ -18,8 +18,6 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
-import { CustomFiltersService } from 'custom-filters-service';
-
 import { rulesLimitsService } from 'rules-limits-service';
 
 import { engine } from '../engine';
@@ -59,6 +57,7 @@ import {
     FiltersService,
     AllowlistService,
     UserRulesService,
+    CustomFiltersService,
     FilteringLogService,
     eventService,
     DocumentBlockService,
