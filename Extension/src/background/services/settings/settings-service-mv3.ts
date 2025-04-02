@@ -18,7 +18,9 @@
 
 import browser from 'webextension-polyfill';
 
-import { TsWebExtension } from 'tswebextension';
+// Because this file is already MV3 replacement module, we can import directly
+// from mv3 tswebextension without using aliases.
+import { TsWebExtension } from '@adguard/tswebextension/mv3';
 
 import { RulesLimitsService } from 'rules-limits-service';
 
