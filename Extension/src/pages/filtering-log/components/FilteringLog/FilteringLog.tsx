@@ -124,7 +124,7 @@ const FilteringLog = observer(() => {
                             const [tabInfo] = data;
                             logStore.onTabReset(tabInfo);
 
-                            // Close modal only if reset tab is not selected
+                            // Close modal only if tabInfo update is related to current selected tab
                             if (selectedTabId === tabInfo.tabId) {
                                 wizardStore.closeModal();
                             }
