@@ -1,23 +1,15 @@
-import {
-    beforeEach,
-    describe,
-    expect,
-    it,
-    vi,
-} from 'vitest';
-
 import { PagesApi } from '../../../../../Extension/src/background/api/ui/pages';
 import { SettingsApi } from '../../../../../Extension/src/background/api/settings/main';
 import { FilterStateStorage } from '../../../../../Extension/src/background/storages/filter-state';
 import { GroupStateStorage } from '../../../../../Extension/src/background/storages/group-state';
 import { ForwardFrom } from '../../../../../Extension/src/common/forward';
 
-vi.mock('../../../../../Extension/src/background/storages/metadata');
-vi.mock('../../../../../Extension/src/common/user-agent');
+jest.mock('../../../../../Extension/src/background/storages/metadata');
+jest.mock('../../../../../Extension/src/common/user-agent');
 
-vi.spyOn(FilterStateStorage.prototype, 'getEnabledFilters').mockImplementation(() => []);
-vi.spyOn(GroupStateStorage.prototype, 'getEnabledGroups').mockImplementation(() => []);
-vi.spyOn(GroupStateStorage.prototype, 'get').mockImplementation(() => {
+jest.spyOn(FilterStateStorage.prototype, 'getEnabledFilters').mockImplementation(() => []);
+jest.spyOn(GroupStateStorage.prototype, 'getEnabledGroups').mockImplementation(() => []);
+jest.spyOn(GroupStateStorage.prototype, 'get').mockImplementation(() => {
     return {
         enabled: false,
         touched: false,
