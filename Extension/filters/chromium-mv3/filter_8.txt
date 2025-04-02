@@ -1,8 +1,8 @@
-! Checksum: 05ZiY9wyr58EaeEvSFf8Ww
+! Checksum: Cf8rw+vLAlepJ/M5y4gMRA
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.97
-! TimeUpdated: 2025-03-27T16:08:00+00:00
+! Version: 2.0.7.99
+! TimeUpdated: 2025-04-01T09:07:47+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1533,11 +1533,12 @@ vakantieplaats.nl#@#.topAds
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201966
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197442
 !+ NOT_OPTIMIZED
-hartvannederland.nl#@##topbanner_ad
+538.nl,hartvannederland.nl#@##topbanner_ad
 !+ NOT_OPTIMIZED
-@@||assets.prod.webx.talpa.digital/ad/view/$domain=hartvannederland.nl
+@@||assets.prod.webx.talpa.digital/ad/view/$domain=hartvannederland.nl|538.nl
 ! https://github.com/AdguardTeam/AdguardFilters/issues/178088
 topkleurplaat.nl#%#//scriptlet('prevent-setTimeout', '.height() === 0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177923
@@ -1705,6 +1706,7 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+demorgen.be##.position-after-main-home
 standaard.be##div[id^="ad_"]
 crypto-insiders.nl##.article-content > p > a.btn--highlighted.external-link
 crypto-insiders.nl##.affiliate-dropdown:not(#style_important)

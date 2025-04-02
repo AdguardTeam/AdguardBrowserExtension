@@ -1,8 +1,8 @@
-! Checksum: bTy62T/bRB1FVBwEa9T6lg
+! Checksum: 03T7+vcy2C16nRKU+d8q5A
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.81
-! TimeUpdated: 2025-03-29T04:08:34+00:00
+! Version: 2.0.10.83
+! TimeUpdated: 2025-04-02T14:07:21+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,10 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201868
+$removeparam=uzcid
+$removeparam=beyond_uzcvid
+$removeparam=beyond_uzmcvid
 ! https://www.weblio.jp/ranking/?from=glia player.gliacloud.com anywhere
 ?from=glia^$removeparam=from
 ! Google Merchant Center tracking
@@ -389,6 +393,9 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-12682755
+||code-wallets.com^$removeparam=tw_adid
+||code-wallets.com^$removeparam=tw_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201849
 ||autodaily.ru^$removeparam=from
 ! Yandex.Practicum

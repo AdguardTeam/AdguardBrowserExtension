@@ -2087,6 +2087,40 @@ export const localScriptRules = {
             }
         }
     },
+    '(()=>{let t,e=!1;const o=new MutationObserver(((e,o)=>{const c=t?.querySelector("button.uc-deny-button");c&&(c.click(),o.disconnect())})),c={apply:(c,n,p)=>{const r=Reflect.apply(c,n,p);return!e&&n.matches("#usercentrics-cmp-ui")&&(e=!0,t=r),o.observe(r,{subtree:!0,childList:!0}),r}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,c)})();': {
+        uniqueId: "7d2a68c5db67d5c0b987bcc67516ef8e",
+        func: () => {
+            try {
+                const e = "done";
+                if (Window.prototype.toString["7d2a68c5db67d5c0b987bcc67516ef8e"] !== e) {
+                    (() => {
+                        let e, t = !1;
+                        const c = new MutationObserver(((t, c) => {
+                            const o = e?.querySelector("button.uc-deny-button");
+                            o && (o.click(), c.disconnect());
+                        })), o = {
+                            apply: (o, r, n) => {
+                                const d = Reflect.apply(o, r, n);
+                                return !t && r.matches("#usercentrics-cmp-ui") && (t = !0, e = d), c.observe(d, {
+                                    subtree: !0,
+                                    childList: !0
+                                }), d;
+                            }
+                        };
+                        window.Element.prototype.attachShadow = new Proxy(window.Element.prototype.attachShadow, o);
+                    })();
+                    Object.defineProperty(Window.prototype.toString, "7d2a68c5db67d5c0b987bcc67516ef8e", {
+                        value: e,
+                        enumerable: !1,
+                        writable: !1,
+                        configurable: !1
+                    });
+                }
+            } catch (e) {
+                console.error('Error executing AG js rule with uniqueId "7d2a68c5db67d5c0b987bcc67516ef8e" due to: ' + e);
+            }
+        }
+    },
     '(()=>{let t,e=!1;const o=new MutationObserver(((e,o)=>{const c=t?.querySelector(\'button[data-testid="uc-accept-all-button"]\');c&&(c.click(),o.disconnect())})),c={apply:(c,n,p)=>{const r=Reflect.apply(c,n,p);return!e&&n.matches("#usercentrics-root")&&(e=!0,t=r),o.observe(r,{subtree:!0,childList:!0}),r}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,c)})();': {
         uniqueId: "c3fa9bec7cb9559b8965f87071a37fc6",
         func: () => {

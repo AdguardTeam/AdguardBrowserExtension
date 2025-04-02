@@ -1,8 +1,8 @@
-! Checksum: 1f13ARJ0HYUVRb/cl1X15w
+! Checksum: CovY4Pf27jqbdF2bcuDGNA
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.59.48
-! TimeUpdated: 2025-03-31T10:07:55+00:00
+! Version: 2.0.59.52
+! TimeUpdated: 2025-04-02T09:07:34+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -157,6 +157,7 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||lgvlbd.icu^
 ||crossadsapi.ecomobileapp.com^
 ||service-ad-image-ga.prd.pluto.tv^
 ||pavoshare.com
@@ -2389,6 +2390,9 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+koe-koe.com##div[style="min-height:250px"]
+zeenite.com,squirting.world##div[id^="M-"][style^="height"]
+hentai0day.com###M-CONTENT-300x250-MULTI
 si.com##main > figure[class^="style_"]:has(> div[class^="style_"] > #mmvid)
 medicalxpress.com##.ads-container
 asilmedia.org###catfishAd
@@ -3337,7 +3341,6 @@ movieplayer.it###adv-head
 tumadouga.jp##.index_banner_space > div.index_banner_space
 kaluga-poisk.ru###own-overlay
 chakuwiki.org##.adia
-maho.jp##div[class*="compactAd"]
 aniwave.ai,aniwave.app,aniwave.asia,aniwave.best,aniwave.cc,aniwave.ch,aniwave.club,aniwave.co,aniwave.com,aniwave.com.bd,aniwave.com.np,aniwave.com.tr,aniwave.cz,aniwave.ee,aniwave.fi,aniwave.fun,aniwave.in,aniwave.io,aniwave.live,aniwave.lv,aniwave.me,aniwave.mobi,aniwave.net,aniwave.org,aniwave.ru,aniwave.se,aniwave.sh,aniwave.to,aniwave.tv,aniwave.uk,aniwave.website,aniwave.ws,vidplay.cc,vidplay.club,vidplay.com.bd,vidplay.com.np,vidplay.fm,vidplay.net,vidplay.one,vidplay.org,vidplay.site,vidplay.tv,vidplay.xyz###player-wrapper > div:not([class]):not([id]):has(> div[class] img[src^="assets/bn/"])
 finanzaonline.com##body > #leoskin-mobile-content:empty
 ispreview.co.uk###mobilebanner

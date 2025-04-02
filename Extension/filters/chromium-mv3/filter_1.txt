@@ -1,8 +1,8 @@
-! Checksum: KNoYgqYbpVUK+gqCnPd81g
+! Checksum: ErkRcomKQ6G4GMnRsxkoUQ
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.98.47
-! TimeUpdated: 2025-03-31T16:07:17+00:00
+! Version: 2.0.98.50
+! TimeUpdated: 2025-04-01T18:07:34+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -5289,6 +5289,7 @@ tapochek.net#%#//scriptlet("set-constant", "antiadblock", "undefined")
 ! tapochek.net - fixing first click
 tapochek.net#%#//scriptlet("set-constant", "window.b0", "null")
 ! monna2.top
+monna2.top##body div[id^="tatus"]
 ||monna2.top^$header=location
 monna2.top#%#//scriptlet('abort-on-property-write', 'tatus')
 monna2.top#%#//scriptlet('prevent-setTimeout', '/tick/')
@@ -7618,6 +7619,8 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+mp3party.net##div[class^="advf-"]
+78.ru##div[class^="partner-news_container"]
 uznayvse.ru##[aria-label="Реклама"]
 uznayvse.ru##article > div.float-right:has(> aside[aria-label="Реклама"])
 uznayvse.ru##aside > div.h-screen:has(> div#d300x600)

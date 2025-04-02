@@ -1,8 +1,8 @@
-! Checksum: DNrllqMWfyfz8bz14DX6HQ
+! Checksum: kmx1Jcro75MzXb609kgSYA
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.55.52
-! TimeUpdated: 2025-03-31T12:10:49+00:00
+! Version: 2.0.55.55
+! TimeUpdated: 2025-04-02T11:06:30+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -895,26 +895,16 @@ eldermanga.com,promy.pro,vkfilmizlet.net,diziyoutv.com,guneykoresinemasi.com,jet
 fullfilmizlebaba.com,superfilmgeldi.biz,vkfilmizlet.*,supernaturalizle.com,sinemakolik.net,hdsinemax.com,diziyo.*,fullhdabifilm.com,bettercallsaulizle.com,superfilmgeldi.net,fullhdfilmizlett1.com,filmsezonu.com,fullhdfilmizleabi.com,hdfreeizle.com,hdmixfilim.com,fullhdfilmizlepala.com#%#//scriptlet('abort-on-property-read', 'initAd')
 !
 720pfilmizleme1.com,720pfilmizletir.com,1080pfilmizletir.com,720pfilmizlesene.com,filmmakinesi1.*,fullhd720pizle.live,filmizlemax.*,videoseyred.in,hdfilmcehennem.live#%#//scriptlet("prevent-addEventListener", "click", "checkTarget")
-dizimag.org,filmizlehdizle.com,yabancidiziizlesene.*,1080hdfilmizle.com#%#//scriptlet("abort-on-property-read", "initPop")
+filmizlehdizle.com,yabancidiziizlesene.*,1080hdfilmizle.com#%#//scriptlet("abort-on-property-read", "initPop")
 shirl.club,altporno.xyz#%#//scriptlet("abort-on-property-read", "oV1")
 agarz.com#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/RTCPeerConnection[\s\S]*?new MouseEvent\("click"/.test(a.toString()))return b(a,c)};})();
 ! END: Clickunders
 !
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/189192
-! https://github.com/AdguardTeam/AdguardFilters/issues/191785
-dizipal840.com,dizipal740.com,dizipal739.com#$#.video-banner { display: block !important; }
-dizipal840.com,dizipal740.com,dizipal739.com#$#.pre-player { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186377
 vipfilmcity.pro#%#//scriptlet('remove-attr', 'data-money', '.play-that-video')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186287
 1dizifilmizle.com#%#//scriptlet("abort-on-property-read", "elemDiv")
-! https://github.com/AdguardTeam/AdguardFilters/issues/188449
-dizipal1.com#%#//scriptlet('adjust-setInterval', 'skipButton', '*', '0.001')
-dizipal1.com#%#//scriptlet('remove-attr', 'disabled', '.pre-player > button#skipButton[onclick="skipAd()"][disabled]')
-dizipal1.com#%#//scriptlet('trusted-click-element', '.pre-player > button#skipButton[onclick="skipAd()"]:not([disabled])')
-dizipal1.com#%#//scriptlet('trusted-replace-node-text', 'script', 'manageAds', 'video_urls.length != activeItem', '!1')
-dizipal1.com#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/(function playVideo\(\) \{[\s\S]*?\.remove\(\);[\s\S]*?\})/', '$1 playVideo();')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177389
 dizigom1.tv#%#//scriptlet('prevent-setTimeout', '/img[\s\S]*?\.gif/')
 dizigom1.tv#%#//scriptlet('abort-current-inline-script', 'document.write', '_blank')
@@ -1585,6 +1575,12 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+dizimag.*##.series-watch-player > div[style^="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"]
+dizimag.*#%#//scriptlet('abort-on-property-write', 'popURLs')
+||dizimag.*/kripto$script
+||vipfilmizle.net/*1000x50.gif
+||vipfilmizle.net/*1000-50.gif
+mc-tr.com##.popup-reklam
 startv.com.tr##div[class*="dyg-"]
 sozcu.com.tr##.row div.sozcu-ramazan-imsakiye > a[target="_blank"]
 parselsorgu.tkgm.gov.tr###custom-popup
@@ -1792,8 +1788,6 @@ hangikredi.com##.flex-col > .relative:has(> .native-card-section + div.tooltip):
 ||dizifox*.com/wp-content/themes/diziplus/elma.js
 ||i.hizliresim.com/bsx4xwm.gif
 ||i.hizliresim.com/nddzy48.gif
-||dizimag.org/pop$script
-dizimag.org##.linko1
 ||sinetiktok.com/supermert$script
 filmgo.org#$##video > div#videos { display: block !important; }
 filmgo.org#$#.once-reklam { display: none !important; }
@@ -2026,9 +2020,8 @@ filmmakinesi.co,filmmakinesi.com,filmmakinesi.com.bd,filmmakinesi.com.np,filmmak
 memurlar.net###sticky-masthead
 mangaku.blog###sidebar-b
 mangaku.blog##.nctr
-/dizip*.js$domain=dizimag.org|dizipia.com
+/dizip*.js$domain=dizipia.com
 ||cdn.r10.net/rm/analiz/|$subdocument
-||dizimag.org/uploads/megapari.mp4
 ||dizipia.com/uploads/*.gif
 ||dizipia.com/uploads/1win1000.jpg
 dizipia.com,hdfilmcehennemii.co,dizimov.com.bd,dizimov.com.np##.rek-wrap
@@ -2234,9 +2227,7 @@ dizikorea.com,dizikorea.com.bd,dizikorea.com.np,dizikorea.info,dizikorea.org,diz
 yenisafak.com##.ys-popup-video-ad
 fullhdfilm.*##.footerleft > a:not([href*="fullhdfilm.*"])
 fullhdfilm.*##.filmcontent > div[style^="margin:3px"]
-izlekolik.org,dizikorea.com,dizikorea.com.bd,dizikorea.com.np,dizikorea.info,dizikorea.org,dizikorea.tv,dizikorea.vip,dizimag.org###activeFrontVid
-||dizimag.org/uploads/1350x50.gif
-||dizimag.org/uploads/1000x50.gif
+dizimag.*,izlekolik.org,dizikorea.com,dizikorea.com.bd,dizikorea.com.np,dizikorea.info,dizikorea.org,dizikorea.tv,dizikorea.vip###activeFrontVid
 milliyet.com.tr##.main-card-ads
 bizevdeyokuz.com###custom_html-7
 sinematurk.com##a.coverup
@@ -2308,7 +2299,6 @@ sinema.cx###f-uyari2
 asyadiziizle.com###content > a
 reytingtv.com##div[class^="fullads"]
 hurriyet.com.tr##.news-content > .cf
-dizimag.org##.rek-info
 ||timeturk.com/assets/vast/videojs.ads.js
 islamveihsan.com##.ad-banner
 tafdi3.com,tafdi4.com,tafdi5.com##footer .lastright > p ~ a
@@ -5309,7 +5299,7 @@ takvim.com.tr##iframe[name$="BIKADV"]
 haberturk.com##iframe[src*="/ads/"]
 cnnturk.com##iframe[src^="/action/ibanner"]
 afyonhaber.com##img[alt*="web-banner"]
-dizimag.org,akcakocahavadis.com,muglagazetesi.com.tr,basarisiralamalari.com,eniyiandroid.com,bigatribun.net,mavididim.com.tr##img[alt="reklam"]
+akcakocahavadis.com,muglagazetesi.com.tr,basarisiralamalari.com,eniyiandroid.com,bigatribun.net,mavididim.com.tr##img[alt="reklam"]
 fatsayenihaber.com,geredeyenigun.com,balikesirhaberajansi.com,kurtulusgazetesi.com.tr##img[alt="Reklam"]
 gidahatti.com##img[alt="ad"]
 haber.sol.org.tr##img[style="width: 300px;height: 250px;"]
