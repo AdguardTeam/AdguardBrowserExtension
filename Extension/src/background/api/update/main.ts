@@ -632,9 +632,93 @@ export class UpdateApi {
             throw new Error('Settings is not an object');
         }
 
-        const updatedSettings = await UpdateApi.migrateCombinedAnnoyancesFilter(settings);
+        const filtersStateData = settings['filters-state'];
 
-        await browserStorage.set(ADGUARD_SETTINGS_KEY, updatedSettings);
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const groupsState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                touched: zod.boolean(),
+            }),
+        ).parse(JSON.parse(groupsStateData));
+
+        // AdGuard Annoyances filters group id.
+        const annoyancesGroupId = '4';
+
+        /**
+         * AdGuard Annoyances filter has been splitted into 5 other filters:
+         * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+         * and Widgets - which we should enable if the Annoyances filter is enabled.
+         */
+        const deprecatedAnnoyancesFilterId = '14';
+
+        /**
+         * AdGuard Annoyances filter has been splitted into 5 other filters:
+         * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+         * and Widgets - which we should enable if the Annoyances filter is enabled.
+         */
+        const annoyancesFiltersIds = ['18', '19', '20', '21', '22'];
+
+        // AdGuard Annoyances filters group state.
+        const annoyancesGroup = groupsState[annoyancesGroupId] ?? {
+            enabled: false,
+            touched: false,
+        };
+
+        // AdGuard Annoyances filters states.
+        const annoyancesFiltersState = Object.fromEntries(
+            annoyancesFiltersIds.map((filterId) => {
+                const state = filtersState[filterId] ?? {
+                    loaded: false,
+                    enabled: false,
+                    touched: false,
+                };
+                return [filterId, state];
+            }),
+        );
+
+        const deprecatedAnnoyancesFilter = filtersState[deprecatedAnnoyancesFilterId];
+
+        if (UpdateApi.isObject(deprecatedAnnoyancesFilter)) {
+            // If the deprecated Annoyances filter is enabled, we should enable new groups and filters.
+            if (deprecatedAnnoyancesFilter.enabled) {
+                annoyancesGroup.enabled = true;
+                annoyancesFiltersIds.forEach((id) => {
+                    annoyancesFiltersState[id]!.enabled = true;
+                });
+            }
+            // delete deprecated filter state;
+            delete filtersState[deprecatedAnnoyancesFilterId];
+        }
+
+        // Set updated states and new metadata to the settings.
+
+        groupsState[annoyancesGroupId] = annoyancesGroup;
+        Object.assign(filtersState, annoyancesFiltersState);
+
+        settings['groups-state'] = JSON.stringify(groupsState);
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
 
         // Sets default rules limits.
         await browserStorage.set(RULES_LIMITS_KEY, JSON.stringify([]));
