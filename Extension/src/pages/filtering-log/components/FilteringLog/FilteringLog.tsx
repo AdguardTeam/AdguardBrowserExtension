@@ -43,6 +43,8 @@ const FilteringLog = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
     const RESIZE_THROTTLE = 500;
 
+    const { selectedTabId } = logStore;
+
     useAppearanceTheme(logStore.appearanceTheme);
 
     // init
@@ -121,7 +123,11 @@ const FilteringLog = observer(() => {
                         case NotifierType.TabReset: {
                             const [tabInfo] = data;
                             logStore.onTabReset(tabInfo);
-                            wizardStore.closeModal();
+
+                            // Close modal only if reset tab is not selected
+                            if (selectedTabId === tabInfo.tabId) {
+                                wizardStore.closeModal();
+                            }
                             break;
                         }
                         case NotifierType.SettingUpdated: {
@@ -145,7 +151,7 @@ const FilteringLog = observer(() => {
         return () => {
             removeListenerCallback();
         };
-    }, [logStore, wizardStore]);
+    }, [logStore, wizardStore, selectedTabId]);
 
     useEffect(() => {
         const windowStateHandler = () => {

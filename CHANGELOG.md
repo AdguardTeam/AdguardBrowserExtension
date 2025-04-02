@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cannot maximize Filtering log in Firefox for Windows [#2464].
 - Unable to paste text into user rules input field on Android [#3061].
 - Invalid HTML rule selectors are breaking site loading [#2646].
+- Filtering log: Request details panel is automatically closed when loading
+  a website in another window/tab [#2327].
 
 [#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
@@ -40,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2332]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2332
 [#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
 [#2942]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2942
+[#2327]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2327
 
 ## [5.1.70] - 2025-03-19
 
