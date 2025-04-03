@@ -295,7 +295,7 @@ to generate credentials for `crx` builds, see the example below:
 
 ```bash
 # Command will generate `key.pem` credential in the `./private/AdguardBrowserExtension` directory
-pnpm dlx crx keygen ./private/AdguardBrowserExtension
+pnpm crx keygen ./private/AdguardBrowserExtension
 ```
 
 #### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
