@@ -10,6 +10,7 @@ environments:
   - Chrome WebStore MV3
   - Addons Mozilla
   - Edge Addons
+  - GitHub
 
 static.adtidy.org:
   triggers: []
@@ -186,6 +187,49 @@ Edge Addons:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-edge
+  final-tasks: []
+  variables: {}
+  requirements:
+    - adg-docker: 'true'
+  notifications:
+    - events:
+        - deployment-started-and-finished
+      recipients:
+        - webhook:
+            name: Deploy webhook
+            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+
+GitHub:
+  triggers: []
+  tasks:
+    - clean
+    - checkout:
+        repository: bamboo-deploy-publisher
+        path: bamboo-deploy-publisher
+        force-clean-build: true
+    - artifact-download:
+        artifacts:
+          - name: chrome.zip
+          - name: chrome-mv3.zip
+          - name: edge.zip
+          - name: opera.zip
+          - name: firefox.zip
+          - name: build.txt
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            # publish to Github Releases
+            GITHUB_TOKEN="${bamboo.githubPublicRepoPassword}" \
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-github-release
   final-tasks: []
   variables: {}
   requirements:
