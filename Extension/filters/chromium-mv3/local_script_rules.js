@@ -5860,29 +5860,36 @@ export const localScriptRules = {
             }
         }
     },
-    '(()=>{let e,n=!1;const t=function(){};Object.defineProperty(window,"videojs",{get:function(){return e},set:function(o){e=o,!n&&e&&"function"==typeof e.registerPlugin&&(n=!0,e.registerPlugin("skipIma3Unskippable",t))}}),window.SlotTypeEnum={},window.ANAWeb=function(){},window.ANAWeb.prototype.createVideoSlot=function(){},window.ANAWeb.prototype.createSlot=function(){},window.ANAWeb.VideoPlayerType={},window.addEventListener("load",(function(){document.dispatchEvent(new CustomEvent("ANAReady"))}))})();': {
-        uniqueId: "eb66815e102df8eab52a54543edf987e",
+    '(()=>{let e,n=!1;const o=function(){};Object.defineProperty(window,"videojs",{get:function(){return e},set:function(t){e=t,!n&&e&&"function"==typeof e.registerPlugin&&(n=!0,e.registerPlugin("skipIma3Unskippable",o))}}),window.SlotTypeEnum={},window.ANAWeb=function(){},window.ANAWeb.prototype.createVideoSlot=function(){return Promise.resolve()},window.ANAWeb.prototype.createSlot=function(){},window.ANAWeb.VideoPlayerType={},window.ANAWeb.VideoPlacementType={InStream:1},window.ANAWeb.AdPosition={AboveTheFold:1},window.ANAWeb.PlaybackMethod={ClickSoundOn:1},window.addEventListener("load",(function(){document.dispatchEvent(new CustomEvent("ANAReady"))}))})();': {
+        uniqueId: "3b3aa026a1d7fa6e2ba077f743a7d54d",
         func: () => {
             try {
                 const e = "done";
-                if (Window.prototype.toString.eb66815e102df8eab52a54543edf987e !== e) {
+                if (Window.prototype.toString["3b3aa026a1d7fa6e2ba077f743a7d54d"] !== e) {
                     (() => {
-                        let e, t = !1;
+                        let e, o = !1;
                         const n = function() {};
                         Object.defineProperty(window, "videojs", {
                             get: function() {
                                 return e;
                             },
-                            set: function(o) {
-                                e = o, !t && e && "function" == typeof e.registerPlugin && (t = !0, e.registerPlugin("skipIma3Unskippable", n));
+                            set: function(t) {
+                                e = t, !o && e && "function" == typeof e.registerPlugin && (o = !0, e.registerPlugin("skipIma3Unskippable", n));
                             }
-                        }), window.SlotTypeEnum = {}, window.ANAWeb = function() {}, window.ANAWeb.prototype.createVideoSlot = function() {}, 
-                        window.ANAWeb.prototype.createSlot = function() {}, window.ANAWeb.VideoPlayerType = {}, 
-                        window.addEventListener("load", (function() {
+                        }), window.SlotTypeEnum = {}, window.ANAWeb = function() {}, window.ANAWeb.prototype.createVideoSlot = function() {
+                            return Promise.resolve();
+                        }, window.ANAWeb.prototype.createSlot = function() {}, window.ANAWeb.VideoPlayerType = {}, 
+                        window.ANAWeb.VideoPlacementType = {
+                            InStream: 1
+                        }, window.ANAWeb.AdPosition = {
+                            AboveTheFold: 1
+                        }, window.ANAWeb.PlaybackMethod = {
+                            ClickSoundOn: 1
+                        }, window.addEventListener("load", (function() {
                             document.dispatchEvent(new CustomEvent("ANAReady"));
                         }));
                     })();
-                    Object.defineProperty(Window.prototype.toString, "eb66815e102df8eab52a54543edf987e", {
+                    Object.defineProperty(Window.prototype.toString, "3b3aa026a1d7fa6e2ba077f743a7d54d", {
                         value: e,
                         enumerable: !1,
                         writable: !1,
@@ -5890,7 +5897,7 @@ export const localScriptRules = {
                     });
                 }
             } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "eb66815e102df8eab52a54543edf987e" due to: ' + e);
+                console.error('Error executing AG js rule with uniqueId "3b3aa026a1d7fa6e2ba077f743a7d54d" due to: ' + e);
             }
         }
     },

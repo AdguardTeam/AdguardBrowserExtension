@@ -1,8 +1,8 @@
-! Checksum: Azz6H4+7lEFKH1dxCkGXaQ
+! Checksum: IgCfnxib/KErh1hymVfcOw
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.29.44
-! TimeUpdated: 2025-04-02T11:06:26+00:00
+! Version: 2.0.29.47
+! TimeUpdated: 2025-04-04T07:07:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -215,6 +215,9 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/200089
+elcorreogallego.es###_an_cmp
+elcorreogallego.es#%#//scriptlet('set-constant', '_an.ABMode', 'undefined')
 ! https://github.com/uBlockOrigin/uAssets/issues/27759
 ! https://github.com/uBlockOrigin/uAssets/issues/27744
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201768
@@ -2151,6 +2154,8 @@ c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,me
 !
 ! NOTE: Specific rules
 !
+americatv.com.pe##div[class^="AdsSlot_"]
+viapais.com.ar##.int-banner
 nationalgeographic.com.es##.ad-item:not(.add990x90)
 nationalgeographic.com.es#$#.add990x90 { min-height: 0 !important; }
 aa.com.br#$##aa-hero-ad-frame { height: 350px !important; visibility: hidden !important; }

@@ -1,8 +1,8 @@
-! Checksum: Uo0g6e3U9eUd0wlDOvIjUA
+! Checksum: p1NQmjX0xm9PZRId6Zg33w
 ! Title: EasyList Czech and Slovak
 ! Description: Additional filter list for websites in Czech and Slovak.
-! Version: 2.0.3.2
-! TimeUpdated: 2025-04-01T20:35:24+00:00
+! Version: 2.0.3.4
+! TimeUpdated: 2025-04-03T20:34:56+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Homepage: http://adblock.sk
@@ -102,7 +102,7 @@ kurzy.cz#%#//scriptlet('abp-abort-on-property-write', 's_back')
 ||stat.novinky.cz^
 ||stat.super.cz^
 ||stobklub.cz/images/banners/maintop.jpg
-titulky.com/banaltr/
+titulky.com/mybanaltre/
 titulky.com/ajaxlogon.php
 ||tracker.cncenter.cz^
 ||uschovna.cz/branding
@@ -530,7 +530,8 @@ super.cz##a[data-dot="c_pozadi"]
 telekomunikace.cz##.Flagrow-Ads-under-header
 tipcars.com##.amalker
 tiscali.cz##.bbtitle
-titulky.com###bnnr300x300
+titulky.com###bni300x300
+titulky.com###side2wrap iframe[height='300']
 titulky.com###fairuser
 topzine.cz###vyjizdeciBoxikDiv
 tryhard.cz##[class*="sda-"]
@@ -691,9 +692,9 @@ search.seznam.cz,clanky.seznam.cz##div[data-e-b-n*="advert"]
 sreality.cz#%#//scriptlet('ubo-nosiif.js', 'checkRods')
 super.cz#%#//scriptlet('ubo-ra.js', 'style', 'body')
 svetandroida.cz#%#//scriptlet('ubo-aopr.js', 'detectAdBlocker')
-titulky.com#?##cboxOverl:has(+ div b:contains(/zdarma/i))
-titulky.com#?#b:contains(/zdarma/i):upward(5)
-titulky.com#?#a:matches-css(background:/martevax.cz/i):upward(3)
+titulky.com#?#div:matches-css(position:/fixed/i):has(+ div div:matches-css(float:/left/i):matches-css(background:/url.*/i))
+titulky.com#?#div:matches-css(position:/fixed/i) + div div:matches-css(float:/left/i):matches-css(background:/url.*/i):upward(5)
+titulky.com#?#a:matches-css(background:/marteva/i):upward(3)
 titulky.com#%#//scriptlet('ubo-aeld.js', 'load', 'document.cookie')
 titulky.com#%#//scriptlet('ubo-set.js', 'xmxalr', '')
 titulky.com#$##head_c { margin-top: 0 !important; }

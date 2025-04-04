@@ -1,8 +1,8 @@
-! Checksum: 50s8ehfpA/HyFoRWs/I75g
+! Checksum: 798KZW7fxA26IQJegXPzng
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.12.99
-! TimeUpdated: 2025-04-02T16:07:57+00:00
+! Version: 2.1.13.7
+! TimeUpdated: 2025-04-04T15:06:59+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -652,6 +652,13 @@ esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israel
 !
 ! NOTE: Specific rules
 !
+adage.com##.u-flex > div.u-relative:has(> button > svg > path[d^="M13 4.5a2.5"])
+americatv.com.pe##button[data-variant="shared"]
+americatv.com.pe##.items-center > span:has(+ button[data-variant="shared"])
+americatv.com.pe##.justify-center.items-center:has(> button[data-variant="shared"]:only-child)
+latinanoticias.pe##.box-compartir
+unikal.az##.news-share-container
+faz.net##button[track-label="Teilen"]
 lixil.com##.fotSns
 lixil.com##.nvOtSns
 lixil.com###hs_cos_wrapper_snsBtns
@@ -840,7 +847,7 @@ microsoft.com##div[data-bi-an="social-share"]
 meetup.com##.flex:has(> ul > li > button > div#share-facebook-in-GroupHome)
 discogs.com##.side__gnpk > .wrapper_Ixres
 akomnews.com##.quick_menu > li:not(:has(> div > i.font_icon))
-hardcoregamer.com,gamerant.com,screenrant.com###sharingButtonPopup
+thegamer.com,hardcoregamer.com,gamerant.com,screenrant.com###sharingButtonPopup
 dota2.ru##a[href^="//t.me/share/"]
 championat.com,comments.rambler.ru##button[data-comments$="share_popup"]
 alive.com##.PostShare
@@ -950,7 +957,7 @@ rbs.ta36.com##.widget_sns_follow_buttons
 figma.com##div[class^="meta_container--rightSide--"] > [class^="social_links--"]
 figma.com##div[class^="meta_container--rightSide--"] > hr:has(+ [class^="social_links--"])
 drive2.ru##div[itemscope] > div[class]:has(> div.o-group > button[data-action="share.share"])
-ctvnews.ca##.b-share-bar
+thedailybeast.com,ctvnews.ca##.b-share-bar
 r25.jp##.gap-3 > .gap-3.items-center:has(path[d*="5.82031H17.3224V7.30792H8.39678V17.7211H6.90918V7.30792C6.90918"])
 ghgprotocol.org##.addtoany-block
 ladepeche.fr##.article-full__share
@@ -1135,7 +1142,7 @@ m.avito.ru##button[data-marker="item-top-bar/share"]
 t24.su#?#article > b:contains(Поделиться:)
 github.blog#?#.flex-items-center > ul:has(> li > span:contains(Share:))
 pragmaticengineer.com##.pencraft > span:has(> a > div > svg.lucide-share)
-pragmaticengineer.com##.pencraft > button:has(> svg.lucide-share)
+newsguardrealitycheck.com,pragmaticengineer.com##.pencraft > button:has(> svg.lucide-share)
 pragmaticengineer.com#?#.pencraft > div.pencraft:has(> a.post-ufi-button > div:contains(Share))
 teradownloader.com##section > div:has(> h2 + div .share-btn)
 newspicks.com##div[class^="css-"]:has(> button[data-testid="base-button"] > svg[color="var(--third-party-color-facebook)"])
@@ -5141,7 +5148,7 @@ cookien.com###middle_share_ttl
 lexpress.fr##div[data-trigger="share"]
 shop.driveplaza.com###plg_social_area
 app.famitsu.com##.aside-sns
-kinyobi.co.jp,keibalab.jp,store.natalie.mu,tabikobo.com,baby-calendar.jp,nikkeibp.co.jp##.snsBtn
+tabirai.net,kinyobi.co.jp,keibalab.jp,store.natalie.mu,tabikobo.com,baby-calendar.jp,nikkeibp.co.jp##.snsBtn
 baby-calendar.jp##.article-sns-buttons
 baby-calendar.jp##.recipe-share-area
 shindanmaker.com###btn-modal-shareShindan
@@ -14867,6 +14874,9 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/202259
+monsterhunter.com#@#.sns_list
+monsterhunter.com#@#a[href^="https://lin.ee/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201945
 @@||yastatic.net/share2/share.js$domain=78.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201252

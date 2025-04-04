@@ -1,8 +1,8 @@
-! Checksum: CovY4Pf27jqbdF2bcuDGNA
+! Checksum: Ta0F6zSgEbIw1WUYfvgASQ
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.59.52
-! TimeUpdated: 2025-04-02T09:07:34+00:00
+! Version: 2.0.59.59
+! TimeUpdated: 2025-04-04T15:07:16+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2390,6 +2390,21 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+wetransfer.com##div[data-testid="mobile-wallpaper-layout-enabled"]
+op.gg##main > div[class^="flex flex-col gap-"] > section[class^="w-full md:overflow-hidden md:rounded flex-col"]
+redd.tube##.paid-tabs
+redd.tube#%#//scriptlet('set-constant', 'Object.prototype.vastOptions', 'emptyObj')
+desiporn.one##.top:has(> div[id][style^="height:"] > iframe.na)
+desiporn.one,gay0day.com,thetranny.com,xlilith.com##div[id][style^="height:"]:has(> iframe.na)
+temp-mail.org#$#html[style^="padding-top"] { padding-top: 0px !important; }
+chunichi.co.jp###fluct-overlay
+chunichi.co.jp#?##entry > div.block > b:contains(/^《広告の下に記事が続きます》$/)
+chunichi.co.jp##aside > .cscmp-subscription + .cmp-hdg005:has(+ div.cmp-lst001 div[id^="div-gpt-"])
+navitime.co.jp###st-wrap[style="height: 435px; visibility: visible;"]
+blogtag.ameba.jp##main > ul > li:not([class]) > div[class^="sc-"][class*=" "]:has(> div[class^="sc-"][class*=" "] > div[id^="div-gpt-"][name*="sp_ameba_blogtag_detail_rec_"])
+nana-press.com###spFooterAd
+nana-press.com##.ad-machinePage-footer
+nana-press.com##.modelInfo_listBox_sp[style="margin: 20px 0 20px; min-height: 315px;"]
 koe-koe.com##div[style="min-height:250px"]
 zeenite.com,squirting.world##div[id^="M-"][style^="height"]
 hentai0day.com###M-CONTENT-300x250-MULTI
