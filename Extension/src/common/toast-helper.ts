@@ -58,7 +58,7 @@ export function getFiltersUpdateResultMessage(
             }
             return Number(a.groupId === b.groupId);
         })
-        .map((filter) => `${filter.name}`)
+        .map((filter) => filter.name)
         .join(', ');
 
     if (updatedFilters.length > 1) {
