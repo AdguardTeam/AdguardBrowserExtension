@@ -465,6 +465,7 @@ select:focus {
     position: static!important;
     min-width: 300px;
     background-color: var(--fills-backgrounds-page-background-default)!important;
+    border: none !important;
 
     &:has(.modal--scrollable) {
         height: 100%;
@@ -472,10 +473,6 @@ select:focus {
         @media (min-height: 1090px) {
             height: auto;
         }
-    }
-
-    @media (prefers-color-scheme: dark) {
-        border: 1px solid var(--gray900)!important;
     }
 
     @media (min-width: 640px) {
@@ -495,18 +492,10 @@ select:focus {
 
 .light-mode {
     color-scheme: light;
-
-    .ReactModal__Content--after-open {
-        border: 0!important;
-    }
 }
 
 .dark-mode {
     color-scheme: dark;
-
-    .ReactModal__Content--after-open {
-        border: 1px solid var(--gray700)!important;
-    }
 }
 
 .sr-only {
