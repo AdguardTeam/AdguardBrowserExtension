@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { UserAgent } from '../../../common/user-agent';
-import { AntiBannerFiltersId, RECOMMENDED_TAG_ID } from '../../../common/constants';
+import { RECOMMENDED_TAG_ID } from '../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,
@@ -82,15 +82,7 @@ export class Categories {
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
-        let filters = Categories.getFilters();
-
-        // Exclude Quick Fixes filter from filters list
-        // TODO: remove this check when Quick Fixes Filter will be supported for MV3 again
-        if (__IS_MV3__) {
-            filters = filters.filter((f) => {
-                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
-            });
-        }
+        const filters = Categories.getFilters();
 
         const categories = groups.map((group) => ({
             ...group,

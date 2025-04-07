@@ -56,6 +56,7 @@ import { InstallApi } from '../install';
 import { PopupStatsCategories } from '../page-stats';
 import { HybridStorage } from '../../storages/hybrid-storage';
 
+// These imports are used for migrations before v11.
 import {
     FiltersStorage as FiltersStorageV1,
     BINARY_FILTER_KEY_PREFIX,
@@ -82,6 +83,7 @@ export class UpdateApi {
         '8': UpdateApi.migrateFromV8toV9,
         '9': UpdateApi.migrateFromV9toV10,
         '10': UpdateApi.migrateFromV10toV11,
+        '11': UpdateApi.migrateFromV11toV12,
     };
 
     /**
@@ -202,6 +204,32 @@ export class UpdateApi {
 
         return value;
     };
+
+    /**
+     * Run data migration from schema v11 to schema v12.
+     *
+     * For the extension update to v5.2.0.
+     *
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
+     *
+     * In this update we re-added AdGuard Quick Fixes filter
+     * and want to enable it by default for all users.
+     */
+    private static async migrateFromV11toV12(): Promise<void> {
+        // This migration should be done only for MV3 version.
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        // We cannot load and enable filter here, because filter's API is not
+        // initialized yet. So we just set the filter state to enabled
+        // and loaded.
+        // After that it will be renew from the local copy of filters
+        // - which will create all needed filter's objects in memory to correct
+        // work.
+        await UpdateApi.addQuickFixesFilter();
+    }
 
     /**
      * Run data migration from schema v10 to schema v11.
@@ -337,50 +365,7 @@ export class UpdateApi {
         // After that it will be renew from the local copy of filters
         // - which will create all needed filter's objects in memory to correct
         // work.
-        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
-
-        if (!UpdateApi.isObject(settings)) {
-            throw new Error('Settings is not an object');
-        }
-
-        const filtersStateData = settings['filters-state'];
-
-        if (typeof filtersStateData !== 'string') {
-            throw new Error('Cannot read filters state data');
-        }
-
-        const filtersState = zod.record(
-            zod.string(),
-            zod.object({
-                enabled: zod.boolean(),
-                installed: zod.boolean(),
-                loaded: zod.boolean(),
-            }),
-        ).parse(JSON.parse(filtersStateData));
-
-        // Little hack to mark filter as enabled before it is actually loaded.
-        Object.assign(filtersState, {
-            [AntiBannerFiltersId.QuickFixesFilterId]: {
-                // Enabled by default.
-                enabled: true,
-                // Installed is false, because otherwise this filter state
-                // will be marked as "obsoleted" (because this filter not
-                // exists in metadata yet) and will be removed from the memory.
-                installed: false,
-                // Mark as loaded to update filter from local resources and
-                // create filter object in memory.
-                loaded: true,
-            },
-        });
-
-        settings['filters-state'] = JSON.stringify(filtersState);
-
-        // Set empty filter to create it in the memory.
-        // Right after launch it will be updated to the newest version from remote.
-        await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
-        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
-
-        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+        await UpdateApi.addQuickFixesFilter(true);
     }
 
     /**
@@ -388,8 +373,8 @@ export class UpdateApi {
      *
      * For the extension update to v5.0.183.
      *
-     * For MV2 version we will run empty migration since we don't need to do anything,
-     * just increase the schema version.
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
      *
      * For MV3 version we need to remove deprecated Quick Fixes filter state.
      */
@@ -431,50 +416,7 @@ export class UpdateApi {
         // After that it will be renew from the local copy of filters
         // - which will create all needed filter's objects in memory to correct
         // work.
-        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
-
-        if (!UpdateApi.isObject(settings)) {
-            throw new Error('Settings is not an object');
-        }
-
-        const filtersStateData = settings['filters-state'];
-
-        if (typeof filtersStateData !== 'string') {
-            throw new Error('Cannot read filters state data');
-        }
-
-        const filtersState = zod.record(
-            zod.string(),
-            zod.object({
-                enabled: zod.boolean(),
-                installed: zod.boolean(),
-                loaded: zod.boolean(),
-            }),
-        ).parse(JSON.parse(filtersStateData));
-
-        // Little hack to mark filter as enabled before it is actually loaded.
-        Object.assign(filtersState, {
-            [AntiBannerFiltersId.QuickFixesFilterId]: {
-                // Enabled by default.
-                enabled: true,
-                // Installed is false, because otherwise this filter state
-                // will be marked as "obsoleted" (because this filter not
-                // exists in metadata yet) and will be removed from the memory.
-                installed: false,
-                // Mark as loaded to update filter from local resources and
-                // create filter object in memory.
-                loaded: true,
-            },
-        });
-
-        settings['filters-state'] = JSON.stringify(filtersState);
-
-        // Set empty filter to create it in the memory.
-        // Right after launch it will be updated to the newest version from remote.
-        await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
-        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
-
-        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+        await UpdateApi.addQuickFixesFilter(true);
     }
 
     /**
@@ -1149,6 +1091,74 @@ export class UpdateApi {
 
         // set new settings to storage
         await browserStorage.set('adguard-settings', settings);
+    }
+
+    /**
+     * Adds the removed Quick Fixes filter to settings and storages.
+     *
+     * @note
+     * We cannot load and enable filter here, because filter's API is not
+     * initialized yet. So we just set the filter state to enabled
+     * and loaded.
+     * After that it will be renew from the local copy of filters - which will
+     * create all needed filter's objects in memory to correct work.
+     *
+     * @param useOldStorage Whether to use the old storage API, which was used
+     * before the migration to the new one migration#11 @see {@link UpdateApi.migrateFromV10toV11}.
+     *
+     * @returns A promise that resolves when complete.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
+     */
+    private static async addQuickFixesFilter(useOldStorage: boolean = false): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        // Little hack to mark filter as enabled before it is actually loaded.
+        Object.assign(filtersState, {
+            [AntiBannerFiltersId.QuickFixesFilterId]: {
+                // Enabled by default.
+                enabled: true,
+                // Installed is false, because otherwise this filter state
+                // will be marked as "obsoleted" (because this filter not
+                // exists in metadata yet) and will be removed from the memory.
+                installed: false,
+                // Mark as loaded to update filter from local resources and
+                // create filter object in memory.
+                loaded: true,
+            },
+        });
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Set empty filter to create it in the memory.
+        // Right after launch it will be updated to the newest version from remote.
+        if (useOldStorage) {
+            await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
+        } else {
+            await FiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+        }
+        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
     }
 
     /**

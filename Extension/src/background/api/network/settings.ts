@@ -157,7 +157,7 @@ export class NetworkSettings {
      * @returns The url from which filters can be downloaded.
      */
     // eslint-disable-next-line class-methods-use-this
-    get filtersUrl(): string | null {
+    get filtersUrl(): string {
         // first of all check whether it is mv3-build
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
         if (__IS_MV3__) {
@@ -166,7 +166,8 @@ export class NetworkSettings {
              * This keyword can be used to grep all code related to MV3 remote
              * hosting policy.
              *
-             * We support downloading and applying Custom Filters, which may contain:
+             * We support downloading and applying custom filters and Quick Fixes
+             * filter which may contain:
              * 1. Network rules – converted to DNR rules and applied via dynamic rules.
              * 2. Cosmetic rules – interpreted directly in the extension code.
              * 3. JavaScript rules – handled conditionally:
@@ -180,7 +181,7 @@ export class NetworkSettings {
              *
              * For execution policy enforcement, see usage of the 'JS_RULES_EXECUTION' keyword.
              */
-            return null;
+            return `${this.filtersRulesBaseUrl}/chromium-mv3`;
         }
 
         if (UserAgent.isFirefox) {
@@ -199,25 +200,21 @@ export class NetworkSettings {
     }
 
     /**
-     * Returns URL for downloading AG filters or null if downloading
-     * is not allowed.
+     * Returns URL for downloading AG filters.
      *
-     * @returns URL for downloading AG filters or null if downloading
-     * is not allowed.
+     * @returns URL for downloading AG filters.
      */
-    get filterRulesUrl(): string | null {
-        return !this.filtersUrl ? null : `${this.filtersUrl}/filters/{filter_id}.txt`;
+    get filterRulesUrl(): string {
+        return `${this.filtersUrl}/filters/{filter_id}.txt`;
     }
 
     /**
-     * Returns URL for downloading optimized AG filters or null if downloading
-     * is not allowed.
+     * Returns URL for downloading optimized AG filters.
      *
-     * @returns URL for downloading optimized AG filters or null if downloading
-     * is not allowed.
+     * @returns URL for downloading optimized AG filters.
      */
-    get optimizedFilterRulesUrl(): string | null {
-        return !this.filtersUrl ? null : `${this.filtersUrl}/filters/{filter_id}_optimized.txt`;
+    get optimizedFilterRulesUrl(): string {
+        return `${this.filtersUrl}/filters/{filter_id}_optimized.txt`;
     }
 
     /**

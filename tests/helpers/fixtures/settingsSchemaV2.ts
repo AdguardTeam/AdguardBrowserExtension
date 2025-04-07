@@ -67,12 +67,9 @@ export const getExportedSettingsV2 = () => ({
     },
     'filters': {
         'enabled-filters': __IS_MV3__
-            // 14 - AdGuard Annoyances filter has been splitted into 5 other filters: Cookie Notices, Popups, Mobile
-            // App Banners, Other Annoyances and Widgets
-            // TODO: uncomment this when quick fixes filter will be supported
-            // for MV3 (AG-39385).
-            // ? [1, 2, 3, 4, 6, 11, 16, 17, 24, 224, 1001, 1002]
-            ? [1, 2, 3, 4, 6, 11, 16, 17, 224, 1001, 1002]
+            // 14 - AdGuard Annoyances filter has been splitted into 5 other filters:
+            // Cookie Notices, Popups, Mobile App Banners, Other Annoyances and Widgets
+            ? [1, 2, 3, 4, 6, 11, 16, 17, 24, 224, 1001, 1002]
             : [1, 2, 3, 4, 6, 11, 14, 16, 17, 224, 1001, 1002],
         'enabled-groups': [0, 1, 2, 3, 4, 5, 6, 7],
         'custom-filters': [{

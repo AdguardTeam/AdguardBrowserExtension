@@ -229,6 +229,8 @@ const Stealth = observer(() => {
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
                     title={translator.getMessage('options_send_not_track_title')}
                     description={reactTranslator.getMessage('options_send_not_track_desc', {
                         gpc: (chunks: string) => (
@@ -268,7 +270,7 @@ const Stealth = observer(() => {
                     mode="subTitle"
                     disabled={isStealthModeDisabled}
                 >
-                    { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                    { /* TODO fix type error when SettingsSection be rewritten in typescript */}
                     {/* @ts-ignore */}
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_third_party_title')}
@@ -294,7 +296,7 @@ const Stealth = observer(() => {
                         />
                     </SettingsSetCheckbox>
 
-                    { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                    { /* TODO fix type error when SettingsSection be rewritten in typescript */}
                     {/* @ts-ignore */}
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_first_party_title')}
@@ -331,8 +333,8 @@ const Stealth = observer(() => {
                     referrer rule with stealth exclusion AG-34765 */}
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
                         title={translator.getMessage('options_hide_referrer_title')}
                         description={translator.getMessage('options_hide_referrer_desc')}
                         disabled={!settings.values[HideReferrer]}
