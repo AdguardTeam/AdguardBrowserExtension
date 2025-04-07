@@ -137,8 +137,17 @@ export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `By the rules of Chrome Web
       Such rules are executed by chrome.scripting API (STEP 4.1 and 4.2). Other rules are discarded.`;
 
 // artifacts constants
-export const CHROME_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.xml';
+export const UPDATE_BASE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta';
+
+export const CHROME_UPDATE_FILE_NAME = 'update.xml';
+export const CHROME_UPDATE_URL = `${UPDATE_BASE_URL}/${CHROME_UPDATE_FILE_NAME}`;
+
 export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');
-export const CHROME_CODEBASE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/chrome.crx';
+export const CHROME_CERT_DEV = path.resolve(__dirname, '../tests/test-certificate.pem');
+
+export const CHROME_CODEBASE_FILE_NAME = 'chrome.crx';
+export const CHROME_CODEBASE_URL = `${UPDATE_BASE_URL}/${CHROME_CODEBASE_FILE_NAME}`;
+
 export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
-export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.json';
+export const FIREFOX_WEBEXT_UPDATE_FILE_NAME = 'update.json';
+export const FIREFOX_WEBEXT_UPDATE_URL = `${UPDATE_BASE_URL}/${FIREFOX_WEBEXT_UPDATE_FILE_NAME}`;

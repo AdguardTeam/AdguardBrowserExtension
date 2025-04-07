@@ -60,6 +60,7 @@ Test build:
             # Add postfix to all zip files for easier identification target env.
             mv build/dev/chrome.zip artifacts/chrome-dev.zip
             mv build/dev/chrome-mv3.zip artifacts/chrome-mv3-dev.zip
+            mv build/dev/chrome.crx artifacts/chrome-dev.crx
             mv build/dev/edge.zip artifacts/edge-dev.zip
             mv build/dev/firefox-amo.zip artifacts/firefox-amo-dev.zip
             mv build/dev/firefox-standalone.zip artifacts/firefox-standalone-dev.zip
@@ -95,6 +96,10 @@ Test build:
       required: true
       # Mark it shared to download from stages for tests
       shared: true
+    - name: chrome-dev.crx
+      location: artifacts
+      pattern: chrome-dev.crx
+      required: true
     - name: edge-dev.zip
       location: artifacts
       pattern: edge-dev.zip
