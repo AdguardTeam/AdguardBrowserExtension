@@ -1,8 +1,8 @@
-! Checksum: BlvwJI35RCLEFtx0ZD4pmg
+! Checksum: c5rxrPth2yRcFPc4IZvAXg
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.98.55
-! TimeUpdated: 2025-04-04T17:06:00+00:00
+! Version: 2.0.98.59
+! TimeUpdated: 2025-04-07T14:06:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -7288,7 +7288,7 @@ yandex-video.naydex.net#%#//scriptlet('trusted-replace-xhr-response', '/(<VAST[\
 ! ##.ad
 ru.citaty.net,liga.net,appstorrent.ru,graniru.org,3dnews.ru,zaks.ru,ukranews.com,mr-7.ru,ferra.ru,cont.ws,riavrn.ru,maanimo.com,begaem.com,passion.ru,gq.ru,agravery.com,appsgames.ru,buhgalteria.ru,dumskaya.net,hotcharts.xyz,klops.ru,mmovote.ru,molnet.ru,news.pn,newsru.co.il##.ad
 ! ##.adv
-progroshi.news,thepage.ua,newsru.co.il,freetone.org,infox.ru,internet-technologies.ru,xcadr.tv,dota2.ru,newkaliningrad.ru,reestr.rublacklist.net,ringon.site,glavcom.ua,qna.center,afanasy.biz,happymonday.ua,xcadr.org,dugtor.ru,trud.ru,amic.ru,dugtor.org,kinoafisha.info,niknews.mk.ua,sovety.net,vesti.uz,wotsite.net##.adv
+posylka.net,progroshi.news,thepage.ua,newsru.co.il,freetone.org,infox.ru,internet-technologies.ru,xcadr.tv,dota2.ru,newkaliningrad.ru,reestr.rublacklist.net,ringon.site,glavcom.ua,qna.center,afanasy.biz,happymonday.ua,xcadr.org,dugtor.ru,trud.ru,amic.ru,dugtor.org,kinoafisha.info,niknews.mk.ua,sovety.net,vesti.uz,wotsite.net##.adv
 ! ##center > a[rel="nofollow"] > img
 faptime.ru,kremlinmedia.ru,cyberpedia.su,megaobuchalka.ru,rsload.net,gig-games.net,only-soft.org,freetp.org,10torrent.net,7themes.su,a-age.ru,babestar.ru,biblprog.org.ua,cwer.me,cwer.ru,dc-marvel.ru,dom-filmov.net,fast-torrent.co,frogik.ru,gighub.net,goldenshara.org,goodkino.biz,hd-bit.net,kingdia.com,kino-live2.org,kinocok.com,mskd-ru.net,nashynogi.ru,openssource.biz,pornotor.org,ru-zerkalo.org,rutorent.net,rutorgames.org,seasontor.com,serialpro.net,torentor.co,torentor.net,torrent-am.net,torrent2games.net,torrentik.co,vectornews.net,wotpack.ru,xatab-repack.net##center > a[rel="nofollow"] > img
 ! ##center > a[target="_blank"] > img
@@ -7623,6 +7623,14 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+redheadsound.studio#?#.side-block > div.side-block:has(> div.side-block__title > p:contains(РЕКЛАМА))
+redheadsound.studio##div[id^="adfinity-"]
+vbr.ru##div[class^="branding_"]
+sovsport.ru##div[class^="gift_bonusLogo"]
+sovsport.ru##div[class^="content-controller"] > p:has(> div[class^="button_advertisement"])
+sovsport.ru##div[class^="bonus-rating_ratingWrapper"]
+sovsport.ru##div[class*="right"] > div[class^="st-widget_container"]:has(> div[class^="st-widget_block"] > div[class^="adv-marker"])
+sovsport.ru##div[class^="stories_stories"]
 livejournal.com#$#.b-loginform + div[class] { min-height: 0 !important; }
 mp3party.net##div[class^="advf-"]
 78.ru##div[class^="partner-news_container"]

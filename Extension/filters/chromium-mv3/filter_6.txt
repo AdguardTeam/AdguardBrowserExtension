@@ -1,8 +1,8 @@
-! Checksum: w5U5Lpx4PBvN79s2JeoDkQ
+! Checksum: szt0OgKJFaDOHri0W76N8g
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.79
-! TimeUpdated: 2025-04-04T13:12:27+00:00
+! Version: 2.0.46.87
+! TimeUpdated: 2025-04-07T12:10:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1484,6 +1484,8 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+familie.de##.alice-adslot
+familie.de##.alice-root-header-ads__ad--top
 videogameszone.de##.wadtag
 videogameszone.de##aside[data-tracking-id^="affiliate-button"]
 bz-berlin.de##article:has(> .has-mark)
@@ -5593,6 +5595,8 @@ amateurbusters.com#?#.sb_area > .sb_area_headline:contains(Urlaub)
 !
 !
 !
+! winfuture.de - player does not start
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=winfuture.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201488
 [$path=/themenwelten]lvz.de#@#div[class^="Adstyled__AdWrapper"]
 [$path=/themenwelten]lvz.de#@#div[class^="Adstyled__AdWrapper-"]
@@ -6613,7 +6617,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||kingads.net^$third-party
 ||klick4u.de^$third-party
 ||klicktausch.com^$third-party
-||ktxtr.com^$third-party
 ||liferd.de^$third-party
 ||linkedads.de^$third-party
 ||localpoint.ch^$third-party
@@ -6973,7 +6976,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||shuuz.de/banner/
 ||silbertresor.de^*/banner/$third-party
 ||sims-3.net/xbox.jpg
-||smskontakt.ch/images/$third-party
 ||sn-multimedia.de/weitereangebote-v2/$third-party
 ||sn-multimedia.de/weitereangebote/$third-party
 ||sonnige-aussichten.ch/_img/ad/$third-party
@@ -8237,7 +8239,6 @@ $stylesheet,subdocument,third-party,xmlhttprequest,domain=canna-power.to|canna.t
 ||vienna-capitals.at/tl_files/capitals/banner/
 ||vienna-capitals.at/tl_files/capitals/partner/
 ||viralize.tv^$domain=n-tv.de
-||volksblatt.at/wp-content/banners/
 ||volleyball-bundesliga.de^*/partner/
 ||voltigierzirkel.de/uploads/*-anzeige.
 ||voltigierzirkel.de/uploads/*-anzeige_
@@ -9536,6 +9537,7 @@ designtagebuch.de##.billbo
 baupool.com,bundesliga.com,fnweb.de,formel1.de,laborjournal.de,ligaportal.at,linux-community.de,linux-magazin.de,mannheimer-morgen.de,tarnkappe.info,traktorpool.de,winfuture.de##.billboard
 android-hilfe.de##.billboard-ad-footer
 android-hilfe.de##.billboard-ad-top
+finanzfluss.de##.billboard-as-yield-section
 finanzfluss.de##.billboard-card
 infranken.de##.billboard-wrapper
 computerbild.de##.billboardBtfContainer
@@ -10369,6 +10371,7 @@ sinn-frei.com##.stx
 wetter.com##.styles-module__KqHK9a__adSlot
 coincierge.de##.su-button
 handyraketen.de##.su-button-wide[href^="http://amzn.to/"]
+finanzfluss.de##.suggested-partner
 mt.de##.superad
 fuersie.de,grazia-magazin.de,i-fidelity.net,idee-fuer-mich.de,inside-digital.de,jagderleben.de,jolie.de,ka-news.de,kochbar.de,kress.de,leben-und-erziehen.de,maedchen.de,ok-magazin.de,petra.de##.superbanner
 pharmazeutische-zeitung.de##.superbanner-frame
@@ -10469,6 +10472,7 @@ flz.de##.user-flzads-pi1
 aerokurier.de,auto-motor-und-sport.de,caravaning.de,cavallo.de,elektrobike-online.com,flugrevue.de,menshealth.de,motorradonline.de,mountainbike-magazin.de,outdoor-magazin.com,outdoorchannel.de,promobil.de,roadbike.de,runnersworld.de,womenshealth.de##.v-A_-commercial
 godmode-trader.de##.v-is-sponsored-box
 cavallo.de##.va-adhint
+aerokurier.de,auto-motor-und-sport.de,bike-x.de,cavallo.de,flugrevue.de,mehr-tanken.de,menshealth.de,motorradonline.de,outdoor-magazin.com,promobil.de,runnersworld.de,womenshealth.de##.va-sponsored
 aerokurier.de,auto-motor-und-sport.de,bike-x.de,cavallo.de,flugrevue.de,mehr-tanken.de,menshealth.de,motorradonline.de,outdoor-magazin.com,promobil.de,runnersworld.de,womenshealth.de##.va-stroer-billboard
 hallescherfc.de,pfalz-echo.de##.vc_carousel-inner
 vfl.de##.vc_custom_1544363997968
@@ -10812,8 +10816,8 @@ gmx.net,web.de##div[data-adservice-slot]
 studysmarter.de##div[data-adv-location]
 berliner-zeitung.de##div[data-component-type="ad-slot"]
 freenet.de##div[data-componentid^="ext-frn-adtag-"]
-volksblatt.at##div[data-div-ratios="default:300_250"]
-volksblatt.at##div[data-div-ratios="default:696_280|500:300_250"]
+finanzfluss.de##div[data-cy="billboard-card"]
+finanzfluss.de##div[data-cy="sustainability-section-ad"]
 t-online.de,www-t--online-de.cdn.ampproject.org##div[data-dy*="Partner:"]
 apfelpage.de##div[data-embed-provider="rcm-eu-amazon-adsystem-com"]
 de.motor1.com##div[data-entrypoint="heycar-search-widget"]
@@ -11006,7 +11010,6 @@ astroportal.com##div[style="width: 336px; height: 280px;"]
 strafbuch.de##div[style="width: 468px;height: 60px;overflow: hidden;float: right"]
 immoscout24.ch##div[style="width: auto; height: auto; min-height: 250px; display: flex; justify-content: center; align-items: center;"]
 immoscout24.ch##div[style="width: auto; height: auto; min-height: 250px; justify-content: center; align-items: center;"]
-volksblatt.at##div[style="width:100%; height:600px;"]
 ariva.de##div[style="width:1000px; text-align:center; min-height:270px;"]
 psychic.de##div[style="width:160px;height:600px;"]
 korrekturen.de##div[style="width:300px; height:250px;float:left; margin-right:15px; margin-bottom:15px; border:0; background-color:#c0c0c0; overflow:hidden;"]
@@ -11376,6 +11379,7 @@ emotion.de#?#.node--article:has(span:contains(Anzeige))
 fazemag.de#?#h4:has(span:contains(ANZEIGEN))
 finanzen.net#?#.mleft-10.small-font.light-grey:contains(Werbung) + .box + .border-blue-2
 finanzen.net#?#.mleft-10:contains(Werbung) + .box
+finanzfluss.de#?#.component:has(div.disclaimer-text:contains(Anzeige))
 focus.de#?#article[id^="teaser-"][data-placement]:contains(Anzeige)
 games.ch#?#.col4:has(h3:contains(Unterstützt durch:))
 gamestar.de#?#.content-item-medium:has(data:contains(Anzeige))

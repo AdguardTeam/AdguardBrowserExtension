@@ -1,8 +1,8 @@
-! Checksum: 0lG3TebnfTcNLzcQuPhsRA
+! Checksum: MpWq0oaD8YVSnBxY/g4wpw
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.53.31
-! TimeUpdated: 2025-04-04T15:07:34+00:00
+! Version: 2.0.53.36
+! TimeUpdated: 2025-04-07T14:07:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -409,8 +409,9 @@ reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#@#.InA
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#@#.SidebarAd
 !#safari_cb_affinity
 !
-! Add without $third-party, so apps are blocking them too
+! NOTE: Add without $third-party, so apps are blocking them too
 !
+||fastenfather.com^
 ||stereotypedsugar.com^
 ||podname.com^
 ||luxformula.com^
@@ -4439,6 +4440,9 @@ aol.com#$#.ad__tile { height: 10px!important; position: absolute!important; left
 !
 ! SECTION: Popups - Regular rules
 !
+uview-plus.jiangruyi.com#$##vip-box { display: none !important; }
+uview-plus.jiangruyi.com#$#.v-modal { position: absolute !important; top: -9999px !important; }
+uview-plus.jiangruyi.com#$#body.el-popup-parent--hidden { overflow: auto !important; padding-right: 0 !important; }
 mynet.com##.ng-timeline-sticky-div
 studentappcentre.com##.exit_intent_popup
 golearn.gr##.seminar__cta
@@ -11046,7 +11050,7 @@ m.youtube.com#$#body[modal-open-body] { position: unset !important; }
 ||mail.ru/manifest.json
 ||m.lenta.ru/manifest.json
 ! "Do you want to subscribe to reach more viewers?" popup
-x.com,twitter.com###layers[style="z-index: 1;"]:has(div[role="dialog"] a[href="/i/premium_sign_up"][style])
+[$path=/\/[0-9A-Z_a-z]+\/status\/\d+/]x.com,twitter.com###layers[style="z-index: 1;"]:has(div[role="dialog"] a[href="/i/premium_sign_up"][style])
 ! Twitter login popup
 ! https://github.com/AdguardTeam/AdguardFilters/issues/112718#issuecomment-1069965416
 x.com,twitter.com#$?#div[data-testid="sheetDialog"] > :not(div[data-testid="IntentLoginSheet_Login_Sheet"]) div[aria-label=""] > img[class^="css-"][src$="/privacy_cover.png"]:upward(div[role="group"]) { display: none !important; }
@@ -12168,6 +12172,7 @@ macwelt.de,pcwelt.de#%#//scriptlet("set-constant", "firebase.messaging", "noopFu
 !
 ! SECTION: Push notifications - Regular rules
 !
+karanpc.com##.zestmodal
 myfxbook.com#%#//scriptlet('set-cookie', 'blockWebNotificationsModalShortTerm', '7')
 windowslatest.com##.pnfpb-push-subscribe-icon
 omroepwest.nl##div.layout-component:has(> div.dialog-toggle-notification)
@@ -13059,6 +13064,10 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+awafim.tv##.spo-reel
+awafim.tv###sidebar-content-wrap > .sidebar-section:has(> .side-sub)
+paperswithcode.com##.list-button-subscribe
+gatesnotes.com##.SUButtonLoggedOff
 thedailybeast.com##.b-article-body__piano-top
 newsguardrealitycheck.com##.newsletter-post > div.pencraft > div[class*="subscribeDialog"]
 newsguardrealitycheck.com##.newsletter-post > div.pencraft > div[class*="background-"]
