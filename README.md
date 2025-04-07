@@ -281,8 +281,22 @@ pnpm beta
 pnpm release
 ```
 
-You will need to put certificate.pem file to the `./private` directory. This
+You will need to put certificate.pem file to the `./private/AdguardBrowserExtension` directory. This
 build will create unpacked extensions and then pack them (crx for Chrome).
+
+For testing purposes for `dev` command credentials taken from `./tests/certificate-test.pem` file.
+
+WARNING: DO NOT USE TEST CREDENTIALS FOR PRODUCTION BUILDS, BECAUSE THEY ARE AVAILABLE IN PUBLIC.
+
+##### How to generate credentials for `crx` builds
+
+You can use [Crx CLI `keygen`](https://github.com/thom4parisot/crx#crx-keygen-directory)
+to generate credentials for `crx` builds, see the example below:
+
+```bash
+# Command will generate `key.pem` credential in the `./private/AdguardBrowserExtension` directory
+pnpm crx keygen ./private/AdguardBrowserExtension
+```
 
 #### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
 

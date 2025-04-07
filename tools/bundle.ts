@@ -74,6 +74,7 @@ const devPlan = [
     copyExternals,
     bundleChrome,
     bundleChromeMv3,
+    bundleChromeCrx,
     bundleFirefoxAmo,
     bundleFirefoxStandalone,
     bundleEdge,
