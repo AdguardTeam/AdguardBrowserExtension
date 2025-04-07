@@ -1,26 +1,26 @@
 :root {
-    --gray05: rgba(239, 239, 239, 0.5);
+    /* Other variables */
+    --popup-width: 320px;
+    --popup-height: 600px;
+    --popup-default-height: 600px; /* Size of popup in desktop browsers */
     --t3: 0.3s ease;
-    --overlay-gray: rgba(137, 137, 137, 0.5);
-    --light-shadow: rgba(0, 0, 0, 0.05);
-    --sidebar-transition: 0.3s ease;
-    /* z-index: 4 reserved by Ace Editor */
+
+    /* z-index */
+    /* 4 reserved by Ace Editor */
     --z-idx-options-sidebar: 5;
     --z-idx-options-skip-to-content: 6;
     --z-idx-options-notifications: 10;
     --z-idx-options-modals: 11;
 
-    --shadow-0-1: rgba(0, 0, 0, 0.1);
+    /* Shadows */
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --small-light-shadow-br: 4px 4px 8px 0px var(--shadow-color);
+    --big-light-shadow-br: 8px 8px 24px 0px var(--shadow-color);
+    --big-light-shadow-tr: -8px 8px 24px 0px var(--shadow-color);
 
-    /* NEW VARS */
+    /* Base colors */
 
-    /* Other variables */
-    --popup-width: 320px;
-    --popup-height: 600px;
-    --popup-default-height: 600px; /* Size of popup in desktop browsers */
-
-    /* Base colors: */
-
+    /* Product Primary */
     --product-primary-0: #f7fbf8;
     --product-primary-10: #e4f1e7;
     --product-primary-20: #bbddc3;
@@ -33,6 +33,8 @@
     --product-primary-90: #315439;
     --product-primary-100: #243e2a;
     --product-tertiary-50: #7884cb;
+
+    /* Gray */
     --gray-0: #ffffff;
     --gray-10: #f6f6f6;
     --gray-20: #e4e4e4;
@@ -44,6 +46,8 @@
     --gray-80: #3d3d3d;
     --gray-90: #1f1f1f;
     --gray-100: #000000;
+
+    /* Red */
     --red-0: #fff9f7;
     --red-10: #feeae3;
     --red-20: #fccab9;
@@ -55,6 +59,8 @@
     --red-80: #99472c;
     --red-90: #7b3923;
     --red-100: #5b2a1a;
+
+    /* Orange */
     --orange-0: #fdf9f3;
     --orange-10: #f9ecd8;
     --orange-20: #efd19e;
@@ -67,9 +73,9 @@
     --orange-90: #6c4300;
     --orange-100: #503200;
 
-    /* Context colors: */
+    /* Context colors */
 
-    /* vars that DO NOT change depend on the mode — same for light and dark mode: */
+    /* vars that DO NOT change depend on the mode — same for light and dark mode */
     --fills-buttons-danger-button-default: var(--red-50);
     --fills-buttons-danger-button-hovered: var(--red-60);
     --fills-buttons-danger-button-pressed: var(--red-70);
@@ -78,6 +84,7 @@
     --fills-buttons-main-button-pressed: var(--product-primary-70);
     --fills-logo-white-color-default: var(--gray-0);
     --fills-snacks-mobile-snacks-default: var(--gray-100);
+    --fills-backgrounds-dialog-background-default: var(--gray-100);
     --stroke-dividers-item-divider-green-default: var(--product-primary-50);
     --stroke-dividers-item-divider-orange-default: var(--orange-50);
     --stroke-buttons-secondary-green-default: var(--product-primary-50);
@@ -102,11 +109,11 @@
     --text-links-link-default: var(--product-primary-50);
     --text-links-link-hovered: var(--product-primary-60);
 
-    /* vars that DO NOT change depend on the mode — same for light and dark mode (not specified in design): */
+    /* vars that DO NOT change depend on the mode — same for light and dark mode (not specified in design) */
     --editor-comment: #338033;
     --editor-highlight: #ffff00;
 
-    /* vars that change depend on the mode: */
+    /* vars that change depend on the mode */
     --fills-backgrounds-cards-background-default: var(--gray-0);
     --fills-backgrounds-page-background-default: var(--gray-0);
     --fills-backgrounds-page-background-hovered: var(--gray-10);
@@ -142,7 +149,7 @@
     --text-main-text-main-default: var(--gray-80);
     --text-placeholder-placeholder-disabled: var(--gray-40);
 
-    /* vars that change depend on the mode (not specified in design): */
+    /* vars that change depend on the mode (not specified in design) */
     --outline: #005ecc;
     --editor-selection: #b5d5ff;
     --editor-syntax-blue: #4141e2;
