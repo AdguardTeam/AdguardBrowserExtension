@@ -66,7 +66,10 @@ const RequestCreateRule = observer(() => {
 
     const renderPatterns = (patterns: string[]): React.JSX.Element => {
         const patternItems = patterns.map((pattern, idx) => (
-            <div className="radio-button-wrapper">
+            <div
+                key={pattern}
+                className="radio-button-wrapper"
+            >
                 <input
                     type="radio"
                     id={pattern}
@@ -132,7 +135,10 @@ const RequestCreateRule = observer(() => {
             }
 
             return (
-                <div className="checkbox-wrapper">
+                <div
+                    key={id}
+                    className="checkbox-wrapper"
+                >
                     <input
                         id={id}
                         className="checkbox-input"
