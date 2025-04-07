@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocking page for requests blocked by `$document` rules in MV3.
 - Compatibility of `$header` modifier with `$match-case`
   and `$third-party` modifiers in MV2 [#2942].
-- `zip` artifacts for the extension builds [#3163].
+- `zip` and `crx` artifacts for the extension builds [#3163].
 
 ### Changed
 
