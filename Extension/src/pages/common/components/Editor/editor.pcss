@@ -69,111 +69,59 @@
     }
 
     & .ace_comment {
-        color: var(--green-editor);
+        color: var(--editor-comment);
     }
 
     & .ace_constant {
-        color: var(--purple-editor);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--pink-editor);
-        }
+        color: var(--editor-syntax-pink);
     }
 
     & .ace_keyword {
-        color: var(--red-editor);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--orange-editor);
-        }
+        color: var(--editor-syntax-red);
     }
 
     & .ace_control {
-        color: var(--blue-editor);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--cyan-editor);
-        }
+        color: var(--editor-syntax-blue);
     }
 
     & .ace_operator {
-        color: var(--blue-editor)!important;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--cyan-editor)!important;
-        }
+        color: var(--editor-syntax-blue) !important;
     }
 
     & .ace_quoted {
-        color: var(--red-editor);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--orange-editor);
-        }
+        color: var(--editor-syntax-red);
     }
 
     & .ace_string {
-        color: var(--red-editor);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--orange-editor);
-        }
+        color: var(--editor-syntax-red);
     }
 
     & .ace_variable {
-        color: var(--red-editor);
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--orange-editor);
-        }
+        color: var(--editor-syntax-red);
     }
 
     & .ace_support.ace_type {
-        color: var(--red-editor)!important;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--orange-editor)!important;
-        }
+        color: var(--editor-syntax-red) !important;
     }
 
     & .ace_support.ace_constant {
-        color: var(--red-editor)!important;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--orange-editor)!important;
-        }
+        color: var(--editor-syntax-red) !important;
     }
 
     & .ace_support.ace_function {
-        color: var(--red-editor)!important;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--orange-editor)!important;
-        }
+        color: var(--editor-syntax-red) !important;
     }
 
     & .ace_name.ace_function {
-        color: var(--brown-editor)!important;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--yellow-editor)!important;
-        }
+        color: var(--editor-syntax-yellow) !important;
     }
 
     & .ace_constant.ace_numeric {
-        color: var(--red-editor)!important;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--orange-editor)!important;
-        }
+        color: var(--editor-syntax-red) !important;
     }
 
     & .ace_storage.ace_type {
-        color: var(--blue-editor)!important;
-
-        @media (prefers-color-scheme: dark) {
-            color: var(--cyan-editor)!important;
-        }
+        color: var(--editor-syntax-blue) !important;
     }
 
     & .ace-tm {
@@ -185,129 +133,17 @@
     }
 
     & .ace_selected-word {
-        background: var(--yellow-editor500)!important;
-        border: 0!important;
+        background: var(--editor-highlight) !important;
+        border: 0 !important;
     }
 
     & .ace_selection {
         border: 0!important;
         border-radius: 0;
-        background-color: var(--blue-selection)!important;
+        background-color: var(--editor-selection) !important;
     }
 
     & .ace_mobile-button {
         display: block!important;
-    }
-}
-
-.light-mode {
-    .editor {
-        & .ace_constant {
-            color: var(--purple-editor);
-        }
-
-        & .ace_keyword {
-            color: var(--red-editor);
-        }
-
-        & .ace_control {
-            color: var(--blue-editor);
-        }
-
-        & .ace_operator {
-            color: var(--blue-editor)!important;
-        }
-
-        & .ace_quoted {
-            color: var(--red-editor);
-        }
-
-        & .ace_string {
-            color: var(--red-editor);
-        }
-
-        & .ace_variable {
-            color: var(--red-editor);
-        }
-
-        & .ace_support.ace_type {
-            color: var(--red-editor)!important;
-        }
-
-        & .ace_support.ace_constant {
-            color: var(--red-editor)!important;
-        }
-
-        & .ace_support.ace_function {
-            color: var(--red-editor)!important;
-        }
-
-        & .ace_name.ace_function {
-            color: var(--brown-editor)!important;
-        }
-
-        & .ace_constant.ace_numeric {
-            color: var(--red-editor)!important;
-        }
-
-        & .ace_storage.ace_type {
-            color: var(--blue-editor)!important;
-        }
-    }
-}
-
-.dark-mode {
-    .editor {
-        & .ace_constant {
-            color: var(--pink-editor);
-        }
-
-        & .ace_keyword {
-            color: var(--orange-editor);
-        }
-
-        & .ace_control {
-            color: var(--cyan-editor);
-        }
-
-        & .ace_operator {
-            color: var(--cyan-editor)!important;
-        }
-
-        & .ace_quoted {
-            color: var(--orange-editor);
-        }
-
-        & .ace_string {
-            color: var(--orange-editor);
-        }
-
-        & .ace_variable {
-            color: var(--orange-editor);
-        }
-
-        & .ace_support.ace_type {
-            color: var(--orange-editor)!important;
-        }
-
-        & .ace_support.ace_constant {
-            color: var(--orange-editor)!important;
-        }
-
-        & .ace_support.ace_function {
-            color: var(--orange-editor)!important;
-        }
-
-        & .ace_name.ace_function {
-            color: var(--yellow-editor)!important;
-        }
-
-        & .ace_constant.ace_numeric {
-            color: var(--orange-editor)!important;
-        }
-
-        & .ace_storage.ace_type {
-            color: var(--cyan-editor)!important;
-        }
     }
 }

@@ -1,20 +1,4 @@
 :root {
-    /*ADDITIONAL*/
-    --outline: #005ecc;
-    /*EDITOR*/
-    --green-editor: #338033;
-    --yellow-editor500: #ffff00;
-    --blue-selection: rgb(181, 213, 255);
-    /* - dark mode*/
-    --cyan-editor: #4093d6;
-    --yellow-editor: #dbdb84;
-    --pink-editor: #c46cbd;
-    --orange-editor: #cf8263;
-    /* - light mode*/
-    --blue-editor: #4141e2;
-    --brown-editor: #795e26;
-    --purple-editor: #9e45b4;
-    --red-editor: #a31515;
     /*FILTERING-LOG*/
     --green-row: #dcffe5;
     --green-row-hover: #c3ffd1;
@@ -24,8 +8,6 @@
         --green-row: #2c4332;
         --green-row-hover: #3d6246;
         --green-row-active: #457250;
-        --blue-selection: #556a86;
-        --outline: #99c9ff;
     }
 
     --gray05: rgba(239, 239, 239, 0.5);
@@ -131,6 +113,10 @@
     --text-links-link-default: var(--product-primary-50);
     --text-links-link-hovered: var(--product-primary-60);
 
+    /* vars that DO NOT change depend on the mode — same for light and dark mode (not specified in design): */
+    --editor-comment: #338033;
+    --editor-highlight: #ffff00;
+
     /* vars that change depend on the mode: */
     --fills-backgrounds-cards-background-default: var(--gray-0);
     --fills-backgrounds-page-background-default: var(--gray-0);
@@ -167,6 +153,14 @@
     --text-main-text-main-default: var(--gray-80);
     --text-placeholder-placeholder-disabled: var(--gray-40);
 
+    /* vars that change depend on the mode (not specified in design): */
+    --outline: #005ecc;
+    --editor-selection: #b5d5ff;
+    --editor-syntax-blue: #4141e2;
+    --editor-syntax-yellow: #795e26;
+    --editor-syntax-pink: #9e45b4;
+    --editor-syntax-red: #a31515;
+
     @media (prefers-color-scheme: dark) {
         --fills-backgrounds-cards-background-default: var(--gray-80);
         --fills-backgrounds-page-background-default: var(--gray-90);
@@ -202,6 +196,13 @@
         --text-lables-labels-default: var(--gray-30);
         --text-main-text-main-default: var(--gray-20);
         --text-placeholder-placeholder-disabled: var(--gray-60);
+
+        --outline: #99c9ff;
+        --editor-selection: #556a86;
+        --editor-syntax-blue: #4093d6;
+        --editor-syntax-yellow: #dbdb84;
+        --editor-syntax-pink: #c46cbd;
+        --editor-syntax-red: #cf8263;
     }
 }
 
@@ -209,8 +210,6 @@
     --green-row: #2c4332;
     --green-row-hover: #3d6246;
     --green-row-active: #457250;
-    --blue-selection: #556a86;
-    --outline: #99c9ff;
 
     --fills-backgrounds-cards-background-default: var(--gray-80);
     --fills-backgrounds-page-background-default: var(--gray-90);
@@ -246,14 +245,19 @@
     --text-lables-labels-default: var(--gray-30);
     --text-main-text-main-default: var(--gray-20);
     --text-placeholder-placeholder-disabled: var(--gray-60);
+
+    --outline: #99c9ff;
+    --editor-selection: #556a86;
+    --editor-syntax-blue: #4093d6;
+    --editor-syntax-yellow: #dbdb84;
+    --editor-syntax-pink: #c46cbd;
+    --editor-syntax-red: #cf8263;
 }
 
 .light-mode {
     --green-row: #dcffe5;
     --green-row-hover: #c3ffd1;
     --green-row-active: #a9ffbe;
-    --blue-selection: rgb(181, 213, 255);
-    --outline: #005ecc;
 
     --fills-backgrounds-cards-background-default: var(--gray-0);
     --fills-backgrounds-page-background-default: var(--gray-0);
@@ -289,6 +293,13 @@
     --text-lables-labels-default: var(--gray-70);
     --text-main-text-main-default: var(--gray-80);
     --text-placeholder-placeholder-disabled: var(--gray-40);
+
+    --outline: #005ecc;
+    --editor-selection: #b5d5ff;
+    --editor-syntax-blue: #4141e2;
+    --editor-syntax-yellow: #795e26;
+    --editor-syntax-pink: #9e45b4;
+    --editor-syntax-red: #a31515;
 }
 
 .android {
