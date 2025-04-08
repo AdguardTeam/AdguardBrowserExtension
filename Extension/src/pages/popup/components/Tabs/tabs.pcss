@@ -25,8 +25,7 @@
             min-height: 176px;
             overflow-y: scroll;
             scrollbar-width: thin;
-            scrollbar-color: var(--stroke-icons-gray-icons-disabled)
-                var(--fills-backgrounds-page-background-additional-default); /* FIXME: opacity: 0.3 */
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
             &.tabs__content--has-user-rules {
                 max-height: 216px;
@@ -39,11 +38,11 @@
         }
 
         &::-webkit-scrollbar-track {
-            background: var(--fills-backgrounds-page-background-additional-default); /* FIXME: opacity: 0.3 */
+            background: var(--scrollbar-track);
         }
 
         &::-webkit-scrollbar-thumb {
-            background-color: var(--stroke-icons-gray-icons-disabled);
+            background-color: var(--scrollbar-thumb);
             border-radius: 6px;
         }
     }
