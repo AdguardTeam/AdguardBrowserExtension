@@ -29,6 +29,7 @@ import {
     ForwardAction,
     ForwardFrom,
 } from '../../../common/forward';
+import { getFiltersUpdateResultMessage } from '../../../common/toast-helper';
 
 import { promoNotificationApi } from './promo-notification';
 
@@ -181,7 +182,7 @@ export class Toasts {
      * @param filters List of filters to update.
      */
     public showFiltersUpdatedAlertMessage(success: boolean, filters?: FilterMetadata[]): void {
-        const { title, text } = Toasts.getFiltersUpdateResultMessage(success, filters);
+        const { title, text } = getFiltersUpdateResultMessage(success, filters);
 
         this.showAlertMessage(title, text);
     }
@@ -318,59 +319,6 @@ export class Toasts {
         const text = enabledFilters
             .sort((a, b) => a.displayNumber - b.displayNumber)
             .map((filter) => translator.getMessage('alert_popup_filter_enabled_desc', { filter_name: filter.name }));
-
-        return {
-            title,
-            text,
-        };
-    }
-
-    /**
-     * Returns message with result of updating filters.
-     *
-     * @param success Whether the update was successful or not.
-     * @param updatedFilters List of filters to update.
-     *
-     * @returns Title and text lines for message.
-     */
-    public static getFiltersUpdateResultMessage(
-        success: boolean,
-        updatedFilters?: FilterMetadata[],
-    ): {
-        title: string;
-        text: string;
-    } {
-        if (!success || !updatedFilters) {
-            return {
-                title: translator.getMessage('options_popup_update_title_error'),
-                text: translator.getMessage('options_popup_update_error'),
-            };
-        }
-
-        const title = '';
-
-        if (updatedFilters.length === 0) {
-            return {
-                title,
-                text: translator.getMessage('options_popup_update_not_found'),
-            };
-        }
-
-        let text = updatedFilters
-            .sort((a, b) => {
-                if (a.groupId === b.groupId) {
-                    return a.displayNumber - b.displayNumber;
-                }
-                return Number(a.groupId === b.groupId);
-            })
-            .map((filter) => `${filter.name}`)
-            .join(', ');
-
-        if (updatedFilters.length > 1) {
-            text += ` ${translator.getMessage('options_popup_update_filters')}`;
-        } else {
-            text += ` ${translator.getMessage('options_popup_update_filter')}`;
-        }
 
         return {
             title,
