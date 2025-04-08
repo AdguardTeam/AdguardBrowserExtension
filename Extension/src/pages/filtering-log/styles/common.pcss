@@ -13,21 +13,26 @@ body,
     flex-direction: column;
 }
 
-*::-webkit-scrollbar {
-    width: 12px;
-}
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
-*::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-}
+    &::-webkit-scrollbar {
+        width: 12px;
+    }
 
-*::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbar-thumb);
-    border-radius: 12px;
-}
+    &::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+    }
 
-*::-webkit-scrollbar-corner {
-    background: var(--scrollbar-track);
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--scrollbar-thumb);
+        border-radius: 12px;
+    }
+
+    &::-webkit-scrollbar-corner {
+        background: var(--scrollbar-track);
+    }
 }
 
 body {

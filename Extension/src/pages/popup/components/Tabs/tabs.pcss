@@ -17,21 +17,8 @@
         scrollbar-width: thin;
         display: flex;
         align-items: center;
-
-        &--stats {
-            display: block;
-            padding: 0;
-            max-height: 176px;
-            min-height: 176px;
-            overflow-y: scroll;
-            scrollbar-width: thin;
-            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-
-            &.tabs__content--has-user-rules {
-                max-height: 216px;
-                min-height: 216px;
-            }
-        }
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
         &::-webkit-scrollbar {
             width: 6px;
@@ -44,6 +31,19 @@
         &::-webkit-scrollbar-thumb {
             background-color: var(--scrollbar-thumb);
             border-radius: 6px;
+        }
+
+        &--stats {
+            display: block;
+            padding: 0;
+            max-height: 176px;
+            min-height: 176px;
+            overflow-y: scroll;
+
+            &.tabs__content--has-user-rules {
+                max-height: 216px;
+                min-height: 216px;
+            }
         }
     }
 
