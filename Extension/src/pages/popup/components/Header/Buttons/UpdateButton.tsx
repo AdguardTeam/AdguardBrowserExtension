@@ -27,7 +27,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../common/common-script';
 import { messenger } from '../../../../services/messenger';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
-import { Toasts } from '../../../../../background/api';
+import { getFiltersUpdateResultMessage } from '../../../../../common/toast-helper';
 
 export const UpdateButton = () => {
     const refUpdatingBtn = useRef<HTMLButtonElement>(null);
@@ -53,7 +53,7 @@ export const UpdateButton = () => {
         setUpdateMessage('');
 
         const updatedFilters = await updateFiltersWithMinDuration();
-        const { text } = Toasts.getFiltersUpdateResultMessage(true, updatedFilters);
+        const { text } = getFiltersUpdateResultMessage(true, updatedFilters);
 
         setUpdateMessage(text);
         setFiltersUpdating(false);
