@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cursor moves to the end when saving user rules [#3145].
 - Cannot maximize Filtering log in Firefox for Windows [#2464].
 - Unable to paste text into user rules input field on Android [#3061].
-- Invalid HTML rule selectors are breaking site loading [#2646].
+- Invalid HTML rule selectors are breaking site loading [#2646], [#2826].
 - ya.ru - `Hide Referrer from third parties` breaks the site [#2839].
 - Filtering log: Resizing the right panel selects its contents [#2305].
 - Types of the blocked requests are not displayed in the popup (Firefox for Android) [#3157].
@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
 [#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
+[#2826]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2826
 [#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
 [#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
 [#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
