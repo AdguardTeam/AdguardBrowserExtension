@@ -63,8 +63,7 @@ const RequestModal = observer(() => {
         || DEFAULT_MODAL_WIDTH_PX;
 
     const [modalWidth, setModalWidth] = useState(startModalWidth);
-
-    const dragBar = useRef(null);
+    const isDraggingRef = useRef(false);
 
     const {
         isModalOpen,
@@ -107,7 +106,11 @@ const RequestModal = observer(() => {
         optionsStorage.setItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH, width);
     };
 
-    const drag = (e) => {
+    const pointerMoveHandler = (e) => {
+        if (!isDraggingRef.current) {
+            return;
+        }
+
         const newWidth = window.innerWidth - e.pageX;
         if (newWidth < DEFAULT_MODAL_WIDTH_PX
             || newWidth > window.innerWidth * MAX_MODAL_WIDTH_RATIO) {
@@ -117,13 +120,23 @@ const RequestModal = observer(() => {
         persistModalWidth(newWidth);
     };
 
-    const mouseDownHandler = () => {
-        const cleaner = () => {
-            document.removeEventListener('mousemove', drag);
-            document.removeEventListener('mouseup', cleaner);
-        };
-        document.addEventListener('mouseup', cleaner);
-        document.addEventListener('mousemove', drag);
+    const BODY_RESIZE_CLASS_NAME = 'col-resize';
+
+    const pointerDownHandler = (e) => {
+        e.target.setPointerCapture(e.pointerId);
+        isDraggingRef.current = true;
+        document.body.classList.add(BODY_RESIZE_CLASS_NAME);
+    };
+
+    const pointerUpHandler = (e) => {
+        const target = e.target;
+        if (!target.hasPointerCapture(e.pointerId)) {
+            return;
+        }
+
+        target.releasePointerCapture(e.pointerId);
+        isDraggingRef.current = false;
+        document.body.classList.remove(BODY_RESIZE_CLASS_NAME);
     };
 
     return (
@@ -139,9 +152,11 @@ const RequestModal = observer(() => {
             }}
         >
             <div
-                ref={dragBar}
                 className="request-modal__dragbar"
-                onMouseDown={mouseDownHandler}
+                onPointerMove={pointerMoveHandler}
+                onPointerDown={pointerDownHandler}
+                onPointerUp={pointerUpHandler}
+                onPointerLeave={pointerUpHandler}
                 aria-hidden="true"
             />
             {modalContent}
