@@ -121,7 +121,6 @@ const FilteringLog = observer(() => {
                         case NotifierType.TabReset: {
                             const [tabInfo] = data;
                             logStore.onTabReset(tabInfo);
-                            wizardStore.closeModal();
                             break;
                         }
                         case NotifierType.SettingUpdated: {
