@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocking page for requests blocked by `$document` rules in MV3.
 - Compatibility of `$header` modifier with `$match-case`
   and `$third-party` modifiers in MV2 [#2942].
-- `zip` and `crx` artifacts for the extension builds [#3163].
+- `zip` and `crx` artifacts for the extension builds [#3163], [#2488].
 
 ### Changed
 
@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
 [#2942]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2942
 [#3163]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3163
+[#2488]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2488
 [#2839]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2839
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#3157]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3157
