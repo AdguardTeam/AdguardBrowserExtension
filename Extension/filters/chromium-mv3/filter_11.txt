@@ -1,8 +1,8 @@
-! Checksum: 3XrfYa8C8Lv8a1BuE+b1Bw
+! Checksum: 5Ab9KeJZRNfHb9CRKvc3Eg
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.59.62
-! TimeUpdated: 2025-04-07T12:10:34+00:00
+! Version: 2.0.59.73
+! TimeUpdated: 2025-04-09T15:09:30+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -830,7 +830,7 @@
 ||houseads.ttpsdk.info^
 ||httpool.com^
 ||huntmad.com^
-||i-mobile.co.jp^
+||i-mobile.co.jp^$third-party
 ||i-vengo.com^
 ||i.skimresources.com^
 ||iad.appboy.com^
@@ -891,7 +891,6 @@
 ||mtburn.jp^
 ||mtrcss.com^
 ||mydas.mobi^
-||n4403ad.doubleclick.net^
 ||nanigans.com^
 ||nativex.com^
 ||nearbyad.com^
@@ -1021,6 +1020,7 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/202334
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202208
 ! https://github.com/AdguardTeam/AdguardFilters/issues/189769
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169823
@@ -1843,6 +1843,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! Yandex ads in mobile apps
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/202335
 ! https://x.com/monmimami/status/1896441545177661923
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195788
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195582
@@ -2391,6 +2392,11 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+koreatimes.co.kr##div[class^="Detail_ad-container_"]
+pleasureme.jp##.mobile-footer-menu-buttons
+rat.xxx##.box-mobile
+pornid.com,pornid.com.bd,pornid.com.np,pornid.net,pornid.org,pornid.pro,pornid.ru##.block-cs-wrap
+sexvid.ai,sexvid.asia,sexvid.biz,sexvid.blog,sexvid.cloud,sexvid.cn,sexvid.co,sexvid.com,sexvid.com.bd,sexvid.com.np,sexvid.de,sexvid.eu,sexvid.fr,sexvid.gr,sexvid.icu,sexvid.me,sexvid.mobi,sexvid.one,sexvid.org,sexvid.pl,sexvid.pro,sexvid.space,sexvid.store,sexvid.tech,sexvid.tv,sexvid.vip,sexvid.work,sexvid.ws,pornid.com,pornid.com.bd,pornid.com.np,pornid.net,pornid.org,pornid.pro,pornid.ru##.sp-bottom
 world-weather.info##.b-m
 world-weather.info###m-bt
 world-weather.info##.hide-bl
@@ -4714,6 +4720,7 @@ m.sabah.com.tr##.adv-content
 ||s.mycar-life.com/amp-side-special01.html
 jagran.com##.shadow-remove
 m.focus.de##.cls_hor_prnt
+okwave.jp##.adfunnel.ad_list_bottom
 okwave.jp##aside[class^="adfunnel ad_qa_"]
 okwave.jp##.qa_detail > div[style="min-height: 250px;"]
 okwave.jp##aside[class*="adfunnel_special_box_amp"]
@@ -5953,7 +5960,7 @@ ad-contents.jp##.mobile-big-banner
 sozcu.com.tr###hotelHideaway
 m.lenta.ru##.b-banner__amp
 m.lenta.ru##.b-banner-smi2
-m.ashemaletube.com,amp.ura.news##.adblock
+uranai.nosv.org,m.ashemaletube.com,amp.ura.news##.adblock
 ||cdn-eviewporn-com.cdn.ampproject.org/i/cdn.eviewporn.com/_reklam/
 bigbangnews.com##.container_publi
 gamepress.gg,amazingribs.com##.top-mobile-ad
@@ -6606,7 +6613,7 @@ pnp.de###aufmacher > div[style*="color:#aaa"]
 m.onvista.de##.marketOverviewIntegration
 m.onvista.de##a[href^="https://track.adform.net"]
 m.onvista.de##.ANZEIGE
-sex3.com,rat.xxx,hdxnxx.xxx,zbporn.com,xbabe.com,hdpornfree.xxx,hellporno.net###fltd
+hdtube.porn,pornid.com,pornid.com.bd,pornid.com.np,pornid.net,pornid.org,pornid.pro,pornid.ru,sex3.com,rat.xxx,hdxnxx.xxx,zbporn.com,xbabe.com,hdpornfree.xxx,hellporno.net###fltd
 ||m.txxx.com/sizo^
 upornia.com,hotmovs.com##.topad
 wetter.com##div[id^="ad-fullbanner"]

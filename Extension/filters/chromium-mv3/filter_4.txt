@@ -1,8 +1,8 @@
-! Checksum: R2vEkvex/JhQAgSLiWIakg
+! Checksum: YWKlhcaJqFLN9r3y0LB/zA
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.13.10
-! TimeUpdated: 2025-04-07T14:07:03+00:00
+! Version: 2.1.13.20
+! TimeUpdated: 2025-04-09T17:06:28+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -652,6 +652,14 @@ esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israel
 !
 ! NOTE: Specific rules
 !
+pro.similarweb.com##div[class^="WeshareContainer"]
+affaritaliani.it##.btn-share-cnt
+auto.ru#?#div[class^="SectionBlock"] > div.HoveredTooltip__trigger:has(> button > div[class^="Button"][class*="content-"]:contains(Поделиться))
+pixiv.net##section > div[class^="sc-"]:has(> button > svg > path[d^="M17,9.91842728"][d$="25,17 Z"])
+sigmatv.com##.sliding_share_btns
+patakis.gr##.book__share
+idos.cz##.share-button--fb
+maziyabacity.com,audee-membership.jp##.MuiBox-root:has(> .react-share__ShareButton)
 redheadsound.studio#?#.col-side > div.side-block > div.side-block__title:has( > p:contains(МЫ ВКОНТАКТЕ))
 app.nimbusweb.me##.nns-toggle-share
 sentaku.co.jp#$##editor { padding-top: 25px !important; }
@@ -2172,7 +2180,6 @@ guilded.gg##.BlogPostFull-copy-to-clipboard-control
 guilded.gg##.BlogPostFull-copy-to-clipboard-control + .BlogPostHorizontalRule-container
 podcasts.apple.com#?#.we-share ul.we-share__list > li.we-share__list-item:has(> button:not([class*="icon-embed-copylink"]))
 danas.hr##button[aria-label="Kopiraj link"]
-itnext.io##div[aria-describedby="postFooterSocialMenu"]
 castbox.fm##.sharePageBtn
 art-meter.com##.section-work__share
 lexplain.it##.cp_button--share
@@ -3447,8 +3454,6 @@ value-press.com###scrollMenuSns
 ilkha.com##.post-footer-sidebar > div.post-contact
 wired.co.uk##.social-icons--share
 lanuovacalabria.it##img[alt^="Share on "]
-hololive-fc.com###video-page-wrapper > div[class^="MuiBox-root"] > div[class^="jss"] > div[class^="jss"] > div[class^="jss"] > button[class^="MuiButton"]
-keisuke-ueda.jp,gs-ch.com,takahashifumiya.com,ado-dokidokihimitsukichi-daigakuimo.com,gs-ch.com,ryogomatsumaru.com,p-jinriki-fc.com,yamingfc.net,nicochannel.jp,yamingfc.net,nicochannel.jp,rnqq.jp,canan8181.com###video-page-wrapper > div[class^="jss"] > div[class^="jss"] > div[class^="jss"] > button[class^="MuiButton"]
 oniyomediary.com###single-footer-sns
 value-press.com###spSocialWrap
 developernation.net##img[alt="share-icon"]
@@ -3972,7 +3977,7 @@ m.segye.com,weekly.chosun.com,topclass.chosun.com##.kakao
 francoischarron.com,jp.topcarweb.com,idaegu.com,etoday.co.kr,suruga-ya.jp##.share_icon
 appmedia.jp##.new_share
 tvguide.or.jp##.p--archives-singleSns-share
-booking.design,blog.stackademic.com,blog.neufund.org,uxdesign.cc,javascript.plainenglish.io,medium.com##div[aria-describedby="postFooterSocialMenu"]
+fadamakis.com,tech.storyly.io,itnext.io,booking.design,blog.stackademic.com,blog.neufund.org,uxdesign.cc,javascript.plainenglish.io,medium.com##div[aria-describedby="postFooterSocialMenu"]
 medium.com##header.pw-post-byline-header > div[class] + div[class] > div[class] > div > [aria-describedby]
 saisoncard.co.jp##.sec-social
 netmall.hardoff.co.jp##.product-detail-share
@@ -3984,7 +3989,7 @@ indianexpress.com##.ss-icon
 dilbert.com##.js-social-btn
 protonvpn.com##.hidden-sm-down > div.social
 republicworld.com##div[onclick^="shareStory"]
-sakura-wks.com,mailwise.cybozu.co.jp##.p-sns-button
+zelvia.co.jp,sakura-wks.com,mailwise.cybozu.co.jp##.p-sns-button
 zeimo.jp##.zeimo_widget_bottom_sns
 elcomercio.es##.vjs-voc-social-share
 rakuten-card.co.jp##.detail-sns
@@ -4967,7 +4972,6 @@ timeturk.com##.share-space
 ||databaseitalia.it/wptelegram/widget/
 desktopsolution.org##.pum
 hk01.com##.lcs-share-button
-canan8181.com,rnqq.jp###detail-meta + div[class] > div[class] > div:not([class]) + div.MuiBox-root > div.MuiBox-root > span + div.MuiBox-root > div.MuiBox-root > button
 yargiyayinevi.com###product-buttons
 flatout.com.br##.share_video
 bolshoibelarus.by##div[class^="s2s_"]
@@ -11994,8 +11998,6 @@ rakukan.net#?#.module:has(> [class^="twitter-"])
 coolrom.com.au#?#font table[width][cellpadding="3"]:has(> tbody > tr > td > b:contains(/^Share:$/))
 mechacomic.jp#?#article > section.c-content:has(> div.area_btn_sns)
 sravni.ru#?#div[class^="article-header_interactiveBlock_"] > div:has(svg[data-qa="Share"])
-muneatsu-fc.com,salon-de-horizon.jp,ahnbohyun-fc.com,tokinosora-fc.com,qrpf10.com,pizzaradio.jp,hyakuta.com,dazbee-fc.com,asato-yuya.com,ryogomatsumaru.com,minami-hamabe.net,banbanzai-fc.com,p-jinriki-fc.com,keisuke-ueda.jp,yamingfc.net,ado-dokidokihimitsukichi-daigakuimo.com,takahashifumiya.com,hololive-fc.com,gs-ch.com,canan8181.com,nicochannel.jp,rnqq.jp#?#button:has(> span > svg > path[d^="M18 16.08c-"])
-muneatsu-fc.com,styleparty-fc.jp,salon-de-horizon.jp,ahnbohyun-fc.com,tokinosora-fc.com,qrpf10.com,pizzaradio.jp,hyakuta.com,dazbee-fc.com,asato-yuya.com,ryogomatsumaru.com,minami-hamabe.net,banbanzai-fc.com,p-jinriki-fc.com,keisuke-ueda.jp,qrpf1.com,yamingfc.net,ado-dokidokihimitsukichi-daigakuimo.com,takahashifumiya.com,hololive-fc.com,gs-ch.com,canan8181.com,nicochannel.jp,rnqq.jp#?#.MuiBox-root > div.MuiBox-root:has(> button.react-share__ShareButton)
 opensubtitles.com#?##menu-footer-links > .nav > li:last-child:contains(Share)
 android-robot.com#?#.entry-info > div.entry-categories:has(> div.ya-share2)
 obrazovaka.ru#?#.lft > h3:contains(Поделитесь результатом в социальной сети:)
@@ -13099,6 +13101,7 @@ m.gunes.com##.fixed-interaction-bar
 kinopoisk.ru##.block_social
 !+ NOT_PLATFORM(windows,mac,android)
 gazeta.ru##.article-share-name
+! https://github.com/AdguardTeam/AdguardFilters/issues/202625
 ! https://github.com/AdguardTeam/AdguardFilters/issues/168228
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179384
 ! Not visible on desktop - so should be NOT_OPTIMIZED
@@ -13222,6 +13225,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ##a[href^="http://www.twitter.com/intent/tweet?"]
 ##a[href^="http://twitter.com/intent/tweet/?"]
 !
+##.MuiSvgIcon-fontSizeSmall[data-testid^="Share"]
 ##.fbsmallshare
 ##.cmg-share-bar
 ##a[aria-label="View share options"]
@@ -14877,6 +14881,9 @@ bomb01.com#$#.modal-open { overflow: visible!important; }
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/202625
+! https://github.com/AdguardTeam/AdguardFilters/issues/202295
+idos.cz#@#.share-button
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202259
 monsterhunter.com#@#.sns_list
 monsterhunter.com#@#a[href^="https://lin.ee/"]
