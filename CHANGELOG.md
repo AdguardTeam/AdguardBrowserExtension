@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filtering log: Resizing the right panel selects its contents [#2305].
 - Types of the blocked requests are not displayed in the popup (Firefox for Android) [#3157].
 - Switching to the "Statistics" tab shifts the "Actions" and "Statistics" buttons (Edge for Android) [#3158].
+- Filtering log: Request details panel is automatically closed when loading
+  a website in another window/tab [#2327].
 
 [#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
@@ -51,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#3157]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3157
 [#3158]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3158
+[#2327]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2327
 
 ## [5.1.70] - 2025-03-19
 

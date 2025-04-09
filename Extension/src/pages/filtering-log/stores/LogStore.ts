@@ -342,6 +342,7 @@ class LogStore {
     async onTabClose(tabInfo: FilteringLogTabInfo) {
         delete this.tabsMap[tabInfo.tabId];
         if (tabInfo.tabId === this.selectedTabId) {
+            this.rootStore.wizardStore.closeModal();
             const [firstTabInfo] = Object.values(this.tabsMap);
             if (!firstTabInfo) {
                 return;
@@ -353,6 +354,7 @@ class LogStore {
     @action
     onTabReset(tabInfo: FilteringLogTabInfo) {
         if (this.selectedTabId === tabInfo.tabId) {
+            this.rootStore.wizardStore.closeModal();
             this.filteringEvents = [];
         }
     }
