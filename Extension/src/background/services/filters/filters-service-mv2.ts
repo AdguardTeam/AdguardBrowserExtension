@@ -94,6 +94,8 @@ export class FiltersService {
     private static async onFilterEnable(message: AddAndEnableFilterMessage): Promise<number | undefined> {
         const { filterId } = message.data;
 
+        logger.info(`Background received message to enable filter: id='${filterId}', name='${FiltersApi.getFilterName(filterId)}'`);
+
         // FiltersService.enableFilter() method's second arg is 'true'
         // because it is needed to enable not touched group
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2776
@@ -134,6 +136,8 @@ export class FiltersService {
     private static async onFilterDisable(message: DisableFilterMessage): Promise<void> {
         const { filterId } = message.data;
 
+        logger.info(`Background received message to disable filter: id='${filterId}', name='${FiltersApi.getFilterName(filterId)}'`);
+
         FiltersApi.disableFilters([filterId]);
 
         const group = Categories.getGroupByFilterId(filterId);
@@ -167,6 +171,8 @@ export class FiltersService {
 
         const group = Categories.getGroupState(groupId);
 
+        logger.info(`Background received message to enable group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
+
         if (!group) {
             logger.error(`Cannot find group with ${groupId} id`);
             return;
@@ -194,6 +200,8 @@ export class FiltersService {
      */
     private static async onGroupDisable(message: DisableFiltersGroupMessage): Promise<void> {
         const { groupId } = message.data;
+
+        logger.info(`Background received message to disable group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
 
         Categories.disableGroup(groupId);
 
