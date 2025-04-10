@@ -263,7 +263,7 @@ const TabSelector = observer(() => {
                 id={LISTBOX_ID}
                 role="listbox"
                 className={cn(
-                    'tab-selector__result',
+                    'tab-selector__result thin-scrollbar',
                     selectIsOpen && 'tab-selector__result--open',
                 )}
             >

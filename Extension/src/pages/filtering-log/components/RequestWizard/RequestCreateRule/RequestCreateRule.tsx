@@ -236,7 +236,7 @@ const RequestCreateRule = observer(() => {
                     <span className="request-modal__header">{title}</span>
                 </button>
             </div>
-            <div ref={ref} className="request-modal__content">
+            <div ref={ref} className="request-modal__content thin-scrollbar">
                 <div className="request-info">
                     <div className="request-info__main">
                         <div className="request-info__key">
