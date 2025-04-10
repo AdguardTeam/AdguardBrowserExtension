@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compatibility of `$header` modifier with `$match-case`
   and `$third-party` modifiers in MV2 [#2942].
 - `zip` and `crx` artifacts for the extension builds [#3163].
+- AdGuard Quick Fixes filter and support for custom filters are back again.
 
 ### Changed
 

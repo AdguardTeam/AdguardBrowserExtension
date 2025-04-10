@@ -44,8 +44,8 @@ export const DeveloperModeWarning = observer(() => {
         },
     } = useContext(rootStore);
 
-    // User scripts API with needed 'execute' method is supported in Chrome 136+.
-    const isSuitableChromeVersion = UserAgent.isChromium && Number(UserAgent.version) >= 136;
+    // User scripts API with needed 'execute' method is supported from Chrome 135 and higher.
+    const isSuitableChromeVersion = UserAgent.isChromium && Number(UserAgent.version) >= 135;
 
     if (!__IS_MV3__ || !isSuitableChromeVersion || isUserScriptsApiEnabled) {
         return null;
