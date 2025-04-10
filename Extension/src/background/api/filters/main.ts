@@ -50,6 +50,7 @@ import {
     groupStateStorageDataValidator,
 } from '../../schema';
 import { network } from '../network';
+import { getFilterName } from '../../../pages/helpers';
 
 import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
@@ -286,6 +287,10 @@ export class FiltersApi {
         loadedFilters.push(...alreadyLoadedFilterIds);
 
         filterStateStorage.enableFilters(loadedFilters);
+        logger.info(`Enabled filters: ${loadedFilters.map((id) => {
+            const filterName = FiltersApi.getFilterName(id);
+            return `id='${id}', name='${filterName}'`;
+        }).join('; ')}`);
 
         if (!remote) {
             // Update the enabled filters only if loading happens from local resources
@@ -314,6 +319,10 @@ export class FiltersApi {
      */
     public static disableFilters(filtersIds: number[]): void {
         filterStateStorage.disableFilters(filtersIds);
+        logger.info(`Disabled filters: ${filtersIds.map((id) => {
+            const filterName = FiltersApi.getFilterName(id);
+            return `id='${id}', name='${filterName}'`;
+        }).join('; ')}`);
     }
 
     /**
@@ -405,6 +414,23 @@ export class FiltersApi {
     }
 
     /**
+     * Returns the name of a filter given its ID.
+     *
+     * @param filterId The ID of the filter to get the name for.
+     *
+     * @returns The name of the filter, or 'Unknown' if the filter ID is not found.
+     */
+    public static getFilterName(filterId: number): string {
+        // Filter name should always be defined; using 'Unknown' as a fallback just in case.
+        const UNKNOWN_FILTER_NAME = 'Unknown';
+
+        const filtersMetadata = FiltersApi.getFiltersMetadata();
+        const filterName = getFilterName(filterId, filtersMetadata) || UNKNOWN_FILTER_NAME;
+
+        return filterName;
+    }
+
+    /**
      * Returns enabled filters given the state of the group.
      *
      * @returns Filters ids array.
@@ -458,6 +484,7 @@ export class FiltersApi {
 
         if (groupIds.length > 0) {
             groupStateStorage.enableGroups(groupIds);
+            logger.info(`Enabled groups: ${groupIds.map((id) => Categories.getGroupName(id)).join('; ')}`);
         }
     }
 

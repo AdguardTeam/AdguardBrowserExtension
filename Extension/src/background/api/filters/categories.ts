@@ -144,6 +144,7 @@ export class Categories {
         }
 
         groupStateStorage.enableGroups([groupId]);
+        logger.info(`Enabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
     }
 
     /**
@@ -153,6 +154,7 @@ export class Categories {
      */
     public static disableGroup(groupId: number): void {
         groupStateStorage.disableGroups([groupId]);
+        logger.info(`Disabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
     }
 
     /**
@@ -405,5 +407,22 @@ export class Categories {
                 return filterState?.enabled;
             })
             .map(({ filterId }) => filterId);
+    }
+
+    /**
+     * Returns the name of a group given its ID.
+     *
+     * @param groupId The ID of the group to get the name for.
+     *
+     * @returns The name of the group, or 'Unknown' if the group ID is not found.
+     */
+    public static getGroupName(groupId: number): string {
+        // Group name should always be defined, using 'Unknown' as a fallback just in case
+        const UNKNOWN_GROUP_NAME = 'Unknown';
+
+        const groupsMetadata = metadataStorage.getGroups();
+        const group = groupsMetadata.find((group) => group.groupId === groupId);
+
+        return group ? group.groupName : UNKNOWN_GROUP_NAME;
     }
 }
