@@ -21,7 +21,6 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { CUSTOM_FILTERS_DISABLED_IN_MV3_DUE_TO_CWS } from '../../constants';
@@ -29,58 +28,14 @@ import { AntibannerGroupsId } from '../../../../common/constants';
 
 import './group.pcss';
 
-const renderEnabledFilters = (enabledFilters) => {
-    const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
-    const SLICE_POINT = 3;
-    const displayable = enabledFiltersNames.slice(0, SLICE_POINT);
-    const countable = enabledFiltersNames.slice(SLICE_POINT);
-
-    if (countable.length > 0) {
-        return (
-            <>
-                {reactTranslator.getMessage('options_filters_enabled')}
-                {' '}
-                {reactTranslator.getMessage(
-                    'options_filters_enabled_and_more',
-                    { enabled: displayable.join(', '), more: countable.length },
-                )}
-            </>
-        );
-    }
-
-    if (displayable.length > 1) {
-        const [last, ...rest] = displayable.reverse();
-        return (
-            <>
-                {reactTranslator.getMessage('options_filters_enabled')}
-                {' '}
-                {reactTranslator.getMessage(
-                    'options_filters_enabled_and_last',
-                    { enabled: rest.join(', '), last },
-                )}
-            </>
-        );
-    }
-
-    if (displayable.length === 1) {
-        return (
-            <>
-                {reactTranslator.getMessage('options_filters_enabled')}
-                {' '}
-                {displayable[0]}
-            </>
-        );
-    }
-
-    return reactTranslator.getMessage('options_filters_no_enabled');
-};
-
 const DisabledCustomFiltersGroup = ({
     titleId,
     descriptionId,
+    filterDetailsId,
+    filterDetails,
     groupName,
+    groupDescription,
     groupId,
-    enabledFilters,
 }) => {
     const groupClassName = classNames({
         setting: true,
@@ -110,9 +65,14 @@ const DisabledCustomFiltersGroup = ({
                         <span id={titleId} className="setting__title group__title">
                             {groupName}
                         </span>
-                        <span id={descriptionId} className="setting__desc">
-                            {renderEnabledFilters(enabledFilters)}
+                        <span id={descriptionId} className="setting__title group__description">
+                            {groupDescription}
                         </span>
+                        {filterDetails && (
+                            <span id={filterDetailsId} className="setting__desc">
+                                {filterDetails}
+                            </span>
+                        )}
                         <span id={warningDescriptionId} className="warning">
                             {translator.getMessage('options_filters_custom_disabled_cws')}
                         </span>
@@ -130,8 +90,9 @@ const DisabledCustomFiltersGroup = ({
 
 const Group = ({
     groupName,
+    groupDescription,
     groupId,
-    enabledFilters,
+    filterDetails,
     groupClickHandler,
     checkboxHandler,
     checkboxValue,
@@ -144,6 +105,7 @@ const Group = ({
 
     const titleId = `setting-title-${groupId}`;
     const descriptionId = `setting-desc-${groupId}`;
+    const filterDetailsId = `setting-desc-filters-${groupId}`;
     const iconId = `#setting-${groupId}`;
 
     // TODO: Remove this component when custom filters will be supported for MV3.
@@ -152,9 +114,11 @@ const Group = ({
             <DisabledCustomFiltersGroup
                 titleId={titleId}
                 descriptionId={descriptionId}
+                filterDetailsId={filterDetailsId}
+                filterDetails={filterDetails}
                 groupName={groupName}
+                groupDescription={groupDescription}
                 groupId={AntibannerGroupsId.CustomFiltersGroupId}
-                enabledFilters={enabledFilters}
             />
         );
     }
@@ -180,8 +144,13 @@ const Group = ({
                         {groupName}
                     </span>
                     <span id={descriptionId} className="setting__desc">
-                        {renderEnabledFilters(enabledFilters)}
+                        {groupDescription}
                     </span>
+                    {filterDetails && (
+                        <span id={filterDetailsId} className="setting__desc">
+                            {filterDetails}
+                        </span>
+                    )}
                 </span>
             </button>
             <div className="setting__inline-control setting__inline-control_group">
