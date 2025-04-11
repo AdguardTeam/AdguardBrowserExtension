@@ -73,21 +73,25 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
                     from: path.resolve(__dirname, '../manifest.common.ts'),
                     to: 'manifest.json',
                     transform: () => {
-                        let content = updateManifestBuffer(
+                        const commonManifestContent = Buffer.from(JSON.stringify(commonManifest));
+
+                        const firefoxManifestContent = updateManifestBuffer(
                             BUILD_ENV,
                             browserConfig.browser,
-                            Buffer.from(JSON.stringify(commonManifest)),
+                            commonManifestContent,
                             firefoxManifest,
                         );
+
                         if (browserConfig.browser === Browser.FirefoxStandalone) {
-                            content = updateManifestBuffer(
+                            return updateManifestBuffer(
                                 BUILD_ENV,
                                 browserConfig.browser,
-                                Buffer.from(JSON.stringify(commonManifest)),
-                                firefoxManifestStandalone,
+                                firefoxManifestContent, // target part
+                                firefoxManifestStandalone, // added part
                             );
                         }
-                        return content;
+
+                        return firefoxManifestContent;
                     },
                 },
                 {
