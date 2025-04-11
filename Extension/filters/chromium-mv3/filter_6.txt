@@ -1,8 +1,8 @@
-! Checksum: ArSDgGLXN9upJoVdwIA8dA
+! Checksum: qKJ764kbBZ/e3MbByN5//Q
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.46.89
-! TimeUpdated: 2025-04-09T12:10:17+00:00
+! Version: 2.0.46.95
+! TimeUpdated: 2025-04-10T19:06:18+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -425,16 +425,6 @@ deutschekanale.com,riuria.beauty#%#//scriptlet('prevent-fetch', '/doubleclick\.n
 ! https://github.com/AdguardTeam/AdguardFilters/issues/157415
 gartenfreunde.de###ez-content-blocker-container
 gartenfreunde.de#%#//scriptlet('set-constant', 'ezDetectAardvark', 'noopFunc')
-! https://github.com/AdguardTeam/AdguardFilters/issues/157392
-! TODO: use redirect resource when it will be added - https://github.com/AdguardTeam/Scriptlets/issues/401
-southpark.de#%#(()=>{const e=new Map,t=function(){},o=t;o.prototype.dispose=t,o.prototype.setNetwork=t,o.prototype.resize=t,o.prototype.setServer=t,o.prototype.setLogLevel=t,o.prototype.newContext=function(){return this},o.prototype.setParameter=t,o.prototype.addEventListener=function(t,o){t&&(console.debug(`Type: ${t}, callback: ${o}`),e.set(t,o))},o.prototype.removeEventListener=t,o.prototype.setProfile=t,o.prototype.setCapability=t,o.prototype.setVideoAsset=t,o.prototype.setSiteSection=t,o.prototype.addKeyValue=t,o.prototype.addTemporalSlot=t,o.prototype.registerCustomPlayer=t,o.prototype.setVideoDisplaySize=t,o.prototype.setContentVideoElement=t,o.prototype.registerVideoDisplayBase=t,o.prototype.submitRequest=function(){const t={type:tv.freewheel.SDK.EVENT_SLOT_ENDED},o=e.get("EVENT_SLOT_ENDED");o&&setTimeout((()=>{try{o(t)}catch(e){console.error(e)}}),1)},window.tv={freewheel:{SDK:{Ad:t,AdManager:o,AdListener:t,_instanceQueue:{},setLogLevel:t,EVENT_SLOT_ENDED:"EVENT_SLOT_ENDED"}}}})();
-southpark.de#%#//scriptlet('prevent-fetch', 'imasdk.googleapis.com')
-southpark.de#%#//scriptlet('google-ima3')
-@@||imasdk.googleapis.com/js/sdkloader/ima3_dai.js$domain=southpark.de
-||imasdk.googleapis.com/pal/sdkloader/pal.js$script,redirect=noopjs,domain=southpark.de
-||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=southpark.de
-!+ NOT_PLATFORM(windows, mac, android, ext_chromium, ext_opera)
-@@||mssl.fwmrm.net/libs/adm/*/AdManager.js$domain=southpark.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/156446
 @@||imagenetz.de/werbebanner-ad.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/154040
@@ -1484,6 +1474,7 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+formel1.de##.text-center:has(> .inline-block > div[data-str-format="posterad"])
 familie.de##.alice-adslot
 familie.de##.alice-root-header-ads__ad--top
 videogameszone.de##.wadtag
@@ -2080,7 +2071,7 @@ isteshaltbar.de##div[style^="min-height:"][class*="-rectangle-"]
 sportdeutschland.tv##app-top-banner
 kuechengoetter.de##.c-adverts__content
 kuechengoetter.de##.c-adverts:not(.c-adverts--header)
-data-load.com.bd,data-load.com.np,data-load.in,data-load.me,data-load.to##.p-body-sidebar > div.block:not([data-widget-key])
+data-load.com.bd,data-load.com.np,data-load.eu,data-load.in,data-load.me,data-load.to##.p-body-sidebar > div.block:not([data-widget-key])
 myboerse.bz##.postcontent .download:not([href])
 myboerse.bz###hui-gen
 ||myboerse.bz/persecute.php
@@ -2626,13 +2617,13 @@ lokalwissen.de###fixx-fixx
 grundschulkoenig.de,uebungskoenig.de##.module-adsense
 uebungskoenig.de##.module-amazon-links
 steuertipps.de##.goAdMan
-gmx.ae,gmx.asia,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.in,gmx.co.uk,gmx.com,gmx.com.au,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.ua,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.org,gmx.org.uk,gmx.ph,gmx.pl,gmx.pt,gmx.ru,gmx.se,gmx.sh,gmx.sk,gmx.tech,gmx.tw,gmx.uk,gmx.us,gmx.vn,gmx.ws##.left-col-bottom
+gmx.ae,gmx.ai,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.ca,gmx.cc,gmx.ch,gmx.co,gmx.co.in,gmx.co.uk,gmx.co.za,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.tw,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fm,gmx.fr,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.lt,gmx.mx,gmx.net,gmx.network,gmx.nl,gmx.org,gmx.ph,gmx.pl,gmx.pt,gmx.pw,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tw,gmx.uk,gmx.us,gmx.uz,gmx.vn##.left-col-bottom
 tellows.de##.container #singlecomments > li:not([id])
 anisearch.de###top_outside
 anisearch.de##.rectX
 ||anisearch.de/amazon
 pcgames.de##a[href*="/E-Commerce-Thema-"]
-data-load.com.bd,data-load.com.np,data-load.in,data-load.me,data-load.to##center > a[target="_blank"] > img
+data-load.com.bd,data-load.com.np,data-load.eu,data-load.in,data-load.me,data-load.to##center > a[target="_blank"] > img
 netzwelt.de##a[href^="https://www.awin1.com/cread.php?"]
 nzz.ch##.resor
 amazon.de##div[class*="ad-topper"]
@@ -2676,7 +2667,7 @@ myhomebook.de,travelbook.de##div[class^="affiliate-"]
 krone.at##div[data-boxname="outbrain"]
 krone.at##.talk-plugin-ad-tag
 krone.at##.wvouch
-derstandard.at,derstandard.com.bd,derstandard.com.np,derstandard.de,derstandard.net##ad-container
+derstandard.at,derstandard.cloud,derstandard.com.bd,derstandard.com.np,derstandard.de##ad-container
 vodafone.de##body .gujAd.superbanner
 technik-hauptstadt.de##.ai_widget
 ||was.baunetz.de/adframe.php
@@ -2806,7 +2797,7 @@ alle-lkw.de##.banners
 /[0-9a-z]{10,}.[a-z]{3,}\/[\s\S]*.js#ns=bullads/$domain=1load.sx
 efahrer.chip.de##.ads-alignment
 efahrer.chip.de##.outbrain-reserved-space
-web.de,gmx.ae,gmx.asia,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.in,gmx.co.uk,gmx.com,gmx.com.au,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.ua,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.org,gmx.org.uk,gmx.ph,gmx.pl,gmx.pt,gmx.ru,gmx.se,gmx.sh,gmx.sk,gmx.tech,gmx.tw,gmx.uk,gmx.us,gmx.vn,gmx.ws##.co-content-container
+web.de,gmx.ae,gmx.ai,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.ca,gmx.cc,gmx.ch,gmx.co,gmx.co.in,gmx.co.uk,gmx.co.za,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.tw,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fm,gmx.fr,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.lt,gmx.mx,gmx.net,gmx.network,gmx.nl,gmx.org,gmx.ph,gmx.pl,gmx.pt,gmx.pw,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tw,gmx.uk,gmx.us,gmx.uz,gmx.vn##.co-content-container
 gamestar.de##.jad-placeholder
 ksta.de##.dm-slot
 express.de##.dm-slot:not(#style_important)
@@ -2837,10 +2828,10 @@ computerwoche.de##.idgArticlePdfbutton
 merkur.de###id-Container-416931
 moviepilot.de###dfp-header
 xboxdynasty.de##div[id^="dfp"]
-web.de,gmx.ae,gmx.asia,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.in,gmx.co.uk,gmx.com,gmx.com.au,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.ua,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.org,gmx.org.uk,gmx.ph,gmx.pl,gmx.pt,gmx.ru,gmx.se,gmx.sh,gmx.sk,gmx.tech,gmx.tw,gmx.uk,gmx.us,gmx.vn,gmx.ws##.horoscope-teaser-tool
-web.de,gmx.ae,gmx.asia,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.in,gmx.co.uk,gmx.com,gmx.com.au,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.ua,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.org,gmx.org.uk,gmx.ph,gmx.pl,gmx.pt,gmx.ru,gmx.se,gmx.sh,gmx.sk,gmx.tech,gmx.tw,gmx.uk,gmx.us,gmx.vn,gmx.ws##ul[data-layout-columns="7col"] > li > a[target="_blank"]:not([href*="web.de"]):not([href*="gmx."])
-web.de,gmx.ae,gmx.asia,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.in,gmx.co.uk,gmx.com,gmx.com.au,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.ua,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.org,gmx.org.uk,gmx.ph,gmx.pl,gmx.pt,gmx.ru,gmx.se,gmx.sh,gmx.sk,gmx.tech,gmx.tw,gmx.uk,gmx.us,gmx.vn,gmx.ws##section[data-name] > div[data-service-slot]
-web.de,gmx.ae,gmx.asia,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.in,gmx.co.uk,gmx.com,gmx.com.au,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.ua,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.org,gmx.org.uk,gmx.ph,gmx.pl,gmx.pt,gmx.ru,gmx.se,gmx.sh,gmx.sk,gmx.tech,gmx.tw,gmx.uk,gmx.us,gmx.vn,gmx.ws##div[data-ac]
+web.de,gmx.ae,gmx.ai,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.ca,gmx.cc,gmx.ch,gmx.co,gmx.co.in,gmx.co.uk,gmx.co.za,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.tw,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fm,gmx.fr,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.lt,gmx.mx,gmx.net,gmx.network,gmx.nl,gmx.org,gmx.ph,gmx.pl,gmx.pt,gmx.pw,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tw,gmx.uk,gmx.us,gmx.uz,gmx.vn##.horoscope-teaser-tool
+web.de,gmx.ae,gmx.ai,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.ca,gmx.cc,gmx.ch,gmx.co,gmx.co.in,gmx.co.uk,gmx.co.za,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.tw,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fm,gmx.fr,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.lt,gmx.mx,gmx.net,gmx.network,gmx.nl,gmx.org,gmx.ph,gmx.pl,gmx.pt,gmx.pw,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tw,gmx.uk,gmx.us,gmx.uz,gmx.vn##ul[data-layout-columns="7col"] > li > a[target="_blank"]:not([href*="web.de"]):not([href*="gmx."])
+web.de,gmx.ae,gmx.ai,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.ca,gmx.cc,gmx.ch,gmx.co,gmx.co.in,gmx.co.uk,gmx.co.za,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.tw,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fm,gmx.fr,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.lt,gmx.mx,gmx.net,gmx.network,gmx.nl,gmx.org,gmx.ph,gmx.pl,gmx.pt,gmx.pw,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tw,gmx.uk,gmx.us,gmx.uz,gmx.vn##section[data-name] > div[data-service-slot]
+web.de,gmx.ae,gmx.ai,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.ca,gmx.cc,gmx.ch,gmx.co,gmx.co.in,gmx.co.uk,gmx.co.za,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.tw,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fm,gmx.fr,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.lt,gmx.mx,gmx.net,gmx.network,gmx.nl,gmx.org,gmx.ph,gmx.pl,gmx.pt,gmx.pw,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tw,gmx.uk,gmx.us,gmx.uz,gmx.vn##div[data-ac]
 tarnkappe.info##div[id^="top_"]
 computerwelt.at##.mh-sidebar code > span[style="font-size: xx-small;"]
 kicktipp.de###adtag_banner
@@ -3072,8 +3063,8 @@ teslamag.de##.after-header-ad
 teslamag.de##.archive-inject-ad
 dubisthalle.de##div[class*="-que"][class*="-inhalt"]
 wetter.de##.responsive-slot
-web.de,gmx.ae,gmx.asia,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.in,gmx.co.uk,gmx.com,gmx.com.au,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.ua,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.org,gmx.org.uk,gmx.ph,gmx.pl,gmx.pt,gmx.ru,gmx.se,gmx.sh,gmx.sk,gmx.tech,gmx.tw,gmx.uk,gmx.us,gmx.vn,gmx.ws##uim\:ad + a
-web.de,gmx.ae,gmx.asia,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.cc,gmx.ch,gmx.cl,gmx.cn,gmx.co,gmx.co.il,gmx.co.in,gmx.co.uk,gmx.com,gmx.com.au,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.ua,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.es,gmx.eu,gmx.fr,gmx.ge,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.kr,gmx.live,gmx.mx,gmx.net,gmx.nl,gmx.org,gmx.org.uk,gmx.ph,gmx.pl,gmx.pt,gmx.ru,gmx.se,gmx.sh,gmx.sk,gmx.tech,gmx.tw,gmx.uk,gmx.us,gmx.vn,gmx.ws##uim\:ad + iframe
+web.de,gmx.ae,gmx.ai,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.ca,gmx.cc,gmx.ch,gmx.co,gmx.co.in,gmx.co.uk,gmx.co.za,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.tw,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fm,gmx.fr,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.lt,gmx.mx,gmx.net,gmx.network,gmx.nl,gmx.org,gmx.ph,gmx.pl,gmx.pt,gmx.pw,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tw,gmx.uk,gmx.us,gmx.uz,gmx.vn##uim\:ad + a
+web.de,gmx.ae,gmx.ai,gmx.at,gmx.be,gmx.biz,gmx.by,gmx.ca,gmx.cc,gmx.ch,gmx.co,gmx.co.in,gmx.co.uk,gmx.co.za,gmx.com,gmx.com.bd,gmx.com.br,gmx.com.mx,gmx.com.my,gmx.com.np,gmx.com.tr,gmx.com.tw,gmx.cz,gmx.de,gmx.dev,gmx.dk,gmx.ee,gmx.es,gmx.eu,gmx.fm,gmx.fr,gmx.guru,gmx.hk,gmx.hu,gmx.ie,gmx.in,gmx.info,gmx.io,gmx.is,gmx.it,gmx.jp,gmx.lt,gmx.mx,gmx.net,gmx.network,gmx.nl,gmx.org,gmx.ph,gmx.pl,gmx.pt,gmx.pw,gmx.ru,gmx.se,gmx.sg,gmx.sk,gmx.tw,gmx.uk,gmx.us,gmx.uz,gmx.vn##uim\:ad + iframe
 wunderweib.de,madame.de##.bx-ads
 moviepilot.de##.is-promoted
 wetter.com###uebersicht > .portable-hide
@@ -11236,8 +11227,8 @@ ibooks.to##.code-block:has(i.fa-cloud-download-alt)
 feuerwehrmagazin.de##.excerpt-tile.cell.small-12.medium-6:has(.advertorials)
 print.de##.excerpt-tile.cell:has(.advertorials)
 vergleichswelt.app##.fads-zeile:has(.fads-anzeige-text)
-obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##.find-brandshop-grid:has(.artikelkachel__gesponsortmarker)
-obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##.find-brandshop-grid:has([data-ui-name="find-artikelkachel-gesponsert-marker"])
+obi.at,obi.be,obi.ca,obi.ch,obi.co.id,obi.co.jp,obi.co.kr,obi.co.nz,obi.com,obi.com.au,obi.com.bd,obi.com.br,obi.com.co,obi.com.np,obi.com.pe,obi.com.pk,obi.com.tr,obi.com.ua,obi.com.vn,obi.cz,obi.de,obi.fi,obi.gr,obi.hu,obi.in,obi.io,obi.is,obi.it,obi.net,obi.nl,obi.org,obi.org.uk,obi.pe,obi.pl,obi.pt,obi.ru,obi.sg,obi.sh,obi.si,obi.sk##.find-brandshop-grid:has(.artikelkachel__gesponsortmarker)
+obi.at,obi.be,obi.ca,obi.ch,obi.co.id,obi.co.jp,obi.co.kr,obi.co.nz,obi.com,obi.com.au,obi.com.bd,obi.com.br,obi.com.co,obi.com.np,obi.com.pe,obi.com.pk,obi.com.tr,obi.com.ua,obi.com.vn,obi.cz,obi.de,obi.fi,obi.gr,obi.hu,obi.in,obi.io,obi.is,obi.it,obi.net,obi.nl,obi.org,obi.org.uk,obi.pe,obi.pl,obi.pt,obi.ru,obi.sg,obi.sh,obi.si,obi.sk##.find-brandshop-grid:has([data-ui-name="find-artikelkachel-gesponsert-marker"])
 prad.de##.first-list > li:has(a[href^="https://bit.ly/"])
 prad.de##.first-list > li:has(a[href^="https://ipn.idealo.de/ts/"])
 prad.de##.first-list > li:has(a[href^="https://tracking.s24.com/"])
@@ -11282,7 +11273,7 @@ wallstreet-online.de##.similarNews:has(span[title="Anzeige"])
 mopo.de##.slider-preview:has(.anzeige-label)
 wallstreet-online.de##.sliderItem.active:has(span.news-item:has(img[alt="Anzeige"]))
 finanzen.net##.snapshot__trading:has(.button-advertising-hint)
-obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##.splide__slide:has(hobi-advertiser-tag)
+obi.at,obi.be,obi.ca,obi.ch,obi.co.id,obi.co.jp,obi.co.kr,obi.co.nz,obi.com,obi.com.au,obi.com.bd,obi.com.br,obi.com.co,obi.com.np,obi.com.pe,obi.com.pk,obi.com.tr,obi.com.ua,obi.com.vn,obi.cz,obi.de,obi.fi,obi.gr,obi.hu,obi.in,obi.io,obi.is,obi.it,obi.net,obi.nl,obi.org,obi.org.uk,obi.pe,obi.pl,obi.pt,obi.ru,obi.sg,obi.sh,obi.si,obi.sk##.splide__slide:has(hobi-advertiser-tag)
 szene-hamburg.com##.swiper-slide:has(.entry-adv)
 sportscheck.com##.swiper-slide:has(div.c-product-tile__sponsored)
 inside-digital.de##.td_module_ih_current_news:has(.spo)
@@ -11305,12 +11296,12 @@ berlinstadtservice.de##.wrap-col.box4:has(a[href^="https://www.awin1.com/"])
 zeit.de##.zett-teaser-trio:has(.zett-teaser-trio__kicker--ad-anzeige)
 willhaben.at##[aria-hidden="true"]:has(#apn-large-leaderboard)
 dm.de##[data-dmid="product-tile"]:has([data-dmid="sponsored-marker"])
-obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-find-artikelnummer]:has(.artikelkachel__gesponsortmarker)
-obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-find-artikelnummer]:has([data-ui-name="find-artikelkachel-gesponsert-marker"])
+obi.at,obi.be,obi.ca,obi.ch,obi.co.id,obi.co.jp,obi.co.kr,obi.co.nz,obi.com,obi.com.au,obi.com.bd,obi.com.br,obi.com.co,obi.com.np,obi.com.pe,obi.com.pk,obi.com.tr,obi.com.ua,obi.com.vn,obi.cz,obi.de,obi.fi,obi.gr,obi.hu,obi.in,obi.io,obi.is,obi.it,obi.net,obi.nl,obi.org,obi.org.uk,obi.pe,obi.pl,obi.pt,obi.ru,obi.sg,obi.sh,obi.si,obi.sk##[data-find-artikelnummer]:has(.artikelkachel__gesponsortmarker)
+obi.at,obi.be,obi.ca,obi.ch,obi.co.id,obi.co.jp,obi.co.kr,obi.co.nz,obi.com,obi.com.au,obi.com.bd,obi.com.br,obi.com.co,obi.com.np,obi.com.pe,obi.com.pk,obi.com.tr,obi.com.ua,obi.com.vn,obi.cz,obi.de,obi.fi,obi.gr,obi.hu,obi.in,obi.io,obi.is,obi.it,obi.net,obi.nl,obi.org,obi.org.uk,obi.pe,obi.pl,obi.pt,obi.ru,obi.sg,obi.sh,obi.si,obi.sk##[data-find-artikelnummer]:has([data-ui-name="find-artikelkachel-gesponsert-marker"])
 expert.de##[data-key-id]:has([src^="//b.nl3.eu.criteo.com/rm?"])
 flaconi.de##[data-product-list-id]:has([data-badge-type="sponsored"])
 shop-apotheke.com##[data-qa-id="cross-sell-widget"] li:has(> [data-as-xsell-product-id])
-obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-track-section^="home-topteaser"]:has(hobi-advertiser-tag)
+obi.at,obi.be,obi.ca,obi.ch,obi.co.id,obi.co.jp,obi.co.kr,obi.co.nz,obi.com,obi.com.au,obi.com.bd,obi.com.br,obi.com.co,obi.com.np,obi.com.pe,obi.com.pk,obi.com.tr,obi.com.ua,obi.com.vn,obi.cz,obi.de,obi.fi,obi.gr,obi.hu,obi.in,obi.io,obi.is,obi.it,obi.net,obi.nl,obi.org,obi.org.uk,obi.pe,obi.pl,obi.pt,obi.ru,obi.sg,obi.sh,obi.si,obi.sk##[data-track-section^="home-topteaser"]:has(hobi-advertiser-tag)
 ariva.de##a.background-red-bright:has(span.anzeige)
 hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##article.card:has(.with-ad-marker)
 shop-apotheke.com##article.o-CompactProductListItem:has(a[href^="https://retail-api.sa-tech.de/api/"])
@@ -11340,7 +11331,7 @@ jungefreiheit.de##div[data-widget_type="shortcode.default"]:has(.adsbygoogle)
 mobile.de##div[style="min-height:250px"]:has(#SRP_BILLBOARD_ADSENSE)
 jungefreiheit.de##div[style="text-align: center;"]:has(.adsbygoogle)
 windowspro.de##div[style]:has(a[onclick])
-obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##explore-recommendation-v1:has([data-recommendations-title-short="Gesponsert"])
+obi.at,obi.be,obi.ca,obi.ch,obi.co.id,obi.co.jp,obi.co.kr,obi.co.nz,obi.com,obi.com.au,obi.com.bd,obi.com.br,obi.com.co,obi.com.np,obi.com.pe,obi.com.pk,obi.com.tr,obi.com.ua,obi.com.vn,obi.cz,obi.de,obi.fi,obi.gr,obi.hu,obi.in,obi.io,obi.is,obi.it,obi.net,obi.nl,obi.org,obi.org.uk,obi.pe,obi.pl,obi.pt,obi.ru,obi.sg,obi.sh,obi.si,obi.sk##explore-recommendation-v1:has([data-recommendations-title-short="Gesponsert"])
 mein-mmo.de##li.article:has([data-type="sponsored"])
 dogforum.de##li:has(.wbbXdLocationAfter1stPostAsPost)
 dogforum.de##li:has(.wbbXdLocationPostList)
@@ -11450,12 +11441,12 @@ welt.de#?#div[id][data-qa]:has(.c-buelent-linkbox__label:contains(Anzeige))
 winfuture-forum.de#?#div.ExtraPostBlock:has(div.post_block:contains(Anzeige)):not(.with_rep)
 zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + button
 zentrum-der-gesundheit.de#?#span:contains(/ANZ|EIGE/) + div
-finanzen.*###HomepageIssuerNews
-finanzen.*##.adnz-ad-placeholder--google
-finanzen.*##.adnz-ad-placeholder--wideboard
-finanzen.*##.page-layout__ad-content
-finanzen.*##div[class^="ad-wrapper-"]
-obi.app,obi.at,obi.ba,obi.ca,obi.cc,obi.ch,obi.co.th,obi.com,obi.com.au,obi.com.bd,obi.com.np,obi.com.pe,obi.com.ph,obi.com.ua,obi.cz,obi.de,obi.dk,obi.gr,obi.hu,obi.ie,obi.io,obi.is,obi.it,obi.jp,obi.live,obi.net,obi.net.au,obi.nl,obi.org,obi.pl,obi.pt,obi.ro,obi.ru,obi.sh,obi.si,obi.sk,obi.uk,obi.vn##[data-ae-slot="pdp_old_banner"]
+finanzen.ai,finanzen.at,finanzen.ch,finanzen.com,finanzen.com.bd,finanzen.com.np,finanzen.com.tr,finanzen.de,finanzen.eu,finanzen.fr,finanzen.in,finanzen.info,finanzen.link,finanzen.me,finanzen.net,finanzen.news###HomepageIssuerNews
+finanzen.ai,finanzen.at,finanzen.ch,finanzen.com,finanzen.com.bd,finanzen.com.np,finanzen.com.tr,finanzen.de,finanzen.eu,finanzen.fr,finanzen.in,finanzen.info,finanzen.link,finanzen.me,finanzen.net,finanzen.news##.adnz-ad-placeholder--google
+finanzen.ai,finanzen.at,finanzen.ch,finanzen.com,finanzen.com.bd,finanzen.com.np,finanzen.com.tr,finanzen.de,finanzen.eu,finanzen.fr,finanzen.in,finanzen.info,finanzen.link,finanzen.me,finanzen.net,finanzen.news##.adnz-ad-placeholder--wideboard
+finanzen.ai,finanzen.at,finanzen.ch,finanzen.com,finanzen.com.bd,finanzen.com.np,finanzen.com.tr,finanzen.de,finanzen.eu,finanzen.fr,finanzen.in,finanzen.info,finanzen.link,finanzen.me,finanzen.net,finanzen.news##.page-layout__ad-content
+finanzen.ai,finanzen.at,finanzen.ch,finanzen.com,finanzen.com.bd,finanzen.com.np,finanzen.com.tr,finanzen.de,finanzen.eu,finanzen.fr,finanzen.in,finanzen.info,finanzen.link,finanzen.me,finanzen.net,finanzen.news##div[class^="ad-wrapper-"]
+obi.at,obi.be,obi.ca,obi.ch,obi.co.id,obi.co.jp,obi.co.kr,obi.co.nz,obi.com,obi.com.au,obi.com.bd,obi.com.br,obi.com.co,obi.com.np,obi.com.pe,obi.com.pk,obi.com.tr,obi.com.ua,obi.com.vn,obi.cz,obi.de,obi.fi,obi.gr,obi.hu,obi.in,obi.io,obi.is,obi.it,obi.net,obi.nl,obi.org,obi.org.uk,obi.pe,obi.pl,obi.pt,obi.ru,obi.sg,obi.sh,obi.si,obi.sk##[data-ae-slot="pdp_old_banner"]
 @@/iqadcontroller.$script,domain=manager-magazin.de
 @@||a.bf-ad.net/adengine/chip/adengine.js$xmlhttprequest,domain=chip.de
 @@||acdn.adnxs.com/ast/ast.js$script,domain=finanzen.ch

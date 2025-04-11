@@ -1,8 +1,8 @@
-! Checksum: ggnk+5UxcF+F/tSGCao/5w
+! Checksum: VQ0E+kgXT8iGXLnrImJqqg
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.6.70
-! TimeUpdated: 2025-04-08T20:36:53+00:00
+! Version: 2.0.6.74
+! TimeUpdated: 2025-04-11T04:37:53+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -7168,10 +7168,11 @@ torrdroidforpc.com##[href^="http://slugmefilehos.xyz/"]
 !+ NOT_OPTIMIZED
 ||steam.workshop*.com^$document
 ! https://github.com/uBlockOrigin/uBOL-home/issues/156
+! https://github.com/uBlockOrigin/uAssets/issues/27941
 !+ NOT_OPTIMIZED
-/^https:\/\/s[cftz]y?[ace][aemnu][a-z]{1,4}o[mn][a-z]{4,8}[iy][a-z]?\.com\//$document,to=com|~steamcommunity.com
+/^https:\/\/s[cfntz]y?[ace][aemnu][a-z]{1,4}or?[mn][a-z]{4,8}[iy][a-z]?\.com\//$document,to=com|~steamcommunity.com
 !+ NOT_OPTIMIZED
-/^https:\/\/s[cftz]y?[ace][aemnu][a-z]{1,4}o[mn][a-z]{4,8}[iy][a-z]?\.ru\//$document,to=ru|~steamcommunity.com
+/^https:\/\/s[cfntz]y?[ace][aemnu][a-z]{1,4}or?[mn][a-z]{4,8}[iy][a-z]?\.ru\//$document,to=ru|~steamcommunity.com
 !+ NOT_OPTIMIZED
 /^https:\/\/steam\.(?:community)?workshop-?[a-z]+\.com\//$document,to=com|~steamcommunity.com
 ! https://www.virustotal.com/gui/url/d16f07ca49e9334d080d427294630f22f10d8925de8ae73df2128e0bdbd434a9
@@ -8177,6 +8178,14 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 ! https://www.virustotal.com/gui/url/3ff7013630ec52ca97ead99e456af477f027dbb7fb75a529536c35714d91d8d7
 !+ NOT_OPTIMIZED
 ||shop/au/uqmobile^$document
+! https://www.virustotal.com/gui/url/9c79f4b2c668cfb077990b88fd4c79d46cb23a989293d6de5e72fcd4d6e02b48
+!+ NOT_OPTIMIZED
+/^https?:\/\/[-a-z]{4,}\.(?:com|org)[-.][-a-z]{2,}\.(?:cc|top|vip|world|xin)\/pay\b/$document,match-case,to=cc|top|vip|world|xin
+!+ NOT_OPTIMIZED
+/^https?:\/\/[-a-z]{4,}\.(?:com|org)[-.][-a-z]{2,}\.(?:cc|top|vip|world|xin)\/us\b/$document,match-case,to=cc|top|vip|world|xin
+! https://www.virustotal.com/gui/url/8dacd7644def349c4f653861107b1ae465689e42b2195756e5a7606d27a5f5ae
+!+ NOT_OPTIMIZED
+||secure.*.win/pay^$document,to=win
 ! docusign.com
 !+ NOT_OPTIMIZED
 ||signature-rho.vercel.app^$all,to=~docusign.com
@@ -8260,7 +8269,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 !+ NOT_OPTIMIZED
 ||dichvucong.$document,to=~gov.vn
 !+ NOT_OPTIMIZED
-||tikimall.$document,to=tikimall.com.bd|tikimall.com.np|~tiki.vn
+||tikimall.$document,to=tikimall.com|tikimall.com.bd|tikimall.com.np|tikimall.vip|~tiki.vn
 !+ NOT_OPTIMIZED
 ||taikhoanvps.com.vn^$all,to=~vps.com.vn
 !+ NOT_OPTIMIZED
@@ -8395,7 +8404,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 !+ NOT_OPTIMIZED
 ||nhanvienghtk.com^$all,to=~giaohangtietkiem.vn
 !+ NOT_OPTIMIZED
-||giaohangtietkiem247.*^$all,to=giaohangtietkiem247.com.bd|giaohangtietkiem247.com.np|giaohangtietkiem247.top|~giaohangtietkiem.vn
+||giaohangtietkiem247.*^$all,to=giaohangtietkiem247.com.bd|giaohangtietkiem247.com.np|giaohangtietkiem247.net|giaohangtietkiem247.top|~giaohangtietkiem.vn
 ! https://khonggianmang.vn/uploads/2024_CBT_36_d1b5aaea0a.pdf
 !+ NOT_OPTIMIZED
 ||tienichshiinhan.com^$all,to=~shinhan.com.vn
@@ -8828,7 +8837,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 /l/DMP_captcha_for_vpn?$all
 ! https://github.com/uBlockOrigin/uAssets/issues/24189
 !+ NOT_OPTIMIZED
-||kmspico.*^$document,to=kmspico.biz|kmspico.blog|kmspico.club|kmspico.co|kmspico.com|kmspico.com.bd|kmspico.com.np|kmspico.com.tr|kmspico.digital|kmspico.io|kmspico.link|kmspico.one|kmspico.space
+||kmspico.*^$document,to=kmspico.biz|kmspico.blog|kmspico.cloud|kmspico.co|kmspico.com|kmspico.com.bd|kmspico.com.np|kmspico.com.tr|kmspico.de|kmspico.dev|kmspico.info|kmspico.link|kmspico.net|kmspico.org|kmspico.ws
 !+ NOT_OPTIMIZED
 ||kmspico-$document
 !+ NOT_OPTIMIZED
@@ -9165,7 +9174,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 ! https://www.virustotal.com/gui/url/54511a44248d675994732236310dd43af00862874726d9d2ace0a53b1da9c275
 ! https://www.virustotal.com/gui/url/2a0352008de7b5a41de9c97a977bbee85150de3b22f02486a08027ef6636b1aa
 !+ NOT_OPTIMIZED
-/^https:\/\/(?:www\.)?roblox(?:\.com)?\.[a-z]{2}\//$document,to=roblox.ae|roblox.am|roblox.app|roblox.az|roblox.be|roblox.ca|roblox.cn|roblox.co|roblox.co.uk|roblox.com.au|roblox.com.bd|roblox.com.br|roblox.com.hk|roblox.com.mx|roblox.com.np|roblox.com.tr|roblox.com.uy|roblox.cz|roblox.de|roblox.dk|roblox.es|roblox.fi|roblox.fr|roblox.ge|roblox.id|roblox.in|roblox.in.th|roblox.io|roblox.is|roblox.it|roblox.jp|roblox.kg|roblox.kz|roblox.me|roblox.ml|roblox.net|roblox.news|roblox.nl|roblox.no|roblox.online|roblox.org|roblox.pl|roblox.ru|roblox.se|roblox.space|roblox.store|roblox.su|roblox.tech|roblox.us|roblox.vip|roblox.win|roblox.xyz
+/^https:\/\/(?:www\.)?roblox(?:\.com)?\.[a-z]{2}\//$document,to=roblox.ae|roblox.am|roblox.app|roblox.asia|roblox.be|roblox.blog|roblox.ca|roblox.cc|roblox.cl|roblox.club|roblox.cn|roblox.co|roblox.co.jp|roblox.com.au|roblox.com.bd|roblox.com.br|roblox.com.np|roblox.com.ph|roblox.com.pk|roblox.com.tr|roblox.com.uy|roblox.de|roblox.dev|roblox.fi|roblox.ge|roblox.gg|roblox.id|roblox.in|roblox.io|roblox.is|roblox.it|roblox.jp|roblox.kg|roblox.lk|roblox.ml|roblox.mobi|roblox.net|roblox.network|roblox.news|roblox.nl|roblox.org|roblox.ph|roblox.pk|roblox.pro|roblox.ro|roblox.sa|roblox.se|roblox.space|roblox.store|roblox.su|roblox.tech|roblox.top|roblox.tv|roblox.vn|roblox.website|roblox.xyz
 ! https://github.com/uBlockOrigin/uAssets/issues/25353
 ! https://www.urlvoid.com/scan/feather-wallet.org/
 !+ NOT_OPTIMIZED
@@ -9189,7 +9198,7 @@ app##center#yangchen > iframe#external-frame[src="https://im136.mom/"]:not([clas
 !+ NOT_OPTIMIZED
 ! https://securelist.com/sambaspy-rat-targets-italian-users/113851/
 !+ NOT_OPTIMIZED
-||belliniepecuniaimmobili.*^$document,to=belliniepecuniaimmobili.com.bd|belliniepecuniaimmobili.com.np
+||belliniepecuniaimmobili.*^$document,to=belliniepecuniaimmobili.com.bd|belliniepecuniaimmobili.com.br|belliniepecuniaimmobili.com.np
 !+ NOT_OPTIMIZED
 ||immobilibelliniepecunia.*^$document,to=immobilibelliniepecunia.com.bd|immobilibelliniepecunia.com.np
 !+ NOT_OPTIMIZED
@@ -10110,3 +10119,6 @@ uploadfox.net###ad-gs-05
 /?id=*&traceId=$document
 !+ NOT_OPTIMIZED
 =1&id=*&traceId=$document
+! https://github.com/uBlockOrigin/uAssets/issues/27938
+!+ NOT_OPTIMIZED
+||turtleclient.xyz^$all
