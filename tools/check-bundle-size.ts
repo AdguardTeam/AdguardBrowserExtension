@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * @file Bundle size checker script
  * Tracks and compares bundle sizes across builds to detect significant size
@@ -9,7 +10,12 @@ import util from 'util';
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
 
-import { Browser } from './constants';
+import {
+    Browser,
+    BUILD_ENV,
+    BuildTargetEnv,
+    isValidBuildEnv,
+} from './constants';
 
 /* eslint-disable no-console */
 
@@ -23,13 +29,16 @@ const __dirname = path.dirname(__filename);
 // Constants
 const DEFAULT_SIZE_THRESHOLD = 10; // 10% threshold
 const SKIP_SIZE_CHECK_VALUE = '-1';
-const SIZES_FILE_PATH = path.resolve(__dirname, '.bundle-sizes.json');
 const MAX_MV3_SIZE_BYTES = 30 * 1024 * 1024; // 30MB limit for MV3
 const BUILD_DIRNAME = 'build';
+const PAGES_DIRNAME = 'pages';
+const VENDORS_DIRNAME = 'vendors';
 const ZIP_EXTENSION = '.zip';
+const ROOT_DIR = path.resolve(__dirname, '../');
+const SIZES_FILE_PATH = path.resolve(ROOT_DIR, '.bundle-sizes.json');
 
 // Interface for bundle statistics
-interface BundleSizes {
+type BundleSizes = {
     /**
      * For compare bundled zips.
      */
@@ -44,25 +53,30 @@ interface BundleSizes {
      * For compare unzipped files in vendors/ folder.
      */
     vendors: Record<string, number>;
-}
+};
 
 /**
  * Contains the bundle size for a specific target.
  */
-interface TargetInfo {
+type TargetInfo = {
   stats: BundleSizes;
   version: string;
   updatedAt: string;
-}
+};
 
 /**
  * Describes sizes for all builds and targets.
  */
-interface SizesFile {
-  [buildType: string]: {
-    [target: string]: TargetInfo;
-  };
-}
+type SizesFile = {
+    [buildType in BuildTargetEnv]: {
+        [target in Browser]: TargetInfo;
+    };
+};
+
+type CheckResult = {
+    target: Browser;
+    hasSizeIssues: boolean;
+};
 
 /**
  * Get the configured size threshold or default
@@ -80,13 +94,14 @@ function getSizeThreshold(): number {
 async function readSizesFile(): Promise<SizesFile> {
     try {
         if (!fs.existsSync(SIZES_FILE_PATH)) {
-            throw new Error('Sizes file does not exist');
+            throw new Error(`Sizes file does not exist at the expected path: ${SIZES_FILE_PATH}`);
         }
 
-        const sizesData = fs.readFileSync(SIZES_FILE_PATH, 'utf-8');
+        const sizesData = await fs.promises.readFile(SIZES_FILE_PATH, 'utf-8');
+
         return JSON.parse(sizesData);
     } catch (error) {
-        throw new Error('Failed to read sizes file', { cause: error });
+        throw new Error(`Failed to read sizes file: ${error}`);
     }
 }
 
@@ -102,7 +117,7 @@ async function getFileSize(filePath: string): Promise<number> {
         const stats = await fs.promises.stat(filePath);
         return stats.size;
     } catch (error) {
-        throw new Error('Failed to get file size', { cause: error });
+        throw new Error(`Failed to get file size: ${error}`);
     }
 }
 
@@ -130,7 +145,7 @@ async function getAllFilesInDir(dirPath: string): Promise<string[]> {
 
         return [...files, ...nestedFiles.flat()];
     } catch (error) {
-        throw new Error('Failed to get all files in directory', { cause: error });
+        throw new Error(`Failed to get all files in directory: ${error}`);
     }
 }
 
@@ -138,7 +153,7 @@ async function getAllFilesInDir(dirPath: string): Promise<string[]> {
  * Get the size statistics for the current build
  */
 async function getCurrentBuildStats(buildType: string, target: string): Promise<TargetInfo> {
-    const buildDir = path.resolve(__dirname, BUILD_DIRNAME, buildType);
+    const buildDir = path.resolve(ROOT_DIR, BUILD_DIRNAME, buildType);
 
     // Get zip file sizes
     const zips: Record<string, number> = {};
@@ -151,7 +166,7 @@ async function getCurrentBuildStats(buildType: string, target: string): Promise<
     });
 
     if (!fs.existsSync(path.join(buildDir, target))) {
-        throw new Error(`Target directory ${target} does not exist in build directory`);
+        throw new Error(`Target directory ${path.join(buildDir, target)} does not exist`);
     }
 
     // Find unzipped directory for the specified target
@@ -159,7 +174,7 @@ async function getCurrentBuildStats(buildType: string, target: string): Promise<
 
     // Get pages sizes
     const pages: Record<string, number> = {};
-    const pagesDir = path.join(targetDir, 'pages');
+    const pagesDir = path.join(targetDir, PAGES_DIRNAME);
     if (!fs.existsSync(pagesDir)) {
         throw new Error(`Pages directory ${pagesDir} does not exist`);
     }
@@ -171,8 +186,8 @@ async function getCurrentBuildStats(buildType: string, target: string): Promise<
 
     // Get vendors sizes
     const vendors: Record<string, number> = {};
-    const vendorsDir = path.join(targetDir, 'vendors');
-    if (fs.existsSync(vendorsDir)) {
+    const vendorsDir = path.join(targetDir, VENDORS_DIRNAME);
+    if (!fs.existsSync(vendorsDir)) {
         throw new Error(`Vendors directory ${vendorsDir} does not exist`);
     }
     const filesInVendorsDir = await getAllFilesInDir(vendorsDir);
@@ -182,18 +197,16 @@ async function getCurrentBuildStats(buildType: string, target: string): Promise<
     });
 
     // Get version from package.json
-    let version = '0.0.0';
-    const packageJsonPath = path.resolve(__dirname, 'package.json');
+    const packageJsonPath = path.resolve(ROOT_DIR, 'package.json');
     if (!fs.existsSync(packageJsonPath)) {
         throw new Error('package.json does not exist');
     }
     const packageJson = await fs.promises.readFile(packageJsonPath, 'utf-8');
     const parsedPackageJson = JSON.parse(packageJson);
-    version = parsedPackageJson.version;
 
     return {
         stats: { zips, pages, vendors },
-        version,
+        version: parsedPackageJson.version,
         updatedAt: new Date().toISOString(),
     };
 }
@@ -367,20 +380,24 @@ function compareBuildSizes(
 /**
  * Save build stats to the sizes file
  */
-async function saveBuildStats(buildType: string, target: string, stats: TargetInfo): Promise<void> {
-    try {
-        const sizesData: SizesFile = await readSizesFile();
+async function saveBuildStats(
+    buildType: BuildTargetEnv,
+    target: Browser,
+    stats: TargetInfo,
+): Promise<void> {
+    const sizesData: SizesFile = await readSizesFile();
 
-        if (!sizesData[buildType]) {
-            sizesData[buildType] = {};
-        }
+    Object.assign(sizesData, {
+        [buildType]: {
+            [target]: {
+                ...sizesData[buildType]?.[target],
+                stats,
+            },
+            ...sizesData[buildType],
+        },
+    });
 
-        sizesData[buildType][target] = stats;
-
-        await fs.promises.writeFile(SIZES_FILE_PATH, JSON.stringify(sizesData, null, 2));
-    } catch {
-    // Silently handle error
-    }
+    await fs.promises.writeFile(SIZES_FILE_PATH, JSON.stringify(sizesData, null, 2));
 }
 
 /**
@@ -393,6 +410,10 @@ async function checkBundleSizes(): Promise<void> {
         throw new Error('BUILD_ENV environment variable is required');
     }
 
+    if (!isValidBuildEnv(buildType)) {
+        throw new Error(`Invalid BUILD_ENV: ${buildType}`);
+    }
+
     // Get the size threshold
     const threshold = getSizeThreshold();
     if (threshold === Number(SKIP_SIZE_CHECK_VALUE)) {
@@ -401,21 +422,29 @@ async function checkBundleSizes(): Promise<void> {
     }
 
     // Read the sizes file
-    let sizesData: SizesFile;
-    try {
-        sizesData = await readSizesFile();
-    } catch (error) {
-        throw new Error('Failed to read sizes file', { cause: error });
-    }
+    const sizesData = await readSizesFile();
 
     // Define all possible targets to check
-    const targets = Object.values(Browser).filter((target) => typeof target === 'string');
+    const targets = Object.values(Browser);
 
     // Process all targets asynchronously and collect results
-    const targetResults = await Promise.all(targets.map(async (target) => {
+    const targetResults: CheckResult[] = [];
+
+    // Use a for loop to ensure sequential logging.
+    for (let i = 0; i < targets.length; i += 1) {
+        const target = targets[i]!;
+
         console.log(`\n\nChecking target: ${target}`);
 
+        // FIXME: Check, if we need to skip some targets?
+        // Skip Firefox AMO and Opera for Beta builds, because we do not have them.
+        if (BUILD_ENV === BuildTargetEnv.Beta && (target === Browser.FirefoxAmo || target === Browser.Opera)) {
+            console.log('Skipping Firefox AMO and Opera for Beta builds.');
+            continue;
+        }
+
         // Get current build stats for this target
+        // eslint-disable-next-line no-await-in-loop
         const currentStats = await getCurrentBuildStats(buildType, target);
 
         // Compare with reference sizes if available
@@ -425,11 +454,13 @@ async function checkBundleSizes(): Promise<void> {
             hasSizeIssues = result.hasIssues;
             console.log(result.output);
 
-            return { target, hasSizeIssues };
+            targetResults.push({ target, hasSizeIssues });
+            continue;
         }
 
         // No reference sizes available, save current stats as reference
         console.log(`No reference sizes available for comparison for ${target}. This build will be used as reference.`);
+        // eslint-disable-next-line no-await-in-loop
         await saveBuildStats(buildType, target, currentStats);
 
         // Check only MV3 max size for chrome-mv3 target
@@ -441,8 +472,8 @@ async function checkBundleSizes(): Promise<void> {
             }
         }
 
-        return { target, hasSizeIssues };
-    }));
+        targetResults.push({ target, hasSizeIssues });
+    }
 
     // Check for duplicate packages (do this only once for all targets)
     const { hasIssues: hasDuplicates, output: duplicatesOutput } = await checkForDuplicatePackages();

@@ -43,7 +43,7 @@ export enum ManifestVersionEnv {
     Third = '3',
 }
 
-const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
+export const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
     return Object.values(BuildTargetEnv).includes(buildEnv as BuildTargetEnv);
 };
 

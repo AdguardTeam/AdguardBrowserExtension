@@ -238,6 +238,7 @@ program
     });
 
 program
+    // FIXME: CHECK NAME
     .command(Browser.FirefoxAmo)
     .description('Builds extension for firefox browser')
     .action(() => {
