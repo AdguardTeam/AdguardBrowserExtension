@@ -123,8 +123,16 @@ are willing to contribute.
 
 ### <a name="dev-requirements"></a> Requirements
 
-- [node.js LTS](https://nodejs.org/en/download/)
-- [pnpm v8](https://pnpm.io/installation)
+Ensure that the following software is installed on your computer:
+
+- [Node.js][nodejs]: v22 (you can install multiple versions using [nvm][nvm])
+- [pnpm][pnpm]: v10
+- [Git][git]
+
+[git]: https://git-scm.com/
+[nodejs]: https://nodejs.org/en/download
+[nvm]: https://github.com/nvm-sh/nvm
+[pnpm]: https://pnpm.io/installation
 
 ### <a name="dev-build"></a> How to build
 

@@ -328,6 +328,7 @@ const runTests = async (
     const extensionPath = await unzipExtension(`${BUILD_PATH}/${testMode}`);
 
     const runOptions = {
+        channel: 'chromium',
         args: [
             `--disable-extensions-except=${extensionPath}`,
             `--load-extension=${extensionPath}`,
