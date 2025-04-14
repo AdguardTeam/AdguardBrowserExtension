@@ -12,7 +12,6 @@ import { fileURLToPath } from 'url';
 
 import {
     Browser,
-    BUILD_ENV,
     BuildTargetEnv,
     isValidBuildEnv,
 } from './constants';
@@ -42,7 +41,7 @@ type BundleSizes = {
     /**
      * For compare bundled zips.
      */
-    zips: Record<string, number>;
+    zip: number;
 
     /**
      * For compare unzipped files in pages/ folder.
@@ -155,15 +154,13 @@ async function getAllFilesInDir(dirPath: string): Promise<string[]> {
 async function getCurrentBuildStats(buildType: string, target: string): Promise<TargetInfo> {
     const buildDir = path.resolve(ROOT_DIR, BUILD_DIRNAME, buildType);
 
-    // Get zip file sizes
-    const zips: Record<string, number> = {};
-    const buildFiles = await fs.promises.readdir(buildDir);
-    const zipFiles = buildFiles.filter((file) => file.endsWith(ZIP_EXTENSION));
-
-    zipFiles.forEach(async (zipFile) => {
-        const filePath = path.join(buildDir, zipFile);
-        zips[zipFile] = await getFileSize(filePath);
-    });
+    // Get zip file size
+    let fileName = `${target}${ZIP_EXTENSION}`;
+    // TODO: Remove this
+    if (buildType !== BuildTargetEnv.Dev && (target === Browser.FirefoxAmo || target === Browser.FirefoxStandalone)) {
+        fileName = `firefox${ZIP_EXTENSION}`;
+    }
+    const zip = await getFileSize(path.join(buildDir, fileName));
 
     if (!fs.existsSync(path.join(buildDir, target))) {
         throw new Error(`Target directory ${path.join(buildDir, target)} does not exist`);
@@ -205,7 +202,7 @@ async function getCurrentBuildStats(buildType: string, target: string): Promise<
     const parsedPackageJson = JSON.parse(packageJson);
 
     return {
-        stats: { zips, pages, vendors },
+        stats: { zip, pages, vendors },
         version: parsedPackageJson.version,
         updatedAt: new Date().toISOString(),
     };
@@ -214,10 +211,7 @@ async function getCurrentBuildStats(buildType: string, target: string): Promise<
 /**
  * Helper to handle async iteration without await in loop
  */
-async function processDependencies(dependencies: any[]): Promise<{ duplicateFound: boolean; result: string }> {
-    let duplicateFound = false;
-    let result = '';
-
+async function processDependencies(dependencies: any[]): Promise<boolean> {
     // Process dependencies in sequence with Promise.all
     const results = await Promise.all(dependencies.map(async (pkg) => {
         const pkgName = Object.keys(pkg)[0] || '';
@@ -225,87 +219,89 @@ async function processDependencies(dependencies: any[]): Promise<{ duplicateFoun
             return null;
         }
 
-        const { stdout } = await execAsync(`pnpm why ${pkgName}`);
+        let { stdout } = await execAsync(`pnpm why ${pkgName}`);
+
+        // Ignore devDependencies
+        const devDependenciesIndex = stdout.indexOf('devDependencies:');
+        stdout = stdout.slice(0, devDependenciesIndex !== -1 ? devDependenciesIndex : undefined);
 
         // Check if there are multiple versions
-        const packageNameAsRegex = new RegExp(`^${pkgName.replaceAll('/', '\\/')}@`, 'gm');
-        const instanceMatch = stdout.match(packageNameAsRegex);
-        if (instanceMatch && instanceMatch[1] && parseInt(instanceMatch[1], 10) > 1) {
-            return { isDuplicate: true, pkgName, stdout };
+        const escapedPkgName = pkgName.replaceAll('/', '\\/');
+        const packageNameAsRegex = new RegExp(`^.*\\s${escapedPkgName}\\s(.*)$`, 'gm');
+        const instanceMatches = stdout.matchAll(packageNameAsRegex);
+
+        const packageAllVersions = Array.from(instanceMatches).map((match) => match[1]?.replace(' peer', ''));
+        const uniqueVersions = new Set(packageAllVersions);
+
+        if (uniqueVersions.size > 1) {
+            console.log(`\n❌ Multiple versions of ${pkgName} found:`);
+            console.log('\n', uniqueVersions);
+            console.log(stdout);
+
+            return { isDuplicate: true };
         }
 
         return { isDuplicate: false };
     }));
 
     // Process results
-    results.filter((item) => item !== null).forEach((item) => {
-        if (item && item.isDuplicate) {
-            duplicateFound = true;
-            result += `\n\u26A0\uFE0F Multiple versions of ${item.pkgName} found:\n${item.stdout}\n`;
-        }
-    });
+    const duplicateFound = results
+        .filter((item) => item !== null)
+        .some((item) => item && item.isDuplicate);
 
-    return { duplicateFound, result };
+    return duplicateFound;
 }
 
 /**
  * Check for duplicate package versions using pnpm why
  */
-async function checkForDuplicatePackages(): Promise<{ hasIssues: boolean; output: string }> {
+async function checkForDuplicatePackages(): Promise<boolean> {
     // Get a list of all packages
+    const { stdout: packageListOutput } = await execAsync('pnpm list --json');
+    let packageData;
     try {
-        const { stdout: packageListOutput } = await execAsync('pnpm list --json');
-        let packageData;
-        try {
-            packageData = JSON.parse(packageListOutput);
-        } catch (error) {
-            return { hasIssues: false, output: 'Failed to parse package list output.' };
-        }
-
-        // Ensure dependencies is always an array
-        const dependencies = Array.isArray(packageData[0]?.dependencies)
-            ? packageData[0].dependencies
-            : Object.entries(packageData[0]?.dependencies || {}).map(([name, info]: [string, any]) => {
-                // Ensure name is a string
-                const pkgName = name || '';
-                return { [pkgName]: info };
-            });
-
-        if (!dependencies || dependencies.length === 0) {
-            return { hasIssues: false, output: 'No dependencies found to check.' };
-        }
-
-        let result = 'Checking for duplicate package versions:\n';
-
-        const { duplicateFound, result: duplicateResults } = await processDependencies(dependencies);
-
-        if (duplicateFound) {
-            result += duplicateResults;
-        } else {
-            result += 'All packages have single versions. \u2705\n';
-        }
-
-        return { hasIssues: duplicateFound, output: result };
+        packageData = JSON.parse(packageListOutput);
     } catch (error) {
-        return {
-            hasIssues: false,
-            output: `Failed to check for duplicate packages: ${error instanceof Error ? error.message : String(error)}`,
-        };
+        throw new Error(`Failed to parse package list output: ${error}`);
     }
+
+    // Ensure dependencies is always an array
+    const dependencies = Array.isArray(packageData[0]?.dependencies)
+        ? packageData[0].dependencies
+        : Object.entries(packageData[0]?.dependencies || {}).map(([name, info]: [string, any]) => {
+            // Ensure name is a string
+            const pkgName = name || '';
+            return { [pkgName]: info };
+        });
+
+    if (!dependencies || dependencies.length === 0) {
+        throw new Error('No dependencies found in package list output');
+    }
+
+    console.log('Checking for duplicate package versions:\n');
+
+    const duplicateFound = await processDependencies(dependencies);
+
+    if (!duplicateFound) {
+        console.log('All packages have single versions. ✅\n');
+    }
+
+    return duplicateFound;
 }
 
 /**
  * Compare current build sizes with reference sizes
+ *
+ * @returns Boolean indicating if there are any issues.
  */
 function compareBuildSizes(
     current: TargetInfo,
     reference: TargetInfo,
+    buildType: BuildTargetEnv,
+    target: Browser,
     threshold: number,
-): {
-  hasIssues: boolean;
-  output: string;
-} {
-    let output = 'Size comparison results:\n';
+): boolean {
+    console.log('Size comparison results:\n');
     let hasIssues = false;
 
     // Helper function to format size
@@ -326,55 +322,60 @@ function compareBuildSizes(
     };
 
     // Compare zip files
-    output += '\nZIP Files:\n';
-    Object.entries(current.stats.zips).forEach(([fileName, newSize]) => {
-        const oldSize = reference.stats.zips[fileName] || 0;
-        const changePercent = oldSize > 0 ? ((newSize - oldSize) / oldSize) * 100 : 0;
+    console.log('\nZIP File:\n');
+    const newSize = current.stats.zip;
+    const oldSize = reference.stats.zip;
+    const changePercent = oldSize > 0 ? ((newSize - oldSize) / oldSize) * 100 : 0;
 
-        if (fileName === `${Browser.ChromeMv3}${ZIP_EXTENSION}` && newSize > MAX_MV3_SIZE_BYTES) {
-            hasIssues = true;
-            output += ` ${fileName}: ${formatSize(newSize)} - Exceeds maximum allowed size of 30MB!\n`;
-        } else if (oldSize > 0 && changePercent > threshold) {
-            hasIssues = true;
-            output += ` ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatChange(oldSize, newSize)}) - Exceeds ${threshold}% threshold!\n`;
-        } else {
-            output += ` ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatChange(oldSize, newSize)})` : '(new file)'}\n`;
-        }
-    });
+    let fileName = `${target}${ZIP_EXTENSION}`;
+    // TODO: Remove this
+    if (buildType !== BuildTargetEnv.Dev && (target === Browser.FirefoxAmo || target === Browser.FirefoxStandalone)) {
+        fileName = `firefox${ZIP_EXTENSION}`;
+    }
+
+    if (target === Browser.ChromeMv3 && newSize > MAX_MV3_SIZE_BYTES) {
+        hasIssues = true;
+        console.log(`- ${fileName}: ${formatSize(newSize)} - Exceeds maximum allowed size of 30MB!`);
+    } else if (oldSize > 0 && changePercent > threshold) {
+        hasIssues = true;
+        console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatChange(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+    } else {
+        console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatChange(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
+    }
 
     // Compare pages files if they exist in reference
     if (Object.keys(reference.stats.pages).length > 0) {
-        output += '\nPages Files:\n';
+        console.log('\nPages Files:\n');
         Object.entries(current.stats.pages).forEach(([fileName, newSize]) => {
             const oldSize = reference.stats.pages[fileName] || 0;
             const changePercent = oldSize > 0 ? ((newSize - oldSize) / oldSize) * 100 : 0;
 
             if (oldSize > 0 && changePercent > threshold) {
                 hasIssues = true;
-                output += ` ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatChange(oldSize, newSize)}) - Exceeds ${threshold}% threshold!\n`;
-            } else if (changePercent > 0) {
-                output += ` ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatChange(oldSize, newSize)})` : '(new file)'}\n`;
+                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatChange(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+            } else {
+                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatChange(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
             }
         });
     }
 
     // Compare vendors files if they exist in reference
     if (Object.keys(reference.stats.vendors).length > 0) {
-        output += '\nVendors Files:\n';
+        console.log('\nVendors Files:\n');
         Object.entries(current.stats.vendors).forEach(([fileName, newSize]) => {
             const oldSize = reference.stats.vendors[fileName] || 0;
             const changePercent = oldSize > 0 ? ((newSize - oldSize) / oldSize) * 100 : 0;
 
             if (oldSize > 0 && changePercent > threshold) {
                 hasIssues = true;
-                output += ` ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatChange(oldSize, newSize)}) - Exceeds ${threshold}% threshold!\n`;
-            } else if (changePercent > 0) {
-                output += ` ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatChange(oldSize, newSize)})` : '(new file)'}\n`;
+                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatChange(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+            } else {
+                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatChange(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
             }
         });
     }
 
-    return { hasIssues, output };
+    return hasIssues;
 }
 
 /**
@@ -390,8 +391,8 @@ async function saveBuildStats(
     Object.assign(sizesData, {
         [buildType]: {
             [target]: {
-                ...sizesData[buildType]?.[target],
-                stats,
+                ...sizesData[buildType]?.[target]?.stats,
+                ...stats,
             },
             ...sizesData[buildType],
         },
@@ -436,25 +437,21 @@ async function checkBundleSizes(): Promise<void> {
 
         console.log(`\n\nChecking target: ${target}`);
 
-        // FIXME: Check, if we need to skip some targets?
-        // Skip Firefox AMO and Opera for Beta builds, because we do not have them.
-        if (BUILD_ENV === BuildTargetEnv.Beta && (target === Browser.FirefoxAmo || target === Browser.Opera)) {
-            console.log('Skipping Firefox AMO and Opera for Beta builds.');
-            continue;
-        }
-
         // Get current build stats for this target
         // eslint-disable-next-line no-await-in-loop
         const currentStats = await getCurrentBuildStats(buildType, target);
 
         // Compare with reference sizes if available
-        let hasSizeIssues = false;
         if (sizesData[buildType] && sizesData[buildType][target]) {
-            const result = compareBuildSizes(currentStats, sizesData[buildType][target], threshold);
-            hasSizeIssues = result.hasIssues;
-            console.log(result.output);
+            const hasBuildSizesIssue = compareBuildSizes(
+                currentStats,
+                sizesData[buildType][target],
+                buildType,
+                target,
+                threshold,
+            );
 
-            targetResults.push({ target, hasSizeIssues });
+            targetResults.push({ target, hasSizeIssues: hasBuildSizesIssue });
             continue;
         }
 
@@ -465,19 +462,18 @@ async function checkBundleSizes(): Promise<void> {
 
         // Check only MV3 max size for chrome-mv3 target
         if (target === Browser.ChromeMv3) {
-            const mv3Size = currentStats.stats.zips[`${Browser.ChromeMv3}${ZIP_EXTENSION}`];
+            const mv3Size = currentStats.stats.zip;
             if (mv3Size && mv3Size > MAX_MV3_SIZE_BYTES) {
                 console.error(`${Browser.ChromeMv3}${ZIP_EXTENSION}: ${(mv3Size / (1024 * 1024)).toFixed(2)}MB - Exceeds maximum allowed size of 30MB!`);
-                hasSizeIssues = true;
+                targetResults.push({ target, hasSizeIssues: true });
             }
         }
 
-        targetResults.push({ target, hasSizeIssues });
+        targetResults.push({ target, hasSizeIssues: false });
     }
 
     // Check for duplicate packages (do this only once for all targets)
-    const { hasIssues: hasDuplicates, output: duplicatesOutput } = await checkForDuplicatePackages();
-    console.log(`\n${duplicatesOutput}`);
+    const hasDuplicates = await checkForDuplicatePackages();
 
     // Check if any target had issues
     const hasAnyIssues = targetResults.some((result) => result.hasSizeIssues);

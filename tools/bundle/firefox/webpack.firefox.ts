@@ -56,6 +56,7 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
 
     let zipFilename = `${browserConfig.browser}.zip`;
+    // TODO: Remove this
     if (!isDev) {
         zipFilename = 'firefox.zip';
     }
