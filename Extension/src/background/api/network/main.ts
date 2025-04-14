@@ -37,8 +37,8 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
-import { type FilterUpdateOptions } from '../filters';
-import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
+import { CustomFilterApi, type FilterUpdateOptions } from '../filters';
+import { AntiBannerFiltersId, NEWLINE_CHAR_REGEX } from '../../../common/constants';
 
 import { NetworkSettings } from './settings';
 
@@ -144,7 +144,7 @@ export class Network {
         useOptimizedFilters: boolean,
         rawFilter?: string,
     ): Promise<DownloadResult> {
-        let url: string;
+        let url: string = '';
         const { filterId } = filterUpdateOptions;
 
         if (
@@ -158,23 +158,20 @@ export class Network {
 
         let isLocalFilter = false;
         if (__IS_MV3__) {
-            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/filter_${filterId}.txt`);
+            // `forceRemote` flag for MV3 built-in filters can be used only for
+            // Quick Fixes filter and custom filters.
+            const isRemote = forceRemote
+                && (filterId === AntiBannerFiltersId.QuickFixesFilterId
+                    || CustomFilterApi.isCustomFilter(filterId));
 
-            // TODO: Uncomment this block when Quick Fixes filter will return in another way
-            // // `forceRemote` flag for MV3 built-in filters can be used only for Quick Fixes filter,
-            // // and custom filters
-            // const isRemote = forceRemote
-            //     && (filterId === AntiBannerFiltersId.QuickFixesFilterId
-            //         || CustomFilterApi.isCustomFilter(filterId));
+            if (isRemote) {
+                if (useOptimizedFilters) {
+                    logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
+                }
+                url = this.getUrlForDownloadFilterRules(filterId, false);
+            }
 
-            // if (isRemote) {
-            //     if (useOptimizedFilters) {
-            //         logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
-            //     }
-            //     url = this.getUrlForDownloadFilterRules(filterId, false);
-            // }
-
-            isLocalFilter = true;
+            isLocalFilter = !isRemote;
         } else if (forceRemote || this.settings.localFilterIds.indexOf(filterId) < 0) {
             url = this.getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
         } else {
@@ -187,9 +184,11 @@ export class Network {
 
         // local filters do not support patches, that is why we always download them fully
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
-            // TODO: Revert when Quick Fixes filter will return in another way
-            if (__IS_MV3__ /* && filterId !== AntiBannerFiltersId.QuickFixesFilterId */) {
-                // TODO: Check if its needed
+            // TODO: Check, if this comment is correct and understandable.
+            // For MV3 we load local filters not from files, but from the
+            // prepared data in filters storage, to which we write the binary
+            // data from @adguard/dnr-rulesets. See AG-36824 for details.
+            if (__IS_MV3__ && filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
                 const rawFilterList = await FiltersApi.getRawFilterList(filterId, 'filters/declarative');
 
                 return {
@@ -491,13 +490,9 @@ export class Network {
      *
      * @returns Url for filter downloading.
      *
-     * @throws Error if MV3 is used and remote filter downloading is not supported.
+     * @throws Error if filter rules URL is not defined.
      */
     public getUrlForDownloadFilterRules(filterId: number, useOptimizedFilters: boolean): string {
-        if (__IS_MV3__) {
-            throw new Error('MV3 does not support remote filter downloading');
-        }
-
         if (!this.settings.filterRulesUrl
             || !this.settings.optimizedFilterRulesUrl) {
             throw new Error('Filter rules URL is not defined');

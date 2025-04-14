@@ -121,6 +121,8 @@ export class SettingsService {
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
             // always false for MV2
             areFilterLimitsExceeded: false,
+            // always false for MV2
+            isUserScriptsApiSupported: false,
         };
     }
 

@@ -41,12 +41,15 @@ import {
     CommonFilterApi,
     iconsApi,
     DocumentBlockApi,
+    CustomFilterApi,
+    QuickFixesRulesApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
 import { emptyPreprocessedFilterList, NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
+import { FiltersStorage } from '../storages/filters';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -95,13 +98,19 @@ export class Engine implements TsWebExtensionEngine {
      */
     async start(): Promise<void> {
         /**
-         * By the rules of Chrome Web Store, we cannot use remote remotely hosted scripts, thats why we prebuild them.
+         * By the rules of Chrome Web Store, we cannot use remotely hosted scripts,
+         * which is why we prebuild them.
          *
          * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
          *
-         * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
+         * This is STEP 2: Local script and scriptlet rules are passed to the engine.
+         *
+         * If userScripts API is available, we don't need to set local script rules,
+         * because we will use browser API to inject them.
          */
-        TsWebExtension.setLocalScriptRules(localScriptRules);
+        if (!TsWebExtension.isUserScriptsApiSupported) {
+            TsWebExtension.setLocalScriptRules(localScriptRules);
+        }
 
         const configuration = await Engine.getConfiguration();
 
@@ -222,31 +231,28 @@ export class Engine implements TsWebExtensionEngine {
             trusted: true,
         };
 
-        // TODO Uncomment this block when Quick Fixes filter will be supported for MV3
-        // if (QuickFixesRulesApi.isEnabled()) {
-        //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
-        // }
+        if (QuickFixesRulesApi.isEnabled()) {
+            Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
+        }
 
-        // TODO: uncomment code bellow when custom filters support will be added back
-        // const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
-        //     .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
+        const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
+            .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
-        // const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-        //     const preprocessedFilterList = await FiltersStorage.getAllFilterData(filterId);
+        const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
+            const preprocessedFilterList = await FiltersStorage.get(filterId);
 
-        //     return {
-        //         filterId,
-        //         trusted,
-        //         ...(preprocessedFilterList || emptyPreprocessedFilterList),
-        //     };
-        // }));
+            return {
+                filterId,
+                trusted,
+                ...(preprocessedFilterList || emptyPreprocessedFilterList),
+            };
+        }));
 
         const blockingTrustedRules = await DocumentBlockApi.getTrustedDomains();
 
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
-            // TODO: revert to actual customFilters when their support will be added back
-            customFilters: [],
+            customFilters,
             quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA) || logger.isVerbose(),
             logLevel: logger.currentLevel,

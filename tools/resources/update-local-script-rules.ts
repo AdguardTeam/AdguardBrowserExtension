@@ -264,7 +264,7 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
  *
  * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
  *
- * This is STEP 1.1.
+ * This is STEP 1.
  *
  * @param jsRules Set of unique JS rules collected from the pre-built filters.
  */

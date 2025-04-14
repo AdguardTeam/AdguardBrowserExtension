@@ -193,6 +193,8 @@ class SettingsStore {
 
     @observable isChrome = null;
 
+    @observable isUserScriptsApiSupported = false;
+
     @observable searchInput = '';
 
     @observable searchSelect = SEARCH_FILTERS.ALL;
@@ -324,6 +326,7 @@ class SettingsStore {
             this.setBlockKnownTrackers(data.filtersMetadata.filters);
             this.setStripTrackingParameters(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
+            this.isUserScriptsApiSupported = data.isUserScriptsApiSupported;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         });
@@ -861,12 +864,6 @@ class SettingsStore {
         }
 
         return selectedFilters.filter((filter) => {
-            // TODO: Do not show custom filters in MV3 in the list of filters,
-            // until we add them back. (AG-39385)
-            if (__IS_MV3__ && filter.groupId === AntibannerGroupsId.CustomFiltersGroupId) {
-                return false;
-            }
-
             // If selected group of filters, prevent showing filters from
             // other groups.
             if (Number.isInteger(this.selectedGroupId) && filter.groupId !== this.selectedGroupId) {

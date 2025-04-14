@@ -27,7 +27,7 @@ import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { DynamicRulesLimitsWarning } from '../Warnings';
-import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
+import { DeveloperModeWarning } from '../Warnings/DeveloperModeWarning';
 
 import { UserRulesSwitcher } from './UserRulesSwitcher';
 import { RuleSyntaxLink } from './RuleSyntaxLink';
@@ -68,11 +68,11 @@ const UserRules = observer(() => {
                 description={translator.getMessage('options_userfilter_subtitle_key')}
                 inlineControl={(<UserRulesSwitcher labelId={switchTitleId} />)}
             />
+            <DynamicRulesLimitsWarning />
+            <DeveloperModeWarning />
             <div className={linksClassNames}>
                 <RuleSyntaxLink />
-                {__IS_MV3__ && <RuleLimitsLink />}
             </div>
-            <DynamicRulesLimitsWarning useWrapper />
             {settingsStore.isFullscreenUserRulesEditorOpen
                 ? (
                     <div className="editor__open">

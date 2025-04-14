@@ -8,13 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased <!-- release/v5.2 -->
 
 ### Added
-
+- Support for Chrome's User Scripts API that allows more reliable script
+  injection in MV3 if developer mode is enabled.
 - Send last filters update time during issue reporting [#3055].
 - Ability to exit editor by pressing `Escape` keyboard button [#2333].
 - Blocking page for requests blocked by `$document` rules in MV3.
 - Compatibility of `$header` modifier with `$match-case`
   and `$third-party` modifiers in MV2 [#2942].
 - `zip` and `crx` artifacts for the extension builds [#3163], [#2488].
+- AdGuard Quick Fixes filter and support for custom filters are back again.
 
 ### Changed
 
@@ -36,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switching to the "Statistics" tab shifts the "Actions" and "Statistics" buttons (Edge for Android) [#3158].
 - Filtering log: Request details panel is automatically closed when loading
   a website in another window/tab [#2327].
+- Scriptlet rules are not displayed in the filtering log [#3164].
 
 [#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
@@ -54,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#3157]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3157
 [#3158]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3158
+[#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
 [#2327]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2327
 
 ## [5.1.70] - 2025-03-19

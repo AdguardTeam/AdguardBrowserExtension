@@ -237,11 +237,6 @@ export class FilterUpdateApi {
         const updatedFiltersMetadata: FilterMetadata[] = [];
 
         const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
-            // TODO: Remove this block when custom filters will be supported for MV3
-            if (__IS_MV3__) {
-                return;
-            }
-
             let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null = null;
 
             if (CustomFilterApi.isCustomFilter(filterData.filterId)) {

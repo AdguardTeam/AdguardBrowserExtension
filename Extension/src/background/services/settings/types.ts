@@ -121,4 +121,11 @@ export type GetOptionsDataResponse = {
      * Used in MV3.
      */
     areFilterLimitsExceeded: boolean;
+
+    /**
+     * Whether the user scripts API is supported.
+     *
+     * Used in MV3 only.
+     */
+    isUserScriptsApiSupported: boolean;
 };

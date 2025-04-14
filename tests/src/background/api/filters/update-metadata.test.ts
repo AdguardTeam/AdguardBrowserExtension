@@ -126,7 +126,7 @@ let storage: Storage.StorageArea;
 describe('tests filter metadata loading', () => {
     beforeEach(async () => {
         storage = mockLocalStorage({
-            [APP_VERSION_KEY]: '4.4.0.0',
+            [APP_VERSION_KEY]: '5.2.0.0',
         });
         // should be set before App.init() call
         mockInitMetadata();

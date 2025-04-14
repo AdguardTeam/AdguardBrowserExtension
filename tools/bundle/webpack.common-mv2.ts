@@ -25,7 +25,6 @@ import { merge } from 'webpack-merge';
 import {
     BACKGROUND_OUTPUT,
     CONTENT_SCRIPT_START_OUTPUT,
-    SUBSCRIBE_OUTPUT,
     BLOCKING_BLOCKED_OUTPUT,
     BLOCKING_SAFEBROWSING_OUTPUT,
     INDEX_HTML_FILE_NAME,
@@ -37,7 +36,6 @@ import {
     BLOCKING_SAFEBROWSING_PATH,
     CONTENT_SCRIPT_START_PATH,
     htmlTemplatePluginCommonOptions,
-    SUBSCRIBE_PATH,
     type BrowserConfig,
 } from './common-constants';
 import { ENTRY_POINTS_CHUNKS, genCommonConfig } from './webpack.common';
@@ -59,12 +57,6 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
             },
             [CONTENT_SCRIPT_START_OUTPUT]: {
                 import: path.resolve(CONTENT_SCRIPT_START_PATH, 'mv2.ts'),
-                runtime: false,
-            },
-            // Subscribe to custom filters works only for MV2 version, since MV3
-            // doesn't support any kind of scripts due to CWS policy.
-            [SUBSCRIBE_OUTPUT]: {
-                import: SUBSCRIBE_PATH,
                 runtime: false,
             },
         },

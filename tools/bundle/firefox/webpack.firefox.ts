@@ -33,6 +33,7 @@ import {
 } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { megabytesToBytes, SizeLimitPlugin } from '../size-limit-plugin';
+import { commonManifest } from '../manifest.common';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
 
@@ -64,24 +65,33 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: path.resolve(__dirname, '../manifest.common.json'),
+                    /**
+                     * This is a dummy import to keep "clean" usage of
+                     * `CopyWebpackPlugin`. We actually use `commonManifest`
+                     * imported above.
+                     */
+                    from: path.resolve(__dirname, '../manifest.common.ts'),
                     to: 'manifest.json',
-                    transform: (content) => {
-                        content = updateManifestBuffer(
+                    transform: () => {
+                        const commonManifestContent = Buffer.from(JSON.stringify(commonManifest));
+
+                        const firefoxManifestContent = updateManifestBuffer(
                             BUILD_ENV,
                             browserConfig.browser,
-                            content,
+                            commonManifestContent,
                             firefoxManifest,
                         );
+
                         if (browserConfig.browser === Browser.FirefoxStandalone) {
-                            content = updateManifestBuffer(
+                            return updateManifestBuffer(
                                 BUILD_ENV,
                                 browserConfig.browser,
-                                content,
-                                firefoxManifestStandalone,
+                                firefoxManifestContent, // target part
+                                firefoxManifestStandalone, // added part
                             );
                         }
-                        return content;
+
+                        return firefoxManifestContent;
                     },
                 },
                 {
