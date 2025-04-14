@@ -6,12 +6,22 @@ plan:
   name: browser extension - build beta
 variables:
   dockerNode: adguard/extension-builder:18.19.0--0.1.3
+  bundleSizeThreshold: '10'
+
 stages:
+  - Size Check:
+      manual: 'false'
+      final: 'false'
+      jobs:
+        - Check Bundle Size
   - Build:
       manual: 'false'
       final: 'false'
       jobs:
         - Build
+
+jobs:
+  - jobs/check-bundle-size.yaml
 
 Build:
   key: BUILD
@@ -123,6 +133,16 @@ branches:
   link-to-jira: 'true'
 
 notifications:
+  - events:
+      - plan-status-changed
+    recipients:
+      - webhook:
+          name: Build webhook
+          url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo
+labels: []
+other:
+  concurrent-build-plugin: system-default
+
   - events:
       - plan-status-changed
     recipients:

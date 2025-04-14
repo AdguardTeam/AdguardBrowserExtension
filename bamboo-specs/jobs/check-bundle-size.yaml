@@ -1,0 +1,76 @@
+---
+version: 2
+
+Check Bundle Size:
+  key: SIZECHECK
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - checkout:
+        force-clean-build: 'true'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            # Install dependencies
+            pnpm install ${bamboo.varsPnpm}
+
+            # Determine build type based on plan name: if
+            BUILD_TYPE="beta"
+            if [[ "${bamboo.planKey}" == *RELEASE* ]]; then
+              BUILD_TYPE="release"
+            fi
+
+            echo "Executing build for $BUILD_TYPE"
+
+            # Run build
+            pnpm $BUILD_TYPE
+
+            # Create artifacts directory if it doesn't exist
+            mkdir -p artifacts
+
+            # Check bundle size with threshold from bamboo variable or default
+            echo "Checking bundle sizes with threshold ${bamboo.bundleSizeThreshold:10}%"
+            BUILD_TYPE=$BUILD_TYPE BUNDLE_SIZE_THRESHOLD=${bamboo.bundleSizeThreshold:10} pnpm check-bundle-size
+
+            cp .bundle-sizes.json artifacts/bundle-sizes.json
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            echo "Size before cleanup:" && du -h | tail -n 1
+            rm -rf node_modules build
+            echo "Size after cleanup:" && du -h | tail -n 1
+  artifacts:
+    # FIXME: Do not forget to push bundle-sizes.json to the repository
+    - name: bundle-sizes.json
+      location: artifacts
+      pattern: bundle-sizes.json
+      shared: true
+      required: false
+  requirements:
+    - adg-docker: 'true'

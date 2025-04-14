@@ -76,7 +76,7 @@ export const ENV_CONF: Record<BuildTargetEnv, EnvConfig> = {
     },
 };
 
-export const enum Browser {
+export enum Browser {
     Chrome = 'chrome',
     ChromeMv3 = 'chrome-mv3',
     FirefoxAmo = 'firefox-amo',
