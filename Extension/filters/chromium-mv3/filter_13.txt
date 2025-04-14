@@ -1,8 +1,8 @@
-! Checksum: MqhNaBU7+tM565BI/b+RRQ
+! Checksum: rzOOAop4rSPC8/Ni2IRsKw
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.55.66
-! TimeUpdated: 2025-04-10T16:08:27+00:00
+! Version: 2.0.55.70
+! TimeUpdated: 2025-04-14T12:10:58+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -290,7 +290,7 @@ gecmisi.com.tr#@#.adsbygoogle-noablate
 gecmisi.com.tr#@#div[id^="aswift_"]
 @@/favicon.ico|$domain=gecmisi.com.tr
 @@||gecmisi.com.tr^$cookie=_ym_uid
-gecmisi.com.tr#%#//scriptlet('trusted-create-element', 'footer', 'iframe')
+gecmisi.com.tr#%#//scriptlet('trusted-create-element', 'footer', 'iframe', 'src="googleads"')
 gecmisi.com.tr#%#(()=>{const o=Math.floor(1e5+9e5*Math.random()),a=`${Date.now()}${o}`;var t,e,m,$;t="_ym_uid",e=a,m="/",$=".gecmisi.com.tr",document.cookie=`${t}=${e};path=${m};domain=${$};`})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/186286
 promy.pro#%#//scriptlet('set-constant', 'canRunAds', 'true')
@@ -516,8 +516,8 @@ oyungibi.com#%#//scriptlet("set-constant", "jQuery.adblock", "false")
 osxinfo.net#%#//scriptlet("abort-current-inline-script", "$", "!document.getElementById(btoa")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/49271
 turkdenizcileri.com,bilgalem.blogspot.com#%#//scriptlet("set-constant", "koddostu_com_adblock_yok", "null")
-! https://github.com/AdguardTeam/AdguardFilters/issues/167228
-tekniknot.com#%#//scriptlet('abort-on-property-read', 'msender')
+! https://github.com/AdguardTeam/AdguardFilters/issues/203121
+tekniknot.com#%#//scriptlet('abort-on-property-read', 'workfile')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/47184
 @@||veterinerhekimleri.com/wp-content/plugins/*/includes/adblock-detector/advertisement.js
 veterinerhekimleri.com#%#//scriptlet("set-constant", "jQuery.adblock", "false")
@@ -1584,6 +1584,8 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+haberler.com###inpage_reklam
+haberler.com##main > div.info-text:has(> a[target="_blank"])
 sozcu.com.tr##.membranaVideoDiv
 ||anizm.net/js/poo-undr.js
 haberler.com###mainContent > .hbDetay:has(> article:only-child > #taboola-below-article-widget)
@@ -5481,10 +5483,8 @@ dizilla.nl###router-view > div > div > div[class]:has(> div:only-child > ad)
 ! aglint-disable-next-line invalid-modifiers
 ||googleusercontent.com/img/*/crt$domain=/selcuksportshd\d+\.xyz/
 ! TODO: remove "NOT_VALIDATE" hint when this issue is fixed - https://github.com/AdguardTeam/FiltersCompiler/issues/237
-! aglint-disable unknown-hints-and-platforms
 !+ NOT_VALIDATE
 [$url=/^https?:\/\/(?:cinque|due|tre)\.(?=.*[0-9])[a-z0-9]{16}\.click\/.*\/player\.html/]#%#//scriptlet('set-constant', 'config.advertisement.enabled', 'false')
-! aglint-enable unknown-hints-and-platforms
 [$domain=/^i\[a-z\]*\.strmrdr\[a-z0-9\]+\..*/]#%#//scriptlet('set-constant', 'adscfg.enabled', 'false')
 cinque.668a396e58bcbc27.click#%#//scriptlet('set-constant', 'config.advertisement.enabled', 'false')
 [$domain=/selcuksportshd\d+\.xyz/]##.banner
