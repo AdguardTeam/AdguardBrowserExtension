@@ -232,7 +232,7 @@ export const General = observer(() => {
     return (
         <>
             <SettingsSection title={translator.getMessage('options_general_settings')}>
-                <StaticFiltersLimitsWarning useWrapper />
+                <StaticFiltersLimitsWarning />
                 { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
                 {/* @ts-ignore */}
                 <SettingSetSelect

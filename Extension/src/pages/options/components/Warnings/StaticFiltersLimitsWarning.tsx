@@ -24,8 +24,6 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 
-import { type LimitWarningProps } from './types';
-
 import './limit-warning.pcss';
 
 /**
@@ -34,12 +32,10 @@ import './limit-warning.pcss';
  * Displays a warning about changes made by the browser if rule limits are exceeded
  * or if user enabled maximum possible number of filters.
  *
- * @param props Component props.
- *
  * @returns Static filters limits warning component
  * or null for non-MV3 builds or when the warning is not set.
  */
-export const StaticFiltersLimitsWarning = observer(({ useWrapper = false }: LimitWarningProps) => {
+export const StaticFiltersLimitsWarning = observer(() => {
     if (!__IS_MV3__) {
         return null;
     }
@@ -50,7 +46,7 @@ export const StaticFiltersLimitsWarning = observer(({ useWrapper = false }: Limi
         return null;
     }
 
-    const filterLimitWarning = (
+    return (
         <div role="alert" className="limit-warning">
             <span>
                 {staticFiltersLimitsWarning}
@@ -63,8 +59,4 @@ export const StaticFiltersLimitsWarning = observer(({ useWrapper = false }: Limi
             </Link>
         </div>
     );
-
-    return useWrapper
-        ? <div className="limit-warning--wrapper">{filterLimitWarning}</div>
-        : filterLimitWarning;
 });

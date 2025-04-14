@@ -39,10 +39,10 @@ import { AntibannerGroupsId } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnings';
 import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
-import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { getStaticWarningMessage } from '../Warnings/messages';
 import { NotificationType } from '../../stores/UiStore';
 import type { CategoriesGroupData } from '../../../../background/api';
+import { DeveloperModeWarning } from '../Warnings/DeveloperModeWarning';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
 import { Group } from './Group';
@@ -411,15 +411,13 @@ const Filters = observer(() => {
                 mode={isCustom ? 'custom' : undefined}
             >
                 {
-                    isCustom && __IS_MV3__ && (
-                        <div className="settings__group__links settings__group__links--custom">
-                            <RuleLimitsLink />
-                        </div>
-                    )
-                }
-                {
                     isCustom
-                        ? <DynamicRulesLimitsWarning />
+                        ? (
+                            <>
+                                <DynamicRulesLimitsWarning />
+                                <DeveloperModeWarning />
+                            </>
+                        )
                         : <StaticFiltersLimitsWarning />
                 }
                 <Search />
@@ -453,8 +451,8 @@ const Filters = observer(() => {
         <SettingsSection
             title={translator.getMessage('options_filters')}
         >
-            <StaticFiltersLimitsWarning useWrapper />
-            <DynamicRulesLimitsWarning useWrapper />
+            <StaticFiltersLimitsWarning />
+            <DynamicRulesLimitsWarning />
             {!__IS_MV3__ && <FiltersUpdate />}
             <Search />
             {settingsStore.isSearching

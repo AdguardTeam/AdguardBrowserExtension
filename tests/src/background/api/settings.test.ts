@@ -197,11 +197,10 @@ describe('Settings Api', () => {
             expect(importResult).toBeTruthy();
 
             const importedSettingsString = await SettingsApi.export();
+
             // Fill up optional fields
-            // TODO: Remove this condition when we will return custom filters to MV3(AG-39385).
-            if (!__IS_MV3__) {
-                userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
-            }
+            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+
             expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
         }, EXTENDED_TIMEOUT_MS);
 

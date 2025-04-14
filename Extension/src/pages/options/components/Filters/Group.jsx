@@ -22,10 +22,7 @@ import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
-import { CUSTOM_FILTERS_DISABLED_IN_MV3_DUE_TO_CWS } from '../../constants';
-import { AntibannerGroupsId } from '../../../../common/constants';
 
 import './group.pcss';
 
@@ -75,59 +72,6 @@ const renderEnabledFilters = (enabledFilters) => {
     return reactTranslator.getMessage('options_filters_no_enabled');
 };
 
-const DisabledCustomFiltersGroup = ({
-    titleId,
-    descriptionId,
-    groupName,
-    groupId,
-    enabledFilters,
-}) => {
-    const groupClassName = classNames({
-        setting: true,
-        group: true,
-        'group--disabled': true,
-    });
-
-    const warningDescriptionId = `${descriptionId}-warning`;
-
-    return (
-        <div className={groupClassName}>
-            <a
-                href={CUSTOM_FILTERS_DISABLED_IN_MV3_DUE_TO_CWS}
-                target="_blank"
-                rel="noreferrer"
-                className="setting__area setting__area_group link_like_setting_area"
-                aria-labelledby={titleId}
-                aria-describedby={`${descriptionId} ${warningDescriptionId}`}
-            >
-                <span className="container">
-                    <Icon
-                        id={`#setting-${groupId}`}
-                        classname="icon--24 setting__icon"
-                        aria-hidden="true"
-                    />
-                    <span className="setting__info">
-                        <span id={titleId} className="setting__title group__title">
-                            {groupName}
-                        </span>
-                        <span id={descriptionId} className="setting__desc">
-                            {renderEnabledFilters(enabledFilters)}
-                        </span>
-                        <span id={warningDescriptionId} className="warning">
-                            {translator.getMessage('options_filters_custom_disabled_cws')}
-                        </span>
-                    </span>
-                </span>
-                <Icon
-                    id="#link"
-                    classname="icon icon--24 icon--green-default link"
-                    aria-hidden="true"
-                />
-            </a>
-        </div>
-    );
-};
-
 const Group = ({
     groupName,
     groupId,
@@ -145,19 +89,6 @@ const Group = ({
     const titleId = `setting-title-${groupId}`;
     const descriptionId = `setting-desc-${groupId}`;
     const iconId = `#setting-${groupId}`;
-
-    // TODO: Remove this component when custom filters will be supported for MV3.
-    if (__IS_MV3__ && groupId === AntibannerGroupsId.CustomFiltersGroupId) {
-        return (
-            <DisabledCustomFiltersGroup
-                titleId={titleId}
-                descriptionId={descriptionId}
-                groupName={groupName}
-                groupId={AntibannerGroupsId.CustomFiltersGroupId}
-                enabledFilters={enabledFilters}
-            />
-        );
-    }
 
     return (
         <li className={groupClassName}>

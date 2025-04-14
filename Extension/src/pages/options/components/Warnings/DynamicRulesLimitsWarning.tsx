@@ -24,8 +24,6 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 
-import { type LimitWarningProps } from './types';
-
 import './limit-warning.pcss';
 
 /**
@@ -37,12 +35,10 @@ import './limit-warning.pcss';
  * - on allowlisting a domain when the limit is reached,
  * - on adding user rules when the limit is reached.
  *
- * @param props Component props.
- *
  * @returns Dynamic rules warning component
  * or null for non-MV3 builds or when the warning is not set.
  */
-export const DynamicRulesLimitsWarning = observer(({ useWrapper = false }: LimitWarningProps) => {
+export const DynamicRulesLimitsWarning = observer(() => {
     if (!__IS_MV3__) {
         return null;
     }
@@ -53,7 +49,7 @@ export const DynamicRulesLimitsWarning = observer(({ useWrapper = false }: Limit
         return null;
     }
 
-    const filterLimitWarning = (
+    return (
         <div role="alert" className="limit-warning">
             <span>
                 {dynamicRulesLimitsWarning}
@@ -66,8 +62,4 @@ export const DynamicRulesLimitsWarning = observer(({ useWrapper = false }: Limit
             </Link>
         </div>
     );
-
-    return useWrapper
-        ? <div className="limit-warning--wrapper">{filterLimitWarning}</div>
-        : filterLimitWarning;
 });

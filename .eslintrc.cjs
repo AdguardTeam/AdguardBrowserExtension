@@ -129,12 +129,11 @@ module.exports = {
                         'position': 'after',
                     },
                     // Place custom-filters-service alias after internal
-                    // TODO: Uncomment this block when custom filters will be supported for MV3.
-                    // {
-                    //     'pattern': 'custom-filters-service',
-                    //     'group': 'internal',
-                    //     'position': 'after',
-                    // },
+                    {
+                        'pattern': 'custom-filters-service',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place rules-limits-service alias after internal
                     {
                         'pattern': 'rules-limits-service',
