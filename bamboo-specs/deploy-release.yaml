@@ -37,19 +37,8 @@ static.adtidy.org:
 
             # TODO: Change deploy scripts to static before merge to master.
             ./bamboo-deploy-publisher/deploy.sh chrome-extension-release
-            ./bamboo-deploy-publisher/deploy.sh firefox-extension-release
 
-            # Check if bundle-sizes.json exists and copy it to the workspace
-            if [ -f ".bundle-sizes.json" ]; then
-              echo "Found .bundle-sizes.json, ready for commit"
-            else
-              echo "Warning: .bundle-sizes.json not found"
-            fi
-    - vcs-commit:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          commitMessage: 'skipci: update bundle sizes after release deploy'
-          selectedRepository: defaultRepository
+            ./bamboo-deploy-publisher/deploy.sh firefox-extension-release
   final-tasks: []
   variables: {}
   requirements:
@@ -87,6 +76,12 @@ Chrome WebStore MV2:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-mv2
+    - vcs-commit:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          selectedRepository: "26051221"
+          # Trigger commit to run bundle-size-update.yaml plan
+          commitMessage: "should update bundle sizes for chrome#release after deploy"
   final-tasks: []
   variables: {}
   requirements:
@@ -124,6 +119,12 @@ Chrome WebStore MV3:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release
+    - vcs-commit:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          selectedRepository: "26051221"
+          # Trigger commit to run bundle-size-update.yaml plan
+          commitMessage: "should update bundle sizes for chrome-mv3#release after deploy"
   final-tasks: []
   variables: {}
   requirements:
@@ -162,6 +163,12 @@ Addons Mozilla:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-amo
+    - vcs-commit:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          selectedRepository: "26051221"
+          # Trigger commit to run bundle-size-update.yaml plan
+          commitMessage: "should update bundle sizes for firefox-amo#release after deploy"
   final-tasks: []
   variables: {}
   requirements:
@@ -199,6 +206,12 @@ Edge Addons:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-edge
+    - vcs-commit:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          selectedRepository: "26051221"
+          # Trigger commit to run bundle-size-update.yaml plan
+          commitMessage: "should update bundle sizes for edge#release after deploy"
   final-tasks: []
   variables: {}
   requirements:
