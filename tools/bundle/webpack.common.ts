@@ -207,7 +207,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             [SCRIPTLETS_VENDOR_OUTPUT]: ['@adguard/scriptlets'],
             [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
             [CSS_TOKENIZER_VENDOR_OUTPUT]: ['@adguard/css-tokenizer'],
-            [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: ['text-encoding'],
+            [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: ['@adguard/text-encoding'],
             [REACT_VENDOR_OUTPUT]: ['react', 'react-dom'],
             [MOBX_VENDOR_OUTPUT]: ['mobx'],
             [XSTATE_VENDOR_OUTPUT]: ['xstate'],
