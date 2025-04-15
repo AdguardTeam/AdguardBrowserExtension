@@ -36,7 +36,17 @@ static.adtidy.org:
 
             ./bamboo-deploy-publisher/deploy.sh firefox-extension-beta
 
-            # FIXME: Commit .build-sizes.json after successful deploy
+            # Check if bundle-sizes.json exists and copy it to the workspace
+            if [ -f ".bundle-sizes.json" ]; then
+              echo "Found .bundle-sizes.json, ready for commit"
+            else
+              echo "Warning: .bundle-sizes.json not found"
+            fi
+    - vcs-commit:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          commitMessage: 'skipci: update bundle sizes after firefox beta deploy'
+          selectedRepository: defaultRepository
   final-tasks: []
   variables: {}
   requirements:
