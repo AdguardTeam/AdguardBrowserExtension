@@ -35,13 +35,6 @@ static.adtidy.org:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh firefox-extension-beta
-
-            # Check if bundle-sizes.json exists and copy it to the workspace
-            if [ -f ".bundle-sizes.json" ]; then
-              echo "Found .bundle-sizes.json, ready for commit"
-            else
-              echo "Warning: .bundle-sizes.json not found"
-            fi
     - vcs-commit:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
