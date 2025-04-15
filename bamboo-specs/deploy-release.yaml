@@ -75,7 +75,7 @@ Chrome WebStore MV2:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-mv2
-    - vcs-commit:
+    - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
           selectedRepository: "26051221"
@@ -118,7 +118,7 @@ Chrome WebStore MV3:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release
-    - vcs-commit:
+    - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
           selectedRepository: "26051221"
@@ -162,7 +162,7 @@ Addons Mozilla:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-amo
-    - vcs-commit:
+    - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
           selectedRepository: "26051221"
@@ -205,7 +205,7 @@ Edge Addons:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-edge
-    - vcs-commit:
+    - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
           selectedRepository: "26051221"

@@ -36,7 +36,7 @@ static.adtidy.org:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh chrome-extension-beta
-    - vcs-commit:
+    - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
           selectedRepository: "26051221"
@@ -79,7 +79,7 @@ Chrome WebStore MV3:
 
             # Publish MV3 Beta to Experimental MV3 item
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta
-    - vcs-commit:
+    - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
           selectedRepository: "26051221"
