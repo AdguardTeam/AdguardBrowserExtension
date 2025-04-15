@@ -27,6 +27,7 @@ import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../w
 import { updateManifestBuffer } from '../../helpers';
 import { type BrowserConfig } from '../common-constants';
 import { BUILD_ENV } from '../../constants';
+import { commonManifest } from '../manifest.common';
 
 import { operaManifest } from './manifest.opera';
 
@@ -51,12 +52,17 @@ export const genOperaConfig = (browserConfig: BrowserConfig) => {
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: path.resolve(__dirname, '../manifest.common.json'),
+                        /**
+                         * This is a dummy import to keep "clean" usage of
+                         * `CopyWebpackPlugin`. We actually use `commonManifest`
+                         * imported above.
+                         */
+                        from: path.resolve(__dirname, '../manifest.common.ts'),
                         to: 'manifest.json',
-                        transform: (content) => updateManifestBuffer(
+                        transform: () => updateManifestBuffer(
                             BUILD_ENV,
                             browserConfig.browser,
-                            content,
+                            Buffer.from(JSON.stringify(commonManifest)),
                             operaManifest,
                         ),
                     },

@@ -55,6 +55,7 @@ import {
     FiltersService,
     AllowlistService,
     UserRulesService,
+    CustomFiltersService,
     FilteringLogService,
     eventService,
     DocumentBlockService,
@@ -67,7 +68,6 @@ import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
-import { CustomFiltersService } from '../services/custom-filters/custom-filters-service-mv2';
 
 /**
  * Logs initialization times for debugging purposes.
