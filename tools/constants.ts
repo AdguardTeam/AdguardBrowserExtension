@@ -85,6 +85,10 @@ export enum Browser {
     Edge = 'edge',
 }
 
+export const isValidBrowserTarget = (target: any): target is Browser => {
+    return Object.values(Browser).includes(target as Browser);
+};
+
 /**
  * List of browsers which has its own filters assets directory.
  */
