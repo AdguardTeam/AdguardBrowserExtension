@@ -109,7 +109,7 @@ export async function readSizesFile(): Promise<SizesFile> {
  *
  * @returns Object mapping file paths to sizes in bytes.
  */
-const getFilesWithSizes = async (dirPath: string): Promise<Record<string, number>> => {
+export const getFilesWithSizes = async (dirPath: string): Promise<Record<string, number>> => {
     if (!fs.existsSync(dirPath)) {
         throw new Error(`Directory ${dirPath} does not exist, cannot get file sizes`);
     }

@@ -472,10 +472,11 @@ The browser extension project includes a comprehensive bundle size monitoring sy
 - Checks for duplicate package versions using `pnpm`
 - Stores historical size data in `.bundle-sizes.json`
 - Designed for CI/CD integration (Bamboo)
+- **For Firefox targets (AMO and Standalone) only**, every individual `.js` file is checked to ensure it does not exceed the 4MB limit imposed by the Firefox Add-ons Store. If any `.js` file is larger than 4MB, the check fails and the offending files are reported.**
 
 ### How it works
 - On each beta or release build, the system compares the current bundle sizes to the reference values in `.bundle-sizes.json`.
-- If any size exceeds the configured threshold (and additionally the MV3 30MB limit for Chrome MV3 target), the check fails.
+- If any size exceeds the configured threshold, or additionally check for 30MB limit for Chrome MV3 target or 4MB limit for Firefox targets - the check fails.
 - Duplicate package versions are detected and reported.
 
 ### To update the bundle sizes manually

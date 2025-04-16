@@ -24,6 +24,13 @@ export const DEFAULT_SIZE_THRESHOLD = 10;
 export const MAX_MV3_SIZE_BYTES = 30 * 1024 * 1024;
 
 /**
+ * Firefox Add-ons Store limit for any file inside the zip.
+ *
+ * Note: This limit is not enforced by the Firefox browser itself.
+ */
+export const MAX_FIREFOX_SIZE_BYTES = 4 * 1024 * 1024;
+
+/**
  * Directory name for build output.
  */
 export const BUILD_DIRNAME = 'build';

@@ -15,6 +15,7 @@ import { exec } from 'child_process';
 
 import {
     Browser,
+    type BuildTargetEnv,
     isValidBrowserTarget,
     isValidBuildEnv,
 } from '../constants';
@@ -25,6 +26,8 @@ import {
     DEFAULT_SIZE_THRESHOLD,
     MAX_MV3_SIZE_BYTES,
     ZIP_EXTENSION,
+    BUILD_DIRNAME,
+    MAX_FIREFOX_SIZE_BYTES,
 } from './constants';
 import {
     getCurrentBuildStats,
@@ -32,6 +35,7 @@ import {
     saveBuildStats,
     formatPercentage,
     formatSize,
+    getFilesWithSizes,
 } from './utils';
 
 /* eslint-disable no-console */
@@ -211,6 +215,45 @@ function compareBuildSizes(
 }
 
 /**
+ * Checks that no .js file in Firefox builds exceeds 4MB (Firefox Add-ons Store limit).
+ * Logs errors and returns true if any offending files are found.
+ *
+ * @param buildType Build environment (beta, release, etc.).
+ *
+ * @returns True if some .js files exceed 4MB, else false.
+ */
+async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boolean> {
+    const FIREFOX_TARGETS = [Browser.FirefoxAmo, Browser.FirefoxStandalone];
+
+    try {
+        const jsFileChecks = await Promise.all(FIREFOX_TARGETS.map(async (target) => {
+            const dir = `${BUILD_DIRNAME}/${buildType}/${target}`;
+
+            const jsFiles = await getFilesWithSizes(dir);
+            return Object.entries(jsFiles)
+                .filter(([file]) => file.endsWith('.js'))
+                .map(([file, size]) => ({ file, size }));
+        }));
+
+        let found = false;
+
+        jsFileChecks
+            .flat()
+            .forEach(({ file, size }) => {
+                if (size > MAX_FIREFOX_SIZE_BYTES) {
+                    found = true;
+                    console.error(`Firefox Add-ons Store limit exceeded: ${file} is ${(size / (1024 * 1024)).toFixed(2)}MB (> 4MB)`);
+                }
+            });
+
+        return found;
+    } catch (error) {
+        console.error(`Error checking Firefox JS file sizes: ${error}`);
+        return false;
+    }
+}
+
+/**
  * Main function to check bundle sizes.
  *
  * @throws Error if any size or duplicate issues are detected.
@@ -293,14 +336,14 @@ async function checkBundleSizes(): Promise<void> {
         }
     }
 
+    // Check for Firefox Add-ons Store .js file size limit (4MB per .js file)
+    const hasFirefoxJsIssues = await checkFirefoxJsFileSizes(buildType);
+
     // Check for duplicate packages (do this only once for all targets)
     const hasDuplicates = await checkForDuplicatePackages();
 
-    // Check if any target had issues
-    const hasAnyIssues = hasSizeIssues;
-
     // Exit with error if there are issues in any target
-    if (hasAnyIssues || hasDuplicates) {
+    if (hasSizeIssues || hasDuplicates || hasFirefoxJsIssues) {
         throw new Error('Bundle size check failed due to size issues or duplicate packages.');
     }
 
