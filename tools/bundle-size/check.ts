@@ -59,9 +59,12 @@ function getSizeThreshold(): number {
  * @param pkgName Name of the package.
  * @param whyOutput Output string from `pnpm why <pkgName>`.
  *
- * @returns Number of unique versions.
+ * @returns Object containing unique versions and relevant output with devDependencies removed.
  */
-function countUniqueVersions(pkgName: string, whyOutput: string): Set<string> {
+function countUniqueVersions(pkgName: string, whyOutput: string): {
+    uniqueVersions: Set<string>;
+    relevantOutput: string;
+ } {
     // Ignore version from devDependencies
     const devDependenciesIndex = whyOutput.indexOf('devDependencies:');
     const relevantOutput = whyOutput.slice(0, devDependenciesIndex !== -1 ? devDependenciesIndex : undefined);
@@ -77,7 +80,10 @@ function countUniqueVersions(pkgName: string, whyOutput: string): Set<string> {
 
     const uniqueVersions = new Set(packageAllVersions);
 
-    return uniqueVersions;
+    return {
+        uniqueVersions,
+        relevantOutput,
+    };
 }
 
 /**
@@ -105,7 +111,7 @@ async function processDependencies(dependencies: Dependency[]): Promise<boolean>
 
     // Don't use .some to list all packages with duplicates inside one call to script.
     packagesWithReason.forEach(({ pkgName, versions }) => {
-        const uniqueVersions = countUniqueVersions(pkgName, versions);
+        const { uniqueVersions, relevantOutput } = countUniqueVersions(pkgName, versions);
 
         if (uniqueVersions.size === 1) {
             return;
@@ -115,6 +121,7 @@ async function processDependencies(dependencies: Dependency[]): Promise<boolean>
 
         console.error(`\n❌ Multiple versions of ${pkgName} found: `, uniqueVersions.size);
         console.error(Array.from(uniqueVersions).map((version) => `- ${version}`).join('\n'));
+        console.error(`\nInstalled version:\n${relevantOutput}`);
     });
 
     return hasDuplicates;
