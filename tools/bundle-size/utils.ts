@@ -139,13 +139,13 @@ export async function getCurrentBuildStats(buildType: BuildTargetEnv, target: Br
     const zipArchiveName = `${getBrowserConf(target).zipName}${ZIP_EXTENSION}`;
     const zip = await getFileSize(path.join(buildDir, zipArchiveName));
 
-    // Check if the target directory exists.
-    if (!fs.existsSync(path.join(buildDir, target))) {
-        throw new Error(`Target directory ${path.join(buildDir, target)} does not exist`);
-    }
-
     // Find unzipped directory for the specified target
-    const targetDir = path.join(buildDir, target);
+    const targetDir = path.join(buildDir, getBrowserConf(target).buildDir);
+
+    // Check if the target directory exists.
+    if (!fs.existsSync(targetDir)) {
+        throw new Error(`Target directory ${targetDir} does not exist`);
+    }
 
     // Get pages sizes
     const pages = await getFilesWithSizes(path.join(targetDir, PAGES_DIRNAME));

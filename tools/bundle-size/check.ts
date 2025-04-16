@@ -12,6 +12,7 @@
  */
 import util from 'util';
 import { exec } from 'child_process';
+import path from 'path';
 
 import {
     Browser,
@@ -274,7 +275,11 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
 
     try {
         const jsFileChecks = await Promise.all(FIREFOX_TARGETS.map(async (target) => {
-            const dir = `${BUILD_DIRNAME}/${buildType}/${target}`;
+            const dir = path.join(
+                BUILD_DIRNAME,
+                buildType,
+                getBrowserConf(target).buildDir,
+            );
 
             const jsFiles = await getFilesWithSizes(dir);
             return Object.entries(jsFiles)

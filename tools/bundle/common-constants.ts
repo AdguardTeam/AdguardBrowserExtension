@@ -72,15 +72,13 @@ export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
         browser: Browser.FirefoxStandalone,
         devtools: false,
         buildDir: Browser.FirefoxStandalone,
-        // TODO: (AG-41656) Remove this workaround and use the browser name as for all other builds
-        zipName: 'firefox',
+        zipName: Browser.FirefoxStandalone,
     },
     [Browser.FirefoxAmo]: {
         browser: Browser.FirefoxAmo,
         devtools: false,
         buildDir: Browser.FirefoxAmo,
-        // TODO: (AG-41656) Remove this workaround and use the browser name as for all other builds
-        zipName: 'firefox',
+        zipName: Browser.FirefoxAmo,
     },
     [Browser.Opera]: {
         browser: Browser.Opera,

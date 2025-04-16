@@ -323,7 +323,7 @@ pnpm crx keygen ./private/AdguardBrowserExtension
     cd ./build/beta
     ```
 
-1. Compare the generated `firefox.zip` file with the uploaded one.
+1. Compare the generated `firefox-standalone.zip` file with the uploaded one.
 
 #### <a name="dev-bundle-size"></a> Analyzing bundle size
 

@@ -3,7 +3,7 @@
  * Updates the bundle size record for a specific build environment and target
  * after successful deployment.
  *
- * Usage: Should be run after a build is validated and deployed, to update the reference size.
+ * Usage: Should be run after a build is validated to update the reference size.
  */
 /* eslint-disable no-console */
 import { isValidBrowserTarget, isValidBuildEnv } from '../constants';
