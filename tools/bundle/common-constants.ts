@@ -52,6 +52,7 @@ export type BrowserConfig = {
     browser: Browser;
     devtools: boolean;
     buildDir: string;
+    zipName: string;
 };
 
 export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
@@ -59,30 +60,38 @@ export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
         browser: Browser.Chrome,
         devtools: true,
         buildDir: Browser.Chrome,
+        zipName: Browser.Chrome,
     },
     [Browser.ChromeMv3]: {
         browser: Browser.ChromeMv3,
         devtools: true,
         buildDir: Browser.ChromeMv3,
+        zipName: Browser.ChromeMv3,
     },
     [Browser.FirefoxStandalone]: {
         browser: Browser.FirefoxStandalone,
         devtools: false,
         buildDir: Browser.FirefoxStandalone,
+        // TODO: (AG-41656) Remove this workaround and use the same name for all builds
+        zipName: 'firefox',
     },
     [Browser.FirefoxAmo]: {
         browser: Browser.FirefoxAmo,
         devtools: false,
         buildDir: Browser.FirefoxAmo,
+        // TODO: (AG-41656) Remove this workaround and use the same name for all builds
+        zipName: 'firefox',
     },
     [Browser.Opera]: {
         browser: Browser.Opera,
         devtools: true,
         buildDir: Browser.Opera,
+        zipName: Browser.Opera,
     },
     [Browser.Edge]: {
         browser: Browser.Edge,
         devtools: true,
         buildDir: Browser.Edge,
+        zipName: Browser.Edge,
     },
 };

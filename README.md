@@ -474,14 +474,15 @@ The browser extension project includes a comprehensive bundle size monitoring sy
 - Designed for CI/CD integration (Bamboo)
 
 ### How it works
-- On each build, the system compares the current bundle sizes to the reference values in `.bundle-sizes.json`.
+- On each beta or release build, the system compares the current bundle sizes to the reference values in `.bundle-sizes.json`.
 - If any size exceeds the configured threshold (and additionally the MV3 30MB limit for Chrome MV3 target), the check fails.
 - Duplicate package versions are detected and reported.
 
 ### To update the bundle sizes manually
 We have defined size limits in the project.
 
-1. When we build the beta or release version, the build process checks if we’re exceeding those limits. 2. If we exceed the limits, the developer should investigate the cause and decide whether the size increase is acceptable.
+1. When we build the beta or release version, the build process checks if we’re exceeding those limits.
+2. If we exceed the limits, the developer should investigate the cause and decide whether the size increase is acceptable.
 3. If the new sizes are justified, the developer updates the size values in the package and creates a commit.
 4. We then review and approve any changes to the sizes as part of the PR process.
 

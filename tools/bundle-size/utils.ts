@@ -11,12 +11,14 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { Browser, BuildTargetEnv } from '../constants';
+import { type Browser, type BuildTargetEnv } from '../constants';
+import { getBrowserConf } from '../bundle/helpers';
 
 import type { SizesFile, TargetInfo } from './constants';
 import {
     BUILD_DIRNAME,
     PAGES_DIRNAME,
+    SHARED_DIRNAME,
     VENDORS_DIRNAME,
     ZIP_EXTENSION,
 } from './constants';
@@ -131,17 +133,11 @@ const getFilesWithSizes = async (dirPath: string): Promise<Record<string, number
  *
  * @returns Bundle size stats for the current build.
  */
-export async function getCurrentBuildStats(buildType: string, target: string): Promise<TargetInfo> {
+export async function getCurrentBuildStats(buildType: BuildTargetEnv, target: Browser): Promise<TargetInfo> {
     const buildDir = path.resolve(ROOT_DIR, BUILD_DIRNAME, buildType);
 
-    // Get zip file size
-    let fileName = `${target}${ZIP_EXTENSION}`;
-    // Handle Firefox special case
-    // TODO: (AG-41656) Remove this workaround and use the same name for all builds
-    if (buildType !== BuildTargetEnv.Dev && (target === Browser.FirefoxAmo || target === Browser.FirefoxStandalone)) {
-        fileName = `firefox${ZIP_EXTENSION}`;
-    }
-    const zip = await getFileSize(path.join(buildDir, fileName));
+    const zipArchiveName = `${getBrowserConf(target).zipName}${ZIP_EXTENSION}`;
+    const zip = await getFileSize(path.join(buildDir, zipArchiveName));
 
     // Check if the target directory exists.
     if (!fs.existsSync(path.join(buildDir, target))) {
@@ -157,6 +153,9 @@ export async function getCurrentBuildStats(buildType: string, target: string): P
     // Get vendors sizes
     const vendors = await getFilesWithSizes(path.join(targetDir, VENDORS_DIRNAME));
 
+    // Get shared sizes
+    const shared = await getFilesWithSizes(path.join(targetDir, SHARED_DIRNAME));
+
     // Get version from package.json
     const packageJsonPath = path.resolve(ROOT_DIR, 'package.json');
     if (!fs.existsSync(packageJsonPath)) {
@@ -170,6 +169,7 @@ export async function getCurrentBuildStats(buildType: string, target: string): P
             zip,
             pages,
             vendors,
+            shared,
         },
         version,
         // In human-readable format, for quick debugging.
@@ -218,6 +218,21 @@ export async function writeSizesFile(sizesData: SizesFile): Promise<void> {
     } catch (error) {
         throw new Error(`Failed to write sizes file: ${error}`);
     }
+}
+
+/**
+ * Format a file size in human-readable format.
+ *
+ * @returns Formatted size string.
+ */
+export function formatSize(bytes: number): string {
+    if (bytes < 1024) {
+        return `${bytes.toFixed(2)} bytes`;
+    }
+    if (bytes < 1024 * 1024) {
+        return `${(bytes / 1024).toFixed(2)} KB`;
+    }
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 /**

@@ -6,9 +6,6 @@ plan:
   name: browser extension - build beta
 variables:
   dockerNode: adguard/extension-builder:22.14--0.2--0
-  # Possible size of change for the bundle and each entry point in percentage,
-  # if more than specified value - Size Check stage will fail
-  bundleSizeThreshold: '10'
 stages:
   - Size Check:
       manual: 'false'
@@ -50,11 +47,7 @@ Check Bundle Size:
             # Install dependencies
             pnpm install ${bamboo.varsPnpm}
 
-            # Determine build type based on plan name: if
             BUILD_TYPE="beta"
-            if [[ "${bamboo.planKey}" == *RELEASE* ]]; then
-              BUILD_TYPE="release"
-            fi
 
             echo "Executing build for $BUILD_TYPE"
 
@@ -64,11 +57,8 @@ Check Bundle Size:
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
-            # Check bundle size with threshold from bamboo variable or default
-            echo "Checking bundle sizes with threshold ${bamboo.bundleSizeThreshold:10}%"
-            BUILD_TYPE=$BUILD_TYPE BUNDLE_SIZE_THRESHOLD=${bamboo.bundleSizeThreshold:10} pnpm check-bundle-size
-
-            cp .bundle-sizes.json artifacts/bundle-sizes.json
+            echo "Checking bundle sizes"
+            BUILD_TYPE=$BUILD_TYPE pnpm check-bundle-size
   final-tasks:
     - script:
         interpreter: SHELL
@@ -85,15 +75,6 @@ Check Bundle Size:
             echo "Size before cleanup:" && du -h | tail -n 1
             rm -rf node_modules build
             echo "Size after cleanup:" && du -h | tail -n 1
-  artifacts:
-    # For information and debug
-    - name: bundle-sizes.json
-      location: artifacts
-      pattern: .bundle-sizes.json
-      shared: false
-      # TODO: Mark as required after merge to master
-      # (this is needed to pass bamboo checks for artifacts chain)
-      required: false
   requirements:
     - adg-docker: 'true'
 

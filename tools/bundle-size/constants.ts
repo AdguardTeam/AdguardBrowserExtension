@@ -18,11 +18,6 @@ import type { Browser, BuildTargetEnv } from '../constants';
 export const DEFAULT_SIZE_THRESHOLD = 10;
 
 /**
- * Special value to skip size checks.
- */
-export const SKIP_SIZE_CHECK_VALUE = '-1';
-
-/**
  * 30MB limit for MV3, selected heuristically (by CTO).
  * Enforced for Chrome MV3 builds.
  */
@@ -42,6 +37,11 @@ export const PAGES_DIRNAME = 'pages';
  * Directory name for vendors.
  */
 export const VENDORS_DIRNAME = 'vendors';
+
+/**
+ * Directory name for shared output files.
+ */
+export const SHARED_DIRNAME = 'shared';
 
 /**
  * File extension for zip archives.
@@ -69,6 +69,11 @@ export type BundleSizes = {
      * For comparing unzipped files in vendors/ folder (bytes)
      */
     vendors: Record<string, number>;
+
+    /**
+     * For comparing unzipped files in shared/ folder (bytes)
+     */
+    shared: Record<string, number>;
 };
 
 /**
@@ -100,4 +105,11 @@ export type SizesFile = {
     [buildType in BuildTargetEnv]: {
         [target in Browser]: TargetInfo;
     };
+};
+
+/**
+ * Type for dependencies from pnpm why --json
+ */
+export type Dependency = {
+    [packageName: string]: unknown;
 };
