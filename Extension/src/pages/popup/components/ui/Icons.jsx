@@ -112,8 +112,8 @@ export const Icons = () => {
                 <path stroke="#888" d="M6.429 6.796 17.604 18.61M6.429 18.576 17.605 6.76" />
             </symbol>
 
-            <symbol id="cross-white" width="24" height="24">
-                <path stroke="#f3f3f3" strokeLinecap="round" strokeWidth="1.5" d="m6.429 6.429 11.175 11.175M6.429 17.571 17.605 6.396" />
+            <symbol id="cross-promo" width="24" height="24">
+                <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="m6.429 6.429 11.175 11.175M6.429 17.571 17.605 6.396" />
             </symbol>
 
             <symbol id="play" viewBox="0 0 24 24">

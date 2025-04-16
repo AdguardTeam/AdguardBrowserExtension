@@ -88,7 +88,7 @@ export const PromoNotification = observer(() => {
                 onClick={handleNotificationClose}
             >
                 <svg className="icon icon--button">
-                    <use xlinkHref="#cross-white" />
+                    <use xlinkHref="#cross-promo" />
                 </svg>
             </button>
             <div className="promo-notification__content">
