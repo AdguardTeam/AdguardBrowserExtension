@@ -163,7 +163,6 @@ async function checkForDuplicatePackages(): Promise<boolean> {
  *
  * @param current Current build stats.
  * @param reference Reference build stats.
- * @param buildType Build environment (beta, release, etc.).
  * @param target Browser target.
  * @param threshold Allowed percentage increase.
  *
