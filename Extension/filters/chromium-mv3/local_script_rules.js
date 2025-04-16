@@ -9806,28 +9806,28 @@ export const localScriptRules = {
             }
         }
     },
-    '(function(){if(location.href.includes("/to/aHR0c"))try{var a=location.href.split("/to/");a=atob(a[1]).split("url=");location=decodeURIComponent(a[1])}catch(b){}})();': {
-        uniqueId: "0794ab0bfb2c033b40c21f896b58006a",
+    '(function(){if(location.href.includes("/to/aHR0c"))try{var a=location.href.split("/to/");a=atob(a[1]);location=decodeURIComponent(a)}catch(b){}})();': {
+        uniqueId: "faa1e5b373e282c3295d2edb730eab59",
         func: () => {
             try {
-                const o = "done";
-                if (Window.prototype.toString["0794ab0bfb2c033b40c21f896b58006a"] !== o) {
+                const e = "done";
+                if (Window.prototype.toString.faa1e5b373e282c3295d2edb730eab59 !== e) {
                     !function() {
                         if (location.href.includes("/to/aHR0c")) try {
-                            var o = location.href.split("/to/");
-                            o = atob(o[1]).split("url=");
-                            location = decodeURIComponent(o[1]);
-                        } catch (o) {}
+                            var e = location.href.split("/to/");
+                            e = atob(e[1]);
+                            location = decodeURIComponent(e);
+                        } catch (e) {}
                     }();
-                    Object.defineProperty(Window.prototype.toString, "0794ab0bfb2c033b40c21f896b58006a", {
-                        value: o,
+                    Object.defineProperty(Window.prototype.toString, "faa1e5b373e282c3295d2edb730eab59", {
+                        value: e,
                         enumerable: !1,
                         writable: !1,
                         configurable: !1
                     });
                 }
-            } catch (o) {
-                console.error('Error executing AG js rule with uniqueId "0794ab0bfb2c033b40c21f896b58006a" due to: ' + o);
+            } catch (e) {
+                console.error('Error executing AG js rule with uniqueId "faa1e5b373e282c3295d2edb730eab59" due to: ' + e);
             }
         }
     },
