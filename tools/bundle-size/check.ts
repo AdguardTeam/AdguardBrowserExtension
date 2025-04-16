@@ -1,7 +1,14 @@
 /**
  * @file Bundle size checker script
- * Tracks and compares bundle sizes across builds to detect significant size
- * increases.
+ * Tracks and compares bundle sizes across builds to detect significant size increases.
+ *
+ * Functionality:
+ * - Compares current build sizes to reference sizes for each build type and browser target.
+ * - Detects significant increases using configurable thresholds.
+ * - Ensures MV3 bundle stays under 30MB limit.
+ * - Checks for duplicate package versions using pnpm.
+ * - Stores historical size data in .bundle-sizes.json.
+ * - Designed for CI/CD integration.
  */
 import util from 'util';
 import { exec } from 'child_process';
@@ -34,7 +41,9 @@ import {
 const execAsync = util.promisify(exec);
 
 /**
- * Get the configured size threshold or default
+ * Get the configured size threshold or default.
+ *
+ * @returns Bundle size threshold as a percentage.
  */
 function getSizeThreshold(): number {
     const thresholdVar = process.env.BUNDLE_SIZE_THRESHOLD;
@@ -43,7 +52,11 @@ function getSizeThreshold(): number {
 }
 
 /**
- * Helper to handle async iteration without await in loop
+ * Helper to handle checking for duplicate package versions.
+ *
+ * @param dependencies List of dependency objects from pnpm why.
+ *
+ * @returns True if duplicates found, else false.
  */
 async function processDependencies(dependencies: any[]): Promise<boolean> {
     // Process dependencies in sequence with Promise.all
@@ -87,7 +100,9 @@ async function processDependencies(dependencies: any[]): Promise<boolean> {
 }
 
 /**
- * Check for duplicate package versions using pnpm
+ * Check for duplicate package versions using pnpm.
+ *
+ * @returns True if duplicates found, else false.
  */
 async function checkForDuplicatePackages(): Promise<boolean> {
     try {
@@ -111,9 +126,15 @@ async function checkForDuplicatePackages(): Promise<boolean> {
 }
 
 /**
- * Compare current build sizes with reference sizes
+ * Compare current build sizes with reference sizes.
  *
- * @returns Boolean indicating if there are any issues.
+ * @param current Current build stats.
+ * @param reference Reference build stats.
+ * @param buildType Build environment (beta, release, etc.).
+ * @param target Browser target.
+ * @param threshold Allowed percentage increase.
+ *
+ * @returns True if issues found, else false.
  */
 function compareBuildSizes(
     current: TargetInfo,
@@ -184,7 +205,10 @@ function compareBuildSizes(
 }
 
 /**
- * Main function to check bundle sizes
+ * Main function to check bundle sizes.
+ * Throws if any size or duplicate issues are detected.
+ *
+ * @returns
  */
 async function checkBundleSizes(): Promise<void> {
     // Require BUILD_ENV to be set

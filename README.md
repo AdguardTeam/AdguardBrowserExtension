@@ -59,6 +59,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
     - [Linter](#dev-linter)
     - [Update localizations](#dev-localizations)
 - [Permissions required](#permissions-required)
+- [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 - [Auto-publish builds](#auto-publish-builds)
 - [Minimum supported browser versions](#browser-compatibility)
 
@@ -459,6 +460,48 @@ pnpm locales info
 - `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+
+## <a name="dev-bundle-size-monitoring"></a> Bundle Size Monitoring
+
+The browser extension project includes a comprehensive bundle size monitoring system, located in `tools/bundle-size`. This system helps ensure that our extension bundles remain within defined size limits, and that any significant increases are reviewed and justified.
+
+### Key Features
+- Tracks and compares bundle sizes across different build types (`beta`, `release`, etc.) and browser targets (`chrome`, `chrome-mv3`, `edge`, etc.)
+- Detects significant size increases using configurable thresholds (default: 10%)
+- Ensures Chrome MV3 bundle stays under the 30MB limit
+- Checks for duplicate package versions using `pnpm`
+- Stores historical size data in `.bundle-sizes.json`
+- Designed for CI/CD integration (Bamboo)
+
+### How it works
+- On each build, the system compares the current bundle sizes to the reference values in `.bundle-sizes.json`.
+- If any size exceeds the configured threshold (and additionally the MV3 30MB limit for Chrome MV3 target), the check fails.
+- Duplicate package versions are detected and reported.
+
+### To update the bundle sizes manually
+We have defined size limits in the project.
+
+1. When we build the beta or release version, the build process checks if we’re exceeding those limits. 2. If we exceed the limits, the developer should investigate the cause and decide whether the size increase is acceptable.
+3. If the new sizes are justified, the developer updates the size values in the package and creates a commit.
+4. We then review and approve any changes to the sizes as part of the PR process.
+
+#### Steps:
+1. Run the build for the desired environment (e.g., `pnpm beta` or `pnpm release`).
+2. If the build fails due to bundle size limits, investigate the cause (e.g., new dependencies, large assets).
+3. If the increase is justified, update the reference sizes by running:
+
+    ```shell
+    pnpm ts-node tools/bundle-size/update.ts
+    ```
+    (Set the `BUILD_ENV` and `TARGET_BROWSER` environment variables as needed.)
+
+4. Commit the updated `.bundle-sizes.json` file and include justification in your PR.
+5. The changes will be reviewed and approved as part of the PR process.
+
+#### Notes
+- Size thresholds and limits are configured in `tools/bundle-size/constants.ts`.
+- Bundle size checks are enforced in CI/CD and should be run locally for verification.
+- For more details, see the code and JSDoc in `tools/bundle-size/`.
 
 ## <a name="auto-publish-builds"></a> Auto-publish builds
 

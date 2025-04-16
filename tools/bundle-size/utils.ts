@@ -1,6 +1,11 @@
 /**
  * @file Bundle size utilities
- * Common utility functions for the bundle size monitoring system
+ * Common utility functions for the bundle size monitoring system.
+ *
+ * Provides:
+ * - File and directory size calculation helpers
+ * - Read/write helpers for .bundle-sizes.json
+ * - Build stats extraction for CI and local use
  */
 import fs from 'fs';
 import path from 'path';
@@ -22,13 +27,22 @@ const __dirname = path.dirname(__filename);
 /* eslint-enable @typescript-eslint/naming-convention */
 
 // Path constants
+/**
+ * Root directory of the project.
+ */
 export const ROOT_DIR = path.resolve(__dirname, '../../');
+
+/**
+ * Path to the .bundle-sizes.json file.
+ */
 export const SIZES_FILE_PATH = path.resolve(ROOT_DIR, '.bundle-sizes.json');
 
 /**
- * Get file size in bytes
+ * Get file size in bytes.
  *
- * @param filePath Path to the file
+ * @param filePath Path to the file.
+ *
+ * @returns File size in bytes.
  */
 export async function getFileSize(filePath: string): Promise<number> {
     try {
@@ -40,9 +54,11 @@ export async function getFileSize(filePath: string): Promise<number> {
 }
 
 /**
- * Get all files in a directory and its subdirectories
+ * Get all files in a directory and its subdirectories.
  *
- * @param dirPath Path to the directory
+ * @param dirPath Path to the directory.
+ *
+ * @returns List of file paths.
  */
 export async function getAllFilesInDir(dirPath: string): Promise<string[]> {
     try {
@@ -66,7 +82,9 @@ export async function getAllFilesInDir(dirPath: string): Promise<string[]> {
 }
 
 /**
- * Read the saved sizes file
+ * Read the saved sizes file (.bundle-sizes.json).
+ *
+ * @returns Parsed sizes data.
  */
 export async function readSizesFile(): Promise<SizesFile> {
     try {
@@ -87,7 +105,7 @@ export async function readSizesFile(): Promise<SizesFile> {
  *
  * @param dirPath Path to the directory.
  *
- * @returns A promise that resolves to an object mapping file paths to their sizes.
+ * @returns Object mapping file paths to sizes in bytes.
  */
 const getFilesWithSizes = async (dirPath: string): Promise<Record<string, number>> => {
     if (!fs.existsSync(dirPath)) {
@@ -106,7 +124,12 @@ const getFilesWithSizes = async (dirPath: string): Promise<Record<string, number
 };
 
 /**
- * Get the size statistics for the current build
+ * Get the size statistics for the current build.
+ *
+ * @param buildType Build environment (beta, release, etc.).
+ * @param target Browser target.
+ *
+ * @returns Bundle size stats for the current build.
  */
 export async function getCurrentBuildStats(buildType: string, target: string): Promise<TargetInfo> {
     const buildDir = path.resolve(ROOT_DIR, BUILD_DIRNAME, buildType);
@@ -155,7 +178,11 @@ export async function getCurrentBuildStats(buildType: string, target: string): P
 }
 
 /**
- * Save the build statistics to the sizes file
+ * Save the build statistics to the sizes file.
+ *
+ * @param buildType Build environment.
+ * @param target Browser target.
+ * @param currentStats Current build stats.
  */
 export async function saveBuildStats(
     buildType: BuildTargetEnv,
@@ -181,7 +208,9 @@ export async function saveBuildStats(
 }
 
 /**
- * Write the sizes data to the sizes file
+ * Write the sizes data to the sizes file.
+ *
+ * @param sizesData Data to write.
  */
 export async function writeSizesFile(sizesData: SizesFile): Promise<void> {
     try {
@@ -192,7 +221,11 @@ export async function writeSizesFile(sizesData: SizesFile): Promise<void> {
 }
 
 /**
- * Format a percentage with sign
+ * Format a percentage with sign (e.g., "+5.00%", "-3.20%").
+ *
+ * @param value Value to format.
+ *
+ * @returns Formatted percentage string.
  */
 export function formatPercentage(value: number): string {
     const sign = value >= 0 ? '+' : '';

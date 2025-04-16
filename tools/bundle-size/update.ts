@@ -2,6 +2,8 @@
  * @file Bundle size update script
  * Updates the bundle size record for a specific build environment and target
  * after successful deployment.
+ *
+ * Usage: Should be run after a build is validated and deployed, to update the reference size.
  */
 /* eslint-disable no-console */
 import { isValidBrowserTarget, isValidBuildEnv } from '../constants';
@@ -9,7 +11,11 @@ import { isValidBrowserTarget, isValidBuildEnv } from '../constants';
 import { getCurrentBuildStats, saveBuildStats } from './utils';
 
 /**
- * Main function to update a specific bundle size record
+ * Main function to update a specific bundle size record.
+ *
+ * Requires BUILD_ENV and TARGET_BROWSER environment variables to be set.
+ * Updates the .bundle-sizes.json file with the latest build stats for the given target.
+ * Throws if invalid build type or target is provided.
  */
 async function updateBundleSize(): Promise<void> {
     // Require BUILD_ENV and TARGET to be set
