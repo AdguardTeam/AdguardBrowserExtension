@@ -183,7 +183,7 @@ const opera = async (options: CommanderOptions) => {
     }
 };
 
-const firefox = async (options: CommanderOptions) => {
+const firefoxAmo = async (options: CommanderOptions) => {
     try {
         await bundleFirefoxAmo(options);
     } catch (e) {
@@ -238,11 +238,10 @@ program
     });
 
 program
-    // FIXME: CHECK NAME
     .command(Browser.FirefoxAmo)
     .description('Builds extension for firefox browser')
     .action(() => {
-        firefox(program.opts());
+        firefoxAmo(program.opts());
     });
 
 program
