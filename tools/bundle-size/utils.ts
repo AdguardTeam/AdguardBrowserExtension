@@ -238,11 +238,14 @@ export function formatSize(bytes: number): string {
 /**
  * Format a percentage with sign (e.g., "+5.00%", "-3.20%").
  *
- * @param value Value to format.
+ * @param oldValue Old value.
+ * @param newValue New value.
  *
  * @returns Formatted percentage string.
  */
-export function formatPercentage(value: number): string {
-    const sign = value >= 0 ? '+' : '';
-    return `${sign}${value.toFixed(2)}%`;
+export function formatPercentage(oldValue: number, newValue: number): string {
+    const diff = newValue - oldValue;
+    const percentage = (diff / oldValue) * 100;
+
+    return `${percentage >= 0 ? '+' : ''}${percentage.toFixed(2)}%`;
 }

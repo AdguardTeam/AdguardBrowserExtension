@@ -49,22 +49,35 @@ Test build:
 
             pnpm install ${bamboo.varsPnpm}
 
-            # Create dev build
-            pnpm dev
-
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
-            # Move all artifacts to the artifacts directory.
-            mv build/dev/build.txt artifacts/
+            # Run each target separately to identify from which firefox target
+            # (firefox-standalone or firefox-amo) the zip 'firefox.zip' was created.
+
             # Add postfix to all zip files for easier identification target env.
+            pnpm dev chrome
             mv build/dev/chrome.zip artifacts/chrome-dev.zip
-            mv build/dev/chrome-mv3.zip artifacts/chrome-mv3-dev.zip
             mv build/dev/chrome.crx artifacts/chrome-dev.crx
+
+            pnpm dev chrome-mv3
+            mv build/dev/chrome-mv3.zip artifacts/chrome-mv3-dev.zip
+
+            pnpm dev edge
             mv build/dev/edge.zip artifacts/edge-dev.zip
-            mv build/dev/firefox-amo.zip artifacts/firefox-amo-dev.zip
+
+            # TODO: (AG-41656) Remove this renaming when will start use the browser name for zip filename
+            pnpm dev firefox-amo
+            mv build/dev/firefox.zip artifacts/firefox-amo-dev.zip
+
+            # TODO: (AG-41656) Remove this renaming when will start use the browser name for zip filename
+            pnpm dev firefox-standalone
             mv build/dev/firefox-standalone.zip artifacts/firefox-standalone-dev.zip
+
+            pnpm dev opera
             mv build/dev/opera.zip artifacts/opera-dev.zip
+
+            mv build/dev/build.txt artifacts/
   final-tasks:
     - script:
         interpreter: SHELL

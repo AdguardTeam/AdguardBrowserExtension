@@ -61,8 +61,8 @@ function getSizeThreshold(): number {
  *
  * @returns Number of unique versions.
  */
-function countUniqueVersions(pkgName: string, whyOutput: string): number {
-    // Ignore devDependencies
+function countUniqueVersions(pkgName: string, whyOutput: string): Set<string> {
+    // Ignore version from devDependencies
     const devDependenciesIndex = whyOutput.indexOf('devDependencies:');
     const relevantOutput = whyOutput.slice(0, devDependenciesIndex !== -1 ? devDependenciesIndex : undefined);
 
@@ -71,10 +71,13 @@ function countUniqueVersions(pkgName: string, whyOutput: string): number {
     const packageNameAsRegex = new RegExp(`^.*\\s${escapedPkgName}\\s(.*)$`, 'gm');
     const instanceMatches = relevantOutput.matchAll(packageNameAsRegex);
 
-    const packageAllVersions = Array.from(instanceMatches).map((match) => match[1]?.replace(' peer', ''));
+    const packageAllVersions = Array.from(instanceMatches)
+        .map((match) => match[1]?.replace(' peer', ''))
+        .filter((version) => version !== undefined);
+
     const uniqueVersions = new Set(packageAllVersions);
 
-    return uniqueVersions.size;
+    return uniqueVersions;
 }
 
 /**
@@ -104,15 +107,14 @@ async function processDependencies(dependencies: Dependency[]): Promise<boolean>
     packagesWithReason.forEach(({ pkgName, versions }) => {
         const uniqueVersions = countUniqueVersions(pkgName, versions);
 
-        if (uniqueVersions === 1) {
+        if (uniqueVersions.size === 1) {
             return;
         }
 
         hasDuplicates = true;
 
-        console.log(`\n❌ Multiple versions of ${pkgName} found:`);
-        console.log('\n', uniqueVersions);
-        console.log(versions);
+        console.error(`\n❌ Multiple versions of ${pkgName} found: `, uniqueVersions.size);
+        console.error(Array.from(uniqueVersions).map((version) => `- ${version}`).join('\n'));
     });
 
     return hasDuplicates;
@@ -127,17 +129,21 @@ async function checkForDuplicatePackages(): Promise<boolean> {
     try {
         console.log('\nChecking for duplicate package versions...');
 
-        // Run pnpm why command to get dependency tree
-        const { stdout } = await execAsync('pnpm why --json');
+        // Run pnpm list command to get dependency tree
+        const { stdout } = await execAsync('pnpm list --json');
 
         // Parse JSON response
-        const result = JSON.parse(stdout);
-        if (!result.dependencies || !Array.isArray(result.dependencies)) {
+        const [result] = JSON.parse(stdout);
+
+        if (!result.dependencies) {
             console.error('Invalid output from pnpm why command');
             return false;
         }
 
-        return await processDependencies(result.dependencies);
+        const dependenciesAsArr = Object.entries(result.dependencies)
+            .map(([key, value]) => ({ [key]: value }));
+
+        return await processDependencies(dependenciesAsArr);
     } catch (error) {
         console.error(`Error checking for duplicate packages: ${error}`);
         return false;
@@ -174,9 +180,9 @@ function compareBuildSizes(
 
     if (oldSize > 0 && changePercent > threshold) {
         hasIssues = true;
-        console.log(`- ${zipArchiveName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+        console.error(`- ${zipArchiveName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
     } else {
-        console.log(`- ${zipArchiveName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
+        console.log(`- ${zipArchiveName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
     }
 
     // Compare pages files if they exist in reference
@@ -188,9 +194,9 @@ function compareBuildSizes(
 
             if (oldSize > 0 && changePercent > threshold) {
                 hasIssues = true;
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+                console.error(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
             } else {
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
+                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
             }
         });
     }
@@ -204,14 +210,46 @@ function compareBuildSizes(
 
             if (oldSize > 0 && changePercent > threshold) {
                 hasIssues = true;
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+                console.error(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
             } else {
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
+                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
             }
         });
     }
 
     return hasIssues;
+}
+
+/**
+ * Check the size of the Chrome MV3 bundle.
+ *
+ * @param buildType Build environment (beta, release, etc.).
+ *
+ * @returns True if the size exceeds the limit, else false.
+ */
+async function checkChromeMv3BundleSize(buildType: BuildTargetEnv): Promise<boolean> {
+    console.log('\n\nChecking Chrome MV3 bundle size...');
+
+    try {
+        // Get current build stats for this target
+        // eslint-disable-next-line no-await-in-loop
+        const currentStats = await getCurrentBuildStats(buildType, Browser.ChromeMv3);
+
+        const mv3Size = currentStats.stats.zip;
+        const zipArchiveName = `${getBrowserConf(Browser.ChromeMv3).zipName}${ZIP_EXTENSION}`;
+
+        if (mv3Size && mv3Size > MAX_MV3_SIZE_BYTES) {
+            console.error(`${zipArchiveName}: ${(mv3Size / (1024 * 1024)).toFixed(2)}MB - Exceeds maximum allowed size of 30MB! ❌`);
+
+            return true;
+        }
+
+        return false;
+    } catch (e) {
+        console.error(`Error checking Chrome MV3 bundle size: ${e}`);
+
+        return true;
+    }
 }
 
 /**
@@ -224,6 +262,8 @@ function compareBuildSizes(
  */
 async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boolean> {
     const FIREFOX_TARGETS = [Browser.FirefoxAmo, Browser.FirefoxStandalone];
+
+    console.log('\n\nChecking Firefox Add-ons Store .js file sizes...');
 
     try {
         const jsFileChecks = await Promise.all(FIREFOX_TARGETS.map(async (target) => {
@@ -242,7 +282,7 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
             .forEach(({ file, size }) => {
                 if (size > MAX_FIREFOX_SIZE_BYTES) {
                     found = true;
-                    console.error(`Firefox Add-ons Store limit exceeded: ${file} is ${(size / (1024 * 1024)).toFixed(2)}MB (> 4MB)`);
+                    console.error(`Firefox Add-ons Store limit exceeded: ${file} is ${(size / (1024 * 1024)).toFixed(2)}MB (> 4MB) ❌`);
                 }
             });
 
@@ -310,6 +350,7 @@ async function checkBundleSizes(): Promise<void> {
                 );
 
                 hasSizeIssues = hasSizeIssues || hasBuildSizesIssue;
+
                 continue;
             }
 
@@ -317,23 +358,17 @@ async function checkBundleSizes(): Promise<void> {
             console.log(`No reference sizes available for comparison for ${target}. This build will be used as reference.`);
             // eslint-disable-next-line no-await-in-loop
             await saveBuildStats(buildType, target, currentStats);
-
-            // Check max size only for chrome-mv3 target, because we pack a lot
-            // of filters data inside this target.
-            if (target === Browser.ChromeMv3) {
-                const mv3Size = currentStats.stats.zip;
-                const zipArchiveName = `${getBrowserConf(target).zipName}${ZIP_EXTENSION}`;
-
-                if (mv3Size && mv3Size > MAX_MV3_SIZE_BYTES) {
-                    console.error(`${zipArchiveName}: ${(mv3Size / (1024 * 1024)).toFixed(2)}MB - Exceeds maximum allowed size of 30MB!`);
-                    hasSizeIssues = true;
-                    continue;
-                }
-            }
         } catch (error) {
             // In normal mode, rethrow the error
             throw new Error(`Error processing target ${target}: ${error}`);
         }
+    }
+
+    let hasChromeMv3SizeIssues = false;
+    // Check max size only for chrome-mv3 target, because we pack a lot
+    // of filters data inside this target.
+    if (targets.includes(Browser.ChromeMv3)) {
+        hasChromeMv3SizeIssues = await checkChromeMv3BundleSize(buildType);
     }
 
     // Check for Firefox Add-ons Store .js file size limit (4MB per .js file)
@@ -343,8 +378,8 @@ async function checkBundleSizes(): Promise<void> {
     const hasDuplicates = await checkForDuplicatePackages();
 
     // Exit with error if there are issues in any target
-    if (hasSizeIssues || hasDuplicates || hasFirefoxJsIssues) {
-        throw new Error('Bundle size check failed due to size issues or duplicate packages.');
+    if (hasSizeIssues || hasChromeMv3SizeIssues || hasDuplicates || hasFirefoxJsIssues) {
+        throw new Error('Bundle size check failed due to size issues or duplicate packages');
     }
 
     console.log('Bundle size check completed successfully.');
@@ -354,5 +389,3 @@ async function checkBundleSizes(): Promise<void> {
 checkBundleSizes().catch((err) => {
     throw new Error(`Error checking bundle sizes: ${err}`);
 });
-
-// FIXME: Check: Firefox Extensions Store has a limit of 4 MB for all .js files.
