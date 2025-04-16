@@ -125,11 +125,11 @@ const spring25Notification: PromoNotification = {
             title: '暖春優惠',
             btn: '立即领取',
         },
-        ja: {
-            // FIXME: Not translated yet
-            title: 'AdGuard Christmas キャンペーン',
-            btn: 'プレゼントはこちら',
-        },
+        // For Japanese, there will be other promo soon
+        // ja: {
+        //     title: 'AdGuard Christmas キャンペーン',
+        //     btn: 'プレゼントはこちら',
+        // },
         ko: {
             title: '봄맞이 프로모션',
             btn: '자세히 알아보기',
