@@ -6,6 +6,8 @@
 import util from 'util';
 import { exec } from 'child_process';
 
+import { filesize } from 'filesize';
+
 import {
     Browser,
     BuildTargetEnv,
@@ -15,17 +17,15 @@ import {
 
 import type { TargetInfo } from './constants';
 import {
-    DEFAULT_SIZE_THRESHOLD as DEFAULT_THRESHOLD,
-    SKIP_SIZE_CHECK_VALUE as SKIP_CHECK,
-    MAX_MV3_SIZE_BYTES as MAX_MV3_SIZE,
-    ZIP_EXTENSION,
+    DEFAULT_SIZE_THRESHOLD,
+    SKIP_SIZE_CHECK_VALUE,
     MAX_MV3_SIZE_BYTES,
+    ZIP_EXTENSION,
 } from './constants';
 import {
     getCurrentBuildStats,
     readSizesFile,
     saveBuildStats,
-    formatSize,
     formatPercentage,
 } from './utils';
 
@@ -39,7 +39,7 @@ const execAsync = util.promisify(exec);
 function getSizeThreshold(): number {
     const thresholdVar = process.env.BUNDLE_SIZE_THRESHOLD;
     const threshold = Number(thresholdVar);
-    return !Number.isNaN(threshold) ? threshold : DEFAULT_THRESHOLD;
+    return !Number.isNaN(threshold) ? threshold : DEFAULT_SIZE_THRESHOLD;
 }
 
 /**
@@ -132,19 +132,20 @@ function compareBuildSizes(
     const changePercent = oldSize > 0 ? ((newSize - oldSize) / oldSize) * 100 : 0;
 
     let fileName = `${target}${ZIP_EXTENSION}`;
-    // TODO: Remove this extra case (here and in webpack)
+    // Firefox special case
+    // TODO: (AG-41656) Remove this workaround and use the same name for all builds
     if (buildType !== BuildTargetEnv.Dev && (target === Browser.FirefoxAmo || target === Browser.FirefoxStandalone)) {
         fileName = `firefox${ZIP_EXTENSION}`;
     }
 
     if (target === Browser.ChromeMv3 && newSize > MAX_MV3_SIZE_BYTES) {
         hasIssues = true;
-        console.log(`- ${fileName}: ${formatSize(newSize)} - Exceeds maximum allowed size of 30MB!`);
+        console.log(`- ${fileName}: ${filesize(newSize)} - Exceeds maximum allowed size of 30MB!`);
     } else if (oldSize > 0 && changePercent > threshold) {
         hasIssues = true;
-        console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+        console.log(`- ${fileName}: ${filesize(oldSize)} → ${filesize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
     } else {
-        console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
+        console.log(`- ${fileName}: ${filesize(oldSize)} → ${filesize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
     }
 
     // Compare pages files if they exist in reference
@@ -156,9 +157,9 @@ function compareBuildSizes(
 
             if (oldSize > 0 && changePercent > threshold) {
                 hasIssues = true;
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+                console.log(`- ${fileName}: ${filesize(oldSize)} → ${filesize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
             } else {
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
+                console.log(`- ${fileName}: ${filesize(oldSize)} → ${filesize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
             }
         });
     }
@@ -172,9 +173,9 @@ function compareBuildSizes(
 
             if (oldSize > 0 && changePercent > threshold) {
                 hasIssues = true;
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+                console.log(`- ${fileName}: ${filesize(oldSize)} → ${filesize(newSize)} (${formatPercentage(oldSize - newSize)}) - Exceeds ${threshold}% threshold! ❌`);
             } else {
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
+                console.log(`- ${fileName}: ${filesize(oldSize)} → ${filesize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize - newSize)}) ✅` : '(new file) ✅'}`);
             }
         });
     }
@@ -200,8 +201,8 @@ async function checkBundleSizes(): Promise<void> {
     const specificTarget = process.env.TARGET_BROWSER;
 
     // specificTarget is optional, but if provided, it must be valid.
-    if (specificTarget && !isValidBrowserTarget(specificTarget)) {
-        throw new Error(`Invalid TARGET_BROWSER: ${buildType}`);
+    if (specificTarget !== undefined && !isValidBrowserTarget(specificTarget)) {
+        throw new Error(`Invalid TARGET_BROWSER: ${specificTarget}`);
     }
 
     // Define all possible targets to check
@@ -209,7 +210,7 @@ async function checkBundleSizes(): Promise<void> {
 
     // Get the size threshold
     const threshold = getSizeThreshold();
-    if (threshold === Number(SKIP_CHECK)) {
+    if (threshold === Number(SKIP_SIZE_CHECK_VALUE)) {
         console.log(`Skipping size check, because threshold is set to special skip value: ${threshold}`);
         return;
     }
@@ -254,7 +255,7 @@ async function checkBundleSizes(): Promise<void> {
             // of filters data inside this target.
             if (target === Browser.ChromeMv3) {
                 const mv3Size = currentStats.stats.zip;
-                if (mv3Size && mv3Size > MAX_MV3_SIZE) {
+                if (mv3Size && mv3Size > MAX_MV3_SIZE_BYTES) {
                     console.error(`${Browser.ChromeMv3}${ZIP_EXTENSION}: ${(mv3Size / (1024 * 1024)).toFixed(2)}MB - Exceeds maximum allowed size of 30MB!`);
                     hasSizeIssues = true;
                     continue;

@@ -5,9 +5,16 @@
 import type { Browser, BuildTargetEnv } from '../constants';
 
 // Constants
-export const DEFAULT_SIZE_THRESHOLD = 10; // 10% threshold
+
+/**
+ * 10% threshold for bundle size changes and each entry point size
+ */
+export const DEFAULT_SIZE_THRESHOLD = 10;
 export const SKIP_SIZE_CHECK_VALUE = '-1';
-export const MAX_MV3_SIZE_BYTES = 30 * 1024 * 1024; // 30MB limit for MV3
+/**
+ * 30MB limit for MV3, selected heuristically (by CTO).
+ */
+export const MAX_MV3_SIZE_BYTES = 30 * 1024 * 1024;
 export const BUILD_DIRNAME = 'build';
 export const PAGES_DIRNAME = 'pages';
 export const VENDORS_DIRNAME = 'vendors';

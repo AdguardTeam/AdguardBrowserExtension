@@ -6,6 +6,8 @@ plan:
   name: browser extension - build release
 variables:
   dockerNode: adguard/extension-builder:22.14--0.2--0
+  # Possible size of change for the bundle and each entry point in percentage,
+  # if more than specified value - Size Check stage will fail
   bundleSizeThreshold: '10'
 
 stages:
@@ -85,11 +87,13 @@ Check Bundle Size:
             rm -rf node_modules build
             echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
-    # FIXME: Do not forget to push bundle-sizes.json to the repository
+    # For information and debug
     - name: bundle-sizes.json
       location: artifacts
-      pattern: bundle-sizes.json
-      shared: true
+      pattern: .bundle-sizes.json
+      shared: false
+      # TODO: Mark as required after merge to master
+      # (this is needed to pass bamboo checks for artifacts chain)
       required: false
   requirements:
     - adg-docker: 'true'

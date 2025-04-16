@@ -36,12 +36,6 @@ static.adtidy.org:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh chrome-extension-beta
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          selectedRepository: "26051221"
-          # Trigger commit to run bundle-size-update.yaml plan
-          commitMessage: "should update bundle sizes for chrome#beta after deploy"
   final-tasks: []
   variables: {}
   requirements:
@@ -79,12 +73,6 @@ Chrome WebStore MV3:
 
             # Publish MV3 Beta to Experimental MV3 item
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          selectedRepository: "26051221"
-          # Trigger commit to run bundle-size-update.yaml plan
-          commitMessage: "should update bundle sizes for chrome#beta after deploy"
   final-tasks: []
   variables: {}
   requirements:

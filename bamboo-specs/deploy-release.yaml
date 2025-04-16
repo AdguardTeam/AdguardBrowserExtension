@@ -75,12 +75,6 @@ Chrome WebStore MV2:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-mv2
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          selectedRepository: "26051221"
-          # Trigger commit to run bundle-size-update.yaml plan
-          commitMessage: "should update bundle sizes for chrome#release after deploy"
   final-tasks: []
   variables: {}
   requirements:
@@ -118,12 +112,6 @@ Chrome WebStore MV3:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          selectedRepository: "26051221"
-          # Trigger commit to run bundle-size-update.yaml plan
-          commitMessage: "should update bundle sizes for chrome-mv3#release after deploy"
   final-tasks: []
   variables: {}
   requirements:
@@ -162,12 +150,6 @@ Addons Mozilla:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-amo
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          selectedRepository: "26051221"
-          # Trigger commit to run bundle-size-update.yaml plan
-          commitMessage: "should update bundle sizes for firefox-amo#release after deploy"
   final-tasks: []
   variables: {}
   requirements:
@@ -205,12 +187,6 @@ Edge Addons:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh browser-extension-edge
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          selectedRepository: "26051221"
-          # Trigger commit to run bundle-size-update.yaml plan
-          commitMessage: "should update bundle sizes for edge#release after deploy"
   final-tasks: []
   variables: {}
   requirements:

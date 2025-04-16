@@ -114,7 +114,7 @@ export async function getCurrentBuildStats(buildType: string, target: string): P
     // Get zip file size
     let fileName = `${target}${ZIP_EXTENSION}`;
     // Handle Firefox special case
-    // TODO: Remove this extra case (here and in webpack)
+    // TODO: (AG-41656) Remove this workaround and use the same name for all builds
     if (buildType !== BuildTargetEnv.Dev && (target === Browser.FirefoxAmo || target === Browser.FirefoxStandalone)) {
         fileName = `firefox${ZIP_EXTENSION}`;
     }
@@ -189,19 +189,6 @@ export async function writeSizesFile(sizesData: SizesFile): Promise<void> {
     } catch (error) {
         throw new Error(`Failed to write sizes file: ${error}`);
     }
-}
-
-/**
- * Format a file size in human-readable format
- */
-export function formatSize(bytes: number): string {
-    if (bytes < 1024) {
-        return `${bytes.toFixed(2)} bytes`;
-    }
-    if (bytes < 1024 * 1024) {
-        return `${(bytes / 1024).toFixed(2)} KB`;
-    }
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 /**

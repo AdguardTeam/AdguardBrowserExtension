@@ -35,11 +35,6 @@ static.adtidy.org:
             ls -la
 
             ./bamboo-deploy-publisher/deploy.sh firefox-extension-beta
-    - any-task:
-        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-        configuration:
-          commitMessage: "should update bundle sizes for firefox-amo#beta after deploy"
-          selectedRepository: defaultRepository
   final-tasks: []
   variables: {}
   requirements:

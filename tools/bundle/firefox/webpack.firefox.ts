@@ -57,7 +57,7 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
 
     let zipFilename = `${browserConfig.browser}.zip`;
-    // TODO: Remove this
+    // TODO: (AG-41656) Remove this workaround and use the same name for all builds
     if (!isDev) {
         zipFilename = 'firefox.zip';
     }

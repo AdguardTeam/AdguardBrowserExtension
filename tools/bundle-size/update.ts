@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
 /**
  * @file Bundle size update script
  * Updates the bundle size record for a specific build environment and target
  * after successful deployment.
  */
+/* eslint-disable no-console */
 import { isValidBrowserTarget, isValidBuildEnv } from '../constants';
 
 import { getCurrentBuildStats, saveBuildStats } from './utils';
