@@ -194,7 +194,7 @@ const Filters = observer(() => {
         }
 
         return translator.getMessage('options_filters_enabled_per_group', {
-            enabled: enabledFiltersInGroup.length,
+            current: enabledFiltersInGroup.length,
             total: totalFiltersInGroup.length,
         });
     };
