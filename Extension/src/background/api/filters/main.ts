@@ -18,7 +18,6 @@
 
 import { logger } from '../../../common/logger';
 import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
-import { getErrorMessage } from '../../../common/error';
 import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
 import {
@@ -102,7 +101,7 @@ export class FiltersApi {
             await FiltersApi.loadI18nMetadataFromBackend(true);
             await FiltersApi.loadMetadataFromFromBackend(true);
         } catch (e) {
-            logger.debug('Cannot load remote metadata due to: ', getErrorMessage(e));
+            logger.debug('Cannot load remote metadata due to: ', e);
             // loading metadata from local assets is needed to avoid the extension init stopping after the install
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
             if (shouldUseLocalAssets) {
@@ -203,7 +202,7 @@ export class FiltersApi {
                 // check for updates - without fresh metadata we still can load
                 // newest filter, checking it's version will be against the old,
                 // local metadata, which is possible outdated.
-                logger.error('Failed to update metadata due to an error:', getErrorMessage(e));
+                logger.error('Failed to update metadata due to an error: ', e);
             }
         }
 
@@ -327,7 +326,7 @@ export class FiltersApi {
             await FiltersApi.loadI18nMetadataFromBackend(false);
             await FiltersApi.loadMetadataFromFromBackend(false);
         } catch (e) {
-            logger.error('Cannot load local metadata due to: ', getErrorMessage(e));
+            logger.error('Cannot load local metadata due to: ', e);
         }
 
         FiltersApi.loadFilteringStates();
@@ -346,7 +345,7 @@ export class FiltersApi {
 
             return loadedFiltersIds;
         } catch (e) {
-            logger.error('Cannot load local filters due to: ', getErrorMessage(e));
+            logger.error('Cannot load local filters due to: ', e);
 
             return [];
         }
