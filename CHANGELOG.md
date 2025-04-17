@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased <!-- release/v5.2 -->
 
 ### Added
+
 - Support for Chrome's User Scripts API that allows more reliable script
   injection in MV3 if developer mode is enabled.
 - Send last filters update time during issue reporting [#3055].
