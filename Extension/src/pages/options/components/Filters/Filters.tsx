@@ -185,17 +185,22 @@ const Filters = observer(() => {
      *
      * @param group Group data.
      *
-     * @returns Filter details for the group:
-     * - if group is off — "No filters enabled",
-     * - if group is on — "Enabled: <x> of <y>".
+     * @returns `null` if group is turned off
+     * or string with filter details if group is turned on:
+     * - if some filters enabled — `Enabled: <x> of <y>`;
+     * - if no filters enabled — `No filters enabled`.
      */
-    const getFilterDetailsForGroup = (group: CategoriesGroupData): string => {
+    const getFilterDetailsForGroup = (group: CategoriesGroupData): string | null => {
         if (!group.enabled) {
-            return translator.getMessage('options_filters_no_enabled');
+            return null;
         }
 
         const totalFiltersInGroup = filters.filter((filter) => filter.groupId === group.groupId);
         const enabledFiltersInGroup = totalFiltersInGroup.filter((filter) => filter.enabled);
+
+        if (enabledFiltersInGroup.length === 0) {
+            return translator.getMessage('options_filters_no_enabled');
+        }
 
         return translator.getMessage('options_filters_enabled_per_group', {
             current: enabledFiltersInGroup.length,

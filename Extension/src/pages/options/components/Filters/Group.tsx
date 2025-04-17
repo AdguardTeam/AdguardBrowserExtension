@@ -46,10 +46,10 @@ type GroupParams = {
 
     /**
      * Details about enabled filters:
-     * - if group is off — "No filters enabled",
-     * - if group is on — "Enabled: <x> of <y>".
+     * - if group is off — `null`;
+     * - if group is on — `Enabled: <x> of <y>` or `No filters enabled`.
      */
-    filterDetails: string;
+    filterDetails: string | null;
 
     /**
      * Handler for group click event.
