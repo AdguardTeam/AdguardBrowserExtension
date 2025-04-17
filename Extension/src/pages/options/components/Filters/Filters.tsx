@@ -180,18 +180,22 @@ const Filters = observer(() => {
         navigate(`/filters?group=${groupId}`);
     };
 
-    // FIXME: add jsdoc
-    const getFilterDetailsForGroup = (group: CategoriesGroupData): string | null => {
+    /**
+     * Returns filter details for the group.
+     *
+     * @param group Group data.
+     *
+     * @returns Filter details for the group:
+     * - if group is off — "No filters enabled",
+     * - if group is on — "Enabled: <x> of <y>".
+     */
+    const getFilterDetailsForGroup = (group: CategoriesGroupData): string => {
         if (!group.enabled) {
-            return null;
-        }
-        const totalFiltersInGroup = filters.filter((filter) => filter.groupId === group.groupId);
-
-        const enabledFiltersInGroup = totalFiltersInGroup.filter((filter) => filter.enabled);
-
-        if (enabledFiltersInGroup.length === 0) {
             return translator.getMessage('options_filters_no_enabled');
         }
+
+        const totalFiltersInGroup = filters.filter((filter) => filter.groupId === group.groupId);
+        const enabledFiltersInGroup = totalFiltersInGroup.filter((filter) => filter.enabled);
 
         return translator.getMessage('options_filters_enabled_per_group', {
             current: enabledFiltersInGroup.length,
