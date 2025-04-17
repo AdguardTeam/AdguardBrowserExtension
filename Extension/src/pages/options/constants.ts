@@ -107,8 +107,8 @@ export const COLLECT_HITS_LEARN_MORE_URL = Forward.get({
     from: ForwardFrom.Options,
 });
 
-export const CUSTOM_FILTERS_DISABLED_IN_MV3_DUE_TO_CWS = Forward.get({
-    action: ForwardAction.CustomFiltersMv3Disabled,
+export const DEVELOPER_MODE_REQUIRED_URL = Forward.get({
+    action: ForwardAction.DeveloperModeRequired,
     from: ForwardFrom.Options,
 });
 

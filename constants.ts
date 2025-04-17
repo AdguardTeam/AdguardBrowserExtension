@@ -16,8 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: generate tools/bundle/manifest.common.json with this constants
-
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT = 'web-accessible-resources';
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS = `${WEB_ACCESSIBLE_RESOURCES_OUTPUT}/redirects`;
 

@@ -36,7 +36,6 @@ import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getFirstNonDisabledElement } from '../../../common/utils/dom';
-import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
 import { DynamicRulesLimitsWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
 import { NotificationType } from '../../stores/UiStore';
@@ -213,12 +212,7 @@ const Allowlist = observer(() => {
                     )}
                 inlineControl={(<AllowlistSwitcher labelId={switchTitleId} />)}
             />
-            {__IS_MV3__ && (
-                <div className="settings__group__links">
-                    <RuleLimitsLink />
-                </div>
-            )}
-            <DynamicRulesLimitsWarning useWrapper />
+            <DynamicRulesLimitsWarning />
             <Editor
                 name="allowlist"
                 editorRef={editorRef}

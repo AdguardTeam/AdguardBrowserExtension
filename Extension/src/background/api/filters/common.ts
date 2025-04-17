@@ -79,10 +79,8 @@ export class CommonFilterApi {
     public static isCommonFilter(filterId: number): boolean {
         return !CustomFilterApi.isCustomFilter(filterId)
             && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
-
-        // TODO: Uncomment this line when Quick Fixes filter will be supported for MV3
-        // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
+            && filterId !== AntiBannerFiltersId.AllowlistFilterId
+            && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
     }
 
     /**
@@ -149,13 +147,7 @@ export class CommonFilterApi {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
 
-        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-        // if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
-        //     forceRemote = false;
-        // }
-
-        // TODO: remove this block when we revert support for custom and quick fixes filters
-        if (__IS_MV3__) {
+        if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
             forceRemote = false;
         }
 
@@ -261,16 +253,15 @@ export class CommonFilterApi {
         const remote = !__IS_MV3__;
         await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
 
-        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-        // // For MV3 version we have QuickFixes filter which does not have local
-        // // version and always should be updated from the server.
-        // if (__IS_MV3__) {
-        //     await FiltersApi.loadAndEnableFilters(
-        //         [AntiBannerFiltersId.QuickFixesFilterId],
-        //         true, // Install from remote.
-        //         enableUntouchedGroups,
-        //     );
-        // }
+        // For MV3 version we have QuickFixes filter which does not have local
+        // version and always should be updated from the server.
+        if (__IS_MV3__) {
+            await FiltersApi.loadAndEnableFilters(
+                [AntiBannerFiltersId.QuickFixesFilterId],
+                true,
+                enableUntouchedGroups,
+            );
+        }
     }
 
     /**

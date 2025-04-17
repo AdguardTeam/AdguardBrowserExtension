@@ -53,9 +53,8 @@ export class ContentScriptInjector {
     private static contentScripts = [
         ContentScriptInjector.createContentScriptUrl(CONTENT_SCRIPT_START_OUTPUT),
         ContentScriptInjector.createContentScriptUrl(CONTENT_SCRIPT_END_OUTPUT),
-        // Subscribe to custom filters works only for MV2 version, since MV3
-        // doesn't support any kind of scripts due to CWS policy.
-    ].concat(__IS_MV3__ ? [] : [ContentScriptInjector.createContentScriptUrl(SUBSCRIBE_OUTPUT)]);
+        ContentScriptInjector.createContentScriptUrl(SUBSCRIBE_OUTPUT),
+    ];
 
     /**
      * Content scripts are blocked from executing on some websites by browsers

@@ -26,6 +26,7 @@ import {
     getStorageFixturesV9,
     getStorageFixturesV10,
     getStorageFixturesV11,
+    getStorageFixturesV12,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -127,6 +128,7 @@ describe('Update Api (without indexedDB)', () => {
         const v9 = getStorageFixturesV9(expires);
         const v10 = getStorageFixturesV10(expires);
         const v11 = getStorageFixturesV11(expires);
+        const v12 = getStorageFixturesV12(expires);
 
         const getCases = (from: StorageData[], to: StorageData[]) => {
             const cases = [];
@@ -153,17 +155,18 @@ describe('Update Api (without indexedDB)', () => {
             expect(deepJsonParse(settings)).toStrictEqual(deepJsonParse(data.to));
         };
 
-        it.each(getCases(v0, v11))('should update from v0 to v11', runCase);
-        it.each(getCases(v1, v11))('should update from v1 to v11', runCase);
-        it.each(getCases(v2, v11))('should update from v2 to v11', runCase);
-        it.each(getCases(v3, v11))('should update from v3 to v11', runCase);
-        it.each(getCases(v4, v11))('should update from v4 to v11', runCase);
-        it.each(getCases(v5, v11))('should update from v5 to v11', runCase);
-        it.each(getCases(v6, v11))('should update from v6 to v11', runCase);
-        it.each(getCases(v7, v11))('should update from v7 to v11', runCase);
-        it.each(getCases(v8, v11))('should update from v8 to v11', runCase);
-        it.each(getCases(v9, v11))('should update from v9 to v11', runCase);
-        it.each(getCases(v10, v11))('should update from v10 to v11', runCase);
+        it.each(getCases(v0, v12))('should update from v0 to v12', runCase);
+        it.each(getCases(v1, v12))('should update from v1 to v12', runCase);
+        it.each(getCases(v2, v12))('should update from v2 to v12', runCase);
+        it.each(getCases(v3, v12))('should update from v3 to v12', runCase);
+        it.each(getCases(v4, v12))('should update from v4 to v12', runCase);
+        it.each(getCases(v5, v12))('should update from v5 to v12', runCase);
+        it.each(getCases(v6, v12))('should update from v6 to v12', runCase);
+        it.each(getCases(v7, v12))('should update from v7 to v12', runCase);
+        it.each(getCases(v8, v12))('should update from v8 to v12', runCase);
+        it.each(getCases(v9, v12))('should update from v9 to v12', runCase);
+        it.each(getCases(v10, v12))('should update from v10 to v12', runCase);
+        it.each(getCases(v11, v12))('should update from v11 to v12', runCase);
 
         // Separate test for migration from V3 storage, because after this
         // version we moved from localStorage to hybridStorage.
@@ -186,11 +189,12 @@ describe('Update Api (without indexedDB)', () => {
             // 2) adding new Quick Fixes filter — in v5.0.91
             // 3) re-adding Quick Fixes filter back (after temporary removal) — in v5.0.185
             // 4) renaming filters keys
+            // 5) re-adding Quick Fixes filter back (after temporary removal) — in v5.2.0
 
             // there should be 2 calls in MV2 for:
             // 1) migration filters from localStorage to hybridStorage
             // 2) renaming filters keys
-            expect(setMultipleSpy).toHaveBeenCalledTimes(__IS_MV3__ ? 4 : 2);
+            expect(setMultipleSpy).toHaveBeenCalledTimes(__IS_MV3__ ? 5 : 2);
             expect(setMultipleSpy).toHaveBeenCalledWith(
                 // An object that contains all filter-related keys from the old data
                 // If this test passes, it means that data was passed to the hybrid storage
