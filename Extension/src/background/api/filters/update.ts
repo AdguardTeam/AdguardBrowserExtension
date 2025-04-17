@@ -25,7 +25,6 @@ import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
 import { logger } from '../../../common/logger';
 import { FiltersUpdateTime } from '../../../common/constants';
 import { engine } from '../../engine';
-import { getErrorMessage } from '../../../common/error';
 import { FilterUpdateService } from '../../services/filter-update';
 
 import { type FilterMetadata, FiltersApi } from './main';
@@ -230,7 +229,7 @@ export class FilterUpdateApi {
                 // check for updates - without fresh metadata we still can load
                 // newest filter, checking it's version will be against the old,
                 // local metadata, which is possible outdated.
-                logger.error('Failed to update metadata due to an error:', getErrorMessage(e));
+                logger.error('Failed to update metadata due to an error: ', e);
             }
         }
 
