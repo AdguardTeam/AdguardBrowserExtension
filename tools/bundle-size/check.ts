@@ -49,7 +49,6 @@ const execAsync = util.promisify(exec);
  * @returns Bundle size threshold as a percentage.
  */
 function getSizeThreshold(): number {
-    // FIXME: Describe it in README.md
     const threshold = Number(process.env.BUNDLE_SIZE_THRESHOLD);
 
     return !Number.isNaN(threshold)
