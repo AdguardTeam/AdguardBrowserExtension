@@ -504,7 +504,24 @@ We have defined size limits in the project.
 4. Commit the updated `.bundle-sizes.json` file and include justification in your PR.
 5. The changes will be reviewed and approved as part of the PR process.
 
-#### Notes
+### Bundle Size Threshold Override
+
+You can control the sensitivity of bundle size increase detection by setting the `BUNDLE_SIZE_THRESHOLD` environment variable.
+
+- **Purpose:**
+  Defines the allowed percentage increase in bundle size (compared to the historical reference) before the check fails and triggers a warning or error.
+- **Default:**
+  If not set, the default threshold is **10%**.
+- **Usage:**
+  Set this variable during development or CI runs to temporarily allow larger changes, or to make the check stricter.
+
+**Example usage:**
+```sh
+BUNDLE_SIZE_THRESHOLD=15 pnpm check-bundle-size
+```
+This would allow up to a 15% increase in bundle size before failing.
+
+### Notes
 
 - Size thresholds and limits are configured in `tools/bundle-size/constants.ts`.
 - Bundle size checks are enforced in CI/CD and should be run locally for verification.

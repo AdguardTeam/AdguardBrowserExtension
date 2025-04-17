@@ -24,7 +24,7 @@ import { getBrowserConf } from '../bundle/helpers';
 
 import type { Dependency, TargetInfo } from './constants';
 import {
-    DEFAULT_SIZE_THRESHOLD,
+    DEFAULT_SIZE_THRESHOLD_PERCENTAGE,
     MAX_MV3_SIZE_BYTES,
     ZIP_EXTENSION,
     BUILD_DIRNAME,
@@ -49,9 +49,12 @@ const execAsync = util.promisify(exec);
  * @returns Bundle size threshold as a percentage.
  */
 function getSizeThreshold(): number {
+    // FIXME: Describe it in README.md
     const threshold = Number(process.env.BUNDLE_SIZE_THRESHOLD);
 
-    return !Number.isNaN(threshold) ? threshold : DEFAULT_SIZE_THRESHOLD;
+    return !Number.isNaN(threshold)
+        ? threshold
+        : DEFAULT_SIZE_THRESHOLD_PERCENTAGE;
 }
 
 /**

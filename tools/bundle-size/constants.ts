@@ -13,7 +13,7 @@ import type { Browser, BuildTargetEnv } from '../constants';
  * 10% threshold for bundle size changes and each entry point size.
  * Used as the default allowed percentage increase.
  */
-export const DEFAULT_SIZE_THRESHOLD = 10;
+export const DEFAULT_SIZE_THRESHOLD_PERCENTAGE = 10;
 
 /**
  * 30MB limit for MV3, selected heuristically (by CTO).
