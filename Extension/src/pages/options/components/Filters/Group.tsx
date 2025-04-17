@@ -25,6 +25,51 @@ import { Icon } from '../../../common/components/ui/Icon';
 
 import './group.pcss';
 
+/**
+ * Parameters for the {@link Group} component.
+ */
+type GroupParams = {
+    /**
+     * Group name.
+     */
+    groupName: string;
+
+    /**
+     * Group description.
+     */
+    groupDescription?: string;
+
+    /**
+     * Group id.
+     */
+    groupId: number;
+
+    /**
+     * Details about enabled filters:
+     * - if group is off — "No filters enabled",
+     * - if group is on — "Enabled: <x> of <y>".
+     */
+    filterDetails: string;
+
+    /**
+     * Handler for group click event.
+     */
+    groupClickHandler: () => void;
+
+    /**
+     * Handler for checkbox change event.
+     *
+     * @param id Group id.
+     * @param data Checkbox value.
+     */
+    checkboxHandler: ({ id, data }: { id: string; data: boolean }) => void;
+
+    /**
+     * Checkbox value.
+     */
+    checkboxValue: boolean;
+};
+
 const Group = ({
     groupName,
     groupDescription,
@@ -33,7 +78,7 @@ const Group = ({
     groupClickHandler,
     checkboxHandler,
     checkboxValue,
-}) => {
+}: GroupParams) => {
     const groupClassName = classNames({
         setting: true,
         group: true,
