@@ -293,7 +293,7 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
             .forEach(({ file, size }) => {
                 if (size > MAX_FIREFOX_SIZE_BYTES) {
                     found = true;
-                    console.error(`Firefox Add-ons Store limit exceeded: ${file} is ${(size / (1024 * 1024)).toFixed(2)}MB (> 4MB) ❌`);
+                    console.error(`Firefox Add-ons Store limit exceeded: ${file} is ${(size / (1024 * 1024)).toFixed(2)}MB (> ${MAX_FIREFOX_SIZE_BYTES}MB) ❌`);
                 }
             });
 

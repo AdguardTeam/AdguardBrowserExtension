@@ -9,8 +9,6 @@
  */
 import type { Browser, BuildTargetEnv } from '../constants';
 
-// Constants
-
 /**
  * 10% threshold for bundle size changes and each entry point size.
  * Used as the default allowed percentage increase.
@@ -54,8 +52,6 @@ export const SHARED_DIRNAME = 'shared';
  * File extension for zip archives.
  */
 export const ZIP_EXTENSION = '.zip';
-
-// Types
 
 /**
  * Interface for bundle statistics.

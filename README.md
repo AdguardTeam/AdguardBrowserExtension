@@ -466,6 +466,7 @@ pnpm locales info
 The browser extension project includes a comprehensive bundle size monitoring system, located in `tools/bundle-size`. This system helps ensure that our extension bundles remain within defined size limits, and that any significant increases are reviewed and justified.
 
 ### Key Features
+
 - Tracks and compares bundle sizes across different build types (`beta`, `release`, etc.) and browser targets (`chrome`, `chrome-mv3`, `edge`, etc.)
 - Detects significant size increases using configurable thresholds (default: 10%)
 - Ensures Chrome MV3 bundle stays under the 30MB limit
@@ -475,11 +476,13 @@ The browser extension project includes a comprehensive bundle size monitoring sy
 - **For Firefox targets (AMO and Standalone) only**, every individual `.js` file is checked to ensure it does not exceed the 4MB limit imposed by the Firefox Add-ons Store. If any `.js` file is larger than 4MB, the check fails and the offending files are reported.**
 
 ### How it works
+
 - On each beta or release build, the system compares the current bundle sizes to the reference values in `.bundle-sizes.json`.
 - If any size exceeds the configured threshold, or additionally check for 30MB limit for Chrome MV3 target or 4MB limit for Firefox targets - the check fails.
 - Duplicate package versions are detected and reported.
 
 ### To update the bundle sizes manually
+
 We have defined size limits in the project.
 
 1. When we build the beta or release version, the build process checks if we’re exceeding those limits.
@@ -488,12 +491,13 @@ We have defined size limits in the project.
 4. We then review and approve any changes to the sizes as part of the PR process.
 
 #### Steps:
+
 1. Run the build for the desired environment (e.g., `pnpm beta` or `pnpm release`).
 2. If the build fails due to bundle size limits, investigate the cause (e.g., new dependencies, large assets).
 3. If the increase is justified, update the reference sizes by running:
 
     ```shell
-    pnpm ts-node tools/bundle-size/update.ts
+    pnpm update-bundle-size
     ```
     (Set the `BUILD_ENV` and `TARGET_BROWSER` environment variables as needed.)
 
@@ -501,6 +505,7 @@ We have defined size limits in the project.
 5. The changes will be reviewed and approved as part of the PR process.
 
 #### Notes
+
 - Size thresholds and limits are configured in `tools/bundle-size/constants.ts`.
 - Bundle size checks are enforced in CI/CD and should be run locally for verification.
 - For more details, see the code and JSDoc in `tools/bundle-size/`.
