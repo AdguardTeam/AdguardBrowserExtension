@@ -328,7 +328,7 @@ If you need to build the **RELEASE** version:
 1. Run:
 
     ```shell
-    pnpm release firefox-standalone
+    pnpm release firefox
     ```
 
 1. Navigate to the build directory:
