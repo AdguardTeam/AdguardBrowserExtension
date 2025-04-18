@@ -1,8 +1,8 @@
-! Checksum: ccZRyhoYWeX/PNOmD1tcEw
+! Checksum: +8yP29lHNXcbNpeyumF1gQ
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.32.43
-! TimeUpdated: 2025-04-16T16:08:25+00:00
+! Version: 2.0.32.56
+! TimeUpdated: 2025-04-18T15:07:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -3478,10 +3478,25 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 !
 ! SECTION: Self-promo - Regular rules
 !
+crxsoso.com##.right > div.hover-animate
+mir24.tv##div[class^="SidebarWidgets_"] > div[class^="Banner_"]:has(> a[href="/about/advertising"])
+||mirtvpc.cdnvideo.ru/mirtv/%D1%80%D0%B5%D0%BA%D0%BB%D0%B0%D0%BC%D0%B0%20%20%20.mp4
+gaming.amazon.com##div[data-a-target="prime-main"] div[data-a-target="MarketingPromotionBannerSectionRoot"]
+ilsole24ore.com###zephr-zone-footer
+||membernotifications.aol.com/offers/aolHomepage/stickyFooter
+brave.com###persistent-cta:has(> div > a.download[data-event-action="Persistent Download Button"])
+leakshaven.com##.container > div[style] > .w-full[style] > .text-card-foreground:has(> .p-6 > .flex > .flex > a[href="/plans"])
+renderhub.com##.annLnk
+mu-navi.com,travel.co.jp##.pr-area
+mu-navi.com##.widget_custom_html:has(> div > div.box)
+experts-exchange.com##iframe[id^="injectIframe"]
+uchi.ru##article[class^="RecommendationCard"]
 rus.postimees.ee##.article__piano-block
 wired.jp##.body__inner-container > div[class^="GenericCalloutWrapper"]:has(> aside > p > a[href="https://wired.jp/membership/about/"])
 santaretail.by##.gif_banner
 zeit.de##dialog[data-tp-layout="footer_bar_offer_variante_shared"]
+blitz.gg##div[class^="🤑"]:has(> div[class*="🤑"])
+blitz.gg##.card-frame > div[class^="⚡"]:has(> div[class^="⚡"] > div[class*="🤑"])
 blitz.gg##div[class]:has(> .placeholder > [href^="/pro?utm_"])
 kyuzerogo.sakura.ne.jp##body > div.pe_1
 kyuzerogo.sakura.ne.jp##body > div.top_head:has(+ div.pe_1)
@@ -3549,8 +3564,8 @@ mail.proton.me##.bg-promotion
 ig-store.ru##.banner-one-item
 ig-store.ru##.banner-gl
 ig-store.ru##.banner-3000-points-trigger
-ig-store.ru#$#.news-bg { display: none !important; }
-ig-store.ru#$#body { overflow: auto !important; }
+ig-store.ru#$#body .news-bg { display: none !important; }
+ig-store.ru#$#html > body { overflow: auto !important; }
 tidal.com##.floating-wrapper
 fnn.jp##.js-piano-right-banner01
 finuslugi.ru##.card-banner
@@ -6989,8 +7004,6 @@ livelib.ru##.prm-block
 moeimg.net###overlay_frame
 ! https://github.com/AdguardTeam/AdguardFilters/issues/94805
 auctions.yahoo.co.jp##[data-ylk^="rsec:pr_"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/94803
-travel.co.jp##.pr-area
 ! self-promo only on some articles
 news.goo.ne.jp##.gn-related-pickup
 ! links to native-ad articles
@@ -8029,9 +8042,9 @@ chip.de#$#.Button--Download { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183581 - copy/right text
 ||i38.ru/templates/teleinform/js/cprgt.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183012
-dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#%#//scriptlet('remove-attr', 'disabled', 'button')
-dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#.text-center > div[id][style^="display:"] { display: block !important; }
-dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#form[id][style^="display:"] { display: block !important; }
+nidbdcheck.com,dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#%#//scriptlet('remove-attr', 'disabled', 'button')
+nidbdcheck.com,dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#.text-center > div[id][style^="display:"] { display: block !important; }
+nidbdcheck.com,dizok.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,crewbase.net,batmanfactor.com#$#form[id][style^="display:"] { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179738 (left-over)
 forbes.com##.for-you__component:empty
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177560
@@ -8344,8 +8357,6 @@ kotaku.com##.js_video-sticky-trigger
 ! https://github.com/AdguardTeam/AdguardFilters/issues/72365
 adshrink.it#$##system_center_card_bounce { display: block !important; }
 adshrink.it#?#.stackable .red.floating.message > p > .adversal:upward(2)
-! https://github.com/AdguardTeam/AdguardFilters/issues/72683
-txxx.com,txxx.tube#$#.jwplayer { max-height: initial!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/71454
 nicotv.me#$#.gg_margin_nav { margin-top: 0!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/70540
@@ -8496,6 +8507,8 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/202743
+leakshaven.com#%#//scriptlet('adjust-setInterval', '(clearInterval(', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202433
 recut.ru#%#//scriptlet('trusted-click-element', '#open_link', '', '500')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202740
@@ -9745,10 +9758,11 @@ cocoleech.com#%#//scriptlet("set-constant", "width", "100")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/14668
 prem.link#%#//scriptlet("set-constant", "waiting_time", "0")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12814
-urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*#%#//scriptlet('trusted-click-element', 'form[action="get-url.php"] > input#url[value] + input[id][type="image"][src]')
-urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*#%#(function(){var a="http"+(new URL(window.location.href)).searchParams.get("xurl");try{new URL(a);var b=!0}catch(c){b=!1}if(b)try{window.location=a}catch(c){}})();
-urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*,get-url.com#%#//scriptlet("adjust-setInterval", "i--", "", "0.02")
-urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*,get-url.com#%#//scriptlet('set-constant', 'Time_Start', '0')
+bluedownload.*,urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*#%#//scriptlet("adjust-setTimeout", "['href']", "*", "0.001")
+bluedownload.*,urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*#%#//scriptlet('trusted-click-element', 'form[action="get-url.php"] > input#url[value] + input[id][type="image"][src]')
+bluedownload.*,urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*#%#(function(){var a="http"+(new URL(window.location.href)).searchParams.get("xurl");try{new URL(a);var b=!0}catch(c){b=!1}if(b)try{window.location=a}catch(c){}})();
+bluedownload.*,urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*,get-url.com#%#//scriptlet("adjust-setInterval", "i--", "", "0.02")
+bluedownload.*,urlbluemedia.*,bluemediadownload.*,bluemediaurls.lol,bluemedialink.online,dl.pcgamestorrents.org,bluemediafile.*,bluemediafiles.*,get-url.com#%#//scriptlet('trusted-replace-node-text', 'script', 'btnDownload', '/(-timeStart\)<).{1,10}(\))/', '$1-1$2')
 ! dailypost.co.uk - stop autoplay
 dailypost.co.uk#%#//scriptlet('trusted-click-element', 'span.autoplay-cancel', '', '3300')
 ! rutracker.org - allow pages preview in NewsFox RSS reader in FireFox
