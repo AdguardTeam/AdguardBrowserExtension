@@ -99,7 +99,7 @@ const Group = ({
                 className="setting__area setting__area_group"
                 onClick={groupClickHandler}
                 aria-labelledby={titleId}
-                aria-describedby={`${descriptionId}${filterDetailsId ? ` ${filterDetailsId}` : ''}`}
+                aria-describedby={`${descriptionId}${filterDetails ? ` ${filterDetailsId}` : ''}`}
             >
                 <Icon
                     id={iconId}
