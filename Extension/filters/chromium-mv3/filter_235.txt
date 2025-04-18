@@ -1,8 +1,8 @@
-! Checksum: EHtDL0crnGBlwXU6x7NFXA
+! Checksum: xzfk17k2RbzO/YNWIhHB+A
 ! Title: Persian Blocker
 ! Description: Filter list for blocking ads and trackers on websites in Persian.
-! Version: 2.0.5.52
-! TimeUpdated: 2025-03-31T16:39:22+00:00
+! Version: 2.0.5.54
+! TimeUpdated: 2025-04-05T20:33:39+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: PersianBlocker
@@ -443,6 +443,8 @@ anaj.ir,salamatnews.com#%#//scriptlet('ubo-set.js', 'document.referrer', 'undefi
 !-------------------------^ Non-Persian Ads/Trackers/Annoyances Filters used in Persian websites ^-----------------------!
 !-------------------------v Site-Specific Filters v-----------------------!
 ! >> A <<
+! https://github.com/MasterKia/PersianBlocker/issues/300
+||cdn.alanchand.com/ads^$image,~third-party
 anesthesianotes.ir#$#body { cursor: revert !important; -webkit-touch-callout: default !important; -webkit-user-select: text !important; -khtml-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; -webkit-tap-highlight-color: revert !important; }
 anesthesianotes.ir#%#//scriptlet('ubo-aopr.js', 'nocontext')
 anesthesianotes.ir#%#//scriptlet('ubo-acis.js', 'disableSelection', 'reEnable')
@@ -1070,8 +1072,9 @@ enama.ir##div.avdDiv
 ! >> F <<
 fontchi.com#%#//scriptlet('ubo-href-sanitizer.js', 'a[href^="/goto/"]', '?url -base64')
 filmekade.ir##div.banner-ads
+! https://github.com/uBlockOrigin/uAssets/issues/27841
+fam.ir#%#//scriptlet('ubo-json-prune.js', 'props.children.[].props.children.[].props.children.props.advertisment')
 ||analytics.fam.ir^$~third-party
-||fam.ir/ngx_pagespeed_beacon^$xmlhttprequest,~third-party,method=post
 fileboro.com#%#//scriptlet('ubo-acis.js', 'document.onselectstart', 'killCopy')
 fileboro.com#%#//scriptlet('ubo-aopw.js', 'document.oncopy')
 fileboro.com##div.ads-content
