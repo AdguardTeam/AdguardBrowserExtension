@@ -1,8 +1,8 @@
-! Checksum: WrHy6320o8Sgy6yeCj7XHA
+! Checksum: j6uJ20jr3QFLZPdvkjSuNg
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.35.9
-! TimeUpdated: 2025-04-18T15:07:32+00:00
+! Version: 2.1.35.26
+! TimeUpdated: 2025-04-21T15:07:56+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1205,6 +1205,9 @@ $script,third-party,denyallow=ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|i
 !
 ! NOTE: Specific rules
 !
+wxsck.com###content > div[style^="clear:"]
+wxsck.com##.fixed-btn ~ div[style^="position:fixed; bottom:"]
+wxsck.com#$#.footer { margin-top: 0px !important; }
 ||sudugu.com/config/v7.js
 lkvod.me##.ec-ad-img
 biquge345.com##div[style^="position:fixed;"]
@@ -5082,7 +5085,31 @@ newduba.cn###jq_youxi
 .z.dkt-ib.com
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||hgreils.com^
+||lvqo.cn^
+||jibtdn.top^
+||kucnwtd.top^
+||ewcnmtw.top^
+||sucnwtb.top^
+||vnwu.cn^
+||faamhel.com^
+||nbragzui.com^
+||bvzc.cn^
+||hjvzfa.top^
+||swcnmtb.top^
+||iucnwto.top^
+||ltmarilsf.com^
+||jucnwta.top^
+||mghezaxh.com^
+||hhppzkhurf.com^
+||jktkhn.top^
+||tuyv.cn^
+||mucnmtx.top^
+||kwcnmtd.top^
+||bsizoia.com^
 ||afvrolvial.com^
+||ucmx.cn^
+||cucnmtf.top^
 ||jcfbgdbd.top^
 ||wigk.cn^
 ||henqnv.top^
@@ -12966,6 +12993,7 @@ hxsame.hexun.com$domain=~quote.hexun.com
 ||55kp.app/aini.
 ||xmcdn.com/storages/f651-customerservice/E3/40/GAqhntALzRUHAAJ3LgOTtToZ.
 ||douyin.com/aweme/v1/web/solution/resource/list/*_banner&
+||aizhan.com/images/img/apicn.
 sojson.com##.a-d-img
 sixyin.com##.widget_custom_html
 baidu.com##a[class*="fengchaoContainer"]
@@ -15154,7 +15182,6 @@ anywlan.com##.bscekvofc_o
 qqxiazai.com##.bt_abtn2
 bt.cn,lotour.com##.btad
 163.com##.btm-ad
-aizhan.com##.btn
 ifenpaidy.com##.btn-copy + .btn
 xitongzhijia.net##.btn-dl_swift
 firefox.com.cn,firefoxchina.cn##.btn-email-show + p
@@ -20644,6 +20671,8 @@ _vwisbjs?
 ||banzhu33333.net/js/cdn.
 ||banzhu33333.net/js/html
 ||djdedu.net/static/*.gif
+||28lu.net^*/0
+||wodeshucheng.com^*/0
 /static/2biqu/twgdh.js
 .cc/js/dj1*.js
 .cc/js/dj2*.js

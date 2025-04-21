@@ -1,14 +1,14 @@
-! Checksum: NLgfpToBZckruqCMgF10PQ
+! Checksum: dgBIKKDxrC9m5GZDy1KZzA
 ! Title: Dandelion Sprout's Serbo-Croatian List
 ! Description: A filter list for websites in Serbian, Montenegrin, Croatian, and Bosnian.
-! Version: 2.0.0.58
-! TimeUpdated: 2025-03-21T13:02:16+00:00
+! Version: 2.0.0.59
+! TimeUpdated: 2025-04-19T00:47:59+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: 🏀 Dandelion Sprout's Serbo-Croatian filters
 ! Title 🇭🇷 🇧🇦: Srpskohrvatski filtri Dandelion Sprouta
 ! Title 🇷🇸: Српскохрватски филтери Dandelion Sprout-а
-! OriginalVersion: 21March2025v2-Beta
+! OriginalVersion: 19April2025v1-Beta
 ! Expires: 3 days
 ! Description: For the first time in known history, this is a filterlist for websites in Serbian, Montenegrin, Croatian, and Bosnian. This means that all significant language groups in Europe now have filterlists for them.
 ! Description 🇭🇷: Prvi put u povijesti dostupna je lista filtara za web-lokacije na srpskom, hrvatskom, bosanskom i crnogorskom. Sad sve veće skupine jezika u Europi imaju svoje liste.
@@ -22,7 +22,7 @@
 ! Note: Any problem reports sent directly to this list, _must_ be proven to occur on MV2 or Firefox. If the problem _only_ occurs on MV3, then this list will not handle such problems, and they must instead be submitted to https://reports.adguard.com/new_issue.html or https://github.com/uBlockOrigin/uAssets/issues.
 ! ——————————
 ! Specific entries for sites, or blocking-entries
-24sedam.rs,alo.rs,informer.rs,sd.rs,hellomagazin.rs,barinfo.me,mojtv.hr,novaekonomija.rs,svet-scandal.rs,rtl.hr,tportal.hr,direktno.rs##.banner
+24sedam.rs,alo.rs,informer.rs,sd.rs,hellomagazin.rs,barinfo.me,mojtv.hr,novaekonomija.rs,svet-scandal.rs,rtl.hr,tportal.hr,direktno.rs,srpskainfo.com##.banner
 021.rs##.banner-right
 021.rs##.topBanner
 agrobiz.hr##.stickyfill
@@ -291,6 +291,10 @@ tuzlalive.ba##div[id*=_native_]
 tvfront.rs###main > .widget_block:not(:has(a,img))
 tvfront.rs##.widget_block:has(p:empty)
 tvfront.rs##div[id^=content_v]
+blic.rs##div[class^=banner]:not(:empty)
+blic.rs#$#.iframe-widget[src*=popularno] { max-height: 250px !important }
+blic.rs##.sticky-area--short
+srpskainfo.com##div.sticky__area
 ||glasistre.hr/SliderBanner^
 ||avalaads.com^$third-party
 ||linker.hr^
