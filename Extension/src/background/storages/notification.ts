@@ -82,204 +82,203 @@ export type PromoNotification = {
     icons?: IconVariants,
 };
 
-const SPRING_25_ID = 'spring25';
+const CHRISTMAS_24_ID = 'christmas24';
 
-const spring25Notification: PromoNotification = {
-    id: SPRING_25_ID,
+const christmas24Notification: PromoNotification = {
+    id: CHRISTMAS_24_ID,
     locales: {
         en: {
-            title: 'Time to tidy up for spring',
-            btn: 'Learn how',
+            title: 'Christmas at AdGuard',
+            btn: 'Unwrap',
         },
         fr: {
-            title: 'Nettoyez l\'Internet ce printemps',
-            btn: 'Voir l\'offre',
+            title: 'Noël chez AdGuard',
+            btn: 'Venez voir',
         },
         it: {
-            title: 'Un internet pulito per la primavera',
-            btn: 'Vedere offerta',
+            title: 'Natale ad AdGuard',
+            btn: 'Vieni a vedere',
         },
         de: {
-            title: 'Bereit für den Frühjahrsputz?',
-            btn: 'So geht’s!',
+            title: 'Weihnachten bei AdGuard',
+            btn: 'Geschenk öffnen',
         },
         ru: {
-            title: 'Сделаем интернет чище к весне',
-            btn: 'Узнать как',
+            title: 'Новый год в AdGuard',
+            btn: 'Что под ёлкой?',
         },
         es: {
-            title: 'Es hora de protegerte',
-            btn: 'Ver la oferta',
+            title: 'Navidad en AdGuard',
+            btn: 'Ven a ver',
         },
         es_419: {
-            title: 'Es hora de ordenar para la primavera',
-            btn: 'Aprender cómo',
+            title: 'Navidad en AdGuard',
+            btn: 'Abre',
         },
         pt_pt: {
-            title: 'Proteja-se nessa primavera',
-            btn: 'Ver oferta',
+            title: 'Natal no AdGuard',
+            btn: 'Vem ver',
         },
         pt_br: {
-            title: 'É hora de se proteger',
-            btn: 'Ver oferta',
+            title: 'Natal no AdGuard',
+            btn: 'Vem ver',
         },
         zh_cn: {
-            title: '暖春特惠',
-            btn: '立即享受',
+            title: 'AdGuard Christmas',
+            btn: '有什么惊喜？',
         },
         zh_tw: {
-            title: '暖春優惠',
-            btn: '立即领取',
+            title: 'AdGuard Christmas',
+            btn: '有什麼驚喜？',
         },
-        // For Japanese, there will be other promo soon
-        // ja: {
-        //     title: 'AdGuard Christmas キャンペーン',
-        //     btn: 'プレゼントはこちら',
-        // },
+        ja: {
+            title: 'AdGuard Christmas キャンペーン',
+            btn: 'プレゼントはこちら',
+        },
         ko: {
-            title: '봄맞이 프로모션',
-            btn: '자세히 알아보기',
+            title: 'AdGuard 크리스마스 프로모션',
+            btn: '선물 찾기',
         },
         uk: {
-            title: 'Час навести порядок до весни',
-            btn: 'Дізнатись як',
+            title: 'Новий рік в AdGuard',
+            btn: 'Що під ялинкою?',
         },
         ar: {
-            title: 'حان الوقت لترتيب الأمور من أجل الربيع',
-            btn: 'تعلم كيف',
+            title: 'تخفيضات العام الجديد',
+            btn: 'يفتح',
         },
         be: {
-            title: 'Час навесці парадак да вясны',
-            btn: 'Даведацца як',
+            title: 'Новы год у AdGuard',
+            btn: 'Што пад ёлкай?',
         },
         bg: {
-            title: 'Време е да почистим за пролетта',
-            btn: 'Разберете как',
+            title: 'Нова година в AdGuard',
+            btn: 'Отворете',
         },
         ca: {
-            title: 'Fem ordre per a la primavera',
-            btn: 'Aprèn com',
+            title: 'Nadal a AdGuard',
+            btn: 'Obert',
         },
         cs: {
-            title: 'Čas na úklid na jaře',
-            btn: 'Zjistěte jak',
+            title: 'Vánoce v AdGuardu',
+            btn: 'Otevřená',
         },
         da: {
-            title: 'Tid til at rydde op til foråret',
-            btn: 'Lær hvordan',
+            title: 'Jul på AdGuard',
+            btn: 'Åben',
         },
         el: {
-            title: 'Τακτοποιούμε για την άνοιξη',
-            btn: 'Βρες πως',
+            title: 'Πρωτοχρονιά στο AdGuard',
+            btn: 'Ανοιξε',
         },
         fa: {
-            title: 'زمان آن رسیده که برای بهار مرتب کنیم',
-            btn: 'دریابید که چگونه',
+            title: 'AdGuard سال نو در',
+            btn: 'باز کن',
         },
         fi: {
-            title: 'Aika siivota kevättä varten',
-            btn: 'Opi kuinka',
+            title: 'Joulu AdGuardissa',
+            btn: 'Avaa',
         },
         he: {
-            title: 'זמן לסדר לקראת האביב',
-            btn: 'לברר איך',
+            title: 'קידום לשנה החדשה',
+            btn: 'לִפְתוֹחַ',
         },
         hr: {
-            title: 'Vrijeme je za spremanje za proljeće',
-            btn: 'Nauči kako',
+            title: 'Božić u AdGuardu',
+            btn: 'Otvoren',
         },
         hu: {
-            title: 'Itt az ideje rendet rakni tavaszra',
-            btn: 'Hogyan?',
+            title: 'Karácsony az AdGuard-nál',
+            btn: 'Kinyit',
         },
         hy: {
-            title: 'Մաքրություն՝ գարնան համար',
-            btn: 'Պարզել, թե ինչպես',
+            title: 'Ամանորը AdGuard-ում',
+            btn: 'Բացել',
         },
         id: {
-            title: 'Bersihkan untuk musim semi',
-            btn: 'Cari tahu caranya',
+            title: 'Tahun Baru di AdGuard',
+            btn: 'Membuka',
         },
         lt: {
-            title: 'Laikas sutvarkyti pavasariui',
-            btn: 'Išmokti kaip',
+            title: 'Kalėdos AdGuard',
+            btn: 'Atviras',
         },
         ms: {
-            title: 'Kemaskan untuk musim bunga',
-            btn: 'Ketahui caranya',
+            title: 'Tahun Baru dalam AdGuard',
+            btn: 'Buka',
         },
         nb: {
-            title: 'På tide å rydde opp til våren',
-            btn: 'Lær hvordan',
+            title: 'Nyttår i AdGuard',
+            btn: 'Åpen',
         },
         nl: {
-            title: 'Tijd om op te ruimen voor de lente',
-            btn: 'Leren hoe',
+            title: 'Kerstmis in AdGuard',
+            btn: 'Open',
         },
         pl: {
-            title: 'Czas na porządki przed wiosną',
-            btn: 'Naucz się jak',
+            title: 'Nowy Rok w AdGuard',
+            btn: 'Otwarty',
         },
         ro: {
-            title: 'Facem ordine pentru primăvară',
-            btn: 'Afla cum',
+            title: 'Crăciun în AdGuard',
+            btn: 'Deschis',
         },
         sk: {
-            title: 'Čas upratať pred jarnom',
-            btn: 'Zistite ako',
+            title: 'Vianoce v AdGuarde',
+            btn: 'Otvorený',
         },
         sl: {
-            title: 'Čas je, da pospravimo za pomlad',
-            btn: 'Nauči se kako',
+            title: 'Božič v AdGuardu',
+            btn: 'Odprt',
         },
-        sr_latn: {
-            title: 'Vreme je da pospremimo za proleće',
-            btn: 'Saznajte kako',
+        'sr-Latn': {
+            title: 'Božić u AdGuardu',
+            btn: 'Otvorite',
         },
         sv: {
-            title: 'Dags att städa inför våren',
-            btn: 'Lära sig hur',
+            title: 'Jul i AdGuard',
+            btn: 'Öppen',
         },
         tr: {
-            title: 'Bahar için temizlik zamanı',
-            btn: 'Nasıl öğrenilir',
+            title: "AdGuard'da Yeni Yıl",
+            btn: 'Açık',
         },
         vi: {
-            title: 'Đã đến lúc dọn dẹp cho mùa xuân',
-            btn: 'Tìm hiểu cách',
+            title: 'Năm mới trong AdGuard',
+            btn: 'Mở',
         },
         mk: {
-            title: 'Правиме ред за пролетта',
-            btn: 'Дознајте како',
+            title: 'Нова година со AdGuard',
+            btn: 'Што има под елката?',
         },
         hi: {
-            title: 'वसंत के लिए सफाई का समय',
-            btn: 'कैसे जानें',
+            title: 'एडगार्ड में नया साल',
+            btn: 'खुला',
         },
         et: {
-            title: 'Aeg kevadeks koristamiseks',
-            btn: 'Õpi kuidas',
+            title: 'Jõulud AdGuardis',
+            btn: 'Avatud',
         },
         th: {
-            title: 'ถึงเวลาทำความสะอาดเพื่อฤดูใบไม้ผลิ',
-            btn: 'เรียนรู้วิธีการ',
+            title: 'ปีใหม่ใน AdGuard',
+            btn: 'เปิด',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Spring25 }),
-    from: '28 April 2025 12:00:00',
-    to: '4 May 2025 23:59:00',
+    url: Forward.get({ action: ForwardAction.Christmas24 }),
+    from: '23 December 2024 12:00:00',
+    to: '3 January 2025 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/spring25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/spring25-update.svg'),
+    bgImage: browser.runtime.getURL('assets/images/christmas24.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/christmas24-update.svg'),
     icons: {
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/spring25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/spring25-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/christmas24-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/christmas24-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/spring25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/spring25-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/christmas24-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/christmas24-off-38.png'),
         },
         warning: defaultIconVariants.warning,
     },
@@ -289,5 +288,5 @@ const spring25Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [SPRING_25_ID, spring25Notification],
+    [CHRISTMAS_24_ID, christmas24Notification],
 ]);

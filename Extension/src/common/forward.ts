@@ -79,7 +79,7 @@ export const enum ForwardAction {
     GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',
     FilteringLogAssumedRule = 'filtering_log_assumed_rule',
-    Spring25 = 'spring_25',
+    Christmas24 = 'christmas_24',
     CustomFiltersMv3Disabled = 'custom_mv3_disabled',
 }
 
