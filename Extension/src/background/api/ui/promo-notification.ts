@@ -190,6 +190,25 @@ export class PromoNotificationApi {
     }
 
     /**
+     * Handles Serbian locale codes:
+     * - for non-Serbian locales, returns the same code;
+     * - for any Serbian, e.g. 'sr', 'sr_latn', 'sr_cyrl_rs', returns 'sr_latn'.
+     *
+     * @param normalizedLocale Normalized locale code.
+     *
+     * @returns Normalized locale code.
+     */
+    private static handleSerbianLocale(normalizedLocale: string): string {
+        const GENERAL_SERBIAN_LOCALE = 'sr';
+        const GENERAL_SERBIAN_LATIN_LOCALE = 'sr_latn';
+        if (normalizedLocale.startsWith(GENERAL_SERBIAN_LOCALE)) {
+            return GENERAL_SERBIAN_LATIN_LOCALE;
+        }
+
+        return normalizedLocale;
+    }
+
+    /**
      * Scans notification locales and returns the one matching navigator.language.
      *
      * @param notification Promo notification object.
@@ -203,6 +222,7 @@ export class PromoNotificationApi {
         }
 
         language = PromoNotificationApi.handleSpanishLocale(language);
+        language = PromoNotificationApi.handleSerbianLocale(language);
 
         const languageCode = language.split('_')[0];
         if (!languageCode) {
