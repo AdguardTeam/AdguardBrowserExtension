@@ -1,10 +1,13 @@
-! Checksum: NPtTkVcaklBvgm7zRPyFqA
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1741826570-3600.patch
+! Checksum: Yyeh4o1rL831UDuqb0qEfw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1744974621-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.69
-! TimeUpdated: 2025-03-13T00:38:45+00:00
+! Version: 2.0.10.91
+! TimeUpdated: 2025-04-18T11:06:52+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=uzcid
+$removeparam=beyond_uzcvid
+$removeparam=beyond_uzmcvid
 ?from=glia^$removeparam=from
 $removeparam=srsltid
 $removeparam=_sgm_campaign
@@ -251,6 +254,35 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||d.ghostery.com^$removeparam
+||deepl.com^$removeparam=share
+||netflix.com^$removeparam=source
+||threads.net^$removeparam=xmt
+||nintendo.com^$removeparam=nt_redirect_referrer
+||code-wallets.com^$removeparam=tw_adid
+||code-wallets.com^$removeparam=tw_source
+||autodaily.ru^$removeparam=from
+||practicum.yandex.*$removeparam=from
+||shop.asus.com^$removeparam=campaign_id
+||shop.asus.com^$removeparam=ad_id
+||read.amazon.$removeparam=ref
+||support.bluestacks.com^$removeparam=email
+||support.bluestacks.com^$removeparam=guid
+||support.bluestacks.com^$removeparam=oem
+||support.bluestacks.com^$removeparam=client_ver
+||support.bluestacks.com^$removeparam=install_id
+||support.bluestacks.com^$removeparam=country
+||carwow.de^$removeparam=utm_group
+||carwow.de^$removeparam=affiliate_ref
+||carwow.de^$removeparam=impact_ad_id
+||carwow.de^$removeparam=impact_click_id
+||carwow.de^$removeparam=impact_product_sku
+||assetstore.unity.com^$removeparam=aid
+||airvpn.org^$removeparam=referred_by
+||go.getproton.me^$removeparam=aff_c
+||billing.purevpn.com/aff.php$removeparam=aff
+||strongvpn.com$removeparam=tr_aid
+||trustzonevpn.info/r.php$removeparam=RID
 ||get.surfshark.net^$removeparam=aff_c
 ||get.surfshark.net^$removeparam=aff_id
 ||get.surfshark.net^$removeparam=offer_id
@@ -438,7 +470,8 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 ||puma.com^$removeparam=sc_uid
 ||puma.com^$removeparam=sc_llid
 ||puma.com^$removeparam=sc_eh
-||reddit.com^$removeparam=/deep_link|3p/
+||reddit.com^$removeparam=%243p
+||reddit.com^$removeparam=%24deep_link
 ||reddit.com^$removeparam=post_index
 ||reddit.com^$removeparam=post_fullname
 ||reddit.com^$removeparam=share_id
@@ -874,7 +907,6 @@ $removeparam=source_ve_path,domain=youtubekids.com|youtube-nocookie.com|youtube.
 ||etsy.com^$removeparam=ref
 ||etsy.com^$removeparam=click_sum
 ||myprotein.jp^$removeparam=affil
-||myprotein.jp^$removeparam=a8
 ||email.nationalgeographic.com^$removeparam=__F__
 ||email.nationalgeographic.com^$removeparam=__dU__
 ||pixiv.net^$removeparam=from
@@ -1560,7 +1592,7 @@ $removeparam=dt_dapp,domain=douban.com|163.com
 ||coupang.com^$removeparam=wPcid
 ||weidian.com^$removeparam=/distributorid|wfr|ifr|share_relation/
 ||jasonsavard.com^$removeparam=/cUrl|ref/
-$removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt
+$removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt|affiliate.privatevpn.com
 ||hog.*^$removeparam=ad
 ||lcs.naver.com/m?u=$removeparam=os
 ||lcs.naver.com/m?u=$removeparam=ln
@@ -1631,7 +1663,9 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ||linkedin.com/authwall?$removeparam=originalReferer
 ||linkedin.com^$removeparam=/^trk/
 ||digikey.com^$removeparam=/^utm_cid/
-$removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
+||nicovideo.jp^$removeparam=via
+||nicovideo.jp^$removeparam=at
+||nicovideo.jp^$removeparam=state
 ||nicovideo.jp^$removeparam=transition_id
 ||nicovideo.jp^$removeparam=transition_type
 ||nicovideo.jp^$removeparam=rf
@@ -1652,6 +1686,7 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||nicovideo.jp^$removeparam=ref
 ||nicoft.io^$removeparam=cmnhd_ref
 ||nicoebook.jp^$removeparam=track
+$removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||search.naver.com/search.naver$removeparam=tqi
 ||cc.naver.com/cc?a$removeparam=bw
 ||cc.naver.com/cc?a$removeparam=px
@@ -1746,8 +1781,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 ||amazon.*/*dp/$removeparam=dib_tag
 ||amazon.*/*dp/$removeparam=keywords
 ||amazon.*$removeparam=tag
-||amazon.*$removeparam=ref
-||amazon.*$removeparam=ie
 ||amazon.*$removeparam=adgrpid
 ||amazon.*$removeparam=AssociateTag
 ||amazon.*/gp/buyagain$removeparam=ats
@@ -1767,7 +1800,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 ||amazon.*$removeparam=hvtargid
 ||amazon.*$removeparam=hydadcr
 ||amazon.*$removeparam=initialIssue
-||amazon.*$removeparam=ingress
 ||amazon.*$removeparam=linkCode
 ||amazon.*$removeparam=linkId
 ||amazon.*$removeparam=pd_rd_i
@@ -1952,6 +1984,10 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||a8cv.amiami.jp/click/$removeparam=a8
+@@||apimeishi.meituan.com/meishi/poi$removeparam=utm_medium,xmlhttprequest,domain=meishi.meituan.com
+@@||portal-portm.meituan.com/horn$removeparam=utm_medium,xmlhttprequest,domain=meishi.meituan.com
+@@||tix.axs.com^$removeparam=irclickid
 !+ PLATFORM(ext_ff, ext_opera, ext_chromium)
 @@||google.*/url?*%26srsltid%3D$removeparam=srsltid
 @@||bywiola.com^$removeparam=tagtag_uid
