@@ -232,7 +232,7 @@ const spring25Notification: PromoNotification = {
             title: 'Čas je, da pospravimo za pomlad',
             btn: 'Nauči se kako',
         },
-        'sr-Latn': {
+        sr_latn: {
             title: 'Vreme je da pospremimo za proleće',
             btn: 'Saznajte kako',
         },
