@@ -1,9 +1,9 @@
-! Checksum: oo2ID+fBHkyXOiivQpoRAQ
-! Diff-Path: ../patches/17/17-s-1741826570-3600.patch
+! Checksum: QeCCKpJPuG6bN/krMHhW5g
+! Diff-Path: ../patches/17/17-s-1744974621-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.69
-! TimeUpdated: 2025-03-13T00:38:45+00:00
+! Version: 2.0.10.91
+! TimeUpdated: 2025-04-18T11:06:52+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -21,6 +21,10 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/201868
+$removeparam=uzcid
+$removeparam=beyond_uzcvid
+$removeparam=beyond_uzmcvid
 ! https://www.weblio.jp/ranking/?from=glia player.gliacloud.com anywhere
 ?from=glia^$removeparam=from
 ! Google Merchant Center tracking
@@ -390,6 +394,54 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/202756
+! Install/uninstall tracking
+||d.ghostery.com^$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/203377
+||deepl.com^$removeparam=share
+! https://github.com/AdguardTeam/AdguardFilters/issues/203046
+||netflix.com^$removeparam=source
+! https://github.com/AdguardTeam/AdguardFilters/issues/202484
+||threads.net^$removeparam=xmt
+! https://github.com/AdguardTeam/AdguardFilters/issues/202252
+||nintendo.com^$removeparam=nt_redirect_referrer
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-12682755
+||code-wallets.com^$removeparam=tw_adid
+||code-wallets.com^$removeparam=tw_source
+! https://github.com/AdguardTeam/AdguardFilters/issues/201849
+||autodaily.ru^$removeparam=from
+! Yandex.Practicum
+||practicum.yandex.*$removeparam=from
+! shop.asus.com
+||shop.asus.com^$removeparam=campaign_id
+||shop.asus.com^$removeparam=ad_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/201324
+||read.amazon.$removeparam=ref
+! bluestacks.com
+||support.bluestacks.com^$removeparam=email
+||support.bluestacks.com^$removeparam=guid
+||support.bluestacks.com^$removeparam=oem
+||support.bluestacks.com^$removeparam=client_ver
+||support.bluestacks.com^$removeparam=install_id
+||support.bluestacks.com^$removeparam=country
+! https://github.com/AdguardTeam/AdguardFilters/issues/200852
+||carwow.de^$removeparam=utm_group
+||carwow.de^$removeparam=affiliate_ref
+||carwow.de^$removeparam=impact_ad_id
+||carwow.de^$removeparam=impact_click_id
+||carwow.de^$removeparam=impact_product_sku
+! unity.com
+||assetstore.unity.com^$removeparam=aid
+! airvpn.org
+||airvpn.org^$removeparam=referred_by
+! protonvpn.com
+||go.getproton.me^$removeparam=aff_c
+! purevpn.com
+||billing.purevpn.com/aff.php$removeparam=aff
+! strongvpn.com
+||strongvpn.com$removeparam=tr_aid
+! trustzonevpn.info
+||trustzonevpn.info/r.php$removeparam=RID
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200391
 ||get.surfshark.net^$removeparam=aff_c
 ||get.surfshark.net^$removeparam=aff_id
@@ -642,7 +694,8 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 ||puma.com^$removeparam=sc_eh
 ! reddit.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191029
-||reddit.com^$removeparam=/deep_link|3p/
+||reddit.com^$removeparam=%243p
+||reddit.com^$removeparam=%24deep_link
 ||reddit.com^$removeparam=post_index
 ! reddit.com - email tracking
 ||reddit.com^$removeparam=post_fullname
@@ -1280,7 +1333,6 @@ $removeparam=source_ve_path,domain=youtubekids.com|youtube-nocookie.com|youtube.
 ||etsy.com^$removeparam=click_sum
 ! https://github.com/AdguardTeam/AdguardFilters/issues/160495
 ||myprotein.jp^$removeparam=affil
-||myprotein.jp^$removeparam=a8
 ! https://github.com/AdguardTeam/AdguardFilters/issues/159733
 ||email.nationalgeographic.com^$removeparam=__F__
 ||email.nationalgeographic.com^$removeparam=__dU__
@@ -2279,7 +2331,7 @@ $removeparam=dt_dapp,domain=douban.com|163.com
 ||jasonsavard.com^$removeparam=/cUrl|ref/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196606
 ! https://www.expressvpn.com/tfk?a_aid=tf, https://vpnarea.com/front/member/signup?a_aid=torrentgalaxy
-$removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt
+$removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt|affiliate.privatevpn.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97742
 ||hog.*^$removeparam=ad
 ! https://github.com/AdguardTeam/AdguardFilters/pull/95024
@@ -2387,8 +2439,9 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ||digikey.com^$removeparam=/^utm_cid/
 !
 ! NicoNico (nicovideo.jp)
-! Keep subdomain
-$removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
+||nicovideo.jp^$removeparam=via
+||nicovideo.jp^$removeparam=at
+||nicovideo.jp^$removeparam=state
 ||nicovideo.jp^$removeparam=transition_id
 ||nicovideo.jp^$removeparam=transition_type
 ||nicovideo.jp^$removeparam=rf
@@ -2409,6 +2462,9 @@ $removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
 ||nicovideo.jp^$removeparam=ref
 ||nicoft.io^$removeparam=cmnhd_ref
 ||nicoebook.jp^$removeparam=track
+! Keep subdomain
+$removeparam=from,domain=anime.nicovideo.jp|dic.nicovideo.jp
+!
 ! Naver (naver.com) - tracking parameter
 ! https://github.com/AdguardTeam/AdguardFilters/pull/89838
 ||search.naver.com/search.naver$removeparam=tqi
@@ -2549,8 +2605,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 ||amazon.*/*dp/$removeparam=dib_tag
 ||amazon.*/*dp/$removeparam=keywords
 ||amazon.*$removeparam=tag
-||amazon.*$removeparam=ref
-||amazon.*$removeparam=ie
 ||amazon.*$removeparam=adgrpid
 ||amazon.*$removeparam=AssociateTag
 ||amazon.*/gp/buyagain$removeparam=ats
@@ -2570,7 +2624,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 ||amazon.*$removeparam=hvtargid
 ||amazon.*$removeparam=hydadcr
 ||amazon.*$removeparam=initialIssue
-||amazon.*$removeparam=ingress
 ||amazon.*$removeparam=linkCode
 ||amazon.*$removeparam=linkId
 ||amazon.*$removeparam=pd_rd_i
@@ -2813,11 +2866,20 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! Some a8 links on https://figure-times.com/
+@@||a8cv.amiami.jp/click/$removeparam=a8
+! https://github.com/AdguardTeam/AdguardFilters/issues/201922
+! https://github.com/AdguardTeam/AdguardFilters/issues/201424
+@@||apimeishi.meituan.com/meishi/poi$removeparam=utm_medium,xmlhttprequest,domain=meishi.meituan.com
+@@||portal-portm.meituan.com/horn$removeparam=utm_medium,xmlhttprequest,domain=meishi.meituan.com
+! https://github.com/uBlockOrigin/uAssets/issues/27751
+@@||tix.axs.com^$removeparam=irclickid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199306#issuecomment-2678167845
 ! BUG: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
 ! TODO: remove when this issue is fixed in MV2 extension
 !+ PLATFORM(ext_ff, ext_opera, ext_chromium)
 @@||google.*/url?*%26srsltid%3D$removeparam=srsltid
+! https://github.com/AdguardTeam/AdguardFilters/issues/200080
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198365
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199110
 ! TODO: remove when this issue is fixed - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3076
