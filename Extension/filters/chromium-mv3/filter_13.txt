@@ -1,8 +1,8 @@
-! Checksum: ubfCbFjQhmOmB7kPpQCbNw
+! Checksum: +mpO5ssdNNxZzkr0J+KlUA
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.55.80
-! TimeUpdated: 2025-04-16T13:14:23+00:00
+! Version: 2.0.55.84
+! TimeUpdated: 2025-04-18T14:06:41+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1582,6 +1582,13 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+yemek.com##.masthead-container
+roketdizi.tv##.ad
+roketdizi.tv##.pt-5
+roketdizi.tv##.w-full:empty
+||aksam.com.tr/folders/js/pgn-native-aksamcomtr.dev.js
+aylink.co##.interstitial-page #toasts
+aylink.co##.interstitial-page .wrapper > center:has(> div:only-child .download-buttons-video)
 ||sinetiktok.com/rolling15.js
 ||tranimeizle.top/js/mm3.js
 hepsiburada.com##.slick-slide:has(> div:only-child > div[class] > a[href^="https://adservice"])
@@ -5942,6 +5949,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203257
+roketdizi.tv#@#div[id^="gpt_ad_"]
 ! https://github.com/easylist/easylist/issues/21595
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=haberler.com,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199823

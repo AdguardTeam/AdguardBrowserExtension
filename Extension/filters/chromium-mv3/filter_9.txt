@@ -1,8 +1,8 @@
-! Checksum: GwMlZpK1gJbKdi5LF8iNMA
+! Checksum: PC9p9OsrZQrDe0fIyw1hig
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.29.57
-! TimeUpdated: 2025-04-16T14:08:06+00:00
+! Version: 2.0.29.61
+! TimeUpdated: 2025-04-18T16:07:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -198,6 +198,7 @@
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||ads-redis.ecn.cl^
 ||bs_*.diariobitcoin.care^
 ||publi.elliberal.com.ar^
 ||xad.dnoticias.pt^
@@ -2156,8 +2157,14 @@ c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,me
 !
 ! NOTE: Specific rules
 !
+animeflv.net##a[href^="https://www.tiktok.com/"] img[src="https://animeflv.net/Banner-Tiktok.jpg"]
+animeflv.net##a[href^="https://bit.ly/"]
+||animeflv.net/Banner-Tiktok.jpg
+||mediaserver.emol.cl/zones/zones.js
+||mediaserver.emol.cl/other/lleison/pbli_vw.js
+||emol.com/Detalle/*_ADX.html
+||static.emol.cl/*/publicidadNAC.min.js
 blog.desdelinux.net###special-sidebar-template
-||war.pe/warp.js
 portaldohost.com.br##.ipsResponsive_inlineBlock > a[target="_blank"] > img
 teknofilo.com##.it-ad-wrapper
 kippel01.com##.topBillboard
@@ -3339,7 +3346,7 @@ eltiempo.es##div[style="min-height:600px;"]
 elpais.com##div[id^="ad-"]
 ||static.elpais.com/dist/resources/js/*/ENP-outbrain.js
 elmundo.es##.ue-c-subscription-ad
-meufinanceiro.org,mhscans.com,listas.pro###orquidea-slideup
+crystalcomics.com,meufinanceiro.org,mhscans.com,listas.pro###orquidea-slideup
 ouniversodatv.com,animerikosuper.blogspot.com###HTML1
 animerikosuper.blogspot.com###HTML260
 tecnoscann.com,mhscans.com,animerikosuper.blogspot.com##div[class^="fixed-"][class$="Sd"]

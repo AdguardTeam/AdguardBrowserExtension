@@ -1,8 +1,8 @@
-! Checksum: rh9LUB/CNo45bDSX1kb6UQ
+! Checksum: elW4oyEd0w9QG3c3LWXrJw
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.98.74
-! TimeUpdated: 2025-04-15T14:06:50+00:00
+! Version: 2.0.98.78
+! TimeUpdated: 2025-04-18T12:09:45+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -5281,7 +5281,6 @@ game4you.top,monna2.top,apad2.top,games-pc.top,rustorka.com,rustorka.net,rustork
 @@/side-ad.js$~third-party,domain=game4you.top|games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
 @@/SidebarAds.js$~third-party,domain=game4you.top|games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
 @@/report_ad.js$~third-party,domain=game4you.top|games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
-/\/forum\/(?!login.php)/$removeheader=location,domain=game4you.top|games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|naylo.top|monna2.top|zannn.top|innal.top|apad2.top
 $cookie=opt_js,domain=game4you.top|games-pc.top|rustorka.com|rustorka.net|rustorkacom.lib|rustorka.top|naylo.top
 !
 rustorka.com#%#//scriptlet('prevent-setInterval', 'puk')
@@ -5296,6 +5295,8 @@ monna2.top##body div[id^="tatus"]
 ||monna2.top^$header=location
 monna2.top#%#//scriptlet('abort-on-property-write', 'tatus')
 monna2.top#%#//scriptlet('prevent-setTimeout', '/tick/')
+! Apad Torrent Tracker
+apad2.top##body > div[style*="font-size: 18pt; margin: auto; position:relative; text-align: left; height:"]
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/3011
 @@||vsetv.net/advert.js
@@ -7625,6 +7626,13 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+championat.com##.header-bottom__adv
+championat.com##.game-of-day
+championat.com##.banner-announce
+||24stoma.ru/wp-content/themes/stoma/rkm/ilatan/artilcle.html
+24stoma.ru###tab1 > div[style] > div[style^="color:#bfbfbf;text-align:right;"]
+24stoma.ru###boxcontent
+24stoma.ru##div[class^="ydirect"]
 adindex.ru##.brns
 recut.ru##.col-12 > div.card-inner:has(> div.row a#more)
 artfile.me##.radv
@@ -18854,6 +18862,7 @@ zol.ru##.advertisement_main
 zol.ru###classified
 !
 ! kp.ru,kp.by,kp.kg,kp.kz,kp.md
+kp.ru#$?##app > div[data-slide] ~ div[class^="sc-"] > img[alt="Boom metrics"] ~ div[class^="sc-"] > div + div[class^="sc-"]:has(> div[class^="sc-"] > div[class^="sc-"] > div[class^="sc-"] > section[class^="sc-"] > div[class^="sc-"] > div[id^="yandex_rtb_"]) { remove: true; }
 kp.ru##div[class*="ad-slot"]
 kp.ru##div[style*="height: 250px"]
 kp.ru##div[data-metrics-news] > div[class]:has(> div.smi24__informer)
@@ -19044,6 +19053,8 @@ player.ex.co#@##ad-container
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203261
+@@||static.ig-store.ru/ads/$image,domain=ig-store.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202890
 @@||fastspring.com/images/bn/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202264

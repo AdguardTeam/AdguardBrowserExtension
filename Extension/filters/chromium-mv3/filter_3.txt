@@ -1,8 +1,8 @@
-! Checksum: dCw4bLscRjJe8zSsqg4xug
+! Checksum: zkAu4mKaQFGNGOCOiIA2OQ
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.83.34
-! TimeUpdated: 2025-04-16T15:07:12+00:00
+! Version: 2.0.83.47
+! TimeUpdated: 2025-04-18T17:06:27+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -543,6 +543,9 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 !
 !
 !
+||webpageviews.click^
+||trafficsyncpro.com^
+||oply.hearstapps.com^
 ||mobuppsweb.online^
 ||extreme-ip-lookup.com^$third-party
 ||b.clipkit.co^
@@ -800,7 +803,7 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ||analytics.qushad.com^
 ||orangeclickmedia.com^$third-party
 ||pageviews.tray.com.br^
-||convertbox.com^$third-party
+||app.convertbox.com^$third-party
 ||sync.outbrain.com^$third-party
 ||elb.the-ozone-project.com^
 ||pbcs.nypost.com^
@@ -52320,6 +52323,11 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||geo.justwatch.com^
+||sspnm.emol.com^
+||ssp.emol.com^
+||stats.emol.com^
+||rvv.emol.com^
 ||rma.homedepot.com^
 ||db7q4jg5rkhk8.cloudfront.net^
 ||backend-pixel.zotek.io^
@@ -145627,6 +145635,15 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 ! NOTE: Specific rules
 !
+||docviewer.yandex.com/monitoring.txt
+||channelexco.com/ppx/
+businessinsider.jp##div[class^="displayhandler"]:has(> div[class^="premiumRecommend"])
+||apps.emol.com/bt/pongAudience
+||mediaserver.emol.cl/rtracker/
+||apps.emol.com/bt/rdb.pram.
+||apps.emol.com/bt/pingCommentsAd
+||popularmechanics.com/_assets/oply/
+||assets.hearstapps.com/commerce/release/affiliate-
 ||cvs.com/api/web/vitals/
 ||copilot.microsoft.com/fd/ls/
 ||xboxservices.com/xboxcomfd/experimentation?
@@ -146803,6 +146820,8 @@ president.jp##.recommend
 ||pinterest.com/*/UserRegisterTrackActionResource/
 ||pinterest.com/*/StatsLogResource/
 ||pinterest.com/*/ContextLogResource/
+||pinterest.com/_/_/logClientError/
+||pinterest.com/_/_/trace/trace/
 /assets/client/web-vitals~$domain=the-sun.com|thesun.co.uk
 ||letelegramme.fr/assets/block/analytics/
 ||letelegramme.fr/assets/piano/piano-analytics.js
@@ -150685,6 +150704,9 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Bad:  ||example.com^$cookie=flat_r_mb (should be in cookies_specific.txt)
 !
 !
+! popularmechanics.com
+$cookie=optimizely-user-attributes
+$cookie=optimizely-user-id
 ! clicktripz.com
 $cookie=_ctpuid
 $cookie=_ctuid
@@ -151466,6 +151488,15 @@ $cookie=bf_visit
 ! Bad:  ||monerominer.rocks^$third-party (should be in adservers.txt)
 !
 !
+! oxylabs.io
+||developers.oxylabs.io^$cookie=/^intercom-/
+! popularmechanics.com
+||popularmechanics.com^$cookie=_HFID
+||popularmechanics.com^$cookie=_perhip
+||popularmechanics.com^$cookie=mosb
+! businessinsider.jp
+||businessinsider.jp^$cookie=mgppid
+||businessinsider.jp^$cookie=ppid
 ! roblox.com
 ||roblox.com^$cookie=RBXEventTrackerV2
 ||roblox.com^$cookie=RBXSessionTracker
@@ -152176,6 +152207,10 @@ inapps.appsflyersdk.com^
 !
 ! NOTE: Regular rules
 !
+||bbiquge.cc/tongji/
+||ads-privacy-api.prd.mz.internal.unity3d.com^
+||eventsv2balanced.malpagames.com^
+||pls.prd.mz.internal.unity3d.com^
 ||apishowstats.babybus.com^
 ||tjinit-event.babybus.com^
 ||tjinit-global-register.babybus.com^
@@ -153108,6 +153143,11 @@ d4?appid*type*
 !
 ! For platforms which do not support $redirect rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203237
+@@||auth.ticketmaster.com/epsf/gec*Login
+! https://github.com/AdguardTeam/AdguardFilters/issues/202982
+@@||a-fds.youborafds01.com/data?$xmlhttprequest,domain=pluto.tv
+pluto.tv#%#//scriptlet('abort-on-stack-trace', 'Date.prototype.getTime', 'startSessionHeartBeat')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202763
 world.taobao.com#%#//scriptlet('set-constant', 'aplus', 'emptyObj')
 world.taobao.com#%#//scriptlet('set-constant', 'aplus.getPageSPM', 'emptyArr', '', 'asFunction')
@@ -153208,9 +153248,6 @@ larocheposay.co.kr#%#//scriptlet('set-constant', 'wptg_tagscript.exec', 'noopFun
 @@||googletagmanager.com/gtm.js$domain=journaldunet.com
 @@||dpm.zebestof.com/*/tag.js^$domain=journaldunet.com
 @@||astatic.ccmbg.com/fc/js/prebid?v=$domain=journaldunet.com
-! https://github.com/AdguardTeam/AdguardFilters/issues/196800
-@@||cdn.convertbox.com^$domain=genevievegauvin.com
-@@||app.convertbox.com^$domain=genevievegauvin.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196386
 @@||google-analytics.com/debug/$domain=10bye.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/196208

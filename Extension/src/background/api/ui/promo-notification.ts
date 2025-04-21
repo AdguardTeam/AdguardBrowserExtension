@@ -191,6 +191,37 @@ export class PromoNotificationApi {
     }
 
     /**
+     * Handles Serbian locale codes:
+     * - for non-Serbian locales, returns the same code;
+     * - for general Serbian, e.g. 'sr', returns 'sr_latn';
+     * - for Serbian Latin, e.g. 'sr_latn', 'sr_latn_rs', 'sr_latn_me', 'sr_latn_ba', returns 'sr_latn';
+     * - for Serbian Cyrillic, e.g. 'sr_cyrl', 'sr_cyrl_rs', 'sr_cyrl_me', 'sr_cyrl_ba', returns 'sr_latn'.
+     *
+     * @param normalizedLocale Normalized locale code.
+     *
+     * @returns Normalized locale code.
+     */
+    private static handleSerbianLocale(normalizedLocale: string): string {
+        const GENERAL_SERBIAN_LATIN_LOCALE = 'sr_latn';
+
+        const GENERAL_SERBIAN_LOCALE = 'sr';
+        if (normalizedLocale === GENERAL_SERBIAN_LOCALE) {
+            return GENERAL_SERBIAN_LATIN_LOCALE;
+        }
+
+        if (normalizedLocale.startsWith(GENERAL_SERBIAN_LATIN_LOCALE)) {
+            return GENERAL_SERBIAN_LATIN_LOCALE;
+        }
+
+        const GENERAL_SERBIAN_CYRILLIC_LOCALE = 'sr_cyrl';
+        if (normalizedLocale.startsWith(GENERAL_SERBIAN_CYRILLIC_LOCALE)) {
+            return GENERAL_SERBIAN_LATIN_LOCALE;
+        }
+
+        return normalizedLocale;
+    }
+
+    /**
      * Scans notification locales and returns the one matching navigator.language.
      *
      * @param notification PromoNotification object.
@@ -204,6 +235,7 @@ export class PromoNotificationApi {
         }
 
         language = PromoNotificationApi.handleSpanishLocale(language);
+        language = PromoNotificationApi.handleSerbianLocale(language);
 
         const languageCode = language.split('_')[0];
         if (!languageCode) {
