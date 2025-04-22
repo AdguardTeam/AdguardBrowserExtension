@@ -1,14 +1,14 @@
-! Checksum: eUMBmQhU7W7ytvd6Hxuu3Q
+! Checksum: s631Pvf1n1jb4SwHWiqrEg
 ! Title: AdBlockID
 ! Description: Additional filter list for websites in Indonesian.
-! Version: 2.0.23.65
-! TimeUpdated: 2025-04-18T12:44:37+00:00
+! Version: 2.0.23.66
+! TimeUpdated: 2025-04-19T12:44:03+00:00
 ! Expires: 10 days (update frequency)
 !
-! OriginalVersion: 25.4.14
+! OriginalVersion: 25.4.17
 ! Title: AdBlockID
 ! Description: Filter list that specifically removes adverts on Indonesian language websites.
-! Last modified: 18 Apr 2025 12:07 UTC
+! Last modified: 19 Apr 2025 12:07 UTC
 ! Expires: 1 days
 ! Homepage: https://github.com/realodix/AdBlockID
 .id^*/bnr/$domain=~kalbarprov.go.id
@@ -3239,13 +3239,16 @@ bolatimes.com,dewiku.com,himedik.com,hitekno.com,matamata.com,mobimoto.com,suara
 [$path=/artikel]cermati.com#?#a:matches-attr(href="/^https?:\/\/promo\./"):has(> picture)
 [$path=/artikel]cermati.com##a[data-item^="promo-"]:has(> picture)
 -banner-$image,domain=popmama.com
-fortuneidn.com,ggwp.id,idntimes.com#?##IDN_Billboard:upward(1)
+yummy.co.id#?##IDN_Billboard:upward(1)
+yummy.co.id#?##IDN_InFeed1:upward(1)
 fortuneidn.com,ggwp.id,idntimes.com###IDN_MR1-wrapper
 fortuneidn.com,ggwp.id,idntimes.com###IDN_MR2-wrapper
 fortuneidn.com,ggwp.id,idntimes.com###IDN_MR3-wrapper
 idntimes.com###IDN_PS_MegaBillboard
-idntimes.com,yummy.co.id#?##IDN_SkinLeft:upward(1)
-idntimes.com,yummy.co.id#?##IDN_SkinRight:upward(1)
+idntimes.com###IDN_SkinLeft
+yummy.co.id#?##IDN_SkinLeft:upward(1)
+idntimes.com###IDN_SkinRight
+yummy.co.id#?##IDN_SkinRight:upward(1)
 fortuneidn.com,ggwp.id,idntimes.com###ads-infeed
 idntimes.com###idnads_header_IA
 idntimes.com###idnads_header_IA2
@@ -3262,16 +3265,16 @@ idntimes.com##.wrapper-leaderboard
 idntimes.com##.wrapper-megabillboard
 idntimes.com##.wrapper-mr
 popbela.com##[class^="ads_"]
-popmama.com##[id^="IDN_InArticle"]
-fortuneidn.com,ggwp.id,idntimes.com#?#[id^="IDN_InArticle"]:upward(2)
+fortuneidn.com,ggwp.id,idntimes.com#?#[class^="css-"]:matches-css(border-top-color: rgb(229, 233, 236)):has(> [id^="IDN_"]):upward(1)
+idntimes.com,popmama.com##[id^="IDN_InArticle"]
 popmama.com##[id^="IDN_Leaderboard"]
-fortuneidn.com,ggwp.id,idntimes.com#?#[id^="IDN_Leaderboard"]:upward(2)
 idntimes.com,popmama.com##[id^="IDN_MegaBillboard"]
 yummy.co.id##[id^="idnads_header_"]
 popbela.com,popmama.com##[id^="wrapper-IDN_MegaBillboard" i]
 fortuneidn.com,ggwp.id,idntimes.com##[id^="wrapper-IDN_MegaBillboard"]
 yummy.co.id#?#div:has(> button:contains(/tutup/i)):contains(/SCROLL UNTUK MELANJUTKAN MEMBACA/i)
 yummy.co.id#?#div:matches-css(align-items: center):contains(/adv/i)
+idntimes.com#$?##floatingbanner:matches-css(position: fixed) { remove: true; }
 popmama.com###mainBannerPopup
 popmama.com#$#body { overflow: auto!important; position: unset!important; }
 idntimes.com,popmama.com#%#//scriptlet('ubo-aeld.js', '/copy|keydown/')

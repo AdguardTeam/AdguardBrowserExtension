@@ -1,21 +1,10 @@
-! Checksum: 28fTUbTHqKXWjQMVs1942A
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1728336958-3600.patch
+! Checksum: frQlJBnBn9jvpTbkPZidhA
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1745248293-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.7.45
-! TimeUpdated: 2024-10-07T21:32:34+00:00
+! Version: 2.0.8.15
+! TimeUpdated: 2025-04-21T15:07:23+00:00
 ! Expires: 10 days (update frequency)
-#%#var AG_onLoad=function(func){if(document.readyState==="complete"||document.readyState==="interactive")func();else if(document.addEventListener)document.addEventListener("DOMContentLoaded",func);else if(document.attachEvent)document.attachEvent("DOMContentLoaded",func)};
-#%#var AG_removeElementById = function(id) { var element = document.getElementById(id); if (element && element.parentNode) { element.parentNode.removeChild(element); }};
-#%#var AG_removeElementBySelector = function(selector) { if (!document.querySelectorAll) { return; } var nodes = document.querySelectorAll(selector); if (nodes) { for (var i = 0; i < nodes.length; i++) { if (nodes[i] && nodes[i].parentNode) { nodes[i].parentNode.removeChild(nodes[i]); } } } };
-#%#var AG_each = function(selector, fn) { if (!document.querySelectorAll) return; var elements = document.querySelectorAll(selector); for (var i = 0; i < elements.length; i++) { fn(elements[i]); }; };
-#%#var AG_removeParent = function(el, fn) { while (el && el.parentNode) { if (fn(el)) { el.parentNode.removeChild(el); return; } el = el.parentNode; } };
-#%#var AG_removeCookie=function(a){var e=/./;/^\/.+\/$/.test(a)?e=new RegExp(a.slice(1,-1)):""!==a&&(e=new RegExp(a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));a=function(){for(var a=document.cookie.split(";"),g=a.length;g--;){cookieStr=a[g];var d=cookieStr.indexOf("=");if(-1!==d&&(d=cookieStr.slice(0,d).trim(),e.test(d)))for(var h=document.location.hostname.split("."),f=0;f<h.length-1;f++){var b=h.slice(f).join(".");if(b){var c=d+"=",k="; domain="+b;b="; domain=."+b;document.cookie=c+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+k+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+b+"; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+k+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";document.cookie=c+b+"; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"}}}};a();window.addEventListener("beforeunload",a)};
-#%#var AG_defineProperty=function(){var p,q=Object.defineProperty;if("function"==typeof WeakMap)p=WeakMap;else{var r=0,t=function(){this.a=(r+=Math.random()).toString()};t.prototype.set=function(a,b){var d=a[this.a];d&&d[0]===a?d[1]=b:q(a,this.a,{value:[a,b],writable:!0});return this};t.prototype.get=function(a){var b;return(b=a[this.a])&&b[0]===a?b[1]:void 0};t.prototype.has=function(a){var b=a[this.a];return b?b[0]===a:!1};p=t}function u(a){this.b=a;this.h=Object.create(null)}function v(a,b,d,e){this.a=a;this.i=b;this.c=d;this.f=e}function w(){this.g=/^([^\\\.]|\\.)*?\./;this.j=/\\(.)/g;this.a=new p}function x(a,b){var d=b.f;if(d&&!("beforeGet"in d||"beforeSet"in d))return z(d);var e={get:function(){var c=b.f;c&&c.beforeGet&&c.beforeGet.call(this,b.a.b);a:if(c=b.g)c=A(c)?c.value:c.get?c.get.call(this):void 0;else{c=b.a.b;if(b.i in c&&(c=B(c),null!==c)){var d=C.call(c,b.i);c=d?d.call(this):c[b.i];break a}c=void 0}(this===b.a.b||D.call(b.a.b,this))&&E(a,c,b.c);return c},set:function(c){if(this===b.a.b||D.call(b.a.b,this)){b.f&&b.f.beforeSet&&(c=b.f.beforeSet.call(this,c,this));var d=b.g;d&&A(d)&&d.value===c?c=!0:(d=F(b,c,this),G(c)&&(c=H(a,c),I(a,c,b.c)),c=d)}else c=F(b,c,this);return c}};d&&J(d,e,K);return e}function I(a,b,d){for(var e in d.h){var c=d.h[e];if(b.h[e]){var h=a,g=b.h[e],k=c;!k.f||g.f||"undefined"===typeof g.a.b||g.g||(g.g=z(k.f));g.c&&k.c&&g.c!==k.c&&I(h,g.c,k.c)}else{g=h=void 0;k=a;var f=b,l=c.i,m="undefined"!==typeof f.b,y=!1;m&&(g=L(f.b,l))&&!g.configurable&&(y=!0,h=f.b[l]);var n=y?H(k,h):new u(c.c.b);I(k,n,c.c);n=new v(f,l,n,c.f);f.h[l]=n;m&&(n.g=g,m=x(k,n),y?E(k,h,c.c):(q(f.b,l,m),g&&A(g)&&(M(m,g.value,f.b),E(k,g.value,c.c))))}}}function E(a,b,d){G(b)&&(b=H(a,b),I(a,b,d))}function F(a,b,d){var e=a.g;if(!e){e=B(a.a.b);if(null!==e&&(e=N.call(e,a.i)))return e.call(d,b);if(!O(a.a.b))return!1;a.g={value:b,configurable:!0,writable:!0,enumerable:!0};return!0}return M(e,b,d)}function H(a,b){var d=a.a.get(b);d||(d=new u(b),a.a.set(b,d));return d}function A(a){return"undefined"!==typeof a.writable}function J(a,b,d){for(var e=0,c=d.length;e<c;e++){var h=d[e];h in a&&(b[h]=a[h])}}function z(a){if(a){var b={};J(a,b,P);return b}}function M(a,b,d){if(A(a))return a.writable?(a.value=b,!0):!1;if(!a.set)return!1;a.set.call(d,b);return!0}var P="configurable enumerable value get set writable".split(" "),K=P.slice(0,2),L=Object.getOwnPropertyDescriptor,O=Object.isExtensible,B=Object.getPrototypeOf,D=Object.prototype.isPrototypeOf,C=Object.prototype.__lookupGetter__||function(a){return(a=Q(this,a))&&a.get?a.get:void 0},N=Object.prototype.__lookupSetter__||function(a){return(a=Q(this,a))&&a.set?a.set:void 0};function Q(a,b){if(b in a){for(;!w.hasOwnProperty.call(a,b);)a=B(a);return L(a,b)}}function G(a){var b=typeof a;return"function"===b||"object"===b&&null!==a?!0:!1}var R;return function(a,b,d){R||(R=new w);var e=R;d=d||window;var c=new u;a+=".";var h=c||new u;for(var g=e.g,k=e.j,f,l,m;a;){f=g.exec(a);if(null===f)throw 1;f=f[0].length;l=a.slice(0,f-1).replace(k,"$1");a=a.slice(f);(f=h.h[l])?m=f.c:(m=new u,f=new v(h,l,m),h.h[l]=f);h=m}if(!f)throw 1;a=f;a.f=b;E(e,d,c)};}();
-#%#var AG_abortOnPropertyWrite=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeSet:function(){b&&console.warn("AdGuard aborted property write: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
-#%#var AG_abortOnPropertyRead=function(a,b){var c=Math.random().toString(36).substr(2,8);AG_defineProperty(a,{beforeGet:function(){b&&console.warn("AdGuard aborted property read: "+a);throw new ReferenceError(c);}});var d=window.onerror;window.onerror=function(e){if("string"===typeof e&&-1!==e.indexOf(c))return b&&console.warn("AdGuard has caught window.onerror: "+a),!0;if(d instanceof Function)return d.apply(this,arguments)}};
-#%#var AG_abortInlineScript=function(g,b,c){var d=function(){if("currentScript"in document)return document.currentScript;var a=document.getElementsByTagName("script");return a[a.length-1]},e=Math.random().toString(36).substr(2,8),h=d();AG_defineProperty(b,{beforeGet:function(){var a=d();if(a instanceof HTMLScriptElement&&a!==h&&""===a.src&&g.test(a.textContent))throw c&&console.warn("AdGuard aborted execution of an inline script"),new ReferenceError(e);}});var f=window.onerror;window.onerror=function(a){if("string"===typeof a&&-1!==a.indexOf(e))return c&&console.warn("AdGuard has caught window.onerror: "+b),!0;if(f instanceof Function)return f.apply(this,arguments)}};
-#%#var AG_setConstant=function(e,a){if("undefined"===a)a=void 0;else if("false"===a)a=!1;else if("true"===a)a=!0;else if("noopFunc"===a)a=function(){};else if("trueFunc"===a)a=function(){return!0};else if("falseFunc"===a)a=function(){return!1};else if(/^\d+$/.test(a)){if(a=parseFloat(a),isNaN(a)||32767<Math.abs(a))return}else return;var b=!1;AG_defineProperty(e,{get:function(){return a},set:function(c){if(b)var d=!0;else void 0!==c&&void 0!==a&&typeof c!==typeof a&&(b=!0),d=b;d&&(a=c)}})};
 -reclameplaatjes/
 /adbron.
 /adtwee/*
@@ -52,6 +41,7 @@ _advertentieleaderboardhome.
 ||2k19.nl^$third-party
 ||adrequest.net^$third-party
 ||adshim.com^$third-party
+||adswag.nl^$third-party
 ||affilaxy.com^$third-party
 ||affiliatepartners.com^$third-party
 ||affiliateprogramma.eu^$third-party
@@ -70,11 +60,13 @@ _advertentieleaderboardhome.
 ||nonstoppartner.net^$third-party
 ||online-banners.nl^$third-party
 ||optoutadvertising.com^$third-party
+||publize.net^
 ||sponsorkliks.com^$third-party
 ||static-dscn.net^$third-party
 ||tools-affil2.com^$third-party
 ||tools.islive.nl^$third-party
 ||travelads.be^$third-party
+||trickyrock.com^
 ||viadata.store^
 ||vpscash.nl^$third-party
 ||xpartners.nl^$third-party
@@ -92,6 +84,7 @@ _advertentieleaderboardhome.
 ||cloudfront.net/Assets/images/partners/$domain=feyenoord.nl
 ||cloudfront.net/banners/$domain=eredivisie.nl
 ||feenstra-internetservices.nl/?_dnid=$third-party
+||flexwebhosting.nl/banners/
 ||fx.nl/_ext/widget/$third-party
 ||go2.go2cloud.org^
 ||infotalia.com/worktalia_promo_
@@ -118,9 +111,8 @@ _advertentieleaderboardhome.
 ||strafrechtadvocaten.nl/media/banner/$third-party
 ||swpportal.com/upload/squarebanners/
 ||t.bazarow.com^$third-party
-||tags.refinery89.com^
 ||traffic.12flirt.com^
-||viralize.tv/display/$domain=startpagina.nl
+||viralize.tv/display/$domain=sgxl.nl|startpagina.nl
 ||wertuipsertj34.azurewebsites.net^$xmlhttprequest
 ||widget.vpnnederland.nl^$domain=nzbserver.com
 ||widgets.skyscanner.net^$domain=puuropreis.nl
@@ -129,6 +121,7 @@ _advertentieleaderboardhome.
 ||xmissy.nl/admnfiles1809/sinclub/freechatbanner_
 ||123video.nl^*/300x100_
 ||1twente.nl/Ads/
+||24cars.nl/api/advertise-deliver/
 ||2link.be/banners/
 ||aa.tweakers.nl^
 ||aafm.nl/cms/wp-content/themes/omroepalmelo/img/banners/
@@ -153,6 +146,7 @@ _advertentieleaderboardhome.
 ||bol-an.nl/wp-content/uploads/*/Adv_
 ||brandweerspotters.nl/modules/banners/
 ||buzzbie.nl/uploads/banners/
+||cdn-tmo.nl^*/banners/
 ||cdn-webcam-harlingen.nl/adv/
 ||chatmetvreemden.be/static/html/
 ||chatmetvreemden.nl/static/html/
@@ -274,6 +268,7 @@ _advertentieleaderboardhome.
 ||popinstituut.nl/wp-content/uploads/2014/02/Huren.nl
 ||pornokartel.nl/wp-content/uploads/*/wp-script-leaderboard.gif
 ||promootjesite.nl/images/affliateBanner/
+||propertynl.com/media/organization/banners/
 ||puurnaturisme.nl/images/banners/
 ||racexpress.nl/advertising/
 ||racingnews365.nl/images/banners/
@@ -324,6 +319,7 @@ _advertentieleaderboardhome.
 ||tpo.nl/broodplank/
 ||tradeidee.nl/banners/
 ||transport-online.nl/site/includes/uploads/banner-
+||tvvisie.be/textads/textads.js
 ||twentefm.nl/directcast/custom/rtvnot/playout/commercials/
 ||uecl-voetbal.nl/derden/
 ||uel-voetbal.nl/derden/
@@ -462,8 +458,8 @@ _advertentieleaderboardhome.
 @@||cdn.bluebillywig.com/scripts/prebid/*/bluebillywig_pbjs.js$script,domain=autoblog.bbvms.com
 @@||cdn.spotxcdn.com/integration/easi/v1/easi.js$script,domain=radioluisteren.fm
 @@||files.skoften.net/website/lib/vjs/plugins/ads/videojs.ads.min.js$script,~third-party
-@@||imasdk.googleapis.com/js/core/bridge*.html$subdocument,domain=vtm.be
-@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=crime-nieuws.nl|dailybuzz.nl|skoften.net|sportnieuws.nl|vtm.be|weerplaza.nl
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=crime-nieuws.nl|dailybuzz.nl|goplay.be|skoften.net|sportnieuws.nl|vtm.be|weerplaza.nl
+@@||imasdk.googleapis.com/js/sdkloader/ima3_dai.js$domain=goplay.be
 @@||improvedigital.com/pbw/headerlift.min.js$domain=spelletjes.nl
 @@||js.spotx.tv/ados/v1/106185.js$script,domain=radioluisteren.fm
 @@||massariuscdn.com/pubs/$script,domain=dailybuzz.nl|radio.nl|welingelichtekringen.nl
@@ -534,10 +530,13 @@ _advertentieleaderboardhome.
 immo.vlan.be###ProvidersBox
 immo.vlan.be###TopCompareBox
 autobahn.eu,dingenvoorvrouwen.nl,playboy.nl###WB_VIDEO_PLAYER_TARGET
-hoekschnieuws.nl###\36 050c52fcf1d8-2
 gaynews.nl###abri
 gaynews.nl###abri1
+voetbal24.be###ad-desktop-incontent
 voetbalkrant.com###ad-intro-text
+voetbal24.be###ad-mobile-home-rectangle
+voetbal24.be###ad-mobile-incontent
+voetbal24.be###ad-mobile-outstream
 welklidwoord.nl###ad-takeover
 menselijklichaam.nl###ad1
 filmtotaal.nl###adf-autonative
@@ -603,6 +602,7 @@ grandprixradio.nl###custom_html-17
 grandprixradio.nl###custom_html-18
 minimumloon.nl,omroepeemsdelta.nl,wereldreizigers.nl###custom_html-2
 arrowcaz.nl,messianieuws.nl###custom_html-3
+exxact.nl###custom_html-31
 historiek.net###custom_html-38
 messianieuws.nl###custom_html-4
 huisvlijt.com,messianieuws.nl###custom_html-5
@@ -700,7 +700,7 @@ adodenhaag.nl###sponsors-normal
 itwm.nl###tdi_37
 voetbal4u.be###text-11
 h20.gg,livestreamvandaag.be###text-14
-radiozuidrand.be###text-15
+exxact.nl,radiozuidrand.be###text-15
 edelmetaal-info.nl###text-16
 edelmetaal-info.nl,loemedia.nl###text-17
 edelmetaal-info.nl,voetbalweddenrss.nl###text-19
@@ -742,6 +742,7 @@ telegraaf.nl##.Banner
 2dehands.be,marktplaats.nl##.BannerBottom-root
 marktplaats.nl##.BannerRight-root
 marktplaats.nl##.Banners-bannerFeedItem
+telegraaf.nl##.BasicTeaser__sponsored
 guruwatch.nl##.Billboard
 belegger.nl,beursduivel.be,beursonline.nl,debeurs.nl,eurobench.com##.Billboard-wrapper
 telegraaf.nl##.ComponentRotation
@@ -756,6 +757,7 @@ onsoranje.nl##.SponsorBar
 knvb.nl##.SponsorBar-list
 totoknvbbeker.nl##.SponsorBlock
 telegraaf.nl##.SportScoreboardPage__banner
+zelfmaak-ideetjes.nl##.Sticky_Ad_Widget_SP
 buzzbie.nl##.TS_Banner_Spot
 telegraaf.nl##.TextArticlePage__bannerWrapper
 telegraaf.nl##.VideoArticlePage__banner
@@ -763,22 +765,22 @@ telegraaf.nl##.VideoPage__banner
 deondernemer.nl##.\-mb-10.box-content.flex.hidden.items-center.p-4.md\:mb-0.md\:flex.md\:min-h-25
 christelijknieuws.nl,dartfreakz.nl,thehike.nl,zozwanger.nl##.a-single
 upinthesky.nl##.a-wrap
+ditishelmond.nl##.aanbieder
 rtveen.nl##.aas_zone
 rivierenland-radio.nl##.aba
 newsbit.nl##.acf-block-cta-conversion-rating
-autozine.nl,banden.autoweek.nl,beleggersbelangen.nl,besteproduct.nl,bright.nl,dumpert.nl,eurosport.nl,gpblog.com,hetnieuwsvandaag.be,indebuurt.nl,koopplein.nl,limburger.nl,persinfo.org,rd.nl,sport.be,tellows.nl,tradeidee.nl,tripadvisor.nl,voetbalnieuws.nl,voetbalprimeur.nl,wijlimburg.nl,xgn.nl##.ad
+24cars.nl,a1mediagroep.nl,alarmeringen.nl,autozine.nl,banden.autoweek.nl,beleggersbelangen.nl,besteproduct.nl,bright.nl,dumpert.nl,eurosport.nl,gpblog.com,hetnieuwsvandaag.be,indebuurt.nl,koopplein.nl,limburger.nl,persinfo.org,rd.nl,rtvnunspeet.nl,sport.be,tellows.nl,tradeidee.nl,tripadvisor.nl,voetbalnieuws.nl,voetbalprimeur.nl,vrmg.nl,wijlimburg.nl,xgn.nl##.ad
 crypto-insiders.nl##.ad-category
-filmtotaal.nl##.ad-centering
-babybytes.nl,bruzz.be,omroepflevoland.nl,pu.nl,sportuitslagen.org,trendalert.nl##.ad-container
+babybytes.nl,bruzz.be,omroepflevoland.nl,pu.nl,soccernews.nl,sportuitslagen.org,trendalert.nl##.ad-container
 voetbal.com##.adbox
 sozio.nl##.adchannel
 faillissementsdossier.nl##.adcontainer
 nieuwsmotor.nl##.add-background
 vlaamskijken.nl,voetbalvandaag.be##.adds
 beurs.nl##.addslot
-loemedia.nl##.adlead
+a1mediagroep.nl,loemedia.nl,rtvnunspeet.nl,vrmg.nl##.adlead
 westerwoldeactueel.nl##.adr-wrapper
-cinenews.be,clint.be,handbal.nl,openrotterdam.nl,viamichelin.be,viamichelin.nl,vkmag.com,wegdamnieuws.nl##.ads
+cinenews.be,clint.be,dagelijkseverhalen.nl,handbal.nl,openrotterdam.nl,viamichelin.be,viamichelin.nl,vkmag.com,wegdamnieuws.nl##.ads
 treinreiziger.nl##.ads-adsense-treinreiziger-horizontaal
 treinreiziger.nl##.ads-adsense-treinreiziger-horizontaal-5
 faillissementsdossier.nl##.adsbybinq
@@ -786,18 +788,20 @@ openingstijden.com,promootjesite.nl,radiofm.nl##.adsense
 adodenhaag.nl,spelletje.nl##.adv
 nuus.be##.adv-link
 amusement.tv,beurs.tv,cultuur.tv,formule1.tv,gamen.tv,geloof.tv,gezondheid.tv,informatief.tv,jongeren.tv,kennis.tv,kinderen.tv,kook.tv,lachen.tv,mensen.tv,mode.tv,muziek.tv,natuur.tv,nederland.tv,nieuws.tv,ondernemen.tv,onrecht.tv,oranje.tv,politiek.tv,reis.tv,serie.tv,spelletjes.tv,sporten.tv,talentenjacht.tv,vaartuig.tv,verkiezing.tv,voertuig.tv,voetbal.tv,weer.tv,woon.tv##.adv-tekst
-filmtotaal.nl,intermediair.nl##.advert
+filmtotaal.nl,hoimedia.com,intermediair.nl##.advert
 newsbit.nl##.advert-converting-bar
 juf-milou.nl##.adverteerdersblok
 startlijstjes.nl##.advertentieblock
 rallylovers.be##.advertentierechts
 autoweek.nl##.advertise
-1twente.nl,bnnvara.nl,elektormagazine.nl,fonkmagazine.nl,hpdetijd.nl,kieskeurig.nl,tvgids.tv,twentefm.nl,zijaanzij.nl##.advertisement
+1twente.nl,bnnvara.nl,elektormagazine.nl,fonkmagazine.nl,hpdetijd.nl,kieskeurig.nl,maassluis24.nl,nl24.nu,schiedam24.nl,tvgids.tv,twentefm.nl,zijaanzij.nl##.advertisement
 goodbye.be,sporza.be##.advertising
 albrandswaardsdagblad.nl,barendrechtsdagblad.nl,dagblad010.nl,dagblad070.nl,goudsdagblad.nl,ridderkerksdagblad.nl,rijswijksdagblad.nl,voorburgsdagblad.nl,zoetermeersdagblad.nl##.advrow
 geenstijl.nl##.afctr-wrapper
 wielerflits.be,wielerflits.nl##.affiliate_links
 gfcnieuws.com,historiek.net##.ai-viewport-1
+voedingswaardetabel.nl##.amgrayB
+voedingswaardetabel.nl##.amgrayT
 autoreview.nl##.ar_300_600_mid
 autoreview.nl##.ar_300_600_top
 autoreview.nl##.ar_970_250
@@ -810,15 +814,16 @@ nailtalk.nl##.ashe-widget
 klimaatinfo.nl##.aside__add
 yachtfocus.com##.av
 salvora.nl##.avia-content-slider1
+gaykrant.nl##.awac
 hookers.nl##.axd-container
 stadszaken.nl##.b-side
-afkortingen.nu,agf.nl,beursduivel.be,bpnieuws.nl,dutchitchannel.nl,executive-people.nl,filmladder.nl,folderz.nl,ibestuur.nl,iexprofs.nl,klasse.be,metalfan.nl,nrc.nl,nu.nl,oogtv.nl,retaildetail.be,retaildetail.nl,startpagina.nl,televizier.nl,telezien.nl,totaaltv.nl,tvgemist.be,tvgids.nl,uiennieuws.nl,uitslagen.nl,unity.nu,uw-folder.nl,waldnet.nl##.banner
+afkortingen.nu,agf.nl,beursduivel.be,bpnieuws.nl,dutchitchannel.nl,executive-people.nl,filmladder.nl,folderz.nl,ibestuur.nl,iexprofs.nl,klasse.be,metalfan.nl,nrc.nl,nu.nl,oogtv.nl,propertynl.com,retaildetail.be,retaildetail.nl,startpagina.nl,televizier.nl,telezien.nl,totaaltv.nl,tvgemist.be,tvgids.nl,uiennieuws.nl,uitslagen.nl,unity.nu,uw-folder.nl,waldnet.nl##.banner
 nieuwsuitnijmegen.nl##.banner-box-1
 goudengids.be##.banner-boxes
 speeleiland.nl##.banner-btf-side-rectangle
 feyenoord.nl##.banner-carousel
 sportnieuws.nl##.banner-centered
-deliciousmagazine.nl,fiets.nl,fietsactief.nl,knipmode.nl,rootsmagazine.nl,seasons.nl,truckstar.nl,vorsten.nl,zin.nl##.banner-container
+deliciousmagazine.nl,fiets.nl,fietsactief.nl,knipmode.nl,lokaaltotaal.nl,rootsmagazine.nl,seasons.nl,truckstar.nl,vorsten.nl,zin.nl##.banner-container
 tvblik.nl##.banner-fluid
 prewarcar.nl##.banner-holder
 yachtfocus.com##.banner-item
@@ -837,6 +842,7 @@ autowereld.nl,sexjobs.nl##.banner-wrapper
 opwindend.net##.banner468x60
 motocrossplanet.nl##.banner540
 rtvdordrecht.nl##.bannerContainer
+meetingmagazine.nl##.bannerLine
 iexprofs.nl##.banner__article
 tostrams.nl##.banner__articleside
 tostrams.nl##.banner__homeside
@@ -908,8 +914,12 @@ monitor.iex.nl##.centerbanner
 techzine.nl##.chimney
 autoscout24.be,autoscout24.nl##.cl-billboad-wrapper
 bitcoinmagazine.nl##.clickout-relative
+skoften.net##.cls-placeholder-160-600
+skoften.net##.cls-placeholder-300-600
+skoften.net##.cls-placeholder-970-250
 rd.nl##.codalt-container
 gfcnieuws.com,techgaming.nl##.code-block
+achterhoeknieuwswinterswijk.nl##.component__pubble-banner
 bol.com##.consideration-display
 twentefans.nl##.content-action
 juf-milou.nl##.content_blok_reclame
@@ -927,6 +937,7 @@ voetbaluitslagen.com##.cta
 menttv.be##.cta-container
 voetbaluitslagen.com##.cta__toplist
 kekmama.nl##.cts-row-wrapper
+zelfmaak-ideetjes.nl##.da-container
 albrandswaardsdagblad.nl,barendrechtsdagblad.nl,dagblad010.nl,dagblad070.nl,goudsdagblad.nl,ridderkerksdagblad.nl,rijswijksdagblad.nl,voorburgsdagblad.nl,zoetermeersdagblad.nl##.ddbad_wrapper
 radionl.fm##.desktop_mobile
 touretappe.nl##.desktopad
@@ -954,15 +965,19 @@ mr-online.nl##.elementor-element-da14229
 biflatie.nl##.elementor-location-popup
 biflatie.nl##.elementor-popup-modal
 motorrijder.be##.elementor-widget-container > a > img
+aalsmeervandaag.nl##.elementor-widget-media-carousel
 radiocontinu.nl##.eskimo-carousel-container
+sol2.nl##.et_pb_image_0
+sol2.nl##.et_pb_slider
 noordkopcentraal.nl##.ewic-slider-pro-widget
 pornoplekje.nl##.exitpopup-modal-window
 crypto-insiders.nl##.exp-google-ad
 musicmeter.nl##.external
 escortgirls.be,sexguide.nl,topescort.nl##.fBanners
+voetbalzone.nl##.fco-ad
 voetbalzone.nl##.fco-openweb-ad
+voetbalzone.nl##.fco-sponsored-text-link
 fd.nl##.fd-message
-heracles.nl##.fixed-ads
 ml5.nl##.fl-module-uabb-image-carousel
 id.nl##.flex.items-center.justify-center.mx-auto.min-h-\[280px\].md\:my-2.w-\[336px\].h-\[280px\].md\:w-\[970px\].md\:h-\[250px\]
 webcam-aalsmeer.nl,webcam-airport.nl,webcam-binnenvaart.nl,webcam-blokzijl.nl,webcam-brandaris.nl,webcam-delfzijl.nl,webcam-denhelder.nl,webcam-denoever.nl,webcam-dokkum.nl,webcam-dordrecht.nl,webcam-enkhuizen.nl,webcam-friesemeren.nl,webcam-grou.nl,webcam-havenijmuiden.nl,webcam-hindeloopen.nl,webcam-hoekvanholland.nl,webcam-kampen.nl,webcam-lauwersoog.nl,webcam-leeuwarden.nl,webcam-lelystad.nl,webcam-maassluis.nl,webcam-marken.nl,webcam-monnickendam.nl,webcam-rotterdam.nl,webcam-sneek.nl,webcam-terneuzen.nl,webcam-vlaardingen.nl,webcam-volendam.nl,webcam-workum.nl,webcam-zaanzicht.nl,webcam-zoutkamp.nl,webcam-zwartsluis.nl,webcams-ameland.nl,webcams-scheveningen.nl,webcams-texel.nl,webcams-vlissingen.nl,webcamschiermonnikoog.nl,webcamvlieland.nl##.flexslider
@@ -982,7 +997,7 @@ uecl-voetbal.nl,uel-voetbal.nl##.footerderden
 kanaalxxx.nl##.fpbnr
 motorrijdenexpert.nl##.full-row.relative-row.no-padding-bottom.title-txt-btn.flat-theme.flat-theme-content
 unitednews.sr##.fullwidthbanner-container
-amateursexstart.nl,binnenvaartkrant.nl,christmaholic.nl,curacao.nu,dartfreakz.nl,dbsuriname.com,dehavengids.nl,despirituelewereld.be,dewereldmorgen.be,noordernieuws.nl,regioinbedrijf.nl,seksmet.nl,sekswebsite.nl,shespot.nl,sleutelstad.nl,westerwoldeactueel.nl##.g
+amateursexstart.nl,binnenvaartkrant.nl,christmaholic.nl,curacao.nu,dartfreakz.nl,dbsuriname.com,dehavengids.nl,despirituelewereld.be,dewereldmorgen.be,hoekschnieuws.nl,noordernieuws.nl,regioinbedrijf.nl,seksmet.nl,sekswebsite.nl,shespot.nl,sleutelstad.nl,westerwoldeactueel.nl##.g
 zozwanger.nl##.g-single
 zeelandnet.nl##.g_banner
 radiovisie.eu##.gmollik
@@ -996,6 +1011,7 @@ hardware.info##.header-navigation__truelogo
 schaatsen.nl##.header-partners-logo
 wos.nl##.header-right
 anoniem-surfen.nl##.header-widget-region
+gratisoptehalen.nl##.headerAdWrap
 golf.be##.header__bottom
 4gamers.be##.header__combell
 ajax.nl##.header__partner-link
@@ -1043,15 +1059,17 @@ sparta-rotterdam.nl##.logo_slider_logos
 greenkeeper.nl##.logoblok
 nieuweoogst.nl##.logolinks-wrapper
 techpulse.be##.magazine-sidebar-block
+humo.be##.marketing-banner
 live-voetbal.com##.match-bet
 ga-eagles.nl##.match-sponsor
 mediacourant.nl##.mc-adv
-autovisie.nl,beautify.nl,bedrock.nl,culy.nl,famme.nl,manners.nl,metronieuws.nl,nsmbl.nl,want.nl##.mha_container
+gaykrant.nl##.metaslider
+autovisie.nl,beautify.nl,bedrock.nl,culy.nl,famme.nl,jmouders.nl,manners.nl,metronieuws.nl,nsmbl.nl,want.nl##.mha_container
 demorgen.be,flair.nl,humo.be,libelle.nl,margriet.nl,parool.nl,trouw.nl,volkskrant.nl##.mid1-container
 mijn-tv-gids.be##.midzone
 autobahn.eu##.min-h-280.min-h-md-250
 scholieren.com##.min-h-90
-wegdamnieuws.nl##.mk-sponsorlink
+aalsmeervandaag.nl,wegdamnieuws.nl##.mk-sponsorlink
 wordfeudwoorden.nl##.mobblue
 radioeenhoorn.nl##.module_round_box
 marktplaats.nl##.mp-Listing--cas
@@ -1063,7 +1081,10 @@ edestad.nl##.mtb-0.ptb-15.mb-30.text-center.bg-grey
 qassa.nl##.muurpapier
 autoreview.nl##.my-12.py-6.relative.border-y.border-slate-300.sm\:flex.sm\:justify-between
 schie.nu##.my-5
+dmgdeurne.nl##.n2-section-smartslider
 iex.nl##.nativeblock
+scientias.nl##.ndm-desktop-only
+scientias.nl##.ndm-mobile-header-only
 iex.nl##.network:nth-of-type(2)
 escortgirls.be,sexguide.nl,topescort.nl##.newbottom-fbanners
 partyflock.nl##.nice-thing
@@ -1117,6 +1138,7 @@ simone.nl,wfm.be##.qt-sponsor
 rbsradio.be##.qt-sponsors
 nedporno.com##.r11ght-pl4yer-169
 dagelijksestandaard.nl,sportbookies.nl,viraal.nl,wielrennenuptodate.nl##.raw-html-component
+hoekschnieuws.nl##.rbct > a > img
 belegger.nl,debeurs.nl,eurobench.com##.recommendbanner
 wasmachines.nl##.rectangle
 iex.nl##.rectanglemid
@@ -1129,7 +1151,7 @@ zeelandnet.nl##.row--bnr-between
 racesport.nl##.rs_sponsorbanners_widget
 motorblog.nl##.sale
 oisterwijknieuws.nl##.sam-container
-ajaxshowtime.com,androidworld.be,androidworld.nl,dagelijksestandaard.nl,dartfreakz.nl,dartsnieuws.com,f1maximaal.nl,fr12.nl,indeleiderstrui.nl,twenteinsite.nl,vechtsportinfo.nl,vkmag.com##.sda
+ajaxshowtime.com,androidworld.be,androidworld.nl,dagelijksestandaard.nl,dartfreakz.nl,dartsnieuws.com,f1maximaal.nl,fr12.nl,indeleiderstrui.nl,loesoe.nl,twenteinsite.nl,vechtsportinfo.nl,vkmag.com##.sda
 scholieren.com##.searchvertorial
 dutchcowboys.nl##.section-a-dvertise
 tvgids.nl##.section-banner
@@ -1152,6 +1174,7 @@ unitednews.sr##.slider-container
 omroepwest.nl##.slider-wrapper
 volleyvlaanderen.be##.slider5
 hyc.be,maaslandradio.nl##.slides
+veluwefm.nl##.slideshow_container
 funnygames.be,funnygames.nl,spele.be,spele.nl##.slot-container
 solarmagazine.nl##.sols
 live-voetbal.com##.special-offer
@@ -1165,7 +1188,8 @@ radio0511.com##.sponsorImg
 computable.be##.sponsorartikelen
 amsterdamtigers.com##.sponsorbanner
 nevobo.nl##.sponsorbar
-businessinsider.nl,computable.nl##.sponsored
+24cars.nl,businessinsider.nl,computable.nl##.sponsored
+hoimedia.com##.sponsoren
 az.nl,cambuur.nl,fcgroningen.nl,ga-eagles.nl,mijnserie.nl,nec-nijmegen.nl,trappers.nl,volleybelgium.be##.sponsors
 fleet-mobility.nl##.spotlight
 atv.be,robtv.be,tvl.be,tvoost.be##.squareWrap
@@ -1176,19 +1200,20 @@ ninefornews.nl##.stream-item
 despirituelewereld.be##.stream-item-widget
 iex.nl##.strossle-widget
 123video.nl##.stunt-wide
-dagbladdewest.com##.swiper-wrapper
+aalsmeervandaag.nl,dagbladdewest.com##.swiper-wrapper
 bekijkporno.nl##.table
 iexprofs.nl##.tagwrapper
 koken.vtm.be##.taxonomy-dedicated-header
-boottesten.nl,hoekschnieuws.nl,katholiek.nl,newspower.nu,nieuwsopbeeld.nl,railhobby.nl,regioonline.nl,rtvpapendrecht.nl,transport-online.nl,waterkant.net##.td-a-rec
 techpulse.be##.td-banner-wrap-full
 sportamerika.nl##.tdi_133
-bollenstreekomroep.nl##.tdi_36
+rtvpapendrecht.nl##.tdi_14
+bollenstreekomroep.nl,rtvpapendrecht.nl##.tdi_36
 omroepspakenburg.nl##.tdi_48
 elegance.nl##.tdi_58
 waterkant.net##.tdi_68
 nu.nl##.tealium
 demorgen.be,volkskrant.nl##.teaser-branded
+taaloefenen.nl##.tekstads
 nos.nl##.teletekst__banner
 startpagina.nl##.template-redesign-5-column-top-3-center-banner-outer
 deondernemer.nl##.text-center > .mt-2.box-content.flex.min-h-25.max-w-full.overflow-x-hidden.bg-background-1.p-4.md\:min-h-10
@@ -1212,6 +1237,8 @@ chatmetvreemden.be,chatmetvreemden.nl##.trackerclick
 computable.be,computable.nl##.true-logo
 fok.nl##.trueTop
 uecl-voetbal.nl,uel-voetbal.nl##.uitgelichtbox
+nieuwnieuws.nl##.uk-text-center[style="min-height: 250px;"]
+nieuwnieuws.nl##.uk-text-center[style="min-height: 265px;"]
 nieuwsfiets.nu##.ult-content-box-container
 nieuwsfiets.nu##.us_custom_7370a357
 beursgorilla.nl##.ut--rectangle
@@ -1232,6 +1259,7 @@ moviemeter.nl##.vod-widget-container
 wordfeudhelp.nl##.w-full.my-6.text-center.hoog
 autobahn.eu,dingenvoorvrouwen.nl,playboy.nl##.wb-label
 osuradio.nl##.wdslider
+isgeschiedenis.nl##.webads
 baarsclassicrock.nl,tweakers.net##.widebanner
 tweakers.net##.widebnr
 basketballbelgium.be##.widget-aoclubs-sponsors
@@ -1242,12 +1270,12 @@ indebuurt.nl##.widget-tabs--partners
 wos.nl##.widget.rounded-lg.lg\:rounded-2xl.p-1.lg\:p-4.border.overflow-visible.lg\:w-full.lg\:max-w-\[754px\].\!mx-auto
 autoblog.nl##.widget_ab_sidebar
 nieuws.nl##.widget_add_widget
-ajaxfanzone.nl,christelijknieuws.nl,ecobioliving.eu,groningerkrant.nl,iculture.nl,klapjes.nl,nljug.org,tiener-sexverhalen.nl,transport-online.nl,visionair.nl##.widget_custom_html
+ajaxfanzone.nl,christelijknieuws.nl,ecobioliving.eu,groningerkrant.nl,iculture.nl,jazznu.com,jazzradar.com,klapjes.nl,nljug.org,pokemonkaart.nl,tiener-sexverhalen.nl,transport-online.nl,visionair.nl,vmlnieuws.nl,wieheeftmijgebeld.nl##.widget_custom_html
 mannenstyle.nl##.widget_execphp
 riskcompliance.nl##.widget_itarget_banners
 ajaxreport.nl,feyenoordreport.nl,livestreamvandaag.be,onlinekraslotenrss.nl,psvreport.nl,voetbal4u.com,voetbalsnafu.nl##.widget_links
 infinance.nl##.widget_links_widget
-daemesenheeren.nl,eindtijdklok.org,nljug.org,noordkopcentraal.nl,radionova.be,sliedrecht24.nl,tiener-sexverhalen.nl##.widget_media_image
+daemesenheeren.nl,eindtijdklok.org,nljug.org,noordkopcentraal.nl,omroeptholen.nl,radionova.be,rtvalbrandswaard.com,rtveen.nl,sliedrecht24.nl,tiener-sexverhalen.nl##.widget_media_image
 noordkopcentraal.nl##.widget_metaslider_widget
 schuttevaer.nl##.widget_minisites
 vlootschouw.nl##.widget_miw_widget_multiple_images
@@ -1263,20 +1291,26 @@ indebuurt.nl##.woty-banner
 streamwijzer.nl##.wp-block-buttons
 debestevpn.nl##.wpsm_promobox
 iphoned.nl##.wrap.hidden.lg\:flex.mt-8
+androidworld.nl##.wrap.overflow-hidden.relative.pt-5.z-30.sm\:h-\[90px\].sm\:pt-0
 beurs.nl##.wrapper--topbanner
 voetbalprimeur.nl##[class^="Ad_"]
 bright.nl##[class^="Ad_ad_"]
+at5.nl##[class^="Advertisement_"]
 gamer.nl##[component-export="Ad"]
+androidplanet.nl##[data-name="featured-header"]
+9292.nl##[data-testid^="gpt-ad"]
 indeleiderstrui.nl##[data-ub-carousel]
 delhaize.be##[id*="sponsored_products"]
 regionoordkop.nl##[id^="regio-"]
 geenstijl.nl##a[data-ga-event^="link-tip"]
+nbs-bouwmaterialen.nl##a[data-testid="linkElement"]
 nu.nl##a[data-type="advertorial"]
 cip.nl##a[href*="/ad/click/"]
 nu.nl##a[href*="/advertorial-"]
 seks.com##a[href*="https://sexlijnen.anoniem.nl/"]
 gaynews.nl##a[href^="/_global/_cp.php?"]
 gaynews.nl##a[href^="/_global/_fp.php?"]
+biernet.nl##a[href^="/bja/ga-naar/"]
 nummerzoeker.com##a[href^="/out/"]
 zeelandnet.nl##a[href^="http://partnerprogramma.bol.com/"]
 voetbalvandaag.be##a[href^="http://unibet.me/"]
@@ -1302,6 +1336,7 @@ tweakers.net##a[href^="https://www.true.nl/?utm_"]
 edelmetaal-info.nl##a[onclick^="javascript:pageTracker._trackPageview"]
 gostreaming.nl,tennisplaza.be##a[rel*="sponsored"]
 oisterwijknieuws.nl##a[target="_blank"] > img
+hoekschnieuws.nl##center > a > img
 pcmweb.nl##div.block:nth-of-type(1)
 pcmweb.nl##div.block:nth-of-type(2)
 oisterwijknieuws.nl##div[align="center"] a[target="_blank"]
@@ -1309,11 +1344,11 @@ hartvannederland.nl,shownieuws.nl,vandaaginside.nl##div[class*="-bannerTopWrappe
 hartvannederland.nl,shownieuws.nl,vandaaginside.nl##div[class*="-bannerWrapper-"]
 meteovista.be##div[class*="AdWrapper"]
 agconnect.nl##div[class*="ad-slot"]
+crimesite.nl,ditjesendatjes.nl,fem-fem.nl,fok.nl,gloednieuw.nl,gpinfo.com,headliner.nl,kidsenkurken.nl,klusidee.nl,looopings.nl,lovereality.nl,mannenzaken.nl,meemetoranje.nl,nextplay.nl,nieuws365.be,puna.nl,reality.nl,showblad.nl,showupdate.nl,skoften.net,tvblik.nl,voetbal14.nl,voetbalnieuws.be,webwoordenboek.nl,whiskymonkeys.com,wielernieuws.be##div[class*="r89-"]
 omroepbrabant.nl##div[class^="ad-"]
-deondernemer.nl##div[class^="adBlock_"]
+deondernemer.nl,vtwonen.nl##div[class^="adBlock_"]
 omroepbrabant.nl,reclamefolder.nl##div[class^="ad_"]
 zoom.nl##div[class^="display-ad_container"]
-ditjesendatjes.nl,fem-fem.nl,fok.nl,gloednieuw.nl,gpinfo.com,headliner.nl,klusidee.nl,looopings.nl,lovereality.nl,mannenzaken.nl,nextplay.nl,nieuws365.be,puna.nl,reality.nl,showblad.nl,showupdate.nl,skoften.net,tvblik.nl,voetbal14.nl,voetbalnieuws.be,webwoordenboek.nl,whiskymonkeys.com,wielernieuws.be##div[class^="r89-"]
 klimaatinfo.nl##div[class^="space_"]
 weeronline.nl##div[class^="styled__AdWrapper-"]
 weeronline.nl##div[class^="styled__FooterAdWrapper-"]
@@ -1335,6 +1370,7 @@ handbalinside.nl##div[id^="handb-"]
 nauticlink.com##div[id^="nauti-"]
 jaap.nl##div[id^="property_ad_"]
 fem-fem.nl,gewoonvoorhem.nl,girlscene.nl,reality.nl,soccernews.nl,tpo.nl##div[id^="r89-"]
+revive.nl##div[id^="reviv-"]
 voetbalbelgie.be##div[id^="voetb-"]
 zeilwereld.nl##div[id^="zeilw-"]
 waldnet.nl##div[style*="height: 560px;"]
@@ -1353,16 +1389,19 @@ skoften.net##div[style="min-height: 250px;"]
 skoften.net##div[style="min-height: 265px;"]
 gamereactor.nl##div[style="min-height: 600px; margin-bottom: 20px;"]
 waldnet.nl##div[style="padding-top: 30px; padding-bottom: 30px;"]
+spellingoefenen.nl##div[style="text-align: left; height: 320px; width: 240px;"]
 gamer.nl##div[style="width: 100%; height: 280px;"]
 landbouwgrond.nu##div[style="width: 100%; height: 320px;"]
 ammoniakrechten.nl,efarm.nl,fosfaat.nu,koemarkt.nl,landbouwgrond.nu,mechanisatie.nl,pluimveerechten.nu,quotum.nu,varkensrechten.nu##div[style="width:100%;height:320px;display:block;"]
 waldnet.nl##div[style^="height: 280px;"]
+sommenoefenen.nl##div[style^="max-width: 960px; height:280px;"]
 starnieuws.com##div[style^="width : 250px"]
 apintie.sr##div[style^="width: 300px; height: 180px;"]
 autosport.nl##div[style^="width: 300px; height: 427px;"]
 apintie.sr##div[style^="width:300px; height:180px;"]
 finance.nl##div[style^="width:300px; height:250px;"]
 oisterwijknieuws.nl##img[alt="banner"]
+jazznu.com##img[alt="jazznu"]
 racesport.nl##img[height="250"]
 camping-frankrijk.nl##img[style*="234px; height: 60px"]
 rotterdambasketbal.nl##img[title^="roba_sponosor_"]
@@ -1372,42 +1411,55 @@ partyflock.nl##img[Width="140"]
 partyflock.nl##img[Width="160"]
 gratis.nl##img[Width="160"][height="600"]
 prewarcar.nl##img[Width="160"][height="92"]
-climaximaal.nl##img[Width="200"]
+climaximaal.nl,rtvmiddenholland.nl##img[Width="200"]
 webstick.nl##img[Width="220"]
+jazzism.nl##img[Width="250"]
 dartfreakz.nl##img[Width="250"][height="250"]
-creditexpo.nl,dagbladdewest.com,dagelijksestandaard.nl,fiets.nl,luister.nl,negerin.nl,ninefornews.nl,omroeprsh.nl,psvinside.nl,ucl-voetbal.nl,unitednews.sr##img[Width="300"]
+creditexpo.nl,dagbladdewest.com,dagelijksestandaard.nl,fiets.nl,franekeractueel.nl,luister.nl,negerin.nl,ninefornews.nl,omroeprsh.nl,psvinside.nl,ucl-voetbal.nl,unitednews.sr##img[Width="300"]
 regio-voetbal.nl##img[Width="300"][height="100"]
 advocatie.nl,goedkoopstekeukensduitsland.nl,lflmagazine.nl,mannennieuws.nl,streamwijzer.be,teqnation.com,thatsgaming.nl,yourlittleblackbook.me##img[Width="300"][height="250"]
 ciaotutti.nl##img[Width="300px"]
+franekeractueel.nl##img[Width="310"]
 racexpress.nl##img[Width="310"][height="200"]
 abcsuriname.com##img[Width="320"]
 vives.nl##img[Width="330"][height="520"]
 nauticlink.com##img[Width="336"]
 advocatie.nl##img[Width="336"][height="280"]
 minimumloon.nl##img[Width="350"][height="350"]
+jazzism.nl##img[Width="400"]
 abcsuriname.com##img[Width="420"]
 dutchcryptotalk.com##img[Width="468"][height="60"]
-climaximaal.nl##img[Width="500"]
+climaximaal.nl,franekeractueel.nl##img[Width="500"]
 streamwijzer.be##img[Width="500"][height="500"]
+jazzism.nl##img[Width="600"]
 decibel.nl##img[Width="640"][height="180"]
 nieuwsopbeeld.nl##img[Width="640"][height="640"]
 volleyvlaanderen.be##img[Width="670"][height="80"]
 webstick.nl##img[Width="680"]
 wildfm.nl##img[Width="699"][height="90"]
-cryptobenelux.com,pokeren.nl,ucl-voetbal.nl##img[Width="728"][height="90"]
+rtvmiddenholland.nl,waterkant.net##img[Width="720"]
+cryptobenelux.com,pokeren.nl,rtvmiddenholland.nl,ucl-voetbal.nl##img[Width="728"][height="90"]
 ajaxinside.nl##img[Width="750"][height="400"]
+jazzism.nl##img[Width="843"]
+franekeractueel.nl##img[Width="960"]
 basketballbelgium.be##img[Width="970"][height="250"]
-bol.com##li.js_item_root:has(.dsa__list-padding)
 bol.com##section.js_slot-sponsored-products
 landenweb.nl##table[style="margin-left: auto; margin-right: auto; border: 1px solid; width: 100%; margin-bottom: 10px;"]
 radiocaramba.nl##table[Width="120"][height="600"]
+fok.nl##.col-1.h4:has(.sponsorsTxt)
+androidplanet.nl##.group.relative.flex-shrink-0.lg\:flex-shrink.lg\:first\:col-span-2.lg\:first\:row-span-2.w-\[300px\].lg\:w-auto.flex:has(div[data-name="sponsor-logo"])
 investmentofficer.nl##.io-tape-card__wrap:has(.io-tape-card__label__sponsored)
+weer.nl##.items-center.w-full.justify-center:has(div[data-advert-placeholder-collapses])
 indebuurt.nl##.list-item.list-item--aagje:has(.list-item__sponsor)
 welingelichtekringen.nl##.post:has(a[href*="/partnerposting/"])
 ah.nl##.product-card-portrait_root__ZiRpZ:has(.promotion_root__pAAlu)
 tvgids.nl##.square-item:has( > .banner)
 agconnect.nl#?#.c-teaser:has(.c-pill--partner)
+delhaize.be#?#.product-item:-abp-contains(Gesponsord)
+androidplanet.nl##div[data-name="post"]:has(div[data-name="sponsor-logo"])
 krefel.be#?#div[class^="Flex-styled__StyledFlex-"]:has(h3:-abp-contains(Gesponsorde producten))
+bol.com##li.js_item_root:has(.dsa__list-padding)
+marktplaats.nl#?#.hz-Listing--list-item:-abp-contains(Topadvertentie)
 feijenoordnieuws.nl##.cv-table-left > a:not([target="_blank"]):not([rel="nofollow"]):not(a[href^="https://feijenoordnieuws.nl/"])
 2dehands.be#?#.hz-Listing--list-item:-abp-has(.hz-Listing-priority:-abp-contains(Topadvertentie))
 almere-nieuws.nl#?#.wpb_wrapper:has(.section-heading:-abp-contains(partners))
@@ -1416,6 +1468,7 @@ autobahn.eu#?#.d-none.d-md-block.mb-3:-abp-has(a[target="_blank"][rel="noopener"
 buienradar.nl#?#.linklist:-abp-has(h1:-abp-contains(Lekker Dichtbij Deals))
 businessinsider.nl#?#.widget_custom_html:-abp-has(h2:-abp-contains(Beter Beleggen))
 mediamarkt.be,mediamarkt.nl##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
+duurzaamnieuws.nl#?#.avia_codeblock_section:-abp-contains(Duurzaamnieuws wordt mede mogelijk gemaakt door:)
 fonq.nl#?#[data-cy="plp-tile-container"]:-abp-contains(Gesponsord)
 fonq.nl#?#li:-abp-contains(Gesponsord)
 geenstijl.nl#?#.article.row.no-image:-abp-has(.row.compost-warn:-abp-contains(- ingezonden mededeling -))
@@ -1429,12 +1482,14 @@ nieuwsopbeeld.nl#?#.td_module_wrap:-abp-has(.td-post-category:-abp-contains(Gesp
 psvinside.nl#?#.td_block_template_1:has(.block-title:-abp-contains(Partners))
 tijd.be#?#.o-hpgrid__row-tijdconnect:-abp-has(h2:-abp-contains(Gesponsorde inhoud))
 tostrams.nl#?#section.network:-abp-has(.contentheader.contentheader--network:-abp-contains(Gesponsorde links))
+tvvisie.be,tvvisie.nl#?#.side:-abp-contains(Aanbiedingen)
 vi.nl#?#.c-articles-list__item.c-articles-list__item--highlight:-abp-has(.c-tag.c-articles-list__label:-abp-contains(Advertorial))
 voetbalcentraal.nl#?#.blok:-abp-has(h3:-abp-contains(Partners))
 weer.nl#?#.shadow-lvl-2:-abp-has(a[href^="https://www.voordeeluitjes.nl/"])
 wielerflits.nl#?#.widget-container:-abp-has(.h3.mb-4:-abp-contains(Wielerdeals))
 wielerflits.nl#?#li.list-item.list-item-aside:-abp-has(.badge:-abp-contains(Ad))
 wielerflits.nl#?#li.list-item.list-item-default:-abp-has(span:-abp-contains(Ad))
+wintersport.nl#?#.mb-6:-abp-contains(gesponsord)
 wkdarts.nl#?#.wpb_wrapper:-abp-has(div:-abp-contains(#advertentie))
 bokt.nl#@#.ad-body
 gratisaftehalen.nl#@#.ads-image
@@ -1450,11 +1505,13 @@ bokt.nl#@#.node-ad
 ajaxreport.nl,ajaxrss.nl,blockchainvandaag.com,casinoreport.nl,casinovergelijkingen.com,cryptobelegging.com,cryptotoekomst.com,feyenoordreport.nl,formula1report.com,fultimateteam.com,gamblingreport.nl,livestreamvandaag.be,psvreport.nl,vergelijkbookmakers.nl,voetbalnotering.nl,voetbalsnafu.nl,voetbalvisie.com#@#.top-ads-block
 directwonen.nl#@#.top-advert
 vakantieplaats.nl#@#.topAds
+||proxy.optoutadserving.com^
 ||cryptosplash.care^
 ||cryptobeneluxbanner.care^
 ||cdn.optoutadvertising.com^
 ||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
+||x9t7g4m2qk2.azurewebsites.net^
 ||kjdsfjisdfjr23.azurewebsites.net^
 ||content2.nrc.nl^
 ||aa.hwigroup.com^
@@ -1462,12 +1519,19 @@ vakantieplaats.nl#@#.topAds
 ||aa.tweakers.nl^
 ||ab.tweakers.nl^
 @@/ad_pics/*$image,domain=computerworld.nl|webwereld.nl
-@@||tweakers.net/i^
+@@||tweakers.net/i^$image
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
+forum.fok.nl#%#//scriptlet('prevent-setTimeout', 'ckad')
+forum.fok.nl#@##advertentie
+autotrader.nl#%#//scriptlet('abort-on-property-read', 'Object.prototype.autoRecov')
+!+ NOT_OPTIMIZED
+538.nl,hartvannederland.nl#@##topbanner_ad
+!+ NOT_OPTIMIZED
+@@||assets.prod.webx.talpa.digital/ad/view/$domain=hartvannederland.nl|538.nl
 topkleurplaat.nl#%#//scriptlet('prevent-setTimeout', '.height() === 0')
 filmvandaag.nl#%#//scriptlet('prevent-fetch', 'securepubads.g.doubleclick.net')
-@@||looopings.nl/*ad*.js
+@@||looopings.nl/*.js$script,~third-party
 looopings.nl#%#//scriptlet('remove-node-text', 'script', 'if(!document.getElementById')
 webcam-binnenvaart.nl#%#//scriptlet('prevent-element-src-loading', 'script', 'adsbygoogle')
 vtmgo.be#%#//scriptlet('prevent-fetch', 'v.fwmrm.net')
@@ -1521,6 +1585,27 @@ gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px 
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+grazia.nl##li.bg-reserved:has(div[data-aa-adunit])
+grazia.nl##.sticky-incontent:has(> div[data-aa-adunit])
+grazia.nl##div[data-aa-adunit]
+demorgen.be##.position-after-main-home
+standaard.be##div[id^="ad_"]
+crypto-insiders.nl##.article-content > p > a.btn--highlighted.external-link
+crypto-insiders.nl##.affiliate-dropdown:not(#style_important)
+crypto-insiders.nl##.exp-banner-global
+dailybuzz.nl#%#//scriptlet("set-constant", "cookie", "true")
+mediacourant.nl##.mg-slot
+avrotros.nl#%#//scriptlet('json-prune', 'assets.preroll')
+hartvannederland.nl##div[data-advert-slot-state]
+hartvannederland.nl##div:has(> span:first-child:contains(Advert))
+omroepbrabant.nl#%#//scriptlet('google-ima3')
+omroepbrabant.nl#%#//scriptlet('adjust-setTimeout', '[native code]', '6000', '0.001')
+9292.nl##:is(div, aside, astro-island):has(> div[data-testid="gpt-ad-root"])
+||cdn-ster-nl.akamaized.net/STERAD_P_*.mp4^$media,redirect=noopmp4-1s,domain=nos.nl
+nos.nl#%#//scriptlet('json-prune', 'adUrl')
+||adconfig.ster.nl^$domain=nos.nl
+||hfg.iuknyw5evnygw9v.nl/*?*=omroepzeeland&direct=
+||2mdn.net/instream/html5/ima3.js$domain=omroepzeeland.nl,important
 centraalplus.nl##div[class^="col"] > div.center:has(> div.g > div.g-single > center > i:contains(Advertentie))
 voetbalzone.nl##div[class^="ad-wrapper"]
 voetbalzone.nl##.fco-openweb-ad
@@ -1543,7 +1628,7 @@ iphoned.nl##div[data-name="dynamic-content"]:has(> div[id^="div-gpt-"])
 iphoned.nl##div[data-name="featured-header-container"] > header[data-campaign]
 iphoned.nl##article > .no-content-styles:has(> div[data-nosnippet] > div[data-name="dynamic-content-injected"][data-campaign])
 rtl.nl##div[data-adslot-variant]
-bright.nl##body .ad
+bright.nl##html > body .ad:not(#style_important)
 nieuwsblad.be##.cba_container_grid
 dumpert.nl##div[class^="css-"]:has(> div[class^="css-"]:only-child > .ad)
 402online.com##.bannerblock
@@ -1575,7 +1660,9 @@ knack.be##.c-header__ad
 serietotaal.nl##div[class*="banner"]
 serietotaal.nl##div[id^="ad"]
 serietotaal.nl##.rect-in-headlines
-marktplaats.nl#?#.mp-Page-element > .mp-Listings + div:not([class]):not([id]):has(> .mp-Listings__admarktTitle)
+marktplaats.nl##.hz-Banner
+marktplaats.nl##.bannerContainerLoading
+marktplaats.nl##.mp-Page-element > .mp-Listings + div:not([class]):not([id]):has(> .mp-Listings__admarktTitle)
 marktplaats.nl#?#ul.mp-Listings > li.mp-Listing:has(> .mp-Listing-coverLink > .mp-Listing-group > .mp-Listing-group--price-date-feature > span.mp-Listing-priority > span:contains(/^Topadvertentie$/))
 turksemedia.nl#$?#div[class="sidebar_item"][style="padding-bottom: 16px;"]:has(> a > img[width="276"]) { remove: true; }
 androidplanet.nl#?#.sidebar > .widget_static_device_widget:has(.device-ad)
@@ -1600,12 +1687,13 @@ security.nl##.banner_leaderboard
 iculture.nl##.ad-top-desktop
 iculture.nl##.feed-ad-wrapper
 ||tweakers.net/*/build/banners.*.js
+tweakers.net##body .top-banner
+tweakers.net##.video-container > iframe[src^="https://ads.pexi.nl/"]
 vandaaginside.nl##div[class^="a-bannerWrapper-"]
 vandaaginside.nl##div[class^="Component-bannerTopWrapper-"]
 itnijs.frl##.last.widget
 itnijs.frl##.widget-5 > div.banner
 ||itnijs.frl/wp-content/uploads/2017/10/bannerItNijs
-tweakers.net##.video-container > iframe[src^="https://ads.pexi.nl/"]
 spiele.spiegel.de##div[id^="ad-gamepage"]
 kieskeurig.nl##.advertisement
 ad.nl##li[class^="tile tile tile--"]

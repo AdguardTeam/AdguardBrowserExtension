@@ -1,8 +1,8 @@
-! Checksum: Wg6ZDu8pQv9sdyryvscIXQ
+! Checksum: IJ+kC7j70t4I8eCaXtz7Qw
 ! Title: AdGuard Social Media filter
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.13.56
-! TimeUpdated: 2025-04-18T16:07:13+00:00
+! Version: 2.1.13.59
+! TimeUpdated: 2025-04-21T16:07:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -652,6 +652,10 @@ esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israel
 !
 ! NOTE: Specific rules
 !
+life.pravda.com.ua##.post_news_social > div.button
+ci-en.dlsite.com##.e-buttonBox > div.e-buttonBox-item:has(> button.is-tweet)
+doctorhead.ru##.control-share
+mynavi-agent.jp##.p-article_sns
 svr.gov.ru##.pager-extra-social
 svr.gov.ru##.pager-share-social
 globeplants.com##.product-info__share
@@ -1166,7 +1170,7 @@ stalker2.com##.flex:has(> a[href^="https://www.facebook.com/sharer/"])
 antonymorato.com##div[class^="jss"] > div:has(> svg > path[d^="M17.5 3c-1.1"])
 justica.gov.pt##.justica-documentos_apoio
 rbc.ru##.js-index-central-column > div[data-publisher-index]:has(> [data-rm-data-element*="Telegram"])
-epravda.com.ua##.post_article_social
+champion.com.ua,epravda.com.ua##.post_article_social
 slashdot.org##.comment_share_toggle
 gadgetsnow.indiatimes.com#?#div[data-articlemsid] div[class]:has(> div[class] > span[class]:contains(/^Twitter$/))
 lettuceclub.net##.mt-12.md\:mx-auto
@@ -1555,7 +1559,7 @@ maxroll.gg##main div.mt-2:has(> div.flex > span[title^="Share"])
 bengo4.com##.c-socialShare
 mmt-tv.co.jp##.movie_txt_sns
 rozrywka.radiozet.pl##.content-part__share-links
-pocketgamer.biz##.share-area
+used.sofmap.com,pocketgamer.biz##.share-area
 scan.netsecurity.ne.jp##.arti-sharing-keep
 s.netsecurity.ne.jp##.arti-sharing-keep
 timesofindia.indiatimes.com#?#div[id^="toi-article-container"] div[class]:has(> div[class] > div[class] > div.mobile-socialshare-bottom)
