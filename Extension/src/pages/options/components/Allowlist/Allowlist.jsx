@@ -133,7 +133,7 @@ const Allowlist = observer(() => {
             await saveAllowlist(settingsStore.allowlist.concat('\n', content));
             setAllowlistRerender(true);
         } catch (e) {
-            logger.debug(e);
+            logger.debug('[ext.Allowlist.inputChangeHandler]: error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
                 uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
             } else {

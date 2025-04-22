@@ -160,16 +160,13 @@ class Messenger {
 
             port.onMessage.addListener((message) => {
                 if (!messageHasTypeField(message)) {
-                    logger.error(
-                        'Received message in Messenger.createLongLivedConnection has no type field: ',
-                        message,
-                    );
+                    logger.error('[ext.Messenger]: received message in Messenger.createLongLivedConnection has no type field:', message);
                     return;
                 }
 
                 if (message.type === MessageType.NotifyListeners) {
                     if (!messageHasTypeAndDataFields(message)) {
-                        logger.error('Received message with type MessageType.NotifyListeners has no data: ', message);
+                        logger.error('[ext.Messenger]: received message with type MessageType.NotifyListeners has no data:', message);
                         return;
                     }
 
@@ -182,7 +179,7 @@ class Messenger {
 
             port.onDisconnect.addListener(() => {
                 if (browser.runtime.lastError) {
-                    logger.error(browser.runtime.lastError.message);
+                    logger.error('[ext.Messenger]: received error on disconnect:', browser.runtime.lastError.message);
                 }
                 // we try to connect again if the background page was terminated
                 if (!forceDisconnected) {
@@ -240,13 +237,13 @@ class Messenger {
 
         browser.runtime.onMessage.addListener((message) => {
             if (!messageHasTypeField(message)) {
-                logger.error('Received message in Messenger.createEventListener has no type field: ', message);
+                logger.error('[ext.Messenger]: received message in Messenger.createEventListener has no type field:', message);
                 return undefined;
             }
 
             if (message.type === MessageType.NotifyListeners) {
                 if (!messageHasTypeAndDataFields(message)) {
-                    logger.error('Received message with type MessageType.NotifyListeners has no data: ', message);
+                    logger.error('[ext.Messenger]: received message with type MessageType.NotifyListeners has no data:', message);
                     return undefined;
                 }
 
@@ -497,7 +494,7 @@ class Messenger {
      */
     async updateFilters(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
         if (__IS_MV3__) {
-            logger.debug('Filters update is not supported in MV3');
+            logger.warn('[ext.Messenger]: filters update is not supported in MV3');
             return [];
         }
 
@@ -706,7 +703,7 @@ class Messenger {
         const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
 
         if (!currentTab?.id) {
-            logger.debug('[resetUserRulesForPage]: cannot get current tab id');
+            logger.warn('[ext.Messenger]: cannot get current tab id');
             return;
         }
 

@@ -37,7 +37,7 @@ export function filteredArray<T>(schema: z.ZodType<T>): z.ZodEffects<z.ZodArray<
                 if (result.success) {
                     return item as T;
                 }
-                logger.info('Failed to parse item', result.error);
+                logger.info('[ext.zod-helpers.filteredArray]: Failed to parse item', result.error);
                 return undefined;
             })
             .filter((item): item is T => Boolean(item)));

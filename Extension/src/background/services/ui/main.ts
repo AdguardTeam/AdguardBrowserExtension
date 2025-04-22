@@ -188,7 +188,7 @@ export class UiService {
         if (activeTab?.url) {
             await PagesApi.openAbusePage(activeTab.url, ForwardFrom.ContextMenu);
         } else {
-            logger.warn('Cannot open abuse page for active tab');
+            logger.warn('[ext.UiService.openAbusePageForActiveTab]: cannot open abuse page for active tab, active tab is undefined');
         }
     }
 
@@ -213,7 +213,7 @@ export class UiService {
         if (activeTab?.url) {
             await PagesApi.openSiteReportPage(activeTab.url, ForwardFrom.ContextMenu);
         } else {
-            logger.warn('Cannot open site report page for active tab');
+            logger.warn('[ext.UiService.openSiteReportPageForActiveTab]: cannot open site report page for active tab, active tab is undefined');
         }
     }
 

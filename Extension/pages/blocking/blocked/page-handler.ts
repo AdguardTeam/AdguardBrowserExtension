@@ -174,7 +174,7 @@ const runInit = ({
 
     let filterName = getFilterName(Number(filterId), filtersMetadata);
     if (!filterName) {
-        logger.debug(`Cannot get filter name for filterId "${filterId}", filterId will be displayed instead`);
+        logger.debug(`[ext.page-handler.runInit]: cannot get filter name for filterId "${filterId}", filterId will be displayed instead.`);
         filterName = filterId;
     }
 
@@ -192,15 +192,15 @@ export const initBlockedPageHandler = async (): Promise<void> => {
     const { url, filterId, rule } = getParams(window.location.search);
 
     if (!url) {
-        logger.error(`Cannot parse "url" param in page url: ${window.location.href}`);
+        logger.error(`[ext.page-handler.initBlockedPageHandler]: cannot parse "url" param in page url: ${window.location.href}`);
         return;
     }
     if (!filterId) {
-        logger.error(`Cannot parse "filterId" param in page url: ${window.location.href}`);
+        logger.error(`[ext.page-handler.initBlockedPageHandler]: cannot parse "filterId" param in page url: ${window.location.href}`);
         return;
     }
     if (!rule) {
-        logger.error(`Cannot parse "rule" param in page url: ${window.location.href}`);
+        logger.error(`[ext.page-handler.initBlockedPageHandler]: cannot parse "rule" param in page url: ${window.location.href}`);
         return;
     }
 

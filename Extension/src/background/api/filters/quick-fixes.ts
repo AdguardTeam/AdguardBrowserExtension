@@ -89,7 +89,7 @@ export class QuickFixesRulesApi {
     public static isEnabled(): boolean {
         const filterMetadata = FiltersApi.getFilterMetadata(AntiBannerFiltersId.QuickFixesFilterId);
         if (!filterMetadata) {
-            logger.error('Not found metadata from Quick Fixes filter');
+            logger.error('[ext.QuickFixesRulesApi.isEnabled] not found metadata from Quick Fixes filter');
 
             return false;
         }

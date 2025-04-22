@@ -93,7 +93,7 @@ export class CommonFilterApi {
     public static async updateFilter(
         filterUpdateOptions: FilterUpdateOptions,
     ): Promise<RegularFilterMetadata | null> {
-        logger.info(`Update filter ${filterUpdateOptions.filterId}`);
+        logger.info(`[ext.CommonFilterApi.updateFilter]: update filter ${filterUpdateOptions.filterId}`);
 
         // We do not have to check metadata for the filters which do not update with force, because
         // they even do not trigger metadata update.
@@ -101,24 +101,24 @@ export class CommonFilterApi {
             const filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateOptions.filterId);
 
             if (!filterMetadata) {
-                logger.error(`Cannot find filter ${filterUpdateOptions.filterId} metadata`);
+                logger.error(`[ext.CommonFilterApi.updateFilter]: cannot find filter ${filterUpdateOptions.filterId} metadata`);
                 return null;
             }
 
             if (!CommonFilterApi.isFilterNeedUpdate(filterMetadata)) {
-                logger.info(`Filter ${filterUpdateOptions.filterId} is already updated`);
+                logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} is already updated`);
                 return null;
             }
         }
 
-        logger.info(`Filter ${filterUpdateOptions.filterId} needs to be updated`);
+        logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} needs to be updated`);
 
         try {
             const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateOptions, true);
-            logger.info(`Filter ${filterUpdateOptions.filterId} updated successfully`);
+            logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} updated successfully`);
             return filterMetadata;
         } catch (e) {
-            logger.error(e);
+            logger.error(`[ext.CommonFilterApi.updateFilter]: failed to update filter ${filterUpdateOptions.filterId}:`, e);
             return null;
         }
     }
@@ -296,7 +296,7 @@ export class CommonFilterApi {
      * @returns True, if filter update is required, else returns false.
      */
     private static isFilterNeedUpdate(filterMetadata: RegularFilterMetadata): boolean {
-        logger.info(`Check if filter ${filterMetadata.filterId} need to update`);
+        logger.info(`[ext.CommonFilterApi.isFilterNeedUpdate]: check if filter ${filterMetadata.filterId} need to update`);
 
         const filterVersion = filterVersionStorage.get(filterMetadata.filterId);
 

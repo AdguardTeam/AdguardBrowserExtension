@@ -74,6 +74,7 @@ import {
 } from '../../../../../constants';
 import { filteringLogApi } from '../filtering-log';
 import { network } from '../network';
+import { getZodErrorMessage } from '../../../common/error';
 
 import { SettingsMigrations } from './migrations';
 
@@ -99,8 +100,8 @@ export class SettingsApi {
             const settings = settingsValidator.parse(data);
             settingsStorage.setCache(settings);
         } catch (e) {
-            logger.error('Cannot init settings from storage: ', e);
-            logger.info('Reverting settings to default values');
+            logger.error('[ext.SettingsApi.init]: cannot init settings from storage:', getZodErrorMessage(e));
+            logger.info('[ext.SettingsApi.init]: reverting settings to default values');
             const settings = { ...defaultSettings };
 
             // Update settings in the cache and in the storage
@@ -260,7 +261,7 @@ export class SettingsApi {
 
             return true;
         } catch (e) {
-            logger.error(e);
+            logger.error('[ext.SettingsApi.import]: cannot import settings:', getZodErrorMessage(e));
             return false;
         }
     }
@@ -417,19 +418,12 @@ export class SettingsApi {
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, true);
                 filterIdsToEnable.push(filterId);
             } catch (e) {
-                logger.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
+                logger.debug(`[ext.SettingsApi.loadBuiltInFiltersRemote]: filter rules were not loaded from backend for filter: ${filterId}, error:`, getZodErrorMessage(e));
                 failedFilterIds.push(filterId);
             }
         });
 
-        const promises = await Promise.allSettled(tasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                logger.error(promise.reason);
-            }
-        });
+        await Promise.allSettled(tasks);
 
         filterStateStorage.enableFilters(filterIdsToEnable);
 
@@ -445,19 +439,16 @@ export class SettingsApi {
      */
     private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
         const tasks = filterIds.map(async (filterId: number) => {
-            await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
-        });
-
-        const promises = await Promise.allSettled(tasks);
-
-        filterStateStorage.enableFilters(filterIds);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                logger.error(promise.reason);
+            try {
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+            } catch (e) {
+                logger.debug(`[ext.SettingsApi.loadBuiltInFiltersLocal]: filter rules were not loaded from local storage for filter: ${filterId}, error:`, getZodErrorMessage(e));
             }
         });
+
+        await Promise.allSettled(tasks);
+
+        filterStateStorage.enableFilters(filterIds);
     }
 
     /**
@@ -490,7 +481,7 @@ export class SettingsApi {
             throw new Error(`There is no local copy of filters with ids: ${filterIdsWithNoLocalCopy.join(', ')}`);
         }
 
-        logger.debug(`Trying to load from storage filters with ids: ${filterIdsToLoadLocal.join(', ')}`);
+        logger.debug(`[ext.SettingsApi.loadBuiltInFiltersMv2]: trying to load from storage filters with ids: ${filterIdsToLoadLocal.join(', ')}`);
         await SettingsApi.loadBuiltInFiltersLocal(filterIdsToLoadLocal);
     }
 
@@ -511,7 +502,7 @@ export class SettingsApi {
             if (CommonFilterApi.isMv3Supported(filterId)) {
                 filtersToLoad.push(filterId);
             } else {
-                logger.debug(`MV3 extension does not support filter with id ${filterId}`);
+                logger.debug(`[ext.SettingsApi.loadBuiltInFiltersMv3]: MV3 extension does not support filter with id ${filterId}`);
             }
         });
 
@@ -545,7 +536,7 @@ export class SettingsApi {
 
         groupStateStorage.enableGroups(enabledGroups);
 
-        logger.info(`Import filters: next groups were enabled: ${enabledGroups}`);
+        logger.info(`[ext.SettingsApi.importFilters]: next groups were enabled: ${enabledGroups}`);
 
         // Disable groups not listed in the imported list.
         const allGroups = groupStateStorage.getData();

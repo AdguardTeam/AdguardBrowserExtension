@@ -30,6 +30,7 @@ import { engine } from '../../engine';
 import { TabsApi } from '../../../common/api/extension';
 import { AntiBannerFiltersId, NotifierType } from '../../../common/constants';
 import { UrlUtils } from '../../utils';
+import { getZodErrorMessage } from '../../../common/error';
 
 import { UserRulesApi } from './userrules';
 
@@ -224,7 +225,7 @@ export class AllowlistApi {
         const domain = getDomain(url);
 
         if (!domain) {
-            logger.debug(`[disableFilteringForUrl] No domain in url "${url}"`);
+            logger.debug(`[ext.AllowlistApi.disableFilteringForUrl] no domain in url "${url}"`);
             return;
         }
 
@@ -276,7 +277,7 @@ export class AllowlistApi {
         const domain = getDomain(url);
 
         if (!domain) {
-            logger.debug(`[enableTabUrlFiltering] No domain in url "${url}" of tab ${tabId}`);
+            logger.debug(`[ext.AllowlistApi.enableTabUrlFiltering] no domain in url "${url}" of tab ${tabId}`);
             return;
         }
 
@@ -410,8 +411,7 @@ export class AllowlistApi {
                 storage.setData(defaultData);
             }
         } catch (e) {
-            // eslint-disable-next-line max-len
-            logger.warn(`Cannot parse ${storage.key} storage data from persisted storage, reset to default. Origin error: `, e);
+            logger.warn(`[ext.AllowlistApi.initStorage]: cannot parse ${storage.key} storage data from persisted storage, reset to default. Origin error:`, getZodErrorMessage(e));
             storage.setData(defaultData);
         }
     }

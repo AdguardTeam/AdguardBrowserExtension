@@ -112,7 +112,7 @@ export class NetworkSettings {
      */
     private async init(): Promise<void> {
         this.filtersRulesBaseUrl = await this.getFilterRulesBaseUrl();
-        logger.info('Filters rules base url:', this.filtersRulesBaseUrl);
+        logger.info('[ext.NetworkSettings.init]: filters rules base url:', this.filtersRulesBaseUrl);
     }
 
     /**

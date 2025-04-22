@@ -166,7 +166,7 @@ export class Network {
 
             if (isRemote) {
                 if (useOptimizedFilters) {
-                    logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
+                    logger.info('[ext.Network.downloadFilterRules]: optimized filters are not supported in MV3, full versions will be downloaded.');
                 }
                 url = this.getUrlForDownloadFilterRules(filterId, false);
             }

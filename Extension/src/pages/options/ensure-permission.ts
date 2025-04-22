@@ -18,7 +18,6 @@
 
 import { Permissions } from '../../common/permissions';
 import { logger } from '../../common/logger';
-import { getErrorMessage } from '../../common/error';
 
 /**
  * Handles privacy permission request.
@@ -38,7 +37,7 @@ export const ensurePermission = async (enable: boolean): Promise<boolean> => {
     try {
         hasPrivacyPermission = await Permissions.hasPrivacy();
     } catch (e) {
-        logger.error(getErrorMessage(e));
+        logger.error('[ext.ensurePermission]: ', e);
         return false;
     }
 
@@ -50,7 +49,7 @@ export const ensurePermission = async (enable: boolean): Promise<boolean> => {
     try {
         return await Permissions.addPrivacy();
     } catch (e) {
-        logger.error(getErrorMessage(e));
+        logger.error('[ext.ensurePermission]: ', e);
         return false;
     }
 };

@@ -22,7 +22,7 @@ import isObject from 'lodash-es/isObject';
 import { trimEnd } from 'lodash-es';
 
 import { logger } from '../../../common/logger';
-import { getErrorMessage } from '../../../common/error';
+import { getZodErrorMessage } from '../../../common/error';
 import {
     RAW_FILTER_KEY_PREFIX,
     FiltersStorage,
@@ -140,8 +140,8 @@ export class UpdateApi {
                 await UpdateApi.runSchemaMigration(schemaMigrationAction, schema, schema + 1);
             }
         } catch (e) {
-            logger.error('Error while migrate: ', e);
-            logger.info('Reset settings...');
+            logger.error('[ext.UpdateApi.runMigrations]: error while migrate:', getZodErrorMessage(e));
+            logger.info('[ext.UpdateApi.runMigrations]: Reset settings...');
             await browserStorage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
         }
     }
@@ -162,8 +162,8 @@ export class UpdateApi {
             await schemaMigrationAction();
         } catch (e: unknown) {
             // eslint-disable-next-line max-len
-            const errMessage = `Error while schema migrating from ${previousSchemaVersion} to ${currentSchemaVersion}: ${getErrorMessage(e)}`;
-            logger.error(errMessage);
+            const errMessage = `Error while schema migrating from ${previousSchemaVersion} to ${currentSchemaVersion}: ${getZodErrorMessage(e)}`;
+            logger.error('[ext.UpdateApi.runSchemaMigration]:', errMessage);
 
             throw new Error(errMessage, { cause: e });
         }
@@ -272,13 +272,13 @@ export class UpdateApi {
                 const transactionResult = await hybridStorage.setMultiple(migrationData);
 
                 if (!transactionResult) {
-                    logger.error('Failed to save migrated data');
+                    logger.error('[ext.UpdateApi.migrateFromV10toV11]: failed to save migrated data');
                 }
             } else {
-                logger.debug('No serialized data to migrate');
+                logger.debug('[ext.UpdateApi.migrateFromV10toV11]: no serialized data to migrate');
             }
         } else {
-            logger.debug('IDB is supported, no need to migrate serialized data');
+            logger.debug('[ext.UpdateApi.migrateFromV10toV11]: IDB is supported, no need to migrate serialized data');
         }
 
         // Part 2. Migrate filters keys.
@@ -430,7 +430,7 @@ export class UpdateApi {
         const rawOldPageStatistics = await browserStorage.get(PAGE_STATISTIC_KEY);
 
         if (typeof rawOldPageStatistics !== 'string') {
-            logger.debug('Missing page statistics, nothing to migrate');
+            logger.debug('[ext.UpdateApi.migrateFromV5toV6]: missing page statistics, nothing to migrate');
             return;
         }
 
@@ -448,12 +448,12 @@ export class UpdateApi {
             const oldPageStatisticsObj = JSON.parse(oldPageStatisticsStr);
             oldPageStatistics = pageStatsValidator.parse(oldPageStatisticsObj);
         } catch (e: unknown) {
-            logger.debug('Nothing to migrate, since page statistics cannot be parsed:', getErrorMessage(e));
+            logger.debug('[ext.UpdateApi.migrateFromV5toV6]: nothing to migrate, since page statistics cannot be parsed:', getZodErrorMessage(e));
             return;
         }
 
         if (!oldPageStatistics.data) {
-            logger.debug('No page statistics data to migrate');
+            logger.debug('[ext.UpdateApi.migrateFromV5toV6]: no page statistics data to migrate');
             return;
         }
 
@@ -492,23 +492,25 @@ export class UpdateApi {
 
             const oldKeys = Object.keys(oldDataItem);
             oldKeys.forEach((key) => {
-                if (key !== 'total') {
-                    const statsCount = oldDataItem[key];
-                    if (typeof statsCount === 'undefined') {
-                        return;
-                    }
-
-                    const category = STATS_CATEGORIES_MIGRATION_MAP[key];
-                    if (category) {
-                        newDataItem[category] = (newDataItem[category] || 0) + statsCount;
-                    } else {
-                        logger.debug(`Unknown category for old group id: ${key}, migrated into "Other"`);
-                        // eslint-disable-next-line max-len
-                        newDataItem[PopupStatsCategories.Other] = (newDataItem[PopupStatsCategories.Other] || 0) + statsCount;
-                    }
-
-                    total += statsCount;
+                if (key === 'total') {
+                    return;
                 }
+
+                const statsCount = oldDataItem[key];
+                if (typeof statsCount === 'undefined') {
+                    return;
+                }
+
+                const category = STATS_CATEGORIES_MIGRATION_MAP[key];
+                if (category) {
+                    newDataItem[category] = (newDataItem[category] || 0) + statsCount;
+                } else {
+                    logger.debug(`[ext.UpdateApi.migrateFromV5toV6]: unknown category for old group id: ${key}, migrated into "Other"`);
+                    const prevCount = newDataItem[PopupStatsCategories.Other] || 0;
+                    newDataItem[PopupStatsCategories.Other] = prevCount + statsCount;
+                }
+
+                total += statsCount;
             });
 
             newDataItem.total = total;
@@ -653,7 +655,7 @@ export class UpdateApi {
 
         // Check if there are no filters to migrate.
         if (rawFilterKeys.length === 0 && filterKeys.length === 0) {
-            logger.debug('No filters to migrate from storage to hybrid storage');
+            logger.debug('[ext.UpdateApi.migrateFromV3toV4]: no filters to migrate from storage to hybrid storage');
             return;
         }
 
@@ -669,17 +671,14 @@ export class UpdateApi {
         filterKeys.forEach((key) => {
             const filterId = FiltersStorageV1.extractFilterIdFromFilterKey(key);
             if (filterId === null) {
-                logger.debug(`Failed to extract filter ID from the key: ${key}, skipping`);
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to extract filter ID from the key: ${key}, skipping`);
                 return;
             }
 
             const filterParsingResult = filterSchema.safeParse(entries[key]);
 
             if (!filterParsingResult.success) {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse data from filter ID ${filterId} from the old storage: ${getErrorMessage(filterParsingResult.error)}`,
-                );
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to parse data from filter ID ${filterId} from the old storage: ${getZodErrorMessage(filterParsingResult.error)}`);
                 return;
             }
 
@@ -694,17 +693,14 @@ export class UpdateApi {
         rawFilterKeys.forEach((key) => {
             const filterId = RawFiltersStorage.extractFilterIdFromFilterKey(key);
             if (filterId === null) {
-                logger.debug(`Failed to extract raw filter ID from the key: ${key}, skipping`);
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to extract raw filter ID from the key: ${key}, skipping`);
                 return;
             }
 
             const filterParsingResult = zod.string().safeParse(entries[key]);
 
             if (!filterParsingResult.success) {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse data from raw filter ID ${filterId} from the old storage: ${getErrorMessage(filterParsingResult.error)}`,
-                );
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to parse data from raw filter ID ${filterId} from the old storage: ${getZodErrorMessage(filterParsingResult.error)}`);
                 return;
             }
 
@@ -722,7 +718,7 @@ export class UpdateApi {
             throw new Error('Failed to migrate filters from storage to hybrid storage, transaction failed');
         }
 
-        logger.debug('Filters successfully migrated from storage to hybrid storage');
+        logger.debug('[ext.UpdateApi.migrateFromV3toV4]: filters successfully migrated from storage to hybrid storage');
 
         // We use passthrough to keep all other data as is, in this case we only need to update check times.
         const filterVersionDataValidatorV3 = zod.object({
@@ -755,15 +751,12 @@ export class UpdateApi {
 
                 await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
 
-                logger.debug('Filters version data successfully migrated from the old storage');
+                logger.debug('[ext.UpdateApi.migrateFromV3toV4]: filters version data successfully migrated from the old storage');
             } else {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse filters version data from the old storage: ${getErrorMessage(filtersVersionParsed.error)}`,
-                );
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to parse filters version data from the old storage: ${getZodErrorMessage(filtersVersionParsed.error)}`);
             }
         } else {
-            logger.debug('Filters version data is not a string, skipping migration');
+            logger.debug('[ext.UpdateApi.migrateFromV3toV4]: filters version data is not a string, skipping migration');
         }
     }
 
@@ -796,11 +789,11 @@ export class UpdateApi {
 
             results.forEach((result) => {
                 if (result.status === 'rejected') {
-                    logger.info(getErrorMessage(result.reason));
+                    logger.info(`[ext.UpdateApi.migrateFromV2toV3]: failed to migrate user rules: ${getZodErrorMessage(result.reason)}`);
                 }
             });
         } catch (e: unknown) {
-            logger.info('Error while migrate user rules', getErrorMessage(e));
+            logger.info('[ext.UpdateApi.migrateFromV2toV3]: failed to migrate user rules', getZodErrorMessage(e));
         } finally {
             if (db) {
                 db.close();

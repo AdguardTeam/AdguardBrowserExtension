@@ -43,7 +43,7 @@ export const executeScript = async (
     options: ExecuteScriptOptionsMv3,
 ): Promise<void> => {
     if (!tabId) {
-        logger.debug('Tab id is not provided');
+        logger.debug('[ext.ScriptingService.executeScript]: tab id is not provided');
         return;
     }
 

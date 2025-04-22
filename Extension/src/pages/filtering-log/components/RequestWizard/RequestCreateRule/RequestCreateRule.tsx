@@ -181,7 +181,7 @@ const RequestCreateRule = observer(() => {
 
     const handleAddRuleClick = async () => {
         if (!wizardStore.rule) {
-            logger.error('[handleAddRuleClick]: rule is empty.');
+            logger.error('[ext.RequestCreateRule.handleAddRuleClick]: rule is empty.');
             return;
         }
 

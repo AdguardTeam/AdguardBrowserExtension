@@ -52,7 +52,7 @@ export class PostInstall {
                 setTimeout(PostInstall.checkRequestFilterReady, PostInstall.checkRequestTimeoutMs);
             }
         } catch (e) {
-            logger.error(e);
+            logger.error('[ext.PostInstall.checkRequestFilterReady]: failed to check request filter ready', e);
             // retry request, if message handler is not ready
             setTimeout(PostInstall.checkRequestFilterReady, PostInstall.checkRequestTimeoutMs);
         }

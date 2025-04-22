@@ -17,8 +17,9 @@
  */
 import browser, { type Windows, type Tabs } from 'webextension-polyfill';
 
+import { getErrorMessage } from '@adguard/logger';
+
 import { UserAgent } from '../../user-agent';
-import { getErrorMessage } from '../../error';
 
 /**
  * Helper class for browser.windows API.

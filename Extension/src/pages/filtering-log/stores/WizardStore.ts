@@ -165,7 +165,7 @@ class WizardStore {
             const { selectedTabId } = this.rootStore.logStore;
 
             if (!selectedTabId) {
-                logger.error('[removeFromAllowlistHandler]: selected tab id is not defined');
+                logger.error('[ext.WizardStore.removeFromAllowlistHandler]: selected tab id is not defined');
                 return;
             }
 
@@ -186,7 +186,7 @@ class WizardStore {
             const ruleText = requestRule.originalRuleText ?? requestRule.appliedRuleText;
 
             if (!ruleText) {
-                logger.error('[removeFromUserFilterHandler]: rule text is not defined');
+                logger.error('[ext.WizardStore.removeFromUserFilterHandler]: rule text is not defined');
                 return;
             }
 

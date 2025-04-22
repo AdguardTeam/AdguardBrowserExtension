@@ -50,7 +50,7 @@ export const executeScript = async (
     options: ExecuteScriptOptionsMv2,
 ): Promise<void> => {
     if (!tabId) {
-        logger.debug('Tab id is not provided');
+        logger.debug('[ext.ScriptingService.executeScript]: tab id is not provided');
         return;
     }
 
@@ -96,7 +96,7 @@ export const executeScript = async (
     // Handles errors
     promises.forEach((promise) => {
         if (promise.status === 'rejected') {
-            logger.error('Cannot inject script to tab due to: ', promise.reason);
+            logger.error(`[ext.ScriptingService.executeScript]: cannot inject script to frame ${frameId} and tab ${tabId} due to:`, promise.reason);
         }
     });
 };
