@@ -308,7 +308,20 @@ pnpm crx keygen ./private/AdguardBrowserExtension
 
 #### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
 
-1. Ensure you have installed Node.js and pnpm.
+1. To ensure that the extension is built in the same way, use the docker image:
+
+    ```shell
+    docker run --rm -it \
+        -v $(pwd):/workspace \
+        -w /workspace \
+        adguard/extension-builder:22.14--0.2--0
+    ```
+
+1. Inside the docker container, install the dependencies:
+
+    ```shell
+    pnpm install
+    ```
 
 1. To build the **BETA** version, run:
 
@@ -320,6 +333,22 @@ pnpm crx keygen ./private/AdguardBrowserExtension
 
     ```shell
     cd ./build/beta
+    ```
+
+1. Compare the generated `firefox.zip` file with the uploaded one.
+
+If you need to build the **RELEASE** version:
+
+1. Run:
+
+    ```shell
+    pnpm release firefox
+    ```
+
+1. Navigate to the build directory:
+
+    ```shell
+    cd ./build/release
     ```
 
 1. Compare the generated `firefox.zip` file with the uploaded one.

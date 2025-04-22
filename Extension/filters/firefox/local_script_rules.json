@@ -352,6 +352,22 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{const e={apply:(e,o,t)=>(null===t[0]&&(t[0]={isUserSubscriber:!0}),Reflect.apply(e,o,t))},o={apply:(o,t,n)=>{const r=n[0];return\"function\"==typeof r&&r.toString().includes(\"AdBlockDetector\")&&(n[0]=()=>{}),\"function\"==typeof r&&r.toString().includes(\"Preroll Ad\")&&(n[0]=new Proxy(n[0],e)),Reflect.apply(o,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o)})();": [
+            {
+                "permittedDomains": [
+                    "zone.msn.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const a=function(a){\"function\"==typeof a&&a()};window.aiptag={adplayer:\"\",cmd:[]},window.aiptag.cmd.player=[],window.aiptag.cmd.display=[],window.aiptag.cmd.push=a,window.aiptag.cmd.player.push=a,window.aiptag.cmd.display.push=a,window.aipDisplayTag={display:function(){}},window.aipPlayer=function(a){a&&a.AIP_COMPLETE&&(this.startPreRoll=a.AIP_COMPLETE)}})();": [
+            {
+                "permittedDomains": [
+                    "wormate.io"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{const e={breakStatus:\"done\"},o=[\"beforeReward\",\"adViewed\",\"adBreakDone\"];window.adsbygoogle=window.adsbygoogle||[],window.adsbygoogle.push=function(d){var a;d&&\"object\"==typeof d&&(a=d,o.every((e=>e in a&&\"function\"==typeof a[e])))&&(d.beforeReward(),d.adViewed(),d.adBreakDone(e))}})();": [
             {
                 "permittedDomains": [
@@ -387,14 +403,27 @@
         "(()=>{window.detectIncognito=()=>new Promise((e=>e({isPrivate:!0})));})();": [
             {
                 "permittedDomains": [
+                    "pasflav.online",
+                    "nidbdcheck.com",
+                    "dizok.com",
                     "adxcel.io"
                 ],
                 "restrictedDomains": []
             }
         ],
-        "(()=>{window.AdscoreInit=function(ta,F){};})();": [
+        "(()=>{const e={apply:(e,p,t)=>(!0===t[0]&&(t[0]=!1),Reflect.apply(e,p,t))},p={apply:(p,t,a)=>(\"__updateState\"===a[1]&&a[2]&&a[2].value&&(a[2].value=new Proxy(a[2].value,e)),Reflect.apply(p,t,a))};window.Object.defineProperty=new Proxy(window.Object.defineProperty,p)})();": [
             {
                 "permittedDomains": [
+                    "doods.to",
+                    "veev.to"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const t={apply:(t,e,n)=>{const o=n[0];if(o&&o.status.includes(\"success\"))for(const t in n[0])\"1\"===n[0][t]?n[0][t]=\"0\":1===n[0][t]&&(n[0][t]=0);return Reflect.apply(t,e,n)}},e={apply:(e,n,o)=>{const p=o[0];return\"function\"==typeof p&&p.toString().includes(\"adblockEnabled\")&&(o[0]=new Proxy(o[0],t)),Reflect.apply(e,n,o)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,e)})();": [
+            {
+                "permittedDomains": [
+                    "doods.to",
                     "veev.to"
                 ],
                 "restrictedDomains": []
@@ -403,6 +432,7 @@
         "(()=>{const t={apply:(t,n,e)=>{if(e[0]&&null===e[0].html?.detected&&\"function\"==typeof e[0].html?.instance?.start&&\"function\"==typeof e[0].env?.instance?.start&&\"function\"==typeof e[0].http?.instance?.start){const t=function(){Object.keys(this).forEach((t=>{\"boolean\"==typeof this[t]&&(this[t]=!1)}))};[\"html\",\"env\",\"http\"].forEach((n=>{e[0][n].instance.start=t}))}return Reflect.apply(t,n,e)}};window.Object.keys=new Proxy(window.Object.keys,t)})();": [
             {
                 "permittedDomains": [
+                    "doods.to",
                     "veev.to"
                 ],
                 "restrictedDomains": []
@@ -434,6 +464,14 @@
                     "lifgam.online",
                     "crypto-radio.eu",
                     "tiktokcounter.net"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const n=window.String.prototype.includes,o={apply:(o,t,i)=>{const c=i[0];return!(!i||!n.call(c,\"function onclick(lczxsusin)\"))||Reflect.apply(o,t,i)}};window.String.prototype.includes=new Proxy(window.String.prototype.includes,o)})();": [
+            {
+                "permittedDomains": [
+                    "apkmoddone.com"
                 ],
                 "restrictedDomains": []
             }
@@ -517,13 +555,8 @@
         "(()=>{const e=new Map,t=function(){},o=t;o.prototype.dispose=t,o.prototype.setNetwork=t,o.prototype.resize=t,o.prototype.setServer=t,o.prototype.setLogLevel=t,o.prototype.newContext=function(){return this},o.prototype.setParameter=t,o.prototype.addEventListener=function(t,o){t&&(console.debug(`Type: ${t}, callback: ${o}`),e.set(t,o))},o.prototype.removeEventListener=t,o.prototype.setProfile=t,o.prototype.setCapability=t,o.prototype.setVideoAsset=t,o.prototype.setSiteSection=t,o.prototype.addKeyValue=t,o.prototype.addTemporalSlot=t,o.prototype.registerCustomPlayer=t,o.prototype.setVideoDisplaySize=t,o.prototype.setContentVideoElement=t,o.prototype.registerVideoDisplayBase=t,o.prototype.submitRequest=function(){const t={type:tv.freewheel.SDK.EVENT_SLOT_ENDED},o=e.get(\"EVENT_SLOT_ENDED\");o&&setTimeout((()=>{try{o(t)}catch(e){console.error(e)}}),1)},window.tv={freewheel:{SDK:{Ad:t,AdManager:o,AdListener:t,_instanceQueue:{},setLogLevel:t,EVENT_SLOT_ENDED:\"EVENT_SLOT_ENDED\"}}}})();": [
             {
                 "permittedDomains": [
-                    "southparkstudios.com"
-                ],
-                "restrictedDomains": []
-            },
-            {
-                "permittedDomains": [
-                    "southpark.de"
+                    "southpark.*",
+                    "southparkstudios.*"
                 ],
                 "restrictedDomains": []
             },
@@ -753,14 +786,6 @@
             {
                 "permittedDomains": [
                     "holadoctor.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "window.adBlockDetected = false;": [
-            {
-                "permittedDomains": [
-                    "platinmods.com"
                 ],
                 "restrictedDomains": []
             }
@@ -1172,6 +1197,7 @@
         "(function(){var a={cmd:[],public:{getVideoAdUrl:function(){},createNewPosition:function(){},refreshAds:function(){},setTargetingOnPosition:function(){},getDailymotionAdsParamsForScript:function(c,a){if(\"function\"==typeof a)try{if(1===a.length){a({})}}catch(a){}}}};a.cmd.push=function(b){let a=function(){try{\"function\"==typeof b&&b()}catch(a){}};\"complete\"===document.readyState?a():window.addEventListener(\"load\",()=>{a()})},window.jad=a})();": [
             {
                 "permittedDomains": [
+                    "tvgry.pl",
                     "gry-online.pl"
                 ],
                 "restrictedDomains": []
@@ -1286,6 +1312,7 @@
         "(()=>{Object.defineProperty=new Proxy(Object.defineProperty,{apply:(e,t,n)=>{const r=new Set([\"VP\",\"w3\",\"JW\"]),o=n[1],c=n[2]?.get;return o&&r.has(o)&&\"function\"==typeof c&&c.toString().includes(\"()=>i\")&&(n[2].get=function(){return function(){return!1}}),Reflect.apply(e,t,n)}});})();": [
             {
                 "permittedDomains": [
+                    "open.fm",
                     "deliciousmagazine.pl",
                     "poczta.wp.pl",
                     "pilot.wp.pl",
@@ -1528,6 +1555,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{const e=document.documentElement;new MutationObserver((()=>{const e=document.querySelector(\".skeleton-video-cover-noanimate > .relative > a[href] + button\");e&&e.click()})).observe(e,{attributes:!0,childList:!0,subtree:!0})})();": [
+            {
+                "permittedDomains": [
+                    "hentaidna.tv"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{const n=[];n.push=n=>{try{n()}catch(n){console.error(n)}},window.adsNinja=window.adsNinja||{queue:n}})();": [
             {
                 "permittedDomains": [
@@ -1552,7 +1587,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{let e,n=!1;const t=function(){};Object.defineProperty(window,\"videojs\",{get:function(){return e},set:function(o){e=o,!n&&e&&\"function\"==typeof e.registerPlugin&&(n=!0,e.registerPlugin(\"skipIma3Unskippable\",t))}}),window.SlotTypeEnum={},window.ANAWeb=function(){},window.ANAWeb.prototype.createVideoSlot=function(){},window.ANAWeb.prototype.createSlot=function(){},window.ANAWeb.VideoPlayerType={},window.addEventListener(\"load\",(function(){document.dispatchEvent(new CustomEvent(\"ANAReady\"))}))})();": [
+        "(()=>{let e,n=!1;const o=function(){};Object.defineProperty(window,\"videojs\",{get:function(){return e},set:function(t){e=t,!n&&e&&\"function\"==typeof e.registerPlugin&&(n=!0,e.registerPlugin(\"skipIma3Unskippable\",o))}}),window.SlotTypeEnum={},window.ANAWeb=function(){},window.ANAWeb.prototype.createVideoSlot=function(){return Promise.resolve()},window.ANAWeb.prototype.createSlot=function(){},window.ANAWeb.VideoPlayerType={},window.ANAWeb.VideoPlacementType={InStream:1},window.ANAWeb.AdPosition={AboveTheFold:1},window.ANAWeb.PlaybackMethod={ClickSoundOn:1},window.addEventListener(\"load\",(function(){document.dispatchEvent(new CustomEvent(\"ANAReady\"))}))})();": [
             {
                 "permittedDomains": [
                     "worldstarhiphop.com",
@@ -1591,6 +1626,14 @@
             {
                 "permittedDomains": [
                     "forge.plebmasters.de"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{let e,n=!1;const t=function(){};Object.defineProperty(window,\"videojs\",{get:function(){return e},set:function(i){e=i,!n&&e&&\"function\"==typeof e.registerPlugin&&(n=!0,e.registerPlugin(\"ads\",t))}})})();": [
+            {
+                "permittedDomains": [
+                    "worldsurfleague.com"
                 ],
                 "restrictedDomains": []
             }
@@ -1998,7 +2041,7 @@
                 "restrictedDomains": []
             }
         ],
-        "!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll(\"div[data-pagelet^=\\\"FeedUnit\\\"]:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > div:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > span:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] h3[dir=\\\"auto\\\"] + div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"])\").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.(\"__reactEvents\")||a.includes?.(\"__reactProps\")){a=e[a];try{if(a.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting){b++,e.style=\"display: none !important;\";var f=e.querySelector(\"a[href][aria-label]:not([aria-hidden])\");f&&(d.push([\"Ad blocked based on property [\"+b+\"] -> \"+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();": [
+        "!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll(\"div[data-pagelet^=\\\"FeedUnit\\\"]:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > div:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > span:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] h3[dir=\\\"auto\\\"] + div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * div[class] > div > div:not([style*=\\\"display: none\\\"])\").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.(\"__reactEvents\")||a.includes?.(\"__reactProps\")){a=e[a];try{if(a.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting||a.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting){b++,e.style=\"display: none !important;\";var f=e.querySelector(\"a[href][aria-label]:not([aria-hidden])\");f&&(d.push([\"Ad blocked based on property [\"+b+\"] -> \"+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -2007,7 +2050,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll('div[role=\"complementary\"] div[class*=\" \"] > div[class] > div:not([class]) > div:not([class], [style*=\"display: none\"])');for(const s of n){const n=Object.keys(s).find((e=>e.includes(\"__reactFiber\")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes(\"adsSideFeedUnit\"))return s.style.display=\"none\",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();": [
+        "(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll('div[role=\"complementary\"] div[class*=\" \"] > div[class] > div:not([class]) > div:not([class], [style*=\"display: none\"]), div[role=\"complementary\"] div[class*=\" \"] > div[class] > div:not([class]) > span[class] > div[class]:not([style*=\"display: none\"]), div[role=\"complementary\"] div:has(+ div[data-visualcompletion]) > div:not([style*=\"display: none\"])');for(const s of n){const n=Object.keys(s).find((e=>e.includes(\"__reactFiber\")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes(\"adsSideFeedUnit\"))return s.style.display=\"none\",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -2231,6 +2274,7 @@
         "(()=>{const e=\"loader.min.js\",t={includes:String.prototype.includes,filter:Array.prototype.filter},l=()=>(new Error).stack,n={construct:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&o[0]&&t.includes.call(o[0],\"adshield\")&&(o[0]=[\"(function(){})();\"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&t.includes.call(r[0],\"new Error\")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&o?.includes?.(\"setTimeout\")&&(o=t.filter.call(o,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();": [
             {
                 "permittedDomains": [
+                    "sportalkorea.com",
                     "slashdot.org",
                     "dogdrip.net",
                     "smsonline.cloud",
@@ -2248,7 +2292,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const t={apply:(t,e,n)=>{const o=Reflect.apply(t,e,n);try{o instanceof HTMLIFrameElement&&\"about:blank\"===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch)}catch(t){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,t)})();": [
+        "(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&\"about:blank\"===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch,o.contentWindow.Request=window.Request)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();": [
             {
                 "permittedDomains": [
                     "www.youtube.com"
@@ -2411,20 +2455,6 @@
             {
                 "permittedDomains": [
                     "mebelkmk.ru"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "navigator.getBattery = undefined;": [
-            {
-                "permittedDomains": [],
-                "restrictedDomains": [
-                    "ads.google.com"
-                ]
-            },
-            {
-                "permittedDomains": [
-                    "ntp.msn.com"
                 ],
                 "restrictedDomains": []
             }
@@ -3217,7 +3247,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{document.addEventListener(\"DOMContentLoaded\",(()=>{document.querySelectorAll('.count > li > a[href*=\"/#!\"]').forEach((t=>{const e=(t=>{let e=t;for(let t=0;t<10;t++)try{e=atob(e)}catch(t){break}return e})(t.href.split(\"/#!\")[1]);(t=>{let e=t;try{e=new URL(t)}catch(t){return!1}return\"http:\"===e.protocol||\"https:\"===e.protocol})(e)&&t.setAttribute(\"href\",e)}))}));})();": [
+        "(()=>{window.addEventListener(\"load\",(()=>{document.querySelectorAll('.count > li > a[href*=\"/#!\"]').forEach((t=>{const e=(t=>{let e=t;for(let t=0;t<10;t++)try{e=atob(e)}catch(t){break}return decodeURIComponent(e)})(t.href.split(\"/#!\")[1]);(t=>{let e=t;try{e=new URL(t)}catch(t){return!1}return\"http:\"===e.protocol||\"https:\"===e.protocol})(e)&&t.setAttribute(\"href\",e)}))}));})();": [
             {
                 "permittedDomains": [
                     "multipaste.org"
@@ -3247,6 +3277,8 @@
         "(function(){if(-1<window.location.href.indexOf(\"/#\")){var b=location.href.split(\"/#\");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();": [
             {
                 "permittedDomains": [
+                    "payad.lat",
+                    "uberxviral.com",
                     "gourlpro.com"
                 ],
                 "restrictedDomains": []
@@ -3273,6 +3305,8 @@
         "(()=>{document.addEventListener(\"DOMContentLoaded\",(()=>{try{\"function\"==typeof window.noobBypass&&noobBypass()}catch(b){}}));})();": [
             {
                 "permittedDomains": [
+                    "payad.lat",
+                    "uberxviral.com",
                     "eldiario24hrs.com",
                     "constanteonline.com",
                     "acortaz.es",
@@ -3381,7 +3415,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{let e=\"\";const a=`GA1.1.${Math.floor(Date.now()/1e3)}.${Math.floor(Date.now()/1e3)}`;let o=!1;const t=()=>{e=e.replace(\"G-\",\"\"),document.cookie=`_ga_${e}=${a}`};window.dataLayer=window.dataLayer||[],dataLayer.push=new Proxy(window.dataLayer.push,{apply:(a,d,n)=>(\"config\"===n[0][0]&&(e=n[0][1],\"complete\"===document.readyState?t():o||(window.addEventListener(\"load\",t),o=!0)),Reflect.apply(a,d,n))})})();": [
+        "(()=>{const o=Math.floor(1e5+9e5*Math.random()),a=`${Date.now()}${o}`;var t,e,m,$;t=\"_ym_uid\",e=a,m=\"/\",$=\".gecmisi.com.tr\",document.cookie=`${t}=${e};path=${m};domain=${$};`})();": [
             {
                 "permittedDomains": [
                     "gecmisi.com.tr"
@@ -3898,6 +3932,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{let t,e=!1;const o=new MutationObserver(((e,o)=>{const c=t?.querySelector(\"button.uc-deny-button\");c&&(c.click(),o.disconnect())})),c={apply:(c,n,p)=>{const r=Reflect.apply(c,n,p);return!e&&n.matches(\"#usercentrics-cmp-ui\")&&(e=!0,t=r),o.observe(r,{subtree:!0,childList:!0}),r}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,c)})();": [
+            {
+                "permittedDomains": [
+                    "alternate.de"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{let t,e=!1;const o=new MutationObserver(((e,o)=>{const c=t?.querySelector('button[data-testid=\"uc-accept-all-button\"]');c&&(c.click(),o.disconnect())})),c={apply:(c,n,p)=>{const r=Reflect.apply(c,n,p);return!e&&n.matches(\"#usercentrics-root\")&&(e=!0,t=r),o.observe(r,{subtree:!0,childList:!0}),r}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,c)})();": [
             {
                 "permittedDomains": [
@@ -4189,14 +4231,6 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{try{\"undefined\"!=typeof sessionStorage&&sessionStorage.setItem('status_of_app_redirect_half_modal_on_coordinate_list','{\"displayed\":true}')}catch(e){}})();": [
-            {
-                "permittedDomains": [
-                    "wear.jp"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "div[data-element-test=\"prominent-app-download-popover\"]": [
             {
                 "permittedDomains": [
@@ -4427,7 +4461,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(function(){if(location.href.includes(\"/to/aHR0c\"))try{var a=location.href.split(\"/to/\");a=atob(a[1]).split(\"url=\");location=decodeURIComponent(a[1])}catch(b){}})();": [
+        "(function(){if(location.href.includes(\"/to/aHR0c\"))try{var a=location.href.split(\"/to/\");a=atob(a[1]);location=decodeURIComponent(a)}catch(b){}})();": [
             {
                 "permittedDomains": [
                     "jpopsingles.eu"
@@ -4715,6 +4749,7 @@
         "(function(){var a=\"http\"+(new URL(window.location.href)).searchParams.get(\"xurl\");try{new URL(a);var b=!0}catch(c){b=!1}if(b)try{window.location=a}catch(c){}})();": [
             {
                 "permittedDomains": [
+                    "bluedownload.*",
                     "urlbluemedia.*",
                     "bluemediadownload.*",
                     "bluemediaurls.lol",
@@ -4835,10 +4870,18 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{document.location.href.includes(\"/pop_advisor\")&&AG_onLoad((function(){const e=new CustomEvent(\"visibilitychange\"),t=t=>{Object.defineProperty(t.view.top.document,\"hidden\",{value:!0,writable:!0}),t.view.top.document.dispatchEvent(e),setTimeout((()=>{Object.defineProperty(t.view.top.document,\"hidden\",{value:!1,writable:!0}),t.view.top.document.dispatchEvent(e)}),100)},n=document.querySelector(\"button.btn-continu\");n&&n.addEventListener(\"click\",t)}));})();": [
+        "(()=>{document.location.href.includes(\"/pop_advisor\")&&window.addEventListener(\"load\",()=>{const e=new CustomEvent(\"visibilitychange\"),t=t=>{Object.defineProperty(t.view.top.document,\"hidden\",{value:!0,writable:!0}),t.view.top.document.dispatchEvent(e),setTimeout((()=>{Object.defineProperty(t.view.top.document,\"hidden\",{value:!1,writable:!0}),t.view.top.document.dispatchEvent(e)}),100)},n=document.querySelector(\"button.btn-continu\");n&&n.addEventListener(\"click\",t)});})();": [
             {
                 "permittedDomains": [
                     "empire-anime.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{document.location.href.includes(\"/iframe_ad\")&&window.addEventListener(\"load\",(()=>{const e=new CustomEvent(\"visibilitychange\"),t=()=>{Object.defineProperty(document,\"hidden\",{value:!0,writable:!0}),document.dispatchEvent(e),setTimeout((()=>{Object.defineProperty(document,\"hidden\",{value:!1,writable:!0}),document.dispatchEvent(e)}),100)},n=document.querySelector(\"a.btn-ad-iframe\");n&&n.addEventListener(\"click\",t)}));})();": [
+            {
+                "permittedDomains": [
+                    "empire-streaming.*"
                 ],
                 "restrictedDomains": []
             }
