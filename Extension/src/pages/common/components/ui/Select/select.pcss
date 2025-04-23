@@ -33,10 +33,11 @@
         min-width: 240px;
         max-width: 280px;
         overflow-y: auto;
-        box-shadow: 8px 8px 24px 0px var(--shadow-0-1);
+        box-shadow: var(--big-light-shadow-br);
         margin: 18px 0 0 0;
         background-color: var(--fills-menus-dropdown-menu-background-default);
         scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
         &--hidden {
             display: none;
@@ -46,9 +47,13 @@
             width: 4px;
         }
 
+        &::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
         &::-webkit-scrollbar-thumb {
-            border-radius: 0;
-            background-color: var(--gray700);
+            border-radius: 4px;
+            background-color: var(--scrollbar-thumb);
         }
     }
 
