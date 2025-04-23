@@ -1,8 +1,8 @@
-! Checksum: 6ZgWcJOzWcy90Q6qvnXjIA
+! Checksum: FHZvhLtO7lm8ohO8qDuQYw
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.47.8
-! TimeUpdated: 2025-04-21T17:06:20+00:00
+! Version: 2.0.47.12
+! TimeUpdated: 2025-04-23T09:07:41+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1003,8 +1003,6 @@ brigitte.de,geo.de,stern.de#%#//scriptlet('set-constant', 'foundation.adPlayer.b
 alpin.de#%#//scriptlet('abort-current-inline-script', 'document.querySelector', 'DisplayAcceptableAdIfAdblocked')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171888
 bluray-disc.de#%#//scriptlet("abort-current-inline-script", "popunder")
-! ! https://github.com/AdguardTeam/AdguardFilters/issues/171409
-winfuture.de#%#//scriptlet('trusted-replace-xhr-response', '/"enabled": true,/', '"enabled": false,', '/(homad|svonm).*\.json/')
 ! https://github.com/uBlockOrigin/uAssets/issues/21862#issuecomment-1903805346
 restegourmet.de#%#//scriptlet("adjust-setInterval", "invoke", "1000", "0.01")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166369
@@ -1474,6 +1472,8 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+bild.de##.submenu-list--ad
+bild.de##a[href^="/service/advertorial"]
 gs-forum.eu###oc24-outside-top
 gs-forum.eu##.p-body-sidebar .block-container:has(> div[class] > #GSFRM_D_MPU_TOP)
 formel1.de##.text-center:has(> .inline-block > div[data-str-format="posterad"])

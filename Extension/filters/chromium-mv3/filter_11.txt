@@ -1,8 +1,8 @@
-! Checksum: gaBnEhx5+4Gpc+4TRxqgFg
+! Checksum: ZEzAF7jGiCyma2Y7ckg82g
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.59.97
-! TimeUpdated: 2025-04-21T11:07:02+00:00
+! Version: 2.0.60.4
+! TimeUpdated: 2025-04-23T16:08:46+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1846,6 +1846,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 ! Yandex ads in mobile apps
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203602
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203677
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202335
 ! https://x.com/monmimami/status/1896441545177661923
@@ -2396,6 +2397,19 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+tenki.jp##.ikoyo-pickup-wrap
+porndoe.com##.-iau-wrap
+porndoe.com##.bunny-title-left
+porndoe.com##.bunny-title-middle
+porndoe.com##.advertisement-mobile
+fapnow.*##.block-video + div[align="center"]
+fapnow.*##.mobile-menu
+beemtube.com##.sponsored-below-player
+beemtube.com##div[style]:has(> ins[data-zoneid])
+teenager365.to##.avd-under-video-mob
+m.yelp.com##div[class*="main-content__"] > div > ol > li:has(div[data-traffic-crawl-id="SearchResultBizName"] > h3 > a[href^="/adredir?ad_business_id="])
+m.yelp.com##div[class*="main-content__"] > div > ol > li:has(> div[class*="sponsored-icon__"])
+m.yelp.com##section[data-testid="TopAdStandard"]
 news.yahoo.co.jp###contents > div[class^="sc-"] > article[class^="sc-"] > div[class^="sc-"][style="margin-top:-8px"]:has(> div[id^="yads_"]:only-child)
 lanazione.it##div[style="min-height: 100px; top: 48px;"]
 championat.com##.swiper-wrapper > div.livetable-swiper__item:has(> div.game-of-day)
@@ -4523,7 +4537,7 @@ news.milli.az##.quiz-holder > div[style^="margin: 15px"] > .hidden-lg
 carview.yahoo.co.jp##.posNM
 glosbe.com###tb__cont__2
 wz.de##aside[data-portal-id="banner"]
-hentairox.com,imhentai.xxx,hentaifox.com,hentaiera.com##.bblocktop
+hentaizap.com,hentairox.com,imhentai.xxx,hentaifox.com,hentaiera.com##.bblocktop
 topics.smt.docomo.ne.jp##.ad_middle05
 fc1adult.com##div[style="height: 500px; overflow: hidden; margin-bottom: 20px;"]
 cojicaji.jp##.dfp-cci-rectangle-wrapper

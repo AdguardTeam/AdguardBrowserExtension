@@ -1,13 +1,13 @@
-! Checksum: m3owCL5X8MexeSpCMy+wIA
+! Checksum: jXJPWVX94q0AQbu5JnyiCg
 ! Title: Frellwit's Swedish Filter
 ! Description: Filter that aims to remove regional Swedish ads, tracking, social media, annoyances, sponsored articles etc.
-! Version: 2.0.21.37
-! TimeUpdated: 2025-04-21T04:38:30+00:00
+! Version: 2.0.21.39
+! TimeUpdated: 2025-04-23T04:37:46+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: Frellwit's Swedish Filter
 ! Expires: 4 days
-! Last modified: 2025-04-21 04:39:07 CEST
+! Last modified: 2025-04-23 05:29:20 CEST
 ! Homepage: https://github.com/lassekongo83/Frellwits-filter-lists
 ! Description: A filter for uBlock Origin that aims to remove regional Swedish ads, tracking, annoyances, scams + badware, and unnecessary bloat.
 ! License: GPL3 - https://github.com/lassekongo83/Frellwits-filter-lists/blob/master/LICENSE
@@ -140,7 +140,7 @@ aip.nu,funktionshinderpolitik.se,sjostadsbladet.se,fotbollsresultat.com,lanspost
 aip.nu,lansposten.se,dalabygden.se,sormlandsbygden.se#$#body.cookies-not-set { overflow:unset!important }
 akaviaaspekt.se##.article-list-item--native, a.article-topic__list-item[href^="/annons"], .advertisement--banner > div[class=""]
 aktavara.org##.banner-start
-aktieskolan.se#?#section.elementor-section:contains(Huvudsponsorer & partners)
+aktieskolan.se##.ast-container > .elementor > section.elementor-section:has(a[href*="betting"])
 aktiespararna.se,alekuriren.se,tidningen.se,kurera.se,vinbanken.se##.native
 aktuellhallbarhet.se,byggindustrin.se,dagensmedia.se,dagensmedicin.se,fastighetsnytt.se,resume.se,dagenssamhalle.se,market.se,dagligvarunytt.se,privataaffarer.se##.outsider, .module, .articlemodule, .mob, [data-bad-fullpage-container], a[href^="/native"]
 aktuellsakerhet.se###newsletter
@@ -187,7 +187,6 @@ altinget.se##a[href^="/sponsrade"]
 amelia.expressen.se#?#article p.uppercase.tracking-wide:contains(Inlägget innehåller annonslänkar):upward(article)
 amelia.expressen.se##.max-w-\[980px\]:has(.slick-slider a[target="_blank"])
 analytics$domain=corren.se|folkbladet.se|mvt.se|nt.se|vt.se|vimmerbytidning.se|kuriren.nu|nsd.se|norran.se|pt.se|ekuriren.se|strengnastidning.se|kkuriren.se|sn.se|eposten.se|unt.se|helagotland.se|fastighetsvarlden.se
-antagning.se,universityadmissions.se###cookiebanner
 arbetaren.se#?#.text-sm:contains(/annons/i):upward(.border-b, a[target])
 arbetet.se##.Container:not(.ContentItem-content):has([data-controller="ad"])
 arbetet.se##.Teaser--native, .o-native, [data-controller="ad"], div[id^="consent-"]
@@ -206,7 +205,6 @@ atl.nu,landlantbruk.se,land.se##a[href*="/atl-tv-annons/"], [class^="Ad_"], div[
 atl.nu,landlantbruk.se,land.se##div[class^="Message_messageSticky"]:has(a[href*="/kampanj."])
 atl.nu,landlantbruk.se,land.se,di.se,expressen.se,dn.se###didomi-host
 aurumforum.se#?#.bottom-liner span:contains(Annons):upward(2)
-aurumforum.se##.top-add
 automation.se,verkstadstidningen.se,transportnytt.se,datormagazin.se##.a-wrap
 automobilly.com,nordicmanufacturing.net##.headerannons, .sidebarannonsseg, .footerannons
 automotorsport.se##a[href*="/partner/"]
@@ -252,7 +250,7 @@ bioenergitidningen.se##.flowad
 bioenergitidningen.se###cookieinfo
 bioenergitidningen.se,skogen.se##.nativepuff
 biostock.se,snowmobile.se,tobaksfakta.se,dagenslogistik.se,magasinetkonkret.se,skaneplus.se,battrestadsdel.se##.pum-overlay
-biostock.se,tobaksfakta.se#$#.pum-open { overflow:auto!important }
+biostock.se,tobaksfakta.se,dagenslogistik.se#$#.pum-open { overflow:auto!important }
 bio-link.se,web-tools.se##.d-print-none > div:has(a[target="_blank"])
 bio-link.se,web-tools.se,evertiq.se,alandsradio.ax###cc-main
 birthday.se##.datax
@@ -795,7 +793,6 @@ indien.nu#?#.nyhetsochreseartiklar .views-row:contains(/casino/i)
 industrinyheter.se,dagensnaringsliv.se,infrastrukturnyheter.se,sportochfritidsnyheter.se,inredningsnyheter.se,byggnyheter.se,dagensfastigheter.se,stockholmsbyggnyheter.se,energinyheter.se,vindkraftsnyheter.se,solenerginyheter.se,jarnvagsnyheter.se,transportochlogistik.se,metallerochgruvor.se,papperochmassa.se,miningmetalnews.com##.insider-ads, [id^="mainadvertorial"], [id^="dfptag"], .block-advertorial, .block-views-blockconventus-info-articles-info-article-block, #dfp-tag-before_artikel, #dfp-tag-mobile_before_artikel, #block-views-block-leader-article
 industritorget.se###pnlCookie, .campaign-top, .campaigns-right
 inet.se#%#//scriptlet('ubo-set-cookie.js', 'allow-marketing-cookies', '0')
-ingenjorsjobb.se##.advert-take-over
 ingenjorsjobb.se,vardegrunden.se,lagboken.se##.cookie-notice
 inkopsradet.se##div[id^="inkop-"]
 innebandy.se##[class*="banner-container"], .sponsorsswipeblock
@@ -878,7 +875,7 @@ kolozzeum.com##td[width="305"], br + a[href*="/casino"]
 kompanjoner.se##.site-loader
 komponentkoll.se##.gdpr-wide
 konsten.net##div[id^="konst-"]
-konsumentmagasinet.se##.pricerunner, #Conzent, .conzent-modal
+konsumentmagasinet.se##.pricerunner, #Conzent, .conzent-modal, .price-part
 kristendate.se##div[id^="adv"], #site-right-col-wrapper a[target] img
 kritiker.se##div.recad, div.adhor, div.stickyad
 krogen.se#?#a.article-link:contains(Annons:):upward(.sp-article-content)
@@ -1133,7 +1130,7 @@ omni.se,omniekonomi.se##div[class^="TopPanoramaAd"], div[class^="StickySideAd"],
 omtanke.today##.featured
 opulens.se##.mailpoet_form, #secondary
 ordbokpro.se#%#//scriptlet('ubo-set.js', 'ab_disp', 'noopFunc')
-ordfrontmagasin.se##.oc_cb_wrapper, .simple-image a:not([href^="/"]):not([href*="ordfrontmagasin.se"])
+ordfrontmagasin.se##.oc_cb_wrapper, :is(.simple-image, .widget_media_image) a:not([href^="/"]):not([href*="ordfrontmagasin.se"])
 ordguru.se##.visible-lg, .hidden-lg
 ordparken.se##div[style="text-align:center;padding:8px;margin:30px 0;min-height:340px"]
 orebronyheter.com###top-wrapper
@@ -1178,7 +1175,7 @@ pussad.se#$#html.g1-popup-visible { overflow: initial !important; }
 pussad.se##.g1-popup-newsletter, .g1-slideup-wrap
 qasa.se##div[data-state="open"]:empty
 qasa.se#%#//scriptlet('ubo-aeld.js', 'wheel')
-quizza.nu,elbilen.se###takeover
+quizza.nu,elbilen.se,ingenjorsjobb.se###takeover
 qx.se##.qxa-container, .leaky-popup-banner, .qxasection, a[href^="https://www.qx.se/native/"]
 rabattsok.se,prv.se###cookie-bar
 racemagazine.se##article + div.bg-white:has(.ad-inner)
@@ -1574,8 +1571,8 @@ xn--lgenhet-5wa.nu###block-7, a[href*="lana-pengar"]
 xn--lnforum-exa.se##.LFRBox
 yogafordig.nu##.popup-large, .popup-bottom, .square-banner-wrapper
 ysektionen.se##.yweb-news-paper-banner
-zeinaskitchen.se,trafiksakerhet.se,boktugg.se,lakartidningen.se,villalivet.se,matsafari.nu,forexgruppen.se,fastighetsvarlden.se#%#//scriptlet('ubo-acs.js', 'monsterinsights_frontend')
-zeinaskitchen.se,trafiksakerhet.se,boktugg.se,lakartidningen.se,villalivet.se,matsafari.nu,forexgruppen.se,fastighetsvarlden.se#%#//scriptlet('ubo-set.js', 'mi_track_user', 'false')
+zeinaskitchen.se,trafiksakerhet.se,boktugg.se,lakartidningen.se,villalivet.se,matsafari.nu,forexgruppen.se,fastighetsvarlden.se,aktieskolan.se#%#//scriptlet('ubo-acs.js', 'monsterinsights_frontend')
+zeinaskitchen.se,trafiksakerhet.se,boktugg.se,lakartidningen.se,villalivet.se,matsafari.nu,forexgruppen.se,fastighetsvarlden.se,aktieskolan.se#%#//scriptlet('ubo-set.js', 'mi_track_user', 'false')
 zeromagazine.nu##div[id^="ads"]
 ##.lazyb.panorama
 ##adsaga-banner
@@ -1731,6 +1728,7 @@ zeromagazine.nu##div[id^="ads"]
 ##div.panorama-ad
 ##div.panorama-ad-standard
 ##div.panorama-annonser
+##div.panorama-banner
 ##div.partnership-ads
 ##div.phpbb-ads-center
 ##div.prebid-ad-slot
@@ -1764,6 +1762,7 @@ zeromagazine.nu##div[id^="ads"]
 ##div[class^="borka-widescreen"]
 ##div[class^="holid_desktop"]
 ##div[data-adk-container]
+##div[data-ad-unit-id]
 ##div[data-losjs^="borka-insider"]
 ##div[data-losjs^="borka-panorama"]
 ##div[data-losjs^="borka-widescreen"]
@@ -1868,6 +1867,7 @@ zeromagazine.nu##div[id^="ads"]
 ##[class*="advads_ad_widget"]:not(body):not(html)
 ##[id^="adace_ads"]
 &autoplay$subdocument,removeparam=autoplay,domain=di.se|expressen.se
+*$third-party,script,denyallow=gstatic.com,domain=karlskogavaxer.se
 *$third-party,script,denyallow=jit.si|googleapis.com|telenor.se,domain=startaochdriva.se
 *$third-party,script,denyallow=kit.fontawesome.com|cloudflare.net|use.typekit.net|akamai.net,domain=lakemedelsvarlden.se
 *$ping,domain=fiskejournalen.se
@@ -2164,7 +2164,6 @@ zeromagazine.nu##div[id^="ads"]
 /gplus.php$script,domain=fria.nu|stockholmsfria.se
 /growth-analytics$domain=mindoktor.se
 /gtagEventTracker.js
-/gtm-sokande.js$domain=antagning.se|universityadmissions.se
 /gtm-*.appspot.com
 /gtm.*.js?id=GTM
 /gtm.*/g/collect?
@@ -2241,6 +2240,7 @@ zeromagazine.nu##div[id^="ads"]
 /metrics$domain=swebbtv.se
 /metrics/bambuser
 /minbostadstatic/js/partner/*
+/min.t.$domain=aktieskolan.se
 /mod_carousel_banner$domain=bjuvsweek.se
 /monetization/ads-module/*
 /monetization/pixel-sdk/*
@@ -3317,6 +3317,7 @@ zeromagazine.nu##div[id^="ads"]
 ||tracking.bonnier.news^
 ||tracking.fasab6f.se^
 ||track.intersport.se^
+||track.yetric.net^
 ||tradehouse.media^$third-party
 ||travellink.se/marketing-channel
 ||travnet.se/sulkysport$subdocument
