@@ -180,9 +180,33 @@ const Filters = observer(() => {
         navigate(`/filters?group=${groupId}`);
     };
 
-    const getEnabledFiltersByGroup = (group: CategoriesGroupData) => (
-        filters.filter((filter) => filter.groupId === group.groupId && filter.enabled)
-    );
+    /**
+     * Returns filter details for the group.
+     *
+     * @param group Group data.
+     *
+     * @returns `null` if group is turned off
+     * or string with filter details if group is turned on:
+     * - if some filters enabled — `Enabled: <x> of <y>`;
+     * - if no filters enabled — `No filters enabled`.
+     */
+    const getFilterDetailsForGroup = (group: CategoriesGroupData): string | null => {
+        if (!group.enabled) {
+            return null;
+        }
+
+        const totalFiltersInGroup = filters.filter((filter) => filter.groupId === group.groupId);
+        const enabledFiltersInGroup = totalFiltersInGroup.filter((filter) => filter.enabled);
+
+        if (enabledFiltersInGroup.length === 0) {
+            return translator.getMessage('options_filters_no_enabled');
+        }
+
+        return translator.getMessage('options_filters_enabled_per_group', {
+            current: enabledFiltersInGroup.length,
+            total: totalFiltersInGroup.length,
+        });
+    };
 
     const handleFilterConsentConfirmWrapper = addMinDelayLoader(
         uiStore.setShowLoader,
@@ -197,13 +221,13 @@ const Filters = observer(() => {
         return (
             <ul className="group-list">
                 {sortedGroups.map((group) => {
-                    const enabledFilters = getEnabledFiltersByGroup(group);
                     return (
                         <Group
                             key={group.groupId}
                             groupName={group.groupName}
+                            groupDescription={group.groupDescription}
                             groupId={group.groupId}
-                            enabledFilters={enabledFilters}
+                            filterDetails={getFilterDetailsForGroup(group)}
                             groupClickHandler={groupClickHandler(group.groupId)}
                             checkboxHandler={handleGroupSwitch}
                             checkboxValue={!!group.enabled}

@@ -496,6 +496,7 @@ export class FiltersApi {
                 groupId: AntibannerGroupsId.CustomFiltersGroupId,
                 displayNumber: CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
                 groupName: translator.getMessage('options_antibanner_custom_group'),
+                groupDescription: translator.getMessage('options_antibanner_custom_group_description'),
             });
         }
 
