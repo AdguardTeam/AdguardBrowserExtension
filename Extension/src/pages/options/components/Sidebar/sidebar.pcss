@@ -12,7 +12,7 @@
     margin: 0;
     width: 240px;
     transform: translateX(-100%);
-    transition: transform var(--sidebar-transition);
+    transition: var(--t3) transform;
     overflow-y: auto;
     overflow-x: hidden;
 
@@ -23,8 +23,8 @@
         z-index: var(--z-idx-options-sidebar);
         height: 40px;
         width: 100%;
-        background: var(--fills-backgrounds-page-background-additional-default);
-        box-shadow: 0 2px 4px 0 var(--light-shadow);
+        background: var(--fills-backgrounds-page-background-default);
+        box-shadow: var(--small-light-shadow-br);
         font-size: 14px;
         line-height: 18px;
     }
@@ -67,7 +67,8 @@
         z-index: var(--z-idx-options-sidebar);
         left: 0;
         top: 0;
-        background-color: var(--overlay-gray);
+        opacity: 0.5;
+        background-color: var(--fills-backgrounds-dialog-background-default);
         overflow-x: hidden;
         animation-delay: 0.3s;
         display: none;

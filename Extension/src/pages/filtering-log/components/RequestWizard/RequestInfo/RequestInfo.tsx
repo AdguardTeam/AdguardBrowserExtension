@@ -508,7 +508,7 @@ const RequestInfo = observer(() => {
                 : textsWithCollapsers;
 
             const classNames = isDeclarativeRule && selectedEvent.declarativeRuleInfo?.declarativeRuleJson
-                ? cn('request-info__value', 'scrollable')
+                ? cn('request-info__value', 'scrollable', 'thin-scrollbar')
                 : cn('request-info__value');
 
             return (
@@ -699,7 +699,7 @@ const RequestInfo = observer(() => {
                     {translator.getMessage('filtering_modal_info_title')}
                 </span>
             </div>
-            <div ref={contentRef} className="request-modal__content">
+            <div ref={contentRef} className="request-modal__content thin-scrollbar">
                 {selectedEvent.method && (
                     <div className="request-info">
                         <div className="request-info__main">

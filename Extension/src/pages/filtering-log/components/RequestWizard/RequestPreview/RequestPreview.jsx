@@ -173,7 +173,7 @@ export const RequestPreview = observer(() => {
                     </span>
                 </button>
             </div>
-            <div className="request-modal__content request-preview">
+            <div className="request-modal__content request-preview thin-scrollbar">
                 {renderContent()}
             </div>
             <div className="request-modal__controls">
