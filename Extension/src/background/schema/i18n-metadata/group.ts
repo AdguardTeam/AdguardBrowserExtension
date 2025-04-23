@@ -17,11 +17,16 @@
  */
 import zod from 'zod';
 
-const groupName = zod.object({
+const groupInfo = zod.object({
     /**
      * The name of the filter group.
      */
     name: zod.string(),
+
+    /**
+     * The description of the filter group.
+     */
+    description: zod.string(),
 });
 
 export const groupI18nMetadataValidator = zod.record(
@@ -29,7 +34,7 @@ export const groupI18nMetadataValidator = zod.record(
      * Locale code.
      */
     zod.string(),
-    groupName,
+    groupInfo,
 );
 
 /**

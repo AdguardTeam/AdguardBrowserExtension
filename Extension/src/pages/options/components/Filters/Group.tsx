@@ -21,65 +21,64 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { Icon } from '../../../common/components/ui/Icon';
 
 import './group.pcss';
 
-const renderEnabledFilters = (enabledFilters) => {
-    const enabledFiltersNames = enabledFilters.map((filter) => filter.name);
-    const SLICE_POINT = 3;
-    const displayable = enabledFiltersNames.slice(0, SLICE_POINT);
-    const countable = enabledFiltersNames.slice(SLICE_POINT);
+/**
+ * Parameters for the {@link Group} component.
+ */
+type GroupParams = {
+    /**
+     * Group name.
+     */
+    groupName: string;
 
-    if (countable.length > 0) {
-        return (
-            <>
-                {reactTranslator.getMessage('options_filters_enabled')}
-                {' '}
-                {reactTranslator.getMessage(
-                    'options_filters_enabled_and_more',
-                    { enabled: displayable.join(', '), more: countable.length },
-                )}
-            </>
-        );
-    }
+    /**
+     * Group description.
+     */
+    groupDescription?: string;
 
-    if (displayable.length > 1) {
-        const [last, ...rest] = displayable.reverse();
-        return (
-            <>
-                {reactTranslator.getMessage('options_filters_enabled')}
-                {' '}
-                {reactTranslator.getMessage(
-                    'options_filters_enabled_and_last',
-                    { enabled: rest.join(', '), last },
-                )}
-            </>
-        );
-    }
+    /**
+     * Group id.
+     */
+    groupId: number;
 
-    if (displayable.length === 1) {
-        return (
-            <>
-                {reactTranslator.getMessage('options_filters_enabled')}
-                {' '}
-                {displayable[0]}
-            </>
-        );
-    }
+    /**
+     * Details about enabled filters:
+     * - if group is off — `null`;
+     * - if group is on — `Enabled: <x> of <y>` or `No filters enabled`.
+     */
+    filterDetails: string | null;
 
-    return reactTranslator.getMessage('options_filters_no_enabled');
+    /**
+     * Handler for group click event.
+     */
+    groupClickHandler: () => void;
+
+    /**
+     * Handler for checkbox change event.
+     *
+     * @param id Group id.
+     * @param data Checkbox value.
+     */
+    checkboxHandler: ({ id, data }: { id: string; data: boolean }) => void;
+
+    /**
+     * Checkbox value.
+     */
+    checkboxValue: boolean;
 };
 
 const Group = ({
     groupName,
+    groupDescription,
     groupId,
-    enabledFilters,
+    filterDetails,
     groupClickHandler,
     checkboxHandler,
     checkboxValue,
-}) => {
+}: GroupParams) => {
     const groupClassName = classNames({
         setting: true,
         group: true,
@@ -88,6 +87,7 @@ const Group = ({
 
     const titleId = `setting-title-${groupId}`;
     const descriptionId = `setting-desc-${groupId}`;
+    const filterDetailsId = `setting-desc-filters-${groupId}`;
     const iconId = `#setting-${groupId}`;
 
     return (
@@ -99,7 +99,7 @@ const Group = ({
                 className="setting__area setting__area_group"
                 onClick={groupClickHandler}
                 aria-labelledby={titleId}
-                aria-describedby={descriptionId}
+                aria-describedby={`${descriptionId}${filterDetails ? ` ${filterDetailsId}` : ''}`}
             >
                 <Icon
                     id={iconId}
@@ -111,8 +111,13 @@ const Group = ({
                         {groupName}
                     </span>
                     <span id={descriptionId} className="setting__desc">
-                        {renderEnabledFilters(enabledFilters)}
+                        {groupDescription}
                     </span>
+                    {filterDetails && (
+                        <span id={filterDetailsId} className="setting__desc">
+                            {filterDetails}
+                        </span>
+                    )}
                 </span>
             </button>
             <div className="setting__inline-control setting__inline-control_group">
