@@ -497,35 +497,43 @@ We have defined size limits in the project.
 3. If the increase is justified, update the reference sizes by running:
 
     ```shell
-    pnpm update-bundle-size
+    pnpm update-bundle-size <buildEnv> <targetBrowser>
+    # Example: pnpm update-bundle-size release chrome-mv3
+    # Or: pnpm update-bundle-size beta firefox-amo
     ```
-    (Set the `BUILD_ENV` and `TARGET_BROWSER` environment variables as needed.)
-
 4. Commit the updated `.bundle-sizes.json` file and include justification in your PR.
 5. The changes will be reviewed and approved as part of the PR process.
 
-### Bundle Size Threshold Override
+### Checking bundle size locally
 
-You can control the sensitivity of bundle size increase detection by setting the `BUNDLE_SIZE_THRESHOLD` environment variable.
+To check bundle sizes locally, use:
 
-- **Purpose:**
-  Defines the allowed percentage increase in bundle size (compared to the historical reference) before the check fails and triggers a warning or error.
-- **Default:**
-  If not set, the default threshold is **10%**.
-- **Usage:**
-  Set this variable during development or CI runs to temporarily allow larger changes, or to make the check stricter.
-
-**Example usage:**
-```sh
-BUNDLE_SIZE_THRESHOLD=15 pnpm check-bundle-size
+```shell
+pnpm check-bundle-size <buildEnv> <targetBrowser>
+# Example: pnpm check-bundle-size release chrome-mv3
+# Or: pnpm check-bundle-size beta firefox-amo
 ```
-This would allow up to a 15% increase in bundle size before failing.
 
-### Notes
+For CLI help on parameters, use:
 
-- Size thresholds and limits are configured in `tools/bundle-size/constants.ts`.
-- Bundle size checks are enforced in CI/CD and should be run locally for verification.
-- For more details, see the code and JSDoc in `tools/bundle-size/`.
+```shell
+pnpm check-bundle-size --help
+pnpm update-bundle-size --help
+```
+
+### Usage: Custom Threshold
+
+You can override the default threshold for significant bundle size increases using the `--threshold` option:
+
+```sh
+pnpm check-bundle-size <buildEnv> <targetBrowser> --threshold 5
+# or
+pnpm check-bundle-size release chrome-mv3 --threshold=20
+```
+
+- `--threshold <number>`: Sets the allowed percentage increase in bundle size before the check fails. Default: 10%.
+
+This is useful for temporarily relaxing or tightening the allowed size delta for a specific check/build.
 
 ## <a name="auto-publish-builds"></a> Auto-publish builds
 

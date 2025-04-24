@@ -118,3 +118,12 @@ export type SizesFile = {
 export type Dependency = {
     [packageName: string]: unknown;
 };
+
+/**
+ * Parameters for the checkBundleSizes function.
+ */
+export type CheckBundleSizesParams = {
+    buildEnv: BuildTargetEnv;
+    targetBrowser?: Browser;
+    threshold: number;
+};

@@ -6,38 +6,33 @@
  * Usage: Should be run after a build is validated to update the reference size.
  */
 /* eslint-disable no-console */
-import { isValidBrowserTarget, isValidBuildEnv } from '../constants';
+import { program } from 'commander';
+
+import {
+    Browser,
+    BuildTargetEnv,
+    isValidBrowserTarget,
+    isValidBuildEnv,
+} from '../constants';
 
 import { getCurrentBuildStats, saveBuildStats } from './utils';
 
 /**
  * Main function to update a specific bundle size record.
  *
- * Requires BUILD_ENV and TARGET_BROWSER environment variables to be set.
+ * Requires buildEnv and targetBrowser arguments to be set.
  * Updates the .bundle-sizes.json file with the latest build stats for the given target.
  * Throws if invalid build type or target is provided.
  */
-async function updateBundleSize(): Promise<void> {
-    // Require BUILD_ENV and TARGET to be set
-    const buildType = process.env.BUILD_ENV;
-    const target = process.env.TARGET_BROWSER;
-
-    if (!isValidBuildEnv(buildType)) {
-        throw new Error(`Invalid BUILD_ENV: ${buildType}\n`);
-    }
-
-    if (!isValidBrowserTarget(target)) {
-        throw new Error(`Invalid TARGET_BROWSER: ${buildType}`);
-    }
-
-    console.log(`Updating bundle size for "${buildType}" "${target}"...\n`);
+async function updateBundleSize(buildEnv: BuildTargetEnv, targetBrowser: Browser): Promise<void> {
+    console.log(`Updating bundle size for "${buildEnv}" "${targetBrowser}"...\n`);
 
     try {
         // Get current build stats
-        const currentStats = await getCurrentBuildStats(buildType, target);
+        const currentStats = await getCurrentBuildStats(buildEnv, targetBrowser);
 
         // Update the sizes file
-        await saveBuildStats(buildType, target, currentStats);
+        await saveBuildStats(buildEnv, targetBrowser, currentStats);
 
         console.log('Bundle size update completed successfully.\n');
     } catch (error) {
@@ -45,7 +40,20 @@ async function updateBundleSize(): Promise<void> {
     }
 }
 
-// Run the script
-updateBundleSize().catch((err) => {
-    throw new Error(`Error updating bundle size: ${err}\n`);
-});
+// --- CLI argument parsing with commander ---
+program
+    .argument('<buildEnv>', `Build environment, one from ${Object.values(BuildTargetEnv).join(', ')}`)
+    .argument('[targetBrowser]', `Target browser, one from ${Object.values(Browser).join(', ')}`)
+    .action(async (buildEnv, targetBrowser) => {
+        if (!isValidBuildEnv(buildEnv)) {
+            throw new Error(`Invalid buildEnv: ${buildEnv}\n`);
+        }
+
+        if (!isValidBrowserTarget(targetBrowser)) {
+            throw new Error(`Invalid targetBrowser: ${targetBrowser}`);
+        }
+
+        await updateBundleSize(buildEnv, targetBrowser);
+    });
+
+program.parse(process.argv);

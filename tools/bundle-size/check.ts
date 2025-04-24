@@ -14,15 +14,21 @@ import util from 'util';
 import { exec } from 'child_process';
 import path from 'path';
 
+import { program } from 'commander';
+
 import {
     Browser,
-    type BuildTargetEnv,
+    BuildTargetEnv,
     isValidBrowserTarget,
     isValidBuildEnv,
 } from '../constants';
 import { getBrowserConf } from '../bundle/helpers';
 
-import type { Dependency, TargetInfo } from './constants';
+import type {
+    CheckBundleSizesParams,
+    Dependency,
+    TargetInfo,
+} from './constants';
 import {
     DEFAULT_SIZE_THRESHOLD_PERCENTAGE,
     MAX_MV3_SIZE_BYTES,
@@ -42,19 +48,6 @@ import {
 /* eslint-disable no-console */
 
 const execAsync = util.promisify(exec);
-
-/**
- * Get the configured size threshold or default.
- *
- * @returns Bundle size threshold as a percentage.
- */
-function getSizeThreshold(): number {
-    const threshold = Number(process.env.BUNDLE_SIZE_THRESHOLD);
-
-    return !Number.isNaN(threshold)
-        ? threshold
-        : DEFAULT_SIZE_THRESHOLD_PERCENTAGE;
-}
 
 /**
  * Pure function to determine if there are duplicate versions in the pnpm why output.
@@ -290,12 +283,14 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
 
         let found = false;
 
+        const bytesToMB = (bytes: number) => (bytes / (1024 * 1024)).toFixed(2);
+
         fileChecks
             .flat()
             .forEach(({ file, size }) => {
                 if (size > MAX_FIREFOX_SIZE_BYTES) {
                     found = true;
-                    console.error(`Firefox Add-ons Store limit exceeded: ${file} is ${(size / (1024 * 1024)).toFixed(2)}MB (> ${MAX_FIREFOX_SIZE_BYTES}MB) ❌`);
+                    console.error(`Firefox Add-ons Store limit exceeded: ${file} is ${bytesToMB(size)}MB (> ${bytesToMB(MAX_FIREFOX_SIZE_BYTES)}MB) ❌`);
                 }
             });
 
@@ -311,35 +306,10 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
  *
  * @throws Error if any size or duplicate issues are detected.
  */
-async function checkBundleSizes(): Promise<void> {
-    // Require BUILD_ENV to be set
-    const buildType = process.env.BUILD_ENV;
-    if (!buildType) {
-        throw new Error('BUILD_ENV environment variable is required');
-    }
-
-    if (!isValidBuildEnv(buildType)) {
-        throw new Error(`Invalid BUILD_ENV: ${buildType}`);
-    }
-
-    // Define specific target if provided
-    const specificTarget = process.env.TARGET_BROWSER;
-
-    // specificTarget is optional, but if provided, it must be valid.
-    if (specificTarget !== undefined && !isValidBrowserTarget(specificTarget)) {
-        throw new Error(`Invalid TARGET_BROWSER: ${specificTarget}`);
-    }
-
+async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBundleSizesParams): Promise<void> {
     // Define all possible targets to check
-    const targets = specificTarget ? [specificTarget] : Object.values(Browser);
-
-    // Get the size threshold
-    const threshold = getSizeThreshold();
-
-    // Read the sizes file
+    const targets = targetBrowser ? [targetBrowser] : Object.values(Browser);
     const sizesData = await readSizesFile();
-
-    // Indicate if any target has size issues.
     let hasSizeIssues = false;
 
     // Use a for loop to ensure sequential logging.
@@ -351,13 +321,13 @@ async function checkBundleSizes(): Promise<void> {
         try {
             // Get current build stats for this target
             // eslint-disable-next-line no-await-in-loop
-            const currentStats = await getCurrentBuildStats(buildType, target);
+            const currentStats = await getCurrentBuildStats(buildEnv, target);
 
             // Compare with reference sizes if available
-            if (sizesData[buildType] && sizesData[buildType][target]) {
+            if (sizesData[buildEnv] && sizesData[buildEnv][target]) {
                 const hasBuildSizesIssue = compareBuildSizes(
                     currentStats,
-                    sizesData[buildType][target],
+                    sizesData[buildEnv][target],
                     target,
                     threshold,
                 );
@@ -370,22 +340,22 @@ async function checkBundleSizes(): Promise<void> {
             // No reference sizes available, save current stats as reference
             console.log(`No reference sizes available for comparison for ${target}. This build will be used as reference.`);
             // eslint-disable-next-line no-await-in-loop
-            await saveBuildStats(buildType, target, currentStats);
+            await saveBuildStats(buildEnv, target, currentStats);
         } catch (error) {
             // In normal mode, rethrow the error
             throw new Error(`Error processing target ${target}: ${error}`);
         }
     }
 
-    let hasChromeMv3SizeIssues = false;
     // Check max size only for chrome-mv3 target, because we pack a lot
     // of filters data inside this target.
+    let hasChromeMv3SizeIssues = false;
     if (targets.includes(Browser.ChromeMv3)) {
-        hasChromeMv3SizeIssues = await checkChromeMv3BundleSize(buildType);
+        hasChromeMv3SizeIssues = await checkChromeMv3BundleSize(buildEnv);
     }
 
-    // Check for Firefox Add-ons Store .js file size limit (4MB per .js file)
-    const hasFirefoxJsIssues = await checkFirefoxJsFileSizes(buildType);
+    // Check for Firefox Add-ons Store file size limit (4MB per each file)
+    const hasFirefoxJsIssues = await checkFirefoxJsFileSizes(buildEnv);
 
     // Check for duplicate packages (do this only once for all targets)
     const hasDuplicates = await checkForDuplicatePackages();
@@ -398,7 +368,27 @@ async function checkBundleSizes(): Promise<void> {
     console.log('Bundle size check completed successfully.');
 }
 
-// Run the script
-checkBundleSizes().catch((err) => {
-    throw new Error(`Error checking bundle sizes: ${err}`);
-});
+// --- CLI argument parsing with commander ---
+program
+    .argument('<buildEnv>', `Build environment, one from ${Object.values(BuildTargetEnv).join(', ')}`)
+    .argument('[targetBrowser]', `Target browser, one from ${Object.values(Browser).join(', ')}`)
+    .option('--threshold <number>', 'Bundle size threshold (%)', String(DEFAULT_SIZE_THRESHOLD_PERCENTAGE))
+    .action(async (buildEnv, targetBrowser, options) => {
+        if (!buildEnv) {
+            throw new Error('buildEnv argument is required');
+        }
+
+        if (!isValidBuildEnv(buildEnv)) {
+            throw new Error(`Invalid buildEnv: ${buildEnv}`);
+        }
+
+        if (targetBrowser !== undefined && !isValidBrowserTarget(targetBrowser)) {
+            throw new Error(`Invalid targetBrowser: ${targetBrowser}`);
+        }
+
+        const threshold = Number(options.threshold) || DEFAULT_SIZE_THRESHOLD_PERCENTAGE;
+
+        await checkBundleSizes({ buildEnv, targetBrowser, threshold });
+    });
+
+program.parse(process.argv);
