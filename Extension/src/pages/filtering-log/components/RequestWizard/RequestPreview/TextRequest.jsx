@@ -53,7 +53,7 @@ export const TextRequest = ({
 
     if (textState) {
         return (
-            <div className="request-modal__text">
+            <div className="request-modal__text thin-scrollbar">
                 <pre>
                     <code>
                         {textState}

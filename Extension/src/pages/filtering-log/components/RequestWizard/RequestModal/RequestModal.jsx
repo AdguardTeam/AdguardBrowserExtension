@@ -95,7 +95,7 @@ const RequestModal = observer(() => {
             modalContent = <RequestInfo />;
     }
 
-    const className = cn('ReactModal__Content request-modal', {
+    const className = cn('ReactModal__Content request-modal thin-scrollbar', {
         'request-modal__view': requestModalStateEnum.isView,
         'request-modal__block': requestModalStateEnum.isBlock,
         'request-modal__unblock': requestModalStateEnum.isUnblock,

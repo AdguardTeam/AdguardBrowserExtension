@@ -74,7 +74,10 @@ const remoteI18nMetadata: I18nMetadata = i18nMetadataValidator.parse({
     filters: {},
     groups: {
         1: {
-            en: { name: 'REMOTE' },
+            en: {
+                name: 'REMOTE',
+                description: 'REMOTE description',
+            },
         },
     },
     tags: {},
@@ -84,7 +87,10 @@ const localI18nMetadata: I18nMetadata = i18nMetadataValidator.parse({
     filters: {},
     groups: {
         1: {
-            en: { name: 'LOCAL' },
+            en: {
+                name: 'LOCAL',
+                description: 'LOCAL description',
+            },
         },
     },
     tags: {},
