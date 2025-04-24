@@ -25,6 +25,8 @@ export const MAX_MV3_SIZE_BYTES = 30 * 1024 * 1024;
  * Firefox Add-ons Store limit for any file inside the zip.
  *
  * Note: This limit is not enforced by the Firefox browser itself.
+ *
+ * @see https://github.com/mozilla/addons-linter/blob/3bd6c3874185263ad025485e230dcbdb83517d7d/src/const.js#L103-L111
  */
 export const MAX_FIREFOX_SIZE_BYTES = 4 * 1024 * 1024;
 

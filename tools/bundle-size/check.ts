@@ -262,35 +262,35 @@ async function checkChromeMv3BundleSize(buildType: BuildTargetEnv): Promise<bool
 }
 
 /**
- * Checks that no .js file in Firefox builds exceeds 4MB (Firefox Add-ons Store limit).
+ * Checks that no .js, .css, .json file in Firefox builds exceeds 4MB (Firefox Add-ons Store limit).
  * Logs errors and returns true if any offending files are found.
  *
  * @param buildType Build environment (beta, release, etc.).
  *
- * @returns True if some .js files exceed 4MB, else false.
+ * @returns True if some files exceed 4MB, else false.
  */
 async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boolean> {
     const FIREFOX_TARGETS = [Browser.FirefoxAmo, Browser.FirefoxStandalone];
 
-    console.log('\n\nChecking Firefox Add-ons Store .js file sizes...');
+    console.log('\n\nChecking Firefox Add-ons Store file sizes (.js, .css, .json)...');
 
     try {
-        const jsFileChecks = await Promise.all(FIREFOX_TARGETS.map(async (target) => {
+        const fileChecks = await Promise.all(FIREFOX_TARGETS.map(async (target) => {
             const dir = path.join(
                 BUILD_DIRNAME,
                 buildType,
                 getBrowserConf(target).buildDir,
             );
 
-            const jsFiles = await getFilesWithSizes(dir);
-            return Object.entries(jsFiles)
-                .filter(([file]) => file.endsWith('.js'))
+            const allFiles = await getFilesWithSizes(dir);
+            return Object.entries(allFiles)
+                .filter(([file]) => file.endsWith('.js') || file.endsWith('.css') || file.endsWith('.json'))
                 .map(([file, size]) => ({ file, size }));
         }));
 
         let found = false;
 
-        jsFileChecks
+        fileChecks
             .flat()
             .forEach(({ file, size }) => {
                 if (size > MAX_FIREFOX_SIZE_BYTES) {
@@ -301,7 +301,7 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
 
         return found;
     } catch (error) {
-        console.error(`Error checking Firefox JS file sizes: ${error}`);
+        console.error(`Error checking Firefox file sizes: ${error}`);
         return false;
     }
 }
