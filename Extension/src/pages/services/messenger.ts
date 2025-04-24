@@ -494,7 +494,7 @@ class Messenger {
      */
     async updateFilters(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
         if (__IS_MV3__) {
-            logger.warn('[ext.Messenger]: filters update is not supported in MV3');
+            logger.warn('[ext.Messenger.updateFilters]: filters update is not supported in MV3');
             return [];
         }
 
@@ -703,7 +703,7 @@ class Messenger {
         const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
 
         if (!currentTab?.id) {
-            logger.warn('[ext.Messenger]: cannot get current tab id');
+            logger.warn('[ext.Messenger.resetUserRulesForPage]: cannot get current tab id');
             return;
         }
 

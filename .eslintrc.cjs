@@ -49,6 +49,7 @@ module.exports = {
     ],
     'plugins': [
         'import-newlines',
+        'require-logger-context',
     ],
     'rules': {
         'no-console': 'error',
@@ -205,6 +206,7 @@ module.exports = {
                 { tags: ['example'] },
             ],
         }],
+        'require-logger-context/require-logger-context': 'error',
     },
     'ignorePatterns': [
         'node_modules',

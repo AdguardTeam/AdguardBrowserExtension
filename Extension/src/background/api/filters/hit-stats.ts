@@ -70,7 +70,7 @@ export class HitStatsApi {
                 hitStatsStorage.setData({});
             }
         } catch (e) {
-            logger.error(`[ext.HitsStatsApi.init] cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error:`, getZodErrorMessage(e));
+            logger.error(`[ext.HitStatsApi.init]: cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error:`, getZodErrorMessage(e));
             hitStatsStorage.setData({});
         }
     }
@@ -171,6 +171,7 @@ export class HitStatsApi {
                         baseMessage += `, generated rule text: ${generatedRuleText}`;
                     }
 
+                    // eslint-disable-next-line require-logger-context/require-logger-context
                     logger.error(baseMessage);
                     return null;
                 }
@@ -190,6 +191,7 @@ export class HitStatsApi {
                         baseMessage += `, generated rule text: ${generatedRuleText}`;
                     }
 
+                    // eslint-disable-next-line require-logger-context/require-logger-context
                     logger.error(baseMessage);
                     return null;
                 }
@@ -223,7 +225,7 @@ export class HitStatsApi {
                 filters: hitStatsData,
             });
         } catch (e) {
-            logger.error('[ext.HitsStatsApi.sendStats] cannot send hit stats, origin error:', e);
+            logger.error('[ext.HitStatsApi.sendStats]: cannot send hit stats, origin error:', e);
         }
 
         await HitStatsApi.cleanup();

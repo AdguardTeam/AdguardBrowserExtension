@@ -225,7 +225,7 @@ export class AllowlistApi {
         const domain = getDomain(url);
 
         if (!domain) {
-            logger.debug(`[ext.AllowlistApi.disableFilteringForUrl] no domain in url "${url}"`);
+            logger.debug(`[ext.AllowlistApi.disableFilteringForUrl]: no domain in url "${url}"`);
             return;
         }
 
@@ -277,7 +277,7 @@ export class AllowlistApi {
         const domain = getDomain(url);
 
         if (!domain) {
-            logger.debug(`[ext.AllowlistApi.enableTabUrlFiltering] no domain in url "${url}" of tab ${tabId}`);
+            logger.debug(`[ext.AllowlistApi.enableTabUrlFiltering]: no domain in url "${url}" of tab ${tabId}`);
             return;
         }
 

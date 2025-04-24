@@ -125,7 +125,7 @@ export class FilterUpdateApi {
         const startUpdateLogMessage = forceUpdate
             ? 'Update filters forced by user.'
             : 'Update filters by scheduler.';
-        logger.info(`[ext.FilterUpdateApi.autoUpdateFilters] ${startUpdateLogMessage}`);
+        logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: ${startUpdateLogMessage}`);
 
         // If filtering is disabled, and it is not a forced update, it does nothing.
         const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
@@ -230,7 +230,7 @@ export class FilterUpdateApi {
                 // check for updates - without fresh metadata we still can load
                 // newest filter, checking it's version will be against the old,
                 // local metadata, which is possible outdated.
-                logger.error('[ext.FilterUpdateApi.updateFilters] failed to update metadata due to an error:', getZodErrorMessage(e));
+                logger.error('[ext.FilterUpdateApi.updateFilters]: failed to update metadata due to an error:', getZodErrorMessage(e));
             }
         }
 
@@ -246,7 +246,7 @@ export class FilterUpdateApi {
                     filterMetadata = await CommonFilterApi.updateFilter(filterData);
                 }
             } catch (e) {
-                logger.error(`[ext.FilterUpdateApi.updateFilters] failed to update filter id#${filterData.filterId} due to an error:`, getZodErrorMessage(e));
+                logger.error(`[ext.FilterUpdateApi.updateFilters]: failed to update filter id#${filterData.filterId} due to an error:`, getZodErrorMessage(e));
 
                 return;
             }

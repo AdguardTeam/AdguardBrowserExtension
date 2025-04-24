@@ -123,7 +123,7 @@ const Checkbox = (props: CheckboxProps) => {
         } catch (error) {
             // TODO: Dirty hack, need to refactor. Maybe pass some new prop like 'revertOnError'?
             if (!getErrorMessage(error).includes('[revert-checkbox]')) {
-                logger.error('[ext.Checkbox.changeHandler]: handler execution failed:', error);
+                logger.error('[ext.Checkbox]: handler execution failed:', error);
             }
             if (optimistic) {
                 setState(!newValue); // revert state on error
