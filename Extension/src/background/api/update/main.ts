@@ -448,7 +448,7 @@ export class UpdateApi {
             const oldPageStatisticsObj = JSON.parse(oldPageStatisticsStr);
             oldPageStatistics = pageStatsValidator.parse(oldPageStatisticsObj);
         } catch (e: unknown) {
-            logger.debug('Nothing to migrate, since page statistics cannot be parsed:', getErrorMessage(e));
+            logger.debug('Nothing to migrate, since page statistics cannot be parsed:', e);
             return;
         }
 
@@ -676,10 +676,8 @@ export class UpdateApi {
             const filterParsingResult = filterSchema.safeParse(entries[key]);
 
             if (!filterParsingResult.success) {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse data from filter ID ${filterId} from the old storage: ${getErrorMessage(filterParsingResult.error)}`,
-                );
+                const { error } = filterParsingResult;
+                logger.debug(`Failed to parse data from filter ID ${filterId} from the old storage: `, error);
                 return;
             }
 
@@ -701,10 +699,8 @@ export class UpdateApi {
             const filterParsingResult = zod.string().safeParse(entries[key]);
 
             if (!filterParsingResult.success) {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse data from raw filter ID ${filterId} from the old storage: ${getErrorMessage(filterParsingResult.error)}`,
-                );
+                const { error } = filterParsingResult;
+                logger.debug(`Failed to parse data from raw filter ID ${filterId} from the old storage: `, error);
                 return;
             }
 
@@ -757,10 +753,8 @@ export class UpdateApi {
 
                 logger.debug('Filters version data successfully migrated from the old storage');
             } else {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse filters version data from the old storage: ${getErrorMessage(filtersVersionParsed.error)}`,
-                );
+                const { error } = filtersVersionParsed;
+                logger.debug('Failed to parse filters version data from the old storage: ', error);
             }
         } else {
             logger.debug('Filters version data is not a string, skipping migration');
@@ -796,11 +790,11 @@ export class UpdateApi {
 
             results.forEach((result) => {
                 if (result.status === 'rejected') {
-                    logger.info(getErrorMessage(result.reason));
+                    logger.info(result.reason);
                 }
             });
         } catch (e: unknown) {
-            logger.info('Error while migrate user rules', getErrorMessage(e));
+            logger.info('Error while migrate user rules', e);
         } finally {
             if (db) {
                 db.close();

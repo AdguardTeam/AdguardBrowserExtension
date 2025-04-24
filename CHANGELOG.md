@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased <!-- release/v5.2 -->
 
 ### Added
+
 - Support for Chrome's User Scripts API that allows more reliable script
   injection in MV3 if developer mode is enabled.
 - Send last filters update time during issue reporting [#3055].
@@ -59,6 +60,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3158]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3158
 [#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
 [#2327]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2327
+
+## [5.1.75] - 2025-04-15
+
+### Changed
+
+- Updated [@adguard/tsurlfilter] to v3.2.3.
+- Updated [@adguard/tswebextension] to v3.0.2.
+
+[5.1.75]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.1.70...v5.1.75
 
 ## [5.1.70] - 2025-03-19
 

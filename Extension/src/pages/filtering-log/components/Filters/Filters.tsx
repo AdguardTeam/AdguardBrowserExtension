@@ -109,7 +109,7 @@ const Filters = () => {
                     ref={ref}
                     onScroll={scrollTags}
                     onWheel={handleWheel}
-                    className="filters__events-filters"
+                    className="filters__events-filters thin-scrollbar"
                 >
                     {leftArrow && (
                         <button
