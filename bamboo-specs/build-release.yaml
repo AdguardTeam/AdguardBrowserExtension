@@ -45,7 +45,7 @@ Build:
             pnpm release
 
             # zip source files for publishing on AMO
-            git ls-files | zip -@ build/release/source.zip
+            ./bamboo-specs/scripts/archive-source.sh release
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts

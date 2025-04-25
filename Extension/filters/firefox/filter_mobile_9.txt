@@ -1,9 +1,9 @@
-! Checksum: cJ5K4gEvMRhgRCVqgBcslQ
-! Diff-Path: ../patches/9_optimized/9_optimized-s-1745237685-3600.patch
+! Checksum: smo+MAdqYvLLnUBbI9EYVg
+! Diff-Path: ../patches/9_optimized/9_optimized-s-1745478684-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.29.65
-! TimeUpdated: 2025-04-21T12:10:47+00:00
+! Version: 2.0.29.69
+! TimeUpdated: 2025-04-24T07:07:38+00:00
 ! Expires: 10 days (update frequency)
 ||upeex.com.br^
 ||upeex.com^
@@ -1467,6 +1467,16 @@ $script,third-party,denyallow=ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|i
 xataka.com.br,solowrestling.com,europapress.es,trendencias.com,futuro.cl,solowrestling.mundodeportivo.com,meneame.net,3djuegos.com,meteoconsult.es,meuguia.tv,territoriosamsung.com,conjur.com.br,meups.com.br,elcorreogallego.es,3djuegos.lat,xatakandroid.com,nsctotal.com.br,noticiasdenavarra.com,informacion.es,applesfera.com,xatakamovil.com,espinof.com,mundoxiaomi.com,vidaextra.com,mediotiempo.com,elpais.com,olhardigital.com.br,atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##body .ad
 serviporno.com,solvetic.com,gamesfull.app,agazeta.com.br,lasexta.com,extra.ec,globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.com.br,tvhistoria.com.br,tribunapr.uol.com.br,diariodonordeste.verdesmares.com.br,sbt.com.br,link.estadao.com.br,atomixhq.*,jc.ne10.uol.com.br,internetpasoapaso.com,acidadeon.com,leouve.com.br,larazon.es,infoescola.com,cbn.globoradio.globo.com,maxitorrent.com,abril.com.br,odia.ig.com.br,especiais.g1.globo.com,tribunapr.com.br,novelasd.com,anime-tube.tv##.ads
 c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.*,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
+dragonball.sullca.com###stickyBanner
+dragonball.sullca.com##body > a.fixed[target="_blank"]
+dragonball.sullca.com##.items-center > a[href="https://www.dragonball.uno/dragonball.html"][target="_blank"]
+dragonball.sullca.com#?#.items-center > a[target="_blank"]:has(> span:contains(/^Opción Ad$/))
+dragonball.sullca.com#%#//scriptlet('abort-on-property-write', 'anuncioConfig')
+dragonball.sullca.com#%#//scriptlet('abort-on-property-write', 'setRandomBanner')
+meneame.net##.ad-roba-container
+meneame.net##.ads-interlinks
+hallofseries.com##div[class^="addendo"]
+hallofseries.com##div[style="text-align: center; margin-top: 20px;"]
 americanas.com.br##div[class^="Banner_bannerWrapper"]
 ||redecanais*/player3/query.js
 reclameaqui.com.br##div[role="banner"]:has([alt~="publicidade"i])
@@ -5149,6 +5159,7 @@ urlcloud.us##.banner
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_spanish
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||imasdk.googleapis.com/pal/sdkloader/pal.js$domain=mais.sbt.com.br
 nationalgeographic.com.es#@#.ad-item
 @@||amazonaws.com/*uol.com.br/publicidade-legal/json/ultimas.json$domain=uol.com.br
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=cnnbrasil.com.br
