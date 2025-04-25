@@ -8,13 +8,13 @@ variables:
   dockerNode: adguard/extension-builder:22.14--0.2--0
 stages:
   - Size Check:
-      manual: 'false'
-      final: 'false'
+      manual: false
+      final: false
       jobs:
         - Check Bundle Size
   - Build:
-      manual: 'false'
-      final: 'false'
+      manual: false
+      final: false
       jobs:
         - Build
 

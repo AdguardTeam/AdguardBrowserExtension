@@ -58,8 +58,8 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
         - [Debug MV3 declarative rules](#dev-debug-mv3)
     - [Linter](#dev-linter)
     - [Update localizations](#dev-localizations)
+    - [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 - [Permissions required](#permissions-required)
-- [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 - [Auto-publish builds](#auto-publish-builds)
 - [Minimum supported browser versions](#browser-compatibility)
 
@@ -477,24 +477,11 @@ To show locales info run:
 pnpm locales info
 ```
 
-## <a name="permissions-required"></a> Permissions required
-
-- `tabs`                          - this permission is required in order to get the URL of the options page tab
-- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
-- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime.
-- `contextMenus`                  - this permission is required in order to create a context menu
-- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
-- `storage`                       - this permission is required in order to save user settings, user rules and custom filters
-- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
-- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
-- `unlimitedStorage`              - this permission is required in order to save large filters
-- `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
-
-## <a name="dev-bundle-size-monitoring"></a> Bundle Size Monitoring
+### <a name="dev-bundle-size-monitoring"></a> Bundle Size Monitoring
 
 The browser extension project includes a comprehensive bundle size monitoring system, located in `tools/bundle-size`. This system helps ensure that our extension bundles remain within defined size limits, and that any significant increases are reviewed and justified.
 
-### Key Features
+#### Key Features
 
 - Tracks and compares bundle sizes across different build types (`beta`, `release`, etc.) and browser targets (`chrome`, `chrome-mv3`, `edge`, etc.)
 - Detects significant size increases using configurable thresholds (default: 10%)
@@ -504,22 +491,22 @@ The browser extension project includes a comprehensive bundle size monitoring sy
 - Designed for CI/CD integration (Bamboo)
 - **For Firefox targets (AMO and Standalone) only**, every individual `.js` file is checked to ensure it does not exceed the 4MB limit imposed by the Firefox Add-ons Store. If any `.js` file is larger than 4MB, the check fails and the offending files are reported.**
 
-### How it works
+#### How it works
 
 - On each beta or release build, the system compares the current bundle sizes to the reference values in `.bundle-sizes.json`.
 - If any size exceeds the configured threshold, or additionally check for 30MB limit for Chrome MV3 target or 4MB limit for Firefox targets - the check fails.
 - Duplicate package versions are detected and reported.
 
-### To update the bundle sizes manually
+#### To update the bundle sizes manually
 
 We have defined size limits in the project.
 
-1. When we build the beta or release version, the build process checks if we’re exceeding those limits.
+1. When we build the `beta` or `release` version, the build process checks if we’re exceeding those limits.
 2. If we exceed the limits, the developer should investigate the cause and decide whether the size increase is acceptable.
 3. If the new sizes are justified, the developer updates the size values in the package and creates a commit.
 4. We then review and approve any changes to the sizes as part of the PR process.
 
-#### Steps:
+##### Steps:
 
 1. Run the build for the desired environment (e.g., `pnpm beta` or `pnpm release`).
 2. If the build fails due to bundle size limits, investigate the cause (e.g., new dependencies, large assets).
@@ -533,7 +520,7 @@ We have defined size limits in the project.
 4. Commit the updated `.bundle-sizes.json` file and include justification in your PR.
 5. The changes will be reviewed and approved as part of the PR process.
 
-### Checking bundle size locally
+#### Checking bundle size locally
 
 To check bundle sizes locally, use:
 
@@ -550,7 +537,7 @@ pnpm check-bundle-size --help
 pnpm update-bundle-size --help
 ```
 
-### Usage: Custom Threshold
+#### Usage: Custom Threshold
 
 You can override the default threshold for significant bundle size increases using the `--threshold` option:
 
@@ -563,6 +550,20 @@ pnpm check-bundle-size release chrome-mv3 --threshold=20
 - `--threshold <number>`: Sets the allowed percentage increase in bundle size before the check fails. Default: 10%.
 
 This is useful for temporarily relaxing or tightening the allowed size delta for a specific check/build.
+
+
+## <a name="permissions-required"></a> Permissions required
+
+- `tabs`                          - this permission is required in order to get the URL of the options page tab
+- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
+- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime.
+- `contextMenus`                  - this permission is required in order to create a context menu
+- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
+- `storage`                       - this permission is required in order to save user settings, user rules and custom filters
+- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
+- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
+- `unlimitedStorage`              - this permission is required in order to save large filters
+- `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
 
 ## <a name="auto-publish-builds"></a> Auto-publish builds
 
