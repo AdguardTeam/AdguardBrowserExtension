@@ -41,6 +41,7 @@ import {
     PAGE_STATISTIC_KEY,
     RULES_LIMITS_KEY,
     SCHEMA_VERSION_KEY,
+    SEPARATE_ANNOYANCE_FILTER_IDS,
 } from '../../../common/constants';
 import {
     appearanceValidator,
@@ -208,31 +209,46 @@ export class UpdateApi {
     /**
      * Run data migration from schema v11 to schema v12.
      *
+     * For MV3 — AdGuard Quick Fixes filter is re-added
+     * and enabled by default for all users.
+     *
+     * For MV2 — AdGuard DNS filter and AdGuard Annoyances filter are migrated.
+     *
      * For the extension update to v5.2.0.
-     *
-     * For MV2 version we will run empty migration since we don't need
-     * to do anything, just increase the schema version.
-     *
-     * In this update we re-added AdGuard Quick Fixes filter
-     * and want to enable it by default for all users.
      */
     private static async migrateFromV11toV12(): Promise<void> {
-        // This migration should be done only for MV3 version.
-        if (!__IS_MV3__) {
+        if (__IS_MV3__) {
+            // We cannot load and enable filter here, because filter's API is not
+            // initialized yet. So we just set the filter state to enabled
+            // and loaded.
+            // After that it will be renew from the local copy of filters
+            // - which will create all needed filter's objects in memory to correct
+            // work.
+            await UpdateApi.addQuickFixesFilter();
             return;
         }
 
-        // We cannot load and enable filter here, because filter's API is not
-        // initialized yet. So we just set the filter state to enabled
-        // and loaded.
-        // After that it will be renew from the local copy of filters
-        // - which will create all needed filter's objects in memory to correct
-        // work.
-        await UpdateApi.addQuickFixesFilter();
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        let updatedSettings = await UpdateApi.migrateCombinedAnnoyancesFilter(settings);
+        await FiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
+
+        updatedSettings = await UpdateApi.removeDnsFilter(updatedSettings);
+        await FiltersStorage.remove(AntiBannerFiltersId.DnsFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.DnsFilterId);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, updatedSettings);
     }
 
     /**
      * Run data migration from schema v10 to schema v11.
+     *
+     * For the extension update to v5.1.62.
      */
     private static async migrateFromV10toV11(): Promise<void> {
         let entries: Record<string, unknown> = {};
@@ -1204,6 +1220,130 @@ export class UpdateApi {
         await RawFiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
+     * Replaces the deprecated combined big Annoyances filter
+     * with separate smaller annoyances filters.
+     *
+     * Please note that separated annoyances filters will:
+     * - be marked as 'enabled';
+     * - not be marked as 'loaded'.
+     *
+     * @param settings The settings object.
+     *
+     * @returns The updated settings object.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
+     */
+    private static async migrateCombinedAnnoyancesFilter(
+        settings: Record<string, unknown>,
+    ): Promise<Record<string, unknown>> {
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const groupsState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                touched: zod.boolean(),
+            }),
+        ).parse(JSON.parse(groupsStateData));
+
+        // AdGuard Annoyances filters states.
+        const annoyancesFiltersState = Object.fromEntries(
+            SEPARATE_ANNOYANCE_FILTER_IDS.map((filterId) => {
+                const state = filtersState[filterId] ?? {
+                    loaded: false,
+                    enabled: false,
+                    touched: false,
+                };
+                return [filterId, state];
+            }),
+        );
+
+        const deprecatedAnnoyancesFilter = filtersState[AntiBannerFiltersId.AnnoyancesCombinedFilterId];
+
+        if (UpdateApi.isObject(deprecatedAnnoyancesFilter)) {
+            // If the deprecated Annoyances filter is enabled, we should enable new groups and filters.
+            if (deprecatedAnnoyancesFilter.enabled) {
+                SEPARATE_ANNOYANCE_FILTER_IDS.forEach((id) => {
+                    annoyancesFiltersState[id]!.enabled = true;
+                });
+            }
+            // delete deprecated filter state;
+            delete filtersState[AntiBannerFiltersId.AnnoyancesCombinedFilterId];
+        }
+
+        // Set updated states and new metadata to the settings.
+
+        Object.assign(filtersState, annoyancesFiltersState);
+
+        settings['groups-state'] = JSON.stringify(groupsState);
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        return settings;
+    }
+
+    /**
+     * Removes the deprecated DNS filter from settings.
+     *
+     * @param settings The settings object.
+     *
+     * @returns The updated settings object.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
+     */
+    private static async removeDnsFilter(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const deprecatedDnsFilter = filtersState[AntiBannerFiltersId.DnsFilterId];
+
+        if (UpdateApi.isObject(deprecatedDnsFilter)) {
+            // delete the deprecated filter state
+            delete filtersState[AntiBannerFiltersId.DnsFilterId];
+        }
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        return settings;
     }
 
     /**

@@ -752,9 +752,48 @@ export const getStorageFixturesV12 = (expires: number): StorageData[] => {
     const storageSettingsFixturesV11 = getStorageFixturesV11(expires);
 
     return storageSettingsFixturesV11.map((settings) => {
-        // Migration need only for MV3.
         if (__IS_MV3__) {
             settings = addQuickFixesFilter(settings, false);
+        } else {
+            const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
+
+            // Parse with zod to sort fields
+            const filtersState = zod.record(
+                zod.string(),
+                zod.object({
+                    enabled: zod.boolean(),
+                    installed: zod.boolean(),
+                    loaded: zod.boolean(),
+                }),
+            ).parse(JSON.parse(adgSettings['filters-state'] as string));
+
+            const groupsState = JSON.parse(adgSettings['groups-state'] as string);
+
+            const isAnnoyancesFilterEnabled = filtersState['14']?.enabled ?? false;
+
+            delete filtersState['14'];
+
+            const annoyancesFiltersState = Object.fromEntries(
+                ['18', '19', '20', '21', '22'].map((id) => {
+                    const state = filtersState[id] ?? {
+                        enabled: isAnnoyancesFilterEnabled,
+                        installed: false,
+                        loaded: false,
+                    };
+                    return [id, state];
+                }),
+            );
+
+            Object.assign(filtersState, annoyancesFiltersState);
+
+            // deprecated AdGuard DNS filter is simply removed
+            delete filtersState['15'];
+
+            adgSettings['filters-state'] = JSON.stringify(filtersState);
+            adgSettings['groups-state'] = JSON.stringify(groupsState);
+
+            settings['adguard-settings'] = adgSettings;
+            // Migration need only for MV3.
         }
 
         settings['schema-version'] = 12;
