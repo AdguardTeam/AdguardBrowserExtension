@@ -1,8 +1,8 @@
-! Checksum: 2g82pI3LM5v3V7u2JqTktg
+! Checksum: l24klFOcQwML2Ai5w1Paxw
 ! Title: uBlock Origin – Badware risks
 ! Description: Filter for risky sites, warning users of potential threats.
-! Version: 2.0.6.91
-! TimeUpdated: 2025-04-23T16:39:50+00:00
+! Version: 2.0.6.94
+! TimeUpdated: 2025-04-25T12:45:16+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: uBlock₀ filters – Badware risks
@@ -1209,6 +1209,10 @@ thepiratebay3.com^$all
 /?utm_source=*&j1=1^$document
 !+ NOT_OPTIMIZED
 /video_app/new/adult/*/index.html?$document
+!+ NOT_OPTIMIZED
+/trk?s1=*&type=2&brid=$document
+!+ NOT_OPTIMIZED
+||pin673.cyou^$all
 ! https://github.com/uBlockOrigin/uAssets/issues/24602
 ! https://www.virustotal.com/gui/url/ce2b833adda2f862d77398203bbe33ea331097ba2a803d1a763492d2ac0d5a60
 ! https://safeweb.norton.com/report/show?url=discordvip.createsocialcard.top
@@ -6304,8 +6308,6 @@ origincrack.com##center > button
 ||939l.xyz^$all
 !+ NOT_OPTIMIZED
 ||ebnays.xyz^$all
-!+ NOT_OPTIMIZED
-/^https:\/\/(?:seller\.)?ebay-[a-z]{8,15}\.com\//$document,to=com
 ! https://www.reddit.com/r/Scams/comments/1cux08b/whatsapp_telegram_instagram_work_from_home_posts/
 !+ NOT_OPTIMIZED
 ||51eabay.com^$all
@@ -10157,3 +10159,6 @@ uploadfox.net###ad-gs-05
 /^https?:\/\/[-a-z]{4,}\.gov[-.][-a-z0-9]{2,}\.[a-z]{2,5}\//$document,to=cc|cfd|cyou|live|top|vip|win|world|xin
 !+ NOT_OPTIMIZED
 /^https?:\/\/[-a-z]{4,}\.org[-.][-a-z0-9]{2,}\.[a-z]{2,5}\//$document,to=cc|cfd|cyou|live|top|vip|win|world|xin
+! https://urlscan.io/search/#hash%3Ac3ddb433947ffba704fab581e16dd5a0d246c9861d169aca184266f7dc2cdff4
+!+ NOT_OPTIMIZED
+/^https:\/\/[a-z]{8}\.[a-z]{2,8}\/[!+=][\/0-9a-z]{20,30}\.[-a-z]{2,7}$/$document,to=art|auction|bar|cam|click|coupons|digital|diy|food|forum|gay|guru|life|live|living|my|property|pw|rocks|run|shop|tattoo|tech|today|uno|work,match-case

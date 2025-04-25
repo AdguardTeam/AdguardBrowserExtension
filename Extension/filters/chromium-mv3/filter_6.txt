@@ -1,8 +1,8 @@
-! Checksum: FHZvhLtO7lm8ohO8qDuQYw
+! Checksum: 8mpaiLC7OgSkJBZshHRbTg
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.47.12
-! TimeUpdated: 2025-04-23T09:07:41+00:00
+! Version: 2.0.47.16
+! TimeUpdated: 2025-04-25T10:07:44+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1472,6 +1472,8 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+nd-aktuell.de##.OUTBRAIN ~ .Slider::before
+infranken.de##.billboard_wrap
 bild.de##.submenu-list--ad
 bild.de##a[href^="/service/advertorial"]
 gs-forum.eu###oc24-outside-top
@@ -1567,6 +1569,7 @@ stylebook.de##section > .col-12 > .has-mark:has(> div[id^="billboard_btf_"])
 stylebook.de##section.fixed-bottom[data-type="sticky-bar"] > a[target="_blank"]
 myfanbase.de##div[id^="ad-"]
 freundin.de##li:has(> meta ~ div[class] > div[class] > .advtl-container)
+freundin.de##li:has(> meta + div[class] > div[class] > div[class] > .adv-container)
 mydealz.de##div[id*="AdSlotPortal"]
 blick.ch##[class*="slot-code-"]
 oeffentlicher-dienst.info##div[class^="fallback-"]
@@ -11233,6 +11236,7 @@ googlewatchblog.de##.card-content > center:has(ins.adsbygoogle)
 automotiveit.eu,instandhaltung.de,produktion.de,technik-einkauf.de##.ce_postlistbox:has(.label-ad-highlight)
 all-electronics.de,automotiveit.eu,produktion.de##.ce_topicbox:has(.label-ad-highlight)
 ibooks.to##.code-block:has(i.fa-cloud-download-alt)
+shop-apotheke.at##.cross-sell-horizontal-slider__item-wrapper:has([href^="https://api.sae.systems/rma/api/v"])
 feuerwehrmagazin.de##.excerpt-tile.cell.small-12.medium-6:has(.advertorials)
 print.de##.excerpt-tile.cell:has(.advertorials)
 vergleichswelt.app##.fads-zeile:has(.fads-anzeige-text)

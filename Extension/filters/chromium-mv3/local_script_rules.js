@@ -1089,25 +1089,6 @@ export const localScriptRules = {
             }
         }
     },
-    "document.cookie='_s.cookie_consent=marketing=0:analytics=0:version=2021-07-01;path=/;';": {
-        uniqueId: "7b3e4976177c32f619f7f7447a7c366e",
-        func: () => {
-            try {
-                const e = "done";
-                if (Window.prototype.toString["7b3e4976177c32f619f7f7447a7c366e"] !== e) {
-                    document.cookie = "_s.cookie_consent=marketing=0:analytics=0:version=2021-07-01;path=/;";
-                    Object.defineProperty(Window.prototype.toString, "7b3e4976177c32f619f7f7447a7c366e", {
-                        value: e,
-                        enumerable: !1,
-                        writable: !1,
-                        configurable: !1
-                    });
-                }
-            } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "7b3e4976177c32f619f7f7447a7c366e" due to: ' + e);
-            }
-        }
-    },
     "document.cookie='cmplz_consented_services={\"youtube\":true};path=/;';": {
         uniqueId: "8cbd0cd2ffcfd41b8dd501b4861c18e3",
         func: () => {
