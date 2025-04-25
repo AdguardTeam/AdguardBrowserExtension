@@ -1,9 +1,9 @@
-! Checksum: ko5MZgU9pquKowiNDuqaqg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1744974610-3600.patch
+! Checksum: DFmcEwhPghVunaVJa3BNOw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1745482374-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.91
-! TimeUpdated: 2025-04-18T11:06:52+00:00
+! Version: 2.0.10.93
+! TimeUpdated: 2025-04-24T08:09:28+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=uzcid
 $removeparam=beyond_uzcvid
@@ -254,6 +254,7 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||gofundme.com^$removeparam=attribution_id
 ||d.ghostery.com^$removeparam
 ||deepl.com^$removeparam=share
 ||netflix.com^$removeparam=source
@@ -1664,7 +1665,7 @@ $removeparam=igshid,domain=instagram.com|threads.net
 ||linkedin.com^$removeparam=/^trk/
 ||digikey.com^$removeparam=/^utm_cid/
 ||nicovideo.jp^$removeparam=via
-||nicovideo.jp^$removeparam=at
+||www.nicovideo.jp^$removeparam=at
 ||nicovideo.jp^$removeparam=state
 ||nicovideo.jp^$removeparam=transition_id
 ||nicovideo.jp^$removeparam=transition_type

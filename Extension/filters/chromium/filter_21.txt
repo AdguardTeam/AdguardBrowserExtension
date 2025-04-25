@@ -1,9 +1,9 @@
-! Checksum: e2ysfEoK2WevSKTxqXW8Kw
-! Diff-Path: ../patches/21/21-s-1745320226-3600.patch
+! Checksum: chGcgTvVDtZtIUoj9p0ETw
+! Diff-Path: ../patches/21/21-s-1745587021-3600.patch
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.32.67
-! TimeUpdated: 2025-04-22T11:07:06+00:00
+! Version: 2.0.32.82
+! TimeUpdated: 2025-04-25T13:13:40+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -42,6 +42,8 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203527
+ntvtelugu.com#$#.related-news > div.cards-grid { margin-top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203136
 neoline.ru##a[href="/company/news/interesnoe/yandex-split-pay/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202283
@@ -3482,6 +3484,16 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 !
 ! SECTION: Self-promo - Regular rules
 !
+gigabaito.com##.article-banner-cta
+nd-aktuell.de##freiwillig-zahlen
+hindustantimes.com##a[data-google-interstitial][onclick^="callGA4Subscription"] img
+sky.pro##a[href^="https://sky.pro/promo/media/"][target="_blank"]
+marktechpost.com##.wpb_wrapper > div.td-news-hub-news-ticker + div.td_block_empty_space + div.td_block_wrap
+mail.proton.me##.tip-box
+qieyou.com##.pc-box-app
+tagesspiegel.de###piano-footerbar
+teenager365.to##.block-offer
+pudelek.pl##article div[data-scroll-observer^="paragraph"] ~ div:has(a[href^="https://vip.pudelek.pl/?"] img)
 softodrom.ru##div[onclick="window.location.href='https://domains.softodrom.ru/'"]
 znanierussia.ru##.banner-mobile
 znanierussia.ru##div[class^="banner-"][class$="-desktop"]
@@ -3573,6 +3585,9 @@ hobbyhall.fi##.full-width-banner-top
 musee-pla.com##.bnrSideNav__list
 3dmgame.com##.Content_R > a[href="https://h5.3dmgame.com/activities/signinPc"]
 mail.proton.me##.bg-promotion
+ig-store.ru##div[class^="productAd--"]
+ig-store.ru##div[class^="productAd--"] + div.product-slider-wrapper
+ig-store.ru##.news-banner
 ig-store.ru##.banner-one-item
 ig-store.ru##.banner-gl
 ig-store.ru##.banner-3000-points-trigger
@@ -3701,8 +3716,6 @@ mvideo.ru##mvid-banners-container
 deepl.com##div[data-testid="write-advertisement-banner"]
 asuracomic.net##body > div > a[href="/subscription"] > img
 asuracomic.net##body > .bg-gradient-to-br:has(> .relative > .items-center > button)
-iobit.com##div[class*="-pop"]
-iobit.com##.popbg
 mangatilkisi.com##.code-block-3
 ||mangatilkisi.com/wp-content/uploads/2024/12/MangaTilkisi-reklamsiz-okuma.webp
 streamlabs.com###ultra_banner
@@ -3787,9 +3800,6 @@ studysmarter.*#$#.va-intent-premium { display: none !important; }
 studysmarter.*#$#body { overflow: auto !important; }
 rallys.online##.mfro-ad
 examtopics.com##.bottomMarketing.slide-in
-iobit.com##.comm_popup
-iobit.com##.comm_bottom
-iobit.com##div[class*="float-"]
 m.e-mansion.co.jp###bbsBoardBody > p > a[href="https://www.sumu-log.com/"]
 m.e-mansion.co.jp###bbsBoardBody > p > a[href^="https://www.sumu-lab.com/archives/category/"]
 www.e-mansion.co.jp##.entry-body > p > a[href="https://www.sumu-log.com/"]
@@ -4131,7 +4141,6 @@ thetimes.com#$#html { overflow: auto !important; }
 thetimes.com#$#body { overflow: auto !important; }
 thetimes.com#$##paywall-portal-sale-modal { display: none !important; }
 thetimes.com##.css-1x6275u
-iobit.com##.rabbit-banner
 gingersoftware.com##.ginger-purple-cta
 saas.360.cn#$#.home-activity { display: none !important; }
 saas.360.cn#$#header[style^="padding-top:"] { padding-top: 0 !important; }
@@ -4831,6 +4840,9 @@ learn.microsoft.com###banner-holder
 ivoox.com#$#body { overflow: auto !important; padding-right: 0 !important; }
 ivoox.com#$##promo-starter { display: none !important; }
 ivoox.com#$#.modal-backdrop { display: none !important; }
+ivoox.com#$#div[id$="___BV_modal_outer_"] { display: none !important; }
+ivoox.com#$#.main-container > .wrapper:has(> .container-xl > div > a[href*="_promotion_1.html?"]) { display: none !important; }
+ivoox.com#$#.pre-open:has(> .content > div > .ad) { display: none !important; }
 contents.fc2.com#?#.ichioshi > ul > li.sell_block:has(a[href^="https://media.fc2.com/clicks.php"])
 sslkn.*##.stiker_wrap
 cinemacafe.net##div.inner_bfb
@@ -6114,6 +6126,14 @@ nijimiss.moe,novelskey.tarbin.net,gp.tsukimi.club,misskey.neos.love,mk.yopo.work
 ! !SECTION: Self-promo - Regular rules
 !
 !
+! IObit
+iobit.com##div[class*="-mask"]
+iobit.com##div[class*="bottom"][class~="on"]
+iobit.com##div[class*="pop"]:has(> img[src*="pop"])
+iobit.com##div[class*="pop"][class*="bg"]
+iobit.com##.comm_popup
+iobit.com##.comm_bottom
+iobit.com##div[class*="float-"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/188009
 @@||googletagmanager.com/gtm.js?id=GTM-WMQ82P6$domain=excite.co.jp,badfilter
 excite.co.jp###exCollaboration
@@ -6123,9 +6143,6 @@ x.com,twitter.com##div[data-testid="primaryColumn"] > div[tabindex="0"] > div[cl
 x.com,twitter.com##div[data-testid="profileAnalyticsUpsell"]
 ! Get your own Blue badge
 x.com,twitter.com##div[data-testid="verified_profile_upsell"]
-! https://github.com/AdguardTeam/AdguardFilters/issues/197618
-pixelcut.ai#$#div[class*="radix"] { display: none !important; }
-pixelcut.ai#$?#body { pointer-events: auto !important; }
 ! telepolis.de - self-promo in article
 telepolis.de##div[data-module-name="AdModule"]
 telepolis.de##a-with-access[access-right="telepolis-unterstuetzer"]
@@ -7346,7 +7363,7 @@ duckduckgo.com#$#.badge-link--full { visibility: hidden !important; }
 ||yomiuri.co.jp/assets/images/footer-subscribe/
 yomiuri.co.jp##.js-footer-2020-subscribe
 ! Hdrezka - promo in the player
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag###tg-info-block-exclusive
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag###tg-info-block-exclusive
 ! https://github.com/AdguardTeam/AdguardFilters/issues/65628
 gekkan-fukugyou.jp##.FixedWidget__fixed_widget
 gekkan-fukugyou.jp###custom_html-7
@@ -8703,8 +8720,9 @@ exactpay.online,btcsatoshi.net,cempakajaya.com,wiour.com,mdn.lol,mcafee-com.com,
 ! https://github.com/AdguardTeam/AdguardFilters/issues/170143
 panda.studyis.xyz#%#//scriptlet('adjust-setInterval', 'wpsafe-countdown2', '*', '0.002')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/170094
+! https://github.com/AdguardTeam/AdguardFilters/issues/116036
 ! Streamplay - speed up loading captcha
-powstream.*,stre4mplay.*,streampiay.*,stemplay.*,steamplay.*,steanplay.*,streamp1ay.*,streanplay.*#%#//scriptlet('adjust-setTimeout', 'letgo', '*', '0.001')
+powcloud.*,powstream.*,stre4mplay.*,streampiay.*,stemplay.*,steamplay.*,steanplay.*,streamp1ay.*,streanplay.*,steampiay.cc,pouvideo.cc#%#//scriptlet('adjust-setTimeout', '/letgo|grecaptcha/', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169542
 bishalghale.com.np#%#//scriptlet('adjust-setInterval', 'timer', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169882
@@ -9092,8 +9110,6 @@ musixmatch.com#%#//scriptlet('remove-attr', 'style|oncontextmenu', 'body')
 imgadult.com,imgdrive.net,imgtaxi.com,imgwallet.com#%#//scriptlet("adjust-setTimeout", "redirect", "4000", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/115679
 uploadrar.com#%#//scriptlet("adjust-setTimeout", "tick", "1000")
-! https://github.com/AdguardTeam/AdguardFilters/issues/116036
-steampiay.cc,pouvideo.cc#%#//scriptlet("adjust-setTimeout", "grecaptcha", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/115711
 cheatermad.com#%#//scriptlet("adjust-setInterval", "#upbtn", "", "0.02")
 ! https://github.com/uBlockOrigin/uAssets/issues/12809
@@ -9784,7 +9800,7 @@ dailypost.co.uk#%#//scriptlet('trusted-click-element', 'span.autoplay-cancel', '
 rutracker.org#%#window.self = window.top;
 ! https://github.com/AdguardTeam/AdguardFilters/issues/133093
 ! dizipal*.cloud - frequently changed domains
-dizipal37.cloud,dizipal43.cloud,dizipal45.cloud,dizipal47.cloud,dizipal48.cloud,dizipal54.cloud,dizipal73.cloud,dizipal140.cloud#%#window.addEventListener("contextmenu",function(a){a.stopPropagation()},!0);
+dizipal1017.com,dizipal37.cloud,dizipal43.cloud,dizipal45.cloud,dizipal47.cloud,dizipal48.cloud,dizipal54.cloud,dizipal73.cloud,dizipal140.cloud#%#window.addEventListener("contextmenu",function(a){a.stopPropagation()},!0);
 ||fastly.jsdelivr.net/npm/disable-devtool@latest/disable-devtool.min.js$domain=dizipal37.cloud|dizipal43.cloud|dizipal45.cloud|dizipal47.cloud|dizipal48.cloud|dizipal54.cloud|dizipal73.cloud|dizipal140.cloud
 !
 ! Remove timer, during which ads or self-promos were shown

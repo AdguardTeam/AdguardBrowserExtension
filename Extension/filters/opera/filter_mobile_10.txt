@@ -1,9 +1,9 @@
-! Checksum: bnFaxmYXnxA4UulQ4BZPdw
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1744373647-3600.patch
+! Checksum: DcPMVTYfmoa/F6mmVl2cSA
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1745561590-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.63
-! TimeUpdated: 2025-04-11T12:10:17+00:00
+! Version: 2.0.3.64
+! TimeUpdated: 2025-04-25T06:09:18+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -146,6 +146,7 @@ amazon.*#@##dp-container > #px-profile_feature_div[data-csa-c-type="widget"]
 amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
 amazon.*#@#.sbv-ad-content-container
 amazon.*#@?#div[data-display-at]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[style="display: none !important;"]:last-child)
+amazon.*#@##desktop-dp-ilm_feature_div_01
 @@||shop.apotal.de/images/generic_attachments/attachments/apotal/skyscraper
 teknosa.com#@##gowitImpressionEvent
 zalando.de#@#div[data-trckng-component] div[class]:has(> div[data-visibility-info-id*="advertising"])

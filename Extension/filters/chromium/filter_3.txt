@@ -1,9 +1,9 @@
-! Checksum: GCwpivu4+ydHqg/56L3M3A
-! Diff-Path: ../patches/3/3-s-1745316682-3600.patch
+! Checksum: NfYA6XCgPJxfwQi+Cc/ywg
+! Diff-Path: ../patches/3/3-s-1745583253-3600.patch
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.83.62
-! TimeUpdated: 2025-04-22T10:07:25+00:00
+! Version: 2.0.83.88
+! TimeUpdated: 2025-04-25T12:10:23+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -546,6 +546,9 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 !
 !
 !
+||megadata.co.kr^
+||easytomessage.com^
+||unalytics.top^
 ||aisiteanalytics.com^
 ||cdnlogs.org^
 ||pushd.netky.tech^
@@ -52486,6 +52489,14 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||ocular.hotukdeals.com^
+||telemetry.individual.githubcopilot.com^
+||realtime-logger.production-public.tubi.io^
+||log.kroffle.net^
+||web-sdk-cdn.singular.net^
+||tracking.ringieraxelspringer.tech^
+||event.*.shoplive.cloud^
+||aidsvc.netflix.com^
 ||sensor.grubhub.com^
 ||kloggyr-service.kyruus.com^
 ||geo.justwatch.com^
@@ -54930,7 +54941,6 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ||targeting.tbt.arcpublishing.com^
 ||targeting.washpost.nile.works^
 ||tc-log.mattel163.com^
-||tc.tradetracker.net^
 ||tcheck.outbrainimg.com^
 ||tdep.hema.nl^
 ||tdep.kvk.nl^
@@ -151260,6 +151270,20 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 ! NOTE: Specific rules
 !
+||uber.com/v2/_events
+||uber.com/go/_events
+hindustantimes.com#%#//scriptlet('set-local-storage-item', '/^_c(b|hartbeat)/', '$remove$')
+||a.cdnpure.com/report/group_user?
+||optimizer.poxo.com/ca2/analytics.js
+canadiantire.ca#%#//scriptlet('set-local-storage-item', 'signifydSessionIdInfo', '$remove$')
+||canadiantire.ca/aiq/analytics_ctr_prod.js
+||api.chzzk.naver.com/service/*/ad/display-status
+||api.chzzk.naver.com/ad-polling/*/lives/*/ad
+||aiv-delivery.net/*/TrackingEvents?
+||lespresso.it/js/gtm-helper.js
+||lespresso.it/js/usercentrics-helper.js
+||s.axon.ai/pixel.js
+mais.sbt.com.br#%#//scriptlet('set-local-storage-item', 'youbora.youboraDeviceUUID', '$remove$')
 ||hao123.com/images/track.gif
 ||logincdn.msauth.net/shared/*/chunks/oneds-analytics-js*.js$domain=login.live.com
 ||cologger.shopping.naver.com/api/*/collect/
@@ -151533,7 +151557,6 @@ coomer.su,kemono.su#%#//scriptlet('set-local-storage-item', 'plausible_ignore', 
 ||ump.sf-express.com/monitor/*/report|
 ||cdn.builder.io/api/v1/pixel
 ||dell.com/*/clickstream/collect
-/\.coupang\.com\/(?!resources)(?!vp)[A-Za-z0-9-_]{5,}\/(?!cart)(?!product)[A-Za-z0-9-_]+\/(?!api)(?!user)[A-Za-z0-9-_]+\/[A-Za-z0-9-_]+\/(?!products)[A-Za-z0-9-_]+/$domain=coupang.com|~mc.coupang.com|~checkout.coupang.com,script,xmlhttprequest,method=get,match-case
 ||tripadvisor.*/wm/record
 ||tripadvisor.*/PVLog
 nike.com#%#//scriptlet('set-local-storage-item', 'pi_pageview_count', '$remove$')
@@ -151641,6 +151664,7 @@ themirror.com##reach-topbox
 ||unleash-edge.wrtn.ai/api/frontend/client/metrics|
 ||uploadfox.net/events/
 ||coopmobile.ch/analytics/at.js
+||edge.curalate.com/sites/*/experiences/*/experience.min.js
 ||edge.curalate.com/api/v1/metrics/
 ||tiktok.com/web/report^
 ||run.app/analytics/|
@@ -153998,7 +154022,6 @@ the-ans.jp##.side-reccomend
 ||softland.co.kr/exec/front/eclog/
 ||softland.co.kr/app/Eclog/js/cid.generate.js
 ||push.soft-com.biz/api/ui/metrics
-||cdn.megadata.co.kr/dist/prod/enp_tracker_
 ||image.cauly.co.kr/script/caulytracker_async.js
 ||gate.upclick.com/btn/visitor.min.js
 ||macg.co/modules/statistics/statistics.php
@@ -155717,6 +155740,15 @@ link.gmapp*.net$image
 ! it's problematic that due to how Gmail proxy work, these domains aren't even exposed on the network level
 ! fortunately, extensions can see them (Gmail puts the real URL in the location.hash part of the src)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203888
+c-hh-point-jp.*.cuenote.jp/c/*.gif$image
+c-hh-point-jp.*.cuenote.jp%2Fc%2F*.gif$image
+! Medallia
+medallia.*/?*&invite-opened=yes$image
+medallia.*%2F%3F*%26invite-opened%3Dyes$image
+! jeuxvideo.com
+liens.newsletters.jeuxvideo.com/m/opening/$image
+liens.newsletters.jeuxvideo.com%2Fm%2Fopening%2F$image
 ! netbk.co.jp
 cnt.mail.netbk.co.jp$image
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203693
@@ -156362,6 +156394,9 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Bad:  ||example.com^$cookie=flat_r_mb (should be in cookies_specific.txt)
 !
 !
+! stihlusa.com
+! canadiantire.ca
+$cookie=crl8.fpcuid
 ! popularmechanics.com
 $cookie=optimizely-user-attributes
 $cookie=optimizely-user-id
@@ -157128,6 +157163,7 @@ $cookie=sharedid_cst
 $cookie=_ncg_id_
 $cookie=sharedid
 $cookie=sharedId
+$cookie=_pubcid_cst
 $cookie=_pubcid
 $cookie=pbjs-unifiedid
 !
@@ -157146,17 +157182,22 @@ $cookie=bf_visit
 ! Bad:  ||monerominer.rocks^$third-party (should be in adservers.txt)
 !
 !
+! swissotel.com
+||swissotel.com^$cookie=/^incap_ses_/
+||swissotel.com^$cookie=/^nlbi_/
+||swissotel.com^$cookie=/^visid_incap_/
+! darntough.com
+||darntough.com^$cookie=/^ph_phc_/
 ! oxylabs.io
 ||developers.oxylabs.io^$cookie=/^intercom-/
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203766
-$cookie=_HFID,domain=bicycling.com|bestproducts.com|caranddriver.com|cosmopolitan.com|countryliving.com|delish.com|elledecor.com|elle.com|esquire.com|goodhousekeeping.com|harpersbazaar.com|housebeautiful.com|oprahdaily.com|prevention.com|redbookmag.com|roadandtrack.com|runnersworld.com|seventeen.com|townandcountrymag.com|veranda.com|womansday.com|autoweek.com|thepioneerwoman.com|popularmechanics.com
-$cookie=_perhip,domain=bicycling.com|bestproducts.com|caranddriver.com|cosmopolitan.com|countryliving.com|delish.com|elledecor.com|elle.com|esquire.com|goodhousekeeping.com|harpersbazaar.com|housebeautiful.com|oprahdaily.com|prevention.com|redbookmag.com|roadandtrack.com|runnersworld.com|seventeen.com|townandcountrymag.com|veranda.com|womansday.com|autoweek.com|thepioneerwoman.com|popularmechanics.com
-$cookie=mosb,domain=bicycling.com|bestproducts.com|caranddriver.com|cosmopolitan.com|countryliving.com|delish.com|elledecor.com|elle.com|esquire.com|goodhousekeeping.com|harpersbazaar.com|housebeautiful.com|oprahdaily.com|prevention.com|redbookmag.com|roadandtrack.com|runnersworld.com|seventeen.com|townandcountrymag.com|veranda.com|womansday.com|autoweek.com|thepioneerwoman.com|popularmechanics.com
+$cookie=_HFID,domain=womenshealthmag.com|bicycling.com|bestproducts.com|caranddriver.com|cosmopolitan.com|countryliving.com|delish.com|elledecor.com|elle.com|esquire.com|goodhousekeeping.com|harpersbazaar.com|housebeautiful.com|oprahdaily.com|prevention.com|redbookmag.com|roadandtrack.com|runnersworld.com|seventeen.com|townandcountrymag.com|veranda.com|womansday.com|autoweek.com|thepioneerwoman.com|popularmechanics.com
+$cookie=_perhip,domain=womenshealthmag.com|bicycling.com|bestproducts.com|caranddriver.com|cosmopolitan.com|countryliving.com|delish.com|elledecor.com|elle.com|esquire.com|goodhousekeeping.com|harpersbazaar.com|housebeautiful.com|oprahdaily.com|prevention.com|redbookmag.com|roadandtrack.com|runnersworld.com|seventeen.com|townandcountrymag.com|veranda.com|womansday.com|autoweek.com|thepioneerwoman.com|popularmechanics.com
+$cookie=mosb,domain=womenshealthmag.com|bicycling.com|bestproducts.com|caranddriver.com|cosmopolitan.com|countryliving.com|delish.com|elledecor.com|elle.com|esquire.com|goodhousekeeping.com|harpersbazaar.com|housebeautiful.com|oprahdaily.com|prevention.com|redbookmag.com|roadandtrack.com|runnersworld.com|seventeen.com|townandcountrymag.com|veranda.com|womansday.com|autoweek.com|thepioneerwoman.com|popularmechanics.com
 ! businessinsider.jp
 ||businessinsider.jp^$cookie=mgppid
 ||businessinsider.jp^$cookie=ppid
 ! roblox.com
-||roblox.com^$cookie=RBXEventTrackerV2
 ||roblox.com^$cookie=RBXSessionTracker
 ! iltalehti.fi
 ||iltalehti.fi^$cookie=/^il_ga_/
@@ -157865,6 +157906,9 @@ inapps.appsflyersdk.com^
 !
 ! NOTE: Regular rules
 !
+||ulogs*.ksapisrv.com^
+||adashx4id.ut.taobao.com^
+||analytics.us.tiktok.com^
 ||bbiquge.cc/tongji/
 ||ads-privacy-api.prd.mz.internal.unity3d.com^
 ||eventsv2balanced.malpagames.com^
@@ -158695,6 +158739,10 @@ d4?appid*type*
 !||log-boot.tiktokv.com^
 !
 ! UC Browser
+||bts-la.ucweb.com^
+||intlsucus.ucweb.com^
+||adtrack-intl.ucweb.com^
+||mum.alibabachengdun.com^
 ||localytics.com^
 ||upoll.umengcloud.com^
 ||utop.umengcloud.com^
@@ -158716,6 +158764,7 @@ d4?appid*type*
 !
 ! Repeated requests, two or more in one second if blocked - https://old.reddit.com/r/Adguard/comments/ztbv96/how_do_i_stop_this_my_phone_is_overheating_and/
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203036
 ! reddit app - links from email are not opening the post
 ! https://x.com/ramenbu1129/status/1836747046780588246
 ! https://github.com/AdguardTeam/AdguardFilters/issues/170371
