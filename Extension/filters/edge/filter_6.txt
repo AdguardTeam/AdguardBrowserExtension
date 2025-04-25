@@ -1,9 +1,9 @@
-! Checksum: cn3U3xMqjvRB8qEgQsA1TA
-! Diff-Path: ../patches/6/6-s-1745255400-3600.patch
+! Checksum: U0JRQKh3l8sm0Pnd4vwS2Q
+! Diff-Path: ../patches/6/6-s-1745575905-3600.patch
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.47.8
-! TimeUpdated: 2025-04-21T17:06:20+00:00
+! Version: 2.0.47.16
+! TimeUpdated: 2025-04-25T10:07:44+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1092,8 +1092,6 @@ brigitte.de,geo.de,stern.de#%#//scriptlet('set-constant', 'foundation.adPlayer.b
 alpin.de#%#//scriptlet('abort-current-inline-script', 'document.querySelector', 'DisplayAcceptableAdIfAdblocked')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171888
 bluray-disc.de#%#//scriptlet("abort-current-inline-script", "popunder")
-! ! https://github.com/AdguardTeam/AdguardFilters/issues/171409
-winfuture.de#%#//scriptlet('trusted-replace-xhr-response', '/"enabled": true,/', '"enabled": false,', '/(homad|svonm).*\.json/')
 ! https://github.com/uBlockOrigin/uAssets/issues/21862#issuecomment-1903805346
 restegourmet.de#%#//scriptlet("adjust-setInterval", "invoke", "1000", "0.01")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166369
@@ -1565,6 +1563,10 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+nd-aktuell.de##.OUTBRAIN ~ .Slider::before
+infranken.de##.billboard_wrap
+bild.de##.submenu-list--ad
+bild.de##a[href^="/service/advertorial"]
 gs-forum.eu###oc24-outside-top
 gs-forum.eu##.p-body-sidebar .block-container:has(> div[class] > #GSFRM_D_MPU_TOP)
 formel1.de##.text-center:has(> .inline-block > div[data-str-format="posterad"])
@@ -1658,6 +1660,7 @@ stylebook.de##section > .col-12 > .has-mark:has(> div[id^="billboard_btf_"])
 stylebook.de##section.fixed-bottom[data-type="sticky-bar"] > a[target="_blank"]
 myfanbase.de##div[id^="ad-"]
 freundin.de##li:has(> meta ~ div[class] > div[class] > .advtl-container)
+freundin.de##li:has(> meta + div[class] > div[class] > div[class] > .adv-container)
 mydealz.de##div[id*="AdSlotPortal"]
 blick.ch##[class*="slot-code-"]
 oeffentlicher-dienst.info##div[class^="fallback-"]
@@ -11322,6 +11325,7 @@ googlewatchblog.de##.card-content > center:has(ins.adsbygoogle)
 automotiveit.eu,instandhaltung.de,produktion.de,technik-einkauf.de##.ce_postlistbox:has(.label-ad-highlight)
 all-electronics.de,automotiveit.eu,produktion.de##.ce_topicbox:has(.label-ad-highlight)
 ibooks.to##.code-block:has(i.fa-cloud-download-alt)
+shop-apotheke.at##.cross-sell-horizontal-slider__item-wrapper:has([href^="https://api.sae.systems/rma/api/v"])
 feuerwehrmagazin.de##.excerpt-tile.cell.small-12.medium-6:has(.advertorials)
 print.de##.excerpt-tile.cell:has(.advertorials)
 vergleichswelt.app##.fads-zeile:has(.fads-anzeige-text)
