@@ -290,6 +290,20 @@ export class App {
             if (!settingsStorage.get(SettingOption.DisableShowAppUpdatedNotification)) {
                 toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion);
             }
+
+            /**
+             * Some filters may be 'enabled' during update but not 'loaded' yet,
+             * e.g. separate annoyances filters are enabled instead of the deprecated
+             * combined annoyances filter during the migration.
+             *
+             * We cannot load them during UpdateApi.update()
+             * because it is executed too early,
+             * and filter state data is not initialized at that moment.
+             *
+             * And they should be loaded before the engine start,
+             * otherwise we will not be able to enable them later.
+             */
+            await FiltersApi.reloadEnabledFilters();
         }
 
         // Runs tswebextension

@@ -42,9 +42,24 @@ import { CustomFilterLoader } from './custom/loader';
  * Data transfer object for {@link CustomFilterApi} methods.
  */
 export type CustomFilterDTO = {
+    /**
+     * Custom filter subscription url.
+     */
     customUrl: string;
+
+    /**
+     * Custom filter title.
+     */
     title?: string;
+
+    /**
+     * Whether the custom filter is trusted.
+     */
     trusted: boolean;
+
+    /**
+     * Whether the custom filter is enabled.
+     */
     enabled: boolean;
 };
 

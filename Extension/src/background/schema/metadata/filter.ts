@@ -101,6 +101,13 @@ export const regularFilterMetadataValidator = baseMetadataValidator.merge(
          * updating it.
          */
         subscriptionUrl: zod.string(),
+
+        /**
+         * Whether the filter is deprecated.
+         *
+         * @see {@link https://github.com/AdguardTeam/FiltersRegistry#metadata}
+         */
+        deprecated: zod.boolean().optional(),
     }),
 );
 

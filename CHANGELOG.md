@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- AdGuard DNS filter and AdGuard Annoyances filter as deprecated.
+
 ### Fixed
 
 - Cursor moves to the end when saving user rules [#3145].

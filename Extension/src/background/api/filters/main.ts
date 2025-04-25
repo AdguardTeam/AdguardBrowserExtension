@@ -16,8 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {
+    AntiBannerFiltersId,
+    AntibannerGroupsId,
+    CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
+    SEPARATE_ANNOYANCE_FILTER_IDS,
+} from '../../../common/constants';
 import { logger } from '../../../common/logger';
-import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
 import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
 import {
@@ -80,6 +85,7 @@ export class FiltersApi {
         FiltersApi.loadFilteringStates();
 
         await FiltersApi.removeObsoleteFilters();
+        await FiltersApi.migrateDeprecatedFilters();
     }
 
     /**
@@ -114,6 +120,7 @@ export class FiltersApi {
         FiltersApi.loadFilteringStates();
 
         await FiltersApi.removeObsoleteFilters();
+        await FiltersApi.migrateDeprecatedFilters();
     }
 
     /**
@@ -224,8 +231,19 @@ export class FiltersApi {
                 // e.g. server is not available
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
                 // 'ignorePatches: true' here for loading filters without patches
-                const f = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
-                return f.filterId;
+                try {
+                    const f = await CommonFilterApi.loadFilterRulesFromBackend(
+                        {
+                            filterId,
+                            ignorePatches: true,
+                        },
+                        false,
+                    );
+                    return f.filterId;
+                } catch (e) {
+                    logger.debug(`Filter rules were not loaded from local assets for filter: ${filterId}, error: ${e}`);
+                    return null;
+                }
             }
         });
 
@@ -316,6 +334,7 @@ export class FiltersApi {
 
     /**
      * Reload filters and their metadata from local storage.
+     *
      * Needed only in MV3 version because we don't update filters from remote,
      * we use bundled filters from local resources and their converted rulesets.
      *
@@ -523,9 +542,26 @@ export class FiltersApi {
      * @param remote If true, download data from backend, else load it from local files.
      */
     private static async loadMetadataFromFromBackend(remote: boolean): Promise<void> {
-        const metadata = remote
+        const rawMetadata = remote
             ? await network.downloadMetadataFromBackend()
             : await network.getLocalFiltersMetadata();
+
+        const validFilters: RegularFilterMetadata[] = [];
+
+        rawMetadata.filters.forEach((filter) => {
+            if (filter.deprecated) {
+                logger.info(`Filter with id ${filter.filterId} is deprecated and shall not be used.`);
+                // do not filter out deprecated filter metadata as it may be needed later
+                // e.g. during settings import
+            }
+
+            validFilters.push(filter);
+        });
+
+        const metadata = {
+            ...rawMetadata,
+            filters: validFilters,
+        };
 
         const i18nMetadata = i18nMetadataStorage.getData();
 
@@ -668,7 +704,102 @@ export class FiltersApi {
     }
 
     /**
-     * Remove if necessary obsolete filters.
+     * Removes filter from storages.
+     *
+     * @param filterId Filter id to remove.
+     *
+     * @throws Error if anything goes wrong during the process.
+     */
+    private static async removeFilter(filterId: number): Promise<void> {
+        filterVersionStorage.delete(filterId);
+        filterStateStorage.delete(filterId);
+        await FiltersStorage.remove(filterId);
+        await RawFiltersStorage.remove(filterId);
+    }
+
+    /**
+     * Migrates deprecated filters:
+     * - if they are ***installed*** (which always happens for regular filters)
+     *   but **not *enabled*** — removes them from the list of regular filters;
+     * - if they are ***enabled*** — moves them to custom filters group.
+     *
+     * There are few exceptions:
+     * 1. AdGuard DNS filter is simply removed with no special migration.
+     * 2. Large AdGuard Annoyances filter is replaced with separate Annoyances filters.
+     *
+     * @returns Array of deprecated filters ids.
+     */
+    private static async migrateDeprecatedFilters(): Promise<number[]> {
+        const commonFiltersMetadata = CommonFilterApi.getFiltersMetadata();
+
+        const installedFiltersIds = filterStateStorage.getInstalledFilters();
+        const enabledFilters = FiltersApi.getEnabledFilters();
+
+        const deprecatedFilterIds: number[] = [];
+
+        const installedDeprecatedFilters: RegularFilterMetadata[] = [];
+
+        commonFiltersMetadata.forEach((filter) => {
+            if (!filter.deprecated) {
+                return;
+            }
+
+            deprecatedFilterIds.push(filter.filterId);
+
+            if (installedFiltersIds.includes(filter.filterId)) {
+                installedDeprecatedFilters.push(filter);
+            }
+        });
+
+        const tasks = installedDeprecatedFilters.map(async ({ filterId, subscriptionUrl }) => {
+            await FiltersApi.removeFilter(filterId);
+            logger.info(`Filter with id ${filterId} removed from the regular filters storage since it is deprecated`);
+
+            // AdGuard DNS filter can be simply removed with no special migration
+            if (filterId === AntiBannerFiltersId.DnsFilterId) {
+                return;
+            }
+
+            // migrate large Annoyances filter only if it is enabled
+            if (
+                filterId === AntiBannerFiltersId.AnnoyancesCombinedFilterId
+                && enabledFilters.includes(filterId)
+            ) {
+                logger.info(`Filter with id ${filterId} will be replaced with separate Annoyances filters`);
+                await FiltersApi.loadAndEnableFilters(SEPARATE_ANNOYANCE_FILTER_IDS);
+                return;
+            }
+
+            // for any other enabled deprecated filter, move it to custom group
+            if (enabledFilters.includes(filterId)) {
+                await CustomFilterApi.createFilter({
+                    customUrl: subscriptionUrl,
+                    trusted: true,
+                    enabled: true,
+                });
+                logger.info(`Filter with id ${filterId} moved to custom group`);
+            }
+        });
+
+        const promises = await Promise.allSettled(tasks);
+
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                logger.error(
+                    'Cannot remove obsoleted filter from storage or create a new custom filter due to: ',
+                    promise.reason,
+                );
+            }
+        });
+
+        return deprecatedFilterIds;
+    }
+
+    /**
+     * Removes obsolete filters if there is any.
+     *
+     * Obsolete filters are those that are not present in the metadata
+     * but are installed in the storage.
      */
     private static async removeObsoleteFilters(): Promise<void> {
         const installedFiltersIds = filterStateStorage.getInstalledFilters();
@@ -677,12 +808,8 @@ export class FiltersApi {
         const tasks = installedFiltersIds
             .filter((id) => !metadataFiltersIds.includes(id))
             .map(async (id) => {
-                filterVersionStorage.delete(id);
-                filterStateStorage.delete(id);
-                await FiltersStorage.remove(id);
-                await RawFiltersStorage.remove(id);
-
-                logger.info(`Filter with id: ${id} removed from the storage`);
+                await FiltersApi.removeFilter(id);
+                logger.info(`Filter with id ${id} removed from the storage since it is obsolete`);
             });
 
         const promises = await Promise.allSettled(tasks);
