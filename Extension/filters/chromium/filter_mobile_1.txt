@@ -1,9 +1,9 @@
-! Checksum: 1bh+rYgj8wotnP7Dhl2jIA
-! Diff-Path: ../patches/1_optimized/1_optimized-s-1745313067-3600.patch
+! Checksum: w0D07UZtzFlyHbATh1vhaA
+! Diff-Path: ../patches/1_optimized/1_optimized-s-1745572257-3600.patch
 ! Title: AdGuard Russian filter (Optimized)
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.98.82
-! TimeUpdated: 2025-04-22T09:06:54+00:00
+! Version: 2.0.98.88
+! TimeUpdated: 2025-04-25T09:06:47+00:00
 ! Expires: 10 days (update frequency)
 /nadavi-api/?p4g3=js/api/widget.js
 ||aj*.bid/*?vpaid=$xmlhttprequest
@@ -24,6 +24,7 @@
 /mbp/pre/*$third-party,script
 /wcm/?sh=$third-party,script
 /jquerymin18.js
+/nb/fl.js
 /api/scripts/universal?id=$script,third-party
 /appUbarButton.js
 /api/content/js?blockid=*&sourceid=$script,third-party
@@ -44,7 +45,6 @@
 /usite\.(pro|org|ru|com|ua)\/[A-Za-z0-9_%]{3,12}\/.*\?[A-Za-z0-9%]{70,100}$/$script,domain=usite.pro
 ||ucoz.*/?*%21*%3B$script,~third-party
 /porebl/?Izo84uQ4=*%$script
-/tG3a8U7s/?x37gWsOk=
 ://*.pp.ua^$script,third-party
 .info/show/?*=*&*=*&*=*%20*%20*&$third-party
 .ru/show/?*=*&*=*&*=*%20*%20*&$script,third-party
@@ -69,6 +69,7 @@
 .com/player/|$third-party
 .ru/player/|$third-party
 /bens/vinos
+/bens/vinos.js?
 /b?size=*&catgry=$script,third-party
 /code/bshow.php?id=*&dimension=
 /output/index/*$other,script,third-party
@@ -191,6 +192,7 @@ http://*.ru/leftunit.pl?
 /adfox.asyn.code.ver3.js
 /adhandler/*
 /adjs.php?
+/adland.php
 /adman.js
 /adnetwork.
 /adriver.
@@ -279,6 +281,7 @@ http://*.ru/leftunit.pl?
 /js.ng/c
 /js.ng/s
 /js.php?sid=
+/js/ad_eo_
 /js/advertising/*
 /js/clickunder/*
 /js/clk.js|
@@ -297,6 +300,7 @@ http://*.ru/leftunit.pl?
 /Pop-under.js
 /popuptraf
 /promo/banner2.jpg
+/rec_ad1.
 /reclama_*.jpg
 /redtram.
 /rek1.js|
@@ -334,7 +338,6 @@ http://*.ru/leftunit.pl?
 160x600-
 160x600.
 2010/ads/
-468x15.h
 468x60.g
 468x60.h
 468x60.j
@@ -385,8 +388,8 @@ ucoz.ru/informer/
 ###Ad2
 ###AdText
 ###Adfox_Banner
+###Advertisement
 ###BannerDiv
-###ad-200
 ~madame.lefigaro.fr###ad-container
 ###ad-content
 ###ad-slides
@@ -428,6 +431,7 @@ ucoz.ru/informer/
 ###banners_left
 ###banners_right
 ###bottom-banners
+###buttonad
 ~maximonline.ru###content_ad
 ###dle-content > noindex > span
 ~investopedia.com###footer_ads
@@ -461,6 +465,8 @@ ucoz.ru/informer/
 ~itavisen.no##.ad468
 ~ksl.com##.adBox
 ~mycareer.com.au##.adContainer
+~superbikeplanet.com##.adDiv
+~mercurynews.com,~siliconvalley.com##.adElement
 ~superhry.cz##.adHolder
 ##.adModule
 ~bipbip.co.il##.adText
@@ -470,6 +476,7 @@ ucoz.ru/informer/
 ~didaktik-der-mathematik.de##.ad_right
 ~chinapost.com.tw##.ad_space
 ##.adbg
+~superbikeplanet.com##.addiv
 ~linux.com##.adframe
 ##.adhere
 ~northjersey.com##.adholder
@@ -499,6 +506,7 @@ ucoz.ru/informer/
 ##.b-banner_slide
 ##.b-journalpromo-container
 ##.b-side-banner
+##.banfoot
 ##.banner-border-wrap
 ##.banner-head
 ##.banner-mid
@@ -576,7 +584,6 @@ ucoz.ru/informer/
 ##div[id^="smi2adblock"]
 ##div[id^="smi_teaser_"]
 ##noindex > div[onmouseout]
-||tp.media^
 ||thagrechulo.com^
 ||vvdrhe.win^
 ||adwadvert.com.ua^
@@ -944,9 +951,11 @@ ucoz.ru/informer/
 ||temporarympay.com^$third-party
 ||elonreptiloid.com^$third-party
 ||q0mn5t187u.ru^$third-party
+||uwdvcn.com^$third-party
 ||rotarb.bid^$third-party
 ||bogrex.com^$third-party
 ||ssp.bidvol.com^$third-party
+||azfitn.com^$third-party
 ||mybmrtrg.com^$third-party
 ||sitewithg.com^$third-party
 ||xcec.ru^$third-party
@@ -960,6 +969,7 @@ ucoz.ru/informer/
 ||ogocvet.ru^$third-party
 ||4251.tech^$third-party
 ||humoek.com^$third-party
+||kq6lwk3m9g.ru^$third-party
 ||popadon.com^$all
 ||2ad.wtf^
 ||nasrispit.com^$third-party
@@ -1023,6 +1033,7 @@ ucoz.ru/informer/
 ||mpsuadv.ru^$third-party
 ||whiteboxdigital.ru^$third-party
 ||rtb.mts.ru^$third-party
+||zkdkvnzsdxge.info^$third-party
 ||go.zdos.ru^$third-party
 ||tune-up.site^$third-party
 ||hvcbkr.com^$third-party
@@ -1075,6 +1086,7 @@ ucoz.ru/informer/
 ||dzrs3yuexz.com^$third-party
 ||v.tzbox*.xyz^$third-party
 ||instreamatic.com^$third-party
+||ankunding.biz^$third-party
 ||promoggaqjkd.ru^$third-party
 ||uuaauw.com^$third-party
 ||ggtraf.com^$third-party
@@ -1181,6 +1193,7 @@ ucoz.ru/informer/
 ||plyfoni.ru^$third-party
 ||69v.club^$third-party
 ||content.mql5.com^$third-party
+||kymirasite.pro^$third-party
 ||mibmcbm.com^$third-party
 ||u2bmco.com^$third-party
 ||vyborexperta.ru^$third-party
@@ -1212,7 +1225,10 @@ ucoz.ru/informer/
 ||a.kubik3.ru^
 ||a24help.ru^$third-party
 ||abs.firstvds.ru^$third-party
+||actiflex.org^$third-party
+||actionpay.ru^$third-party
 ||actionteaser.ru^$third-party
+||ad-emea.doubleclick.net/
 ||ad.edugram.com^$third-party
 ||ad.hutor.ru^
 ||ad.oyy.ru^$third-party
@@ -1254,11 +1270,11 @@ ucoz.ru/informer/
 ||afficent.com^
 ||affiliate.astraweb.com^
 ||affiliates.a2hosting.com^
-||agitazio.com^$third-party
 ||agro.net.ru^$third-party
 ||aixcdn.com^$third-party
 ||alfainternet.su^$third-party
 ||alishop*.ru^$third-party
+||allnewspoint.com/static/js/informer.js
 ||almosto.com
 ||alpari.ru^$third-party
 ||amazingcl.ru^$third-party
@@ -1417,6 +1433,7 @@ ucoz.ru/informer/
 ||linkslot.ru^$third-party
 ||linkwithin.com^$third-party
 ||livesurf.ru^$third-party
+||log2.ru^$third-party
 ||login.tracking101.com^
 ||loneday.com
 ||lovn.ru^$third-party
@@ -1501,7 +1518,6 @@ ucoz.ru/informer/
 ||perfmelab.com^$third-party
 ||phoenix-widget.com^$third-party
 ||photoshop-master.org/rotator/$third-party
-||pluginsjquery.com^$third-party
 ||pokrutim.ru^$third-party
 ||popunder.$third-party
 ||prcy-info.ru/informer.php?
@@ -1557,11 +1573,11 @@ ucoz.ru/informer/
 ||seopult.ru^$third-party
 ||seorate.ru^$third-party
 ||seosprint.net^$third-party
-||seowebtools.ru/inform/infb.php?
 ||serl.mooo.com^
 ||shopnetic.com^$third-party
 ||shuffele.com^$third-party
 ||sjsmartcontent.org^$third-party
+||skazkipro.com/?code=$third-party
 ||skypromotion.ru^$third-party
 ||slopeac.com^
 ||socadvnet.com^$third-party
@@ -1595,6 +1611,7 @@ ucoz.ru/informer/
 ||topcto.ru^$third-party
 ||tr.samoresim.ru^
 ||tradedoubler.com^$third-party
+||tradeleads.su^$third-party
 ||trafex.net^$third-party
 ||traff.ru^$third-party
 ||traffer.net^$third-party
@@ -1624,6 +1641,7 @@ ucoz.ru/informer/
 ||utraff.com^$third-party
 ||v.dlski.space^$third-party
 ||v.newsportal*.ru^$third-party
+||vast.reyden-x.com^$third-party
 ||vidalak.com^$third-party
 ||video-play.ru^$third-party
 ||video.market-place.su^$third-party
@@ -1658,6 +1676,7 @@ ucoz.ru/informer/
 ||whisla.com^$third-party
 ||widgeo.net/compteur.php?
 ||widget.admitad.com^$third-party
+||widget.market-place.su^$third-party
 ||widget.socialmart.ru^$third-party
 ||widgets.planeta.ru^$third-party
 ||wieistmeineip.de/ip-address/
@@ -1674,6 +1693,7 @@ ucoz.ru/informer/
 ||www2.bubblesmedia.ru^
 ||wwwomen.ru^$third-party
 ||yottos.com$third-party
+||yourlustmedia.com^$third-party
 ||ytimgg.com^$third-party
 ||zero.kz/c.php?
 ||193.200.64.24^
@@ -1897,7 +1917,7 @@ studbooks.net,vuzlit.com,vuzlit.ru,studwood.net,bstudy.net#%#//scriptlet("abort-
 vuzdoc.org,studref.com#%#//scriptlet("set-constant", "abl", "noopFunc")
 ||securepubads.g.doubleclick.net/pagead/ppub_config$xmlhttprequest,redirect=nooptext,domain=studref.com|vuzdoc.org
 libertycity.net,libertycity.ru#%#//scriptlet('set-constant', 'adBlockEnabled', 'false')
-shadowcore.ru#%#//scriptlet("abort-on-property-read", "justDetectAdblock")
+shadowcore.ru#%#//scriptlet('abort-on-stack-trace', 'document.createElement', 'checkAboba')
 @@||staticmv.mediavitrina.ru/vitrina_assets/*/banner.gif?r=*&ads=adv$domain=player.mediavitrina.ru
 letyshops.com#$#.banner_ad.ad_banner.ad-button { display: block !important; }
 igromania.ru#%#//scriptlet("set-constant", "aahci", "true")
@@ -2522,11 +2542,13 @@ sobaka.ru#$#body { padding: 0 !important; }
 severpost.ru#$#body > div#main { margin-top: 0 !important; }
 travelask.ru#$#.wrapper > div.content-wrapper { padding-top: 0 !important; }
 7info.ru#$#body { background-image: none !important; cursor: default !important; }
+naruto-base.su#$#body > div#fll { margin-top: 0 !important; }
 ex-fs.net#$##content { margin-top: 0 !important; }
 flashplayer.ru#$#.gametils > li { margin: 0 !important; }
 lordfilm.black,lordsfilm.tv,lordfilms-s.pw#$#.wrap { padding-top: 0 !important; margin-top: 0 !important; }
 7days.ru#$#body { margin-top: 0 !important; }
 kazus.ru#$#html { overflow: visible !important; margin-right: 0 !important; }
+horrorzone.ru#$#body { background: #000 !important; }
 trinixy.ru#$#body { background: none !important; }
 mogilev.online#$#body > header { margin: 0px auto 0px auto!important; }
 biletyplus.ru#%#//scriptlet("prevent-addEventListener", "fetch", "isShouldCached")
@@ -2534,8 +2556,6 @@ biletyplus.ru#$#body { overflow: visible!important; }
 chipmaker.ru#$#.ipsList_reset > li[data-blocktitle="Custom Text"] { visibility: hidden!important; }
 fex.net#$#.modal_type_video-ads { display: none!important; }
 fex.net#$#body { overflow: visible!important; }
-cpa.rip#$#.header-desktop { margin-bottom: 1.5vw !important; }
-cpa.rip#$#.header-mobile { margin-bottom: 1.5vw !important; }
 ua.news#$#body { background-image: none !important; padding-top: 0 !important; background-color: #ffffff !important; }
 yaplakal.com,yap.ru#$##top-line { height: auto !important; }
 povarenok.ru#$#body { background: #fdf5dd!important; }
@@ -2656,6 +2676,7 @@ yandex-video.naydex.net#%#//scriptlet('trusted-replace-xhr-response', '/(<VAST[\
 /^http(s?):\/\/[a-z]{6}\..*\/[a-z0-9]{3,30}\/[a-z0-9]{5,}\.php$/$script,third-party,domain=ego-zhena.ru|codernet.ru|desmyhome.ru|ale07.ru|wotexpress.info|koolinar.ru|newdaynews.ru|smiruss.ru|uk-parkovaya.ru|allkey.org|beejournal.ru|coronavirus-control.ru|fatelines.net|ovgorskiy.ru|fixmaster74.ru|winnote.ru|sundaria.su|amperof.ru|220.guru|vph-holod.ru|severpost.ru|mnogotolka.ru|siniy-ekran.ru|ua.news|kslift.ru|politnavigator.net|tarifec.com|vse-vino.ru|pornreactor.cc|joyreactor.cc|reactor.cc|rsute.ru|enovosty.com|tayga.info|xnewsq.net|om1.ru|rustxt.ru|jpnsoft.ru|oc-windows.ru|cikavosti.com|u-news.com.ua|mp3frog.com|tom-dzherri.ru|konkurent.ru|dalanews.kz|svpressa.ru|bargu.by|mp3rax.com|audio-books.su|progorodsamara.ru|yaom.ru|comandir.com|pocvetam.ru|osnmedia.ru|topdaynews.ru|hxmp3.com|novosti-n.org|mp3crown.cc|knews.kg|audiokniga-onlain.ru|xfilesserial.ru|kulichki.net|pesni-detskie.ru|militaryarms.ru|ranobe-novels.ru|vo-radio.ru|petstime.ru|nakanune.ru|time-in.ru|kotletki.online|sakhalife.ru|kinobaza24.ru|ianed.ru|turkish-tv.ru|android-kino-tv.ru|lafa.site|hozzi.ru|evasamara.ru|syzran-small.ru|inforuss.info|tourprom.ru|macdonaldsi.ru|togliatti24.ru|ctnews.ru|solenka.info|kaluga-poisk.ru|bragazeta.ru|astrologyk.com|potokmedia.ru|gotovim.ru|mir-znamenitostej.ru|topnews.ru|pg21.ru|podolyaka.su|softaltair.ru|asilmedia.org|telegraf.news|mechtarybolova.ru|fermilon.ru|seron.tv|prufy.ru
 /^http(s?):\/\/[A-Za-z0-9]{6}\.[A-Za-z0-9]{3}\/[A-Za-z0-9]{30,}\.php$/$script,third-party,domain=rsute.ru|afn.by|hdvideobox.ru|samelectrik.ru|amazingfacts.ru|allkey.org|kuxnmir.ru|kg-portal.ru|xxxlmusic.com|smartpress.by|unews.pro|inzhener-info.ru|vklook.online|joyreactor.cc|solenka.info|discover24.ru
 /^http(s?):\/\/[A-Za-z0-9]{6}\.[A-Za-z0-9]{3}\/[A-Za-z0-9-.]{6}\/[A-Za-z0-9-.\/]{25,}\.php$/$script,third-party,domain=solenka.info|kvmarvel.ru|crashplane.ru|ymkababy.ru|newsland.com|prozoro.net.ua|alau.kz|brjunetka.ru|tarifec.com|u-news.com.ua|zoobusiness.kiev.ua|b-online.ru|porosenka.net|dachnyuchastok.ru|gubka-bob.ru|film.ru|pg11.ru|pg12.ru|pg13.ru|pg21.ru|prochepetsk.ru|progorodnn.ru|progorodnsk.ru|progorodsamara.ru|samokat-dostavka.ru|lifedon.com.ua|clubhunters.ru|polytech-soft.com|max-vps.ru|unews.pro|vsplanet.net
+/^http(s?):\/\/([A-Za-z0-9-.]+\/){5,}[A-Za-z0-9_-]+$/$script,third-party,domain=crashplane.ru|ymkababy.ru|newsland.com|prozoro.net.ua|alau.kz|brjunetka.ru|tarifec.com|u-news.com.ua|zoobusiness.kiev.ua|b-online.ru|beejournal.ru|porosenka.net|dachnyuchastok.ru|gubka-bob.ru|film.ru|pg11.ru|pg12.ru|pg13.ru|pg21.ru|prochepetsk.ru|progorodnn.ru|progorodnsk.ru|progorodsamara.ru|fixmaster74.ru|samokat-dostavka.ru|coronavirus-control.ru|lifedon.com.ua|fatelines.net|clubhunters.ru|made-box.ru|howto-news.info
 /script.js^$third-party,domain=rus-km.ru|progorodnn.ru|vestiprim.ru|4mlhn1ocg4.com|koolinar.ru|kyiv.media|pershij.com.ua|u-news.com.ua|crashplane.ru|cin-24.com|vikingi-online.info|hi-blog.ru|lifedon.com.ua|skuky.net|365news.biz|vklook.ru|tv-show.live|pt0zhwhc26.ru|mnogotolka.ru|gadget-apple.ru|kinovideo.cc|tarifec.com|amazingfacts.ru|womanvip.ru|evo-rus.com|kraj.by|shematok.ru|bargu.by|rivnepost.rv.ua|sobesednik.ru|comments.ua|pln-pskov.ru|lyricsonline.ru|amperof.ru|kapital-rus.ru|sport24tv.ru|militariorg.ucoz.ru|pravda-tv.ru|ianed.ru|solenka.info|inforuss.info|ufanotes.ru|togliatti24.ru|storinka.com.ua|moskva-obl.ru|reporter64.ru|gastrot.ru|yadelus.ru|telegraf.news|bnkomi.ru|myslo.ru
 ru.citaty.net,liga.net,appstorrent.ru,graniru.org,3dnews.ru,zaks.ru,ukranews.com,mr-7.ru,ferra.ru,cont.ws,riavrn.ru,maanimo.com,begaem.com,passion.ru,gq.ru,agravery.com,appsgames.ru,buhgalteria.ru,dumskaya.net,hotcharts.xyz,klops.ru,mmovote.ru,molnet.ru,news.pn,newsru.co.il##.ad
 posylka.net,progroshi.news,thepage.ua,newsru.co.il,freetone.org,infox.ru,internet-technologies.ru,xcadr.tv,dota2.ru,newkaliningrad.ru,reestr.rublacklist.net,ringon.site,glavcom.ua,qna.center,afanasy.biz,happymonday.ua,xcadr.org,dugtor.ru,trud.ru,amic.ru,dugtor.org,kinoafisha.info,niknews.mk.ua,sovety.net,vesti.uz,wotsite.net##.adv
@@ -2720,10 +2741,10 @@ unn.ua##div[id^="ads-sidebar"]
 sputnik.by##div[data-type="banner"]
 hrodna.life##.inner-banner-brand
 tengrinews.kz##.container > section:has(> div.ya-news)
-tengritravel.kz###text-3
 tengrinews.kz,tengriauto.kz##.header_adv
 tengrinews.kz,tengriauto.kz##.banner-tn_left
 reform.news###custom_html-8
+itc.ua##body > div[style^="text-align"][style*="bgcolor: #000000;"]
 focus.ua##.o-adds
 ||domovita.by/js/adfox/
 ||static.spotles365.com/static.js
@@ -2817,22 +2838,22 @@ meteofor.com.ua,gismeteo.ru##.content-column:not(.column1) section.section-rss
 gismeteo.ru,gismeteo.kz##.top-media-placeholder
 gismeteo.ru##.flexbox > div.right_col_1 > div.wrap_small.__frame > div:not([class^="weather_now"])
 ||static.hdrezka.ac/i/*ggbet*.gif
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##div[id^="bn_"]
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-content__main > div[id]:has(> iframe[src^="https://rstbtmd.com/"])
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-seriesupdate__block_list > li.b-seriesupdate__block_list_item:has(> div.b-seriesupdate__block_list_item_inner[style^="display: block; height: 150px;"])
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-seriesupdate__block_list > li.b-seriesupdate__block_list_item[data-url=""] > div[style="display: block; height: 150px; overflow: hidden;"]
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-player > div[style^="height: 160px;"]
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##div[style="height: 250px; overflow: hidden;"]
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##a[style*="data:image"]
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##[style^="height: 250px;"][style*="width: 680px;"]
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag###ownplayer-link-show
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-content > a
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-content > center > a
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-content__main > div[id]:not([class]):empty
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#$#body.has-brand:not(.b-theme__template__night) { background: #efefef !important; }
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#$#.b-post__rating_table { margin-left: -30px !important; }
-rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#%#//scriptlet('remove-class', 'active-brand', 'body')
-rezka.si,punisher-hdrezka.net,punisher-hdrezka.net,abw.by##.ad-branding
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##div[id^="bn_"]
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-content__main > div[id]:has(> iframe[src^="https://rstbtmd.com/"])
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-seriesupdate__block_list > li.b-seriesupdate__block_list_item:has(> div.b-seriesupdate__block_list_item_inner[style^="display: block; height: 150px;"])
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-seriesupdate__block_list > li.b-seriesupdate__block_list_item[data-url=""] > div[style="display: block; height: 150px; overflow: hidden;"]
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-player > div[style^="height: 160px;"]
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##div[style="height: 250px; overflow: hidden;"]
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##a[style*="data:image"]
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##[style^="height: 250px;"][style*="width: 680px;"]
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag###ownplayer-link-show
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-content > a
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-content > center > a
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-content__main > div[id]:not([class]):empty
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#$#body.has-brand:not(.b-theme__template__night) { background: #efefef !important; }
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#$#.b-post__rating_table { margin-left: -30px !important; }
+rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka-sex-city.net,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag#%#//scriptlet('remove-class', 'active-brand', 'body')
+rezka-ua.org,rezka.si,punisher-hdrezka.net,punisher-hdrezka.net,abw.by##.ad-branding
 [$domain=/hdrezka.net/]##.ad-branding
 kom-dir.ru,gd.ru,buhsoft.ru,dirklinik.ru,fd.ru,business.ru,pro-personal.ru,trudohrana.ru##.ASE_brandImage
 /vpaid^$xmlhttprequest,domain=kodik.biz|kodik.cc|kodik.info|vio.to|u-cdn.top|kodikdb.com
@@ -2842,6 +2863,9 @@ prufy.ru,kostroma.today,fnvolga.ru,menunedeli.ru,sfera.fm,frankmedia.ru,cisoclub
 /upload/rk/*$domain=ivanovonews.ru|gorodn.ru|bits.media|devyatka.ru|gazeta-n1.ru|gorod48.ru|hi-fi.ru|innov.ru|k1news.ru|ktostroit.ru|likeni.ru|meteo-tv.ru|mos.news|newkaliningrad.ru|newsroom24.ru|nta-nn.ru|openbusiness.ru|personalaudio.ru|podrobno.uz|portamur.ru|radugaskidok.ru|rigma.info|securitylab.ru|seonews.ru|shoes-report.ru|sportfm.ru|tvcom-tv.ru|ural56.ru|vladtv.ru|wotafaq.com|ya62.ru|zebra-tv.ru|skisport.ru|marketing.by|rabochy-put.ru|vegetarian.ru|gorodarmavir.ru|estetmedicina.ru|afanasy.biz|itmed.org|actualcomment.ru|pushkino.tv|olimpfm.ru|vn.ru|buzulukinform.ru|prado-club.su|tvr.by|fomag.ru|eg-online.ru|ng58.ru|mediaryazan.ru|m-strana.ru
 ivanovonews.ru,gorodn.ru,bits.media,devyatka.ru,gazeta-n1.ru,gorod48.ru,hi-fi.ru,innov.ru,k1news.ru,ktostroit.ru,likeni.ru,meteo-tv.ru,mos.news,newkaliningrad.ru,newsroom24.ru,nta-nn.ru,openbusiness.ru,personalaudio.ru,podrobno.uz,portamur.ru,radugaskidok.ru,rigma.info,securitylab.ru,seonews.ru,shoes-report.ru,sportfm.ru,tvcom-tv.ru,ural56.ru,vladtv.ru,wotafaq.com,ya62.ru,zebra-tv.ru,skisport.ru,marketing.by,rabochy-put.ru,vegetarian.ru,gorodarmavir.ru,estetmedicina.ru,afanasy.biz,itmed.org,actualcomment.ru,pushkino.tv,olimpfm.ru,vn.ru,buzulukinform.ru,prado-club.su,tvr.by,fomag.ru,eg-online.ru,ng58.ru,mediaryazan.ru,m-strana.ru##img[src^="/upload/rk/"]
 chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru,motor.ru,74.ru,zab.ru,tulapressa.ru,vladday.ru,teleport2001.ru,ivbg.ru,riamobalashiha.ru,vz.ru,vkpress.ru,newstula.ru,panoramapro.ru,zpravda.ru,mirtesen.ru,sports.ru,ko.ru,togliatti24.ru,psychologies.ru,fontanka.ru,news.ru,interfax-russia.ru,kursk-izvestia.ru,dp.ru,lentv24.ru,runews24.ru,bfm.ru,starhit.ru,ctnews.ru,kp40.ru,osnmedia.ru,lifehacker.ru,miasskiy.ru,govoritmoskva.ru,wi-fi.ru,vesti.ru,province.ru,nashe.ru,7info.ru,ntv.ru,life.ru,rb.ru,business.ru,rosbalt.ru,utro.ru,progorodnn.ru,anekdot.ru,astrakhan-24.ru,bel.ru,belive.ru,chrdk.ru,dni.ru,gazeta.ru,iz.ru,kaspyinfo.ru,m24.ru,marieclaire.ru,mhealth.ru,moika78.ru,penzavzglyad.ru,pravda.ru,radioromantika.ru,realty.interfax.ru,riamo.ru,rusplt.ru,severpost.ru,snob.ru,sovsport.ru,topwar.ru,trendymen.ru,tvc.ru,tvzvezda.ru,ukraina.ru,vokrugsveta.ru,zr.ru##div[id^="unit_"]
+thegirl.ru##.article__content > div.article__block-and-creative-container:has(> div.article__block_type-productSet)
+1obl.ru##.backgroundWhite:not(:has(*))
+1obl.ru##div[itemtype="http://schema.org/NewsArticle"] > div[class="backgroundWhite px-4 pt-3 pb-0 mt-2"]
 uchi.ru##a[class*="HeaderBanner"]
 championat.com##.header-bottom__adv
 championat.com##.game-of-day
@@ -3437,6 +3461,7 @@ kino-teatr.ru#?#.content_block:has(> div.block_okkko)
 /jquery.li.js$domain=cc-fan.tv|cn-fan.tv|fox-fan.tv|nf-fan.tv
 apteka.ru##.EshopBannersGrid
 apteka.ru##div[class^="banners"]
+wikigrowth.com##.wgr
 f1news.ru###b2-container
 apteka.ru##.OrderCreatedPopup__banner
 ||rutor.org.ru/download*.png
@@ -3486,6 +3511,7 @@ rubrikator.org##.panel__container.a-bg
 cpa.rip##.eriuue-widget
 ||afftimes.com/wp-content/themes/*/brand_banners$image
 afftimes.com##div[data-banner_id]
+afftimes.com##.post_banners_slider
 tgstat.com,tgstat.ru##.slider-editors-choice
 vgr.by##.dmi-header-ads
 arhangel.ru###topr
@@ -3507,6 +3533,7 @@ mlyn.by##body .adv-blocks__block
 forbes.ru##div[data-type="ad"]
 forbes.ru##div[style="min-height: 224px;"]
 forbes.ru#?#ul > li:has(div[class] > aside > div[id^="adfox_"])
+expertcen.ru##.promo-block
 ukraina.ru##div[data-type="banner"]
 ||teleport2001.ru/serviceworker-advanced_pwa_js
 teleport2001.ru##.views-row-banner
@@ -3644,6 +3671,7 @@ kinoafisha.info##.filmInfo_bannerLast
 new-science.ru###text-html-widget-17
 new-science.ru###text-html-widget-6
 thegirl.ru##div[data-creative-container="hb-top"]
+thegirl.ru#$?#.swiper-wrapper > div.swiper-slide:has(> div.album-slider-swiper__creative-container > div.album-slider-swiper__creative-notification) { remove: true; }
 multitran.com##.pic
 rusfootball.info##aside[rel="nofollow"][itemtype="http://schema.org/WPAdBlock"]
 ridus.ru###moreContent > div[class="brick"]:not([itemListElement])
@@ -4230,7 +4258,6 @@ floristics.info##.rmgm
 floristics.info###adb-aft-art
 floristics.info##.native-ads
 khl.ru##.lk-go
-/\/uploads\/.*\/(bananza|playcash|adcombo|igaming)/$image,domain=cpa.rip
 cpa.rip##div[class^="eriuue-"]
 kartaslov.ru##div[style$="text-align: center; height: 270px"]
 kartaslov.ru##div[style="width: 100%; height: 600px; text-align: center;"]
@@ -4440,6 +4467,7 @@ hockey.by##div[class^="banner banner-map-"]
 glaza.info##div[class^="dle_"]
 limon.kg##.branding > div[class^="branding_"]
 korabelov.info,newxboxone.ru##.stream-item
+periscopes.ru,dedale.ru##code[id^="astr-p"]
 tonkosti.ru##.azorella-header
 tonkosti.ru##.footer-azorella
 tonkosti.ru##div[data-antares="true"]
@@ -4512,10 +4540,8 @@ doctorpiter.ru,maximonline.ru,woman.ru,parents.ru,vokrugsveta.ru,psychologies.ru
 mmo13.ru###games-300x600
 go64.ru##.wow_type_longer
 alau.kz##body > a[class^="link-"][target="_blank"]
-/\/\d{10}_[yads]{2}baner\.png/$domain=best-soft.net
 kinoafisha.info##.tab_inner > div[class^="aka"][class*="outer-mobile"]
 myshows.me##.adblock
-vb.by##div[class^="elementor-"] > a[target="_blank"] > img
 psm7.com##.dynbaner
 clarity-project.info##.adsense-wrap
 4esnok.by##.stream-item-mag
@@ -4618,6 +4644,7 @@ cat-a-cat.net##p[style="text-align: center"] > a[target="_blank"] > img
 torrent-film.co,torrenther.com,smotret-multfilmi.net##.dnewrr
 rmnt.ru##div[id^="ad-in-content-"]
 starhit.ru##.hb-placeholder
+m.sobaka.ru##.b-post-view__tgb
 sovetromantica.com##.helkamaAnimeGoogle
 liga.net##.top-bnr
 ||my.mosenergosbyt.ru/file/id_content:$image
@@ -4674,7 +4701,6 @@ lostpix.com##.infotext
 vidnoe24.ru##.header3content-section
 ||alicdn.com^$image,domain=gadget-apple.ru
 woman.ru##.place-for-creative
-vladna.club##iframe[width="300"][height="600"]
 fastpic.org,fastpic.ru##.fvright
 gorodche.ru,eg.ru##.article_znamya
 moika78.ru,nevasport.ru##.partners-header
@@ -4684,6 +4710,7 @@ russkiiyazyk.ru,isaloni.su,bargu.by,softolet.ru##.widget_custom_html
 ||girlstop.info/jstt/
 new-rutor.org###download_page_panel_overlay
 mobiltelefon.ru###bbanners
+braslav-star.by##.site-content section.news_portal_ads_banner
 eaomedia.ru,primamedia.ru,magadanmedia.ru##.inside_banner
 govoritmoskva.ru##div[id^="infox_"]
 govoritmoskva.ru##.rightColumn > div.darkPart > a[href^="https://"][target="_blank"]
@@ -4784,6 +4811,7 @@ terrikon.com##div[style^="width:300px; height: 400px;"]
 terrikon.com##div[style^="width:300px; height:600px;"]
 terrikon.com##div[style="min-height: 353px;margin-bottom: 5px;"]
 world-weather.ru##.ww-cont-top-ban
+schlock.ru###rtbDown
 schlock.ru###rtbSide
 agrovesti.net##.bannerlabel
 apk-inform.com##.content-second-banner
@@ -4900,6 +4928,7 @@ inmyroom.ru##.b-BannerPlace
 26-2.ru##.newOverLogo__wrapper
 gorodarmavir.ru##div[id^="banner-slider-"]
 shostka.info###news-inside > div[id="dont_copy"] + div[class][style]
+||shostka.info/media/$image
 shostka.info##aside[id^="aside"] > div.sb-element.media
 banki.ru##div[data-header-banner]
 akniga.org##.container__ad
@@ -4933,6 +4962,7 @@ realadmin.ru##article > div.grids.money
 runews24.ru##.b-banner-center
 yarnews.net##.for-banner
 market.csgo.com,yarnews.net##div[class^="banners-"]
+znak.com##.c1-ads
 vestinn.ru##.youdo_links
 ndn.info##.BigBlock
 makler.md###header_wideBannContainer
@@ -5141,7 +5171,6 @@ yaplakal.com,yap.ru###footer > a[href^="//www.yaplakal.com/go/"]
 yaplakal.com,yap.ru###footer > a[style]
 picforall.ru###footer_left
 fotostrana.ru###fsr-king-holder
-3dnews.ru###global-wrapper > div[style]:empty
 womanadvice.ru###googlerekl
 pixcloud.ru,arigato.tv###header
 gramota.ru###header > div#display.clear
@@ -5153,6 +5182,7 @@ shara-games.ru###lc
 samlab.ws###left > .box-shadow:nth-child(n+3)
 questtime.net###left-bot
 myparcels.ru###letystd-block
+asmlocator.ru###logo a[nofollow]
 gramota.ru###main-sec > .block-side:last-child
 mobile-review.com###mainbanner
 zoneofgames.ru###mainbg
@@ -5189,9 +5219,11 @@ lyrsense.com###sideYaBlock
 privetsochi.ru###sidebar > div.block > div[align="center"] > a > img
 liveangarsk.ru###sidebar-right img[width="235"]
 999.md,simpalsid.com###simpalsid-news
+itpen.ru,electric-220.ru,firstfisher.ru,masterservis24.ru,okeydoc.ru###slidebox
 samlab.ws###soft-new > center > a:not([href^="http://samlab.ws/"]) > img
 sxnarod.com###tablespons
 parniplus.com,ua.news###text-10
+rublacklist.net###text-13 a > img
 multforum.ru,androidayuda.com,androidsis.com,sdelairukami.ru###text-3
 multforum.ru,pcgramota.ru###text-4
 ntr-games.com,itechua.com,poddavleniem.ru###text-9
@@ -5206,12 +5238,12 @@ ura.news###top_banner_A
 kino-teatr.ru###top_space
 ykt.ru,bragazeta.ru###topbanner
 bragazeta.ru###banner1-full
+ngs.ru###tvzavr_iframe
 kinokadr.ru###uberdiv
 kinokadr.ru###uberfooter
 fotostrana.ru###user-updates-feed-cont > div[class="user-updates-block king-wrapper-usernews-block nclear"]
 forum.na-svyazi.ru###userlinks
 businessua.com###vedomosti_block
-mmoglobus.ru###verh > div[class="region region-verh"] > div.block
 multiurok.ru###vue-bubble
 oszone.net###wd_loadingbox
 pawno-info.ru###wgo img[width="400"][height="50"]
@@ -5221,7 +5253,6 @@ forum.na-svyazi.ru###wrapboard > div[align="center"] > a > img[height="70"]
 syl.ru###ya_top
 fb.ru###yandex_flat
 cyberforum.ru###yatopbanner
-zaycev.net###zina-region-leftmenubottom
 ua-ix.biz##.Advertising
 wowinterface.com##.DonateOverlay
 spot.uz##.LeaderBoard
@@ -5261,6 +5292,7 @@ andro-news.com##.av-block
 avito.ru##.avito-ads-container
 sportbox.ru,afisha.bigmir.net##.b-advertise
 irk.ru##.b-adwords-news-read-banner
+sob.ru##.b-banner-stickit
 irk.ru##.b-branding-bottom
 irk.ru##.b-branding-top
 svpressa.ru##.b-content__title_ads
@@ -5359,7 +5391,6 @@ pogoda.e1.ru##.content-velum > .content-velum__wrapper > .velum
 x-true.info,absoluttv.ru,auto.gorod-vrn.ru##.content_adv
 9tv.co.il,kriminal.tv,aktualno.ru,socportal.info##.content_banner
 noob-club.ru##.content_cactus
-avito.ru##.context-flyer.js-catalog-item-enum
 finam.ru,ikinohd.com,post-tracker.ru##.counters
 fishki.net##.cycle-carousel-wrap > a[id^="id_ap_"]
 ykt.ru##.d-advs
@@ -5381,6 +5412,7 @@ itmed.org,belkagomel.by,regnum.ru##.footer-banner
 elevatorist.com##.footer__agricultural__list > a[target="_blank"]
 veseloeradio.ru##.footer__banners-wrapper
 bezdna.su##.footer_advert
+objectiv.tv##.foreign_news
 reviewdetector.ru##.forumdesc > a > img[onmouseout="this.className='CImgBrNo'"]
 fex.net##.fs-table__ads-wrapper
 dropmefiles.com##.google_bnr
@@ -5399,6 +5431,7 @@ iccup.com##.image-right
 hh.ru##.index-banner
 povar.ru##.ingredients_ad
 howdyho.net##.interesting_block_links > a:not([href^="https://ad.admitad.com/"])
+baby.ru##.js-promo-fixed
 tvernews.ru##.kc6a
 vtambove.ru##.l-branding-top
 flashplayer.ru##.left > div[id][style^="position: relative;"]
@@ -5412,7 +5445,6 @@ rosnews.biz##.loading.clearfix
 volzsky.ru##.lr_banner
 love.ngs.ru##.lv-right-banner
 flashplayer.ru##.main > div[id][style*="min-height"][style*="position"][style*="overflow"]
-samlab.ws##.main > div[style*="99%"]:first-child
 rapsinews.ru##.b-banners__bottom
 incrussia.ru##.main-dude
 avito.ru##.main-page-promo
@@ -5487,7 +5519,6 @@ cccp-kino.com,pc-torrents.net,playzona.org##.rkl-box
 softobase.com##.rkl-horizontal
 forum.qrz.ru,shara.today##.rotator
 wonderzine.com,kurs.censor.net,market.censor.net,hopesandfears.com,lookatme.ru##.row-banner
-russian.rt.com##.rt--partner-block
 cheb.ru##.rurek
 sumypost.com##.sb-element.media
 onedio.ru##.scrollhelper
@@ -5495,6 +5526,7 @@ mastergrad.com##.section-body > div[style^="margin-bottom: 15px;"]:not([class*="
 diabethelp.org,diabetik.guru##.section-popular
 subscribe.ru##.sendsay_adv
 grodnonews.by,cossa.ru,mos.news##.side-banner
+lifehacker.ru##.side-banner > div.widget_custom_html
 drive.ru##.side-dv
 edu.ru##.side-navi__banner
 1tv.ru##.side-promo-place-right
@@ -5505,6 +5537,7 @@ glavpost.com##.sidebar-banner-block
 ural56.ru##.sidebar-banner__item
 mediametrics.ru##.sidebar-left
 kvn.ru,forklog.com##.sidebar_banner
+objectiv.tv##.simon_banner
 xcelebs.ru##.single_fiolet
 felomena.com##.sliding-parent1 > div.yesshow
 mobiset.ru##.smw2
@@ -5683,7 +5716,6 @@ gisclub.tv##div[id^="ad_below_menu_"]
 business.ru##div[class^="adfox_"]
 3dnews.ru##div[id^="adslot_"]
 lenov.ru##div[id^="b_tz"]
-new-rutor.org,fedpress.ru,talks.by,tayga.info,turbina.ru##div[id^="banner_"]
 list-org.com##div[id^="bl_"]
 donpress.com##div[id^="block-advertblock-"]
 anekdot.ru##div[id^="krt-"]
@@ -5775,6 +5807,7 @@ uhta24.ru##td[width="220"] a:not([href^="/"]) > img[alt]
 ||4pna.com/banner/
 ||abc-people.com/banners/
 ||aces.gg/templates/DefaultT/img/distr.jpg
+||ad.3dnews.ru^$domain=~ad.3dnews.ru
 ||ad.mail.ru/vp/*&duration=$domain=vk.com
 ||adultfriendfinder.com/go/page/js_im_box?$third-party
 ||advego.ru/i/b/$third-party
@@ -5843,6 +5876,7 @@ uhta24.ru##td[width="220"] a:not([href^="/"]) > img[alt]
 ||footballhd.ru/templates/ball/images/rec/
 ||forum-treiderov.com/styles/partner/
 ||forum.hdtv.ru/jscripts/main_banner.js
+||forum.opel-club.ru/baners/
 ||fwdcdn.com/img/commercial/$domain=ukr.net
 ||galaxy-droid.ru/uploads/aport_banner.png
 ||gazetabalakovo.ru/wp-content/uploads/*/rek.
@@ -5865,6 +5899,7 @@ uhta24.ru##td[width="220"] a:not([href^="/"]) > img[alt]
 ||infovoronezh.ru/images/baners/
 ||islam-today.ru/files/stat_ban/
 ||itbukva.com/templates/ja_elastica/images/lety_mobiltelefon.jpg
+||ivi.ru/branding/*/brand.css
 ||jauns.lv/widget/$third-party
 ||kapital-rus.ru/img/*/banners/
 ||karate.ru/media/banner/
@@ -5887,8 +5922,8 @@ uhta24.ru##td[width="220"] a:not([href^="/"]) > img[alt]
 ||mmotop.ru/uploads/promotion/
 ||mobiltelefon.ru/photo/rek/
 ||most3.ykt.ru/session?
+||mozutil.mozilla-russia.org/image/euro.gif
 ||mydiv.net/tim/new*/*_yandex_
-||mylove.ru/js/i/inter*.js$domain=~mylove.ru
 ||mysw.info/img/
 ||myzuka.club/do/Left_
 ||myzuka.club/do/Right_
@@ -5899,6 +5934,7 @@ uhta24.ru##td[width="220"] a:not([href^="/"]) > img[alt]
 ||notebook-center.ru/market/widget.php
 ||nrjprice.com/js/api/widget.js
 ||oil-club.ru/banners/
+||onelike.tv/grey/apple.js
 ||online-torg.club/friends/?q=
 ||opennet.ru/img/bsh_
 ||orer.am/banners/
@@ -5907,6 +5943,7 @@ uhta24.ru##td[width="220"] a:not([href^="/"]) > img[alt]
 ||ovgorskiy.ru/images/yandex.png
 ||ozersk74.ru/upload/banners/
 ||pajero4x4.ru/cgi-bin/*.pl^
+||pcpro100.info/wp-content/themes/pcpro100/images/top-ban.gif
 ||pedsovet.su/rtr/
 ||peterburg.ru/*banner
 ||photo-monster.ru/*/rotor.js
@@ -5935,6 +5972,7 @@ uhta24.ru##td[width="220"] a:not([href^="/"]) > img[alt]
 ||rusargument.ru/output/index/
 ||rutracker-net.ru/img/rtn/ban/
 ||rutvet.ru/1ra.gif
+||s.livelib.ru/img/promo
 ||s.newslab.ru/b/
 ||sat-digest.com/sc*_first.js
 ||sdelanounas.ru/b/
@@ -5987,9 +6025,7 @@ uhta24.ru##td[width="220"] a:not([href^="/"]) > img[alt]
 ||wmmail.ru/banners/
 ||wowjp.net/_styles/pps/
 ||wowlol.ru/mmopay/
-||xcadr.com/contents/other/player/*.mp4
 ||xt.ht/banner/
-||yabs.yandex.*/show/$third-party
 ||yapfiles.ru/uploads/branddata/
 ||youhack.ru/stz/
 ||zen.yandex.ru/widget-loader$domain=fishki.net
@@ -6130,6 +6166,7 @@ fastpic.org##main > div.row > div[class^="col-"] > div.spinner1 + div.rounded
 lostfilm.life,lostfilm.download,lostfilmtv5.site,lostfilm.pro,lostfilmtv.site,lostfilm.uno,lostfilm.today,lostfilm.tv#$#body { background: #000000 !important; }
 lostfilm.life,lostfilm.download,lostfilmtv5.site,lostfilm.pro,lostfilmtv.site,lostfilm.uno,lostfilm.today,lostfilm.tv##.oi_papa_oi
 lostfilm.life,lostfilm.download,lostfilmtv5.site,lostfilm.pro,lostfilmtv.site,lostfilm.uno,lostfilm.today,lostfilm.tv##div[style="padding-top:240px;width: 100%;"]
+||lostfilm.tv/pereP/?a=
 ||lostfilm.tv/?a=$script
 kg-portal.ru##.kg_promo
 kg-portal.ru##[class^="ten_frontrow_"]
@@ -6328,6 +6365,7 @@ pornolab-zerkalo.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net#
 pornolab-zerkalo.appspot.com,pornolab.biz,pornolab.cc,pornolab.lib,pornolab.net##td[width="50%"][class="vBottom"][style="text-align: right !important;"]
 ||alli-ti-hunter.com/bens/vinos$script,redirect=noopjs,important,~websocket
 ||code.directadvert.ru/data/*.js$script,redirect=noopjs,important
+||et-code.ru/bens/vinos.js$script,redirect=noopjs,important,~websocket
 ||m.mixadvert.com/show/?id=$redirect=nooptext,important,~websocket
 ||redtram.com/n4p/$redirect=nooptext,important,~websocket
 ||info.zonasearch.com/ad/admulti*.json
@@ -6441,6 +6479,7 @@ livejournal.com##.cat-widget__card-wrap--adv
 livejournal.com##.cat-widget__card-wrap--promo
 livejournal.com##.lj-card--banner-context-second
 livejournal.com##.allbanners
+livejournal.com##.allbanners-link
 livejournal.com##.footer-banner-wrapper
 rambler.ru##div[style="min-height: 600px;"]
 rambler.ru##div[style="min-height: 300px;"]
@@ -6839,7 +6878,6 @@ ntv.ru#@#div[id^="AdFox_banner_"]
 ntv.ru#@#embed[width="240"][height="400"]
 ntv.ru#@#object[width="240"][height="400"]
 @@||rl0.ru/widget/js/ticketmanager.js
-@@||gamer.ru/alarmalarm/uploads/src/*/banner.jpg
 kirishi.ru#@##theAd
 @@||mchs.gov.ru^$document
 polismed.ru#@#.logo-ad
@@ -6873,7 +6911,6 @@ russia.tv#@##video-adv
 @@||nalog.ru^$document
 @@||click.alfabank.ru^$genericblock,generichide
 @@||kvartplata.ru^$document
-@@||жкхнсо.рф^$document
 geomar.ru#@##advert1
 geomar.ru#@##advert2
 geomar.ru#@#.advert2

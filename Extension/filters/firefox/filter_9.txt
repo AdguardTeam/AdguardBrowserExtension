@@ -1,9 +1,9 @@
-! Checksum: 9z01O6rlpAL6uusgepYGrQ
-! Diff-Path: ../patches/9/9-s-1745237685-3600.patch
+! Checksum: gdsDx8MAOEPU6jIcGllF3g
+! Diff-Path: ../patches/9/9-s-1745478684-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.29.65
-! TimeUpdated: 2025-04-21T12:10:47+00:00
+! Version: 2.0.29.69
+! TimeUpdated: 2025-04-24T07:07:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2304,6 +2304,16 @@ c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,me
 !
 ! NOTE: Specific rules
 !
+dragonball.sullca.com###stickyBanner
+dragonball.sullca.com##body > a.fixed[target="_blank"]
+dragonball.sullca.com##.items-center > a[href="https://www.dragonball.uno/dragonball.html"][target="_blank"]
+dragonball.sullca.com#?#.items-center > a[target="_blank"]:has(> span:contains(/^Opción Ad$/))
+dragonball.sullca.com#%#//scriptlet('abort-on-property-write', 'anuncioConfig')
+dragonball.sullca.com#%#//scriptlet('abort-on-property-write', 'setRandomBanner')
+meneame.net##.ad-roba-container
+meneame.net##.ads-interlinks
+hallofseries.com##div[class^="addendo"]
+hallofseries.com##div[style="text-align: center; margin-top: 20px;"]
 americanas.com.br##div[class^="Banner_bannerWrapper"]
 ||redecanais*/player3/query.js
 reclameaqui.com.br##div[role="banner"]:has([alt~="publicidade"i])
@@ -6025,6 +6035,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203562
+@@||imasdk.googleapis.com/pal/sdkloader/pal.js$domain=mais.sbt.com.br
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202097
 nationalgeographic.com.es#@#.ad-item
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198804

@@ -25441,6 +25441,160 @@
 				"name": "uBlock Origin —— 惡意軟體風險",
 				"description": "過濾風險網站，警告使用者潛在的威脅。"
 			}
+		},
+		"258": {
+			"be": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Забароніць грамадскім сайтам дзеяць у вашых файлах LAN."
+			},
+			"bg": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Предотвратява публичните интернет сайтове да ровят във вашите LAN файлове."
+			},
+			"ca": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Impedeix que els llocs públics d'Internet explorin els teus fitxers de LAN."
+			},
+			"cs": {
+				"name": "Blokování vniknutí cizích osob do LAN",
+				"description": "Zabraňuje veřejným internetovým stránkám proniknout do vašich souborů v síti LAN."
+			},
+			"da": {
+				"name": "Blokér ekstern indtrængen i LAN",
+				"description": "Forhindrer offentlige websteder i at tilgå brugerens LAN-filer."
+			},
+			"de": {
+				"name": "Fremdzugriff auf Ihr LAN verhindern",
+				"description": "Verhindert, dass öffentliche Internetsites in Ihre LAN-Dateien eindringen."
+			},
+			"el": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Αποτρέπει τις δημόσιες ιστοσελίδες του Διαδικτύου να ερευνήσουν τα αρχεία του LAN σας."
+			},
+			"en": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Prevents public Internet sites from digging into your LAN files."
+			},
+			"es": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Evita que los sitios públicos de Internet accedan a tus archivos de LAN."
+			},
+			"es_ES": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Evita que los sitios públicos de Internet accedan a tus archivos de LAN."
+			},
+			"fa": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "توسعه وب سایت های عمومی اینترنتی را از دسترسی به فایل های LAN شما جلوگیری می کند."
+			},
+			"fi": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Estää julkisia Internet-sivustoja kaivautumasta LAN-tiedostoihisi."
+			},
+			"fr": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Empêche les sites Internet publics de fouiller dans vos fichiers LAN."
+			},
+			"he": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "מונע מאתרי אינטרנט ציבוריים לחפור לתוך הקבצים של ה-LAN שלך."
+			},
+			"hr": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Sprječava javnim Internet stranicama da kopaju u vaše LAN datoteke."
+			},
+			"hu": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Megakadályozza, hogy a nyilvános Internet oldalakról betekintsenek a LAN fájljaidba."
+			},
+			"id": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Mencegah situs Internet publik menggali file LAN Anda."
+			},
+			"it": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Impedisce ai siti pubblici della rete globale di accedere ai file della tua rete locale."
+			},
+			"ja": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "パブリックインターネットサイトが LAN ファイルにアクセスするのを防ぎます。"
+			},
+			"ko": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "사이트가 로컬 네트워크에서 파일에 액세스하는 것을 방지합니다."
+			},
+			"mk": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Спречува јавните интернет страници да копаат во вашите LAN датотеки."
+			},
+			"nl": {
+				"name": "Indringing van buitenstaanders in LAN blokkeren",
+				"description": "Voorkomt dat openbare internetsites toegang krijgen tot jouw LAN-bestanden."
+			},
+			"no": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Hindrer offentlige nettsteder fra å grave seg inn i LAN-filene dine."
+			},
+			"pl": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Zapobiega dostępowi publicznych witryn internetowych do plików w Twojej sieci LAN."
+			},
+			"pt": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Evita que sites públicos da Internet acessem os seus ficheiros na LAN."
+			},
+			"pt_BR": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Impede que sites públicos da Internet acessem seus arquivos na LAN."
+			},
+			"pt_PT": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Evita que sites públicos da Internet acessem os seus ficheiros na LAN."
+			},
+			"ro": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Împiedică site-urile publice de Internet să sape în fișierele dvs. LAN."
+			},
+			"ru": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Предотвращает доступ сайтов к вашим файлам в локальной сети."
+			},
+			"sk": {
+				"name": "Blokovanie vniknutia cudzích osôb do siete LAN",
+				"description": "Zabraňuje verejným internetovým stránkam, aby sa prehrabávali vo Vašich sieťových súboroch."
+			},
+			"sl": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Preprečuje, da bi javna spletna mesta brskala po datotekah LAN."
+			},
+			"sr": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Onemogućava javnim Internet sajtovima da proučavaju vaše LAN datoteke."
+			},
+			"sv": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Förhindrar offentliga webbplatser från att gräva i dina LAN-filer."
+			},
+			"tr": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Halka açık İnternet sitelerinin LAN dosyalarınıza erişmesini engeller."
+			},
+			"uk": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Запобігає проникненню загальнодоступних інтернет-сайтів у файли локальної мережі."
+			},
+			"vi": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "Ngăn các trang web Internet công cộng đào sâu vào các tệp LAN của bạn."
+			},
+			"zh": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "防止公共互联网网站窃取局域网文件。"
+			},
+			"zh_TW": {
+				"name": "Block Outsider Intrusion into LAN",
+				"description": "防止公共網際網路網站竊取局域網檔案。"
+			}
 		}
 	}
 }

@@ -1,9 +1,9 @@
-! Checksum: dxs7icMOowTD4knM4uOZVw
-! Diff-Path: ../patches/7/7-s-1745320229-3600.patch
+! Checksum: n0yve2zRps8LZ527S2+ZfQ
+! Diff-Path: ../patches/7/7-s-1745593823-3600.patch
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.63.90
-! TimeUpdated: 2025-04-22T11:06:41+00:00
+! Version: 2.0.64.0
+! TimeUpdated: 2025-04-25T15:06:59+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -26,6 +26,10 @@
 ! not for DNS
 ||ias.rakuten.co.jp^$third-party,domain=~rakuten-co.jp
 !
+||ads-lite2.net^$third-party
+||mid-round.com^
+||ploud-crew.net^
+||prime-ever.com^
 ||adandhub.com^
 ||getallmedia.com^
 ||ssdsp.smt.docomo.ne.jp^$third-party
@@ -455,8 +459,6 @@ video.tv-tokyo.co.jp#$##detect.ad-container { display: block !important; }
 video.tv-tokyo.co.jp#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199758
 chobirich.com#$#.Enquete { display: block !important; }
-chobirich.com#@#.ad_image
-chobirich.com#@#.img_ad
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198779
 ||rkd3.dev/detectadblocker.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176057
@@ -720,9 +722,6 @@ manga1001.*#@#.c-ads
 manga1001.*#@#.body-top-ads
 ! no fix for iOS14 unless allowing ad
 animenew.be#$##ad { height: 1px !important; }
-! classic anti-adb
-nazolog.com#@#.ad_image
-nazolog.com#@#.img_ad
 ! https://github.com/NanoMeow/QuickReports/issues/1326 ima3 rereirect doesn't fully work
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=connectedgamestore.com
 ! manga sites anti-adb
@@ -1522,6 +1521,7 @@ hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 /wp-content/uploads/2024/09/fanza_ad$image
 !
 ! Malware/Phishing
+://www-dmm.*.com/rajklnc/$document
 /rms/client/LO0101001.php$document
 ?ph0nq=010$document
 ?ph0ne=(050)-$document
@@ -1682,6 +1682,7 @@ _ap/signin*?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=
 !
 /\/all\/login\.php\?([0-9a-f]{32})=\1$/$document,match-case,domain=com
 /\/t_([0-9A-Za-z]{32})\?token=\1/$document,domain=cloud|cn|com|net|top|vip
+/^https?:\/\/(?:jp|qq)\d{7,8}\.[a-z]{7,8}\.[a-z]{2,8}\//$document,domain=art|asia|auction|bar|cam|click|coupons|digital|diy|food|forum|gay|guru|life|live|living|my|property|pw|rocks|run|shop|tattoo|tech|today|uno|work,match-case
 |http://t-*/cz/$document,domain=monster|online|space
 /ja/payment/|$document,domain=co.in|co.za
 ://eki-net-*.*/Perosnal_member/$document,domain=cn|net
@@ -1769,6 +1770,16 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+4gamer.net##div[id^="BANNER-"]
+tradingcardstyle.jp##.entry-content > table[style="border-collapse: collapse; width: 100%;"]:has(> tbody > tr > td[style="width: 100%; background-color: #ffffff; text-align: left;"] > a[href^="https://www.amazon.co.jp"][target="_blank"][rel="follow noopener"])
+tradingcardstyle.jp##.entry-content > table[style="border-collapse: collapse; width: 100%;"]:has(> tbody > tr > td[style="width: 100%;"] > img ~ p > a.btn[href^="https://www.amazon.co.jp"][target="_blank"][rel="follow noopener"])
+okinilove.com###fixed_footer
+okinilove.com##a[href^="https://fuzoku.sod.co.jp/danin-recruit?utm_"][target="_blank"]
+okinilove.com##div[class$="_outline"]:has(> div > div.plugin-freearea > center > div.sample_block)
+okinilove.com##div[class$="_outline"]:has(> div > div.plugin-freearea > script[src^="https://adm.shinobi.jp"])
+manabitimes.jp##.min-h-\[280px\]
+||richlink.blogsys.jp/embed/f5c8e32e-0d80-3de4-9874-bb994a143d82$domain=nwknews.jp
+nwknews.jp##div[class^="article-body"] > div.t_h > b > span[style="font-size: 125%;"]
 pref.gunma.jp###common_banner_link
 seikyuresyasokuho.com###block-9 table
 businessinsider.jp##div[class^="article_pArticle_Embed"]:has(> aside.araklet)
@@ -3426,6 +3437,7 @@ javple.com###tracking-url
 tv-aichi.co.jp##.p-news_snsarea
 klmanga.org#?##movie-last-movie > li:has(> center > ins[id])
 books.rakuten.co.jp##.flexContents__box--adBox1
+ufret.jp###full-screen-ad
 ufret.jp##.list-group-flush > a.list-group-item-action[href^="https://shop.sococo.jp"]
 ||ufret.jp/img/sococo640200.jpg
 ufret.jp##div[data-as-slot-id]
@@ -3704,6 +3716,7 @@ applealmondjp.com###BT_applejp_Inread
 applealmondjp.com##.after-header-widget-area
 jp-weathernews.com##section[class*="admid"]
 beauty.biglobe.ne.jp###s_salon > div[style^="width:calc("]
+tenki.jp##.section-wrap.mb20 > h3:has(+ div[id^="taboola-below-article-thumbnails-"])
 tenki.jp###pr-tokubetsu-banner
 hs-exp.jp##.amz-outline
 hs-exp.jp##.koruri.brown-link
@@ -3739,6 +3752,7 @@ seiyufan.livedoor.biz##.sideB > p.side-title
 seimei-handan.net##.adreader
 seimei-handan.net##.adwidereader
 seimei-handan.net##.rakuten
+nazology.kusuguru.co.jp##.oembed-amazon
 nazology.kusuguru.co.jp##.amazon__category-af
 blog-bootcamp.jp##.has-text-align-center.u-mb-ctrl > span.u-fz-s
 sekkaku.net##.sekkaku-bbs-ad-point
@@ -4502,6 +4516,11 @@ pointtown.com##.c-footer-ad
 izzetmtgnews.com##a[href*=".cardrush"] > img
 city.meguro.tokyo.jp##.banner-box
 ||blog.seesaa.jp/contents/bmlist.txt
+rakukan.net##.article__content > a[href^="https://amzn.to"][target="_blank"]:contains(【PR】Amazon)
+rakukan.net##.article__content > a[href^="https://amzn.to"][target="_blank"]:contains(【PR】Amazon) + b
+rakukan.net##.side > section.module:has(> div > ins.adsbygoogle)
+rakukan.net##.side > section.module:has(> div > div[id^="im-"])
+rakukan.net##.side > section.module:has(> div > center > script)
 rakukan.net##div[class^="article__title--ad"]
 ||blozoo.info/restool/generate/blogparts/
 pcinformation.info##.osusume-info
@@ -6756,7 +6775,7 @@ game-0.net,wp-etc.navich.net,check-pc.com,gayroom.jp,topitane.net,1173go.com,ben
 karatedo.co.jp,a-zmanga.net,erogazou.gallery,akiba3d.com,azur256.com,cent-hk.com,keiba-atetai.com,lomo-otoku.ssl-lolipop.jp,matsukishi.com,soratoburin.com,xn--mck5e585m.com,bright-b.com,mangagift.com,doujin-voice.com,coco2i.com,tentacles.biz,nakiny.com,yosshie.com,jp-idol.com,katfile-download.com,jp-jav.com,javcc.com,sethplan.com,hentai4daily.com,netgeek.biz,idiom-encyclopedia.com,xn--glay-yn4c8b9a8lo661apz3h.com,l-media.tokyo###text-8
 g-times.jp,techtechnolog.com,av-baron.com,coco2i.com,orenoraresne.com,apprisejp.xyz,xn--gutnkx91i.com,tentacles.biz,minaminumaebi.blogmimi.com,anianierosuki.work,senzuri.net,hentai4daily.com,kk1up.jp,pinapopo.com,boin.pink###text-9
 erogazou.gallery,j-air.jp,bluesea0925.com,coco2i.com,alpaca76.com,nozokizennkaimax.xyz,tentacles.biz,ysk-consulting.com,vipcle2.com,nihonjinnanmin.com,asiamediablog.com,k-daidokoro.com###text-10
-tomoyuki65.com,news.railway-pressnet.com,pcefan.com,gamejikkyou.com,orenoraresne.com,shikakuhiroba.net,ero-doujin-blog.com,anianierosuki.work,jpzipblog.com,netgeek.biz,yosemi-7.com###text-11
+tradingcardstyle.jp,tomoyuki65.com,news.railway-pressnet.com,pcefan.com,gamejikkyou.com,orenoraresne.com,shikakuhiroba.net,ero-doujin-blog.com,anianierosuki.work,jpzipblog.com,netgeek.biz,yosemi-7.com###text-11
 sozaino.site,reiwa-kawaraban.com,syukan.chinsiko.xyz,tentacles.biz,kankorekore.2-d.jp,ero-doujin-blog.com,erogazoufactory.com,xn--eckl0bk7f7cc4od8az005k0ssb.xyz,lionmaru.blog###text-12
 sossy-blog.com,game16.net,mimiblo.com,videogakuen.com,yamakamu.net,minaminumaebi.blogmimi.com,baseballchannel.jp###text-13
 ebetsunopporo.com,bl-archive.net,anichoice.com,sgamesreview.com,shico.xyz,oreteki-design.com###text-14
@@ -7638,6 +7657,9 @@ nlab.itmedia.co.jp##.contents_bannar
 nlab.itmedia.co.jp##.admsg
 nlab.itmedia.co.jp##.bannar
 nlab.itmedia.co.jp##.headerbannar
+||gamewith.jp/*_jack_ad/images/
+gamewith.jp##.collaboration-jack-header-wrap
+gamewith.jp#%#//scriptlet('remove-class', 'is-collaboration-jack', 'body')
 gamewith.jp##.browsi-atf
 gamewith.jp##.review_amazon_ranking_box
 gamewith.jp##div[class$="adWrapper"]
@@ -11451,7 +11473,6 @@ hamadasyuzou.co.jp#@#.ad_box
 hamadasyuzou.co.jp#@#.ad_contents
 hamadasyuzou.co.jp#@#.ad_title
 hamadasyuzou.co.jp#@#.ad_wrapper
-hamadasyuzou.co.jp#@#.ad_image
 ! https://github.com/AdguardTeam/AdguardFilters/issues/146864
 asianoneta.blog.jp#@#.side_ad
 ! Unbreak Rakuten Super deal/Coupon
