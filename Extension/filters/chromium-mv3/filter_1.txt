@@ -1,8 +1,8 @@
-! Checksum: kIlAWDzrETCIJdtpluanXQ
+! Checksum: qZHS2flJU5RrdIy7Wx1s5w
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.0.98.88
-! TimeUpdated: 2025-04-25T09:06:47+00:00
+! Version: 2.0.98.93
+! TimeUpdated: 2025-04-28T12:10:15+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1434,6 +1434,7 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||w.rulive.ru^$third-party
 ||thagrechulo.com^
 ||vvdrhe.win^
 ||adwadvert.com.ua^
@@ -7627,6 +7628,11 @@ chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita.ru,lenta.ru
 !
 !
 !
+petstory.ru##div[onclick*="swapBanners"]
+fishki.net###rutube-block
+msi-store.ru#%#//scriptlet('prevent-window-open')
+livejournal.com##.mainpage--adv > div:has(> div[class$=" ng-isolate-scope"] ~ div[class*="--hideable "])
+livejournal.com##header[role="banner"] > div:has(> div[class$=" ng-isolate-scope"] ~ div[class*="--hideable "])
 thegirl.ru##.article__content > div.article__block-and-creative-container:has(> div.article__block_type-productSet)
 1obl.ru##.backgroundWhite:not(:has(*))
 1obl.ru##div[itemtype="http://schema.org/NewsArticle"] > div[class="backgroundWhite px-4 pt-3 pb-0 mt-2"]
@@ -8320,7 +8326,7 @@ politonline.ru,pravda.ru##div[id^="div_sf_"]
 forum.antichat.club##.sam3Bannner2Uni
 aartyk.ru#?#.col > div.card-panel:has(> div.adv-widget)
 aartyk.ru#?#.col > div.card-panel:has(> ins.adsbygoogle)
-rtraveler.ru##div[class^="banner-"]
+petstory.ru,rtraveler.ru##div[class^="banner-"]
 rtraveler.ru##.traffic-networks
 uznayvse.ru##.iku_topadcategory
 uznayvse.ru##aside[data-blocktype="smi2"]
@@ -19060,6 +19066,8 @@ player.ex.co#@##ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203844
 ! TODO: remove this when the issue - https://github.com/AdguardTeam/AdGuardExtra/issues/586 - is fixed
 ! aglint-disable-next-line invalid-modifiers
+! https://github.com/AdguardTeam/AdguardFilters/issues/204057
+allkeyshop.com#@#.affiliate
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203261
 @@||static.ig-store.ru/ads/$image,domain=ig-store.ru
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202890

@@ -1,8 +1,8 @@
-! Checksum: fUjvniWD0/CjVo37JQHNYg
+! Checksum: uM1AIqv+iZAihpCD2+a9JQ
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.54.33
-! TimeUpdated: 2025-04-25T16:08:29+00:00
+! Version: 2.0.54.42
+! TimeUpdated: 2025-04-28T13:21:50+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -4462,6 +4462,7 @@ aol.com#$#.ad__tile { height: 10px!important; position: absolute!important; left
 !
 ! SECTION: Popups - Regular rules
 !
+hostadvice.com#%#//scriptlet('set-cookie', 'popup_exit_intent_1', '1')
 gigabaito.com##.popup-wrap:has(> div.onetime_popup)
 thegirl.ru##.article-notification-inset
 ||wizconnected.com/*/resources/dist/promotional-popup-module.*.chunk.min.
@@ -5343,7 +5344,7 @@ nerdwallet.com###contextual-reg-modal-container
 yanusy.com#?#.overlay-box:has(> a[href*="campaign"])
 thestar.com.my##.freeModal
 diepresse.com###abocontainer-f
-||autofill.yandex.ru^$domain=pikabu.ru|ru.hexlet.io|rnk.ru|ig-store.ru
+||autofill.yandex.ru^$domain=pikabu.ru|ru.hexlet.io|rnk.ru|ig-store.ru|fishki.net
 ||id.vk.com/floating_one_tap_auth$domain=pikabu.ru
 pikabu.ru##div[data-test-id="floatingOneTap"]
 pikabu.ru##.popup-button-promo
@@ -13134,6 +13135,14 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+petstory.ru##.like-pets-subscribe
+thevoicemag.ru##.article-detail_tag_social-banner
+theweek.in##.article-post > div.specialpromo:has(> div.video-iframe-new a[href^="https://whatsapp.com/channel/"])
+telegraf.news##.pod_photo > div.left:has(> a[href^="https://t.me/"])
+khaleejtimes.com##.signup-subscribe
+khaleejtimes.com##.hme-nwslttr-uae-nf
+ground.news##.hideElementSiteWide:has(> div.w-full > div.flex > a[href="/subscribe"])
+searchenginejournal.com##.top_lead1 > iframe.sej-iframe-auto-height[src^="https://www.searchenginejournal.com/wp-json/sscats/"]
 theinformation.com##aside[data-testid="lead-sticky-banner"]
 theinformation.com##aside[data-testid="subscribe-to-the-briefing"]
 theinformation.com##a[data-testid="group-subscription-image"]
@@ -13281,7 +13290,7 @@ pandaily.com##.sign-up-today
 pandaily.com##.container > section > a[href="https://pandaily.substack.com/"]
 goodsam.com#%#//scriptlet('set-cookie', 'emailpop', '1')
 qol.az##.social-buttons
-olke.az##.to-social
+valyuta.az,olke.az##.to-social
 businessinsider.com##.homepage-newsletter
 mathrubhumi.com##.whatsapp_follow
 mathrubhumi.com##.mpp-story-bottom-updates
@@ -17100,6 +17109,7 @@ cnet.com##div[section="homepage-email-promo"]
 handelshof.de#?#body > div.fancybox-container:has(> div.fancybox-inner > div.fancybox-stage div.newsletter-modal)
 handelshof.de#$#html { overflow: auto !important; }
 easeus.com##div[class^="email_box_"]
+||static.klaviyo.com/onsite/js/*/klaviyo.js$domain=afina.com
 ||static.klaviyo.com/onsite/js/klaviyo.js$domain=kontrolfreek.com|stetson.com|cooksy.com|rabbitholehay.com|bellesa.co|newwell.co.jp|newwell.com|newwell.com.bd|newwell.com.np|newwell.com.tr|newwell.jp|gamedev.tv
 molistar.com##.box-post-share-gg
 molistar.com##.form-register

@@ -1,8 +1,8 @@
-! Checksum: Od7uCqt/2MV8V9JaCZSOVA
+! Checksum: ATOcAstmivExIOGqvTyF5A
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.20.33
-! TimeUpdated: 2025-04-25T15:07:17+00:00
+! Version: 2.0.20.40
+! TimeUpdated: 2025-04-28T14:08:42+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -58,6 +58,10 @@ alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,ra
 !
 !
 !
+tv9telugu.com##.tv9_banner
+dhgate.com###J_appBanner
+dhgate.com##body::before
+dhgate.com##.r-openapp
 espncricinfo.com##.ds-bottom-14.ds-right-0
 espncricinfo.com#?#button:has(> span:contains(Get App))
 gigabaito.com##.app_bottom_banner
@@ -87,7 +91,7 @@ mynet.com##.app-link-container
 ososedki.com###installContainer
 dailymotion.com##div[class^="HomeRightColumn__promoContainer"] > div[class^="AppPromotion_"]
 royalroad.com###mobile-callout
-qlover.jp##.jss128
+qlover.jp###root > div[class^="jss"][style=""]:has(> a.MuiButton-colorPrimary[href^="https://qlover.page.link/?"])
 moviewalker.jp##.footerBnr
 posylka.net#$#.plugin-banner { display: none !important; }
 posylka.net#%#//scriptlet('remove-class', 'has-plugin-banner', 'body')
