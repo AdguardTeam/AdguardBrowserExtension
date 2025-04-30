@@ -1,9 +1,9 @@
-! Checksum: KnNqaIKdTbr/QY6iPovzEg
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1745587024-3600.patch
+! Checksum: lTIQaWO7PSQh9o9d0Wg9RQ
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1746000802-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.60.13
-! TimeUpdated: 2025-04-25T13:13:27+00:00
+! Version: 2.0.60.29
+! TimeUpdated: 2025-04-30T08:09:24+00:00
 ! Expires: 10 days (update frequency)
 ||adx-open-service.youku.com^
 ||ad.youku.com^
@@ -92,6 +92,7 @@
 ||startup.mobile.yandex.net^
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
+||maticooads.com^
 ||ad*.zonaplus.tv^
 ||apishow.babybus.com^
 ||apppromoteapi.babybus.com^
@@ -1405,6 +1406,7 @@ deviantart.com#$#div[class*="dp-ad-"] {height: 0!important; width: 0!important; 
 @@||api.bufferapp.com/*/profiles.json
 @@||api.bufferapp.com/*/service/
 @@||api.bufferapp.com/*/user
+my-angers.info#@#amp-auto-ads
 watch.impress.co.jp#%#//scriptlet('trusted-replace-node-text', 'script', '/ipc.watch.js', 'ipc.loader.queue.jquery.push', 'ipc.loader.queue.ready.push')
 @@||cmp.inmobi.com/geoip$domain=express.co.uk
 milk-key.com#@#.header-ads-area
@@ -1611,6 +1613,22 @@ celeby-media.net,kyun2-girls.com,hapiee.com,2ch-c.net,4p.de,www-cbc-ca.cdn.amppr
 chip.de,gamesworld.de,fnn.jp##.Ad
 medipalette.lotte.co.jp,genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
+yabancidizi.*##.player > div.flex
+homo.xxx,hello.porn##.top_spot
+xfree.com##.mobile-wall-prbn
+||czechcash.com^$domain=xfree.com
+hentaihere.com#$#.text-center:has(> a[href="/directory/staff-pick"]) { position: unset !important; }
+txxxporn.tube##.hlmffrrzdrmfrzhzhddm
+indianexpress.com##.body-part > .mobile:has(> .top-ads-mobile)
+jjgirls.me##div[class]:has(> ins[data-zoneid])
+m.666biquge.com##body > div[style^="height:"]
+republicworld.com##.bannerWidth
+republicworld.com##section.w-full:has(.adWidget) + div[style^="margin-bottom:"]
+vistanet.it##.row-mobile-top
+tecnoblog.net###ad-single-bottom
+firstpost.com##.mnvid-wrp > div.mn-rhs:has(> div.text-center > div[style] > div.myad)
+koreatimes.co.kr##div[class^="wrap DetailTaboola_only-"]
+koreatimes.co.kr##div[class^="Detail_ad-container"]
 nau.ch##div[data-sticky-height="1px"]
 rakukan.net#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'interstitialAdDiv')
 rakukan.net##.free-area:has(> div > div > ul.link__list)
@@ -1630,6 +1648,8 @@ fapnow.*##.mobile-menu
 beemtube.com##.sponsored-below-player
 beemtube.com##div[style]:has(> ins[data-zoneid])
 teenager365.to##.avd-under-video-mob
+m.yelp.com###BottomAdStandard
+m.yelp.com##section[data-testid="BottomAdStandard"]
 m.yelp.com##div[class*="main-content__"] > div > ol > li:has(div[data-traffic-crawl-id="SearchResultBizName"] > h3 > a[href^="/adredir?ad_business_id="])
 m.yelp.com##div[class*="main-content__"] > div > ol > li:has(> div[class*="sponsored-icon__"])
 m.yelp.com##section[data-testid="TopAdStandard"]
@@ -2400,7 +2420,6 @@ haber7.com###makroo-sticky-adunit
 apps.jeurissen.co##html > body .cja-pagewrapper .cja-landing__content > div.cja-sqrimage
 apps.jeurissen.co##html > body .cja-maincontent .cja-btmimage
 trthaber.com##.mobile-masthead-ads-container
-ntv.com.tr##.mobile-mpu-area
 nan-net.com##.bottom_menu:has(> div[style]:only-child > div[style]:only-child > iframe[id^="bottomad"]:only-child)
 chineseconverter.com##body .mobile-ad
 radiotimes.com##.ad-placement
@@ -6882,6 +6901,8 @@ vfokuse.mail.ru#?#header > div[class]:has(> div[class*="rb-slot_plug"])
 livejournal.com##data-banner-place-id
 livejournal.com##div[id^="billboard_mobile_"]
 livejournal.com##.mdspost-aside__item--banner
+!+ NOT_OPTIMIZED
+ntv.com.tr##.mobile-mpu-area
 !+ NOT_OPTIMIZED
 lepoint.fr###WRAP_TOP_POS
 !+ NOT_OPTIMIZED

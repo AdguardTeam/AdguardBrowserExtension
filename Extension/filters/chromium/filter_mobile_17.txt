@@ -1,9 +1,9 @@
-! Checksum: DFmcEwhPghVunaVJa3BNOw
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1745482374-3600.patch
+! Checksum: dxMDHOg8Jj3gIv1Kes37Ng
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1745953806-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.93
-! TimeUpdated: 2025-04-24T08:09:28+00:00
+! Version: 2.0.10.95
+! TimeUpdated: 2025-04-29T19:06:36+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=uzcid
 $removeparam=beyond_uzcvid
@@ -254,6 +254,11 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||tv.apple.com^$removeparam=itscg
+||tv.apple.com^$removeparam=itsct
+||m.1688.com^$removeparam=src
+||m.1688.com^$removeparam=__removesafearea__
+||m.1688.com^$removeparam=src_cna
 ||gofundme.com^$removeparam=attribution_id
 ||d.ghostery.com^$removeparam
 ||deepl.com^$removeparam=share
