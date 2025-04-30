@@ -1,9 +1,9 @@
-! Checksum: bDfmNIbxSvNkATGCEmCRrw
-! Diff-Path: ../patches/22/22-s-1745583265-3600.patch
+! Checksum: J+kEdsAk0U7uUISEu9Rl1Q
+! Diff-Path: ../patches/22/22-s-1746015262-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.11.59
-! TimeUpdated: 2025-04-25T12:10:50+00:00
+! Version: 2.0.11.62
+! TimeUpdated: 2025-04-30T12:10:47+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2115,6 +2115,8 @@ zebratechnologies.force.com##.zbrbot-container
 !
 !   SECTION: Uncategorized
 !
+! rp-online.de leftovers on home page
+rp-online.de###park-main > section[data-cy="section"]:has(> .park-html > #opinary-root > iframe[src^="https://compass.pressekompass.net/compasses/"])
 ! namu.wiki namunews
 namu.wiki#?#div[class*=" "] > div[class*=" "]:has(> a[target="_blank"][rel="noopener"]):contains(더 보기)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194871
@@ -2411,6 +2413,7 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+air-journal.fr##[class*="donation"]:not(a)
 smutba.se,sfmlab.com##div[style="min-height: 90px; justify-content: center;"]
 smutba.se,sfmlab.com##.patreon
 polyhaven.com##div[class^="Grid_adGridTop"]
@@ -2610,7 +2613,7 @@ unian.ua,unian.net##.support-post
 ||paywall.fewcents.co/static/js/paywall.js
 ||aqours.today/img01/MP3/ZL.JPG
 proagro.com.ua#$#.td-outer-container { background-image: none !important; cursor: default !important; }
-proagro.com.ua#%#//scriptlet("abort-on-property-read", "wpsite_clickable_data")
+proagro.com.ua#%#//scriptlet('abort-on-property-read', 'wpsite_clickable_data')
 focus.ua##.js-cat-required
 tsn.ua##.c-donate
 ||i.lb.ua/static/donate/news.png
