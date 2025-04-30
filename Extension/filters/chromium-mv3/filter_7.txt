@@ -1,8 +1,8 @@
-! Checksum: vf1XzGoi632HtMzfhXIo7Q
+! Checksum: rCjziWC+hAzigg9ZtDU1Iw
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.64.6
-! TimeUpdated: 2025-04-27T14:06:14+00:00
+! Version: 2.0.64.9
+! TimeUpdated: 2025-04-29T19:06:16+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1669,7 +1669,7 @@ _ap/signin*?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=
 ://eki*.*.com/Personal/member/Login/index.php?oneTimeAccessID=$document
 .com/ae/login.php?openid.pape.max_auth_age=0&openid.return_to=%$document
 !
-/^https?:\/\/(?:jp|qq)\d{7,8}\.[a-z]{7,8}\.[a-z]{2,8}\//$document,to=art|asia|auction|bar|cam|click|coupons|digital|diy|food|forum|gay|guru|life|live|living|my|property|pw|rocks|run|shop|tattoo|tech|today|uno|work,match-case
+/^https?:\/\/(?:jp|qq)\d{7,8}\.[a-z]{7,8}\.[a-z]{2,8}\//$document,to=art|asia|auction|bar|cam|click|coupons|digital|diy|food|forum|gay|guru|life|live|living|my|property|pw|rocks|run|shop|tattoo|tech|today|top|uno|work,match-case
 |http://t-*/cz/$document,to=monster|online|space
 /ja/payment/|$document,to=co.in|co.za
 ://eki-net-*.*/Perosnal_member/$document,to=cn|net
@@ -1709,7 +1709,9 @@ _ap/signin*?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=viki.ja-jp.nina.az|uraaka-joshi.com
+/^(?!.*(mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=viki.ja-jp.nina.az|uraaka-joshi.com
+! Similar to regexp above, but using the denyallow modifier
+*$script,third-party,denyallow=mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=viki.ja-jp.nina.az|uraaka-joshi.com
 !
 ! ###banner
 town.inawashiro.fukushima.jp,city.buzen.lg.jp,nanbbs.jp,eroita.net,city.hirosaki.aomori.jp,iyasiya.com,adacomi.com,pref.shimane.lg.jp,pref.osaka.lg.jp,illust-ai.com,nan-net.com,radiolife.com,keimei.ne.jp,5ch.net,bbspink.com,crank-in.net###banner
@@ -2920,6 +2922,8 @@ uwakich.com##div[class^="article-body"] > div > b > span[style="color: rgb(255, 
 ipentec.com##.AdsContainerDocumentTop
 hamusoku.com##div[class^="article-body"] > span:has(> span > b > a[href^="https://amzn.to/"])
 hamusoku.com##div[class^="article-body"] > a[href^="https://amzn.to/"]
+young-machine.com#$#.l-footer { margin-bottom: 0 !important;}
+young-machine.com##.photo-ad__fv
 young-machine.com##.ad-dammy
 young-machine.com###ai_widget-38
 young-machine.com###ai_widget-43

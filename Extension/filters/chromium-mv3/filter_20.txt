@@ -1,8 +1,8 @@
-! Checksum: ATOcAstmivExIOGqvTyF5A
+! Checksum: NKfGfZlJduIMZMF+LYYmHw
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.20.40
-! TimeUpdated: 2025-04-28T14:08:42+00:00
+! Version: 2.0.20.45
+! TimeUpdated: 2025-04-30T08:09:46+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -58,6 +58,10 @@ alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,ra
 !
 !
 !
+easy.co.il##.qr-container
+easy.co.il##.open-app-button
+ntv.com.tr##.article-app-widget
+x.com##article[data-testid="tweet"] div[data-testid="card.wrapper"]:has(> div[data-testid="card.layoutLarge.media"] > a[href="https://itunes.apple.com/app/id6670324846"])
 tv9telugu.com##.tv9_banner
 dhgate.com###J_appBanner
 dhgate.com##body::before
@@ -176,10 +180,10 @@ kitco.com##img[alt*="AppStore"]
 kitco.com##img[alt*="GooglePlay"]
 kitco.com##img[alt*="QR Code"]
 republicworld.com##a[href^="https://republicworld.page.link/"]
-terabox.app#?#.action-bar > div.action-bar-view:has(> div.btn-text:contains(View on Mobile))
-terabox.app##.share-base > div.btns-box:has(> div.operation-block > div#openNaBtn)
-terabox.app###openNaMessageBar > div.right > div.btn
-terabox.app##.to-app-container
+1024terabox.com,terabox.com,terabox.app#?#.action-bar > div.action-bar-view:has(> div.btn-text:contains(View on Mobile))
+1024terabox.com,terabox.com,terabox.app##.share-base > div.btns-box:has(> div.operation-block > div#openNaBtn)
+1024terabox.com,terabox.com,terabox.app###openNaMessageBar > div.right > div.btn
+1024terabox.com,terabox.com,terabox.app##.to-app-container
 apkfab.com##.tip-extension
 domclick.ru##div[class*="MobileBanner-mobileBanner"]
 lesfrontaliers.lu###side-column > div.col-sm-12:has(> div.content > div#iosApp)
@@ -523,7 +527,9 @@ banki.ru##div[class^="appsWidgetstyled__StyledAppsWidget"]
 subito.it##div[class^="AppWidget_download-box-wrapper"]
 analyticsindiamag.com##main[data-elementor-type="single-post"] > section.elementor-section:has(> div.elementor-container > div.elementor-column > div.elementor-widget-wrap > section > div.elementor-container > div.elementor-column > div.elementor-widget-wrap > div.elementor-element > div.elementor-widget-container > a[href="https://apps.apple.com/in/app/analytics-india-magazine/id1502685162"])
 routinehub.co##.actions div.qr-code
-jianshu.com##body > #__next ~ div:not([class]):has(img[src="//upload.jianshu.io/images/js-qrc.png"])
+jianshu.com#$#body { overflow: auto !important; }
+jianshu.com#$#body[style*="width: calc(100% - 15px)"] { width: 100% !important; }
+jianshu.com#$#body > #__next ~ div:not([class]):has(img[src="//upload.jianshu.io/images/js-qrc.png"]) { display: none !important; }
 cara.app###js_smartbanner
 cars.av.by##.promo-app
 flowgpt.com#%#//scriptlet('set-local-storage-item', 'appDownloadModal.Dismissed.p', 'true')

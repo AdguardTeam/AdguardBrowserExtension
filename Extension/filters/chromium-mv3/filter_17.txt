@@ -1,8 +1,8 @@
-! Checksum: OL8IgzkcVaFSnV1FKE34rA
+! Checksum: one6urSH7jhKZLbU072fjQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.94
-! TimeUpdated: 2025-04-28T12:11:08+00:00
+! Version: 2.0.10.95
+! TimeUpdated: 2025-04-29T19:06:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -393,6 +393,9 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/203915
+||tv.apple.com^$removeparam=itscg
+||tv.apple.com^$removeparam=itsct
 ! https://github.com/AdguardTeam/AdguardFilters/issues/204187
 ||m.1688.com^$removeparam=src
 ||m.1688.com^$removeparam=__removesafearea__
