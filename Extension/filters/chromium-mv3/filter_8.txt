@@ -1,8 +1,8 @@
-! Checksum: 5QyAEwpDos/X02hlSU98Kg
+! Checksum: QmCUSCM26vM1PRorLKCv7A
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.17
-! TimeUpdated: 2025-04-25T18:08:44+00:00
+! Version: 2.0.8.19
+! TimeUpdated: 2025-05-02T09:07:47+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -820,7 +820,7 @@ salvora.nl##.avia-content-slider1
 gaykrant.nl##.awac
 hookers.nl##.axd-container
 stadszaken.nl##.b-side
-afkortingen.nu,agf.nl,beursduivel.be,bpnieuws.nl,dutchitchannel.nl,executive-people.nl,filmladder.nl,folderz.nl,ibestuur.nl,iexprofs.nl,klasse.be,metalfan.nl,nrc.nl,nu.nl,oogtv.nl,propertynl.com,retaildetail.be,retaildetail.nl,startpagina.nl,televizier.nl,telezien.nl,totaaltv.nl,tvgemist.be,tvgids.nl,uiennieuws.nl,uitslagen.nl,unity.nu,uw-folder.nl,waldnet.nl##.banner
+afkortingen.nu,agf.nl,beurs.nl,beursduivel.be,beursgorilla.nl,bpnieuws.nl,dutchitchannel.nl,executive-people.nl,filmladder.nl,folderz.nl,ibestuur.nl,iexprofs.nl,klasse.be,metalfan.nl,nrc.nl,nu.nl,oogtv.nl,propertynl.com,retaildetail.be,retaildetail.nl,startpagina.nl,televizier.nl,telezien.nl,totaaltv.nl,tvgemist.be,tvgids.nl,uiennieuws.nl,uitslagen.nl,unity.nu,uw-folder.nl,vnci.nl,waldnet.nl##.banner
 nieuwsuitnijmegen.nl##.banner-box-1
 goudengids.be##.banner-boxes
 speeleiland.nl##.banner-btf-side-rectangle
@@ -924,6 +924,7 @@ rd.nl##.codalt-container
 gfcnieuws.com,techgaming.nl##.code-block
 achterhoeknieuwswinterswijk.nl##.component__pubble-banner
 bol.com##.consideration-display
+deaandeelhouder.be,deaandeelhouder.nl##.container-commercial
 jumbo.com##.container.sponsored
 twentefans.nl##.content-action
 juf-milou.nl##.content_blok_reclame
@@ -1419,7 +1420,7 @@ climaximaal.nl,rtvmiddenholland.nl##img[width="200"]
 webstick.nl##img[width="220"]
 jazzism.nl##img[width="250"]
 dartfreakz.nl##img[width="250"][height="250"]
-creditexpo.nl,dagbladdewest.com,dagelijksestandaard.nl,fiets.nl,franekeractueel.nl,luister.nl,negerin.nl,ninefornews.nl,omroeprsh.nl,psvinside.nl,ucl-voetbal.nl,unitednews.sr##img[width="300"]
+creditexpo.nl,dagbladdewest.com,dagelijksestandaard.nl,deaandeelhouder.be,deaandeelhouder.nl,fiets.nl,franekeractueel.nl,luister.nl,negerin.nl,ninefornews.nl,omroeprsh.nl,psvinside.nl,ucl-voetbal.nl,unitednews.sr##img[width="300"]
 regio-voetbal.nl##img[width="300"][height="100"]
 advocatie.nl,goedkoopstekeukensduitsland.nl,lflmagazine.nl,mannennieuws.nl,streamwijzer.be,teqnation.com,thatsgaming.nl,yourlittleblackbook.me##img[width="300"][height="250"]
 ciaotutti.nl##img[width="300px"]
@@ -1740,6 +1741,10 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+funda.nl##div[role="advertisment"]
+funda.nl##.advertisement-rectangle
+funda.nl##.mx-auto > section.justify-center:has(> div[id^="div-gpt-"])
+funda.nl##.h-dynamic-screen > .hidden:has(> .text-center:only-child > div[id^="div-gpt-"]:only-child)
 rd.nl##div.flex-col:has(> div.flex > div.codalt-container)
 grazia.nl##li.bg-reserved:has(div[data-aa-adunit])
 grazia.nl##.sticky-incontent:has(> div[data-aa-adunit])

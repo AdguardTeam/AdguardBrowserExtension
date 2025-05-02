@@ -1,8 +1,8 @@
-! Checksum: one6urSH7jhKZLbU072fjQ
+! Checksum: Iem8FAFMbjbFCE8whVuMfQ
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.95
-! TimeUpdated: 2025-04-29T19:06:36+00:00
+! Version: 2.0.10.96
+! TimeUpdated: 2025-05-02T16:08:50+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,10 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! https://kb.triplewhale.com/en/articles/5740620-klaviyo-integration#h_d0fb8c7039
+$removeparam=tw_medium
+$removeparam=tw_profile_id
+$removeparam=tw_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201868
 $removeparam=uzcid
 $removeparam=beyond_uzcvid
@@ -415,7 +419,6 @@ $removeparam=fb_source
 ||nintendo.com^$removeparam=nt_redirect_referrer
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-12682755
 ||code-wallets.com^$removeparam=tw_adid
-||code-wallets.com^$removeparam=tw_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201849
 ||autodaily.ru^$removeparam=from
 ! Yandex.Practicum

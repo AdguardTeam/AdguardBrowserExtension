@@ -1,8 +1,8 @@
-! Checksum: F1OCFDf20TY91SOqd0A0YA
+! Checksum: wYwMFvcdA29NEHZnfmHiaw
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.52.13
-! TimeUpdated: 2025-04-30T08:09:42+00:00
+! Version: 2.0.52.18
+! TimeUpdated: 2025-05-02T17:06:45+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -196,8 +196,7 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/1478420
-japscan.lol#%#//scriptlet('prevent-addEventListener', 'load', '/\(\w{6}\s[A-Z][a-z][A-Z][a-z]_\d{4}/')
-japscan.lol#%#//scriptlet("remove-node-text", "script", "/Y[a-z][a-z]?k[a-z]\d|/110'[+,]/")
+japscan.lol#%#//scriptlet("remove-node-text", "script", "/Y[a-z][a-z]?k[a-z]\d|YouIAndMe/")
 /^https:\/\/acscdn\.com\/script\/(?:aclib|atg|compatibility|ippg|suv4|ut)\.js(\?cb=\d{13})?$/$script,third-party,match-case,important,domain=japscan.lol
 @@||acscdn.com^$script,third-party,domain=japscan.lol
 @@.shop/*/invoke.js$script,third-party,domain=japscan.lol,important
@@ -1665,6 +1664,7 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203869
+$popup,domain=jonathansociallike.com,badfilter
 $popup,domain=diananatureforeign.com,badfilter
 $popup,domain=sarahnewspaperbeat.com,badfilter
 $popup,domain=richardsignfish.com,badfilter
@@ -11458,7 +11458,6 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||imgpeak.com/img/
 ||immobilier.nc^*/medias_pubs/
 ||immoweb.be/*/autopromo-footer?
-||immoweb.be/*/dpg/advertisements
 ||immoweb.be/*/sponsor?
 ||impimg.free.fr/pubs/
 ||info-algerie.com/media/Polo-Sedan.jpg
@@ -12377,7 +12376,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||toolslib.net/assets/custom/img/4d5/
 ||toolslib.net/assets/img/placeholders/
 ||toomai.fr/img/banner/
-||top-for-phone.fr/visuels/
+||top-for-phone.fr/imgs/
 ||topachat.com/images/configo_*compos-
 ||topjetm.net^*/img/pub.
 ||topliste-fr.com/filmsdivx.gif
@@ -14466,7 +14465,6 @@ logitheque.com###adni_widgets-2
 clicanoo.re###adress_utiles
 bobvoyeur.com,djazairess.com,ecogine.org,tendancehotellerie.fr,zalotech.com###ads
 ustart.org###ads_tall
-immoweb.be###advertisments
 cuisineaz.com###advi
 finalclap.com###aff_tuto_com
 dogzer.com###affichage_tag_58
@@ -14490,7 +14488,6 @@ africanmanager.com###bLayer
 lenouveleconomiste.fr###b_top
 commentcamarche.com,commentcamarche.net###ba_position4
 commentcamarche.com,commentcamarche.net###ba_right
-top-for-phone.fr###background-cover
 euro-2016-france.net###background-promo
 meilleurmobile.com###backgrounddiv
 deavita.fr###badHabbitsPopup
@@ -14621,7 +14618,6 @@ israelmagazine.co.il###featgal
 agroligne.com,auto-utilitaire.com,mobilealgerie.com###floatdiv
 algeriepatriotique.com###flottante_droite
 algeriepatriotique.com###flottante_gauche
-test-mobile.fr###fondhabillage
 forum.oujdacity.net###footer
 amateur2sexe.fr###footer-boom
 liberation.fr###footer-partners-box
@@ -14992,7 +14988,7 @@ reezocar.com##.autopromo-container
 buzzly.fr##.ayl-ad-article
 nintendo-master.com##.back_content
 animedigitalnetwork.fr##.background-click
-katibin.fr##.background-cover
+katibin.fr,top-for-phone.fr##.background-cover
 codeur.com##.badge-project-urgent
 cnews.fr##.ban-bottom-desktop
 bdgest.com,bedetheque.com##.ban-top
@@ -15110,9 +15106,6 @@ hclips.com,txxx.com,txxx.tube##.chan_banner
 yahoo.com##.classickick
 allkeyshop.com,goclecd.fr##.clb-left
 allkeyshop.com,goclecd.fr##.clb-right
-test-mobile.fr##.clickleft
-test-mobile.fr##.clickright
-test-mobile.fr##.clicktop
 fourchette-et-bikini.fr##.cluj
 bienpublic.com,dna.fr,estrepublicain.fr,lalsace.fr,ledauphine.com,lejsl.com,leprogres.fr,republicain-lorrain.fr,vosgesmatin.fr##.colStickyWrapperP2
 mediadico.com##.cold-bloc-video-generique

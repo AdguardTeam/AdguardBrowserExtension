@@ -1,8 +1,8 @@
-! Checksum: rCjziWC+hAzigg9ZtDU1Iw
+! Checksum: Hv4gdqOuuerjnQJUJMwucw
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.64.9
-! TimeUpdated: 2025-04-29T19:06:16+00:00
+! Version: 2.0.64.13
+! TimeUpdated: 2025-05-02T05:08:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -442,6 +442,8 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/204335
+mtgames.jp#@#.adspace
 ! anti-adb
 kujimap.com#@#ins.adsbygoogle[data-ad-client]
 kujimap.com#@#ins.adsbygoogle[data-ad-slot]
@@ -1669,7 +1671,7 @@ _ap/signin*?_encoding=UTF8&openid.assoc_handle=jpflex&openid.claimed_id=&action=
 ://eki*.*.com/Personal/member/Login/index.php?oneTimeAccessID=$document
 .com/ae/login.php?openid.pape.max_auth_age=0&openid.return_to=%$document
 !
-/^https?:\/\/(?:jp|qq)\d{7,8}\.[a-z]{7,8}\.[a-z]{2,8}\//$document,to=art|asia|auction|bar|cam|click|coupons|digital|diy|food|forum|gay|guru|life|live|living|my|property|pw|rocks|run|shop|tattoo|tech|today|top|uno|work,match-case
+/^https?:\/\/(?:j[ap]|qq)\d{7,8}\.[a-z]{7,8}\.[a-z]{2,8}\//$document,to=art|asia|auction|bar|cam|click|coupons|digital|diy|food|forum|gay|guru|life|live|living|my|property|pw|rocks|run|sbs|shop|store|tattoo|tech|today|top|uno|work,match-case
 |http://t-*/cz/$document,to=monster|online|space
 /ja/payment/|$document,to=co.in|co.za
 ://eki-net-*.*/Perosnal_member/$document,to=cn|net
@@ -1763,6 +1765,10 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+||asobeans.jp/css/ad_fullScreen_
+uranai.nosv.org###brand_ad_block
+uranai.nosv.org#$##navigation[style^="margin-top"] { margin-top: 0 !important; }
+mtgames.jp##.amazonBox
 plus.luremaga.jp#$#@media (max-width: 768px) { .dividerBottom + .postContents::before { min-height: 0 !important; } }
 plus.luremaga.jp#$#@media (min-width: 769px) { .side_widget.block-widget > .code-block-banner-ec-1::before { min-height: 0 !important; } }
 fily.co.jp##a[href^="https://apps.apple.com/jp/app/"] > img[width="720"][height="540"]
@@ -3219,6 +3225,7 @@ ge-soku.com###diver_widget_pcsp-5
 ge-soku.com###diver_widget_pcsp-16
 ge-soku.com###diver_widget_pcsp-14
 ge-soku.com###custom_html-108
+automaton-media.com##.author-box + div.ct-hidden-sm[data-block^="hook:"][data-block-structure="custom"][data-vertical-spacing="top:bottom"]
 automaton-media.com###pc_all_header
 automaton-media.com##.ct-widget:has(> div.wp-block-greenshift-blocks-container > div > div.code-block > div[id^="pc_all_right_"])
 automaton-media.com##.td-ss-main-sidebar > aside.widget:has(> div.block-title > span)
@@ -9716,6 +9723,7 @@ audioreview.m1001.coreserver.jp###side-fixed a[href^="//af.moshimo.com/af/c/clic
 kashi-mo.com##.rectangle_bnr
 yahoo.co.jp###lrec
 ibbs.info##.ad_data
+blog.esuteru.com##div[class^="article-body"] > blockquote > center > table[style="text-align:left;margin-left:0;margin-right:0; width: 100%; font-size: 16px;"][data-nosnippet]:has(> tbody > tr > td > a[href^="https://www.amazon.co.jp"][target="_blank"] > img)
 blog.esuteru.com##blockquote:last-of-type:has(> table[style] a[href^="https://www.amazon.co.jp/"])
 blog.esuteru.com##.quote_area.article_detail_margin > table[cellpadding="5"][style="border-collapse:separate;border-spacing:5px;border:none 0"]:has(a[href*="amazon.co.jp"][target="_blank"] > img)
 blog.esuteru.com##.azrank_quote
@@ -9724,7 +9732,7 @@ blog.esuteru.com,jin115.com###gStickyAd
 news-us.org##.adspc
 news-us.org##[class^="sponsor"]
 supersolenoid.blog.fc2.com,supersolenoid.jp,matomate.blog.2nt.com,dxbeppin.com,hattatu-matome.ldblog.jp,animanch.com,blog.esuteru.com##.amazlet-box
-otakomu.jp##div[class^="article-body"] > blockquote:has(> span.a8ad ~ div.amazlet-box)
+otakomu.jp##div[class^="article-body"] > blockquote:has(> iframe ~ div.amazlet-box)
 otakomu.jp,blog.esuteru.com##a.jackFix
 blog.esuteru.com##.ad-aside > a[target="_blank"]
 otakomu.jp##blockquote > a[href^="https://www.amazon.co.jp/"]
@@ -11756,8 +11764,8 @@ netmile.co.jp#@#.ad-txt
 @@||aff.i-mobile.co.jp/display_data.ashx?$image,domain=chobirich.com
 @@||aff.valuecommerce.ne.jp/ad/displayBanner/$image,domain=gendama.jp
 @@||affiliate-b.com/upload_image/$domain=ponta.gamefactory.jp|warau.jp
-@@||afi-b.com/upload_image/$domain=chobirich.com|dietnavi.com|gendama.jp|lifemedia.jp|moppy.jp|point.i2i.jp|pointi.jp
-@@||afl.rakuten.co.jp^$image,domain=chobirich.com|gendama.jp|lifemedia.jp|moppy.jp|netmile.co.jp|pointtown.com
+@@||afi-b.com/upload_image/$domain=chobirich.com|dietnavi.com|gendama.jp|lifemedia.jp|moppy.jp|point.i2i.jp|pointi.jp|warau.jp
+@@||afl.rakuten.co.jp^$image,domain=chobirich.com|gendama.jp|lifemedia.jp|moppy.jp|netmile.co.jp|pointtown.com|warau.jp
 @@||amazonaws.com/adv-img.zucks.jp/$image,domain=ecnavi.jp
 @@||amazonaws.com/affiliate-img.docomo.ne.jp/banner/$image,domain=chobirich.com|moppy.jp|point.i2i.jp
 @@||amazonaws.com/img.point.i2i.jp/banner/*/300x250_$image,domain=point.i2i.jp
@@ -11767,26 +11775,28 @@ netmile.co.jp#@#.ad-txt
 @@||ci-labo.com/*/brand/images/300x250.jpg$domain=moppy.jp
 @@||cloudfront.net/*_300x250$image,domain=chobirich.com
 @@||cosmeland.jp/affiliate/$image,domain=ponta.gamefactory.jp
-@@||cross-a.net^$image,domain=chance.com|chobirich.com|dietnavi.com|gendama.jp|pointi.jp|ponta.gamefactory.jp|t-mall.cmnw.jp
+@@||cross-a.net^$image,domain=chance.com|chobirich.com|dietnavi.com|gendama.jp|pointi.jp|ponta.gamefactory.jp|t-mall.cmnw.jp|warau.jp
 @@||dell.com/images/jp/banners/*_300x250.$image,domain=chobirich.com
-@@||dinos.co.jp/affiliate/$image,domain=moppy.jp|t-mall.tsite.jp
+@@||dinos.co.jp/affiliate/$image,domain=moppy.jp|t-mall.tsite.jp|warau.jp
 @@||ecnavi.jp/global/img/bc_ecnavi_games_300x250.gif
 @@||gpoint.co.jp/images/gpark/bnr/300_250_$~third-party
 @@||gpoint.co.jp/images/*_300x250.$~third-party
 @@||j-a-net.jp^$image,domain=chance.com|chobirich.com|ecnavi.jp|gendama.jp|hapitas.jp|lifemedia.jp|moppy.jp|netmile.co.jp|point.i2i.jp|pointi.jp|pointtown.com|ponta.gamefactory.jp|t-mall.cmnw.jp|t-mall.tsite.jp|warau.jp|yomipo.yomiuri.co.jp
-@@||linksynergy.com/fs$image,domain=chance.com
+@@||jal.co.jp/affiliate/$image,domain=warau.jp
+@@||linksynergy.com/fs$image,domain=chance.com|warau.jp
 @@||moppy.jp/pub/global/pc/banner/gacha/468x60.jpg$~third-party
 @@||pia.jp/uploads5/files/*/300_250.$image,domain=moppy.jp
 @@||point-g.rakuten.co.jp/pg_assets/item/contets/*/300_250_$~third-party
 @@||point-g.rakuten.co.jp/pg_assets/item/contets/*_300x250$image,~third-party
+@@||presco.ai/banner/$image,domain=warau.jp
 @@||prf.hn/source/$image,domain=moppy.jp
 @@||r-ad.ne.jp^$subdocument,xmlhttprequest,domain=recruit.co.jp
 @@||ryuryumall.jp/af/ls/logo/300_250_$image,domain=moppy.jp
 @@||smart-c.jp/i?$image,domain=gendama.jp|moppy.jp
 @@||storage.aeonshop.com/assets/file/pages/img/AD/$domain=moppy.jp
-@@||tcs-asp.net/imagesender$image,domain=chobirich.com|dietnavi.com|gendama.jp|lifemedia.jp|moppy.jp|ponta.gamefactory.jp
+@@||tcs-asp.net/imagesender$image,domain=chobirich.com|dietnavi.com|gendama.jp|lifemedia.jp|moppy.jp|ponta.gamefactory.jp|warau.jp
 @@||trafficgate.net/t/b/$image,domain=chobirich.com|ecnavi.jp|gendama.jp|hapitas.jp|lifemedia.jp|moppy.jp|point-g.rakuten.co.jp|pointi.jp|pointtown.com|ponta.gamefactory.jp|t-mall.tsite.jp|warau.jp|yomipo.yomiuri.co.jp
-@@||valuecommerce.com^$image,domain=chobirich.com|dietnavi.com|ecnavi.jp|gendama.jp|hapitas.jp|hiroba.dpoint.docomo.ne.jp|lifemedia.jp|moppy.jp|netmile.co.jp|point.i2i.jp|pointi.jp|ponta.gamefactory.jp|t-mall.tsite.jp|yomipo.yomiuri.co.jp
+@@||valuecommerce.com^$image,domain=chobirich.com|dietnavi.com|ecnavi.jp|gendama.jp|hapitas.jp|hiroba.dpoint.docomo.ne.jp|lifemedia.jp|moppy.jp|netmile.co.jp|point.i2i.jp|pointi.jp|ponta.gamefactory.jp|t-mall.tsite.jp|yomipo.yomiuri.co.jp|warau.jp
 @@||virusbuster.jp/aff/banner/$image,domain=chobirich.com|point.i2i.jp
 @@||wellness.nichirei.co.jp/img/ad/$domain=t-mall.tsite.jp
 @@||wowma.net/market/linkshare/$image,domain=chobirich.com|gendama.jp|moppy.jp|point.i2i.jp|t-mall.tsite.jp

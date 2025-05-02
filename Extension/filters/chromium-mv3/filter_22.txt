@@ -1,8 +1,8 @@
-! Checksum: VGLqqxmrHeAfBOlFozI3LA
+! Checksum: Ud8owFVcjDPctZJmcx11yw
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.11.62
-! TimeUpdated: 2025-04-30T12:10:47+00:00
+! Version: 2.0.11.64
+! TimeUpdated: 2025-05-02T10:07:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2094,8 +2094,9 @@ zebratechnologies.force.com##.zbrbot-container
 !   NOTE: Allowlist for chat widgets
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176548
 @@||config.gorgias.chat^$domain=thefeed.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/204396
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167711
-@@||client.crisp.chat^$domain=journey.cloud
+@@||client.crisp.chat^$domain=journey.cloud|aa.net.uk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164918
 @@||widget.replain.cc^$domain=gregoryurban.ru
 ! Unblocking Salesforce support chats only
@@ -2412,6 +2413,7 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+hrw.org###graphene--modal
 air-journal.fr##[class*="donation"]:not(a)
 smutba.se,sfmlab.com##div[style="min-height: 90px; justify-content: center;"]
 smutba.se,sfmlab.com##.patreon
