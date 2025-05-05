@@ -1,9 +1,9 @@
-! Checksum: jU4JEsIFZ4qbYD+LY3AP/w
-! Diff-Path: ../patches/11/11-s-1746022265-3600.patch
+! Checksum: bZg9Ki2Tkk4T+/5gtMgGgA
+! Diff-Path: ../patches/11/11-s-1746451144-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.60.30
-! TimeUpdated: 2025-04-30T14:07:20+00:00
+! Version: 2.0.60.39
+! TimeUpdated: 2025-05-05T13:15:09+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -160,6 +160,10 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||configure.rayjump.com^
+||v.kidoz.net^
+||sdk-api.kidoz.net^
+||gadsme.com^
 ||maticooads.com^
 ||ad*.zonaplus.tv^
 ||apishow.babybus.com^
@@ -2404,6 +2408,20 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+liquipedia.net#$#.mobile-sticky-ad { display: none !important; }
+liquipedia.net#$#.mobile-sticky-ad ~ #main-nav { top: 0 !important; }
+liquipedia.net#$#.mobile-sticky-ad ~ #wiki-nav { top: 3.125rem !important; }
+liquipedia.net#$#body:has(> .mobile-sticky-ad) { padding-top: 5.375rem !important; }
+navitime.co.jp##.japan-travel-banner
+gqjapan.jp##.ad-stickyhero
+thecourier.co.uk###leaderboard-mobile-only
+hepsiburada.com###hyd-adx
+bestbuy.com##.widget-container > .container > .row.contained-row:has(.shop-display-ad)
+aajtak.in##.itgdAdsPlaceholder
+nationalheraldindia.com##div[class^="styles-m__mobile-ad__"]
+nationalheraldindia.com##div[class^="header-m__ad-"]
+nationalheraldindia.com##div[class^="styles-m__dfp__"]
+nextdoordolls.com##.channel-adx-mobile
 yabancidizi.*##.player > div.flex
 homo.xxx,hello.porn##.top_spot
 xfree.com##.mobile-wall-prbn
@@ -2685,7 +2703,6 @@ bunshun.jp##.ats_custom_inarticle_wrapper
 bunshun.jp##div[id^="taboola-mid-article-thumbnails-"]
 pornhub.com##.watchpageAd
 h178.com###StickyAd
-f95zone.to##.sidePanel__tabPanels ul.offCanvasMenu-list > li:has(> div.offCanvasMenu-linkHolder > a.offCanvasMenu-link[target="_blank"])
 gamewith.jp##.overlay-creative-ad
 trailrunner.jp##.side_banner_sm_box
 plaza.rakuten.co.jp##.blogBody > table[border="0"]:has(a[href^="https://hb.afl.rakuten.co.jp/ichiba/"][rel^="nofollow sponsored"] > img)
@@ -7544,6 +7561,11 @@ womenshealth.de#?#body > .list__header:contains(Sponsored Section)
 contexto.me#$#.top-ad-padding { padding-top: 15px !important; }
 ! NOTE: Regular rules end ⬆️
 ! !SECTION: Regular rules
+!
+! m.yelp.com
+m.yelp.com##div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[class*="sponsored-icon_"])
+m.yelp.com##div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[class*="sponsored-icon_"]) + li[class]
+m.yelp.com##div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[data-testid^="themed-ad-"])
 !
 ! Avito
 m.avito.ru#?#div[data-marker="new-item-wrapper"] ~ div[class]:has(> div[data-code] > div[id^="ads_"])
