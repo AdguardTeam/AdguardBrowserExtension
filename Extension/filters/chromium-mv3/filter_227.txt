@@ -1,13 +1,13 @@
-! Checksum: w4xwS801AMw/PtS43tTjCw
+! Checksum: qHI5Cc/06KVQiiFkTNMG5w
 ! Title: List-KR
 ! Description: Filter that removes ads and various scripts from websites with Korean content. Combined and augmented with AdGuard-specific rules for enhanced filtering. This filter is expected to be used alongside with AdGuard Base filter.
-! Version: 2.0.21.19
-! TimeUpdated: 2025-05-02T16:39:17+00:00
+! Version: 2.0.21.27
+! TimeUpdated: 2025-05-05T12:45:12+00:00
 ! Expires: 10 days (update frequency)
 !
 ! Title: List-KR for AdGuard
 ! Description: List-KR for AdGuard. Maintained by the adblock community and AdGuard.
-! OriginalVersion: 2025.0502.1
+! OriginalVersion: 2025.0505.0
 ! Expires: 1 day
 ! Homepage: https://github.com/List-KR/List-KR
 ! Support: https://list-kr-community.pages.dev/docs/
@@ -530,7 +530,7 @@
 /data/banner.json?$domain=~nintendo.app|~nintendo.at|~nintendo.be|~nintendo.biz|~nintendo.ca|~nintendo.ch|~nintendo.cl|~nintendo.cloud|~nintendo.cn|~nintendo.co|~nintendo.co.il|~nintendo.co.jp|~nintendo.co.kr|~nintendo.co.nz|~nintendo.co.uk|~nintendo.co.za|~nintendo.com|~nintendo.com.ar|~nintendo.com.au|~nintendo.com.bd|~nintendo.com.br|~nintendo.com.hk|~nintendo.com.mx|~nintendo.com.np|~nintendo.com.pe|~nintendo.cz|~nintendo.de|~nintendo.dk|~nintendo.es|~nintendo.eu|~nintendo.fi|~nintendo.fr|~nintendo.gr|~nintendo.hk|~nintendo.hu|~nintendo.ie|~nintendo.it|~nintendo.jp|~nintendo.kz|~nintendo.lt|~nintendo.mx|~nintendo.net|~nintendo.nl|~nintendo.no|~nintendo.online|~nintendo.org.il|~nintendo.pe|~nintendo.pl|~nintendo.pt|~nintendo.ro|~nintendo.ru|~nintendo.sa|~nintendo.se|~nintendo.shop|~nintendo.sk|~nintendo.store|~nintendo.tv|~nintendo.tw
 /ad-manager.min.js
 !
-||biz.sbs.co.kr/ad/main/pc/Biz_PC_Dable_Main_Right_Top_340250.html
+||biz.sbs.co.kr/ad/
 ||biz.sbs.co.kr/img/pc/end_banner_250423.jpg
 ||2days.aboda.kr/api/inventory
 ||api.eyejokerdb.com/api/banners/
@@ -547,7 +547,6 @@
 ||edge-live.joongna.com/api/web-ads/
 ||cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/
 /^https:\/\/biz\.chosun\.com\/resizer\/v[0-9]+\/[A-Z0-9]+\.[a-z]+\?auth=.+&width=/$domain=biz.chosun.com,header=x-edgeconnect-cache-status
-||biz.sbs.co.kr/ad/article/
 ||wimg.heraldcorp.com/svc/banner/
 ||product.kyobobook.co.kr/api/gw/onk/ad/
 ||eyejokerdb.com/assets/banners/
@@ -1355,189 +1354,188 @@
 ||cdn.ksportscdn.com/data/popup/
 ||tvwiki*.com/AD
 ||media.cokcok.vip/assets/images/
-/https:\/\/tvwiki[0-9]+\.com\/AD\//$domain=tvwiki4.com|tvwiki5.com|tvwiki6.com|tvwiki7.com|tvwiki8.com|tvwiki9.com|tvwiki10.com|tvwiki11.com|tvwiki12.com|tvwiki13.com|tvwiki14.com|tvwiki15.com|tvwiki16.com|tvwiki17.com
+/https:\/\/tvwiki\d+\.com\/AD\//$domain=/tvwiki\d+\.com/
 ||rj.filesbest.xyz/r/
-/^https:\/\/torrentrj[0-9]+\.com\/uploadfile\/up[0-9a-z]+\.gif/$domain=torrentrj174.com|torrentrj175.com|torrentrj176.com|torrentrj177.com|torrentrj178.com|torrentrj179.com|torrentrj180.com|torrentrj181.com|torrentrj182.com|torrentrj183.com
+/^https:\/\/torrentrj\d+\.com\/uploadfile\/up[0-9a-z]+\.gif/$domain=/^torrentrj\d+\.com/
 ||moeni.net/img/a/ad
 ||sptv-sportscdn.com/data/popup/
 ||images.request-support.com/br/
-/^https:\/\/cdn-[a-z]+-[0-9]+\.hasha\.in\/[a-zA-Z_0-9-]+\./$domain=hasha.in
+/^https:\/\/cdn-[a-z]+-\d+\.hasha\.in\/[a-zA-Z_0-9-]+\./$domain=hasha.in
 ||anilife.live/assets/banner/
 ||moeni.net/img/a/lula.gif
-/theme/basic/img/banner/*$domain=nunu4.tv|nunu5.tv|nunu6.tv|nunu7.tv|nunu8.tv|nunu9.tv|nunu10.tv|nunu11.tv
-||torrentpi*.com/data/file/ad/$domain=torrentpi144.com|torrentpi145.com|torrentpi146.com|torrentpi147.com|torrentpi148.com|torrentpi149.com|torrentpi150.com|torrentpi151.com|torrentpi152.com|torrentpi153.com|torrentpi154.com|torrentpi155.com|torrentpi156.com
-/^https:\/\/avpink[0-9]+\.com\/wp-content\/uploads\/[0-9]+\/[0-9]+\/[0-9-%A-Z]+x[0-9]+/$domain=avpink365.com|avpink366.com|avpink367.com|avpink368.com|avpink369.com|avpink370.com|avpink371.com|avpink372.com|avpink373.com
-/^https:\/\/avpink[0-9]+\.com\/wp-content\/uploads\/[0-9]+\/[0-9]+\/[0-9]+-[0-9]+-[0-9]+\./$domain=avpink365.com|avpink366.com|avpink367.com|avpink368.com|avpink369.com|avpink370.com|avpink371.com|avpink372.com|avpink373.com
+/theme/basic/img/banner/*$domain=/nunu\d+\.tv/
+||torrentpi*.com/data/file/ad/$domain=/torrentpi\d+\.com/
+/^https:\/\/avpink\d+\.com\/wp-content\/uploads\/\d+\/\d+\/[0-9-%A-Z]+x\d+/$domain=/^avpink\d+\.com/
+/^https:\/\/avpink\d+\.com\/wp-content\/uploads\/\d+\/\d+\/\d+-\d+-\d+\./$domain=/^avpink\d+\.com/
 ||cdn.ksportscdn.com/data/editor/
 ||xn--h10b90b998c.site/img/
-/^https:\/\/v[0-9]+\.dasibogo\.net\/wp-content\/uploads\/sites\/[0-9]+\/[0-9]+\/[0-9]+\/[a-z0-9]+\./$domain=dasibogo.net
-/^https:\/\/v[0-9]+\.jogemovie\.net\/wp-content\/uploads\/sites\/[0-9]+\/[0-9]+\/[0-9]+\/[a-z0-9-]+\./$domain=dasibogo.net
+/^https:\/\/v\d+\.dasibogo\.net\/wp-content\/uploads\/sites\/\d+\/\d+\/\d+\/[a-z0-9]+\./$domain=dasibogo.net
+/^https:\/\/v\d+\.jogemovie\.net\/wp-content\/uploads\/sites\/\d+\/\d+\/\d+\/[a-z0-9-]+\./$domain=dasibogo.net
 ||xn--vv4b11c.com/main/data/file/_sh_banner_/
 ||xn--vv4b11c.com/assets/img/banner_
 ||xn--vv4b11c.com/main/data/file/goodsite/
 ||anilife.*/assets/images/banner/$domain=anilife.app|anilife.com|anilife.com.bd|anilife.com.np|anilife.life|anilife.live|anilife.my|anilife.net
 ||tvzone.*/data/banner/$domain=tvzone.app|tvzone.co.in|tvzone.com.bd|tvzone.com.np|tvzone.cz|tvzone.fr|tvzone.org|tvzone.tv|tvzone.ua|tvzone.uk|tvzone.xyz
 ||xvideos-kr.com/img/banner/
-||telegra.ph/file/$domain=avguri4.com|avguri5.com|avguri6.com|avguri7.com|avguri8.com|avguri9.com|avguri10.com|avguri11.com|avguri12.com|avguri13.com|avguri14.com|avguri15.com
+||telegra.ph/file/$domain=/^avguri\d+\.com/
 ||ohli365.*/data/apms/$domain=ohli365.biz|ohli365.com.bd|ohli365.com.np|ohli365.net|ohli365.site|ohli365.vip
 ||bbongtv.*/img/*.gif$domain=bbongtv.co.kr|bbongtv.com|bbongtv.com.bd|bbongtv.com.np|bbongtv.net
-/^https:\/\/www\.ygy[0-9]+\.com\/upload_files\/banner\//$domain=ygy48.com|ygy49.com|ygy50.com|ygy51.com|ygy52.com|ygy53.com|ygy54.com|ygy55.com|ygy56.com|ygy57.com|ygy58.com|ygy59.com|ygy60.com|ygy61.com
-/^https:\/\/www\.ygy[0-9]+\.com\/upload_files\/popup\//$domain=ygy48.com|ygy49.com|ygy50.com|ygy51.com|ygy52.com|ygy53.com|ygy54.com|ygy55.com|ygy56.com|ygy57.com|ygy58.com|ygy59.com|ygy60.com|ygy61.com
-/^https:\/\/linkssakda\.com\/upload\/images\/[0-9]+\./$domain=linkssakda.com
-||i.imgur.com^$domain=avguri4.com|avguri5.com|avguri6.com|avguri7.com|avguri8.com|avguri9.com|avguri10.com|avguri11.com|avguri12.com|avguri13.com|avguri14.com|avguri15.com
+/^https:\/\/www\.ygy\d+\.com\/upload_files\/banner\//$domain=/ygy\d+\.com/
+/^https:\/\/www\.ygy\d+\.com\/upload_files\/popup\//$domain=/ygy\d+\.com/
+/^https:\/\/linkssakda\.com\/upload\/images\/\d+\./$domain=linkssakda.com
+||i.imgur.com^$domain=/avguri\d+\.com/
 ||moeni.net/img/a/*x
 ||cdnbuzz.buzz//banner/
-/^https:\/\/avjoa[0-9]+\.com\/wp-content\/uploads\/[0-9]+\/[0-9]+\/.+\.gif$/
-/^https:\/\/www\.ttking[0-9]+\.me\/ad\//
-/^https:\/\/nolgoga[0-9]+\.com\/data\/.+\.gif$/
+/^https:\/\/avjoa\d+\.com\/wp-content\/uploads\/\d+\/\d+\/.+\.gif$/
+/^https:\/\/www\.ttking\d+\.me\/ad\//
+/^https:\/\/nolgoga\d+\.com\/data\/.+\.gif$/
 ||ohli24.com/img/
 ||nanatv.*/resource/images/$domain=nanatv.co|nanatv.com.bd|nanatv.com.np|nanatv.org
 ||xn--cm2by8iw5h6xm8pc.*/data/banner/$domain=xn--cm2by8iw5h6xm8pc.com|xn--cm2by8iw5h6xm8pc.com.bd|xn--cm2by8iw5h6xm8pc.com.np
-||imgbox.com/*.gif$domain=bontv59.com|bontv60.com|bontv61.com|bontv62.com|bontv63.com|bontv64.com|bontv65.com|bontv66.com|bontv67.com|bontv68.com|bontv69.com
-/^https:\/\/tor[0-9]+\.com\/data\/file\/test\//$domain=tvzota106.com|tvzota107.com|tvzota108.com|tvzota109.com|tvzota110.com|tvzota111.com|tvzota112.com|tvzota113.com|tvzota114.com|tvzota115.com|tvzota116.com
+||imgbox.com/*.gif$domain=/^bontv\d+\.com/
+/^https:\/\/tor\d+\.com\/data\/file\/test\//$domain=/tvzota\d+\.com/
 ||agitwebtoon.*/upload/$domain=agitwebtoon.com.bd|agitwebtoon.com.np|agitwebtoon.xyz
-/^https:\/\/18moa[0-9]+\.com\/data\/file\/main_top_banner\/thumb-/
+/^https:\/\/18moa\d+\.com\/data\/file\/main_top_banner\/thumb-/
 ||topgirl.co/project/bm/js/nuevo.min.js
 ||wwwimageup.live-009.com/other/wx_app_admin/
-/^https:\/\/opss[0-9]+\.com\/img\/[A-z]+\.gif(\?v=[0-9]+)?$/
+/^https:\/\/opss\d+\.com\/img\/[A-z]+\.gif(\?v=\d+)?$/
 /thumb/kh/bn/*$domain=1004past.com
-/^https:\/\/jiok[0-9]+\.net\/img\//
-/data/apms/background/*$domain=opworlds18.com|opworlds19.com|opworlds20.com|opworlds21.com|opworlds22.com|opworlds23.com|opworlds24.com|opworlds25.com|opworlds26.com
-/data/editor/*$domain=opworlds18.com|opworlds19.com|opworlds20.com|opworlds21.com|opworlds22.com|opworlds23.com|opworlds24.com|opworlds25.com|opworlds26.com
-/data/file/primium/*$domain=opworlds18.com|opworlds19.com|opworlds20.com|opworlds21.com|opworlds22.com|opworlds23.com|opworlds24.com|opworlds25.com|opworlds26.com
-/^https:\/\/yt[0-9]+\.org\/files\/attach\/banner_images\/[0-9]+\/([0-9-]+(x|X)[0-9]+|(%[A-Z0-9]+)+)\./$domain=yt723.org|yt724.org|yt725.org|yt726.org|yt727.org|yt728.org|yt729.org|yt730.org|yt731.org|yt732.org|yt733.org
-/^https:\/\/bookmoa[0-9]+\.com\/data\/apms\/background\//
+/^https:\/\/jiok\d+\.net\/img\//
+/data/apms/background/*$domain=/^opworlds\d+\.com/
+/data/editor/*$domain=^opworlds\d+\.com/
+/data/file/primium/*$domain=^opworlds\d+\.com/
+/^https:\/\/yt\d+\.org\/files\/attach\/banner_images\/\d+\/([\d-]+(x|X)\d+|(%[A-Z0-9]+)+)\./$domain=/yt\d+\.org/
+^https:\/\/bookmoa\d+\.com\/data\/apms\/background\//
 ||kormovie.com/img/*.gif|
-/^https:\/\/\jusoyo[0-9]+\.(net|com)\/data\/apms\/background\//
-/^https:\/\/\jusoyo[0-9]+\.(net|com)\/.+\.webp$/
-/^https:\/\/yadong[0-9]+\.net\/Uploads\/images\/[0-9]{4}-[0-9]{2}-[0-9]{2}/
+/^https:\/\/jusoyo\d+\.(net|com)\/data\/apms\/background\//
+/^https:\/\/jusoyo\d+\.(net|com)\/.+\.webp$/
+/^https:\/\/yadong\d+\.net\/Uploads\/images\/\d{4}-\d{2}-\d{2}/
 ||blogger.googleusercontent.com^$domain=yasyadong.com
 ||i.imgur.com^$domain=yasyadong.com
-/^https:\/\/iabn[0-9]+\.net\//$domain=fxfx247.com|fxfx248.com|fxfx249.com|fxfx250.com|fxfx251.com|fxfx252.com|fxfx253.com|fxfx254.com|fxfx255.com|fxfx256.com|fxfx257.com|fxfx258.com|fxfx259.com|fxfx260.com|fxfx261.com|fxfx262.com|fxfx263.com|fxfx264.com|fxfx265.com
-/^https:\/\/mkmk[0-9]+\.com\/img\/[a-z]+[0-9]+x[0-9]+/
-/^https:\/\/mkmk[0-9]+\.com\/img\/[a-z0-9_-]+\.gif$/
+/^https:\/\/iabn\d+\.net\//$domain=/^fxfx\d+\.com/
+/^https:\/\/mkmk\d+\.com\/img\/[a-z]+\d+x\d+\//
+/^https:\/\/mkmk\d+\.com\/img\/[a-z0-9_-]+\.gif$/
 ||agitnovel.*/data/file/novel/banner/$domain=agitnovel.com.bd|agitnovel.com.np|agitnovel.xyz
 ||cokcok.*/wp-json/jt-bad-ux-popup/list/
 ||cokcok.*/wp-admin/admin-ajax.php?action=jt_bad_ux_popup
 ||cokcok.*/wp-admin/admin-ajax.php?action=load_random_banners
 ||jmana.*/resouce/img/adimg/
-/^https:\/\/ww[0-9]+\.torrentdin[0-9]+\.com\/data\/editor\/[0-9]+\/[a-z0-9]+_[a-z0-9]+_[a-z0-9]+\./
-/^https:\/\/ww[0-9]+\.torrentdin[0-9]+\.com\/data\/file\/ad\//
+/^https:\/\/ww\d+\.torrentdin\d+\.com\/data\/editor\/\d+\/[a-z0-9]+_[a-z0-9]+_[a-z0-9]+\./
+/^https:\/\/ww\d+\.torrentdin\d+\.com\/data\/file\/ad\//
 /^https:\/\/[a-z]+\.aniwolf\.com\/storage\/[A-z0-9]+\./$domain=aniwolf.com|aniwolf.com.bd|aniwolf.com.np
 ||tinypic.host^$domain=tvroom.app|tvroom.cn|tvroom.co.kr|tvroom.com|tvroom.com.bd|tvroom.com.np|tvroom.mn|tvroom.org|tvroom.top|tvroom.xyz|mvking.cn|mvking.com|mvking.com.bd|mvking.com.np|mvking.org
-/^https:\/\/www\.torrentreel[0-9]+\.site\/ad\//
-/^https:\/\/tvchak[0-9]+\.com\/img\/bbnn/
-/^https:\/\/agit[0-9]+\.com\/upload\/[0-9]+\/[0-9]+\/[0-9]+\./
-||hoohootv*.*/static/bnner/$domain=hoohootv60.xyz|hoohootv61.xyz|hoohootv62.xyz|hoohootv63.xyz|hoohootv64.xyz|hoohootv65.xyz|hoohootv66.xyz|hoohootv67.xyz|hoohootv68.xyz|hoohootv69.xyz|hoohootv70.xyz|hoohootv71.xyz|hoohootv72.xyz|hoohootv73.xyz
-/^https:\/\/tv[0-9]+\.avsee\.[a-z]+\/imgs\//$domain=avsee.biz|avsee.co|avsee.com|avsee.com.bd|avsee.com.np|avsee.in|avsee.me|avsee.net|avsee.org|avsee.ru|avsee.tv|avsee.ws
+/^https:\/\/www\.torrentreel\d+\.site\/ad\//
+/^https:\/\/tvchak\d+\.com\/img\/bbnn/
+/^https:\/\/agit\d+\.com\/upload\/\d+\/\d+\/\d+\./
+||hoohootv*.*/static/bnner/$domain=/hoohootv\d+\.xyz/
+/^https:\/\/tv\d+\.avsee\.[a-z]+\/imgs\//$domain=avsee.*/
 ||tvhot.cc/b/
 /^https:\/\/sonagitv\.[a-z]+\/images\/banner\/(?!webtoon_)/$domain=sonagitv.com|sonagitv.com.bd|sonagitv.com.np|sonagitv.live|sonagitv.me|sonagitv.org|sonagitv.pro|sonagitv.tv|sonagitv.xyz
 ||i.imgur.com^$domain=sonagitv.com|sonagitv.com.bd|sonagitv.com.np|sonagitv.live|sonagitv.me|sonagitv.org|sonagitv.pro|sonagitv.tv|sonagitv.xyz
 ||xn--h10b90b998c.*/img/$domain=xn--h10b90b998c.com|xn--h10b90b998c.com.bd|xn--h10b90b998c.com.np|xn--h10b90b998c.live|xn--h10b90b998c.net|xn--h10b90b998c.online|xn--h10b90b998c.org|xn--h10b90b998c.site
 ||i.imgur.com^$domain=newtoki.ai|newtoki.asia|newtoki.biz|newtoki.blog|newtoki.club|newtoki.co|newtoki.com|newtoki.com.bd|newtoki.com.ng|newtoki.com.np|newtoki.info|newtoki.kr|newtoki.life|newtoki.link|newtoki.live|newtoki.me|newtoki.net|newtoki.news|newtoki.one|newtoki.online|newtoki.org|newtoki.pro|newtoki.site|newtoki.store|newtoki.vip
 ||newtoki.*/banner*/$domain=newtoki.ai|newtoki.asia|newtoki.biz|newtoki.blog|newtoki.club|newtoki.co|newtoki.com|newtoki.com.bd|newtoki.com.ng|newtoki.com.np|newtoki.info|newtoki.kr|newtoki.life|newtoki.link|newtoki.live|newtoki.me|newtoki.net|newtoki.news|newtoki.one|newtoki.online|newtoki.org|newtoki.pro|newtoki.site|newtoki.store|newtoki.vip
-||i.imgur.com^$domain=torrentqq350.com|torrentqq351.com|torrentqq352.com|torrentqq353.com|torrentqq354.com|torrentqq355.com|torrentqq356.com|torrentqq357.com|torrentqq358.com|torrentqq359.com|torrentqq360.com|torrentqq361.com|torrentqq362.com|torrentqq363.com|torrentqq364.com
+||i.imgur.com^$domain=/^torrentqq\d+.com/
 ||cdn.jjun.live/BANNER/*.gif
 ||tvmon.*/img/ba
 ||tvmon.*/AD/
-||filesbest.xyz/uploadfile/images/*.gif$domain=torrenttip125.com|torrenttip126.com|torrenttip127.com|torrenttip128.com|torrenttip129.com|torrenttip130.com|torrenttip131.com|torrenttip132.com|torrenttip133.com|torrenttip134.com|torrenttip135.com|torrenttip136.com|torrenttip137.com|torrenttip138.com
-/^https:\/\/(www\.)?bobaelink[0-9]+\.xyz\/images\/ad\//
+||filesbest.xyz/uploadfile/images/*.gif$domain=/^torrenttip\d+\.com/
+/^https:\/\/(www\.)?bobaelink\d+\.xyz\/images\/ad\//
 ||i.uuoobe.com/images/250x250-6005.jpg
-/\/data\/zzapstream\/[0-9]+_[A-z0-9]+\.gif/$domain=zzzz.lol
+/\/data\/zzapstream\/\d+_[A-z0-9]+\.gif/$domain=zzzz.lol
 ||i.uuoobe.com//ad/
 /^https:\/\/(www\.)?filetender\.com\/images\/(?!logo).+\.(jpg|png)$/$domain=filetender.com
-/^https:\/\/m[0-9]+\.kotbc\.com\/img\/[a-z0-9_\/]+\.gif$/
-||i.imgur.com^$domain=torrentwhy118.xyz|torrentwhy119.xyz|torrentwhy120.xyz|torrentwhy121.xyz|torrentwhy122.xyz|torrentwhy123.xyz|torrentwhy124.xyz|torrentwhy125.xyz|torrentwhy126.xyz|torrentwhy127.xyz|torrentwhy128.xyz|torrentwhy129.xyz
-||imgbox.com^$domain=tvzota106.com|tvzota107.com|tvzota108.com|tvzota109.com|tvzota110.com|tvzota111.com|tvzota112.com|tvzota113.com|tvzota114.com|tvzota115.com|tvzota116.com
-/^https:\/\/(www\.)?ruru\.tv\/uploads\/[0-9]+\/((?!16682220461360)[0-9]+)/$domain=ruru.tv
+/^https:\/\/m\d+\.kotbc\.com\/img\/[a-z0-9_\/]+\.gif$/
+||i.imgur.com^$domain=/^torrentwhy\d+\.xyz/
+||imgbox.com^$domain=/^tvzota\d+\.com/
+/^https:\/\/(www\.)?ruru\.tv\/uploads\/\d+\/(?!16682220461360)\d+/$domain=ruru.tv
 ||ruru.tv/uploads/
-/^https:\/\/torrentsee[0-9]+\.com\/uploadfile\/up[a-z0-9]+\.gif$/
+/^https:\/\/torrentsee\d+\.com\/uploadfile\/up[a-z0-9]+\.gif/
 ||kbutv.com/allimg/*/banner
 ||zzweb.b-cdn.net/data/file/partnerevent/
-/^https:\/\/manatoon[0-9]+\.com\/data\/apms\/background\//
-/^https:\/\/av[0-9]+\.org\/banner\//
+/^https:\/\/manatoon\d+\.com\/data\/apms\/background\//
+/^https:\/\/av\d+\.org\/banner\//
 ||cdnbuzz.buzz/banner/
-/^https:\/\/(www\.)?todawa[0-9]+\.asia\/ad\//
-/^https:\/\/(www\.)?bngame[0-9]+\.com\/data\/files\/banner\//
+/^https:\/\/(www\.)?todawa\d+\.asia\/ad\//
+/^https:\/\/(www\.)?bngame\d+\.com\/data\/files\/banner\//
 /^https:\/\/today-sports\.io\/img\/.*(?=(evolution|banner|\.gif))/$domain=today-sports.io
-/^https:\/\/tvmoa[0-9]+\.com\/data\/apms\/background\//
+/^https:\/\/tvmoa\d+\.com\/data\/apms\/background\//
 ||save-1.net/data/apms/background/
 ||save-1.net/thema/Save1/widget/miso-top-banner/topbar.js
-/^https:\/\/img\.cdnfor\.me\/images\/[0-9]+\/[0-9]+\/[0-9]+\/[a-z0-9_-]+\./$domain=save-1.net
-/^https:\/\/cdn-nl-[0-9]+\.hasha\.in\/[A-z0-9_]+\.gif$/$domain=hasha.in
+/^https:\/\/img\.cdnfor\.me\/images\/\d+\/\d+\/\d+\/[a-z0-9_-]+\./$domain=save-1.net
+/^https:\/\/cdn-nl-\d+\.hasha\.in\/[A-z0-9_]+\.gif$/$domain=hasha.in
 ||jusotop.com/b/$domain=yatv.net|yadongtube.net|yadongkorea.red|yadongwang.org|yako.red
-/^https:\/\/jgmoa[0-9]+\.com\/upload_files\/popup\//
-/^https:\/\/newtoki[0-9]+\.com\/tokinbtoki\/[0-9]+/
-/^https:\/\/manatoki[0-9]+\.net\/tokinbtoki\//
-||imgsuperpower.com^$domain=tkr331.com|tkr332.com|tkr333.com|tkr334.com|tkr335.com|tkr336.com|tkr337.com|tkr338.com|tkr339.com|tkr340.com|tkr341.com|tkr342.com
-||blogger.googleusercontent.com/img/$domain=tkr331.com|tkr332.com|tkr333.com|tkr334.com|tkr335.com|tkr336.com|tkr337.com|tkr338.com|tkr339.com|tkr340.com|tkr341.com|tkr342.com
-||static.springbuilder.site/fs/userFiles-v2/$domain=tkr331.com|tkr332.com|tkr333.com|tkr334.com|tkr335.com|tkr336.com|tkr337.com|tkr338.com|tkr339.com|tkr340.com|tkr341.com|tkr342.com
+/^https:\/\/jgmoa\d+\.com\/upload_files\/popup\//
+/^https:\/\/newtoki\d+\.com\/tokinbtoki\/\d+\//
+/^https:\/\/manatoki\d+\.net\/tokinbtoki\//
+||imgsuperpower.com^$domain=/^tkr\d+\.com/
+||blogger.googleusercontent.com/img/$domain=/^tkr\d+\.com/
+||static.springbuilder.site/fs/userFiles-v2/$domain=/^tkr\d+\.com/
 /^https:\/\/static\.tzstatic\.top\/t\/[a-z0-9]+\.gif$/
-/^https:\/\/image\.yaburi[0-9]+\.com\/image-storage\/banners\//
-/^https:\/\/w[0-9]+\.torrentnx[0-9]+\.com\/data\/file\/notice\//$domain=torrentnx17.com|torrentnx18.com|torrentnx19.com|torrentnx20.com|torrentnx21.com|torrentnx22.com|torrentnx23.com|torrentnx24.com|torrentnx25.com|torrentnx26.com|torrentnx27.com
+/^https:\/\/image\.yaburi\d+\.com\/image-storage\/banners\//
+/^https:\/\/w\d+\.torrentnx\d+\.com\/data\/file\/notice\//$domain=torrentnx17.com|torrentnx18.com|torrentnx19.com|torrentnx20.com|torrentnx21.com|torrentnx22.com|torrentnx23.com|torrentnx24.com|torrentnx25.com|torrentnx26.com|torrentnx27.com
 ||i.imgur.com^$domain=etorrentro.net
-/^https:\/\/imgcloud[0-9]+\.net\//$domain=wftoon137.com|wftoon138.com|wftoon139.com|wftoon140.com|wftoon141.com|wftoon142.com|wftoon143.com|wftoon144.com|wftoon145.com|wftoon146.com|wftoon147.com|wftoon148.com|wftoon149.com|wftoon150.com|wftoon151.com
-/^https:\/\/torrentten[0-9]+\.com\/thema\/Basic\/assets\/img\/.+\.gif$/
-/^https:\/\/linkrand[0-9]+\.com\/thema\/Miso-Basic[0-9]\/assets\/img\/banne/
-/^https:\/\/linkrand[0-9]+\.com\/data\/file\/(left|right)_sero\//
-/^https:\/\/linkrand[0-9]+\.com\/data\/apms\/background\//
-/^https:\/\/linkrand[0-9]+\.com\/data\/file\/site_2\//
-/^https:\/\/tvbox[0-9]+\.xyz\/data\/apms\/background\/.+\.gif$/
-/^https:\/\/ydbox[0-9]+\.com\/data\/apms\/background\/.+\.gif$/
-/^https:\/\/nightyd[0-9]+\.com\/uploadfile\/up[a-z0-9]+\./
-/^https:\/\/linkeye[0-9]+\.com\/data\/file\/banner\//
+/^https:\/\/imgcloud\d+\.net\/$domain=wftoon137.com|wftoon138.com|wftoon139.com|wftoon140.com|wftoon141.com|wftoon142.com|wftoon143.com|wftoon144.com|wftoon145.com|wftoon146.com|wftoon147.com|wftoon148.com|wftoon149.com|wftoon150.com|wftoon151.com/
+/^https:\/\/torrentten\d+\.com\/thema\/Basic\/assets\/img\/.+\.gif$/
+/^https:\/\/linkrand\d+\.com\/thema\/Miso-Basic\d\/assets\/img\/banne/
+/^https:\/\/linkrand\d+\.com\/data\/file\/(left|right)_sero\//
+//^https:\/\/linkrand\d+\.com\/data\/apms\/background\//
+/^https:\/\/linkrand\d+\.com\/data\/file\/site_2\//
+/^https:\/\/tvbox\d+\.xyz\/data\/apms\/background\/.+\.gif$/
+/^https:\/\/ydbox\d+\.com\/data\/apms\/background\/.+\.gif$/
+/^https:\/\/nightyd\d+\.com\/uploadfile\/up[a-z0-9]+\./
+/^https:\/\/linkeye\d+\.com\/data\/file\/banner\//
 ||static.springbuilder.site/fs/userFiles-v2/$domain=img.imimggggg87878.com
 ||i.imgur.com^$domain=img.imimggggg87878.com
 ||hellven.net/data/apms/imgb/
 ||toonthe.com/img/banner/
-/^https:\/\/hohotoon[0-9]+\.com\/data\/banner\//
-/^https?:\/\/(www\.)?spotv[0-9]+\.com\/theme\/basic\/img\/[a-z]+_ad_/
-/^https:\/\/torrenthaja[0-9]*\.com\/data\/banner\//
+/^https:\/\/hohotoon\d+\.com\/data\/banner\//
+/^https?:\/\/(www\.)?spotv\d+\.com\/theme\/basic\/img\/[a-z]+_ad_/
+/^https:\/\/torrenthaja\d*\.com\/data\/banner\//
 ||anilife.*/imgs/banner/$domain=anilife.app|anilife.com|anilife.com.bd|anilife.com.np|anilife.life|anilife.live|anilife.my|anilife.net
-/^https:\/\/xn--8-o68e16s35etqj\.com\/data\/editor\/[0-9]+\/[a-z0-9]+_[a-z0-9]+_[a-z0-9]+\./
-/^https:\/\/torrentmode[0-9]+\.com\/data\/zn_bimg\//
 ||az-cdn.com/banners/
-/^https:\/\/toonkor[0-9]+\.com\/images\/[0-9a-z-]*[0-9]{3,}(x|X)[0-9]{2,}/
-/^https:\/\/toonkor[0-9]+\.com\/bann\//
-/^https:\/\/torrentlee[0-9]+\.com\/[A-z_0-9]+\.gif$/
-/^https:\/\/torrentwiz[0-9]+\.com\/[A-z0-9]+\.gif$/
-/^https:\/\/agit[0-9]+\.xyz\/data\/file\/novel\/banner\//
-/^https:\/\/jgmoa[0-9]+\.com\/upload_files\/banner\//
-/https:\/\/www\.sexzoa[0-9]+\.me\/imgad\//
-/^https:\/\/yagong[0-9]+\.com\/storage\/upload\/banners\//
-/^https:\/\/yagong[0-9]+\.com\/images\/[A-z0-9-]+\.gif$/
-/^https:\/\/www\.xcity[0-9]+\.me\/imgad\//
-/^https:\/\/www\.jinyi[0-9]+\.me\/imgad\//
-/^https:\/\/www\.redsun[0-9]+\.me\/ad\//
-/^https:\/\/manamoa[0-9]+\.com\/data\/apms\/background\//
-/^https:\/\/namedtoon[0-9]+\.com\/Uploads\/\/images\/[0-9]{4}-[0-9]{2}-[0-9]{2}\/[a-z0-9]{13}/
-/^https:\/\/(www\.)?race[0-9]+\.xyz\/images\/spon\//
-/^https:\/\/imgcloud[0-9]+\.net\//$domain=wtwt256.com|wtwt257.com|wtwt258.com|wtwt259.com|wtwt260.com|wtwt261.com|wtwt262.com|wtwt263.com|wtwt264.com|wtwt265.com|wtwt266.com|wtwt267.com|wtwt268.com|wtwt269.com|wtwt270.com|wtwt271.com|wtwt272.com|wtwt273.com|wtwt274.com
-||i.imgur.com^$domain=torrentgram65.com|torrentgram66.com|torrentgram67.com|torrentgram68.com|torrentgram69.com|torrentgram70.com|torrentgram71.com|torrentgram72.com|torrentgram73.com|torrentgram74.com|torrentgram75.com|torrentgram76.com|torrentgram77.com|torrentgram78.com|torrentgram79.com|torrentgram80.com
+/^https:\/\/xn--8-o68e16s35etqj\.com\/data\/editor\/\d+\/[a-z0-9]+_[a-z0-9]+_[a-z0-9]+\./
+/^https:\/\/torrentmode\d+\.com\/data\/zn_bimg\//
+/^https:\/\/toonkor\d+\.com\/images\/[0-9a-z-]*\d{3,}(x|X)\d{2,}/
+/^https:\/\/toonkor\d+\.com\/bann\//
+/^https:\/\/torrentlee\d+\.com\/[A-z_0-9]+\.gif$/
+/^https:\/\/torrentwiz\d+\.com\/[A-z0-9]+\.gif$/
+/^https:\/\/agit\d+\.xyz\/data\/file\/novel\/banner\//
+/^https:\/\/jgmoa\d+\.com\/upload_files\/banner\//
+/^https:\/\/www\.sexzoa\d+\.me\/imgad\//
+/^https:\/\/yagong\d+\.com\/storage\/upload\/banners\//
+/^https:\/\/yagong\d+\.com\/images\/[A-z0-9-]+\.gif$/
+/^https:\/\/www\.xcity\d+\.me\/imgad\//
+/^https:\/\/www\.jinyi\d+\.me\/imgad\//
+/^https:\/\/www\.redsun\d+\.me\/ad\//
+/^https:\/\/manamoa\d+\.com\/data\/apms\/background\//
+/^https:\/\/namedtoon\d+\.com\/Uploads\/images\/\d{4}-\d{2}-\d{2}\/[a-z0-9]{13}/
+/^https:\/\/(www\.)?race\d+\.xyz\/images\/spon\//
+/^https:\/\/imgcloud\d+\.net\//$domain=/wtwt\d+.com/
+||i.imgur.com^$domain=/^torrentgram\d+\.com/
 /^https:\/\/dc\.filesbest\.xyz\/uploadfile\/images\/[a-z0-9]+\.gif$/
-/^https:\/\/torrentwiz[0-9]+\.com\/data\/editor\/[0-9]{4}\//
-/^https:\/\/torrentbot[0-9]+\.com\/uploadfile\/up[a-z0-9]+\.gif$/
-||imgbox.com^$domain=ktxtorrent121.com|ktxtorrent122.com|ktxtorrent123.com|ktxtorrent124.com|ktxtorrent125.com|ktxtorrent126.com|ktxtorrent127.com|ktxtorrent128.com|ktxtorrent129.com|ktxtorrent130.com|ktxtorrent131.com|ktxtorrent132.com|ktxtorrent133.com|ktxtorrent134.com|ktxtorrent135.com
-||static.filesbest.xyz^$domain=ktxtorrent121.com|ktxtorrent122.com|ktxtorrent123.com|ktxtorrent124.com|ktxtorrent125.com|ktxtorrent126.com|ktxtorrent127.com|ktxtorrent128.com|ktxtorrent129.com|ktxtorrent130.com|ktxtorrent131.com|ktxtorrent132.com|ktxtorrent133.com|ktxtorrent134.com|ktxtorrent135.com
-||i.imgur.com^$domain=bobaelink65.xyz|bobaelink66.xyz|bobaelink67.xyz|bobaelink68.xyz|bobaelink69.xyz|bobaelink70.xyz|bobaelink71.xyz|bobaelink72.xyz|bobaelink73.xyz|bobaelink74.xyz|bobaelink75.xyz|bobaelink76.xyz
+/^https:\/\/torrentwiz\d+\.com\/data\/editor\/\d{4}\//
+/^https:\/\/torrentbot\d+\.com\/uploadfile\/up[a-z0-9]+\.gif$/
+||imgbox.com^$domain=/^ktxtorrent\d+\.com/
+||static.filesbest.xyz^$domain=/^ktxtorrent\d+\.com/
+||i.imgur.com^$domain=/^bobaelink\d+\.xyz/
 ||filetender.com/mobon.html|
-/^https:\/\/(www\.)?filetender\.com\/images\/[0-9]{3,}(X|x)[0-9]{3,}-[0-9]{4}/
+/^https:\/\/(www\.)?filetender\.com\/images\/\d{3,}(X|x)\d{3,}-\d{4}/
 ||filetender.com/images/*.gif
-/^https:\/\/booktoki[0-9]+\.com\/tokinbtoki\/[0-9]+/
+/^https:\/\/booktoki\d+\.com\/tokinbtoki\/\d+/
 ||hcdn1.maxsocdn.net^$domain=sogirl.so
 ||1.bp.blogspot.com^$domain=sogirl.so
 ||toonimg.com/data/files/banner/
-/^https:\/\/frtoon[0-9]+\.com\/data\/by_banner\//
-/^https?:\/\/[0-9]+image\.[0-9]+toon\.com\/Image\/Banposter\//
-/^https?:\/\/toon[0-9]+\.com\/bbs\/myiframe\.html$/
-/^https?:\/\/manaboza[0-9]+\.com\/static\/picture\/[0-9]{4}_[0-9]{10}\.[0-9]{4}\./
-/^https?:\/\/manaboza[0-9]+\.com\/static\/image\/header\//
-/^https:\/\/newtoon[0-9]+\.com\/banner\//
-/^https:\/\/bam[0-9]+co\.com\/_book\/_Contents\/banner\//
-||imgsuperpower.com^$domain=hdhd344.net|hdhd345.net|hdhd346.net|hdhd347.net|hdhd348.net|hdhd349.net|hdhd350.net|hdhd351.net|hdhd352.net|hdhd353.net|hdhd354.net|hdhd355.net|hdhd356.net|hdhd357.net|hdhd358.net
-||blogger.googleusercontent.com^$domain=hdhd344.net|hdhd345.net|hdhd346.net|hdhd347.net|hdhd348.net|hdhd349.net|hdhd350.net|hdhd351.net|hdhd352.net|hdhd353.net|hdhd354.net|hdhd355.net|hdhd356.net|hdhd357.net|hdhd358.net
-/^https:\/\/iabn[0-9]+\.net\//$domain=wfwf345.com|wfwf346.com|wfwf347.com|wfwf348.com|wfwf349.com|wfwf350.com|wfwf351.com|wfwf352.com|wfwf353.com|wfwf354.com|wfwf355.com|wfwf356.com|wfwf357.com
-/^https:\/\/blacktoon[0-9]+\.com\/poster_js\/[0-9]+\.js/
+/^https:\/\/frtoon\d+\.com\/data\/by_banner\//,
+/^https?:\/\/\d+image\.\d+toon\.com\/Image\/Banposter\//,
+/^https?:\/\/manaboza\d+\.com\/static\/picture\/\d{4}_[0-9]{10}\.\d{4}\./,
+/^https?:\/\/manaboza\d+\.com\/static\/image\/header\//,
+/^https:\/\/newtoon\d+\.com\/banner\//,
+/^https:\/\/bam\d+co\.com\/_book\/_Contents\/banner\//
+||imgsuperpower.com^$domain=/^hdhd\d+\.net/
+||blogger.googleusercontent.com^$domain=/^hdhd\d+\.net/
+/^https:\/\/iabn\d+\.net\/$domain=/wfwf\d+\.net/
+/^https:\/\/blacktoon\d+\.com\/poster_js\/\d+\.js/
 ||toonkor*.com/images/*.gif
 ||wwwimageup.angle777899.com/other/atoona/
 !
@@ -1600,6 +1598,7 @@ jobkorea.co.kr##div[id^="Banner"]
 eegosa.com##section[id*="_ads_"]
 ! ##div[id*="_AD"]
 sports.donga.com##div[id*="_AD"]
+coupang.com##.ads-line-banner-container
 eyejokerdb.com##div[class$="max-w-[1200px]"].w-full > .rounded-lg
 eyejokerdb.com##next-route-announcer + .flex > div[class$="z-[5]"].relative
 jogemoa.com###container > .banner_list
@@ -2826,42 +2825,44 @@ clien.net##div:has(> div[class="ad_banner"])
 etoland.co.kr##div#super_store_skin_v1
 etoland.co.kr##div.my_880_100_wrap
 koreaminecraft.net##tr.notice:not(:has(.wst_member_title))
+kio.ac##main > div:has(> div > div > a > img)
 !
 ! DOMAIN-REFRESHER: START
 !
 blacktoon1.info##div[data-mesh-id="comp-m8jy31rninlineContent"]
-tkor011.com,tkor012.com,tkor013.com,tkor014.com,tkor015.com,tkor016.com,tkor017.com,tkor018.com,tkor019.com,tkor020.com,tkor021.com,tkor022.com,tkor023.com,tkor024.com,tkor025.com,tkor026.com,tkor027.com,tkor028.com##*[class*="top_bann"]
+[$domain=/^tkor\d+\.com/]##*[class*="top_bann"]
 toonkor.wiki##.banner
 yako.gg##.banner_grid
 v119.com##.zone-right > *:has(~ .no-pd):not(:has(> .tabbox))
 v119.com##.at-boxed .zone-center > .widget-box ~ *
 ! aglint-disable-next-line
-newtoki359.com,newtoki360.com,newtoki361.com,newtoki362.com,newtoki363.com,newtoki364.com,newtoki365.com,newtoki366.com,newtoki367.com,newtoki368.com,newtoki369.com,newtoki370.com,newtoki371.com,newtoki372.com,newtoki373.com,newtoki374.com,newtoki375.com##img[title="소울_뉴토끼_이벤트_배너"]
+[$domain=/^newtoki\d+\.com/]##img[title="소울_뉴토끼_이벤트_배너"]
 itrulli.com##div.elementor-widget-shortcode
 avjoa69.com##img[onclick]
 avjoa69.com##.happy-header
-jusokorea5.com,jusokorea6.com,jusokorea7.com,jusokorea8.com,jusokorea9.com,jusokorea10.com,jusokorea11.com,jusokorea12.com,jusokorea13.com,jusokorea14.com,jusokorea15.com,jusokorea16.com,jusokorea17.com,jusokorea18.com##div[class*="-ad-banner"]
+[$domain=/^jusokorea\d+\.com/]##div[class*="-ad-banner"]
 ntnt1.tv##a[data-testid="linkElement"][href^="http"][target="_blank"]:has(> wow-image)
 aniwolf.com,aniwolf.com.bd,aniwolf.com.np##.banner-area
 anilife.app,anilife.com,anilife.com.bd,anilife.com.np,anilife.life,anilife.live,anilife.my,anilife.net##div[class] > a[class][href^="http"][target="_blank"]
-tvwiki13.com,tvwiki14.com,tvwiki15.com,tvwiki16.com,tvwiki17.com,tvwiki4.com,tvwiki18.com,tvwiki19.com,tvwiki20.com,tvwiki21.com,tvwiki22.com,tvwiki23.com,tvwiki24.com,tvwiki25.com##div[id] > ul:has(a[herf] > img[src^="/AD/"])
+[$domain=/^tvwiki\d+\.com/]##div[id] > ul:has(a[href] > img[src^="/AD/"])
 hoduhodu.com##.w-full > a[target="_blank"] > img
-kktv12.com,kktv13.com,kktv14.com,kktv15.com,kktv16.com,kktv17.com,kktv18.com,kktv19.com,kktv20.com,kktv21.com,kktv22.com,kktv23.com,kktv24.com,kktv25.com,kktv26.com##.modal_contents
-tvmon14.org,tvmon15.org,tvmon16.org,tvmon17.org,tvmon18.org,tvmon19.org,tvmon20.org,tvmon21.org,tvmon22.org,tvmon23.org,tvmon24.org,tvmon25.org,tvmon26.org,tvmon27.org,tvmon28.org##.row-banner
+[$domain=/^kktv\d+\.com/]##.modal_contents
+[$domain=/^tvmon\d+\.org/]##.row-banner
 tvroom5.org##div.banners_area
 tvroom5.org##div.banner_l
 tvroom5.org##.pop-up.iziModal
 tvroom5.org##.iziModal-overlay
-cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com###cpb-popup-banners
-cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com###custom_banner_wrap
-cokcoktv4.com,cokcoktv5.com,cokcoktv6.com,cokcoktv7.com,cokcoktv8.com,cokcoktv9.com,cokcoktv10.com,cokcoktv11.com,cokcoktv12.com,cokcoktv13.com,cokcoktv14.com,cokcoktv15.com,cokcoktv16.com,cokcoktv17.com,cokcoktv18.com##.custom_banner_wrap
-tvwiki13.com,tvwiki14.com,tvwiki15.com,tvwiki16.com,tvwiki17.com,tvwiki4.com,tvwiki18.com,tvwiki19.com,tvwiki20.com,tvwiki21.com,tvwiki22.com,tvwiki23.com,tvwiki24.com,tvwiki25.com##ul[class^="banner"]
-sptv24.com,sptv25.com,sptv26.com,sptv27.com,sptv28.com,sptv29.com,sptv30.com,sptv31.com,sptv32.com,sptv33.com,sptv34.com,sptv35.com,sptv36.com,sptv37.com##.modal_contents
-torrentpi144.com,torrentpi145.com,torrentpi146.com,torrentpi147.com,torrentpi148.com,torrentpi149.com,torrentpi150.com,torrentpi151.com,torrentpi152.com,torrentpi153.com,torrentpi154.com,torrentpi155.com,torrentpi156.com##style ~ .basic-post-gallery
-avguri4.com,avguri5.com,avguri6.com,avguri7.com,avguri8.com,avguri9.com,avguri10.com,avguri11.com,avguri12.com,avguri13.com,avguri14.com,avguri15.com##div[id$="_bn"]
-avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.com,avpink371.com,avpink372.com,avpink373.com###foogallery_widget-3
-avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.com,avpink371.com,avpink372.com,avpink373.com###foogallery_widget-12
-avpink365.com,avpink366.com,avpink367.com,avpink368.com,avpink369.com,avpink370.com,avpink371.com,avpink372.com,avpink373.com###foogallery_widget-13
+[$domain=/^torrentnx\d+\.com/]##a[href*="/bbs/link.php"]
+[$domain=/^cokcoktv\d+\.com/]###cpb-popup-banners
+[$domain=/^cokcoktv\d+\.com/]###custom_banner_wrap
+[$domain=/^cokcoktv\d+\.com/]##.custom_banner_wrap
+[$domain=/^tvwiki\d+\.com/]##ul[class^="banner"]
+[$domain=/^sptv\d+\.com/]##.modal_contents
+[$domain=/^torrentpi\d+\.com/]##style ~ .basic-post-gallery
+[$domain=/^avguri\d+\.com/]##div[id$="_bn"]
+[$domain=/^avpink\d+\.com/]###foogallery_widget-3
+[$domain=/^avpink\d+\.com/]###foogallery_widget-12
+[$domain=/^avpink\d+\.com/]###foogallery_widget-13
 tv25.co##.code-block
 xn--vv4b11c.com##.mp4-banner-view
 xn--vv4b11c.com###xcontent-goodsite
@@ -2869,107 +2870,111 @@ anilife.app,anilife.com,anilife.com.bd,anilife.com.np,anilife.life,anilife.live,
 anilife.app,anilife.com,anilife.com.bd,anilife.com.np,anilife.life,anilife.live,anilife.my,anilife.net##div[data-page] > div[class]:has(a[target="_blank"])
 tvzone.app,tvzone.co.in,tvzone.com.bd,tvzone.com.np,tvzone.cz,tvzone.fr,tvzone.org,tvzone.tv,tvzone.ua,tvzone.uk,tvzone.xyz##.main_banner
 xvideos-kr.com##.thumb-ad
-torrentnx17.com,torrentnx18.com,torrentnx19.com,torrentnx20.com,torrentnx21.com,torrentnx22.com,torrentnx23.com,torrentnx24.com,torrentnx25.com,torrentnx26.com,torrentnx27.com##a[href*="/bbs/link.php"]
+[$domain=/^torrentnx\d+\.com/]##a[href*="/bbs/link.php"]
 coktv.com,coktv.com.bd,coktv.com.np,coktv.live##.custom_banner_wrap
-avguri4.com,avguri5.com,avguri6.com,avguri7.com,avguri8.com,avguri9.com,avguri10.com,avguri11.com,avguri12.com,avguri13.com,avguri14.com,avguri15.com###hd_pop
+[$domain=/^avguri\d+\.com/]###hd_pop
 bbongtv.co.kr,bbongtv.com,bbongtv.com.bd,bbongtv.com.np,bbongtv.net##img[src^="/img/"][src*=".gif"]
-ygy48.com,ygy49.com,ygy50.com,ygy51.com,ygy52.com,ygy53.com,ygy54.com,ygy55.com,ygy56.com,ygy57.com,ygy58.com,ygy59.com,ygy60.com,ygy61.com##.popup_wrap
+[$domain=/^ygy\d+\.com/]##.popup_wrap
 moeni.net##img[src^="/img/sp/"]
 av19.gg###page ~ div[style^="min-height:"]#content.row
-nolgoga25.com,nolgoga26.com,nolgoga27.com,nolgoga28.com,nolgoga29.com,nolgoga30.com,nolgoga31.com,nolgoga32.com,nolgoga33.com,nolgoga34.com,nolgoga35.com###hd_pop
-bontv59.com,bontv60.com,bontv61.com,bontv62.com,bontv63.com,bontv64.com,bontv65.com,bontv66.com,bontv67.com,bontv68.com,bontv69.com##div[class$="_ban"]
-bontv59.com,bontv60.com,bontv61.com,bontv62.com,bontv63.com,bontv64.com,bontv65.com,bontv66.com,bontv67.com,bontv68.com,bontv69.com##div[class^="popup_"]
-tvzota106.com,tvzota107.com,tvzota108.com,tvzota109.com,tvzota110.com,tvzota111.com,tvzota112.com,tvzota113.com,tvzota114.com,tvzota115.com,tvzota116.com##div[class$="_ban"]
-tvzota106.com,tvzota107.com,tvzota108.com,tvzota109.com,tvzota110.com,tvzota111.com,tvzota112.com,tvzota113.com,tvzota114.com,tvzota115.com,tvzota116.com##div[class^="popup_"]
+[$domain=/^nolgoga\d+\.com/]###hd_pop
+[$domain=/^bontv\d+\.com/]##div[class$="_ban"]
+[$domain=/^bontv\d+\.com/]##div[class^="popup_"]
+[$domain=/^tvzota\d+\.com/]##div[class$="_ban"]
+[$domain=/^tvzota\d+\.com/]##div[class^="popup_"]
 agitwebtoon.com.bd,agitwebtoon.com.np,agitwebtoon.xyz##.advx
 newtoki.ai,newtoki.asia,newtoki.biz,newtoki.blog,newtoki.club,newtoki.co,newtoki.com,newtoki.com.bd,newtoki.com.ng,newtoki.com.np,newtoki.info,newtoki.kr,newtoki.life,newtoki.link,newtoki.live,newtoki.me,newtoki.net,newtoki.news,newtoki.one,newtoki.online,newtoki.org,newtoki.pro,newtoki.site,newtoki.store,newtoki.vip##.banner2
-opworlds18.com,opworlds19.com,opworlds20.com,opworlds21.com,opworlds22.com,opworlds23.com,opworlds24.com,opworlds25.com,opworlds26.com##.basic-banner-gallery
-jusoyo12.net,jusoyo13.net,jusoyo14.net,jusoyo15.net,jusoyo16.net,jusoyo17.net,jusoyo18.net,jusoyo19.net,jusoyo20.net,jusoyo21.net,jusoyo22.net##.hd_pops
-jusoyo12.net,jusoyo13.net,jusoyo14.net,jusoyo15.net,jusoyo16.net,jusoyo17.net,jusoyo18.net,jusoyo19.net,jusoyo20.net,jusoyo21.net,jusoyo22.net##.basic-banner-gallery
+[$domain=/^opworlds1\d+\.com/]##.basic-banner-gallery
+[$domain=/^jusoyo1\d+\.net/]##.hd_pops
+[$domain=/^jusoyo1\d+\.net/]##.basic-banner-gallery
 agitnovel.com.bd,agitnovel.com.np,agitnovel.xyz##.banner
 spochak.com##.list-webzine .list-item
-torrentdin4.com,torrentdin5.com,torrentdin6.com,torrentdin7.com,torrentdin8.com,torrentdin9.com,torrentdin10.com,torrentdin11.com,torrentdin12.com,torrentdin13.com,torrentdin14.com,torrentdin15.com###hd_pop
-torrentdin4.com,torrentdin5.com,torrentdin6.com,torrentdin7.com,torrentdin8.com,torrentdin9.com,torrentdin10.com,torrentdin11.com,torrentdin12.com,torrentdin13.com,torrentdin14.com,torrentdin15.com##div[class*="at-"] > .widget-box
-tvchak77.com,tvchak78.com,tvchak79.com,tvchak80.com,tvchak81.com,tvchak82.com,tvchak83.com,tvchak84.com,tvchak85.com,tvchak86.com,tvchak87.com,tvchak88.com,tvchak89.com,tvchak90.com,tvchak91.com,tvchak92.com,tvchak93.com,tvchak94.com,tvchak95.com,tvchak96.com,tvchak97.com,tvchak98.com##div[style].border-shadow
-tvchak77.com,tvchak78.com,tvchak79.com,tvchak80.com,tvchak81.com,tvchak82.com,tvchak83.com,tvchak84.com,tvchak85.com,tvchak86.com,tvchak87.com,tvchak88.com,tvchak89.com,tvchak90.com,tvchak91.com,tvchak92.com,tvchak93.com,tvchak94.com,tvchak95.com,tvchak96.com,tvchak97.com,tvchak98.com##.banner-box
+[$domain=/^torrentdin\d+\.com/]###hd_pop
+[$domain=/^torrentdin\d+\.com/]##div[class*="at-"] > .widget-box
+[$domain=/^tvchak\d+\.com/]##div[style].border-shadow
+[$domain=/^tvchak\d+\.com/]##.banner-box
 cokcok.co.kr,cokcok.com.bd,cokcok.com.np,cokcok.com.tr,cokcok.pro,cokcok.vip##.custom_banner_item
-agit359.com,agit360.com,agit361.com,agit362.com,agit363.com,agit364.com,agit365.com,agit367.com,agit368.com,agit369.com,agit370.com,agit371.com,agit372.com,agit373.com,agit374.com,agit375.com##.banner
-torrentqq350.com,torrentqq351.com,torrentqq352.com,torrentqq353.com,torrentqq354.com,torrentqq355.com,torrentqq356.com,torrentqq357.com,torrentqq358.com,torrentqq359.com,torrentqq360.com,torrentqq361.com,torrentqq362.com,torrentqq363.com,torrentqq364.com##.at-banner
+[$domain=/^agit\d+\.com/]##.banner
+[$domain=/^torrentqq\d+\.com/]##.at-banner
 tvhot.blog,tvhot.cc,tvhot.com,tvhot.com.bd,tvhot.com.np,tvhot.me,tvhot.org,tvhot.pro,tvhot.site,tvhot.vip##div[id*="-banner-"]
 tvhot.blog,tvhot.cc,tvhot.com,tvhot.com.bd,tvhot.com.np,tvhot.me,tvhot.org,tvhot.pro,tvhot.site,tvhot.vip###body_wrap > div[class][style^="margin:"]
 sonagitv.com,sonagitv.com.bd,sonagitv.com.np,sonagitv.live,sonagitv.me,sonagitv.org,sonagitv.pro,sonagitv.tv,sonagitv.xyz##a[href][target="_blank"] > img[src^="/images/banner/"]:not([src^="/images/banner/webtoon_"])
 newtoki.ai,newtoki.asia,newtoki.biz,newtoki.blog,newtoki.club,newtoki.co,newtoki.com,newtoki.com.bd,newtoki.com.ng,newtoki.com.np,newtoki.info,newtoki.kr,newtoki.life,newtoki.link,newtoki.live,newtoki.me,newtoki.net,newtoki.news,newtoki.one,newtoki.online,newtoki.org,newtoki.pro,newtoki.site,newtoki.store,newtoki.vip##.ba_test
-torrentqq350.com,torrentqq351.com,torrentqq352.com,torrentqq353.com,torrentqq354.com,torrentqq355.com,torrentqq356.com,torrentqq357.com,torrentqq358.com,torrentqq359.com,torrentqq360.com,torrentqq361.com,torrentqq362.com,torrentqq363.com,torrentqq364.com##.row-banner
+[$domain=/^torrentqq\d+\.com/]##.row-banner
 sonagitv.com,sonagitv.com.bd,sonagitv.com.np,sonagitv.live,sonagitv.me,sonagitv.org,sonagitv.pro,sonagitv.tv,sonagitv.xyz##.popup_warp
 kr.bb-tv.co##.banner
-torrenttip125.com,torrenttip126.com,torrenttip127.com,torrenttip128.com,torrenttip129.com,torrenttip130.com,torrenttip131.com,torrenttip132.com,torrenttip133.com,torrenttip134.com,torrenttip135.com,torrenttip136.com,torrenttip137.com,torrenttip138.com##a[href*="/ad/"]
-torrenttt130.com,torrenttt131.com,torrenttt132.com,torrenttt133.com,torrenttt134.com,torrenttt135.com,torrenttt136.com,torrenttt137.com,torrenttt138.com,torrenttt139.com,torrenttt140.com,torrenttt141.com,torrenttt142.com,torrenttt143.com##a[href*="/ad/"][target="_blank"]
+[$domain=/^torrenttip\d+\.com/]##a[href*="/ad/"]
+[$domain=/^torrenttt\d+\.com/]##a[href*="/ad/"][target="_blank"]
 zzzz.lol##a[href*="/bbs/link.php?bo_table=partner&"]
 zzzz.lol##.ent_wrapper.slide-vertical-effect .ent_navigation
 zzzz.lol##a[href*="?bo_table=partner"]
 zzzz.lol###hd_pop
 hasha.in##div[style^="min-height:"][class^="bg-hasha-"] > div[style] + .max-w-full
-tvzota106.com,tvzota107.com,tvzota108.com,tvzota109.com,tvzota110.com,tvzota111.com,tvzota112.com,tvzota113.com,tvzota114.com,tvzota115.com,tvzota116.com##div[class^="popup_"]
-tvzota106.com,tvzota107.com,tvzota108.com,tvzota109.com,tvzota110.com,tvzota111.com,tvzota112.com,tvzota113.com,tvzota114.com,tvzota115.com,tvzota116.com##.wid
+[$domain=/^tvzota\d+\.com/]##div[class^="popup_"]
+[$domain=/^tvzota\d+\.com/]##.wid
 yako.red,yadongwang.org,yadongkorea.red,yadongtube.net,yatv.net###banner
 save-1.net##div[id^="float"]
 save-1.net##div[class^="header-banner-"]
 save-1.net##.at-main > .widget-box
 save-1.net##.w-banner
-jgmoa57.com,jgmoa58.com,jgmoa59.com,jgmoa60.com,jgmoa61.com,jgmoa62.com,jgmoa63.com,jgmoa64.com,jgmoa65.com,jgmoa66.com,jgmoa67.com,jgmoa68.com,jgmoa69.com,jgmoa70.com,jgmoa71.com##.popup
-torrenttop103.com,torrenttop104.com,torrenttop105.com,torrenttop106.com,torrenttop107.com,torrenttop108.com,torrenttop109.com,torrenttop110.com,torrenttop111.com,torrenttop112.com,torrenttop113.com,torrenttop114.com,torrenttop115.com,torrenttop116.com##a[href^="/adver-"]
-yaburi52.com,yaburi53.com,yaburi54.com,yaburi55.com,yaburi56.com,yaburi57.com,yaburi58.com,yaburi59.com,yaburi60.com,yaburi61.com,yaburi62.com,yaburi63.com,yaburi64.com,yaburi65.com,yaburi66.com,yaburi67.com,yaburi68.com,yaburi69.com,yaburi70.com,yaburi71.com,yaburi72.com###popups
+[$domain=/^jgmoa\d+\.com/]##.popup
+[$domain=/^torrenttop\d+\.com/]##a[href^="/adver-"]
+[$domain=/^yaburi\d+\.com/]###popups
 etorrentro.net##div[id^="banner"]
 1004girl.com##.page-content > .row.no-gap.no-space > .col-33
-linkrand5.com,linkrand6.com,linkrand7.com,linkrand8.com,linkrand9.com,linkrand10.com,linkrand11.com,linkrand12.com,linkrand13.com,linkrand14.com,linkrand15.com,linkrand16.com,linkrand17.com,linkrand18.com,linkrand19.com##.is-hover a[href^="http"][target="_blank"]
-linkrand5.com,linkrand6.com,linkrand7.com,linkrand8.com,linkrand9.com,linkrand10.com,linkrand11.com,linkrand12.com,linkrand13.com,linkrand14.com,linkrand15.com,linkrand16.com,linkrand17.com,linkrand18.com,linkrand19.com##div[id][class*=" "][data-interval] div[style*="/data/apms/background"]
-tvbox68.xyz,tvbox69.xyz,tvbox70.xyz,tvbox71.xyz,tvbox72.xyz,tvbox73.xyz,tvbox74.xyz,tvbox75.xyz,tvbox76.xyz,tvbox77.xyz,tvbox78.xyz,tvbox79.xyz,tvbox80.xyz,tvbox81.xyz,tvbox82.xyz,tvbox83.xyz,tvbox84.xyz##div[class*="-banner"] div[class*=" "][style=" "]
-ydbox30.com,ydbox31.com,ydbox32.com,ydbox33.com,ydbox34.com,ydbox35.com,ydbox36.com,ydbox37.com,ydbox38.com,ydbox39.com,ydbox40.com,ydbox41.com,ydbox42.com,ydbox43.com,ydbox44.com,ydbox45.com,ydbox46.com##div[class*="-banner"] div[class*=" "][style=" "]
-linkeye7.com,linkeye8.com,linkeye9.com,linkeye10.com,linkeye11.com,linkeye12.com,linkeye13.com,linkeye14.com,linkeye15.com,linkeye16.com,linkeye17.com,linkeye18.com,linkeye19.com,linkeye20.com,linkeye21.com##div[class*="banner-"]
+[$domain=/^linkrand\d+\.com/]##.is-hover a[href^="http"][target="_blank"]
+[$domain=/^linkrand\d+\.com/]##div[id][class*=" "][data-interval] div[style*="/data/apms/background"]
+[$domain=/^tvbox\d+\.xyz/]##div[class*="-banner"] div[class*=" "][style=" "]
+[$domain=/^ydbox\d+\.com/]##div[class*="-banner"] div[class*=" "][style=" "]
+[$domain=/^linkeye\d+\.com/]##div[class*="banner-"]
 img.imimggggg87878.com##div[class$="-banner"]
 linkkf.app###banner
-booktoki461.com,booktoki462.com,booktoki463.com,booktoki464.com,booktoki465.com,booktoki466.com,booktoki467.com,booktoki468.com,booktoki469.com,booktoki470.com,booktoki471.com,booktoki472.com,booktoki473.com,booktoki474.com,booktoki475.com,booktoki476.com##div[id*="-banner-"] > div[class*=" "] > div[class*=" "][style*=" "]
+[$domain=/^booktoki\d+\.com/]##div[id*="-banner-"] > div[class*=" "] > div[class*=" "][style*=" "]
 hellven.net##a[href^="http"][target="_blank"].thumbnail
 dajunbi.com##div[class^="banner_"]
-spotv120.com,spotv121.com,spotv122.com,spotv123.com,spotv124.com,spotv125.com,spotv126.com,spotv127.com,spotv128.com,spotv129.com,spotv130.com,spotv131.com,spotv132.com,spotv133.com,spotv134.com,spotv135.com,spotv136.com,spotv137.com,spotv138.com##div[id$="-banner"]
+[$domain=/^spotv\d+\.com/]##div[id$="-banner"]
 qooqootv.fun##div[class^="banner_"]
-lover932.net,lover933.net,lover934.net,lover935.net,lover936.net,lover937.net,lover938.net,lover939.net,lover940.net,lover941.net##.xe_content span ~ div[style]
+[$domain=/^lover\d+\.net/]##.xe_content span ~ div[style]
 theqoo.net##tr.notice:not([data-document_srl])
-yagong76.com,yagong77.com,yagong78.com,yagong79.com,yagong80.com,yagong81.com,yagong82.com,yagong83.com,yagong84.com,yagong85.com,yagong86.com,yagong87.com,yagong88.com,yagong89.com,yagong90.com,yagong91.com,yagong92.com,yagong93.com,yagong94.com,yagong95.com,yagong96.com,yagong97.com,yagong98.com##div[x-data="popups()"]
-redsun50.me,redsun51.me,redsun52.me,redsun53.me,redsun54.me,redsun55.me,redsun56.me,redsun57.me,redsun58.me,redsun59.me,redsun60.me,redsun61.me,redsun62.me,redsun63.me,redsun64.me,redsun65.me,redsun66.me,redsun67.me,redsun68.me,redsun69.me,redsun70.me,redsun71.me,redsun72.me,redsun73.me,redsun74.me##div[id*="ads"]
-manamoa99.com,manamoa100.com,manamoa101.com,manamoa102.com,manamoa103.com,manamoa104.com,manamoa105.com,manamoa106.com,manamoa107.com,manamoa108.com,manamoa109.com,manamoa110.com,manamoa111.com,manamoa112.com,manamoa113.com,manamoa114.com,manamoa115.com,manamoa116.com,manamoa117.com,manamoa118.com,manamoa119.com##div[class*="banner"]
-torrentgram65.com,torrentgram66.com,torrentgram67.com,torrentgram68.com,torrentgram69.com,torrentgram70.com,torrentgram71.com,torrentgram72.com,torrentgram73.com,torrentgram74.com,torrentgram75.com,torrentgram76.com,torrentgram77.com,torrentgram78.com,torrentgram79.com,torrentgram80.com##.panel-default ~ .row > .col-sm-6
-torrentgram65.com,torrentgram66.com,torrentgram67.com,torrentgram68.com,torrentgram69.com,torrentgram70.com,torrentgram71.com,torrentgram72.com,torrentgram73.com,torrentgram74.com,torrentgram75.com,torrentgram76.com,torrentgram77.com,torrentgram78.com,torrentgram79.com,torrentgram80.com##.npia-board-gallery
-torrentgram65.com,torrentgram66.com,torrentgram67.com,torrentgram68.com,torrentgram69.com,torrentgram70.com,torrentgram71.com,torrentgram72.com,torrentgram73.com,torrentgram74.com,torrentgram75.com,torrentgram76.com,torrentgram77.com,torrentgram78.com,torrentgram79.com,torrentgram80.com###body_text > .at-main.at-col[style]
-torrentbam129.com,torrentbam130.com,torrentbam131.com,torrentbam132.com,torrentbam133.com,torrentbam134.com,torrentbam135.com,torrentbam136.com,torrentbam137.com,torrentbam138.com,torrentbam139.com,torrentbam140.com,torrentbam141.com,torrentbam142.com,torrentbam143.com,torrentbam144.com##a[href*="/ad/"][target="_blank"]
-torrentbot176.com,torrentbot177.com,torrentbot178.com,torrentbot179.com,torrentbot180.com,torrentbot181.com,torrentbot182.com,torrentbot183.com,torrentbot184.com,torrentbot185.com,torrentbot186.com,torrentbot187.com,torrentbot188.com,torrentbot189.com##a[href^="/go/"][target="_blank"]
-torrentbot176.com,torrentbot177.com,torrentbot178.com,torrentbot179.com,torrentbot180.com,torrentbot181.com,torrentbot182.com,torrentbot183.com,torrentbot184.com,torrentbot185.com,torrentbot186.com,torrentbot187.com,torrentbot188.com,torrentbot189.com##div[id^="ad_"]
-ktxtorrent121.com,ktxtorrent122.com,ktxtorrent123.com,ktxtorrent124.com,ktxtorrent125.com,ktxtorrent126.com,ktxtorrent127.com,ktxtorrent128.com,ktxtorrent129.com,ktxtorrent130.com,ktxtorrent131.com,ktxtorrent132.com,ktxtorrent133.com,ktxtorrent134.com,ktxtorrent135.com##img[src*=".imgbox.com/"]
-torrentsome144.com,torrentsome145.com,torrentsome146.com,torrentsome147.com,torrentsome148.com,torrentsome149.com,torrentsome150.com,torrentsome151.com,torrentsome152.com,torrentsome153.com,torrentsome154.com,torrentsome155.com,torrentsome156.com##a[href^="/go/"][target="_blank"]
-torrentrj166.com,torrentrj167.com,torrentrj168.com,torrentrj169.com,torrentrj170.com,torrentrj171.com,torrentrj172.com,torrentrj173.com,torrentrj174com,torrentrj175.com,torrentrj176.com,torrentrj177.com,torrentrj178.com,torrentrj179.com,torrentrj180.com,torrentrj181.com##a[href^="/go/"][target="_blank"]
-bobaelink65.xyz,bobaelink66.xyz,bobaelink67.xyz,bobaelink68.xyz,bobaelink69.xyz,bobaelink70.xyz,bobaelink71.xyz,bobaelink72.xyz,bobaelink73.xyz,bobaelink74.xyz,bobaelink75.xyz,bobaelink76.xyz##a[href^="/ad-"]
+[$domain=/^yagong\d+\.com/]##div[x-data="popups()"]
+[$domain=/^redsun\d+\.me/]##div[id*="ads"]
+[$domain=/^manamoa\d+\.com/]##div[class*="banner"]
+[$domain=/^torrentgram\d+\.com/]##.panel-default ~ .row > .col-sm-6
+[$domain=/^torrentgram\d+\.com/]##.npia-board-gallery
+[$domain=/^torrentgram\d+\.com/]###body_text > .at-main.at-col[style]
+[$domain=/^torrentbam\d+\.com/]##a[href*="/ad/"][target="_blank"]
+[$domain=/^torrentbot\d+\.com/]##a[href^="/go/"][target="_blank"]
+[$domain=/^torrentbot\d+\.com/]##div[id^="ad_"]
+[$domain=/^ktxtorrent\d+\.com/]##img[src*=".imgbox.com/"]
+[$domain=/^torrentsome\d+\.com/]##a[href^="/go/"][target="_blank"]
+[$domain=/^torrentrj\d+\.com/]##a[href^="/go/"][target="_blank"]
+[$domain=/^bobaelink\d+\.xyz/]##a[href^="/ad-"]
 uuoobe.com##td[valign="top"] ~ td[width][valign][bgcolor][align] table[width][height][border][cellpadding]
 uuoobe.com##table[width][cellspacing] td[valign="top"] table[width][border="0"] td[height="100"]
 filetender.com###banner
 filetender.com##iframe[src="https://filetender.com/mobon.html"]
 moviepang.net##.sidebar[style] > aside[id^="text-"][class] ~ aside[id^="text-"][class]
-frtoon220.com,frtoon221.com,frtoon222.com,frtoon223.com,frtoon224.com,frtoon225.com,frtoon226.com,frtoon227.com,frtoon228.com,frtoon229.com,frtoon230.com,frtoon231.com,frtoon232.com,frtoon233.com##.ad-form > .row > div[class^="col-md-"]
+[$domain=/^frtoon\d+\.com/]##.ad-form > .row > div[class^="col-md-"]
 toon123.com##main > section[style]:not([class])
-manaboza62.com,manaboza63.com,manaboza64.com,manaboza65.com,manaboza66.com,manaboza67.com,manaboza68.com,manaboza69.com,manaboza70.com,manaboza71.com,manaboza72.com,manaboza73.com##.payment_fullbnr
-manaboza62.com,manaboza63.com,manaboza64.com,manaboza65.com,manaboza66.com,manaboza67.com,manaboza68.com,manaboza69.com,manaboza70.com,manaboza71.com,manaboza72.com,manaboza73.com##.comic_bot_bnr
+[$domain=/^manaboza\d+\.com/]##.payment_fullbnr
+[$domain=/^manaboza\d+\.com/]##.comic_bot_bnr
 torrentmode.com##a[href^="https://torrentmode.com/bbs/bannerhit.php"]
-newtoon224.com,newtoon225.com,newtoon226.com,newtoon227.com,newtoon228.com,newtoon229.com,newtoon230.com,newtoon231.com,newtoon232.com,newtoon233.com,newtoon234.com##.ad-form > .row > div[class^="col-md-"]
-blacktoon302.com,blacktoon303.com,blacktoon304.com,blacktoon305.com,blacktoon306.com,blacktoon307.com,blacktoon308.com,blacktoon309.com,blacktoon310.com,blacktoon311.com,blacktoon312.com,blacktoon313.com##.banner.container > .row > .col-6
+[$domain=/^newtoon\d+\.com/]##.ad-form > .row > div[class^="col-md-"]
+[$domain=/^blacktoon\d+\.com/]##.banner.container > .row > .col-6
 ! aglint-disable-next-line
-manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki469.net,manatoki470.net,manatoki471.net,manatoki472.net,manatoki473.net###hd_pop
-booktoki461.com,booktoki462.com,booktoki463.com,booktoki464.com,booktoki465.com,booktoki466.com,booktoki467.com,booktoki468.com,booktoki469.com,booktoki470.com,booktoki471.com,booktoki472.com,booktoki473.com,booktoki474.com,booktoki475.com,booktoki476.com###hd_pop
+[$domain=/^newtoki\d+\.com/]###hd_pop
+[$domain=/^manatoki\d+\.net/]###hd_pop
+[$domain=/^booktoki\d+\.com/]###hd_pop
 ! aglint-disable-next-line
+[$domain=/^newtoki\d+\.com/]##div.col-15.col-md-9
 ! aglint-disable-next-line
+[$domain=/^newtoki\d+\.com/]##.board-tail-banner
 ! aglint-disable-next-line
-booktoki461.com,booktoki462.com,booktoki463.com,booktoki464.com,booktoki465.com,booktoki466.com,booktoki467.com,booktoki468.com,booktoki469.com,booktoki470.com,booktoki471.com,booktoki472.com,booktoki473.com,booktoki474.com,booktoki475.com,booktoki476.com##img[src^="/tokinbtoki/"]
-manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki489.net,manatoki490.net,manatoki491.net,manatoki492.net,manatoki493.net,manatoki494.net,manatoki495.net,manatoki496.net##[style="margin-bottom: 20px;"].row.row-15
-manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki489.net,manatoki490.net,manatoki491.net,manatoki492.net,manatoki493.net,manatoki494.net,manatoki495.net,manatoki496.net##.basic-banner.row.row-10
-manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki489.net,manatoki490.net,manatoki491.net,manatoki492.net,manatoki493.net,manatoki494.net,manatoki495.net,manatoki496.net##.board-tail-banner
+[$domain=/^newtoki\d+\.com/]##.basic-banner
+[$domain=/^booktoki\d+\.com/]##img[src^="/tokinbtoki/"]
+[$domain=/^manatoki\d+\.net/]##[style="margin-bottom: 20px;"].row.row-15
+[$domain=/^manatoki\d+\.net/]##.basic-banner.row.row-10
+[$domain=/^manatoki\d+\.net/]##.board-tail-banner
 103.204.13.68##.product-banner
 103.204.13.68##div[class^="mobile-m ad720_"]
 !
@@ -3008,7 +3013,7 @@ displayad.naver.com#@#.ad_item
 te31.com#@##gallery-advert
 @@||ad2.shoplinker.co.kr^
 @@||muirim.com/admin/data/banner/
-@@/^(http|https):\/\/image\.kyobobook\.co\.kr\/ink\/images\/prom\/[0-9]{4}\/general\/[0-9]{6}_dailyCheck\//
+@@/^(https?):\/\/image\.kyobobook\.co\.kr\/ink\/images\/prom\/\d{4}\/general\/\d{6}_dailyCheck\//
 @@||advimg.ad-mapps.com/sdk/js/ver/*/ad_movie_script.js$domain=ichannela.com
 x86.co.kr#@#.download_ad
 @@||ssl.pstatic.net/adimg*.search/adpost/js/ad.js$domain=naver.com
@@ -3234,8 +3239,9 @@ www.erdcloud.com#$#.erd-container { width: 100% !important; }
 !
 ! DOMAIN-REFRESHER: START
 !
-spotv120.com,spotv121.com,spotv122.com,spotv123.com,spotv124.com,spotv125.com,spotv126.com,spotv127.com,spotv128.com,spotv129.com,spotv130.com,spotv131.com,spotv132.com,spotv133.com,spotv134.com,spotv135.com,spotv136.com,spotv137.com,spotv138.com#$#header { top: 0px !important; }
 ! aglint-disable-next-line
+! aglint-disable-next-line
+[$domain=/newtoki\d+\.com/]#$#body { overflow: auto !important; }
 !
 ! DOMAIN-REFRESHER: END
 2cpu.co.kr#$#header .row[style] { margin-bottom: 35px !important; }
@@ -3384,7 +3390,8 @@ zzzz.lol#?#.widget-side .widget-title:has(+ div a[href^="/bbs/link.php?bo_table=
 booktoki461.com,booktoki462.com,booktoki463.com,booktoki464.com,booktoki465.com,booktoki466.com,booktoki467.com,booktoki468.com,booktoki469.com,booktoki470.com,booktoki471.com,booktoki472.com,booktoki473.com,booktoki474.com,booktoki475.com,booktoki476.com#?#ul[class] > li:has(> a[href*="tokkiweb.com"])
 manatoki464.net,manatoki465.net,manatoki466.net,manatoki467.net,manatoki468.net,manatoki489.net,manatoki490.net,manatoki491.net,manatoki492.net,manatoki493.net,manatoki494.net,manatoki495.net,manatoki496.net#?#ul[class] > li:has(> a[href^="/guarantee.php"])
 ! aglint-disable-next-line
-yagong76.com,yagong77.com,yagong78.com,yagong79.com,yagong80.com,yagong81.com,yagong82.com,yagong83.com,yagong84.com,yagong85.com,yagong86.com,yagong87.com,yagong88.com,yagong89.com,yagong90.com,yagong91.com,yagong92.com,yagong93.com,yagong94.com,yagong95.com,yagong96.com,yagong97.com,yagong98.com#?#div[class*="border"]:has(> a[href][target*="_blank"])
+[$domain=/newtoki\d+\.com/]#?#ul[class] > li:has(> a[href^="/guarantee.php"])
+[$domain=/^yagong\d*+\.com$/]##div[class*="border"]:has(> a[href][target*="_blank"])
 !
 ! DOMAIN-REFRESHER: END
 search.daum.net#$?#body.nate aside#mAside > div[disp-attr]:has(> .wing_nate) + div[disp-attr] { margin-top: 0px !important; }
