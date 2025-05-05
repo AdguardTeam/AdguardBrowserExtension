@@ -1089,25 +1089,6 @@ export const localScriptRules = {
             }
         }
     },
-    "document.cookie='_s.cookie_consent=marketing=0:analytics=0:version=2021-07-01;path=/;';": {
-        uniqueId: "7b3e4976177c32f619f7f7447a7c366e",
-        func: () => {
-            try {
-                const e = "done";
-                if (Window.prototype.toString["7b3e4976177c32f619f7f7447a7c366e"] !== e) {
-                    document.cookie = "_s.cookie_consent=marketing=0:analytics=0:version=2021-07-01;path=/;";
-                    Object.defineProperty(Window.prototype.toString, "7b3e4976177c32f619f7f7447a7c366e", {
-                        value: e,
-                        enumerable: !1,
-                        writable: !1,
-                        configurable: !1
-                    });
-                }
-            } catch (e) {
-                console.error('Error executing AG js rule with uniqueId "7b3e4976177c32f619f7f7447a7c366e" due to: ' + e);
-            }
-        }
-    },
     "document.cookie='cmplz_consented_services={\"youtube\":true};path=/;';": {
         uniqueId: "8cbd0cd2ffcfd41b8dd501b4861c18e3",
         func: () => {
@@ -8723,6 +8704,34 @@ export const localScriptRules = {
                 }
             } catch (e) {
                 console.error('Error executing AG js rule with uniqueId "b2938935474adeb9fa9f991bc00ad666" due to: ' + e);
+            }
+        }
+    },
+    '(()=>{const t={apply:(t,o,n)=>{const e=n[0];return"function"==typeof e&&e.toString().includes("onAbnormalityDetected")&&(n[0]=function(){}),Reflect.apply(t,o,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': {
+        uniqueId: "b149f5f8f73c8f7b2b21d20e1538bea4",
+        func: () => {
+            try {
+                const e = "done";
+                if (Window.prototype.toString.b149f5f8f73c8f7b2b21d20e1538bea4 !== e) {
+                    (() => {
+                        const e = {
+                            apply: (e, t, o) => {
+                                const n = o[0];
+                                return "function" == typeof n && n.toString().includes("onAbnormalityDetected") && (o[0] = function() {}), 
+                                Reflect.apply(e, t, o);
+                            }
+                        };
+                        window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, e);
+                    })();
+                    Object.defineProperty(Window.prototype.toString, "b149f5f8f73c8f7b2b21d20e1538bea4", {
+                        value: e,
+                        enumerable: !1,
+                        writable: !1,
+                        configurable: !1
+                    });
+                }
+            } catch (e) {
+                console.error('Error executing AG js rule with uniqueId "b149f5f8f73c8f7b2b21d20e1538bea4" due to: ' + e);
             }
         }
     },

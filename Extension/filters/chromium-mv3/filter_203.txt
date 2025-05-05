@@ -1,14 +1,14 @@
-! Checksum: eBI5+hHVEbqkxBe95DLnvA
+! Checksum: JoJI/7ku/BUpiK/pWio5Xg
 ! Title: Hungarian filter
 ! Description: Hufilter. Filter list that specifically removes ads on websites in the Hungarian language.
-! Version: 2.0.3.58
-! TimeUpdated: 2025-03-26T16:37:30+00:00
+! Version: 2.0.3.82
+! TimeUpdated: 2025-05-05T16:39:24+00:00
 ! Expires: 10 days (update frequency)
 !
-! Checksum: sEDy4LhG+j5WM7+q1M873Q
-! OriginalVersion: 202503260956
+! Checksum: fTCVJm89BnWmzxsOe5Cr0g
+! OriginalVersion: 202505041608
 ! Title: Hufilter for AdGuard
-! Last modified: 26 Mar 2025 09:56 UTC
+! Last modified: 04 May 2025 16:08 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://hufilter.hu
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -121,11 +121,6 @@ hu##[class*="overlayBg"]
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters ----------------------------------------------!
 !-------------------------------------------------------------------------------!
-online-filmek.ac,online-filmek.me##div[align="center"] > div[style^="margin-top:"] > div > a[target="_blank"] > img
-online-filmek.ac,online-filmek.me#%#//scriptlet('set-constant', 'document.write', 'undefined')
-online-filmek.ac,online-filmek.me##a[onclick^="window.open"]
-online-filmek.ac,online-filmek.me##div[align="center"] > a[onclick]
-online-filmek.ac,online-filmek.me##span[class^="adslot_"]
 hdmozi.hu##.asgdc
 magyarorszagom.hu##.bannerContent
 112press.hu##.banner_middle
@@ -157,6 +152,7 @@ alfahir.hu###block-block-16
 alfahir.hu###block-block-22
 alfahir.hu###block-views-ajanlo-block
 alfahir.hu###sticky_footer
+allegro.hu##.opbox-sheet.card:has(div[data-box-name^="allegro.ads."])
 androbit.net###RedUserNotification
 androgeek.hu##div.cikk_zona
 androgeek.hu##div.rightside > iframe
@@ -225,6 +221,7 @@ bkv.hu##.modal-backdrop
 bkv.hu##.modal-dialog
 bkv.hu###karrier
 blikk.hu##[id*="-ad-"][data-x="1"]
+blikk.hu##[id^="div-gpt-ad-"]
 blikk.hu##[id^="div-gpt-ad-"] + [class$="widget"]
 blikk.hu##[style="width:100%;text-align: center; margin-bottom:15px;"]
 blikk.hu###footerLogos
@@ -604,10 +601,12 @@ index.hu###ad_null_position
 index.hu###also_bannerek
 index.hu###index_shopline
 index.hu##[id*="banner"]
+index.hu##.welovedogzajanlo_wrapper
 infomovar.hu,infoajka.hu,infoszigetkoz.hu,infosopron.hu,infopapa.hu,infocelldomolk.hu,infodebrecen.hu,infobekescsaba.hu,infosarvar.hu,infoszombathely.hu,infozalaegerszeg.hu,infokeszthely.hu,infoszentendre.hu,infocegled.hu,infokarcag.hu,infofehervar.hu,infotatabanya.hu,infogyor.hu,infoesztergom.hu,infokiskunfelegyhaza.hu,inforabakoz.hu,infodunaujvaros.hu,infodombovar.hu,infoveszprem.hu,infomiskolc.hu,infohodmezovasarhely.hu,infonograd.hu,infotamasi.hu###main div[class*="banner"]
 infomovar.hu,infoajka.hu,infoszigetkoz.hu,infosopron.hu,infopapa.hu,infocelldomolk.hu,infodebrecen.hu,infobekescsaba.hu,infosarvar.hu,infoszombathely.hu,infozalaegerszeg.hu,infokeszthely.hu,infoszentendre.hu,infocegled.hu,infokarcag.hu,infofehervar.hu,infotatabanya.hu,infogyor.hu,infoesztergom.hu,infokiskunfelegyhaza.hu,inforabakoz.hu,infodunaujvaros.hu,infodombovar.hu,infoveszprem.hu,infomiskolc.hu,infohodmezovasarhely.hu,infonograd.hu,infotamasi.hu###sidebar > div[class*="banner"]
 infomovar.hu,infoajka.hu,infoszigetkoz.hu,infosopron.hu,infopapa.hu,infocelldomolk.hu,infodebrecen.hu,infobekescsaba.hu,infosarvar.hu,infoszombathely.hu,infozalaegerszeg.hu,infokeszthely.hu,infoszentendre.hu,infocegled.hu,infokarcag.hu,infofehervar.hu,infotatabanya.hu,infogyor.hu,infoesztergom.hu,infokiskunfelegyhaza.hu,inforabakoz.hu,infodunaujvaros.hu,infodombovar.hu,infoveszprem.hu,infomiskolc.hu,infohodmezovasarhely.hu,infonograd.hu,infotamasi.hu##div.read div[class*="banner"]
 ingatlan.com##div[id*="banner"]
+ingatlan.com###residential-park-banners
 ingatlanmagazin.com##[class*="banner"]
 ingatlanok.hu##[class*="banner"]
 internet-marketing.hu###bottompopup
@@ -622,6 +621,7 @@ itmania.hu##.rckaexclude
 itmania.hu##[class*="hirdetes"]
 ize.hu##.banner
 jofogas.hu###roadblock-adcum-zone
+jofogas.hu##.r_above-placeholder
 jogiforum.hu##[class*="banner"]
 joy.hu##[class*="Adverticum"]
 joy.hu##[class^="ad-"]
@@ -810,24 +810,16 @@ mlzphoto.hu##.widget_text.widget.widget_custom_html
 mlzphoto.hu###custom_html-3
 mme.hu##.om-holder
 mmonline.hu##[class*="banner"]
-mno.hu##[class*="ad_"]
-mno.hu##[class*="adbox"]
-mno.hu##[class*="banner"]
-mno.hu##[class*="box ajanlo"]
-mno.hu##[id*="Banner"]
-mno.hu##[id*="ctnet"]
 mobilarena.hu##.adbox
 mobilarena.hu##[class*="adtext"]
 moly.hu##[class*="banner"]
-mon.hu##.Ad
-mon.hu##[id*="Ad_"]
-mon.hu##[id*="Banner"]
 motorrevu.hu##[class*="hirdetes"]
 ! https://github.com/hufilter/hufilter/issues/314
 mozinet.me###adserving-tag-hb
 mozinet.me###pa_sticky_ad_box_middle_left
+mozinet.me##.abh
+mozinet.me##a[href="javascript:void(0);"][onclick^="window.open"]
 mozinet.me##iframe[id^="postbid_if_"]
-mozinet.me,online-filmek.ac##[href^="https://gamesspot.live/"]
 mozinezo.hu###header
 mozishop.hu##.om-holder
 muhelynet.hu###exposeMask
@@ -835,15 +827,6 @@ muhelynet.hu###header
 mult-kor.hu##[align="center"] > a[href*="banner"]
 mult-kor.hu##[class^="ui-dialog"]
 multiplay.hu##[id*="banner"]
-napi.hu##.totalcar
-napi.hu##[class*="banner"]
-napi.hu##[class*="hirdetes"]
-napi.hu##[id*="banner"]
-napi.hu##[id*="billboard"]
-napi.hu###interstitial
-napi.hu###mobilinstruments
-napi.hu###stickyfooter
-napi.hu##a[href^="https://bit.ly/"]
 napidroid.hu##.right
 napidroid.hu###custom_html-3
 napidroid.hu###custom_html-4
@@ -853,11 +836,12 @@ napinemszar.hu###sidebar
 ! https://github.com/hufilter/hufilter/issues/8
 napiszar.com##[style="width:300px;height:250px;"]
 napiszar.hu##[class*="banner"]
+napiszar.hu###top-banner
 napiszex.hu##.banner
 napiszex.hu##.banner-bottom
 napiszex.hu##.list-item.has-banner
-napiuzlet.com##[class*="advertisement"]
 ncore.pro##.banner
+ncore.pro##:has(> .banner) + .hr_stuff, .hr_stuff:has(+ * > .banner)
 nemkutya.com##[class^="ad-"]
 nemkutya.com###text-3
 nemzetisport.hu##.bet365_connect
@@ -881,6 +865,7 @@ nepszava.hu##.ad
 netbulvar.eu##[id*="advertisment"]
 nice.hu##[class*="banner"]
 nkmenergia.hu###tab-widget
+nlc.hu##.banner-container
 nlc.hu##.m-fbPopup
 nlc.hu##.rubAd
 noinetcafe.hu##[class*="banner"]
@@ -890,6 +875,7 @@ nol.hu##.noprint
 nol.hu##[class*="Banner"]
 nol.hu##div[class*="ad-container"]
 noplaza.hu##[class*="banner"]
+nosalty.hu##.ce_adocean_ad_slot
 novagyok.hu##[class*="banner"]
 novagyok.hu##[id*="banner"]
 nyest.hu##[class*="banner"]
@@ -897,8 +883,9 @@ offline.hu##.ads
 olcsobbat.hu##[class*="Advert"]
 olcsobbat.hu##[id*="hirdetes"]
 olcsobbat.hu###datasheetNavHelp
-online-filmek.ac##[href^="https://wdtyl.xyz/"]
-online-filmek.me##.hover_bkgr_fricc
+online-filmek.ac,online-filmek.me###azidodpazarlod
+online-filmek.ac,online-filmek.me##.ad_mrg
+online-filmek.ac,online-filmek.me##.details-main-panel + span
 onlinecegjegyzek.hu##[class*="hirdetes"]
 ! https://github.com/hufilter/hufilter/issues/254
 onroad.hu##.highlighted-banner
@@ -955,6 +942,8 @@ port.hu##.edgebox-widget.show
 port.hu##.port-adbd
 port.hu##[class*="_spon"]
 port.hu##[class="advert fix-advert"]
+port.hu##.advertisement__sticky
+port.hu##body .advert
 portfolio.hu##.footer--partners
 portfolio.hu##[data-qa="oil-full"]
 portfolio.hu##[data-qa="oil-Layer"]
@@ -1002,8 +991,6 @@ sielok.hu##[id*="AdWrap"]
 sonline.hu##[class*="hirdetes"]
 sonline.hu##[id*="ctnet_ad_"]
 sonline.hu##div[class*="ad "]
-sorozataddict.hu###cboxOverlay
-sorozataddict.hu###colorbox
 sorozatwiki.hu##[class*="-ad-"]
 sorozatwiki.hu###fragment
 sporthirado.hu##[class*="banner"]
@@ -1038,6 +1025,7 @@ storyonline.hu##[class*="hirdetes"]
 storyonline.hu##div[class*="adserver"]
 storyonline.hu##div[id*="kirakat"]
 storyonline.hu##div[id*="rightad"]
+streetkitchen.hu##.sponsor-container
 stylemagazin.hu##[class="wp-container wp-top"]
 stylemagazin.hu##[id*="banner"]
 superiorhirek.hu##[class*="-ad"]
@@ -1079,6 +1067,7 @@ telex.hu##.banner-bottom
 telex.hu##.recommendation.recommendation--out
 telex.hu##.recommendation.recommendation--pr
 telex.hu##.title-section__sponsored
+telex.hu##.gpt-ad-container
 teltlanyok.com##[id^="adchange"]
 terhesferfi.hu##div.banner
 termalfurdo.hu##.kiemelttartalombox_feher
@@ -1129,6 +1118,7 @@ vasarnap.hu##.banner-commercial
 vasarnap.hu##.reklamnagy
 vatera.hu##.page-rightside-advert
 vatera.hu##div[id*="advert-container"]
+vectraline.hu##.prod-banner
 vehir.hu##[class*="szovegkozi"]
 vehir.hu##[class^="ad_"]
 vehir.hu##[id*="reklam_"]
@@ -1246,7 +1236,8 @@ nlc.hu#?#.m-breakingLayer:has(a[href*="nlc.hu/balkonfanatik"])
 prohardver.hu,mobilarena.hu,gamepod.hu,itcafe.hu,hardverapro.hu,fototrend.hu#?#div:has(>[style*="calc"])
 prohardver.hu,mobilarena.hu,itcafe.hu,gamepod.hu,logout.hu,hardverapro.hu#?#div:has(>h4 + div[style*="calc"])
 prohardver.hu,mobilarena.hu,itcafe.hu,gamepod.hu,logout.hu#?#div#center:has(div > div > p > a[style="color: #b42223;"])
-prohardver.hu,hardverapro.hu#?#div[class]:has(> h4:contains(/(Hirdetés|[Hh].*i.*r.*d.*e.*t.*é.*s)/) + div[class])
+prohardver.hu,mobilarena.hu,itcafe.hu,gamepod.hu,logout.hu,hardverapro.hu##.adaptiveAd
+prohardver.hu,mobilarena.hu,itcafe.hu,gamepod.hu,logout.hu,hardverapro.hu#?#div:not(.priv-thread-owner):has(> h4:contains(/(Hirdetés|[Hh].*i.*r.*d.*e.*t.*é.*s)/) + div[class])
 szeged365.hu#?#[id^="tie-block"]:has(.stream-title)
 ugytudjuk.hu#?#.row:has(.mainTopBnr)
 !-------------------------------------------------------------------------------!
@@ -1262,13 +1253,15 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 !-------------------------------------------------------------------------------!
 ||*/empty.json
 ||*/eu-banned-popup/
+||24.hu/*/sponsoredpost.css$stylesheet
+||24.hu/*/sponsoredpost.js$script
 ||444.hu/*/ease/
 ||ado.hu/banners/$image
 ||affiliate.hu$subdocument
 ||affiliation.arukereso.hu/pbox/
 ||alfahir.hu^*/hirdetesfoto/$image
-||amiotthonunk.hu/images/banners/
-||aori.hu/banner
+||amiotthonunk.hu/images/banners/$image
+||aori.hu/banner$image
 ||asva.info/tmp/
 ||asva.info/wp-content/themes/branfordmagazine/images/banners/$image
 ||atv.hu/*reklam
@@ -1283,8 +1276,7 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||blog.hu/pixel
 ||borsonline.hu/*hirdetes
 ||cegmarketing.hu/banner
-||cfusion-internet.com^$third-party
-||chat.hu/Client/banner
+||chat.hu/Client/banner$image
 ||chat.hu/imgadverts$image
 ||cosmopolitan.hu/*/sponsor/
 ||csongradihirek.hu/portal/images/stories/_reklamok/$image
@@ -1296,16 +1288,16 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||est.hu/design/img/szponzoracio/$image
 ||eudomain.eu/ad
 ||eudomain.eu/affiliate
-||ezoterikus.hu/*banner*/
+||ezoterikus.hu/*banner*/$image
 ||femcafe.hu/*/spike_ad/
 ||femcafe.hu/*/sponsoration/
 ||femcafe.hu/*/szponzoracio/
 ||femcafe.hu/spike-ad/
 ||filmvilag.me/*.gif$image
 ||fototrend.hu/design/hatter.jpg$image
-||freeweb.hu/*_banner*.
-||gamepod.hu/ajanlo/lapcsalad.html
-||geeks.hu/*body-bg-*.
+||freeweb.hu/*_banner*.$image
+||gamepod.hu/ajanlo/lapcsalad.html$subdocument
+||geeks.hu/*body-bg-*.$image
 ||gigasex.hu/bannerek/$image
 ||glassdoor.com/app/static/js/gd-fj-ads-init$script
 ||gyakorikerdesek.hu/pic/bannerek/$image
@@ -1320,18 +1312,18 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||hirek.sk/banner/$image
 ||hosszupuskasub.com/css/*skin.jpg$image
 ||hrportal.hu/images/banner/$image
-||hungariantop1000.com/cgi-bin/counter.cgi
 ||hupont.hu/hirdetes/
 ||hwsw.hu/images/bodybgs/$image
 ||hwsw.hu/images/bodybgs2/
 ||i.cdn29.hu/apix_collect/ads
+||iap.cdn.indexvas.hu/Scripts.js$script
 ||iho.hu/img/banner/
 ||image.arukereso.hu/ad$image
 ||img.hunbasket.webpont.com/kosarsport/art/*banner$image
-||infogyor.hu/*_banners/
-||informed.hu/*banner
-||ingyenweb.hu/felso/*.
-||ingyenweb.hu/smsbanner/
+||infogyor.hu/*_banners/$image
+||informed.hu/*banner$image
+||ingyenweb.hu/felso/*.$image
+||ingyenweb.hu/smsbanner/$image
 ||jogiforum.hu/files/partner/
 ||kiszamolo.hu/wp-content/uploads/*banner*.png$image
 ||kiszamolo.hu/wp-content/uploads/2016/09/Hitel-290x200-blog-jobb.gif$image
@@ -1355,63 +1347,61 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||medicalonline.hu/*hirdetes
 ||metropol.hu/*/images/sponsor_*.$image
 ||miabonyunk.hu/hirdetesek/
-||mindmegette.hu/images/294/O/nyerjagyulaival_2020_background_300x300.jpg$image
-||mkbnetbankar.hu/banner
+||mkbnetbankar.hu/banner$image
 ||mlzphoto.hu/bannerek/$image
-||mobilarena.hu/ajanlo/lapcsalad.html
+||mobilarena.hu/ajanlo/lapcsalad.html$subdocument
 ||napidroid.hu/*/*hird
 ||napidroid.hu/*/*logo$image
 ||napocska.hu/images/*_advert*.$image
 ||net-solutions.hu/banner/$image
 ||noplaza.hu/banner/$image
 ||nso.hu/*/sponsoration/*.
-||okmanyiroda.hu/banner.html
+||okmanyiroda.hu/banner.html$subdocument
 ||p3k.hu/*_hatter*.$image
 ||p3k.hu/*szponz*.
 ||pcguru.hu/uploads/banners/*.jpg$image
 ||pcpult.hu/*/banner/$image
 ||pcwplus.hu/bannerek/$image
-||performax.cz^$third-party
 ||piacesprofit.hu/files/skin/$image
-||pornolize.com/*?clickTAG=
 ||port-network.com/sponsoration_elements/
 ||portfolio.hu/img/partner/$image
 ||preissuchmaschine.de/banner/$image
 ||prohardver.hu/dl/cnt/*/background.png$image
 ||randihely.hu/adnews/
-||revizoronline.com/*banner
+||revizoronline.com/*banner$image
 ||sg.hu/images/hirdetes.gif$image
-||sg.hu/sg.wgt
 ||sielok.hu/kampanybanner/$image
 ||sikerado.hu/banner/$image
 ||stat.profession.hu/static/assets/images/prize-game$image
 ||static.lhp.hu/lhp.hu/bannerek/$image
 ||static.love.hu/design/ad/
-||static.nemzetisport.hu//style/nso/i/*banner
+||static.nemzetisport.hu//style/nso/i/*banner$image
 ||static.nemzetisport.hu//style/nso/i/betclic.gif$image
 ||static.origos.hu/s/css/responsive-ads/hangar/hangar-investor-web.css$stylesheet
 ||stylemagazin.hu/static/template_settings/
 ||szegeder.hu/get-ads
 ||szegeder.hu/js/ads-prebid.js^$script
-||szegedma.hu/*banners/*.
+||szegedma.hu/*banners/*.$image
 ! https://github.com/hufilter/hufilter/issues/5
 ||szepsegbroker.hu/banner/$image
 ||szepsegbroker.hu/elements/bannerz.2019.js^$script
 ||talalka.hu/hirdetes/
 ||telefonguru.hu/banners/$image
-||telefonguru.hu/iframes/
+||telefonguru.hu/iframes/$subdocument
 ||tvn.hu/tvn/kepek/xpoker.hu/$image
 ||ultraweb.hu/ad*.php
 ||utcakereso.hu/hirdetes/
 ||vatera.hu/affiliate/images/banner/$image
+||vectraline.hu/*/hirdetesek/$image
 ||vezess.hu/data/files/bannerek/$image
 ||vezess.hu/data/files/kapcsolodo_anyagok/szponz_hatterek/$image
 ||vezess2.p3k.hu/app/uploads/*nyeremenyjatek$image
 ||vg.hu/banners/$image
 ||webminute.hu/bannerek/$image
 ||zeneszoveg.hu/gfx/skin-*/*.
-||widget.block4d.com^
 ||a.adnium.com^
+||ad*.gyaloglo.hu^
+||ad*.mellesleg.hu^
 ||ad.depo.hu^
 ||ad.gyermekevek.hu^
 ||ad.hirekmedia.hu^
@@ -1422,10 +1412,9 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||ad.parom.hu^
 ||ad.pphungary.hu^
 ||ad.szexneked.hu^
-||ad*.gyaloglo.hu^
-||ad*.mellesleg.hu^
 ||adfair.hu^
 ||adfree-stat.p3g.hu^
+||admanager.magyarhirlap.hu^
 ||ads.geeks.hu^
 ||adv.forpsi.hu^
 ||adv.hu^
@@ -1467,6 +1456,7 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||up-banner.wavecdn.de^
 ||vid4u.org^
 ||wdtyl.xyz^
+||widget.block4d.com^
 ||wstat.ozon.ru^
 ||abmr.net^$third-party
 ||ad.hu^$third-party
@@ -1482,6 +1472,7 @@ ugytudjuk.hu#?#.row:has(.mainTopBnr)
 ||betfair.com^$third-party
 ||bongacash.com^$third-party
 ||calivary.com^$third-party
+||cfusion-internet.com^$third-party
 ||clicksure.com^$third-party
 ||data.bookline.hu^$third-party
 ||head-clickfusion.com^$third-party
@@ -1528,6 +1519,19 @@ hu###cookie-bar
 hu###cookie-notice
 hu###cookie-window
 hu###cookiebar
+hu###EUCookiev2
+hu##.cookie-box
+hu##.cookie-modal
+hu##.eu-cookie-compliance-banner
+hu###cookies-policy
+hu###cmplz-cookiebanner-container
+hu##app-cookie-layer
+hu###szechenyi2020
+hu###szechenyi2020-wrapper
+hu###szechenyi
+hu###szechenyi-toggle
+hu###szechenyi_2020_logo
+hu##.sz2020-logo
 ! hu###qc-cmp2-container
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters ----------------------------------------------!
@@ -1562,9 +1566,12 @@ bankmonitor.hu##main + .ok-prerender
 baon.hu,bama.hu,beol.hu,boon.hu,delmagyar.hu,duol.hu,feol.hu,kisalfold.hu,haon.hu,heol.hu,szoljon.hu,kemma.hu,nool.hu,sonline.hu,szon.hu,teol.hu,vaol.hu,veol.hu,zaol.hu##app-article-subscription-box
 baon.hu,bama.hu,beol.hu,boon.hu,delmagyar.hu,duol.hu,feol.hu,kisalfold.hu,haon.hu,heol.hu,szoljon.hu,kemma.hu,nool.hu,sonline.hu,szon.hu,teol.hu,vaol.hu,veol.hu,zaol.hu##app-newsletter-modal
 bebiztositva.hu##.pea_cook_wrapper
+bekeltetes.hu##.cdk-overlay-container:has(app-cookie-consent-dialog)
+bkk.hu##.szechenyi2020-wrapper
 blikk.hu###articleOfferFlag
 blikk.hu###pe_confirm
 blikk.hu###pe_confirm_optin_6
+blikk.hu##.leavingPopupLayer
 blikkruzs.blikk.hu###pe_confirm_optin_1
 blog.hu##[id*="cp_popup"]
 bonuszbrigad.hu###newASZFLayer
@@ -1605,13 +1612,16 @@ esport1.hu###article-recommend-popup
 f1vilag.hu###catapult-cookie-bar
 f1vilag.hu##div[id*="elementor-popup-modal-"]
 femina.hu###femina-shop-ajanlo-slider
+fermentor.hu###elementor-popup-modal-384
 forbes.hu##.crp_related
 forbes.hu###catapult-cookie-bar
 fressnapf.hu##.grey-popup-layer
+g7.hu###box-footer-newsletter
 glamour.hu##.leavingPopupLayer
 glamour.hu###articleOfferFlag
 glamour.hu###pe_confirm_optin_6
 glamour.hu###qc-cmp2-container
+gov.hu###cookiesenabled
 gsplus.hu,pcwplus.hu###web-push-popup
 gumiszoba.com###eu-cookie-law
 gumiszoba.com###facebook-likebox-8
@@ -1622,6 +1632,7 @@ gyorihir.hu###cookie_bar
 gyorplusz.hu###cookie-law-info-bar
 harmonet.hu###ajanlo_box_ah
 hasznaltauto.hu###CybotCookiebotDialog
+hasznaltauto.hu##.local-content
 haziallat.hu##[id^="cookieconsent"]
 hazipatika.com##.fb-exit-popup-container
 hazipatika.com###facebook-sharebar
@@ -1655,6 +1666,7 @@ itthonrolhaza.hu###cookie-law-info-bar
 kalohirek.hu###cookie_container
 kapu.hu###cookieSpan
 karpathir.com##[app="tibrr-cookie-consent"]
+kaveverzum.hu###overlay_cookie_alert, #overlay_cookie_alert[style*="display: flex"] ~ #exposeMaskOverlay
 kecskemet365.hu###check-also-box
 keol.hu###social
 keol.hu##div.subscribe_module
@@ -1687,6 +1699,7 @@ mandiner.hu##app-facebook-popup
 mandiner.hu##app-newsletter-popup
 media1.hu##.elementor-popup-modal
 mediacenter.hu###cookie-msg
+medicalonline.hu###medical_newsletter
 medicalonline.hu##.accept-cookies
 merce.hu##.cookie-bar
 merce.hu##.popup-wrap
@@ -1700,17 +1713,19 @@ myonlineradio.hu##[src^="/public/img/efi/"]
 ! https://github.com/hufilter/hufilter/issues/427
 myonlineradio.hu##.fb-page-cont
 najlepsie-clanky.com##[class*="pea_cook"]
-napi.hu##.cikkajanlo
 napiszex.hu##.ckwrap
 napjainkportal.hu##.cookie-notice-container
 nemzetisport.hu##.allow-cookie-stripe
+nemzetiszinhaz.hu##.cookie
 nice.hu##div.cookie-message
 nice.hu##div#show_news_box
+njt.hu###cld
 nlc.hu##.m-pcPromoArticlePointsLayer
 nlc.hu##.m-pcPromoFooterLayer
 nlc.hu##div.m-articleStickySocial
 nlc.hu##div.m-breakingLayer
 noizz.hu###articleOfferFlag
+novekedes.hu##.main-cookie-bar
 nyest.hu###cookie-consent
 obi.hu##.colorbox-cookiepolicy
 offline.hu###catapult-cookie-bar
@@ -1759,6 +1774,7 @@ sorozatwiki.hu###fhr-cookie-bar
 starity.hu###upprev_box
 startlap.hu###push-notification
 szabadfold.hu##div.fb_shares
+szallas.hu###onetrust-consent-sdk
 szatmar.ro##.cookie-consent
 szeged365.hu##.active.popup-screen
 szeged365.hu##.popup-box
@@ -1773,6 +1789,7 @@ tarhely.eu###sutik
 telekom.hu###app-cookie-policy
 telex.hu###modal--umbrella
 telex.hu###modal--you
+textilbongesz.hu###consentModal
 thaimatrac.hu##.border-top.p-4.bg-8.cookie-alert__inner
 titkokszigete.hu##.spu-bg
 titkokszigete.hu##.spu-box
@@ -1780,12 +1797,14 @@ totalcar.hu##.header-tk-ajanlo
 travelo.hu##div.qc-cmp-ui-container
 tudtade.blogstar.hu###cookie_policy
 twn.hu###popunder_featured
+ugyeszseg.hu##.et_pb_fullwidth_image
 vg.hu##.newsletter-box
 ! https://github.com/hufilter/hufilter/issues/250
 vg.hu##[style^="bottom: 0px; left: 0px; position: fixed; width:"]
 wasabi.hu##.footprint_cookie
 webforditas.hu###cookie-consent
 widescreen.hu##div.penci-wrap-gprd-law
+wmn.hu##a[href="https://wmn.hu/hirlevel-feliratkozas/"]
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters (with Extended CSS) --------------------------!
 !-------------------------------------------------------------------------------!
@@ -1797,12 +1816,18 @@ infostart.hu#?##sitemodal:has(.fb-button)
 !------ Specific network filters -----------------------------------------------!
 !-------------------------------------------------------------------------------!
 /js/push.js$script,domain=infostart.hu
-||cmp.quantcast.com^$script,domain=agrarszektor.hu|autoszektor.hu|bpiautosok.hu|g7.hu|hazipatika.com|hellovidek.hu|hrportal.hu|magyarnarancs.hu|index.hu|pestisracok.hu|portfolio.hu|telex.hu|totalcar.hu|totalbike.hu|szeretlekmagyarorszag.hu|port.hu|player.hu|mandiner.hu|budapestkornyeke.hu|bacsmegye.hu|civishir.hu|baon.hu|bama.hu|beol.hu|boon.hu|delmagyar.hu|duol.hu|feol.hu|kisalfold.hu|haon.hu|heol.hu|szoljon.hu|kemma.hu|nool.hu|sonline.hu|szon.hu|teol.hu|vaol.hu|veol.hu|zaol.hu|twice.hu|sassy.hu|prohardver.hu|mobilarena.hu|itcafe.hu|gamepod.hu|logout.hu|hardverapro.hu|pcwplus.hu|gsplus.hu|myonlineradio.hu|blikk.hu
+/cookie-modal.css$stylesheet,domain=posta.hu
+/cookie-information-modal.css$stylesheet,domain=posta.hu
+/cookie-box.css$stylesheet,domain=posta.hu
+/cookie.js$script,domain=posta.hu
+||cmp.quantcast.com^$script,domain=agrarszektor.hu|autoszektor.hu|bpiautosok.hu|g7.hu|hazipatika.com|hellovidek.hu|hrportal.hu|magyarnarancs.hu|index.hu|pestisracok.hu|portfolio.hu|telex.hu|totalcar.hu|totalbike.hu|szeretlekmagyarorszag.hu|port.hu|player.hu|mandiner.hu|budapestkornyeke.hu|bacsmegye.hu|civishir.hu|baon.hu|bama.hu|beol.hu|boon.hu|delmagyar.hu|duol.hu|feol.hu|kisalfold.hu|haon.hu|heol.hu|szoljon.hu|kemma.hu|nool.hu|sonline.hu|szon.hu|teol.hu|vaol.hu|veol.hu|zaol.hu|twice.hu|sassy.hu|prohardver.hu|mobilarena.hu|itcafe.hu|gamepod.hu|logout.hu|hardverapro.hu|pcwplus.hu|gsplus.hu|myonlineradio.hu|blikk.hu|medicalonline.hu
 ||consent.cookiebot.com^$third-party,script,domain=agroinform.hu
 ||medinfo.ocdn.eu/hu/consent_v2/choice.js^$script,domain=egeszsegkalauz.hu
 ||quantcast.mgr.consensu.org^$script,domain=agrarszektor.hu|autoszektor.hu|bpiautosok.hu|g7.hu|hazipatika.com|hellovidek.hu|hrportal.hu|magyarnarancs.hu|index.hu|pestisracok.hu|portfolio.hu|telex.hu|totalcar.hu|totalbike.hu|szeretlekmagyarorszag.hu|port.hu|player.hu|mandiner.hu|budapestkornyeke.hu|bacsmegye.hu|civishir.hu|baon.hu|bama.hu|beol.hu|boon.hu|delmagyar.hu|duol.hu|feol.hu|kisalfold.hu|haon.hu|heol.hu|szoljon.hu|kemma.hu|nool.hu|sonline.hu|szon.hu|teol.hu|vaol.hu|veol.hu|zaol.hu|twice.hu|sassy.hu|pcwplus.hu|gsplus.hu|myonlineradio.hu|blikk.hu
 ||static.quantcast.mgr.consensu.org/v30/cmpui-popup.js^$script,domain=szeretlekmagyarorszag.hu
-||cmp.inmobi.com^$third-party,script,domain=telex.hu|origo.hu|atlatszo.hu|rtl.hu|videa.hu|myonlineradio.hu|hvg.hu|femina.hu|prohardver.hu|itcafe.hu|mobilarena.hu|gamepod.hu|logout.hu|fototrend.hu|hardverapro.hu|vg.hu|portfolio.hu|noizz.hu|economx.hu|budapestkornyeke.hu|bpiautosok.hu|magyarnemzet.hu|blikk.hu|nepszava.hu|magyarnarancs.hu|hirtv.hu|pestisracok.hu|autoszektor.hu|penzcentrum.hu|index.hu|media1.hu
+||cmp.inmobi.com^$third-party,script,domain=telex.hu|origo.hu|atlatszo.hu|rtl.hu|videa.hu|myonlineradio.hu|hvg.hu|femina.hu|prohardver.hu|itcafe.hu|mobilarena.hu|gamepod.hu|logout.hu|fototrend.hu|hardverapro.hu|vg.hu|portfolio.hu|noizz.hu|economx.hu|budapestkornyeke.hu|bpiautosok.hu|magyarnemzet.hu|blikk.hu|nepszava.hu|magyarnarancs.hu|hirtv.hu|pestisracok.hu|autoszektor.hu|penzcentrum.hu|index.hu|media1.hu|g7.hu|444.hu|life.hu|wmn.hu|hirstart.hu|cafeblog.hu|nosalty.hu|hazipatika.com|startlap.hu|nlc.hu|mindmegette.hu|koponyeg.hu|kisalfold.hu|kekvillogo.hu|indavideo.hu|szabadfold.hu|figyelo.hu|astronet.hu|automotor.hu|lakaskultura.hu|likebalaton.hu|napidoktor.hu|travelo.hu|dietaesfitnesz.hu|vitorlazasmagazin.hu|videkize.hu|tvmusor.hu|borsonline.hu|ripost.hu|metropol.hu|ingatlanbazar.hu|freemail.hu|radio1gong.hu|hirfm.hu|greendex.hu
+||optimonk.com^$third-party,domain=mandiner.hu
+||widget.moneycdn.com/hitelintezo/moneycheckwidget.min.js$script,domain=ingatlan.com
 !-------------------------------------------------------------------------------!
 !------ Generic network filters ------------------------------------------------!
 !-------------------------------------------------------------------------------!
@@ -1814,6 +1839,12 @@ infostart.hu#?##sitemodal:has(.fb-button)
 ||penzcentrum.hu/assets/js/bioep.min.js$script
 ||szepsegbroker.hu/items/jquery.floating_popup*.js^$script
 ||liked.hu/choice/*/cmp2*.js^$script
+||*.hu/*eu_cookie_compliance.js$script
+||*.hu/*eu_cookie_compliance.css$stylesheet
+||*.hu/*wp-content/plugins/complianz-gdpr/*.js$script
+||*.hu/*wp-content/plugins/complianz-gdpr/*.css$stylesheet
+||iccm.ingatlancdn.com/iccm-*.js$script
+||cookielaw.org^$third-party
 ! This section file contains rules for bypassing anti-adblock protections.
 ! The rules in this section should be compatible with all popular adblockers (Adblock Plus, AdGuard, uBlock Origin).
 !-------------------------------------------------------------------------------!
@@ -1848,47 +1879,98 @@ videa.hu,videaloop.hu##.top-video-container-banner
 ! This section file contains rules for blocking trackers and other privacy-invasive technologies.
 ! The rules in this section should be compatible with all popular adblockers (Adblock Plus, AdGuard, uBlock Origin).
 !-------------------------------------------------------------------------------!
-!------ Specific network filters -----------------------------------------------!
+!------ Specific network filters - Tracking scripts ----------------------------!
 !-------------------------------------------------------------------------------!
-||cdn.performax.cz/acc/insert_rtb.js$script,domain=bpiautosok.hu
 ||api.indidata.com^$third-party,domain=civishir.hu
 !-------------------------------------------------------------------------------!
-!------ Generic network filters ------------------------------------------------!
+!------ Generic network filters - Tracking paths -------------------------------!
+!-------------------------------------------------------------------------------!
+/wp-content/plugins/advanced-ads-tracking
+!-------------------------------------------------------------------------------!
+!------ Generic network filters - Tracking scripts -----------------------------!
 !-------------------------------------------------------------------------------!
 /gemius.js^$script
 /gemius.min.js^$script
+/wp-content/plugins/fatchilli-google-tag-manager/js/fc/analytics-talk-content-tracking.min.js$script
+/wp-content/plugins/fatchilli-google-tag-manager/js/fc/purchase-tracking.min.js$script
+/wp-content/plugins/wp-analytify/assets/js/miscellaneous-tracking.js$script
 /xgemius.js^$script
 /xgemius.min.js^$script
-||*.hu/userip.php
+||api1.keytiles.com/api/v1/webhits-trackingscript^$script
+||campaign.telex.hu/*/banner.js$script
+||campaign.telex.hu/*/remplib.js$script
 ||infostart.hu/js/ga.js$script
+||scripts.keytiles.com/tracking/*.js^$script
+||stat.p24.hu/*/measuring-codes/*.js$script
+!-------------------------------------------------------------------------------!
+!------ Generic network filters - Tracking endpoints ---------------------------!
+!-------------------------------------------------------------------------------!
+||*.hu/userip.php
+||campaign.telex.hu/showtime.php
 ||websas.hu/statistics/
+!-------------------------------------------------------------------------------!
+!------ Generic network filters - Tracking domains -----------------------------!
+!-------------------------------------------------------------------------------!
+||adat.agrokep.vg.hu^
+||adat.borsonline.hu^
+||adat.figyelo.hu^
 ||adat.freemail.hu^
+||adat.hirtv.hu^
+||adat.ingatlanbazar.hu^
+||adat.kisalfold.hu^
+||adat.koponyeg.hu^
+||adat.life.hu^
+||adat.magyarnemzet.hu^
+||adat.mandiner.hu^
+||adat.metropol.hu^
+||adat.mindmegette.hu^
+||adat.nemzetisport.hu^
+||adat.origo.hu^
+||adat.ripost.hu^
+||adat.she.life.hu^
+||adat.vg.hu^
+||adat.videa.hu^
+||adform.net^
 ||adtrackeraa.com^
 ! https://github.com/hufilter/hufilter/issues/305
 ||beam-tracker.telex.hu^
 ||beam.telex.hu^
+||campaign-remp.444.hu^
 ||counter.megagroup.ru^
 ||doubleclick.net^
 ||gemius.hu^
 ||gemius.pl^
+||indexstat.index.hu^
+||mediaownerscloud.com^
 ! https://github.com/hufilter/hufilter/issues/480
 ||px.blog.hu^
 ||smartadserver.com^
+||tracker-remp.magyarnarancs.hu^
+||tracker.24xtra.hu^
 ||tracker.azet.sk^
+||trackerapi.ebxcdn.com^
 ||tracking.binarypromos.com^
 ||tracking.tchibo.hu^
+!-------------------------------------------------------------------------------!
+!------ Generic network filters - Tracking domains, third-party ----------------!
+!-------------------------------------------------------------------------------!
 ||analytics.yahoo.com^$third-party
+||clarity.ms^$third-party
 ||counter.hitslink.com^$third-party
+||customer.io^$third-party
+||ebxcdn.com^$third-party
 ! https://github.com/hufilter/hufilter/issues/367
 ||ex1tp.com^$third-party
 ||google-analytics.com^$third-party
 ||gravity.com^$third-party
 ||lo.v.liveperson.net^$third-party
 ||onesignal.com^$third-party
+||performax.cz^$third-party
 ||targetix.net^$third-party
 ||track306.info^$third-party
 ||trackingterrorism.org^$third-party
 ||va.v.liveperson.net^$third-party,script
+||track.segmentstream.com^$third-party
 ! This section file contains rules for fixing breaking sites. For example:
 ! - Layout issues
 ! - Broken scripts
@@ -1898,8 +1980,9 @@ videa.hu,videaloop.hu##.top-video-container-banner
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=mafab.hu
 ! https://github.com/AdguardTeam/AdguardFilters/issues/139139
 @@||pro.hit.gemius.pl/gstream.js$script,domain=embed.rtl.hu
+greendex.hu#@#.heateor_sss_sharing_container
 ! This section file contains rules for blocking advertisements.
-! The rules in this section should be AdGuard-specific, but cross-compabible rules are also allowed, if they are
+! The rules in this section should be AdGuard-specific, but cross-compatible rules are also allowed, if they are
 ! not working properly without the AdGuard-specific rules.
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters ----------------------------------------------!
@@ -1911,15 +1994,14 @@ myonlineradio.hu#$#.topHorizontalBanner { position: absolute !important; left: -
 startlap.hu#$#div.container.banner-container.wide { min-height: 0 !important; height: auto !important; }
 dehir.hu#$##popupFrontPageBanner-modal { display: none !important; }
 dehir.hu#$#body { overflow: auto !important; }
-! https://github.com/hufilter/hufilter/issues/440
-! https://github.com/hufilter/hufilter/pulls/452
+prohardver.hu,fototrend.hu#$#main { background-image: none !important; }
 !-------------------------------------------------------------------------------!
 !------ Specific network filters -----------------------------------------------!
 !-------------------------------------------------------------------------------!
 /inside-banner.mini.js$domain=myonlineradio.hu
 ! This section file contains rules for blocking annoying elements on websites, such as cookie notices, newsletter
 ! subscription prompts, floating elements and so on.
-! The rules in this section should be AdGuard-specific, but cross-compabible rules are also allowed, if they are
+! The rules in this section should be AdGuard-specific, but cross-compatible rules are also allowed, if they are
 ! not working properly without the AdGuard-specific rules.
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters ----------------------------------------------!
@@ -1931,6 +2013,7 @@ fizz.hu#%#//scriptlet('set-cookie', 'cookie.consent.finished', '1')
 fizz.hu#%#//scriptlet('set-cookie', 'gdpr_level', '1')
 hetek.hu#%#//scriptlet('remove-class', 'modal-open', 'body')
 hosszupuskasub.com#%#//scriptlet('prevent-window-open')
+kaveverzum.hu#$#body { position: static !important; }
 laptophardware.hu#%#//scriptlet('set-constant', 'cookie_alert_overlay', 'noopFunc')
 lifestory.hu#%#//scriptlet('remove-attr', 'oncontextmenu')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/128532
@@ -1946,6 +2029,8 @@ vezess.hu#%#//scriptlet('prevent-addEventListener', 'mouseleave', 'showFbPopup')
 vezess.hu#%#//scriptlet('prevent-setTimeout', 'FbExit', '3000')
 vezess.hu#%#//scriptlet('remove-class', 'blurry', 'body > :not(.m-fbPopup)', 'stay')
 origo.hu#$#.oh-holder.open { z-index: 9999 !important; }
+otpbank.hu##.cdk-overlay-container:has(ib-bs-recommended-analytics-consent)
+otpbank.hu#$#html { position: static !important; }
 myonlineradio.hu#$#.js-appAdv { display: none !important; }
 myonlineradio.hu#$#.cover-slider-cont { display: block !important; }
 noizz.hu#$#.leavingPopupLayer { display: none !important; }
@@ -1963,7 +2048,7 @@ kektura.hu###cookie-consent-dialog
 filmvilag.me##[style]:has(.adslot_1)
 otpportalok.hu###pop_1:has(> .suti)
 ! This section file contains rules for bypassing anti-adblock protections.
-! The rules in this section should be AdGuard-specific, but cross-compabible rules are also allowed, if they are
+! The rules in this section should be AdGuard-specific, but cross-compatible rules are also allowed, if they are
 ! not working properly without the AdGuard-specific rules.
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters ----------------------------------------------!
@@ -1971,8 +2056,6 @@ otpportalok.hu###pop_1:has(> .suti)
 24.hu#%#//scriptlet('abort-current-inline-script', 'window._ceCTSData', 'hirdetések')
 angol-magyar-szotar.hu#%#//scriptlet('set-constant', 'adblock', 'false')
 calculat.org#%#//scriptlet('prevent-setTimeout', 'adstest', '4000')
-! chp-ads-block-detector
-cinemo.hu#%#//scriptlet('abort-on-property-read', 'adsBlocked')
 divany.hu,totalcar.hu,totalbike.hu#%#//scriptlet('abort-on-property-write', 'document.head', 'currentScript.remove')
 egeszsegkalauz.hu#%#//scriptlet('set-cookie', 'isLeavingPopUpReady', '1')
 embed.indavideo.hu#%#//scriptlet('set-constant', 'AdHandler.adblocked', '0')
@@ -1991,20 +2074,19 @@ pcworld.hu#%#//scriptlet('remove-class', 'have-ad', 'body')
 port.hu#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'window.ado.blocked')
 ! https://github.com/uBlockOrigin/uAssets/issues/25482
 online-filmek.ac#%#//scriptlet('prevent-fetch', 'api')
+online-filmek.ac#%#//scriptlet('prevent-fetch', 'ads')
 ! https://github.com/uBlockOrigin/uAssets/issues/27256#issuecomment-2670818969
 rubyvidhub.com#%#//scriptlet('remove-node-text', 'script', 'undefined')
 karpathir.com##[class^="k"][class*="-container"][class*="-2"][class$="-hide"]
 !-------------------------------------------------------------------------------!
 !------ Specific network filters -----------------------------------------------!
 !-------------------------------------------------------------------------------!
-! chp-ads-block-detector
-||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xmlhttprequest,redirect=nooptext,domain=cinemo.hu
-||sovrn.com$xmlhttprequest,redirect=nooptext,domain=cinemo.hu
+||galaxypush.com/css/styles.min.css^$redirect=noopcss,domain=online-filmek.ac|online-filmek.me,important
 ! This section file contains rules for fixing breaking sites. For example:
 ! - Layout issues
 ! - Broken scripts
 ! - etc.
-! The rules in this section should be AdGuard-specific, but cross-compabible rules are also allowed, if they are
+! The rules in this section should be AdGuard-specific, but cross-compatible rules are also allowed, if they are
 ! not working properly without the AdGuard-specific rules.
 !-------------------------------------------------------------------------------!
 !------ Specific cosmetic filters ----------------------------------------------!
@@ -2053,3 +2135,18 @@ pcwplus.hu,gsplus.hu#$#@media (max-width: 768px) { [class="container main single
 !------ Specific network filters -----------------------------------------------!
 !-------------------------------------------------------------------------------!
 ! https://github.com/hufilter/hufilter/issues/317
+! This section contains rules for blocking scam, phishing, malicious, and other security-threatening sites.
+! The rules in this section should be compatible with all popular adblockers (Adblock Plus, AdGuard, uBlock Origin).
+! Rules should follow this format:
+! ||domain.com^$document
+! Imported from https://github.com/FakesiteListHUN/FakeWebshopListHUN/blob/50836b104948a76f4344270e8baa954bc562fca9/fakewebshoplist#L153C1-L162C11
+||aliexpress.hu^$document
+||aliexpressz.hu^$document
+||azsiacenter.hu^$document
+||azsiacentrum.hu^$document
+||kinaiwebaruhaz.hu^$document
+||maplin.hu^$document
+||microelectrónica.es^$document
+||mikroelektronik.hu^$document
+||petpoolalarm.com^$document
+||sexmeup.hu^$document
