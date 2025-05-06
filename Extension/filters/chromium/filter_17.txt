@@ -1,9 +1,9 @@
-! Checksum: 57A8tgixn5ywfPwpmRLAzQ
-! Diff-Path: ../patches/17/17-s-1745482374-3600.patch
+! Checksum: l839yb7ElucjBVt5vNf0wg
+! Diff-Path: ../patches/17/17-s-1746447299-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.10.93
-! TimeUpdated: 2025-04-24T08:09:28+00:00
+! Version: 2.0.10.98
+! TimeUpdated: 2025-05-05T12:11:15+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -21,6 +21,10 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! https://kb.triplewhale.com/en/articles/5740620-klaviyo-integration#h_d0fb8c7039
+$removeparam=tw_medium
+$removeparam=tw_profile_id
+$removeparam=tw_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201868
 $removeparam=uzcid
 $removeparam=beyond_uzcvid
@@ -394,6 +398,15 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! links on the HP
+||hokkaido-np.co.jp^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/203915
+||tv.apple.com^$removeparam=itscg
+||tv.apple.com^$removeparam=itsct
+! https://github.com/AdguardTeam/AdguardFilters/issues/204187
+||m.1688.com^$removeparam=src
+||m.1688.com^$removeparam=__removesafearea__
+||m.1688.com^$removeparam=src_cna
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203892
 ||gofundme.com^$removeparam=attribution_id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202756
@@ -409,7 +422,6 @@ $removeparam=fb_source
 ||nintendo.com^$removeparam=nt_redirect_referrer
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-12682755
 ||code-wallets.com^$removeparam=tw_adid
-||code-wallets.com^$removeparam=tw_source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/201849
 ||autodaily.ru^$removeparam=from
 ! Yandex.Practicum
@@ -1227,6 +1239,7 @@ keepstreams.com^$removeparam=downloadmode
 ||streamfab.jp^$removeparam=c_wh
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164060#issuecomment-1779661046
 ! https://github.com/AdguardTeam/AdguardFilters/issues/111997
+||ozon.ru^$removeparam=origin_referer
 ||ozon.ru^$removeparam=__rr
 ||ozon.ru^$removeparam=abt_att
 ||ozon.ru^$removeparam=asb

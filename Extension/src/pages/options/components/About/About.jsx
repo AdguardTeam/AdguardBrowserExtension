@@ -57,6 +57,22 @@ const About = observer(() => {
                 </div>
                 <div className="about__version">
                     {`${translator.getMessage('options_about_version')} ${version}`}
+                    <p>
+                        {`TSWebExtension v${libVersions.tswebextension}`}
+                        <br />
+                        {`TSUrlFilter v${libVersions.tsurlfilter}`}
+                        <br />
+                        {`Scriptlets v${libVersions.scriptlets}`}
+                        <br />
+                        {`ExtendedCss v${libVersions.extendedCss}`}
+                        {/* // TODO revert later AG-42086 */}
+                        {/* {libVersions.dnrRulesets && ( */}
+                        {/*     <> */}
+                        {/*         <br /> */}
+                        {/*         {`DNR-Rulesets v${libVersions.dnrRulesets}`} */}
+                        {/*     </> */}
+                        {/* )} */}
+                    </p>
                 </div>
                 <ul
                     className="about__libs"
