@@ -1,9 +1,9 @@
-! Checksum: DcPMVTYfmoa/F6mmVl2cSA
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1745561590-3600.patch
+! Checksum: fxlXN1QX4/94AZ5yR9WPQQ
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1746451149-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.64
-! TimeUpdated: 2025-04-25T06:09:18+00:00
+! Version: 2.0.3.65
+! TimeUpdated: 2025-05-05T13:15:07+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -147,6 +147,9 @@ amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
 amazon.*#@#.sbv-ad-content-container
 amazon.*#@?#div[data-display-at]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[style="display: none !important;"]:last-child)
 amazon.*#@##desktop-dp-ilm_feature_div_01
+m.yelp.com#@#div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[class*="sponsored-icon_"])
+m.yelp.com#@#div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[class*="sponsored-icon_"]) + li[class]
+m.yelp.com#@#div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[data-testid^="themed-ad-"])
 @@||shop.apotal.de/images/generic_attachments/attachments/apotal/skyscraper
 teknosa.com#@##gowitImpressionEvent
 zalando.de#@#div[data-trckng-component] div[class]:has(> div[data-visibility-info-id*="advertising"])

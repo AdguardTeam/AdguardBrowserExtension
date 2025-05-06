@@ -1,9 +1,9 @@
-! Checksum: TSZ6eiU/pd5WeHTaOnlnsQ
-! Diff-Path: ../patches/16/16-s-1745557855-3600.patch
+! Checksum: RV0nJVbrcFbtvp6uptKKmg
+! Diff-Path: ../patches/16/16-s-1746451150-3600.patch
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.52.4
-! TimeUpdated: 2025-04-25T05:07:38+00:00
+! Version: 2.0.52.23
+! TimeUpdated: 2025-05-05T13:15:23+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -197,7 +197,7 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/1478420
-japscan.lol#%#//scriptlet("remove-node-text", "script", "/Y[a-z][a-z]?k[a-z]\d/")
+japscan.lol#%#//scriptlet("remove-node-text", "script", "/Y[a-z][a-z]?k[a-z]\d|YouKiss/")
 /^https:\/\/acscdn\.com\/script\/(?:aclib|atg|compatibility|ippg|suv4|ut)\.js(\?cb=\d{13})?$/$script,third-party,match-case,important,domain=japscan.lol
 @@||acscdn.com^$script,third-party,domain=japscan.lol
 @@.shop/*/invoke.js$script,third-party,domain=japscan.lol,important
@@ -904,14 +904,16 @@ igen.fr#$##motherboard { top: 30px!important; }
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
-/^(?!.*(ilfcdn.li|bytecdntp.com|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=scan-fr.cc
+/^(?!.*(mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=scan-fr.cc
 ! Similar to regexp above, but using the denyallow modifier
-$script,third-party,denyallow=ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|x.com,_____,domain=extreme-down.moe|dl-protect.link|tirexo.ink|zone-telechargement.*|fsmirror93.lol
+*$script,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=extreme-down.moe|dl-protect.link|tirexo.ink|zone-telechargement.*|fsmirror93.lol
 ! Similar to regexp above, but using the denyallow modifier and for xmlhttprequest
-$xmlhttprequest,third-party,denyallow=fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|x.com,_____,domain=zone-telechargement.*
+$xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=zone-telechargement.*
 !
 !
 !
+bookys-ebooks.com###vpnvpn
+bookys-ebooks.com##div[class="bys-container"] > div[class*="bys-bg"] > div[class]:has(> .dl_bg)
 campingcarlesite.com##div[id^="fancybox-"]
 ||bnbchain.org^$domain=observalgerie.com
 observalgerie.com#%#//scriptlet('abort-current-inline-script', 'fetch', 'Uint8Array')
@@ -1698,7 +1700,13 @@ app.molotov.tv#%#//scriptlet('prevent-xhr', '/ping?token=')
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/204507
+$subdocument,third-party,domain=lulustream.com,badfilter
+$popup,domain=lulustream.com,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203869
+$popup,domain=jonathansociallike.com,badfilter
+$popup,domain=diananatureforeign.com,badfilter
+$popup,domain=sarahnewspaperbeat.com,badfilter
 $popup,domain=richardsignfish.com,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203826
 ||porndoe.com^$csp=media-src 'none' http: https:,badfilter
@@ -4366,6 +4374,7 @@ _build=iclick-$popup
 ||1e89ee9512.com^
 ||1ff0de0d52.com^
 ||1ttv.net^
+||1xlite-4262965.top^
 ||205f21070c.com^
 ||218cc08472.com^
 ||2382a095f4.com^
@@ -5046,6 +5055,7 @@ _build=iclick-$popup
 ||astonishing-service.com^
 ||astylararsines.com^
 ||atadsoalsuget.net^
+||atakokaju.shop^
 ||atchshipsmotor.com^
 ||atedtrevor.guru^
 ||atenpegman.com^
@@ -7162,6 +7172,7 @@ _build=iclick-$popup
 ||offcuboneer.com^
 ||offergo.net^
 ||offers1019.com^
+||officeclouddriveshared365.com^
 ||offinfernaper.com^
 ||offraticater.com^
 ||ofninjasktor.com^
@@ -7987,6 +7998,7 @@ _build=iclick-$popup
 ||syndetimmit.shop^
 ||syndetstermine.com^
 ||t.eroges.com^
+||t4ce4ma.shop^
 ||ta7wiilat.store^
 ||tabun.net^
 ||tacanunmuted.top^
@@ -8231,6 +8243,7 @@ _build=iclick-$popup
 ||vdvxlayf.com^
 ||vealedincite.com^
 ||ver-pelis.me^
+||ver1f3y.com^
 ||veritabiedate.com^
 ||veritabiedate.net^
 ||veritabledate.com^
@@ -8273,6 +8286,7 @@ _build=iclick-$popup
 ||viiucwwa.com^
 ||viiwzrlr.com^
 ||viixjjgk.com^
+||viiyutty.com^
 ||viizone.com^
 ||vilreeroucm.net^
 ||vimeonk.com^
@@ -11464,7 +11478,6 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||imgpeak.com/img/
 ||immobilier.nc^*/medias_pubs/
 ||immoweb.be/*/autopromo-footer?
-||immoweb.be/*/dpg/advertisements
 ||immoweb.be/*/sponsor?
 ||impimg.free.fr/pubs/
 ||info-algerie.com/media/Polo-Sedan.jpg
@@ -12383,7 +12396,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||toolslib.net/assets/custom/img/4d5/
 ||toolslib.net/assets/img/placeholders/
 ||toomai.fr/img/banner/
-||top-for-phone.fr/visuels/
+||top-for-phone.fr/imgs/
 ||topachat.com/images/configo_*compos-
 ||topjetm.net^*/img/pub.
 ||topliste-fr.com/filmsdivx.gif
@@ -14472,7 +14485,6 @@ logitheque.com###adni_widgets-2
 clicanoo.re###adress_utiles
 bobvoyeur.com,djazairess.com,ecogine.org,tendancehotellerie.fr,zalotech.com###ads
 ustart.org###ads_tall
-immoweb.be###advertisments
 cuisineaz.com###advi
 finalclap.com###aff_tuto_com
 dogzer.com###affichage_tag_58
@@ -14496,7 +14508,6 @@ africanmanager.com###bLayer
 lenouveleconomiste.fr###b_top
 commentcamarche.com,commentcamarche.net###ba_position4
 commentcamarche.com,commentcamarche.net###ba_right
-top-for-phone.fr###background-cover
 euro-2016-france.net###background-promo
 meilleurmobile.com###backgrounddiv
 deavita.fr###badHabbitsPopup
@@ -14627,7 +14638,6 @@ israelmagazine.co.il###featgal
 agroligne.com,auto-utilitaire.com,mobilealgerie.com###floatdiv
 algeriepatriotique.com###flottante_droite
 algeriepatriotique.com###flottante_gauche
-test-mobile.fr###fondhabillage
 forum.oujdacity.net###footer
 amateur2sexe.fr###footer-boom
 liberation.fr###footer-partners-box
@@ -14998,7 +15008,7 @@ reezocar.com##.autopromo-container
 buzzly.fr##.ayl-ad-article
 nintendo-master.com##.back_content
 animedigitalnetwork.fr##.background-click
-katibin.fr##.background-cover
+katibin.fr,top-for-phone.fr##.background-cover
 codeur.com##.badge-project-urgent
 cnews.fr##.ban-bottom-desktop
 bdgest.com,bedetheque.com##.ban-top
@@ -15116,9 +15126,6 @@ hclips.com,txxx.com,txxx.tube##.chan_banner
 yahoo.com##.classickick
 allkeyshop.com,goclecd.fr##.clb-left
 allkeyshop.com,goclecd.fr##.clb-right
-test-mobile.fr##.clickleft
-test-mobile.fr##.clickright
-test-mobile.fr##.clicktop
 fourchette-et-bikini.fr##.cluj
 bienpublic.com,dna.fr,estrepublicain.fr,lalsace.fr,ledauphine.com,lejsl.com,leprogres.fr,republicain-lorrain.fr,vosgesmatin.fr##.colStickyWrapperP2
 mediadico.com##.cold-bloc-video-generique

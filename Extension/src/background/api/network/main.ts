@@ -17,7 +17,6 @@
  */
 import browser from 'webextension-polyfill';
 
-import { FiltersApi } from '@adguard/tswebextension/mv3';
 import {
     FiltersDownloader,
     type DefinedExpressions,
@@ -25,6 +24,9 @@ import {
 } from '@adguard/filters-downloader/browser';
 import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
+import { type TsWebExtension as TsWebExtensionMv3 } from '@adguard/tswebextension/mv3';
+
+import { TsWebExtension } from 'tswebextension';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
 import { logger } from '../../../common/logger';
@@ -39,6 +41,7 @@ import {
 } from '../../schema';
 import { CustomFilterApi, type FilterUpdateOptions } from '../filters';
 import { AntiBannerFiltersId, NEWLINE_CHAR_REGEX } from '../../../common/constants';
+import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 
 import { NetworkSettings } from './settings';
 
@@ -189,7 +192,16 @@ export class Network {
             // prepared data in filters storage, to which we write the binary
             // data from @adguard/dnr-rulesets. See AG-36824 for details.
             if (__IS_MV3__ && filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
-                const rawFilterList = await FiltersApi.getRawFilterList(filterId, 'filters/declarative');
+                // TODO: Check if its needed
+                await (TsWebExtension as unknown as typeof TsWebExtensionMv3).syncRuleSetWithIdb(
+                    filterId,
+                    'filters/declarative',
+                );
+                const rawFilterList = await FiltersStoragesAdapter.getRawFilterList(filterId);
+
+                if (!rawFilterList) {
+                    throw new Error(`Cannot find filter with id ${filterId}`);
+                }
 
                 return {
                     filter: rawFilterList.split(NEWLINE_CHAR_REGEX),
