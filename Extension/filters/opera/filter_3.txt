@@ -1,9 +1,9 @@
-! Checksum: 5KqAr1xMqkBFquTNo1Q2/w
-! Diff-Path: ../patches/3/3-s-1746451152-3600.patch
+! Checksum: 6BPOCbsjlaM9xqMAq+4/Wg
+! Diff-Path: ../patches/3/3-s-1746519221-3600.patch
 ! Title: AdGuard Tracking Protection filter
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.84.31
-! TimeUpdated: 2025-05-05T13:14:48+00:00
+! Version: 2.0.84.36
+! TimeUpdated: 2025-05-06T08:09:15+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -552,6 +552,7 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ! test for CNAME
 ||kib.hu^
 !
+||analytics.newsifier.nl^
 ||mn-tz.com^
 ||tr.thecontentserver.com^
 ||sst.hostnet.nl^
@@ -154939,6 +154940,10 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 ! NOTE: Specific rules
 !
+||cdn.jsdelivr.net/npm/@snowplow/
+||anizmplayer.com/gMetrics/
+/metrics^|$script,domain=anizle.com|anizm.net|puffytr.com
+||free.ranklet4.com/impression?
 ||joymaxtr.net/jc/gtm.js
 ||capi.elements.video/tr/
 ||web-perf.booking.com^
@@ -157004,7 +157009,6 @@ weekly-economist.mainichi.jp##iframe[id^="cxWidget_"]
 bizjournals.com##.c1-ad-sticky
 ||dxlive.com/js/dtrace.js
 chinatimes.com##.popin-recommend
-||static.sahibinden.com/assets/analytics*.js
 ||prtimes.jp/common/*/html/js/heatmap-senddata.js
 ||prtimes.jp/common/js/GTMhead.js
 ||prtimes.jp/common/js/googleana.js
@@ -159428,6 +159432,11 @@ link.gmapp*.net$image
 ! it's problematic that due to how Gmail proxy work, these domains aren't even exposed on the network level
 ! fortunately, extensions can see them (Gmail puts the real URL in the location.hash part of the src)
 !
+! sahibinden.com
+sahibinden.com/mail/readStatistics/$image
+sahibinden.com/trace/email/read/$image
+sahibinden.com%2Fmail%2FreadStatistics%2F$image
+sahibinden.com%2Ftrace%2Femail%2Fread%2F$image
 ! Plex
 sp.plex.tv/q/$image
 sp.plex.tv%2Fq%2F$image
@@ -160886,6 +160895,11 @@ $cookie=bf_visit
 ! Bad:  ||monerominer.rocks^$third-party (should be in adservers.txt)
 !
 !
+! pixabay.com
+||pixabay.com^$cookie=anonymous_user_id
+! sahibinden.com
+||sahibinden.com^$cookie=kno
+||sahibinden.com^$cookie=shuid
 ! aamulehti.fi
 ||aamulehti.fi^$cookie=sa1pid
 ! swissotel.com

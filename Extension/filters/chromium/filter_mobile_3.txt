@@ -1,9 +1,9 @@
-! Checksum: MwaWDP/4IxbLDVg3BN/new
-! Diff-Path: ../patches/3_optimized/3_optimized-s-1746451138-3600.patch
+! Checksum: aHVe66XELpnwiqKja8zqeg
+! Diff-Path: ../patches/3_optimized/3_optimized-s-1746519211-3600.patch
 ! Title: AdGuard Tracking Protection filter (Optimized)
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.84.31
-! TimeUpdated: 2025-05-05T13:14:48+00:00
+! Version: 2.0.84.36
+! TimeUpdated: 2025-05-06T08:09:15+00:00
 ! Expires: 10 days (update frequency)
 slobodnadalmacija.hr,meconomynews.com,brandbrief.co.kr,motorgraph.com#%#//scriptlet('abort-current-inline-script', 'atob', 'eval(decodeURIComponent(escape(window.atob("KCgpPT5')
 slobodnadalmacija.hr,meconomynews.com,brandbrief.co.kr,motorgraph.com#%#//scriptlet('prevent-eval-if', '/07c225f3\.online|content-loader\.com|css-load\.com|html-load\.com/')
@@ -252,6 +252,7 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1)  { remove: true; }
 ||xlog.snssdk.com^
 ||log.snssdk.com^
 ||kib.hu^
+||analytics.newsifier.nl^
 ||mn-tz.com^
 ||tr.thecontentserver.com^
 ||sst.hostnet.nl^
@@ -154266,6 +154267,10 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 /prod/dfm/fp.min.js$redirect=nooptext,important,domain=dailycamera.com
 /prod/dfm/g2i.min.js$redirect=nooptext,important,domain=dailycamera.com
 /prod/dfm/t8y9347t.min.js$redirect=nooptext,important,domain=dailycamera.com
+||cdn.jsdelivr.net/npm/@snowplow/
+||anizmplayer.com/gMetrics/
+/metrics^|$script,domain=anizle.com|anizm.net|puffytr.com
+||free.ranklet4.com/impression?
 ||joymaxtr.net/jc/gtm.js
 ||capi.elements.video/tr/
 ||web-perf.booking.com^
@@ -156331,7 +156336,6 @@ weekly-economist.mainichi.jp##iframe[id^="cxWidget_"]
 bizjournals.com##.c1-ad-sticky
 ||dxlive.com/js/dtrace.js
 chinatimes.com##.popin-recommend
-||static.sahibinden.com/assets/analytics*.js
 ||prtimes.jp/common/*/html/js/heatmap-senddata.js
 ||prtimes.jp/common/js/GTMhead.js
 ||prtimes.jp/common/js/googleana.js
@@ -158714,6 +158718,10 @@ link.gmapp*.net$image
 ||ya.ru/clck/
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||bing.com/fd/ls/
+sahibinden.com/mail/readStatistics/$image
+sahibinden.com/trace/email/read/$image
+sahibinden.com%2Fmail%2FreadStatistics%2F$image
+sahibinden.com%2Ftrace%2Femail%2Fread%2F$image
 sp.plex.tv/q/$image
 sp.plex.tv%2Fq%2F$image
 links.plex.tv/s/eo/$image
@@ -159471,6 +159479,9 @@ $cookie=_pubcid
 $cookie=pbjs-unifiedid
 $cookie=bf_lead
 $cookie=bf_visit
+||pixabay.com^$cookie=anonymous_user_id
+||sahibinden.com^$cookie=kno
+||sahibinden.com^$cookie=shuid
 ||aamulehti.fi^$cookie=sa1pid
 ||swissotel.com^$cookie=/^incap_ses_/
 ||swissotel.com^$cookie=/^nlbi_/
