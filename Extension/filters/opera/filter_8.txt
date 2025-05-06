@@ -1,9 +1,9 @@
-! Checksum: MT540B8ljHgJnAbPBSIQ5w
-! Diff-Path: ../patches/8/8-s-1746443461-3600.patch
+! Checksum: w40cXcgsAvGZagOGZ7JmoA
+! Diff-Path: ../patches/8/8-s-1746512022-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.20
-! TimeUpdated: 2025-05-05T11:06:56+00:00
+! Version: 2.0.8.21
+! TimeUpdated: 2025-05-06T06:09:28+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1744,6 +1744,7 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+puna.nl##.raw-html-component:has(div[class$="-ad"])
 businessinsider.nl##div[data-module="billboard"]
 funda.nl##div[role="advertisment"]
 funda.nl##.advertisement-rectangle

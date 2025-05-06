@@ -1,5 +1,5 @@
-! Checksum: LbFfGCLHeHQHEV9KQb1QnA
-! Diff-Path: ../patches/16_optimized/16_optimized-s-1746451145-3600.patch
+! Checksum: 5dxZtZA/ZrjA1swSHouoqg
+! Diff-Path: ../patches/16_optimized/16_optimized-s-1746499163-3600.patch
 ! Title: AdGuard French filter (Optimized)
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
 ! Version: 2.0.52.23
@@ -101,7 +101,6 @@ ebookdz.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
 ||ebookdz.com/forum/libab/script.js
 monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementById', 'Blocking Ads')
 japscan.lol#%#//scriptlet("remove-node-text", "script", "/Y[a-z][a-z]?k[a-z]\d|YouKiss/")
-/^https:\/\/acscdn\.com\/script\/(?:aclib|atg|compatibility|ippg|suv4|ut)\.js(\?cb=\d{13})?$/$script,third-party,match-case,important,domain=japscan.lol
 @@||acscdn.com^$script,third-party,domain=japscan.lol
 @@.shop/*/invoke.js$script,third-party,domain=japscan.lol,important
 japscan.lol#@#div.container > [href]
@@ -1247,6 +1246,7 @@ alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#
 /ad_bottom_
 /adblock.php
 /adform.
+/adfuel-
 /adfuel/*
 /adpage_
 /adperf.
@@ -1390,6 +1390,7 @@ alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#
 /pub_250_
 /pub_title.
 /publicidadsetup/*
+/publicit%c3%a9/*
 /publicite-$domain=~publicite-decor.fr|~publicite-lepeut-dole.fr
 /publicite.
 /publicite/*
@@ -1691,6 +1692,7 @@ _build=iclick-$popup
 ||acxiom-online.com^$third-party
 ||ad-spire.net^$third-party
 ||ad6.fr^$third-party
+||adfurikun.jp^$third-party
 ||adhslx.com^$third-party
 ||adintop.com^$third-party
 ||adkontekst.pl^$third-party
@@ -1732,6 +1734,7 @@ _build=iclick-$popup
 ||affiliatable.io^$third-party
 ||affility.com^$third-party
 ||afilio.com.br^$third-party
+||algocashmaster.com^$third-party
 ||apypxl.com^$third-party
 ||aquaplatform.com^$third-party
 ||askmecca.com^$third-party
@@ -2043,6 +2046,7 @@ _build=iclick-$popup
 ||chaxidroat.net^
 ||chokagehoast.com^
 ||ckdxbragemqum.com^
+||climbingsmuggle.com^
 ||cliv2508.com^
 ||cloudgallery.net^
 ||cloudseun.com^
@@ -2625,6 +2629,7 @@ _build=iclick-$popup
 ||a-calc.de^$third-party
 ||adless.io^$third-party
 ||afminer.com^$third-party
+||authedmine.com^$third-party
 ||binance.org^$third-party
 ||browsealoud.com/plus/scripts/$script
 ||cnhv.co^$third-party
@@ -2672,6 +2677,7 @@ _build=iclick-$popup
 ||dosya-indirici.online^$popup
 ||dropcatch.com^$popup,third-party
 ||elvenar.com^$popup,third-party
+||espace-plus.net^$popup,third-party
 ||exodusjailhousetarantula.com^$popup
 ||familiarpyromaniasloping.com^$popup
 ||firstclick.pro^$popup
@@ -2845,6 +2851,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||s3content.s3.amazonaws.com/imgemails/cf
 ||satsupreme.com/images/banners/
 ||schule-und-familie.de/assets/images/banners/
+||secretturf.com/img/$third-party
 ||sexcity-girls.com/banner/
 ||shareasale.com/sale.cfm?amount=
 ||sherpa.agoda.com^$third-party
@@ -2865,6 +2872,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||tripleclicks.com^$subdocument
 ||tudou.com^$subdocument
 ||turk-dreamworld.com/images/sponsor/
+||tuto.com/banner/$third-party
 ||ucoz.net/cgi/uutils.fcg?
 ||up-banner.wavecdn.net^
 ||vachvoi.cc/picture/files/
@@ -3016,6 +3024,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||amateur2sexe.fr/include/$script
 ||andlil.com/prorealtime-trading-
 ||animeka.com/_img/cache/partner/
+||api.annonces.nc/posts/random-boosted
 ||aps.dz/images/banners/clients/
 ||archimag.com/sites/archimag.com/files/adds/
 ||athle.org/upload/marketing/
@@ -3716,6 +3725,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ##.oboxads-ad-widget
 ##.oboxads-outstream
 ##.of-ad-container
+##.padAdv
 ##.padscreen
 ##.page-head-ad
 ##.pagin_pub

@@ -1,9 +1,9 @@
-! Checksum: nZRUdcGPGSKazpXs9zOBsA
-! Diff-Path: ../patches/20/20-s-1746451151-3600.patch
+! Checksum: yMJ+1weQT6D9/iBcjNAN0g
+! Diff-Path: ../patches/20/20-s-1746465072-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.20.56
-! TimeUpdated: 2025-05-05T13:15:26+00:00
+! Version: 2.0.20.60
+! TimeUpdated: 2025-05-05T17:07:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -59,6 +59,9 @@ alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,ra
 !
 !
 !
+doordash.com##a[data-testid="openAppButton"]
+doordash.com##div[class]:has(> div[data-testid="appDownload"]:first-child + button[data-testid="appDownloadButton"]:last-child)
+doordash.com##main > main > div[class]:has(> div[class]:only-child > div[class]:only-child > div[class] > span:only-child > a[href*="adjust"])
 t.shuqi.com##.ReaderFreeFixedGuideBtn
 easy.co.il##.qr-container
 easy.co.il##.open-app-button
