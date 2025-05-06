@@ -44,7 +44,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scriptlet rules are not displayed in the filtering log [#3164].
 - The filtering in Edge's split screen doesn't work [#2832].
 - Total blocked popup string translated incorrectly [#3204].
-- vk.com is broken by $replace rules [#3122]
+- vk.com is broken by $replace rules [#3122].
+- Increase file size limit to 10MB for $replace rules in Firefox [#3192].
 
 [#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
@@ -68,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2832]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2832
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
 [#3122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3122
+[#3129]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3192
 
 ## [5.1.75] - 2025-04-15
 
