@@ -101,7 +101,7 @@
     "source-map-loader": "3.0.2",
     "style-loader": "3.3.2",
     "superjson": "2.2.1",
-    "swc-loader": "0.2.3",
+    "swc-loader": "^0.2.6",
     "terser": "5.37.0",
     "ts-node": "10.9.1",
     "tsx": "4.19.2",
@@ -117,7 +117,8 @@
   },
   "pnpm": {
     "overrides": {
-      "@adguard/tswebextension>@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/4f225a33019017124ddbb19d284aabe48e64af1b/packages/tsurlfilter/tsurlfilter.tgz"
+      "@adguard/tswebextension>@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/4f225a33019017124ddbb19d284aabe48e64af1b/packages/tsurlfilter/tsurlfilter.tgz",
+      "@adguard/tswebextension": "link:../tsurlfilter/packages/tswebextension"
     }
   },
   "dependencies": {
@@ -125,6 +126,7 @@
     "@adguard/filters-downloader": "2.2.6",
     "@adguard/logger": "1.1.1",
     "@adguard/scriptlets": "2.1.6",
+    "@adguard/text-encoding": "^0.8.3",
     "@adguard/translate": "1.0.2",
     "@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/4f225a33019017124ddbb19d284aabe48e64af1b/packages/tsurlfilter/tsurlfilter.tgz",
     "@adguard/tswebextension": "https://github.com/AdguardTeam/tsurlfilter/raw/2d1efed6e96fb83f4b24406d4a0f05f92e7219c8/packages/tswebextension/tswebextension.tgz",
