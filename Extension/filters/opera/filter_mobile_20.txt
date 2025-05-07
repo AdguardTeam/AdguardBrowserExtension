@@ -1,9 +1,9 @@
-! Checksum: j/3Top4CiqcHfhn20fQtdg
-! Diff-Path: ../patches/20_optimized/20_optimized-s-1745587029-3600.patch
+! Checksum: eNxNxuQjtLnSR6pYRnYrDg
+! Diff-Path: ../patches/20_optimized/20_optimized-s-1746499166-3600.patch
 ! Title: AdGuard Mobile App Banners filter (Optimized)
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.20.32
-! TimeUpdated: 2025-04-25T13:13:40+00:00
+! Version: 2.0.20.60
+! TimeUpdated: 2025-05-05T17:07:12+00:00
 ! Expires: 10 days (update frequency)
 /js/jquery.smartbanner.js
 ##.ldapp-article
@@ -19,6 +19,20 @@
 ##head[prefix~="medium-com:"] ~ body .js-openInAppButton
 ##head[prefix~="medium-com:"] ~ body .js-postActionsBarContent > .js-readNextInteractions
 alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,rabota.by,temp-mail.org,ortobom.com.br,dicionarioinformal.com.br,5-fifth.com,news.sky.com,chat.babel.com,getwordly.com,school-turnup.com,naked-science.ru,vod.tvp.pl,tvn24.pl,m.lamoda.ru,lkfl2.nalog.ru,kocailem.com,dartworld.shopgate.com,m.alles10euro.de,dodopizza.ru,allo.ua,tempo.co,beymen.com,tvnmeteo.tvn24.pl,outsidetv.com,golfchannel.com,sportsnet.ca,euronews.com,pkobp.pl,tesco.hu,prima.hu,immobilienscout24.de,lcwaikiki.com,m.sigrun-woehr.com,transfermarkt.de,fragfinn.de,hh.ru,eraffe24.de,infranken.de,m.computeruniverse.net,m.emp.de,meduza.io##body .smartbanner
+doordash.com##a[data-testid="openAppButton"]
+doordash.com##div[class]:has(> div[data-testid="appDownload"]:first-child + button[data-testid="appDownloadButton"]:last-child)
+doordash.com##main > main > div[class]:has(> div[class]:only-child > div[class]:only-child > div[class] > span:only-child > a[href*="adjust"])
+t.shuqi.com##.ReaderFreeFixedGuideBtn
+easy.co.il##.qr-container
+easy.co.il##.open-app-button
+ntv.com.tr##.article-app-widget
+x.com##article[data-testid="tweet"] div[data-testid="card.wrapper"]:has(> div[data-testid="card.layoutLarge.media"] > a[href="https://itunes.apple.com/app/id6670324846"])
+tv9telugu.com##.tv9_banner
+dhgate.com###J_appBanner
+dhgate.com##body::before
+dhgate.com##.r-openapp
+espncricinfo.com##.ds-bottom-14.ds-right-0
+espncricinfo.com##button:has(> span:contains(Get App))
 gigabaito.com##.app_bottom_banner
 gigabaito.com##.app_cv_footer
 comss.ru##a[href="https://www.rustore.ru/catalog/app/ru.comss.dns.app"]
@@ -46,23 +60,18 @@ mynet.com##.app-link-container
 ososedki.com###installContainer
 dailymotion.com##div[class^="HomeRightColumn__promoContainer"] > div[class^="AppPromotion_"]
 royalroad.com###mobile-callout
-qlover.jp##.jss128
+qlover.jp###root > div[class^="jss"][style=""]:has(> a.MuiButton-colorPrimary[href^="https://qlover.page.link/?"])
 moviewalker.jp##.footerBnr
 posylka.net#$#.plugin-banner { display: none !important; }
 posylka.net#%#//scriptlet('remove-class', 'has-plugin-banner', 'body')
 gamersky.com##.gs_ccs_appdown
 op.gg##section + div[class]:has(> a[href^="https://op.gg/"] > img[alt="Download"])
-livemint.com##.ECH_LM_MWEB_ALL_BUT_ATF5
-op.gg##.flex > div.text-center:has(> a[href^="https://itunes.apple.com/"])
 faz.net##a[track-label*="App"]
 bestbuy.com###smartbannerContainer
-education.yandex.ru##body > section[class*="styles_prompt__"]:has(> div[class] > div[class] + button)
 newsmax.com###dtnmapp
 calendar.yandex.ru###CalendarBanner
-antalya.bel.tr##.mobile-info
 rohlik.cz##section[data-test="app-promo-wrapper"]
 m.dcinside.com##.app-info-ban
-m.dcinside.com##.layer-bottom-popup
 wetransfer.com##.AppInstallBanner
 apsiyon.com#$##mobile-redirect-banner { display: none !important; }
 apsiyon.com#%#//scriptlet('remove-class', 'with-sb', '#header')
@@ -91,6 +100,7 @@ scribd.com##div[style] > a[href^="https://www.scribd.com/oauth/signup"]:has(> sp
 cosme.net#%#//scriptlet('trusted-click-element', 'button[style*="background-color: rgb(255"].ab-message-button')
 przegladsportowy.onet.pl###__bottomBanner
 foxford.ru##div[class*="ContentContainer"] > div > div:has( > div > div > .slick-slider > .slick-list > .slick-track > .slick-slide > div > div > div[class*="QrWrapper"])
+foxford.ru##div[class^="styled__Root-"]:has(> div > a[href^="https://foxford.page.link/"][href*="ru.foxford.foxfordtextbook"])
 web.joongna.com#$#.min-h-screen > button[class^="py-[17px] px-[20px] bg-[#F1F4F6] hidden justify-between max"] { display: none !important; }
 web.joongna.com#$#.carouselWrapper + div > div.fixed.bg-white.justify-between.lg\:hidden.top-\[136px\] { top: 63px !important; }
 evroopt.by#$#a[href="/app-eplus/"] { visibility: hidden !important; }
@@ -106,10 +116,10 @@ m.map.kakao.com###daumWrap > div.comm_layer
 kitco.com##img[alt*="AppStore"]
 kitco.com##img[alt*="GooglePlay"]
 kitco.com##img[alt*="QR Code"]
-terabox.app##.action-bar > div.action-bar-view:has(> div.btn-text:contains(View on Mobile))
-terabox.app##.share-base > div.btns-box:has(> div.operation-block > div#openNaBtn)
-terabox.app###openNaMessageBar > div.right > div.btn
-terabox.app##.to-app-container
+1024terabox.com,terabox.com,terabox.app##.action-bar > div.action-bar-view:has(> div.btn-text:contains(View on Mobile))
+1024terabox.com,terabox.com,terabox.app##.share-base > div.btns-box:has(> div.operation-block > div#openNaBtn)
+1024terabox.com,terabox.com,terabox.app###openNaMessageBar > div.right > div.btn
+1024terabox.com,terabox.com,terabox.app##.to-app-container
 apkfab.com##.tip-extension
 domclick.ru##div[class*="MobileBanner-mobileBanner"]
 furunavi.jp##.footer-applink
@@ -167,6 +177,7 @@ studysmarter.*##div[data-ai-flashcard]
 thesportstak.com##aside > div.flex:has(> a[href^="https://onelink.to/"])
 newsbreak.com#%#//scriptlet('set-local-storage-item', 'readMoreButtonShow', 'true')
 comfy.ua##.footer-download-app__wrapper
+sixty-percent.com,m.sporx.com##a[href^="https://app.adjust.com/"]
 sporx.com##.pgContainer > a[title*="uygulamamızı"]
 sporx.com##.pgContainer > img[alt="Sporx Mobil uygulamaları"]
 mangaraw.plus##.fixed.bottom-0.standalone\:hidden
@@ -195,6 +206,9 @@ meteum.ai##div[class^="WeatherAppTopWidgetClient_container__"]
 meteum.ai##article[class^="AppPromoMeteumApp_wrap__"]
 vitaexpress.ru###installAppBanner
 366.ru,gorzdrav.org##.b-apps-flyer
+haystack.tv##.banner-bg.sticky
+haystack.tv###about-us-panel > section:has(> h1:first-child + div:last-child > a[href*="haystackapp.page.link"])
+haystack.tv#?#button:has(> p:contains(Get the App))
 myvi.in##header a[href="https://vi.app.link/viappinst"]
 fontanka.ru##article > div[class^="wrapper_"]:has(> a[href^="https://redirect.appmetrica.yandex.com/"])
 proton.me##div[aria-labelledby="mobile-banner-title"]
@@ -223,6 +237,7 @@ sp.manga.nicovideo.jp##div.fixed.bottom-2
 businessinsider.com,sakurazaka46.com##.app-button
 hangikredi.com##div[class*="bg-bannerLeftGradient"]
 meteum.ai##button[class^="AppPromo_container"]
+theportugalnews.com##header > .p-3 > .mx-auto > .row:has(> .col-8 > a.btn-download)
 level.travel#%#//scriptlet('trusted-set-cookie', 'lt_go_to_app_mobile_popup', 'hiding')
 perekrestok.ru#%#//scriptlet('trusted-click-element', 'button.app-banner-close', '', '800')
 m.sonyunara.jp,magnit.ru##.install-app-banner
@@ -233,6 +248,7 @@ moises.ai##.relative > div.flex-col:has(> div[role="group"] > a[title="App Store
 moises.ai##footer + div.fixed
 codenames.game##a[href="https://cge.as/cnapp-store-download-cno"]
 v.daum.net##.box_floating:has(button[data-tiara-action-name="다음앱배너_클릭"])
+member.kms.kuronekoyamato.co.jp##.common-header ~ div > .overlay:has(> .open-app-area)
 camp-fire.jp###main ~ section > div[class]:has(> img[src*="_app"])
 hromadske.radio##div[class^="ModalBanner_modalBanner"]
 yamap.com##.Posts__Download__Section
@@ -274,6 +290,7 @@ bestmovie.it###bestmovie-store-apps
 just-eat.*##section[data-qa="download-app-section"]
 m.facebook.com##div[data-status-bar-color]:not(.vscroller) > div[data-is-pull-to-refresh-allowed="true"] + .fixed-container.bottom
 tagesspiegel.de##a[href*="tagesspiegel-app"]
+m.sporx.com###pAd > a[href^="https://app.adjust.com/"]
 m.sporx.com#%#//scriptlet('set-constant', 'showPopupInts', 'noopFunc')
 jp.investing.com#?#.flex-col > div.flex:has(> div.flex-1 > div > nav > ul[data-test="footer-mobile-links"])
 news18.com##div[class*="install_app"]
@@ -311,6 +328,7 @@ manga.nicovideo.jp##a[href^="https://nicomanga.onelink.me/"]
 m.economictimes.com#%#//scriptlet('set-session-storage-item', 'nudgeStickyBannerHide', 'true')
 m.economictimes.com##a[href*="app.goo.gl/?link="]
 wrtn.jp#%#//scriptlet('trusted-click-element', '#web-modal button.css-1d86b5p')
+zutool.jp##.column_app_box01
 zutool.jp##[class^="cmn_app_link"]
 meijutt.net#%#//scriptlet('trusted-set-cookie-reload', 'meijutt2024', 'meijutt2025')
 bundesliga.com##app-banner-wrapper
@@ -319,12 +337,15 @@ gingersoftware.com##.gc-home-page > gc-new-banner-carousel:has(.icon-chrome-colo
 banki.ru##div[class^="appsWidgetstyled__StyledAppsWidget"]
 subito.it##div[class^="AppWidget_download-box-wrapper"]
 routinehub.co##.actions div.qr-code
-jianshu.com##body > #__next ~ div:not([class]):has(img[src="//upload.jianshu.io/images/js-qrc.png"])
+jianshu.com#$#body { overflow: auto !important; }
+jianshu.com#$#body[style*="width: calc(100% - 15px)"] { width: 100% !important; }
+jianshu.com#$#body > #__next ~ div:not([class]):has(img[src="//upload.jianshu.io/images/js-qrc.png"]) { display: none !important; }
 flowgpt.com#%#//scriptlet('set-local-storage-item', 'appDownloadModal.Dismissed.p', 'true')
 flowgpt.com#%#//scriptlet('set-local-storage-item', 'appDownloadModal.Dismissed.home', 'true')
 flowgpt.com#%#//scriptlet('set-local-storage-item', 'appDownloadBannerDismissed.chat', 'true')
 flip.gr##.needsclick
 duckduckgo.com#%#//scriptlet('trusted-set-cookie', 'ax', 'v433-5')
+totaljobs.com##article[data-testid="hp-app-banner-holder"]
 yce.perfectcorp.com##div[class^="app-buttons_appButtonBlock__"]
 atptour.com##.atp_apps
 atptour.com##.atp_article > p:has(> a[href^="https://www.atptour.com/"][href*="/apps?"][href*="app_banner"])
@@ -332,12 +353,13 @@ huya.com##.player-app-qrcode
 info.nicomanga.jp##.wp-block-post-content > div.wp-block-group:has(> p > a[href="https://site.nicovideo.jp/nicomanga/?appstore"])
 store.steampowered.com##.banner_open_in_steam
 bushikaku.net##.index__app
+chita.ru##article > div[class^="wrapper_"]:has(> a[href^="https://redirect.appmetrica.yandex.com/"])
 substack.com#?#.container > .pencraft:has(> .pencraft + button:contains(Install the app))
 boosty.to#%#//scriptlet('set-session-storage-item', 'preventShowAppBanner', 'true')
 krymr.com##.col-xs-12 > div.slide-in-wg:has(> div.wg-hiding-area a[href="/mobilnoye-prilozheniye"])
 krymr.com##.wsw > div.wsw__embed:has(> div.infgraphicsAttach a[href*="/mobilnoye-prilozheniye"])
 bangumi.org###section_download_link
-ofix.com,kariyerbankasi.net##.mobile-app-popup
+my.telkomsel.com##div[class^="BannerDownload"]
 receive-sms.cc##.pt-3 .bg-banner
 zillow.com###pfs-upsell
 laposte.fr##.component-smartBanner-part
@@ -356,6 +378,7 @@ pracazarogiem.pl,pracezarohem.cz,pracazarohom.sk##div[class*="MobileBannerDownlo
 familydollar.com##.headerPromoBar
 mail.yahoo.co.jp###root > div[class^="sc-"] > div[class^="sc-"] > div[class^="sc-"]:has( > div[class^="sc-"] > img[alt="Yahoo!メールアプリをインストール"])
 indiatimes.com##a[href^="https://timesofindia.onelink.me"]
+typhoon.yahoo.co.jp###calendar_detail2_module
 mydealz.de##.browserExtension-promotionBanner
 duckduckgo.com##div[class^="mobile-homepage_atbBadge"]
 cloud.mail.ru#%#//scriptlet('set-session-storage-item', 'downloadAppModalShown', 'true')
@@ -508,6 +531,7 @@ mail.google.com###nav > #speedbump
 sfes.rakuten-bank.co.jp#$#body[style^="padding-top:"] { padding-top: 0px !important; }
 sfes.rakuten-bank.co.jp#$##area_download-app { display: none !important; }
 chizhik.club#?##__next > div[class]:has(> div.wrapperContainer > a[href="https://chizhik.club/mobile"])
+tmailor.com#?#.container > .row:has(a[href^="https://play.google.com/store/apps/details?"])
 www-aljazeera-com.cdn.ampproject.org,aljazeera.com##div[class*="app-download-banner"]
 ryukyushimpo.jp#?#.flex-col > .justify-center:has(a[href*="//play.google.com/store/apps/details"])
 locipo.jp##div[class^="app_bannar_"]
@@ -546,6 +570,7 @@ ithome.com##.down_app
 m.shein.com###branch-app
 anime-sharing.com##.js-installPromptContainer
 ||tvcdn.netkeiba.com/img.dir/common/img/keibamatome/banner/
+epocacosmeticos.com##div[data-testid="baixe-app"]
 [$path=/maps]google.com##div[jsaction*="promotion"]
 [$path=/maps]yandex.*#?#form.route-form-view > div.card-banner-view
 instagram.com#%#//scriptlet('set-session-storage-item', 'loggedOutAppSheetIsMinimized', '1')
@@ -577,6 +602,7 @@ m.webnovel.com##div[class^="styles_toAppIcon__"]
 aptekiplus.ru#%#//scriptlet('set-cookie', 'header_banner_cookies', 'true')
 cn.bing.com###id_qrcode_popup_positioner
 cloud.tencent.com##.cdc-widget-global > div.cdc-widget-global__btn:not(.top)
+mybook.ru#?#.ant-col-lg-3 > div[class] > div[class]:has(> div[class] > a[href^="https://redirect.appmetrica.yandex.com/serve/"])
 list.jd.com##.jdm-tbar-tab-qrcode
 house.goo.ne.jp##.cmnAppli
 ulifestyle.com.hk###open-in-modal
@@ -587,6 +613,7 @@ coolapk.com##.download-group
 bastyon.com##body > div[class^="shadow-popup-"]
 news.ltn.com.tw,ec.ltn.com.tw##.appE1121
 lifestyleasia.com##.btt-top-add-section
+hatarako.net,askdoctors.jp##.top-app-area
 povo.jp###sectionApp
 gpfans.com###androidDownload
 stheadline.com#?#.content-body > p:has(> a[href="https://bit.ly/3yLrgYZ"])
@@ -616,6 +643,7 @@ st.benesse.ne.jp##.app_download_bnr
 4yuuu.com##a[href^="https://4moon.onelink.me/"]
 emg.yahoo.co.jp,crisis.yahoo.co.jp##.promotionLink
 4meee.com##.articles > ul.banner__items
+kma.kkbox.com##.banner-download
 callfilter.app###pageContent a[href="https://play.google.com/store/apps/details?id=callfilter.app"]
 sports.sina.com.cn##a[href^="http://sports.sina.com.cn/download/"] > img
 doc88.com##.boxright > .dk-side
@@ -646,6 +674,7 @@ qidian.com###left-container > div[dl-track$="_redpacketdownload"]
 rainews.it#$#.banner-app { display: none !important; }
 rainews.it#$#html > body[data-layout=homepage] main { border-bottom: 0px solid #009 !important; }
 researchgate.net##.lite-page__footer-native-app
+mts.by##.tariff > section.app
 wenshushu.cn##.cont-right a[href="https://www.wenshushu.cn/download"] > img
 character.ai#%#//scriptlet('set-local-storage-item', 'MOBILE_APP_ANNOUNCEMENT_SEEN', 'true')
 happymod.ru##.new-fixd-box
@@ -660,6 +689,7 @@ apkpure.*##.aegon-down-item
 youku.com###app .callEnd_box
 clearnotebooks.com#?#.grid-notes_container > div.base-component:has(> div.base-component > div.how-to-use)
 producthunt.com#%#//scriptlet('prevent-addEventListener', 'scroll', 'Math.round(e/n)!==r')
+weblio.jp##.weblio-apps
 tokyo-calendar.jp#?#.sub-contents > div.sidebar-panel:has(> div > a[href="https://go.onelink.me/KVTI/5b7ff7e0"])
 tokyo-calendar.jp#?#.sub-contents > div.sidebar-panel:has(> div > img[alt="東京カレンダーアプリ"])
 tokyo-calendar.jp#?#.sub-contents > div.sidebar-panel:has(> div > img[alt="東京カレンダーアプリ"]) + div.app-dl-buttons
@@ -688,6 +718,7 @@ pikabu.ru##.appstore-link
 histrf.ru#$#.min-h-screen { margin-top: 0 !important; }
 histrf.ru#$#header { top: 0 !important; }
 pdf2go.com##.extension-container
+girlswalker.com##.gw-footer-banner-app-wrap
 yazio.com,msdmanuals.com,tierschutzbund.de##.smartbanner
 ||navitime.co.jp/static/*/bicycle/banner/app_p1.png
 channelchk.com##a[href="https://channelchk.com/app"]
@@ -707,6 +738,7 @@ bisnis.com##.wrapper__ads-download
 runtrip.jp##.fixed_banner
 job.minnanokaigo.com##.grid-cols-app-bar
 goobike.com##.app_install
+ubook.reader.qq.com##.guide-card
 ubook.reader.qq.com##.top-guide
 ubook.reader.qq.com##.writer-say
 bhaskar.com#%#//scriptlet('remove-attr', 'style', '#root > div[style^="--mobile-navbar-height:"]')
@@ -822,6 +854,7 @@ apfelpage.de##.widget_appful
 nytimes.com##button[data-testid="getstarted-magic-link"]
 m.haber7.com###makroo-sticky-adunit
 ||loader.to/images/loader/loader_app.jpg
+kickstarter.com##.mobile > .shadow-high.relative:first-child
 newsbreak.com#?##__next > section:has(> div.fixed > div.flex > button:contains(Get the app))
 avg.com###body-inner > #teaser
 joongang.co.kr##.goto-app-btn
@@ -875,6 +908,7 @@ betteranime.net#$#body { overflow: auto!important; }
 mail.yahoo.co.jp##img[alt="Yahoo!メールアプリをインストール"]
 mail.yahoo.co.jp##img[alt="Yahoo!メールアプリをインストール"] + div[class^="sc-"]
 boomplay.com##.googlePlay
+boomplay.com##.getAppUI
 aptoide.com##div[class^="aptoide-installer"]
 nbcnews.com##amp-list#branch-amp-journey
 kino.tricolor.tv#%#//scriptlet('remove-class', 'add_app-module', '.main')
@@ -883,6 +917,7 @@ mixch.tv##.app-bnr
 bigo.tv##.load-box
 bigo.tv##.download-dialog
 hinative.com##.mod_banner_bestapp_footer
+m.douban.com#$#.TalionNav-static { display: none !important; }
 m.douban.com#$#.TalionNav { padding-bottom: 30px !important; }
 gaosan.com##.float-qrcode
 kogan.com###kogan-ad-sidebar
@@ -1045,6 +1080,7 @@ travel.rakuten.co.jp##span[id="footerBannerAppDL"]
 travel.rakuten.co.jp###appDlBn
 hoyolab.com##.bbs-qr
 linkedin.com#$#.header-container { margin-top:0px!important; }
+wear.jp###hdr_download
 oceans-nadia.com#$#div[class^="CommonModal_modalBack"] { display:none!important; }
 oceans-nadia.com#$#header { margin-top: 0px !important;}
 point.md#%#//scriptlet('set-cookie', 'visited', 'true')
@@ -1060,6 +1096,7 @@ sp.netkeiba.com##.netkeiba_app_link01
 france24.com##.o-self-promo--app
 nikkei.com##a[data-rn-track="open_in_app"]
 meduza.io##body[class^="amp-"] div[class^="style__BannerTop-"]
+hipdf.com##.wsc-ad-plugin-container
 aliexpress.com,aliexpress.us#$#body.smartbanner-placeholder { padding-top: 0 !important; }
 aliexpress.com,aliexpress.us#$##header-float-banner { display: none !important; }
 golosameriki.com###wrowblock-27871_73
@@ -1160,6 +1197,8 @@ webtoons.com##.foot_app
 boredpanda.com,hackread.com##.get-app
 electrical4u.com###custom_html-24
 warnung.bund.de##.apphint
+nknews.org,essenjet.com###mobileApp
+nknews.org##a[href^="https://www.nknews.org/pro/mobile-apps/"] > img
 camscanner.com##.orcode_box
 avg.com##.hub-cta-desktop
 glasswire.com##.glasswire-android
@@ -1178,6 +1217,7 @@ uol.com.br##.c-notification-link-app
 blog.system76.com#$#body { padding-top: 0!important; }
 m.facebook.com##div[data-sigil="m-promo"]
 n-tv.de##.teaser__appbanner
+finanswebde.com##.prouser.fcbluebg
 tver.jp##a[class^="app-banner_container"]
 booking.com##div[data-item-id="gta_smart_banner"]
 livemint.com#$#.mobileAd { height: 0 !important; }
@@ -1190,16 +1230,18 @@ ifunny.co#$#body { overflow-y: auto !important; }
 emlakkatilim.com.tr##div[id$="ApplicationNitification"]
 gotradio.com##.leftColAd
 www-hindustantimes-com.cdn.ampproject.org,hindustantimes.com##.openAppButton
-m.gamer.com.tw,noin.shop,india.com##.open-app
-qushucheng.com,m.wanben.org,jingwuhotel.com##.appguide-wrap
+newindianexpress.com,m.gamer.com.tw,noin.shop,india.com##.open-app
+wodeshucheng.com,qushucheng.com,m.wanben.org,jingwuhotel.com##.appguide-wrap
 bhaskar.com,divyabhaskar.co.in#?#div[class][style^="position:"] > div[class]:has(> a[href^="https://play.google.com/store/apps/details?id=com.ak.ta."])
 /images/playstore-$domain=bhaskar.com|divyabhaskar.co.in
 ||ssl.pstatic.net/static/m/comic/im/app_banner_
 m.kooora.com#$#html { margin-top: 0 !important; }
+account.mail.ru##.mail-app-promo
 10jqka.com.cn###backWashNav
 nur.kz##.js-page-top
 nperf.com##.mobilePromoLogos
 house.goo.ne.jp,kusurinomadoguchi.com,bleacherreport.com,tvbs.com.tw##.smart_banner
+||m.555duo.net/images/app.gif
 myanimelist.net##.header-mini-banner
 sport.tvp.pl,buser.com.br,belsat.eu##.banner-app
 fanfox.net###edShow
@@ -1217,9 +1259,12 @@ mirtesen.ru#$#html { overflow: auto !important; }
 m.kenh14.vn##a[href="https://kenh14.vn/download-app.htm"] > img
 medium.com##a[href^="https://rsci.app.link"]
 behance.net#$#body { position: static!important; }
+bankbazaar.com###mobileAppStickyFooter
 translate.ru##.download-mobile
 wikihow.*###gatFollowAndroid
 wikihow.*###gatFollowApp
+||xgoo.jp/img/portal/misc/footer_app_recommend/
+blog.goo.ne.jp##.app_induction
 uteka.ru,investing.com##.mobile-apps
 novelcool.com##.sus-download-app-box
 track24.ru#?#.theiaStickySidebar > div.ds:has(> h3 > i.icon-android)
@@ -1247,6 +1292,7 @@ f2movies.to##a[href="/android-movies-apk"]
 battleboats.io###appstores
 player.fm#$#.open-in-app-promo { display: none !important; }
 ||i2.sinaimg.cn/*/searchCallup.js$domain=gu.sina.cn
+gu.sina.cn###__callup_bottom
 bing.com###bnp_hfly
 parcelsapp.com##.badges
 m.gamer.com.tw##div[class^="download-app_box"]
@@ -1291,6 +1337,7 @@ smotrim.ru,tieba.baidu.com#$#body { overflow: auto !important; }
 klook.com,japantaxi.jp,crichd.*,theinitium.com,operanewsapp.com,iq.com,news.awa.fm##.download
 sirabee.com##a[href^="https://app.sirabee.com"]
 ozon.by,ozon.ru##[data-widget="webToAppBanner"]
+game-state.com###playstore
 arzamas.academy#$#body { margin-top: 0! important; }
 c.mi.com##.qr-box
 papara.com###smart
@@ -1359,6 +1406,7 @@ roblox.com###app-bumper-main
 plus.nhk.jp,shufoo.net,gran-turismo.com,m.tv.naver.com,m.comic.naver.com,m.bombaytimes.com##.app_banner
 trendyol.com,tripadvisor.ru,prog-8.com,spice.eplus.jp,catalog.onliner.by,hket.com,fashion-headline.com,momoshop.com.tw,ticketjam.jp,kompas.com,sevenbank.co.jp,booth.pm,reverso.net,bangumi.org,msn.com,m.investing.com,m.spiegel.de,mavcsoport.hu,m.trendyol.com,autobild.de,infranken.de,m.douglas.de,focus.de###smartbanner
 supreme2.ru###s2newsad
+abril.com.br##.magazine-read
 soundcloud.com##article.mobileApps
 wattpad.com###bottom-banner-container
 wattpad.com###announcements-container
@@ -1387,6 +1435,7 @@ finanzen.net,vodafone.cz,m.jdsports.co.uk,mmajunkie.com#%#document.cookie="sb-cl
 fcn.de,kq2.com,kdrv.com,wfft.com,wtva.com,wktv.com,actionnewsnow.com#%#//scriptlet('set-cookie', 'smartbanner-closed', 'true')
 appticker.de#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/loadAppStoreBanner/.test(a.toString()))return b(a,c)};})();
 svyaznoy.ru#%#//scriptlet('remove-class', 'android-banner-on-page')
+imgur.io,imgur.com#$#div[class^="SeeImgurOIA-"] { display: none !important; }
 imgur.io,imgur.com#$#body { overflow-y: auto !important; }
 msn.com#%#//scriptlet('remove-class', 'irisbactive-top', 'body')
 mytuner-radio.com###appDownloadAd
@@ -1417,7 +1466,7 @@ unian.net#$#.main-column > div > aside { height: 30px!important; }
 1015vibe.com,1033theeagle.com,1037chuckfm.com,1073theeagle.com,960theref.com,969theeagle.com,971theriver.com,97xonline.com,99jamzmiami.com,actionnewsjax.com,b985.com,boston25news.com,business860.com,eagledayton.com,eaglesanantonio.com,easy1029.com,easy93.com,espn690.com,hits1053sanantonio.com,hits965orlando.com,hits973.com,hot105fm.com,hot1065fm.com,k923orlando.com,k95tulsa.com,k99online.com,kiro7.com,kiss104fm.com,kissrocks.com,kkyx.com,kono1011.com,krmg.com,magic1021.com,mix965tulsa.com,mymagic949.com,oregonsfox.com,power1061.com,powerathens.com,star945.com,theboneonline.com,wape.com,wbab.com,wbli.com,wdbo.com,wduv.com,wftv.com,wgauradio.com,whio.com,whio.com,wmmo.com,wokv.com,wpxi.com,wsbradio.com,wsbtv.com,wsoctv.com,x995jax.com,y100fm.com,yourgeorgiacountry.com##a[href="/mobile-apps/"]
 1015vibe.com,1033theeagle.com,1037chuckfm.com,1073theeagle.com,960theref.com,969theeagle.com,971theriver.com,97xonline.com,99jamzmiami.com,actionnewsjax.com,b985.com,boston25news.com,business860.com,eagledayton.com,eaglesanantonio.com,easy1029.com,easy93.com,espn690.com,hits1053sanantonio.com,hits965orlando.com,hits973.com,hot105fm.com,hot1065fm.com,k923orlando.com,k95tulsa.com,k99online.com,kiro7.com,kiss104fm.com,kissrocks.com,kkyx.com,kono1011.com,krmg.com,magic1021.com,mix965tulsa.com,mymagic949.com,oregonsfox.com,power1061.com,powerathens.com,star945.com,theboneonline.com,wape.com,wbab.com,wbli.com,wdbo.com,wduv.com,wftv.com,wgauradio.com,whio.com,whio.com,wmmo.com,wokv.com,wpxi.com,wsbradio.com,wsbtv.com,wsoctv.com,x995jax.com,y100fm.com,yourgeorgiacountry.com##.b-right-rail-advanced__main-right-rail table[style$="width: 100%; height: 250px; padding-bottom:0px;"]
 1015vibe.com,1033theeagle.com,1037chuckfm.com,1073theeagle.com,960theref.com,969theeagle.com,971theriver.com,97xonline.com,99jamzmiami.com,actionnewsjax.com,b985.com,boston25news.com,business860.com,eagledayton.com,eaglesanantonio.com,easy1029.com,easy93.com,espn690.com,hits1053sanantonio.com,hits965orlando.com,hits973.com,hot105fm.com,hot1065fm.com,k923orlando.com,k95tulsa.com,k99online.com,kiro7.com,kiss104fm.com,kissrocks.com,kkyx.com,kono1011.com,krmg.com,magic1021.com,mix965tulsa.com,mymagic949.com,oregonsfox.com,power1061.com,powerathens.com,star945.com,theboneonline.com,wape.com,wbab.com,wbli.com,wdbo.com,wduv.com,wftv.com,wgauradio.com,whio.com,whio.com,wmmo.com,wokv.com,wpxi.com,wsbradio.com,wsbtv.com,wsoctv.com,x995jax.com,y100fm.com,yourgeorgiacountry.com##.call-to-action:has(> div.mobile-apps)
-rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-dwnapp
+rezka-ua.in,rezka.fi,rezka-ua.org,rezka.si,hello-rezka.tv,hdrezka.kim,kvk.pub,hdrezka1twwpb.org,omnirezka.tv,hdrezka1dhpkk.org,hdrezka9bsbhq.org,hdrezka720dhh.org,hdrezka320ypq.org,hdrezka180map.org,hdrezka320hjh.org,hdrezka9fmskj.org,hdrezka2vmmty.org,hdrezka8dgquu.org,hdrezkayyh5pq.org,hdrezka2tepnm.org,standby-rezka.tv,flymaterez.net,hdrezka320fkk.org,hdrezka.vip,rezka.space,hdrezka8bdhtq.org,hdrezka1tqbbd.org,hdrezka1qkpbx.org,hdrezka320rtq.org,rezka-ua.tv,hdrezkabmmshq.org,hdrezka.in,hdrezka66yhfg.net,hdrezka.rest,hdrezka19139.org,hdrezka.ag,upivi.com,hdrezka.me,kinopub.me,3ivi.com,rezkify.com,bestofkinopoisk.com,rezkery.com,hdrezkaonline.com,hdrezka.sh,cokinopoisk.com,hdrezka-ag.com,hdrezka.club,hdrezka.cm,hdrezka.co,hdrezka.name,hdrezka.site,hdrezka.today,hdrezka.tv,hdrezka.website,hdrezkayou.com,rezka.ag##.b-dwnapp
 irishradiolive.com,myonlineradio.at,myonlineradio.de,myonlineradio.hu,myonlineradio.nl,myonlineradio.sk,myradioendirect.fr,myradioenvivo.ar,myradioenvivo.mx,myradioonline.cl,myradioonline.es,myradioonline.it,myradioonline.pl,myradioonline.ro,ukradiolive.com#$#.mobileAffiliateAdblock { display: none !important; }
 irishradiolive.com,myonlineradio.at,myonlineradio.de,myonlineradio.hu,myonlineradio.nl,myonlineradio.sk,myradioendirect.fr,myradioenvivo.ar,myradioenvivo.mx,myradioonline.cl,myradioonline.es,myradioonline.it,myradioonline.pl,myradioonline.ro,ukradiolive.com#%#//scriptlet('trusted-click-element', '.js-closeAppBnr')
 irishradiolive.com,myonlineradio.at,myonlineradio.de,myonlineradio.hu,myonlineradio.nl,myonlineradio.sk,myradioendirect.fr,myradioenvivo.ar,myradioenvivo.mx,myradioonline.cl,myradioonline.es,myradioonline.it,myradioonline.pl,myradioonline.ro,ukradiolive.com#$#.cover-slider-cont { display: block !important; }
