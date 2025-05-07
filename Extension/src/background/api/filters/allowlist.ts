@@ -307,7 +307,8 @@ export class AllowlistApi {
         url: string,
         tabId: number,
     ): Promise<void> {
-        AllowlistApi.disableFilteringForUrl(url);
+        // Should be awaited before reloading, to wait engine update
+        await AllowlistApi.disableFilteringForUrl(url);
 
         await TabsApi.reload(tabId);
     }
