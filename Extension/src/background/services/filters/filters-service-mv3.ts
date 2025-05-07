@@ -34,12 +34,9 @@ import {
     annoyancesConsent,
     Categories,
     FiltersApi,
-    HitStatsApi,
     PageStatsApi,
     QuickFixesRulesApi,
 } from '../../api';
-import { settingsEvents } from '../../events';
-import { SettingOption } from '../../schema';
 import { AntiBannerFiltersId } from '../../../common/constants';
 
 /**
@@ -64,8 +61,6 @@ export class FiltersService {
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersService.resetBlockedAdsCount);
         messageHandler.addListener(MessageType.SetConsentedFilters, FiltersService.setConsentedFilters);
         messageHandler.addListener(MessageType.GetIsConsentedFilter, FiltersService.getIsConsentedFilter);
-
-        settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
     }
 
     /**
@@ -271,17 +266,6 @@ export class FiltersService {
             await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
-        }
-    }
-
-    /**
-     * Called when prompted to disable or enable hit collection.
-     *
-     * @param value Desired collecting status.
-     */
-    private static async onCollectHitsSwitch(value: boolean): Promise<void> {
-        if (value) {
-            HitStatsApi.cleanup();
         }
     }
 }
