@@ -174,17 +174,17 @@ class UiStore {
      * Opens the sidebar.
      */
     @action
-        openSidebar = () => {
-            this.isSidebarOpen = true;
-        };
+    openSidebar = () => {
+        this.isSidebarOpen = true;
+    };
 
     /**
      * Closes the sidebar.
      */
     @action
-        closeSidebar = () => {
-            this.isSidebarOpen = false;
-        };
+    closeSidebar = () => {
+        this.isSidebarOpen = false;
+    };
 }
 
 export default UiStore;
