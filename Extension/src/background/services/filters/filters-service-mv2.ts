@@ -35,7 +35,6 @@ import {
     type FilterMetadata,
     FiltersApi,
     FilterUpdateApi,
-    HitStatsApi,
     PageStatsApi,
     toasts,
 } from '../../api';
@@ -73,7 +72,6 @@ export class FiltersService {
         contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.manualCheckFiltersUpdate);
 
         settingsEvents.addListener(SettingOption.UseOptimizedFilters, FiltersService.onOptimizedFiltersSwitch);
-        settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
     }
 
     /**
@@ -233,17 +231,6 @@ export class FiltersService {
     private static async onOptimizedFiltersSwitch(): Promise<void> {
         await FiltersApi.reloadEnabledFilters();
         engine.debounceUpdate();
-    }
-
-    /**
-     * Called when prompted to disable or enable hit collection.
-     *
-     * @param value Desired collecting status.
-     */
-    private static async onCollectHitsSwitch(value: boolean): Promise<void> {
-        if (value) {
-            HitStatsApi.cleanup();
-        }
     }
 
     /**

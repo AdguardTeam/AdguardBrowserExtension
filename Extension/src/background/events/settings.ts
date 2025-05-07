@@ -19,6 +19,11 @@ import { type SettingOption, type Settings } from '../schema';
 
 export type SettingsListener<T extends keyof Settings> = (value: Settings[T]) => void | Promise<void>;
 
+// TODO: Remove awaiting of listener promises in publishEvent.
+//  This will decouple the publisher from listener execution time/errors,
+//  improving system robustness and publishEvent responsiveness.
+//  Listeners can still be async; components needing to wait for a
+//  specific async listener should use other patterns (e.g., follow-up events).
 /**
  * Type-safe mediator for setting options change events.
  */

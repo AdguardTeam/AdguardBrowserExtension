@@ -37,6 +37,7 @@ import { AntiBannerFiltersId } from '../../../common/constants';
 import { engine } from '../../engine';
 import {
     Categories,
+    HitStatsApi,
     SettingsApi,
     TabsApi,
 } from '../../api';
@@ -81,6 +82,7 @@ export class SettingsService {
         settingsEvents.addListener(SettingOption.SendDoNotTrack, SettingsService.onSendDoNotTrackStateChange);
         settingsEvents.addListener(SettingOption.RemoveXClientData, SettingsService.onRemoveXClientDataStateChange);
         settingsEvents.addListener(SettingOption.BlockWebRTC, SettingsService.onBlockWebRTCStateChange);
+        settingsEvents.addListener(SettingOption.DisableCollectHits, SettingsService.onDisableCollectHitsChange);
 
         // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
         // settingsEvents.addListener(
@@ -311,6 +313,19 @@ export class SettingsService {
             }
         } catch (e) {
             logger.error('Failed to change `block WebRTC` option state', e);
+        }
+    }
+
+    /**
+     * Called when {@link SettingOption.DisableCollectHits} changes.
+     *
+     * @param disableCollectHitsStats Setting value.
+     */
+    static onDisableCollectHitsChange(disableCollectHitsStats: boolean): void {
+        engine.api.setCollectHitStats(!disableCollectHitsStats);
+
+        if (disableCollectHitsStats) {
+            HitStatsApi.cleanup();
         }
     }
 
