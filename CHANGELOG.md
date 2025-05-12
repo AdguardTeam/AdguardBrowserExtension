@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cannot maximize Filtering log in Firefox for Windows [#2464].
 - Unable to paste text into user rules input field on Android [#3061].
 - Invalid HTML rule selectors are breaking site loading [#2646], [#2826].
-- ya.ru - `Hide Referrer from third parties` breaks the site [#2839].
+- Stealth mode's `Hide Referer from third parties` option may break some websites [#2839].
 - Filtering log: Resizing the right panel selects its contents [#2305].
 - Types of the blocked requests are not displayed in the popup (Firefox for Android) [#3157].
 - Switching to the "Statistics" tab shifts the "Actions" and "Statistics" buttons (Edge for Android) [#3158].
@@ -43,8 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scriptlet rules are not displayed in the filtering log [#3164].
 - The filtering in Edge's split screen doesn't work [#2832].
 - Total blocked popup string translated incorrectly [#3204].
-- vk.com is broken by $replace rules [#3122].
-- Increase file size limit to 10MB for $replace rules in Firefox [#3192].
+- `$replace` rules may break some websites [#3122].
+- Increase file size limit to 10MB for `$replace` rules in Firefox [#3192].
 
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
