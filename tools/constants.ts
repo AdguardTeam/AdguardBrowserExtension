@@ -43,7 +43,7 @@ export enum ManifestVersionEnv {
     Third = '3',
 }
 
-const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
+export const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
     return Object.values(BuildTargetEnv).includes(buildEnv as BuildTargetEnv);
 };
 
@@ -76,7 +76,7 @@ export const ENV_CONF: Record<BuildTargetEnv, EnvConfig> = {
     },
 };
 
-export const enum Browser {
+export enum Browser {
     Chrome = 'chrome',
     ChromeMv3 = 'chrome-mv3',
     FirefoxAmo = 'firefox-amo',
@@ -84,6 +84,10 @@ export const enum Browser {
     Opera = 'opera',
     Edge = 'edge',
 }
+
+export const isValidBrowserTarget = (target: any): target is Browser => {
+    return Object.values(Browser).includes(target as Browser);
+};
 
 /**
  * List of browsers which has its own filters assets directory.
