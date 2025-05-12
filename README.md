@@ -489,7 +489,7 @@ The browser extension project includes a comprehensive bundle size monitoring sy
 - Checks for duplicate package versions using `pnpm`
 - Stores historical size data in `.bundle-sizes.json`
 - Designed for CI/CD integration (Bamboo)
-- **For Firefox targets (AMO and Standalone) only**, every individual `.js` file is checked to ensure it does not exceed the 4MB limit imposed by the Firefox Add-ons Store. If any `.js` file is larger than 4MB, the check fails and the offending files are reported.**
+- **For Firefox targets (AMO and Standalone) only**, every individual `.js` file is checked to ensure it does not exceed the 4MB limit imposed by the Firefox Add-ons Store. If any `.js` file is larger than 4MB, the check fails and the offending files are reported.
 
 #### How it works
 
@@ -506,7 +506,7 @@ We have defined size limits in the project.
 3. If the new sizes are justified, the developer updates the size values in the package and creates a commit.
 4. We then review and approve any changes to the sizes as part of the PR process.
 
-##### Steps:
+##### Steps
 
 1. Run the build for the desired environment (e.g., `pnpm beta` or `pnpm release`).
 2. If the build fails due to bundle size limits, investigate the cause (e.g., new dependencies, large assets).
@@ -518,6 +518,7 @@ We have defined size limits in the project.
     # Or: pnpm update-bundle-size beta firefox-amo
     # Or: pnpm update-bundle-size dev
     ```
+
 4. Commit the updated `.bundle-sizes.json` file and include justification in your PR.
 5. The changes will be reviewed and approved as part of the PR process.
 
@@ -554,7 +555,6 @@ pnpm check-bundle-size beta
 - `--threshold <number>`: Sets the allowed percentage increase in bundle size before the check fails. Default: 10%.
 
 This is useful for temporarily relaxing or tightening the allowed size delta for a specific check/build.
-
 
 ## <a name="permissions-required"></a> Permissions required
 
