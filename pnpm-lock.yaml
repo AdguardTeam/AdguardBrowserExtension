@@ -15,8 +15,8 @@ importers:
   .:
     dependencies:
       '@adguard/agtree':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.3
+        version: 3.1.3
       '@adguard/filters-downloader':
         specifier: 2.2.6
         version: 2.2.6
@@ -26,6 +26,9 @@ importers:
       '@adguard/scriptlets':
         specifier: 2.1.6
         version: 2.1.6
+      '@adguard/text-encoding':
+        specifier: ^0.8.3
+        version: 0.8.3
       '@adguard/translate':
         specifier: 1.0.2
         version: 1.0.2
@@ -148,8 +151,8 @@ importers:
         version: 3.4.0(zod@3.21.4)
     devDependencies:
       '@adguard/dnr-rulesets':
-        specifier: https://github.com/AdguardTeam/tsurlfilter/raw/b0f0f1cab08a10c3b47c04acc3f43fb987004374/packages/dnr-rulesets/dnr-rulesets.tgz
-        version: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/b0f0f1cab08a10c3b47c04acc3f43fb987004374/packages/dnr-rulesets/dnr-rulesets.tgz
+        specifier: https://github.com/AdguardTeam/tsurlfilter/raw/69c9db79c37053ad2a574c358694f7f453c67479/packages/dnr-rulesets/dnr-rulesets.tgz
+        version: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/69c9db79c37053ad2a574c358694f7f453c67479/packages/dnr-rulesets/dnr-rulesets.tgz
       '@adguard/re2-wasm':
         specifier: 1.2.0
         version: 1.2.0
@@ -273,9 +276,6 @@ importers:
       fake-indexeddb:
         specifier: 6.0.0
         version: 6.0.0
-      filesize:
-        specifier: 10.1.2
-        version: 10.1.2
       form-data:
         specifier: 4.0.0
         version: 4.0.0
@@ -391,12 +391,8 @@ packages:
     resolution: {integrity: sha512-/tx6NXr9zUUmmnIJLK8dtSwH9il3lH38iBPQ2AFfPUkqYXizBWQuA2tttz91YNpFj54ABnpMSbYGB7zMBNNmLA==}
     engines: {node: '>=18'}
 
-  '@adguard/agtree@3.1.0':
-    resolution: {integrity: sha512-0jW1V/k3kh1lMU2Q7iZSsRQMLLOXFIzhbdEIK32ZrnU5S9u/++pSPreYw/LhgKdiSJ5tnycFVLY1YLYQ3YEyFA==}
-    engines: {node: '>=18'}
-
-  '@adguard/agtree@3.1.1':
-    resolution: {integrity: sha512-XMhZycH+ebGBAwJh5uZH2dPIvePnX7PKXMEBzLb7LXjwmWe7ZR9YpGxxfJCzNpCm0Bg0RdHHCn/L7e5te/Ud8A==}
+  '@adguard/agtree@3.1.3':
+    resolution: {integrity: sha512-QQjCopTaFmI3Xhmbneq5BxooEftRqATD9r/4FhT7j9bLdmJB23iliUeoDysi5wyepueA1b0GNa9q2g8xce2lkg==}
     engines: {node: '>=22'}
 
   '@adguard/assistant@4.3.70':
@@ -409,9 +405,9 @@ packages:
     resolution: {integrity: sha512-pKM8oUQcl8IrVyJIlqwiAUMX4manZrfe2S/a9Np3VDbnaQFbGTwW1cmQoKffmdFUwk7dEKzQ83ILm1OuOu6kZw==}
     hasBin: true
 
-  '@adguard/dnr-rulesets@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/b0f0f1cab08a10c3b47c04acc3f43fb987004374/packages/dnr-rulesets/dnr-rulesets.tgz':
-    resolution: {tarball: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/b0f0f1cab08a10c3b47c04acc3f43fb987004374/packages/dnr-rulesets/dnr-rulesets.tgz}
-    version: 2.0.0
+  '@adguard/dnr-rulesets@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/69c9db79c37053ad2a574c358694f7f453c67479/packages/dnr-rulesets/dnr-rulesets.tgz':
+    resolution: {tarball: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/69c9db79c37053ad2a574c358694f7f453c67479/packages/dnr-rulesets/dnr-rulesets.tgz}
+    version: 3.0.0-alpha.2
     hasBin: true
 
   '@adguard/extended-css@2.1.1':
@@ -2680,10 +2676,6 @@ packages:
   file-entry-cache@6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
-
-  filesize@10.1.2:
-    resolution: {integrity: sha512-Dx770ai81ohflojxhU+oG+Z2QGvKdYxgEr9OSA8UVrqhwNHjfH9A8f5NKfg83fEH8ZFA5N5llJo5T3PIoZ4CRA==}
-    engines: {node: '>= 10.4.0'}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -5119,19 +5111,7 @@ snapshots:
       xregexp: 5.1.2
       zod: 3.21.4
 
-  '@adguard/agtree@3.1.0':
-    dependencies:
-      '@adguard/css-tokenizer': 1.2.0
-      camelcase-keys: 7.0.2
-      clone-deep: 4.0.1
-      is-ip: 3.1.0
-      json5: 2.2.3
-      sprintf-js: 1.1.3
-      tldts: 5.7.112
-      xregexp: 5.1.2
-      zod: 3.21.4
-
-  '@adguard/agtree@3.1.1':
+  '@adguard/agtree@3.1.3':
     dependencies:
       '@adguard/css-tokenizer': 1.2.0
       camelcase-keys: 7.0.2
@@ -5153,7 +5133,7 @@ snapshots:
       crypto-js: 4.2.0
       diff: https://codeload.github.com/105th/jsdiff/tar.gz/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a
 
-  '@adguard/dnr-rulesets@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/b0f0f1cab08a10c3b47c04acc3f43fb987004374/packages/dnr-rulesets/dnr-rulesets.tgz':
+  '@adguard/dnr-rulesets@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/69c9db79c37053ad2a574c358694f7f453c67479/packages/dnr-rulesets/dnr-rulesets.tgz':
     dependencies:
       '@adguard/logger': https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/f53e4b6b3e8239db6f874051cd02086f11f20e6e/packages/logger/logger.tgz
       commander: 12.1.0
@@ -5186,7 +5166,7 @@ snapshots:
 
   '@adguard/tsurlfilter@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/f53e4b6b3e8239db6f874051cd02086f11f20e6e/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)':
     dependencies:
-      '@adguard/agtree': 3.1.1
+      '@adguard/agtree': 3.1.3
       '@adguard/css-tokenizer': 1.2.0
       '@adguard/logger': https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/f53e4b6b3e8239db6f874051cd02086f11f20e6e/packages/logger/logger.tgz
       '@adguard/re2-wasm': 1.2.0
@@ -5204,7 +5184,7 @@ snapshots:
 
   '@adguard/tswebextension@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/f53e4b6b3e8239db6f874051cd02086f11f20e6e/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)':
     dependencies:
-      '@adguard/agtree': 3.1.1
+      '@adguard/agtree': 3.1.3
       '@adguard/assistant': 4.3.70
       '@adguard/extended-css': 2.1.1
       '@adguard/logger': https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/f53e4b6b3e8239db6f874051cd02086f11f20e6e/packages/logger/logger.tgz
@@ -7606,8 +7586,6 @@ snapshots:
   file-entry-cache@6.0.1:
     dependencies:
       flat-cache: 3.2.0
-
-  filesize@10.1.2: {}
 
   fill-range@7.1.1:
     dependencies:

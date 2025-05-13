@@ -60,6 +60,7 @@ import {
     ADGUARD_SETTINGS_KEY,
     AntiBannerFiltersId,
     NotifierType,
+    SEPARATE_ANNOYANCE_FILTER_IDS,
 } from '../../../common/constants';
 import { settingsEvents } from '../../events';
 import { notifier } from '../../notifier';
@@ -311,11 +312,17 @@ export class SettingsApi {
         }
 
         if (allowAcceptableAds) {
-            await CommonFilterApi.loadFilterRulesFromBackend(
-                // Since this is called on settings import we update filters without patches.
-                { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, ignorePatches: false },
-                false,
-            );
+            try {
+                await CommonFilterApi.loadFilterRulesFromBackend(
+                    // Since this is called on settings import we update filters without patches.
+                    { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, ignorePatches: false },
+                    false,
+                );
+            } catch (e) {
+                logger.error(
+                    `Failed to load filter with id ${AntiBannerFiltersId.SearchAndSelfPromoFilterId} due to ${e}`,
+                );
+            }
             filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
@@ -438,10 +445,12 @@ export class SettingsApi {
      * @private
      */
     private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
+        const filtersToEnable: number[] = [];
         const tasks = filterIds.map(async (filterId: number) => {
             try {
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
             } catch (e) {
+                // error may be thrown if filter is deprecated and its local copy no longer exists
                 logger.debug(`[ext.SettingsApi.loadBuiltInFiltersLocal]: filter rules were not loaded from local storage for filter: ${filterId}, error:`, getZodErrorMessage(e));
             }
         });
@@ -510,6 +519,28 @@ export class SettingsApi {
     }
 
     /**
+     * Migrates combined annoyances filter to separated annoyances filters during import
+     * and returns updated enabled filters list.
+     *
+     * @param enabledFilterIds Enabled filters list.
+     *
+     * @returns Updated list of filters to enable.
+     */
+    private static migrateCombinedAnnoyanceFilter(enabledFilterIds: number[]): number[] {
+        if (!enabledFilterIds.includes(AntiBannerFiltersId.AnnoyancesCombinedFilterId)) {
+            return enabledFilterIds;
+        }
+
+        const filtersToEnable = enabledFilterIds.filter((filterId) => {
+            return filterId !== AntiBannerFiltersId.AnnoyancesCombinedFilterId;
+        });
+
+        filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
+
+        return filtersToEnable;
+    }
+
+    /**
      * Imports filters settings from object of {@link FiltersConfig}.
      */
     private static async importFilters({
@@ -522,14 +553,21 @@ export class SettingsApi {
         await SettingsApi.importUserFilter(userFilter);
         SettingsApi.importAllowlist(allowlist);
 
-        const builtInFilters = enabledFilters.filter((filterId: number) => CommonFilterApi.isCommonFilter(filterId));
+        const filtersToEnable = enabledFilters.filter((filterId: number) => CommonFilterApi.isCommonFilter(filterId));
 
         if (__IS_MV3__) {
-            await SettingsApi.loadBuiltInFiltersMv3(builtInFilters);
+            await SettingsApi.loadBuiltInFiltersMv3(filtersToEnable);
 
             await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
-            await SettingsApi.loadBuiltInFiltersMv2(builtInFilters);
+            // special handling for large AdGuard Annoyances filter,
+            // all other deprecated filters shall be skipped;
+            // only for MV2 because it was never available in MV3
+            if (filtersToEnable.includes(AntiBannerFiltersId.AnnoyancesCombinedFilterId)) {
+                filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
+            }
+
+            await SettingsApi.loadBuiltInFiltersMv2(filtersToEnable);
         }
 
         await CustomFilterApi.createFilters(customFilters);

@@ -20,19 +20,13 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { merge } from 'webpack-merge';
 import { type WebpackPluginInstance } from 'webpack';
 
 import { genMv2CommonConfig } from '../webpack.common-mv2';
 import { updateManifestBuffer } from '../../helpers';
-import {
-    Browser,
-    BUILD_ENV,
-    BuildTargetEnv,
-} from '../../constants';
+import { Browser, BUILD_ENV } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
-import { megabytesToBytes, SizeLimitPlugin } from '../size-limit-plugin';
 import { commonManifest } from '../manifest.common';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
@@ -42,23 +36,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 /* eslint-enable @typescript-eslint/naming-convention */
 
-const SIZE_LIMITS_MB = {
-    // Need to be less than 4 MB, because Firefox Extensions Store has a limit of 4 MB for .js files.
-    '.js': megabytesToBytes(4),
-};
-
-export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = false) => {
+export const genFirefoxConfig = (browserConfig: BrowserConfig) => {
     const commonConfig = genMv2CommonConfig(browserConfig);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
-    }
-
-    const isDev = BUILD_ENV === BuildTargetEnv.Dev;
-
-    let zipFilename = `${browserConfig.browser}.zip`;
-    if (!isDev) {
-        zipFilename = 'firefox.zip';
     }
 
     const plugins: WebpackPluginInstance[] = [
@@ -101,18 +83,7 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, isWatchMode = fal
                 },
             ],
         }),
-        // Check the size of the output JS files and fail the build if any file exceeds the limit
-        // but not in the development mode.
-        new SizeLimitPlugin(isDev ? {} : SIZE_LIMITS_MB),
     ];
-
-    // Run the archive only if it is not a watch mode
-    if (!isWatchMode && plugins) {
-        plugins.push(new ZipWebpackPlugin({
-            path: '../',
-            filename: zipFilename,
-        }));
-    }
 
     const firefoxConfig = {
         output: {

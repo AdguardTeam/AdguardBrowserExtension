@@ -450,14 +450,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
     };
 
     // Run the archive only if it is not a watch mode to reduce the build time.
-    // Also, we have special handler for ZipWebpackPlugin only for Firefox builds.
-    const isNotFirefoxBuild = browserConfig.browser !== Browser.FirefoxAmo
-        && browserConfig.browser !== Browser.FirefoxStandalone;
-    if (!isWatchMode && configuration.plugins && isNotFirefoxBuild) {
-        // @ts-ignore
+    if (!isWatchMode && configuration.plugins) {
+        // @ts-expect-error ZipWebpackPlugin has outdated types
         configuration.plugins.push(new ZipWebpackPlugin({
             path: '../',
-            filename: `${browserConfig.browser}.zip`,
+            filename: `${browserConfig.zipName}.zip`,
         }));
     }
 

@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- AdGuard DNS filter and AdGuard Annoyances filter as deprecated.
+
 ### Fixed
 
 - Cursor moves to the end when saving user rules [#3145].
@@ -41,26 +43,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filtering log: Request details panel is automatically closed when loading
   a website in another window/tab [#2327].
 - Scriptlet rules are not displayed in the filtering log [#3164].
+- The filtering in Edge's split screen doesn't work [#2832].
+- Total blocked popup string translated incorrectly [#3204].
+- vk.com is broken by $replace rules [#3122].
+- Increase file size limit to 10MB for $replace rules in Firefox [#3192].
 
-[#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
-[#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
-[#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
-[#2826]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2826
-[#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
-[#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
-[#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
+[#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
+[#2327]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2327
 [#2332]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2332
 [#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
-[#2942]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2942
-[#3163]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3163
+[#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
 [#2488]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2488
+[#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
+[#2826]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2826
+[#2832]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2832
 [#2839]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2839
-[#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
+[#2942]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2942
+[#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
+[#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
+[#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
+[#3122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3122
+[#3192]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3192
+[#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#3157]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3157
 [#3158]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3158
+[#3163]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3163
 [#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
-[#2327]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2327
+[#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
+
+## Unreleased <!-- master -->
+
+### Changed
+
+- Updated [@adguard/agtree] to v3.1.3.
+- Updated [@adguard/dnr-rulesets] to v3.0.0-alpha.0.
+- Updated [@adguard/tsurlfilter] to v3.3.0-alpha.0.
+- Updated [@adguard/tswebextension] to v3.1.0-alpha.0.
 
 ## [5.1.75] - 2025-04-15
 

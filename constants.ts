@@ -19,6 +19,9 @@
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT = 'web-accessible-resources';
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS = `${WEB_ACCESSIBLE_RESOURCES_OUTPUT}/redirects`;
 
+// IMPORTANT! If you will add new directory for output files, please configure check
+// function in tools/bundle-size/check.ts for new directory.
+
 export const BACKGROUND_OUTPUT = 'pages/background';
 export const OPTIONS_OUTPUT = 'pages/options';
 export const POPUP_OUTPUT = 'pages/popup';

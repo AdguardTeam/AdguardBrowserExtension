@@ -183,7 +183,7 @@ const opera = async (options: CommanderOptions) => {
     }
 };
 
-const firefox = async (options: CommanderOptions) => {
+const firefoxAmo = async (options: CommanderOptions) => {
     try {
         await bundleFirefoxAmo(options);
     } catch (e) {
@@ -210,42 +210,42 @@ program
     );
 
 program
-    .command('chrome')
+    .command(Browser.Chrome)
     .description('Builds extension for chrome browser')
     .action(() => {
         chrome(program.opts());
     });
 
 program
-    .command('chrome-mv3')
+    .command(Browser.ChromeMv3)
     .description('Builds extension for chrome-mv3 browser')
     .action(() => {
         chromeMv3(program.opts());
     });
 
 program
-    .command('edge')
+    .command(Browser.Edge)
     .description('Builds extension for edge browser')
     .action(() => {
         edge(program.opts());
     });
 
 program
-    .command('opera')
+    .command(Browser.Opera)
     .description('Builds extension for opera browser')
     .action(() => {
         opera(program.opts());
     });
 
 program
-    .command('firefox')
+    .command(Browser.FirefoxAmo)
     .description('Builds extension for firefox browser')
     .action(() => {
-        firefox(program.opts());
+        firefoxAmo(program.opts());
     });
 
 program
-    .command('firefox-standalone')
+    .command(Browser.FirefoxStandalone)
     .description('Builds signed extension for firefox browser')
     .action(() => {
         firefoxStandalone(program.opts());
