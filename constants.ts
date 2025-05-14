@@ -46,6 +46,7 @@ export const REACT_VENDOR_OUTPUT = 'vendors/react';
 export const MOBX_VENDOR_OUTPUT = 'vendors/mobx';
 export const XSTATE_VENDOR_OUTPUT = 'vendors/xstate';
 export const TSURLFILTER_VENDOR_OUTPUT = 'vendors/tsurlfilter';
+export const TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT = 'vendors/tsurlfilter-declarative-converter';
 export const AGTREE_VENDOR_OUTPUT = 'vendors/agtree';
 export const CSS_TOKENIZER_VENDOR_OUTPUT = 'vendors/css-tokenizer';
 export const TSWEBEXTENSION_VENDOR_OUTPUT = 'vendors/tswebextension';
