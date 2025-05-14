@@ -48,6 +48,7 @@ import {
     ASSISTANT_INJECT_OUTPUT,
     SCRIPTLETS_VENDOR_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
+    TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
     FILTERING_LOG_OUTPUT,
     DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT,
@@ -96,6 +97,7 @@ export const ENTRY_POINTS_CHUNKS = {
     [BACKGROUND_OUTPUT]: [
         TSWEBEXTENSION_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
+        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
         SCRIPTLETS_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
         CSS_TOKENIZER_VENDOR_OUTPUT,
@@ -104,6 +106,9 @@ export const ENTRY_POINTS_CHUNKS = {
     [OPTIONS_OUTPUT]: [
         SCRIPTLETS_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
+        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
+        TSWEBEXTENSION_VENDOR_OUTPUT,
+        TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
         CSS_TOKENIZER_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
         REACT_VENDOR_OUTPUT,
@@ -125,6 +130,10 @@ export const ENTRY_POINTS_CHUNKS = {
     [FULLSCREEN_USER_RULES_OUTPUT]: [
         CSS_TOKENIZER_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
+        SCRIPTLETS_VENDOR_OUTPUT,
+        TSURLFILTER_VENDOR_OUTPUT,
+        TSWEBEXTENSION_VENDOR_OUTPUT,
+        TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
         REACT_VENDOR_OUTPUT,
         MOBX_VENDOR_OUTPUT,
         XSTATE_VENDOR_OUTPUT,
@@ -203,6 +212,12 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     SCRIPTLETS_VENDOR_OUTPUT,
                 ],
             },
+            [TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT]: {
+                import: '@adguard/tsurlfilter/es/declarative-converter',
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
+                ],
+            },
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
                 dependOn: [
@@ -211,7 +226,12 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                 ],
             },
-            [SCRIPTLETS_VENDOR_OUTPUT]: ['@adguard/scriptlets'],
+            [SCRIPTLETS_VENDOR_OUTPUT]: {
+                import: '@adguard/scriptlets',
+                dependOn: [
+                    AGTREE_VENDOR_OUTPUT,
+                ],
+            },
             [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
             [CSS_TOKENIZER_VENDOR_OUTPUT]: ['@adguard/css-tokenizer'],
             [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: ['@adguard/text-encoding'],
