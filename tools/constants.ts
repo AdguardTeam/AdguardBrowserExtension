@@ -79,6 +79,10 @@ export const ENV_CONF: Record<BuildTargetEnv, EnvConfig> = {
 export enum Browser {
     Chrome = 'chrome',
     ChromeMv3 = 'chrome-mv3',
+    /**
+     * CRX build of Chrome MV2 for mobile testing.
+     */
+    ChromeCrx = 'chrome-crx',
     FirefoxAmo = 'firefox-amo',
     FirefoxStandalone = 'firefox-standalone',
     Opera = 'opera',

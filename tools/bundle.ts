@@ -67,14 +67,17 @@ const bundleOpera = (options: CommanderOptions) => {
 };
 
 const bundleChromeCrx = async () => {
+    const key = 'Building CRX for Chrome';
+    console.log(`${key}...`);
+    console.time(key);
     await crx(Browser.Chrome);
+    console.timeEnd(key);
 };
 
-const devPlan = [
+const devPlanTasks = [
     copyExternals,
     bundleChrome,
     bundleChromeMv3,
-    bundleChromeCrx,
     bundleFirefoxAmo,
     bundleFirefoxStandalone,
     bundleEdge,
@@ -82,7 +85,7 @@ const devPlan = [
     buildInfo,
 ];
 
-const betaPlan = [
+const betaPlanTasks = [
     copyExternals,
     bundleChrome,
     bundleChromeMv3,
@@ -91,13 +94,13 @@ const betaPlan = [
     buildInfo,
 ];
 
-const firefoxStandalonePlan = [
+const firefoxStandalonePlanTasks = [
     copyExternals,
     bundleFirefoxStandalone,
     buildInfo,
 ];
 
-const releasePlan = [
+const releasePlanTasks = [
     copyExternals,
     bundleChrome,
     bundleChromeMv3,
@@ -107,27 +110,54 @@ const releasePlan = [
     buildInfo,
 ];
 
-const runBuild = async (
+/**
+ * Runs a single task with options, and logs the time taken.
+ *
+ * @param task Task to run.
+ * @param options Command line options.
+ */
+const runSingleTask = async (
+    task: (options: CommanderOptions) => Promise<void>,
+    options: CommanderOptions,
+) => {
+    console.log(`Running task: ${task.name}...`);
+    console.time(`Time for task ${task.name}`);
+    await task(options);
+    console.timeEnd(`Time for task ${task.name}`);
+};
+
+/**
+ * Runs a list of tasks.
+ *
+ * @param tasks List of tasks to run.
+ * @param options Command line options.
+ */
+const runBuildPlanTasks = async (
     tasks: ((options: CommanderOptions) => Promise<void>)[],
     options: CommanderOptions,
 ) => {
     for (const task of tasks) {
-        await task(options);
+        await runSingleTask(task, options);
     }
 };
 
+/**
+ * Runs the main build plan.
+ *
+ * @param options Command line options.
+ */
 const mainBuild = async (options: CommanderOptions) => {
     switch (BUILD_ENV) {
         case BuildTargetEnv.Dev: {
-            await runBuild(devPlan, options);
+            await runBuildPlanTasks(devPlanTasks, options);
             break;
         }
         case BuildTargetEnv.Beta: {
-            await runBuild(betaPlan, options);
+            await runBuildPlanTasks(betaPlanTasks, options);
             break;
         }
         case BuildTargetEnv.Release: {
-            await runBuild(releasePlan, options);
+            await runBuildPlanTasks(releasePlanTasks, options);
             break;
         }
         default:
@@ -146,7 +176,23 @@ const main = async (options: CommanderOptions) => {
 
 const chrome = async (options: CommanderOptions) => {
     try {
-        await bundleChrome(options);
+        await runSingleTask(bundleChrome, options);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
+/**
+ * Runs CRX build of Chrome MV2 for mobile testing
+ * should be run separately since it takes too much time
+ * so it is better to run as a separate (parallel) job in test specs.
+ */
+const chromeCrx = async (options: CommanderOptions) => {
+    try {
+        // crx build depends on chrome build so it should be done first
+        await runSingleTask(bundleChrome, options);
+        await bundleChromeCrx();
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -155,7 +201,7 @@ const chrome = async (options: CommanderOptions) => {
 
 const chromeMv3 = async (options: CommanderOptions) => {
     try {
-        await bundleChromeMv3(options);
+        await runSingleTask(bundleChromeMv3, options);
         if (!options.watch) {
             await buildInfo();
         }
@@ -167,7 +213,7 @@ const chromeMv3 = async (options: CommanderOptions) => {
 
 const edge = async (options: CommanderOptions) => {
     try {
-        await bundleEdge(options);
+        await runSingleTask(bundleEdge, options);
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -176,7 +222,7 @@ const edge = async (options: CommanderOptions) => {
 
 const opera = async (options: CommanderOptions) => {
     try {
-        await bundleOpera(options);
+        await runSingleTask(bundleOpera, options);
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -185,7 +231,7 @@ const opera = async (options: CommanderOptions) => {
 
 const firefoxAmo = async (options: CommanderOptions) => {
     try {
-        await bundleFirefoxAmo(options);
+        await runSingleTask(bundleFirefoxAmo, options);
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -194,7 +240,7 @@ const firefoxAmo = async (options: CommanderOptions) => {
 
 const firefoxStandalone = async (options: CommanderOptions) => {
     try {
-        await runBuild(firefoxStandalonePlan, options);
+        await runBuildPlanTasks(firefoxStandalonePlanTasks, options);
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -214,6 +260,13 @@ program
     .description('Builds extension for chrome browser')
     .action(() => {
         chrome(program.opts());
+    });
+
+program
+    .command(Browser.ChromeCrx)
+    .description('Builds CRX build of Chrome MV2 for mobile testing')
+    .action(() => {
+        chromeCrx(program.opts());
     });
 
 program
