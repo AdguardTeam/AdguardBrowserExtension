@@ -74,7 +74,6 @@ const devPlan = [
     copyExternals,
     bundleChrome,
     bundleChromeMv3,
-    bundleChromeCrx,
     bundleFirefoxAmo,
     bundleFirefoxStandalone,
     bundleEdge,
@@ -120,6 +119,7 @@ const mainBuild = async (options: CommanderOptions) => {
     switch (BUILD_ENV) {
         case BuildTargetEnv.Dev: {
             await runBuild(devPlan, options);
+            await bundleChromeCrx();
             break;
         }
         case BuildTargetEnv.Beta: {
