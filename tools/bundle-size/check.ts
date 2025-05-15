@@ -115,7 +115,7 @@ async function processDependencies(dependencies: Dependency[]): Promise<boolean>
 
         hasDuplicates = true;
 
-        console.error(`\n❌ Multiple versions of ${pkgName} found: `, uniqueVersions.size);
+        console.error(`\n❌ Multiple versions of ${pkgName} found:`, uniqueVersions.size);
         console.error(Array.from(uniqueVersions).map((version) => `- ${version}`).join('\n'));
         console.error(`\nInstalled version:\n${relevantOutput}`);
     });
@@ -146,7 +146,13 @@ async function checkForDuplicatePackages(): Promise<boolean> {
         const dependenciesAsArr = Object.entries(result.dependencies)
             .map(([key, value]) => ({ [key]: value }));
 
-        return await processDependencies(dependenciesAsArr);
+        const hasDuplicates = await processDependencies(dependenciesAsArr);
+
+        if (!hasDuplicates) {
+            console.log('✅ No duplicate package versions found!');
+        }
+
+        return hasDuplicates;
     } catch (error) {
         console.error(`Error checking for duplicate packages: ${error}`);
         return false;
@@ -182,9 +188,9 @@ function compareBuildSizes(
 
     if (oldSize > 0 && changePercent > threshold) {
         hasIssues = true;
-        console.error(`- ${zipArchiveName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+        console.error(`- ❌ ${zipArchiveName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold!`);
     } else {
-        console.log(`- ${zipArchiveName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
+        console.log(`- ✅ ${zipArchiveName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)})` : '(new file)'}`);
     }
 
     // Compare pages files if they exist in reference
@@ -196,9 +202,9 @@ function compareBuildSizes(
 
             if (oldSize > 0 && changePercent > threshold) {
                 hasIssues = true;
-                console.error(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+                console.error(`- ❌ ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold!`);
             } else {
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
+                console.log(`- ✅ ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)})` : '(new file)'}`);
             }
         });
     }
@@ -212,9 +218,9 @@ function compareBuildSizes(
 
             if (oldSize > 0 && changePercent > threshold) {
                 hasIssues = true;
-                console.error(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold! ❌`);
+                console.error(`- ❌ ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold!`);
             } else {
-                console.log(`- ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)}) ✅` : '(new file) ✅'}`);
+                console.log(`- ✅ ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)})` : '(new file)'}`);
             }
         });
     }
@@ -245,6 +251,8 @@ async function checkChromeMv3BundleSize(buildType: BuildTargetEnv): Promise<bool
 
             return true;
         }
+
+        console.log('✅ Chrome MV3 bundle size is ok!');
 
         return false;
     } catch (e) {
@@ -293,6 +301,8 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
                     console.error(`Firefox Add-ons Store limit exceeded: ${file} is ${bytesToMB(size)}MB (> ${bytesToMB(MAX_FIREFOX_SIZE_BYTES)}MB) ❌`);
                 }
             });
+
+        console.log('✅ All file sizes for Firefox Add-ons Store are ok!');
 
         return found;
     } catch (error) {

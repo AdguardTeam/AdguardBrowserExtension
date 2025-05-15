@@ -58,8 +58,15 @@ Check Bundle Size:
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
+            # NOTE: Firefox standalone build is not needed for artifacts
+            # but it is needed for bundle size check
+            pnpm release firefox-standalone
+
             echo "Checking bundle sizes"
             pnpm check-bundle-size release
+
+            # Cleaning up Firefox standalone build after bundle size check
+            rm -rf build/release/firefox-standalone
   final-tasks:
     - script:
         interpreter: SHELL
