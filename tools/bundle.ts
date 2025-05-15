@@ -89,7 +89,6 @@ const betaPlanTasks = [
     copyExternals,
     bundleChrome,
     bundleChromeMv3,
-    bundleChromeCrx,
     bundleEdge,
     buildInfo,
 ];
