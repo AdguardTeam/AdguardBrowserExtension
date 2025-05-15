@@ -318,7 +318,10 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
  */
 async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBundleSizesParams): Promise<void> {
     // Define all possible targets to check
-    const targets = targetBrowser ? [targetBrowser] : Object.values(Browser);
+    const targets = targetBrowser
+        ? [targetBrowser]
+        // filter out chrome-crx
+        : Object.values(Browser).filter((browser) => !browser.toLowerCase().endsWith('crx'));
     const sizesData = await readSizesFile();
     let hasSizeIssues = false;
 
