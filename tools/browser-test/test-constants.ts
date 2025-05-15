@@ -73,5 +73,5 @@ export const DEFAULT_EXTENSION_CONFIG: Configuration = {
             selfDestructFirstPartyCookiesTime: 3600,
         },
     },
-    blockingTrustedRules: [],
+    trustedDomains: [],
 };

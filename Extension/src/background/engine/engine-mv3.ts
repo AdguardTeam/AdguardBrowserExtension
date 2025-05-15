@@ -248,7 +248,7 @@ export class Engine implements TsWebExtensionEngine {
             };
         }));
 
-        const blockingTrustedRules = await DocumentBlockApi.getTrustedDomains();
+        const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
@@ -262,7 +262,7 @@ export class Engine implements TsWebExtensionEngine {
             settings,
             filtersPath: 'filters/',
             ruleSetsPath: 'filters/declarative',
-            blockingTrustedRules,
+            trustedDomains,
         };
     }
 
