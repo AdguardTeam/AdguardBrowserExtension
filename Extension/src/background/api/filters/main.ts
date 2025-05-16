@@ -22,6 +22,8 @@ import {
     CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER,
     SEPARATE_ANNOYANCE_FILTER_IDS,
 } from '../../../common/constants';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { logger } from '../../../common/logger';
 import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
@@ -158,7 +160,7 @@ export class FiltersApi {
      * @returns True, if filter is trusted, else returns false.
      */
     public static isFilterTrusted(filterId: number): boolean {
-        if (!CustomFilterApi.isCustomFilter(filterId)) {
+        if (!CustomFilterUtils.isCustomFilter(filterId)) {
             return true;
         }
 
@@ -356,7 +358,7 @@ export class FiltersApi {
 
         // Ignore custom filters, user-rules, allowlist
         // and quick fixes filter (used only in MV3).
-        const commonFiltersIds = filterIds.filter((id) => CommonFilterApi.isCommonFilter(id));
+        const commonFiltersIds = filterIds.filter((id) => CommonFilterUtils.isCommonFilter(id));
 
         try {
             // Only re-load filters without changed their states: enabled or disabled.
@@ -381,7 +383,7 @@ export class FiltersApi {
         const filterIds = FiltersApi.getEnabledFilters();
 
         // Ignore custom filters
-        const commonFiltersIds = filterIds.filter((id) => CommonFilterApi.isCommonFilter(id));
+        const commonFiltersIds = filterIds.filter((id) => CommonFilterUtils.isCommonFilter(id));
 
         const loadedFiltersIds = await FiltersApi.loadFilters(commonFiltersIds, true);
 
@@ -402,7 +404,7 @@ export class FiltersApi {
      * @returns Filter metadata.
      */
     public static getFilterMetadata(filterId: number): FilterMetadata | undefined {
-        if (CustomFilterApi.isCustomFilter(filterId)) {
+        if (CustomFilterUtils.isCustomFilter(filterId)) {
             return CustomFilterApi.getFilterMetadata(filterId);
         }
 

@@ -18,11 +18,8 @@
 
 import { sortBy } from 'lodash-es';
 
-import {
-    CommonFilterApi,
-    type CategoriesFilterData,
-    type CategoriesGroupData,
-} from '../../../../background/api';
+import { type CategoriesFilterData, type CategoriesGroupData } from '../../../../background/api/filters/categories';
+import { CommonFilterApi } from '../../../../background/api/filters/common';
 
 /**
  * Sorts filters by enabled status and displayNumber.

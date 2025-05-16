@@ -49,7 +49,7 @@ import { rootStore } from '../../../options/stores/RootStore';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
 import { NotificationType } from '../../../options/stores/UiStore';
-import { FILE_WRONG_EXTENSION_CAUSE } from '../../../options/constants';
+import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { ToggleFullscreenButton } from './ToggleFullscreenButton';

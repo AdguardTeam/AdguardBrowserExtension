@@ -56,6 +56,7 @@ import {
 } from '../../../../../constants';
 import { OptionsPageSections } from '../../../common/nav';
 import { FilterUpdateService } from '../../services/filter-update';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
@@ -270,7 +271,7 @@ export class PagesApi {
         }
 
         const commonFilterIds = FiltersApi.getEnabledFilters()
-            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
+            .filter((filterId) => !CustomFilterUtils.isCustomFilter(filterId));
 
         const manifestDetails = browser.runtime.getManifest();
 
