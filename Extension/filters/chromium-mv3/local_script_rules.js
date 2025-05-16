@@ -412,6 +412,24 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "0104074ac36239af0632fc0f2aa96707" due to: ' + e);
         }
     },
+    '(()=>{document.addEventListener("DOMContentLoaded",(()=>{const e=document.querySelector(".adsbygoogle:not(.adsbygoogle-noablate)"),t=document.createElement("div");t.textContent=".".repeat(3e3),e.appendChild(t)}));})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.bdadee2d2471bf842565a6d2880f96f2 === e) return;
+            document.addEventListener("DOMContentLoaded", (() => {
+                const e = document.querySelector(".adsbygoogle:not(.adsbygoogle-noablate)"), t = document.createElement("div");
+                t.textContent = ".".repeat(3e3), e.appendChild(t);
+            }));
+            Object.defineProperty(Window.prototype.toString, "bdadee2d2471bf842565a6d2880f96f2", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "bdadee2d2471bf842565a6d2880f96f2" due to: ' + e);
+        }
+    },
     "window.samDetected = false;": () => {
         try {
             const e = "done";
