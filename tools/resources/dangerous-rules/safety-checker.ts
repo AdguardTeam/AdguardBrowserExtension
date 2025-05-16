@@ -103,7 +103,7 @@ class SafetyChecker {
     async checkScriptText(scriptText: string): Promise<AIResponse> {
         const prompt = SafetyChecker.buildPrompt();
         const chatCompletion = await this.openai.chat.completions.create({
-            model: 'gpt-4o',
+            model: 'gpt-4.1',
             messages: [
                 {
                     role: 'system',
