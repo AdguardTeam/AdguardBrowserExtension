@@ -35,8 +35,8 @@ import {
     SAFEBROWSING_LEARN_MORE_URL,
     BUG_REPORT_URL,
     BUG_REPORT_MV3_URL,
-    FILE_WRONG_EXTENSION_CAUSE,
 } from '../../constants';
+import { FILE_WRONG_EXTENSION_CAUSE } from '../../../common/constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { type SettingHandler } from '../../types';

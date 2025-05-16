@@ -21,7 +21,7 @@ import { CUSTOM_FILTERS_START_ID } from './constants';
 /**
  * Extracted to common helper class because it is used in background and options pages
  */
-export class CustomFilterHelper {
+export class CustomFilterUtils {
     /**
      * Check if filter is custom.
      *

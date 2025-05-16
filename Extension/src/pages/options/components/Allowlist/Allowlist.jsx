@@ -28,6 +28,7 @@ import { Link } from 'react-router-dom';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
+import { FILE_WRONG_EXTENSION_CAUSE } from '../../../common/constants';
 import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
@@ -39,7 +40,6 @@ import { getFirstNonDisabledElement } from '../../../common/utils/dom';
 import { DynamicRulesLimitsWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
 import { NotificationType } from '../../stores/UiStore';
-import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';

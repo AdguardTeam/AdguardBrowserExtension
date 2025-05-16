@@ -20,7 +20,7 @@ import { type FilterMetadata } from '../background/api/filters/main';
 import { AntiBannerFiltersId } from '../common/constants';
 import { translator } from '../common/translators/translator';
 
-import { FILE_WRONG_EXTENSION_CAUSE } from './options/constants';
+import { FILE_WRONG_EXTENSION_CAUSE } from './common/constants';
 import { type Notification, NotificationType } from './options/stores/UiStore';
 
 export const getFilenameExtension = (filename: string): string | undefined => {
