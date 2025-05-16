@@ -26,6 +26,8 @@ import { logger } from '../../../common/logger';
 import { FiltersUpdateTime } from '../../../common/constants';
 import { engine } from '../../engine';
 import { FilterUpdateService } from '../../services/filter-update';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 
 import { type FilterMetadata, FiltersApi } from './main';
 import { CustomFilterApi } from './custom';
@@ -217,7 +219,8 @@ export class FilterUpdateApi {
          * We do not update metadata on each check if there are no filters or only custom filters.
          */
         const shouldLoadMetadata = filterUpdateOptionsList.some((filterUpdateOptions) => {
-            return filterUpdateOptions.ignorePatches && CommonFilterApi.isCommonFilter(filterUpdateOptions.filterId);
+            return filterUpdateOptions.ignorePatches
+                && CommonFilterUtils.isCommonFilter(filterUpdateOptions.filterId);
         });
 
         if (shouldLoadMetadata) {
@@ -238,7 +241,7 @@ export class FilterUpdateApi {
         const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
             let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null = null;
 
-            if (CustomFilterApi.isCustomFilter(filterData.filterId)) {
+            if (CustomFilterUtils.isCustomFilter(filterData.filterId)) {
                 filterMetadata = await CustomFilterApi.updateFilter(filterData);
             } else {
                 filterMetadata = await CommonFilterApi.updateFilter(filterData);
@@ -275,7 +278,7 @@ export class FilterUpdateApi {
 
         return filterIds.filter((id: number) => {
             // Always check for updates for custom filters
-            const isCustom = CustomFilterApi.isCustomFilter(Number(id));
+            const isCustom = CustomFilterUtils.isCustomFilter(Number(id));
 
             // Select only not recently checked filters
             const filterVersion = filterVersions[Number(id)];

@@ -26,11 +26,8 @@
 import { type Windows } from 'webextension-polyfill';
 
 import { type ForwardFrom } from '../forward';
-import {
-    type CustomFilterMetadata,
-    type SettingOption,
-    type Settings,
-} from '../../background/schema';
+import { type SettingOption, type Settings } from '../../background/schema/settings';
+import { type CustomFilterMetadata } from '../../background/schema/custom-filter-metadata';
 import { type NotifierType } from '../constants';
 import { type AppearanceTheme } from '../settings';
 import { type FilteringLogTabInfo } from '../../background/api/filtering-log';
@@ -47,7 +44,7 @@ import { type CreateEventListenerResponse } from '../../background/services/even
 import { type FilterMetadata } from '../../background/api/filters/main';
 import { type GetAllowlistDomainsResponse } from '../../background/services/allowlist';
 import { type GetUserRulesEditorDataResponse, type GetUserRulesResponse } from '../../background/services/userrules';
-import { type GetCustomFilterInfoResult } from '../../background/api';
+import { type GetCustomFilterInfoResult } from '../../background/api/filters/custom';
 
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 

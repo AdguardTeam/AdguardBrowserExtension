@@ -111,5 +111,3 @@ export const DEVELOPER_MODE_REQUIRED_URL = Forward.get({
     action: ForwardAction.DeveloperModeRequired,
     from: ForwardFrom.Options,
 });
-
-export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';

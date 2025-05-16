@@ -38,7 +38,6 @@ import {
     SettingsApi,
     toasts,
     filteringLogApi,
-    CommonFilterApi,
     iconsApi,
     DocumentBlockApi,
     CustomFilterApi,
@@ -50,6 +49,7 @@ import { emptyPreprocessedFilterList, NotifierType } from '../../common/constant
 import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 import { FiltersStorage } from '../storages/filters';
+import { CommonFilterUtils } from '../../common/common-filter-utils';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -196,7 +196,7 @@ export class Engine implements TsWebExtensionEngine {
      */
     private static async getConfiguration(): Promise<Configuration> {
         const staticFiltersIds = FiltersApi.getEnabledFilters()
-            .filter((filterId) => CommonFilterApi.isCommonFilter(filterId));
+            .filter((filterId) => CommonFilterUtils.isCommonFilter(filterId));
 
         const settings = SettingsApi.getTsWebExtConfiguration(true);
 

@@ -30,7 +30,7 @@ import { filterVersionStorage } from '../../storages/filter-version';
 import { RawFiltersStorage } from '../../storages/raw-filters';
 import { FiltersStorage } from '../../storages/filters';
 import { type Network } from '../network/main';
-import { CustomFilterHelper } from '../../../common/custom-filter-helper';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { createPromiseWithTimeout } from '../../utils/timeouts';
 
 import { type FilterUpdateOptions } from './update';
@@ -386,23 +386,12 @@ export class CustomFilterApi {
     /**
      * Check if filter is custom.
      *
-     * @param filterId Filter id.
-     *
-     * @returns True, if filter is custom, else returns false.
-     */
-    public static isCustomFilter(filterId: number): boolean {
-        return CustomFilterHelper.isCustomFilter(filterId);
-    }
-
-    /**
-     * Check if filter is custom.
-     *
      * @param filter Filter metadata.
      *
      * @returns True, if filter is custom, else returns false.
      */
     public static isCustomFilterMetadata(filter: FilterMetadata): filter is CustomFilterMetadata {
-        return CustomFilterHelper.isCustomFilter(filter.filterId);
+        return CustomFilterUtils.isCustomFilter(filter.filterId);
     }
 
     /**

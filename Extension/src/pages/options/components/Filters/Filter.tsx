@@ -37,7 +37,7 @@ import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
-import { CustomFilterHelper } from '../../../../common/custom-filter-helper';
+import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
 import { getStaticWarningMessage } from '../Warnings/messages';
 import { NotificationType } from '../../stores/UiStore';
 
@@ -107,7 +107,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         : [...tagsDetails];
 
     const updateFilterSettingMV3 = async (filterId: number, enabled: boolean) => {
-        if (CustomFilterHelper.isCustomFilter(filterId)) {
+        if (CustomFilterUtils.isCustomFilter(filterId)) {
             // for custom filters, we can't check limits before applying,
             // so we need to check the after applying
             await settingsStore.updateFilterSetting(filterId, enabled);
