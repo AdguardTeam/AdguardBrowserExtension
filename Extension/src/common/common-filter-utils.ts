@@ -16,6 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// types import from background does not affect on bundle size
+import type { FilterMetadata } from '../background/api/filters/main';
+import type { RegularFilterMetadata } from '../background/schema/metadata/filter';
+
 import { AntiBannerFiltersId } from './constants';
 import { CustomFilterUtils } from './custom-filter-utils';
 
@@ -37,5 +41,18 @@ export class CommonFilterUtils {
             && filterId !== AntiBannerFiltersId.UserFilterId
             && filterId !== AntiBannerFiltersId.AllowlistFilterId
             && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
+    }
+
+    /**
+     * Checks whether the filter is a regular filter.
+     *
+     * It is needed only for proper types checking instead of type castings.
+     *
+     * @param filter Filter metadata.
+     *
+     * @returns True if filter is a regular filter, false otherwise.
+     */
+    public static isRegularFilterMetadata(filter: FilterMetadata): filter is RegularFilterMetadata {
+        return CommonFilterUtils.isCommonFilter(filter.filterId);
     }
 }

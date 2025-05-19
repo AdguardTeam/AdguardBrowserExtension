@@ -43,6 +43,7 @@ import { BrowserUtils } from '../../utils/browser-utils';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
+    CHROME_EXTENSIONS_SETTINGS_URL,
     FILTERING_LOG_WINDOW_STATE,
 } from '../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../common/api/extension';
@@ -131,11 +132,6 @@ export class PagesApi {
      *  Extension browser store url.
      */
     public static readonly extensionStoreUrl = PagesApi.getExtensionStoreUrl();
-
-    /**
-     * Chrome's extensions settings page url.
-     */
-    public static readonly chromeExtensionsSettingsUrl = 'chrome://extensions';
 
     /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
@@ -430,7 +426,7 @@ export class PagesApi {
      * Opens Chrome's extensions settings page.
      */
     public static async openChromeExtensionsSettingsPage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApi.chromeExtensionsSettingsUrl });
+        await browser.tabs.create({ url: CHROME_EXTENSIONS_SETTINGS_URL });
     }
 
     /**

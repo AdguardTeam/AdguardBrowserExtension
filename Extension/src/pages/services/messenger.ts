@@ -346,6 +346,15 @@ class Messenger {
     }
 
     /**
+     * Sends a message to the background page to open the Chrome extensions settings page.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    async openChromeExtensionsPage(): Promise<ExtractMessageResponse<MessageType.OpenChromeExtensionsSettingsPage>> {
+        return this.sendMessage(MessageType.OpenChromeExtensionsSettingsPage);
+    }
+
+    /**
      * Sends a message to the background page to enable a filter by filter id.
      *
      * @param filterId Filter identifier.
