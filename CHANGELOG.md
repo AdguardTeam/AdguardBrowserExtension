@@ -70,14 +70,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
 
-## Unreleased <!-- master -->
+## [5.1.84]
 
 ### Changed
 
 - Updated [@adguard/agtree] to v3.1.3.
-- Updated [@adguard/dnr-rulesets] to v3.0.0-alpha.0.
-- Updated [@adguard/tsurlfilter] to v3.3.0-alpha.0.
-- Updated [@adguard/tswebextension] to v3.1.0-alpha.0.
+- Updated [@adguard/dnr-rulesets] to v3.0.0-alpha.1.
+- Updated [@adguard/tsurlfilter] to v3.3.1.
+- Updated [@adguard/tswebextension] to v3.1.0-alpha.3.
 
 ## [5.1.75] - 2025-04-15
 
