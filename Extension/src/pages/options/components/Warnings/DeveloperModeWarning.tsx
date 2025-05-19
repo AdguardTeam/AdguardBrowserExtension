@@ -19,9 +19,10 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { CHROME_EXTENSIONS_SETTINGS_URL } from '../../../../common/constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { messenger } from '../../../services/messenger';
 import { DEVELOPER_MODE_REQUIRED_URL } from '../../constants';
-import { PagesApi } from '../../../../background/api';
 import { UserAgent } from '../../../../common/user-agent';
 import { rootStore } from '../../stores/RootStore';
 
@@ -53,7 +54,7 @@ export const DeveloperModeWarning = observer(() => {
 
     const openChromeExtensionsSettings = async (e: React.MouseEvent) => {
         e.preventDefault();
-        await PagesApi.openChromeExtensionsSettingsPage();
+        await messenger.openChromeExtensionsPage();
     };
 
     const message = reactTranslator.getMessage('options_developer_mode_required', {
@@ -61,7 +62,7 @@ export const DeveloperModeWarning = observer(() => {
             <a
                 // Note: Chrome will prevent opening the settings page via href,
                 // so we need to open it via the API.
-                href={PagesApi.chromeExtensionsSettingsUrl}
+                href={CHROME_EXTENSIONS_SETTINGS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={openChromeExtensionsSettings}

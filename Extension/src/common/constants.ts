@@ -203,3 +203,8 @@ export const emptyPreprocessedFilterList: PreprocessedFilterList = {
     rawFilterList: '',
     conversionMap: {},
 };
+
+/**
+ * Chrome's extensions settings page url.
+ */
+export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';
