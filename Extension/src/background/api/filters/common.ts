@@ -32,8 +32,7 @@ import {
 } from '../../storages';
 import { network } from '../network';
 
-import { CustomFilterApi } from './custom';
-import { type FilterMetadata, FiltersApi } from './main';
+import { FiltersApi } from './main';
 import { type FilterUpdateOptions } from './update';
 import { FilterParser } from './parser';
 
@@ -66,34 +65,6 @@ export class CommonFilterApi {
      */
     public static getFiltersMetadata(): RegularFilterMetadata[] {
         return metadataStorage.getFilters();
-    }
-
-    /**
-     * Checks if filter is built-in: not custom, not user-rules, not allowlist
-     * and not quick fixes filter (used only for MV3 version).
-     *
-     * @param filterId Filter id.
-     *
-     * @returns True, if filter is common, else returns false.
-     */
-    public static isCommonFilter(filterId: number): boolean {
-        return !CustomFilterApi.isCustomFilter(filterId)
-            && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId
-            && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
-    }
-
-    /**
-     * Checks whether the filter is a regular filter.
-     *
-     * It is needed only for proper types checking instead of type castings.
-     *
-     * @param filter Filter metadata.
-     *
-     * @returns True if filter is a regular filter, false otherwise.
-     */
-    public static isRegularFilterMetadata(filter: FilterMetadata): filter is RegularFilterMetadata {
-        return CommonFilterApi.isCommonFilter(filter.filterId);
     }
 
     /**

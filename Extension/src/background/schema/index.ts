@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 export * from './configuration';
-export * from './settings';
 export * from './preprocessor';
 export * from './metadata';
 export * from './i18n-metadata';
@@ -31,3 +30,10 @@ export * from './local-script-rules';
 export * from './notification';
 export * from './safebrowsing';
 export * from './annoyances-consent';
+
+export {
+    appearanceValidator,
+    settingsValidator,
+    type Settings,
+    SettingOption,
+} from './settings';

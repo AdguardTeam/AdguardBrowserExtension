@@ -17,6 +17,7 @@
  */
 import { UserAgent } from '../../../common/user-agent';
 import { RECOMMENDED_TAG_ID } from '../../../common/constants';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
 import {
     metadataStorage,
     filterStateStorage,
@@ -294,7 +295,7 @@ export class Categories {
 
         filtersMetadata.forEach((filterMetadata) => {
             // skip deprecated filters
-            if (CommonFilterApi.isRegularFilterMetadata(filterMetadata)
+            if (CommonFilterUtils.isRegularFilterMetadata(filterMetadata)
                 && filterMetadata.deprecated) {
                 return;
             }

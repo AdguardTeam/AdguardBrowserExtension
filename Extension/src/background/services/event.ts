@@ -33,7 +33,7 @@ export type CreateEventListenerResponse = {
 /**
  * The EventService class operates with event listeners: creates or removes them.
  */
-export class EventService {
+class EventService {
     // TODO: types
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private eventListeners = new Map<number, any>();

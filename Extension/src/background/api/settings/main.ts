@@ -76,6 +76,7 @@ import {
 import { filteringLogApi } from '../filtering-log';
 import { network } from '../network';
 import { getZodErrorMessage } from '../../../common/error';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
 
 import { SettingsMigrations } from './migrations';
 
@@ -553,7 +554,9 @@ export class SettingsApi {
         await SettingsApi.importUserFilter(userFilter);
         SettingsApi.importAllowlist(allowlist);
 
-        const filtersToEnable = enabledFilters.filter((filterId: number) => CommonFilterApi.isCommonFilter(filterId));
+        const filtersToEnable = enabledFilters.filter((filterId: number) => {
+            return CommonFilterUtils.isCommonFilter(filterId);
+        });
 
         if (__IS_MV3__) {
             await SettingsApi.loadBuiltInFiltersMv3(filtersToEnable);

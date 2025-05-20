@@ -29,6 +29,7 @@ import { type TsWebExtension as TsWebExtensionMv3 } from '@adguard/tswebextensio
 import { TsWebExtension } from 'tswebextension';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -39,7 +40,7 @@ import {
     i18nMetadataValidator,
     localScriptRulesValidator,
 } from '../../schema';
-import { CustomFilterApi, type FilterUpdateOptions } from '../filters';
+import { type FilterUpdateOptions } from '../filters';
 import { AntiBannerFiltersId, NEWLINE_CHAR_REGEX } from '../../../common/constants';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 
@@ -165,7 +166,7 @@ export class Network {
             // Quick Fixes filter and custom filters.
             const isRemote = forceRemote
                 && (filterId === AntiBannerFiltersId.QuickFixesFilterId
-                    || CustomFilterApi.isCustomFilter(filterId));
+                    || CustomFilterUtils.isCustomFilter(filterId));
 
             if (isRemote) {
                 if (useOptimizedFilters) {
