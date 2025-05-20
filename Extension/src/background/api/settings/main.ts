@@ -446,9 +446,13 @@ export class SettingsApi {
      * @private
      */
     private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
+        const filtersToEnable: number[] = [];
+
         const tasks = filterIds.map(async (filterId: number) => {
             try {
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
+
+                filtersToEnable.push(filterId);
             } catch (e) {
                 // error may be thrown if filter is deprecated and its local copy no longer exists
                 logger.debug(`[ext.SettingsApi.loadBuiltInFiltersLocal]: filter rules were not loaded from local storage for filter: ${filterId}, error:`, getZodErrorMessage(e));
@@ -457,7 +461,7 @@ export class SettingsApi {
 
         await Promise.allSettled(tasks);
 
-        filterStateStorage.enableFilters(filterIds);
+        filterStateStorage.enableFilters(filtersToEnable);
     }
 
     /**
