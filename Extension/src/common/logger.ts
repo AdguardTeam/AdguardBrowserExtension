@@ -30,7 +30,7 @@ class ExtendedLogger extends Logger {
 
     isVerbose(): boolean {
         return this.currentLevel === LogLevel.Debug
-             || this.currentLevel === LogLevel.Trace;
+             || this.currentLevel === LogLevel.Verbose;
     }
 
     /**
