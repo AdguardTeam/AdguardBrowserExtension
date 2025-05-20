@@ -534,28 +534,6 @@ export class SettingsApi {
     }
 
     /**
-     * Migrates combined annoyances filter to separated annoyances filters during import
-     * and returns updated enabled filters list.
-     *
-     * @param enabledFilterIds Enabled filters list.
-     *
-     * @returns Updated list of filters to enable.
-     */
-    private static migrateCombinedAnnoyanceFilter(enabledFilterIds: number[]): number[] {
-        if (!enabledFilterIds.includes(AntiBannerFiltersId.AnnoyancesCombinedFilterId)) {
-            return enabledFilterIds;
-        }
-
-        const filtersToEnable = enabledFilterIds.filter((filterId) => {
-            return filterId !== AntiBannerFiltersId.AnnoyancesCombinedFilterId;
-        });
-
-        filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
-
-        return filtersToEnable;
-    }
-
-    /**
      * Imports filters settings from object of {@link FiltersConfig}.
      */
     private static async importFilters({
