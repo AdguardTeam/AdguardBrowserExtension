@@ -321,7 +321,7 @@ export class SettingsApi {
                 );
             } catch (e) {
                 logger.error(
-                    `Failed to load filter with id ${AntiBannerFiltersId.SearchAndSelfPromoFilterId} due to ${e}`,
+                    `[ext.SettingsApi.importGeneralSettings]: Failed to load filter with id ${AntiBannerFiltersId.SearchAndSelfPromoFilterId} due to ${e}`,
                 );
             }
             filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
@@ -446,7 +446,6 @@ export class SettingsApi {
      * @private
      */
     private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
-        const filtersToEnable: number[] = [];
         const tasks = filterIds.map(async (filterId: number) => {
             try {
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);

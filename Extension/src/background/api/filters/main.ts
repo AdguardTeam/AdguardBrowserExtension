@@ -25,7 +25,6 @@ import {
 import { CommonFilterUtils } from '../../../common/common-filter-utils';
 import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { logger } from '../../../common/logger';
-import { AntibannerGroupsId, CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER } from '../../../common/constants';
 import { getZodErrorMessage } from '../../../common/error';
 import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
@@ -243,7 +242,7 @@ export class FiltersApi {
                     );
                     return f.filterId;
                 } catch (e) {
-                    logger.debug(`Filter rules were not loaded from local assets for filter: ${filterId}, error: ${e}`);
+                    logger.debug(`[ext.FiltersApi.loadFilters]: Filter rules were not loaded from local assets for filter: ${filterId}, error: ${e}`);
                     return null;
                 }
             }
@@ -554,7 +553,7 @@ export class FiltersApi {
 
         rawMetadata.filters.forEach((filter) => {
             if (filter.deprecated) {
-                logger.info(`Filter with id ${filter.filterId} is deprecated and shall not be used.`);
+                logger.info(`[ext.FiltersApi.loadMetadataFromFromBackend]: Filter with id ${filter.filterId} is deprecated and shall not be used.`);
                 // do not filter out deprecated filter metadata as it may be needed later
                 // e.g. during settings import
             }
@@ -752,7 +751,7 @@ export class FiltersApi {
 
         const tasks = installedDeprecatedFilters.map(async ({ filterId, subscriptionUrl }) => {
             await FiltersApi.removeFilter(filterId);
-            logger.info(`Filter with id ${filterId} removed from the regular filters storage since it is deprecated`);
+            logger.info(`[ext.FiltersApi.migrateDeprecatedFilters]: Filter with id ${filterId} removed from the regular filters storage since it is deprecated`);
 
             // AdGuard DNS filter can be simply removed with no special migration
             if (filterId === AntiBannerFiltersId.DnsFilterId) {
@@ -764,7 +763,7 @@ export class FiltersApi {
                 filterId === AntiBannerFiltersId.AnnoyancesCombinedFilterId
                 && enabledFilters.includes(filterId)
             ) {
-                logger.info(`Filter with id ${filterId} will be replaced with separate Annoyances filters`);
+                logger.info(`[ext.FiltersApi.migrateDeprecatedFilters]: Filter with id ${filterId} will be replaced with separate Annoyances filters`);
                 await FiltersApi.loadAndEnableFilters(SEPARATE_ANNOYANCE_FILTER_IDS);
                 return;
             }
@@ -776,7 +775,7 @@ export class FiltersApi {
                     trusted: true,
                     enabled: true,
                 });
-                logger.info(`Filter with id ${filterId} moved to custom group`);
+                logger.info(`[ext.FiltersApi.migrateDeprecatedFilters]: Filter with id ${filterId} moved to custom group`);
             }
         });
 
@@ -784,10 +783,7 @@ export class FiltersApi {
 
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                logger.error(
-                    'Cannot remove obsoleted filter from storage or create a new custom filter due to: ',
-                    promise.reason,
-                );
+                logger.error('[ext.FiltersApi.migrateDeprecatedFilters]: Cannot remove obsoleted filter from storage or create a new custom filter due to: ', promise.reason);
             }
         });
 
@@ -808,7 +804,7 @@ export class FiltersApi {
             .filter((id) => !metadataFiltersIds.includes(id))
             .map(async (id) => {
                 await FiltersApi.removeFilter(id);
-                logger.info(`Filter with id ${id} removed from the storage since it is obsolete`);
+                logger.info(`[ext.FiltersApi.removeObsoleteFilters]: Filter with id ${id} removed from the storage since it is obsolete`);
             });
 
         await Promise.allSettled(tasks);

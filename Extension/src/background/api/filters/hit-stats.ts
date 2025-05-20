@@ -171,7 +171,7 @@ export class HitStatsApi {
                         baseMessage += `, generated rule text: ${generatedRuleText}`;
                     }
 
-                    // eslint-disable-next-line require-logger-context/require-logger-context
+                    // eslint-disable-next-line @adguard/logger-context/require-logger-context
                     logger.error(baseMessage);
                     return null;
                 }
@@ -191,7 +191,7 @@ export class HitStatsApi {
                         baseMessage += `, generated rule text: ${generatedRuleText}`;
                     }
 
-                    // eslint-disable-next-line require-logger-context/require-logger-context
+                    // eslint-disable-next-line @adguard/logger-context/require-logger-context
                     logger.error(baseMessage);
                     return null;
                 }

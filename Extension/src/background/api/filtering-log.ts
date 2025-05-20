@@ -413,12 +413,12 @@ export class FilteringLogApi {
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
-                // eslint-disable-next-line require-logger-context/require-logger-context
+                // eslint-disable-next-line @adguard/logger-context/require-logger-context
                 logger.warn(`${baseMessage}, trying to sync the filter`);
                 return this.getRuleText(filterId, ruleIndex);
             }
 
-            // eslint-disable-next-line require-logger-context/require-logger-context
+            // eslint-disable-next-line @adguard/logger-context/require-logger-context
             logger.error(baseMessage);
             return null;
         }
@@ -439,12 +439,12 @@ export class FilteringLogApi {
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
-                // eslint-disable-next-line require-logger-context/require-logger-context
+                // eslint-disable-next-line @adguard/logger-context/require-logger-context
                 logger.warn(`${baseMessage}, trying to sync the filter`);
                 return this.getRuleText(filterId, ruleIndex);
             }
 
-            // eslint-disable-next-line require-logger-context/require-logger-context
+            // eslint-disable-next-line @adguard/logger-context/require-logger-context
             logger.error(baseMessage);
             return null;
         }

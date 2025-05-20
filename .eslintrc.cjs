@@ -49,7 +49,7 @@ module.exports = {
     ],
     'plugins': [
         'import-newlines',
-        'require-logger-context',
+        '@adguard/logger-context',
     ],
     'rules': {
         'no-console': 'error',
@@ -206,7 +206,9 @@ module.exports = {
                 { tags: ['example'] },
             ],
         }],
-        'require-logger-context/require-logger-context': 'error',
+        '@adguard/logger-context/require-logger-context': ['error', {
+            contextModuleName: 'ext',
+        }],
     },
     'ignorePatterns': [
         'node_modules',
