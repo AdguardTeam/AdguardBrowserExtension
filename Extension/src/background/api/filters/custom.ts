@@ -298,16 +298,15 @@ export class CustomFilterApi {
      * @param filtersData Array of {@link CustomFilterDTO}.
      */
     public static async createFilters(filtersData: CustomFilterDTO[]): Promise<void> {
-        const tasks = filtersData.map((filterData) => CustomFilterApi.createFilter(filterData));
-
-        const promises = await Promise.allSettled(tasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                logger.error('[ext.CustomFilterApi.createFilters]: cannot create filter due to:', promise.reason);
+        const tasks = filtersData.map(async (filterData) => {
+            try {
+                await CustomFilterApi.createFilter(filterData);
+            } catch (e) {
+                logger.error('[ext.CustomFilterApi.createFilters]: cannot create filter: ', filtersData, e);
             }
         });
+
+        await Promise.allSettled(tasks);
     }
 
     /**

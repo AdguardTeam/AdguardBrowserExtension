@@ -803,8 +803,12 @@ export class FiltersApi {
         const tasks = installedFiltersIds
             .filter((id) => !metadataFiltersIds.includes(id))
             .map(async (id) => {
-                await FiltersApi.removeFilter(id);
-                logger.info(`[ext.FiltersApi.removeObsoleteFilters]: Filter with id ${id} removed from the storage since it is obsolete`);
+                try {
+                    await FiltersApi.removeFilter(id);
+                    logger.info(`[ext.FiltersApi.removeObsoleteFilters]: Filter with id ${id} removed from the storage since it is obsolete`);
+                } catch (e) {
+                    logger.error(`[ext.FiltersApi.removeObsoleteFilters]: Cannot remove obsoleted filter ${id} from storage due to: `, e);
+                }
             });
 
         await Promise.allSettled(tasks);
