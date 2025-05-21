@@ -17,10 +17,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser from 'webextension-polyfill';
-
 import { Logger, LogLevel } from '@adguard/logger';
 
+import { browserStorage } from '../background/storages/shared-instances';
+
+/**
+ * Extended logger with persistent log level setting.
+ * Extends the base Logger class with browser storage integration
+ * for saving and retrieving log level preferences.
+ */
 class ExtendedLogger extends Logger {
     private static readonly LOG_LEVEL_LOCAL_STORAGE_KEY = 'log-level';
 
@@ -28,6 +33,15 @@ class ExtendedLogger extends Logger {
         ? LogLevel.Info
         : LogLevel.Debug;
 
+    /**
+     * Checks if the current log level is verbose (Debug or Verbose).
+     *
+     * This method is useful for determining if detailed logging should
+     * be enabled across the application in different modules. Some kind of
+     * "single point of truth".
+     *
+     * @returns True if current log level is Debug or Verbose, false otherwise.
+     */
     isVerbose(): boolean {
         return this.currentLevel === LogLevel.Debug
              || this.currentLevel === LogLevel.Verbose;
@@ -37,44 +51,42 @@ class ExtendedLogger extends Logger {
      * Sets log with persistent value, which will be saved, if
      * browser.storage.local is available.
      *
-     * @param level Log level to set
+     * @param level Log level to set.
      */
     setLogLevel(level: LogLevel): void {
         this.currentLevel = level;
 
-        if (browser.storage?.local) {
-            browser.storage.local.set({ [ExtendedLogger.LOG_LEVEL_LOCAL_STORAGE_KEY]: level })
-                .catch((error) => {
-                    // eslint-disable-next-line max-len
-                    this.error('[ext.ExtendedLogger.setLogLevel] failed to save log level in browser.storage.local: ', error);
-                });
-        }
-    }
-
-    private static isValidLogLevel(level: string): level is LogLevel {
-        return Object.values(LogLevel).includes(level as LogLevel);
-    }
-
-    public async init(): Promise<void> {
-        if (!browser.storage?.local) {
-            return;
-        }
-
-        try {
-            const result = await browser.storage.local.get(ExtendedLogger.LOG_LEVEL_LOCAL_STORAGE_KEY);
-
-            if (!result[ExtendedLogger.LOG_LEVEL_LOCAL_STORAGE_KEY]
-                || typeof result[ExtendedLogger.LOG_LEVEL_LOCAL_STORAGE_KEY] !== 'string') {
+        browserStorage.set(ExtendedLogger.LOG_LEVEL_LOCAL_STORAGE_KEY, level)
+            .catch((error) => {
                 // eslint-disable-next-line max-len
-                this.warn('[ext.ExtendedLogger.constructor] log level from browser.storage.local is not a string. Value: ', result);
-                return;
-            }
+                this.error('[ext.ExtendedLogger.setLogLevel] failed to save log level in browser.storage.local: ', error);
+            });
+    }
 
-            const logLevel = result[ExtendedLogger.LOG_LEVEL_LOCAL_STORAGE_KEY] as string;
+    /**
+     * Validates if the provided value is a valid LogLevel.
+     *
+     * @param value Value to validate.
+     *
+     * @returns {boolean} True if the value is a valid LogLevel, false otherwise.
+     */
+    private static isValidLogLevel(value: unknown): value is LogLevel {
+        return typeof value === 'string' && Object.values(LogLevel).includes(value as LogLevel);
+    }
+
+    /**
+     * Initializes the logger by loading the saved log level from browser storage.
+     * Falls back to the default log level if retrieval fails or the stored level is invalid.
+     *
+     * @returns Promise that resolves when initialization is complete.
+     */
+    public async init(): Promise<void> {
+        try {
+            const logLevel = await browserStorage.get(ExtendedLogger.LOG_LEVEL_LOCAL_STORAGE_KEY);
 
             if (!ExtendedLogger.isValidLogLevel(logLevel)) {
                 // eslint-disable-next-line max-len
-                this.warn('[ext.ExtendedLogger.constructor] log level from browser.storage.local is not valid. Value: ', result.logLevel);
+                this.warn('[ext.ExtendedLogger.constructor] log level from browser.storage.local is not valid. Value: ', logLevel);
                 return;
             }
 
@@ -91,6 +103,10 @@ class ExtendedLogger extends Logger {
         }
     }
 
+    /**
+     * Creates a new instance of ExtendedLogger.
+     * Initializes the logger with the default log level based on build configuration.
+     */
     constructor() {
         super();
 

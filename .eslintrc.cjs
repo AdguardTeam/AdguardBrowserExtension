@@ -167,7 +167,7 @@ module.exports = {
         'jsx-a11y/label-has-associated-control': 'off',
 
         // These rules are enabled for background only see Extension/src/background/.eslintrc.cjs
-        // TODO consider enabling them for the whole project later
+        // TODO: consider enabling them for the whole project later
         '@typescript-eslint/explicit-function-return-type': 'off',
         'jsdoc/require-param-description': 'off',
         'jsdoc/require-property-description': 'off',
