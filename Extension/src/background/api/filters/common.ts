@@ -18,7 +18,6 @@
 import browser from 'webextension-polyfill';
 
 import { BrowserUtils } from '../../utils/browser-utils';
-import { CommonFilterUtils } from '../../../common/common-filter-utils';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import { SettingOption, type RegularFilterMetadata } from '../../schema';
@@ -33,7 +32,7 @@ import {
 } from '../../storages';
 import { network } from '../network';
 
-import { type FilterMetadata, FiltersApi } from './main';
+import { FiltersApi } from './main';
 import { type FilterUpdateOptions } from './update';
 import { FilterParser } from './parser';
 
@@ -66,19 +65,6 @@ export class CommonFilterApi {
      */
     public static getFiltersMetadata(): RegularFilterMetadata[] {
         return metadataStorage.getFilters();
-    }
-
-    /**
-     * Checks whether the filter is a regular filter.
-     *
-     * It is needed only for proper types checking instead of type castings.
-     *
-     * @param filter Filter metadata.
-     *
-     * @returns True if filter is a regular filter, false otherwise.
-     */
-    public static isRegularFilterMetadata(filter: FilterMetadata): filter is RegularFilterMetadata {
-        return CommonFilterUtils.isCommonFilter(filter.filterId);
     }
 
     /**
