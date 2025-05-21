@@ -378,32 +378,15 @@
         }
         hit(source);
     }
-    function hit(source) {
-        var ADGUARD_PREFIX = "[AdGuard]";
-        if (!source.verbose) {
-            return;
-        }
-        try {
-            var trace = console.trace.bind(console);
-            var label = `${ADGUARD_PREFIX} `;
-            if (source.engine === "corelibs") {
-                label += source.ruleText;
-            } else {
-                if (source.domainName) {
-                    label += `${source.domainName}`;
-                }
-                if (source.args) {
-                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
-                } else {
-                    label += `#%#//scriptlet('${source.name}')`;
-                }
-            }
-            if (trace) {
-                trace(label);
-            }
-        } catch (e) {}
-        if (typeof window.__debug === "function") {
-            window.__debug(source);
+    function hit(e) {
+        if (e.verbose) {
+            try {
+                var n = console.trace.bind(console), i = "[AdGuard] ";
+                "corelibs" === e.engine ? i += e.ruleText : (e.domainName && (i += `${e.domainName}`), 
+                e.args ? i += `#%#//scriptlet('${e.name}', '${e.args.join("', '")}')` : i += `#%#//scriptlet('${e.name}')`), 
+                n && n(i);
+            } catch (e) {}
+            "function" == typeof window.__debug && window.__debug(e);
         }
     }
     function noopFunc() {}
@@ -420,7 +403,7 @@
         return "";
     }
     function trueFunc() {
-        return true;
+        return !0;
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {
