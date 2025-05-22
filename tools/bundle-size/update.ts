@@ -23,20 +23,38 @@ import { getCurrentBuildStats, saveBuildStats } from './utils';
  * Requires buildEnv and targetBrowser arguments to be set.
  * Updates the .bundle-sizes.json file with the latest build stats for the given target.
  * Throws if invalid build type or target is provided.
+ *
+ * @param buildEnv The build environment.
+ * @param targetBrowser The target browser. Optional, defaults to all browsers.
  */
-async function updateBundleSize(buildEnv: BuildTargetEnv, targetBrowser: Browser): Promise<void> {
+async function updateBundleSize(buildEnv: BuildTargetEnv, targetBrowser?: Browser): Promise<void> {
     console.log(`Updating bundle size for "${buildEnv}" "${targetBrowser}"...\n`);
 
-    try {
-        // Get current build stats
-        const currentStats = await getCurrentBuildStats(buildEnv, targetBrowser);
+    const targets = targetBrowser
+        ? [targetBrowser]
+        // filter out chrome-crx
+        : Object.values(Browser).filter((browser) => !browser.toLowerCase().endsWith('crx'));
 
-        // Update the sizes file
-        await saveBuildStats(buildEnv, targetBrowser, currentStats);
+    for (let i = 0; i < targets.length; i += 1) {
+        const target = targets[i]!;
 
-        console.log('Bundle size update completed successfully.\n');
-    } catch (error) {
-        throw new Error(`Error updating bundle size: ${error}\n`);
+        const envTargetMsgChunk = `for env "${buildEnv}" and target "${target}"`;
+
+        console.log(`\n\nUpdating bundle size ${envTargetMsgChunk}...`);
+
+        try {
+            // Get current build stats
+            // eslint-disable-next-line no-await-in-loop
+            const currentStats = await getCurrentBuildStats(buildEnv, target);
+
+            // Update the sizes file
+            // eslint-disable-next-line no-await-in-loop
+            await saveBuildStats(buildEnv, target, currentStats);
+
+            console.log(`Bundle size update completed successfully ${envTargetMsgChunk}\n`);
+        } catch (error) {
+            throw new Error(`Error updating bundle size ${envTargetMsgChunk}: ${error}\n`);
+        }
     }
 }
 
@@ -46,11 +64,11 @@ program
     .argument('[targetBrowser]', `Target browser, one from ${Object.values(Browser).join(', ')}`)
     .action(async (buildEnv, targetBrowser) => {
         if (!isValidBuildEnv(buildEnv)) {
-            throw new Error(`Invalid buildEnv: ${buildEnv}\n`);
+            throw new Error(`Invalid buildEnv: "${buildEnv}"\n`);
         }
 
-        if (!isValidBrowserTarget(targetBrowser)) {
-            throw new Error(`Invalid targetBrowser: ${targetBrowser}`);
+        if (targetBrowser !== undefined && !isValidBrowserTarget(targetBrowser)) {
+            throw new Error(`Invalid targetBrowser: "${targetBrowser}"`);
         }
 
         await updateBundleSize(buildEnv, targetBrowser);

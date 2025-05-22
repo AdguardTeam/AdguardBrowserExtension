@@ -149,7 +149,7 @@ async function checkForDuplicatePackages(): Promise<boolean> {
         const hasDuplicates = await processDependencies(dependenciesAsArr);
 
         if (!hasDuplicates) {
-            console.log('✅ No duplicate package versions found!');
+            console.log('✅ No duplicate package versions found!\n');
         }
 
         return hasDuplicates;
@@ -313,6 +313,11 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
 
 /**
  * Main function to check bundle sizes.
+ *
+ * @param data Check bundle sizes parameters.
+ * @param data.buildEnv The build environment.
+ * @param data.targetBrowser The target browser. Optional, defaults to all browsers.
+ * @param data.threshold The threshold for bundle size comparison.
  *
  * @throws Error if any size or duplicate issues are detected.
  */
