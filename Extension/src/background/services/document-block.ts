@@ -81,7 +81,7 @@ export class DocumentBlockService {
     /**
      * Listener for the event of adding a domain to trusted domains.
      *
-     * @param message Message of type {@link AddUrlToTrustedMessage}.
+     * @param message Message of type {@link BadfilterRuleAsTrustedMessage}.
      * @param message.data Contains string url domain.
      */
     private static async onBadfilterRuleAsTrusted({ data }: BadfilterRuleAsTrustedMessage): Promise<void> {
