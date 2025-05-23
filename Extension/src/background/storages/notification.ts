@@ -133,7 +133,7 @@ const birthday25Notification: PromoNotification = {
         },
         ja: {
             title: 'AdGuard 16周年セール',
-            btn: 'セール内容をチェック',
+            btn: 'セール内容はこちら',
         },
         ko: {
             title: '16주년 기념 세일',
