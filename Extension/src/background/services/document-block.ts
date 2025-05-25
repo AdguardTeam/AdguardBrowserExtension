@@ -17,11 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
-import {
-    type AddUrlToTrustedMessage,
-    type BadfilterRuleAsTrustedMessage,
-    MessageType,
-} from '../../common/messages';
+import { type AddUrlToTrustedMessage, MessageType } from '../../common/messages';
 import { DocumentBlockApi, TabsApi } from '../api';
 import { engine } from '../engine';
 import { messageHandler } from '../message-handler';
@@ -38,14 +34,7 @@ export class DocumentBlockService {
     public static async init(): Promise<void> {
         await DocumentBlockApi.init();
 
-        if (__IS_MV3__) {
-            messageHandler.addListener(
-                MessageType.BadfilterRuleAsTrusted,
-                DocumentBlockService.onBadfilterRuleAsTrusted,
-            );
-        } else {
-            messageHandler.addListener(MessageType.AddUrlToTrusted, DocumentBlockService.onAddUrlToTrusted);
-        }
+        messageHandler.addListener(MessageType.AddUrlToTrusted, DocumentBlockService.onAddUrlToTrusted);
     }
 
     /**
@@ -73,21 +62,6 @@ export class DocumentBlockService {
         const { url } = data;
 
         await DocumentBlockApi.setTrustedDomain(url);
-        await engine.update();
-
-        DocumentBlockService.updateActiveTab(url);
-    }
-
-    /**
-     * Listener for the event of adding a domain to trusted domains.
-     *
-     * @param message Message of type {@link BadfilterRuleAsTrustedMessage}.
-     * @param message.data Contains string url domain.
-     */
-    private static async onBadfilterRuleAsTrusted({ data }: BadfilterRuleAsTrustedMessage): Promise<void> {
-        const { rule, url } = data;
-
-        await DocumentBlockApi.storeTrustedDomain(rule);
         await engine.update();
 
         DocumentBlockService.updateActiveTab(url);
