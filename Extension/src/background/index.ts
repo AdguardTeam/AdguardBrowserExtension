@@ -19,6 +19,8 @@ import browser from 'webextension-polyfill';
 
 import { App } from 'app';
 
-// initialize background services
+// Initialize background services.
+// Initialization is deferred to `onStartup` and `onInstalled` events
+// because the extension uses a non-persistent background page model.
 browser.runtime.onStartup.addListener(App.init);
 browser.runtime.onInstalled.addListener(App.init);
