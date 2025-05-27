@@ -374,12 +374,6 @@ Then install extension via developer mode, make requests and see applied declara
 
 ##### How to build MV3 extension
 
-1. Switch to the `v5.0` branch:
-
-    ```shell
-    git checkout v5.0
-    ```
-
 1. Run the following command in the terminal:
 
     ```shell
@@ -410,25 +404,53 @@ That’s it!
 
 ##### How to debug rules
 
-1. Find and modify the rule you need in the `./Extension/filters/chromium-mv3` directory in the `.txt` files.
+For faster development of DNR rulesets, you can use `@adguard/dnr-rulesets` watch mode, which will automatically rebuild rulesets whenever filter files change:
 
-1. Convert the rules from txt to declarative form:
-
-    ```shell
-    pnpm convert-declarative
-    ```
-
-1. Build the extension again:
+1. First, build the extension once (just skip, if you did it in the [How to build](#dev-build) section):
 
     ```shell
     pnpm dev chrome-mv3
     ```
 
+1. Start the watch mode with all required filters:
+
+    ```shell
+    npx @adguard/dnr-rulesets watch \
+        // Force update of rulesets in manifest.json
+        --force-update \
+        // Enable rulesets with IDs 1 and 2
+        --enable=1,2 \
+        // Download filters from the server on the first run
+        --download \
+        // Path to the extension manifest
+        ./build/dev/chrome-mv3/manifest.json \
+        // Path to the filters directory
+        ./build/dev/chrome-mv3/filters \
+        // Path to the web-accessible-resources directory
+        ./Extension/web-accessible-resources \
+        // Output directory for DNR rulesets
+        ./build/dev/chrome-mv3/filters/declarative
+    ```
+
+    The `--download` flag will download all filters from the server on the first run. For subsequent runs, you can omit this flag to use existing filters:
+
+    ```shell
+    npx @adguard/dnr-rulesets watch \
+        --force-update \
+        --enable=1,2 \
+        ./build/dev/chrome-mv3/manifest.json \
+        ./build/dev/chrome-mv3/filters \
+        ./Extension/web-accessible-resources \
+        ./build/dev/chrome-mv3/filters/declarative
+    ```
+
+1. Now, whenever you modify filter files, the DNR rulesets will be automatically rebuilt without having to rebuild the entire extension.
+
 1. Reload the extension in the browser:
 
     ![Reload extension](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/reload_extension.png)
 
-1. If you see an ❗ mark - it means that assumed rule (which we calculated with our tsurlfilter engine, which performed applying rules in MV2) and actually applied rule (from which we converted to DNR rule) are not the same. And this can be a problem of conversion. <br/> Otherwise, if assumed and applied rules are the same - only applied rule (in text and declarative ways) will be shown.
+1. If you see an ❗ mark - it means that assumed rule (which we calculated with our tsurlfilter engine, which performed applying rules in MV2) and actually applied rule (from which we converted to DNR rule) are not the same. And this can be a problem of conversion. <br/> Otherwise, if assumed and applied rules are the same - only applied rule, in raw text and declarative rule views, will be shown.
 
 ### <a name="dev-linter"></a> Linter
 

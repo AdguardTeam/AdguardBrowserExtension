@@ -24,8 +24,7 @@
     "lint-staged": "lint-staged",
     "check-types": "tsc --project tsconfig.with_types_mv2.json --noEmit && tsc --project tsconfig.with_types_mv3.json --noEmit",
     "disclaimer": "pnpm lint | tsx tools/insert-disclaimer.js",
-    "copy-external": "tswebextension war Extension/web-accessible-resources",
-    "convert-declarative": "tsx tools/converter.ts"
+    "copy-external": "tswebextension war Extension/web-accessible-resources"
   },
   "repository": {
     "type": "git",
@@ -157,5 +156,10 @@
     "xstate": "5.19.0",
     "zod": "3.21.4",
     "zod-validation-error": "3.4.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@adguard/dnr-rulesets": "https://github.com/AdguardTeam/tsurlfilter/raw/532f55932809839d2bb12a997b9268d032994481/packages/dnr-rulesets/dnr-rulesets.tgz"
+    }
   }
 }

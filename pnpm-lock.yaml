@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@adguard/dnr-rulesets': https://github.com/AdguardTeam/tsurlfilter/raw/532f55932809839d2bb12a997b9268d032994481/packages/dnr-rulesets/dnr-rulesets.tgz
+
 importers:
 
   .:
@@ -142,8 +145,8 @@ importers:
         version: 3.4.0(zod@3.21.4)
     devDependencies:
       '@adguard/dnr-rulesets':
-        specifier: 3.0.0-alpha.10
-        version: 3.0.0-alpha.10
+        specifier: https://github.com/AdguardTeam/tsurlfilter/raw/532f55932809839d2bb12a997b9268d032994481/packages/dnr-rulesets/dnr-rulesets.tgz
+        version: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/532f55932809839d2bb12a997b9268d032994481/packages/dnr-rulesets/dnr-rulesets.tgz
       '@adguard/re2-wasm':
         specifier: 1.2.0
         version: 1.2.0
@@ -393,8 +396,9 @@ packages:
     resolution: {integrity: sha512-pKM8oUQcl8IrVyJIlqwiAUMX4manZrfe2S/a9Np3VDbnaQFbGTwW1cmQoKffmdFUwk7dEKzQ83ILm1OuOu6kZw==}
     hasBin: true
 
-  '@adguard/dnr-rulesets@3.0.0-alpha.10':
-    resolution: {integrity: sha512-k0rmCVBVaDIGfsiGpzJ98/cr5fCm5ciOufaQMDGtV56DxgMAPhRrnuw5iN99BzUGhuggAHkrTzz2gZTQSrdD/A==}
+  '@adguard/dnr-rulesets@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/532f55932809839d2bb12a997b9268d032994481/packages/dnr-rulesets/dnr-rulesets.tgz':
+    resolution: {tarball: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/532f55932809839d2bb12a997b9268d032994481/packages/dnr-rulesets/dnr-rulesets.tgz}
+    version: 3.0.1-alpha.0
     hasBin: true
 
   '@adguard/extended-css@2.1.1':
@@ -1924,6 +1928,10 @@ packages:
   check-error@2.1.1:
     resolution: {integrity: sha512-OAlb+T7V4Op9OwdkjmguYRqncdlx5JiofwOAUkmTF+jNdHwzTaTs4sRAGpzLF3oOz5xAyDGrPgeIDFQmDOTiJw==}
     engines: {node: '>= 16'}
+
+  chokidar@4.0.3:
+    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
+    engines: {node: '>= 14.16.0'}
 
   chrome-trace-event@1.0.4:
     resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
@@ -4140,6 +4148,10 @@ packages:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
     engines: {node: '>= 6'}
 
+  readdirp@4.1.2:
+    resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
+    engines: {node: '>= 14.18.0'}
+
   reflect.getprototypeof@1.0.10:
     resolution: {integrity: sha512-00o4I+DVrefhv+nX0ulyi3biSHCPDe+yLv5o/p6d/UVlirijB8E16FtfwSAi4g3tcqrQ4lRAqQSoFEZJehYEcw==}
     engines: {node: '>= 0.4'}
@@ -5100,9 +5112,10 @@ snapshots:
       crypto-js: 4.2.0
       diff: https://codeload.github.com/105th/jsdiff/tar.gz/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a
 
-  '@adguard/dnr-rulesets@3.0.0-alpha.10':
+  '@adguard/dnr-rulesets@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/532f55932809839d2bb12a997b9268d032994481/packages/dnr-rulesets/dnr-rulesets.tgz':
     dependencies:
       '@adguard/logger': 1.1.1
+      chokidar: 4.0.3
       commander: 12.1.0
       fast-glob: 3.3.3
       fs-extra: 11.3.0
@@ -6612,6 +6625,10 @@ snapshots:
   charenc@0.0.2: {}
 
   check-error@2.1.1: {}
+
+  chokidar@4.0.3:
+    dependencies:
+      readdirp: 4.1.2
 
   chrome-trace-event@1.0.4: {}
 
@@ -9112,6 +9129,8 @@ snapshots:
       inherits: 2.0.4
       string_decoder: 1.3.0
       util-deprecate: 1.0.2
+
+  readdirp@4.1.2: {}
 
   reflect.getprototypeof@1.0.10:
     dependencies:
