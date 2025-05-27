@@ -416,19 +416,19 @@ For faster development of DNR rulesets, you can use `@adguard/dnr-rulesets` watc
 
     ```shell
     npx @adguard/dnr-rulesets watch \
-        // Force update of rulesets in manifest.json
+        # Force update of rulesets in manifest.json
         --force-update \
-        // Enable rulesets with IDs 1 and 2
+        # Enable rulesets with IDs 1 and 2
         --enable=1,2 \
-        // Download filters from the server on the first run
+        # Download filters from the server on the first run
         --download \
-        // Path to the extension manifest
+        # Path to the extension manifest
         ./build/dev/chrome-mv3/manifest.json \
-        // Path to the filters directory
+        # Path to the filters directory
         ./build/dev/chrome-mv3/filters \
-        // Path to the web-accessible-resources directory
+        # Path to the web-accessible-resources directory
         ./Extension/web-accessible-resources \
-        // Output directory for DNR rulesets
+        # Output directory for DNR rulesets
         ./build/dev/chrome-mv3/filters/declarative
     ```
 
