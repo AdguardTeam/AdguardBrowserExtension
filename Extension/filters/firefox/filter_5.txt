@@ -1,9 +1,9 @@
-! Checksum: x6ZL7SeMUyQhiXqZwk8oWg
-! Diff-Path: ../patches/5/5-s-1742549790-3600.patch
+! Checksum: bgs//FIYjPtm7xrlFP9RrQ
+! Diff-Path: ../patches/5/5-s-1748063453-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.63
-! TimeUpdated: 2025-03-21T09:31:50+00:00
+! Version: 2.0.1.67
+! TimeUpdated: 2025-05-24T05:06:56+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -231,5 +231,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! ||video-weaver.*.hls.ttvnw.net/v*/playlist/*.m3u8$replace=/#EXT-X-DATERANGE:ID="stitched-ad[\s\S]*(#EXT-X-PROGRAM-DATE-TIME)(?![\s\S]*?#EXTINF:\d\.\d+\,live)[\s\S]*|(#EXT-X-DATERANGE:ID="stitched-ad[\s\S]*?(#EXT-X-PROGRAM-DATE-TIME)([\s\S]*?(#EXTINF:\d\.\d+\,live)))/\$5/
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/205227
+||legy-jp.line-apps.com^
 !################## For tracking ##################
 ||uim.tifbs.net/js/2048.js

@@ -1,9 +1,9 @@
-! Checksum: iaWxNM6NYFon67XJjRk0pQ
-! Diff-Path: ../patches/8/8-s-1746512017-3600.patch
+! Checksum: cqcq7DCWtnriMQG9kXHZGQ
+! Diff-Path: ../patches/8/8-s-1747884542-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.21
-! TimeUpdated: 2025-05-06T06:09:28+00:00
+! Version: 2.0.8.26
+! TimeUpdated: 2025-05-22T03:25:14+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1143,7 +1143,7 @@ guruwatch.nl##.publisher-sh-spot1
 simone.nl,wfm.be##.qt-sponsor
 rbsradio.be##.qt-sponsors
 nedporno.com##.r11ght-pl4yer-169
-dagelijksestandaard.nl,sportbookies.nl,viraal.nl,wielrennenuptodate.nl##.raw-html-component
+dagelijksestandaard.nl,puna.nl,sportbookies.nl,viraal.nl,wielrennenuptodate.nl##.raw-html-component
 hoekschnieuws.nl##.rbct > a > img
 belegger.nl,debeurs.nl,eurobench.com##.recommendbanner
 wasmachines.nl##.rectangle
@@ -1469,12 +1469,12 @@ bol.com##li.js_item_root:has(.dsa__list-padding)
 marktplaats.nl#?#.hz-Listing--list-item:-abp-contains(Topadvertentie)
 feijenoordnieuws.nl##.cv-table-left > a:not([target="_blank"]):not([rel="nofollow"]):not(a[href^="https://feijenoordnieuws.nl/"])
 2dehands.be#?#.hz-Listing--list-item:-abp-has(.hz-Listing-priority:-abp-contains(Topadvertentie))
+mediamarkt.be,mediamarkt.nl##[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
 almere-nieuws.nl#?#.wpb_wrapper:has(.section-heading:-abp-contains(partners))
 amstelveensnieuwsblad.nl,baarnschecourant.nl,barneveldsekrant.nl,bennekomsnieuwsblad.nl,biltschecourant.nl,deputtenaer.nl,derijnpost.nl,destadamersfoort.nl,destadgorinchem.nl,dewoudenberger.nl,edestad.nl,ermelosweekblad.nl,harderwijkercourant.nl,hcnieuws.nl,hetkompashardinxveld-giessendam.nl,hetkompassliedrecht.nl,houtensnieuws.nl,huisaanhuiselburg.nl,huisaanhuisoldebroek.nl,leusderkrant.nl,nieuwsbladdekaap.nl,nunspeethuisaanhuis.nl,recreatiekrantveluwe.nl,regiosportveenendaal.nl,rijnenveluwe.nl,scherpenzeelsekrant.nl,soestercourant.nl,stadnijkerk.nl,stadwageningen.nl,weekbladvoorouderamstel.nl,wijksnieuws.nl#?#.component__plugin:has(h6:-abp-contains(advertentie))
 autobahn.eu#?#.d-none.d-md-block.mb-3:-abp-has(a[target="_blank"][rel="noopener"])
 buienradar.nl#?#.linklist:-abp-has(h1:-abp-contains(Lekker Dichtbij Deals))
 businessinsider.nl#?#.widget_custom_html:-abp-has(h2:-abp-contains(Beter Beleggen))
-mediamarkt.be,mediamarkt.nl##div[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
 duurzaamnieuws.nl#?#.avia_codeblock_section:-abp-contains(Duurzaamnieuws wordt mede mogelijk gemaakt door:)
 fonq.nl#?#[data-cy="plp-tile-container"]:-abp-contains(Gesponsord)
 fonq.nl#?#li:-abp-contains(Gesponsord)
@@ -1748,6 +1748,10 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+autoblog.nl##div[class^="ndm-min-"]
+autoblog.nl##.widget_ab_sidebar
+autoweek.nl##.advertise
+iphoned.nl##.no-content-styles
 puna.nl##.raw-html-component:has(div[class$="-ad"])
 businessinsider.nl##div[data-module="billboard"]
 funda.nl##div[role="advertisment"]
