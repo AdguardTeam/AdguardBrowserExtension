@@ -19,8 +19,23 @@ import browser from 'webextension-polyfill';
 
 import { App } from 'app';
 
-// Initialize background services.
-// Initialization is deferred to `onStartup` and `onInstalled` events
-// because the extension uses a non-persistent background page model.
-browser.runtime.onStartup.addListener(App.init);
-browser.runtime.onInstalled.addListener(App.init);
+import { UserAgent } from '../common/user-agent';
+
+const wrapper1 = (): void => {
+    // eslint-disable-next-line no-console
+    console.log('wrapper 1', Date.now());
+    App.init();
+};
+
+const wrapper2 = (): void => {
+    // eslint-disable-next-line no-console
+    console.log('wrapper 2', Date.now());
+    App.init();
+};
+
+wrapper1();
+
+if (UserAgent.isFirefox) {
+    browser.runtime.onStartup.addListener(wrapper2);
+    browser.runtime.onInstalled.addListener(wrapper2);
+}
