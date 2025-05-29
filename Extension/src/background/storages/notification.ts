@@ -70,6 +70,7 @@ export type PromoNotification = {
      * May be needed for different promos for different locales at the same time.
      */
     bgImage: string;
+
     /**
      * Update popup background image may have a bit different width.
      */
