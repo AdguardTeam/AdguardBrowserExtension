@@ -5,13 +5,75 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Unreleased <!-- release/v5.2 -->
+
+### Added
+
+- Support for Chrome's User Scripts API that allows more reliable script
+  injection in MV3 if developer mode is enabled.
+- Send last filters update time during issue reporting [#3055].
+- Ability to exit editor by pressing `Escape` keyboard button [#2333].
+- Blocking page for requests blocked by `$document` rules in MV3.
+- Compatibility of `$header` modifier with `$match-case`
+  and `$third-party` modifiers in MV2 [#2942].
+- `zip` and `crx` artifacts for the extension builds [#3163], [#2488].
+- AdGuard Quick Fixes filter and support for custom filters are back again.
 
 ### Changed
 
-- Updated [@adguard/agtree] to v3.2.0.
-- Updated [@adguard/tsurlfilter] to v3.3.3.
-- Updated [@adguard/tswebextension] to v3.1.0-alpha.3.
+- Updated blocking pages for MV2 — Safebrowsing and blocked by `$document` rules.
+- Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
+<!-- FIXME: check versions later -->
+- Updated [@adguard/agtree] to v3.1.5.
+- Updated [@adguard/scriptlets] to v2.2.1.
+- Updated [@adguard/tsurlfilter] to v3.4.x.
+- Updated [@adguard/tswebextension] to v3.2.x.
+
+### Removed
+
+- AdGuard DNS filter and AdGuard Annoyances filter as deprecated.
+
+### Fixed
+
+- Cursor moves to the end when saving user rules [#3145].
+- Cannot maximize Filtering log in Firefox for Windows [#2464].
+- Unable to paste text into user rules input field on Android [#3061].
+- Invalid HTML rule selectors are breaking site loading [#2646], [#2826].
+- Stealth mode's `Hide Referer from third parties` option may break some websites [#2839].
+- Filtering log: Resizing the right panel selects its contents [#2305].
+- Types of the blocked requests are not displayed in the popup (Firefox for Android) [#3157].
+- Switching to the "Statistics" tab shifts the "Actions" and "Statistics" buttons (Edge for Android) [#3158].
+- Filtering log: Request details panel is automatically closed when loading
+  a website in another window/tab [#2327].
+- Scriptlet rules are not displayed in the filtering log [#3164].
+- The filtering in Edge's split screen doesn't work [#2832].
+- Total blocked popup string translated incorrectly [#3204].
+- `$replace` rules may break some websites [#3122].
+- Increase file size limit to 10MB for `$replace` rules in Firefox [#3192].
+
+[#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
+[#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
+[#2327]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2327
+[#2332]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2332
+[#2333]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2333
+[#2464]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
+[#2488]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2488
+[#2646]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2646
+[#2826]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2826
+[#2832]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2832
+[#2839]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2839
+[#2942]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2942
+[#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
+[#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
+[#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
+[#3122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3122
+[#3192]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3192
+[#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
+[#3157]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3157
+[#3158]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3158
+[#3163]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3163
+[#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
+[#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
 
 ## [5.1.88] - 2025-05-23
 
@@ -23,6 +85,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/tswebextension] to v3.1.0-alpha.1.
 
 [5.1.88]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.1.79...v5.1.88
+
+## [5.1.84]
+
+### Changed
+
+- Updated [@adguard/agtree] to v3.2.0.
+- Updated [@adguard/tsurlfilter] to v3.3.3.
+- Updated [@adguard/tswebextension] to v3.1.0-alpha.3.
 
 ## [5.1.79] - 2025-04-28
 

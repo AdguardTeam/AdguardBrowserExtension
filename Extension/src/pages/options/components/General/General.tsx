@@ -19,7 +19,7 @@
 // TODO remove no-explicit-any disabling
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment */
 
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -35,11 +35,11 @@ import {
     SAFEBROWSING_LEARN_MORE_URL,
     BUG_REPORT_URL,
     BUG_REPORT_MV3_URL,
-    FILE_WRONG_EXTENSION_CAUSE,
 } from '../../constants';
+import { FILE_WRONG_EXTENSION_CAUSE } from '../../../common/constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
-import { SettingHandler } from '../../types';
+import { type SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
@@ -123,12 +123,21 @@ export const General = observer(() => {
 
     const { settings, allowAcceptableAds }: any = settingsStore;
 
+    const importInputRef = useRef<HTMLInputElement>(null);
+
     if (!settings) {
         return null;
     }
 
     const handleExportSettings = () => {
         exportData(ExportTypes.Settings);
+    };
+
+    const handleImportSettings = () => {
+        if (!importInputRef.current) {
+            return;
+        }
+        importInputRef.current.click();
     };
 
     const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -223,7 +232,7 @@ export const General = observer(() => {
     return (
         <>
             <SettingsSection title={translator.getMessage('options_general_settings')}>
-                <StaticFiltersLimitsWarning useWrapper />
+                <StaticFiltersLimitsWarning />
                 { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
                 {/* @ts-ignore */}
                 <SettingSetSelect
@@ -319,27 +328,20 @@ export const General = observer(() => {
                 >
                     {translator.getMessage('options_export_settings')}
                 </button>
-                <div className="links-menu__item--wrapper">
-                    <input
-                        id="inputEl"
-                        type="file"
-                        accept="application/json"
-                        onChange={inputChangeHandlerWrapper}
-                        className="actions__input-file"
-                    />
-                    <label
-                        htmlFor="inputEl"
-                        className="links-menu__item button--link--green"
-                    >
-                        <input
-                            type="file"
-                            accept="application/json"
-                            onChange={inputChangeHandlerWrapper}
-                            className="actions__input-file"
-                        />
-                        {translator.getMessage('options_import_settings')}
-                    </label>
-                </div>
+                <input
+                    ref={importInputRef}
+                    type="file"
+                    accept="application/json"
+                    onChange={inputChangeHandlerWrapper}
+                    className="actions__input-file"
+                />
+                <button
+                    type="button"
+                    className="links-menu__item button--link--green"
+                    onClick={handleImportSettings}
+                >
+                    {translator.getMessage('options_import_settings')}
+                </button>
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
@@ -349,6 +351,7 @@ export const General = observer(() => {
                     {translator.getMessage('options_report_bug')}
                 </a>
                 <button
+                    role="link"
                     type="button"
                     className="links-menu__item button--link--green"
                     onClick={handleLeaveFeedback}

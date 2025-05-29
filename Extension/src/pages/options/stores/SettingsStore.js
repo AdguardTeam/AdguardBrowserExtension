@@ -193,6 +193,8 @@ class SettingsStore {
 
     @observable isChrome = null;
 
+    @observable isUserScriptsApiSupported = false;
+
     @observable searchInput = '';
 
     @observable searchSelect = SEARCH_FILTERS.ALL;
@@ -299,13 +301,14 @@ class SettingsStore {
             } else {
                 // on the next filters updates, we update filters keeping order
                 /**
-                 * TODO (v.zhelvis): Updating filters on background service response can cause filter enable state mismatch,
-                 * because we toggle switches on frontend side first, but cannot determine when action
-                 * in background service is completed and final result of user action.
-                 * It seems that we need to use a new approach with atomic updates instead of global state synchronization
-                 * to avoid this kind of problems. This task can be split into two parts:
+                 * TODO: Updating filters on background service response can cause filter enable
+                 * state mismatch, because we toggle switches on frontend side first, but cannot determine when
+                 * action in background service is completed and final result of user action.
+                 * It seems that we need to use a new approach with atomic updates instead of global
+                 * state synchronization to avoid this kind of problems. This task can be split into two parts:
                  * - Moving specific logic from the background to the settings page.
-                 * - Integrate a transparent transaction model with simple collision resolution to prevent race conditions.
+                 * - Integrate a transparent transaction model with simple collision resolution to prevent
+                 * race conditions.
                  */
                 this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
             }
@@ -323,6 +326,7 @@ class SettingsStore {
             this.setBlockKnownTrackers(data.filtersMetadata.filters);
             this.setStripTrackingParameters(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
+            this.isUserScriptsApiSupported = data.isUserScriptsApiSupported;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         });
@@ -608,21 +612,21 @@ class SettingsStore {
     }
 
     @action
-        setFilterEnabledState = (rawFilterId, enabled) => {
-            const filterId = parseInt(rawFilterId, 10);
-            this.filters.forEach((filter) => {
-                if (filter.filterId === filterId) {
-                // eslint-disable-next-line no-param-reassign
-                    filter.enabled = !!enabled;
-                }
-            });
-            this.visibleFilters.forEach((filter) => {
-                if (filter.filterId === filterId) {
-                // eslint-disable-next-line no-param-reassign
-                    filter.enabled = !!enabled;
-                }
-            });
-        };
+    setFilterEnabledState = (rawFilterId, enabled) => {
+        const filterId = parseInt(rawFilterId, 10);
+        this.filters.forEach((filter) => {
+            if (filter.filterId === filterId) {
+            // eslint-disable-next-line no-param-reassign
+                filter.enabled = !!enabled;
+            }
+        });
+        this.visibleFilters.forEach((filter) => {
+            if (filter.filterId === filterId) {
+            // eslint-disable-next-line no-param-reassign
+                filter.enabled = !!enabled;
+            }
+        });
+    };
 
     @action
     async updateFilterSetting(filterId, enabled) {
@@ -735,19 +739,19 @@ class SettingsStore {
     }
 
     @action
-        setAllowlist = (allowlist) => {
-            this.allowlist = allowlist;
-        };
+    setAllowlist = (allowlist) => {
+        this.allowlist = allowlist;
+    };
 
     @action
-        getAllowlist = async () => {
-            try {
-                const { content } = await messenger.getAllowlist();
-                this.setAllowlist(content);
-            } catch (e) {
-                logger.debug(e);
-            }
-        };
+    getAllowlist = async () => {
+        try {
+            const { content } = await messenger.getAllowlist();
+            this.setAllowlist(content);
+        } catch (e) {
+            logger.debug(e);
+        }
+    };
 
     saveAllowlist = async (value) => {
         return new Promise((resolve, reject) => {
@@ -764,25 +768,25 @@ class SettingsStore {
     };
 
     @action
-        setAllowlistEditorContentChangedState = (state) => {
-            this.allowlistEditorContentChanged = state;
-        };
+    setAllowlistEditorContentChangedState = (state) => {
+        this.allowlistEditorContentChanged = state;
+    };
 
     @action
-        setSearchInput = (value) => {
-            this.searchInput = value;
-            this.sortFilters();
-            this.sortSearchGroups();
-            this.selectVisibleFilters();
-        };
+    setSearchInput = (value) => {
+        this.searchInput = value;
+        this.sortFilters();
+        this.sortSearchGroups();
+        this.selectVisibleFilters();
+    };
 
     @action
-        setSearchSelect = (value) => {
-            this.searchSelect = value;
-            this.sortFilters();
-            this.sortSearchGroups();
-            this.selectVisibleFilters();
-        };
+    setSearchSelect = (value) => {
+        this.searchSelect = value;
+        this.sortFilters();
+        this.sortSearchGroups();
+        this.selectVisibleFilters();
+    };
 
     @computed
     get isSearching() {
@@ -794,33 +798,33 @@ class SettingsStore {
      * Filters sort happens when user exits from filters group, or changes search filters
      */
     @action
-        sortFilters = () => {
-            this.setFilters(sortFilters(this.filters));
-        };
+    sortFilters = () => {
+        this.setFilters(sortFilters(this.filters));
+    };
 
     @action
-        setFilters = (filters) => {
-            this.filters = filters;
-        };
+    setFilters = (filters) => {
+        this.filters = filters;
+    };
 
     @action
-        setVisibleFilters = (visibleFilters) => {
-            this.visibleFilters = visibleFilters;
-        };
+    setVisibleFilters = (visibleFilters) => {
+        this.visibleFilters = visibleFilters;
+    };
 
     /**
      * We do not sort groups while search on every groups data update for better UI experience
      * Groups sort happens only when user changes search filters
      */
     @action
-        sortSearchGroups = () => {
-            this.setGroups(sortGroupsOnSearch(this.categories));
-        };
+    sortSearchGroups = () => {
+        this.setGroups(sortGroupsOnSearch(this.categories));
+    };
 
     @action
-        setGroups = (categories) => {
-            this.categories = categories;
-        };
+    setGroups = (categories) => {
+        this.categories = categories;
+    };
 
     /**
      * We use visibleFilters for better UI experience, in order not to hide filter
@@ -829,23 +833,23 @@ class SettingsStore {
      *
      */
     @action
-        selectVisibleFilters = () => {
-            this.visibleFilters = this.filters.filter((filter) => {
-                let searchMod;
-                switch (this.searchSelect) {
-                    case SEARCH_FILTERS.ENABLED:
-                        searchMod = filter.enabled;
-                        break;
-                    case SEARCH_FILTERS.DISABLED:
-                        searchMod = !filter.enabled;
-                        break;
-                    default:
-                        searchMod = true;
-                }
+    selectVisibleFilters = () => {
+        this.visibleFilters = this.filters.filter((filter) => {
+            let searchMod;
+            switch (this.searchSelect) {
+                case SEARCH_FILTERS.ENABLED:
+                    searchMod = filter.enabled;
+                    break;
+                case SEARCH_FILTERS.DISABLED:
+                    searchMod = !filter.enabled;
+                    break;
+                default:
+                    searchMod = true;
+            }
 
-                return searchMod;
-            });
-        };
+            return searchMod;
+        });
+    };
 
     @computed
     get filtersToRender() {
@@ -860,12 +864,6 @@ class SettingsStore {
         }
 
         return selectedFilters.filter((filter) => {
-            // TODO: Do not show custom filters in MV3 in the list of filters,
-            // until we add them back. (AG-39385)
-            if (__IS_MV3__ && filter.groupId === AntibannerGroupsId.CustomFiltersGroupId) {
-                return false;
-            }
-
             // If selected group of filters, prevent showing filters from
             // other groups.
             if (Number.isInteger(this.selectedGroupId) && filter.groupId !== this.selectedGroupId) {
@@ -979,42 +977,42 @@ class SettingsStore {
     }
 
     @action
-        setIsAnnoyancesConsentModalOpen = (value) => {
-            this.isAnnoyancesConsentModalOpen = value;
-        };
+    setIsAnnoyancesConsentModalOpen = (value) => {
+        this.isAnnoyancesConsentModalOpen = value;
+    };
 
     @action
-        setFilterIdSelectedForConsent = (filterId) => {
-            this.filterIdSelectedForConsent = filterId;
-            this.updateFilterStateUI(filterId, true);
-        };
+    setFilterIdSelectedForConsent = (filterId) => {
+        this.filterIdSelectedForConsent = filterId;
+        this.updateFilterStateUI(filterId, true);
+    };
 
     @action
-        handleFilterConsentCancel = () => {
-            if (this.filterIdSelectedForConsent) {
-                this.updateFilterStateUI(this.filterIdSelectedForConsent, false);
-                this.filterIdSelectedForConsent = null;
-                return;
-            }
+    handleFilterConsentCancel = () => {
+        if (this.filterIdSelectedForConsent) {
+            this.updateFilterStateUI(this.filterIdSelectedForConsent, false);
+            this.filterIdSelectedForConsent = null;
+            return;
+        }
 
-            // handle modal for group
-            this.updateGroupStateUI(AntibannerGroupsId.AnnoyancesFiltersGroupId, false);
-        };
+        // handle modal for group
+        this.updateGroupStateUI(AntibannerGroupsId.AnnoyancesFiltersGroupId, false);
+    };
 
     @action
-        handleFilterConsentConfirm = async () => {
-            if (this.filterIdSelectedForConsent) {
-                await this.updateFilterSetting(this.filterIdSelectedForConsent, true);
-                await messenger.setConsentedFilters([this.filterIdSelectedForConsent]);
-                this.filterIdSelectedForConsent = null;
-                return;
-            }
-            // handle consent modal for group
-            await this.updateGroupSetting(AntibannerGroupsId.AnnoyancesFiltersGroupId, true);
-            await messenger.setConsentedFilters(
-                this.recommendedAnnoyancesFilters.map((f) => f.filterId),
-            );
-        };
+    handleFilterConsentConfirm = async () => {
+        if (this.filterIdSelectedForConsent) {
+            await this.updateFilterSetting(this.filterIdSelectedForConsent, true);
+            await messenger.setConsentedFilters([this.filterIdSelectedForConsent]);
+            this.filterIdSelectedForConsent = null;
+            return;
+        }
+        // handle consent modal for group
+        await this.updateGroupSetting(AntibannerGroupsId.AnnoyancesFiltersGroupId, true);
+        await messenger.setConsentedFilters(
+            this.recommendedAnnoyancesFilters.map((f) => f.filterId),
+        );
+    };
 
     @computed
     get shouldShowFilterPolicy() {

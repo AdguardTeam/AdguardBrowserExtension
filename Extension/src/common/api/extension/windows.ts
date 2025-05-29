@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { type Windows, Tabs } from 'webextension-polyfill';
+import browser, { type Windows, type Tabs } from 'webextension-polyfill';
 
 import { UserAgent } from '../../user-agent';
 import { getErrorMessage } from '../../error';

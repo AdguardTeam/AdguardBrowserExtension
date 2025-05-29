@@ -20,12 +20,20 @@ import path from 'node:path';
 
 import { type Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-import { BACKGROUND_OUTPUT, CONTENT_SCRIPT_START_OUTPUT } from '../../constants';
+import {
+    BACKGROUND_OUTPUT,
+    BLOCKING_BLOCKED_OUTPUT,
+    CONTENT_SCRIPT_START_OUTPUT,
+    INDEX_HTML_FILE_NAME,
+} from '../../constants';
 
 import {
     BACKGROUND_PATH,
+    BLOCKING_BLOCKED_PATH,
     CONTENT_SCRIPT_START_PATH,
+    htmlTemplatePluginCommonOptions,
     type BrowserConfig,
 } from './common-constants';
 import { genCommonConfig } from './webpack.common';
@@ -43,10 +51,21 @@ export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: bo
                 import: BACKGROUND_PATH,
                 runtime: false,
             },
+            [BLOCKING_BLOCKED_OUTPUT]: {
+                import: BLOCKING_BLOCKED_PATH,
+            },
             [CONTENT_SCRIPT_START_OUTPUT]: {
                 import: path.resolve(CONTENT_SCRIPT_START_PATH, 'mv3.ts'),
                 runtime: false,
             },
         },
+        plugins: [
+            new HtmlWebpackPlugin({
+                ...htmlTemplatePluginCommonOptions,
+                template: path.join(BLOCKING_BLOCKED_PATH, INDEX_HTML_FILE_NAME),
+                filename: `${BLOCKING_BLOCKED_OUTPUT}.html`,
+                chunks: [BLOCKING_BLOCKED_OUTPUT],
+            }),
+        ],
     });
 };

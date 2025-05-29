@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { SettingOption, I18nMetadata } from '../schema';
+import { SettingOption, type I18nMetadata } from '../schema';
 import { StringStorage } from '../utils/string-storage';
 
 import { settingsStorage } from './settings';

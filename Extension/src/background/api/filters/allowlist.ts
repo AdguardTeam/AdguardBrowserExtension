@@ -202,8 +202,7 @@ export class AllowlistApi {
         const filterId = mainFrameRule.getFilterListId();
 
         if (filterId === AntiBannerFiltersId.UserFilterId) {
-            const ruleText = mainFrameRule.getText();
-            await AllowlistApi.removeAllowlistRuleFromUserList(ruleText, tabId, tabRefresh);
+            await AllowlistApi.removeAllowlistRuleFromUserList(mainFrameRule.getIndex(), tabId, tabRefresh);
             return;
         }
 
@@ -215,20 +214,46 @@ export class AllowlistApi {
     }
 
     /**
+     * Disables filtering for specified url by adding domain to the allowlist.
+     *
+     * Please note that this method does not reload the tab.
+     *
+     * @param url Tab document url.
+     */
+    public static async disableFilteringForUrl(url: string): Promise<void> {
+        const domain = getDomain(url);
+
+        if (!domain) {
+            logger.debug(`[disableFilteringForUrl] No domain in url "${url}"`);
+            return;
+        }
+
+        if (AllowlistApi.isInverted()) {
+            AllowlistApi.removeInvertedAllowlistDomain(domain);
+        } else {
+            AllowlistApi.addAllowlistDomain(domain);
+        }
+
+        await engine.update();
+    }
+
+    /**
      * Disable filtering for specified tab by adding url to the allowlist.
      *
      * @param tabId Tab id.
      */
-    public static async disableTabFiltering(tabId: number): Promise<void> {
+    public static async disableTabFilteringForTabId(tabId: number): Promise<void> {
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
         if (!tabContext) {
             return;
         }
 
         const { info: { url } } = tabContext;
-        if (url) {
-            await AllowlistApi.disableTabUrlFiltering(url, tabId);
+        if (!url) {
+            return;
         }
+
+        await AllowlistApi.disableTabUrlFiltering(url, tabId);
     }
 
     /**
@@ -251,6 +276,7 @@ export class AllowlistApi {
         const domain = getDomain(url);
 
         if (!domain) {
+            logger.debug(`[enableTabUrlFiltering] No domain in url "${url}" of tab ${tabId}`);
             return;
         }
 
@@ -281,19 +307,9 @@ export class AllowlistApi {
         url: string,
         tabId: number,
     ): Promise<void> {
-        const domain = getDomain(url);
-
-        if (!domain) {
-            return;
-        }
-
-        if (AllowlistApi.isInverted()) {
-            AllowlistApi.removeInvertedAllowlistDomain(domain);
-        } else {
-            AllowlistApi.addAllowlistDomain(domain);
-        }
-
-        await engine.update();
+        // Should be awaited before reloading to allow the engine to update.
+        // AG-42124
+        await AllowlistApi.disableFilteringForUrl(url);
 
         await TabsApi.reload(tabId);
     }
@@ -303,17 +319,17 @@ export class AllowlistApi {
      *
      * Updates {@link Engine} and reloads the tab if {@link tabRefresh} is true.
      *
-     * @param ruleText Tab document rule text.
+     * @param ruleIndex Rule index.
      * @param tabId Tab id.
      * @param tabRefresh Is tab refresh needed after removing rule from the user list.
      * We do not refresh the tab after rule deletion via the filtering log.
      */
     private static async removeAllowlistRuleFromUserList(
-        ruleText: string,
+        ruleIndex: number,
         tabId: number,
         tabRefresh: boolean = false,
     ): Promise<void> {
-        await UserRulesApi.removeUserRule(ruleText);
+        await UserRulesApi.removeUserRuleByIndex(ruleIndex);
 
         await engine.update();
 

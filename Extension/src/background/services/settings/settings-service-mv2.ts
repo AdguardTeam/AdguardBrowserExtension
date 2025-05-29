@@ -31,6 +31,7 @@ import { AntiBannerFiltersId } from '../../../common/constants';
 import { engine } from '../../engine';
 import {
     Categories,
+    HitStatsApi,
     SafebrowsingApi,
     SettingsApi,
     TabsApi,
@@ -43,7 +44,7 @@ import {
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
 
-import type { ExportMessageResponse, GetOptionsDataResponse } from './types';
+import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
 
 /**
  * SettingsService handles all setting-related messages and
@@ -92,6 +93,7 @@ export class SettingsService {
             SettingOption.DisableFiltering,
             SettingsService.onDisableFilteringStateChange,
         );
+        settingsEvents.addListener(SettingOption.DisableCollectHits, SettingsService.onDisableCollectHitsChange);
 
         contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsService.enableFiltering);
         contextMenuEvents.addListener(ContextMenuAction.DisableProtection, SettingsService.disableFiltering);
@@ -121,6 +123,8 @@ export class SettingsService {
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
             // always false for MV2
             areFilterLimitsExceeded: false,
+            // always false for MV2
+            isUserScriptsApiSupported: false,
         };
     }
 
@@ -318,6 +322,18 @@ export class SettingsService {
      */
     static onSelfDestructFirstPartyCookiesTimeStateChange(): void {
         engine.debounceUpdate();
+    }
+
+    /**
+     * Called when {@link SettingOption.DisableCollectHits} changes.
+     *
+     * @param disableCollectHitsStats Setting value.
+     */
+    static onDisableCollectHitsChange(disableCollectHitsStats: boolean): void {
+        engine.api.setCollectHitStats(!disableCollectHitsStats);
+        if (disableCollectHitsStats) {
+            HitStatsApi.cleanup();
+        }
     }
 
     /**

@@ -33,8 +33,6 @@ import {
 } from '../../../common/messages';
 import {
     Categories,
-    CommonFilterApi,
-    CustomFilterApi,
     type FilterMetadata,
     FiltersApi,
     iconsApi,
@@ -42,18 +40,21 @@ import {
 import { filterStateStorage, settingsStorage } from '../../storages';
 import { rulesLimitsStorage } from '../../storages/rules-limits';
 import { rulesLimitsStorageDataValidator } from '../../schema/rules-limits';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { logger } from '../../../common/logger';
 // Note: due to circular dependencies, import message-handler.ts after all
 // other imports.
 import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
 import { SettingOption } from '../../schema/settings/enum';
+import { AntiBannerFiltersId } from '../../../common/constants';
 
-import type {
-    StaticLimitsCheckResult,
-    IRulesLimits,
-    DynamicLimitsCheckResult,
-    Mv3LimitsCheckResult,
+import {
+    type StaticLimitsCheckResult,
+    type IRulesLimits,
+    type DynamicLimitsCheckResult,
+    type Mv3LimitsCheckResult,
 } from './interface';
 
 const {
@@ -129,7 +130,7 @@ export class RulesLimitsService {
      */
     private static getStaticEnabledFiltersCount(): number {
         return FiltersApi.getEnabledFiltersWithMetadata()
-            .filter((f) => !CustomFilterApi.isCustomFilter(f.filterId)).length;
+            .filter((f) => !CustomFilterUtils.isCustomFilter(f.filterId)).length;
     }
 
     /**
@@ -165,16 +166,15 @@ export class RulesLimitsService {
             return acc;
         }, {});
 
-        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-        // // It is like "syntax sugar" for the quick fixes filter to emulate it
-        // // like an "empty" ruleset, because it looks like usual filter
-        // // in the UI, but it actually applied dynamically, so enabling it will
-        // // never change quota of the used static rules.
-        // counters[AntiBannerFiltersId.QuickFixesFilterId] = {
-        //     filterId: AntiBannerFiltersId.QuickFixesFilterId,
-        //     rulesCount: 0,
-        //     regexpRulesCount: 0,
-        // };
+        // It is like "syntax sugar" for the quick fixes filter to emulate it
+        // like an "empty" ruleset, because it looks like usual filter
+        // in the UI, but it actually applied dynamically, so enabling it will
+        // never change quota of the used static rules.
+        counters[AntiBannerFiltersId.QuickFixesFilterId] = {
+            filterId: AntiBannerFiltersId.QuickFixesFilterId,
+            rulesCount: 0,
+            regexpRulesCount: 0,
+        };
 
         return counters;
     };
@@ -192,7 +192,7 @@ export class RulesLimitsService {
         ruleSetsCounters: RuleSetCountersMap,
     ): RuleSetCounter[] {
         return filters
-            .filter((f) => !CustomFilterApi.isCustomFilter(f.filterId))
+            .filter((f) => !CustomFilterUtils.isCustomFilter(f.filterId))
             .map((filter) => ruleSetsCounters[filter.filterId])
             .filter((ruleSet): ruleSet is RuleSetCounter => ruleSet !== undefined);
     }
@@ -412,7 +412,7 @@ export class RulesLimitsService {
             // dynamically from the remote) and do not use quota of the static
             // rules.
             // of them is going via dynamic part of DNR rules.
-            .filter((f) => CommonFilterApi.isCommonFilter(f.filterId))
+            .filter((f) => CommonFilterUtils.isCommonFilter(f.filterId))
             .map((filter) => filter.filterId);
 
         return ids;
@@ -799,7 +799,7 @@ export class RulesLimitsService {
     private async canEnableStaticFilter(message: CanEnableStaticFilterMv3Message): Promise<StaticLimitsCheckResult> {
         const { filterId } = message.data;
 
-        if (CustomFilterApi.isCustomFilter(filterId)) {
+        if (CustomFilterUtils.isCustomFilter(filterId)) {
             throw new Error('Custom filters should be checked with canEnableDynamicRules method');
         }
 

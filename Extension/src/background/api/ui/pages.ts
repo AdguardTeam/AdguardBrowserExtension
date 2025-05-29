@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { type Runtime, type Windows } from 'webextension-polyfill';
+import { format } from 'date-fns';
+import { UTCDate } from '@date-fns/utc';
 
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -28,7 +30,7 @@ import {
     Forward,
     ForwardAction,
     ForwardFrom,
-    ForwardParams,
+    type ForwardParams,
 } from '../../../common/forward';
 import { UrlUtils } from '../../utils/url';
 import {
@@ -41,6 +43,7 @@ import { BrowserUtils } from '../../utils/browser-utils';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
+    CHROME_EXTENSIONS_SETTINGS_URL,
     FILTERING_LOG_WINDOW_STATE,
 } from '../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../common/api/extension';
@@ -53,6 +56,8 @@ import {
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
 import { OptionsPageSections } from '../../../common/nav';
+import { FilterUpdateService } from '../../services/filter-update';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
@@ -210,6 +215,14 @@ export class PagesApi {
 
         const windowStateString = await browserStorage.get(FILTERING_LOG_WINDOW_STATE);
 
+        // Firefox does not allow to maximize popup windows on Windows operating system.
+        // For more details, see the Bugzilla report:
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1756507
+        // As a temporary solution, we open the window in a normal state for Firefox on Windows
+        // to fix issue reported to us:
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2464
+        const windowType = UserAgent.isFirefox && UserAgent.isWindows ? 'normal' : 'popup';
+
         try {
             const options = typeof windowStateString === 'string'
                 ? JSON.parse(windowStateString)
@@ -217,7 +230,7 @@ export class PagesApi {
 
             await WindowsApi.create({
                 url,
-                type: 'popup',
+                type: windowType,
                 ...options,
             });
         } catch (e) {
@@ -228,7 +241,7 @@ export class PagesApi {
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2100
                 await WindowsApi.create({
                     url,
-                    type: 'popup',
+                    type: windowType,
                     ...PagesApi.defaultPopupWindowState,
                 });
             }
@@ -254,7 +267,7 @@ export class PagesApi {
         }
 
         const commonFilterIds = FiltersApi.getEnabledFilters()
-            .filter((filterId) => !CustomFilterApi.isCustomFilter(filterId));
+            .filter((filterId) => !CustomFilterUtils.isCustomFilter(filterId));
 
         const manifestDetails = browser.runtime.getManifest();
 
@@ -295,6 +308,13 @@ export class PagesApi {
             if (customFilterUrls.length > 0) {
                 params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
             }
+        }
+
+        const filtersLastUpdate = await FilterUpdateService.getLastUpdateTimeMs();
+        if (filtersLastUpdate) {
+            params.filters_last_update = encodeURIComponent(
+                PagesApi.convertTimestampToTimeString(filtersLastUpdate),
+            );
         }
 
         Object.assign(
@@ -400,6 +420,13 @@ export class PagesApi {
      */
     public static async openExtensionStorePage(): Promise<void> {
         await browser.tabs.create({ url: PagesApi.extensionStoreUrl });
+    }
+
+    /**
+     * Opens Chrome's extensions settings page.
+     */
+    public static async openChromeExtensionsSettingsPage(): Promise<void> {
+        await browser.tabs.create({ url: CHROME_EXTENSIONS_SETTINGS_URL });
     }
 
     /**
@@ -598,5 +625,20 @@ export class PagesApi {
         }
 
         return Object.fromEntries(stealthOptionsEntries);
+    }
+
+    /**
+     * Converts timestamp in milliseconds to time string.
+     *
+     * Needed for `filters_last_update` query parameters.
+     *
+     * @see {@link https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters}
+     *
+     * @param timestampMs Timestamp in milliseconds.
+     *
+     * @returns Time string in format `YYYY-MM-DD-HH-mm-ss` in **UTC+0**.
+     */
+    private static convertTimestampToTimeString(timestampMs: number): string {
+        return format(new UTCDate(timestampMs), 'yyyy-MM-dd-HH-mm-ss');
     }
 }

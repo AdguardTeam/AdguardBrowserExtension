@@ -14,8 +14,8 @@ importers:
   .:
     dependencies:
       '@adguard/agtree':
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 3.1.5
+        version: 3.1.5
       '@adguard/filters-downloader':
         specifier: 2.2.6
         version: 2.2.6
@@ -23,8 +23,8 @@ importers:
         specifier: 1.1.1
         version: 1.1.1
       '@adguard/scriptlets':
-        specifier: 2.1.6
-        version: 2.1.6
+        specifier: 2.2.1
+        version: 2.2.1
       '@adguard/text-encoding':
         specifier: ^0.8.3
         version: 0.8.3
@@ -37,6 +37,9 @@ importers:
       '@adguard/tswebextension':
         specifier: https://github.com/AdguardTeam/tsurlfilter/raw/80b9abb4826dfbc941722edb1dc467f30e22529a/packages/tswebextension/tswebextension.tgz
         version: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/80b9abb4826dfbc941722edb1dc467f30e22529a/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)
+      '@date-fns/utc':
+        specifier: ^2.1.0
+        version: 2.1.0
       '@xstate/react':
         specifier: 4.1.3
         version: 4.1.3(@types/react@17.0.83)(react@17.0.2)(xstate@5.19.0)
@@ -95,8 +98,8 @@ importers:
         specifier: 15.8.1
         version: 15.8.1
       punycode:
-        specifier: 2.3.0
-        version: 2.3.0
+        specifier: 2.3.1
+        version: 2.3.1
       react:
         specifier: 17.0.2
         version: 17.0.2
@@ -140,11 +143,11 @@ importers:
         specifier: 5.19.0
         version: 5.19.0
       zod:
-        specifier: 3.21.4
-        version: 3.21.4
+        specifier: 3.24.4
+        version: 3.24.4
       zod-validation-error:
         specifier: 3.4.0
-        version: 3.4.0(zod@3.21.4)
+        version: 3.4.0(zod@3.24.4)
     devDependencies:
       '@adguard/dnr-rulesets':
         specifier: https://github.com/AdguardTeam/tsurlfilter/raw/80b9abb4826dfbc941722edb1dc467f30e22529a/packages/dnr-rulesets/dnr-rulesets.tgz
@@ -167,6 +170,9 @@ importers:
       '@types/lodash-es':
         specifier: 4.17.11
         version: 4.17.11
+      '@types/node-forge':
+        specifier: 1.3.11
+        version: 1.3.11
       '@types/punycode':
         specifier: 2.1.4
         version: 2.1.4
@@ -269,9 +275,6 @@ importers:
       fake-indexeddb:
         specifier: 6.0.0
         version: 6.0.0
-      filesize:
-        specifier: 10.1.2
-        version: 10.1.2
       form-data:
         specifier: 4.0.0
         version: 4.0.0
@@ -296,6 +299,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      node-forge:
+        specifier: 1.3.1
+        version: 1.3.1
       openai:
         specifier: 4.26.0
         version: 4.26.0
@@ -380,12 +386,8 @@ importers:
 
 packages:
 
-  '@adguard/agtree@3.0.1':
-    resolution: {integrity: sha512-/tx6NXr9zUUmmnIJLK8dtSwH9il3lH38iBPQ2AFfPUkqYXizBWQuA2tttz91YNpFj54ABnpMSbYGB7zMBNNmLA==}
-    engines: {node: '>=18'}
-
-  '@adguard/agtree@3.2.0':
-    resolution: {integrity: sha512-sH0UWmhwjxdZvkGFBSQ+CHuQddoffIbSn+T3Wujtm/ARFlmvoxwEcr3V5PvQEDx6PgDtid6duWpcLut1qwRfQA==}
+  '@adguard/agtree@3.1.5':
+    resolution: {integrity: sha512-QyOSzAHMioF9Z9tRh7eGb7J4IQYcO9ymeHWQdZ7xInk0FNMDqZI9at7t+8YDnbS87bkxgzFODqxayIz5Cid8rA==}
     engines: {node: '>=22'}
 
   '@adguard/agtree@3.2.1':
@@ -423,8 +425,8 @@ packages:
     resolution: {integrity: sha512-yMtEJfThxN9rEYm2Zg3X8jUKaPYq5wByc90JbMspSWJo7MXw664gTvLD7/wijl6y79VSuAs77bXUIgBXutMp7A==}
     engines: {node: '>=10'}
 
-  '@adguard/scriptlets@2.1.6':
-    resolution: {integrity: sha512-Kod4RVgj+fEo1VrPnsMVzGVQJihakjSKEzTe0B5Sz027flFzo7/O5hOgSEuJV9yg2RMl6HgcQeb6xWZWKJ2abw==}
+  '@adguard/scriptlets@2.2.1':
+    resolution: {integrity: sha512-OUIfzIgarkeQhMVv6wWK/mbRnkOpePIRFBlMxwFevcGnbry7sDdNti44M+ipyDXEi9G3C+YnIEXGEPmbKvBREw==}
 
   '@adguard/text-encoding@0.8.3':
     resolution: {integrity: sha512-LA0bsY+YYnQqItGaYMoVL0l55JDi/uwvUca53V6M6mvKNHtaYDTlf3yAeW2PafsTfWvoYH7gObGu8eCvPh69tg==}
@@ -720,6 +722,9 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       postcss: ^8.4
+
+  '@date-fns/utc@2.1.0':
+    resolution: {integrity: sha512-176grgAgU2U303rD2/vcOmNg0kGPbhzckuH1TEP2al7n0AQipZIy9P15usd2TKQCG1g+E1jX/ZVQSzs4sUDwgA==}
 
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -1366,6 +1371,9 @@ packages:
   '@types/node-fetch@2.6.12':
     resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
 
+  '@types/node-forge@1.3.11':
+    resolution: {integrity: sha512-FQx220y22OKNTqaByeBGqHWYz4cl94tpcxeFdvBo3wjG6XPBuZ0BNgNZRV5J5TFmmcsJ4IzsLkmGRiQbnYsBEQ==}
+
   '@types/node@18.19.86':
     resolution: {integrity: sha512-fifKayi175wLyKyc5qUfyENhQ1dCNI1UNjp653d8kuYcPQN5JhX3dGuP/XmvPTg/xRBn1VTLpbmi+H/Mr7tLfQ==}
 
@@ -1410,6 +1418,9 @@ packages:
 
   '@types/tapable@1.0.12':
     resolution: {integrity: sha512-bTHG8fcxEqv1M9+TD14P8ok8hjxoOCkfKc8XXLaaD05kI7ohpeI956jtDOD3XHKBQrlyPughUtzm1jtVhHpA5Q==}
+
+  '@types/trusted-types@2.0.7':
+    resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
 
   '@types/ua-parser-js@0.7.37':
     resolution: {integrity: sha512-4sOxS3ZWXC0uHJLYcWAaLMxTvjRX3hT96eF4YWUh1ovTaenvibaZOE5uXtIp4mksKMLRwo7YDiCBCw6vBiUPVg==}
@@ -2671,10 +2682,6 @@ packages:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
 
-  filesize@10.1.2:
-    resolution: {integrity: sha512-Dx770ai81ohflojxhU+oG+Z2QGvKdYxgEr9OSA8UVrqhwNHjfH9A8f5NKfg83fEH8ZFA5N5llJo5T3PIoZ4CRA==}
-    engines: {node: '>= 10.4.0'}
-
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
@@ -3560,6 +3567,10 @@ packages:
       encoding:
         optional: true
 
+  node-forge@1.3.1:
+    resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
+    engines: {node: '>= 6.13.0'}
+
   node-int64@0.4.0:
     resolution: {integrity: sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==}
 
@@ -4060,10 +4071,6 @@ packages:
 
   public-encrypt@4.0.3:
     resolution: {integrity: sha512-zVpa8oKZSz5bTMTFClc1fQOnyyEzpl5ozpi1B5YcvBrdohMjH2rfsBtyXcuNuwjsDIXmBYlF2N5FlJYhR29t8Q==}
-
-  punycode@2.3.0:
-    resolution: {integrity: sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==}
-    engines: {node: '>=6'}
 
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -5078,27 +5085,12 @@ packages:
     peerDependencies:
       zod: ^3.18.0
 
-  zod@3.21.4:
-    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
-
   zod@3.24.4:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
 snapshots:
 
-  '@adguard/agtree@3.0.1':
-    dependencies:
-      '@adguard/css-tokenizer': 1.2.0
-      camelcase-keys: 7.0.2
-      clone-deep: 4.0.1
-      is-ip: 3.1.0
-      json5: 2.2.3
-      sprintf-js: 1.1.3
-      tldts: 5.7.112
-      xregexp: 5.1.2
-      zod: 3.21.4
-
-  '@adguard/agtree@3.2.0':
+  '@adguard/agtree@3.1.5':
     dependencies:
       '@adguard/css-tokenizer': 1.2.0
       camelcase-keys: 7.0.2
@@ -5155,9 +5147,10 @@ snapshots:
 
   '@adguard/re2-wasm@1.2.0': {}
 
-  '@adguard/scriptlets@2.1.6':
+  '@adguard/scriptlets@2.2.1':
     dependencies:
-      '@adguard/agtree': 3.0.1
+      '@adguard/agtree': 3.1.5
+      '@types/trusted-types': 2.0.7
       js-yaml: 3.14.1
 
   '@adguard/text-encoding@0.8.3': {}
@@ -5169,7 +5162,7 @@ snapshots:
       '@adguard/agtree': 3.2.1
       '@adguard/css-tokenizer': 1.2.0
       '@adguard/re2-wasm': 1.2.0
-      '@adguard/scriptlets': 2.1.6
+      '@adguard/scriptlets': 2.2.1
       cidr-tools: 6.4.2
       commander: 9.4.1
       is-cidr: 4.0.2
@@ -5186,7 +5179,7 @@ snapshots:
       '@adguard/assistant': 4.3.70
       '@adguard/extended-css': 2.1.1
       '@adguard/logger': 1.1.1
-      '@adguard/scriptlets': 2.1.6
+      '@adguard/scriptlets': 2.2.1
       '@adguard/text-encoding': 0.8.3
       '@adguard/tsurlfilter': https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/80b9abb4826dfbc941722edb1dc467f30e22529a/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)
       bowser: 2.11.0
@@ -5485,6 +5478,8 @@ snapshots:
   '@csstools/utilities@2.0.0(postcss@8.4.49)':
     dependencies:
       postcss: 8.4.49
+
+  '@date-fns/utc@2.1.0': {}
 
   '@discoveryjs/json-ext@0.5.7': {}
 
@@ -5942,6 +5937,10 @@ snapshots:
       '@types/node': 18.19.86
       form-data: 4.0.0
 
+  '@types/node-forge@1.3.11':
+    dependencies:
+      '@types/node': 22.14.1
+
   '@types/node@18.19.86':
     dependencies:
       undici-types: 5.26.5
@@ -5988,6 +5987,8 @@ snapshots:
   '@types/source-list-map@0.1.6': {}
 
   '@types/tapable@1.0.12': {}
+
+  '@types/trusted-types@2.0.7': {}
 
   '@types/ua-parser-js@0.7.37': {}
 
@@ -7583,8 +7584,6 @@ snapshots:
     dependencies:
       flat-cache: 3.2.0
 
-  filesize@10.1.2: {}
-
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
@@ -8470,6 +8469,8 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
+  node-forge@1.3.1: {}
+
   node-int64@0.4.0: {}
 
   node-releases@2.0.19: {}
@@ -9047,8 +9048,6 @@ snapshots:
       parse-asn1: 5.1.7
       randombytes: 2.1.0
       safe-buffer: 5.2.1
-
-  punycode@2.3.0: {}
 
   punycode@2.3.1: {}
 
@@ -9838,7 +9837,7 @@ snapshots:
 
   uri-js@4.4.1:
     dependencies:
-      punycode: 2.3.0
+      punycode: 2.3.1
 
   urijs@1.19.11: {}
 
@@ -10167,14 +10166,8 @@ snapshots:
       webpack-sources: 3.2.3
       yazl: 2.5.1
 
-  zod-validation-error@3.4.0(zod@3.21.4):
-    dependencies:
-      zod: 3.21.4
-
   zod-validation-error@3.4.0(zod@3.24.4):
     dependencies:
       zod: 3.24.4
-
-  zod@3.21.4: {}
 
   zod@3.24.4: {}

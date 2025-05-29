@@ -39,7 +39,6 @@ import { FILTERING_LOG_ASSUMED_RULE_URL } from '../../../../options/constants';
 import { translator } from '../../../../../common/translators/translator';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import {
-    getFilterName,
     getRequestEventType,
     getCookieData,
     getRuleFilterName,
@@ -56,8 +55,9 @@ import { DEFAULT_MODAL_WIDTH_PX, LINE_COUNT_LIMIT } from '../constants';
 import { TextCollapser } from '../../../../common/components/TextCollapser/TextCollapser';
 import { AddedRuleState } from '../../../constants';
 import { type FilteringLogEvent, type FilteringEventRuleData } from '../../../../../background/api/filtering-log';
-import { FilterMetadata } from '../../../../../background/api';
+import { type FilterMetadata } from '../../../../../background/api';
 import { Popover } from '../../../../common/components/ui/Popover/Popover';
+import { getFilterName } from '../../../../helpers';
 
 import './request-info.pcss';
 
@@ -65,7 +65,7 @@ import './request-info.pcss';
  * Stealth actions names.
  */
 type StealthActionNamesType = {
-    [key: number]: string,
+    [key: number]: string;
 };
 
 const StealthActionNames: StealthActionNamesType = {
@@ -84,17 +84,17 @@ type ButtonProps = {
     /**
      * Button title key for translation.
      */
-    buttonTitleKey: string,
+    buttonTitleKey: string;
 
     /**
      * Button click handler.
      */
-    onClick: () => void,
+    onClick: () => void;
 
     /**
      * Additional class name.
      */
-    className?: string,
+    className?: string;
 };
 
 /**
@@ -104,19 +104,19 @@ type EventPartData = {
     /**
      * Part title.
      */
-    title: string,
+    title: string;
 
     /**
      * Part data.
      */
-    data?: string | string[] | null,
+    data?: string | string[] | null;
 };
 
 /**
  * Event parts map.
  */
 type EventPartMap = {
-    [key: string]: EventPartData,
+    [key: string]: EventPartData;
 };
 
 /**
@@ -286,11 +286,17 @@ const RequestInfo = observer(() => {
 
     const appliedRulesData = __IS_MV3__
         ? {
-            title: translator.getPlural('filtering_modal_applied_rules', selectedEvent.declarativeRuleInfo?.sourceRules.length || 0),
+            title: translator.getPlural(
+                'filtering_modal_applied_rules',
+                selectedEvent.declarativeRuleInfo?.sourceRules.length || 0,
+            ),
             data: selectedEvent.declarativeRuleInfo?.sourceRules.map((r) => r.sourceRule),
         }
         : {
-            title: translator.getPlural('filtering_modal_applied_rules', Math.max(rulesData.appliedRuleTexts.length, 1)),
+            title: translator.getPlural(
+                'filtering_modal_applied_rules',
+                Math.max(rulesData.appliedRuleTexts.length, 1),
+            ),
             data: rulesData.appliedRuleTexts.length > 0
                 ? rulesData.appliedRuleTexts.join('\n')
                 : null,
@@ -351,7 +357,10 @@ const RequestInfo = observer(() => {
     // Original rule texts contains elements only if the rule was converted
     if (rulesData.originalRuleTexts.length > 0) {
         eventPartsMap[PARTS.ORIGINAL_RULE] = {
-            title: translator.getPlural('filtering_modal_original_rules', Math.max(rulesData.originalRuleTexts.length, 1)),
+            title: translator.getPlural(
+                'filtering_modal_original_rules',
+                Math.max(rulesData.originalRuleTexts.length, 1),
+            ),
             data: rulesData.originalRuleTexts.join('\n'),
         };
     }
@@ -484,6 +493,7 @@ const RequestInfo = observer(() => {
                         <Icon
                             id="#question"
                             classname="icon icon--24 icon--green-default"
+                            aria-hidden="true"
                         />
                     </Popover>
                 );
@@ -498,7 +508,7 @@ const RequestInfo = observer(() => {
                 : textsWithCollapsers;
 
             const classNames = isDeclarativeRule && selectedEvent.declarativeRuleInfo?.declarativeRuleJson
-                ? cn('request-info__value', 'scrollable')
+                ? cn('request-info__value', 'scrollable', 'thin-scrollbar')
                 : cn('request-info__value');
 
             return (
@@ -682,13 +692,14 @@ const RequestInfo = observer(() => {
                     <Icon
                         id="#cross"
                         classname="icon--24 icon--gray-default"
+                        aria-hidden="true"
                     />
                 </button>
                 <span className="request-modal__header">
                     {translator.getMessage('filtering_modal_info_title')}
                 </span>
             </div>
-            <div ref={contentRef} className="request-modal__content">
+            <div ref={contentRef} className="request-modal__content thin-scrollbar">
                 {selectedEvent.method && (
                     <div className="request-info">
                         <div className="request-info__main">

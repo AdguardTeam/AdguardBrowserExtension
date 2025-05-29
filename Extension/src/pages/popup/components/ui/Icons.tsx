@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable max-len */
+
 import React from 'react';
 
 import './icons.pcss';

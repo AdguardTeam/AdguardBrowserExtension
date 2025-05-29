@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { WebRequest } from 'webextension-polyfill';
+import browser, { type WebRequest } from 'webextension-polyfill';
 
 import { RequestType } from '@adguard/tsurlfilter/es/request-type';
 // Note: we don't use alias here, because we don't use safebrowsing service in MV3.
@@ -33,7 +33,7 @@ import {
 import { SettingOption } from '../schema';
 import { settingsEvents } from '../events';
 import { messageHandler } from '../message-handler';
-import { MessageType, OpenSafebrowsingTrustedMessage } from '../../common/messages';
+import { MessageType, type OpenSafebrowsingTrustedMessage } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
 import { logger } from '../../common/logger';
 
@@ -89,7 +89,7 @@ export class SafebrowsingService {
                         return;
                     }
 
-                    // Chromium doesn't allow open extension url in incognito mode
+                    // Chromium does not allow to open extension url in incognito mode
                     if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChromium) {
                         // Closing tab before opening a new one may lead to browser crash (Chromium)
                         browser.tabs.create({ url: safebrowsingUrl })
@@ -97,19 +97,20 @@ export class SafebrowsingService {
                                 browser.tabs.remove(tabId);
                             })
                             .catch((e) => {
-                                logger.warn('Cannot open info page about blocked domain. Original error: ', e);
+                                // eslint-disable-next-line max-len
+                                logger.warn(`Cannot open info page about blocked domain in tab with id ${tabId}. Original error: ${e}`);
                             });
                     } else {
                         browser.tabs.update(tabId, { url: safebrowsingUrl })
                             .catch((e) => {
                                 // eslint-disable-next-line max-len
-                                logger.warn(`Cannot update tab with id ${tabId} to show info page about blocked domain. Original error: `, e);
+                                logger.warn(`Cannot update tab with id ${tabId} to show info page about blocked domain. Original error: ${e}`);
                             });
                     }
                 })
                 .catch((e) => {
                     // eslint-disable-next-line max-len
-                    logger.warn(`Cannot execute safe browsing check for requested url "${requestUrl}". Original error: `, e);
+                    logger.warn(`Cannot execute safe browsing check for requested url "${requestUrl}". Original error: ${e}`);
                 });
         }
     }

@@ -18,9 +18,10 @@
 import { logger } from '../../common/logger';
 import {
     MessageType,
-    SaveAllowlistDomainsMessage,
-    AddAllowlistDomainMessage,
-    RemoveAllowlistDomainMessage,
+    type SaveAllowlistDomainsMessage,
+    type AddAllowlistDomainForTabIdMessage,
+    type AddAllowlistDomainForUrlMessage,
+    type RemoveAllowlistDomainMessage,
 } from '../../common/messages';
 import { messageHandler } from '../message-handler';
 import { engine } from '../engine';
@@ -34,8 +35,8 @@ import {
 import { Prefs } from '../prefs';
 
 export type GetAllowlistDomainsResponse = {
-    content: string,
-    appVersion: string,
+    content: string;
+    appVersion: string;
 };
 
 /**
@@ -48,7 +49,14 @@ export class AllowlistService {
     public static init(): void {
         messageHandler.addListener(MessageType.GetAllowlistDomains, AllowlistService.onGetAllowlistDomains);
         messageHandler.addListener(MessageType.SaveAllowlistDomains, AllowlistService.handleDomainsSave);
-        messageHandler.addListener(MessageType.AddAllowlistDomain, AllowlistService.onAddAllowlistDomain);
+        messageHandler.addListener(
+            MessageType.AddAllowlistDomainForTabId,
+            AllowlistService.onAddAllowlistDomainForTabId,
+        );
+        messageHandler.addListener(
+            MessageType.AddAllowlistDomainForUrl,
+            AllowlistService.onAddAllowlistDomainForUrl,
+        );
         messageHandler.addListener(MessageType.RemoveAllowlistDomain, AllowlistService.onRemoveAllowlistDomain);
 
         settingsEvents.addListener(SettingOption.AllowlistEnabled, AllowlistService.updateEngine);
@@ -82,12 +90,23 @@ export class AllowlistService {
     /**
      * The listener for the allowlist domain addition event from popup.
      *
-     * @param message Message of type {@link AddAllowlistDomainMessage}.
+     * @param message Message of type {@link AddAllowlistDomainForTabIdMessage}.
      */
-    private static async onAddAllowlistDomain(message: AddAllowlistDomainMessage): Promise<void> {
+    private static async onAddAllowlistDomainForTabId(message: AddAllowlistDomainForTabIdMessage): Promise<void> {
         const { tabId } = message.data;
 
-        await AllowlistApi.disableTabFiltering(tabId);
+        await AllowlistApi.disableTabFilteringForTabId(tabId);
+    }
+
+    /**
+     * The listener for the allowlist domain addition event from popup.
+     *
+     * @param message Message of type {@link AddAllowlistDomainForUrlMessage}.
+     */
+    private static async onAddAllowlistDomainForUrl(message: AddAllowlistDomainForUrlMessage): Promise<void> {
+        const { url } = message.data;
+
+        await AllowlistApi.disableFilteringForUrl(url);
     }
 
     /**
@@ -143,7 +162,7 @@ export class AllowlistService {
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.id) {
-            await AllowlistApi.disableTabFiltering(activeTab.id);
+            await AllowlistApi.disableTabFilteringForTabId(activeTab.id);
         } else {
             logger.warn('Cannot open site report page for active tab');
         }

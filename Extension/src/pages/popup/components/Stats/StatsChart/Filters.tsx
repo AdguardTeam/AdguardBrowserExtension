@@ -89,6 +89,7 @@ export const Filters = observer(() => {
                 value={store.selectedBlockedType}
                 options={existingGroupsOptions}
                 popupModification
+                label={translator.getMessage('popup_statistics_category_label')}
             />
             <Select
                 id="time-range"
@@ -96,6 +97,7 @@ export const Filters = observer(() => {
                 value={store.selectedTimeRange}
                 options={timeRangeOptions}
                 popupModification
+                label={translator.getMessage('popup_statistics_time_label')}
             />
         </div>
     );

@@ -1,4 +1,4 @@
-import { GetStatisticsDataResponse } from '../../../Extension/src/background/api';
+import { type GetStatisticsDataResponse } from '../../../Extension/src/background/api';
 import { PageStatsStorage } from '../../../Extension/src/background/storages/page-stats';
 import { translator } from '../../../Extension/src/common/translators/translator';
 

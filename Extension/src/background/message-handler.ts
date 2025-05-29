@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Runtime } from 'webextension-polyfill';
+import { type Runtime } from 'webextension-polyfill';
 
 import { Engine, type EngineMessage } from 'engine';
 
 import {
-    Message,
+    type Message,
     APP_MESSAGE_HANDLER_NAME,
     MessageHandler,
 } from '../common/messages';

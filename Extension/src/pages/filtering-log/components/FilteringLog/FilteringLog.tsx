@@ -25,7 +25,7 @@ import { Filters } from '../Filters';
 import {
     Messenger,
     messenger,
-    LongLivedConnectionCallbackMessage,
+    type LongLivedConnectionCallbackMessage,
     Page,
 } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
@@ -121,7 +121,6 @@ const FilteringLog = observer(() => {
                         case NotifierType.TabReset: {
                             const [tabInfo] = data;
                             logStore.onTabReset(tabInfo);
-                            wizardStore.closeModal();
                             break;
                         }
                         case NotifierType.SettingUpdated: {

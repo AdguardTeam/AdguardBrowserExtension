@@ -34,11 +34,9 @@ import {
     annoyancesConsent,
     Categories,
     FiltersApi,
-    HitStatsApi,
     PageStatsApi,
+    QuickFixesRulesApi,
 } from '../../api';
-import { settingsEvents } from '../../events';
-import { SettingOption } from '../../schema';
 import { AntiBannerFiltersId } from '../../../common/constants';
 
 /**
@@ -63,8 +61,6 @@ export class FiltersService {
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersService.resetBlockedAdsCount);
         messageHandler.addListener(MessageType.SetConsentedFilters, FiltersService.setConsentedFilters);
         messageHandler.addListener(MessageType.GetIsConsentedFilter, FiltersService.getIsConsentedFilter);
-
-        settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
     }
 
     /**
@@ -84,6 +80,7 @@ export class FiltersService {
      */
     private static async onFilterEnable(message: AddAndEnableFilterMessage): Promise<number | undefined> {
         const { filterId } = message.data;
+        logger.info(`Background received message to enable filter: id='${filterId}', name='${FiltersApi.getFilterName(filterId)}'`);
 
         // FiltersService.enableFilter() method's second arg is 'true'
         // because it is needed to enable not touched group
@@ -124,6 +121,8 @@ export class FiltersService {
     private static async onFilterDisable(message: DisableFilterMessage): Promise<void> {
         const { filterId } = message.data;
 
+        logger.info(`Background received message to disable filter: id='${filterId}', name='${FiltersApi.getFilterName(filterId)}'`);
+
         FiltersApi.disableFilters([filterId]);
 
         const group = Categories.getGroupByFilterId(filterId);
@@ -154,6 +153,7 @@ export class FiltersService {
      */
     private static async onGroupEnable(message: EnableFiltersGroupMessage): Promise<number[] | undefined> {
         const { groupId } = message.data;
+        logger.info(`Background received message to enable group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
 
         const group = Categories.getGroupState(groupId);
 
@@ -184,6 +184,8 @@ export class FiltersService {
      */
     private static async onGroupDisable(message: DisableFiltersGroupMessage): Promise<void> {
         const { groupId } = message.data;
+
+        logger.info(`Background received message to disable group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
 
         Categories.disableGroup(groupId);
 
@@ -261,21 +263,9 @@ export class FiltersService {
         // For quick fixes filter we have special logic with partially updating
         // metadata and then load filter from remote.
         if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
-            // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
-        }
-    }
-
-    /**
-     * Called when prompted to disable or enable hit collection.
-     *
-     * @param value Desired collecting status.
-     */
-    private static async onCollectHitsSwitch(value: boolean): Promise<void> {
-        if (value) {
-            HitStatsApi.cleanup();
         }
     }
 }

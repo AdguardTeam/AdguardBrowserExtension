@@ -25,7 +25,7 @@ import { type PreprocessedFilterList } from '@adguard/tswebextension';
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 11;
+export const APP_SCHEMA_VERSION = 12;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -42,7 +42,9 @@ export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
 
-// Filter ids used in the code on the background page and filtering log page
+/**
+ * Filter ids used in the code on the background page and filtering log page.
+ */
 export enum AntiBannerFiltersId {
     StealthModeFilterId = -1,
     UserFilterId = 0,
@@ -51,24 +53,53 @@ export enum AntiBannerFiltersId {
     SocialFilterId = 4,
     SearchAndSelfPromoFilterId = 10,
     AnnoyancesCombinedFilterId = 14,
+    DnsFilterId = 15,
     UrlTrackingFilterId = 17,
+    AnnoyancesCookieNoticesFilterId = 18,
+    AnnoyancesPopupsFilterId = 19,
+    AnnoyancesMobileAppBannersFilterId = 20,
+    AnnoyancesOtherAnnoyancesFilterId = 21,
+    AnnoyancesWidgetsFilterId = 22,
     QuickFixesFilterId = 24,
     AllowlistFilterId = 100,
     MobileAdsFilterId = 11,
 }
 
-// Group ids used in the code on the multiple entry points
+/**
+ * AdGuard Annoyances filter has been splitted into 5 other filters:
+ * Cookie Notices, Popups, Mobile App Banners, Other Annoyances
+ * and Widgets - which we should enabled instead of the Annoyances filter.
+ */
+export const SEPARATE_ANNOYANCE_FILTER_IDS = [
+    AntiBannerFiltersId.AnnoyancesCookieNoticesFilterId,
+    AntiBannerFiltersId.AnnoyancesPopupsFilterId,
+    AntiBannerFiltersId.AnnoyancesMobileAppBannersFilterId,
+    AntiBannerFiltersId.AnnoyancesOtherAnnoyancesFilterId,
+    AntiBannerFiltersId.AnnoyancesWidgetsFilterId,
+];
+
+/**
+ * Group ids used in the code on the multiple entry points.
+ */
 export const enum AntibannerGroupsId {
-    // custom filters group identifier
+    /**
+     * Custom filters group identifier.
+     */
     CustomFiltersGroupId = 0,
     AdBlockingFiltersGroupId = 1,
     PrivacyFiltersGroupId = 2,
     SocialFiltersGroupId = 3,
     AnnoyancesFiltersGroupId = 4,
     SecurityFiltersGroupId = 5,
-    // other filters group identifier
+
+    /**
+     * Other filters group identifier.
+     */
     OtherFiltersGroupId = 6,
-    // language-specific group identifier
+
+    /**
+     * Language-specific group identifier.
+     */
     LanguageFiltersGroupId = 7,
 }
 
@@ -172,3 +203,8 @@ export const emptyPreprocessedFilterList: PreprocessedFilterList = {
     rawFilterList: '',
     conversionMap: {},
 };
+
+/**
+ * Chrome's extensions settings page url.
+ */
+export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';

@@ -1,4 +1,4 @@
-import { PageStatsData } from '../../../Extension/src/background/schema';
+import { type PageStatsData } from '../../../Extension/src/background/schema';
 import { PageStatsStorage } from '../../../Extension/src/background/storages/page-stats';
 
 export const getEmptyPageStatsDataFixture = (

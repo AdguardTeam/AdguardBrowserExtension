@@ -27,12 +27,12 @@ import { logger } from '../../../common/logger';
 import { messageHandler } from '../../message-handler';
 import {
     MessageType,
-    OpenAbuseTabMessage,
-    OpenSiteReportTabMessage,
+    type OpenAbuseTabMessage,
+    type OpenSiteReportTabMessage,
 } from '../../../common/messages';
 import { UserAgent } from '../../../common/user-agent';
 import { engine } from '../../engine';
-import { AntiBannerFiltersId, NotifierType } from '../../../common/constants';
+import { AntiBannerFiltersId, type NotifierType } from '../../../common/constants';
 import { notifier } from '../../notifier';
 import {
     toasts,
@@ -41,40 +41,57 @@ import {
     SettingsApi,
     PagesApi,
     AssistantApi,
-    SettingsData,
-    FilterMetadata,
+    type SettingsData,
+    type FilterMetadata,
     ContextMenuApi,
     UiApi,
     PageStatsApi,
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
+import { type AppearanceTheme } from '../../../common/settings';
+import { SettingOption } from '../../schema';
 
 /**
  * Init app data for extension pages.
  */
 export type PageInitAppData = {
-    userSettings: SettingsData,
-    enabledFilters: Record<string, boolean>,
-    filtersMetadata: FilterMetadata[],
+    userSettings: SettingsData;
+    enabledFilters: Record<string, boolean>;
+    filtersMetadata: FilterMetadata[];
     requestFilterInfo: {
-        rulesCount: number,
-    },
+        rulesCount: number;
+    };
     environmentOptions: {
-        isMacOs: boolean,
-        canBlockWebRTC: boolean,
-        isChrome: boolean,
+        isMacOs: boolean;
+        canBlockWebRTC: boolean;
+        isChrome: boolean;
         Prefs: {
-            locale: string,
-            mobile: boolean,
-        },
-        appVersion: string,
-    },
+            locale: string;
+            mobile: boolean;
+        };
+        appVersion: string;
+    };
     constants: {
-        AntiBannerFiltersId: typeof AntiBannerFiltersId,
+        AntiBannerFiltersId: typeof AntiBannerFiltersId;
         // TODO: Seems like deprecated, can be removed.
-        EventNotifierType: typeof NotifierType,
-    },
+        EventNotifierType: typeof NotifierType;
+    };
+};
+
+/**
+ * Init app data for blocking page.
+ */
+export type BlockingPageInitAppData = {
+    /**
+     * Theme of the extension.
+     */
+    theme: AppearanceTheme;
+
+    /**
+     * Filters metadata. Needed for displaying localized filter name.
+     */
+    filtersMetadata: FilterMetadata[];
 };
 
 /**
@@ -125,6 +142,10 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenThankyouPage, PagesApi.openThankYouPage);
         messageHandler.addListener(MessageType.OpenExtensionStore, PagesApi.openExtensionStorePage);
         messageHandler.addListener(MessageType.OpenComparePage, PagesApi.openComparePage);
+        messageHandler.addListener(
+            MessageType.OpenChromeExtensionsSettingsPage,
+            PagesApi.openChromeExtensionsSettingsPage,
+        );
         messageHandler.addListener(MessageType.OpenFullscreenUserRules, PagesApi.openFullscreenUserRulesPage);
         messageHandler.addListener(
             MessageType.UpdateFullscreenUserRulesTheme,
@@ -140,6 +161,7 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenRulesLimitsTab, PagesApi.openRulesLimitsPage);
 
         messageHandler.addListener(MessageType.InitializeFrameScript, UiService.getPageInitAppData);
+        messageHandler.addListener(MessageType.InitializeBlockingPageScript, UiService.getBlockingPageInitAppData);
         messageHandler.addListener(MessageType.ScriptletCloseWindow, PagesApi.closePage);
 
         tsWebExtTabsApi.onCreate.subscribe(UiApi.update);
@@ -243,6 +265,20 @@ export class UiService {
                 AntiBannerFiltersId,
                 EventNotifierType: notifier.events,
             },
+        };
+    }
+
+    /**
+     * Returns {@link BlockingPageInitAppData} that is used on blocking pages:
+     * - blocked by rules;
+     * - blocked by Safebrowsing.
+     *
+     * @returns Blocking page init app data.
+     */
+    private static getBlockingPageInitAppData(): BlockingPageInitAppData {
+        return {
+            theme: SettingsApi.getSetting(SettingOption.AppearanceTheme) as AppearanceTheme,
+            filtersMetadata: FiltersApi.getFiltersMetadata(),
         };
     }
 

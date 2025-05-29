@@ -18,7 +18,7 @@
 
 import React from 'react';
 
-import { I18nInterface, translate } from '@adguard/translate';
+import { type I18nInterface, translate } from '@adguard/translate';
 
 import { i18n } from './i18n';
 

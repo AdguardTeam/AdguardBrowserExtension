@@ -1,5 +1,5 @@
 import browser from 'sinon-chrome';
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import {
     describe,
     it,

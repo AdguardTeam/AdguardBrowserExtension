@@ -20,7 +20,7 @@ import browser from 'webextension-polyfill';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
-import { SettingOption, RegularFilterMetadata } from '../../schema';
+import { SettingOption, type RegularFilterMetadata } from '../../schema';
 import { AntiBannerFiltersId } from '../../../common/constants';
 import {
     metadataStorage,
@@ -32,9 +32,8 @@ import {
 } from '../../storages';
 import { network } from '../network';
 
-import { CustomFilterApi } from './custom';
 import { FiltersApi } from './main';
-import type { FilterUpdateOptions } from './update';
+import { type FilterUpdateOptions } from './update';
 import { FilterParser } from './parser';
 
 /**
@@ -66,23 +65,6 @@ export class CommonFilterApi {
      */
     public static getFiltersMetadata(): RegularFilterMetadata[] {
         return metadataStorage.getFilters();
-    }
-
-    /**
-     * Checks if filter is built-in: not custom, not user-rules, not allowlist
-     * and not quick fixes filter (used only for MV3 version).
-     *
-     * @param filterId Filter id.
-     *
-     * @returns True, if filter is common, else returns false.
-     */
-    public static isCommonFilter(filterId: number): boolean {
-        return !CustomFilterApi.isCustomFilter(filterId)
-            && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
-
-        // TODO: Uncomment this line when Quick Fixes filter will be supported for MV3
-        // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
     }
 
     /**
@@ -141,6 +123,8 @@ export class CommonFilterApi {
      * dynamically.
      *
      * @returns Filter metadata — {@link RegularFilterMetadata}.
+     *
+     * @throws Error if filter is deprecated and should not be used.
      */
     public static async loadFilterRulesFromBackend(
         filterUpdateOptions: FilterUpdateOptions,
@@ -149,13 +133,7 @@ export class CommonFilterApi {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
 
-        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-        // if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
-        //     forceRemote = false;
-        // }
-
-        // TODO: remove this block when we revert support for custom and quick fixes filters
-        if (__IS_MV3__) {
+        if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
             forceRemote = false;
         }
 
@@ -194,7 +172,13 @@ export class CommonFilterApi {
             expires,
             timeUpdated,
             diffPath,
+            deprecated,
+            filterId,
         } = filterMetadata;
+
+        if (deprecated) {
+            throw new Error(`Filter with id ${filterId} is deprecated and shall not be used`);
+        }
 
         const filterVersion = filterVersionStorage.get(filterUpdateOptions.filterId);
 
@@ -261,16 +245,15 @@ export class CommonFilterApi {
         const remote = !__IS_MV3__;
         await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
 
-        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-        // // For MV3 version we have QuickFixes filter which does not have local
-        // // version and always should be updated from the server.
-        // if (__IS_MV3__) {
-        //     await FiltersApi.loadAndEnableFilters(
-        //         [AntiBannerFiltersId.QuickFixesFilterId],
-        //         true, // Install from remote.
-        //         enableUntouchedGroups,
-        //     );
-        // }
+        // For MV3 version we have QuickFixes filter which does not have local
+        // version and always should be updated from the server.
+        if (__IS_MV3__) {
+            await FiltersApi.loadAndEnableFilters(
+                [AntiBannerFiltersId.QuickFixesFilterId],
+                true,
+                enableUntouchedGroups,
+            );
+        }
     }
 
     /**
