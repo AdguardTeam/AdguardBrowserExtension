@@ -69,7 +69,6 @@ export type PromoNotification = {
      * Path to the background image for the promo.
      * May be needed for different promos for different locales at the same time.
      */
-
     bgImage: string;
     /**
      * Update popup background image may have a bit different width.
@@ -82,204 +81,203 @@ export type PromoNotification = {
     icons?: IconVariants;
 };
 
-const SPRING_25_ID = 'spring25';
+const BIRTHDAY_25_ID = 'birthday25';
 
-const spring25Notification: PromoNotification = {
-    id: SPRING_25_ID,
+const birthday25Notification: PromoNotification = {
+    id: BIRTHDAY_25_ID,
     locales: {
         en: {
-            title: 'Time to tidy up for spring',
-            btn: 'Learn how',
+            title: 'Long story short: birthday sale',
+            btn: 'Dive in',
         },
         fr: {
-            title: 'Nettoyez l\'Internet ce printemps',
-            btn: 'Voir l\'offre',
+            title: "La chose à noter : c'est notre anniversaire !",
+            btn: 'Voyons voir',
         },
         it: {
-            title: 'Un internet pulito per la primavera',
-            btn: 'Vedere offerta',
+            title: "C'é il nostro anniversario, vieni vedere",
+            btn: 'Vedi le cose',
         },
         de: {
-            title: 'Bereit für den Frühjahrsputz?',
-            btn: 'So geht’s!',
+            title: 'Eine Geschichte mit Rabatten',
+            btn: 'Jetzt entdecken',
         },
         ru: {
-            title: 'Сделаем интернет чище к весне',
-            btn: 'Узнать как',
+            title: 'Есть что рассказать и подарить',
+            btn: 'А ну-ка',
         },
         es: {
-            title: 'Es hora de protegerte',
-            btn: 'Ver la oferta',
+            title: 'Tenemos algo que decir y algo que regalarte',
+            btn: '¿Qué és?',
         },
         es_419: {
-            title: 'Es hora de ordenar para la primavera',
-            btn: 'Aprender cómo',
+            title: 'Tenemos algo que decir y algo que regalarte',
+            btn: '¿Qué és?',
         },
         pt_pt: {
-            title: 'Proteja-se nessa primavera',
-            btn: 'Ver oferta',
+            title: 'Temos algo a dizer, e algo a presentear',
+            btn: 'O que é?',
         },
         pt_br: {
-            title: 'É hora de se proteger',
-            btn: 'Ver oferta',
+            title: 'Há algo que precisamos dizer… e uma surpresa',
+            btn: 'O que é?',
         },
         zh_cn: {
-            title: '暖春特惠',
-            btn: '立即享受',
+            title: '周年庆大促',
+            btn: '立即参与',
         },
         zh_tw: {
-            title: '暖春優惠',
-            btn: '立即领取',
+            title: '周年慶大促',
+            btn: '立即參與',
         },
-        // For Japanese, there will be other promo soon
-        // ja: {
-        //     title: 'AdGuard Christmas キャンペーン',
-        //     btn: 'プレゼントはこちら',
-        // },
+        ja: {
+            title: 'AdGuard 16周年セール',
+            btn: 'セール内容はこちら',
+        },
         ko: {
-            title: '봄맞이 프로모션',
+            title: '16주년 기념 세일',
             btn: '자세히 알아보기',
         },
         uk: {
-            title: 'Час навести порядок до весни',
-            btn: 'Дізнатись як',
+            title: 'Історія зі знижкою',
+            btn: 'Дізнатися',
         },
         ar: {
-            title: 'حان الوقت لترتيب الأمور من أجل الربيع',
-            btn: 'تعلم كيف',
+            title: 'قصة تنتهي بخصم',
+            btn: 'اكتشف',
         },
         be: {
-            title: 'Час навесці парадак да вясны',
-            btn: 'Даведацца як',
+            title: 'Гісторыя са зніжкай',
+            btn: 'Даведайся',
         },
         bg: {
-            title: 'Време е да почистим за пролетта',
-            btn: 'Разберете как',
+            title: 'История с отстъпка',
+            btn: 'Научи се',
         },
         ca: {
-            title: 'Fem ordre per a la primavera',
-            btn: 'Aprèn com',
+            title: 'Història amb descompte',
+            btn: 'Descobreix',
         },
         cs: {
-            title: 'Čas na úklid na jaře',
-            btn: 'Zjistěte jak',
+            title: 'Příběh se slevou',
+            btn: 'Zjistit',
         },
         da: {
-            title: 'Tid til at rydde op til foråret',
-            btn: 'Lær hvordan',
+            title: 'Historie med rabat',
+            btn: 'Find ud af',
         },
         el: {
-            title: 'Τακτοποιούμε για την άνοιξη',
-            btn: 'Βρες πως',
+            title: 'Ιστορία με έκπτωση',
+            btn: 'Μάθετε',
         },
         fa: {
-            title: 'زمان آن رسیده که برای بهار مرتب کنیم',
-            btn: 'دریابید که چگونه',
+            title: 'داستانی با تخفیف',
+            btn: 'کشف کن',
         },
         fi: {
-            title: 'Aika siivota kevättä varten',
-            btn: 'Opi kuinka',
+            title: 'Tarina alennuksella',
+            btn: 'Opi',
         },
         he: {
-            title: 'זמן לסדר לקראת האביב',
-            btn: 'לברר איך',
+            title: 'סיפור עם הנחה',
+            btn: 'גלה',
         },
         hr: {
-            title: 'Vrijeme je za spremanje za proljeće',
-            btn: 'Nauči kako',
+            title: 'Priča s popustom',
+            btn: 'Saznaj',
         },
         hu: {
-            title: 'Itt az ideje rendet rakni tavaszra',
-            btn: 'Hogyan?',
+            title: 'Történet kedvezménnyel',
+            btn: 'Tudj meg',
         },
         hy: {
-            title: 'Մաքրություն՝ գարնան համար',
-            btn: 'Պարզել, թե ինչպես',
+            title: 'Պատմություն զեղչով',
+            btn: 'Բացահայտել',
         },
         id: {
-            title: 'Bersihkan untuk musim semi',
-            btn: 'Cari tahu caranya',
+            title: 'Cerita dengan diskon',
+            btn: 'Cari tahu',
         },
         lt: {
-            title: 'Laikas sutvarkyti pavasariui',
-            btn: 'Išmokti kaip',
+            title: 'Istorija su nuolaida',
+            btn: 'Sužinoti',
         },
         ms: {
-            title: 'Kemaskan untuk musim bunga',
-            btn: 'Ketahui caranya',
+            title: 'Kisah dengan diskaun',
+            btn: 'Ketahui',
         },
         nb: {
-            title: 'På tide å rydde opp til våren',
-            btn: 'Lær hvordan',
+            title: 'Historie med rabatt',
+            btn: 'Finn ut',
         },
         nl: {
-            title: 'Tijd om op te ruimen voor de lente',
-            btn: 'Leren hoe',
+            title: 'Verhaal met korting',
+            btn: 'Ontdek',
         },
         pl: {
-            title: 'Czas na porządki przed wiosną',
-            btn: 'Naucz się jak',
+            title: 'Historia ze zniżką',
+            btn: 'Dowiedz się',
         },
         ro: {
-            title: 'Facem ordine pentru primăvară',
-            btn: 'Afla cum',
+            title: 'Poveste cu reducere',
+            btn: 'Află',
         },
         sk: {
-            title: 'Čas upratať pred jarnom',
-            btn: 'Zistite ako',
+            title: 'Príbeh so zľavou',
+            btn: 'Zistiť',
         },
         sl: {
-            title: 'Čas je, da pospravimo za pomlad',
-            btn: 'Nauči se kako',
+            title: 'Zgodba s popustom',
+            btn: 'Izvedi',
         },
         sr_latn: {
-            title: 'Vreme je da pospremimo za proleće',
-            btn: 'Saznajte kako',
+            title: 'Priča sa popustom',
+            btn: 'Saznaj',
         },
         sv: {
-            title: 'Dags att städa inför våren',
-            btn: 'Lära sig hur',
+            title: 'Berättelse med rabatt',
+            btn: 'Ta reda på',
         },
         tr: {
-            title: 'Bahar için temizlik zamanı',
-            btn: 'Nasıl öğrenilir',
+            title: 'İndirimli hikaye',
+            btn: 'Keşfet',
         },
         vi: {
-            title: 'Đã đến lúc dọn dẹp cho mùa xuân',
-            btn: 'Tìm hiểu cách',
+            title: 'Câu chuyện giảm giá',
+            btn: 'Tìm hiểu',
         },
         mk: {
-            title: 'Правиме ред за пролетта',
-            btn: 'Дознајте како',
+            title: 'Приказна со попуст',
+            btn: 'Дознај',
         },
         hi: {
-            title: 'वसंत के लिए सफाई का समय',
-            btn: 'कैसे जानें',
+            title: 'छूट वाली कहानी',
+            btn: 'जानें',
         },
         et: {
-            title: 'Aeg kevadeks koristamiseks',
-            btn: 'Õpi kuidas',
+            title: 'Lugu allahindlusega',
+            btn: 'Uuri',
         },
         th: {
-            title: 'ถึงเวลาทำความสะอาดเพื่อฤดูใบไม้ผลิ',
-            btn: 'เรียนรู้วิธีการ',
+            title: 'เรื่องราวพร้อมส่วนลด',
+            btn: 'ค้นหา',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Spring25 }),
-    from: '28 April 2025 12:00:00',
-    to: '4 May 2025 23:59:00',
+    url: Forward.get({ action: ForwardAction.Birthday25 }),
+    from: '30 May 2025 12:00:00',
+    to: '5 June 2025 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/spring25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/spring25-update.svg'),
+    bgImage: browser.runtime.getURL('assets/images/birthday25.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/birthday25-update.svg'),
     icons: {
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/spring25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/spring25-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/birthday25-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/birthday25-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/spring25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/spring25-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/birthday25-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/birthday25-off-38.png'),
         },
         warning: defaultIconVariants.warning,
     },
@@ -289,5 +287,5 @@ const spring25Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [SPRING_25_ID, spring25Notification],
+    [BIRTHDAY_25_ID, birthday25Notification],
 ]);
