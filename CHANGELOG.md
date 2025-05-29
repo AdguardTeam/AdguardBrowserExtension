@@ -96,14 +96,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [5.1.88]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.1.79...v5.1.88
 
-## [5.1.84]
-
-### Changed
-
-- Updated [@adguard/agtree] to v3.2.0.
-- Updated [@adguard/tsurlfilter] to v3.3.3.
-- Updated [@adguard/tswebextension] to v3.1.0-alpha.3.
-
 ## [5.1.79] - 2025-04-28
 
 ### Changed
