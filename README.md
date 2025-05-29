@@ -461,7 +461,7 @@ That’s it!
 
     Now, whenever you modify filter files, the DNR rulesets will rebuild automatically, so you won’t have to rebuild the entire extension.
 
-    **OR**
+**OR**
 
 2. Convert filters to DNR rulesets **manually**:
 
