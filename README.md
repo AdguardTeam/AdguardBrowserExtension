@@ -432,7 +432,9 @@ That’s it!
     Start watch mode with all required filters:
 
     ```shell
-    npx @adguard/dnr-rulesets watch \
+    pnpm exec dnr-rulesets watch \
+        # Enable extended logging about rulesets
+        --debug \
         # Enable rulesets with IDs 1 and 2
         --enable=1,2 \
         # Download filters from the server on the first run
@@ -446,7 +448,9 @@ That’s it!
     The `--load` flag will download all filters from the server on the first run. For subsequent runs, you can omit this flag to use existing filters:
 
     ```shell
-    npx @adguard/dnr-rulesets watch \
+    pnpm exec dnr-rulesets watch \
+        # Enable extended logging about rulesets
+        --debug \
         # Enable rulesets with IDs 1 and 2
         --enable=1,2 \
         # Path to the extension manifest
@@ -464,7 +468,7 @@ That’s it!
     If you do not want to use watch mode and only need a single run, you can do it directly via the `@adguard/tsurlfilter` CLI command `convert` — it will convert filters to DNR rulesets:
 
     ```shell
-    npx @adguard/tsurlfilter convert \
+    pnpm exec tsurlfilter convert \
         # Enable extended logging about rulesets
         --debug \
         # Path to the directory with raw txt filters
