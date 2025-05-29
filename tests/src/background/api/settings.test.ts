@@ -225,7 +225,7 @@ describe('Settings Api', () => {
             await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(false);
 
-            // test trusted domains list as well since it is temporary and not stores as a part of settings
+            // check trusted domains list as well since it is temporary and not stored as a part of settings
             await DocumentBlockApi.setTrustedDomain('https://example.com/test');
             expect(await DocumentBlockApi.getTrustedDomains()).toStrictEqual(['example.com']);
 
