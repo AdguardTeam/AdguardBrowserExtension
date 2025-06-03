@@ -289,7 +289,7 @@ pnpm beta
 pnpm release
 ```
 
-You will need to put certificate.pem file to the `./private` directory. This
+You will need to put certificate.pem file to the `./private/AdguardBrowserExtension` directory. This
 build will create unpacked extensions and then pack them (crx for Chrome).
 
 #### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
@@ -406,7 +406,7 @@ Then install extension via developer mode, make requests and see applied declara
 
     ![Select](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/select.png)
 
-That’s it!
+That's it!
 
 ##### How to debug rules
 
