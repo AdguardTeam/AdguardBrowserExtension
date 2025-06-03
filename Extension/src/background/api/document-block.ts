@@ -89,4 +89,11 @@ export class DocumentBlockApi {
 
         DocumentBlockApi.storeTrustedDomain(hostname);
     }
+
+    /**
+     * Clears all trusted domains by resetting the list to an empty array.
+     */
+    public static async reset(): Promise<void> {
+        await trustedDomainsStorage.setData([]);
+    }
 }

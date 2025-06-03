@@ -73,6 +73,7 @@ import {
     GPC_SCRIPT_OUTPUT,
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../../constants';
+import { DocumentBlockApi } from '../document-block';
 import { filteringLogApi } from '../filtering-log';
 import { network } from '../network';
 import { CommonFilterUtils } from '../../../common/common-filter-utils';
@@ -215,6 +216,9 @@ export class SettingsApi {
 
         // On import should enable only groups from imported file.
         await CommonFilterApi.initDefaultFilters(enableUntouchedGroups);
+
+        // reset trusted domains list
+        await DocumentBlockApi.reset();
 
         // reset list of consented filter ids on reset settings
         await annoyancesConsent.reset();

@@ -18,14 +18,16 @@
 
 import { type BlockingPageInitAppData } from '../../../src/background/services';
 import { messenger } from '../../../src/pages/services/messenger';
+import { logger } from '../../../src/common/logger';
+import { getFilterName } from '../../../src/pages/helpers';
 import {
     addGoBackButtonListener,
     getElementById,
     getParams,
     updatePlaceholder,
 } from '../helpers';
-import { logger } from '../../../src/common/logger';
-import { getFilterName } from '../../../src/pages/helpers';
+
+import { toggleLoader } from './loader';
 
 /**
  * Id of the "Proceed Anyway" button.
@@ -110,19 +112,23 @@ const updatePlaceholders = ({ url, filterName, rule }: PlaceholdersData): void =
 /**
  * Adds listener to handle "Proceed Anyway" button click.
  *
- * @param url In MV2 — URL to add to trusted, in MV3 — URL to proceed to.
- * @param rule In MV2 — not needed, in MV3 — rule that blocked the page and should be badfiltered.
+ * @param url URL to add to trusted.
  */
-const addProceedAnywayListener = (url: string, rule: string): void => {
+const addProceedAnywayListener = async (url: string): Promise<void> => {
     const proceedAnywayBtn = getElementById(BLOCKED_PROCEED_ANYWAY_BTN_ID);
 
-    proceedAnywayBtn.addEventListener('click', (e: Event) => {
+    proceedAnywayBtn.addEventListener('click', async (e: Event) => {
         e.preventDefault();
 
-        if (__IS_MV3__) {
-            messenger.badfilterRuleAsTrusted(rule, url);
-        } else {
-            messenger.addUrlToTrusted(url);
+        // Show the loader while waiting for the response in MV3
+        toggleLoader(__IS_MV3__);
+
+        try {
+            await messenger.addUrlToTrusted(url);
+            // Redirect to the trusted URL after successful response
+            window.location.href = url;
+        } catch (error) {
+            logger.info('Error adding URL to trusted:', error);
         }
     });
 };
@@ -140,9 +146,15 @@ const addAddToAllowlistListener = async (url: string): Promise<void> => {
     addToAllowlistBtn.addEventListener('click', async (e: Event) => {
         e.preventDefault();
 
-        await messenger.addAllowlistDomainForUrl(url);
+        // Show the loader while waiting for the response in MV3
+        toggleLoader(__IS_MV3__);
 
-        window.location.href = url;
+        try {
+            await messenger.addAllowlistDomainForUrl(url);
+            window.location.href = url;
+        } catch (error) {
+            logger.info('Error adding domain to allowlist:', error);
+        }
     });
 };
 
@@ -180,7 +192,7 @@ const runInit = ({
 
     updateTheme(theme);
     updatePlaceholders({ url, filterName, rule });
-    addProceedAnywayListener(url, rule);
+    addProceedAnywayListener(url);
     addAddToAllowlistListener(url);
     addGoBackButtonListener(BLOCKED_GO_BACK_BTN_ID);
 };

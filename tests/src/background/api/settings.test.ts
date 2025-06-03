@@ -16,6 +16,7 @@ import {
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../constants';
 import {
+    DocumentBlockApi,
     Network,
     SettingsApi,
     type SettingsData,
@@ -222,10 +223,16 @@ describe('Settings Api', () => {
 
         it('Reset default settings', async () => {
             await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
+            expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(false);
+
+            // check trusted domains list as well since it is temporary and not stored as a part of settings
+            await DocumentBlockApi.setTrustedDomain('https://example.com/test');
+            expect(await DocumentBlockApi.getTrustedDomains()).toStrictEqual(['example.com']);
 
             await SettingsApi.reset(true);
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
+            expect(await DocumentBlockApi.getTrustedDomains()).toStrictEqual([]);
         }, EXTENDED_TIMEOUT_MS);
     });
 });

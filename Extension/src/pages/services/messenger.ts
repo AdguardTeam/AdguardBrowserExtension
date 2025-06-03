@@ -59,7 +59,6 @@ import {
     type SetNotificationViewedMessage,
     type UpdateFullscreenUserRulesThemeMessage,
     type AddUrlToTrustedMessage,
-    type BadfilterRuleAsTrustedMessage,
     type ExtractedMessage,
     type OpenSafebrowsingTrustedMessage,
 } from '../../common/messages';
@@ -973,22 +972,6 @@ class Messenger {
         url: AddUrlToTrustedMessage['data']['url'],
     ): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> {
         return this.sendMessage(MessageType.AddUrlToTrusted, { url });
-    }
-
-    /**
-     * Sends a message to the background page to badfilter specific rule as trusted temporarily
-     * and url is needed to update the tab url after blocking page display.
-     *
-     * @param rule Rule to badfilter.
-     * @param url Url to update for the tab.
-     *
-     * @returns Promise that resolves after the message is sent.
-     */
-    async badfilterRuleAsTrusted(
-        rule: BadfilterRuleAsTrustedMessage['data']['rule'],
-        url: BadfilterRuleAsTrustedMessage['data']['url'],
-    ): Promise<ExtractMessageResponse<MessageType.BadfilterRuleAsTrusted>> {
-        return this.sendMessage(MessageType.BadfilterRuleAsTrusted, { rule, url });
     }
 
     /**
