@@ -17,7 +17,8 @@
  */
 import browser, { type Windows, type Tabs } from 'webextension-polyfill';
 
-import { getErrorMessage } from '../../error';
+import { getErrorMessage } from '@adguard/logger';
+
 import { logger } from '../../logger';
 
 /**
@@ -99,12 +100,12 @@ export class WindowsApi {
         updateInfo: Windows.UpdateUpdateInfoType,
     ): Promise<void> {
         if (!windowId) {
-            logger.debug('windowId is not specified');
+            logger.debug('[ext.WindowsApi.update]: windowId is not specified');
             return;
         }
 
         if (!WindowsApi.isSupported()) {
-            logger.debug('browser.windows API is not supported');
+            logger.debug('[ext.WindowsApi.update]: browser.windows API is not supported');
             return;
         }
 

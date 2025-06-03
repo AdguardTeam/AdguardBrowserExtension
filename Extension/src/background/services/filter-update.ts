@@ -135,7 +135,7 @@ export class FilterUpdateService {
                     await FilterUpdateApi.autoUpdateFilters();
                 }
             } catch (e) {
-                logger.error('An error occurred during filters update:', e);
+                logger.error('[ext.FilterUpdateService.update]: an error occurred during filters update:', e);
             }
             // Saving current time to storage is required in the cases
             // when background page is often unloaded,

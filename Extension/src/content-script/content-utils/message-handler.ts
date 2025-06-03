@@ -54,7 +54,7 @@ export class ContentScriptMessageHandler extends MessageHandler {
         if (!ContentScriptMessageHandler.isValidMessageType(message)) {
             // Do not print errors for internal assistant messages.
             if (!ContentScriptMessageHandler.isInternalAssistantMessage(message)) {
-                logger.error('Invalid message in ContentScriptMessageHandler:', message);
+                logger.error('[ext.ContentScriptMessageHandler.handleMessage]: invalid message:', message);
             }
             return;
         }

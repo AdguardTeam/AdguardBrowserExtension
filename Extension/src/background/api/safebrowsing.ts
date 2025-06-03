@@ -105,16 +105,16 @@ export class SafebrowsingApi {
      * @returns Safebrowsing list we've detected or null.
      */
     public static async checkSafebrowsingFilter(requestUrl: string, referrerUrl: string): Promise<string | undefined> {
-        logger.debug(`Checking safebrowsing filter for ${requestUrl}...`);
+        logger.trace(`[ext.SafebrowsingApi.checkSafebrowsingFilter]: checking safebrowsing filter for ${requestUrl}...`);
 
         const sbList = await SafebrowsingApi.lookupUrl(requestUrl);
 
         if (!sbList) {
-            logger.debug('No safebrowsing rule found');
+            logger.trace('[ext.SafebrowsingApi.checkSafebrowsingFilter]: no safebrowsing rule found');
             return;
         }
 
-        logger.debug('Following safebrowsing filter has been matched:', sbList);
+        logger.trace('[ext.SafebrowsingApi.checkSafebrowsingFilter]: following safebrowsing filter has been matched:', sbList);
         return SafebrowsingApi.getErrorPageURL(requestUrl, referrerUrl, sbList);
     }
 
@@ -168,20 +168,20 @@ export class SafebrowsingApi {
         try {
             response = await network.lookupSafebrowsing(shortHashes);
         } catch (e) {
-            logger.error(`Error response from safebrowsing lookup server for ${host}. Original error: ${e}`);
+            logger.error(`[ext.SafebrowsingApi.lookupUrl]: error response from safebrowsing lookup server for ${host}. Original error:`, e);
             await SafebrowsingApi.suspendSafebrowsing();
             return null;
         }
 
         if (response && response.status >= SafebrowsingApi.SERVER_ERROR_STATUS_CODE) {
             // Error on server side, suspend request
-            logger.error(`Error response status ${response.status} received from safebrowsing lookup server.`);
+            logger.error(`[ext.SafebrowsingApi.lookupUrl]: error response status ${response.status} received from safebrowsing lookup server.`);
             await SafebrowsingApi.suspendSafebrowsing();
             return null;
         }
 
         if (!response) {
-            logger.error('Cannot read response from the server');
+            logger.error('[ext.SafebrowsingApi.lookupUrl]: cannot read response from the server');
             return null;
         }
 
@@ -292,8 +292,8 @@ export class SafebrowsingApi {
             }
 
             return null;
-        } catch (ex) {
-            logger.error(`Error parse safebrowsing response. Original error: ${ex}`);
+        } catch (e) {
+            logger.error('[ext.SafebrowsingApi.processSbResponse]: error parse safebrowsing response. Original error:', e);
         }
 
         return null;

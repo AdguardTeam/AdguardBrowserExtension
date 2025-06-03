@@ -70,6 +70,7 @@ import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { ContentScriptInjector } from '../content-script-injector';
+import { getZodErrorMessage } from '../../common/error';
 
 /**
  * This class is app entry point.
@@ -95,6 +96,9 @@ export class App {
 
         // First initialize critical sync event handlers.
         App.syncInit();
+
+        // Set the current log level from session storage.
+        await logger.init();
 
         // Then "lazy" call for all other stuff.
         await App.asyncInit();
@@ -146,7 +150,7 @@ export class App {
         }
 
         // Initializes network settings.
-        await network.waitForNetworkInit();
+        await network.init();
 
         // Initializes App storage data
         await App.initClientId();
@@ -190,7 +194,7 @@ export class App {
         // the update of the entire extension.
         if (isUpdate) {
             const filtersIds = await FiltersApi.reloadFiltersFromLocal();
-            logger.info('Following filters has been updated from local resources:', filtersIds);
+            logger.info('[ext.App.asyncInit]: following filters has been updated from local resources:', filtersIds);
         }
 
         await PageStatsApi.init();
@@ -333,7 +337,7 @@ export class App {
         try {
             await browser.runtime.setUninstallURL(App.uninstallUrl);
         } catch (e) {
-            logger.error('Cannot set app uninstall url. Origin error: ', e);
+            logger.error('[ext.App.setUninstallUrl]: cannot set app uninstall url. Origin error:', e);
         }
     }
 
@@ -347,7 +351,7 @@ export class App {
         try {
             clientId = zod.string().parse(storageClientId);
         } catch (e) {
-            logger.warn('Error while parsing client id, generating a new one');
+            logger.warn('[ext.App.initClientId]: error while parsing client id, generating a new one, error: ', getZodErrorMessage(e));
             clientId = InstallApi.genClientId();
             await browserStorage.set(CLIENT_ID_KEY, clientId);
         }

@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { getZodErrorMessage } from '../../../common/error';
 import { logger } from '../../../common/logger';
 import { annoyancesConsentStorageDataValidator } from '../../schema';
 import { annoyancesConsentStorage } from '../../storages';
@@ -51,8 +52,7 @@ export class AnnoyancesConsentApi {
                 await annoyancesConsentStorage.setData(data);
             }
         } catch (e) {
-            // eslint-disable-next-line max-len
-            logger.warn(`Cannot parse data from "${annoyancesConsentStorage.key}" storage, set default states. Origin error: `, e);
+            logger.warn(`[ext.AnnoyancesConsentApi.getFromStorage]: cannot parse data from "${annoyancesConsentStorage.key}" storage, set default states. Origin error:`, getZodErrorMessage(e));
             data = [];
             await annoyancesConsentStorage.setData(data);
         }

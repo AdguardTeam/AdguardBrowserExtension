@@ -116,7 +116,7 @@ export class FilterVersionStorage extends StringStorage<
             const data = this.data[filterId];
 
             if (!data) {
-                logger.warn(`Failed to refresh last check time for filter ${filterId}.`);
+                logger.warn(`[ext.FilterVersionStorage.refreshLastCheckTime]: failed to refresh last check time for filter ${filterId}.`);
                 continue;
             }
 

@@ -23,6 +23,7 @@ import {
 import { UserAgent } from '../../../common/user-agent';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { logger } from '../../../common/logger';
+import { browserStorage } from '../../storages/shared-instances';
 
 /**
  * NetworkSettings contains a bunch of url's which are using by extension.
@@ -78,7 +79,7 @@ export class NetworkSettings {
     // Folder that contains filters metadata and files with rules. 'filters' by default
     readonly localFiltersFolder = 'filters';
 
-    // TODO: Check, not using.
+    // TODO: Check, not used in the code.
     // Path to the redirect sources
     readonly redirectSourcesFolder = 'assets/libs/scriptlets';
 
@@ -89,30 +90,17 @@ export class NetworkSettings {
 
     /**
      * Base url for downloading filter rules.
-     *
-     * @private
      */
-    private filtersRulesBaseUrl: string = '';
-
-    /**
-     * Promise that resolves when the network settings are initialized.
-     * Only needed in MV3 with async initialization.
-     */
-    public initPromise: Promise<void> | null = null;
-
-    /**
-     * Constructor.
-     */
-    constructor() {
-        this.initPromise = this.init();
-    }
+    private filtersRulesBaseUrl: string = this.DEFAULT_FILTER_RULES_BASE_URL;
 
     /**
      * Initializes the network settings.
      */
-    private async init(): Promise<void> {
+    public async init(): Promise<void> {
+        // For testing purposes, we can set the base url for filter rules
+        // through the local storage.
         this.filtersRulesBaseUrl = await this.getFilterRulesBaseUrl();
-        logger.info('Filters rules base url:', this.filtersRulesBaseUrl);
+        logger.info('[ext.NetworkSettings.init]: filters rules base url:', this.filtersRulesBaseUrl);
     }
 
     /**
@@ -136,19 +124,28 @@ export class NetworkSettings {
      *
      * For execution policy enforcement, see usage of the 'JS_RULES_EXECUTION' keyword.
      *
-     * @returns The base url for filter rules.
+     * @returns Promise that resolves to the base URL for filter rules.
      */
     private async getFilterRulesBaseUrl(): Promise<string> {
         // We don't need to set base url in MV3 because we cannot update filters via patches.
         // TODO: Remove check when filters will support patches in MV3.
-        if (!__IS_MV3__) {
-            const url = localStorage.getItem(this.FILTERS_BASE_URL_KEY);
-            if (url) {
-                return url;
-            }
+        if (__IS_MV3__) {
+            return this.DEFAULT_FILTER_RULES_BASE_URL;
         }
 
-        return this.DEFAULT_FILTER_RULES_BASE_URL;
+        try {
+            const url = await browserStorage.get(this.FILTERS_BASE_URL_KEY);
+
+            if (typeof url !== 'string' || !url) {
+                logger.warn('[ext.NetworkSettings.getFilterRulesBaseUrl]: Invalid filter rules base url from storage:', url);
+                return this.DEFAULT_FILTER_RULES_BASE_URL;
+            }
+
+            return url;
+        } catch (error) {
+            logger.warn('[ext.NetworkSettings.getFilterRulesBaseUrl]: Failed to get filters base url from storage:', error);
+            return this.DEFAULT_FILTER_RULES_BASE_URL;
+        }
     }
 
     /**

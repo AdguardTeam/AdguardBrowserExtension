@@ -134,7 +134,7 @@ export class KeepAlive {
         } catch (e) {
             // This error occurs if there are no pages able to handle this listener.
             // It could happen if the background page reloaded when the options page was not open.
-            logger.debug(e);
+            logger.debug('[ext.KeepAlive.resyncEventSubscriptions]: cannot update listeners:', e);
         }
     }
 
@@ -163,7 +163,7 @@ export class KeepAlive {
                 return;
             } catch (e) {
                 // use debug level to avoid extension errors when blocking pages is loading
-                logger.debug(`[KeepAlive.executeScriptOnTab] Tab ${tab.id} error: ${e}`);
+                logger.debug(`[ext.KeepAlive.executeScriptOnTab]: Tab ${tab.id} error: ${e}`);
             }
         }
     }

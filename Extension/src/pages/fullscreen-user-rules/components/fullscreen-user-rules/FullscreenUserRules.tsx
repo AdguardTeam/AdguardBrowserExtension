@@ -67,7 +67,7 @@ export const FullscreenUserRules = observer(() => {
                             break;
                         }
                         default: {
-                            logger.debug('There is no listener for type:', type);
+                            logger.warn('[ext.FullscreenUserRules]: there is no listener for type:', type);
                             break;
                         }
                     }

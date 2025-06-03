@@ -49,6 +49,7 @@ import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
 import { SettingOption } from '../../schema/settings/enum';
 import { AntiBannerFiltersId } from '../../../common/constants';
+import { getZodErrorMessage } from '../../../common/error';
 
 import {
     type StaticLimitsCheckResult,
@@ -580,8 +581,7 @@ export class RulesLimitsService {
                 await this.cleanExpectedEnabledFilters();
             }
         } catch (e) {
-            // eslint-disable-next-line max-len
-            logger.warn(`Cannot parse data from "${rulesLimitsStorage.key}" storage, set default states. Origin error: `, e);
+            logger.warn(`[ext.RulesLimitsService.initStorage]: cannot parse data from "${rulesLimitsStorage.key}" storage, set default states. Origin error:`, getZodErrorMessage(e));
             await this.cleanExpectedEnabledFilters();
         }
     }
@@ -660,7 +660,7 @@ export class RulesLimitsService {
             // sometimes configuration result may not be ready yet,
             // e.g. when service worker was not running and options page is opened from the context menu
             // TODO: consider returning something like NOT_READY status which can be handled later if needed
-            logger.debug('[canEnableDynamicRules] Configuration result is not ready yet');
+            logger.debug('[ext.RulesLimitsService.getDynamicRulesLimitations]: configuration result is not ready yet');
             return { ok: true };
         }
 
@@ -733,7 +733,7 @@ export class RulesLimitsService {
          * In any case, the filter will not be enabled if it doesn't fit in limits.
          */
         if (!result) {
-            logger.error('[doesStaticFilterFitsInLimits]: configuration result is not ready yet');
+            logger.error('[ext.RulesLimitsService.doesStaticFilterFitsInLimits]: configuration result is not ready yet');
             return { ok: true };
         }
 
@@ -822,7 +822,7 @@ export class RulesLimitsService {
          * In any case, the filter will not be enabled if it doesn't fit in limits.
          */
         if (!result) {
-            logger.error('[doStaticFiltersFitInLimits]: Configuration result is not ready yet.');
+            logger.error('[ext.RulesLimitsService.doStaticFiltersFitInLimits]: configuration result is not ready yet.');
             return { ok: true };
         }
 

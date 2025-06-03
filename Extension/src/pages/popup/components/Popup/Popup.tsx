@@ -125,14 +125,14 @@ export const Popup = observer(() => {
     useEffect(() => {
         const messageHandler = (message: unknown): undefined => {
             if (!messageHasTypeField(message)) {
-                logger.warn('Received message in popup handler has no type field: ', message);
+                logger.warn('[ext.Popup]: received message in popup handler has no type field:', message);
                 return;
             }
 
             switch (message.type) {
                 case MessageType.UpdateTotalBlocked: {
                     if (!messageHasTypeAndDataFields(message)) {
-                        logger.warn('Received message in popup handler has no type or data fields: ', message);
+                        logger.warn('[ext.Popup]: received message in popup handler has no type or data fields:', message);
                         return;
                     }
                     const castedMessage = message as ExtractedMessage<MessageType.UpdateTotalBlocked>;
