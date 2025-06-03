@@ -151,7 +151,7 @@ export class AllowlistService {
         if (activeTab?.id) {
             await AllowlistApi.enableTabFiltering(activeTab.id, true);
         } else {
-            logger.warn('Cannot open site report page for active tab');
+            logger.warn('[ext.AllowlistService.enableSiteFilteringFromContextMenu]: cannot open site report page for active tab, active tab is undefined');
         }
     }
 
@@ -164,7 +164,7 @@ export class AllowlistService {
         if (activeTab?.id) {
             await AllowlistApi.disableTabFilteringForTabId(activeTab.id);
         } else {
-            logger.warn('Cannot open site report page for active tab');
+            logger.warn('[ext.AllowlistService.disableSiteFilteringFromContextMenu]: cannot open site report page for active tab, active tab is undefined');
         }
     }
 

@@ -128,7 +128,7 @@ const addProceedAnywayListener = async (url: string): Promise<void> => {
             // Redirect to the trusted URL after successful response
             window.location.href = url;
         } catch (error) {
-            logger.info('Error adding URL to trusted:', error);
+            logger.info('[ext.page-handler]: Error adding URL to trusted:', error);
         }
     });
 };
@@ -153,7 +153,7 @@ const addAddToAllowlistListener = async (url: string): Promise<void> => {
             await messenger.addAllowlistDomainForUrl(url);
             window.location.href = url;
         } catch (error) {
-            logger.info('Error adding domain to allowlist:', error);
+            logger.info('[ext.page-handler]: Error adding domain to allowlist:', error);
         }
     });
 };
@@ -186,7 +186,7 @@ const runInit = ({
 
     let filterName = getFilterName(Number(filterId), filtersMetadata);
     if (!filterName) {
-        logger.debug(`Cannot get filter name for filterId "${filterId}", filterId will be displayed instead`);
+        logger.debug(`[ext.page-handler]: cannot get filter name for filterId "${filterId}", filterId will be displayed instead.`);
         filterName = filterId;
     }
 
@@ -204,15 +204,15 @@ export const initBlockedPageHandler = async (): Promise<void> => {
     const { url, filterId, rule } = getParams(window.location.search);
 
     if (!url) {
-        logger.error(`Cannot parse "url" param in page url: ${window.location.href}`);
+        logger.error(`[ext.page-handler]: cannot parse "url" param in page url: ${window.location.href}`);
         return;
     }
     if (!filterId) {
-        logger.error(`Cannot parse "filterId" param in page url: ${window.location.href}`);
+        logger.error(`[ext.page-handler]: cannot parse "filterId" param in page url: ${window.location.href}`);
         return;
     }
     if (!rule) {
-        logger.error(`Cannot parse "rule" param in page url: ${window.location.href}`);
+        logger.error(`[ext.page-handler]: cannot parse "rule" param in page url: ${window.location.href}`);
         return;
     }
 

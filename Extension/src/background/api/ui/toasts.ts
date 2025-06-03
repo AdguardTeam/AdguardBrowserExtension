@@ -76,7 +76,7 @@ export class Toasts {
         try {
             if (triesCount > Toasts.MAX_TRIES) {
                 // Give up
-                logger.warn('Reached max tries on attempts to show rule limits alert popup');
+                logger.warn('[ext.Toasts.showRuleLimitsAlert]: reached max tries on attempts to show rule limits alert popup.');
                 return;
             }
 
@@ -84,7 +84,7 @@ export class Toasts {
             const alertContainerStyles = this.styles.get(StylesAssetsPath.RulesLimitsContainer);
 
             if (!alertStyles || !alertContainerStyles) {
-                logger.error('Alert assets is not loaded!');
+                logger.error('[ext.Toasts.showRuleLimitsAlert]: alert assets is not loaded!');
                 return;
             }
 
@@ -128,7 +128,7 @@ export class Toasts {
         try {
             if (triesCount > Toasts.MAX_TRIES) {
                 // Give up
-                logger.warn('Reached max tries on attempts to show alert popup');
+                logger.warn('[ext.Toasts.showAlertMessage]: reached max tries on attempts to show alert popup');
                 return;
             }
 
@@ -137,7 +137,7 @@ export class Toasts {
             const alertContainerStyles = this.styles.get(StylesAssetsPath.AlertContainer);
 
             if (!alertStyles || !alertContainerStyles) {
-                logger.error('Alert assets is not loaded!');
+                logger.error('[ext.Toasts.showAlertMessage]: alert assets styles are not loaded!');
                 return;
             }
 
@@ -242,7 +242,7 @@ export class Toasts {
                     const svgStr = await response.text();
                     offerBgImage = `data:image/svg+xml;base64,${btoa(svgStr)}`;
                 } catch (e) {
-                    logger.warn('Failed to load promo notification background image', e);
+                    logger.warn('[ext.Toasts.showApplicationUpdatedPopup]: failed to load promo notification background image:', e);
                 }
             }
         }
@@ -250,7 +250,7 @@ export class Toasts {
         try {
             if (triesCount > Toasts.MAX_TRIES) {
                 // Give up
-                logger.warn('Reached max tries on attempts to show application update popup');
+                logger.warn('[ext.Toasts.showApplicationUpdatedPopup]: reached max tries on attempts to show application update popup');
                 return;
             }
 
@@ -259,7 +259,7 @@ export class Toasts {
             const iframeStyles = this.styles.get(StylesAssetsPath.UpdateContainer);
 
             if (!alertStyles || !iframeStyles) {
-                logger.error('Update popup assets is not loaded!');
+                logger.error('[ext.Toasts.showApplicationUpdatedPopup]: update popup assets styles are not loaded!');
                 return;
             }
 

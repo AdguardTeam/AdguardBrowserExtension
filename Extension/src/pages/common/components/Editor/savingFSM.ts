@@ -113,7 +113,7 @@ export const createSavingService = ({ id, services }: SavingServiceParams) => {
                         target: SavingFSMState.Saved,
                         actions: ({ event }) => {
                             const { error } = event;
-                            logger.error(error);
+                            logger.error('[ext.savingFSM]: failed to save data: ', error);
                         },
                     },
                 },
@@ -129,7 +129,7 @@ export const createSavingService = ({ id, services }: SavingServiceParams) => {
     const actor = createActor(workflow);
 
     actor.subscribe((snapshot) => {
-        logger.debug(id, { currentState: snapshot.value });
+        logger.trace('[ext.savingFSM]: current state: ', { id, currentState: snapshot.value });
     });
 
     return actor.start();

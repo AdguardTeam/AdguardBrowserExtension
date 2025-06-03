@@ -211,7 +211,7 @@ export class SettingsService {
                 await TabsApi.reload(activeTab.id);
             }
         } catch (e) {
-            logger.error('Error while updating filtering state', e);
+            logger.error('[ext.SettingsService.onDisableFilteringStateChange]: error while updating filtering state', e);
         }
     }
 
@@ -222,7 +222,7 @@ export class SettingsService {
         try {
             await engine.update();
         } catch (e) {
-            logger.error('Failed to change Tracking protection state', e);
+            logger.error('[ext.SettingsService.onDisableStealthModeStateChange]: failed to change Tracking protection state', e);
         }
     }
 
@@ -240,7 +240,7 @@ export class SettingsService {
                 await SettingsApi.setSetting(SettingOption.HideReferrer, !isHideReferrerEnabled);
             }
         } catch (e) {
-            logger.error('Failed to change `hide referrer` option state', e);
+            logger.error('[ext.SettingsService.onHideReferrerStateChange]: failed to change `hide referrer` option state', e);
         }
     }
 
@@ -258,7 +258,7 @@ export class SettingsService {
                 await SettingsApi.setSetting(SettingOption.HideSearchQueries, !isHideSearchQueriesEnabled);
             }
         } catch (e) {
-            logger.error('Failed to change `hide search queries` option state', e);
+            logger.error('[ext.SettingsService.onHideSearchQueriesStateChange]: failed to change `hide search queries` option state', e);
         }
     }
 
@@ -276,7 +276,7 @@ export class SettingsService {
                 await SettingsApi.setSetting(SettingOption.SendDoNotTrack, !isSendDoNotTrackEnabled);
             }
         } catch (e) {
-            logger.error('Failed to change `send do not track` option state', e);
+            logger.error('[ext.SettingsService.onSendDoNotTrackStateChange]: failed to change `send do not track` option state', e);
         }
     }
 
@@ -294,7 +294,7 @@ export class SettingsService {
                 await SettingsApi.setSetting(SettingOption.RemoveXClientData, !isRemoveXClientDataEnabled);
             }
         } catch (e) {
-            logger.error('Failed to change `remove x-client-data` option state', e);
+            logger.error('[ext.SettingsService.onRemoveXClientDataStateChange]: failed to change `remove x-client-data` option state', e);
         }
     }
 
@@ -312,7 +312,7 @@ export class SettingsService {
                 await SettingsApi.setSetting(SettingOption.BlockWebRTC, !isBlockWebRTCEnabled);
             }
         } catch (e) {
-            logger.error('Failed to change `block WebRTC` option state', e);
+            logger.error('[ext.SettingsService.onBlockWebRTCStateChange]: failed to change `block WebRTC` option state', e);
         }
     }
 
