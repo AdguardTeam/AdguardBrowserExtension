@@ -1,10 +1,11 @@
-! Checksum: loiIvwijtQBewVpUNqu2yw
-! Diff-Path: ../patches/9_optimized/9_optimized-s-1745237681-3600.patch
+! Checksum: cLxu4hw9v+BjF2qMXMfHAA
+! Diff-Path: ../patches/9_optimized/9_optimized-s-1748272272-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.29.65
-! TimeUpdated: 2025-04-21T12:10:47+00:00
+! Version: 2.0.30.7
+! TimeUpdated: 2025-05-26T15:07:16+00:00
 ! Expires: 10 days (update frequency)
+||simpleads.com.br^$third-party
 ||upeex.com.br^
 ||upeex.com^
 ||adspublicidades.agency^
@@ -176,8 +177,15 @@
 ||xad.dnoticias.pt^
 ||adclient-uol.lp.uol.com.br^
 ||adv.r7.com^
+mitele.es#$#html { overflow: auto !important; }
+mitele.es#$#body { overflow: auto !important; }
+mitele.es#$#div[class^="adsInfo__fullOpacity-"] { display: none !important; }
 elcorreogallego.es###_an_cmp
 elcorreogallego.es#%#//scriptlet('set-constant', '_an.ABMode', 'undefined')
+redecanaistv.*,redecanais.*#%#//scriptlet('set-cookie', 'adsCompleted', '1')
+redecanaistv.*,redecanais.*#%#//scriptlet('set-session-storage-item', 'finalReloadDone', '1')
+redecanaistv.*,redecanais.*#%#//scriptlet('set-local-storage-item', 'finalReloadDone', '1')
+redecanaistv.*,redecanais.*#%#//scriptlet('prevent-setTimeout', '_0x', '500')
 redecanaistv.*,redecanais.*#%#//scriptlet('prevent-fetch', 'mode:no-cors')
 redecanaistv.*,redecanais.*#%#//scriptlet('set-constant', 'adClickCount', '0')
 redecanaistv.*,redecanais.*#%#//scriptlet('set-constant', 'close', 'undefined')
@@ -580,9 +588,14 @@ receitasdaora.online,foodiesgallery.com,caroloportunidades.com.br#%#//scriptlet(
 @@||widgets.outbrain.com/outbrain.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us|coempregos.com.br|animesonliner4.com|drstonebr.com|animefire.info
 @@||s4.cdnpc.net/*.css?version=v93$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us|coempregos.com.br|animesonliner4.com|drstonebr.com|animefire.info
 @@||cdn.taboola.com/libtrc/san1go-network/loader.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us|coempregos.com.br|animesonliner4.com|drstonebr.com|animefire.info
-coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
+@@||cdn.taboola.com/libtrc/unpkg/tfa.js$xmlhttprequest,domain=anitube.vip|hinatasoul.com|dattebayo-br.com|anitube.us|coempregos.com.br|animesonliner4.com|drstonebr.com|animefire.info
+coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#@#.AdsBox
+coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#$#.wrap-player > #player { display: block !important; }
+coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('adjust-setTimeout', 'PLAYER LIBERADO', '*', '0.001')
+coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('prevent-setTimeout', '/hasAdblock|detectadb|ad-placement/')
 coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('set-constant', 'detectedAdblock', 'noopFunc')
 coempregos.com.br,anitube.us,anitube.vip,hinatasoul.com#%#//scriptlet('prevent-fetch', '/outbrain\.com|adligature\.com|quantserve\.com|srvtrck\.com/')
+drstonebr.com,animefire.info,animesonliner4.com,coempregos.com.br,anitube.us,dattebayo-br.com,anitube.vip,hinatasoul.comssstik.io#%#//scriptlet('prevent-xhr', '//cdn.taboola.com/libtrc/unpkg/tfa.js')
 drstonebr.com,animefire.info,animesonliner4.com,coempregos.com.br,anitube.us,dattebayo-br.com,anitube.vip,hinatasoul.com#%#(()=>{let e="";const t={adsbygoogle:{url:"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",value:"google_plmetrics"},outbrain:{url:"//widgets.outbrain.com/outbrain.js",value:"outbrain"},cdnpcStyleMin:{url:"//s4.cdnpc.net/front/css/style.min.css",value:"slider--features"},cdnpcMain:{url:"//s4.cdnpc.net/vite-bundle/main.css",value:"data-v-d23a26c8"},taboola:{url:"//cdn.taboola.com/libtrc/san1go-network/loader.js",value:"feOffset"}},n=n=>{try{const o=n;if(!o.responseText){const n=(e=>{const n=Object.values(t).find((t=>e.includes(t.url)));return n?n.value:""})(e);Object.defineProperty(o,"responseText",{value:n})}"function"==typeof o.onload&&o.onload(),"function"==typeof o.onreadystatechange&&(Object.defineProperty(o,"status",{value:200}),Object.defineProperty(o,"readyState",{value:4}),o.onreadystatechange())}catch(e){console.trace(e)}},o={apply:(n,o,a)=>{const r=a[1];return r&&(e=>Object.values(t).some((t=>e.includes(t.url))))(r)&&(o.prevent=!0,e=r),Reflect.apply(n,o,a)}};window.XMLHttpRequest.prototype.open=new Proxy(window.XMLHttpRequest.prototype.open,o);const a={apply:async(t,o,a)=>{if(!o.prevent)return Reflect.apply(t,o,a);try{const t=await fetch(e);if((await t.text()).length<2e3)return n(o)}catch(e){return console.trace(e),n(o)}return Reflect.apply(t,o,a)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,a)})();
 dicasgostosas.com#%#//scriptlet('prevent-setTimeout', 'hasAdblock')
 dicasgostosas.com#%#//scriptlet('prevent-xhr', 'popads.net')
@@ -654,7 +667,7 @@ animesonehd.xyz##.rteam_antiadb
 ||animesonehd.xyz/wp-content/themes/animesonehd/js/rteam_detect.js
 @@||adslayuda.com/wp-content/plugins/better-adsmanager/js/advertising.min.js
 adslayuda.com#%#//scriptlet("set-constant", "better_ads_adblock", "true")
-uppers.es,yasss.es,radioset.es,bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es##div[class^="adsInfo__container"]
+uppers.es,yasss.es,radioset.es,bemad.es,cuatro.com,divinity.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es##div[class^="adsInfo__container"]
 journaldemontreal.com#$?#.popup-adblocker { display: none !important; }
 journaldemontreal.com#$?#body { overflow: visible !important; }
 @@||botinnifit.com/*/adsbygoogle.js
@@ -812,9 +825,9 @@ expansion.com#@#div[id^="div-gpt-ad"]
 @@||expansion.com$generichide
 @@||securepubads.g.doubleclick.net/gpt/pubads_impl_$domain=expansion.com
 !+ NOT_OPTIMIZED
-@@/adjs.js$domain=bemad.es|cuatro.com|divinity.es|eltiempohoy.es|energytv.es|factoriadeficcion.com|mitele.es|mtmad.es|telecinco.es
+@@/adjs.js$domain=bemad.es|cuatro.com|divinity.es|energytv.es|factoriadeficcion.com|mitele.es|mtmad.es|telecinco.es
 !+ NOT_OPTIMIZED
-@@/fuckadblock.js$domain=bemad.es|cuatro.com|divinity.es|eltiempohoy.es|energytv.es|factoriadeficcion.com|mitele.es|mtmad.es|telecinco.es
+@@/fuckadblock.js$domain=bemad.es|cuatro.com|divinity.es|energytv.es|factoriadeficcion.com|mitele.es|mtmad.es|telecinco.es
 !+ NOT_OPTIMIZED
 @@||mitele.es^$generichide
 !+ NOT_OPTIMIZED
@@ -1132,6 +1145,8 @@ hentai-id.tv#%#//scriptlet('href-sanitizer', 'a[href*="://ouo.io/"]', '?s')
 playpaste.com#%#//scriptlet("prevent-window-open")
 tuhentaionline.com#%#//scriptlet("abort-on-property-read", "Pub2")
 gnula.nu#%#(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\(\)>0x0\)\{fA=setTimeout\(/.test(a.toString()))return b(a,c)};})();
+olhardigital.com.br#$#.sn-header-bar { top: 0 !important; }
+olhardigital.com.br#$#body { padding-top: 0 !important; }
 pulzo.com#$##pulzo-header { position: static !important; }
 meufinanceiro.org,investimentosfacil.online,receitasnatural.com,fomedereceitas.online,financastop.online,blog.whatsappgb.top,cryptobr.biz,infoinvest.org,receitastop.click#$#.hided { display: block !important; }
 elmueble.com#$#header { top: 0 !important; }
@@ -1246,7 +1261,7 @@ windowsblogitalia.com#$#.sidebar > div.tile-top.tile { height: auto!important; }
 .br/adx.js
 .br/afiliados/$domain=~mercadolivre.com.br
 .br/banner.aspx?
-.br/banners/$domain=~gov.br
+.br/banners/$domain=~gov.br|~kabum.com.br
 .br/imagensdb/banners/
 .br/metrics/
 .br/swf/banners/
@@ -1327,11 +1342,60 @@ _publicidade.
 _publicidade_
 _publicitario.
 http://adw.
-/^(?!.*(ilfcdn.li|bytecdntp.com|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|imgsmail.ru|cloudflare.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispoptv.com|superflix.net|mangatigre.net|darkmahou.org|brjogostorrents.com
-$script,third-party,denyallow=ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|authkong.com|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|cloudflare.net|x.com,_____,domain=anroll.net|monoschinos2.com|animeyt.es|leercapitulo.com|pelisflix2.green|darkmahou.org|comandotorrents.to|comandoplay.com|pelismax.one|seriesgod.cc|anime-jl.net|zonatmo.com|recipesalba.com|ratiomotor.com|retiontech.com|ferromotor.com|motoratrium.com|recitma.com|flavourecipes.com|motorworten.com|techitan.com|loveteching.com|animefire.plus|animeflv.net
+/^(?!.*(mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=thepiratefilmestorrent.biz|serieslatinoamerica.tv|pelispoptv.com|superflix.net|mangatigre.net|darkmahou.org|brjogostorrents.com
+*$script,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|fastlycdn.com|doodcdn.co|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|raincaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=anroll.net|monoschinos2.com|animeyt.es|leercapitulo.com|pelisflix2.green|darkmahou.org|comandotorrents.to|comandoplay.com|pelismax.one|seriesgod.cc|anime-jl.net|zonatmo.com|recipesalba.com|ratiomotor.com|retiontech.com|ferromotor.com|motoratrium.com|recitma.com|flavourecipes.com|motorworten.com|techitan.com|loveteching.com|animefire.plus|animeflv.net|gratistorrent.com
 xataka.com.br,solowrestling.com,europapress.es,trendencias.com,futuro.cl,solowrestling.mundodeportivo.com,meneame.net,3djuegos.com,meteoconsult.es,meuguia.tv,territoriosamsung.com,conjur.com.br,meups.com.br,elcorreogallego.es,3djuegos.lat,xatakandroid.com,nsctotal.com.br,noticiasdenavarra.com,informacion.es,applesfera.com,xatakamovil.com,espinof.com,mundoxiaomi.com,vidaextra.com,mediotiempo.com,elpais.com,olhardigital.com.br,atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##body .ad
 serviporno.com,solvetic.com,gamesfull.app,agazeta.com.br,lasexta.com,extra.ec,globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.com.br,tvhistoria.com.br,tribunapr.uol.com.br,diariodonordeste.verdesmares.com.br,sbt.com.br,link.estadao.com.br,atomixhq.*,jc.ne10.uol.com.br,internetpasoapaso.com,acidadeon.com,leouve.com.br,larazon.es,infoescola.com,cbn.globoradio.globo.com,maxitorrent.com,abril.com.br,odia.ig.com.br,especiais.g1.globo.com,tribunapr.com.br,novelasd.com,anime-tube.tv##.ads
 c5n.com,t13.cl,solowrestling.mundodeportivo.com,todojujuy.com,mendozapost.com,meiobit.com,brasilparalelo.com.br,tvonline.fan,laprensagrafica.com,ahoragranada.com,correio24horas.com.br,cnnespanol.cnn.com,motociclismo.es,sub100.com.br,theenemy.com.br,manhwas.net,rpp.pe,ambito.com,economipedia.com,informador.mx,elinformador.com.co,cronista.com,rionegro.com.ar,diariodecuyo.com.ar,voydeviaje.com.ar,guarda14.com,viapais.com.ar,agazeta.com.br,eleconomista.com.mx,metropolitanafm.com.br,tycsports.com,elespectador.com,bnews.com.br,migalhas.com.br,losandes.com.ar,lavoz.com.ar,mundo.sputniknews.com,omelete.com.br,lapoliticaonline.*,valenciaplaza.com,veneapp.com,dalealbo.cl,globo.com,defesanet.com.br,mibrujula.com,lyon.kim,26noticias.com.ar,auniao.com,clickpb.com.br,emagister.com,lanacion.com.ar,parana-online.com.br,r7.com,toxico-pc.com,uol.com.br##body .banner
+puntodebreak.com##.selected-match-info
+puntodebreak.com##.region-taxonomy-ad
+puntodebreak.com###ver-partido-directo
+selfie.iol.pt##.taboolaWrapper
+selfie.iol.pt##.pubTopWrapper.mcd-hidden-block
+ole.com.ar##div[class^="sc-"]:has(> .SRA > div[id^="div-gpt-ad-"])
+ole.com.ar##div[class^="sc-"]:has(> .lazyBanner)
+ole.com.ar##.bannerTopHeader
+ole.com.ar##.bann
+veja.abril.com.br###abrAdAnchor
+sport.es##.friso-marcadores-sponsor
+||suastore.com/wp-content/uploads/*/ads$image
+suaurl.com##.divMain > .text-center
+diariodolitoral.com.br##.bloco-banner
+diariodolitoral.com.br##.coluna-propaganda
+diariodolitoral.com.br##.conteudo-noticia > div:not([class]):has(> .anuncio)
+diariodolitoral.com.br##.texto-conteudo > div:not([class]):has(> .anuncio)
+uol.com.br##.m1-ads-placeholder
+uol.com.br##div[data-ad-unit-id]
+mundoconectado.com.br##div[id^="ad_"]
+hentaiporno.xxx##.ays-pb-modals
+/wp-content/plugins/ays-popup-box/*$domain=hentaiporno.xxx
+bemad.es,cuatro.com,divinity.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es###wrapper-megasuperior
+timesbrasil.com.br##.pubad
+olhardigital.com.br##div[data-snad]
+baixaki.com.br###new-float-ads
+baixaki.com.br##div[class^="styles_ads_placeholder"]
+megacurioso.com.br###banner-video-area
+nationalgeographicbrasil.com##div[id^="gpt--header--"]
+nationalgeographic.pt#$#@media only screen and (min-width: 1080px) { .add990x90 { display: none !important; } }
+nationalgeographic.pt#$#@media only screen and (min-width: 1080px) { .page-content { margin-top: 120px !important; } }
+yelitzonpc.com##center > a[target="_blank"]
+misprogramaspc.com##.vn-green > a[target="_blank"]
+tecmundo.com.br##div[class^="styles_ads_"]
+gamestorrents.app##img[onclick*="click.ggpickaff"]
+muyinteresante.com##.banner
+macmagazine.com.br###canvas-content > div.cnvs-block-section:has(> div.cnvs-block-section-outer div.ad-space)
+macmagazine.com.br##.cs-sidebar__inner > div.widget:has(> div.wp-block-group div.ad-space)
+macmagazine.com.br###bannertopoWrapper
+dragonball.sullca.com###stickyBanner
+dragonball.sullca.com##body > a.fixed[target="_blank"]
+dragonball.sullca.com##.items-center > a[href="https://www.dragonball.uno/dragonball.html"][target="_blank"]
+dragonball.sullca.com#?#.items-center > a[target="_blank"]:has(> span:contains(/^Opción Ad$/))
+dragonball.sullca.com#%#//scriptlet('abort-on-property-write', 'anuncioConfig')
+dragonball.sullca.com#%#//scriptlet('abort-on-property-write', 'setRandomBanner')
+meneame.net##.ad-roba-container
+meneame.net##.ads-interlinks
+hallofseries.com##div[class^="addendo"]
+hallofseries.com##div[style="text-align: center; margin-top: 20px;"]
 americanas.com.br##div[class^="Banner_bannerWrapper"]
 ||redecanais*/player3/query.js
 reclameaqui.com.br##div[role="banner"]:has([alt~="publicidade"i])
@@ -1468,7 +1532,7 @@ europapress.es###sc-mpu-top
 kns.cookni.net,twobluescans.com##a[href^="https://www.polybuzz.ai/"]
 kns.cookni.net,twobluescans.com##.c-sidebar:has(> div.container a[href^="https://www.polybuzz.ai/"])
 kns.cookni.net,twobluescans.com##.row > div.widget:has(> div.c-widget-wrap iframe[id^="google_ads"])
-samuraiscan.cookni.net,spanish.visorsmr.com,kns.cookni.net,twobluescans.com##div[id^="ad-container"]
+mewingzone.com,samuraiscan.cookni.net,spanish.visorsmr.com,kns.cookni.net,twobluescans.com##div[id^="ad-container"]
 elsiglodedurango.com.mx##.col-4 > .h-900:has(> .pub)
 estadiodeportes.mx###__next > div.grid:has(> div.content > div.module > header + div.bannercover)
 estadiodeportes.mx##.bannercover
@@ -1577,7 +1641,7 @@ computerhoy.20minutos.es##article > div > div.lazyload-wrapper:has(> div[id^="em
 t13.cl##.ads13
 t13.cl##.banner-top
 patasdacasa.com.br##.adserver
-e-noticies.cat,edatv.news##.stickyFooterContainer
+e-noticies.cat,edatv.news,carpetasfcb.com##.stickyFooterContainer
 computerhoy.20minutos.es##div[class^="ad-slot_"]
 ciudadano.news##.ada_mod
 ciudadano.news##.module_mm
@@ -1679,8 +1743,12 @@ poder360.com.br##.trust-project-bar
 tycsports.com##.asideAdWrapper
 tycsports.com##.horizontalAdWrapper
 itforum.com.br##body > .container:has(> .row:only-child > div:only-child > div:only-child > div[id^="div-gpt-ad"])
-canaltech.com.br#?#main + div.fixed:has(> div[id^="div-gpt-ad"])
+canaltech.com.br###content-news > div.aspect-video[class*="truvidPos"]
+canaltech.com.br###content-news > div.flex-col[class*="min-h-"]:has(> span[class*=" tracking-"]:only-child)
+canaltech.com.br##main + div.fixed:has(> div[id^="div-gpt-ad"])
 canaltech.com.br#?#main div.justify-center:has(> span:contains(Conteúdo apoiado por))
+canaltech.com.br###truvidPos
+canaltech.com.br###content-news > div[class]:has(> div[data-ad])
 cnnbrasil.com.br##.sidebar__item--ad
 pelismx.lat##.botones-ads
 pelismx.lat###top-menu-movil
@@ -2018,8 +2086,6 @@ cerisescan.net,sinensisscan.net##a[href="https://receita-fit.com"]
 cerisescan.net,sinensisscan.net#?#.widget_custom_html:has(a[href="https://receita-fit.com"])
 tviplayer.iol.pt##.billboardxlWrapper
 jornalopcao.com.br##.template-part-component-google-ad
-canaltech.com.br###truvidPos
-canaltech.com.br#?##content-news > div[class]:has(> div[data-ad])
 superembeds.com##.pppx
 superembeds.com###adStop
 ||superembeds.com/*.xml
@@ -2278,7 +2344,7 @@ putinho.net##.stream-item
 hacertest.com###adssup
 vanitatis.elconfidencial.com##.revUnit
 niusdiario.es###MEGASUPERIOR
-niusdiario.es##div[class^="ads__ad_container-"]
+factoriadeficcion.com,niusdiario.es##div[class^="ads__ad_container-"]
 olhardigital.com.br##.diagonal-strip
 xataka.com,applesfera.com,xatakamovil.com,genbeta.com,espinof.com###stories_container:empty
 computerhoy.com,businessinsider.es##div[class^="ad-slot_"]
@@ -2568,7 +2634,7 @@ cuevana.fm##a[href^="/register"]
 inforchannel.com.br##body .height-ads
 inforchannel.com.br##iframe[src^="https://banners.inforchannel.com.br/"]
 folhavitoria.com.br##.card-advertising
-uol.com.br##.up-floating
+megacurioso.com.br,uol.com.br##.up-floating
 redesuldenoticias.com.br##div[id="modal-noticias"][visualizacoes="69502"]
 redesuldenoticias.com.br##.modal-backdrop
 diariodepernambuco.com.br##.PubTopo
@@ -2973,7 +3039,7 @@ baixaki.com.br##tr[id^="tr-ads_bxk_search_native-"]
 ||baixaki.com.br/parceiros/cross-promotion.htm
 megacurioso.com.br##.ad-halfpage-placeholder
 megacurioso.com.br##.ad-leaderboard-placeholder
-solowrestling.mundodeportivo.com,ciudad.com.ar,oficinadanet.com.br##div[class^="banner-"]
+diariodolitoral.com.br,solowrestling.mundodeportivo.com,ciudad.com.ar,oficinadanet.com.br##div[class^="banner-"]
 solowrestling.mundodeportivo.com##div[class^="banner-"] + span.text-uppercase
 concursosnobrasil.com.br##.label-publicidade
 65ymas.com,motociclismo.es,elnacional.cat##.c-banner
@@ -3051,7 +3117,7 @@ lapoliticaonline.*###header-banner-wrapper
 onepieceex.net##.banner-resposivo
 tecmundo.com.br##p > a[href^="https://bit.ly/"][target="_blank"] > span > img
 ||img.ibxk.com.br/*/banner-*.png$domain=tecmundo.com.br
-contaspoupanca.pt,redgol.cl,lapaginamillonaria.com,e-noticies.cat,econodata.com.br,edatv.news,tomatazos.com,wapa.pe,sicnoticias.pt,g24.gal,levelup.com,eldiario.es,tuasaude.com,globo.com,eltiempo.com,gauchazh.clicrbs.com.br,hobbyconsolas.com,larepublica.pe,vozpopuli.com##.ad-container
+contaspoupanca.pt,redgol.cl,lapaginamillonaria.com,e-noticies.cat,econodata.com.br,edatv.news,tomatazos.com,wapa.pe,sicnoticias.pt,g24.gal,levelup.com,eldiario.es,tuasaude.com,globo.com,eltiempo.com,gauchazh.clicrbs.com.br,hobbyconsolas.com,larepublica.pe,vozpopuli.com,carpetasfcb.com##.ad-container
 hobbyconsolas.com##div[class^="ad-slot_"]
 hobbyconsolas.com##div[class^="placeholder_placeholder"]
 vozpopuli.com##.home_1_ad
@@ -3871,7 +3937,7 @@ goomusica.com###cuerpo > div.derecha
 remusica.biz,musicaeu.com###baNwan
 remusica.biz,musicaeu.com###banIz
 vizer.tv##body > .vizerNewBox.adsByVizer
-bemad.es,cuatro.com,divinity.es,eltiempohoy.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es##.cards__card_ad-3gZy
+bemad.es,cuatro.com,divinity.es,energytv.es,factoriadeficcion.com,mtmad.es,telecinco.es##.cards__card_ad-3gZy
 mitele.es##.ad-wrapper
 tudotv.tv##.Publicidade728
 holadoctor.com##.banner_cubo_space
@@ -4757,7 +4823,6 @@ motor.es#?#.secundaria .divisor:has(~ .hueco-publicidad)
 motor.es#?#.secundaria .divisor:has(.robapaginas-portada)
 climadobrasil.com.br#?#.wrapper > .block_full:has(> div.cls-publi-height)
 eltiempo.pe#?#div:not([class]) > div[style]:has(> small + div ins.adsbygoogle)
-ole.com.ar#?#div[class^="sc-"]:has(> div > div[id^="div-gpt-"])
 elperiodico.cat#?#.col-md-4 > .hidden-xs:has(> .minHeightLong > .following-ad-container)
 computerhoy.com#?#.container-region-aside > aside[class^="region-section"]:has(> div[class^="region-section"] > div[class^="ad-slot"])
 hentaikai.com#?#.main > .card-serie:has(> a[href^="https://www.tufos.com.br/"])
@@ -5000,6 +5065,7 @@ player.seriesgod.com,player.pelisgod.com#%#//scriptlet('trusted-replace-node-tex
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_spanish
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||imasdk.googleapis.com/pal/sdkloader/pal.js$domain=mais.sbt.com.br
 nationalgeographic.com.es#@#.ad-item
 @@||amazonaws.com/*uol.com.br/publicidade-legal/json/ultimas.json$domain=uol.com.br
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=cnnbrasil.com.br
@@ -5130,7 +5196,7 @@ vvale.com.br#@#.publicidade
 @@||tpc.googlesyndication.com/simgad/*$domain=simple.ripley.com.pe
 simple.ripley.com.pe#@#.dfp-ad-unit
 @@||geekland.eu/wp-content/uploads/*-publicidad-$image
-@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=bemad.es|cuatro.com|divinity.es|eltiempohoy.es|energytv.es|factoriadeficcion.com|mtmad.es|telecinco.es|uppers.es|yasss.es
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=bemad.es|cuatro.com|divinity.es|energytv.es|factoriadeficcion.com|mtmad.es|telecinco.es|uppers.es|yasss.es
 @@||calcularindemnizacion.es^$elemhide
 @@||b.scorecardresearch.com^$domain=marca.com
 @@||seur.com^$document

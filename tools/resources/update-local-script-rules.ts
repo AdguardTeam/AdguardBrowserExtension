@@ -390,7 +390,7 @@ export const updateLocalResourcesForChromiumMv3 = async () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const ruleSetId of ruleSetIds) {
         // eslint-disable-next-line no-await-in-loop
-        const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, metadataRuleSet, folder);
+        const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, folder);
         const filterListNode = FilterListParser.parse(rawFilterList, {
             ...defaultParserOptions,
             includeRaws: false,

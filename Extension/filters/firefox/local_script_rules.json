@@ -352,6 +352,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{window.GADS={init:function(n){n&&\"function\"==typeof n.onFinish&&n.onFinish()}};})();": [
+            {
+                "permittedDomains": [
+                    "girlgames.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{const e={apply:(e,o,t)=>(null===t[0]&&(t[0]={isUserSubscriber:!0}),Reflect.apply(e,o,t))},o={apply:(o,t,n)=>{const r=n[0];return\"function\"==typeof r&&r.toString().includes(\"AdBlockDetector\")&&(n[0]=()=>{}),\"function\"==typeof r&&r.toString().includes(\"Preroll Ad\")&&(n[0]=new Proxy(n[0],e)),Reflect.apply(o,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o)})();": [
             {
                 "permittedDomains": [
@@ -420,7 +428,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const t={apply:(t,e,n)=>{const o=n[0];if(o&&o.status.includes(\"success\"))for(const t in n[0])\"1\"===n[0][t]?n[0][t]=\"0\":1===n[0][t]&&(n[0][t]=0);return Reflect.apply(t,e,n)}},e={apply:(e,n,o)=>{const p=o[0];return\"function\"==typeof p&&p.toString().includes(\"adblockEnabled\")&&(o[0]=new Proxy(o[0],t)),Reflect.apply(e,n,o)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,e)})();": [
+        "(()=>{const e={apply:(e,t,n)=>{const o=n[0];if(o&&o.status.includes(\"success\"))for(const e in n[0])\"1\"===n[0][e]?n[0][e]=\"0\":1===n[0][e]&&(n[0][e]=0);return Reflect.apply(e,t,n)}},t=[\"adblockEnabled\",\"=!!parseInt(\",\"disable_adb\"],n={apply:(n,o,s)=>{const p=s[0];return\"function\"==typeof p&&t.some((e=>p.toString().includes(e)))&&(s[0]=new Proxy(s[0],e)),Reflect.apply(n,o,s)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,n)})();": [
             {
                 "permittedDomains": [
                     "doods.to",
@@ -2024,7 +2032,7 @@
                 "restrictedDomains": []
             }
         ],
-        "!function(){var e=0,r=[];new MutationObserver((function(){document.querySelectorAll(\"div[role='list'] > div[role='listitem']:not([style*='display: none'])\").forEach((function(i){Object.keys(i).forEach((function(s){if(s.includes(\"__reactFiber\")||s.includes(\"__reactProps\")){s=i[s];try{if(s.memoizedProps?.children?.props?.children?.props?.pin?.ad_destination_url||s.memoizedProps?.children?.props?.children?.props?.children?.props?.pin?.ad_destination_url||s.memoizedProps?.children?.props?.children?.props?.children?.props?.children?.props?.pin?.ad_destination_url){e++,i.style=\"display: none !important;\";var n=i.querySelector('a[href] span[class*=\" \"]:last-child, a[href] div[class*=\" \"][style*=\"margin\"]:last-child > div[class*=\" \"][style*=\"margin\"] + div[class*=\" \"]:last-child');n&&(r.push([\"Ad blocked based on property [\"+e+\"] -> \"+n.innerText]),console.table(r))}}catch(s){}}}))}))})).observe(document,{childList:!0,subtree:!0})}();": [
+        "(()=>{let e=0;const i=[];new MutationObserver((function(){document.querySelectorAll(\"div[role='list'] > div[role='listitem']:not([style*='display: none']) div[data-test-id='pinWrapper'], div[role='list'] > div[role='listitem']:not([style*='display: none']) div[data-test-id='pinWrapper'] > div[data-test-id]\").forEach((s=>{Object.keys(s).forEach((t=>{if(t.includes(\"__reactProps\")){const r=s[t];try{if(r?.children?.props?.children?.props?.pinKey?.adDestinationUrl||r?.children[1]?.props?.children[1]?.props?.children?.props?.pinKey?.adDestinationUrl||r?.children[0]?.props?.children[1]?.props?.children[1]?.props?.children?.props?.pinKey?.adDestinationUrl){const t=s.closest(\"div[role='list'] > div[role='listitem']:not([style*='display: none'])\");if(!t)return;t.style=\"display: none !important;\",e++;const r=t.querySelector('div[data-test-id=\"pinrep-footer\"] > div[class] > div[class] > div[class]:last-child > div[class] > a[aria-label][href][rel] > div[class] > div[class] > div[class]');r&&(i.push([\"Ad blocked based on property [\"+e+\"] -> \"+r.innerText]),console.table(i))}}catch(e){console.error(e)}}}))}))})).observe(document,{childList:!0,subtree:!0})})();": [
             {
                 "permittedDomains": [
                     "pinterest.*"
@@ -2041,7 +2049,7 @@
                 "restrictedDomains": []
             }
         ],
-        "!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll(\"div[data-pagelet^=\\\"FeedUnit\\\"]:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > div:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > span:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] h3[dir=\\\"auto\\\"] + div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * div[class] > div > div:not([style*=\\\"display: none\\\"])\").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.(\"__reactEvents\")||a.includes?.(\"__reactProps\")){a=e[a];try{if(a.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting||a.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting){b++,e.style=\"display: none !important;\";var f=e.querySelector(\"a[href][aria-label]:not([aria-hidden])\");f&&(d.push([\"Ad blocked based on property [\"+b+\"] -> \"+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();": [
+        "!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll(\"div[data-pagelet^=\\\"FeedUnit\\\"]:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > div:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > span:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] h3[dir=\\\"auto\\\"] + div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div > div > span > div:not([style*=\\\"display: none\\\"])\").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.(\"__reactEvents\")||a.includes?.(\"__reactProps\")){a=e[a];try{if(a.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting||a.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes(\"SPONSORED\")){b++,e.style=\"display: none !important;\";var f=e.querySelector(\"a[href][aria-label]:not([aria-hidden])\");f&&(d.push([\"Ad blocked based on property [\"+b+\"] -> \"+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -2274,6 +2282,7 @@
         "(()=>{const e=\"loader.min.js\",t={includes:String.prototype.includes,filter:Array.prototype.filter},l=()=>(new Error).stack,n={construct:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&o[0]&&t.includes.call(o[0],\"adshield\")&&(o[0]=[\"(function(){})();\"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&t.includes.call(r[0],\"new Error\")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&o?.includes?.(\"setTimeout\")&&(o=t.filter.call(o,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();": [
             {
                 "permittedDomains": [
+                    "etoday.co.kr",
                     "sportalkorea.com",
                     "slashdot.org",
                     "dogdrip.net",
@@ -3423,6 +3432,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{document.addEventListener(\"DOMContentLoaded\",(()=>{const e=document.querySelector(\".adsbygoogle:not(.adsbygoogle-noablate)\"),t=document.createElement(\"div\");t.textContent=\".\".repeat(3e3),e.appendChild(t)}));})();": [
+            {
+                "permittedDomains": [
+                    "gecmisi.com.tr"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "window.samDetected = false;": [
             {
                 "permittedDomains": [
@@ -3535,14 +3552,6 @@
             {
                 "permittedDomains": [
                     "eboo.lu"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "document.cookie='_s.cookie_consent=marketing=0:analytics=0:version=2021-07-01;path=/;';": [
-            {
-                "permittedDomains": [
-                    "smallpdf.com"
                 ],
                 "restrictedDomains": []
             }
@@ -3943,6 +3952,7 @@
         "(()=>{let t,e=!1;const o=new MutationObserver(((e,o)=>{const c=t?.querySelector('button[data-testid=\"uc-accept-all-button\"]');c&&(c.click(),o.disconnect())})),c={apply:(c,n,p)=>{const r=Reflect.apply(c,n,p);return!e&&n.matches(\"#usercentrics-root\")&&(e=!0,t=r),o.observe(r,{subtree:!0,childList:!0}),r}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,c)})();": [
             {
                 "permittedDomains": [
+                    "mobil.nrw",
                     "liebscher-bracht.com"
                 ],
                 "restrictedDomains": []

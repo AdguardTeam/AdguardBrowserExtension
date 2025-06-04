@@ -1,9 +1,9 @@
-! Checksum: 8GzOAP7xIqntZB9FuR3m3Q
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1744373634-3600.patch
+! Checksum: 3MbZR00BXf7m1ibjKEdwhQ
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1747771895-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.63
-! TimeUpdated: 2025-04-11T12:10:17+00:00
+! Version: 2.0.3.67
+! TimeUpdated: 2025-05-20T20:07:51+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -146,6 +146,12 @@ amazon.*#@##dp-container > #px-profile_feature_div[data-csa-c-type="widget"]
 amazon.*#@#div[data-csa-c-painter="ad-topper-desktop-card"]
 amazon.*#@#.sbv-ad-content-container
 amazon.*#@?#div[data-display-at]:has(> div[data-csa-c-painter="ad-topper-desktop-card"]:first-child + div[style="display: none !important;"]:last-child)
+amazon.*#@##desktop-dp-ilm_feature_div_01
+amazon.*#@#.s-main-slot > div.s-result-item:has(> .sg-col-inner:only-child > div[class*="widget=loom-"][class*="FEATURED"])
+amazon.*#@##search .s-main-slot > div.s-result-item[data-asin=""]:not(.a-section) .s-progressive-scroll-container span[data-action="s-progressive-scroll-link"]
+m.yelp.com#@#div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[class*="sponsored-icon_"])
+m.yelp.com#@#div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[class*="sponsored-icon_"]) + li[class]
+m.yelp.com#@#div[data-testid="suggested-search-bar"] ~ div[class*="border-color-"] > ol > li:has(> div[data-testid^="themed-ad-"])
 @@||shop.apotal.de/images/generic_attachments/attachments/apotal/skyscraper
 teknosa.com#@##gowitImpressionEvent
 zalando.de#@#div[data-trckng-component] div[class]:has(> div[data-visibility-info-id*="advertising"])
@@ -164,7 +170,7 @@ ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored)
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
-ebay.*#@#.x-rx-slot
+ebay.*#@$#.x-rx-slot { position: absolute!important; left: -4000px!important;}
 ebay.*#@#.srp-river-answer[class*="CAROUSEL"]:not([class*="NAVIGATION"])
 aliexpress.com#@#.search-item-card-wrapper-list:has( > div:only-child > div:only-child > a + div[class*="multi"])
 [$path=/jobs]linkedin.com#@##ember33
