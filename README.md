@@ -383,13 +383,13 @@ build/analyze-reports
 
 #### <a name="dev-debug-mv3"></a> Debug MV3 declarative rules
 
-If you want to debug MV3 declarative rules and check exactly which rules has been applied for requests, you can build and install extension as described in below sections. This will allow you to see applied declarative rules in the filtering log.
+If you want to debug MV3 declarative rules and check exactly which rules have been applied to requests, you can build and install the extension as described in the sections below. This will allow you to view the applied declarative rules in the filtering log.
 
-Also you can edit filters and rebuilt DNR rulesets without rebuilding the entire extension, which is may be useful for debugging purposes.
+Additionally, you can edit filters and rebuild DNR rulesets without rebuilding the entire extension, which may be useful for debugging purposes.
 
-##### How to build MV3 extension
+##### How to build the MV3 extension
 
-1. Ensure that you installed all dependencies as described in the [Requirements](#dev-requirements) section.
+1. Ensure that you have installed all dependencies as described in the [Requirements](#dev-requirements) section.
 
     ```shell
     pnpm install
@@ -401,13 +401,13 @@ Also you can edit filters and rebuilt DNR rulesets without rebuilding the entire
     pnpm dev chrome-mv3
     ```
 
-1. The built extension will be located in the directory:
+1. The built extension will be located in the following directory:
 
     ```shell
     ./build/dev/chrome-mv3
     ```
 
-##### How to install unpacked in the browser
+##### How to install the unpacked extension in the browser
 
 1. Turn on developer mode:
 
@@ -429,9 +429,7 @@ Also you can edit filters and rebuilt DNR rulesets without rebuilding the entire
     pnpm dev chrome-mv3
     ```
 
-2. Convert filters to DNR rulesets **automatically**, after changes in text files:
-
-    To speed up the development of DNR rulesets, use the `@adguard/dnr-rulesets` CLI's `watch` command. This command automatically rebuilds rulesets whenever filter files change.
+2. Convert filters to DNR rulesets **automatically** after changes in text files:
 
     Start watching for changes:
 
@@ -439,31 +437,31 @@ Also you can edit filters and rebuilt DNR rulesets without rebuilding the entire
     pnpm debug-filters:watch
     ```
 
-    Now, whenever when filter files in `./build/dev/chrome-mv3/filters` directory will be changed, the DNR rulesets will rebuild automatically, so there is no need to rebuild the entire extension and convert filters manually.
+    Now, whenever filter files in the `./build/dev/chrome-mv3/filters` directory are changed, the DNR rulesets will be rebuilt automatically. There is no need to rebuild the entire extension or convert filters manually.
 
-    For details about commands options, go to [Technical information about commands](#dev-technical-info-about-debug-commands) section.
+    For details about command options, see the [Technical information about commands](#dev-technical-info-about-debug-commands) section.
 
 **OR**
 
-2. Convert filters to DNR rulesets **manually**, after changes in text files:
+2. Convert filters to DNR rulesets **manually** after changes in text files:
 
-    If it needed to run **a single conversion**, it can be done via the `@adguard/tsurlfilter` CLI's command `convert` — it will convert filters to DNR rulesets.
+    If you need to run a **single conversion**, you can use the `@adguard/tsurlfilter` CLI's `convert` command to convert filters to DNR rulesets.
 
-    But before run conversion, it's needed to download raw text filters.
+    However, before running the conversion, you need to download the raw text filters:
 
     ```shell
     pnpm debug-filters:load
     ```
 
-    Then apply changes for filters in `./build/dev/chrome-mv3/filters` directory.
+    Then, apply your changes to the filters in the `./build/dev/chrome-mv3/filters` directory.
 
-    After that, run conversion:
+    After that, run the conversion:
 
     ```shell
     pnpm debug-filters:convert
     ```
 
-    For details about commands options, go to [Technical information about commands](#dev-technical-info-about-debug-commands) section.
+    For details about command options, see the [Technical information about commands](#dev-technical-info-about-debug-commands) section.
 
 3. Reload the extension in the browser after conversion:
 
@@ -471,7 +469,7 @@ Also you can edit filters and rebuilt DNR rulesets without rebuilding the entire
 
 4. If you see an exclamation mark, it means the assumed rule (calculated by our tsurlfilter engine using MV2 rules) and the applied rule (converted to a DNR rule) are different. This can indicate a conversion problem.
 
-    Otherwise, if the assumed and applied rules are the same, only the applied rule, in both raw text and declarative rule views, will be shown.
+    Otherwise, if the assumed and applied rules are the same, only the applied rule will be shown in both the raw text and declarative rule views.
 
 
 ##### <a name="dev-technical-info-about-debug-commands"></a> Technical information about commands
