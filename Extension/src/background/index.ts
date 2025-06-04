@@ -21,21 +21,28 @@ import { App } from 'app';
 
 import { UserAgent } from '../common/user-agent';
 
-const wrapper1 = (): void => {
-    // eslint-disable-next-line no-console
-    console.log('wrapper 1', Date.now());
+let isInitialized = false;
+
+/**
+ * Initializes the app if it has not been initialized yet.
+ */
+const initWrapper = (): void => {
+    if (isInitialized) {
+        return;
+    }
+
     App.init();
+    isInitialized = true;
 };
 
-const wrapper2 = (): void => {
-    // eslint-disable-next-line no-console
-    console.log('wrapper 2', Date.now());
-    App.init();
-};
+initWrapper();
 
-wrapper1();
-
+/**
+ * Initializes background services in Firefox.
+ * Initialization is deferred to `onStartup` and `onInstalled` events
+ * because the Firefox extension uses a non-persistent background page model.
+ */
 if (UserAgent.isFirefox) {
-    browser.runtime.onStartup.addListener(wrapper2);
-    browser.runtime.onInstalled.addListener(wrapper2);
+    browser.runtime.onStartup.addListener(initWrapper);
+    browser.runtime.onInstalled.addListener(initWrapper);
 }
