@@ -383,11 +383,17 @@ build/analyze-reports
 
 #### <a name="dev-debug-mv3"></a> Debug MV3 declarative rules
 
-If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper [How to build](#dev-build) section, but for specified branch, in which we develop MV3 version.
+If you want to debug MV3 declarative rules and check exactly which rules has been applied for requests, you can build and install extension as described in below sections. This will allow you to see applied declarative rules in the filtering log.
 
-Then install extension via developer mode, make requests and see applied declarative rules in the filtering log.
+Also you can edit filters and rebuilt DNR rulesets without rebuilding the entire extension, which is may be useful for debugging purposes.
 
 ##### How to build MV3 extension
+
+1. Ensure that you installed all dependencies as described in the [Requirements](#dev-requirements) section.
+
+    ```shell
+    pnpm install
+    ```
 
 1. Run the following command in the terminal:
 
@@ -415,28 +421,72 @@ Then install extension via developer mode, make requests and see applied declara
 
     ![Select](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/select.png)
 
-That’s it!
-
 ##### How to debug rules
 
-1. First, build the extension (skip this step if you already did so in the *How to build extension* section):
+1. First, build the extension (skip this step if you already did so in the *How to build MV3 extension* section):
 
     ```shell
     pnpm dev chrome-mv3
     ```
 
-2. Convert filters to DNR rulesets **automatically**:
+2. Convert filters to DNR rulesets **automatically**, after changes in text files:
 
-    To speed up the development of DNR rulesets, use the `@adguard/dnr-rulesets` `watch` command. This command automatically rebuilds rulesets whenever filter files change.
+    To speed up the development of DNR rulesets, use the `@adguard/dnr-rulesets` CLI's `watch` command. This command automatically rebuilds rulesets whenever filter files change.
 
-    Start watch mode with all required filters:
+    Start watching for changes:
+
+    ```shell
+    pnpm debug-filters:watch
+    ```
+
+    Now, whenever when filter files in `./build/dev/chrome-mv3/filters` directory will be changed, the DNR rulesets will rebuild automatically, so there is no need to rebuild the entire extension and convert filters manually.
+
+    For details about commands options, go to [Technical information about commands](#dev-technical-info-about-debug-commands) section.
+
+**OR**
+
+2. Convert filters to DNR rulesets **manually**, after changes in text files:
+
+    If it needed to run **a single conversion**, it can be done via the `@adguard/tsurlfilter` CLI's command `convert` — it will convert filters to DNR rulesets.
+
+    But before run conversion, it's needed to download raw text filters.
+
+    ```shell
+    pnpm debug-filters:load
+    ```
+
+    Then apply changes for filters in `./build/dev/chrome-mv3/filters` directory.
+
+    After that, run conversion:
+
+    ```shell
+    pnpm debug-filters:convert
+    ```
+
+    For details about commands options, go to [Technical information about commands](#dev-technical-info-about-debug-commands) section.
+
+3. Reload the extension in the browser after conversion:
+
+    ![Reload extension](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/reload_extension.png)
+
+4. If you see an exclamation mark, it means the assumed rule (calculated by our tsurlfilter engine using MV2 rules) and the applied rule (converted to a DNR rule) are different. This can indicate a conversion problem.
+
+    Otherwise, if the assumed and applied rules are the same, only the applied rule, in both raw text and declarative rule views, will be shown.
+
+
+##### <a name="dev-technical-info-about-debug-commands"></a> Technical information about commands
+
+1. **Automatically convert text filters to DNR rulesets after changes**
+    ```shell
+    pnpm debug-filters:watch
+    ```
+
+    Will do the following:
 
     ```shell
     pnpm exec dnr-rulesets watch \
-        # Enable extended logging about rulesets
+        # Enable extended logging about rulesets, since it is optional - it can be removed
         --debug \
-        # Enable rulesets with IDs 1 and 2
-        --enable=1,2 \
         # Download filters from the server on the first run
         --load \
         # Path to the extension manifest
@@ -445,27 +495,27 @@ That’s it!
         ./Extension/web-accessible-resources
     ```
 
-    The `--load` flag will download all filters from the server on the first run. For subsequent runs, you can omit this flag to use existing filters:
-
+1. **Load filters and metadata**
     ```shell
-    pnpm exec dnr-rulesets watch \
-        # Enable extended logging about rulesets
-        --debug \
-        # Enable rulesets with IDs 1 and 2
-        --enable=1,2 \
-        # Path to the extension manifest
-        ./build/dev/chrome-mv3/manifest.json \
-        # Path to web-accessible-resources directory (needs for $redirect rules)
-        ./Extension/web-accessible-resources
+    pnpm debug-filters:load
     ```
 
-    Now, whenever you modify filter files, the DNR rulesets will rebuild automatically, so you won’t have to rebuild the entire extension.
+    Will do the following:
 
-**OR**
+    ```shell
+    pnpm exec dnr-rulesets load
+        # This will load raw text filters with theirs metadata
+        --raw-filters
+        # Destination path for raw filters
+        ./build/dev/chrome-mv3/filters
+    ```
 
-2. Convert filters to DNR rulesets **manually**:
+1. **Single run for conversion text filters to DNR rulesets**
+    ```shell
+    pnpm debug-filters:convert
+    ```
 
-    If you do not want to use watch mode and only need a single run, you can do it directly via the `@adguard/tsurlfilter` CLI command `convert` — it will convert filters to DNR rulesets:
+    Will do the following:
 
     ```shell
     pnpm exec tsurlfilter convert \
@@ -479,15 +529,6 @@ That’s it!
         ./build/dev/chrome-mv3/filters/declarative
     ```
 
-    After the conversion is done, you can manually update the ruleset information in `manifest.json` if needed: enable, add, or remove rulesets as required.
-
-3. Reload the extension in the browser after conversion:
-
-    ![Reload extension](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/reload_extension.png)
-
-4. If you see an exclamation mark, it means the assumed rule (calculated by our tsurlfilter engine using MV2 rules) and the applied rule (converted to a DNR rule) are different. This can indicate a conversion problem.
-
-    Otherwise, if the assumed and applied rules are the same, only the applied rule, in both raw text and declarative rule views, will be shown.
 
 ### <a name="dev-linter"></a> Linter
 
