@@ -45,7 +45,7 @@ Build:
             pnpm beta firefox-standalone
 
             # zip source files for publishing on AMO
-            git ls-files | zip -@ build/beta/source.zip
+            ./bamboo-specs/scripts/archive-source.sh beta
 
             # Move to the build/beta directory and sign the Firefox extension
             cd ./build/beta

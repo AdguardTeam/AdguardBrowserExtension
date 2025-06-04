@@ -1,9 +1,9 @@
-! Checksum: 3800Y3SM7zcYe8cUoM5Byw
-! Diff-Path: ../patches/22/22-s-1745248295-3600.patch
+! Checksum: 0kSFrvJP6VH3D/B/ViRAnw
+! Diff-Path: ../patches/22/22-s-1748020330-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.11.57
-! TimeUpdated: 2025-04-21T15:07:51+00:00
+! Version: 2.0.11.79
+! TimeUpdated: 2025-05-23T17:07:08+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -89,6 +89,12 @@ ityouchannel.livedoor.blog,nanjei-baseball.blog.jp,baynews.blog.jp,xresolutionx.
 !
 ! NOTE: Blogroll specific rules
 !
+dot.asahi.com##.article-pr-under
+alfalfalfa.com##aside.section-box:has(> div.plugin-blogroll)
+||lovekoala.com/rss-$subdocument
+lovekoala.com##.lcmcolumn ~ div.mtxt
+||hanshintigers1.blog.jp/include$subdocument,~third-party
+hanshintigers1.blog.jp##div[class^="include"]
 monst-news.net##div[id^="rss_wrap"]
 himasoku.com##.himajin-headline
 kalender.se##.hidden.justify-center > div[class*="min-h-[800px]"]
@@ -1367,6 +1373,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 ~sinoptik.ua###SinoptikInformer
 ##a[title="WhatsApp Newsletter Marketing"]
 !
+||hotukdeals.com/search/price_comparison/pricespy?
 ||client.contents-search-windows.com^
 ||affilizz.com^$third-party
 ||mbp-japan.com/information/$script,third-party
@@ -1392,9 +1399,8 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !   !SECTION: Widgets - Marketing (generic rules)
 !
 !   SECTION: Widgets - Marketing (third-party services)
-! make it domain specific, block if the widget is really annoying
-!||zopim.com^$third-party,domain=
 !
+||webchat-ui.citibot.net^
 ||webchat.bebot.io^$third-party
 ||kwizbot.io^$third-party
 ||milionymonet.onet.pl/js/omm/widget/euroloterie.js
@@ -1530,7 +1536,6 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 ||netroxsc.ru^$third-party
 ||pinformer.sinoptik.ua^$third-party
 ||st.yagla.ru^$third-party
-||static.elfsight.com^$third-party
 ||widget.sender.mobi^$third-party,domain=~privat24.ua|~privatbank.ua
 ||cloud.lexprofit.$third-party
 ||partner-widget.vse-sdal.com^
@@ -1763,11 +1768,18 @@ yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
 ||yangteacher.ru/reformal.js
 ||yastatic.net/*/chat/widget.js$domain=next24.ru|goodprice4you.ru
 ||yengec.zendesk.com/embeddable/
+! May cause issues with some sites
+! ||static.elfsight.com^$domain=
+! make it domain specific, block if the widget is really annoying
+! ||zopim.com^$third-party,domain=
 !   NOTE: Marketing (specific) end ⬆️
 !   !SECTION: Widgets - Marketing (specific)
 !
 !   SECTION: Widgets - Marketing - Allowlist
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/205808
+||widgets.trustedshops.com/reviews/tsSticker/*.gif?$important
+@@||widgets.trustedshops.com/reviews/tsSticker/$domain=sportnahrung-engel.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/202762
 @@||marquiz.ru^$domain=logiccontact.space
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191742
@@ -1778,11 +1790,6 @@ yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
 @@||wchat.freshchat.com/js/widget.js$domain=livecrowd.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/174036
 @@||secure.livechatinc.com/customer/action/open_chat?$domain=kinguin.net
-! https://github.com/AdguardTeam/AdguardFilters/issues/202755
-! https://github.com/AdguardTeam/AdguardFilters/issues/201505
-! https://github.com/AdguardTeam/AdguardFilters/issues/187963
-! https://github.com/AdguardTeam/AdguardFilters/issues/170804
-@@||static.elfsight.com^$third-party,domain=cafemarta.ch|trestlebrewing.com|taube-rankweil.at|savearizonafund.com|avproedge.com|spiceandcurry.ca|keenetic.com.tr|bigchicken.com|agirsaglam.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158945
 @@||widgets.trustedshops.com/reviews/tsSticker/tsSticker.js$domain=interpack.eu
 @@||widgets.trustedshops.com/reviews/tsSticker/css/light.theme.css$domain=interpack.eu
@@ -1870,7 +1877,6 @@ getnews.jp,front-row.jp##._popIn_recommend
 beauty.oricon.co.jp###contents > div[style="margin-top:20px"] > h3[style="margin-top:17px;background:#ececec; color:#222; margin-bottom: 8px;"]
 lmaga.jp##.feed
 crank-in.net#?#.mb-0:has(> div[id^="_popIn_"])
-dramanavi.net###block-97
 medical.jiji.com###_popIn_recommend_2
 okwave.jp##._popIn_recommend-wrap
 sitakke.jp##.editor__section
@@ -1925,6 +1931,7 @@ full-count.jp#?#section > div.c-heading:has(> p.c-heading__en:contains(RECOMMEND
 /js/chat/edu_chat.js
 /wp-content/plugins/creame-whatsapp-me/public/js/joinchat.
 !
+||vivocha.com^$third-party
 ||ac-chatbot.freebie-ac.jp^$third-party
 ||decagon.ai^$third-party
 ||widget.hireaiva.com^$third-party
@@ -1977,6 +1984,8 @@ freestreams-live.my###custom_html-9
 ||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com
 litres.ru###call_support
 !
+||assets.mediaexpert.pl/build/*/inteliwise-loader.$domain=mediaexpert.pl
+hilton.com###hilton-chat-root
 ||cbot.tebyatirim.com.tr/js/widget/cbot-tebyatirim-generator.js
 softwarekeep.com##iframe[title="Opens a widget where you can find more information"]
 justanswer.com##.chatMainWrapper
@@ -2092,8 +2101,9 @@ zebratechnologies.force.com##.zbrbot-container
 !   NOTE: Allowlist for chat widgets
 ! https://github.com/AdguardTeam/AdguardFilters/issues/176548
 @@||config.gorgias.chat^$domain=thefeed.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/204396
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167711
-@@||client.crisp.chat^$domain=journey.cloud
+@@||client.crisp.chat^$domain=journey.cloud|aa.net.uk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164918
 @@||widget.replain.cc^$domain=gregoryurban.ru
 ! Unblocking Salesforce support chats only
@@ -2112,6 +2122,8 @@ zebratechnologies.force.com##.zbrbot-container
 !
 !   SECTION: Uncategorized
 !
+! rp-online.de leftovers on home page
+rp-online.de###park-main > section[data-cy="section"]:has(> .park-html > #opinary-root > iframe[src^="https://compass.pressekompass.net/compasses/"])
 ! namu.wiki namunews
 namu.wiki#?#div[class*=" "] > div[class*=" "]:has(> a[target="_blank"][rel="noopener"]):contains(더 보기)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194871
@@ -2272,6 +2284,7 @@ pesni-tut.com##.r_m_genre_songs + div[id] + div:not([id])
 ||youtube.com/embed/?enablejsapi=1&origin=*3dnews.ru&widgetid=1
 ! Voting widget
 ! specific
+yahoo.com##.caas-iframe[data-type="opinary"]
 ign.com##div[data-cy="tierlist-view-trigger"]
 vg247.com##.poll_wrapper
 aerzteblatt.de##iframe#civey
@@ -2408,6 +2421,13 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+istories.media##div[class^="DonationsModalTimer-"]
+ncronline.org##.region-main-top
+stlpr.org###nonintrusive-donate-ask
+stlpr.org##.alleg-donate-embed
+perito.media##.footer__swiper-row > div.footer-swiper:has(> div.footer-swiper__container a[href="https://perito.media/posts/perito-zapuskaet-patreon-i-boosty"])
+hrw.org###graphene--modal
+air-journal.fr##[class*="donation"]:not(a)
 smutba.se,sfmlab.com##div[style="min-height: 90px; justify-content: center;"]
 smutba.se,sfmlab.com##.patreon
 polyhaven.com##div[class^="Grid_adGridTop"]
@@ -2607,7 +2627,7 @@ unian.ua,unian.net##.support-post
 ||paywall.fewcents.co/static/js/paywall.js
 ||aqours.today/img01/MP3/ZL.JPG
 proagro.com.ua#$#.td-outer-container { background-image: none !important; cursor: default !important; }
-proagro.com.ua#%#//scriptlet("abort-on-property-read", "wpsite_clickable_data")
+proagro.com.ua#%#//scriptlet('abort-on-property-read', 'wpsite_clickable_data')
 focus.ua##.js-cat-required
 tsn.ua##.c-donate
 ||i.lb.ua/static/donate/news.png
@@ -2648,7 +2668,7 @@ samlab.ws##iframe[src^="https://yoomoney.ru/"]
 ||yoomoney.ru/quickpay/shop-widget$domain=ovgorskiy.ru|blog.themarfa.name
 ||funding.webmoney.ru/widgets/$domain=ovgorskiy.ru|demek.ru|скачатьофис.рф
 ! Google Revenue Manager
-||news.google.com/swg/js/v1/swg-basic.js$domain=wololo.net|premierguitar.com|svetandroida.cz
+||news.google.com/swg/js/v1/swg-basic.js$domain=wololo.net|premierguitar.com|svetandroida.cz|12punto.com.tr
 ! The Moscow Times
 themoscowtimes.com##.preheader_advert
 themoscowtimes.com##.contribute-article
