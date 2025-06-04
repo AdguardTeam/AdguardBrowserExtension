@@ -115,7 +115,7 @@ export const initSafebrowsingPageHandler = async (): Promise<void> => {
     const { url } = getParams(window.location.search);
 
     if (!url) {
-        logger.error(`Cannot parse "url" param in page url: ${window.location.href}`);
+        logger.error(`[ext.page-handler]: cannot parse "url" param in page url: ${window.location.href}`);
         return;
     }
 

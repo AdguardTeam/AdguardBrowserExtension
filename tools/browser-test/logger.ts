@@ -17,7 +17,7 @@
  */
 /* eslint-disable no-console */
 
-import { getErrorMessage } from '../../Extension/src/common/error';
+import { getZodErrorMessage } from '../../Extension/src/common/error';
 
 import {
     TestStatus,
@@ -119,7 +119,7 @@ export const logTestUnknownError = (testName: string, error: unknown): void => {
     console.log(colorizeTitleText(testName));
 
     console.log('Status:', colorizeStatusText(TestStatus.Failed));
-    console.log(`Caught unknown error during waiting for tests: ${getErrorMessage(error)} \n`);
+    console.log(`Caught unknown error during waiting for tests: ${getZodErrorMessage(error)} \n`);
 
     console.log('\n');
 };

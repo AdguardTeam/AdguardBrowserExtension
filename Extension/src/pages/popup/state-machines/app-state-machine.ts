@@ -231,7 +231,7 @@ const appStateMachine = setup({
 const appStateActor = createActor(appStateMachine);
 
 appStateActor.subscribe((state) => {
-    logger.debug(APP_STATE_MACHINE_ID, { currentState: state.value });
+    logger.trace('[ext.app-state-machine]: current state:', { id: APP_STATE_MACHINE_ID, currentState: state.value });
 });
 
 appStateActor.start();

@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@adguard/logger': https://github.com/AdguardTeam/tsurlfilter/raw/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz
   '@adguard/dnr-rulesets': https://github.com/AdguardTeam/tsurlfilter/raw/da4d9ea09be34dfc00057bdfd16f1e2e58fa360b/packages/dnr-rulesets/dnr-rulesets.tgz
   '@adguard/tsurlfilter': https://github.com/AdguardTeam/tsurlfilter/raw/da4d9ea09be34dfc00057bdfd16f1e2e58fa360b/packages/tsurlfilter/tsurlfilter.tgz
   '@adguard/tswebextension': https://github.com/AdguardTeam/tsurlfilter/raw/da4d9ea09be34dfc00057bdfd16f1e2e58fa360b/packages/tswebextension/tswebextension.tgz
@@ -21,8 +22,8 @@ importers:
         specifier: 2.2.6
         version: 2.2.6
       '@adguard/logger':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: https://github.com/AdguardTeam/tsurlfilter/raw/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz
+        version: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz
       '@adguard/scriptlets':
         specifier: 2.2.1
         version: 2.2.1
@@ -151,8 +152,11 @@ importers:
         version: 3.4.0(zod@3.24.4)
     devDependencies:
       '@adguard/dnr-rulesets':
-        specifier: 3.0.0-alpha.12
+        specifier: https://github.com/AdguardTeam/tsurlfilter/raw/da4d9ea09be34dfc00057bdfd16f1e2e58fa360b/packages/dnr-rulesets/dnr-rulesets.tgz
         version: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/da4d9ea09be34dfc00057bdfd16f1e2e58fa360b/packages/dnr-rulesets/dnr-rulesets.tgz
+      '@adguard/eslint-plugin-logger-context':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@adguard/re2-wasm':
         specifier: 1.2.0
         version: 1.2.0
@@ -410,6 +414,9 @@ packages:
     version: 3.0.0-alpha.12
     hasBin: true
 
+  '@adguard/eslint-plugin-logger-context@1.0.1':
+    resolution: {integrity: sha512-KfHD0UrCkkHQK7cq5nBvY9cJ/kDJoMwKfq66cJngLRKnCkCYGKGBT+HPmwapkXK96UItfPswW07i1VWIaZSgpA==}
+
   '@adguard/extended-css@2.1.1':
     resolution: {integrity: sha512-TsHZ20oUWhbtrzQ4w70B96oHkGBIUZg2FdMfkq4StGfLmXQb+kI7fQb6BtXP2D0bvraIHMq6/mtKExglDJ9vsg==}
     engines: {node: '>=16'}
@@ -418,9 +425,10 @@ packages:
     resolution: {integrity: sha512-lAKrJbM8pEK2sZi4Tb9bfa3aSDZ025nYNAHF7FxYgihtbX5SxKPZBXThEjgHGTqyifsMDq/HSVC0n15EIytMdQ==}
     engines: {node: '>=18'}
 
-  '@adguard/logger@1.1.1':
-    resolution: {integrity: sha512-pWAxGW5D6Nut4VTgckO/pqPOAOnDnC14js/wUU+FB8yZBKQHklCix46m0qqeB+YhhI68ZJBPxx32f9lxG87l5Q==}
-    engines: {node: '>=18.19.0'}
+  '@adguard/logger@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz':
+    resolution: {tarball: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz}
+    version: 2.0.0
+    engines: {node: '>=22'}
 
   '@adguard/re2-wasm@1.2.0':
     resolution: {integrity: sha512-yMtEJfThxN9rEYm2Zg3X8jUKaPYq5wByc90JbMspSWJo7MXw664gTvLD7/wijl6y79VSuAs77bXUIgBXutMp7A==}
@@ -5112,12 +5120,14 @@ snapshots:
 
   '@adguard/dnr-rulesets@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/da4d9ea09be34dfc00057bdfd16f1e2e58fa360b/packages/dnr-rulesets/dnr-rulesets.tgz':
     dependencies:
-      '@adguard/logger': 1.1.1
+      '@adguard/logger': https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz
       chokidar: 4.0.3
       commander: 12.1.0
       fast-glob: 3.3.3
       fs-extra: 11.3.0
       zod: 3.24.4
+
+  '@adguard/eslint-plugin-logger-context@1.0.1': {}
 
   '@adguard/extended-css@2.1.1': {}
 
@@ -5129,7 +5139,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@adguard/logger@1.1.1': {}
+  '@adguard/logger@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz': {}
 
   '@adguard/re2-wasm@1.2.0': {}
 
@@ -5164,7 +5174,7 @@ snapshots:
       '@adguard/agtree': 3.2.1
       '@adguard/assistant': 4.3.70
       '@adguard/extended-css': 2.1.1
-      '@adguard/logger': 1.1.1
+      '@adguard/logger': https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz
       '@adguard/scriptlets': 2.2.1
       '@adguard/text-encoding': 0.8.3
       '@adguard/tsurlfilter': https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/da4d9ea09be34dfc00057bdfd16f1e2e58fa360b/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)

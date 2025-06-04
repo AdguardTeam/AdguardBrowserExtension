@@ -121,7 +121,6 @@ export enum MessageType {
     SaveCookieLogEvent = 'saveCookieRuleEvent',
     LoadSettingsJson = 'loadSettingsJson',
     AddUrlToTrusted = 'addUrlToTrusted',
-    BadfilterRuleAsTrusted = 'badfilterRuleAsTrusted',
     SetPreserveLogState = 'setPreserveLogState',
     GetUserRulesEditorData = 'getUserRulesEditorData',
     GetEditorStorageContent = 'getEditorStorageContent',
@@ -539,14 +538,6 @@ export type AddUrlToTrustedMessage = {
     };
 };
 
-export type BadfilterRuleAsTrustedMessage = {
-    type: MessageType.BadfilterRuleAsTrusted;
-    data: {
-        rule: string;
-        url: string;
-    };
-};
-
 export type SetNotificationViewedMessage = {
     type: MessageType.SetNotificationViewed;
     data: {
@@ -910,10 +901,6 @@ export type MessageMap = {
     };
     [MessageType.AddUrlToTrusted]: {
         message: AddUrlToTrustedMessage;
-        response: void;
-    };
-    [MessageType.BadfilterRuleAsTrusted]: {
-        message: BadfilterRuleAsTrustedMessage;
         response: void;
     };
     [MessageType.CurrentLimitsMv3]: {
