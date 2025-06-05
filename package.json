@@ -17,7 +17,7 @@
     "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
     "locales": "tsx tools/locales.js",
     "resources": "tsx tools/resources.ts",
-    "resources:mv3": "pnpm add -D @adguard/dnr-rulesets && tsx tools/resources-mv3.ts",
+    "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets && tsx tools/resources-mv3.ts",
     "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
     "increment": "pnpm version patch --no-git-tag-version",
     "prepare": "husky install",
