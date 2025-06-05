@@ -91,8 +91,11 @@ class ExtendedLogger extends Logger {
             const logLevel = await browserStorage.get(ExtendedLogger.LOG_LEVEL_LOCAL_STORAGE_KEY);
 
             if (!ExtendedLogger.isValidLogLevel(logLevel)) {
-                // eslint-disable-next-line max-len
-                this.warn('[ext.ExtendedLogger.init]: log level from browser.storage.local is not valid. Value: ', logLevel);
+                // Print a warning only if the log level is valuable.
+                if (logLevel !== null && logLevel !== undefined) {
+                    // eslint-disable-next-line max-len
+                    this.warn('[ext.ExtendedLogger.init]: log level from browser.storage.local is not valid. Value: ', logLevel);
+                }
                 return;
             }
 
