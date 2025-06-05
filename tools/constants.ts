@@ -128,7 +128,7 @@ export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `By the rules of Chrome Web
 
 1. We collect and pre-build script rules from the filters (which are pre-built into the extension)
    into the add-on (STEP 1.1 and 1.2). See 'updateLocalResourcesForChromiumMv3' in
-   https://github.com/AdguardTeam/AdguardBrowserExtension/blob/release/mv3-filters/tools/resources/update-local-script-rules.ts
+   https://github.com/AdguardTeam/AdguardBrowserExtension/blob/master/tools/resources/update-local-script-rules.ts
    and the files called "local_script_rules.js".
 2. Collected local scripts are passed to the engine (STEP 2.1 and 2.2).
 3. At runtime we check every script rule whether it is included in "local_script_rules.js" (STEP 3).
