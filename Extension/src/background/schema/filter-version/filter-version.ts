@@ -22,7 +22,7 @@ import { SchemaPreprocessor } from '../preprocessor';
 /**
  * Runtime validator for persistent filter version data.
  */
-export const filterVersionDataValidator = zod.object({
+const filterVersionDataValidator = zod.object({
     /**
      * Version of filter. Usually consists of 4 parts: 1.2.3.4.
      */

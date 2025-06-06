@@ -21,7 +21,7 @@ import zod from 'zod';
  * Describes the relationship between the number of blocked requests and
  * the name of the group (similar to the tag).
  */
-export const pageStatsDataItemValidator = zod.record(zod.string(), zod.number());
+const pageStatsDataItemValidator = zod.record(zod.string(), zod.number());
 
 /**
  * Describes the relationship between the number of blocked requests and
@@ -29,7 +29,7 @@ export const pageStatsDataItemValidator = zod.record(zod.string(), zod.number())
  */
 export type PageStatsDataItem = zod.infer<typeof pageStatsDataItemValidator>;
 
-export const pageStatsDataValidator = zod.object({
+const pageStatsDataValidator = zod.object({
     /**
      * Blocked requests grouped by hours.
      */
@@ -69,6 +69,6 @@ export const pageStatsValidator = zod.object({
 });
 
 /**
- * Contains.
+ * Contains total blocked requests and blocked requests grouped by time.
  */
 export type PageStats = zod.infer<typeof pageStatsValidator>;

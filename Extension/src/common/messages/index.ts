@@ -16,6 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// FIXME: check one more time whether it is acceptable
+// since exports are: the MessageType enum and a lot of types,
+// and imports there are types only so if should not affect bundle size
 export * from './constants';
-export * from './send-message';
-export * from './message-handler';
+export { sendMessage, sendTabMessage } from './send-message';
+export { MessageHandler, messageHasTypeField, messageHasTypeAndDataFields } from './message-handler';

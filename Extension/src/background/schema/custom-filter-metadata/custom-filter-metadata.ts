@@ -19,7 +19,7 @@ import zod from 'zod';
 
 import { baseMetadataValidator } from '../metadata/filter';
 
-export const customFilterMetadataValidator = baseMetadataValidator.merge(
+const customFilterMetadataValidator = baseMetadataValidator.merge(
     zod.object({
         /**
          * The filter subscription URL from which the application retrieved

@@ -21,7 +21,7 @@ export const enum AppContextKey {
     ClientId = 'clientId',
 }
 
-export type AppContextData = {
+type AppContextData = {
     /**
      * Whether the engine is started.
      */
@@ -36,7 +36,7 @@ export type AppContextData = {
 /**
  * Memory storage for app global context.
  */
-export class AppContext {
+class AppContext {
     // Initialize with default data
     private data: AppContextData = {
         [AppContextKey.IsInit]: false,

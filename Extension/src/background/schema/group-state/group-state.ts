@@ -22,7 +22,7 @@ import { SchemaPreprocessor } from '../preprocessor';
 /**
  * Runtime validator for persistent group state data.
  */
-export const groupStateDataValidator = zod.object({
+const groupStateDataValidator = zod.object({
     /**
      * Is group enabled or not.
      */

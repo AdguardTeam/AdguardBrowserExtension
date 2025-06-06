@@ -32,7 +32,7 @@ import { UiApi } from './main';
 /**
  * Promo notification API is needed to work with notifications.
  */
-export class PromoNotificationApi {
+class PromoNotificationApi {
     private static readonly CHECK_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
     private static readonly MIN_PERIOD_MS = 30 * 60 * 1000; // 30 minutes

@@ -18,5 +18,4 @@
 
 // Rules limits schema entry point
 
-// Rules limits validators and types
-export * from './rules-limits';
+export { rulesLimitsStorageDataValidator, type RulesLimitsStorageData } from './rules-limits';

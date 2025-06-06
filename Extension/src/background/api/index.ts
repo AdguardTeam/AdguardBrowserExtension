@@ -15,14 +15,56 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './filters';
-export * from './network';
-export * from './filtering-log';
-export * from './settings';
-export * from './ui';
-export * from '../../common/api/extension';
-export * from './install';
-export * from './update';
-export * from './safebrowsing';
+export {
+    FiltersApi,
+    type FilterMetadata,
+    CommonFilterApi,
+    CustomFilterApi,
+    type GetCustomFilterInfoResult,
+    AllowlistApi,
+    UserRulesApi,
+    FilterUpdateApi,
+    type FilterUpdateOptions,
+    type FilterUpdateOptionsList,
+    Categories,
+    type CategoriesFilterData,
+    type CategoriesGroupData,
+    type CategoriesData,
+    HitStatsApi,
+    annoyancesConsent,
+    QuickFixesRulesApi,
+} from './filters';
+export {
+    network,
+    type ExtensionXMLHttpRequest,
+    type ResponseLikeXMLHttpRequest,
+    type FilterHitStats,
+    type FiltersHitStats,
+    NetworkSettings,
+} from './network';
+export {
+    filteringLogApi,
+    type FilteringEventRuleData,
+    type FilteringLogEvent,
+    type UIFilteringLogEvent,
+    type FilteringLogTabInfo,
+} from './filtering-log';
+export { SettingsApi, type SettingsData } from './settings';
+export {
+    UiApi,
+    PagesApi,
+    toasts,
+    promoNotificationApi,
+    FramesApi,
+    type FrameData,
+    AssistantApi,
+    iconsApi,
+    defaultIconVariants,
+    ContextMenuApi,
+} from './ui';
+export { WindowsApi, TabsApi, getIconImageData } from '../../common/api/extension';
+export { InstallApi } from './install';
+export { UpdateApi } from './update';
+export { SafebrowsingApi } from './safebrowsing';
 export { DocumentBlockApi } from './document-block';
-export * from './page-stats';
+export { PageStatsApi, PopupStatsCategories, type GetStatisticsDataResponse } from './page-stats';

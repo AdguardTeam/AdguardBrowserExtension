@@ -18,5 +18,4 @@
 
 // Hit stats schema entry point
 
-// hit stats validators and types
-export * from './hit-stats';
+export { hitStatsStorageDataValidator, type HitStatsStorageData, type HitStats } from './hit-stats';

@@ -18,7 +18,7 @@
 
 import { RULES_LIMITS_KEY } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
-import { type RulesLimitsStorageData } from '../schema/rules-limits/rules-limits';
+import { type RulesLimitsStorageData } from '../schema/rules-limits';
 
 import { browserStorage } from './shared-instances';
 

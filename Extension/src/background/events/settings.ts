@@ -17,7 +17,7 @@
  */
 import { type SettingOption, type Settings } from '../schema';
 
-export type SettingsListener<T extends keyof Settings> = (value: Settings[T]) => void | Promise<void>;
+type SettingsListener<T extends keyof Settings> = (value: Settings[T]) => void | Promise<void>;
 
 // TODO: Remove awaiting of listener promises in publishEvent.
 //  This will decouple the publisher from listener execution time/errors,
@@ -27,7 +27,7 @@ export type SettingsListener<T extends keyof Settings> = (value: Settings[T]) =>
 /**
  * Type-safe mediator for setting options change events.
  */
-export class SettingsEvents {
+class SettingsEvents {
     private listenersMap = new Map();
 
     /**
