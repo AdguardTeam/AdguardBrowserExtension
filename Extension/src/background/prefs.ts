@@ -19,6 +19,7 @@ import browser from 'webextension-polyfill';
 
 import { TSURLFILTER_VERSION } from '@adguard/tsurlfilter';
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
+import { getVersion } from '@adguard/dnr-rulesets/utils';
 
 import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from 'tswebextension';
 
@@ -39,5 +40,6 @@ export class Prefs {
         tsurlfilter: TSURLFILTER_VERSION,
         scriptlets: SCRIPTLETS_VERSION,
         extendedCss: EXTENDED_CSS_VERSION,
+        dnrRulesets: __IS_MV3__ ? getVersion() : null,
     };
 }
