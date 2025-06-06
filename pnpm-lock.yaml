@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@adguard/filters-downloader': link:../filters-downloader
+
 importers:
 
   .:
@@ -12,8 +15,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0
       '@adguard/filters-downloader':
-        specifier: 2.2.6
-        version: 2.2.6
+        specifier: link:../filters-downloader
+        version: link:../filters-downloader
       '@adguard/logger':
         specifier: 1.1.1
         version: 1.1.1
@@ -389,10 +392,6 @@ packages:
   '@adguard/css-tokenizer@1.2.0':
     resolution: {integrity: sha512-cUj5j/AU5z/T4//5M6KnIJBpykAY4QbDsoiQ2DaWX/r2XkepMkTb8DhIbUHJD/QLGEyLeQLpi+nlxAgf4NTRRQ==}
 
-  '@adguard/diff-builder@1.0.17':
-    resolution: {integrity: sha512-pKM8oUQcl8IrVyJIlqwiAUMX4manZrfe2S/a9Np3VDbnaQFbGTwW1cmQoKffmdFUwk7dEKzQ83ILm1OuOu6kZw==}
-    hasBin: true
-
   '@adguard/dnr-rulesets@3.0.0-alpha.14':
     resolution: {integrity: sha512-kuBKWWgDTgrLYegUz+aFOS8r5ONXYPW3/2X0J/8fwT/+HTBEy0grjlCBToLEcVNi8sI4cYWtsN8JXHy+yt7Dfw==}
     hasBin: true
@@ -400,10 +399,6 @@ packages:
   '@adguard/extended-css@2.1.1':
     resolution: {integrity: sha512-TsHZ20oUWhbtrzQ4w70B96oHkGBIUZg2FdMfkq4StGfLmXQb+kI7fQb6BtXP2D0bvraIHMq6/mtKExglDJ9vsg==}
     engines: {node: '>=16'}
-
-  '@adguard/filters-downloader@2.2.6':
-    resolution: {integrity: sha512-lAKrJbM8pEK2sZi4Tb9bfa3aSDZ025nYNAHF7FxYgihtbX5SxKPZBXThEjgHGTqyifsMDq/HSVC0n15EIytMdQ==}
-    engines: {node: '>=18'}
 
   '@adguard/logger@1.1.1':
     resolution: {integrity: sha512-pWAxGW5D6Nut4VTgckO/pqPOAOnDnC14js/wUU+FB8yZBKQHklCix46m0qqeB+YhhI68ZJBPxx32f9lxG87l5Q==}
@@ -2013,10 +2008,6 @@ packages:
     resolution: {integrity: sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==}
     engines: {node: '>=16'}
 
-  commander@11.1.0:
-    resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
-    engines: {node: '>=16'}
-
   commander@12.1.0:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
     engines: {node: '>=18'}
@@ -2282,11 +2273,6 @@ packages:
 
   diff@7.0.0:
     resolution: {integrity: sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==}
-    engines: {node: '>=0.3.1'}
-
-  diff@https://codeload.github.com/105th/jsdiff/tar.gz/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a:
-    resolution: {tarball: https://codeload.github.com/105th/jsdiff/tar.gz/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a}
-    version: 5.1.1
     engines: {node: '>=0.3.1'}
 
   diffie-hellman@5.0.3:
@@ -5094,12 +5080,6 @@ snapshots:
 
   '@adguard/css-tokenizer@1.2.0': {}
 
-  '@adguard/diff-builder@1.0.17':
-    dependencies:
-      commander: 11.1.0
-      crypto-js: 4.2.0
-      diff: https://codeload.github.com/105th/jsdiff/tar.gz/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a
-
   '@adguard/dnr-rulesets@3.0.0-alpha.14':
     dependencies:
       '@adguard/logger': 1.1.1
@@ -5109,14 +5089,6 @@ snapshots:
       zod: 3.24.4
 
   '@adguard/extended-css@2.1.1': {}
-
-  '@adguard/filters-downloader@2.2.6':
-    dependencies:
-      '@adguard/diff-builder': 1.0.17
-      axios: 1.6.2
-      crypto-js: 4.2.0
-    transitivePeerDependencies:
-      - debug
 
   '@adguard/logger@1.1.1': {}
 
@@ -6698,8 +6670,6 @@ snapshots:
 
   commander@11.0.0: {}
 
-  commander@11.1.0: {}
-
   commander@12.1.0: {}
 
   commander@2.20.3: {}
@@ -6982,8 +6952,6 @@ snapshots:
   diff@4.0.2: {}
 
   diff@7.0.0: {}
-
-  diff@https://codeload.github.com/105th/jsdiff/tar.gz/2be2e7df90e8eebd99f0385c7b1dc16c2f4dcc1a: {}
 
   diffie-hellman@5.0.3:
     dependencies:

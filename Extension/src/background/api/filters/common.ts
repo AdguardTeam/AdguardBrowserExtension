@@ -258,8 +258,9 @@ export class CommonFilterApi {
         // module to reduce the risk of cyclic dependency, since FiltersApi
         // depends on CommonFilterApi and CustomFilterApi.
         // On the first run, we update the common filters from the backend.
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const remote = !__IS_MV3__;
-        await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
+        await FiltersApi.loadAndEnableFilters(filterIds, false, enableUntouchedGroups);
 
         // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
         // // For MV3 version we have QuickFixes filter which does not have local

@@ -166,6 +166,9 @@ export class FilterUpdateApi {
                 updatePeriod,
             ).map((filter) => ({ ...filter, ignorePatches: true }));
 
+            // eslint-disable-next-line max-len, no-console
+            console.warn(`Filters to patch update: ${JSON.stringify(filtersToPatchUpdate)}, filters to full update: ${JSON.stringify(filtersToFullUpdate)}`);
+
             // Combine both arrays
             const combinedFilters = [...filtersToPatchUpdate, ...filtersToFullUpdate];
 
