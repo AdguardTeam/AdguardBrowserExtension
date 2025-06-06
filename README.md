@@ -568,6 +568,7 @@ This is useful for temporarily relaxing or tightening the allowed size delta for
 - `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+- `userScripts`                   - this permission is required in order to apply JavaScript and Scriptlet rules from User rules and Custom filters
 
 ## <a name="auto-publish-builds"></a> Auto-publish builds
 
