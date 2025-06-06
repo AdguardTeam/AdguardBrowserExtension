@@ -26,17 +26,17 @@ type TooltipParams = {
     /**
      * Tooltip text.
      */
-    text?: string,
+    text?: string;
 
     /**
      * Tooltip visibility flag.
      */
-    visible?: boolean,
+    visible?: boolean;
 
     /**
      * Flag to set fixed width for tooltip.
      */
-    fixedWidth?: boolean,
+    fixedWidth?: boolean;
 };
 
 export const Tooltip = ({ text, visible, fixedWidth }: TooltipParams) => {

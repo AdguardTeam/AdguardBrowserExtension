@@ -28,52 +28,52 @@ type ConfirmModalParams = {
     /**
      * Modal title.
      */
-    title: string,
+    title: string;
 
     /**
      * Modal subtitle.
      */
-    subtitle?: string,
+    subtitle?: string;
 
     /**
      * Modal visibility flag.
      */
-    isOpen: boolean,
+    isOpen: boolean;
 
     /**
      * Confirm button click handler.
      */
-    onConfirm: () => void,
+    onConfirm: () => void;
 
     /**
      * Cancel button click handler.
      */
-    onCancel?: () => void,
+    onCancel?: () => void;
 
     /**
      * Modal visibility flag setter.
      */
-    setIsOpen: (isOpen: boolean) => void,
+    setIsOpen: (isOpen: boolean) => void;
 
     /**
      * Custom confirm button title.
      */
-    customConfirmTitle?: string,
+    customConfirmTitle?: string;
 
     /**
      * Custom cancel button title.
      */
-    customCancelTitle?: string,
+    customCancelTitle?: string;
 
     /**
      * Flag to show consent modal.
      */
-    isConsent?: boolean,
+    isConsent?: boolean;
 
     /**
      * Flag to make modal content scrollable. Default is false.
      */
-    isScrollable?: boolean,
+    isScrollable?: boolean;
 };
 
 export const ConfirmModal = ({
@@ -142,10 +142,10 @@ export const ConfirmModal = ({
                         <button
                             type="button"
                             className="button modal__close"
-                            aria-label={translator.getMessage('close_button_title')}
+                            title={translator.getMessage('close_button_title')}
                             onClick={handleCancel}
                         >
-                            <Icon id="#cross" />
+                            <Icon id="#cross" aria-hidden="true" />
                         </button>
                     </div>
                     {subtitle && (

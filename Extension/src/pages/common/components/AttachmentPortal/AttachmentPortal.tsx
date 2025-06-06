@@ -19,7 +19,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { Position } from '../types';
+import { type Position } from '../types';
 
 const TOOLTIP_EDGE_PADDING = 4; // px
 
@@ -33,9 +33,9 @@ const getCssString = (position: Position, visible: boolean) => {
 };
 
 type AttachmentPortalParams = {
-    rootId: string,
-    position: Position,
-    children: React.ReactNode,
+    rootId: string;
+    position: Position;
+    children: React.ReactNode;
 };
 
 export const AttachmentPortal = ({ rootId, position, children }: AttachmentPortalParams) => {

@@ -18,12 +18,12 @@
 import { logger } from '../../common/logger';
 import {
     SettingOption,
-    Metadata,
-    FilterVersionStorageData,
-    FilterVersionData,
+    type Metadata,
+    type FilterVersionStorageData,
+    type FilterVersionData,
 } from '../schema';
 import { StringStorage } from '../utils/string-storage';
-import type { FilterUpdateOptionsList } from '../api';
+import { type FilterUpdateOptionsList } from '../api';
 
 import { settingsStorage } from './settings';
 
@@ -116,7 +116,7 @@ export class FilterVersionStorage extends StringStorage<
             const data = this.data[filterId];
 
             if (!data) {
-                logger.warn(`Failed to refresh last check time for filter ${filterId}.`);
+                logger.warn(`[ext.FilterVersionStorage.refreshLastCheckTime]: failed to refresh last check time for filter ${filterId}.`);
                 continue;
             }
 

@@ -29,12 +29,14 @@ import { type SingleActionParams } from './types';
 import '../actions.pcss';
 
 export const ReportIssueAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
+    const title = translator.getMessage('popup_abuse_site');
+
     /**
      * Handle issue reporting action click.
      */
     const handleAbuseSite = () => {
         if (!url) {
-            logger.error('No URL provided for abuse site reporting');
+            logger.error('[ext.ReportIssueAction]: no URL provided for abuse site reporting');
             return;
         }
 
@@ -50,15 +52,17 @@ export const ReportIssueAction = ({ className, isFilteringPossible, url }: Singl
         <button
             type="button"
             className={className}
+            title={title}
             onClick={handleAbuseSite}
         >
             <Icon
                 id="#thumb-down"
                 classname="icon--24 icon--action--thumb-down"
+                aria-hidden="true"
             />
-            <div className="action__title">
-                {translator.getMessage('popup_abuse_site')}
-            </div>
+            <span className="action__title">
+                {title}
+            </span>
         </button>
     );
 };

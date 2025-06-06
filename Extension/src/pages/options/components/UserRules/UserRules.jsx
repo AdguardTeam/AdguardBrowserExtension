@@ -27,7 +27,7 @@ import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { DynamicRulesLimitsWarning } from '../Warnings';
-import { RuleLimitsLink } from '../RulesLimits/RuleLimitsLink';
+import { DeveloperModeWarning } from '../Warnings/DeveloperModeWarning';
 
 import { UserRulesSwitcher } from './UserRulesSwitcher';
 import { RuleSyntaxLink } from './RuleSyntaxLink';
@@ -44,6 +44,9 @@ const UserRules = observer(() => {
         'settings__group__links--custom': settingsStore.isFullscreenUserRulesEditorOpen,
     });
 
+    const switchId = settingsStore.userFilterEnabledSettingId;
+    const switchTitleId = `${switchId}-title`;
+
     // When we close fullscreen editor we should update limits warning message.
     useEffect(() => {
         const updateLimits = async () => {
@@ -58,17 +61,18 @@ const UserRules = observer(() => {
     return (
         <>
             <SettingsSection
+                id={switchId}
                 title={translator.getMessage('options_userfilter')}
-                id={settingsStore.userFilterEnabledSettingId}
+                titleId={switchTitleId}
                 mode="smallContainer"
                 description={translator.getMessage('options_userfilter_subtitle_key')}
-                inlineControl={<UserRulesSwitcher />}
+                inlineControl={(<UserRulesSwitcher labelId={switchTitleId} />)}
             />
+            <DynamicRulesLimitsWarning />
+            <DeveloperModeWarning />
             <div className={linksClassNames}>
                 <RuleSyntaxLink />
-                {__IS_MV3__ && <RuleLimitsLink />}
             </div>
-            <DynamicRulesLimitsWarning useWrapper />
             {settingsStore.isFullscreenUserRulesEditorOpen
                 ? (
                     <div className="editor__open">

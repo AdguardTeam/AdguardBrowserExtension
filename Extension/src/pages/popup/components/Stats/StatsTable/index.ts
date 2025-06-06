@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { StatsTable } from './StatsTable';
+export { StatsTable, STATS_TAB_ID, STATS_PANEL_ID } from './StatsTable';

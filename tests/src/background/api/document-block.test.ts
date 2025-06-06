@@ -1,5 +1,5 @@
 import browser from 'sinon-chrome';
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import {
     describe,
     it,
@@ -77,6 +77,33 @@ describe('document block api', () => {
                     domain: 'example.com',
                     expires: DocumentBlockApi.TRUSTED_TTL_MS,
                 }]),
+            }),
+        ).toBe(true);
+    });
+
+    it('Resets trusted domains', async () => {
+        const url = 'https://example.org/test';
+
+        await DocumentBlockApi.init();
+
+        vi.spyOn(Date, 'now').mockImplementation(() => 0);
+
+        await DocumentBlockApi.setTrustedDomain(url);
+
+        expect(
+            browser.storage.local.set.calledWith({
+                [TRUSTED_DOCUMENTS_CACHE_KEY]: JSON.stringify([{
+                    domain: 'example.org',
+                    expires: DocumentBlockApi.TRUSTED_TTL_MS,
+                }]),
+            }),
+        ).toBe(true);
+
+        await DocumentBlockApi.reset();
+
+        expect(
+            browser.storage.local.set.calledWith({
+                [TRUSTED_DOCUMENTS_CACHE_KEY]: JSON.stringify([]),
             }),
         ).toBe(true);
     });

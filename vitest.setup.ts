@@ -21,7 +21,7 @@ import browser from 'sinon-chrome';
 import escape from 'css.escape';
 // @ts-ignore
 import chrome from 'sinon-chrome/extensions';
-import type { DebouncedFunc } from 'lodash-es/debounce';
+import { type DebouncedFunc } from 'lodash-es/debounce';
 
 import { ResourceType } from '@adguard/tsurlfilter/es/declarative-converter';
 

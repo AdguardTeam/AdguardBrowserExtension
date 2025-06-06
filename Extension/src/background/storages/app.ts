@@ -25,12 +25,12 @@ export type AppContextData = {
     /**
      * Whether the engine is started.
      */
-    [AppContextKey.IsInit]: boolean,
+    [AppContextKey.IsInit]: boolean;
 
     /**
      * Client ID.
      */
-    [AppContextKey.ClientId]?: string,
+    [AppContextKey.ClientId]?: string;
 };
 
 /**

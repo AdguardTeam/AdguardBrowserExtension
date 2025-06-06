@@ -31,26 +31,27 @@ export const ProtectionSwitch = observer(() => {
 
     const { applicationFilteringPaused, pauseApplicationFiltering, resumeApplicationFiltering } = store;
 
-    let title = translator.getMessage('context_disable_protection');
     let iconId = '#pause';
     let buttonHandler = pauseApplicationFiltering;
 
     if (applicationFilteringPaused) {
-        title = translator.getMessage('context_enable_protection');
         iconId = '#start';
         buttonHandler = resumeApplicationFiltering;
     }
 
     return (
         <button
-            className="button popup-header__button"
             type="button"
+            role="switch"
+            title={translator.getMessage('popup_protection_button')}
+            className="button popup-header__button"
+            aria-checked={!applicationFilteringPaused}
             onClick={buttonHandler}
-            title={title}
         >
             <Icon
                 id={iconId}
                 classname="icon--24 icon--header"
+                aria-hidden="true"
             />
         </button>
     );

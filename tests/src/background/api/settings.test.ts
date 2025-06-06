@@ -1,5 +1,5 @@
 import browser from 'sinon-chrome';
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import {
     vi,
     describe,
@@ -11,14 +11,15 @@ import {
 
 import {
     ASSISTANT_INJECT_OUTPUT,
-    DOCUMENT_BLOCK_OUTPUT,
+    BLOCKING_BLOCKED_OUTPUT,
     GPC_SCRIPT_OUTPUT,
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../constants';
 import {
+    DocumentBlockApi,
     Network,
     SettingsApi,
-    SettingsData,
+    type SettingsData,
 } from '../../../../Extension/src/background/api';
 import { App } from '../../../../Extension/src/background/app';
 import {
@@ -120,14 +121,14 @@ describe('Settings Api', () => {
         it('Gets tswebextension config', async () => {
             const expected = __IS_MV3__
                 ? getDefaultSettingsConfigFixtureMV3(
-                    browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                    browser.runtime.getURL(`${BLOCKING_BLOCKED_OUTPUT}.html?_locale=en`),
                     `/${ASSISTANT_INJECT_OUTPUT}.js`,
                     `/${GPC_SCRIPT_OUTPUT}.js`,
                     `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
                     false,
                 )
                 : getDefaultSettingsConfigFixtureMV2(
-                    browser.runtime.getURL(`${DOCUMENT_BLOCK_OUTPUT}.html`),
+                    browser.runtime.getURL(`${BLOCKING_BLOCKED_OUTPUT}.html?_locale=en`),
                     `/${ASSISTANT_INJECT_OUTPUT}.js`,
                     false,
                 );
@@ -197,11 +198,10 @@ describe('Settings Api', () => {
             expect(importResult).toBeTruthy();
 
             const importedSettingsString = await SettingsApi.export();
+
             // Fill up optional fields
-            // TODO: Remove this condition when we will return custom filters to MV3(AG-39385).
-            if (!__IS_MV3__) {
-                userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
-            }
+            userConfig[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+
             expect(JSON.parse(importedSettingsString)).toStrictEqual(userConfig);
         }, EXTENDED_TIMEOUT_MS);
 
@@ -223,10 +223,16 @@ describe('Settings Api', () => {
 
         it('Reset default settings', async () => {
             await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
+            expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(false);
+
+            // check trusted domains list as well since it is temporary and not stored as a part of settings
+            await DocumentBlockApi.setTrustedDomain('https://example.com/test');
+            expect(await DocumentBlockApi.getTrustedDomains()).toStrictEqual(['example.com']);
 
             await SettingsApi.reset(true);
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
+            expect(await DocumentBlockApi.getTrustedDomains()).toStrictEqual([]);
         }, EXTENDED_TIMEOUT_MS);
     });
 });

@@ -17,7 +17,7 @@
  */
 
 import { ANNOYANCES_CONSENT_KEY } from '../../common/constants';
-import { AnnoyancesConsentStorageData } from '../schema';
+import { type AnnoyancesConsentStorageData } from '../schema';
 import { StringStorage } from '../utils/string-storage';
 
 import { browserStorage } from './shared-instances';

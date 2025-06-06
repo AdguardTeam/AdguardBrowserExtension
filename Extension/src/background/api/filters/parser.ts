@@ -16,14 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 export type FilterParsedData = {
-    name: string,
-    description: string,
-    homepage: string,
-    version: string,
-    expires: number,
-    timeUpdated: string,
+    name: string;
+    description: string;
+    homepage: string;
+    version: string;
+    expires: number;
+    timeUpdated: string;
     // Spec https://github.com/ameshkov/diffupdates/tree/b81243c50d23e0a8be0fe95a80d55abd00b08981?tab=readme-ov-file#-diff-path
-    diffPath: string,
+    diffPath: string;
 };
 
 /**

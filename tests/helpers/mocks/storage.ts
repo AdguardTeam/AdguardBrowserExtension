@@ -1,5 +1,5 @@
 import browser from 'sinon-chrome';
-import { Storage, Events } from 'webextension-polyfill';
+import { type Storage, type Events } from 'webextension-polyfill';
 
 /**
  * Emulated browser.storage.local

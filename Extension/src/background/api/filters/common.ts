@@ -20,7 +20,7 @@ import browser from 'webextension-polyfill';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
-import { SettingOption, RegularFilterMetadata } from '../../schema';
+import { SettingOption, type RegularFilterMetadata } from '../../schema';
 import { AntiBannerFiltersId } from '../../../common/constants';
 import {
     metadataStorage,
@@ -32,9 +32,8 @@ import {
 } from '../../storages';
 import { network } from '../network';
 
-import { CustomFilterApi } from './custom';
 import { FiltersApi } from './main';
-import type { FilterUpdateOptions } from './update';
+import { type FilterUpdateOptions } from './update';
 import { FilterParser } from './parser';
 
 /**
@@ -69,23 +68,6 @@ export class CommonFilterApi {
     }
 
     /**
-     * Checks if filter is built-in: not custom, not user-rules, not allowlist
-     * and not quick fixes filter (used only for MV3 version).
-     *
-     * @param filterId Filter id.
-     *
-     * @returns True, if filter is common, else returns false.
-     */
-    public static isCommonFilter(filterId: number): boolean {
-        return !CustomFilterApi.isCustomFilter(filterId)
-            && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
-
-        // TODO: Uncomment this line when Quick Fixes filter will be supported for MV3
-        // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
-    }
-
-    /**
      * Update common filter.
      *
      * @param filterUpdateOptions Filter update detail.
@@ -95,7 +77,7 @@ export class CommonFilterApi {
     public static async updateFilter(
         filterUpdateOptions: FilterUpdateOptions,
     ): Promise<RegularFilterMetadata | null> {
-        logger.info(`Update filter ${filterUpdateOptions.filterId}`);
+        logger.info(`[ext.CommonFilterApi.updateFilter]: update filter ${filterUpdateOptions.filterId}`);
 
         // We do not have to check metadata for the filters which do not update with force, because
         // they even do not trigger metadata update.
@@ -103,24 +85,24 @@ export class CommonFilterApi {
             const filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateOptions.filterId);
 
             if (!filterMetadata) {
-                logger.error(`Cannot find filter ${filterUpdateOptions.filterId} metadata`);
+                logger.error(`[ext.CommonFilterApi.updateFilter]: cannot find filter ${filterUpdateOptions.filterId} metadata`);
                 return null;
             }
 
             if (!CommonFilterApi.isFilterNeedUpdate(filterMetadata)) {
-                logger.info(`Filter ${filterUpdateOptions.filterId} is already updated`);
+                logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} is already updated`);
                 return null;
             }
         }
 
-        logger.info(`Filter ${filterUpdateOptions.filterId} needs to be updated`);
+        logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} needs to be updated`);
 
         try {
             const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateOptions, true);
-            logger.info(`Filter ${filterUpdateOptions.filterId} updated successfully`);
+            logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} updated successfully`);
             return filterMetadata;
         } catch (e) {
-            logger.error(e);
+            logger.error(`[ext.CommonFilterApi.updateFilter]: failed to update filter ${filterUpdateOptions.filterId}:`, e);
             return null;
         }
     }
@@ -141,6 +123,8 @@ export class CommonFilterApi {
      * dynamically.
      *
      * @returns Filter metadata — {@link RegularFilterMetadata}.
+     *
+     * @throws Error if filter is deprecated and should not be used.
      */
     public static async loadFilterRulesFromBackend(
         filterUpdateOptions: FilterUpdateOptions,
@@ -149,13 +133,7 @@ export class CommonFilterApi {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
 
-        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-        // if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
-        //     forceRemote = false;
-        // }
-
-        // TODO: remove this block when we revert support for custom and quick fixes filters
-        if (__IS_MV3__) {
+        if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
             forceRemote = false;
         }
 
@@ -194,7 +172,13 @@ export class CommonFilterApi {
             expires,
             timeUpdated,
             diffPath,
+            deprecated,
+            filterId,
         } = filterMetadata;
+
+        if (deprecated) {
+            throw new Error(`Filter with id ${filterId} is deprecated and shall not be used`);
+        }
 
         const filterVersion = filterVersionStorage.get(filterUpdateOptions.filterId);
 
@@ -261,16 +245,15 @@ export class CommonFilterApi {
         const remote = !__IS_MV3__;
         await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
 
-        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-        // // For MV3 version we have QuickFixes filter which does not have local
-        // // version and always should be updated from the server.
-        // if (__IS_MV3__) {
-        //     await FiltersApi.loadAndEnableFilters(
-        //         [AntiBannerFiltersId.QuickFixesFilterId],
-        //         true, // Install from remote.
-        //         enableUntouchedGroups,
-        //     );
-        // }
+        // For MV3 version we have QuickFixes filter which does not have local
+        // version and always should be updated from the server.
+        if (__IS_MV3__) {
+            await FiltersApi.loadAndEnableFilters(
+                [AntiBannerFiltersId.QuickFixesFilterId],
+                true,
+                enableUntouchedGroups,
+            );
+        }
     }
 
     /**
@@ -305,7 +288,7 @@ export class CommonFilterApi {
      * @returns True, if filter update is required, else returns false.
      */
     private static isFilterNeedUpdate(filterMetadata: RegularFilterMetadata): boolean {
-        logger.info(`Check if filter ${filterMetadata.filterId} need to update`);
+        logger.info(`[ext.CommonFilterApi.isFilterNeedUpdate]: check if filter ${filterMetadata.filterId} need to update`);
 
         const filterVersion = filterVersionStorage.get(filterMetadata.filterId);
 

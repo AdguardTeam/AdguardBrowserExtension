@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { AnyRule, InputByteBuffer } from '@adguard/agtree';
+import { type AnyRule, InputByteBuffer } from '@adguard/agtree';
 import { RuleParser } from '@adguard/agtree/parser';
 import { RuleDeserializer } from '@adguard/agtree/deserializer';
 import {
     FilterListPreprocessor,
-    PreprocessedFilterList,
+    getRuleSourceIndex,
+    getRuleSourceText,
+    type PreprocessedFilterList,
     RuleSyntaxUtils,
 } from '@adguard/tsurlfilter';
 
@@ -39,6 +41,7 @@ import {
     editorStorage,
 } from '../../storages';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
+import { getZodErrorMessage } from '../../../common/error';
 
 /**
  * API for managing user rules list.
@@ -65,10 +68,7 @@ export class UserRulesApi {
             }
         } catch (e) {
             if (!isInstall) {
-                logger.warn(
-                    'Cannot parse user filter list from persisted storage, reset to default. Origin error: ',
-                    e,
-                );
+                logger.warn('[ext.UserRulesApi.init]: cannot parse user filter list from persisted storage, reset to default. Origin error:', getZodErrorMessage(e));
             }
             await FiltersStorage.set(
                 AntiBannerFiltersId.UserFilterId,
@@ -110,7 +110,7 @@ export class UserRulesApi {
                 }
             }
         } catch (e) {
-            logger.error('Cannot check user rules for url', e);
+            logger.error('[ext.UserRulesApi.hasRulesForUrl]: cannot check user rules for url, origin error:', e);
         }
 
         return false;
@@ -192,6 +192,37 @@ export class UserRulesApi {
             .join(NEWLINE_CHAR_UNIX);
 
         await UserRulesApi.setUserRules(userRulesToSave);
+    }
+
+    /**
+     * Removes rule from user list by index.
+     *
+     * @param index Rule index.
+     *
+     * @returns True, if rule was removed, else returns false.
+     */
+    public static async removeUserRuleByIndex(index: number): Promise<boolean> {
+        const [rawFilterList, sourceMap, conversionMap] = await Promise.all([
+            FiltersStoragesAdapter.getRawFilterList(AntiBannerFiltersId.UserFilterId),
+            FiltersStoragesAdapter.getSourceMap(AntiBannerFiltersId.UserFilterId),
+            FiltersStoragesAdapter.getConversionMap(AntiBannerFiltersId.UserFilterId),
+        ]);
+
+        if (!sourceMap || !conversionMap || !rawFilterList) {
+            return false;
+        }
+
+        const lineStartIndex = getRuleSourceIndex(index, sourceMap);
+
+        const ruleText = conversionMap[lineStartIndex] ?? getRuleSourceText(index, rawFilterList);
+
+        if (!ruleText) {
+            return false;
+        }
+
+        await UserRulesApi.removeUserRule(ruleText);
+
+        return true;
     }
 
     /**

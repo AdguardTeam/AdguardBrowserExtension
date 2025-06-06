@@ -43,7 +43,7 @@ export enum ManifestVersionEnv {
     Third = '3',
 }
 
-const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
+export const isValidBuildEnv = (buildEnv: any): buildEnv is BuildTargetEnv => {
     return Object.values(BuildTargetEnv).includes(buildEnv as BuildTargetEnv);
 };
 
@@ -76,14 +76,22 @@ export const ENV_CONF: Record<BuildTargetEnv, EnvConfig> = {
     },
 };
 
-export const enum Browser {
+export enum Browser {
     Chrome = 'chrome',
     ChromeMv3 = 'chrome-mv3',
+    /**
+     * CRX build of Chrome MV2 for mobile testing.
+     */
+    ChromeCrx = 'chrome-crx',
     FirefoxAmo = 'firefox-amo',
     FirefoxStandalone = 'firefox-standalone',
     Opera = 'opera',
     Edge = 'edge',
 }
+
+export const isValidBrowserTarget = (target: any): target is Browser => {
+    return Object.values(Browser).includes(target as Browser);
+};
 
 /**
  * List of browsers which has its own filters assets directory.
@@ -122,23 +130,39 @@ Because of that, we use the following approach (that was accepted by AMO reviewe
 3. We also allow "User rules" and "Custom filters" to work since those rules are added manually by the user.
    This way filters maintainers can test new rules before including them in the filters.`;
 
-export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `By the rules of Chrome Web Store, we cannot use remote scripts.
-   Because of that, we use the following approach
-   (you can search the described steps by 'JS_RULES_EXECUTION' in the bundled background.js):
+export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = ` To fully comply with Chrome Web Store policies regarding remote code execution,
+ we implement a strict security-focused approach for JavaScript rule execution:
 
-1. We collect and pre-build script rules from the filters (which are pre-built into the extension)
-   into the add-on (STEP 1.1 and 1.2). See 'updateLocalResourcesForChromiumMv3' in
-   https://github.com/AdguardTeam/AdguardBrowserExtension/blob/master/tools/resources/update-local-script-rules.ts
-   and the files called "local_script_rules.js".
-2. Collected local scripts are passed to the engine (STEP 2.1 and 2.2).
-3. At runtime we check every script rule whether it is included in "local_script_rules.js" (STEP 3).
-4. Execution of script rules:
-    - If the rule is included, we allow this rule to be executed.
-      Such rules are executed by chrome.scripting API (STEP 4.1 and 4.2). Other rules are discarded.`;
+ 1. For standard users (default mode):
+    - We collect and pre-build script rules from the filters and statically bundle
+      them into the extension - STEP 1. See 'updateLocalResourcesForChromiumMv3' in our build tools.
+    - These pre-verified local scripts are passed to the engine - STEP 2.
+    - At runtime, we check if each script rule is included in our local scripts list (STEP 3).
+    - Only pre-verified local scripts are executed via chrome.scripting API (STEP 4.1 and 4.2).
+      All other scripts are discarded.
+
+ 2. For advanced users with developer mode explicitly enabled:
+    - JavaScript rules from custom filters can be executed using the browser's built-in
+      userScripts API (STEP 4.3), which provides a secure sandbox.
+    - This execution bypasses the local script verification process but remains
+      isolated and secure through Chrome's native sandboxing.
+    - This mode requires explicit user activation and is intended for advanced users only.
+
+ This dual-path implementation ensures perfect compliance with Chrome Web Store policies
+ while providing necessary functionality for users with different needs.`;
 
 // artifacts constants
-export const CHROME_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.xml';
+export const UPDATE_BASE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta';
+
+export const CHROME_UPDATE_FILE_NAME = 'update.xml';
+export const CHROME_UPDATE_URL = `${UPDATE_BASE_URL}/${CHROME_UPDATE_FILE_NAME}`;
+
 export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');
-export const CHROME_CODEBASE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/chrome.crx';
+export const CHROME_CERT_DEV = path.resolve(__dirname, '../tests/test-certificate.pem');
+
+export const CHROME_CODEBASE_FILE_NAME = 'chrome.crx';
+export const CHROME_CODEBASE_URL = `${UPDATE_BASE_URL}/${CHROME_CODEBASE_FILE_NAME}`;
+
 export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
-export const FIREFOX_WEBEXT_UPDATE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.json';
+export const FIREFOX_WEBEXT_UPDATE_FILE_NAME = 'update.json';
+export const FIREFOX_WEBEXT_UPDATE_URL = `${UPDATE_BASE_URL}/${FIREFOX_WEBEXT_UPDATE_FILE_NAME}`;

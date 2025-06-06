@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Action } from 'webextension-polyfill';
+import { type Action } from 'webextension-polyfill';
 
 import { logger } from '../../logger';
 
@@ -86,7 +86,7 @@ const loadImageDataMv3 = async (size: number, url: string) => {
         const imageData = ctx.getImageData(0, 0, size, size);
         return imageData;
     } catch (error) {
-        logger.error('Failed to load image:', error);
+        logger.error('[ext.iconsCache]: failed to load image:', error);
         throw error;
     }
 };
