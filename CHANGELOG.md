@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Total blocked popup string translated incorrectly [#3204].
 - `$replace` rules may break some websites [#3122].
 - Increase file size limit to 10MB for `$replace` rules in Firefox [#3192].
+- Allow to specify attributes without value in selector for HTML filtering rules [tsurlfilter#147].
 
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
@@ -75,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3163]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3163
 [#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
+[tsurlfilter#147]: https://github.com/AdguardTeam/tsurlfilter/issues/147
 
 ## [5.1.94] - 2025-05-29
 
