@@ -1,5 +1,5 @@
 import {
-    Config,
+    type Config,
     RootOption,
     PROTOCOL_VERSION,
     GeneralSettingsOption,
@@ -10,7 +10,6 @@ import {
     StealthOption,
     CustomFilterOption,
 } from '../../../Extension/src/background/schema';
-import { CUSTOM_FILTERS_START_ID } from '../../../Extension/src/common/constants';
 
 import { filterNameFixture } from './filterWithMetadata';
 
@@ -42,7 +41,7 @@ export const getExportedSettingsProtocolV1Fixture = () => ({
         'user-rules-editor-wrap': false,
     },
     'filters': {
-        'enabled-filters': [1, 2, 3, 4, 7, 13, 14, 15, 17, 241, 1000],
+        'enabled-filters': [1, 2, 3, 4, 7, 13, 17, 18, 19, 20, 21, 22, 241, 1000],
         'enabled-groups': [0, 1, 2, 3, 4, 5, 6, 7],
         'custom-filters': [{
             'customUrl': 'https://testcases.agrd.dev/Filters/element-hiding-rules/test-element-hiding-rules.txt',
@@ -91,27 +90,11 @@ export const getImportedSettingsFromV1Fixture = () => {
     configV1[RootOption.GeneralSettings][GeneralSettingsOption.AppearanceTheme] = JSON.parse(configV1['general-settings']['appearance-theme']);
     // eslint-disable-next-line max-len
     configV1[RootOption.Stealth][StealthOption.SelfDestructThirdPartyCookiesTime] = JSON.parse(configV1['stealth']['stealth-block-third-party-cookies-time']);
+
     // Fill up optional fields
-
-    // TODO: Uncomment this condition when we will return custom filters to MV3 (AG-39385).
-    if (__IS_MV3__) {
-        // Since we remove downloading remove custom filters in AG-39385, we cannot
-        // support import of them.
-        configV1[RootOption.Filters][FiltersOption.CustomFilters] = [];
-    } else {
-        configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
-        configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.trusted = false;
-        configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.enabled = false;
-    }
-
-    const enabledFilters = configV1[RootOption.Filters][FiltersOption.EnabledFilters];
-
-    // TODO: Remove this filtering when we will return custom filters. (AG-39385).
-    if (__IS_MV3__) {
-        // Exclude custom filters from enabled filters.
-        configV1[RootOption.Filters][FiltersOption.EnabledFilters] = enabledFilters
-            .filter((id) => id < CUSTOM_FILTERS_START_ID);
-    }
+    configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.title = filterNameFixture;
+    configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.trusted = false;
+    configV1[RootOption.Filters][FiltersOption.CustomFilters][1]!.enabled = false;
 
     Object.assign(
         configV1[RootOption.Filters],
@@ -146,14 +129,13 @@ export const getImportedSettingsFromV1Fixture = () => {
                 return id !== 14 && id !== 15 && id !== 241;
             });
 
-        // TODO: Uncomment this when we will return Quick Fixes filter again to MV3 (AG-39385).
         // Insert before last element to correct order in strict equal tests.
-        // configV1.filters['enabled-filters'].splice(
-        //     configV1.filters['enabled-filters'].length - 1,
-        //     0,
-        //     // 24 - AdGuard Quick Fixes enabled by default for MV3.
-        //     24,
-        // );
+        configV1.filters['enabled-filters'].splice(
+            configV1.filters['enabled-filters'].length - 1,
+            0,
+            // 24 - AdGuard Quick Fixes enabled by default for MV3.
+            24,
+        );
 
         // Safebrowsing deleted after 5.0 (MV3).
         configV1['general-settings']['safebrowsing-enabled'] = false;
@@ -190,27 +172,22 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
             // App Banners, Other Annoyances and Widgets
             // 15 - AdGuard DNS filter - not supported in MV3.
             // 241 - EasyList Cookie List, author does not support MV3.
-            // TODO: Insert 24 if we will return Quick Fixes filter again to MV3 (AG-39385).
-            // TODO: Insert 1000, 1001 if we will return support for custom filters again to MV3 (AG-39385).
-            ? [1, 2, 3, 4, 7, 13, 17]
-            : [1, 2, 3, 4, 7, 13, 14, 15, 17, 241, 1000, 1001],
+            ? [1, 2, 3, 4, 7, 13, 17, 24, 1000, 1001]
+            : [1, 2, 3, 4, 7, 13, 17, 18, 19, 20, 21, 22, 241, 1000, 1001],
         [FiltersOption.EnabledGroups]: [0, 1, 2, 3, 4, 5, 6, 7],
-        // TODO: Uncomment this condition when we will return support for custom filters again to MV3 (AG-39385).
-        [FiltersOption.CustomFilters]: __IS_MV3__
-            ? []
-            : [{
+        [FiltersOption.CustomFilters]: [{
             // eslint-disable-next-line max-len
-                [CustomFilterOption.CustomUrl]: 'https://testcases.agrd.dev/Filters/element-hiding-rules/test-element-hiding-rules.txt',
-                [CustomFilterOption.Title]: 'Rules for element hiding rules test',
-                [CustomFilterOption.Trusted]: true,
-                [CustomFilterOption.Enabled]: true,
-            },
-            {
+            [CustomFilterOption.CustomUrl]: 'https://testcases.agrd.dev/Filters/element-hiding-rules/test-element-hiding-rules.txt',
+            [CustomFilterOption.Title]: 'Rules for element hiding rules test',
+            [CustomFilterOption.Trusted]: true,
+            [CustomFilterOption.Enabled]: true,
+        },
+        {
             // eslint-disable-next-line max-len
-                [CustomFilterOption.CustomUrl]: 'https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt',
-                [CustomFilterOption.Trusted]: true,
-                [CustomFilterOption.Enabled]: true,
-            }],
+            [CustomFilterOption.CustomUrl]: 'https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt',
+            [CustomFilterOption.Trusted]: true,
+            [CustomFilterOption.Enabled]: true,
+        }],
         [FiltersOption.UserFilter]: {
             [UserFilterOption.Enabled]: true,
             // eslint-disable-next-line max-len

@@ -309,7 +309,7 @@ export const getStorageFixturesV1 = (): StorageData[] => ([{
     'viewed-notification-time': 123456789,
 }]);
 
-type SafebrowsingCacheDataV1 = { key: string, value: string };
+type SafebrowsingCacheDataV1 = { key: string; value: string };
 
 export const getStorageFixturesV2 = (expires: number): StorageData[] => {
     const storageSettingsFixturesV1 = getStorageFixturesV1();
@@ -537,44 +537,11 @@ export const getStorageFixturesV7 = (expires: number): StorageData[] => {
     const storageSettingsFixturesV6 = getStorageFixturesV6(expires);
 
     return storageSettingsFixturesV6.map((settings) => {
-        // For MV2 we don't need to change anything.
-        if (!__IS_MV3__) {
-            settings['schema-version'] = 7;
-
-            return settings;
+        // Migration need only for MV3.
+        if (__IS_MV3__) {
+            settings = addQuickFixesFilter(settings, true);
         }
 
-        const adgSettings = settings['adguard-settings'] as any;
-        const filtersStateData = adgSettings['filters-state'];
-
-        if (typeof filtersStateData !== 'string') {
-            throw new Error('Cannot read filters state data');
-        }
-
-        const filtersState = zod.record(
-            zod.string(),
-            zod.object({
-                enabled: zod.boolean(),
-                installed: zod.boolean(),
-                loaded: zod.boolean(),
-            }),
-        ).parse(JSON.parse(filtersStateData));
-
-        // Added AdGuard Quick Fixes filter which should be enabled by default.
-        const addedAdGuardQuickFixesFilterId = 24;
-        filtersState[addedAdGuardQuickFixesFilterId] = {
-            // Enabled by default.
-            enabled: true,
-            // Marked as not installed to not remove it as obsoleted
-            // (because after migration it would not have info in metadata).
-            installed: false,
-            // Marked as loaded to update it.
-            loaded: true,
-        };
-
-        adgSettings['filters-state'] = JSON.stringify(filtersState);
-        settings['adguard-settings'] = adgSettings;
-        settings['raw_filterrules_24.txt'] = '';
         settings['schema-version'] = 7;
 
         return settings;
@@ -585,13 +552,10 @@ export const getStorageFixturesV8 = (expires: number): StorageData[] => {
     const storageSettingsFixturesV7 = getStorageFixturesV7(expires);
 
     return storageSettingsFixturesV7.map((settings) => {
-        // For MV2 we need to change schema version only.
-        if (!__IS_MV3__) {
-            settings['schema-version'] = 8;
-            return settings;
+        // MV3-related migration.
+        if (__IS_MV3__) {
+            settings = removeQuickFixesFilter(settings);
         }
-
-        settings = removeQuickFixesFilter(settings);
 
         settings['schema-version'] = 8;
 
@@ -603,43 +567,11 @@ export const getStorageFixturesV9 = (expires: number): StorageData[] => {
     const storageSettingsFixturesV8 = getStorageFixturesV8(expires);
 
     return storageSettingsFixturesV8.map((settings) => {
-        // For MV2 we need to change schema version only.
-        if (!__IS_MV3__) {
-            settings['schema-version'] = 9;
-            return settings;
+        // Migration need only for MV3.
+        if (__IS_MV3__) {
+            settings = addQuickFixesFilter(settings, true);
         }
 
-        const adgSettings = settings['adguard-settings'] as any;
-        const filtersStateData = adgSettings['filters-state'];
-
-        if (typeof filtersStateData !== 'string') {
-            throw new Error('Cannot read filters state data');
-        }
-
-        const filtersState = zod.record(
-            zod.string(),
-            zod.object({
-                enabled: zod.boolean(),
-                installed: zod.boolean(),
-                loaded: zod.boolean(),
-            }),
-        ).parse(JSON.parse(filtersStateData));
-
-        // Added AdGuard Quick Fixes filter which should be enabled by default.
-        const addedAdGuardQuickFixesFilterId = 24;
-        filtersState[addedAdGuardQuickFixesFilterId] = {
-            // Enabled by default.
-            enabled: true,
-            // Marked as not installed to not remove it as obsoleted
-            // (because after migration it would not have info in metadata).
-            installed: false,
-            // Marked as loaded to update it.
-            loaded: true,
-        };
-
-        adgSettings['filters-state'] = JSON.stringify(filtersState);
-        settings['adguard-settings'] = adgSettings;
-        settings['raw_filterrules_24.txt'] = '';
         settings['schema-version'] = 9;
 
         return settings;
@@ -650,18 +582,70 @@ export const getStorageFixturesV10 = (expires: number): StorageData[] => {
     const storageSettingsFixturesV9 = getStorageFixturesV9(expires);
 
     return storageSettingsFixturesV9.map((settings) => {
-        // For MV2 we need to change schema version only.
-        if (!__IS_MV3__) {
-            settings['schema-version'] = 10;
-            return settings;
+        // Migration need only for MV3.
+        if (__IS_MV3__) {
+            settings = removeQuickFixesFilter(settings);
         }
-
-        settings = removeQuickFixesFilter(settings);
 
         settings['schema-version'] = 10;
 
         return settings;
     });
+};
+
+const addQuickFixesFilter = (
+    settings: StorageData,
+    oldStorage: boolean,
+): StorageData => {
+    const adgSettings = settings['adguard-settings'] as any;
+    const filtersStateData = adgSettings['filters-state'];
+
+    if (typeof filtersStateData !== 'string') {
+        throw new Error('Cannot read filters state data');
+    }
+
+    const filtersState = zod.record(
+        zod.string(),
+        zod.object({
+            enabled: zod.boolean(),
+            installed: zod.boolean(),
+            loaded: zod.boolean(),
+        }),
+    ).parse(JSON.parse(filtersStateData));
+
+    // Added AdGuard Quick Fixes filter which should be enabled by default.
+    const addedAdGuardQuickFixesFilterId = 24;
+    filtersState[addedAdGuardQuickFixesFilterId] = {
+        // Enabled by default.
+        enabled: true,
+        // Marked as not installed to not remove it as obsoleted
+        // (because after migration it would not have info in metadata).
+        installed: false,
+        // Marked as loaded to update it.
+        loaded: true,
+    };
+
+    adgSettings['filters-state'] = JSON.stringify(filtersState);
+    settings['adguard-settings'] = adgSettings;
+
+    // Since v11 we do not store raw filter rules in settings.
+    if (oldStorage) {
+        const {
+            rawFilterList,
+            filterList,
+            conversionMap,
+            sourceMap,
+        } = FilterListPreprocessor.preprocess('');
+
+        settings['filterrules_24.txt'] = rawFilterList;
+        settings['binaryfilterrules_24.txt'] = serialize(filterList);
+        settings['conversionmap_24.txt'] = conversionMap;
+        settings['sourcemap_24.txt'] = sourceMap;
+    } else {
+        settings['raw_filterrules_24.txt'] = '';
+    }
+
+    return settings;
 };
 
 const removeQuickFixesFilter = (settings: StorageData): StorageData => {
@@ -702,7 +686,7 @@ export const getStorageFixturesV11 = (expires: number): StorageData[] => {
         const keys = Object.keys(settings);
 
         // Part 1. Migrate serialized data.
-        // Some date, like typed arrays, are not JSON serializable. In IDB, we can store such data without any problems.
+        // Some data, like typed arrays, are not JSON serializable. In IDB, we can store such data without any problems.
         // But if IDB is not supported, hybrid storage falls back to browser.storage.local,
         // where we only can store JSON-serializable data.
         // To be able to store such data in browser.storage.local, we serialize such data when using hybrid storage.
@@ -759,6 +743,60 @@ export const getStorageFixturesV11 = (expires: number): StorageData[] => {
         });
 
         settings['schema-version'] = 11;
+
+        return settings;
+    });
+};
+
+export const getStorageFixturesV12 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV11 = getStorageFixturesV11(expires);
+
+    return storageSettingsFixturesV11.map((settings) => {
+        if (__IS_MV3__) {
+            settings = addQuickFixesFilter(settings, false);
+        } else {
+            const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
+
+            // Parse with zod to sort fields
+            const filtersState = zod.record(
+                zod.string(),
+                zod.object({
+                    enabled: zod.boolean(),
+                    installed: zod.boolean(),
+                    loaded: zod.boolean(),
+                }),
+            ).parse(JSON.parse(adgSettings['filters-state'] as string));
+
+            const groupsState = JSON.parse(adgSettings['groups-state'] as string);
+
+            const isAnnoyancesFilterEnabled = filtersState['14']?.enabled ?? false;
+
+            delete filtersState['14'];
+
+            const annoyancesFiltersState = Object.fromEntries(
+                ['18', '19', '20', '21', '22'].map((id) => {
+                    const state = filtersState[id] ?? {
+                        enabled: isAnnoyancesFilterEnabled,
+                        installed: false,
+                        loaded: false,
+                    };
+                    return [id, state];
+                }),
+            );
+
+            Object.assign(filtersState, annoyancesFiltersState);
+
+            // deprecated AdGuard DNS filter is simply removed
+            delete filtersState['15'];
+
+            adgSettings['filters-state'] = JSON.stringify(filtersState);
+            adgSettings['groups-state'] = JSON.stringify(groupsState);
+
+            settings['adguard-settings'] = adgSettings;
+            // Migration need only for MV3.
+        }
+
+        settings['schema-version'] = 12;
 
         return settings;
     });

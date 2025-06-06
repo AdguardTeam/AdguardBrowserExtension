@@ -55,6 +55,7 @@ import {
     FiltersService,
     AllowlistService,
     UserRulesService,
+    CustomFiltersService,
     FilteringLogService,
     eventService,
     DocumentBlockService,
@@ -67,7 +68,7 @@ import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
-import { CustomFiltersService } from '../services/custom-filters/custom-filters-service-mv2';
+import { getZodErrorMessage } from '../../common/error';
 
 /**
  * Logs initialization times for debugging purposes.
@@ -128,6 +129,9 @@ export class App {
         // This call is moved to top in order to keep consistent with MV3 version,
         // where it's needed to register critical event handlers in a sync way.
         UiService.syncInit();
+
+        // Set the current log level from session storage.
+        await logger.init();
 
         await trackInitTimesForDebugging();
 
@@ -290,6 +294,20 @@ export class App {
             if (!settingsStorage.get(SettingOption.DisableShowAppUpdatedNotification)) {
                 toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion);
             }
+
+            /**
+             * Some filters may be 'enabled' during update but not 'loaded' yet,
+             * e.g. separate annoyances filters are enabled instead of the deprecated
+             * combined annoyances filter during the migration.
+             *
+             * We cannot load them during UpdateApi.update()
+             * because it is executed too early,
+             * and filter state data is not initialized at that moment.
+             *
+             * And they should be loaded before the engine start,
+             * otherwise we will not be able to enable them later.
+             */
+            await FiltersApi.reloadEnabledFilters();
         }
 
         // Runs tswebextension
@@ -340,7 +358,7 @@ export class App {
         try {
             await browser.runtime.setUninstallURL(App.uninstallUrl);
         } catch (e) {
-            logger.error('Cannot set app uninstall url. Origin error: ', e);
+            logger.error('[ext.App.setUninstallUrl]: cannot set app uninstall url. Origin error:', e);
         }
     }
 
@@ -354,7 +372,7 @@ export class App {
         try {
             clientId = zod.string().parse(storageClientId);
         } catch (e) {
-            logger.warn('Error while parsing client id, generating a new one');
+            logger.warn('[ext.App.initClientId]: error while parsing client id, generating a new one, error: ', getZodErrorMessage(e));
             clientId = InstallApi.genClientId();
             await browserStorage.set(CLIENT_ID_KEY, clientId);
         }

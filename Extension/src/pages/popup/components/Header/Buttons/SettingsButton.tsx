@@ -34,11 +34,12 @@ export const SettingsButton = () => {
             className="button popup-header__button"
             type="button"
             onClick={handleSettingsClick}
-            title={translator.getMessage('options_settings')}
+            title={translator.getMessage('popup_open_settings')}
         >
             <Icon
                 id="#settings"
                 classname="icon--24 icon--header"
+                aria-hidden="true"
             />
         </button>
     );

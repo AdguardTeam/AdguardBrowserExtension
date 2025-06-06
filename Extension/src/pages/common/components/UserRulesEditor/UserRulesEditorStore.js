@@ -46,6 +46,8 @@ class UserRulesEditorStore {
 
     @observable specificLimitWarningData = null;
 
+    @observable cursorPosition = null;
+
     savingService = createSavingService({
         id: 'userRules',
         services: {
@@ -86,19 +88,24 @@ class UserRulesEditorStore {
     }
 
     @action
-        setUserRulesEditorContentChangedState = (state) => {
-            this.userRulesEditorContentChanged = state;
-        };
+    setUserRulesEditorContentChangedState = (state) => {
+        this.userRulesEditorContentChanged = state;
+    };
 
     @action
-        setUserRulesExportAvailableState = (state) => {
-            this.userRulesExportAvailable = state;
-        };
+    setUserRulesExportAvailableState = (state) => {
+        this.userRulesExportAvailable = state;
+    };
 
     @action
-        setUserRulesEditorPrefsDropped = (state) => {
-            this.userRulesEditorPrefsDropped = state;
-        };
+    setUserRulesEditorPrefsDropped = (state) => {
+        this.userRulesEditorPrefsDropped = state;
+    };
+
+    @action
+    setCursorPosition = (position) => {
+        this.cursorPosition = position;
+    };
 
     @action
     async updateSetting(settingId, value) {
@@ -147,6 +154,10 @@ class UserRulesEditorStore {
             return this.settings.values[this.userFilterEnabledSettingId];
         }
         return false;
+    }
+
+    getCursorPosition() {
+        return this.cursorPosition;
     }
 
     saveUserRules(value) {

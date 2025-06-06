@@ -21,6 +21,7 @@ import { ZodError } from 'zod';
 import { safebrowsingStorageDataValidator, type SafebrowsingCacheData } from '../schema';
 import { SB_LRU_CACHE_KEY } from '../../common/constants';
 import { logger } from '../../common/logger';
+import { getZodErrorMessage } from '../../common/error';
 
 import { browserStorage } from './shared-instances';
 
@@ -80,13 +81,13 @@ export class SbCache {
             // Note: `.load()` method doesn't remove stale records, so we need to do it manually
             this.cache.purgeStale();
         } catch (e: unknown) {
-            logger.error('Failed to initialize safebrowsing storage', e);
+            logger.error('[ext.SbCache.init]: failed to initialize safebrowsing storage', getZodErrorMessage(e));
 
             // if data is corrupted, purge it
             // if error is json parsing error or zod validation error
             if (e instanceof SyntaxError || e instanceof ZodError) {
                 await SbCache.purgeStorage();
-                logger.info('Safebrowsing storage was purged, because of data corruption');
+                logger.info('[ext.SbCache.init]: safebrowsing storage was purged, because of data corruption');
             }
         }
     }
@@ -98,7 +99,7 @@ export class SbCache {
         try {
             await browserStorage.remove(SB_LRU_CACHE_KEY);
         } catch (e: unknown) {
-            logger.error('Failed to purge safebrowsing storage', e);
+            logger.error('[ext.SbCache.purgeStorage]: failed to purge safebrowsing storage', e);
         }
     }
 

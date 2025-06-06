@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { MessageType, SetNotificationViewedMessage } from '../../../common/messages';
+import { MessageType, type SetNotificationViewedMessage } from '../../../common/messages';
 import { promoNotificationApi } from '../../api';
 import { messageHandler } from '../../message-handler';
 

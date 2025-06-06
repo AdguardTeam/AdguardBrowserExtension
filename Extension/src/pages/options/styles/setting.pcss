@@ -16,7 +16,6 @@
     }
 
     &--disabled {
-        & .textarea,
         & .input__in {
             pointer-events: none;
             cursor: default;
@@ -59,6 +58,11 @@
             &_group {
                 margin-left: 0;
 
+                & .checkbox__in {
+                    /* 16px (label padding) - 3px (default margin) */
+                    top: 13px;
+                }
+
                 & .checkbox__label {
                     padding: 16px;
 
@@ -87,6 +91,10 @@
         &--inline {
             display: block;
         }
+
+        .setting--reversed &--horizontal {
+            flex-direction: row-reverse;
+        }
     }
 
     &__info {
@@ -98,25 +106,13 @@
         @media (max-width: 640px) {
             min-width: 40%;
         }
-
-        span.warning {
-            display: block;
-            color: var(--text-links-attention-link-default);
-            margin-top: 8px;
-            font-size: 14px;
-            line-height: 1.3;
-
-            a {
-                color: var(--text-links-attention-link-default);
-            }
-        }
     }
 
     &__title {
         font-weight: 500;
         font-size: 16px;
         color: var(--text-main-text-main-default);
-        line-height: 21px;
+        line-height: 24px;
         word-break: break-word;
 
         &--search {
@@ -125,10 +121,9 @@
     }
 
     &__desc {
-        line-height: 18px;
-        padding: 4px 8px 0 0;
         color: var(--text-description-description-default);
         font-size: 14px;
+        line-height: 1.3;
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-word;

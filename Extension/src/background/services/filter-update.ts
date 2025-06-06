@@ -16,7 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FilterUpdateApi } from '../api';
+import { getVersionTimestampMs } from '@adguard/dnr-rulesets/utils';
+
+import { FilterUpdateApi, QuickFixesRulesApi } from '../api';
 import { browserStorage } from '../storages';
 import { isNumber } from '../../common/guards';
 import { logger } from '../../common/logger';
@@ -29,9 +31,16 @@ import { logger } from '../../common/logger';
  */
 export class FilterUpdateService {
     /**
-     * Storage key for storing last update check time in the storage.
+     * Storage key for storing last update *check* time in the storage.
      */
-    private static STORAGE_KEY = 'updateCheckTimeMs';
+    private static UPDATE_CHECK_TIME_KEY = 'updateCheckTimeMs';
+
+    /**
+     * Storage key for storing last filters update time in the storage.
+     *
+     * Needed to send `filters_last_update` during issue reporting.
+     */
+    private static LAST_UPDATE_KEY = 'filters-last-update';
 
     /**
      * Checking period
@@ -65,6 +74,39 @@ export class FilterUpdateService {
      */
     public async init(): Promise<void> {
         await this.update();
+
+        if (__IS_MV3__) {
+            const dnrRulesetsBuildTimestampMs = getVersionTimestampMs();
+            await FilterUpdateService.setLastUpdateTimeMs(dnrRulesetsBuildTimestampMs);
+        } else {
+            await FilterUpdateService.setLastUpdateTimeMs(Date.now());
+        }
+    }
+
+    /**
+     * Sets the last filters **update** (not just *check*) time in the storage
+     * for version which supports diff updates, i.e. MV2.
+     *
+     * @param timestampMs The timestamp in milliseconds.
+     */
+    public static async setLastUpdateTimeMs(timestampMs: number): Promise<void> {
+        await browserStorage.set(FilterUpdateService.LAST_UPDATE_KEY, timestampMs);
+    }
+
+    /**
+     * Gets the last filters **update** (not just *check*) time from the storage
+     * for version which supports diff updates, i.e. MV2.
+     *
+     * @returns The timestamp in milliseconds or `null` if the value is not set.
+     */
+    public static async getLastUpdateTimeMs(): Promise<number | null> {
+        const lastUpdateTimeMs = await browserStorage.get(FilterUpdateService.LAST_UPDATE_KEY);
+
+        if (lastUpdateTimeMs === undefined) {
+            return null;
+        }
+
+        return Number(lastUpdateTimeMs);
     }
 
     /**
@@ -75,7 +117,7 @@ export class FilterUpdateService {
         // eslint-disable-next-line no-restricted-globals
         self.clearTimeout(this.schedulerTimerId);
 
-        const prevCheckTimeMs = await browserStorage.get(FilterUpdateService.STORAGE_KEY);
+        const prevCheckTimeMs = await browserStorage.get(FilterUpdateService.UPDATE_CHECK_TIME_KEY);
 
         /**
          * Check updates if prevCheckTimeMs is not set or
@@ -88,18 +130,17 @@ export class FilterUpdateService {
         if (shouldCheckUpdates) {
             try {
                 if (__IS_MV3__) {
-                    // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-                    // await QuickFixesRulesApi.updateQuickFixesFilter();
+                    await QuickFixesRulesApi.updateQuickFixesFilter();
                 } else {
                     await FilterUpdateApi.autoUpdateFilters();
                 }
             } catch (e) {
-                logger.error('An error occurred during filters update:', e);
+                logger.error('[ext.FilterUpdateService.update]: an error occurred during filters update:', e);
             }
             // Saving current time to storage is required in the cases
             // when background page is often unloaded,
             // for example, in the cases of service workers.
-            await browserStorage.set(FilterUpdateService.STORAGE_KEY, Date.now());
+            await browserStorage.set(FilterUpdateService.UPDATE_CHECK_TIME_KEY, Date.now());
         }
 
         // eslint-disable-next-line no-restricted-globals

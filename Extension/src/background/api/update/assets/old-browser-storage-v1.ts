@@ -17,7 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
-import { ExtendedStorageInterface } from '../../../../common/storage';
+import { type ExtendedStorageInterface } from '../../../../common/storage';
 
 /**
  * Wrapper for browser.storage.local with dev-friendly interface.

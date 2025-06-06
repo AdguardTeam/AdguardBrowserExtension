@@ -25,19 +25,17 @@ import { merge } from 'webpack-merge';
 import {
     BACKGROUND_OUTPUT,
     CONTENT_SCRIPT_START_OUTPUT,
-    DOCUMENT_BLOCK_OUTPUT,
-    REACT_VENDOR_OUTPUT,
-    SAFEBROWSING_OUTPUT,
-    SUBSCRIBE_OUTPUT,
+    BLOCKING_BLOCKED_OUTPUT,
+    BLOCKING_SAFEBROWSING_OUTPUT,
+    INDEX_HTML_FILE_NAME,
 } from '../../constants';
 
 import {
-    AD_BLOCKED_PATH,
     BACKGROUND_PATH,
+    BLOCKING_BLOCKED_PATH,
+    BLOCKING_SAFEBROWSING_PATH,
     CONTENT_SCRIPT_START_PATH,
     htmlTemplatePluginCommonOptions,
-    SAFEBROWSING_PATH,
-    SUBSCRIBE_PATH,
     type BrowserConfig,
 } from './common-constants';
 import { ENTRY_POINTS_CHUNKS, genCommonConfig } from './webpack.common';
@@ -51,33 +49,21 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
                 import: BACKGROUND_PATH,
                 dependOn: ENTRY_POINTS_CHUNKS[BACKGROUND_OUTPUT],
             },
-            [SAFEBROWSING_OUTPUT]: {
-                import: SAFEBROWSING_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                ],
+            [BLOCKING_SAFEBROWSING_OUTPUT]: {
+                import: BLOCKING_SAFEBROWSING_PATH,
             },
-            [DOCUMENT_BLOCK_OUTPUT]: {
-                import: AD_BLOCKED_PATH,
-                dependOn: [
-                    REACT_VENDOR_OUTPUT,
-                ],
+            [BLOCKING_BLOCKED_OUTPUT]: {
+                import: BLOCKING_BLOCKED_PATH,
             },
             [CONTENT_SCRIPT_START_OUTPUT]: {
                 import: path.resolve(CONTENT_SCRIPT_START_PATH, 'mv2.ts'),
-                runtime: false,
-            },
-            // Subscribe to custom filters works only for MV2 version, since MV3
-            // doesn't support any kind of scripts due to CWS policy.
-            [SUBSCRIBE_OUTPUT]: {
-                import: SUBSCRIBE_PATH,
                 runtime: false,
             },
         },
         plugins: [
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(BACKGROUND_PATH, 'index.html'),
+                template: path.join(BACKGROUND_PATH, INDEX_HTML_FILE_NAME),
                 templateParameters: {
                     browser: process.env.BROWSER,
                 },
@@ -89,15 +75,15 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(AD_BLOCKED_PATH, 'index.html'),
-                filename: `${DOCUMENT_BLOCK_OUTPUT}.html`,
-                chunks: [REACT_VENDOR_OUTPUT, DOCUMENT_BLOCK_OUTPUT],
+                template: path.join(BLOCKING_BLOCKED_PATH, INDEX_HTML_FILE_NAME),
+                filename: `${BLOCKING_BLOCKED_OUTPUT}.html`,
+                chunks: [BLOCKING_BLOCKED_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(SAFEBROWSING_PATH, 'index.html'),
-                filename: `${SAFEBROWSING_OUTPUT}.html`,
-                chunks: [REACT_VENDOR_OUTPUT, SAFEBROWSING_OUTPUT],
+                template: path.join(BLOCKING_SAFEBROWSING_PATH, INDEX_HTML_FILE_NAME),
+                filename: `${BLOCKING_SAFEBROWSING_OUTPUT}.html`,
+                chunks: [BLOCKING_SAFEBROWSING_OUTPUT],
             }),
         ],
     });

@@ -32,10 +32,9 @@ import { engine } from '../../engine';
 import {
     annoyancesConsent,
     Categories,
-    FilterMetadata,
+    type FilterMetadata,
     FiltersApi,
     FilterUpdateApi,
-    HitStatsApi,
     PageStatsApi,
     toasts,
 } from '../../api';
@@ -73,7 +72,6 @@ export class FiltersService {
         contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.manualCheckFiltersUpdate);
 
         settingsEvents.addListener(SettingOption.UseOptimizedFilters, FiltersService.onOptimizedFiltersSwitch);
-        settingsEvents.addListener(SettingOption.DisableCollectHits, FiltersService.onCollectHitsSwitch);
     }
 
     /**
@@ -93,6 +91,8 @@ export class FiltersService {
      */
     private static async onFilterEnable(message: AddAndEnableFilterMessage): Promise<number | undefined> {
         const { filterId } = message.data;
+
+        logger.trace(`[ext.FiltersService.onFilterEnable]: background received message to enable filter: id='${filterId}', name='${FiltersApi.getFilterName(filterId)}'`);
 
         // FiltersService.enableFilter() method's second arg is 'true'
         // because it is needed to enable not touched group
@@ -134,6 +134,8 @@ export class FiltersService {
     private static async onFilterDisable(message: DisableFilterMessage): Promise<void> {
         const { filterId } = message.data;
 
+        logger.trace(`[ext.FiltersService.onFilterDisable]: background received message to disable filter: id='${filterId}', name='${FiltersApi.getFilterName(filterId)}'`);
+
         FiltersApi.disableFilters([filterId]);
 
         const group = Categories.getGroupByFilterId(filterId);
@@ -167,8 +169,10 @@ export class FiltersService {
 
         const group = Categories.getGroupState(groupId);
 
+        logger.trace(`[ext.FiltersService.onGroupEnable]: background received message to enable group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
+
         if (!group) {
-            logger.error(`Cannot find group with ${groupId} id`);
+            logger.error(`[ext.FiltersService.onGroupEnable]: cannot find group with ${groupId} id`);
             return;
         }
 
@@ -194,6 +198,8 @@ export class FiltersService {
      */
     private static async onGroupDisable(message: DisableFiltersGroupMessage): Promise<void> {
         const { groupId } = message.data;
+
+        logger.trace(`[ext.FiltersService.onGroupDisable]: background received message to disable group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
 
         Categories.disableGroup(groupId);
 
@@ -225,17 +231,6 @@ export class FiltersService {
     private static async onOptimizedFiltersSwitch(): Promise<void> {
         await FiltersApi.reloadEnabledFilters();
         engine.debounceUpdate();
-    }
-
-    /**
-     * Called when prompted to disable or enable hit collection.
-     *
-     * @param value Desired collecting status.
-     */
-    private static async onCollectHitsSwitch(value: boolean): Promise<void> {
-        if (value) {
-            HitStatsApi.cleanup();
-        }
     }
 
     /**

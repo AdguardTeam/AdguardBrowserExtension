@@ -23,3 +23,8 @@ export const MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS = 1500;
  * Minimal delay for showing loader. Needed in mv3 for smoother user experience.
  */
 export const MIN_LOADER_SHOWING_TIME_MS = 500;
+
+/**
+ * Error cause identifier for when a file has an incorrect extension.
+ */
+export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';

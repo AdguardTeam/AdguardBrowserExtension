@@ -26,28 +26,25 @@
 import { type Windows } from 'webextension-polyfill';
 
 import { type ForwardFrom } from '../forward';
-import type {
-    CustomFilterMetadata,
-    SettingOption,
-    Settings,
-} from '../../background/schema';
-import type { NotifierType } from '../constants';
-import type { AppearanceTheme } from '../settings';
-import type { FilteringLogTabInfo } from '../../background/api/filtering-log';
-import type { GetTabInfoForPopupResponse } from '../../background/services/ui/popup';
-import type { GetFilteringLogDataResponse } from '../../background/services/filtering-log';
-import type {
-    IRulesLimits,
-    Mv3LimitsCheckResult,
-    StaticLimitsCheckResult,
+import { type SettingOption, type Settings } from '../../background/schema/settings';
+import { type CustomFilterMetadata } from '../../background/schema/custom-filter-metadata';
+import { type NotifierType } from '../constants';
+import { type AppearanceTheme } from '../settings';
+import { type FilteringLogTabInfo } from '../../background/api/filtering-log';
+import { type GetTabInfoForPopupResponse } from '../../background/services/ui/popup';
+import { type GetFilteringLogDataResponse } from '../../background/services/filtering-log';
+import {
+    type IRulesLimits,
+    type Mv3LimitsCheckResult,
+    type StaticLimitsCheckResult,
 } from '../../background/services/rules-limits/interface';
-import type { PageInitAppData } from '../../background/services/ui/main';
-import type { ExportMessageResponse, GetOptionsDataResponse } from '../../background/services/settings/types';
-import type { CreateEventListenerResponse } from '../../background/services/event';
-import type { FilterMetadata } from '../../background/api/filters/main';
-import type { GetAllowlistDomainsResponse } from '../../background/services/allowlist';
-import type { GetUserRulesEditorDataResponse, GetUserRulesResponse } from '../../background/services/userrules';
-import type { GetCustomFilterInfoResult } from '../../background/api';
+import { type BlockingPageInitAppData, type PageInitAppData } from '../../background/services/ui/main';
+import { type ExportMessageResponse, type GetOptionsDataResponse } from '../../background/services/settings/types';
+import { type CreateEventListenerResponse } from '../../background/services/event';
+import { type FilterMetadata } from '../../background/api/filters/main';
+import { type GetAllowlistDomainsResponse } from '../../background/services/allowlist';
+import { type GetUserRulesEditorDataResponse, type GetUserRulesResponse } from '../../background/services/userrules';
+import { type GetCustomFilterInfoResult } from '../../background/api/filters/custom';
 
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 
@@ -89,12 +86,15 @@ export enum MessageType {
     OpenAbuseTab = 'openAbuseTab',
     OpenSiteReportTab = 'openSiteReportTab',
     OpenComparePage = 'openComparePage',
+    OpenChromeExtensionsSettingsPage = 'openChromeExtensionsSettingsPage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
     RemoveAllowlistDomain = 'removeAllowlistDomain',
-    AddAllowlistDomain = 'addAllowlistDomain',
+    AddAllowlistDomainForTabId = 'addAllowlistDomainForTabId',
+    AddAllowlistDomainForUrl = 'addAllowlistDomainForUrl',
     OnOpenFilteringLogPage = 'onOpenFilteringLogPage',
     GetFilteringLogData = 'getFilteringLogData',
     InitializeFrameScript = 'initializeFrameScript',
+    InitializeBlockingPageScript = 'initializeBlockingPageScript',
     OnCloseFilteringLogPage = 'onCloseFilteringLogPage',
     GetFilteringInfoByTabId = 'getFilteringInfoByTabId',
     SynchronizeOpenTabs = 'synchronizeOpenTabs',
@@ -144,43 +144,43 @@ export enum MessageType {
 }
 
 export type ApplySettingsJsonMessage = {
-    type: MessageType.ApplySettingsJson,
+    type: MessageType.ApplySettingsJson;
     data: {
-        json: string,
-    },
+        json: string;
+    };
 };
 
 export type LoadSettingsJsonMessage = {
-    type: MessageType.LoadSettingsJson,
+    type: MessageType.LoadSettingsJson;
     data: {
-        json: string,
-    },
+        json: string;
+    };
 };
 
 export type AddFilteringSubscriptionMessage = {
-    type: MessageType.AddFilteringSubscription,
+    type: MessageType.AddFilteringSubscription;
     data: {
-        url: string,
-        title?: string,
-    }
+        url: string;
+        title?: string;
+    };
 };
 
 export type CreateEventListenerMessage = {
-    type: MessageType.CreateEventListener,
+    type: MessageType.CreateEventListener;
     data: {
-        events: NotifierType[]
-    }
+        events: NotifierType[];
+    };
 };
 
 export type RemoveListenerMessage = {
-    type: MessageType.RemoveListener,
+    type: MessageType.RemoveListener;
     data: {
-        listenerId: number,
-    }
+        listenerId: number;
+    };
 };
 
 export type GetIsEngineStartedMessage = {
-    type: MessageType.GetIsEngineStarted,
+    type: MessageType.GetIsEngineStarted;
 };
 
 export type GetTabInfoForPopupMessage = {
@@ -217,19 +217,19 @@ export type UpdateFullscreenUserRulesThemeMessage = {
 };
 
 export type AddLongLivedConnectionMessage = {
-    type: MessageType.AddLongLivedConnection,
+    type: MessageType.AddLongLivedConnection;
     data: {
-        events: NotifierType[]
-    }
+        events: NotifierType[];
+    };
 };
 
 export type NotifyListenersMessage = {
-    type: MessageType.NotifyListeners,
+    type: MessageType.NotifyListeners;
     data: any;
 };
 
 export type UpdateListenersMessage = {
-    type: MessageType.UpdateListeners,
+    type: MessageType.UpdateListeners;
 };
 
 export type CheckFiltersUpdateMessage = {
@@ -246,6 +246,10 @@ export type ResetBlockedAdsCountMessage = {
 
 export type OpenComparePageMessage = {
     type: MessageType.OpenComparePage;
+};
+
+export type OpenChromeExtensionsSettingsPageMessage = {
+    type: MessageType.OpenChromeExtensionsSettingsPage;
 };
 
 export type OpenFullscreenUserRulesMessage = {
@@ -287,307 +291,318 @@ export type GetOptionsDataMessage = {
 export type ChangeUserSettingMessage<T extends SettingOption = SettingOption> = {
     type: MessageType.ChangeUserSettings;
     data: {
-        key: T,
-        value: Settings[T]
-    }
+        key: T;
+        value: Settings[T];
+    };
 };
 
 export type ResetSettingsMessage = {
-    type: MessageType.ResetSettings
+    type: MessageType.ResetSettings;
 };
 
 export type AddAndEnableFilterMessage = {
-    type: MessageType.AddAndEnableFilter
+    type: MessageType.AddAndEnableFilter;
     data: {
-        filterId: number
-    }
+        filterId: number;
+    };
 };
 
 export type DisableFilterMessage = {
-    type: MessageType.DisableFilter
+    type: MessageType.DisableFilter;
     data: {
-        filterId: number,
-    }
+        filterId: number;
+    };
 };
 
 export type RemoveAntiBannerFilterMessage = {
-    type: MessageType.RemoveAntiBannerFilter
+    type: MessageType.RemoveAntiBannerFilter;
     data: {
-        filterId: number
-    }
+        filterId: number;
+    };
 };
 
 export type SaveAllowlistDomainsMessage = {
-    type: MessageType.SaveAllowlistDomains
+    type: MessageType.SaveAllowlistDomains;
     data: {
-        value: string,
-    }
+        value: string;
+    };
 };
 
 export type SaveUserRulesMessage = {
-    type: MessageType.SaveUserRules
+    type: MessageType.SaveUserRules;
     data: {
-        value: string,
-    }
+        value: string;
+    };
 };
 
 export type GetUserRulesMessage = {
-    type: MessageType.GetUserRules
+    type: MessageType.GetUserRules;
 };
 
 export type GetUserRulesEditorDataMessage = {
-    type: MessageType.GetUserRulesEditorData
+    type: MessageType.GetUserRulesEditorData;
 };
 
 export type AddUserRuleMessage = {
-    type: MessageType.AddUserRule
+    type: MessageType.AddUserRule;
     data: {
-        ruleText: string,
-    }
+        ruleText: string;
+    };
 };
 
 export type RemoveUserRuleMessage = {
-    type: MessageType.RemoveUserRule
+    type: MessageType.RemoveUserRule;
     data: {
-        ruleText: string,
-    }
+        ruleText: string;
+    };
 };
 
 export type ResetUserRulesForPageMessage = {
-    type: MessageType.ResetUserRulesForPage
+    type: MessageType.ResetUserRulesForPage;
     data: {
-        url: string,
-        tabId: number,
-    }
+        url: string;
+        tabId: number;
+    };
 };
 
 export type GetEditorStorageContentMessage = {
-    type: MessageType.GetEditorStorageContent
+    type: MessageType.GetEditorStorageContent;
 };
 
 export type SetEditorStorageContentMessage = {
-    type: MessageType.SetEditorStorageContent
+    type: MessageType.SetEditorStorageContent;
     data: {
-        content: string,
-    }
+        content: string;
+    };
 };
 
-export type AddAllowlistDomainMessage = {
-    type: MessageType.AddAllowlistDomain
+export type AddAllowlistDomainForTabIdMessage = {
+    type: MessageType.AddAllowlistDomainForTabId;
     data: {
-        tabId: number,
-    }
+        tabId: number;
+    };
+};
+
+export type AddAllowlistDomainForUrlMessage = {
+    type: MessageType.AddAllowlistDomainForUrl;
+    data: {
+        url: string;
+    };
 };
 
 export type RemoveAllowlistDomainMessage = {
-    type: MessageType.RemoveAllowlistDomain
+    type: MessageType.RemoveAllowlistDomain;
     data: {
-        tabId: number,
-        tabRefresh: boolean,
-    }
+        tabId: number;
+        tabRefresh: boolean;
+    };
 };
 
 export type LoadCustomFilterInfoMessage = {
-    type: MessageType.LoadCustomFilterInfo
+    type: MessageType.LoadCustomFilterInfo;
     data: {
-        url: string,
-        title?: string,
-    }
+        url: string;
+        title?: string;
+    };
 };
 
 export type CustomFilterSubscriptionData = {
-    customUrl: string,
-    name: string,
-    trusted: boolean,
+    customUrl: string;
+    name: string;
+    trusted: boolean;
 };
 
 export type SubscribeToCustomFilterMessage = {
-    type: MessageType.SubscribeToCustomFilter
+    type: MessageType.SubscribeToCustomFilter;
     data: {
-        filter: CustomFilterSubscriptionData
-    }
+        filter: CustomFilterSubscriptionData;
+    };
 };
 
 export type AppInitializedMessage = {
-    type: MessageType.AppInitialized
+    type: MessageType.AppInitialized;
 };
 
 export type UpdateTotalBlockedMessage = {
-    type: MessageType.UpdateTotalBlocked
+    type: MessageType.UpdateTotalBlocked;
     data: {
-        tabId: number,
-        totalBlocked: number,
-        totalBlockedTab: number,
-    }
+        tabId: number;
+        totalBlocked: number;
+        totalBlockedTab: number;
+    };
 };
 
 export type CheckRequestFilterReadyMessage = {
-    type: MessageType.CheckRequestFilterReady
+    type: MessageType.CheckRequestFilterReady;
 };
 
 export type GetFilteringLogDataMessage = {
-    type: MessageType.GetFilteringLogData,
+    type: MessageType.GetFilteringLogData;
 };
 
 export type SynchronizeOpenTabsMessage = {
-    type: MessageType.SynchronizeOpenTabs,
+    type: MessageType.SynchronizeOpenTabs;
 };
 
 export type OpenFilteringLogPageMessage = {
-    type: MessageType.OnOpenFilteringLogPage
+    type: MessageType.OnOpenFilteringLogPage;
 };
 
 export type CloseFilteringLogPageMessage = {
-    type: MessageType.OnCloseFilteringLogPage
+    type: MessageType.OnCloseFilteringLogPage;
 };
 
 export type ClearEventsByTabIdMessage = {
-    type: MessageType.ClearEventsByTabId
+    type: MessageType.ClearEventsByTabId;
     data: {
-        tabId: number,
-        ignorePreserveLog?: boolean,
-    }
+        tabId: number;
+        ignorePreserveLog?: boolean;
+    };
 };
 
 export type SetPreserveLogStateMessage = {
-    type: MessageType.SetPreserveLogState
+    type: MessageType.SetPreserveLogState;
     data: {
-        state: boolean,
-    }
+        state: boolean;
+    };
 };
 
 export type SetFilteringLogWindowStateMessage = {
-    type: MessageType.SetFilteringLogWindowState,
+    type: MessageType.SetFilteringLogWindowState;
     data: {
-        windowState: Windows.CreateCreateDataType
-    }
+        windowState: Windows.CreateCreateDataType;
+    };
 };
 
 export type RefreshPageMessage = {
-    type: MessageType.RefreshPage,
+    type: MessageType.RefreshPage;
     data: {
-        tabId: number,
-    }
+        tabId: number;
+    };
 };
 
 export type GetFilteringInfoByTabIdMessage = {
-    type: MessageType.GetFilteringInfoByTabId,
+    type: MessageType.GetFilteringInfoByTabId;
     data: {
-        tabId: number,
-    }
+        tabId: number;
+    };
 };
 
 export type EnableFiltersGroupMessage = {
-    type: MessageType.EnableFiltersGroup,
+    type: MessageType.EnableFiltersGroup;
     data: {
-        groupId: number,
-    }
+        groupId: number;
+    };
 };
 
 export type DisableFiltersGroupMessage = {
-    type: MessageType.DisableFiltersGroup,
+    type: MessageType.DisableFiltersGroup;
     data: {
-        groupId: number,
-    }
+        groupId: number;
+    };
 };
 
 export type InitializeFrameScriptMessage = {
-    type: MessageType.InitializeFrameScript,
+    type: MessageType.InitializeFrameScript;
+};
+
+export type InitializeBlockingPageScript = {
+    type: MessageType.InitializeBlockingPageScript;
 };
 
 export type SetConsentedFiltersMessage = {
-    type: MessageType.SetConsentedFilters,
+    type: MessageType.SetConsentedFilters;
     data: {
-        filterIds: number[],
-    }
+        filterIds: number[];
+    };
 };
 
 export type GetIsConsentedFilterMessage = {
-    type: MessageType.GetIsConsentedFilter,
+    type: MessageType.GetIsConsentedFilter;
     data: {
-        filterId: number,
-    }
+        filterId: number;
+    };
 };
 
 export type OpenSafebrowsingTrustedMessage = {
-    type: MessageType.OpenSafebrowsingTrusted,
+    type: MessageType.OpenSafebrowsingTrusted;
     data: {
-        url: string,
-    }
+        url: string;
+    };
 };
 
 export type AddUrlToTrustedMessage = {
-    type: MessageType.AddUrlToTrusted,
+    type: MessageType.AddUrlToTrusted;
     data: {
-        url: string,
-    }
+        url: string;
+    };
 };
 
 export type SetNotificationViewedMessage = {
-    type: MessageType.SetNotificationViewed,
+    type: MessageType.SetNotificationViewed;
     data: {
-        withDelay: boolean,
-    }
+        withDelay: boolean;
+    };
 };
 
 export type ScriptletCloseWindowMessage = {
-    type: MessageType.ScriptletCloseWindow,
+    type: MessageType.ScriptletCloseWindow;
 };
 
 export type ShowAlertPopupMessage = {
-    type: MessageType.ShowAlertPopup,
+    type: MessageType.ShowAlertPopup;
     data: {
-        isAdguardTab: boolean,
-        title: string,
-        text: string | string[],
-        alertStyles: string,
-        alertContainerStyles: string,
-    }
+        isAdguardTab: boolean;
+        title: string;
+        text: string | string[];
+        alertStyles: string;
+        alertContainerStyles: string;
+    };
 };
 
 export type ShowRuleLimitsAlertMessage = {
-    type: MessageType.ShowRuleLimitsAlert,
+    type: MessageType.ShowRuleLimitsAlert;
     data: {
-        isAdguardTab: boolean,
-        mainText: string,
-        linkText: string,
-        alertStyles: string,
-        alertContainerStyles: string,
-    }
+        isAdguardTab: boolean;
+        mainText: string;
+        linkText: string;
+        alertStyles: string;
+        alertContainerStyles: string;
+    };
 };
 
 export type ShowVersionUpdatedPopupMessage = {
-    type: MessageType.ShowVersionUpdatedPopup,
+    type: MessageType.ShowVersionUpdatedPopup;
     data: {
-        isAdguardTab: boolean,
-        title: string,
-        description: string,
-        changelogHref: string,
-        changelogText: string,
-        showPromoNotification: boolean,
-        offer: string,
-        offerDesc: string,
-        offerButtonText: string,
-        offerButtonHref: string,
-        offerBgImage: string,
-        disableNotificationText: string,
-        alertStyles: string,
-        iframeStyles: string,
-    }
+        isAdguardTab: boolean;
+        title: string;
+        description: string;
+        changelogHref: string;
+        changelogText: string;
+        showPromoNotification: boolean;
+        offer: string;
+        offerDesc: string;
+        offerButtonText: string;
+        offerButtonHref: string;
+        offerBgImage: string;
+        disableNotificationText: string;
+        alertStyles: string;
+        iframeStyles: string;
+    };
 };
 
 export type CanEnableStaticFilterMv3Message = {
-    type: MessageType.CanEnableStaticFilterMv3,
+    type: MessageType.CanEnableStaticFilterMv3;
     data: {
-        filterId: number,
-    }
+        filterId: number;
+    };
 };
 
 export type CanEnableStaticGroupMv3Message = {
-    type: MessageType.CanEnableStaticGroupMv3,
+    type: MessageType.CanEnableStaticGroupMv3;
     data: {
-        groupId: number,
-    }
+        groupId: number;
+    };
 };
 
 export type CurrentLimitsMv3Message = {
@@ -611,303 +626,315 @@ export type MessageMap = {
     [MessageType.CreateEventListener]: {
         message: CreateEventListenerMessage;
         response: CreateEventListenerResponse;
-    }
+    };
     [MessageType.AddLongLivedConnection]: {
         message: AddLongLivedConnectionMessage;
         response: void;
-    }
+    };
     [MessageType.ApplySettingsJson]: {
         message: ApplySettingsJsonMessage;
         response: boolean;
-    }
+    };
     [MessageType.LoadSettingsJson]: {
         message: LoadSettingsJsonMessage;
         response: ExportMessageResponse;
-    }
+    };
     [MessageType.AddFilteringSubscription]: {
         message: AddFilteringSubscriptionMessage;
         response: void;
-    }
+    };
     [MessageType.GetIsEngineStarted]: {
         message: GetIsEngineStartedMessage;
         response: boolean;
-    }
+    };
     [MessageType.GetTabInfoForPopup]: {
         message: GetTabInfoForPopupMessage;
         response: GetTabInfoForPopupResponse | undefined;
-    }
+    };
     [MessageType.ChangeApplicationFilteringPaused]: {
         message: ChangeApplicationFilteringPausedMessage;
         response: void;
-    }
+    };
     [MessageType.OpenRulesLimitsTab]: {
         message: OpenRulesLimitsTabMessage;
         response: void;
-    }
+    };
     [MessageType.OpenSettingsTab]: {
         message: OpenSettingsTabMessage;
         response: void;
-    }
+    };
     [MessageType.OpenAssistant]: {
         message: OpenAssistantMessage;
         response: void;
-    }
+    };
     [MessageType.UpdateFullscreenUserRulesTheme]: {
         message: UpdateFullscreenUserRulesThemeMessage;
         response: void;
-    }
+    };
     [MessageType.SynchronizeOpenTabs]: {
         message: SynchronizeOpenTabsMessage;
         response: FilteringLogTabInfo[];
-    }
+    };
     [MessageType.CheckFiltersUpdate]: {
         message: CheckFiltersUpdateMessage;
         response: FilterMetadata[] | undefined;
-    }
+    };
     [MessageType.GetAllowlistDomains]: {
         message: GetAllowlistDomainsMessage;
         response: GetAllowlistDomainsResponse;
-    }
+    };
     [MessageType.OpenExtensionStore]: {
         message: OpenExtensionStoreMessage;
         response: void;
-    }
+    };
     [MessageType.OpenComparePage]: {
         message: OpenComparePageMessage;
         response: void;
-    }
+    };
+    [MessageType.OpenChromeExtensionsSettingsPage]: {
+        message: OpenChromeExtensionsSettingsPageMessage;
+        response: void;
+    };
     [MessageType.OpenFullscreenUserRules]: {
         message: OpenFullscreenUserRulesMessage;
         response: void;
-    }
+    };
     [MessageType.ResetBlockedAdsCount]: {
         message: ResetBlockedAdsCountMessage;
         response: void;
-    }
+    };
     [MessageType.OpenFilteringLog]: {
         message: OpenFilteringLogMessage;
         response: void;
-    }
+    };
     [MessageType.OpenAbuseTab]: {
         message: OpenAbuseTabMessage;
         response: void;
-    }
+    };
     [MessageType.OpenSiteReportTab]: {
         message: OpenSiteReportTabMessage;
         response: void;
-    }
+    };
     [MessageType.OpenThankyouPage]: {
         message: OpenThankyouPageMessage;
         response: void;
-    }
+    };
     [MessageType.GetOptionsData]: {
         message: GetOptionsDataMessage;
         response: GetOptionsDataResponse;
-    }
+    };
     [MessageType.ChangeUserSettings]: {
         message: ChangeUserSettingMessage;
         response: void;
-    }
+    };
     [MessageType.ResetSettings]: {
         message: ResetSettingsMessage;
         response: boolean;
-    }
+    };
     [MessageType.AddAndEnableFilter]: {
         message: AddAndEnableFilterMessage;
         response: number | undefined;
-    }
+    };
     [MessageType.DisableFilter]: {
         message: DisableFilterMessage;
         response: void;
-    }
+    };
     [MessageType.RemoveAntiBannerFilter]: {
         message: RemoveAntiBannerFilterMessage;
         response: void;
-    }
+    };
     [MessageType.SaveAllowlistDomains]: {
         message: SaveAllowlistDomainsMessage;
         response: void;
-    }
+    };
     [MessageType.SaveUserRules]: {
         message: SaveUserRulesMessage;
         response: void;
-    }
+    };
     [MessageType.GetUserRules]: {
         message: GetUserRulesMessage;
         response: GetUserRulesResponse;
-    }
+    };
     [MessageType.GetUserRulesEditorData]: {
         message: GetUserRulesEditorDataMessage;
         response: GetUserRulesEditorDataResponse;
-    }
+    };
     [MessageType.AddUserRule]: {
         message: AddUserRuleMessage;
         response: void;
-    }
+    };
     [MessageType.RemoveUserRule]: {
         message: RemoveUserRuleMessage;
         response: void;
-    }
+    };
     [MessageType.ResetUserRulesForPage]: {
         message: ResetUserRulesForPageMessage;
         response: void;
-    }
+    };
     [MessageType.GetEditorStorageContent]: {
         message: GetEditorStorageContentMessage;
         response: string | undefined;
-    }
+    };
     [MessageType.SetEditorStorageContent]: {
         message: SetEditorStorageContentMessage;
         response: void;
-    }
+    };
     [MessageType.RemoveAllowlistDomain]: {
         message: RemoveAllowlistDomainMessage;
         response: void;
-    }
-    [MessageType.AddAllowlistDomain]: {
-        message: AddAllowlistDomainMessage;
+    };
+    [MessageType.AddAllowlistDomainForTabId]: {
+        message: AddAllowlistDomainForTabIdMessage;
         response: void;
-    }
+    };
+    [MessageType.AddAllowlistDomainForUrl]: {
+        message: AddAllowlistDomainForUrlMessage;
+        response: void;
+    };
     [MessageType.LoadCustomFilterInfo]: {
         message: LoadCustomFilterInfoMessage;
         response: GetCustomFilterInfoResult;
-    }
+    };
     [MessageType.SubscribeToCustomFilter]: {
         message: SubscribeToCustomFilterMessage;
         response: CustomFilterMetadata;
-    }
+    };
     // This message is sent from background and handled on UI side.
     [MessageType.AppInitialized]: {
         message: AppInitializedMessage;
         response: never;
-    }
+    };
     // This message is sent from background and handled on UI side.
     [MessageType.UpdateTotalBlocked]: {
         message: UpdateTotalBlockedMessage;
         response: never;
-    }
+    };
     [MessageType.GetFilteringLogData]: {
         message: GetFilteringLogDataMessage;
         response: GetFilteringLogDataResponse;
-    }
+    };
     [MessageType.CheckRequestFilterReady]: {
         message: CheckRequestFilterReadyMessage;
         response: boolean;
-    }
+    };
     [MessageType.OnOpenFilteringLogPage]: {
         message: OpenFilteringLogPageMessage;
         response: void;
-    }
+    };
     [MessageType.OnCloseFilteringLogPage]: {
         message: CloseFilteringLogPageMessage;
         response: void;
-    }
+    };
     [MessageType.ClearEventsByTabId]: {
         message: ClearEventsByTabIdMessage;
         response: void;
-    }
+    };
     [MessageType.SetPreserveLogState]: {
         message: SetPreserveLogStateMessage;
         response: void;
-    }
+    };
     [MessageType.RefreshPage]: {
         message: RefreshPageMessage;
         response: void;
-    }
+    };
     [MessageType.GetFilteringInfoByTabId]: {
         message: GetFilteringInfoByTabIdMessage;
         response: FilteringLogTabInfo | undefined;
-    }
+    };
     [MessageType.SetFilteringLogWindowState]: {
         message: SetFilteringLogWindowStateMessage;
         response: void;
-    }
+    };
     [MessageType.EnableFiltersGroup]: {
         message: EnableFiltersGroupMessage;
         response: number[] | undefined;
-    }
+    };
     [MessageType.DisableFiltersGroup]: {
         message: DisableFiltersGroupMessage;
         response: void;
-    }
+    };
     [MessageType.OpenSafebrowsingTrusted]: {
         message: OpenSafebrowsingTrustedMessage;
         response: void;
-    }
+    };
     [MessageType.SetNotificationViewed]: {
         message: SetNotificationViewedMessage;
         response: Promise<void>;
-    }
+    };
     [MessageType.RemoveListener]: {
         message: RemoveListenerMessage;
         response: void;
-    }
+    };
     [MessageType.ScriptletCloseWindow]: {
         message: ScriptletCloseWindowMessage;
         response: void;
-    }
+    };
     [MessageType.ShowRuleLimitsAlert]: {
         message: ShowRuleLimitsAlertMessage;
         response: boolean;
-    }
+    };
     // This message is sent from background and handled on UI side.
     [MessageType.NotifyListeners]: {
         message: NotifyListenersMessage;
         response: never;
-    }
+    };
     // This message is sent from background and handled on UI side.
     [MessageType.UpdateListeners]: {
         message: UpdateListenersMessage;
         response: never;
-    }
+    };
     [MessageType.ShowAlertPopup]: {
         message: ShowAlertPopupMessage;
         response: void;
-    }
+    };
     [MessageType.ShowVersionUpdatedPopup]: {
         message: ShowVersionUpdatedPopupMessage;
         response: boolean;
-    }
+    };
     [MessageType.GetIsConsentedFilter]: {
         message: GetIsConsentedFilterMessage;
         response: boolean;
-    }
+    };
     [MessageType.SetConsentedFilters]: {
         message: SetConsentedFiltersMessage;
         response: void;
-    }
+    };
     [MessageType.AddUrlToTrusted]: {
         message: AddUrlToTrustedMessage;
         response: void;
-    }
+    };
     [MessageType.CurrentLimitsMv3]: {
         message: CurrentLimitsMv3Message;
         response: Mv3LimitsCheckResult;
-    }
+    };
     [MessageType.GetRulesLimitsCountersMv3]: {
         message: GetRulesLimitsCountersMv3Message;
         response: IRulesLimits | undefined;
-    }
+    };
     [MessageType.CanEnableStaticFilterMv3]: {
         message: CanEnableStaticFilterMv3Message;
         response: StaticLimitsCheckResult;
-    }
+    };
     [MessageType.CanEnableStaticGroupMv3]: {
         message: CanEnableStaticGroupMv3Message;
         response: StaticLimitsCheckResult;
-    }
+    };
     [MessageType.RestoreFiltersMv3]: {
         message: RestoreFiltersMv3Message;
         response: void;
-    }
+    };
     [MessageType.ClearRulesLimitsWarningMv3]: {
         message: ClearRulesLimitsWarningMv3Message;
         response: void;
-    }
+    };
     [MessageType.InitializeFrameScript]: {
         message: InitializeFrameScriptMessage;
         response: PageInitAppData;
-    }
+    };
+    [MessageType.InitializeBlockingPageScript]: {
+        message: InitializeBlockingPageScript;
+        response: BlockingPageInitAppData;
+    };
 };
 
 /**

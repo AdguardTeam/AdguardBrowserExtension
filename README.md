@@ -58,6 +58,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
         - [Debug MV3 declarative rules](#dev-debug-mv3)
     - [Linter](#dev-linter)
     - [Update localizations](#dev-localizations)
+    - [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 - [Permissions required](#permissions-required)
 - [Auto-publish builds](#auto-publish-builds)
 - [Minimum supported browser versions](#browser-compatibility)
@@ -188,7 +189,7 @@ To make a dev build for a specific browser, run:
 pnpm dev <browser>
 ```
 
-Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `firefox`,
+Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `firefox-amo`,
 `firefox-standalone`, like this:
 
 ```shell
@@ -292,6 +293,20 @@ pnpm release
 You will need to put certificate.pem file to the `./private/AdguardBrowserExtension` directory. This
 build will create unpacked extensions and then pack them (crx for Chrome).
 
+For testing purposes for `dev` command credentials taken from `./tests/certificate-test.pem` file.
+
+WARNING: DO NOT USE TEST CREDENTIALS FOR PRODUCTION BUILDS, BECAUSE THEY ARE AVAILABLE IN PUBLIC.
+
+##### How to generate credentials for `crx` builds
+
+You can use [Crx CLI `keygen`](https://github.com/thom4parisot/crx#crx-keygen-directory)
+to generate credentials for `crx` builds, see the example below:
+
+```bash
+# Command will generate `key.pem` credential in the `./private/AdguardBrowserExtension` directory
+pnpm crx keygen ./private/AdguardBrowserExtension
+```
+
 #### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
 
 1. To ensure that the extension is built in the same way, use the docker image:
@@ -321,7 +336,7 @@ build will create unpacked extensions and then pack them (crx for Chrome).
     cd ./build/beta
     ```
 
-1. Compare the generated `firefox.zip` file with the uploaded one.
+1. Compare the generated `firefox-standalone.zip` file with the uploaded one.
 
 If you need to build the **RELEASE** version:
 
@@ -373,12 +388,6 @@ If you want to debug MV3 declarative rules and check exactly which rules has bee
 Then install extension via developer mode, make requests and see applied declarative rules in the filtering log.
 
 ##### How to build MV3 extension
-
-1. Switch to the `v5.0` branch:
-
-    ```shell
-    git checkout v5.0
-    ```
 
 1. Run the following command in the terminal:
 
@@ -467,6 +476,85 @@ To show locales info run:
 ```shell
 pnpm locales info
 ```
+
+### <a name="dev-bundle-size-monitoring"></a> Bundle Size Monitoring
+
+The browser extension project includes a comprehensive bundle size monitoring system, located in `tools/bundle-size`. This system helps ensure that our extension bundles remain within defined size limits, and that any significant increases are reviewed and justified.
+
+#### Key Features
+
+- Tracks and compares bundle sizes across different build types (`beta`, `release`, etc.) and browser targets (`chrome`, `chrome-mv3`, `edge`, etc.)
+- Detects significant size increases using configurable thresholds (default: 10%)
+- Ensures Chrome MV3 bundle stays under the 30MB limit
+- Checks for duplicate package versions using `pnpm`
+- Stores historical size data in `.bundle-sizes.json`
+- Designed for CI/CD integration (Bamboo)
+- **For Firefox targets (AMO and Standalone) only**, every individual `.js` file is checked to ensure it does not exceed the 4MB limit imposed by the Firefox Add-ons Store. If any `.js` file is larger than 4MB, the check fails and the offending files are reported.
+
+#### How it works
+
+- On each beta or release build, the system compares the current bundle sizes to the reference values in `.bundle-sizes.json`.
+- If any size exceeds the configured threshold, or additionally check for 30MB limit for Chrome MV3 target or 4MB limit for Firefox targets - the check fails.
+- Duplicate package versions are detected and reported.
+
+#### To update the bundle sizes manually
+
+We have defined size limits in the project.
+
+1. When we build the `beta` or `release` version, the build process checks if we’re exceeding those limits.
+2. If we exceed the limits, the developer should investigate the cause and decide whether the size increase is acceptable.
+3. If the new sizes are justified, the developer updates the size values in the package and creates a commit.
+4. We then review and approve any changes to the sizes as part of the PR process.
+
+##### Steps
+
+1. Run the build for the desired environment (e.g., `pnpm beta` or `pnpm release`).
+2. If the build fails due to bundle size limits, investigate the cause (e.g., new dependencies, large assets).
+3. If the increase is justified, update the reference sizes by running:
+
+    ```shell
+    pnpm update-bundle-size <buildEnv> [targetBrowser]
+    # Example: pnpm update-bundle-size release chrome-mv3
+    # Or: pnpm update-bundle-size beta firefox-amo
+    # Or: pnpm update-bundle-size dev
+    ```
+
+4. Commit the updated `.bundle-sizes.json` file and include justification in your PR.
+5. The changes will be reviewed and approved as part of the PR process.
+
+#### Checking bundle size locally
+
+To check bundle sizes locally, use:
+
+```shell
+pnpm check-bundle-size <buildEnv> [targetBrowser]
+# Example: pnpm check-bundle-size release chrome-mv3
+# Or: pnpm check-bundle-size beta firefox-amo
+# Or: pnpm check-bundle-size dev
+```
+
+For CLI help on parameters, use:
+
+```shell
+pnpm check-bundle-size --help
+pnpm update-bundle-size --help
+```
+
+#### Usage: Custom Threshold
+
+You can override the default threshold for significant bundle size increases using the `--threshold` option:
+
+```sh
+pnpm check-bundle-size <buildEnv> [targetBrowser] --threshold 5
+# or
+pnpm check-bundle-size release chrome-mv3 --threshold=20
+# or
+pnpm check-bundle-size beta
+```
+
+- `--threshold <number>`: Sets the allowed percentage increase in bundle size before the check fails. Default: 10%.
+
+This is useful for temporarily relaxing or tightening the allowed size delta for a specific check/build.
 
 ## <a name="permissions-required"></a> Permissions required
 

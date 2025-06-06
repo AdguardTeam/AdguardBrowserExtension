@@ -604,48 +604,24 @@
         window.google.ima = ima;
         hit(source);
     }
-    function hit(source) {
-        var ADGUARD_PREFIX = "[AdGuard]";
-        if (!source.verbose) {
-            return;
-        }
-        try {
-            var trace = console.trace.bind(console);
-            var label = `${ADGUARD_PREFIX} `;
-            if (source.engine === "corelibs") {
-                label += source.ruleText;
-            } else {
-                if (source.domainName) {
-                    label += `${source.domainName}`;
-                }
-                if (source.args) {
-                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
-                } else {
-                    label += `#%#//scriptlet('${source.name}')`;
-                }
-            }
-            if (trace) {
-                trace(label);
-            }
-        } catch (e) {}
-        if (typeof window.__debug === "function") {
-            window.__debug(source);
+    function hit(e) {
+        if (e.verbose) {
+            try {
+                var n = console.trace.bind(console), i = "[AdGuard] ";
+                "corelibs" === e.engine ? i += e.ruleText : (e.domainName && (i += `${e.domainName}`), 
+                e.args ? i += `#%#//scriptlet('${e.name}', '${e.args.join("', '")}')` : i += `#%#//scriptlet('${e.name}')`), 
+                n && n(i);
+            } catch (e) {}
+            "function" == typeof window.__debug && window.__debug(e);
         }
     }
     function noopFunc() {}
-    function logMessage(source, message) {
-        var forced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-        var convertMessageToString = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-        var {name: name, verbose: verbose} = source;
-        if (!forced && !verbose) {
-            return;
+    function logMessage(e, o) {
+        var n = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], g = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: l, verbose: v} = e;
+        if (n || v) {
+            var a = console.log;
+            g ? a(`${l}: ${o}`) : a(`${l}:`, o);
         }
-        var nativeConsole = console.log;
-        if (!convertMessageToString) {
-            nativeConsole(`${name}:`, message);
-            return;
-        }
-        nativeConsole(`${name}: ${message}`);
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];
     try {

@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { TRUSTED_DOCUMENTS_CACHE_KEY } from '../../common/constants';
-import { TrustedDomainData } from '../schema';
+import { type TrustedDomainData } from '../schema';
 import { StringStorage } from '../utils/string-storage';
 
 import { browserStorage } from './shared-instances';

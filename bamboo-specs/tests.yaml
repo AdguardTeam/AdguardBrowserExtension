@@ -13,7 +13,8 @@ stages:
       manual: false
       final: false
       jobs:
-        - Test build
+        - Test dev build
+        - Build chrome crx artifact
   - Tests:
       manual: false
       final: false
@@ -22,11 +23,11 @@ stages:
         - Unit tests
         - Integration tests
 
-Test build:
-  key: TESTBUILD
+Test dev build:
+  key: TESTDEVBUILD
   other:
     clean-working-dir: true
-  docker:
+  docker: &docker
     image: ${bamboo.dockerNode}
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
@@ -65,7 +66,7 @@ Test build:
             mv build/dev/firefox-standalone.zip artifacts/firefox-standalone-dev.zip
             mv build/dev/opera.zip artifacts/opera-dev.zip
   final-tasks:
-    - script:
+    - script: &final-clean-up-script
         interpreter: SHELL
         scripts:
           - |-
@@ -111,17 +112,56 @@ Test build:
       location: artifacts
       pattern: opera-dev.zip
       required: true
-  requirements:
+  requirements: &requirements
     - adg-docker: 'true'
+    - extension: 'true'
+
+Build chrome crx artifact:
+  key: BUILDCHROMECRX
+  other:
+    clean-working-dir: true
+  docker: *docker
+  tasks:
+    - checkout:
+        force-clean-build: true
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+            ls -la
+
+            # Fix mixed logs
+            exec 2>&1
+
+            # Create artifacts directory first thing to ensure it exists
+            mkdir -p artifacts
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            pnpm install ${bamboo.varsPnpm}
+
+            # Create dev build
+            pnpm dev chrome-crx
+
+            # Add postfix to the built file for easier identification target env
+            mv build/dev/chrome.crx artifacts/chrome-dev.crx
+  final-tasks:
+    - script: *final-clean-up-script
+  artifacts:
+    - name: chrome-dev.crx
+      location: artifacts
+      pattern: chrome-dev.crx
+      required: true
+  requirements: *requirements
 
 Lint:
   key: LINT
   other:
     clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  docker: *docker
   tasks:
     - script:
         interpreter: SHELL
@@ -139,34 +179,16 @@ Lint:
 
             pnpm install ${bamboo.varsPnpm}
 
-            ./bamboo-specs/scripts/timeout-wrapper.sh 90s pnpm lint
+            ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
   final-tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            echo "Size after cleanup:" && du -h | tail -n 1
-  requirements:
-    - adg-docker: 'true'
+    - script: *final-clean-up-script
+  requirements: *requirements
 
 Unit tests:
   key: UNITTESTS
   other:
     clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  docker: *docker
   tasks:
     - script:
         interpreter: SHELL
@@ -189,32 +211,14 @@ Unit tests:
     - test-parser:
         type: junit
         test-results: 'tests-reports/unit-tests-mv*.xml'
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            echo "Size after cleanup:" && du -h | tail -n 1
-  requirements:
-    - adg-docker: 'true'
+    - script: *final-clean-up-script
+  requirements: *requirements
 
 Integration tests:
   key: INTEGRATIONTESTS
   other:
     clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  docker: *docker
   tasks:
     - artifact-download:
         artifacts:
@@ -229,23 +233,8 @@ Integration tests:
     - test-parser:
         type: junit
         test-results: 'tests-reports/integration-tests-*.xml'
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            echo "Size after cleanup:" && du -h | tail -n 1
-  requirements:
-    - adg-docker: 'true'
+    - script: *final-clean-up-script
+  requirements: *requirements
 
 branches:
   create: for-pull-request

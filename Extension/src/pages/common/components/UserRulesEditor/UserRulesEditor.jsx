@@ -31,15 +31,14 @@ import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
 import { Editor, EditorLeaveModal } from '../Editor';
 import { translator } from '../../../../common/translators/translator';
-import { Popover } from '../ui/Popover';
 import { Checkbox } from '../ui/Checkbox';
-import { Icon } from '../ui/Icon';
 import { messenger } from '../../../services/messenger';
 import {
     NotifierType,
     NEWLINE_CHAR_UNIX,
     NEWLINE_CHAR_REGEX,
 } from '../../../../common/constants';
+import { getFirstNonDisabledElement } from '../../utils/dom';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
@@ -50,9 +49,10 @@ import { rootStore } from '../../../options/stores/RootStore';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
 import { NotificationType } from '../../../options/stores/UiStore';
-import { FILE_WRONG_EXTENSION_CAUSE } from '../../../options/constants';
+import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
+import { ToggleFullscreenButton } from './ToggleFullscreenButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { userRulesEditorStore } from './UserRulesEditorStore';
 
@@ -66,6 +66,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
+    const actionsRef = useRef(null);
+
+    const switchId = 'user-filter-switch';
+    const switchTitleId = `${switchId}-title`;
 
     let shouldResetSize = false;
     if (store.userRulesEditorPrefsDropped) {
@@ -94,7 +98,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                             break;
                         }
                         default: {
-                            logger.debug('Undefined message type:', type);
+                            logger.debug('[ext.UserRulesEditor]: undefined message type:', type);
                             break;
                         }
                     }
@@ -152,6 +156,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         if (!store.userRulesEditorContentChanged) {
             if (editorRef.current) {
                 editorRef.current.editor.setValue(userRules, CURSOR_POSITION_AFTER_INSERT);
+
+                const cursorPosition = store.getCursorPosition();
+                if (cursorPosition) {
+                    editorRef.current.editor.moveCursorTo(cursorPosition.row, cursorPosition.column);
+                    store.setCursorPosition(null);
+                }
             }
             store.setUserRulesEditorContentChangedState(false);
             await messenger.setEditorStorageContent(null);
@@ -187,7 +197,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                             break;
                         }
                         default: {
-                            logger.debug('Undefined message type:', type);
+                            logger.debug('[ext.UserRulesEditor]: undefined message type:', type);
                             break;
                         }
                     }
@@ -226,6 +236,8 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
     const saveUserRules = async (userRules) => {
+        store.setCursorPosition(editorRef.current.editor.getCursorPosition());
+
         // For MV2 version we don't show loader and don't check limits.
         if (!__IS_MV3__) {
             await store.saveUserRules(userRules);
@@ -236,6 +248,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
             uiStore.setShowLoader(false);
         }
         store.setUserRulesEditorContentChangedState(false);
+        store.setCursorPosition(null);
     };
 
     const inputChangeHandler = async (event) => {
@@ -273,7 +286,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 await saveUserRules(rulesUnionString);
             }
         } catch (e) {
-            logger.debug(e);
+            logger.debug('[ext.UserRulesEditor]: import error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
                 uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
             } else {
@@ -290,6 +303,11 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
     const importClickHandler = (e) => {
         e.preventDefault();
+
+        if (!inputRef.current) {
+            return;
+        }
+
         inputRef.current.click();
     };
 
@@ -307,45 +325,53 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         store.setUserRulesEditorContentChangedState(content !== value);
     };
 
-    const shortcuts = [
-        {
-            name: 'save',
-            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-            exec: saveClickHandler,
+    const focusFirstEnabledAction = () => {
+        const actionsEl = actionsRef.current;
+        if (!actionsEl) {
+            return;
+        }
+
+        const firstNonDisabledButton = getFirstNonDisabledElement(actionsEl, '.actions__btn');
+        if (firstNonDisabledButton) {
+            // Before focusing on element we need to add info about shortcut
+            // so Screen Reader can tell user that editor can be closed with Escape
+            firstNonDisabledButton.ariaKeyShortcuts = 'Escape';
+            firstNonDisabledButton.focus();
+        }
+    };
+
+    const shortcuts = [{
+        name: 'togglecomment',
+        bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
+        exec: (editor) => {
+            const selection = editor.getSelection();
+            const ranges = selection.getAllRanges();
+
+            const rowsSelected = ranges
+                .map((range) => {
+                    const [start, end] = [range.start.row, range.end.row];
+                    return Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
+                })
+                .flat();
+
+            const allRowsCommented = rowsSelected.every((row) => {
+                const rowLine = editor.session.getLine(row);
+                return rowLine.trim().startsWith(SimpleRegex.MASK_COMMENT);
+            });
+
+            rowsSelected.forEach((row) => {
+                const rawLine = editor.session.getLine(row);
+                // if all lines start with comment mark we remove it
+                if (allRowsCommented) {
+                    const lineWithRemovedComment = rawLine.replace(SimpleRegex.MASK_COMMENT, '');
+                    editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
+                    // otherwise we add it
+                } else {
+                    editor.session.insert({ row, column: 0 }, SimpleRegex.MASK_COMMENT);
+                }
+            });
         },
-        {
-            name: 'togglecomment',
-            bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
-            exec: (editor) => {
-                const selection = editor.getSelection();
-                const ranges = selection.getAllRanges();
-
-                const rowsSelected = ranges
-                    .map((range) => {
-                        const [start, end] = [range.start.row, range.end.row];
-                        return Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
-                    })
-                    .flat();
-
-                const allRowsCommented = rowsSelected.every((row) => {
-                    const rowLine = editor.session.getLine(row);
-                    return rowLine.trim().startsWith(SimpleRegex.MASK_COMMENT);
-                });
-
-                rowsSelected.forEach((row) => {
-                    const rawLine = editor.session.getLine(row);
-                    // if all lines start with comment mark we remove it
-                    if (allRowsCommented) {
-                        const lineWithRemovedComment = rawLine.replace(SimpleRegex.MASK_COMMENT, '');
-                        editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
-                        // otherwise we add it
-                    } else {
-                        editor.session.insert({ row, column: 0 }, SimpleRegex.MASK_COMMENT);
-                    }
-                });
-            },
-        },
-    ];
+    }];
 
     const exportClickHandler = () => {
         exportData(ExportTypes.UserFilter);
@@ -360,6 +386,14 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
         if (__IS_MV3__) {
             await settingsStore.checkLimitations();
+        }
+    };
+
+    const toggleFullscreen = async () => {
+        if (fullscreen) {
+            await closeEditorFullscreen();
+        } else {
+            await openEditorFullscreen();
         }
     };
 
@@ -390,10 +424,6 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         )(id, data);
     };
 
-    const fullscreenTooltipText = fullscreen
-        ? translator.getMessage('options_editor_close_fullscreen_button_tooltip')
-        : translator.getMessage('options_editor_open_fullscreen_button_tooltip');
-
     return (
         <>
             <Editor
@@ -403,6 +433,8 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 fullscreen={fullscreen}
                 shouldResetSize={shouldResetSize}
                 onChange={editorChangeHandler}
+                onSave={saveClickHandler}
+                onExit={focusFirstEnabledAction}
                 highlightRules
             />
             {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}
@@ -415,6 +447,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 />
             )}
             <div
+                ref={actionsRef}
                 className={cn('actions actions--grid', {
                     'actions--fullscreen-user-rules': fullscreen,
                     'actions--user-rules': !fullscreen,
@@ -424,17 +457,18 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     fullscreen && (
                         <label
                             className="actions__label"
-                            htmlFor="user-filter-enabled"
+                            htmlFor={switchId}
                         >
-                            <div className="actions__title">
+                            <div id={switchTitleId} className="actions__title" aria-hidden="true">
                                 {translator.getMessage('fullscreen_user_rules_title')}
                             </div>
                             <div className="actions__control">
                                 <Checkbox
-                                    id="user-filter-enabled"
+                                    id={switchId}
                                     handler={handleUserRulesToggle}
                                     value={store.userFilterEnabled}
                                     className="checkbox__label--actions"
+                                    labelId={switchTitleId}
                                 />
                             </div>
                         </label>
@@ -444,11 +478,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     <UserRulesSavingButton onClick={saveClickHandler} />
                     <input
                         type="file"
-                        id="inputEl"
                         accept="text/plain"
                         ref={inputRef}
                         onChange={inputChangeHandler}
-                        style={{ display: 'none' }}
+                        className="actions__input-file"
                     />
                     <button
                         type="button"
@@ -470,35 +503,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 </div>
                 <div className="actions--grid actions--icons">
                     <ToggleWrapButton onClick={toggleWrap} />
-                    <Popover text={fullscreenTooltipText}>
-                        {
-                            fullscreen ? (
-                                <button
-                                    type="button"
-                                    className="button actions__btn actions__btn--icon"
-                                    onClick={closeEditorFullscreen}
-                                    aria-label={translator.getMessage('options_editor_close_fullscreen_button_tooltip')}
-                                >
-                                    <Icon
-                                        id="#reduce"
-                                        classname="icon--24 icon--gray-default"
-                                    />
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="button actions__btn actions__btn--icon"
-                                    onClick={openEditorFullscreen}
-                                    aria-label={translator.getMessage('options_editor_open_fullscreen_button_tooltip')}
-                                >
-                                    <Icon
-                                        id="#extend"
-                                        classname="icon--24 icon--gray-default"
-                                    />
-                                </button>
-                            )
-                        }
-                    </Popover>
+                    <ToggleFullscreenButton fullscreen={fullscreen} onClick={toggleFullscreen} />
                 </div>
             </div>
         </>

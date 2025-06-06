@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
-import type { Configuration } from 'webpack';
+import { type Configuration } from 'webpack';
 
 import { RulesetsInjector } from '@adguard/dnr-rulesets';
 
@@ -36,6 +36,7 @@ import {
 } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
+import { commonManifest } from '../manifest.common';
 
 import { chromeMv3Manifest } from './manifest.chrome-mv3';
 
@@ -78,7 +79,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
             browserConfig.browser,
             content,
             rulesetsInjector.applyRulesets(
-                (id) => `filters/declarative/${id}/${id}.json`,
+                (id: string) => `filters/declarative/${id}/${id}.json`,
                 chromeMv3Manifest,
                 filters,
                 {
@@ -110,9 +111,16 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: path.resolve(__dirname, '../manifest.common.json'),
+                        /**
+                         * This is a dummy import to keep "clean" usage of
+                         * `CopyWebpackPlugin`. We actually use `commonManifest`
+                         * imported above.
+                         */
+                        from: path.resolve(__dirname, '../manifest.common.ts'),
                         to: 'manifest.json',
-                        transform: transformManifest,
+                        transform: () => {
+                            return transformManifest(Buffer.from(JSON.stringify(commonManifest)));
+                        },
                     },
                     {
                         context: 'Extension',

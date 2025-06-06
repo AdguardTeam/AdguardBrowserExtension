@@ -19,8 +19,8 @@
 import browser from 'webextension-polyfill';
 
 import {
-    MessageType,
-    MessageWithoutHandlerName,
+    type MessageType,
+    type MessageWithoutHandlerName,
     APP_MESSAGE_HANDLER_NAME,
 } from './constants';
 

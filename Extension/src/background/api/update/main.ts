@@ -22,7 +22,7 @@ import isObject from 'lodash-es/isObject';
 import { trimEnd } from 'lodash-es';
 
 import { logger } from '../../../common/logger';
-import { getErrorMessage } from '../../../common/error';
+import { getZodErrorMessage } from '../../../common/error';
 import {
     RAW_FILTER_KEY_PREFIX,
     FiltersStorage,
@@ -41,6 +41,7 @@ import {
     PAGE_STATISTIC_KEY,
     RULES_LIMITS_KEY,
     SCHEMA_VERSION_KEY,
+    SEPARATE_ANNOYANCE_FILTER_IDS,
 } from '../../../common/constants';
 import {
     appearanceValidator,
@@ -49,13 +50,14 @@ import {
     SchemaPreprocessor,
     SettingOption,
 } from '../../schema';
-import type { RunInfo } from '../../utils/run-info';
+import { type RunInfo } from '../../utils/run-info';
 import { IDBUtils } from '../../utils/indexed-db';
 import { defaultSettings } from '../../../common/settings';
 import { InstallApi } from '../install';
 import { PopupStatsCategories } from '../page-stats';
 import { HybridStorage } from '../../storages/hybrid-storage';
 
+// These imports are used for migrations before v11.
 import {
     FiltersStorage as FiltersStorageV1,
     BINARY_FILTER_KEY_PREFIX,
@@ -82,6 +84,7 @@ export class UpdateApi {
         '8': UpdateApi.migrateFromV8toV9,
         '9': UpdateApi.migrateFromV9toV10,
         '10': UpdateApi.migrateFromV10toV11,
+        '11': UpdateApi.migrateFromV11toV12,
     };
 
     /**
@@ -138,8 +141,8 @@ export class UpdateApi {
                 await UpdateApi.runSchemaMigration(schemaMigrationAction, schema, schema + 1);
             }
         } catch (e) {
-            logger.error('Error while migrate: ', e);
-            logger.info('Reset settings...');
+            logger.error('[ext.UpdateApi.runMigrations]: error while migrate:', getZodErrorMessage(e));
+            logger.info('[ext.UpdateApi.runMigrations]: Reset settings...');
             await browserStorage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
         }
     }
@@ -160,8 +163,8 @@ export class UpdateApi {
             await schemaMigrationAction();
         } catch (e: unknown) {
             // eslint-disable-next-line max-len
-            const errMessage = `Error while schema migrating from ${previousSchemaVersion} to ${currentSchemaVersion}: ${getErrorMessage(e)}`;
-            logger.error(errMessage);
+            const errMessage = `Error while schema migrating from ${previousSchemaVersion} to ${currentSchemaVersion}: ${getZodErrorMessage(e)}`;
+            logger.error('[ext.UpdateApi.runSchemaMigration]:', errMessage);
 
             throw new Error(errMessage, { cause: e });
         }
@@ -204,7 +207,48 @@ export class UpdateApi {
     };
 
     /**
+     * Run data migration from schema v11 to schema v12.
+     *
+     * For MV3 — AdGuard Quick Fixes filter is re-added
+     * and enabled by default for all users.
+     *
+     * For MV2 — AdGuard DNS filter and AdGuard Annoyances filter are migrated.
+     *
+     * For the extension update to v5.2.0.
+     */
+    private static async migrateFromV11toV12(): Promise<void> {
+        if (__IS_MV3__) {
+            // We cannot load and enable filter here, because filter's API is not
+            // initialized yet. So we just set the filter state to enabled
+            // and loaded.
+            // After that it will be renew from the local copy of filters
+            // - which will create all needed filter's objects in memory to correct
+            // work.
+            await UpdateApi.addQuickFixesFilter();
+            return;
+        }
+
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        let updatedSettings = await UpdateApi.migrateCombinedAnnoyancesFilter(settings);
+        await FiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
+
+        updatedSettings = await UpdateApi.removeDnsFilter(updatedSettings);
+        await FiltersStorage.remove(AntiBannerFiltersId.DnsFilterId);
+        await RawFiltersStorage.remove(AntiBannerFiltersId.DnsFilterId);
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, updatedSettings);
+    }
+
+    /**
      * Run data migration from schema v10 to schema v11.
+     *
+     * For the extension update to v5.1.62.
      */
     private static async migrateFromV10toV11(): Promise<void> {
         let entries: Record<string, unknown> = {};
@@ -244,13 +288,13 @@ export class UpdateApi {
                 const transactionResult = await hybridStorage.setMultiple(migrationData);
 
                 if (!transactionResult) {
-                    logger.error('Failed to save migrated data');
+                    logger.error('[ext.UpdateApi.migrateFromV10toV11]: failed to save migrated data');
                 }
             } else {
-                logger.debug('No serialized data to migrate');
+                logger.debug('[ext.UpdateApi.migrateFromV10toV11]: no serialized data to migrate');
             }
         } else {
-            logger.debug('IDB is supported, no need to migrate serialized data');
+            logger.debug('[ext.UpdateApi.migrateFromV10toV11]: IDB is supported, no need to migrate serialized data');
         }
 
         // Part 2. Migrate filters keys.
@@ -337,50 +381,7 @@ export class UpdateApi {
         // After that it will be renew from the local copy of filters
         // - which will create all needed filter's objects in memory to correct
         // work.
-        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
-
-        if (!UpdateApi.isObject(settings)) {
-            throw new Error('Settings is not an object');
-        }
-
-        const filtersStateData = settings['filters-state'];
-
-        if (typeof filtersStateData !== 'string') {
-            throw new Error('Cannot read filters state data');
-        }
-
-        const filtersState = zod.record(
-            zod.string(),
-            zod.object({
-                enabled: zod.boolean(),
-                installed: zod.boolean(),
-                loaded: zod.boolean(),
-            }),
-        ).parse(JSON.parse(filtersStateData));
-
-        // Little hack to mark filter as enabled before it is actually loaded.
-        Object.assign(filtersState, {
-            [AntiBannerFiltersId.QuickFixesFilterId]: {
-                // Enabled by default.
-                enabled: true,
-                // Installed is false, because otherwise this filter state
-                // will be marked as "obsoleted" (because this filter not
-                // exists in metadata yet) and will be removed from the memory.
-                installed: false,
-                // Mark as loaded to update filter from local resources and
-                // create filter object in memory.
-                loaded: true,
-            },
-        });
-
-        settings['filters-state'] = JSON.stringify(filtersState);
-
-        // Set empty filter to create it in the memory.
-        // Right after launch it will be updated to the newest version from remote.
-        await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
-        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
-
-        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+        await UpdateApi.addQuickFixesFilter(true);
     }
 
     /**
@@ -388,8 +389,8 @@ export class UpdateApi {
      *
      * For the extension update to v5.0.183.
      *
-     * For MV2 version we will run empty migration since we don't need to do anything,
-     * just increase the schema version.
+     * For MV2 version we will run empty migration since we don't need
+     * to do anything, just increase the schema version.
      *
      * For MV3 version we need to remove deprecated Quick Fixes filter state.
      */
@@ -431,50 +432,7 @@ export class UpdateApi {
         // After that it will be renew from the local copy of filters
         // - which will create all needed filter's objects in memory to correct
         // work.
-        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
-
-        if (!UpdateApi.isObject(settings)) {
-            throw new Error('Settings is not an object');
-        }
-
-        const filtersStateData = settings['filters-state'];
-
-        if (typeof filtersStateData !== 'string') {
-            throw new Error('Cannot read filters state data');
-        }
-
-        const filtersState = zod.record(
-            zod.string(),
-            zod.object({
-                enabled: zod.boolean(),
-                installed: zod.boolean(),
-                loaded: zod.boolean(),
-            }),
-        ).parse(JSON.parse(filtersStateData));
-
-        // Little hack to mark filter as enabled before it is actually loaded.
-        Object.assign(filtersState, {
-            [AntiBannerFiltersId.QuickFixesFilterId]: {
-                // Enabled by default.
-                enabled: true,
-                // Installed is false, because otherwise this filter state
-                // will be marked as "obsoleted" (because this filter not
-                // exists in metadata yet) and will be removed from the memory.
-                installed: false,
-                // Mark as loaded to update filter from local resources and
-                // create filter object in memory.
-                loaded: true,
-            },
-        });
-
-        settings['filters-state'] = JSON.stringify(filtersState);
-
-        // Set empty filter to create it in the memory.
-        // Right after launch it will be updated to the newest version from remote.
-        await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
-        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
-
-        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+        await UpdateApi.addQuickFixesFilter(true);
     }
 
     /**
@@ -488,7 +446,7 @@ export class UpdateApi {
         const rawOldPageStatistics = await browserStorage.get(PAGE_STATISTIC_KEY);
 
         if (typeof rawOldPageStatistics !== 'string') {
-            logger.debug('Missing page statistics, nothing to migrate');
+            logger.debug('[ext.UpdateApi.migrateFromV5toV6]: missing page statistics, nothing to migrate');
             return;
         }
 
@@ -506,12 +464,12 @@ export class UpdateApi {
             const oldPageStatisticsObj = JSON.parse(oldPageStatisticsStr);
             oldPageStatistics = pageStatsValidator.parse(oldPageStatisticsObj);
         } catch (e: unknown) {
-            logger.debug('Nothing to migrate, since page statistics cannot be parsed:', getErrorMessage(e));
+            logger.debug('[ext.UpdateApi.migrateFromV5toV6]: nothing to migrate, since page statistics cannot be parsed:', getZodErrorMessage(e));
             return;
         }
 
         if (!oldPageStatistics.data) {
-            logger.debug('No page statistics data to migrate');
+            logger.debug('[ext.UpdateApi.migrateFromV5toV6]: no page statistics data to migrate');
             return;
         }
 
@@ -550,23 +508,25 @@ export class UpdateApi {
 
             const oldKeys = Object.keys(oldDataItem);
             oldKeys.forEach((key) => {
-                if (key !== 'total') {
-                    const statsCount = oldDataItem[key];
-                    if (typeof statsCount === 'undefined') {
-                        return;
-                    }
-
-                    const category = STATS_CATEGORIES_MIGRATION_MAP[key];
-                    if (category) {
-                        newDataItem[category] = (newDataItem[category] || 0) + statsCount;
-                    } else {
-                        logger.debug(`Unknown category for old group id: ${key}, migrated into "Other"`);
-                        // eslint-disable-next-line max-len
-                        newDataItem[PopupStatsCategories.Other] = (newDataItem[PopupStatsCategories.Other] || 0) + statsCount;
-                    }
-
-                    total += statsCount;
+                if (key === 'total') {
+                    return;
                 }
+
+                const statsCount = oldDataItem[key];
+                if (typeof statsCount === 'undefined') {
+                    return;
+                }
+
+                const category = STATS_CATEGORIES_MIGRATION_MAP[key];
+                if (category) {
+                    newDataItem[category] = (newDataItem[category] || 0) + statsCount;
+                } else {
+                    logger.debug(`[ext.UpdateApi.migrateFromV5toV6]: unknown category for old group id: ${key}, migrated into "Other"`);
+                    const prevCount = newDataItem[PopupStatsCategories.Other] || 0;
+                    newDataItem[PopupStatsCategories.Other] = prevCount + statsCount;
+                }
+
+                total += statsCount;
             });
 
             newDataItem.total = total;
@@ -711,7 +671,7 @@ export class UpdateApi {
 
         // Check if there are no filters to migrate.
         if (rawFilterKeys.length === 0 && filterKeys.length === 0) {
-            logger.debug('No filters to migrate from storage to hybrid storage');
+            logger.debug('[ext.UpdateApi.migrateFromV3toV4]: no filters to migrate from storage to hybrid storage');
             return;
         }
 
@@ -727,17 +687,14 @@ export class UpdateApi {
         filterKeys.forEach((key) => {
             const filterId = FiltersStorageV1.extractFilterIdFromFilterKey(key);
             if (filterId === null) {
-                logger.debug(`Failed to extract filter ID from the key: ${key}, skipping`);
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to extract filter ID from the key: ${key}, skipping`);
                 return;
             }
 
             const filterParsingResult = filterSchema.safeParse(entries[key]);
 
             if (!filterParsingResult.success) {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse data from filter ID ${filterId} from the old storage: ${getErrorMessage(filterParsingResult.error)}`,
-                );
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to parse data from filter ID ${filterId} from the old storage: ${getZodErrorMessage(filterParsingResult.error)}`);
                 return;
             }
 
@@ -752,17 +709,14 @@ export class UpdateApi {
         rawFilterKeys.forEach((key) => {
             const filterId = RawFiltersStorage.extractFilterIdFromFilterKey(key);
             if (filterId === null) {
-                logger.debug(`Failed to extract raw filter ID from the key: ${key}, skipping`);
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to extract raw filter ID from the key: ${key}, skipping`);
                 return;
             }
 
             const filterParsingResult = zod.string().safeParse(entries[key]);
 
             if (!filterParsingResult.success) {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse data from raw filter ID ${filterId} from the old storage: ${getErrorMessage(filterParsingResult.error)}`,
-                );
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to parse data from raw filter ID ${filterId} from the old storage: ${getZodErrorMessage(filterParsingResult.error)}`);
                 return;
             }
 
@@ -780,7 +734,7 @@ export class UpdateApi {
             throw new Error('Failed to migrate filters from storage to hybrid storage, transaction failed');
         }
 
-        logger.debug('Filters successfully migrated from storage to hybrid storage');
+        logger.debug('[ext.UpdateApi.migrateFromV3toV4]: filters successfully migrated from storage to hybrid storage');
 
         // We use passthrough to keep all other data as is, in this case we only need to update check times.
         const filterVersionDataValidatorV3 = zod.object({
@@ -813,15 +767,12 @@ export class UpdateApi {
 
                 await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
 
-                logger.debug('Filters version data successfully migrated from the old storage');
+                logger.debug('[ext.UpdateApi.migrateFromV3toV4]: filters version data successfully migrated from the old storage');
             } else {
-                logger.debug(
-                    // eslint-disable-next-line max-len
-                    `Failed to parse filters version data from the old storage: ${getErrorMessage(filtersVersionParsed.error)}`,
-                );
+                logger.debug(`[ext.UpdateApi.migrateFromV3toV4]: failed to parse filters version data from the old storage: ${getZodErrorMessage(filtersVersionParsed.error)}`);
             }
         } else {
-            logger.debug('Filters version data is not a string, skipping migration');
+            logger.debug('[ext.UpdateApi.migrateFromV3toV4]: filters version data is not a string, skipping migration');
         }
     }
 
@@ -854,11 +805,11 @@ export class UpdateApi {
 
             results.forEach((result) => {
                 if (result.status === 'rejected') {
-                    logger.info(getErrorMessage(result.reason));
+                    logger.info(`[ext.UpdateApi.migrateFromV2toV3]: failed to migrate user rules: ${getZodErrorMessage(result.reason)}`);
                 }
             });
         } catch (e: unknown) {
-            logger.info('Error while migrate user rules', getErrorMessage(e));
+            logger.info('[ext.UpdateApi.migrateFromV2toV3]: failed to migrate user rules', getZodErrorMessage(e));
         } finally {
             if (db) {
                 db.close();
@@ -1152,6 +1103,74 @@ export class UpdateApi {
     }
 
     /**
+     * Adds the removed Quick Fixes filter to settings and storages.
+     *
+     * @note
+     * We cannot load and enable filter here, because filter's API is not
+     * initialized yet. So we just set the filter state to enabled
+     * and loaded.
+     * After that it will be renew from the local copy of filters - which will
+     * create all needed filter's objects in memory to correct work.
+     *
+     * @param useOldStorage Whether to use the old storage API, which was used
+     * before the migration to the new one migration#11 @see {@link UpdateApi.migrateFromV10toV11}.
+     *
+     * @returns A promise that resolves when complete.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
+     */
+    private static async addQuickFixesFilter(useOldStorage: boolean = false): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        // Little hack to mark filter as enabled before it is actually loaded.
+        Object.assign(filtersState, {
+            [AntiBannerFiltersId.QuickFixesFilterId]: {
+                // Enabled by default.
+                enabled: true,
+                // Installed is false, because otherwise this filter state
+                // will be marked as "obsoleted" (because this filter not
+                // exists in metadata yet) and will be removed from the memory.
+                installed: false,
+                // Mark as loaded to update filter from local resources and
+                // create filter object in memory.
+                loaded: true,
+            },
+        });
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        // Set empty filter to create it in the memory.
+        // Right after launch it will be updated to the newest version from remote.
+        if (useOldStorage) {
+            await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
+        } else {
+            await FiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+        }
+        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
      * Removes the deprecated Quick Fixes filter from settings and storages.
      *
      * @returns A promise that resolves when complete.
@@ -1200,6 +1219,130 @@ export class UpdateApi {
         await RawFiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
+     * Replaces the deprecated combined big Annoyances filter
+     * with separate smaller annoyances filters.
+     *
+     * Please note that separated annoyances filters will:
+     * - be marked as 'enabled';
+     * - not be marked as 'loaded'.
+     *
+     * @param settings The settings object.
+     *
+     * @returns The updated settings object.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
+     */
+    private static async migrateCombinedAnnoyancesFilter(
+        settings: Record<string, unknown>,
+    ): Promise<Record<string, unknown>> {
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const groupsState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                touched: zod.boolean(),
+            }),
+        ).parse(JSON.parse(groupsStateData));
+
+        // AdGuard Annoyances filters states.
+        const annoyancesFiltersState = Object.fromEntries(
+            SEPARATE_ANNOYANCE_FILTER_IDS.map((filterId) => {
+                const state = filtersState[filterId] ?? {
+                    loaded: false,
+                    enabled: false,
+                    touched: false,
+                };
+                return [filterId, state];
+            }),
+        );
+
+        const deprecatedAnnoyancesFilter = filtersState[AntiBannerFiltersId.AnnoyancesCombinedFilterId];
+
+        if (UpdateApi.isObject(deprecatedAnnoyancesFilter)) {
+            // If the deprecated Annoyances filter is enabled, we should enable new groups and filters.
+            if (deprecatedAnnoyancesFilter.enabled) {
+                SEPARATE_ANNOYANCE_FILTER_IDS.forEach((id) => {
+                    annoyancesFiltersState[id]!.enabled = true;
+                });
+            }
+            // delete deprecated filter state;
+            delete filtersState[AntiBannerFiltersId.AnnoyancesCombinedFilterId];
+        }
+
+        // Set updated states and new metadata to the settings.
+
+        Object.assign(filtersState, annoyancesFiltersState);
+
+        settings['groups-state'] = JSON.stringify(groupsState);
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        return settings;
+    }
+
+    /**
+     * Removes the deprecated DNS filter from settings.
+     *
+     * @param settings The settings object.
+     *
+     * @returns The updated settings object.
+     *
+     * @throws Error if settings are invalid or data cannot be read.
+     */
+    private static async removeDnsFilter(settings: Record<string, unknown>): Promise<Record<string, unknown>> {
+        const filtersStateData = settings['filters-state'];
+
+        if (typeof filtersStateData !== 'string') {
+            throw new Error('Cannot read filters state data');
+        }
+
+        const filtersState = zod.record(
+            zod.string(),
+            zod.object({
+                enabled: zod.boolean(),
+                installed: zod.boolean(),
+                loaded: zod.boolean(),
+            }),
+        ).parse(JSON.parse(filtersStateData));
+
+        const groupsStateData = settings['groups-state'];
+
+        if (typeof groupsStateData !== 'string') {
+            throw new Error('Cannot read groups state data');
+        }
+
+        const deprecatedDnsFilter = filtersState[AntiBannerFiltersId.DnsFilterId];
+
+        if (UpdateApi.isObject(deprecatedDnsFilter)) {
+            // delete the deprecated filter state
+            delete filtersState[AntiBannerFiltersId.DnsFilterId];
+        }
+
+        settings['filters-state'] = JSON.stringify(filtersState);
+
+        return settings;
     }
 
     /**

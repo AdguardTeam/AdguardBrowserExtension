@@ -24,6 +24,9 @@ import { popupStore } from '../../../stores/PopupStore';
 
 import './stats-table.pcss';
 
+export const STATS_TAB_ID = 'stats-tab';
+export const STATS_PANEL_ID = 'stats-panel';
+
 export const StatsTable = observer(() => {
     const store = useContext(popupStore);
 
@@ -52,7 +55,14 @@ export const StatsTable = observer(() => {
         });
 
     return (
-        <div className="stats">
+        <div
+            id={STATS_PANEL_ID}
+            role="tabpanel"
+            className="stats"
+            aria-labelledby={STATS_TAB_ID}
+            // A11Y: Allow focus on the tab panel so screen reader can read the content properly
+            tabIndex={0}
+        >
             <ul className="stats__list">
                 {renderStatsByType}
             </ul>

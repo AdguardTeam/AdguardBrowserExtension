@@ -24,7 +24,7 @@ import React, {
 
 import { AttachmentPortal } from '../../AttachmentPortal';
 import { Tooltip } from '../Tooltip';
-import { Position } from '../../types';
+import { type Position } from '../../types';
 
 import './popover.pcss';
 

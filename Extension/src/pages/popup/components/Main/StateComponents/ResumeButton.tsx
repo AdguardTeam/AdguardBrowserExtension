@@ -44,7 +44,7 @@ export const ResumeButton = observer(({ clickHandler }: ResumeButtonProps) => {
     // click handler is not needed during the transition
     // but in other cases it is required
     if (!isTransition && !clickHandler) {
-        logger.error('Click handler should be defined for the main switcher');
+        logger.error('[ext.ResumeButton]: click handler should be defined for the main switcher');
         return null;
     }
 

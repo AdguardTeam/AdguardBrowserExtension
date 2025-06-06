@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Runtime } from 'webextension-polyfill';
+import { type Runtime } from 'webextension-polyfill';
 
 import { Engine, type EngineMessage } from 'engine';
 
 import {
-    Message,
+    type Message,
     APP_MESSAGE_HANDLER_NAME,
     MessageHandler,
 } from '../common/messages';
@@ -55,7 +55,7 @@ export class BackgroundMessageHandler extends MessageHandler {
         if (message.handlerName === APP_MESSAGE_HANDLER_NAME) {
             // Check type
             if (!BackgroundMessageHandler.isValidMessageType(message)) {
-                logger.error('Invalid message in BackgroundMessageHandler:', message);
+                logger.error('[ext.BackgroundMessageHandler.handleMessage]: invalid message:', message);
                 return;
             }
 
@@ -68,7 +68,7 @@ export class BackgroundMessageHandler extends MessageHandler {
                 try {
                     return await listener(message, sender);
                 } catch (e) {
-                    logger.error('An error occurred while handling message:', message, 'error:', e);
+                    logger.error('[ext.BackgroundMessageHandler.handleMessage]: an error occurred while handling message:', message, 'error:', e);
 
                     throw e;
                 }

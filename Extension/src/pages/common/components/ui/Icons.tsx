@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
+/* eslint-disable max-len */
 import React from 'react';
 
 import '../../styles/icons.pcss';
@@ -117,6 +117,25 @@ export const Icons = () => {
                 <g fill="none" fillRule="evenodd">
                     <path stroke="currentColor" clipRule="evenodd" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     <path stroke="currentColor" d="M10 9.3c.02-.82 1-1.52 2-1.52s1.6.39 2 1.22c.32.7.01 1.55-1.06 2.28-.87.56-1.14 1.13-1.14 2.18M11.8 15.9v-.2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </g>
+            </symbol>
+
+            <symbol id="no-filters-found" viewBox="0 0 48 51">
+                <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M31.631 18.31a15.16 15.16 0 0 1-4.196 12.723c-5.872 5.999-15.504 6.099-21.503.226-6-5.872-6.108-15.505-.227-21.503 4.377-4.477 10.838-5.673 16.33-3.553M27.436 31.033 47 50.172" />
+                    <path d="M31.522 15.564a7.023 7.023 0 1 0 0-14.046 7.023 7.023 0 0 0 0 14.046ZM27.752 4.645l7.54 7.539M27.752 12.157l7.54-7.54" />
+                </g>
+            </symbol>
+
+            <symbol id="no-filters-yet" viewBox="0 0 63 35">
+                <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M54.5 36.886a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" />
+                    <path d="M54.5 26.776v4.67-4.67Z" />
+                    <path d="M54.5 26.776v4.67" />
+                    <path d="M54.491 33.31v.152-.152Z" />
+                    <path d="M54.491 33.31v.152M9.802 10.302V31.84h35.34M52.277 20.591v-9.985M9.802 1.5h42.475M35.086 1.5v30.34" />
+                    <path d="m35.283 1.5-8.801 8.802H1L9.802 1.5" />
+                    <path d="m34.978 1.805 8.802 8.801h17.594L52.277 1.5" />
                 </g>
             </symbol>
         </svg>

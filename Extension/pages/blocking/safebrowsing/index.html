@@ -1,0 +1,1506 @@
+<!--
+ * blocking-pages - Blocking pages for AdGuard projects
+ * @version v2.0.40
+ * @link
+ * @license Proprietary
+ --><!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title data-id="adgSafebrowsingTitle"></title>
+        <link rel="shortcut icon" type="image/png" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACxUlEQVR42sWXT0gUYRTAPwgiiCjoGHSqY4fOHfIWdIrAexjsNyNWM7azs5tmhaVIh+ogdZDCMKIi0HVnc/32T7VagVFklv0xM/+kKZrWhiuj+5p3+EzQnW/Gdtzf8mBhl3k/3nsz7xtih4/p26WoJlNDb5ai+nMa0WelSMik4eASbQ/maDgEUlw15biakRPqpPV9mMaVtMyUy1K8kkpMKSlrC2wjbrASHqBG4CEmwwSCQAEn0W2JnS7vUPeQtSi9X7rJStoktQdN+4RiAXEoYzSuHsecBJGMQDcvJ4bXAjwsiYzE1Hpim8BDAR7FF8DyF0sA7x6Cg1fECgwRGglmvBKIDSXg/fRHu//0WAL6uBcCj0e6YH4xC1VdtfkFmNpqCQTShRbo/JYE5Mabm/YtYMpFIhlaQyEFwl8eAYIVEM1AeVI5SqRocL8oSezzEzCXTJj6MwMN6et5BR58agVk5NcoVCQ18RAm1F0EweViJ9A5kAbOwuICnEteWSXQ0n+P/877LoofhEONwGvbMofPwMuxXuDMzM+CFqtbFrjVdwdy1gdpenvb6S14bYWAVi1qg9xeBR+mBoAzOjcOFUYNYMJcLgdI19gL588Aph4mHFEbeGDCrz9HgDM4M7yc/HtmgvfdXfk5PkNnTqa+sqMWJjPTsBIc0JpndW5W8tlVAmUdgZ1Ob70Qa4C57G/gNL+76+oR7I/5t5I1wFkIO5W4kLoK82YWeiZeuUqOJyNig6v1XP+0EU6mdFcCRASNajUebUM++WKoofd6INBInHIsdX4LjQSzBRNIqP3WIXQzcYMv6j9RIAFTTqoHyXqghj/03wLs1CHiGPeVEO37ElIIZOY/kmcm8p35+3xM3UcKiY/pu/H4JhRgSpuSUnYQr8A3KRuBS8R7UEKr9/17OwbK1GlsE9lIaGf1Xmrog1K8sgUX2Xqv8xeiHfjtkgd1aQAAAABJRU5ErkJggg&#x3D;&#x3D;" />
+      
+      <style rel="stylesheet" crossorigin>:root {
+    --product-primary-0: #f7fbf8;
+    --product-primary-10: #d9ecde;
+    --product-primary-20: #bedfc6;
+    --product-primary-30: #a2d0ad;
+    --product-primary-40: #84c193;
+    --product-primary-50: #67b279;
+    --product-primary-60: #5b9f6b;
+    --product-primary-70: #4e8c5d;
+    --product-primary-80: #42794f;
+    --product-primary-90: #366642;
+    --product-primary-100: #22482c;
+    --product-secondary-0: #f5edf5;
+    --product-secondary-10: #dec8e1;
+    --product-secondary-20: #ccaad1;
+    --product-secondary-30: #c096c7;
+    --product-secondary-40: #b586be;
+    --product-secondary-50: #a870b2;
+    --product-secondary-60: #9f61aa;
+    --product-secondary-70: #92549c;
+    --product-secondary-80: #804886;
+    --product-secondary-90: #6d3e72;
+    --product-secondary-100: #502d53;
+    --gray-0: #ffffff;
+    --gray-10: #f6f6f6;
+    --gray-20: #e4e4e4;
+    --gray-30: #d2d2d2;
+    --gray-40: #c0c0c0;
+    --gray-50: #a4a4a4;
+    --gray-60: #7f7f7f;
+    --gray-70: #5b5b5b;
+    --gray-80: #3d3d3d;
+    --gray-90: #1f1f1f;
+    --gray-100: #0a0a0a;
+    --orange-0: #fdf9f2;
+    --orange-10: #f5e2c1;
+    --orange-20: #eecb92;
+    --orange-30: #e5b460;
+    --orange-40: #de9e33;
+    --orange-50: #d58500;
+    --orange-60: #c77901;
+    --orange-70: #b76c01;
+    --orange-80: #a85f01;
+    --orange-90: #985201;
+    --orange-100: #803d00;
+    --red-0: #fcece6;
+    --red-10: #f6c2b1;
+    --red-20: #f2a288;
+    --red-30: #ef9071;
+    --red-40: #ec7b55;
+    --red-50: #e9653a;
+    --red-60: #e75727;
+    --red-70: #dc4918;
+    --red-80: #bc3f15;
+    --red-90: #a13612;
+    --red-100: #77280d;
+}
+
+:root {
+    /* Page background */
+    --default-page-background: var(--gray-0);
+    --hovered-page-background: var(--gray-10);
+    --pressed-page-background: var(--gray-20);
+    /* Cards background */
+    --default-cards-background: var(--gray-0);
+    /* Popup background */
+    --default-popup-background: var(--gray-0);
+    /* Footer background */
+    --default-footer-background: var(--gray-80);
+    /* Item divider */
+    --default-item-divider: var(--gray-30);
+    /* Main text */
+    --default-main-text: var(--gray-80);
+    --disabled-main-text: var(--gray-50);
+    /* Description text */
+    --default-description-text: var(--gray-60);
+    /* Forms */
+    --default-labels: var(--gray-70);
+    /* Input */
+    --default-input-background: var(--gray-10);
+    --default-active-input-stroke: var(--gray-50);
+    --default-inactive-input-stroke: var(--gray-30);
+    --default-placeholder: var(--gray-50);
+    --default-input-on-card-background: var(--gray-10);
+    --disabled-input-on-card-background: var(--gray-10);
+    /* Dropdown */
+    --default-dropdown-menu-background: var(--gray-0);
+    --hovered-dropdown-menu-background: var(--gray-10);
+    /* Main button */
+    --default-main-button: var(--product-primary-50);
+    --hovered-main-button: var(--product-primary-60);
+    --pressed-main-button: var(--product-primary-70);
+    --disabled-main-button: var(--product-primary-30);
+    --default-primary-button-text: var(--gray-0);
+    --disabled-primary-button-text: var(--product-primary-0);
+    --default-primary-button-icon: var(--gray-0);
+    /* Secondary button */
+    --default-secondary-button: var(--gray-0);
+    --hovered-secondary-button: var(--gray-10);
+    --pressed-secondary-button: var(--gray-20);
+    --disabled-secondary-button: var(--gray-0);
+    --default-secondary-button-stroke: var(--gray-80);
+    --disabled-secondary-button-stroke: var(--gray-50);
+    /* Secondary card button */
+    --default-secondary-card-button: var(--gray-0);
+    --hovered-secondary-card-button: var(--gray-10);
+    --pressed-secondary-card-button: var(--gray-20);
+    --disabled-secondary-card-button: var(--gray-0);
+    /* Danger button */
+    --default-danger-button: var(--red-50);
+    --hovered-danger-button: var(--red-60);
+    --pressed-danger-button: var(--red-70);
+    --disabled-danger-button: var(--red-30);
+    /* Link */
+    --default-link: var(--product-primary-50);
+    --hovered-link: var(--product-primary-60);
+    --pressed-link: var(--product-primary-70);
+    --visited-link: var(--product-primary-80);
+    /* Attention link */
+    --default-attention-link: var(--orange-50);
+    --hovered-attention-link: var(--orange-60);
+    --pressed-attention-link: var(--orange-70);
+    --disabled-attention-link: var(--orange-30);
+    /* Error link */
+    --default-error-link: var(--red-50);
+    /* Product icon */
+    --default-product-icon: var(--product-primary-50);
+    /* Black icon */
+    --default-black-icons: var(--gray-80);
+    /* Gray icon */
+    --default-gray-icons: var(--gray-60);
+    --disabled-gray-icons: var(--gray-30);
+    /* Error icon */
+    --default-error-icon: var(--red-50);
+    /* Stat */
+    --default-stats-background: var(--gray-20);
+    --default-red-stat: var(--red-50);
+    /* Modal */
+    --modal-iframe-overlay: #ffffff50;
+    --modal-overlay: #00000050;
+    /* Notifications */
+    --default-notifications-attention: var(--orange-10);
+    /* Logo key */
+    --default-logo-key-color: var(--gray-90);
+    /* Loaders */
+    --default-loaders-background: var(--gray-20);
+    --default-loaders-background-dark: var(--gray-70);
+    --default-loaders-primary: var(--product-primary-50);
+    /* Toplines */
+    --default-text-toplines-main: var(--gray-0);
+    --disabled-text-toplines-main: var(--gray-20);
+    --default-fills-toplines-adblocker: var(--gray-100);
+    --default-fills-toplines-vpn: var(--gray-10);
+    /* Breadcrumbs */
+    --default-breadcrumbs: var(--gray-50);
+    --fills-snacks-desktop-snacks-default: var(--gray-10);
+}
+
+[data-theme='dark'] {
+    /* Page background */
+    --default-page-background: var(--gray-90);
+    --hovered-page-background: var(--gray-80);
+    --pressed-page-background: var(--gray-70);
+    /* Cards background */
+    --default-cards-background: var(--gray-80);
+    /* Popup background */
+    --default-popup-background: var(--gray-90);
+    /* Footer background */
+    --default-footer-background: var(--gray-80);
+    /* Item divider */
+    --default-item-divider: var(--gray-70);
+    /* Main text */
+    --default-main-text: var(--gray-20);
+    --disabled-main-text: var(--gray-50);
+    /* Description text */
+    --default-description-text: var(--gray-40);
+    /* Forms */
+    --default-labels: var(--gray-30);
+    /* Input */
+    --default-input-background: var(--gray-80);
+    --default-active-input-stroke: var(--gray-50);
+    --default-inactive-input-stroke: var(--gray-70);
+    --default-placeholder: var(--gray-50);
+    --default-input-on-card-background: var(--gray-70);
+    --disabled-input-on-card-background: var(--gray-70);
+    /* Dropdown */
+    --default-dropdown-menu-background: var(--gray-80);
+    --hovered-dropdown-menu-background: var(--gray-70);
+    /* Main button */
+    --default-main-button: var(--product-primary-50);
+    --hovered-main-button: var(--product-primary-60);
+    --pressed-main-button: var(--product-primary-70);
+    --disabled-main-button: var(--product-primary-90);
+    --default-primary-button-text: var(--gray-0);
+    --disabled-primary-button-text: var(--product-primary-20);
+    --default-primary-button-icon: var(--gray-0);
+    /* Secondary button */
+    --default-secondary-button: var(--gray-90);
+    --hovered-secondary-button: var(--gray-80);
+    --pressed-secondary-button: var(--gray-70);
+    --disabled-secondary-button: var(--gray-90);
+    --default-secondary-button-stroke: var(--gray-20);
+    --disabled-secondary-button-stroke: var(--gray-50);
+    /* Secondary card button */
+    --default-secondary-card-button: var(--gray-80);
+    --hovered-secondary-card-button: var(--gray-70);
+    --pressed-secondary-card-button: var(--gray-60);
+    --disabled-secondary-card-button: var(--gray-80);
+    /* Danger button */
+    --default-danger-button: var(--red-50);
+    --hovered-danger-button: var(--red-60);
+    --pressed-danger-button: var(--red-70);
+    --disabled-danger-button: var(--red-30);
+    /* Link */
+    --default-link: var(--product-primary-50);
+    --hovered-link: var(--product-primary-60);
+    --pressed-link: var(--product-primary-70);
+    --visited-link: var(--product-primary-30);
+    /* Attention link */
+    --default-attention-link: var(--orange-50);
+    --hovered-attention-link: var(--orange-60);
+    --pressed-attention-link: var(--orange-70);
+    --disabled-attention-link: var(--orange-30);
+    /* Error link */
+    --default-error-link: var(--red-50);
+    /* Product icon */
+    --default-product-icon: var(--product-primary-50);
+    /* Black icon */
+    --default-black-icons: var(--gray-20);
+    /* Gray icon */
+    --default-gray-icons: var(--gray-40);
+    --disabled-gray-icons: var(--gray-70);
+    /* Error icon */
+    --default-error-icon: var(--red-50);
+    /* Stat */
+    --default-stats-background: var(--gray-70);
+    --default-red-stat: var(--red-50);
+    /* Modal */
+    --modal-iframe-overlay: #00000075;
+    --modal-overlay: #00000075;
+    /* Notifications */
+    --default-notifications-attention: var(--orange-100);
+    /* Logo key */
+    --default-logo-key-color: var(--gray-10);
+    /* Loaders */
+    --default-loaders-background: var(--gray-70);
+    --default-loaders-background-dark: var(--gray-70);
+    --default-loaders-primary: var(--product-primary-50);
+    /* Toplines */
+    --default-text-toplines-main: var(--gray-0);
+    --disabled-text-toplines-main: var(--gray-20);
+    --default-fills-toplines-adblocker: var(--gray-100);
+    --default-fills-toplines-vpn: var(--gray-80);
+    /* Breadcrumbs */
+    --default-breadcrumbs: var(--gray-50);
+    --fills-snacks-desktop-snacks-default: var(--gray-80);
+}
+
+:root {
+    --dns-blue50: #3c81f6;
+    --dns-red50: #f04444;
+    --dns-orange50: #f59e10;
+    --adg-green30: #a2d0ad;
+    --adg-green50: #67b279;
+    --adg-green60: #5b9f6b;
+    --adg-green70: #4e8c5d;
+    --vpn-green30: #b2cc9e;
+    --vpn-green50: #74a352;
+    --vpn-green60: #68924a;
+    --vpn-green70: #5c8141;
+    --t2: 0.2s ease;
+    --t3: 0.3s ease;
+    --t4: 0.4s ease;
+}
+
+*,
+*::before,
+*::after {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    min-width: 360px;
+    min-height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    margin: 0;
+    font-family:
+        'Roboto',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Ubuntu,
+        Arial,
+        sans-serif;
+    font-weight: 400;
+    color: var(--default-main-text);
+    background-color: var(--default-page-background);
+}
+
+body.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-weight: 700;
+}
+
+p,
+ul,
+li {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    list-style: none;
+}
+
+button {
+    margin: 0;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    background-color: transparent;
+}
+
+svg {
+    display: block;
+}
+
+.main {
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+
+.page-block {
+    padding: 40px 0;
+}
+
+@media (min-width: 768px) {
+
+.page-block {
+        padding: 80px 0
+}
+    }
+
+.container {
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+@media (min-width: 1024px) {
+
+.container {
+        padding: 0 24px
+}
+    }
+
+.grid {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+
+@media (min-width: 1024px) {
+
+.grid {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+                flex-direction: row;
+        -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
+        -webkit-box-align: start;
+            -ms-flex-align: start;
+                align-items: flex-start
+}
+    }
+
+.column {
+    width: 100%;
+    max-width: 476px;
+}
+
+.column--hide-tablet {
+        display: none;
+    }
+
+@media (min-width: 1024px) {
+
+.column--hide-tablet {
+            display: block
+    }
+        }
+
+.title {
+    font-size: 24px;
+    line-height: 120%;
+}
+
+@media (min-width: 768px) {
+
+.title {
+        font-size: 32px
+}
+    }
+
+.subtitle {
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.product-title {
+    font-size: 18px;
+    line-height: 20px;
+}
+
+.text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+
+.text-left-tablet {
+        text-align: left
+}
+    }
+
+.flex-center {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+
+.button {
+    width: 100%;
+    height: 56px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    border-radius: 8px;
+    padding-left: 24px;
+    padding-right: 24px;
+    font-size: 16px;
+    line-height: 130%;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button[data-type='filled'] {
+        -webkit-transition: var(--t2) background-color;
+        transition: var(--t2) background-color;
+        background-color: var(--default-main-button);
+        color: var(--default-primary-button-text);
+    }
+
+.button[data-type='filled']:hover,
+        .button[data-type='filled']:focus {
+            background-color: var(--hovered-main-button);
+        }
+
+.button[data-type='filled']:active {
+            background-color: var(--pressed-main-button);
+        }
+
+.button[data-type='filled']:disabled {
+            background-color: var(--disabled-main-button);
+            color: var(--disabled-primary-button-text);
+        }
+
+.button[data-type='transparent'] {
+        -webkit-transition: var(--t2) background-color;
+        transition: var(--t2) background-color;
+        background-color: var(--default-secondary-button);
+        color: var(--default-main-text);
+        -webkit-box-shadow: 0 0 0 1px inset var(--default-secondary-button-stroke);
+                box-shadow: 0 0 0 1px inset var(--default-secondary-button-stroke);
+    }
+
+.button[data-type='transparent']:hover,
+        .button[data-type='transparent']:focus {
+            background-color: var(--hovered-secondary-button);
+        }
+
+.button[data-type='transparent']:active {
+            background-color: var(--pressed-secondary-button);
+        }
+
+.button[data-type='transparent']:disabled {
+            background-color: var(--disabled-secondary-button);
+            -webkit-box-shadow: 0 0 0 1px inset var(--disabled-secondary-button-stroke);
+                    box-shadow: 0 0 0 1px inset var(--disabled-secondary-button-stroke);
+        }
+
+.button[data-size='medium'] {
+        padding-top: 18px;
+        padding-bottom: 18px;
+    }
+
+.button:active {
+        -webkit-transition: none;
+        transition: none;
+    }
+
+.button:disabled {
+        cursor: default;
+    }
+
+.input {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    position: relative;
+}
+
+.input__container {
+        width: 100%;
+    }
+
+.input__container--multifunctional .input__field {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                gap: 16px;
+                -webkit-box-pack: justify;
+                    -ms-flex-pack: justify;
+                        justify-content: space-between;
+                padding: 16px;
+            }
+
+@media (min-width: 768px) {
+
+.input__container--multifunctional .input__field {
+                    background-color: transparent
+            }
+                }
+
+@media (min-width: 768px) {
+
+.input__container--multifunctional .input__field:hover {
+                        background-color: var(--default-input-background)
+                }
+                    }
+
+.input__container--multifunctional .input__text {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                gap: 3px;
+                overflow: hidden;
+            }
+
+.input__label {
+        margin-bottom: 8px;
+        font-size: 14px;
+        line-height: 1.285;
+        color: var(--default-labels);
+    }
+
+.input__label--disabled {
+            opacity: 0.5;
+        }
+
+.input__field-in {
+        position: relative;
+    }
+
+.input__field {
+        width: 100%;
+        position: relative;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 16px 56px 16px 16px;
+        font-size: 16px;
+        font-family: inherit;
+        line-height: 1.375;
+        background-color: var(--default-input-background);
+        color: var(--default-main-text);
+        outline: none;
+        -webkit-transition:
+            var(--t3) border-color,
+            var(--t3) background-color;
+        transition:
+            var(--t3) border-color,
+            var(--t3) background-color;
+        z-index: 1;
+    }
+
+.input__field--textarea {
+            min-height: 100px;
+            max-height: 144px;
+            resize: vertical;
+        }
+
+.input__field::-webkit-input-placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field::-moz-placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field:-ms-input-placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field::-ms-input-placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field::placeholder {
+            color: var(--default-placeholder);
+        }
+
+.input__field:focus {
+            border-color: var(--default-active-input-stroke);
+        }
+
+.input__field:disabled {
+            opacity: 0.5;
+        }
+
+.input__field:disabled + .input__btn {
+                display: none;
+            }
+
+.input__field--error {
+            border-color: var(--default-error-icon);
+        }
+
+.input__field--error + .input__error {
+                display: inline;
+            }
+
+.input__error {
+        display: none;
+        margin-top: 4px;
+        font-size: 14px;
+        line-height: 1.15;
+        color: var(--default-error-link);
+    }
+
+.input__field-value {
+        font-size: 16px;
+        line-height: inherit;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+.input__field-value--modal {
+            margin: 0 0 32px;
+            max-height: 600px;
+            min-height: 24px;
+            word-break: break-word;
+            white-space: normal;
+            white-space: initial;
+            overflow-y: auto;
+        }
+
+.input__text-value {
+        font-weight: 600;
+    }
+
+.input__text-value:after {
+            content: ':';
+        }
+
+.input__actions {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        gap: 16px;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+    }
+
+.input__action {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+    }
+
+.input__actions-divider {
+        display: block;
+        width: 1px;
+        height: 24px;
+        background-color: var(--default-item-divider);
+    }
+
+.content {
+    display: block;
+}
+
+@media (min-width: 768px) {
+
+.content--dns {
+            padding-left: 32px
+    }
+        }
+
+.content__title span {
+            display: block;
+        }
+
+.content__title--red span {
+                color: var(--dns-red50);
+            }
+
+.content__title--blue span {
+                color: var(--dns-blue50);
+            }
+
+.content__title--orange span {
+                color: var(--dns-orange50);
+            }
+
+.content__text {
+        padding-top: 8px;
+    }
+
+.content__text--mb {
+            margin: 0 0 24px;
+        }
+
+@media (min-width: 768px) {
+
+.content__text--mb {
+                margin: 0 0 32px
+        }
+            }
+
+.content__text strong {
+            font-weight: 700;
+        }
+
+.content__parental-input {
+        display: none;
+        margin-top: 48px;
+    }
+
+.content__parental-input--show {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+        }
+
+.content__parental-proceed {
+        display: none;
+    }
+
+.content__buttons {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-column-gap: 24px;
+           -moz-column-gap: 24px;
+                column-gap: 24px;
+        margin: 24px 0 40px;
+    }
+
+@media (min-width: 768px) {
+
+.content__buttons {
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: row;
+                    flex-direction: row;
+            margin: 32px 0 40px
+    }
+        }
+
+.content__buttons .button {
+            max-width: 400px;
+        }
+
+@media (min-width: 768px) {
+
+.content__buttons .button {
+                width: auto;
+                max-width: none;
+                max-width: initial;
+                min-width: 200px
+        }
+            }
+
+.content__buttons .button + .button {
+            margin-top: 16px;
+        }
+
+@media (min-width: 768px) {
+
+.content__buttons .button + .button {
+                margin-top: 0
+        }
+            }
+
+.content__inputs {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        gap: 16px;
+        margin: 0 auto;
+        max-width: 400px;
+    }
+
+@media (min-width: 768px) {
+
+.content__inputs {
+            gap: 0;
+            max-width: none
+    }
+        }
+
+@media (min-width: 1024px) {
+
+.content__inputs {
+            margin: 0
+    }
+        }
+
+.pic--dns {
+        padding-right: 32px;
+    }
+
+.pic--adg {
+        padding-bottom: 8px;
+    }
+
+@media (min-width: 768px) {
+
+.pic--adg {
+            padding-bottom: 48px
+    }
+        }
+
+@media (min-width: 1024px) {
+
+.pic--adg {
+            padding-bottom: 0;
+            padding-right: 100px
+    }
+        }
+
+.pic--hide-tablet {
+        display: none;
+    }
+
+@media (min-width: 1024px) {
+
+.pic--hide-tablet {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex
+    }
+        }
+
+@media (min-width: 1024px) {
+
+.pic--hide-desktop {
+            display: none
+    }
+        }
+
+.faq__item {
+        margin: 0 0 40px;
+    }
+
+.faq__item:last-child {
+            margin: 0;
+        }
+
+.faq-item--open .faq-item__content {
+            grid-template-rows: none;
+            opacity: 1;
+        }
+
+.faq-item--always-open .faq-item__content {
+            grid-template-rows: none;
+            opacity: 1;
+        }
+
+.faq-item--always-open .faq-item__toggle-btn {
+            cursor: default;
+        }
+
+.faq-item__toggle {
+        position: relative;
+    }
+
+.faq-item__toggle-btn {
+        width: 100%;
+        display: block;
+        padding-right: 32px;
+        font-weight: inherit;
+        font-size: inherit;
+        text-align: left;
+        color: inherit;
+        cursor: pointer;
+    }
+
+.faq-item__toggle-btn.active + .faq-item__toggle-btn-icon {
+                -webkit-transform: scaleY(-1);
+                    -ms-transform: scaleY(-1);
+                        transform: scaleY(-1);
+            }
+
+.faq-item__toggle-btn--star {
+            padding-right: 64px;
+        }
+
+@media (min-width: 768px) {
+
+.faq-item__toggle-btn--star {
+                padding-right: 32px
+        }
+            }
+
+.faq-item__star-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 32px;
+    }
+
+@media (min-width: 768px) {
+
+.faq-item__star-icon {
+            right: 0;
+            left: -32px
+    }
+        }
+
+.faq-item__toggle-btn-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        -webkit-transition: var(--t2) transform;
+        transition: var(--t2) transform;
+        z-index: -1;
+    }
+
+.faq-item__content {
+        display: block;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+    }
+
+@supports (display: grid) {
+
+.faq-item__content {
+            max-height: none;
+            max-height: initial;
+            display: grid;
+            grid-template-rows: 0fr;
+            -webkit-transition:
+                var(--t3) grid-template-rows,
+                var(--t3) opacity;
+            transition:
+                var(--t3) grid-template-rows,
+                var(--t3) opacity
+    }
+        }
+
+.faq-item__content.active {
+            max-height: 1200px;
+            opacity: 1;
+            -webkit-transition: var(--t3) opacity;
+            transition: var(--t3) opacity;
+        }
+
+@supports (display: grid) {
+
+.faq-item__content.active {
+                max-height: none;
+                max-height: initial;
+                grid-template-rows: 1fr;
+                -webkit-transition:
+                    var(--t3) grid-template-rows,
+                    var(--t3) opacity;
+                transition:
+                    var(--t3) grid-template-rows,
+                    var(--t3) opacity
+        }
+            }
+
+.faq-item__desc {
+        overflow: hidden;
+    }
+
+.faq-item__text {
+        padding-top: 21px;
+    }
+
+.faq-item__text:first-child {
+            padding-top: 8px;
+        }
+
+.faq-item__text a,
+        .faq-item__text button {
+            font-size: inherit;
+            line-height: inherit;
+            color: var(--default-link);
+            -webkit-transition: var(--t2) background-color;
+            transition: var(--t2) background-color;
+            cursor: pointer;
+        }
+
+.faq-item__text a:hover,
+            .faq-item__text a:focus,
+            .faq-item__text button:hover,
+            .faq-item__text button:focus {
+                color: var(--hovered-link);
+            }
+
+.faq-item__text a:active, .faq-item__text button:active {
+                -webkit-transition: none;
+                transition: none;
+                color: var(--pressed-link);
+            }
+
+.faq-item__text a {
+            text-decoration: underline;
+        }
+
+.faq-item__text button {
+            text-decoration: none;
+        }
+
+.faq-item__text--gray {
+            color: var(--default-description-text);
+        }
+
+.faq-item__text--code {
+            padding-top: 8px;
+            word-wrap: break-word;
+        }
+
+.faq-item__product {
+        margin-top: 24px;
+    }
+
+.faq-item__product:last-child {
+            margin-top: 48px;
+        }
+
+.product__header {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+.product__header-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+.product__header-content {
+        margin-left: 16px;
+    }
+
+.product__header-promo {
+        color: var(--default-description-text);
+        line-height: 20px;
+    }
+
+.product__desc {
+        margin-top: 16px;
+    }
+
+.product__features {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+    }
+
+.product__features-item {
+        width: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        margin-top: 16px;
+    }
+
+@media (min-width: 768px) {
+
+.product__features-item {
+            width: 50%;
+            padding-right: 24px
+    }
+        }
+
+.product__features-text {
+        margin-left: 8px;
+        padding-top: 3px;
+        line-height: 18px;
+    }
+
+.product__btn {
+        margin-top: 24px;
+    }
+
+.product__btn a {
+            width: 100%;
+            max-width: 400px;
+            display: inline-block;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 16px;
+            line-height: 130%;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            -webkit-transition: var(--t2) background-color;
+            transition: var(--t2) background-color;
+            cursor: pointer;
+        }
+
+@media (min-width: 1024px) {
+
+.product__btn a {
+                width: auto;
+                max-width: none;
+                max-width: initial;
+                min-width: 168px
+        }
+            }
+
+.product__btn a:active {
+                -webkit-transition: none;
+                transition: none;
+            }
+
+.product__btn a:disabled {
+                cursor: default;
+            }
+
+.product__btn[data-color='adg-green'] a {
+            background-color: var(--adg-green50);
+            color: var(--default-primary-button-text);
+        }
+
+.product__btn[data-color='adg-green'] a:hover,
+            .product__btn[data-color='adg-green'] a:focus {
+                background-color: var(--adg-green60);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='adg-green'] a:active {
+                background-color: var(--adg-green70);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='adg-green'] a:disabled {
+                background-color: var(--adg-green30);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='vpn-green'] a {
+            background-color: var(--vpn-green50);
+            color: var(--default-primary-button-text);
+        }
+
+.product__btn[data-color='vpn-green'] a:hover,
+            .product__btn[data-color='vpn-green'] a:focus {
+                background-color: var(--vpn-green60);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='vpn-green'] a:active {
+                background-color: var(--vpn-green70);
+                color: var(--default-primary-button-text);
+            }
+
+.product__btn[data-color='vpn-green'] a:disabled {
+                background-color: var(--vpn-green30);
+                color: var(--default-primary-button-text);
+            }
+
+.modal {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    top: 0;
+    left: 0;
+    padding: 24px 16px 88px;
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: var(--t3) opacity var(--t3) visibility;
+    transition: var(--t3) opacity var(--t3) visibility;
+    z-index: 1;
+}
+
+.modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+.modal__in {
+        width: 100%;
+        max-width: 480px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        position: relative;
+        border-radius: 8px;
+        -webkit-box-shadow: 8px 8px 24px 0 rgba(0, 0, 0, 0.1);
+                box-shadow: 8px 8px 24px 0 rgba(0, 0, 0, 0.1);
+        padding: 24px 16px;
+        background-color: var(--default-page-background);
+        color: var(--default-main-text);
+        overflow-y: auto;
+    }
+
+@media (min-width: 768px) {
+
+.modal__in {
+            max-width: 720px;
+            padding: 32px
+    }
+        }
+
+.modal__title {
+        margin: 0 0 12px;
+    }
+
+.modal__content {
+        margin: 0 0 32px;
+        max-width: 600px;
+        word-break: break-word;
+        overflow-y: auto;
+    }
+
+.modal__actions {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        gap: 16px;
+    }
+
+@media (min-width: 768px) {
+
+.modal__actions {
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: row;
+                    flex-direction: row
+    }
+        }
+
+@media (min-width: 768px) {
+
+.modal__actions .button {
+                width: auto;
+                min-width: 200px
+        }
+            }
+
+.modal__close {
+        width: 24px;
+        height: 24px;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        position: absolute;
+        right: 16px;
+        top: 16px;
+    }
+
+.notify {
+    width: calc(100% - 32px);
+    max-width: 612px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    gap: 8px;
+    position: fixed;
+    -webkit-box-shadow: 4px 4px 8px 0 #0000001a;
+            box-shadow: 4px 4px 8px 0 #0000001a;
+    bottom: 16px;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(calc(100% + 16px));
+        -ms-transform: translateX(-50%) translateY(calc(100% + 16px));
+            transform: translateX(-50%) translateY(calc(100% + 16px));
+    border-radius: 4px;
+    padding: 16px;
+    background-color: var(--fills-snacks-desktop-snacks-default);
+    z-index: 2;
+}
+
+.notify.active {
+        -webkit-transition: var(--t3) transform;
+        transition: var(--t3) transform;
+        -webkit-transform: translateX(-50%) translateY(0);
+            -ms-transform: translateX(-50%) translateY(0);
+                transform: translateX(-50%) translateY(0);
+    }
+
+.notify__close {
+        width: 24px;
+        height: 24px;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+    }</style>
+    </head>
+
+    <body>
+        <main class="main">
+            <div class="page-block">
+                <div class="container">
+                    <div class="grid">
+                        <div class="column">
+                            <div class="pic pic--adg pic--hide-tablet flex-center">
+                                <svg width="320" height="321" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M73.28 90.4c-6.9.25-15.8 8.13-18.25 11.65-3.23 4.18-9.55 17.41-5.6 21.55 8.21 4.19 11.88-4.4 15.74-10.04 5.89-8.68 13.94-11.3 19.76-17.15 1.19-1.2-2.34-6.36-11.66-6.01Z" fill="#34381B"/><path d="M81.02 103.53c-2.32.75.67 2.48 5.34-.4 5.51-3.38 9.05-9.16 12.38-14.72-8.06.06-15.97 3.8-22.14 8.85-6.23 6.97-5.55 12.22 4.42 6.26Z" fill="#34381B"/><path opacity=".4" d="M159.41 85.98c-.56-.85-5.02-2.3-8.08-8.2-.37-.71-.08 1-.88 1.05l-.66.03c-.3 13 7.92 5.94 9.63 7.12Z" fill="#CEB79B"/><path d="m194.52 119.6-90.78-1.66s11.5-27.03 14.47-33.68c.56-3.23 1.08-6.36 1.68-9.24 1.47-7.97.74-16.43 2.23-24.32 2.77-20.36 16.18-25.13 34.1-22.74 13.33 2 21.16 16.27 21.33 28.96.4 3.56.2 14.21.23 14.31 4.6 16.29 10.41 35.12 16.72 48.38l.02-.01Z" fill="#CE8000"/><path d="M190.3 120.83c-5.4-7.83-7.58-16.24-7.5-16.2 1.15.4 2.37.98 3.03 2.01-6.47-10.21-10.43-36.07-12.22-37.81-3.08 4.25-38.56 5.07-38.56 5.07l-7.26-3.47c.9 13.94-2.84 34.22-14.75 46.2-1.2 1.09-2.75 2.53-3.24 4.2h80.5Z" fill="#C07500"/><path opacity=".6" d="M141.53 121.02c-.03 6.56 2.04 13.8 3.3 20.2 11.45 1.3 38.45 2.46 49.96 2.19.3-2.6-.21-5.15-.73-7.67-.7-3.49-1.36-7.13-3.61-9.99-2.48-3.25-.92-4.97-4.17-7.43-9.28-7.04-6.9-14.66-6.77-16 .45-4.63-2.85-6.61-4.54-16.7-.78-4.61-1.02-9.5.28-14.04-1.92-2.32-4.56-4.73-7.74-4.78-1.64 3.6-2.58 7.45-3.68 11.23-.8 2.7-1.61 5.38-2.24 8.13-2.72 11.9-20.07 34.86-20.07 34.86Z" fill="#A05A07"/><path d="M239.52 170.76H52.06c-5.02 36.18-10.12 72.37-15.37 108.52 63.3 26.4 142.29 27.5 207 4.92-2.25-35.31 3.56-77.08-4.17-113.44Z" fill="#2B6B40"/><path d="M54.88 150.43a19881 19881 0 0 1-18.2 128.85c54.75 23.24 123.86 26.46 181.6 12.48-4.21-36.02-2.35-70.67 7.4-97.18 1.25-3.42 1.46-25.42-2.19-44.15H54.88Z" fill="#245B34"/><path d="m249.92 281.88-.45.17c-1.5.59-3.02 1.16-4.56 1.71l3.09-27.5 1.1 14.57v.02l.82 11.03Z" fill="#3B754B"/><path d="M249.47 282.05a241.68 241.68 0 0 1-19.47 6.59c-1.37-47.05-2.26-96.32-10.37-142.3 5.5-.8 13.1-1.88 18.62-2.67 4.38 30.87 7.31 61.71 9.18 92.79.91 15.2 1.57 30.38 2.04 45.6Z" fill="#3E8E5B"/><path opacity=".65" d="M249.47 282.05c-1.95.76-3.95 1.5-5.94 2.21-3.01-21.58-7.72-37.79-14.94-40.82-1.56-32.75-3.1-65.03-8.96-97.1 5.5-.8 13.1-1.88 18.62-2.67 4.38 30.87 7.31 61.7 9.18 92.78.91 15.2 1.57 30.4 2.04 45.6Z" fill="#3B754B"/><path opacity=".65" d="M247.47 236.53c-4.86-7.74-18.87-21.31-20.34-21.5-1.67-26.96-4.07-51.15-7.5-68.7l18.62-2.66c4.3 30.64 7.56 64.63 9.22 92.86Z" fill="#3B754B"/><path d="M72.54 291.23a243.4 243.4 0 0 1-35.86-11.95c6.5-44.85 12.4-86.84 18.31-129.71 13.6 2.75 25.54 5.2 26.05 5.42.97.4-3.06 65.88-8.5 136.24Z" fill="#3B754B"/><path d="M41.72 281.35c-1.85-.74-3.67-1.48-5.49-2.26 11.62-84.6 35.36-221.36 5.5 2.26ZM62.1 269.73a281.82 281.82 0 0 0-2.65 17.84l-3.19-1.01 3.92-27.6s6-10.16 1.92 10.77Z" fill="#3E8E5B"/><path d="M245.66 149.38c-18.16 4.76-36.59 8.36-55 12 5.01 4.41 25.11 21.9 29.88 26.77 5.13 5.9 8.89 11.15 16.24 13.96 0 .01 0 0 0 0 7.18 4.42 9.05 13.46 14.61 19.36 3 3.28 7.7 8.6 15.84 12.04 3.6 1.53 13.75 5.7 15.54-1.98 0 0-35.96-80.34-37.11-82.15Z" fill="#C5CAB9"/><path opacity=".4" d="M268.65 184.82c-26.54 14.48-49.28-7.88-29.9-33.22l.56-.63c-16.03 4.1-32.34 7.12-48.56 10.4 7.9 7.8 15.27 15.91 24.6 22.11 5.81 4.04 9.28 10.38 14.65 14.82 2.4 1.78 5.36 2.63 7.76 4.4 6.97 5.04 8.62 14.52 15 20.1 4.64 4.8 19.48-33 15.89-37.98Z" fill="#C2C2AC"/><path d="M263.26 196.63c-4.6-6.25-7.69-1.38-9.3 5.46a2.61 2.61 0 0 1-4.75.8c-2.42-3.85-6.1-8.5-15.66-12.79-12.48-5.6-9.93-25.85-3.31-36.9a1678.04 1678.04 0 0 1-39.37 8.15c4.5 4.65 9.1 9.22 13.65 13.82 6.98 5.64 14.58 10.16 19.93 17.54a31.39 31.39 0 0 0 9.73 8.1c5.2 1.95 8.51 6.6 11.09 11.34 9.75 20.34 33.79 32.22 45.96 17.2-4.76-6.09-22.06-27.8-27.97-32.72Z" fill="#BBBBA5"/><path d="M219.62 167.19c.45-3.31-.23-7.95-1.74-11.32-1 .2-2 .4-3 .62-.58 1.71-1.11 12.24-1.07 25.84a71.15 71.15 0 0 1 8.35 7.44c.74-10.5-2.9-12-2.54-22.58Z" fill="#949984"/><path d="m197.73 267.42 5.06 1.57s-2.36 4.45-4.74 3.9c-2.38-.53-.32-5.48-.32-5.48ZM103.04 270.05l-1.54.72.13 1.2s1.01 2.67 2.79 1.8c1.77-.86-1.38-3.7-1.38-3.7v-.02Z" fill="#06B253"/><path d="M105.32 266.17c.07 0 .12.07.09.14a400.3 400.3 0 0 1-2.47 5.89c-2.6 6.1-5.4 12.09-8.7 17.89l-1.94 3.82-.28 1.48a312.16 312.16 0 0 0 54.48 4.7c20 0 39.25-1.83 57.3-5.22 4.04-.76 8.03-1.6 11.95-2.5-2-5.5-12.01-19-16.03-26.2h-94.4Z" fill="#C5C7B2"/><path d="M162.65 299.7c-5.32.26-10.7.4-16.15.4-18.97 0-37.26-1.65-54.48-4.7.08-.5.18-.99.28-1.48 2.76-5.6 5.85-11.05 8.6-16.66 12.9 4.99 13.3 14.95 29.64 15.52 12.96-1.14 24.33.4 32.1 6.91Z" fill="#CCD1C0"/><path d="M104.55 268.08a62.51 62.51 0 0 0-1.65 4.13h.03c9.47-.87 8.8 8.38 18.98 7.86 1.6.03 3.2-.04 4.78-.2 42.59-6.85 51.23-5.78 77.1 15.02 4.05-.76 8.03-1.6 11.96-2.5-1.86-5.06-10.43-16.84-14.93-24.3h-96.27v-.01Z" fill="#BBB99D"/><path d="M48.57 170.28 34.9 175.6l-2.6 4.5s9.4 17.66 16.11 11.7c6.7-5.96.17-21.51.17-21.51h-.01Z" fill="#9EA58E"/><path d="m49 169.83-13.66 5.32-2.6 4.5s9.4 17.67 16.11 11.7c6.7-5.96.16-21.51.16-21.51Z" fill="#676D54"/><path d="M36.85 157.84c-.3.38-8.15 7.36-8.15 7.36s15 17.83 23.91 9.17c8.92-8.68-15.77-16.53-15.77-16.53h.01Z" fill="#9EA58E"/><path d="m43.34 157.81-14.22 6.6s12.76 13.81 19.54 8.84c6.77-4.98-5.32-15.44-5.32-15.44Z" fill="#676D54"/><path d="M47.16 134.4c-.58.15-13.64 1.16-13.64 1.16s1.46 29 16.83 27.12c15.38-1.89-3.19-28.28-3.19-28.28Z" fill="#9EA58E"/><path d="M47.94 134.18c-.58.15-13.64 1.16-13.64 1.16s1.46 29 16.83 27.12c15.38-1.89-3.2-28.28-3.2-28.28Z" fill="#676D54"/><path d="m58.94 120.6-14.78 1.31s-2.67 6.16-3.37 13.66h13.35v23.88h-.72c16.1 5.57 5.52-38.84 5.52-38.84v-.01Z" fill="#9EA58E"/><path d="m59.83 120.6-14.79 1.31s-11.6 26.75 7.3 36.67c18.9 9.91 7.48-37.98 7.48-37.98h.01Z" fill="#676D54"/><path d="M203 267.25c-.57-7.9-6.64-9.8-4.8-15.72 1.19-2.74.46-5.7 1.55-8.44 5.97-8.98 3.94-8.6-7.3-5.22-2.94.83-5.73-.63-8.7-.4-6.47 1.69-13.13.4-19.65 1.56a14.6 14.6 0 0 1-9.44-.14c-11.48-1.83-23.42.22-34.9-.7-5.55-1.63-7.24-5.95-13.5-2.67-1.79.62-3.46.1-4.86-.95-1.08-.8-4.01.97-1.08 6.99 1.27 2.16 1.05 4.49 1.31 6.88 2.08 6.44 5.95 8.28 1.94 15.37.34 6.09-5.21 5.12-1.95 8.14 7.03-3.67 6.95 3 13.84 2.84 7.81.83 20.04 1.59 29.43.17 6.24 1.01 12.22 1.17 18.31-.78 16.99-2.7 8.4.94 20.76-1.85 3-.67 5.69-2.16 8.86-1.97 2.14.37 4.1.04 6.12-.61 1.3-.13 4.53.95 4.06-2.5Z" fill="#3E8E5B"/><path d="M200.4 259.63c-4.1-5.7-2.22-6.1-1.32-12.06-.48-8.68 13.32-15.64-7.16-9.57-1.64 6.15-9.91 7.45-9.25-.39-2.48.47-4.95 1.06-7.48.94-3.42 15.66-23.54 13.71-35.96 13.54-9.8-.8-4.9 4.28-19.9 1.4-21.55-4.46-15.57-1.64-15.57-1.64-.32-.08-.63-.17-.95-.27 3.24 5.6 3.34 6.4.77 12.24-.44 2.76.35 3.24-2.2 5.27 8.75-1.47 17.75.66 26.44 1.65 6.8.81 12.8 4.43 19.55 4.41 3.38-5.61 9.46-5.75 13.19-.41 15.33-3.36 12.53.21 23.41-2.41 4.29-1.72 8.57-1.96 13.1-2.05 1.93-1.47 6.26 1.3 5.95-3.04a18.06 18.06 0 0 0-2.6-7.62l-.02.01Z" fill="#3B754B"/><path d="M200.47 259.63c.47-.45 1.7-.89-.88-2.22-.19-.1.15-.5.17-.6.09-.44.06-.8-.04-1.23a1.35 1.35 0 0 0-.45-.76.94.94 0 0 0-1.05-.6c-32.6 4.57-82.95 2-90.4-2.17-1.5-.83-3.41-1.63-5.13-.92-1.75.72-.86 2.67.22 3.56.12.76.13 1.57.05 2.5-.69 7.06 82.38 10.62 97.75 3.86.78-.35.43-1.22-.22-1.41h-.02Z" fill="#D58500"/><path opacity=".3" d="M102.9 254.68c.1.67.12 1.37.07 2.15l.23-.22c.48-.41 1.04-.6 1.61-.87.52-.24 1.18-.64.6-1.23-.92-.98-2.59-.98-3.31-2.2a3.9 3.9 0 0 1-.25-.5c-.48.9.22 2.2 1.05 2.89v-.02ZM200.47 259.63c.47-.45 1.7-.89-.88-2.22-.19-.1.15-.5.17-.6.26-.95-.36-2.72-1.54-2.6-20.65 2.9-48.41 2.93-67.89 1.5a57.96 57.96 0 0 1-27.2 2.11c3.4 5.37 55.48 8.45 83.1 5.96 2.47-3.85 9.3-5.84 12.61-2.06.7-.21 1.32-.44 1.85-.67.79-.35.44-1.22-.22-1.4v-.02Z" fill="#A05A07"/><path opacity=".3" d="M200.94 260.89c.44-.4.11-1.1-.47-1.26.47-.46 1.7-.9-.88-2.23-.19-.09.15-.5.17-.6.25-.94-.35-2.7-1.54-2.6-14.6 2.05-32.78 2.67-49.04 2.35-9.43 3.02-19.24 5.5-29.19 5.74 17.64 2.21 45.16 3.06 63.64 1.69 3.3-4.15 12.9-7.17 17.31-3.1Z" fill="#A05A07"/><path d="M198.21 254.2c-6.89.97-14.57 1.62-22.48 2-3.92 3.42-13.87 8.1-13.89 8.44 6 0 11.83-.1 17.12-.37 6.83-2.83 14-5.4 19.88-9.96a.96.96 0 0 0-.63-.1Z" fill="#A05A07"/><path d="M105.17 258.61c-.7-.15-1.45.21-1.88.73-.68.84-.74 2.63-1.01 3.64-.28 1.08.48 2.2 1.52 2.8 1.04.6 2.3.8 3.52.97 32.82 4.61 72.64-3.03 89.89-12.28 1.67-.89 3.52-2.38 2.92-4.03-.1-.3-.3-.59-.3-.9 0-.8 1.2-1.36 1.08-2.16-.08-.56-.8-.89-1.43-.81-.62.07-1.15.41-1.67.74-11.9 7.48-61.28 18.34-92.62 11.32l-.02-.02Z" fill="#D58500"/><path d="M199.82 249.53c0-.8 1.19-1.36 1.08-2.16-.08-.56-.8-.88-1.43-.81-.63.07-1.16.42-1.67.74-4.74 2.98-15.45 6.5-28.6 9.21-.62.98-1.26 1.95-1.95 2.87a23.33 23.33 0 0 1-4.23 4.33c-.72.57-1.45 1.12-2.2 1.66 15.08-2.53 28.25-6.54 36.39-10.89 1.67-.9 3.52-2.38 2.91-4.03-.1-.3-.3-.59-.3-.9v-.02Z" fill="#D58500"/><path opacity=".3" d="M199.82 249.53c0-.8 1.19-1.36 1.07-2.16-.08-.56-.8-.88-1.43-.81-.62.07-1.15.42-1.67.74a43.6 43.6 0 0 1-8.1 3.67 4.85 4.85 0 0 1-1.27 2.9c-1.07 1.32-2.17.7-2.66 1.58-.19.64-.16 1.7-1.01 1.79-1.84-.43-.55-3.52-2.38-3.97a186.68 186.68 0 0 1-23.16 5.06c-13 8.42-44.73 12.58-53.85.32a2 2 0 0 0-2.06.7c-.69.83-.75 2.62-1.02 3.63-.2.76.15 1.59.7 2.15 5.2 3.9 48.71 5.39 81.64-5.31-.73-1.5 1.2-2.33 1.53-.53 3.91-1.4 7.63-3 11.04-4.83 2.28-1.24 3.72-2.68 2.62-4.94v.02Z" fill="#A05A07"/><path opacity=".3" d="M199.82 249.53c0-.8 1.19-1.36 1.08-2.16-.09-.56-.8-.88-1.43-.81-.63.07-1.16.42-1.67.74-1.6 1-3.85 2.06-6.66 3.13.68.78.86 1.9.59 2.9-.46 1.26.15 2.5-.02 3.78 2.51-1.39 9.22-3.2 8.4-6.67-.1-.3-.3-.6-.3-.9ZM102.54 264.46c0-1.12.87-1.5 1.7-2.02.64-.42 1.16-1.1.9-1.89-.21-.6-.7-1.06-.92-1.66l-.05-.18-.11.05-.04.01a.7.7 0 0 0-.1.06l-.04.02-.1.06-.06.04-.06.05c-.02 0-.04.03-.06.04l-.04.03c-.1.09-.2.18-.28.28-.69.83-.75 2.62-1.02 3.63a2.1 2.1 0 0 0 .27 1.58v-.1ZM183.1 255.6c-.42-.46-1.19-.5-1.74-.25-.44.2-.68.6-.7 1-.13.5.1 1.03.49 1.38.54.5 1.5.65 2.08.12.68-.61.4-1.66-.14-2.26Z" fill="#A05A07"/><path d="M182.9 255.82c-.33-.37-.94-.4-1.38-.2a.94.94 0 0 0-.56.8c-.1.4.08.82.4 1.1.43.4 1.19.53 1.65.1.55-.5.33-1.33-.1-1.8Z" fill="#A05A07"/><path opacity=".3" d="M189.3 252.98c-.75-.22-1.58.53-1.61 1.25-.03.65.49 1.3 1.17 1.52.43.14.85.03 1.18-.22.97-.63.4-2.22-.74-2.56Z" fill="#A05A07"/><path d="M189.25 253.35c-.55-.15-1.16.4-1.18.92-.01.48.36.95.85 1.12.33.1.63.02.87-.16.72-.47.3-1.63-.54-1.88Z" fill="#A05A07"/><path opacity=".3" d="M196.76 250.6c-.21-.42-.62-.75-1.21-.73-1.72.04-1.87 2.26-.64 2.85.11.06.22.1.36.13 1.23.29 2.16-1.1 1.49-2.27v.01Z" fill="#A05A07"/><path d="M196.42 250.8a.92.92 0 0 0-.87-.52c-1.25.04-1.36 1.65-.46 2.07.09.04.16.08.26.1.88.2 1.57-.8 1.07-1.64Z" fill="#A05A07"/><path opacity=".3" d="M174.36 257.71a1.8 1.8 0 0 0-1.63-.08c-.62.25-.83.94-.67 1.48.38 1.43 2.37 1.6 2.92.2.24-.62-.07-1.23-.62-1.6Z" fill="#A05A07"/><path d="M174.16 257.98a1.37 1.37 0 0 0-1.24-.06c-.47.19-.64.71-.52 1.13.3 1.1 1.8 1.23 2.24.15.18-.46-.06-.94-.48-1.22Z" fill="#A05A07"/><path opacity=".3" d="M164.63 259.52h-.06c-.62-.15-1.29-.07-1.68.47a1 1 0 0 0-.19.56c-.17.72.13 1.42.8 1.84.38.25.84.29 1.3.22.54-.07.9-.54 1.08-.96.49-1.09-.4-2.02-1.25-2.14Z" fill="#A05A07"/><path d="M164.55 259.92h-.04c-.46-.1-.94-.05-1.23.34a.74.74 0 0 0-.15.42c-.12.53.1 1.04.58 1.35.3.18.63.21.96.17.4-.05.66-.4.8-.7.35-.8-.3-1.49-.93-1.57l.01-.01Z" fill="#A05A07"/><path d="M76.58 168.43c-9.03-.26-18.07-.4-27.11-.45C41 188.5 33.76 210.73 29.8 216.72c-1.62 3.2-3.37 6.33-5.23 9.38H64.6a37.54 37.54 0 0 1 4.08-3.38c3.95-3.6 5.2-8.49 8.02-12.75 3.36-5.23 7.82-9.79 11.86-14.5 2.9-3.66 4.87-7.64 7.41-11.62 2.28-3.45 5-6.8 6.62-10.66.6-1.2 1.08-2.4 1.46-3.6-9.15-.53-18.3-.91-27.46-1.16Z" fill="#BBB99D"/><path d="M59.44 231.01c-1.03-1.63 1.54-3.64 2.9-5.07 4.4-4.12 7.57-8.27 9.68-13.88 2.61-6.92 22.39-37.81 24.07-41.7-3.79-.22-51.27 1.81-53.44.15-5.28 15.9-9.96 32.06-18.29 47.08-4.13 6.5-7.03 11.67-7.58 16.41-3.18 25.16 59.32 23.3 42.67-3l-.01.01Z" fill="#CCD1C0"/><path opacity=".4" d="M43.85 166.94c-.76 2.3-5.37 16.05-6.06 18.37 31.2 7.03 20.05 38.9-7.18 33.36-.83-.14-6.01-1.5-6.35-.9-6.39 11.45-11.33 17.7-3.77 27.1 7.73 9.62 32.96 4.33 41.18-17.79 2.08-3.14 34.66-54.92 35.97-60.13H43.85Z" fill="#C2C2AC"/><path d="M64.28 197.05c1.12 4.97 5.6 13.94-1.63 20.97-1.69 1.64-16.52 6.04-20.73 4.37-.43-.2 19.28 4.77 20.64 3.17 6.97-6.03 7.8-9.42 11.3-17.4 3.11-6 22.13-36.33 23.18-39.32l-54.13-1.9c-1.44 0-2.76 11.46-4.06 15.03 9.18 3.8 21.66 6.17 25.43 15.08Z" fill="#C2C2AC"/><path d="M69.47 170.3c-.36 1.31-.85 2.6-1.33 3.83a42.7 42.7 0 0 1-1.56 3.48l-1.85-.55-.57 1.94-1.9-.57-.24.81-2.35 8.07v.02l-.27.09c-8.53-4.21-23.4-10.75-26.75-6.9.02-.25.03-.52.07-.8.36-3.9 1.58-12.17 3.54-19.04l.16-.56c1.58-5.36 3.65-9.76 6.13-10.3l26.93 20.48h-.01Z" fill="#9EA58E"/><path d="M69.5 170.18c-1.89 6.36-5.08 12.46-9.84 17.13a167.9 167.9 0 0 0-7.38-3.45v-.02c-8.02-3.35-16.75-6.78-19.98-3.75.78-4.86 2.43-26.96 9.88-30.68 9.03 7 18.25 13.81 27.32 20.78Z" fill="#9EA58E"/><path d="M44.13 165.92c-5.19-2.95-9.04 1.75-7.6 4.65.84 1.7 3.04 2.32 4.8 2.23 6.23-.32 5.84-5.14 2.8-6.88Z" fill="#B1B7A5"/><path opacity=".4" d="M69.5 170.2c-1.91 6.35-5.08 12.44-9.84 17.1-2.1-1.04-4.67-2.26-7.38-3.44 2.2-10.67-5.68-20.9-16.47-23.29 1.18-2.8 2.31-9.94 6.04-10.96 9.6 6.02 18.36 13.93 27.65 20.6v-.01Z" fill="#949984"/><path d="M69.5 170.2a43.78 43.78 0 0 1-5.43 11.77s0-.02-.02-.02c-6.56-8.93-16.54-19.08-28.07-21.95 1.44-3.43 3.5-14.83 9.07-8.4 8.06 6.2 16.44 12.4 24.44 18.6h.01Z" fill="#949984"/><path d="M74.32 169.7h9.6L62.74 134.3c-.86-.28-25.23 8.6-33.61 30.98 16.09-3.85 37.86 7.05 45.2 14.68V169.7Z" fill="#9EA58E"/><path d="M74.44 180.13c3.19-2.7 7.43-5.95 10.05-9.2l-22.2-37.07c-.87-.28-25.24 8.6-33.62 30.98 16.53-3.94 39.03 7.64 45.77 15.3Z" fill="#9EA58E"/><path d="M46.44 154.66c-4.44-.93-11.8 2.97-14.51 8.5l-.62 1.19c5.42-.75 11.33-.04 17.04 1.5 1.4-4.3 2.5-10.26-1.92-11.19Z" fill="#B1B7A5"/><path opacity=".4" d="M62.28 133.86c-.63-.2-13.58 4.4-23.87 15.46 8.66 1.03 18.24 6.36 26.32 23.42 4.26 2.47 7.69 5.11 9.7 7.4 3.2-2.7 7.44-5.95 10.06-9.2l-22.2-37.07h-.01Z" fill="#949984"/><path d="M80.79 174.76a33.2 33.2 0 0 0 3.7-3.83l-22.21-37.07c-.54-.17-10.14 3.19-19.35 11.12 14.85 5.12 28.8 17.76 36.81 30.67l1.06-.89h-.01Z" fill="#949984"/><path d="M98.17 134c-12.36-4.65-16.38-10.85-16.38-10.85s3.2-2.98 8.9-6.04a54.79 54.79 0 0 1 25.05-6.61c2.47-.04 5.06.1 7.74.44 25.06 3.24-12.97 27.71-25.32 23.06Z" fill="#3E8E5B"/><path opacity=".4" d="M98.17 134c-12.36-4.65-16.38-10.85-16.38-10.85s3.2-2.98 8.9-6.04a54.79 54.79 0 0 1 25.05-6.61c2.47-.04 5.06.1 7.74.44 25.06 3.24-12.97 27.71-25.32 23.06Z" fill="#3B754B"/><path d="M115.75 110.5c-3.25.75-7.86 2.93-14.15 6.72-6.45 3.9-9.93.98-10.9-.11a54.78 54.78 0 0 1 25.04-6.61Z" fill="#459562"/><path d="M84.65 175.44c.26-.4.78-.58 1.2-.72.56-.2 1.1-.36 1.66-.57a56.7 56.7 0 0 1 5.28-1.84c.84-.23 1.69-.41 2.53-.62.7-.17 1.4-.34 2.1-.4a3.64 3.64 0 0 1 2 .25l.05.02.04-.03c1.35-.95 2.59-2 3.74-3.15-2.12-13.28-24.6-47.73-24.6-47.73-17.61-.44-35.98 5.36-44.98 15.66 23.73 1.78 41.4 20.87 49.88 39.53.36.09.77-.16 1.08-.39v-.01h.02Z" fill="#9EA58E"/><path d="M99.35 170.78c1.36-.94 2.6-2 3.75-3.14-2.12-13.28-24.61-47.73-24.61-47.73-17.6-.44-35.98 5.36-44.97 15.66 24 1.8 41.85 21.42 50.21 40.3a28.82 28.82 0 0 0 15.62-5.09Z" fill="#9EA58E"/><path d="M53.55 132.44c-4.44-1.9-13.18.67-16.32 3.55a50.5 50.5 0 0 1 18.42 6.8c2.44-3.96 1.9-8.63-2.1-10.35Z" fill="#B1B7A5"/><path opacity=".4" d="M78.49 119.9c-10.97-.28-22.23 1.88-31.34 6.02 11.69 4.2 24.7 15.42 24.54 30.73a80.01 80.01 0 0 1 12.05 19.2c7.18-.19 14.3-3.1 19.36-8.22-2.12-13.29-24.61-47.74-24.61-47.74v.01Z" fill="#949984"/><path d="M78.49 119.9a74.54 74.54 0 0 0-28.6 4.86c12.47.55 37.32 30.61 41.75 49.77a27.73 27.73 0 0 0 11.46-6.9c-2.12-13.28-24.61-47.74-24.61-47.74v.01Z" fill="#949984"/><path opacity=".3" d="M177.16 65.1c.2-.26.33-.4.33-.4l-.05.32-.28.08Z" fill="#C77500"/><path opacity=".3" d="m177.87 69.06-.05.52v.05c-.03.35-.07.69-.12 1l-.03.25-.06.46-.03.2v.03l-.01.02v.05l-.07.3c-.08.3-.16.64-.29 1-.13.42-.28.86-.42 1.25.3.89.61 1.74.92 2.56a5.59 5.59 0 0 0-.65 1c-.15.27-.27.54-.34.8l-.04.1c-.2.7-.74 1.48-1.37 2.14a4.47 4.47 0 0 1-2.14 1.32c-.35.05-.68.01-.93-.18v-.01l-.04-.02-.02-.02a2.83 2.83 0 0 1-.44-.95c-.05-.15-.1-.3-.14-.47v-.01c-.1-.34-.18-.72-.28-1.15a40.48 40.48 0 0 1-.65-4.18l-.08-.7v-.05c-.06-.46-.1-.94-.14-1.41-.06-.81-.11-1.61-.14-2.4v-.04a30.9 30.9 0 0 1 .03-2.53v-.1l.05-.77c0-.01 0-.02.02-.02 0-.15.02-.28.03-.41a6.41 6.41 0 0 1 .2-1.26l.06-.22v-.02c.02-.1.04-.18.09-.26a4.28 4.28 0 0 1 .39-.97c.3-.51.7-.79 1.19-.76.36.02.73.1 1.1.2h.02a6.78 6.78 0 0 1 2.33 1.12c.05.03.11.06.16.12.02 0 .03.02.05.03.05.03.1.05.13.1l.12.09.1.08h.02l.53.5.48.48a12.2 12.2 0 0 0 .48 3.14h-.02Z" fill="#A05A07"/><path d="M167.63 121.3c-.03.28 2.82-1.54 2.41-6.52 0-5.57-3.53-4.39-3.53-4.39s2.3 2.66 1.12 10.92Z" fill="#949984"/><path opacity=".3" d="M119.88 78.95c-1.1 4.66-4.3 10.89 1.55 9.46 5.84-1.43.38-11.42.38-11.42l-1.93 1.96Z" fill="#A05A07"/><path d="M129.06 109.32s-4.53-.4-4.93 4.6c-.4 4.99 4.93 6.39 5.19 6.45.26.06-.27-11.05-.27-11.05Z" fill="#B4B296"/><path d="M166.47 141.68c-2.93-.32-6.16-.85-9.54-1.56-.68-.15-1.37-.29-2.05-.45a183.84 183.84 0 0 1-12.52-3.26 203.6 203.6 0 0 1-22.85-8.19c-.48-.21-1.03-.5-1.15-1.02-.08-.4 2.23-4.3 2.59-4.48 5.55-3.09 7.65-18.95 8.44-31.73.41-6.88.45-12.85.45-15.48V74.1h.01c3.66-3.67 13.59 2.38 17.45 3.95 1.84.75 17.5 6.6 19.23 8.55.11.13.17.24.17.33-.46 4.48-.72 8.31-.77 11.66-.04 2.48.04 4.69.22 6.69.25 2.56.66 4.78 1.26 6.78.57 1.98 1.3 3.76 2.21 5.45a48.17 48.17 0 0 0 3.82 5.84l.05.06c1.24 1.64 2.62 3.36 4.15 5.26l.52.66c2.2 2.75 3.38 4.99 3.7 6.77 1.02 5.37-5.62 6.64-15.4 5.57l.01.02Z" fill="#E8D4BA"/><path opacity=".4" d="M178.17 129.33c-9.73-12.2-14.15-16.54-11.47-42.4.16-1.5-17.43-8.08-19.39-8.87-3.86-1.58-13.8-7.63-17.45-3.96-.02.02.17 11.64-.98 23.57.52.8 1.02 1.63 1.44 2.48.88 1.8 1.54 3.73 2.12 5.65.33 1.12.64 2.26.86 3.4.13.69.22 1.4.14 2.1-.12 1.1-.76 1.92-1.95 1.84-1.56-.1-2.97-1.03-4.08-2.08l-.46-.46c-1.31 5.9-3.22 10.59-5.99 12.11-.35.2-2.67 4.1-2.58 4.49.12.51.66.8 1.15 1.02 26.46 11.49 76.66 23.7 58.64 1.1v.01Z" fill="#CEB79B"/><path opacity=".4" d="M178.17 129.33c-9.73-12.2-14.15-16.54-11.47-42.4.16-1.5-17.43-8.08-19.38-8.87-3.87-1.58-13.8-7.63-17.46-3.96-.02.01.12 8.42-.55 18.27.2.25.37.5.53.76a22.29 22.29 0 0 1 1.92 3.87c.52 1.3.93 2.61 1.42 3.92l.98 2.57c.9 2.41 1.8 4.92 2.09 7.5.2 1.83.05 4.23-2.19 4.57-1.72.26-3.42-.42-4.83-1.38a14.68 14.68 0 0 1-2.59-2.27c-1.3 5.29-3.13 9.41-5.68 10.83-.35.2-2.67 4.09-2.59 4.48.12.52.66.8 1.15 1.02 26.46 11.5 76.67 23.7 58.65 1.11v-.02Z" fill="#CEB79B"/><path opacity=".4" d="M181.88 136.1c-1.05 4.5-9.87 4.74-21.2 2.76-.1-4.74-14.42-4.47-15.68-9.07-3.72-13.62-8.93-23.68-15.61-38.79a3.49 3.49 0 0 0-.11-.23c.43-6.18.54-11.82.57-15.24V72.13c3.65-3.67 13.59 2.38 17.45 3.96 1.96.8 19.55 7.38 19.4 8.87l-.17 1.66c-.44 4.66-.64 8.6-.6 11.99-.24 15.94 4.18 20.65 12.22 30.74 2.2 2.75 3.38 4.99 3.71 6.77l.01-.02Z" fill="#CEB79B"/><path d="M126.52 109.8s-1.95-.41-2.35 4.55c-.4 4.97 2.45 6.8 2.41 6.53-1.18-8.25-.06-11.08-.06-11.08Z" fill="#BBB99D"/><path d="M116.48 148.23c15.64 10.78 42.52-13.4 42.36-31.77-11.3 12.92-25.25 15.04-34.51-1.25a28.36 28.36 0 0 1-6.75 4.9c-.57.32-.49.82-.33 1.29 0 0 .16 26.17-.77 26.83Z" fill="#C5C7B2"/><path d="M118.6 119.63c-1.6.83-3.58 1.63-6.02 2.3-.46.12-.64.48-.61.82a.71.71 0 0 0 0 .36c1.17 5.2-.5 10.75 1.79 15.78l.17.34a58.34 58.34 0 0 0-4.05 1.6 19.4 19.4 0 0 0 2.13 1.8 35.66 35.66 0 0 0 7.19 3.97 14.9 14.9 0 0 0 7.75 1.11c.15-9.39-5.8-24.22-8.34-28.07h-.01ZM170.35 119c-2.08 6.63-9.67 12.04-14.9 12.04-4.25 0-5.97-4.42-9.66-7.75 7.61-2.97 19.45-7.62 22.46-12.55.12-.38.34-.29.75.15.96 1 1.54 2.3 1.7 3.67.16 1.48.04 3-.35 4.44Z" fill="#BBB99D"/><path d="M116.02 142.9Z" fill="#3E8E5B"/><path d="M247.7 151.8v.02c-43.54 3-43.45 26.23-101.91 9.96v-.02c-9.56-3-19.58-5.13-28.52-9.65-.1-.16-.14-.34-.24-.53-.02 0-.02-.02-.02-.02l.02-.02c-.6-2.8-.6-5.71-1.01-8.54h.02c2.56 2.73 3.63 3.13 7.61 2.26 10.9-3.19 20.44-10 30.18-15.67 5.46-3.46 11.85-6.83 15.81-12.08v-.02c1.38-1.8.36-2.75 1.03-3.13 2.14-1 6.8-1.03 8.95.17 13.7 8.9 32.26-.02 44.98 11.65h.03a160.3 160.3 0 0 1 19.85 18.15c.09.11 3.16 7.34 3.22 7.45v.02Z" fill="#3C8454"/><path opacity=".4" d="M116.02 142.9ZM116.02 142.91v-.02.02ZM181.32 115.54l-.02.03c-2.1 3-4.81 5.6-7.8 7.84l-.06.04c-1 .74-2.04 1.45-3.09 2.1a70.63 70.63 0 0 1-10.92 5.5c-1.82.73-3.65 1.43-5.45 2.18l-1.55.65c-2.48 1.08-4.95 2.22-7.43 3.3l-.11.05a129 129 0 0 0-7.04 3.2 29.43 29.43 0 0 0-6.22 3.91 12.6 12.6 0 0 0-3.5 4.6c-.73 1.8-.82 3.8-1.03 5.72-.04.43-.09.88-.11 1.34 0-.08-.64-.32-1.47-.59-1-.34-2.28-.73-3.04-.98a9.96 9.96 0 0 0-1.42-.44h-.02c-1.08-.33-2.3-.66-3.16-1.29-.08-.04-.15-.1-.23-.16-.1-.1-.2-.2-.29-.33-.04-.06-.09-.12-.13-.2-.09-.14-.17-.32-.23-.5-.4-1.03-.41-2.38-.52-3.28-.2-1.76-.28-3.53-.46-5.3 0 .1.03.2.05.28.17 1.05.67 1.7 1.43 2l.25.09c.7.33 1.54.46 2.5.44l.37-.03a16.22 16.22 0 0 0 3.68-.73l.83-.25c.54-.17 1.06-.37 1.6-.57 4.24-1.6 8.5-3.95 10.3-4.78l.68-.37c1.46-.77 2.88-1.58 4.32-2.4.1-.06.22-.12.33-.2 1.11-.62 2.23-1.26 3.34-1.92a304.69 304.69 0 0 0 9.3-5.74c.24-.14.46-.3.7-.45l1.09-.7c.4-.27.82-.52 1.23-.8.17-.1.33-.21.5-.3l.03-.05c.16-.08.3-.18.46-.28.16-.1.3-.21.46-.3.69-.47 1.39-.92 2.08-1.4a17.7 17.7 0 0 0 1.14-.75 31.94 31.94 0 0 0 6.09-5.1 9.9 9.9 0 0 0 .84-1.1c.65-1 .95-1.91.76-2.68-.03-.1 0-.2.1-.3a.47.47 0 0 1 .1-.12c.03-.02.05-.04.09-.05a4.8 4.8 0 0 1 1.4-.46 16.5 16.5 0 0 1 4.5-.17 9.7 9.7 0 0 1 2.53.55c.1.03.2.08.27.12.08.06.14.1.2.12.02.01.03.03.05.03l.16.1.31.18 1.23.7Z" fill="#3B754B"/><path d="M198.28 148.86c-6.75-4.57 6.52-10.5 2.9-16-5.04-8.25-20.56 17.21-10.4 24.58 5.53 2.5 18.43-4.44 7.5-8.57ZM143.06 150.63c-.95.56-1.94 1.05-3.03 1.3-1.09.26-2.2.36-3.3.14-1.13-.22-2.45-.73-3.61-.35-.54.17-1.25.58-1.28 1.2-.03.44.2.85.48 1.17.7.77 1.68 1.19 2.7 1.4 1.25.28 2.55.33 3.82.41 1.1.08 2.19.28 3.3.34 1.08.07 2.21.02 3.26-.26 1.02-.28 2.17-.83 2.7-1.78 1.29-2.22-1.61-5.61-5.05-3.59v.02Z" fill="#3E8E5B"/><path d="M242.4 142.02c-8.93.65-16.15 6.91-24.8 8.95-4.55 1.43-16.76-.68-16-8.43 1.25-7.67 9.54-10.72 14.94-15.25v.01c.47-.38 3.05-2.7 4.12-3.77 1.34.76 2.66 1.63 3.96 2.55 5.47 3.93 10.46 9.1 15.19 13.47a96 96 0 0 1 2.2 2.06l.4.42v-.01ZM206.18 119.53s-40.57 43.17-50.44 27.14c-4.15-6.74 11.42-14.18 18.09-16.54 5.42-1.93 15.29-5.96 17.1-11.43 4.44.29 10.19.4 15.25.83Z" fill="#3B754B"/><path d="M247.71 151.83c-51.46 5.28-44.3 28.42-113.36 6.57 5 1.12 10.32 1.21 15.33.44 16.94-1.69 25.62 6.57 46 .67 16.32-4.73 31.32-15.22 48.78-15.24l.02.08c.09.12 3.17 7.33 3.22 7.46l.02.02Z" fill="#3B754B"/><path d="M241.25 140.88c-11.36 1.44-17.92-1.24-16.63-14.8 5.47 3.93 10.46 9.1 15.19 13.47.44.38 1.39 1.3 1.44 1.34v-.01ZM125.52 155.41c.38-1.46 1.21-3.08.76-4.6-.1-.33-.25-.66-.27-.99-.05-.6.26-1.15.48-1.68.52-1.31.36-2.67.42-4.01-1.34.12-2.79.92-4.13 1.22-1.12.26-2.3.46-3.45.37-1.79-.13-3.11-1.06-3.32-2.88l.83 7.71c.07.56.13 1.17.47 1.63.39.53 1.06.78 1.68 1.01 2.23.8 4.4 1.57 6.5 2.29 0-.03.02-.05.03-.08v.01Z" fill="#2B6B40"/><path opacity=".58" d="M174.7 122.52c.28 2.28-2.28 7.41-5.46 6.74.78 2.52-.24 5.5-2.35 7.36 1.36 2.03.06 6.78-3.08 7.45-.25 3.2-2.54 6.02-5.76 7.5.03-.03.6 4.23-2.67 4.15 1.09 1.6.63 4.4-.19 6.1l-.93 2.4c-4.94-1.19-10.73-.76-4.46-5.53a5.71 5.71 0 0 0-1.2-3.97h.12c.82-1.2.54-2.75.45-4.09 1.98-2.95 3.71-5.75 2.44-9.23 3.07-1.5 2.43-6.15.5-7.94.64-.86 1.07-2.65 1.25-3.6 5.63-3.54 12.2-6.96 16.28-12.34v-.02c1.66-2.31-.16-3.03 1.83-3.43 2.26-.65 6.13-.63 8.15.48.54.35 1.1.68 1.65.97-.53 2.8-4.79 6.04-6.57 7Z" fill="#18512F"/><path d="M124.7 114.62c-.06.26-.12.52-.16.79-.38 2.38.01 4.87 1.04 7.06a13.4 13.4 0 0 0 6.25 6.33c1.4.67 2.89 1.11 4.44 1.15 1.57.05 3.13-.2 4.63-.67 3.23-.99 6.23-2.85 8.62-5.24l.4-.42c-13.83-3.85-20.72-7.81-23.25-10.13-1.3-1.2-.62-.73-1.97 1.12v.01Z" fill="#CCD1C0"/><path d="M127.72 115.1c-.65-.74-.92-.97-1.3-2.2-.62-2-1.24-2.58.1-3.1-1.4-.23-2.16 1.97-2.48 5.84-.4 4.96 1.64 5.4 1.91 5.46.09.02.09-1.16.06-2.75-.57-.21 2.12-2.8 1.71-3.25Z" fill="#CCD1C0"/><path d="M173.7 70.71c-.38 1.58-1.86 16.79-3.02 19.93-1.02 2.75-10.1 14.24-22.37 14.33-12.14-1.65-21.93-12.87-22.44-18.5-.26-2.77-.06-13.95-.25-16.65-.13-.2.33-3.68.39-6.1.65-3.46 1.51-13.46 4.19-17.68 1.57-2.46 5.04-5.17 7.39-5.83 4.47-1.26 9.95.87 16.36 1.75 2.14.3 4.32.46 6.5.47 6.94.01 8.35-1.4 11.94 7.62.65 3.53 1.2 15.4 1.2 15.4l.1 5.25v.01Z" fill="#E8D4BA"/><path opacity=".4" d="M170.66 83.35c.76 2.7.01 7.3.01 7.3l-21.22 3.46-5.68-13.93s.12-1.84 1.42-1.72c1.3.14 2.04 2.47 4 2.55 1.97.08 1.8-1.06 3.49-1.7 2.81-.97 2.89.45 1.7 1.48 0 0 6.17 7.25 9.16 5.03 6.36-4.62 6.77-17.24 3.47-19.91 1.9-2.5.42-5.26-1.88-4.94-3.04.43-8.88 2.06-10.24 2.85-2.04-2.32-2.42-3.22-5.97-2.57-.55.1-1.06.72-1.63 1.2-.44 3.6-2.75 3.14-5.09 1.39-6.33-3.64-11.12-4.17-11.56-4.2-2.16-.14-3.61 15.53 4.37 27.42-1.15 4.3-7.65-5.68-8.53-5.52a29.98 29.98 0 0 1-1.85-7.64c-.37-3.56 1.93-7.45.05-10.58-1.2-2.02-4.99-2.68-3.99-5.63 1.51-8.33 1.89-14.64 13.37-17.92 5.3-1.83 14.22 2.8 22.03 2.4 5.54-.06 17.46-1.28 17.47 12.53 0 .34.4.75.56 1.28.37.38-.11 6.07-.06 6.64-.23-.06-.76 12.18-3.41 20.73h.01Z" fill="#CEB79B"/><path d="M120.5 67.75c-.4-.46-.76-.94-1.09-1.44.07-1.31.4-2.59.55-3.85.94-7.81.46-10.11 1.85-15.2 1.36-4.98 3.53-9.43 7.22-13.04.3-.3.61-.58.93-.87-.04 1.77 2.93 2.85 2.02 5.38-.06.14.49-.12.43.02-1.6 4.51-3.82 10.4-4.9 15-1.36 5.87-1.36 9.99-1.36 9.99s-4.4 1.77-5.66 4h.01Z" fill="#CE8000"/><path d="M125.73 75.98c-1.6 4.01-5.35 4.13-5.98-.47-.87-3.97-2.19-9.4-.5-13.9.97-1.22 2.78-3.19 4.52-2.17 1.51.9 2.05 3.13 2.38 4.71.7 3.88 1 8.07-.42 11.83Z" fill="#E8D4BA"/><path opacity=".4" d="M124.42 78.08c-.38.38-.8.67-1.28.83l-.25.08a1.74 1.74 0 0 1-1.45-.27 3.24 3.24 0 0 1-.26-.2 5.3 5.3 0 0 1-1.19-1.76l-.03-.13-.34-1.12c.62.4 3.12 1.8 3.45 1.24 1.02-1.75 1.92-7.18 2-9.35.07-2.52-1.8-7.04-4.25-7.39.38-.2.73-.36 1.16-.6.36-.2.75-.32 1.14-.25.95.16 1.75 1.2 2.36 2.74a17.2 17.2 0 0 1 .98 3.88c.67 4.51.18 10.05-2.05 12.3h.01Z" fill="#CEB79B"/><path d="M123.92 68.14c-.02-.71.1-1.34-.16-2.12-.73-2.02-1.39-2.5-2.8-3.07-.79-.32-1.24 2.32-1.02 3.65.27 1.72 1.6-1.5 2.2-1.21 1.13.52-.38 3.92-.59 4.87-.22 1.03.28 2.15.64 3.07.25.67.75.67 1.08.11.1-.19.19-.4.25-.64-.28-.6-1.16-.91-1-1.75.16-.9.94-2.5 1.4-2.92Z" fill="#CEB79B"/><path d="M121.87 79.05c-.15.8-.75 3.48-1.95 2.78-1.4-.82 2.6-5.25 2.6-5.25s-1.63-3.5-4.78.89c-4.11 5.73 1.63 9.15 3.67 6.35 1.03-1.43 1.67-3.88 1.91-4.95-.36.1-.72.17-1.45.18Z" fill="#676D54"/><path opacity=".4" d="M121.87 79.05c-.15.8-.75 3.48-1.95 2.78-1.4-.82 2.6-5.25 2.6-5.25s-.14-.28-.4-.58c-.5.75-1.04 1.46-1.6 2.14-.66.81-1.33 1.8-2.2 2.36-.6.37-1.36.61-1.98.15-.53 3.7 3.45 5.4 5.07 3.17 1.03-1.43 1.67-3.88 1.91-4.95-.36.1-.72.17-1.45.18Z" fill="#474C2F"/><path d="M121.87 79.05c-.15.8-.75 3.48-1.95 2.78-1.4-.82 2.6-5.25 2.6-5.25l-.18-.3c-.66.33-1.15 1.13-1.6 1.72a8.15 8.15 0 0 0-1.48 2.88c-.25 1.01-.42 2.23.05 3.21.08.18.22.45.39.7a2.34 2.34 0 0 0 1.7-.98c1.03-1.43 1.66-3.88 1.91-4.95-.36.1-.72.17-1.45.18Z" fill="#474C2F"/><path opacity=".69" d="M117.89 79.22c.84-.1 1.67-.58 2.29-1.23a6.54 6.54 0 0 0 1.51-2.4c-.77-.57-2.1-.7-3.94 1.86-.4.55-.69 1.07-.92 1.57.32.2.71.24 1.06.2Z" fill="#949984"/><path opacity=".4" d="M123.92 68.14c-.5-.46-2.06 4.13-2.37 3.2l-.01-.02c-.28-.78-.73-1.36-1.61-1.42-.4-.03-1.01.28-1.27.34-.04-.18-.07-.4-.08-.63v-.03c-.15-2-.32-5.58.68-7.98 0 0 .32-.2.83-.25.7-.06 1.74.16 2.8 1.59.48.65.78 1.3.96 1.94.51 1.77.08 3.26.08 3.26ZM174.26 57.96v-.04l-.02-.02c-.12-.38-.27-.97-.47-1.7v-.03l-.04-.04v-.06c-.12-.45-.24-.95-.4-1.48-.2-.87-.44-1.79-.69-2.76v-.02h-.01c-.02-.03-.02-.05-.02-.09l-.35-1.36c-.02-.02-.02-.04-.02-.06a.4.4 0 0 1-.02-.12l-.02-.02v-.02c0-.06 0-.08-.02-.13l-.3-1.18-.01-.05-.02-.03-.6-2.38a17.27 17.27 0 0 0-.67-2.12c-.12-.04-.25-.06-.38-.08-.07 0-.16-.03-.25-.04-.21-.01-.42-.02-.66 0h-.53a.26.26 0 0 1-.13 0c-.02.02-.05.02-.07.02-.98.12-2.05.4-3.12.76h-.02c-.18.07-.4.15-.59.2l-.02.02v-.02c-.38.16-.73.31-1.09.44v.02h-.02c-.62.27-1.22.57-1.76.83l-.03.01v.02a9.54 9.54 0 0 0-1.16.67l-.07.07v.02h-.03c-.7.75 2 2.95 2.46 5.44a3.46 3.46 0 0 1-.46 2.5 4.68 4.68 0 0 1-.77.93c-.25.23-.52.46-.88.69-.5.35-1.25.77-2.08 1.21l-.02.02-1.49.77-1.8.94-.2.12c-.56.28-1.04.57-1.4.8-.18.1-.3.22-.44.34a3 3 0 0 0-.5.59l-.03.1v.02c0 .03-.02.06-.04.1-.14.38-.25.73-.29 1.08-.12.77-.16 1.43.04 2.2.14.54.3 1.08.35 1.65l.02.08c.06.9-.08 1.78-.2 2.68v.07l-.16 1.25c-.02.3-.04.6-.02.92a32.21 32.21 0 0 1 1.4 3.87c.22 1.24-.75 1.55-1.7 1.88v.02h-.01c-.4.13-.8.3-1.07.55-.28.25-.56.44-.82.58h-.03c-1.05.57-2.11.27-3.93-1.31a3.41 3.41 0 0 0-2.89-.86c-.28.05-.5.15-.56.17-.39.85-.15 2.05.44 3.31v.04c.13.28.28.57.47.85v.02s0 .02.03.04v.02l.48.75v.04l.01.02c.44.65.93 1.28 1.43 1.8.5.54.99.97 1.43 1.27.12.15.37.3.71.5h.02c.67.4 1.7.85 2.93 1.37.38.17.8.32 1.2.5h.01c.33.15.66.26.99.4.34.15.69.28 1.02.4h.02l1.74.73c1.9.74 3.67 1.42 4.86 1.92.39.17.71.3.95.42.25.12.43.2.46.27.24-.34.67-.43 1.23-.36h.03c.65.06 1.51.3 2.31.5h.02s.02 0 .01.02c.6.16 1.19.31 1.67.36h.03c.05.02.09.03.14.03l.16-.01h.06c.4 0 .73-.12.89-.4.08-.16.16-.31.24-.5v-.02c.29-.64.56-1.47.81-2.45.1-.43.22-.9.32-1.38v-.03c.2-.93.4-1.9.58-2.93v-.03c.15-.97.32-1.97.45-2.92v-.05c.1-.62.2-1.22.27-1.78v-.02c.03-.2.06-.39.07-.56v-.06h.02s-.02 0 0-.02c.03-.25.05-.47.1-.7v-.02c.02-.25.05-.51.09-.74v-.03l.1-.6a474.91 474.91 0 0 0 .83-7.34l.05-.51.02-.22v-.03l.01-.12c0-.06 0-.09.03-.12l.03-.53.08-.67v-.04l.06-.56v-.2c0-.05.03-.1.03-.16V65.94l.15-1.41.05-.34.02-.01v-.05l.18-.88.02-.01v-.05l.02-.07v-.02l.65-3.1.02-.01v-.06l.3-1.43c-.03 0-.12-.22-.22-.56v.02Zm-9.96 5.87c.73.17-.03.2-1.16.17h-.04c-1.8-.06-4.5-.26-3.67-.34l.6-.03.01-.01h.15l.02-.01h.04c1.36-.07 2.79-.07 4.06.22Z" fill="#CEB79B"/><path d="M144.9 80.03c-.76-.56-1.81-.99-1.84-1.87-.03-.52.5-1.83 1.07-2.12.42-.22.08-.84-.35-.62-.87.45-1.48 1.86-1.49 2.68 0 1.14 1.24 1.79 2.2 2.5.38.27.8-.3.42-.57ZM153.13 80.56c-.42.23-.07.84.35.61 1.03-.57 2.35-1.06 2.49-2.19.1-.82-.34-2.3-1.14-2.85-.4-.27-.82.3-.42.56.52.37.89 1.73.8 2.24-.16.88-1.25 1.17-2.07 1.63h-.01Z" fill="#CEB79B"/><path d="M167.23 42.3c-3.15 6.36-12.67 4.9-18.47 3.92-5.64-.77-10.1-3.67-14.94-6.45-1.68-.89-3.55-1.82-5.08-2.7a22.55 22.55 0 0 1 4.26-4.14c11.73-1.35 24.35 4.23 34.23 9.36Z" fill="#CE8000"/><path opacity=".4" d="M133.92 56.35s1.4 4.72 4.43 5.66c3.03.94 5.97 3.85 7.52 3.03 1.56-.83 1.42-2.6 1.42-2.6s.41-2.59 3.03-2.42c1.57.1 2.6-6.4-3.15-5.45-3.68.6-7.62-.37-9.67-1-2.04-.62-3.96 1.88-3.57 2.78Z" fill="#CEB79B"/><path d="M140.8 62.64c-.56-.3-1.33-.36-1.95-.47-.64-.1-1.5-.36-2.17-.14a.46.46 0 0 0-.38.16c-.76.9-.08 2.43.72 3.08.97.78 2.51.73 3.52.06.9-.6 1.36-2.14.26-2.7Z" fill="#3E875B"/><path d="M140.8 62.64c-.56-.3-1.33-.36-1.95-.47-.64-.1-1.5-.36-2.17-.14a.46.46 0 0 0-.38.16c-.25.3-.34.65-.33 1.03.2 0 .41.03.61.04l1.6.13c.7.07 1.82.29 1.65 1.23-.13.71-1.17.93-1.76 1.03l-.25.03c.9.3 1.98.15 2.73-.35.9-.6 1.36-2.15.26-2.7Z" fill="#3B754B"/><path d="M144.65 64.72c-.46-.2-5.06-5.29-12.01-2.6-.54.21-.18 1.05.36.83 6.16-2.38 11.09 2.52 11.32 2.61.53.22.88-.62.34-.84Z" fill="#676D54"/><path d="M158.74 66.3c.8.86 2.27 1.25 3.36.72.91-.44 1.9-1.74 1.37-2.77a.44.44 0 0 0-.33-.24c-.58-.35-1.45-.3-2.09-.33-.6-.04-1.36-.14-1.97 0-1.16.28-1.06 1.86-.34 2.63Z" fill="#3E875B"/><path d="M163.48 64.26a.44.44 0 0 0-.33-.24c-.58-.35-1.46-.3-2.1-.34-.6-.04-1.36-.14-1.96 0-.7.18-.94.82-.86 1.46 1.15-.1 2.75-.21 2.73.84-.01.61-.77.86-1.25.97h-.05c.77.37 1.7.44 2.45.07.91-.44 1.9-1.74 1.37-2.77v.01Z" fill="#3B754B"/><path d="M154.88 64.96c.51-.1 6.36-4.54 12.66.1.5.37-.08 1.19-.57.82-5.58-4.1-11.7.04-11.96.08-.6.1-.73-.89-.13-1Z" fill="#676D54"/><path d="M136.3 64.23c.49 0 .88-.23.88-.51 0-.29-.39-.52-.87-.52s-.87.23-.87.52c0 .28.39.51.87.51ZM158.72 66.14c.48 0 .87-.23.87-.52 0-.28-.4-.52-.87-.52-.48 0-.88.24-.88.52 0 .29.4.52.88.52Z" fill="#F7F7F7"/><path d="m153.3 68.53.14-1.23c.07-.71.03-1.4-.14-2.15-.22-1-.15-1.86.23-2.96.04-.12.04-.24-.04-.34a.44.44 0 0 0-.34-.19.38.38 0 0 0-.4.27c-.26.77-.4 1.42-.43 2.06-.03.5.07.99.17 1.47.08.45.18.91.16 1.37-.01.72-.1 1.45-.2 2.15-.13 1.01-.26 2.07-.17 3.13.01.18.14.31.32.32a.5.5 0 0 0 .36-.14c.09-.09.13-.21.12-.34-.1-1.14.05-2.3.2-3.43l.01.01Z" fill="#CEB79B"/><path opacity=".3" d="M169.83 44.53c-3.13 3.07-8.27 2.85-12.57 2.53-3.61.08-7.27-.53-10.7-1.3-3.77-.72-6.97-2.8-10.37-4.42l.04-.02c-1.57.44-5.9 1.61-6.68 1.19-1.77-.97-2.9-3.22-.37-5.2 4.82-4.07 11.14-3.2 15.59.05 4.19 2.89 8.55 6.88 14.91 6.2 1.15-.12 11.67-4.63 11.58-3.2-.1 1.75.11 2.83-1.43 4.16Z" fill="#C77500"/><path d="M179.4 63.96c-1 .18-2 .42-2.95.68-1.03.29-2.05.62-3.05.97.2-7.04-.33-14-3.15-20.08 0 0-.57-.86-.65-.8-5 4.96-19.1 1.53-20.84 1.49 2.09-1.94 9.76-6.92 4.8-11.14l2.86-.55-4.54-2.25c.6.09 3-1.09 2.7-2.28-.92-1.5-3.49-2.44-5.21-2.38 3.12-.19 5.5.04 7.44.58 18.39 3.28 22.35 19.86 22.6 35.76h-.02Z" fill="#C77500"/><path d="M180.85 68.89c-.13 3.32-1.3 6.46-2.46 9.59-.37 1.01-.6 2.06-1.32 2.9-1.26 1.77-3.29 1.41-4.43-.27-2.6-4.13-1.18-10.6.58-14.7h.01v-.02l.01-.03h.01c-.19-.38-.2-.4 0-.02.16-.3.28-.64.46-.9.77-1.66 2.7-3.86 4.54-2.22.6.4 1.36.73 1.81 1.31.86 1.25.77 2.93.78 4.37v-.01Z" fill="#E8D4BA"/><path d="M176.93 79.9c.45-.15.87-.31 1.13-.43a4.66 4.66 0 0 1-1.49 2.42c-.97.97-2.41.85-3.35-.1-1.5-1.45-1.81-3.64-1.9-5.67.01-4.3.88-9.32 3.81-12.68 1.51-1.5 2.53-.67 3.96.32-5.77 1.33-5.73 11.9-4.69 16.44.19.4 1.47.08 2.53-.3Z" fill="#CEB79B"/><path opacity=".4" d="M180.74 66.44c-3.65.8-4.55 4.84-4.5 8.13-.01 1.2.05 5.87 1.39 6.07-.3.45-.64.89-1.05 1.25-.3.24-.6.47-.97.6-5.54-2.34-4.34-10.66-2.27-15.22 0 0 0-.02.02-.02l.01-.02c.12-.25.24-.5.38-.74.55-1.22 3.01-4.36 4.22-3.46 1.02.75 2.35 1.15 2.58 2.54.08.29.14.57.2.88l-.01-.01Z" fill="#CEB79B"/><path d="M175.8 74.58c.04.85-.93 1.06-1.32 1.61.04.25.1.48.18.68.27.6.79.66 1.15.03.5-.89 1.2-1.94 1.1-3-.1-.97-1.21-4.56.05-4.94.68-.2 1.63 3.18 2.16 1.5.4-1.3.3-4-.58-3.79-1.56.4-2.33.79-3.37 2.72-.4.73-.35 1.38-.46 2.09a6.96 6.96 0 0 1 1.08 3.09Z" fill="#CEB79B"/><path opacity=".4" d="M180.84 68.89c-.15 2.09-.4 4.12-1.14 6.09-.48-1.18-2.36-.83-2.91 0-.02 0 0 .02-.02.02-.62.62-1.37-3.82-2.06-3.51-.55-2.9 2.57-7.74 5.83-5.94v.01h.01a11 11 0 0 1 .3 3.33h-.01Z" fill="#CEB79B"/><path d="M174.8 77.7s-.3 1.2.98 1.59c1.28.39 1.51-1.43 1.51-1.43l-2.49-.16Z" fill="#CEB79B"/><path opacity=".3" d="M170.36 42.13c-.12.78-.2 1.69-.6 2.46a9.8 9.8 0 0 1-5.76 2.5c3.22-3.75 4.88-9.97 1.72-15.59 1.19.71 2.36 1.54 3.43 2.45.45 1.73 1.47 5.7 1.22 8.18h-.01Z" fill="#A05A07"/><path opacity=".3" d="M162.84 47.18c-1.3.07-2.75.04-4.09-.02 3.04-3.99 6.38-10.4 4.45-16.98l1.02.5c3.1 5.19 1.04 12.69-1.39 16.5h.01Z" fill="#A05A07"/><path d="M149.15 81.4c-.88 0-1.78-.88-2.39-1.63-.9-1.14-1.85-.9-1.9-.89a.4.4 0 0 1-.49-.27.4.4 0 0 1 .28-.5c.06-.01 1.48-.4 2.75 1.17 1 1.26 1.6 1.34 1.76 1.34.47 0 1.2-.33 1.58-.7.64-.62 1.75-1.33 2.76-1.26a.4.4 0 1 1-.05.8c-.6-.04-1.48.39-2.16 1.04-.45.45-1.37.9-2.11.92h-.03v-.01Z" fill="#CEB79B"/><path d="m174.26 82.38-.1 1.28v.03c-1.37 7.85-1.4 16.7-7.55 22.56-1.17 2.58-2.69 5.09-5.4 6.34-.9.56-1.03 1.69-1.27 2.65a11.93 11.93 0 0 1-2.13 4.2c-3.05 4.25-8.35 3.92-12.95 3.19-6.86-.15-10.23-5.07-11.38-11.32-2.61.52-3.71-3.8-4.63-5.78-6.32 2.44-6.05-20.77-6.06-24.72l.27-1.9c1.65-7.26 2.25-14.53 3.88-21.84.39-1.52-.1-4.82-.1-6.37l.35-.34c.92-.96 1.44-2.4 2.16-3.42-.89 4.88-3.34 9.78-1.78 14.76-.5.3-1.03 1.16-1.53 1.9l-.06.09.07-.05 1.43-.88-.15 2.04c-.27.2-.67 1.04-.75 1.36l.7-.42c.28 4.42-1.22 14.74 4.13 16.27-.6 2.09-.2 3.05 1.43 4.9.51-3.23 2.66-6.22 8.67-5.57-.57.36-1.38 1.22-1.01 2.12.34-.36 2.84-2.73 4.13-1.75 4.62 2.07 11.66-1.53 12.87 2.84.48-.44 1.14-1.43.16-2.17 3.08.16 7.27 1.42 6.74 6.11 3.16-1.33 4.16-2.99 3.85-5.44 3.65 0 3.08-11.53 3.57-14.46l.64.51c-.06-.4-.32-1.2-.57-1.45.04-.67.09-1.35.12-2.04l1.01.82.36.3c-.37-.73-.83-1.8-1.32-2.18 2.2-4.97.35-9.82.11-14.86.58 1.1.9 2.58 1.7 3.66l.31.38c-.45 2.5-.98 5.3-.6 7.83.69 6.55-.02 13.15.7 19.72.01.36-.02.73-.03 1.1Z" fill="#CE8000"/><path opacity=".3" d="M174.27 82.64c-1.54 8.45-1.32 17.86-8.07 24.09-.64 2.6-2.67 4.69-5 5.86-1.22.83-1.03 2.54-1.62 3.76a11.19 11.19 0 0 1-1.77 3.1 9.67 9.67 0 0 1-10.07 3.45c-2.94-.6-6.34-.16-8.93-1.74-3.14-2.32-4.41-6.33-5.35-9.93-2.44 1.23-4.36-5.47-4.59-5.7-6.43 1.85-6.04-20.43-6.09-24.72 1.54-7.94 2.5-15.79 4.15-23.75.36-1.1-.05-4.43-.07-5.6.74-1.34 1.48-2.32 1.88-3.32-.15 5.52-2.85 6.37-1.2 13.55-.5.3-1.02 1.16-1.52 1.9l-.06.1.07-.05 1.42-.89-.14 2.05c-.27.2-.67 1.03-.75 1.36l.7-.43c-.08 4.53-.22 10.3 1.61 14.54-3.6 6.92-1.91 16.07 2.68 22.39.46-.8.17-2.55.52-3.65 7.93 10.86 19.05 14.36 21.36-2.3 2.56 3.52 5.4 1.87 6.9-1.5 2.96 2.25 3.64-7.23 3.85-9.01.18.63.26 1.39.2 2.3 3.16-1.33 4.16-3 3.85-5.44 2.95-.17 2.72-5.57 3.13-7.8.2-2.16.34-4.49.48-6.66l.63.5c-.06-.4-.3-1.17-.56-1.43.04-.67.09-1.36.12-2.05l.94.77.42.35c-.1-.2-.21-.41-.3-.62a4.9 4.9 0 0 0-1.01-1.56c2.23-4.87.25-10.03.15-14.83.58 1.33.98 2.9 1.97 4.03l-.9 4.84c-.14 2.11.21 4.24.35 6.34.21 2.18.27 4.4.07 6.67-.3 3.74.91 7.36.48 11.07l.04-.03h.03Z" fill="#C77500"/><path opacity=".3" d="M174.26 82.38c-.56 4.74-.81 8.99-2.1 13.54-.82 2.9-1.97 6.1-3.72 8.3-.75.94-1.84 2.03-1.84 2.03a12.04 12.04 0 0 1-5.4 6.34c-.9.56-1 1.72-1.26 2.65a11.11 11.11 0 0 1-4.11 6.08c-2.66 1.93-4.95 2.19-8.1 1.58-3.35-.71-7.48.02-10.01-2.66 9.24-2.94 16.7-10.45 18.84-19.96.67 4.72-1.75 9.78-3.44 13.6 5.26-5.91 10.94-12.25 12.05-20.4 1.23 2.08-.05 5.15.32 6.91 3.07-10.47 6.02-20.82 6.4-31.84.18.14.46.38.64.51-.08-.4-.31-1.17-.57-1.44l.13-2.05c.26.23 1.03.86 1.29 1.06 0 .02.07.06.08.07-.12-.21-.22-.43-.33-.64a4.83 4.83 0 0 0-1-1.53c2.04-4.99.34-9.8.05-14.84.66 1.24.99 2.93 2.02 4.04-.45 2.5-.93 5.27-.55 7.82.69 6.55-.08 13.16.65 19.73 0 .36-.02.73-.04 1.1Z" fill="#A05A07"/><path d="M154.16 116.32c.02-.61-.94-.67-.96-.06a5.28 5.28 0 0 1-1.8 3.67c-.88.8-2.07 1.11-3.18 1.43a6.11 6.11 0 0 0 2.23-4.22c.05-.61-.9-.67-.95-.06-.15 1.76-1.04 2.9-2.4 3.98-.4.33 0 .89.42.82-.05.3.16.64.54.54 1.5-.46 2.98-.86 4.16-1.94a6.1 6.1 0 0 0 1.95-4.15h-.01v-.01ZM145.52 120.57c-1.51-.03-2.73-2.34-2.71-3.68.01-.62-.95-.68-.96-.06a5.49 5.49 0 0 0 2.22 4.24c-.53-.25-1.1-.38-1.62-.7a7.08 7.08 0 0 1-1.88-1.74c-1-1.3-1.93-3.18-1.56-4.87.12-.6-.78-.9-.91-.3-.41 1.9.37 3.75 1.4 5.31.5.74 1.09 1.39 1.77 1.95.36.3.79.57 1.2.77.38.17.8.24 1.16.43.5.25 1-.4.64-.72.37.2.76.32 1.17.33.62.01.68-.94.06-.95h.01Z" fill="#995A07"/><path d="M153.51 137.86c.05 1.25-.66 2.44-1.21 3.48a12.65 12.65 0 0 1-4.7 9.22c-1 .58-1.47-.22-2.65.1-1.92.14-3.72-1.94-4.6-3.55a7.7 7.7 0 0 1-.88-4.25c.01-.67.18-1.39.39-2.18-.08-.08-.2-.08-.27-.15-1.95-1.7-1.6-5.5.1-7.36a7.64 7.64 0 0 1 .25-8c-.4-.8-1.02-1.49-1.43-1.95l15.02.42c.24.98-.04 1.85-.48 2.81.07.16.15.27.18.34 1 2.22.4 5.18-.77 7.46.65 1.15 1.15 2.63 1.05 3.61Z" fill="#BA6F04"/><path d="M148.36 128.5c-1.16 1.1-2.64 3.44-1.76 4.44.92 1 3.96.1 5.04-.93s1.3-2.7.35-3.7c-.96-1-2.54-.92-3.63.19ZM142.54 128.93c.84.88 2.05 2.88 1.31 3.61-.73.7-3.09-.07-4.01-1.03-.93-.96-.94-2.21-.2-2.91.74-.78 2.01-.6 2.9.33ZM143.06 135.96c.85.89 1.77 3.4.96 4.25-.81.77-3.84-.43-4.65-1.32-.8-.88-.89-2.28-.08-3.1.81-.8 2.85-.76 3.77.17ZM147.82 135.8c-1.16 1.1-2.64 3.45-1.77 4.46.92 1 3.97.08 5.05-.94 1.08-1.04.84-2.18-.08-3.1-.89-1-2.04-1.52-3.2-.42ZM143.19 143.62c.5 1.26 1.3 4.26-.44 4.48-.88.14-2-2.04-2.57-3.3-.5-1.26-.1-2 .73-2.3.87-.27 1.78-.14 2.27 1.12h.01ZM146.97 143.45c-1.16 1.1-2.67 4.35-1.43 4.8 1.04.36 3.12-.92 4.27-2.03 1.15-1.1 1.3-2.23.4-3.15-.88-.89-2.16-.66-3.24.37Z" fill="#C57802"/><path d="M143.21 127.94c.66.73 1.17 1.6 1.68 2.4.59.97.3 2.2.2 3.34-.02.6 1.03.81 1.14-.7.1-1.12-.1-2.26.14-2.9.62-.97 1.8-3.13 2.9-2.84.6.17.73-.77.2-.93-1.38-.3-2.95 2.23-3.85 3.34-.65-.88-1.2-1.69-2.06-2.31-1.03-.74-.72.2-.35.6Z" fill="#995A07"/><path d="M143.21 134.69c-.52-.2-1.5-.19-1.14.31.18.2 1.23.45 1.74 1.18.96 1.34.92 3 .84 4.5-.01.6.68 1.8.8-.06-.37-2.27 2.13-6.17 3.19-6 .6.09.62-.85.02-.94-1.25-.19-2.69 1.86-3.4 2.9-.65-1.07-1.02-1.46-2.06-1.9h.01Z" fill="#995A07"/><path d="M142.88 142.76c2.16 1.03.77 4.06 1.77 6.72-.17.6.69 1.22.85.62-.82-2.2-.34-3.63.3-5.28 0 0 1.02-3.03 2.9-2.76.6.17.8-.7.28-.86-2.11-.12-3.36 1.77-3.7 2.74-.5-.69-.5-1.14-1.2-1.53-.52-.35-1.99-.46-1.21.35Z" fill="#995A07"/><path d="M149.76 131.88c-1.68.57-2.46-.05-2.1-.76.35-.71 1.45-2.42 2.5-2.4 1.06.03 2.45 2.17-.4 3.16ZM148.97 139.87c-2.05.67-2.98-.07-2.5-.93.46-.86 1.8-2.94 3.04-2.91 1.28.1 2.92 2.67-.54 3.84ZM147.4 147.23c-1.52.5-2.02-.39-1.55-1.17.47-.78 1.73-2.67 2.6-2.5.86.16 1.5 2.9-1.03 3.67h-.01ZM141.36 146.04c1.04.7 1.58.19 1.4-.57-.17-.73-.66-2.47-1.4-2.5-.73.03-1.71 1.93 0 3.07ZM141.1 139.31c1.9.91 2.82.25 2.54-.62-.32-.88-1.4-2.94-2.58-3.04-1.24-.1-3.1 2.2.03 3.66ZM141 131.68c1.57.75 2.38.21 2.06-.48-.25-.68-1.16-2.48-2.21-2.58-1.02-.06-2.46 1.79.15 3.06ZM147.03 165.21a2.8 2.8 0 0 0 .16 2.1c-3.75-2.43-6.94-7.27-5.65-11.85.1-.32.24-.6.4-.9.16-.3.32-.58.57-.8.08-.08.1-.17.14-.26v-.02c.12-.45-.27-1.28.42-1.33 9.66.08 6.03 8.28 3.95 13.06h.01Z" fill="#D58500"/><path opacity=".3" d="M147.03 165.21a2.8 2.8 0 0 0 .16 2.1 12.2 12.2 0 0 1-2.24-1.78c3.03-3.76 2.33-10.06-3.46-9.9l.06-.17a5 5 0 0 1 .4-.9c1.15-1.64 4.7-2.9 6.5-2.04.12.3-.05.67 0 .99 0 .14.05.26.13.37 2.85 2.56-1.13 9.66-1.55 11.33Z" fill="#A05A07"/><path opacity=".3" d="M149.33 158.69a6.72 6.72 0 0 0-2.56-3.17 7.81 7.81 0 0 0-2.16-1.05 10.4 10.4 0 0 0-2.33-.47l-.1-.01.15-.11.16-.1c.57-.32 1.22-.64 1.89-.9.11-.05.22-.1.34-.13l.49-.17.1-.02.25-.08c.86-.24 1.72-.35 2.5-.24.06 0 .1.02.13.03l.04.02h.01l.05.02c.02 0 .02.02.04.03h.01l.03.03.01.02.04.04.03.06v.02l.03.11c.02.1 0 .2-.01.32v.1l-.03.25V153.51l.02.1v.05l.02.06c.02.06.06.12.1.16.02.04.05.06.08.09l.09.06.15.22.02.02.01.03a4 4 0 0 1 .32.6l.1.22.08.23.08.22.03.13c.12.86 0 1.89-.24 2.94l.03.05Z" fill="#A05A07"/><path d="M148.13 157.63c.02-1.25-.12-3.04-1.4-3.66-.54-.27-1.06.53-.51.79 1 .49.97 2.03.97 2.98a8.6 8.6 0 0 1-1.26 4.47c-.32.53.48 1.04.79.52a9.74 9.74 0 0 0 1.41-5.11ZM145.3 153.64c-.27-.56-1.06-.04-.8.5.68 1.47-.83 2.53-1.76 3.42-.44.42.26 1.07.7.64 1.34-1.28 2.78-2.58 1.85-4.56Z" fill="#995A07"/><path d="m155.65 125.11-.02.06c-.21.6-.56 1.05-1.06 1.22l-.85-.08-.38-.04c-8.11-.76-5.56-.52-13.56-1.22h-.01l-1.12-.1a1.3 1.3 0 0 1-.32-.25l-.1-.1a2.55 2.55 0 0 1-.3-.56l-.1-.44c-.2-1.04.07-2.4.56-3.31l.03-.05.63.06 2.3.18 1.53.13.9.08 1.54.12 1.83.16.8.07 1.2.11.63.06c.14.03.3.04.45.05.09.02.19.02.28.03l.88.09c.13 0 .27.02.41.04l3.85.38.03.13v.02a5.76 5.76 0 0 1-.03 3.17Z" fill="#00C55E"/><path d="m155.65 125.1-.02.07c-.2.58-.56 1.05-1.06 1.22l-.86-.08-.38-.04c-8.1-.75-5.55-.51-13.55-1.22h-.02l-1.12-.1a1.32 1.32 0 0 1-.33-.25l-.09-.1a2.99 2.99 0 0 1-.3-.56l-.1-.44.26.08c.48.12.97.2 1.47.23.89.08 1.8.02 2.67-.1a9.14 9.14 0 0 0 2.85-.83c.01 0 .02 0 .03-.02.03 0 .08-.03.12-.06l.12-.07.36-.2a4.65 4.65 0 0 0 1.42-1.68l.8.08 1.2.11.63.06.45.05.28.03.87.08.42.04 3.85.38.04.13v.02l.1.36c.18.88.15 1.97-.13 2.8l.02.02Z" fill="#06B253"/><path d="m149.48 153.25-.07.28v.07a3.1 3.1 0 0 1-.24.57.69.69 0 0 1-.13.15h-.09a195.41 195.41 0 0 0-1.82-.1l-1.06-.06-.58-.03-1.01-.04-2.3-.1h-.05c-.09-.11-.17-.27-.25-.47l-.05-.15-.04-.11-.05-.2-.05-.25a9.02 9.02 0 0 1 0-3.45h.06a231.95 231.95 0 0 0 3.43.12l1.16.07h.12c.04 0 .08 0 .12.02l.84.06.91.07.33.02.37.03.51.03v.03a6.34 6.34 0 0 1 .05.57c.03.13.03.27.04.4.03.83-.02 1.74-.16 2.45l.01.02Z" fill="#00C55E"/><path d="m149.48 153.25-.07.28-.01.07a2.74 2.74 0 0 1-.23.57c-.04.06-.08.11-.13.15h-.09a195.41 195.41 0 0 0-1.82-.1l-1.06-.06c-.21 0-.4-.02-.58-.03l-1.01-.04-2.3-.1h-.05a1.6 1.6 0 0 1-.25-.48l-.05-.15-.04-.1-.05-.21-.05-.25a6.65 6.65 0 0 0 3.26-1.62c.52-.46 1-1.03 1.38-1.63h.11c.04 0 .08 0 .12.02l.85.06.91.07.32.02.37.03.52.03v.03l.03.2.03.37.03.41c.02.83-.03 1.74-.16 2.45h.02Z" fill="#06B253"/><path d="M142.22 86.66c-.8-.07-1.15.48-.57.72 1.48.62 11.53 1.02 14.12.92.59-.02.47-.93-.12-.91-6.01-.84-13.43-.73-13.43-.73ZM147.53 90.1c.28.4 1.28.35 1.7.36.59.03 1.23.02 1.8-.14.57-.17.72.73.16.9a7.3 7.3 0 0 1-2.41.15c-.6-.04-1.57-.1-1.95-.66-.33-.49.36-1.08.7-.6Z" fill="#995A07"/><path d="M151.62 46.53a29.8 29.8 0 0 1-11.47-3.35 50.93 50.93 0 0 0-3.96-1.84l.04-.02c-3.15.3-4.81 3.64-6.14 6.48-2.51 4.74-2.84 8.35-4.43 14.6l-.76-1.8c-.05-.14-.38-.91-.23-2.56l-.69-6.81 2.81.98s-1.33-4.64-.5-4.73c4.41-.46 1.03-7.39 1.03-7.39l2.86 1.54s.42-1.49 1.17-2.18c1.5-1.22 4.15-1.78 5.99-.59 2.94 2.02 8.61 8.1 13.31 5.78 1.4-.7.03 1.79.97 1.9Z" fill="#C77500"/><path opacity=".3" d="M142.55 86.65s1.76-1.19 5.71-1.37c1.78-.08 3.49.22 4.77.74 1.28.53 3.14 1.06 3.04 1.5-.1.45-9.22-.58-13.52-.86ZM151.41 90.73s-.32 1.6-1.81 2c-.68.2-1.35.1-1.88-.2-.52-.3-1.1-1.78-1.1-2.12 0-.34 3.48 1.39 4.8.32Z" fill="#A05A07"/><path d="M177.35 78.36c-.14.27-.37.48-.64.6-.12.05-.25.09-.37.1-.76.08-1.43-.5-1.52-1.32-.07-.66.28-1.27.83-1.5.11-.06.24-.1.38-.1.74-.09 1.42.5 1.5 1.31.04.34-.03.65-.18.91Z" fill="#676D54"/><path opacity=".4" d="M176.71 78.96c-.12.05-.25.09-.37.1-.76.08-1.43-.5-1.52-1.32-.07-.66.28-1.27.83-1.5 0 0-.97 2.32 1.06 2.72Z" fill="#474C2F"/><path d="M177.35 78.36c-2.38-.58-1.32-2.23-1.32-2.23.74-.08 1.42.51 1.5 1.32.04.34-.03.65-.18.91Z" fill="#949984"/><path d="M120.49 52.49s59.27 4.66 59.23 4.15c-2.24-34.49-26.26-32.31-26.57-32.43-17.12-3.03-30.03 7.1-32.66 28.29v-.01Z" fill="#979E87"/><path opacity=".4" d="M138.66 27.1c-3.1-.53-9.83 4.73-8.13 8.16 4.56 5.16 15.3-6.43 8.13-8.16Z" fill="#C5CAB9"/><path d="M179.65 55.73c-.6-7.56-2.34-15.33-6.8-21.57-6.54-9.33-15.74-9.8-25.94-11.02a4.04 4.04 0 0 0-.98 1.42c6.64 11.41-15.8 28.95-21.62 14.46a55.02 55.02 0 0 0-3.83 13.48c-.12-.01 55.66 4.05 57.16 4.14 1.32-.05 2.41.55 2-.9v-.01ZM167.9 39.16c-1.41-.95-2.33-3.4-2.62-5.28-.48-3.18 1.7-4.48 3.85-2.53 2.47 2.25 1.55 9.66-1.23 7.8Z" fill="#949984"/><path opacity=".4" d="M153.06 51.86c-9.6-5-21.95-4.9-31.27.73 4.81.38 21.9 1.7 36.27 2.75a26.57 26.57 0 0 0-5-3.49ZM172.17 33.26c.09 8.52-1.86 14.17-12.46 22.2 11 .78 19.47 1.36 19.46 1.16-.73-11.23-3.22-18.56-7-23.36Z" fill="#676D54"/><path d="M180.13 60.58c-13.63-1.09-49.07-2.52-60.41-3.1-.78-.56-.6-3.22-.21-5.27 7.46-1.64 43.63 1.63 59.42 3.41 2.18-.32 1.2 3.54 1.2 4.96Z" fill="#C2C2AC"/><path d="m156.7 59.22-16.29-.8c2.94-4.06 14.24-3.07 16.29.8ZM180.13 60.58c-5.38-.44-10.86-.7-19.77-1.18.8-1.73 1.47-3.56 1.29-5.52 6.1.56 12.02 1.06 17.88 1.83 1.36.03.59 3.83.6 4.87Z" fill="#BBB99D"/><path d="M130.95 56.2c5.37.84 10.95-.52 15.46-3.52-11.76-.82-22.92-1.3-26.5-.57 2.84 2.75 7.3 3.61 11.04 4.09Z" fill="#C5CAB9"/><path d="M125.7 54.02c-.24-1.58-3.1-1.34-3.04.43.01 2.75 3.54 1.47 3.03-.43Z" fill="#979E87"/><path opacity=".4" d="M123.3 54.44c0-.31.09-.62.28-.88.25-.32.58-.52.94-.59-2.38-.49-2.44 3.57-.23 3.02-.54-.11-.99-.58-1-1.55h.01Z" fill="#676D54"/><path d="M138.67 54.16c-.79-.7-2.46.02-2.84 1.03-.17.42-.05.87.22 1.21.67.85 2.48.78 3-.61.23-.58.07-1.23-.39-1.64Z" fill="#979E87"/><path opacity=".4" d="M136.12 55.21c.28-.72 1.2-1.3 2-1.3-.84-.15-1.99.46-2.29 1.28-.16.42-.04.87.23 1.2.29.36.8.57 1.3.56-.4-.05-1.78-.39-1.23-1.74h-.01Z" fill="#676D54"/><path d="M149.55 55.04c-1.22 1.08.14 3.96 2.24 2.38 1.86-1.39-.8-3.64-2.24-2.38Z" fill="#979E87"/><path opacity=".4" d="M149.1 56.15c0 1.17 1.15 2.44 2.7 1.28.25-.19.41-.39.51-.6-.15-.04-2.53-.75-3.21-.68Z" fill="#676D54"/><path opacity=".4" d="M149.89 55.1c.4-.31.89-.38 1.34-.3a1.58 1.58 0 0 0-1.66.24c-.95.84-.35 2.75.94 2.83-1.15-.32-1.64-2.02-.62-2.8v.02Z" fill="#676D54"/><path d="M164.55 55.96c-2.1-.53-3 2.78-.59 2.86.66.03 1.33-.4 1.46-1.58a1.2 1.2 0 0 0-.87-1.28Z" fill="#979E87"/><path opacity=".4" d="M164.55 55.96a1.68 1.68 0 0 0-.62-.04c.11 0 .24.02.36.06.55.14.94.7.87 1.28-.11 1.04-.65 1.49-1.23 1.56h.02c.68.03 1.34-.4 1.47-1.57a1.2 1.2 0 0 0-.88-1.28h.01Z" fill="#676D54"/><path d="M177.26 56.52c-2.47-.27-1.63 4.14.57 2.92 1.67-.47.84-2.73-.58-2.92h.01Z" fill="#979E87"/><path opacity=".4" d="M177.26 56.52a1.17 1.17 0 0 0-.53.03c1.63.45 1.92 2.71.11 3.06 2.27.35 2.6-2.64.42-3.09ZM152.75 47.54s3.44-22.15 3.28-23.2c.95.1 2.09.28 3.34.6 1.6 7.74-2 22.45-6.62 22.6Z" fill="#676D54"/><path d="M151.03 48.28c6.6.26 7.45-21.2 6.99-23.6l-.06-.06c-4.73-.35-6.27-1.14-11.05-1.5-1.79 1.6-3.75 25.52 4.13 25.16h-.01Z" fill="#676D54"/><path d="M157.33 33.64c-.26 5.61-2.85 14.03-7.33 14.16-7.08-1.27-5.23-18.15-3.92-23.89 2.62-4.15 9-3.25 11.52.65 0 .18.1 4.35-.27 9.09Z" fill="#C2C2AC"/><path d="M157.33 33.64c.32 9.96-9.54 22.5-12.02 6.66.87.22 7.6 1.65 12.02-6.66Z" fill="#BBB99D"/><path d="M144.85 33.72c0-3.32.49-6.61 1.23-9.82 1.66-2.92 6.78-3.63 9.28-1.5.21 7.94-10.5 11.32-10.5 11.32Z" fill="#C5CAB9"/><path d="M152.22 38.24c-.45-1.06-1.7-1.12-2.32-.74-1.39.84-1.14 3.65.8 3.47 1.07-.1 1.96-1.7 1.52-2.73Z" fill="#979E87"/><path opacity=".4" d="M152.22 38.24a1.5 1.5 0 0 0-.9-.86c.17.15.31.34.42.59.44 1.02-.46 2.62-1.53 2.72-.24.03-.45 0-.64-.06.28.24.65.38 1.13.34 1.08-.1 1.97-1.7 1.53-2.73Z" fill="#676D54"/><path d="M151.95 29.28a.93.93 0 0 0-.5-.24 1.33 1.33 0 0 0-1 .12c-2.3 1.16.93 5.03 2.2 2.61.46-.84.04-1.96-.7-2.49Z" fill="#979E87"/><path opacity=".4" d="m151.95 29.28-.04-.03c.48.58.68 1.45.32 2.13-.52.96-1.34.92-2 .45.69.8 1.8 1.14 2.43-.05.44-.84.03-1.97-.7-2.49h-.01Z" fill="#676D54"/><path d="M153.33 23c-.15-.8-1.82-2.21-2.65-.87-1.23 2.24 3.23 3.9 2.64.86h.01Z" fill="#979E87"/><path opacity=".4" d="M153.33 23c-.11-.6-1.01-1.48-1.82-1.42 1.57.34 2.26 2.82.45 3.08 1 .28 1.67-.76 1.37-1.66Z" fill="#676D54"/><path d="m166.35 61.53-1.23-1.05s1.64.08 2.47.67a8.06 8.06 0 0 0 1.5-.67c.14-.07-.2-3.8-1.16-3.42a31.2 31.2 0 0 1-9.8 1.19c-.54 0-1.98.82-1.98.82l.21-.97a20 20 0 0 0-1.92-.3c-.96-.21-1.43 1.72-1.43 3.29.06 2 1.23 1.71 3.01 1.71 2.67-.07 6.91-.37 10.34-1.26v-.01Z" fill="#CE8000"/><path d="M158.76 62.65c-3.63-.74-3.9-3.73-3.5-4.7-.27-.07-.61-.07-.89-.14-.96-.22-1.44 1.71-1.44 3.28.07 2 .21 1.86 2.81 1.86.76-.07 1.92-.22 3.02-.3Z" fill="#B26804"/><path d="M132.12 58.46c4.8 2.69 11.53 3.6 11.53 3.6 1.17.23 2.22.32 3.1.46 1.7.21 2.05-.36 1.93-1.71.02-.15-.05-.3-.04-.45-.5-3.26-.3-2.87-1.18-3.09-.75.01-.82.01-1.8.08-.34.57-1.09 1.48-1.09 1.48l-.02-1.64c-3.94-.3-9.9-1.6-11.76-2.56-.47.19-1.88 2.99-.67 3.84v-.01Z" fill="#CE8000"/><path d="M132.12 58.46c1.14.76 2.87 1.5 4.84 2.02-2-1.12-2.29-5.1-2.28-5.19a10.2 10.2 0 0 1-1.89-.74c-.47.26-1.88 3.06-.67 3.9ZM143.65 62.05l3.1.47c1.85.22 2.13-.5 1.9-2.17-.5-3.25-.3-2.86-1.19-3.09-.13.67.8 4.18-3.81 4.8Z" fill="#B26804"/><path d="M44.9 121.86c-.52.17-.25.63-.75.8 24.95.73 46.84 22.06 51.92 53.32l.12.04 11.84-.04V116.2c-14.95-2.83-43.5-.45-63.14 5.68l.01-.02Z" fill="#9EA58E"/><path d="M110.15 177.06c6.82-12.53 15.84-43.08 7.35-57.2-5.12-8.55-47.49-6.47-73.35 2.05 25.16.75 47.22 22.42 52.05 54.11 5.92 1.02 10.2 1.28 13.96 1.04Z" fill="#9EA58E"/><path d="M76.47 129.42a9.57 9.57 0 0 0-4.63-2.02c-1.45-.28-2.96-.42-4.32-1a4.72 4.72 0 0 1-2.76-3.05c-.42-1.36-1.05-2.8-2.28-3.62a6.15 6.15 0 0 0-3.71-.84c-1.74.06-3.46.41-5.16.8-2.5.57-5.06 1.26-7.43 2.32 11.62.87 22.48 6.2 31.17 14.9.19-.34.35-.68.5-1.04.91-2.27.51-4.8-1.37-6.45h-.01Z" fill="#B1B7A5"/><path opacity=".4" d="M117.5 119.85c-2.58-4.32-14.66-5.92-29.31-5.36 1.24 9-1.04 19.2-8.2 25.24 8.13 9.28 14 21.72 16.21 36.28 5.92 1.02 10.2 1.27 13.96 1.04 6.81-12.52 15.83-43.08 7.35-57.2Z" fill="#949984"/><path d="M108.7 158.3c-1.5 6.57-4.09 13-8.1 18.37 3.76.47 6.8.56 9.56.39 6.42-12.4 22.57-58.75-2.31-61.63 2.7 14.05 3.93 28.78.85 42.87Z" fill="#949984"/><path d="M83.13 115.74c-13.62 2.56-13.65 5.79-13.06 5.98 5.1 1.61 9.76-3.04 29.74-3.09 2.43 0 7 .57 9.27-.24.27-1.1-3-2.5-4.07-2.89-5.19-1.91-16.44-.68-21.89.24Z" fill="#949984"/><path opacity=".63" d="M75.98 117.96c-1.71-1.02-7 2.33-6.56 3.25 1.11 2.11 11.68-.1 6.57-3.25h-.01ZM106.66 116.79c-.76-2.49-8.43-3.05-9.02-.5-.22 3.21 11.75 3.88 9.01.5Z" fill="#676D54"/><path d="M77.68 112.71c.11-.52-1.8-1.37-2.28-1.14-.49.23-1.86 1.49-2.15 1.74a1.3 1.3 0 0 0-.32 1.5c.38.83 4.09-1.8 4.76-2.1Z" fill="#474C2F"/><path opacity=".5" d="M74.95 112.66c-.53.19-1.76.82-1.9.9-.26.36-.31.85-.12 1.26.37.84 4.77-2.31 4.75-2.41a5.45 5.45 0 0 0-2.74.25Z" fill="#34381B"/><path d="M100.88 109.55c-.39-2.24-6.54.89-3.66 1.85.22.08 4.06.34 3.66-1.86Z" fill="#474C2F"/><path opacity=".5" d="M100.6 110.3c-1.54-2.3-5.97.08-3.37 1.1.22.08 3.54-.92 3.36-1.1Z" fill="#34381B"/><path d="M68.84 118.81c-.26.8-.2 1.77.37 2.4.9 1.04 2.64.78 3.74-.04 14.48-10.77 29.47-7.1 31.1-3.72.13.28.22.6.42.83.37.47 1.04.6 1.6.42.55-.19.98-.65 1.23-1.18.49-1.07.02-2.26-.64-3.24-5.37-8-34.64-5.3-37.83 4.53Z" fill="#676D54"/><path opacity=".5" d="M106.67 114.29c-1.5-2.23-4.86-3.63-8.99-4.28-.74 3.31-9.89 3.03-10.4-.18-4.67.47-9.29 1.63-12.76 3.4 4.02 2.4-3.16 9.13-5.54 5.16-1.31 2.77 1.7 4.6 3.97 2.78 14.48-10.77 29.47-7.1 31.1-3.72 1.67 3.58 4.94-.67 2.6-3.17h.02Z" fill="#474C2F"/><path opacity=".5" d="M76.22 118.98a35.54 35.54 0 0 1 9.34-3.96s.53-2.93-1.45-4.77a37.65 37.65 0 0 0-7.46 2.02c.48.41.6 1.12.61 1.73.02 1.05-.82 4.36-1.05 4.97l.01.01ZM99.26 114.7c2 .52 3.49 1.28 4.28 2.07a6.72 6.72 0 0 0 2.47-3.29c-1.35-1.4-3.51-2.4-6.15-3.04a5.09 5.09 0 0 1-.6 4.25v.01Z" fill="#474C2F"/><path d="M93.52 36.16c-9.47-17.42-24.57-9.06-26.86-5.5-.46-.22 1.83 12.24 2.35 12.42 5.57 1.9 4.95 9.35 5.02 11.02-6.47 2.05-11.44 7.3-15.16 12.78-5.02 7.4-13.86 30.42-14.54 39.02-.16 2.09 1.02 2.67 2 1.52.53-.62 1.02-1.28 1.46-1.97-2.62 6.73 3.94 1.2 7.02-3.03 1.6-2.2 4.19-3.13 6.27-4.77.37 2.09 1.02 6.29 3.6 6.72 3.28.55 5.85-6.4 6.05-6.94 4.46.6 8.6 1.7 15.89-2.1.69 5.34 6.33 11.52 10.66 8.34 1.84-1.34 1.03-3.16.5-4.96-1.04-3.57 4.45-11.35 7.38-18.78 9.75-9.2 5.57-18.79 1.4-24.11-13.77-17.6-5.9-6.5-13.06-19.66h.02Z" fill="#676D54"/><path opacity=".3" d="M105.19 79.93c-2.93 7.43-8.43 15.2-7.38 18.78.52 1.8 1.34 3.62-.5 4.96-4.33 3.17-9.98-3-10.67-8.34-7.28 3.8-11.42 2.7-15.88 2.1-2.02 6.32-8.02 11.64-9.66.22-2.08 1.64-4.67 2.56-6.27 4.77-3.08 4.23-9.63 9.76-7.01 3.03-.44.7-.94 1.35-1.46 1.98-.98 1.14-2.17.56-2-1.53.64-8.1 8.92-30.47 14.54-39.01 3.71-5.47 8.67-10.72 15.16-12.8-.07-1.65.54-9.1-5.02-11-.53-.19-2.82-12.64-2.36-12.43 2.3-3.56 17.38-11.91 26.87 5.51 7.16 13.16-.72 2.07 13.05 19.66 4.17 5.33 8.35 14.92-1.4 24.12l-.01-.02Z" fill="#464C2E"/><path d="M70.47 30.14c-.75 2.54 3.73 1.83 5.57-.04 4.02-4.1-4.38-4-5.57.04Z" fill="#676D54"/><path opacity=".3" d="M106.58 55.83c-13.77-17.6-5.9-6.5-13.05-19.66-4.8-8.8-11.02-11.03-16.3-10.6 15.85 17.33 6.21 57.69-3.58 49.01-5.91 8.62-14.12 13.23-22.63 8.67-3.38 8.56-6.3 17.85-6.68 22.65-.16 2.09 1.02 2.67 2 1.52.53-.62 1.03-1.28 1.46-1.97a3.86 3.86 0 0 0-.6 1.61c-.27 4.66 5.63-2.33 7.62-4.64 1.78-2.06 4.2-3.13 6.27-4.77.38 2.09 1.03 6.25 3.6 6.72 2.84.52 4.58-3.34 5.43-5.38.22-.5.43-1.03.62-1.55 4.47.6 8.6 1.7 15.89-2.1.7 5.33 6.34 11.52 10.66 8.34 1.84-1.35 1.04-3.16.5-4.97-1.04-3.56 4.45-11.34 7.38-18.77a.7.7 0 0 0 .4-.2c9.32-9.48 5.17-18.59 1-23.91Z" fill="#464C2E"/><path opacity=".7" d="M106.58 55.82c-13.77-17.6-5.9-6.5-13.05-19.66-4.74-8.73-10.9-10.99-16.14-10.63C92.86 34.18 92.7 57.37 86.1 73.7c-1.61 4-3.95 7.87-7.46 10.46-4.62 3.42-8.81 3.57-6.02-.63 1.42-2.15 2.67-4.6 2.51-7.17-2.33 7.68-14.95 16.4-25.1 9.51-2.94 7.78-5.34 15.72-5.68 20.03-.16 2.1 1.02 2.67 2 1.53a16.9 16.9 0 0 0 1.46-1.98 3.85 3.85 0 0 0-.6 1.62c-.27 4.65 5.63-2.34 7.62-4.64 1.78-2.07 4.2-3.14 6.27-4.77.38 2.08 1.03 6.25 3.6 6.72 2.84.51 4.58-3.34 5.43-5.39.22-.5.43-1.02.62-1.55 4.47.6 8.6 1.7 15.89-2.1.7 5.34 6.34 11.52 10.66 8.34 1.84-1.34 1.04-3.16.5-4.96-1.04-3.57 4.45-11.35 7.38-18.78a.67.67 0 0 0 .4-.2c9.3-9.48 5.16-18.58 1-23.9h-.02v-.01Z" fill="#464C2E"/><path opacity=".7" d="M106.58 55.82c-2.08-2.66-3.67-4.66-4.88-6.19v.16c.45 19.52-15.8 44.72-34.57 38.49-.05.14-16.94 18.33-19.68 20.12 1.13 1.32 5.67-4.03 7.36-6 1.78-2.06 4.2-3.13 6.27-4.77.38 2.09 1.04 6.25 3.61 6.72 2.83.52 4.57-3.34 5.43-5.38.21-.5.42-1.03.61-1.55 4.47.59 8.61 1.7 15.9-2.1.68 5.33 6.33 11.5 10.66 8.34 1.83-1.34 1.02-3.16.5-4.97-1.05-3.56 4.45-11.34 7.38-18.77a.7.7 0 0 0 .4-.2c9.3-9.48 5.16-18.59.99-23.91v.01h.02Z" fill="#464C2E"/><path d="M106.58 55.82c-2.48-3.17-4.26-5.4-5.54-7.02 14.72 21.64-18.67 50.12-16.77 19.93C80 83.54 92.8 89.05 99.85 81.78 94.48 98.8 72 93.84 71.95 94.05c-.28 1.05-1.2 3.38-1.2 3.38 4.46.59 8.6 1.7 15.89-2.11.13 1.92 1.12 3.57 1.2 3.73a5.43 5.43 0 0 1 4.8.87 4.43 4.43 0 0 1 1.69 4.6c1 .1 2.03-.15 2.97-.85 1.84-1.34 1.03-3.16.5-4.96-1.04-3.58 4.45-11.35 7.38-18.78a.68.68 0 0 0 .4-.2c9.3-9.48 5.16-18.58 1-23.9v-.01Z" fill="#464C2E"/><path opacity=".5" d="M102.7 85.39c-3.27 3.5-7.41 6.46-12.08 7.71a7.85 7.85 0 0 0-4.87 2.67l.9-.44c.04.33.1.66.18 1 4.6-1.12 9.1 1.85 11.6 5.57-1.58-6.01.19-8.51 4.28-16.53v.02Z" fill="#34381B"/><path d="M69.78 56c.13.08.24.18.34.3.4.5.37 1.24.38 1.89 0 .65.78 2.5 2.17 1.56.43-.29.67-.78.88-1.26 1.02-2.4.34-4.3.35-4.1 0 0-2.78.82-4.12 1.6Z" fill="#464C2E"/><path d="M110.53 71.9c-.45-4.03-2.5-7.8-2.5-7.8s.09 4.13-.8 8.76c-.9 4.64-2.05 7.07-2.05 7.07.6.05 4.05-4.1 5.35-8.04Z" fill="#34381B"/><path d="M65.22 74.88c-4.18 4.18-9.34 6.13-12.93 5.25 4.41-10.25 7.02-15.73 14.5-22.09 6.43 2.45 4.34 10.73-1.57 16.83Z" fill="#676D54"/><path d="M85.17 109.79c-4.03-1.47-12.43-1.92-2.19 1.81.54.17 1.11.47 1.2 1.1.05.75.55 1.6.04 2.24a23.8 23.8 0 0 0-2.05 2.55c.2 2.18 3.48-1.04 4.22-1.82.68-.96-.44-5.76-1.24-5.88h.02Z" fill="#474C2F"/><path opacity=".5" d="M85.6 110.23c.1.94-.85 1.7-1.69 1.9 1.54 2.81-.85 3.68-1.74 5.36.2 2.18 3.48-1.04 4.22-1.82.57-.8-.1-4.22-.8-5.44Z" fill="#34381B"/><path opacity=".5" d="M84.6 116.31a2.77 2.77 0 0 1-.54-1.19c-.68.79-1.87 2.2-1.88 2.38-.03.58.75 1.48 2.69-.42l.28-.28c-.2-.13-.4-.3-.55-.48Z" fill="#34381B"/><path d="M84.1 112.61a15.87 15.87 0 0 0-4.33-3.45c-.16-.4-.61-.7-1.18-.82-3.37-.76-10.06-3.39-11.23-4.47-.96.57-3.11 2.13-2.16 3.05.56-1.02 10.97 8.52 14.28 4.42.72.86 2.49 1.33 2.25 2.67-.37.75-.12 2.55-.93 2.66-1.17.5-2.35 1.07-3.54 1.73 1.63.02 4.33 1.01 5.03.38 1.13-1.03 1.9-5.17 1.83-6.16h-.01v-.01Z" fill="#474C2F"/><path opacity=".25" d="M71.84 106.08a38.91 38.91 0 0 1-4.16-1.9 64.73 64.73 0 0 0-1.52 2.86 42.95 42.95 0 0 1 1.2.77l1.27.83.2.13c1.9 1.2 3.91 2.32 6.02 3.12.21-1.77 1.77-3.22 3.5-3.59-.03 0-4.4-1.38-6.5-2.22Zm2.57 3.24c-.89 2.09-5.1-.69-4.84-2.21 1.29-.85 5.28 1.1 4.84 2.2Z" fill="#34381B"/><path opacity=".25" d="M69.52 108.92c-.72-.84-1.74-3.05-1.17-3.04.64.34 1.5.17 2.19.1l.82-.1a35.16 35.16 0 0 1-3.8-1.78c-.1-.06-1.74 2.96-1.42 2.94.08-.01 1.05.7 2.48 1.6l.9.29v-.02Z" fill="#34381B"/><path opacity=".5" d="M84.1 112.61c0-.1-.29-.39-.66-.74-.48 1.07-1.84.93-2.71.48.55.4 1.22.88 1 1.65-.37.74-.12 2.55-.93 2.65-1.17.5-2.35 1.08-3.54 1.73 1.63.03 4.33 1.02 5.03.39 1.13-1.03 1.9-5.17 1.83-6.17l-.02.01Z" fill="#34381B"/><path opacity=".5" d="M82.55 116.4a2.88 2.88 0 0 1-1-1.7c-.28.67-.02 1.9-.77 1.95-1.16.5-2.35 1.07-3.53 1.73 2.92.16 5.38 1.83 6.05-1.54a4.95 4.95 0 0 1-.75-.43Z" fill="#34381B"/><path d="M78.69 113.23c.6 1.57-.65 2.71-1.39 4.93-.56.84-1.72 1.04-2.5 1.71 2.82.03 3.23 1.56 5.26-2.97.5-.93 1.18-1.59 1.27-2.63.22-2.1-5.65-7.23-2.64-1.03Z" fill="#474C2F"/><path opacity=".5" d="M80.8 112.67c-.1.84-1.25 1.5-1.98.93.22 1.32-.8 2.53-1.53 4.55-.56.83-1.71 1.05-2.5 1.72 2.82.02 3.23 1.55 5.26-2.98.86-1.38 1.91-2.61.75-4.22Z" fill="#34381B"/><path opacity=".5" d="M78.07 117.62a3.3 3.3 0 0 1-.05-1.15l-.71 1.69c-.14.3-.4.53-.7.6-.6.36-1.2.72-1.79 1.12 2.23.02 2.95 1 4.17-.9-.45-.27-.79-.82-.92-1.35v-.01Z" fill="#34381B"/><path d="M68.4 107.37c-.42-.92-.88-1.8-1.4-2.68 1 .38 2.02.65 3.06.8-.65-.87-2.45-1.7-1.48-2.93a30.33 30.33 0 0 0 3.73-9.65c-3.92-.21-9.88.5-11.52 4.03.39 4.4 1.54 10.55 6.82 11.2a2.66 2.66 0 0 1-.66-1.74c.4.43.9.78 1.46.98h-.02Z" fill="#676D54"/><path opacity=".3" d="M70.67 92.87c-3.04.05-10 .95-9.78 4.94.36 4.16 1.81 9.76 6.71 10.33-.1-.11-.17-.2-.24-.32v-.01c-.27-.41-.4-.9-.42-1.41.4.42.9.77 1.45.97-.4-.92-.89-1.8-1.37-2.68.98.38 2 .64 3.05.8l-.28-.28v-.02h-.02l-1.07-1.1h-.01c-1.2-1.01 1.1-3.1 1.37-4.34v-.01a29.47 29.47 0 0 0 2.25-6.83c-.5-.03-1.07-.05-1.64-.03Zm-2.45 4.78c-.1 3.55-5.77 6.43-5.9 1.3-.16-5.6 6.16-4.8 5.9-1.3Z" fill="#464C2E"/><path opacity=".3" d="M68.68 104.1c-.52-.42-.49-1.03-.1-1.54a30.33 30.33 0 0 0 3.73-9.65c-.52-.03-1.07-.05-1.64-.04-.28 3.66-.84 8.6-4.75 10.15-.3.08-2.17 1.17-1.03 1.07.66-.43.9.24.27.55-.33.56 1.34 1.33.05 2.7.73.43 1.53.73 2.39.8a2.66 2.66 0 0 1-.67-1.75c.4.44.9.78 1.46.98a29 29 0 0 0-1.38-2.68c.98.38 2 .65 3.05.8l-1.38-1.4ZM69.02 43.08a6.71 6.71 0 0 1 4.17 4.25c1.5-.13 2.76-.59 2.81-2.17.1-3.33-2.03-8.02-8.89-15.07-.17.2-.33.4-.44.57-.46-.22-1.18.16-1.03.83.11.46 2.87 11.4 3.4 11.59h-.02Z" fill="#464C2E"/><path opacity=".3" d="M71.55 44.66a2.2 2.2 0 0 0 1.34-.88c1.96-3.05-2.99-10.35-5.88-13.6-.13.17-.25.32-.35.48-.46-.22-1.18.16-1.02.83.1.46 2.85 11.4 3.38 11.59 1.04.35 1.87.92 2.53 1.59Z" fill="#464C2E"/><path d="m66.92 30.6-7.4.88c-2.03.27-3.67 1.56-5.2 2.83-3.23 2.7-6.11 7.63-8.25 11-2.31 3.62 14.77-5.58 24.76-1.47.3.12.52.04.67-.14 1.91-.58-2.72-11.45-4.58-13.1Z" fill="#464C2E"/><path opacity=".3" d="m66.92 30.61-2.1.26C64.32 40 53.9 44.67 46 46.1c1.68.45 16.88-5.45 25.48-2.39 1.9-.58-2.72-11.45-4.58-13.1Z" fill="#34381B"/><path opacity=".3" d="M67.43 31.2c4.7 10.8-3.55 8.65-10.21 12.4 4.55-.92 9.63-1.39 13.6.24.3.12.52.04.67-.14 1.76-.53-1.98-9.7-4.05-12.5Z" fill="#34381B"/><path opacity=".4" d="M47.56 44.75c3.3-1.72 2.25-4.72 2.07-4.98-1.09 1.58-3.1 4.85-3.16 4.96.33.2.76.16 1.1.01h-.01ZM54.32 34.32c-.73.6-1.43 1.32-2.12 2.1.49 4.4 2.97 3.19 7.77 1 3.39-1.54 4.03-4.55 3.03-6.2a.92.92 0 0 0-.1-.13l-3.4.4c-2.03.27-3.67 1.56-5.2 2.84l.02-.01Z" fill="#676D54"/><path d="M47.07 46.12c.4-.06.89-.16 1.44-.3 1.35-.33 2.78-1.42 3.99-2.09 1.49-.82 2.99-1.66 4.53-2.4 2.75-1.34 5.77-2.39 8.86-2.2.42.01.87.04 1.24-.16s.62-.69.41-1.05c-.21-.37-.76-.4-1.15-.22-.4.17-.72.48-1.12.64-.6.24-1.28.1-1.93.12-.37 0-3.5.43-5.4 1.54-1.33.77-2.72 1.42-4.04 2.2-2.26 1.32-4.45 2.82-6.83 3.93Z" fill="#34381B"/><path opacity=".3" d="M72.95 35.96c1.92 1.93 5.3-1.34 3.18-2.57-2.28-1.32-4.89.98-3.18 2.57Z" fill="#464C2E"/><path d="M73.02 34.15c-.72 3.85 4.78 3.38 3.6-.33l-3.6.33Z" fill="#464C2E"/><path d="M76.62 33.82s-1.06.08-1.44.13c.24 1.04-.11 2.1-.8 2.81 1.64.65 3.13-1.54 2.24-2.94Z" fill="#34381B"/><path d="M77.06 37.45c.42-.03 1.14-.4 1-.92-.48-1.2-2.48.84-1 .92Z" fill="#676D54"/><path d="M101.6 107.51a55.18 55.18 0 0 0-3.47-4.8c-.71-.31-2.78 1.12-2.7 1.61l4.03 3.98c.4.4.81.84.92 1.37.03 0 .06.02.07.07.1.73 1.69.64 2.1-.03a5.64 5.64 0 0 0-.96-2.2h.01Z" fill="#474C2F"/><path opacity=".5" d="M101.6 107.51c-.39-.6-.8-1.2-1.2-1.77.23.9.7 2.67-.49 3.04.22.27.4.56.47.89.17.75 1.66.77 2.17.04a5.62 5.62 0 0 0-.96-2.2h.01ZM98.13 102.72c-1.25-.7-2.95.05-2.7 1.6l1.48 1.46c-.19-1.02.13-1.58 1.12-.76-.32-.99 1.12-.48 1.6-.34-.48-.67-.98-1.32-1.5-1.95v-.01Z" fill="#34381B"/><path d="M98.32 101.92c-1.77-2.17-3.89 2.46-4 2.6 1.22.1 1.12.06 1.69.26a3.98 3.98 0 0 1-.22-1.28c.52.1 1.03.3 1.5.56a4.5 4.5 0 0 0-.2-1s.47.3 1.75.62c-.5-1.43-.52-1.75-.52-1.75v-.01Z" fill="#464C2E"/><path d="M102.8 109.12c-.88-.27-1.36 1.08-.48 1.34.2.06 3.42 2.45 3.04 3.1-.19.34-.41.63-.68.9l-2.3 2.6c-.14.36.06.78.43.9 1.9.67 3.95-3.5 4.18-4.4.47-1.89-3.21-4.16-4.2-4.44Z" fill="#474C2F"/><path opacity=".5" d="M105.88 111.14c-.02.28-.1.54-.17.7-.15.31-.79.76-.82.77.36.4.59.77.47.97-.2.33-.41.63-.68.9l-2.3 2.58c-.14.36.06.79.43.91 1.9.67 3.96-3.5 4.18-4.4.2-.8-.35-1.67-1.11-2.42Z" fill="#34381B"/><path opacity=".5" d="M105.13 115.1a2 2 0 0 1-.06-1.08l-2.68 3.03c-.14.36.05.78.42.91 1.1.38 2.22-.8 3.04-2.06-.3-.21-.57-.46-.72-.8Z" fill="#34381B"/><path d="M102.56 109.28c-.86-.67-1.75.63-.83 1.17-.07 1.14 1.14 1.84 1.53 2.82-.24.82-.71 1.57-1.03 2.37-.34-.3-.82-.1-1.12.17-.86.86 1.17 1.91 1.52 1.94 1.12.06 2.55-3.87 2.6-4.84 0-.15-1.12-2.27-2.66-3.63h-.01Z" fill="#474C2F"/><path opacity=".5" d="M104.9 112.78c-.48.4-1.18.44-1.76.28.03.07.06.15.1.21-.23.82-.7 1.57-1.02 2.37-.34-.3-.82-.1-1.12.17-.87.86 1.16 1.91 1.51 1.94 1.11-.02 2.9-4.12 2.47-5.17l-.18.2Z" fill="#34381B"/><path opacity=".5" d="M103.1 115.41a6.1 6.1 0 0 1-.12-1.43c-.24.55-.53 1.08-.76 1.65-.22-.17-1.05.11-1.12.17-.86.87 1.17 1.91 1.53 1.94.35.02.75-.36 1.11-.93-.33-.38-.54-.9-.64-1.4v.01Z" fill="#34381B"/><path d="M102.57 109.9c-.18-.64-.94-.62-1.26-.23-.57-.82-1.75.18-1.09.92.26.28.5.57.7.88.63 1.12-.29 3.7-.31 3.65-.8-.28-1.71-.53-2.73-.71.65 1.45 2.2 3.5 3.3 3.12.77-.27 2.58-3.53 1.4-7.63Z" fill="#474C2F"/><path opacity=".5" d="M102.84 112.61c-.61.42-1.18.25-1.67-.12 0 .08-.54 2.67-.56 2.62-.8-.28-1.71-.53-2.73-.71.65 1.45 2.2 3.5 3.3 3.13.6-.2 1.81-2.21 1.78-5l-.13.09h.01v-.01Z" fill="#34381B"/><path opacity=".5" d="M100.95 115.35c-.06-.65.2-2.53.33-2.79a.43.43 0 0 1-.1-.08c-.02.08-.55 2.67-.57 2.63-.8-.29-1.71-.53-2.73-.72l.3.61c1.22-.2 2.43 1.28 2.51 2.55.17.03.33.02.48-.02.09-.03.19-.1.3-.2a5.44 5.44 0 0 1-.51-1.98h-.02Z" fill="#34381B"/><path opacity=".32" d="M47.5 98.31c-.06.33-.12.7-.16 1.09-.21 2.02 1.64 1.24 2.29-.64.13-.37.21-.72.27-1.03-1.46 1.93-2.32.63-2.4.58ZM55.67 91.91c-.2.4-.41.82-.6 1.3-1 2.45 1.6 2.14 3.09.04.3-.43.54-.82.72-1.19-2.48 1.39-3.14-.05-3.2-.15Z" fill="#676D54"/><path opacity=".3" d="M79.37 48.28c.49 1.11 2.83.82 3.3-.9-.6 5.7-3.3 1.1-3.3.9ZM81.55 36.7c.53.65 2.06.03 2.07-1.22.64 3.96-2.03 1.35-2.07 1.21ZM76.56 57.85c.14.92 1.95 1.16 2.64-.02-1.55 4.14-2.68.17-2.64.02ZM82.57 65.92c.14.92 1.95 1.16 2.64-.02-1.55 4.13-2.68.17-2.64.02Z" fill="#464C2E"/><path d="M113.28 262.4s2.48-1.17 1.12-8.07c-1.36-6.91-8.13-1.65-8.13-1.65s3.56 9.46 7 9.71Z" fill="#676D54"/><path d="M112.57 261.75s2.48-1.17 1.13-8.07c-1.36-6.91-8.14-1.65-8.14-1.65s3.56 9.46 7.01 9.72Z" fill="#474C2F"/><path d="M131.5 253.47c.09 5.24-15.9 5.69-21.19 5.69-5.28 0-4.98-3.7-4.98-5.55 0-1.85 11.33-3.49 16.61-3.49 5.28 0 9.53 1.5 9.56 3.36Z" fill="#CEB79B"/><path d="M103.53 234.77s-1.23 19.11-1.46 27.52c1.48 0 8.07.06 9.77.3a4.2 4.2 0 0 0 1.44-.2s-1.74-1.18-2.97-3.23c-1.85-3.09-2.1-5.37-2.36-9.1-.27-3.94-.21-8.09.1-11.1.15-1.52.32-2.73.44-3.41a8.6 8.6 0 0 0-.62-.16c-1.42-.32-3-.4-4.35-.61l.01-.01Z" fill="#676D54"/><path d="M112.08 262.68h-.02c-25.34-1-51.82 6.6-75.77-5.67-6.78-4.13-12.37-10.28-16.6-17.14 1.4-10.37 7.78-18.6 17.01-22.49a43.19 43.19 0 0 1 12.85-3.31c18.29-1.27 41.72 16.05 58.43 21.35-.9 7.18-2.5 21.93 4.1 27.26Z" fill="#9EA58E"/><path d="M81.4 223.6c.7 8.62 11.95 25.44 25.87 26.52-.38-5.23.14-11.03.7-14.7-4.9-1.6-19.84-8.73-26.58-11.81Z" fill="#B1B7A5"/><path d="M95.9 262.92c-8.64.27-17.24 1.24-25.88 1.21-11.5-.23-23.06-1.54-33.74-7.11-6.77-4.13-14.88-8-19.1-14.87 1.44-10.64 10.6-21.22 20.13-25.02 4.72-1.9 9.79-3.17 14.87-3.14 10.53 17.57 13.75 41.17 43.72 48.93Z" fill="#949984"/><path opacity=".14" d="M25.81 225.45c-3.47 4.23-7.87 11.52-8.64 16.7 11.65 14.36 32.6 22.06 50.22 21.93-29.4-11.91-38.7-29.74-41.58-38.63Z" fill="#474C2F"/><path opacity=".14" d="m17.96 239.06-.79 3.09c4.63 6.56 16.04 14.01 22.77 16.68 13.05 5.1 25.58 5.66 37.91 5.16 4.45-.17 8.89-.5 13.3-.78a378 378 0 0 1 4.76-.3c5.38-.3 10.75-.48 16.15-.23l-1.79-1.89s-25.67 1.6-36.77 1.79c-11.1.2-24.56-1.48-35.88-6.35-11.31-4.88-19.67-17.17-19.67-17.17ZM96.74 243.82c-.4-.84.2-1.82 1.08-2.03.5.02.84.64 1.26.87.38.2 1.05.39 1.39.63.93.7-.47 1.68-1.47 1.88-1 .2-1.91-.61-2.25-1.35h-.01ZM54.1 220.76c-1.98 2.86-6.38-.13-4.32-2.4.73-.8 2.13-.08 3.01.3.45.2.79-.05 1.06.33.43.62.67 1.16.25 1.76ZM63 222.72c.94.4 1.96.88 2.4 1.78.17.34.83.2.69.58-1.1 3.04-6.07-1.19-3.09-2.36ZM74.35 228.63c.06 0-.16.44-.16.4.27.06.5.35.67.52.24.25.53.46.82.66.38.29 1.13.4 1.32.84.18.41-.32.76-.52.94-.97.8-4.78-.9-3.5-2.66.24-.35 1-.76 1.37-.71Z" fill="#474C2F"/><path d="M100.7 244.1c-1.7 2.3-3.92-.13-3.64-1.5.39-1.97 5.07-.44 3.64 1.5Z" fill="#676D54"/><path d="M85 235.94s.28.04.28.02c.44-.21 1.3.56 1.54.77.53.45 1.76 1.42.97 2.02-.94.7-2.66.09-3.35-.57-.7-.68-.1-1.81.56-2.23Z" fill="#474C2F" style="mix-blend-mode:multiply" opacity=".14"/><path d="M100.7 244.1c-.42.57-.86.85-1.3.93.23-.15.46-.37.67-.66 1.05-1.42-1.21-2.63-2.63-2.38 1.18-.92 4.5.45 3.27 2.11Z" fill="#474C2F"/><path d="M88.17 238.15c-.21 1.13-2.49.5-3.12-.07a1.4 1.4 0 0 1-.5-1.02c-.39-2.17 4.1-1.53 3.62 1.09Z" fill="#676D54"/><path d="M85.1 235.92c1.1-.55 3.43.31 3.07 2.23-.08.46-.5.62-1.01.62.17-.1.29-.25.33-.47.3-1.57-1.22-2.43-2.39-2.4v.02Z" fill="#474C2F"/><path d="M73.61 228.82c1.45-.82 3.28.54 3.52 1.84a.91.91 0 0 1-.78 1.09c-1.26.16-2.93-.9-3.13-1.96-.07-.36.09-.8.4-.97Z" fill="#676D54"/><path d="M77.13 230.67a.9.9 0 0 1-.78 1.09l-.16.01a.9.9 0 0 0 .3-.88c-.2-1.12-1.56-2.26-2.86-2.07 1.44-.8 3.26.54 3.5 1.85Z" fill="#474C2F"/><path d="M63.38 222.56c.4-.06.8-.04 1.2.05.87.1 1.57.73 1.7 1.68 0 .1 0 .2-.03.3-.06.42-.34.84-.78 1-.62.22-1.95-.1-2.52-.7-.7-.56-.65-2.15.43-2.32Z" fill="#676D54"/><path d="M63.38 222.56c.4-.06.8-.04 1.2.05.87.1 1.57.73 1.7 1.68 0 .1 0 .2-.03.3-.06.42-.34.84-.78 1l-.1.02c.2-.19.31-.45.35-.72.03-.1.04-.2.02-.3a1.88 1.88 0 0 0-1.7-1.67c-.38-.1-.8-.1-1.2-.04l-.05.01a.97.97 0 0 1 .59-.32Z" fill="#474C2F"/><path d="M50.47 217.99c1.85-.44 3.41.55 3.87 1.54.65 1.41-1.9 3.28-4.24.44-.66-.81-.8-1.71.37-1.99Z" fill="#676D54"/><path d="M50.47 217.98c1.86-.44 3.42.56 3.87 1.55.31.66-.1 1.44-.87 1.76.4-.4.57-.93.34-1.42-.46-.98-2.02-1.98-3.87-1.55l-.19.05c.14-.17.37-.3.72-.4v.01Z" fill="#474C2F"/><path d="M107.33 241.24c-5.95 1.02-7.02-4.78-11.7-6.88-6.14-1.23-8.1.84-12.44-5.94-4.9-2.56-6.78 1.08-11.12-5.23-1.93-4.48-10.1-.5-12.78-3.39-1.69-1.82-6.42-1.96-8.54-3.3a7.69 7.69 0 0 0-4.54-1.35c12.67-3.38 24.03 3.05 36.3 8.83a303.14 303.14 0 0 0 25.45 11.45c-.13.67-.56 4.4-.63 5.81Z" fill="#474C2F" opacity=".14"/><path d="M215.27 152.25H94.1v71.85h121.17v-71.85Z" fill="#D6E6FE"/><path d="M93.8 146.83h121.76a3.88 3.88 0 0 1 3.87 3.87v78.83H89.93V150.7a3.88 3.88 0 0 1 3.88-3.87Z" fill="#F7F7F7"/><path d="M215.27 152.25H94.1v71.85h121.17v-71.85Z" fill="#FF6652"/><path d="M191.88 159.66h-75.6a5.37 5.37 0 0 0-5.37 5.36v44.58c0 2.97 2.4 5.37 5.37 5.37h75.6c2.96 0 5.36-2.4 5.36-5.37v-44.58c0-2.96-2.4-5.36-5.37-5.36Z" fill="#F7F7F7"/><path d="M197.25 165.02H110.9c0-2.96 2.4-5.36 5.37-5.36h75.6c2.97 0 5.37 2.4 5.37 5.36Z" fill="#D1D7DB"/><path d="M137.18 207h33.8a2.8 2.8 0 0 0 2.5-4.05l-17.13-33.8a2.8 2.8 0 0 0-5 .03l-16.67 33.8a2.8 2.8 0 0 0 2.5 4.03Z" fill="#FF6652"/><path d="M154.08 201.58a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5ZM152.67 193.11a1.46 1.46 0 1 0 2.93 0v-17.56a1.46 1.46 0 1 0-2.93 0v17.56Z" fill="#fff"/><g opacity=".51" fill="#F7F7F7"><path opacity=".3" d="m132.4 152.25-28.6 71.85h-9.7V186.9l13.83-34.64h24.47ZM155.99 152.25l-28.25 71.85H115.4l28.47-71.85h12.12ZM215.27 152.25v19.06l-21.02 52.8H169.7l28.7-71.86h16.87ZM215.27 200.3v23.8h-9.43l9.43-23.8Z"/></g><path d="M116.02 163.69a.92.92 0 1 0 0-1.85.92.92 0 0 0 0 1.85ZM119.24 163.69a.93.93 0 1 0 0-1.85.93.93 0 0 0 0 1.85ZM122.45 163.69a.92.92 0 1 0 0-1.85.92.92 0 0 0 0 1.85Z" fill="#AAB4BA"/><path d="M220.93 253.86H88.44a3.3 3.3 0 0 1-3.3-3.3v-3.1l4.8-13.93h129.5l4.79 13.54v3.5a3.3 3.3 0 0 1-3.3 3.3Z" fill="#7F8A90"/><path d="M221.85 249.87H87.52a2.42 2.42 0 0 1-2.34-3.06l4.76-17.28h129.5l4.75 17.28a2.42 2.42 0 0 1-2.34 3.06Z" fill="#EFEEED"/><path d="M201.97 229.53c-2.9 8.54-16.5 15.9-35.89 20.34H87.51a2.42 2.42 0 0 1-2.34-3.06l4.76-17.28h112.03Z" fill="#F9F9F9"/><path d="M208.88 244.55H100.49v-2.4l2.85-13.95h102.7l2.84 13.95v2.4Z" fill="#C8C6C6"/><path opacity=".53" d="M208.88 242.15H100.49l2.85-13.95h102.7l2.84 13.95Z" fill="#EDEBEB"/><path d="M165.74 242.15h-65.25l2.85-13.95h68.64l-6.24 13.95Z" fill="#E5E3E3"/><path opacity=".32" d="m213.5 161.8 5.93 1.53v18.3c-7.56-1.41-5.05-8.81-5.05-8.81-7.89-.74-5.16-10.18-5.16-10.18-3.72.72-7.13 1.32-9.37 1.58-7.79.92-7.4-3.6-7.4-3.6l34.9-9.24 2.26 6.98s-8.03 1.8-16.1 3.44Z" fill="#485B7C"/><path d="M264.91 153.23a2.33 2.33 0 0 0-2.08-.88c-1.3.14-3.03.94-3.3 4.17-.47 5.24 12.28 5.53 12.28 5.53l-6.89-8.82Z" fill="#9EA58E"/><path d="M264.98 154.04a2.53 2.53 0 0 0-2.4-.94c-1.26.21-2.8 1.35-3.07 4.37-.46 5.25 12.3 5.53 12.3 5.53l-6.83-8.97Z" fill="#676D54"/><path d="M155.4 262s-2.63-2.63-3.65-3.82l10.72-1.58c.87 2.05-7.06 5.4-7.06 5.4Z" fill="#DEC8AE"/><path d="M169.28 261.73c-1.58 1.54-5.45 2.18-7.21 2.8-3.23.37-5.43-1.54-6.66-2.54 2.78-1.74 6.47-4.9 7.95-6.13 1.34-1.12 2.75-4.28 3.6-5.8.92-1.65 3.52-6.03 6.15-2.22 2.01 2.92-3.84 13.89-3.84 13.89Z" fill="#E8D4BA"/><path d="M155.4 262c2.79-1.75 6.48-4.92 7.96-6.14 1.35-1.12 2.76-4.28 3.61-5.8.92-1.65 3.52-6.04 6.15-2.22 0 0-3.1.69-5.79 6.72-1.91 4.3-1.59 6.2.41 6.36 1.75.15 2.93-2.09 3.2-2.64-.89 1.99-1.66 3.44-1.66 3.44-1.58 1.55-5.45 2.2-7.21 2.8-3.23.38-5.43-1.53-6.66-2.53Z" fill="#DEC8AE"/><path d="M169.68 253.6s-2.72-3.48 2.3-5.15c0 0-3.22 1.56-2.3 5.16Z" fill="#CEB79B"/><path d="M166.47 255.01c-.32 3.02-2.8 3.15-3.2 3.3-2.49.24-6.63 6.63-12.21 5.12-.07-1.69 6.37-8.47 7.28-9.9 1.7-.96 2.1-1.99 2.56-3.62.76-2.69.97-11.87 4.84-10.2 3.9 1.67.73 15.29.73 15.29v.01Z" fill="#E8D4BA"/><path d="M157.28 249.56c1.7-.96 3.89-1.07 3.89-1.07.76-2.7.7-10.44 4.57-8.77-4.68 3.95-3.87 13.18-3.87 13.18-4.1 6.4 3 4.85 3 4.85-4.73 4.02-5.45 5.28-8.27 6.4-1.37.55-3.87-.22-5.54-.71-.06-1.69 5.31-12.45 6.23-13.88h-.01Z" fill="#DEC8AE"/><path d="M154.3 260.48s7.23-3.06 6.93-12.22l-4.08.9-2.85 11.32ZM165.48 246.6s-3.94-2.06.06-5.74c0 0-2.37 2.81-.06 5.73Z" fill="#CEB79B"/><path d="M160.33 251.44c-.17 3.77-4.04 7.03-10.22 10.63-1.1.63-6.67-2.56-5.86-3.19 1.1-.86 5.54-6.12 6.08-7.07 2.8-4.38 2.1-10.4 5.1-14.64.93-1.3 2.39-2.44 3.97-2.25 4.23.96.9 14.69.92 16.52Z" fill="#E8D4BA"/><path d="M155.44 237.17c.92-1.3 2.38-2.43 3.97-2.25.16.03.3.08.44.16-5.81 4-3.78 16.49-3.78 16.49s-2.35 1.9-1.98 4.25c.53 3.42 4.93-.88 5-.89-.86 2.82-3.67 8.74-10.2 9.73-3.92.6-7.82-2.39-7.01-3.02 1.1-.87 7.92-8.88 8.45-9.83 2.8-4.38 2.11-10.39 5.11-14.63Z" fill="#DEC8AE"/><path d="M155.45 237.2c.16-.25.35-.48.54-.7-1.2 4.24-1.98 8.63-1.8 13.03.03.48-1.44 15.93-10.94 13.1 0 0 9.2-21.2 12.2-25.44ZM158.68 242.85s-4.41-1.72-.5-6.15c0 0-2.25 3.3.5 6.15Z" fill="#CEB79B"/><path d="M144.55 251.17c1.42-2.81 1.9-6.3 2.1-9.3.66-9.33 6.05-7.96 6.36-6.71h.03c.46 4.3-.27 17.6-.81 19.94-.72 3.23.32 4.72-8.07 7.51a8.7 8.7 0 0 1-1.86.44c-1.65.36-4.03.25-5.35-.41-1.38-.7-6.48-2.16-7.39-3.2-.48-.54 13.71-6.16 15-8.26v-.01Z" fill="#E8D4BA"/><path d="M144.48 251.28c.41.24.53.8.25 1.79-2.02 6.9 4.56 7.3 4.7 7.31a33.23 33.23 0 0 1-5.28 2.23 8.7 8.7 0 0 1-1.87.44c-1.64.36-3.93.24-5.34-.18-1.42-.42-7.4-3.1-7.91-3.45-.6-.4 13.93-5.95 15.45-8.15Z" fill="#DEC8AE"/><path d="M136.82 260.25c-6.42-.9.35-3.29 1.57-4.86.74-.77 6.14-4.23 6.14-4.23 1.3-2.57 2-5.54 2.04-8.3 1.97 5.65-1.8 6.07-.75 10.14.37 1.45.05 3.95-2.33 1.1-1.44-1.73-2.65 6.26-6.67 6.16v-.01ZM152.34 242.09s-4.7-.61-1.87-5.98c0 0-.68 4.23 1.87 5.98ZM164.84 258.19l-4.96 3.96s-.27 1.04 1.36.27c1.62-.78 3.6-4.22 3.6-4.22v-.01Z" fill="#CEB79B"/><path d="M119.24 256.04s4.04 6.17 10.04 4.27c6-1.9 5.87-4 7.76-4.57 1.9-.58 5.58-.83 5.96-2.32.37-1.49-2.41-4.61-5.53-4.54-4.92.12-5.56 1.72-8.63 4.35 0 0-5.48.39-9.6 2.8v.01Z" fill="#E8D4BA"/><path d="M130.33 255.7c-.43 4.94 4.53 1.69 4.53 1.69-.95.85-2.4 1.91-5.58 2.92-6 1.9-10.04-4.27-10.04-4.27 4.12-2.42 9.6-2.8 9.6-2.8 3.07-2.64 3.7-4.23 8.63-4.35 0 0-6.7 1.88-7.14 6.82Z" fill="#DEC8AE"/><path d="M134.99 253.37s.43-2.17 3.19-2.73 2.91 1.61 2.91 1.61-1.26-1.6-3.13-1.01c-1.88.57-2.97 2.13-2.97 2.13ZM130.26 251.95s-.74 3.54-1.84 2.88c-1.1-.66-.68-1.22-.68-1.22s-8.57 2.15-3.83 6.4c-2.91-1.28-4.67-3.97-4.67-3.97 4.12-2.42 9.6-2.8 9.6-2.8.54-.47 1-.9 1.42-1.29Z" fill="#CEB79B"/><path d="m254.66 149.54-.53-.05-7.5-.75-11.02-1.1-.29-.53c-.37-.66-1.1-1.87-2-3.19l-.08-.1c-.02-.05-.06-.1-.1-.14-.07-.12-.16-.24-.24-.35a39 39 0 0 0-.66-.9l-.37-.47-.21-.26-.39-.46-.29-.33-.37-.39-.18-.18-.19-.19c-2.8-2.7-4.72-9.7-5.06-13.39a4.8 4.8 0 0 1 2.8-4.92c.22-.02.48.07.74.23 1.24.75 2.77 3.24 3.54 5.38.13.32.23.65.3.95.3 1.16 1.26 2.37 2.57 3.56a44.32 44.32 0 0 0 6.32 4.5 23 23 0 0 1 3.02 2.41c.69.63 1.4 1.32 2.13 2.04a155.09 155.09 0 0 1 7.48 7.95l.6.67-.02.01Z" fill="#E8D4BA"/><path opacity=".4" d="M238.06 142.22s-.28.2-.8.48l-.69.32c-.8.34-1.88.7-3.26.9l-.07-.1-.1-.14a36.94 36.94 0 0 0-.91-1.25l-.37-.47-.2-.26-.4-.46-.28-.33a6.5 6.5 0 0 0-.37-.39l-.19-.18-.18-.19c-2.81-2.7-4.72-9.7-5.07-13.39-.18-1.78.48-3 1.2-3.77 0 0-1.19 11.85 8.05 17.52 1.07.66 2.28 1.23 3.65 1.7l-.01.01Z" fill="#CEB79B"/><path d="M244.46 138.89c-6.49 1.74-8.82-3.48-9.35-6.92a44.47 44.47 0 0 0 6.32 4.51c.82.5 1.87 1.37 3.03 2.41ZM232.25 127.47c-2.3-.54-3.39-3.44-3.55-5.39 1.25.76 2.78 3.25 3.55 5.39Z" fill="#EDDAC5"/><path d="M231.84 129.03c-2.4-.63-3.7-5.82-3.79-6.6-.45 2.57 1.56 6.39 3.8 6.6Z" fill="#CEB79B"/><path d="M271.95 166.58c-1 3.15-2.9 12.74-3.88 14.02-2.11 3.65-18.27 4.2-25.63 4.16-14.49-.14-26.86-16.17-22-26.8 4.38-13.15 16.48-18.82 29.58-12.56 10.1 4.1 20.5 17.48 21.94 21.18Z" fill="#E8D4BA"/><path opacity=".4" d="M271.95 166.58c-1 3.15-2.9 12.74-3.88 14.02-1.77 3.06-13.44 3.94-21.5 4.12-2.04-1.47-11.25-9.06-2.35-20.92 6.34-8.45 18.94-3.19 27.24 1.73.22.4.39.75.5 1.04v.01Z" fill="#CEB79B"/><path d="M245.3 184.76s7.17-5.1 6.58-12.36c0 0 1.3 7.06-.44 12.13l-6.15.23Z" fill="#CEB79B"/><path opacity=".4" d="M271.96 166.58c-1.02 3.15-2.9 12.74-3.89 14.02-.74 1.27-3.16 2.16-6.33 2.79-2.68.53-5.87.86-9.02 1.07 14.7-9.87 5.27-34 5.18-34.21a58.14 58.14 0 0 1 5.2 4.73c4.61 4.7 8.06 9.59 8.85 11.6Z" fill="#CEB79B"/><path d="M271.95 166.58c-1 3.15-2.9 12.74-3.88 14.02-.74 1.27-3.16 2.16-6.33 2.79 9.84-10.16 1.37-28.41 1.37-28.41 4.6 4.7 8.06 9.59 8.84 11.6Z" fill="#CEB79B"/><path d="m244.22 182.97-1.57.36c-1.12.26-2.75.61-4.6 1-3.39.7-7.51 1.48-10.65 1.83-6.36.7-6.95-6.93-6.95-6.93-8.08-1.27-5.77-8.87-5.77-8.87-4.44.63-6.37-5.72-4.74-7.23 2.3-2.14 5.51-3.74 8.52-4.88a55.65 55.65 0 0 1 7.4-2.16l.48-.1.65-.12 15.64 24.6 1.59 2.5Z" fill="#E8D4BA"/><path opacity=".4" d="M238.02 184.33c-3.65.76-7.55 1.48-10.62 1.83-5.66.49-6.66-4.88-6.95-6.93-6.27-.56-6.62-7.2-5.77-8.87-3.94.83-6.55-5.57-4.74-7.23.93-.86 2-1.63 3.17-2.34-1.73 5.68 2.2 8.74 5.22 8.28 0 0-.88 7.95 4.28 9.26 0 0 2.75 8.1 15.4 6Z" fill="#CEB79B"/><path d="M229.2 165.99c.17 1.6-1.15.93-2.08.98a152.78 152.78 0 0 1-12.52 3.66l.07-.27c-.55.08-1.07.05-1.55-.07 3.63-1.3 7.16-2.54 11.2-3.55 1.55-.46 2.9-.98 3.92-1.6.54-.33.9.23.96.84v.01ZM231.9 175.94c.17 1.6-1.15.93-2.08.98a124.15 124.15 0 0 1-9.3 2.81l-.07-.5c-.39-.06-.75-.14-1.1-.23a97.73 97.73 0 0 1 7.68-2.31c1.54-.45 2.89-.97 3.91-1.6.55-.33.9.24.96.85Z" fill="#CEB79B"/><path d="M227.92 160.41c.64 1.74.48 3.4-.34 3.7-.83.31-10.02 4.23-10.66-.3-.68-4.85 7.52-5.7 8.34-6 .83-.3 2.02.86 2.66 2.6ZM231.13 170.31c.58 1.56.54 3.02-.09 3.25-.62.22-8.63 4.44-9.86.7-1.75-5.31 6.46-6.42 7.78-6.37.67.03 1.6.85 2.17 2.42ZM235.51 180.63c.66 1.35.72 2.7.13 2.98-.59.29-8.8 1.06-9.78-3.37-.32-1.45 5.09-1.92 7.37-1.55.65.11 1.62.57 2.28 1.94Z" fill="#EDDAC5"/><path d="m239.57 142.15-.6.7c-2.25 2.66-8.29 9.61-10.62 12.36-5.29 2.48-10 3.04-16.28 4.14-4.8 1.1-7.47 1.2-11.13 2.37-2.14.69-5.82 1.94-7.17.69-4.75-4.37-.37-5.74 5.2-7.61 4.75-1.6 8.32-3.65 14.15-5.26 9.91-2.71 18.78-5.64 26.45-7.39Z" fill="#E8D4BA"/><path d="M225.87 156.1c.06 1.6-1.26.55-2.14.86-7.52 2.52-17.49 2.82-24.76 5.41 5.01-4.71 14.22-4.32 21.98-5.81 1.57-.35 2.94-.8 4-1.36.56-.3.89.29.9.9h.02ZM193.57 160.86s5.65-.87 3.52-4.36c0 0 3.57 4.43-3.52 4.36Z" fill="#CEB79B"/><path opacity=".4" d="M227.05 155.78c-.63 1-1.98 1.6-3.18 1.14-4.58-.7-12.66 2.17-16.62 3.38-2.2.38-4.07.7-6.3 1.41-2.15.7-5.83 1.94-7.18.7 4-1.2 6.12-4.34 10.88-4.04 2.28.06 4.68-.82 6.57-1.73 4.6-2.2 10.53-1.15 14.65-2.11 1.59-.37 1.71.44 1.18 1.25Z" fill="#CEB79B"/><path d="M196.65 158.88c.55-.18.81-.88.59-1.57-.23-.69-.86-1.1-1.41-.91-.55.18-.82.88-.6 1.57.24.69.87 1.1 1.42.91ZM215.71 153.08c-2.02 2.6-10.2 2.33-13.5.72l-.23-.12c3.43-1.37 6.6-2.89 11.15-4.14.77-.2 1.53-.42 2.29-.63.7.72 1.75 2.28.3 4.17Z" fill="#EDDAC5"/><path d="M264.29 153.39s2.91 4.64 3.48 11.66c.54 6.74-3.44 17.49-13.77 19.32 0 0 4.63 13.8 10.08 28.33 4.01 10.72 40.9-11.68 35.27-23.22-5.63-11.54-35.05-36.1-35.05-36.1h-.01Z" fill="#676D54"/><path d="m264.29 152.67-.14.68c2.94 1.95 4.57 6.34 5.02 11.86.54 6.74-4.55 18.21-14.88 20.04 0 0 .93 15.17 6.38 29.71 4 10.72 14.75 22.52 20.2 21.56 5.43-.96 14.22-8.83 18.18-16.55 3.96-7.7 6.74-18.96 1.1-30.5-5.64-11.54-35.86-36.8-35.86-36.8Z" fill="#9EA58E"/><path d="M291.9 178.57c-1.25 17.37-27.4.36-27.4.36 3.4-4.3 4.99-9.8 4.67-13.72-.45-5.52-2.08-9.91-5-11.86l.13-.68s16.73 14 27.62 25.9h-.01Z" fill="#B1B7A5"/><path d="M302.9 208.44a39.14 39.14 0 0 1-3.85 11.55c-3.95 7.71-12.75 15.58-18.19 16.54-5.44.96-16.18-10.84-20.19-21.55-5.44-14.54-6.37-29.71-6.37-29.71 2.67-.48 5-1.6 6.96-3.12 0 0 17.04 33.53 41.65 26.3Z" fill="#949984"/><path opacity=".14" d="M296.88 223.58c-4.45 6.4-11.42 12.13-16.02 12.95-5.44.96-16.18-10.85-20.19-21.56a95.1 95.1 0 0 1-2.9-9.24c.16.17 22.56 25.85 39.1 17.85Z" fill="#474C2F"/></svg>
+                            </div>
+
+                            <div class="pic pic--adg pic--hide-desktop flex-center">
+                                <svg width="124" height="124" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity=".25" d="M62 124A62 62 0 1 0 62 0a62 62 0 0 0 0 124Z" fill="#E8EDEF"/><path d="M62 110.05a48.05 48.05 0 1 0 0-96.1 48.05 48.05 0 0 0 0 96.1Z" fill="#E8EDEF"/><path d="M40.14 82.98h43.24c2.67 0 4.39-2.82 3.19-5.2l-21.9-43.23a3.57 3.57 0 0 0-6.4.03L36.94 77.82a3.57 3.57 0 0 0 3.2 5.16Z" fill="#FF6652"/><path d="M61.76 76.03a2.87 2.87 0 1 0 0-5.75 2.87 2.87 0 0 0 0 5.75ZM59.95 65.2a1.87 1.87 0 1 0 3.75 0V42.74a1.87 1.87 0 1 0-3.75 0V65.2Z" fill="#fff"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="column">
+                            <div class="content">
+                                <h1
+                                    data-id="adgSafebrowsingTitle"
+                                    class="title text-center text-left-tablet content__title content__title--blue"
+                                ></h1>
+
+                                <div
+                                    id="adblockerSafebrowsingDesc"
+                                    data-id="extSafebrowsingDesc"
+                                    class="text text-center text-left-tablet content__text"
+                                ></div>
+
+                                <div class="content__buttons">
+                                        <button
+                                            id="safebrowsingPageBackBtn"
+                                            type="button"
+                                            class="button"
+                                            data-size="medium"
+                                            data-type="filled"
+                                            data-id="backBtn"
+                                            data-back-btn
+                                        ></button>
+
+                                    <button
+                                        id="adblockerSafebrowsingProceed"
+                                        type="button"
+                                        class="button js-safebrowsing-proceed"
+                                        data-size="medium"
+                                        data-type="transparent"
+                                        data-id="proceedAnyway"
+                                    ></button>
+                                </div>
+
+                                <div class="content__dropdown">
+                                    <ul class="faq">
+                                        <li class="faq__item">
+                                            <div class="faq-item faq-item--always-open">
+                                                <h2 class="subtitle faq-item__toggle">
+                                                    <button
+                                                        type="button"
+                                                        data-id="adgSafebrowsingFaqTitle1"
+                                                        class="text faq-item__toggle-btn"
+                                                    >
+                                                    </button>
+                                                </h2>
+                                    
+                                                <div class="faq-item__content">
+                                                    <div class="faq-item__desc">
+                                                        <div data-id="extSafebrowsingReport" class="text faq-item__text"></div>
+                                                        <div data-id="adgSafebrowsingFaqDesc1_2" class="text faq-item__text"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

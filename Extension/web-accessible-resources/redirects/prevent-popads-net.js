@@ -24,50 +24,29 @@
         window.onerror = createOnErrorHandler(rid).bind();
         hit(source);
     }
-    function createOnErrorHandler(rid) {
-        var nativeOnError = window.onerror;
-        return function onError(error) {
-            if (typeof error === "string" && error.includes(rid)) {
-                return true;
+    function createOnErrorHandler(r) {
+        var n = window.onerror;
+        return function(e) {
+            if ("string" == typeof e && e.includes(r)) return !0;
+            if (n instanceof Function) {
+                for (var t = arguments.length, o = new Array(t > 1 ? t - 1 : 0), i = 1; i < t; i++) o[i - 1] = arguments[i];
+                return n.apply(window, [ e, ...o ]);
             }
-            if (nativeOnError instanceof Function) {
-                for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                    args[_key - 1] = arguments[_key];
-                }
-                return nativeOnError.apply(window, [ error, ...args ]);
-            }
-            return false;
+            return !1;
         };
     }
     function randomId() {
         return Math.random().toString(36).slice(2, 9);
     }
-    function hit(source) {
-        var ADGUARD_PREFIX = "[AdGuard]";
-        if (!source.verbose) {
-            return;
-        }
-        try {
-            var trace = console.trace.bind(console);
-            var label = `${ADGUARD_PREFIX} `;
-            if (source.engine === "corelibs") {
-                label += source.ruleText;
-            } else {
-                if (source.domainName) {
-                    label += `${source.domainName}`;
-                }
-                if (source.args) {
-                    label += `#%#//scriptlet('${source.name}', '${source.args.join("', '")}')`;
-                } else {
-                    label += `#%#//scriptlet('${source.name}')`;
-                }
-            }
-            if (trace) {
-                trace(label);
-            }
-        } catch (e) {}
-        if (typeof window.__debug === "function") {
-            window.__debug(source);
+    function hit(e) {
+        if (e.verbose) {
+            try {
+                var n = console.trace.bind(console), i = "[AdGuard] ";
+                "corelibs" === e.engine ? i += e.ruleText : (e.domainName && (i += `${e.domainName}`), 
+                e.args ? i += `#%#//scriptlet('${e.name}', '${e.args.join("', '")}')` : i += `#%#//scriptlet('${e.name}')`), 
+                n && n(i);
+            } catch (e) {}
+            "function" == typeof window.__debug && window.__debug(e);
         }
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];

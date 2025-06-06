@@ -17,7 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
-import { getErrorMessage } from './error';
+import { getErrorMessage } from '@adguard/logger';
 
 type OptionalPermission = browser.Manifest.OptionalPermission;
 

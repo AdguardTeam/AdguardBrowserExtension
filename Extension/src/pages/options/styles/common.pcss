@@ -25,7 +25,8 @@ body {
     overflow-y: scroll;
 }
 
-h2 {
+h2,
+h3 {
     margin: 0;
     font-size: inherit;
 }
@@ -114,6 +115,20 @@ label.checkbox-label {
     }
 }
 
+.skip-to-content-btn {
+    z-index: var(--z-idx-options-skip-to-content);
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    pointer-events: none;
+    opacity: 0;
+
+    &:focus-visible {
+        pointer-events: auto;
+        opacity: 1;
+    }
+}
+
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -150,10 +165,6 @@ label.checkbox-label {
         line-height: 21px;
         font-weight: 600;
         cursor: pointer;
-
-        &--wrapper {
-            margin: 16px 0;
-        }
     }
 }
 
@@ -202,6 +213,10 @@ label.checkbox-label {
                 }
             }
         }
+
+        &--reversed {
+            flex-direction: row-reverse;
+        }
     }
 
     @media (min-width: 640px) {
@@ -221,13 +236,16 @@ label.checkbox-label {
                     padding-top: 16px;
                 }
 
-                & .checkbox__label {
-                    @media (min-width: 640px) {
-                        padding: 16px;
+                & .checkbox__in {
+                    /* 16px (label padding) - 3px (default margin) */
+                    top: 13px;
+                }
 
-                        &:before {
-                            top: 0;
-                        }
+                & .checkbox__label {
+                    padding: 16px;
+
+                    &:before {
+                        top: 0;
                     }
                 }
             }
@@ -237,9 +255,7 @@ label.checkbox-label {
             }
 
             &--about {
-                @media (min-width: 640px) {
-                    padding: 16px 0 16px 16px;
-                }
+                padding: 16px 0 16px 16px;
             }
 
             &--custom {
@@ -283,13 +299,9 @@ label.checkbox-label {
 .desc {
     font-size: 16px;
     margin-bottom: 20px;
-    color: var(--gray-base);
+    color: var(--text-description-description-default);
     line-height: 22px;
     padding-left: 15px;
-
-    @media (prefers-color-scheme: dark) {
-        color: var(--gray300);
-    }
 
     &--link {
         color: var(--text-links-link-default);
@@ -408,12 +420,7 @@ label.checkbox-label {
     }
 
     &__input-file {
-        position: absolute;
-        clip: rect(1px, 1px, 1px, 1px);
-
-        &:focus + .links-menu__item {
-            outline: 2px solid var(--outline);
-        }
+        display: none;
     }
 
     &__label {
@@ -447,7 +454,7 @@ select:focus {
 }
 
 .ReactModal__Overlay {
-    z-index: 10;
+    z-index: var(--z-idx-options-modals);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -458,6 +465,7 @@ select:focus {
     position: static!important;
     min-width: 300px;
     background-color: var(--fills-backgrounds-page-background-default)!important;
+    border: none !important;
 
     &:has(.modal--scrollable) {
         height: 100%;
@@ -465,10 +473,6 @@ select:focus {
         @media (min-height: 1090px) {
             height: auto;
         }
-    }
-
-    @media (prefers-color-scheme: dark) {
-        border: 1px solid var(--gray900)!important;
     }
 
     @media (min-width: 640px) {
@@ -480,12 +484,6 @@ select:focus {
     }
 }
 
-.ace_cursor {
-    @media (prefers-color-scheme: dark) {
-        color: var(--gray300)!important;
-    }
-}
-
 .ace_content {
     color: var(--text-main-text-main-default)!important;
     background-color: var(--fills-backgrounds-page-background-default)!important;
@@ -494,32 +492,20 @@ select:focus {
 
 .light-mode {
     color-scheme: light;
-
-    .ReactModal__Content--after-open {
-        border: 0!important;
-    }
-
-    .desc {
-        color: var(--gray-base);
-    }
-
-    .ace_cursor {
-        color: var(--black)!important;
-    }
 }
 
 .dark-mode {
     color-scheme: dark;
+}
 
-    .ReactModal__Content--after-open {
-        border: 1px solid var(--gray700)!important;
-    }
-
-    .desc {
-        color: var(--gray300);
-    }
-
-    .ace_cursor {
-        color: var(--gray300)!important;
-    }
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }

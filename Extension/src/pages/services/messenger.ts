@@ -25,46 +25,45 @@ import {
     MessageType,
     messageHasTypeAndDataFields,
     messageHasTypeField,
+    type MessageWithoutHandlerName,
+    type ChangeUserSettingMessage,
+    type AddAndEnableFilterMessage,
+    type DisableFilterMessage,
+    type ApplySettingsJsonMessage,
+    type SetFilteringLogWindowStateMessage,
+    type SaveUserRulesMessage,
+    type SetConsentedFiltersMessage,
+    type GetIsConsentedFilterMessage,
+    type LoadCustomFilterInfoMessage,
+    type SubscribeToCustomFilterMessage,
+    type RemoveAntiBannerFilterMessage,
+    type GetTabInfoForPopupMessage,
+    type ChangeApplicationFilteringPausedMessage,
+    type OpenAbuseTabMessage,
+    type OpenSiteReportTabMessage,
+    type ResetUserRulesForPageMessage,
+    type RemoveAllowlistDomainMessage,
+    type AddAllowlistDomainForTabIdMessage,
+    type AddAllowlistDomainForUrlMessage,
+    type GetFilteringInfoByTabIdMessage,
+    type ClearEventsByTabIdMessage,
+    type RefreshPageMessage,
+    type AddUserRuleMessage,
+    type RemoveUserRuleMessage,
+    type SetPreserveLogStateMessage,
+    type SetEditorStorageContentMessage,
+    type CanEnableStaticFilterMv3Message,
+    type CanEnableStaticGroupMv3Message,
+    type ExtractMessageResponse,
+    type ValidMessageTypes,
+    type SetNotificationViewedMessage,
+    type UpdateFullscreenUserRulesThemeMessage,
+    type AddUrlToTrustedMessage,
+    type ExtractedMessage,
+    type OpenSafebrowsingTrustedMessage,
 } from '../../common/messages';
-import type {
-    MessageWithoutHandlerName,
-    ChangeUserSettingMessage,
-    AddAndEnableFilterMessage,
-    DisableFilterMessage,
-    ApplySettingsJsonMessage,
-    SetFilteringLogWindowStateMessage,
-    SaveUserRulesMessage,
-    SetConsentedFiltersMessage,
-    GetIsConsentedFilterMessage,
-    LoadCustomFilterInfoMessage,
-    SubscribeToCustomFilterMessage,
-    RemoveAntiBannerFilterMessage,
-    GetTabInfoForPopupMessage,
-    ChangeApplicationFilteringPausedMessage,
-    OpenAbuseTabMessage,
-    OpenSiteReportTabMessage,
-    ResetUserRulesForPageMessage,
-    RemoveAllowlistDomainMessage,
-    AddAllowlistDomainMessage,
-    GetFilteringInfoByTabIdMessage,
-    ClearEventsByTabIdMessage,
-    RefreshPageMessage,
-    AddUserRuleMessage,
-    RemoveUserRuleMessage,
-    SetPreserveLogStateMessage,
-    SetEditorStorageContentMessage,
-    CanEnableStaticFilterMv3Message,
-    CanEnableStaticGroupMv3Message,
-    ExtractMessageResponse,
-    ValidMessageTypes,
-    SetNotificationViewedMessage,
-    UpdateFullscreenUserRulesThemeMessage,
-    AddUrlToTrustedMessage,
-    ExtractedMessage,
-    OpenSafebrowsingTrustedMessage,
-} from '../../common/messages';
-import { NotifierType } from '../../common/constants';
-import { CreateEventListenerResponse } from '../../background/services/event';
+import { type NotifierType } from '../../common/constants';
+import { type CreateEventListenerResponse } from '../../background/services/event';
 
 /**
  * @typedef {import('../../common/messages').MessageMap} MessageMap
@@ -77,12 +76,12 @@ export type LongLivedConnectionCallbackMessage = {
     /**
      * Type of notifier.
      */
-    type: NotifierType,
+    type: NotifierType;
 
     /**
      * Data of notifier.
      */
-    data: any,
+    data: any;
 };
 
 export const enum Page {
@@ -106,7 +105,8 @@ class Messenger {
         this.resetUserRulesForPage = this.resetUserRulesForPage.bind(this);
         this.updateFilters = this.updateFilters.bind(this);
         this.removeAllowlistDomain = this.removeAllowlistDomain.bind(this);
-        this.addAllowlistDomain = this.addAllowlistDomain.bind(this);
+        this.addAllowlistDomainForTabId = this.addAllowlistDomainForTabId.bind(this);
+        this.addAllowlistDomainForUrl = this.addAllowlistDomainForUrl.bind(this);
     }
 
     /**
@@ -159,13 +159,13 @@ class Messenger {
 
             port.onMessage.addListener((message) => {
                 if (!messageHasTypeField(message)) {
-                    logger.error('Received message in Messenger.createLongLivedConnection has no type field: ', message);
+                    logger.error('[ext.Messenger]: received message in Messenger.createLongLivedConnection has no type field:', message);
                     return;
                 }
 
                 if (message.type === MessageType.NotifyListeners) {
                     if (!messageHasTypeAndDataFields(message)) {
-                        logger.error('Received message with type MessageType.NotifyListeners has no data: ', message);
+                        logger.error('[ext.Messenger]: received message with type MessageType.NotifyListeners has no data:', message);
                         return;
                     }
 
@@ -178,7 +178,7 @@ class Messenger {
 
             port.onDisconnect.addListener(() => {
                 if (browser.runtime.lastError) {
-                    logger.error(browser.runtime.lastError.message);
+                    logger.error('[ext.Messenger]: received error on disconnect:', browser.runtime.lastError.message);
                 }
                 // we try to connect again if the background page was terminated
                 if (!forceDisconnected) {
@@ -236,13 +236,13 @@ class Messenger {
 
         browser.runtime.onMessage.addListener((message) => {
             if (!messageHasTypeField(message)) {
-                logger.error('Received message in Messenger.createEventListener has no type field: ', message);
+                logger.error('[ext.Messenger]: received message in Messenger.createEventListener has no type field:', message);
                 return undefined;
             }
 
             if (message.type === MessageType.NotifyListeners) {
                 if (!messageHasTypeAndDataFields(message)) {
-                    logger.error('Received message with type MessageType.NotifyListeners has no data: ', message);
+                    logger.error('[ext.Messenger]: received message with type MessageType.NotifyListeners has no data:', message);
                     return undefined;
                 }
 
@@ -339,6 +339,15 @@ class Messenger {
      */
     async openComparePage(): Promise<ExtractMessageResponse<MessageType.OpenComparePage>> {
         return this.sendMessage(MessageType.OpenComparePage);
+    }
+
+    /**
+     * Sends a message to the background page to open the Chrome extensions settings page.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    async openChromeExtensionsPage(): Promise<ExtractMessageResponse<MessageType.OpenChromeExtensionsSettingsPage>> {
+        return this.sendMessage(MessageType.OpenChromeExtensionsSettingsPage);
     }
 
     /**
@@ -493,7 +502,7 @@ class Messenger {
      */
     async updateFilters(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
         if (__IS_MV3__) {
-            logger.debug('Filters update is not supported in MV3');
+            logger.warn('[ext.Messenger.updateFilters]: filters update is not supported in MV3');
             return [];
         }
 
@@ -702,7 +711,7 @@ class Messenger {
         const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
 
         if (!currentTab?.id) {
-            logger.debug('[resetUserRulesForPage]: cannot get current tab id');
+            logger.warn('[ext.Messenger.resetUserRulesForPage]: cannot get current tab id');
             return;
         }
 
@@ -728,16 +737,32 @@ class Messenger {
     }
 
     /**
-     * Sends a message to the background page to add an allowlist domain.
+     * Sends a message to the background page to add an allowlist domain for a specific tab.
      *
      * @param tabId The ID of the tab.
      *
      * @returns Promise that resolves after the domain is added.
      */
-    async addAllowlistDomain(
-        tabId: AddAllowlistDomainMessage['data']['tabId'],
-    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomain>> {
-        return this.sendMessage(MessageType.AddAllowlistDomain, { tabId });
+    async addAllowlistDomainForTabId(
+        tabId: AddAllowlistDomainForTabIdMessage['data']['tabId'],
+    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomainForTabId>> {
+        return this.sendMessage(MessageType.AddAllowlistDomainForTabId, { tabId });
+    }
+
+    /**
+     * Sends a message to the background page to add an allowlist domain for a specific URL.
+     *
+     * Please note that after adding an allowlist domain, the tab will not be reloaded,
+     * it should be done separately later if needed.
+     *
+     * @param url The URL of the page.
+     *
+     * @returns Promise that resolves after the domain is added.
+     */
+    async addAllowlistDomainForUrl(
+        url: AddAllowlistDomainForUrlMessage['data']['url'],
+    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomainForUrl>> {
+        return this.sendMessage(MessageType.AddAllowlistDomainForUrl, { url });
     }
 
     /**
@@ -940,7 +965,9 @@ class Messenger {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async addUrlToTrusted(url: AddUrlToTrustedMessage['data']['url']): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> {
+    async addUrlToTrusted(
+        url: AddUrlToTrustedMessage['data']['url'],
+    ): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> {
         return this.sendMessage(MessageType.AddUrlToTrusted, { url });
     }
 
@@ -1005,6 +1032,15 @@ class Messenger {
      */
     async initializeFrameScript(): Promise<ExtractMessageResponse<MessageType.InitializeFrameScript>> {
         return this.sendMessage(MessageType.InitializeFrameScript);
+    }
+
+    /**
+     * Sends a message to the background page to initialize the blocking page script.
+     *
+     * @returns Promise that resolves with the initialization data for the blocking page script.
+     */
+    async initializeBlockingPageScript(): Promise<ExtractMessageResponse<MessageType.InitializeBlockingPageScript>> {
+        return this.sendMessage(MessageType.InitializeBlockingPageScript);
     }
 
     /**
