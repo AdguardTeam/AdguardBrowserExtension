@@ -15,11 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './main';
-export * from './general-settings';
-export * from './extension-specific-settings';
-export * from './custom-filters';
-export * from './user-filter';
-export * from './allowlist';
-export * from './filters';
-export * from './stealth';
+export {
+    PROTOCOL_VERSION,
+    RootOption,
+    configValidator,
+    type Config,
+} from './main';
+export {
+    GeneralSettingsOption,
+    generalSettingsConfigValidator,
+    type GeneralSettingsConfig,
+} from './general-settings';
+export {
+    ExtensionSpecificSettingsOption,
+    extensionSpecificSettingsConfigValidator,
+    type ExtensionSpecificSettingsConfig,
+} from './extension-specific-settings';
+export { CustomFilterOption, customFiltersConfigValidator } from './custom-filters';
+export { UserFilterOption, userFilterValidator, type UserFilterConfig } from './user-filter';
+export { AllowlistOption, allowlistValidator, type AllowlistConfig } from './allowlist';
+export { FiltersOption, filtersConfigValidator, type FiltersConfig } from './filters';
+export { StealthOption, stealthConfigValidator, type StealthConfig } from './stealth';

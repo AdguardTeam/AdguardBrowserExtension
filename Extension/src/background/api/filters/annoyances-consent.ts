@@ -24,7 +24,7 @@ import { annoyancesConsentStorage } from '../../storages';
 /**
  * Class for managing annoyances filters consent.
  */
-export class AnnoyancesConsentApi {
+class AnnoyancesConsentApi {
     private consentedFilterIds: Set<number> | null;
 
     /**

@@ -42,7 +42,7 @@ import { CustomFilterLoader } from './custom/loader';
 /**
  * Data transfer object for {@link CustomFilterApi} methods.
  */
-export type CustomFilterDTO = {
+type CustomFilterDTO = {
     /**
      * Custom filter subscription url.
      */
@@ -68,7 +68,7 @@ export type CustomFilterDTO = {
  * Full info about downloaded custom filter, returned
  * in 'Add custom filter' modal window if filter was not added before.
  */
-export type CustomFilterInfo = FilterParsedData & {
+type CustomFilterInfo = FilterParsedData & {
     customUrl: string;
     rulesCount: number;
 };
@@ -77,7 +77,7 @@ export type CustomFilterInfo = FilterParsedData & {
  * Response of {@link CustomFilterApi.getFilterInfo} for 'Add custom filter' modal window with data,
  * returned on creating new custom filter.
  */
-export type CreateCustomFilterResponse = {
+type CreateCustomFilterResponse = {
     filter: CustomFilterInfo;
 };
 
@@ -85,7 +85,7 @@ export type CreateCustomFilterResponse = {
  * Response of {@link CustomFilterApi.getFilterInfo} for 'Add custom filter' modal window with data,
  * returned if custom filter with subscription url has already existed.
  */
-export type CustomFilterAlreadyExistResponse = {
+type CustomFilterAlreadyExistResponse = {
     errorAlreadyExists: boolean;
 };
 
@@ -98,7 +98,7 @@ export type GetCustomFilterInfoResult = CreateCustomFilterResponse | CustomFilte
  * Parsed custom filter data from remote source.
  * It is downloaded while creating and updating custom filter in {@link CustomFilterApi.getRemoteFilterData}.
  */
-export type GetRemoteCustomFilterResult = {
+type GetRemoteCustomFilterResult = {
     rawRules: string;
     rules: string[];
     checksum: string | null;

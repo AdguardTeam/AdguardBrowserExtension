@@ -15,17 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './filtering-log';
-export * from './settings';
-export * from './allowlist';
-export * from './fullscreen-user-rules-editor';
-export * from './custom-filters';
-export * from './userrules';
-export * from './event';
-export * from './ui';
-export * from './filters';
-export * from './locale-detect';
-export * from './document-block';
-export * from './filter-update';
+export { FilteringLogService, type GetFilteringLogDataResponse } from './filtering-log';
+export { SettingsService } from './settings';
+export { AllowlistService, type GetAllowlistDomainsResponse } from './allowlist';
+export { fullscreenUserRulesEditor } from './fullscreen-user-rules-editor';
+export { CustomFiltersService } from './custom-filters';
+export { UserRulesService, type GetUserRulesResponse, type GetUserRulesEditorDataResponse } from './userrules';
+export { eventService, type CreateEventListenerResponse } from './event';
+export {
+    PopupService,
+    type PageInitAppData,
+    PromoNotificationService,
+    type GetTabInfoForPopupResponse,
+} from './ui';
+export { FiltersService } from './filters';
+export { localeDetect } from './locale-detect';
+export { DocumentBlockService } from './document-block';
+export { FilterUpdateService, filterUpdateService } from './filter-update';
 // Do not export SafebrowsingService here, because it will break MV3 build
 // because of dependencies with window object.

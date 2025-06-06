@@ -18,5 +18,8 @@
 
 // Custom filter metadata schema entry point
 
-// Custom filter metadata validators and types
-export * from './custom-filter-metadata';
+export {
+    customFilterMetadataStorageDataValidator,
+    type CustomFilterMetadata,
+    type CustomFilterMetadataStorageData,
+} from './custom-filter-metadata';

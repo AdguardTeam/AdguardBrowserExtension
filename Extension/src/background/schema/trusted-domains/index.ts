@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export * from './trusted-domains';
+export { type TrustedDomainData } from './trusted-domains';

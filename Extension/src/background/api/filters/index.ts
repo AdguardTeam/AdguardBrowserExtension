@@ -15,13 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './main';
-export * from './common';
-export * from './custom';
-export * from './allowlist';
-export * from './userrules';
-export * from './update';
-export * from './categories';
-export * from './hit-stats';
-export * from './annoyances-consent';
-export * from './quick-fixes';
+export { FiltersApi, type FilterMetadata } from './main';
+export { CommonFilterApi } from './common';
+export { CustomFilterApi, type GetCustomFilterInfoResult } from './custom';
+export { AllowlistApi } from './allowlist';
+export { UserRulesApi } from './userrules';
+export {
+    FilterUpdateApi,
+    type FilterUpdateOptions,
+    type FilterUpdateOptionsList,
+} from './update';
+export {
+    Categories,
+    type CategoriesFilterData,
+    type CategoriesGroupData,
+    type CategoriesData,
+} from './categories';
+export { HitStatsApi } from './hit-stats';
+export { annoyancesConsent } from './annoyances-consent';
+export { QuickFixesRulesApi } from './quick-fixes';
