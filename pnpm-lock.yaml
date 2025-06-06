@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@adguard/filters-downloader': link:../filters-downloader
+  '@adguard/filters-downloader': https://github.com/AdguardTeam/FiltersDownloader/raw/b68e65e3345e3465caaa71557e531e8f6812e71d/filters-downloader.tgz
 
 importers:
 
@@ -15,8 +15,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0
       '@adguard/filters-downloader':
-        specifier: link:../filters-downloader
-        version: link:../filters-downloader
+        specifier: https://github.com/AdguardTeam/FiltersDownloader/raw/b68e65e3345e3465caaa71557e531e8f6812e71d/filters-downloader.tgz
+        version: https://raw.githubusercontent.com/AdguardTeam/FiltersDownloader/b68e65e3345e3465caaa71557e531e8f6812e71d/filters-downloader.tgz
       '@adguard/logger':
         specifier: 1.1.1
         version: 1.1.1
@@ -392,6 +392,10 @@ packages:
   '@adguard/css-tokenizer@1.2.0':
     resolution: {integrity: sha512-cUj5j/AU5z/T4//5M6KnIJBpykAY4QbDsoiQ2DaWX/r2XkepMkTb8DhIbUHJD/QLGEyLeQLpi+nlxAgf4NTRRQ==}
 
+  '@adguard/diff-builder@1.1.0':
+    resolution: {integrity: sha512-2KGzA6vzbwrTX14gopkztdT/5t/pTyf6tn8VQE2EtWlW8n0/j+HG49+CZ/or0nR3IVQi0SNQgfuKIXfz0ReZxQ==}
+    hasBin: true
+
   '@adguard/dnr-rulesets@3.0.0-alpha.14':
     resolution: {integrity: sha512-kuBKWWgDTgrLYegUz+aFOS8r5ONXYPW3/2X0J/8fwT/+HTBEy0grjlCBToLEcVNi8sI4cYWtsN8JXHy+yt7Dfw==}
     hasBin: true
@@ -399,6 +403,11 @@ packages:
   '@adguard/extended-css@2.1.1':
     resolution: {integrity: sha512-TsHZ20oUWhbtrzQ4w70B96oHkGBIUZg2FdMfkq4StGfLmXQb+kI7fQb6BtXP2D0bvraIHMq6/mtKExglDJ9vsg==}
     engines: {node: '>=16'}
+
+  '@adguard/filters-downloader@https://raw.githubusercontent.com/AdguardTeam/FiltersDownloader/b68e65e3345e3465caaa71557e531e8f6812e71d/filters-downloader.tgz':
+    resolution: {tarball: https://raw.githubusercontent.com/AdguardTeam/FiltersDownloader/b68e65e3345e3465caaa71557e531e8f6812e71d/filters-downloader.tgz}
+    version: 2.4.1
+    engines: {node: '>=18.13.0'}
 
   '@adguard/logger@1.1.1':
     resolution: {integrity: sha512-pWAxGW5D6Nut4VTgckO/pqPOAOnDnC14js/wUU+FB8yZBKQHklCix46m0qqeB+YhhI68ZJBPxx32f9lxG87l5Q==}
@@ -2006,6 +2015,10 @@ packages:
 
   commander@11.0.0:
     resolution: {integrity: sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==}
+    engines: {node: '>=16'}
+
+  commander@11.1.0:
+    resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
     engines: {node: '>=16'}
 
   commander@12.1.0:
@@ -5080,6 +5093,11 @@ snapshots:
 
   '@adguard/css-tokenizer@1.2.0': {}
 
+  '@adguard/diff-builder@1.1.0':
+    dependencies:
+      commander: 11.1.0
+      crypto-js: 4.2.0
+
   '@adguard/dnr-rulesets@3.0.0-alpha.14':
     dependencies:
       '@adguard/logger': 1.1.1
@@ -5089,6 +5107,14 @@ snapshots:
       zod: 3.24.4
 
   '@adguard/extended-css@2.1.1': {}
+
+  '@adguard/filters-downloader@https://raw.githubusercontent.com/AdguardTeam/FiltersDownloader/b68e65e3345e3465caaa71557e531e8f6812e71d/filters-downloader.tgz':
+    dependencies:
+      '@adguard/diff-builder': 1.1.0
+      axios: 1.6.2
+      crypto-js: 4.2.0
+    transitivePeerDependencies:
+      - debug
 
   '@adguard/logger@1.1.1': {}
 
@@ -6669,6 +6695,8 @@ snapshots:
   commander@10.0.1: {}
 
   commander@11.0.0: {}
+
+  commander@11.1.0: {}
 
   commander@12.1.0: {}
 
