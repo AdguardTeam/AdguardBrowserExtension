@@ -415,7 +415,7 @@ Then install extension via developer mode, make requests and see applied declara
 
     ![Select](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/select.png)
 
-That’s it!
+That's it!
 
 ##### How to debug rules
 
