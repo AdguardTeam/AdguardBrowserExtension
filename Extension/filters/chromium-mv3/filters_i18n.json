@@ -14805,7 +14805,7 @@
 			},
 			"de": {
 				"name": "AdGuard Deutscher Filter",
-				"description": "„EasyList Germany“ und „AdGuard Deutscher Filter“Filterlisten, die Werbung auf deutschsprachigen Webseiten sperrt."
+				"description": "EasyList Germany + AdGuard Deutscher Filter. Filterliste, die gezielt Werbung auf deutschsprachigen Websites entfernt."
 			},
 			"el": {
 				"name": "AdGuard Γερμανικό φίλτρο",
