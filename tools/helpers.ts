@@ -21,7 +21,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { merge } from 'webpack-merge';
-import type { Manifest } from 'webextension-polyfill';
+import { type Manifest } from 'webextension-polyfill';
 
 import { Redirects } from '@adguard/scriptlets/redirects';
 

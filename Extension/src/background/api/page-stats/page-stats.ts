@@ -22,6 +22,7 @@ import { logger } from '../../../common/logger';
 import { translator } from '../../../common/translators/translator';
 import { type PageStatsDataItem, pageStatsValidator } from '../../schema';
 import { PageStatsStorage, pageStatsStorage } from '../../storages/page-stats';
+import { getZodErrorMessage } from '../../../common/error';
 
 /**
  * Statistics data.
@@ -30,32 +31,32 @@ export type GetStatisticsDataResponse = {
     /**
      * Statistics for today.
      */
-    today: PageStatsDataItem[],
+    today: PageStatsDataItem[];
 
     /**
      * Statistics for the last week.
      */
-    lastWeek: PageStatsDataItem[],
+    lastWeek: PageStatsDataItem[];
 
     /**
      * Statistics for the last month.
      */
-    lastMonth: PageStatsDataItem[],
+    lastMonth: PageStatsDataItem[];
 
     /**
      * Statistics for the last year.
      */
-    lastYear: PageStatsDataItem[],
+    lastYear: PageStatsDataItem[];
 
     /**
      * Overall statistics.
      */
-    overall: PageStatsDataItem[],
+    overall: PageStatsDataItem[];
 
     /**
      * Blocked categories data.
      */
-    blockedCategories: GetCategoriesResponse,
+    blockedCategories: GetCategoriesResponse;
 };
 
 /**
@@ -155,10 +156,7 @@ export class PageStatsApi {
                 pageStatsStorage.setData({});
             }
         } catch (e) {
-            logger.warn(
-                `Cannot parse data from "${pageStatsStorage.key}" storage, set default states. Origin error: `,
-                e,
-            );
+            logger.warn(`[ext.PageStatsApi.init]: cannot parse data from "${pageStatsStorage.key}" storage, set default states. Origin error:`, getZodErrorMessage(e));
             pageStatsStorage.setData({});
         }
 
@@ -208,10 +206,7 @@ export class PageStatsApi {
         try {
             rawCategoriesData = companiesDbService.getCompaniesDbCategories();
         } catch (e) {
-            logger.warn(
-                'Cannot load categories data from companiesDbService. Origin error: ',
-                e,
-            );
+            logger.warn('[ext.PageStatsApi.validateCategoriesData]: cannot load categories data from companiesDbService. Origin error:', e);
         }
 
         if (!rawCategoriesData) {
@@ -251,7 +246,7 @@ export class PageStatsApi {
         let statsCategoryId = CompaniesDbCategoriesMap[companyCategoryId];
 
         if (typeof statsCategoryId === 'undefined') {
-            logger.debug(`Not mapped category id: ${companyCategoryId}, set to "Other"`);
+            logger.debug(`[ext.PageStatsApi.updateStats]: not mapped category id: ${companyCategoryId}, set to "Other"`);
             statsCategoryId = PopupStatsCategories.Other;
         }
 

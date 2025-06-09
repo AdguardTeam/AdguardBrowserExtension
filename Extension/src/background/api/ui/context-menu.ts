@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Menus } from 'webextension-polyfill';
+import browser, { type Menus } from 'webextension-polyfill';
 import { nanoid } from 'nanoid';
 import { throttle } from 'lodash-es';
 
@@ -29,10 +29,10 @@ import { SettingOption } from '../../schema';
 import { SettingsApi } from '../settings';
 import { OPTIONS_PAGE } from '../../../common/constants';
 
-import { FrameData } from './frames';
+import { type FrameData } from './frames';
 
 export type AddMenuItemOptions = Menus.CreateCreatePropertiesType & {
-    messageArgs?: { [key: string]: unknown },
+    messageArgs?: { [key: string]: unknown };
 };
 
 /**

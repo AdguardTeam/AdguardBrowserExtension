@@ -19,8 +19,8 @@ import { RulesLimitsService } from 'rules-limits-service';
 
 import { tabsApi as tsWebExtTabsApi } from '../../tswebextension';
 import {
-    ChangeApplicationFilteringPausedMessage,
-    GetTabInfoForPopupMessage,
+    type ChangeApplicationFilteringPausedMessage,
+    type GetTabInfoForPopupMessage,
     MessageType,
 } from '../../../common/messages';
 import { messageHandler } from '../../message-handler';
@@ -48,20 +48,20 @@ import {
  * Tab info for the popup.
  */
 export type GetTabInfoForPopupResponse = {
-    frameInfo: FrameData,
-    stats: GetStatisticsDataResponse,
-    settings: SettingsData,
-    areFilterLimitsExceeded: boolean,
+    frameInfo: FrameData;
+    stats: GetStatisticsDataResponse;
+    settings: SettingsData;
+    areFilterLimitsExceeded: boolean;
     options: {
-        showStatsSupported: boolean,
-        isFirefoxBrowser: boolean
-        showInfoAboutFullVersion: boolean
-        isMacOs: boolean,
-        isEdgeBrowser: boolean,
-        notification: PromoNotification | null,
-        isDisableShowAdguardPromoInfo: boolean,
-        hasUserRulesToReset: boolean,
-    },
+        showStatsSupported: boolean;
+        isFirefoxBrowser: boolean;
+        showInfoAboutFullVersion: boolean;
+        isMacOs: boolean;
+        isEdgeBrowser: boolean;
+        notification: PromoNotification | null;
+        isDisableShowAdguardPromoInfo: boolean;
+        hasUserRulesToReset: boolean;
+    };
 };
 
 /**

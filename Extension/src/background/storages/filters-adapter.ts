@@ -21,7 +21,7 @@ import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebex
 import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 import { METADATA_RULESET_ID } from '@adguard/tsurlfilter/es/declarative-converter';
 
-import { FilterListPreprocessor, PreprocessedFilterList } from 'tswebextension';
+import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextension';
 
 import { logger } from '../../common/logger';
 
@@ -67,9 +67,7 @@ export class FiltersStoragesAdapter {
         if (__IS_MV3__) {
             const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
             if (staticFilterIds !== null && staticFilterIds.has(filterId)) {
-                logger.error(
-                    `Filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`,
-                );
+                logger.error(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
                 return;
             }
         }
@@ -77,7 +75,7 @@ export class FiltersStoragesAdapter {
         try {
             await BrowserExtensionFiltersStorage.set(filterId, filter);
         } catch (error: unknown) {
-            logger.error(`Failed to set filter list for filter id ${filterId}, got error:`, error);
+            logger.error(`[ext.FiltersStoragesAdapter.set]: failed to set filter list for filter id ${filterId}, got error:`, error);
             throw error;
         }
     }
@@ -144,9 +142,7 @@ export class FiltersStoragesAdapter {
         if (__IS_MV3__) {
             const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
             if (staticFilterIds !== null && staticFilterIds.has(filterId)) {
-                logger.error(
-                    `Filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`,
-                );
+                logger.error(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
                 return;
             }
         }

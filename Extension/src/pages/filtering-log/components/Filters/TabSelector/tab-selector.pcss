@@ -3,17 +3,21 @@
     width: 100%;
 
     &__result {
-        display: flex;
+        display: none;
         flex-direction: column;
         position: absolute;
         z-index: 21;
         top: 100%;
         max-height: 288px;
         overflow-y: auto;
-        box-shadow: 8px 8px 24px 0px var(--shadow-0-1);
+        box-shadow: var(--big-light-shadow-br);
         border-radius: 8px;
         width: 400px;
         scrollbar-width: thin;
+
+        &--open {
+            display: flex;
+        }
 
         @media (max-width: 640px) {
             width: 330px;
@@ -31,6 +35,22 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        outline-offset: -2px;
+        box-sizing: content-box;
+
+        &:first-child {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        &:last-child {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--outline);
+        }
 
         &--text {
             font-size: 14px;

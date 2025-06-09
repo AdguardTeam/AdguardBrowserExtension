@@ -20,8 +20,9 @@ import React, { useEffect, useState } from 'react';
 
 import cn from 'classnames';
 
+import { getErrorMessage } from '@adguard/logger';
+
 import { logger } from '../../../../../common/logger';
-import { getErrorMessage } from '../../../../../common/error';
 
 import './checkbox.pcss';
 
@@ -56,6 +57,12 @@ interface CheckboxProps {
     label: string;
 
     /**
+     * Label ID for the select (used only for screen readers).
+     * If not provided, the label will be used.
+     */
+    labelId?: string;
+
+    /**
      * Additional CSS classes for customization
      */
     className?: string;
@@ -84,6 +91,7 @@ const Checkbox = (props: CheckboxProps) => {
         handler,
         inverted = false,
         label = '',
+        labelId,
         value = false,
         className,
         disabled,
@@ -115,7 +123,7 @@ const Checkbox = (props: CheckboxProps) => {
         } catch (error) {
             // TODO: Dirty hack, need to refactor. Maybe pass some new prop like 'revertOnError'?
             if (!getErrorMessage(error).includes('[revert-checkbox]')) {
-                logger.error('Handler execution failed', error);
+                logger.error('[ext.Checkbox]: handler execution failed:', error);
             }
             if (optimistic) {
                 setState(!newValue); // revert state on error
@@ -138,10 +146,13 @@ const Checkbox = (props: CheckboxProps) => {
                 className="checkbox__in"
                 tabIndex={0}
                 disabled={disabled || pending}
+                aria-labelledby={labelId}
             />
             <label
                 htmlFor={String(id)}
                 className={cn('checkbox__label', className)}
+                // We hide from Screen Readers if labelId is provided to avoid duplication
+                aria-hidden={!!labelId}
             >
                 {label}
             </label>

@@ -28,7 +28,7 @@ import React, {
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-import type { SettingHandler } from '../../../types';
+import { type SettingHandler } from '../../../types';
 
 import './input.pcss';
 

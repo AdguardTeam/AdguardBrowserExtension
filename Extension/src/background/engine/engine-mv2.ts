@@ -20,7 +20,7 @@ import { debounce } from 'lodash-es';
 // Because this file is already MV2 replacement module, we can import directly
 // from basic MV2 tswebextension without using aliases.
 import {
-    ConfigurationMV2,
+    type ConfigurationMV2,
     MESSAGE_HANDLER_NAME,
     createTsWebExtension,
     type Message as EngineMessage,
@@ -83,11 +83,11 @@ export class Engine implements TsWebExtensionEngine {
 
         const configuration = await Engine.getConfiguration();
 
-        logger.info('Start tswebextension...');
+        logger.info('[ext.Engine.start]: Start tswebextension...');
         await this.api.start(configuration);
 
         const rulesCount = this.api.getRulesCount();
-        logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
+        logger.info(`[ext.Engine.start]: tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
@@ -101,11 +101,11 @@ export class Engine implements TsWebExtensionEngine {
     async update(): Promise<void> {
         const configuration = await Engine.getConfiguration();
 
-        logger.info('Update tswebextension configuration...');
+        logger.info('[ext.Engine.update]: Update tswebextension configuration...');
         await this.api.configure(configuration);
 
         const rulesCount = this.api.getRulesCount();
-        logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
+        logger.info(`[ext.Engine.update]: tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
@@ -130,12 +130,12 @@ export class Engine implements TsWebExtensionEngine {
                 ]);
 
                 if (!content) {
-                    logger.error(`Failed to get filter ${filterId}`);
+                    logger.error(`[ext.Engine.getConfiguration]: Failed to get filter ${filterId}`);
                     return;
                 }
 
                 if (!sourceMap) {
-                    logger.warn(`Source map is not found for filter ${filterId}`);
+                    logger.warn(`[ext.Engine.getConfiguration]: Source map is not found for filter ${filterId}`);
                 }
 
                 const trusted = FiltersApi.isFilterTrusted(filterId);
@@ -147,7 +147,7 @@ export class Engine implements TsWebExtensionEngine {
                     sourceMap,
                 });
             } catch (e) {
-                logger.error(`Failed to get filter ${filterId}`, e);
+                logger.error(`[ext.Engine.getConfiguration]: Failed to get filter ${filterId}`, e);
             }
         });
 

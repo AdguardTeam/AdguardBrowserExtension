@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { RefObject, useEffect } from 'react';
+import { type RefObject, useEffect } from 'react';
 
 import { throttle } from 'lodash-es';
 

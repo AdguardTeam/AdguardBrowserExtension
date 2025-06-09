@@ -18,8 +18,8 @@
 import { StringStorage } from '../utils/string-storage';
 import {
     SettingOption,
-    CustomFilterMetadata,
-    CustomFilterMetadataStorageData,
+    type CustomFilterMetadata,
+    type CustomFilterMetadataStorageData,
 } from '../schema';
 
 import { settingsStorage } from './settings';

@@ -1,5 +1,8 @@
 // TODO figure out how to fix the eslint errors
-/* eslint-disable jsx-a11y/anchor-is-valid,jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/anchor-is-valid,
+   jsx-a11y/click-events-have-key-events,
+   jsx-a11y/no-static-element-interactions
+*/
 /**
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -35,22 +38,22 @@ type WarningProps = {
     /**
      * String with names of filters that are enabled.
      */
-    actuallyEnabledFilterNames: string,
+    actuallyEnabledFilterNames: string;
 
     /**
      * String with names of filters that were expected to be enabled.
      */
-    expectedEnabledFilterNames: string,
+    expectedEnabledFilterNames: string;
 
     /**
      * Function to reactivate filters.
      */
-    onClickReactivateFilters: () => void,
+    onClickReactivateFilters: () => void;
 
     /**
      * Function to close the warning.
      */
-    onClickCloseWarning: () => void,
+    onClickCloseWarning: () => void;
 };
 
 /**
