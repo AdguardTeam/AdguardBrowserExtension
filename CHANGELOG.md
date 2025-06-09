@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - OOM errors may occur when applying too many patches in a row in MV2 [#3230].
 
+[5.1.102]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.1.94...v5.1.102
 [#3230]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3230
 
 ## [5.1.94] - 2025-05-29
