@@ -29,12 +29,14 @@ import { type SingleActionParams } from './types';
 import '../actions.pcss';
 
 export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
+    const title = translator.getMessage('popup_security_report');
+
     /**
      * Handle site security check action click.
      */
     const handleCheckSiteSecurity = () => {
         if (!url) {
-            logger.error('No URL provided for site security check');
+            logger.error('[ext.CheckSiteSecurityAction]: no URL provided for site security check');
             return;
         }
 
@@ -50,15 +52,17 @@ export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }:
         <button
             type="button"
             className={className}
+            title={title}
             onClick={handleCheckSiteSecurity}
         >
             <Icon
                 id="#info"
                 classname="icon--24 icon--action--info"
+                aria-hidden="true"
             />
-            <div className="action__title">
-                {translator.getMessage('popup_security_report')}
-            </div>
+            <span className="action__title">
+                {title}
+            </span>
         </button>
     );
 };

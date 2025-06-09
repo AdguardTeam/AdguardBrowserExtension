@@ -10,7 +10,7 @@ variables:
   # Node.js is needed for build and tests.
   dockerNode: adguard/extension-builder:22.14--0.2--0
   # Stable branch name for auto-update only filters.
-  stableBranchName: release/mv3-filters
+  stableBranchName: stable/v5.1
 
 # Since auto-build is being run only for a stable branch now (specified in
 # `bamboo.stableBranchName`) we should skip the build stage for other branches.
@@ -83,7 +83,7 @@ other:
 branch-overrides:
   -
     # Note: it should be equal with `bamboo.stableBranchName`
-    release/mv3-filters:
+    stable/v5.1:
       stages:
         - Tests:
             manual: false
@@ -130,7 +130,7 @@ branch-overrides:
 
                   pnpm install ${bamboo.varsPnpm}
 
-                  ./bamboo-specs/scripts/timeout-wrapper.sh 80s pnpm lint
+                  ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
         final-tasks:
           - script:
               interpreter: SHELL

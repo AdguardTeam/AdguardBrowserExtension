@@ -21,7 +21,7 @@ import React, {
     useEffect,
     useRef,
 } from 'react';
-import { useBlocker, BlockerFunction } from 'react-router-dom';
+import { useBlocker, type BlockerFunction } from 'react-router-dom';
 
 import { noop } from 'lodash-es';
 

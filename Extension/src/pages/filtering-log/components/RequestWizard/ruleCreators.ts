@@ -23,10 +23,10 @@ import {
     OPTIONS_DELIMITER,
 } from '@adguard/tsurlfilter';
 
-import type { FilteringEventRuleData, FilteringLogEvent } from '../../../../background/api';
+import { type FilteringEventRuleData, type FilteringLogEvent } from '../../../../background/api';
 import { strings } from '../../../../common/strings';
 import { logger } from '../../../../common/logger';
-import type { RuleCreationOptions } from '../../types';
+import { type RuleCreationOptions } from '../../types';
 
 import { COMMA_DELIMITER } from './constants';
 import { UrlUtils } from './utils';
@@ -159,7 +159,7 @@ export const createExceptionCssRule = (
     event: FilteringLogEvent,
 ): string => {
     if (!rule || !rule.appliedRuleText) {
-        logger.error(`Cannot create css exception rule for an event with id: ${event.eventId} because rule is not defined or appliedRuleText is not defined.`);
+        logger.error(`[ext.ruleCreators]: cannot create css exception rule for an event with id: ${event.eventId} because rule is not defined or appliedRuleText is not defined.`);
         return '';
     }
 
@@ -189,7 +189,7 @@ export const createExceptionCssRule = (
         return domainPart + generateExceptionRule(appliedRuleText, CosmeticRuleMarker.Html);
     }
 
-    logger.error('Cannot createExceptionCssRule for the rule:', rule);
+    logger.error('[ext.ruleCreators]: cannot createExceptionCssRule for the rule:', rule);
 
     return '';
 };
@@ -207,7 +207,7 @@ export const createExceptionScriptRule = (
     event: FilteringLogEvent,
 ): string => {
     if (!rule || !rule.appliedRuleText) {
-        logger.error(`Cannot create exception blocking script rule for an event with id: ${event.eventId} because rule is not defined or appliedRuleText is not defined.`);
+        logger.error(`[ext.ruleCreators]: cannot create exception blocking script rule for an event with id: ${event.eventId} because rule is not defined or appliedRuleText is not defined.`);
         return '';
     }
 

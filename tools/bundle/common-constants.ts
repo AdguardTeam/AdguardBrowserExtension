@@ -19,7 +19,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+import type HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { Browser } from '../constants';
 
@@ -39,8 +39,8 @@ export const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/
 export const SUBSCRIBE_PATH = path.resolve(__dirname, '../../Extension/pages/subscribe');
 export const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
 export const FULLSCREEN_USER_RULES_PATH = path.resolve(__dirname, '../../Extension/pages/fullscreen-user-rules');
-export const SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extension/pages/safebrowsing');
-export const AD_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/ad-blocked');
+export const BLOCKING_SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extension/pages/blocking/safebrowsing');
+export const BLOCKING_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/blocking/blocked');
 export const EDITOR_PATH = path.resolve(__dirname, '../../Extension/src/pages/common/components/Editor');
 
 export const htmlTemplatePluginCommonOptions: Partial<HtmlWebpackPlugin.Options> = {
@@ -52,6 +52,7 @@ export type BrowserConfig = {
     browser: Browser;
     devtools: boolean;
     buildDir: string;
+    zipName: string;
 };
 
 export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
@@ -59,30 +60,36 @@ export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
         browser: Browser.Chrome,
         devtools: true,
         buildDir: Browser.Chrome,
+        zipName: Browser.Chrome,
     },
     [Browser.ChromeMv3]: {
         browser: Browser.ChromeMv3,
         devtools: true,
         buildDir: Browser.ChromeMv3,
+        zipName: Browser.ChromeMv3,
     },
     [Browser.FirefoxStandalone]: {
         browser: Browser.FirefoxStandalone,
         devtools: false,
         buildDir: Browser.FirefoxStandalone,
+        zipName: Browser.FirefoxStandalone,
     },
     [Browser.FirefoxAmo]: {
         browser: Browser.FirefoxAmo,
         devtools: false,
         buildDir: Browser.FirefoxAmo,
+        zipName: Browser.FirefoxAmo,
     },
     [Browser.Opera]: {
         browser: Browser.Opera,
         devtools: true,
         buildDir: Browser.Opera,
+        zipName: Browser.Opera,
     },
     [Browser.Edge]: {
         browser: Browser.Edge,
         devtools: true,
         buildDir: Browser.Edge,
+        zipName: Browser.Edge,
     },
 };

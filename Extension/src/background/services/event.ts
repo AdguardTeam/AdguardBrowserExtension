@@ -15,25 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Runtime } from 'webextension-polyfill';
+import browser, { type Runtime } from 'webextension-polyfill';
 
 import { notifier } from '../notifier';
 import { messageHandler } from '../message-handler';
 import {
-    RemoveListenerMessage,
-    CreateEventListenerMessage,
+    type RemoveListenerMessage,
+    type CreateEventListenerMessage,
     MessageType,
-    NotifyListenersMessage,
+    type NotifyListenersMessage,
 } from '../../common/messages';
 
 export type CreateEventListenerResponse = {
-    listenerId: number,
+    listenerId: number;
 };
 
 /**
  * The EventService class operates with event listeners: creates or removes them.
  */
-export class EventService {
+class EventService {
     // TODO: types
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private eventListeners = new Map<number, any>();

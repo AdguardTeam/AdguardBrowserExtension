@@ -28,6 +28,7 @@ import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { GLOBAL_PRIVACY_CONTROL_URL, DO_NOT_TRACK_URL } from '../../constants';
 import {
@@ -93,7 +94,7 @@ const Stealth = observer(() => {
             }
         }
 
-        logger.info(`Setting ${id} set to ${data}. Ignore background: ${ignoreBackground}`);
+        logger.trace(`[ext.Stealth]: Setting ${id} set to ${data}. Ignore background: ${ignoreBackground}`);
         await updateSettingWrapper(id, value, ignoreBackground);
     };
 
@@ -158,18 +159,23 @@ const Stealth = observer(() => {
     const isThirdPartyCookiesEnabled = settings.values[SelfDestructThirdPartyCookies];
     const isFirstPartyCookiesEnabled = settings.values[SelfDestructFirstPartyCookies];
 
+    const switchId = DisableStealthMode;
+    const switchTitleId = `${switchId}-title`;
+
     return (
         <>
             <SettingsSection
-                title={reactTranslator.getMessage('options_privacy_title')}
-                description={reactTranslator.getMessage('options_privacy_desc')}
+                id={switchId}
+                title={translator.getMessage('options_privacy_title')}
+                titleId={switchTitleId}
+                description={translator.getMessage('options_privacy_desc')}
                 mode="smallContainer"
-                id={DisableStealthMode}
                 inlineControl={(
                     <Setting
                         id={DisableStealthMode}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_privacy_title')}
+                        label={translator.getMessage('options_privacy_title')}
+                        labelId={switchTitleId}
                         inverted
                         value={settings.values[DisableStealthMode]}
                         handler={disableStealthChangeHandlerWrapper}
@@ -178,20 +184,20 @@ const Stealth = observer(() => {
             />
 
             <SettingsSection
-                title={reactTranslator.getMessage('options_stealth_general_title')}
+                title={translator.getMessage('options_stealth_general_title')}
                 mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
-                    title={reactTranslator.getMessage('options_block_known_trackers_title')}
-                    description={reactTranslator.getMessage('options_block_known_trackers_description')}
+                    title={translator.getMessage('options_block_known_trackers_title')}
+                    description={translator.getMessage('options_block_known_trackers_description')}
                     disabled={!blockKnownTrackers}
                     sectionDisabled={isStealthModeDisabled}
                     id={BlockKnownTrackers}
                     type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_block_known_trackers_title')}
+                    label={translator.getMessage('options_block_known_trackers_title')}
                     value={blockKnownTrackers}
                     handler={blockKnownTrackersChangeHandlerWrapper}
                 />
@@ -199,37 +205,35 @@ const Stealth = observer(() => {
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
-                    title={reactTranslator.getMessage('options_strip_tracking_params_title')}
-                    description={reactTranslator.getMessage('options_strip_tracking_params_description')}
+                    title={translator.getMessage('options_strip_tracking_params_title')}
+                    description={translator.getMessage('options_strip_tracking_params_description')}
                     disabled={!stripTrackingParameters}
                     sectionDisabled={isStealthModeDisabled}
                     id={STRIP_TRACKING_PARAMETERS}
                     type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_strip_tracking_params_title')}
+                    label={translator.getMessage('options_strip_tracking_params_title')}
                     value={stripTrackingParameters}
                     handler={stripTrackingParametersChangeHandlerWrapper}
                 />
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
-                    title={reactTranslator.getMessage('options_hide_search_queries_title')}
-                    description={reactTranslator.getMessage('options_hide_search_queries_desc')}
+                    title={translator.getMessage('options_hide_search_queries_title')}
+                    description={translator.getMessage('options_hide_search_queries_desc')}
                     disabled={!settings.values[HideSearchQueries]}
                     sectionDisabled={isStealthModeDisabled}
                     id={HideSearchQueries}
                     type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_hide_search_queries_title')}
+                    label={translator.getMessage('options_hide_search_queries_title')}
                     value={settings.values[HideSearchQueries]}
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
-                    title={reactTranslator.getMessage('options_send_not_track_title')}
+                    title={translator.getMessage('options_send_not_track_title')}
                     description={reactTranslator.getMessage('options_send_not_track_desc', {
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
-                        gpc: (chunks) => (
+                        gpc: (chunks: string) => (
                             <a
                                 className="desc--link"
                                 href={GLOBAL_PRIVACY_CONTROL_URL}
@@ -239,9 +243,7 @@ const Stealth = observer(() => {
                                 {chunks}
                             </a>
                         ),
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
-                        dnt: (chunks) => (
+                        dnt: (chunks: string) => (
                             <a
                                 className="desc--link"
                                 href={DO_NOT_TRACK_URL}
@@ -256,7 +258,7 @@ const Stealth = observer(() => {
                     sectionDisabled={isStealthModeDisabled}
                     id={SendDoNotTrack}
                     type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_send_not_track_title')}
+                    label={translator.getMessage('options_send_not_track_title')}
                     value={settings.values[SendDoNotTrack]}
                     handler={settingChangeHandler}
                 />
@@ -264,20 +266,20 @@ const Stealth = observer(() => {
 
             {!__IS_MV3__ && (
                 <SettingsSection
-                    title={reactTranslator.getMessage('options_stealth_cookies_title')}
+                    title={translator.getMessage('options_stealth_cookies_title')}
                     mode="subTitle"
                     disabled={isStealthModeDisabled}
                 >
-                    { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                    { /* TODO fix type error when SettingsSection be rewritten in typescript */}
                     {/* @ts-ignore */}
                     <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_third_party_title')}
-                        description={reactTranslator.getMessage('options_third_party_desc')}
+                        title={translator.getMessage('options_third_party_title')}
+                        description={translator.getMessage('options_third_party_desc')}
                         disabled={!isThirdPartyCookiesEnabled}
                         sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructThirdPartyCookies}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_third_party_title')}
+                        label={translator.getMessage('options_third_party_title')}
                         value={isThirdPartyCookiesEnabled}
                         handler={settingChangeHandler}
                     >
@@ -294,16 +296,16 @@ const Stealth = observer(() => {
                         />
                     </SettingsSetCheckbox>
 
-                    { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                    { /* TODO fix type error when SettingsSection be rewritten in typescript */}
                     {/* @ts-ignore */}
                     <SettingsSetCheckbox
-                        title={reactTranslator.getMessage('options_first_party_title')}
-                        description={reactTranslator.getMessage('options_first_party_desc')}
+                        title={translator.getMessage('options_first_party_title')}
+                        description={translator.getMessage('options_first_party_desc')}
                         disabled={!isFirstPartyCookiesEnabled}
                         sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructFirstPartyCookies}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_first_party_title')}
+                        label={translator.getMessage('options_first_party_title')}
                         value={isFirstPartyCookiesEnabled}
                         handler={settingChangeHandler}
                     >
@@ -323,22 +325,23 @@ const Stealth = observer(() => {
             )}
 
             <SettingsSection
-                title={reactTranslator.getMessage('options_stealth_miscellaneous_title')}
+                title={translator.getMessage('options_stealth_miscellaneous_title')}
                 mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
-                {/* TODO revert this option when will be found a way to disable referrer rule with stealth exclusion AG-34765 */}
+                {/* TODO revert this option when will be found a way to disable
+                    referrer rule with stealth exclusion AG-34765 */}
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
-                        title={reactTranslator.getMessage('options_hide_referrer_title')}
-                        description={reactTranslator.getMessage('options_hide_referrer_desc')}
+                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // @ts-ignore
+                        title={translator.getMessage('options_hide_referrer_title')}
+                        description={translator.getMessage('options_hide_referrer_desc')}
                         disabled={!settings.values[HideReferrer]}
                         sectionDisabled={isStealthModeDisabled}
                         id={HideReferrer}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_hide_referrer_title')}
+                        label={translator.getMessage('options_hide_referrer_title')}
                         value={settings.values[HideReferrer]}
                         handler={settingChangeHandler}
                     />
@@ -348,13 +351,13 @@ const Stealth = observer(() => {
                     <SettingsSetCheckbox
                         // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                         // @ts-ignore
-                        title={reactTranslator.getMessage('options_remove_client_data_title')}
-                        description={reactTranslator.getMessage('options_remove_client_data_desc')}
+                        title={translator.getMessage('options_remove_client_data_title')}
+                        description={translator.getMessage('options_remove_client_data_desc')}
                         disabled={!settings.values[RemoveXClientData]}
                         sectionDisabled={isStealthModeDisabled}
                         id={RemoveXClientData}
                         type={SETTINGS_TYPES.CHECKBOX}
-                        label={reactTranslator.getMessage('options_remove_client_data_title')}
+                        label={translator.getMessage('options_remove_client_data_title')}
                         value={settings.values[RemoveXClientData]}
                         handler={settingChangeHandler}
                     />
@@ -363,13 +366,13 @@ const Stealth = observer(() => {
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
-                    title={reactTranslator.getMessage('options_disable_webrtc_title')}
-                    description={reactTranslator.getMessage('options_disable_webrtc_desc')}
+                    title={translator.getMessage('options_disable_webrtc_title')}
+                    description={translator.getMessage('options_disable_webrtc_desc')}
                     disabled={!settings.values[BlockWebRTC]}
                     sectionDisabled={isStealthModeDisabled}
                     id={BlockWebRTC}
                     type={SETTINGS_TYPES.CHECKBOX}
-                    label={reactTranslator.getMessage('options_disable_webrtc_title')}
+                    label={translator.getMessage('options_disable_webrtc_title')}
                     value={settings.values[BlockWebRTC]}
                     handler={privacySettingChangeHandlerWithLoader}
                 />

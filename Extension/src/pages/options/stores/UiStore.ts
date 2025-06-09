@@ -23,11 +23,11 @@ import {
 } from 'mobx';
 import { nanoid } from 'nanoid';
 
-import type { InvalidStaticResultData, InvalidDynamicResultData } from '../../../background/services/rules-limits';
+import { type InvalidStaticResultData, type InvalidDynamicResultData } from '../../../background/services/rules-limits';
 // TODO: Maybe not import from components folder here?
 import { getDynamicWarningMessage, getStaticWarningMessage } from '../components/Warnings/messages';
 
-import type { RootStore } from './RootStore';
+import { type RootStore } from './RootStore';
 
 export enum NotificationType {
     SUCCESS = 'success',
@@ -51,7 +51,7 @@ export type Notification = {
     /**
      * Notification type
      */
-    type: NotificationType
+    type: NotificationType;
 
     /**
      * Some additional data, e.g. links.
@@ -94,6 +94,11 @@ class UiStore {
      * Specific limits warning message to be displayed about dynamic section with user rules.
      */
     @observable dynamicRulesLimitsWarning: string | null = null;
+
+    /**
+     * Sidebar visibility state. **Used only on mobile**.
+     */
+    @observable isSidebarOpen = false;
 
     @action
     addNotification({ description, type, extra }: Omit<Notification, 'id'>) {
@@ -164,6 +169,22 @@ class UiStore {
 
         this.dynamicRulesLimitsWarning = getDynamicWarningMessage(data);
     }
+
+    /**
+     * Opens the sidebar.
+     */
+    @action
+    openSidebar = () => {
+        this.isSidebarOpen = true;
+    };
+
+    /**
+     * Closes the sidebar.
+     */
+    @action
+    closeSidebar = () => {
+        this.isSidebarOpen = false;
+    };
 }
 
 export default UiStore;

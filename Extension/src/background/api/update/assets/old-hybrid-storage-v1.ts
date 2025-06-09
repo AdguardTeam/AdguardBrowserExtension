@@ -9,7 +9,7 @@ import { nanoid } from 'nanoid';
 import * as idb from 'idb';
 import { isObject } from 'lodash-es';
 
-import { ExtendedStorageInterface } from '../../../../common/storage';
+import { type ExtendedStorageInterface } from '../../../../common/storage';
 
 import { BrowserStorage } from './old-browser-storage-v1';
 import { IDBStorage } from './old-idb-storage-v1';

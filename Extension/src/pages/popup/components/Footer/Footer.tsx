@@ -48,6 +48,7 @@ export const Footer = observer(() => {
                     <Icon
                         id="#apple"
                         classname="icon--24 icon--footer"
+                        aria-hidden="true"
                     />
                 </a>
                 <a
@@ -60,6 +61,7 @@ export const Footer = observer(() => {
                     <Icon
                         id="#android"
                         classname="icon--24 icon--footer"
+                        aria-hidden="true"
                     />
                 </a>
             </div>
@@ -68,7 +70,7 @@ export const Footer = observer(() => {
 
     if (store.isEdgeBrowser) {
         const currentYear = new Date().getFullYear();
-        const footerText = `© 2009-${currentYear} AdGuard Software Ltd`;
+        const footerText = `© 2009-${currentYear} Adguard Software Ltd`;
         footerContent = <div className="footer__text">{footerText}</div>;
     }
 

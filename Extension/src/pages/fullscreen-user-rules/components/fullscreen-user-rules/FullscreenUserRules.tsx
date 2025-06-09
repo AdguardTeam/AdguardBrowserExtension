@@ -26,7 +26,7 @@ import { NotifierType } from '../../../../common/constants';
 import { rootStore } from '../../../options/stores/RootStore';
 import {
     Messenger,
-    LongLivedConnectionCallbackMessage,
+    type LongLivedConnectionCallbackMessage,
     Page,
 } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
@@ -67,7 +67,7 @@ export const FullscreenUserRules = observer(() => {
                             break;
                         }
                         default: {
-                            logger.debug('There is no listener for type:', type);
+                            logger.warn('[ext.FullscreenUserRules]: there is no listener for type:', type);
                             break;
                         }
                     }

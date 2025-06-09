@@ -16,10 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: generate tools/bundle/manifest.common.json with this constants
-
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT = 'web-accessible-resources';
 export const WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS = `${WEB_ACCESSIBLE_RESOURCES_OUTPUT}/redirects`;
+
+// IMPORTANT! If you will add new directory for output files, please configure check
+// function in tools/bundle-size/check.ts for new directory.
 
 export const BACKGROUND_OUTPUT = 'pages/background';
 export const OPTIONS_OUTPUT = 'pages/options';
@@ -27,8 +28,8 @@ export const POPUP_OUTPUT = 'pages/popup';
 export const FILTERING_LOG_OUTPUT = 'pages/filtering-log';
 export const POST_INSTALL_OUTPUT = 'pages/post-install';
 export const FULLSCREEN_USER_RULES_OUTPUT = 'pages/fullscreen-user-rules';
-export const SAFEBROWSING_OUTPUT = 'pages/safebrowsing';
-export const DOCUMENT_BLOCK_OUTPUT = 'pages/ad-blocked';
+export const BLOCKING_BLOCKED_OUTPUT = 'pages/blocking/blocked';
+export const BLOCKING_SAFEBROWSING_OUTPUT = 'pages/blocking/safebrowsing';
 export const SUBSCRIBE_OUTPUT = 'pages/subscribe';
 export const CONTENT_SCRIPT_START_OUTPUT = 'pages/content-script-start';
 export const CONTENT_SCRIPT_END_OUTPUT = 'pages/content-script-end';
@@ -45,6 +46,7 @@ export const REACT_VENDOR_OUTPUT = 'vendors/react';
 export const MOBX_VENDOR_OUTPUT = 'vendors/mobx';
 export const XSTATE_VENDOR_OUTPUT = 'vendors/xstate';
 export const TSURLFILTER_VENDOR_OUTPUT = 'vendors/tsurlfilter';
+export const TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT = 'vendors/tsurlfilter-declarative-converter';
 export const AGTREE_VENDOR_OUTPUT = 'vendors/agtree';
 export const CSS_TOKENIZER_VENDOR_OUTPUT = 'vendors/css-tokenizer';
 export const TSWEBEXTENSION_VENDOR_OUTPUT = 'vendors/tswebextension';
@@ -60,6 +62,8 @@ export const REMOTE_I18N_METADATA_FILE_NAME = 'filters_i18n.js';
 // But locally we prefer to use '.json' extension.
 export const LOCAL_METADATA_FILE_NAME = 'filters.json';
 export const LOCAL_I18N_METADATA_FILE_NAME = 'filters_i18n.json';
+
+export const INDEX_HTML_FILE_NAME = 'index.html';
 
 /**
  * List of AdGuard filters IDs.

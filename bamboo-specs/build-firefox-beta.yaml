@@ -8,8 +8,8 @@ variables:
   dockerNode: adguard/extension-builder:22.14--0.2--0
 stages:
   - Build:
-      manual: 'false'
-      final: 'false'
+      manual: false
+      final: false
       jobs:
         - Build
 
@@ -53,10 +53,14 @@ Build:
             # Set environment variables and run go-webext to sign the Firefox extension
             FIREFOX_CLIENT_ID="${bamboo_firefoxAmoClientId}" \
             FIREFOX_CLIENT_SECRET="${bamboo_firefoxAmoClientSecret}" \
-            go-webext -v sign firefox -f 'firefox.zip' -s 'source.zip' -o 'firefox.xpi'
+            go-webext -v sign firefox -f 'firefox-standalone.zip' -s 'source.zip' -o 'firefox.xpi'
 
             # Exit from build/beta directory
             cd ../..
+
+            # TODO: (AG-41656) Remove this workaround and use the browser name
+            # as for all other builds
+            mv build/beta/firefox-standalone.zip build/beta/firefox.zip
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts

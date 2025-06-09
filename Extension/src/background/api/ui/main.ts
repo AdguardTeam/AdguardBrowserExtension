@@ -23,7 +23,7 @@ import { TabsApi } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
 
 import { ContextMenuApi } from './context-menu';
-import { FrameData, FramesApi } from './frames';
+import { type FrameData, FramesApi } from './frames';
 import { iconsApi } from './icons';
 
 /**
@@ -111,7 +111,7 @@ export class UiApi {
                 },
             });
         } catch (e) {
-            logger.info('Failed to broadcast total blocked message:', e);
+            logger.info('[ext.UiApi.broadcastTotalBlockedMessage]: failed to broadcast total blocked message:', e);
         }
     }
 }

@@ -109,13 +109,18 @@ const Filters = () => {
                     ref={ref}
                     onScroll={scrollTags}
                     onWheel={handleWheel}
-                    className="filters__events-filters"
+                    className="filters__events-filters thin-scrollbar"
                 >
                     {leftArrow && (
                         <button
                             type="button"
                             onClick={scrollLeft}
                             className="filters__arrow filters__arrow--left"
+                            // Hide from keyboard navigation and screen readers
+                            // Because they can access rest of filters without
+                            // scrolling block to the left
+                            aria-hidden="true"
+                            tabIndex={-1}
                         >
                             <Icon id="#arrow-left" classname="filters__arrow__icon" />
                         </button>
@@ -127,6 +132,11 @@ const Filters = () => {
                             type="button"
                             onClick={scrollRight}
                             className="filters__arrow filters__arrow--right"
+                            // Hide from keyboard navigation and screen readers
+                            // Because they can access rest of filters without
+                            // scrolling block to the right
+                            aria-hidden="true"
+                            tabIndex={-1}
                         >
                             <Icon id="#arrow-left" classname="filters__arrow__icon" />
                         </button>

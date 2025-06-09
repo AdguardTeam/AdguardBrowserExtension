@@ -1,5 +1,5 @@
 import browser from 'sinon-chrome';
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import {
     describe,
     beforeEach,
@@ -14,6 +14,7 @@ import { SbCache, sbCache } from '../../../../Extension/src/background/storages'
 import { SettingsApi } from '../../../../Extension/src/background/api/settings/main';
 import { type SafebrowsingStorageData } from '../../../../Extension/src/background/schema';
 import { mockLocalStorage } from '../../../helpers';
+import { BLOCKING_SAFEBROWSING_OUTPUT } from '../../../../constants';
 
 /**
  * We do not use Safebrowsing API in MV3. Actually we could try to implement
@@ -94,11 +95,12 @@ describe.skipIf(__IS_MV3__)('Safebrowsing API', () => {
             const list = 'adguard-malware-shavar';
 
             const expectedRedirectUrl = chrome.runtime.getURL(
-                'pages/safebrowsing.html'
-            + '?malware=true'
-            + '&host=example.com'
-            + '&url=https%3A%2F%2Fexample.com'
-            + '&ref=https%3A%2F%2Fexample.com',
+                `${BLOCKING_SAFEBROWSING_OUTPUT}.html`
+                + '?malware=true'
+                + '&host=example.com'
+                + '&url=https%3A%2F%2Fexample.com'
+                + '&ref=https%3A%2F%2Fexample.com'
+                + '&_locale=en',
             );
 
             const host = UrlUtils.getHost(url)!;

@@ -5,8 +5,8 @@
 import * as idb from 'idb';
 
 import { logger } from '../../../../common/logger';
-import { getErrorMessage } from '../../../../common/error';
-import { ExtendedStorageInterface } from '../../../../common/storage';
+import { getZodErrorMessage } from '../../../../common/error';
+import { type ExtendedStorageInterface } from '../../../../common/storage';
 
 const DEFAULT_STORE_NAME = 'defaultStore';
 const DEFAULT_IDB_NAME = 'adguardIDB';
@@ -129,7 +129,7 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
             await Promise.all(Object.entries(data).map(([key, value]) => tx.store.put(value, key)));
             await tx.done;
         } catch (e) {
-            logger.error('Error while setting multiple keys in the storage:', getErrorMessage(e));
+            logger.error('[ext.IDBStorage.setMultiple]: error while setting multiple keys in the storage:', getZodErrorMessage(e));
             tx.abort();
             return false;
         }
@@ -152,7 +152,7 @@ export class IDBStorage implements ExtendedStorageInterface<string, unknown, 'as
             await Promise.all(keys.map((key) => tx.store.delete(key)));
             await tx.done;
         } catch (e) {
-            logger.error('Error while removing multiple keys from the storage:', getErrorMessage(e));
+            logger.error('[ext.IDBStorage.removeMultiple]: error while removing multiple keys from the storage:', getZodErrorMessage(e));
             tx.abort();
             return false;
         }

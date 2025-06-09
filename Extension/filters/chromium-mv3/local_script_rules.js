@@ -1,17 +1,24 @@
 /**
- * By the rules of Chrome Web Store, we cannot use remote scripts.
- *    Because of that, we use the following approach
- *    (you can search the described steps by 'JS_RULES_EXECUTION' in the bundled background.js):
+ *  To fully comply with Chrome Web Store policies regarding remote code execution,
+ *  we implement a strict security-focused approach for JavaScript rule execution:
  *
- * 1. We collect and pre-build script rules from the filters (which are pre-built into the extension)
- *    into the add-on (STEP 1.1 and 1.2). See 'updateLocalResourcesForChromiumMv3' in
- *    https://github.com/AdguardTeam/AdguardBrowserExtension/blob/release/mv3-filters/tools/resources/update-local-script-rules.ts
- *    and the files called "local_script_rules.js".
- * 2. Collected local scripts are passed to the engine (STEP 2.1 and 2.2).
- * 3. At runtime we check every script rule whether it is included in "local_script_rules.js" (STEP 3).
- * 4. Execution of script rules:
- *     - If the rule is included, we allow this rule to be executed.
- *       Such rules are executed by chrome.scripting API (STEP 4.1 and 4.2). Other rules are discarded.
+ *  1. For standard users (default mode):
+ *     - We collect and pre-build script rules from the filters and statically bundle
+ *       them into the extension - STEP 1. See 'updateLocalResourcesForChromiumMv3' in our build tools.
+ *     - These pre-verified local scripts are passed to the engine - STEP 2.
+ *     - At runtime, we check if each script rule is included in our local scripts list (STEP 3).
+ *     - Only pre-verified local scripts are executed via chrome.scripting API (STEP 4.1 and 4.2).
+ *       All other scripts are discarded.
+ *
+ *  2. For advanced users with developer mode explicitly enabled:
+ *     - JavaScript rules from custom filters can be executed using the browser's built-in
+ *       userScripts API (STEP 4.3), which provides a secure sandbox.
+ *     - This execution bypasses the local script verification process but remains
+ *       isolated and secure through Chrome's native sandboxing.
+ *     - This mode requires explicit user activation and is intended for advanced users only.
+ *
+ *  This dual-path implementation ensures perfect compliance with Chrome Web Store policies
+ *  while providing necessary functionality for users with different needs.
  */
 export const localScriptRules = {
     '(function(){var a=document.currentScript,b=String.prototype.charCodeAt,c=function(){return true;};Object.defineProperty(String.prototype,"charCodeAt",{get:function(){return document.currentScript===a?b:c},set:function(a){}})})();': () => {
@@ -4834,6 +4841,25 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
+        }
+    },
+    '(()=>{window.Pogo=window.Pogo||{},window.Pogo.cmd=[],window.Pogo.cmd.push=o=>{"function"==typeof o&&o()},window.Pogo.getVideoTag=(o,w)=>{w&&"function"==typeof w&&w()};})();': () => {
+        try {
+            const o = "done";
+            if (Window.prototype.toString.f1975fac6cc2feb528947114b7201f11 === o) return;
+            window.Pogo = window.Pogo || {}, window.Pogo.cmd = [], window.Pogo.cmd.push = o => {
+                "function" == typeof o && o();
+            }, window.Pogo.getVideoTag = (o, e) => {
+                e && "function" == typeof e && e();
+            };
+            Object.defineProperty(Window.prototype.toString, "f1975fac6cc2feb528947114b7201f11", {
+                value: o,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (o) {
+            console.error('Error executing AG js rule with uniqueId "f1975fac6cc2feb528947114b7201f11" due to: ' + o);
         }
     },
     '(()=>{const e=document.documentElement;new MutationObserver((()=>{const e=document.querySelector(".skeleton-video-cover-noanimate > .relative > a[href] + button");e&&e.click()})).observe(e,{attributes:!0,childList:!0,subtree:!0})})();': () => {

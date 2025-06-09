@@ -16,11 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type FilterMetadata } from '../background/api';
+import { type FilterMetadata } from '../background/api/filters/main';
+import { AntiBannerFiltersId } from '../common/constants';
 import { translator } from '../common/translators/translator';
 
-import { FILE_WRONG_EXTENSION_CAUSE } from './options/constants';
-import { Notification, NotificationType } from './options/stores/UiStore';
+import { FILE_WRONG_EXTENSION_CAUSE } from './common/constants';
+import { type Notification, NotificationType } from './options/stores/UiStore';
 
 export const getFilenameExtension = (filename: string): string | undefined => {
     if (!filename) {
@@ -212,4 +213,33 @@ export const updateFilterDescription = (updatedFilters?: FilterMetadata[]): Omit
     }
 
     return { description, type: NotificationType.SUCCESS };
+};
+
+/**
+ * Returns filter name for filterId.
+ *
+ * @param filterId Filter id.
+ * @param filtersMetadata Filters metadata.
+ *
+ * @returns Filter name for filterId.
+ */
+export const getFilterName = (
+    filterId: number | undefined,
+    filtersMetadata: FilterMetadata[] | null,
+): string | null => {
+    if (filterId === undefined || !filtersMetadata) {
+        return null;
+    }
+
+    if (filterId === AntiBannerFiltersId.UserFilterId) {
+        return translator.getMessage('options_userfilter');
+    }
+
+    if (filterId === AntiBannerFiltersId.AllowlistFilterId) {
+        return translator.getMessage('options_allowlist');
+    }
+
+    const filterMetadata = filtersMetadata.find((el) => el.filterId === filterId);
+
+    return filterMetadata ? filterMetadata.name : null;
 };

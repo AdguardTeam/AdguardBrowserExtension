@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Runtime } from 'webextension-polyfill';
+import { type Runtime } from 'webextension-polyfill';
 
 import { MessageType } from '@adguard/tswebextension';
 
@@ -54,7 +54,7 @@ export class ContentScriptMessageHandler extends MessageHandler {
         if (!ContentScriptMessageHandler.isValidMessageType(message)) {
             // Do not print errors for internal assistant messages.
             if (!ContentScriptMessageHandler.isInternalAssistantMessage(message)) {
-                logger.error('Invalid message in ContentScriptMessageHandler:', message);
+                logger.error('[ext.ContentScriptMessageHandler.handleMessage]: invalid message:', message);
             }
             return;
         }

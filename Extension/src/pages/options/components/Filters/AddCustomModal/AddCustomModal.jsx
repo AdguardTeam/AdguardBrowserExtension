@@ -16,7 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useContext } from 'react';
+import React, {
+    useState,
+    useContext,
+    useEffect,
+    useCallback,
+} from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
 
@@ -58,19 +63,27 @@ const customStyles = {
     },
 };
 
+/**
+ * Escape key string.
+ */
+const ESCAPE_KEY = 'Escape';
+
+/**
+ * Modal steps.
+ */
+const STEPS = {
+    INPUT: 'input',
+    CHECKING: 'checking',
+    APPROVE: 'approve',
+    ERROR: 'error',
+};
+
 const AddCustomModal = observer(({
     closeModalHandler,
     modalIsOpen,
     initialUrl,
     initialTitle,
 }) => {
-    const STEPS = {
-        INPUT: 'input',
-        CHECKING: 'checking',
-        APPROVE: 'approve',
-        ERROR: 'error',
-    };
-
     const [isLoading, setLoading] = useState(false);
     const [customUrlToAdd, setCustomUrlToAdd] = useState(initialUrl);
     const [stepToRender, setStepToRender] = useState(STEPS.INPUT);
@@ -79,7 +92,7 @@ const AddCustomModal = observer(({
     const [filterToAddName, setFilterToAddName] = useState(initialTitle);
     const customUrlToAddIsEmpty = customUrlToAdd.trim() === '';
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         closeModalHandler();
         setLoading(false);
         setCustomUrlToAdd('');
@@ -87,7 +100,28 @@ const AddCustomModal = observer(({
         setError('');
         setFilterToAdd(null);
         setFilterToAddName(initialTitle);
-    };
+    }, [closeModalHandler, initialTitle]);
+
+    /**
+     * Listen for keydown events globally, because `react-modal` package when
+     * content of modal gets re-rendered, it loses focus from current interactive
+     * element and ability to close with ESC key is lost. Probably it's intended
+     * behavior of the package, but it's not desired in our case. They attach
+     * keydown event listener to modal container itself.
+     */
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === ESCAPE_KEY) {
+                closeModal();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [closeModal]);
 
     const { settingsStore, uiStore } = useContext(rootStore);
 
@@ -122,7 +156,7 @@ const AddCustomModal = observer(({
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
-            logger.error(e);
+            logger.error('[ext.AddCustomModal]: error: ', e);
             setStepToRender(STEPS.ERROR);
         }
     };
@@ -176,7 +210,7 @@ const AddCustomModal = observer(({
             }
         } catch (e) {
             setStepToRender(STEPS.ERROR);
-            logger.error(e);
+            logger.error('[ext.AddCustomModal]: error: ', e);
         }
         closeModal();
     };
@@ -287,22 +321,27 @@ const AddCustomModal = observer(({
                         </div>
                     </div>
 
-                    <div>
+                    <div className="modal__filter--trusted">
                         <label className="checkbox-label" htmlFor="trusted">
                             <input
                                 id="trusted"
                                 type="checkbox"
+                                className="sr-only"
                                 disabled={isLoading}
                                 onChange={handleTrustedCheckbox}
                             />
                             <div className="custom-checkbox">
-                                <Icon id="#checked" classname="icon--18" />
+                                <Icon
+                                    id="#checked"
+                                    classname="icon--18"
+                                    aria-hidden="true"
+                                />
                             </div>
                             {translator.getMessage('options_add_custom_filter_modal_filter_trusted')}
                         </label>
-                    </div>
-                    <div className="modal__filter--trusted-desc">
-                        {translator.getMessage('options_add_custom_filter_modal_filter_trusted_description')}
+                        <div className="modal__filter--trusted-desc">
+                            {translator.getMessage('options_add_custom_filter_modal_filter_trusted_description')}
+                        </div>
                     </div>
                 </form>
             </ModalContentWrapper>
@@ -343,7 +382,7 @@ const AddCustomModal = observer(({
                 )}
             >
                 <form>
-                    <div className="modal__desc">
+                    <div role="alert" className="modal__desc">
                         {error || translator.getMessage('options_add_custom_filter_modal_error_subtitle')}
                     </div>
                 </form>
