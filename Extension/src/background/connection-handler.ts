@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser, { Runtime } from 'webextension-polyfill';
+import browser, { type Runtime } from 'webextension-polyfill';
 
 import { KEEP_ALIVE_PORT_NAME } from '../common/constants';
 import {
@@ -50,14 +50,13 @@ export class ConnectionHandler {
     private static handleConnection(port: Runtime.Port): void {
         let listenerId: number;
 
-        logger.info(`Port: "${port.name}" connected`);
+        logger.debug(`[ext.ConnectionHandler.handleConnection]: port "${port.name}" connected`);
 
         ConnectionHandler.onPortConnection(port);
 
         port.onMessage.addListener((message) => {
             if (!messageHasTypeAndDataFields(message)) {
-                // eslint-disable-next-line max-len
-                logger.error('Received message in ConnectionHandler.handleConnection has no type or data field: ', message);
+                logger.error('[ext.ConnectionHandler.handleConnection]: received message in ConnectionHandler.handleConnection has no type or data field:', message);
                 return;
             }
 
@@ -75,18 +74,18 @@ export class ConnectionHandler {
                     };
                     port.postMessage(message);
                 } catch (e) {
-                    logger.error('Failed to send message to the port due to an error:', e);
+                    logger.error('[ext.ConnectionHandler.handleConnection]: failed to send message to the port due to an error:', e);
                 }
             });
         });
 
         port.onDisconnect.addListener(() => {
             if (chrome.runtime.lastError) {
-                logger.debug('An error occurred on disconnect', browser.runtime.lastError);
+                logger.debug('[ext.ConnectionHandler.handleConnection]: an error occurred on disconnect', browser.runtime.lastError);
             }
             ConnectionHandler.onPortDisconnection(port);
             notifier.removeListener(listenerId);
-            logger.info(`Port: "${port.name}" disconnected`);
+            logger.debug(`[ext.ConnectionHandler.handleConnection]: port "${port.name}" disconnected`);
         });
     }
 
@@ -112,7 +111,7 @@ export class ConnectionHandler {
 
             case port.name === KEEP_ALIVE_PORT_NAME: {
                 // This handler exists solely to prevent errors from the default case.
-                logger.debug('Connected to the port');
+                logger.debug('[ext.ConnectionHandler.onPortConnection]: connected to the port');
                 break;
             }
 

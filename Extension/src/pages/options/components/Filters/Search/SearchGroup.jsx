@@ -23,12 +23,19 @@ import cn from 'classnames';
 import { Filter } from '../Filter';
 import { Setting, SETTINGS_TYPES } from '../../Settings/Setting';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { translator } from '../../../../../common/translators/translator';
 
 import '../group.pcss';
 
 const renderFilters = (matchedFilters, groupEnabled) => {
-    return matchedFilters
-        .map((filter) => <Filter key={filter.filterId} filter={filter} groupEnabled={groupEnabled} />);
+    return matchedFilters.map((filter) => (
+        <Filter
+            key={filter.filterId}
+            filter={filter}
+            groupEnabled={groupEnabled}
+            disabled={!groupEnabled}
+        />
+    ));
 };
 
 const SearchGroup = ({
@@ -43,30 +50,37 @@ const SearchGroup = ({
     const filtersClassName = cn('filters', {
         'filters--disabled': !groupEnabled,
     });
+
+    const titleId = `setting-title-${groupId}`;
+
     return (
-        <>
+        <li className="search-group-list__item">
             <div className={groupClassName}>
                 <button
                     type="button"
+                    role="link"
                     tabIndex={0}
                     className="setting__area setting__area_group"
                     onClick={groupClickHandler}
+                    aria-labelledby={titleId}
                 >
                     <Icon
                         id={`#setting-${groupId}`}
                         classname="icon--24 setting__icon"
+                        aria-hidden="true"
                     />
-                    <div className="setting__info">
-                        <div className="setting__title setting__title--search">
+                    <span className="setting__info">
+                        <span id={titleId} className="setting__title setting__title--search">
                             {groupName}
-                        </div>
-                    </div>
+                        </span>
+                    </span>
                 </button>
                 <div className="setting__inline-control setting__inline-control_group">
                     <Setting
                         id={groupId}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={groupName}
+                        labelId={titleId}
                         value={groupEnabled}
                         handler={checkboxHandler}
                         className="group__checkbox"
@@ -74,10 +88,13 @@ const SearchGroup = ({
                     />
                 </div>
             </div>
-            <div className={filtersClassName}>
+            <ul
+                className={filtersClassName}
+                aria-label={translator.getMessage('options_filters_of_group', { groupName })}
+            >
                 {renderFilters(filtersToShow, groupEnabled)}
-            </div>
-        </>
+            </ul>
+        </li>
     );
 };
 

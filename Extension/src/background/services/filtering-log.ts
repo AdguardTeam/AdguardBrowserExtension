@@ -17,47 +17,47 @@
  */
 
 import {
-    TabContext,
+    type TabContext,
     tabsApi as tsWebExtTabsApi,
     defaultFilteringLog,
     FilteringEventType,
-    SendRequestEvent,
-    ReceiveResponseEvent,
-    TabReloadEvent,
-    RemoveParamEvent,
-    RemoveHeaderEvent,
-    ApplyCosmeticRuleEvent,
-    ApplyBasicRuleEvent,
-    ApplyCspRuleEvent,
-    CookieEvent,
-    JsInjectEvent,
-    ReplaceRuleApplyEvent,
-    StealthActionEvent,
-    StealthAllowlistActionEvent,
-    CspReportBlockedEvent,
+    type SendRequestEvent,
+    type ReceiveResponseEvent,
+    type TabReloadEvent,
+    type RemoveParamEvent,
+    type RemoveHeaderEvent,
+    type ApplyCosmeticRuleEvent,
+    type ApplyBasicRuleEvent,
+    type ApplyCspRuleEvent,
+    type CookieEvent,
+    type JsInjectEvent,
+    type ReplaceRuleApplyEvent,
+    type StealthActionEvent,
+    type StealthAllowlistActionEvent,
+    type CspReportBlockedEvent,
     getDomain,
-    ApplyPermissionsRuleEvent,
-    DeclarativeRuleEvent,
+    type ApplyPermissionsRuleEvent,
+    type DeclarativeRuleEvent,
 } from 'tswebextension';
 
 import { messageHandler } from '../message-handler';
 import {
-    ClearEventsByTabIdMessage,
-    GetFilteringInfoByTabIdMessage,
+    type ClearEventsByTabIdMessage,
+    type GetFilteringInfoByTabIdMessage,
     MessageType,
     type RefreshPageMessage,
-    SetFilteringLogWindowStateMessage,
-    SetPreserveLogStateMessage,
+    type SetFilteringLogWindowStateMessage,
+    type SetPreserveLogStateMessage,
 } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
 import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../common/constants';
 import {
     FiltersApi,
-    FilterMetadata,
+    type FilterMetadata,
     filteringLogApi,
     SettingsApi,
-    SettingsData,
-    FilteringLogTabInfo,
+    type SettingsData,
+    type FilteringLogTabInfo,
     TabsApi,
     HitStatsApi,
 } from '../api';
@@ -65,9 +65,9 @@ import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
 
 export type GetFilteringLogDataResponse = {
-    filtersMetadata: FilterMetadata[],
-    settings: SettingsData,
-    preserveLogEnabled: boolean,
+    filtersMetadata: FilterMetadata[];
+    settings: SettingsData;
+    preserveLogEnabled: boolean;
 };
 
 // TODO (David): Add function to preprocess rule event data

@@ -90,8 +90,10 @@ export const Main = observer(() => {
         'main--has-user-rules': hasUserRulesToReset,
     });
 
+    const currentSiteLabel = `${translator.getMessage('popup_tab_current_website')}: `;
+
     if (!currentSite) {
-        logger.debug('Current site is not defined yet');
+        logger.warn('[ext.Main]: current site is not defined yet');
     }
 
     const totalBlockedSubtitle = translator.getMessage('popup_tab_blocked_all_count', {
@@ -140,7 +142,7 @@ export const Main = observer(() => {
     const state = statesMap[appState];
 
     if (!state) {
-        logger.debug(`No info state: ${appState}`);
+        logger.warn('[ext.Main]: no info state: ', appState);
         return null;
     }
 
@@ -187,7 +189,7 @@ export const Main = observer(() => {
             return <ResumeButton clickHandler={state[AppStateField.ButtonHandler]} />;
         }
 
-        logger.debug('No component for the current app state');
+        logger.warn('[ext.Main]: no component for the current app state: ', appState);
         return null;
     };
 
@@ -196,8 +198,9 @@ export const Main = observer(() => {
             <div className="main__header">
                 <div
                     className="main__header--current-site"
-                    title={currentSite}
+                    title={`${currentSiteLabel}${currentSite}`}
                 >
+                    <span className="sr-only">{currentSiteLabel}</span>
                     {currentSite}
                 </div>
                 <div

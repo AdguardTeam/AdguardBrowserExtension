@@ -43,11 +43,13 @@ const Editor = ({
     name,
     value,
     editorRef,
-    shortcuts,
+    shortcuts = [],
     onChange,
     fullscreen,
     highlightRules,
     shouldResetSize,
+    onSave,
+    onExit,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
     const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
@@ -59,7 +61,7 @@ const Editor = ({
                 setSize(JSON.parse(editorStorageSize));
             } catch (e) {
                 setSize(DEFAULT_EDITOR_SIZE);
-                logger.debug(e.message);
+                logger.debug('[ext.Editor]: failed to parse editor size from storage: ', e.message);
             }
         }
     }, [editorStorageSize]);
@@ -94,6 +96,20 @@ const Editor = ({
     // highlight rules syntax only for user rules
     const editorMode = highlightRules ? 'adguard' : 'text';
 
+    const mergedShortcuts = [
+        {
+            name: 'save',
+            bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+            exec: onSave,
+        },
+        {
+            name: 'exit',
+            bindKey: { win: 'Esc', mac: 'Esc' },
+            exec: onExit,
+        },
+        ...shortcuts,
+    ];
+
     return (
         <div style={editorStyles} className={editorClassName}>
             <AceEditor
@@ -107,7 +123,7 @@ const Editor = ({
                 editorProps={{ $blockScrolling: true }}
                 fontSize={14}
                 value={value}
-                commands={shortcuts}
+                commands={mergedShortcuts}
                 onChange={onChange}
             />
             <ReactResizeDetector

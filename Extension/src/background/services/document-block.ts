@@ -17,7 +17,7 @@
  */
 import browser from 'webextension-polyfill';
 
-import { AddUrlToTrustedMessage, MessageType } from '../../common/messages';
+import { type AddUrlToTrustedMessage, MessageType } from '../../common/messages';
 import { DocumentBlockApi, TabsApi } from '../api';
 import { engine } from '../engine';
 import { messageHandler } from '../message-handler';
@@ -38,6 +38,21 @@ export class DocumentBlockService {
     }
 
     /**
+     * Updates the active tab with the provided URL.
+     *
+     * @param url The URL to update the active tab with.
+     */
+    private static updateActiveTab = async (url: string): Promise<void> => {
+        const tab = await TabsApi.getActive();
+
+        if (!tab?.id) {
+            return;
+        }
+
+        await browser.tabs.update(tab.id, { url });
+    };
+
+    /**
      * Listener for the event of adding a domain to trusted domains.
      *
      * @param message Message of type {@link AddUrlToTrustedMessage}.
@@ -49,10 +64,6 @@ export class DocumentBlockService {
         await DocumentBlockApi.setTrustedDomain(url);
         await engine.update();
 
-        const tab = await TabsApi.getActive();
-
-        if (tab?.id) {
-            await browser.tabs.update(tab.id, { url });
-        }
+        DocumentBlockService.updateActiveTab(url);
     }
 }

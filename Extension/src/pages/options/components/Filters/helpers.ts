@@ -18,10 +18,14 @@
 
 import { sortBy } from 'lodash-es';
 
-import type { CategoriesFilterData, CategoriesGroupData } from '../../../../background/api';
+// types import does not affect on bundle size
+import { type CategoriesFilterData, type CategoriesGroupData } from '../../../../background/api/filters/categories';
+// but code import does, so only common code must be imported
+import { CommonFilterUtils } from '../../../../common/common-filter-utils';
 
 /**
- * Sorts filters by enabled status and displayNumber
+ * Sorts filters by enabled status and displayNumber.
+ * It also filters out deprecated filters.
  *
  * @param filters Filters to sort.
  *
@@ -56,6 +60,13 @@ export const sortFilters = (filters: CategoriesFilterData[]) => {
             }
 
             return 0;
+        })
+        // do not display deprecated filters
+        .filter((filter) => {
+            // only _regular_ filters can be deprecated, not custom ones
+            return CommonFilterUtils.isRegularFilterMetadata(filter)
+                ? !filter.deprecated
+                : true;
         });
 
     return sorted;

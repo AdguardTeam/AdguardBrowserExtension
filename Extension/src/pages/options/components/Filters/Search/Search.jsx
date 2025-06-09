@@ -24,7 +24,7 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { translator } from '../../../../../common/translators/translator';
 import { Select } from '../../../../common/components/ui/Select';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { UserAgent } from '../../../../../common/user-agent';
@@ -39,15 +39,15 @@ const isDesktopScreen = window.innerWidth > TABLET_SCREEN_WIDTH;
 const options = [
     {
         value: SEARCH_FILTERS.ALL,
-        title: reactTranslator.getMessage('options_filters_list_search_display_option_all_filters'),
+        title: translator.getMessage('options_filters_list_search_display_option_all_filters'),
     },
     {
         value: SEARCH_FILTERS.ENABLED,
-        title: reactTranslator.getMessage('options_filters_list_search_display_option_enabled'),
+        title: translator.getMessage('options_filters_list_search_display_option_enabled'),
     },
     {
         value: SEARCH_FILTERS.DISABLED,
-        title: reactTranslator.getMessage('options_filters_list_search_display_option_disabled'),
+        title: translator.getMessage('options_filters_list_search_display_option_disabled'),
     },
 ];
 
@@ -66,6 +66,7 @@ const Search = observer(() => {
     } = settingsStore;
 
     useEffect(() => {
+        // If keys changed, change aria-keyshortcuts attributes
         const modifierKeyProperty = UserAgent.isMacOs ? 'metaKey' : 'ctrlKey';
         const handleSearchHotkey = (e) => {
             const { code } = e;
@@ -144,22 +145,25 @@ const Search = observer(() => {
                     className="search__input"
                     type="text"
                     autoComplete="off"
-                    placeholder={reactTranslator.getMessage('options_filters_search')}
+                    placeholder={translator.getMessage('options_filters_search')}
                     ref={searchInputRef}
                     onChange={searchInputHandler}
                     value={searchInput}
+                    aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+F' : 'Ctrl+F'}
                 />
             </label>
             {searchInput && (
                 <button
                     type="button"
                     className="button"
-                    aria-label={reactTranslator.getMessage('close_button_title')}
                     onClick={searchCloseHandler}
+                    title={translator.getMessage('clear_button_title')}
+                    aria-keyshortcuts="Escape"
                 >
                     <Icon
                         id="#cross"
                         classname="icon--24 icon--gray-default"
+                        aria-hidden="true"
                     />
                 </button>
             )}
@@ -169,6 +173,7 @@ const Search = observer(() => {
                     handler={searchSelectHandler}
                     options={options}
                     value={searchSelect}
+                    label={translator.getMessage('options_filters_search_filter')}
                 />
             </div>
         </div>

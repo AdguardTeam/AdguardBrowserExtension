@@ -17,7 +17,7 @@
  */
 import { HIT_STATISTIC_KEY } from '../../common/constants';
 import { StringStorage } from '../utils/string-storage';
-import { HitStatsStorageData } from '../schema';
+import { type HitStatsStorageData } from '../schema';
 
 import { browserStorage } from './shared-instances';
 import { filterVersionStorage } from './filter-version';

@@ -18,16 +18,19 @@
 import { filterVersionStorage, settingsStorage } from '../../storages';
 import {
     SettingOption,
-    RegularFilterMetadata,
-    CustomFilterMetadata,
+    type RegularFilterMetadata,
+    type CustomFilterMetadata,
 } from '../../schema';
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
 import { logger } from '../../../common/logger';
 import { FiltersUpdateTime } from '../../../common/constants';
 import { engine } from '../../engine';
-import { getErrorMessage } from '../../../common/error';
+import { getZodErrorMessage } from '../../../common/error';
+import { FilterUpdateService } from '../../services/filter-update';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 
-import { FilterMetadata, FiltersApi } from './main';
+import { type FilterMetadata, FiltersApi } from './main';
 import { CustomFilterApi } from './custom';
 import { CommonFilterApi } from './common';
 
@@ -38,11 +41,11 @@ export type FilterUpdateOptions = {
     /**
      * Filter identifier.
      */
-    filterId: number,
+    filterId: number;
     /**
      * Should we update filters fully without patch updates or load patches to filters.
      */
-    ignorePatches: boolean,
+    ignorePatches: boolean;
 };
 
 /**
@@ -124,7 +127,7 @@ export class FilterUpdateApi {
         const startUpdateLogMessage = forceUpdate
             ? 'Update filters forced by user.'
             : 'Update filters by scheduler.';
-        logger.info(startUpdateLogMessage);
+        logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: ${startUpdateLogMessage}`);
 
         // If filtering is disabled, and it is not a forced update, it does nothing.
         const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
@@ -189,6 +192,12 @@ export class FilterUpdateApi {
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
             engine.debounceUpdate();
+
+            // set last update time only for MV2
+            // because there is no ability to update filters with patches in MV3
+            if (!__IS_MV3__) {
+                await FilterUpdateService.setLastUpdateTimeMs(Date.now());
+            }
         }
 
         return updatedFilters;
@@ -211,7 +220,8 @@ export class FilterUpdateApi {
          * We do not update metadata on each check if there are no filters or only custom filters.
          */
         const shouldLoadMetadata = filterUpdateOptionsList.some((filterUpdateOptions) => {
-            return filterUpdateOptions.ignorePatches && CommonFilterApi.isCommonFilter(filterUpdateOptions.filterId);
+            return filterUpdateOptions.ignorePatches
+                && CommonFilterUtils.isCommonFilter(filterUpdateOptions.filterId);
         });
 
         if (shouldLoadMetadata) {
@@ -223,24 +233,25 @@ export class FilterUpdateApi {
                 // check for updates - without fresh metadata we still can load
                 // newest filter, checking it's version will be against the old,
                 // local metadata, which is possible outdated.
-                logger.error('Failed to update metadata due to an error:', getErrorMessage(e));
+                logger.error('[ext.FilterUpdateApi.updateFilters]: failed to update metadata due to an error:', getZodErrorMessage(e));
             }
         }
 
         const updatedFiltersMetadata: FilterMetadata[] = [];
 
         const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
-            // TODO: Remove this block when custom filters will be supported for MV3
-            if (__IS_MV3__) {
-                return;
-            }
-
             let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null = null;
 
-            if (CustomFilterApi.isCustomFilter(filterData.filterId)) {
-                filterMetadata = await CustomFilterApi.updateFilter(filterData);
-            } else {
-                filterMetadata = await CommonFilterApi.updateFilter(filterData);
+            try {
+                if (CustomFilterUtils.isCustomFilter(filterData.filterId)) {
+                    filterMetadata = await CustomFilterApi.updateFilter(filterData);
+                } else {
+                    filterMetadata = await CommonFilterApi.updateFilter(filterData);
+                }
+            } catch (e) {
+                logger.error(`[ext.FilterUpdateApi.updateFilters]: failed to update filter id#${filterData.filterId} due to an error:`, getZodErrorMessage(e));
+
+                return;
             }
 
             if (filterMetadata) {
@@ -248,14 +259,7 @@ export class FilterUpdateApi {
             }
         });
 
-        const promises = await Promise.allSettled(updateTasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                logger.error('Cannot update filter due to: ', promise.reason);
-            }
-        });
+        await Promise.allSettled(updateTasks);
 
         return updatedFiltersMetadata;
     }
@@ -274,7 +278,7 @@ export class FilterUpdateApi {
 
         return filterIds.filter((id: number) => {
             // Always check for updates for custom filters
-            const isCustom = CustomFilterApi.isCustomFilter(Number(id));
+            const isCustom = CustomFilterUtils.isCustomFilter(Number(id));
 
             // Select only not recently checked filters
             const filterVersion = filterVersions[Number(id)];

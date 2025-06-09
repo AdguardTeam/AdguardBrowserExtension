@@ -33,6 +33,9 @@ import {
 
 import './actions.pcss';
 
+const ACTIONS_TAB_ID = 'actions-tab';
+const ACTIONS_PANEL_ID = 'actions-panel';
+
 const Actions = observer(() => {
     const store = useContext(popupStore);
 
@@ -41,7 +44,14 @@ const Actions = observer(() => {
     const actionChangingClassname = cn('action', { 'action--disabled': !isFilteringPossible });
 
     return (
-        <div className="actions">
+        <div
+            id={ACTIONS_PANEL_ID}
+            role="tabpanel"
+            className="actions"
+            aria-labelledby={ACTIONS_TAB_ID}
+            // A11Y: Allow focus on the tab panel so screen reader can read the content properly
+            tabIndex={0}
+        >
             <BlockAdsAction isFilteringPossible={isFilteringPossible} className={actionChangingClassname} />
             <OpenFilteringLogAction className="action" />
             <ReportIssueAction
@@ -67,4 +77,4 @@ const Actions = observer(() => {
     );
 });
 
-export { Actions };
+export { Actions, ACTIONS_TAB_ID, ACTIONS_PANEL_ID };

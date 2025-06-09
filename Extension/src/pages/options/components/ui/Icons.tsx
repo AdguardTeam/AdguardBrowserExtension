@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+/* eslint-disable max-len */
 
 import React from 'react';
 
@@ -67,20 +68,6 @@ export const Icons = () => {
                 <path d="M4 17.5H9.5" stroke="currentColor" fill="none" strokeWidth="1.5" />
                 <path d="M11.5 6.5H21.5" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" />
                 <path d="M16.5 6V4.5" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" />
-            </symbol>
-
-            <symbol id="empty" viewBox="0 0 81 104">
-                <g fill="none" fillRule="evenodd" transform="translate(1 2)">
-                    <rect fill="#67b279" fillRule="nonzero" height="10.424528" rx="5.212264" width="40" x="12.573151" y="90.69107" />
-                    <ellipse cx="7.701977" cy="61.254354" fill="#3b3b3b" fillRule="nonzero" rx="1.607724" ry="1.632159" />
-                    <ellipse cx="66.099384" cy="45.782087" fill="#3b3b3b" fillRule="nonzero" rx="1.607724" ry="1.632159" />
-                    <g stroke="#3b3b3b" strokeWidth="2.4">
-                        <ellipse cx="61.676972" cy="7.966934" rx="7.734348" ry="7.8519" />
-                        <ellipse cx="76.103476" cy="27.32482" rx="2.572358" ry="2.611454" />
-                        <path d="m8.25989762 35.9026387h49.24320728" strokeLinecap="square" />
-                        <path d="m25.7687677 54.0385167c.0168909-.1011429.2411898.2687114 0 .9658067v28.2082899c0 1.1045695.8954305 2 2 2 .3835033 0 .7589206-.1102607 1.0815152-.317643l11.1497171-6.8949703v-1l-.7099385-21.9956766c-.2414363-.6970953-.0171374-1.0669496 0-.9658067l24.4467768-23.6037845c.7946289-.7672279.8168418-2.033363.0496139-2.8279919-.3768878-.390348-.8962019-.610811-1.4388029-.610811h-59.63646934c-1.1045695 0-2 .8954305-2 2 0 .5426011.22046295 1.0619152.61081097 1.4388029z" strokeLinejoin="round" />
-                    </g>
-                </g>
             </symbol>
 
             <symbol id="link" viewBox="0 0 24 24">

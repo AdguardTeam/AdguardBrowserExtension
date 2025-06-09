@@ -8,11 +8,84 @@ variables:
   dockerNode: adguard/extension-builder:22.14--0.2--0
 
 stages:
+  - Size Check:
+      manual: false
+      final: false
+      jobs:
+        - Check Bundle Size
   - Build:
-      manual: 'false'
-      final: 'false'
+      manual: false
+      final: false
       jobs:
         - Build
+
+Check Bundle Size:
+  key: SIZECHECK
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - checkout:
+        force-clean-build: 'true'
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
+            # Install dependencies
+            pnpm install ${bamboo.varsPnpm}
+
+            BUILD_TYPE="release"
+
+            echo "Executing build for $BUILD_TYPE"
+
+            # Run build
+            pnpm $BUILD_TYPE
+
+            # Create artifacts directory if it doesn't exist
+            mkdir -p artifacts
+
+            # NOTE: Firefox standalone build is not needed for artifacts
+            # but it is needed for bundle size check
+            pnpm release firefox-standalone
+
+            echo "Checking bundle sizes"
+            pnpm check-bundle-size release
+
+            # Cleaning up Firefox standalone build after bundle size check
+            rm -rf build/release/firefox-standalone
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            echo "Size before cleanup:" && du -h | tail -n 1
+            rm -rf node_modules build
+            echo "Size after cleanup:" && du -h | tail -n 1
+  requirements:
+    - adg-docker: 'true'
+
 
 Build:
   key: BUILD
@@ -46,6 +119,10 @@ Build:
 
             # zip source files for publishing on AMO
             ./bamboo-specs/scripts/archive-source.sh release
+
+            # TODO: (AG-41656) Remove this workaround and use the browser name
+            # as for all other builds
+            mv build/release/firefox-amo.zip build/release/firefox.zip
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { I18nInterface, translate } from '@adguard/translate';
+import { type I18nInterface, translate } from '@adguard/translate';
 
 import { i18n } from './i18n';
 

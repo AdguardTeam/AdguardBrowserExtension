@@ -1,4 +1,4 @@
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import sinon from 'sinon';
 import {
     afterEach,
@@ -33,6 +33,26 @@ import {
 vi.mock('../../../../../Extension/src/background/engine');
 vi.mock('../../../../../Extension/src/background/api/ui/icons');
 vi.mock('../../../../../Extension/src/background/storages/notification');
+vi.mock('../../../../../Extension/src/background/storages/settings', () => ({
+    SettingsStorage: {
+        init: vi.fn().mockResolvedValue(undefined),
+        get: vi.fn().mockReturnValue({}),
+        isInitialized: vi.fn().mockReturnValue(true),
+    },
+    settingsStorage: {
+        init: vi.fn().mockResolvedValue(undefined),
+        get: vi.fn().mockReturnValue({}),
+        set: vi.fn().mockResolvedValue(undefined),
+        isInitialized: vi.fn().mockReturnValue(true),
+    },
+}));
+vi.mock('../../../../../Extension/src/background/api/settings/main', () => ({
+    SettingsApi: {
+        init: vi.fn().mockResolvedValue(undefined),
+        getSettings: vi.fn().mockResolvedValue({}),
+        getSetting: vi.fn().mockReturnValue(false),
+    },
+}));
 
 const server = sinon.fakeServer.create({
     respondImmediately: true,
@@ -54,7 +74,10 @@ const remoteI18nMetadata: I18nMetadata = i18nMetadataValidator.parse({
     filters: {},
     groups: {
         1: {
-            en: { name: 'REMOTE' },
+            en: {
+                name: 'REMOTE',
+                description: 'REMOTE description',
+            },
         },
     },
     tags: {},
@@ -64,7 +87,10 @@ const localI18nMetadata: I18nMetadata = i18nMetadataValidator.parse({
     filters: {},
     groups: {
         1: {
-            en: { name: 'LOCAL' },
+            en: {
+                name: 'LOCAL',
+                description: 'LOCAL description',
+            },
         },
     },
     tags: {},
@@ -106,7 +132,7 @@ let storage: Storage.StorageArea;
 describe('tests filter metadata loading', () => {
     beforeEach(async () => {
         storage = mockLocalStorage({
-            [APP_VERSION_KEY]: '4.4.0.0',
+            [APP_VERSION_KEY]: '5.2.0.0',
         });
         // should be set before App.init() call
         mockInitMetadata();

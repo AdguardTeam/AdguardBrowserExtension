@@ -32,6 +32,8 @@ import '../actions.pcss';
 export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
     const [removingUserRules, clearingUserRules] = useState(false);
 
+    const title = translator.getMessage('popup_reset_page_user_rules');
+
     /**
      * Sends a message to the background to remove user rules for a page by `url`.
      */
@@ -45,7 +47,7 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
      */
     const handlePageUserRulesReset = async () => {
         if (!url) {
-            logger.error('No URL provided for page user rules reset');
+            logger.error('[ext.ResetPageUserRulesAction]: no URL provided for page user rules reset');
             return;
         }
 
@@ -69,21 +71,20 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
         <button
             type="button"
             className={className}
-            onClick={handlePageUserRulesReset}
+            title={title}
             disabled={removingUserRules}
+            onClick={handlePageUserRulesReset}
         >
             <Icon
                 id={removeUserRulesIconId}
                 classname={removeUserRulesIconClassname}
                 animationCondition={removingUserRules}
                 animationClassname="icon--loading"
+                aria-hidden="true"
             />
-            <div
-                className="action__title"
-                title={translator.getMessage('popup_reset_page_user_rules')}
-            >
-                {translator.getMessage('popup_reset_page_user_rules')}
-            </div>
+            <span className="action__title">
+                {title}
+            </span>
         </button>
     );
 };

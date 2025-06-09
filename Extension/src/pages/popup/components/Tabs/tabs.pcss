@@ -17,6 +17,21 @@
         scrollbar-width: thin;
         display: flex;
         align-items: center;
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 6px;
+        }
 
         &--stats {
             display: block;
@@ -24,28 +39,11 @@
             max-height: 176px;
             min-height: 176px;
             overflow-y: scroll;
-            scrollbar-width: thin;
-            scrollbar-color: var(--fills-loaders-background-default) var(--fills-backgrounds-page-background-default);
 
             &.tabs__content--has-user-rules {
                 max-height: 216px;
                 min-height: 216px;
             }
-        }
-
-        &::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        /* TODO: check if needed */
-        &::-webkit-scrollbar-track {
-            background: var(--fills-loaders-background-default);
-        }
-
-        /* TODO: check if needed */
-        &::-webkit-scrollbar-thumb {
-            background-color: var(--fills-loaders-background-default);
-            border-radius: 4px;
         }
     }
 

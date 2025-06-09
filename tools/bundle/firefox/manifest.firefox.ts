@@ -26,7 +26,6 @@ import {
     BACKGROUND_OUTPUT,
     MIN_SUPPORTED_VERSION,
     POPUP_OUTPUT,
-    SUBSCRIBE_OUTPUT,
 } from '../../../constants';
 
 const appId = FIREFOX_APP_IDS_MAP[BUILD_ENV];
@@ -44,18 +43,6 @@ export const firefoxManifest = {
         'page': `${BACKGROUND_OUTPUT}.html`,
         'persistent': false,
     },
-    'content_scripts': [{
-        'all_frames': true,
-        'js': [
-            `${SUBSCRIBE_OUTPUT}.js`,
-        ],
-        'matches': [
-            'http://*/*',
-            'https://*/*',
-        ],
-        'match_about_blank': false,
-        'run_at': 'document_end',
-    }],
     'browser_action': {
         'default_icon': {
             '19': 'assets/icons/on-19.png',
@@ -90,6 +77,8 @@ export const firefoxManifest = {
         'contextMenus',
         'cookies',
         'privacy',
+        'clipboardRead',
+        'clipboardWrite',
     ],
 };
 

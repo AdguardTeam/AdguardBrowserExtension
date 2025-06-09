@@ -18,15 +18,15 @@ module.exports = {
             4,
             {
                 SwitchCase: 1,
-                // TODO: Currently 'Decorator' is not supported with @typescript-eslint/parser@7,
-                // but we cannot update it to 8 because of the incompatibility with other plugins.
-                // So we should to update it with `eslint-config-airbnb-typescript`.
-                ignoredNodes: ['Decorator'],
+                ignoredNodes: [
+                    // indentation for props with decorators is not working as expecting,
+                    // that is why we are disabling it
+                    'PropertyDefinition[decorators]',
+                ],
             },
         ],
 
         'import/prefer-default-export': 'off',
-        'max-len': 'off',
         'no-use-before-define': 'off',
         'indent': 'off',
         'arrow-body-style': 'off',

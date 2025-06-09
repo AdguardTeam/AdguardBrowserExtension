@@ -21,25 +21,25 @@ import { type SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextensio
 import { logger } from '../../../common/logger';
 import { type AppearanceTheme, defaultSettings } from '../../../common/settings';
 import {
-    AllowlistConfig,
+    type AllowlistConfig,
     AllowlistOption,
     configValidator,
-    ExtensionSpecificSettingsConfig,
+    type ExtensionSpecificSettingsConfig,
     ExtensionSpecificSettingsOption,
-    FiltersConfig,
+    type FiltersConfig,
     FiltersOption,
-    GeneralSettingsConfig,
+    type GeneralSettingsConfig,
     GeneralSettingsOption,
     RootOption,
     PROTOCOL_VERSION,
-    StealthConfig,
+    type StealthConfig,
     StealthOption,
-    UserFilterConfig,
+    type UserFilterConfig,
     UserFilterOption,
     SettingOption,
-    Settings,
+    type Settings,
     settingsValidator,
-    Config,
+    type Config,
 } from '../../schema';
 import {
     filterStateStorage,
@@ -54,11 +54,13 @@ import {
     UserRulesApi,
     AllowlistApi,
     annoyancesConsent,
+    QuickFixesRulesApi,
 } from '../filters';
 import {
     ADGUARD_SETTINGS_KEY,
     AntiBannerFiltersId,
     NotifierType,
+    SEPARATE_ANNOYANCE_FILTER_IDS,
 } from '../../../common/constants';
 import { settingsEvents } from '../../events';
 import { notifier } from '../../notifier';
@@ -67,19 +69,22 @@ import { messenger } from '../../../pages/services/messenger';
 import { Prefs } from '../../prefs';
 import {
     ASSISTANT_INJECT_OUTPUT,
-    DOCUMENT_BLOCK_OUTPUT,
+    BLOCKING_BLOCKED_OUTPUT,
     GPC_SCRIPT_OUTPUT,
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../../constants';
+import { DocumentBlockApi } from '../document-block';
 import { filteringLogApi } from '../filtering-log';
 import { network } from '../network';
+import { getZodErrorMessage } from '../../../common/error';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
 
 import { SettingsMigrations } from './migrations';
 
 export type SettingsData = {
-    names: typeof SettingOption,
-    defaultValues: Settings,
-    values: Settings,
+    names: typeof SettingOption;
+    defaultValues: Settings;
+    values: Settings;
 };
 
 /**
@@ -98,8 +103,8 @@ export class SettingsApi {
             const settings = settingsValidator.parse(data);
             settingsStorage.setCache(settings);
         } catch (e) {
-            logger.error('Cannot init settings from storage: ', e);
-            logger.info('Reverting settings to default values');
+            logger.error('[ext.SettingsApi.init]: cannot init settings from storage:', getZodErrorMessage(e));
+            logger.info('[ext.SettingsApi.init]: reverting settings to default values');
             const settings = { ...defaultSettings };
 
             // Update settings in the cache and in the storage
@@ -159,9 +164,12 @@ export class SettingsApi {
     public static getTsWebExtConfiguration<T extends boolean>(
         isMV3: T,
     ): T extends true ? SettingsConfigMV3 : SettingsConfigMV2 {
+        // pass the locale explicitly as a part of the url
+        const documentBlockingPageUrl = `${Prefs.baseUrl}${BLOCKING_BLOCKED_OUTPUT}.html?_locale=${Prefs.language}`;
+
         return {
             assistantUrl: `/${ASSISTANT_INJECT_OUTPUT}.js`,
-            documentBlockingPageUrl: `${Prefs.baseUrl}${DOCUMENT_BLOCK_OUTPUT}.html`,
+            documentBlockingPageUrl,
             ...(isMV3 && {
                 gpcScriptUrl: `/${GPC_SCRIPT_OUTPUT}.js`,
                 hideDocumentReferrerScriptUrl: `/${HIDE_DOCUMENT_REFERRER_OUTPUT}.js`,
@@ -210,6 +218,9 @@ export class SettingsApi {
         // On import should enable only groups from imported file.
         await CommonFilterApi.initDefaultFilters(enableUntouchedGroups);
 
+        // reset trusted domains list
+        await DocumentBlockApi.reset();
+
         // reset list of consented filter ids on reset settings
         await annoyancesConsent.reset();
     }
@@ -256,7 +267,7 @@ export class SettingsApi {
 
             return true;
         } catch (e) {
-            logger.error(e);
+            logger.error('[ext.SettingsApi.import]: cannot import settings:', getZodErrorMessage(e));
             return false;
         }
     }
@@ -306,11 +317,17 @@ export class SettingsApi {
         }
 
         if (allowAcceptableAds) {
-            await CommonFilterApi.loadFilterRulesFromBackend(
-                // Since this is called on settings import we update filters without patches.
-                { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, ignorePatches: false },
-                false,
-            );
+            try {
+                await CommonFilterApi.loadFilterRulesFromBackend(
+                    // Since this is called on settings import we update filters without patches.
+                    { filterId: AntiBannerFiltersId.SearchAndSelfPromoFilterId, ignorePatches: false },
+                    false,
+                );
+            } catch (e) {
+                logger.error(
+                    `[ext.SettingsApi.importGeneralSettings]: Failed to load filter with id ${AntiBannerFiltersId.SearchAndSelfPromoFilterId} due to ${e}`,
+                );
+            }
             filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
@@ -413,19 +430,12 @@ export class SettingsApi {
                 await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, true);
                 filterIdsToEnable.push(filterId);
             } catch (e) {
-                logger.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
+                logger.debug(`[ext.SettingsApi.loadBuiltInFiltersRemote]: filter rules were not loaded from backend for filter: ${filterId}, error:`, getZodErrorMessage(e));
                 failedFilterIds.push(filterId);
             }
         });
 
-        const promises = await Promise.allSettled(tasks);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                logger.error(promise.reason);
-            }
-        });
+        await Promise.allSettled(tasks);
 
         filterStateStorage.enableFilters(filterIdsToEnable);
 
@@ -440,20 +450,22 @@ export class SettingsApi {
      * @private
      */
     private static async loadBuiltInFiltersLocal(filterIds: number[]): Promise<void> {
+        const filtersToEnable: number[] = [];
+
         const tasks = filterIds.map(async (filterId: number) => {
-            await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
-        });
+            try {
+                await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, false);
 
-        const promises = await Promise.allSettled(tasks);
-
-        filterStateStorage.enableFilters(filterIds);
-
-        // Handles errors
-        promises.forEach((promise) => {
-            if (promise.status === 'rejected') {
-                logger.error(promise.reason);
+                filtersToEnable.push(filterId);
+            } catch (e) {
+                // error may be thrown if filter is deprecated and its local copy no longer exists
+                logger.debug(`[ext.SettingsApi.loadBuiltInFiltersLocal]: filter rules were not loaded from local storage for filter: ${filterId}, error:`, getZodErrorMessage(e));
             }
         });
+
+        await Promise.allSettled(tasks);
+
+        filterStateStorage.enableFilters(filtersToEnable);
     }
 
     /**
@@ -486,7 +498,7 @@ export class SettingsApi {
             throw new Error(`There is no local copy of filters with ids: ${filterIdsWithNoLocalCopy.join(', ')}`);
         }
 
-        logger.debug(`Trying to load from storage filters with ids: ${filterIdsToLoadLocal.join(', ')}`);
+        logger.debug(`[ext.SettingsApi.loadBuiltInFiltersMv2]: trying to load from storage filters with ids: ${filterIdsToLoadLocal.join(', ')}`);
         await SettingsApi.loadBuiltInFiltersLocal(filterIdsToLoadLocal);
     }
 
@@ -507,7 +519,7 @@ export class SettingsApi {
             if (CommonFilterApi.isMv3Supported(filterId)) {
                 filtersToLoad.push(filterId);
             } else {
-                logger.debug(`MV3 extension does not support filter with id ${filterId}`);
+                logger.debug(`[ext.SettingsApi.loadBuiltInFiltersMv3]: MV3 extension does not support filter with id ${filterId}`);
             }
         });
 
@@ -527,28 +539,30 @@ export class SettingsApi {
         await SettingsApi.importUserFilter(userFilter);
         SettingsApi.importAllowlist(allowlist);
 
-        const builtInFilters = enabledFilters.filter((filterId: number) => CommonFilterApi.isCommonFilter(filterId));
+        const filtersToEnable = enabledFilters.filter((filterId: number) => {
+            return CommonFilterUtils.isCommonFilter(filterId);
+        });
 
         if (__IS_MV3__) {
-            await SettingsApi.loadBuiltInFiltersMv3(builtInFilters);
+            await SettingsApi.loadBuiltInFiltersMv3(filtersToEnable);
 
-            // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-            // forcibly enable Quick Fixes filter on import for MV3
-            // because it is a must-have filter
-            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
-            await SettingsApi.loadBuiltInFiltersMv2(builtInFilters);
+            // special handling for large AdGuard Annoyances filter,
+            // all other deprecated filters shall be skipped;
+            // only for MV2 because it was never available in MV3
+            if (filtersToEnable.includes(AntiBannerFiltersId.AnnoyancesCombinedFilterId)) {
+                filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
+            }
+
+            await SettingsApi.loadBuiltInFiltersMv2(filtersToEnable);
         }
 
-        // TODO: Uncomment this block when custom filters will be supported for MV3.
-        // Ignoring custom filters for MV3 since AG-39385.
-        if (!__IS_MV3__) {
-            await CustomFilterApi.createFilters(customFilters);
-        }
+        await CustomFilterApi.createFilters(customFilters);
 
         groupStateStorage.enableGroups(enabledGroups);
 
-        logger.info(`Import filters: next groups were enabled: ${enabledGroups}`);
+        logger.info(`[ext.SettingsApi.importFilters]: next groups were enabled: ${enabledGroups}`);
 
         // Disable groups not listed in the imported list.
         const allGroups = groupStateStorage.getData();

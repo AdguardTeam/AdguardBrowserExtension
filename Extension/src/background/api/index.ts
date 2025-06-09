@@ -24,5 +24,5 @@ export * from '../../common/api/extension';
 export * from './install';
 export * from './update';
 export * from './safebrowsing';
-export * from './document-block';
+export { DocumentBlockApi } from './document-block';
 export * from './page-stats';

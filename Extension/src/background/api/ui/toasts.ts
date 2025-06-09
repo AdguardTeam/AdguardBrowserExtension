@@ -22,13 +22,14 @@ import { BrowserUtils } from '../../utils/browser-utils';
 import { translator } from '../../../common/translators/translator';
 import { notificationTextRecordValidator } from '../../schema';
 import { TabsApi } from '../../../common/api/extension';
-import { FilterMetadata } from '../filters';
+import { type FilterMetadata } from '../filters';
 import { sendTabMessage, MessageType } from '../../../common/messages';
 import {
     Forward,
     ForwardAction,
     ForwardFrom,
 } from '../../../common/forward';
+import { getFiltersUpdateResultMessage } from '../../../common/toast-helper';
 
 import { promoNotificationApi } from './promo-notification';
 
@@ -75,7 +76,7 @@ export class Toasts {
         try {
             if (triesCount > Toasts.MAX_TRIES) {
                 // Give up
-                logger.warn('Reached max tries on attempts to show rule limits alert popup');
+                logger.warn('[ext.Toasts.showRuleLimitsAlert]: reached max tries on attempts to show rule limits alert popup.');
                 return;
             }
 
@@ -83,7 +84,7 @@ export class Toasts {
             const alertContainerStyles = this.styles.get(StylesAssetsPath.RulesLimitsContainer);
 
             if (!alertStyles || !alertContainerStyles) {
-                logger.error('Alert assets is not loaded!');
+                logger.error('[ext.Toasts.showRuleLimitsAlert]: alert assets is not loaded!');
                 return;
             }
 
@@ -127,7 +128,7 @@ export class Toasts {
         try {
             if (triesCount > Toasts.MAX_TRIES) {
                 // Give up
-                logger.warn('Reached max tries on attempts to show alert popup');
+                logger.warn('[ext.Toasts.showAlertMessage]: reached max tries on attempts to show alert popup');
                 return;
             }
 
@@ -136,7 +137,7 @@ export class Toasts {
             const alertContainerStyles = this.styles.get(StylesAssetsPath.AlertContainer);
 
             if (!alertStyles || !alertContainerStyles) {
-                logger.error('Alert assets is not loaded!');
+                logger.error('[ext.Toasts.showAlertMessage]: alert assets styles are not loaded!');
                 return;
             }
 
@@ -181,7 +182,7 @@ export class Toasts {
      * @param filters List of filters to update.
      */
     public showFiltersUpdatedAlertMessage(success: boolean, filters?: FilterMetadata[]): void {
-        const { title, text } = Toasts.getFiltersUpdateResultMessage(success, filters);
+        const { title, text } = getFiltersUpdateResultMessage(success, filters);
 
         this.showAlertMessage(title, text);
     }
@@ -241,7 +242,7 @@ export class Toasts {
                     const svgStr = await response.text();
                     offerBgImage = `data:image/svg+xml;base64,${btoa(svgStr)}`;
                 } catch (e) {
-                    logger.warn('Failed to load promo notification background image', e);
+                    logger.warn('[ext.Toasts.showApplicationUpdatedPopup]: failed to load promo notification background image:', e);
                 }
             }
         }
@@ -249,7 +250,7 @@ export class Toasts {
         try {
             if (triesCount > Toasts.MAX_TRIES) {
                 // Give up
-                logger.warn('Reached max tries on attempts to show application update popup');
+                logger.warn('[ext.Toasts.showApplicationUpdatedPopup]: reached max tries on attempts to show application update popup');
                 return;
             }
 
@@ -258,7 +259,7 @@ export class Toasts {
             const iframeStyles = this.styles.get(StylesAssetsPath.UpdateContainer);
 
             if (!alertStyles || !iframeStyles) {
-                logger.error('Update popup assets is not loaded!');
+                logger.error('[ext.Toasts.showApplicationUpdatedPopup]: update popup assets styles are not loaded!');
                 return;
             }
 
@@ -310,67 +311,14 @@ export class Toasts {
      * @returns Title and text lines for message.
      */
     private static getFiltersEnabledResultMessage(enabledFilters: FilterMetadata[]): {
-        title: string,
-        text: string[],
+        title: string;
+        text: string[];
     } {
         const title = translator.getMessage('alert_popup_filter_enabled_title');
 
         const text = enabledFilters
             .sort((a, b) => a.displayNumber - b.displayNumber)
             .map((filter) => translator.getMessage('alert_popup_filter_enabled_desc', { filter_name: filter.name }));
-
-        return {
-            title,
-            text,
-        };
-    }
-
-    /**
-     * Returns message with result of updating filters.
-     *
-     * @param success Whether the update was successful or not.
-     * @param updatedFilters List of filters to update.
-     *
-     * @returns Title and text lines for message.
-     */
-    private static getFiltersUpdateResultMessage(
-        success: boolean,
-        updatedFilters?: FilterMetadata[],
-    ): {
-        title: string,
-        text: string,
-    } {
-        if (!success || !updatedFilters) {
-            return {
-                title: translator.getMessage('options_popup_update_title_error'),
-                text: translator.getMessage('options_popup_update_error'),
-            };
-        }
-
-        const title = '';
-
-        if (updatedFilters.length === 0) {
-            return {
-                title,
-                text: translator.getMessage('options_popup_update_not_found'),
-            };
-        }
-
-        let text = updatedFilters
-            .sort((a, b) => {
-                if (a.groupId === b.groupId) {
-                    return a.displayNumber - b.displayNumber;
-                }
-                return Number(a.groupId === b.groupId);
-            })
-            .map((filter) => `${filter.name}`)
-            .join(', ');
-
-        if (updatedFilters.length > 1) {
-            text += ` ${translator.getMessage('options_popup_update_filters')}`;
-        } else {
-            text += ` ${translator.getMessage('options_popup_update_filter')}`;
-        }
 
         return {
             title,

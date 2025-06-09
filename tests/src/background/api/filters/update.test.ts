@@ -1,4 +1,4 @@
-import { Storage } from 'webextension-polyfill';
+import { type Storage } from 'webextension-polyfill';
 import {
     afterEach,
     beforeEach,
@@ -122,7 +122,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
 
         beforeEach(async () => {
             storage = mockLocalStorage({
-                [APP_VERSION_KEY]: '4.2.0.0',
+                [APP_VERSION_KEY]: '5.2.0.0',
             });
             await App.init();
         });
@@ -288,7 +288,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
 
         beforeEach(async () => {
             storage = mockLocalStorage({
-                [APP_VERSION_KEY]: '4.2.0.0',
+                [APP_VERSION_KEY]: '5.2.0.0',
                 [CLIENT_ID_KEY]: 'id',
             });
             await App.init();
@@ -482,7 +482,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
 
         beforeEach(async () => {
             storage = mockLocalStorage({
-                [APP_VERSION_KEY]: '4.2.0.0',
+                [APP_VERSION_KEY]: '5.2.0.0',
                 [CLIENT_ID_KEY]: 'id',
             });
 

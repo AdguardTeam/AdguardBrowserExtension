@@ -13,37 +13,6 @@ body,
     flex-direction: column;
 }
 
-*::-webkit-scrollbar {
-    width: 12px;
-}
-
-*::-webkit-scrollbar-track {
-    background: var(--gray100);
-
-    @media (prefers-color-scheme: dark) {
-        background: var(--grayDark);
-    }
-}
-
-*::-webkit-scrollbar-thumb {
-    background-color: var(--gray300);
-    border-radius: 20px;
-    border: 3px solid var(--gray100);
-
-    @media (prefers-color-scheme: dark) {
-        background-color: var(--gray700);
-        border: 3px solid var(--grayDark);
-    }
-}
-
-*::-webkit-scrollbar-corner {
-    background: var(--gray100);
-
-    @media (prefers-color-scheme: dark) {
-        background: var(--grayDark);
-    }
-}
-
 body {
     margin: 0;
     font-family: 'Roboto Flex', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Ubuntu, Arial, sans-serif;
@@ -86,6 +55,7 @@ select {
 
 /* custom checkbox */
 .checkbox-wrapper {
+    position: relative;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -97,6 +67,8 @@ select {
     cursor: pointer;
     display: flex;
     align-items: center;
+    /* To make size of label 1:1 with icon */
+    line-height: 0;
 
     & .custom-checkbox {
         min-width: 16px;
@@ -125,14 +97,17 @@ select {
     clip: rect(1px, 1px, 1px, 1px);
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
 
     &:focus-visible + .checkbox-label {
         outline: 2px solid var(--outline);
     }
 
     &:checked + .checkbox-label .custom-checkbox {
-        background-color: var(--green400);
-        border-color: var(--green400);
+        background-color: var(--stroke-icons-product-icon-default);
+        border-color: var(--stroke-icons-product-icon-default);
 
         & .icon {
             display: block;
@@ -217,41 +192,47 @@ select {
 
 .light-mode {
     color-scheme: light;
-
-    *::-webkit-scrollbar-track {
-        background: var(--gray100);
-    }
-
-    *::-webkit-scrollbar-thumb {
-        background-color: var(--gray300);
-        border-radius: 20px;
-        border: 3px solid var(--gray100);
-    }
-
-    *::-webkit-scrollbar-corner {
-        background: var(--gray100);
-    }
 }
 
 .dark-mode {
     color-scheme: dark;
-
-    *::-webkit-scrollbar-track {
-        background: var(--grayDark);
-    }
-
-    *::-webkit-scrollbar-thumb {
-        background-color: var(--gray700);
-        border-radius: 20px;
-        border: 3px solid var(--grayDark);
-    }
-
-    *::-webkit-scrollbar-corner {
-        background: var(--grayDark);
-    }
 }
 
 span.red-dot {
     color: var(--text-links-error-link-default);
     margin-right: 4px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+
+    &::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--scrollbar-thumb);
+        border-radius: 12px;
+    }
+
+    &::-webkit-scrollbar-corner {
+        background: var(--scrollbar-track);
+    }
 }

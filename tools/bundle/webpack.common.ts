@@ -24,7 +24,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ZipWebpackPlugin from 'zip-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 // webpack.DefinePlugin is not named exported by webpack.
-import webpack, { Configuration, type EntryObject } from 'webpack';
+import webpack, { type Configuration, type EntryObject } from 'webpack';
 
 import {
     BUILD_PATH,
@@ -48,6 +48,7 @@ import {
     ASSISTANT_INJECT_OUTPUT,
     SCRIPTLETS_VENDOR_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
+    TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
     FILTERING_LOG_OUTPUT,
     DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT,
@@ -57,6 +58,8 @@ import {
     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
     BACKGROUND_OUTPUT,
     MIN_SUPPORTED_VERSION,
+    INDEX_HTML_FILE_NAME,
+    SUBSCRIBE_OUTPUT,
 } from '../../constants';
 
 import {
@@ -70,6 +73,7 @@ import {
     OPTIONS_PATH,
     POPUP_PATH,
     POST_INSTALL_PATH,
+    SUBSCRIBE_PATH,
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf } from './helpers';
@@ -93,6 +97,7 @@ export const ENTRY_POINTS_CHUNKS = {
     [BACKGROUND_OUTPUT]: [
         TSWEBEXTENSION_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
+        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
         SCRIPTLETS_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
         CSS_TOKENIZER_VENDOR_OUTPUT,
@@ -101,6 +106,9 @@ export const ENTRY_POINTS_CHUNKS = {
     [OPTIONS_OUTPUT]: [
         SCRIPTLETS_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
+        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
+        TSWEBEXTENSION_VENDOR_OUTPUT,
+        TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
         CSS_TOKENIZER_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
         REACT_VENDOR_OUTPUT,
@@ -111,6 +119,7 @@ export const ENTRY_POINTS_CHUNKS = {
     [FILTERING_LOG_OUTPUT]: [
         SCRIPTLETS_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
+        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
         CSS_TOKENIZER_VENDOR_OUTPUT,
         TSWEBEXTENSION_VENDOR_OUTPUT,
@@ -122,6 +131,11 @@ export const ENTRY_POINTS_CHUNKS = {
     [FULLSCREEN_USER_RULES_OUTPUT]: [
         CSS_TOKENIZER_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
+        SCRIPTLETS_VENDOR_OUTPUT,
+        TSURLFILTER_VENDOR_OUTPUT,
+        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
+        TSWEBEXTENSION_VENDOR_OUTPUT,
+        TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
         REACT_VENDOR_OUTPUT,
         MOBX_VENDOR_OUTPUT,
         XSTATE_VENDOR_OUTPUT,
@@ -187,6 +201,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     REACT_VENDOR_OUTPUT,
                 ],
             },
+            [SUBSCRIBE_OUTPUT]: {
+                import: SUBSCRIBE_PATH,
+                runtime: false,
+            },
             // Library vendors
             [TSURLFILTER_VENDOR_OUTPUT]: {
                 import: '@adguard/tsurlfilter',
@@ -194,6 +212,12 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     AGTREE_VENDOR_OUTPUT,
                     CSS_TOKENIZER_VENDOR_OUTPUT,
                     SCRIPTLETS_VENDOR_OUTPUT,
+                ],
+            },
+            [TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT]: {
+                import: '@adguard/tsurlfilter/es/declarative-converter',
+                dependOn: [
+                    TSURLFILTER_VENDOR_OUTPUT,
                 ],
             },
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
@@ -204,7 +228,12 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
                 ],
             },
-            [SCRIPTLETS_VENDOR_OUTPUT]: ['@adguard/scriptlets'],
+            [SCRIPTLETS_VENDOR_OUTPUT]: {
+                import: '@adguard/scriptlets',
+                dependOn: [
+                    AGTREE_VENDOR_OUTPUT,
+                ],
+            },
             [AGTREE_VENDOR_OUTPUT]: ['@adguard/agtree'],
             [CSS_TOKENIZER_VENDOR_OUTPUT]: ['@adguard/css-tokenizer'],
             [TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT]: ['@adguard/text-encoding'],
@@ -271,12 +300,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`,
                 ),
-                // TODO: Uncomment this block when custom filters will be supported for MV3.
-                // 'custom-filters-service': path.resolve(
-                //     __dirname,
-                // eslint-disable-next-line max-len
-                //     `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`,
-                // ),
+                'custom-filters-service': path.resolve(
+                    __dirname,
+                    // eslint-disable-next-line max-len
+                    `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`,
+                ),
                 'rules-limits-service': path.resolve(
                     __dirname,
                     `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`,
@@ -369,7 +397,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(OPTIONS_PATH, 'index.html'),
+                template: path.join(OPTIONS_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
                     ...ENTRY_POINTS_CHUNKS[OPTIONS_OUTPUT],
@@ -378,19 +406,19 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(POPUP_PATH, 'index.html'),
+                template: path.join(POPUP_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${POPUP_OUTPUT}.html`,
                 chunks: [REACT_VENDOR_OUTPUT, MOBX_VENDOR_OUTPUT, POPUP_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(POST_INSTALL_PATH, 'index.html'),
+                template: path.join(POST_INSTALL_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${POST_INSTALL_OUTPUT}.html`,
                 chunks: [POST_INSTALL_OUTPUT],
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(FULLSCREEN_USER_RULES_PATH, 'index.html'),
+                template: path.join(FULLSCREEN_USER_RULES_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
                     ...ENTRY_POINTS_CHUNKS[FULLSCREEN_USER_RULES_OUTPUT],
@@ -399,7 +427,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             }),
             new HtmlWebpackPlugin({
                 ...htmlTemplatePluginCommonOptions,
-                template: path.join(FILTERING_LOG_PATH, 'index.html'),
+                template: path.join(FILTERING_LOG_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
                     ...ENTRY_POINTS_CHUNKS[FILTERING_LOG_OUTPUT],
@@ -444,13 +472,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
     };
 
     // Run the archive only if it is not a watch mode to reduce the build time.
-    // Also, we have special handler for ZipWebpackPlugin only for Firefox builds.
-    const isNotFirefoxBuild = browserConfig.browser !== Browser.FirefoxAmo
-        && browserConfig.browser !== Browser.FirefoxStandalone;
-    if (!isWatchMode && configuration.plugins && isNotFirefoxBuild) {
+    if (!isWatchMode && configuration.plugins) {
+        // @ts-expect-error ZipWebpackPlugin has outdated types
         configuration.plugins.push(new ZipWebpackPlugin({
             path: '../',
-            filename: `${browserConfig.browser}.zip`,
+            filename: `${browserConfig.zipName}.zip`,
         }));
     }
 

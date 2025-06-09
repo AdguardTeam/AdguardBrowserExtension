@@ -41,7 +41,7 @@ export const AnnoyancesConsent = observer(({
 
     const renderFilters = () => {
         return filtersToGetConsentFor.map((filter) => (
-            <div className="annoyances-consent__text annoyances-consent__filter" key={filter.filterId}>
+            <li key={filter.filterId} className="annoyances-consent__text annoyances-consent__filter">
                 <div className="annoyances-consent__filter--header">
                     <div className="annoyances-consent__filter--name">
                         {filter.name}
@@ -53,13 +53,13 @@ export const AnnoyancesConsent = observer(({
                         className="annoyances-consent__filter--homepage-link"
                         title={translator.getMessage('options_filters_filter_link')}
                     >
-                        <Icon id="#link" />
+                        <Icon id="#link" aria-hidden="true" />
                     </a>
                 </div>
                 <div className="annoyances-consent__filter--description">
                     {filter.description}
                 </div>
-            </div>
+            </li>
         ));
     };
 
@@ -71,9 +71,9 @@ export const AnnoyancesConsent = observer(({
             <div className="annoyances-consent__text">
                 {translator.getMessage('options_filters_annoyances_consent_question')}
             </div>
-            <div className="annoyances-consent__text">
+            <ul className="annoyances-consent__text annoyances-consent__filters">
                 {renderFilters()}
-            </div>
+            </ul>
             {shouldShowFilterPolicy && (
                 <div className="annoyances-consent__filter--policy">
                     {reactTranslator.getMessage('options_filters_annoyances_consent_filter_policy', {

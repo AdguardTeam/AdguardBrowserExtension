@@ -91,7 +91,7 @@ export class BrowserUtils {
             // eslint-disable-next-line no-new
             new Version(version);
         } catch (e: unknown) {
-            logger.debug(`Can not parse version: "${version}", error: `, e);
+            logger.debug(`[ext.BrowserUtils.isSemver]: can not parse version: "${version}", error:`, e);
             return false;
         }
         return true;

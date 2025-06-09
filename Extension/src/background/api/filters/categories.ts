@@ -16,7 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { UserAgent } from '../../../common/user-agent';
-import { AntiBannerFiltersId, RECOMMENDED_TAG_ID } from '../../../common/constants';
+import { RECOMMENDED_TAG_ID } from '../../../common/constants';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
 import {
     metadataStorage,
     filterStateStorage,
@@ -25,19 +26,18 @@ import {
     customFilterMetadataStorage,
 } from '../../storages';
 import {
-    GroupMetadata,
-    TagMetadata,
-    RegularFilterMetadata,
-    GroupStateData,
-    FilterStateData,
-    FilterVersionData,
-    CustomFilterMetadata,
+    type GroupMetadata,
+    type TagMetadata,
+    type RegularFilterMetadata,
+    type GroupStateData,
+    type FilterStateData,
+    type FilterVersionData,
+    type CustomFilterMetadata,
 } from '../../schema';
 import { logger } from '../../../common/logger';
-import { CustomFilterHelper } from '../../../common/custom-filter-helper';
 
 import { CommonFilterApi } from './common';
-import { FilterMetadata, FiltersApi } from './main';
+import { type FilterMetadata, FiltersApi } from './main';
 import { FilterUpdateApi } from './update';
 
 /**
@@ -66,8 +66,8 @@ export type CategoriesGroupData = (
  * Aggregated data for options page.
  */
 export type CategoriesData = {
-    categories: CategoriesGroupData[],
-    filters: CategoriesFilterData[]
+    categories: CategoriesGroupData[];
+    filters: CategoriesFilterData[];
 };
 
 /**
@@ -83,16 +83,7 @@ export class Categories {
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
-        let filters = Categories.getFilters();
-
-        // Exclude Quick Fixes filter and custom filters from filters list
-        // TODO: remove this check when Quick Fixes Filter and custom filters will be supported for MV3 again
-        if (__IS_MV3__) {
-            filters = filters.filter((f) => {
-                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId
-                    && !CustomFilterHelper.isCustomFilter(f.filterId);
-            });
-        }
+        const filters = Categories.getFilters();
 
         const categories = groups.map((group) => ({
             ...group,
@@ -144,6 +135,7 @@ export class Categories {
         }
 
         groupStateStorage.enableGroups([groupId]);
+        logger.info(`[ext.Categories.enableGroup]: enabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
     }
 
     /**
@@ -153,6 +145,7 @@ export class Categories {
      */
     public static disableGroup(groupId: number): void {
         groupStateStorage.disableGroups([groupId]);
+        logger.info(`[ext.Categories.disableGroup]: disabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
     }
 
     /**
@@ -301,6 +294,12 @@ export class Categories {
         const result: CategoriesFilterData[] = [];
 
         filtersMetadata.forEach((filterMetadata) => {
+            // skip deprecated filters
+            if (CommonFilterUtils.isRegularFilterMetadata(filterMetadata)
+                && filterMetadata.deprecated) {
+                return;
+            }
+
             const {
                 filterId,
                 tags,
@@ -309,20 +308,20 @@ export class Categories {
                 timeUpdated,
                 diffPath,
             } = filterMetadata;
-            const tagsDetails = Categories.getTagsDetails(tags);
 
             const filterState = filterStateStorage.get(filterId);
             if (!filterState) {
-                logger.error(`Cannot find filter ${filterId} state data`);
+                logger.error(`[ext.Categories.getFilters]: cannot find filter ${filterId} state data`);
                 return;
             }
 
             let filterVersion = filterVersionStorage.get(filterId);
             if (!filterVersion) {
                 // TODO: remove this hack after we find how to reproduce this issue
-                // Sometimes filter version data might be missing https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
+                // Sometimes filter version data might be missing
+                // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
                 // so we set it to values from metadata
-                logger.info(`Cannot find filter ${filterId} version data, restoring it from metadata`);
+                logger.info(`[ext.Categories.getFilters]: Cannot find filter ${filterId} version data, restoring it from metadata`);
                 const dayAgoMs = Date.now() - 1000 * 60 * 60 * 24; // 24 hours
                 filterVersion = {
                     version,
@@ -335,6 +334,8 @@ export class Categories {
                 };
                 filterVersionStorage.set(filterId, filterVersion);
             }
+
+            const tagsDetails = Categories.getTagsDetails(tags);
 
             result.push({
                 ...filterMetadata,
@@ -361,7 +362,7 @@ export class Categories {
             const groupState = groupStateStorage.get(groupMetadata.groupId);
 
             if (!groupState) {
-                logger.error(`Cannot find group ${groupMetadata.groupId} state data`);
+                logger.error(`[ext.Categories.getGroups]: cannot find group ${groupMetadata.groupId} state data`);
                 return;
             }
 
@@ -404,5 +405,22 @@ export class Categories {
                 return filterState?.enabled;
             })
             .map(({ filterId }) => filterId);
+    }
+
+    /**
+     * Returns the name of a group given its ID.
+     *
+     * @param groupId The ID of the group to get the name for.
+     *
+     * @returns The name of the group, or 'Unknown' if the group ID is not found.
+     */
+    public static getGroupName(groupId: number): string {
+        // Group name should always be defined, using 'Unknown' as a fallback just in case
+        const UNKNOWN_GROUP_NAME = 'Unknown';
+
+        const groupsMetadata = metadataStorage.getGroups();
+        const group = groupsMetadata.find((group) => group.groupId === groupId);
+
+        return group ? group.groupName : UNKNOWN_GROUP_NAME;
     }
 }

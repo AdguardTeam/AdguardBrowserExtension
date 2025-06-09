@@ -15,17 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { Tabs } from 'webextension-polyfill';
+import { type Tabs } from 'webextension-polyfill';
 
 import { RuleGenerator } from '@adguard/agtree/generator';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
 import {
     BACKGROUND_TAB_ID,
-    ContentType,
-    CookieEvent,
+    type ContentType,
+    type CookieEvent,
     isExtensionUrl,
-    StealthActionEvent,
+    type StealthActionEvent,
     getDomain,
     getRuleSourceText,
     getRuleSourceIndex,
@@ -37,27 +37,27 @@ import { logger } from '../../common/logger';
 import { translator } from '../../common/translators/translator';
 import { notifier } from '../notifier';
 import { engine } from '../engine';
-import { settingsStorage } from '../storages';
-import { SettingOption } from '../schema';
+import { settingsStorage } from '../storages/settings';
+import { SettingOption } from '../schema/settings/enum';
 import { TabsApi } from '../../common/api/extension/tabs';
 import { AntiBannerFiltersId, NotifierType } from '../../common/constants';
 import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 
 export type FilteringEventRuleData = {
-    filterId: number,
-    ruleIndex: number,
-    isImportant?: boolean,
-    documentLevelRule?: boolean,
-    isStealthModeRule?: boolean,
-    allowlistRule?: boolean,
-    allowlistStealthRule?: boolean,
-    cspRule?: boolean,
-    permissionsRule?: boolean,
-    modifierValue?: string,
-    cookieRule?: boolean,
-    contentRule?: boolean,
-    cssRule?: boolean,
-    scriptRule?: boolean,
+    filterId: number;
+    ruleIndex: number;
+    isImportant?: boolean;
+    documentLevelRule?: boolean;
+    isStealthModeRule?: boolean;
+    allowlistRule?: boolean;
+    allowlistStealthRule?: boolean;
+    cspRule?: boolean;
+    permissionsRule?: boolean;
+    modifierValue?: string;
+    cookieRule?: boolean;
+    contentRule?: boolean;
+    cssRule?: boolean;
+    scriptRule?: boolean;
 } & Partial<RuleText>;
 
 /**
@@ -65,30 +65,30 @@ export type FilteringEventRuleData = {
  * some filtering log event type from tswebextension.
  */
 export type FilteringLogEvent = {
-    eventId: string,
-    requestUrl?: string,
-    requestDomain?: string,
-    frameUrl?: string,
-    frameDomain?: string,
-    requestType?: ContentType,
-    timestamp?: number,
-    requestThirdParty?: boolean,
-    method?: string,
-    statusCode?: number,
-    requestRule?: FilteringEventRuleData,
-    removeParam?: boolean,
-    removeHeader?: boolean,
-    headerName?: string,
-    element?: string,
-    script?: boolean,
-    cookieName?: string,
-    cookieValue?: string,
-    isModifyingCookieRule?: boolean,
-    cspReportBlocked?: boolean,
-    replaceRules?: FilteringEventRuleData[],
-    stealthAllowlistRules?: FilteringEventRuleData[],
-    stealthActions?: StealthActionEvent['data']['stealthActions'],
-    declarativeRuleInfo?: DeclarativeRuleInfo,
+    eventId: string;
+    requestUrl?: string;
+    requestDomain?: string;
+    frameUrl?: string;
+    frameDomain?: string;
+    requestType?: ContentType;
+    timestamp?: number;
+    requestThirdParty?: boolean;
+    method?: string;
+    statusCode?: number;
+    requestRule?: FilteringEventRuleData;
+    removeParam?: boolean;
+    removeHeader?: boolean;
+    headerName?: string;
+    element?: string;
+    script?: boolean;
+    cookieName?: string;
+    cookieValue?: string;
+    isModifyingCookieRule?: boolean;
+    cspReportBlocked?: boolean;
+    replaceRules?: FilteringEventRuleData[];
+    stealthAllowlistRules?: FilteringEventRuleData[];
+    stealthActions?: StealthActionEvent['data']['stealthActions'];
+    declarativeRuleInfo?: DeclarativeRuleInfo;
 };
 
 /**
@@ -105,27 +105,27 @@ export type FilteringLogTabInfo = {
     /**
      * Tab id.
      */
-    tabId: number,
+    tabId: number;
 
     /**
      * Tab title.
      */
-    title: string,
+    title: string;
 
     /**
      * Indicates if this tab is an extension page (e.g. Options, filtering log).
      */
-    isExtensionTab: boolean,
+    isExtensionTab: boolean;
 
     /**
      * Filtering events.
      */
-    filteringEvents: FilteringLogEvent[],
+    filteringEvents: FilteringLogEvent[];
 
     /**
      * Domain of the tab.
      */
-    domain: string | null,
+    domain: string | null;
 };
 
 /**
@@ -231,13 +231,13 @@ export class FilteringLogApi {
         if (filterIds) {
             filterIds.forEach((filterId) => this.filtersCache.delete(filterId));
 
-            logger.info(`Filtering log filters cache purged for filter ids: ${filterIds.join(', ')}`);
+            logger.debug(`[ext.FilteringLogApi.purgeFiltersCache]: filtering log filters cache purged for filter ids: ${filterIds.join(', ')}`);
             return;
         }
 
         this.filtersCache.clear();
 
-        logger.info('Filtering log filters cache purged');
+        logger.debug('[ext.FilteringLogApi.purgeFiltersCache]: filtering log filters cache purged.');
     }
 
     /**
@@ -311,7 +311,7 @@ export class FilteringLogApi {
 
             return filterData;
         } catch (e) {
-            logger.error(`Failed to get filter data for filter id ${filterId}`, e);
+            logger.error(`[ext.FilteringLogApi.getFilterData]: failed to get filter data for filter id ${filterId}:`, e);
         }
 
         return undefined;
@@ -371,14 +371,14 @@ export class FilteringLogApi {
             // The following error messages should not be displayed during normal operation,
             // but we handle them just in case, and to provide type safety
             if (!ruleNode) {
-                logger.error(`Failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
+                logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
             }
 
             const ruleText = RuleGenerator.generate(ruleNode);
 
             if (!ruleText) {
-                logger.error(`Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
+                logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
             }
 
@@ -390,7 +390,7 @@ export class FilteringLogApi {
         const filterData = await this.getFilterData(filterId);
 
         if (!filterData) {
-            logger.error(`Failed to get filter data for filter id ${filterId}`);
+            logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get filter data for filter id ${filterId}`);
             return null;
         }
 
@@ -400,7 +400,7 @@ export class FilteringLogApi {
         const lineStartIndex = getRuleSourceIndex(ruleIndex, sourceMap);
 
         if (lineStartIndex === -1) {
-            let baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `[ext.FilteringLogApi.getRuleText]: failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
 
             const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
 
@@ -413,10 +413,12 @@ export class FilteringLogApi {
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
+                // eslint-disable-next-line @adguard/logger-context/require-logger-context
                 logger.warn(`${baseMessage}, trying to sync the filter`);
                 return this.getRuleText(filterId, ruleIndex);
             }
 
+            // eslint-disable-next-line @adguard/logger-context/require-logger-context
             logger.error(baseMessage);
             return null;
         }
@@ -424,7 +426,7 @@ export class FilteringLogApi {
         const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
 
         if (!appliedRuleText) {
-            let baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `[ext.FilteringLogApi.getRuleText]: failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
 
             const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
 
@@ -437,10 +439,12 @@ export class FilteringLogApi {
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
+                // eslint-disable-next-line @adguard/logger-context/require-logger-context
                 logger.warn(`${baseMessage}, trying to sync the filter`);
                 return this.getRuleText(filterId, ruleIndex);
             }
 
+            // eslint-disable-next-line @adguard/logger-context/require-logger-context
             logger.error(baseMessage);
             return null;
         }
@@ -492,13 +496,13 @@ export class FilteringLogApi {
         try {
             engine.api.setDebugScriptlets(true);
         } catch (e) {
-            logger.error('Failed to enable `verbose scriptlets logging` option', e);
+            logger.error('[ext.FilteringLogApi.onOpenFilteringLogPage]: failed to enable `verbose scriptlets logging` option:', e);
         }
 
         try {
             engine.api.setCollectHitStats(true);
         } catch (e) {
-            logger.error('Failed to enable `collect hit stats` option', e);
+            logger.error('[ext.FilteringLogApi.onOpenFilteringLogPage]: failed to enable `collect hit stats` option:', e);
         }
     }
 
@@ -520,14 +524,14 @@ export class FilteringLogApi {
             try {
                 engine.api.setDebugScriptlets(false);
             } catch (e) {
-                logger.error('Failed to disable `verbose scriptlets logging` option', e);
+                logger.error('[ext.FilteringLogApi.onCloseFilteringLogPage]: failed to disable `verbose scriptlets logging` option:', e);
             }
 
             if (settingsStorage.get(SettingOption.DisableCollectHits)) {
                 try {
                     engine.api.setCollectHitStats(false);
                 } catch (e) {
-                    logger.error('Failed to disable `collect hit stats` option', e);
+                    logger.error('[ext.FilteringLogApi.onCloseFilteringLogPage]: failed to disable `collect hit stats` option:', e);
                 }
             }
         }
@@ -801,7 +805,7 @@ export class FilteringLogApi {
         const event = filteringEvents.find((e) => e.eventId === eventId);
 
         if (!event) {
-            logger.debug('Not found event in filtering log to update: ', eventId);
+            logger.debug('[ext.FilteringLogApi.attachDeclarativeRuleToEventData]: not found event in filtering log to update:', eventId);
             return;
         }
 

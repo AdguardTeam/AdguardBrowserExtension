@@ -27,15 +27,15 @@ import { CopyToClipboard } from '../CopyToClipboard';
 import './text-collapser.pcss';
 
 type TextCollapserProps = {
-    text: string,
-    width: number,
-    lineCountLimit: number,
+    text: string;
+    width: number;
+    lineCountLimit: number;
     collapserButtonMessages: {
-        showMessage?: string,
-        hideMessage?: string,
-    },
-    canCopy?: boolean,
-    children?: React.ReactNode,
+        showMessage?: string;
+        hideMessage?: string;
+    };
+    canCopy?: boolean;
+    children?: React.ReactNode;
 };
 
 export const TextCollapser = forwardRef((
