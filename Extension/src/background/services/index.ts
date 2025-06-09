@@ -23,10 +23,12 @@ export { CustomFiltersService } from './custom-filters';
 export { UserRulesService, type GetUserRulesResponse, type GetUserRulesEditorDataResponse } from './userrules';
 export { eventService, type CreateEventListenerResponse } from './event';
 export {
-    PopupService,
+    UiService,
     type PageInitAppData,
-    PromoNotificationService,
+    type BlockingPageInitAppData,
+    PopupService,
     type GetTabInfoForPopupResponse,
+    PromoNotificationService,
 } from './ui';
 export { FiltersService } from './filters';
 export { localeDetect } from './locale-detect';
