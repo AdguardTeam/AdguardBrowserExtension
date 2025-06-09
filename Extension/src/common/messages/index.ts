@@ -19,6 +19,7 @@
 // FIXME: check one more time whether it is acceptable
 // since exports are: the MessageType enum and a lot of types,
 // and imports there are types only so if should not affect bundle size
+// eslint-disable-next-line no-restricted-syntax
 export * from './constants';
 export { sendMessage, sendTabMessage } from './send-message';
 export { MessageHandler, messageHasTypeField, messageHasTypeAndDataFields } from './message-handler';

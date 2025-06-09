@@ -153,6 +153,13 @@ module.exports = {
                 'ignoreEOLComments': true,
             },
         ],
+        'no-restricted-syntax': [
+            'error',
+            {
+                selector: ':matches(ExportAllDeclaration)',
+                message: 'Export only modules you need.',
+            },
+        ],
         'no-prototype-builtins': 'off',
         'no-continue': 'off',
         'no-bitwise': 'off',
