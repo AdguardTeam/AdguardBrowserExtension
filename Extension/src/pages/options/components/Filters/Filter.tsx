@@ -262,7 +262,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                                     />
                                 </div>
                             </div>
-                            <div className="setting__inner">
+                            <div className="setting__inner filter__content">
                                 <div id={prefixedFilterTitleId} className="filter__title" aria-hidden="true">
                                     <Popover text={name}>
                                         <div className="filter__title-constraint">

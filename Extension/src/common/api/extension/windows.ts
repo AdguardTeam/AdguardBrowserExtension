@@ -20,6 +20,7 @@ import browser, { type Windows, type Tabs } from 'webextension-polyfill';
 import { getErrorMessage } from '@adguard/logger';
 
 import { logger } from '../../logger';
+import { UserAgent } from '../../user-agent';
 
 /**
  * Helper class for browser.windows API.
@@ -31,9 +32,23 @@ export class WindowsApi {
      * Do not use browser.windows API if it is not supported,
      * for example on Android: not supported in Firefox and does not work in Edge.
      *
+     * @see {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/windows}
+     * @see {@link https://learn.microsoft.com/en-us/microsoft-edge/extensions-chromium/developer-guide/api-support}
+     *
      * @returns True if browser.windows API is supported, false otherwise.
      */
-    private static isSupported() {
+    private static async isSupported() {
+        const isAndroid = await UserAgent.getIsAndroid();
+
+        /**
+         * We need separate check for Edge on Android,
+         * because it has browser.windows API defined,
+         * but it does nothing when you try to use it
+         */
+        if (isAndroid && UserAgent.isEdge) {
+            return false;
+        }
+
         return !!browser.windows
             && typeof browser.windows.update === 'function'
             && typeof browser.windows.create === 'function';
@@ -43,12 +58,6 @@ export class WindowsApi {
      * Calls browser.windows.create with fallback to browser.tabs.create.
      * In case of fallback, compatible data will be reused.
      *
-     *
-     * This covers cases:
-     * - Firefox for Android, where browser.windows API is not available.
-     *   https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2536
-     * - Edge for Android, for some reason browser.windows.create does not open a new tab.
-     *
      * @param createData Browser.windows.create argument.
      *
      * @returns Created window, tab or null, if no calls were made.
@@ -56,7 +65,7 @@ export class WindowsApi {
     public static async create(
         createData?: Windows.CreateCreateDataType,
     ): Promise<Windows.Window | Tabs.Tab | null> {
-        if (WindowsApi.isSupported()) {
+        if (await WindowsApi.isSupported()) {
             return browser.windows.create(createData);
         }
 
@@ -104,7 +113,7 @@ export class WindowsApi {
             return;
         }
 
-        if (!WindowsApi.isSupported()) {
+        if (!(await WindowsApi.isSupported())) {
             logger.debug('[ext.WindowsApi.update]: browser.windows API is not supported');
             return;
         }
