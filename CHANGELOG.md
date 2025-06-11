@@ -9,15 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Support for Chrome's User Scripts API that allows more reliable script
-  injection in MV3 if developer mode is enabled.
+- Support for Chrome's User Scripts API that allows more reliable script injection in MV3.
+- Support for custom filters is back again due to User Scripts API usage.
 - Send last filters update time during issue reporting [#3055].
 - Ability to exit editor by pressing `Escape` keyboard button [#2333].
 - Blocking page for requests blocked by `$document` rules in MV3.
 - Compatibility of `$header` modifier with `$match-case`
   and `$third-party` modifiers in MV2 [#2942].
 - `zip` and `crx` artifacts for the extension builds [#3163], [#2488].
-- AdGuard Quick Fixes filter and support for custom filters are back again.
 
 ### Changed
 
