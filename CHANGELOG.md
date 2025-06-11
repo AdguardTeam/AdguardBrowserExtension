@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated blocking pages for MV2 — Safebrowsing and blocked by `$document` rules.
+- Updated blocking pages in MV2 extension for Safebrowsing and for web pages blocked by `$document` rules.
 - Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
 - Updated [@adguard/agtree] to v3.2.1.
 - Updated [@adguard/dnr-rulesets] to v3.1.0.
@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/logger] to v2.0.0.
 - Updated [@adguard/scriptlets] to v2.2.7.
 - Updated [@adguard/tsurlfilter] to v3.4.0.
-- Updated [@adguard/tswebextension] to v3.2.0.
+- Updated [@adguard/tswebextension] to v3.2.1.
 
 ### Removed
 
