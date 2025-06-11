@@ -423,84 +423,50 @@ Additionally, you can edit filters and rebuild DNR rulesets without rebuilding t
 
 ##### How to debug rules
 
-1. First, **build the extension** (skip this step if you already did so in the [How to build MV3 extension](#dev-debug-mv3-how-to-build) section):
+You can debug and update DNR rulesets without rebuilding the entire extension. There are two main workflows:
 
+**A. Automatic (recommended for most cases):**
+
+1. **Build the extension** (if not done yet):
     ```shell
     pnpm install
     pnpm dev chrome-mv3
     ```
-
-After extension is built, you can rebuild DNR rulesets automatically **OR** run
-conversion command manually:
-
-2. Convert filters to DNR rulesets **automatically** after changes in text files:
-
-    Start watching for changes:
-
+2. **Start watching for filter changes:**
     ```shell
     pnpm debug-filters:watch
     ```
+    - This will extract text filters to `./build/dev/chrome-mv3/filters` and watch for changes.
+    - When you edit and save any filter file, DNR rulesets will be rebuilt automatically.
+3. **Reload the extension in your browser** to apply new rulesets.
 
-    This command will extract text filters to the `./build/dev/chrome-mv3/filters`
-    and will start watching for changes in these files.
+**B. Manual (for advanced/manual control):**
 
-    Now, whenever filter text files in the `./build/dev/chrome-mv3/filters` directory are changed (watcher command will be triggered when you will save the file), the DNR rulesets will be rebuilt automatically. There is no need to rebuild the entire extension or convert filters manually.
-
-    Go to step 3.
-
-    For details about command options, see the [Technical information about commands](#dev-technical-info-about-debug-commands) section.
-
-**OR**
-
-2. Convert filters to DNR rulesets **manually** after changes in text files:
-
-    If you need to run a **conversion manually**, you can use the `@adguard/tsurlfilter` CLI's `convert` command to convert filters to DNR rulesets.
-
-    However, before running the conversion, you need to extract the raw text filters:
-
+1. **Extract text filters:**
     ```shell
     pnpm debug-filters:extract
     ```
-
-    Then, apply your changes to the text filters files in the `./build/dev/chrome-mv3/filters` directory.
-
-    After that, run the conversion:
-
+2. **Edit the text filters** in `./build/dev/chrome-mv3/filters` as needed.
+3. **Convert filters to DNR rulesets:**
     ```shell
     pnpm debug-filters:convert
     ```
+4. **Reload the extension in your browser** to apply new rulesets.
 
-    Go to step 3.
+**Tip:**
+- To download the latest available text filters, run:
+    ```shell
+    pnpm debug-filters:load
+    ```
 
-    For details about command options, see the [Technical information about commands](#dev-technical-info-about-debug-commands) section.
-
-3. Reload the extension in the browser after conversion:
-
-    ![Reload extension](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/reload_extension.png)
-
-4. If you see an exclamation mark, it means the assumed rule (calculated by our tsurlfilter engine using MV2 rules) and the applied rule (converted to a DNR rule) are different. This can indicate a conversion problem.
-
-    Otherwise, if the assumed and applied rules are the same, only the applied rule will be shown in both the raw text and declarative rule views.
-
-**Note:** if you need latest available text filters, you can run the following command to download them:
-
-```shell
-pnpm debug-filters:load
-```
-
-And after that run conversion in automatic or manual mode as described above.
-
+If you see an exclamation mark in the filtering log, it means the assumed rule (calculated by the engine) and the applied rule (converted to DNR) are different. Otherwise, only the applied rule (in DNR and text ways) will be shown.
 
 ##### <a name="dev-technical-info-about-debug-commands"></a> Technical information about commands
 
-1. **Automatically convert text filters to DNR rulesets after changes**
+- **Watch for changes and auto-convert:**
     ```shell
     pnpm debug-filters:watch
-    ```
-
-    Will do the following:
-
-    ```shell
+    # Under the hood:
     pnpm exec dnr-rulesets watch \
         # Enable extended logging about rulesets, since it is optional - it can be removed
         --debug \
@@ -511,42 +477,20 @@ And after that run conversion in automatic or manual mode as described above.
         # loaded during runtime).
         /web-accessible-resources
     ```
-
-    For details about all command options, run following command:
-
-    ```shell
-    pnpm exec dnr-rulesets watch --help
-    ```
-
-1. **Load text filters and metadata**
+- **Load latest text filters and metadata:**
     ```shell
     pnpm debug-filters:load
-    ```
-
-    Will do the following:
-
-    ```shell
+    # Under the hood:
     pnpm exec dnr-rulesets load
         # This will load latest text filters with their metadata
         --latest-filters
         # Destination path for text filters
         ./build/dev/chrome-mv3/filters
     ```
-
-    For details about all command options, run following command:
-
-    ```shell
-    pnpm exec dnr-rulesets load --help
-    ```
-
-1. **Single run for conversion text filters to DNR rulesets**
+- **Manual conversion:**
     ```shell
     pnpm debug-filters:convert
-    ```
-
-    Will do the following:
-
-    ```shell
+    # Under the hood:
     pnpm exec tsurlfilter convert \
         # Enable extended logging about rulesets
         --debug \
@@ -559,21 +503,10 @@ And after that run conversion in automatic or manual mode as described above.
         # Destination path for converted DNR rulesets
         ./build/dev/chrome-mv3/filters/declarative
     ```
-
-    For details about all command options, run following command:
-
-    ```shell
-    pnpm exec tsurlfilter convert --help
-    ```
-
-1. **Extract text filters from DNR rulesets**
+- **Extract text filters from DNR rulesets:**
     ```shell
     pnpm debug-filters:extract
-    ```
-
-    Will do the following:
-
-    ```shell
+    # Under the hood:
     pnpm exec tsurlfilter extract-filters \
         # Path to the directory with DNR rulesets
         ./build/dev/chrome-mv3/filters/declarative \
@@ -581,11 +514,11 @@ And after that run conversion in automatic or manual mode as described above.
         ./build/dev/chrome-mv3/filters
     ```
 
-    For details about all command options, run following command:
-
-    ```shell
-    pnpm exec dnr-rulesets extract-filters --help
-    ```
+For all command options, use `--help`, e.g.:
+```shell
+pnpm exec dnr-rulesets watch --help
+pnpm exec tsurlfilter convert --help
+```
 
 
 ### <a name="dev-linter"></a> Linter
