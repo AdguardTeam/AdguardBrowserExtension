@@ -15,7 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import browser from 'webextension-polyfill';
+
 import { App } from 'app';
 
-// initialize background services
-App.init();
+// Initialize background services.
+// Initialization is deferred to `onStartup` and `onInstalled` events
+// because the extension uses a non-persistent background page model.
+browser.runtime.onStartup.addListener(App.init);
+browser.runtime.onInstalled.addListener(App.init);
