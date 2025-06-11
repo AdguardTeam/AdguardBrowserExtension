@@ -17,6 +17,7 @@
  */
 import { Prefs } from '../prefs';
 import { appContext, AppContextKey } from '../storages/app';
+import { CHROME_EXTENSIONS_SETTINGS_URL } from '../../common/constants';
 import { logger } from '../../common/logger';
 
 import { Version } from './version';
@@ -55,6 +56,22 @@ export class BrowserUtils {
         params.push(`lang=${locale}`);
         params.push(`id=${id}`);
         return params;
+    }
+
+    /**
+     * Returns extension details url,
+     * e.g. `chrome://extensions/?id=<extensionId>`.
+     *
+     * Needed for User Scripts API toggle.
+     *
+     * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts#chrome_versions_138_and_newer_allow_user_scripts_toggle
+     *
+     * @returns Extension details url.
+     */
+    public static getExtensionDetailsUrl(): string {
+        const url = new URL(CHROME_EXTENSIONS_SETTINGS_URL);
+        url.searchParams.set('id', Prefs.id);
+        return url.toString();
     }
 
     /**

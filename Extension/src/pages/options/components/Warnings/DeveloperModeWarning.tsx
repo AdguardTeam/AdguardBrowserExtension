@@ -19,6 +19,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { BrowserUtils } from '../../../../background/utils/browser-utils';
+import { CHROME_EXTENSIONS_SETTINGS_URL } from '../../../../common/constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { logger } from '../../../../common/logger';
 import { messenger } from '../../../services/messenger';
@@ -122,14 +124,14 @@ export const DeveloperModeWarning = observer(() => {
      * so we need to open it via the API.
      *
      * @param text Link text.
+     * @param href Link href.
      * @param onClickHandler Click handler.
      *
      * @returns Link element — `<a>` tag.
      */
-    const getSettingsLink = (text: string, onClickHandler: (e: React.MouseEvent) => void) => (
-        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    const getSettingsLink = (text: string, href: string, onClickHandler: (e: React.MouseEvent) => void) => (
         <a
-            href=""
+            href={href}
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClickHandler}
@@ -140,14 +142,22 @@ export const DeveloperModeWarning = observer(() => {
 
     const getWarningAboutDevModeToggle = () => {
         return reactTranslator.getMessage('options_developer_mode_required', {
-            'settings-link': (text: string) => getSettingsLink(text, openChromeExtensionsSettings),
+            'settings-link': (text: string) => getSettingsLink(
+                text,
+                CHROME_EXTENSIONS_SETTINGS_URL,
+                openChromeExtensionsSettings,
+            ),
             'external-link': getExternalLink,
         });
     };
 
     const getWarningAboutAllowUserScriptsToggle = () => {
         return reactTranslator.getMessage('options_allow_user_scripts_required', {
-            'settings-link': (text: string) => getSettingsLink(text, openExtensionDetails),
+            'settings-link': (text: string) => getSettingsLink(
+                text,
+                BrowserUtils.getExtensionDetailsUrl(),
+                openExtensionDetails,
+            ),
             'external-link': getExternalLink,
         });
     };

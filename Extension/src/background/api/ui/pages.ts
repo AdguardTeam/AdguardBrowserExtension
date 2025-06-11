@@ -134,8 +134,6 @@ export class PagesApi {
      */
     public static readonly extensionStoreUrl = PagesApi.getExtensionStoreUrl();
 
-    public static readonly extensionDetailsUrl = PagesApi.getExtensionDetailsUrl();
-
     /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
      * Otherwise only focuses on the open setting tab.
@@ -440,7 +438,9 @@ export class PagesApi {
     public static async openExtensionDetailsPage(): Promise<void> {
         // if a tab with the same url is already opened, create new tab even
         // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
-        await browser.tabs.create({ url: PagesApi.extensionDetailsUrl });
+        // IMPORTANT: extension details url helper is used in options page as well,
+        // so it should not be a PagesApi method, otherwise options page bundle size increase
+        await browser.tabs.create({ url: BrowserUtils.getExtensionDetailsUrl() });
     }
 
     /**
@@ -541,22 +541,6 @@ export class PagesApi {
             action,
             from: ForwardFrom.Options,
         });
-    }
-
-    /**
-     * Returns extension details url,
-     * e.g. `chrome://extensions/?id=<extensionId>`.
-     *
-     * Needed for User Scripts API toggle.
-     *
-     * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts#chrome_versions_138_and_newer_allow_user_scripts_toggle
-     *
-     * @returns Extension details url.
-     */
-    private static getExtensionDetailsUrl(): string {
-        const url = new URL(CHROME_EXTENSIONS_SETTINGS_URL);
-        url.searchParams.set('id', browser.runtime.id);
-        return url.toString();
     }
 
     /**
