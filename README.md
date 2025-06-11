@@ -432,26 +432,30 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
     pnpm install
     pnpm dev chrome-mv3
     ```
-2. **Start watching for filter changes:**
+1. **Start watching for filter changes:**
     ```shell
     pnpm debug-filters:watch
     ```
     - This will extract text filters to `./build/dev/chrome-mv3/filters` and watch for changes.
     - When you edit and save any filter file, DNR rulesets will be rebuilt automatically.
-3. **Reload the extension in your browser** to apply new rulesets.
+1. **Reload the extension in your browser** to apply new rulesets.
 
 **B. Manual (for advanced/manual control):**
-
+1. **Build the extension** (if not done yet):
+    ```shell
+    pnpm install
+    pnpm dev chrome-mv3
+    ```
 1. **Extract text filters:**
     ```shell
     pnpm debug-filters:extract
     ```
-2. **Edit the text filters** in `./build/dev/chrome-mv3/filters` as needed.
-3. **Convert filters to DNR rulesets:**
+1. **Edit the text filters** in `./build/dev/chrome-mv3/filters` as needed.
+1. **Convert filters to DNR rulesets:**
     ```shell
     pnpm debug-filters:convert
     ```
-4. **Reload the extension in your browser** to apply new rulesets.
+1. **Reload the extension in your browser** to apply new rulesets.
 
 **Tip:**
 - To download the latest available text filters, run:
