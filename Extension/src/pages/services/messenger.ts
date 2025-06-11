@@ -351,6 +351,15 @@ class Messenger {
     }
 
     /**
+     * Sends a message to the background page to open the extension details page.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    async openExtensionDetailsPage(): Promise<ExtractMessageResponse<MessageType.OpenExtensionDetailsPage>> {
+        return this.sendMessage(MessageType.OpenExtensionDetailsPage);
+    }
+
+    /**
      * Sends a message to the background page to enable a filter by filter id.
      *
      * @param filterId Filter identifier.

@@ -134,6 +134,8 @@ export class PagesApi {
      */
     public static readonly extensionStoreUrl = PagesApi.getExtensionStoreUrl();
 
+    public static readonly extensionDetailsUrl = PagesApi.getExtensionDetailsUrl();
+
     /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
      * Otherwise only focuses on the open setting tab.
@@ -427,7 +429,18 @@ export class PagesApi {
      * Opens Chrome's extensions settings page.
      */
     public static async openChromeExtensionsSettingsPage(): Promise<void> {
+        // if a tab with the same url is already opened, create new tab even
+        // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
         await browser.tabs.create({ url: CHROME_EXTENSIONS_SETTINGS_URL });
+    }
+
+    /**
+     * Opens the extension details page.
+     */
+    public static async openExtensionDetailsPage(): Promise<void> {
+        // if a tab with the same url is already opened, create new tab even
+        // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
+        await browser.tabs.create({ url: PagesApi.extensionDetailsUrl });
     }
 
     /**
@@ -528,6 +541,21 @@ export class PagesApi {
             action,
             from: ForwardFrom.Options,
         });
+    }
+
+    /**
+     * Returns extension details url,
+     * e.g. `chrome://extensions/?id=<extensionId>`.
+     *
+     * Needed for User Scripts API toggle.
+     *
+     * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts#chrome_versions_138_and_newer_allow_user_scripts_toggle
+     *
+     * @returns Extension details url.
+     */
+    private static getExtensionDetailsUrl(): string {
+        const extensionId = browser.runtime.id;
+        return `${CHROME_EXTENSIONS_SETTINGS_URL}?id=${extensionId}`;
     }
 
     /**
