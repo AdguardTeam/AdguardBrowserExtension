@@ -192,12 +192,11 @@ describe('Update Api (without indexedDB)', () => {
             // 2) adding new Quick Fixes filter — in v5.0.91
             // 3) re-adding Quick Fixes filter back (after temporary removal) — in v5.0.185
             // 4) renaming filters keys
-            // 5) re-adding Quick Fixes filter back (after temporary removal) — in v5.2.0
 
             // there should be 2 calls in MV2 for:
             // 1) migration filters from localStorage to hybridStorage
             // 2) renaming filters keys
-            expect(setMultipleSpy).toHaveBeenCalledTimes(__IS_MV3__ ? 5 : 2);
+            expect(setMultipleSpy).toHaveBeenCalledTimes(__IS_MV3__ ? 4 : 2);
             expect(setMultipleSpy).toHaveBeenCalledWith(
                 // An object that contains all filter-related keys from the old data
                 // If this test passes, it means that data was passed to the hybrid storage

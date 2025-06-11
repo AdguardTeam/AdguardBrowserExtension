@@ -24,4 +24,5 @@ export * from './update';
 export * from './categories';
 export * from './hit-stats';
 export * from './annoyances-consent';
-export * from './quick-fixes';
+// TODO: revert if Quick Fixes filter is back
+// export * from './quick-fixes';
