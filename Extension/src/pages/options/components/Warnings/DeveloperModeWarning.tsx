@@ -152,8 +152,7 @@ export const DeveloperModeWarning = observer(() => {
         });
     };
 
-    const shouldEnableDevMode = currentChromeVersion >= MIN_CHROME_VERSION_REQUIRED.DEV_MODE_TOGGLE
-        && currentChromeVersion < MIN_CHROME_VERSION_REQUIRED.ALLOW_USER_SCRIPTS_TOGGLE;
+    const shouldEnableDevMode = currentChromeVersion < MIN_CHROME_VERSION_REQUIRED.ALLOW_USER_SCRIPTS_TOGGLE;
 
     const message = shouldEnableDevMode
         ? getWarningAboutDevModeToggle()
