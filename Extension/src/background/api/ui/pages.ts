@@ -554,8 +554,9 @@ export class PagesApi {
      * @returns Extension details url.
      */
     private static getExtensionDetailsUrl(): string {
-        const extensionId = browser.runtime.id;
-        return `${CHROME_EXTENSIONS_SETTINGS_URL}?id=${extensionId}`;
+        const url = new URL(CHROME_EXTENSIONS_SETTINGS_URL);
+        url.searchParams.set('id', browser.runtime.id);
+        return url.toString();
     }
 
     /**
