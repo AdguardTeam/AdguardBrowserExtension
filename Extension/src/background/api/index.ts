@@ -32,7 +32,8 @@ export {
     type CategoriesData,
     HitStatsApi,
     annoyancesConsent,
-    QuickFixesRulesApi,
+    // TODO: revert if Quick Fixes filter is back
+    // QuickFixesRulesApi,
 } from './filters';
 export {
     network,
