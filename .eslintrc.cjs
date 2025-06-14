@@ -67,6 +67,7 @@ module.exports = {
         'import/no-cycle': 'off',
         'import/prefer-default-export': 'off',
         'import/extensions': 'off',
+        'import/no-named-as-default': 'error',
         'import-newlines/enforce': ['error', 2, 120],
         'import/order': [
             'error',
