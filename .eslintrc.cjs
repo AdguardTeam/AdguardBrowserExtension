@@ -156,7 +156,7 @@ module.exports = {
         'no-restricted-syntax': [
             'error',
             {
-                selector: ':matches(ExportAllDeclaration)',
+                selector: 'ExportAllDeclaration',
                 message: 'Wildcard exports are not allowed.',
             },
         ],
