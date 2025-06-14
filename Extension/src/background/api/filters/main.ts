@@ -217,6 +217,11 @@ export class FiltersApi {
         }
 
         const tasks = filterIds.map(async (filterId) => {
+            // TODO: revert if Quick Fixes filter is back
+            if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
+                return null;
+            }
+
             try {
                 // 'ignorePatches: true' here for loading filters without patches
                 const f = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, remote);
@@ -556,6 +561,11 @@ export class FiltersApi {
                 logger.info(`[ext.FiltersApi.loadMetadataFromFromBackend]: Filter with id ${filter.filterId} is deprecated and shall not be used.`);
                 // do not filter out deprecated filter metadata as it may be needed later
                 // e.g. during settings import
+            }
+
+            // TODO: revert if Quick Fixes filter is back
+            if (filter.filterId === AntiBannerFiltersId.QuickFixesFilterId) {
+                return;
             }
 
             validFilters.push(filter);

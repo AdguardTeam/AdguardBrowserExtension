@@ -48,7 +48,6 @@ import { logger } from '../../../common/logger';
 import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
 import { SettingOption } from '../../schema/settings/enum';
-import { AntiBannerFiltersId } from '../../../common/constants';
 import { getZodErrorMessage } from '../../../common/error';
 
 import {
@@ -167,15 +166,16 @@ export class RulesLimitsService {
             return acc;
         }, {});
 
-        // It is like "syntax sugar" for the quick fixes filter to emulate it
-        // like an "empty" ruleset, because it looks like usual filter
-        // in the UI, but it actually applied dynamically, so enabling it will
-        // never change quota of the used static rules.
-        counters[AntiBannerFiltersId.QuickFixesFilterId] = {
-            filterId: AntiBannerFiltersId.QuickFixesFilterId,
-            rulesCount: 0,
-            regexpRulesCount: 0,
-        };
+        // TODO: revert if Quick Fixes filter is back
+        // // It is like "syntax sugar" for the quick fixes filter to emulate it
+        // // like an "empty" ruleset, because it looks like usual filter
+        // // in the UI, but it actually applied dynamically, so enabling it will
+        // // never change quota of the used static rules.
+        // counters[AntiBannerFiltersId.QuickFixesFilterId] = {
+        //     filterId: AntiBannerFiltersId.QuickFixesFilterId,
+        //     rulesCount: 0,
+        //     regexpRulesCount: 0,
+        // };
 
         return counters;
     };

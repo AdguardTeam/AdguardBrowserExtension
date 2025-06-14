@@ -18,7 +18,7 @@
 
 import { getVersionTimestampMs } from '@adguard/dnr-rulesets/utils';
 
-import { FilterUpdateApi, QuickFixesRulesApi } from '../api';
+import { FilterUpdateApi } from '../api';
 import { browserStorage } from '../storages';
 import { isNumber } from '../../common/guards';
 import { logger } from '../../common/logger';
@@ -130,7 +130,8 @@ export class FilterUpdateService {
         if (shouldCheckUpdates) {
             try {
                 if (__IS_MV3__) {
-                    await QuickFixesRulesApi.updateQuickFixesFilter();
+                    // TODO: revert if Quick Fixes filter is back
+                    // await QuickFixesRulesApi.updateQuickFixesFilter();
                 } else {
                     await FilterUpdateApi.autoUpdateFilters();
                 }

@@ -35,7 +35,6 @@ import {
     Categories,
     FiltersApi,
     PageStatsApi,
-    QuickFixesRulesApi,
 } from '../../api';
 import { AntiBannerFiltersId } from '../../../common/constants';
 
@@ -263,7 +262,8 @@ export class FiltersService {
         // For quick fixes filter we have special logic with partially updating
         // metadata and then load filter from remote.
         if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
-            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            // TODO: revert if Quick Fixes filter is back
+            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
         }

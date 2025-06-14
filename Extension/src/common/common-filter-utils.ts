@@ -39,8 +39,9 @@ export class CommonFilterUtils {
     public static isCommonFilter(filterId: number): boolean {
         return !CustomFilterUtils.isCustomFilter(filterId)
             && filterId !== AntiBannerFiltersId.UserFilterId
-            && filterId !== AntiBannerFiltersId.AllowlistFilterId
-            && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
+            && filterId !== AntiBannerFiltersId.AllowlistFilterId;
+        // TODO: revert if Quick Fixes filter is back
+        // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
     }
 
     /**

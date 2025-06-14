@@ -33,4 +33,5 @@ export {
 } from './categories';
 export { HitStatsApi } from './hit-stats';
 export { annoyancesConsent } from './annoyances-consent';
-export { QuickFixesRulesApi } from './quick-fixes';
+// TODO: revert if Quick Fixes filter is back
+// export { QuickFixesRulesApi } from './quick-fixes';

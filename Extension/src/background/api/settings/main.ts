@@ -54,7 +54,6 @@ import {
     UserRulesApi,
     AllowlistApi,
     annoyancesConsent,
-    QuickFixesRulesApi,
 } from '../filters';
 import {
     ADGUARD_SETTINGS_KEY,
@@ -546,7 +545,8 @@ export class SettingsApi {
         if (__IS_MV3__) {
             await SettingsApi.loadBuiltInFiltersMv3(filtersToEnable);
 
-            await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+            // TODO: revert if Quick Fixes filter is back
+            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
         } else {
             // special handling for large AdGuard Annoyances filter,
             // all other deprecated filters shall be skipped;
