@@ -157,7 +157,7 @@ module.exports = {
             'error',
             {
                 selector: ':matches(ExportAllDeclaration)',
-                message: 'Export only modules you need.',
+                message: 'Wildcard exports are not allowed.',
             },
         ],
         'no-prototype-builtins': 'off',
