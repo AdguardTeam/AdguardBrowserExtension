@@ -63,17 +63,6 @@ module.exports = {
                 fixStyle: 'inline-type-imports',
             },
         ],
-        '@typescript-eslint/naming-convention': [
-            'error',
-            {
-                selector: 'variable',
-                modifiers: ['const', 'exported'],
-                types: ['string', 'number', 'boolean', 'array'],
-                format: ['UPPER_CASE'],
-                leadingUnderscore: 'forbid',
-                trailingUnderscore: 'forbid',
-            },
-        ],
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
         'import/prefer-default-export': 'off',
