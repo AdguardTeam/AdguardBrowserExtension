@@ -28,7 +28,7 @@ import {
     APP_MESSAGE_HANDLER_NAME,
 } from './constants';
 
-export type MessageListener<T extends ValidMessageTypes> = (
+type MessageListener<T extends ValidMessageTypes> = (
     message: ExtractedMessage<T>,
     sender: Runtime.MessageSender,
 ) => Promise<ExtractMessageResponse<T>> | ExtractMessageResponse<T>;

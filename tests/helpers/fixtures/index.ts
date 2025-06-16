@@ -16,4 +16,19 @@ export { getSettingsV1 } from './settingsSchemaV1';
 export { getSettingsV2, getExportedSettingsV2 } from './settingsSchemaV2';
 export { getMetadataFixture } from './getMetadataFixture';
 export { getI18nMetadataFixture } from './getI18nMetadataFixture';
-export * from './getStorageFixtures';
+export {
+    getStorageFixturesV0,
+    getStorageFixturesV1,
+    getStorageFixturesV2,
+    getStorageFixturesV3,
+    getStorageFixturesV4,
+    getStorageFixturesV5,
+    getStorageFixturesV6,
+    getStorageFixturesV7,
+    getStorageFixturesV8,
+    getStorageFixturesV9,
+    getStorageFixturesV10,
+    getStorageFixturesV11,
+    getStorageFixturesV12,
+    type StorageData,
+} from './getStorageFixtures';

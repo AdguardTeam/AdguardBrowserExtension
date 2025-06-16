@@ -12,7 +12,7 @@ import { SafebrowsingApi } from '../../../../Extension/src/background/api/safebr
 import { SB_LRU_CACHE_KEY } from '../../../../Extension/src/common/constants';
 import { SbCache, sbCache } from '../../../../Extension/src/background/storages';
 import { SettingsApi } from '../../../../Extension/src/background/api/settings/main';
-import { type SafebrowsingStorageData } from '../../../../Extension/src/background/schema';
+import { type SafebrowsingStorageData } from '../../../../Extension/src/background/schema/safebrowsing/safebrowsing';
 import { mockLocalStorage } from '../../../helpers';
 import { BLOCKING_SAFEBROWSING_OUTPUT } from '../../../../constants';
 

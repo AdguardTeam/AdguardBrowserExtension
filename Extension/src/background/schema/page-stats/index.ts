@@ -18,5 +18,9 @@
 
 // Page stats schema entry point
 
-// page stats validators and types
-export * from './page-stats';
+export {
+    pageStatsValidator,
+    type PageStats,
+    type PageStatsData,
+    type PageStatsDataItem,
+} from './page-stats';

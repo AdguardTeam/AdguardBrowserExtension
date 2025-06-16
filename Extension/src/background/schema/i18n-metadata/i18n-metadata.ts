@@ -23,7 +23,7 @@ import { regularFilterI18nMetadataValidator } from './filter';
 import { tagI18nMetadataValidator } from './tag';
 import { groupI18nMetadataValidator } from './group';
 
-export const filtersI18nRecordValidator = zod.record(
+const filtersI18nRecordValidator = zod.record(
     SchemaPreprocessor.numberValidator,
     regularFilterI18nMetadataValidator,
 );
@@ -34,7 +34,7 @@ export const filtersI18nRecordValidator = zod.record(
  */
 export type FiltersI18n = zod.infer<typeof filtersI18nRecordValidator>;
 
-export const groupsI18nRecordValidator = zod.record(SchemaPreprocessor.numberValidator, groupI18nMetadataValidator);
+const groupsI18nRecordValidator = zod.record(SchemaPreprocessor.numberValidator, groupI18nMetadataValidator);
 
 /**
  * Describes an object in which the language codes are keys and the group name
@@ -42,7 +42,7 @@ export const groupsI18nRecordValidator = zod.record(SchemaPreprocessor.numberVal
  */
 export type GroupsI18n = zod.infer<typeof groupsI18nRecordValidator>;
 
-export const tagsI18nRecordValidator = zod.record(SchemaPreprocessor.numberValidator, tagI18nMetadataValidator);
+const tagsI18nRecordValidator = zod.record(SchemaPreprocessor.numberValidator, tagI18nMetadataValidator);
 
 /**
  * Describes an object where the language codes are keys and the description and

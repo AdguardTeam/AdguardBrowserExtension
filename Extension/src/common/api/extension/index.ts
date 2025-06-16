@@ -15,6 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './windows';
-export * from './tabs';
-export * from './iconsCache';
+export { WindowsApi } from './windows';
+export { TabsApi } from './tabs';
+export { getIconImageData } from './iconsCache';
