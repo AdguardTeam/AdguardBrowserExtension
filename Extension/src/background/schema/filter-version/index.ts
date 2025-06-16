@@ -18,5 +18,8 @@
 
 // Filter version schema entry point
 
-// Filter version validators and types
-export * from './filter-version';
+export {
+    filterVersionStorageDataValidator,
+    type FilterVersionStorageData,
+    type FilterVersionData,
+} from './filter-version';

@@ -20,7 +20,7 @@
  * Class used to persist user rules editor content in memory
  * during switches between common and fullscreen modes.
  */
-export class EditorStorage {
+class EditorStorage {
     // current content
     private data: string | undefined;
 

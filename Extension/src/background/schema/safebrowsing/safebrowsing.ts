@@ -20,7 +20,7 @@ import zod from 'zod';
 /**
  * Safebrowsing cache data schema validator.
  */
-export const safebrowsingCacheDataValidator = zod.string();
+const safebrowsingCacheDataValidator = zod.string();
 
 /**
  * Safebrowsing cache data type inferred from {@link safebrowsingCacheDataValidator} schema.

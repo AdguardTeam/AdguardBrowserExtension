@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './browser-utils';
-export * from './i18n';
-export * from './string-storage';
-export * from './url';
-export * from './version';
-export * from './run-info';
-export * from '../../common/unknown';
+export { BrowserUtils } from './browser-utils';
+export { I18n } from './i18n';
+export { StringStorage } from './string-storage';
+export { UrlUtils } from './url';
+export { Version } from './version';
+export { type RunInfo, getRunInfo } from './run-info';

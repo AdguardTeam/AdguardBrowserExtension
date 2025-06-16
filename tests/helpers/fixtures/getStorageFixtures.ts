@@ -7,11 +7,11 @@ import { FilterListPreprocessor } from '@adguard/tsurlfilter';
 
 import { pageStatsValidator } from '../../../Extension/src/background/schema/page-stats';
 
-export const RAW_FILTER_KEY_PREFIX = 'raw_filterrules_';
-export const FILTER_KEY_PREFIX = 'filterrules_';
-export const BINARY_FILTER_KEY_PREFIX = 'binaryfilterrules_';
-export const CONVERSION_MAP_PREFIX = 'conversionmap_';
-export const SOURCE_MAP_PREFIX = 'sourcemap_';
+const RAW_FILTER_KEY_PREFIX = 'raw_filterrules_';
+const FILTER_KEY_PREFIX = 'filterrules_';
+const BINARY_FILTER_KEY_PREFIX = 'binaryfilterrules_';
+const CONVERSION_MAP_PREFIX = 'conversionmap_';
+const SOURCE_MAP_PREFIX = 'sourcemap_';
 
 export type StorageData = Record<string, unknown>;
 

@@ -18,5 +18,4 @@
 
 // Filter state schema entry point
 
-// Filter state validators and types
-export * from './filter-state';
+export { filterStateStorageDataValidator, type FilterStateData, type FilterStateStorageData } from './filter-state';

@@ -18,5 +18,4 @@
 
 // Annoyances consent schema entry point
 
-// annoyances consent validators and types
-export * from './annoyances-consent';
+export { annoyancesConsentStorageDataValidator, type AnnoyancesConsentStorageData } from './annoyances-consent';

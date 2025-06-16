@@ -32,7 +32,7 @@ import { FiltersApi } from '../api/filters/main';
 import { CommonFilterApi } from '../api/filters/common';
 import { AntibannerGroupsId } from '../../common/constants';
 
-export type BrowsingLanguage = {
+type BrowsingLanguage = {
     language: string;
     time: number;
 };
@@ -40,7 +40,7 @@ export type BrowsingLanguage = {
 /**
  * This service is used to auto-enable language-specific filters.
  */
-export class LocaleDetect {
+class LocaleDetect {
     static SUCCESS_HIT_COUNT = 3;
 
     static MAX_HISTORY_LENGTH = 10;
