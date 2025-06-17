@@ -54,7 +54,6 @@ import {
     UserRulesApi,
     AllowlistApi,
     annoyancesConsent,
-    QuickFixesRulesApi,
 } from '../filters';
 import {
     ADGUARD_SETTINGS_KEY,
