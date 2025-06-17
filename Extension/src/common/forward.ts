@@ -80,7 +80,7 @@ export const enum ForwardAction {
     LearnAboutAdGuard = 'learn_about_adguard',
     FilteringLogAssumedRule = 'filtering_log_assumed_rule',
     Birthday25 = 'birthday_25',
-    // TODO: Delete downer links from here and TDS after release v5.2.
+    // TODO: Delete from here and TDS after release v5.2.
     CustomFiltersMv3Disabled = 'custom_mv3_disabled',
     DeveloperModeRequired = 'developer_mode_required',
 }

@@ -133,7 +133,7 @@ const FilteringLog = observer(() => {
                             break;
                         }
                         default: {
-                            logger.debug('There is no listener for type:', type);
+                            logger.warn('[ext.FilteringLog]: there is no listener for type:', type);
                             break;
                         }
                     }

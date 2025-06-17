@@ -17,13 +17,28 @@
  */
 import browser, { type Windows, type Tabs } from 'webextension-polyfill';
 
-import { UserAgent } from '../../user-agent';
-import { getErrorMessage } from '../../error';
+import { getErrorMessage } from '@adguard/logger';
+
+import { logger } from '../../logger';
 
 /**
  * Helper class for browser.windows API.
  */
 export class WindowsApi {
+    /**
+     * Checks if browser.windows API is supported.
+     *
+     * Do not use browser.windows API if it is not supported,
+     * for example on Android: not supported in Firefox and does not work in Edge.
+     *
+     * @returns True if browser.windows API is supported, false otherwise.
+     */
+    private static isSupported() {
+        return !!browser.windows
+            && typeof browser.windows.update === 'function'
+            && typeof browser.windows.create === 'function';
+    }
+
     /**
      * Calls browser.windows.create with fallback to browser.tabs.create.
      * In case of fallback, compatible data will be reused.
@@ -41,10 +56,7 @@ export class WindowsApi {
     public static async create(
         createData?: Windows.CreateCreateDataType,
     ): Promise<Windows.Window | Tabs.Tab | null> {
-        const isAndroid = await UserAgent.getIsAndroid();
-
-        // Do not use browser.windows API on Android, as it is not supported (Firefox) / does not work (Edge).
-        if (browser.windows && !isAndroid) {
+        if (WindowsApi.isSupported()) {
             return browser.windows.create(createData);
         }
 
@@ -75,5 +87,28 @@ export class WindowsApi {
 
             return null;
         }
+    }
+
+    /**
+     * Updates the properties of a window with specified ID.
+     *
+     * @param windowId Window ID. May be undefined.
+     * @param updateInfo Update info.
+     */
+    public static async update(
+        windowId: number | undefined,
+        updateInfo: Windows.UpdateUpdateInfoType,
+    ): Promise<void> {
+        if (!windowId) {
+            logger.debug('[ext.WindowsApi.update]: windowId is not specified');
+            return;
+        }
+
+        if (!WindowsApi.isSupported()) {
+            logger.debug('[ext.WindowsApi.update]: browser.windows API is not supported');
+            return;
+        }
+
+        await browser.windows.update(windowId, updateInfo);
     }
 }

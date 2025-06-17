@@ -98,7 +98,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                             break;
                         }
                         default: {
-                            logger.debug('Undefined message type:', type);
+                            logger.debug('[ext.UserRulesEditor]: undefined message type:', type);
                             break;
                         }
                     }
@@ -197,7 +197,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                             break;
                         }
                         default: {
-                            logger.debug('Undefined message type:', type);
+                            logger.debug('[ext.UserRulesEditor]: undefined message type:', type);
                             break;
                         }
                     }
@@ -286,7 +286,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 await saveUserRules(rulesUnionString);
             }
         } catch (e) {
-            logger.debug(e);
+            logger.debug('[ext.UserRulesEditor]: import error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
                 uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
             } else {

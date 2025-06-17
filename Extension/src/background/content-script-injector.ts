@@ -19,11 +19,12 @@
 import { getHostname } from 'tldts';
 import browser, { type Tabs } from 'webextension-polyfill';
 
+import { getErrorMessage } from '@adguard/logger';
+
 import { isHttpRequest } from 'tswebextension';
 
 import { executeScript } from 'scripting-service';
 
-import { getErrorMessage } from '../common/error';
 import { UserAgent } from '../common/user-agent';
 import { logger } from '../common/logger';
 import {
@@ -115,7 +116,7 @@ export class ContentScriptInjector {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                logger.error('Cannot inject scripts to tab due to: ', promise.reason);
+                logger.error('[ext.ContentScriptInjector.init]: cannot inject scripts to tab due to: ', promise.reason);
             }
         });
     }
@@ -238,7 +239,7 @@ export class ContentScriptInjector {
         try {
             await browser.storage.session.set({ [ContentScriptInjector.INJECTED_KEY]: true });
         } catch (e) {
-            logger.error('Cannot set injected flag in session storage', e);
+            logger.error('[ext.ContentScriptInjector.setInjected]: cannot set injected flag in session storage:', e);
         }
     }
 
@@ -260,7 +261,7 @@ export class ContentScriptInjector {
             const result = await browser.storage.session.get(ContentScriptInjector.INJECTED_KEY);
             isInjected = result[ContentScriptInjector.INJECTED_KEY] === true;
         } catch (e) {
-            logger.error('Cannot get injected flag from session storage', e);
+            logger.error('[ext.ContentScriptInjector.isInjected]: cannot get injected flag from session storage:', e);
         }
 
         return isInjected;

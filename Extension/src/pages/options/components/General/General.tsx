@@ -172,7 +172,7 @@ export const General = observer(() => {
                 isSucceeded = false;
             }
         } catch (e) {
-            logger.debug(e);
+            logger.error('[ext.General]: error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
                 uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
             }

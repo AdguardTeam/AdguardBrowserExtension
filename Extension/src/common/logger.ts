@@ -19,10 +19,38 @@
 
 import { Logger, LogLevel } from '@adguard/logger';
 
+import { browserStorage } from '../background/storages/shared-instances';
+
+/**
+ * Extended logger with persistent log level setting.
+ * Extends the base Logger class with browser storage integration
+ * for saving and retrieving log level preferences.
+ */
 class ExtendedLogger extends Logger {
+    /**
+     * Key for storing the current log level in browser storage.
+     */
+    private static readonly LOG_LEVEL_LOCAL_STORAGE_KEY = 'log-level';
+
+    /**
+     * Default log level based on the build configuration.
+     */
+    private static readonly DEFAULT_LOG_LEVEL = IS_RELEASE || IS_BETA
+        ? LogLevel.Info
+        : LogLevel.Debug;
+
+    /**
+     * Checks if the current log level is verbose (Debug or Verbose).
+     *
+     * This method is useful for determining if detailed logging should
+     * be enabled across the application in different modules. Some kind of
+     * "single point of truth".
+     *
+     * @returns True if current log level is Debug or Verbose, false otherwise.
+     */
     isVerbose(): boolean {
         return this.currentLevel === LogLevel.Debug
-            || this.currentLevel === LogLevel.Trace;
+            || this.currentLevel === LogLevel.Verbose;
     }
 
     /**
@@ -97,13 +125,9 @@ class ExtendedLogger extends Logger {
 
 const logger = new ExtendedLogger();
 
-logger.currentLevel = IS_RELEASE || IS_BETA
-    ? LogLevel.Info
-    : LogLevel.Trace;
-
 // Expose logger to the window object,
 // to have possibility to switch log level from the console.
-// Example: adguard.logger.currentLevel = 'debug'
+// Example: adguard.logger.setCurrentLevel('trace');
 
 // eslint-disable-next-line no-restricted-globals
 Object.assign(self, { adguard: { ...self.adguard, logger } });

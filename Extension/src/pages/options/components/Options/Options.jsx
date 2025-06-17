@@ -145,7 +145,7 @@ const Options = observer(() => {
                             break;
                         }
                         default: {
-                            logger.debug('Undefined message type:', type);
+                            logger.warn('[ext.Options]: Undefined message type:', type);
                             break;
                         }
                     }
