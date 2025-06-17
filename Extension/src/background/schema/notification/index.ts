@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export * from './notification-text-record';
+export { notificationTextRecordValidator, type NotificationTextRecord } from './notification-text-record';

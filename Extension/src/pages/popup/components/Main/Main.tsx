@@ -93,7 +93,7 @@ export const Main = observer(() => {
     const currentSiteLabel = `${translator.getMessage('popup_tab_current_website')}: `;
 
     if (!currentSite) {
-        logger.warn('[ext.Main]: current site is not defined yet');
+        logger.info('[ext.Main]: current site is not defined yet');
     }
 
     const totalBlockedSubtitle = translator.getMessage('popup_tab_blocked_all_count', {
@@ -142,7 +142,7 @@ export const Main = observer(() => {
     const state = statesMap[appState];
 
     if (!state) {
-        logger.warn('[ext.Main]: no info state: ', appState);
+        logger.info('[ext.Main]: no info state: ', appState);
         return null;
     }
 
@@ -189,7 +189,7 @@ export const Main = observer(() => {
             return <ResumeButton clickHandler={state[AppStateField.ButtonHandler]} />;
         }
 
-        logger.warn('[ext.Main]: no component for the current app state: ', appState);
+        logger.info('[ext.Main]: no component for the current app state: ', appState);
         return null;
     };
 

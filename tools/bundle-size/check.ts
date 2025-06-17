@@ -240,7 +240,6 @@ async function checkChromeMv3BundleSize(buildType: BuildTargetEnv): Promise<bool
 
     try {
         // Get current build stats for this target
-        // eslint-disable-next-line no-await-in-loop
         const currentStats = await getCurrentBuildStats(buildType, Browser.ChromeMv3);
 
         const mv3Size = currentStats.stats.zip;
@@ -338,7 +337,6 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
 
         try {
             // Get current build stats for this target
-            // eslint-disable-next-line no-await-in-loop
             const currentStats = await getCurrentBuildStats(buildEnv, target);
 
             // Compare with reference sizes if available
@@ -357,7 +355,6 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
 
             // No reference sizes available, save current stats as reference
             console.log(`No reference sizes available for comparison for ${target}. This build will be used as reference.`);
-            // eslint-disable-next-line no-await-in-loop
             await saveBuildStats(buildEnv, target, currentStats);
         } catch (error) {
             // In normal mode, rethrow the error

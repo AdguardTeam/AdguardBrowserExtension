@@ -25,6 +25,7 @@ metadataRuleSet.setAdditionalProperty('metadata', metadata);
 const serializedMetadataRuleSet = metadataRuleSet.serialize();
 const metadataRuleSetPath = getRuleSetPath(METADATA_RULESET_ID, 'filters/declarative');
 
+// TODO: change case to UPPER_SNAKE_CASE
 export const mockFilterPath = 'test-filter.txt';
 
 /**

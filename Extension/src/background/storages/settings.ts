@@ -26,7 +26,7 @@ import { browserStorage } from './shared-instances';
 /**
  * Storage for app settings.
  */
-export class SettingsStorage implements StorageInterface<SettingOption, Settings[SettingOption]> {
+class SettingsStorage implements StorageInterface<SettingOption, Settings[SettingOption]> {
     static saveTimeoutMs = 100;
 
     /**

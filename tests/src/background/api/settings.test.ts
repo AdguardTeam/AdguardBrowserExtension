@@ -17,10 +17,10 @@ import {
 } from '../../../../constants';
 import {
     DocumentBlockApi,
-    Network,
     SettingsApi,
     type SettingsData,
 } from '../../../../Extension/src/background/api';
+import { Network } from '../../../../Extension/src/background/api/network/main';
 import { App } from '../../../../Extension/src/background/app';
 import {
     ExtensionSpecificSettingsOption,

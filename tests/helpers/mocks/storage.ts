@@ -4,7 +4,7 @@ import { type Storage, type Events } from 'webextension-polyfill';
 /**
  * Emulated browser.storage.local
  */
-export class EmulatedLocalStorage implements Storage.StorageArea {
+class EmulatedLocalStorage implements Storage.StorageArea {
     private data: Record<string, unknown>;
 
     constructor(initData: Record<string, unknown> = {}) {

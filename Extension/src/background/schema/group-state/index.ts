@@ -18,5 +18,4 @@
 
 // Group state schema entry point
 
-// Group state validators and types
-export * from './group-state';
+export { groupStateStorageDataValidator, type GroupStateStorageData, type GroupStateData } from './group-state';

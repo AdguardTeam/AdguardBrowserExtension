@@ -22,7 +22,7 @@ import { SchemaPreprocessor } from '../preprocessor';
 /**
  * Runtime validator for persistent filter state data.
  */
-export const filterStateDataValidator = zod.object({
+const filterStateDataValidator = zod.object({
     /**
      * Is filter enabled or not.
      */

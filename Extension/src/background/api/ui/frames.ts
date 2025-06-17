@@ -31,7 +31,7 @@ import { PageStatsApi } from '../page-stats';
 import { SettingsApi } from '../settings';
 import { engine } from '../../engine';
 
-export type FrameRule = {
+type FrameRule = {
     filterId: number;
     ruleText: string;
 };
