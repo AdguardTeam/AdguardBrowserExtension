@@ -28,8 +28,8 @@
     "check-types": "tsc --project tsconfig.with_types_mv2.json --noEmit && tsc --project tsconfig.with_types_mv3.json --noEmit",
     "disclaimer": "pnpm lint | tsx tools/insert-disclaimer.js",
     "debug-filters:load": "pnpm exec dnr-rulesets load --latest-filters ./build/dev/chrome-mv3/filters",
-    "debug-filters:convert": "pnpm exec tsurlfilter convert --debug ./build/dev/chrome-mv3/filters /web-accessible-resources ./build/dev/chrome-mv3/filters/declarative",
-    "debug-filters:watch": "pnpm debug-filters:extract && pnpm exec dnr-rulesets watch --debug ./build/dev/chrome-mv3/manifest.json /web-accessible-resources",
+    "debug-filters:convert": "pnpm exec tsurlfilter convert --debug ./build/dev/chrome-mv3/filters /web-accessible-resources/redirects ./build/dev/chrome-mv3/filters/declarative",
+    "debug-filters:watch": "pnpm debug-filters:extract && pnpm exec dnr-rulesets watch --debug ./build/dev/chrome-mv3/manifest.json /web-accessible-resources/redirects",
     "debug-filters:extract": "pnpm exec tsurlfilter extract-filters ./build/dev/chrome-mv3/filters/declarative ./build/dev/chrome-mv3/filters"
   },
   "repository": {
@@ -170,7 +170,7 @@
     "overrides": {
       "@adguard/logger": "https://github.com/AdguardTeam/tsurlfilter/raw/7c0abe7e1aa9b45ffaaca0ec81a6b1ecb906f803/packages/logger/logger.tgz",
       "@adguard/dnr-rulesets": "https://github.com/AdguardTeam/tsurlfilter/raw/df4d94fd2044d4407c0eb01504dbce042d34c3fb/packages/dnr-rulesets/dnr-rulesets.tgz",
-      "@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/df4d94fd2044d4407c0eb01504dbce042d34c3fb/packages/tsurlfilter/tsurlfilter.tgz",
+      "@adguard/tsurlfilter": "link:../tsurlfilter/packages/tsurlfilter",
       "@adguard/tswebextension": "https://github.com/AdguardTeam/tsurlfilter/raw/df4d94fd2044d4407c0eb01504dbce042d34c3fb/packages/tswebextension/tswebextension.tgz",
       "@adugard/tswebextension>@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/df4d94fd2044d4407c0eb01504dbce042d34c3fb/packages/tsurlfilter/tsurlfilter.tgz"
     }

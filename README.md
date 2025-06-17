@@ -486,7 +486,7 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Path to web-accessible-resources directory (needed for $redirect rules)
         # relative to the root directory of the extension (because they will be
         # loaded during runtime).
-        /web-accessible-resources
+        /web-accessible-resources/redirects
     ```
 - **Load latest text filters and metadata:**
     ```shell
@@ -510,7 +510,7 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Path to web-accessible-resources directory (needed for $redirect rules)
         # relative to the root directory of the extension (because they will be
         # loaded during runtime).
-        /web-accessible-resources \
+        /web-accessible-resources/redirects \
         # Destination path for converted DNR rulesets
         ./build/dev/chrome-mv3/filters/declarative
     ```
