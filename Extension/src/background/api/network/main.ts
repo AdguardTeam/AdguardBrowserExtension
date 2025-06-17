@@ -110,12 +110,13 @@ export class Network {
     private loadingSubscriptions: Record<string, boolean> = {};
 
     /**
-     * Initializes the network settings.
+     * Returns promise that resolves when network is initialized.
+     * Only needed in MV3 with async initialization.
      *
-     * @returns A promise that resolves when the settings are initialized.
+     * @returns Promise that resolves when network is initialized.
      */
-    public async init(): Promise<void> {
-        await this.settings.init();
+    public waitForNetworkInit(): Promise<void> | null {
+        return this.settings.initPromise;
     }
 
     /**
@@ -169,7 +170,7 @@ export class Network {
 
             if (isRemote) {
                 if (useOptimizedFilters) {
-                    logger.info('[ext.Network.downloadFilterRules]: optimized filters are not supported in MV3, full versions will be downloaded.');
+                    logger.info('Optimized filters are not supported in MV3, full versions will be downloaded');
                 }
                 url = this.getUrlForDownloadFilterRules(filterId, false);
             }

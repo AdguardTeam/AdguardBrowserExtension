@@ -81,43 +81,38 @@ export class SafebrowsingService {
             tabId,
         } = context;
 
-        const isDocumentRequestAndNotRedirect = requestType === RequestType.Document
-            && statusCode !== 301
-            && statusCode !== 302;
+        if (requestType === RequestType.Document && statusCode !== 301 && statusCode !== 302) {
+            SafebrowsingApi
+                .checkSafebrowsingFilter(requestUrl, referrerUrl)
+                .then((safebrowsingUrl) => {
+                    if (!safebrowsingUrl) {
+                        return;
+                    }
 
-        if (!isDocumentRequestAndNotRedirect) {
-            return;
+                    // Chromium does not allow to open extension url in incognito mode
+                    if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChromium) {
+                        // Closing tab before opening a new one may lead to browser crash (Chromium)
+                        browser.tabs.create({ url: safebrowsingUrl })
+                            .then(() => {
+                                browser.tabs.remove(tabId);
+                            })
+                            .catch((e) => {
+                                // eslint-disable-next-line max-len
+                                logger.warn(`Cannot open info page about blocked domain in tab with id ${tabId}. Original error: ${e}`);
+                            });
+                    } else {
+                        browser.tabs.update(tabId, { url: safebrowsingUrl })
+                            .catch((e) => {
+                                // eslint-disable-next-line max-len
+                                logger.warn(`Cannot update tab with id ${tabId} to show info page about blocked domain. Original error: ${e}`);
+                            });
+                    }
+                })
+                .catch((e) => {
+                    // eslint-disable-next-line max-len
+                    logger.warn(`Cannot execute safe browsing check for requested url "${requestUrl}". Original error: ${e}`);
+                });
         }
-
-        const onOk = (safebrowsingUrl: string | undefined): void => {
-            if (!safebrowsingUrl) {
-                return;
-            }
-
-            // Chromium does not allow to open extension url in incognito mode
-            if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChromium) {
-                // Closing tab before opening a new one may lead to browser crash (Chromium)
-                browser.tabs.create({ url: safebrowsingUrl })
-                    .then(() => browser.tabs.remove(tabId))
-                    .catch((e) => {
-                        logger.warn(`[ext.SafebrowsingService.onHeadersReceived]: cannot open info page about blocked domain in tab with id ${tabId}, original error:`, e);
-                    });
-            } else {
-                browser.tabs.update(tabId, { url: safebrowsingUrl })
-                    .catch((e) => {
-                        logger.warn(`[ext.SafebrowsingService.onHeadersReceived]: cannot update tab with id ${tabId} to show info page about blocked domain, original error:`, e);
-                    });
-            }
-        };
-
-        const onFailure = (e: unknown): void => {
-            logger.warn(`[ext.SafebrowsingService.onHeadersReceived]: cannot execute safe browsing check for requested url "${requestUrl}", original error:`, e);
-        };
-
-        SafebrowsingApi
-            .checkSafebrowsingFilter(requestUrl, referrerUrl)
-            .then(onOk)
-            .catch(onFailure);
     }
 
     /**

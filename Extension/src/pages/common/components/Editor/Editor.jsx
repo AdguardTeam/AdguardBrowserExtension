@@ -61,7 +61,7 @@ const Editor = ({
                 setSize(JSON.parse(editorStorageSize));
             } catch (e) {
                 setSize(DEFAULT_EDITOR_SIZE);
-                logger.debug('[ext.Editor]: failed to parse editor size from storage: ', e.message);
+                logger.debug(e.message);
             }
         }
     }, [editorStorageSize]);

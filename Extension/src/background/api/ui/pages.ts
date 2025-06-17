@@ -19,14 +19,13 @@ import browser, { type Runtime, type Windows } from 'webextension-polyfill';
 import { format } from 'date-fns';
 import { UTCDate } from '@date-fns/utc';
 
-import { getErrorMessage } from '@adguard/logger';
-
 import { UserAgent } from '../../../common/user-agent';
 import {
     type AddFilteringSubscriptionMessage,
     type ScriptletCloseWindowMessage,
     type UpdateFullscreenUserRulesThemeMessage,
 } from '../../../common/messages';
+import { getErrorMessage } from '../../../common/error';
 import {
     Forward,
     ForwardAction,

@@ -22,7 +22,6 @@ import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextens
 import { FILTER_LIST_EXTENSION } from '../../../../common/constants';
 import { logger } from '../../../../common/logger';
 import { hybridStorage } from '../../../storages/shared-instances';
-import { getZodErrorMessage } from '../../../../common/error';
 
 /**
  * Storage prefix for raw preprocessed filter lists.
@@ -86,7 +85,7 @@ export class FiltersStorage {
                 throw new Error('Transaction failed');
             }
         } catch (e) {
-            logger.error(`[ext.FiltersStorage.set]: failed to set filter list for filter id ${filterId}, got error:`, e);
+            logger.error(`Failed to set filter list for filter id ${filterId}, got error:`, e);
             throw e;
         }
     }
@@ -146,7 +145,10 @@ export class FiltersStorage {
             return zod.array(zod.instanceof(Uint8Array)).parse(data);
         } catch (e) {
             if (logError) {
-                logger.error(`[ext.FiltersStorage.get]: failed to get binary filter data for filter id ${filterId}, got error:`, getZodErrorMessage(e));
+                logger.error(
+                    `Failed to get binary filter data for filter id ${filterId}, got error:`,
+                    e,
+                );
             }
             throw e;
         }
@@ -167,7 +169,7 @@ export class FiltersStorage {
             const data = await hybridStorage.get(filterKey);
             return zod.string().parse(data);
         } catch (e) {
-            logger.error(`[ext.FiltersStorage.getPreprocessedFilterList]: failed to get preprocessed raw filter list for filter id ${filterId}, got error:`, getZodErrorMessage(e));
+            logger.error(`Failed to get preprocessed raw filter list for filter id ${filterId}, got error:`, e);
             throw e;
         }
     }
@@ -187,7 +189,7 @@ export class FiltersStorage {
             const data = await hybridStorage.get(sourceMapKey);
             return SOURCE_MAP_SCHEMA.parse(data);
         } catch (e) {
-            logger.error(`[ext.FiltersStorage.getSourceMap]: failed to get source map for filter id ${filterId}, got error:`, getZodErrorMessage(e));
+            logger.error(`Failed to get source map for filter id '${filterId}', ${filterId}, got error:`, e);
             throw e;
         }
     }
@@ -207,7 +209,7 @@ export class FiltersStorage {
             const data = await hybridStorage.get(conversionMapKey);
             return CONVERSION_MAP_SCHEMA.parse(data);
         } catch (e) {
-            logger.error(`[ext.FiltersStorage.getConversionMap]: failed to get conversion map for filter id ${filterId}, got error:`, getZodErrorMessage(e));
+            logger.error(`Failed to get conversion map for filter id ${filterId}, got error:`, e);
             throw e;
         }
     }
@@ -278,7 +280,7 @@ export class FiltersStorage {
                 sourceMap,
             };
         } catch (e) {
-            logger.error('[ext.FiltersStorage.getAllFilterData]: failed to get all filter data', getZodErrorMessage(e));
+            logger.error('Failed to get all filter data', e);
 
             return null;
         }

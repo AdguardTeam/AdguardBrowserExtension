@@ -55,7 +55,7 @@ export class BackgroundMessageHandler extends MessageHandler {
         if (message.handlerName === APP_MESSAGE_HANDLER_NAME) {
             // Check type
             if (!BackgroundMessageHandler.isValidMessageType(message)) {
-                logger.error('[ext.BackgroundMessageHandler.handleMessage]: invalid message:', message);
+                logger.error('Invalid message in BackgroundMessageHandler:', message);
                 return;
             }
 
@@ -68,7 +68,7 @@ export class BackgroundMessageHandler extends MessageHandler {
                 try {
                     return await listener(message, sender);
                 } catch (e) {
-                    logger.error('[ext.BackgroundMessageHandler.handleMessage]: an error occurred while handling message:', message, 'error:', e);
+                    logger.error('An error occurred while handling message:', message, 'error:', e);
 
                     throw e;
                 }

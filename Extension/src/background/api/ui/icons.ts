@@ -80,17 +80,18 @@ class IconsApi {
         const icon = await this.pickIconVariant();
         // Update all tabs icons
         const allTabs = await browser.tabs.query({});
-
-        await Promise.allSettled(allTabs.map(async (tab) => {
-            if (!tab.id) {
-                return;
-            }
-            try {
+        const results = await Promise.allSettled(allTabs.map(async (tab) => {
+            if (tab.id) {
                 await IconsApi.setActionIcon(icon, tab.id);
-            } catch (e) {
-                logger.debug(`[ext.IconsApi.update]: failed to update icon for tab ${tab.id}:`, e);
             }
         }));
+
+        // Log any failures for debugging
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                logger.debug(`Failed to update icon for tab ${allTabs[index]?.id}:`, result.reason);
+            }
+        });
     }
 
     /**
@@ -129,7 +130,7 @@ class IconsApi {
                 await browserAction.setBadgeText({ tabId, text: badgeText });
             }
         } catch (e) {
-            logger.info(`[ext.IconsApi.updateTabAction]: failed to update tab icon for tab ${tabId}:`, e);
+            logger.info('Failed to update tab icon:', e);
         }
     }
 

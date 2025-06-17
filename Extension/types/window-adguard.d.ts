@@ -24,12 +24,10 @@ declare global {
              * tswebextension update.
              */
             logger: Logger;
-
             /**
              * For integration tests.
              */
             configure: (config: Configuration) => Promise<ConfigurationResult>;
-
             /**
              * Used to trigger autoUpdate function for tests.
              */

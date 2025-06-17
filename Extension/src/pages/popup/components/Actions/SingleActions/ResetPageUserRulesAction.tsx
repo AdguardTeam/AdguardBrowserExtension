@@ -47,7 +47,7 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
      */
     const handlePageUserRulesReset = async () => {
         if (!url) {
-            logger.error('[ext.ResetPageUserRulesAction]: no URL provided for page user rules reset');
+            logger.error('No URL provided for page user rules reset');
             return;
         }
 

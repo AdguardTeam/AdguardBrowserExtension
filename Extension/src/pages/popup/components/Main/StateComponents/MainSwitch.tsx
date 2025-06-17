@@ -44,7 +44,7 @@ type MainSwitchProps = {
 
 export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps) => {
     if (typeof isEnabled === 'undefined') {
-        logger.error('[ext.MainSwitch]: isEnabled should be defined for the main switcher');
+        logger.error('isEnabled should be defined for the main switcher');
         return null;
     }
 
@@ -55,7 +55,7 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
     // click handler is not needed during the transition
     // but in other cases it is required
     if (!isTransition && !clickHandler) {
-        logger.error('[ext.MainSwitch]: no click handler defined for the main switcher');
+        logger.error('No click handler defined for the main switcher');
         return null;
     }
 

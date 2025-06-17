@@ -36,7 +36,7 @@ export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }:
      */
     const handleCheckSiteSecurity = () => {
         if (!url) {
-            logger.error('[ext.CheckSiteSecurityAction]: no URL provided for site security check');
+            logger.error('No URL provided for site security check');
             return;
         }
 

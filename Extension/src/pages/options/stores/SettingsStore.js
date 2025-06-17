@@ -82,7 +82,7 @@ const fetchDataWithRetry = async (fetchFunction) => {
      */
     const innerRetry = async (retryTimes) => {
         if (retryTimes === 0) {
-            logger.error('[ext.SettingsStore]: failed to get from the background service.');
+            logger.error('Failed to get from the background service.');
             return null;
         }
         try {
@@ -95,7 +95,7 @@ const fetchDataWithRetry = async (fetchFunction) => {
 
             return data;
         } catch (e) {
-            logger.warn('[ext.SettingsStore]: failed to get from the background service, will retry fetch. error: ', e);
+            logger.error(e);
             await sleep(RETRY_DELAY_MS);
             return innerRetry(retryTimes - 1);
         }
@@ -666,7 +666,7 @@ class SettingsStore {
                 this.setFilterEnabledState(filterId, enabled);
             }
         } catch (e) {
-            logger.error('[ext.SettingsStore.updateFilterSetting]: failed to update filter setting: ', e);
+            logger.error(e);
             this.setFilterEnabledState(filterId, !enabled);
         }
     }
@@ -749,7 +749,7 @@ class SettingsStore {
             const { content } = await messenger.getAllowlist();
             this.setAllowlist(content);
         } catch (e) {
-            logger.error('[ext.SettingsStore]: failed to get allowlist: ', e);
+            logger.debug(e);
         }
     };
 

@@ -232,10 +232,9 @@ export class UserRulesService {
         if (errors.length > 0) {
             errors.forEach((error) => {
                 logger.error(
-                    '[ext.UserRulesService.checkUserRulesRegexpErrors]: User rule parsing error:',
+                    'User rule parsing error:',
                     `\nRule: ${RuleGenerator.generate(error.networkRule.node)}`,
-                    '\nReason:',
-                    error,
+                    `\nReason: ${error.reason}`,
                 );
             });
         }

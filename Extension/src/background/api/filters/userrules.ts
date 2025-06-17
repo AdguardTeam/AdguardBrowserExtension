@@ -41,7 +41,6 @@ import {
     editorStorage,
 } from '../../storages';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
-import { getZodErrorMessage } from '../../../common/error';
 
 /**
  * API for managing user rules list.
@@ -68,7 +67,10 @@ export class UserRulesApi {
             }
         } catch (e) {
             if (!isInstall) {
-                logger.warn('[ext.UserRulesApi.init]: cannot parse user filter list from persisted storage, reset to default. Origin error:', getZodErrorMessage(e));
+                logger.warn(
+                    'Cannot parse user filter list from persisted storage, reset to default. Origin error: ',
+                    e,
+                );
             }
             await FiltersStorage.set(
                 AntiBannerFiltersId.UserFilterId,
@@ -110,7 +112,7 @@ export class UserRulesApi {
                 }
             }
         } catch (e) {
-            logger.error('[ext.UserRulesApi.hasRulesForUrl]: cannot check user rules for url, origin error:', e);
+            logger.error('Cannot check user rules for url', e);
         }
 
         return false;

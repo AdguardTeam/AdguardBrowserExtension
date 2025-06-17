@@ -51,7 +51,7 @@ export const Miscellaneous = observer(() => {
     const [isOpenResetSettingsModal, setIsOpenResetSettingsModal] = useState(false);
 
     const settingChangeHandler = async ({ id, data }) => {
-        logger.trace(`[ext.Miscellaneous]: Setting ${id} set to ${data}`);
+        logger.info(`Setting ${id} set to ${data}`);
         await settingsStore.updateSetting(id, data);
     };
 

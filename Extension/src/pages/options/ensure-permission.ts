@@ -37,7 +37,7 @@ export const ensurePermission = async (enable: boolean): Promise<boolean> => {
     try {
         hasPrivacyPermission = await Permissions.hasPrivacy();
     } catch (e) {
-        logger.error('[ext.ensure-permission]: ', e);
+        logger.error(e);
         return false;
     }
 
@@ -49,7 +49,7 @@ export const ensurePermission = async (enable: boolean): Promise<boolean> => {
     try {
         return await Permissions.addPrivacy();
     } catch (e) {
-        logger.error('[ext.ensure-permission]: ', e);
+        logger.error(e);
         return false;
     }
 };

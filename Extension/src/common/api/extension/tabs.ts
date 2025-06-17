@@ -19,8 +19,6 @@ import browser, { type Tabs } from 'webextension-polyfill';
 
 import { Prefs } from '../../../background/prefs';
 
-import { WindowsApi } from './windows';
-
 /**
  * Helper class for browser.tabs API.
  */
@@ -47,8 +45,9 @@ export class TabsApi {
         const { id, windowId } = tab;
 
         await browser.tabs.update(id, { active: true });
-
-        await WindowsApi.update(windowId, { focused: true });
+        if (windowId) {
+            await browser.windows.update(windowId, { focused: true });
+        }
     }
 
     /**

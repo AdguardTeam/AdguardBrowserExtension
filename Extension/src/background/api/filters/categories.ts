@@ -135,7 +135,7 @@ export class Categories {
         }
 
         groupStateStorage.enableGroups([groupId]);
-        logger.info(`[ext.Categories.enableGroup]: enabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
+        logger.info(`Enabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
     }
 
     /**
@@ -145,7 +145,7 @@ export class Categories {
      */
     public static disableGroup(groupId: number): void {
         groupStateStorage.disableGroups([groupId]);
-        logger.info(`[ext.Categories.disableGroup]: disabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
+        logger.info(`Disabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
     }
 
     /**
@@ -311,7 +311,7 @@ export class Categories {
 
             const filterState = filterStateStorage.get(filterId);
             if (!filterState) {
-                logger.error(`[ext.Categories.getFilters]: cannot find filter ${filterId} state data`);
+                logger.error(`Cannot find filter ${filterId} state data`);
                 return;
             }
 
@@ -321,7 +321,7 @@ export class Categories {
                 // Sometimes filter version data might be missing
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2693,
                 // so we set it to values from metadata
-                logger.info(`[ext.Categories.getFilters]: Cannot find filter ${filterId} version data, restoring it from metadata`);
+                logger.info(`Cannot find filter ${filterId} version data, restoring it from metadata`);
                 const dayAgoMs = Date.now() - 1000 * 60 * 60 * 24; // 24 hours
                 filterVersion = {
                     version,
@@ -362,7 +362,7 @@ export class Categories {
             const groupState = groupStateStorage.get(groupMetadata.groupId);
 
             if (!groupState) {
-                logger.error(`[ext.Categories.getGroups]: cannot find group ${groupMetadata.groupId} state data`);
+                logger.error(`Cannot find group ${groupMetadata.groupId} state data`);
                 return;
             }
 

@@ -50,13 +50,14 @@ export class ConnectionHandler {
     private static handleConnection(port: Runtime.Port): void {
         let listenerId: number;
 
-        logger.debug(`[ext.ConnectionHandler.handleConnection]: port "${port.name}" connected`);
+        logger.info(`Port: "${port.name}" connected`);
 
         ConnectionHandler.onPortConnection(port);
 
         port.onMessage.addListener((message) => {
             if (!messageHasTypeAndDataFields(message)) {
-                logger.error('[ext.ConnectionHandler.handleConnection]: received message in ConnectionHandler.handleConnection has no type or data field:', message);
+                // eslint-disable-next-line max-len
+                logger.error('Received message in ConnectionHandler.handleConnection has no type or data field: ', message);
                 return;
             }
 
@@ -74,18 +75,18 @@ export class ConnectionHandler {
                     };
                     port.postMessage(message);
                 } catch (e) {
-                    logger.error('[ext.ConnectionHandler.handleConnection]: failed to send message to the port due to an error:', e);
+                    logger.error('Failed to send message to the port due to an error:', e);
                 }
             });
         });
 
         port.onDisconnect.addListener(() => {
             if (chrome.runtime.lastError) {
-                logger.debug('[ext.ConnectionHandler.handleConnection]: an error occurred on disconnect', browser.runtime.lastError);
+                logger.debug('An error occurred on disconnect', browser.runtime.lastError);
             }
             ConnectionHandler.onPortDisconnection(port);
             notifier.removeListener(listenerId);
-            logger.debug(`[ext.ConnectionHandler.handleConnection]: port "${port.name}" disconnected`);
+            logger.info(`Port: "${port.name}" disconnected`);
         });
     }
 
@@ -111,7 +112,7 @@ export class ConnectionHandler {
 
             case port.name === KEEP_ALIVE_PORT_NAME: {
                 // This handler exists solely to prevent errors from the default case.
-                logger.debug('[ext.ConnectionHandler.onPortConnection]: connected to the port');
+                logger.debug('Connected to the port');
                 break;
             }
 

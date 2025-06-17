@@ -25,7 +25,6 @@ import {
 import { CommonFilterUtils } from '../../../common/common-filter-utils';
 import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { logger } from '../../../common/logger';
-import { getZodErrorMessage } from '../../../common/error';
 import { isNumber } from '../../../common/guards';
 import { translator } from '../../../common/translators/translator';
 import {
@@ -110,11 +109,11 @@ export class FiltersApi {
             await FiltersApi.loadI18nMetadataFromBackend(true);
             await FiltersApi.loadMetadataFromFromBackend(true);
         } catch (e) {
-            logger.debug('[ext.FiltersApi.updateMetadata]: cannot load remote metadata due to:', getZodErrorMessage(e));
+            logger.debug('Cannot load remote metadata due to: ', e);
             // loading metadata from local assets is needed to avoid the extension init stopping after the install
             // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
             if (shouldUseLocalAssets) {
-                logger.debug('[ext.FiltersApi.updateMetadata]: trying to load metadata from local assets...');
+                logger.debug('Trying to load metadata from local assets...');
                 await FiltersApi.loadI18nMetadataFromBackend(false);
                 await FiltersApi.loadMetadataFromFromBackend(false);
             }
@@ -212,7 +211,7 @@ export class FiltersApi {
                 // check for updates - without fresh metadata we still can load
                 // newest filter, checking it's version will be against the old,
                 // local metadata, which is possible outdated.
-                logger.error('[ext.FiltersApi.loadFilters]: failed to update metadata due to an error:', getZodErrorMessage(e));
+                logger.error('Failed to update metadata due to an error: ', e);
             }
         }
 
@@ -222,12 +221,14 @@ export class FiltersApi {
                 const f = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, remote);
                 return f.filterId;
             } catch (e) {
-                logger.debug(`[ext.FiltersApi.loadFilters]: filter rules were not loaded from backend for filter: ${filterId}, error:`, getZodErrorMessage(e));
+                logger.debug(`Filter rules were not loaded from backend for filter: ${filterId}, error: ${e}`);
                 if (!network.isFilterHasLocalCopy(filterId)) {
-                    logger.debug(`[ext.FiltersApi.loadFilters]: filter rules cannot be loaded because there is no local assets for filter ${filterId}.`);
+                    logger.debug(
+                        `Filter rules cannot be loaded because there is no local assets for filter ${filterId}.`,
+                    );
                     return null;
                 }
-                logger.debug(`[ext.FiltersApi.loadFilters]: trying to load locally stored filter rules for filter: ${filterId}...`);
+                logger.debug(`Trying to load locally stored filter rules for filter: ${filterId}...`);
                 // second arg is 'false' to load locally stored filter rules if remote loading failed
                 // e.g. server is not available
                 // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2761
@@ -242,7 +243,7 @@ export class FiltersApi {
                     );
                     return f.filterId;
                 } catch (e) {
-                    logger.debug(`[ext.FiltersApi.loadFilters]: Filter rules were not loaded from local assets for filter: ${filterId}, error: ${e}`);
+                    logger.debug(`Filter rules were not loaded from local assets for filter: ${filterId}, error: ${e}`);
                     return null;
                 }
             }
@@ -253,7 +254,7 @@ export class FiltersApi {
         // Handles errors
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                logger.error('[ext.FiltersApi.loadFilters]: cannot load filter rules due to:', getZodErrorMessage(promise.reason));
+                logger.error('Cannot load filter rules due to: ', promise.reason);
             }
         });
 
@@ -295,11 +296,10 @@ export class FiltersApi {
         loadedFilters.push(...alreadyLoadedFilterIds);
 
         filterStateStorage.enableFilters(loadedFilters);
-        const loadedFiltersToLog = loadedFilters.map((id) => {
+        logger.info(`Enabled filters: ${loadedFilters.map((id) => {
             const filterName = FiltersApi.getFilterName(id);
             return `id='${id}', name='${filterName}'`;
-        });
-        logger.info(`[ext.FiltersApi.loadAndEnableFilters]: enabled filters: ${loadedFiltersToLog.join('; ')}`);
+        }).join('; ')}`);
 
         if (!remote) {
             // Update the enabled filters only if loading happens from local resources
@@ -328,11 +328,10 @@ export class FiltersApi {
      */
     public static disableFilters(filtersIds: number[]): void {
         filterStateStorage.disableFilters(filtersIds);
-        const disabledFiltersToLog = filtersIds.map((id) => {
+        logger.info(`Disabled filters: ${filtersIds.map((id) => {
             const filterName = FiltersApi.getFilterName(id);
             return `id='${id}', name='${filterName}'`;
-        });
-        logger.info(`[ext.FiltersApi.disableFilters]: disabled filters: ${disabledFiltersToLog.join('; ')}`);
+        }).join('; ')}`);
     }
 
     /**
@@ -348,7 +347,7 @@ export class FiltersApi {
             await FiltersApi.loadI18nMetadataFromBackend(false);
             await FiltersApi.loadMetadataFromFromBackend(false);
         } catch (e) {
-            logger.error('[ext.FiltersApi.reloadFiltersFromLocal]: cannot load local metadata due to:', getZodErrorMessage(e));
+            logger.error('Cannot load local metadata due to: ', e);
         }
 
         FiltersApi.loadFilteringStates();
@@ -367,7 +366,7 @@ export class FiltersApi {
 
             return loadedFiltersIds;
         } catch (e) {
-            logger.error('[ext.FiltersApi.reloadFiltersFromLocal]: cannot load local filters due to:', getZodErrorMessage(e));
+            logger.error('Cannot load local filters due to: ', e);
 
             return [];
         }
@@ -495,7 +494,7 @@ export class FiltersApi {
 
         if (groupIds.length > 0) {
             groupStateStorage.enableGroups(groupIds);
-            logger.info(`[ext.FiltersApi.enableGroupsWereNotTouched]: enabled groups: ${groupIds.map((id) => Categories.getGroupName(id)).join('; ')}`);
+            logger.info(`Enabled groups: ${groupIds.map((id) => Categories.getGroupName(id)).join('; ')}`);
         }
     }
 
@@ -553,7 +552,7 @@ export class FiltersApi {
 
         rawMetadata.filters.forEach((filter) => {
             if (filter.deprecated) {
-                logger.info(`[ext.FiltersApi.loadMetadataFromFromBackend]: Filter with id ${filter.filterId} is deprecated and shall not be used.`);
+                logger.info(`Filter with id ${filter.filterId} is deprecated and shall not be used.`);
                 // do not filter out deprecated filter metadata as it may be needed later
                 // e.g. during settings import
             }
@@ -588,7 +587,8 @@ export class FiltersApi {
             const i18nMetadata = i18nMetadataValidator.parse(JSON.parse(storageData));
             i18nMetadataStorage.setCache(i18nMetadata);
         } catch (e) {
-            logger.warn(`[ext.FiltersApi.initI18nMetadata]: cannot parse data from "${i18nMetadataStorage.key}" storage, load from local assets. Origin error:`, getZodErrorMessage(e));
+            // eslint-disable-next-line max-len
+            logger.warn(`Cannot parse data from "${i18nMetadataStorage.key}" storage, load from local assets. Origin error: `, e);
             await FiltersApi.loadI18nMetadataFromBackend(false);
         }
     }
@@ -610,7 +610,8 @@ export class FiltersApi {
             const metadata = metadataValidator.parse(JSON.parse(storageData));
             metadataStorage.setCache(metadata);
         } catch (e) {
-            logger.warn(`[ext.FiltersApi.initMetadata]: cannot parse data from "${metadataStorage.key}" storage, load from local assets. Origin error:`, getZodErrorMessage(e));
+            // eslint-disable-next-line max-len
+            logger.warn(`Cannot parse data from "${metadataStorage.key}" storage, load from local assets. Origin error: `, e);
             await FiltersApi.loadMetadataFromFromBackend(false);
         }
     }
@@ -646,7 +647,8 @@ export class FiltersApi {
 
             filterStateStorage.setData(data);
         } catch (e) {
-            logger.warn(`[ext.FiltersApi.initFilterStateStorage]: cannot parse data from "${filterStateStorage.key}" storage, load default states. Origin error:`, getZodErrorMessage(e));
+            // eslint-disable-next-line max-len
+            logger.warn(`Cannot parse data from "${filterStateStorage.key}" storage, load default states. Origin error: `, e);
             filterStateStorage.setData(FilterStateStorage.applyMetadata({}, metadata));
         }
     }
@@ -671,7 +673,8 @@ export class FiltersApi {
 
             groupStateStorage.setData(data);
         } catch (e) {
-            logger.warn(`[ext.FiltersApi.initGroupStateStorage]: cannot parse data from "${groupStateStorage.key}" storage, set default states. Origin error:`, getZodErrorMessage(e));
+            // eslint-disable-next-line max-len
+            logger.warn(`Cannot parse data from "${groupStateStorage.key}" storage, set default states. Origin error: `, e);
             groupStateStorage.setData(GroupStateStorage.applyMetadata({}, metadata));
         }
     }
@@ -696,7 +699,8 @@ export class FiltersApi {
 
             filterVersionStorage.setData(data);
         } catch (e) {
-            logger.warn(`[ext.FiltersApi.initFilterVersionStorage]: cannot parse data from "${filterVersionStorage.key}" storage, set default states. Origin error:`, getZodErrorMessage(e));
+            // eslint-disable-next-line max-len
+            logger.warn(`Cannot parse data from "${filterVersionStorage.key}" storage, set default states. Origin error: `, e);
             filterVersionStorage.setData(FilterVersionStorage.applyMetadata({}, metadata));
         }
     }
@@ -751,7 +755,7 @@ export class FiltersApi {
 
         const tasks = installedDeprecatedFilters.map(async ({ filterId, subscriptionUrl }) => {
             await FiltersApi.removeFilter(filterId);
-            logger.info(`[ext.FiltersApi.migrateDeprecatedFilters]: Filter with id ${filterId} removed from the regular filters storage since it is deprecated`);
+            logger.info(`Filter with id ${filterId} removed from the regular filters storage since it is deprecated`);
 
             // AdGuard DNS filter can be simply removed with no special migration
             if (filterId === AntiBannerFiltersId.DnsFilterId) {
@@ -763,7 +767,7 @@ export class FiltersApi {
                 filterId === AntiBannerFiltersId.AnnoyancesCombinedFilterId
                 && enabledFilters.includes(filterId)
             ) {
-                logger.info(`[ext.FiltersApi.migrateDeprecatedFilters]: Filter with id ${filterId} will be replaced with separate Annoyances filters`);
+                logger.info(`Filter with id ${filterId} will be replaced with separate Annoyances filters`);
                 await FiltersApi.loadAndEnableFilters(SEPARATE_ANNOYANCE_FILTER_IDS);
                 return;
             }
@@ -775,7 +779,7 @@ export class FiltersApi {
                     trusted: true,
                     enabled: true,
                 });
-                logger.info(`[ext.FiltersApi.migrateDeprecatedFilters]: Filter with id ${filterId} moved to custom group`);
+                logger.info(`Filter with id ${filterId} moved to custom group`);
             }
         });
 
@@ -783,7 +787,10 @@ export class FiltersApi {
 
         promises.forEach((promise) => {
             if (promise.status === 'rejected') {
-                logger.error('[ext.FiltersApi.migrateDeprecatedFilters]: Cannot remove obsoleted filter from storage or create a new custom filter due to: ', promise.reason);
+                logger.error(
+                    'Cannot remove obsoleted filter from storage or create a new custom filter due to: ',
+                    promise.reason,
+                );
             }
         });
 
@@ -803,15 +810,17 @@ export class FiltersApi {
         const tasks = installedFiltersIds
             .filter((id) => !metadataFiltersIds.includes(id))
             .map(async (id) => {
-                try {
-                    await FiltersApi.removeFilter(id);
-                    logger.info(`[ext.FiltersApi.removeObsoleteFilters]: Filter with id ${id} removed from the storage since it is obsolete`);
-                } catch (e) {
-                    logger.error(`[ext.FiltersApi.removeObsoleteFilters]: Cannot remove obsoleted filter ${id} from storage due to: `, e);
-                }
+                await FiltersApi.removeFilter(id);
+                logger.info(`Filter with id ${id} removed from the storage since it is obsolete`);
             });
 
-        await Promise.allSettled(tasks);
+        const promises = await Promise.allSettled(tasks);
+        // Handles errors
+        promises.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                logger.error('Cannot remove obsoleted filter from storage due to: ', promise.reason);
+            }
+        });
     }
 
     /**

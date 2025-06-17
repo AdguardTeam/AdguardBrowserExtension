@@ -30,7 +30,6 @@ import {
     type FiltersHitStats,
     network,
 } from '../network';
-import { getZodErrorMessage } from '../../../common/error';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import { engine } from '../../engine';
 
@@ -70,7 +69,8 @@ export class HitStatsApi {
                 hitStatsStorage.setData({});
             }
         } catch (e) {
-            logger.error(`[ext.HitStatsApi.init]: cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error:`, getZodErrorMessage(e));
+            // eslint-disable-next-line max-len
+            logger.error(`Cannot parse data from "${hitStatsStorage.key}" storage, set default states. Origin error: `, e);
             hitStatsStorage.setData({});
         }
     }
@@ -160,7 +160,7 @@ export class HitStatsApi {
 
                 // During normal operation, this should not happen
                 if (lineStartIndex === -1) {
-                    let baseMessage = `[ext.HitsStatsApi.sendStats.transformFilterHits] cannot find rule source index for rule index ${ruleIndex}`;
+                    let baseMessage = `[HitStatsApi] Cannot find rule source index for rule index ${ruleIndex}`;
 
                     const ruleNode = engine.api.retrieveRuleNode(Number(filterId), Number(ruleIndex));
 
@@ -171,7 +171,6 @@ export class HitStatsApi {
                         baseMessage += `, generated rule text: ${generatedRuleText}`;
                     }
 
-                    // eslint-disable-next-line @adguard/logger-context/require-logger-context
                     logger.error(baseMessage);
                     return null;
                 }
@@ -180,7 +179,7 @@ export class HitStatsApi {
 
                 // During normal operation, this should not happen
                 if (!appliedRuleText) {
-                    let baseMessage = `[ext.HitsStatsApi.sendStats.transformFilterHits] cannot find rule text for rule index ${ruleIndex}`;
+                    let baseMessage = `[HitStatsApi] Cannot find rule text for rule index ${ruleIndex}`;
 
                     const ruleNode = engine.api.retrieveRuleNode(Number(filterId), Number(ruleIndex));
 
@@ -191,7 +190,6 @@ export class HitStatsApi {
                         baseMessage += `, generated rule text: ${generatedRuleText}`;
                     }
 
-                    // eslint-disable-next-line @adguard/logger-context/require-logger-context
                     logger.error(baseMessage);
                     return null;
                 }
@@ -224,8 +222,8 @@ export class HitStatsApi {
             await network.sendHitStats({
                 filters: hitStatsData,
             });
-        } catch (e) {
-            logger.error('[ext.HitStatsApi.sendStats]: cannot send hit stats, origin error:', e);
+        } catch (e: unknown) {
+            logger.error(e);
         }
 
         await HitStatsApi.cleanup();

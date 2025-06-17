@@ -49,7 +49,6 @@ module.exports = {
     ],
     'plugins': [
         'import-newlines',
-        '@adguard/logger-context',
     ],
     'rules': {
         'no-console': 'error',
@@ -82,28 +81,72 @@ module.exports = {
                 ],
                 'pathGroups': [
                     // Place all react libraries after external
-                    { 'pattern': '*react*', 'group': 'external', 'position': 'before' },
+                    {
+                        'pattern': '*react*',
+                        'group': 'external',
+                        'position': 'before',
+                    },
                     // Place all our libraries after react-like
-                    { 'pattern': '@adguard/**', 'group': 'external', 'position': 'after' },
+                    {
+                        'pattern': '@adguard/**',
+                        'group': 'external',
+                        'position': 'after',
+                    },
                     // Place app alias after internal
-                    { 'pattern': 'app', 'group': 'internal', 'position': 'after' },
+                    {
+                        'pattern': 'app',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place engine alias after internal
-                    { 'pattern': 'engine', 'group': 'internal', 'position': 'after' },
+                    {
+                        'pattern': 'engine',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place tswebextension alias after internal
-                    { 'pattern': 'tswebextension', 'group': 'internal', 'position': 'after' },
+                    {
+                        'pattern': 'tswebextension',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place scripting-service alias after internal
-                    { 'pattern': 'scripting-service', 'group': 'internal', 'position': 'after' },
+                    {
+                        'pattern': 'scripting-service',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place settings-service alias after internal
-                    { 'pattern': 'settings-service', 'group': 'internal', 'position': 'after' },
+                    {
+                        'pattern': 'settings-service',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place filters-service alias after internal
-                    { 'pattern': 'filters-service', 'group': 'internal', 'position': 'after' },
+                    {
+                        'pattern': 'filters-service',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place custom-filters-service alias after internal
-                    { 'pattern': 'custom-filters-service', 'group': 'internal', 'position': 'after' },
+                    {
+                        'pattern': 'custom-filters-service',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Place rules-limits-service alias after internal
-                    { 'pattern': 'rules-limits-service', 'group': 'internal', 'position': 'after' },
+                    {
+                        'pattern': 'rules-limits-service',
+                        'group': 'internal',
+                        'position': 'after',
+                    },
                     // Separate group for all .pcss styles
-                    // eslint-disable-next-line max-len, object-curly-newline
-                    { 'pattern': '*.pcss', 'group': 'object', 'patternOptions': { 'matchBase': true }, 'position': 'after' },
+                    {
+                        'pattern': '*.pcss',
+                        'group': 'object',
+                        'patternOptions': { 'matchBase': true },
+                        'position': 'after',
+                    },
                 ],
                 'pathGroupsExcludedImportTypes': ['builtin', 'react'],
                 'newlines-between': 'always',
@@ -121,10 +164,6 @@ module.exports = {
             'ignoreTrailingComments': false,
             'ignoreComments': false,
             'ignoreTemplateLiterals': true,
-            /**
-             * Ignore calls to logger, e.g. logger.error(), because of the long string.
-             */
-            'ignorePattern': 'logger\\.',
         }],
         'indent': [
             'error',
@@ -167,7 +206,7 @@ module.exports = {
         'jsx-a11y/label-has-associated-control': 'off',
 
         // These rules are enabled for background only see Extension/src/background/.eslintrc.cjs
-        // TODO: consider enabling them for the whole project later
+        // TODO consider enabling them for the whole project later
         '@typescript-eslint/explicit-function-return-type': 'off',
         'jsdoc/require-param-description': 'off',
         'jsdoc/require-property-description': 'off',
@@ -196,19 +235,49 @@ module.exports = {
         'jsdoc/sort-tags': ['error', {
             linesBetween: 1,
             tagSequence: [
-                { tags: ['file'] },
-                { tags: ['template', 'class', 'async'] },
-                { tags: ['note'] },
-                { tags: ['see'] },
-                { tags: ['param'] },
-                { tags: ['returns'] },
-                { tags: ['throws'] },
-                { tags: ['example'] },
+                {
+                    tags: [
+                        'file',
+                    ],
+                },
+                {
+                    tags: [
+                        'template',
+                        'class',
+                        'async',
+                    ],
+                },
+                {
+                    tags: [
+                        'note',
+                    ],
+                },
+                {
+                    tags: [
+                        'see',
+                    ],
+                },
+                {
+                    tags: [
+                        'param',
+                    ],
+                },
+                {
+                    tags: [
+                        'returns',
+                    ],
+                },
+                {
+                    tags: [
+                        'throws',
+                    ],
+                },
+                {
+                    tags: [
+                        'example',
+                    ],
+                },
             ],
-        }],
-        // Check that every logger call has a context tag.
-        '@adguard/logger-context/require-logger-context': ['error', {
-            contextModuleName: 'ext',
         }],
     },
     'ignorePatterns': [

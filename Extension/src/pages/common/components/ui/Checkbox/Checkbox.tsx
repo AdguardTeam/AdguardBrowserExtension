@@ -20,9 +20,8 @@ import React, { useEffect, useState } from 'react';
 
 import cn from 'classnames';
 
-import { getErrorMessage } from '@adguard/logger';
-
 import { logger } from '../../../../../common/logger';
+import { getErrorMessage } from '../../../../../common/error';
 
 import './checkbox.pcss';
 
@@ -123,7 +122,7 @@ const Checkbox = (props: CheckboxProps) => {
         } catch (error) {
             // TODO: Dirty hack, need to refactor. Maybe pass some new prop like 'revertOnError'?
             if (!getErrorMessage(error).includes('[revert-checkbox]')) {
-                logger.error('[ext.Checkbox]: handler execution failed:', error);
+                logger.error('Handler execution failed', error);
             }
             if (optimistic) {
                 setState(!newValue); // revert state on error

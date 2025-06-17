@@ -76,7 +76,7 @@ export class OptionsStorage {
         try {
             this.storage.setItem(key, JSON.stringify(value));
         } catch (e) {
-            logger.error('[ext.OptionsStorage.setItem]: error: ', e);
+            logger.debug(e);
         }
     }
 
@@ -92,7 +92,7 @@ export class OptionsStorage {
             try {
                 storedValue = JSON.parse(item);
             } catch (e) {
-                logger.error('[ext.OptionsStorage.getItem]: error: ', e);
+                logger.debug(e);
             }
         }
 

@@ -156,7 +156,7 @@ const AddCustomModal = observer(({
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
-            logger.error('[ext.AddCustomModal]: error: ', e);
+            logger.error(e);
             setStepToRender(STEPS.ERROR);
         }
     };
@@ -210,7 +210,7 @@ const AddCustomModal = observer(({
             }
         } catch (e) {
             setStepToRender(STEPS.ERROR);
-            logger.error('[ext.AddCustomModal]: error: ', e);
+            logger.error(e);
         }
         closeModal();
     };

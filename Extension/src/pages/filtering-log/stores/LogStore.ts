@@ -588,7 +588,7 @@ class LogStore {
     @action
     clearFilteringEvents = async () => {
         if (this.selectedTabId === null) {
-            logger.error('[ext.LogStore]: selected tab id is not defined');
+            logger.error('[clearFilteringEvents]: selected tab id is not defined');
             return;
         }
 
@@ -608,7 +608,7 @@ class LogStore {
     @action
     refreshPage = async () => {
         if (this.selectedTabId === null) {
-            logger.error('[ext.LogStore]: selected tab id is not defined');
+            logger.error('[clearFilteringEvents]: selected tab id is not defined');
             return;
         }
 

@@ -86,7 +86,7 @@ const loadImageDataMv3 = async (size: number, url: string) => {
         const imageData = ctx.getImageData(0, 0, size, size);
         return imageData;
     } catch (error) {
-        logger.error('[ext.iconsCache]: failed to load image:', error);
+        logger.error('Failed to load image:', error);
         throw error;
     }
 };

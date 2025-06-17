@@ -69,7 +69,7 @@ export class ContextMenuEvents {
         const listener = this.listenersMap.get(event);
 
         if (!listener) {
-            logger.error(`[ext.ContextMenuEvents.publishEvent]: contextMenuEvent not found listener for ${event}!`);
+            logger.error(`ContextMenuEvent not found listener for ${event}!`);
             return;
         }
 

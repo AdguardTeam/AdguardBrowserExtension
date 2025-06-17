@@ -122,7 +122,7 @@ class Notifier {
             try {
                 listener.apply(listener, args);
             } catch (ex) {
-                logger.error(`[ext.Notifier.notifyListeners]: error invoking listener for ${event} cause:`, ex);
+                logger.error(`Error invoking listener for ${event} cause:`, ex);
             }
         });
     }

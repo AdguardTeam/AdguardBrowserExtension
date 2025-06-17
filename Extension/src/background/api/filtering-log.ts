@@ -231,13 +231,13 @@ export class FilteringLogApi {
         if (filterIds) {
             filterIds.forEach((filterId) => this.filtersCache.delete(filterId));
 
-            logger.debug(`[ext.FilteringLogApi.purgeFiltersCache]: filtering log filters cache purged for filter ids: ${filterIds.join(', ')}`);
+            logger.info(`Filtering log filters cache purged for filter ids: ${filterIds.join(', ')}`);
             return;
         }
 
         this.filtersCache.clear();
 
-        logger.debug('[ext.FilteringLogApi.purgeFiltersCache]: filtering log filters cache purged.');
+        logger.info('Filtering log filters cache purged');
     }
 
     /**
@@ -311,7 +311,7 @@ export class FilteringLogApi {
 
             return filterData;
         } catch (e) {
-            logger.error(`[ext.FilteringLogApi.getFilterData]: failed to get filter data for filter id ${filterId}:`, e);
+            logger.error(`Failed to get filter data for filter id ${filterId}`, e);
         }
 
         return undefined;
@@ -371,14 +371,14 @@ export class FilteringLogApi {
             // The following error messages should not be displayed during normal operation,
             // but we handle them just in case, and to provide type safety
             if (!ruleNode) {
-                logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
+                logger.error(`Failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
             }
 
             const ruleText = RuleGenerator.generate(ruleNode);
 
             if (!ruleText) {
-                logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
+                logger.error(`Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
             }
 
@@ -390,7 +390,7 @@ export class FilteringLogApi {
         const filterData = await this.getFilterData(filterId);
 
         if (!filterData) {
-            logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get filter data for filter id ${filterId}`);
+            logger.error(`Failed to get filter data for filter id ${filterId}`);
             return null;
         }
 
@@ -400,7 +400,7 @@ export class FilteringLogApi {
         const lineStartIndex = getRuleSourceIndex(ruleIndex, sourceMap);
 
         if (lineStartIndex === -1) {
-            let baseMessage = `[ext.FilteringLogApi.getRuleText]: failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `Failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
 
             const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
 
@@ -413,12 +413,10 @@ export class FilteringLogApi {
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
-                // eslint-disable-next-line @adguard/logger-context/require-logger-context
                 logger.warn(`${baseMessage}, trying to sync the filter`);
                 return this.getRuleText(filterId, ruleIndex);
             }
 
-            // eslint-disable-next-line @adguard/logger-context/require-logger-context
             logger.error(baseMessage);
             return null;
         }
@@ -426,7 +424,7 @@ export class FilteringLogApi {
         const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
 
         if (!appliedRuleText) {
-            let baseMessage = `[ext.FilteringLogApi.getRuleText]: failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
+            let baseMessage = `Failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
 
             const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
 
@@ -439,12 +437,10 @@ export class FilteringLogApi {
 
             // If the rule is not found, try to sync the filter and try again
             if (this.attemptToSyncFilter(filterId)) {
-                // eslint-disable-next-line @adguard/logger-context/require-logger-context
                 logger.warn(`${baseMessage}, trying to sync the filter`);
                 return this.getRuleText(filterId, ruleIndex);
             }
 
-            // eslint-disable-next-line @adguard/logger-context/require-logger-context
             logger.error(baseMessage);
             return null;
         }
@@ -496,13 +492,13 @@ export class FilteringLogApi {
         try {
             engine.api.setDebugScriptlets(true);
         } catch (e) {
-            logger.error('[ext.FilteringLogApi.onOpenFilteringLogPage]: failed to enable `verbose scriptlets logging` option:', e);
+            logger.error('Failed to enable `verbose scriptlets logging` option', e);
         }
 
         try {
             engine.api.setCollectHitStats(true);
         } catch (e) {
-            logger.error('[ext.FilteringLogApi.onOpenFilteringLogPage]: failed to enable `collect hit stats` option:', e);
+            logger.error('Failed to enable `collect hit stats` option', e);
         }
     }
 
@@ -524,14 +520,14 @@ export class FilteringLogApi {
             try {
                 engine.api.setDebugScriptlets(false);
             } catch (e) {
-                logger.error('[ext.FilteringLogApi.onCloseFilteringLogPage]: failed to disable `verbose scriptlets logging` option:', e);
+                logger.error('Failed to disable `verbose scriptlets logging` option', e);
             }
 
             if (settingsStorage.get(SettingOption.DisableCollectHits)) {
                 try {
                     engine.api.setCollectHitStats(false);
                 } catch (e) {
-                    logger.error('[ext.FilteringLogApi.onCloseFilteringLogPage]: failed to disable `collect hit stats` option:', e);
+                    logger.error('Failed to disable `collect hit stats` option', e);
                 }
             }
         }
@@ -805,7 +801,7 @@ export class FilteringLogApi {
         const event = filteringEvents.find((e) => e.eventId === eventId);
 
         if (!event) {
-            logger.debug('[ext.FilteringLogApi.attachDeclarativeRuleToEventData]: not found event in filtering log to update:', eventId);
+            logger.debug('Not found event in filtering log to update: ', eventId);
             return;
         }
 

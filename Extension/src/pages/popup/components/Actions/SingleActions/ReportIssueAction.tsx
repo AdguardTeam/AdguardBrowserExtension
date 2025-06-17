@@ -36,7 +36,7 @@ export const ReportIssueAction = ({ className, isFilteringPossible, url }: Singl
      */
     const handleAbuseSite = () => {
         if (!url) {
-            logger.error('[ext.ReportIssueAction]: no URL provided for abuse site reporting');
+            logger.error('No URL provided for abuse site reporting');
             return;
         }
 

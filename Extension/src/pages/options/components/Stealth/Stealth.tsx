@@ -94,7 +94,7 @@ const Stealth = observer(() => {
             }
         }
 
-        logger.trace(`[ext.Stealth]: Setting ${id} set to ${data}. Ignore background: ${ignoreBackground}`);
+        logger.info(`Setting ${id} set to ${data}. Ignore background: ${ignoreBackground}`);
         await updateSettingWrapper(id, value, ignoreBackground);
     };
 

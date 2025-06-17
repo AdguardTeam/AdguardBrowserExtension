@@ -114,7 +114,7 @@ export class Engine implements TsWebExtensionEngine {
 
         const configuration = await Engine.getConfiguration();
 
-        logger.info('[ext.Engine.start]: Start tswebextension...');
+        logger.info('Start tswebextension...');
         const result = await this.api.start(configuration);
 
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
@@ -123,7 +123,7 @@ export class Engine implements TsWebExtensionEngine {
         await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
         const rulesCount = this.api.getRulesCount();
-        logger.info(`[ext.Engine.start]: tswebextension is started. Rules count: ${rulesCount}`);
+        logger.info(`tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
@@ -160,9 +160,9 @@ export class Engine implements TsWebExtensionEngine {
     async update(skipLimitsCheck: boolean = false): Promise<void> {
         const configuration = await Engine.getConfiguration();
 
-        logger.info('[ext.Engine.update]: Update tswebextension configuration...');
+        logger.info('Update tswebextension configuration...');
         if (skipLimitsCheck) {
-            logger.info('[ext.Engine.update]: With skip limits check.');
+            logger.info('With skip limits check.');
         }
         const result = await this.api.configure(configuration);
 
@@ -172,7 +172,7 @@ export class Engine implements TsWebExtensionEngine {
         await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
         const rulesCount = this.api.getRulesCount();
-        logger.info(`[ext.Engine.update]: tswebextension configuration is updated. Rules count: ${rulesCount}`);
+        logger.info(`tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
