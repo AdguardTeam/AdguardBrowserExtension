@@ -53,6 +53,7 @@ module.exports = {
     ],
     'rules': {
         'no-console': 'error',
+        'no-await-in-loop': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/indent': 'off',
         '@typescript-eslint/no-shadow': 'off',

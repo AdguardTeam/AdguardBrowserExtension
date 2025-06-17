@@ -224,7 +224,6 @@ const startDownload = async (browser: AssetsFiltersBrowser): Promise<void> => {
         if (!url) {
             continue;
         }
-        // eslint-disable-next-line no-await-in-loop
         await downloadFilter(url, browser);
     }
 };
