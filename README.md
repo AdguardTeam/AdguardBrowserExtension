@@ -415,7 +415,7 @@ Then install extension via developer mode, make requests and see applied declara
 
     ![Select](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/select.png)
 
-That’s it!
+That's it!
 
 ##### How to debug rules
 
@@ -568,6 +568,7 @@ This is useful for temporarily relaxing or tightening the allowed size delta for
 - `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+- `userScripts`                   - this permission is required to let the user subscribe to custom filter lists and evaluate rules from these lists
 
 ## <a name="auto-publish-builds"></a> Auto-publish builds
 

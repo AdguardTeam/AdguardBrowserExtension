@@ -41,7 +41,6 @@ import {
     iconsApi,
     DocumentBlockApi,
     CustomFilterApi,
-    QuickFixesRulesApi,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
@@ -231,9 +230,10 @@ export class Engine implements TsWebExtensionEngine {
             trusted: true,
         };
 
-        if (QuickFixesRulesApi.isEnabled()) {
-            Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
-        }
+        // TODO: revert if Quick Fixes filter is back
+        // if (QuickFixesRulesApi.isEnabled()) {
+        //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
+        // }
 
         const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
             .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));

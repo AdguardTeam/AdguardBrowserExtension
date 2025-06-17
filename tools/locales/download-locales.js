@@ -67,7 +67,6 @@ const promiseBatchMap = async (arr, batchSize, handler) => {
     // eslint-disable-next-line no-restricted-syntax
     for (const batch of batches) {
         const promises = batch.map(handler);
-        // eslint-disable-next-line no-await-in-loop
         const data = await Promise.all(promises);
         result.push(data);
     }
@@ -160,12 +159,10 @@ const downloadUrlWithRetry = async (url, retries = 100, initialDelay = 2000, fac
     let delay = initialDelay;
     for (let i = 0; i < retries; i += 1) {
         try {
-            // eslint-disable-next-line no-await-in-loop
             return await downloadMessagesByUrl(url);
         } catch (error) {
             if (shouldRetry(error.message)) {
                 cliLog.info(`Attempt ${i + 1} failed due to rate limiting. Retrying in ${delay} ms...`);
-                // eslint-disable-next-line no-await-in-loop
                 await delayExecution(delay);
                 delay *= factor;
             } else {

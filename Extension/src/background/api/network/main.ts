@@ -161,11 +161,14 @@ export class Network {
 
         let isLocalFilter = false;
         if (__IS_MV3__) {
-            // `forceRemote` flag for MV3 built-in filters can be used only for
-            // Quick Fixes filter and custom filters.
+            // `forceRemote` flag for MV3 built-in filters can be used only for custom filters.
             const isRemote = forceRemote
-                && (filterId === AntiBannerFiltersId.QuickFixesFilterId
-                    || CustomFilterUtils.isCustomFilter(filterId));
+                && CustomFilterUtils.isCustomFilter(filterId);
+
+            // TODO: revert if Quick Fixes filter is back
+            // const isRemote = forceRemote
+            //     && (filterId === AntiBannerFiltersId.QuickFixesFilterId
+            //         || CustomFilterUtils.isCustomFilter(filterId));
 
             if (isRemote) {
                 if (useOptimizedFilters) {
@@ -191,7 +194,9 @@ export class Network {
             // For MV3 we load local filters not from files, but from the
             // prepared data in filters storage, to which we write the binary
             // data from @adguard/dnr-rulesets. See AG-36824 for details.
-            if (__IS_MV3__ && filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+            if (__IS_MV3__) {
+                // TODO: revert if Quick Fixes filter is back
+                // if (__IS_MV3__ && filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
                 // TODO: Check if its needed
                 await (TsWebExtension as unknown as typeof TsWebExtensionMv3).syncRuleSetWithIdb(
                     filterId,
