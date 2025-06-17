@@ -31,11 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated blocking pages for MV2 — Safebrowsing and blocked by `$document` rules.
 - Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
-<!-- FIXME: check versions later -->
-- Updated [@adguard/agtree] to v3.1.5.
-- Updated [@adguard/scriptlets] to v2.2.1.
-- Updated [@adguard/tsurlfilter] to v3.4.x.
-- Updated [@adguard/tswebextension] to v3.2.x.
+- Updated [@adguard/agtree] to v3.2.1.
+- Updated [@adguard/dnr-rulesets] to v3.1.0.
+- Updated [@adguard/logger] to v2.0.0.
+- Updated [@adguard/scriptlets] to v2.2.7.
+- Updated [@adguard/tsurlfilter] to v3.4.0.
+- Updated [@adguard/tswebextension] to v3.2.0.
 
 ### Removed
 
@@ -58,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Total blocked popup string translated incorrectly [#3204].
 - `$replace` rules may break some websites [#3122].
 - Increase file size limit to 10MB for `$replace` rules in Firefox [#3192].
+- Allow to specify attributes without value in selector for HTML filtering rules [tsurlfilter#147].
 
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
@@ -82,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3163]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3163
 [#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
+[tsurlfilter#147]: https://github.com/AdguardTeam/tsurlfilter/issues/147
 
 ## [5.1.94] - 2025-05-29
 
