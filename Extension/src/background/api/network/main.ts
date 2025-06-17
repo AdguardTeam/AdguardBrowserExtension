@@ -41,7 +41,7 @@ import {
     localScriptRulesValidator,
 } from '../../schema';
 import { type FilterUpdateOptions } from '../filters';
-import { AntiBannerFiltersId, NEWLINE_CHAR_REGEX } from '../../../common/constants';
+import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 
 import { NetworkSettings } from './settings';
