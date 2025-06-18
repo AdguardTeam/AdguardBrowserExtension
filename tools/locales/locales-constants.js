@@ -52,19 +52,28 @@ const {
 const LOCALES_ABSOLUTE_PATH = path.join(__dirname, LOCALES_RELATIVE_PATH);
 
 /**
- * We use this pairs because we have different locale codes in the crowdin and the extension
+ * We use this pairs because we have different locale codes in the crowdin and the extension.
  */
 const LOCALE_PAIRS = {
     /**
-     * Norwegian language locale code in Crowdin is 'no'
-     * Chrome recognizes both locale code 'nb' and 'no',
-     * Firefox recognizes only 'nb'
+     * Norwegian language locale code in Crowdin is 'no'.
+     * Chrome recognizes both locale code 'nb' and 'no'.
+     * Firefox recognizes only 'nb'.
      */
     nb: 'no',
+
     /**
-     * We duplicate es language for Spanish (Latin America and Caribbean)
+     * We duplicate es language for Spanish (Latin America and Caribbean).
      */
     es_419: 'es',
+
+    /**
+     * Serbian (Latin) language locale code in Crowdin is 'sr-Latn'.
+     * All browsers recognizes only 'sr' locale code.
+     *
+     * @see {@link https://developer.chrome.com/docs/extensions/reference/api/i18n#locales}
+     */
+    sr: 'sr-Latn',
 };
 
 /**
