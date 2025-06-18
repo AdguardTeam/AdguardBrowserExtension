@@ -87,6 +87,7 @@ export enum MessageType {
     OpenSiteReportTab = 'openSiteReportTab',
     OpenComparePage = 'openComparePage',
     OpenChromeExtensionsSettingsPage = 'openChromeExtensionsSettingsPage',
+    OpenExtensionDetailsPage = 'openExtensionDetailsPage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
     RemoveAllowlistDomain = 'removeAllowlistDomain',
     AddAllowlistDomainForTabId = 'addAllowlistDomainForTabId',
@@ -250,6 +251,10 @@ export type OpenComparePageMessage = {
 
 export type OpenChromeExtensionsSettingsPageMessage = {
     type: MessageType.OpenChromeExtensionsSettingsPage;
+};
+
+export type OpenExtensionDetailsPageMessage = {
+    type: MessageType.OpenExtensionDetailsPage;
 };
 
 export type OpenFullscreenUserRulesMessage = {
@@ -693,6 +698,10 @@ export type MessageMap = {
     };
     [MessageType.OpenChromeExtensionsSettingsPage]: {
         message: OpenChromeExtensionsSettingsPageMessage;
+        response: void;
+    };
+    [MessageType.OpenExtensionDetailsPage]: {
+        message: OpenExtensionDetailsPageMessage;
         response: void;
     };
     [MessageType.OpenFullscreenUserRules]: {
