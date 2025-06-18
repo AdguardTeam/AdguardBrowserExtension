@@ -2662,6 +2662,30 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "0c91eaeaf0d6e2a52ab9be668bbd08a5" due to: ' + e);
         }
     },
+    '(()=>{let e;const t={apply:(t,n,o)=>(o[0]?.behavior?.controlType&&o[0]?.initialItems&&"function"==typeof o[0].update&&(e=o[0].update,o[0].update=function(){this.update=e}),Reflect.apply(t,n,o))};window.Object.keys=new Proxy(window.Object.keys,t)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.ca0d0ab35fc86cd11d58ae07707d23fa === e) return;
+            (() => {
+                let e;
+                const t = {
+                    apply: (t, o, a) => (a[0]?.behavior?.controlType && a[0]?.initialItems && "function" == typeof a[0].update && (e = a[0].update, 
+                    a[0].update = function() {
+                        this.update = e;
+                    }), Reflect.apply(t, o, a))
+                };
+                window.Object.keys = new Proxy(window.Object.keys, t);
+            })();
+            Object.defineProperty(Window.prototype.toString, "ca0d0ab35fc86cd11d58ae07707d23fa", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "ca0d0ab35fc86cd11d58ae07707d23fa" due to: ' + e);
+        }
+    },
     '(()=>{const e={apply:(e,n,t)=>{const o=t[1];return o&&["adBlockingDetected","assessAdBlocking"].includes(o)&&t[2]&&"function"==typeof t[2].value&&(t[2].value=()=>{}),Reflect.apply(e,n,t)}};window.Object.defineProperty=new Proxy(window.Object.defineProperty,e)})();': () => {
         try {
             const e = "done";
@@ -7110,26 +7134,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "7388e0f8018a3f9b99906510f5d32edd" due to: ' + e);
-        }
-    },
-    "(function(){var c=document.addEventListener;document.addEventListener=function(a,b,d,e){\"click\"!=a&&-1==b.toString().indexOf('trigerred')&&c(a,b,d,e)}.bind(document);})();": () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.a7165e98cefa8ce0f55b8614d1d6e6f5 === e) return;
-            !function() {
-                var e = document.addEventListener;
-                document.addEventListener = function(t, n, r, o) {
-                    "click" != t && -1 == n.toString().indexOf("trigerred") && e(t, n, r, o);
-                }.bind(document);
-            }();
-            Object.defineProperty(Window.prototype.toString, "a7165e98cefa8ce0f55b8614d1d6e6f5", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "a7165e98cefa8ce0f55b8614d1d6e6f5" due to: ' + e);
         }
     },
     "document.addEventListener('DOMContentLoaded', function() { if (window.location.href.indexOf(\"hpinterstitialnew.html\") != -1) { window.setCookie1('sitecapture_interstitial', 1, 1); window.location.href = \"http://www.ndtv.com/\"; } })": () => {
