@@ -81,8 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
 [tsurlfilter#147]: https://github.com/AdguardTeam/tsurlfilter/issues/147
 
-<!-- TODO: add the date after release -->
-## [5.1.102] - 2025-06-XX
+## [5.1.102] - 2025-06-15
 
 ### Changed
 
