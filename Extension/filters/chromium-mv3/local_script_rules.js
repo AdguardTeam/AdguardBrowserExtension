@@ -5930,6 +5930,47 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "03163849cc3681e88adf734700efefc6" due to: ' + e);
         }
     },
+    '(()=>{let e,t=!1;const n=function(){},o=function(t,n){if("function"==typeof n)try{window.KalturaPlayer?n([]):e=n}catch(e){console.error(e)}};let r;Object.defineProperty(window,"PWT",{get:()=>({requestBids:o,generateConfForGPT:o,addKeyValuePairsToGPTSlots:n,generateDFPURL:n}),set(){}}),Object.defineProperty(window,"KalturaPlayer",{get:function(){return r},set:function(n){r=n,!t&&e&&(t=!0,e([]))}})})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.c8bf49746912973d817a11811377a065 === e) return;
+            (() => {
+                let e, t = !1;
+                const r = function() {}, o = function(t, r) {
+                    if ("function" == typeof r) try {
+                        window.KalturaPlayer ? r([]) : e = r;
+                    } catch (e) {
+                        console.error(e);
+                    }
+                };
+                let n;
+                Object.defineProperty(window, "PWT", {
+                    get: () => ({
+                        requestBids: o,
+                        generateConfForGPT: o,
+                        addKeyValuePairsToGPTSlots: r,
+                        generateDFPURL: r
+                    }),
+                    set() {}
+                }), Object.defineProperty(window, "KalturaPlayer", {
+                    get: function() {
+                        return n;
+                    },
+                    set: function(r) {
+                        n = r, !t && e && (t = !0, e([]));
+                    }
+                });
+            })();
+            Object.defineProperty(Window.prototype.toString, "c8bf49746912973d817a11811377a065", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "c8bf49746912973d817a11811377a065" due to: ' + e);
+        }
+    },
     '(()=>{const a=function(){},b=function(c,a){if("function"==typeof a)try{a([])}catch(a){console.error(a)}};Object.defineProperty(window,"PWT",{value:{requestBids:b,generateConfForGPT:b,addKeyValuePairsToGPTSlots:a,generateDFPURL:a}})})();': () => {
         try {
             const e = "done";
