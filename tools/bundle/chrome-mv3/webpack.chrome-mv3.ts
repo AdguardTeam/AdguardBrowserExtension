@@ -25,6 +25,7 @@ import { merge } from 'webpack-merge';
 import { type Configuration } from 'webpack';
 
 import { RulesetsInjector } from '@adguard/dnr-rulesets';
+import { RULESET_NAME_PREFIX } from '@adguard/tsurlfilter/es/declarative-converter';
 
 import { genMv3CommonConfig } from '../webpack.common-mv3';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
@@ -44,8 +45,6 @@ import { chromeMv3Manifest } from './manifest.chrome-mv3';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 /* eslint-enable @typescript-eslint/naming-convention */
-
-export const RULESET_NAME_PREFIX = 'ruleset_';
 
 const GPC_SCRIPT_PATH = path.resolve(__dirname, '../../../Extension/pages/gpc');
 const HIDE_DOCUMENT_REFERRER_SCRIPT_PATH = path.resolve(__dirname, '../../../Extension/pages/hide-document-referrer');
