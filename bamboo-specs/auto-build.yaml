@@ -15,7 +15,7 @@ variables:
 # Since auto-build is being run only for a stable branch now (specified in
 # `bamboo.stableBranchName`) we should skip the build stage for other branches.
 stages:
-  - DoNothing:
+  - DoNothing: &any-stage
       manual: false
       final: false
       jobs:
@@ -23,14 +23,14 @@ stages:
 
 DoNothing:
   key: NOTHING
-  other:
+  other: &other
     clean-working-dir: true
-  docker:
+  docker: &dockerNode
     image: ${bamboo.dockerNode}
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
-    - checkout:
+    - checkout: &checkout
         force-clean-build: true
     - script:
         interpreter: SHELL
@@ -86,34 +86,27 @@ branch-overrides:
     stable/v5.1:
       stages:
         - Tests:
-            manual: false
-            final: false
+            <<: *any-stage
             jobs:
               - Lint
               - Unit tests
               - Locales check
         - Update filters and build:
-            manual: false
-            final: false
+            <<: *any-stage
             jobs:
-              - Update filters and build
+              - Full filters update and build
+              - Skip-review filters update and build
         - Integration tests:
-            manual: false
-            final: false
+            <<: *any-stage
             jobs:
               - Integration tests
 
       Lint:
         key: LINT
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerNode}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+        other: *other
+        docker: *dockerNode
         tasks:
-          - checkout:
-              force-clean-build: true
+          - checkout: *checkout
           - script:
               interpreter: SHELL
               scripts:
@@ -132,24 +125,18 @@ branch-overrides:
 
                   ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
         final-tasks:
-          - script:
+          - script: &script-cleanup
               interpreter: SHELL
               scripts:
                 - ./bamboo-specs/scripts/cleanup.sh
-        requirements:
-          - adg-docker: 'true'
+        requirements: *requirements
 
       Unit tests:
         key: UNITTESTS
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerNode}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+        other: *other
+        docker: *dockerNode
         tasks:
-          - checkout:
-              force-clean-build: true
+          - checkout: *checkout
           - script:
               interpreter: SHELL
               scripts:
@@ -172,24 +159,15 @@ branch-overrides:
               type: junit
               # mv3 postfix because we run auto-builds only for mv3 branch.
               test-results: 'tests-reports/unit-tests-mv3.xml'
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
-        requirements:
-          - adg-docker: 'true'
+          - script: *script-cleanup
+        requirements: *requirements
 
       Locales check:
         key: LOCALESCHECK
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerNode}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+        other: *other
+        docker: *dockerNode
         tasks:
-          - checkout:
-              force-clean-build: true
+          - checkout: *checkout
           - script:
               interpreter: SHELL
               scripts:
@@ -208,26 +186,16 @@ branch-overrides:
 
                   pnpm locales validate --min
         final-tasks:
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
-        requirements:
-          - adg-docker: 'true'
+          - script: *script-cleanup
+        requirements: *requirements
 
-
-      Update filters and build:
-        key: UPDATEFILTERSANDBUILD
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerNode}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+      Skip-review filters update and build:
+        key: SKIPREVIEWUPDATEANDBUILD
+        other: *other
+        docker: *dockerNode
         tasks:
-          - checkout:
-              force-clean-build: true
-          - script:
+          - checkout: *checkout
+          - script: &script-init-update
               interpreter: SHELL
               scripts:
                 - |-
@@ -254,9 +222,34 @@ branch-overrides:
                   # Update patch version because resources was changed.
                   pnpm increment
 
-                  # Update filters before build.
+                  # Install the latest dnr-rulesets version
                   OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
+          - script:
+              interpreter: SHELL
+              scripts:
+                - |-
+                  # FIXME (Slava): check the script
 
+                  # Determine if we should run skip-review update
+                  DAY=$(date +%u)
+                  HOUR=$(date -u +%H)
+
+                  # Only run MON-FRI between 6:00-19:00 UTC (9:00-22:00 UTC+3)
+                  # Except Friday when we run Full update at 19:00 UTC
+                  # (Monday=1, Friday=5)
+                  if [[ $DAY -ge 1 && $DAY -le 5 && !($DAY -eq 5 && $HOUR -eq 19) ]]; then
+                    echo "Running skip-review update..."
+
+                    # Run the ruleset update script
+                    npx ts-node tools/ruleset-updates.ts
+                  else
+                    echo "Skipping skip-review update"
+                    exit 0
+                  fi
+          - script: &script-build
+              interpreter: SHELL
+              scripts:
+                - |-
                   # Create artifacts directory if it doesn't exist.
                   mkdir -p artifacts
 
@@ -268,38 +261,82 @@ branch-overrides:
                   # publish zip versions of the extension.
                   mv build/beta/chrome-mv3.zip artifacts/chrome-mv3-beta.zip
                   mv build/release/chrome-mv3.zip artifacts/chrome-mv3-release.zip
-          - inject-variables:
-              # Doesn't matter which channel we use, because version is the same
-              # for both channels.
-              file: build/release/build.txt
-              scope: RESULT
-              namespace: inject
+          - inject-variables: *inject-variables
           - any-task:
               plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
               configuration:
                 selectedRepository: defaultRepository
-                commitMessage: 'skipci: Filters update & increment patch version'
+                commitMessage: 'skipci: Skip-review filters update & increment patch version'
           - any-task:
               plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
               configuration:
                 selectedRepository: defaultRepository
-                tagName: autobuild-v${bamboo.inject.version}
+                tagName: autobuild-skip-review-v${bamboo.inject.version}
         final-tasks:
+          - script: *script-cleanup
+        artifacts: *artifacts
+        requirements: *requirements
+
+      Full filters update and build:
+        key: FULLUPDATEANDBUILD
+        other: *other
+        docker: *dockerNode
+        # Run Friday full update at 22:00 UTC+3
+        tasks:
+          - checkout: *checkout
+          - script: *script-init-update
           - script:
               interpreter: SHELL
               scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+                - |-
+                  # FIXME (Slava): check the script
+
+                  # Determine day of week to confirm Friday update
+                  DAY=$(date +%u)
+                  HOUR=$(date -u +%H)
+
+                  # Friday is day 5, after 19:00 UTC (or 22:00 UTC+3)
+                  if [[ $DAY -eq 5 ]] && [[ $HOUR -ge 19 ]]; then
+                    echo "Running Full update..."
+                    # Set cache directory
+                    pnpm config set store-dir ${bamboo.cachePnpm}
+
+                    # Install dependencies
+                    pnpm install ${bamboo.varsPnpm}
+
+                    # FIXME (Slava): consider doing it via js (tools/ script)
+                    # Extract extension version from package.json and save to text file
+                    EXTENSION_VERSION=$(node -e "console.log(require('./package.json').version)")
+                    echo "$EXTENSION_VERSION" > Extension/filters/extension-version.txt
+
+                    # Run the ruleset update script
+                    npx ts-node tools/ruleset-updates.ts --full
+                  else
+                    echo "Skipping full update"
+                    exit 0
+                  fi
+          - script: *script-build
+          - any-task:
+              plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+              configuration:
+                selectedRepository: defaultRepository
+                commitMessage: 'skipci: Full filters update & increment patch version'
+          - any-task:
+              plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
+              configuration:
+                selectedRepository: defaultRepository
+                tagName: autobuild-full-update-v${bamboo.inject.version}
+        final-tasks:
+          - script: *script-cleanup
         artifacts: *artifacts
         requirements: *requirements
 
       Integration tests:
         key: INTEGRATIONTESTS
-        other:
-          clean-working-dir: true
+        other: *other
         docker:
+          <<: *dockerNode
           image: ${bamboo.dockerPlaywright}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
         tasks:
           - artifact-download:
               artifacts:
@@ -318,17 +355,13 @@ branch-overrides:
           - test-parser:
               type: junit
               test-results: 'tests-reports/integration-tests-*.xml'
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
-        requirements:
-          - adg-docker: 'true'
+          - script: *script-cleanup
+        requirements: *requirements
 
-      # run release build at 22:00 (UTC+3) every Monday, Wednesday, Friday
+      # Skip-review update: once per hour during work hours 9:00-22:00 UTC+3 on weekdays except Friday.
+      # Full update: once per week — at 22:00 UTC+3 on Friday.
+      # But what to do exactly and when is defined inside the scripts.
       # https://confluence.atlassian.com/bamboo/constructing-a-cron-expression-in-bamboo-289277372.html
-      # it is needed in the end of the day to collect all changes
-      # made by filter list maintainers during the workday
       triggers:
         - cron:
-            expression: 0 0 22 ? * MON,WED,FRI
+            expression: 0 0 9-22 ? * MON-FRI
