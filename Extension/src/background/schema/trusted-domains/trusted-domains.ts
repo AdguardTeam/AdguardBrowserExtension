@@ -20,7 +20,7 @@ import zod from 'zod';
 /**
  * Runtime validator for persistent trusted domains data.
  */
-export const trustedDomainDataValidator = zod.object({
+const trustedDomainDataValidator = zod.object({
     /**
      * String domain which was excluded from filtering.
      */

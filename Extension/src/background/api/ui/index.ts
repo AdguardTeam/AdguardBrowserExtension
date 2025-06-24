@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './main';
-export * from './pages';
-export * from './toasts';
-export * from './promo-notification';
-export * from './frames';
-export * from './assistant';
-export * from './icons';
-export * from './context-menu';
+export { UiApi } from './main';
+export { PagesApi } from './pages';
+export { toasts } from './toasts';
+export { promoNotificationApi } from './promo-notification';
+export { FramesApi, type FrameData } from './frames';
+export { AssistantApi } from './assistant';
+export { iconsApi, defaultIconVariants } from './icons';
+export { ContextMenuApi } from './context-menu';

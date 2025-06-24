@@ -15,5 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './main';
-export * from './settings';
+export {
+    network,
+    type ExtensionXMLHttpRequest,
+    type ResponseLikeXMLHttpRequest,
+    type FilterHitStats,
+    type FiltersHitStats,
+} from './main';
+export { NetworkSettings } from './settings';

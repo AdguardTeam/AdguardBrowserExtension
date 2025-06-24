@@ -16,10 +16,25 @@ import type { Browser, BuildTargetEnv } from '../constants';
 export const DEFAULT_SIZE_THRESHOLD_PERCENTAGE = 10;
 
 /**
+ * 1 MB in bytes.
+ */
+const ONE_MB_IN_BYTES = 1024 * 1024;
+
+/**
  * 30MB limit for MV3, selected heuristically (by CTO).
  * Enforced for Chrome MV3 builds.
  */
-export const MAX_MV3_SIZE_BYTES = 30 * 1024 * 1024;
+export const MAX_MV3_SIZE_BYTES = 30 * ONE_MB_IN_BYTES;
+
+/**
+ * 200 MB limit for Firefox Add-ons Store.
+ *
+ * Potentially even bigger number is allowed
+ * since max uncompressed size was increased
+ * https://github.com/mozilla/addons-server/pull/22773
+ * but 200 MB should be more than enough.
+ */
+export const MAX_FIREFOX_AMO_SIZE_BYTES = 200 * ONE_MB_IN_BYTES;
 
 /**
  * Firefox Add-ons Store limit for any file inside the zip.
@@ -28,7 +43,7 @@ export const MAX_MV3_SIZE_BYTES = 30 * 1024 * 1024;
  *
  * @see https://github.com/mozilla/addons-linter/blob/3bd6c3874185263ad025485e230dcbdb83517d7d/src/const.js#L103-L111
  */
-export const MAX_FIREFOX_SIZE_BYTES = 4 * 1024 * 1024;
+export const MAX_FIREFOX_SIZE_BYTES = 4 * ONE_MB_IN_BYTES;
 
 /**
  * Directory name for build output.
@@ -79,6 +94,11 @@ export type BundleSizes = {
      * For comparing unzipped files in shared/ folder (bytes)
      */
     shared: Record<string, number>;
+
+    /**
+     * For comparing unzipped (raw) files in folder (bytes).
+     */
+    raw?: number;
 };
 
 /**

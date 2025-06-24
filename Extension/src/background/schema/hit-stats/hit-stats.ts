@@ -36,7 +36,7 @@ const filterHitsValidator = zod.record(
     filterRulesHitsValidator.optional(),
 );
 
-export const hitStatsValidator = zod.object({
+const hitStatsValidator = zod.object({
     /**
      * Contains an object with filter IDs as keys and their
      * {@link filterRulesHitsValidator} as values.
@@ -50,7 +50,7 @@ export const hitStatsValidator = zod.object({
  */
 export type HitStats = zod.infer<typeof hitStatsValidator>;
 
-export const filtersVersionsValidator = zod.record(
+const filtersVersionsValidator = zod.record(
     /**
      * Filter's id.
      */
@@ -61,11 +61,6 @@ export const filtersVersionsValidator = zod.record(
      */
     zod.string(),
 );
-
-/**
- * Contains an object with filter IDs as keys and their versions as values.
- */
-export type FiltersVersions = zod.infer<typeof filtersVersionsValidator>;
 
 export const hitStatsStorageDataValidator = zod.object({
     /**

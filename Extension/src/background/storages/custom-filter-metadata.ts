@@ -30,7 +30,7 @@ import { settingsStorage } from './settings';
  *
  * @see {@link StringStorage}
  */
-export class CustomFilterMetadataStorage extends StringStorage<
+class CustomFilterMetadataStorage extends StringStorage<
     SettingOption.CustomFilters,
     CustomFilterMetadataStorageData,
     'sync'

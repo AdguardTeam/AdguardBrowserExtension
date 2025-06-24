@@ -133,7 +133,12 @@ export class CommonFilterApi {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
 
-        if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+        // TODO: revert if Quick Fixes filter is back
+        // if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+        //     forceRemote = false;
+        // }
+
+        if (__IS_MV3__ && forceRemote) {
             forceRemote = false;
         }
 
@@ -245,15 +250,16 @@ export class CommonFilterApi {
         const remote = !__IS_MV3__;
         await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
 
-        // For MV3 version we have QuickFixes filter which does not have local
-        // version and always should be updated from the server.
-        if (__IS_MV3__) {
-            await FiltersApi.loadAndEnableFilters(
-                [AntiBannerFiltersId.QuickFixesFilterId],
-                true,
-                enableUntouchedGroups,
-            );
-        }
+        // TODO: revert if Quick Fixes filter is back
+        // // For MV3 version we have QuickFixes filter which does not have local
+        // // version and always should be updated from the server.
+        // if (__IS_MV3__) {
+        //     await FiltersApi.loadAndEnableFilters(
+        //         [AntiBannerFiltersId.QuickFixesFilterId],
+        //         true,
+        //         enableUntouchedGroups,
+        //     );
+        // }
     }
 
     /**

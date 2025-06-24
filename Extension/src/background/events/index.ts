@@ -15,5 +15,5 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './settings';
-export * from './context-menu';
+export { settingsEvents } from './settings';
+export { contextMenuEvents, ContextMenuAction } from './context-menu';

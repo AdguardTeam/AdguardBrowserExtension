@@ -31,7 +31,7 @@ import { OPTIONS_PAGE } from '../../../common/constants';
 
 import { type FrameData } from './frames';
 
-export type AddMenuItemOptions = Menus.CreateCreatePropertiesType & {
+type AddMenuItemOptions = Menus.CreateCreatePropertiesType & {
     messageArgs?: { [key: string]: unknown };
 };
 

@@ -25,6 +25,7 @@ import {
 import { getBrowserConf } from '../bundle/helpers';
 
 import type {
+    BundleSizes,
     CheckBundleSizesParams,
     Dependency,
     TargetInfo,
@@ -35,6 +36,7 @@ import {
     ZIP_EXTENSION,
     BUILD_DIRNAME,
     MAX_FIREFOX_SIZE_BYTES,
+    MAX_FIREFOX_AMO_SIZE_BYTES,
 } from './constants';
 import {
     getCurrentBuildStats,
@@ -240,7 +242,6 @@ async function checkChromeMv3BundleSize(buildType: BuildTargetEnv): Promise<bool
 
     try {
         // Get current build stats for this target
-        // eslint-disable-next-line no-await-in-loop
         const currentStats = await getCurrentBuildStats(buildType, Browser.ChromeMv3);
 
         const mv3Size = currentStats.stats.zip;
@@ -257,6 +258,66 @@ async function checkChromeMv3BundleSize(buildType: BuildTargetEnv): Promise<bool
         return false;
     } catch (e) {
         console.error(`Error checking Chrome MV3 bundle size: ${e}`);
+
+        return true;
+    }
+}
+
+/**
+ * Check the size of the Firefox Amo unpacked directory.
+ *
+ * @param buildType Build environment — beta or release.
+ *
+ * @returns True if new size exceeds the limit
+ * or if new size is more than threshold compared to previous size,
+ * otherwise false.
+ */
+async function checkFirefoxAmoUnpackedSize(
+    buildType: BuildTargetEnv,
+    prevStats: BundleSizes,
+    threshold: number,
+): Promise<boolean> {
+    if (buildType !== BuildTargetEnv.Beta && buildType !== BuildTargetEnv.Release) {
+        throw new Error('Invalid build type for Firefox AMO unpacked size check, expected beta or release');
+    }
+
+    console.log('\n\nChecking Firefox AMO unpacked size...');
+
+    try {
+        // Get current build stats for this target
+        const currentStats = await getCurrentBuildStats(buildType, Browser.FirefoxAmo);
+
+        const currentSize = currentStats.stats.raw;
+        if (!currentSize) {
+            console.error('No current size found for Firefox AMO unpacked size check!');
+            return true;
+        }
+
+        const rawDirName = `${getBrowserConf(Browser.FirefoxAmo).buildDir}`;
+
+        if (currentSize > MAX_FIREFOX_AMO_SIZE_BYTES) {
+            console.error(`${rawDirName}: ${(currentSize / (1024 * 1024)).toFixed(2)} MB - Exceeds maximum allowed size of ${MAX_FIREFOX_AMO_SIZE_BYTES} MB! ❌`);
+            return true;
+        }
+
+        const prevSize = prevStats.raw;
+        if (!prevSize) {
+            console.error('No previous size found for Firefox AMO unpacked size check!');
+            return true;
+        }
+
+        const changePercent = ((currentSize - prevSize) / prevSize) * 100;
+
+        if (prevSize > 0 && changePercent > threshold) {
+            console.error(`❌ ${rawDirName}: ${formatSize(prevSize)} → ${formatSize(currentSize)} (${formatPercentage(prevSize, currentSize)}) - Exceeds ${threshold}% threshold!`);
+            return true;
+        }
+
+        console.log(`✅ ${rawDirName}: ${formatSize(prevSize)} → ${formatSize(currentSize)} (${formatPercentage(prevSize, currentSize)}) - ok!`);
+
+        return false;
+    } catch (e) {
+        console.error(`Error checking Firefox AMO unpacked size: ${e}`);
 
         return true;
     }
@@ -338,7 +399,6 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
 
         try {
             // Get current build stats for this target
-            // eslint-disable-next-line no-await-in-loop
             const currentStats = await getCurrentBuildStats(buildEnv, target);
 
             // Compare with reference sizes if available
@@ -357,7 +417,6 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
 
             // No reference sizes available, save current stats as reference
             console.log(`No reference sizes available for comparison for ${target}. This build will be used as reference.`);
-            // eslint-disable-next-line no-await-in-loop
             await saveBuildStats(buildEnv, target, currentStats);
         } catch (error) {
             // In normal mode, rethrow the error
@@ -372,6 +431,18 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
         hasChromeMv3SizeIssues = await checkChromeMv3BundleSize(buildEnv);
     }
 
+    let hasFirefoxAmoSizeIssues = false;
+    if (
+        targets.includes(Browser.FirefoxAmo)
+        && (buildEnv === BuildTargetEnv.Beta || buildEnv === BuildTargetEnv.Release)
+    ) {
+        hasFirefoxAmoSizeIssues = await checkFirefoxAmoUnpackedSize(
+            buildEnv,
+            sizesData[buildEnv][Browser.FirefoxAmo].stats,
+            threshold,
+        );
+    }
+
     // Check for Firefox Add-ons Store file size limit (4MB per each file)
     const hasFirefoxJsIssues = await checkFirefoxJsFileSizes(buildEnv);
 
@@ -379,7 +450,13 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
     const hasDuplicates = await checkForDuplicatePackages();
 
     // Exit with error if there are issues in any target
-    if (hasSizeIssues || hasChromeMv3SizeIssues || hasDuplicates || hasFirefoxJsIssues) {
+    if (
+        hasSizeIssues
+        || hasChromeMv3SizeIssues
+        || hasFirefoxAmoSizeIssues
+        || hasDuplicates
+        || hasFirefoxJsIssues
+    ) {
         throw new Error('Bundle size check failed due to size issues or duplicate packages');
     }
 

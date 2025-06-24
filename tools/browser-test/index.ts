@@ -392,7 +392,6 @@ const runTests = async (
     // run testcases
     // eslint-disable-next-line no-restricted-syntax
     for (const testcase of filteredTestsCases) {
-        // eslint-disable-next-line no-await-in-loop
         const testSuccess = await runTest(
             backgroundPage,
             page,
