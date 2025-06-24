@@ -1,2 +1,41 @@
-export * from './fixtures';
-export * from './mocks';
+export {
+    getExportedSettingsProtocolV1Fixture,
+    getExportedSettingsProtocolV2Fixture,
+    getImportedSettingsFromV1Fixture,
+    getDefaultExportFixture,
+    filterNameFixture,
+    filterTextWithMetadataFixture,
+    getDefaultSettingsConfigFixtureMV2,
+    getDefaultSettingsConfigFixtureMV3,
+    getFilterTextFixture,
+    getEmptyPageStatsDataFixture,
+    getEmptyStatisticDataFixture,
+    getSettingsV1,
+    getSettingsV2,
+    getExportedSettingsV2,
+    getMetadataFixture,
+    getI18nMetadataFixture,
+    getStorageFixturesV0,
+    getStorageFixturesV1,
+    getStorageFixturesV2,
+    getStorageFixturesV3,
+    getStorageFixturesV4,
+    getStorageFixturesV5,
+    getStorageFixturesV6,
+    getStorageFixturesV7,
+    getStorageFixturesV8,
+    getStorageFixturesV9,
+    getStorageFixturesV10,
+    getStorageFixturesV11,
+    getStorageFixturesV12,
+    type StorageData,
+} from './fixtures';
+
+export {
+    mockLocalStorage,
+    mockFilterPath,
+    mockXhrRequests,
+    MockedTsWebExtension,
+    SettingsApi,
+    PageStatsApi,
+} from './mocks';

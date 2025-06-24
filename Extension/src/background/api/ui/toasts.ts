@@ -44,7 +44,7 @@ enum StylesAssetsPath {
 /**
  * Toasts class handles work with different popups and alert messages.
  */
-export class Toasts {
+class Toasts {
     private static readonly MAX_TRIES = 500;
 
     private static readonly TRIES_TIMEOUT_MS = 5000; // 5 sec

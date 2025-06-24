@@ -129,13 +129,14 @@ export const getImportedSettingsFromV1Fixture = () => {
                 return id !== 14 && id !== 15 && id !== 241;
             });
 
-        // Insert before last element to correct order in strict equal tests.
-        configV1.filters['enabled-filters'].splice(
-            configV1.filters['enabled-filters'].length - 1,
-            0,
-            // 24 - AdGuard Quick Fixes enabled by default for MV3.
-            24,
-        );
+        // TODO: revert if Quick Fixes filter is back
+        // // Insert before last element to correct order in strict equal tests.
+        // configV1.filters['enabled-filters'].splice(
+        //     configV1.filters['enabled-filters'].length - 1,
+        //     0,
+        //     // 24 - AdGuard Quick Fixes enabled by default for MV3.
+        //     24,
+        // );
 
         // Safebrowsing deleted after 5.0 (MV3).
         configV1['general-settings']['safebrowsing-enabled'] = false;
@@ -172,7 +173,9 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
             // App Banners, Other Annoyances and Widgets
             // 15 - AdGuard DNS filter - not supported in MV3.
             // 241 - EasyList Cookie List, author does not support MV3.
-            ? [1, 2, 3, 4, 7, 13, 17, 24, 1000, 1001]
+            ? [1, 2, 3, 4, 7, 13, 17, 1000, 1001]
+            // TODO: revert if Quick Fixes filter is back
+            // ? [1, 2, 3, 4, 7, 13, 17, 24, 1000, 1001]
             : [1, 2, 3, 4, 7, 13, 17, 18, 19, 20, 21, 22, 241, 1000, 1001],
         [FiltersOption.EnabledGroups]: [0, 1, 2, 3, 4, 5, 6, 7],
         [FiltersOption.CustomFilters]: [{

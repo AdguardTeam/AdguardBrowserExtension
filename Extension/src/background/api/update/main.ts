@@ -218,16 +218,9 @@ export class UpdateApi {
      */
     private static async migrateFromV11toV12(): Promise<void> {
         if (__IS_MV3__) {
-            // We cannot load and enable filter here, because filter's API is not
-            // initialized yet. So we just set the filter state to enabled
-            // and loaded.
-            // After that it will be renew from the local copy of filters
-            // - which will create all needed filter's objects in memory to correct
-            // work.
-            await UpdateApi.addQuickFixesFilter();
+            // await UpdateApi.removeQuickFixesFilter();
             return;
         }
-
         const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
 
         if (!UpdateApi.isObject(settings)) {
@@ -1142,19 +1135,19 @@ export class UpdateApi {
         ).parse(JSON.parse(filtersStateData));
 
         // Little hack to mark filter as enabled before it is actually loaded.
-        Object.assign(filtersState, {
-            [AntiBannerFiltersId.QuickFixesFilterId]: {
-                // Enabled by default.
-                enabled: true,
-                // Installed is false, because otherwise this filter state
-                // will be marked as "obsoleted" (because this filter not
-                // exists in metadata yet) and will be removed from the memory.
-                installed: false,
-                // Mark as loaded to update filter from local resources and
-                // create filter object in memory.
-                loaded: true,
-            },
-        });
+        // Object.assign(filtersState, {
+        //     [AntiBannerFiltersId.QuickFixesFilterId]: {
+        //         // Enabled by default.
+        //         enabled: true,
+        //         // Installed is false, because otherwise this filter state
+        //         // will be marked as "obsoleted" (because this filter not
+        //         // exists in metadata yet) and will be removed from the memory.
+        //         installed: false,
+        //         // Mark as loaded to update filter from local resources and
+        //         // create filter object in memory.
+        //         loaded: true,
+        //     },
+        // });
 
         settings['filters-state'] = JSON.stringify(filtersState);
 
@@ -1216,6 +1209,7 @@ export class UpdateApi {
 
         // Remove deprecated Quick Fixes filter from the storages.
         await FiltersStorageV1.remove(AntiBannerFiltersId.QuickFixesFilterId);
+        await FiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
         await RawFiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
