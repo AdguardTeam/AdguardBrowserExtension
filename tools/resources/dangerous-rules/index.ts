@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop,no-restricted-syntax,no-console */
+/* eslint-disable no-restricted-syntax, no-console */
 /**
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).

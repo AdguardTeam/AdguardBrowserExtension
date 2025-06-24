@@ -28,7 +28,7 @@ import { filterVersionStorage } from './filter-version';
  *
  * @see {@link StringStorage}
  */
-export class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, HitStatsStorageData, 'async'> {
+class HitStatsStorage extends StringStorage<typeof HIT_STATISTIC_KEY, HitStatsStorageData, 'async'> {
     /**
      * Caches filter version if it is not cached yet.
      *

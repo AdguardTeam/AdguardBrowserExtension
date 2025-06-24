@@ -53,11 +53,3 @@ export const customFiltersConfigValidator = zod.array(
         [CustomFilterOption.Enabled]: zod.boolean(),
     }),
 );
-
-/**
- * Describes custom filter information. This type has several of the same
- * fields as {@link CustomFilterMetadata} - this is because this type is only
- * used to import and export custom filters, so we only need a small set of
- * custom filter settings.
- */
-export type CustomFiltersConfig = zod.infer<typeof customFiltersConfigValidator>;

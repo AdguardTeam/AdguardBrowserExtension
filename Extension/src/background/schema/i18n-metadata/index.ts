@@ -15,7 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export * from './i18n-metadata';
-export * from './filter';
-export * from './tag';
-export * from './group';
+export {
+    i18nMetadataValidator,
+    type I18nMetadata,
+    type FiltersI18n,
+    type GroupsI18n,
+    type TagsI18n,
+} from './i18n-metadata';
+export { regularFilterI18nMetadataValidator, type RegularFilterI18nMetadata } from './filter';
+export { tagI18nMetadataValidator, type TagI18nMetadata } from './tag';
+export { groupI18nMetadataValidator, type GroupI18nMetadata } from './group';

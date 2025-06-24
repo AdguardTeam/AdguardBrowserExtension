@@ -19,23 +19,28 @@
 // entry point of `storages` layer
 // `storages` contains app data storage models based on `schema` layer
 
-export * from './app';
-export * from './allowlist';
-export * from './custom-filter-metadata';
-export * from './editor';
-export * from './filter-state';
-export * from './filter-version';
-export * from './filters';
-export * from './raw-filters';
-export * from './group-state';
-export * from './i18n-metadata';
-export * from './inverted-allowlist';
-export * from './metadata';
-export * from './settings';
-export * from './safebrowsing';
-export * from './page-stats';
-export * from './notification';
-export * from './trusted-domains';
-export * from './hit-stats';
-export * from './annoyances-consent';
-export * from './shared-instances';
+export { appContext, AppContextKey } from './app';
+export { allowlistDomainsStorage } from './allowlist';
+export { customFilterMetadataStorage } from './custom-filter-metadata';
+export { editorStorage } from './editor';
+export { FilterStateStorage, filterStateStorage } from './filter-state';
+export { FilterVersionStorage, filterVersionStorage } from './filter-version';
+export { FiltersStorage } from './filters';
+export { RawFiltersStorage, RAW_FILTER_KEY_PREFIX } from './raw-filters';
+export { GroupStateStorage, groupStateStorage } from './group-state';
+export { i18nMetadataStorage } from './i18n-metadata';
+export { invertedAllowlistDomainsStorage } from './inverted-allowlist';
+export { MetadataStorage, metadataStorage } from './metadata';
+export { settingsStorage } from './settings';
+export { SbCache, sbCache, sbRequestCache } from './safebrowsing';
+export { PageStatsStorage, pageStatsStorage } from './page-stats';
+export {
+    notificationStorage,
+    type IconData,
+    type IconVariants,
+    type PromoNotification,
+} from './notification';
+export { trustedDomainsStorage } from './trusted-domains';
+export { hitStatsStorage } from './hit-stats';
+export { annoyancesConsentStorage } from './annoyances-consent';
+export { browserStorage, hybridStorage } from './shared-instances';

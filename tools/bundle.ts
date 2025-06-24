@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable no-console,no-restricted-syntax,no-await-in-loop */
+/* eslint-disable no-console, no-restricted-syntax */
 import { program } from 'commander';
 
 import { bundleRunner } from './bundle/bundle-runner';

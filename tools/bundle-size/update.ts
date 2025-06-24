@@ -44,11 +44,9 @@ async function updateBundleSize(buildEnv: BuildTargetEnv, targetBrowser?: Browse
 
         try {
             // Get current build stats
-            // eslint-disable-next-line no-await-in-loop
             const currentStats = await getCurrentBuildStats(buildEnv, target);
 
             // Update the sizes file
-            // eslint-disable-next-line no-await-in-loop
             await saveBuildStats(buildEnv, target, currentStats);
 
             console.log(`Bundle size update completed successfully ${envTargetMsgChunk}\n`);

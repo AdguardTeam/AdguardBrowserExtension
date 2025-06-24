@@ -427,7 +427,20 @@ export class PagesApi {
      * Opens Chrome's extensions settings page.
      */
     public static async openChromeExtensionsSettingsPage(): Promise<void> {
+        // if a tab with the same url is already opened, create new tab even
+        // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
         await browser.tabs.create({ url: CHROME_EXTENSIONS_SETTINGS_URL });
+    }
+
+    /**
+     * Opens the extension details page.
+     */
+    public static async openExtensionDetailsPage(): Promise<void> {
+        // if a tab with the same url is already opened, create new tab even
+        // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
+        // IMPORTANT: extension details url helper is used in options page as well,
+        // so it should not be a PagesApi method, otherwise options page bundle size increase
+        await browser.tabs.create({ url: BrowserUtils.getExtensionDetailsUrl() });
     }
 
     /**
