@@ -2534,6 +2534,32 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "22514194ad8441cc56e68716b1f75f69" due to: ' + e);
         }
     },
+    '(()=>{window.addEventListener("load",(()=>{setTimeout((()=>{if(!document.querySelector(".plyr--video video"))for(const o in window)if("function"==typeof window[o]&&window[o].toString().includes("Hls.isSupported")){try{window[o]()}catch(e){console.stack(`Error occurred while calling ${o}:`,e)}break}}),1e3)}));})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.fc7e03df62426e566b625183c2be9408 === e) return;
+            window.addEventListener("load", (() => {
+                setTimeout((() => {
+                    if (!document.querySelector(".plyr--video video")) for (const e in window) if ("function" == typeof window[e] && window[e].toString().includes("Hls.isSupported")) {
+                        try {
+                            window[e]();
+                        } catch (o) {
+                            console.stack(`Error occurred while calling ${e}:`, o);
+                        }
+                        break;
+                    }
+                }), 1e3);
+            }));
+            Object.defineProperty(Window.prototype.toString, "fc7e03df62426e566b625183c2be9408", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "fc7e03df62426e566b625183c2be9408" due to: ' + e);
+        }
+    },
     '(()=>{window.GADS={init:function(n){n&&"function"==typeof n.onFinish&&n.onFinish()}};})();': () => {
         try {
             const e = "done";
@@ -7479,33 +7505,33 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "b149f5f8f73c8f7b2b21d20e1538bea4" due to: ' + e);
         }
     },
-    '(()=>{if(Object.getOwnPropertyDescriptor(window.JSON,"stringify").writable)return;const e={apply:(e,t,n)=>{let o=Reflect.apply(e,t,n);try{3!==n.length||"object"!=typeof o||"string"!=typeof o.body||o.body.includes(\'"isInlinePlaybackNoAd":true\')||(o.body=o.body.replace(\'"contentPlaybackContext":{\',\'"contentPlaybackContext":{"isInlinePlaybackNoAd":true,\'))}catch(e){console.trace("Error occurred:",e)}return o}};window.Object.assign=new Proxy(window.Object.assign,e)})();': () => {
+    '(()=>{if(Object.getOwnPropertyDescriptor(window.JSON,"stringify").writable)return;const e={apply:(e,t,r)=>{let c=Reflect.apply(e,t,r);try{3!==r.length||"object"!=typeof c||"string"!=typeof c.body||c.body.includes(\'"clientScreen":"ADUNIT"\')||(c.body=c.body.replace(\'"clientScreen":"WATCH"\',\'"clientScreen":"ADUNIT"\'))}catch(e){console.trace("Error occurred:",e)}return c}};window.Object.assign=new Proxy(window.Object.assign,e)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["3aa661a8f3f9fe0e27881a3ec69c67ff"] === e) return;
+            if (Window.prototype.toString["145514dc8004b86c314d4f23b92861f1"] === e) return;
             (() => {
                 if (Object.getOwnPropertyDescriptor(window.JSON, "stringify").writable) return;
                 const e = {
-                    apply: (e, t, o) => {
-                        let r = Reflect.apply(e, t, o);
+                    apply: (e, r, t) => {
+                        let o = Reflect.apply(e, r, t);
                         try {
-                            3 !== o.length || "object" != typeof r || "string" != typeof r.body || r.body.includes('"isInlinePlaybackNoAd":true') || (r.body = r.body.replace('"contentPlaybackContext":{', '"contentPlaybackContext":{"isInlinePlaybackNoAd":true,'));
+                            3 !== t.length || "object" != typeof o || "string" != typeof o.body || o.body.includes('"clientScreen":"ADUNIT"') || (o.body = o.body.replace('"clientScreen":"WATCH"', '"clientScreen":"ADUNIT"'));
                         } catch (e) {
                             console.trace("Error occurred:", e);
                         }
-                        return r;
+                        return o;
                     }
                 };
                 window.Object.assign = new Proxy(window.Object.assign, e);
             })();
-            Object.defineProperty(Window.prototype.toString, "3aa661a8f3f9fe0e27881a3ec69c67ff", {
+            Object.defineProperty(Window.prototype.toString, "145514dc8004b86c314d4f23b92861f1", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "3aa661a8f3f9fe0e27881a3ec69c67ff" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "145514dc8004b86c314d4f23b92861f1" due to: ' + e);
         }
     },
     '(()=>{let t=document.location.href,e=[],n=[],o="",r=!1;const i=Array.prototype.push,a={apply:(t,o,a)=>(window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id&&a[0]&&a[0]!==window&&"number"==typeof a[0].start&&a[0].end&&"ssap"===a[0].namespace&&a[0].id&&(r||0!==a[0]?.start||n.includes(a[0].id)||(e.length=0,n.length=0,r=!0,i.call(e,a[0]),i.call(n,a[0].id)),r&&0!==a[0]?.start&&!n.includes(a[0].id)&&(i.call(e,a[0]),i.call(n,a[0].id))),Reflect.apply(t,o,a))};window.Array.prototype.push=new Proxy(window.Array.prototype.push,a),document.addEventListener("DOMContentLoaded",(function(){if(!window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id)return;const i=()=>{const t=document.querySelector("video");if(t&&e.length){const i=Math.round(t.duration),a=Math.round(e.at(-1).end/1e3),c=n.join(",");if(!1===t.loop&&o!==c&&i&&i===a){const n=e.at(-1).start/1e3;t.currentTime<n&&(t.currentTime=n,r=!1,o=c)}else if(!0===t.loop&&i&&i===a){const n=e.at(-1).start/1e3;t.currentTime<n&&(t.currentTime=n,r=!1,o=c)}}};i();new MutationObserver((()=>{t!==document.location.href&&(t=document.location.href,e.length=0,n.length=0,r=!1),i()})).observe(document,{childList:!0,subtree:!0})}))})();': () => {
