@@ -32,6 +32,17 @@ import './mode-adguard.js';
 
 import './editor.pcss';
 
+/**
+ * Adds a class if the Oculus Browser is detected, to limit a CSS hack to that browser.
+ *
+ * Task: AG-43589 — see this task number for the related CSS workaround.
+ */
+const addOculusClass = () => {
+    if (navigator.userAgent.includes('OculusBrowser')) {
+        document.body.classList.add('oculus-browser');
+    }
+};
+
 const DEFAULT_EDITOR_SIZE = {
     width: '618px',
     height: '300px',
@@ -72,6 +83,10 @@ const Editor = ({
             setSize(DEFAULT_EDITOR_SIZE);
         }
     }, [shouldResetSize, SIZE_STORAGE_KEY]);
+
+    useEffect(() => {
+        addOculusClass();
+    }, []);
 
     const editorStyles = {
         width: size.width,
