@@ -17,7 +17,7 @@
  */
 
 /**
- * File name where we store a version of dnr-rulesets which is used for Full update.
+ * File name where we store a version of dnr-rulesets which is used for the latest Full update.
  */
 const FULL_UPDATE_DNR_RULESETS_VERSION_FILE_NAME = 'dnr-rulesets-version.txt';
 
