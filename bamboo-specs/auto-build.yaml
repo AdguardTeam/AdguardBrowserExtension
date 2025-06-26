@@ -223,13 +223,11 @@ branch-overrides:
                   pnpm increment
 
                   # Install the latest dnr-rulesets version
-                  OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
+                  OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3-load-latest
           - script:
               interpreter: SHELL
               scripts:
                 - |-
-                  # FIXME (Slava): check the script
-
                   # Determine if we should run skip-review update
                   DAY=$(date +%u)
                   HOUR=$(date -u +%H)
@@ -238,10 +236,8 @@ branch-overrides:
                   # Except Friday when we run Full update at 19:00 UTC
                   # (Monday=1, Friday=5)
                   if [[ $DAY -ge 1 && $DAY -le 5 && !($DAY -eq 5 && $HOUR -eq 19) ]]; then
-                    echo "Running skip-review update..."
-
-                    # Run the ruleset update script
-                    npx ts-node tools/ruleset-updates.ts
+                    echo "Running Skip-review update..."
+                    pnpm resources:mv3-skip-review-update
                   else
                     echo "Skipping skip-review update"
                     exit 0
@@ -294,8 +290,6 @@ branch-overrides:
               interpreter: SHELL
               scripts:
                 - |-
-                  # FIXME (Slava): check the script
-
                   # Determine day of week to confirm Friday update
                   DAY=$(date +%u)
                   HOUR=$(date -u +%H)
@@ -303,19 +297,7 @@ branch-overrides:
                   # Friday is day 5, after 19:00 UTC (or 22:00 UTC+3)
                   if [[ $DAY -eq 5 ]] && [[ $HOUR -ge 19 ]]; then
                     echo "Running Full update..."
-                    # Set cache directory
-                    pnpm config set store-dir ${bamboo.cachePnpm}
-
-                    # Install dependencies
-                    pnpm install ${bamboo.varsPnpm}
-
-                    # FIXME (Slava): consider doing it via js (tools/ script)
-                    # Extract extension version from package.json and save to text file
-                    EXTENSION_VERSION=$(node -e "console.log(require('./package.json').version)")
-                    echo "$EXTENSION_VERSION" > Extension/filters/extension-version.txt
-
-                    # Run the ruleset update script
-                    npx ts-node tools/ruleset-updates.ts --full
+                    pnpm resources:mv3-full-update
                   else
                     echo "Skipping full update"
                     exit 0

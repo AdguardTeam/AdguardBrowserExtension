@@ -204,13 +204,19 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
 /**
  * Copies the DNR rulesets from the @adguard/dnr-rulesets internal directory to
  * the declarative filters directory in browser extension.
+ *
+ * @param dest Destination directory. Defaults to `Extension/filters/chromium-mv3`.
  */
-export const downloadAndPrepareMv3Filters = async () => {
+export const downloadAndPrepareMv3Filters = async (
+    dest = FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3),
+) => {
     const loader = new AssetsLoader();
 
     // Note: it is just copying the files from the @adguard/dnr-rulesets package
-    // to the filters directory. The files are already downloaded.
-    return loader.load(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3));
+    // to the `dest` directory. The files are already downloaded.
+    const result = await loader.load(dest);
+
+    return result;
 };
 
 /**
