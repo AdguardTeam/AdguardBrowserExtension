@@ -27,20 +27,19 @@ import 'ace-builds/src-noconflict/theme-textmate.js';
 import 'ace-builds/src-noconflict/mode-text.js';
 
 import { logger } from '../../../../common/logger';
+import { UserAgent } from '../../../../common/user-agent';
 
 import './mode-adguard.js';
 
 import './editor.pcss';
 
 /**
- * Adds a class if the Oculus Browser is detected, to limit a CSS hack to that browser.
+ * Helper to get Oculus-specific class for the editor container.
  *
  * Task: AG-43589 — see this task number for the related CSS workaround.
  */
-const addOculusClass = () => {
-    if (navigator.userAgent.includes('OculusBrowser')) {
-        document.body.classList.add('oculus-browser');
-    }
+const getOculusClass = () => {
+    return UserAgent.isOculus ? 'oculus-browser' : '';
 };
 
 const DEFAULT_EDITOR_SIZE = {
@@ -84,10 +83,6 @@ const Editor = ({
         }
     }, [shouldResetSize, SIZE_STORAGE_KEY]);
 
-    useEffect(() => {
-        addOculusClass();
-    }, []);
-
     const editorStyles = {
         width: size.width,
         height: size.height,
@@ -106,6 +101,7 @@ const Editor = ({
     const editorClassName = cn(
         'editor',
         { 'editor--full-screen': fullscreen },
+        getOculusClass(),
     );
 
     // highlight rules syntax only for user rules
