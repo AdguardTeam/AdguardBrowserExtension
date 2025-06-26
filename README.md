@@ -280,7 +280,7 @@ pnpm resources
 ```
 
 > [!TIP]
-> Run `pnpm resources:mv3` to download resources for MV3 version.
+> Run `pnpm resources:mv3-load-latest` to download resources for MV3 version.
 
 This command also checks if there are dangerous rules in the filters.
 See [dangerous rules](tools/resources/dangerous-rules/README.md)
@@ -428,15 +428,18 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 **A. Automatic (recommended for most cases):**
 
 1. **Build the extension** (if not done yet):
+
     ```shell
     pnpm install
     pnpm dev chrome-mv3
     ```
 
 1. **Start watching for filter changes:**
+
     ```shell
     pnpm debug-filters:watch
     ```
+
     - This will extract text filters to `./build/dev/chrome-mv3/filters` and watch for changes.
     - When you edit and save any filter file, DNR rulesets will be rebuilt automatically.
 
@@ -445,12 +448,14 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 **B. Manual (for advanced/manual control):**
 
 1. **Build the extension** (if not done yet):
+
     ```shell
     pnpm install
     pnpm dev chrome-mv3
     ```
 
 1. **Extract text filters:**
+
     ```shell
     pnpm debug-filters:extract
     ```
@@ -458,6 +463,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 1. **Edit the text filters** in `./build/dev/chrome-mv3/filters` as needed.
 
 1. **Convert filters to DNR rulesets:**
+
     ```shell
     pnpm debug-filters:convert
     ```
@@ -465,7 +471,9 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 1. **Reload the extension in your browser** to apply new rulesets.
 
 **Tip:**
+
 - To download the latest available text filters, run:
+
     ```shell
     pnpm debug-filters:load
     ```
@@ -475,6 +483,7 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
 ##### <a name="dev-technical-info-about-debug-commands"></a> Technical information about commands
 
 - **Watch for changes and auto-convert:**
+
     ```shell
     pnpm debug-filters:watch
     # Under the hood:
@@ -488,7 +497,9 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # loaded during runtime).
         /web-accessible-resources/redirects
     ```
+
 - **Load latest text filters and metadata:**
+
     ```shell
     pnpm debug-filters:load
     # Under the hood:
@@ -498,7 +509,9 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Destination path for text filters
         ./build/dev/chrome-mv3/filters
     ```
+
 - **Manual conversion:**
+
     ```shell
     pnpm debug-filters:convert
     # Under the hood:
@@ -514,7 +527,9 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Destination path for converted DNR rulesets
         ./build/dev/chrome-mv3/filters/declarative
     ```
+
 - **Extract text filters from DNR rulesets:**
+
     ```shell
     pnpm debug-filters:extract
     # Under the hood:
@@ -526,11 +541,11 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
     ```
 
 For all command options, use `--help`, e.g.:
+
 ```shell
 pnpm exec dnr-rulesets watch --help
 pnpm exec tsurlfilter convert --help
 ```
-
 
 ### <a name="dev-linter"></a> Linter
 
