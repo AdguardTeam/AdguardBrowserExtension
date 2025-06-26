@@ -1,6 +1,6 @@
 {
   "name": "browser-extension",
-  "version": "5.1.111",
+  "version": "5.1.112",
   "description": "AdGuard Extension",
   "type": "module",
   "scripts": {
@@ -17,7 +17,7 @@
     "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
     "locales": "tsx tools/locales.js",
     "resources": "tsx tools/resources.ts",
-    "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets && tsx tools/resources-mv3.ts",
+    "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~3.0 && tsx tools/resources-mv3.ts",
     "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
     "increment": "pnpm version patch --no-git-tag-version",
     "prepare": "husky install",
@@ -34,7 +34,7 @@
   "author": "adguard@adguard.com",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@adguard/dnr-rulesets": "^3.0.20250623180112",
+    "@adguard/dnr-rulesets": "^3.0.20250625180106",
     "@adguard/re2-wasm": "1.2.0",
     "@types/chrome": "0.0.268",
     "@types/crypto-js": "4.1.1",
