@@ -37,13 +37,13 @@ export const matchesSearch = (filteringEvent: UIFilteringLogEvent, search: strin
             || containsIgnoreCase(filterName, search);
     }
 
-    // allow to search for Tracking protection rules by the current module name and its old name
+    // allow to search for Tracking protection events only by the old name
+    // to avoid matching of 'AdGuard Tracking Protection filter'
     if (
         (filteringEvent.requestRule && filteringEvent.requestRule.isStealthModeRule)
         || !!filteringEvent?.stealthActions
     ) {
         matches = matches
-            || containsIgnoreCase('tracking protection', search)
             || containsIgnoreCase('stealth mode', search);
     }
 
