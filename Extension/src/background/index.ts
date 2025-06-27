@@ -19,8 +19,31 @@ import browser from 'webextension-polyfill';
 
 import { App } from 'app';
 
-// Initialize background services.
-// Initialization is deferred to `onStartup` and `onInstalled` events
-// because the extension uses a non-persistent background page model.
-browser.runtime.onStartup.addListener(App.init);
-browser.runtime.onInstalled.addListener(App.init);
+import { UserAgent } from '../common/user-agent';
+
+let isInitialized = false;
+
+/**
+ * Initializes the app if it has not been initialized yet.
+ */
+const initWrapper = (): void => {
+    if (isInitialized) {
+        return;
+    }
+
+    App.init();
+    isInitialized = true;
+};
+
+initWrapper();
+
+/**
+ * Initializes background services.
+ * For Firefox, initialization happens both immediately and is registered for `onStartup` and `onInstalled` events
+ * to ensure proper initialization in Firefox's non-persistent background page model.
+ * This ensures the extension starts even when there are no open tabs.
+ */
+if (UserAgent.isFirefox) {
+    browser.runtime.onStartup.addListener(initWrapper);
+    browser.runtime.onInstalled.addListener(initWrapper);
+}
