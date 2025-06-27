@@ -383,11 +383,17 @@ build/analyze-reports
 
 #### <a name="dev-debug-mv3"></a> Debug MV3 declarative rules
 
-If you want to debug MV3 declarative rules and check exactly which rules has been applied for some requests, you can build extension in dev mode as described in the upper [How to build](#dev-build) section, but for specified branch, in which we develop MV3 version.
+If you want to debug MV3 declarative rules and check exactly which rules have been applied to requests, you can build and install the extension as described in the sections below. This will allow you to view the applied declarative rules in the filtering log.
 
-Then install extension via developer mode, make requests and see applied declarative rules in the filtering log.
+Additionally, you can edit filters and rebuild DNR rulesets without rebuilding the entire extension, which may be useful for debugging purposes.
 
-##### How to build MV3 extension
+##### <a name="dev-debug-mv3-how-to-build"></a>  How to build the MV3 extension
+
+1. Ensure that you have installed all dependencies as described in the [Requirements](#dev-requirements) section.
+
+    ```shell
+    pnpm install
+    ```
 
 1. Run the following command in the terminal:
 
@@ -395,13 +401,13 @@ Then install extension via developer mode, make requests and see applied declara
     pnpm dev chrome-mv3
     ```
 
-1. The built extension will be located in the directory:
+1. The built extension will be located in the following directory:
 
     ```shell
     ./build/dev/chrome-mv3
     ```
 
-##### How to install unpacked in the browser
+##### How to install the unpacked extension in the browser
 
 1. Turn on developer mode:
 
@@ -415,29 +421,116 @@ Then install extension via developer mode, make requests and see applied declara
 
     ![Select](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/select.png)
 
-That's it!
-
 ##### How to debug rules
 
-1. Find and modify the rule you need in the `./Extension/filters/chromium-mv3` directory in the `.txt` files.
+You can debug and update DNR rulesets without rebuilding the entire extension. There are two main workflows:
 
-1. Convert the rules from txt to declarative form:
+**A. Automatic (recommended for most cases):**
 
+1. **Build the extension** (if not done yet):
     ```shell
-    pnpm convert-declarative
-    ```
-
-1. Build the extension again:
-
-    ```shell
+    pnpm install
     pnpm dev chrome-mv3
     ```
 
-1. Reload the extension in the browser:
+1. **Start watching for filter changes:**
+    ```shell
+    pnpm debug-filters:watch
+    ```
+    - This will extract text filters to `./build/dev/chrome-mv3/filters` and watch for changes.
+    - When you edit and save any filter file, DNR rulesets will be rebuilt automatically.
 
-    ![Reload extension](https://cdn.adtidy.org/content/Kb/ad_blocker/browser_extension/reload_extension.png)
+1. **Reload the extension in your browser** to apply new rulesets.
 
-1. If you see an ❗ mark - it means that assumed rule (which we calculated with our tsurlfilter engine, which performed applying rules in MV2) and actually applied rule (from which we converted to DNR rule) are not the same. And this can be a problem of conversion. <br/> Otherwise, if assumed and applied rules are the same - only applied rule (in text and declarative ways) will be shown.
+**B. Manual (for advanced/manual control):**
+
+1. **Build the extension** (if not done yet):
+    ```shell
+    pnpm install
+    pnpm dev chrome-mv3
+    ```
+
+1. **Extract text filters:**
+    ```shell
+    pnpm debug-filters:extract
+    ```
+
+1. **Edit the text filters** in `./build/dev/chrome-mv3/filters` as needed.
+
+1. **Convert filters to DNR rulesets:**
+    ```shell
+    pnpm debug-filters:convert
+    ```
+
+1. **Reload the extension in your browser** to apply new rulesets.
+
+**Tip:**
+- To download the latest available text filters, run:
+    ```shell
+    pnpm debug-filters:load
+    ```
+
+If you see an exclamation mark in the filtering log, it means the assumed rule (calculated by the engine) and the applied rule (converted to DNR) are different. Otherwise, only the applied rule (in DNR and text ways) will be shown.
+
+##### <a name="dev-technical-info-about-debug-commands"></a> Technical information about commands
+
+- **Watch for changes and auto-convert:**
+    ```shell
+    pnpm debug-filters:watch
+    # Under the hood:
+    pnpm exec dnr-rulesets watch \
+        # Enable extended logging about rulesets, since it is optional - it can be removed
+        --debug \
+        # Path to the extension manifest
+        ./build/dev/chrome-mv3/manifest.json \
+        # Path to web-accessible-resources directory (needed for $redirect rules)
+        # relative to the root directory of the extension (because they will be
+        # loaded during runtime).
+        /web-accessible-resources/redirects
+    ```
+- **Load latest text filters and metadata:**
+    ```shell
+    pnpm debug-filters:load
+    # Under the hood:
+    pnpm exec dnr-rulesets load
+        # This will load latest text filters with their metadata
+        --latest-filters
+        # Destination path for text filters
+        ./build/dev/chrome-mv3/filters
+    ```
+- **Manual conversion:**
+    ```shell
+    pnpm debug-filters:convert
+    # Under the hood:
+    pnpm exec tsurlfilter convert \
+        # Enable extended logging about rulesets
+        --debug \
+        # Path to the directory with text filters
+        ./build/dev/chrome-mv3/filters \
+        # Path to web-accessible-resources directory (needed for $redirect rules)
+        # relative to the root directory of the extension (because they will be
+        # loaded during runtime).
+        /web-accessible-resources/redirects \
+        # Destination path for converted DNR rulesets
+        ./build/dev/chrome-mv3/filters/declarative
+    ```
+- **Extract text filters from DNR rulesets:**
+    ```shell
+    pnpm debug-filters:extract
+    # Under the hood:
+    pnpm exec tsurlfilter extract-filters \
+        # Path to the directory with DNR rulesets
+        ./build/dev/chrome-mv3/filters/declarative \
+        # Path to save extracted text filters
+        ./build/dev/chrome-mv3/filters
+    ```
+
+For all command options, use `--help`, e.g.:
+```shell
+pnpm exec dnr-rulesets watch --help
+pnpm exec tsurlfilter convert --help
+```
+
 
 ### <a name="dev-linter"></a> Linter
 

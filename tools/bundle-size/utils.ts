@@ -11,10 +11,14 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { type Browser, type BuildTargetEnv } from '../constants';
+import { Browser, type BuildTargetEnv } from '../constants';
 import { getBrowserConf } from '../bundle/helpers';
 
-import type { SizesFile, TargetInfo } from './constants';
+import type {
+    BundleSizes,
+    SizesFile,
+    TargetInfo,
+} from './constants';
 import {
     BUILD_DIRNAME,
     PAGES_DIRNAME,
@@ -126,6 +130,39 @@ export const getFilesWithSizes = async (dirPath: string): Promise<Record<string,
 };
 
 /**
+ * Returns the size of a directory with all files and subdirectories.
+ *
+ * Recursively traverses the directory and its subdirectories to calculate the total size.
+ *
+ * @param dirPath Path to the directory.
+ *
+ * @returns Size of the directory in bytes.
+ */
+export const getDirSize = async (dirPath: string): Promise<number> => {
+    if (!fs.existsSync(dirPath)) {
+        throw new Error(`Directory ${dirPath} does not exist, cannot get directory size`);
+    }
+
+    let totalSize = 0;
+    const items = await fs.promises.readdir(dirPath, { withFileTypes: true });
+
+    for (const item of items) {
+        const itemPath = path.join(dirPath, item.name);
+
+        if (item.isDirectory()) {
+            // Recursively get size of subdirectory
+            totalSize += await getDirSize(itemPath);
+        } else if (item.isFile()) {
+            // Add file size to total
+            const size = await getFileSize(itemPath);
+            totalSize += size;
+        }
+    }
+
+    return totalSize;
+};
+
+/**
  * Get the size statistics for the current build.
  *
  * @param buildType Build environment (beta, release, etc.).
@@ -164,13 +201,19 @@ export async function getCurrentBuildStats(buildType: BuildTargetEnv, target: Br
     const packageJson = JSON.parse(await fs.promises.readFile(packageJsonPath, 'utf-8'));
     const version = packageJson.version || 'unknown';
 
+    const stats: BundleSizes = {
+        zip,
+        pages,
+        vendors,
+        shared,
+    };
+
+    if (target === Browser.FirefoxAmo) {
+        stats.raw = await getDirSize(targetDir);
+    }
+
     return {
-        stats: {
-            zip,
-            pages,
-            vendors,
-            shared,
-        },
+        stats,
         version,
         // In human-readable format, for quick debugging.
         updatedAt: new Date().toISOString(),

@@ -202,13 +202,14 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
 };
 
 /**
- * Prepares filters for chromium-mv3:
- * 1. Downloads chromium-mv3 filters metadata and parses it to get all filter ids.
- * 2. Downloads chromium-mv3 i18n metadata.
- * 3. Downloads all chromium-mv3 filters (parsed from the metadata (1)) and stores them in the chromium-mv3 folder.
+ * Copies the DNR rulesets from the @adguard/dnr-rulesets internal directory to
+ * the declarative filters directory in browser extension.
  */
 export const downloadAndPrepareMv3Filters = async () => {
     const loader = new AssetsLoader();
+
+    // Note: it is just copying the files from the @adguard/dnr-rulesets package
+    // to the filters directory. The files are already downloaded.
     return loader.load(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3));
 };
 
@@ -224,6 +225,7 @@ const startDownload = async (browser: AssetsFiltersBrowser): Promise<void> => {
         if (!url) {
             continue;
         }
+        // eslint-disable-next-line no-await-in-loop
         await downloadFilter(url, browser);
     }
 };

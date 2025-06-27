@@ -35,7 +35,8 @@ export class Subscribe {
             return;
         }
 
-        document.addEventListener('click', Subscribe.handleOnClickEvent);
+        // Use pointerdown to handle both mouse clicks and touch events
+        document.addEventListener('pointerdown', Subscribe.handleOnClickEvent);
     }
 
     /**

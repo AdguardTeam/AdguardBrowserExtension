@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow to specify attributes without value in selector for HTML filtering rules [tsurlfilter#147].
 - Missing space in the description of AdGuard German filter in the `de` locale [#3216].
 - OOM errors may occur when applying too many patches in a row in MV2 [#3230].
+- Extension initialization on browser startup in Firefox [#3189].
 
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
@@ -86,11 +87,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3216]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3216
 [#3163]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3163
 [#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
+[#3189]: https://github.com/AdguardTeam/AdguardBrowserExtension/pull/3189
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
 [tsurlfilter#147]: https://github.com/AdguardTeam/tsurlfilter/issues/147
 
-<!-- TODO: add the date after release -->
-## [5.1.102] - 2025-06-XX
+## [5.1.102] - 2025-06-15
 
 ### Changed
 
