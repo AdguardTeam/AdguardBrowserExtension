@@ -23,12 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated blocking pages in MV2 extension for Safebrowsing and for web pages blocked by `$document` rules.
 - Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
 - Updated [@adguard/agtree] to v3.2.1.
+- Updated [@adguard/assistant] to v4.3.74.
 - Updated [@adguard/dnr-rulesets] to v3.1.0.
-- Updated [@adguard/filters-downloader] to v2.4.1.
+- Updated [@adguard/filters-downloader] to v2.4.2.
 - Updated [@adguard/logger] to v2.0.0.
 - Updated [@adguard/scriptlets] to v2.2.7.
 - Updated [@adguard/tsurlfilter] to v3.4.0.
-- Updated [@adguard/tswebextension] to v3.2.1.
+- Updated [@adguard/tswebextension] to v3.2.2.
 
 ### Removed
 
@@ -796,9 +797,10 @@ The extension is now fully compatible with MV3.
 [4.2.162]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.151...v4.2.162
 [4.2.151]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.1.57...v4.2.151
 
+[@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
+[@adguard/assistant]: https://github.com/AdguardTeam/AdguardAssistant/blob/master/CHANGELOG.md
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
 [@adguard/logger]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/logger/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
-[@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/tswebextension]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md
 [@adguard/tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md
