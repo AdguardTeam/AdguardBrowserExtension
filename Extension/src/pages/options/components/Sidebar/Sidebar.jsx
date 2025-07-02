@@ -124,11 +124,9 @@ const Sidebar = observer(() => {
                 className={className}
                 inert={isSidebarLocked ? '' : undefined}
             >
-                <Icon
-                    id="#logo"
-                    classname="icon--logo sidebar__logo"
-                    aria-hidden="true"
-                />
+                <div className="sidebar__logo">
+                    <div className="logo" />
+                </div>
                 <Nav onLinkClick={closeSidebarWrapper} />
                 {settingsStore.showAdguardPromoInfo && (
                     <Compare

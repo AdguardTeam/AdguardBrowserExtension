@@ -17,7 +17,7 @@
     }
 
     &--logo {
-        width: 107px;
+        width: 104px;
         height: 24px;
         color: var(--fills-logo-key-color-default);
     }
@@ -57,5 +57,31 @@
         to {
             -webkit-transform: rotate(360deg);
         }
+    }
+}
+
+.logo {
+    width: 104px;
+    height: 24px;
+    background-image: url("../../../assets/images/logo.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+    vertical-align: middle;
+
+    @media (prefers-color-scheme: dark) {
+        background-image: url("../../../assets/images/logo-dark.svg");
+    }
+}
+
+.light-mode {
+    .logo {
+        background-image: url("../../../assets/images/logo.svg");
+    }
+}
+
+.dark-mode {
+    .logo {
+        background-image: url("../../../assets/images/logo-dark.svg");
     }
 }
