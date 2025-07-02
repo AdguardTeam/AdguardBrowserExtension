@@ -391,6 +391,13 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     test: /\.(woff|woff2|eot|ttf|otf)$/,
                     type: 'asset/resource',
                 },
+                {
+                    test: /\.(svg|png)$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'assets/images/[name][ext]',
+                    },
+                },
             ],
         },
         plugins: [
