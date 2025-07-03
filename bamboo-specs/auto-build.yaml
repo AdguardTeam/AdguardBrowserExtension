@@ -10,7 +10,7 @@ variables:
   # Node.js is needed for build and tests.
   dockerNode: adguard/extension-builder:22.14--0.2--0
   # Stable branch name for auto-update only filters.
-  stableBranchName: stable/v5.1
+  stableBranchName: stable/v5.2
 
 # Since auto-build is being run only for a stable branch now (specified in
 # `bamboo.stableBranchName`) we should skip the build stage for other branches.
@@ -83,7 +83,7 @@ other:
 branch-overrides:
   -
     # Note: it should be equal with `bamboo.stableBranchName`
-    stable/v5.1:
+    stable/v5.2:
       stages:
         - Tests:
             manual: false
@@ -241,7 +241,7 @@ branch-overrides:
                   # Validate that current branch is valid for build.
                   if [ "${bamboo.planRepository.branchName}" != "${bamboo.stableBranchName}" ]; then
                       # Throw error if current branch is not ${bamboo.stableBranchName},
-                      # because we do not deploy new releases not from release branch.
+                      # because we do not deploy new releases not from stable branch.
                       echo "auto-build is not supported on branch ${bamboo.stableBranchName}"
                       exit 1;
                   fi
@@ -255,7 +255,19 @@ branch-overrides:
                   pnpm increment
 
                   # Update filters before build.
-                  OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
+                  # --skip-local-resources is used to skip updating local resources,
+                  # because to use "skip review" feature in the Chrome Web Store
+                  # we need to ensure that changes are made only in rulesets
+                  # json files.
+                  OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3 --skip-local-resources
+
+                  # Extract unsafe rules from the filters and save them to the
+                  # metadata for each rulesets to use "skip review" feature
+                  # in the Chrome Web Store with limitation of the number of
+                  # unsafe rules to 4900, since quota for session rules is 5000
+                  # and we need to leave some space for other rules,
+                  # e.g. general $stealth rules from Tracking Protection filter.
+                  pnpm resources:mv3:extract-unsafe-rules --limit 4900
 
                   # Create artifacts directory if it doesn't exist.
                   mkdir -p artifacts
@@ -263,6 +275,17 @@ branch-overrides:
                   # Build release and beta versions of the extension.
                   pnpm beta chrome-mv3
                   pnpm release chrome-mv3
+
+                  # Download latest beta and release versions of the extension
+                  # from the Chrome Web Store to check that they are eligible for
+                  # "skip review" feature.
+                  pnpm tsx tools/skip-review/download-latest-extension beta
+                  pnpm tsx tools/skip-review/download-latest-extension release
+
+                  # Check that beta and release updates contain only safe
+                  # changes in rulesets and only in rule_resources files.
+                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
+                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
 
                   # Move zip artifacts to the artifacts directory, because we will
                   # publish zip versions of the extension.
@@ -325,10 +348,9 @@ branch-overrides:
         requirements:
           - adg-docker: 'true'
 
-      # run release build at 22:00 (UTC+3) every Monday, Wednesday, Friday
-      # https://confluence.atlassian.com/bamboo/constructing-a-cron-expression-in-bamboo-289277372.html
-      # it is needed in the end of the day to collect all changes
-      # made by filter list maintainers during the workday
+      # run auto-build each hour after 30 minutes of the hour to collect all
+      # changes made by filter list maintainers during the last hour update.
       triggers:
         - cron:
-            expression: 0 0 22 ? * MON,WED,FRI
+            expression: 0 30 * ? * *
+            description: Run auto-build every hour at 30 minutes past the hour.
