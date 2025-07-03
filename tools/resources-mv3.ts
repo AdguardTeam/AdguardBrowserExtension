@@ -26,15 +26,21 @@ import { updateLocalResourcesForChromiumMv3 } from './resources/update-local-scr
 /**
  * Downloads resources for MV3, checks if there are dangerous rules,
  * and converts filters to rulesets.
+ *
+ * @param skipLocalResources If true, skips updating local resources for MV3.
  */
-const resourcesMv3 = async () => {
+const resourcesMv3 = async (skipLocalResources = false) => {
     console.log('Downloading resources for MV3...');
     await downloadAndPrepareMv3Filters();
     console.log('Resources for MV3 downloaded');
 
-    console.log('Updating local resources for MV3...');
-    await updateLocalResourcesForChromiumMv3();
-    console.log('Local resources for MV3 updated');
+    if (!skipLocalResources) {
+        console.log('Updating local resources for MV3...');
+        await updateLocalResourcesForChromiumMv3();
+        console.log('Local resources for MV3 updated');
+    } else {
+        console.log('Skipping update of local resources for MV3 (--skip-local-resources flag set)');
+    }
 
     if (process.env.OPENAI_API_KEY) {
         console.log('Finding dangerous rules...');
@@ -46,5 +52,6 @@ const resourcesMv3 = async () => {
 };
 
 (async () => {
-    await resourcesMv3();
+    const skipLocalResources = process.argv.includes('--skip-local-resources');
+    await resourcesMv3(skipLocalResources);
 })();
