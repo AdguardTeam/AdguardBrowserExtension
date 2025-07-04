@@ -4241,28 +4241,28 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f5e04b1e897644b8741f5724e8210233" due to: ' + e);
         }
     },
-    '(()=>{Object.defineProperty=new Proxy(Object.defineProperty,{apply:(e,t,n)=>{const r=new Set(["VP","w3","JW"]),o=n[1],c=n[2]?.get;return o&&r.has(o)&&"function"==typeof c&&c.toString().includes("()=>i")&&(n[2].get=function(){return function(){return!1}}),Reflect.apply(e,t,n)}});})();': () => {
+    '(()=>{Object.defineProperty=new Proxy(Object.defineProperty,{apply:(e,t,n)=>{const r=new Set(["VP","w3","JW"]),i=n[1],o=n[2]?.get;return i&&r.has(i)&&"function"==typeof o&&(o.toString().includes("()=>i")||o.toString().includes("()=>a"))&&(n[2].get=function(){return function(){return!1}}),Reflect.apply(e,t,n)}});})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.d2e0c1a15c46cd17c61c4bb3e9ed07ff === e) return;
+            if (Window.prototype.toString["7f969d1eb1f96d58aba3ed9c61499ef3"] === e) return;
             Object.defineProperty = new Proxy(Object.defineProperty, {
                 apply: (e, t, r) => {
-                    const c = new Set([ "VP", "w3", "JW" ]), n = r[1], o = r[2]?.get;
-                    return n && c.has(n) && "function" == typeof o && o.toString().includes("()=>i") && (r[2].get = function() {
+                    const n = new Set([ "VP", "w3", "JW" ]), o = r[1], i = r[2]?.get;
+                    return o && n.has(o) && "function" == typeof i && (i.toString().includes("()=>i") || i.toString().includes("()=>a")) && (r[2].get = function() {
                         return function() {
                             return !1;
                         };
                     }), Reflect.apply(e, t, r);
                 }
             });
-            Object.defineProperty(Window.prototype.toString, "d2e0c1a15c46cd17c61c4bb3e9ed07ff", {
+            Object.defineProperty(Window.prototype.toString, "7f969d1eb1f96d58aba3ed9c61499ef3", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "d2e0c1a15c46cd17c61c4bb3e9ed07ff" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "7f969d1eb1f96d58aba3ed9c61499ef3" due to: ' + e);
         }
     },
     "window.showAds = true;": () => {
