@@ -27,6 +27,7 @@ import {
 import { SettingOption } from '../../schema';
 import { getIconImageData } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
+import { extensionUpdateService } from '../../services';
 
 import { type FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
@@ -44,6 +45,10 @@ export const defaultIconVariants: IconVariants = {
     warning: {
         '19': browser.runtime.getURL('assets/icons/warning-19.png'),
         '38': browser.runtime.getURL('assets/icons/warning-38.png'),
+    },
+    updateAvailable: {
+        '19': browser.runtime.getURL('assets/icons/update-available-19.png'),
+        '38': browser.runtime.getURL('assets/icons/update-available-38.png'),
     },
 };
 
@@ -181,6 +186,11 @@ class IconsApi {
 
         if (isMv3LimitsExceeded) {
             return defaultIconVariants.warning;
+        }
+
+        const isExtensionUpdateAvailable = extensionUpdateService.getIsUpdateAvailable();
+        if (isExtensionUpdateAvailable) {
+            return defaultIconVariants.updateAvailable;
         }
 
         return isDisabled

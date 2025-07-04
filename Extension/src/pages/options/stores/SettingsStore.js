@@ -30,8 +30,7 @@ import {
     SavingFSMEvent,
     SavingFSMState,
 } from '../../common/components/Editor/savingFSM';
-import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS, NotificationType } from '../../common/constants';
-import { sleep } from '../../../../../tools/common/sleep';
+import { MIN_UPDATE_DISPLAY_DURATION_MS, NotificationType } from '../../common/constants';
 import { messenger } from '../../services/messenger';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import {
@@ -49,6 +48,7 @@ import {
     WASTE_CHARACTERS,
 } from '../../../common/constants';
 import { translator } from '../../../common/translators/translator';
+import { sleep } from '../../../common/sleep-utils';
 
 /**
  * Sometimes the options page might be opened before the background page or
@@ -151,6 +151,7 @@ class SettingsStore {
                 const end = Date.now();
                 const timePassed = end - start;
                 if (timePassed < MIN_EXECUTION_TIME_REQUIRED_MS) {
+                    // TODO: consider using sleepIfNecessary
                     await sleep(MIN_EXECUTION_TIME_REQUIRED_MS - timePassed);
                 }
 
@@ -697,7 +698,7 @@ class SettingsStore {
             this.refreshFilters(filtersUpdates);
             setTimeout(() => {
                 this.setFiltersUpdating(false);
-            }, MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS);
+            }, MIN_UPDATE_DISPLAY_DURATION_MS);
             return filtersUpdates;
         } catch (error) {
             this.setFiltersUpdating(false);
@@ -714,17 +715,27 @@ class SettingsStore {
 
             this.setExtensionUpdateAvailable(isExtensionUpdateAvailable);
 
-            setTimeout(() => {
-                this.setFiltersUpdating(false);
+            // setTimeout(() => {
+            //     this.setFiltersUpdating(false);
 
-                if (!isExtensionUpdateAvailable) {
-                    const uiStore = this.rootStore.uiStore;
-                    uiStore.addNotification({
-                        description: translator.getMessage('options_update_not_needed_notification_desc'),
-                        type: NotificationType.SUCCESS,
-                    });
-                }
-            }, MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS);
+            //     if (!isExtensionUpdateAvailable) {
+            //         const uiStore = this.rootStore.uiStore;
+            //         uiStore.addNotification({
+            //             description: translator.getMessage('options_update_not_needed_notification_desc'),
+            //             type: NotificationType.SUCCESS,
+            //         });
+            //     }
+            // }, MIN_UPDATE_DISPLAY_DURATION_MS);
+
+            this.setFiltersUpdating(false);
+
+            if (!isExtensionUpdateAvailable) {
+                const uiStore = this.rootStore.uiStore;
+                uiStore.addNotification({
+                    description: translator.getMessage('options_update_not_needed_notification_desc'),
+                    type: NotificationType.SUCCESS,
+                });
+            }
 
             return isExtensionUpdateAvailable;
         } catch (error) {
@@ -745,24 +756,41 @@ class SettingsStore {
                 // FIXME: reload extension via messaging
             }
 
-            setTimeout(() => {
-                this.setExtensionUpdating(false);
+            // setTimeout(() => {
+            //     this.setExtensionUpdating(false);
 
-                if (!isSuccessful) {
-                    this.setExtensionUpdateAvailable(false);
+            //     if (!isSuccessful) {
+            //         this.setExtensionUpdateAvailable(false);
 
-                    const uiStore = this.rootStore.uiStore;
+            //         const uiStore = this.rootStore.uiStore;
 
-                    uiStore.addNotification({
-                        description: translator.getMessage('options_update_failed_notification_desc'),
-                        extra: {
-                            link: translator.getMessage('options_update_failed_notification_try_again_btn'),
-                            onClick: this.checkUpdatesMV3,
-                        },
-                        type: NotificationType.ERROR,
-                    });
-                }
-            }, MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS);
+            //         uiStore.addNotification({
+            //             description: translator.getMessage('options_update_failed_notification_desc'),
+            //             extra: {
+            //                 link: translator.getMessage('options_update_failed_notification_try_again_btn'),
+            //                 onClick: this.checkUpdatesMV3,
+            //             },
+            //             type: NotificationType.ERROR,
+            //         });
+            //     }
+            // }, MIN_UPDATE_DISPLAY_DURATION_MS);
+
+            this.setExtensionUpdating(false);
+
+            if (!isSuccessful) {
+                this.setExtensionUpdateAvailable(false);
+
+                const uiStore = this.rootStore.uiStore;
+
+                uiStore.addNotification({
+                    description: translator.getMessage('options_update_failed_notification_desc'),
+                    extra: {
+                        link: translator.getMessage('options_update_failed_notification_try_again_btn'),
+                        onClick: this.checkUpdatesMV3,
+                    },
+                    type: NotificationType.ERROR,
+                });
+            }
         } catch (error) {
             this.setExtensionUpdating(false);
             throw error;

@@ -64,6 +64,7 @@ import {
     localeDetect,
     PromoNotificationService,
     filterUpdateService,
+    extensionUpdateService,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -243,6 +244,8 @@ export class App {
          * TODO: delete after frontend refactoring.
          */
         eventService.init();
+
+        extensionUpdateService.init();
 
         /**
          * Called after eventService init, otherwise it won't handle messages.

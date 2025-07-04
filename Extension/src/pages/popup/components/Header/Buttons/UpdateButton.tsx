@@ -24,9 +24,9 @@ import React, {
 
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { addMinDurationTime } from '../../../../common/common-script';
+import { addMinDurationTime } from '../../../../../common/sleep-utils';
 import { messenger } from '../../../../services/messenger';
-import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
+import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { getFiltersUpdateResultMessage } from '../../../../../common/toast-helper';
 
 export const UpdateButton = () => {
@@ -38,7 +38,7 @@ export const UpdateButton = () => {
 
     const updateFiltersWithMinDuration = addMinDurationTime(
         messenger.updateFiltersMV2,
-        MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS,
+        MIN_UPDATE_DISPLAY_DURATION_MS,
     );
 
     const handleUpdateFiltersClick = async () => {
