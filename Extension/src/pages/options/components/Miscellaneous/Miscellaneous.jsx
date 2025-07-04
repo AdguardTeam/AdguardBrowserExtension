@@ -24,6 +24,7 @@ import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SETTINGS_TYPES } from '../Settings/Setting';
 import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
+import { NotificationType } from '../../../common/constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { userRulesEditorStore } from '../../../common/components/UserRulesEditor/UserRulesEditorStore';
 import { logger } from '../../../../common/logger';
@@ -31,7 +32,6 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { COLLECT_HITS_LEARN_MORE_URL } from '../../constants';
-import { NotificationType } from '../../stores/UiStore';
 
 export const Miscellaneous = observer(() => {
     const {

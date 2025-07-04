@@ -125,6 +125,12 @@ export const Icons = () => {
                     <path d="m34.978 1.805 8.802 8.801h17.594L52.277 1.5" />
                 </g>
             </symbol>
+
+            <symbol id="update-available" viewBox="0 0 24 24">
+                <g fill="none" fillRule="evenodd">
+                    <path stroke="#67B279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m12 4 7 10.49h-3.5V20h-7v-5.51H5L12 4Z" clipRule="evenodd" />
+                </g>
+            </symbol>
         </svg>
     );
 };

@@ -36,7 +36,7 @@ import {
     BUG_REPORT_URL,
     BUG_REPORT_MV3_URL,
 } from '../../constants';
-import { FILE_WRONG_EXTENSION_CAUSE } from '../../../common/constants';
+import { FILE_WRONG_EXTENSION_CAUSE, NotificationType } from '../../../common/constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { type SettingHandler } from '../../types';
@@ -47,7 +47,6 @@ import { Unknown } from '../../../../common/unknown';
 import { FiltersUpdateTime } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning } from '../Warnings';
 import { logger } from '../../../../common/logger';
-import { NotificationType } from '../../stores/UiStore';
 
 const filtersUpdatePeriodOptions = [
     {

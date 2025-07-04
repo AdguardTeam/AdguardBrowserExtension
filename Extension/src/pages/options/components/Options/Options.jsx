@@ -44,6 +44,7 @@ import { rootStore } from '../../stores/RootStore';
 import { Notifications } from '../Notifications';
 import { updateFilterDescription } from '../../../helpers';
 import { messenger } from '../../../services/messenger';
+import { NotificationType } from '../../../common/constants';
 import { logger } from '../../../../common/logger';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { Loader } from '../../../common/components/Loader';
@@ -52,7 +53,6 @@ import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { Icons } from '../ui/Icons';
-import { NotificationType } from '../../stores/UiStore';
 import { SkipToContentButton } from '../SkipToContentButton';
 
 import '../../styles/styles.pcss';

@@ -32,6 +32,7 @@ import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { translator } from '../../../../common/translators/translator';
 import { messenger } from '../../../services/messenger';
+import { NotificationType } from '../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constants';
@@ -39,7 +40,6 @@ import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
 import { getStaticWarningMessage } from '../Warnings/messages';
-import { NotificationType } from '../../stores/UiStore';
 
 import { formatDate } from './helpers';
 import { HighlightSearch } from './Search/HighlightSearch';

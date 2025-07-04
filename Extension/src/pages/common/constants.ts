@@ -28,3 +28,8 @@ export const MIN_LOADER_SHOWING_TIME_MS = 500;
  * Error cause identifier for when a file has an incorrect extension.
  */
 export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';
+
+export enum NotificationType {
+    SUCCESS = 'success',
+    ERROR = 'error',
+}

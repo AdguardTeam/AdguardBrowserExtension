@@ -26,13 +26,9 @@ import { nanoid } from 'nanoid';
 import { type InvalidStaticResultData, type InvalidDynamicResultData } from '../../../background/services/rules-limits';
 // TODO: Maybe not import from components folder here?
 import { getDynamicWarningMessage, getStaticWarningMessage } from '../components/Warnings/messages';
+import { type NotificationType } from '../../common/constants';
 
 import { type RootStore } from './RootStore';
-
-export enum NotificationType {
-    SUCCESS = 'success',
-    ERROR = 'error',
-}
 
 /**
  * Notification object.
@@ -54,7 +50,9 @@ export type Notification = {
     type: NotificationType;
 
     /**
-     * Some additional data, e.g. links.
+     * Some additional data, e.g. link and onClick handler.
+     *
+     * FIXME: specify the type.
      */
     extra?: Record<string, any>;
 };

@@ -56,6 +56,8 @@ export class FiltersService {
         messageHandler.addListener(MessageType.DisableFilter, FiltersService.onFilterDisable);
         messageHandler.addListener(MessageType.EnableFiltersGroup, FiltersService.onGroupEnable);
         messageHandler.addListener(MessageType.DisableFiltersGroup, FiltersService.onGroupDisable);
+        messageHandler.addListener(MessageType.CheckExtensionUpdate, FiltersService.manualCheckExtensionUpdate);
+        messageHandler.addListener(MessageType.UpdateExtension, FiltersService.manualUpdateExtension);
         messageHandler.addListener(MessageType.RestoreFiltersMv3, FiltersService.onRestoreFilters);
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersService.resetBlockedAdsCount);
         messageHandler.addListener(MessageType.SetConsentedFilters, FiltersService.setConsentedFilters);
@@ -189,6 +191,26 @@ export class FiltersService {
         Categories.disableGroup(groupId);
 
         await engine.update();
+    }
+
+    /**
+     * FIXME: add docs.
+     *
+     * @returns FIXME: ...
+     */
+    private static async manualCheckExtensionUpdate(): Promise<boolean> {
+        // FIXME: implement
+        return Promise.resolve(true);
+    }
+
+    /**
+     * FIXME: add docs.
+     *
+     * @returns FIXME: ...
+     */
+    private static async manualUpdateExtension(): Promise<boolean> {
+        // FIXME: implement
+        return Promise.resolve(false);
     }
 
     /**

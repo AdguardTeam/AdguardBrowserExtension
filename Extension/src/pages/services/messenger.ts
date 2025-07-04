@@ -103,7 +103,7 @@ class Messenger {
      */
     constructor() {
         this.resetUserRulesForPage = this.resetUserRulesForPage.bind(this);
-        this.updateFilters = this.updateFilters.bind(this);
+        this.updateFiltersMV2 = this.updateFiltersMV2.bind(this);
         this.removeAllowlistDomain = this.removeAllowlistDomain.bind(this);
         this.addAllowlistDomainForTabId = this.addAllowlistDomainForTabId.bind(this);
         this.addAllowlistDomainForUrl = this.addAllowlistDomainForUrl.bind(this);
@@ -509,13 +509,36 @@ class Messenger {
      *
      * @returns Promise that resolves with the list of filters.
      */
-    async updateFilters(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
+    async updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
         if (__IS_MV3__) {
-            logger.warn('[ext.Messenger.updateFilters]: filters update is not supported in MV3');
+            logger.warn('[ext.Messenger.updateFiltersMV2]: filters update is not supported in MV3');
             return [];
         }
 
         return this.sendMessage(MessageType.CheckFiltersUpdate);
+    }
+
+    /**
+     * Sends a message to the background page to check for extension updates.
+     *
+     * @returns Promise that resolves with boolean - true if update is available, false otherwise.
+     */
+    async checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdate>> {
+        if (!__IS_MV3__) {
+            logger.warn('[ext.Messenger.checkUpdatesMV3]: extension update is not supported in MV2');
+            return false;
+        }
+
+        return this.sendMessage(MessageType.CheckExtensionUpdate);
+    }
+
+    async updateExtensionMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtension>> {
+        if (!__IS_MV3__) {
+            logger.warn('[ext.Messenger.updateExtensionMV3]: extension update is not supported in MV2');
+            return false;
+        }
+
+        return this.sendMessage(MessageType.UpdateExtension);
     }
 
     /**

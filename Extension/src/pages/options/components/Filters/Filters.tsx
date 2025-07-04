@@ -32,6 +32,7 @@ import { sortBy } from 'lodash-es';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 import { SettingsSection } from '../Settings/SettingsSection';
+import { NotificationType } from '../../../common/constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Icon } from '../../../common/components/ui/Icon';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
@@ -40,7 +41,6 @@ import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnin
 import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
 import { getStaticWarningMessage } from '../Warnings/messages';
-import { NotificationType } from '../../stores/UiStore';
 import type { CategoriesGroupData } from '../../../../background/api';
 import { DeveloperModeWarning } from '../Warnings/DeveloperModeWarning';
 
@@ -477,7 +477,7 @@ const Filters = observer(() => {
         >
             <StaticFiltersLimitsWarning />
             <DynamicRulesLimitsWarning />
-            {!__IS_MV3__ && <FiltersUpdate />}
+            <FiltersUpdate />
             <Search />
             {settingsStore.isSearching
                 ? renderGroupsOnSearch(filtersToRender)

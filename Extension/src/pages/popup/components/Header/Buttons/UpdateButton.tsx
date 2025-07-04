@@ -37,7 +37,7 @@ export const UpdateButton = () => {
     const [updateMessage, setUpdateMessage] = useState('');
 
     const updateFiltersWithMinDuration = addMinDurationTime(
-        messenger.updateFilters,
+        messenger.updateFiltersMV2,
         MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS,
     );
 

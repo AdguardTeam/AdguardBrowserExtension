@@ -30,7 +30,7 @@ import {
     SavingFSMEvent,
     SavingFSMState,
 } from '../../common/components/Editor/savingFSM';
-import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../common/constants';
+import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS, NotificationType } from '../../common/constants';
 import { sleep } from '../../../../../tools/common/sleep';
 import { messenger } from '../../services/messenger';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
@@ -49,8 +49,6 @@ import {
     WASTE_CHARACTERS,
 } from '../../../common/constants';
 import { translator } from '../../../common/translators/translator';
-
-import { NotificationType } from './UiStore';
 
 /**
  * Sometimes the options page might be opened before the background page or
@@ -189,6 +187,10 @@ class SettingsStore {
 
     @observable filtersUpdating = false;
 
+    @observable extensionUpdateAvailable = false;
+
+    @observable extensionUpdating = false;
+
     @observable selectedGroupId = null;
 
     @observable isChrome = null;
@@ -223,6 +225,7 @@ class SettingsStore {
         this.updateFilterSetting = this.updateFilterSetting.bind(this);
         this.updateGroupSetting = this.updateGroupSetting.bind(this);
         this.setAllowAcceptableAdsState = this.setAllowAcceptableAdsState.bind(this);
+        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
 
         this.savingAllowlistService.subscribe((state) => {
             runInAction(() => {
@@ -677,13 +680,20 @@ class SettingsStore {
     }
 
     @action
-    async updateFilters() {
+    setExtensionUpdateAvailable(value) {
+        this.extensionUpdateAvailable = value;
+    }
+
+    @action
+    setExtensionUpdating(value) {
+        this.extensionUpdating = value;
+    }
+
+    @action
+    async updateFiltersMV2() {
         this.setFiltersUpdating(true);
         try {
-            // In MV3 we do not support checking update for filters.
-            const filtersUpdates = __IS_MV3__
-                ? []
-                : await messenger.updateFilters();
+            const filtersUpdates = await messenger.updateFiltersMV2();
             this.refreshFilters(filtersUpdates);
             setTimeout(() => {
                 this.setFiltersUpdating(false);
@@ -691,6 +701,70 @@ class SettingsStore {
             return filtersUpdates;
         } catch (error) {
             this.setFiltersUpdating(false);
+            throw error;
+        }
+    }
+
+    @action
+    async checkUpdatesMV3() {
+        this.setFiltersUpdating(true);
+
+        try {
+            const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
+
+            this.setExtensionUpdateAvailable(isExtensionUpdateAvailable);
+
+            setTimeout(() => {
+                this.setFiltersUpdating(false);
+
+                if (!isExtensionUpdateAvailable) {
+                    const uiStore = this.rootStore.uiStore;
+                    uiStore.addNotification({
+                        description: translator.getMessage('options_update_not_needed_notification_desc'),
+                        type: NotificationType.SUCCESS,
+                    });
+                }
+            }, MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS);
+
+            return isExtensionUpdateAvailable;
+        } catch (error) {
+            this.setFiltersUpdating(false);
+            throw error;
+        }
+    }
+
+    @action
+    async updateExtensionMV3() {
+        this.setExtensionUpdateAvailable(false);
+        this.setExtensionUpdating(true);
+
+        try {
+            const isSuccessful = await messenger.updateExtensionMV3();
+
+            if (isSuccessful) {
+                // FIXME: reload extension via messaging
+            }
+
+            setTimeout(() => {
+                this.setExtensionUpdating(false);
+
+                if (!isSuccessful) {
+                    this.setExtensionUpdateAvailable(false);
+
+                    const uiStore = this.rootStore.uiStore;
+
+                    uiStore.addNotification({
+                        description: translator.getMessage('options_update_failed_notification_desc'),
+                        extra: {
+                            link: translator.getMessage('options_update_failed_notification_try_again_btn'),
+                            onClick: this.checkUpdatesMV3,
+                        },
+                        type: NotificationType.ERROR,
+                    });
+                }
+            }, MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS);
+        } catch (error) {
+            this.setExtensionUpdating(false);
             throw error;
         }
     }

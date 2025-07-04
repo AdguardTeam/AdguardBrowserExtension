@@ -72,6 +72,8 @@ export enum MessageType {
     GetAllowlistDomains = 'getAllowlistDomains',
     SaveAllowlistDomains = 'saveAllowlistDomains',
     CheckFiltersUpdate = 'checkFiltersUpdate',
+    CheckExtensionUpdate = 'checkExtensionUpdate',
+    UpdateExtension = 'updateExtension',
     DisableFiltersGroup = 'disableFiltersGroup',
     DisableFilter = 'disableFilter',
     LoadCustomFilterInfo = 'loadCustomFilterInfo',
@@ -235,6 +237,14 @@ export type UpdateListenersMessage = {
 
 export type CheckFiltersUpdateMessage = {
     type: MessageType.CheckFiltersUpdate;
+};
+
+export type CheckExtensionUpdateMessage = {
+    type: MessageType.CheckExtensionUpdate;
+};
+
+export type UpdateExtensionMessage = {
+    type: MessageType.UpdateExtension;
 };
 
 export type GetAllowlistDomainsMessage = {
@@ -683,6 +693,14 @@ export type MessageMap = {
     [MessageType.CheckFiltersUpdate]: {
         message: CheckFiltersUpdateMessage;
         response: FilterMetadata[] | undefined;
+    };
+    [MessageType.CheckExtensionUpdate]: {
+        message: CheckExtensionUpdateMessage;
+        response: boolean;
+    };
+    [MessageType.UpdateExtension]: {
+        message: UpdateExtensionMessage;
+        response: boolean;
     };
     [MessageType.GetAllowlistDomains]: {
         message: GetAllowlistDomainsMessage;

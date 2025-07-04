@@ -28,6 +28,7 @@ import { rootStore } from '../../stores/RootStore';
 import { Icon } from '../../../common/components/ui/Icon';
 import { messenger } from '../../../services/messenger';
 import { type Notification as INotification } from '../../stores/UiStore';
+import { NotificationType } from '../../../common/constants';
 import { translator } from '../../../../common/translators/translator';
 
 /**
@@ -53,7 +54,18 @@ export const Notification = (props: NotificationProps) => {
         type,
         extra,
     } = props;
+
     const isNotificationWithLink = extra?.link && typeof extra?.link === 'string';
+
+    let onClickHandler: ((e: React.MouseEvent) => void) | undefined;
+
+    if (extra?.onClick && typeof extra?.onClick === 'function') {
+        onClickHandler = (e: React.MouseEvent) => {
+            e.preventDefault();
+            extra.onClick();
+            handleCloseClick();
+        };
+    }
 
     const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
 
@@ -112,7 +124,7 @@ export const Notification = (props: NotificationProps) => {
             onMouseEnter={handleMouseOver}
         >
             <Icon
-                id="#info"
+                id={type === NotificationType.SUCCESS ? '#tick' : '#info'}
                 classname="icon--24"
                 aria-hidden="true"
             />
@@ -126,7 +138,7 @@ export const Notification = (props: NotificationProps) => {
                     <button
                         type="button"
                         role="link"
-                        onClick={handleRuleLimitsClick}
+                        onClick={onClickHandler || handleRuleLimitsClick}
                     >
                         {extra.link}
                     </button>
