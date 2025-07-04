@@ -279,6 +279,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
         const localization = localizations[locale];
         if (localization) {
             group.groupName = localization.name;
+            group.groupDescription = localization.description;
         }
     }
 
