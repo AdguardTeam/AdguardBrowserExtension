@@ -128,7 +128,7 @@ export const Icons = () => {
 
             <symbol id="update-available" viewBox="0 0 24 24">
                 <g fill="none" fillRule="evenodd">
-                    <path stroke="#67B279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m12 4 7 10.49h-3.5V20h-7v-5.51H5L12 4Z" clipRule="evenodd" />
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m12 4 7 10.49h-3.5V20h-7v-5.51H5L12 4Z" clipRule="evenodd" />
                 </g>
             </symbol>
         </svg>

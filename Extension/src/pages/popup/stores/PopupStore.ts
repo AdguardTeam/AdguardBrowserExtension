@@ -64,6 +64,11 @@ type CategoryBlockedStatsInfo = {
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
 
+/**
+ * Notification TTL in milliseconds.
+ */
+const NOTIFICATION_TTL_MS = 4000;
+
 class PopupStore {
     TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
@@ -155,8 +160,21 @@ class PopupStore {
     @observable
         appState: AppState = appStateActor.getSnapshot().value;
 
+    /**
+     * Whether the extension update is available.
+     */
+    @observable extensionUpdateAvailable = false;
+
+    /**
+     * Whether to show the notification about no extension update available,
+     * i.e. it is up-to-date.
+     */
+    @observable showNoExtensionUpdateNotification = false;
+
     constructor() {
         makeObservable(this);
+
+        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -575,6 +593,43 @@ class PopupStore {
         }
 
         return this.settings.values[this.settings.names.AppearanceTheme];
+    }
+
+    @action
+    setExtensionUpdateAvailable(value: boolean) {
+        this.extensionUpdateAvailable = value;
+    }
+
+    @action
+    setShowNoExtensionUpdateNotification(value: boolean) {
+        this.showNoExtensionUpdateNotification = value;
+    }
+
+    @action
+    async checkUpdatesMV3() {
+        const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
+
+        if (isExtensionUpdateAvailable) {
+            this.setExtensionUpdateAvailable(isExtensionUpdateAvailable);
+        } else {
+            this.setShowNoExtensionUpdateNotification(true);
+            // show 'no update' notification temporarily
+            // FIXME: implement notification showing
+            setTimeout(() => {
+                this.setShowNoExtensionUpdateNotification(false);
+            }, NOTIFICATION_TTL_MS);
+        }
+    }
+
+    @action
+    async updateExtensionMV3() {
+        const isSuccessfulUpdate = await messenger.updateExtensionMV3();
+
+        if (!isSuccessfulUpdate) {
+            this.setExtensionUpdateAvailable(false);
+
+            // FIXME: show notification
+        }
     }
 }
 

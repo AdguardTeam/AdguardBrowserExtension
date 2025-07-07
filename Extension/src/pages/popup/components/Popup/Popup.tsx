@@ -163,6 +163,8 @@ export const Popup = observer(() => {
             <Footer />
             {/* Promo should be rendered in top of other notifications */}
             { areFilterLimitsExceeded && __IS_MV3__ && <Notification />}
+            {/* FIXME: implement Notifications component for showing notifications */}
+            {/* e.g., for rule limits and update */}
             <PromoNotification />
         </>
     );
