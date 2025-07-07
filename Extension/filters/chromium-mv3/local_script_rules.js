@@ -4590,6 +4590,36 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
         }
     },
+    '(()=>{let e=!1;const l={apply:async(e,l,o)=>{const r=o[0];return!1===r?.rewardAllowed&&(o[0].rewardAllowed=!0),Reflect.apply(e,l,o)}},o={apply:(o,r,t)=>{const n=t[0]?.pokiAdsCompleted;return!e&&n&&n[0]?.toString()?.includes("rewardAllowed")&&(n[0]=new Proxy(n[0],l),e=!0),Reflect.apply(o,r,t)}};window.Object.keys=new Proxy(window.Object.keys,o)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["85cbf457d7f9be26230706564eebecbe"] === e) return;
+            (() => {
+                let e = !1;
+                const r = {
+                    apply: async (e, r, t) => {
+                        const o = t[0];
+                        return !1 === o?.rewardAllowed && (t[0].rewardAllowed = !0), Reflect.apply(e, r, t);
+                    }
+                }, t = {
+                    apply: (t, o, n) => {
+                        const c = n[0]?.pokiAdsCompleted;
+                        return !e && c && c[0]?.toString()?.includes("rewardAllowed") && (c[0] = new Proxy(c[0], r), 
+                        e = !0), Reflect.apply(t, o, n);
+                    }
+                };
+                window.Object.keys = new Proxy(window.Object.keys, t);
+            })();
+            Object.defineProperty(Window.prototype.toString, "85cbf457d7f9be26230706564eebecbe", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "85cbf457d7f9be26230706564eebecbe" due to: ' + e);
+        }
+    },
     '(()=>{window.Pogo=window.Pogo||{},window.Pogo.cmd=[],window.Pogo.cmd.push=o=>{"function"==typeof o&&o()},window.Pogo.getVideoTag=(o,w)=>{w&&"function"==typeof w&&w()};})();': () => {
         try {
             const o = "done";
@@ -9893,24 +9923,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "c3123d07eda7051ae1561c7613cf6cd8" due to: ' + e);
-        }
-    },
-    'setTimeout(function(){var el = document.querySelector(".showitxt"); if(el) { el.innerHTML = el.innerHTML.replace("(Anzeige)",""); }},3000);': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["97deeafd5b9c8767a31890baf15c37ce"] === e) return;
-            setTimeout((function() {
-                var e = document.querySelector(".showitxt");
-                e && (e.innerHTML = e.innerHTML.replace("(Anzeige)", ""));
-            }), 3e3);
-            Object.defineProperty(Window.prototype.toString, "97deeafd5b9c8767a31890baf15c37ce", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "97deeafd5b9c8767a31890baf15c37ce" due to: ' + e);
         }
     },
     '(function(b,d,e){function a(){}b={get:function(){return a},set:a},d={};Object.defineProperties(d,{spid_control_callback:b,content_control_callback:b,vid_control_callback:b});e=new Proxy({},{get:function(a,c){switch(c){case "config":return d;case "_setSpKey":throw Error();default:return a[c]}},set:function(a,c,b){switch(c){case "config":return!0;case "bootstrap":case "mms":return a[c]=b,!0;default:throw Error();}}});Object.defineProperty(window,"_sp_",{get:function(){return e},set:a})})();': () => {
