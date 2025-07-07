@@ -42,6 +42,7 @@ import {
     type SettingsData,
     UserRulesApi,
 } from '../../api';
+import { extensionUpdateService } from '../extension-update';
 
 // TODO: describe all properties
 /**
@@ -52,6 +53,7 @@ export type GetTabInfoForPopupResponse = {
     stats: GetStatisticsDataResponse;
     settings: SettingsData;
     areFilterLimitsExceeded: boolean;
+    isExtensionUpdateAvailable: boolean;
     options: {
         showStatsSupported: boolean;
         isFirefoxBrowser: boolean;
@@ -113,6 +115,9 @@ export class PopupService {
                 settings: SettingsApi.getData(),
                 areFilterLimitsExceeded: __IS_MV3__
                     ? await RulesLimitsService.areFilterLimitsExceeded()
+                    : false,
+                isExtensionUpdateAvailable: __IS_MV3__
+                    ? await extensionUpdateService.getIsUpdateAvailable()
                     : false,
                 options: {
                     showStatsSupported: true,

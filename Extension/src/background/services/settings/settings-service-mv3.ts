@@ -48,6 +48,7 @@ import {
     settingsEvents,
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
+import { extensionUpdateService } from '../extension-update';
 
 import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
 
@@ -137,6 +138,7 @@ export class SettingsService {
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
             areFilterLimitsExceeded,
             isUserScriptsApiSupported: TsWebExtension.isUserScriptsApiSupported,
+            isExtensionUpdateAvailable: extensionUpdateService.getIsUpdateAvailable(),
         };
     }
 

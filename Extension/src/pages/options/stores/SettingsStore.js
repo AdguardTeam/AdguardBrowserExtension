@@ -333,6 +333,7 @@ class SettingsStore {
             this.isUserScriptsApiSupported = data.isUserScriptsApiSupported;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
+            this.setExtensionUpdateAvailable(data.isExtensionUpdateAvailable);
         });
 
         return data;

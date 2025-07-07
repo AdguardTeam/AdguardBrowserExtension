@@ -254,6 +254,7 @@ class PopupStore {
                 stats,
                 settings,
                 areFilterLimitsExceeded,
+                isExtensionUpdateAvailable,
             } = response;
 
             // frame info
@@ -280,6 +281,8 @@ class PopupStore {
             this.settings = settings;
 
             this.areFilterLimitsExceeded = areFilterLimitsExceeded;
+
+            this.setExtensionUpdateAvailable(isExtensionUpdateAvailable);
 
             this.currentTabId = currentTab.id;
 

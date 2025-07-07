@@ -128,4 +128,11 @@ export type GetOptionsDataResponse = {
      * Used in MV3 only.
      */
     isUserScriptsApiSupported: boolean;
+
+    /**
+     * Whether an extension update is available.
+     *
+     * Used in MV3 only.
+     */
+    isExtensionUpdateAvailable: boolean;
 };
