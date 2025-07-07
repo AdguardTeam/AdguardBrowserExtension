@@ -715,18 +715,6 @@ class SettingsStore {
 
             this.setExtensionUpdateAvailable(isExtensionUpdateAvailable);
 
-            // setTimeout(() => {
-            //     this.setFiltersUpdating(false);
-
-            //     if (!isExtensionUpdateAvailable) {
-            //         const uiStore = this.rootStore.uiStore;
-            //         uiStore.addNotification({
-            //             description: translator.getMessage('options_update_not_needed_notification_desc'),
-            //             type: NotificationType.SUCCESS,
-            //         });
-            //     }
-            // }, MIN_UPDATE_DISPLAY_DURATION_MS);
-
             this.setFiltersUpdating(false);
 
             if (!isExtensionUpdateAvailable) {
@@ -736,8 +724,6 @@ class SettingsStore {
                     type: NotificationType.SUCCESS,
                 });
             }
-
-            return isExtensionUpdateAvailable;
         } catch (error) {
             this.setFiltersUpdating(false);
             throw error;
@@ -755,25 +741,6 @@ class SettingsStore {
             if (isSuccessful) {
                 // FIXME: reload extension via messaging
             }
-
-            // setTimeout(() => {
-            //     this.setExtensionUpdating(false);
-
-            //     if (!isSuccessful) {
-            //         this.setExtensionUpdateAvailable(false);
-
-            //         const uiStore = this.rootStore.uiStore;
-
-            //         uiStore.addNotification({
-            //             description: translator.getMessage('options_update_failed_notification_desc'),
-            //             extra: {
-            //                 link: translator.getMessage('options_update_failed_notification_try_again_btn'),
-            //                 onClick: this.checkUpdatesMV3,
-            //             },
-            //             type: NotificationType.ERROR,
-            //         });
-            //     }
-            // }, MIN_UPDATE_DISPLAY_DURATION_MS);
 
             this.setExtensionUpdating(false);
 
