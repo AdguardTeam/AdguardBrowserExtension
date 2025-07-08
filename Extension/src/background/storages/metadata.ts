@@ -180,6 +180,8 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
         filters.forEach((filter) => MetadataStorage.applyFilterLocalization(filter, filtersI18n, uiLanguage));
         groups.forEach((group) => MetadataStorage.applyGroupLocalization(group, groupsI18n, uiLanguage));
 
+        metadata.locale = uiLanguage;
+
         return metadata;
     }
 
@@ -279,6 +281,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
         const localization = localizations[locale];
         if (localization) {
             group.groupName = localization.name;
+            group.groupDescription = localization.description;
         }
     }
 
