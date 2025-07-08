@@ -385,17 +385,73 @@ const ensureOnlyRulesetsChanged = async (
 
     // Check that only rule_resources files changed (using system diff).
     const changedFiles = await getChangedFiles(oldDir, newDir);
-    for (const path of changedFiles) {
-        if (Array.from(rulesetsPaths).some((p) => path.endsWith(p))) {
+    for (const filePath of changedFiles) {
+        if (Array.from(rulesetsPaths).some((p) => filePath.endsWith(p))) {
             continue;
         }
-        console.log(`❌ Detected changes outside rule_resources: ${path}`);
+        await printExternalFileDiff(filePath, oldDir, newDir);
         changedOnlyRulesets = false;
     }
     if (!changedOnlyRulesets) {
         throw new Error('❌ Files outside rule_resources were changed!');
     }
     console.log('✅ Only rule_resources files changed');
+};
+
+/**
+ * Print and show diff for a file changed outside rule_resources.
+ *
+ * @param filePath Relative path to the changed file.
+ * @param oldDir Path to the old directory.
+ * @param newDir Path to the new directory.
+ */
+const printExternalFileDiff = async (
+    filePath: string,
+    oldDir: string,
+    newDir: string,
+) => {
+    const relativeFilePath = path.relative(oldDir, filePath);
+    const oldFile = path.join(oldDir, relativeFilePath);
+    const newFile = path.join(newDir, relativeFilePath);
+
+    console.log(`❌ Detected changes outside rule_resources, diff between "${oldFile}" and "${newFile}"`);
+
+    if (fs.existsSync(oldFile) && fs.existsSync(newFile)) {
+        // Both files exist, show diff
+        try {
+            const diffResult = await new Promise<string>((resolve, reject) => {
+                // "-u" for unified diff format to show context
+                const diff = spawn('diff', ['-u', oldFile, newFile]);
+
+                // Set encoding for stdout and stderr to 'utf-8'
+                diff.stdout.setEncoding('utf-8');
+                diff.stderr.setEncoding('utf-8');
+
+                let out = '';
+
+                diff.stdout.on('data', (data) => {
+                    out += data.toString();
+                });
+
+                diff.stderr.on('data', (data) => {
+                    out += data.toString();
+                });
+
+                diff.on('close', () => resolve(out));
+                diff.on('error', reject);
+            });
+
+            console.log(diffResult.trim());
+        } catch (e) {
+            console.log('[Error running diff]');
+        }
+    } else if (fs.existsSync(oldFile)) {
+        console.log('[File removed]');
+    } else if (fs.existsSync(newFile)) {
+        console.log('[File added]');
+    } else {
+        console.log(`[File missing in both]: old "${oldFile}", new "${newFile}", filePath "${filePath}"`);
+    }
 };
 
 /**
