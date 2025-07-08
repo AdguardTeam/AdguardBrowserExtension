@@ -160,10 +160,14 @@ class PopupStore {
     @observable
         appState: AppState = appStateActor.getSnapshot().value;
 
+    @observable updateChecking = false;
+
     /**
      * Whether the extension update is available.
      */
     @observable extensionUpdateAvailable = false;
+
+    @observable extensionUpdateFailed = false;
 
     /**
      * Whether to show the notification about no extension update available,
@@ -175,6 +179,7 @@ class PopupStore {
         makeObservable(this);
 
         this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
+        this.updateExtensionMV3 = this.updateExtensionMV3.bind(this);
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -599,8 +604,18 @@ class PopupStore {
     }
 
     @action
+    setUpdateChecking(value: boolean) {
+        this.updateChecking = value;
+    }
+
+    @action
     setExtensionUpdateAvailable(value: boolean) {
         this.extensionUpdateAvailable = value;
+    }
+
+    @action
+    setExtensionUpdateFailed(value: boolean) {
+        this.extensionUpdateFailed = value;
     }
 
     @action
@@ -610,6 +625,7 @@ class PopupStore {
 
     @action
     async checkUpdatesMV3() {
+        this.setUpdateChecking(true);
         const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
 
         if (isExtensionUpdateAvailable) {
@@ -622,17 +638,27 @@ class PopupStore {
                 this.setShowNoExtensionUpdateNotification(false);
             }, NOTIFICATION_TTL_MS);
         }
+        this.setUpdateChecking(false);
     }
 
     @action
     async updateExtensionMV3() {
         const isSuccessfulUpdate = await messenger.updateExtensionMV3();
 
-        if (!isSuccessfulUpdate) {
+        if (isSuccessfulUpdate) {
+            // FIXME: restart extension to update it
+            // FIXME: consider opening popup with success notification after it
+        } else {
+            // set to false to force another check
             this.setExtensionUpdateAvailable(false);
-
-            // FIXME: show notification
+            this.setExtensionUpdateFailed(true);
         }
+    }
+
+    get showUpdateRelatedNotification(): boolean {
+        return this.extensionUpdateAvailable
+            || this.extensionUpdateFailed
+            || this.showNoExtensionUpdateNotification;
     }
 }
 

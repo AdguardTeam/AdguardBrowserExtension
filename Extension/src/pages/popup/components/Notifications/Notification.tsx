@@ -20,20 +20,49 @@ import React, { useState } from 'react';
 
 import classnames from 'classnames';
 
-import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
-import { messenger } from '../../../services/messenger';
 
 import './notification.pcss';
 
+type NotificationProps = {
+    /**
+     * Icon component for the notification.
+     */
+    icon: React.ReactNode;
+
+    /**
+     * Title of the notification.
+     */
+    title: string;
+
+    /**
+     * Button to be shown in the notification, optional.
+     */
+    button?: {
+        /**
+         * Text of the button.
+         */
+        text: string;
+
+        /**
+         * Click handler for the button.
+         */
+        onClick: () => void;
+    };
+};
+
 /**
- * Component Notification is used to show a notification about the rule limits
+ * The component needed to show a notification about the rule limits
  * exceeded in popup.
  *
  * @todo TODO: Add reuse this component to show message about successful update
  * of application with filters.
  */
-export const Notification = () => {
+export const Notification = ({
+    icon,
+    title,
+    button,
+}: NotificationProps) => {
     const [notificationClosing, setNotificationClosing] = useState(false);
     // We save the state "close" of the notification in local state to show it
     // again until user has not fixed list of filters.
@@ -56,25 +85,21 @@ export const Notification = () => {
         }, closeTimeoutMs);
     };
 
-    const handleRuleLimitsClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        messenger.openRulesLimitsTab();
-        window.close();
-    };
-
     return (
         <div className={notificationClassnames}>
-            <Icon
-                id="#info"
-                classname="icon--24 icon--red-default"
-            />
+            {icon}
             <div className="notification__content">
                 <p>
-                    {translator.getMessage('popup_limits_exceeded_warning')}
+                    {title}
                 </p>
-                <button type="button" onClick={handleRuleLimitsClick}>
-                    {translator.getMessage('options_rule_limits')}
-                </button>
+                {button && (
+                    <button
+                        type="button"
+                        onClick={button.onClick}
+                    >
+                        {button.text}
+                    </button>
+                )}
             </div>
             <button
                 aria-label="close"

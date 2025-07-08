@@ -16,27 +16,29 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
 
 import { translator } from '../../../../../../common/translators/translator';
 import { Icon } from '../../../../../common/components/ui/Icon';
 import { popupStore } from '../../../../stores/PopupStore';
 
-export const UpdateButtonMV3 = () => {
+export const UpdateButtonMV3 = observer(() => {
     const store = useContext(popupStore);
 
-    const { checkUpdatesMV3, updateExtensionMV3, extensionUpdateAvailable } = store;
-
-    const [updateChecking, setUpdateChecking] = useState(false);
+    const {
+        checkUpdatesMV3,
+        updateExtensionMV3,
+        updateChecking,
+        extensionUpdateAvailable,
+    } = store;
 
     const handleCheckUpdatesClick = async () => {
         if (!__IS_MV3__) {
             throw new Error('Extension update is not supported in MV2');
         }
 
-        setUpdateChecking(true);
         await checkUpdatesMV3();
-        setUpdateChecking(false);
     };
 
     const handleUpdateExtensionClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
@@ -90,4 +92,4 @@ export const UpdateButtonMV3 = () => {
             </button>
         </>
     );
-};
+});
