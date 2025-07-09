@@ -2519,32 +2519,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "22514194ad8441cc56e68716b1f75f69" due to: ' + e);
         }
     },
-    '(()=>{window.addEventListener("load",(()=>{setTimeout((()=>{if(!document.querySelector(".plyr--video video"))for(const o in window)if("function"==typeof window[o]&&window[o].toString().includes("Hls.isSupported")){try{window[o]()}catch(e){console.stack(`Error occurred while calling ${o}:`,e)}break}}),1e3)}));})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.fc7e03df62426e566b625183c2be9408 === e) return;
-            window.addEventListener("load", (() => {
-                setTimeout((() => {
-                    if (!document.querySelector(".plyr--video video")) for (const e in window) if ("function" == typeof window[e] && window[e].toString().includes("Hls.isSupported")) {
-                        try {
-                            window[e]();
-                        } catch (o) {
-                            console.stack(`Error occurred while calling ${e}:`, o);
-                        }
-                        break;
-                    }
-                }), 1e3);
-            }));
-            Object.defineProperty(Window.prototype.toString, "fc7e03df62426e566b625183c2be9408", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "fc7e03df62426e566b625183c2be9408" due to: ' + e);
-        }
-    },
     '(()=>{window.GADS={init:function(n){n&&"function"==typeof n.onFinish&&n.onFinish()}};})();': () => {
         try {
             const e = "done";
