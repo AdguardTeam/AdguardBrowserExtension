@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import browser from 'webextension-polyfill';
+
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
@@ -618,11 +620,20 @@ export class FiltersApi {
 
         try {
             const metadata = metadataValidator.parse(JSON.parse(storageData));
-            metadataStorage.setCache(metadata);
+            const currentLocale = browser.i18n.getUILanguage();
+            if (metadata.locale === currentLocale) {
+                metadataStorage.setCache(metadata);
+                return;
+            }
+
+            logger.info(`[ext.FiltersApi.initMetadata]: stored locale ${metadata.locale} ≠ ${currentLocale}; refreshing metadata`);
+            // fall through to load from backend below
         } catch (e) {
             logger.warn(`[ext.FiltersApi.initMetadata]: cannot parse data from "${metadataStorage.key}" storage, load from local assets. Origin error:`, getZodErrorMessage(e));
-            await FiltersApi.loadMetadataFromFromBackend(false);
+            // fall through to load from backend below
         }
+
+        await FiltersApi.loadMetadataFromFromBackend(false);
     }
 
     /**
@@ -825,6 +836,7 @@ export class FiltersApi {
     }
 
     /**
+     * TODO: Remove this method; it was used only for the quick fixes filter.
      * Partially updates metadata for one specified not custom filter without
      * changing metadata with translations for the filter.
      *

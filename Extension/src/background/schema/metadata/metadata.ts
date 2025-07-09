@@ -23,13 +23,22 @@ import { groupMetadataValidator } from './group';
 
 export const metadataValidator = zod.object({
     /**
+     * The current locale used for localization.
+     * Metadata is localized once during initialization.
+     * If the locale does not change, we use cached metadata; otherwise, we update the localizations.
+     */
+    locale: zod.string().optional(),
+
+    /**
      * Array of {@link RegularFilterMetadata}.
      */
     filters: regularFilterMetadataValidator.array(),
+
     /**
      * Array of {@link GroupMetadata}.
      */
     groups: groupMetadataValidator.array(),
+
     /**
      * Array of {@link TagMetadata}.
      */
