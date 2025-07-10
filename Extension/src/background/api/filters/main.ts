@@ -56,6 +56,7 @@ import {
 } from '../../schema';
 import { network } from '../network';
 import { getFilterName } from '../../../pages/helpers';
+import { Prefs } from '../../prefs';
 
 import { UserRulesApi } from './userrules';
 import { AllowlistApi } from './allowlist';
@@ -91,6 +92,8 @@ export class FiltersApi {
 
         await FiltersApi.removeObsoleteFilters();
         await FiltersApi.migrateDeprecatedFilters();
+
+        Prefs.libVersions.dnrRulesets = metadataStorage.getDnrRulesetsVersion();
     }
 
     /**

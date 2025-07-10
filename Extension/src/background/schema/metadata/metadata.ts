@@ -21,6 +21,10 @@ import { regularFilterMetadataValidator } from './filter';
 import { tagMetadataValidator } from './tag';
 import { groupMetadataValidator } from './group';
 
+/**
+ * It extended with superRefine to customize validation for MV3 version, but
+ * export only one validator and type.
+ */
 export const metadataValidator = zod.object({
     /**
      * The current locale used for localization.
@@ -28,6 +32,19 @@ export const metadataValidator = zod.object({
      * If the locale does not change, we use cached metadata; otherwise, we update the localizations.
      */
     locale: zod.string().optional(),
+
+    /**
+     * The version of the metadata.
+     * Should be present in MV3 only.
+     */
+    version: zod.string().optional(),
+
+    /**
+     * The timestamp of the version in milliseconds.
+     * This is used to provide it during issue reporting.
+     * Should be present in MV3 only.
+     */
+    versionTimestampMs: zod.number().optional(),
 
     /**
      * Array of {@link RegularFilterMetadata}.
@@ -43,6 +60,27 @@ export const metadataValidator = zod.object({
      * Array of {@link TagMetadata}.
      */
     tags: tagMetadataValidator.array(),
+}).superRefine((data, ctx) => {
+    if (!__IS_MV3__) {
+        return;
+    }
+
+    /* eslint-disable jsdoc/require-jsdoc */
+    if (!data.version) {
+        ctx.addIssue({
+            code: zod.ZodIssueCode.custom,
+            message: '"version" is required in MV3',
+            path: ['version'],
+        });
+    }
+    if (typeof data.versionTimestampMs !== 'number') {
+        ctx.addIssue({
+            code: zod.ZodIssueCode.custom,
+            message: '"versionTimestampMs" is required in MV3',
+            path: ['versionTimestampMs'],
+        });
+    }
+    /* eslint-enable jsdoc/require-jsdoc */
 });
 
 /**

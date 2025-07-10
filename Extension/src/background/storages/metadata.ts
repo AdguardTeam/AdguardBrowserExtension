@@ -44,6 +44,36 @@ import { settingsStorage } from './settings';
  */
 export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metadata, 'sync'> {
     /**
+     * Return version for DNR rulesets.
+     *
+     * @returns Version for DNR rulesets.
+     *
+     * @throws Error if metadata is not initialized.
+     */
+    public getDnrRulesetsVersion(): string | undefined {
+        if (!this.data) {
+            throw MetadataStorage.createNotInitializedError();
+        }
+
+        return this.data.version;
+    }
+
+    /**
+     * Return build timestamp ms for DNR rulesets.
+     *
+     * @returns Build timestamp in milliseconds for DNR rulesets.
+     *
+     * @throws Error if metadata is not initialized.
+     */
+    public getDnrRulesetsBuildTimestampMs(): number | undefined {
+        if (!this.data) {
+            throw MetadataStorage.createNotInitializedError();
+        }
+
+        return this.data.versionTimestampMs;
+    }
+
+    /**
      * Returns regular filters metadata.
      *
      * @returns Regular filters metadata.

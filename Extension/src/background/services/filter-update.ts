@@ -16,10 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { getVersionTimestampMs } from '@adguard/dnr-rulesets/utils';
-
 import { FilterUpdateApi } from '../api';
-import { browserStorage } from '../storages';
+import { browserStorage, metadataStorage } from '../storages';
 import { isNumber } from '../../common/guards';
 import { logger } from '../../common/logger';
 
@@ -76,7 +74,12 @@ export class FilterUpdateService {
         await this.update();
 
         if (__IS_MV3__) {
-            const dnrRulesetsBuildTimestampMs = getVersionTimestampMs();
+            const dnrRulesetsBuildTimestampMs = metadataStorage.getDnrRulesetsBuildTimestampMs();
+            if (dnrRulesetsBuildTimestampMs === undefined) {
+                logger.warn('[ext.FilterUpdateService.init]: DNR rulesets build timestamp is not available.');
+                return;
+            }
+            // We set last update time in MV3 during issue reporting.
             await FilterUpdateService.setLastUpdateTimeMs(dnrRulesetsBuildTimestampMs);
         } else {
             await FilterUpdateService.setLastUpdateTimeMs(Date.now());
@@ -86,6 +89,8 @@ export class FilterUpdateService {
     /**
      * Sets the last filters **update** (not just *check*) time in the storage
      * for version which supports diff updates, i.e. MV2.
+     * For MV3 this method is used only to record the last update time during
+     * issue reporting.
      *
      * @param timestampMs The timestamp in milliseconds.
      */
