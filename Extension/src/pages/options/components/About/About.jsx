@@ -65,13 +65,12 @@ const About = observer(() => {
                         {`Scriptlets v${libVersions.scriptlets}`}
                         <br />
                         {`ExtendedCss v${libVersions.extendedCss}`}
-                        {/* // TODO revert later AG-42086 */}
-                        {/* {libVersions.dnrRulesets && ( */}
-                        {/*     <> */}
-                        {/*         <br /> */}
-                        {/*         {`DNR-Rulesets v${libVersions.dnrRulesets}`} */}
-                        {/*     </> */}
-                        {/* )} */}
+                        {libVersions.dnrRulesets && (
+                            <>
+                                <br />
+                                {`DNR rulesets v${libVersions.dnrRulesets}`}
+                            </>
+                        )}
                     </p>
                 </div>
                 <div className="about__copyright">

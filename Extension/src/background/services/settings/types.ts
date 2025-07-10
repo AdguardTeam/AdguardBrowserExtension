@@ -72,6 +72,12 @@ export type GetOptionsDataResponse = {
          * Version of the ExtendedCss library.
          */
         extendedCss: string;
+
+        /**
+         * Version of the DNR-Rulesets library.
+         * Will be filled after extension will load metadata for DNR rulesets.
+         */
+        dnrRulesets?: string;
     };
 
     /**

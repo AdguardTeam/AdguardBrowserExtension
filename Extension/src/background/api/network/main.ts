@@ -344,7 +344,12 @@ export class Network {
             if (__IS_MV3__) {
                 const metadataRuleSet = MetadataRuleSet.deserialize(response.responseText);
                 // Filters metadata is stored as an additional property in the metadata ruleset.
-                metadata = metadataRuleSet.getAdditionalProperty('metadata');
+                const filtersMetadata = metadataRuleSet.getAdditionalProperty('metadata') || {};
+                metadata = {
+                    version: metadataRuleSet.getAdditionalProperty('version'),
+                    versionTimestampMs: metadataRuleSet.getAdditionalProperty('versionTimestampMs'),
+                    ...filtersMetadata,
+                };
             } else {
                 metadata = JSON.parse(response.responseText);
             }
