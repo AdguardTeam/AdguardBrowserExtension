@@ -10642,6 +10642,55 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "cf094940c140bb6a8015c9e1f15490f1" due to: ' + e);
         }
     },
+    '!function(){const e=e=>{const t=document.querySelector(".down-button");if(t&&t.textContent.includes("Continuar al enlace"))return;const o=new XMLHttpRequest;o.open("POST","/check.php",!0),o.setRequestHeader("Content-type","application/x-www-form-urlencoded"),o.send("a");const n=atob(window.ext_site).replace(/[a-z]/gi,(e=>String.fromCharCode(e.charCodeAt(0)+(e.toLowerCase()<="m"?13:-13))));let i=e.replaceAll(\'\\\\"\',\'"\');i=i.replace("\'+ api_key+ \'",window.api_key),i=i.replace("\'+ link_out+ \\"",window.link_out),i=i.replace(/action="\'\\+ .*?\\+ \'"/,`action="${n}"`);var a;const r=(a=i,(new DOMParser).parseFromString(a,"text/html")).querySelector("form"),c=new FormData(r),w=new XMLHttpRequest;w.open("POST",n,!0),w.send(c),window.tab2=window,postMessage("_clicked_b",location.origin)},t={apply:(t,o,n)=>{if(n[1]&&n[1].includes("api_key")){const t=window.link_out,o=window.api_key,i=n[1].match(/<form target=[\\s\\S]*?<\\/form>/)[0];if(n[1]=n[1].replace(/(setTimeout\\(function\\(\\)\\{)window\\[.\\[.\\]\\]\\[.\\[.*?\\]\\]= .*?(\\},3000)/,"$1$2"),n[1]=n[1].replace(/(window\\[).\\[\\d+\\](\\]\\(.\\(atob\\(main_site)/,\'$1"location"]["assign"$2\'),t&&o&&i)try{"loading"===document.readyState?window.addEventListener("load",(()=>{e(i)}),{once:!0}):e(i)}catch(e){console.debug(e)}}return Reflect.apply(t,o,n)}};window.Function.prototype.constructor=new Proxy(window.Function.prototype.constructor,t)}();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.ca77be71e26513295ae5e7edf2a6fb1a === e) return;
+            !function() {
+                const e = e => {
+                    const t = document.querySelector(".down-button");
+                    if (t && t.textContent.includes("Continuar al enlace")) return;
+                    const o = new XMLHttpRequest;
+                    o.open("POST", "/check.php", !0), o.setRequestHeader("Content-type", "application/x-www-form-urlencoded"), 
+                    o.send("a");
+                    const n = atob(window.ext_site).replace(/[a-z]/gi, (e => String.fromCharCode(e.charCodeAt(0) + (e.toLowerCase() <= "m" ? 13 : -13))));
+                    let r = e.replaceAll('\\"', '"');
+                    r = r.replace("'+ api_key+ '", window.api_key), r = r.replace("'+ link_out+ \"", window.link_out), 
+                    r = r.replace(/action="'\+ .*?\+ '"/, `action="${n}"`);
+                    var a;
+                    const i = (a = r, (new DOMParser).parseFromString(a, "text/html")).querySelector("form"), c = new FormData(i), d = new XMLHttpRequest;
+                    d.open("POST", n, !0), d.send(c), window.tab2 = window, postMessage("_clicked_b", location.origin);
+                }, t = {
+                    apply: (t, o, n) => {
+                        if (n[1] && n[1].includes("api_key")) {
+                            const t = window.link_out, o = window.api_key, r = n[1].match(/<form target=[\s\S]*?<\/form>/)[0];
+                            if (n[1] = n[1].replace(/(setTimeout\(function\(\)\{)window\[.\[.\]\]\[.\[.*?\]\]= .*?(\},3000)/, "$1$2"), 
+                            n[1] = n[1].replace(/(window\[).\[\d+\](\]\(.\(atob\(main_site)/, '$1"location"]["assign"$2'), 
+                            t && o && r) try {
+                                "loading" === document.readyState ? window.addEventListener("load", (() => {
+                                    e(r);
+                                }), {
+                                    once: !0
+                                }) : e(r);
+                            } catch (e) {
+                                console.debug(e);
+                            }
+                        }
+                        return Reflect.apply(t, o, n);
+                    }
+                };
+                window.Function.prototype.constructor = new Proxy(window.Function.prototype.constructor, t);
+            }();
+            Object.defineProperty(Window.prototype.toString, "ca77be71e26513295ae5e7edf2a6fb1a", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "ca77be71e26513295ae5e7edf2a6fb1a" due to: ' + e);
+        }
+    },
     '!function(){const e=e=>{const o=new XMLHttpRequest;o.open("POST","/check.php",!0),o.setRequestHeader("Content-type","application/x-www-form-urlencoded"),o.send("a");const t=atob(window.ext_site).replace(/[a-z]/gi,(e=>String.fromCharCode(e.charCodeAt(0)+(e.toLowerCase()<="m"?13:-13))));let n=e.replaceAll(\'\\\\"\',\'"\');n=n.replace("\'+ api_key+ \'",window.api_key),n=n.replace("\'+ link_out+ \\"",window.link_out),n=n.replace(/action="\'\\+ .*?\\+ \'"/,`action="${t}"`);var a;const i=(a=n,(new DOMParser).parseFromString(a,"text/html")).querySelector("form"),r=new FormData(i),c=new XMLHttpRequest;c.open("POST",t,!0),c.send(r),window.tab2=window,postMessage("_clicked_b",location.origin)},o={apply:(o,t,n)=>{if(n[1]&&n[1].includes("api_key")){const o=window.link_out,t=window.api_key,a=n[1].match(/window\\.open\\(.*?\\(atob\\(main_site\\)\\).*?("\\/.*\\.php\\?.*=").*?("&.*?=").*?(api_key),"view"/),i=a[1].replaceAll(\'"\',""),r=a[2].replaceAll(\'"\',""),c=n[1].match(/<form target=[\\s\\S]*?<\\/form>/)[0];if(n[1]=n[1].replace("window.location.href","var nulled"),n[1]=n[1].replace("window.open(f","location.assign(f"),n[1]=n[1].replace(/(parseInt\\(c\\.split\\("-"\\)\\[0\\]\\)<= 0).*?(\\)\\{)/,"$1$2"),o&&t&&i&&r&&c)try{"loading"===document.readyState?window.addEventListener("load",(()=>{e(c)}),{once:!0}):e(c)}catch(e){console.debug(e)}}return Reflect.apply(o,t,n)}};window.Function.prototype.constructor=new Proxy(window.Function.prototype.constructor,o)}();': () => {
         try {
             const e = "done";
