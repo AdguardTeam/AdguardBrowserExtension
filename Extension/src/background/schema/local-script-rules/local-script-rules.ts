@@ -17,7 +17,7 @@
  */
 import zod from 'zod';
 
-export const localScriptRulesValidator = zod.object({
+export const localScriptRulesValidatorMv2 = zod.object({
     /**
      * Contains a comment describing the purpose of the local script rules file.
      */
@@ -55,4 +55,23 @@ export const localScriptRulesValidator = zod.object({
  * Describes the structure of the local script rules file, which is necessary
  * for Firefox AMO to check if JS rules can be executed.
  */
-export type LocalScriptRules = zod.infer<typeof localScriptRulesValidator>;
+export type LocalScriptRulesMv2 = zod.infer<typeof localScriptRulesValidatorMv2>;
+
+export const localScriptRulesValidatorMv3 = zod.record(
+    /**
+     * Key is the cosmetic rule body.
+     */
+    zod.string(),
+
+    /**
+     * Value is the function itself, which is used to check if the rule can be
+     * executed.
+     */
+    zod.string(),
+);
+
+/**
+ * Describes the structure of the local script rules object, which is necessary
+ * for CWS, when user has not enabled "Allow user scripts" option.
+ */
+export type LocalScriptRulesMv3 = zod.infer<typeof localScriptRulesValidatorMv3>;

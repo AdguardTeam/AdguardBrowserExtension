@@ -15,4 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { localScriptRulesValidator, type LocalScriptRules } from './local-script-rules';
+export {
+    localScriptRulesValidatorMv2,
+    localScriptRulesValidatorMv3,
+    type LocalScriptRulesMv2,
+    type LocalScriptRulesMv3,
+} from './local-script-rules';

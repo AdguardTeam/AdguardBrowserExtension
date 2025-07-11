@@ -76,7 +76,7 @@ export class Engine implements TsWebExtensionEngine {
          *    This way filters maintainers can test new rules before including them in the filters.
          */
         if (IS_FIREFOX_AMO) {
-            const localScriptRules = await network.getLocalScriptRules();
+            const localScriptRules = await network.getLocalScriptRulesMv2();
 
             this.api.setLocalScriptRules(localScriptRules);
         }

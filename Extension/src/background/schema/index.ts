@@ -98,7 +98,12 @@ export {
     type CustomFilterMetadataStorageData,
 } from './custom-filter-metadata';
 
-export { localScriptRulesValidator, type LocalScriptRules } from './local-script-rules';
+export {
+    localScriptRulesValidatorMv2,
+    localScriptRulesValidatorMv3,
+    type LocalScriptRulesMv2,
+    type LocalScriptRulesMv3,
+} from './local-script-rules';
 
 export { notificationTextRecordValidator, type NotificationTextRecord } from './notification';
 

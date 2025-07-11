@@ -35,10 +35,12 @@ import { UserAgent } from '../../../common/user-agent';
 import {
     type Metadata,
     type I18nMetadata,
-    type LocalScriptRules,
+    type LocalScriptRulesMv2,
+    type LocalScriptRulesMv3,
     metadataValidator,
     i18nMetadataValidator,
-    localScriptRulesValidator,
+    localScriptRulesValidatorMv2,
+    localScriptRulesValidatorMv3,
 } from '../../schema';
 import { type FilterUpdateOptions } from '../filters';
 import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
@@ -395,14 +397,14 @@ export class Network {
     }
 
     /**
-     * Loads script rules from local file.
+     * Loads script rules from local file for MV2.
      * This method should be called only in the Firefox AMO.
      *
      * @returns Array of string script rules.
      *
      * @throws Error if metadata is invalid.
      */
-    public async getLocalScriptRules(): Promise<LocalScriptRules> {
+    public async getLocalScriptRulesMv2(): Promise<LocalScriptRulesMv2> {
         const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/local_script_rules.json`);
 
         let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
@@ -421,8 +423,51 @@ export class Network {
         try {
             const localScriptRules = JSON.parse(response.responseText);
 
-            return localScriptRulesValidator.parse(localScriptRules);
+            return localScriptRulesValidatorMv2.parse(localScriptRules);
         } catch (e: unknown) {
+            throw Network.createError('invalid response', url, response, e instanceof Error ? e : undefined);
+        }
+    }
+
+    /**
+     * Loads script rules from local file for MV3.
+     *
+     * For MV3, the filters metadata is stored in the metadata ruleset.
+     * The reason for this is that it allows us to perform extension updates
+     * where only the JSON files of the rulesets are changed.
+     *
+     * @returns Object of {@link LocalScriptRulesMv3}.
+     */
+    public async getLocalScriptRulesMv3(): Promise<LocalScriptRulesMv3> {
+        const metadataRuleSetPath = getRuleSetPath(
+            METADATA_RULESET_ID,
+            `${this.settings.localFiltersFolder}/declarative`,
+        );
+        const url = browser.runtime.getURL(metadataRuleSetPath);
+
+        let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
+
+        try {
+            response = await Network.fetchJson(url);
+        } catch (e: unknown) {
+            const exMessage = e instanceof Error ? e.message : 'could not load local local script rules';
+            throw Network.createError(exMessage, url);
+        }
+
+        if (!response?.responseText) {
+            throw Network.createError('empty response', url, response);
+        }
+
+        try {
+            const metadataRuleSet = MetadataRuleSet.deserialize(response.responseText);
+
+            // Local script rules is stored as an additional property in the metadata ruleset.
+            const localScriptRules = metadataRuleSet.getAdditionalProperty('localScriptRules') || {};
+
+            return localScriptRulesValidatorMv3.parse(localScriptRules);
+        } catch (e: unknown) {
+            // TODO: Return regular error
+            // TODO: Zod error doesn't display
             throw Network.createError('invalid response', url, response, e instanceof Error ? e : undefined);
         }
     }
