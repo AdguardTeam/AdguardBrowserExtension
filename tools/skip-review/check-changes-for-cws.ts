@@ -453,7 +453,7 @@ const checkFileDiffForSignificantChanges = async (
 
             // Special exclusions for manifest.json: `version` and `update_url`
             // fields.
-            if (filePath.endsWith('manifest.json')) {
+            if (filePath.endsWith(MANIFEST_FILE_NAME)) {
                 const lines = diffText.split('\n');
                 const filtered: string[] = [];
 
