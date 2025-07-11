@@ -386,30 +386,38 @@ const ensureOnlyRulesetsChanged = async (
     // Check that only rule_resources files changed (using system diff).
     const changedFiles = await getChangedFiles(oldDir, newDir);
     for (const filePath of changedFiles) {
+        // Ignore rulesets which specified in the package.json, because they are
+        // allowed to change.
         if (Array.from(rulesetsPaths).some((p) => filePath.endsWith(p))) {
             continue;
         }
-        await printExternalFileDiff(filePath, oldDir, newDir);
-        changedOnlyRulesets = false;
+
+        // Every other file should be checked.
+        const res = await checkFileDiffForSignificantChanges(filePath, oldDir, newDir);
+        if (!res) {
+            changedOnlyRulesets = false;
+        }
     }
+
     if (!changedOnlyRulesets) {
         throw new Error('❌ Files outside rule_resources were changed!');
     }
+
     console.log('✅ Only rule_resources files changed');
 };
 
 /**
- * Print and show diff for a file changed outside rule_resources.
+ * Checks the diff of a file outside rule_resources and prints it.
  *
  * @param filePath Relative path to the changed file.
  * @param oldDir Path to the old directory.
  * @param newDir Path to the new directory.
  */
-const printExternalFileDiff = async (
+const checkFileDiffForSignificantChanges = async (
     filePath: string,
     oldDir: string,
     newDir: string,
-) => {
+): Promise<boolean> => {
     const relativeFilePath = path.relative(oldDir, filePath);
     const oldFile = path.join(oldDir, relativeFilePath);
     const newFile = path.join(newDir, relativeFilePath);
@@ -441,7 +449,52 @@ const printExternalFileDiff = async (
                 diff.on('error', reject);
             });
 
-            console.log(diffResult.trim());
+            let diffText = diffResult.trim();
+
+            // Special exclusions for manifest.json: `version` and `update_url`
+            // fields.
+            if (filePath.endsWith('manifest.json')) {
+                const lines = diffText.split('\n');
+                const filtered: string[] = [];
+
+                // Cannot use .filter() here, because we need to skip next line
+                // if it is empty or just whitespace.
+                for (let i = 0; i < lines.length; i += 1) {
+                    const line = lines[i];
+
+                    // Skip empty lines
+                    if (!line) {
+                        continue;
+                    }
+
+                    // Exclude -"update_url": ... and the next line if it's empty
+                    // or just whitespace, which actually inserted by CWS after
+                    // publishing the extension.
+                    if (/^-\s*"update_url":/.test(line)) {
+                        const nextLine = lines[i + 1] ?? '';
+                        if (i + 1 < lines.length && /^[-+]\s*$/.test(nextLine)) {
+                            i += 1; // skip next line if it's a diff empty line
+                        }
+                        continue;
+                    }
+
+                    // Exclude `version` field changes.
+                    if (/^[-+]\s*"version":/.test(line)) {
+                        continue;
+                    }
+
+                    filtered.push(line);
+                }
+                diffText = filtered.join('\n');
+            }
+
+            // Changes were only in `version` or `update_url`
+            // or no changes at all.
+            if (diffText.trim() === '') {
+                return false;
+            }
+
+            console.log(diffText);
         } catch (e) {
             console.log('[Error running diff]');
         }
@@ -452,6 +505,8 @@ const printExternalFileDiff = async (
     } else {
         console.log(`[File missing in both]: old "${oldFile}", new "${newFile}", filePath "${filePath}"`);
     }
+
+    return true;
 };
 
 /**
