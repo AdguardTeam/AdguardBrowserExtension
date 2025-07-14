@@ -18,6 +18,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { spawn } from 'node:child_process';
 
 import { Command } from 'commander';
@@ -31,6 +32,11 @@ import { isSafeRule } from '@adguard/tsurlfilter/es/declarative-converter-utils'
  * Name of the manifest file.
  */
 const MANIFEST_FILE_NAME = 'manifest.json';
+
+/**
+ * Name of the _metadata folder in Chrome Web Store, should be ignored.
+ */
+const CWS_METADATA_FOLDER_NAME = '_metadata';
 
 /**
  * Read and parse JSON file.
@@ -299,12 +305,14 @@ const checkRuleResources = (
 };
 
 /**
- * Get the set of changed files between two directories using system diff.
+ * Get the set of changed files between two directories using system diff
+ * or between two files.
  *
- * @param oldDir Path to the old directory.
- * @param newDir Path to the new directory.
+ * @param oldDir Path to the old directory or file.
+ * @param newDir Path to the new directory or file.
  *
- * @returns Set of relative file paths that differ between the two directories.
+ * @returns Set of relative file paths that differ between the two directories
+ * or files.
  */
 const getChangedFiles = (oldDir: string, newDir: string): Promise<Set<string>> => {
     return new Promise((resolve, reject) => {
@@ -386,16 +394,81 @@ const ensureOnlyRulesetsChanged = async (
     // Check that only rule_resources files changed (using system diff).
     const changedFiles = await getChangedFiles(oldDir, newDir);
     for (const filePath of changedFiles) {
+        // Ignore rulesets which specified in the package.json, because they are
+        // allowed to change.
         if (Array.from(rulesetsPaths).some((p) => filePath.endsWith(p))) {
             continue;
         }
+
+        // Ignore CWS metadata folder, it is added by CWS after publishing.
+        if (filePath.startsWith(CWS_METADATA_FOLDER_NAME)) {
+            continue;
+        }
+
+        // Special case for manifest.json, we need to check only `version`
+        // and `update_url` fields, because CWS adds `update_url` after
+        // publishing the extension, so it will always differ.
+        if (filePath.endsWith(MANIFEST_FILE_NAME)) {
+            const manifestChanged = await checkManifestForSignificantChanges(filePath, oldDir, newDir);
+
+            if (!manifestChanged) {
+                continue;
+            }
+        }
+
+        // Every other file should be checked.
         await printExternalFileDiff(filePath, oldDir, newDir);
         changedOnlyRulesets = false;
     }
+
     if (!changedOnlyRulesets) {
         throw new Error('❌ Files outside rule_resources were changed!');
     }
+
     console.log('✅ Only rule_resources files changed');
+};
+
+/**
+ * Checks the manifest.json for significant changes: without `version`, since it
+ * is always different, and without `update_url`, since it is added by CWS.
+ *
+ * @param filePath Relative path to the manifest file.
+ * @param oldDir Path to the old directory.
+ * @param newDir Path to the new directory.
+ *
+ * @returns Promise that resolves to true if significant changes were found.
+ */
+const checkManifestForSignificantChanges = async (
+    filePath: string,
+    oldDir: string,
+    newDir: string,
+): Promise<boolean> => {
+    const relativeFilePath = path.relative(oldDir, filePath);
+    const oldFile = path.join(oldDir, relativeFilePath);
+    const newFile = path.join(newDir, relativeFilePath);
+
+    const oldManifest = readJson(oldFile);
+    const newManifest = readJson(newFile);
+
+    // Delete `version` since it is always different.
+    delete oldManifest.version;
+    // Delete `version` since it is always different.
+    delete newManifest.version;
+
+    // Delete `update_url` since it is added by CWS after publishing.
+    delete oldManifest.update_url;
+
+    const systemTmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'cws-check-manifest-'));
+
+    const oldManifestTmpPath = path.join(systemTmpDir, 'old_manifest.json');
+    const newManifestTmpPath = path.join(systemTmpDir, 'new_manifest.json');
+
+    await fs.promises.writeFile(oldManifestTmpPath, JSON.stringify(oldManifest));
+    await fs.promises.writeFile(newManifestTmpPath, JSON.stringify(newManifest));
+
+    const changedLines = await getChangedFiles(oldManifestTmpPath, newManifestTmpPath);
+
+    return changedLines.size > 0;
 };
 
 /**
@@ -414,7 +487,10 @@ const printExternalFileDiff = async (
     const oldFile = path.join(oldDir, relativeFilePath);
     const newFile = path.join(newDir, relativeFilePath);
 
-    console.log(`❌ Detected changes outside rule_resources, diff between "${oldFile}" and "${newFile}"`);
+    console.log(`❌ Detected changes outside rule_resources, diff between "${oldFile}" and "${newFile}":`);
+    if (relativeFilePath.endsWith(MANIFEST_FILE_NAME)) {
+        console.log('❌ Please ignore changes in `version` and `update_url` fields, they are expected.');
+    }
 
     if (fs.existsSync(oldFile) && fs.existsSync(newFile)) {
         // Both files exist, show diff
@@ -441,7 +517,7 @@ const printExternalFileDiff = async (
                 diff.on('error', reject);
             });
 
-            console.log(diffResult.trim());
+            console.log('[File changed]\n', diffResult.trim());
         } catch (e) {
             console.log('[Error running diff]');
         }
