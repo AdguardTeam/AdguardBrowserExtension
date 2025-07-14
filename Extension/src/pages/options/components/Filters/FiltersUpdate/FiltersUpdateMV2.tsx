@@ -58,7 +58,7 @@ const FiltersUpdateMV2 = observer(() => {
             >
                 {filtersUpdating
                     ? translator.getMessage('options_check_update_progress')
-                    : translator.getMessage('options_check_update')}
+                    : translator.getMessage('update_check')}
             </button>
         </div>
     );

@@ -19,10 +19,9 @@
 import React from 'react';
 
 import { translator } from '../../../../common/translators/translator';
-import { Icon } from '../../../common/components/ui/Icon';
 import { messenger } from '../../../services/messenger';
 
-import { Notification } from './Notification';
+import { Notification, NotificationType } from './Notification';
 
 import './notification.pcss';
 
@@ -38,15 +37,10 @@ export const RuleLimitsNotification = () => {
 
     return (
         <Notification
-            icon={(
-                <Icon
-                    id="#info"
-                    classname="icon--24 icon--red-default"
-                />
-            )}
-            title={translator.getMessage('popup_limits_exceeded_warning')}
+            type={NotificationType.Error}
+            text={translator.getMessage('popup_limits_exceeded_warning')}
             button={{
-                text: translator.getMessage('options_rule_limits'),
+                title: translator.getMessage('options_rule_limits'),
                 onClick: handleRuleLimitsClick,
             }}
         />

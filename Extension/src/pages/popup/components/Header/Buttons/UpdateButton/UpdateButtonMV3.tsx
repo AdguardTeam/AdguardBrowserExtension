@@ -37,7 +37,6 @@ export const UpdateButtonMV3 = observer(() => {
         if (!__IS_MV3__) {
             throw new Error('Extension update is not supported in MV2');
         }
-
         await checkUpdatesMV3();
     };
 
@@ -55,7 +54,7 @@ export const UpdateButtonMV3 = observer(() => {
                 disabled={!isUpdateAvailable}
                 type="button"
                 onClick={handleUpdateExtensionClick}
-                title={translator.getMessage('options_updates_available_title')}
+                title={translator.getMessage('update_available_title')}
             >
                 <Icon
                     id="#update-available"
@@ -67,6 +66,7 @@ export const UpdateButtonMV3 = observer(() => {
     }
 
     const isCheckingUpdate = updateState === ExtensionUpdateState.Checking;
+    const isUpdating = updateState === ExtensionUpdateState.Updating;
 
     return (
         <>
@@ -75,21 +75,21 @@ export const UpdateButtonMV3 = observer(() => {
                 className="sr-only"
                 aria-live="assertive"
                 tabIndex={-1}
-                aria-hidden={!isCheckingUpdate}
+                aria-hidden={!isCheckingUpdate && !isUpdating}
             >
-                {isCheckingUpdate ? translator.getMessage('options_checking_for_updates_in_progress') : ''}
+                {isCheckingUpdate || isUpdating ? translator.getMessage('update_checking_in_progress') : ''}
             </div>
             <button
                 className="button popup-header__button"
-                disabled={isCheckingUpdate}
+                disabled={isCheckingUpdate || isUpdating}
                 type="button"
                 onClick={handleCheckUpdatesClick}
-                title={translator.getMessage('options_check_update')}
+                title={translator.getMessage('update_check')}
             >
                 <Icon
                     id="#reload"
                     classname="icon--24 icon--header"
-                    animationCondition={isCheckingUpdate}
+                    animationCondition={isCheckingUpdate || isUpdating}
                     animationClassname="icon--loading"
                     aria-hidden="true"
                 />

@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import classnames from 'classnames';
 
@@ -24,31 +24,69 @@ import { Icon } from '../../../common/components/ui/Icon';
 
 import './notification.pcss';
 
-type NotificationProps = {
+/**
+ * Notification type.
+ */
+export enum NotificationType {
     /**
-     * Icon component for the notification.
+     * Notification type for loading state. The icon should be animated.
      */
-    icon: React.ReactNode;
+    Loading,
 
     /**
-     * Title of the notification.
+     * Notification type for success state.
      */
-    title: string;
+    Success,
+
+    /**
+     * Notification type for error state.
+     */
+    Error,
+}
+
+export type NotificationParams = {
+    /**
+     * Notification type
+     */
+    type: NotificationType;
+
+    /**
+     * Animation condition for the icon. If not specified, the icon will not be animated.
+     */
+    animationCondition?: boolean;
+
+    /**
+     * Text of the notification.
+     */
+    text: string;
 
     /**
      * Button to be shown in the notification, optional.
      */
     button?: {
         /**
-         * Text of the button.
+         * Title of the button.
          */
-        text: string;
+        title: string;
 
         /**
          * Click handler for the button.
          */
         onClick: () => void;
     };
+
+    /**
+     * Flag to close notification manually.
+     *
+     * If set, the notification should be closed manually.
+     * Otherwise, the notification will be closed automatically (on timeout).
+     */
+    closeManually?: boolean;
+
+    /**
+     * Custom close button handler.
+     */
+    onCloseHandler?: () => void;
 };
 
 /**
@@ -59,10 +97,13 @@ type NotificationProps = {
  * of application with filters.
  */
 export const Notification = ({
-    icon,
-    title,
+    type,
+    animationCondition,
+    text,
     button,
-}: NotificationProps) => {
+    closeManually,
+    onCloseHandler,
+}: NotificationParams) => {
     const [notificationClosing, setNotificationClosing] = useState(false);
     // We save the state "close" of the notification in local state to show it
     // again until user has not fixed list of filters.
@@ -75,31 +116,84 @@ export const Notification = ({
     );
 
     // Timeout for closing the notification, same as in the styles animation.
-    const closeTimeoutMs = 300;
+    const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
+
+    const NOTIFICATION_TTL_MS = 4000;
+
+    useEffect(() => {
+        const closeTimeout = setTimeout(() => {
+            if (!closeManually) {
+                setNotificationClosing(true);
+            }
+        }, NOTIFICATION_TTL_MS);
+
+        const removeTimeout = setTimeout(() => {
+            if (!closeManually) {
+                setNotificationClosed(true);
+            }
+        }, NOTIFICATION_TTL_MS + TIME_TO_REMOVE_NOTIFICATION_MS);
+
+        return () => {
+            clearTimeout(closeTimeout);
+            clearTimeout(removeTimeout);
+        };
+    }, [closeManually]);
 
     const handleCloseClick = () => {
+        if (onCloseHandler) {
+            onCloseHandler();
+        }
+
         setNotificationClosing(true);
 
         setTimeout(() => {
             setNotificationClosed(true);
-        }, closeTimeoutMs);
+        }, TIME_TO_REMOVE_NOTIFICATION_MS);
+    };
+
+    const iconsMap = {
+        [NotificationType.Loading]: (
+            <Icon
+                id="#loading"
+                classname="icon--24 icon--green-default"
+                animationClassname="icon--loading"
+                animationCondition={animationCondition}
+                aria-hidden="true"
+            />
+        ),
+        [NotificationType.Success]: (
+            <Icon
+                id="#tick"
+                classname="icon--24 icon--green-default"
+                aria-hidden="true"
+            />
+        ),
+        [NotificationType.Error]: (
+            <Icon
+                id="#info"
+                classname="icon--24 icon--red-default"
+                aria-hidden="true"
+            />
+        ),
     };
 
     return (
         <div className={notificationClassnames}>
-            {icon}
-            <div className="notification__content">
-                <p>
-                    {title}
-                </p>
-                {button && (
-                    <button
-                        type="button"
-                        onClick={button.onClick}
-                    >
-                        {button.text}
-                    </button>
-                )}
+            <div className="notification__wrapper">
+                {iconsMap[type]}
+                <div className="notification__content">
+                    <p>
+                        {text}
+                    </p>
+                    {button && (
+                        <button
+                            type="button"
+                            onClick={button.onClick}
+                        >
+                            {button.title}
+                        </button>
+                    )}
+                </div>
             </div>
             <button
                 aria-label="close"

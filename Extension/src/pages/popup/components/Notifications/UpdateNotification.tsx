@@ -17,9 +17,8 @@
  */
 
 import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
 
-import { translator } from '../../../../common/translators/translator';
-import { Icon } from '../../../common/components/ui/Icon';
 import { popupStore } from '../../stores/PopupStore';
 
 import { Notification } from './Notification';
@@ -30,28 +29,34 @@ import './notification.pcss';
  * The component needed to show a notification about the rule limits
  * exceeded in popup.
  */
-export const UpdateNotification = () => {
+export const UpdateNotification = observer(() => {
     const store = useContext(popupStore);
 
-    const { checkUpdatesMV3 } = store;
+    const { updateNotification } = store;
 
-    const handleTryAgainClick = async () => {
-        await checkUpdatesMV3();
-    };
+    // console.log('updateNotification', updateNotification);
+
+    if (!updateNotification) {
+        return null;
+    }
+
+    const {
+        type,
+        animationCondition,
+        text,
+        button,
+        onCloseHandler,
+        closeManually,
+    } = updateNotification;
 
     return (
         <Notification
-            icon={(
-                <Icon
-                    id="#info"
-                    classname="icon--24 icon--red-default"
-                />
-            )}
-            title={translator.getMessage('popup_limits_exceeded_warning')}
-            button={{
-                text: translator.getMessage('options_rule_limits'),
-                onClick: handleTryAgainClick,
-            }}
+            type={type}
+            animationCondition={animationCondition}
+            text={text}
+            button={button}
+            onCloseHandler={onCloseHandler}
+            closeManually={closeManually}
         />
     );
-};
+});

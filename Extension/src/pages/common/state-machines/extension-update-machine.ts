@@ -50,6 +50,11 @@ export const enum ExtensionUpdateState {
      * It means that the extension is already up-to-date.
      */
     NotAvailable = 'NotAvailable',
+
+    /**
+     * Update failed state.
+     */
+    UpdateFailed = 'UpdateFailed',
 }
 
 /**
@@ -85,6 +90,11 @@ export const enum ExtensionUpdateEvent {
      * Event for successful update.
      */
     UpdateSuccess = 'UpdateSuccess',
+
+    /**
+     * Event for transition to idle state.
+     */
+    Idle = 'Idle',
 }
 
 /**
@@ -98,6 +108,8 @@ const EXTENSION_UPDATE_MACHINE_ID = 'extensionUpdate';
 
 const MIN_DELAY_MS = 1;
 
+const NOTIFICATION_DELAY_MS = 2 * 1000;
+
 /**
  * Extension update state machine.
  */
@@ -105,6 +117,7 @@ const extensionUpdateMachine = setup({
     types: {} as { events: EventType },
     delays: {
         MIN_DELAY: MIN_DELAY_MS,
+        NOTIFICATION_DELAY: NOTIFICATION_DELAY_MS,
     },
 }).createMachine({
     id: EXTENSION_UPDATE_MACHINE_ID,
@@ -133,6 +146,15 @@ const extensionUpdateMachine = setup({
                 },
             },
         },
+        // FIXME: check how it works, consider removing
+        // transition state, needed to show a notification
+        [ExtensionUpdateState.NotAvailable]: {
+            after: {
+                NOTIFICATION_DELAY: {
+                    target: ExtensionUpdateState.Idle,
+                },
+            },
+        },
         [ExtensionUpdateState.Available]: {
             on: {
                 [ExtensionUpdateEvent.Update]: {
@@ -143,15 +165,16 @@ const extensionUpdateMachine = setup({
         [ExtensionUpdateState.Updating]: {
             on: {
                 [ExtensionUpdateEvent.UpdateFailed]: {
-                    target: ExtensionUpdateState.Idle,
+                    target: ExtensionUpdateState.UpdateFailed,
                 },
             },
         },
-        // transition state, needed to show a notification
-        // FIXME: consider removing this state
-        [ExtensionUpdateState.NotAvailable]: {
-            after: {
-                MIN_DELAY: {
+        [ExtensionUpdateState.UpdateFailed]: {
+            on: {
+                [ExtensionUpdateEvent.Check]: {
+                    target: ExtensionUpdateState.Checking,
+                },
+                [ExtensionUpdateEvent.Idle]: {
                     target: ExtensionUpdateState.Idle,
                 },
             },

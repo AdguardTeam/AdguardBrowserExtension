@@ -17,21 +17,29 @@
  */
 
 import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
 
 import { popupStore } from '../../stores/PopupStore';
 
 import { RuleLimitsNotification } from './RuleLimitsNotification';
 import { UpdateNotification } from './UpdateNotification';
 
-export const Notifications = () => {
+export const Notifications = observer(() => {
     const store = useContext(popupStore);
 
-    const { areFilterLimitsExceeded, showUpdateRelatedNotification } = store;
+    // const { areFilterLimitsExceeded, updateNotification } = store;
+    const { areFilterLimitsExceeded } = store;
 
-    return (
-        <>
-            {areFilterLimitsExceeded && <RuleLimitsNotification />}
-            {showUpdateRelatedNotification && <UpdateNotification />}
-        </>
-    );
-};
+    // rule limits notification is more important
+    if (areFilterLimitsExceeded) {
+        return <RuleLimitsNotification />;
+    }
+
+    // if (updateNotification) {
+    //     return <UpdateNotification />;
+    // }
+
+    // return null;
+
+    return <UpdateNotification />;
+});

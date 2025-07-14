@@ -713,7 +713,7 @@ class SettingsStore {
             if (!isExtensionUpdateAvailable) {
                 const uiStore = this.rootStore.uiStore;
                 uiStore.addNotification({
-                    description: translator.getMessage('options_update_not_needed_notification_desc'),
+                    description: translator.getMessage('update_not_needed'),
                     type: NotificationType.SUCCESS,
                 });
             }
@@ -734,9 +734,9 @@ class SettingsStore {
                 const uiStore = this.rootStore.uiStore;
 
                 uiStore.addNotification({
-                    description: translator.getMessage('options_update_failed_notification_desc'),
+                    description: translator.getMessage('update_failed_text'),
                     extra: {
-                        link: translator.getMessage('options_update_failed_notification_try_again_btn'),
+                        link: translator.getMessage('update_failed_try_again_btn'),
                         onClick: this.checkUpdatesMV3,
                     },
                     type: NotificationType.ERROR,

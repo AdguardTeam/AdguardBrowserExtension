@@ -46,14 +46,15 @@ import {
     AppStateEvent,
 } from '../state-machines/app-state-machine';
 import {
-    extensionUpdateActor,
+    ExtensionUpdateState,
     ExtensionUpdateEvent,
+    extensionUpdateActor,
     setActorInitState,
-    type ExtensionUpdateState,
 } from '../../common/state-machines/extension-update-machine';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 import { UserAgent } from '../../../common/user-agent';
+import { NotificationType, type NotificationParams } from '../components/Notifications/Notification';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -69,11 +70,6 @@ type CategoryBlockedStatsInfo = {
 
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
-
-/**
- * Notification TTL in milliseconds.
- */
-const NOTIFICATION_TTL_MS = 4000;
 
 class PopupStore {
     TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
@@ -187,6 +183,12 @@ class PopupStore {
                 this.appState = state.value;
             });
         });
+
+        extensionUpdateActor.subscribe((state) => {
+            runInAction(() => {
+                this.updateState = state.value;
+            });
+        });
     }
 
     /**
@@ -292,6 +294,7 @@ class PopupStore {
 
             this.setAppActorInitState();
 
+            // FIXME: check if needed
             setActorInitState(isExtensionUpdateAvailable);
         });
     };
@@ -604,25 +607,24 @@ class PopupStore {
         return this.settings.values[this.settings.names.AppearanceTheme];
     }
 
-    @action
-    setShowNoExtensionUpdateNotification(value: boolean) {
-        this.showNoExtensionUpdateNotification = value;
-    }
-
+    /**
+     * Checks for updates and if update is available, starts the update process.
+     *
+     * Note:
+     * This behavior is different on options page
+     * where two separate clicks are required
+     * to check for updates and start the update process.
+     */
     @action
     async checkUpdatesMV3() {
         const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
 
         if (isExtensionUpdateAvailable) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
+            this.updateExtensionMV3();
         } else {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
-            this.setShowNoExtensionUpdateNotification(true);
-            // show 'no update' notification temporarily
-            // FIXME: implement notification showing
-            setTimeout(() => {
-                this.setShowNoExtensionUpdateNotification(false);
-            }, NOTIFICATION_TTL_MS);
+            // FIXME: check the notification for this case
         }
     }
 
@@ -635,14 +637,53 @@ class PopupStore {
         if (isSuccessfulUpdate) {
             // FIXME: consider opening popup with success notification after it
         } else {
-            // set to false to force another check
-            // FIXME: show 'update failed' notification
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
         }
     }
 
-    get showUpdateRelatedNotification(): boolean {
-        // FIXME: rely on the update state
-        return this.showNoExtensionUpdateNotification;
+    /**
+     * Update notification to show.
+     */
+    get updateNotification(): NotificationParams | null {
+        switch (this.updateState) {
+            case ExtensionUpdateState.Checking: {
+                return {
+                    type: NotificationType.Loading,
+                    animationCondition: true,
+                    text: translator.getMessage('update_checking_in_progress'),
+                };
+            }
+            case ExtensionUpdateState.NotAvailable: {
+                return {
+                    type: NotificationType.Success,
+                    text: translator.getMessage('update_not_needed'),
+                };
+            }
+            case ExtensionUpdateState.Updating: {
+                return {
+                    type: NotificationType.Loading,
+                    animationCondition: true,
+                    text: translator.getMessage('update_installing_in_progress_title'),
+                };
+            }
+            case ExtensionUpdateState.UpdateFailed: {
+                return {
+                    type: NotificationType.Error,
+                    text: translator.getMessage('update_failed_text'),
+                    button: {
+                        title: translator.getMessage('update_failed_try_again_btn'),
+                        onClick: this.checkUpdatesMV3,
+                    },
+                    closeManually: true,
+                    onCloseHandler: () => {
+                        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Idle });
+                    },
+                };
+            }
+            default: {
+                return null;
+            }
+        }
     }
 }
 

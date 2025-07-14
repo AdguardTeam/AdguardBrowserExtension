@@ -19,7 +19,7 @@
 /**
  * Time duration for showing update state change. Needed for smoother user experience.
  */
-export const MIN_UPDATE_DISPLAY_DURATION_MS = 2000;
+export const MIN_UPDATE_DISPLAY_DURATION_MS = 2 * 1000;
 
 export const MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS = 1500;
 

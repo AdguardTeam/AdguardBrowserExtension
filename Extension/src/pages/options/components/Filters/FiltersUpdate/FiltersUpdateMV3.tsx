@@ -78,7 +78,7 @@ const FiltersUpdateMV3 = observer(() => {
         await settingsStore.updateExtensionMV3();
     };
 
-    const checkUpdatesTitle = translator.getMessage('options_check_update');
+    const checkUpdatesTitle = translator.getMessage('update_check');
 
     const CheckUpdatesBlock = (
         <button
@@ -111,13 +111,13 @@ const FiltersUpdateMV3 = observer(() => {
             />
             <div className="extension-update__text">
                 <div className="extension-update__title">
-                    {translator.getMessage('options_checking_for_updates_in_progress')}
+                    {translator.getMessage('update_checking_in_progress')}
                 </div>
             </div>
         </div>
     );
 
-    const updateAvailableBtnTitle = translator.getMessage('options_updates_available_update_btn');
+    const updateAvailableBtnTitle = translator.getMessage('update_available_update_btn');
 
     const UpdatesAvailableBlock = (
         <>
@@ -129,10 +129,10 @@ const FiltersUpdateMV3 = observer(() => {
                 />
                 <div className="extension-update__text">
                     <div className="extension-update__title">
-                        {translator.getMessage('options_updates_available_title')}
+                        {translator.getMessage('update_available_title')}
                     </div>
                     <div className="extension-update__desc">
-                        {translator.getMessage('options_updates_available_desc')}
+                        {translator.getMessage('update_available_desc')}
                     </div>
                 </div>
             </div>
@@ -160,10 +160,10 @@ const FiltersUpdateMV3 = observer(() => {
             />
             <div className="extension-update__text">
                 <div className="extension-update__title">
-                    {translator.getMessage('options_updates_installing_in_progress_title')}
+                    {translator.getMessage('update_installing_in_progress_title')}
                 </div>
                 <div className="extension-update__desc">
-                    {translator.getMessage('options_updates_installing_in_progress_desc')}
+                    {translator.getMessage('update_installing_in_progress_desc')}
                 </div>
             </div>
         </div>
@@ -175,6 +175,7 @@ const FiltersUpdateMV3 = observer(() => {
         [ExtensionUpdateState.Available]: UpdatesAvailableBlock,
         [ExtensionUpdateState.Updating]: UpdatesInstallingInProgressBlock,
         [ExtensionUpdateState.NotAvailable]: CheckUpdatesBlock,
+        [ExtensionUpdateState.UpdateFailed]: CheckUpdatesBlock,
     };
 
     return (
