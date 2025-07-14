@@ -16,11 +16,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
-import { Icon } from '../../../../common/components/ui/Icon';
+import { NotifierType } from '../../../../../common/constants';
+import { logger } from '../../../../../common/logger';
 import { translator } from '../../../../../common/translators/translator';
+import { Icon } from '../../../../common/components/ui/Icon';
+import { ExtensionUpdateState } from '../../../../common/state-machines/extension-update-machine';
+import { messenger } from '../../../../services/messenger';
 import { rootStore } from '../../../stores/RootStore';
 
 import './filters-update.pcss';
@@ -28,11 +32,43 @@ import './filters-update.pcss';
 const FiltersUpdateMV3 = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
-    const {
-        filtersUpdating,
-        extensionUpdateAvailable,
-        extensionUpdating,
-    } = settingsStore;
+    const { extensionUpdateState } = settingsStore;
+
+    useEffect(() => {
+        let removeListenerCallback = () => {};
+
+        const subscribeToMessages = async () => {
+            const events = [
+                NotifierType.ExtensionUpdateIsAvailable,
+            ];
+
+            removeListenerCallback = await messenger.createEventListener(
+                events,
+                async (message) => {
+                    const { type } = message;
+
+                    switch (type) {
+                        case NotifierType.ExtensionUpdateIsAvailable: {
+                            await settingsStore.requestOptionsData();
+                            break;
+                        }
+                        default: {
+                            logger.warn('[ext.FiltersUpdateMV3]: Undefined message type:', type);
+                            break;
+                        }
+                    }
+                },
+            );
+        };
+
+        (async () => {
+            await subscribeToMessages();
+        })();
+
+        return () => {
+            removeListenerCallback();
+        };
+    }, [settingsStore]);
 
     const checkClickHandler = async () => {
         await settingsStore.checkUpdatesMV3();
@@ -42,36 +78,34 @@ const FiltersUpdateMV3 = observer(() => {
         await settingsStore.updateExtensionMV3();
     };
 
-    const getCheckUpdatesBlock = () => {
-        const title = translator.getMessage('options_check_update');
+    const checkUpdatesTitle = translator.getMessage('options_check_update');
 
-        return (
-            <button
-                type="button"
-                onClick={checkClickHandler}
-                className="extension-update__info extension-update__check-btn"
-                title={title}
-            >
-                <Icon
-                    id="#reload"
-                    classname="icon--24 icon--green-default"
-                    aria-hidden="true"
-                />
-                <div className="extension-update__text">
-                    <div className="extension-update__title">
-                        {title}
-                    </div>
+    const CheckUpdatesBlock = (
+        <button
+            type="button"
+            onClick={checkClickHandler}
+            className="extension-update__info extension-update__check-btn"
+            title={checkUpdatesTitle}
+        >
+            <Icon
+                id="#reload"
+                classname="icon--24 icon--green-default"
+                aria-hidden="true"
+            />
+            <div className="extension-update__text">
+                <div className="extension-update__title">
+                    {checkUpdatesTitle}
                 </div>
-            </button>
-        );
-    };
+            </div>
+        </button>
+    );
 
-    const getCheckingUpdatesInProgressBlock = () => (
+    const CheckingUpdatesInProgressBlock = (
         <div className="extension-update__info">
             <Icon
                 id="#reload"
                 classname="icon--24 icon--green-default"
-                animationCondition={filtersUpdating}
+                animationCondition={extensionUpdateState === ExtensionUpdateState.Checking}
                 animationClassname="icon--loading"
                 aria-hidden="true"
             />
@@ -83,46 +117,44 @@ const FiltersUpdateMV3 = observer(() => {
         </div>
     );
 
-    const getUpdatesAvailableBlock = () => {
-        const btnTitle = translator.getMessage('options_updates_available_update_btn');
+    const updateAvailableBtnTitle = translator.getMessage('options_updates_available_update_btn');
 
-        return (
-            <>
-                <div className="extension-update__info">
-                    <Icon
-                        id="#update-available"
-                        classname="icon--24 icon--green-default"
-                        aria-hidden="true"
-                    />
-                    <div className="extension-update__text">
-                        <div className="extension-update__title">
-                            {translator.getMessage('options_updates_available_title')}
-                        </div>
-                        <div className="extension-update__desc">
-                            {translator.getMessage('options_updates_available_desc')}
-                        </div>
+    const UpdatesAvailableBlock = (
+        <>
+            <div className="extension-update__info">
+                <Icon
+                    id="#update-available"
+                    classname="icon--24 icon--green-default"
+                    aria-hidden="true"
+                />
+                <div className="extension-update__text">
+                    <div className="extension-update__title">
+                        {translator.getMessage('options_updates_available_title')}
+                    </div>
+                    <div className="extension-update__desc">
+                        {translator.getMessage('options_updates_available_desc')}
                     </div>
                 </div>
-                <div>
-                    <button
-                        type="button"
-                        onClick={updateClickHandler}
-                        className="button button--link button--link--underlined button--link--green"
-                        title={btnTitle}
-                    >
-                        {btnTitle}
-                    </button>
-                </div>
-            </>
-        );
-    };
+            </div>
+            <div>
+                <button
+                    type="button"
+                    onClick={updateClickHandler}
+                    className="button button--link button--link--underlined button--link--green"
+                    title={updateAvailableBtnTitle}
+                >
+                    {updateAvailableBtnTitle}
+                </button>
+            </div>
+        </>
+    );
 
-    const getUpdatesInstallingInProgressBlock = () => (
+    const UpdatesInstallingInProgressBlock = (
         <div className="extension-update__info">
             <Icon
                 id="#loading"
                 classname="icon--24"
-                animationCondition={extensionUpdating}
+                animationCondition={extensionUpdateState === ExtensionUpdateState.Updating}
                 animationClassname="icon--loading"
                 aria-hidden="true"
             />
@@ -137,23 +169,17 @@ const FiltersUpdateMV3 = observer(() => {
         </div>
     );
 
-    const getNeededStateBlock = () => {
-        let stateBlock = getCheckUpdatesBlock();
-
-        if (filtersUpdating) {
-            stateBlock = getCheckingUpdatesInProgressBlock();
-        } else if (extensionUpdateAvailable) {
-            stateBlock = getUpdatesAvailableBlock();
-        } else if (extensionUpdating) {
-            stateBlock = getUpdatesInstallingInProgressBlock();
-        }
-
-        return stateBlock;
+    const getStateBlockMap = {
+        [ExtensionUpdateState.Idle]: CheckUpdatesBlock,
+        [ExtensionUpdateState.Checking]: CheckingUpdatesInProgressBlock,
+        [ExtensionUpdateState.Available]: UpdatesAvailableBlock,
+        [ExtensionUpdateState.Updating]: UpdatesInstallingInProgressBlock,
+        [ExtensionUpdateState.NotAvailable]: CheckUpdatesBlock,
     };
 
     return (
         <div className="extension-update">
-            {getNeededStateBlock()}
+            {getStateBlockMap[extensionUpdateState]}
         </div>
     );
 });

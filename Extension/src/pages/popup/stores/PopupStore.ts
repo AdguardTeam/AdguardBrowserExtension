@@ -45,6 +45,12 @@ import {
     appStateActor,
     AppStateEvent,
 } from '../state-machines/app-state-machine';
+import {
+    extensionUpdateActor,
+    ExtensionUpdateEvent,
+    setActorInitState,
+    type ExtensionUpdateState,
+} from '../../common/state-machines/extension-update-machine';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 import { UserAgent } from '../../../common/user-agent';
@@ -160,18 +166,13 @@ class PopupStore {
     @observable
         appState: AppState = appStateActor.getSnapshot().value;
 
-    @observable updateChecking = false;
+    @observable
+        updateState: ExtensionUpdateState = extensionUpdateActor.getSnapshot().value;
 
-    /**
-     * Whether the extension update is available.
-     */
-    @observable extensionUpdateAvailable = false;
-
-    @observable extensionUpdateFailed = false;
-
+    // FIXME: check if needed
     /**
      * Whether to show the notification about no extension update available,
-     * i.e. it is up-to-date.
+     * e.g. when user clicks on check updates button, but there are no updates.
      */
     @observable showNoExtensionUpdateNotification = false;
 
@@ -203,7 +204,7 @@ class PopupStore {
     /**
      * Sets the initial state of the app state machine actor based on the current popup data.
      */
-    setActorInitState = () => {
+    setAppActorInitState = () => {
         if (this.applicationFilteringPaused) {
             appStateActor.send({ type: AppStateEvent.Pause });
         } else if (this.documentAllowlisted) {
@@ -287,11 +288,11 @@ class PopupStore {
 
             this.areFilterLimitsExceeded = areFilterLimitsExceeded;
 
-            this.setExtensionUpdateAvailable(isExtensionUpdateAvailable);
-
             this.currentTabId = currentTab.id;
 
-            this.setActorInitState();
+            this.setAppActorInitState();
+
+            setActorInitState(isExtensionUpdateAvailable);
         });
     };
 
@@ -604,33 +605,18 @@ class PopupStore {
     }
 
     @action
-    setUpdateChecking(value: boolean) {
-        this.updateChecking = value;
-    }
-
-    @action
-    setExtensionUpdateAvailable(value: boolean) {
-        this.extensionUpdateAvailable = value;
-    }
-
-    @action
-    setExtensionUpdateFailed(value: boolean) {
-        this.extensionUpdateFailed = value;
-    }
-
-    @action
     setShowNoExtensionUpdateNotification(value: boolean) {
         this.showNoExtensionUpdateNotification = value;
     }
 
     @action
     async checkUpdatesMV3() {
-        this.setUpdateChecking(true);
         const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
 
         if (isExtensionUpdateAvailable) {
-            this.setExtensionUpdateAvailable(isExtensionUpdateAvailable);
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
         } else {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
             this.setShowNoExtensionUpdateNotification(true);
             // show 'no update' notification temporarily
             // FIXME: implement notification showing
@@ -638,27 +624,25 @@ class PopupStore {
                 this.setShowNoExtensionUpdateNotification(false);
             }, NOTIFICATION_TTL_MS);
         }
-        this.setUpdateChecking(false);
     }
 
-    @action
+    // FIXME: check linter extension
+    // eslint-disable-next-line class-methods-use-this
     async updateExtensionMV3() {
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
         const isSuccessfulUpdate = await messenger.updateExtensionMV3();
 
         if (isSuccessfulUpdate) {
-            // FIXME: restart extension to update it
             // FIXME: consider opening popup with success notification after it
         } else {
             // set to false to force another check
-            this.setExtensionUpdateAvailable(false);
-            this.setExtensionUpdateFailed(true);
+            // FIXME: show 'update failed' notification
         }
     }
 
     get showUpdateRelatedNotification(): boolean {
-        return this.extensionUpdateAvailable
-            || this.extensionUpdateFailed
-            || this.showNoExtensionUpdateNotification;
+        // FIXME: rely on the update state
+        return this.showNoExtensionUpdateNotification;
     }
 }
 

@@ -125,6 +125,8 @@ export class SettingsService {
             areFilterLimitsExceeded: false,
             // always false for MV2
             isUserScriptsApiSupported: false,
+            // always false for MV2
+            isExtensionUpdateAvailable: false,
         };
     }
 

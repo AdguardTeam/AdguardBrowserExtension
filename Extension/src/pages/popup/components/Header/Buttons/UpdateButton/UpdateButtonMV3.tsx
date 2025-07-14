@@ -22,6 +22,7 @@ import { observer } from 'mobx-react';
 import { translator } from '../../../../../../common/translators/translator';
 import { Icon } from '../../../../../common/components/ui/Icon';
 import { popupStore } from '../../../../stores/PopupStore';
+import { ExtensionUpdateState } from '../../../../../common/state-machines/extension-update-machine';
 
 export const UpdateButtonMV3 = observer(() => {
     const store = useContext(popupStore);
@@ -29,8 +30,7 @@ export const UpdateButtonMV3 = observer(() => {
     const {
         checkUpdatesMV3,
         updateExtensionMV3,
-        updateChecking,
-        extensionUpdateAvailable,
+        updateState,
     } = store;
 
     const handleCheckUpdatesClick = async () => {
@@ -46,11 +46,13 @@ export const UpdateButtonMV3 = observer(() => {
         await updateExtensionMV3();
     };
 
-    if (extensionUpdateAvailable) {
+    const isUpdateAvailable = updateState === ExtensionUpdateState.Available;
+
+    if (isUpdateAvailable) {
         return (
             <button
                 className="button popup-header__button"
-                disabled={!extensionUpdateAvailable}
+                disabled={!isUpdateAvailable}
                 type="button"
                 onClick={handleUpdateExtensionClick}
                 title={translator.getMessage('options_updates_available_title')}
@@ -64,6 +66,8 @@ export const UpdateButtonMV3 = observer(() => {
         );
     }
 
+    const isCheckingUpdate = updateState === ExtensionUpdateState.Checking;
+
     return (
         <>
             <div
@@ -71,13 +75,13 @@ export const UpdateButtonMV3 = observer(() => {
                 className="sr-only"
                 aria-live="assertive"
                 tabIndex={-1}
-                aria-hidden={!updateChecking}
+                aria-hidden={!isCheckingUpdate}
             >
-                {updateChecking ? translator.getMessage('options_checking_for_updates_in_progress') : ''}
+                {isCheckingUpdate ? translator.getMessage('options_checking_for_updates_in_progress') : ''}
             </div>
             <button
                 className="button popup-header__button"
-                disabled={updateChecking}
+                disabled={isCheckingUpdate}
                 type="button"
                 onClick={handleCheckUpdatesClick}
                 title={translator.getMessage('options_check_update')}
@@ -85,7 +89,7 @@ export const UpdateButtonMV3 = observer(() => {
                 <Icon
                     id="#reload"
                     classname="icon--24 icon--header"
-                    animationCondition={updateChecking}
+                    animationCondition={isCheckingUpdate}
                     animationClassname="icon--loading"
                     aria-hidden="true"
                 />

@@ -121,6 +121,7 @@ export enum NotifierType {
     UpdateAllowlistFilterRules = 'event.update.allowlist.filter.rules',
     SettingUpdated = 'event.update.setting.value',
     FiltersUpdateCheckReady = 'event.update.filters.check',
+    ExtensionUpdateIsAvailable = 'event.update.extension.is.available',
     // Filtering log events.
     TabAdded = 'log.tab.added',
     TabClose = 'log.tab.close',

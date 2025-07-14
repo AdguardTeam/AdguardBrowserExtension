@@ -16,11 +16,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { NotifierType } from '../../../common/constants';
 import { MessageType } from '../../../common/messages';
 import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../pages/common/constants';
 import { iconsApi } from '../../api';
 import { messageHandler } from '../../message-handler';
+import { notifier } from '../../notifier';
 
 /**
  * FIXME: add description.
@@ -62,7 +64,10 @@ class ExtensionUpdateService {
 
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
-        iconsApi.update();
+        if (this.isUpdateAvailable) {
+            iconsApi.update();
+            notifier.notifyListeners(NotifierType.ExtensionUpdateIsAvailable);
+        }
 
         return Promise.resolve(this.isUpdateAvailable);
     }

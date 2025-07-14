@@ -32,6 +32,7 @@ import {
 } from '../../common/components/Editor/savingFSM';
 import { MIN_UPDATE_DISPLAY_DURATION_MS, NotificationType } from '../../common/constants';
 import { messenger } from '../../services/messenger';
+import { extensionUpdateActor, ExtensionUpdateEvent } from '../../common/state-machines/extension-update-machine';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import {
     sortFilters,
@@ -188,9 +189,7 @@ class SettingsStore {
 
     @observable filtersUpdating = false;
 
-    @observable extensionUpdateAvailable = false;
-
-    @observable extensionUpdating = false;
+    @observable extensionUpdateState = extensionUpdateActor.getSnapshot().value;
 
     @observable selectedGroupId = null;
 
@@ -234,6 +233,12 @@ class SettingsStore {
                 if (state.value === SavingFSMState.Saving) {
                     this.allowlistEditorContentChanged = false;
                 }
+            });
+        });
+
+        extensionUpdateActor.subscribe((state) => {
+            runInAction(() => {
+                this.extensionUpdateState = state.value;
             });
         });
     }
@@ -333,7 +338,10 @@ class SettingsStore {
             this.isUserScriptsApiSupported = data.isUserScriptsApiSupported;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
-            this.setExtensionUpdateAvailable(data.isExtensionUpdateAvailable);
+
+            if (data.isExtensionUpdateAvailable) {
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
+            }
         });
 
         return data;
@@ -682,16 +690,6 @@ class SettingsStore {
     }
 
     @action
-    setExtensionUpdateAvailable(value) {
-        this.extensionUpdateAvailable = value;
-    }
-
-    @action
-    setExtensionUpdating(value) {
-        this.extensionUpdating = value;
-    }
-
-    @action
     async updateFiltersMV2() {
         this.setFiltersUpdating(true);
         try {
@@ -709,14 +707,8 @@ class SettingsStore {
 
     @action
     async checkUpdatesMV3() {
-        this.setFiltersUpdating(true);
-
         try {
             const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
-
-            this.setExtensionUpdateAvailable(isExtensionUpdateAvailable);
-
-            this.setFiltersUpdating(false);
 
             if (!isExtensionUpdateAvailable) {
                 const uiStore = this.rootStore.uiStore;
@@ -726,28 +718,19 @@ class SettingsStore {
                 });
             }
         } catch (error) {
-            this.setFiltersUpdating(false);
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
             throw error;
         }
     }
 
     @action
     async updateExtensionMV3() {
-        this.setExtensionUpdateAvailable(false);
-        this.setExtensionUpdating(true);
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
 
         try {
             const isSuccessful = await messenger.updateExtensionMV3();
 
-            if (isSuccessful) {
-                // FIXME: reload extension via messaging
-            }
-
-            this.setExtensionUpdating(false);
-
             if (!isSuccessful) {
-                this.setExtensionUpdateAvailable(false);
-
                 const uiStore = this.rootStore.uiStore;
 
                 uiStore.addNotification({
@@ -760,7 +743,7 @@ class SettingsStore {
                 });
             }
         } catch (error) {
-            this.setExtensionUpdating(false);
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
             throw error;
         }
     }

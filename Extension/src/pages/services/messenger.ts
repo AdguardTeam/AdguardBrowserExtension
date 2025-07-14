@@ -64,6 +64,7 @@ import {
 } from '../../common/messages';
 import { type NotifierType } from '../../common/constants';
 import { type CreateEventListenerResponse } from '../../background/services/event';
+import { extensionUpdateActor, ExtensionUpdateEvent } from '../common/state-machines/extension-update-machine';
 
 /**
  * @typedef {import('../../common/messages').MessageMap} MessageMap
@@ -529,7 +530,17 @@ class Messenger {
             return false;
         }
 
-        return this.sendMessage(MessageType.CheckExtensionUpdate);
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
+
+        const isExtensionUpdateAvailable = await this.sendMessage(MessageType.CheckExtensionUpdate);
+
+        if (isExtensionUpdateAvailable) {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
+        } else {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
+        }
+
+        return isExtensionUpdateAvailable;
     }
 
     async updateExtensionMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtension>> {
@@ -538,7 +549,16 @@ class Messenger {
             return false;
         }
 
-        return this.sendMessage(MessageType.UpdateExtension);
+        const isSuccessfulUpdate = await this.sendMessage(MessageType.UpdateExtension);
+
+        if (isSuccessfulUpdate) {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
+            // FIXME: reload extension via messaging to update it
+        } else {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
+        }
+
+        return isSuccessfulUpdate;
     }
 
     /**
