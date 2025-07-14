@@ -38,7 +38,7 @@ const ExtensionsIds: Record<BuildTargetEnv, string> = {
 };
 
 /**
- * Directory containing the previous extension.
+ * Local directory containing the previous extension, ignored by git.
  */
 const TMP_DIR = path.join(process.cwd(), 'tmp');
 
