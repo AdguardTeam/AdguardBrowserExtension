@@ -204,6 +204,7 @@ export { extensionUpdateActor };
 export const setActorInitState = (isExtensionUpdateAvailable: boolean) => {
     if (isExtensionUpdateAvailable) {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
+        return;
     }
 
     extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });

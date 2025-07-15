@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NotifierType } from '../../../common/constants';
 import { MessageType } from '../../../common/messages';
 import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../pages/common/constants';
@@ -25,6 +24,7 @@ import {
     ExtensionUpdateEvent,
 } from '../../../pages/common/state-machines/extension-update-machine';
 import { iconsApi } from '../../api';
+import { getRunInfo } from '../../utils';
 import { messageHandler } from '../../message-handler';
 import { notifier } from '../../notifier';
 
@@ -69,14 +69,10 @@ class ExtensionUpdateService {
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
         if (this.isUpdateAvailable) {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
             iconsApi.update();
-            notifier.notifyListeners(NotifierType.ExtensionUpdateIsAvailable);
-        } else {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
         }
 
-        return Promise.resolve(this.isUpdateAvailable);
+        return this.isUpdateAvailable;
     }
 
     /**
@@ -99,12 +95,12 @@ class ExtensionUpdateService {
 
         if (this.isExtensionUpdated) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
-            // FIXME: reload extension via messaging to update it
+            // FIXME: reload extension to update it
         } else {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
         }
 
-        return Promise.resolve(this.isExtensionUpdated);
+        return this.isExtensionUpdated;
     }
 
     /**

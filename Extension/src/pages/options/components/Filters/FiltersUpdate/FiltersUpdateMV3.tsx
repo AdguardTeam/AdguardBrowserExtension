@@ -16,15 +16,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { NotifierType } from '../../../../../common/constants';
-import { logger } from '../../../../../common/logger';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { ExtensionUpdateState } from '../../../../common/state-machines/extension-update-machine';
-import { messenger } from '../../../../services/messenger';
 import { rootStore } from '../../../stores/RootStore';
 
 import './filters-update.pcss';
@@ -33,42 +30,6 @@ const FiltersUpdateMV3 = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     const { extensionUpdateState } = settingsStore;
-
-    useEffect(() => {
-        let removeListenerCallback = () => {};
-
-        const subscribeToMessages = async () => {
-            const events = [
-                NotifierType.ExtensionUpdateIsAvailable,
-            ];
-
-            removeListenerCallback = await messenger.createEventListener(
-                events,
-                async (message) => {
-                    const { type } = message;
-
-                    switch (type) {
-                        case NotifierType.ExtensionUpdateIsAvailable: {
-                            await settingsStore.requestOptionsData();
-                            break;
-                        }
-                        default: {
-                            logger.warn('[ext.FiltersUpdateMV3]: Undefined message type:', type);
-                            break;
-                        }
-                    }
-                },
-            );
-        };
-
-        (async () => {
-            await subscribeToMessages();
-        })();
-
-        return () => {
-            removeListenerCallback();
-        };
-    }, [settingsStore]);
 
     const checkClickHandler = async () => {
         await settingsStore.checkUpdatesMV3();

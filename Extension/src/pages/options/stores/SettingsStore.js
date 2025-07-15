@@ -32,7 +32,11 @@ import {
 } from '../../common/components/Editor/savingFSM';
 import { MIN_UPDATE_DISPLAY_DURATION_MS, NotificationType } from '../../common/constants';
 import { messenger } from '../../services/messenger';
-import { extensionUpdateActor, ExtensionUpdateEvent } from '../../common/state-machines/extension-update-machine';
+import {
+    extensionUpdateActor,
+    ExtensionUpdateEvent,
+    setActorInitState,
+} from '../../common/state-machines/extension-update-machine';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import {
     sortFilters,
@@ -339,9 +343,7 @@ class SettingsStore {
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
 
-            if (data.isExtensionUpdateAvailable) {
-                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
-            }
+            setActorInitState(data.isExtensionUpdateAvailable);
         });
 
         return data;
