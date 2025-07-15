@@ -618,6 +618,8 @@ class PopupStore {
      */
     @action
     async checkUpdatesMV3() {
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
+
         const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
 
         if (isExtensionUpdateAvailable) {
@@ -633,6 +635,7 @@ class PopupStore {
     // eslint-disable-next-line class-methods-use-this
     async updateExtensionMV3() {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
+
         const isSuccessfulUpdate = await messenger.updateExtensionMV3();
 
         if (isSuccessfulUpdate) {

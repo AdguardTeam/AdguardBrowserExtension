@@ -23,8 +23,6 @@ import { popupStore } from '../../stores/PopupStore';
 
 import { Notification } from './Notification';
 
-import './notification.pcss';
-
 /**
  * The component needed to show a notification about the rule limits
  * exceeded in popup.

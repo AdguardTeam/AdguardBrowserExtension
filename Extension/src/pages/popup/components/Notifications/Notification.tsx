@@ -23,7 +23,7 @@ import classnames from 'classnames';
 import { Icon } from '../../../common/components/ui/Icon';
 import { NotificationType } from '../../../common/constants';
 
-import './notification.pcss';
+import './notifications.pcss';
 
 export type NotificationParams = {
     /**
@@ -73,9 +73,6 @@ export type NotificationParams = {
 /**
  * The component needed to show a notification about the rule limits
  * exceeded in popup.
- *
- * @todo TODO: Add reuse this component to show message about successful update
- * of application with filters.
  */
 export const Notification = ({
     type,
@@ -127,8 +124,9 @@ export const Notification = ({
 
         setNotificationClosing(true);
 
-        setTimeout(() => {
+        const removeTimeout = setTimeout(() => {
             setNotificationClosed(true);
+            clearTimeout(removeTimeout);
         }, TIME_TO_REMOVE_NOTIFICATION_MS);
     };
 

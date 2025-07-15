@@ -24,22 +24,17 @@ import { popupStore } from '../../stores/PopupStore';
 import { RuleLimitsNotification } from './RuleLimitsNotification';
 import { UpdateNotification } from './UpdateNotification';
 
+import './notifications.pcss';
+
 export const Notifications = observer(() => {
     const store = useContext(popupStore);
 
-    // const { areFilterLimitsExceeded, updateNotification } = store;
     const { areFilterLimitsExceeded } = store;
 
-    // rule limits notification is more important
-    if (areFilterLimitsExceeded) {
-        return <RuleLimitsNotification />;
-    }
-
-    // if (updateNotification) {
-    //     return <UpdateNotification />;
-    // }
-
-    // return null;
-
-    return <UpdateNotification />;
+    return (
+        <div className="notifications">
+            <UpdateNotification />
+            {areFilterLimitsExceeded && <RuleLimitsNotification />}
+        </div>
+    );
 });

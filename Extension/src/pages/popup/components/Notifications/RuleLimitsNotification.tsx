@@ -24,8 +24,6 @@ import { messenger } from '../../../services/messenger';
 
 import { Notification } from './Notification';
 
-import './notification.pcss';
-
 /**
  * The component needed to show a notification about the rule limits
  * exceeded in popup.
@@ -44,6 +42,7 @@ export const RuleLimitsNotification = () => {
                 title: translator.getMessage('options_rule_limits'),
                 onClick: handleRuleLimitsClick,
             }}
+            closeManually
         />
     );
 };

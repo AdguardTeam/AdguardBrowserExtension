@@ -1,29 +1,39 @@
 @keyframes notify-show {
     0% {
-        transform: translateY(100%);
+        transform: translateY(-100%);
+        opacity: 0;
     }
 
     100% {
         transform: translateY(0);
+        opacity: 1;
     }
 }
 
 @keyframes notify-hide {
     0% {
         transform: translateY(0);
+        opacity: 1;
     }
 
     100% {
         transform: translateY(100%);
+        opacity: 0;
     }
 }
 
-.notification {
+.notifications {
     position: fixed;
+    gap: 8px;
     left: 8px;
     right: 8px;
     bottom: 8px;
+    display: flex;
+    flex-direction: column;
     width: calc(100% - 16px);
+}
+
+.notification {
     max-height: 50%;
     animation: notify-show 0.3s ease-in;
     transition: 0.3s ease transform;

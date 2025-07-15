@@ -40,15 +40,15 @@ export enum NotificationType {
     /**
      * Notification type for loading state. The icon should be animated.
      */
-    Loading = 'Loading',
+    Loading = 'loading',
 
     /**
      * Notification type for success state.
      */
-    Success = 'Success',
+    Success = 'success',
 
     /**
      * Notification type for error state.
      */
-    Error = 'Error',
+    Error = 'error',
 }

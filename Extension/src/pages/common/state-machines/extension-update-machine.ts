@@ -164,6 +164,9 @@ const extensionUpdateMachine = setup({
         },
         [ExtensionUpdateState.Updating]: {
             on: {
+                [ExtensionUpdateEvent.UpdateSuccess]: {
+                    target: ExtensionUpdateState.Idle,
+                },
                 [ExtensionUpdateEvent.UpdateFailed]: {
                     target: ExtensionUpdateState.UpdateFailed,
                 },
