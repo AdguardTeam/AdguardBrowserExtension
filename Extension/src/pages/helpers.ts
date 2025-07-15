@@ -197,7 +197,7 @@ export const updateFilterDescription = (updatedFilters?: FilterMetadata[]): Omit
     if (!updatedFilters) {
         return {
             description: translator.getMessage('options_popup_update_error'),
-            type: NotificationType.ERROR,
+            type: NotificationType.Error,
         };
     }
 
@@ -212,7 +212,7 @@ export const updateFilterDescription = (updatedFilters?: FilterMetadata[]): Omit
         description = `${filterNames} ${translator.getMessage('options_popup_update_filters')}`;
     }
 
-    return { description, type: NotificationType.SUCCESS };
+    return { description, type: NotificationType.Error };
 };
 
 /**

@@ -19,9 +19,10 @@
 import React from 'react';
 
 import { translator } from '../../../../common/translators/translator';
+import { NotificationType } from '../../../common/constants';
 import { messenger } from '../../../services/messenger';
 
-import { Notification, NotificationType } from './Notification';
+import { Notification } from './Notification';
 
 import './notification.pcss';
 

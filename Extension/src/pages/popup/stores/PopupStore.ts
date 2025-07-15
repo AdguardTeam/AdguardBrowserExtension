@@ -51,10 +51,11 @@ import {
     extensionUpdateActor,
     setActorInitState,
 } from '../../common/state-machines/extension-update-machine';
+import { NotificationType } from '../../common/constants';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 import { UserAgent } from '../../../common/user-agent';
-import { NotificationType, type NotificationParams } from '../components/Notifications/Notification';
+import { type NotificationParams } from '../components/Notifications/Notification';
 
 type BlockedStatsInfo = {
     tabId: number;

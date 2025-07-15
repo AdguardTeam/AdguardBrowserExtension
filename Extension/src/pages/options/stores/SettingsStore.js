@@ -278,7 +278,7 @@ class SettingsStore {
                 extra: {
                     link: translator.getMessage('options_rule_limits'),
                 },
-                type: NotificationType.ERROR,
+                type: NotificationType.Error,
             });
         }
 
@@ -716,7 +716,7 @@ class SettingsStore {
                 const uiStore = this.rootStore.uiStore;
                 uiStore.addNotification({
                     description: translator.getMessage('update_not_needed'),
-                    type: NotificationType.SUCCESS,
+                    type: NotificationType.Success,
                 });
             }
         } catch (error) {
@@ -741,7 +741,7 @@ class SettingsStore {
                         link: translator.getMessage('update_failed_try_again_btn'),
                         onClick: this.checkUpdatesMV3,
                     },
-                    type: NotificationType.ERROR,
+                    type: NotificationType.Error,
                 });
             }
         } catch (error) {

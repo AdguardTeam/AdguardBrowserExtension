@@ -155,7 +155,7 @@ export const General = observer(() => {
             if (!success) {
                 uiStore.addNotification({
                     description: translator.getMessage('options_popup_import_error_required_privacy_permission'),
-                    type: NotificationType.ERROR,
+                    type: NotificationType.Error,
                 });
                 event.target.value = '';
                 return;
@@ -173,7 +173,7 @@ export const General = observer(() => {
         } catch (e) {
             logger.error('[ext.General]: error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
-                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+                uiStore.addNotification({ description: e.message, type: NotificationType.Error });
             }
             isSucceeded = false;
         }
@@ -181,12 +181,12 @@ export const General = observer(() => {
         if (isSucceeded) {
             uiStore.addNotification({
                 description: translator.getMessage('options_popup_import_success_title'),
-                type: NotificationType.SUCCESS,
+                type: NotificationType.Success,
             });
         } else {
             uiStore.addNotification({
                 description: translator.getMessage('options_popup_import_error_title'),
-                type: NotificationType.ERROR,
+                type: NotificationType.Error,
             });
         }
 

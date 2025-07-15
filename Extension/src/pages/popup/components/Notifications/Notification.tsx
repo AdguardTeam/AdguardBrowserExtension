@@ -21,28 +21,9 @@ import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 
 import { Icon } from '../../../common/components/ui/Icon';
+import { NotificationType } from '../../../common/constants';
 
 import './notification.pcss';
-
-/**
- * Notification type.
- */
-export enum NotificationType {
-    /**
-     * Notification type for loading state. The icon should be animated.
-     */
-    Loading,
-
-    /**
-     * Notification type for success state.
-     */
-    Success,
-
-    /**
-     * Notification type for error state.
-     */
-    Error,
-}
 
 export type NotificationParams = {
     /**

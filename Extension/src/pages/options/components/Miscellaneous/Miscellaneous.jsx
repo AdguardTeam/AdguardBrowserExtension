@@ -74,7 +74,7 @@ export const Miscellaneous = observer(() => {
         await messenger.resetStatistics();
         uiStore.addNotification({
             description: translator.getMessage('options_reset_stats_done'),
-            type: NotificationType.SUCCESS,
+            type: NotificationType.Success,
         });
     };
 
@@ -92,12 +92,12 @@ export const Miscellaneous = observer(() => {
             settingsStore.requestOptionsData(true);
             uiStore.addNotification({
                 description: translator.getMessage('options_reset_settings_done'),
-                type: NotificationType.SUCCESS,
+                type: NotificationType.Success,
             });
         } else {
             uiStore.addNotification({
                 description: translator.getMessage('options_reset_settings_error'),
-                type: NotificationType.ERROR,
+                type: NotificationType.Error,
             });
         }
 

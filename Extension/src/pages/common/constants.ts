@@ -33,7 +33,22 @@ export const MIN_LOADER_SHOWING_TIME_MS = 500;
  */
 export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';
 
+/**
+ * Notification type.
+ */
 export enum NotificationType {
-    SUCCESS = 'success',
-    ERROR = 'error',
+    /**
+     * Notification type for loading state. The icon should be animated.
+     */
+    Loading = 'Loading',
+
+    /**
+     * Notification type for success state.
+     */
+    Success = 'Success',
+
+    /**
+     * Notification type for error state.
+     */
+    Error = 'Error',
 }

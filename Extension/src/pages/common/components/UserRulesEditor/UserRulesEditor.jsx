@@ -287,11 +287,11 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         } catch (e) {
             logger.debug('[ext.UserRulesEditor]: import error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
-                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+                uiStore.addNotification({ description: e.message, type: NotificationType.Error });
             } else {
                 uiStore.addNotification({
                     description: translator('options_popup_import_error_file_description'),
-                    type: NotificationType.ERROR,
+                    type: NotificationType.Error,
                 });
             }
         }

@@ -163,7 +163,7 @@ const Options = observer(() => {
                     extra: {
                         link: translator.getMessage('options_rule_limits'),
                     },
-                    type: NotificationType.ERROR,
+                    type: NotificationType.Error,
                 });
             }
 

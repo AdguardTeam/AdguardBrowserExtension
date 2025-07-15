@@ -129,7 +129,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                         extra: {
                             link: translator.getMessage('options_rule_limits'),
                         },
-                        type: NotificationType.ERROR,
+                        type: NotificationType.Error,
                     });
                 }
 

@@ -124,7 +124,7 @@ export const Notification = (props: NotificationProps) => {
             onMouseEnter={handleMouseOver}
         >
             <Icon
-                id={type === NotificationType.SUCCESS ? '#tick' : '#info'}
+                id={type === NotificationType.Success ? '#tick' : '#info'}
                 classname="icon--24"
                 aria-hidden="true"
             />
