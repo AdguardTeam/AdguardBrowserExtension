@@ -64,7 +64,6 @@ import {
 } from '../../common/messages';
 import { type NotifierType } from '../../common/constants';
 import { type CreateEventListenerResponse } from '../../background/services/event';
-import { extensionUpdateActor, ExtensionUpdateEvent } from '../common/state-machines/extension-update-machine';
 
 /**
  * @typedef {import('../../common/messages').MessageMap} MessageMap
@@ -529,8 +528,6 @@ class Messenger {
             logger.warn('[ext.Messenger.checkUpdatesMV3]: extension update is not supported in MV2');
             return false;
         }
-
-        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
 
         const isExtensionUpdateAvailable = await this.sendMessage(MessageType.CheckExtensionUpdate);
 

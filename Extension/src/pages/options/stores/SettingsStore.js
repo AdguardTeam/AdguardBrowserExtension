@@ -707,10 +707,14 @@ class SettingsStore {
 
     @action
     async checkUpdatesMV3() {
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
+
         try {
             const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
 
-            if (!isExtensionUpdateAvailable) {
+            if (isExtensionUpdateAvailable) {
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
+            } else {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
 
                 const uiStore = this.rootStore.uiStore;
@@ -732,9 +736,12 @@ class SettingsStore {
         try {
             const isSuccessful = await messenger.updateExtensionMV3();
 
-            if (!isSuccessful) {
-                const uiStore = this.rootStore.uiStore;
+            if (isSuccessful) {
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
+            } else {
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
 
+                const uiStore = this.rootStore.uiStore;
                 uiStore.addNotification({
                     description: translator.getMessage('update_failed_text'),
                     extra: {
@@ -743,6 +750,8 @@ class SettingsStore {
                     },
                     type: NotificationType.Error,
                 });
+
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.Idle });
             }
         } catch (error) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
