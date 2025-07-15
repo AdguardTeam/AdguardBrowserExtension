@@ -534,12 +534,6 @@ class Messenger {
 
         const isExtensionUpdateAvailable = await this.sendMessage(MessageType.CheckExtensionUpdate);
 
-        if (isExtensionUpdateAvailable) {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
-        } else {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
-        }
-
         return isExtensionUpdateAvailable;
     }
 
@@ -550,13 +544,6 @@ class Messenger {
         }
 
         const isSuccessfulUpdate = await this.sendMessage(MessageType.UpdateExtension);
-
-        if (isSuccessfulUpdate) {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
-            // FIXME: reload extension via messaging to update it
-        } else {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
-        }
 
         return isSuccessfulUpdate;
     }

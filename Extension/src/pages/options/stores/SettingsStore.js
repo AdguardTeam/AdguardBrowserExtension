@@ -711,6 +711,8 @@ class SettingsStore {
             const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
 
             if (!isExtensionUpdateAvailable) {
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
+
                 const uiStore = this.rootStore.uiStore;
                 uiStore.addNotification({
                     description: translator.getMessage('update_not_needed'),

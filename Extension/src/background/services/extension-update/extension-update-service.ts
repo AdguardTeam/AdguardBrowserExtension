@@ -20,6 +20,10 @@ import { NotifierType } from '../../../common/constants';
 import { MessageType } from '../../../common/messages';
 import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../pages/common/constants';
+import {
+    extensionUpdateActor,
+    ExtensionUpdateEvent,
+} from '../../../pages/common/state-machines/extension-update-machine';
 import { iconsApi } from '../../api';
 import { messageHandler } from '../../message-handler';
 import { notifier } from '../../notifier';
@@ -60,13 +64,16 @@ class ExtensionUpdateService {
         const start = Date.now();
 
         // FIXME: implement the logic for isUpdateAvailable.
-        this.isUpdateAvailable = true;
+        this.isUpdateAvailable = false;
 
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
         if (this.isUpdateAvailable) {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
             iconsApi.update();
             notifier.notifyListeners(NotifierType.ExtensionUpdateIsAvailable);
+        } else {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
         }
 
         return Promise.resolve(this.isUpdateAvailable);
@@ -80,13 +87,22 @@ class ExtensionUpdateService {
     private async manualUpdateExtension(): Promise<boolean> {
         const start = Date.now();
 
-        // FIXME: implement the logic for isExtensionUpdated.
-        this.isExtensionUpdated = false;
+        // change the state of isUpdateAvailable just in case if the update fails
+        // FIXME: currently the extension icon relies on this flag,
+        // check if it can rely on the state machine
         this.isUpdateAvailable = false;
+        this.isExtensionUpdated = false;
 
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
         iconsApi.update();
+
+        if (this.isExtensionUpdated) {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
+            // FIXME: reload extension via messaging to update it
+        } else {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
+        }
 
         return Promise.resolve(this.isExtensionUpdated);
     }
