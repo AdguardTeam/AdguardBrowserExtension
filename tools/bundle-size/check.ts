@@ -227,6 +227,22 @@ function compareBuildSizes(
         });
     }
 
+    // Compare shared files if they exist in reference
+    if (Object.keys(reference.stats.shared).length > 0) {
+        console.log('\nShared Files:\n');
+        Object.entries(current.stats.shared).forEach(([fileName, newSize]) => {
+            const oldSize = reference.stats.shared[fileName] || 0;
+            const changePercent = oldSize > 0 ? ((newSize - oldSize) / oldSize) * 100 : 0;
+
+            if (oldSize > 0 && changePercent > threshold) {
+                hasIssues = true;
+                console.error(`- ❌ ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold!`);
+            } else {
+                console.log(`- ✅ ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)})` : '(new file)'}`);
+            }
+        });
+    }
+
     return hasIssues;
 }
 
