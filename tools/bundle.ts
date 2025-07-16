@@ -19,13 +19,11 @@
 /* eslint-disable no-console, no-restricted-syntax */
 import { program } from 'commander';
 
+import { BuildTargetEnv } from '../constants';
+
 import { bundleRunner } from './bundle/bundle-runner';
 import { copyExternals } from './bundle/copy-external';
-import {
-    Browser,
-    BUILD_ENV,
-    BuildTargetEnv,
-} from './constants';
+import { Browser, BUILD_ENV } from './constants';
 import { getWebpackConfig } from './bundle/get-webpack-config';
 import { crx } from './bundle/crx';
 import { buildInfo } from './bundle/build-info';

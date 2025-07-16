@@ -28,7 +28,6 @@ import webpack, { type Configuration, type EntryObject } from 'webpack';
 
 import {
     BUILD_PATH,
-    BuildTargetEnv,
     Browser,
     BUILD_ENV,
 } from '../constants';
@@ -60,6 +59,7 @@ import {
     MIN_SUPPORTED_VERSION,
     INDEX_HTML_FILE_NAME,
     SUBSCRIBE_OUTPUT,
+    BuildTargetEnv,
 } from '../../constants';
 
 import {

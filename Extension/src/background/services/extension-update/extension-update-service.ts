@@ -16,17 +16,19 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { ExtensionsIds } from '../../../../../constants';
+import { logger } from '../../../common/logger';
 import { MessageType } from '../../../common/messages';
 import { sleepIfNecessary } from '../../../common/sleep-utils';
+import { getCrxUrl } from '../../../common/update-mv3';
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../pages/common/constants';
 import {
     extensionUpdateActor,
     ExtensionUpdateEvent,
 } from '../../../pages/common/state-machines/extension-update-machine';
 import { iconsApi } from '../../api';
-import { getRunInfo } from '../../utils';
 import { messageHandler } from '../../message-handler';
-import { notifier } from '../../notifier';
+import { getRunInfo, Version } from '../../utils';
 
 /**
  * FIXME: add description.
@@ -56,15 +58,24 @@ class ExtensionUpdateService {
     }
 
     /**
-     * FIXME: add docs.
+     * Checks for extension updates.
      *
-     * @returns FIXME: ...
+     * @returns True if update is available, false otherwise.
      */
     private async manualCheckExtensionUpdate(): Promise<boolean> {
         const start = Date.now();
 
-        // FIXME: implement the logic for isUpdateAvailable.
-        this.isUpdateAvailable = false;
+        const latestChromeStoreVersion = await ExtensionUpdateService.getLatestChromeStoreVersion();
+        if (!latestChromeStoreVersion) {
+            return false;
+        }
+
+        const { currentAppVersion } = await getRunInfo();
+
+        const currentVersion = new Version(currentAppVersion);
+        const latestVersion = new Version(latestChromeStoreVersion);
+
+        this.isUpdateAvailable = latestVersion.compare(currentVersion) > 0;
 
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
@@ -76,9 +87,9 @@ class ExtensionUpdateService {
     }
 
     /**
-     * FIXME: add docs.
+     * Updates the extension.
      *
-     * @returns FIXME: ...
+     * @returns True if update was successful, false otherwise.
      */
     private async manualUpdateExtension(): Promise<boolean> {
         const start = Date.now();
@@ -101,6 +112,51 @@ class ExtensionUpdateService {
         }
 
         return this.isExtensionUpdated;
+    }
+
+    /**
+     * Returns the latest version of the extension available in the Chrome Web Store.
+     *
+     * @returns Extension version available in the Chrome Web Store.
+     */
+    private static async getLatestChromeStoreVersion(): Promise<string | null> {
+        // FIXME: check proper id
+        const extensionId = ExtensionsIds.release;
+
+        const updateUrl = getCrxUrl(extensionId);
+
+        logger.debug(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Checking for updates at ${updateUrl}...`);
+
+        const response = await fetch(updateUrl);
+
+        if (response.status !== 200) {
+            logger.debug(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: No update found for "${updateUrl}", status: ${response.status}`);
+            return null;
+        }
+
+        const latestVersionUrl = response.url;
+
+        if (!latestVersionUrl) {
+            logger.debug(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: No redirect location header found for "${extensionId}"`);
+            return null;
+        }
+
+        logger.debug(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Latest extension version is ${latestVersionUrl}`);
+
+        const match = latestVersionUrl.match(/_([0-9_]+)\.crx$/);
+
+        if (!match || !match[1]) {
+            logger.debug('[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Could not parse version from redirect URL.');
+            return null;
+        }
+
+        const latestExtensionVersionInStore = match[1]
+            // '5_1_111_0' -> '5.1.111.0'
+            .replace(/_/g, '.')
+            // '5.1.111.0' -> '5.1.111'
+            .replace(/\.0$/g, '');
+
+        return latestExtensionVersionInStore;
     }
 
     /**

@@ -16,9 +16,9 @@ import path from 'path';
 
 import { program } from 'commander';
 
+import { BuildTargetEnv } from '../../constants';
 import {
     Browser,
-    BuildTargetEnv,
     isValidBrowserTarget,
     isValidBuildEnv,
 } from '../constants';
