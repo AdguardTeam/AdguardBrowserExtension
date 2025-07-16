@@ -624,6 +624,10 @@ export class PopupStore {
 
         const isSuccessfulUpdate = await messenger.updateExtensionMV3();
 
+        if (typeof isSuccessfulUpdate !== 'boolean') {
+            return;
+        }
+
         if (!isSuccessfulUpdate) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
         }

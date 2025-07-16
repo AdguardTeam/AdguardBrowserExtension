@@ -700,7 +700,7 @@ export type MessageMap = {
     };
     [MessageType.UpdateExtension]: {
         message: UpdateExtensionMessage;
-        response: boolean;
+        response: boolean | void;
     };
     [MessageType.GetAllowlistDomains]: {
         message: GetAllowlistDomainsMessage;

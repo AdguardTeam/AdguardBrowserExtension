@@ -736,11 +736,13 @@ class SettingsStore {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
 
         try {
-            const isSuccessful = await messenger.updateExtensionMV3();
+            const isSuccessfulUpdate = await messenger.updateExtensionMV3();
 
-            if (isSuccessful) {
-                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
-            } else {
+            if (typeof isSuccessfulUpdate !== 'boolean') {
+                return;
+            }
+
+            if (!isSuccessfulUpdate) {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
 
                 const uiStore = this.rootStore.uiStore;

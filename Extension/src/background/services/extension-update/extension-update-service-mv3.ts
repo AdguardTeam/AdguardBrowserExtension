@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import browser from 'webextension-polyfill';
+
 import { ExtensionsIds } from '../../../../../constants';
 import { logger } from '../../../common/logger';
 import { MessageType } from '../../../common/messages';
@@ -87,6 +89,8 @@ class ExtensionUpdateService {
         const latestVersion = new Version(latestChromeStoreVersion);
 
         this.isUpdateAvailable = latestVersion.compare(currentVersion) > 0;
+        // FIXME: remove as needed only for tests
+        // this.isUpdateAvailable = true;
 
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
@@ -103,7 +107,8 @@ class ExtensionUpdateService {
     /**
      * Updates the extension.
      *
-     * @returns True if update was successful, false otherwise.
+     * @returns False if update fails,
+     * otherwise void because the extension reloads.
      */
     private async manualUpdateExtension(): Promise<boolean> {
         const start = Date.now();
@@ -116,9 +121,17 @@ class ExtensionUpdateService {
 
         iconsApi.update();
 
+        try {
+            // FIXME: save some flag to storage and retrieve it after the reload
+            this.isExtensionUpdated = true;
+            browser.runtime.reload();
+        } catch (e) {
+            this.isExtensionUpdated = false;
+            logger.error(`[ext.ExtensionUpdateService.manualUpdateExtension]: Failed to reload extension: ${e}`);
+        }
+
         if (this.isExtensionUpdated) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
-            // FIXME: reload extension to update it
         } else {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
         }

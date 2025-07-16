@@ -534,6 +534,12 @@ class Messenger {
         return isExtensionUpdateAvailable;
     }
 
+    /**
+     * Sends a message to the background page to update the extension.
+     *
+     * @returns Promise that resolves with boolean false if update failed,
+     * otherwise void because the extension reloads on success.
+     */
     async updateExtensionMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtension>> {
         if (!__IS_MV3__) {
             logger.warn('[ext.Messenger.updateExtensionMV3]: extension update is not supported in MV2');
