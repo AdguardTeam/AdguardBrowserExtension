@@ -161,8 +161,6 @@ class ExtensionUpdateService {
             return null;
         }
 
-        logger.debug(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Latest extension version is ${latestVersionUrl}`);
-
         const match = latestVersionUrl.match(/_([0-9_]+)\.crx$/);
 
         if (!match || !match[1]) {
