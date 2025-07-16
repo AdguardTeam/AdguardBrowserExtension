@@ -132,9 +132,9 @@ class ExtensionUpdateService {
      * @returns Extension version available in the Chrome Web Store.
      */
     private static async getLatestChromeStoreVersion(): Promise<string | null> {
-        // FIXME: revert
+        // FIXME: revert before merge
         // const extensionId = Prefs.id;
-        const extensionId = 'bgnkhhnnamicmpeenaelnjfhikgbkllg';
+        const extensionId = 'apjcbfpjihpedihablmalmbbhjpklbdf';
 
         const possibleExtensionIds = Object.values(ExtensionsIds).filter((id) => !!id);
 
