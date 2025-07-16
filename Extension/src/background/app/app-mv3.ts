@@ -18,6 +18,8 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
+import { extensionUpdateService } from 'extension-update-service';
+
 import { rulesLimitsService } from 'rules-limits-service';
 
 import { engine } from '../engine';
@@ -64,7 +66,6 @@ import {
     localeDetect,
     PromoNotificationService,
     filterUpdateService,
-    extensionUpdateService,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';

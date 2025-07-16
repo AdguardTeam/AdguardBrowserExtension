@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+import { extensionUpdateService } from 'extension-update-service';
+
 import { RulesLimitsService } from 'rules-limits-service';
 
 import { tabsApi as tsWebExtTabsApi } from '../../tswebextension';
@@ -42,7 +45,6 @@ import {
     type SettingsData,
     UserRulesApi,
 } from '../../api';
-import { extensionUpdateService } from '../extension-update';
 
 // TODO: describe all properties
 /**

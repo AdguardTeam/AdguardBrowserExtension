@@ -17,6 +17,8 @@
  */
 import browser from 'webextension-polyfill';
 
+import { extensionUpdateService } from 'extension-update-service';
+
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
@@ -27,7 +29,6 @@ import {
 import { SettingOption } from '../../schema';
 import { getIconImageData } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
-import { extensionUpdateService } from '../../services';
 
 import { type FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';

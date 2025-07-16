@@ -22,6 +22,8 @@ import browser from 'webextension-polyfill';
 // from mv3 tswebextension without using aliases.
 import { TsWebExtension } from '@adguard/tswebextension/mv3';
 
+import { extensionUpdateService } from 'extension-update-service';
+
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
@@ -48,7 +50,6 @@ import {
     settingsEvents,
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
-import { extensionUpdateService } from '../extension-update';
 
 import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
 

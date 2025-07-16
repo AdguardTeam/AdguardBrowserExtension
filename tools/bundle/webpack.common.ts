@@ -305,6 +305,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     // eslint-disable-next-line max-len
                     `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`,
                 ),
+                'extension-update-service': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/services/extension-update/extension-update-service-mv${manifestVersion}.ts`,
+                ),
                 'rules-limits-service': path.resolve(
                     __dirname,
                     `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`,
