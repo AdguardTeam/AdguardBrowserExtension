@@ -142,23 +142,24 @@ export const DeveloperModeWarning = observer(() => {
 
     const getWarningAboutDevModeToggle = () => {
         return reactTranslator.getMessage('options_developer_mode_required', {
+            'external-link': getExternalLink,
             'settings-link': (text: string) => getSettingsLink(
                 text,
                 CHROME_EXTENSIONS_SETTINGS_URL,
                 openChromeExtensionsSettings,
             ),
-            'external-link': getExternalLink,
         });
     };
 
     const getWarningAboutAllowUserScriptsToggle = () => {
         return reactTranslator.getMessage('options_allow_user_scripts_required', {
+            'external-link': getExternalLink,
+            b: (text: string) => <b>{text}</b>,
             'settings-link': (text: string) => getSettingsLink(
                 text,
                 BrowserUtils.getExtensionDetailsUrl(),
                 openExtensionDetails,
             ),
-            'external-link': getExternalLink,
         });
     };
 
