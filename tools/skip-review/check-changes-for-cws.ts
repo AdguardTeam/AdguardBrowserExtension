@@ -113,7 +113,7 @@ const onlyRuleResourcesChanged = (
  *
  * @returns True if any unsafe rules found, false otherwise.
  */
-const checkForUnsafe = (
+const hasUnsafeRuleChanges = (
     changes: DeclarativeRule[] | { before: DeclarativeRule; after: DeclarativeRule }[],
     changeType: string,
     rulesetFilePath: string,
@@ -281,13 +281,13 @@ const checkRuleResources = (
             }
         }
 
-        if (!checkForUnsafe(added, 'Added', rulesetPath)) {
+        if (hasUnsafeRuleChanges(added, 'Added', rulesetPath)) {
             changesAreSafe = false;
         }
-        if (!checkForUnsafe(removed, 'Removed', rulesetPath)) {
+        if (hasUnsafeRuleChanges(removed, 'Removed', rulesetPath)) {
             changesAreSafe = false;
         }
-        if (!checkForUnsafe(updated, 'Updated', rulesetPath)) {
+        if (hasUnsafeRuleChanges(updated, 'Updated', rulesetPath)) {
             changesAreSafe = false;
         }
     }
