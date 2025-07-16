@@ -28,21 +28,32 @@ import {
 } from '../../../pages/common/state-machines/extension-update-machine';
 import { iconsApi } from '../../api';
 import { messageHandler } from '../../message-handler';
+// import { Prefs } from '../../prefs';
 import { getRunInfo, Version } from '../../utils';
 
 /**
- * FIXME: add description.
+ * Service for checking and updating the extension.
+ *
+ * Needed for MV3.
  */
 class ExtensionUpdateService {
     /**
-     * FIXME: add docs.
+     * Flag indicating if an update is available.
      */
     private isUpdateAvailable: boolean = false;
 
+    /**
+     * Flag indicating if the extension has been updated.
+     *
+     * FIXME: calculate the value based on some storage value
+     * saved before the extension reload while updating.
+     */
     private isExtensionUpdated: boolean = false;
 
     /**
-     * FIXME: add docs.
+     * Constructor.
+     *
+     * Binds event handlers.
      */
     constructor() {
         this.manualCheckExtensionUpdate = this.manualCheckExtensionUpdate.bind(this);
@@ -50,9 +61,9 @@ class ExtensionUpdateService {
     }
 
     /**
-     * FIXME: add docs.
+     * Initializes the service.
      */
-    init(): void {
+    public init(): void {
         messageHandler.addListener(MessageType.CheckExtensionUpdate, this.manualCheckExtensionUpdate);
         messageHandler.addListener(MessageType.UpdateExtension, this.manualUpdateExtension);
     }
@@ -81,6 +92,9 @@ class ExtensionUpdateService {
 
         if (this.isUpdateAvailable) {
             iconsApi.update();
+            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Current version ${currentAppVersion} is lower than latest available version ${latestChromeStoreVersion}`);
+        } else {
+            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Current version ${currentAppVersion} is higher than latest available version ${latestChromeStoreVersion}`);
         }
 
         return this.isUpdateAvailable;
@@ -94,9 +108,7 @@ class ExtensionUpdateService {
     private async manualUpdateExtension(): Promise<boolean> {
         const start = Date.now();
 
-        // change the state of isUpdateAvailable just in case if the update fails
-        // FIXME: currently the extension icon relies on this flag,
-        // check if it can rely on the state machine
+        // change the state of isUpdateAvailable for a case when the updating fails
         this.isUpdateAvailable = false;
         this.isExtensionUpdated = false;
 
@@ -120,8 +132,16 @@ class ExtensionUpdateService {
      * @returns Extension version available in the Chrome Web Store.
      */
     private static async getLatestChromeStoreVersion(): Promise<string | null> {
-        // FIXME: check proper id
-        const extensionId = ExtensionsIds.release;
+        // FIXME: revert
+        // const extensionId = Prefs.id;
+        const extensionId = 'bgnkhhnnamicmpeenaelnjfhikgbkllg';
+
+        const possibleExtensionIds = Object.values(ExtensionsIds).filter((id) => !!id);
+
+        if (!possibleExtensionIds.includes(extensionId)) {
+            logger.error(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Invalid extension ID: '${extensionId}'`);
+            return null;
+        }
 
         const updateUrl = getCrxUrl(extensionId);
 

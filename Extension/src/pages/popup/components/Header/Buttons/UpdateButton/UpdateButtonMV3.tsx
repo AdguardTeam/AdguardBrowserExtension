@@ -21,28 +21,24 @@ import { observer } from 'mobx-react';
 
 import { translator } from '../../../../../../common/translators/translator';
 import { Icon } from '../../../../../common/components/ui/Icon';
-import { popupStore } from '../../../../stores/PopupStore';
+import { popupStore, PopupStore } from '../../../../stores/PopupStore';
 import { ExtensionUpdateState } from '../../../../../common/state-machines/extension-update-machine';
 
 export const UpdateButtonMV3 = observer(() => {
     const store = useContext(popupStore);
 
-    const {
-        checkUpdatesMV3,
-        updateExtensionMV3,
-        updateState,
-    } = store;
+    const { updateState } = store;
 
     const handleCheckUpdatesClick = async () => {
         if (!__IS_MV3__) {
             throw new Error('Extension update is not supported in MV2');
         }
-        await checkUpdatesMV3();
+        await PopupStore.checkUpdatesMV3();
     };
 
     const handleUpdateExtensionClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
         e.preventDefault();
-        await updateExtensionMV3();
+        await PopupStore.updateExtensionMV3();
     };
 
     const isUpdateAvailable = updateState === ExtensionUpdateState.Available;

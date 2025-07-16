@@ -146,8 +146,7 @@ const extensionUpdateMachine = setup({
                 },
             },
         },
-        // FIXME: check how it works, consider removing
-        // transition state, needed to show a notification
+        // transition state, needed to show a notification on popup
         [ExtensionUpdateState.NotAvailable]: {
             after: {
                 NOTIFICATION_DELAY: {
@@ -195,9 +194,9 @@ extensionUpdateActor.start();
 
 export { extensionUpdateActor };
 
-// FIXME: check if needed
 /**
- * Sets the initial state of the extension update machine actor based on the current popup data.
+ * Sets the initial state of the extension update machine actor
+ * based on the current data for the page — options or popup.
  *
  * @param isExtensionUpdateAvailable Whether an extension update is available.
  */

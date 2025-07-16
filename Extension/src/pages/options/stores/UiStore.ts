@@ -52,7 +52,7 @@ export type Notification = {
     /**
      * Some additional data, e.g. link and onClick handler.
      *
-     * FIXME: specify the type.
+     * TODO: specify the type.
      */
     extra?: Record<string, any>;
 };

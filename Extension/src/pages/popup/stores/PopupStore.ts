@@ -72,7 +72,7 @@ type CategoryBlockedStatsInfo = {
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
 
-class PopupStore {
+export class PopupStore {
     TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     /**
@@ -166,18 +166,8 @@ class PopupStore {
     @observable
         updateState: ExtensionUpdateState = extensionUpdateActor.getSnapshot().value;
 
-    // FIXME: check if needed
-    /**
-     * Whether to show the notification about no extension update available,
-     * e.g. when user clicks on check updates button, but there are no updates.
-     */
-    @observable showNoExtensionUpdateNotification = false;
-
     constructor() {
         makeObservable(this);
-
-        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
-        this.updateExtensionMV3 = this.updateExtensionMV3.bind(this);
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -295,7 +285,6 @@ class PopupStore {
 
             this.setAppActorInitState();
 
-            // FIXME: check if needed
             setActorInitState(isExtensionUpdateAvailable);
         });
     };
@@ -617,30 +606,25 @@ class PopupStore {
      * to check for updates and start the update process.
      */
     @action
-    async checkUpdatesMV3() {
+    static async checkUpdatesMV3() {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
 
         const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
 
         if (isExtensionUpdateAvailable) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
-            this.updateExtensionMV3();
+            PopupStore.updateExtensionMV3();
         } else {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
-            // FIXME: check the notification for this case
         }
     }
 
-    // FIXME: check linter extension
-    // eslint-disable-next-line class-methods-use-this
-    async updateExtensionMV3() {
+    static async updateExtensionMV3() {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
 
         const isSuccessfulUpdate = await messenger.updateExtensionMV3();
 
-        if (isSuccessfulUpdate) {
-            // FIXME: consider opening popup with success notification after it
-        } else {
+        if (!isSuccessfulUpdate) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
         }
     }
@@ -676,7 +660,7 @@ class PopupStore {
                     text: translator.getMessage('update_failed_text'),
                     button: {
                         title: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: this.checkUpdatesMV3,
+                        onClick: PopupStore.checkUpdatesMV3,
                     },
                     closeManually: true,
                     onCloseHandler: () => {
