@@ -46,24 +46,89 @@ import {
     UserRulesApi,
 } from '../../api';
 
-// TODO: describe all properties
 /**
  * Tab info for the popup.
  */
 export type GetTabInfoForPopupResponse = {
+    /**
+     * Info about main frame for the tab.
+     */
     frameInfo: FrameData;
+
+    /**
+     * Page statistics.
+     *
+     * Related to all visited pages, not just the current tab.
+     */
     stats: GetStatisticsDataResponse;
+
+    /**
+     * Current settings.
+     */
     settings: SettingsData;
+
+    /**
+     * Whether the filter limits are exceeded.
+     *
+     * Needed only for MV3.
+     */
     areFilterLimitsExceeded: boolean;
+
+    /**
+     * Whether the extension update is available.
+     *
+     * Needed only for MV3.
+     */
     isExtensionUpdateAvailable: boolean;
+
+    /**
+     * Various options.
+     */
     options: {
+        // TODO: consider removing if not used
+        /**
+         * Whether stats are supported.
+         */
         showStatsSupported: boolean;
+
+        // TODO: consider removing if not used
+        /**
+         * Whether the browser is Firefox.
+         */
         isFirefoxBrowser: boolean;
+
+        /**
+         * Whether to show info about full version,
+         * i.e. a link to the page where the extension and apps are compared.
+         */
         showInfoAboutFullVersion: boolean;
+
+        // TODO: consider removing if not used
+        /**
+         * Whether the OS is macOS.
+         */
         isMacOs: boolean;
+
+        /**
+         * Whether the browser is Edge.
+         */
         isEdgeBrowser: boolean;
+
+        /**
+         * Promo notification.
+         */
         notification: PromoNotification | null;
+
+        // TODO: consider removing if not used
+        /**
+         * Whether to disable the "Show Adguard" promo info.
+         */
         isDisableShowAdguardPromoInfo: boolean;
+
+        /**
+         * Whether the user rules for the page present.
+         * If true, they can be reset.
+         */
         hasUserRulesToReset: boolean;
     };
 };
