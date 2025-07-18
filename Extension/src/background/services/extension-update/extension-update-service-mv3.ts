@@ -47,11 +47,9 @@ export class ExtensionUpdateService {
      */
     private isUpdateAvailable: boolean = false;
 
+    // FIXME: check if needed
     /**
      * Flag indicating if the extension has been updated.
-     *
-     * FIXME: calculate the value based on some storage value
-     * saved before the extension reload while updating.
      */
     private isExtensionUpdated: boolean = false;
 
@@ -93,7 +91,7 @@ export class ExtensionUpdateService {
         // const currentVersion = new Version(currentAppVersion);
         // const latestVersion = new Version(latestChromeStoreVersion);
         // this.isUpdateAvailable = latestVersion.compare(currentVersion) > 0;
-        // FIXME: remove as needed only for tests
+        // FIXME: remove as needed only for development
         this.isUpdateAvailable = true;
 
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
