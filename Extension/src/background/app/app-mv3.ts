@@ -18,7 +18,7 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
-import { extensionUpdateService } from 'extension-update-service';
+import { extensionUpdateService, ExtensionUpdateService } from 'extension-update-service';
 
 import { rulesLimitsService } from 'rules-limits-service';
 
@@ -297,6 +297,11 @@ export class App {
         // we should await it before dispatching the event to exclude race
         // conditions.
         await filterUpdateService.init();
+
+        // if (isUpdate && __IS_MV3__) {
+        if (true && __IS_MV3__) {
+            await ExtensionUpdateService.handleExtensionReloadOnUpdate();
+        }
 
         // This event is used for integration tests (scripts/browser-test/index.ts)
         // and waitUntilExtensionInitialized() is adding a listener to the event

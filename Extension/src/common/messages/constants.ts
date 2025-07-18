@@ -28,7 +28,7 @@ import { type Windows } from 'webextension-polyfill';
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
 import { type CustomFilterMetadata } from '../../background/schema/custom-filter-metadata';
-import { type NotifierType } from '../constants';
+import { type ManualExtensionUpdatePage, type NotifierType } from '../constants';
 import { type AppearanceTheme } from '../settings';
 import { type FilteringLogTabInfo } from '../../background/api/filtering-log';
 import { type GetTabInfoForPopupResponse } from '../../background/services/ui/popup';
@@ -245,6 +245,9 @@ export type CheckExtensionUpdateMessage = {
 
 export type UpdateExtensionMessage = {
     type: MessageType.UpdateExtension;
+    data: {
+        fromPage: ManualExtensionUpdatePage;
+    };
 };
 
 export type GetAllowlistDomainsMessage = {

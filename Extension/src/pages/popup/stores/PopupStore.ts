@@ -53,9 +53,10 @@ import {
 } from '../../common/state-machines/extension-update-machine';
 import { NotificationType } from '../../common/constants';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
-import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
+import { ManualExtensionUpdatePage, TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 import { UserAgent } from '../../../common/user-agent';
 import { type NotificationParams } from '../components/Notifications/Notification';
+import { logger } from '../../../common/logger';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -254,6 +255,7 @@ export class PopupStore {
                 settings,
                 areFilterLimitsExceeded,
                 isExtensionUpdateAvailable,
+                isExtensionReloadedOnUpdate,
             } = response;
 
             // frame info
@@ -285,7 +287,7 @@ export class PopupStore {
 
             this.setAppActorInitState();
 
-            setActorInitState(isExtensionUpdateAvailable);
+            setActorInitState(isExtensionUpdateAvailable, isExtensionReloadedOnUpdate);
         });
     };
 
@@ -609,25 +611,31 @@ export class PopupStore {
     static async checkUpdatesMV3() {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
 
-        const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
+        try {
+            const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
 
-        if (isExtensionUpdateAvailable) {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
-            PopupStore.updateExtensionMV3();
-        } else {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
+            if (isExtensionUpdateAvailable) {
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
+                await PopupStore.updateExtensionMV3();
+            } else {
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
+            }
+        } catch (error: unknown) {
+            logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
         }
     }
 
     static async updateExtensionMV3() {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
 
-        const isSuccessfulUpdate = await messenger.updateExtensionMV3();
+        const isSuccessfulUpdate = await messenger.updateExtensionMV3(ManualExtensionUpdatePage.Popup);
 
         if (typeof isSuccessfulUpdate !== 'boolean') {
             return;
         }
 
+        // IMPORTANT: only fail is handled here
+        // since success is handled after the extension reload
         if (!isSuccessfulUpdate) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
         }
@@ -670,6 +678,12 @@ export class PopupStore {
                     onCloseHandler: () => {
                         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Idle });
                     },
+                };
+            }
+            case ExtensionUpdateState.UpdateSuccess: {
+                return {
+                    type: NotificationType.Success,
+                    text: translator.getMessage('update_success_text'),
                 };
             }
             default: {

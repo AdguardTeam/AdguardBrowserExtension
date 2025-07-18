@@ -21,11 +21,6 @@
 // service. It will be replaced with MV2 or MV3 version during the build
 // via webpack.
 
-export { extensionUpdateService } from 'extension-update-service';
+export { extensionUpdateService, ExtensionUpdateService } from 'extension-update-service';
 
-/**
- * Singleton instance of ExtensionUpdateService
- * which will be replaced with MV2 or MV3 implementation during the build via webpack.
- *
- * By default, MV3 will be used.
- */
+export type { ManualExtensionUpdateData } from './types';

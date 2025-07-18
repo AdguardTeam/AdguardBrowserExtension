@@ -22,7 +22,7 @@ import browser from 'webextension-polyfill';
 // from mv3 tswebextension without using aliases.
 import { TsWebExtension } from '@adguard/tswebextension/mv3';
 
-import { extensionUpdateService } from 'extension-update-service';
+import { ExtensionUpdateService, extensionUpdateService } from 'extension-update-service';
 
 import { RulesLimitsService } from 'rules-limits-service';
 
@@ -122,6 +122,8 @@ export class SettingsService {
     static async getOptionsData(): Promise<GetOptionsDataResponse> {
         const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
 
+        const isExtensionReloadedOnUpdate = await ExtensionUpdateService.getIsExtensionReloadedOnUpdate();
+
         return {
             settings: SettingsApi.getData(),
             appVersion: Prefs.version,
@@ -140,6 +142,7 @@ export class SettingsService {
             areFilterLimitsExceeded,
             isUserScriptsApiSupported: TsWebExtension.isUserScriptsApiSupported,
             isExtensionUpdateAvailable: extensionUpdateService.getIsUpdateAvailable(),
+            isExtensionReloadedOnUpdate,
         };
     }
 

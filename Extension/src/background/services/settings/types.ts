@@ -141,4 +141,11 @@ export type GetOptionsDataResponse = {
      * Used in MV3 only.
      */
     isExtensionUpdateAvailable: boolean;
+
+    /**
+     * Whether the extension was reloaded after an update.
+     *
+     * Used in MV3 only.
+     */
+    isExtensionReloadedOnUpdate: boolean;
 };

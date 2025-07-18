@@ -16,29 +16,32 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import browser from 'webextension-polyfill';
-
 import { ExtensionsIds } from '../../../../../constants';
+import { MANUAL_EXTENSION_UPDATE_KEY, ManualExtensionUpdatePage } from '../../../common/constants';
 import { logger } from '../../../common/logger';
-import { MessageType } from '../../../common/messages';
+import { MessageType, type UpdateExtensionMessage } from '../../../common/messages';
 import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { getCrxUrl } from '../../../common/update-mv3';
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../pages/common/constants';
 import {
-    extensionUpdateActor,
-    ExtensionUpdateEvent,
-} from '../../../pages/common/state-machines/extension-update-machine';
-import { iconsApi } from '../../api';
+    browserAction,
+    iconsApi,
+    PagesApi,
+} from '../../api';
 import { messageHandler } from '../../message-handler';
+import { browserStorage } from '../../storages';
 // import { Prefs } from '../../prefs';
-import { getRunInfo, Version } from '../../utils';
+// import { getRunInfo, Version } from '../../utils';
+import { getRunInfo } from '../../utils';
+
+import { type ManualExtensionUpdateData } from './types';
 
 /**
  * Service for checking and updating the extension.
  *
  * Needed for MV3.
  */
-class ExtensionUpdateService {
+export class ExtensionUpdateService {
     /**
      * Flag indicating if an update is available.
      */
@@ -78,6 +81,8 @@ class ExtensionUpdateService {
     private async manualCheckExtensionUpdate(): Promise<boolean> {
         const start = Date.now();
 
+        // FIXME: use chrome.runtime.requestUpdateCheck() to check updates after fetching via the update cws url
+        // because new extension version may not be loaded on the computer yet
         const latestChromeStoreVersion = await ExtensionUpdateService.getLatestChromeStoreVersion();
         if (!latestChromeStoreVersion) {
             return false;
@@ -85,12 +90,11 @@ class ExtensionUpdateService {
 
         const { currentAppVersion } = await getRunInfo();
 
-        const currentVersion = new Version(currentAppVersion);
-        const latestVersion = new Version(latestChromeStoreVersion);
-
-        this.isUpdateAvailable = latestVersion.compare(currentVersion) > 0;
+        // const currentVersion = new Version(currentAppVersion);
+        // const latestVersion = new Version(latestChromeStoreVersion);
+        // this.isUpdateAvailable = latestVersion.compare(currentVersion) > 0;
         // FIXME: remove as needed only for tests
-        // this.isUpdateAvailable = true;
+        this.isUpdateAvailable = true;
 
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
@@ -107,42 +111,114 @@ class ExtensionUpdateService {
     /**
      * Updates the extension.
      *
+     * @param message Message of type {@link UpdateExtensionMessage}.
+     * @param message.data Contains page from which the update was triggered.
+     *
      * @returns False if update fails,
      * otherwise void because the extension reloads.
      */
-    private async manualUpdateExtension(): Promise<boolean> {
+    private async manualUpdateExtension({ data }: UpdateExtensionMessage): Promise<boolean | void> {
         const start = Date.now();
+
+        const { fromPage } = data;
 
         // change the state of isUpdateAvailable for a case when the updating fails
         this.isUpdateAvailable = false;
         this.isExtensionUpdated = false;
 
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-
         iconsApi.update();
 
         try {
-            // FIXME: save some flag to storage and retrieve it after the reload
+            const { currentAppVersion } = await getRunInfo();
+            const manualExtensionDataToSave: ManualExtensionUpdateData = {
+                initVersion: currentAppVersion,
+                pageToOpenAfterReload: fromPage,
+            };
             this.isExtensionUpdated = true;
-            browser.runtime.reload();
+            // IMPORTANT: saving to storage should be done before the extension reload
+            await browserStorage.set(MANUAL_EXTENSION_UPDATE_KEY, JSON.stringify(manualExtensionDataToSave));
+
+            // needed for either notification showing on popup
+            // or updating status on options page before the extension reload
+            await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
+
+            ExtensionUpdateService.reloadExtension();
         } catch (e) {
+            await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
             this.isExtensionUpdated = false;
             logger.error(`[ext.ExtensionUpdateService.manualUpdateExtension]: Failed to reload extension: ${e}`);
-        }
-
-        if (this.isExtensionUpdated) {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
-        } else {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
         }
 
         return this.isExtensionUpdated;
     }
 
     /**
+     * Reloads the extension.
+     *
+     * IMPORTANT:
+     * `chrome.runtime.reload` should be used,
+     * otherwise service worker may be inactive after reload
+     * if `browser.runtime.reload` from webextension-polyfill is used.
+     */
+    private static reloadExtension(): void {
+        chrome.runtime.reload();
+    }
+
+    /**
+     * Retrieves manual extension update data from storage.
+     *
+     * @returns Manual extension update data or null if not found.
+     */
+    private static async retrieveManualExtensionUpdateData(): Promise<ManualExtensionUpdateData | null> {
+        const manualExtensionUpdateStr = await browserStorage.get(MANUAL_EXTENSION_UPDATE_KEY);
+
+        if (typeof manualExtensionUpdateStr !== 'string') {
+            return null;
+        }
+
+        try {
+            return JSON.parse(manualExtensionUpdateStr);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * Handles extension reload after update.
+     */
+    public static async handleExtensionReloadOnUpdate(): Promise<void> {
+        const manualExtensionUpdateData = await ExtensionUpdateService.retrieveManualExtensionUpdateData();
+
+        if (!manualExtensionUpdateData) {
+            logger.debug('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: No manual extension update data found');
+            return;
+        }
+
+        const { initVersion, pageToOpenAfterReload } = manualExtensionUpdateData;
+
+        logger.info(`[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: The extension was updated from ${initVersion}`);
+
+        if (!pageToOpenAfterReload) {
+            logger.warn('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: No pageToOpenAfterReload found');
+            await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
+            return;
+        }
+
+        if (pageToOpenAfterReload === ManualExtensionUpdatePage.Options) {
+            logger.info('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: Opening options page...');
+            await PagesApi.openFiltersOnSettingsPage();
+        } else if (pageToOpenAfterReload === ManualExtensionUpdatePage.Popup) {
+            logger.info('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: Opening popup...');
+            await browserAction.openPopup();
+        }
+    }
+
+    /**
      * Returns the latest version of the extension available in the Chrome Web Store.
      *
      * @returns Extension version available in the Chrome Web Store.
+     *
+     * @throws Error if fetching the version fails.
      */
     private static async getLatestChromeStoreVersion(): Promise<string | null> {
         // FIXME: revert before merge
@@ -197,6 +273,22 @@ class ExtensionUpdateService {
      */
     public getIsUpdateAvailable(): boolean {
         return this.isUpdateAvailable;
+    }
+
+    /**
+     * Returns boolean value indicating if extension update was done manually previously.
+     *
+     * IMPORTANT!
+     * After retrieving the value from the storage, it is removed.
+     *
+     * @returns True if extension was updated and reloaded previously, false otherwise.
+     */
+    public static async getIsExtensionReloadedOnUpdate(): Promise<boolean> {
+        const manualExtensionUpdateData = await ExtensionUpdateService.retrieveManualExtensionUpdateData();
+
+        await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
+
+        return !!manualExtensionUpdateData;
     }
 }
 

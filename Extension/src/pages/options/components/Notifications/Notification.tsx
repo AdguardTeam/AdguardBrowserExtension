@@ -24,6 +24,7 @@ import React, {
 
 import classnames from 'classnames';
 
+import { NOTIFICATION_TTL_MS } from '../../../../common/constants';
 import { rootStore } from '../../stores/RootStore';
 import { Icon } from '../../../common/components/ui/Icon';
 import { messenger } from '../../../services/messenger';
@@ -68,8 +69,6 @@ export const Notification = (props: NotificationProps) => {
     }
 
     const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
-
-    const NOTIFICATION_TTL_MS = 4000;
 
     useEffect(() => {
         const closeTimeout = setTimeout(() => {

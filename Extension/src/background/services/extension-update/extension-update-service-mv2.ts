@@ -67,6 +67,15 @@ export class ExtensionUpdateService {
      *
      * @throws Not implemented error.
      */
+    public static async handleExtensionReloadOnUpdate(): Promise<void> {
+        throw new Error('Not implemented');
+    }
+
+    /**
+     * Just a empty dummy method for MV2.
+     *
+     * @throws Not implemented error.
+     */
     // eslint-disable-next-line class-methods-use-this
     public getIsUpdateAvailable(): boolean {
         throw new Error('Not implemented');

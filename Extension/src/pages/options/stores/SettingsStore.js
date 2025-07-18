@@ -48,6 +48,7 @@ import { optionsStorage } from '../options-storage';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
+    ManualExtensionUpdatePage,
     RECOMMENDED_TAG_ID,
     TRUSTED_TAG_KEYWORD,
     WASTE_CHARACTERS,
@@ -343,7 +344,15 @@ class SettingsStore {
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
 
-            setActorInitState(data.isExtensionUpdateAvailable);
+            setActorInitState(data.isExtensionUpdateAvailable, data.isExtensionReloadedOnUpdate);
+
+            if (data.isExtensionReloadedOnUpdate) {
+                const uiStore = this.rootStore.uiStore;
+                uiStore.addNotification({
+                    description: translator.getMessage('update_success_text'),
+                    type: NotificationType.Success,
+                });
+            }
         });
 
         return data;
@@ -726,8 +735,7 @@ class SettingsStore {
                 });
             }
         } catch (error) {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
-            throw error;
+            logger.debug('[ext.SettingsStore.checkUpdatesMV3]: failed to check updates on options page: ', error);
         }
     }
 
@@ -736,12 +744,14 @@ class SettingsStore {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
 
         try {
-            const isSuccessfulUpdate = await messenger.updateExtensionMV3();
+            const isSuccessfulUpdate = await messenger.updateExtensionMV3(ManualExtensionUpdatePage.Options);
 
             if (typeof isSuccessfulUpdate !== 'boolean') {
                 return;
             }
 
+            // IMPORTANT: only fail is handled here
+            // since success is handled after the extension reload
             if (!isSuccessfulUpdate) {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
 
@@ -758,8 +768,7 @@ class SettingsStore {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.Idle });
             }
         } catch (error) {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
-            throw error;
+            logger.debug('[ext.SettingsStore.updateExtensionMV3]: failed to update extension: ', error);
         }
     }
 

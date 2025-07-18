@@ -20,6 +20,7 @@ import React, { useEffect, useState } from 'react';
 
 import classnames from 'classnames';
 
+import { NOTIFICATION_TTL_MS } from '../../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
 import { NotificationType } from '../../../common/constants';
 
@@ -95,8 +96,6 @@ export const Notification = ({
 
     // Timeout for closing the notification, same as in the styles animation.
     const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
-
-    const NOTIFICATION_TTL_MS = 4000;
 
     useEffect(() => {
         const closeTimeout = setTimeout(() => {

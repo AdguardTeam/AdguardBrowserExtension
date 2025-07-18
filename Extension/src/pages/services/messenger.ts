@@ -62,7 +62,7 @@ import {
     type ExtractedMessage,
     type OpenSafebrowsingTrustedMessage,
 } from '../../common/messages';
-import { type NotifierType } from '../../common/constants';
+import { type ManualExtensionUpdatePage, type NotifierType } from '../../common/constants';
 import { type CreateEventListenerResponse } from '../../background/services/event';
 
 /**
@@ -537,16 +537,20 @@ class Messenger {
     /**
      * Sends a message to the background page to update the extension.
      *
+     * @param fromPage Page from which the update was triggered.
+     *
      * @returns Promise that resolves with boolean false if update failed,
      * otherwise void because the extension reloads on success.
      */
-    async updateExtensionMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtension>> {
+    async updateExtensionMV3(
+        fromPage: ManualExtensionUpdatePage,
+    ): Promise<ExtractMessageResponse<MessageType.UpdateExtension>> {
         if (!__IS_MV3__) {
             logger.warn('[ext.Messenger.updateExtensionMV3]: extension update is not supported in MV2');
             return false;
         }
 
-        const isSuccessfulUpdate = await this.sendMessage(MessageType.UpdateExtension);
+        const isSuccessfulUpdate = await this.sendMessage(MessageType.UpdateExtension, { fromPage });
 
         return isSuccessfulUpdate;
     }

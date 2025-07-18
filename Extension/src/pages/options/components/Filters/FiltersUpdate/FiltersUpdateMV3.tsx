@@ -137,6 +137,7 @@ const FiltersUpdateMV3 = observer(() => {
         [ExtensionUpdateState.Updating]: UpdatesInstallingInProgressBlock,
         [ExtensionUpdateState.NotAvailable]: CheckUpdatesBlock,
         [ExtensionUpdateState.UpdateFailed]: CheckUpdatesBlock,
+        [ExtensionUpdateState.UpdateSuccess]: CheckUpdatesBlock,
     };
 
     return (

@@ -41,6 +41,7 @@ export const FILTERING_LOG_WINDOW_STATE = 'filtering-log-window-state';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
+export const MANUAL_EXTENSION_UPDATE_KEY = 'manual-extension-update';
 
 /**
  * Filter ids used in the code on the background page and filtering log page.
@@ -208,3 +209,13 @@ export const emptyPreprocessedFilterList: PreprocessedFilterList = {
  * Chrome's extensions settings page url.
  */
 export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';
+
+/**
+ * Time-to-live for notifications in milliseconds.
+ */
+export const NOTIFICATION_TTL_MS = 4000;
+
+export enum ManualExtensionUpdatePage {
+    Options = 'options',
+    Popup = 'popup',
+}

@@ -127,6 +127,8 @@ export class SettingsService {
             isUserScriptsApiSupported: false,
             // always false for MV2
             isExtensionUpdateAvailable: false,
+            // always false for MV2
+            isExtensionReloadedOnUpdate: false,
         };
     }
 

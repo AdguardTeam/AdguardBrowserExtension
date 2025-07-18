@@ -18,6 +18,7 @@
 
 import { createActor, setup } from 'xstate';
 
+import { NOTIFICATION_TTL_MS } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 
 /**
@@ -55,6 +56,11 @@ export const enum ExtensionUpdateState {
      * Update failed state.
      */
     UpdateFailed = 'UpdateFailed',
+
+    /**
+     * Update success state.
+     */
+    UpdateSuccess = 'UpdateSuccess',
 }
 
 /**
@@ -106,9 +112,10 @@ type EventType = {
 
 const EXTENSION_UPDATE_MACHINE_ID = 'extensionUpdate';
 
+/**
+ * Minimum delay just for state machine transitions.
+ */
 const MIN_DELAY_MS = 1;
-
-const NOTIFICATION_DELAY_MS = 2 * 1000;
 
 /**
  * Extension update state machine.
@@ -117,7 +124,7 @@ const extensionUpdateMachine = setup({
     types: {} as { events: EventType },
     delays: {
         MIN_DELAY: MIN_DELAY_MS,
-        NOTIFICATION_DELAY: NOTIFICATION_DELAY_MS,
+        NOTIFICATION_DELAY: NOTIFICATION_TTL_MS,
     },
 }).createMachine({
     id: EXTENSION_UPDATE_MACHINE_ID,
@@ -133,6 +140,12 @@ const extensionUpdateMachine = setup({
                 // and options page was opened
                 [ExtensionUpdateEvent.UpdateAvailable]: {
                     target: ExtensionUpdateState.Available,
+                },
+                // transition from Idle to UpdateSuccess (with no Checking and UpdateAvailable in between)
+                // is possible because if update is successful, the extension reloads
+                // and Idle is the initial state
+                [ExtensionUpdateEvent.UpdateSuccess]: {
+                    target: ExtensionUpdateState.UpdateSuccess,
                 },
             },
         },
@@ -181,6 +194,13 @@ const extensionUpdateMachine = setup({
                 },
             },
         },
+        [ExtensionUpdateState.UpdateSuccess]: {
+            after: {
+                NOTIFICATION_DELAY: {
+                    target: ExtensionUpdateState.Idle,
+                },
+            },
+        },
     },
 });
 
@@ -199,10 +219,19 @@ export { extensionUpdateActor };
  * based on the current data for the page — options or popup.
  *
  * @param isExtensionUpdateAvailable Whether an extension update is available.
+ * @param isExtensionReloadedOnUpdate Whether the extension was reloaded after an update.
  */
-export const setActorInitState = (isExtensionUpdateAvailable: boolean) => {
+export const setActorInitState = (
+    isExtensionUpdateAvailable: boolean,
+    isExtensionReloadedOnUpdate: boolean,
+) => {
     if (isExtensionUpdateAvailable) {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
+        return;
+    }
+
+    if (isExtensionReloadedOnUpdate) {
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
         return;
     }
 

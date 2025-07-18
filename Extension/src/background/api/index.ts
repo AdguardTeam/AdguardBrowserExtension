@@ -62,6 +62,7 @@ export {
     iconsApi,
     defaultIconVariants,
     ContextMenuApi,
+    browserAction,
 } from './ui';
 export { WindowsApi, TabsApi, getIconImageData } from '../../common/api/extension';
 export { InstallApi } from './install';
