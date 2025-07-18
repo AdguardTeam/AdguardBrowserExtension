@@ -80,6 +80,15 @@ export class ExtensionUpdateService {
     public getIsUpdateAvailable(): boolean {
         throw new Error('Not implemented');
     }
+
+    /**
+     * Just a empty dummy method for MV2.
+     *
+     * @throws Not implemented error.
+     */
+    public static async getIsExtensionReloadedOnUpdate(): Promise<boolean> {
+        throw new Error('Not implemented');
+    }
 }
 
 export const extensionUpdateService = new ExtensionUpdateService();
