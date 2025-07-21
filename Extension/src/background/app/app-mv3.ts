@@ -298,6 +298,7 @@ export class App {
         // conditions.
         await filterUpdateService.init();
 
+        // FIXME: revert
         // if (isUpdate && __IS_MV3__) {
         if (true && __IS_MV3__) {
             await ExtensionUpdateService.handleExtensionReloadOnUpdate();
