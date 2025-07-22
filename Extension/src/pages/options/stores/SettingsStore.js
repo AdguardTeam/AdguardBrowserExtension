@@ -42,7 +42,6 @@ import {
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
 import {
-    AntiBannerFiltersId,
     AntibannerGroupsId,
     RECOMMENDED_TAG_ID,
     TRUSTED_TAG_KEYWORD,
@@ -486,26 +485,14 @@ class SettingsStore {
     }
 
     /**
-     * List of recommended annoyances filters.
+     * List of recommended annoyances filters
+     * which are only AdGuard annoyances filters.
      */
     @computed
     get recommendedAnnoyancesFilters() {
         return this.annoyancesFilters.filter((filter) => {
             return filter.tags.includes(RECOMMENDED_TAG_ID);
         });
-    }
-
-    /**
-     * List of AdGuard annoyances filters.
-     */
-    @computed
-    get agAnnoyancesFilters() {
-        return [
-            ...this.recommendedAnnoyancesFilters,
-            this.annoyancesFilters.find((f) => {
-                return f.filterId === AntiBannerFiltersId.AnnoyancesCombinedFilterId;
-            }),
-        ];
     }
 
     /**
@@ -1017,7 +1004,7 @@ class SettingsStore {
     @computed
     get shouldShowFilterPolicy() {
         if (this.filterIdSelectedForConsent) {
-            return this.agAnnoyancesFilters.some((f) => f.filterId === this.filterIdSelectedForConsent);
+            return this.recommendedAnnoyancesFilters.some((f) => f.filterId === this.filterIdSelectedForConsent);
         }
         // consent modal for group
         return true;
