@@ -130,26 +130,47 @@ Because of that, we use the following approach (that was accepted by AMO reviewe
 3. We also allow "User rules" and "Custom filters" to work since those rules are added manually by the user.
    This way filters maintainers can test new rules before including them in the filters.`;
 
-export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = ` To fully comply with Chrome Web Store policies regarding remote code execution,
- we implement a strict security-focused approach for JavaScript rule execution:
+export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `To fully comply with Chrome Web Store policies regarding remote code execution,
+we implement a strict security-focused approach for Scriptlet and JavaScript rules execution.
 
- 1. For standard users (default mode):
-    - We collect and pre-build script rules from the filters and statically bundle
-      them into the extension - STEP 1. See 'updateLocalResourcesForChromiumMv3' in our build tools.
-    - These pre-verified local scripts are passed to the engine - STEP 2.
-    - At runtime, we check if each script rule is included in our local scripts list (STEP 3).
-    - Only pre-verified local scripts are executed via chrome.scripting API (STEP 4.1 and 4.2).
-      All other scripts are discarded.
+1. Default - regular users that did not grant User scripts API permission explicitly:
+   - We collect and pre-build script rules from the filters and statically bundle
+     them into the extension - STEP 1. See 'updateLocalResourcesForChromiumMv3' in our build tools.
+     IMPORTANT: all scripts and their arguments are local and bundled within the extension.
+   - These pre-verified local scripts are passed to the engine - STEP 2.
+   - At runtime before the execution, we check if each script rule is included
+     in our local scripts list (STEP 3).
+   - Only pre-verified local scripts are executed via chrome.scripting API (STEP 4.1 and 4.2).
+     All other scripts are discarded.
+   - Custom filters are NOT allowed for regular users to prevent any possibility
+     of remote code execution, regardless of rule interpretation.
 
- 2. For advanced users with developer mode explicitly enabled:
-    - JavaScript rules from custom filters can be executed using the browser's built-in
-      userScripts API (STEP 4.3), which provides a secure sandbox.
-    - This execution bypasses the local script verification process but remains
-      isolated and secure through Chrome's native sandboxing.
-    - This mode requires explicit user activation and is intended for advanced users only.
+2. For advanced users that explicitly granted User scripts API permission -
+   via enabling the Developer mode or Allow user scripts in the extension details:
+   - Custom filters are allowed and may contain Scriptlet and JS rules
+     that can be executed using the browser's built-in userScripts API (STEP 4.3),
+     which provides a secure sandbox.
+   - This execution bypasses the local script verification process but remains
+     isolated and secure through Chrome's native sandboxing.
+   - This mode requires explicit user activation and is intended for advanced users only.
 
- This dual-path implementation ensures perfect compliance with Chrome Web Store policies
- while providing necessary functionality for users with different needs.`;
+IMPORTANT:
+Custom filters are ONLY supported when User scripts API permission is explicitly enabled.
+This strict policy prevents Chrome Web Store rejection due to potential remote script execution.
+When custom filters are allowed, they may contain:
+1. Network rules – converted to DNR rules and applied via dynamic rules.
+2. Cosmetic rules – interpreted directly in the extension code.
+3. Scriptlet and JS rules – executed via the browser's userScripts API (userScripts.execute)
+   with Chrome's native sandboxing providing security isolation.
+For regular users without User scripts API permission (default case):
+- Only pre-bundled filters with statically verified scripts are supported.
+- Downloading custom filters or any rules from remote sources is blocked entirely
+   to ensure compliance with the store policies.
+
+This implementation ensures perfect compliance with Chrome Web Store policies
+by preventing any possibility of remote code execution for regular users.
+
+It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.`;
 
 // artifacts constants
 export const UPDATE_BASE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta';
