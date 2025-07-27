@@ -118,6 +118,8 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
                         context: 'Extension',
                         from: 'filters/chromium-mv3',
                         to: 'filters',
+                        // It is already bundled with background.js
+                        filter: (path) => !path.endsWith('/local_script_rules.js'),
                     },
                 ],
             }),

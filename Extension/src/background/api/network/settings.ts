@@ -38,39 +38,13 @@ export class NetworkSettings {
     readonly safebrowsingLookupUrl = 'https://sb.adtidy.org/safebrowsing-lookup-short-hash.html';
 
     /**
-     * Default base url for downloading filter rules.
+     * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
+     * process in the extension.
      *
-     * MV3_REMOTE_POLICY.
-     * This keyword can be used to grep all code related to MV3 remote
-     * hosting policy.
+     * Base URL for downloading filter rules.
      *
-     * In MV3 extension we download a so-called "Quick Fixes filter" which
-     * is used for fixing major issues without the need to update the
-     * extension or custom filter lists added by the users themselves.
-     * Having this logic is particularly important for an ad blocker since
-     * websites breakages can occur at any time and we need to be able to
-     * fix them ASAP.
-     *
-     * We make sure that all these rules that come from the filter
-     * were in compliance with CWS policies:
-     * "Fetching a remote configuration file for A/B testing or determining
-     * enabled features, where all logic for the functionality is contained
-     * within the extension package".
-     *
-     * 1. Network rules from the Quick Fixes filter is converted to DNR
-     *    rules and applied via dynamic rules.
-     * 2. Cosmetic rules are interpreted in the code. For example, hiding
-     *    elements OR on the contrary, unhiding them when it is necessary.
-     *    At the same time the cosmetic rules logic is contained in the
-     *    extension package.
-     *
-     * Quick Fixes filter contents can be examined here:
-     * https://filters.adtidy.org/extension/chromium-mv3/filters/24.txt.
-     *
-     * To ensure compliance with Chrome Store policies, we have safeguards
-     * that restrict execution to rules that are included into the extension
-     * package and can be reviewed there. These safeguards can be found by
-     * searching for 'JS_RULES_EXECUTION'.
+     * Note, that downloading filter rules is DISABLED in the current MV3 build
+     * in order to ensure that remotely hosted rules are not used in Chrome.
      *
      * @private
      */
@@ -130,44 +104,16 @@ export class NetworkSettings {
     }
 
     /**
-     * Used to set the base url for filter rules through the local storage for testing purposes.
+     * Used to set the base url for filter rules through the local storage
+     * for testing purposes.
      *
-     * MV3_REMOTE_POLICY.
-     * This keyword can be used to grep all code related to MV3 remote
-     * hosting policy.
+     * @returns Promise that resolves to the base url for filter rules.
      *
-     * In MV3 extension we download a so-called "Quick Fixes filter" which
-     * is used for fixing major issues without the need to update the
-     * extension or custom filter lists added by the users themselves.
-     * Having this logic is particularly important for an ad blocker since
-     * websites breakages can occur at any time and we need to be able to
-     * fix them ASAP.
-     *
-     * We make sure that all these rules that come from the filter
-     * were in compliance with CWS policies:
-     * "Fetching a remote configuration file for A/B testing or determining
-     * enabled features, where all logic for the functionality is contained
-     * within the extension package".
-     *
-     * 1. Network rules from the Quick Fixes filter is converted to DNR
-     *    rules and applied via dynamic rules.
-     * 2. Cosmetic rules are interpreted in the code. For example, hiding
-     *    elements OR on the contrary, unhiding them when it is necessary.
-     *    At the same time the cosmetic rules logic is contained in the
-     *    extension package.
-     *
-     * Quick Fixes filter contents can be examined here:
-     * https://filters.adtidy.org/extension/chromium-mv3/filters/24.txt.
-     *
-     * To ensure compliance with Chrome Store policies, we have safeguards
-     * that restrict execution to rules that are included into the extension
-     * package and can be reviewed there. These safeguards can be found by
-     * searching for 'JS_RULES_EXECUTION'.
-     *
-     * @returns The base url for filter rules.
+     * @private
      */
     private async getFilterRulesBaseUrl(): Promise<string> {
-        // We don't need to set base url in MV3 because we cannot update filters via patches.
+        // We don't need to set base url in MV3 because we cannot update
+        // filters via patches.
         // TODO: Remove check when filters will support patches in MV3.
         if (!__IS_MV3__) {
             const url = localStorage.getItem(this.FILTERS_BASE_URL_KEY);
@@ -180,48 +126,31 @@ export class NetworkSettings {
     }
 
     /**
-     * Returns the url from which the filters can be loaded.
+     * Returns the url from which the filters can be downloaded.
      *
      * @returns The url from which filters can be downloaded.
      */
     // eslint-disable-next-line class-methods-use-this
     get filtersUrl(): string | null {
-        // first of all check whether it is mv3-build
+        // First of all check whether it is mv3-build
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
+
+        /**
+         * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
+         * process in the extension.
+         *
+         * 1. We collect and bundle all scripts that can be executed on web pages into
+         *    the extension package into so-called `localScriptRules`.
+         * 2. Rules that control when and where these scripts can be executed are also
+         *    bundled within the extension package inside ruleset files.
+         * 3. The rules look like: `example.org#%#scripttext`. Whenever the rule is
+         *    matched, we check if there's a function for `scripttext` in
+         *    `localScriptRules`, retrieve it from there and execute it.
+         *
+         * Downloading rules from remote server is completely disabled in the
+         * MV3 build by returning `null` here.
+         */
         if (__IS_MV3__) {
-            /**
-             * MV3_REMOTE_POLICY.
-             * This keyword can be used to grep all code related to MV3 remote
-             * hosting policy.
-             *
-             * In MV3 extension we download a so-called "Quick Fixes filter" which
-             * is used for fixing major issues without the need to update the
-             * extension or custom filter lists added by the users themselves.
-             * Having this logic is particularly important for an ad blocker since
-             * websites breakages can occur at any time and we need to be able to
-             * fix them ASAP.
-             *
-             * We make sure that all these rules that come from the filter
-             * were in compliance with CWS policies:
-             * "Fetching a remote configuration file for A/B testing or determining
-             * enabled features, where all logic for the functionality is contained
-             * within the extension package".
-             *
-             * 1. Network rules from the Quick Fixes filter is converted to DNR
-             *    rules and applied via dynamic rules.
-             * 2. Cosmetic rules are interpreted in the code. For example, hiding
-             *    elements OR on the contrary, unhiding them when it is necessary.
-             *    At the same time the cosmetic rules logic is contained in the
-             *    extension package.
-             *
-             * Quick Fixes filter contents can be examined here:
-             * https://filters.adtidy.org/extension/chromium-mv3/filters/24.txt.
-             *
-             * To ensure compliance with Chrome Store policies, we have safeguards
-             * that restrict execution to rules that are included into the extension
-             * package and can be reviewed there. These safeguards can be found by
-             * searching for 'JS_RULES_EXECUTION'.
-             */
             return null;
         }
 

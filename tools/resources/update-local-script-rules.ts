@@ -260,11 +260,11 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
 };
 
 /**
- * Updates `local_script_rules.js` for Chromium MV3 based on JS rules from the pre-built filters.
+ * Updates `local_script_rules.js` for Chromium MV3 based on JS rules from the
+ * pre-built filters.
  *
- * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
- *
- * This is STEP 1.1.
+ * It is possible to follow all places using this logic by searching
+ * `JS_RULES_EXECUTION`.
  *
  * @param jsRules Set of unique JS rules collected from the pre-built filters.
  */

@@ -165,17 +165,6 @@ export class RulesLimitsService {
             return acc;
         }, {});
 
-        // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-        // // It is like "syntax sugar" for the quick fixes filter to emulate it
-        // // like an "empty" ruleset, because it looks like usual filter
-        // // in the UI, but it actually applied dynamically, so enabling it will
-        // // never change quota of the used static rules.
-        // counters[AntiBannerFiltersId.QuickFixesFilterId] = {
-        //     filterId: AntiBannerFiltersId.QuickFixesFilterId,
-        //     rulesCount: 0,
-        //     regexpRulesCount: 0,
-        // };
-
         return counters;
     };
 
