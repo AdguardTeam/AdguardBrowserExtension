@@ -94,11 +94,19 @@ export class Engine implements TsWebExtensionEngine {
      */
     async start(): Promise<void> {
         /**
-         * By the rules of Chrome Web Store, we cannot use remote remotely hosted scripts, thats why we prebuild them.
+         * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
+         * process in the extension.
          *
-         * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
+         * 1. We collect and bundle all scripts that can be executed on web pages into
+         *    the extension package into so-called `localScriptRules`.
+         * 2. Rules that control when and where these scripts can be executed are also
+         *    bundled within the extension package inside ruleset files.
+         * 3. The rules look like: `example.org#%#scripttext`. Whenever the rule is
+         *    matched, we check if there's a function for `scripttext` in
+         *    `localScriptRules`, retrieve it from there and execute it.
          *
-         * This is STEP 2.1: Local script and scriptlet rules are passed to the engine.
+         * Here we're initializing the `localScriptRules` map in the engine so
+         * that it could get the functions to execute.
          */
         TsWebExtension.setLocalScriptRules(localScriptRules);
 
@@ -212,19 +220,11 @@ export class Engine implements TsWebExtensionEngine {
             Object.assign(userrules, await UserRulesApi.getUserRules());
         }
 
+        // TODO: Remove this block, quick fixes is no more and not coming back.
         const quickFixesRules: Configuration['quickFixesRules'] = {
             ...emptyPreprocessedFilterList,
-            /**
-             * Quick fixes are always trusted because it is the one of
-             * AdGuard's filter.
-             */
             trusted: true,
         };
-
-        // TODO Uncomment this block when Quick Fixes filter will be supported for MV3
-        // if (QuickFixesRulesApi.isEnabled()) {
-        //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
-        // }
 
         // TODO: uncomment code bellow when custom filters support will be added back
         // const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()

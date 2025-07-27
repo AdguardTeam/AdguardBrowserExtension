@@ -88,8 +88,7 @@ export class FilterUpdateService {
         if (shouldCheckUpdates) {
             try {
                 if (__IS_MV3__) {
-                    // TODO: Uncomment this block when Quick Fixes filter will be supported for MV3
-                    // await QuickFixesRulesApi.updateQuickFixesFilter();
+                    // There's no update check in MV3 extension.
                 } else {
                     await FilterUpdateApi.autoUpdateFilters();
                 }

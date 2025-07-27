@@ -155,6 +155,13 @@ export class Network {
             && !forceRemote
             && this.settings.localFilterIds.indexOf(filterId) < 0
         ) {
+            /**
+             * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
+             * process in the extension.
+             *
+             * Note, that downloading anything is forbidden in MV3 extension.
+             */
+
             // eslint-disable-next-line max-len
             throw new Error(`Cannot locally load filter with id ${filterId} because it is not build in the extension local resources.`);
         }
@@ -190,8 +197,7 @@ export class Network {
 
         // local filters do not support patches, that is why we always download them fully
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
-            // TODO: Revert when Quick Fixes filter will return in another way
-            if (__IS_MV3__ /* && filterId !== AntiBannerFiltersId.QuickFixesFilterId */) {
+            if (__IS_MV3__) {
                 // TODO: Check if its needed
                 // eslint-disable-next-line max-len
                 await (TsWebExtension as unknown as typeof TsWebExtensionMv3).syncRuleSetWithIdb(filterId, 'filters/declarative');
