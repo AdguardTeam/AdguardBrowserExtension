@@ -40,109 +40,107 @@ const FiltersUpdateMV3 = observer(() => {
     };
 
     const checkUpdatesTitle = translator.getMessage('update_check');
-
-    const CheckUpdatesBlock = (
-        <button
-            type="button"
-            onClick={checkClickHandler}
-            className="extension-update__info extension-update__check-btn"
-            title={checkUpdatesTitle}
-        >
-            <Icon
-                id="#reload"
-                classname="icon--24 icon--green-default"
-                aria-hidden="true"
-            />
-            <div className="extension-update__text">
-                <div className="extension-update__title">
-                    {checkUpdatesTitle}
-                </div>
-            </div>
-        </button>
-    );
-
-    const CheckingUpdatesInProgressBlock = (
-        <div className="extension-update__info">
-            <Icon
-                id="#reload"
-                classname="icon--24 icon--green-default"
-                animationCondition={extensionUpdateState === ExtensionUpdateState.Checking}
-                animationClassname="icon--loading"
-                aria-hidden="true"
-            />
-            <div className="extension-update__text">
-                <div className="extension-update__title">
-                    {translator.getMessage('update_checking_in_progress')}
-                </div>
-            </div>
-        </div>
-    );
-
     const updateAvailableBtnTitle = translator.getMessage('update_available_update_btn');
 
-    const UpdatesAvailableBlock = (
-        <>
-            <div className="extension-update__info">
-                <Icon
-                    id="#update-available"
-                    classname="icon--24 icon--green-default"
-                    aria-hidden="true"
-                />
-                <div className="extension-update__text">
-                    <div className="extension-update__title">
-                        {translator.getMessage('update_available_title')}
+    const renderContent = () => {
+        switch (extensionUpdateState) {
+            case ExtensionUpdateState.Checking:
+                return (
+                    <div className="extension-update__info">
+                        <Icon
+                            id="#reload"
+                            classname="icon--24 icon--green-default"
+                            animationCondition
+                            animationClassname="icon--loading"
+                            aria-hidden="true"
+                        />
+                        <div className="extension-update__text">
+                            <div className="extension-update__title">
+                                {translator.getMessage('update_checking_in_progress')}
+                            </div>
+                        </div>
                     </div>
-                    <div className="extension-update__desc">
-                        {translator.getMessage('update_available_desc')}
+                );
+            case ExtensionUpdateState.Available:
+                return (
+                    <>
+                        <div className="extension-update__info">
+                            <Icon
+                                id="#update-available"
+                                classname="icon--24 icon--green-default"
+                                aria-hidden="true"
+                            />
+                            <div className="extension-update__text">
+                                <div className="extension-update__title">
+                                    {translator.getMessage('update_available_title')}
+                                </div>
+                                <div className="extension-update__desc">
+                                    {translator.getMessage('update_available_desc')}
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button
+                                type="button"
+                                onClick={updateClickHandler}
+                                className="button button--link button--link--underlined button--link--green"
+                                title={updateAvailableBtnTitle}
+                            >
+                                {updateAvailableBtnTitle}
+                            </button>
+                        </div>
+                    </>
+                );
+            case ExtensionUpdateState.Updating:
+                return (
+                    <div className="extension-update__info">
+                        <Icon
+                            id="#loading"
+                            classname="icon--24"
+                            animationCondition
+                            animationClassname="icon--loading"
+                            aria-hidden="true"
+                        />
+                        <div className="extension-update__text">
+                            <div className="extension-update__title">
+                                {translator.getMessage('update_installing_in_progress_title')}
+                            </div>
+                            <div className="extension-update__desc">
+                                {translator.getMessage('update_installing_in_progress_desc')}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div>
-                <button
-                    type="button"
-                    onClick={updateClickHandler}
-                    className="button button--link button--link--underlined button--link--green"
-                    title={updateAvailableBtnTitle}
-                >
-                    {updateAvailableBtnTitle}
-                </button>
-            </div>
-        </>
-    );
-
-    const UpdatesInstallingInProgressBlock = (
-        <div className="extension-update__info">
-            <Icon
-                id="#loading"
-                classname="icon--24"
-                animationCondition={extensionUpdateState === ExtensionUpdateState.Updating}
-                animationClassname="icon--loading"
-                aria-hidden="true"
-            />
-            <div className="extension-update__text">
-                <div className="extension-update__title">
-                    {translator.getMessage('update_installing_in_progress_title')}
-                </div>
-                <div className="extension-update__desc">
-                    {translator.getMessage('update_installing_in_progress_desc')}
-                </div>
-            </div>
-        </div>
-    );
-
-    const getStateBlockMap = {
-        [ExtensionUpdateState.Idle]: CheckUpdatesBlock,
-        [ExtensionUpdateState.Checking]: CheckingUpdatesInProgressBlock,
-        [ExtensionUpdateState.Available]: UpdatesAvailableBlock,
-        [ExtensionUpdateState.Updating]: UpdatesInstallingInProgressBlock,
-        [ExtensionUpdateState.NotAvailable]: CheckUpdatesBlock,
-        [ExtensionUpdateState.UpdateFailed]: CheckUpdatesBlock,
-        [ExtensionUpdateState.UpdateSuccess]: CheckUpdatesBlock,
+                );
+            case ExtensionUpdateState.Idle:
+            case ExtensionUpdateState.NotAvailable:
+            case ExtensionUpdateState.UpdateFailed:
+            case ExtensionUpdateState.UpdateSuccess:
+            default:
+                return (
+                    <button
+                        type="button"
+                        onClick={checkClickHandler}
+                        className="extension-update__info extension-update__check-btn"
+                        title={checkUpdatesTitle}
+                    >
+                        <Icon
+                            id="#reload"
+                            classname="icon--24 icon--green-default"
+                            aria-hidden="true"
+                        />
+                        <div className="extension-update__text">
+                            <div className="extension-update__title">
+                                {checkUpdatesTitle}
+                            </div>
+                        </div>
+                    </button>
+                );
+        }
     };
 
     return (
         <div className="extension-update">
-            {getStateBlockMap[extensionUpdateState]}
+            {renderContent()}
         </div>
     );
 });
