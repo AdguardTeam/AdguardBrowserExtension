@@ -2639,34 +2639,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "36fd3167269f896e4009a009ae54edb3" due to: ' + e);
         }
     },
-    '(()=>{document.addEventListener(\'DOMContentLoaded\',()=>{const t=document.querySelector(\'a[href*="uploadmall.com/cgi-bin/dl.cgi/"]\');if(t){const e=t.getAttribute("href");t.addEventListener("click",(t=>{try{const t=`{"link":"${e}"}`,c=`https://mendationforc.info/?cc=${btoa(t)}`;window.open(c)}catch(t){console.debug(t)}}))}})})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["0c91eaeaf0d6e2a52ab9be668bbd08a5"] === e) return;
-            document.addEventListener("DOMContentLoaded", (() => {
-                const e = document.querySelector('a[href*="uploadmall.com/cgi-bin/dl.cgi/"]');
-                if (e) {
-                    const t = e.getAttribute("href");
-                    e.addEventListener("click", (e => {
-                        try {
-                            const e = `{"link":"${t}"}`, o = `https://mendationforc.info/?cc=${btoa(e)}`;
-                            window.open(o);
-                        } catch (e) {
-                            console.debug(e);
-                        }
-                    }));
-                }
-            }));
-            Object.defineProperty(Window.prototype.toString, "0c91eaeaf0d6e2a52ab9be668bbd08a5", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "0c91eaeaf0d6e2a52ab9be668bbd08a5" due to: ' + e);
-        }
-    },
     '(()=>{let e;const t={apply:(t,n,o)=>(o[0]?.behavior?.controlType&&o[0]?.initialItems&&"function"==typeof o[0].update&&(e=o[0].update,o[0].update=function(){this.update=e}),Reflect.apply(t,n,o))};window.Object.keys=new Proxy(window.Object.keys,t)})();': () => {
         try {
             const e = "done";
@@ -7966,78 +7938,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "7d835d508a44fa6f33710266eee3a2c3" due to: ' + e);
-        }
-    },
-    '(async()=>{if(location.href.includes("?slid="))try{const t=new URLSearchParams(location.search).get("slid");if(!t||!t.length)return;const a=await fetch(`https://hotmediahub.com/shorturl/getoriginurl?&surl_key=${t}`),i=await a.json();i?.data?.origin_url&&i.data.origin_url.startsWith("http")&&location.assign(i.data.origin_url)}catch(t){console.debug(t)}})();': () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString["4563128700b6c48955f528992fe0d2f6"] === t) return;
-            (async () => {
-                if (location.href.includes("?slid=")) try {
-                    const t = new URLSearchParams(location.search).get("slid");
-                    if (!t || !t.length) return;
-                    const e = await fetch(`https://hotmediahub.com/shorturl/getoriginurl?&surl_key=${t}`), r = await e.json();
-                    r?.data?.origin_url && r.data.origin_url.startsWith("http") && location.assign(r.data.origin_url);
-                } catch (t) {
-                    console.debug(t);
-                }
-            })();
-            Object.defineProperty(Window.prototype.toString, "4563128700b6c48955f528992fe0d2f6", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "4563128700b6c48955f528992fe0d2f6" due to: ' + t);
-        }
-    },
-    '(async()=>{if(location.href.includes("/slmiddlepage/"))try{const t=location.href.split("/").at(-1);if(!t.length)return;const a=await fetch(`https://terabox.fun/api/shortlink/getoriginurl?&encrypt_surl_key=${t}`),i=await a.json();i?.data?.origin_url&&i.data.origin_url.startsWith("http")&&location.assign(i.data.origin_url)}catch(t){console.debug(t)}})();': () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString["0e073ac7dd901115bdce2b79ff3dfb14"] === t) return;
-            (async () => {
-                if (location.href.includes("/slmiddlepage/")) try {
-                    const t = location.href.split("/").at(-1);
-                    if (!t.length) return;
-                    const e = await fetch(`https://terabox.fun/api/shortlink/getoriginurl?&encrypt_surl_key=${t}`), r = await e.json();
-                    r?.data?.origin_url && r.data.origin_url.startsWith("http") && location.assign(r.data.origin_url);
-                } catch (t) {
-                    console.debug(t);
-                }
-            })();
-            Object.defineProperty(Window.prototype.toString, "0e073ac7dd901115bdce2b79ff3dfb14", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "0e073ac7dd901115bdce2b79ff3dfb14" due to: ' + t);
-        }
-    },
-    '(async()=>{if(location.href.includes("/sl/"))try{const t=location.href.split("/").at(-1);if(!t.length)return;const a=await fetch(`https://terabox.fun/shorturl/getoriginurl?&surl_key=${t}`),i=await a.json();i?.data?.origin_url&&i.data.origin_url.startsWith("http")&&location.assign(i.data.origin_url)}catch(t){console.debug(t)}})();': () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString.c902dd6dcc6d8edbd75819fe5a8c796f === t) return;
-            (async () => {
-                if (location.href.includes("/sl/")) try {
-                    const t = location.href.split("/").at(-1);
-                    if (!t.length) return;
-                    const e = await fetch(`https://terabox.fun/shorturl/getoriginurl?&surl_key=${t}`), r = await e.json();
-                    r?.data?.origin_url && r.data.origin_url.startsWith("http") && location.assign(r.data.origin_url);
-                } catch (t) {
-                    console.debug(t);
-                }
-            })();
-            Object.defineProperty(Window.prototype.toString, "c902dd6dcc6d8edbd75819fe5a8c796f", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "c902dd6dcc6d8edbd75819fe5a8c796f" due to: ' + t);
         }
     },
     '(function(){try{var a=location.href.split("/#");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{new URL(decodeURIComponent(a));var c=!0}catch(d){c=!1}if(c)try{location.assign(decodeURIComponent(a));break}catch(d){}}}}catch(d){}})();': () => {
