@@ -98,9 +98,9 @@ export const enum ExtensionUpdateEvent {
     UpdateSuccess = 'UpdateSuccess',
 
     /**
-     * Event for transition to idle state.
+     * Event for resetting to idle state.
      */
-    Idle = 'Idle',
+    ResetToIdle = 'ResetToIdle',
 }
 
 /**
@@ -113,17 +113,11 @@ type EventType = {
 const EXTENSION_UPDATE_MACHINE_ID = 'extensionUpdate';
 
 /**
- * Minimum delay just for state machine transitions.
- */
-const MIN_DELAY_MS = 1;
-
-/**
  * Extension update state machine.
  */
 const extensionUpdateMachine = setup({
     types: {} as { events: EventType },
     delays: {
-        MIN_DELAY: MIN_DELAY_MS,
         NOTIFICATION_DELAY: NOTIFICATION_TTL_MS,
     },
 }).createMachine({
@@ -189,7 +183,7 @@ const extensionUpdateMachine = setup({
                 [ExtensionUpdateEvent.Check]: {
                     target: ExtensionUpdateState.Checking,
                 },
-                [ExtensionUpdateEvent.Idle]: {
+                [ExtensionUpdateEvent.ResetToIdle]: {
                     target: ExtensionUpdateState.Idle,
                 },
             },

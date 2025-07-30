@@ -676,7 +676,7 @@ export class PopupStore {
                     },
                     closeManually: true,
                     onCloseHandler: () => {
-                        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Idle });
+                        extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
                     },
                 };
             }

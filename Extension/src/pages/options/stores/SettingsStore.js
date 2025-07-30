@@ -752,7 +752,7 @@ class SettingsStore {
                     type: NotificationType.Error,
                 });
 
-                extensionUpdateActor.send({ type: ExtensionUpdateEvent.Idle });
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
             }
         } catch (error) {
             logger.debug('[ext.SettingsStore.updateExtensionMV3]: failed to update extension: ', error);
