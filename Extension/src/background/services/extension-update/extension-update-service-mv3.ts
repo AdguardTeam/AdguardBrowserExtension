@@ -94,6 +94,9 @@ export class ExtensionUpdateService {
         // FIXME: remove as needed only for development
         this.isUpdateAvailable = true;
 
+        /**
+         * Minimal duration is needed for more smooth UI.
+         */
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
         if (this.isUpdateAvailable) {
@@ -136,8 +139,13 @@ export class ExtensionUpdateService {
             // IMPORTANT: saving to storage should be done before the extension reload
             await browserStorage.set(MANUAL_EXTENSION_UPDATE_KEY, JSON.stringify(manualExtensionDataToSave));
 
-            // needed for either notification showing on popup
-            // or updating status on options page before the extension reload
+            /**
+             * Minimal duration is needed for more smooth UI.
+             *
+             * Being used for:
+             * - notification showing on popup;
+             * - updating status on options page before the extension reload.
+             */
             await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
             ExtensionUpdateService.reloadExtension();
