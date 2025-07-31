@@ -18,10 +18,6 @@
 
 import browser from 'webextension-polyfill';
 
-// Because this file is already MV3 replacement module, we can import directly
-// from mv3 tswebextension without using aliases.
-import { TsWebExtension } from '@adguard/tswebextension/mv3';
-
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
@@ -136,7 +132,6 @@ export class SettingsService {
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
             areFilterLimitsExceeded,
-            isUserScriptsApiSupported: TsWebExtension.isUserScriptsApiSupported,
         };
     }
 
