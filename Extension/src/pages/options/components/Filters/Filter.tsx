@@ -126,9 +126,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                 if (staticFiltersLimitsWarning) {
                     uiStore.addNotification({
                         description: staticFiltersLimitsWarning,
-                        extra: {
-                            link: translator.getMessage('options_rule_limits'),
-                        },
+                        link: translator.getMessage('options_rule_limits'),
                         type: NotificationType.ERROR,
                     });
                 }

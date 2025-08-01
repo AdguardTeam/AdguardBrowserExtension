@@ -131,9 +131,7 @@ const Filters = observer(() => {
                     if (staticFiltersLimitsWarning) {
                         uiStore.addNotification({
                             description: staticFiltersLimitsWarning,
-                            extra: {
-                                link: translator.getMessage('options_rule_limits'),
-                            },
+                            link: translator.getMessage('options_rule_limits'),
                             type: NotificationType.ERROR,
                         });
                     }

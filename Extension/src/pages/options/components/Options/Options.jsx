@@ -160,9 +160,7 @@ const Options = observer(() => {
             if (__IS_MV3__ && areFilterLimitsExceeded) {
                 uiStore.addNotification({
                     description: translator.getMessage('popup_limits_exceeded_warning'),
-                    extra: {
-                        link: translator.getMessage('options_rule_limits'),
-                    },
+                    link: translator.getMessage('options_rule_limits'),
                     type: NotificationType.ERROR,
                 });
             }

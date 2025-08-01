@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Dynamic rules limit duplicate notifications.
 - Network rules with `$important` modifier are applied even if protection is disabled [#3227].
 
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227

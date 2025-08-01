@@ -51,9 +51,9 @@ export const Notification = (props: NotificationProps) => {
         id,
         description,
         type,
-        extra,
+        link,
     } = props;
-    const isNotificationWithLink = extra?.link && typeof extra?.link === 'string';
+    const isNotificationWithLink = !!link;
 
     const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
 
@@ -128,7 +128,7 @@ export const Notification = (props: NotificationProps) => {
                         role="link"
                         onClick={handleRuleLimitsClick}
                     >
-                        {extra.link}
+                        {link}
                     </button>
                 )}
             </div>

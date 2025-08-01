@@ -266,9 +266,7 @@ class SettingsStore {
         if (uiStore.dynamicRulesLimitsWarning) {
             uiStore.addNotification({
                 description: uiStore.dynamicRulesLimitsWarning,
-                extra: {
-                    link: translator.getMessage('options_rule_limits'),
-                },
+                link: translator.getMessage('options_rule_limits'),
                 type: NotificationType.ERROR,
             });
         }
