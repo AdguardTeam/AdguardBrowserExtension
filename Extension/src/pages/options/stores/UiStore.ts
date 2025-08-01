@@ -54,9 +54,9 @@ export type Notification = {
     type: NotificationType;
 
     /**
-     * Some additional data, e.g. links.
+     * Link to detailed info
      */
-    extra?: Record<string, any>;
+    link?: string;
 };
 
 class UiStore {
@@ -101,12 +101,22 @@ class UiStore {
     @observable isSidebarOpen = false;
 
     @action
-    addNotification({ description, type, extra }: Omit<Notification, 'id'>) {
+    addNotification({ description, type, link }: Omit<Notification, 'id'>): string | null {
+        const isNotificationAlreadyPresent = this.notifications.some((notification) => {
+            return notification.type === type
+                && notification.link === link
+                && notification.description === description;
+        });
+
+        if (isNotificationAlreadyPresent) {
+            return null;
+        }
+
         const id = nanoid();
         this.notifications.push({
             id,
             description,
-            extra,
+            link,
             type,
         });
         return id;
