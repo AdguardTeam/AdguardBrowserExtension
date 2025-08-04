@@ -6806,6 +6806,40 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "9201edecacad19e52ef0fb416ec8c902" due to: ' + e);
         }
     },
+    '(()=>{const e={apply:(e,t,r)=>{try{if(r[2]?.[0]&&r[2][0]?.includes?.("MarketplaceFeedAdStory")){const e=r[2][0],t=e.split(/\\r?\\n|\\r/).map((e=>JSON.parse(e)));t.forEach((e=>{e.data?.viewer?.marketplace_feed_stories?.edges&&(e.data.viewer.marketplace_feed_stories.edges=e.data.viewer.marketplace_feed_stories.edges.filter((e=>!e.node?.__typename?.includes("MarketplaceFeedAdStory"))))}));const a=t.map((e=>JSON.stringify(e))).join("\\r\\n");r[2][0]=a}return Reflect.apply(e,t,r)}catch(a){return console.trace(a),Reflect.apply(e,t,r)}}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["62b1f9c5122ff0789e03ede3f535bab1"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, r) => {
+                        try {
+                            if (r[2]?.[0] && r[2][0]?.includes?.("MarketplaceFeedAdStory")) {
+                                const e = r[2][0].split(/\r?\n|\r/).map((e => JSON.parse(e)));
+                                e.forEach((e => {
+                                    e.data?.viewer?.marketplace_feed_stories?.edges && (e.data.viewer.marketplace_feed_stories.edges = e.data.viewer.marketplace_feed_stories.edges.filter((e => !e.node?.__typename?.includes("MarketplaceFeedAdStory"))));
+                                }));
+                                const t = e.map((e => JSON.stringify(e))).join("\r\n");
+                                r[2][0] = t;
+                            }
+                            return Reflect.apply(e, t, r);
+                        } catch (o) {
+                            return console.trace(o), Reflect.apply(e, t, r);
+                        }
+                    }
+                };
+                window.Function.prototype.call = new Proxy(window.Function.prototype.call, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "62b1f9c5122ff0789e03ede3f535bab1", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "62b1f9c5122ff0789e03ede3f535bab1" due to: ' + e);
+        }
+    },
     '!function(){if(window.location.href.includes("/marketplace/")){new MutationObserver(function(){document.querySelectorAll(\'div[data-testid="marketplace_home_feed"] div[class][data-testid^="MarketplaceUpsell-"] > div > div\').forEach(function(e){var t=e.outerHTML;t&&void 0!==t&&!0===t.includes("/ads/about/")&&(e.style="display:none!important;")})}).observe(document,{childList:!0,subtree:!0})}}();': () => {
         try {
             const e = "done";
@@ -9632,40 +9666,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "14a0dfcfc56570b45c7aa35014affd67" due to: ' + e);
-        }
-    },
-    '(()=>{const e={apply:(e,t,r)=>{try{if(r[2]?.[0]&&r[2][0]?.includes?.("MarketplaceFeedAdStory")){const e=r[2][0],t=e.split(/\\r?\\n|\\r/).map((e=>JSON.parse(e)));t.forEach((e=>{e.data?.viewer?.marketplace_feed_stories?.edges&&(e.data.viewer.marketplace_feed_stories.edges=e.data.viewer.marketplace_feed_stories.edges.filter((e=>!e.node?.__typename?.includes("MarketplaceFeedAdStory"))))}));const a=t.map((e=>JSON.stringify(e))).join("\\r\\n");r[2][0]=a}return Reflect.apply(e,t,r)}catch(a){return console.trace(a),Reflect.apply(e,t,r)}}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,e)})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["62b1f9c5122ff0789e03ede3f535bab1"] === e) return;
-            (() => {
-                const e = {
-                    apply: (e, t, r) => {
-                        try {
-                            if (r[2]?.[0] && r[2][0]?.includes?.("MarketplaceFeedAdStory")) {
-                                const e = r[2][0].split(/\r?\n|\r/).map((e => JSON.parse(e)));
-                                e.forEach((e => {
-                                    e.data?.viewer?.marketplace_feed_stories?.edges && (e.data.viewer.marketplace_feed_stories.edges = e.data.viewer.marketplace_feed_stories.edges.filter((e => !e.node?.__typename?.includes("MarketplaceFeedAdStory"))));
-                                }));
-                                const t = e.map((e => JSON.stringify(e))).join("\r\n");
-                                r[2][0] = t;
-                            }
-                            return Reflect.apply(e, t, r);
-                        } catch (o) {
-                            return console.trace(o), Reflect.apply(e, t, r);
-                        }
-                    }
-                };
-                window.Function.prototype.call = new Proxy(window.Function.prototype.call, e);
-            })();
-            Object.defineProperty(Window.prototype.toString, "62b1f9c5122ff0789e03ede3f535bab1", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "62b1f9c5122ff0789e03ede3f535bab1" due to: ' + e);
         }
     },
     '(()=>{const e={apply:(e,t,c)=>{try{const e=c[0];e&&e.includes(\'"clientScreen"\')&&!e.includes(\'"clientScreen":"ADUNIT"\')&&(c[0]=e.replace(\'"clientScreen":"WATCH_FULL_SCREEN"\',\'"clientScreen":"ADUNIT"\'))}catch(e){console.trace("Error occurred:",e)}return Reflect.apply(e,t,c)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();': () => {
