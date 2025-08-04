@@ -68,6 +68,11 @@ export const enum ExtensionUpdateState {
  */
 export const enum ExtensionUpdateEvent {
     /**
+     * Event to initialize the state machine.
+     */
+    Init = 'Init',
+
+    /**
      * Event to check for updates.
      */
     Check = 'Check',
@@ -107,7 +112,20 @@ export const enum ExtensionUpdateEvent {
  * Extension update state machine event type.
  */
 type EventType = {
+    /**
+     * Event type.
+     */
     type: ExtensionUpdateEvent;
+
+    /**
+     * Whether an extension update is available.
+     */
+    isUpdateAvailable?: boolean;
+
+    /**
+     * Whether the extension was reloaded after an update.
+     */
+    isReloaded?: boolean;
 };
 
 const EXTENSION_UPDATE_MACHINE_ID = 'extensionUpdate';
@@ -126,6 +144,17 @@ const extensionUpdateMachine = setup({
     states: {
         [ExtensionUpdateState.Idle]: {
             on: {
+                [ExtensionUpdateEvent.Init]: [
+                    {
+                        guard: ({ event }: { event: EventType }) => !!event.isUpdateAvailable,
+                        target: ExtensionUpdateState.Available,
+                    },
+                    {
+                        guard: ({ event }: { event: EventType }) => !!event.isReloaded,
+                        target: ExtensionUpdateState.UpdateSuccess,
+                    },
+                    { target: ExtensionUpdateState.NotAvailable },
+                ],
                 [ExtensionUpdateEvent.Check]: {
                     target: ExtensionUpdateState.Checking,
                 },
@@ -209,25 +238,19 @@ extensionUpdateActor.start();
 export { extensionUpdateActor };
 
 /**
- * Sets the initial state of the extension update machine actor
+ * Initializes the extension update machine actor
  * based on the current data for the page — options or popup.
  *
  * @param isExtensionUpdateAvailable Whether an extension update is available.
  * @param isExtensionReloadedOnUpdate Whether the extension was reloaded after an update.
  */
-export const setActorInitState = (
+export const initExtensionUpdateActor = (
     isExtensionUpdateAvailable: boolean,
     isExtensionReloadedOnUpdate: boolean,
 ) => {
-    if (isExtensionUpdateAvailable) {
-        extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
-        return;
-    }
-
-    if (isExtensionReloadedOnUpdate) {
-        extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateSuccess });
-        return;
-    }
-
-    extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
+    extensionUpdateActor.send({
+        type: ExtensionUpdateEvent.Init,
+        isUpdateAvailable: isExtensionUpdateAvailable,
+        isReloaded: isExtensionReloadedOnUpdate,
+    });
 };

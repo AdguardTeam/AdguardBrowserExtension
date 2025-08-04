@@ -49,7 +49,7 @@ import {
     ExtensionUpdateState,
     ExtensionUpdateEvent,
     extensionUpdateActor,
-    setActorInitState,
+    initExtensionUpdateActor,
 } from '../../common/state-machines/extension-update-machine';
 import { NotificationType } from '../../common/constants';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
@@ -287,7 +287,7 @@ export class PopupStore {
 
             this.setAppActorInitState();
 
-            setActorInitState(isExtensionUpdateAvailable, isExtensionReloadedOnUpdate);
+            initExtensionUpdateActor(isExtensionUpdateAvailable, isExtensionReloadedOnUpdate);
         });
     };
 

@@ -45,7 +45,7 @@ import { messenger } from '../../services/messenger';
 import {
     extensionUpdateActor,
     ExtensionUpdateEvent,
-    setActorInitState,
+    initExtensionUpdateActor,
 } from '../../common/state-machines/extension-update-machine';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import {
@@ -343,7 +343,7 @@ class SettingsStore {
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
 
-            setActorInitState(data.isExtensionUpdateAvailable, data.isExtensionReloadedOnUpdate);
+            initExtensionUpdateActor(data.isExtensionUpdateAvailable, data.isExtensionReloadedOnUpdate);
 
             if (data.isExtensionReloadedOnUpdate) {
                 const uiStore = this.rootStore.uiStore;
