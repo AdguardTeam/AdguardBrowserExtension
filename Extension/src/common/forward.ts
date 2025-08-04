@@ -82,7 +82,8 @@ export const enum ForwardAction {
     Birthday25 = 'birthday_25',
     // TODO: Delete from here and TDS after release v5.2.
     CustomFiltersMv3Disabled = 'custom_mv3_disabled',
-    DeveloperModeRequired = 'developer_mode_required',
+    // IMPORTANT: do not change the value as tds is already configured for that specific string.
+    UserScriptsApiRequired = 'developer_mode_required',
 }
 
 export const enum ForwardFrom {

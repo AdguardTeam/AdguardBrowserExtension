@@ -49,6 +49,7 @@ import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 import { FiltersStorage } from '../storages/filters';
 import { CommonFilterUtils } from '../../common/common-filter-utils';
+import { isUserScriptsApiSupported } from '../../common/user-scripts-api';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -150,7 +151,7 @@ export class Engine implements TsWebExtensionEngine {
          *
          * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
          */
-        if (!TsWebExtension.isUserScriptsApiSupported) {
+        if (!isUserScriptsApiSupported()) {
             TsWebExtension.setLocalScriptRules(localScriptRules);
         }
 
@@ -278,18 +279,69 @@ export class Engine implements TsWebExtensionEngine {
         //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
         // }
 
-        const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
-            .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
+        let customFilters: Configuration['customFilters'] = [];
 
-        const customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-            const preprocessedFilterList = await FiltersStorage.get(filterId);
+        /**
+         * Custom filters are NOT allowed for users by default. To have them enabled,
+         * user must explicitly grant User scripts API permission.
+         *
+         * To fully comply with Chrome Web Store policies regarding remote code execution,
+         * we implement a strict security-focused approach for JavaScript rule execution.
+         *
+         * 1. Default - regular users that did not grant User scripts API permission explicitly:
+         *    - We collect and pre-build script rules from the filters and statically bundle
+         *      them into the extension - STEP 1. See 'updateLocalResourcesForChromiumMv3' in our build tools.
+         *      IMPORTANT: all scripts and their arguments are local and bundled within the extension.
+         *    - These pre-verified local scripts are passed to the engine - STEP 2.
+         *    - At runtime before the execution, we check if each script rule is included
+         *      in our local scripts list (STEP 3).
+         *    - Only pre-verified local scripts are executed via chrome.scripting API (STEP 4.1 and 4.2).
+         *      All other scripts are discarded.
+         *    - Custom filters are NOT allowed for regular users to prevent any possibility
+         *      of remote code execution, regardless of rule interpretation.
+         *
+         * 2. For advanced users that explicitly granted User scripts API permission -
+         *    via enabling the Developer mode or Allow user scripts in the extension details:
+         *    - Custom filters are allowed and may contain Scriptlet and JS rules
+         *      that can be executed using the browser's built-in userScripts API (STEP 4.3),
+         *      which provides a secure sandbox.
+         *    - This execution bypasses the local script verification process but remains
+         *      isolated and secure through Chrome's native sandboxing.
+         *    - This mode requires explicit user activation and is intended for advanced users only.
+         *
+         * IMPORTANT:
+         * Custom filters are ONLY supported when User scripts API permission is explicitly enabled.
+         * This strict policy prevents Chrome Web Store rejection due to potential remote script execution.
+         * When custom filters are allowed, they may contain:
+         * 1. Network rules – converted to DNR rules and applied via dynamic rules.
+         * 2. Cosmetic rules – interpreted directly in the extension code.
+         * 3. Scriptlet and JS rules – executed via the browser's userScripts API (userScripts.execute)
+         *    with Chrome's native sandboxing providing security isolation.
+         *
+         * For regular users without User scripts API permission (default case):
+         * - Only pre-bundled filters with statically verified scripts are supported.
+         * - Downloading custom filters or any rules from remote sources is blocked entirely
+         *   to ensure compliance with the store policies.
+         *
+         * This implementation ensures perfect compliance with Chrome Web Store policies
+         * by preventing any possibility of remote code execution for regular users.
+         *
+         * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
+         */
+        if (isUserScriptsApiSupported()) {
+            const customFiltersWithMetadata = FiltersApi.getEnabledFiltersWithMetadata()
+                .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
-            return {
-                filterId,
-                trusted,
-                ...(preprocessedFilterList || emptyPreprocessedFilterList),
-            };
-        }));
+            customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
+                const preprocessedFilterList = await FiltersStorage.get(filterId);
+
+                return {
+                    filterId,
+                    trusted,
+                    ...(preprocessedFilterList || emptyPreprocessedFilterList),
+                };
+            }));
+        }
 
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 

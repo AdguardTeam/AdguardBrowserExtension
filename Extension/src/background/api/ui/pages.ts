@@ -56,9 +56,11 @@ import {
     FULLSCREEN_USER_RULES_OUTPUT,
     OPTIONS_OUTPUT,
 } from '../../../../../constants';
+import { logger } from '../../../common/logger';
 import { OptionsPageSections } from '../../../common/nav';
 import { FilterUpdateService } from '../../services/filter-update';
 import { CustomFilterUtils } from '../../../common/custom-filter-utils';
+import { isUserScriptsApiSupported } from '../../../common/user-scripts-api';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
@@ -469,6 +471,11 @@ export class PagesApi {
      * @param message - Content script message with custom filter data.
      */
     public static async openSettingsPageWithCustomFilterModal(message: AddFilteringSubscriptionMessage): Promise<void> {
+        if (__IS_MV3__ && !isUserScriptsApiSupported()) {
+            logger.debug('[ext.PagesApi.openSettingsPageWithCustomFilterModal]: User scripts API permission is not granted');
+            return;
+        }
+
         const { url, title } = message.data;
 
         let optionalPart = '#filters?group=0';

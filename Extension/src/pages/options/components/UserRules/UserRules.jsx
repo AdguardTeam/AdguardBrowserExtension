@@ -27,9 +27,9 @@ import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { DynamicRulesLimitsWarning } from '../Warnings';
-import { DeveloperModeWarning } from '../Warnings/DeveloperModeWarning';
 
 import { UserRulesSwitcher } from './UserRulesSwitcher';
+import { UserScriptsApiWarningForUserRules } from './UserScriptsApiWarningForUserRules';
 import { RuleSyntaxLink } from './RuleSyntaxLink';
 
 import './styles.pcss';
@@ -69,7 +69,7 @@ const UserRules = observer(() => {
                 inlineControl={(<UserRulesSwitcher labelId={switchTitleId} />)}
             />
             <DynamicRulesLimitsWarning />
-            <DeveloperModeWarning />
+            <UserScriptsApiWarningForUserRules />
             <div className={linksClassNames}>
                 <RuleSyntaxLink />
             </div>

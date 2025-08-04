@@ -24,7 +24,17 @@ import {
     runInAction,
 } from 'mobx';
 
+import {
+    AntibannerGroupsId,
+    ManualExtensionUpdatePage,
+    RECOMMENDED_TAG_ID,
+    TRUSTED_TAG_KEYWORD,
+    WASTE_CHARACTERS,
+} from '../../../common/constants';
 import { logger } from '../../../common/logger';
+import { sleep } from '../../../common/sleep-utils';
+import { translator } from '../../../common/translators/translator';
+import { UserAgent } from '../../../common/user-agent';
 import {
     createSavingService,
     SavingFSMEvent,
@@ -45,15 +55,6 @@ import {
     sortGroupsOnSearch,
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
-import {
-    AntibannerGroupsId,
-    ManualExtensionUpdatePage,
-    RECOMMENDED_TAG_ID,
-    TRUSTED_TAG_KEYWORD,
-    WASTE_CHARACTERS,
-} from '../../../common/constants';
-import { translator } from '../../../common/translators/translator';
-import { sleep } from '../../../common/sleep-utils';
 
 /**
  * Sometimes the options page might be opened before the background page or
@@ -199,7 +200,7 @@ class SettingsStore {
 
     @observable isChrome = null;
 
-    @observable isUserScriptsApiSupported = false;
+    @observable currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.version) : null;
 
     @observable searchInput = '';
 
@@ -339,7 +340,6 @@ class SettingsStore {
             this.setBlockKnownTrackers(data.filtersMetadata.filters);
             this.setStripTrackingParameters(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
-            this.isUserScriptsApiSupported = data.isUserScriptsApiSupported;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
 

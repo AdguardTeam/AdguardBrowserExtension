@@ -24,8 +24,6 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 
-import './limit-warning.pcss';
-
 /**
  * Dynamic rules warning component.
  *
@@ -50,12 +48,12 @@ export const DynamicRulesLimitsWarning = observer(() => {
     }
 
     return (
-        <div role="alert" className="limit-warning">
+        <div role="alert" className="warning section-warning">
             <span>
                 {dynamicRulesLimitsWarning}
             </span>
             <Link
-                className="limit-warning--link"
+                className="section-warning--link"
                 to={`/${OptionsPageSections.ruleLimits}`}
             >
                 {translator.getMessage('options_rule_limits')}
