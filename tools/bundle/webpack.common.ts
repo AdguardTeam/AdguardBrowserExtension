@@ -317,6 +317,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/src/background/api/network/network-mv${manifestVersion}.ts`,
                 ),
+                'network-api-settings': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/api/network/settings-mv${manifestVersion}.ts`,
+                ),
                 'filters-update-api': path.resolve(
                     __dirname,
                     `../../Extension/src/background/api/filters/update/update-mv${manifestVersion}.ts`,

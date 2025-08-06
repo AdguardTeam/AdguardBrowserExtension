@@ -46,7 +46,7 @@ import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import { isUserScriptsApiSupported } from '../../../common/user-scripts-api';
 
-import { NetworkSettings } from './settings';
+import { NetworkSettings } from './settings-mv3';
 
 export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: boolean };
 

@@ -37,7 +37,7 @@ import {
 } from '../../schema';
 import { type FilterUpdateOptions } from '../filters';
 
-import { NetworkSettings } from './settings';
+import { NetworkSettings } from './settings-mv2';
 
 export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: boolean };
 
@@ -146,6 +146,13 @@ export class Network {
         const hasFilterIdInLocalFilters = this.settings.localFilterIds.indexOf(filterId) >= 0;
 
         if (!forceRemote && !hasFilterIdInLocalFilters) {
+            /**
+             * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
+             * process in the extension.
+             *
+             * Note, that downloading anything is forbidden in MV3 extension.
+             */
+
             // eslint-disable-next-line max-len
             throw new Error(`Cannot locally load filter with id ${filterId} because it is not build in the extension local resources.`);
         }
