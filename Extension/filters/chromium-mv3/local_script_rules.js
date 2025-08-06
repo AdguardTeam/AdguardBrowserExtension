@@ -1,46 +1,16 @@
 /**
- * To fully comply with Chrome Web Store policies regarding remote code execution,
- * we implement a strict security-focused approach for JavaScript rule execution.
+ * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
+ * process in the extension.
  *
- * 1. Default - regular users that did not grant User scripts API permission explicitly:
- *    - We collect and pre-build script rules from the filters and statically bundle
- *      them into the extension - STEP 1. See 'updateLocalResourcesForChromiumMv3' in our build tools.
- *      IMPORTANT: all scripts and their arguments are local and bundled within the extension.
- *    - These pre-verified local scripts are passed to the engine - STEP 2.
- *    - At runtime before the execution, we check if each script rule is included
- *      in our local scripts list (STEP 3).
- *    - Only pre-verified local scripts are executed via chrome.scripting API (STEP 4.1 and 4.2).
- *      All other scripts are discarded.
- *    - Custom filters are NOT allowed for regular users to prevent any possibility
- *      of remote code execution, regardless of rule interpretation.
+ * 1. We collect and bundle all scripts that can be executed on web pages into
+ *     the extension package into so-called `localScriptRules`.
+ * 2. Rules that control when and where these scripts can be executed are also
+ *     bundled within the extension package inside ruleset files.
+ * 3. The rules look like: `example.org#%#scripttext`. Whenever the rule is
+ *     matched, we check if there's a function for scripttext in
+ *     `localScriptRules`, retrieve it from there and execute it.
  *
- * 2. For advanced users that explicitly granted User scripts API permission -
- *    via enabling the Developer mode or Allow user scripts in the extension details:
- *    - Custom filters are allowed and may contain Scriptlet and JS rules
- *      that can be executed using the browser's built-in userScripts API (STEP 4.3),
- *      which provides a secure sandbox.
- *    - This execution bypasses the local script verification process but remains
- *      isolated and secure through Chrome's native sandboxing.
- *    - This mode requires explicit user activation and is intended for advanced users only.
- *
- * IMPORTANT:
- * Custom filters are ONLY supported when User scripts API permission is explicitly enabled.
- * This strict policy prevents Chrome Web Store rejection due to potential remote script execution.
- * When custom filters are allowed, they may contain:
- * 1. Network rules – converted to DNR rules and applied via dynamic rules.
- * 2. Cosmetic rules – interpreted directly in the extension code.
- * 3. Scriptlet and JS rules – executed via the browser's userScripts API (userScripts.execute)
- *    with Chrome's native sandboxing providing security isolation.
- *
- * For regular users without User scripts API permission (default case):
- * - Only pre-bundled filters with statically verified scripts are supported.
- * - Downloading custom filters or any rules from remote sources is blocked entirely
- *   to ensure compliance with the store policies.
- *
- * This implementation ensures perfect compliance with Chrome Web Store policies
- * by preventing any possibility of remote code execution for regular users.
- *
- * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
+ * Below is the file with all the registered scripts that can be executed.
  */
 export const localScriptRules = {
     '(function(){var a=document.currentScript,b=String.prototype.charCodeAt,c=function(){return true;};Object.defineProperty(String.prototype,"charCodeAt",{get:function(){return document.currentScript===a?b:c},set:function(a){}})})();': () => {
@@ -639,7 +609,7 @@ export const localScriptRules = {
         try {
             const e = "done";
             if (Window.prototype.toString["103de1b5e23e730a477b9b7da10564a4"] === e) return;
-            window.TATM = window.TATM || {}, TATM.init = () => {}, TATM.initAdUnits = () => {},
+            window.TATM = window.TATM || {}, TATM.init = () => {}, TATM.initAdUnits = () => {}, 
             TATM.pageReady = () => {}, TATM.getVast = function(e) {
                 return new Promise((e => {
                     e();
@@ -1207,7 +1177,7 @@ export const localScriptRules = {
         try {
             const e = "done";
             if (Window.prototype.toString.dcadc5846fed7b2f033974e6075c5fed === e) return;
-            -1 == document.cookie.indexOf("GPRD") && (document.cookie = "GPRD=128; path=/;",
+            -1 == document.cookie.indexOf("GPRD") && (document.cookie = "GPRD=128; path=/;", 
             location.reload());
             Object.defineProperty(Window.prototype.toString, "dcadc5846fed7b2f033974e6075c5fed", {
                 value: e,
@@ -1238,7 +1208,7 @@ export const localScriptRules = {
         try {
             const e = "done";
             if (Window.prototype.toString["23d2c0ec8e7bc0167527c1acc5bb5355"] === e) return;
-            -1 == document.cookie.indexOf("cookie-functional") && (document.cookie = "cookie-functional=1; path=/;",
+            -1 == document.cookie.indexOf("cookie-functional") && (document.cookie = "cookie-functional=1; path=/;", 
             document.cookie = "popupek=1; path=/;", location.reload());
             Object.defineProperty(Window.prototype.toString, "23d2c0ec8e7bc0167527c1acc5bb5355", {
                 value: e,
@@ -1254,7 +1224,7 @@ export const localScriptRules = {
         try {
             const e = "done";
             if (Window.prototype.toString.f2aea7e44ba000bb61336ea707125580 === e) return;
-            -1 == document.cookie.indexOf("ccb") && (document.cookie = "ccb=facebookAccepted=0&googleAnalyticsAccepted=0&commonCookies=1; path=/;",
+            -1 == document.cookie.indexOf("ccb") && (document.cookie = "ccb=facebookAccepted=0&googleAnalyticsAccepted=0&commonCookies=1; path=/;", 
             location.reload());
             Object.defineProperty(Window.prototype.toString, "f2aea7e44ba000bb61336ea707125580", {
                 value: e,
@@ -1380,7 +1350,7 @@ export const localScriptRules = {
             !function() {
                 if (-1 == document.cookie.indexOf("_chorus_privacy_consent") && document.location.hostname.includes("bavarianfootballworks.com")) {
                     var e = (new Date).getTime(), o = new Date(e + 1314e6);
-                    document.cookie = "_chorus_privacy_consent=" + e + "; path=/; expires=" + o.toUTCString(),
+                    document.cookie = "_chorus_privacy_consent=" + e + "; path=/; expires=" + o.toUTCString(), 
                     location.reload();
                 }
             }();
@@ -1401,7 +1371,7 @@ export const localScriptRules = {
             !function() {
                 if (-1 == document.cookie.indexOf("_chorus_privacy_consent") && document.location.hostname.includes("goldenstateofmind.com")) {
                     var e = (new Date).getTime(), o = new Date(e + 1314e6);
-                    document.cookie = "_chorus_privacy_consent=" + e + "; path=/; expires=" + o.toUTCString(),
+                    document.cookie = "_chorus_privacy_consent=" + e + "; path=/; expires=" + o.toUTCString(), 
                     location.reload();
                 }
             }();
@@ -1422,7 +1392,7 @@ export const localScriptRules = {
             !function() {
                 if (-1 == document.cookie.indexOf("_chorus_privacy_consent") && document.location.hostname.includes("mmafighting.com")) {
                     var e = (new Date).getTime(), o = new Date(e + 1314e6);
-                    document.cookie = "_chorus_privacy_consent=" + e + "; path=/; expires=" + o.toUTCString(),
+                    document.cookie = "_chorus_privacy_consent=" + e + "; path=/; expires=" + o.toUTCString(), 
                     location.reload();
                 }
             }();
@@ -1440,7 +1410,7 @@ export const localScriptRules = {
         try {
             const e = "done";
             if (Window.prototype.toString.c69eca07b387ee449234ff30bf5ce30e === e) return;
-            -1 == document.cookie.indexOf("cms_cookies") && (document.cookie = "cms_cookies=6; path=/;",
+            -1 == document.cookie.indexOf("cms_cookies") && (document.cookie = "cms_cookies=6; path=/;", 
             document.cookie = "cms_cookies_saved=true; path=/;", location.reload());
             Object.defineProperty(Window.prototype.toString, "c69eca07b387ee449234ff30bf5ce30e", {
                 value: e,
@@ -1615,7 +1585,7 @@ export const localScriptRules = {
             !function() {
                 if (-1 == document.cookie.indexOf("BCPermissionLevel")) {
                     var e = (new Date).getTime(), o = new Date(e + 1314e6);
-                    document.cookie = "BCPermissionLevel=PERSONAL; path=/; expires=" + o.toUTCString(),
+                    document.cookie = "BCPermissionLevel=PERSONAL; path=/; expires=" + o.toUTCString(), 
                     location.reload();
                 }
             }();
@@ -1636,7 +1606,7 @@ export const localScriptRules = {
             !function() {
                 if (-1 == document.cookie.indexOf("_chorus_privacy_consent")) {
                     var e = (new Date).getTime(), o = new Date(e + 1314e6);
-                    document.cookie = "_chorus_privacy_consent=" + e + "; path=/; expires=" + o.toUTCString(),
+                    document.cookie = "_chorus_privacy_consent=" + e + "; path=/; expires=" + o.toUTCString(), 
                     location.reload();
                 }
             }();
@@ -1790,6 +1760,36 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c3fa9bec7cb9559b8965f87071a37fc6" due to: ' + e);
         }
     },
+    "(()=>{let t,e=!1;const o=new MutationObserver(((e,o)=>{const c=t?.querySelector('button#accept');c&&(c.click(),o.disconnect())})),c={apply:(c,n,p)=>{const r=Reflect.apply(c,n,p);return!e&&n.matches(\"#usercentrics-cmp-ui\")&&(e=!0,t=r),o.observe(r,{subtree:!0,childList:!0}),r}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,c)})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.c357ef7f6286b9d1497dd27602788dfe === e) return;
+            (() => {
+                let e, t = !1;
+                const o = new MutationObserver(((t, o) => {
+                    const r = e?.querySelector("button#accept");
+                    r && (r.click(), o.disconnect());
+                })), r = {
+                    apply: (r, c, n) => {
+                        const d = Reflect.apply(r, c, n);
+                        return !t && c.matches("#usercentrics-cmp-ui") && (t = !0, e = d), o.observe(d, {
+                            subtree: !0,
+                            childList: !0
+                        }), d;
+                    }
+                };
+                window.Element.prototype.attachShadow = new Proxy(window.Element.prototype.attachShadow, r);
+            })();
+            Object.defineProperty(Window.prototype.toString, "c357ef7f6286b9d1497dd27602788dfe", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "c357ef7f6286b9d1497dd27602788dfe" due to: ' + e);
+        }
+    },
     '(()=>{let t,e=!1;const o=new MutationObserver(((e,o)=>{const c=t?.querySelector("#cmpbox a.cmptxt_btn_yes");c&&(c.click(),o.disconnect())})),c={apply:(c,n,p)=>{const r=Reflect.apply(c,n,p);return!e&&n.matches("#cmpwrapper")&&(e=!0,t=r),o.observe(r,{subtree:!0,childList:!0}),r}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,c)})();': () => {
         try {
             const e = "done";
@@ -1824,7 +1824,7 @@ export const localScriptRules = {
         try {
             const o = "done";
             if (Window.prototype.toString["9907768cd527256baba4120870996330"] === o) return;
-            window.self !== window.top || document.cookie.includes("visitor=") || (document.cookie = "visitor=1; path=/;",
+            window.self !== window.top || document.cookie.includes("visitor=") || (document.cookie = "visitor=1; path=/;", 
             document.cookie && location.reload());
             Object.defineProperty(Window.prototype.toString, "9907768cd527256baba4120870996330", {
                 value: o,
@@ -2135,7 +2135,7 @@ export const localScriptRules = {
             !function() {
                 var e = window.setTimeout;
                 window.setTimeout = function(t, o) {
-                    return !Number.isNaN(o) && /\$\('#l'\+|#linkdiv/.test(t.toString()) && (o *= .01),
+                    return !Number.isNaN(o) && /\$\('#l'\+|#linkdiv/.test(t.toString()) && (o *= .01), 
                     e.apply(this, arguments);
                 }.bind(window);
             }();
@@ -2193,7 +2193,7 @@ export const localScriptRules = {
             if (Window.prototype.toString["7c9eb641391ed7a82e455b87f3672582"] === e) return;
             !function() {
                 const e = {
-                    apply: (o, t, n) => (n[0]?.adSlots && (n[0].adSlots = []), n[1]?.success && (n[1].success = new Proxy(n[1].success, e)),
+                    apply: (o, t, n) => (n[0]?.adSlots && (n[0].adSlots = []), n[1]?.success && (n[1].success = new Proxy(n[1].success, e)), 
                     Reflect.apply(o, t, n))
                 };
                 window.Object.assign = new Proxy(window.Object.assign, e);
@@ -2206,6 +2206,26 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "7c9eb641391ed7a82e455b87f3672582" due to: ' + e);
+        }
+    },
+    "\"use strict\"; window.MutationObserver = new Proxy(window.MutationObserver, { construct(Target, Args) { let Stringified = Args[0].toString(); if (Stringified.includes('cs:') && Stringified.includes('gl:') && Stringified.includes('ne:') && Stringified.includes('dg:')) { return Reflect.construct(Target, [() => {}]); } return Reflect.construct(Target, Args); } });": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.c287d35369268f7ace0d483cc8ca2199 === e) return;
+            window.MutationObserver = new Proxy(window.MutationObserver, {
+                construct(e, c) {
+                    let t = c[0].toString();
+                    return t.includes("cs:") && t.includes("gl:") && t.includes("ne:") && t.includes("dg:") ? Reflect.construct(e, [ () => {} ]) : Reflect.construct(e, c);
+                }
+            });
+            Object.defineProperty(Window.prototype.toString, "c287d35369268f7ace0d483cc8ca2199", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "c287d35369268f7ace0d483cc8ca2199" due to: ' + e);
         }
     },
     "\"use strict\"; window.Function.prototype.apply = new Proxy(window.Function.prototype.apply, { apply(Target, ThisArg, Args) { let FunctionContext = ThisArg.toString(); if (FunctionContext.includes('veta') && FunctionContext.includes('http') && FunctionContext.includes('/gfp/') && FunctionContext.includes('().mark((')) { return Reflect.apply(Target, async () => false, []); } return Reflect.apply(Target, ThisArg, Args); } });": () => {
@@ -2350,7 +2370,7 @@ export const localScriptRules = {
             const e = "done";
             if (Window.prototype.toString.ddae51deac37af19fec2771965b890e1 === e) return;
             window.setTimeout = new Proxy(window.setTimeout, {
-                apply: (e, t, o) => o && o[0] && /SkipMsg\(\)/.test(o[0].toString()) && o[1] ? (o[1] = 1,
+                apply: (e, t, o) => o && o[0] && /SkipMsg\(\)/.test(o[0].toString()) && o[1] ? (o[1] = 1, 
                 Reflect.apply(e, t, o)) : Reflect.apply(e, t, o)
             });
             Object.defineProperty(Window.prototype.toString, "ddae51deac37af19fec2771965b890e1", {
@@ -2548,32 +2568,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "22514194ad8441cc56e68716b1f75f69" due to: ' + e);
         }
     },
-    '(()=>{window.addEventListener("load",(()=>{setTimeout((()=>{if(!document.querySelector(".plyr--video video"))for(const o in window)if("function"==typeof window[o]&&window[o].toString().includes("Hls.isSupported")){try{window[o]()}catch(e){console.stack(`Error occurred while calling ${o}:`,e)}break}}),1e3)}));})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.fc7e03df62426e566b625183c2be9408 === e) return;
-            window.addEventListener("load", (() => {
-                setTimeout((() => {
-                    if (!document.querySelector(".plyr--video video")) for (const e in window) if ("function" == typeof window[e] && window[e].toString().includes("Hls.isSupported")) {
-                        try {
-                            window[e]();
-                        } catch (o) {
-                            console.stack(`Error occurred while calling ${e}:`, o);
-                        }
-                        break;
-                    }
-                }), 1e3);
-            }));
-            Object.defineProperty(Window.prototype.toString, "fc7e03df62426e566b625183c2be9408", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "fc7e03df62426e566b625183c2be9408" due to: ' + e);
-        }
-    },
     '(()=>{window.GADS={init:function(n){n&&"function"==typeof n.onFinish&&n.onFinish()}};})();': () => {
         try {
             const e = "done";
@@ -2593,35 +2587,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c2ffc94b6ce8e97f2c432d64690cfc9d" due to: ' + e);
         }
     },
-    '(()=>{const e={apply:(e,o,t)=>(null===t[0]&&(t[0]={isUserSubscriber:!0}),Reflect.apply(e,o,t))},o={apply:(o,t,n)=>{const r=n[0];return"function"==typeof r&&r.toString().includes("AdBlockDetector")&&(n[0]=()=>{}),"function"==typeof r&&r.toString().includes("Preroll Ad")&&(n[0]=new Proxy(n[0],e)),Reflect.apply(o,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o)})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["785fddde2c2648fbf7b3c872780aab8f"] === e) return;
-            (() => {
-                const e = {
-                    apply: (e, t, o) => (null === o[0] && (o[0] = {
-                        isUserSubscriber: !0
-                    }), Reflect.apply(e, t, o))
-                }, t = {
-                    apply: (t, o, r) => {
-                        const n = r[0];
-                        return "function" == typeof n && n.toString().includes("AdBlockDetector") && (r[0] = () => {}),
-                        "function" == typeof n && n.toString().includes("Preroll Ad") && (r[0] = new Proxy(r[0], e)),
-                        Reflect.apply(t, o, r);
-                    }
-                };
-                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, t);
-            })();
-            Object.defineProperty(Window.prototype.toString, "785fddde2c2648fbf7b3c872780aab8f", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "785fddde2c2648fbf7b3c872780aab8f" due to: ' + e);
-        }
-    },
     '(()=>{const a=function(a){"function"==typeof a&&a()};window.aiptag={adplayer:"",cmd:[]},window.aiptag.cmd.player=[],window.aiptag.cmd.display=[],window.aiptag.cmd.push=a,window.aiptag.cmd.player.push=a,window.aiptag.cmd.display.push=a,window.aipDisplayTag={display:function(){}},window.aipPlayer=function(a){a&&a.AIP_COMPLETE&&(this.startPreRoll=a.AIP_COMPLETE)}})();': () => {
         try {
             const a = "done";
@@ -2633,7 +2598,7 @@ export const localScriptRules = {
                 window.aiptag = {
                     adplayer: "",
                     cmd: []
-                }, window.aiptag.cmd.player = [], window.aiptag.cmd.display = [], window.aiptag.cmd.push = a,
+                }, window.aiptag.cmd.player = [], window.aiptag.cmd.display = [], window.aiptag.cmd.push = a, 
                 window.aiptag.cmd.player.push = a, window.aiptag.cmd.display.push = a, window.aipDisplayTag = {
                     display: function() {}
                 }, window.aipPlayer = function(a) {
@@ -2660,7 +2625,7 @@ export const localScriptRules = {
                 }, o = [ "beforeReward", "adViewed", "adBreakDone" ];
                 window.adsbygoogle = window.adsbygoogle || [], window.adsbygoogle.push = function(r) {
                     var d;
-                    r && "object" == typeof r && (d = r, o.every((e => e in d && "function" == typeof d[e]))) && (r.beforeReward(),
+                    r && "object" == typeof r && (d = r, o.every((e => e in d && "function" == typeof d[e]))) && (r.beforeReward(), 
                     r.adViewed(), r.adBreakDone(e));
                 };
             })();
@@ -2674,34 +2639,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "36fd3167269f896e4009a009ae54edb3" due to: ' + e);
         }
     },
-    '(()=>{document.addEventListener(\'DOMContentLoaded\',()=>{const t=document.querySelector(\'a[href*="uploadmall.com/cgi-bin/dl.cgi/"]\');if(t){const e=t.getAttribute("href");t.addEventListener("click",(t=>{try{const t=`{"link":"${e}"}`,c=`https://mendationforc.info/?cc=${btoa(t)}`;window.open(c)}catch(t){console.debug(t)}}))}})})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["0c91eaeaf0d6e2a52ab9be668bbd08a5"] === e) return;
-            document.addEventListener("DOMContentLoaded", (() => {
-                const e = document.querySelector('a[href*="uploadmall.com/cgi-bin/dl.cgi/"]');
-                if (e) {
-                    const t = e.getAttribute("href");
-                    e.addEventListener("click", (e => {
-                        try {
-                            const e = `{"link":"${t}"}`, o = `https://mendationforc.info/?cc=${btoa(e)}`;
-                            window.open(o);
-                        } catch (e) {
-                            console.debug(e);
-                        }
-                    }));
-                }
-            }));
-            Object.defineProperty(Window.prototype.toString, "0c91eaeaf0d6e2a52ab9be668bbd08a5", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "0c91eaeaf0d6e2a52ab9be668bbd08a5" due to: ' + e);
-        }
-    },
     '(()=>{let e;const t={apply:(t,n,o)=>(o[0]?.behavior?.controlType&&o[0]?.initialItems&&"function"==typeof o[0].update&&(e=o[0].update,o[0].update=function(){this.update=e}),Reflect.apply(t,n,o))};window.Object.keys=new Proxy(window.Object.keys,t)})();': () => {
         try {
             const e = "done";
@@ -2709,7 +2646,7 @@ export const localScriptRules = {
             (() => {
                 let e;
                 const t = {
-                    apply: (t, o, a) => (a[0]?.behavior?.controlType && a[0]?.initialItems && "function" == typeof a[0].update && (e = a[0].update,
+                    apply: (t, o, a) => (a[0]?.behavior?.controlType && a[0]?.initialItems && "function" == typeof a[0].update && (e = a[0].update, 
                     a[0].update = function() {
                         this.update = e;
                     }), Reflect.apply(t, o, a))
@@ -2734,7 +2671,7 @@ export const localScriptRules = {
                 const e = {
                     apply: (e, t, o) => {
                         const d = o[1];
-                        return d && [ "adBlockingDetected", "assessAdBlocking" ].includes(d) && o[2] && "function" == typeof o[2].value && (o[2].value = () => {}),
+                        return d && [ "adBlockingDetected", "assessAdBlocking" ].includes(d) && o[2] && "function" == typeof o[2].value && (o[2].value = () => {}), 
                         Reflect.apply(e, t, o);
                     }
                 };
@@ -2815,7 +2752,7 @@ export const localScriptRules = {
                 const e = {
                     apply: (e, t, r) => (!0 === r[0] && (r[0] = !1), Reflect.apply(e, t, r))
                 }, t = {
-                    apply: (t, r, o) => ("__updateState" === o[1] && o[2] && o[2].value && (o[2].value = new Proxy(o[2].value, e)),
+                    apply: (t, r, o) => ("__updateState" === o[1] && o[2] && o[2].value && (o[2].value = new Proxy(o[2].value, e)), 
                     Reflect.apply(t, r, o))
                 };
                 window.Object.defineProperty = new Proxy(window.Object.defineProperty, t);
@@ -2844,7 +2781,7 @@ export const localScriptRules = {
                 }, t = [ "adblockEnabled", "=!!parseInt(", "disable_adb" ], o = {
                     apply: (o, n, r) => {
                         const d = r[0];
-                        return "function" == typeof d && t.some((e => d.toString().includes(e))) && (r[0] = new Proxy(r[0], e)),
+                        return "function" == typeof d && t.some((e => d.toString().includes(e))) && (r[0] = new Proxy(r[0], e)), 
                         Reflect.apply(o, n, r);
                     }
                 };
@@ -3001,7 +2938,7 @@ export const localScriptRules = {
                 const e = {
                     apply: (e, t, o) => {
                         const p = o[1];
-                        return p && "string" == typeof p && p.match(/pagead2\.googlesyndication\.com|google.*\.js|\/.*?\/.*?ad.*?\.js|\.(shop|quest|autos)\/.*?\.(js|php|html)/) && (t.prevent = !0),
+                        return p && "string" == typeof p && p.match(/pagead2\.googlesyndication\.com|google.*\.js|\/.*?\/.*?ad.*?\.js|\.(shop|quest|autos)\/.*?\.(js|php|html)/) && (t.prevent = !0), 
                         Reflect.apply(e, t, o);
                     }
                 };
@@ -3095,7 +3032,7 @@ export const localScriptRules = {
                         const e = document.querySelector(".entry-header.header");
                         return parseInt(e.getAttribute("data-id"));
                     }
-                    t.setAttribute("rel", "stylesheet"), t.setAttribute("media", "all"), t.setAttribute("href", "/wp-content/cache/autoptimize/css/autoptimize_92c5b1cf0217cba9b3fab27d39f320b9.css"),
+                    t.setAttribute("rel", "stylesheet"), t.setAttribute("media", "all"), t.setAttribute("href", "/wp-content/cache/autoptimize/css/autoptimize_92c5b1cf0217cba9b3fab27d39f320b9.css"), 
                     document.head.appendChild(t);
                     const r = 3, n = 5, o = 13, c = "07";
                     let a = "", i = "";
@@ -3151,15 +3088,15 @@ export const localScriptRules = {
             if (Window.prototype.toString["75be2f053259701edcb277b5ff24cd28"] === e) return;
             (() => {
                 const e = new Map, t = function() {}, o = t;
-                o.prototype.dispose = t, o.prototype.setNetwork = t, o.prototype.resize = t, o.prototype.setServer = t,
+                o.prototype.dispose = t, o.prototype.setNetwork = t, o.prototype.resize = t, o.prototype.setServer = t, 
                 o.prototype.setLogLevel = t, o.prototype.newContext = function() {
                     return this;
                 }, o.prototype.setParameter = t, o.prototype.addEventListener = function(t, o) {
                     t && (console.debug(`Type: ${t}, callback: ${o}`), e.set(t, o));
-                }, o.prototype.removeEventListener = t, o.prototype.setProfile = t, o.prototype.setCapability = t,
-                o.prototype.setVideoAsset = t, o.prototype.setSiteSection = t, o.prototype.addKeyValue = t,
-                o.prototype.addTemporalSlot = t, o.prototype.registerCustomPlayer = t, o.prototype.setVideoDisplaySize = t,
-                o.prototype.setContentVideoElement = t, o.prototype.registerVideoDisplayBase = t,
+                }, o.prototype.removeEventListener = t, o.prototype.setProfile = t, o.prototype.setCapability = t, 
+                o.prototype.setVideoAsset = t, o.prototype.setSiteSection = t, o.prototype.addKeyValue = t, 
+                o.prototype.addTemporalSlot = t, o.prototype.registerCustomPlayer = t, o.prototype.setVideoDisplaySize = t, 
+                o.prototype.setContentVideoElement = t, o.prototype.registerVideoDisplayBase = t, 
                 o.prototype.submitRequest = function() {
                     const t = {
                         type: tv.freewheel.SDK.EVENT_SLOT_ENDED
@@ -3259,7 +3196,7 @@ export const localScriptRules = {
                 var e = document.querySelectorAll("ins.adsbygoogle");
                 e.length && e.forEach((e => {
                     var t = document.createElement("iframe");
-                    t.style = "display: none !important;", e.setAttribute("data-ad-status", "filled"),
+                    t.style = "display: none !important;", e.setAttribute("data-ad-status", "filled"), 
                     e.appendChild(t);
                 }));
             }));
@@ -3326,9 +3263,9 @@ export const localScriptRules = {
                         }
                         if (e) {
                             var r = `<ins class="adsbygoogle" data-adsbygoogle-status="done" style="display: block; height: 200px; width: 200px;" data-ad-status="unfilled"><ins id="aswift_0_expand" style="border: none; height: 0px; width: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-table;" tabindex="0" title="Advertisement" aria-label="Advertisement"><ins id="aswift_0_anchor" style="border: none; height: 0px; width: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: block;"><iframe id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;border:0;width:200px;height:200px;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" frameborder="0" src="https://googleads.g.doubleclick.net/pagead/ads?client=${e}&amp;output=html&amp;adk=${t(10)}&amp;adf=${t(10)}&amp;lmt=${t(10)}&amp;plat=${t(100)};&amp;format=0x0&amp;url=${encodeURIComponent(document.location.href)}&amp;ea=0&amp;flash=0&amp;pra=5&amp;wgl=1&amp;uach=${t(100)}&amp;bpp=2&amp;bdt=${t(3)}&amp;idt=${t(3)}&amp;shv=r${t(8)}&amp;mjsv=m${t(8)}&amp;ptt=${t(1)}&amp;saldr=aa&amp;abxe=1&amp;nras=1&amp;correlator=${t(8)}&amp;frm=${t(2)}&amp;pv=2&amp;ga_vid=${t(10)}.${t(10)}&amp;ga_sid=${t(10)}&amp;ga_hid=${t(10)}&amp;ga_fc=0&amp;u_tz=${t(3)}&amp;u_his=8&amp;u_java=0&amp;u_h=${t(4)}&amp;u_w=${t(4)}&amp;u_ah=${t(4)}&amp;u_aw=${t(4)}&amp;u_cd=${t(2)}&amp;u_nplug=${t(1)}&amp;u_nmime=${t(1)}&amp;adx=-${t(8)}&amp;ady=-${t(8)}&amp;biw=${t(4)}&amp;bih=${t(4)}&amp;scr_x=0&amp;scr_y=0&amp;eid=${t(30)}&amp;oid=${t(1)}&amp;pvsid=${t(16)}&amp;pem=${t(3)}&amp;eae=${t(1)}&amp;fc=${t(4)}&amp;brdim=${t(20)}&amp;vis=1&amp;rsz=${t(6)}&amp;abl=NS&amp;fu=${t(4)}&amp;bc=${t(2)}&amp;ifi=1&amp;uci=a!1&amp;fsb=1&amp;dtd=128" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" data-google-container-id="a!1" data-load-complete="true"></iframe></ins></ins></ins>`, p = document.querySelector("body > *"), n = document.querySelectorAll(".phpbb-ads-center > .adsbygoogle");
-                            p && n.length && (!p.querySelector("iframe#aswift_0") && p.insertAdjacentHTML("afterend", r),
+                            p && n.length && (!p.querySelector("iframe#aswift_0") && p.insertAdjacentHTML("afterend", r), 
                             n.forEach((a => {
-                                a.querySelector("iframe#aswift_0") || (a.parentNode.style.height = "200px", a.parentNode.style.width = "200px",
+                                a.querySelector("iframe#aswift_0") || (a.parentNode.style.height = "200px", a.parentNode.style.width = "200px", 
                                 a.parentNode.innerHTML = r);
                             })));
                         }
@@ -3353,6 +3290,35 @@ export const localScriptRules = {
             });
         } catch (a) {
             console.error('Error executing AG js rule with uniqueId "802366024dd441867900263826a1b687" due to: ' + a);
+        }
+    },
+    '(()=>{const e={apply:(e,o,t)=>(null===t[0]&&(t[0]={isUserSubscriber:!0}),Reflect.apply(e,o,t))},o={apply:(o,t,n)=>{const r=n[0];return"function"==typeof r&&r.toString().includes("AdBlockDetector")&&(n[0]=()=>{}),"function"==typeof r&&r.toString().includes("Preroll Ad")&&(n[0]=new Proxy(n[0],e)),Reflect.apply(o,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["785fddde2c2648fbf7b3c872780aab8f"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, o) => (null === o[0] && (o[0] = {
+                        isUserSubscriber: !0
+                    }), Reflect.apply(e, t, o))
+                }, t = {
+                    apply: (t, o, r) => {
+                        const n = r[0];
+                        return "function" == typeof n && n.toString().includes("AdBlockDetector") && (r[0] = () => {}), 
+                        "function" == typeof n && n.toString().includes("Preroll Ad") && (r[0] = new Proxy(r[0], e)), 
+                        Reflect.apply(t, o, r);
+                    }
+                };
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, t);
+            })();
+            Object.defineProperty(Window.prototype.toString, "785fddde2c2648fbf7b3c872780aab8f", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "785fddde2c2648fbf7b3c872780aab8f" due to: ' + e);
         }
     },
     "window.adsbygoogle = { loaded: !0 };": () => {
@@ -3380,7 +3346,7 @@ export const localScriptRules = {
                 const e = {
                     apply: (e, t, o) => {
                         const r = o[0];
-                        return r?.includes(".b_ad,") ? o[0] = "#b_results" : r?.includes(".b_restorableLink") && (o[0] = ".b_algo"),
+                        return r?.includes(".b_ad,") ? o[0] = "#b_results" : r?.includes(".b_restorableLink") && (o[0] = ".b_algo"), 
                         Reflect.apply(e, t, o);
                     }
                 };
@@ -3958,7 +3924,7 @@ export const localScriptRules = {
             if (Window.prototype.toString["631aed795dd7ba8bffc8ac13694e2216"] === e) return;
             !function() {
                 const e = {
-                    apply: (e, a, r) => (r[0]?.includes?.("{}") && (r[0] = '<?xml version="1.0" encoding="UTF-8"?>\n<vmap:VMAP version="1.0" xmlns:vmap="http://www.iab.net/videosuite/vmap"><vmap:AdBreak timeOffset="start" breakType="linear" breakId="4f95e542-9da8-480e-8c2a-7ade1ffdcc3d"><vmap:AdSource allowMultipleAds="true" followRedirects="true"><vmap:VASTAdData></vmap:VASTAdData></vmap:AdSource></vmap:AdBreak></vmap:VMAP>'),
+                    apply: (e, a, r) => (r[0]?.includes?.("{}") && (r[0] = '<?xml version="1.0" encoding="UTF-8"?>\n<vmap:VMAP version="1.0" xmlns:vmap="http://www.iab.net/videosuite/vmap"><vmap:AdBreak timeOffset="start" breakType="linear" breakId="4f95e542-9da8-480e-8c2a-7ade1ffdcc3d"><vmap:AdSource allowMultipleAds="true" followRedirects="true"><vmap:VASTAdData></vmap:VASTAdData></vmap:AdSource></vmap:AdBreak></vmap:VMAP>'), 
                     Reflect.apply(e, a, r))
                 };
                 window.DOMParser.prototype.parseFromString = new Proxy(window.DOMParser.prototype.parseFromString, e);
@@ -4270,28 +4236,28 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f5e04b1e897644b8741f5724e8210233" due to: ' + e);
         }
     },
-    '(()=>{Object.defineProperty=new Proxy(Object.defineProperty,{apply:(e,t,n)=>{const r=new Set(["VP","w3","JW"]),o=n[1],c=n[2]?.get;return o&&r.has(o)&&"function"==typeof c&&c.toString().includes("()=>i")&&(n[2].get=function(){return function(){return!1}}),Reflect.apply(e,t,n)}});})();': () => {
+    '(()=>{Object.defineProperty=new Proxy(Object.defineProperty,{apply:(e,t,n)=>{const r=new Set(["VP","w3","JW"]),o=n[1],c=n[2]?.get;return o&&r.has(o)&&"function"==typeof c&&/^\\(\\)=>.$/.test(c.toString())&&(n[2].get=function(){return function(){return!1}}),Reflect.apply(e,t,n)}});})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.d2e0c1a15c46cd17c61c4bb3e9ed07ff === e) return;
+            if (Window.prototype.toString["78efcafe6d31d29f2e5224aca115d0e2"] === e) return;
             Object.defineProperty = new Proxy(Object.defineProperty, {
                 apply: (e, t, r) => {
-                    const c = new Set([ "VP", "w3", "JW" ]), n = r[1], o = r[2]?.get;
-                    return n && c.has(n) && "function" == typeof o && o.toString().includes("()=>i") && (r[2].get = function() {
+                    const n = new Set([ "VP", "w3", "JW" ]), o = r[1], c = r[2]?.get;
+                    return o && n.has(o) && "function" == typeof c && /^\(\)=>.$/.test(c.toString()) && (r[2].get = function() {
                         return function() {
                             return !1;
                         };
                     }), Reflect.apply(e, t, r);
                 }
             });
-            Object.defineProperty(Window.prototype.toString, "d2e0c1a15c46cd17c61c4bb3e9ed07ff", {
+            Object.defineProperty(Window.prototype.toString, "78efcafe6d31d29f2e5224aca115d0e2", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "d2e0c1a15c46cd17c61c4bb3e9ed07ff" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "78efcafe6d31d29f2e5224aca115d0e2" due to: ' + e);
         }
     },
     "window.showAds = true;": () => {
@@ -4507,6 +4473,23 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "14b2658c5d58ff999b0f841402be6327" due to: ' + e);
         }
     },
+    '(()=>{window.addEventListener("load",(()=>{"object"==typeof window.player&&"function"==typeof window.player.trigger&&window.player.trigger("playlistComplete")}));})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["777ecb0cee36adcb947f146ce7e592d2"] === e) return;
+            window.addEventListener("load", (() => {
+                "object" == typeof window.player && "function" == typeof window.player.trigger && window.player.trigger("playlistComplete");
+            }));
+            Object.defineProperty(Window.prototype.toString, "777ecb0cee36adcb947f146ce7e592d2", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "777ecb0cee36adcb947f146ce7e592d2" due to: ' + e);
+        }
+    },
     '!function(){if(location.pathname.includes("/source/playerads")){var b=new MutationObserver(function(){var a=document.querySelector(\'script[type="text/javascript"]\');a&&a.textContent.includes(\'"ads": [\')&&(b.disconnect(),a.textContent=a.textContent.replace(/("ads": \\[\\{)[\\s\\S]*?(\\}\\])/,"$1$2"))});b.observe(document,{childList:!0,subtree:!0})}}();': () => {
         try {
             const e = "done";
@@ -4619,6 +4602,36 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
         }
     },
+    '(()=>{let e=!1;const l={apply:async(e,l,o)=>{const r=o[0];return!1===r?.rewardAllowed&&(o[0].rewardAllowed=!0),Reflect.apply(e,l,o)}},o={apply:(o,r,t)=>{const n=t[0]?.pokiAdsCompleted;return!e&&n&&n[0]?.toString()?.includes("rewardAllowed")&&(n[0]=new Proxy(n[0],l),e=!0),Reflect.apply(o,r,t)}};window.Object.keys=new Proxy(window.Object.keys,o)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["85cbf457d7f9be26230706564eebecbe"] === e) return;
+            (() => {
+                let e = !1;
+                const r = {
+                    apply: async (e, r, t) => {
+                        const o = t[0];
+                        return !1 === o?.rewardAllowed && (t[0].rewardAllowed = !0), Reflect.apply(e, r, t);
+                    }
+                }, t = {
+                    apply: (t, o, n) => {
+                        const c = n[0]?.pokiAdsCompleted;
+                        return !e && c && c[0]?.toString()?.includes("rewardAllowed") && (c[0] = new Proxy(c[0], r), 
+                        e = !0), Reflect.apply(t, o, n);
+                    }
+                };
+                window.Object.keys = new Proxy(window.Object.keys, t);
+            })();
+            Object.defineProperty(Window.prototype.toString, "85cbf457d7f9be26230706564eebecbe", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "85cbf457d7f9be26230706564eebecbe" due to: ' + e);
+        }
+    },
     '(()=>{window.Pogo=window.Pogo||{},window.Pogo.cmd=[],window.Pogo.cmd.push=o=>{"function"==typeof o&&o()},window.Pogo.getVideoTag=(o,w)=>{w&&"function"==typeof w&&w()};})();': () => {
         try {
             const o = "done";
@@ -4699,7 +4712,7 @@ export const localScriptRules = {
                 },
                 BOLT_AD_COMPLETE: "AD_COMPLETE",
                 BOLT_AD_ERROR: "AD_ERROR"
-            }, window.ramp = window.ramp || {}, window.ramp.addUnits = () => Promise.resolve(),
+            }, window.ramp = window.ramp || {}, window.ramp.addUnits = () => Promise.resolve(), 
             window.ramp.displayUnits = () => {
                 setTimeout((() => {
                     "function" == typeof window.ramp.onPlayerReady && window.ramp.onPlayerReady();
@@ -4726,7 +4739,7 @@ export const localScriptRules = {
                 let t, o = !1;
                 Object.defineProperty(window, "ig", {
                     get: function() {
-                        return "function" != typeof t?.RetentionRewardedVideo?.prototype?.rewardedVideoResult || o || (t.RetentionRewardedVideo.prototype.rewardedVideoResult = new Proxy(t.RetentionRewardedVideo.prototype.rewardedVideoResult, e),
+                        return "function" != typeof t?.RetentionRewardedVideo?.prototype?.rewardedVideoResult || o || (t.RetentionRewardedVideo.prototype.rewardedVideoResult = new Proxy(t.RetentionRewardedVideo.prototype.rewardedVideoResult, e), 
                         o = !0), t;
                     },
                     set: function(e) {
@@ -4760,7 +4773,7 @@ export const localScriptRules = {
                     }
                 }), window.SlotTypeEnum = {}, window.ANAWeb = function() {}, window.ANAWeb.prototype.createVideoSlot = function() {
                     return Promise.resolve();
-                }, window.ANAWeb.prototype.createSlot = function() {}, window.ANAWeb.VideoPlayerType = {},
+                }, window.ANAWeb.prototype.createSlot = function() {}, window.ANAWeb.VideoPlayerType = {}, 
                 window.ANAWeb.VideoPlacementType = {
                     InStream: 1
                 }, window.ANAWeb.AdPosition = {
@@ -5039,7 +5052,7 @@ export const localScriptRules = {
             (() => {
                 const e = "3.453.0", t = function() {}, n = {}, r = function(e) {
                     const t = document.createElement("div");
-                    t.style.setProperty("display", "none", "important"), t.style.setProperty("visibility", "collapse", "important"),
+                    t.style.setProperty("display", "none", "important"), t.style.setProperty("visibility", "collapse", "important"), 
                     e && e.appendChild(t);
                 };
                 r.prototype.destroy = t, r.prototype.initialize = t;
@@ -5166,12 +5179,12 @@ export const localScriptRules = {
                         }
                     };
                 }, o = new s;
-                o.volume = 1, o.collapse = t, o.configureAdsManager = t, o.destroy = t, o.discardAdBreak = t,
-                o.expand = t, o.focus = t, o.getAdSkippableState = () => !1, o.getCuePoints = () => [ 0 ],
-                o.getCurrentAd = () => h, o.getCurrentAdCuePoints = () => [], o.getRemainingTime = () => 0,
+                o.volume = 1, o.collapse = t, o.configureAdsManager = t, o.destroy = t, o.discardAdBreak = t, 
+                o.expand = t, o.focus = t, o.getAdSkippableState = () => !1, o.getCuePoints = () => [ 0 ], 
+                o.getCurrentAd = () => h, o.getCurrentAdCuePoints = () => [], o.getRemainingTime = () => 0, 
                 o.getVolume = function() {
                     return this.volume;
-                }, o.init = t, o.isCustomClickTrackingUsed = () => !1, o.isCustomPlaybackUsed = () => !1,
+                }, o.init = t, o.isCustomClickTrackingUsed = () => !1, o.isCustomPlaybackUsed = () => !1, 
                 o.pause = t, o.requestNextAdBreak = t, o.resize = t, o.resume = t, o.setVolume = function(e) {
                     this.volume = e;
                 }, o.skip = t, o.start = function() {
@@ -5193,7 +5206,7 @@ export const localScriptRules = {
                     ADS_MANAGER_LOADED: "adsManagerLoaded"
                 };
                 const u = s;
-                u.prototype.settings = new i, u.prototype.contentComplete = t, u.prototype.destroy = t,
+                u.prototype.settings = new i, u.prototype.contentComplete = t, u.prototype.destroy = t, 
                 u.prototype.getSettings = function() {
                     return this.settings;
                 }, u.prototype.getVersion = () => e, u.prototype.requestAds = function(e, t) {
@@ -5273,7 +5286,7 @@ export const localScriptRules = {
                     getWidth: () => 1
                 };
                 const C = function(e, t, n, r, i, s) {
-                    this.errorCode = t, this.message = r, this.type = e, this.adsRequest = i, this.userRequestContext = s,
+                    this.errorCode = t, this.message = r, this.type = e, this.adsRequest = i, this.userRequestContext = s, 
                     this.getErrorCode = function() {
                         return this.errorCode;
                     }, this.getInnerError = function() {
@@ -5424,7 +5437,7 @@ export const localScriptRules = {
                         FULLSCREEN: "fullscreen",
                         NORMAL: "normal"
                     }
-                }), window.google || (window.google = {}), window.google.ima?.dai && (n.dai = window.google.ima.dai),
+                }), window.google || (window.google = {}), window.google.ima?.dai && (n.dai = window.google.ima.dai), 
                 window.google.ima = n;
             })();
             Object.defineProperty(Window.prototype.toString, "d7a710ada6cca5832af6d92e62726e74", {
@@ -5514,7 +5527,7 @@ export const localScriptRules = {
                                 writable: !0
                             }), Object.defineProperty(t, "responseText", {
                                 writable: !0
-                            }), a && (null != e && e.ad_breaks && (e.ad_breaks = []), null != e && e.apple_tv && (e.apple_tv = {})),
+                            }), a && (null != e && e.ad_breaks && (e.ad_breaks = []), null != e && e.apple_tv && (e.apple_tv = {})), 
                             r) {
                                 const o = e.replaceAll(/#EXTINF:(\d|\d\.\d+)\,\nhttps:\/\/redirector\.googlevideo\.com\/videoplayback\?[\s\S]*?&source=dclk_video_ads&[\s\S]*?\n/g, "");
                                 t.response = o, t.responseText = o;
@@ -5596,7 +5609,7 @@ export const localScriptRules = {
                         if (c.includes("uplynk.com/") && c.includes(".m3u8")) {
                             const t = await e(...r);
                             let n = await t.text();
-                            return n = n.replaceAll(/#UPLYNK-SEGMENT: \S*\,ad\s[\s\S]+?((#UPLYNK-SEGMENT: \S+\,segment)|(#EXT-X-ENDLIST))/g, "$1"),
+                            return n = n.replaceAll(/#UPLYNK-SEGMENT: \S*\,ad\s[\s\S]+?((#UPLYNK-SEGMENT: \S+\,segment)|(#EXT-X-ENDLIST))/g, "$1"), 
                             new Response(n);
                         }
                         return Reflect.apply(t, n, r);
@@ -5660,7 +5673,7 @@ export const localScriptRules = {
                         if (n.match(/pubads\.g\.doubleclick\.net\/ondemand\/.*\/content\/.*\/vid\/.*\/streams\/.*\/manifest\.mpd|pubads\.g\.doubleclick.net\/ondemand\/hls\/.*\.m3u8/)) {
                             const t = await e(...c);
                             let o = await t.text();
-                            return o = o.replaceAll(/<Period id="(pre|mid|post)-roll-.-ad-[\s\S]*?>[\s\S]*?<\/Period>|#EXTINF:(\d|\d\.\d+)\,\nhttps:\/\/redirector\.googlevideo\.com\/videoplayback\?[\s\S]*?&source=dclk_video_ads&[\s\S]*?\n/g, ""),
+                            return o = o.replaceAll(/<Period id="(pre|mid|post)-roll-.-ad-[\s\S]*?>[\s\S]*?<\/Period>|#EXTINF:(\d|\d\.\d+)\,\nhttps:\/\/redirector\.googlevideo\.com\/videoplayback\?[\s\S]*?&source=dclk_video_ads&[\s\S]*?\n/g, ""), 
                             new Response(o);
                         }
                         return Reflect.apply(t, o, c);
@@ -5685,7 +5698,7 @@ export const localScriptRules = {
                 window.FAVE = window.FAVE || {};
                 const e = {
                     set: (e, s, n, a) => {
-                        if (e?.settings?.ads?.ssai?.prod?.clips?.enabled && (e.settings.ads.ssai.prod.clips.enabled = !1),
+                        if (e?.settings?.ads?.ssai?.prod?.clips?.enabled && (e.settings.ads.ssai.prod.clips.enabled = !1), 
                         e?.player?.instances) for (var i of Object.keys(e.player.instances)) e.player.instances[i]?.configs?.ads?.ssai?.prod?.clips?.enabled && (e.player.instances[i].configs.ads.ssai.prod.clips.enabled = !1);
                         return Reflect.set(e, s, n, a);
                     }
@@ -6417,7 +6430,7 @@ export const localScriptRules = {
                                         if (!r) return;
                                         r.style = "display: none !important;", e++;
                                         const o = r.querySelector('div[data-test-id="pinrep-footer"] > div[class] > div[class] > div[class]:last-child > div[class] > a[aria-label][href][rel] > div[class] > div[class] > div[class]');
-                                        o && (t.push([ "Ad blocked based on property [" + e + "] -> " + o.innerText ]),
+                                        o && (t.push([ "Ad blocked based on property [" + e + "] -> " + o.innerText ]), 
                                         console.table(t));
                                     }
                                 } catch (e) {
@@ -6450,62 +6463,62 @@ export const localScriptRules = {
                     var e = document.querySelectorAll("div[id^='mount_']");
                     (0 < e.length ? document.querySelectorAll('div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])') : document.querySelectorAll('[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]')).forEach((function(t) {
                         function c(n, t) {
-                            for (0 < e.length ? "0" == (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span > span > span[data-content]')).length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span[aria-label]')) : h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [class] [class]"),
-                            socheck = 0; socheck < h.length; socheck++) h[socheck].innerText.contains(t) && (d = [ "1" ],
+                            for (0 < e.length ? "0" == (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span > span > span[data-content]')).length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span[aria-label]')) : h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [class] [class]"), 
+                            socheck = 0; socheck < h.length; socheck++) h[socheck].innerText.contains(t) && (d = [ "1" ], 
                             p = [ "1" ], u = [ "1" ], i = l = r = 1, socheck = h.length);
                         }
                         function o(n, t, c, o, a) {
-                            for (0 < e.length ? "0" == (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span > span > span[data-content]')).length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] div[role="button"][tabindex]')) : h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] > span a > [class] [class]"),
-                            "0" == h.length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span[aria-label]')),
+                            for (0 < e.length ? "0" == (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span > span > span[data-content]')).length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] div[role="button"][tabindex]')) : h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] > span a > [class] [class]"), 
+                            "0" == h.length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span[aria-label]')), 
                             socheck = 0; socheck < h.length; socheck++) {
-                                spancheck = 0, 1 < h.length ? (spancheck = h[socheck].querySelectorAll("span")[0],
-                                0 == spancheck && (spancheck = h[socheck].querySelectorAll("b")[0])) : (spancheck = h[0].querySelectorAll("span")[socheck],
+                                spancheck = 0, 1 < h.length ? (spancheck = h[socheck].querySelectorAll("span")[0], 
+                                0 == spancheck && (spancheck = h[socheck].querySelectorAll("b")[0])) : (spancheck = h[0].querySelectorAll("span")[socheck], 
                                 0 == spancheck && (spancheck = h[0].querySelectorAll("b")[socheck]));
                                 var k = h[0];
                                 if (0 != spancheck && spancheck) {
-                                    if (2 == spancheck.children.length && 0 < e.length) for (spancheck = spancheck.querySelectorAll("span:not([style])"),
-                                    spcheck = 0; spcheck < spancheck.length; spcheck++) spancheck[spcheck].innerText.contains(t) ? s = 1 : !spancheck[spcheck].innerText.contains(c) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(t) || spancheck[spcheck].innerText.contains(o) || spancheck[spcheck].innerText.contains(a) ? !spancheck[spcheck].innerText.contains(o) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(c) || spancheck[spcheck].innerText.contains(t) || spancheck[spcheck].innerText.contains(a) ? !spancheck[spcheck].innerText.contains(a) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(c) || spancheck[spcheck].innerText.contains(o) || spancheck[spcheck].innerText.contains(t) || (u = [ "1" ],
+                                    if (2 == spancheck.children.length && 0 < e.length) for (spancheck = spancheck.querySelectorAll("span:not([style])"), 
+                                    spcheck = 0; spcheck < spancheck.length; spcheck++) spancheck[spcheck].innerText.contains(t) ? s = 1 : !spancheck[spcheck].innerText.contains(c) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(t) || spancheck[spcheck].innerText.contains(o) || spancheck[spcheck].innerText.contains(a) ? !spancheck[spcheck].innerText.contains(o) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(c) || spancheck[spcheck].innerText.contains(t) || spancheck[spcheck].innerText.contains(a) ? !spancheck[spcheck].innerText.contains(a) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(c) || spancheck[spcheck].innerText.contains(o) || spancheck[spcheck].innerText.contains(t) || (u = [ "1" ], 
                                     i = 1) : (p = [ "1" ], l = 1) : (d = [ "1" ], r = 1);
-                                    0 == e.length && ((!(spancheck.innerText.contains(t) && 0 == spancheck.offsetTop || h[0].innerText.contains(t) && 0 == h[0].offsetTop) || spancheck.innerText.contains(c) && !h[0].innerText.contains(c) || spancheck.innerText.contains(o) && !h[0].innerText.contains(o) || spancheck.innerText.contains(a) && !h[0].innerText.contains(a)) && (!k.innerText.contains(t) || 0 != k.offsetTop || k.innerText.contains(c) || k.innerText.contains(o) || k.innerText.contains(a)) ? !spancheck.innerText.contains(c) || 0 != spancheck.offsetTop || spancheck.innerText.contains(t) || spancheck.innerText.contains(o) || spancheck.innerText.contains(a) ? !spancheck.innerText.contains(o) || 0 != spancheck.offsetTop || spancheck.innerText.contains(c) || spancheck.innerText.contains(t) || spancheck.innerText.contains(a) ? !spancheck.innerText.contains(a) || 0 != spancheck.offsetTop || spancheck.innerText.contains(c) || spancheck.innerText.contains(o) || spancheck.innerText.contains(t) || (u = [ "1" ],
+                                    0 == e.length && ((!(spancheck.innerText.contains(t) && 0 == spancheck.offsetTop || h[0].innerText.contains(t) && 0 == h[0].offsetTop) || spancheck.innerText.contains(c) && !h[0].innerText.contains(c) || spancheck.innerText.contains(o) && !h[0].innerText.contains(o) || spancheck.innerText.contains(a) && !h[0].innerText.contains(a)) && (!k.innerText.contains(t) || 0 != k.offsetTop || k.innerText.contains(c) || k.innerText.contains(o) || k.innerText.contains(a)) ? !spancheck.innerText.contains(c) || 0 != spancheck.offsetTop || spancheck.innerText.contains(t) || spancheck.innerText.contains(o) || spancheck.innerText.contains(a) ? !spancheck.innerText.contains(o) || 0 != spancheck.offsetTop || spancheck.innerText.contains(c) || spancheck.innerText.contains(t) || spancheck.innerText.contains(a) ? !spancheck.innerText.contains(a) || 0 != spancheck.offsetTop || spancheck.innerText.contains(c) || spancheck.innerText.contains(o) || spancheck.innerText.contains(t) || (u = [ "1" ], 
                                     i = 1) : (p = [ "1" ], l = 1) : (d = [ "1" ], r = 1) : s = 1);
                                 }
                             }
                         }
                         function a(n, t, c, o, a) {
-                            u = 0 < e.length ? (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + t + "]"),
-                            d = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + c + "]"),
-                            p = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + o + "]"),
-                            n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + a + "]")) : (h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + t + "]"),
-                            d = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + c + "]"),
-                            p = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + o + "]"),
+                            u = 0 < e.length ? (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + t + "]"), 
+                            d = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + c + "]"), 
+                            p = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + o + "]"), 
+                            n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + a + "]")) : (h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + t + "]"), 
+                            d = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + c + "]"), 
+                            p = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + o + "]"), 
                             n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + a + "]"));
                         }
                         var s = 0, r = 0, l = 0, i = 0, h = 0, d = 0, p = 0, u = 0, k = t.querySelectorAll("div[style='width: 100%'] > a[href*='oculus.com/quest'] > div"), f = document.querySelector("[lang]"), y = document.querySelectorAll("link[rel='preload'][href*='/l/']");
                         f = f ? document.querySelector("[lang]").lang : "en";
                         var g, S = t.querySelectorAll('a[ajaxify*="ad_id"] > span'), m = t.querySelectorAll('a[href*="ads/about"]'), T = t.querySelectorAll('a[href*="https://www.facebook.com/business/help"]');
-                        if ("display: none !important;" != t.getAttribute("style") && !t.classList.contains("hidden_elem") && (0 < S.length || 0 < m.length || 0 < T.length ? (n += 1,
-                        0 < e.length ? ("" == (g = t.querySelectorAll("a[href]")[0].innerText) && (g = t.querySelectorAll("a[href]")[1].innerText),
-                        "" == g && (g = t.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0].getAttribute("aria-label"))) : g = t.querySelectorAll("a[href]")[2].innerText,
-                        console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n),
-                        console.log("F length: " + S.length), console.log("H length: " + m.length), console.log("I length (Paid partnership): " + T.length),
-                        console.log("--------"), t.style = "display:none!important;") : 0 < k.length ? (n += 1,
-                        g = "Facebook", console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n),
-                        console.log("Non-declared ad"), console.log("--------"), t.style = "display:none!important;") : "af" == f ? c(t, "Geborg") : "de" == f || "nl" == f ? a(t, "G", "e", "s", "n") : "am" == f ? c(t, "የተከፈለበት ማስታወቂያ") : "ar" == f ? c(t, "مُموَّل") : "as" == f ? c(t, "পৃষ্ঠপোষকতা কৰা") : "az" == f ? c(t, "Sponsor dəstəkli") : "co" == f ? c(t, "Spunsurizatu") : "bs" == f || "sl" == f || "cs" == f ? a(t, "S", "p", "z", "n") : "da" == f || "en" == f || "et" == f || "fy" == f || "it" == f || "ku" == f || "nb" == f || "nn" == f || "pl" == f || "sq" == f || "sv" == f || "zz" == f ? 0 < e.length ? y[0].href.contains("en_UD") ? c(t, "pəɹosuodS") : y[0].href.contains("ja_KS") ? c(t, "広告") : y[0].href.contains("tz_MA") ? c(t, "ⵉⴷⵍ") : y[0].href.contains("sy_SY") ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : y[0].href.contains("cb_IQ") ? c(t, "پاڵپشتیکراو") : y[0].href.contains("ar_AR") ? c(t, "مُموَّل") : y[0].href.contains("sz_PL") ? c(t, "Szpōnzorowane") : y[0].href.contains("eo_EO") ? c(t, "Reklamo") : y[0].href.contains("es_LA") ? a(t, "P", "u", "c", "d") : (a(t, "S", "p", "s", "n"),
-                        "0" == h.length && o(t, "S", "p", "s", "n"), "0" == h.length && c(t, "Sponsored")) : document.querySelector("body").className.includes("Locale_en_UD") ? c(t, "pəɹosuodS") : document.querySelector("body").className.includes("ja_KS") ? c(t, "広告") : document.querySelector("body").className.includes("tz_MA") ? c(t, "ⵉⴷⵍ") : document.querySelector("body").className.includes("sy_SY") ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : document.querySelector("body").className.includes("cb_IQ") ? c(t, "پاڵپشتیکراو") : document.querySelector("body").className.includes("ar_AR") ? c(t, "مُموَّل") : document.querySelector("body").className.includes("sz_PL") ? c(t, "Szpōnzorowane") : document.querySelector("body").className.includes("eo_EO") ? c(t, "Reklamo") : document.querySelector("body").className.includes("es_LA") ? a(t, "P", "u", "c", "d") : (a(t, "S", "p", "s", "n"),
-                        "0" == h.length && o(t, "S", "p", "s", "n")) : "be" == f ? c(t, "Рэклама") : "bg" == f ? c(t, "Спонсорирано") : "mk" == f ? c(t, "Спонзорирано") : "br" == f ? c(t, "Paeroniet") : "ca" == f ? c(t, "Patrocinat") : "gl" == f || "pt" == f ? (c(t, "Patrocinado"),
-                        "0" == r && a(t, "P", "a", "c", "o")) : "bn" == f ? c(t, "সৌজন্যে") : "cb" == f ? c(t, "پاڵپشتیکراو") : "cx" == f ? a(t, "G", "i", "s", "n") : "cy" == f ? c(t, "Noddwyd") : "el" == f ? c(t, "Χορηγούμενη") : "eo" == f ? c(t, "Reklamo") : "es" == f ? a(t, "P", "u", "c", "d") : "eu" == f ? c(t, "Babestua") : "fa" == f ? c(t, "دارای پشتیبانی مالی") : "ff" == f ? c(t, "Yoɓanaama") : "fi" == f ? c(t, "Sponsoroitu") : "fo" == f ? c(t, "Stuðlað") : "fr" == f ? 0 < e.length ? y[0].href.contains("fr_FR") ? a(t, "S", "p", "s", "n") : a(t, "C", "o", "m", "n") : document.querySelector("body").className.includes("Locale_fr_FR") ? a(t, "S", "p", "s", "n") : a(t, "C", "o", "m", "n") : "ga" == f ? c(t, "Urraithe") : "gn" == f ? c(t, "Oñepatrosinapyre") : "gu" == f ? c(t, "પ્રાયોજિત") : "ha" == f ? c(t, "Daukar Nauyi") : "he" == f ? c(t, "ממומן") : "hr" == f ? c(t, "Plaćeni oglas") : "ht" == f ? c(t, "Peye") : "ne" == f || "mr" == f || "hi" == f ? c(t, "प्रायोजित") : "hu" == f ? a(t, "H", "i", "r", "d") : "hy" == f ? c(t, "Գովազդային") : "id" == f ? a(t, "B", "e", "p", "n") : "is" == f ? c(t, "Kostað") : "ja" == f ? c(t, "広告") : "ms" == f ? c(t, "Ditaja") : "jv" == f ? c(t, "Disponsori") : "ka" == f ? c(t, "რეკლამა") : "kk" == f ? c(t, "Демеушілік көрсеткен") : "km" == f ? c(t, "បានឧបត្ថម្ភ") : "kn" == f ? c(t, "ಪ್ರಾಯೋಜಿತ") : "ko" == f ? c(t, "Sponsored") : "ky" == f ? c(t, "Демөөрчүлөнгөн") : "lo" == f ? c(t, "ຜູ້ສະໜັບສະໜູນ") : "lt" == f ? c(t, "Remiama") : "lv" == f ? c(t, "Apmaksāta reklāma") : "mg" == f ? c(t, "Misy Mpiantoka") : "ml" == f ? c(t, "സ്പോൺസർ ചെയ്തത്") : "mn" == f ? c(t, "Ивээн тэтгэсэн") : "mt" == f ? c(t, "Sponsorjat") : "my" == f ? (c(t, "ပံ့ပိုးထားသည်"),
-                        "0" == r && c(t, "အခပေးကြော်ငြာ")) : "or" == f ? c(t, "ପ୍ରଯୋଜିତ") : "pa" == f ? c(t, "ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ") : "ps" == f ? c(t, "تمويل شوي") : "ro" == f ? c(t, "Sponsorizat") : "ru" == f || "uk" == f ? c(t, "Реклама") : "rw" == f ? c(t, "Icyamamaza ndasukirwaho") : "sc" == f ? c(t, "Patronadu de") : "si" == f ? c(t, "අනුග්රාහක") : "sk" == f ? c(t, "Sponzorované") : "sn" == f ? c(t, "Zvabhadharirwa") : "so" == f ? c(t, "La maalgeliyey") : "sr" == f ? c(t, "Спонзорисано") : "sw" == f ? c(t, "Imedhaminiwa") : "sy" == f ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : "sz" == f ? c(t, "Szpōnzorowane") : "ta" == f ? c(t, "விளம்பரம்") : "te" == f ? c(t, "ప్రాయోజితం చేయబడింది") : "tg" == f ? c(t, "Бо сарпарастӣ") : "th" == f ? c(t, "ได้รับการสนับสนุน") : "tl" == f ? c(t, "May Sponsor") : "tr" == f ? c(t, "Sponsorlu") : "tt" == f ? c(t, "Хәйрияче") : "tz" == f ? c(t, "ⵉⴷⵍ") : "ur" == f ? c(t, "سپانسرڈ") : "uz" == f ? c(t, "Reklama") : "vi" == f ? c(t, "Được tài trợ") : "zh-Hans" == f ? c(t, "赞助内容") : "zh-Hant" == f && c(t, "贊助"),
+                        if ("display: none !important;" != t.getAttribute("style") && !t.classList.contains("hidden_elem") && (0 < S.length || 0 < m.length || 0 < T.length ? (n += 1, 
+                        0 < e.length ? ("" == (g = t.querySelectorAll("a[href]")[0].innerText) && (g = t.querySelectorAll("a[href]")[1].innerText), 
+                        "" == g && (g = t.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0].getAttribute("aria-label"))) : g = t.querySelectorAll("a[href]")[2].innerText, 
+                        console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n), 
+                        console.log("F length: " + S.length), console.log("H length: " + m.length), console.log("I length (Paid partnership): " + T.length), 
+                        console.log("--------"), t.style = "display:none!important;") : 0 < k.length ? (n += 1, 
+                        g = "Facebook", console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n), 
+                        console.log("Non-declared ad"), console.log("--------"), t.style = "display:none!important;") : "af" == f ? c(t, "Geborg") : "de" == f || "nl" == f ? a(t, "G", "e", "s", "n") : "am" == f ? c(t, "የተከፈለበት ማስታወቂያ") : "ar" == f ? c(t, "مُموَّل") : "as" == f ? c(t, "পৃষ্ঠপোষকতা কৰা") : "az" == f ? c(t, "Sponsor dəstəkli") : "co" == f ? c(t, "Spunsurizatu") : "bs" == f || "sl" == f || "cs" == f ? a(t, "S", "p", "z", "n") : "da" == f || "en" == f || "et" == f || "fy" == f || "it" == f || "ku" == f || "nb" == f || "nn" == f || "pl" == f || "sq" == f || "sv" == f || "zz" == f ? 0 < e.length ? y[0].href.contains("en_UD") ? c(t, "pəɹosuodS") : y[0].href.contains("ja_KS") ? c(t, "広告") : y[0].href.contains("tz_MA") ? c(t, "ⵉⴷⵍ") : y[0].href.contains("sy_SY") ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : y[0].href.contains("cb_IQ") ? c(t, "پاڵپشتیکراو") : y[0].href.contains("ar_AR") ? c(t, "مُموَّل") : y[0].href.contains("sz_PL") ? c(t, "Szpōnzorowane") : y[0].href.contains("eo_EO") ? c(t, "Reklamo") : y[0].href.contains("es_LA") ? a(t, "P", "u", "c", "d") : (a(t, "S", "p", "s", "n"), 
+                        "0" == h.length && o(t, "S", "p", "s", "n"), "0" == h.length && c(t, "Sponsored")) : document.querySelector("body").className.includes("Locale_en_UD") ? c(t, "pəɹosuodS") : document.querySelector("body").className.includes("ja_KS") ? c(t, "広告") : document.querySelector("body").className.includes("tz_MA") ? c(t, "ⵉⴷⵍ") : document.querySelector("body").className.includes("sy_SY") ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : document.querySelector("body").className.includes("cb_IQ") ? c(t, "پاڵپشتیکراو") : document.querySelector("body").className.includes("ar_AR") ? c(t, "مُموَّل") : document.querySelector("body").className.includes("sz_PL") ? c(t, "Szpōnzorowane") : document.querySelector("body").className.includes("eo_EO") ? c(t, "Reklamo") : document.querySelector("body").className.includes("es_LA") ? a(t, "P", "u", "c", "d") : (a(t, "S", "p", "s", "n"), 
+                        "0" == h.length && o(t, "S", "p", "s", "n")) : "be" == f ? c(t, "Рэклама") : "bg" == f ? c(t, "Спонсорирано") : "mk" == f ? c(t, "Спонзорирано") : "br" == f ? c(t, "Paeroniet") : "ca" == f ? c(t, "Patrocinat") : "gl" == f || "pt" == f ? (c(t, "Patrocinado"), 
+                        "0" == r && a(t, "P", "a", "c", "o")) : "bn" == f ? c(t, "সৌজন্যে") : "cb" == f ? c(t, "پاڵپشتیکراو") : "cx" == f ? a(t, "G", "i", "s", "n") : "cy" == f ? c(t, "Noddwyd") : "el" == f ? c(t, "Χορηγούμενη") : "eo" == f ? c(t, "Reklamo") : "es" == f ? a(t, "P", "u", "c", "d") : "eu" == f ? c(t, "Babestua") : "fa" == f ? c(t, "دارای پشتیبانی مالی") : "ff" == f ? c(t, "Yoɓanaama") : "fi" == f ? c(t, "Sponsoroitu") : "fo" == f ? c(t, "Stuðlað") : "fr" == f ? 0 < e.length ? y[0].href.contains("fr_FR") ? a(t, "S", "p", "s", "n") : a(t, "C", "o", "m", "n") : document.querySelector("body").className.includes("Locale_fr_FR") ? a(t, "S", "p", "s", "n") : a(t, "C", "o", "m", "n") : "ga" == f ? c(t, "Urraithe") : "gn" == f ? c(t, "Oñepatrosinapyre") : "gu" == f ? c(t, "પ્રાયોજિત") : "ha" == f ? c(t, "Daukar Nauyi") : "he" == f ? c(t, "ממומן") : "hr" == f ? c(t, "Plaćeni oglas") : "ht" == f ? c(t, "Peye") : "ne" == f || "mr" == f || "hi" == f ? c(t, "प्रायोजित") : "hu" == f ? a(t, "H", "i", "r", "d") : "hy" == f ? c(t, "Գովազդային") : "id" == f ? a(t, "B", "e", "p", "n") : "is" == f ? c(t, "Kostað") : "ja" == f ? c(t, "広告") : "ms" == f ? c(t, "Ditaja") : "jv" == f ? c(t, "Disponsori") : "ka" == f ? c(t, "რეკლამა") : "kk" == f ? c(t, "Демеушілік көрсеткен") : "km" == f ? c(t, "បានឧបត្ថម្ភ") : "kn" == f ? c(t, "ಪ್ರಾಯೋಜಿತ") : "ko" == f ? c(t, "Sponsored") : "ky" == f ? c(t, "Демөөрчүлөнгөн") : "lo" == f ? c(t, "ຜູ້ສະໜັບສະໜູນ") : "lt" == f ? c(t, "Remiama") : "lv" == f ? c(t, "Apmaksāta reklāma") : "mg" == f ? c(t, "Misy Mpiantoka") : "ml" == f ? c(t, "സ്പോൺസർ ചെയ്തത്") : "mn" == f ? c(t, "Ивээн тэтгэсэн") : "mt" == f ? c(t, "Sponsorjat") : "my" == f ? (c(t, "ပံ့ပိုးထားသည်"), 
+                        "0" == r && c(t, "အခပေးကြော်ငြာ")) : "or" == f ? c(t, "ପ୍ରଯୋଜିତ") : "pa" == f ? c(t, "ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ") : "ps" == f ? c(t, "تمويل شوي") : "ro" == f ? c(t, "Sponsorizat") : "ru" == f || "uk" == f ? c(t, "Реклама") : "rw" == f ? c(t, "Icyamamaza ndasukirwaho") : "sc" == f ? c(t, "Patronadu de") : "si" == f ? c(t, "අනුග්රාහක") : "sk" == f ? c(t, "Sponzorované") : "sn" == f ? c(t, "Zvabhadharirwa") : "so" == f ? c(t, "La maalgeliyey") : "sr" == f ? c(t, "Спонзорисано") : "sw" == f ? c(t, "Imedhaminiwa") : "sy" == f ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : "sz" == f ? c(t, "Szpōnzorowane") : "ta" == f ? c(t, "விளம்பரம்") : "te" == f ? c(t, "ప్రాయోజితం చేయబడింది") : "tg" == f ? c(t, "Бо сарпарастӣ") : "th" == f ? c(t, "ได้รับการสนับสนุน") : "tl" == f ? c(t, "May Sponsor") : "tr" == f ? c(t, "Sponsorlu") : "tt" == f ? c(t, "Хәйрияче") : "tz" == f ? c(t, "ⵉⴷⵍ") : "ur" == f ? c(t, "سپانسرڈ") : "uz" == f ? c(t, "Reklama") : "vi" == f ? c(t, "Được tài trợ") : "zh-Hans" == f ? c(t, "赞助内容") : "zh-Hant" == f && c(t, "贊助"), 
                         0 < h.length && 0 < d.length && 0 < p.length && 0 < u.length)) {
-                            for (cont = 0; cont < h.length; cont++) 0 < h[cont].offsetHeight && (cont = h.length,
+                            for (cont = 0; cont < h.length; cont++) 0 < h[cont].offsetHeight && (cont = h.length, 
                             s = 1);
-                            for (cont1 = 0; cont1 < d.length; cont1++) 0 < d[cont1].offsetHeight && (cont1 = d.length,
+                            for (cont1 = 0; cont1 < d.length; cont1++) 0 < d[cont1].offsetHeight && (cont1 = d.length, 
                             r = 1);
-                            for (cont2 = 0; cont2 < p.length; cont2++) 0 < p[cont2].offsetHeight && (cont2 = p.length,
+                            for (cont2 = 0; cont2 < p.length; cont2++) 0 < p[cont2].offsetHeight && (cont2 = p.length, 
                             l = 1);
-                            for (cont3 = 0; cont3 < u.length; cont3++) 0 < u[cont3].offsetHeight && (cont3 = u.length,
+                            for (cont3 = 0; cont3 < u.length; cont3++) 0 < u[cont3].offsetHeight && (cont3 = u.length, 
                             i = 1);
-                            1 == s && 1 == r && 1 == l && 1 == i && (0 < e.length && "" != (g = t.querySelectorAll("a[href]")[1].innerText) || (g = t.querySelectorAll("a[href]")[2].innerText),
-                            n += 1, console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n),
+                            1 == s && 1 == r && 1 == l && 1 == i && (0 < e.length && "" != (g = t.querySelectorAll("a[href]")[1].innerText) || (g = t.querySelectorAll("a[href]")[2].innerText), 
+                            n += 1, console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n), 
                             console.log("--------"), t.style = "display:none!important;");
                         }
                     }));
@@ -6540,7 +6553,7 @@ export const localScriptRules = {
                                     if (s.children?.props?.category?.includes("SPONSORED") || s.children?.props?.children?.props?.category?.includes("SPONSORED") || s.children?.props?.feedEdge?.category?.includes("SPONSORED") || s.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting || s.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id || s.children?.props?.children?.props?.minGapType?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting || s.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting || s.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED") || s.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting || s.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting || s.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes("SPONSORED") || s.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED")) {
                                         e++, i.style = "display: none !important;";
                                         var r = i.querySelector("a[href][aria-label]:not([aria-hidden])");
-                                        r && (d.push([ "Ad blocked based on property [" + e + "] -> " + r.ariaLabel ]),
+                                        r && (d.push([ "Ad blocked based on property [" + e + "] -> " + r.ariaLabel ]), 
                                         console.table(d));
                                     }
                                 } catch (s) {}
@@ -6573,7 +6586,7 @@ export const localScriptRules = {
                         const n = Object.keys(t).find((e => e.includes("__reactFiber")));
                         if (n) {
                             const o = t[n];
-                            if (o?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return t.style.display = "none",
+                            if (o?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return t.style.display = "none", 
                             void e.disconnect();
                         }
                     }
@@ -6640,7 +6653,7 @@ export const localScriptRules = {
                                         if (i.children?.props?.children?.props?.adId) {
                                             e++, t.style = "display: none !important;";
                                             var n = t.querySelector("a[href][aria-label]:not([aria-hidden])");
-                                            n && (r.push([ "Ad blocked based on property [" + e + "] -> " + n.ariaLabel ]),
+                                            n && (r.push([ "Ad blocked based on property [" + e + "] -> " + n.ariaLabel ]), 
                                             console.table(r));
                                         }
                                     } catch (i) {}
@@ -6671,18 +6684,18 @@ export const localScriptRules = {
                 var e = new MutationObserver((function() {
                     document.querySelectorAll('[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]').forEach((function(e) {
                         function o(e, t) {
-                            for (c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [class] [class]'),
-                            socheck = 0; socheck < c.length; socheck++) c[socheck].innerText.contains(t) && (d = [ "1" ],
+                            for (c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [class] [class]'), 
+                            socheck = 0; socheck < c.length; socheck++) c[socheck].innerText.contains(t) && (d = [ "1" ], 
                             i = [ "1" ], u = [ "1" ], s = r = l = 1, socheck = c.length);
                         }
                         function n(e, t, o, n, a) {
-                            c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + t + "]"),
-                            d = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + o + "]"),
-                            i = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + n + "]"),
-                            u = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + a + "]"),
-                            0 == c.length && (c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + t + "]"),
-                            d = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + o + "]"),
-                            i = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + n + "]"),
+                            c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + t + "]"), 
+                            d = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + o + "]"), 
+                            i = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + n + "]"), 
+                            u = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + a + "]"), 
+                            0 == c.length && (c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + t + "]"), 
+                            d = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + o + "]"), 
+                            i = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + n + "]"), 
                             u = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + a + "]"));
                         }
                         var a = 0, l = 0, r = 0, s = 0, c = 0, d = 0, i = 0, u = 0, h = e.querySelectorAll("div[style='width: 100%'] > a[href*='oculus.com/quest'] > div"), g = document.querySelector("[lang]").lang, f = e.querySelectorAll('a[ajaxify*="ad_id"] > span'), p = e.querySelectorAll('a[href*="ads/about"]');
@@ -6690,27 +6703,27 @@ export const localScriptRules = {
                             if (0 < f.length || 0 < p.length) {
                                 t += 1;
                                 var y = e.querySelectorAll("a[href]")[2].innerText;
-                                console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t),
-                                console.log("F length: " + f.length), console.log("H length: " + p.length), console.log("--------"),
+                                console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t), 
+                                console.log("F length: " + f.length), console.log("H length: " + p.length), console.log("--------"), 
                                 e.style = "display:none!important;";
                             } else if (0 < h.length) {
                                 t += 1;
                                 y = "Facebook";
-                                console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t),
+                                console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t), 
                                 console.log("Non-declared ad"), console.log("--------"), e.style = "display:none!important;";
                             } else "af" == g ? o(e, "Geborg") : "de" == g || "nl" == g ? n(e, "G", "e", "s", "n") : "am" == g ? o(e, "የተከፈለበት ማስታወቂያ") : "ar" == g ? o(e, "مُموَّل") : "as" == g ? o(e, "পৃষ্ঠপোষকতা কৰা") : "az" == g ? o(e, "Sponsor dəstəkli") : "co" == g ? o(e, "Spunsurizatu") : "bs" == g || "sl" == g || "cs" == g ? n(e, "S", "p", "z", "n") : "da" == g || "en" == g || "et" == g || "fy" == g || "it" == g || "ku" == g || "nb" == g || "nn" == g || "pl" == g || "sq" == g || "sv" == g || "zz" == g ? document.querySelector("body").className.includes("Locale_en_UD") ? o(e, "pəɹosuodS") : n(e, "S", "p", "s", "n") : "be" == g ? o(e, "Рэклама") : "bg" == g ? o(e, "Спонсорирано") : "mk" == g ? o(e, "Спонзорирано") : "br" == g ? o(e, "Paeroniet") : "ca" == g ? o(e, "Patrocinat") : "gl" == g || "pt" == g ? o(e, "Patrocinado") : "bn" == g ? o(e, "সৌজন্যে") : "cb" == g ? o(e, "پاڵپشتیکراو") : "cx" == g ? n(e, "G", "i", "s", "n") : "cy" == g ? o(e, "Noddwyd") : "el" == g ? o(e, "Χορηγούμενη") : "eo" == g ? o(e, "Reklamo") : "es" == g ? n(e, "P", "u", "c", "d") : "eu" == g ? o(e, "Babestua") : "fa" == g ? o(e, "دارای پشتیبانی مالی") : "ff" == g ? o(e, "Yoɓanaama") : "fi" == g ? o(e, "Sponsoroitu") : "fo" == g ? o(e, "Stuðlað") : "fr" == g ? document.querySelector("body").className.includes("Locale_fr_FR") ? n(e, "S", "p", "s", "n") : n(e, "C", "o", "m", "n") : "ga" == g ? o(e, "Urraithe") : "gn" == g ? o(e, "Oñepatrosinapyre") : "gu" == g ? o(e, "પ્રાયોજિત") : "ha" == g ? o(e, "Daukar Nauyi") : "he" == g ? o(e, "ממומן") : "hr" == g ? o(e, "Plaćeni oglas") : "ht" == g ? o(e, "Peye") : "ne" == g || "mr" == g || "hi" == g ? o(e, "प्रायोजित") : "hu" == g ? n(e, "H", "i", "r", "d") : "hy" == g ? o(e, "Գովազդային") : "id" == g ? n(e, "B", "e", "p", "n") : "is" == g ? o(e, "Kostað") : "ja" == g ? o(e, "広告") : "ms" == g ? o(e, "Ditaja") : "jv" == g ? o(e, "Disponsori") : "ka" == g ? o(e, "რეკლამა") : "kk" == g ? o(e, "Демеушілік көрсеткен") : "km" == g ? o(e, "បានឧបត្ថម្ភ") : "kn" == g ? o(e, "ಪ್ರಾಯೋಜಿತ") : "ko" == g ? o(e, "Sponsored") : "ky" == g ? o(e, "Демөөрчүлөнгөн") : "lo" == g ? o(e, "ຜູ້ສະໜັບສະໜູນ") : "lt" == g ? o(e, "Remiama") : "lv" == g ? o(e, "Apmaksāta reklāma") : "mg" == g ? o(e, "Misy Mpiantoka") : "ml" == g ? o(e, "സ്പോൺസർ ചെയ്തത്") : "mn" == g ? o(e, "Ивээн тэтгэсэн") : "mt" == g ? o(e, "Sponsorjat") : "my" == g ? o(e, "ပံ့ပိုးထားသည်") : "or" == g ? o(e, "ପ୍ରଯୋଜିତ") : "pa" == g ? o(e, "ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ") : "ps" == g ? o(e, "تمويل شوي") : "ro" == g ? o(e, "Sponsorizat") : "ru" == g || "uk" == g ? o(e, "Реклама") : "rw" == g ? o(e, "Icyamamaza ndasukirwaho") : "sc" == g ? o(e, "Patronadu de") : "si" == g ? o(e, "අනුග්‍රාහක") : "sk" == g ? o(e, "Sponzorované") : "sn" == g ? o(e, "Zvabhadharirwa") : "so" == g ? o(e, "La maalgeliyey") : "sr" == g ? o(e, "Спонзорисано") : "sw" == g ? o(e, "Imedhaminiwa") : "sy" == g ? o(e, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : "sz" == g ? o(e, "Szpōnzorowane") : "ta" == g ? o(e, "விளம்பரம்") : "te" == g ? o(e, "ప్రాయోజితం చేయబడింది") : "tg" == g ? o(e, "Бо сарпарастӣ") : "th" == g ? o(e, "ได้รับการสนับสนุน") : "tl" == g ? o(e, "May Sponsor") : "tr" == g ? o(e, "Sponsorlu") : "tt" == g ? o(e, "Хәйрияче") : "tz" == g ? o(e, "ⵉⴷⵍ") : "ur" == g ? o(e, "سپانسرڈ") : "uz" == g ? o(e, "Reklama") : "vi" == g ? o(e, "Được tài trợ") : "zh-Hans" == g ? o(e, "赞助内容") : "zh-Hant" == g && o(e, "贊助");
                             if (0 < c.length && 0 < d.length && 0 < i.length && 0 < u.length) {
-                                for (cont = 0; cont < c.length; cont++) 0 < c[cont].offsetHeight && (cont = c.length,
+                                for (cont = 0; cont < c.length; cont++) 0 < c[cont].offsetHeight && (cont = c.length, 
                                 a = 1);
-                                for (cont1 = 0; cont1 < d.length; cont1++) 0 < d[cont1].offsetHeight && (cont1 = d.length,
+                                for (cont1 = 0; cont1 < d.length; cont1++) 0 < d[cont1].offsetHeight && (cont1 = d.length, 
                                 l = 1);
-                                for (cont2 = 0; cont2 < i.length; cont2++) 0 < i[cont2].offsetHeight && (cont2 = i.length,
+                                for (cont2 = 0; cont2 < i.length; cont2++) 0 < i[cont2].offsetHeight && (cont2 = i.length, 
                                 r = 1);
-                                for (cont3 = 0; cont3 < u.length; cont3++) 0 < u[cont3].offsetHeight && (cont3 = u.length,
+                                for (cont3 = 0; cont3 < u.length; cont3++) 0 < u[cont3].offsetHeight && (cont3 = u.length, 
                                 s = 1);
                                 if (1 == a && 1 == l && 1 == r && 1 == s) {
                                     y = e.querySelectorAll("a[href]")[2].innerText;
-                                    t += 1, console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t),
+                                    t += 1, console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t), 
                                     console.log("--------"), e.style = "display:none!important;";
                                 }
                             }
@@ -6743,10 +6756,10 @@ export const localScriptRules = {
                 0 < window.location.href.indexOf("marketplace") && (e = new MutationObserver((function() {
                     document.querySelectorAll('div[role="main"] div[class][style^="max-width:"] div[class][style^="max-width:"]').forEach((function(e) {
                         var o, l = e.querySelectorAll('a[href*="ads/about"]');
-                        "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || 0 < l.length && (t += 1,
-                        "" == (o = e.querySelectorAll("a[href]")[0].innerText) && (o = e.querySelectorAll("a[href]")[1].innerText),
-                        "" == o && (o = e.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0]?.getAttribute("aria-label")),
-                        console.log("--------"), console.log("Ad hidden from: " + o), console.log("Total ads hidden: " + t),
+                        "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || 0 < l.length && (t += 1, 
+                        "" == (o = e.querySelectorAll("a[href]")[0].innerText) && (o = e.querySelectorAll("a[href]")[1].innerText), 
+                        "" == o && (o = e.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0]?.getAttribute("aria-label")), 
+                        console.log("--------"), console.log("Ad hidden from: " + o), console.log("Total ads hidden: " + t), 
                         console.log("H length: " + l.length), console.log("--------"), e.style = "display:none!important;");
                     }));
                 })), t = 0, e.observe(document, {
@@ -6791,6 +6804,40 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "9201edecacad19e52ef0fb416ec8c902" due to: ' + e);
+        }
+    },
+    '(()=>{const e={apply:(e,t,r)=>{try{if(r[2]?.[0]&&r[2][0]?.includes?.("MarketplaceFeedAdStory")){const e=r[2][0],t=e.split(/\\r?\\n|\\r/).map((e=>JSON.parse(e)));t.forEach((e=>{e.data?.viewer?.marketplace_feed_stories?.edges&&(e.data.viewer.marketplace_feed_stories.edges=e.data.viewer.marketplace_feed_stories.edges.filter((e=>!e.node?.__typename?.includes("MarketplaceFeedAdStory"))))}));const a=t.map((e=>JSON.stringify(e))).join("\\r\\n");r[2][0]=a}return Reflect.apply(e,t,r)}catch(a){return console.trace(a),Reflect.apply(e,t,r)}}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["62b1f9c5122ff0789e03ede3f535bab1"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, r) => {
+                        try {
+                            if (r[2]?.[0] && r[2][0]?.includes?.("MarketplaceFeedAdStory")) {
+                                const e = r[2][0].split(/\r?\n|\r/).map((e => JSON.parse(e)));
+                                e.forEach((e => {
+                                    e.data?.viewer?.marketplace_feed_stories?.edges && (e.data.viewer.marketplace_feed_stories.edges = e.data.viewer.marketplace_feed_stories.edges.filter((e => !e.node?.__typename?.includes("MarketplaceFeedAdStory"))));
+                                }));
+                                const t = e.map((e => JSON.stringify(e))).join("\r\n");
+                                r[2][0] = t;
+                            }
+                            return Reflect.apply(e, t, r);
+                        } catch (o) {
+                            return console.trace(o), Reflect.apply(e, t, r);
+                        }
+                    }
+                };
+                window.Function.prototype.call = new Proxy(window.Function.prototype.call, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "62b1f9c5122ff0789e03ede3f535bab1", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "62b1f9c5122ff0789e03ede3f535bab1" due to: ' + e);
         }
     },
     '!function(){if(window.location.href.includes("/marketplace/")){new MutationObserver(function(){document.querySelectorAll(\'div[data-testid="marketplace_home_feed"] div[class][data-testid^="MarketplaceUpsell-"] > div > div\').forEach(function(e){var t=e.outerHTML;t&&void 0!==t&&!0===t.includes("/ads/about/")&&(e.style="display:none!important;")})}).observe(document,{childList:!0,subtree:!0})}}();': () => {
@@ -7132,7 +7179,7 @@ export const localScriptRules = {
                 }, r = () => (new Error).stack, o = {
                     construct: (o, n, c) => {
                         const l = r();
-                        return t.includes.call(l, e) && n[0] && t.includes.call(n[0], "adshield") && (n[0] = [ "(function(){})();" ]),
+                        return t.includes.call(l, e) && n[0] && t.includes.call(n[0], "adshield") && (n[0] = [ "(function(){})();" ]), 
                         Reflect.construct(o, n, c);
                     }
                 };
@@ -7140,7 +7187,7 @@ export const localScriptRules = {
                 const n = {
                     apply: (o, n, c) => {
                         const l = r();
-                        return t.includes.call(l, e) && c[0] && t.includes.call(c[0], "new Error") && (c[0] = () => {}),
+                        return t.includes.call(l, e) && c[0] && t.includes.call(c[0], "new Error") && (c[0] = () => {}), 
                         Reflect.apply(o, n, c);
                     }
                 };
@@ -7148,7 +7195,7 @@ export const localScriptRules = {
                 const c = {
                     apply: (o, n, c) => {
                         const l = r();
-                        return t.includes.call(l, e) && c[0] && n?.includes?.("setTimeout") && (n = t.filter.call(n, (e => !t.includes.call(e, "setTimeout")))),
+                        return t.includes.call(l, e) && c[0] && n?.includes?.("setTimeout") && (n = t.filter.call(n, (e => !t.includes.call(e, "setTimeout")))), 
                         Reflect.apply(o, n, c);
                     }
                 };
@@ -7184,6 +7231,30 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "5662f0dae824e1b38f13e27f256c2066" due to: ' + e);
         }
     },
+    '(()=>{const t={apply:(t,o,n)=>{const e=n[0];return"function"==typeof e&&e.toString().includes("onAbnormalityDetected")&&(n[0]=function(){}),Reflect.apply(t,o,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.b149f5f8f73c8f7b2b21d20e1538bea4 === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, o) => {
+                        const n = o[0];
+                        return "function" == typeof n && n.toString().includes("onAbnormalityDetected") && (o[0] = function() {}), 
+                        Reflect.apply(e, t, o);
+                    }
+                };
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "b149f5f8f73c8f7b2b21d20e1538bea4", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "b149f5f8f73c8f7b2b21d20e1538bea4" due to: ' + e);
+        }
+    },
     '(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&"about:blank"===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch,o.contentWindow.Request=window.Request)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();': () => {
         try {
             const e = "done";
@@ -7193,7 +7264,7 @@ export const localScriptRules = {
                     apply: (e, t, o) => {
                         const n = Reflect.apply(e, t, o);
                         try {
-                            n instanceof HTMLIFrameElement && "about:blank" === n.src && n.contentWindow && (n.contentWindow.fetch = window.fetch,
+                            n instanceof HTMLIFrameElement && "about:blank" === n.src && n.contentWindow && (n.contentWindow.fetch = window.fetch, 
                             n.contentWindow.Request = window.Request);
                         } catch (e) {}
                         return n;
@@ -7211,57 +7282,39 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "b2938935474adeb9fa9f991bc00ad666" due to: ' + e);
         }
     },
-    '(()=>{const t={apply:(t,o,n)=>{const e=n[0];return"function"==typeof e&&e.toString().includes("onAbnormalityDetected")&&(n[0]=function(){}),Reflect.apply(t,o,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': () => {
+    '(()=>{const e={construct:(e,t,c)=>{try{const n=t[0];let r=t[1]?.body;if(!n?.includes("youtubei")||!r)return Reflect.construct(e,t,c);if(r.includes(\'"clientScreen":"WATCH"\'))console.log("Intercepted YouTube request:",n),t[1].body=r.replace(\'"clientScreen":"WATCH"\',\'"clientScreen":"ADUNIT"\');else{const n=JSON.parse(r);if(!n.context?.client)return Reflect.construct(e,t,c);n.context.client.clientScreen="ADUNIT",r=JSON.stringify(n),t[1].body=r}}catch(e){console.trace("Error occurred:",e)}return Reflect.construct(e,t,c)}};window.Request=new Proxy(window.Request,e)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.b149f5f8f73c8f7b2b21d20e1538bea4 === e) return;
+            if (Window.prototype.toString.f38f2760831f57f8aadc441440d810f0 === e) return;
             (() => {
                 const e = {
-                    apply: (e, t, o) => {
-                        const n = o[0];
-                        return "function" == typeof n && n.toString().includes("onAbnormalityDetected") && (o[0] = function() {}),
-                        Reflect.apply(e, t, o);
-                    }
-                };
-                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, e);
-            })();
-            Object.defineProperty(Window.prototype.toString, "b149f5f8f73c8f7b2b21d20e1538bea4", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "b149f5f8f73c8f7b2b21d20e1538bea4" due to: ' + e);
-        }
-    },
-    '(()=>{if(Object.getOwnPropertyDescriptor(window.JSON,"stringify").writable)return;const e={construct:(e,c,r)=>{try{const e=c[0],r=c[1]?.body;e?.includes("youtubei")&&r?.includes(\'"clientScreen":"WATCH"\')&&(c[1].body=r.replace(\'"clientScreen":"WATCH"\',\'"clientScreen":"ADUNIT"\'))}catch(e){console.trace("Error occurred:",e)}return Reflect.construct(e,c,r)}};window.Request=new Proxy(window.Request,e)})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["91f888c248ca41605ecc865ebb74a447"] === e) return;
-            (() => {
-                if (Object.getOwnPropertyDescriptor(window.JSON, "stringify").writable) return;
-                const e = {
-                    construct: (e, c, r) => {
+                    construct: (e, t, c) => {
                         try {
-                            const e = c[0], r = c[1]?.body;
-                            e?.includes("youtubei") && r?.includes('"clientScreen":"WATCH"') && (c[1].body = r.replace('"clientScreen":"WATCH"', '"clientScreen":"ADUNIT"'));
+                            const r = t[0];
+                            let n = t[1]?.body;
+                            if (!r?.includes("youtubei") || !n) return Reflect.construct(e, t, c);
+                            if (n.includes('"clientScreen":"WATCH"')) console.log("Intercepted YouTube request:", r), 
+                            t[1].body = n.replace('"clientScreen":"WATCH"', '"clientScreen":"ADUNIT"'); else {
+                                const r = JSON.parse(n);
+                                if (!r.context?.client) return Reflect.construct(e, t, c);
+                                r.context.client.clientScreen = "ADUNIT", n = JSON.stringify(r), t[1].body = n;
+                            }
                         } catch (e) {
                             console.trace("Error occurred:", e);
                         }
-                        return Reflect.construct(e, c, r);
+                        return Reflect.construct(e, t, c);
                     }
                 };
                 window.Request = new Proxy(window.Request, e);
             })();
-            Object.defineProperty(Window.prototype.toString, "91f888c248ca41605ecc865ebb74a447", {
+            Object.defineProperty(Window.prototype.toString, "f38f2760831f57f8aadc441440d810f0", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "91f888c248ca41605ecc865ebb74a447" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "f38f2760831f57f8aadc441440d810f0" due to: ' + e);
         }
     },
     '(()=>{let t=document.location.href,e=[],n=[],o="",r=!1;const i=Array.prototype.push,a={apply:(t,o,a)=>(window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id&&a[0]&&a[0]!==window&&"number"==typeof a[0].start&&a[0].end&&"ssap"===a[0].namespace&&a[0].id&&(r||0!==a[0]?.start||n.includes(a[0].id)||(e.length=0,n.length=0,r=!0,i.call(e,a[0]),i.call(n,a[0].id)),r&&0!==a[0]?.start&&!n.includes(a[0].id)&&(i.call(e,a[0]),i.call(n,a[0].id))),Reflect.apply(t,o,a))};window.Array.prototype.push=new Proxy(window.Array.prototype.push,a),document.addEventListener("DOMContentLoaded",(function(){if(!window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id)return;const i=()=>{const t=document.querySelector("video");if(t&&e.length){const i=Math.round(t.duration),a=Math.round(e.at(-1).end/1e3),c=n.join(",");if(!1===t.loop&&o!==c&&i&&i===a){const n=e.at(-1).start/1e3;t.currentTime<n&&(t.currentTime=n,r=!1,o=c)}else if(!0===t.loop&&i&&i===a){const n=e.at(-1).start/1e3;t.currentTime<n&&(t.currentTime=n,r=!1,o=c)}}};i();new MutationObserver((()=>{t!==document.location.href&&(t=document.location.href,e.length=0,n.length=0,r=!1),i()})).observe(document,{childList:!0,subtree:!0})}))})();': () => {
@@ -7271,8 +7324,8 @@ export const localScriptRules = {
             (() => {
                 let e = document.location.href, t = [], n = [], o = "", r = !1;
                 const c = Array.prototype.push, i = {
-                    apply: (e, o, i) => (window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id && i[0] && i[0] !== window && "number" == typeof i[0].start && i[0].end && "ssap" === i[0].namespace && i[0].id && (r || 0 !== i[0]?.start || n.includes(i[0].id) || (t.length = 0,
-                    n.length = 0, r = !0, c.call(t, i[0]), c.call(n, i[0].id)), r && 0 !== i[0]?.start && !n.includes(i[0].id) && (c.call(t, i[0]),
+                    apply: (e, o, i) => (window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id && i[0] && i[0] !== window && "number" == typeof i[0].start && i[0].end && "ssap" === i[0].namespace && i[0].id && (r || 0 !== i[0]?.start || n.includes(i[0].id) || (t.length = 0, 
+                    n.length = 0, r = !0, c.call(t, i[0]), c.call(n, i[0].id)), r && 0 !== i[0]?.start && !n.includes(i[0].id) && (c.call(t, i[0]), 
                     c.call(n, i[0].id))), Reflect.apply(e, o, i))
                 };
                 window.Array.prototype.push = new Proxy(window.Array.prototype.push, i), document.addEventListener("DOMContentLoaded", (function() {
@@ -7292,7 +7345,7 @@ export const localScriptRules = {
                     };
                     c();
                     new MutationObserver((() => {
-                        e !== document.location.href && (e = document.location.href, t.length = 0, n.length = 0,
+                        e !== document.location.href && (e = document.location.href, t.length = 0, n.length = 0, 
                         r = !1), c();
                     })).observe(document, {
                         childList: !0,
@@ -7352,6 +7405,32 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "2e6eacfae44118fb1fa0397d0470917e" due to: ' + e);
+        }
+    },
+    '(()=>{const e={apply:async(n,o,t)=>(t[0]?.toString?.().includes("function () { [native code] }")&&(t[0]=new Proxy(t[0],e)),"object"==typeof t[0]&&t[0].linearAdBreaks&&(t[0].linearAdBreaks=[]),Reflect.apply(n,o,t))},n={construct:(n,o,t)=>{const r=o[0],c=r?.toString(),i=c?.includes("ad breaks");return i&&(o[0]=new Proxy(r,e)),Reflect.construct(n,o,t)}};window.Promise=new Proxy(window.Promise,n)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.f9fdd7bf50948a3a4434700b9afa2851 === e) return;
+            (() => {
+                const e = {
+                    apply: async (r, t, o) => (o[0]?.toString?.().includes("function () { [native code] }") && (o[0] = new Proxy(o[0], e)), 
+                    "object" == typeof o[0] && o[0].linearAdBreaks && (o[0].linearAdBreaks = []), Reflect.apply(r, t, o))
+                }, r = {
+                    construct: (r, t, o) => {
+                        const n = t[0], a = n?.toString(), i = a?.includes("ad breaks");
+                        return i && (t[0] = new Proxy(n, e)), Reflect.construct(r, t, o);
+                    }
+                };
+                window.Promise = new Proxy(window.Promise, r);
+            })();
+            Object.defineProperty(Window.prototype.toString, "f9fdd7bf50948a3a4434700b9afa2851", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "f9fdd7bf50948a3a4434700b9afa2851" due to: ' + e);
         }
     },
     '(()=>{document.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll(\'a[href^="https://af.gog.com/game/"]\').forEach((t=>{const e=t.getAttribute("href").replace("https://af.gog.com/","https://www.gog.com/");t.setAttribute("href",e)}))}));})();': () => {
@@ -7451,7 +7530,7 @@ export const localScriptRules = {
         try {
             const e = "done";
             if (Window.prototype.toString["9d74c934588df2de463c39e31e3adc10"] === e) return;
-            -1 == document.cookie.indexOf("native-app-topper") && (document.cookie = "native-app-topper=" + Date.now() + "; path=/;",
+            -1 == document.cookie.indexOf("native-app-topper") && (document.cookie = "native-app-topper=" + Date.now() + "; path=/;", 
             location.reload());
             Object.defineProperty(Window.prototype.toString, "9d74c934588df2de463c39e31e3adc10", {
                 value: e,
@@ -7532,44 +7611,44 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "4a9a4c88d375de003f5ff00b3d926a2e" due to: ' + e);
         }
     },
-    '(()=>{var b=EventTarget.prototype.addEventListener,c=function(a,b){var c=document.querySelector("button.AppHeader-login");c&&b.bind(c)("click",function(){d.disconnect()},{once:!0})},d=new MutationObserver(function(){var a=document.querySelector(".Modal-wrapper .signFlowModal > .Modal-closeButton");a&&(d.disconnect(),e.disconnect(),a.click())});d.observe(document,{childList:!0,subtree:!0});var e=new MutationObserver(a=>{c(a,b)});e.observe(document,{childList:!0,subtree:!0}),setTimeout(function(){e.disconnect(),d.disconnect()},5E3)})();': () => {
+    '(()=>{var b=EventTarget.prototype.addEventListener,c=function(a,b){var c=document.querySelector("button.AppHeader-login, .AppHeader-userInfo > .AppHeader-profile > div > button.Button--blue");c&&b.bind(c)("click",function(){d.disconnect()},{once:!0})},d=new MutationObserver(function(){var a=document.querySelector(".Modal-wrapper .signFlowModal > .Modal-closeButton");a&&(d.disconnect(),e.disconnect(),a.click())});d.observe(document,{childList:!0,subtree:!0});var e=new MutationObserver(a=>{c(a,b)});e.observe(document,{childList:!0,subtree:!0}),setTimeout(function(){e.disconnect(),d.disconnect()},5E3)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["41bf8021e5a5f51b455d8d18dce0c4d0"] === e) return;
+            if (Window.prototype.toString.f8538b151cd703002da3f4fc86771de0 === e) return;
             (() => {
                 var e = EventTarget.prototype.addEventListener, t = new MutationObserver((function() {
                     var e = document.querySelector(".Modal-wrapper .signFlowModal > .Modal-closeButton");
-                    e && (t.disconnect(), n.disconnect(), e.click());
+                    e && (t.disconnect(), o.disconnect(), e.click());
                 }));
                 t.observe(document, {
                     childList: !0,
                     subtree: !0
                 });
-                var n = new MutationObserver((n => {
-                    !function(e, n) {
-                        var o = document.querySelector("button.AppHeader-login");
-                        o && n.bind(o)("click", (function() {
+                var o = new MutationObserver((o => {
+                    !function(e, o) {
+                        var n = document.querySelector("button.AppHeader-login, .AppHeader-userInfo > .AppHeader-profile > div > button.Button--blue");
+                        n && o.bind(n)("click", (function() {
                             t.disconnect();
                         }), {
                             once: !0
                         });
                     }(0, e);
                 }));
-                n.observe(document, {
+                o.observe(document, {
                     childList: !0,
                     subtree: !0
                 }), setTimeout((function() {
-                    n.disconnect(), t.disconnect();
+                    o.disconnect(), t.disconnect();
                 }), 5e3);
             })();
-            Object.defineProperty(Window.prototype.toString, "41bf8021e5a5f51b455d8d18dce0c4d0", {
+            Object.defineProperty(Window.prototype.toString, "f8538b151cd703002da3f4fc86771de0", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "41bf8021e5a5f51b455d8d18dce0c4d0" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "f8538b151cd703002da3f4fc86771de0" due to: ' + e);
         }
     },
     '(function(){if(!document.cookie.includes("zip_and_city=")){var a=encodeURIComponent(\'{"zip":"","city":""}\');document.cookie="zip_and_city="+a+"; path=/;"}})();': () => {
@@ -7700,12 +7779,12 @@ export const localScriptRules = {
                             if (0 < n.length && n[0].innerText.contains("Suggested")) {
                                 console.log("--------"), o += 1;
                                 var l = e.querySelectorAll("a[href]")[2].innerText;
-                                console.log("Annoyance hidden from: " + l), console.log("Total annoyances Hidden: " + o),
+                                console.log("Annoyance hidden from: " + l), console.log("Total annoyances Hidden: " + o), 
                                 console.log("F length: " + n.length), console.log("--------"), e.style = "display:none!important;";
                             }
-                            0 < t.length && t[0].innerText.contains("People you may know") && (console.log("--------"),
-                            o += 1, "" == (l = e.querySelectorAll("a[href]")[2].innerText) && (l = "Facebook"),
-                            console.log("Annoyance hidden from: " + l), console.log("Total annoyances Hidden: " + o),
+                            0 < t.length && t[0].innerText.contains("People you may know") && (console.log("--------"), 
+                            o += 1, "" == (l = e.querySelectorAll("a[href]")[2].innerText) && (l = "Facebook"), 
+                            console.log("Annoyance hidden from: " + l), console.log("Total annoyances Hidden: " + o), 
                             console.log("F length: " + n.length), console.log("--------"), e.style = "display:none!important;");
                         }
                     }));
@@ -7731,7 +7810,7 @@ export const localScriptRules = {
             if (Window.prototype.toString["03e8fcb55c09dc00ea2c8fbc43ccc9ac"] === e) return;
             new MutationObserver((function() {
                 document.querySelectorAll('div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])').forEach((function(e) {
-                    "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || e.querySelectorAll("div[aria-posinset] div[style] div[class] > div[class] > div[class] > div[class] > span")[0].innerText.contains("Suggested for you") && (console.log("--------"),
+                    "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || e.querySelectorAll("div[aria-posinset] div[style] div[class] > div[class] > div[class] > div[class] > span")[0].innerText.contains("Suggested for you") && (console.log("--------"), 
                     console.log("Annoyances hidden (Suggested for you)"), e.style = "display:none!important;");
                 }));
             })).observe(document, {
@@ -7754,7 +7833,7 @@ export const localScriptRules = {
             if (Window.prototype.toString["7658e09af099cd1524b0fba53dd1cb1c"] === e) return;
             new MutationObserver((function() {
                 document.querySelectorAll('div[role="feed"] > span').forEach((function(e) {
-                    "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || e.querySelectorAll("div[aria-posinset] div[style] div[class] > div[class] > div[class] > div[class] > span")[0].innerText.contains("Suggested for you") && (console.log("--------"),
+                    "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || e.querySelectorAll("div[aria-posinset] div[style] div[class] > div[class] > div[class] > div[class] > span")[0].innerText.contains("Suggested for you") && (console.log("--------"), 
                     console.log("Annoyances hidden (Suggested for you)"), e.style = "display:none!important;");
                 }));
             })).observe(document, {
@@ -7786,7 +7865,7 @@ export const localScriptRules = {
                                     if (s.children?.props?.category?.includes("SHOWCASE") || s.children?.props?.children?.props?.category?.includes("SHOWCASE") || s.children?.props?.children?.props?.feedEdge?.category?.includes("SHOWCASE") || s.children?.props?.category?.includes("FB_SHORTS") || s.children?.props?.children?.props?.category?.includes("FB_SHORTS") || s.children?.props?.children?.props?.feedEdge?.category?.includes("FB_SHORTS")) {
                                         e++, n.style = "display: none !important;";
                                         var t = n.querySelector("a[href][aria-label]:not([aria-hidden])");
-                                        t && (r.push([ "SHOWCASE post blocked based on property [" + e + "] -> " + t.ariaLabel ]),
+                                        t && (r.push([ "SHOWCASE post blocked based on property [" + e + "] -> " + t.ariaLabel ]), 
                                         console.table(r));
                                     }
                                 } catch (s) {}
@@ -7895,78 +7974,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "7d835d508a44fa6f33710266eee3a2c3" due to: ' + e);
         }
     },
-    '(async()=>{if(location.href.includes("?slid="))try{const t=new URLSearchParams(location.search).get("slid");if(!t||!t.length)return;const a=await fetch(`https://hotmediahub.com/shorturl/getoriginurl?&surl_key=${t}`),i=await a.json();i?.data?.origin_url&&i.data.origin_url.startsWith("http")&&location.assign(i.data.origin_url)}catch(t){console.debug(t)}})();': () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString["4563128700b6c48955f528992fe0d2f6"] === t) return;
-            (async () => {
-                if (location.href.includes("?slid=")) try {
-                    const t = new URLSearchParams(location.search).get("slid");
-                    if (!t || !t.length) return;
-                    const e = await fetch(`https://hotmediahub.com/shorturl/getoriginurl?&surl_key=${t}`), r = await e.json();
-                    r?.data?.origin_url && r.data.origin_url.startsWith("http") && location.assign(r.data.origin_url);
-                } catch (t) {
-                    console.debug(t);
-                }
-            })();
-            Object.defineProperty(Window.prototype.toString, "4563128700b6c48955f528992fe0d2f6", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "4563128700b6c48955f528992fe0d2f6" due to: ' + t);
-        }
-    },
-    '(async()=>{if(location.href.includes("/slmiddlepage/"))try{const t=location.href.split("/").at(-1);if(!t.length)return;const a=await fetch(`https://terabox.fun/api/shortlink/getoriginurl?&encrypt_surl_key=${t}`),i=await a.json();i?.data?.origin_url&&i.data.origin_url.startsWith("http")&&location.assign(i.data.origin_url)}catch(t){console.debug(t)}})();': () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString["0e073ac7dd901115bdce2b79ff3dfb14"] === t) return;
-            (async () => {
-                if (location.href.includes("/slmiddlepage/")) try {
-                    const t = location.href.split("/").at(-1);
-                    if (!t.length) return;
-                    const e = await fetch(`https://terabox.fun/api/shortlink/getoriginurl?&encrypt_surl_key=${t}`), r = await e.json();
-                    r?.data?.origin_url && r.data.origin_url.startsWith("http") && location.assign(r.data.origin_url);
-                } catch (t) {
-                    console.debug(t);
-                }
-            })();
-            Object.defineProperty(Window.prototype.toString, "0e073ac7dd901115bdce2b79ff3dfb14", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "0e073ac7dd901115bdce2b79ff3dfb14" due to: ' + t);
-        }
-    },
-    '(async()=>{if(location.href.includes("/sl/"))try{const t=location.href.split("/").at(-1);if(!t.length)return;const a=await fetch(`https://terabox.fun/shorturl/getoriginurl?&surl_key=${t}`),i=await a.json();i?.data?.origin_url&&i.data.origin_url.startsWith("http")&&location.assign(i.data.origin_url)}catch(t){console.debug(t)}})();': () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString.c902dd6dcc6d8edbd75819fe5a8c796f === t) return;
-            (async () => {
-                if (location.href.includes("/sl/")) try {
-                    const t = location.href.split("/").at(-1);
-                    if (!t.length) return;
-                    const e = await fetch(`https://terabox.fun/shorturl/getoriginurl?&surl_key=${t}`), r = await e.json();
-                    r?.data?.origin_url && r.data.origin_url.startsWith("http") && location.assign(r.data.origin_url);
-                } catch (t) {
-                    console.debug(t);
-                }
-            })();
-            Object.defineProperty(Window.prototype.toString, "c902dd6dcc6d8edbd75819fe5a8c796f", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "c902dd6dcc6d8edbd75819fe5a8c796f" due to: ' + t);
-        }
-    },
     '(function(){try{var a=location.href.split("/#");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{new URL(decodeURIComponent(a));var c=!0}catch(d){c=!1}if(c)try{location.assign(decodeURIComponent(a));break}catch(d){}}}}catch(d){}})();': () => {
         try {
             const e = "done";
@@ -8033,7 +8040,7 @@ export const localScriptRules = {
                     var e = new MutationObserver((function() {
                         try {
                             var t = document.querySelector('form#landing > input[name="go"][value]'), n = document.querySelector("body > script");
-                            t && t.value.startsWith("aHR0c") && n && n.textContent.includes("document.getElementById('landing').submit();") && (n.remove(),
+                            t && t.value.startsWith("aHR0c") && n && n.textContent.includes("document.getElementById('landing').submit();") && (n.remove(), 
                             e.disconnect(), location.assign(atob(t.value)));
                         } catch (e) {}
                     }));
@@ -8598,7 +8605,7 @@ export const localScriptRules = {
             !function() {
                 var e = window.setInterval;
                 window.setInterval = function(t, r) {
-                    return 1e3 === r && /removeAttr\('disabled'\)/.test(t.toString()) && (r *= .01),
+                    return 1e3 === r && /removeAttr\('disabled'\)/.test(t.toString()) && (r *= .01), 
                     e.apply(this, arguments);
                 }.bind(window);
             }();
@@ -8807,7 +8814,7 @@ export const localScriptRules = {
                 const e = {
                     apply: (e, t, n) => {
                         const o = Reflect.apply(e, t, n);
-                        return o?.data?.getDetailPageContent?.linkCustomAdOffers && (o.data.getDetailPageContent.linkCustomAdOffers = []),
+                        return o?.data?.getDetailPageContent?.linkCustomAdOffers && (o.data.getDetailPageContent.linkCustomAdOffers = []), 
                         o;
                     }
                 };
@@ -8995,7 +9002,7 @@ export const localScriptRules = {
                     return Math.floor(Math.random() * (o - e) + e);
                 }();
                 window.addEventListener("load", (function() {
-                    window.google_image_requests = [], window.google_global_correlator = e, window._hmt = window._hmt || [],
+                    window.google_image_requests = [], window.google_global_correlator = e, window._hmt = window._hmt || [], 
                     _hmt.id = e;
                 }));
             }();
@@ -9029,26 +9036,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "2c65b37bc179c213f5741f032fbc81bd" due to: ' + e);
-        }
-    },
-    "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/myaaqqbpfun12\\(\\)/.test(a.toString()))return b(a,c)};})();": () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.d0fc82b069eb2ac72f8e46e7308e2540 === e) return;
-            !function() {
-                var e = window.setTimeout;
-                window.setTimeout = function(t, o) {
-                    if (!/myaaqqbpfun12\(\)/.test(t.toString())) return e(t, o);
-                };
-            }();
-            Object.defineProperty(Window.prototype.toString, "d0fc82b069eb2ac72f8e46e7308e2540", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "d0fc82b069eb2ac72f8e46e7308e2540" due to: ' + e);
         }
     },
     "window.ad = window.ads = window.dzad = window.dzads = true;": () => {
@@ -9164,7 +9151,7 @@ export const localScriptRules = {
             if (Window.prototype.toString.b2a535efb393e3b426f36ad8e34ba1f7 === e) return;
             (() => {
                 const e = function() {};
-                window.__uid2 = window.__uid2 || {}, window.__uid2.init = e, window.__uid2.setIdentityFromEmail = e,
+                window.__uid2 = window.__uid2 || {}, window.__uid2.init = e, window.__uid2.setIdentityFromEmail = e, 
                 window.__uid2.callbacks = window.__uid2.callbacks || [], window.__uid2.callbacks.push = function(e) {
                     "function" == typeof e && e("InitCompleted", {
                         identity: null
@@ -9434,11 +9421,11 @@ export const localScriptRules = {
                 document.querySelectorAll('a[target="_blank"]').forEach((function(r) {
                     for (i = 0; i < e.length; i++) {
                         var t;
-                        r.href.includes(e[i]) && (t = (t = (t = r.href.split("#!")[1]) || r.href.split("%23%21")[1]) || "",
-                        r.href.includes("#!") && (t = "#!" + t), r.href.includes("%23%21") && (t = "%23%21" + t),
-                        t = (t = (t = r.href.split("&feature=share&")[1]) || r.href.split("%26feature%3Dshare%26")[1]) || "",
-                        r.href.includes("&feature=share&") && (t = "?" + t), r.href.includes("%26feature%3Dshare%26") && (t = "%3F" + t),
-                        t = (t = (t = r.href.split("&h=")[1]) || r.href.split("%26h%3D")[1]) || "", r.href.includes("&h=") && (t = "&h=" + t),
+                        r.href.includes(e[i]) && (t = (t = (t = r.href.split("#!")[1]) || r.href.split("%23%21")[1]) || "", 
+                        r.href.includes("#!") && (t = "#!" + t), r.href.includes("%23%21") && (t = "%23%21" + t), 
+                        t = (t = (t = r.href.split("&feature=share&")[1]) || r.href.split("%26feature%3Dshare%26")[1]) || "", 
+                        r.href.includes("&feature=share&") && (t = "?" + t), r.href.includes("%26feature%3Dshare%26") && (t = "%3F" + t), 
+                        t = (t = (t = r.href.split("&h=")[1]) || r.href.split("%26h%3D")[1]) || "", r.href.includes("&h=") && (t = "&h=" + t), 
                         r.href.includes("%26h%3D") && (t = "%26h%3D" + t), r.setAttribute("href", r.href.split(e[i])[0] + t));
                     }
                 }));
@@ -9681,6 +9668,112 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "14a0dfcfc56570b45c7aa35014affd67" due to: ' + e);
         }
     },
+    '(()=>{const e={apply:(e,r,c)=>{try{let t=c[0];if(!t)return Reflect.apply(e,r,c);const n=Array.isArray(t)?"array":"string";if("array"===n&&(t=t[0]),t.includes(\'"clientScreen"\')&&!t.includes(\'"clientScreen":"ADUNIT"\'))switch(n){case"array":c[0][0]=t.replace(\'"clientScreen":"WATCH_FULL_SCREEN"\',\'"clientScreen":"ADUNIT"\');break;case"string":c[0]=t.replace(\'"clientScreen":"WATCH_FULL_SCREEN"\',\'"clientScreen":"ADUNIT"\')}}catch(e){console.trace("Error occurred:",e)}return Reflect.apply(e,r,c)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.dc0c1c052ff85343f8f7dcc985fb01d1 === e) return;
+            (() => {
+                const e = {
+                    apply: (e, r, c) => {
+                        try {
+                            let t = c[0];
+                            if (!t) return Reflect.apply(e, r, c);
+                            const n = Array.isArray(t) ? "array" : "string";
+                            if ("array" === n && (t = t[0]), t.includes('"clientScreen"') && !t.includes('"clientScreen":"ADUNIT"')) switch (n) {
+                              case "array":
+                                c[0][0] = t.replace('"clientScreen":"WATCH_FULL_SCREEN"', '"clientScreen":"ADUNIT"');
+                                break;
+
+                              case "string":
+                                c[0] = t.replace('"clientScreen":"WATCH_FULL_SCREEN"', '"clientScreen":"ADUNIT"');
+                            }
+                        } catch (e) {
+                            console.trace("Error occurred:", e);
+                        }
+                        return Reflect.apply(e, r, c);
+                    }
+                };
+                window.XMLHttpRequest.prototype.send = new Proxy(window.XMLHttpRequest.prototype.send, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "dc0c1c052ff85343f8f7dcc985fb01d1", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "dc0c1c052ff85343f8f7dcc985fb01d1" due to: ' + e);
+        }
+    },
+    '(()=>{const e=Function.prototype.call;let t=!1,o=!1;const n={apply:(n,c,r)=>{const a=r[0];if(a?.requestNumber&&a?.snapshot)try{t=((e,t=5)=>{if("object"!=typeof e||null===e)return!1;const n=new Array(1e3);let c=0;const r=new WeakSet;for(n[c++]={obj:e,depth:0};c>0&&!o;){const{obj:e,depth:a}=n[--c];if(a>t||"object"!=typeof e||null===e||r.has(e))continue;let l;r.add(e);try{l=Object.hasOwn(e,"backoffTimeMs")}catch(e){console.trace("Error while checking for backoffTimeMs:",e)}if(l)return void 0!==e.backoffTimeMs||(o=!0,!1);for(const t in e)if(Object.hasOwn(e,t)){let o;try{o=e[t]}catch(e){console.trace("Error while accessing property:",e)}null!==o&&"object"==typeof o&&!r.has(o)&&c<n.length&&(n[c++]={obj:o,depth:a+1})}}return!1})(a),(t||o)&&(Function.prototype.call=e)}catch(e){console.trace("Error while checking for backoffTimeMs:",e)}return Reflect.apply(n,c,r)}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,n),window.addEventListener("load",(()=>{if(!t)return void(Function.prototype.call=e);const o=document.querySelector(".html5-video-player"),n=window.location.search,c=new URLSearchParams(n).get("v"),r=new URLSearchParams(n).get("t")??0;if(!o||!c)return;const a=parseInt(r,10);o.loadVideoById(c,a)}))})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["0efe2c6870fcc8613710aec52bba2dca"] === e) return;
+            (() => {
+                const e = Function.prototype.call;
+                let t = !1, o = !1;
+                const c = {
+                    apply: (c, r, n) => {
+                        const a = n[0];
+                        if (a?.requestNumber && a?.snapshot) try {
+                            t = ((e, t = 5) => {
+                                if ("object" != typeof e || null === e) return !1;
+                                const c = new Array(1e3);
+                                let r = 0;
+                                const n = new WeakSet;
+                                for (c[r++] = {
+                                    obj: e,
+                                    depth: 0
+                                }; r > 0 && !o; ) {
+                                    const {obj: a, depth: i} = c[--r];
+                                    if (i > t || "object" != typeof a || null === a || n.has(a)) continue;
+                                    let l;
+                                    n.add(a);
+                                    try {
+                                        l = Object.hasOwn(a, "backoffTimeMs");
+                                    } catch (e) {
+                                        console.trace("Error while checking for backoffTimeMs:", e);
+                                    }
+                                    if (l) return void 0 !== a.backoffTimeMs || (o = !0, !1);
+                                    for (const t in a) if (Object.hasOwn(a, t)) {
+                                        let o;
+                                        try {
+                                            o = a[t];
+                                        } catch (e) {
+                                            console.trace("Error while accessing property:", e);
+                                        }
+                                        null !== o && "object" == typeof o && !n.has(o) && r < c.length && (c[r++] = {
+                                            obj: o,
+                                            depth: i + 1
+                                        });
+                                    }
+                                }
+                                return !1;
+                            })(a), (t || o) && (Function.prototype.call = e);
+                        } catch (e) {
+                            console.trace("Error while checking for backoffTimeMs:", e);
+                        }
+                        return Reflect.apply(c, r, n);
+                    }
+                };
+                window.Function.prototype.call = new Proxy(window.Function.prototype.call, c), window.addEventListener("load", (() => {
+                    if (!t) return void (Function.prototype.call = e);
+                    const o = document.querySelector(".html5-video-player"), c = window.location.search, r = new URLSearchParams(c).get("v"), n = new URLSearchParams(c).get("t") ?? 0;
+                    if (!o || !r) return;
+                    const a = parseInt(n, 10);
+                    o.loadVideoById(r, a);
+                }));
+            })();
+            Object.defineProperty(Window.prototype.toString, "0efe2c6870fcc8613710aec52bba2dca", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "0efe2c6870fcc8613710aec52bba2dca" due to: ' + e);
+        }
+    },
     "!function(){window.somtag={cmd:function(){}};}();": () => {
         try {
             const e = "done";
@@ -9763,7 +9856,7 @@ export const localScriptRules = {
                 const e = {
                     construct: (e, t, r) => {
                         const o = t[0], n = o?.toString();
-                        return n && n.length > 500 && n.length < 1e3 && /=>[\s\S]*?for[\s\S]*?\[.+\]/.test(n) && (t[0] = () => {}),
+                        return n && n.length > 500 && n.length < 1e3 && /=>[\s\S]*?for[\s\S]*?\[.+\]/.test(n) && (t[0] = () => {}), 
                         Reflect.construct(e, t, r);
                     }
                 };
@@ -9924,24 +10017,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c3123d07eda7051ae1561c7613cf6cd8" due to: ' + e);
         }
     },
-    'setTimeout(function(){var el = document.querySelector(".showitxt"); if(el) { el.innerHTML = el.innerHTML.replace("(Anzeige)",""); }},3000);': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["97deeafd5b9c8767a31890baf15c37ce"] === e) return;
-            setTimeout((function() {
-                var e = document.querySelector(".showitxt");
-                e && (e.innerHTML = e.innerHTML.replace("(Anzeige)", ""));
-            }), 3e3);
-            Object.defineProperty(Window.prototype.toString, "97deeafd5b9c8767a31890baf15c37ce", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "97deeafd5b9c8767a31890baf15c37ce" due to: ' + e);
-        }
-    },
     '(function(b,d,e){function a(){}b={get:function(){return a},set:a},d={};Object.defineProperties(d,{spid_control_callback:b,content_control_callback:b,vid_control_callback:b});e=new Proxy({},{get:function(a,c){switch(c){case "config":return d;case "_setSpKey":throw Error();default:return a[c]}},set:function(a,c,b){switch(c){case "config":return!0;case "bootstrap":case "mms":return a[c]=b,!0;default:throw Error();}}});Object.defineProperty(window,"_sp_",{get:function(){return e},set:a})})();': () => {
         try {
             const e = "done";
@@ -10065,7 +10140,7 @@ export const localScriptRules = {
                 window.EventTarget.prototype.addEventListener = new Proxy(window.EventTarget.prototype.addEventListener, {
                     apply: (t, n, o) => {
                         const r = o[1], c = /detail.adblockDetected|handleAdblockDetect|Flags.autoRecov/;
-                        return r && "function" == typeof r && (c.test(e.call(r)) || c.test(r.toString())) && (o[1] = function() {}),
+                        return r && "function" == typeof r && (c.test(e.call(r)) || c.test(r.toString())) && (o[1] = function() {}), 
                         Reflect.apply(t, n, o);
                     }
                 });
@@ -10267,7 +10342,7 @@ export const localScriptRules = {
                 }, n = {
                     apply: (o, n, a) => {
                         const r = a[1];
-                        return r && (e => Object.values(t).some((t => e.includes(t.url))))(r) && (n.prevent = !0,
+                        return r && (e => Object.values(t).some((t => e.includes(t.url))))(r) && (n.prevent = !0, 
                         e = r), Reflect.apply(o, n, a);
                     }
                 };
@@ -10423,7 +10498,7 @@ export const localScriptRules = {
             document.addEventListener("DOMContentLoaded", (() => {
                 try {
                     let e;
-                    "function" == typeof decode_link && "string" == typeof link_out && (e = decode_link(atob(link_out)),
+                    "function" == typeof decode_link && "string" == typeof link_out && (e = decode_link(atob(link_out)), 
                     location.assign(e)), "string" == typeof api_key && (document.cookie = `${api_key}=Wn275; path=/`);
                     const t = document.querySelector("* > .button#contador");
                     t && e && setTimeout((() => {
@@ -10685,6 +10760,55 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "cf094940c140bb6a8015c9e1f15490f1" due to: ' + e);
         }
     },
+    '!function(){const e=e=>{const t=document.querySelector(".down-button");if(t&&t.textContent.includes("Continuar al enlace"))return;const o=new XMLHttpRequest;o.open("POST","/check.php",!0),o.setRequestHeader("Content-type","application/x-www-form-urlencoded"),o.send("a");const n=atob(window.ext_site).replace(/[a-z]/gi,(e=>String.fromCharCode(e.charCodeAt(0)+(e.toLowerCase()<="m"?13:-13))));let i=e.replaceAll(\'\\\\"\',\'"\');i=i.replace("\'+ api_key+ \'",window.api_key),i=i.replace("\'+ link_out+ \\"",window.link_out),i=i.replace(/action="\'\\+ .*?\\+ \'"/,`action="${n}"`);var a;const r=(a=i,(new DOMParser).parseFromString(a,"text/html")).querySelector("form"),c=new FormData(r),w=new XMLHttpRequest;w.open("POST",n,!0),w.send(c),window.tab2=window,postMessage("_clicked_b",location.origin)},t={apply:(t,o,n)=>{if(n[1]&&n[1].includes("api_key")){const t=window.link_out,o=window.api_key,i=n[1].match(/<form target=[\\s\\S]*?<\\/form>/)[0];if(n[1]=n[1].replace(/(setTimeout\\(function\\(\\)\\{)window\\[.\\[.\\]\\]\\[.\\[.*?\\]\\]= .*?(\\},3000)/,"$1$2"),n[1]=n[1].replace(/(window\\[).\\[\\d+\\](\\]\\(.\\(atob\\(main_site)/,\'$1"location"]["assign"$2\'),t&&o&&i)try{"loading"===document.readyState?window.addEventListener("load",(()=>{e(i)}),{once:!0}):e(i)}catch(e){console.debug(e)}}return Reflect.apply(t,o,n)}};window.Function.prototype.constructor=new Proxy(window.Function.prototype.constructor,t)}();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.ca77be71e26513295ae5e7edf2a6fb1a === e) return;
+            !function() {
+                const e = e => {
+                    const t = document.querySelector(".down-button");
+                    if (t && t.textContent.includes("Continuar al enlace")) return;
+                    const o = new XMLHttpRequest;
+                    o.open("POST", "/check.php", !0), o.setRequestHeader("Content-type", "application/x-www-form-urlencoded"), 
+                    o.send("a");
+                    const n = atob(window.ext_site).replace(/[a-z]/gi, (e => String.fromCharCode(e.charCodeAt(0) + (e.toLowerCase() <= "m" ? 13 : -13))));
+                    let r = e.replaceAll('\\"', '"');
+                    r = r.replace("'+ api_key+ '", window.api_key), r = r.replace("'+ link_out+ \"", window.link_out), 
+                    r = r.replace(/action="'\+ .*?\+ '"/, `action="${n}"`);
+                    var a;
+                    const i = (a = r, (new DOMParser).parseFromString(a, "text/html")).querySelector("form"), c = new FormData(i), d = new XMLHttpRequest;
+                    d.open("POST", n, !0), d.send(c), window.tab2 = window, postMessage("_clicked_b", location.origin);
+                }, t = {
+                    apply: (t, o, n) => {
+                        if (n[1] && n[1].includes("api_key")) {
+                            const t = window.link_out, o = window.api_key, r = n[1].match(/<form target=[\s\S]*?<\/form>/)[0];
+                            if (n[1] = n[1].replace(/(setTimeout\(function\(\)\{)window\[.\[.\]\]\[.\[.*?\]\]= .*?(\},3000)/, "$1$2"), 
+                            n[1] = n[1].replace(/(window\[).\[\d+\](\]\(.\(atob\(main_site)/, '$1"location"]["assign"$2'), 
+                            t && o && r) try {
+                                "loading" === document.readyState ? window.addEventListener("load", (() => {
+                                    e(r);
+                                }), {
+                                    once: !0
+                                }) : e(r);
+                            } catch (e) {
+                                console.debug(e);
+                            }
+                        }
+                        return Reflect.apply(t, o, n);
+                    }
+                };
+                window.Function.prototype.constructor = new Proxy(window.Function.prototype.constructor, t);
+            }();
+            Object.defineProperty(Window.prototype.toString, "ca77be71e26513295ae5e7edf2a6fb1a", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "ca77be71e26513295ae5e7edf2a6fb1a" due to: ' + e);
+        }
+    },
     '!function(){const e=e=>{const o=new XMLHttpRequest;o.open("POST","/check.php",!0),o.setRequestHeader("Content-type","application/x-www-form-urlencoded"),o.send("a");const t=atob(window.ext_site).replace(/[a-z]/gi,(e=>String.fromCharCode(e.charCodeAt(0)+(e.toLowerCase()<="m"?13:-13))));let n=e.replaceAll(\'\\\\"\',\'"\');n=n.replace("\'+ api_key+ \'",window.api_key),n=n.replace("\'+ link_out+ \\"",window.link_out),n=n.replace(/action="\'\\+ .*?\\+ \'"/,`action="${t}"`);var a;const i=(a=n,(new DOMParser).parseFromString(a,"text/html")).querySelector("form"),r=new FormData(i),c=new XMLHttpRequest;c.open("POST",t,!0),c.send(r),window.tab2=window,postMessage("_clicked_b",location.origin)},o={apply:(o,t,n)=>{if(n[1]&&n[1].includes("api_key")){const o=window.link_out,t=window.api_key,a=n[1].match(/window\\.open\\(.*?\\(atob\\(main_site\\)\\).*?("\\/.*\\.php\\?.*=").*?("&.*?=").*?(api_key),"view"/),i=a[1].replaceAll(\'"\',""),r=a[2].replaceAll(\'"\',""),c=n[1].match(/<form target=[\\s\\S]*?<\\/form>/)[0];if(n[1]=n[1].replace("window.location.href","var nulled"),n[1]=n[1].replace("window.open(f","location.assign(f"),n[1]=n[1].replace(/(parseInt\\(c\\.split\\("-"\\)\\[0\\]\\)<= 0).*?(\\)\\{)/,"$1$2"),o&&t&&i&&r&&c)try{"loading"===document.readyState?window.addEventListener("load",(()=>{e(c)}),{once:!0}):e(c)}catch(e){console.debug(e)}}return Reflect.apply(o,t,n)}};window.Function.prototype.constructor=new Proxy(window.Function.prototype.constructor,o)}();': () => {
         try {
             const e = "done";
@@ -10692,11 +10816,11 @@ export const localScriptRules = {
             !function() {
                 const e = e => {
                     const o = new XMLHttpRequest;
-                    o.open("POST", "/check.php", !0), o.setRequestHeader("Content-type", "application/x-www-form-urlencoded"),
+                    o.open("POST", "/check.php", !0), o.setRequestHeader("Content-type", "application/x-www-form-urlencoded"), 
                     o.send("a");
                     const t = atob(window.ext_site).replace(/[a-z]/gi, (e => String.fromCharCode(e.charCodeAt(0) + (e.toLowerCase() <= "m" ? 13 : -13))));
                     let n = e.replaceAll('\\"', '"');
-                    n = n.replace("'+ api_key+ '", window.api_key), n = n.replace("'+ link_out+ \"", window.link_out),
+                    n = n.replace("'+ api_key+ '", window.api_key), n = n.replace("'+ link_out+ \"", window.link_out), 
                     n = n.replace(/action="'\+ .*?\+ '"/, `action="${t}"`);
                     var a;
                     const r = (a = n, (new DOMParser).parseFromString(a, "text/html")).querySelector("form"), c = new FormData(r), i = new XMLHttpRequest;
@@ -10705,8 +10829,8 @@ export const localScriptRules = {
                     apply: (o, t, n) => {
                         if (n[1] && n[1].includes("api_key")) {
                             const o = window.link_out, t = window.api_key, a = n[1].match(/window\.open\(.*?\(atob\(main_site\)\).*?("\/.*\.php\?.*=").*?("&.*?=").*?(api_key),"view"/), r = a[1].replaceAll('"', ""), c = a[2].replaceAll('"', ""), i = n[1].match(/<form target=[\s\S]*?<\/form>/)[0];
-                            if (n[1] = n[1].replace("window.location.href", "var nulled"), n[1] = n[1].replace("window.open(f", "location.assign(f"),
-                            n[1] = n[1].replace(/(parseInt\(c\.split\("-"\)\[0\]\)<= 0).*?(\)\{)/, "$1$2"),
+                            if (n[1] = n[1].replace("window.location.href", "var nulled"), n[1] = n[1].replace("window.open(f", "location.assign(f"), 
+                            n[1] = n[1].replace(/(parseInt\(c\.split\("-"\)\[0\]\)<= 0).*?(\)\{)/, "$1$2"), 
                             o && t && r && c && i) try {
                                 "loading" === document.readyState ? window.addEventListener("load", (() => {
                                     e(i);
