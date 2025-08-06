@@ -29,7 +29,7 @@ import { groupStateStorage } from '../../storages/group-state';
 import { filterVersionStorage } from '../../storages/filter-version';
 import { RawFiltersStorage } from '../../storages/raw-filters';
 import { FiltersStorage } from '../../storages/filters';
-import { type Network } from '../network/main';
+import { type Network } from '../network';
 import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { createPromiseWithTimeout } from '../../utils/timeouts';
 import { getZodErrorMessage } from '../../../common/error';

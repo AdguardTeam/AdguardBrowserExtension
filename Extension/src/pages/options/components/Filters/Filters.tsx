@@ -543,7 +543,8 @@ const Filters = observer(() => {
                 {renderFilters({
                     filtersToRender,
                     groupEnabled: selectedGroup.enabled,
-                    areActionsAllowed: !isCustom,
+                    // In MV3, we should disable actions if the filter is custom and user scripts API is not granted.
+                    areActionsAllowed: !__IS_MV3__ || (isCustom && !showUserScriptsApiWarning),
                 })}
                 {renderEmptyFiltersMessage()}
                 {isCustom && !settingsStore.isSearching && (

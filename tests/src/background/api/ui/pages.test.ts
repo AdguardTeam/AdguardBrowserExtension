@@ -7,7 +7,7 @@ import {
 } from 'vitest';
 
 import { PagesApi } from '../../../../../Extension/src/background/api/ui/pages';
-import { SettingsApi } from '../../../../../Extension/src/background/api/settings/main';
+import { SettingsApi } from '../../../../../Extension/src/background/api/settings';
 import { FilterStateStorage } from '../../../../../Extension/src/background/storages/filter-state';
 import { GroupStateStorage } from '../../../../../Extension/src/background/storages/group-state';
 import { ForwardFrom } from '../../../../../Extension/src/common/forward';

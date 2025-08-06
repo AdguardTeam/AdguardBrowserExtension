@@ -15,16 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { UserAgent } from '../../../common/user-agent';
-import { AntiBannerFiltersId, RECOMMENDED_TAG_ID } from '../../../common/constants';
-import { CommonFilterUtils } from '../../../common/common-filter-utils';
+// TODO (AG-44868): Reduce code duplication across mv2 and mv3
+import { FilterUpdateApi } from '../update';
+import { CommonFilterApi } from '../common';
+import { UserAgent } from '../../../../common/user-agent';
+import { RECOMMENDED_TAG_ID } from '../../../../common/constants';
+import { CommonFilterUtils } from '../../../../common/common-filter-utils';
 import {
     metadataStorage,
     filterStateStorage,
     groupStateStorage,
     filterVersionStorage,
     customFilterMetadataStorage,
-} from '../../storages';
+} from '../../../storages';
 import {
     type GroupMetadata,
     type TagMetadata,
@@ -33,12 +36,9 @@ import {
     type FilterStateData,
     type FilterVersionData,
     type CustomFilterMetadata,
-} from '../../schema';
-import { logger } from '../../../common/logger';
-
-import { CommonFilterApi } from './common';
-import { type FilterMetadata, FiltersApi } from './main';
-import { FilterUpdateApi } from './update';
+} from '../../../schema';
+import { logger } from '../../../../common/logger';
+import { type FilterMetadata, FiltersApi } from '../main';
 
 /**
  * Filter data displayed in category section on options page.
@@ -83,15 +83,7 @@ export class Categories {
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
-        let filters = Categories.getFilters();
-
-        // Exclude Quick Fixes filter from filters list
-        // TODO: revert if Quick Fixes filter is back
-        if (__IS_MV3__) {
-            filters = filters.filter((f) => {
-                return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
-            });
-        }
+        const filters = Categories.getFilters();
 
         const categories = groups.map((group) => ({
             ...group,

@@ -1,10 +1,23 @@
-! Checksum: 3MTth9zKYxmcxkjKBtcAHg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1748265531-3600.patch
+! Checksum: 679DrI2tjoClnJE8zOzj7A
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1754309770-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.11.9
-! TimeUpdated: 2025-05-26T13:14:55+00:00
+! Version: 2.0.11.56
+! TimeUpdated: 2025-08-04T12:12:26+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=mt_click_id
+$removeparam=mt_network
+$removeparam=mt_campaign
+$removeparam=mt_adset
+$removeparam=mt_creative
+$removeparam=mt_medium
+$removeparam=mt_sub1
+$removeparam=mt_sub2
+$removeparam=mt_sub3
+$removeparam=mt_sub4
+$removeparam=mt_sub5
+$removeparam=adc_publisher
+$removeparam=adc_token
 $removeparam=tw_medium
 $removeparam=tw_profile_id
 $removeparam=tw_source
@@ -70,7 +83,6 @@ $removeparam=sms_source
 $removeparam=sms_uph
 $removeparam=ttclid
 $removeparam=spot_im_redirect_source
-$cookie=_wp_visitor
 $removeparam=mt_link_id
 $removeparam=iclid
 $removeparam=user_email_address
@@ -204,6 +216,9 @@ $removeparam=dpg_campaign
 $removeparam=dpg_medium
 $removeparam=dpg_content
 $removeparam=admitad_uid
+$removeparam=adj_campaign
+$removeparam=adj_t
+$removeparam=adj_creative
 $removeparam=gps_adid
 $removeparam=unicorn_click_id
 $removeparam=adjust_creative
@@ -258,6 +273,65 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||lyf.eu^$removeparam=adid
+||lenovo.com^$removeparam=obem
+||lenovo.com^$removeparam=CID
+||lenovo.com^$removeparam=rrid
+||lenovo.com^$removeparam=run_key
+||ref.digital.pumb.ua^$removeparam
+||digital.pumb.ua^$removeparam=source_caller
+||digital.pumb.ua^$removeparam=af_channel
+||digital.pumb.ua^$removeparam=shortlink
+||cyberghostvpn.com^$removeparam=brand
+||cyberghostvpn.com^$removeparam=aff_sub
+||cyberghostvpn.com^$removeparam=aff_id
+||cyberghostvpn.com^$removeparam=source
+||clubi.cc/*?t=$removeparam=t
+||clubi.cc/*?t=$removeparam=s
+||clubi.cc/*?t=$removeparam=c
+*$removeparam=channable,domain=easynotebooks.de|notebook.de
+*$removeparam=sPartner,domain=easynotebooks.de|notebook.de
+||tingfm.com^$removeparam=from
+||hola.org^$removeparam=ref
+||midasbuy.com^$removeparam=adtag
+||midasbuy.com^$removeparam=from
+||idnes.cz^$removeparam=zdroj
+||coloso.co.kr^$removeparam=fb_asc
+||alia-cloudflare.com/launcher/$removeparam=url,xmlhttprequest
+||alia-cloudflare.com/launcher/$removeparam=is_mobile,xmlhttprequest
+||alia-cloudflare.com/launcher/$removeparam=timezone,xmlhttprequest
+||alia-cloudflare.com/launcher/$removeparam=ip_address,xmlhttprequest
+||alia-cloudflare.com/launcher/$removeparam=user_agent,xmlhttprequest
+||alia-cloudflare.com/launcher/$removeparam=new_session,xmlhttprequest
+||operanewsapp.com^$removeparam=from
+||operanewsapp.com^$removeparam=request_id
+||operanewsapp.com^$removeparam=share_from
+||sprinklr.com/api/livechat/event/$removeparam=cursor
+||hepsiburada.com^$removeparam=wt_pc
+||akakce.com/r/?c=$removeparam=u
+||domclick.ru^$removeparam=from
+||buydomains.com/lander/*?domain=$removeparam
+||duckduckgo.com/y.js$removeparam=ad_provider
+||duckduckgo.com/y.js$removeparam=ad_domain
+||duckduckgo.com/y.js$removeparam=click_metadata
+||duckduckgo.com/y.js$removeparam=vqd
+||duckduckgo.com/y.js$removeparam=iurl
+||olybet.lv^$removeparam=ref
+||provereno.media^$removeparam=tg_rhash
+||weathernews.jp^$removeparam=fm
+||grok.com^$removeparam=referrer
+||nikke-jp.com^$removeparam=pid
+||nikke.onelink.me^$removeparam=pid
+*$removeparam=siteNo,domain=m-emart.ssg.com|emart.ssg.com
+*$removeparam=ckwhere,domain=m-emart.ssg.com|emart.ssg.com
+*$removeparam=appPopYn,domain=m-emart.ssg.com|emart.ssg.com
+*$removeparam=service_id,domain=m-emart.ssg.com|emart.ssg.com
+||gettranny.com^$removeparam=campaign
+||stanby.com^$removeparam=sr_fr
+://youtube.com/@*?si=$removeparam=si
+||youtu.be^$removeparam=si
+||myaccount.google.com^$removeparam=source
+||www.hcaptcha.com^$removeparam=ref
 ||korona.ru^$removeparam=pr-source
 ||korona.ru^$removeparam=pr-medium
 ||korona.ru^$removeparam=pr-campaign
@@ -336,6 +410,9 @@ $removeparam=xmt,domain=threads.com|threads.net
 ||carwow.de^$removeparam=impact_product_sku
 ||assetstore.unity.com^$removeparam=aid
 ||airvpn.org^$removeparam=referred_by
+||protonvpn.com^$removeparam=url_id
+||protonvpn.com^$removeparam=plan
+||protonvpn.com^$removeparam=ref
 ||go.getproton.me^$removeparam=aff_c
 ||billing.purevpn.com/aff.php$removeparam=aff
 ||strongvpn.com$removeparam=tr_aid
@@ -589,13 +666,10 @@ $removeparam=sub_rt,domain=comemo.nikkei.com|diehardtales.com|greenplanet.kaneka
 ||aeza.net^$removeparam=ref
 ||gptgirlfriend.online^$removeparam=ref
 ||fantasygf.ai^$removeparam=linkId
-||pornjourney.ai^$removeparam=referral
 ||land.muah.ai^$removeparam=ref
 ||getidol.com^$removeparam=ref
-||pornx.ai^$removeparam=ref
 ||vodafone.com.tr^$removeparam=tracking_cid
 ||juicy-ai.com^$removeparam=ref
-||angelgf.com^$removeparam=via
 ||slushy.com^$removeparam=af
 ||deepmode.com^$removeparam=fpr
 ||candy.ai^$removeparam=cid
@@ -642,7 +716,6 @@ ref=producthunt^$removeparam=ref
 ||news.yahoo.co.jp^$removeparam=date
 ||news.yahoo.co.jp^$removeparam=ctg
 ||news.yahoo.co.jp^$removeparam=bt
-||lumosvpn.com/?cep=$removeparam
 ||shop.adidas.jp^$removeparam=source_caller
 ||shop.adidas.jp^$removeparam=shortlink
 ||daohang.qq.com^$removeparam=fr
@@ -687,7 +760,6 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||videoproc.com/*install/$removeparam
 ||m.otenki.com^$removeparam=af
 ||carseven.co.jp^$removeparam=from
-||email1.io^$removeparam=aid
 ||blogmura.com^$removeparam=p_cid
 ||nvidia.com^$removeparam=jso
 ||nytimes.com^$removeparam=smid
@@ -711,7 +783,6 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||ejje.weblio.jp^$removeparam=erl
 ||qjweb.jp^$removeparam=from
 ||map.yahoo.co.jp^$removeparam=from_srv
-||protonvpn.com^$removeparam=ref
 ||quora.com^$removeparam=share
 ||tcgplayer.com^$removeparam=source
 ||kyujin.navitime.co.jp^$removeparam=from
@@ -765,7 +836,6 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||uber.com^$removeparam=uclick_id
 ||controld.com^$removeparam=cid
 ?ref=upstract.com^$removeparam=ref
-||prothomalo.com^$cookie=uuid_v2
 ||track.wargaming-aff.com/click?pid=$removeparam=ref_id
 ||trck.wargaming.net^$removeparam
 ||join.worldoftanks.eu^$removeparam
@@ -841,9 +911,6 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||hd.kinopoisk.ru^$removeparam=from_block
 ||bizhint.jp^$removeparam=trcd
 ||teknosa.com^$removeparam=adj_adgroup
-||teknosa.com^$removeparam=adj_campaign
-||teknosa.com^$removeparam=adj_creative
-||teknosa.com^$removeparam=adj_t
 ||teknosa.com^$removeparam=adp_cid
 ||teknosa.com^$removeparam=adp_oid
 ||teknosa.com^$removeparam=shopId
@@ -854,9 +921,6 @@ $removeparam=trackcode,domain=vk.com|vk.ru
 $removeparam=recom,domain=vk.com|vk.ru
 ||vkplay.ru$removeparam=_1ld
 ||vkplay.ru$removeparam=_1lp
-||vkplay.ru^$removeparam=mt_adset
-||vkplay.ru^$removeparam=mt_sub1
-||vkplay.ru^$removeparam=mt_sub2
 ||incogni.com^$removeparam=transaction_id
 ||incogni.com^$removeparam=offer_id
 ||incogni.com^$removeparam=affiliate_id
@@ -930,7 +994,7 @@ $removeparam=NaPm,domain=msearch.shopping.naver.com|search.shopping.naver.com
 ||duckduckgo.com^$removeparam=vis
 ||duckduckgo.com^$removeparam=perf_id
 ||duckduckgo.com^$removeparam=parent_perf_id
-||tutanota.com^$removeparam=t-src
+*$removeparam=t-src,domain=tutanota.com|tuta.com
 ||donga.com^$removeparam=ref
 ||t.adcell.com/*?$removeparam=subId
 ||track.webgains.com/click.html?$removeparam=clickref
@@ -973,6 +1037,8 @@ mailchimp.com$removeparam=amp%3Butm_medium
 mailchimp.com$removeparam=amp%3Butm_campaign
 mailchimp.com$removeparam=amp%3Baid
 mailchimp.com$removeparam=amp%3Bafl
+||wetransfer.com^$removeparam=t_network
+||wetransfer.com^$removeparam=t_s
 ||wetransfer.com^$removeparam=t_lsid
 ||wetransfer.com^$removeparam=t_rid
 ||wetransfer.com^$removeparam=t_exp
@@ -1095,7 +1161,6 @@ $removeparam=newsstand,domain=sportalkorea.com
 ||similarweb.com^$removeparam=from_ext
 ||bild.de^$removeparam=t_ref
 ||simplelogin.io^$removeparam=slref
-||applesfera.com^$cookie=NID
 ||pravda.com.ua^$removeparam=pageviewCount
 ||belta.co.jp^$removeparam=cid
 $removeparam=urrad,domain=u-s-s.jp|belta.co.jp
@@ -1136,7 +1201,6 @@ $removeparam=src_tab_page_id,domain=shein.co.uk|shein.com
 $removeparam=phone_code,domain=shein.co.uk|shein.com
 $removeparam=ici,domain=shein.co.uk|shein.com
 ||nesine.com^$removeparam=adj_adgroup
-||nesine.com^$removeparam=adj_creative
 ||nesine.com^$removeparam=adjust_t
 ||nesine.com^$removeparam=glid
 ||nesine.com^$removeparam=rlid
@@ -1247,8 +1311,6 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||event.hoken-mammoth.jp^$removeparam=s_mf
 ||cinematoday.jp^$removeparam=g_clk
 $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
-||investing.com^$cookie=smd
-||investing.com^$cookie=udid
 ||basketballking.jp^$removeparam=cx_art
 ||japan.cnet.com^$removeparam=tag
 ||asahi.com^$removeparam=iref
@@ -1399,16 +1461,12 @@ $removeparam=clid,domain=adguard-vpn.*|adguardvpn-help.*
 ||mirtesen.ru^$removeparam=bvuuid
 ||mirtesen.ru^$removeparam=ad
 $removeparam=oref,domain=defenseone.com|govexec.com|nextgov.com|route-fifty.com
-||whistleout.com.au^$cookie=ARRAffinity
-||whistleout.com.au^$cookie=ARRAffinitySameSite
 ||rac.co.uk^$removeparam=cid
 ||heraldcorp.com/view.php$removeparam=pos
 ||toomics.com^$removeparam=pid
 ||toomics.com^$removeparam=subpid
 ||toomics.com^$removeparam=channel
 ||toomics.com^$removeparam=gen
-||get-express-vpns.com^$removeparam=sxid
-||get-express-vpns.com^$removeparam=ttorigin
 ||zavvi.com^$removeparam=affil
 ||zavvi.com^$removeparam=sv_campaign_id
 ||mkaff.com/landings/$removeparam
@@ -1426,6 +1484,11 @@ $removeparam=clickTrackInfo,domain=lazada.com.ph|lazada.vn
 ||trk.mail.ru^$subdocument,removeparam=mt_click_id
 $removeparam=/utm_partner_id|frommail/,domain=mail.ru|sportmail.ru
 ||pulse.mail.ru^$removeparam=/^(udid|DeviceID|ver|appbuild|vendor|model|device_name|device_type|instanceid|device_year|connection_class|appsflyerid)/
+||checklink.mail.ru^$removeparam=android_id
+||checklink.mail.ru^$removeparam=advertising_id
+||checklink.mail.ru^$removeparam=advertising_tracking_enabled
+||checklink.mail.ru^$removeparam=autogen_token
+||checklink.mail.ru^$removeparam=email
 ||use.typekit.net^$font,removeparam=~/^(primer|subset_id)=/,domain=~fonts.adobe.com
 ||p.typekit.net^$stylesheet,removeparam
 ||qcplay.co.jp/?shortlink=*&c=$removeparam=c
@@ -1578,9 +1641,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||adj.st^$removeparam=adjust_deeplink
 ||adj.st^$removeparam=pt
 ||adj.st^$removeparam=pd
-||adj.st^$removeparam=adj_campaign
 ||adj.st^$removeparam=adj_adgroup
-||adj.st^$removeparam=adj_creative
 ||adj.st^$removeparam=adj_adnomia_click_id
 ||adj.st^$removeparam=pfx
 ||adj.st^$removeparam=adj_deeplink
@@ -1830,9 +1891,14 @@ $removeparam=search_domain,domain=ya.ru|yandex.*
 ||www.ebay.$removeparam=amdata
 ||www.ebay.$removeparam=mkrid
 ||www.ebay.$removeparam=campid
+||ebay.*/itm$removeparam=customid
+||ebay.*/itm$removeparam=toolid
+||ebay.*/itm$removeparam=_skw
+||ebay.*/str$removeparam=_trksid
 $removeparam=asc_campaign,domain=aboutamazon.com|amazon.*|amzn.to
 $removeparam=asc_refurl,domain=aboutamazon.com|amazon.*|amzn.to
 $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
+||amazon.*$removeparam=ascsubtag
 ||amazon.*$removeparam=isDramIntegrated
 ||amazon.*$removeparam=shoppingPortalEnabled
 ||amazon.*/*dp/$removeparam=dib
@@ -2024,6 +2090,11 @@ $removeparam=s,domain=twitter.com|x.com
 ||bilibili.com^$removeparam=vd_source
 ||weibo.*^$removeparam=weibo_id
 ||weibo.*^$removeparam=dt_dapp
+||iqiyi.com^$removeparam=r_area
+||iqiyi.com^$removeparam=recArea
+||iqiyi.com^$removeparam=block
+||iqiyi.com^$removeparam=eventId
+||iqiyi.com^$removeparam=event_id
 ||iqiyi.com^$removeparam=vfrm
 ||iqiyi.com^$removeparam=vfrmblk
 ||iqiyi.com^$removeparam=vfrmrst
@@ -2067,9 +2138,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 @@||glavnoe.life^$removeparam=utm_referrer
 @@||glavnoe.life^$removeparam=utm_source
 @@||glavnoe.life^$removeparam=utm_term
-@@||kortko.cc^$removeparam=utm_campaign
-@@||kortko.cc^$removeparam=utm_content
-@@||kortko.cc^$removeparam=utm_source
 @@||booklive.jp/vcentry/landing?$removeparam=vc_lpp
 @@||google.*/maps^$removeparam=utm_campaign
 @@||uploadnow.*/share$removeparam=utm_source
@@ -2105,7 +2173,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 @@||empflix.com^$removeparam
 @@||cdn-fck.tnaflix.com^$removeparam
 @@||xe.com^$removeparam
-@@||girafa.com.br^$removeparam
 @@||ofeminin.pl/*&srcc=ucs$removeparam=utm_source
 @@||auto-swiat.pl/*&srcc=ucs$removeparam=utm_source
 @@||komputerswiat.pl/*&srcc=ucs$removeparam=utm_source

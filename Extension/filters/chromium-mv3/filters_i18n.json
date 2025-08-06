@@ -159,7 +159,7 @@
 			},
 			"tr": {
 				"name": "Reklam engelleme",
-				"description": "Reklamları engelle"
+				"description": "Reklamları engelleyin"
 			},
 			"uk": {
 				"name": "Блокування реклами",
@@ -1226,7 +1226,7 @@
 				"description": "บล็อกโฆษณาบนเว็บไซต์ในภาษาที่กำหนด"
 			},
 			"tr": {
-				"name": "Dile Özgü",
+				"name": "Dile özgü",
 				"description": "Belirli dillerdeki sitelerde reklamları engelleyin"
 			},
 			"uk": {
@@ -14354,7 +14354,7 @@
 				"description": "De meest uitgebreide lijst van verschillende online statistieken en web analyse tools. Als u wilt dat uw acties op het internet niet worden gevolgd, gebruik dan dit filter."
 			},
 			"no": {
-				"name": "AdGuards spionvarefilter",
+				"name": "AdGuards sporingsbeskyttelsesfilter",
 				"description": "Den mest omfattende listen over ulike tellere og analyseverktøy på nettet. Hvis du ikke vil at dine handlinger på Internett skal spores, bruk dette filteret."
 			},
 			"pl": {

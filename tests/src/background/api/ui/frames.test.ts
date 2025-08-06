@@ -33,8 +33,8 @@ vi.mock('../../../../../Extension/src/background/api/page-stats', () => ({
     PageStatsApi,
 }));
 
-vi.mock('../../../../../Extension/src/background/api/settings/main', async () => ({
-    ...(await vi.importActual('../../../../../Extension/src/background/api/settings/main')),
+vi.mock('../../../../../Extension/src/background/api/settings', async () => ({
+    ...(await vi.importActual('../../../../../Extension/src/background/api/settings')),
     SettingsApi,
 }));
 
