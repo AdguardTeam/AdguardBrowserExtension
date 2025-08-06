@@ -23,4 +23,4 @@ export {
     type FilterHitStats,
     type FiltersHitStats,
 } from 'network-api';
-export { NetworkSettings } from './settings';
+export { NetworkSettings } from 'network-api-settings';
