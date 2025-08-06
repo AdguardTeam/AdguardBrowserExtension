@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { FilterUpdateApi } from '../api';
-import { browserStorage, metadataStorage } from '../storages';
-import { isNumber } from '../../common/guards';
-import { logger } from '../../common/logger';
+// TODO (AG-44868): Reduce code duplication across mv2 and mv3
+import { browserStorage, metadataStorage } from '../../storages';
+import { isNumber } from '../../../common/guards';
+import { logger } from '../../../common/logger';
+import { isUserScriptsApiSupported } from '../../../common/user-scripts-api';
+import { FilterUpdateApi } from '../../api/filters/update';
 
 /**
  * Service for scheduling filters update checks.
@@ -73,17 +74,13 @@ export class FilterUpdateService {
     public async init(): Promise<void> {
         await this.update();
 
-        if (__IS_MV3__) {
-            const dnrRulesetsBuildTimestampMs = metadataStorage.getDnrRulesetsBuildTimestampMs();
-            if (dnrRulesetsBuildTimestampMs === undefined) {
-                logger.warn('[ext.FilterUpdateService.init]: DNR rulesets build timestamp is not available.');
-                return;
-            }
-            // We set last update time in MV3 during issue reporting.
-            await FilterUpdateService.setLastUpdateTimeMs(dnrRulesetsBuildTimestampMs);
-        } else {
-            await FilterUpdateService.setLastUpdateTimeMs(Date.now());
+        const dnrRulesetsBuildTimestampMs = metadataStorage.getDnrRulesetsBuildTimestampMs();
+        if (dnrRulesetsBuildTimestampMs === undefined) {
+            logger.warn('[ext.FilterUpdateService.init]: DNR rulesets build timestamp is not available.');
+            return;
         }
+        // We set last update time in MV3 during issue reporting.
+        await FilterUpdateService.setLastUpdateTimeMs(dnrRulesetsBuildTimestampMs);
     }
 
     /**
@@ -134,12 +131,11 @@ export class FilterUpdateService {
 
         if (shouldCheckUpdates) {
             try {
-                if (__IS_MV3__) {
-                    // TODO: revert if Quick Fixes filter is back
-                    // await QuickFixesRulesApi.updateQuickFixesFilter();
-                } else {
-                    await FilterUpdateApi.autoUpdateFilters();
+                // In MV3, filters update is only allowed if userscripts API is granted
+                if (!isUserScriptsApiSupported()) {
+                    throw new Error('Userscripts API is not granted');
                 }
+                await FilterUpdateApi.autoUpdateFilters();
             } catch (e) {
                 logger.error('[ext.FilterUpdateService.update]: an error occurred during filters update:', e);
             }

@@ -20,7 +20,7 @@ import {
     SettingsApi,
     type SettingsData,
 } from '../../../../Extension/src/background/api';
-import { Network } from '../../../../Extension/src/background/api/network/main';
+import { Network } from '../../../../Extension/src/background/api/network';
 import { App } from '../../../../Extension/src/background/app';
 import {
     ExtensionSpecificSettingsOption,

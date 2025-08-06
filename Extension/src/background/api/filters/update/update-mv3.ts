@@ -15,24 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { filterVersionStorage, settingsStorage } from '../../storages';
+// TODO (AG-44868): Reduce code duplication across mv2 and mv3
+import { filterVersionStorage, settingsStorage } from '../../../storages';
 import {
     SettingOption,
     type RegularFilterMetadata,
     type CustomFilterMetadata,
-} from '../../schema';
-import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
-import { logger } from '../../../common/logger';
-import { FiltersUpdateTime } from '../../../common/constants';
-import { engine } from '../../engine';
-import { getZodErrorMessage } from '../../../common/error';
-import { FilterUpdateService } from '../../services/filter-update';
-import { CommonFilterUtils } from '../../../common/common-filter-utils';
-import { CustomFilterUtils } from '../../../common/custom-filter-utils';
-
-import { type FilterMetadata, FiltersApi } from './main';
-import { CustomFilterApi } from './custom';
-import { CommonFilterApi } from './common';
+} from '../../../schema';
+import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../common/settings';
+import { logger } from '../../../../common/logger';
+import { FiltersUpdateTime } from '../../../../common/constants';
+import { engine } from '../../../engine';
+import { getZodErrorMessage } from '../../../../common/error';
+import { CommonFilterUtils } from '../../../../common/common-filter-utils';
+import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
+import { CommonFilterApi } from '../common';
+import { type FilterMetadata, FiltersApi } from '../main';
+import { CustomFilterApi } from '../custom';
 
 /**
  * Filter update detail.
@@ -78,22 +77,11 @@ export class FilterUpdateApi {
      *
      * @returns List of metadata for updated filters.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public static async checkForFiltersUpdates(filterIds: number[]): Promise<FilterMetadata[]> {
         // TODO: We can add update filters in MV3 via patches via using
         // dynamic conversion of these patches, but it can be done later.
-        if (__IS_MV3__) {
-            return [];
-        }
-
-        const filtersToCheck = FilterUpdateApi.selectFiltersIdsToUpdate(filterIds);
-
-        // We update filters without patches when we enable groups.
-        const filterDetails = filtersToCheck.map((id) => ({ filterId: id, ignorePatches: true }));
-
-        const updatedFilters = await FilterUpdateApi.updateFilters(filterDetails);
-        filterVersionStorage.refreshLastCheckTime(filterDetails);
-
-        return updatedFilters;
+        return [];
     }
 
     /**
@@ -192,12 +180,6 @@ export class FilterUpdateApi {
         // If some filters were updated, then it is time to update the engine.
         if (updatedFilters.length > 0) {
             engine.debounceUpdate();
-
-            // set last update time only for MV2
-            // because there is no ability to update filters with patches in MV3
-            if (!__IS_MV3__) {
-                await FilterUpdateService.setLastUpdateTimeMs(Date.now());
-            }
         }
 
         return updatedFilters;
