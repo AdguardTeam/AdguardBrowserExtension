@@ -19,9 +19,9 @@ import path from 'node:path';
 
 import tsconfigPaths from 'vite-tsconfig-paths';
 import {
+    defineConfig,
     defineProject,
-    defineWorkspace,
-    type WorkspaceProjectConfiguration,
+    type UserWorkspaceConfig,
 } from 'vitest/config';
 
 import { loadAliases } from './tools/typescript';
@@ -34,9 +34,9 @@ import { ManifestVersionEnv } from './tools/constants';
  *
  * @returns The test configuration.
  */
-const createWorkspaceConfigForManifestVersion = (
+const createProjectForManifestVersion = (
     manifestVersion: ManifestVersionEnv,
-): WorkspaceProjectConfiguration => defineProject({
+): UserWorkspaceConfig => defineProject({
     define: {
         IS_FIREFOX_AMO: false,
         // For run tests like it's release.
@@ -58,7 +58,8 @@ const createWorkspaceConfigForManifestVersion = (
             'fake-indexeddb/auto',
             './vitest.setup.ts',
         ],
-        environment: 'jsdom', // Enables jsdom environment for tests.
+        // Enables jsdom environment for tests.
+        environment: 'jsdom',
         environmentOptions: {
             jsdom: {
                 // eslint-disable-next-line max-len
@@ -68,7 +69,11 @@ const createWorkspaceConfigForManifestVersion = (
     },
 });
 
-export default defineWorkspace([
-    createWorkspaceConfigForManifestVersion(ManifestVersionEnv.Second),
-    createWorkspaceConfigForManifestVersion(ManifestVersionEnv.Third),
-]);
+export default defineConfig({
+    test: {
+        projects: [
+            createProjectForManifestVersion(ManifestVersionEnv.Second),
+            createProjectForManifestVersion(ManifestVersionEnv.Third),
+        ],
+    },
+});
