@@ -9668,32 +9668,41 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "14a0dfcfc56570b45c7aa35014affd67" due to: ' + e);
         }
     },
-    '(()=>{const e={apply:(e,t,c)=>{try{const e=c[0];e&&e.includes(\'"clientScreen"\')&&!e.includes(\'"clientScreen":"ADUNIT"\')&&(c[0]=e.replace(\'"clientScreen":"WATCH_FULL_SCREEN"\',\'"clientScreen":"ADUNIT"\'))}catch(e){console.trace("Error occurred:",e)}return Reflect.apply(e,t,c)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();': () => {
+    '(()=>{const e={apply:(e,r,c)=>{try{let t=c[0];if(!t)return Reflect.apply(e,r,c);const n=Array.isArray(t)?"array":"string";if("array"===n&&(t=t[0]),t.includes(\'"clientScreen"\')&&!t.includes(\'"clientScreen":"ADUNIT"\'))switch(n){case"array":c[0][0]=t.replace(\'"clientScreen":"WATCH_FULL_SCREEN"\',\'"clientScreen":"ADUNIT"\');break;case"string":c[0]=t.replace(\'"clientScreen":"WATCH_FULL_SCREEN"\',\'"clientScreen":"ADUNIT"\')}}catch(e){console.trace("Error occurred:",e)}return Reflect.apply(e,r,c)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["774336191d2576add124064a9bc700d1"] === e) return;
+            if (Window.prototype.toString.dc0c1c052ff85343f8f7dcc985fb01d1 === e) return;
             (() => {
                 const e = {
-                    apply: (e, t, r) => {
+                    apply: (e, r, c) => {
                         try {
-                            const e = r[0];
-                            e && e.includes('"clientScreen"') && !e.includes('"clientScreen":"ADUNIT"') && (r[0] = e.replace('"clientScreen":"WATCH_FULL_SCREEN"', '"clientScreen":"ADUNIT"'));
+                            let t = c[0];
+                            if (!t) return Reflect.apply(e, r, c);
+                            const n = Array.isArray(t) ? "array" : "string";
+                            if ("array" === n && (t = t[0]), t.includes('"clientScreen"') && !t.includes('"clientScreen":"ADUNIT"')) switch (n) {
+                              case "array":
+                                c[0][0] = t.replace('"clientScreen":"WATCH_FULL_SCREEN"', '"clientScreen":"ADUNIT"');
+                                break;
+
+                              case "string":
+                                c[0] = t.replace('"clientScreen":"WATCH_FULL_SCREEN"', '"clientScreen":"ADUNIT"');
+                            }
                         } catch (e) {
                             console.trace("Error occurred:", e);
                         }
-                        return Reflect.apply(e, t, r);
+                        return Reflect.apply(e, r, c);
                     }
                 };
                 window.XMLHttpRequest.prototype.send = new Proxy(window.XMLHttpRequest.prototype.send, e);
             })();
-            Object.defineProperty(Window.prototype.toString, "774336191d2576add124064a9bc700d1", {
+            Object.defineProperty(Window.prototype.toString, "dc0c1c052ff85343f8f7dcc985fb01d1", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "774336191d2576add124064a9bc700d1" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "dc0c1c052ff85343f8f7dcc985fb01d1" due to: ' + e);
         }
     },
     '(()=>{const e=Function.prototype.call;let t=!1,o=!1;const n={apply:(n,c,r)=>{const a=r[0];if(a?.requestNumber&&a?.snapshot)try{t=((e,t=5)=>{if("object"!=typeof e||null===e)return!1;const n=new Array(1e3);let c=0;const r=new WeakSet;for(n[c++]={obj:e,depth:0};c>0&&!o;){const{obj:e,depth:a}=n[--c];if(a>t||"object"!=typeof e||null===e||r.has(e))continue;let l;r.add(e);try{l=Object.hasOwn(e,"backoffTimeMs")}catch(e){console.trace("Error while checking for backoffTimeMs:",e)}if(l)return void 0!==e.backoffTimeMs||(o=!0,!1);for(const t in e)if(Object.hasOwn(e,t)){let o;try{o=e[t]}catch(e){console.trace("Error while accessing property:",e)}null!==o&&"object"==typeof o&&!r.has(o)&&c<n.length&&(n[c++]={obj:o,depth:a+1})}}return!1})(a),(t||o)&&(Function.prototype.call=e)}catch(e){console.trace("Error while checking for backoffTimeMs:",e)}return Reflect.apply(n,c,r)}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,n),window.addEventListener("load",(()=>{if(!t)return void(Function.prototype.call=e);const o=document.querySelector(".html5-video-player"),n=window.location.search,c=new URLSearchParams(n).get("v"),r=new URLSearchParams(n).get("t")??0;if(!o||!c)return;const a=parseInt(r,10);o.loadVideoById(c,a)}))})();': () => {
