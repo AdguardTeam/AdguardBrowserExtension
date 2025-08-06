@@ -11,8 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dynamic rules limit duplicate notifications.
 - Network rules with `$important` modifier are applied even if protection is disabled [#3227].
+- Early save reactivation and missing exit prompt during active User Rules/Allowlist save [#3151].
 
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
+[#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
 
 ## Unreleased <!-- release/v5.2 -->
 
