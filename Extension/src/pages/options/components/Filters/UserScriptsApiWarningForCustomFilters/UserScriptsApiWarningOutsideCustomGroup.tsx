@@ -27,7 +27,7 @@ import {
     CHROME_EXTENSIONS_SETTINGS_URL,
     USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED,
 } from '../../../../../common/constants';
-import { BrowserUtils } from '../../../../../background/utils';
+import { BrowserUtils } from '../../../../../background/utils/browser-utils';
 
 export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
     const { settingsStore: { currentChromeVersion } } = useContext(rootStore);
