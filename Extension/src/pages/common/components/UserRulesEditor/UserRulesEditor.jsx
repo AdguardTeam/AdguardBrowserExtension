@@ -233,9 +233,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const hasUnsavedChanges = !isSaving && store.userRulesEditorContentChanged;
     const unsavedChangesTitle = translator.getMessage('options_editor_leave_title');
     const unsavedChangesSubtitle = translator.getMessage('options_userfilter_leave_subtitle');
-    usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
+    usePreventUnload(hasUnsavedChanges || isSaving, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
     const saveUserRules = async (userRules) => {
+        if (isSaving) {
+            return;
+        }
         store.setCursorPosition(editorRef.current.editor.getCursorPosition());
 
         // For MV2 version we don't show loader and don't check limits.
@@ -436,6 +439,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 onSave={saveClickHandler}
                 onExit={focusFirstEnabledAction}
                 highlightRules
+                readOnly={isSaving}
             />
             {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}
             {/* We are hiding it because only Options page has router, and there is no point of using it */}

@@ -50,6 +50,7 @@ const Editor = ({
     shouldResetSize,
     onSave,
     onExit,
+    readOnly = false,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
     const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
@@ -125,6 +126,7 @@ const Editor = ({
                 value={value}
                 commands={mergedShortcuts}
                 onChange={onChange}
+                readOnly={readOnly}
             />
             <ReactResizeDetector
                 skipOnMount
