@@ -145,8 +145,8 @@ importers:
         version: 3.4.0(zod@3.24.4)
     devDependencies:
       '@adguard/dnr-rulesets':
-        specifier: ~3.2
-        version: 3.2.20250716115023
+        specifier: ~3.2.20250806160103
+        version: 3.2.20250806160103
       '@adguard/eslint-plugin-logger-context':
         specifier: ^1.0.1
         version: 1.0.1
@@ -402,8 +402,8 @@ packages:
     engines: {node: '>=18.13.0'}
     hasBin: true
 
-  '@adguard/dnr-rulesets@3.2.20250716115023':
-    resolution: {integrity: sha512-tWdbyLA9jaOdb3D7ycDQRiTxuTiGQ9mkhBjPccJph+HZzqh7pZBjs+hZo1hVJztcY6szFvAk+TOt5Ds15s3ooA==}
+  '@adguard/dnr-rulesets@3.2.20250806160103':
+    resolution: {integrity: sha512-yKeyZy+lc2ajrz1XDeTc2kgNzByUniIs32Rk+Pm2fRsRtqTp4D5LR+gbDOie7aTzHGX8efx2PaA/ErBnoiEOjg==}
     hasBin: true
 
   '@adguard/eslint-plugin-logger-context@1.0.1':
@@ -1802,8 +1802,8 @@ packages:
     resolution: {integrity: sha512-Xm7bpRXnDSX2YE2YFfBk2FnF0ep6tmG7xPh8iHee8MIcrgq762Nkce856dYtJYLkuIoYZvGfTs/PbZhideTcEg==}
     engines: {node: '>=4'}
 
-  axios@1.10.0:
-    resolution: {integrity: sha512-/1xYAC4MP/HEG+3duIhFr4ZQXR4sQXOIe+o6sdqzeykGLx6Upp/1p8MHqhINOvGeP7xyNHe7tsiJByc4SSVUxw==}
+  axios@1.11.0:
+    resolution: {integrity: sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA==}
 
   axios@1.6.2:
     resolution: {integrity: sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==}
@@ -2738,6 +2738,10 @@ packages:
 
   form-data@4.0.0:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+    engines: {node: '>= 6'}
+
+  form-data@4.0.4:
+    resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
     engines: {node: '>= 6'}
 
   formdata-node@4.4.1:
@@ -5135,13 +5139,13 @@ snapshots:
       commander: 11.1.0
       crypto-js: 4.2.0
 
-  '@adguard/dnr-rulesets@3.2.20250716115023':
+  '@adguard/dnr-rulesets@3.2.20250806160103':
     dependencies:
       '@adguard/agtree': 3.2.2
       '@adguard/logger': 2.0.0
       '@adguard/re2-wasm': 1.2.0
       '@adguard/tsurlfilter': 3.4.5(@adguard/re2-wasm@1.2.0)
-      axios: 1.10.0
+      axios: 1.11.0
       chokidar: 4.0.3
       commander: 12.1.0
       fast-glob: 3.3.3
@@ -6491,10 +6495,10 @@ snapshots:
 
   axe-core@4.10.3: {}
 
-  axios@1.10.0:
+  axios@1.11.0:
     dependencies:
       follow-redirects: 1.15.9
-      form-data: 4.0.0
+      form-data: 4.0.4
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
@@ -7657,6 +7661,14 @@ snapshots:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
+      mime-types: 2.1.35
+
+  form-data@4.0.4:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      hasown: 2.0.2
       mime-types: 2.1.35
 
   formdata-node@4.4.1:
