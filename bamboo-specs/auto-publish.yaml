@@ -13,9 +13,10 @@ environments:
 
 AutoDeployAndPublish Release:
   # run auto-deploy only after successful build
-  triggers:
-    - build-success:
-        branch: stable-v5.2
+  # FIXME: Uncomment in AG-44839
+  # triggers:
+  #   - build-success:
+  #       branch: stable-v5.2
   tasks:
     - clean
     - checkout:
@@ -74,9 +75,10 @@ AutoDeployAndPublish Release:
 
 AutoDeployAndPublish Beta:
   # run auto-deploy only after successful build
-  triggers:
-    - build-success:
-        branch: stable-v5.2
+  # FIXME: Uncomment in AG-44839
+  # triggers:
+  #   - build-success:
+  #       branch: stable-v5.2
   tasks:
     - clean
     - checkout:
