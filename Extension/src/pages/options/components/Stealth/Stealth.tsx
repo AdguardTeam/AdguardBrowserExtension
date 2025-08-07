@@ -329,6 +329,21 @@ const Stealth = observer(() => {
                 mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
+
+                <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // @ts-ignore
+                    title={translator.getMessage('options_disable_webrtc_title')}
+                    description={translator.getMessage('options_disable_webrtc_desc')}
+                    disabled={!settings.values[BlockWebRTC]}
+                    sectionDisabled={isStealthModeDisabled}
+                    id={BlockWebRTC}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={translator.getMessage('options_disable_webrtc_title')}
+                    value={settings.values[BlockWebRTC]}
+                    handler={privacySettingChangeHandlerWithLoader}
+                />
+
                 {/* TODO revert this option when will be found a way to disable
                     referrer rule with stealth exclusion AG-34765 */}
                 {!__IS_MV3__ && (
@@ -362,20 +377,6 @@ const Stealth = observer(() => {
                         handler={settingChangeHandler}
                     />
                 )}
-
-                <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
-                    title={translator.getMessage('options_disable_webrtc_title')}
-                    description={translator.getMessage('options_disable_webrtc_desc')}
-                    disabled={!settings.values[BlockWebRTC]}
-                    sectionDisabled={isStealthModeDisabled}
-                    id={BlockWebRTC}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={translator.getMessage('options_disable_webrtc_title')}
-                    value={settings.values[BlockWebRTC]}
-                    handler={privacySettingChangeHandlerWithLoader}
-                />
             </SettingsSection>
         </>
     );
