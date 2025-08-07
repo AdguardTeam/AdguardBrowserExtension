@@ -127,7 +127,7 @@ const logger = new ExtendedLogger();
 
 // Expose logger to the window object,
 // to have possibility to switch log level from the console.
-// Example: adguard.logger.setCurrentLevel('trace');
+// Example: adguard.logger.setLogLevel('verbose');
 
 // eslint-disable-next-line no-restricted-globals
 Object.assign(self, { adguard: { ...self.adguard, logger } });

@@ -16,28 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { isUserScriptsApiSupported } from '../background/tswebextension';
+
 import { USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED } from './constants';
 import { logger } from './logger';
 import { UserAgent } from './user-agent';
 
-/**
- * Checks if User scripts API permission is granted.
- *
- * Note: do not rely on the engine value as its reload is required
- * for the value update which is not triggered when users grant or revoke the permission.
- *
- * @returns True if User scripts API permission is granted, false otherwise.
- */
-export const isUserScriptsApiSupported = () => {
-    try {
-        // Method call which throws an error if User scripts API permission is not granted.
-        chrome.userScripts.getScripts();
-        return true;
-    } catch {
-        // User scripts API is not available.
-        return false;
-    }
-};
+// Re-export to check if the User scripts API is supported in other modules.
+export { isUserScriptsApiSupported };
 
 /**
  * Checks if the User scripts API warning should be shown.

@@ -19,3 +19,6 @@
 // Re-export everything from tswebextension/mv2.
 // eslint-disable-next-line no-restricted-syntax
 export * from '@adguard/tswebextension';
+
+// In MV2 the User scripts API is not supported, so we provide a stub.
+export const isUserScriptsApiSupported = (): boolean => false;
