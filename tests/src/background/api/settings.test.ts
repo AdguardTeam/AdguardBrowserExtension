@@ -218,7 +218,7 @@ describe('Settings Api', () => {
 
             const exportedSettingsString = await SettingsApi.export();
             const EXPORTED_SETTINGS_V_2_0 = getExportedSettingsV2();
-            expect(exportedSettingsString).toStrictEqual(JSON.stringify(EXPORTED_SETTINGS_V_2_0));
+            expect(JSON.parse(exportedSettingsString)).toStrictEqual(EXPORTED_SETTINGS_V_2_0);
         }, EXTENDED_TIMEOUT_MS);
 
         it('Reset default settings', async () => {
