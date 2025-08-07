@@ -285,7 +285,7 @@ export class SettingsApi {
             [RootOption.Stealth]: SettingsApi.exportStealth(),
         };
 
-        return JSON.stringify(config);
+        return JSON.stringify(config, null, 4);
     }
 
     /**

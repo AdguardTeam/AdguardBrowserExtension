@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased <!-- release/v5.3 -->
 
+### Added
+
+- Beautification to exported settings JSON for improved readability [#3069].
+
 ### Fixed
 
 - Dynamic rules limit duplicate notifications.
@@ -15,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
+[#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
 
 ## Unreleased <!-- release/v5.2 -->
 
