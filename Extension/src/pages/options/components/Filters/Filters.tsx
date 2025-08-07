@@ -72,11 +72,12 @@ type FilterListRenderParams = {
     groupEnabled: boolean;
 
     /**
-     * Whether actions with filters are allowed.
+     * Whether actions with filters are disabled.
      *
-     * Needed for Custom filters group to disable actions if user scripts API is not granted.
+     * Needed for Custom filters group to disable actions if user scripts API
+     * is not granted.
      */
-    areActionsAllowed: boolean;
+    areActionsDisabled: boolean;
 };
 
 const QUERY_PARAM_NAMES = {
@@ -273,7 +274,7 @@ const Filters = observer(() => {
     const renderFilters = ({
         filtersToRender,
         groupEnabled,
-        areActionsAllowed,
+        areActionsDisabled,
     }: FilterListRenderParams) => {
         if (filtersToRender.length === 0) {
             return null;
@@ -282,7 +283,7 @@ const Filters = observer(() => {
         const groupListClassName = classNames(
             'group-list',
             {
-                'group-list--disabled': !areActionsAllowed,
+                'group-list--disabled': areActionsDisabled,
             },
         );
 
@@ -543,8 +544,9 @@ const Filters = observer(() => {
                 {renderFilters({
                     filtersToRender,
                     groupEnabled: selectedGroup.enabled,
-                    // In MV3, we should disable actions if the filter is custom and user scripts API is not granted.
-                    areActionsAllowed: !__IS_MV3__ || (isCustom && !showUserScriptsApiWarning),
+                    // In MV3, we should disable actions if the filter is custom
+                    // and user scripts API is not granted.
+                    areActionsDisabled: __IS_MV3__ && isCustom && showUserScriptsApiWarning,
                 })}
                 {renderEmptyFiltersMessage()}
                 {isCustom && !settingsStore.isSearching && (
