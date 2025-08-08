@@ -30,8 +30,6 @@ import {
 } from '../../api';
 import { messageHandler } from '../../message-handler';
 import { browserStorage } from '../../storages';
-// import { Prefs } from '../../prefs';
-// import { getRunInfo, Version } from '../../utils';
 import { getRunInfo } from '../../utils';
 
 import { type ManualExtensionUpdateData } from './types';
