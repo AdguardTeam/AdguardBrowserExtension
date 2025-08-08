@@ -300,14 +300,12 @@ export class App {
         await filterUpdateService.init();
 
         // Handle reload after manual update and determine if we were reloaded due to update.
-        const isReloaded = await ExtensionUpdateService.handleExtensionReloadOnUpdate();
+        // Normalize to boolean across MV2/MV3 where the method may return void or boolean.
+        const isReloadedResult = await ExtensionUpdateService.handleExtensionReloadOnUpdate();
 
         // FIXME: remove
-        // eslint-disable-next-line no-console
-        console.log('test123 isReloaded:', isReloaded);
-
-        // FIXME: remove
-        const isReloadedOnUpdate = isReloaded && true;
+        // const isReloadedOnUpdate = isReloaded && true;
+        const isReloadedOnUpdate = Boolean(isReloadedResult);
 
         // initialize the extension update state machine with a single Init event,
         // this will set the initial state inside the machine via guards
