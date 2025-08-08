@@ -35,6 +35,7 @@ import { browserStorage } from '../../storages';
 import { getRunInfo } from '../../utils';
 
 import { type ManualExtensionUpdateData } from './types';
+import { extensionUpdateActor, ExtensionUpdateEvent } from './extension-update-machine';
 
 /**
  * Service for checking and updating the extension.
@@ -77,6 +78,8 @@ export class ExtensionUpdateService {
      * @returns True if update is available, false otherwise.
      */
     private async manualCheckExtensionUpdate(): Promise<boolean> {
+        // Drive state machine: enter Checking
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
         const start = Date.now();
 
         // FIXME: use chrome.runtime.requestUpdateCheck() to check updates after fetching via the update cws url
@@ -100,9 +103,13 @@ export class ExtensionUpdateService {
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
         if (this.isUpdateAvailable) {
+            // Drive state machine: update is available
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
             iconsApi.update();
             logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Current version ${currentAppVersion} is lower than latest available version ${latestChromeStoreVersion}`);
         } else {
+            // Drive state machine: no update
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
             logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Current version ${currentAppVersion} is higher than latest available version ${latestChromeStoreVersion}`);
         }
 
@@ -119,6 +126,8 @@ export class ExtensionUpdateService {
      * otherwise void because the extension reloads.
      */
     private async manualUpdateExtension({ data }: UpdateExtensionMessage): Promise<boolean | void> {
+        // Drive state machine: start updating
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
         const start = Date.now();
 
         const { fromPage } = data;
@@ -152,6 +161,8 @@ export class ExtensionUpdateService {
         } catch (e) {
             await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
             this.isExtensionUpdated = false;
+            // Drive state machine: update failed
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
             logger.error(`[ext.ExtensionUpdateService.manualUpdateExtension]: Failed to reload extension: ${e}`);
         }
 
@@ -191,13 +202,17 @@ export class ExtensionUpdateService {
 
     /**
      * Handles extension reload after update.
+     *
+     * @returns {Promise<boolean>} True if a manual extension update reload was detected and handled
+     * (including when no pageToOpenAfterReload is present but update data existed); false if no
+     * manual update data was found.
      */
-    public static async handleExtensionReloadOnUpdate(): Promise<void> {
+    public static async handleExtensionReloadOnUpdate(): Promise<boolean> {
         const manualExtensionUpdateData = await ExtensionUpdateService.retrieveManualExtensionUpdateData();
 
         if (!manualExtensionUpdateData) {
             logger.debug('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: No manual extension update data found');
-            return;
+            return false;
         }
 
         const { initVersion, pageToOpenAfterReload } = manualExtensionUpdateData;
@@ -206,9 +221,10 @@ export class ExtensionUpdateService {
 
         if (!pageToOpenAfterReload) {
             logger.warn('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: No pageToOpenAfterReload found');
-            await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
-            return;
+            return false;
         }
+
+        await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
 
         if (pageToOpenAfterReload === ManualExtensionUpdatePage.Options) {
             logger.info('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: Opening options page...');
@@ -217,6 +233,8 @@ export class ExtensionUpdateService {
             logger.info('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: Opening popup...');
             await browserAction.openPopup();
         }
+
+        return true;
     }
 
     /**

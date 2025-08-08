@@ -125,7 +125,7 @@ type EventType = {
     /**
      * Whether the extension was reloaded after an update.
      */
-    isReloaded?: boolean;
+    isReloadedOnUpdate?: boolean;
 };
 
 const EXTENSION_UPDATE_MACHINE_ID = 'extensionUpdate';
@@ -146,11 +146,11 @@ const extensionUpdateMachine = setup({
             on: {
                 [ExtensionUpdateEvent.Init]: [
                     {
-                        guard: ({ event }: { event: EventType }) => !!event.isUpdateAvailable,
+                        guard: ({ event }: { event: EventType }): boolean => !!event.isUpdateAvailable,
                         target: ExtensionUpdateState.Available,
                     },
                     {
-                        guard: ({ event }: { event: EventType }) => !!event.isReloaded,
+                        guard: ({ event }: { event: EventType }): boolean => !!event.isReloadedOnUpdate,
                         target: ExtensionUpdateState.UpdateSuccess,
                     },
                     { target: ExtensionUpdateState.NotAvailable },
@@ -179,6 +179,9 @@ const extensionUpdateMachine = setup({
                 },
                 [ExtensionUpdateEvent.NoUpdateAvailable]: {
                     target: ExtensionUpdateState.NotAvailable,
+                },
+                [ExtensionUpdateEvent.ResetToIdle]: {
+                    target: ExtensionUpdateState.Idle,
                 },
             },
         },
@@ -236,21 +239,3 @@ extensionUpdateActor.subscribe((state) => {
 extensionUpdateActor.start();
 
 export { extensionUpdateActor };
-
-/**
- * Initializes the extension update machine actor
- * based on the current data for the page — options or popup.
- *
- * @param isExtensionUpdateAvailable Whether an extension update is available.
- * @param isExtensionReloadedOnUpdate Whether the extension was reloaded after an update.
- */
-export const initExtensionUpdateActor = (
-    isExtensionUpdateAvailable: boolean,
-    isExtensionReloadedOnUpdate: boolean,
-) => {
-    extensionUpdateActor.send({
-        type: ExtensionUpdateEvent.Init,
-        isUpdateAvailable: isExtensionUpdateAvailable,
-        isReloaded: isExtensionReloadedOnUpdate,
-    });
-};

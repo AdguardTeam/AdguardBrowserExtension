@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ExtensionUpdateService, extensionUpdateService } from 'extension-update-service';
+// import { ExtensionUpdateService, extensionUpdateService } from 'extension-update-service';
 
 import { RulesLimitsService } from 'rules-limits-service';
 
@@ -74,19 +74,19 @@ export type GetTabInfoForPopupResponse = {
      */
     areFilterLimitsExceeded: boolean;
 
-    /**
-     * Whether the extension update is available.
-     *
-     * Needed only for MV3.
-     */
-    isExtensionUpdateAvailable: boolean;
+    // /**
+    //  * Whether the extension update is available.
+    //  *
+    //  * Needed only for MV3.
+    //  */
+    // isExtensionUpdateAvailable: boolean;
 
-    /**
-     * Whether the extension was reloaded after the manual update.
-     *
-     * Needed only for MV3.
-     */
-    isExtensionReloadedOnUpdate: boolean;
+    // /**
+    //  * Whether the extension was reloaded after the manual update.
+    //  *
+    //  * Needed only for MV3.
+    //  */
+    // isExtensionReloadedOnUpdate: boolean;
 
     /**
      * Various options.
@@ -190,12 +190,12 @@ export class PopupService {
                 areFilterLimitsExceeded: __IS_MV3__
                     ? await RulesLimitsService.areFilterLimitsExceeded()
                     : false,
-                isExtensionUpdateAvailable: __IS_MV3__
-                    ? await extensionUpdateService.getIsUpdateAvailable()
-                    : false,
-                isExtensionReloadedOnUpdate: __IS_MV3__
-                    ? await ExtensionUpdateService.getIsExtensionReloadedOnUpdate()
-                    : false,
+                // isExtensionUpdateAvailable: __IS_MV3__
+                //     ? await extensionUpdateService.getIsUpdateAvailable()
+                //     : false,
+                // isExtensionReloadedOnUpdate: __IS_MV3__
+                //     ? await ExtensionUpdateService.getIsExtensionReloadedOnUpdate()
+                //     : false,
                 options: {
                     showStatsSupported: true,
                     isFirefoxBrowser: UserAgent.isFirefox,

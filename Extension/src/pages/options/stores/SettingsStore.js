@@ -45,8 +45,7 @@ import { messenger } from '../../services/messenger';
 import {
     extensionUpdateActor,
     ExtensionUpdateEvent,
-    initExtensionUpdateActor,
-} from '../../common/state-machines/extension-update-machine';
+} from '../../../background/services/extension-update/extension-update-machine';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import {
     sortFilters,
@@ -342,8 +341,6 @@ class SettingsStore {
             this.isChrome = data.environmentOptions.isChrome;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
-
-            initExtensionUpdateActor(data.isExtensionUpdateAvailable, data.isExtensionReloadedOnUpdate);
 
             if (data.isExtensionReloadedOnUpdate) {
                 const uiStore = this.rootStore.uiStore;
@@ -722,6 +719,7 @@ class SettingsStore {
                 });
             }
         } catch (error) {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
             logger.debug('[ext.SettingsStore.checkUpdatesMV3]: failed to check updates on options page: ', error);
         }
     }

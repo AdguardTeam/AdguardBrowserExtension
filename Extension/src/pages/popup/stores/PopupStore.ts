@@ -49,8 +49,7 @@ import {
     ExtensionUpdateState,
     ExtensionUpdateEvent,
     extensionUpdateActor,
-    initExtensionUpdateActor,
-} from '../../common/state-machines/extension-update-machine';
+} from '../../../background/services/extension-update/extension-update-machine';
 import { NotificationType } from '../../common/constants';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
 import { ManualExtensionUpdatePage, TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
@@ -254,8 +253,8 @@ export class PopupStore {
                 stats,
                 settings,
                 areFilterLimitsExceeded,
-                isExtensionUpdateAvailable,
-                isExtensionReloadedOnUpdate,
+                // isExtensionUpdateAvailable,
+                // isExtensionReloadedOnUpdate,
             } = response;
 
             // frame info
@@ -286,8 +285,6 @@ export class PopupStore {
             this.currentTabId = currentTab.id;
 
             this.setAppActorInitState();
-
-            initExtensionUpdateActor(isExtensionUpdateAvailable, isExtensionReloadedOnUpdate);
         });
     };
 
@@ -621,6 +618,7 @@ export class PopupStore {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
             }
         } catch (error: unknown) {
+            extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
             logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
         }
     }
