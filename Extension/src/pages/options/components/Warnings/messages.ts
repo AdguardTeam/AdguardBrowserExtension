@@ -34,14 +34,14 @@ export const getStaticWarningMessage = (data: InvalidStaticResultData): string |
 
     if (filtersCount) {
         if (filtersCount.expected !== undefined && filtersCount.current !== undefined) {
-            return translator.getMessage('options_all_limits_exceeded_warning', {
+            return translator.getMessage('options_all_limits_exceeded_warning_browser', {
                 current: filtersCount.current,
                 expected: filtersCount.expected,
             });
         }
 
         if (filtersCount.maximum !== undefined && filtersCount.current !== undefined) {
-            return translator.getMessage('options_limits_warning_static_filters', {
+            return translator.getMessage('options_limits_warning_static_filters_browser', {
                 current: filtersCount.current,
                 maximum: filtersCount.maximum,
             });
@@ -49,17 +49,14 @@ export const getStaticWarningMessage = (data: InvalidStaticResultData): string |
     }
 
     if (rulesCount) {
-        return translator.getMessage('options_limits_warning_static_rules', {
+        return translator.getMessage('options_limits_warning_static_filters_browser', {
             current: rulesCount.current,
             maximum: rulesCount.maximum,
         });
     }
 
     if (rulesRegexpsCount) {
-        return translator.getMessage('options_limits_warning_static_regex_rules', {
-            current: rulesRegexpsCount.current,
-            maximum: rulesRegexpsCount.maximum,
-        });
+        return translator.getMessage('options_limits_warning_static_regex_rules_no_counter');
     }
 
     return null;
@@ -76,14 +73,14 @@ export const getDynamicWarningMessage = (data: InvalidDynamicResultData): string
     const { rulesCount, rulesRegexpsCount, rulesUnsafeCount } = data;
 
     if (rulesCount) {
-        return translator.getMessage('options_limits_warning_dynamic_rules', {
+        return translator.getMessage('options_limits_warning_dynamic_rules_hint', {
             current: rulesCount.current,
             maximum: rulesCount.maximum,
         });
     }
 
     if (rulesRegexpsCount) {
-        return translator.getMessage('options_limits_warning_dynamic_regex_rules', {
+        return translator.getMessage('options_limits_warning_dynamic_regex_rules_hint', {
             current: rulesRegexpsCount.current,
             maximum: rulesRegexpsCount.maximum,
         });
