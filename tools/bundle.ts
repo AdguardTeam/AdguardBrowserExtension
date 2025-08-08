@@ -89,7 +89,10 @@ const betaPlanTasks = [
     copyExternals,
     bundleChrome,
     bundleChromeMv3,
+    bundleFirefoxAmo,
+    bundleFirefoxStandalone,
     bundleEdge,
+    bundleOpera,
     buildInfo,
 ];
 
