@@ -81,16 +81,28 @@ export class ExtensionUpdateService {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
         const start = Date.now();
 
-        // FIXME: use chrome.runtime.requestUpdateCheck() to check updates after fetching via the update cws url
-        // because new extension version may not be loaded on the computer yet
         const latestChromeStoreVersion = await ExtensionUpdateService.getLatestChromeStoreVersion();
         if (!latestChromeStoreVersion) {
             return false;
         }
 
+        // use runtime.requestUpdateCheck() to actually check updates
+        // because new extension version may not be loaded on the computer yet
+        const { status, version: nextUpdateVersion } = await chrome.runtime.requestUpdateCheck();
+
+        // continue only if update is available, otherwise (if 'throttled' or 'no_update') return false
+        if (status !== 'update_available') {
+            return false;
+        }
+
+        if (nextUpdateVersion !== latestChromeStoreVersion) {
+            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Next update version '${nextUpdateVersion}' is not equal to latest version available in CWS '${latestChromeStoreVersion}'`);
+        }
+
         const { currentAppVersion } = await getRunInfo();
 
         // FIXME: uncomment
+        // FIXME: probably nextUpdateVersion should be used (double check it)
         // const currentVersion = new Version(currentAppVersion);
         // const latestVersion = new Version(latestChromeStoreVersion);
         // this.isUpdateAvailable = latestVersion.compare(currentVersion) > 0;
