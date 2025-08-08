@@ -253,8 +253,8 @@ export class PopupStore {
                 stats,
                 settings,
                 areFilterLimitsExceeded,
-                // isExtensionUpdateAvailable,
-                // isExtensionReloadedOnUpdate,
+                isExtensionUpdateAvailable,
+                isExtensionReloadedOnUpdate,
             } = response;
 
             // frame info
@@ -285,6 +285,12 @@ export class PopupStore {
             this.currentTabId = currentTab.id;
 
             this.setAppActorInitState();
+
+            extensionUpdateActor.send({
+                type: ExtensionUpdateEvent.Init,
+                isReloadedOnUpdate: isExtensionReloadedOnUpdate,
+                isUpdateAvailable: isExtensionUpdateAvailable,
+            });
         });
     };
 

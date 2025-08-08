@@ -153,7 +153,6 @@ const extensionUpdateMachine = setup({
                         guard: ({ event }: { event: EventType }): boolean => !!event.isReloadedOnUpdate,
                         target: ExtensionUpdateState.UpdateSuccess,
                     },
-                    { target: ExtensionUpdateState.NotAvailable },
                 ],
                 [ExtensionUpdateEvent.Check]: {
                     target: ExtensionUpdateState.Checking,

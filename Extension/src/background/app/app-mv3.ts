@@ -22,7 +22,6 @@ import { extensionUpdateService, ExtensionUpdateService } from 'extension-update
 
 import { rulesLimitsService } from 'rules-limits-service';
 
-import { extensionUpdateActor, ExtensionUpdateEvent } from '../services/extension-update/extension-update-machine';
 import { engine } from '../engine';
 import { MessageType, sendMessage } from '../../common/messages';
 import { logger } from '../../common/logger';
@@ -142,7 +141,9 @@ export class App {
         const { previousAppVersion, currentAppVersion } = runInfo;
         const isAppVersionChanged = previousAppVersion !== currentAppVersion;
         const isInstall = isAppVersionChanged && !previousAppVersion;
-        const isUpdate = isAppVersionChanged && !!previousAppVersion;
+        // FIXME: revert
+        // const isUpdate = isAppVersionChanged && !!previousAppVersion;
+        const isUpdate = true;
 
         if (isInstall) {
             await InstallApi.install(runInfo);
@@ -299,28 +300,8 @@ export class App {
         // conditions.
         await filterUpdateService.init();
 
-        // Handle reload after manual update and determine if we were reloaded due to update.
-        // Normalize to boolean across MV2/MV3 where the method may return void or boolean.
-        const isReloadedResult = await ExtensionUpdateService.handleExtensionReloadOnUpdate();
-
-        // FIXME: remove
-        // const isReloadedOnUpdate = isReloaded && true;
-        const isReloadedOnUpdate = Boolean(isReloadedResult);
-
-        // initialize the extension update state machine with a single Init event,
-        // this will set the initial state inside the machine via guards
-        try {
-            const isUpdateAvailable = extensionUpdateService.getIsUpdateAvailable();
-            extensionUpdateActor.send({
-                type: ExtensionUpdateEvent.Init,
-                // FIXME: uncomment
-                // isReloadedOnUpdate: isReloaded && isUpdate,
-                isReloadedOnUpdate,
-                isUpdateAvailable,
-            });
-        } catch (e) {
-            // Non-fatal: log and continue app init.
-            logger.debug('[ext.App.asyncInit]: failed to initialize extension update machine', e);
+        if (isUpdate && __IS_MV3__) {
+            await ExtensionUpdateService.handleExtensionReloadOnUpdate();
         }
 
         // This event is used for integration tests (scripts/browser-test/index.ts)

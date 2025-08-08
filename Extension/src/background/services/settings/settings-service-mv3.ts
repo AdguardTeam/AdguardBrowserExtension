@@ -18,6 +18,8 @@
 
 import browser from 'webextension-polyfill';
 
+import { ExtensionUpdateService, extensionUpdateService } from 'extension-update-service';
+
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
@@ -115,6 +117,8 @@ export class SettingsService {
      */
     static async getOptionsData(): Promise<GetOptionsDataResponse> {
         const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
+        const isExtensionReloadedOnUpdate = await ExtensionUpdateService.getIsExtensionReloadedOnUpdate();
+        const isExtensionUpdateAvailable = await extensionUpdateService.getIsUpdateAvailable();
 
         return {
             settings: SettingsApi.getData(),
@@ -132,6 +136,8 @@ export class SettingsService {
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
             areFilterLimitsExceeded,
+            isExtensionReloadedOnUpdate,
+            isExtensionUpdateAvailable,
         };
     }
 

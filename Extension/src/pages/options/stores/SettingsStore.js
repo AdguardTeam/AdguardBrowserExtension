@@ -342,6 +342,12 @@ class SettingsStore {
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
 
+            extensionUpdateActor.send({
+                type: ExtensionUpdateEvent.Init,
+                isReloadedOnUpdate: data.isExtensionReloadedOnUpdate,
+                isUpdateAvailable: data.isExtensionUpdateAvailable,
+            });
+
             if (data.isExtensionReloadedOnUpdate) {
                 const uiStore = this.rootStore.uiStore;
                 uiStore.addNotification({

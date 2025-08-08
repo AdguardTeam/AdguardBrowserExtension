@@ -127,4 +127,18 @@ export type GetOptionsDataResponse = {
      * Used in MV3.
      */
     areFilterLimitsExceeded: boolean;
+
+    /**
+     * Whether the extension is reloaded on update.
+     *
+     * Used in MV3.
+     */
+    isExtensionReloadedOnUpdate: boolean;
+
+    /**
+     * Whether an update is available.
+     *
+     * Used in MV3.
+     */
+    isExtensionUpdateAvailable: boolean;
 };
