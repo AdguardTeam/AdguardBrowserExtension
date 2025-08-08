@@ -19,7 +19,7 @@
 import React from 'react';
 
 import { translator } from '../../../../common/translators/translator';
-import { Icon } from '../../../common/components/ui/Icon';
+import logoShieldUrl from '../../../../../assets/images/logo-shield.svg';
 
 import './splash-screen.pcss';
 
@@ -38,10 +38,10 @@ export const SplashScreen = ({ isEngineStarted }: SplashScreenProps) => {
     return (
         <div className="splash-screen">
             {shouldShowLogo && (
-                <Icon
-                    id="#logo-splash"
-                    classname="splash-screen__logo"
-                    title={translator.getMessage('popup_site_filtering_state_loading')}
+                <img
+                    src={logoShieldUrl}
+                    alt={translator.getMessage('popup_site_filtering_state_loading')}
+                    className="splash-screen__logo"
                 />
             )}
         </div>

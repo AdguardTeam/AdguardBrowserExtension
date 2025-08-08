@@ -208,3 +208,34 @@ export const emptyPreprocessedFilterList: PreprocessedFilterList = {
  * Chrome's extensions settings page url.
  */
 export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';
+
+/**
+ * Minimum Chrome versions required for different toggles which enables usage of User Scripts API.
+ *
+ * User scripts API with needed 'execute' method is supported from Chrome 135 and higher.
+ * But prior to 138 it can be enabled only via Developer mode toggle.
+ * And for 138 and higher it can be enabled via User Scripts API toggle in the extensions details.
+ *
+ * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts
+ */
+export const USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED = {
+    /**
+     * Minimum Chrome version where Developer mode should be enabled.
+     *
+     * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts#chrome_versions_prior_to_138_developer_mode_toggle
+     */
+    DEV_MODE_TOGGLE: 135,
+    /**
+     * Minimum Chrome version where User Scripts API toggle should be enabled.
+     *
+     * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts#chrome_versions_138_and_newer_allow_user_scripts_toggle
+     */
+    ALLOW_USER_SCRIPTS_TOGGLE: 138,
+};
+
+/**
+ * Delay in milliseconds before rechecking the state of the User Scripts API permission.
+ *
+ * Needed to update the state of the warning when the user grants or revokes the permission.
+ */
+export const USER_SCRIPTS_API_WARNING_RECHECK_DELAY_MS = 2000;

@@ -38,13 +38,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated blocking pages in MV2 extension for Safebrowsing and for web pages blocked by `$document` rules.
 - Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
-- Updated [@adguard/agtree] to v3.2.1.
-- Updated [@adguard/dnr-rulesets] to v3.1.0.
-- Updated [@adguard/filters-downloader] to v2.4.1.
+- Updated [@adguard/agtree] to v3.2.2.
+- Updated [@adguard/assistant] to v4.3.75.
+- Updated [@adguard/dnr-rulesets] to v3.2.0.
+- Updated [@adguard/filters-downloader] to v2.4.2.
 - Updated [@adguard/logger] to v2.0.0.
-- Updated [@adguard/scriptlets] to v2.2.7.
-- Updated [@adguard/tsurlfilter] to v3.4.0.
-- Updated [@adguard/tswebextension] to v3.2.1.
+- Updated [@adguard/scriptlets] to v2.2.8.
+- Updated [@adguard/tsurlfilter] to v3.4.5.
+- Updated [@adguard/tswebextension] to v3.2.7.
 
 ### Removed
 
@@ -71,6 +72,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Missing space in the description of AdGuard German filter in the `de` locale [#3216].
 - OOM errors may occur when applying too many patches in a row in MV2 [#3230].
 - Extension initialization on browser startup in Firefox [#3189].
+- Wrong rule is displayed for page blocked by `$document` rule in MV3 [#3260].
+- Overflowing notification text in the options page.
 
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
@@ -97,6 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
 [#3189]: https://github.com/AdguardTeam/AdguardBrowserExtension/pull/3189
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
+[#3260]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3260
 [tsurlfilter#147]: https://github.com/AdguardTeam/tsurlfilter/issues/147
 
 ## [5.1.102] - 2025-06-15
@@ -812,9 +816,10 @@ The extension is now fully compatible with MV3.
 [4.2.162]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.2.151...v4.2.162
 [4.2.151]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v4.1.57...v4.2.151
 
+[@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
+[@adguard/assistant]: https://github.com/AdguardTeam/AdguardAssistant/blob/master/CHANGELOG.md
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
 [@adguard/logger]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/logger/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
-[@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/tswebextension]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md
 [@adguard/tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md

@@ -221,11 +221,34 @@ export async function getCurrentBuildStats(buildType: BuildTargetEnv, target: Br
 }
 
 /**
+ * Sort several fields of the bundle sizes stats alphabetically: `pages`,
+ * `vendors`, and `shared`.
+ *
+ * @param stats Bundle sizes stats to sort.
+ *
+ * @returns Sorted bundle sizes stats.
+ */
+const sortStatsAlphabetically = (stats: BundleSizes): BundleSizes => {
+    const sortKeys = (obj: Record<string, number>) => Object.fromEntries(
+        Object.entries(obj).sort(([a], [b]) => a.localeCompare(b)),
+    );
+
+    return {
+        zip: stats.zip,
+        pages: sortKeys(stats.pages),
+        vendors: sortKeys(stats.vendors),
+        shared: sortKeys(stats.shared),
+        raw: stats.raw,
+    };
+};
+
+/**
  * Save the build statistics to the sizes file.
  *
  * @param buildType Build environment.
  * @param target Browser target.
- * @param currentStats Current build stats.
+ * @param currentStats Current build stats. Keys of every nested object
+ * in the `stats` field will be sorted alphabetically to ensure consistent order.
  */
 export async function saveBuildStats(
     buildType: BuildTargetEnv,
@@ -244,7 +267,16 @@ export async function saveBuildStats(
 
     // Update the target information
     // Use type assertion for proper indexing
-    sizesData[buildType][target] = currentStats;
+    sizesData[buildType][target] = {
+        version: currentStats.version,
+        updatedAt: currentStats.updatedAt,
+        // This is not strictly guaranteed that orders of fields will be
+        // consistent during serialization, but for most modern environments,
+        // the order we define in the object literal (as in the return value of
+        // sortStatsAlphabetically) will be preserved when serializing with
+        // JSON.stringify.
+        stats: sortStatsAlphabetically(currentStats.stats),
+    };
 
     // Write the updated sizes data back to the file
     await writeSizesFile(sizesData);

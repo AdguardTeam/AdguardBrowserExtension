@@ -1,9 +1,9 @@
-! Checksum: khys+UslmP4czyAu5aaiGQ
-! Diff-Path: ../patches/5/5-s-1748063450-3600.patch
+! Checksum: 6hldu0x2bZ3OWTN810ZXfQ
+! Diff-Path: ../patches/5/5-s-1754489663-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.67
-! TimeUpdated: 2025-05-24T05:06:56+00:00
+! Version: 2.0.1.73
+! TimeUpdated: 2025-08-06T14:10:18+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -76,6 +76,10 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
+! Fix fake buffering on the initial load
+! If there will not be any issues with these rules, they perhaps can be moved to the Base filter
+www.youtube.com#%#(()=>{const e={apply:(e,r,c)=>{try{let t=c[0];if(!t)return Reflect.apply(e,r,c);const n=Array.isArray(t)?"array":"string";if("array"===n&&(t=t[0]),t.includes('"clientScreen"')&&!t.includes('"clientScreen":"ADUNIT"'))switch(n){case"array":c[0][0]=t.replace('"clientScreen":"WATCH_FULL_SCREEN"','"clientScreen":"ADUNIT"');break;case"string":c[0]=t.replace('"clientScreen":"WATCH_FULL_SCREEN"','"clientScreen":"ADUNIT"')}}catch(e){console.trace("Error occurred:",e)}return Reflect.apply(e,r,c)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();
+www.youtube.com#%#(()=>{const e=Function.prototype.call;let t=!1,o=!1;const n={apply:(n,c,r)=>{const a=r[0];if(a?.requestNumber&&a?.snapshot)try{t=((e,t=5)=>{if("object"!=typeof e||null===e)return!1;const n=new Array(1e3);let c=0;const r=new WeakSet;for(n[c++]={obj:e,depth:0};c>0&&!o;){const{obj:e,depth:a}=n[--c];if(a>t||"object"!=typeof e||null===e||r.has(e))continue;let l;r.add(e);try{l=Object.hasOwn(e,"backoffTimeMs")}catch(e){console.trace("Error while checking for backoffTimeMs:",e)}if(l)return void 0!==e.backoffTimeMs||(o=!0,!1);for(const t in e)if(Object.hasOwn(e,t)){let o;try{o=e[t]}catch(e){console.trace("Error while accessing property:",e)}null!==o&&"object"==typeof o&&!r.has(o)&&c<n.length&&(n[c++]={obj:o,depth:a+1})}}return!1})(a),(t||o)&&(Function.prototype.call=e)}catch(e){console.trace("Error while checking for backoffTimeMs:",e)}return Reflect.apply(n,c,r)}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,n),window.addEventListener("load",(()=>{if(!t)return void(Function.prototype.call=e);const o=document.querySelector(".html5-video-player"),n=window.location.search,c=new URLSearchParams(n).get("v"),r=new URLSearchParams(n).get("t")??0;if(!o||!c)return;const a=parseInt(r,10);o.loadVideoById(c,a)}))})();
 ! remove anti-adb
 ! !#if (!adguard_ext_firefox)
 ! www.youtube.com#%#(()=>{const wrapper=(target,thisArg,args)=>{let result=Reflect.apply(target,thisArg,args);try{const decoded=atob(result);if(decoded.includes('bkaEnforcementMessage')){const modifiedContent=decoded.replace(/\n.\n.auxiliaryUi\.messageRenderers\.bkaEnforcementMessageViewModel\.displayType.\dENFORCEMENT_MESSAGE_VIEW_MODEL_DISPLAY_TYPE_[A-Z]+\n.\n.auxiliaryUi\.messageRenderers\.bkaEnforcementMessageViewModel\.isVisible.{2}(?:tru|fals)e/,'');const encodeToBase64=btoa(modifiedContent);return encodeToBase64}}catch(e){} return result};const handler={apply:wrapper};window.Array.prototype.join=new Proxy(window.Array.prototype.join,handler)})();
@@ -227,7 +231,5 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! https://github.com/AdguardTeam/AdguardFilters/issues/64754
 !
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/205227
-||legy-jp.line-apps.com^
 !################## For tracking ##################
 ||uim.tifbs.net/js/2048.js
