@@ -45,6 +45,7 @@ import { messenger } from '../../services/messenger';
 import {
     extensionUpdateActor,
     ExtensionUpdateEvent,
+    ExtensionUpdateState,
 } from '../../../background/services/extension-update/extension-update-machine';
 import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
 import {
@@ -195,6 +196,14 @@ class SettingsStore {
 
     @observable extensionUpdateState = extensionUpdateActor.getSnapshot().value;
 
+    /**
+     * Internal tracker to detect entering specific FSM states (not observable).
+     *
+     * We compare it with the current state to trigger notifications
+     * only on transitions and avoid duplicates.
+     */
+    lastExtensionUpdateState = null;
+
     @observable selectedGroupId = null;
 
     @observable isChrome = null;
@@ -224,6 +233,7 @@ class SettingsStore {
     constructor(rootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
+        this.uiStore = rootStore.uiStore;
 
         this.updateSetting = this.updateSetting.bind(this);
         this.updateFilterSetting = this.updateFilterSetting.bind(this);
@@ -244,6 +254,42 @@ class SettingsStore {
             runInAction(() => {
                 this.extensionUpdateState = state.value;
             });
+
+            // check if state has changed to prevent multiple notifications
+            if (state.value !== this.lastExtensionUpdateState) {
+                switch (state.value) {
+                    case ExtensionUpdateState.UpdateSuccess: {
+                        this.uiStore.addNotification({
+                            description: translator.getMessage('update_success_text'),
+                            type: NotificationType.Success,
+                        });
+                        break;
+                    }
+                    case ExtensionUpdateState.NotAvailable: {
+                        this.uiStore.addNotification({
+                            description: translator.getMessage('update_not_needed'),
+                            type: NotificationType.Success,
+                        });
+                        break;
+                    }
+                    case ExtensionUpdateState.UpdateFailed: {
+                        this.uiStore.addNotification({
+                            description: translator.getMessage('update_failed_text'),
+                            extra: {
+                                link: translator.getMessage('update_failed_try_again_btn'),
+                                onClick: this.checkUpdatesMV3,
+                            },
+                            type: NotificationType.Error,
+                        });
+                        // reset state to idle after showing error notification
+                        extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                this.lastExtensionUpdateState = state.value;
+            }
         });
     }
 
@@ -271,14 +317,12 @@ class SettingsStore {
     async checkLimitations() {
         const currentLimitsMv3 = await messenger.getCurrentLimits();
 
-        const uiStore = this.rootStore.uiStore;
+        this.uiStore.setStaticFiltersLimitsWarning(currentLimitsMv3.staticFiltersData);
+        this.uiStore.setDynamicRulesLimitsWarning(currentLimitsMv3.dynamicRulesData);
 
-        uiStore.setStaticFiltersLimitsWarning(currentLimitsMv3.staticFiltersData);
-        uiStore.setDynamicRulesLimitsWarning(currentLimitsMv3.dynamicRulesData);
-
-        if (uiStore.dynamicRulesLimitsWarning) {
-            uiStore.addNotification({
-                description: uiStore.dynamicRulesLimitsWarning,
+        if (this.uiStore.dynamicRulesLimitsWarning) {
+            this.uiStore.addNotification({
+                description: this.uiStore.dynamicRulesLimitsWarning,
                 extra: {
                     link: translator.getMessage('options_rule_limits'),
                 },
@@ -347,14 +391,6 @@ class SettingsStore {
                 isReloadedOnUpdate: data.isExtensionReloadedOnUpdate,
                 isUpdateAvailable: data.isExtensionUpdateAvailable,
             });
-
-            if (data.isExtensionReloadedOnUpdate) {
-                const uiStore = this.rootStore.uiStore;
-                uiStore.addNotification({
-                    description: translator.getMessage('update_success_text'),
-                    type: NotificationType.Success,
-                });
-            }
         });
 
         return data;
@@ -706,23 +742,17 @@ class SettingsStore {
         }
     }
 
-    @action
+    // FIXME: check if needed (eslint exception or method at all)
+    // eslint-disable-next-line class-methods-use-this
     async checkUpdatesMV3() {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
 
         try {
             const isExtensionUpdateAvailable = await messenger.checkUpdatesMV3();
-
             if (isExtensionUpdateAvailable) {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
             } else {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
-
-                const uiStore = this.rootStore.uiStore;
-                uiStore.addNotification({
-                    description: translator.getMessage('update_not_needed'),
-                    type: NotificationType.Success,
-                });
             }
         } catch (error) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
@@ -730,7 +760,8 @@ class SettingsStore {
         }
     }
 
-    @action
+    // FIXME: check if needed (eslint exception or method at all)
+    // eslint-disable-next-line class-methods-use-this
     async updateExtensionMV3() {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
 
@@ -745,18 +776,6 @@ class SettingsStore {
             // since success is handled after the extension reload
             if (!isSuccessfulUpdate) {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
-
-                const uiStore = this.rootStore.uiStore;
-                uiStore.addNotification({
-                    description: translator.getMessage('update_failed_text'),
-                    extra: {
-                        link: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: this.checkUpdatesMV3,
-                    },
-                    type: NotificationType.Error,
-                });
-
-                extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
             }
         } catch (error) {
             logger.debug('[ext.SettingsStore.updateExtensionMV3]: failed to update extension: ', error);

@@ -86,16 +86,16 @@ export class ExtensionUpdateService {
 
         // use runtime.requestUpdateCheck() to actually check updates
         // because new extension version may not be loaded on the computer yet
-        const { status, version: nextUpdateVersion } = await chrome.runtime.requestUpdateCheck();
+        // const { status, version: nextUpdateVersion } = await chrome.runtime.requestUpdateCheck();
 
         // continue only if update is available, otherwise (if 'throttled' or 'no_update') return false
-        if (status !== 'update_available') {
-            return false;
-        }
+        // if (status !== 'update_available') {
+        //     return false;
+        // }
 
-        if (nextUpdateVersion !== latestChromeStoreVersion) {
-            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Next update version '${nextUpdateVersion}' is not equal to latest version available in CWS '${latestChromeStoreVersion}'`);
-        }
+        // if (nextUpdateVersion !== latestChromeStoreVersion) {
+        //     logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Next update version '${nextUpdateVersion}' is not equal to latest version available in CWS '${latestChromeStoreVersion}'`);
+        // }
 
         const { currentAppVersion } = await getRunInfo();
 
@@ -154,7 +154,7 @@ export class ExtensionUpdateService {
                 initVersion: currentAppVersion,
                 pageToOpenAfterReload: fromPage,
             };
-            this.isExtensionUpdated = true;
+            this.isExtensionUpdated = false;
             // IMPORTANT: saving to storage should be done before the extension reload
             await browserStorage.set(MANUAL_EXTENSION_UPDATE_KEY, JSON.stringify(manualExtensionDataToSave));
 
