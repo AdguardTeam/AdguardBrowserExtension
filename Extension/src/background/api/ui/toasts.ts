@@ -199,6 +199,15 @@ class Toasts {
         previousVersion: string,
         triesCount = 1,
     ): Promise<void> {
+        // Validate versions before using semver-dependent helpers to avoid errors in tests/runtime
+        if (!BrowserUtils.isSemver(currentVersion) || !BrowserUtils.isSemver(previousVersion)) {
+            logger.warn('[ext.Toasts.showApplicationUpdatedPopup]: invalid version(s) provided:', {
+                currentVersion,
+                previousVersion,
+            });
+            return;
+        }
+
         const { getMajorVersionNumber, getMinorVersionNumber } = BrowserUtils;
 
         const promoNotification = await promoNotificationApi.getCurrentNotification();
