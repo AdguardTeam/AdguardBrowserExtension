@@ -19,10 +19,12 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { ExtensionUpdateState } from '../../../../../../background/services/extension-update/extension-update-machine';
+import { ManualExtensionUpdatePage } from '../../../../../../common/constants';
 import { translator } from '../../../../../../common/translators/translator';
 import { Icon } from '../../../../../common/components/ui/Icon';
+import { messenger } from '../../../../../services/messenger';
 import { popupStore, PopupStore } from '../../../../stores/PopupStore';
-import { ExtensionUpdateState } from '../../../../../../background/services/extension-update/extension-update-machine';
 
 export const UpdateButtonMV3 = observer(() => {
     const store = useContext(popupStore);
@@ -38,7 +40,7 @@ export const UpdateButtonMV3 = observer(() => {
 
     const handleUpdateExtensionClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
         e.preventDefault();
-        await PopupStore.updateExtensionMV3();
+        await messenger.updateExtensionMV3(ManualExtensionUpdatePage.Popup);
     };
 
     const isUpdateAvailable = updateState === ExtensionUpdateState.Available;

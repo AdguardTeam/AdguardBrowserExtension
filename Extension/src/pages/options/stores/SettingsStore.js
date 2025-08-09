@@ -26,7 +26,6 @@ import {
 
 import {
     AntibannerGroupsId,
-    ManualExtensionUpdatePage,
     RECOMMENDED_TAG_ID,
     TRUSTED_TAG_KEYWORD,
     WASTE_CHARACTERS,
@@ -742,7 +741,6 @@ class SettingsStore {
         }
     }
 
-    // FIXME: check if needed (eslint exception or method at all)
     // eslint-disable-next-line class-methods-use-this
     async checkUpdatesMV3() {
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Check });
@@ -757,28 +755,6 @@ class SettingsStore {
         } catch (error) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
             logger.debug('[ext.SettingsStore.checkUpdatesMV3]: failed to check updates on options page: ', error);
-        }
-    }
-
-    // FIXME: check if needed (eslint exception or method at all)
-    // eslint-disable-next-line class-methods-use-this
-    async updateExtensionMV3() {
-        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
-
-        try {
-            const isSuccessfulUpdate = await messenger.updateExtensionMV3(ManualExtensionUpdatePage.Options);
-
-            if (typeof isSuccessfulUpdate !== 'boolean') {
-                return;
-            }
-
-            // IMPORTANT: only fail is handled here
-            // since success is handled after the extension reload
-            if (!isSuccessfulUpdate) {
-                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
-            }
-        } catch (error) {
-            logger.debug('[ext.SettingsStore.updateExtensionMV3]: failed to update extension: ', error);
         }
     }
 

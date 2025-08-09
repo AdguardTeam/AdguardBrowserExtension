@@ -64,6 +64,10 @@ import {
 } from '../../common/messages';
 import { type ManualExtensionUpdatePage, type NotifierType } from '../../common/constants';
 import { type CreateEventListenerResponse } from '../../background/services/event';
+import {
+    extensionUpdateActor,
+    ExtensionUpdateEvent,
+} from '../../background/services/extension-update/extension-update-machine';
 
 /**
  * @typedef {import('../../common/messages').MessageMap} MessageMap
@@ -521,6 +525,16 @@ class Messenger {
     /**
      * Sends a message to the background page to check for extension updates.
      *
+     * NOTE!
+     * Extension update checking is different in popup and options pages:
+     * on popup the update button should be clicked only once,
+     * and if update is available it's install starts immediately (no more clicks required),
+     * but on options page the update button should be clicked manually by user.
+     *
+     * That's why `messenger.updateExtensionMV3()` (below) is universal method for both pages,
+     * but `messenger.checkUpdatesMV3()` (current one) is not universal
+     * and requires additional logic on the pages' side.
+     *
      * @returns Promise that resolves with boolean - true if update is available, false otherwise.
      */
     async checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdate>> {
@@ -538,6 +552,7 @@ class Messenger {
      * Sends a message to the background page to update the extension.
      *
      * @param fromPage Page from which the update was triggered.
+     * This parameter should be saved to open the needed page on successful update.
      *
      * @returns Promise that resolves with boolean false if update failed,
      * otherwise void because the extension reloads on success.
@@ -550,9 +565,29 @@ class Messenger {
             return false;
         }
 
-        const isSuccessfulUpdate = await this.sendMessage(MessageType.UpdateExtension, { fromPage });
+        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
 
-        return isSuccessfulUpdate;
+        let isSuccessfulUpdate = null;
+
+        try {
+            isSuccessfulUpdate = await this.sendMessage(MessageType.UpdateExtension, { fromPage });
+
+            // FIXME: describe why this check is necessary
+            if (
+                typeof isSuccessfulUpdate !== 'boolean'
+                || isSuccessfulUpdate === null
+            ) {
+                return;
+            }
+
+            // IMPORTANT: only fail is handled here
+            // since success is handled after the extension reload
+            if (!isSuccessfulUpdate) {
+                extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
+            }
+        } catch (error) {
+            logger.debug('[ext.Messenger.updateExtensionMV3]: failed to update extension: ', error);
+        }
     }
 
     /**

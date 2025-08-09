@@ -19,9 +19,11 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { ExtensionUpdateState } from '../../../../../background/services/extension-update/extension-update-machine';
+import { ManualExtensionUpdatePage } from '../../../../../common/constants';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
-import { ExtensionUpdateState } from '../../../../../background/services/extension-update/extension-update-machine';
+import { messenger } from '../../../../services/messenger';
 import { rootStore } from '../../../stores/RootStore';
 
 import './filters-update.pcss';
@@ -36,7 +38,7 @@ const FiltersUpdateMV3 = observer(() => {
     };
 
     const updateClickHandler = async () => {
-        await settingsStore.updateExtensionMV3();
+        await messenger.updateExtensionMV3(ManualExtensionUpdatePage.Options);
     };
 
     const checkUpdatesTitle = translator.getMessage('update_check');

@@ -619,29 +619,13 @@ export class PopupStore {
 
             if (isExtensionUpdateAvailable) {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
-                await PopupStore.updateExtensionMV3();
+                await messenger.updateExtensionMV3(ManualExtensionUpdatePage.Popup);
             } else {
                 extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
             }
         } catch (error: unknown) {
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.ResetToIdle });
             logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
-        }
-    }
-
-    static async updateExtensionMV3() {
-        extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
-
-        const isSuccessfulUpdate = await messenger.updateExtensionMV3(ManualExtensionUpdatePage.Popup);
-
-        if (typeof isSuccessfulUpdate !== 'boolean') {
-            return;
-        }
-
-        // IMPORTANT: only fail is handled here
-        // since success is handled after the extension reload
-        if (!isSuccessfulUpdate) {
-            extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateFailed });
         }
     }
 
