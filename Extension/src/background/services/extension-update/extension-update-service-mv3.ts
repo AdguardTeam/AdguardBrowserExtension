@@ -29,11 +29,18 @@ import {
     PagesApi,
 } from '../../api';
 import { messageHandler } from '../../message-handler';
+import { Prefs } from '../../prefs';
 import { browserStorage } from '../../storages';
-import { getRunInfo } from '../../utils';
+import { getRunInfo } from '../../utils/run-info';
+import { Version } from '../../utils/version';
 
 import { type ManualExtensionUpdateData } from './types';
 import { extensionUpdateActor, ExtensionUpdateEvent } from './extension-update-machine';
+
+/**
+ * Max time to wait for chrome.runtime.requestUpdateCheck() before giving up.
+ */
+const UPDATE_CHECK_TIMEOUT_MS = 15000; // 15 seconds
 
 /**
  * Service for checking and updating the extension.
@@ -81,47 +88,66 @@ export class ExtensionUpdateService {
 
         const latestChromeStoreVersion = await ExtensionUpdateService.getLatestChromeStoreVersion();
         if (!latestChromeStoreVersion) {
+            logger.debug('[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Cannot retrieve latest version from Chrome Web Store');
+            // do not return yet
+        }
+
+        let nextUpdateVersion: string | undefined;
+        let status: chrome.runtime.RequestUpdateCheckStatus;
+        try {
+            // runtime.requestUpdateCheck() should be used to actually check updates
+            // because new extension version may not be loaded on the computer yet
+            const res = await ExtensionUpdateService.requestUpdateCheckWithTimeout(UPDATE_CHECK_TIMEOUT_MS);
+            status = res.status;
+            nextUpdateVersion = res.version;
+        } catch (e) {
+            // minimal duration is needed for more smooth UI.
+            await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
+            logger.warn('[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: requestUpdateCheck failed or timed out, reason:', e);
             return false;
         }
 
-        // FIXME: uncomment
-        // use runtime.requestUpdateCheck() to actually check updates
-        // because new extension version may not be loaded on the computer yet
-        // const { status, version: nextUpdateVersion } = await chrome.runtime.requestUpdateCheck();
+        /**
+         * Check if update is available,
+         * otherwise (if 'throttled' or 'no_update') return false.
+         *
+         * @see {@link https://developer.chrome.com/docs/extensions/reference/api/runtime#method-requestUpdateCheck}
+         */
+        if (status !== 'update_available') {
+            // minimal duration is needed for more smooth UI.
+            await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
+            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Update is not available, status: '${status}'`);
+            return false;
+        }
 
-        // continue only if update is available, otherwise (if 'throttled' or 'no_update') return false
-        // if (status !== 'update_available') {
-        //     return false;
-        // }
+        if (!nextUpdateVersion) {
+            // minimal duration is needed for more smooth UI.
+            await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
+            logger.debug('[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Update version (via requestUpdateCheck) is empty');
+            return false;
+        }
 
-        // if (nextUpdateVersion !== latestChromeStoreVersion) {
-        //     logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Next update version '${nextUpdateVersion}' is not equal to latest version available in CWS '${latestChromeStoreVersion}'`);
-        // }
+        if (latestChromeStoreVersion && nextUpdateVersion !== latestChromeStoreVersion) {
+            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Next update version '${nextUpdateVersion}' is not equal to latest version available in CWS '${latestChromeStoreVersion}'`);
+        }
 
         const { currentAppVersion } = await getRunInfo();
 
-        // FIXME: uncomment
-        // FIXME: probably nextUpdateVersion should be used (double check it)
-        // const currentVersion = new Version(currentAppVersion);
-        // const latestVersion = new Version(latestChromeStoreVersion);
-        // this.isUpdateAvailable = latestVersion.compare(currentVersion) > 0;
-        // FIXME: remove as needed only for development
-        this.isUpdateAvailable = true;
-
-        /**
-         * Minimal duration is needed for more smooth UI.
-         */
+        const currentVersion = new Version(currentAppVersion);
+        const latestVersion = new Version(nextUpdateVersion);
+        this.isUpdateAvailable = latestVersion.compare(currentVersion) > 0;
+        // minimal duration is needed for more smooth UI.
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
         if (this.isUpdateAvailable) {
             // Drive state machine: update is available
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.UpdateAvailable });
             iconsApi.update();
-            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Current version ${currentAppVersion} is lower than latest available version ${latestChromeStoreVersion}`);
+            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Current version ${currentAppVersion} is lower than latest available version ${nextUpdateVersion}`);
         } else {
             // Drive state machine: no update
             extensionUpdateActor.send({ type: ExtensionUpdateEvent.NoUpdateAvailable });
-            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Current version ${currentAppVersion} is higher than latest available version ${latestChromeStoreVersion}`);
+            logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Current version ${currentAppVersion} is higher than latest available version ${nextUpdateVersion}`);
         }
 
         return this.isUpdateAvailable;
@@ -193,6 +219,36 @@ export class ExtensionUpdateService {
     }
 
     /**
+     * Wraps chrome.runtime.requestUpdateCheck() with a timeout.
+     *
+     * @param timeoutMs Max time in milliseconds to wait before rejecting.
+     *
+     * @returns Promise that resolves to the result of requestUpdateCheck
+     * or rejects if the timeout is reached.
+     */
+    private static async requestUpdateCheckWithTimeout(
+        timeoutMs: number,
+    ): Promise<{ status: chrome.runtime.RequestUpdateCheckStatus; version?: string }> {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const timeoutPromise = new Promise<never>((_, reject) => {
+            timer = setTimeout(() => {
+                reject(new Error(`requestUpdateCheck timed out after ${timeoutMs} ms`));
+            }, timeoutMs);
+        });
+
+        try {
+            return await Promise.race([
+                chrome.runtime.requestUpdateCheck(),
+                timeoutPromise,
+            ]) as { status: chrome.runtime.RequestUpdateCheckStatus; version?: string };
+        } finally {
+            if (timer) {
+                clearTimeout(timer);
+            }
+        }
+    }
+
+    /**
      * Retrieves manual extension update data from storage.
      *
      * @returns Manual extension update data or null if not found.
@@ -249,9 +305,7 @@ export class ExtensionUpdateService {
      * @throws Error if fetching the version fails.
      */
     private static async getLatestChromeStoreVersion(): Promise<string | null> {
-        // FIXME: revert before merge
-        // const extensionId = Prefs.id;
-        const extensionId = 'apjcbfpjihpedihablmalmbbhjpklbdf';
+        const extensionId = Prefs.id;
 
         const possibleExtensionIds = Object.values(ExtensionsIds).filter((id) => !!id);
 

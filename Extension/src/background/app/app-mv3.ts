@@ -141,9 +141,7 @@ export class App {
         const { previousAppVersion, currentAppVersion } = runInfo;
         const isAppVersionChanged = previousAppVersion !== currentAppVersion;
         const isInstall = isAppVersionChanged && !previousAppVersion;
-        // FIXME: revert
-        // const isUpdate = isAppVersionChanged && !!previousAppVersion;
-        const isUpdate = true;
+        const isUpdate = isAppVersionChanged && !!previousAppVersion;
 
         if (isInstall) {
             await InstallApi.install(runInfo);
