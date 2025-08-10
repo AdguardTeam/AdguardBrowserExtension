@@ -567,15 +567,15 @@ class Messenger {
 
         extensionUpdateActor.send({ type: ExtensionUpdateEvent.Update });
 
-        let isSuccessfulUpdate = null;
+        let isSuccessfulUpdate;
 
         try {
             isSuccessfulUpdate = await this.sendMessage(MessageType.UpdateExtension, { fromPage });
 
-            // FIXME: describe why this check is necessary
+            // the value can be `boolean` or `undefined` (if update succeeded)
             if (
                 typeof isSuccessfulUpdate !== 'boolean'
-                || isSuccessfulUpdate === null
+                || isSuccessfulUpdate === undefined
             ) {
                 return;
             }

@@ -84,6 +84,7 @@ export class ExtensionUpdateService {
             return false;
         }
 
+        // FIXME: uncomment
         // use runtime.requestUpdateCheck() to actually check updates
         // because new extension version may not be loaded on the computer yet
         // const { status, version: nextUpdateVersion } = await chrome.runtime.requestUpdateCheck();
