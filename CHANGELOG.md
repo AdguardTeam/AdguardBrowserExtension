@@ -5,7 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased <!-- release/v5.2 -->
+<!-- FIXME: change after release of v5.2 -->
+## Unreleased v5.2 patch 1
+
+### Added
+
+- Ability to update the extension with filters manually in MV3.
+
+## Unreleased v5.2
 
 ### Added
 
