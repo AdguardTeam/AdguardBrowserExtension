@@ -71,13 +71,13 @@ class PopupStore {
      * Flag that indicates whether the application filtering is **paused**.
      */
     @observable
-        applicationFilteringPaused: boolean | null = null;
+    applicationFilteringPaused: boolean | null = null;
 
     /**
      * Flag that indicates whether the filtering is possible or not (e.g. secure pages).
      */
     @observable
-        isFilteringPossible = true;
+    isFilteringPossible = true;
 
     /**
      * Flag that indicates whether the filtering engine is started.
@@ -90,7 +90,7 @@ class PopupStore {
      * If set to `false`, the engine is not started and the splash screen should be displayed.
      */
     @observable
-        isEngineStarted: boolean | null = null;
+    isEngineStarted: boolean | null = null;
 
     /**
      * Flag that indicates whether the filtering on a website is disabled
@@ -98,62 +98,62 @@ class PopupStore {
      * so it cannot be undone by the user.
      */
     @observable
-        canAddRemoveRule = true;
+    canAddRemoveRule = true;
 
     @observable
-        url: string | null = null;
+    url: string | null = null;
 
     @observable
-        viewState = ViewState.Actions;
+    viewState = ViewState.Actions;
 
     @observable
-        totalBlocked = 0;
+    totalBlocked = 0;
 
     @observable
-        totalBlockedTab = 0;
+    totalBlockedTab = 0;
 
     @observable
-        documentAllowlisted: boolean | null = null;
+    documentAllowlisted: boolean | null = null;
 
     @observable
-        userAllowlisted: boolean | null = null;
+    userAllowlisted: boolean | null = null;
 
     @observable
-        showInfoAboutFullVersion = true;
+    showInfoAboutFullVersion = true;
 
     @observable
-        isEdgeBrowser = false;
+    isEdgeBrowser = false;
 
     @observable
-        isAndroidBrowser = false;
+    isAndroidBrowser = false;
 
     @observable
-        stats: GetStatisticsDataResponse | null = null;
+    stats: GetStatisticsDataResponse | null = null;
 
     @observable
-        selectedTimeRange = TimeRange.Week;
+    selectedTimeRange = TimeRange.Week;
 
     @observable
-        selectedBlockedType = this.TOTAL_BLOCKED_GROUP_ID;
+    selectedBlockedType = this.TOTAL_BLOCKED_GROUP_ID;
 
     @observable
-        promoNotification: PromoNotification | null = null;
+    promoNotification: PromoNotification | null = null;
 
     @observable
-        hasUserRulesToReset = false;
+    hasUserRulesToReset = false;
 
     @observable
-        settings: SettingsData | null = null;
+    settings: SettingsData | null = null;
 
     @observable
-        areFilterLimitsExceeded = false;
+    areFilterLimitsExceeded = false;
 
     currentTabId?: number | null = null;
 
     domainName: string | null = null;
 
     @observable
-        appState: AppState = appStateActor.getSnapshot().value;
+    appState: AppState = appStateActor.getSnapshot().value;
 
     constructor() {
         makeObservable(this);

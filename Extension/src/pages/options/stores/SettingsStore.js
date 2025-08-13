@@ -161,59 +161,86 @@ class SettingsStore {
         },
     });
 
-    @observable settings = null;
+    @observable
+    settings = null;
 
-    @observable optionsReadyToRender = false;
+    @observable
+    optionsReadyToRender = false;
 
-    @observable version = null;
+    @observable
+    version = null;
 
-    @observable libVersions = null;
+    @observable
+    libVersions = null;
 
-    @observable filters = [];
+    @observable
+    filters = [];
 
-    @observable categories = [];
+    @observable
+    categories = [];
 
-    @observable visibleFilters = [];
+    @observable
+    visibleFilters = [];
 
-    @observable rulesCount = 0;
+    @observable
+    rulesCount = 0;
 
-    @observable allowAcceptableAds = null;
+    @observable
+    allowAcceptableAds = null;
 
-    @observable blockKnownTrackers = null;
+    @observable
+    blockKnownTrackers = null;
 
-    @observable stripTrackingParameters = null;
+    @observable
+    stripTrackingParameters = null;
 
-    @observable allowlist = '';
+    @observable
+    allowlist = '';
 
-    @observable savingAllowlistState = this.savingAllowlistService.getSnapshot().value;
+    @observable
+    savingAllowlistState = this.savingAllowlistService.getSnapshot().value;
 
-    @observable filtersUpdating = false;
+    @observable
+    filtersUpdating = false;
 
-    @observable selectedGroupId = null;
+    @observable
+    selectedGroupId = null;
 
-    @observable isChrome = null;
+    @observable
+    isChrome = null;
 
-    @observable currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.version) : null;
+    @observable
+    currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.version) : null;
 
-    @observable searchInput = '';
+    @observable
+    searchInput = '';
 
-    @observable searchSelect = SEARCH_FILTERS.ALL;
+    @observable
+    searchSelect = SEARCH_FILTERS.ALL;
 
-    @observable allowlistEditorContentChanged = false;
+    @observable
+    allowlistEditorContentChanged = false;
 
-    @observable allowlistEditorWrap = null;
+    @observable
+    allowlistEditorWrap = null;
 
-    @observable fullscreenUserRulesEditorIsOpen = false;
+    @observable
+    fullscreenUserRulesEditorIsOpen = false;
 
-    @observable allowlistSizeReset = false;
+    @observable
+    allowlistSizeReset = false;
 
-    @observable filtersToGetConsentFor = [];
+    @observable
+    filtersToGetConsentFor = [];
 
-    @observable isAnnoyancesConsentModalOpen = false;
+    @observable
+    isAnnoyancesConsentModalOpen = false;
 
-    @observable filterIdSelectedForConsent = null;
+    @observable
+    filterIdSelectedForConsent = null;
 
-    @observable rulesLimits = DEFAULT_RULES_LIMITS;
+    @observable
+    rulesLimits = DEFAULT_RULES_LIMITS;
 
     constructor(rootStore) {
         makeObservable(this);

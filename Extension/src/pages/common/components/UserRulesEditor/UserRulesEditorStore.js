@@ -34,19 +34,26 @@ import {
 } from '../Editor/savingFSM';
 
 class UserRulesEditorStore {
-    @observable settings = null;
+    @observable
+    settings = null;
 
-    @observable userRulesEditorContentChanged = false;
+    @observable
+    userRulesEditorContentChanged = false;
 
-    @observable userRulesEditorWrap = null;
+    @observable
+    userRulesEditorWrap = null;
 
-    @observable userRulesExportAvailable = false;
+    @observable
+    userRulesExportAvailable = false;
 
-    @observable userRulesEditorPrefsDropped = false;
+    @observable
+    userRulesEditorPrefsDropped = false;
 
-    @observable specificLimitWarningData = null;
+    @observable
+    specificLimitWarningData = null;
 
-    @observable cursorPosition = null;
+    @observable
+    cursorPosition = null;
 
     savingService = createSavingService({
         id: 'userRules',
@@ -61,7 +68,8 @@ class UserRulesEditorStore {
         },
     });
 
-    @observable savingUserRulesState = this.savingService.getSnapshot().value;
+    @observable
+    savingUserRulesState = this.savingService.getSnapshot().value;
 
     constructor() {
         makeObservable(this);
