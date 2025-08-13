@@ -142,7 +142,7 @@ export const Notification = ({
         }, TIME_TO_REMOVE_NOTIFICATION_MS);
     };
 
-    const iconsMap = {
+    const iconsMap: Record<NotificationType, JSX.Element> = {
         [NotificationType.Loading]: (
             <Icon
                 id="#loading"
