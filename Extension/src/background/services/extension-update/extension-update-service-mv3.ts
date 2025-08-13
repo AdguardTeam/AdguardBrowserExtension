@@ -313,6 +313,12 @@ export class ExtensionUpdateService {
             return;
         }
 
+        /**
+         * Note:
+         * MANUAL_EXTENSION_UPDATE_KEY is not removed here
+         * and it will be removed after the needed page is opened.
+         * It is needed for the notification showing.
+         */
         if (pageToOpenAfterReload === ManualExtensionUpdatePage.Options) {
             logger.info('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: Opening options page...');
             await PagesApi.openFiltersOnSettingsPage();
