@@ -7267,41 +7267,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "b2938935474adeb9fa9f991bc00ad666" due to: ' + e);
         }
     },
-    '(()=>{const e={construct:(e,t,c)=>{try{const n=t[0];let r=t[1]?.body;if(!n?.includes("youtubei")||!r)return Reflect.construct(e,t,c);if(r.includes(\'"clientScreen":"WATCH"\'))console.log("Intercepted YouTube request:",n),t[1].body=r.replace(\'"clientScreen":"WATCH"\',\'"clientScreen":"ADUNIT"\');else{const n=JSON.parse(r);if(!n.context?.client)return Reflect.construct(e,t,c);n.context.client.clientScreen="ADUNIT",r=JSON.stringify(n),t[1].body=r}}catch(e){console.trace("Error occurred:",e)}return Reflect.construct(e,t,c)}};window.Request=new Proxy(window.Request,e)})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.f38f2760831f57f8aadc441440d810f0 === e) return;
-            (() => {
-                const e = {
-                    construct: (e, t, c) => {
-                        try {
-                            const r = t[0];
-                            let n = t[1]?.body;
-                            if (!r?.includes("youtubei") || !n) return Reflect.construct(e, t, c);
-                            if (n.includes('"clientScreen":"WATCH"')) console.log("Intercepted YouTube request:", r), 
-                            t[1].body = n.replace('"clientScreen":"WATCH"', '"clientScreen":"ADUNIT"'); else {
-                                const r = JSON.parse(n);
-                                if (!r.context?.client) return Reflect.construct(e, t, c);
-                                r.context.client.clientScreen = "ADUNIT", n = JSON.stringify(r), t[1].body = n;
-                            }
-                        } catch (e) {
-                            console.trace("Error occurred:", e);
-                        }
-                        return Reflect.construct(e, t, c);
-                    }
-                };
-                window.Request = new Proxy(window.Request, e);
-            })();
-            Object.defineProperty(Window.prototype.toString, "f38f2760831f57f8aadc441440d810f0", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "f38f2760831f57f8aadc441440d810f0" due to: ' + e);
-        }
-    },
     '(()=>{let t=document.location.href,e=[],n=[],o="",r=!1;const i=Array.prototype.push,a={apply:(t,o,a)=>(window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id&&a[0]&&a[0]!==window&&"number"==typeof a[0].start&&a[0].end&&"ssap"===a[0].namespace&&a[0].id&&(r||0!==a[0]?.start||n.includes(a[0].id)||(e.length=0,n.length=0,r=!0,i.call(e,a[0]),i.call(n,a[0].id)),r&&0!==a[0]?.start&&!n.includes(a[0].id)&&(i.call(e,a[0]),i.call(n,a[0].id))),Reflect.apply(t,o,a))};window.Array.prototype.push=new Proxy(window.Array.prototype.push,a),document.addEventListener("DOMContentLoaded",(function(){if(!window.yt?.config_?.EXPERIMENT_FLAGS?.html5_enable_ssap_entity_id)return;const i=()=>{const t=document.querySelector("video");if(t&&e.length){const i=Math.round(t.duration),a=Math.round(e.at(-1).end/1e3),c=n.join(",");if(!1===t.loop&&o!==c&&i&&i===a){const n=e.at(-1).start/1e3;t.currentTime<n&&(t.currentTime=n,r=!1,o=c)}else if(!0===t.loop&&i&&i===a){const n=e.at(-1).start/1e3;t.currentTime<n&&(t.currentTime=n,r=!1,o=c)}}};i();new MutationObserver((()=>{t!==document.location.href&&(t=document.location.href,e.length=0,n.length=0,r=!1),i()})).observe(document,{childList:!0,subtree:!0})}))})();': () => {
         try {
             const e = "done";
@@ -7346,6 +7311,42 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "ae4fa77cc5169989696ccbb4288099b4" due to: ' + e);
+        }
+    },
+    '(()=>{const e={construct:(e,t,c)=>{try{const n=t[0];let r=t[1]?.body;if(!n?.includes("youtubei")||!r)return Reflect.construct(e,t,c);if((r.includes(\'"contentPlaybackContext"\')||r.includes(\'"adSignalsInfo"\'))&&(!r.includes(\'"params":"yAEB\')||!r.includes(\'"clientScreen":"ADUNIT"\'))){const n=JSON.parse(r);if(!n.context?.client)return Reflect.construct(e,t,c);n.context.client.clientScreen="ADUNIT",n.playbackContext&&(n.params=`yAEB${n.params?n.params:""}`),n.playerRequest&&(n.playerRequest.params=`yAEB${n.playerRequest.params?n.playerRequest.params:""}`),r=JSON.stringify(n),t[1].body=r}}catch(e){console.trace("Error occurred:",e)}return Reflect.construct(e,t,c)}};window.Request=new Proxy(window.Request,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["8b13a784996f59d1e9c20cd6f27421b9"] === e) return;
+            (() => {
+                const e = {
+                    construct: (e, t, r) => {
+                        try {
+                            const c = t[0];
+                            let n = t[1]?.body;
+                            if (!c?.includes("youtubei") || !n) return Reflect.construct(e, t, r);
+                            if ((n.includes('"contentPlaybackContext"') || n.includes('"adSignalsInfo"')) && (!n.includes('"params":"yAEB') || !n.includes('"clientScreen":"ADUNIT"'))) {
+                                const c = JSON.parse(n);
+                                if (!c.context?.client) return Reflect.construct(e, t, r);
+                                c.context.client.clientScreen = "ADUNIT", c.playbackContext && (c.params = `yAEB${c.params ? c.params : ""}`), 
+                                c.playerRequest && (c.playerRequest.params = `yAEB${c.playerRequest.params ? c.playerRequest.params : ""}`), 
+                                n = JSON.stringify(c), t[1].body = n;
+                            }
+                        } catch (e) {
+                            console.trace("Error occurred:", e);
+                        }
+                        return Reflect.construct(e, t, r);
+                    }
+                };
+                window.Request = new Proxy(window.Request, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "8b13a784996f59d1e9c20cd6f27421b9", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "8b13a784996f59d1e9c20cd6f27421b9" due to: ' + e);
         }
     },
     '(()=>{window.JSON.parse=new Proxy(JSON.parse,{apply(r,e,t){const n=Reflect.apply(r,e,t);if(!location.pathname.startsWith("/shorts/"))return n;const a=n?.entries;return a&&Array.isArray(a)&&(n.entries=n.entries.filter((r=>{if(!r?.command?.reelWatchEndpoint?.adClientParams?.isAd)return r}))),n}});})();': () => {
@@ -9651,42 +9652,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "14a0dfcfc56570b45c7aa35014affd67" due to: ' + e);
-        }
-    },
-    '(()=>{const e={construct:(e,t,c)=>{try{const n=t[0];let r=t[1]?.body;if(!n?.includes("youtubei")||!r)return Reflect.construct(e,t,c);if((r.includes(\'"contentPlaybackContext"\')||r.includes(\'"adSignalsInfo"\'))&&(!r.includes(\'"params":"yAEB\')||!r.includes(\'"clientScreen":"ADUNIT"\'))){const n=JSON.parse(r);if(!n.context?.client)return Reflect.construct(e,t,c);n.context.client.clientScreen="ADUNIT",n.playbackContext&&(n.params=`yAEB${n.params?n.params:""}`),n.playerRequest&&(n.playerRequest.params=`yAEB${n.playerRequest.params?n.playerRequest.params:""}`),r=JSON.stringify(n),t[1].body=r}}catch(e){console.trace("Error occurred:",e)}return Reflect.construct(e,t,c)}};window.Request=new Proxy(window.Request,e)})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["8b13a784996f59d1e9c20cd6f27421b9"] === e) return;
-            (() => {
-                const e = {
-                    construct: (e, t, r) => {
-                        try {
-                            const c = t[0];
-                            let n = t[1]?.body;
-                            if (!c?.includes("youtubei") || !n) return Reflect.construct(e, t, r);
-                            if ((n.includes('"contentPlaybackContext"') || n.includes('"adSignalsInfo"')) && (!n.includes('"params":"yAEB') || !n.includes('"clientScreen":"ADUNIT"'))) {
-                                const c = JSON.parse(n);
-                                if (!c.context?.client) return Reflect.construct(e, t, r);
-                                c.context.client.clientScreen = "ADUNIT", c.playbackContext && (c.params = `yAEB${c.params ? c.params : ""}`), 
-                                c.playerRequest && (c.playerRequest.params = `yAEB${c.playerRequest.params ? c.playerRequest.params : ""}`), 
-                                n = JSON.stringify(c), t[1].body = n;
-                            }
-                        } catch (e) {
-                            console.trace("Error occurred:", e);
-                        }
-                        return Reflect.construct(e, t, r);
-                    }
-                };
-                window.Request = new Proxy(window.Request, e);
-            })();
-            Object.defineProperty(Window.prototype.toString, "8b13a784996f59d1e9c20cd6f27421b9", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "8b13a784996f59d1e9c20cd6f27421b9" due to: ' + e);
         }
     },
     '(()=>{const e={apply:(e,t,n)=>{try{let c=n[0];if(!c)return Reflect.apply(e,t,n);const r=Array.isArray(c),a=r?c[0]:c;if((c.includes(\'"contentPlaybackContext"\')||c.includes(\'"adSignalsInfo"\'))&&(!a.includes(\'"params":"yAEB\')||!a.includes(\'"clientScreen":"ADUNIT"\'))){const c=JSON.parse(a);if(!c.context?.client)return Reflect.apply(e,t,n);c.context.client.clientScreen="ADUNIT",c.playbackContext&&(c.params=`yAEB${c.params?c.params:""}`);const o=JSON.stringify(c);r?n[0][0]=o:n[0]=o}}catch(e){console.trace("Error occurred:",e)}return Reflect.apply(e,t,n)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();': () => {
