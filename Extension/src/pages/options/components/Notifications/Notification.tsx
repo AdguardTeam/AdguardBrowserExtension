@@ -30,7 +30,7 @@ import { rootStore } from '../../stores/RootStore';
 import { Icon } from '../../../common/components/ui/Icon';
 import { messenger } from '../../../services/messenger';
 import { type Notification as INotification } from '../../stores/UiStore';
-import { NotificationType } from '../../../common/constants';
+import { NotificationType, TIME_TO_REMOVE_NOTIFICATION_MS } from '../../../common/constants';
 import { translator } from '../../../../common/translators/translator';
 
 /**
@@ -68,8 +68,6 @@ export const Notification = (props: NotificationProps) => {
             handleCloseClick();
         };
     }
-
-    const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
 
     useEffect(() => {
         const closeTimeout = setTimeout(() => {
