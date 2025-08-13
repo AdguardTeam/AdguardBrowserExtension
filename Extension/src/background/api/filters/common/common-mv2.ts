@@ -152,8 +152,6 @@ export class CommonFilterApi {
             }
         }
 
-        // logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} needs to be updated`);
-
         try {
             const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateOptions, true);
             logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} updated successfully`);
