@@ -20,6 +20,7 @@ import React, {
     useContext,
     useEffect,
     useState,
+    useRef,
 } from 'react';
 
 import classnames from 'classnames';
@@ -94,11 +95,20 @@ export const Notification = (props: NotificationProps) => {
         { 'notification--close': notificationIsClosed },
     );
 
+    const removeOnClickTimeoutRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (removeOnClickTimeoutRef.current) {
+                clearTimeout(removeOnClickTimeoutRef.current);
+            }
+        };
+    }, []);
+
     const handleCloseClick = () => {
         setNotificationIsClosed(true);
-        const removeTimeout = setTimeout(() => {
+        removeOnClickTimeoutRef.current = window.setTimeout(() => {
             uiStore.removeNotification(id);
-            clearTimeout(removeTimeout);
         }, TIME_TO_REMOVE_NOTIFICATION_MS);
     };
 

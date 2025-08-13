@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, {
+    useEffect,
+    useState,
+    useRef,
+} from 'react';
 
 import classnames from 'classnames';
 
@@ -116,6 +120,16 @@ export const Notification = ({
         };
     }, [closeManually]);
 
+    const removeOnClickTimeoutRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (removeOnClickTimeoutRef.current) {
+                clearTimeout(removeOnClickTimeoutRef.current);
+            }
+        };
+    }, []);
+
     const handleCloseClick = () => {
         if (onCloseHandler) {
             onCloseHandler();
@@ -123,9 +137,8 @@ export const Notification = ({
 
         setNotificationClosing(true);
 
-        const removeTimeout = setTimeout(() => {
+        removeOnClickTimeoutRef.current = window.setTimeout(() => {
             setNotificationClosed(true);
-            clearTimeout(removeTimeout);
         }, TIME_TO_REMOVE_NOTIFICATION_MS);
     };
 
