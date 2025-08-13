@@ -17,11 +17,7 @@
  */
 // TODO (AG-44868): Reduce code duplication across mv2 and mv3
 import { filterVersionStorage, settingsStorage } from '../../../storages';
-import {
-    SettingOption,
-    type RegularFilterMetadata,
-    type CustomFilterMetadata,
-} from '../../../schema';
+import { SettingOption } from '../../../schema';
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../common/settings';
 import { logger } from '../../../../common/logger';
 import { FiltersUpdateTime } from '../../../../common/constants';
@@ -119,13 +115,9 @@ export class FilterUpdateApi {
      */
     public static async autoUpdateFilters(forceUpdate = false): Promise<FilterMetadata[]> {
         const startUpdateLogMessage = forceUpdate
-            ? 'Update filters forced by user.'
-            : 'Update filters by scheduler.';
-        const updateMethodMessage = forceUpdate
-            ? 'Update method: full sync'
-            : 'Update method: differential';
+            ? 'Update filters forced by user. \n Update method: full sync'
+            : 'Update filters by scheduler. \n Update method: differential';
         logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: ${startUpdateLogMessage}`);
-        logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: ${updateMethodMessage}`);
 
         // If filtering is disabled, and it is not a forced update, it does nothing.
         const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
@@ -181,12 +173,6 @@ export class FilterUpdateApi {
             filterUpdateDetailsToUpdate = Array.from(uniqueFiltersMap.values());
         }
 
-        // Filters to update here log
-        const filterToUpdateIds = filterUpdateDetailsToUpdate.map((filterDetail) => {
-            return filterDetail.filterId;
-        });
-        logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: Checking filters for update - ${filterToUpdateIds}`);
-
         const updatedFilters = await FilterUpdateApi.updateFilters(filterUpdateDetailsToUpdate);
 
         // Updates last check time of all installed and enabled filters,
@@ -239,48 +225,20 @@ export class FilterUpdateApi {
             }
         }
 
-        const updatedFiltersMetadata: FilterMetadata[] = [];
-
-        // Log the original versions of filters first.
-        for (const filter of filterUpdateOptionsList) {
-            let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | undefined;
-            let requiresUpdate = false;
+        const customFiltersUpdateList: FilterUpdateOptions[] = [];
+        const commonFiltersUpdateList: FilterUpdateOptions[] = [];
+        filterUpdateOptionsList.forEach((filter) => {
             if (CustomFilterUtils.isCustomFilter(filter.filterId)) {
-                filterMetadata = CustomFilterApi.getFilterMetadata(filter.filterId);
-                requiresUpdate = !!filterMetadata
-                    && await CustomFilterApi.isFilterNeedUpdateByFilterUpdateOptions(filter);
+                customFiltersUpdateList.push(filter);
             } else {
-                filterMetadata = CommonFilterApi.getFilterMetadata(filter.filterId);
-                requiresUpdate = !!filterMetadata && CommonFilterApi.isFilterNeedUpdate(filterMetadata);
-            }
-            if (requiresUpdate) {
-                logger.info(`[ext.FilterUpdateApi.updateFilters]: Filter ${filter.filterId} needs to be updated [${filterMetadata?.version}]`);
-            }
-        }
-
-        const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
-            let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null = null;
-
-            try {
-                if (CustomFilterUtils.isCustomFilter(filterData.filterId)) {
-                    filterMetadata = await CustomFilterApi.updateFilter(filterData);
-                } else {
-                    filterMetadata = await CommonFilterApi.updateFilter(filterData);
-                }
-            } catch (e) {
-                logger.error(`[ext.FilterUpdateApi.updateFilters]: failed to update filter id#${filterData.filterId} due to an error:`, getZodErrorMessage(e));
-
-                return;
-            }
-
-            if (filterMetadata) {
-                updatedFiltersMetadata.push(filterMetadata);
+                commonFiltersUpdateList.push(filter);
             }
         });
 
-        await Promise.allSettled(updateTasks);
+        const updatedCustomMetadata = await CustomFilterApi.updateFilters(customFiltersUpdateList);
+        const updatedCommonMetadata = await CommonFilterApi.updateFilters(commonFiltersUpdateList);
 
-        return updatedFiltersMetadata;
+        return [...updatedCustomMetadata, ...updatedCommonMetadata];
     }
 
     /**
