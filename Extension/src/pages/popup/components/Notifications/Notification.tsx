@@ -92,11 +92,10 @@ export const Notification = ({
     // again until user has not fixed list of filters.
     const [notificationClosed, setNotificationClosed] = useState(false);
 
-    const notificationClassnames = classnames(
-        'notification',
-        { 'notification--closing': notificationClosing },
-        { 'notification--close': notificationClosed },
-    );
+    const notificationClassName = classnames('notification', {
+        'notification--closing': notificationClosing,
+        'notification--close': notificationClosed,
+    });
 
     useEffect(() => {
         const closeTimeout = setTimeout(() => {
@@ -166,7 +165,7 @@ export const Notification = ({
     };
 
     return (
-        <div className={notificationClassnames}>
+        <div className={notificationClassName}>
             <div className="notification__wrapper">
                 {iconsMap[type]}
                 <div className="notification__content">
