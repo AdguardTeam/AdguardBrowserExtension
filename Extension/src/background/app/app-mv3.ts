@@ -298,7 +298,7 @@ export class App {
         // conditions.
         await filterUpdateService.init();
 
-        if (isUpdate && __IS_MV3__) {
+        if (isUpdate) {
             await ExtensionUpdateService.handleExtensionReloadOnUpdate();
         }
 
