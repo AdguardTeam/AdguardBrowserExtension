@@ -522,6 +522,34 @@ export class CustomFilterApi {
     /**
      * Checks if custom filter data need to update.
      *
+     * @param filterUpdateOptions Filter update options.
+     *
+     * @returns True, if filter data need to update, else returns false.
+     */
+    public static async isFilterNeedUpdateByFilterUpdateOptions(
+        filterUpdateOptions: FilterUpdateOptions,
+    ): Promise<boolean> {
+        const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOptions.filterId);
+
+        if (!filterMetadata) {
+            return false;
+        }
+
+        const { customUrl } = filterMetadata;
+
+        const rawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
+        const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
+            customUrl,
+            rawFilter,
+            filterUpdateOptions.ignorePatches,
+        );
+
+        return this.isFilterNeedUpdate(filterMetadata, filterRemoteData);
+    }
+
+    /**
+     * Checks if custom filter data need to update.
+     *
      * @param filter Current custom filter metadata.
      * @param downloadedData Downloaded filter data.
      * @param downloadedData.checksum Checksum of downloaded filter text.

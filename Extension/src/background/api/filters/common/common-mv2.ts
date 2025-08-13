@@ -95,7 +95,7 @@ export class CommonFilterApi {
             }
         }
 
-        logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} needs to be updated`);
+        // logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} needs to be updated`);
 
         try {
             const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateOptions, true);
@@ -272,7 +272,7 @@ export class CommonFilterApi {
      *
      * @returns True, if filter update is required, else returns false.
      */
-    private static isFilterNeedUpdate(filterMetadata: RegularFilterMetadata): boolean {
+    public static isFilterNeedUpdate(filterMetadata: RegularFilterMetadata): boolean {
         logger.info(`[ext.CommonFilterApi.isFilterNeedUpdate]: check if filter ${filterMetadata.filterId} need to update`);
 
         const filterVersion = filterVersionStorage.get(filterMetadata.filterId);

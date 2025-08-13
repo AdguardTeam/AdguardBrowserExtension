@@ -30,7 +30,7 @@ import { getZodErrorMessage } from '../../../../common/error';
 import { FilterUpdateService } from '../../../services/filter-update';
 import { CommonFilterUtils } from '../../../../common/common-filter-utils';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
-import { CommonFilterApi } from '../common';
+import { CommonFilterApi } from '../common/common-mv2';
 import { type FilterMetadata, FiltersApi } from '../main';
 import { CustomFilterApi } from '../custom';
 
@@ -121,7 +121,11 @@ export class FilterUpdateApi {
         const startUpdateLogMessage = forceUpdate
             ? 'Update filters forced by user.'
             : 'Update filters by scheduler.';
+        const updateMethodMessage = forceUpdate
+            ? 'Update method: full sync'
+            : 'Update method: differential';
         logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: ${startUpdateLogMessage}`);
+        logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: ${updateMethodMessage}`);
 
         // If filtering is disabled, and it is not a forced update, it does nothing.
         const filteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
@@ -177,6 +181,12 @@ export class FilterUpdateApi {
             filterUpdateDetailsToUpdate = Array.from(uniqueFiltersMap.values());
         }
 
+        // Filters to update here log
+        const filterToUpdateIds = filterUpdateDetailsToUpdate.map((filterDetail) => {
+            return filterDetail.filterId;
+        });
+        logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: Checking filters for update - ${filterToUpdateIds}`);
+
         const updatedFilters = await FilterUpdateApi.updateFilters(filterUpdateDetailsToUpdate);
 
         // Updates last check time of all installed and enabled filters,
@@ -230,6 +240,23 @@ export class FilterUpdateApi {
         }
 
         const updatedFiltersMetadata: FilterMetadata[] = [];
+
+        // Log the original versions of filters first.
+        for (const filter of filterUpdateOptionsList) {
+            let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | undefined;
+            let requiresUpdate = false;
+            if (CustomFilterUtils.isCustomFilter(filter.filterId)) {
+                filterMetadata = CustomFilterApi.getFilterMetadata(filter.filterId);
+                requiresUpdate = !!filterMetadata
+                    && await CustomFilterApi.isFilterNeedUpdateByFilterUpdateOptions(filter);
+            } else {
+                filterMetadata = CommonFilterApi.getFilterMetadata(filter.filterId);
+                requiresUpdate = !!filterMetadata && CommonFilterApi.isFilterNeedUpdate(filterMetadata);
+            }
+            if (requiresUpdate) {
+                logger.info(`[ext.FilterUpdateApi.updateFilters]: Filter ${filter.filterId} needs to be updated [${filterMetadata?.version}]`);
+            }
+        }
 
         const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
             let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null = null;
