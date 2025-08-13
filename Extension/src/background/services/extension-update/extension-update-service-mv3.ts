@@ -249,6 +249,22 @@ export class ExtensionUpdateService {
     }
 
     /**
+     * Validates manual extension update data.
+     *
+     * @param data Data to validate.
+     *
+     * @returns True if data is valid, false otherwise.
+     */
+    private static validateManualExtensionUpdateData(data: unknown): data is ManualExtensionUpdateData {
+        return (
+            typeof data === 'object'
+            && data !== null
+            && 'initVersion' in data
+            && 'pageToOpenAfterReload' in data
+        );
+    }
+
+    /**
      * Retrieves manual extension update data from storage.
      *
      * @returns Manual extension update data or null if not found.
@@ -261,8 +277,12 @@ export class ExtensionUpdateService {
         }
 
         try {
-            return JSON.parse(manualExtensionUpdateStr);
+            const parsedData = JSON.parse(manualExtensionUpdateStr);
+            return this.validateManualExtensionUpdateData(parsedData)
+                ? parsedData
+                : null;
         } catch (e) {
+            logger.debug('[ext.ExtensionUpdateService.retrieveManualExtensionUpdateData]: Failed to parse manual extension update data: ', e);
             return null;
         }
     }
