@@ -654,7 +654,7 @@ export class PopupStore {
                     text: translator.getMessage('update_installing_in_progress_title'),
                 };
             }
-            case ExtensionUpdateState.UpdateFailed: {
+            case ExtensionUpdateState.Failed: {
                 return {
                     type: NotificationType.Error,
                     text: translator.getMessage('update_failed_text'),
@@ -668,7 +668,7 @@ export class PopupStore {
                     },
                 };
             }
-            case ExtensionUpdateState.UpdateSuccess: {
+            case ExtensionUpdateState.Success: {
                 return {
                     type: NotificationType.Success,
                     text: translator.getMessage('update_success_text'),

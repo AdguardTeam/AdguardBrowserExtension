@@ -257,7 +257,7 @@ class SettingsStore {
             // check if state has changed to prevent multiple notifications
             if (state.value !== this.lastExtensionUpdateState) {
                 switch (state.value) {
-                    case ExtensionUpdateState.UpdateSuccess: {
+                    case ExtensionUpdateState.Success: {
                         this.uiStore.addNotification({
                             description: translator.getMessage('update_success_text'),
                             type: NotificationType.Success,
@@ -271,7 +271,7 @@ class SettingsStore {
                         });
                         break;
                     }
-                    case ExtensionUpdateState.UpdateFailed: {
+                    case ExtensionUpdateState.Failed: {
                         this.uiStore.addNotification({
                             description: translator.getMessage('update_failed_text'),
                             extra: {

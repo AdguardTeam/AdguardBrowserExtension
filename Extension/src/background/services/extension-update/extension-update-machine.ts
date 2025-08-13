@@ -55,12 +55,12 @@ export const enum ExtensionUpdateState {
     /**
      * Update failed state.
      */
-    UpdateFailed = 'UpdateFailed',
+    Failed = 'Failed',
 
     /**
      * Update success state.
      */
-    UpdateSuccess = 'UpdateSuccess',
+    Success = 'Success',
 }
 
 /**
@@ -151,7 +151,7 @@ const extensionUpdateMachine = setup({
                     },
                     {
                         guard: ({ event }: { event: EventType }): boolean => !!event.isReloadedOnUpdate,
-                        target: ExtensionUpdateState.UpdateSuccess,
+                        target: ExtensionUpdateState.Success,
                     },
                 ],
                 [ExtensionUpdateEvent.Check]: {
@@ -167,7 +167,7 @@ const extensionUpdateMachine = setup({
                 // is possible because if update is successful, the extension reloads
                 // and Idle is the initial state
                 [ExtensionUpdateEvent.UpdateSuccess]: {
-                    target: ExtensionUpdateState.UpdateSuccess,
+                    target: ExtensionUpdateState.Success,
                 },
             },
         },
@@ -205,11 +205,11 @@ const extensionUpdateMachine = setup({
                     target: ExtensionUpdateState.Idle,
                 },
                 [ExtensionUpdateEvent.UpdateFailed]: {
-                    target: ExtensionUpdateState.UpdateFailed,
+                    target: ExtensionUpdateState.Failed,
                 },
             },
         },
-        [ExtensionUpdateState.UpdateFailed]: {
+        [ExtensionUpdateState.Failed]: {
             on: {
                 [ExtensionUpdateEvent.Check]: {
                     target: ExtensionUpdateState.Checking,
@@ -219,7 +219,7 @@ const extensionUpdateMachine = setup({
                 },
             },
         },
-        [ExtensionUpdateState.UpdateSuccess]: {
+        [ExtensionUpdateState.Success]: {
             after: {
                 NOTIFICATION_DELAY: {
                     target: ExtensionUpdateState.Idle,

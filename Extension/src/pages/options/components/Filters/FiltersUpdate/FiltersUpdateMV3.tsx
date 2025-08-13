@@ -115,8 +115,8 @@ const FiltersUpdateMV3 = observer(() => {
                 );
             case ExtensionUpdateState.Idle:
             case ExtensionUpdateState.NotAvailable:
-            case ExtensionUpdateState.UpdateFailed:
-            case ExtensionUpdateState.UpdateSuccess:
+            case ExtensionUpdateState.Failed:
+            case ExtensionUpdateState.Success:
             default:
                 return (
                     <button
