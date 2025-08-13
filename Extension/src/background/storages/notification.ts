@@ -145,7 +145,7 @@ const backToSchool25Notification: PromoNotification = {
         },
         ar: {
             title: 'عرض العودة إلى المدرسة',
-            btn: 'خصومات تصل إلى 40٪',
+            btn: '٪خصومات تصل إلى 40',
         },
         be: {
             title: 'Зноў у школу',
@@ -173,7 +173,7 @@ const backToSchool25Notification: PromoNotification = {
         },
         fa: {
             title: 'تبلیغات بازگشت به مدرسه',
-            btn: 'تخفیف‌ها تا 40٪',
+            btn: '٪خفیف‌ها تا 40',
         },
         fi: {
             title: 'Takaisin kouluun -kampanja',
