@@ -40,7 +40,7 @@ import { extensionUpdateActor, ExtensionUpdateEvent } from './extension-update-m
 /**
  * Max time to wait for chrome.runtime.requestUpdateCheck() before giving up.
  */
-const UPDATE_CHECK_TIMEOUT_MS = 15000; // 15 seconds
+const UPDATE_CHECK_TIMEOUT_MS = 15 * 1000; // 15 seconds
 
 /**
  * Service for checking and updating the extension.
