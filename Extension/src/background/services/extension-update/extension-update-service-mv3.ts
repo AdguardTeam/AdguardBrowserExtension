@@ -338,7 +338,13 @@ export class ExtensionUpdateService {
 
         logger.debug(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Checking for updates at ${updateUrl}...`);
 
-        const response = await fetch(updateUrl);
+        let response: Response;
+        try {
+            response = await fetch(updateUrl);
+        } catch (e) {
+            logger.error(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Failed to fetch update for "${updateUrl}": ${e}`);
+            return null;
+        }
 
         if (response.status !== 200) {
             logger.debug(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: No update found for "${updateUrl}", status: ${response.status}`);
