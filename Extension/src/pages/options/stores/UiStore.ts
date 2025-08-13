@@ -78,27 +78,32 @@ class UiStore {
     /**
      * Notifications list
      */
-    @observable notifications: Notification[] = [];
+    @observable
+    notifications: Notification[] = [];
 
     /**
      * Loader visibility state. **Used for mv3**.
      */
-    @observable showLoader = false;
+    @observable
+    showLoader = false;
 
     /**
      * Specific limits warning message to be displayed about static filters.
      */
-    @observable staticFiltersLimitsWarning: string | null = null;
+    @observable
+    staticFiltersLimitsWarning: string | null = null;
 
     /**
      * Specific limits warning message to be displayed about dynamic section with user rules.
      */
-    @observable dynamicRulesLimitsWarning: string | null = null;
+    @observable
+    dynamicRulesLimitsWarning: string | null = null;
 
     /**
      * Sidebar visibility state. **Used only on mobile**.
      */
-    @observable isSidebarOpen = false;
+    @observable
+    isSidebarOpen = false;
 
     @action
     addNotification({ description, type, extra }: Omit<Notification, 'id'>) {
