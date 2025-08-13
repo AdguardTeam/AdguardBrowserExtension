@@ -49,6 +49,11 @@ const UPDATE_CHECK_TIMEOUT_MS = 15000; // 15 seconds
  */
 export class ExtensionUpdateService {
     /**
+     * Regular expression to match the version from the latest version URL.
+     */
+    private static readonly LATEST_VERSION_URL_REGEXP = /_([0-9_]+)\.crx$/;
+
+    /**
      * Flag indicating if an update is available.
      */
     private isUpdateAvailable: boolean = false;
@@ -358,7 +363,7 @@ export class ExtensionUpdateService {
             return null;
         }
 
-        const match = latestVersionUrl.match(/_([0-9_]+)\.crx$/);
+        const match = latestVersionUrl.match(this.LATEST_VERSION_URL_REGEXP);
 
         if (!match || !match[1]) {
             logger.debug('[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Could not parse version from redirect URL.');
