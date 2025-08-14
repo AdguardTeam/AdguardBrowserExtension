@@ -29,7 +29,8 @@ import {
 import { messenger } from '../../services/messenger';
 
 class FullscreenUserRulesStore {
-    @observable settings = null;
+    @observable
+    settings = null;
 
     constructor() {
         makeObservable(this);

@@ -62,28 +62,28 @@ class WizardStore {
     }
 
     @observable
-        isModalOpen = false;
+    isModalOpen = false;
 
     @observable
-        requestModalState = WizardRequestState.View;
+    requestModalState = WizardRequestState.View;
 
     @observable
-        ruleText: string | null = null;
+    ruleText: string | null = null;
 
     @observable
-        rulePattern = '';
+    rulePattern = '';
 
     @observable
-        ruleOptions: RuleCreationOptions = defaultRuleOptions;
+    ruleOptions: RuleCreationOptions = defaultRuleOptions;
 
     @observable
-        addedRuleState: AddedRuleState | null = null;
+    addedRuleState: AddedRuleState | null = null;
 
     /**
      * Whether the rule for the specified request is now applied or deleted
      */
     @observable
-        isActionSubmitted = false;
+    isActionSubmitted = false;
 
     @computed
     get requestModalStateEnum() {
