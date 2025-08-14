@@ -274,31 +274,44 @@ type SelectorTab = {
 };
 
 class LogStore {
-    @observable filteringEvents: UIFilteringLogEvent[] = [];
+    @observable
+    filteringEvents: UIFilteringLogEvent[] = [];
 
-    @observable tabsMap: TabsMap = {};
+    @observable
+    tabsMap: TabsMap = {};
 
-    @observable selectedTabId: number | null = null;
+    @observable
+    selectedTabId: number | null = null;
 
-    @observable eventsSearchValue = '';
+    @observable
+    eventsSearchValue = '';
 
-    @observable preserveLogEnabled = false;
+    @observable
+    preserveLogEnabled = false;
 
-    @observable selectedEvent: UIFilteringLogEvent | null = null;
+    @observable
+    selectedEvent: UIFilteringLogEvent | null = null;
 
-    @observable filtersMetadata: FilterMetadata[] | null = null;
+    @observable
+    filtersMetadata: FilterMetadata[] | null = null;
 
-    @observable settings: SettingsData | null = null;
+    @observable
+    settings: SettingsData | null = null;
 
-    @observable miscellaneousFilters = initMiscellaneousFilters;
+    @observable
+    miscellaneousFilters = initMiscellaneousFilters;
 
-    @observable requestSourceFilters = initRequestSourceFilters;
+    @observable
+    requestSourceFilters = initRequestSourceFilters;
 
-    @observable eventTypesFilters = initEventTypesFilters;
+    @observable
+    eventTypesFilters = initEventTypesFilters;
 
-    @observable selectIsOpen = false;
+    @observable
+    selectIsOpen = false;
 
-    @observable prevTabs: SelectorTab[] = [];
+    @observable
+    prevTabs: SelectorTab[] = [];
 
     private rootStore: RootStore;
 
