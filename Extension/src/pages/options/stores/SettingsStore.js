@@ -42,13 +42,13 @@ import {
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
 import {
-    AntiBannerFiltersId,
     AntibannerGroupsId,
     RECOMMENDED_TAG_ID,
     TRUSTED_TAG_KEYWORD,
     WASTE_CHARACTERS,
 } from '../../../common/constants';
 import { translator } from '../../../common/translators/translator';
+import { UserAgent } from '../../../common/user-agent';
 
 import { NotificationType } from './UiStore';
 
@@ -161,59 +161,86 @@ class SettingsStore {
         },
     });
 
-    @observable settings = null;
+    @observable
+    settings = null;
 
-    @observable optionsReadyToRender = false;
+    @observable
+    optionsReadyToRender = false;
 
-    @observable version = null;
+    @observable
+    version = null;
 
-    @observable libVersions = null;
+    @observable
+    libVersions = null;
 
-    @observable filters = [];
+    @observable
+    filters = [];
 
-    @observable categories = [];
+    @observable
+    categories = [];
 
-    @observable visibleFilters = [];
+    @observable
+    visibleFilters = [];
 
-    @observable rulesCount = 0;
+    @observable
+    rulesCount = 0;
 
-    @observable allowAcceptableAds = null;
+    @observable
+    allowAcceptableAds = null;
 
-    @observable blockKnownTrackers = null;
+    @observable
+    blockKnownTrackers = null;
 
-    @observable stripTrackingParameters = null;
+    @observable
+    stripTrackingParameters = null;
 
-    @observable allowlist = '';
+    @observable
+    allowlist = '';
 
-    @observable savingAllowlistState = this.savingAllowlistService.getSnapshot().value;
+    @observable
+    savingAllowlistState = this.savingAllowlistService.getSnapshot().value;
 
-    @observable filtersUpdating = false;
+    @observable
+    filtersUpdating = false;
 
-    @observable selectedGroupId = null;
+    @observable
+    selectedGroupId = null;
 
-    @observable isChrome = null;
+    @observable
+    isChrome = null;
 
-    @observable isUserScriptsApiSupported = false;
+    @observable
+    currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.version) : null;
 
-    @observable searchInput = '';
+    @observable
+    searchInput = '';
 
-    @observable searchSelect = SEARCH_FILTERS.ALL;
+    @observable
+    searchSelect = SEARCH_FILTERS.ALL;
 
-    @observable allowlistEditorContentChanged = false;
+    @observable
+    allowlistEditorContentChanged = false;
 
-    @observable allowlistEditorWrap = null;
+    @observable
+    allowlistEditorWrap = null;
 
-    @observable fullscreenUserRulesEditorIsOpen = false;
+    @observable
+    fullscreenUserRulesEditorIsOpen = false;
 
-    @observable allowlistSizeReset = false;
+    @observable
+    allowlistSizeReset = false;
 
-    @observable filtersToGetConsentFor = [];
+    @observable
+    filtersToGetConsentFor = [];
 
-    @observable isAnnoyancesConsentModalOpen = false;
+    @observable
+    isAnnoyancesConsentModalOpen = false;
 
-    @observable filterIdSelectedForConsent = null;
+    @observable
+    filterIdSelectedForConsent = null;
 
-    @observable rulesLimits = DEFAULT_RULES_LIMITS;
+    @observable
+    rulesLimits = DEFAULT_RULES_LIMITS;
 
     constructor(rootStore) {
         makeObservable(this);
@@ -324,7 +351,6 @@ class SettingsStore {
             this.setBlockKnownTrackers(data.filtersMetadata.filters);
             this.setStripTrackingParameters(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
-            this.isUserScriptsApiSupported = data.isUserScriptsApiSupported;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         });
@@ -484,26 +510,14 @@ class SettingsStore {
     }
 
     /**
-     * List of recommended annoyances filters.
+     * List of recommended annoyances filters
+     * which are only AdGuard annoyances filters.
      */
     @computed
     get recommendedAnnoyancesFilters() {
         return this.annoyancesFilters.filter((filter) => {
             return filter.tags.includes(RECOMMENDED_TAG_ID);
         });
-    }
-
-    /**
-     * List of AdGuard annoyances filters.
-     */
-    @computed
-    get agAnnoyancesFilters() {
-        return [
-            ...this.recommendedAnnoyancesFilters,
-            this.annoyancesFilters.find((f) => {
-                return f.filterId === AntiBannerFiltersId.AnnoyancesCombinedFilterId;
-            }),
-        ];
     }
 
     /**
@@ -1015,7 +1029,7 @@ class SettingsStore {
     @computed
     get shouldShowFilterPolicy() {
         if (this.filterIdSelectedForConsent) {
-            return this.agAnnoyancesFilters.some((f) => f.filterId === this.filterIdSelectedForConsent);
+            return this.recommendedAnnoyancesFilters.some((f) => f.filterId === this.filterIdSelectedForConsent);
         }
         // consent modal for group
         return true;

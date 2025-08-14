@@ -72,6 +72,12 @@ export type GetOptionsDataResponse = {
          * Version of the ExtendedCss library.
          */
         extendedCss: string;
+
+        /**
+         * Version of the DNR-Rulesets library.
+         * Will be filled after extension will load metadata for DNR rulesets.
+         */
+        dnrRulesets?: string;
     };
 
     /**
@@ -121,11 +127,4 @@ export type GetOptionsDataResponse = {
      * Used in MV3.
      */
     areFilterLimitsExceeded: boolean;
-
-    /**
-     * Whether the user scripts API is supported.
-     *
-     * Used in MV3 only.
-     */
-    isUserScriptsApiSupported: boolean;
 };

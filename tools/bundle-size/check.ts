@@ -227,6 +227,22 @@ function compareBuildSizes(
         });
     }
 
+    // Compare shared files if they exist in reference
+    if (Object.keys(reference.stats.shared).length > 0) {
+        console.log('\nShared Files:\n');
+        Object.entries(current.stats.shared).forEach(([fileName, newSize]) => {
+            const oldSize = reference.stats.shared[fileName] || 0;
+            const changePercent = oldSize > 0 ? ((newSize - oldSize) / oldSize) * 100 : 0;
+
+            if (oldSize > 0 && changePercent > threshold) {
+                hasIssues = true;
+                console.error(`- ❌ ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} (${formatPercentage(oldSize, newSize)}) - Exceeds ${threshold}% threshold!`);
+            } else {
+                console.log(`- ✅ ${fileName}: ${formatSize(oldSize)} → ${formatSize(newSize)} ${oldSize > 0 ? `(${formatPercentage(oldSize, newSize)})` : '(new file)'}`);
+            }
+        });
+    }
+
     return hasIssues;
 }
 
@@ -457,7 +473,12 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
         || hasDuplicates
         || hasFirefoxJsIssues
     ) {
-        throw new Error('Bundle size check failed due to size issues or duplicate packages');
+        throw new Error('Bundle size check failed due to size issues. Check the output above.');
+    }
+
+    // Exit with error if there are issues in any target
+    if (hasDuplicates) {
+        throw new Error('Bundle size check failed due to duplicate packages. Check the output above.');
     }
 
     console.log('Bundle size check completed successfully.');
@@ -465,9 +486,9 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
 
 // --- CLI argument parsing with commander ---
 program
-    .argument('<buildEnv>', `Build environment, one from ${Object.values(BuildTargetEnv).join(', ')}`)
-    .argument('[targetBrowser]', `Target browser, one from ${Object.values(Browser).join(', ')}`)
-    .option('--threshold <number>', 'Bundle size threshold (%)', String(DEFAULT_SIZE_THRESHOLD_PERCENTAGE))
+    .argument('<buildEnv>', `Build environment, one from: ${Object.values(BuildTargetEnv).map((s) => `"${s}"`).join(', ')}`)
+    .argument('[targetBrowser]', `Target browser, one from: ${Object.values(Browser).map((s) => `"${s}"`).join(', ')}`)
+    .option('--threshold <number>', 'Bundle size threshold in percents', String(DEFAULT_SIZE_THRESHOLD_PERCENTAGE))
     .action(async (buildEnv, targetBrowser, options) => {
         if (!buildEnv) {
             throw new Error('buildEnv argument is required');
