@@ -65,37 +65,14 @@ const About = observer(() => {
                         {`Scriptlets v${libVersions.scriptlets}`}
                         <br />
                         {`ExtendedCss v${libVersions.extendedCss}`}
-                        {/* // TODO revert later AG-42086 */}
-                        {/* {libVersions.dnrRulesets && ( */}
-                        {/*     <> */}
-                        {/*         <br /> */}
-                        {/*         {`DNR-Rulesets v${libVersions.dnrRulesets}`} */}
-                        {/*     </> */}
-                        {/* )} */}
+                        {libVersions.dnrRulesets && (
+                            <>
+                                <br />
+                                {`DNR rulesets v${libVersions.dnrRulesets}`}
+                            </>
+                        )}
                     </p>
                 </div>
-                <ul
-                    className="about__libs"
-                    aria-label={translator.getMessage('options_about_libs')}
-                >
-                    <li className="about__version">
-                        {`TSWebExtension v${libVersions.tswebextension}`}
-                    </li>
-                    <li className="about__version">
-                        {`TSUrlFilter v${libVersions.tsurlfilter}`}
-                    </li>
-                    <li className="about__version">
-                        {`Scriptlets v${libVersions.scriptlets}`}
-                    </li>
-                    <li className="about__version">
-                        {`ExtendedCss v${libVersions.extendedCss}`}
-                    </li>
-                    {libVersions.dnrRulesets && (
-                        <li className="about__version">
-                            {`DNR-Rulesets v${libVersions.dnrRulesets}`}
-                        </li>
-                    )}
-                </ul>
                 <div className="about__copyright">
                     {copyRightText}
                     {/* Hide following br tag so Screen Reader will read text together */}
