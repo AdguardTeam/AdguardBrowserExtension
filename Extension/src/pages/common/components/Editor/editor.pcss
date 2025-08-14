@@ -147,31 +147,3 @@
         display: block !important;
     }
 }
-
-/* ------------------------------------------------------------------
-   Work-around for Quest/Android "focus-zoom" bug
-   AG-43589
-   ------------------------------------------------
-   Ace keeps a hidden 1 × 1 px <textarea> (`.ace_text-input`) to funnel
-   keystrokes and IME events (Input Method Editor events, e.g., for
-   typing non-Latin characters). When that element receives focus in
-   Blink-based browsers on Android (including Meta Quest Browser),
-   the "minimum-readable-font-size" heuristic (< 16 px) kicks in and
-   zooms the whole window.
-
-   By forcing both the computed font-size *and* the bounding-box
-   (width/height/line-height) to 16 px we stay above the threshold and
-   completely suppress the auto-zoom—without affecting Ace's layout,
-   because the element is still `opacity:0`.
-
-   The `:not(.ace_composition)` guard lets Ace temporarily resize the
-   textarea during IME composition so candidate windows continue to work.
-
-   NOTE: This rule is applied only on the Oculus browser (Meta Quest Browser).
------------------------------------------------------------------- */
-.editor.oculus-browser .ace_text-input:not(.ace_composition) {
-    width: 16px !important;
-    height: 16px !important;
-    line-height: 16px !important;
-    font-size: 16px !important;
-}

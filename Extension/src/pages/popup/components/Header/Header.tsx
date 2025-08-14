@@ -21,6 +21,7 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
+import { Icon } from '../../../common/components/ui/Icon';
 import { popupStore } from '../../stores/PopupStore';
 import { isTransitionAppState } from '../../state-machines/app-state-machine';
 
@@ -39,9 +40,11 @@ export const Header = observer(() => {
 
     return (
         <div className="popup-header">
-            <div className="popup-header__logo">
-                <div className="logo" />
-            </div>
+            <Icon
+                id="#logo"
+                classname="icon--logo"
+                aria-hidden="true"
+            />
             <div
                 className={cn('popup-header__buttons', {
                     'popup-header__buttons--non-active': isTransitionAppState(appState),

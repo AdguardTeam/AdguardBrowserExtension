@@ -46,7 +46,7 @@ vi.mock('../../../../../Extension/src/background/storages/settings', () => ({
         isInitialized: vi.fn().mockReturnValue(true),
     },
 }));
-vi.mock('../../../../../Extension/src/background/api/settings', () => ({
+vi.mock('../../../../../Extension/src/background/api/settings/main', () => ({
     SettingsApi: {
         init: vi.fn().mockResolvedValue(undefined),
         getSettings: vi.fn().mockResolvedValue({}),
@@ -68,10 +68,6 @@ const initMetadata: Metadata = metadataValidator.parse({
     filters: [],
     groups: [],
     tags: [],
-    ...(__IS_MV3__ ? {
-        version: '1.2.3',
-        versionTimestampMs: 1739664924000,
-    } : {}),
 });
 
 const remoteI18nMetadata: I18nMetadata = i18nMetadataValidator.parse({
@@ -85,10 +81,6 @@ const remoteI18nMetadata: I18nMetadata = i18nMetadataValidator.parse({
         },
     },
     tags: {},
-    ...(__IS_MV3__ ? {
-        version: '1.2.3',
-        versionTimestampMs: 1739664924000,
-    } : {}),
 });
 
 const localI18nMetadata: I18nMetadata = i18nMetadataValidator.parse({

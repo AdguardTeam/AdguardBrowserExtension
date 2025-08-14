@@ -15,11 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-// TODO (AG-44868): Reduce code duplication across mv2 and mv3
-import { FilterUpdateApi } from '../../api';
-import { browserStorage } from '../../storages';
-import { isNumber } from '../../../common/guards';
-import { logger } from '../../../common/logger';
+
+import { getVersionTimestampMs } from '@adguard/dnr-rulesets/utils';
+
+import { FilterUpdateApi } from '../api';
+import { browserStorage } from '../storages';
+import { isNumber } from '../../common/guards';
+import { logger } from '../../common/logger';
 
 /**
  * Service for scheduling filters update checks.
@@ -72,14 +74,18 @@ export class FilterUpdateService {
      */
     public async init(): Promise<void> {
         await this.update();
-        await FilterUpdateService.setLastUpdateTimeMs(Date.now());
+
+        if (__IS_MV3__) {
+            const dnrRulesetsBuildTimestampMs = getVersionTimestampMs();
+            await FilterUpdateService.setLastUpdateTimeMs(dnrRulesetsBuildTimestampMs);
+        } else {
+            await FilterUpdateService.setLastUpdateTimeMs(Date.now());
+        }
     }
 
     /**
      * Sets the last filters **update** (not just *check*) time in the storage
      * for version which supports diff updates, i.e. MV2.
-     * For MV3 this method is used only to record the last update time during
-     * issue reporting.
      *
      * @param timestampMs The timestamp in milliseconds.
      */
@@ -123,7 +129,12 @@ export class FilterUpdateService {
 
         if (shouldCheckUpdates) {
             try {
-                await FilterUpdateApi.autoUpdateFilters();
+                if (__IS_MV3__) {
+                    // TODO: revert if Quick Fixes filter is back
+                    // await QuickFixesRulesApi.updateQuickFixesFilter();
+                } else {
+                    await FilterUpdateApi.autoUpdateFilters();
+                }
             } catch (e) {
                 logger.error('[ext.FilterUpdateService.update]: an error occurred during filters update:', e);
             }

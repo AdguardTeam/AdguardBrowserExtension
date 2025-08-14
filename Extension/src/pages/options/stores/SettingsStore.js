@@ -42,13 +42,13 @@ import {
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
 import {
+    AntiBannerFiltersId,
     AntibannerGroupsId,
     RECOMMENDED_TAG_ID,
     TRUSTED_TAG_KEYWORD,
     WASTE_CHARACTERS,
 } from '../../../common/constants';
 import { translator } from '../../../common/translators/translator';
-import { UserAgent } from '../../../common/user-agent';
 
 import { NotificationType } from './UiStore';
 
@@ -193,7 +193,7 @@ class SettingsStore {
 
     @observable isChrome = null;
 
-    @observable currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.version) : null;
+    @observable isUserScriptsApiSupported = false;
 
     @observable searchInput = '';
 
@@ -324,6 +324,7 @@ class SettingsStore {
             this.setBlockKnownTrackers(data.filtersMetadata.filters);
             this.setStripTrackingParameters(data.filtersMetadata.filters);
             this.isChrome = data.environmentOptions.isChrome;
+            this.isUserScriptsApiSupported = data.isUserScriptsApiSupported;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         });
@@ -483,14 +484,26 @@ class SettingsStore {
     }
 
     /**
-     * List of recommended annoyances filters
-     * which are only AdGuard annoyances filters.
+     * List of recommended annoyances filters.
      */
     @computed
     get recommendedAnnoyancesFilters() {
         return this.annoyancesFilters.filter((filter) => {
             return filter.tags.includes(RECOMMENDED_TAG_ID);
         });
+    }
+
+    /**
+     * List of AdGuard annoyances filters.
+     */
+    @computed
+    get agAnnoyancesFilters() {
+        return [
+            ...this.recommendedAnnoyancesFilters,
+            this.annoyancesFilters.find((f) => {
+                return f.filterId === AntiBannerFiltersId.AnnoyancesCombinedFilterId;
+            }),
+        ];
     }
 
     /**
@@ -1002,7 +1015,7 @@ class SettingsStore {
     @computed
     get shouldShowFilterPolicy() {
         if (this.filterIdSelectedForConsent) {
-            return this.recommendedAnnoyancesFilters.some((f) => f.filterId === this.filterIdSelectedForConsent);
+            return this.agAnnoyancesFilters.some((f) => f.filterId === this.filterIdSelectedForConsent);
         }
         // consent modal for group
         return true;

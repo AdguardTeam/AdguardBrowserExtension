@@ -107,7 +107,7 @@ export const COLLECT_HITS_LEARN_MORE_URL = Forward.get({
     from: ForwardFrom.Options,
 });
 
-export const USER_SCRIPTS_API_REQUIRED_URL = Forward.get({
-    action: ForwardAction.UserScriptsApiRequired,
+export const DEVELOPER_MODE_REQUIRED_URL = Forward.get({
+    action: ForwardAction.DeveloperModeRequired,
     from: ForwardFrom.Options,
 });

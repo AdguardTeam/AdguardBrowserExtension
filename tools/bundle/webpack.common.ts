@@ -313,34 +313,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/pages/content-script-start/mv${manifestVersion}.ts`,
                 ),
-                'network-api': path.resolve(
-                    __dirname,
-                    `../../Extension/src/background/api/network/network-mv${manifestVersion}.ts`,
-                ),
-                'network-api-settings': path.resolve(
-                    __dirname,
-                    `../../Extension/src/background/api/network/settings-mv${manifestVersion}.ts`,
-                ),
-                'filters-update-api': path.resolve(
-                    __dirname,
-                    `../../Extension/src/background/api/filters/update/update-mv${manifestVersion}.ts`,
-                ),
-                'common-filter-api': path.resolve(
-                    __dirname,
-                    `../../Extension/src/background/api/filters/common/common-mv${manifestVersion}.ts`,
-                ),
-                'filter-categories-api': path.resolve(
-                    __dirname,
-                    `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`,
-                ),
-                'settings-api': path.resolve(
-                    __dirname,
-                    `../../Extension/src/background/api/settings/settings-mv${manifestVersion}.ts`,
-                ),
-                'filter-update-service': path.resolve(
-                    __dirname,
-                    `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`,
-                ),
             },
         },
         module: {
@@ -418,13 +390,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 {
                     test: /\.(woff|woff2|eot|ttf|otf)$/,
                     type: 'asset/resource',
-                },
-                {
-                    test: /\.(svg|png)$/,
-                    type: 'asset/resource',
-                    generator: {
-                        filename: 'assets/images/[name][ext]',
-                    },
                 },
             ],
         },

@@ -20,31 +20,73 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { BrowserUtils } from '../../../../background/utils/browser-utils';
-import {
-    CHROME_EXTENSIONS_SETTINGS_URL,
-    USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED,
-} from '../../../../common/constants';
+import { CHROME_EXTENSIONS_SETTINGS_URL } from '../../../../common/constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
-import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
-import { useVisibilityCheck } from '../../../common/hooks/useVisibilityCheck';
+import { logger } from '../../../../common/logger';
 import { messenger } from '../../../services/messenger';
-import { USER_SCRIPTS_API_REQUIRED_URL } from '../../constants';
+import { DEVELOPER_MODE_REQUIRED_URL } from '../../constants';
+import { UserAgent } from '../../../../common/user-agent';
 import { rootStore } from '../../stores/RootStore';
 
+import './limit-warning.pcss';
+
 /**
- * User scripts API warning component for User rules section.
+ * Minimum Chrome versions required for different toggles which enables usage of User Scripts API.
+ *
+ * User scripts API with needed 'execute' method is supported from Chrome 135 and higher.
+ * But prior to 138 it can be enabled only via Developer mode toggle.
+ * And for 138 and higher it can be enabled via User Scripts API toggle in the extensions details.
+ *
+ * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts
+ */
+const MIN_CHROME_VERSION_REQUIRED = {
+    /**
+     * Minimum Chrome version where Developer mode should be enabled.
+     *
+     * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts#chrome_versions_prior_to_138_developer_mode_toggle
+     */
+    DEV_MODE_TOGGLE: 135,
+    /**
+     * Minimum Chrome version where User Scripts API toggle should be enabled.
+     *
+     * @see https://developer.chrome.com/docs/extensions/reference/api/userScripts#chrome_versions_138_and_newer_allow_user_scripts_toggle
+     */
+    ALLOW_USER_SCRIPTS_TOGGLE: 138,
+};
+
+/**
+ * Developer mode warning component.
  *
  * This warning is specifically needed to inform users that full functionality
- * of JavaScript rules requires user scripts API to be enabled in the browser.
- * Without user scripts API granted, certain advanced JS filtering capabilities will be
+ * of JavaScript rules requires developer mode to be enabled in the browser.
+ * Without developer mode, certain advanced JS filtering capabilities will be
  * limited or unavailable.
  */
-export const UserScriptsApiWarningForUserRules = observer(() => {
-    const { settingsStore: { currentChromeVersion } } = useContext(rootStore);
+export const DeveloperModeWarning = observer(() => {
+    const {
+        settingsStore: {
+            /**
+             * Actually, this flag (inside the tswebextension library) checks
+             * whether the User Scripts API with 'execute' method is supported.
+             */
+            isUserScriptsApiSupported: isUserScriptsApiEnabled,
+        },
+    } = useContext(rootStore);
 
-    const showWarning = useVisibilityCheck(shouldShowUserScriptsApiWarning);
+    if (isUserScriptsApiEnabled) {
+        logger.debug('[ext.DeveloperModeWarning]: User Scripts API is already enabled');
+        return null;
+    }
 
-    if (!showWarning || !currentChromeVersion) {
+    if (!__IS_MV3__ || !UserAgent.isChromium) {
+        logger.debug('[ext.DeveloperModeWarning]: User Scripts API supported only in MV3 Chromium-based browsers');
+        return null;
+    }
+
+    const currentChromeVersion = Number(UserAgent.version);
+
+    if (currentChromeVersion < MIN_CHROME_VERSION_REQUIRED.DEV_MODE_TOGGLE) {
+        logger.debug(`[ext.DeveloperModeWarning]: User Scripts API is not supported in Chrome v${currentChromeVersion}`);
         return null;
     }
 
@@ -67,7 +109,7 @@ export const UserScriptsApiWarningForUserRules = observer(() => {
      */
     const getExternalLink = (text: string) => (
         <a
-            href={USER_SCRIPTS_API_REQUIRED_URL}
+            href={DEVELOPER_MODE_REQUIRED_URL}
             target="_blank"
             rel="noopener noreferrer"
         >
@@ -100,37 +142,34 @@ export const UserScriptsApiWarningForUserRules = observer(() => {
 
     const getWarningAboutDevModeToggle = () => {
         return reactTranslator.getMessage('options_developer_mode_required', {
-            'external-link': getExternalLink,
-            b: (text: string) => <b>{text}</b>,
             'settings-link': (text: string) => getSettingsLink(
                 text,
                 CHROME_EXTENSIONS_SETTINGS_URL,
                 openChromeExtensionsSettings,
             ),
+            'external-link': getExternalLink,
         });
     };
 
     const getWarningAboutAllowUserScriptsToggle = () => {
         return reactTranslator.getMessage('options_allow_user_scripts_required', {
-            'external-link': getExternalLink,
-            b: (text: string) => <b>{text}</b>,
             'settings-link': (text: string) => getSettingsLink(
                 text,
                 BrowserUtils.getExtensionDetailsUrl(),
                 openExtensionDetails,
             ),
+            'external-link': getExternalLink,
         });
     };
 
-    // eslint-disable-next-line max-len
-    const shouldEnableDevMode = currentChromeVersion < USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED.ALLOW_USER_SCRIPTS_TOGGLE;
+    const shouldEnableDevMode = currentChromeVersion < MIN_CHROME_VERSION_REQUIRED.ALLOW_USER_SCRIPTS_TOGGLE;
 
     const message = shouldEnableDevMode
         ? getWarningAboutDevModeToggle()
         : getWarningAboutAllowUserScriptsToggle();
 
     return (
-        <div role="alert" className="warning section-warning">
+        <div role="alert" className="limit-warning">
             <span>
                 {message}
             </span>

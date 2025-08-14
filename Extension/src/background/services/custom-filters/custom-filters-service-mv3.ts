@@ -31,6 +31,7 @@ import type { CustomFilterMetadata } from '../../schema';
 
 /**
  * Service for processing events with custom filters.
+ * TODO: Uncomment this class when custom filters will be supported for MV3.
  */
 export class CustomFiltersService {
     /**

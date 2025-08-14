@@ -9,9 +9,9 @@ set -ex
 
 branch="${bamboo_planRepository_branchName}"
 
-# Throw error if current branch is not "stable/v5.2", because we do not
+# Throw error if current branch is not "stable/v5.1", because we do not
 # deploy new releases not from release branch.
-if [ $branch != "stable/v5.2" ]; then
+if [ $branch != "stable/v5.1" ]; then
     echo "auto-build is not supported on branch ${branch}"
     exit 1;
 fi

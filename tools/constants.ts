@@ -130,18 +130,26 @@ Because of that, we use the following approach (that was accepted by AMO reviewe
 3. We also allow "User rules" and "Custom filters" to work since those rules are added manually by the user.
    This way filters maintainers can test new rules before including them in the filters.`;
 
-export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `Search for 'JS_RULES_EXECUTION' to find all parts of script execution
-process in the extension.
+export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = ` To fully comply with Chrome Web Store policies regarding remote code execution,
+ we implement a strict security-focused approach for JavaScript rule execution:
 
-1. We collect and bundle all scripts that can be executed on web pages into
-    the extension package into so-called \`localScriptRules\`.
-2. Rules that control when and where these scripts can be executed are also
-    bundled within the extension package inside ruleset files.
-3. The rules look like: \`example.org#%#scripttext\`. Whenever the rule is
-    matched, we check if there's a function for scripttext in
-    \`localScriptRules\`, retrieve it from there and execute it.
+ 1. For standard users (default mode):
+    - We collect and pre-build script rules from the filters and statically bundle
+      them into the extension - STEP 1. See 'updateLocalResourcesForChromiumMv3' in our build tools.
+    - These pre-verified local scripts are passed to the engine - STEP 2.
+    - At runtime, we check if each script rule is included in our local scripts list (STEP 3).
+    - Only pre-verified local scripts are executed via chrome.scripting API (STEP 4.1 and 4.2).
+      All other scripts are discarded.
 
-Below is the file with all the registered scripts that can be executed.`;
+ 2. For advanced users with developer mode explicitly enabled:
+    - JavaScript rules from custom filters can be executed using the browser's built-in
+      userScripts API (STEP 4.3), which provides a secure sandbox.
+    - This execution bypasses the local script verification process but remains
+      isolated and secure through Chrome's native sandboxing.
+    - This mode requires explicit user activation and is intended for advanced users only.
+
+ This dual-path implementation ensures perfect compliance with Chrome Web Store policies
+ while providing necessary functionality for users with different needs.`;
 
 // artifacts constants
 export const UPDATE_BASE_URL = 'https://static.adtidy.org/extensions/adguardadblocker/beta';

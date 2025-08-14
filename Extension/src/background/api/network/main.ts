@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-// TODO (AG-44868): Reduce code duplication across mv2 and mv3
 import browser from 'webextension-polyfill';
 
 import {
@@ -23,8 +22,14 @@ import {
     type DefinedExpressions,
     type DownloadResult,
 } from '@adguard/filters-downloader/browser';
+import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
+import { type TsWebExtension as TsWebExtensionMv3 } from '@adguard/tswebextension/mv3';
+
+import { TsWebExtension } from 'tswebextension';
 
 import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
+import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { logger } from '../../../common/logger';
 import { UserAgent } from '../../../common/user-agent';
 import {
@@ -36,8 +41,10 @@ import {
     localScriptRulesValidator,
 } from '../../schema';
 import { type FilterUpdateOptions } from '../filters';
+import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
+import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 
-import { NetworkSettings } from './settings-mv2';
+import { NetworkSettings } from './settings';
 
 export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: boolean };
 
@@ -143,23 +150,35 @@ export class Network {
         let url: string = '';
         const { filterId } = filterUpdateOptions;
 
-        const hasFilterIdInLocalFilters = this.settings.localFilterIds.indexOf(filterId) >= 0;
-
-        if (!forceRemote && !hasFilterIdInLocalFilters) {
-            /**
-             * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
-             * process in the extension.
-             *
-             * Note, that downloading anything is forbidden in MV3 extension.
-             */
-
+        if (
+            !__IS_MV3__
+            && !forceRemote
+            && this.settings.localFilterIds.indexOf(filterId) < 0
+        ) {
             // eslint-disable-next-line max-len
             throw new Error(`Cannot locally load filter with id ${filterId} because it is not build in the extension local resources.`);
         }
 
         let isLocalFilter = false;
+        if (__IS_MV3__) {
+            // `forceRemote` flag for MV3 built-in filters can be used only for custom filters.
+            const isRemote = forceRemote
+                && CustomFilterUtils.isCustomFilter(filterId);
 
-        if (forceRemote || !hasFilterIdInLocalFilters) {
+            // TODO: revert if Quick Fixes filter is back
+            // const isRemote = forceRemote
+            //     && (filterId === AntiBannerFiltersId.QuickFixesFilterId
+            //         || CustomFilterUtils.isCustomFilter(filterId));
+
+            if (isRemote) {
+                if (useOptimizedFilters) {
+                    logger.info('[ext.Network.downloadFilterRules]: optimized filters are not supported in MV3, full versions will be downloaded.');
+                }
+                url = this.getUrlForDownloadFilterRules(filterId, false);
+            }
+
+            isLocalFilter = !isRemote;
+        } else if (forceRemote || this.settings.localFilterIds.indexOf(filterId) < 0) {
             url = this.getUrlForDownloadFilterRules(filterId, useOptimizedFilters);
         } else {
             const filterFileName = useOptimizedFilters
@@ -171,6 +190,30 @@ export class Network {
 
         // local filters do not support patches, that is why we always download them fully
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
+            // TODO: Check, if this comment is correct and understandable.
+            // For MV3 we load local filters not from files, but from the
+            // prepared data in filters storage, to which we write the binary
+            // data from @adguard/dnr-rulesets. See AG-36824 for details.
+            if (__IS_MV3__) {
+                // TODO: revert if Quick Fixes filter is back
+                // if (__IS_MV3__ && filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+                // TODO: Check if its needed
+                await (TsWebExtension as unknown as typeof TsWebExtensionMv3).syncRuleSetWithIdb(
+                    filterId,
+                    'filters/declarative',
+                );
+                const rawFilterList = await FiltersStoragesAdapter.getRawFilterList(filterId);
+
+                if (!rawFilterList) {
+                    throw new Error(`Cannot find filter with id ${filterId}`);
+                }
+
+                return {
+                    filter: rawFilterList.split(NEWLINE_CHAR_REGEX),
+                    rawFilter: rawFilterList,
+                };
+            }
+
             // full remote filter update for MV2
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
@@ -267,8 +310,21 @@ export class Network {
      * @throws Error if metadata is invalid.
      */
     public async getLocalFiltersMetadata(): Promise<Metadata> {
-        // Metadata is stored in a separate JSON file.
-        const url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_METADATA_FILE_NAME}`);
+        let url: string;
+
+        if (__IS_MV3__) {
+            // For MV3, the filters metadata is stored in the metadata ruleset.
+            // The reason for this is that it allows us to perform extension updates
+            // where only the JSON files of the rulesets are changed.
+            const metadataRuleSetPath = getRuleSetPath(
+                METADATA_RULESET_ID,
+                `${this.settings.localFiltersFolder}/declarative`,
+            );
+            url = browser.runtime.getURL(metadataRuleSetPath);
+        } else {
+            // Otherwise, metadata is stored in a separate JSON file.
+            url = browser.runtime.getURL(`${this.settings.localFiltersFolder}/${LOCAL_METADATA_FILE_NAME}`);
+        }
 
         let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
@@ -284,7 +340,14 @@ export class Network {
         }
 
         try {
-            const metadata = JSON.parse(response.responseText);
+            let metadata: unknown;
+            if (__IS_MV3__) {
+                const metadataRuleSet = MetadataRuleSet.deserialize(response.responseText);
+                // Filters metadata is stored as an additional property in the metadata ruleset.
+                metadata = metadataRuleSet.getAdditionalProperty('metadata');
+            } else {
+                metadata = JSON.parse(response.responseText);
+            }
             return metadataValidator.parse(metadata);
         } catch (e: unknown) {
             // TODO: Return regular error

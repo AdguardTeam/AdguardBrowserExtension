@@ -303,9 +303,10 @@ export class SettingsApi {
 
         settingsStorage.set(SettingOption.DisableShowPageStats, !showBlockedAdsCount);
         settingsStorage.set(SettingOption.DisableDetectFilters, !autodetectFilters);
-
-        settingsStorage.set(SettingOption.DisableSafebrowsing, !safebrowsingEnabled);
-        settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);
+        if (!__IS_MV3__) {
+            settingsStorage.set(SettingOption.DisableSafebrowsing, !safebrowsingEnabled);
+            settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);
+        }
 
         if (appearanceTheme) {
             settingsStorage.set(SettingOption.AppearanceTheme, appearanceTheme);
@@ -541,14 +542,21 @@ export class SettingsApi {
             return CommonFilterUtils.isCommonFilter(filterId);
         });
 
-        // special handling for large AdGuard Annoyances filter,
-        // all other deprecated filters shall be skipped;
-        // only for MV2 because it was never available in MV3
-        if (filtersToEnable.includes(AntiBannerFiltersId.AnnoyancesCombinedFilterId)) {
-            filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
-        }
+        if (__IS_MV3__) {
+            await SettingsApi.loadBuiltInFiltersMv3(filtersToEnable);
 
-        await SettingsApi.loadBuiltInFiltersMv2(filtersToEnable);
+            // TODO: revert if Quick Fixes filter is back
+            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
+        } else {
+            // special handling for large AdGuard Annoyances filter,
+            // all other deprecated filters shall be skipped;
+            // only for MV2 because it was never available in MV3
+            if (filtersToEnable.includes(AntiBannerFiltersId.AnnoyancesCombinedFilterId)) {
+                filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
+            }
+
+            await SettingsApi.loadBuiltInFiltersMv2(filtersToEnable);
+        }
 
         await CustomFilterApi.createFilters(customFilters);
 
@@ -692,13 +700,15 @@ export class SettingsApi {
         }
 
         if (stripTrackingParam) {
-            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.UrlTrackingFilterId], true);
+            const remote = !__IS_MV3__;
+            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.UrlTrackingFilterId], remote);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.UrlTrackingFilterId]);
         }
 
         if (blockKnownTrackers) {
-            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.TrackingFilterId], true);
+            const remote = !__IS_MV3__;
+            await FiltersApi.loadAndEnableFilters([AntiBannerFiltersId.TrackingFilterId], remote);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.TrackingFilterId]);
         }

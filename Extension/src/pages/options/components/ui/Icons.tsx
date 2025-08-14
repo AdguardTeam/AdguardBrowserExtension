@@ -50,10 +50,8 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="setting-5" viewBox="0 0 24 24">
-                <g fill="none" fillRule="evenodd">
-                    <path fill="currentColor" fillRule="evenodd" d="M15.1 9.25c.3.34.3.89 0 1.22l-2.3 2.57c-.8.96-1.3.96-2.12 0l-1.45-1.6a.93.93 0 0 1 0-1.23.73.73 0 0 1 1.1 0l1.4 1.57 2.28-2.53c.3-.33.8-.33 1.1 0Z" clipRule="evenodd" />
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5.2c0 3.07-.04 10.78 9 16 9.04-5.22 9-12.93 9-16a17.72 17.72 0 0 0-18 0Z" clipRule="evenodd" />
-                </g>
+                <path d="M9 11L12 14L16 9" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path fillRule="evenodd" clipRule="evenodd" d="M11.9998 3C9.18674 3 5.79348 3.6454 3 5.06597C3 8.13403 2.96144 15.7775 11.9998 21C21.0384 15.7775 21 8.13403 21 5.06597C18.2063 3.6454 14.8131 3 11.9998 3V3Z" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
 
             <symbol id="setting-6" viewBox="0 0 24 24">

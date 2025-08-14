@@ -24,6 +24,8 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 
+import './limit-warning.pcss';
+
 /**
  * Static filters limits warning component.
  *
@@ -45,12 +47,12 @@ export const StaticFiltersLimitsWarning = observer(() => {
     }
 
     return (
-        <div role="alert" className="warning section-warning">
+        <div role="alert" className="limit-warning">
             <span>
                 {staticFiltersLimitsWarning}
             </span>
             <Link
-                className="section-warning--link"
+                className="limit-warning--link"
                 to={`/${OptionsPageSections.ruleLimits}`}
             >
                 {translator.getMessage('options_rule_limits')}
