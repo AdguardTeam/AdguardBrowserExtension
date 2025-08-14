@@ -16,10 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dynamic rules limit duplicate notifications.
 - Network rules with `$important` modifier are applied even if protection is disabled [#3227].
 - Early save reactivation and missing exit prompt during active User Rules/Allowlist save [#3151].
+- Some requests are blocked in 'Inverted allowlist' mode even though there're no websites added to the Allowlist [#3193].
 
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
+[#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
 
 ## Unreleased <!-- release/v5.2 -->
 
