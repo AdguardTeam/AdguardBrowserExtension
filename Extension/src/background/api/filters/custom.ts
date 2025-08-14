@@ -354,7 +354,8 @@ export class CustomFilterApi {
             return null;
         });
 
-        const filtersToUpdate = (await Promise.all(filterPromises)).filter((v) => v !== null);
+        const resolvedFilters = await Promise.all(filterPromises);
+        const filtersToUpdate = resolvedFilters.filter((v) => v !== null);
 
         filtersToUpdate.forEach((filter) => {
             logger.info(`[ext.CustomFilterApi.updateFilters]: Filter ${filter.updateOptions.filterId} needs to be updated [${filter.metadata.version}]`);

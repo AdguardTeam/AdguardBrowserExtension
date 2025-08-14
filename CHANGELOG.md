@@ -17,9 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Network rules with `$important` modifier are applied even if protection is disabled [#3227].
 - Early save reactivation and missing exit prompt during active User Rules/Allowlist save [#3151].
 
+### Changed
+
+- Improved filters update logs readability, added version information before and after update[#2934].
+
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
+[#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 
 ## Unreleased <!-- release/v5.2 -->
 

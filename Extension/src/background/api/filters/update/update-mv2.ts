@@ -235,10 +235,22 @@ export class FilterUpdateApi {
             }
         });
 
-        const updatedCustomMetadata = await CustomFilterApi.updateFilters(customFiltersUpdateList);
-        const updatedCommonMetadata = await CommonFilterApi.updateFilters(commonFiltersUpdateList);
+        const [updatedCustomFilters, updatedCommonFilters] = await Promise.allSettled([
+            CustomFilterApi.updateFilters(customFiltersUpdateList),
+            CommonFilterApi.updateFilters(commonFiltersUpdateList),
+        ]);
 
-        return [...updatedCustomMetadata, ...updatedCommonMetadata];
+        if (updatedCustomFilters.status === 'rejected') {
+            logger.error('[ext.FilterUpdateApi.updateFilters]: failed to update custom filters due to an error:', updatedCustomFilters.reason);
+        }
+        if (updatedCommonFilters.status === 'rejected') {
+            logger.error('[ext.FilterUpdateApi.updateFilters]: failed to update common filters due to an error:', updatedCommonFilters.reason);
+        }
+
+        return [
+            ...(updatedCustomFilters.status === 'fulfilled' ? updatedCustomFilters.value : []),
+            ...(updatedCommonFilters.status === 'fulfilled' ? updatedCommonFilters.value : []),
+        ];
     }
 
     /**

@@ -79,10 +79,10 @@ export class CommonFilterApi {
     ): Promise<FilterMetadata[]> {
         logger.info('[ext.CommonFilterApi.updateFilters]: Checking common filters for updates');
 
-        const filterPromises = filtersUpdateOptions.map(async (filterUpdateOptions) => {
+        const filtersToUpdate = filtersUpdateOptions.map((filterUpdateOptions) => {
             const filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateOptions.filterId);
             if (!filterMetadata) {
-                logger.error(`[ext.CommonFilterApi.updateFilters]: cannot find custom filter ${filterUpdateOptions.filterId} metadata`);
+                logger.error(`[ext.CommonFilterApi.updateFilters]: cannot find common filter ${filterUpdateOptions.filterId} metadata`);
                 return null;
             }
 
@@ -96,9 +96,7 @@ export class CommonFilterApi {
                 metadata: filterMetadata,
                 updateOptions: filterUpdateOptions,
             };
-        });
-
-        const filtersToUpdate = (await Promise.all(filterPromises)).filter((v) => v !== null);
+        }).filter((filter) => filter !== null);
 
         filtersToUpdate.forEach((filter) => {
             logger.info(`[ext.CommonFilterApi.updateFilters]: Filter ${filter.updateOptions.filterId} needs to be updated [${filter.metadata.version}]`);
