@@ -34,7 +34,7 @@ class CopyToClipboardStore {
     }
 
     @observable
-        currentContainerId = null;
+    currentContainerId = null;
 
     tooltipTimer = null;
 

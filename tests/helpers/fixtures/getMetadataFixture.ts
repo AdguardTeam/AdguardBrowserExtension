@@ -21,7 +21,12 @@ export const getMetadataFixture = (): Metadata => {
     if (__IS_MV3__) {
         const rawMetadataRuleSet = readFileSync(metadataRuleSetPath, 'utf8');
         const metadataRuleSet = MetadataRuleSet.deserialize(rawMetadataRuleSet);
-        metadata = metadataRuleSet.getAdditionalProperty('metadata');
+        const filtersMetadata = metadataRuleSet.getAdditionalProperty('metadata') || {};
+        metadata = {
+            version: metadataRuleSet.getAdditionalProperty('version'),
+            versionTimestampMs: metadataRuleSet.getAdditionalProperty('versionTimestampMs'),
+            ...filtersMetadata,
+        };
     } else {
         metadata = metadataMv2;
     }

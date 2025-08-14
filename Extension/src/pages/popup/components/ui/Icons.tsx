@@ -97,12 +97,6 @@ export const Icons = () => {
             <symbol id="popup-loading" viewBox="0 0 24 24">
                 <path stroke="currentColor" fill="currentColor" d="M3.274 14.842c-.433.141-.673.609-.497 1.03a10.002 10.002 0 1 0 2.83-11.565c-.35.291-.353.817-.034 1.142.32.326.84.327 1.195.041a8.352 8.352 0 1 1-2.415 9.867c-.183-.417-.645-.656-1.079-.515Z" strokeLinecap="round" />
             </symbol>
-
-            <symbol id="logo-splash" viewBox="0 0 48 48">
-                <path fill="#67B279" fillRule="evenodd" clipRule="evenodd" d="M24 0C16.5 0 7.45 1.72 0 5.5 0 13.7-.1 34.08 24 48 48.1 34.07 48 13.7 48 5.5 40.55 1.73 31.5 0 24 0Z" />
-                <path fill="#5B9F6B" fillRule="evenodd" clipRule="evenodd" d="M24 0C16.5 0 7.45 1.72 0 5.5v.11C0 13.86 0 34.13 24 48V0Z" />
-                <path fill="#fff" fillRule="evenodd" clipRule="evenodd" d="M23.79 30.86 37.7 12.4c-1.02-.8-1.91-.24-2.4.2h-.02L23.68 24.48l-4.38-5.17c-2.09-2.37-4.92-.56-5.59-.09L23.8 30.86Z" />
-            </symbol>
         </svg>
     );
 };

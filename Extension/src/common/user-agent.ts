@@ -257,6 +257,8 @@ export class UserAgent {
 
     static isFirefoxMobile = UserAgent.isFirefox && UserAgent.isMobileDevice;
 
+    static isOculus = UserAgent.isTargetBrowser('Oculus Browser');
+
     static isSupportedBrowser = (UserAgent.isChrome && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.CHROMIUM_MV2)
         || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.EDGE_CHROMIUM)
         || (UserAgent.isFirefox && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.FIREFOX)
