@@ -34,7 +34,7 @@ import {
     type ExtensionXMLHttpRequest,
     network,
     type ResponseLikeXMLHttpRequest,
-} from './network';
+} from './network/main';
 
 /**
  * The Safe Browsing API checks whether a site is in a database of potentially

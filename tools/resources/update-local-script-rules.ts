@@ -259,11 +259,11 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
 };
 
 /**
- * Updates `local_script_rules.js` for Chromium MV3 based on JS rules from the
- * pre-built filters.
+ * Updates `local_script_rules.js` for Chromium MV3 based on JS rules from the pre-built filters.
  *
- * It is possible to follow all places using this logic by searching
- * `JS_RULES_EXECUTION`.
+ * It is possible to follow all places using this logic by searching JS_RULES_EXECUTION.
+ *
+ * This is STEP 1.
  *
  * @param jsRules Set of unique JS rules collected from the pre-built filters.
  */
@@ -374,9 +374,6 @@ export const localScriptRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
     await saveToJsFile(jsFileContent, LOCAL_SCRIPT_RULES_FILE_NAME);
 };
 
-/**
- *
- */
 export const updateLocalResourcesForChromiumMv3 = async () => {
     const folder = path.join(
         FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3),

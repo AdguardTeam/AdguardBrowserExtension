@@ -1,8 +1,8 @@
 &nbsp;
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.adguard.com/public/Adguard/Common/Logos/ext_logo_dark.svg" width="300px" alt="AdGuard Browser Extension" />
-        <img src="https://cdn.adguard.com/public/Adguard/Common/Logos/ext_logo.svg" width="300px" alt="AdGuard Browser Extension"/>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.adguard.com/public/Adguard/Common/Logos/ext_dark.svg" width="300px" alt="AdGuard Browser Extension" />
+        <img src="https://cdn.adguard.com/public/Adguard/Common/Logos/ext.svg" width="300px" alt="AdGuard Browser Extension"/>
     </picture>
 </p>
 <h3 align="center">Ad blocker with advanced privacy protection features</h3>
@@ -315,7 +315,7 @@ pnpm crx keygen ./private/AdguardBrowserExtension
     docker run --rm -it \
         -v $(pwd):/workspace \
         -w /workspace \
-        adguard/extension-builder:22.17--0.2--0
+        adguard/extension-builder:22.14--0.2--0
     ```
 
 1. Inside the docker container, install the dependencies:

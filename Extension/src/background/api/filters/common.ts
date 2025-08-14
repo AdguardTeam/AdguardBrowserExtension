@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-// TODO (AG-44868): Reduce code duplication across mv2 and mv3
 import browser from 'webextension-polyfill';
 
-import { type FilterUpdateOptions } from '../update';
-import { BrowserUtils } from '../../../utils/browser-utils';
-import { logger } from '../../../../common/logger';
-import { UserAgent } from '../../../../common/user-agent';
-import { SettingOption, type RegularFilterMetadata } from '../../../schema';
-import { AntiBannerFiltersId } from '../../../../common/constants';
+import { BrowserUtils } from '../../utils/browser-utils';
+import { logger } from '../../../common/logger';
+import { UserAgent } from '../../../common/user-agent';
+import { SettingOption, type RegularFilterMetadata } from '../../schema';
+import { AntiBannerFiltersId } from '../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,
@@ -31,10 +29,12 @@ import {
     FiltersStorage,
     RawFiltersStorage,
     filterVersionStorage,
-} from '../../../storages';
-import { network } from '../../network';
-import { FiltersApi } from '../main';
-import { FilterParser } from '../parser';
+} from '../../storages';
+import { network } from '../network';
+
+import { FiltersApi } from './main';
+import { type FilterUpdateOptions } from './update';
+import { FilterParser } from './parser';
 
 /**
  * API for managing AdGuard's filters data.
@@ -112,8 +112,7 @@ export class CommonFilterApi {
      *
      * @param filterUpdateOptions Filter update detail.
      * @param forceRemote Whether to download filter rules from remote resources or
-     * from local resources. This parameter is ignored for MV3, and only
-     * exists for compatibility.
+     * from local resources.
      *
      * **IMPORTANT: `forceRemote` can't be used for MV3** except Quick Fixes
      * filter, because we update filters, their metadata, and rulesets with
@@ -126,15 +125,22 @@ export class CommonFilterApi {
      * @returns Filter metadata — {@link RegularFilterMetadata}.
      *
      * @throws Error if filter is deprecated and should not be used.
-     * @throws Error if Userscript API is not enabled. It is required to download remote filters in MV3.
      */
     public static async loadFilterRulesFromBackend(
         filterUpdateOptions: FilterUpdateOptions,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         forceRemote: boolean,
     ): Promise<RegularFilterMetadata> {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
         const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
+
+        // TODO: revert if Quick Fixes filter is back
+        // if (__IS_MV3__ && forceRemote && filterUpdateOptions.filterId !== AntiBannerFiltersId.QuickFixesFilterId) {
+        //     forceRemote = false;
+        // }
+
+        if (__IS_MV3__ && forceRemote) {
+            forceRemote = false;
+        }
 
         const {
             filter,
@@ -142,7 +148,7 @@ export class CommonFilterApi {
             isPatchUpdateFailed,
         } = await network.downloadFilterRules(
             filterUpdateOptions,
-            false,
+            forceRemote,
             isOptimized,
             oldRawFilter,
         );
@@ -241,16 +247,19 @@ export class CommonFilterApi {
         // module to reduce the risk of cyclic dependency, since FiltersApi
         // depends on CommonFilterApi and CustomFilterApi.
         // On the first run, we update the common filters from the backend.
-        await FiltersApi.loadAndEnableFilters(filterIds, true, enableUntouchedGroups);
+        const remote = !__IS_MV3__;
+        await FiltersApi.loadAndEnableFilters(filterIds, remote, enableUntouchedGroups);
 
         // TODO: revert if Quick Fixes filter is back
         // // For MV3 version we have QuickFixes filter which does not have local
         // // version and always should be updated from the server.
-        // await FiltersApi.loadAndEnableFilters(
-        //     [AntiBannerFiltersId.QuickFixesFilterId],
-        //     true,
-        //     enableUntouchedGroups,
-        // );
+        // if (__IS_MV3__) {
+        //     await FiltersApi.loadAndEnableFilters(
+        //         [AntiBannerFiltersId.QuickFixesFilterId],
+        //         true,
+        //         enableUntouchedGroups,
+        //     );
+        // }
     }
 
     /**

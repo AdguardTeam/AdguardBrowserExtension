@@ -28,7 +28,6 @@ import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { OptionsPageSections } from '../../../../common/nav';
-import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
 
@@ -113,62 +112,6 @@ export const RulesLimits = observer(() => {
         });
     };
 
-    const getDynamicRulesDescription = () => {
-        const defaultDescription = reactTranslator.getMessage('options_rule_limits_dynamic_user_rules', {
-            user_rules: (text: string) => (
-                <Link
-                    className="rules-limits__text--gray"
-                    to={`/${OptionsPageSections.userFilter}`}
-                >
-                    {text}
-                </Link>
-            ),
-            allowlist: (text: string) => (
-                <Link
-                    className="rules-limits__text--gray"
-                    to={`/${OptionsPageSections.allowlist}`}
-                >
-                    {text}
-                </Link>
-            ),
-            custom_filters: (text: string) => (
-                <Link
-                    className="rules-limits__text--gray"
-                    to={`/${OptionsPageSections.filters}?group=0`}
-                >
-                    {text}
-                </Link>
-            ),
-        });
-
-        const noCustomFiltersDescription = reactTranslator.getMessage(
-            'options_rule_limits_dynamic_user_rules_no_custom_filters',
-            {
-                user_rules: (text: string) => (
-                    <Link
-                        className="rules-limits__text--gray"
-                        to={`/${OptionsPageSections.userFilter}`}
-                    >
-                        {text}
-                    </Link>
-                ),
-                allowlist: (text: string) => (
-                    <Link
-                        className="rules-limits__text--gray"
-                        to={`/${OptionsPageSections.allowlist}`}
-                    >
-                        {text}
-                    </Link>
-                ),
-            },
-        );
-
-        // custom filters are not available if user scripts api is not available
-        return shouldShowUserScriptsApiWarning()
-            ? noCustomFiltersDescription
-            : defaultDescription;
-    };
-
     return (
         <SettingsSection
             title={translator.getMessage('options_rule_limits')}
@@ -191,7 +134,32 @@ export const RulesLimits = observer(() => {
                     </div>
                     <div className="rules-limits__group">
                         <div className="rules-limits__text--gray">
-                            {getDynamicRulesDescription()}
+                            {reactTranslator.getMessage('options_rule_limits_dynamic_user_rules', {
+                                user_rules: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.userFilter}`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                                allowlist: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.allowlist}`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                                custom_filters: (text: string) => (
+                                    <Link
+                                        className="rules-limits__text--gray"
+                                        to={`/${OptionsPageSections.filters}?group=0`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                            })}
                         </div>
                         <div className={getClassNamesForNumbers(dynamicRulesEnabledCount, dynamicRulesMaximumCount)}>
                             {reactTranslator.getMessage('options_rule_limits_numbers', {

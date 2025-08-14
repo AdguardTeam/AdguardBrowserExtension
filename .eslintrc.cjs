@@ -225,7 +225,5 @@ module.exports = {
         'build',
         'Extension/web-accessible-resources',
         'coverage',
-        // Directory for temporary files
-        'tmp/',
     ],
 };

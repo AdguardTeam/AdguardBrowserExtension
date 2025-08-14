@@ -17,10 +17,9 @@
  */
 export {
     network,
-    Network,
     type ExtensionXMLHttpRequest,
     type ResponseLikeXMLHttpRequest,
     type FilterHitStats,
     type FiltersHitStats,
-} from 'network-api';
-export { NetworkSettings } from 'network-api-settings';
+} from './main';
+export { NetworkSettings } from './settings';
