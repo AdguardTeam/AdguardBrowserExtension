@@ -26,6 +26,7 @@ import React, {
     type FC,
 } from 'react';
 
+import cn from 'classnames';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import { type SettingHandler } from '../../../types';
@@ -45,6 +46,7 @@ export type TextInputProps = {
     required?: boolean;
     minValue?: number;
     step?: number;
+    className?: string;
 };
 
 const HANDLE_TEXT_INPUT_DEBOUNCE_MS = 1000;
@@ -96,6 +98,7 @@ export const TextInput: FC<TextInputProps> = ({
     required = false,
     minValue,
     step,
+    className,
 }) => {
     const [inputValue, changeHandler] = useTextInput(value, handler);
 
@@ -108,7 +111,7 @@ export const TextInput: FC<TextInputProps> = ({
                 value={inputValue}
                 onChange={changeHandler}
                 id={id}
-                className="input__in"
+                className={cn('input__in', className)}
                 placeholder={placeholder}
                 min={minValue}
                 required={required}
