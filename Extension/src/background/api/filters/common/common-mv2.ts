@@ -86,10 +86,8 @@ export class CommonFilterApi {
                 return null;
             }
 
-            if (filterUpdateOptions.ignorePatches) {
-                if (!CommonFilterApi.isFilterNeedUpdate(filterMetadata)) {
-                    return null;
-                }
+            if (filterUpdateOptions.ignorePatches && !CommonFilterApi.isFilterNeedUpdate(filterMetadata)) {
+                return null;
             }
 
             return {
