@@ -96,6 +96,7 @@ export const Setting = (props) => {
                 required = false,
                 minValue,
                 step,
+                className,
             } = props;
             return (
                 <TextInput
@@ -107,6 +108,7 @@ export const Setting = (props) => {
                     required={required}
                     minValue={minValue}
                     step={step}
+                    className={className}
                 />
             );
         }

@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Early save reactivation and missing exit prompt during active User Rules/Allowlist save [#3151].
 - Some requests are blocked in 'Inverted allowlist' mode even though there're no websites added to the Allowlist [#3193].
 
+### Changed
+
+- Improved feature names and descriptions in Tracking protection (MV2).
+
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
