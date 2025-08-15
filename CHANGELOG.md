@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Improved filters update logs readability, added version information before and after update[#2934].
+- Improved filters update logs readability, added version information before and after update [#2934].
 
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151

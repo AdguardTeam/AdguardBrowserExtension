@@ -72,7 +72,7 @@ export class CommonFilterApi {
      *
      * @param filtersUpdateOptions Filters update detail.
      *
-     * @returns Updated filter metadata or null, if update is not required.
+     * @returns Updated filter metadata list.
      */
     public static async updateFilters(
         filtersUpdateOptions: FilterUpdateOptions[],
