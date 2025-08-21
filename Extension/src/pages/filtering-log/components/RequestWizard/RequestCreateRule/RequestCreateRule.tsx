@@ -156,7 +156,7 @@ const RequestCreateRule = observer(() => {
                         key={id}
                     >
                         <div className="custom-checkbox">
-                            <Icon id="#checked" classname="icon--18" />
+                            <Icon id="#checked" className="icon--18" />
                         </div>
                         <div className="checkbox-label__desc">
                             {label}
@@ -231,7 +231,7 @@ const RequestCreateRule = observer(() => {
                 >
                     <Icon
                         id="#arrow-left"
-                        classname="icon--24 icon--gray-default"
+                        className="icon--24 icon--gray-default"
                     />
                     <span className="request-modal__header">{title}</span>
                 </button>
