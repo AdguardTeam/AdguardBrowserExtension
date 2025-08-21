@@ -1,9 +1,9 @@
-! Checksum: EgNSV0rxIfKlCaKeKGi8/Q
-! Diff-Path: ../patches/19/19-s-1755641440-3600.patch
+! Checksum: EoGAQzE4jmvJDpc6D1C36A
+! Diff-Path: ../patches/19/19-s-1755764023-3600.patch
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.60.66
-! TimeUpdated: 2025-08-19T22:07:05+00:00
+! Version: 2.0.60.74
+! TimeUpdated: 2025-08-21T08:09:52+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -535,6 +535,7 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! Do not forget about '!#safari_cb_affinity' section for exclusions:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#general
 !
+||makeuseof.com/promo/next/adb/
 idphotoland.com###msgpb
 global.novelpia.com##div[data-state="open"][style="pointer-events: auto;"]
 global.novelpia.com##div[data-state="open"][style="pointer-events: auto;"] + div[data-dismissable-layer]
@@ -3155,6 +3156,11 @@ aol.com#$#.ad__tile { height: 10px!important; position: absolute!important; left
 !
 ! SECTION: Popups - Regular rules
 !
+miletakademi.net#$#body { overflow: auto !important; padding-right: 0 !important; }
+miletakademi.net#$##yksKoclukFormModal { display: none !important; }
+miletakademi.net#$##yksKoclukFormModal ~ div.modal-backdrop { display: none !important; }
+||static-forms.klaviyo.com^$domain=esrtech.com
+hightech.fm###modal-vote
 theprovince.com##.featured-video--fixed
 ksta.de##turbo-player-ui[controls-breakpoint="tiny"]
 auroraoss.com###ads-notice
@@ -7681,9 +7687,9 @@ realestate.yahoo.co.jp###_shp_bnr.FixedBox__fixedInfoBox
 realestate.yahoo.co.jp##.StickyBanner__link--contract
 timeout.com##div[class^="_overlay"][data-component="popup-newsletter"]
 byjus.com##.ask-ques-mobile-bottom-button
-touristik-aktuell.de,zinspilot.de,fussball.com,ionos.it,giardiniblog.it#$#body { overflow: auto !important; }
-touristik-aktuell.de,zinspilot.de,fussball.com,ionos.it,giardiniblog.it#$##bio_ep { display: none !important; }
-touristik-aktuell.de,zinspilot.de,fussball.com,ionos.it,giardiniblog.it#$##bio_ep_bg { display: none !important; }
+thetruckersreport.com,touristik-aktuell.de,zinspilot.de,fussball.com,ionos.it,giardiniblog.it#$#body { overflow: auto !important; }
+thetruckersreport.com,touristik-aktuell.de,zinspilot.de,fussball.com,ionos.it,giardiniblog.it#$##bio_ep { display: none !important; }
+thetruckersreport.com,touristik-aktuell.de,zinspilot.de,fussball.com,ionos.it,giardiniblog.it#$##bio_ep_bg { display: none !important; }
 puntocellulare.it#$?##pushbox { remove: true; }
 puntocellulare.it#%#//scriptlet('set-cookie', 'ilike', '1')
 shotam.info,bahndampf.de,vpncompare.co.uk##.sgpb-popup-dialog-main-div-wrapper
@@ -11839,6 +11845,15 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+gidadedektifi.net##div[class^="XSubscribeBox"]
+||teneriffa-news.com/popup.js
+amarujala.com###subscribe_brand_lovers
+amarujala.com##.subscribe_brand_lovers_back
+navbharattimes.indiatimes.com##.google-follow
+navbharattimes.indiatimes.com##.web_social > .yt-iframe
+zoom.us##div[type="SMS_EVERGREEN"]
+zoom.us#$#.zoom-overlay:has(> div[role="dialog"] > div[class^="zoom-dialog"][class*="_sms-"]) { display: none !important; }
+zoom.us#$#body.zoom-popup-parent--hidden { overflow: auto !important; width: auto !important; }
 computerbild.de##.socialBar__newsletter
 computerbild.de##.NewsletterEmbed__iframe
 ||resources-production.la.welt.de/la-paperboy-widget

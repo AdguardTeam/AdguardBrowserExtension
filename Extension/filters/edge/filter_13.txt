@@ -1,9 +1,9 @@
-! Checksum: fvTlV7APeU0PMKYU84F+4Q
-! Diff-Path: ../patches/13/13-s-1755619901-3600.patch
+! Checksum: cQ020KWwIiFxJ3eZg+ogew
+! Diff-Path: ../patches/13/13-s-1755764014-3600.patch
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.58.98
-! TimeUpdated: 2025-08-19T16:07:58+00:00
+! Version: 2.0.59.0
+! TimeUpdated: 2025-08-21T08:09:41+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1498,6 +1498,7 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+||filmmakinesi.de/uploads/malker/*.mp4
 ||hdfilmcehennemi.*/ads/$domain=hdfilmcehennemi.*
 hdfilmcehennemi.*#%#//scriptlet('set-constant', 'isFirstLoad', 'false')
 hdfilmcehennemi.*###loadingIframe
@@ -5884,6 +5885,11 @@ x.ag2m2.cfd#?##oframeplayerjs > pjsdiv[style^="position:"]:has(> pjsdiv > pjsdiv
 ! aglint-enable invalid-modifiers
 ! dizipal*.com - frequently changed domains (probably another similar)
 [$domain=/(\d+)?dizipal(\d+)?\.com/]#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/manageAds\(video_urls\[activeItem\]\, video_seconds\[activeItem\]\, ad_urls\[activeItem]\,true\);/', 'playVideo();')
+! dizipal*.plus - fake dizipal
+[$domain=/dizipal\d+.plus/]##.top-banner-container
+||dizipal*.plus/*.gif
+/^https:\/\/dizipal\d+.plus\/assets\/(wipbett|ukraa|limrabet)\.mp4$/
+||dizipal*.plus/*.gif
 ! dizipal*.com - fake dizipal
 /wp-content/uploads/2025/01/xslot-pageskin-reklam.png
 [$domain=/dizipal\d+.com/]##.videoalt
