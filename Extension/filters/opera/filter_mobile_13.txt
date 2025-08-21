@@ -1,9 +1,9 @@
-! Checksum: OanpVNiEMunw7S0RnjM9Bg
-! Diff-Path: ../patches/13_optimized/13_optimized-s-1755619907-3600.patch
+! Checksum: hPutNs8dZtfHy/YHzEjdKQ
+! Diff-Path: ../patches/13_optimized/13_optimized-s-1755764022-3600.patch
 ! Title: AdGuard Turkish filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.58.98
-! TimeUpdated: 2025-08-19T16:07:58+00:00
+! Version: 2.0.59.0
+! TimeUpdated: 2025-08-21T08:09:41+00:00
 ! Expires: 10 days (update frequency)
 ||azelvid.com^
 ||polatads.com^
@@ -1019,6 +1019,7 @@ $xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.l
 /service/advertchannels?$domain=kocaelifikir.com|anayurtgazetesi.com|medyaankara.com|ozgunkocaeli.com.tr|urfanatik.com|dirilispostasi.com|turkuazgazetesi.net|yenialanya.com|bugunkocaeli.com.tr|cagdaskocaeli.com.tr|mansetaydin.com|enkocaeli.com|kocaelikoz.com|kocaelibarisgazetesi.com|seskocaeli.com|sigortahaber.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
+||filmmakinesi.de/uploads/malker/*.mp4
 ||hdfilmcehennemi.*/ads/$domain=hdfilmcehennemi.*
 hdfilmcehennemi.*#%#//scriptlet('set-constant', 'isFirstLoad', 'false')
 hdfilmcehennemi.*###loadingIframe
@@ -5296,6 +5297,10 @@ x.ag2m2.cfd#?##oframeplayerjs > pjsdiv[style^="position:"]:has(> pjsdiv > pjsdiv
 !+ NOT_VALIDATE
 ||blogger.googleusercontent.com/img/$domain=/^dizipal\d+\.com$/
 [$domain=/(\d+)?dizipal(\d+)?\.com/]#%#//scriptlet('trusted-replace-node-text', 'script', 'playAdd', '/manageAds\(video_urls\[activeItem\]\, video_seconds\[activeItem\]\, ad_urls\[activeItem]\,true\);/', 'playVideo();')
+[$domain=/dizipal\d+.plus/]##.top-banner-container
+||dizipal*.plus/*.gif
+/^https:\/\/dizipal\d+.plus\/assets\/(wipbett|ukraa|limrabet)\.mp4$/
+||dizipal*.plus/*.gif
 /wp-content/uploads/2025/01/xslot-pageskin-reklam.png
 [$domain=/dizipal\d+.com/]##.videoalt
 [$domain=/dizipal\d+.com/]##.videoust

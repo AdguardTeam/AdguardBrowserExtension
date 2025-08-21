@@ -1,9 +1,9 @@
-! Checksum: LUiNK5XSA5skjkzp/CahbQ
-! Diff-Path: ../patches/6/6-s-1755645059-3600.patch
+! Checksum: 80yWwH/dx2frmLo+TZISOA
+! Diff-Path: ../patches/6/6-s-1755753085-3600.patch
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.48.95
-! TimeUpdated: 2025-08-19T23:07:03+00:00
+! Version: 2.0.48.99
+! TimeUpdated: 2025-08-21T05:07:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1542,6 +1542,14 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+teneriffa-news.com##.qm-reco
+teneriffa-news.com##.page-content.status-publish > .row.builder:has(div[id^="teneriffa-news.com_lb_"])
+berliner-zeitung.de##div[class]:has(> div[id^="qmn-ad-Article"]:only-child)
+computerbild.de##a.labeling[target="_blank"]
+||porno-von-nebenan.net/wp-content/uploads/*banner
+porno-von-nebenan.net##.super-rss-reader-widget
+porno-von-nebenan.net###text-18
+porno-von-nebenan.net##div[class^="pum"]
 ||rollingstone.de/wp-content/plugins/asmb-advertorial-builder
 rollingstone.de##.asmb-sticker-header-ad-helper
 rollingstone.de#$#.asmb-header-container { padding-top: 0px !important; }

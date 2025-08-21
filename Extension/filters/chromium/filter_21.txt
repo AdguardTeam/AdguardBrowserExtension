@@ -1,9 +1,9 @@
-! Checksum: JE4d61AGQEcKpXi0WN9zZA
-! Diff-Path: ../patches/21/21-s-1755637803-3600.patch
+! Checksum: g6jGd+QHtfILephIdf2bBQ
+! Diff-Path: ../patches/21/21-s-1755695969-3600.patch
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.36.64
-! TimeUpdated: 2025-08-19T21:06:38+00:00
+! Version: 2.0.36.67
+! TimeUpdated: 2025-08-20T13:15:53+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -42,6 +42,10 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
+! hightech.fm - news inserts in articles
+hightech.fm##.ad-banner
+! 3dnews.ru - news inserts in articles
+3dnews.ru##.js-mediator-article > div#newsSlider
 ! eluniversal.com.mx - autoplay video on main page
 ||youtube.com/embed*&autoplay=1$domain=eluniversal.com.mx,important
 ! https://github.com/AdguardTeam/AdguardFilters/issues/210978
@@ -3501,6 +3505,8 @@ www.kinopoisk.ru##div[class^="trailer-promo"]
 !
 ! SECTION: Self-promo - Regular rules
 !
+istockphoto.com##div[data-testid="tooltip-wrapper"]:has(a[href="/ai/modification"])
+zoom.us###mkt-popup-0
 ||reforma.com/libre/offlines/cx_bloquesexternos/personalizado
 reforma.com##div[id*="_Personalizado"][id^="Bloque_EX_"]
 wantgoo.com#$##popupOverlayAd { display: none !important; }
@@ -8885,7 +8891,7 @@ locall.host#%#//scriptlet('prevent-addEventListener', 'scroll', 'requestAnimatio
 ! https://github.com/AdguardTeam/AdguardFilters/issues/194006
 sabkiyojana.com#%#//scriptlet('prevent-addEventListener', 'blur', 'event.dispatch.apply')
 ! Joyreactor - enable video controls
-pornreactor.cc,joyreactor.cc,reactor.cc#%#//scriptlet('set-attr', 'video[autoplay]:not([controls])', 'controls', 'true')
+fapreactor.com,pornreactor.cc,joyreactor.cc,reactor.cc#%#//scriptlet('set-attr', 'video[autoplay]:not([controls])', 'controls', 'true')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191178
 newzviz.com#%#//scriptlet('adjust-setInterval', '(time)', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191090

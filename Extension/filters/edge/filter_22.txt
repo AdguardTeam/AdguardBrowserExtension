@@ -1,9 +1,9 @@
-! Checksum: eoZHCJiJWlKZHI1RuN/B5A
-! Diff-Path: ../patches/22/22-s-1755616276-3600.patch
+! Checksum: T2XRX/v/mCXs7mMtFnLk2g
+! Diff-Path: ../patches/22/22-s-1755706298-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.12.46
-! TimeUpdated: 2025-08-19T15:07:48+00:00
+! Version: 2.0.12.48
+! TimeUpdated: 2025-08-20T16:08:05+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1386,6 +1386,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (third-party services)
 !
+||chat.quickcep.com^
 ||webchat-ui.citibot.net^
 ||webchat.bebot.io^$third-party
 ||kwizbot.io^$third-party
@@ -1832,13 +1833,14 @@ mhealth.ru##.incut_readmore
 ##.torimochi-widget
 rankingoo.net##div.widget_swell_ad_widget
 ! Uzou recommendation
-||speee-ad.akamaized.net^$important,domain=newsee-media.com|saitama-np.co.jp|htb.co.jp|oricon.co.jp|maidonanews.jp|news.tv-aichi.co.jp|lisani.jp|hochi.news|yomuno.jp
+webcartop.jp###widget_code_php_in_widget-23
+||speee-ad.akamaized.net^$important,domain=newsee-media.com|saitama-np.co.jp|htb.co.jp|oricon.co.jp|maidonanews.jp|news.tv-aichi.co.jp|lisani.jp|hochi.news|yomuno.jp|webcartop.jp
 hochi.news##div[style="min-height: 1000px;"]
 lisani.jp##.widget__uzou
 yomuno.jp#?#.aside_redesign.post > h3.aside_redesign_headline:contains(こちらもどうぞ)
 yomuno.jp###similar_articles
 newsee-media.com,saitama-np.co.jp##.uz-ar
-newsee-media.com,saitama-np.co.jp,htb.co.jp,oricon.co.jp,maidonanews.jp##.uz-ny
+webcartop.jp,newsee-media.com,saitama-np.co.jp,htb.co.jp,oricon.co.jp,maidonanews.jp##.uz-ny
 ! gacraft recommendations
 ||gacraft.jp^$third-party
 houyhnhnm.jp##.section-similer-post

@@ -4562,6 +4562,23 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
         }
     },
+    '(()=>{document.addEventListener("DOMContentLoaded",(()=>{"function"==typeof getfull&&getfull()}));})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["45e2ee4fbb5fd647b76cf34c6f5c7222"] === e) return;
+            document.addEventListener("DOMContentLoaded", (() => {
+                "function" == typeof getfull && getfull();
+            }));
+            Object.defineProperty(Window.prototype.toString, "45e2ee4fbb5fd647b76cf34c6f5c7222", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "45e2ee4fbb5fd647b76cf34c6f5c7222" due to: ' + e);
+        }
+    },
     '(()=>{let e=!1;const l={apply:async(e,l,o)=>{const r=o[0];return!1===r?.rewardAllowed&&(o[0].rewardAllowed=!0),Reflect.apply(e,l,o)}},o={apply:(o,r,t)=>{const n=t[0]?.pokiAdsCompleted;return!e&&n&&n[0]?.toString()?.includes("rewardAllowed")&&(n[0]=new Proxy(n[0],l),e=!0),Reflect.apply(o,r,t)}};window.Object.keys=new Proxy(window.Object.keys,o)})();': () => {
         try {
             const e = "done";
