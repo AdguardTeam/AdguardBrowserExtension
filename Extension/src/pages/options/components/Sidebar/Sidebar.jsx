@@ -111,7 +111,7 @@ const Sidebar = observer(() => {
                 >
                     <Icon
                         id={isSidebarOpen ? '#cross' : '#menu'}
-                        classname={isSidebarOpen ? 'icon--24 icon--gray-default' : 'icon--menu'}
+                        className={isSidebarOpen ? 'icon--24 icon--gray-default' : 'icon--menu'}
                         aria-hidden="true"
                     />
                 </button>

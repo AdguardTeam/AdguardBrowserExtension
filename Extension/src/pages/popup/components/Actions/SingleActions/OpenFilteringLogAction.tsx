@@ -46,7 +46,7 @@ export const OpenFilteringLogAction = ({ className }: SingleActionParams) => {
         >
             <Icon
                 id="#sandwich"
-                classname="icon--24 icon--action--sandwich"
+                className="icon--24 icon--action--sandwich"
                 aria-hidden="true"
             />
             <span className="action__title">
