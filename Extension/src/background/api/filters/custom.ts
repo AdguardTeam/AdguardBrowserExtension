@@ -310,6 +310,78 @@ export class CustomFilterApi {
     }
 
     /**
+     * Updates custom filters data by ids.
+     *
+     * Returns subscription url from {@link customFilterMetadataStorage}.
+     * Downloads data from remote source.
+     * Checks, if new filters versions available.
+     * If filters need for update, save new filters data in storages.
+     *
+     * @param filtersUpdateOptions Filters update detail.
+     *
+     * @returns Updated filters metadata or null, if filters didn't exist
+     * or new version is not available.
+     */
+    public static async updateFilters(
+        filtersUpdateOptions: FilterUpdateOptions[],
+    ): Promise<FilterMetadata[]> {
+        logger.info('[ext.CustomFilterApi.updateFilters]: Checking custom filters for updates');
+
+        const filterPromises = filtersUpdateOptions.map(async (filterUpdateOption) => {
+            const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOption.filterId);
+            if (!filterMetadata) {
+                logger.error(`[ext.CustomFilterApi.updateFilters]: cannot find custom filter ${filterUpdateOption.filterId} metadata`);
+                return null;
+            }
+
+            const { customUrl } = filterMetadata;
+
+            const rawFilter = await RawFiltersStorage.get(filterUpdateOption.filterId);
+            const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
+                customUrl,
+                rawFilter,
+                filterUpdateOption.ignorePatches,
+            );
+            logger.info(`[ext.CustomFilterApi.updateFilters]: checking filter - ${filterUpdateOption.filterId} for updates`);
+            if (CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {
+                return {
+                    metadata: filterMetadata,
+                    remoteData: filterRemoteData,
+                    updateOptions: filterUpdateOption,
+                };
+            }
+            return null;
+        });
+
+        const resolvedFilters = await Promise.all(filterPromises);
+        const filtersToUpdate = resolvedFilters.filter((v) => v !== null);
+
+        filtersToUpdate.forEach((filter) => {
+            logger.info(`[ext.CustomFilterApi.updateFilters]: Filter ${filter.updateOptions.filterId} needs to be updated [${filter.metadata.version}]`);
+        });
+
+        const updatedFiltersMetadata: FilterMetadata[] = [];
+
+        const updateTasks = filtersToUpdate.map(async (filter) => {
+            const updatedMetadata = await CustomFilterApi.updateFilter(filter.updateOptions);
+            if (updatedMetadata) {
+                logger.info(`[ext.CustomFilterApi.updateFilters]: Filter ${filter.updateOptions.filterId} updated [${updatedMetadata.version}]`);
+                updatedFiltersMetadata.push(updatedMetadata);
+            }
+        });
+
+        await Promise.allSettled(updateTasks);
+
+        if (updatedFiltersMetadata.length > 0) {
+            logger.info('[ext.CustomFilterApi.updateFilters]: Finished custom filters update');
+        } else {
+            logger.info('[ext.CustomFilterApi.updateFilters]: Custom filters are already up-to-date');
+        }
+
+        return updatedFiltersMetadata;
+    }
+
+    /**
      * Updates custom filter data by id.
      *
      * Returns subscription url from {@link customFilterMetadataStorage}.
@@ -517,6 +589,34 @@ export class CustomFilterApi {
     private static getChecksum(rules: string[]): string {
         const rulesText = rules.join('\n');
         return MD5(rulesText).toString();
+    }
+
+    /**
+     * Checks if custom filter data need to update.
+     *
+     * @param filterUpdateOptions Filter update options.
+     *
+     * @returns True, if filter data need to update, else returns false.
+     */
+    public static async isFilterNeedUpdateByFilterUpdateOptions(
+        filterUpdateOptions: FilterUpdateOptions,
+    ): Promise<boolean> {
+        const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOptions.filterId);
+
+        if (!filterMetadata) {
+            return false;
+        }
+
+        const { customUrl } = filterMetadata;
+
+        const rawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
+        const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
+            customUrl,
+            rawFilter,
+            filterUpdateOptions.ignorePatches,
+        );
+
+        return this.isFilterNeedUpdate(filterMetadata, filterRemoteData);
     }
 
     /**

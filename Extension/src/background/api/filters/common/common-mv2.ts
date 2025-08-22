@@ -33,7 +33,7 @@ import {
     filterVersionStorage,
 } from '../../../storages';
 import { network } from '../../network';
-import { FiltersApi } from '../main';
+import { type FilterMetadata, FiltersApi } from '../main';
 import { FilterParser } from '../parser';
 
 /**
@@ -68,6 +68,59 @@ export class CommonFilterApi {
     }
 
     /**
+     * Update common filters.
+     *
+     * @param filtersUpdateOptions Filters update detail.
+     *
+     * @returns Updated filter metadata list.
+     */
+    public static async updateFilters(
+        filtersUpdateOptions: FilterUpdateOptions[],
+    ): Promise<FilterMetadata[]> {
+        logger.info('[ext.CommonFilterApi.updateFilters]: Checking common filters for updates');
+
+        const filtersToUpdate = filtersUpdateOptions.map((filterUpdateOptions) => {
+            const filterMetadata = CommonFilterApi.getFilterMetadata(filterUpdateOptions.filterId);
+            if (!filterMetadata) {
+                logger.error(`[ext.CommonFilterApi.updateFilters]: cannot find metadata for common filter ${filterUpdateOptions.filterId}`);
+                return null;
+            }
+
+            if (filterUpdateOptions.ignorePatches && !CommonFilterApi.isFilterNeedUpdate(filterMetadata)) {
+                return null;
+            }
+
+            return {
+                metadata: filterMetadata,
+                updateOptions: filterUpdateOptions,
+            };
+        }).filter((filter) => filter !== null);
+
+        filtersToUpdate.forEach((filter) => {
+            logger.info(`[ext.CommonFilterApi.updateFilters]: Filter ${filter.updateOptions.filterId} needs to be updated from [${filter.metadata.version}]`);
+        });
+
+        const updatedFiltersMetadata: FilterMetadata[] = [];
+
+        const updateTasks = filtersToUpdate.map(async (filter) => {
+            const updatedMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filter.updateOptions, true);
+            if (updatedMetadata) {
+                logger.info(`[ext.CommonFilterApi.updateFilters]: Filter ${filter.updateOptions.filterId} updated to [${updatedMetadata.version}]`);
+                updatedFiltersMetadata.push(updatedMetadata);
+            }
+        });
+
+        await Promise.allSettled(updateTasks);
+
+        if (updatedFiltersMetadata.length > 0) {
+            logger.info('[ext.CommonFilterApi.updateFilters]: Finished common filters update');
+        } else {
+            logger.info('[ext.CommonFilterApi.updateFilters]: Common filters are already up-to-date');
+        }
+        return updatedFiltersMetadata;
+    }
+
+    /**
      * Update common filter.
      *
      * @param filterUpdateOptions Filter update detail.
@@ -94,8 +147,6 @@ export class CommonFilterApi {
                 return null;
             }
         }
-
-        logger.info(`[ext.CommonFilterApi.updateFilter]: filter ${filterUpdateOptions.filterId} needs to be updated`);
 
         try {
             const filterMetadata = await CommonFilterApi.loadFilterRulesFromBackend(filterUpdateOptions, true);
@@ -272,7 +323,7 @@ export class CommonFilterApi {
      *
      * @returns True, if filter update is required, else returns false.
      */
-    private static isFilterNeedUpdate(filterMetadata: RegularFilterMetadata): boolean {
+    public static isFilterNeedUpdate(filterMetadata: RegularFilterMetadata): boolean {
         logger.info(`[ext.CommonFilterApi.isFilterNeedUpdate]: check if filter ${filterMetadata.filterId} need to update`);
 
         const filterVersion = filterVersionStorage.get(filterMetadata.filterId);
