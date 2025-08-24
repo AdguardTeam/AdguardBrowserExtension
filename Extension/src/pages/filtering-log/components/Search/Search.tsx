@@ -87,7 +87,7 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
                 >
                     <Icon
                         id="#cross"
-                        classname="icon--24 icon--gray-default"
+                        className="icon--24 icon--gray-default"
                         aria-hidden="true"
                     />
                 </button>
@@ -97,7 +97,7 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
         return (
             <Icon
                 id="#magnifying"
-                classname="icon--24 icon--gray-default search__ico"
+                className="icon--24 icon--gray-default search__ico"
                 aria-hidden="true"
             />
         );

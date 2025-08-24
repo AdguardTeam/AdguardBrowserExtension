@@ -57,7 +57,7 @@ export const ReportIssueAction = ({ className, isFilteringPossible, url }: Singl
         >
             <Icon
                 id="#thumb-down"
-                classname="icon--24 icon--action--thumb-down"
+                className="icon--24 icon--action--thumb-down"
                 aria-hidden="true"
             />
             <span className="action__title">

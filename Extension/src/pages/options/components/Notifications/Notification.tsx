@@ -113,7 +113,7 @@ export const Notification = (props: NotificationProps) => {
         >
             <Icon
                 id="#info"
-                classname="icon--24"
+                className="icon--24"
                 aria-hidden="true"
             />
             <div
@@ -140,7 +140,7 @@ export const Notification = (props: NotificationProps) => {
             >
                 <Icon
                     id="#cross"
-                    classname="icon--24 icon--gray-default"
+                    className="icon--24 icon--gray-default"
                     aria-hidden="true"
                 />
             </button>

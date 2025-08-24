@@ -487,7 +487,7 @@ const Filters = observer(() => {
                 >
                     <Icon
                         id="#arrow-left"
-                        classname="icon--24"
+                        className="icon--24"
                         aria-hidden="true"
                     />
                 </button>
