@@ -94,9 +94,9 @@ export const UpdateButton = () => {
             >
                 <Icon
                     id="#reload"
-                    classname="icon--24 icon--header"
+                    className="icon--24 icon--header"
                     animationCondition={filtersUpdating}
-                    animationClassname="icon--loading"
+                    animationClassName="icon--loading"
                     aria-hidden="true"
                 />
             </button>

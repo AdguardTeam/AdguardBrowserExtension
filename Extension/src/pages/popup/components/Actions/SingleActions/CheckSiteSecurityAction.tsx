@@ -57,7 +57,7 @@ export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }:
         >
             <Icon
                 id="#info"
-                classname="icon--24 icon--action--info"
+                className="icon--24 icon--action--info"
                 aria-hidden="true"
             />
             <span className="action__title">

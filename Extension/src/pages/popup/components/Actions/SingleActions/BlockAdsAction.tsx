@@ -49,7 +49,7 @@ export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionP
         >
             <Icon
                 id="#block-ad"
-                classname="icon--24 icon--action--block-ad"
+                className="icon--24 icon--action--block-ad"
                 aria-hidden="true"
             />
             <span className="action__title">

@@ -49,9 +49,9 @@ export const Loader = ({ showLoader }: LoaderParams) => {
                         <div className="loader__content">
                             <Icon
                                 id="#loading"
-                                classname="icon--24"
+                                className="icon--24"
                                 animationCondition={showLoader}
-                                animationClassname="icon--loading"
+                                animationClassName="icon--loading"
                             />
                             <div className="loader__text">
                                 {translator.getMessage('options_loader_applying_changes')}

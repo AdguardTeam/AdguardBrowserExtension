@@ -66,7 +66,7 @@ export const Notification = () => {
         <div className={notificationClassnames}>
             <Icon
                 id="#info"
-                classname="icon--24 icon--red-default"
+                className="icon--24 icon--red-default"
             />
             <div className="notification__content">
                 <p>
@@ -84,7 +84,7 @@ export const Notification = () => {
             >
                 <Icon
                     id="#cross"
-                    classname="icon icon--24 icon--gray-default"
+                    className="icon icon--24 icon--gray-default"
                 />
             </button>
         </div>

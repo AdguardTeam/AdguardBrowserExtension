@@ -383,7 +383,7 @@ export const Select = ({
             </button>
             <Icon
                 id="#select"
-                classname="icon--select icon--gray-default select__ico"
+                className="icon--select icon--gray-default select__ico"
                 aria-hidden="true"
             />
             <div
@@ -415,7 +415,7 @@ export const Select = ({
                         </span>
                         <Icon
                             id="#tick"
-                            classname="icon icon--24 icon--green-default select__item-icon"
+                            className="icon icon--24 icon--green-default select__item-icon"
                             aria-hidden="true"
                         />
                     </div>

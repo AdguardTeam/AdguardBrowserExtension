@@ -61,7 +61,7 @@ export const Footer = observer(() => {
                         >
                             <Icon
                                 id="#cross"
-                                classname="icon--24 icon--gray-default"
+                                className="icon--24 icon--gray-default"
                                 aria-hidden="true"
                             />
                         </button>

@@ -122,7 +122,7 @@ const Filters = () => {
                             aria-hidden="true"
                             tabIndex={-1}
                         >
-                            <Icon id="#arrow-left" classname="filters__arrow__icon" />
+                            <Icon id="#arrow-left" className="filters__arrow__icon" />
                         </button>
                     )}
                     <MiscellaneousFilters />
@@ -138,7 +138,7 @@ const Filters = () => {
                             aria-hidden="true"
                             tabIndex={-1}
                         >
-                            <Icon id="#arrow-left" classname="filters__arrow__icon" />
+                            <Icon id="#arrow-left" className="filters__arrow__icon" />
                         </button>
                     )}
                 </div>

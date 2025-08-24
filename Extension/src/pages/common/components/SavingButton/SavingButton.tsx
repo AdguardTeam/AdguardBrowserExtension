@@ -51,7 +51,7 @@ const renderSavingState = (savingRulesState: SavingFSMState) => {
             {/* TODO: check editor__icon styles later, it may no longer be needed */}
             <Icon
                 id="#tick"
-                classname="icon--18 icon--green-default editor__icon"
+                className="icon--18 icon--green-default editor__icon"
                 aria-hidden="true"
             />
             {indicatorText}

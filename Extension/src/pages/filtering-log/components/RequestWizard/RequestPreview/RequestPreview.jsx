@@ -166,7 +166,7 @@ export const RequestPreview = observer(() => {
                 >
                     <Icon
                         id="#arrow-left"
-                        classname="icon--24 icon--gray-default"
+                        className="icon--24 icon--gray-default"
                     />
                     <span className="request-modal__header">
                         {reactTranslator.getMessage('filtering_modal_preview_title')}

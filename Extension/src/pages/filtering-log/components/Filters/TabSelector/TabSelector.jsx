@@ -185,7 +185,7 @@ const TabSelector = observer(() => {
                         {isActive && (
                             <Icon
                                 id="#tick"
-                                classname="icon icon--24 icon--green-default"
+                                className="icon icon--24 icon--green-default"
                                 aria-hidden="true"
                             />
                         )}
@@ -248,7 +248,7 @@ const TabSelector = observer(() => {
                         >
                             <Icon
                                 id="#arrow-down"
-                                classname={cn(
+                                className={cn(
                                     'icon--24 icon--gray-default search__ico',
                                     selectIsOpen ? 'search__arrow-up' : 'search__arrow-down',
                                 )}

@@ -47,7 +47,7 @@ export const Footer = observer(() => {
                 >
                     <Icon
                         id="#apple"
-                        classname="icon--24 icon--footer"
+                        className="icon--24 icon--footer"
                         aria-hidden="true"
                     />
                 </a>
@@ -60,7 +60,7 @@ export const Footer = observer(() => {
                 >
                     <Icon
                         id="#android"
-                        classname="icon--24 icon--footer"
+                        className="icon--24 icon--footer"
                         aria-hidden="true"
                     />
                 </a>

@@ -82,203 +82,203 @@ export type PromoNotification = {
     icons?: IconVariants;
 };
 
-const BIRTHDAY_25_ID = 'birthday25';
+const BACK_TO_SCHOOL_25_ID = 'backToSchool25';
 
-const birthday25Notification: PromoNotification = {
-    id: BIRTHDAY_25_ID,
+const backToSchool25Notification: PromoNotification = {
+    id: BACK_TO_SCHOOL_25_ID,
     locales: {
         en: {
-            title: 'Long story short: birthday sale',
-            btn: 'Dive in',
+            title: 'Back to School promo',
+            btn: 'Up to 40% off',
         },
         fr: {
-            title: "La chose à noter : c'est notre anniversaire !",
-            btn: 'Voyons voir',
+            title: 'La Rentrée avec AdGuard',
+            btn: "Jusqu'à 40% de remise",
         },
         it: {
-            title: "C'é il nostro anniversario, vieni vedere",
-            btn: 'Vedi le cose',
+            title: 'A Scuola con AdGuard',
+            btn: 'Fino al 40% di sconto',
         },
         de: {
-            title: 'Eine Geschichte mit Rabatten',
-            btn: 'Jetzt entdecken',
+            title: 'Back to School Promo',
+            btn: 'Bis zu 40% Rabatt',
         },
         ru: {
-            title: 'Есть что рассказать и подарить',
-            btn: 'А ну-ка',
+            title: 'Снова в школу',
+            btn: 'Скидки до 40%',
         },
         es: {
-            title: 'Tenemos algo que decir y algo que regalarte',
-            btn: '¿Qué és?',
+            title: 'Promo de vuelta al cole',
+            btn: 'Hasta un 40% OFF',
         },
         es_419: {
-            title: 'Tenemos algo que decir y algo que regalarte',
-            btn: '¿Qué és?',
+            title: 'Vuelta al cole',
+            btn: 'Hasta un 40% OFF',
         },
         pt_pt: {
-            title: 'Temos algo a dizer, e algo a presentear',
-            btn: 'O que é?',
+            title: 'Promo de volta às aulas',
+            btn: 'Até 40% OFF',
         },
         pt_br: {
-            title: 'Há algo que precisamos dizer… e uma surpresa',
-            btn: 'O que é?',
+            title: 'Promo de volta às aulas',
+            btn: 'Até 40% OFF',
         },
         zh_cn: {
-            title: '周年庆大促',
-            btn: '立即参与',
+            title: '返校季 SALE',
+            btn: '低至6折',
         },
         zh_tw: {
-            title: '周年慶大促',
-            btn: '立即參與',
+            title: '返校 SALE',
+            btn: '低至6折',
         },
-        ja: {
-            title: 'AdGuard 16周年セール',
-            btn: 'セール内容はこちら',
-        },
+        // ja: {
+        //     title: 'AdGuard 16周年セール',
+        //     btn: 'セール内容はこちら',
+        // },
         ko: {
-            title: '16주년 기념 세일',
-            btn: '자세히 알아보기',
+            title: '백투스쿨 세일',
+            btn: '최대 40% 할인',
         },
         uk: {
-            title: 'Історія зі знижкою',
-            btn: 'Дізнатися',
+            title: 'Знову до школи',
+            btn: 'Знижки до 40%',
         },
         ar: {
-            title: 'قصة تنتهي بخصم',
-            btn: 'اكتشف',
+            title: 'عرض العودة إلى المدرسة',
+            btn: '٪خصومات تصل إلى 40',
         },
         be: {
-            title: 'Гісторыя са зніжкай',
-            btn: 'Даведайся',
+            title: 'Зноў у школу',
+            btn: 'Зніжкі да 40%',
         },
         bg: {
-            title: 'История с отстъпка',
-            btn: 'Научи се',
+            title: 'Обратно на училище: промоция',
+            btn: 'Отстъпки до 40%',
         },
         ca: {
-            title: 'Història amb descompte',
-            btn: 'Descobreix',
+            title: "Tornada a l'escola",
+            btn: 'Descomptes –40%',
         },
         cs: {
-            title: 'Příběh se slevou',
-            btn: 'Zjistit',
+            title: 'Zpátky do školy: Akce',
+            btn: 'Slevy až 40%',
         },
         da: {
-            title: 'Historie med rabat',
-            btn: 'Find ud af',
+            title: 'Tilbage til skole promo',
+            btn: 'Rabatter op til 40%',
         },
         el: {
-            title: 'Ιστορία με έκπτωση',
-            btn: 'Μάθετε',
+            title: 'Επιστροφή στα σχολεία',
+            btn: 'Εκπτώσεις έως και 40%',
         },
         fa: {
-            title: 'داستانی با تخفیف',
-            btn: 'کشف کن',
+            title: 'تبلیغات بازگشت به مدرسه',
+            btn: '٪خفیف‌ها تا 40',
         },
         fi: {
-            title: 'Tarina alennuksella',
-            btn: 'Opi',
+            title: 'Takaisin kouluun -kampanja',
+            btn: 'Alennukset jopa 40%',
         },
         he: {
-            title: 'סיפור עם הנחה',
-            btn: 'גלה',
+            title: 'מבצע חזרה לבית הספר',
+            btn: 'הנחות עד 40%',
         },
         hr: {
-            title: 'Priča s popustom',
-            btn: 'Saznaj',
+            title: 'Natrag u školu: Promo',
+            btn: 'Popusti do 40%',
         },
         hu: {
-            title: 'Történet kedvezménnyel',
-            btn: 'Tudj meg',
+            title: 'Vissza az iskolába promóció',
+            btn: 'Akár 40% kedvezmény',
         },
         hy: {
-            title: 'Պատմություն զեղչով',
-            btn: 'Բացահայտել',
+            title: 'Վերադառնալ դպրոց',
+            btn: 'Զեղչեր՝ մինչև 40%',
         },
         id: {
-            title: 'Cerita dengan diskon',
-            btn: 'Cari tahu',
+            title: 'Promo Kembali ke Sekolah',
+            btn: 'Diskon hingga 40%',
         },
         lt: {
-            title: 'Istorija su nuolaida',
-            btn: 'Sužinoti',
+            title: 'Atgal į mokyklą: akcija',
+            btn: 'Nuolaidos iki 40%',
         },
         ms: {
-            title: 'Kisah dengan diskaun',
-            btn: 'Ketahui',
+            title: 'Promosi Kembali ke Sekolah',
+            btn: 'Diskaun sehingga 40%',
         },
         nb: {
-            title: 'Historie med rabatt',
-            btn: 'Finn ut',
+            title: 'Tilbake til skolen',
+            btn: 'Rabatter opptil 40%',
         },
         nl: {
-            title: 'Verhaal met korting',
-            btn: 'Ontdek',
+            title: 'Terug naar school promotie',
+            btn: 'Kortingen tot 40%',
         },
         pl: {
-            title: 'Historia ze zniżką',
-            btn: 'Dowiedz się',
+            title: 'Powrót do szkoły: Promocja',
+            btn: 'Zniżki do 40%',
         },
         ro: {
-            title: 'Poveste cu reducere',
-            btn: 'Află',
+            title: 'Înapoi la școală: Promoția',
+            btn: 'Reduceri de până la 40%',
         },
         sk: {
-            title: 'Príbeh so zľavou',
-            btn: 'Zistiť',
+            title: 'Späť do školy: Promo akcia',
+            btn: 'Zľavy až do 40%',
         },
         sl: {
-            title: 'Zgodba s popustom',
-            btn: 'Izvedi',
+            title: 'Nazaj v šolo: Promocija',
+            btn: 'Popusti do 40%',
         },
         sr_latn: {
-            title: 'Priča sa popustom',
-            btn: 'Saznaj',
+            title: 'Povratak u školu: Promocija',
+            btn: 'Popusti do 40%',
         },
         sv: {
-            title: 'Berättelse med rabatt',
-            btn: 'Ta reda på',
+            title: 'Tillbaka till skolan',
+            btn: 'Rabatter upp till 40%',
         },
         tr: {
-            title: 'İndirimli hikaye',
-            btn: 'Keşfet',
+            title: 'Okula Dönüş kampanyası',
+            btn: '%40’a varan indirimler',
         },
         vi: {
-            title: 'Câu chuyện giảm giá',
-            btn: 'Tìm hiểu',
+            title: 'Back to School: Khuyến mãi',
+            btn: 'Giảm giá lên đến 40%',
         },
         mk: {
-            title: 'Приказна со попуст',
-            btn: 'Дознај',
+            title: 'Назад на училиште: Промоција',
+            btn: 'Попусти до 40%',
         },
         hi: {
-            title: 'छूट वाली कहानी',
-            btn: 'जानें',
+            title: 'स्कूल वापसी प्रमो',
+            btn: '40% तक की छूट',
         },
         et: {
-            title: 'Lugu allahindlusega',
-            btn: 'Uuri',
+            title: 'Tagasi kooli pakkumine',
+            btn: 'Allahindlus kuni 40%',
         },
         th: {
-            title: 'เรื่องราวพร้อมส่วนลด',
-            btn: 'ค้นหา',
+            title: 'Back to School',
+            btn: 'ส่วนลดสูงสุด 40%',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Birthday25 }),
-    from: '30 May 2025 12:00:00',
-    to: '5 June 2025 23:59:00',
+    url: Forward.get({ action: ForwardAction.BackToSchool25 }),
+    from: '25 August 2025 12:00:00',
+    to: '1 September 2025 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/birthday25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/birthday25-update.svg'),
+    bgImage: browser.runtime.getURL('assets/images/bts25.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/bts25-update.svg'),
     icons: {
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/birthday25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/birthday25-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/bts25-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/bts25-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/birthday25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/birthday25-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/bts25-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/bts25-off-38.png'),
         },
         warning: defaultIconVariants.warning,
     },
@@ -288,5 +288,5 @@ const birthday25Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [BIRTHDAY_25_ID, birthday25Notification],
+    [BACK_TO_SCHOOL_25_ID, backToSchool25Notification],
 ]);

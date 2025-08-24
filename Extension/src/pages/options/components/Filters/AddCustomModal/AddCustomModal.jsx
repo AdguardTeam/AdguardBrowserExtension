@@ -333,7 +333,7 @@ const AddCustomModal = observer(({
                             <div className="custom-checkbox">
                                 <Icon
                                     id="#checked"
-                                    classname="icon--18"
+                                    className="icon--18"
                                     aria-hidden="true"
                                 />
                             </div>

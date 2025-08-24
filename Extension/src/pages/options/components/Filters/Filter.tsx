@@ -221,7 +221,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                     >
                         <Icon
                             id="#trash"
-                            classname="icon icon--24 icon--red-default"
+                            className="icon icon--24 icon--red-default"
                             aria-hidden="true"
                         />
                     </button>
