@@ -243,11 +243,11 @@ export const General = observer(() => {
                     handler={appearanceChangeHandler}
                 />
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                    // TODO: fix type error when SettingsSetCheckbox be rewritten in typescript
                     // @ts-ignore
                     title={translator.getMessage('options_block_acceptable_ads')}
                     description={reactTranslator.getMessage('options_block_acceptable_ads_desc', {
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                        // TODO: fix type error when SettingsSetCheckbox be rewritten in typescript
                         // @ts-ignore
                         a: (chunks) => (
                             <a
@@ -272,7 +272,7 @@ export const General = observer(() => {
                         // @ts-ignore
                         title={translator.getMessage('options_safebrowsing_enabled')}
                         description={reactTranslator.getMessage('options_safebrowsing_enabled_desc', {
-                            // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
+                            // TODO: fix type error when SettingsSetCheckbox be rewritten in typescript
                             // @ts-ignore
                             a: (chunks) => (
                                 <a

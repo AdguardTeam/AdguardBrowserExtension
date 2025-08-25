@@ -19,7 +19,6 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { translator } from '../../../../../common/translators/translator';
 import { rootStore } from '../../../stores/RootStore';
 import { formatDate } from '../helpers';
@@ -44,7 +43,7 @@ const FiltersUpdate = observer(() => {
         <div className="filters-update">
             <div className="filters-update__info">
                 <div className="filters-update__title">
-                    {reactTranslator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
+                    {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
                 </div>
                 <div className="filters-update__desc">
                     {formatDate(latestCheckTime)}
@@ -58,8 +57,8 @@ const FiltersUpdate = observer(() => {
                 disabled={!isUpdateFiltersButtonActive || filtersUpdating}
             >
                 {filtersUpdating
-                    ? reactTranslator.getMessage('options_check_update_progress')
-                    : reactTranslator.getMessage('options_check_update')}
+                    ? translator.getMessage('options_check_update_progress')
+                    : translator.getMessage('options_check_update')}
             </button>
         </div>
     );
