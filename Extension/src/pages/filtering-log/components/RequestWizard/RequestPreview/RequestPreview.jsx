@@ -29,7 +29,7 @@ import { useMachine } from '@xstate/react';
 import { ContentType as RequestType } from 'tswebextension';
 
 import { Icon } from '../../../../common/components/ui/Icon';
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
+import { translator } from '../../../../../common/translators/translator';
 import {
     fetchMachine,
     FetchEvents,
@@ -103,16 +103,16 @@ export const RequestPreview = observer(() => {
         setBeautify(true);
     };
 
-    const tryAgainButtonTitle = reactTranslator.getMessage('filtering_log_details_modal_try_again');
-    const backToRequestButtonTitle = reactTranslator.getMessage('filtering_log_details_modal_back_button');
-    const beautifyButtonTitle = reactTranslator.getMessage('filtering_log_details_modal_beautify_button');
+    const tryAgainButtonTitle = translator.getMessage('filtering_log_details_modal_try_again');
+    const backToRequestButtonTitle = translator.getMessage('filtering_log_details_modal_back_button');
+    const beautifyButtonTitle = translator.getMessage('filtering_log_details_modal_beautify_button');
 
     const renderContent = () => {
         if (previewState.matches(FetchStates.LOADING)) {
             return (
                 <div className="request-preview__status">
                     <span className="request-info__value request-preview__text">
-                        {reactTranslator.getMessage('filtering_modal_status_text_loading')}
+                        {translator.getMessage('filtering_modal_status_text_loading')}
                     </span>
                 </div>
             );
@@ -121,7 +121,7 @@ export const RequestPreview = observer(() => {
             return (
                 <div className="request-preview__status">
                     <span className="request-info__error request-preview__text">
-                        {reactTranslator.getMessage('filtering_modal_status_text_error')}
+                        {translator.getMessage('filtering_modal_status_text_error')}
                     </span>
                     <button
                         type="button"
@@ -169,7 +169,7 @@ export const RequestPreview = observer(() => {
                         className="icon--24 icon--gray-default"
                     />
                     <span className="request-modal__header">
-                        {reactTranslator.getMessage('filtering_modal_preview_title')}
+                        {translator.getMessage('filtering_modal_preview_title')}
                     </span>
                 </button>
             </div>
