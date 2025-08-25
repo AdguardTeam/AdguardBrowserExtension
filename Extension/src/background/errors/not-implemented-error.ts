@@ -16,36 +16,33 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NotImplementedError } from '../../errors/not-implemented-error';
-
 /**
- * This service is a empty dummy to correct work of MV2 build without
- * using MV3 code.
+ * Customized error class for not implemented features.
  */
-export class RulesLimitsService {
+export class NotImplementedError extends Error {
     /**
-     * Just a empty dummy for MV2.
+     * Error name constant.
      */
-    // eslint-disable-next-line class-methods-use-this
-    init(): void { }
+    private static readonly ERROR_NAME = 'NotImplementedError';
 
     /**
-     * Just a empty dummy for MV2.
-     *
-     * @throws Not implemented error.
+     * Base error message.
      */
-    public static getExpectedEnabledFilters = (): number[] => {
-        throw new NotImplementedError();
-    };
+    private static readonly BASE_MESSAGE = 'Not implemented';
 
     /**
-     * Just a empty dummy method for MV2.
+     * Constructs a new `NotImplementedError` instance.
      *
-     * @throws Not implemented error.
+     * @param message Additional error message (optional).
      */
-    public static areFilterLimitsExceeded(): boolean {
-        throw new NotImplementedError();
+    constructor(message: string | undefined = undefined) {
+        // Prepare the full error message
+        const fullMessage = message
+            ? `${NotImplementedError.BASE_MESSAGE}: ${message}`
+            : NotImplementedError.BASE_MESSAGE;
+
+        super(fullMessage);
+
+        this.name = NotImplementedError.ERROR_NAME;
     }
 }
-
-export const rulesLimitsService = new RulesLimitsService();
