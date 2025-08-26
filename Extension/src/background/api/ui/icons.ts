@@ -17,6 +17,8 @@
  */
 import browser from 'webextension-polyfill';
 
+import { ExtensionUpdateService } from 'extension-update-service';
+
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
@@ -44,6 +46,10 @@ export const defaultIconVariants: IconVariants = {
     warning: {
         '19': browser.runtime.getURL('assets/icons/warning-19.png'),
         '38': browser.runtime.getURL('assets/icons/warning-38.png'),
+    },
+    updateAvailable: {
+        '19': browser.runtime.getURL('assets/icons/update-available-19.png'),
+        '38': browser.runtime.getURL('assets/icons/update-available-38.png'),
     },
 };
 
@@ -183,9 +189,21 @@ class IconsApi {
             return defaultIconVariants.warning;
         }
 
+        // prioritize promo icons over the update-available icon,
+        // i.e. PromoNotification is rendered on top of other notifications as well
+        if (this.promoIcons) {
+            return isDisabled
+                ? this.promoIcons.disabled
+                : this.promoIcons.enabled;
+        }
+
+        if (ExtensionUpdateService.getIsUpdateAvailable()) {
+            return defaultIconVariants.updateAvailable;
+        }
+
         return isDisabled
-            ? this.promoIcons?.disabled || defaultIconVariants.disabled
-            : this.promoIcons?.enabled || defaultIconVariants.enabled;
+            ? defaultIconVariants.disabled
+            : defaultIconVariants.enabled;
     }
 
     /**

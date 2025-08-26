@@ -25,7 +25,7 @@ import { formatDate } from '../helpers';
 
 import './filters-update.pcss';
 
-const FiltersUpdate = observer(() => {
+const Mv2FiltersUpdate = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     const {
@@ -36,7 +36,7 @@ const FiltersUpdate = observer(() => {
     } = settingsStore;
 
     const updateClickHandler = async () => {
-        await settingsStore.updateFilters();
+        await settingsStore.updateFiltersMV2();
     };
 
     return (
@@ -58,10 +58,10 @@ const FiltersUpdate = observer(() => {
             >
                 {filtersUpdating
                     ? translator.getMessage('options_check_update_progress')
-                    : translator.getMessage('options_check_update')}
+                    : translator.getMessage('update_check')}
             </button>
         </div>
     );
 });
 
-export { FiltersUpdate };
+export { Mv2FiltersUpdate as FiltersUpdate };

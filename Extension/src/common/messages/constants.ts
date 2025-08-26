@@ -72,6 +72,10 @@ export enum MessageType {
     GetAllowlistDomains = 'getAllowlistDomains',
     SaveAllowlistDomains = 'saveAllowlistDomains',
     CheckFiltersUpdate = 'checkFiltersUpdate',
+    CheckExtensionUpdateFromPopup = 'checkExtensionUpdateFromPopup',
+    CheckExtensionUpdateFromOptions = 'checkExtensionUpdateFromOptions',
+    UpdateExtensionFromPopup = 'updateExtensionFromPopup',
+    UpdateExtensionFromOptions = 'updateExtensionFromOptions',
     DisableFiltersGroup = 'disableFiltersGroup',
     DisableFilter = 'disableFilter',
     LoadCustomFilterInfo = 'loadCustomFilterInfo',
@@ -235,6 +239,22 @@ export type UpdateListenersMessage = {
 
 export type CheckFiltersUpdateMessage = {
     type: MessageType.CheckFiltersUpdate;
+};
+
+export type CheckExtensionUpdateMessage = {
+    type: MessageType.CheckExtensionUpdateFromPopup;
+};
+
+export type CheckExtensionUpdateFromOptionsMessage = {
+    type: MessageType.CheckExtensionUpdateFromOptions;
+};
+
+export type UpdateExtensionMessage = {
+    type: MessageType.UpdateExtensionFromOptions;
+};
+
+export type UpdateExtensionFromPopupMessage = {
+    type: MessageType.UpdateExtensionFromPopup;
 };
 
 export type GetAllowlistDomainsMessage = {
@@ -683,6 +703,22 @@ export type MessageMap = {
     [MessageType.CheckFiltersUpdate]: {
         message: CheckFiltersUpdateMessage;
         response: FilterMetadata[] | undefined;
+    };
+    [MessageType.CheckExtensionUpdateFromPopup]: {
+        message: CheckExtensionUpdateMessage;
+        response: void;
+    };
+    [MessageType.CheckExtensionUpdateFromOptions]: {
+        message: CheckExtensionUpdateFromOptionsMessage;
+        response: boolean;
+    };
+    [MessageType.UpdateExtensionFromOptions]: {
+        message: UpdateExtensionMessage;
+        response: void;
+    };
+    [MessageType.UpdateExtensionFromPopup]: {
+        message: UpdateExtensionFromPopupMessage;
+        response: void;
     };
     [MessageType.GetAllowlistDomains]: {
         message: GetAllowlistDomainsMessage;

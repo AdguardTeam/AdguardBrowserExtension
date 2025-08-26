@@ -39,7 +39,6 @@ import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
 import { getStaticWarningMessage } from '../Warnings/messages';
-import { NotificationType } from '../../stores/UiStore';
 
 import { formatDate } from './helpers';
 import { HighlightSearch } from './Search/HighlightSearch';
@@ -124,13 +123,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
 
                 const staticFiltersLimitsWarning = getStaticWarningMessage(result.data);
                 if (staticFiltersLimitsWarning) {
-                    uiStore.addNotification({
-                        description: staticFiltersLimitsWarning,
-                        extra: {
-                            link: translator.getMessage('options_rule_limits'),
-                        },
-                        type: NotificationType.ERROR,
-                    });
+                    uiStore.addRuleLimitsNotification(staticFiltersLimitsWarning);
                 }
 
                 // We don't enable the filter if it exceeds the limit.
