@@ -28,7 +28,6 @@ import webpack, { type Configuration, type EntryObject } from 'webpack';
 
 import {
     BUILD_PATH,
-    BuildTargetEnv,
     Browser,
     BUILD_ENV,
 } from '../constants';
@@ -60,6 +59,7 @@ import {
     MIN_SUPPORTED_VERSION,
     INDEX_HTML_FILE_NAME,
     SUBSCRIBE_OUTPUT,
+    BuildTargetEnv,
 } from '../../constants';
 
 import {
@@ -304,6 +304,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     // eslint-disable-next-line max-len
                     `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`,
+                ),
+                'extension-update-service': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/services/extension-update/extension-update-service-mv${manifestVersion}.ts`,
                 ),
                 'rules-limits-service': path.resolve(
                     __dirname,

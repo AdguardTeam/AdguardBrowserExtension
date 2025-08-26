@@ -39,6 +39,7 @@ import {
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../../common/constants';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
+import { NotificationType } from '../../../common/types';
 import { type SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -47,7 +48,6 @@ import { Unknown } from '../../../../common/unknown';
 import { FiltersUpdateTime } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning } from '../Warnings';
 import { logger } from '../../../../common/logger';
-import { NotificationType } from '../../stores/UiStore';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -155,8 +155,8 @@ export const General = observer(() => {
             const success = await handlePrivacyPermissionForWebRtc(content);
             if (!success) {
                 uiStore.addNotification({
-                    description: translator.getMessage('options_popup_import_error_required_privacy_permission'),
-                    type: NotificationType.ERROR,
+                    type: NotificationType.Error,
+                    text: translator.getMessage('options_popup_import_error_required_privacy_permission'),
                 });
                 event.target.value = '';
                 return;
@@ -174,20 +174,23 @@ export const General = observer(() => {
         } catch (e) {
             logger.error('[ext.General]: error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
-                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+                uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: e.message,
+                });
             }
             isSucceeded = false;
         }
 
         if (isSucceeded) {
             uiStore.addNotification({
-                description: translator.getMessage('options_popup_import_success_title'),
-                type: NotificationType.SUCCESS,
+                type: NotificationType.Success,
+                text: translator.getMessage('options_popup_import_success_title'),
             });
         } else {
             uiStore.addNotification({
-                description: translator.getMessage('options_popup_import_error_title'),
-                type: NotificationType.ERROR,
+                type: NotificationType.Error,
+                text: translator.getMessage('options_popup_import_error_title'),
             });
         }
 

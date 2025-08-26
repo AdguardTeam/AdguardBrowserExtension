@@ -54,6 +54,11 @@ export type IconVariants = {
      * State icon variants when MV3 limitations are exceeded.
      */
     warning: IconData;
+
+    /**
+     * State icon variants when the extension update is available.
+     */
+    updateAvailable: IconData;
 };
 
 export type PromoNotification = {
@@ -281,6 +286,7 @@ const backToSchool25Notification: PromoNotification = {
             '38': browser.runtime.getURL('assets/icons/bts25-off-38.png'),
         },
         warning: defaultIconVariants.warning,
+        updateAvailable: defaultIconVariants.updateAvailable,
     },
 };
 

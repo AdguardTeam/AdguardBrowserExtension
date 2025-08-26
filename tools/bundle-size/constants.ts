@@ -7,7 +7,8 @@
  * - Directory and file naming conventions
  * - Type definitions for bundle size data structures
  */
-import type { Browser, BuildTargetEnv } from '../constants';
+import type { BuildTargetEnv } from '../../constants';
+import type { Browser } from '../constants';
 
 /**
  * 10% threshold for bundle size changes and each entry point size.

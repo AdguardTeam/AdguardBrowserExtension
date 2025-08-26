@@ -22,14 +22,14 @@ import React, {
     useState,
 } from 'react';
 
-import { translator } from '../../../../../common/translators/translator';
-import { Icon } from '../../../../common/components/ui/Icon';
-import { addMinDurationTime } from '../../../../common/common-script';
-import { messenger } from '../../../../services/messenger';
-import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
-import { getFiltersUpdateResultMessage } from '../../../../../common/toast-helper';
+import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../../../common/constants';
+import { translator } from '../../../../../../common/translators/translator';
+import { Icon } from '../../../../../common/components/ui/Icon';
+import { addMinDurationTime } from '../../../../../../common/sleep-utils';
+import { messenger } from '../../../../../services/messenger';
+import { getFiltersUpdateResultMessage } from '../../../../../../common/toast-helper';
 
-export const UpdateButton = () => {
+const Mv2UpdateButton = () => {
     const refUpdatingBtn = useRef<HTMLButtonElement>(null);
 
     const timeoutId = useRef<NodeJS.Timeout>();
@@ -37,14 +37,14 @@ export const UpdateButton = () => {
     const [updateMessage, setUpdateMessage] = useState('');
 
     const updateFiltersWithMinDuration = addMinDurationTime(
-        messenger.updateFilters,
-        MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS,
+        messenger.updateFiltersMV2,
+        MIN_UPDATE_DISPLAY_DURATION_MS,
     );
 
     const handleUpdateFiltersClick = async () => {
         // In MV3 we don't support update of filters.
         if (__IS_MV3__) {
-            return;
+            throw new Error('Filters update is not supported in MV3');
         }
 
         clearTimeout(timeoutId.current);
@@ -103,3 +103,5 @@ export const UpdateButton = () => {
         </>
     );
 };
+
+export { Mv2UpdateButton as UpdateButton };

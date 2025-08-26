@@ -23,8 +23,8 @@ import path from 'node:path';
 import Crx from 'crx';
 import forge from 'node-forge';
 
+import { BuildTargetEnv } from '../../constants';
 import {
-    BuildTargetEnv,
     Browser,
     BUILD_PATH,
     CHROME_CERT,

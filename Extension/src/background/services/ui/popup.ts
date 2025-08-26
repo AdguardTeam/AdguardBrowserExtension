@@ -15,8 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+import { ExtensionUpdateService } from 'extension-update-service';
+
 import { RulesLimitsService } from 'rules-limits-service';
 
+import { ExtensionUpdateFSMEvent } from '../../../common/constants';
 import { tabsApi as tsWebExtTabsApi } from '../../tswebextension';
 import {
     type ChangeApplicationFilteringPausedMessage,
@@ -42,24 +46,103 @@ import {
     type SettingsData,
     UserRulesApi,
 } from '../../api';
+import { extensionUpdateActor } from '../extension-update/extension-update-machine';
 
-// TODO: describe all properties
 /**
  * Tab info for the popup.
  */
 export type GetTabInfoForPopupResponse = {
+    /**
+     * Info about main frame for the tab.
+     */
     frameInfo: FrameData;
+
+    /**
+     * Page statistics.
+     *
+     * Related to all visited pages, not just the current tab.
+     */
     stats: GetStatisticsDataResponse;
+
+    /**
+     * Current settings.
+     */
     settings: SettingsData;
+
+    /**
+     * Whether the filter limits are exceeded.
+     *
+     * Needed only for MV3.
+     */
     areFilterLimitsExceeded: boolean;
+
+    /**
+     * Whether an extension update is available.
+     */
+    isExtensionUpdateAvailable: boolean;
+
+    /**
+     * Whether the extension is reloaded on update.
+     *
+     * Needed only for MV3.
+     */
+    isExtensionReloadedOnUpdate: boolean;
+
+    /**
+     * Whether the extension update was successful.
+     *
+     * Needed only for MV3.
+     */
+    isSuccessfulExtensionUpdate: boolean;
+
+    /**
+     * Various options.
+     */
     options: {
+        // TODO: consider removing if not used
+        /**
+         * Whether stats are supported.
+         */
         showStatsSupported: boolean;
+
+        // TODO: consider removing if not used
+        /**
+         * Whether the browser is Firefox.
+         */
         isFirefoxBrowser: boolean;
+
+        /**
+         * Whether to show info about full version,
+         * i.e. a link to the page where the extension and apps are compared.
+         */
         showInfoAboutFullVersion: boolean;
+
+        // TODO: consider removing if not used
+        /**
+         * Whether the OS is macOS.
+         */
         isMacOs: boolean;
+
+        /**
+         * Whether the browser is Edge.
+         */
         isEdgeBrowser: boolean;
+
+        /**
+         * Promo notification.
+         */
         notification: PromoNotification | null;
+
+        // TODO: consider removing if not used
+        /**
+         * Whether to disable the "Show Adguard" promo info.
+         */
         isDisableShowAdguardPromoInfo: boolean;
+
+        /**
+         * Whether the user rules for the page present.
+         * If true, they can be reset.
+         */
         hasUserRulesToReset: boolean;
     };
 };
@@ -106,6 +189,25 @@ export class PopupService {
 
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
+        const isExtensionUpdateAvailable = __IS_MV3__
+            ? await ExtensionUpdateService.getIsUpdateAvailable()
+            : false;
+        const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
+
+        const isExtensionReloadedOnUpdate = __IS_MV3__
+            ? !!manualExtensionUpdateData
+            : false;
+
+        const isSuccessfulExtensionUpdate = __IS_MV3__
+            ? !!manualExtensionUpdateData?.isOk
+            : false;
+
+        extensionUpdateActor.send({
+            type: ExtensionUpdateFSMEvent.Init,
+            isReloadedOnUpdate: isExtensionReloadedOnUpdate,
+            isUpdateAvailable: isExtensionUpdateAvailable,
+        });
+
         if (tabContext) {
             return {
                 frameInfo: FramesApi.getMainFrameData(tabContext),
@@ -114,6 +216,9 @@ export class PopupService {
                 areFilterLimitsExceeded: __IS_MV3__
                     ? await RulesLimitsService.areFilterLimitsExceeded()
                     : false,
+                isExtensionUpdateAvailable,
+                isExtensionReloadedOnUpdate,
+                isSuccessfulExtensionUpdate,
                 options: {
                     showStatsSupported: true,
                     isFirefoxBrowser: UserAgent.isFirefox,

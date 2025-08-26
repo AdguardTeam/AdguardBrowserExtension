@@ -18,6 +18,8 @@
 
 import browser from 'webextension-polyfill';
 
+import { ExtensionUpdateService } from 'extension-update-service';
+
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
@@ -29,7 +31,7 @@ import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
 import { messageHandler } from '../../message-handler';
 import { UserAgent } from '../../../common/user-agent';
-import { AntiBannerFiltersId } from '../../../common/constants';
+import { AntiBannerFiltersId, ExtensionUpdateFSMEvent } from '../../../common/constants';
 import { engine } from '../../engine';
 import {
     Categories,
@@ -44,6 +46,7 @@ import {
     settingsEvents,
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
+import { extensionUpdateActor } from '../extension-update/extension-update-machine';
 
 import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
 
@@ -116,6 +119,18 @@ export class SettingsService {
     static async getOptionsData(): Promise<GetOptionsDataResponse> {
         const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
 
+        const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
+
+        const isExtensionReloadedOnUpdate = !!manualExtensionUpdateData;
+
+        const isExtensionUpdateAvailable = await ExtensionUpdateService.getIsUpdateAvailable();
+
+        extensionUpdateActor.send({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: isExtensionUpdateAvailable,
+            isReloadedOnUpdate: isExtensionReloadedOnUpdate,
+        });
+
         return {
             settings: SettingsApi.getData(),
             appVersion: Prefs.version,
@@ -132,6 +147,9 @@ export class SettingsService {
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
             areFilterLimitsExceeded,
+            isExtensionUpdateAvailable,
+            isExtensionReloadedOnUpdate,
+            isSuccessfulExtensionUpdate: !!manualExtensionUpdateData?.isOk,
         };
     }
 
