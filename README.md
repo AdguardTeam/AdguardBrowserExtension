@@ -52,6 +52,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
     - [How to build](#dev-build)
         - [Tests and dev build](#dev-tests-and-build)
         - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
+        - [Linking tsurlfilter on CI (Bamboo)](#dev-ci-link)
         - [Building the beta and release versions](#dev-beta-and-release)
         - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
         - [Analyzing bundle size](#dev-bundle-size)
@@ -269,6 +270,33 @@ regardless of the linking option you chose.
     `--no-cache` flag is required to rebuild the extension on changes in the linked packages.
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
+
+#### <a name="dev-ci-link"></a> Linking tsurlfilter on CI (Bamboo)
+
+For CI builds, you can link with a specific tsurlfilter commit, branch, or tag using the automated linking script.
+
+To enable tsurlfilter linking on CI:
+
+1. **Edit the configuration in `bamboo-specs/scripts/link-tsurlfilter.sh`:**
+
+   ```bash
+   # Set TSURLFILTER_REF to the desired reference
+   # TSURLFILTER_REF="fix/AG-45315"     # branch name
+   # TSURLFILTER_REF="a1b2c3d4e5f6..."  # commit hash
+   # TSURLFILTER_REF="v2.1.0"           # tag name
+   # TSURLFILTER_REF=""                 # skip linking (default)
+   ```
+
+2. **The script will automatically:**
+   - Clone the specified tsurlfilter reference
+   - Build the tswebextension package
+   - Link it to the browser extension project
+   - Clean up the tsurlfilter directory after the build
+
+The linking script is integrated into all CI jobs (tests, linting, builds) and only activates when `TSURLFILTER_REF` is set to a non-empty value.
+
+> [!NOTE]
+> The CI linking is designed to be idempotent and automatically handles SSH setup and cleanup.
 
 #### <a name="dev-beta-and-release"></a> Building the beta and release versions
 
