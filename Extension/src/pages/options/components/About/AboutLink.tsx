@@ -39,6 +39,7 @@ const AboutLink = ({
             className="links-menu__item button--link--green about__link"
         >
             {translator.getMessage(translatorKey)}
+            <div className="about__link-icon" />
         </a>
     );
 };
