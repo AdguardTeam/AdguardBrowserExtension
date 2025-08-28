@@ -6,6 +6,28 @@ exec 2>&1
 
 ls -la
 
+# Parse command line arguments
+LINK_AGTREE=false
+LINK_TSURLFILTER=false
+
+while [ $# -gt 0 ]; do
+    case $1 in
+        --with-agtree)
+            LINK_AGTREE=true
+            shift
+            ;;
+        --with-tsurlfilter)
+            LINK_TSURLFILTER=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Available options: --with-agtree, --with-tsurlfilter"
+            exit 1
+            ;;
+    esac
+done
+
 # Configuration file for Bamboo Test plan
 # Developers can modify these variables to control the build behavior
 
@@ -17,7 +39,7 @@ ls -la
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
-TSURLFILTER_REF=""
+TSURLFILTER_REF="master"
 
 # Repository URLs
 TSURLFILTER_REPO="ssh://git@bit.int.agrd.dev:7999/adguard-filters/tsurlfilter.git"
@@ -77,10 +99,21 @@ link_tswebextension() {
         && npx lerna run build --scope=@adguard/tswebextension --include-dependencies)
 
         # Return to main project directory and link the built tswebextension package
-        echo "Linking tswebextension package to main project..."
         cd "${ORIGINAL_DIR}"
 
+        echo "Linking tswebextension package to main project..."
         pnpm link ../tsurlfilter/packages/tswebextension
+
+        # Optionally link additional packages based on command line flags
+        if [ "$LINK_AGTREE" = true ]; then
+            echo "Linking agtree package to main project..."
+            pnpm link ../tsurlfilter/packages/agtree
+        fi
+
+        if [ "$LINK_TSURLFILTER" = true ]; then
+            echo "Linking tsurlfilter package to main project..."
+            pnpm link ../tsurlfilter/packages/tsurlfilter
+        fi
     else
         echo "No TSURLFILTER_REF specified, skipping tsurlfilter clone"
     fi
