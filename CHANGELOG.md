@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated blocking pages in MV2 extension for Safebrowsing and for web pages blocked by `$document` rules.
 - Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
+- Decrease time period for temporary exceptions caused by clicking "Proceed anyway"
+  on a blocking page from 40 minutes to 10 seconds [#3263].
 - Updated [@adguard/agtree] to v3.2.2.
 - Updated [@adguard/assistant] to v4.3.75.
 - Updated [@adguard/dnr-rulesets] to v3.2.0.
@@ -86,6 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3189]: https://github.com/AdguardTeam/AdguardBrowserExtension/pull/3189
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
 [#3260]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3260
+[#3263]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3263
 [tsurlfilter#147]: https://github.com/AdguardTeam/tsurlfilter/issues/147
 
 ## [5.1.102] - 2025-06-15
