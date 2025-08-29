@@ -6,7 +6,7 @@ plan:
   name: browser extension - test
 variables:
   # playwright is needed for integration tests after build
-  dockerNode: adguard/playwright-runner:22.14--1.51.1--0
+  dockerNode: adguard/playwright-runner:22.17--1.53.2--0
 
 stages:
   - Test build:
@@ -249,7 +249,10 @@ Integration tests:
         scripts:
           - |-
             # Call the common script with timeout
-            ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh dev
+            # TODO: Add integration tests for release and beta builds too
+            # TODO: Decrease timeout when problem with playwright installation
+            # in docker image will be solved
+            ./bamboo-specs/scripts/timeout-wrapper.sh 600s bash ./bamboo-specs/scripts/integration-tests.sh dev
   final-tasks:
     - test-parser:
         type: junit

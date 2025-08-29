@@ -155,17 +155,26 @@ pnpm test
 Running integration tests:
 
 ```shell
-pnpm test:integration <MODE>
-# MODE can be 'dev', 'beta', 'release', same as build targets.
+pnpm test:integration <TARGET>
+# TARGET can be 'dev', 'beta', 'release', same as build targets.
+```
+
+Running integration tests with userscripts mode selection:
+
+```shell
+pnpm test:integration <TARGET> [-u <USERSCRIPTS_MODE>]
+# TARGET can be 'dev', 'beta', 'release', same as build targets.
+# USERSCRIPTS_MODE can be 'enabled' or 'disabled' (default: both modes)
 ```
 
 Running integration tests with enabling debug mode (page will be stopped after
 tests execution) for one of them:
 
 ```shell
-pnpm test:integration <MODE> [-d <TEST_ID>]
-# MODE can be 'dev', 'beta', 'release', same as build targets.
+pnpm test:integration <TARGET> [-d <TEST_ID>] [-u <USERSCRIPTS_MODE>]
+# TARGET can be 'dev', 'beta', 'release', same as build targets.
 # TEST_ID can be extracted from https://testcases.agrd.dev/data.json
+# USERSCRIPTS_MODE can be 'enabled' or 'disabled' (default: both modes)
 ```
 
 Run the following command to build the dev version:
