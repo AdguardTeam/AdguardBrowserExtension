@@ -55,6 +55,12 @@ describe('version', () => {
             { left: '1.0.0.1', right: '1.0.0.2', expected: -1 },
             { left: '1.2', right: '1.0.2', expected: 1 },
             { left: '1.0.0.0.1', right: '1.0.0.0', expected: 0 },
+            // compare versions with 3 parts
+            { left: '2.0.0', right: '1.0.0', expected: 1 },
+            { left: '1.0.0', right: '2.0.0', expected: -1 },
+            { left: '1.0.0', right: '1.0.0', expected: 0 },
+            { left: '1.0.1', right: '1.0.0', expected: 1 },
+            { left: '1.0.11', right: '1.0.9', expected: 1 },
         ];
 
         it.each(cases)('compares $left with $right', ({ left, right, expected }) => {

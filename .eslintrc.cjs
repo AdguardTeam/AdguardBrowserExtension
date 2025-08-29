@@ -101,6 +101,8 @@ module.exports = {
                     { 'pattern': 'filters-service', 'group': 'internal', 'position': 'after' },
                     // Place custom-filters-service alias after internal
                     { 'pattern': 'custom-filters-service', 'group': 'internal', 'position': 'after' },
+                    // Place extension-update-service alias after internal
+                    { 'pattern': 'extension-update-service', 'group': 'internal', 'position': 'after' },
                     // Place rules-limits-service alias after internal
                     { 'pattern': 'rules-limits-service', 'group': 'internal', 'position': 'after' },
                     // Separate group for all .pcss styles

@@ -75,6 +75,29 @@ export class Engine implements TsWebExtensionEngine {
     constructor() {
         this.api = new TsWebExtension(`/${WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS}`);
 
+        /**
+         * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
+         * process in the extension.
+         *
+         * 1. We collect and bundle all scripts that can be executed on web pages into
+         *    the extension package into so-called `localScriptRules`.
+         * 2. Rules that control when and where these scripts can be executed are also
+         *    bundled within the extension package inside ruleset files.
+         * 3. The rules look like: `example.org#%#scripttext`. Whenever the rule is
+         *    matched, we check if there's a function for `scripttext` in
+         *    `localScriptRules`, retrieve it from there and execute it.
+         *
+         * Here we're initializing the `localScriptRules` map in the engine so
+         * that it could get the functions to execute.
+         *
+         * Set local script rules regardless of User Scripts API support,
+         * since is User Script API is available, it can be triggered by
+         * user in any moment which we cannot track, so we always need
+         * to have localScriptRules set in the engine to have possibility
+         * to execute scripts via scripting.executeScript with locality check.
+         */
+        TsWebExtension.setLocalScriptRules(localScriptRules);
+
         this.handleMessage = this.api.getMessageHandler();
 
         // Expose for integration tests.
@@ -97,25 +120,6 @@ export class Engine implements TsWebExtensionEngine {
      * to use MV3 in Firefox.
      */
     async start(): Promise<void> {
-        /**
-         * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
-         * process in the extension.
-         *
-         * 1. We collect and bundle all scripts that can be executed on web pages into
-         *    the extension package into so-called `localScriptRules`.
-         * 2. Rules that control when and where these scripts can be executed are also
-         *    bundled within the extension package inside ruleset files.
-         * 3. The rules look like: `example.org#%#scripttext`. Whenever the rule is
-         *    matched, we check if there's a function for `scripttext` in
-         *    `localScriptRules`, retrieve it from there and execute it.
-         *
-         * Here we're initializing the `localScriptRules` map in the engine so
-         * that it could get the functions to execute.
-         */
-        if (!isUserScriptsApiSupported()) {
-            TsWebExtension.setLocalScriptRules(localScriptRules);
-        }
-
         const configuration = await Engine.getConfiguration();
 
         logger.info('[ext.Engine.start]: Start tswebextension...');
@@ -309,11 +313,18 @@ export class Engine implements TsWebExtensionEngine {
 
         return {
             declarativeLogEnabled: filteringLogApi.isOpen(),
+            // Custom filters from remote sources will be passed only if
+            // User Scripts API permission is granted.
             customFilters,
+            // Deprecated, now is empty and will be removed in future.
             quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA) || logger.isVerbose(),
             logLevel: logger.currentLevel,
+            // Built-in local filters.
             staticFiltersIds,
+            // Rules defined by user. Applying them depends on User Scripts API
+            // permission: if it is granted, user rules are applied as-is,
+            // otherwise script rules are filtered against localScriptRules.
             userrules,
             allowlist,
             settings,

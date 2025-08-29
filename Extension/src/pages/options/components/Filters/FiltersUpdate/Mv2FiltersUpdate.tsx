@@ -19,14 +19,13 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { translator } from '../../../../../common/translators/translator';
 import { rootStore } from '../../../stores/RootStore';
 import { formatDate } from '../helpers';
 
 import './filters-update.pcss';
 
-const FiltersUpdate = observer(() => {
+const Mv2FiltersUpdate = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     const {
@@ -37,14 +36,14 @@ const FiltersUpdate = observer(() => {
     } = settingsStore;
 
     const updateClickHandler = async () => {
-        await settingsStore.updateFilters();
+        await settingsStore.updateFiltersMV2();
     };
 
     return (
         <div className="filters-update">
             <div className="filters-update__info">
                 <div className="filters-update__title">
-                    {reactTranslator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
+                    {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
                 </div>
                 <div className="filters-update__desc">
                     {formatDate(latestCheckTime)}
@@ -58,11 +57,11 @@ const FiltersUpdate = observer(() => {
                 disabled={!isUpdateFiltersButtonActive || filtersUpdating}
             >
                 {filtersUpdating
-                    ? reactTranslator.getMessage('options_check_update_progress')
-                    : reactTranslator.getMessage('options_check_update')}
+                    ? translator.getMessage('options_check_update_progress')
+                    : translator.getMessage('update_check')}
             </button>
         </div>
     );
 });
 
-export { FiltersUpdate };
+export { Mv2FiltersUpdate as FiltersUpdate };

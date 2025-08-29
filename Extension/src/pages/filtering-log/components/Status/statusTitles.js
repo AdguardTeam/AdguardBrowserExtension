@@ -17,7 +17,7 @@
  */
 
 import { StatusMode } from '../../filteringLogStatus';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
+import { translator } from '../../../../common/translators/translator';
 
 /**
  * @typedef {object} StatusTitle
@@ -42,5 +42,5 @@ const titleMap = {
 };
 
 export const getStatusTitle = (mode) => {
-    return reactTranslator.getMessage(titleMap[mode]);
+    return translator.getMessage(titleMap[mode]);
 };

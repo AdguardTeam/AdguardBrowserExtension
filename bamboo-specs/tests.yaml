@@ -37,6 +37,10 @@ Test dev build:
     - script:
         interpreter: SHELL
         scripts:
+          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree
+    - script:
+        interpreter: SHELL
+        scripts:
           - |-
             set -x
             set -e
@@ -80,6 +84,8 @@ Test dev build:
 
             echo "Size before cleanup:" && du -h | tail -n 1
             rm -rf node_modules build
+            rm -rf .git
+            rm -rf ../tsurlfilter
             echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
     - name: build.txt
@@ -127,6 +133,9 @@ Build chrome crx artifact:
     - script:
         interpreter: SHELL
         scripts:
+          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree
+    - script:
+        scripts:
           - |-
             set -x
             set -e
@@ -166,6 +175,10 @@ Lint:
     - script:
         interpreter: SHELL
         scripts:
+          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree
+    - script:
+        interpreter: SHELL
+        scripts:
           - |-
             set -x
             set -e
@@ -190,6 +203,10 @@ Unit tests:
     clean-working-dir: true
   docker: *docker
   tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree
     - script:
         interpreter: SHELL
         scripts:
@@ -223,6 +240,10 @@ Integration tests:
     - artifact-download:
         artifacts:
           - name: chrome-mv3-dev.zip
+    - script:
+        interpreter: SHELL
+        scripts:
+          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree
     - script:
         interpreter: SHELL
         scripts:

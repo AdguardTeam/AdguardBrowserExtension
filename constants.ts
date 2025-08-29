@@ -73,6 +73,26 @@ export const INDEX_HTML_FILE_NAME = 'index.html';
 export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 224];
 
 /**
+ * Environment types for build target.
+ */
+export enum BuildTargetEnv {
+    Dev = 'dev',
+    Beta = 'beta',
+    Release = 'release',
+}
+
+/**
+ * IDs of the extension in Chrome Web Store for each build target environment.
+ *
+ * @type {Record<BuildTargetEnv, string>}
+ */
+export const ExtensionsIds: Record<BuildTargetEnv, string> = {
+    [BuildTargetEnv.Release]: 'bgnkhhnnamicmpeenaelnjfhikgbkllg',
+    [BuildTargetEnv.Beta]: 'apjcbfpjihpedihablmalmbbhjpklbdf',
+    [BuildTargetEnv.Dev]: '', // Not published in CWS
+};
+
+/**
  * Minimum supported browser versions.
  *
  * IMPORTANT! Update browser compatibility in the README.md file when changing the versions.

@@ -20,27 +20,34 @@ import React, {
     useContext,
     useEffect,
     useState,
+    useRef,
 } from 'react';
 
 import classnames from 'classnames';
 
+import { NOTIFICATION_TTL_MS } from '../../../../common/constants';
 import { rootStore } from '../../stores/RootStore';
+import { TIME_TO_REMOVE_NOTIFICATION_MS } from '../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
-import { messenger } from '../../../services/messenger';
-import { type Notification as INotification } from '../../stores/UiStore';
+import { NotificationType, type NotificationParams } from '../../../common/types';
 import { translator } from '../../../../common/translators/translator';
 
 /**
- * Notification component props
+ * Notification with id.
  */
-export interface NotificationProps extends INotification {}
+export type NotificationParamsWithId = NotificationParams & {
+    /**
+     * Unique notification id.
+     */
+    id: string;
+};
 
 /**
  * Notification component.
  *
  * @param props Notification component props
  */
-export const Notification = (props: NotificationProps) => {
+export const Notification = (props: NotificationParamsWithId) => {
     const [notificationIsClosed, setNotificationIsClosed] = useState(false);
 
     const [shouldCloseOnTimeout, setShouldCloseOnTimeout] = useState(true);
@@ -49,15 +56,10 @@ export const Notification = (props: NotificationProps) => {
 
     const {
         id,
-        description,
+        text,
         type,
-        link,
+        button,
     } = props;
-    const isNotificationWithLink = !!link;
-
-    const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
-
-    const NOTIFICATION_TTL_MS = 4000;
 
     useEffect(() => {
         const closeTimeout = setTimeout(() => {
@@ -83,20 +85,25 @@ export const Notification = (props: NotificationProps) => {
         { 'notification--close': notificationIsClosed },
     );
 
+    const removeOnClickTimeoutRef = useRef<number | undefined>();
+
+    useEffect(() => {
+        return () => {
+            clearTimeout(removeOnClickTimeoutRef.current);
+        };
+    }, []);
+
+    /**
+     * Handles close button click:
+     * 1. marks notification as closed,
+     * 2. removes notification from UI store after a delay.
+     */
     const handleCloseClick = () => {
         setNotificationIsClosed(true);
-        const removeTimeout = setTimeout(() => {
-            uiStore.removeNotification(id);
-            clearTimeout(removeTimeout);
-        }, TIME_TO_REMOVE_NOTIFICATION_MS);
-    };
 
-    // TODO: Refactor this code and extract click handler from general
-    // notification component.
-    const handleRuleLimitsClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        messenger.openRulesLimitsTab();
-        handleCloseClick();
+        removeOnClickTimeoutRef.current = window.setTimeout(() => {
+            uiStore.removeNotification(id);
+        }, TIME_TO_REMOVE_NOTIFICATION_MS);
     };
 
     /**
@@ -112,8 +119,8 @@ export const Notification = (props: NotificationProps) => {
             onMouseEnter={handleMouseOver}
         >
             <Icon
-                id="#info"
-                classname="icon--24"
+                id={type === NotificationType.Success ? '#tick' : '#info'}
+                className="icon--24"
                 aria-hidden="true"
             />
             <div
@@ -121,14 +128,18 @@ export const Notification = (props: NotificationProps) => {
                 className="notification__content"
                 aria-live="assertive"
             >
-                <p>{description}</p>
-                { isNotificationWithLink && (
+                <p>{text}</p>
+                {button && (
                     <button
                         type="button"
                         role="link"
-                        onClick={handleRuleLimitsClick}
+                        onClick={() => {
+                            handleCloseClick();
+                            button.onClick();
+                        }}
+                        title={button.title}
                     >
-                        {link}
+                        {button.title}
                     </button>
                 )}
             </div>
@@ -140,7 +151,7 @@ export const Notification = (props: NotificationProps) => {
             >
                 <Icon
                     id="#cross"
-                    classname="icon--24 icon--gray-default"
+                    className="icon--24 icon--gray-default"
                     aria-hidden="true"
                 />
             </button>

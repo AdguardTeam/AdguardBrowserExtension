@@ -47,9 +47,7 @@ export const Header = observer(() => {
                     'popup-header__buttons--non-active': isTransitionAppState(appState),
                 })}
             >
-                {!__IS_MV3__ && (
-                    <UpdateButton />
-                )}
+                <UpdateButton />
                 <ProtectionSwitch />
                 <SettingsButton />
             </div>
