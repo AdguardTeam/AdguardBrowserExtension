@@ -17,14 +17,52 @@
  */
 /* eslint-disable no-console */
 
+import chalk from 'chalk';
+
 import { getZodErrorMessage } from '../../Extension/src/common/error';
 
-import {
-    TestStatus,
-    colorizeDurationTime,
-    colorizeStatusText,
-    colorizeTitleText,
-} from './text-color';
+export const enum TestStatus {
+    Passed = 'passed',
+    Failed = 'failed',
+    Skipped = 'skipped',
+    Timeout = 'timeout',
+}
+
+/**
+ * Colorize status text.
+ *
+ * @param status Test status.
+ *
+ * @returns Colorized status text.
+ */
+export const colorizeStatusText = (status: TestStatus): string => {
+    if (status === TestStatus.Passed) {
+        return chalk.green(status);
+    }
+    if (status === TestStatus.Skipped) {
+        // some tests may be skipped due to exceptions
+        return chalk.yellow(status);
+    }
+    return chalk.red(status);
+};
+
+/**
+ * Colorize title text.
+ *
+ * @param title Test title.
+ *
+ * @returns Colorized title text.
+ */
+export const colorizeTitleText = (title: string): string => chalk.bold.inverse(title);
+
+/**
+ * Colorize duration time.
+ *
+ * @param duration Test duration time.
+ *
+ * @returns Colorized duration time.
+ */
+export const colorizeDurationTime = (duration: number | string): string => chalk.yellow(duration);
 
 /**
  * Describes test details object from QUnit.
@@ -122,4 +160,77 @@ export const logTestUnknownError = (testName: string, error: unknown): void => {
     console.log(`Caught unknown error during waiting for tests: ${getZodErrorMessage(error)} \n`);
 
     console.log('\n');
+};
+
+/**
+ * Log info message with optional formatting.
+ *
+ * @param message Message to log.
+ * @param options Optional formatting options.
+ * @param options.title Whether to format message as title.
+ * @param options.newline Whether to add newline after message.
+ */
+export const logInfo = (message: string, options?: { title?: boolean; newline?: boolean }): void => {
+    const formattedMessage = options?.title ? colorizeTitleText(message) : message;
+    console.log(formattedMessage);
+
+    if (options?.newline) {
+        console.log('\n');
+    }
+};
+
+/**
+ * Log success message with green checkmark.
+ *
+ * @param message Message to log.
+ * @param options Optional formatting options.
+ * @param options.newline Whether to add newline after message.
+ */
+export const logSuccess = (message: string, options?: { newline?: boolean }): void => {
+    console.log(`${chalk.green('✓')} ${message}`);
+
+    if (options?.newline) {
+        console.log('\n');
+    }
+};
+
+/**
+ * Log error message with red formatting.
+ *
+ * @param message Message to log.
+ * @param error Optional error object.
+ * @param options Optional formatting options.
+ * @param options.newline Whether to add newline after message.
+ */
+export const logError = (message: string, error?: unknown, options?: { newline?: boolean }): void => {
+    const errorText = error ? `: ${getZodErrorMessage(error)}` : '';
+    console.error(`${chalk.red('✗')} ${message}${errorText}`);
+
+    if (options?.newline) {
+        console.log('\n');
+    }
+};
+
+/**
+ * Log warning message with yellow formatting.
+ *
+ * @param message Message to log.
+ * @param options Optional formatting options.
+ * @param options.newline Whether to add newline after message.
+ */
+export const logWarning = (message: string, options?: { newline?: boolean }): void => {
+    console.log(`${chalk.yellow('⚠')} ${message}`);
+
+    if (options?.newline) {
+        console.log('\n');
+    }
+};
+
+/**
+ * Log section header with decorative formatting.
+ *
+ * @param title Section title.
+ */
+export const logSection = (title: string): void => {
+    console.log(`\n=== ${colorizeTitleText(title)} ===`);
 };

@@ -56,10 +56,15 @@ import {
     logTestResult,
     logTestTimeout,
     logTestUnknownError,
+    logInfo,
+    logSuccess,
+    logError,
+    logSection,
+    TestStatus,
     type TestDetails,
 } from './logger';
 import { Product } from './product';
-import { TestStatus } from './text-color';
+import { enableUserScriptsPermission, testUserScriptsAvailability } from './user-scripts-api';
 
 // https://playwright.dev/docs/service-workers-experimental
 process.env.PW_EXPERIMENTAL_SERVICE_WORKER_NETWORK_EVENTS = '1';
@@ -72,11 +77,21 @@ const TEST_REPORT_PATH = 'tests-reports/integration-tests.xml';
 
 const PRODUCT_MV3 = Product.Mv3;
 
+enum UserScriptsMode {
+    ENABLED = 'USERSCRIPTS_ENABLED',
+    DISABLED = 'USERSCRIPTS_DISABLED',
+}
+
 type TestRunOptions = {
     /**
-     * Enable debug mode with pause page for specified id.
+     * Enable debug mode with pause page for test with specified id.
      */
-    debug: string;
+    debugTestId: string;
+    /**
+     * UserScripts mode for testing. If not specified, both modes will be tested.
+     * Can be string from CLI or enum value after parsing.
+     */
+    userscriptsMode: UserScriptsMode | string;
 };
 
 /**
@@ -171,6 +186,7 @@ const passUserRulesToServiceWorker = async (
  * @param backgroundPage The service worker responsible for processing rules.
  * @param page The Playwright page where the test case will be executed.
  * @param testcase The test case to run, including rules and test configurations.
+ * @param userScriptsMode The userscripts mode (ENABLED or DISABLED) for this test run.
  * @param debugMode Optional flag for enabling debug mode with extended timeouts
  * and stopping page after evaluated tests via connecting debugger.
  *
@@ -180,6 +196,7 @@ const runTest = async (
     backgroundPage: Worker,
     page: Page,
     testcase: Testcase,
+    userScriptsMode: UserScriptsMode,
     debugMode?: boolean,
 ): Promise<boolean> => {
     // TODO: implement separate e2e test for popups
@@ -210,7 +227,7 @@ const runTest = async (
     // Create a test suite
     const testSuite = builder
         .testSuite()
-        .name(testcase.title);
+        .name(`[${userScriptsMode}] ${testcase.title}`);
 
     let res: TestDetails | TestStatus;
     try {
@@ -299,10 +316,15 @@ const unzipExtension = async (pathToZip: string): Promise<string> => {
     // Directory to extract the ZIP
     const unpackedPath = path.join(pathToZip, 'chrome-mv3');
 
-    // Ensure the directory exists
-    if (!fs.existsSync(unpackedPath)) {
-        fs.mkdirSync(unpackedPath);
+    // Always remove old extraction to ensure fresh state
+    if (fs.existsSync(unpackedPath)) {
+        fs.rmSync(unpackedPath, { recursive: true, force: true });
     }
+
+    // Create directory for extraction
+    fs.mkdirSync(unpackedPath, { recursive: true });
+
+    logInfo(`Extracting extension from ${zipPath} to ${unpackedPath}`);
 
     // Unzip the extension
     await fs.createReadStream(zipPath)
@@ -310,6 +332,19 @@ const unzipExtension = async (pathToZip: string): Promise<string> => {
         .promise();
 
     return unpackedPath;
+};
+
+/**
+ * Gets the extension ID from the service worker context.
+ *
+ * @param backgroundPage The service worker where extension ID will be retrieved.
+ *
+ * @returns A promise that resolves to the extension ID string.
+ */
+const getExtensionId = async (backgroundPage: Worker): Promise<string> => {
+    return backgroundPage.evaluate((): string => {
+        return chrome.runtime.id;
+    });
 };
 
 /**
@@ -326,7 +361,62 @@ const runTests = async (
     testMode: BuildTargetEnv,
     options?: Partial<TestRunOptions>,
 ): Promise<boolean> => {
-    const extensionPath = await unzipExtension(`${BUILD_PATH}/${testMode}`);
+    // Determine which modes to run
+    const modesToRun = options?.userscriptsMode
+        ? [options.userscriptsMode as UserScriptsMode]
+        : [UserScriptsMode.DISABLED, UserScriptsMode.ENABLED];
+
+    let allTestsPassed = true;
+
+    // Run tests for each mode
+    for (const userScriptsMode of modesToRun) {
+        logSection(`Running tests in ${userScriptsMode} mode`);
+
+        const modeTestsPassed = await runTestsForMode(testMode, userScriptsMode, options);
+        if (!modeTestsPassed) {
+            allTestsPassed = false;
+        }
+    }
+
+    // Always write report after all tests are run
+    builder.writeTo(TEST_REPORT_PATH);
+
+    return allTestsPassed;
+};
+
+/**
+ * Runs integration tests for a specific userscripts mode.
+ *
+ * @param testMode 'dev', 'beta' or 'release', depending on which build
+ * should be tested.
+ * @param userScriptsMode The userscripts mode to run tests in.
+ * @param options Some setting for run tests, see {@link TestRunOptions}.
+ *
+ * @returns True if all tests have passed or false if any tests have failed
+ * or timed out.
+ */
+const runTestsForMode = async (
+    testMode: BuildTargetEnv,
+    userScriptsMode: UserScriptsMode,
+    options?: Partial<TestRunOptions>,
+): Promise<boolean> => {
+    logInfo(`Preparing to run tests in ${testMode} mode with userscripts ${userScriptsMode}`);
+
+    // Always clean browser cache to ensure consistent test environment
+    logInfo('Cleaning browser user data directory...');
+    try {
+        if (fs.existsSync(USER_DATA_PATH)) {
+            fs.rmSync(USER_DATA_PATH, { recursive: true, force: true });
+            logInfo(`Cleared browser cache at: ${USER_DATA_PATH}`);
+        }
+    } catch (error) {
+        logError('Failed to clean browser cache', error);
+        // Continue anyway, as this is not critical
+    }
+
+    const extensionPath = await unzipExtension(path.join(BUILD_PATH, testMode));
+
+    logInfo(`Extension unzipped from ${BUILD_PATH}/${testMode} to: ${extensionPath}`);
 
     const runOptions = {
         channel: 'chromium',
@@ -336,7 +426,7 @@ const runTests = async (
         ],
     };
 
-    if (options?.debug !== undefined) {
+    if (options?.debugTestId !== undefined) {
         Object.assign(runOptions, { headless: false });
     } else {
         runOptions.args.push('--headless=new');
@@ -361,12 +451,46 @@ const runTests = async (
             }),
         ]);
     } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Extension initialization failed (possible due to timeout)', e);
+        logError('Extension initialization failed (possible due to timeout)', e);
+        await browserContext.close();
         return false;
     }
 
     const page = await browserContext.newPage();
+
+    // Only setup userScripts for ENABLED mode
+    if (userScriptsMode === UserScriptsMode.ENABLED) {
+        // Get extension ID
+        const extensionId = await getExtensionId(backgroundPage);
+
+        // Enable userScripts permission through extension settings
+        logInfo('Enabling userScripts permission...');
+        const permissionEnabled = await enableUserScriptsPermission(page, extensionId);
+
+        if (permissionEnabled) {
+            logSuccess('UserScripts permission enabled');
+        } else {
+            logInfo('UserScripts permission might already be enabled or not available');
+        }
+
+        // Test userScripts API availability before running test cases
+        logInfo('Testing userScripts API availability...');
+        const userScriptsAvailable = await testUserScriptsAvailability(
+            backgroundPage,
+            page,
+            options?.debugTestId !== undefined,
+        );
+
+        if (!userScriptsAvailable) {
+            logError('UserScripts API is not available or not working properly');
+            await browserContext.close();
+            return false;
+        }
+
+        logSuccess('UserScripts API is available and working');
+    } else {
+        logInfo('Skipping userScripts setup for DISABLED mode');
+    }
 
     const testcases = await getTestcases();
 
@@ -382,12 +506,12 @@ const runTests = async (
 
     let allTestsPassed = true;
 
-    const filteredTestsCases = options?.debug !== undefined
-        ? compatibleTestcases.filter(({ id }) => id === Number.parseInt(options.debug!, 10))
+    const filteredTestsCases = options?.debugTestId !== undefined
+        ? compatibleTestcases.filter(({ id }) => id === Number.parseInt(options.debugTestId!, 10))
         : compatibleTestcases;
 
-    if (filteredTestsCases.length === 0 && options?.debug !== undefined) {
-        throw Error(`Not found compatible test for provided id: ${options.debug}`);
+    if (filteredTestsCases.length === 0 && options?.debugTestId !== undefined) {
+        throw Error(`Not found compatible test for provided id: ${options.debugTestId}`);
     }
 
     // run testcases
@@ -397,7 +521,8 @@ const runTests = async (
             backgroundPage,
             page,
             testcase,
-            options?.debug !== undefined,
+            userScriptsMode,
+            options?.debugTestId !== undefined,
         );
 
         if (!testSuccess) {
@@ -407,45 +532,67 @@ const runTests = async (
 
     await browserContext.close();
 
-    builder.writeTo(TEST_REPORT_PATH);
-
     return allTestsPassed;
+};
+
+/**
+ * Parses and validates userscripts mode from CLI options.
+ *
+ * @param options CLI options that may contain userscriptsMode.
+ *
+ * @returns The parsed options with validated userscriptsMode.
+ */
+const parseUserScriptsMode = (options?: Partial<TestRunOptions>): Partial<TestRunOptions> => {
+    if (options?.userscriptsMode) {
+        const mode = options.userscriptsMode.toLowerCase();
+        if (mode === 'enabled') {
+            options.userscriptsMode = UserScriptsMode.ENABLED;
+        } else if (mode === 'disabled') {
+            options.userscriptsMode = UserScriptsMode.DISABLED;
+        } else {
+            program.error('Invalid userscripts mode. Use `enabled` or `disabled`');
+        }
+    }
+    return options || {};
+};
+
+/**
+ * Common action handler for running tests with error handling.
+ *
+ * @param testMode The build target environment to test.
+ * @param options CLI options.
+ */
+const runTestsCommand = async (
+    testMode: BuildTargetEnv,
+    options?: Partial<TestRunOptions>,
+): Promise<void> => {
+    const parsedOptions = parseUserScriptsMode(options);
+    const success = await runTests(testMode, parsedOptions);
+
+    if (!success) {
+        program.error('Some tests failed. Check detailed info in the up log.');
+    }
 };
 
 program
     .command('dev')
     .option('-d, --debug <TEST_ID>', 'enable debug mode with pause for specified id')
+    .option('-u, --userscripts-mode <MODE>', 'userscripts mode: `enabled` or `disabled` (default: both)')
     .description('run tests in dev mode')
-    .action(async (options?: Partial<TestRunOptions>) => {
-        const success = await runTests(BuildTargetEnv.Dev, options);
-
-        if (!success) {
-            program.error('Some tests failed. Check detailed info in the up log.');
-        }
-    });
+    .action((options?: Partial<TestRunOptions>) => runTestsCommand(BuildTargetEnv.Dev, options));
 
 program
     .command('beta')
     .option('-d, --debug <TEST_ID>', 'enable debug mode with pause for specified id')
+    .option('-u, --userscripts-mode <MODE>', 'userscripts mode: `enabled` or `disabled` (default: both)')
     .description('run tests in beta mode')
-    .action(async (options?: Partial<TestRunOptions>) => {
-        const success = await runTests(BuildTargetEnv.Beta, options);
-
-        if (!success) {
-            program.error('Some tests failed. Check detailed info in the up log.');
-        }
-    });
+    .action((options?: Partial<TestRunOptions>) => runTestsCommand(BuildTargetEnv.Beta, options));
 
 program
     .command('release')
     .option('-d, --debug <TEST_ID>', 'enable debug mode with pause for specified id')
+    .option('-u, --userscripts-mode <MODE>', 'userscripts mode: `enabled` or `disabled` (default: both)')
     .description('run tests in release mode')
-    .action(async (options?: Partial<TestRunOptions>) => {
-        const success = await runTests(BuildTargetEnv.Release, options);
-
-        if (!success) {
-            program.error('Some tests failed. Check detailed info in the up log.');
-        }
-    });
+    .action((options?: Partial<TestRunOptions>) => runTestsCommand(BuildTargetEnv.Release, options));
 
 program.parse(process.argv);
