@@ -194,7 +194,7 @@ export const RulesLimits = observer(() => {
                             {getDynamicRulesDescription()}
                         </div>
                         <div className={getClassNamesForNumbers(dynamicRulesEnabledCount, dynamicRulesMaximumCount)}>
-                            {reactTranslator.getMessage('options_rule_limits_numbers', {
+                            {translator.getMessage('options_rule_limits_numbers', {
                                 current: dynamicRulesEnabledCount,
                                 maximum: dynamicRulesMaximumCount,
                             })}
@@ -209,7 +209,7 @@ export const RulesLimits = observer(() => {
                             dynamicRulesUnsafeMaximumCount,
                         )}
                         >
-                            {reactTranslator.getMessage('options_rule_limits_numbers', {
+                            {translator.getMessage('options_rule_limits_numbers', {
                                 current: dynamicRulesUnsafeEnabledCount,
                                 maximum: dynamicRulesUnsafeMaximumCount,
                             })}
@@ -224,7 +224,7 @@ export const RulesLimits = observer(() => {
                             dynamicRulesRegexpsMaximumCount,
                         )}
                         >
-                            {reactTranslator.getMessage('options_rule_limits_numbers', {
+                            {translator.getMessage('options_rule_limits_numbers', {
                                 current: dynamicRulesRegexpsEnabledCount,
                                 maximum: dynamicRulesRegexpsMaximumCount,
                             })}
@@ -251,7 +251,7 @@ export const RulesLimits = observer(() => {
                             })}
                         </div>
                         <div className={getClassNamesForNumbers(staticFiltersEnabledCount, staticFiltersMaximumCount)}>
-                            {reactTranslator.getMessage('options_rule_limits_numbers', {
+                            {translator.getMessage('options_rule_limits_numbers', {
                                 current: staticFiltersEnabledCount,
                                 maximum: staticFiltersMaximumCount,
                             })}
@@ -278,7 +278,7 @@ export const RulesLimits = observer(() => {
                             })}
                         </div>
                         <div className={getClassNamesForNumbers(staticRulesEnabledCount, staticRulesMaximumCount)}>
-                            {reactTranslator.getMessage('options_rule_limits_numbers', {
+                            {translator.getMessage('options_rule_limits_numbers', {
                                 current: staticRulesEnabledCount,
                                 maximum: staticRulesMaximumCount,
                             })}
@@ -293,7 +293,7 @@ export const RulesLimits = observer(() => {
                             staticRulesRegexpsMaxCount,
                         )}
                         >
-                            {reactTranslator.getMessage('options_rule_limits_numbers', {
+                            {translator.getMessage('options_rule_limits_numbers', {
                                 current: staticRulesRegexpsEnabledCount,
                                 maximum: staticRulesRegexpsMaxCount,
                             })}

@@ -29,6 +29,7 @@ import { SettingsSection } from '../Settings/SettingsSection';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../../common/constants';
+import { NotificationType } from '../../../common/types';
 import { rootStore } from '../../stores/RootStore';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
@@ -39,7 +40,6 @@ import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getFirstNonDisabledElement } from '../../../common/utils/dom';
 import { DynamicRulesLimitsWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
-import { NotificationType } from '../../stores/UiStore';
 import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
@@ -135,11 +135,14 @@ const Allowlist = observer(() => {
         } catch (e) {
             logger.debug('[ext.Allowlist]: error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
-                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+                uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: e.message,
+                });
             } else {
                 uiStore.addNotification({
-                    description: translator('options_popup_import_error_file_description'),
-                    type: NotificationType.ERROR,
+                    type: NotificationType.Error,
+                    text: translator('options_popup_import_error_file_description'),
                 });
             }
         }

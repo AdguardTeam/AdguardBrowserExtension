@@ -18,7 +18,7 @@
 
 import React, { useState } from 'react';
 
-import { addMinDurationTime } from '../../../../common/common-script';
+import { addMinDurationTime } from '../../../../../common/sleep-utils';
 import { translator } from '../../../../../common/translators/translator';
 import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
@@ -77,9 +77,9 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
         >
             <Icon
                 id={removeUserRulesIconId}
-                classname={removeUserRulesIconClassname}
+                className={removeUserRulesIconClassname}
                 animationCondition={removingUserRules}
-                animationClassname="icon--loading"
+                animationClassName="icon--loading"
                 aria-hidden="true"
             />
             <span className="action__title">

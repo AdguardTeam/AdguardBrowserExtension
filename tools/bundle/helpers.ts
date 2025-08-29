@@ -16,9 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { type BuildTargetEnv } from '../../constants';
 import {
     type Browser,
-    type BuildTargetEnv,
     ENV_CONF,
     type EnvConfig,
 } from '../constants';

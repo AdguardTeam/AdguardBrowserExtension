@@ -28,7 +28,7 @@ import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Icons } from '../ui/Icons';
 import { MainContainer } from '../MainContainer';
-import { Notification } from '../Notification';
+import { Notifications } from '../Notifications';
 import { PromoNotification } from '../PromoNotification';
 import { SplashScreen } from '../SplashScreen';
 import { popupStore } from '../../stores/PopupStore';
@@ -54,7 +54,6 @@ export const Popup = observer(() => {
         isEngineStarted,
         checkIsEngineStarted,
         getPopupData,
-        areFilterLimitsExceeded,
         updateBlockedStats,
         isAndroidBrowser,
     } = useContext(popupStore);
@@ -162,7 +161,7 @@ export const Popup = observer(() => {
             <Tabs />
             <Footer />
             {/* Promo should be rendered in top of other notifications */}
-            { areFilterLimitsExceeded && __IS_MV3__ && <Notification />}
+            {__IS_MV3__ && <Notifications />}
             <PromoNotification />
         </>
     );
