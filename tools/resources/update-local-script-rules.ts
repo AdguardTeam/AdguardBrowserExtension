@@ -272,16 +272,39 @@ export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>)
     /**
      * This is a test case rule that is used for integration testing.
      * It should be added explicitly to the list of rules.
-     *
-     * @see {@link https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt}
-     * @see {@link https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt}
      */
     const TESTCASES_RULES = [
-        // https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt
+        // Source: https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt
         // eslint-disable-next-line max-len
         'testcases.agrd.dev,pages.dev#%#!function(){let e=()=>{document.querySelector("#case-1-generichide > .test-banner1").style.width="200px"};"complete"===document.readyState?e():window.document.addEventListener("readystatechange",e)}();',
-        // https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt
-        "testcases.agrd.dev,pages.dev#%#console.log(Date.now(), 'script rule is executed');",
+        // Source: https://testcases.agrd.dev/Filters/script-rules/test-script-rules.txt
+        'testcases.agrd.dev,pages.dev#%#window.__testCase1 = true;',
+        'testcases.agrd.dev,pages.dev#%#window.adg_test=true;',
+        'testcases.agrd.dev,pages.dev#%#window.adg_test=false;',
+        'testcases.agrd.dev,pages.dev#@%#window.adg_test=false;',
+        'testcases.agrd.dev,pages.dev#%#window.orderTest = ""',
+        'testcases.agrd.dev,pages.dev#%#window.orderTest += "1"',
+        'testcases.agrd.dev,pages.dev#%#window.orderTest += "2"',
+        'testcases.agrd.dev,pages.dev#%#window.orderTest += "3"',
+        'testcases.agrd.dev,pages.dev#%#window.orderTest += "4"',
+        // Source: https://testcases.agrd.dev/Filters/script-rules/test-script-firefox/test-script-firefox.txt
+        'testcases.agrd.dev#%#window.__firefoxTest1 = true;',
+        'testcases.agrd.dev#%#document.cookie = "adg_test";',
+        // Source: https://testcases.agrd.dev/Filters/script-rules/jsinject-rules/test-jsinject-rules.txt
+        'testcases.agrd.dev,pages.dev#%#document.__jsinjectTest = true;',
+        // Source: https://testcases.agrd.dev/Filters/nonbasic-path-modifier/test-nonbasic-path-modifier.txt
+        '[$path=/subpage1]testcases.agrd.dev,pages.dev#%#window.__case13=true;',
+        '[$path=/subpage2]testcases.agrd.dev,pages.dev#%#window.__case14=true;',
+        '[$path=/sub.*/]testcases.agrd.dev,pages.dev#%#window.__case15=true;',
+        '[$path=/subpage(?!1)/]testcases.agrd.dev,pages.dev#%#window.__case16=true;',
+        // Source: https://testcases.agrd.dev/Filters/advanced-domain-modifier/test-advanced-domain-modifier.txt
+        'testcases.agrd.*,pages.*#%#window.__case5=true;',
+        // Source: https://testcases.agrd.dev/Filters/content-security-policy/test-content-security-policy.txt
+        'testcases.agrd.dev,pages.dev#%#console.log(\'script rule\')',
+        'testcases.agrd.dev,pages.dev#%#console.log(Date.now(), "default registered script")',
+        // Source: https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt
+        'testcases.agrd.dev,pages.dev#%#console.log(\'script rule\')',
+        'testcases.agrd.dev,pages.dev#%#console.log(Date.now(), "default registered script")',
     ];
 
     TESTCASES_RULES.forEach((rawRule) => {
