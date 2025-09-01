@@ -4572,6 +4572,32 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "a8d7f5b4e27b5a94d3b0c3528bdccb9c" due to: ' + e);
         }
     },
+    '((e,t)=>{const p={apply:(p,o,n)=>{if(n[0]&&n[1]&&n[1].includes(t)){const t=new URL(n[1]);t.searchParams.delete(e),n[1]=t.href.replace("%2CCuepointPlaylist","")}return Reflect.apply(p,o,n)}};window.XMLHttpRequest.prototype.open=new Proxy(window.XMLHttpRequest.prototype.open,p)})("deviceAdInsertionTypeOverride","/GetPlaybackResources?");': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.ca045d12c34bac6d300256ca0d59536d === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, r) => {
+                        if (r[0] && r[1] && r[1].includes("/GetPlaybackResources?")) {
+                            const e = new URL(r[1]);
+                            e.searchParams.delete("deviceAdInsertionTypeOverride"), r[1] = e.href.replace("%2CCuepointPlaylist", "");
+                        }
+                        return Reflect.apply(e, t, r);
+                    }
+                };
+                window.XMLHttpRequest.prototype.open = new Proxy(window.XMLHttpRequest.prototype.open, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "ca045d12c34bac6d300256ca0d59536d", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "ca045d12c34bac6d300256ca0d59536d" due to: ' + e);
+        }
+    },
     '(()=>{if(window.self!==window.top)try{if("object"==typeof localStorage)return}catch(a){delete window.localStorage,window.localStorage={setItem(){},getItem(){},removeItem(){},clear(){}}}})();': () => {
         try {
             const e = "done";
