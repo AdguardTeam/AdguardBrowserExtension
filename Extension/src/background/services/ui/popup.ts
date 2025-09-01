@@ -192,7 +192,9 @@ export class PopupService {
         const isExtensionUpdateAvailable = __IS_MV3__
             ? await ExtensionUpdateService.getIsUpdateAvailable()
             : false;
-        const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
+        const manualExtensionUpdateData = __IS_MV3__
+            ? await ExtensionUpdateService.getManualExtensionUpdateData()
+            : null;
 
         const isExtensionReloadedOnUpdate = __IS_MV3__
             ? !!manualExtensionUpdateData
