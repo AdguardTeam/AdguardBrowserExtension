@@ -16,6 +16,7 @@ import {
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../constants';
 import {
+    CommonFilterApi,
     DocumentBlockApi,
     SettingsApi,
     type SettingsData,
@@ -27,6 +28,7 @@ import {
     FiltersOption,
     RootOption,
     SettingOption,
+    StealthOption,
 } from '../../../../Extension/src/background/schema';
 import { settingsStorage } from '../../../../Extension/src/background/storages';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
@@ -233,6 +235,33 @@ describe('Settings Api', () => {
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
             expect(await DocumentBlockApi.getTrustedDomains()).toStrictEqual([]);
+        }, EXTENDED_TIMEOUT_MS);
+
+        it('should not enable default filters on import', async () => {
+            const initDefaultFiltersSpy = vi.spyOn(CommonFilterApi, 'initDefaultFilters');
+
+            const userConfig = getExportedSettingsProtocolV2Fixture();
+
+            // Disable all filters in settings
+            userConfig[RootOption.Filters][FiltersOption.EnabledFilters] = [];
+            userConfig[RootOption.Filters][FiltersOption.EnabledGroups] = [];
+            userConfig[RootOption.Filters][FiltersOption.CustomFilters] = [];
+            if (userConfig[RootOption.Stealth]) {
+                userConfig[RootOption.Stealth][StealthOption.BlockKnownTrackers] = false;
+                userConfig[RootOption.Stealth][StealthOption.StripTrackingParams] = false;
+            }
+
+            const importResult = await SettingsApi.import(JSON.stringify(userConfig));
+
+            // Should export successfully
+            expect(importResult).toBeTruthy();
+
+            // Should not initialize default filters
+            expect(initDefaultFiltersSpy).not.toHaveBeenCalled();
+
+            // Exported settings should be the same
+            const exportedSettings = await SettingsApi.export();
+            expect(JSON.parse(exportedSettings)).toStrictEqual(userConfig);
         }, EXTENDED_TIMEOUT_MS);
     });
 });

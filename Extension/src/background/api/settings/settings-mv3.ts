@@ -201,8 +201,9 @@ export class SettingsApi {
      *
      * @param enableUntouchedGroups - Should enable untouched groups related to
      * the default filters or not.
+     * @param shouldInitDefaultFilters - Should initialize default filters or not, default value is `true`.
      */
-    public static async reset(enableUntouchedGroups: boolean): Promise<void> {
+    public static async reset(enableUntouchedGroups: boolean, shouldInitDefaultFilters = true): Promise<void> {
         await UserRulesApi.setUserRules('');
 
         // Set settings store to defaults
@@ -213,8 +214,12 @@ export class SettingsApi {
         // Re-init filters
         await FiltersApi.init(false);
 
-        // On import should enable only groups from imported file.
-        await CommonFilterApi.initDefaultFilters(enableUntouchedGroups);
+        // On import should not enable default filters
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136
+        if (shouldInitDefaultFilters) {
+            // On import should enable only groups from imported file.
+            await CommonFilterApi.initDefaultFilters(enableUntouchedGroups);
+        }
 
         // reset trusted domains list
         await DocumentBlockApi.reset();
@@ -247,8 +252,13 @@ export class SettingsApi {
 
             const validConfig = configValidator.parse(json);
 
-            // Should not enable default groups.
-            await SettingsApi.reset(false);
+            /**
+             * 1. Should not enable default groups.
+             * 2. Should not enable default filters.
+             *
+             * @see {@link https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136}
+             */
+            await SettingsApi.reset(false, false);
 
             SettingsApi.importExtensionSpecificSettings(
                 validConfig[RootOption.ExtensionSpecificSettings],
