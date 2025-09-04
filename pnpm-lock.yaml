@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@adguard/tswebextension>@adguard/tsurlfilter': https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz
-  '@adguard/tswebextension': https://github.com/AdguardTeam/tsurlfilter/raw/e71ba7738f8880f26668e5695135fbcfe3857f6e/packages/tswebextension/tswebextension.tgz
-  '@adguard/tsurlfilter': https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz
-
 importers:
 
   .:
@@ -32,11 +27,11 @@ importers:
         specifier: 1.0.2
         version: 1.0.2
       '@adguard/tsurlfilter':
-        specifier: https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz
-        version: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)
+        specifier: ^3.4.5
+        version: 3.4.5(@adguard/re2-wasm@1.2.0)
       '@adguard/tswebextension':
-        specifier: https://github.com/AdguardTeam/tsurlfilter/raw/e71ba7738f8880f26668e5695135fbcfe3857f6e/packages/tswebextension/tswebextension.tgz
-        version: https://github.com/AdguardTeam/tsurlfilter/raw/e71ba7738f8880f26668e5695135fbcfe3857f6e/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)
+        specifier: ^3.2.7
+        version: 3.2.7(@adguard/re2-wasm@1.2.0)
       '@date-fns/utc':
         specifier: ^2.1.0
         version: 2.1.0
@@ -439,25 +434,15 @@ packages:
   '@adguard/translate@1.0.2':
     resolution: {integrity: sha512-TeQV4ngse/fcpFDCrtU5VqjZfQsdytSuGT8wF4biIM6c6v6W/tkUdrTDhNItq126hAZe65V8QgipTAp8qHdeZw==}
 
-  '@adguard/tsurlfilter@https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz':
-    resolution: {tarball: https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz}
-    version: 3.4.3
+  '@adguard/tsurlfilter@3.4.5':
+    resolution: {integrity: sha512-wYGjjN+IJUE9kBvgCaHCphDxNTSxnwWjmzwXY9bUI0DjdXv8lhsJd1QtZfbz/yFt3CilrTCGPoDvShZkaBz05g==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
       '@adguard/re2-wasm': 1.2.0
 
-  '@adguard/tsurlfilter@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz':
-    resolution: {tarball: https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz}
-    version: 3.4.3
-    engines: {node: '>=22'}
-    hasBin: true
-    peerDependencies:
-      '@adguard/re2-wasm': 1.2.0
-
-  '@adguard/tswebextension@https://github.com/AdguardTeam/tsurlfilter/raw/e71ba7738f8880f26668e5695135fbcfe3857f6e/packages/tswebextension/tswebextension.tgz':
-    resolution: {tarball: https://github.com/AdguardTeam/tsurlfilter/raw/e71ba7738f8880f26668e5695135fbcfe3857f6e/packages/tswebextension/tswebextension.tgz}
-    version: 3.3.0
+  '@adguard/tswebextension@3.2.7':
+    resolution: {integrity: sha512-gUJUyHGkZsLQVQDeUsyE40GUFp3t9iqaJAli5o993wXK7sUAeAKijRMmkILLg6f4TEjl+QV3Egw2NbfJZQQ2WQ==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -1975,8 +1960,8 @@ packages:
     resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
     engines: {node: '>=6.0'}
 
-  chrome-types@0.1.358:
-    resolution: {integrity: sha512-KCbRpZFdYupaAcT6qX7+IHNDjm8LXzyCyeCqPi2Ij6RFnPbn5y433H/Zl5Dy2cCwmnHBLLfiMr4sNH+HwPm5eg==}
+  chrome-types@0.1.375:
+    resolution: {integrity: sha512-YmHvBeZUqOUeejdtX8h/ehbM4SbVYdSpoTh6+LpPVe3T8TBV2uqRd7LGITuhVtWbMIiXX0NzrajLbwITYYZI/g==}
 
   cidr-regex@3.1.1:
     resolution: {integrity: sha512-RBqYd32aDwbCMFJRL6wHOlDNYJsPNTt8vC82ErHF5vKt8QQzxm1FrkW8s/R5pVrXMf17sba09Uoy91PKiddAsw==}
@@ -5159,7 +5144,7 @@ snapshots:
       '@adguard/agtree': 3.2.2
       '@adguard/logger': 2.0.0
       '@adguard/re2-wasm': 1.2.0
-      '@adguard/tsurlfilter': https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)
+      '@adguard/tsurlfilter': 3.4.5(@adguard/re2-wasm@1.2.0)
       axios: 1.11.0
       chokidar: 4.0.3
       commander: 12.1.0
@@ -5195,7 +5180,7 @@ snapshots:
 
   '@adguard/translate@1.0.2': {}
 
-  '@adguard/tsurlfilter@https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)':
+  '@adguard/tsurlfilter@3.4.5(@adguard/re2-wasm@1.2.0)':
     dependencies:
       '@adguard/agtree': 3.2.2
       '@adguard/css-tokenizer': 1.2.0
@@ -5212,24 +5197,7 @@ snapshots:
       zod: 3.24.4
       zod-validation-error: 3.4.0(zod@3.24.4)
 
-  '@adguard/tsurlfilter@https://raw.githubusercontent.com/AdguardTeam/tsurlfilter/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)':
-    dependencies:
-      '@adguard/agtree': 3.2.2
-      '@adguard/css-tokenizer': 1.2.0
-      '@adguard/logger': 2.0.0
-      '@adguard/re2-wasm': 1.2.0
-      '@adguard/scriptlets': 2.2.8
-      cidr-tools: 6.4.2
-      commander: 12.1.0
-      is-cidr: 4.0.2
-      is-ip: 3.1.0
-      lru-cache: 11.0.2
-      punycode: 2.3.1
-      tldts: 5.7.112
-      zod: 3.24.4
-      zod-validation-error: 3.4.0(zod@3.24.4)
-
-  '@adguard/tswebextension@https://github.com/AdguardTeam/tsurlfilter/raw/e71ba7738f8880f26668e5695135fbcfe3857f6e/packages/tswebextension/tswebextension.tgz(@adguard/re2-wasm@1.2.0)':
+  '@adguard/tswebextension@3.2.7(@adguard/re2-wasm@1.2.0)':
     dependencies:
       '@adguard/agtree': 3.2.2
       '@adguard/assistant': 4.3.75
@@ -5237,9 +5205,9 @@ snapshots:
       '@adguard/logger': 2.0.0
       '@adguard/scriptlets': 2.2.8
       '@adguard/text-encoding': 0.8.3
-      '@adguard/tsurlfilter': https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz(@adguard/re2-wasm@1.2.0)
+      '@adguard/tsurlfilter': 3.4.5(@adguard/re2-wasm@1.2.0)
       bowser: 2.11.0
-      chrome-types: 0.1.358
+      chrome-types: 0.1.375
       commander: 12.1.0
       fs-extra: 11.3.0
       idb: 8.0.2
@@ -6720,7 +6688,7 @@ snapshots:
 
   chrome-trace-event@1.0.4: {}
 
-  chrome-types@0.1.358: {}
+  chrome-types@0.1.375: {}
 
   cidr-regex@3.1.1:
     dependencies:
