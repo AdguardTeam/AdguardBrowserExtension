@@ -114,6 +114,12 @@ link_tswebextension() {
             echo "Linking tsurlfilter package to main project..."
             pnpm link ../tsurlfilter/packages/tsurlfilter
         fi
+
+        # CSS Tokenizer is a dependency of AGTree and TSUrlFilter
+        # if any of them is linked, link CSS Tokenizer as well
+        if [ "$LINK_AGTREE" = true ] || [ "$LINK_TSURLFILTER" = true ]; then
+            pnpm link ../tsurlfilter/packages/css-tokenizer
+        fi
     else
         echo "No TSURLFILTER_REF specified, skipping tsurlfilter clone"
     fi
