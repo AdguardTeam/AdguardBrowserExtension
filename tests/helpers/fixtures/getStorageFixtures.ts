@@ -562,7 +562,6 @@ export const getStorageFixturesV7 = (expires: number): StorageData[] => {
 
         adgSettings['filters-state'] = JSON.stringify(filtersState);
         settings['adguard-settings'] = adgSettings;
-        settings['raw_filterrules_24.txt'] = '';
         settings['schema-version'] = 7;
 
         return settings;
@@ -613,7 +612,6 @@ export const getStorageFixturesV9 = (expires: number): StorageData[] => {
 
         adgSettings['filters-state'] = JSON.stringify(filtersState);
         settings['adguard-settings'] = adgSettings;
-        settings['raw_filterrules_24.txt'] = '';
         settings['schema-version'] = 9;
 
         return settings;
