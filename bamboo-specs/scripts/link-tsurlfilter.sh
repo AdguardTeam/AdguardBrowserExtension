@@ -39,7 +39,7 @@ done
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
-TSURLFILTER_REF=""
+TSURLFILTER_REF="release/browser-extension-v5.3"
 
 # Repository URLs
 TSURLFILTER_REPO="ssh://git@bit.int.agrd.dev:7999/adguard-filters/tsurlfilter.git"
@@ -113,6 +113,12 @@ link_tswebextension() {
         if [ "$LINK_TSURLFILTER" = true ]; then
             echo "Linking tsurlfilter package to main project..."
             pnpm link ../tsurlfilter/packages/tsurlfilter
+        fi
+
+        # CSS Tokenizer is a dependency of AGTree and TSUrlFilter
+        # if any of them is linked, link CSS Tokenizer as well
+        if [ "$LINK_AGTREE" = true ] || [ "$LINK_TSURLFILTER" = true ]; then
+            pnpm link ../tsurlfilter/packages/css-tokenizer
         fi
     else
         echo "No TSURLFILTER_REF specified, skipping tsurlfilter clone"
