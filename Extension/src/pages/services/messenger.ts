@@ -103,7 +103,7 @@ class Messenger {
      */
     constructor() {
         this.resetUserRulesForPage = this.resetUserRulesForPage.bind(this);
-        this.updateFilters = this.updateFilters.bind(this);
+        this.updateFiltersMV2 = this.updateFiltersMV2.bind(this);
         this.removeAllowlistDomain = this.removeAllowlistDomain.bind(this);
         this.addAllowlistDomainForTabId = this.addAllowlistDomainForTabId.bind(this);
         this.addAllowlistDomainForUrl = this.addAllowlistDomainForUrl.bind(this);
@@ -137,7 +137,7 @@ class Messenger {
     }
 
     /**
-     * Creates long-lived connections between popup and background page.
+     * Creates long-lived connections between an extension page and the background page.
      *
      * @param page Page name.
      * @param events List of events to which subscribe.
@@ -234,7 +234,7 @@ class Messenger {
             listenerId = updatedResponse.listenerId;
         };
 
-        browser.runtime.onMessage.addListener((message) => {
+        const messageHandler = (message: unknown) => {
             if (!messageHasTypeField(message)) {
                 logger.error('[ext.Messenger]: received message in Messenger.createEventListener has no type field:', message);
                 return undefined;
@@ -257,12 +257,16 @@ class Messenger {
             if (message.type === MessageType.UpdateListeners) {
                 onUpdateListeners();
             }
-        });
+        };
 
         const onUnload = (): void => {
             if (!listenerId) {
                 return;
             }
+
+            browser.runtime.onMessage.removeListener(messageHandler);
+            window.removeEventListener('beforeunload', onUnload);
+            window.removeEventListener('unload', onUnload);
 
             this.sendMessage(
                 MessageType.RemoveListener,
@@ -276,6 +280,7 @@ class Messenger {
             }
         };
 
+        browser.runtime.onMessage.addListener(messageHandler);
         window.addEventListener('beforeunload', onUnload);
         window.addEventListener('unload', onUnload);
 
@@ -509,13 +514,70 @@ class Messenger {
      *
      * @returns Promise that resolves with the list of filters.
      */
-    async updateFilters(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
+    async updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
         if (__IS_MV3__) {
-            logger.warn('[ext.Messenger.updateFilters]: filters update is not supported in MV3');
+            logger.warn('[ext.Messenger.updateFiltersMV2]: filters update is not supported in MV3');
             return [];
         }
 
         return this.sendMessage(MessageType.CheckFiltersUpdate);
+    }
+
+    /**
+     * Sends a message to the background page to check for extension updates initiated from popup.
+     */
+    async checkUpdatesFromPopupMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateFromPopup>> {
+        if (!__IS_MV3__) {
+            logger.warn('[ext.Messenger.checkUpdatesFromPopupMV3]: extension update is not supported in MV2');
+            return;
+        }
+
+        return this.sendMessage(MessageType.CheckExtensionUpdateFromPopup);
+    }
+
+    /**
+     * Sends a message to the background page to update extension initiated from popup.
+     */
+    async updateExtensionFromPopupMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtensionFromPopup>> {
+        if (!__IS_MV3__) {
+            logger.warn('[ext.Messenger.updateExtensionFromPopupMV3]: extension update is not supported in MV2');
+            return;
+        }
+
+        return this.sendMessage(MessageType.UpdateExtensionFromPopup);
+    }
+
+    /**
+     * Sends a message to the background page to check for extension updates.
+     *
+     * @returns Promise that resolves with boolean - true if update is available, false otherwise.
+     */
+    async checkUpdatesFromOptionsMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateFromOptions>> {
+        if (!__IS_MV3__) {
+            logger.warn('[ext.Messenger.checkUpdatesFromOptionsMV3]: extension update is not supported in MV2');
+            return false;
+        }
+
+        return this.sendMessage(MessageType.CheckExtensionUpdateFromOptions);
+    }
+
+    /**
+     * Sends a message to the background page to update the extension from the options page.
+     *
+     * @returns Promise that resolves with boolean false if update failed,
+     * otherwise void because the extension reloads on success.
+     */
+    async updateExtensionFromOptionsMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtensionFromOptions>> {
+        if (!__IS_MV3__) {
+            logger.warn('[ext.Messenger.updateExtensionFromOptionsMV3]: extension update is not supported in MV2');
+            return;
+        }
+
+        try {
+            await this.sendMessage(MessageType.UpdateExtensionFromOptions);
+        } catch (error) {
+            logger.debug('[ext.Messenger.updateExtensionFromOptionsMV3]: failed to update extension: ', error);
+        }
     }
 
     /**

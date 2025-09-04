@@ -26,9 +26,9 @@ import { type Manifest } from 'webextension-polyfill';
 import { Redirects } from '@adguard/scriptlets/redirects';
 
 import packageJson from '../package.json';
-import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
+import { BuildTargetEnv, WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
 
-import { BuildTargetEnv, Browser } from './constants';
+import { Browser } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 
 /* eslint-disable @typescript-eslint/naming-convention */

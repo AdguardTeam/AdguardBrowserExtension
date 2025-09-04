@@ -34,7 +34,6 @@ import cn from 'classnames';
 import { rootStore } from '../../stores/RootStore';
 import { getRequestEventType } from '../RequestWizard/utils';
 import { translator } from '../../../../common/translators/translator';
-import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { AntiBannerFiltersId, SCROLLBAR_WIDTH } from '../../../../common/constants';
 import { passiveEventSupported } from '../../../helpers';
 import { optionsStorage } from '../../../options/options-storage';
@@ -55,11 +54,11 @@ const filterNameAccessor = (props) => {
     } = props;
 
     if (requestRule && requestRule.isStealthModeRule) {
-        return reactTranslator.getMessage('filtering_log_privacy_applied_rules');
+        return translator.getMessage('filtering_log_privacy_applied_rules');
     }
 
     if (!filterName && stealthActions) {
-        return reactTranslator.getMessage('filtering_log_privacy_applied_rules');
+        return translator.getMessage('filtering_log_privacy_applied_rules');
     }
 
     return props.filterName;
@@ -424,7 +423,7 @@ const FilteringEvents = observer(() => {
     const columnsData = [
         {
             id: 'status',
-            Header: `${reactTranslator.getMessage('filtering_table_status')}`,
+            Header: `${translator.getMessage('filtering_table_status')}`,
             accessor: statusAccessor,
         },
         {
@@ -434,22 +433,22 @@ const FilteringEvents = observer(() => {
         },
         {
             id: 'type',
-            Header: `${reactTranslator.getMessage('filtering_table_type')}`,
+            Header: `${translator.getMessage('filtering_table_type')}`,
             accessor: typeAccessor,
         },
         {
             id: 'rule',
-            Header: `${reactTranslator.getMessage('filtering_table_rule')}`,
+            Header: `${translator.getMessage('filtering_table_rule')}`,
             accessor: ruleAccessor,
         },
         {
             id: 'filter',
-            Header: `${reactTranslator.getMessage('filtering_table_filter')}`,
+            Header: `${translator.getMessage('filtering_table_filter')}`,
             accessor: filterNameAccessor,
         },
         {
             id: 'source',
-            Header: `${reactTranslator.getMessage('filtering_table_source')}`,
+            Header: `${translator.getMessage('filtering_table_source')}`,
             accessor: 'frameDomain',
         },
     ];

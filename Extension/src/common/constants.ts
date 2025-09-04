@@ -41,6 +41,7 @@ export const FILTERING_LOG_WINDOW_STATE = 'filtering-log-window-state';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
+export const MANUAL_EXTENSION_UPDATE_KEY = 'manual-extension-update';
 
 /**
  * Filter ids used in the code on the background page and filtering log page.
@@ -121,6 +122,7 @@ export enum NotifierType {
     UpdateAllowlistFilterRules = 'event.update.allowlist.filter.rules',
     SettingUpdated = 'event.update.setting.value',
     FiltersUpdateCheckReady = 'event.update.filters.check',
+    ExtensionUpdateStateChange = 'event.update.extension.state.change',
     // Filtering log events.
     TabAdded = 'log.tab.added',
     TabClose = 'log.tab.close',
@@ -210,6 +212,11 @@ export const emptyPreprocessedFilterList: PreprocessedFilterList = {
 export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';
 
 /**
+ * Time-to-live for notifications in milliseconds.
+ */
+export const NOTIFICATION_TTL_MS = 4000;
+
+/**
  * Minimum Chrome versions required for different toggles which enables usage of User Scripts API.
  *
  * User scripts API with needed 'execute' method is supported from Chrome 135 and higher.
@@ -239,3 +246,98 @@ export const USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED = {
  * Needed to update the state of the warning when the user grants or revokes the permission.
  */
 export const USER_SCRIPTS_API_WARNING_RECHECK_DELAY_MS = 2000;
+
+/**
+ * Enum with the list of the pages where manual extension update can be triggered.
+ */
+export enum ManualExtensionUpdatePage {
+    Options = 'options',
+    Popup = 'popup',
+}
+
+/**
+ * States for the extension update finite state machine (FSM).
+ */
+export const enum ExtensionUpdateFSMState {
+    /**
+     * Idle state.
+     */
+    Idle = 'Idle',
+
+    /**
+     * Checking for updates state.
+     */
+    Checking = 'Checking',
+
+    /**
+     * Available updates state.
+     */
+    Available = 'Available',
+
+    /**
+     * Updating state.
+     */
+    Updating = 'Updating',
+
+    /**
+     * Not available updates state.
+     *
+     * It means that the extension is already up-to-date.
+     */
+    NotAvailable = 'NotAvailable',
+
+    /**
+     * Update failed state.
+     */
+    Failed = 'Failed',
+
+    /**
+     * Update success state.
+     */
+    Success = 'Success',
+}
+
+/**
+ * Events for the extension update finite state machine (FSM).
+ *
+ * Note: there is no event for successful update, because it is not needed —
+ * the extension is reloaded automatically after the update
+ * and needed notification is shown based on the storage value (set before the update).
+ * For more details, see `ExtensionUpdateService.handleExtensionReloadOnUpdate()`.
+ */
+export const enum ExtensionUpdateFSMEvent {
+    /**
+     * Event to initialize the state machine.
+     */
+    Init = 'Init',
+
+    /**
+     * Event to check for updates.
+     */
+    Check = 'Check',
+
+    /**
+     * Event for no available updates after the check.
+     */
+    NoUpdateAvailable = 'NoUpdateAvailable',
+
+    /**
+     * Event for available updates after the check.
+     */
+    UpdateAvailable = 'UpdateAvailable',
+
+    /**
+     * Event to start the update.
+     */
+    Update = 'Update',
+
+    /**
+     * Event for failed update.
+     */
+    UpdateFailed = 'UpdateFailed',
+}
+
+/**
+ * Time duration for showing update state change. Needed for smoother user experience.
+ */
+export const MIN_UPDATE_DISPLAY_DURATION_MS = 2 * 1000;
