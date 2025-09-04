@@ -720,6 +720,20 @@ This is useful for temporarily relaxing or tightening the allowed size delta for
 
 Due to the transition from MV2 to MV3, we cannot update our filters remotely. To keep the filters as fresh as possible, we have configured automated tasks in our CI plans. These tasks will build a new version of the extension with only the updated `@adguard/dnr-rulesets` package, which contains new static rulesets.
 
+### Auto-update cycle
+
+We have set up an auto-update cycle that runs every hour to sync with fresh releases from the [`@adguard/dnr-rulesets`](https://www.npmjs.com/package/@adguard/dnr-rulesets) npm package. This ensures our extension stays up-to-date with the latest filter rules.
+
+To deploy new releases as soon as possible, we have implemented all the steps outlined in Chrome's [Skip Review documentation](https://developer.chrome.com/docs/webstore/skip-review). This allows us to publish updates to the Chrome Web Store without waiting for the full review cycle.
+
+### Skip review restrictions
+
+However, there is an important restriction when using the "skip review" option: **we cannot update the extension with skip review if it contains changes to filtering script rules**. This is because all script rules are collected during build time into a file called `local_script_rules.js` (for safe use them with the scripting API).
+
+Therefore, any updates that include changes to script rules will require the full review cycle in the Chrome Web Store as usual.
+
+### Build process
+
 These automated tasks will run all necessary checks: unit tests, translation checks, and linter. After that, they will update resources, including filters and local script rules, create a build, and run integration tests to ensure the update is safe.
 
 Finally, the new version of the extension will be published to the Chrome Web Store.
