@@ -121,7 +121,7 @@ export class SettingsService {
 
         const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
 
-        const isExtensionReloadedOnUpdate = !!manualExtensionUpdateData;
+        const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
 
         const isExtensionUpdateAvailable = await ExtensionUpdateService.getIsUpdateAvailable();
 
@@ -146,10 +146,12 @@ export class SettingsService {
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
-            areFilterLimitsExceeded,
-            isExtensionUpdateAvailable,
-            isExtensionReloadedOnUpdate,
-            isSuccessfulExtensionUpdate: !!manualExtensionUpdateData?.isOk,
+            mv3SpecificOptions: {
+                areFilterLimitsExceeded,
+                isExtensionUpdateAvailable,
+                isExtensionReloadedOnUpdate,
+                isSuccessfulExtensionUpdate: manualExtensionUpdateData?.isOk || false,
+            },
         };
     }
 

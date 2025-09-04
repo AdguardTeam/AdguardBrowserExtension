@@ -121,14 +121,8 @@ export class SettingsService {
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
-            // always false for MV2
-            areFilterLimitsExceeded: false,
-            // always false for MV2
-            isExtensionUpdateAvailable: false,
-            // always false for MV2
-            isExtensionReloadedOnUpdate: false,
-            // always false for MV2
-            isSuccessfulExtensionUpdate: false,
+            // MV3-specific options are null for MV2
+            mv3SpecificOptions: null,
         };
     }
 
