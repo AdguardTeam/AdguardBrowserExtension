@@ -496,17 +496,37 @@ export class PagesApi {
     }
 
     /**
+     * Opens settings page with specified query.
+     * If the page has been already opened, focus on it.
+     *
+     * @param query Query string to open on settings page.
+     */
+    private static async openSettingsPageWithQuery(query: string): Promise<void> {
+        const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, query);
+
+        const tab = await PagesApi.openTabOnSettingsPage(path);
+
+        await TabsApi.focus(tab);
+    }
+
+    /**
+     * Opens filters section on settings page.
+     * If the page has been already opened, focus on it.
+     */
+    public static async openFiltersOnSettingsPage(): Promise<void> {
+        const queryPart = `#${OptionsPageSections.filters}`;
+
+        await PagesApi.openSettingsPageWithQuery(queryPart);
+    }
+
+    /**
      * Opens rules limits section on settings page.
      * If the page has been already opened, focus on it.
      */
     public static async openRulesLimitsPage(): Promise<void> {
         const queryPart = `#${OptionsPageSections.ruleLimits}`;
 
-        const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, queryPart);
-
-        const tab = await PagesApi.openTabOnSettingsPage(path);
-
-        await TabsApi.focus(tab);
+        await PagesApi.openSettingsPageWithQuery(queryPart);
     }
 
     /**

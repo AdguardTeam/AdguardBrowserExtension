@@ -47,12 +47,12 @@ import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { Loader } from '../../../common/components/Loader';
-import { NotifierType } from '../../../../common/constants';
+import { ExtensionUpdateFSMState, NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
+import { NotificationType } from '../../../common/types';
 import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import { Icons } from '../ui/Icons';
-import { NotificationType } from '../../stores/UiStore';
 import { SkipToContentButton } from '../SkipToContentButton';
 
 import '../../styles/styles.pcss';
@@ -104,7 +104,36 @@ const Options = observer(() => {
     useAppearanceTheme(settingsStore.appearanceTheme);
 
     useEffect(() => {
-        let removeListenerCallback = () => {};
+        let removeListenerCallback = () => { };
+
+        const handleExtensionUpdateStateChange = (state) => {
+            switch (state) {
+                case ExtensionUpdateFSMState.NotAvailable: {
+                    uiStore.addNotification({
+                        type: NotificationType.Success,
+                        text: translator.getMessage('update_not_needed'),
+                    });
+                    break;
+                }
+                case ExtensionUpdateFSMState.Failed: {
+                    settingsStore.setIsExtensionUpdateAvailable(false);
+                    uiStore.addNotification({
+                        type: NotificationType.Error,
+                        text: translator.getMessage('update_failed_text'),
+                        button: {
+                            title: translator.getMessage('update_failed_try_again_btn'),
+                            onClick: settingsStore.checkUpdatesMV3,
+                        },
+                    });
+                    break;
+                }
+                default: {
+                    // do nothing since notification should be shown
+                    // for a limited list of states
+                    break;
+                }
+            }
+        };
 
         const subscribeToMessages = async () => {
             const events = [
@@ -113,6 +142,7 @@ const Options = observer(() => {
                 NotifierType.FiltersUpdateCheckReady,
                 NotifierType.SettingUpdated,
                 NotifierType.FullscreenUserRulesEditorUpdated,
+                NotifierType.ExtensionUpdateStateChange,
             ];
 
             removeListenerCallback = await messenger.createEventListener(
@@ -144,6 +174,11 @@ const Options = observer(() => {
                             settingsStore.setFullscreenUserRulesEditorState(isOpen);
                             break;
                         }
+                        case NotifierType.ExtensionUpdateStateChange: {
+                            const [eventData] = message.data;
+                            handleExtensionUpdateStateChange(eventData);
+                            break;
+                        }
                         default: {
                             logger.warn('[ext.Options]: Undefined message type:', type);
                             break;
@@ -158,11 +193,7 @@ const Options = observer(() => {
 
             // Show notification about changed filter list by browser only once.
             if (__IS_MV3__ && areFilterLimitsExceeded) {
-                uiStore.addNotification({
-                    description: translator.getMessage('popup_limits_exceeded_warning'),
-                    link: translator.getMessage('options_rule_limits'),
-                    type: NotificationType.ERROR,
-                });
+                uiStore.addRuleLimitsNotification(translator.getMessage('popup_limits_exceeded_warning'));
             }
 
             // Note: Is it important to check the limits after the request for

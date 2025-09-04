@@ -24,40 +24,14 @@ import {
 import { nanoid } from 'nanoid';
 
 import { type InvalidStaticResultData, type InvalidDynamicResultData } from '../../../background/services/rules-limits';
+import { translator } from '../../../common/translators/translator';
+import { NotificationType, type NotificationParams } from '../../common/types';
+import { messenger } from '../../services/messenger';
 // TODO: Maybe not import from components folder here?
 import { getDynamicWarningMessage, getStaticWarningMessage } from '../components/Warnings/messages';
+import { type NotificationParamsWithId } from '../components/Notifications/Notification';
 
 import { type RootStore } from './RootStore';
-
-export enum NotificationType {
-    SUCCESS = 'success',
-    ERROR = 'error',
-}
-
-/**
- * Notification object.
- */
-export type Notification = {
-    /**
-     * ID of notification
-     */
-    id: string;
-
-    /**
-     * Description of notification
-     */
-    description: string;
-
-    /**
-     * Notification type
-     */
-    type: NotificationType;
-
-    /**
-     * Link to detailed info
-     */
-    link?: string;
-};
 
 class UiStore {
     /**
@@ -79,7 +53,7 @@ class UiStore {
      * Notifications list
      */
     @observable
-    notifications: Notification[] = [];
+    notifications: NotificationParamsWithId[] = [];
 
     /**
      * Loader visibility state. **Used for mv3**.
@@ -106,25 +80,42 @@ class UiStore {
     isSidebarOpen = false;
 
     @action
-    addNotification({ description, type, link }: Omit<Notification, 'id'>): string | null {
-        const isNotificationAlreadyPresent = this.notifications.some((notification) => {
-            return notification.type === type
-                && notification.link === link
-                && notification.description === description;
-        });
+    addNotification(params: NotificationParams) {
+        const isNotificationAlreadyPresent = this.notifications
+            .some((notification) => {
+                return notification.type === params.type
+                    && notification.text === params.text;
+            });
 
         if (isNotificationAlreadyPresent) {
             return null;
         }
-
         const id = nanoid();
         this.notifications.push({
             id,
-            description,
-            link,
-            type,
+            ...params,
         });
         return id;
+    }
+
+    /**
+     * Adds an error notification about rule limits exceeded.
+     *
+     * The notification will have a button to open the rules limits tab.
+     *
+     * @param text Notification text.
+     */
+    @action
+    addRuleLimitsNotification(text: string) {
+        const button = {
+            title: translator.getMessage('options_rule_limits'),
+            onClick: messenger.openRulesLimitsTab,
+        };
+        this.addNotification({
+            type: NotificationType.Error,
+            text,
+            button,
+        });
     }
 
     @action

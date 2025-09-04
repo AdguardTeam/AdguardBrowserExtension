@@ -23,19 +23,8 @@ import fs from 'node:fs';
 import unzipper from 'unzipper';
 import { ensureDir } from 'fs-extra';
 
-import { MIN_SUPPORTED_VERSION } from '../../constants';
-import { BuildTargetEnv } from '../constants';
-
-/**
- * IDs of the extension in Chrome Web Store for each build target environment.
- *
- * @type {Record<BuildTargetEnv, string>}
- */
-const ExtensionsIds: Record<BuildTargetEnv, string> = {
-    [BuildTargetEnv.Release]: 'bgnkhhnnamicmpeenaelnjfhikgbkllg',
-    [BuildTargetEnv.Beta]: 'apjcbfpjihpedihablmalmbbhjpklbdf',
-    [BuildTargetEnv.Dev]: '', // Not published in CWS
-};
+import { BuildTargetEnv, ExtensionsIds } from '../../constants';
+import { getCrxUrl } from '../../Extension/src/common/update-mv3';
 
 /**
  * Local directory containing the previous extension, ignored by git.
@@ -48,44 +37,17 @@ const TMP_DIR = path.join(process.cwd(), 'tmp');
 const CRX_HEADER_MAGIC_STRING = 'Cr24';
 
 /**
- * Chrome version string for update requests.
- */
-const CHROME_VER = `${MIN_SUPPORTED_VERSION.CHROMIUM_MV3}.0.0.0`;
-
-/**
- * Returns the Chrome Web Store extension update URL for a given extension
- * ID and Chrome version.
- *
- * @param extensionId The extension ID in the Chrome Web Store.
- * @param chromeVer The Chrome version string (e.g., '120.0.0.0').
- *
- * @returns The update URL for the CRX file.
- */
-const getCrxUrl = (extensionId: string, chromeVer: string) => {
-    const url = new URL('https://clients2.google.com/service/update2/crx');
-
-    url.searchParams.set('response', 'redirect');
-    url.searchParams.set('acceptformat', 'crx3');
-    url.searchParams.set('prodversion', chromeVer);
-    url.searchParams.set('x', `id=${extensionId}&installsource=ondemand&uc`);
-
-    return url.href;
-};
-
-/**
  * Downloads the CRX file for the given extension ID and Chrome version,
  * following redirects.
  *
  * @param extensionId The extension ID in the Chrome Web Store.
  * @param destPath The destination path for the downloaded CRX file.
- * @param chromeVer The Chrome version string.
  */
 const downloadCrxFile = async (
     extensionId: string,
     destPath: string,
-    chromeVer: string,
 ) => {
-    const url = getCrxUrl(extensionId, chromeVer);
+    const url = getCrxUrl(extensionId);
 
     console.log(`Checking for updates at ${url}`);
 
@@ -234,7 +196,7 @@ const downloadAndUnpackExtension = async (target: BuildTargetEnv.Beta | BuildTar
 
     try {
         await ensureDir(TMP_DIR);
-        await downloadCrxFile(extensionId, crxPath, CHROME_VER);
+        await downloadCrxFile(extensionId, crxPath);
         await extractZipFromCrx(crxPath, zipPath);
         await unzipExtension(zipPath, unpackedExtensionPath);
         await removeMetadataFolder(unpackedExtensionPath);

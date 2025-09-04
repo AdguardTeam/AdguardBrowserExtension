@@ -42,7 +42,6 @@ import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnin
 import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
 import { getStaticWarningMessage } from '../Warnings/messages';
-import { NotificationType } from '../../stores/UiStore';
 import type { CategoriesGroupData } from '../../../../background/api';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
@@ -154,11 +153,7 @@ const Filters = observer(() => {
                     const staticFiltersLimitsWarning = getStaticWarningMessage(result.data);
 
                     if (staticFiltersLimitsWarning) {
-                        uiStore.addNotification({
-                            description: staticFiltersLimitsWarning,
-                            link: translator.getMessage('options_rule_limits'),
-                            type: NotificationType.ERROR,
-                        });
+                        uiStore.addRuleLimitsNotification(staticFiltersLimitsWarning);
                     }
 
                     // We don't enable the group if it exceeds the limit.
@@ -577,7 +572,7 @@ const Filters = observer(() => {
         >
             <StaticFiltersLimitsWarning />
             <DynamicRulesLimitsWarning />
-            {!__IS_MV3__ && <FiltersUpdate />}
+            <FiltersUpdate />
             <Search />
             {settingsStore.isSearching
                 ? renderGroupsOnSearch(filtersToRender)

@@ -24,7 +24,6 @@ import cn from 'classnames';
 import { rootStore } from '../../../stores/RootStore';
 import { RULE_CREATION_OPTION } from '../constants';
 import { messenger } from '../../../../services/messenger';
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
@@ -216,9 +215,9 @@ const RequestCreateRule = observer(() => {
         && wizardStore.rulePatterns.length > 1;
     const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
 
-    let title = reactTranslator.getMessage('filtering_modal_add_title');
+    let title = translator.getMessage('filtering_modal_add_title');
     if (wizardStore.requestModalState === WizardRequestState.Unblock) {
-        title = reactTranslator.getMessage('filtering_modal_exception_title');
+        title = translator.getMessage('filtering_modal_exception_title');
     }
 
     return (
@@ -240,7 +239,7 @@ const RequestCreateRule = observer(() => {
                 <div className="request-info">
                     <div className="request-info__main">
                         <div className="request-info__key">
-                            {reactTranslator.getMessage('filtering_modal_rule_text_desc')}
+                            {translator.getMessage('filtering_modal_rule_text_desc')}
                         </div>
                         <textarea
                             disabled={wizardStore.isActionSubmitted}

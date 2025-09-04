@@ -23,3 +23,4 @@ export { FramesApi, type FrameData } from './frames';
 export { AssistantApi } from './assistant';
 export { iconsApi, defaultIconVariants } from './icons';
 export { ContextMenuApi } from './context-menu';
+export { browserAction } from './browser-action';
