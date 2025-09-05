@@ -26,7 +26,7 @@ export const NoFiltering = () => {
             <div className="main__no-filtering">
                 <Icon
                     id="#checkmark"
-                    classname="icon--24 main__no-filtering__icon"
+                    className="icon--24 main__no-filtering__icon"
                     aria-hidden="true"
                 />
             </div>

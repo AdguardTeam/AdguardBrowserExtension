@@ -55,7 +55,7 @@ class EventService {
     }
 
     /**
-     * Creates new event listener and returs its id.
+     * Creates new event listener and returns its id.
      *
      * @param message Item of {@link CreateEventListenerMessage}.
      * @param sender Item of {@link Runtime.MessageSender}.
@@ -79,7 +79,14 @@ class EventService {
                 data,
             };
 
-            browser.tabs.sendMessage(sender.tab.id, message);
+            // sender.tab is only present for content scripts
+            if (sender.tab && sender.tab.id) {
+                browser.tabs.sendMessage(sender.tab.id, message);
+            } else {
+                // for extension pages, e.g. popup or options, sender.tab is undefined,
+                // so runtime messaging is used
+                browser.runtime.sendMessage(message);
+            }
         });
 
         this.eventListeners.set(listenerId, sender);

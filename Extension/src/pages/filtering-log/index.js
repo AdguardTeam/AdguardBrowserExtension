@@ -19,14 +19,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { reactTranslator } from '../../common/translators/reactTranslator';
+import { translator } from '../../common/translators/translator';
 import { i18n } from '../../common/translators/i18n';
 
 import { FilteringLog } from './components/FilteringLog/index';
 
 export const filteringLog = {
     init: () => {
-        document.title = reactTranslator.getMessage('filtering_log_title');
+        document.title = translator.getMessage('filtering_log_title');
         document.documentElement.lang = i18n.getUILanguage();
 
         ReactDOM.render(

@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
 
-## Unreleased <!-- release/v5.2 -->
+## Unreleased v5.2
 
 ### Added
 
@@ -41,11 +41,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compatibility of `$header` modifier with `$match-case`
   and `$third-party` modifiers in MV2 [#2942].
 - `zip` and `crx` artifacts for the extension builds [#3163], [#2488].
+- Ability to update the extension with filters manually in MV3.
 
 ### Changed
 
 - Updated blocking pages in MV2 extension for Safebrowsing and for web pages blocked by `$document` rules.
 - Improved accessibility for visually impaired users [#3035], [#2315], [#2332].
+- Decrease time period for temporary exceptions caused by clicking "Proceed anyway"
+  on a blocking page from 40 minutes to 10 seconds [#3263].
 - Updated [@adguard/agtree] to v3.2.2.
 - Updated [@adguard/assistant] to v4.3.75.
 - Updated [@adguard/dnr-rulesets] to v3.2.0.
@@ -109,6 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3189]: https://github.com/AdguardTeam/AdguardBrowserExtension/pull/3189
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
 [#3260]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3260
+[#3263]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3263
 [tsurlfilter#147]: https://github.com/AdguardTeam/tsurlfilter/issues/147
 
 ## [5.1.102] - 2025-06-15

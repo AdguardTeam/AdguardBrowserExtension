@@ -48,7 +48,7 @@ export const FilterStatus = ({ statusCode, method, mode }) => {
                 {iconId && (
                     <Icon
                         id={iconId}
-                        classname="status__icon"
+                        className="status__icon"
                         aria-hidden="true"
                     />
                 )}

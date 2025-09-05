@@ -46,8 +46,11 @@ import {
     AppStateEvent,
 } from '../state-machines/app-state-machine';
 import { asyncWrapper } from '../../filtering-log/stores/helpers';
-import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
+import { MIN_UPDATE_DISPLAY_DURATION_MS, TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
 import { UserAgent } from '../../../common/user-agent';
+import { logger } from '../../../common/logger';
+import { sleepIfNecessary } from '../../../common/sleep-utils';
+import { NotificationType, type NotificationParams } from '../../common/types';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -64,7 +67,7 @@ type CategoryBlockedStatsInfo = {
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
 
-class PopupStore {
+export class PopupStore {
     TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     /**
@@ -155,8 +158,18 @@ class PopupStore {
     @observable
     appState: AppState = appStateActor.getSnapshot().value;
 
+    @observable
+    isExtensionUpdateAvailable = false;
+
+    @observable
+    isExtensionUpdating = false;
+
+    @observable
+    updateNotification: NotificationParams | null = null;
+
     constructor() {
         makeObservable(this);
+        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -180,7 +193,7 @@ class PopupStore {
     /**
      * Sets the initial state of the app state machine actor based on the current popup data.
      */
-    setActorInitState = () => {
+    setAppActorInitState = () => {
         if (this.applicationFilteringPaused) {
             appStateActor.send({ type: AppStateEvent.Pause });
         } else if (this.documentAllowlisted) {
@@ -236,6 +249,9 @@ class PopupStore {
                 stats,
                 settings,
                 areFilterLimitsExceeded,
+                isExtensionUpdateAvailable,
+                isExtensionReloadedOnUpdate,
+                isSuccessfulExtensionUpdate,
             } = response;
 
             // frame info
@@ -265,7 +281,31 @@ class PopupStore {
 
             this.currentTabId = currentTab.id;
 
-            this.setActorInitState();
+            this.setAppActorInitState();
+
+            this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
+
+            // notification about successful or failed update should be shown after the popup is opened.
+            // and it cannot be done by notifier (from the background page)
+            // because event may be dispatched _before_ the popup is opened,
+            // i.e. listener may not be registered yet.
+            if (isExtensionReloadedOnUpdate) {
+                if (isSuccessfulExtensionUpdate) {
+                    this.setUpdateNotification({
+                        type: NotificationType.Success,
+                        text: translator.getMessage('update_success_text'),
+                    });
+                } else {
+                    this.setUpdateNotification({
+                        type: NotificationType.Error,
+                        text: translator.getMessage('update_failed_text'),
+                        button: {
+                            title: translator.getMessage('update_failed_try_again_btn'),
+                            onClick: this.checkUpdatesMV3,
+                        },
+                    });
+                }
+            }
         });
     };
 
@@ -575,6 +615,46 @@ class PopupStore {
         }
 
         return this.settings.values[this.settings.names.AppearanceTheme];
+    }
+
+    /**
+     * Checks for updates and if update is available, starts the update process.
+     *
+     * Note:
+     * This behavior is different on options page
+     * where two separate clicks are required
+     * to check for updates and start the update process.
+     */
+    @action
+    async checkUpdatesMV3() {
+        const start = Date.now();
+        this.setIsExtensionUpdating(true);
+
+        try {
+            this.setUpdateNotification(null);
+            await messenger.checkUpdatesFromPopupMV3();
+        } catch (error: unknown) {
+            logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
+        }
+
+        // Ensure minimum duration for smooth UI experience
+        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
+        this.setIsExtensionUpdating(false);
+    }
+
+    @action
+    setIsExtensionUpdateAvailable(isUpdateAvailable: boolean): void {
+        this.isExtensionUpdateAvailable = isUpdateAvailable;
+    }
+
+    @action
+    setIsExtensionUpdating(isUpdating: boolean): void {
+        this.isExtensionUpdating = isUpdating;
+    }
+
+    @action
+    setUpdateNotification(notification: NotificationParams | null): void {
+        this.updateNotification = notification;
     }
 }
 

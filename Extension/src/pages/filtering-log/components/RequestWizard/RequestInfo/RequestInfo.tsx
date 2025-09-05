@@ -492,7 +492,7 @@ const RequestInfo = observer(() => {
                     <Popover text={text as string} fixedWidth>
                         <Icon
                             id="#question"
-                            classname="icon icon--24 icon--green-default"
+                            className="icon icon--24 icon--green-default"
                             aria-hidden="true"
                         />
                     </Popover>
@@ -691,7 +691,7 @@ const RequestInfo = observer(() => {
                 >
                     <Icon
                         id="#cross"
-                        classname="icon--24 icon--gray-default"
+                        className="icon--24 icon--gray-default"
                         aria-hidden="true"
                     />
                 </button>

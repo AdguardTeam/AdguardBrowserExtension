@@ -83,7 +83,7 @@ type IconParams = Pick<AriaAttributes, 'aria-hidden'> & {
     /**
      * Icon class name.
      */
-    classname?: string;
+    className?: string;
 
     /**
      * Icon title.
@@ -98,18 +98,18 @@ type IconParams = Pick<AriaAttributes, 'aria-hidden'> & {
     /**
      * Animation class name.
      */
-    animationClassname?: string;
+    animationClassName?: string;
 };
 
 export const Icon = ({
     id,
-    classname,
+    className,
     title,
     animationCondition,
-    animationClassname,
+    animationClassName,
     'aria-hidden': ariaHidden,
 }: IconParams) => {
-    const iconClassname = cn('icon', classname);
+    const iconClassname = cn('icon', className);
 
     const icon = (
         <Svg
@@ -120,9 +120,9 @@ export const Icon = ({
         />
     );
 
-    if (animationCondition && animationClassname) {
+    if (animationCondition && animationClassName) {
         return (
-            <AnimatedWrapper className={animationClassname} aria-hidden={ariaHidden}>
+            <AnimatedWrapper className={animationClassName} aria-hidden={ariaHidden}>
                 {icon}
             </AnimatedWrapper>
         );

@@ -55,7 +55,7 @@ export type BrowserConfig = {
     zipName: string;
 };
 
-export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
+export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserConfig> = {
     [Browser.Chrome]: {
         browser: Browser.Chrome,
         devtools: true,
@@ -93,3 +93,17 @@ export const BROWSERS_CONF: Record<Browser, BrowserConfig> = {
         zipName: Browser.Edge,
     },
 };
+
+/**
+ * RegExp for matching components that need to be replaced while webpack building.
+ *
+ * Needed for components which are different for MV2 and MV3.
+ */
+export const COMPONENT_REPLACEMENT_MATCH_REGEXP = new RegExp(
+    `\\.\\/Abstract(${
+        [
+            'UpdateButton',
+            'FiltersUpdate',
+        ].join('|')
+    })`,
+);

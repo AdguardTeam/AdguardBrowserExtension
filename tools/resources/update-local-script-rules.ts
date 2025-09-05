@@ -55,6 +55,7 @@ import {
 } from '../constants';
 
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-extractor';
+import { TESTCASES_RULES } from './testcases-rules';
 
 const exec = promisify(execCallback);
 
@@ -267,22 +268,8 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
  *
  * @param jsRules Set of unique JS rules collected from the pre-built filters.
  */
-export const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>) => {
-    /**
-     * This is a test case rule that is used for integration testing.
-     * It should be added explicitly to the list of rules.
-     *
-     * @see {@link https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt}
-     * @see {@link https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt}
-     */
-    const TESTCASES_RULES = [
-        // https://testcases.agrd.dev/Filters/generichide-rules/generichide-rules.txt
-        // eslint-disable-next-line max-len
-        'testcases.agrd.dev,pages.dev#%#!function(){let e=()=>{document.querySelector("#case-1-generichide > .test-banner1").style.width="200px"};"complete"===document.readyState?e():window.document.addEventListener("readystatechange",e)}();',
-        // https://testcases.agrd.dev/Filters/injection-speed/test-injection-speed.txt
-        "testcases.agrd.dev,pages.dev#%#console.log(Date.now(), 'script rule is executed');",
-    ];
-
+const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>) => {
+    // First, process testcases rules
     TESTCASES_RULES.forEach((rawRule) => {
         const ruleNode = CosmeticRuleParser.parse(rawRule);
         if (!ruleNode
@@ -375,7 +362,8 @@ export const localScriptRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
 };
 
 /**
- *
+ * Updates `local_script_rules.js` based on the rules from the pre-built filters
+ * and testcases rules for Chromium MV3.
  */
 export const updateLocalResourcesForChromiumMv3 = async () => {
     const folder = path.join(

@@ -14,4 +14,5 @@ ls -la
 
 echo "Size before cleanup:" && du -h | tail -n 1
 rm -rf node_modules
+rm -rf .git
 echo "Size after cleanup:" && du -h | tail -n 1

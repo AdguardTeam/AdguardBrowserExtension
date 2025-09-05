@@ -21,7 +21,7 @@ import { AntiBannerFiltersId } from '../common/constants';
 import { translator } from '../common/translators/translator';
 
 import { FILE_WRONG_EXTENSION_CAUSE } from './common/constants';
-import { type Notification, NotificationType } from './options/stores/UiStore';
+import { type NotificationParams, NotificationType } from './common/types';
 
 export const getFilenameExtension = (filename: string): string | undefined => {
     if (!filename) {
@@ -193,26 +193,29 @@ export const isVerticalScroll = (() => {
  * @returns Object with title and description describing error if `updatedFilters` is not provided,
  * otherwise description with information about updated filters.
  */
-export const updateFilterDescription = (updatedFilters?: FilterMetadata[]): Omit<Notification, 'id'> => {
+export const updateFilterDescription = (updatedFilters?: FilterMetadata[]): NotificationParams => {
     if (!updatedFilters) {
         return {
-            description: translator.getMessage('options_popup_update_error'),
-            type: NotificationType.ERROR,
+            type: NotificationType.Error,
+            text: translator.getMessage('options_popup_update_error'),
         };
     }
 
     const filterNames = updatedFilters.map((filter) => filter.name).join(', ');
 
     // no updated filters
-    let description = `${filterNames} ${translator.getMessage('options_popup_update_not_found')}`;
+    let text = `${filterNames} ${translator.getMessage('options_popup_update_not_found')}`;
 
     if (updatedFilters.length === 1) {
-        description = `${filterNames} ${translator.getMessage('options_popup_update_filter')}`;
+        text = `${filterNames} ${translator.getMessage('options_popup_update_filter')}`;
     } else if (updatedFilters.length > 1) {
-        description = `${filterNames} ${translator.getMessage('options_popup_update_filters')}`;
+        text = `${filterNames} ${translator.getMessage('options_popup_update_filters')}`;
     }
 
-    return { description, type: NotificationType.SUCCESS };
+    return {
+        type: NotificationType.Success,
+        text,
+    };
 };
 
 /**

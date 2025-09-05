@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS = 2000;
 export const MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS = 1500;
 
 /**
@@ -28,3 +27,8 @@ export const MIN_LOADER_SHOWING_TIME_MS = 500;
  * Error cause identifier for when a file has an incorrect extension.
  */
 export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';
+
+/**
+ * Timeout for closing the notification, same as in the styles animation.
+ */
+export const TIME_TO_REMOVE_NOTIFICATION_MS = 300;

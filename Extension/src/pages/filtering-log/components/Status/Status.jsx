@@ -93,7 +93,7 @@ export const Status = (props) => {
                                 <div className="status__icon--wrapper">
                                     <Icon
                                         id={statusCode ? '#transfer-status' : '#arrow-status'}
-                                        classname="status__icon"
+                                        className="status__icon"
                                         aria-hidden="true"
                                     />
                                 </div>
@@ -105,7 +105,7 @@ export const Status = (props) => {
                                     <div className="status__icon--wrapper">
                                         <Icon
                                             id="#ban"
-                                            classname="status__icon"
+                                            className="status__icon"
                                             aria-hidden="true"
                                         />
                                     </div>

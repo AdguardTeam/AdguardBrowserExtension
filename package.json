@@ -19,7 +19,7 @@
         "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
         "locales": "tsx tools/locales.js",
         "resources": "tsx tools/resources.ts",
-        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~3.2 && tsx tools/resources-mv3.ts && pnpm resources:mv3:extract-unsafe-rules",
+        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~3.2 && tsx tools/resources/update-local-test-script-rules.ts && tsx tools/resources-mv3.ts && pnpm resources:mv3:extract-unsafe-rules",
         "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
         "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
@@ -121,13 +121,6 @@
         "webpack-merge": "5.10.0",
         "zip-webpack-plugin": "4.0.3"
     },
-    "pnpm": {
-        "overrides": {
-            "@adguard/tswebextension>@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz",
-            "@adguard/tswebextension": "https://github.com/AdguardTeam/tsurlfilter/raw/e71ba7738f8880f26668e5695135fbcfe3857f6e/packages/tswebextension/tswebextension.tgz",
-            "@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz"
-        }
-    },
     "dependencies": {
         "@adguard/agtree": "3.2.2",
         "@adguard/filters-downloader": "2.4.2",
@@ -135,8 +128,8 @@
         "@adguard/scriptlets": "2.2.8",
         "@adguard/text-encoding": "^0.8.3",
         "@adguard/translate": "1.0.2",
-        "@adguard/tsurlfilter": "https://github.com/AdguardTeam/tsurlfilter/raw/18e529c4505a7b00ace15c15634149722b03e776/packages/tsurlfilter/tsurlfilter.tgz",
-        "@adguard/tswebextension": "https://github.com/AdguardTeam/tsurlfilter/raw/e71ba7738f8880f26668e5695135fbcfe3857f6e/packages/tswebextension/tswebextension.tgz",
+        "@adguard/tsurlfilter": "^3.4.5",
+        "@adguard/tswebextension": "^3.2.7",
         "@date-fns/utc": "^2.1.0",
         "@xstate/react": "4.1.3",
         "ace-builds": "1.17.0",

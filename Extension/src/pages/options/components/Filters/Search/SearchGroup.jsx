@@ -66,7 +66,7 @@ const SearchGroup = ({
                 >
                     <Icon
                         id={`#setting-${groupId}`}
-                        classname="icon--24 setting__icon"
+                        className="icon--24 setting__icon"
                         aria-hidden="true"
                     />
                     <span className="setting__info">

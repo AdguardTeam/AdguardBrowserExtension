@@ -125,7 +125,7 @@ const DisabledCustomFiltersGroup = ({
             >
                 <Icon
                     id={`#setting-${AntibannerGroupsId.CustomFiltersGroupId}`}
-                    classname="icon--24 setting__icon"
+                    className="icon--24 setting__icon"
                     aria-hidden="true"
                 />
                 <span className="setting__info setting__info__custom-group-warning">
@@ -146,7 +146,7 @@ const DisabledCustomFiltersGroup = ({
                 >
                     <Icon
                         id="#question"
-                        classname="icon icon--24 icon--green-default link"
+                        className="icon icon--24 icon--green-default link"
                         aria-hidden="true"
                     />
                 </a>
@@ -252,7 +252,7 @@ const Group = observer(({
             >
                 <Icon
                     id={iconId}
-                    classname="icon--24 setting__icon"
+                    className="icon--24 setting__icon"
                     aria-hidden="true"
                 />
                 <span className="setting__info">

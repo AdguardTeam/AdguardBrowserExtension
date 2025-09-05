@@ -46,10 +46,10 @@ import { addMinDelayLoader } from '../helpers';
 // TODO: Continue to remove dependency on the root store via adding loader and
 // notifications to own 'user-rules-editor' store.
 import { rootStore } from '../../../options/stores/RootStore';
-import { usePreventUnload } from '../../hooks/usePreventUnload';
-import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
-import { NotificationType } from '../../../options/stores/UiStore';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
+import { usePreventUnload } from '../../hooks/usePreventUnload';
+import { NotificationType } from '../../types';
+import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { ToggleFullscreenButton } from './ToggleFullscreenButton';
@@ -291,11 +291,14 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         } catch (e) {
             logger.debug('[ext.UserRulesEditor]: import error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
-                uiStore.addNotification({ description: e.message, type: NotificationType.ERROR });
+                uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: e.message,
+                });
             } else {
                 uiStore.addNotification({
-                    description: translator('options_popup_import_error_file_description'),
-                    type: NotificationType.ERROR,
+                    type: NotificationType.Error,
+                    text: translator('options_popup_import_error_file_description'),
                 });
             }
         }

@@ -88,7 +88,7 @@ const Actions = observer(() => {
                             <div className={preserveLogClassName}>
                                 <Icon
                                     id="#record"
-                                    classname="icon--24"
+                                    className="icon--24"
                                     aria-hidden="true"
                                 />
                             </div>
@@ -105,7 +105,7 @@ const Actions = observer(() => {
                         >
                             <Icon
                                 id="#trash"
-                                classname="icon--24 icon--red-default"
+                                className="icon--24 icon--red-default"
                                 aria-hidden="true"
                             />
                         </button>
@@ -119,7 +119,7 @@ const Actions = observer(() => {
                     >
                         <Icon
                             id="#reload"
-                            classname="icon--24 actions__refresh--icon"
+                            className="icon--24 actions__refresh--icon"
                             aria-hidden="true"
                         />
                         <span className="actions__refresh--text">

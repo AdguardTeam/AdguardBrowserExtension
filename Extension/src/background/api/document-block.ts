@@ -26,8 +26,11 @@ export class DocumentBlockApi {
     /**
      * For how long will the application exclude the provided domain
      * from blocking by the $document rule.
+     *
+     * For consistency with the CoreLibs apps, the value is set to 10 seconds
+     * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3263.
      */
-    public static readonly TRUSTED_TTL_MS = 40 * 60 * 1000; // 40 min
+    public static readonly TRUSTED_TTL_MS = 10 * 1000; // 10 seconds
 
     /**
      * Initializes the storage for the API.

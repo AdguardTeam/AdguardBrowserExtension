@@ -11,7 +11,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { Browser, type BuildTargetEnv } from '../constants';
+import { type BuildTargetEnv } from '../../constants';
+import { Browser } from '../constants';
 import { getBrowserConf } from '../bundle/helpers';
 
 import type {

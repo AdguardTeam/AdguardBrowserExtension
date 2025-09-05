@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { NotImplementedError } from '../../errors/not-implemented-error';
+
 /**
  * This service is a empty dummy to correct work of MV2 build without
  * using MV3 code.
@@ -33,7 +35,7 @@ export class RulesLimitsService {
      * @throws Not implemented error.
      */
     public static getExpectedEnabledFilters = (): number[] => {
-        throw new Error('Not implemented');
+        throw new NotImplementedError();
     };
 
     /**
@@ -42,7 +44,7 @@ export class RulesLimitsService {
      * @throws Not implemented error.
      */
     public static areFilterLimitsExceeded(): boolean {
-        throw new Error('areFilterLimitsExceeded Not implemented');
+        throw new NotImplementedError();
     }
 }
 

@@ -16,4 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { FiltersUpdate } from './FiltersUpdate';
+// !IMPORTANT!
+// export './FiltersUpdate' will be replaced during webpack compilation
+// with NormalModuleReplacementPlugin to proper implementation
+// from './Mv2FiltersUpdate' or './Mv3FiltersUpdate'
+export { FiltersUpdate } from './AbstractFiltersUpdate';

@@ -38,7 +38,7 @@ export const SettingsButton = () => {
         >
             <Icon
                 id="#settings"
-                classname="icon--24 icon--header"
+                className="icon--24 icon--header"
                 aria-hidden="true"
             />
         </button>

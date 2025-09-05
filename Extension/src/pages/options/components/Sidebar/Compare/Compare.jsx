@@ -45,7 +45,7 @@ export const Compare = ({ onCompareClick, onCloseClick }) => {
             >
                 <Icon
                     id="#cross"
-                    classname="icon--24 icon--gray-default"
+                    className="icon--24 icon--gray-default"
                     aria-hidden="true"
                 />
             </button>

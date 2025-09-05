@@ -83,13 +83,13 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
                 {/* enabled switcher state */}
                 <Icon
                     id="#checkmark"
-                    classname="icon--24 switcher__icon switcher__icon--on"
+                    className="icon--24 switcher__icon switcher__icon--on"
                     aria-hidden="true"
                 />
                 {/* disabled switcher state */}
                 <Icon
                     id="#circle"
-                    classname="icon--24 switcher__icon switcher__icon--off"
+                    className="icon--24 switcher__icon switcher__icon--off"
                     aria-hidden="true"
                 />
             </div>

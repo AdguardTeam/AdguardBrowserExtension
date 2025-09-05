@@ -34,7 +34,8 @@ import unzipper from 'unzipper';
  */
 import { FilterListPreprocessor } from '@adguard/tsurlfilter';
 
-import { BUILD_PATH, BuildTargetEnv } from '../constants';
+import { BuildTargetEnv } from '../../constants';
+import { BUILD_PATH } from '../constants';
 import { EXTENSION_INITIALIZED_EVENT } from '../../Extension/src/common/constants';
 import { sleep } from '../common/sleep';
 

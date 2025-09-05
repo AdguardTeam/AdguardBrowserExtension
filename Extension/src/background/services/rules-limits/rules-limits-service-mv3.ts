@@ -264,7 +264,7 @@ export class RulesLimitsService {
         result: ConfigurationResult,
     ): TooManyUnsafeRulesError | undefined => {
         return result.dynamicRules?.limitations
-            .find((e) => e instanceof TooManyUnsafeRulesError);
+            .find((e: unknown) => e instanceof TooManyUnsafeRulesError);
     };
 
     /**
@@ -278,7 +278,7 @@ export class RulesLimitsService {
         result: ConfigurationResult,
     ): TooManyRegexpRulesError | undefined => {
         return result.dynamicRules?.limitations
-            .find((e) => e instanceof TooManyRegexpRulesError);
+            .find((e: unknown) => e instanceof TooManyRegexpRulesError);
     };
 
     /**
@@ -292,7 +292,7 @@ export class RulesLimitsService {
         result: ConfigurationResult,
     ): TooManyRulesError | undefined => {
         return result.dynamicRules?.limitations
-            .find((e) => e instanceof TooManyRulesError);
+            .find((e: unknown) => e instanceof TooManyRulesError);
     };
 
     /**
