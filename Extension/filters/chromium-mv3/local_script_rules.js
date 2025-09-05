@@ -2585,6 +2585,30 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c2ffc94b6ce8e97f2c432d64690cfc9d" due to: ' + e);
         }
     },
+    '(()=>{const n={construct:(n,o,t)=>{const c=o[0];return"function"==typeof c&&c.toString().includes("(){Date.now()>=")&&(o[0]=()=>{}),Reflect.construct(n,o,t)}};window.Promise=new Proxy(window.Promise,n)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.c57e5717d58ce76bdbc1d365c949ba2e === e) return;
+            (() => {
+                const e = {
+                    construct: (e, t, o) => {
+                        const c = t[0];
+                        return "function" == typeof c && c.toString().includes("(){Date.now()>=") && (t[0] = () => {}), 
+                        Reflect.construct(e, t, o);
+                    }
+                };
+                window.Promise = new Proxy(window.Promise, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "c57e5717d58ce76bdbc1d365c949ba2e", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "c57e5717d58ce76bdbc1d365c949ba2e" due to: ' + e);
+        }
+    },
     '(()=>{const a=function(a){"function"==typeof a&&a()};window.aiptag={adplayer:"",cmd:[]},window.aiptag.cmd.player=[],window.aiptag.cmd.display=[],window.aiptag.cmd.push=a,window.aiptag.cmd.player.push=a,window.aiptag.cmd.display.push=a,window.aipDisplayTag={display:function(){}},window.aipPlayer=function(a){a&&a.AIP_COMPLETE&&(this.startPreRoll=a.AIP_COMPLETE)}})();': () => {
         try {
             const a = "done";
@@ -7430,19 +7454,20 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "8101008ad648ae0c89f1d5c621aec48b" due to: ' + e);
         }
     },
-    '(()=>{const e={apply:(e,r,t)=>{try{const a=t[0];if(!a?.context?.client)return Reflect.apply(e,r,t);a.context.client.clientScreen="ADUNIT",a.playbackContext&&(a.params=`yAEB${a.params?a.params:""}`),a.playerRequest&&(a.playerRequest.params=`yAEB${a.playerRequest.params?a.playerRequest.params:""}`),t[0]=a}catch(e){console.trace("Error occurred:",e)}return Reflect.apply(e,r,t)}};window.JSON.stringify=new Proxy(window.JSON.stringify,e)})();': () => {
+    '(()=>{const e={apply:(e,r,t)=>{if(location.href.includes("/shorts/"))return Reflect.apply(e,r,t);try{const a=t[0];if(!a?.context?.client)return Reflect.apply(e,r,t);a.context.client.clientScreen="ADUNIT",a.playbackContext&&(a.params=`yAEB${a.params?a.params:""}`),a.playerRequest&&(a.playerRequest.params=`yAEB${a.playerRequest.params?a.playerRequest.params:""}`),t[0]=a}catch(e){console.trace("Error occurred:",e)}return Reflect.apply(e,r,t)}};window.JSON.stringify=new Proxy(window.JSON.stringify,e)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["39725944637501f3fb54e4221580118e"] === e) return;
+            if (Window.prototype.toString["9a80498c0b27a72f7d21b9ce37ac0928"] === e) return;
             (() => {
                 const e = {
                     apply: (e, r, t) => {
+                        if (location.href.includes("/shorts/")) return Reflect.apply(e, r, t);
                         try {
-                            const n = t[0];
-                            if (!n?.context?.client) return Reflect.apply(e, r, t);
-                            n.context.client.clientScreen = "ADUNIT", n.playbackContext && (n.params = `yAEB${n.params ? n.params : ""}`), 
-                            n.playerRequest && (n.playerRequest.params = `yAEB${n.playerRequest.params ? n.playerRequest.params : ""}`), 
-                            t[0] = n;
+                            const a = t[0];
+                            if (!a?.context?.client) return Reflect.apply(e, r, t);
+                            a.context.client.clientScreen = "ADUNIT", a.playbackContext && (a.params = `yAEB${a.params ? a.params : ""}`), 
+                            a.playerRequest && (a.playerRequest.params = `yAEB${a.playerRequest.params ? a.playerRequest.params : ""}`), 
+                            t[0] = a;
                         } catch (e) {
                             console.trace("Error occurred:", e);
                         }
@@ -7451,14 +7476,14 @@ export const localScriptRules = {
                 };
                 window.JSON.stringify = new Proxy(window.JSON.stringify, e);
             })();
-            Object.defineProperty(Window.prototype.toString, "39725944637501f3fb54e4221580118e", {
+            Object.defineProperty(Window.prototype.toString, "9a80498c0b27a72f7d21b9ce37ac0928", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "39725944637501f3fb54e4221580118e" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "9a80498c0b27a72f7d21b9ce37ac0928" due to: ' + e);
         }
     },
     '(()=>{window.JSON.parse=new Proxy(JSON.parse,{apply(r,e,t){const n=Reflect.apply(r,e,t);if(!location.pathname.startsWith("/shorts/"))return n;const a=n?.entries;return a&&Array.isArray(a)&&(n.entries=n.entries.filter((r=>{if(!r?.command?.reelWatchEndpoint?.adClientParams?.isAd)return r}))),n}});})();': () => {
