@@ -2585,6 +2585,34 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c2ffc94b6ce8e97f2c432d64690cfc9d" due to: ' + e);
         }
     },
+    '(()=>{const e={apply:(e,o,t)=>{try{const e=o;e.length>0&&e.length<5&&"object"==typeof e[0]&&null!==e[0]&&Object.hasOwn(e[0],"blocked")&&(e.forEach((e=>{e&&"object"==typeof e&&Object.hasOwn(e,"blocked")&&(e.blocked=!1)})),o=e)}catch(e){}return Reflect.apply(e,o,t)}};window.Array.prototype.some=new Proxy(window.Array.prototype.some,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.a2560bc95989a0cc443785391b553c8b === e) return;
+            (() => {
+                const e = {
+                    apply: (e, o, t) => {
+                        try {
+                            const e = o;
+                            e.length > 0 && e.length < 5 && "object" == typeof e[0] && null !== e[0] && Object.hasOwn(e[0], "blocked") && (e.forEach((e => {
+                                e && "object" == typeof e && Object.hasOwn(e, "blocked") && (e.blocked = !1);
+                            })), o = e);
+                        } catch (e) {}
+                        return Reflect.apply(e, o, t);
+                    }
+                };
+                window.Array.prototype.some = new Proxy(window.Array.prototype.some, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "a2560bc95989a0cc443785391b553c8b", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "a2560bc95989a0cc443785391b553c8b" due to: ' + e);
+        }
+    },
     '(()=>{const n={construct:(n,o,t)=>{const c=o[0];return"function"==typeof c&&c.toString().includes("(){Date.now()>=")&&(o[0]=()=>{}),Reflect.construct(n,o,t)}};window.Promise=new Proxy(window.Promise,n)})();': () => {
         try {
             const e = "done";
@@ -3211,23 +3239,23 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "81b55e3b01cb8f931036cccb4d1056b6" due to: ' + e);
         }
     },
-    '(()=>{if(!location.href.includes("://embed.wcostream.com/inc/embed/index.php?file=")||navigator.userAgent.toLowerCase().includes("firefox"))return;const e=`/inc/embed/video-js.php${location.search}`;location.href=e})();': () => {
+    '(()=>{if(!location.href.includes("://embed.wcostream.com/inc/embed/index.php?file="))return;const e=`/inc/embed/video-js.php${location.search}`;location.href=e})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.c4d79717c9423e5618062445d788b996 === e) return;
+            if (Window.prototype.toString.b906e269a72b6af7c1d463b60f868697 === e) return;
             (() => {
-                if (!location.href.includes("://embed.wcostream.com/inc/embed/index.php?file=") || navigator.userAgent.toLowerCase().includes("firefox")) return;
+                if (!location.href.includes("://embed.wcostream.com/inc/embed/index.php?file=")) return;
                 const e = `/inc/embed/video-js.php${location.search}`;
                 location.href = e;
             })();
-            Object.defineProperty(Window.prototype.toString, "c4d79717c9423e5618062445d788b996", {
+            Object.defineProperty(Window.prototype.toString, "b906e269a72b6af7c1d463b60f868697", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "c4d79717c9423e5618062445d788b996" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "b906e269a72b6af7c1d463b60f868697" due to: ' + e);
         }
     },
     '(function(){window.adnPopConfig={zoneId:"149"}})();': () => {
@@ -9869,73 +9897,80 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "78d72494ea8bcdc16d5f0b415b6d466c" due to: ' + e);
         }
     },
-    '(()=>{const e=Function.prototype.call;let t=!1,o=!1,n=!1;const c={apply:(c,r,a)=>{const l=a[0];if(l?.requestNumber&&l?.snapshot)try{o=((e,t=5)=>{if("object"!=typeof e||null===e)return!1;const o=new Array(1e3);let c=0;const r=new WeakSet;for(o[c++]={obj:e,depth:0};c>0&&!n;){const{obj:e,depth:a}=o[--c];if(a>t||"object"!=typeof e||null===e||r.has(e))continue;let l;r.add(e);try{l=Object.hasOwn(e,"backoffTimeMs")}catch(e){console.trace("Error while checking for backoffTimeMs:",e)}if(l)return void 0!==e.backoffTimeMs||(n=!0,!1);for(const t in e)if(Object.hasOwn(e,t)){let n;try{n=e[t]}catch(e){console.trace("Error while accessing property:",e)}null!==n&&"object"==typeof n&&!r.has(n)&&c<o.length&&(o[c++]={obj:n,depth:a+1})}}return!1})(l),t=!0,(o||n)&&(Function.prototype.call=e)}catch(e){console.trace("Error while checking for backoffTimeMs:",e)}return Reflect.apply(c,r,a)}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,c),window.addEventListener("load",(()=>{if(Function.prototype.call=e,!o&&t)return;const n=document.querySelector(".html5-video-player"),c=window.location.search,r=new URLSearchParams(c).get("v"),a=new URLSearchParams(c).get("t")??"0";if(!n||!r)return;const l=parseInt(a,10);n.loadVideoById(r,l)}))})();': () => {
+    '(()=>{const t=Function.prototype.call;let e=!1,o=!1,n=!1;const c={apply:(c,r,a)=>{const l=a[0];if(l?.requestNumber&&l?.snapshot)try{o=((t,e=5)=>{if("object"!=typeof t||null===t)return!1;const o=new Array(1e3);let c=0;const r=new WeakSet;for(o[c++]={obj:t,depth:0};c>0&&!n;){const{obj:t,depth:a}=o[--c];if(a>e||"object"!=typeof t||null===t||r.has(t))continue;let l;r.add(t);try{l=Object.hasOwn(t,"backoffTimeMs")}catch(t){}if(l)return void 0!==t.backoffTimeMs||(n=!0,!1);for(const e in t)if(Object.hasOwn(t,e)){let n;try{n=t[e]}catch(t){}null!==n&&"object"==typeof n&&!r.has(n)&&c<o.length&&(o[c++]={obj:n,depth:a+1})}}return!1})(l),e=!0,(o||n)&&(Function.prototype.call=t)}catch(t){}return Reflect.apply(c,r,a)}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,c);window.addEventListener("load",(async()=>{if(Function.prototype.call=t,!o&&e)return;const n=window.location.search,c=new URLSearchParams(n).get("v");if(!c)return;const r=await(a="#movie_player",l=200,i=1e4,new Promise((t=>{if(!a||!l||!i)return void t(null);const e=Date.now()+i,o=()=>{const n=document.querySelector(a);n?t(n):Date.now()>e?t(null):setTimeout(o,l)};o()})));var a,l,i;if(!r)return;const s=new URLSearchParams(n).get("t")??"0",u=parseInt(s,10);if("function"==typeof r.loadVideoById)try{r.loadVideoById(c,u)}catch(t){}}))})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.aa8b2f9c3ac6c0e5b1d32ebba3ab263f === e) return;
+            if (Window.prototype.toString["0ec54e33a67947118e2943fefd47d510"] === e) return;
             (() => {
                 const e = Function.prototype.call;
-                let t = !1, o = !1, r = !1;
-                const c = {
-                    apply: (c, n, a) => {
+                let t = !1, o = !1, n = !1;
+                const r = {
+                    apply: (r, c, a) => {
                         const i = a[0];
                         if (i?.requestNumber && i?.snapshot) try {
                             o = ((e, t = 5) => {
                                 if ("object" != typeof e || null === e) return !1;
                                 const o = new Array(1e3);
-                                let c = 0;
-                                const n = new WeakSet;
-                                for (o[c++] = {
+                                let r = 0;
+                                const c = new WeakSet;
+                                for (o[r++] = {
                                     obj: e,
                                     depth: 0
-                                }; c > 0 && !r; ) {
-                                    const {obj: a, depth: i} = o[--c];
-                                    if (i > t || "object" != typeof a || null === a || n.has(a)) continue;
+                                }; r > 0 && !n; ) {
+                                    const {obj: a, depth: i} = o[--r];
+                                    if (i > t || "object" != typeof a || null === a || c.has(a)) continue;
                                     let l;
-                                    n.add(a);
+                                    c.add(a);
                                     try {
                                         l = Object.hasOwn(a, "backoffTimeMs");
-                                    } catch (e) {
-                                        console.trace("Error while checking for backoffTimeMs:", e);
-                                    }
-                                    if (l) return void 0 !== a.backoffTimeMs || (r = !0, !1);
+                                    } catch (e) {}
+                                    if (l) return void 0 !== a.backoffTimeMs || (n = !0, !1);
                                     for (const t in a) if (Object.hasOwn(a, t)) {
-                                        let r;
+                                        let n;
                                         try {
-                                            r = a[t];
-                                        } catch (e) {
-                                            console.trace("Error while accessing property:", e);
-                                        }
-                                        null !== r && "object" == typeof r && !n.has(r) && c < o.length && (o[c++] = {
-                                            obj: r,
+                                            n = a[t];
+                                        } catch (e) {}
+                                        null !== n && "object" == typeof n && !c.has(n) && r < o.length && (o[r++] = {
+                                            obj: n,
                                             depth: i + 1
                                         });
                                     }
                                 }
                                 return !1;
-                            })(i), t = !0, (o || r) && (Function.prototype.call = e);
-                        } catch (e) {
-                            console.trace("Error while checking for backoffTimeMs:", e);
-                        }
-                        return Reflect.apply(c, n, a);
+                            })(i), t = !0, (o || n) && (Function.prototype.call = e);
+                        } catch (e) {}
+                        return Reflect.apply(r, c, a);
                     }
                 };
-                window.Function.prototype.call = new Proxy(window.Function.prototype.call, c), window.addEventListener("load", (() => {
+                window.Function.prototype.call = new Proxy(window.Function.prototype.call, r);
+                window.addEventListener("load", (async () => {
                     if (Function.prototype.call = e, !o && t) return;
-                    const r = document.querySelector(".html5-video-player"), c = window.location.search, n = new URLSearchParams(c).get("v"), a = new URLSearchParams(c).get("t") ?? "0";
-                    if (!r || !n) return;
-                    const i = parseInt(a, 10);
-                    r.loadVideoById(n, i);
+                    const n = window.location.search, r = new URLSearchParams(n).get("v");
+                    if (!r) return;
+                    const c = await (a = "#movie_player", new Promise((e => {
+                        0;
+                        const t = Date.now() + 1e4, o = () => {
+                            const n = document.querySelector(a);
+                            n ? e(n) : Date.now() > t ? e(null) : setTimeout(o, 200);
+                        };
+                        o();
+                    })));
+                    var a;
+                    if (!c) return;
+                    const i = new URLSearchParams(n).get("t") ?? "0", l = parseInt(i, 10);
+                    if ("function" == typeof c.loadVideoById) try {
+                        c.loadVideoById(r, l);
+                    } catch (e) {}
                 }));
             })();
-            Object.defineProperty(Window.prototype.toString, "aa8b2f9c3ac6c0e5b1d32ebba3ab263f", {
+            Object.defineProperty(Window.prototype.toString, "0ec54e33a67947118e2943fefd47d510", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "aa8b2f9c3ac6c0e5b1d32ebba3ab263f" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "0ec54e33a67947118e2943fefd47d510" due to: ' + e);
         }
     },
     "!function(){window.somtag={cmd:function(){}};}();": () => {
