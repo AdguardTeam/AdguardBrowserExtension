@@ -39,7 +39,7 @@ done
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
-TSURLFILTER_REF="master"
+TSURLFILTER_REF=""
 
 # Repository URLs
 TSURLFILTER_REPO="ssh://git@bit.int.agrd.dev:7999/adguard-filters/tsurlfilter.git"
