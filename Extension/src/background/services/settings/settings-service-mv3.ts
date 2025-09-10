@@ -123,7 +123,7 @@ export class SettingsService {
 
         const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
 
-        const isExtensionUpdateAvailable = await ExtensionUpdateService.getIsUpdateAvailable();
+        const isExtensionUpdateAvailable = ExtensionUpdateService.getIsUpdateAvailable();
 
         extensionUpdateActor.send({
             type: ExtensionUpdateFSMEvent.Init,
