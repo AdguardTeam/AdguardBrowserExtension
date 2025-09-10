@@ -42,10 +42,6 @@ export const DEFAULT_EXTENSION_CONFIG: Configuration = {
         ...emptyPreprocessedFilterList,
         trusted: true,
     },
-    quickFixesRules: {
-        ...emptyPreprocessedFilterList,
-        trusted: true,
-    },
     verbose: false,
     filtersPath: 'filters',
     ruleSetsPath: 'filters/declarative',
