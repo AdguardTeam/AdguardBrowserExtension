@@ -166,8 +166,6 @@ type CachedFilterData = Pick<PreprocessedFilterList, 'rawFilterList' | 'conversi
  * and the rules applied to them.
  */
 export class FilteringLogApi {
-    private static readonly REQUESTS_SIZE_PER_TAB = 1000;
-
     /**
      * Filter lists that are generated dynamically by TSWebExtension.
      * We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
@@ -176,11 +174,6 @@ export class FilteringLogApi {
         AntiBannerFiltersId.StealthModeFilterId,
         AntiBannerFiltersId.AllowlistFilterId,
     ]);
-
-    /**
-     * Flag to enable/disable preserve log.
-     */
-    private preserveLogEnabled = false;
 
     private openedFilteringLogsPages = 0;
 
@@ -474,8 +467,8 @@ export class FilteringLogApi {
      *
      * @returns True, if preserve log is enabled, else false.
      */
-    public isPreserveLogEnabled(): boolean {
-        return this.preserveLogEnabled;
+    public static isPreserveLogEnabled(): boolean {
+        return settingsStorage.get(SettingOption.PreserveLogEnabled) || false;
     }
 
     /**
@@ -483,8 +476,27 @@ export class FilteringLogApi {
      *
      * @param enabled Is preserve log enabled.
      */
-    public setPreserveLogState(enabled: boolean): void {
-        this.preserveLogEnabled = enabled;
+    public static setPreserveLogState(enabled: boolean): void {
+        settingsStorage.set(SettingOption.PreserveLogEnabled, enabled);
+    }
+
+    /**
+     * Gets preserve log modal state.
+     *
+     * @returns True, if modal should be shown, else false.
+     */
+    public static getShowPreserveLogModalState(): boolean {
+        const value = settingsStorage.get(SettingOption.showPreserveLogModal) ?? true;
+        return value;
+    }
+
+    /**
+     * Sets preserve log modal state.
+     *
+     * @param enabled Is preserve log modal should be shown.
+     */
+    public static setShowPreserveLogModalState(enabled: boolean): void {
+        settingsStorage.set(SettingOption.showPreserveLogModal, enabled);
     }
 
     /**
@@ -683,7 +695,7 @@ export class FilteringLogApi {
     public clearEventsByTabId(tabId: number, ignorePreserveLog = false): void {
         const tabInfo = this.tabsInfoMap.get(tabId);
 
-        const preserveLog = ignorePreserveLog ? false : this.preserveLogEnabled;
+        const preserveLog = ignorePreserveLog ? false : FilteringLogApi.isPreserveLogEnabled();
 
         if (tabInfo && !preserveLog) {
             tabInfo.filteringEvents = [];
@@ -711,10 +723,11 @@ export class FilteringLogApi {
 
         tabInfo.filteringEvents.push(data);
 
-        if (tabInfo.filteringEvents.length > FilteringLogApi.REQUESTS_SIZE_PER_TAB) {
-            // don't remove first item, cause it's request to main frame
-            tabInfo.filteringEvents.splice(1, 1);
-        }
+        // TODO: Create settings for limit
+        // if (tabInfo.filteringEvents.length > FilteringLogApi.REQUESTS_SIZE_PER_TAB) {
+        //     // don't remove first item, cause it's request to main frame
+        //     tabInfo.filteringEvents.splice(1, 1);
+        // }
     }
 
     /**

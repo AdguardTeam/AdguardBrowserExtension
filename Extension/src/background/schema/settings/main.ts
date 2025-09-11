@@ -182,6 +182,16 @@ export const settingsValidator = zod.object({
      * without reload entire extension.
      */
     [SettingOption.DisableFiltering]: SchemaPreprocessor.booleanValidator,
+
+    // ----- Filtering log section -----
+    /**
+     * Flag to enable/disable preserve log functionality.
+     */
+    [SettingOption.PreserveLogEnabled]: SchemaPreprocessor.booleanValidator,
+    /**
+     * Flag to disable showing preserve log modal warning.
+     */
+    [SettingOption.showPreserveLogModal]: SchemaPreprocessor.booleanValidator,
 });
 
 /**
