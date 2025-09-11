@@ -1,9 +1,9 @@
-! Checksum: GnXsRg8w2amw7xFcxA+i0A
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1754305911-3600.patch
+! Checksum: CCm7Npwu+FHz0M3pJjk+Gw
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1757596595-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.50
-! TimeUpdated: 2025-08-04T11:07:50+00:00
+! Version: 2.0.8.64
+! TimeUpdated: 2025-09-11T13:12:23+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -146,6 +146,7 @@ _advertentieleaderboardhome.
 ||bol-an.nl/wp-content/uploads/*/Adv_
 ||brandweerspotters.nl/modules/banners/
 ||buzzbie.nl/uploads/banners/
+||cdn-ster-nl.akamaized.net/*.mp4$redirect=noopmp4-1s,domain=npo.nl
 ||cdn-tmo.nl^*/banners/
 ||cdn-webcam-harlingen.nl/adv/
 ||chatmetvreemden.be/static/html/
@@ -490,6 +491,7 @@ _advertentieleaderboardhome.
 ##.hoofdAd2
 ##.kwebler-ad-minimal
 ##.massarius-dfp-unit
+##.rmn-advert
 ##a[href^="https://go2.go2cloud.org/"]
 ##a[href^="https://mt67.net/"]
 ##a[href^="https://www.2k19.nl/"]
@@ -532,7 +534,7 @@ immo.vlan.be###TopCompareBox
 autobahn.eu,dingenvoorvrouwen.nl,playboy.nl###WB_VIDEO_PLAYER_TARGET
 gaynews.nl###abri
 gaynews.nl###abri1
-voetbal24.be###ad-desktop-incontent
+oetbal24.be###ad-desktop-incontent
 voetbalkrant.com###ad-intro-text
 voetbal24.be###ad-mobile-home-rectangle
 voetbal24.be###ad-mobile-incontent
@@ -556,7 +558,7 @@ demorgen.be,parool.nl,trouw.nl,volkskrant.nl###article_paragraph_6
 demorgen.be,parool.nl,trouw.nl,volkskrant.nl###article_paragraph_9
 autobahn.eu###avantisTarget
 ciaotutti.nl###b_searchboxInc
-belgiancycling.be,zoekhulp.nl###banner
+belgiancycling.be,wattedoen.be,zoekhulp.nl###banner
 autowereld.nl###banner-detail-top
 autowereld.nl###banner-lister-top
 2dehands.be,marktplaats.nl###banner-top-dt-container
@@ -572,6 +574,7 @@ bol-an.nl###block-11
 groningerkrant.nl###block-2
 spreekbuis.nl###block-3
 tiener-sexverhalen.nl###block-6
+scientias.nl###block-7
 bol-an.nl###block-9
 luchtvaartnieuws.nl###block-block-191
 blikopnieuws.nl###block-block-38
@@ -627,6 +630,7 @@ manpedia.nl###gridlove-module-2
 vrouwpedia.nl###gridlove-module-3
 nieuws.nl###header-banner
 unitednews.sr###image-vertical-reel-scroll-slideshow
+wattedoen.be###imu_large
 indeleiderstrui.nl###indeleiderstrui_ros_alpha_rectangle-halfpage
 indeleiderstrui.nl###indeleiderstrui_ros_bravo_leaderboard-billboard
 indeleiderstrui.nl###indeleiderstrui_ros_bravo_mini_ad_fluid
@@ -726,6 +730,8 @@ sexpower.nl###top-banner
 marktplaats.nl###top-banner-wrapper
 onderwijsnieuwsdienst.nl###topAdvertisement
 escort46.nl###top_image_div
+ewmagazine.nl###top_lb_bb
+ewmagazine.nl###top_rt
 hollandskroonnieuws.nl,radio-minerva.be,wieringernieuws.nl###topbanner
 voetbal-vandaag.nl###topbox
 hotradiohits.nl###tpl_banners
@@ -769,7 +775,7 @@ ditishelmond.nl##.aanbieder
 rtveen.nl##.aas_zone
 rivierenland-radio.nl##.aba
 newsbit.nl##.acf-block-cta-conversion-rating
-24cars.nl,a1mediagroep.nl,alarmeringen.nl,autozine.nl,banden.autoweek.nl,beleggersbelangen.nl,besteproduct.nl,bright.nl,dumpert.nl,eurosport.nl,gpblog.com,hetnieuwsvandaag.be,indebuurt.nl,koopplein.nl,limburger.nl,persinfo.org,rd.nl,rtvnunspeet.nl,sport.be,tellows.nl,tradeidee.nl,tripadvisor.nl,voetbalnieuws.nl,voetbalprimeur.nl,vrmg.nl,wijlimburg.nl,xgn.nl##.ad
+24cars.nl,a1mediagroep.nl,alarmeringen.nl,autozine.nl,banden.autoweek.nl,beleggersbelangen.nl,besteproduct.nl,bicycling.nl,bright.nl,dumpert.nl,eurosport.nl,gpblog.com,hetnieuwsvandaag.be,indebuurt.nl,koopplein.nl,limburger.nl,menshealth.nl,persinfo.org,rd.nl,rtvnunspeet.nl,runners.nl,sport.be,tellows.nl,tradeidee.nl,tripadvisor.nl,vi.nl,voetbalnieuws.nl,voetbalprimeur.nl,vrmg.nl,wijlimburg.nl,womenshealthmag.nl,xgn.nl##.ad
 crypto-insiders.nl##.ad-category
 babybytes.nl,bruzz.be,omroepflevoland.nl,pu.nl,soccernews.nl,sportuitslagen.org,trendalert.nl##.ad-container
 voetbal.com##.adbox
@@ -1002,6 +1008,7 @@ amateursexstart.nl,binnenvaartkrant.nl,christmaholic.nl,curacao.nu,dartfreakz.nl
 zozwanger.nl##.g-single
 zeelandnet.nl##.g_banner
 radiovisie.eu##.gmollik
+wattedoen.be##.gpt_box
 srherald.com##.gsrhera
 ninefornews.nl##.gyehnsh
 porntube.nl,sextube.nl##.happy-player-beside
@@ -1085,6 +1092,7 @@ schie.nu##.my-5
 dmgdeurne.nl##.n2-section-smartslider
 iex.nl##.nativeblock
 scientias.nl##.ndm-desktop-only
+autoblog.nl##.ndm-min-normal
 scientias.nl##.ndm-mobile-header-only
 iex.nl##.network:nth-of-type(2)
 escortgirls.be,sexguide.nl,topescort.nl##.newbottom-fbanners
@@ -1094,6 +1102,7 @@ tijd.be##.o-hpgrid__row-sponsoredcombo
 tijd.be##.o-hpgrid__row-tijdconnect
 twentefans.nl##.odd-wrapper
 flashscore.nl##.oddsPlacement
+bicycling.nl,menshealth.nl,runners.nl,vi.nl,womenshealthmag.nl##.optional-ad
 vlaamskijken.nl##.order-book
 autoscout24.be,autoscout24.nl##.osa-as24-placeholder
 hardware.info##.overview-item--success
@@ -1224,7 +1233,7 @@ meerdangewenst.nl##.tg-site-footer-section-1
 topgear.nl##.theme-advertorial
 fantv.nl##.tm-top-a
 fantv.nl##.tm-top-c
-startpagina.nl##.top-banner
+startpagina.nl,tweakers.net##.top-banner
 willem-ii.nl##.top-bar-logos
 wijwedden.net##.top-bookmaker-widget
 live-voetbal.com##.top-match
@@ -1294,6 +1303,7 @@ debestevpn.nl##.wpsm_promobox
 iphoned.nl##.wrap.hidden.lg\:flex.mt-8
 androidworld.nl##.wrap.overflow-hidden.relative.pt-5.z-30.sm\:h-\[90px\].sm\:pt-0
 beurs.nl##.wrapper--topbanner
+vi.nl##[class="ArticlePromoItem_ArticlePromoItem_"]
 voetbalprimeur.nl##[class^="Ad_"]
 bright.nl##[class^="Ad_ad_"]
 at5.nl##[class^="Advertisement_"]
@@ -1471,6 +1481,7 @@ mediamarkt.be,mediamarkt.nl##[data-test="mms-product-card"]:has(div[data-test="m
 almere-nieuws.nl#?#.wpb_wrapper:has(.section-heading:-abp-contains(partners))
 amstelveensnieuwsblad.nl,baarnschecourant.nl,barneveldsekrant.nl,bennekomsnieuwsblad.nl,biltschecourant.nl,deputtenaer.nl,derijnpost.nl,destadamersfoort.nl,destadgorinchem.nl,dewoudenberger.nl,edestad.nl,ermelosweekblad.nl,harderwijkercourant.nl,hcnieuws.nl,hetkompashardinxveld-giessendam.nl,hetkompassliedrecht.nl,houtensnieuws.nl,huisaanhuiselburg.nl,huisaanhuisoldebroek.nl,leusderkrant.nl,nieuwsbladdekaap.nl,nunspeethuisaanhuis.nl,recreatiekrantveluwe.nl,regiosportveenendaal.nl,rijnenveluwe.nl,scherpenzeelsekrant.nl,soestercourant.nl,stadnijkerk.nl,stadwageningen.nl,weekbladvoorouderamstel.nl,wijksnieuws.nl#?#.component__plugin:has(h6:-abp-contains(advertentie))
 autobahn.eu#?#.d-none.d-md-block.mb-3:-abp-has(a[target="_blank"][rel="noopener"])
+bol.com#?#[data-bltgi*="ProductList_"]:-abp-contains(Gesponsord)
 buienradar.nl#?#.linklist:-abp-has(h1:-abp-contains(Lekker Dichtbij Deals))
 businessinsider.nl#?#.widget_custom_html:-abp-has(h2:-abp-contains(Beter Beleggen))
 duurzaamnieuws.nl#?#.avia_codeblock_section:-abp-contains(Duurzaamnieuws wordt mede mogelijk gemaakt door:)
@@ -1478,6 +1489,7 @@ fonq.nl#?#[data-cy="plp-tile-container"]:-abp-contains(Gesponsord)
 fonq.nl#?#li:-abp-contains(Gesponsord)
 geenstijl.nl#?#.article.row.no-image:-abp-has(.row.compost-warn:-abp-contains(- ingezonden mededeling -))
 glutenvrij.nl#?#.Article__inner:has(.Article__title:-abp-contains(Advertentie))
+jumbo.com#?#[data-pathway-product-position]:-abp-contains(Gesponsord)
 linda.nl#?#.article-column_article:-abp-has(.category-label_label:-abp-contains(Advertorial))
 linda.nl#?#.article-row_article:-abp-has(.article-row_category.category-label_label:-abp-contains(Advertorial))
 mediamarkt.be,mediamarkt.nl#?#[data-index-number]:-abp-contains(Gesponsord)
@@ -1601,6 +1613,9 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
 ||svonm.com/*config.json$replace=/"enabled": true\,/"enabled":false\,/i,important
+9292.nl##[data-testid="ad-root"]
+9292.nl##astro-island[component-export="Ad"]
+hbvl.be##section[data-theme-sponsored-content]
 ditjesendatjes.nl##img[alt="Advertentie"]
 ditjesendatjes.nl#?#p.text-center.text-sm:contains(Advertentie)
 ditjesendatjes.nl#%#//scriptlet('trusted-replace-node-text', 'script', 'availableAds', ',availableAds:[', ',availableAds:[],noAds:[')
@@ -1639,7 +1654,7 @@ dailybuzz.nl#%#//scriptlet("set-constant", "cookie", "true")
 mediacourant.nl##.mg-slot
 avrotros.nl#%#//scriptlet('json-prune', 'assets.preroll')
 hartvannederland.nl##div[data-advert-slot-state]
-hartvannederland.nl##div:has(> span:first-child:contains(Advert))
+hartvannederland.nl#?#div:has(> span:first-child:contains(Advert))
 omroepbrabant.nl#%#//scriptlet('google-ima3')
 omroepbrabant.nl#%#//scriptlet('adjust-setTimeout', '[native code]', '6000', '0.001')
 9292.nl##:is(div, aside, astro-island):has(> div[data-testid="gpt-ad-root"])
@@ -1648,7 +1663,7 @@ nos.nl#%#//scriptlet('json-prune', 'adUrl')
 ||adconfig.ster.nl^$domain=nos.nl
 ||hfg.iuknyw5evnygw9v.nl/*?*=omroepzeeland&direct=
 ||2mdn.net/instream/html5/ima3.js$domain=omroepzeeland.nl,important
-centraalplus.nl##div[class^="col"] > div.center:has(> div.g > div.g-single > center > i:contains(Advertentie))
+centraalplus.nl#?#div[class^="col"] > div.center:has(> div.g > div.g-single > center > i:contains(Advertentie))
 voetbalzone.nl##div[class^="ad-wrapper"]
 voetbalzone.nl##.fco-openweb-ad
 gptoday.net###gptoday_ros_foxtrot_rectangle-halfpage
@@ -1830,7 +1845,7 @@ afkortingen.nu###link_unit
 fok.nl###mainContent > div.ad
 gezondheidsplein.nl,gelderlander.nl##.ad
 iphoned.nl##.advert-sidebar
-nrc.nl,afkortingen.nu##.banner
+buienalarm.nl,nrc.nl,afkortingen.nu##.banner
 marktplaats.nl##.banner-vipbottom
 nu.nl##.block.advertoriallist
 televizier.nl,tvgids.nl##.interstitial_banner
@@ -1861,7 +1876,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_dutch
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 puna.nl#@#.raw-html-component
-@@||2mdn.net/instream/html5/ima3.js$domain=puna.bbvms.com
+@@||2mdn.net/instream/html5/ima3.js$domain=puna.bbvms.com|puna.nl
 marktnet.nl#@#.ad-description
 @@||mmcdn.nl/tags/vkmag.com/
 underarmour.nl#@#.b-header-banner
