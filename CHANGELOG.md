@@ -30,9 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/dnr-rulesets] to v3.2.0.
 - Updated [@adguard/filters-downloader] to v2.4.2.
 - Updated [@adguard/logger] to v2.0.0.
-- Updated [@adguard/scriptlets] to v2.2.8.
-- Updated [@adguard/tsurlfilter] to v3.4.5.
-- Updated [@adguard/tswebextension] to v3.2.10.
+- Updated [@adguard/scriptlets] to v2.2.10.
+- Updated [@adguard/tsurlfilter] to v3.4.6.
+- Updated [@adguard/tswebextension] to v3.2.11.
 
 ### Removed
 
