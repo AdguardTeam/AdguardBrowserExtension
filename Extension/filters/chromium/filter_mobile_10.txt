@@ -1,9 +1,9 @@
-! Checksum: 1eaBWZa5tt5JBDLUVQuNiw
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1753100153-3600.patch
+! Checksum: 6YIUP6uXKS6cXHQSs4KrAw
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1754575986-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.71
-! TimeUpdated: 2025-07-21T12:12:06+00:00
+! Version: 2.0.3.73
+! TimeUpdated: 2025-08-07T14:09:32+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -165,10 +165,6 @@ search.brave.com#@#div[data-advertiser-id]
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
 @@||developer.mozilla.org/pong/
 @@||startpage.com/adsense/search/async-ads.js$domain=startpage.com
-ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-reco-ct:-abp-has(.mfe-promoted-label)
-ebay.co.uk,ebay.com,ebay.com.au#@?#li.s-item:-abp-has(span:-abp-contains(/S[^P]*?P[^O]*?O[^N]*?N[^S]*?S[^O]*?O[^R]*?R[^E]*?E[^D]*?D/))
-ebay.co.uk,ebay.com,ebay.com.au#@?#.b-module:-abp-has(h2:-abp-contains(Sponsored))
-ebay.co.uk,ebay.com,ebay.com.au#@?#.mfe-lex:-abp-has(h2:-abp-contains(sponsored))
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
@@ -187,6 +183,7 @@ news.fresheye.com#@#.bk2.spsite
 websearch.rakuten.co.jp#@##ad-ichiba
 etsy.com#@?#.responsive-listing-grid > li:has( > div > a div > .ad-iindicator)
 etsy.com#@?#div[data-search-results-region] li:has( div[class*="merch-stash"]:only-child > a > div[class*="listing-card__info"] p > span:not([aria-hidden="true"]):contains(Etsy))
+duckduckgo.com#@#main[data-testid="zci-products"] > nav + div > div:has( > h2 button[data-testid="ad-badge"])
 duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#li[data-layout="products"]
 duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#.module--carousel-products
 duckduckgo.com,duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion#@#[data-layout="ad"]
