@@ -581,43 +581,7 @@ pnpm exec tsurlfilter convert --help
 Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
-### <a name="dev-locales"></a> Locales
-
-#### Localization Workflow
-
-**⚠️ IMPORTANT: Follow this workflow strictly to avoid overwriting translations in Crowdin**
-
-1. **Add new keys to English locale**
-   - Add new translation keys to `./Extension/_locales/en/messages.json`
-
-2. **Create Pull Request**
-   - Create PR with your changes including the new locale keys
-   - **DO NOT run `pnpm locales upload` yet**
-
-3. **Get approvals**
-   - Team Lead approval (for code changes)
-   - Content Manager approval (for new translation keys and text)
-
-4. **Upload to Crowdin** (only after approvals)
-   ```shell
-   pnpm locales upload
-   ```
-
-5. **Wait for translations**
-   - Notify the `#adguard-translations` Slack channel about new translation keys
-   - Translators will work on new keys in Crowdin
-   - Monitor translation progress in Crowdin dashboard and Slack channel updates
-
-6. **Download completed translations**
-   ```shell
-   pnpm locales download
-   ```
-
-7. **Update PR and merge**
-   - Add downloaded translations to your PR
-   - Merge PR after final review
-
-#### Locales Commands
+### <a name="dev-localizations"></a> Update localizations
 
 To download and append localizations run:
 
