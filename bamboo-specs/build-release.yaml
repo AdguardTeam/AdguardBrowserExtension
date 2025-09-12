@@ -8,11 +8,12 @@ variables:
   dockerNode: adguard/extension-builder:22.17--0.2--0
 
 stages:
-  - Size Check:
+  - Size and locales check:
       manual: false
       final: false
       jobs:
         - Check Bundle Size
+        - Check translations
   - Build:
       manual: false
       final: false
@@ -30,7 +31,7 @@ Check Bundle Size:
   tasks:
     - checkout:
         force-clean-build: 'true'
-    - script:
+    - script: &setup-script
         interpreter: SHELL
         scripts:
           - |-
@@ -44,7 +45,10 @@ Check Bundle Size:
 
             # Set cache directory
             pnpm config set store-dir ${bamboo.cachePnpm}
-
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
             # Install dependencies
             pnpm install ${bamboo.varsPnpm}
 
@@ -68,7 +72,7 @@ Check Bundle Size:
             # Cleaning up Firefox standalone build after bundle size check
             rm -rf build/release/firefox-standalone
   final-tasks:
-    - script:
+    - script: &final-clean-up-script
         interpreter: SHELL
         scripts:
           - |-
@@ -84,9 +88,29 @@ Check Bundle Size:
             rm -rf node_modules build
             rm -rf .git
             echo "Size after cleanup:" && du -h | tail -n 1
-  requirements:
+  requirements: &requirements
     - adg-docker: 'true'
+    - extension: 'true'
 
+Check translations:
+  key: LOCALESCHECK
+  other:
+    clean-working-dir: true
+  docker: *docker
+  tasks:
+    - checkout:
+        force-clean-build: true
+    - script: *setup-script
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            pnpm install ${bamboo.varsPnpm}
+
+            pnpm locales validate --min
+  final-tasks:
+    - script: *final-clean-up-script
+  requirements: *requirements
 
 Build:
   key: BUILD
@@ -99,23 +123,13 @@ Build:
   tasks:
     - checkout:
         force-clean-build: 'true'
+    - script: *setup-script
     - script:
         interpreter: SHELL
         scripts:
           - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
-
             pnpm install ${bamboo.varsPnpm}
-            pnpm locales validate --min
+
             pnpm release
 
             # zip source files for publishing on AMO
@@ -146,22 +160,7 @@ Build:
           selectedRepository: defaultRepository
           tagName: v${bamboo.inject.version}
   final-tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            rm -rf .git
-            echo "Size after cleanup:" && du -h | tail -n 1
+    - script: *final-clean-up-script
   artifacts:
     - name: build.txt
       location: artifacts
