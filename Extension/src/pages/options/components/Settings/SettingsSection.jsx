@@ -31,9 +31,10 @@ const SettingsSection = (props) => {
         children,
         disabled,
         mode,
+        className,
     } = props;
 
-    const settingGroupClassName = classNames('settings__group', {
+    const settingGroupClassName = classNames('settings__group', className, {
         'settings__group--disabled': disabled,
     });
 

@@ -195,6 +195,7 @@ const Allowlist = observer(() => {
                 title={translator.getMessage('options_allowlist')}
                 titleId={switchTitleId}
                 mode="smallContainer"
+                className="setting__allowlist-section"
                 description={settings.values[DefaultAllowlistMode]
                     ? translator.getMessage('options_allowlist_desc')
                     : (
