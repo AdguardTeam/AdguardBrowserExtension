@@ -61,9 +61,13 @@ export enum AntiBannerFiltersId {
     AnnoyancesMobileAppBannersFilterId = 20,
     AnnoyancesOtherAnnoyancesFilterId = 21,
     AnnoyancesWidgetsFilterId = 22,
-    QuickFixesFilterId = 24,
     AllowlistFilterId = 100,
     MobileAdsFilterId = 11,
+
+    /**
+     * @deprecated
+     */
+    QuickFixesFilterId = 24,
 }
 
 /**
