@@ -293,9 +293,7 @@ export class App {
 
         await sendMessage({ type: MessageType.AppInitialized });
 
-        // In MV3 we need filters update service to update quick fixes filter,
-        // we should await it before dispatching the event to exclude race
-        // conditions.
+        // Set filters last update timestamp for issue reporting
         await filterUpdateService.init();
 
         await ExtensionUpdateService.handleExtensionReloadOnUpdate(isUpdate);
