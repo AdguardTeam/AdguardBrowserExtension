@@ -30,8 +30,8 @@ const PreserveLogModal = () => {
 
     const [showModalInFuture, setShowModalInFuture] = useState(true);
 
-    const handleModal = (preserveLogState: boolean) => {
-        logStore.setPreserveLog(preserveLogState);
+    const confirmModal = () => {
+        logStore.setPreserveLog(true);
         if (!showModalInFuture) {
             logStore.hidePreserveLogModalInFuture();
         }
@@ -61,9 +61,8 @@ const PreserveLogModal = () => {
             title={translator.getMessage('filtering_log_preserve_log_modal_title')}
             subtitle={renderSubtitle()}
             isOpen={logStore.isPreserveLogModalOpen}
-            onConfirm={() => handleModal(true)}
+            onConfirm={confirmModal}
             customConfirmTitle={translator.getMessage('filtering_log_preserve_log_modal_confirm')}
-            onCancel={() => handleModal(false)}
             setIsOpen={logStore.setIsPreserveLogModalOpen}
             isConsent
         />

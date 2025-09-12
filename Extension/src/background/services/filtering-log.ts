@@ -70,7 +70,6 @@ export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[];
     settings: SettingsData;
     preserveLogEnabled: boolean;
-    isShowPreserveLogModalEnabled: boolean;
 };
 
 // TODO (David): Add function to preprocess rule event data
@@ -702,7 +701,6 @@ export class FilteringLogService {
             filtersMetadata: FiltersApi.getFiltersMetadata(),
             settings: SettingsApi.getData(),
             preserveLogEnabled: FilteringLogApi.isPreserveLogEnabled(),
-            isShowPreserveLogModalEnabled: FilteringLogApi.getShowPreserveLogModalState(),
         };
 
         return result;

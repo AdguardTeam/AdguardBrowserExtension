@@ -166,6 +166,8 @@ type CachedFilterData = Pick<PreprocessedFilterList, 'rawFilterList' | 'conversi
  * and the rules applied to them.
  */
 export class FilteringLogApi {
+    private static readonly REQUESTS_SIZE_PER_TAB = 1000;
+
     /**
      * Filter lists that are generated dynamically by TSWebExtension.
      * We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
@@ -723,11 +725,13 @@ export class FilteringLogApi {
 
         tabInfo.filteringEvents.push(data);
 
-        // TODO: Create settings for limit
-        // if (tabInfo.filteringEvents.length > FilteringLogApi.REQUESTS_SIZE_PER_TAB) {
-        //     // don't remove first item, cause it's request to main frame
-        //     tabInfo.filteringEvents.splice(1, 1);
-        // }
+        const shouldRemoveOldestEvent = !FilteringLogApi.isPreserveLogEnabled()
+            && (tabInfo.filteringEvents.length > FilteringLogApi.REQUESTS_SIZE_PER_TAB);
+
+        if (shouldRemoveOldestEvent) {
+            // don't remove first item, cause it's request to main frame
+            tabInfo.filteringEvents.splice(1, 1);
+        }
     }
 
     /**

@@ -505,14 +505,12 @@ class LogStore {
             filtersMetadata,
             settings,
             preserveLogEnabled,
-            isShowPreserveLogModalEnabled,
         } = await messenger.getFilteringLogData();
 
         runInAction(() => {
             this.filtersMetadata = filtersMetadata;
             this.settings = settings;
             this.preserveLogEnabled = preserveLogEnabled;
-            this.isPreserveLogModalOpen = isShowPreserveLogModalEnabled;
         });
     };
 
@@ -534,9 +532,19 @@ class LogStore {
     @action
     hidePreserveLogModalInFuture = async () => {
         if (this.settings) {
+            this.settings.values[this.settings.names.showPreserveLogModal] = false;
             await messenger.setPreserveLogShowModalState(false);
         }
     };
+
+    @computed
+    get isShowPreserveLogModal() {
+        if (!this.settings) {
+            return null;
+        }
+
+        return this.settings.values[this.settings.names.showPreserveLogModal];
+    }
 
     @computed
     get events() {

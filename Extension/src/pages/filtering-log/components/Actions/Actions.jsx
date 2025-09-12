@@ -49,7 +49,11 @@ const Actions = observer(() => {
     };
 
     const preserveLogHandler = (e) => {
-        logStore.setPreserveLog(e.target.checked);
+        if (logStore.isShowPreserveLogModal && e.target.checked) {
+            logStore.setIsPreserveLogModalOpen(true);
+        } else {
+            logStore.setPreserveLog(e.target.checked);
+        }
     };
 
     const preserveLogClassName = cn(
