@@ -470,7 +470,7 @@ export class FilteringLogApi {
      * @returns True, if preserve log is enabled, else false.
      */
     public static isPreserveLogEnabled(): boolean {
-        return settingsStorage.get(SettingOption.PreserveLogEnabled) || false;
+        return settingsStorage.get(SettingOption.PreserveLogEnabled) ?? false;
     }
 
     /**
