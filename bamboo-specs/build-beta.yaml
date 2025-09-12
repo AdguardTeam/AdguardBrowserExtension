@@ -70,8 +70,8 @@ Check Bundle Size:
 
             # Cleaning up Firefox and Opera builds after bundle size check
             rm -rf build/beta/firefox-* build/beta/opera
-  final-tasks: &final-clean-up-script
-    - script:
+  final-tasks:
+    - script: &final-clean-up-script
         interpreter: SHELL
         scripts:
           - |-
