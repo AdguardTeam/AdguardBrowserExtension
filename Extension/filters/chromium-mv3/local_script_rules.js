@@ -647,26 +647,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "62de8ad86c59d0b7297a578a18ec0db3" due to: ' + e);
         }
     },
-    '(()=>{window.addEventListener("load",(()=>{document.querySelector(".vsly-player")&&(()=>{const e=document.createElement("script");e.id="xieg6Sie",e.src="https://cdn.viously.com/js/sdk/boot.js",document.head.appendChild(e)})()}));})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["1b4cc4a23e39a6479216628792b359fd"] === e) return;
-            window.addEventListener("load", (() => {
-                document.querySelector(".vsly-player") && (() => {
-                    const e = document.createElement("script");
-                    e.id = "xieg6Sie", e.src = "https://cdn.viously.com/js/sdk/boot.js", document.head.appendChild(e);
-                })();
-            }));
-            Object.defineProperty(Window.prototype.toString, "1b4cc4a23e39a6479216628792b359fd", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "1b4cc4a23e39a6479216628792b359fd" due to: ' + e);
-        }
-    },
     '(()=>{window.TATM=window.TATM||{},TATM.init=()=>{},TATM.initAdUnits=()=>{},TATM.pageReady=()=>{},TATM.getVast=function(n){return new Promise((n=>{n()}))},TATM.push=function(n){if("function"==typeof n)try{n()}catch(n){console.debug(n)}};})();': () => {
         try {
             const e = "done";
