@@ -6,7 +6,7 @@ plan:
   name: browser extension - test
 variables:
   # playwright is needed for integration tests after build
-  dockerNode: adguard/playwright-runner:22.17--1.53.2--0
+  dockerPlaywright: adguard/playwright-runner:22.17--1.53.2--1
 
 stages:
   - Test build:
@@ -28,7 +28,7 @@ Test dev build:
   other:
     clean-working-dir: true
   docker: &docker
-    image: ${bamboo.dockerNode}
+    image: ${bamboo.dockerPlaywright}
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
