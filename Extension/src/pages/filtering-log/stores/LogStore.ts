@@ -41,7 +41,6 @@ import { BACKGROUND_TAB_ID } from '../../../common/constants';
 import { getStatusMode, StatusMode } from '../filteringLogStatus';
 import { logger } from '../../../common/logger';
 import { getFilterName } from '../../helpers';
-import { optionsStorage } from '../../options/options-storage';
 
 import { matchesSearch } from './helpers';
 import { type RootStore } from './RootStore';
@@ -505,14 +504,13 @@ class LogStore {
         const {
             filtersMetadata,
             settings,
+            preserveLogEnabled,
         } = await messenger.getFilteringLogData();
-
-        const preserveLogEnabled = optionsStorage.getItem(optionsStorage.KEYS.PRESERVE_LOG_ENABLED);
-        this.setPreserveLog(preserveLogEnabled);
 
         runInAction(() => {
             this.filtersMetadata = filtersMetadata;
             this.settings = settings;
+            this.preserveLogEnabled = preserveLogEnabled;
         });
     };
 
@@ -648,7 +646,6 @@ class LogStore {
     @action
     setPreserveLog = async (state: boolean) => {
         await messenger.setPreserveLogState(state);
-        optionsStorage.setItem(optionsStorage.KEYS.PRESERVE_LOG_ENABLED, state);
 
         runInAction(() => {
             this.preserveLogEnabled = state;

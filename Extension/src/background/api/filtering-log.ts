@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { type Tabs } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
 import { RuleGenerator } from '@adguard/agtree/generator';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
@@ -169,11 +170,6 @@ export class FilteringLogApi {
     private static readonly REQUESTS_SIZE_PER_TAB = 1000;
 
     /**
-     * Flag to enable/disable preserve log.
-     */
-    private preserveLogEnabled = false;
-
-    /**
      * Filter lists that are generated dynamically by TSWebExtension.
      * We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
      */
@@ -181,6 +177,16 @@ export class FilteringLogApi {
         AntiBannerFiltersId.StealthModeFilterId,
         AntiBannerFiltersId.AllowlistFilterId,
     ]);
+
+    /**
+     * Flag to enable/disable preserve log.
+     */
+    private preserveLogEnabled = false;
+
+    /**
+     * Key for preserve log flag in storage.
+     */
+    private readonly PRESERVE_LOG_ENABLED_KEY = 'preserve_log_enabled';
 
     private openedFilteringLogsPages = 0;
 
@@ -221,6 +227,13 @@ export class FilteringLogApi {
      * Flag to invert allowlist mode.
      */
     private allowlistInverted = false;
+
+    /**
+     * Initializes preserve log state.
+     */
+    constructor() {
+        this.initPreserveLogState();
+    }
 
     /**
      * Purges filters cache.
@@ -472,10 +485,32 @@ export class FilteringLogApi {
     /**
      * Checks if preserve log is enabled.
      *
-     * @param enabled - True, if preserve log is enabled, else false.
+     * @returns True, if preserve log is enabled, else false.
+     */
+    public isPreserveLogEnabled(): boolean {
+        return this.preserveLogEnabled;
+    }
+
+    /**
+     * Sets preserve log state.
+     *
+     * @param enabled Is preserve log enabled.
      */
     public setPreserveLogState(enabled: boolean): void {
         this.preserveLogEnabled = enabled;
+        browser.storage.session.set({ [this.PRESERVE_LOG_ENABLED_KEY]: enabled });
+    }
+
+    /**
+     * Initializes preserve log state.
+     */
+    private async initPreserveLogState(): Promise<void> {
+        const result = await browser.storage.session.get(this.PRESERVE_LOG_ENABLED_KEY);
+        if (!result[this.PRESERVE_LOG_ENABLED_KEY]) {
+            return;
+        }
+
+        this.preserveLogEnabled = Boolean(result[this.PRESERVE_LOG_ENABLED_KEY]);
     }
 
     /**

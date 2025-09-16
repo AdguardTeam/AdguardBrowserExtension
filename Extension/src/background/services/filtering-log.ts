@@ -67,6 +67,7 @@ import { SettingOption } from '../schema';
 export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[];
     settings: SettingsData;
+    preserveLogEnabled: boolean;
 };
 
 // TODO (David): Add function to preprocess rule event data
@@ -682,12 +683,11 @@ export class FilteringLogService {
      * filter log parameters: metadata, settings, and save log state.
      */
     private static onGetFilteringLogData(): GetFilteringLogDataResponse {
-        const result = {
+        return {
             filtersMetadata: FiltersApi.getFiltersMetadata(),
             settings: SettingsApi.getData(),
+            preserveLogEnabled: filteringLogApi.isPreserveLogEnabled(),
         };
-
-        return result;
     }
 
     /**
