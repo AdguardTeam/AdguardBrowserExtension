@@ -349,6 +349,11 @@ export class FiltersApi {
      * @returns List of loaded filter IDs.
      */
     public static async reloadFiltersFromLocal(): Promise<number[]> {
+        if (!__IS_MV3__) {
+            logger.debug('[ext.FiltersApi.reloadFiltersFromLocal]: method is only for MV3 version');
+            return [];
+        }
+
         try {
             await FiltersApi.loadI18nMetadataFromBackend(false);
             await FiltersApi.loadMetadataFromFromBackend(false);
@@ -360,7 +365,9 @@ export class FiltersApi {
 
         await FiltersApi.removeObsoleteFilters();
 
-        const filterIds = filterStateStorage.getLoadFilters();
+        // For MV3 we should reload all filters, because they are actually
+        // loaded into IDB by TsWebExtension during it's initialization.
+        const filterIds = filterStateStorage.getAllFilters();
 
         // Ignore custom filters, user-rules and allowlist filter.
         const commonFiltersIds = filterIds.filter((id) => CommonFilterUtils.isCommonFilter(id));

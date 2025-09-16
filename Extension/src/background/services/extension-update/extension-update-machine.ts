@@ -135,21 +135,46 @@ const extensionUpdateMachine = setup({
 });
 
 /**
- * Handles state change events.
+ * Creates the extension update actor and subscribes to state changes.
  *
- * @param state State change event.
+ * Intentionally uses a closure to encapsulate the previous state value,
+ * avoiding global variables and keeping state tracking internal to the handler logic.
+ *
+ * @returns The extension update actor instance.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleStateChange = (state: any): void => {
-    logger.debug(`[ext.extension-update-machine]: Current state: ${state.value}`);
+function createExtensionUpdateActorWithHandler(): ReturnType<typeof createActor> {
+    const extensionUpdateActor = createActor(extensionUpdateMachine);
+    let previousStateValue: unknown;
 
-    notifier.notifyListeners(NotifierType.ExtensionUpdateStateChange, state.value);
+    const handleStateChange = async (state: ReturnType<typeof extensionUpdateActor.getSnapshot>): Promise<void> => {
+        const firstCall = previousStateValue === undefined && state.value === ExtensionUpdateFSMState.Idle;
+        const stateChanged = previousStateValue !== undefined && state.value !== previousStateValue;
 
-    iconsApi.update();
-};
+        if (!firstCall && !stateChanged) {
+            previousStateValue = state.value;
 
-const extensionUpdateActor = createActor(extensionUpdateMachine);
+            return;
+        }
 
-extensionUpdateActor.subscribe(handleStateChange);
+        logger.debug(`[ext.extension-update-machine]: Current state: ${state.value}, previous state: ${previousStateValue}`);
+
+        notifier.notifyListeners(NotifierType.ExtensionUpdateStateChange, state.value);
+
+        previousStateValue = state.value;
+
+        // We have special icon for "update available" state, so update it when
+        // needed, because it will set the correct icon for all tabs independent
+        // of their state (enabled/disabled/allowlisted).
+        if (state.value === ExtensionUpdateFSMState.Available) {
+            iconsApi.update();
+        }
+    };
+
+    extensionUpdateActor.subscribe(handleStateChange);
+
+    return extensionUpdateActor;
+}
+
+const extensionUpdateActor = createExtensionUpdateActorWithHandler();
 
 export { extensionUpdateActor };

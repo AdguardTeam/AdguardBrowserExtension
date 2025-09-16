@@ -25,9 +25,7 @@ import {
 } from '@adguard/filters-downloader/browser';
 import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
-import { type TsWebExtension as TsWebExtensionMv3 } from '@adguard/tswebextension/mv3';
-
-import { TsWebExtension } from 'tswebextension';
+import { TsWebExtension } from '@adguard/tswebextension/mv3';
 
 import { LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
 import { CustomFilterUtils } from '../../../common/custom-filter-utils';
@@ -178,10 +176,12 @@ export class Network {
             // prepared data in filters storage, to which we write the binary
             // data from @adguard/dnr-rulesets. See AG-36824 for details.
 
-            await (TsWebExtension as unknown as typeof TsWebExtensionMv3).syncRuleSetWithIdb(
-                filterId,
-                'filters/declarative',
-            );
+            // Sync the declarative ruleset with IndexedDB to ensure the filter
+            // data is available in the storage before attempting to retrieve it.
+            // Note: because this method called before first run of tswebextension,
+            // it will use it's own default log level.
+            await TsWebExtension.syncRuleSetWithIdbByFilterId(filterId, 'filters/declarative');
+
             const rawFilterList = await FiltersStoragesAdapter.getRawFilterList(filterId);
 
             if (!rawFilterList) {

@@ -157,6 +157,21 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
+     * Returns list of all filters ids.
+     *
+     * @returns List of all filters ids.
+     *
+     * @throws Error if filter state data is not initialized.
+     */
+    public getAllFilters(): number[] {
+        if (!this.data) {
+            throw FilterStateStorage.createNotInitializedError();
+        }
+
+        return Object.keys(this.data).map((id) => Number(id));
+    }
+
+    /**
      * Enables specified filters.
      *
      * @param filterIds List of filter ids to enable.

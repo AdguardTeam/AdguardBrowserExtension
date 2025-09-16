@@ -17,6 +17,8 @@
  */
 import browser from 'webextension-polyfill';
 
+import { tabsApi as tsWebExtTabsApi } from 'tswebextension';
+
 import { ExtensionUpdateService } from 'extension-update-service';
 
 import { RulesLimitsService } from 'rules-limits-service';
@@ -27,10 +29,10 @@ import {
     type IconVariants,
 } from '../../storages';
 import { SettingOption } from '../../schema';
-import { getIconImageData } from '../../../common/api/extension';
+import { getIconImageData, TabsApi as CommonTabsApi } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
 
-import { type FrameData } from './frames';
+import { FramesApi, type FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
 import { browserAction } from './browser-action';
 
@@ -80,7 +82,9 @@ class IconsApi {
     }
 
     /**
-     * Updates the icon state.
+     * Pre-set one icon for all tabs based on the current extension state and
+     * promo notification (if any). After that updates icon for current tab
+     * based on tab context data.
      */
     public async update(): Promise<void> {
         const icon = await this.pickIconVariant();
@@ -92,15 +96,35 @@ class IconsApi {
                 return;
             }
             try {
+                logger.debug(`[ext.IconsApi.update]: updating icon for tab ${tab.id}`, icon);
                 await IconsApi.setActionIcon(icon, tab.id);
             } catch (e) {
                 logger.debug(`[ext.IconsApi.update]: failed to update icon for tab ${tab.id}:`, e);
             }
         }));
+
+        const activeTab = await CommonTabsApi.getActive();
+        const tabId = activeTab?.id;
+        if (!tabId) {
+            return;
+        }
+
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
+        if (!tabContext) {
+            return;
+        }
+
+        const frameData = FramesApi.getMainFrameData(tabContext);
+
+        try {
+            await iconsApi.updateTabAction(tabId, frameData);
+        } catch (e) {
+            logger.info(`[ext.IconsApi.update]: failed to update tab icon for active tab ${tabId}:`, e);
+        }
     }
 
     /**
-     * Updates current extension icon for specified tab.
+     * Updates extension icon for specified tab.
      *
      * @param tabId Tab's id.
      * @param frameData The information from {@link FrameData} is needed
@@ -111,6 +135,11 @@ class IconsApi {
         tabId: number,
         frameData: FrameData,
     ): Promise<void> {
+        /**
+         * TODO: Check, whether we should call this method since it will update
+         * the icon on every tab for each call if the promo notification is not
+         * active.
+         */
         try {
             await this.resetPromoIconIfAny(tabId, frameData);
         } catch { /* do nothing */ }
@@ -123,7 +152,7 @@ class IconsApi {
 
         const isDisabled = documentAllowlisted || applicationFilteringDisabled;
 
-        // Determine extension's action new state based on the current tab state
+        // Determine extension's action new state based on the tab state
         const icon = await this.pickIconVariant(isDisabled);
         const badgeText = IconsApi.getBadgeText(totalBlockedTab, isDisabled);
 
@@ -140,8 +169,8 @@ class IconsApi {
     }
 
     /**
-     * Cleans up the promo icon variants. If the current tab action data is provided,
-     * updates the icon for the current tab.
+     * Cleans up the promo icon variants. If the tab data is provided,
+     * updates the icon for the specified tab.
      *
      * @param tabId Tab's id.
      * @param frameData Tab's {@link FrameData}.
@@ -154,7 +183,7 @@ class IconsApi {
         // Get rid of promo icon on all tabs, this prevents icon flickering on tab change
         await IconsApi.setActionIcon(icon);
 
-        // Update current tab action
+        // Update action icon for the specified tab if any
         if (tabId && frameData) {
             const isDisabled = frameData.documentAllowlisted || frameData.applicationFilteringDisabled;
             const disabledIcon = await this.pickIconVariant(isDisabled);
@@ -173,8 +202,8 @@ class IconsApi {
     }
 
     /**
-     * Picks the icon variant based on the current tab state.
-     * Fallbacks to default icon variants if the current icon variants are not provided.
+     * Picks the icon variant based on the current extension state.
+     * Fallbacks to default icon variants if the promo icons are not set.
      *
      * @param isDisabled Is website allowlisted or app filtering disabled.
      *
@@ -197,7 +226,7 @@ class IconsApi {
                 : this.promoIcons.enabled;
         }
 
-        if (ExtensionUpdateService.getIsUpdateAvailable()) {
+        if (__IS_MV3__ && ExtensionUpdateService.getIsUpdateAvailable()) {
             return defaultIconVariants.updateAvailable;
         }
 
@@ -207,7 +236,7 @@ class IconsApi {
     }
 
     /**
-     * Calculates the badge text based on the current tab state.
+     * Calculates the badge text based on the tab state.
      *
      * @param totalBlockedTab Number of blocked requests.
      * @param isDisabled Is website allowlisted or app filtering disabled.

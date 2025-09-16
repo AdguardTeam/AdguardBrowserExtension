@@ -103,7 +103,7 @@ const Mv3FiltersUpdate = observer(() => {
                             </div>
                         </div>
                     </div>
-                    <div>
+                    <div className="extension-update__update-btn">
                         <button
                             type="button"
                             onClick={updateClickHandler}
