@@ -345,6 +345,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`,
                 ),
+                'browser-action-api': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/api/ui/browser-action/browser-action-mv${manifestVersion}.ts`,
+                ),
             },
         },
         module: {
