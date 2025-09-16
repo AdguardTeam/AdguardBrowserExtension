@@ -230,21 +230,6 @@ export class Engine implements TsWebExtensionEngine {
             Object.assign(userrules, await UserRulesApi.getUserRules());
         }
 
-        // TODO: Remove this block, quick fixes is no more and not coming back.
-        const quickFixesRules: Configuration['quickFixesRules'] = {
-            ...emptyPreprocessedFilterList,
-            /**
-             * Quick fixes are always trusted because it is the one of
-             * AdGuard's filter.
-             */
-            trusted: true,
-        };
-
-        // TODO: revert if Quick Fixes filter is back
-        // if (QuickFixesRulesApi.isEnabled()) {
-        //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
-        // }
-
         let customFilters: Configuration['customFilters'] = [];
 
         /**
@@ -316,8 +301,6 @@ export class Engine implements TsWebExtensionEngine {
             // Custom filters from remote sources will be passed only if
             // User Scripts API permission is granted.
             customFilters,
-            // Deprecated, now is empty and will be removed in future.
-            quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA) || logger.isVerbose(),
             logLevel: logger.currentLevel,
             // Built-in local filters.

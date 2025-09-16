@@ -19,7 +19,7 @@
 import { FilterUpdateApi } from '../update';
 import { CommonFilterApi } from '../common';
 import { UserAgent } from '../../../../common/user-agent';
-import { AntiBannerFiltersId, RECOMMENDED_TAG_ID } from '../../../../common/constants';
+import { RECOMMENDED_TAG_ID } from '../../../../common/constants';
 import { CommonFilterUtils } from '../../../../common/common-filter-utils';
 import {
     metadataStorage,
@@ -83,13 +83,7 @@ export class Categories {
      */
     public static getCategories(): CategoriesData {
         const groups = Categories.getGroups();
-        let filters = Categories.getFilters();
-
-        // Exclude Quick Fixes filter from filters list
-        // TODO: revert if Quick Fixes filter is back
-        filters = filters.filter((f) => {
-            return f.filterId !== AntiBannerFiltersId.QuickFixesFilterId;
-        });
+        const filters = Categories.getFilters();
 
         const categories = groups.map((group) => ({
             ...group,
