@@ -34,6 +34,9 @@ pnpm config set store-dir ${bamboo_cachePnpm}
 # Install dependencies
 pnpm install ${bamboo_varsPnpm}
 
+# For correct link playwright browsers
+pnpm exec playwright install
+
 # Run integration tests
 pnpm test:integration $TARGET
 
