@@ -33,6 +33,7 @@ export {
 
 export {
     mockLocalStorage,
+    mockSessionStorage,
     mockFilterPath,
     mockXhrRequests,
     MockedTsWebExtension,

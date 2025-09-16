@@ -29,6 +29,7 @@ import { MANIFEST_ENV } from './tools/constants';
 import {
     MockedTsWebExtension,
     mockLocalStorage,
+    mockSessionStorage,
     mockXhrRequests,
 } from './tests/helpers';
 import { mockGlobalFetch } from './tests/helpers/mocks/fetch';
@@ -97,6 +98,7 @@ vi.mock('lodash-es', async () => ({
 }));
 
 mockLocalStorage();
+mockSessionStorage();
 
 Object.assign(global, {
     sinonFakeServer: mockXhrRequests(),

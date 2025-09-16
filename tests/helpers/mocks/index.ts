@@ -1,4 +1,4 @@
-export { mockLocalStorage } from './storage';
+export { mockLocalStorage, mockSessionStorage } from './storage';
 export { mockFilterPath, mockXhrRequests } from './xhr';
 export { MockedTsWebExtension } from './tswebextension';
 export { SettingsApi } from './settings-api';

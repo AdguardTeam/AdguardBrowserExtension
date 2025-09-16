@@ -106,3 +106,24 @@ export const mockLocalStorage = (initData?: Record<string, unknown>): Storage.St
 
     return localStorage;
 };
+
+/**
+ * Mocks the browser.storage.session API with an instance of EmulatedLocalStorage
+ *
+ * @param initData - Optional initial data for the mock storage
+ *
+ * @returns Mocked storage instance
+ */
+export const mockSessionStorage = (initData?: Record<string, unknown>): Storage.StorageArea => {
+    const sessionStorage = new EmulatedLocalStorage(initData);
+
+    // Create session storage if it doesn't exist
+    (browser.storage as any).session = {
+        get: sessionStorage.get.bind(sessionStorage),
+        set: sessionStorage.set.bind(sessionStorage),
+        remove: sessionStorage.remove.bind(sessionStorage),
+        clear: sessionStorage.clear.bind(sessionStorage),
+    };
+
+    return sessionStorage;
+};
