@@ -61,7 +61,6 @@ import {
     type AddUrlToTrustedMessage,
     type ExtractedMessage,
     type OpenSafebrowsingTrustedMessage,
-    type SetPreserveLogShowModalStateMessage,
 } from '../../common/messages';
 import { type NotifierType } from '../../common/constants';
 import { type CreateEventListenerResponse } from '../../background/services/event';
@@ -951,19 +950,6 @@ class Messenger {
         state: SetPreserveLogStateMessage['data']['state'],
     ): Promise<ExtractMessageResponse<MessageType.SetPreserveLogState>> {
         return this.sendMessage(MessageType.SetPreserveLogState, { state });
-    }
-
-    /**
-     * Sends a message to the background page to set the preserve log state.
-     *
-     * @param state State indicating whether to preserve the log.
-     *
-     * @returns Promise that resolves after the message is sent.
-     */
-    async setPreserveLogShowModalState(
-        state: SetPreserveLogShowModalStateMessage['data']['state'],
-    ): Promise<ExtractMessageResponse<MessageType.SetPreserveLogShowModalState>> {
-        return this.sendMessage(MessageType.SetPreserveLogShowModalState, { state });
     }
 
     /**

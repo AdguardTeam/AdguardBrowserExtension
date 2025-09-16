@@ -22,6 +22,7 @@ import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { translator } from '../../../../common/translators/translator';
 import { CheckMarkCheckbox } from '../../../common/components/ui/Checkbox/CheckmarkCheckbox';
 import { rootStore } from '../../stores/RootStore';
+import { optionsStorage } from '../../../options/options-storage';
 
 import './preserveLogModal.pcss';
 
@@ -30,10 +31,14 @@ const PreserveLogModal = () => {
 
     const [showModalInFuture, setShowModalInFuture] = useState(true);
 
+    const hidePreserveLogModalInFuture = async () => {
+        optionsStorage.setItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL, false);
+    };
+
     const confirmModal = () => {
         logStore.setPreserveLog(true);
         if (!showModalInFuture) {
-            logStore.hidePreserveLogModalInFuture();
+            hidePreserveLogModalInFuture();
         }
     };
 

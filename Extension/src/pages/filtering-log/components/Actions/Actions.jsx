@@ -27,6 +27,7 @@ import { Icon } from '../../../common/components/ui/Icon';
 import { Popover } from '../../../common/components/ui/Popover';
 import { EventsSearch } from '../Filters/EventsSearch';
 import { TabSelector } from '../Filters/TabSelector';
+import { optionsStorage } from '../../../options/options-storage';
 
 import './actions.pcss';
 
@@ -34,6 +35,8 @@ const Actions = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
 
     const { preserveLogEnabled } = logStore;
+
+    const isShowPreserveLogModal = optionsStorage.getItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
 
     const clearLogHandler = async (e) => {
         e.preventDefault();
@@ -49,7 +52,7 @@ const Actions = observer(() => {
     };
 
     const preserveLogHandler = (e) => {
-        if (logStore.isShowPreserveLogModal && e.target.checked) {
+        if (isShowPreserveLogModal && e.target.checked) {
             logStore.setIsPreserveLogModalOpen(true);
         } else {
             logStore.setPreserveLog(e.target.checked);

@@ -169,6 +169,11 @@ export class FilteringLogApi {
     private static readonly REQUESTS_SIZE_PER_TAB = 1000;
 
     /**
+     * Flag to enable/disable preserve log.
+     */
+    private preserveLogEnabled = false;
+
+    /**
      * Filter lists that are generated dynamically by TSWebExtension.
      * We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
      */
@@ -467,38 +472,10 @@ export class FilteringLogApi {
     /**
      * Checks if preserve log is enabled.
      *
-     * @returns True, if preserve log is enabled, else false.
+     * @param enabled - True, if preserve log is enabled, else false.
      */
-    public static isPreserveLogEnabled(): boolean {
-        return settingsStorage.get(SettingOption.PreserveLogEnabled) ?? false;
-    }
-
-    /**
-     * Sets preserve log state.
-     *
-     * @param enabled Is preserve log enabled.
-     */
-    public static setPreserveLogState(enabled: boolean): void {
-        settingsStorage.set(SettingOption.PreserveLogEnabled, enabled);
-    }
-
-    /**
-     * Gets preserve log modal state.
-     *
-     * @returns True, if modal should be shown, else false.
-     */
-    public static getShowPreserveLogModalState(): boolean {
-        const value = settingsStorage.get(SettingOption.showPreserveLogModal) ?? true;
-        return value;
-    }
-
-    /**
-     * Sets preserve log modal state.
-     *
-     * @param enabled Is preserve log modal should be shown.
-     */
-    public static setShowPreserveLogModalState(enabled: boolean): void {
-        settingsStorage.set(SettingOption.showPreserveLogModal, enabled);
+    public setPreserveLogState(enabled: boolean): void {
+        this.preserveLogEnabled = enabled;
     }
 
     /**
@@ -697,7 +674,7 @@ export class FilteringLogApi {
     public clearEventsByTabId(tabId: number, ignorePreserveLog = false): void {
         const tabInfo = this.tabsInfoMap.get(tabId);
 
-        const preserveLog = ignorePreserveLog ? false : FilteringLogApi.isPreserveLogEnabled();
+        const preserveLog = ignorePreserveLog ? false : this.preserveLogEnabled;
 
         if (tabInfo && !preserveLog) {
             tabInfo.filteringEvents = [];
@@ -725,7 +702,7 @@ export class FilteringLogApi {
 
         tabInfo.filteringEvents.push(data);
 
-        const shouldRemoveOldestEvent = !FilteringLogApi.isPreserveLogEnabled()
+        const shouldRemoveOldestEvent = !this.preserveLogEnabled
             && (tabInfo.filteringEvents.length > FilteringLogApi.REQUESTS_SIZE_PER_TAB);
 
         if (shouldRemoveOldestEvent) {

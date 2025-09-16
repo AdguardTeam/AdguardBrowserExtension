@@ -47,7 +47,6 @@ import {
     MessageType,
     type RefreshPageMessage,
     type SetFilteringLogWindowStateMessage,
-    type SetPreserveLogShowModalStateMessage,
     type SetPreserveLogStateMessage,
 } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
@@ -62,14 +61,12 @@ import {
     TabsApi,
     HitStatsApi,
 } from '../api';
-import { FilteringLogApi } from '../api/filtering-log';
 import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
 
 export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[];
     settings: SettingsData;
-    preserveLogEnabled: boolean;
 };
 
 // TODO (David): Add function to preprocess rule event data
@@ -92,7 +89,6 @@ export class FilteringLogService {
         messageHandler.addListener(MessageType.ClearEventsByTabId, FilteringLogService.onClearEventsByTabId);
         messageHandler.addListener(MessageType.RefreshPage, FilteringLogService.onRefreshPage);
         messageHandler.addListener(MessageType.SetPreserveLogState, FilteringLogService.onSetPreserveLogState);
-        messageHandler.addListener(MessageType.SetPreserveLogShowModalState, FilteringLogService.onSetPreserveLogShowModalState);
         messageHandler.addListener(MessageType.SetFilteringLogWindowState, FilteringLogService.onSetFilteringLogWindowState);
 
         tsWebExtTabsApi.onCreate.subscribe(FilteringLogService.onTabCreate);
@@ -639,18 +635,7 @@ export class FilteringLogService {
      */
     private static onSetPreserveLogState({ data }: SetPreserveLogStateMessage): void {
         const { state } = data;
-        FilteringLogApi.setPreserveLogState(state);
-    }
-
-    /**
-     * Set the visibility state of the preserve log modal.
-     *
-     * @param message Message with type {@link SetPreserveLogShowModalStateMessage}.
-     * @param message.data State for preserve log modal visibility: show or hide.
-     */
-    private static onSetPreserveLogShowModalState({ data }: SetPreserveLogShowModalStateMessage): void {
-        const { state } = data;
-        FilteringLogApi.setShowPreserveLogModalState(state);
+        filteringLogApi.setPreserveLogState(state);
     }
 
     /**
@@ -700,7 +685,6 @@ export class FilteringLogService {
         const result = {
             filtersMetadata: FiltersApi.getFiltersMetadata(),
             settings: SettingsApi.getData(),
-            preserveLogEnabled: FilteringLogApi.isPreserveLogEnabled(),
         };
 
         return result;

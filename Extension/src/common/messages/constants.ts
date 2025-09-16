@@ -127,7 +127,6 @@ export enum MessageType {
     LoadSettingsJson = 'loadSettingsJson',
     AddUrlToTrusted = 'addUrlToTrusted',
     SetPreserveLogState = 'setPreserveLogState',
-    SetPreserveLogShowModalState = 'setPreserveLogShowModalState',
     GetUserRulesEditorData = 'getUserRulesEditorData',
     GetEditorStorageContent = 'getEditorStorageContent',
     SetEditorStorageContent = 'setEditorStorageContent',
@@ -488,13 +487,6 @@ export type ClearEventsByTabIdMessage = {
 
 export type SetPreserveLogStateMessage = {
     type: MessageType.SetPreserveLogState;
-    data: {
-        state: boolean;
-    };
-};
-
-export type SetPreserveLogShowModalStateMessage = {
-    type: MessageType.SetPreserveLogShowModalState;
     data: {
         state: boolean;
     };
@@ -884,10 +876,6 @@ export type MessageMap = {
     };
     [MessageType.SetPreserveLogState]: {
         message: SetPreserveLogStateMessage;
-        response: void;
-    };
-    [MessageType.SetPreserveLogShowModalState]: {
-        message: SetPreserveLogShowModalStateMessage;
         response: void;
     };
     [MessageType.RefreshPage]: {

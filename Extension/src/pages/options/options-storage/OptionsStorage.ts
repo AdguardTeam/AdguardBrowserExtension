@@ -42,6 +42,16 @@ export class OptionsStorage {
          * Request modal width
          */
         REQUEST_INFO_MODAL_WIDTH: 'request-info-modal-width',
+
+        /**
+         * Preserve log enabled state
+         */
+        PRESERVE_LOG_ENABLED: 'filtering-log-preserve-enabled',
+
+        /**
+         * Show preserve log modal state
+         */
+        SHOW_PRESERVE_LOG_MODAL: 'filtering-log-show-modal',
     };
 
     DEFAULTS = {
@@ -55,6 +65,8 @@ export class OptionsStorage {
             filter: { width: 260 },
             source: { width: 200 },
         },
+        [this.KEYS.PRESERVE_LOG_ENABLED]: false,
+        [this.KEYS.SHOW_PRESERVE_LOG_MODAL]: true,
     };
 
     /**
