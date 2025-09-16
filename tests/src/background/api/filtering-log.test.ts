@@ -27,12 +27,44 @@ vi.mock('../../../../Extension/src/common/api/extension/tabs', () => {
     };
 });
 
-vi.mock('../../../../Extension/src/background/storages/settings', () => {
+vi.mock('webextension-polyfill', () => {
     return {
         __esModule: true,
-        settingsStorage: {
-            get: vi.fn(() => false),
-            set: vi.fn(),
+        default: {
+            storage: {
+                session: {
+                    get: vi.fn(() => Promise.resolve({})),
+                    set: vi.fn(() => Promise.resolve()),
+                },
+                local: {
+                    get: vi.fn(() => Promise.resolve({})),
+                    set: vi.fn(() => Promise.resolve()),
+                },
+            },
+            runtime: {
+                id: 'test-extension-id',
+                getURL: vi.fn((path) => `chrome-extension://test-extension-id/${path}`),
+                getManifest: vi.fn(() => ({ version: '1.0.0' })),
+            },
+            i18n: {
+                getUILanguage: vi.fn(() => 'en'),
+                getMessage: vi.fn((key) => key),
+            },
+            tabs: {
+                query: vi.fn(() => Promise.resolve([])),
+                get: vi.fn(() => Promise.resolve({})),
+            },
+            webNavigation: {
+                onCommitted: {
+                    addListener: vi.fn(),
+                    removeListener: vi.fn(),
+                },
+            },
+            declarativeNetRequest: {
+                MAX_NUMBER_OF_DYNAMIC_RULES: 30000,
+                MAX_NUMBER_OF_REGEX_RULES: 1000,
+                MAX_NUMBER_OF_ENABLED_STATIC_RULESETS: 50,
+            },
         },
     };
 });
