@@ -771,6 +771,9 @@
     "options_update_antibanner_filters": {
         "message": "التحقق من وجود تحديث للتصفيات"
     },
+    "options_check_update": {
+        "message": "تحقق وجود تحديثات"
+    },
     "options_check_update_progress": {
         "message": "التحقق من..."
     },
@@ -855,9 +858,6 @@
     "options_rule_limits_dynamic_user_rules": {
         "message": "القواعد المضافة بواسطة المستخدم، مثل <user_rules>قواعد المستخدم<\/user_rules>و <allowlist>القائمة البيضاء<\/allowlist> و <custom_filters>التصفيات المخصصة<\/custom_filters>"
     },
-    "options_rule_limits_dynamic_user_rules_no_custom_filters": {
-        "message": "القواعد التي يضيفها المستخدم، مثل <user_rules>قواعد المستخدم<\/user_rules> <allowlist>والمواقع الإلكترونية المدرجة في قائمة المسموح بها<\/allowlist>"
-    },
     "options_rule_limits_dynamic_unsafe": {
         "description": "Note: First dollar sign is used to escape the second one, so eventually only one dollar sign will be displayed",
         "message": "قواعد ديناميكية غير آمنة (تستخدم لبعض المعدلات المتقدمة، مثل $$redirect أو $$cookie) — مضمنة في القواعد التي يضيفها المستخدم"
@@ -933,22 +933,6 @@
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "لقد وصلت إلى الحد الأقصى لقواعد regex المضافة من قبل المستخدم. %maximum% من %current% تم تمكين قواعد regex."
-    },
-    "options_developer_mode_required": {
-        "message": "يقيد متصفحك <external-link>بعض أنواع القواعد<\/external-link>. لتطبيق جميع القواعد، قم بتمكين <b>وضع المطور<\/b> في <settings-link>إعدادات الملحقات <\/settings-link> في متصفحك",
-        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
-    },
-    "options_allow_user_scripts_required": {
-        "message": "يقيد متصفحك <external-link>بعض أنواع القواعد<\/external-link>. لتطبيق جميع القواعد، قم بتمكين <b>السماح بالنصوص البرمجية للمستخدم<\/b> في <settings-link>إعدادات الملحقات <\/settings-link> في متصفحك",
-        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
-    },
-    "options_custom_group_developer_mode_required": {
-        "message": "لاستخدام التصفية المخصصة، قم بتمكين <b>وضع المطور<\/b> في <settings-link>إعدادات الملحقات<\/settings-link> في متصفحك",
-        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
-    },
-    "options_custom_group_allow_user_scripts_required": {
-        "message": "لاستخدام التصفية المخصصة، قم بتمكين <b>السماح بالنصوص البرمجية للمستخدم<\/b> في <settings-link>إعدادات الملحقات <\/settings-link> في متصفحك",
-        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
     },
     "options_show_adguard_full_version_title": {
         "message": "عرض المعلومات عن النسخة الكاملة من AdGuard"
@@ -1032,7 +1016,7 @@
         "message": "تعطيل WebRTC"
     },
     "options_disable_webrtc_desc": {
-        "message": "يمكن أن يسرب WebRTC عنوان IP الخاص بك حتى إذا كنت تستخدم بروكسي أو VPN. قد يؤدي تعطيل WebRTC إلى تعطيل بعض المواقع الإلكترونية"
+        "message": "يمكن أن يسرب WebRTC عنوان IP الخاص بك حتى إذا كنت تستخدم بروكسي أو VPN. وقد يؤدي تعطيل WebRTC إلى تعطيل بعض المواقع الإلكترونية"
     },
     "options_strip_tracking_params_title": {
         "message": "إزالة معلمات التتبع"
@@ -1044,19 +1028,19 @@
         "message": "حظر أدوات التتبع"
     },
     "options_block_known_trackers_description": {
-        "message": "حظر أدوات التتبع وأدوات تحليلات الويب باستخدام تصفية AdGuard للحماية من التتبع"
+        "message": "حظر أدوات التتبع وتحليلات الويب باستخدام تصفية الحماية من التتبع في AdGuard"
     },
     "options_third_party_title": {
         "message": "التدمير الذاتي لملفات تعريف ارتباط الطرف ثالث"
     },
     "options_third_party_desc": {
-        "message": "تحديد عمر ملفات تعريف ارتباط الطرف الثالث (بالدقائق)"
+        "message": "تحديد صلاحية لملفات تعريف الارتباط الخاصة بطرف ثالث (بالدقائق)"
     },
     "options_first_party_title": {
         "message": "التدمير الذاتي لملفات تعريف ارتباط الطرف الأول (غير مستحسن)"
     },
     "options_first_party_desc": {
-        "message": "تحديد عمر ملفات تعريف ارتباط الطرف الأول (بالدقائق)"
+        "message": "تحديد صلاحية لملفات تعريف الارتباط الخاصة بالطرف الأول (بالدقائق)"
     },
     "popup_abuse_site": {
         "message": "الإبلاغ عن مشكلة"
@@ -1077,7 +1061,7 @@
         "message": "الفترة الزمنية للإحصائيات"
     },
     "popup_statistics_time_day": {
-        "message": "اليوم الأخير"
+        "message": "الأمس"
     },
     "popup_statistics_time_week": {
         "message": "الأسبوع الماضي"
@@ -1324,39 +1308,6 @@
     },
     "clear_button_title": {
         "message": "مسح"
-    },
-    "update_check": {
-        "message": "تحقق من وجود تحديثات"
-    },
-    "update_checking_in_progress": {
-        "message": "التحقق من وجود التحديث..."
-    },
-    "update_available_title": {
-        "message": "التحديثات المتاحة"
-    },
-    "update_available_desc": {
-        "message": "لحظر الإعلانات بشكل فعّال، حافظ على تحديث الإضافات والتصفيات الخاصة بك"
-    },
-    "update_available_update_btn": {
-        "message": "تحديث"
-    },
-    "update_installing_in_progress_title": {
-        "message": "تحديث الامتداد والتصفيات..."
-    },
-    "update_installing_in_progress_desc": {
-        "message": "سيتم إعادة تشغيل الامتداد بعد التحديث"
-    },
-    "update_not_needed": {
-        "message": "تم تحديث الامتدادات والتصفيات الخاصة بك"
-    },
-    "update_failed_text": {
-        "message": "فشل في إكمال التحديث"
-    },
-    "update_success_text": {
-        "message": "تم تحديث الملحق والتصفيات"
-    },
-    "update_failed_try_again_btn": {
-        "message": "حاول مرة أخرى"
     },
     "filtering_modal_applied_rules": {
         "message": "القاعدة المطبقة: | القواعد المطبقة: | القواعد المطبقة: | القواعد المطبقة: | القواعد المطبقة: | القواعد المطبقة:",

@@ -1,9 +1,9 @@
-! Checksum: Ko9CHpCylUljmSQs6n7o6g
-! Diff-Path: ../patches/21/21-s-1758031856-3600.patch
+! Checksum: FLfqtj+vLBvImEFyvaJcyg
+! Diff-Path: ../patches/21/21-s-1757510213-3600.patch
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.37.44
-! TimeUpdated: 2025-09-16T14:07:25+00:00
+! Version: 2.0.37.31
+! TimeUpdated: 2025-09-10T13:13:17+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -42,8 +42,6 @@ instagram.com##._aagw:empty
 ! End: Instagram.com
 !
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/212570#issuecomment-3248718051
-india.com#%#//scriptlet('trusted-click-element', '#PreferredSources .close-btn')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/213018
 praxistipps.chip.de##.Article > #videoWidget
 ! https://github.com/AdguardTeam/AdguardFilters/issues/212503
@@ -1095,6 +1093,7 @@ event.rakuten.co.jp##.Permission
 oxu.az##article.news + h2.news-share-title
 oxu.az##article.news ~ div.news-share-container
 ! Video recommendations
+||geo.dailymotion.com^$domain=wol.gg
 gendai.media##div[data-testid="firework-storyblock-ad"]
 maquia.hpplus.jp##.firework-tag-articles
 maquia.hpplus.jp##.section-fireworkTag
@@ -3520,12 +3519,6 @@ www.kinopoisk.ru##footer > div:has(> div > div[data-testid="kp-ui.amediateka-foo
 !
 ! SECTION: Self-promo - Regular rules
 !
-tabootube.*##.webcam_top_list
-tabootube.*##.wio-vspb
-spiritfit.ru#%#//scriptlet('set-session-storage-item', 'bn_promocode', '1')
-analyticsvidhya.com##.free-course-blog-card
-antyweb.pl#?#.wrapper > div > div > .my-4:has(> .container span:contains(Reklama))
-banki.ru###lightbox-container > div[style^="font-size: initial; word-break: initial; margin:"]
 deepl.com#%#//scriptlet('trusted-set-local-storage-item', 'LabsBanner', '{"bannerShown":true}')
 play.mercadolibre.com.ar##.banner-ads-container
 ||img.cityheaven.net/img/banner/seamless_login_unlinked_banner.png
@@ -3976,7 +3969,6 @@ truckstop.com###schedule-demo
 truckstop.com##.blog-detail-page__blog-content > figure:has(> a[href="/demo/"] > img)
 similarweb.com##.app-solution-banner
 ||column.valx.jp/wp-content/themes/jin/img/bnr_wpc.png
-column.valx.jp##img[src="/wp-content/themes/jin/img/bnr_wpc.png"]
 ru.hexlet.io##.hexlet-frontend-open-day-banner
 ru.hexlet.io##.hexlet-qa-open-day-banner
 inkefalonia.gr#?##tm-main-bottom > div.row > div.uk-width-1-1:has(> div.uk-panel > h3 > span:contains(ΑΓΓΕΛΙΕΣ))
@@ -4786,7 +4778,7 @@ rule34.xxx##.dp.leftside
 rule34.xxx##.dp.rightside
 ipinfo.io##.general-announcement-banner
 buytelegrammember.net###tpbr_topbar
-mypikpak.com###app div.el-scrollbar__view div.operation-container:has( div.el-carousel__container)
+mypikpak.com#?##app div.el-scrollbar__view div.operation-container:has( div.el-carousel__container)
 eobuv.sk##.marketing-bar
 ||rule34.xxx/images/futa.jpg
 tw.news.yahoo.com##main > div#postArticle > #module-articleChallenge
@@ -8394,9 +8386,6 @@ eiga.com##.header-pure-banner
 !##############################
 ! SECTION: Tweaks - CSS
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/213540
-asd.homes#$##clickme + a#btn[style*="display: none;"] { display: table !important; }
-asd.homes#$##clickme:has(+ a#btn[style*="display: none;"]) { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/210222
 odiadance.com#$##btn6 { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/209271
@@ -8434,10 +8423,9 @@ chip.de#$#.Button--Download { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183581 - copy/right text
 ||i38.ru/templates/teleinform/js/cprgt.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/183012
-! fly.inc
-djbassking.club,nidbdcheck.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,batmanfactor.com#%#//scriptlet('remove-attr', 'disabled', 'button')
-djbassking.club,nidbdcheck.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,batmanfactor.com#$#.text-center > div[id][style^="display:"] { display: block !important; }
-djbassking.club,nidbdcheck.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,batmanfactor.com#$#form[id][style^="display:"] { display: block !important; }
+nidbdcheck.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,batmanfactor.com#%#//scriptlet('remove-attr', 'disabled', 'button')
+nidbdcheck.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,batmanfactor.com#$#.text-center > div[id][style^="display:"] { display: block !important; }
+nidbdcheck.com,9sblog.com,newselab.com,glowandglamcorner.com,dadinthemaking.com,listofthis.com,beautifulfashionnailart.com,batmanfactor.com#$#form[id][style^="display:"] { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179738 (left-over)
 forbes.com##.for-you__component:empty
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175114
@@ -8843,10 +8831,6 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/213540
-asd.homes#%#//scriptlet('trusted-replace-node-text', 'script', 'downloadbtn', '/seconds: \d+/g', 'seconds: 0')
-! https://github.com/AdguardTeam/AdguardFilters/issues/213170
-financewada.com,utkarshonlinetest.com,techbezzie.com#%#//scriptlet('adjust-setInterval', '/time--|timeto--/', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/212580
 goldengoalsfinance.com#%#//scriptlet('adjust-setInterval', '/timeLeft|counter/', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/212391
@@ -9946,7 +9930,7 @@ goodssh.com#%#//scriptlet("set-constant", "counter", "-1")
 ! newsjizz.in - skip timer
 a2zupload.com#%#//scriptlet("adjust-setInterval", "download", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/45486
-katfile.cloud,katfile.com#%#//scriptlet("adjust-setTimeout", "#freebtn", "", "0.02")
+katfile.com#%#//scriptlet("adjust-setTimeout", "#freebtn", "", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/43273
 !+ NOT_PLATFORM(windows, mac, android)
 coolrom.com.au#%#//scriptlet("adjust-setTimeout", "download()")
