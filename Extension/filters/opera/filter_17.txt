@@ -1,9 +1,9 @@
-! Checksum: h0KOgTBTyBp6o+trXwc4zg
-! Diff-Path: ../patches/17/17-s-1757388283-3600.patch
+! Checksum: mF7a3NfVdA26zPWGLmmzXA
+! Diff-Path: ../patches/17/17-s-1758031860-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.11.81
-! TimeUpdated: 2025-09-09T03:20:55+00:00
+! Version: 2.0.11.84
+! TimeUpdated: 2025-09-16T14:07:23+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -425,6 +425,10 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! casino.ua
+||casino.ua/short-register/$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/213205
+||4kdownload.com^$removeparam=source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/212969
 ||perplexity.ai^$removeparam=login-source
 ||perplexity.ai^$removeparam=login-new
@@ -3116,6 +3120,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/213210
+@@||passport.jlcpcb.com^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/211078
 @@||yandex.go.link^$removeparam=adj_t
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-13135670
