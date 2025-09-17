@@ -222,11 +222,6 @@ export class FiltersApi {
         }
 
         const tasks = filterIds.map(async (filterId) => {
-            // TODO: revert if Quick Fixes filter is back
-            if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
-                return null;
-            }
-
             try {
                 // 'ignorePatches: true' here for loading filters without patches
                 const f = await CommonFilterApi.loadFilterRulesFromBackend({ filterId, ignorePatches: true }, remote);
@@ -354,6 +349,11 @@ export class FiltersApi {
      * @returns List of loaded filter IDs.
      */
     public static async reloadFiltersFromLocal(): Promise<number[]> {
+        if (!__IS_MV3__) {
+            logger.debug('[ext.FiltersApi.reloadFiltersFromLocal]: method is only for MV3 version');
+            return [];
+        }
+
         try {
             await FiltersApi.loadI18nMetadataFromBackend(false);
             await FiltersApi.loadMetadataFromFromBackend(false);
@@ -365,10 +365,11 @@ export class FiltersApi {
 
         await FiltersApi.removeObsoleteFilters();
 
-        const filterIds = filterStateStorage.getLoadFilters();
+        // For MV3 we should reload all filters, because they are actually
+        // loaded into IDB by TsWebExtension during it's initialization.
+        const filterIds = filterStateStorage.getAllFilters();
 
-        // Ignore custom filters, user-rules, allowlist
-        // and quick fixes filter (used only in MV3).
+        // Ignore custom filters, user-rules and allowlist filter.
         const commonFiltersIds = filterIds.filter((id) => CommonFilterUtils.isCommonFilter(id));
 
         try {
@@ -566,11 +567,6 @@ export class FiltersApi {
                 logger.info(`[ext.FiltersApi.loadMetadataFromFromBackend]: Filter with id ${filter.filterId} is deprecated and shall not be used.`);
                 // do not filter out deprecated filter metadata as it may be needed later
                 // e.g. during settings import
-            }
-
-            // TODO: revert if Quick Fixes filter is back
-            if (filter.filterId === AntiBannerFiltersId.QuickFixesFilterId) {
-                return;
             }
 
             validFilters.push(filter);
@@ -836,34 +832,6 @@ export class FiltersApi {
             });
 
         await Promise.allSettled(tasks);
-    }
-
-    /**
-     * TODO: Remove this method; it was used only for the quick fixes filter.
-     * Partially updates metadata for one specified not custom filter without
-     * changing metadata with translations for the filter.
-     *
-     * @param filterMetadata Filter metadata.
-     */
-    public static partialUpdateMetadataForFilter(filterMetadata: RegularFilterMetadata): void {
-        // i18n metadata not changed, but it is needed for updating metadata
-        // via one method (without creating new methods) with translations.
-        const oldMetadata = metadataStorage.getData();
-
-        const { filterId } = filterMetadata;
-
-        const oldMetadataFilterIdx = oldMetadata.filters.findIndex((f) => f.filterId === filterId);
-        if (oldMetadataFilterIdx !== -1) {
-            oldMetadata.filters[oldMetadataFilterIdx] = filterMetadata;
-        } else {
-            oldMetadata.filters.push(filterMetadata);
-        }
-
-        FiltersApi.updateMetadataWithI18nMetadata(
-            oldMetadata,
-            // i18n metadata not changed.
-            i18nMetadataStorage.getData(),
-        );
     }
 
     /**

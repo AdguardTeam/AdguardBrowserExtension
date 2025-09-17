@@ -1,9 +1,9 @@
-! Checksum: IJSeexQd4cwfw5KuTNWDOg
-! Diff-Path: ../patches/23/23-s-1754493189-3600.patch
+! Checksum: 9VYd1HzOsgS2rL/Xsf6oqA
+! Diff-Path: ../patches/23/23-s-1757423992-3600.patch
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.7.10
-! TimeUpdated: 2025-08-06T15:09:20+00:00
+! Version: 2.0.7.21
+! TimeUpdated: 2025-09-09T13:16:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -114,13 +114,11 @@
 ||ucoz.*/cgi/uutils.fcg?*&r=
 ! For popups. + scriptlet in 'general_extensions.txt'
 /\.s\/src\/[a-z0-9]*.js/$domain=plasma.3dn.ru
-/(\.com|.at.ua|\.clan\.su|\.ru|narod\.ru|3dn\.ru|\.net|my1\.ru|do\.am|moy\.su|\.info|\.tv|mrcmirgorod\.com\.ua|\.su)\/\?[A-Za-z0-9%]{80,}$/$script,domain=rezzoclub.ru|comicsgeek.ru|narod.ru|3dn.ru|at.ua|clan.su|igrul-ka.ru|kino-torrent.net|tc-image.3dn.ru|selezen.net|my1.ru|do.am|moy.su|jetvis.ru
-/(\.com|.at.ua|\.clan\.su|\.ru|narod\.ru|3dn\.ru|\.net|my1\.ru|do\.am|moy\.su|\.info|\.tv|mrcmirgorod\.com\.ua|\.su|\.org\.ua|usite\.pro)\/[A-Za-z0-9_%]{3,12}\?[A-Za-z0-9%]{70,100}$/$script,domain=rezzoclub.ru|comicsgeek.ru|narod.ru|3dn.ru|at.ua|clan.su|free-dream.ru|igrul-ka.ru|kino-torrent.net|tc-image.3dn.ru|selezen.net|my1.ru|do.am|moy.su|jetvis.ru|fanofnfs.3dn.ru|kubik3.ru|paravozik.tv|greenflash.su|play-force.ru|megomult.ru|rub.org.ua|pokatushki-pmr.ru|usite.pro
-/(\.com|.at.ua|\.clan\.su|\.ru|narod\.ru|3dn\.ru|\.net|my1\.ru|do\.am|moy\.su|\.info|\.tv|mrcmirgorod\.com\.ua|\.su|\.org\.ua|usite\.pro)\/[A-Za-z0-9_%]{3,12}\/.*\?[A-Za-z0-9%]{70,100}$/$script,domain=rezzoclub.ru|comicsgeek.ru|narod.ru|3dn.ru|at.ua|clan.su|free-dream.ru|igrul-ka.ru|selezen.net|my1.ru|do.am|moy.su|jetvis.ru|fanofnfs.3dn.ru|kubik3.ru|paravozik.tv|greenflash.su|play-force.ru|megomult.ru|rub.org.ua|elektronika56.ru|staroetv.su|pro-zakupki.ru|usite.pro
 /ucoz\.(net|org|ru|com|ua)\/[A-Za-z0-9_%]{3,12}\?[A-Za-z0-9%]{70,100}$/$script,domain=ucoz.net|ucoz.org|ucoz.ru|ucoz.com|ucoz.ua
 /ucoz\.(net|org|ru|com|ua)\/[A-Za-z0-9_%]{3,12}\/.*\?[A-Za-z0-9%]{70,100}$/$script,domain=ucoz.net|ucoz.org|ucoz.ru|ucoz.com|ucoz.ua
 /usite\.(pro|org|ru|com|ua)\/[A-Za-z0-9_%]{3,12}\/.*\?[A-Za-z0-9%]{70,100}$/$script,domain=usite.pro
 !
+/^https?:\/\/(?:[A-Za-z0-9-]+\.)*[A-Za-z0-9-]+\.ru\/(?:[A-Za-z0-9_-]{2,12}\/){0,5}[A-Za-z0-9_-]{2,12}\?[A-Za-z0-9!;^%_]{50,}[A-Za-z0-9!;^%_]$/$~third-party,script,domain=ru
 ||ucoz.*/?*%21*%3B$script,~third-party
 .*.ru/bpoint/src/vvpl.js?$third-party
 .ru/bpoint/bnr/blocks/vastvpaid_player.js
@@ -843,6 +841,7 @@ ucoz.ru/informer/
 ! Ads on uCoz sites
 ##div[id^="_u_ablock_"]
 !
+##.adfox_placeholder
 ##.text-center.adf-ins
 ##iframe[src^="https://ad.adriver.ru/"]
 ##div[data-banner-name]
@@ -3950,7 +3949,7 @@ obozrevatel.com,theblueprint.ru,hellomagrussia.ru,unian.ua,uaportal.com,nebogach
 ! ##.advert
 ufacitynews.ru,sevastopol.su,zn.ua,pravo.ru,lubertsyriamo.ru,kommersant.ru,dvnovosti.ru,kubnews.ru,turbopages.org,chernozem.info,flashgames.ru,footballreview.ru,inforesist.org,msgforum.ru,newsland.com,province.ru,tenews.org.ua,zab.ru##.advert
 ! ##div[id^="unit_"]
-malls.ru,montecarlo.ru,hightech.fm,ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.*,sm.news,politring.com,ura.news,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
+ferra.ru,malls.ru,montecarlo.ru,hightech.fm,ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.*,sm.news,politring.com,ura.news,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
 ! ##div[id^="adfox_"]
 mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,gorodche.ru,smartpress.by,raenza.ru,eadaily.com,zakon.kz,svpressa.ru,udf.name,udf.by,baby.ru,pikabu.ru,thequestion.ru##div[id^="adfox_"]
 !
@@ -3968,13 +3967,21 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+nur.kz##.main-page-sub-menu__list > li:has(> a[href^="https://special.nur.kz/otbasy"])
+nur.kz##[class*="-adv"]
+goloskarpat.info##.dynads
+||bs.yandex.ru/prebid/
+fapreactor.com,pornreactor.cc,joyreactor.cc,reactor.cc###contentinner > div[style] > a[target="_blank"] > img
+fapreactor.com,pornreactor.cc,joyreactor.cc,reactor.cc###background > div#container > span > a[rel="nofollow"]
+inkorr.com##.vertical__banner
+inkorr.com##p[style="margin-top:-18px;font-size:12px;margin-bottom: 40px;"]
 1plus1.ua##.bannerPremium
 grad.ua###banner-top-page
 grad.ua##.radio_banner
-grad.ua###post-entry > div.blok_header_title:has(> h3:contains(СМИ Украины:))
+grad.ua#?##post-entry > div.blok_header_title:has(> h3:contains(СМИ Украины:))
 grad.ua##aside > div.banner_top_right:has(> ins.adsbygoogle)
 grad.ua##div[class^="dle_b_ps_"]
-||yandex.ru/ads/system/context.js
+||yandex.*/ads/system/context.js
 ||raw.githubusercontent.com/AsilMediaUzbek/videoreklamalar/
 ||mp3lar.net/adv.js
 unian.net,unian.ua##.bnr-block
@@ -3997,7 +4004,6 @@ repack.me#$#main > div.container { padding-top: 0 !important; margin-top: 0 !imp
 repack.me##.col-sm-12.col-lg-3 > div.panel:has(p[style="text-align:center;"] > a > img)
 repack.me##a[href="/download"]
 hdrezka.pro##div[id^="movie_banner_"]
-pornreactor.cc,joyreactor.cc,reactor.cc##.content-card ~ div:not(.content-card) > a[target="_blank"] > img
 pravda.com.ua##.unit_top_banner
 pravda.com.ua##iframe[src="about:blank"]
 tabloid.pravda.com.ua#?#article > div.block_post .banner__text:contains(Реклама)
@@ -4265,6 +4271,8 @@ citrus.ua,xsport.ua,zi.dn.ua,zi.ua##img[src^="/upload/rk/"]
 !
 !
 !
+novyny.live##.adv
+ua-reporter.com##.googleads_div
 itc.ua##.banner-agency
 m-translate.org.ua#?#.ui > div.synonym:has(> div.divider:contains(Ad))
 1plus1.ua##.banner-pmu

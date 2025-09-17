@@ -47,6 +47,7 @@ import {
     UserRulesApi,
 } from '../../api';
 import { extensionUpdateActor } from '../extension-update/extension-update-machine';
+import { type MV3SpecificOptions } from '../types';
 
 /**
  * Tab info for the popup.
@@ -68,32 +69,6 @@ export type GetTabInfoForPopupResponse = {
      * Current settings.
      */
     settings: SettingsData;
-
-    /**
-     * Whether the filter limits are exceeded.
-     *
-     * Needed only for MV3.
-     */
-    areFilterLimitsExceeded: boolean;
-
-    /**
-     * Whether an extension update is available.
-     */
-    isExtensionUpdateAvailable: boolean;
-
-    /**
-     * Whether the extension is reloaded on update.
-     *
-     * Needed only for MV3.
-     */
-    isExtensionReloadedOnUpdate: boolean;
-
-    /**
-     * Whether the extension update was successful.
-     *
-     * Needed only for MV3.
-     */
-    isSuccessfulExtensionUpdate: boolean;
 
     /**
      * Various options.
@@ -145,6 +120,15 @@ export type GetTabInfoForPopupResponse = {
          */
         hasUserRulesToReset: boolean;
     };
+
+    /**
+     * MV3-specific options.
+     *
+     * This field is:
+     * - contains MV3-specific properties for MV3;
+     * - null for MV2.
+     */
+    mv3SpecificOptions: MV3SpecificOptions | null;
 };
 
 /**
@@ -190,16 +174,18 @@ export class PopupService {
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         const isExtensionUpdateAvailable = __IS_MV3__
-            ? await ExtensionUpdateService.getIsUpdateAvailable()
+            ? ExtensionUpdateService.getIsUpdateAvailable()
             : false;
-        const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
+        const manualExtensionUpdateData = __IS_MV3__
+            ? await ExtensionUpdateService.getManualExtensionUpdateData()
+            : null;
 
         const isExtensionReloadedOnUpdate = __IS_MV3__
-            ? !!manualExtensionUpdateData
+            ? manualExtensionUpdateData !== null
             : false;
 
         const isSuccessfulExtensionUpdate = __IS_MV3__
-            ? !!manualExtensionUpdateData?.isOk
+            ? manualExtensionUpdateData?.isOk || false
             : false;
 
         extensionUpdateActor.send({
@@ -213,12 +199,14 @@ export class PopupService {
                 frameInfo: FramesApi.getMainFrameData(tabContext),
                 stats: PageStatsApi.getStatisticsData(),
                 settings: SettingsApi.getData(),
-                areFilterLimitsExceeded: __IS_MV3__
-                    ? await RulesLimitsService.areFilterLimitsExceeded()
-                    : false,
-                isExtensionUpdateAvailable,
-                isExtensionReloadedOnUpdate,
-                isSuccessfulExtensionUpdate,
+                mv3SpecificOptions: __IS_MV3__
+                    ? {
+                        areFilterLimitsExceeded: await RulesLimitsService.areFilterLimitsExceeded(),
+                        isExtensionUpdateAvailable,
+                        isExtensionReloadedOnUpdate,
+                        isSuccessfulExtensionUpdate,
+                    }
+                    : null,
                 options: {
                     showStatsSupported: true,
                     isFirefoxBrowser: UserAgent.isFirefox,

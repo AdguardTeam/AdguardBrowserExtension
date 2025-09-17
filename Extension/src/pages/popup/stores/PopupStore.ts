@@ -248,10 +248,7 @@ export class PopupStore {
                 options,
                 stats,
                 settings,
-                areFilterLimitsExceeded,
-                isExtensionUpdateAvailable,
-                isExtensionReloadedOnUpdate,
-                isSuccessfulExtensionUpdate,
+                mv3SpecificOptions,
             } = response;
 
             // frame info
@@ -277,12 +274,26 @@ export class PopupStore {
             // settings
             this.settings = settings;
 
-            this.areFilterLimitsExceeded = areFilterLimitsExceeded;
-
             this.currentTabId = currentTab.id;
 
             this.setAppActorInitState();
 
+            // Handle MV3-specific options
+            if (!mv3SpecificOptions) {
+                // Early exit for MV2 or when mv3SpecificOptions is absent
+                this.areFilterLimitsExceeded = false;
+                this.setIsExtensionUpdateAvailable(false);
+                return;
+            }
+
+            const {
+                areFilterLimitsExceeded,
+                isExtensionUpdateAvailable,
+                isExtensionReloadedOnUpdate,
+                isSuccessfulExtensionUpdate,
+            } = mv3SpecificOptions;
+
+            this.areFilterLimitsExceeded = areFilterLimitsExceeded;
             this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
 
             // notification about successful or failed update should be shown after the popup is opened.

@@ -209,18 +209,18 @@ export class UpdateApi {
     /**
      * Run data migration from schema v11 to schema v12.
      *
-     * For MV3 — AdGuard Quick Fixes filter is re-added
-     * and enabled by default for all users.
+     * For MV3 — No action needed (Quick Fixes filter has been removed).
      *
      * For MV2 — AdGuard DNS filter and AdGuard Annoyances filter are migrated.
      *
      * For the extension update to v5.2.0.
      */
     private static async migrateFromV11toV12(): Promise<void> {
+        // No action needed for MV3
         if (__IS_MV3__) {
-            // await UpdateApi.removeQuickFixesFilter();
             return;
         }
+
         const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
 
         if (!UpdateApi.isObject(settings)) {

@@ -362,14 +362,29 @@ class SettingsStore {
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
 
-            this.setIsExtensionUpdateAvailable(data.isExtensionUpdateAvailable);
+            // Handle MV3-specific options
+            const { mv3SpecificOptions } = data;
+
+            if (!mv3SpecificOptions) {
+                // Early exit for MV2 or when mv3SpecificOptions is absent
+                this.setIsExtensionUpdateAvailable(false);
+                return;
+            }
+
+            const {
+                isExtensionUpdateAvailable,
+                isExtensionReloadedOnUpdate,
+                isSuccessfulExtensionUpdate,
+            } = mv3SpecificOptions;
+
+            this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
 
             // notification about successful or failed update should be shown after the options page is opened.
             // and it cannot be done by notifier (from the background page)
             // because event may be dispatched before the options page is opened,
             // i.e. listener may not be registered yet.
-            if (data.isExtensionReloadedOnUpdate) {
-                if (data.isSuccessfulExtensionUpdate) {
+            if (isExtensionReloadedOnUpdate) {
+                if (isSuccessfulExtensionUpdate) {
                     this.uiStore.addNotification({
                         type: NotificationType.Success,
                         text: translator.getMessage('update_success_text'),

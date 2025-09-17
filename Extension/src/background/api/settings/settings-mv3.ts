@@ -547,9 +547,6 @@ export class SettingsApi {
 
         await SettingsApi.loadBuiltInFiltersMv3(filtersToEnable);
 
-        // TODO: revert if Quick Fixes filter is back
-        // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
-
         await CustomFilterApi.createFilters(customFilters);
 
         groupStateStorage.enableGroups(enabledGroups);

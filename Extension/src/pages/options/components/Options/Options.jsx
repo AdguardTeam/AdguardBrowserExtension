@@ -189,10 +189,10 @@ const Options = observer(() => {
         };
 
         (async () => {
-            const { areFilterLimitsExceeded } = await settingsStore.requestOptionsData(true);
+            const { mv3SpecificOptions } = await settingsStore.requestOptionsData(true);
 
             // Show notification about changed filter list by browser only once.
-            if (__IS_MV3__ && areFilterLimitsExceeded) {
+            if (__IS_MV3__ && mv3SpecificOptions?.areFilterLimitsExceeded) {
                 uiStore.addRuleLimitsNotification(translator.getMessage('popup_limits_exceeded_warning'));
             }
 
