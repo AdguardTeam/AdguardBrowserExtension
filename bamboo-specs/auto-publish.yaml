@@ -13,9 +13,9 @@ environments:
 
 AutoDeployAndPublish Release:
   # run auto-deploy only after successful build
-  triggers:
-    - build-success:
-        branch: stable-v5.1
+  # triggers:
+  #   - build-success:
+  #       branch: stable-v5.1
   tasks:
     - clean
     - checkout:
@@ -32,17 +32,19 @@ AutoDeployAndPublish Release:
             set -x
             set -e
 
-            # Fix mixed logs
-            exec 2>&1
-            ls -la
+            echo "Auto publishing from 5.1 is disabled because we await for new release from 5.2"
 
-            # Rename release artifact to the final name, this is needed because
-            # we use one common name 'chrome-mv3.zip' for both beta and release
-            # artifacts inside deploy script.
-            mv chrome-mv3-release.zip chrome-mv3.zip
+            # # Fix mixed logs
+            # exec 2>&1
+            # ls -la
 
-            # Deploying and publishing release in Chrome Web Store.
-            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
+            # # Rename release artifact to the final name, this is needed because
+            # # we use one common name 'chrome-mv3.zip' for both beta and release
+            # # artifacts inside deploy script.
+            # mv chrome-mv3-release.zip chrome-mv3.zip
+
+            # # Deploying and publishing release in Chrome Web Store.
+            # ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
   requirements:
     - adg-docker: 'true'
   notifications:
