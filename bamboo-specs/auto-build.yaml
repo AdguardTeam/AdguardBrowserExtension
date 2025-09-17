@@ -329,6 +329,7 @@ branch-overrides:
       # https://confluence.atlassian.com/bamboo/constructing-a-cron-expression-in-bamboo-289277372.html
       # it is needed in the end of the day to collect all changes
       # made by filter list maintainers during the workday
-      triggers:
-        - cron:
-            expression: 0 0 22 ? * MON,WED,FRI
+      # Disabled since we are waiting for the new release from 5.2.
+      # triggers:
+      #   - cron:
+      #       expression: 0 0 22 ? * MON,WED,FRI
