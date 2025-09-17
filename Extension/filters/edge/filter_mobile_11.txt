@@ -1,9 +1,9 @@
-! Checksum: MsWX8J4YnWUh0TedwKXTLw
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1758021022-3600.patch
+! Checksum: sWK1DLa1YDYQGlppBRefTw
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1757592886-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.64.36
-! TimeUpdated: 2025-09-16T11:06:36+00:00
+! Version: 2.0.64.22
+! TimeUpdated: 2025-09-11T12:11:03+00:00
 ! Expires: 10 days (update frequency)
 ||*.libaishuo.com^$third-party
 ||adx-open-service.youku.com^
@@ -1044,9 +1044,6 @@ turbopages.org##.page__result > div[class*="type_native"]
 ###ad-300x250_mobile
 !+ NOT_OPTIMIZED
 ##body > style + div[id="ics"]
-dailymotion.com#%#//scriptlet('set-constant', 'DMP_IS_AUTOPLAY_ENABLED', 'false')
-dailymotion.com#%#//scriptlet('trusted-set-constant', '__PLAYER_CONFIG__.player.autostart', '"off"')
-dailymotion.com#%#(()=>{const a={apply:(a,t,r)=>{try{!0===r[0]?.parameters?.[1]?.autoplay&&(r[0].parameters[1].autoplay=!1)}catch(a){console.trace(a)}return Reflect.apply(a,t,r)}};window.JSON.stringify=new Proxy(window.JSON.stringify,a)})();
 wuxianxiaoshuowang.com#%#//scriptlet("abort-on-property-read", "createApp")
 m.7days.ru#%#//scriptlet('remove-class', 'banners-brand', '#page_content')
 momon-ga.com#%#//scriptlet('prevent-addEventListener', 'load', 'document.cookie')
@@ -1598,15 +1595,6 @@ opinion.cw.com.tw,aidoly.net,celeby-media.net,kyun2-girls.com,hapiee.com,2ch-c.n
 chip.de,gamesworld.de,fnn.jp##.Ad
 medipalette.lotte.co.jp,genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,ranking.goo.ne.jp,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
-tabootube.*##.mobile-links
-hyperts.net###amarnk
-avito.ru##div[data-key^="advBannerWidget"]
-ixbt.games##.mobile-c
-phinphanatic.com###body-0 > figure:has(> #mm-player-placeholder-smallAndMedium-screens)
-trendyol.com##.search-banner
-thevoyeurmania.com##.happy-footer-mobile
-kayserigundem.com.tr##header + div.flex.lg\:hidden
-cbsnews.com##.container > carousel[slug="taboola-around-the-web-video-door"]
 asianetnews.com##.HometopAd
 asianetnews.com##.mobiletopad
 asianetnews.com##.wrapper > div:has(> div[id^="div-gpt-"])
@@ -1697,9 +1685,8 @@ ddd-smart.net##.ds-5__wrapper
 news.infoseek.co.jp##div[id^="ad-wrapper"]
 bebesetmamans.20minutes.fr##.page-masthead
 zdnet.fr##.pub_dfp
-pornhits.com#$#.promo-bar { display: none !important; }
-pornhits.com#$#.promo-bar + .container { padding-top: 0 !important; }
 pornhits.com##.header__bn
+pornhits.com##.promo-bar
 pornhits.com##.sites__item--hl
 modernliving.jp##div[class^="css-"]:has(> div.ad-disclaimer)
 m.sporx.com###pAd_close
@@ -4043,6 +4030,7 @@ carview.yahoo.co.jp##.posNM
 glosbe.com###tb__cont__2
 wz.de##aside[data-portal-id="banner"]
 comicporn.xxx,hentaienvy.com,hentaizap.com,hentairox.com,imhentai.xxx,hentaifox.com,hentaiera.com##.bblocktop
+topics.smt.docomo.ne.jp##.ad_middle05
 fc1adult.com##div[style="height: 500px; overflow: hidden; margin-bottom: 20px;"]
 cojicaji.jp##.dfp-cci-rectangle-wrapper
 finance.yahoo.co.jp##main > section#pr_main1
@@ -5400,6 +5388,7 @@ scmp.com##.article-list__inline-ad
 scmp.com,mobil.nwzonline.de,mobil-nwzonline-de.cdn.ampproject.org##.advert
 scmp.com##.details__topics-ad
 orgazmtv.net##.video-block > div.video + div.mob-300
+m.search.naver.com##li[data-pwr-ad-url]
 dcard.tw##div[style="height: 250px; width: auto;"]
 dcard.tw##div[style="height:250px;width:auto"]
 yan.vn##.AdsAppend
@@ -7088,8 +7077,6 @@ vfokuse.mail.ru#?#header > div[class]:has(> div[class*="rb-slot_plug"])
 livejournal.com##data-banner-place-id
 livejournal.com##div[id^="billboard_mobile_"]
 livejournal.com##.mdspost-aside__item--banner
-!+ NOT_OPTIMIZED
-topics.smt.docomo.ne.jp##.ad_middle05
 !+ NOT_PLATFORM(ext_android_cb)
 beauty.oricon.co.jp##.ttl-kjbox
 !+ NOT_PLATFORM(ext_ublock)

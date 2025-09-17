@@ -396,7 +396,6 @@
         "(()=>{window.detectIncognito=()=>new Promise((e=>e({isPrivate:!0})));})();": [
             {
                 "permittedDomains": [
-                    "djbassking.club",
                     "uaeboy.ae",
                     "csyildizi.com",
                     "mealold.com",
@@ -1382,12 +1381,6 @@
                     "amazon.com"
                 ],
                 "restrictedDomains": []
-            },
-            {
-                "permittedDomains": [
-                    "amazon.*"
-                ],
-                "restrictedDomains": []
             }
         ],
         "(()=>{if(window.self!==window.top)try{if(\"object\"==typeof localStorage)return}catch(a){delete window.localStorage,window.localStorage={setItem(){},getItem(){},removeItem(){},clear(){}}}})();": [
@@ -2106,7 +2099,6 @@
         "(()=>{const e=\"loader.min.js\",t={includes:String.prototype.includes,filter:Array.prototype.filter},l=()=>(new Error).stack,n={construct:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&o[0]&&t.includes.call(o[0],\"adshield\")&&(o[0]=[\"(function(){})();\"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&t.includes.call(r[0],\"new Error\")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&o?.includes?.(\"setTimeout\")&&(o=t.filter.call(o,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();": [
             {
                 "permittedDomains": [
-                    "tz.de",
                     "ygosu.com",
                     "etoday.co.kr",
                     "sportalkorea.com",
@@ -3262,14 +3254,6 @@
             {
                 "permittedDomains": [
                     "gnula.nu"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "(()=>{const a={apply:(a,t,r)=>{try{!0===r[0]?.parameters?.[1]?.autoplay&&(r[0].parameters[1].autoplay=!1)}catch(a){console.trace(a)}return Reflect.apply(a,t,r)}};window.JSON.stringify=new Proxy(window.JSON.stringify,a)})();": [
-            {
-                "permittedDomains": [
-                    "dailymotion.com"
                 ],
                 "restrictedDomains": []
             }

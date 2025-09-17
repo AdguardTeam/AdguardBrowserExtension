@@ -7,12 +7,11 @@ plan:
 variables:
   dockerNode: adguard/extension-builder:22.17--0.2--0
 stages:
-  - Size and locales check:
+  - Size Check:
       manual: false
       final: false
       jobs:
         - Check Bundle Size
-        - Check translations
   - Build:
       manual: false
       final: false
@@ -23,21 +22,19 @@ Check Bundle Size:
   key: SIZECHECK
   other:
     clean-working-dir: true
-  docker: &docker
+  docker:
     image: ${bamboo.dockerNode}
     volumes:
       ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
         force-clean-build: 'true'
-    - script: &setup-script
+    - script:
         interpreter: SHELL
         scripts:
           - |-
-            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
-            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
-            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
-            set -ex
+            set -x
+            set -e
 
             # Fix mixed logs
             exec 2>&1
@@ -46,11 +43,6 @@ Check Bundle Size:
 
             # Set cache directory
             pnpm config set store-dir ${bamboo.cachePnpm}
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -ex
 
             # Install dependencies
             pnpm install ${bamboo.varsPnpm}
@@ -75,11 +67,12 @@ Check Bundle Size:
             # Cleaning up Firefox and Opera builds after bundle size check
             rm -rf build/beta/firefox-* build/beta/opera
   final-tasks:
-    - script: &final-clean-up-script
+    - script:
         interpreter: SHELL
         scripts:
           - |-
-            set -ex
+            set -x
+            set -e
 
             # Fix mixed logs
             exec 2>&1
@@ -90,35 +83,18 @@ Check Bundle Size:
             rm -rf node_modules build
             rm -rf .git
             echo "Size after cleanup:" && du -h | tail -n 1
-  requirements: &requirements
+  requirements:
     - adg-docker: 'true'
-    - extension: 'true'
 
-Check translations:
-  key: LOCALESCHECK
-  other:
-    clean-working-dir: true
-  docker: *docker
-  tasks:
-    - checkout:
-        force-clean-build: true
-    - script: *setup-script
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            pnpm install ${bamboo.varsPnpm}
-
-            pnpm locales validate --min
-  final-tasks:
-    - script: *final-clean-up-script
-  requirements: *requirements
 
 Build:
   key: BUILD
   other:
     clean-working-dir: true
-  docker: *docker
+  docker:
+    image: ${bamboo.dockerNode}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
         force-clean-build: 'true'
@@ -126,11 +102,21 @@ Build:
         repository: extensions-private
         path: private
         force-clean-build: 'true'
-    - script: *setup-script
     - script:
         interpreter: SHELL
         scripts:
           - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            # Set cache directory
+            pnpm config set store-dir ${bamboo.cachePnpm}
+
             pnpm install ${bamboo.varsPnpm}
 
             pnpm beta
@@ -158,7 +144,22 @@ Build:
           selectedRepository: defaultRepository
           tagName: v${bamboo.inject.version}-beta
   final-tasks:
-    - script: *final-clean-up-script
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            set -x
+            set -e
+
+            # Fix mixed logs
+            exec 2>&1
+
+            ls -la
+
+            echo "Size before cleanup:" && du -h | tail -n 1
+            rm -rf node_modules build
+            rm -rf .git
+            echo "Size after cleanup:" && du -h | tail -n 1
   artifacts:
     - name: build.txt
       location: artifacts
@@ -190,7 +191,8 @@ Build:
       pattern: update.xml
       shared: true
       required: true
-  requirements: *requirements
+  requirements:
+    - adg-docker: 'true'
 
 triggers: []
 
