@@ -771,9 +771,6 @@
     "options_update_antibanner_filters": {
         "message": "Ստուգել զտիչի թարմացումները"
     },
-    "options_check_update": {
-        "message": "Ստուգել թարմացումները"
-    },
     "options_check_update_progress": {
         "message": "Ստուգում..."
     },
@@ -858,6 +855,9 @@
     "options_rule_limits_dynamic_user_rules": {
         "message": "Օգտագործող-ավելացված կանոններ, օրինակ՝ <user_rules>Օգտագործողի կանոններ<\/user_rules>, <allowlist>Թույլատրված կայքեր<\/allowlist>, <custom_filters>Անձնական Ֆիլտրեր<\/custom_filters>"
     },
+    "options_rule_limits_dynamic_user_rules_no_custom_filters": {
+        "message": "Օգտագործող-ավելացված կանոններ, օրինակ՝ <user_rules>օգտատերի կանոններ<\/user_rules> եւ <allowlist>թույլատրված կայքեր<\/allowlist>"
+    },
     "options_rule_limits_dynamic_unsafe": {
         "description": "Note: First dollar sign is used to escape the second one, so eventually only one dollar sign will be displayed",
         "message": "Անվտանգ չէ դինամիկ կանոններ (օգտագործված որոշ avanz մարդիկ, օրինակ՝ $$redirect կամ $$cookie) — ներառված է օգտվող-ավելացված կանոններում"
@@ -933,6 +933,22 @@
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "Դուք հասել եք օգտվող-ավելացված regex կանոնների սահմանափակմանը։ %maximum% -ը %current% regex կանոններից է ակտիվ։"
+    },
+    "options_developer_mode_required": {
+        "message": "Ձեր դիտարկիչը սահմանափակում է <external-link>որոշ տեսակների կանոններ<\/external-link>: Բոլոր կանոնները դիմելու համար ձեր դիտարկչի <settings-link>ընդլայնման տեղադրվածում<\/settings-link> հնարավորություն տվեք <b>Մշակողի ռեժիմը<\/b>։",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_allow_user_scripts_required": {
+        "message": "Ձեր դիտարկիչը սահմանափակում է <external-link>որոշ տեսակի կանոններ<\/external-link>: Բոլոր կանոնները կիրառելու համար ձեր դիտարկչի <settings-link>ընդլայնման տեղադրվածում<\/settings-link> միացրեք <b>Թույլատրել օգտատիրոջ սցենարներ<\/b> անջատիչը",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_custom_group_developer_mode_required": {
+        "message": "Հատուկ ֆիլտրեր օգտագործելու համար միացրեք <b>Մշակողի ռեժիմը<\/b> ձեր դիտարկիչի <settings-link>ընդլայնման կարգավորումներում<\/settings-link>",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_custom_group_allow_user_scripts_required": {
+        "message": "Սովորույթ ֆիլտրեր օգտագործելու համար, հնարավորություն տվեք <b>Թույլատրել օգտատեր սկրիպտներ<\/b> ձեր դիտարկչի <settings-link>ընդլայնման տեղադրվածում<\/settings-link>։",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
     },
     "options_show_adguard_full_version_title": {
         "message": "Ցուցադրել տեղեկությունը AdGuard-ի ամբողջական տարբերակում"
@@ -1016,31 +1032,31 @@
         "message": "Անջատել WebRTC"
     },
     "options_disable_webrtc_desc": {
-        "message": "WebRTC կարող է բացահայտել ձեր IP հասցեն, նույնիսկ եթե օգտագործում եք պրոկսի կամ VPN: WebRTC- ի դադարեցումը կարող է վնասել որոշ կայքերին"
+        "message": "WebRTC կարող է բացահայտել ձեր IP հասցեն, նույնիսկ եթե օգտագործում եք պրոքսի կամ VPN: WebRTC-ի անջատումը կարող է վնասել որոշ կայքերի աշխատանքը։"
     },
     "options_strip_tracking_params_title": {
         "message": "Մաքրել URL-ի հետևող պարամետրերը"
     },
     "options_strip_tracking_params_description": {
-        "message": "Հեռացնել պարամետրերը վեբ հարցումներից AdGuard URL Tracking ֆիլտրով"
+        "message": "Հեռացնել պարամետրերը web հարցումներից AdGuard URL հետևման ֆիլտրով"
     },
     "options_block_known_trackers_title": {
         "message": "Արգելափակել հետագծողները"
     },
     "options_block_known_trackers_description": {
-        "message": "Հակադարձեք հետևողներին և վեբ անալիզի գործիքներ AdGuard Tracking Protection ֆիլտրով"
+        "message": "Հետեւորդները եւ web վերլուծության գործիքները արգելափակեք AdGuard Tracking Protection զտիչով։"
     },
     "options_third_party_title": {
         "message": "Ինքնաոչնչացնել երրորդ կողմի cookie-ները"
     },
     "options_third_party_desc": {
-        "message": "Բացառել երրորդ կողմի cookie-ների կյանքը (րոպեներով)"
+        "message": "Սահմանել երրորդ կողմի թխուկների կյանքի տևողությունը (րոպեներով)"
     },
     "options_first_party_title": {
         "message": "Առաջատարի կուկին ինքնավերացմանը ենթարկելով (չի համաձայնեցվում)"
     },
     "options_first_party_desc": {
-        "message": "Բացառել առաջին կողմի cookie-ների կյանքը (րոպեներով)"
+        "message": "Սահմանափակել առաջին կողմի թխվածքաբլիթների կյանքը (րոպեներով)"
     },
     "popup_abuse_site": {
         "message": "Խնդրում ենք հայտնել խնդրի մասին"
@@ -1061,13 +1077,13 @@
         "message": "Վիճակագրության ժամանակաշրջան"
     },
     "popup_statistics_time_day": {
-        "message": "Վերջին օր"
+        "message": "Վերջին օրը"
     },
     "popup_statistics_time_week": {
-        "message": "Վերջին շաբաթ"
+        "message": "Վերջին շաբաթը"
     },
     "popup_statistics_time_month": {
-        "message": "Վերջին ամիս"
+        "message": "Վերջին ամիսը "
     },
     "popup_statistics_time_year": {
         "message": "Վերջին տարի"
@@ -1259,7 +1275,7 @@
         "message": "General"
     },
     "options_stealth_cookies_title": {
-        "message": "Կուներ"
+        "message": "Քուքիներ"
     },
     "options_stealth_miscellaneous_title": {
         "message": "Խառը"
@@ -1308,6 +1324,39 @@
     },
     "clear_button_title": {
         "message": "Մաքրել"
+    },
+    "update_check": {
+        "message": "Ստուգել թարմացումները"
+    },
+    "update_checking_in_progress": {
+        "message": "Ստուգում է թարմացումները..."
+    },
+    "update_available_title": {
+        "message": "Հասանելի են թարմացումներ"
+    },
+    "update_available_desc": {
+        "message": "Գովազդները արդյունավետ արգելափակելու համար թարմացրեք ձեր ընդլայնումն ու ֆիլտրերը"
+    },
+    "update_available_update_btn": {
+        "message": "Թարմացնել"
+    },
+    "update_installing_in_progress_title": {
+        "message": "Ընդլայնման և ֆիլտրերի թարմացում..."
+    },
+    "update_installing_in_progress_desc": {
+        "message": "Ընդլայնումը կվերստարտվի թարմացումից հետո"
+    },
+    "update_not_needed": {
+        "message": "Ձեր ընդլայնումը և ֆիլտրերը թարմացված են"
+    },
+    "update_failed_text": {
+        "message": "Չհաջողվեց ավարտել թարմացումը"
+    },
+    "update_success_text": {
+        "message": "Ընդլայնումը և ֆիլտրերը թարմացվեցին"
+    },
+    "update_failed_try_again_btn": {
+        "message": "Կրկին փորձեք"
     },
     "filtering_modal_applied_rules": {
         "message": "Կիրառվող կանոն. | Կիրառվող կանոններ.",

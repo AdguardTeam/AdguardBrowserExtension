@@ -261,11 +261,11 @@ export const checkTranslations = async (locales, flags) => {
             }
             // check for translations readiness for required locales
             if (filteredReadinessResults.length === 0) {
-                cliLog.success('Our locales have required level of translations');
+                cliLog.success('In-house locales have required level of translations');
             } else {
                 isSuccess = false;
                 printTranslationsResults(filteredReadinessResults, isMinimum);
-                cliLog.warningRed('Our locales should be done for 100%');
+                cliLog.warningRed('In-house locales should be done for 100%');
             }
             if (!isSuccess) {
                 // throw error finally
