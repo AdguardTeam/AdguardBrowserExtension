@@ -36,7 +36,7 @@ const Actions = observer(() => {
 
     const { preserveLogEnabled } = logStore;
 
-    const isShowPreserveLogModal = optionsStorage.getItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
+    const shouldShowPreserveLogModal = optionsStorage.getItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
 
     const clearLogHandler = async (e) => {
         e.preventDefault();
@@ -52,7 +52,7 @@ const Actions = observer(() => {
     };
 
     const preserveLogHandler = (e) => {
-        if (isShowPreserveLogModal && e.target.checked) {
+        if (shouldShowPreserveLogModal && e.target.checked) {
             logStore.setIsPreserveLogModalOpen(true);
         } else {
             logStore.setPreserveLog(e.target.checked);

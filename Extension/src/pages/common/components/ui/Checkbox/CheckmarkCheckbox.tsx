@@ -53,7 +53,11 @@ interface CheckmarkCheckboxProps {
 
 const CheckMarkCheckbox = (props: CheckmarkCheckboxProps) => {
     const {
-        id, value, handler, label, checked,
+        id,
+        value,
+        handler,
+        label,
+        checked,
     } = props;
     return (
         <div

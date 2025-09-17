@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { type Tabs } from 'webextension-polyfill';
-import browser from 'webextension-polyfill';
+import browser, { type Tabs } from 'webextension-polyfill';
 
 import { RuleGenerator } from '@adguard/agtree/generator';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
