@@ -108,3 +108,38 @@ export const checkUnusedMessages = async () => {
         });
     }
 };
+
+/**
+ * Checks if all locale keys used in source code exist in base locale
+ */
+export const checkMissingLocaleKeys = async () => {
+    const baseLocaleTranslations = await getLocaleTranslations(BASE_LOCALE);
+    const baseMessages = new Set(Object.keys(baseLocaleTranslations));
+
+    const filesContents = getSrcFilesContents(SRC_DIR);
+
+    const getMessagePattern = /(getMessage|getPlural)\s*\(\s*['"`]([^'"`]+)['"`]/g;
+
+    const usedKeys = new Set();
+
+    filesContents.forEach((fileContent) => {
+        let match = getMessagePattern.exec(fileContent);
+
+        while (match !== null) {
+            usedKeys.add(match[2]);
+            match = getMessagePattern.exec(fileContent);
+        }
+    });
+
+    const missingKeys = Array.from(usedKeys.difference(baseMessages));
+
+    if (missingKeys.length === 0) {
+        cliLog.success('All used locale keys exist in base locale');
+    } else {
+        cliLog.warningRed('Found locale keys used in code but missing from base locale:');
+        missingKeys.forEach((key) => {
+            cliLog.warning(`  ${key}`);
+        });
+        throw new Error('Some locale keys used in code are missing from base locale');
+    }
+};
