@@ -771,9 +771,6 @@
     "options_update_antibanner_filters": {
         "message": "Käivita filtrite uuendamine"
     },
-    "options_check_update": {
-        "message": "Otsi uuendusi"
-    },
     "options_check_update_progress": {
         "message": "Kontrollin..."
     },
@@ -855,6 +852,12 @@
     "options_rule_limits_dynamic": {
         "message": "Dünaamilised reeglid"
     },
+    "options_rule_limits_dynamic_user_rules": {
+        "message": "Kasutaja lisatud reeglid, nagu <user_rules>kasutajareeglid<\/user_rules>, <allowlist>lubatud veebisaidid<\/allowlist> ja <custom_filters>kohandatud filtrid<\/custom_filters>"
+    },
+    "options_rule_limits_dynamic_user_rules_no_custom_filters": {
+        "message": "Kasutaja poolt lisatud reeglid, näiteks <user_rules>kasutaja reeglid<\/user_rules> ja <allowlist>lubatud veebilehed<\/allowlist>"
+    },
     "options_rule_limits_dynamic_unsafe": {
         "description": "Note: First dollar sign is used to escape the second one, so eventually only one dollar sign will be displayed",
         "message": "Ohutud dünaamilised reeglid (kasutatakse mõnede täiustatud modifikaatorite jaoks, nagu $$redirect või $$cookie) — sisaldub kasutaja lisatud reeglites"
@@ -931,6 +934,22 @@
     "options_limits_warning_dynamic_regex_rules": {
         "message": "Te olete jõudnud kasutaja poolt lisatud regex-reeglite piirini. %maximum% of %current% regex-reeglit on lubatud."
     },
+    "options_developer_mode_required": {
+        "message": "Teie brauser piirab <external-link>Teatud tüüpi reeglid<\/external-link>. Kõigi reeglite rakendamiseks lubage <b>Arendaja režiim<\/b> brauseris <settings-link>Laienduse seaded<\/settings-link>",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_allow_user_scripts_required": {
+        "message": "Teie brauser piirab <external-link>Teatud tüüpi reeglid<\/external-link>. Kõigi reeglite rakendamiseks lubage <b>Luba kasutajaskriptid<\/b> brauseris <settings-link>Laienduse seaded<\/settings-link>",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_custom_group_developer_mode_required": {
+        "message": "Kohandatud filtrite kasutamiseks lubage <b>Arendaja režiim<\/b> brauseris <settings-link>Laienduse seaded<\/settings-link>",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_custom_group_allow_user_scripts_required": {
+        "message": "Kohandatud filtrite kasutamiseks luba <b>Luba kasutajaskriptid<\/b> oma brauseri <settings-link>laiendusseadetes<\/settings-link>",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
     "options_show_adguard_full_version_title": {
         "message": "Näita teavitust AdGuardi täisversiooni kohta"
     },
@@ -974,7 +993,7 @@
         "message": "Jälgimiskaitse"
     },
     "options_privacy_desc": {
-        "message": "Kaitse oma identiteeti ja delikaatseid isikuandmeid tuhandete onlain jälitajate eest, blokeerides kõige populaarsemad jälgimismeetodid"
+        "message": "Blokeeri laialt kasutatavad jälitamise meetodid ning kaitse oma identiteeti ja isiklikke andmeid tuhandete onlain jälitajate eest"
     },
     "options_hide_referrer_title": {
         "message": "Peidab kolmandate osapoolte eest Viitaja"
@@ -986,7 +1005,7 @@
         "message": "Peida tehtavad otsingupäringud"
     },
     "options_hide_search_queries_desc": {
-        "message": "Peida otsingumootorist külastatud veebilehtede päringud"
+        "message": "Peida otsingumootorist külastatud veebisaitide päringud"
     },
     "options_send_not_track_title": {
         "message": "Saada Do-Not-Track päis"
@@ -1010,13 +1029,13 @@
         "message": "Blokeerib Google Chrome'i, et see ei saaks Google domeenidele oma versiooni ja muudatuste andmeid saata"
     },
     "options_disable_webrtc_title": {
-        "message": "Blokeeri WebRTC-d"
+        "message": "Lülita välja WebRTC"
     },
     "options_disable_webrtc_desc": {
         "message": "WebRTC võib teie IP-aadressi lekkida isegi siis, kui kasutate puhverserverit või VPN-i. WebRTC keelamine võib mõne veebisaidi rikkuda"
     },
     "options_strip_tracking_params_title": {
-        "message": "Eemalda jälitamise parameetrid"
+        "message": "Eemalda jälgimisparameetrid"
     },
     "options_strip_tracking_params_description": {
         "message": "Eemalda parameetrid veebipäringutest AdGuard URL jälgimise filtriga"
@@ -1305,6 +1324,39 @@
     },
     "clear_button_title": {
         "message": "Eemalda"
+    },
+    "update_check": {
+        "message": "Otsi uuendusi"
+    },
+    "update_checking_in_progress": {
+        "message": "Uuenduste kontrollimine..."
+    },
+    "update_available_title": {
+        "message": "Uuendused on saadaval"
+    },
+    "update_available_desc": {
+        "message": "Reklaamide tõhusaks blokeerimiseks hoidke oma laiendusi ja filtreid ajakohasena"
+    },
+    "update_available_update_btn": {
+        "message": "Ajakohastamine"
+    },
+    "update_installing_in_progress_title": {
+        "message": "Laienduse ja filtrite uuendamine..."
+    },
+    "update_installing_in_progress_desc": {
+        "message": "Laiend taaskäivitub pärast uuendust"
+    },
+    "update_not_needed": {
+        "message": "Sinu laiendus ja filtrid on ajakohased"
+    },
+    "update_failed_text": {
+        "message": "Uuenduse lõpuleviimine ebaõnnestus"
+    },
+    "update_success_text": {
+        "message": "Laiend ja filtrid on uuendatud"
+    },
+    "update_failed_try_again_btn": {
+        "message": "Proovi uuesti"
     },
     "filtering_modal_applied_rules": {
         "message": "| Rakendatud reegel: | Rakendatud reeglid:",
