@@ -102,6 +102,7 @@ const Editor = ({
     const editorClassName = cn(
         'editor',
         { 'editor--full-screen': fullscreen },
+        { 'editor--with-margin': !fullscreen },
         getOculusClass(),
     );
 

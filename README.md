@@ -592,6 +592,8 @@ please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
 ### <a name="dev-localizations"></a> Update localizations
 
+For detailed localization workflow and best practices, see [Locales Documentation](./tools/locales/README.md#dev-locales).
+
 To download and append localizations run:
 
 ```shell

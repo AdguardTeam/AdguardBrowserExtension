@@ -1,9 +1,9 @@
-! Checksum: MYNWs+3XlnGnw6vuUZhVlQ
-! Diff-Path: ../patches/6/6-s-1757517082-3600.patch
+! Checksum: 9qRrxl/DsDzPlPqgZ9gMkg
+! Diff-Path: ../patches/6/6-s-1757952729-3600.patch
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.49.43
-! TimeUpdated: 2025-09-10T15:07:21+00:00
+! Version: 2.0.49.48
+! TimeUpdated: 2025-09-15T16:08:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -477,7 +477,6 @@ agrarwetter.net###body_opacity_overlay
 agrarwetter.net###DivdetectorContainer
 agrarwetter.net#%#//scriptlet("prevent-setTimeout", "adBlock")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/131952
-computerbase.de#%#//scriptlet("abort-current-inline-script", "document.createElement", "/adblock|googlesyndication\.com/")
 computerbase.de#%#//scriptlet('prevent-element-src-loading', 'img', 'pagead2.googlesyndication.com')
 computerbase.de#@#.adbox
 computerbase.de#@#.adbox1
@@ -1454,6 +1453,8 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+eisbaeren.de##.full_column > div#slide_260
+eisbaeren.de##.full_column > div.content_item:has(> div > div.ad_serve > script)
 ||media.medikamente-per-klick.de/images/banners/
 tarnkappe.info##.container .is-one-third:has(a[href^="https://"][target="_blank"])
 ||techbook.de/wp-json/gutenberg/v1/html/embed/
@@ -7032,7 +7033,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||sims-3.net/xbox.jpg
 ||sn-multimedia.de/weitereangebote-v2/$third-party
 ||sn-multimedia.de/weitereangebote/$third-party
-||sonnige-aussichten.ch/_img/ad/$third-party
 ||sorgenlos.de^*/banner/
 ||space4free.net/images/banner/$third-party
 ||spotlight.offerista.com^$third-party
@@ -9367,8 +9367,9 @@ ak-kurier.de##.ad + .uk-panel
 alpin.de,immobilienscout24.de,radioklassik.at##.ad-banner
 alpin.de##.ad-banner-billboard
 apollo-news.net##.ad-before-content
-finanzen.net,gebraucht-kaufen.de,it-daily.net,mixed.de,nebelspalter.ch,northdata.de,raetsel-hilfe.de,sueddeutsche.de,swissmom.ch,the-decoder.de,tt.com,watchtime.net,zeit.de##.ad-container
+gebraucht-kaufen.de,it-daily.net,mixed.de,nebelspalter.ch,northdata.de,raetsel-hilfe.de,sueddeutsche.de,swissmom.ch,the-decoder.de,tt.com,watchtime.net,zeit.de##.ad-container
 aerzteblatt.de##.ad-container-dont-remove-me
+finanzen.net##.ad-container:not(a[id^="zero-web-header-"]):not(a[id^="zero-crypto-web-header-"])
 heise.de##.ad-desktop-group-2
 hallo-minden.de##.ad-info
 augsburger-allgemeine.de##.ad-list_small-native-container
@@ -9902,6 +9903,7 @@ gastgewerbe-magazin.de##.ggm-ad
 golem.de##.go-ad-slot
 golem.de##.go-alink-list
 golem.de##.go-teaser--variant-affiliate
+golem.de##.go-teaser--variant-sponsored
 jungfrauzeitung.ch##.gokb
 jungfrauzeitung.ch##.gokwblock
 nydus.org##.googl
@@ -10170,6 +10172,7 @@ onvista.de##.ov-carousel--table-fixed-cells .bg-premium
 onvista.de##.ov-carousel__inner tr[class*="bg-premium"]
 onvista.de##.ov-interaction
 onvista.de##.ov-interaction-slot
+onvista.de##.ov-table-row--height.bg-primary-detail
 onvista.de##.ov-table-sponsored-row
 onvista.de##.ov-table-sponsored-row-disclaimer
 onvista.de##.ov-table-sponsored-row-disclaimer + .bg-color--cd-blueberry-bright-10
@@ -10289,6 +10292,7 @@ grazia-magazin.de,idee-fuer-mich.de,ok-magazin.de,vital.de##.quartermedia
 crossmagazin.de##.quiz-footer-wrapper
 codecheck.info##.r
 netzkino.de##.r-d045u9.r-1udh08x.r-bnwqim.css-1dbjc4n
+radioszene.de##.radioszene_ad_byside_logo
 dartsnews.de,power-wrestling.de,radsportaktuell.de,tennisaktuell.de##.raw-html-component
 videoaktiv.de##.rcu
 videoaktiv.de##.rec
@@ -10875,6 +10879,7 @@ onlinehaendler-news.de##div[class*="adplacement_"]
 chartsurfer.de##div[class*="adszone-"]
 amazona.de##div[class*="fnetbr"]
 biancazapatka.com##div[class="app-banner"]
+onvista.de##div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]
 onvista.de##div[class="col col--sm-4 col--md-3 col--lg-4 col--xl-4"]
 preispirat.ch##div[class="vc_row wpb_row vc_inner vc_row-fluid"]:has(img[src*="/partner-promo/"])
 blick.de,gut-erklaert.de,hifi-forum.de,kino.de,meinestadt.de,news.de,nordbayern.de,t-online.de,teltarif.de##div[class] > img[referrerpolicy="unsafe-url"]

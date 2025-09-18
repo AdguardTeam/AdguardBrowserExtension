@@ -17,9 +17,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { excludeUnsafeRules } from '@adguard/dnr-rulesets';
+
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
 import { updateLocalResourcesForChromiumMv3 } from './resources/update-local-script-rules';
+import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
 
 // TODO: worth refactoring since this function is separated from ./resources.ts
 
@@ -49,6 +52,18 @@ const resourcesMv3 = async (skipLocalResources = false) => {
     } else {
         console.log('OpenAI API key is not provided, skipping dangerous rules check');
     }
+
+    /**
+     * Extract unsafe rules from the filters and save them to the metadata
+     * for each rulesets to use "skip review" feature in the Chrome Web Store
+     * with limitation of the number of unsafe rules to 4900, since quota
+     * for session rules is 5000 and we need to leave some space for other
+     * rules, e.g. general $stealth rules from Tracking Protection filter.
+     */
+    excludeUnsafeRules({
+        dir: DECLARATIVE_FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3),
+        limit: 4900,
+    });
 };
 
 (async () => {
