@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Beautification to exported settings JSON for improved readability [#3069].
+- Warning modal for "Preserve Log" feature in Filtering Log to inform users about potential performance impact [#3148].
 
 ### Fixed
 
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Early save reactivation and missing exit prompt during active User Rules/Allowlist save [#3151].
 - Some requests are blocked in 'Inverted allowlist' mode even though there're no websites added to the Allowlist [#3193].
 - Do not enable any filters on settings import if `enabled-filters` is empty [#3136].
+- Preserve logs does not retain all records in the filtering log [#3148].
 
 ### Changed
 
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
 [#3136]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136
+[#3148]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3148
 
 ## Unreleased v5.2
 
