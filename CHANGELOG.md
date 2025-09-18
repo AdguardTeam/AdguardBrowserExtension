@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Some requests are blocked in 'Inverted allowlist' mode even though there're no websites added to the Allowlist [#3193].
 - Do not enable any filters on settings import if `enabled-filters` is empty [#3136].
 - Preserve logs does not retain all records in the filtering log [#3148].
+- Settings applied notification appearing before settings are actually applied [#3278].
+
 
 ### Changed
 
@@ -33,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
 [#3136]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136
 [#3148]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3148
+[#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 
 ## Unreleased v5.2
 
