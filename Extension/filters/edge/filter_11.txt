@@ -1,9 +1,9 @@
-! Checksum: UC1iyTFYvqLW5E9/fFo2ew
-! Diff-Path: ../patches/11/11-s-1757592886-3600.patch
+! Checksum: VuAg0KJP5bRA4Jdkqnk0cw
+! Diff-Path: ../patches/11/11-s-1758021022-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.64.22
-! TimeUpdated: 2025-09-11T12:11:03+00:00
+! Version: 2.0.64.36
+! TimeUpdated: 2025-09-16T11:06:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1225,6 +1225,12 @@ turbopages.org##.page__result > div[class*="type_native"]
 !-------JS----------
 !-------------------
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/213295#issuecomment-3295974288
+! On mobile Firefox when autoplay is disabled and ads are blocked, the video stucks on loading screen sometimes,
+! so as a workaround we disable autoplay
+dailymotion.com#%#//scriptlet('set-constant', 'DMP_IS_AUTOPLAY_ENABLED', 'false')
+dailymotion.com#%#//scriptlet('trusted-set-constant', '__PLAYER_CONFIG__.player.autostart', '"off"')
+dailymotion.com#%#(()=>{const a={apply:(a,t,r)=>{try{!0===r[0]?.parameters?.[1]?.autoplay&&(r[0].parameters[1].autoplay=!1)}catch(a){console.trace(a)}return Reflect.apply(a,t,r)}};window.JSON.stringify=new Proxy(window.JSON.stringify,a)})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/211867
 wuxianxiaoshuowang.com#%#//scriptlet("abort-on-property-read", "createApp")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195011
@@ -2384,6 +2390,15 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+tabootube.*##.mobile-links
+hyperts.net###amarnk
+avito.ru##div[data-key^="advBannerWidget"]
+ixbt.games##.mobile-c
+phinphanatic.com###body-0 > figure:has(> #mm-player-placeholder-smallAndMedium-screens)
+trendyol.com##.search-banner
+thevoyeurmania.com##.happy-footer-mobile
+kayserigundem.com.tr##header + div.flex.lg\:hidden
+cbsnews.com##.container > carousel[slug="taboola-around-the-web-video-door"]
 asianetnews.com##.HometopAd
 asianetnews.com##.mobiletopad
 asianetnews.com##.wrapper > div:has(> div[id^="div-gpt-"])
@@ -2474,8 +2489,9 @@ ddd-smart.net##.ds-5__wrapper
 news.infoseek.co.jp##div[id^="ad-wrapper"]
 bebesetmamans.20minutes.fr##.page-masthead
 zdnet.fr##.pub_dfp
+pornhits.com#$#.promo-bar { display: none !important; }
+pornhits.com#$#.promo-bar + .container { padding-top: 0 !important; }
 pornhits.com##.header__bn
-pornhits.com##.promo-bar
 pornhits.com##.sites__item--hl
 modernliving.jp##div[class^="css-"]:has(> div.ad-disclaimer)
 m.sporx.com###pAd_close
@@ -4819,7 +4835,6 @@ carview.yahoo.co.jp##.posNM
 glosbe.com###tb__cont__2
 wz.de##aside[data-portal-id="banner"]
 comicporn.xxx,hentaienvy.com,hentaizap.com,hentairox.com,imhentai.xxx,hentaifox.com,hentaiera.com##.bblocktop
-topics.smt.docomo.ne.jp##.ad_middle05
 fc1adult.com##div[style="height: 500px; overflow: hidden; margin-bottom: 20px;"]
 cojicaji.jp##.dfp-cci-rectangle-wrapper
 finance.yahoo.co.jp##main > section#pr_main1
@@ -6177,7 +6192,6 @@ scmp.com##.article-list__inline-ad
 scmp.com,mobil.nwzonline.de,mobil-nwzonline-de.cdn.ampproject.org##.advert
 scmp.com##.details__topics-ad
 orgazmtv.net##.video-block > div.video + div.mob-300
-m.search.naver.com##li[data-pwr-ad-url]
 dcard.tw##div[style="height: 250px; width: auto;"]
 dcard.tw##div[style="height:250px;width:auto"]
 yan.vn##.AdsAppend
@@ -7943,6 +7957,8 @@ livejournal.com##.mdspost-aside__item--banner
 ! END: Livejournal.com
 !
 !
+!+ NOT_OPTIMIZED
+topics.smt.docomo.ne.jp##.ad_middle05
 !+ NOT_PLATFORM(ext_android_cb)
 beauty.oricon.co.jp##.ttl-kjbox
 !+ NOT_PLATFORM(ext_ublock)
@@ -8043,10 +8059,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 ! Yandex ads in mobile apps
-! Less dangerous: 77.88.55.88, 77.88.44.55, 5.255.255.77
-! BUG: https://github.com/AdguardTeam/CoreLibs/issues/1951
-! Don't add more than 200 apps per rule
-! TODO: merge app lists of the same rules after fixing
+! Used less dangerous IPs: 77.88.55.88, 77.88.44.55, 5.255.255.77
+! Important: Add a package name to all rules
 !
 ! TeraBox app (with root)
 ! APKPure
@@ -8062,6 +8076,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ||lqm.io^
 ||pn.ybp.yahoo.com^
 ||staticcc.com^
+! https://github.com/AdguardTeam/AdguardFilters/issues/212648
 ! https://github.com/AdguardTeam/AdguardFilters/issues/199526
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195708
 ! loads by HTTP, no root required
