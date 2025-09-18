@@ -30,15 +30,10 @@ interface CheckmarkCheckboxProps {
     id: string;
 
     /**
-     * Initial value of the checkbox
-     */
-    value: boolean;
-
-    /**
      * Function to handle the change event.
      * Can be synchronous or asynchronous.
      */
-    handler: (data: { id: string | number; data: boolean }) => void | Promise<void>;
+    handler: (data: { id: string; data: boolean }) => void | Promise<void>;
 
     /**
      * Label for the checkbox
@@ -48,28 +43,25 @@ interface CheckmarkCheckboxProps {
     /**
      * If true, the checkbox will be checked
      */
-    checked?: boolean;
+    checked: boolean;
 }
 
 const CheckMarkCheckbox = (props: CheckmarkCheckboxProps) => {
     const {
         id,
-        value,
         handler,
         label,
         checked,
     } = props;
+
     return (
-        <div
-            className="checkbox-wrapper"
-        >
+        <div className="checkbox-wrapper">
             <input
                 id={id}
                 className="checkbox-input"
                 type="checkbox"
                 name={id}
-                value={id}
-                onChange={() => handler({ id, data: value })}
+                onChange={() => handler({ id, data: !checked })}
                 checked={checked}
             />
             <label

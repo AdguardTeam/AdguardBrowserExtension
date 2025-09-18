@@ -46,7 +46,7 @@ export class OptionsStorage {
         /**
          * Show preserve log modal state
          */
-        SHOW_PRESERVE_LOG_MODAL: 'filtering-log-show-modal',
+        SHOW_PRESERVE_LOG_MODAL: 'show-preserve-log-modal',
     };
 
     DEFAULTS = {

@@ -17,6 +17,7 @@
  */
 
 import React, { useContext, useState } from 'react';
+import { observer } from 'mobx-react';
 
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { translator } from '../../../../common/translators/translator';
@@ -25,18 +26,19 @@ import { rootStore } from '../../stores/RootStore';
 import { optionsStorage } from '../../../options/options-storage';
 
 import './preserveLogModal.pcss';
+import '../../../common/styles/modal.pcss';
 
-const PreserveLogModal = () => {
+const PreserveLogModal = observer(() => {
     const { logStore } = useContext(rootStore);
 
     const [showModalInFuture, setShowModalInFuture] = useState(true);
 
-    const hidePreserveLogModalInFuture = async () => {
+    const hidePreserveLogModalInFuture = () => {
         optionsStorage.setItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL, false);
     };
 
-    const confirmModal = () => {
-        logStore.setPreserveLog(true);
+    const confirmModal = async () => {
+        await logStore.setPreserveLog(true);
         if (!showModalInFuture) {
             hidePreserveLogModalInFuture();
         }
@@ -47,18 +49,17 @@ const PreserveLogModal = () => {
     };
 
     const renderSubtitle = () => (
-        <div>
+        <>
             <div className="modal__subtitle">
                 {translator.getMessage('filtering_log_preserve_log_modal_description')}
             </div>
             <CheckMarkCheckbox
                 checked={!showModalInFuture}
                 id="preserve_log"
-                value
                 handler={handleShowModal}
                 label={translator.getMessage('filtering_log_preserve_log_skip_modal_in_future')}
             />
-        </div>
+        </>
     );
 
     return (
@@ -72,6 +73,6 @@ const PreserveLogModal = () => {
             isConsent
         />
     );
-};
+});
 
 export { PreserveLogModal };

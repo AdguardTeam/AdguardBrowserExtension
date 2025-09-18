@@ -110,7 +110,7 @@ export const mockLocalStorage = (initData?: Record<string, unknown>): Storage.St
 /**
  * Mocks the browser.storage.session API with an instance of EmulatedLocalStorage
  *
- * @param initData - Optional initial data for the mock storage
+ * @param initData Optional initial data for the mock storage
  *
  * @returns Mocked storage instance
  */

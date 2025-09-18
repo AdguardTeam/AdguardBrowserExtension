@@ -634,9 +634,9 @@ export class FilteringLogService {
      * @param message Message with type {@link SetPreserveLogStateMessage}.
      * @param message.data State for preserver log: enable or disable.
      */
-    private static onSetPreserveLogState({ data }: SetPreserveLogStateMessage): void {
+    private static async onSetPreserveLogState({ data }: SetPreserveLogStateMessage): Promise<void> {
         const { state } = data;
-        filteringLogApi.setPreserveLogState(state);
+        await filteringLogApi.setPreserveLogState(state);
     }
 
     /**

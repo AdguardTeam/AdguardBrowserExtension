@@ -495,21 +495,28 @@ export class FilteringLogApi {
      *
      * @param enabled Is preserve log enabled.
      */
-    public setPreserveLogState(enabled: boolean): void {
-        this.preserveLogEnabled = enabled;
-        browser.storage.session.set({ [this.PRESERVE_LOG_ENABLED_KEY]: enabled });
+    public async setPreserveLogState(enabled: boolean): Promise<void> {
+        try {
+            await browser.storage.session.set({ [this.PRESERVE_LOG_ENABLED_KEY]: enabled });
+            this.preserveLogEnabled = enabled;
+        } catch (error) {
+            logger.error('[ext.FilteringLogApi.setPreserveLogState]: Failed to save preserve log state to storage:', error);
+        }
     }
 
     /**
      * Initializes preserve log state.
      */
     private async initPreserveLogState(): Promise<void> {
-        const result = await browser.storage.session.get(this.PRESERVE_LOG_ENABLED_KEY);
-        if (!result[this.PRESERVE_LOG_ENABLED_KEY]) {
-            return;
+        try {
+            const result = await browser.storage.session.get(this.PRESERVE_LOG_ENABLED_KEY);
+            if (!result[this.PRESERVE_LOG_ENABLED_KEY]) {
+                return;
+            }
+            this.preserveLogEnabled = Boolean(result[this.PRESERVE_LOG_ENABLED_KEY]);
+        } catch (error) {
+            logger.error('[ext.FilteringLogApi.initPreserveLogState]: Failed to get preserve log state from storage:', error);
         }
-
-        this.preserveLogEnabled = Boolean(result[this.PRESERVE_LOG_ENABLED_KEY]);
     }
 
     /**
