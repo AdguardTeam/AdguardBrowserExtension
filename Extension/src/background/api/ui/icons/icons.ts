@@ -27,14 +27,13 @@ import {
     settingsStorage,
     type IconData,
     type IconVariants,
-} from '../../storages';
-import { SettingOption } from '../../schema';
-import { getIconImageData, TabsApi as CommonTabsApi } from '../../../common/api/extension';
-import { logger } from '../../../common/logger';
-
-import { FramesApi, type FrameData } from './frames';
-import { promoNotificationApi } from './promo-notification';
-import { browserAction } from './browser-action';
+} from '../../../storages';
+import { SettingOption } from '../../../schema';
+import { getIconImageData, TabsApi as CommonTabsApi } from '../../../../common/api/extension';
+import { logger } from '../../../../common/logger';
+import { FramesApi, type FrameData } from '../frames';
+import { promoNotificationApi } from '../promo-notification';
+import { browserAction } from '../browser-action';
 
 export const defaultIconVariants: IconVariants = {
     enabled: {
