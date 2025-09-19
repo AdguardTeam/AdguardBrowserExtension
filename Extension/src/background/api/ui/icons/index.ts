@@ -15,4 +15,5 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { iconsApi, defaultIconVariants } from 'icons-api';
+export { iconsApi } from 'icons-api';
+export { defaultIconVariants } from './icons-common';
