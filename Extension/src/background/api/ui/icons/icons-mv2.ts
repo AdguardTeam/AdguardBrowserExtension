@@ -19,10 +19,6 @@ import browser from 'webextension-polyfill';
 
 import { tabsApi as tsWebExtTabsApi } from 'tswebextension';
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
-import { RulesLimitsService } from 'rules-limits-service';
-
 import {
     settingsStorage,
     type IconData,
@@ -209,24 +205,12 @@ class IconsApi {
      * @returns Icon variant to display.
      */
     private async pickIconVariant(isDisabled = false): Promise<IconData> {
-        const isMv3LimitsExceeded = __IS_MV3__
-            ? await RulesLimitsService.areFilterLimitsExceeded()
-            : false;
-
-        if (isMv3LimitsExceeded) {
-            return defaultIconVariants.warning;
-        }
-
         // prioritize promo icons over the update-available icon,
         // i.e. PromoNotification is rendered on top of other notifications as well
         if (this.promoIcons) {
             return isDisabled
                 ? this.promoIcons.disabled
                 : this.promoIcons.enabled;
-        }
-
-        if (__IS_MV3__ && ExtensionUpdateService.getIsUpdateAvailable()) {
-            return defaultIconVariants.updateAvailable;
         }
 
         return isDisabled
