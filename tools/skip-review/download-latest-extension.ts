@@ -111,7 +111,13 @@ const downloadFileWithProgress = async (url: string, destPath: string) => {
         printProgress(downloaded, total);
     }
 
-    fileStream.end();
+    // Wait for the file stream to finish writing
+    await new Promise<void>((resolve, reject) => {
+        fileStream.end();
+        fileStream.on('finish', () => resolve());
+        fileStream.on('error', reject);
+    });
+
     if (total) {
         process.stdout.write('\n');
     }
@@ -176,7 +182,7 @@ const removeMetadataFolder = async (unpackedPath: string) => {
         await fs.promises.rm(metadataPath, { recursive: true, force: true });
         console.log('Removed metadata folder:', metadataPath);
     } else {
-        console.log('No metadata folder found to remove.');
+        console.log('No metadata folder found to remove, skipping.');
     }
 };
 
@@ -204,6 +210,7 @@ const downloadAndUnpackExtension = async (target: BuildTargetEnv.Beta | BuildTar
         console.log(`Extension downloaded and unpacked to ${unpackedExtensionPath}`);
     } catch (e) {
         console.error('Error:', e);
+        throw e;
     }
 };
 
