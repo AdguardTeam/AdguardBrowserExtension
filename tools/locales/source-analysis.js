@@ -73,7 +73,10 @@ const getSrcFilesContents = (dirPath, contents = []) => {
         if (fs.lstatSync(fullPath).isDirectory()) {
             getSrcFilesContents(fullPath, contents);
         } else if (canContainLocalesStrings(fullPath)) {
-            contents.push(fs.readFileSync(fullPath).toString());
+            contents.push({
+                filePath: fullPath,
+                content: fs.readFileSync(fullPath).toString(),
+            });
         }
     });
     return contents;
@@ -86,7 +89,7 @@ export const checkUnusedMessages = async () => {
     const baseLocaleTranslations = await getLocaleTranslations(BASE_LOCALE);
     const baseMessages = Object.keys(baseLocaleTranslations);
 
-    const filesContents = getSrcFilesContents(SRC_DIR);
+    const filesContents = getSrcFilesContents(SRC_DIR).map((file) => file.content);
 
     const isPresentInFile = (message, file) => {
         return file.includes(`'${message}'`) || file.includes(`"${message}"`);
@@ -122,12 +125,12 @@ export const checkMissingLocaleKeys = async () => {
 
     const usedKeys = new Set();
 
-    filesContents.forEach((fileContent) => {
-        let match = getMessagePattern.exec(fileContent);
+    filesContents.forEach((file) => {
+        let match = getMessagePattern.exec(file.content);
 
         while (match !== null) {
             usedKeys.add(match[2]);
-            match = getMessagePattern.exec(fileContent);
+            match = getMessagePattern.exec(file.content);
         }
     });
 
@@ -142,4 +145,50 @@ export const checkMissingLocaleKeys = async () => {
         });
         throw new Error('Some locale keys used in code are missing from base locale');
     }
+};
+
+/**
+ * Checks for getMessage/getPlural calls that use variables instead of string literals
+ */
+export const checkVariableUsageInTranslateFunctions = () => {
+    const filesContents = getSrcFilesContents(SRC_DIR);
+
+    const variablePattern = /translator\.(getMessage|getPlural)\s*\((?!\s*['"`])/g;
+
+    const violations = [];
+
+    filesContents.forEach((file) => {
+        const lines = file.content.split('\n');
+
+        for (const match of file.content.matchAll(variablePattern)) {
+            const fullMatch = match[0];
+            const functionName = match[1];
+
+            const beforeMatch = file.content.substring(0, match.index);
+            const lineNumber = beforeMatch.split('\n').length;
+            const lineContent = lines[lineNumber - 1].trim();
+
+            violations.push({
+                filePath: file.filePath,
+                lineNumber,
+                functionName,
+                match: fullMatch.trim(),
+                lineContent,
+            });
+        }
+    });
+
+    if (violations.length === 0) {
+        cliLog.success('All getMessage/getPlural calls use string literals');
+    } else {
+        cliLog.warningRed('Found getMessage/getPlural calls using variables instead of string literals:');
+        violations.forEach((violation) => {
+            const relativePath = violation.filePath.replace(`${process.cwd()}/`, '');
+            cliLog.warning(`${relativePath}:${violation.lineNumber}`);
+            cliLog.info(`  ${violation.lineContent}`);
+        });
+        cliLog.info('These should be refactored to use string literals for proper static analysis.');
+    }
+
+    return violations;
 };

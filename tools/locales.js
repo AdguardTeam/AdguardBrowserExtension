@@ -23,7 +23,11 @@ import { downloadAndSave } from './locales/download-locales';
 import { uploadLocales } from './locales/upload-locales';
 import { renewLocales } from './locales/renew-locales';
 import { checkTranslations } from './locales/validate';
-import { checkUnusedMessages, checkMissingLocaleKeys } from './locales/source-analysis';
+import {
+    checkUnusedMessages,
+    checkMissingLocaleKeys,
+    checkVariableUsageInTranslateFunctions,
+} from './locales/source-analysis';
 import { cliLog } from './cli-log';
 import { LOCALES } from './locales/locales-constants';
 
@@ -61,6 +65,7 @@ const renew = async () => {
 const validate = async (locales, isMinimum) => {
     try {
         await checkMissingLocaleKeys();
+        checkVariableUsageInTranslateFunctions();
         await checkTranslations(locales, { isMinimum });
     } catch (e) {
         cliLog.error(e.message);

@@ -84,7 +84,7 @@ type ButtonProps = {
     /**
      * Button title key for translation.
      */
-    buttonTitleKey: string;
+    title: string;
 
     /**
      * Button click handler.
@@ -438,14 +438,14 @@ const RequestInfo = observer(() => {
             let showMessage;
             let hideMessage;
             if (isRequestUrl) {
-                showMessage = 'filtering_modal_show_full_url';
-                hideMessage = 'filtering_modal_hide_full_url';
+                showMessage = translator.getMessage('filtering_modal_show_full_url');
+                hideMessage = translator.getMessage('filtering_modal_hide_full_url');
             } else if (isRule) {
-                showMessage = 'filtering_modal_show_full_rule';
-                hideMessage = 'filtering_modal_hide_full_rule';
+                showMessage = translator.getMessage('filtering_modal_show_full_rule');
+                hideMessage = translator.getMessage('filtering_modal_hide_full_rule');
             } else if (isElement) {
-                showMessage = 'filtering_modal_show_full_element';
-                hideMessage = 'filtering_modal_hide_full_element';
+                showMessage = translator.getMessage('filtering_modal_show_full_element');
+                hideMessage = translator.getMessage('filtering_modal_hide_full_element');
             }
             const collapserButtonMessages = {
                 showMessage,
@@ -548,10 +548,8 @@ const RequestInfo = observer(() => {
         wizardStore.setPreviewState();
     };
 
-    const renderButton = ({ buttonTitleKey, onClick, className }: ButtonProps): JSX.Element => {
+    const renderButton = ({ title, onClick, className }: ButtonProps): JSX.Element => {
         const buttonClass = cn('button button--l request-modal__button', className);
-
-        const title = translator.getMessage(buttonTitleKey);
 
         return (
             <button
@@ -571,41 +569,41 @@ const RequestInfo = observer(() => {
 
         const BUTTON_MAP = {
             BLOCK: {
-                buttonTitleKey: 'filtering_modal_block',
+                title: translator.getMessage('filtering_modal_block'),
                 onClick: blockHandler,
                 className: 'button--red-bg',
             },
             UNBLOCK: {
-                buttonTitleKey: 'filtering_modal_unblock',
+                title: translator.getMessage('filtering_modal_unblock'),
                 onClick: unblockHandler,
                 className: 'button--green-bg',
             },
             ALLOWLIST: {
-                buttonTitleKey: 'filtering_modal_remove_allowlist',
+                title: translator.getMessage('filtering_modal_remove_allowlist'),
                 onClick: removeFromAllowlistHandler,
                 className: 'button--green-bg',
             },
             USER_FILTER: {
-                buttonTitleKey: 'filtering_modal_remove_user',
+                title: translator.getMessage('filtering_modal_remove_user'),
                 onClick: () => removeFromUserFilterHandler(event),
                 className: 'button--red-bg',
             },
             REMOVE_ADDED_BLOCK_RULE: {
-                buttonTitleKey: 'filtering_modal_remove_user',
+                title: translator.getMessage('filtering_modal_remove_user'),
                 onClick: () => {
                     wizardStore.removeAddedRuleFromUserFilter();
                 },
                 className: 'button--red-bg',
             },
             REMOVE_ADDED_UNBLOCK_RULE: {
-                buttonTitleKey: 'filtering_modal_block_again',
+                title: translator.getMessage('filtering_modal_block_again'),
                 onClick: () => {
                     wizardStore.removeAddedRuleFromUserFilter();
                 },
                 className: 'button--red-bg',
             },
             PREVIEW: {
-                buttonTitleKey: 'filtering_modal_preview_request_button',
+                title: translator.getMessage('filtering_modal_preview_request_button'),
                 onClick: previewClickHandler,
                 className: 'button--transparent',
             },
