@@ -45,6 +45,7 @@ export const loadImageData = async (size: number, url: string) => {
 
         ctx.drawImage(bitmap, 0, 0, size, size);
         const imageData = ctx.getImageData(0, 0, size, size);
+
         return imageData;
     } catch (error) {
         logger.error('[ext.load-image-data-mv3]: failed to load image:', error);
