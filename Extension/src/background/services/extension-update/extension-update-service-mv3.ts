@@ -383,7 +383,10 @@ export class ExtensionUpdateService {
 
         let response: Response;
         try {
-            response = await fetch(updateUrl);
+            response = await fetch(updateUrl, {
+                // HEAD is needed to minimize the extension update response size. AG-46443
+                method: 'HEAD',
+            });
         } catch (e) {
             logger.debug(`[ext.ExtensionUpdateService.getLatestChromeStoreVersion]: Failed to fetch update for "${updateUrl}": ${e}`);
             return null;
