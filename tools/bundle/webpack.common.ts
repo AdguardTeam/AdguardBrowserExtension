@@ -345,6 +345,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`,
                 ),
+                'load-image-data': path.resolve(
+                    __dirname,
+                    `../../Extension/src/common/api/extension/iconsCache/load-image-data-mv${manifestVersion}.ts`,
+                ),
             },
         },
         module: {
