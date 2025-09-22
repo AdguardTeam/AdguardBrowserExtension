@@ -26,6 +26,7 @@ import {
     type MessageHandler,
     type Message as EngineMessage,
     type ConfigurationResult,
+    ConvertedFilterList,
 } from '@adguard/tswebextension/mv3';
 
 import { logger } from '../../common/logger';
@@ -44,7 +45,7 @@ import {
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
-import { emptyPreprocessedFilterList, NotifierType } from '../../common/constants';
+import { NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 import { FiltersStorage } from '../storages/filters';
@@ -218,17 +219,18 @@ export class Engine implements TsWebExtensionEngine {
             }
         }
 
-        const userrules: Configuration['userrules'] = {
-            ...emptyPreprocessedFilterList,
-            /**
-             * User rules are always trusted.
-             */
-            trusted: true,
-        };
+        let userRulesFilter: ConvertedFilterList;
 
         if (UserRulesApi.isEnabled()) {
-            Object.assign(userrules, await UserRulesApi.getUserRules());
+            userRulesFilter = await UserRulesApi.getUserRules();
+        } else {
+            userRulesFilter = ConvertedFilterList.createEmpty();
         }
+
+        const userrules: Configuration['userrules'] = {
+            content: userRulesFilter.getContent(),
+            conversionData: userRulesFilter.getConversionData(),
+        };
 
         let customFilters: Configuration['customFilters'] = [];
 
@@ -284,12 +286,17 @@ export class Engine implements TsWebExtensionEngine {
                 .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
             customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-                const preprocessedFilterList = await FiltersStorage.get(filterId);
+                let convertedFilterList = await FiltersStorage.get(filterId);
+
+                if (!convertedFilterList) {
+                    convertedFilterList = ConvertedFilterList.createEmpty();
+                }
 
                 return {
                     filterId,
+                    content: convertedFilterList.getContent(),
+                    conversionData: convertedFilterList.getConversionData(),
                     trusted,
-                    ...(preprocessedFilterList || emptyPreprocessedFilterList),
                 };
             }));
         }

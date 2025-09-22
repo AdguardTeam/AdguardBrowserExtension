@@ -24,6 +24,7 @@ import {
     MESSAGE_HANDLER_NAME,
     createTsWebExtension,
     type Message as EngineMessage,
+    ConvertedFilterList,
 } from '@adguard/tswebextension';
 
 import { logger } from '../../common/logger';
@@ -124,27 +125,20 @@ export class Engine implements TsWebExtensionEngine {
 
         const tasks = enabledFilters.map(async (filterId) => {
             try {
-                const [content, sourceMap] = await Promise.all([
-                    FiltersStorage.getFilterList(filterId),
-                    FiltersStorage.getSourceMap(filterId),
-                ]);
+                const filter = await FiltersStorage.get(filterId);
 
-                if (!content) {
+                if (!filter) {
                     logger.error(`[ext.Engine.getConfiguration]: Failed to get filter ${filterId}`);
                     return;
-                }
-
-                if (!sourceMap) {
-                    logger.warn(`[ext.Engine.getConfiguration]: Source map is not found for filter ${filterId}`);
                 }
 
                 const trusted = FiltersApi.isFilterTrusted(filterId);
 
                 filters.push({
                     filterId,
-                    content,
+                    content: filter.getContent(),
+                    conversionData: filter.getConversionData(),
                     trusted,
-                    sourceMap,
                 });
             } catch (e) {
                 logger.error(`[ext.Engine.getConfiguration]: Failed to get filter ${filterId}`, e);
@@ -167,25 +161,26 @@ export class Engine implements TsWebExtensionEngine {
 
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
+        let userrules: ConvertedFilterList;
+
+        if (UserRulesApi.isEnabled()) {
+            userrules = await UserRulesApi.getUserRules();
+        } else {
+            userrules = ConvertedFilterList.createEmpty();
+        }
+
         const result: ConfigurationMV2 = {
             verbose: !!(IS_RELEASE || IS_BETA),
             logLevel: logger.currentLevel,
             filters,
             userrules: {
-                content: [],
-                sourceMap: {},
+                content: userrules.getContent(),
+                conversionData: userrules.getConversionData(),
             },
             allowlist,
             settings,
             trustedDomains,
         };
-
-        if (UserRulesApi.isEnabled()) {
-            const { filterList, sourceMap } = await UserRulesApi.getUserRules();
-
-            result.userrules.content = filterList;
-            result.userrules.sourceMap = sourceMap;
-        }
 
         return result;
     }

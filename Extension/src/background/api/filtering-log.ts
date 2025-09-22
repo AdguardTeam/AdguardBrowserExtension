@@ -17,7 +17,6 @@
  */
 import { type Tabs } from 'webextension-polyfill';
 
-import { RuleGenerator } from '@adguard/agtree/generator';
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
 import {
@@ -27,9 +26,7 @@ import {
     isExtensionUrl,
     type StealthActionEvent,
     getDomain,
-    getRuleSourceText,
-    getRuleSourceIndex,
-    type PreprocessedFilterList,
+    type ConvertedFilterList,
     type DeclarativeRuleInfo,
 } from 'tswebextension';
 
@@ -157,11 +154,6 @@ interface RuleText {
 }
 
 /**
- * Cached filter data.
- */
-type CachedFilterData = Pick<PreprocessedFilterList, 'rawFilterList' | 'conversionMap' | 'sourceMap'>;
-
-/**
  * The filtering log collects all available information about requests
  * and the rules applied to them.
  */
@@ -201,7 +193,7 @@ export class FilteringLogApi {
      * This cache is used to avoid unnecessary requests to the storage while filtering log is opened.
      * After closing the filtering log, the cache is purged to free up memory.
      */
-    private filtersCache = new Map<number, CachedFilterData>();
+    private filtersCache = new Map<number, ConvertedFilterList>();
 
     /**
      * Map of filter sync attempts. The key is the filter list id and the value is the last attempt time.
@@ -279,37 +271,21 @@ export class FilteringLogApi {
      *
      * @returns Filter data or undefined if the filter is not found.
      */
-    private async getFilterData(filterId: number): Promise<CachedFilterData | undefined> {
+    private async getFilterData(filterId: number): Promise<ConvertedFilterList | undefined> {
         if (this.filtersCache.has(filterId)) {
             return this.filtersCache.get(filterId);
         }
 
         try {
-            // eslint-disable-next-line prefer-const
-            let [rawFilterList, conversionMap, sourceMap] = await Promise.all([
-                FiltersStoragesAdapter.getRawFilterList(filterId),
-                FiltersStoragesAdapter.getConversionMap(filterId),
-                FiltersStoragesAdapter.getSourceMap(filterId),
-            ]);
+            const convertedFilterList = await FiltersStoragesAdapter.get(filterId);
 
-            // Raw filter list and source map are required to get rule texts
-            if (!rawFilterList || !sourceMap) {
+            if (convertedFilterList === undefined) {
                 return undefined;
             }
 
-            if (!conversionMap) {
-                conversionMap = {};
-            }
+            this.filtersCache.set(filterId, convertedFilterList);
 
-            const filterData: CachedFilterData = {
-                rawFilterList,
-                conversionMap,
-                sourceMap,
-            };
-
-            this.filtersCache.set(filterId, filterData);
-
-            return filterData;
+            return convertedFilterList;
         } catch (e) {
             logger.error(`[ext.FilteringLogApi.getFilterData]: failed to get filter data for filter id ${filterId}:`, e);
         }
@@ -366,19 +342,12 @@ export class FilteringLogApi {
         // Note: Stealth and Allowlist are special filters, they're generated dynamically by TSWebExtension internally.
         // We don't store them in the storage, so we need to get rule AST nodes and generate rule text manually.
         if (FilteringLogApi.DYNAMIC_FILTER_LISTS.has(filterId)) {
-            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+            const ruleText = engine.api.retrieveRuleText(filterId, ruleIndex);
 
             // The following error messages should not be displayed during normal operation,
             // but we handle them just in case, and to provide type safety
-            if (!ruleNode) {
-                logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
-                return null;
-            }
-
-            const ruleText = RuleGenerator.generate(ruleNode);
-
             if (!ruleText) {
-                logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`);
+                logger.error(`[ext.FilteringLogApi.getRuleText]: failed to get rule node for filter id ${filterId} and rule index ${ruleIndex}`);
                 return null;
             }
 
@@ -394,21 +363,18 @@ export class FilteringLogApi {
             return null;
         }
 
-        const { rawFilterList, conversionMap, sourceMap } = filterData;
+        const originalRuleText = filterData.getOriginalRuleText(ruleIndex);
 
-        // Get line start index in the source file by rule start index in the byte array
-        const lineStartIndex = getRuleSourceIndex(ruleIndex, sourceMap);
-
-        if (lineStartIndex === -1) {
+        // FIXME: this is just an extra protection layer, probably we don't need it
+        if (originalRuleText === null) {
             let baseMessage = `[ext.FilteringLogApi.getRuleText]: failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
 
-            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+            const ruleText = engine.api.retrieveRuleText(filterId, ruleIndex);
 
             // Note: during normal operation, ruleNode should not be null,
             // but we handle this case just in case, and to provide type safety
-            if (ruleNode) {
-                const generatedRuleText = RuleGenerator.generate(ruleNode);
-                baseMessage += `, generated rule text: ${generatedRuleText}`;
+            if (ruleText) {
+                baseMessage += `, applied rule text: ${ruleText}`;
             }
 
             // If the rule is not found, try to sync the filter and try again
@@ -423,18 +389,17 @@ export class FilteringLogApi {
             return null;
         }
 
-        const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
+        const appliedRuleText = filterData.getOriginalRuleText(ruleIndex);
 
         if (!appliedRuleText) {
             let baseMessage = `[ext.FilteringLogApi.getRuleText]: failed to get rule text for filter id ${filterId} and rule index ${ruleIndex}`;
 
-            const ruleNode = engine.api.retrieveRuleNode(filterId, ruleIndex);
+            const ruleText = engine.api.retrieveRuleText(filterId, ruleIndex);
 
             // Note: during normal operation, ruleNode should not be null,
             // but we handle this case just in case, and to provide type safety
-            if (ruleNode) {
-                const generatedRuleText = RuleGenerator.generate(ruleNode);
-                baseMessage += `, generated rule text: ${generatedRuleText}`;
+            if (ruleText) {
+                baseMessage += `, applied rule text: ${ruleText}`;
             }
 
             // If the rule is not found, try to sync the filter and try again
@@ -452,10 +417,6 @@ export class FilteringLogApi {
         const result: RuleText = {
             appliedRuleText,
         };
-
-        if (conversionMap && conversionMap[lineStartIndex]) {
-            result.originalRuleText = conversionMap[lineStartIndex];
-        }
 
         return result;
     }

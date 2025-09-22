@@ -15,15 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { type AnyRule, InputByteBuffer } from '@adguard/agtree';
 import { RuleParser } from '@adguard/agtree/parser';
-import { RuleDeserializer } from '@adguard/agtree/deserializer';
 import {
-    FilterListPreprocessor,
-    getRuleSourceIndex,
-    getRuleSourceText,
-    type PreprocessedFilterList,
+    ConvertedFilterList,
     RuleSyntaxUtils,
+    findNextLineBreakIndex,
 } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
@@ -60,7 +56,7 @@ export class UserRulesApi {
             if (!(await FiltersStorage.has(AntiBannerFiltersId.UserFilterId))) {
                 await FiltersStorage.set(
                     AntiBannerFiltersId.UserFilterId,
-                    FilterListPreprocessor.createEmptyPreprocessedFilterList(),
+                    ConvertedFilterList.createEmpty(),
                 );
             } else {
                 // In this case zod will validate the data.
@@ -72,7 +68,7 @@ export class UserRulesApi {
             }
             await FiltersStorage.set(
                 AntiBannerFiltersId.UserFilterId,
-                FilterListPreprocessor.createEmptyPreprocessedFilterList(),
+                ConvertedFilterList.createEmpty(),
             );
         }
     }
@@ -99,16 +95,27 @@ export class UserRulesApi {
         }
 
         try {
-            const chunks = await UserRulesApi.getBinaryUserRules();
-            const buffer = new InputByteBuffer(chunks);
-            let ruleNode: AnyRule;
-            // If the next byte is 0, it means that there's nothing to read.
-            while (buffer.peekUint8() !== 0) {
-                RuleDeserializer.deserialize(buffer, ruleNode = {} as AnyRule);
+            const content = (await UserRulesApi.getUserRules()).getContent();
+
+            let ruleStartIndex = 0;
+            // Note: we do not use `.split`, because we want to early exit if we find a rule for the given url,
+            // without creating an array of all rules.
+            // TODO: Use some scanner here from tsurlfilter instead of finding line breaks.
+            let [lbIndex, lbLength] = findNextLineBreakIndex(content);
+
+            while (lbIndex < content.length) {
+                const rawRule = content.slice(ruleStartIndex, lbIndex);
+                const ruleNode = RuleParser.parse(rawRule);
+
                 if (RuleSyntaxUtils.isRuleForUrl(ruleNode, url)) {
                     return true;
                 }
+
+                ruleStartIndex = lbIndex + lbLength;
+                [lbIndex, lbLength] = findNextLineBreakIndex(content, lbIndex + lbLength);
             }
+
+            return false;
         } catch (e) {
             logger.error('[ext.UserRulesApi.hasRulesForUrl]: cannot check user rules for url, origin error:', e);
         }
@@ -121,28 +128,11 @@ export class UserRulesApi {
      *
      * @returns User rules list.
      */
-    public static async getUserRules(): Promise<PreprocessedFilterList> {
+    public static async getUserRules(): Promise<ConvertedFilterList> {
         const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
 
         if (!data) {
-            return FilterListPreprocessor.createEmptyPreprocessedFilterList();
-        }
-
-        return data;
-    }
-
-    /**
-     * Returns binary serialized, preprocessed rules from user list.
-     *
-     * @note This may include converted rules and does not include syntactically invalid rules.
-     *
-     * @returns User rules list in binary format.
-     */
-    public static async getBinaryUserRules(): Promise<Uint8Array[]> {
-        const data = await FiltersStorage.getFilterList(AntiBannerFiltersId.UserFilterId);
-
-        if (!data) {
-            return FilterListPreprocessor.createEmptyPreprocessedFilterList().filterList;
+            return new ConvertedFilterList('', ConvertedFilterList.createEmptyConversionData());
         }
 
         return data;
@@ -202,19 +192,13 @@ export class UserRulesApi {
      * @returns True, if rule was removed, else returns false.
      */
     public static async removeUserRuleByIndex(index: number): Promise<boolean> {
-        const [rawFilterList, sourceMap, conversionMap] = await Promise.all([
-            FiltersStoragesAdapter.getRawFilterList(AntiBannerFiltersId.UserFilterId),
-            FiltersStoragesAdapter.getSourceMap(AntiBannerFiltersId.UserFilterId),
-            FiltersStoragesAdapter.getConversionMap(AntiBannerFiltersId.UserFilterId),
-        ]);
+        const filter = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
 
-        if (!sourceMap || !conversionMap || !rawFilterList) {
+        if (!filter) {
             return false;
         }
 
-        const lineStartIndex = getRuleSourceIndex(index, sourceMap);
-
-        const ruleText = conversionMap[lineStartIndex] ?? getRuleSourceText(index, rawFilterList);
+        const ruleText = filter.getOriginalRuleText(index);
 
         if (!ruleText) {
             return false;

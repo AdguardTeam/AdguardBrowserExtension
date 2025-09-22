@@ -11,7 +11,7 @@ import {
     vi,
 } from 'vitest';
 
-import { FilterListPreprocessor } from '@adguard/tswebextension';
+import { ConvertedFilterList } from '@adguard/tswebextension';
 import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 
 import { network } from '../../../../../Extension/src/background/api/network';
@@ -26,7 +26,7 @@ import { mockLocalStorage } from '../../../../helpers';
 import { FiltersStorage, filterVersionStorage } from '../../../../../Extension/src/background/storages';
 import { FiltersStoragesAdapter } from '../../../../../Extension/src/background/storages/filters-adapter';
 
-const preprocessedFilter = FilterListPreprocessor.preprocess([
+const convertedFilter = new ConvertedFilterList([
     'example.com##h1',
     '||example.org^$document',
 ].join('\n'));
@@ -51,7 +51,7 @@ describe('Hit Stats Api', () => {
 
     beforeEach(async () => {
         storage = mockLocalStorage();
-        getFilterSpy = vi.spyOn(FiltersStoragesAdapter, 'get').mockResolvedValue(preprocessedFilter);
+        getFilterSpy = vi.spyOn(FiltersStoragesAdapter, 'get').mockResolvedValue(convertedFilter);
 
         if (__IS_MV3__) {
             getManifestSpy = vi.spyOn(browser.runtime, 'getManifest').mockReturnValue({
@@ -168,7 +168,7 @@ describe('Hit Stats Api', () => {
 
         const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
         const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
-        vi.spyOn(FiltersStorage, 'get').mockResolvedValue(preprocessedFilter);
+        vi.spyOn(FiltersStorage, 'get').mockResolvedValue(convertedFilter);
 
         await HitStatsApi.init();
 
