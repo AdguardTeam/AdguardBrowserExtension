@@ -368,7 +368,7 @@ pnpm crx keygen ./private/AdguardBrowserExtension
     docker run --rm -it \
         -v $(pwd):/workspace \
         -w /workspace \
-        adguard/extension-builder:22.17--0.2--0
+        adguard/extension-builder:22.17--0.2.1--0
     ```
 
 1. Inside the docker container, install the dependencies:
