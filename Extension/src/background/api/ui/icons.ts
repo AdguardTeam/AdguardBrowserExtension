@@ -29,7 +29,7 @@ import {
     type IconVariants,
 } from '../../storages';
 import { SettingOption } from '../../schema';
-import { getIconImageData, TabsApi as CommonTabsApi } from '../../../common/api/extension';
+import { iconsCache, TabsApi as CommonTabsApi } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
 
 import { FramesApi, type FrameData } from './frames';
@@ -198,7 +198,7 @@ class IconsApi {
      * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
      */
     private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
-        await browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
+        await browserAction.setIcon({ imageData: await iconsCache.getIconImageData(icon), tabId });
     }
 
     /**
