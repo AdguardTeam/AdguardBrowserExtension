@@ -342,11 +342,9 @@ branch-overrides:
         requirements:
           - adg-docker: 'true'
 
-      triggers: []
       # run auto-build each hour after 30 minutes of the hour to collect all
       # changes made by filter list maintainers during the last hour update.
-      # FIXME: Temporary disabled until v5.2.78-beta on manual review in CWS.
-      # triggers:
-      #   - cron:
-      #       expression: 0 30 * ? * *
-      #       description: Run auto-build every hour at 30 minutes past the hour.
+      triggers:
+        - cron:
+            expression: 0 30 * ? * *
+            description: Run auto-build every hour at 30 minutes past the hour.
