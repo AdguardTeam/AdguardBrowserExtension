@@ -28,7 +28,7 @@ import { logger } from '../../../common/logger';
 import { MessageType } from '../../../common/messages';
 import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { getCrxUrl } from '../../../common/update-mv3';
-import { browserAction, PagesApi } from '../../api';
+import { PagesApi } from '../../api';
 import { messageHandler } from '../../message-handler';
 import { Prefs } from '../../prefs';
 import { browserStorage } from '../../storages';
@@ -356,7 +356,7 @@ export class ExtensionUpdateService {
             await PagesApi.openFiltersOnSettingsPage();
         } else if (pageToOpenAfterReload === ManualExtensionUpdatePage.Popup) {
             logger.info('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: Opening popup...');
-            await browserAction.openPopup();
+            await PagesApi.openExtensionPopup();
         }
     }
 
