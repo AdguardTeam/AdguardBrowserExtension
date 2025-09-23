@@ -9,6 +9,10 @@
     overflow-y: auto;
     background-color: var(--fills-backgrounds-page-background-default);
 
+    * {
+        box-sizing: border-box;
+    }
+
     &__header {
         display: flex;
         justify-content: space-between;
@@ -91,6 +95,7 @@
         padding: 24px 32px 32px;
         display: flex;
         align-items: center;
+        box-sizing: border-box;
 
         &--centered {
             width: 100%;
@@ -153,6 +158,37 @@
                 line-height: 18px;
                 padding-left: 32px;
             }
+        }
+    }
+}
+
+.ReactModal__Overlay {
+    z-index: var(--z-idx-options-modals);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5)!important;
+}
+
+.ReactModal__Content--after-open {
+    position: static!important;
+    min-width: 300px;
+    background-color: var(--fills-backgrounds-page-background-default)!important;
+    border: none !important;
+
+    &:has(.modal--scrollable) {
+        height: 100%;
+
+        @media (min-height: 1090px) {
+            height: auto;
+        }
+    }
+
+    @media (min-width: 640px) {
+        width: 600px;
+
+        &:has(.modal--scrollable) {
+            max-height: 80%;
         }
     }
 }
