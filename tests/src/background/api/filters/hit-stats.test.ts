@@ -176,11 +176,11 @@ describe('Hit Stats Api', () => {
         vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
 
         // Add hits to both filters
-        HitStatsApi.addRuleHit(FIRST_FILTER_ID, 4);
+        HitStatsApi.addRuleHit(FIRST_FILTER_ID, 0);
 
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 4);
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 4);
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 48);
+        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 0);
+        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 0);
+        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 16);
 
         // Now let's simulate that the version of the first filter has increased
         vi.spyOn(filterVersionStorage, 'get').mockImplementation((filterId: number) => {
