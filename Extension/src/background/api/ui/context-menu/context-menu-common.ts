@@ -19,17 +19,16 @@ import browser, { type Menus } from 'webextension-polyfill';
 import { nanoid } from 'nanoid';
 import { throttle } from 'lodash-es';
 
-import { translator } from '../../../common/translators/translator';
+import { translator } from '../../../../common/translators/translator';
 import {
     ContextMenuAction,
     contextMenuEvents,
     settingsEvents,
-} from '../../events';
-import { SettingOption } from '../../schema';
-import { SettingsApi } from '../settings';
-import { OPTIONS_PAGE } from '../../../common/constants';
-
-import { type FrameData } from './frames';
+} from '../../../events';
+import { SettingOption } from '../../../schema';
+import { SettingsApi } from '../../settings';
+import { OPTIONS_PAGE } from '../../../../common/constants';
+import { type FrameData } from '../frames';
 
 /**
  * Wrapper around context menus create method.
@@ -52,7 +51,7 @@ const createMenu = (props: browser.Menus.CreateCreatePropertiesType): Promise<vo
 /**
  * API for creating and updating browser context menus.
  */
-export class ContextMenuApi {
+export abstract class ContextMenuApiCommon {
     /**
      * Context menu titles.
      */
@@ -76,7 +75,10 @@ export class ContextMenuApi {
      * Initializes Context Menu API.
      */
     public static init(): void {
-        settingsEvents.addListener(SettingOption.DisableShowContextMenu, ContextMenuApi.handleDisableShowContextMenu);
+        settingsEvents.addListener(
+            SettingOption.DisableShowContextMenu,
+            ContextMenuApiCommon.handleDisableShowContextMenu,
+        );
         browser.contextMenus.onClicked.addListener(async (onClickData: browser.Menus.OnClickData) => {
             await contextMenuEvents.publishEvent(onClickData.menuItemId as ContextMenuAction);
         });
@@ -87,7 +89,7 @@ export class ContextMenuApi {
      * Used in because updateMenu can be called multiple times from various event listeners, but
      * context menu doesn't require fast update.
      */
-    public static throttledUpdateMenu = throttle(ContextMenuApi.updateMenu, 100);
+    public static throttledUpdateMenu = throttle(ContextMenuApiCommon.updateMenu, 100);
 
     /**
      * Updates context menu depends on tab filtering state.
@@ -115,7 +117,7 @@ export class ContextMenuApi {
         }
 
         // Clean up context menu just in case.
-        await ContextMenuApi.removeAll();
+        await ContextMenuApiCommon.removeAll();
 
         // There is nothing to do if context menu is disabled
         if (SettingsApi.getSetting(SettingOption.DisableShowContextMenu)) {
@@ -128,42 +130,45 @@ export class ContextMenuApi {
 
         try {
             if (applicationFilteringDisabled) {
-                await ContextMenuApi.addFilteringDisabledMenuItems(isOptionsPage);
+                await ContextMenuApiCommon.addFilteringDisabledMenuItems(isOptionsPage);
             } else if (urlFilteringDisabled) {
-                await ContextMenuApi.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
+                await ContextMenuApiCommon.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
             } else {
                 if (documentAllowlisted && !userAllowlisted) {
-                    await ContextMenuApi.addMenuItem(ContextMenuAction.SiteException);
+                    await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteException);
                 } else if (canAddRemoveRule) {
                     if (documentAllowlisted) {
-                        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringOn);
+                        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringOn);
                     } else {
-                        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringOff);
+                        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringOff);
                     }
                 }
-                await ContextMenuApi.addSeparator();
+                await ContextMenuApiCommon.addSeparator();
 
                 if (!documentAllowlisted) {
-                    await ContextMenuApi.addMenuItem(ContextMenuAction.BlockSiteAds);
+                    await ContextMenuApiCommon.addMenuItem(ContextMenuAction.BlockSiteAds);
                 }
 
-                await ContextMenuApi.addMenuItem(ContextMenuAction.SecurityReport);
-                await ContextMenuApi.addMenuItem(ContextMenuAction.ComplaintWebsite);
-                await ContextMenuApi.addSeparator();
-                if (!__IS_MV3__) {
-                    await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
-                    await ContextMenuApi.addSeparator();
-                }
+                await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SecurityReport);
+                await ContextMenuApiCommon.addMenuItem(ContextMenuAction.ComplaintWebsite);
+                await ContextMenuApiCommon.addSeparator();
+                await ContextMenuApiCommon.addManifestSpecificMenuItems();
                 if (!isOptionsPage) {
-                    await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+                    await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
                 }
-                await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
-                await ContextMenuApi.addMenuItem(ContextMenuAction.DisableProtection);
+                await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenLog);
+                await ContextMenuApiCommon.addMenuItem(ContextMenuAction.DisableProtection);
             }
         } catch (e) {
             // do nothing
         }
     }
+
+    /**
+     * Adds manifest specific menu items.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    protected static async addManifestSpecificMenuItems(): Promise<void> {}
 
     /**
      * Removes all context menu items.
@@ -177,38 +182,24 @@ export class ContextMenuApi {
     /**
      * Creates menu items for the context menu, displayed, when app filtering disabled globally.
      *
-     * @param isOptionsPage Is current page options page.
+     * @param _isOptionsPage Is current page options page.
      */
-    private static async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
-        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
-        await ContextMenuApi.addSeparator();
-        if (!__IS_MV3__) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
-        }
-        if (!isOptionsPage) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
-        }
-        await ContextMenuApi.addMenuItem(ContextMenuAction.EnableProtection);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected static async addFilteringDisabledMenuItems(_isOptionsPage: boolean): Promise<void> {
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
+        await ContextMenuApiCommon.addSeparator();
     }
 
     /**
      * Creates menu items for the context menu, displayed, when app filtering disabled for current tab.
      *
-     * @param isOptionsPage Is current page options page.
+     * @param _isOptionsPage Is current page options page.
      */
-    private static async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected static async addUrlFilteringDisabledContextMenuAction(_isOptionsPage: boolean): Promise<void> {
         // Disabled because it's just informational inactive button
-        await ContextMenuApi.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
-        await ContextMenuApi.addSeparator();
-        if (!__IS_MV3__) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
-        }
-        if (!isOptionsPage) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
-        }
-        if (!__IS_MV3__) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
-        }
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
+        await ContextMenuApiCommon.addSeparator();
     }
 
     /**
@@ -217,14 +208,14 @@ export class ContextMenuApi {
      * @param action Context menu action key.
      * @param options {@link browser.contextMenus.create} Options.
      */
-    private static async addMenuItem(
+    protected static async addMenuItem(
         action: ContextMenuAction,
         options: Menus.CreateCreatePropertiesType = {},
     ): Promise<void> {
         await createMenu({
             id: action,
             contexts: ['all'],
-            title: ContextMenuApi.MENU_TITLES[action],
+            title: ContextMenuApiCommon.MENU_TITLES[action],
             ...options,
         });
     }
@@ -232,7 +223,7 @@ export class ContextMenuApi {
     /**
      * Creates menu separator.
      */
-    private static async addSeparator(): Promise<void> {
+    protected static async addSeparator(): Promise<void> {
         await createMenu({
             id: nanoid(), // required for Firefox
             type: 'separator',
@@ -248,7 +239,7 @@ export class ContextMenuApi {
     private static async handleDisableShowContextMenu(disable: boolean): Promise<void> {
         // handle only disable menu, anyway user switch tab button, after enabling
         if (disable) {
-            await ContextMenuApi.removeAll();
+            await ContextMenuApiCommon.removeAll();
         }
     }
 }
