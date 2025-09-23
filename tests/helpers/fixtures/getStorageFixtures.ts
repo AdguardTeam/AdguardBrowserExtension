@@ -3,9 +3,8 @@ import zod from 'zod';
 import SuperJSON from 'superjson';
 import { isObject, trimEnd } from 'lodash-es';
 
-import { FilterListPreprocessor } from '@adguard/tsurlfilter';
-
 import { pageStatsValidator } from '../../../Extension/src/background/schema/page-stats';
+import { FilterListPreprocessor } from '../../../Extension/src/background/api/update/assets/preprocessor/preprocessor';
 
 const RAW_FILTER_KEY_PREFIX = 'raw_filterrules_';
 const FILTER_KEY_PREFIX = 'filterrules_';

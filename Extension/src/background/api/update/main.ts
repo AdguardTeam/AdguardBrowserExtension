@@ -302,10 +302,10 @@ export class UpdateApi {
          * Mapping of old key prefixes to new key prefixes.
          */
         const filtersKeyPrefixesMap: ReadonlyMap<string, string> = new Map<string, string>([
-            [FILTER_KEY_PREFIX, FiltersStorage.KEY_RAW_FILTER_LIST],
-            [BINARY_FILTER_KEY_PREFIX, FiltersStorage.KEY_FILTER_LIST],
-            [CONVERSION_MAP_PREFIX, FiltersStorage.KEY_CONVERSION_MAP],
-            [SOURCE_MAP_PREFIX, FiltersStorage.KEY_SOURCE_MAP],
+            [FILTER_KEY_PREFIX, 'rawFilterList'],
+            [BINARY_FILTER_KEY_PREFIX, 'filterList'],
+            [CONVERSION_MAP_PREFIX, 'conversionMap'],
+            [SOURCE_MAP_PREFIX, 'sourceMap'],
         ]);
         const filtersKeyPrefixesEntries = Array.from(filtersKeyPrefixesMap.entries());
         const migrationData: Record<string, unknown> = {};

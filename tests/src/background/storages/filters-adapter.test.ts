@@ -12,7 +12,7 @@ import {
 import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
 
-import { FilterListPreprocessor } from 'tswebextension';
+import { ConvertedFilterList } from 'tswebextension';
 
 import { mockLocalStorage } from '../../../helpers';
 import { FiltersStoragesAdapter } from '../../../../Extension/src/background/storages/filters-adapter';
@@ -28,7 +28,7 @@ const rawFilter = [
     'example.com##.ad',
 ].join('\n');
 
-const filter = FilterListPreprocessor.preprocess(rawFilter);
+const filter = new ConvertedFilterList(rawFilter);
 
 describe.skipIf(__IS_MV3__)('FiltersStoragesAdapter (MV2)', () => {
     let localStorage: Storage.StorageArea;
@@ -55,14 +55,8 @@ describe.skipIf(__IS_MV3__)('FiltersStoragesAdapter (MV2)', () => {
 
         expect(filterFromStorage).not.toBeUndefined();
 
-        // Note: Under `filterList` key we have an Uint8Array, so we need to convert it before comparing
-        expect({
-            ...filterFromStorage,
-            filterList: filterFromStorage!.filterList.map(Buffer.from),
-        }).toEqual({
-            ...filter,
-            filterList: filter.filterList.map(Buffer.from),
-        });
+        expect(filterFromStorage?.getContent()).toEqual(filter.getContent());
+        expect(filterFromStorage?.getConversionData()).toEqual(filter.getConversionData());
     });
 
     it('has', async () => {
@@ -148,14 +142,8 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
 
         expect(filterFromStorage).not.toBeUndefined();
 
-        // Note: Under `filterList` key we have an Uint8Array, so we need to convert it before comparing
-        expect({
-            ...filterFromStorage,
-            filterList: filterFromStorage!.filterList.map(Buffer.from),
-        }).toEqual({
-            ...filter,
-            filterList: filter.filterList.map(Buffer.from),
-        });
+        expect(filterFromStorage?.getContent()).toEqual(filter.getContent());
+        expect(filterFromStorage?.getConversionData()).toEqual(filter.getConversionData());
     });
 
     it('set should not save static filters', async () => {

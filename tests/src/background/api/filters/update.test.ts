@@ -345,7 +345,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV1);
+            expect(await FiltersStoragesAdapter.getFilterContent(1)).toEqual(fakeFilterV1);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1);
 
             returnMetadataWithVersion(filterId, '4.0.0.0');
@@ -371,7 +371,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getFilterContent(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             await FilterUpdateApi.autoUpdateFilters(false);
@@ -385,7 +385,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getFilterContent(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
         });
 
@@ -414,7 +414,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getFilterContent(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             // Auto update filter to get a diff patch
@@ -513,7 +513,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
         it('should update filter with include', async () => {
             await FiltersApi.loadAndEnableFilters([filterId], true);
 
-            const rawFilterFromStorage = await FiltersStorage.getRawFilterList(filterId);
+            const rawFilterFromStorage = await FiltersStorage.getFilterContent(filterId);
 
             // Raw filter from storage should contain included content,
             // and not the `!#include` directive.
