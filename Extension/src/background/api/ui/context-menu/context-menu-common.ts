@@ -115,7 +115,7 @@ export abstract class ContextMenuApiCommon {
      * @param frameData.canAddRemoveRule Is user rules was applied on current website.
      * @param frameData.url Current tab url.
      */
-    public async updateMenu({
+    private async updateMenu({
         applicationFilteringDisabled,
         urlFilteringDisabled,
         documentAllowlisted,
@@ -219,8 +219,6 @@ export abstract class ContextMenuApiCommon {
 
     /**
      * Removes all context menu items.
-     *
-     * @private
      */
     private static async removeAll(): Promise<void> {
         await browser.contextMenus.removeAll();

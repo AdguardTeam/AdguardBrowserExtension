@@ -18,7 +18,6 @@
 
 import { ContextMenuApiCommon } from './context-menu-common';
 
-/* eslint-disable class-methods-use-this */
 /**
  * API for creating and updating browser context menus.
  */
