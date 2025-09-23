@@ -22,17 +22,6 @@ import { type Configuration } from '@adguard/tswebextension/mv3';
 import { type TestDetails } from './logger';
 
 /**
- * Serialized configuration needed because when we pass object with not-primitive
- * fields to background page (service worker), playwright will use serialization
- * (possibly to JSON) and then our fields like UInt8Array became invalid.
- */
-export type SerializedConfiguration = Omit<Configuration, 'userrules'> & {
-    userrules: Omit<Configuration['userrules'], 'filterList'> & {
-        filterList: number[][];
-    };
-};
-
-/**
  * Creates proxy object for QUnit object to fire custom event after test run.
  */
 export const addQunitListeners = (): void => {
@@ -87,21 +76,13 @@ export const addQunitListeners = (): void => {
  *
  * @param configuration Configuration.
  */
-export const setTsWebExtensionConfig = async (configuration: SerializedConfiguration): Promise<void> => {
+export const setTsWebExtensionConfig = async (configuration: Configuration): Promise<void> => {
     if (!self.adguard.configure) {
         // eslint-disable-next-line max-len
         throw new Error(`self.adguard.configure is not found in Window object, available keys in window ${Object.keys(self)}.`);
     }
 
-    const deserializedConfiguration: Configuration = {
-        ...configuration,
-        userrules: {
-            ...configuration.userrules,
-            filterList: configuration.userrules.filterList.map((item) => new Uint8Array(item)),
-        },
-    };
-
-    await self.adguard.configure(deserializedConfiguration);
+    await self.adguard.configure(configuration);
 };
 
 /**
