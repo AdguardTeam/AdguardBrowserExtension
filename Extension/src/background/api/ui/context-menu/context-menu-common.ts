@@ -143,7 +143,7 @@ export abstract class ContextMenuApiCommon {
 
         try {
             if (applicationFilteringDisabled) {
-                await this.addFilteringDisabledMenuItems(isOptionsPage);
+                await ContextMenuApiCommon.addFilteringDisabledMenuItems(isOptionsPage);
             } else if (urlFilteringDisabled) {
                 await this.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
             } else {
@@ -183,18 +183,39 @@ export abstract class ContextMenuApiCommon {
     abstract addUpdateFiltersMenuItem(): Promise<void>;
 
     /**
-     * Creates menu items for the context menu, displayed when app filtering is disabled globally.
+     * Creates menu items for the context menu, displayed, when app filtering disabled globally.
      *
      * @param isOptionsPage Is current page options page.
      */
-    abstract addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void>;
+    private static async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
+        await ContextMenuApiCommon.addSeparator();
 
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenLog);
+
+        if (!isOptionsPage) {
+            await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
+        }
+
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.EnableProtection);
+    }
+
+    /* eslint-disable class-methods-use-this */
     /**
-     * Creates menu items for the context menu, displayed when app filtering is disabled for current tab.
+     * Creates menu items for the context menu, displayed, when app filtering disabled for current tab.
      *
      * @param isOptionsPage Is current page options page.
      */
-    abstract addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void>;
+    protected async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
+        await ContextMenuApiCommon.addSeparator();
+
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenLog);
+
+        if (!isOptionsPage) {
+            await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
+        }
+    }
 
     /**
      * Removes all context menu items.

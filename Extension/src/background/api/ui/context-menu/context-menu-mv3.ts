@@ -16,8 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ContextMenuAction } from '../../../events';
-
 import { ContextMenuApiCommon } from './context-menu-common';
 
 /* eslint-disable class-methods-use-this */
@@ -32,34 +30,5 @@ export class ContextMenuApi extends ContextMenuApiCommon {
     // eslint-disable-next-line class-methods-use-this
     public async addUpdateFiltersMenuItem(): Promise<void> {
         // MV3 doesn't support "Update Filters" menu item
-    }
-
-    /**
-     * Creates menu items for the context menu, displayed, when app filtering disabled globally.
-     *
-     * @param isOptionsPage Is current page options page.
-     */
-    public async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
-        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
-        await ContextMenuApiCommon.addSeparator();
-
-        if (!isOptionsPage) {
-            await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
-        }
-        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.EnableProtection);
-    }
-
-    /**
-     * Creates menu items for the context menu, displayed, when app filtering disabled for current tab.
-     *
-     * @param isOptionsPage Is current page options page.
-     */
-    public async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
-        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
-        await ContextMenuApiCommon.addSeparator();
-
-        if (!isOptionsPage) {
-            await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
-        }
     }
 }
