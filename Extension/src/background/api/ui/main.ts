@@ -22,7 +22,7 @@ import { MessageType, sendMessage } from '../../../common/messages';
 import { TabsApi } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
 
-import { contextMenuApi } from './context-menu';
+import { ContextMenuApi } from './context-menu';
 import { type FrameData, FramesApi } from './frames';
 import { iconsApi } from './icons';
 
@@ -63,7 +63,7 @@ export class UiApi {
     public static async update(tabContext: TabContext): Promise<void> {
         const frameData = FramesApi.getMainFrameData(tabContext);
 
-        await contextMenuApi.throttledUpdateMenu(frameData);
+        ContextMenuApi.throttledUpdateMenu(frameData);
 
         const tabId = tabContext.info.id;
         UiApi.throttledUpdateAction(tabId, frameData);

@@ -63,5 +63,3 @@ export class ContextMenuApi extends ContextMenuApiCommon {
         }
     }
 }
-
-export const contextMenuApi = new ContextMenuApi();

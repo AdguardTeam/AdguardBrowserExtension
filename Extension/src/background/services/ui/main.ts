@@ -113,7 +113,7 @@ export class UiService {
         // TODO add better handling for AdGuard for Firefox
         // Do not init context menu for mobile browsers
         if (browser.contextMenus) {
-            ContextMenuApi.init();
+            ContextMenuApi.init(new ContextMenuApi());
         }
 
         contextMenuEvents.addListener(ContextMenuAction.OpenSettings, PagesApi.openSettingsPage);

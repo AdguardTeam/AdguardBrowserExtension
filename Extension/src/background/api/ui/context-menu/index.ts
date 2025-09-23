@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { contextMenuApi, ContextMenuApi } from 'context-menu-api';
+export { ContextMenuApi } from 'context-menu-api';

@@ -53,6 +53,11 @@ const createMenu = (props: browser.Menus.CreateCreatePropertiesType): Promise<vo
  */
 export abstract class ContextMenuApiCommon {
     /**
+     * Singleton instance of ContextMenuApi.
+     */
+    private static instance: ContextMenuApiCommon;
+
+    /**
      * Context menu titles.
      */
     private static readonly MENU_TITLES = {
@@ -73,8 +78,12 @@ export abstract class ContextMenuApiCommon {
 
     /**
      * Initializes Context Menu API.
+     *
+     * @param instance Instance of ContextMenuApiCommon.
      */
-    public static init(): void {
+    public static init(instance: ContextMenuApiCommon): void {
+        ContextMenuApiCommon.instance = instance;
+
         settingsEvents.addListener(
             SettingOption.DisableShowContextMenu,
             ContextMenuApiCommon.handleDisableShowContextMenu,
@@ -89,7 +98,11 @@ export abstract class ContextMenuApiCommon {
      * Used in because updateMenu can be called multiple times from various event listeners, but
      * context menu doesn't require fast update.
      */
-    public throttledUpdateMenu = throttle(this.updateMenu.bind(this), 100);
+    public static throttledUpdateMenu = throttle((frameData: FrameData) => {
+        if (ContextMenuApiCommon.instance) {
+            ContextMenuApiCommon.instance.updateMenu(frameData);
+        }
+    }, 100);
 
     /**
      * Updates context menu depends on tab filtering state.
@@ -102,7 +115,7 @@ export abstract class ContextMenuApiCommon {
      * @param frameData.canAddRemoveRule Is user rules was applied on current website.
      * @param frameData.url Current tab url.
      */
-    private async updateMenu({
+    public async updateMenu({
         applicationFilteringDisabled,
         urlFilteringDisabled,
         documentAllowlisted,

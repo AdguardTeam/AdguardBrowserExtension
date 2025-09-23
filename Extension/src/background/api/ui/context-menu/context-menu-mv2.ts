@@ -69,5 +69,3 @@ export class ContextMenuApi extends ContextMenuApiCommon {
         await ContextMenuApiCommon.addMenuItem(ContextMenuAction.UpdateFilters);
     }
 }
-
-export const contextMenuApi = new ContextMenuApi();
