@@ -20,15 +20,16 @@ import { ContextMenuAction } from '../../../events';
 
 import { ContextMenuApiCommon } from './context-menu-common';
 
+/* eslint-disable class-methods-use-this */
 /**
  * API for creating and updating browser context menus.
  */
 export class ContextMenuApi extends ContextMenuApiCommon {
     /**
-     * Adds manifest specific menu items.
+     * Adds "Update Filters" menu item.
      */
-    public async addManifestSpecificMenuItems(): Promise<void> {
-        await this.addMenuItem(ContextMenuAction.UpdateFilters);
+    public async addUpdateFiltersMenuItem(): Promise<void> {
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.UpdateFilters);
         await ContextMenuApiCommon.addSeparator();
     }
 
@@ -38,16 +39,16 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      * @param isOptionsPage Is current page options page.
      */
     public async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
-        await this.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
         await ContextMenuApiCommon.addSeparator();
 
-        await this.addMenuItem(ContextMenuAction.OpenLog);
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenLog);
 
         if (!isOptionsPage) {
-            await this.addMenuItem(ContextMenuAction.OpenSettings);
+            await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
         }
 
-        await this.addMenuItem(ContextMenuAction.EnableProtection);
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.EnableProtection);
     }
 
     /**
@@ -56,16 +57,16 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      * @param isOptionsPage Is current page options page.
      */
     public async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
-        await this.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
         await ContextMenuApiCommon.addSeparator();
 
-        await this.addMenuItem(ContextMenuAction.OpenLog);
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenLog);
 
         if (!isOptionsPage) {
-            await this.addMenuItem(ContextMenuAction.OpenSettings);
+            await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
         }
 
-        await this.addMenuItem(ContextMenuAction.UpdateFilters);
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.UpdateFilters);
     }
 }
 

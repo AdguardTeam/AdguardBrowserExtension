@@ -55,7 +55,7 @@ export abstract class ContextMenuApiCommon {
     /**
      * Context menu titles.
      */
-    private readonly MENU_TITLES = {
+    private static readonly MENU_TITLES = {
         [ContextMenuAction.SiteProtectionDisabled]: translator.getMessage('context_site_protection_disabled'),
         [ContextMenuAction.SiteFilteringDisabled]: translator.getMessage('context_site_filtering_disabled'),
         [ContextMenuAction.SiteException]: translator.getMessage('context_site_exception'),
@@ -135,29 +135,29 @@ export abstract class ContextMenuApiCommon {
                 await this.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
             } else {
                 if (documentAllowlisted && !userAllowlisted) {
-                    await this.addMenuItem(ContextMenuAction.SiteException);
+                    await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteException);
                 } else if (canAddRemoveRule) {
                     if (documentAllowlisted) {
-                        await this.addMenuItem(ContextMenuAction.SiteFilteringOn);
+                        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringOn);
                     } else {
-                        await this.addMenuItem(ContextMenuAction.SiteFilteringOff);
+                        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringOff);
                     }
                 }
                 await ContextMenuApiCommon.addSeparator();
 
                 if (!documentAllowlisted) {
-                    await this.addMenuItem(ContextMenuAction.BlockSiteAds);
+                    await ContextMenuApiCommon.addMenuItem(ContextMenuAction.BlockSiteAds);
                 }
 
-                await this.addMenuItem(ContextMenuAction.SecurityReport);
-                await this.addMenuItem(ContextMenuAction.ComplaintWebsite);
+                await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SecurityReport);
+                await ContextMenuApiCommon.addMenuItem(ContextMenuAction.ComplaintWebsite);
                 await ContextMenuApiCommon.addSeparator();
-                await this.addManifestSpecificMenuItems();
+                await this.addUpdateFiltersMenuItem();
                 if (!isOptionsPage) {
-                    await this.addMenuItem(ContextMenuAction.OpenSettings);
+                    await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
                 }
-                await this.addMenuItem(ContextMenuAction.OpenLog);
-                await this.addMenuItem(ContextMenuAction.DisableProtection);
+                await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenLog);
+                await ContextMenuApiCommon.addMenuItem(ContextMenuAction.DisableProtection);
             }
         } catch (e) {
             // do nothing
@@ -165,9 +165,9 @@ export abstract class ContextMenuApiCommon {
     }
 
     /**
-     * Adds manifest specific menu items.
+     * Adds "Update Filters" menu item if supported by manifest version.
      */
-    abstract addManifestSpecificMenuItems(): Promise<void>;
+    abstract addUpdateFiltersMenuItem(): Promise<void>;
 
     /**
      * Creates menu items for the context menu, displayed when app filtering is disabled globally.
@@ -198,14 +198,14 @@ export abstract class ContextMenuApiCommon {
      * @param action Context menu action key.
      * @param options {@link browser.contextMenus.create} Options.
      */
-    protected async addMenuItem(
+    protected static async addMenuItem(
         action: ContextMenuAction,
         options: Menus.CreateCreatePropertiesType = {},
     ): Promise<void> {
         await createMenu({
             id: action,
             contexts: ['all'],
-            title: this.MENU_TITLES[action],
+            title: ContextMenuApiCommon.MENU_TITLES[action],
             ...options,
         });
     }

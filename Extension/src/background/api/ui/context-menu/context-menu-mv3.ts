@@ -20,17 +20,18 @@ import { ContextMenuAction } from '../../../events';
 
 import { ContextMenuApiCommon } from './context-menu-common';
 
+/* eslint-disable class-methods-use-this */
 /**
  * API for creating and updating browser context menus.
  */
 export class ContextMenuApi extends ContextMenuApiCommon {
     /**
-     * Adds manifest specific menu items.
-     * MV3 doesn't add any manifest-specific items.
+     * Adds "Update Filters" menu item.
+     * MV3 doesn't support this functionality.
      */
     // eslint-disable-next-line class-methods-use-this
-    public async addManifestSpecificMenuItems(): Promise<void> {
-        // MV3 doesn't add any manifest-specific items
+    public async addUpdateFiltersMenuItem(): Promise<void> {
+        // MV3 doesn't support "Update Filters" menu item
     }
 
     /**
@@ -39,13 +40,13 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      * @param isOptionsPage Is current page options page.
      */
     public async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
-        await this.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
         await ContextMenuApiCommon.addSeparator();
 
         if (!isOptionsPage) {
-            await this.addMenuItem(ContextMenuAction.OpenSettings);
+            await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
         }
-        await this.addMenuItem(ContextMenuAction.EnableProtection);
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.EnableProtection);
     }
 
     /**
@@ -54,11 +55,11 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      * @param isOptionsPage Is current page options page.
      */
     public async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
-        await this.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
         await ContextMenuApiCommon.addSeparator();
 
         if (!isOptionsPage) {
-            await this.addMenuItem(ContextMenuAction.OpenSettings);
+            await ContextMenuApiCommon.addMenuItem(ContextMenuAction.OpenSettings);
         }
     }
 }
