@@ -42,6 +42,11 @@ DoNothing:
             BRANCH="${bamboo.planRepository.branchName}"
 
             echo "Build and deployment is not supported on branch ${BRANCH}, skipping"
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
   # Since the artifact is being published from a non-master branch, it should
   # still be available in the master branch.
   artifacts: &artifacts
@@ -132,10 +137,10 @@ branch-overrides:
 
                   ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
         final-tasks:
-          - script:
+          - script: &cleanup-script
               interpreter: SHELL
               scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+                - "./bamboo-specs/scripts/cleanup.sh"
         requirements:
           - adg-docker: 'true'
 
@@ -172,10 +177,7 @@ branch-overrides:
               type: junit
               # mv3 postfix because we run auto-builds only for mv3 branch.
               test-results: 'tests-reports/unit-tests-mv3.xml'
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
 
@@ -208,13 +210,9 @@ branch-overrides:
 
                   pnpm locales validate --min
         final-tasks:
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
-
 
       Update filters and build:
         key: UPDATEFILTERSANDBUILD
@@ -305,7 +303,7 @@ branch-overrides:
           - script:
               interpreter: SHELL
               scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+                - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
         artifacts: *artifacts
         requirements: *requirements
 
@@ -335,10 +333,7 @@ branch-overrides:
           - test-parser:
               type: junit
               test-results: 'tests-reports/integration-tests-*.xml'
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
 
