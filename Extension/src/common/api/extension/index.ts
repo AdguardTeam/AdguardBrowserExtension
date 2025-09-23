@@ -17,4 +17,4 @@
  */
 export { WindowsApi } from './windows';
 export { TabsApi } from './tabs';
-export { iconsCache } from './iconsCache';
+export { iconsCache } from './icons-cache';

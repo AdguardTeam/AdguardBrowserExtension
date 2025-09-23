@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { IconsCacheCommon } from './iconsCache-common';
+import { IconsCacheCommon } from './icons-cache-common';
 
 class IconsCache extends IconsCacheCommon {
     /**

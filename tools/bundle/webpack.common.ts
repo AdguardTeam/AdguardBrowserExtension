@@ -345,9 +345,9 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`,
                 ),
-                'iconsCache': path.resolve(
+                'icons-cache': path.resolve(
                     __dirname,
-                    `../../Extension/src/common/api/extension/iconsCache/iconsCache-mv${manifestVersion}.ts`,
+                    `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`,
                 ),
             },
         },

@@ -18,7 +18,7 @@
 
 import { logger } from '@adguard/tsurlfilter';
 
-import { IconsCacheCommon } from './iconsCache-common';
+import { IconsCacheCommon } from './icons-cache-common';
 
 class IconsCache extends IconsCacheCommon {
     /**
