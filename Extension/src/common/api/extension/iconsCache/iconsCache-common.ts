@@ -18,7 +18,16 @@
 
 import { type Action } from 'webextension-polyfill';
 
+/**
+ * Abstract base class for caching browser extension icons.
+ *
+ * Provides caching functionality for icon ImageData objects to avoid redundant loading.
+ * Concrete implementations handle manifest-specific loading strategies (MV2/MV3).
+ */
 export abstract class IconsCacheCommon {
+    /**
+     * Internal cache storage mapping icon URLs to ImageData objects.
+     */
     protected cache = new Map<string, ImageData>();
 
     /**
