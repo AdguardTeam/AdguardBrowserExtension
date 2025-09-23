@@ -79,19 +79,7 @@ Build:
     - script:
         interpreter: SHELL
         scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            rm -rf .git
-            echo "Size after cleanup:" && du -h | tail -n 1
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/firefox.zip,artifacts/firefox.xpi,artifacts/update.json,artifacts/source.zip"
   artifacts:
     - name: build.txt
       location: artifacts

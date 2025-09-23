@@ -76,21 +76,10 @@ Check Bundle Size:
             # Cleaning up Firefox standalone build after bundle size check
             rm -rf build/release/firefox-standalone
   final-tasks:
-    - script: &final-clean-up-script
+    - script: &cleanup-script
         interpreter: SHELL
         scripts:
-          - |-
-            set -ex
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            rm -rf .git
-            echo "Size after cleanup:" && du -h | tail -n 1
+          - "./bamboo-specs/scripts/cleanup.sh"
   requirements: &requirements
     - adg-docker: 'true'
     - extension: 'true'
@@ -114,7 +103,7 @@ Check translations:
 
             pnpm locales validate --min
   final-tasks:
-    - script: *final-clean-up-script
+    - script: *cleanup-script
   requirements: *requirements
 
 Build:
@@ -164,7 +153,10 @@ Build:
           selectedRepository: defaultRepository
           tagName: v${bamboo.inject.version}
   final-tasks:
-    - script: *final-clean-up-script
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome.zip,artifacts/chrome-mv3.zip,artifacts/firefox.zip,artifacts/edge.zip,artifacts/opera.zip,artifacts/source.zip"
   artifacts:
     - name: build.txt
       location: artifacts
