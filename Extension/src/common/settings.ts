@@ -66,4 +66,5 @@ export const defaultSettings: Settings = {
     [SettingOption.DisableShowContextMenu]: false,
     [SettingOption.AllowlistDomains]: JSON.stringify(DEFAULT_ALLOWLIST),
     [SettingOption.InvertedAllowlistDomains]: JSON.stringify(DEFAULT_INVERTED_ALLOWLIST),
+    [SettingOption.PreserveLogEnabled]: false,
 };

@@ -177,11 +177,6 @@ export class FilteringLogApi {
         AntiBannerFiltersId.AllowlistFilterId,
     ]);
 
-    /**
-     * Flag to enable/disable preserve log.
-     */
-    private preserveLogEnabled = false;
-
     private openedFilteringLogsPages = 0;
 
     private tabsInfoMap = new Map<number, FilteringLogTabInfo>([
@@ -474,8 +469,8 @@ export class FilteringLogApi {
      *
      * @returns True, if preserve log is enabled, else false.
      */
-    public isPreserveLogEnabled(): boolean {
-        return this.preserveLogEnabled;
+    public static isPreserveLogEnabled(): boolean {
+        return settingsStorage.get(SettingOption.PreserveLogEnabled);
     }
 
     /**
@@ -483,8 +478,8 @@ export class FilteringLogApi {
      *
      * @param enabled Is preserve log enabled.
      */
-    public setPreserveLogState(enabled: boolean): void {
-        this.preserveLogEnabled = enabled;
+    public static setPreserveLogState(enabled: boolean): void {
+        settingsStorage.set(SettingOption.PreserveLogEnabled, enabled);
     }
 
     /**
@@ -683,7 +678,7 @@ export class FilteringLogApi {
     public clearEventsByTabId(tabId: number, ignorePreserveLog = false): void {
         const tabInfo = this.tabsInfoMap.get(tabId);
 
-        const preserveLog = ignorePreserveLog ? false : this.preserveLogEnabled;
+        const preserveLog = ignorePreserveLog ? false : FilteringLogApi.isPreserveLogEnabled();
 
         if (tabInfo && !preserveLog) {
             tabInfo.filteringEvents = [];
@@ -711,7 +706,10 @@ export class FilteringLogApi {
 
         tabInfo.filteringEvents.push(data);
 
-        if (tabInfo.filteringEvents.length > FilteringLogApi.REQUESTS_SIZE_PER_TAB) {
+        const shouldRemoveOldestEvent = !FilteringLogApi.isPreserveLogEnabled()
+            && (tabInfo.filteringEvents.length > FilteringLogApi.REQUESTS_SIZE_PER_TAB);
+
+        if (shouldRemoveOldestEvent) {
             // don't remove first item, cause it's request to main frame
             tabInfo.filteringEvents.splice(1, 1);
         }

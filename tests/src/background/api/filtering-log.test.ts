@@ -27,6 +27,16 @@ vi.mock('../../../../Extension/src/common/api/extension/tabs', () => {
     };
 });
 
+vi.mock('../../../../Extension/src/background/storages/settings', () => {
+    return {
+        __esModule: true,
+        settingsStorage: {
+            get: vi.fn(() => false),
+            set: vi.fn(),
+        },
+    };
+});
+
 describe('FilteringLogApi', () => {
     afterAll(() => {
         vi.clearAllMocks();

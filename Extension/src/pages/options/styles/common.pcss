@@ -454,37 +454,6 @@ select:focus {
     outline: none;
 }
 
-.ReactModal__Overlay {
-    z-index: var(--z-idx-options-modals);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5)!important;
-}
-
-.ReactModal__Content--after-open {
-    position: static!important;
-    min-width: 300px;
-    background-color: var(--fills-backgrounds-page-background-default)!important;
-    border: none !important;
-
-    &:has(.modal--scrollable) {
-        height: 100%;
-
-        @media (min-height: 1090px) {
-            height: auto;
-        }
-    }
-
-    @media (min-width: 640px) {
-        width: 600px;
-
-        &:has(.modal--scrollable) {
-            max-height: 80%;
-        }
-    }
-}
-
 .ace_content {
     color: var(--text-main-text-main-default)!important;
     background-color: var(--fills-backgrounds-page-background-default)!important;
