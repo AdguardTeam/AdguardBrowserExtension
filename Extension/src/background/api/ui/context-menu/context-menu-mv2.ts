@@ -27,8 +27,8 @@ export class ContextMenuApi extends ContextMenuApiCommon {
     /**
      * Adds manifest specific menu items.
      */
-    protected static async addManifestSpecificMenuItems(): Promise<void> {
-        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.UpdateFilters);
+    public async addManifestSpecificMenuItems(): Promise<void> {
+        await this.addMenuItem(ContextMenuAction.UpdateFilters);
         await ContextMenuApiCommon.addSeparator();
     }
 
@@ -37,16 +37,17 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      *
      * @param isOptionsPage Is current page options page.
      */
-    protected static async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
-        await super.addFilteringDisabledMenuItems(isOptionsPage);
+    public async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
+        await this.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
+        await ContextMenuApiCommon.addSeparator();
 
-        await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        await this.addMenuItem(ContextMenuAction.OpenLog);
 
         if (!isOptionsPage) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+            await this.addMenuItem(ContextMenuAction.OpenSettings);
         }
 
-        await ContextMenuApi.addMenuItem(ContextMenuAction.EnableProtection);
+        await this.addMenuItem(ContextMenuAction.EnableProtection);
     }
 
     /**
@@ -54,15 +55,18 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      *
      * @param isOptionsPage Is current page options page.
      */
-    protected static async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
-        await super.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
+    public async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
+        await this.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
+        await ContextMenuApiCommon.addSeparator();
 
-        await ContextMenuApi.addMenuItem(ContextMenuAction.OpenLog);
+        await this.addMenuItem(ContextMenuAction.OpenLog);
 
         if (!isOptionsPage) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+            await this.addMenuItem(ContextMenuAction.OpenSettings);
         }
 
-        await ContextMenuApi.addMenuItem(ContextMenuAction.UpdateFilters);
+        await this.addMenuItem(ContextMenuAction.UpdateFilters);
     }
 }
+
+export const contextMenuApi = new ContextMenuApi();

@@ -25,17 +25,27 @@ import { ContextMenuApiCommon } from './context-menu-common';
  */
 export class ContextMenuApi extends ContextMenuApiCommon {
     /**
+     * Adds manifest specific menu items.
+     * MV3 doesn't add any manifest-specific items.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    public async addManifestSpecificMenuItems(): Promise<void> {
+        // MV3 doesn't add any manifest-specific items
+    }
+
+    /**
      * Creates menu items for the context menu, displayed, when app filtering disabled globally.
      *
      * @param isOptionsPage Is current page options page.
      */
-    protected static async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
-        await super.addFilteringDisabledMenuItems(isOptionsPage);
+    public async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
+        await this.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
+        await ContextMenuApiCommon.addSeparator();
 
         if (!isOptionsPage) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+            await this.addMenuItem(ContextMenuAction.OpenSettings);
         }
-        await ContextMenuApi.addMenuItem(ContextMenuAction.EnableProtection);
+        await this.addMenuItem(ContextMenuAction.EnableProtection);
     }
 
     /**
@@ -43,11 +53,14 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      *
      * @param isOptionsPage Is current page options page.
      */
-    protected static async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
-        await super.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
+    public async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
+        await this.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
+        await ContextMenuApiCommon.addSeparator();
 
         if (!isOptionsPage) {
-            await ContextMenuApi.addMenuItem(ContextMenuAction.OpenSettings);
+            await this.addMenuItem(ContextMenuAction.OpenSettings);
         }
     }
 }
+
+export const contextMenuApi = new ContextMenuApi();
