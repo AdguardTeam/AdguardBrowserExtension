@@ -27,7 +27,7 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      * MV3 doesn't support this functionality.
      */
     // eslint-disable-next-line class-methods-use-this
-    public async addUpdateFiltersMenuItem(): Promise<void> {
+    protected async addUpdateFiltersMenuItem(): Promise<void> {
         // MV3 doesn't support "Update Filters" menu item
     }
 }

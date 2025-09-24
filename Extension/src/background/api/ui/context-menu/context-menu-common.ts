@@ -53,11 +53,6 @@ const createMenu = (props: browser.Menus.CreateCreatePropertiesType): Promise<vo
  */
 export abstract class ContextMenuApiCommon {
     /**
-     * Singleton instance of ContextMenuApi.
-     */
-    private static instance: ContextMenuApiCommon;
-
-    /**
      * Context menu titles.
      */
     private static readonly MENU_TITLES = {
@@ -78,12 +73,8 @@ export abstract class ContextMenuApiCommon {
 
     /**
      * Initializes Context Menu API.
-     *
-     * @param instance Instance of ContextMenuApiCommon.
      */
-    public static init(instance: ContextMenuApiCommon): void {
-        ContextMenuApiCommon.instance = instance;
-
+    public static init(): void {
         settingsEvents.addListener(
             SettingOption.DisableShowContextMenu,
             ContextMenuApiCommon.handleDisableShowContextMenu,
@@ -98,11 +89,7 @@ export abstract class ContextMenuApiCommon {
      * Used in because updateMenu can be called multiple times from various event listeners, but
      * context menu doesn't require fast update.
      */
-    public static throttledUpdateMenu = throttle((frameData: FrameData) => {
-        if (ContextMenuApiCommon.instance) {
-            ContextMenuApiCommon.instance.updateMenu(frameData);
-        }
-    }, 100);
+    public throttledUpdateMenu = throttle(this.updateMenu, 100);
 
     /**
      * Updates context menu depends on tab filtering state.
@@ -143,9 +130,9 @@ export abstract class ContextMenuApiCommon {
 
         try {
             if (applicationFilteringDisabled) {
-                await ContextMenuApiCommon.addFilteringDisabledMenuItems(isOptionsPage);
+                await this.addFilteringDisabledMenuItems(isOptionsPage);
             } else if (urlFilteringDisabled) {
-                await this.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
+                await ContextMenuApiCommon.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
             } else {
                 if (documentAllowlisted && !userAllowlisted) {
                     await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteException);
@@ -178,16 +165,17 @@ export abstract class ContextMenuApiCommon {
     }
 
     /**
-     * Adds "Update Filters" menu item if supported by manifest version.
+     * Adds "Update Filters" menu item.
+     * This action is supported only in MV2.
      */
-    abstract addUpdateFiltersMenuItem(): Promise<void>;
+    protected abstract addUpdateFiltersMenuItem(): Promise<void>;
 
     /**
      * Creates menu items for the context menu, displayed, when app filtering disabled globally.
      *
      * @param isOptionsPage Is current page options page.
      */
-    private static async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
+    private async addFilteringDisabledMenuItems(isOptionsPage: boolean): Promise<void> {
         await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteProtectionDisabled);
         await ContextMenuApiCommon.addSeparator();
 
@@ -198,6 +186,8 @@ export abstract class ContextMenuApiCommon {
         }
 
         await ContextMenuApiCommon.addMenuItem(ContextMenuAction.EnableProtection);
+
+        this.addUpdateFiltersMenuItem();
     }
 
     /* eslint-disable class-methods-use-this */
@@ -206,7 +196,7 @@ export abstract class ContextMenuApiCommon {
      *
      * @param isOptionsPage Is current page options page.
      */
-    protected async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
+    protected static async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
         await ContextMenuApiCommon.addMenuItem(ContextMenuAction.SiteFilteringDisabled, { enabled: false });
         await ContextMenuApiCommon.addSeparator();
 

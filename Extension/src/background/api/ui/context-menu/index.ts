@@ -16,4 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { ContextMenuApi } from 'context-menu-api';
+
+// Re-export the class itself for external usage static methods.
 export { ContextMenuApi } from 'context-menu-api';
+
+// Create and export instance with manifest specific implementation.
+export const contextMenuApi = new ContextMenuApi();

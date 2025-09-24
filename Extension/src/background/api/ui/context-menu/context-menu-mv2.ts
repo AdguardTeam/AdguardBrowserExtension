@@ -28,19 +28,7 @@ export class ContextMenuApi extends ContextMenuApiCommon {
     /**
      * Adds "Update Filters" menu item.
      */
-    public async addUpdateFiltersMenuItem(): Promise<void> {
-        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.UpdateFilters);
-        await ContextMenuApiCommon.addSeparator();
-    }
-
-    /**
-     * Creates menu items for the context menu, displayed, when app filtering disabled for current tab.
-     *
-     * @param isOptionsPage Is current page options page.
-     */
-    public async addUrlFilteringDisabledContextMenuAction(isOptionsPage: boolean): Promise<void> {
-        super.addUrlFilteringDisabledContextMenuAction(isOptionsPage);
-
+    protected async addUpdateFiltersMenuItem(): Promise<void> {
         await ContextMenuApiCommon.addMenuItem(ContextMenuAction.UpdateFilters);
     }
 }
