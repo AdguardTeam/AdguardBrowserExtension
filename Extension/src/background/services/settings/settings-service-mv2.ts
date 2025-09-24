@@ -145,7 +145,7 @@ export class SettingsService {
         try {
             // Should enable default filters and their groups.
             await SettingsApi.reset(true);
-            engine.debounceUpdate();
+            await engine.update();
 
             return true;
         } catch (e) {
@@ -165,7 +165,9 @@ export class SettingsService {
 
         const isImported = await SettingsApi.import(json);
 
-        engine.debounceUpdate();
+        if (isImported) {
+            await engine.update();
+        }
 
         return isImported;
     }

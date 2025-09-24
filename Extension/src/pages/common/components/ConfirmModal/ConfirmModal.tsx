@@ -33,7 +33,7 @@ type ConfirmModalParams = {
     /**
      * Modal subtitle.
      */
-    subtitle?: string;
+    subtitle?: string | React.ReactNode;
 
     /**
      * Modal visibility flag.

@@ -31,10 +31,6 @@ import { OPTIONS_PAGE } from '../../../common/constants';
 
 import { type FrameData } from './frames';
 
-type AddMenuItemOptions = Menus.CreateCreatePropertiesType & {
-    messageArgs?: { [key: string]: unknown };
-};
-
 /**
  * Wrapper around context menus create method.
  * It helps to handle errors thrown by contextMenus.
@@ -57,6 +53,25 @@ const createMenu = (props: browser.Menus.CreateCreatePropertiesType): Promise<vo
  * API for creating and updating browser context menus.
  */
 export class ContextMenuApi {
+    /**
+     * Context menu titles.
+     */
+    private static readonly MENU_TITLES = {
+        [ContextMenuAction.SiteProtectionDisabled]: translator.getMessage('context_site_protection_disabled'),
+        [ContextMenuAction.SiteFilteringDisabled]: translator.getMessage('context_site_filtering_disabled'),
+        [ContextMenuAction.SiteException]: translator.getMessage('context_site_exception'),
+        [ContextMenuAction.SiteFilteringOn]: translator.getMessage('context_site_filtering_on'),
+        [ContextMenuAction.SiteFilteringOff]: translator.getMessage('context_site_filtering_off'),
+        [ContextMenuAction.BlockSiteAds]: translator.getMessage('context_block_site_ads'),
+        [ContextMenuAction.SecurityReport]: translator.getMessage('context_security_report'),
+        [ContextMenuAction.ComplaintWebsite]: translator.getMessage('context_complaint_website'),
+        [ContextMenuAction.UpdateFilters]: translator.getMessage('context_update_antibanner_filters'),
+        [ContextMenuAction.OpenSettings]: translator.getMessage('context_open_settings'),
+        [ContextMenuAction.OpenLog]: translator.getMessage('context_open_log'),
+        [ContextMenuAction.DisableProtection]: translator.getMessage('context_disable_protection'),
+        [ContextMenuAction.EnableProtection]: translator.getMessage('context_enable_protection'),
+    };
+
     /**
      * Initializes Context Menu API.
      */
@@ -202,14 +217,15 @@ export class ContextMenuApi {
      * @param action Context menu action key.
      * @param options {@link browser.contextMenus.create} Options.
      */
-    private static async addMenuItem(action: ContextMenuAction, options: AddMenuItemOptions = {}): Promise<void> {
-        const { messageArgs, ...rest } = options;
-
+    private static async addMenuItem(
+        action: ContextMenuAction,
+        options: Menus.CreateCreatePropertiesType = {},
+    ): Promise<void> {
         await createMenu({
             id: action,
             contexts: ['all'],
-            title: translator.getMessage(action, messageArgs),
-            ...rest,
+            title: ContextMenuApi.MENU_TITLES[action],
+            ...options,
         });
     }
 

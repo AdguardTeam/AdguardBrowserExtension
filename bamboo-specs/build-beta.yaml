@@ -107,6 +107,8 @@ Check translations:
         interpreter: SHELL
         scripts:
           - |-
+            set -ex
+
             pnpm install ${bamboo.varsPnpm}
 
             pnpm locales validate --min
@@ -131,6 +133,8 @@ Build:
         interpreter: SHELL
         scripts:
           - |-
+            set -ex
+
             pnpm install ${bamboo.varsPnpm}
 
             pnpm beta

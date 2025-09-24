@@ -77,6 +77,17 @@ export const Warning = ({
         from: ForwardFrom.Options,
     });
 
+    const renderCloseWarningLink = (chunks: string) => (
+        <a
+            target="_blank"
+            rel="noreferrer"
+            className="rules-limits__group-option-link"
+            onClick={onClickCloseWarning}
+        >
+            {chunks}
+        </a>
+    );
+
     return (
         <div className="rules-limits rules-limits__warning">
             <div className="rules-limits__warning-title">
@@ -146,24 +157,21 @@ export const Warning = ({
                         })}
                     </div>
                     <div className="rules-limits__group-option">
-                        {reactTranslator.getMessage(
+                        {
                             actuallyEnabledFilterNames.length > 0
-                                ? 'options_rule_limits_warning_actions_close_warning_multiple_filters'
-                                : 'options_rule_limits_warning_actions_close_warning_one_filter',
-                            {
-                                // eslint-disable-next-line react/no-unstable-nested-components
-                                a: (chunks: string) => (
-                                    <a
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="rules-limits__group-option-link"
-                                        onClick={onClickCloseWarning}
-                                    >
-                                        {chunks}
-                                    </a>
-                                ),
-                            },
-                        )}
+                                ? reactTranslator.getMessage(
+                                    'options_rule_limits_warning_actions_close_warning_multiple_filters',
+                                    {
+                                        a: renderCloseWarningLink,
+                                    },
+                                )
+                                : reactTranslator.getMessage(
+                                    'options_rule_limits_warning_actions_close_warning_one_filter',
+                                    {
+                                        a: renderCloseWarningLink,
+                                    },
+                                )
+                        }
                     </div>
                 </div>
             </div>
