@@ -62,7 +62,7 @@ export {
     ContextMenuApi,
     browserAction,
 } from './ui';
-export { WindowsApi, TabsApi, getIconImageData } from '../../common/api/extension';
+export { WindowsApi, TabsApi, iconsCache } from '../../common/api/extension';
 export { InstallApi } from './install';
 export { UpdateApi } from './update';
 export { SafebrowsingApi } from './safebrowsing';
