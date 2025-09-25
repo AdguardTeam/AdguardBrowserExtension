@@ -49,8 +49,8 @@ export class FilterUpdateService {
     /**
      * Filter update period.
      * This means that filters should be updated if it was updated more than the specified value.
-     * We set 3 hours because currently we generate patches for our filter once an hour and
-     * for third-party filters once every 4 hours.
+     * We set 3 hours because currently we generate patches for our filter every 3 hours and
+     * for third-party filters every 4 hours.
      */
     private static readonly FILTER_UPDATE_PERIOD_MS = 1000 * 60 * 60 * 3; // 3 hours
 
