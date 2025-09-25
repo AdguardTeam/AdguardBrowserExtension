@@ -19,46 +19,22 @@ import browser from 'webextension-polyfill';
 
 import { tabsApi as tsWebExtTabsApi } from 'tswebextension';
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
-import { RulesLimitsService } from 'rules-limits-service';
-
 import {
     settingsStorage,
     type IconData,
     type IconVariants,
-} from '../../storages';
-import { SettingOption } from '../../schema';
-import { getIconImageData, TabsApi as CommonTabsApi } from '../../../common/api/extension';
-import { logger } from '../../../common/logger';
-
-import { FramesApi, type FrameData } from './frames';
-import { promoNotificationApi } from './promo-notification';
-import { browserAction } from './browser-action';
-
-export const defaultIconVariants: IconVariants = {
-    enabled: {
-        '19': browser.runtime.getURL('assets/icons/on-19.png'),
-        '38': browser.runtime.getURL('assets/icons/on-38.png'),
-    },
-    disabled: {
-        '19': browser.runtime.getURL('assets/icons/off-19.png'),
-        '38': browser.runtime.getURL('assets/icons/off-38.png'),
-    },
-    warning: {
-        '19': browser.runtime.getURL('assets/icons/warning-19.png'),
-        '38': browser.runtime.getURL('assets/icons/warning-38.png'),
-    },
-    updateAvailable: {
-        '19': browser.runtime.getURL('assets/icons/update-available-19.png'),
-        '38': browser.runtime.getURL('assets/icons/update-available-38.png'),
-    },
-};
+} from '../../../storages';
+import { SettingOption } from '../../../schema';
+import { getIconImageData, TabsApi as CommonTabsApi } from '../../../../common/api/extension';
+import { logger } from '../../../../common/logger';
+import { FramesApi, type FrameData } from '../frames';
+import { promoNotificationApi } from '../promo-notification';
+import { browserAction } from '../browser-action';
 
 /**
  * The Icons API is responsible for managing the extension's action state.
  */
-class IconsApi {
+export abstract class IconsApiCommon {
     /**
      * Badge background color.
      */
@@ -67,7 +43,7 @@ class IconsApi {
     /**
      * Icon variants for the promo notification, if any is available.
      */
-    private promoIcons: IconVariants | null = null;
+    protected promoIcons: IconVariants | null = null;
 
     /**
      * Initializes Icons API.
@@ -96,10 +72,10 @@ class IconsApi {
                 return;
             }
             try {
-                logger.debug(`[ext.IconsApi.update]: updating icon for tab ${tab.id}`, icon);
-                await IconsApi.setActionIcon(icon, tab.id);
+                logger.debug(`[ext.IconsApiCommon.update]: updating icon for tab ${tab.id}`, icon);
+                await IconsApiCommon.setActionIcon(icon, tab.id);
             } catch (e) {
-                logger.debug(`[ext.IconsApi.update]: failed to update icon for tab ${tab.id}:`, e);
+                logger.debug(`[ext.IconsApiCommon.update]: failed to update icon for tab ${tab.id}:`, e);
             }
         }));
 
@@ -117,9 +93,9 @@ class IconsApi {
         const frameData = FramesApi.getMainFrameData(tabContext);
 
         try {
-            await iconsApi.updateTabAction(tabId, frameData);
+            await this.updateTabAction(tabId, frameData);
         } catch (e) {
-            logger.info(`[ext.IconsApi.update]: failed to update tab icon for active tab ${tabId}:`, e);
+            logger.info(`[ext.IconsApiCommon.update]: failed to update tab icon for active tab ${tabId}:`, e);
         }
     }
 
@@ -154,17 +130,17 @@ class IconsApi {
 
         // Determine extension's action new state based on the tab state
         const icon = await this.pickIconVariant(isDisabled);
-        const badgeText = IconsApi.getBadgeText(totalBlockedTab, isDisabled);
+        const badgeText = IconsApiCommon.getBadgeText(totalBlockedTab, isDisabled);
 
         try {
-            await IconsApi.setActionIcon(icon, tabId);
+            await IconsApiCommon.setActionIcon(icon, tabId);
 
             if (badgeText.length !== 0) {
                 await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
                 await browserAction.setBadgeText({ tabId, text: badgeText });
             }
         } catch (e) {
-            logger.info(`[ext.IconsApi.updateTabAction]: failed to update tab icon for tab ${tabId}:`, e);
+            logger.info(`[ext.IconsApiCommon.updateTabAction]: failed to update tab icon for tab ${tabId}:`, e);
         }
     }
 
@@ -181,13 +157,13 @@ class IconsApi {
         const icon = await this.pickIconVariant();
 
         // Get rid of promo icon on all tabs, this prevents icon flickering on tab change
-        await IconsApi.setActionIcon(icon);
+        await IconsApiCommon.setActionIcon(icon);
 
         // Update action icon for the specified tab if any
         if (tabId && frameData) {
             const isDisabled = frameData.documentAllowlisted || frameData.applicationFilteringDisabled;
             const disabledIcon = await this.pickIconVariant(isDisabled);
-            await IconsApi.setActionIcon(disabledIcon, tabId);
+            await IconsApiCommon.setActionIcon(disabledIcon, tabId);
         }
     }
 
@@ -205,35 +181,14 @@ class IconsApi {
      * Picks the icon variant based on the current extension state.
      * Fallbacks to default icon variants if the promo icons are not set.
      *
+     * This method must be implemented by concrete classes (MV2/MV3)
+     * as they have different logic for icon selection.
+     *
      * @param isDisabled Is website allowlisted or app filtering disabled.
      *
      * @returns Icon variant to display.
      */
-    private async pickIconVariant(isDisabled = false): Promise<IconData> {
-        const isMv3LimitsExceeded = __IS_MV3__
-            ? await RulesLimitsService.areFilterLimitsExceeded()
-            : false;
-
-        if (isMv3LimitsExceeded) {
-            return defaultIconVariants.warning;
-        }
-
-        // prioritize promo icons over the update-available icon,
-        // i.e. PromoNotification is rendered on top of other notifications as well
-        if (this.promoIcons) {
-            return isDisabled
-                ? this.promoIcons.disabled
-                : this.promoIcons.enabled;
-        }
-
-        if (__IS_MV3__ && ExtensionUpdateService.getIsUpdateAvailable()) {
-            return defaultIconVariants.updateAvailable;
-        }
-
-        return isDisabled
-            ? defaultIconVariants.disabled
-            : defaultIconVariants.enabled;
-    }
+    protected abstract pickIconVariant(isDisabled?: boolean): Promise<IconData>;
 
     /**
      * Calculates the badge text based on the tab state.
@@ -304,5 +259,3 @@ class IconsApi {
         }
     }
 }
-
-export const iconsApi = new IconsApi();
