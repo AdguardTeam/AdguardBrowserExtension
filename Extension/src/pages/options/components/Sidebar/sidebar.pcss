@@ -1,20 +1,21 @@
 .sidebar {
-    display: flex;
-    flex-direction: column;
     flex-shrink: 0;
-    padding: 24px 0;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
+    height: 100%;   
     background: var(--fills-backgrounds-page-background-additional-default);
     z-index: var(--z-idx-options-sidebar);
-    margin: 0;
-    width: 240px;
     transform: translateX(-100%);
     transition: var(--t3) transform;
     overflow-y: auto;
     overflow-x: hidden;
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        width: 240px;
+        height: fit-content;
+        min-height: 100vh;
+        padding: 24px 0;
+    }
 
     &__menu {
         display: block;

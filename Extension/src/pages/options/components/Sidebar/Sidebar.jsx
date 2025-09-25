@@ -124,16 +124,18 @@ const Sidebar = observer(() => {
                 className={className}
                 inert={isSidebarLocked ? '' : undefined}
             >
-                <div className="sidebar__logo">
-                    <div className="logo" />
+                <div className="sidebar__content">
+                    <div className="sidebar__logo">
+                        <div className="logo" />
+                    </div>
+                    <Nav onLinkClick={closeSidebarWrapper} />
+                    {settingsStore.showAdguardPromoInfo && (
+                        <Compare
+                            onCompareClick={handleCompareClick}
+                            onCloseClick={hideCompare}
+                        />
+                    )}
                 </div>
-                <Nav onLinkClick={closeSidebarWrapper} />
-                {settingsStore.showAdguardPromoInfo && (
-                    <Compare
-                        onCompareClick={handleCompareClick}
-                        onCloseClick={hideCompare}
-                    />
-                )}
             </div>
         </>
     );
