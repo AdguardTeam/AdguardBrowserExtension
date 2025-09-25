@@ -349,6 +349,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`,
                 ),
+                'icons-api': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/api/ui/icons/icons-mv${manifestVersion}.ts`,
+                ),
             },
         },
         module: {

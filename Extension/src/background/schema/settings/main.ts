@@ -182,6 +182,11 @@ export const settingsValidator = zod.object({
      * without reload entire extension.
      */
     [SettingOption.DisableFiltering]: SchemaPreprocessor.booleanValidator,
+
+    /**
+     * Preserve log enabled setting for filtering log UI.
+     */
+    [SettingOption.PreserveLogEnabled]: SchemaPreprocessor.booleanValidator,
 });
 
 /**

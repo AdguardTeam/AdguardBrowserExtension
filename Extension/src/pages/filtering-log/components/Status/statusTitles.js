@@ -27,10 +27,10 @@ import { translator } from '../../../../common/translators/translator';
  * @property {string} UNBLOCKED
  */
 const StatusTitle = {
-    PROCESSED: 'filtering_log_status_processed',
-    BLOCKED: 'filtering_log_status_blocked',
-    MODIFIED: 'filtering_log_status_modified',
-    UNBLOCKED: 'filtering_log_status_allowed',
+    PROCESSED: translator.getMessage('filtering_log_status_processed'),
+    BLOCKED: translator.getMessage('filtering_log_status_blocked'),
+    MODIFIED: translator.getMessage('filtering_log_status_modified'),
+    UNBLOCKED: translator.getMessage('filtering_log_status_allowed'),
 };
 
 const titleMap = {
@@ -42,5 +42,5 @@ const titleMap = {
 };
 
 export const getStatusTitle = (mode) => {
-    return translator.getMessage(titleMap[mode]);
+    return titleMap[mode];
 };
