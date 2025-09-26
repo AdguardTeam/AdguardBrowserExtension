@@ -56,10 +56,19 @@ export class ExtensionUpdateService {
     private static readonly LATEST_VERSION_URL_REGEXP = /_([0-9_]+)\.crx$/;
 
     /**
+     * Update available status.
+     *
+     * @see {@link https://developer.chrome.com/docs/extensions/reference/api/runtime#type-RequestUpdateCheckStatus}
+     */
+    private static readonly UPDATE_AVAILABLE_STATUS = 'update_available';
+
+    /**
      * Initializes the service.
      */
     public static init(): void {
         extensionUpdateActor.start();
+
+        chrome.runtime.onUpdateAvailable.addListener(ExtensionUpdateService.onAvailable);
 
         messageHandler.addListener(
             MessageType.CheckExtensionUpdateFromPopup,
@@ -78,6 +87,17 @@ export class ExtensionUpdateService {
             MessageType.UpdateExtensionFromOptions,
             ExtensionUpdateService.manualUpdateExtensionFromOptions,
         );
+    }
+
+    /**
+     * Handles the onUpdateAvailable event from Chrome runtime.
+     *
+     * @param details Update details from Chrome.
+     */
+    private static onAvailable(details: chrome.runtime.UpdateAvailableDetails): void {
+        logger.debug(`[ext.ExtensionUpdateService.onAvailable]: Update became available, version: ${details.version}`);
+        extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.UpdateAvailable });
+        chrome.runtime.onUpdateAvailable.removeListener(ExtensionUpdateService.onAvailable);
     }
 
     /**
@@ -152,8 +172,12 @@ export class ExtensionUpdateService {
         let nextUpdateVersion: string | undefined;
         let status: chrome.runtime.RequestUpdateCheckStatus;
         try {
-            // runtime.requestUpdateCheck() should be used to actually check updates
-            // because new extension version may not be loaded on the computer yet
+            /**
+             * `runtime.requestUpdateCheck()` should be used to actually check updates
+             * because new extension version may not be loaded on the computer yet.
+             *
+             * @see {@link https://developer.chrome.com/docs/extensions/reference/api/runtime#method-requestUpdateCheck}
+             */
             const res = await ExtensionUpdateService.requestUpdateCheckWithTimeout(UPDATE_CHECK_TIMEOUT_MS);
             status = res.status;
             nextUpdateVersion = res.version;
@@ -168,7 +192,7 @@ export class ExtensionUpdateService {
          *
          * @see {@link https://developer.chrome.com/docs/extensions/reference/api/runtime#method-requestUpdateCheck}
          */
-        if (status !== 'update_available') {
+        if (status !== ExtensionUpdateService.UPDATE_AVAILABLE_STATUS) {
             logger.debug(`[ext.ExtensionUpdateService.manualCheckExtensionUpdate]: Update is not available, status: '${status}'`);
             return false;
         }
@@ -239,6 +263,7 @@ export class ExtensionUpdateService {
         // IMPORTANT: only failure of the update is handled here
         // since its success is handled after the extension reload
         if (!isExtensionUpdated) {
+            logger.debug('[ext.ExtensionUpdateService.manualUpdateExtension]: Extension update failed');
             // wait for more smooth user experience
             // NOTE: it has to be done here and not in the UI components
             // because UI notifications strictly depend on the state machine states
