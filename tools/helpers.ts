@@ -125,15 +125,15 @@ export const updateManifest = (
     };
 
     // For MV3 will use the version name with date of the DNR ruleset version,
-    // e.g. "7.8.5 (2024-06-12-14:30)".
+    // e.g. "7.8.5 (25-06-12 14:30)".
     if (manifestEnv === ManifestVersionEnv.Third) {
         const dnrRulesetsVersionDate = new Date(getVersionTimestampMs());
         const simplifiedJsonDate = dnrRulesetsVersionDate
             .toISOString()
-            // slice of seconds and milliseconds
-            .slice(0, 16)
+            // slice full year, seconds and milliseconds
+            .slice(2, 16)
             // replace T to minify garbage in version_name
-            .replace('T', '-');
+            .replace('T', ' ');
 
         result.version_name += ` (${simplifiedJsonDate})`;
     }
