@@ -345,6 +345,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     __dirname,
                     `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`,
                 ),
+                'context-menu-api': path.resolve(
+                    __dirname,
+                    `../../Extension/src/background/api/ui/context-menu/context-menu-mv${manifestVersion}.ts`,
+                ),
                 'icons-cache': path.resolve(
                     __dirname,
                     `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`,
