@@ -337,9 +337,9 @@ branch-overrides:
         requirements:
           - adg-docker: 'true'
 
-      # run auto-build each hour after 30 minutes of the hour to collect all
-      # changes made by filter list maintainers during the last hour update.
+      # run auto-build every 3 hours after 30 minutes of the hour to collect all
+      # changes made by filter list maintainers during the last 3 hours update.
       triggers:
         - cron:
-            expression: 0 30 * ? * *
-            description: Run auto-build every hour at 30 minutes past the hour.
+            expression: 0 30 */3 ? * *
+            description: Run auto-build every 3 hours at 30 minutes past the hour.
