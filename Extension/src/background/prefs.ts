@@ -32,7 +32,17 @@ export class Prefs {
 
     public static baseUrl = browser.runtime.getURL('');
 
+    /**
+     * Version of application, taken from manifest.json, e.g. "7.8.5".
+     */
     public static version = browser.runtime.getManifest().version;
+
+    /**
+     * For MV3 will use the version name with date of the DNR ruleset version,
+     * e.g. "7.8.5 (25-06-12 14:30)".
+     * For MV2 it's the same as `version` above, e.g. "7.8.5".
+     */
+    public static versionName = browser.runtime.getManifest().version_name;
 
     public static language = browser.i18n.getUILanguage();
 
@@ -41,8 +51,8 @@ export class Prefs {
         tsurlfilter: TSURLFILTER_VERSION,
         scriptlets: SCRIPTLETS_VERSION,
         extendedCss: EXTENDED_CSS_VERSION,
-        // DNR Ruleset version will be set later
-        // when the metadata is loaded (only for MV3).
+        // DNR Ruleset version will be set later during execution
+        // when the metadata for rules is loaded (only for MV3).
         dnrRulesets: undefined,
     };
 }
