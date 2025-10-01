@@ -108,8 +108,7 @@ export class SettingsService {
     static async getOptionsData(): Promise<GetOptionsDataResponse> {
         return {
             settings: SettingsApi.getData(),
-            // For MV2, appVersionName is just the version.
-            appVersionName: Prefs.version,
+            appVersion: Prefs.version,
             libVersions: Prefs.libVersions,
             environmentOptions: {
                 isChrome: UserAgent.isChrome,
