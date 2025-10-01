@@ -69,24 +69,13 @@ Test dev build:
             mv build/dev/firefox-amo.zip artifacts/firefox-amo-dev.zip
             mv build/dev/firefox-standalone.zip artifacts/firefox-standalone-dev.zip
             mv build/dev/opera.zip artifacts/opera-dev.zip
+  # IMPORTANT: run clean after each job, since each job is run in a separate
+  # directory and we want to clean up after each job.
   final-tasks:
-    - script: &final-clean-up-script
+    - script:
         interpreter: SHELL
         scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            rm -rf .git
-            rm -rf ../tsurlfilter
-            echo "Size after cleanup:" && du -h | tail -n 1
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome-dev.zip,artifacts/chrome-mv3-dev.zip,artifacts/edge-dev.zip,artifacts/firefox-amo-dev.zip,artifacts/firefox-standalone-dev.zip,artifacts/opera-dev.zip"
   artifacts:
     - name: build.txt
       location: artifacts
@@ -158,7 +147,10 @@ Build chrome crx artifact:
             # Add postfix to the built file for easier identification target env
             mv build/dev/chrome.crx artifacts/chrome-dev.crx
   final-tasks:
-    - script: *final-clean-up-script
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-dev.crx"
   artifacts:
     - name: chrome-dev.crx
       location: artifacts
@@ -194,7 +186,10 @@ Lint:
 
             ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
   final-tasks:
-    - script: *final-clean-up-script
+    - script: &cleanup-script
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh"
   requirements: *requirements
 
 Unit tests:
@@ -228,7 +223,7 @@ Unit tests:
     - test-parser:
         type: junit
         test-results: 'tests-reports/unit-tests-mv*.xml'
-    - script: *final-clean-up-script
+    - script: *cleanup-script
   requirements: *requirements
 
 Integration tests:
@@ -254,7 +249,7 @@ Integration tests:
     - test-parser:
         type: junit
         test-results: 'tests-reports/integration-tests-*.xml'
-    - script: *final-clean-up-script
+    - script: *cleanup-script
   requirements: *requirements
 
 branches:

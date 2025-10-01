@@ -15,6 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { WindowsApi } from './windows';
-export { TabsApi } from './tabs';
-export { iconsCache } from './icons-cache';
+
+import { ContextMenuApiCommon } from './context-menu-common';
+
+/**
+ * API for creating and updating browser context menus for Manifest V3.
+ *
+ * Empty implementation - MV3 version doesn't add "Update Filters" menu item
+ * because manual filter updates are not supported in MV3 architecture.
+ * All functionality is inherited from the base class.
+ */
+export class ContextMenuApi extends ContextMenuApiCommon {}

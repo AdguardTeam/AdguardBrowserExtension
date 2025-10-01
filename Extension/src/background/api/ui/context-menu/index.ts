@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { WindowsApi } from './windows';
-export { TabsApi } from './tabs';
-export { iconsCache } from './icons-cache';
+
+import { ContextMenuApi } from 'context-menu-api';
+
+export { ContextMenuApi } from 'context-menu-api';
+export const contextMenuApi = new ContextMenuApi();

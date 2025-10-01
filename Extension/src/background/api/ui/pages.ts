@@ -62,6 +62,8 @@ import { FilterUpdateService } from '../../services/filter-update';
 import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { isUserScriptsApiSupported } from '../../../common/user-scripts-api';
 
+import { browserAction } from './browser-action';
+
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
 /**
@@ -527,6 +529,32 @@ export class PagesApi {
         const queryPart = `#${OptionsPageSections.ruleLimits}`;
 
         await PagesApi.openSettingsPageWithQuery(queryPart);
+    }
+
+    /**
+     * Opens the extension popup in the last focused _normal_ window.
+     */
+    public static async openExtensionPopup(): Promise<void> {
+        // opening popup in the window with no toolbar throws an error. AG-46535
+        const { id: lastFocusedWindowId } = await chrome.windows.getLastFocused({
+            windowTypes: ['normal'],
+        });
+
+        if (!lastFocusedWindowId) {
+            logger.warn('[ext.PagesApi.openExtensionPopup]: No normal window found to open popup');
+            return;
+        }
+
+        // Ensure the window is focused before opening the popup
+        await chrome.windows.update(lastFocusedWindowId, { focused: true });
+
+        try {
+            await browserAction.openPopup({
+                windowId: lastFocusedWindowId,
+            });
+        } catch (e) {
+            logger.error('[ext.PagesApi.openExtensionPopup]: Failed to open popup', e);
+        }
     }
 
     /**

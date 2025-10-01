@@ -15,6 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { WindowsApi } from './windows';
-export { TabsApi } from './tabs';
-export { iconsCache } from './icons-cache';
+
+import { ContextMenuAction } from '../../../events';
+
+import { ContextMenuApiCommon } from './context-menu-common';
+
+/* eslint-disable class-methods-use-this */
+/**
+ * API for creating and updating browser context menus.
+ */
+export class ContextMenuApi extends ContextMenuApiCommon {
+    /**
+     * Adds "Update Filters" menu item.
+     *
+     * @param withSeparator Whether to add a separator after the menu item.
+     */
+    protected async addUpdateFiltersMenuItem(withSeparator: boolean): Promise<void> {
+        await ContextMenuApiCommon.addMenuItem(ContextMenuAction.UpdateFilters);
+
+        if (withSeparator) {
+            await ContextMenuApiCommon.addSeparator();
+        }
+    }
+}

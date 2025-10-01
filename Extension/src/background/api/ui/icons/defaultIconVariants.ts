@@ -15,6 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { WindowsApi } from './windows';
-export { TabsApi } from './tabs';
-export { iconsCache } from './icons-cache';
+
+import browser from 'webextension-polyfill';
+
+import { type IconVariants } from '../../../storages';
+
+export const defaultIconVariants: IconVariants = {
+    enabled: {
+        '19': browser.runtime.getURL('assets/icons/on-19.png'),
+        '38': browser.runtime.getURL('assets/icons/on-38.png'),
+    },
+    disabled: {
+        '19': browser.runtime.getURL('assets/icons/off-19.png'),
+        '38': browser.runtime.getURL('assets/icons/off-38.png'),
+    },
+    warning: {
+        '19': browser.runtime.getURL('assets/icons/warning-19.png'),
+        '38': browser.runtime.getURL('assets/icons/warning-38.png'),
+    },
+    updateAvailable: {
+        '19': browser.runtime.getURL('assets/icons/update-available-19.png'),
+        '38': browser.runtime.getURL('assets/icons/update-available-38.png'),
+    },
+};

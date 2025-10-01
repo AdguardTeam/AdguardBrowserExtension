@@ -5,7 +5,8 @@ plan:
   key: BERELEASESPECS
   name: browser extension - build release
 variables:
-  dockerNode: adguard/extension-builder:22.17--0.2--0
+  dockerNode: adguard/extension-builder:22.17--0.2.1--0
+  buildType: release
 
 stages:
   - Size and locales check:
@@ -56,41 +57,28 @@ Check Bundle Size:
             # Install dependencies
             pnpm install ${bamboo.varsPnpm}
 
-            BUILD_TYPE="release"
-
-            echo "Executing build for $BUILD_TYPE"
+            echo "Executing build for ${bamboo.buildType}"
 
             # Run build
-            pnpm $BUILD_TYPE
+            pnpm ${bamboo.buildType}
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
             # NOTE: Firefox standalone build is not needed for artifacts
             # but it is needed for bundle size check
-            pnpm release firefox-standalone
+            pnpm ${bamboo.buildType} firefox-standalone
 
             echo "Checking bundle sizes"
-            pnpm check-bundle-size release
+            pnpm check-bundle-size ${bamboo.buildType}
 
             # Cleaning up Firefox standalone build after bundle size check
-            rm -rf build/release/firefox-standalone
+            rm -rf build/${bamboo.buildType}/firefox-standalone
   final-tasks:
-    - script: &final-clean-up-script
+    - script: &cleanup-script
         interpreter: SHELL
         scripts:
-          - |-
-            set -ex
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            rm -rf .git
-            echo "Size after cleanup:" && du -h | tail -n 1
+          - "./bamboo-specs/scripts/cleanup.sh"
   requirements: &requirements
     - adg-docker: 'true'
     - extension: 'true'
@@ -114,7 +102,7 @@ Check translations:
 
             pnpm locales validate --min
   final-tasks:
-    - script: *final-clean-up-script
+    - script: *cleanup-script
   requirements: *requirements
 
 Build:
@@ -134,26 +122,26 @@ Build:
 
             pnpm install ${bamboo.varsPnpm}
 
-            pnpm release
+            pnpm ${bamboo.buildType}
 
             # zip source files for publishing on AMO
-            ./bamboo-specs/scripts/archive-source.sh release
+            ./bamboo-specs/scripts/archive-source.sh ${bamboo.buildType}
 
             # TODO: (AG-41656) Remove this workaround and use the browser name
             # as for all other builds
-            mv build/release/firefox-amo.zip build/release/firefox.zip
+            mv build/${bamboo.buildType}/firefox-amo.zip build/${bamboo.buildType}/firefox.zip
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
             # Copy all artifacts to the artifacts directory
-            cp build/release/build.txt artifacts/
-            cp build/release/chrome.zip artifacts/
-            cp build/release/chrome-mv3.zip artifacts/
-            cp build/release/firefox.zip artifacts/
-            cp build/release/edge.zip artifacts/
-            cp build/release/opera.zip artifacts/
-            cp build/release/source.zip artifacts/
+            cp build/${bamboo.buildType}/build.txt artifacts/
+            cp build/${bamboo.buildType}/chrome.zip artifacts/
+            cp build/${bamboo.buildType}/chrome-mv3.zip artifacts/
+            cp build/${bamboo.buildType}/firefox.zip artifacts/
+            cp build/${bamboo.buildType}/edge.zip artifacts/
+            cp build/${bamboo.buildType}/opera.zip artifacts/
+            cp build/${bamboo.buildType}/source.zip artifacts/
     - inject-variables:
         file: artifacts/build.txt
         scope: RESULT
@@ -164,7 +152,10 @@ Build:
           selectedRepository: defaultRepository
           tagName: v${bamboo.inject.version}
   final-tasks:
-    - script: *final-clean-up-script
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome.zip,artifacts/chrome-mv3.zip,artifacts/firefox.zip,artifacts/edge.zip,artifacts/opera.zip,artifacts/source.zip"
   artifacts:
     - name: build.txt
       location: artifacts

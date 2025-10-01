@@ -5,7 +5,8 @@ plan:
   key: BEBETASPECS
   name: browser extension - build beta
 variables:
-  dockerNode: adguard/extension-builder:22.17--0.2--0
+  dockerNode: adguard/extension-builder:22.17--0.2.1--0
+  buildType: beta
 stages:
   - Size and locales check:
       manual: false
@@ -55,41 +56,21 @@ Check Bundle Size:
             # Install dependencies
             pnpm install ${bamboo.varsPnpm}
 
-            BUILD_TYPE="beta"
-
-            echo "Executing build for $BUILD_TYPE"
+            echo "Executing build for ${bamboo.buildType}"
 
             # Run build
-            pnpm $BUILD_TYPE
+            pnpm ${bamboo.buildType}
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
-            # NOTE: Firefox and Opera builds are not needed for artifacts
-            # but they are needed for bundle size check
-            pnpm beta firefox-amo && pnpm beta firefox-standalone && pnpm beta opera
-
             echo "Checking bundle sizes"
-            pnpm check-bundle-size beta
-
-            # Cleaning up Firefox and Opera builds after bundle size check
-            rm -rf build/beta/firefox-* build/beta/opera
+            pnpm check-bundle-size ${bamboo.buildType}
   final-tasks:
-    - script: &final-clean-up-script
+    - script: &cleanup-script
         interpreter: SHELL
         scripts:
-          - |-
-            set -ex
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            rm -rf .git
-            echo "Size after cleanup:" && du -h | tail -n 1
+          - "./bamboo-specs/scripts/cleanup.sh"
   requirements: &requirements
     - adg-docker: 'true'
     - extension: 'true'
@@ -113,7 +94,7 @@ Check translations:
 
             pnpm locales validate --min
   final-tasks:
-    - script: *final-clean-up-script
+    - script: *cleanup-script
   requirements: *requirements
 
 Build:
@@ -137,21 +118,21 @@ Build:
 
             pnpm install ${bamboo.varsPnpm}
 
-            pnpm beta
+            pnpm ${bamboo.buildType}
 
             # Build CRX by a separate script run
-            pnpm beta chrome-crx
+            pnpm ${bamboo.buildType} chrome-crx
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
             # Copy all artifacts to the artifacts directory
-            cp build/beta/build.txt artifacts/
-            cp build/beta/chrome.zip artifacts/
-            cp build/beta/chrome-mv3.zip artifacts/
-            cp build/beta/edge.zip artifacts/
-            cp build/beta/chrome.crx artifacts/
-            cp build/beta/update.xml artifacts/
+            cp build/${bamboo.buildType}/build.txt artifacts/
+            cp build/${bamboo.buildType}/chrome.zip artifacts/
+            cp build/${bamboo.buildType}/chrome-mv3.zip artifacts/
+            cp build/${bamboo.buildType}/edge.zip artifacts/
+            cp build/${bamboo.buildType}/chrome.crx artifacts/
+            cp build/${bamboo.buildType}/update.xml artifacts/
     - inject-variables:
         file: artifacts/build.txt
         scope: RESULT
@@ -160,9 +141,12 @@ Build:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
         configuration:
           selectedRepository: defaultRepository
-          tagName: v${bamboo.inject.version}-beta
+          tagName: v${bamboo.inject.version}-${bamboo.buildType}
   final-tasks:
-    - script: *final-clean-up-script
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome.zip,artifacts/chrome-mv3.zip,artifacts/edge.zip,artifacts/chrome.crx,artifacts/update.xml"
   artifacts:
     - name: build.txt
       location: artifacts
