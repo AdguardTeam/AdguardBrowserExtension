@@ -1,9 +1,9 @@
-! Checksum: CFOJACOwcyoB9SHpdmuHNQ
-! Diff-Path: ../patches/8/8-s-1757596589-3600.patch
+! Checksum: ILH0eGFiZ3I45wEM/RzM9Q
+! Diff-Path: ../patches/8/8-s-1758553900-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.64
-! TimeUpdated: 2025-09-11T13:12:23+00:00
+! Version: 2.0.8.68
+! TimeUpdated: 2025-09-22T15:08:00+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1762,6 +1762,12 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+moviemeter.nl##.small-leaderboard
+deondernemer.nl##div[class^="adBlock"]
+deondernemer.nl##section[class^="SingleBlock_advertisement"]
+||boodschappen.nl/wp-json/boodschappen/v1/banners/get_banners
+||boodschappen.nl/wp-json/boodschappen/v1/banners/get_advertorial
+||boodschappen.nl/wp-json/boodschappen/v1/banners/get_native_banner
 9292.nl##[data-testid="ad-root"]
 9292.nl##astro-island[component-export="Ad"]
 hbvl.be##section[data-theme-sponsored-content]
@@ -2044,6 +2050,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/213830
+moviemeter.nl#%#//scriptlet('trusted-suppress-native-method', 'document.write', '"adswag.nl"', 'prevent')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/210624
 puna.nl#@#.raw-html-component
 @@||2mdn.net/instream/html5/ima3.js$domain=puna.bbvms.com|puna.nl
