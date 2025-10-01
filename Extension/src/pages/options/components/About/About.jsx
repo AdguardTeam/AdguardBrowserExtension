@@ -35,9 +35,9 @@ import './about-page.pcss';
 const About = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
-    const { appVersionName, libVersions } = settingsStore;
+    const { appVersion, libVersions } = settingsStore;
 
-    if (!appVersionName) {
+    if (!appVersion) {
         return null;
     }
 
@@ -56,7 +56,7 @@ const About = observer(() => {
                     {translator.getMessage('options_about_title')}
                 </div>
                 <div className="about__version">
-                    {`${translator.getMessage('options_about_version')} ${appVersionName}`}
+                    {`${translator.getMessage('options_about_version')} ${appVersion}`}
                     <p>
                         {`TSWebExtension v${libVersions.tswebextension}`}
                         <br />

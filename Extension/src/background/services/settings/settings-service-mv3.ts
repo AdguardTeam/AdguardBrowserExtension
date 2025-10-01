@@ -133,7 +133,7 @@ export class SettingsService {
 
         return {
             settings: SettingsApi.getData(),
-            appVersionName: Prefs.versionName || Prefs.version,
+            appVersion: Prefs.version,
             libVersions: Prefs.libVersions,
             environmentOptions: {
                 isChrome: UserAgent.isChrome,
