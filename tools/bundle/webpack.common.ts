@@ -168,6 +168,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'context-menu-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/context-menu/context-menu-mv${manifestVersion}.ts`),
         'icons-cache': path.resolve(__dirname, `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`),
         'icons-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/icons/icons-mv${manifestVersion}.ts`),
+        'locale-detect': path.resolve(__dirname, `../../Extension/src/background/services/locale-detect/locale-detect-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {
