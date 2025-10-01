@@ -1,9 +1,9 @@
-! Checksum: CCm7Npwu+FHz0M3pJjk+Gw
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1757596595-3600.patch
+! Checksum: bxOP8zIVnW1T2inTVTYNyA
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1758553906-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.64
-! TimeUpdated: 2025-09-11T13:12:23+00:00
+! Version: 2.0.8.68
+! TimeUpdated: 2025-09-22T15:08:00+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -1613,6 +1613,12 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
 ||svonm.com/*config.json$replace=/"enabled": true\,/"enabled":false\,/i,important
+moviemeter.nl##.small-leaderboard
+deondernemer.nl##div[class^="adBlock"]
+deondernemer.nl##section[class^="SingleBlock_advertisement"]
+||boodschappen.nl/wp-json/boodschappen/v1/banners/get_banners
+||boodschappen.nl/wp-json/boodschappen/v1/banners/get_advertorial
+||boodschappen.nl/wp-json/boodschappen/v1/banners/get_native_banner
 9292.nl##[data-testid="ad-root"]
 9292.nl##astro-island[component-export="Ad"]
 hbvl.be##section[data-theme-sponsored-content]
@@ -1875,6 +1881,7 @@ voipsipclient.blogspot.nl##.adsbygoogle
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_dutch
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+moviemeter.nl#%#//scriptlet('trusted-suppress-native-method', 'document.write', '"adswag.nl"', 'prevent')
 puna.nl#@#.raw-html-component
 @@||2mdn.net/instream/html5/ima3.js$domain=puna.bbvms.com|puna.nl
 marktnet.nl#@#.ad-description

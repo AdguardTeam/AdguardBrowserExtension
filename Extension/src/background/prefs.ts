@@ -37,13 +37,6 @@ export class Prefs {
      */
     public static version = browser.runtime.getManifest().version;
 
-    /**
-     * For MV3 will use the version name with date of the DNR ruleset version,
-     * e.g. "7.8.5 (25-06-12 14:30)".
-     * For MV2 it's the same as `version` above, e.g. "7.8.5".
-     */
-    public static versionName = browser.runtime.getManifest().version_name;
-
     public static language = browser.i18n.getUILanguage();
 
     public static readonly libVersions: GetOptionsDataResponse['libVersions'] = {
