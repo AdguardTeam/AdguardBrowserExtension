@@ -17,7 +17,8 @@
  */
 import { MetadataStorage } from 'metadata-storage';
 
-import { SettingOption } from '../../schema';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { SettingOption, type Metadata } from '../../schema';
 import { settingsStorage } from '../settings';
 
 /**
