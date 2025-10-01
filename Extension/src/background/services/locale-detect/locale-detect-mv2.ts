@@ -18,19 +18,21 @@
 
 import browser, { type Tabs } from 'webextension-polyfill';
 
-import { getDomain, isHttpRequest } from '../tswebextension';
-import { UserAgent } from '../../common/user-agent';
-import { type RegularFilterMetadata, SettingOption } from '../schema';
+import { getDomain, isHttpRequest } from '../../tswebextension';
+import { UserAgent } from '../../../common/user-agent';
+import { type RegularFilterMetadata, SettingOption } from '../../schema';
 import {
     groupStateStorage,
     metadataStorage,
     settingsStorage,
-} from '../storages';
-import { engine } from '../engine';
-import { toasts } from '../api/ui';
-import { FiltersApi } from '../api/filters/main';
-import { CommonFilterApi } from '../api/filters/common';
-import { AntibannerGroupsId } from '../../common/constants';
+} from '../../storages';
+import { engine } from '../../engine';
+import { toasts } from '../../api/ui';
+import { FiltersApi } from '../../api/filters/main';
+import { CommonFilterApi } from '../../api/filters/common';
+import { AntibannerGroupsId } from '../../../common/constants';
+
+import { type LocaleDetectCommon } from './locale-detect-common';
 
 type BrowsingLanguage = {
     language: string;
@@ -39,8 +41,10 @@ type BrowsingLanguage = {
 
 /**
  * This service is used to auto-enable language-specific filters.
+ *
+ * @note This service is only used in Manifest V2 extensions.
  */
-class LocaleDetect {
+class LocaleDetect implements LocaleDetectCommon {
     static SUCCESS_HIT_COUNT = 3;
 
     static MAX_HISTORY_LENGTH = 10;
@@ -216,7 +220,7 @@ class LocaleDetect {
         changeInfo: Tabs.OnUpdatedChangeInfoType,
         tab: Tabs.Tab,
     ): Promise<void> {
-        if (tab.status === 'complete' && !__IS_MV3__) {
+        if (tab.status === 'complete') {
             await this.detectTabLanguage(tab);
         }
     }
@@ -342,8 +346,7 @@ class LocaleDetect {
             return;
         }
 
-        const remote = !__IS_MV3__;
-        await FiltersApi.loadAndEnableFilters(disabledFiltersIds, remote);
+        await FiltersApi.loadAndEnableFilters(disabledFiltersIds, true);
         engine.debounceUpdate();
 
         const filters: RegularFilterMetadata[] = [];

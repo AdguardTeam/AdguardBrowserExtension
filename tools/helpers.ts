@@ -22,13 +22,16 @@ import { fileURLToPath } from 'node:url';
 
 import { merge } from 'webpack-merge';
 import { type Manifest } from 'webextension-polyfill';
+import { format } from 'date-fns';
+import { UTCDate } from '@date-fns/utc/date';
 
 import { Redirects } from '@adguard/scriptlets/redirects';
+import { getVersionTimestampMs } from '@adguard/dnr-rulesets/utils';
 
 import packageJson from '../package.json';
 import { BuildTargetEnv, WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
 
-import { Browser } from './constants';
+import { Browser, ManifestVersionEnv } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -87,17 +90,19 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
 };
 
 /**
- * Updates manifest object with new values
+ * Updates a manifest object with new values and returns the updated manifest.
  *
- * @param env
- * @param browser
- * @param targetPart
- * @param addedPart
+ * @param buildEnv The build environment.
+ * @param manifestEnv The manifest version environment.
+ * @param browser The target browser.
+ * @param targetPart The existing manifest content.
+ * @param addedPart The additional manifest content to merge.
  *
- * @returns {*&{content_security_policy: string, version: string}}
+ * @returns The updated manifest object.
  */
 export const updateManifest = (
-    env: BuildTargetEnv,
+    buildEnv: BuildTargetEnv,
+    manifestEnv: ManifestVersionEnv,
     browser: Browser,
     targetPart: ManifestBase,
     addedPart: Partial<ManifestBase>,
@@ -105,7 +110,7 @@ export const updateManifest = (
     // Merge the parts, ensuring the merged object has the expected type
     const union = merge(targetPart, addedPart);
 
-    const devPolicy = getEnvPolicy(env, browser);
+    const devPolicy = getEnvPolicy(buildEnv, browser);
 
     // Ensure that version and name are properly set
     const manifestVersion = union.manifest_version || targetPart.manifest_version;
@@ -114,11 +119,23 @@ export const updateManifest = (
     // Build the final manifest object
     const result: WebExtensionManifest = {
         version: packageJson.version,
+        version_name: packageJson.version,
         manifest_version: manifestVersion,
         name,
         ...devPolicy,
         ...union, // Spread other properties from the merged object
     };
+
+    // For MV3 will use the version name with date of the DNR ruleset version,
+    // e.g. "7.8.5 (25-06-12 14:30)".
+    if (manifestEnv === ManifestVersionEnv.Third) {
+        const dnrBuildDate = format(
+            new UTCDate(getVersionTimestampMs()),
+            'yy-MM-dd HH:mm',
+        );
+
+        result.version_name += ` (${dnrBuildDate})`;
+    }
 
     return result;
 };
@@ -126,7 +143,8 @@ export const updateManifest = (
 /**
  * Updates a manifest buffer with new values and returns the updated buffer.
  *
- * @param env The build environment.
+ * @param buildEnv The build environment.
+ * @param manifestEnv The manifest version environment.
  * @param browser The target browser.
  * @param targetPart The existing manifest content as a buffer.
  * @param addedPart The additional manifest content to merge.
@@ -134,14 +152,15 @@ export const updateManifest = (
  * @returns A buffer containing the updated manifest.
  */
 export const updateManifestBuffer = (
-    env: BuildTargetEnv,
+    buildEnv: BuildTargetEnv,
+    manifestEnv: ManifestVersionEnv,
     browser: Browser,
     targetPart: Buffer,
     addedPart: Partial<WebExtensionManifest>,
 ): Buffer => {
     const target = JSON.parse(targetPart.toString());
 
-    const result = updateManifest(env, browser, target, addedPart);
+    const result = updateManifest(buildEnv, manifestEnv, browser, target, addedPart);
 
     return Buffer.from(JSON.stringify(result, null, 4));
 };

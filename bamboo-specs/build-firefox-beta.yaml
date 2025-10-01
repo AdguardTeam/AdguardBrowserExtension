@@ -5,7 +5,8 @@ plan:
   key: BEFIREFOXBETASPECS
   name: browser extension - build firefox beta
 variables:
-  dockerNode: adguard/extension-builder:22.17--0.2--0
+  dockerNode: adguard/extension-builder:22.17--0.2.1--0
+  buildType: beta
 stages:
   - Build:
       manual: false
@@ -42,13 +43,13 @@ Build:
             pnpm config set store-dir ${bamboo.cachePnpm}
 
             pnpm install ${bamboo.varsPnpm}
-            pnpm beta firefox-standalone
+            pnpm ${bamboo.buildType} firefox-standalone
 
             # zip source files for publishing on AMO
-            ./bamboo-specs/scripts/archive-source.sh beta
+            ./bamboo-specs/scripts/archive-source.sh ${bamboo.buildType}
 
             # Move to the build/beta directory and sign the Firefox extension
-            cd ./build/beta
+            cd ./build/${bamboo.buildType}
 
             # Set environment variables and run go-webext to sign the Firefox extension
             FIREFOX_CLIENT_ID="${bamboo_firefoxAmoClientId}" \
@@ -60,17 +61,17 @@ Build:
 
             # TODO: (AG-41656) Remove this workaround and use the browser name
             # as for all other builds
-            mv build/beta/firefox-standalone.zip build/beta/firefox.zip
+            mv build/${bamboo.buildType}/firefox-standalone.zip build/${bamboo.buildType}/firefox.zip
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
             # Copy all artifacts to the artifacts directory
-            cp build/beta/build.txt artifacts/
-            cp build/beta/firefox.zip artifacts/
-            cp build/beta/firefox.xpi artifacts/
-            cp build/beta/update.json artifacts/
-            cp build/beta/source.zip artifacts/
+            cp build/${bamboo.buildType}/build.txt artifacts/
+            cp build/${bamboo.buildType}/firefox.zip artifacts/
+            cp build/${bamboo.buildType}/firefox.xpi artifacts/
+            cp build/${bamboo.buildType}/update.json artifacts/
+            cp build/${bamboo.buildType}/source.zip artifacts/
     - inject-variables:
         file: artifacts/build.txt
         scope: RESULT
@@ -79,19 +80,7 @@ Build:
     - script:
         interpreter: SHELL
         scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            echo "Size before cleanup:" && du -h | tail -n 1
-            rm -rf node_modules build
-            rm -rf .git
-            echo "Size after cleanup:" && du -h | tail -n 1
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/firefox.zip,artifacts/firefox.xpi,artifacts/update.json,artifacts/source.zip"
   artifacts:
     - name: build.txt
       location: artifacts

@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Beautification to exported settings JSON for improved readability [#3069].
 - Ability to keep filtering log records without size limitations when "Preserve log" is enabled [#3148].
 
+### Changed
+
+- Improved filters update logs readability, added version information before and after update [#2934].
+- Improved feature names and descriptions in Tracking protection (MV2).
+
 ### Fixed
 
 - Dynamic rules limit duplicate notifications.
@@ -22,23 +27,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings applied notification appearing before settings are actually applied [#3278].
 - Preserve logs does not retain all records in the filtering log [#3148].
 
-
-### Changed
-
-- Improved filters update logs readability, added version information before and after update [#2934].
-- Improved feature names and descriptions in Tracking protection (MV2).
-
-[#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
-[#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
-[#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
-[#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
+[#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
 [#3136]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136
-[#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 [#3148]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3148
+[#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
+[#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
+[#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
+[#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 
+## Unreleased 5.2 patch 1
 
-## 5.2
+### Fixed
+
+- Minimize the extension update fetch response size in MV3.
+- The extension is failed to update via the popup [#3317].
+
+[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
+
+## [5.2.77] - 2025-09-22
 
 ### Added
 
@@ -95,6 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Wrong rule is displayed for page blocked by `$document` rule in MV3 [#3260].
 - Overflowing notification text in the options page.
 
+[5.2.77]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.77
 [#2305]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2305
 [#2315]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2315
 [#2327]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2327
@@ -111,15 +119,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3055]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3055
 [#3061]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3061
 [#3122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3122
-[#3192]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3192
 [#3145]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3145
 [#3157]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3157
 [#3158]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3158
-[#3216]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3216
 [#3163]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3163
 [#3164]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3164
 [#3189]: https://github.com/AdguardTeam/AdguardBrowserExtension/pull/3189
+[#3192]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3192
 [#3204]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3204
+[#3216]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3216
 [#3260]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3260
 [#3263]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3263
 [tsurlfilter#147]: https://github.com/AdguardTeam/tsurlfilter/issues/147
