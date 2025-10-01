@@ -46,9 +46,10 @@ export type GetOptionsDataResponse = {
     settings: SettingsData;
 
     /**
-     * Extension version.
+     * Extension version name, e.g. "7.8.5 (25-06-12 14:30)" for MV3 or "7.8.5" for MV2.
+     * Used in the About section of the options page.
      */
-    appVersion: string;
+    appVersionName: string;
 
     /**
      * Versions of the libraries used in the extension.

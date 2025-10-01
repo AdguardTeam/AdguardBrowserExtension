@@ -8,7 +8,7 @@ variables:
   # Playwright is needed for integration tests after build.
   dockerPlaywright: adguard/playwright-runner:22.17--1.53.2--1
   # Node.js is needed for build and tests.
-  dockerNode: adguard/extension-builder:22.17--0.2--0
+  dockerNode: adguard/extension-builder:22.17--0.2.1--0
   # Stable branch name for auto-update only filters.
   stableBranchName: stable/v5.2
 
@@ -42,6 +42,11 @@ DoNothing:
             BRANCH="${bamboo.planRepository.branchName}"
 
             echo "Build and deployment is not supported on branch ${BRANCH}, skipping"
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
   # Since the artifact is being published from a non-master branch, it should
   # still be available in the master branch.
   artifacts: &artifacts
@@ -132,10 +137,10 @@ branch-overrides:
 
                   ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
         final-tasks:
-          - script:
+          - script: &cleanup-script
               interpreter: SHELL
               scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+                - "./bamboo-specs/scripts/cleanup.sh"
         requirements:
           - adg-docker: 'true'
 
@@ -172,10 +177,7 @@ branch-overrides:
               type: junit
               # mv3 postfix because we run auto-builds only for mv3 branch.
               test-results: 'tests-reports/unit-tests-mv3.xml'
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
 
@@ -208,13 +210,9 @@ branch-overrides:
 
                   pnpm locales validate --min
         final-tasks:
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
-
 
       Update filters and build:
         key: UPDATEFILTERSANDBUILD
@@ -305,7 +303,7 @@ branch-overrides:
           - script:
               interpreter: SHELL
               scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+                - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
         artifacts: *artifacts
         requirements: *requirements
 
@@ -335,16 +333,13 @@ branch-overrides:
           - test-parser:
               type: junit
               test-results: 'tests-reports/integration-tests-*.xml'
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
 
-      # run auto-build each hour after 30 minutes of the hour to collect all
-      # changes made by filter list maintainers during the last hour update.
+      # run auto-build every 3 hours after 30 minutes of the hour to collect all
+      # changes made by filter list maintainers during the last 3 hours update.
       triggers:
         - cron:
-            expression: 0 30 * ? * *
-            description: Run auto-build every hour at 30 minutes past the hour.
+            expression: 0 30 */3 ? * *
+            description: Run auto-build every 3 hours at 30 minutes past the hour.
