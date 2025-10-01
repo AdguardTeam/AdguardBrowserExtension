@@ -63,7 +63,6 @@ import {
     FilteringLogService,
     eventService,
     DocumentBlockService,
-    localeDetect,
     PromoNotificationService,
     filterUpdateService,
 } from '../services';
@@ -235,9 +234,6 @@ export class App {
 
         // Adds listeners for popup events
         PopupService.init();
-
-        // Initializes language detector for auto-enabling relevant filters
-        localeDetect.init();
 
         /**
          * Adds listener for creating `notifier` events. Triggers by frontend.
