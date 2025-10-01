@@ -115,6 +115,10 @@ const Options = observer(() => {
                     });
                     break;
                 }
+                case ExtensionUpdateFSMState.Available: {
+                    settingsStore.setIsExtensionUpdateAvailable(true);
+                    break;
+                }
                 case ExtensionUpdateFSMState.Failed: {
                     settingsStore.setIsExtensionUpdateAvailable(false);
                     uiStore.addNotification({

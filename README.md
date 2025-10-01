@@ -722,7 +722,7 @@ Due to the transition from MV2 to MV3, we cannot update our filters remotely. To
 
 ### Auto-update cycle
 
-We have set up an auto-update cycle that runs every hour to sync with fresh releases from the [`@adguard/dnr-rulesets`](https://www.npmjs.com/package/@adguard/dnr-rulesets) npm package. This ensures our extension stays up-to-date with the latest filter rules.
+We have set up an auto-update cycle that runs every 3 hours to sync with fresh releases from the [`@adguard/dnr-rulesets`](https://www.npmjs.com/package/@adguard/dnr-rulesets) npm package. This ensures our extension stays up-to-date with the latest filter rules.
 
 To deploy new releases as soon as possible, we have implemented all the steps outlined in Chrome's [Skip Review documentation](https://developer.chrome.com/docs/webstore/skip-review). This allows us to publish updates to the Chrome Web Store without waiting for the full review cycle.
 

@@ -1,6 +1,6 @@
 {
     "name": "browser-extension",
-    "version": "5.2.111",
+    "version": "5.2.87+3.build.20251001180039",
     "description": "AdGuard Extension",
     "type": "module",
     "scripts": {
@@ -23,7 +23,7 @@
         "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
         "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
-        "increment": "pnpm version patch --no-git-tag-version",
+        "increment": "tsx tools/increment.ts",
         "prepare": "husky install",
         "lint-staged": "lint-staged",
         "check-types": "tsc --project tsconfig.with_types_mv2.json --noEmit && tsc --project tsconfig.with_types_mv3.json --noEmit",
@@ -53,6 +53,7 @@
         "@types/react": "17.0.83",
         "@types/react-dom": "17.0.25",
         "@types/react-modal": "3.16.3",
+        "@types/semver": "^7.7.1",
         "@types/sinon": "17.0.3",
         "@types/sinon-chrome": "2.2.15",
         "@types/ua-parser-js": "0.7.37",
@@ -102,6 +103,7 @@
         "postcss-svg": "3.0.0",
         "preprocess-loader": "0.3.0",
         "rimraf": "5.0.10",
+        "semver": "^7.7.2",
         "sinon": "19.0.2",
         "sinon-chrome": "3.0.1",
         "source-map-loader": "3.0.2",

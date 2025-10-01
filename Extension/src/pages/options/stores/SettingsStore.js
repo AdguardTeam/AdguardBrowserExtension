@@ -168,7 +168,7 @@ class SettingsStore {
     optionsReadyToRender = false;
 
     @observable
-    version = null;
+    appVersion = null;
 
     @observable
     libVersions = null;
@@ -352,7 +352,7 @@ class SettingsStore {
                 this.setGroups(data.filtersMetadata.categories);
             }
             this.rulesCount = data.filtersInfo.rulesCount;
-            this.version = data.appVersion;
+            this.appVersion = data.appVersion;
             this.libVersions = data.libVersions;
             this.constants = data.constants;
             this.setAllowAcceptableAds(data.filtersMetadata.filters);

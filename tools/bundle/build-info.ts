@@ -35,7 +35,7 @@ const filePath = path.join(BUILD_PATH, OUTPUT_PATH, FILE_NAME);
 /**
  * Writes build.txt file with current version
  *
- * @returns {Promise<void>}
+ * @returns Promise which resolves when the file is written.
  */
 export const buildInfo = async () => {
     await fsp.writeFile(filePath, content, 'utf-8');

@@ -47,6 +47,7 @@ export type GetOptionsDataResponse = {
 
     /**
      * Extension version.
+     * Used in the About section of the options page.
      */
     appVersion: string;
 
