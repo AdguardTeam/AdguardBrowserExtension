@@ -1,9 +1,9 @@
-! Checksum: vs/RhAFwUN5eFuNV6C03tw
-! Diff-Path: ../patches/16/16-s-1758028686-3600.patch
+! Checksum: zADZBLrBv0MLNQjyaep2rg
+! Diff-Path: ../patches/16/16-s-1759162254-3600.patch
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.54.41
-! TimeUpdated: 2025-09-16T13:14:17+00:00
+! Version: 2.0.54.46
+! TimeUpdated: 2025-09-29T16:07:21+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -54,6 +54,8 @@
 ! Good: @@/adblocker/detect.js$domain=example.org
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
+! https://github.com/easylist/listefr/issues/266
+xcandid.top#@#.ad-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/209760
 cinefil.com#@#ins.adsbygoogle[data-ad-slot]
 cinefil.com#@#ins.adsbygoogle[data-ad-client]
@@ -219,11 +221,12 @@ monumentum.fr#%#//scriptlet('abort-current-inline-script', 'document.getElementB
 ! https://github.com/AdguardTeam/AdguardFilters/issues/179837
 ! https://github.com/AdguardTeam/AdguardFilters/issues/1478420
 japscan.*#%#//scriptlet("prevent-addEventListener", "load", "/^\s*\(event\)\s*=>\s*\{|jso\$|(_\d{2}){6}\(/")
-japscan.*#%#//scriptlet('set-constant', 'WMUQ', 'true')
-japscan.*#%#//scriptlet('trusted-suppress-native-method', 'Document.prototype.getElementsByClassName', '/^[0-9_a-z]{3,}$/')
-japscan.*#%#//scriptlet('trusted-suppress-native-method', 'Document.prototype.getElementById', '/^[0-9a-z]{3,}$/')
-japscan.*#%#//scriptlet('trusted-suppress-native-method', 'Document.prototype.querySelector', '/^\.[A-Z_a-z]+$/')
-japscan.*#%#//scriptlet("remove-node-text", "script", "/Y[a-z][a-z]?k[a-z]\d|(\|\||if\s*\(|const|let|var)\s*[\s($0-9A-Z_a-z]*=?\W*t\W*[\s($0-9A-Z_a-z]*=?\W*y\W*[\s($0-9A-Z_a-z]*=?\W*p\W*[\s($0-9A-Z_a-z]*=?\W*e\W*[\s($0-9A-Z_a-z]*=?\W*o\W*[\s($0-9A-Z_a-z]*=?\W*f|t\W*[\s($0-9A-Z_a-z]*=?\W*y\W*[\s($0-9A-Z_a-z]*=?\W*p\W*[\s($0-9A-Z_a-z]*=?\W*e\W*[\s($0-9A-Z_a-z]*=?\W*o?\W*[\s($0-9A-Z_a-z]*=?\W*f?\W*if\s*\(|=\s*['\"]t|String\[_0x|fromCharCode\s*\(\s*116|\)\.toString\(|decodeURIComponent\('%|atob\s*\(|Array\.prototype\.indexOf|if\s*\(eval|\|\|\s*eval|replaceChildren|sibling\.|height=|appendChild|\/007\.png|insertBefore|function nawNA|.join\s*\(\s*'\s*'\s*\)/")
+japscan.*#%#//scriptlet('set-constant', 'RRUWO', 'true')
+japscan.*#%#//scriptlet('trusted-suppress-native-method', 'Document.prototype.getElementsByClassName', '/^[0-9A-Z_a-z]{3,}$/')
+japscan.*#%#//scriptlet('trusted-suppress-native-method', 'Document.prototype.getElementById', '/^[a-z][0-9A-Z_a-z]{2,}$/')
+japscan.*#%#//scriptlet('trusted-suppress-native-method', 'Document.prototype.querySelector', '/^\.[0-9A-Z_a-z]+$/')
+japscan.*#%#//scriptlet('trusted-suppress-native-method', 'Document.prototype.querySelector', '/^\[class~=/')
+japscan.*#%#//scriptlet("remove-node-text", "script", "/Y[a-z][a-z]?k[a-z]\d|(\|\||if\s*\(|const|let|var)\s*[\s($0-9A-Z_a-z]*=?\W*t\W*[\s($0-9A-Z_a-z]*=?\W*y\W*[\s($0-9A-Z_a-z]*=?\W*p\W*[\s($0-9A-Z_a-z]*=?\W*e\W*[\s($0-9A-Z_a-z]*=?\W*o\W*[\s($0-9A-Z_a-z]*=?\W*f|t\W*[\s($0-9A-Z_a-z]*=?\W*y\W*[\s($0-9A-Z_a-z]*=?\W*p\W*[\s($0-9A-Z_a-z]*=?\W*e\W*[\s($0-9A-Z_a-z]*=?\W*o?\W*[\s($0-9A-Z_a-z]*=?\W*f?\W*if\s*\(|=\s*['\"]t|String\[_0x|fromCharCode\s*\(\s*116|\)\.toString\(|decodeURIComponent\('%|atob\s*\(|Array\.prototype\.indexOf|if\s*\(eval|\|\|\s*eval|replaceChildren|sibling\.|height=|appendChild|\/007\.png|insertBefore|textContent|createRange|getElementsByClassName|style\.height|function nawNA|.join\s*\(\s*'\s*'\s*\)/")
 japscan.*#%#//scriptlet('trusted-set-constant', 'aclib', '{"isShowingPop": false}')
 japscan.*#%#//scriptlet('set-constant', 'aclib.runInPagePush', 'noopFunc')
 japscan.*#@#div.container > [href]

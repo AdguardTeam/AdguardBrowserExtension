@@ -26,7 +26,7 @@ import { type Configuration } from 'webpack';
 import { genMv2CommonConfig } from '../webpack.common-mv2';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
-import { BUILD_ENV, MANIFEST_ENV } from '../../constants';
+import { BUILD_ENV } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { commonManifest } from '../manifest.common';
 
@@ -62,7 +62,6 @@ export const genEdgeConfig = (browserConfig: BrowserConfig) => {
                         to: 'manifest.json',
                         transform: () => updateManifestBuffer(
                             BUILD_ENV,
-                            MANIFEST_ENV,
                             browserConfig.browser,
                             Buffer.from(JSON.stringify(commonManifest)),
                             edgeManifest,

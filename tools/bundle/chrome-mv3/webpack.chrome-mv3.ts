@@ -33,7 +33,6 @@ import {
     AssetsFiltersBrowser,
     BUILD_ENV,
     FILTERS_DEST,
-    MANIFEST_ENV,
 } from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
@@ -77,7 +76,6 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
 
         return updateManifestBuffer(
             BUILD_ENV,
-            MANIFEST_ENV,
             browserConfig.browser,
             content,
             rulesetsInjector.applyRulesets(
