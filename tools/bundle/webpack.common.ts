@@ -169,6 +169,9 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'icons-cache': path.resolve(__dirname, `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`),
         'icons-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/icons/icons-mv${manifestVersion}.ts`),
         'locale-detect': path.resolve(__dirname, `../../Extension/src/background/services/locale-detect/locale-detect-mv${manifestVersion}.ts`),
+        'metadata-schema': path.resolve(__dirname, `../../Extension/src/background/schema/metadata/metadata/metadata-mv${manifestVersion}.ts`),
+        'metadata-storage': path.resolve(__dirname, `../../Extension/src/background/storages/metadata/metadata-mv${manifestVersion}.ts`),
+        'filters-api-main': path.resolve(__dirname, `../../Extension/src/background/api/filters/main/main-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {
