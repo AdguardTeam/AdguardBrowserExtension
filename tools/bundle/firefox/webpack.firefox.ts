@@ -25,7 +25,11 @@ import { type WebpackPluginInstance } from 'webpack';
 
 import { genMv2CommonConfig } from '../webpack.common-mv2';
 import { updateManifestBuffer } from '../../helpers';
-import { Browser, BUILD_ENV } from '../../constants';
+import {
+    Browser,
+    BUILD_ENV,
+    MANIFEST_ENV,
+} from '../../constants';
 import { type BrowserConfig } from '../common-constants';
 import { commonManifest } from '../manifest.common';
 
@@ -59,6 +63,7 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig) => {
 
                         const firefoxManifestContent = updateManifestBuffer(
                             BUILD_ENV,
+                            MANIFEST_ENV,
                             browserConfig.browser,
                             commonManifestContent,
                             firefoxManifest,
@@ -67,6 +72,7 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig) => {
                         if (browserConfig.browser === Browser.FirefoxStandalone) {
                             return updateManifestBuffer(
                                 BUILD_ENV,
+                                MANIFEST_ENV,
                                 browserConfig.browser,
                                 firefoxManifestContent, // target part
                                 firefoxManifestStandalone, // added part

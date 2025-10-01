@@ -77,6 +77,10 @@ const extensionUpdateMachine = setup({
                 [ExtensionUpdateFSMEvent.Check]: {
                     target: ExtensionUpdateFSMState.Checking,
                 },
+                // UpdateAvailable event is emitted when chrome.runtime.onUpdateAvailable is fired
+                [ExtensionUpdateFSMEvent.UpdateAvailable]: {
+                    target: ExtensionUpdateFSMState.Available,
+                },
             },
         },
         [ExtensionUpdateFSMState.Checking]: {
