@@ -23,7 +23,7 @@ import { type ExecuteScriptOptionsCommon } from './types';
 /**
  * ExecuteScriptOptionsCommon with MV3 specific fields.
  */
-type ExecuteScriptOptionsMv3 = ExecuteScriptOptionsCommon & {
+export type ExecuteScriptOptionsMv3 = ExecuteScriptOptionsCommon & {
     /**
      * The function to execute.
      */
