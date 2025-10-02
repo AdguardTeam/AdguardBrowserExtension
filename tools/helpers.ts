@@ -20,18 +20,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { parse, SemVer } from 'semver';
 import { merge } from 'webpack-merge';
 import { type Manifest } from 'webextension-polyfill';
-import { format } from 'date-fns';
-import { UTCDate } from '@date-fns/utc/date';
 
 import { Redirects } from '@adguard/scriptlets/redirects';
-import { getVersionTimestampMs } from '@adguard/dnr-rulesets/utils';
 
 import packageJson from '../package.json';
 import { BuildTargetEnv, WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
 
-import { Browser, ManifestVersionEnv } from './constants';
+import { Browser } from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -91,18 +89,22 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
 
 /**
  * Updates a manifest object with new values and returns the updated manifest.
+ * Also updates the version and name fields based on the package.json version,
+ * since package.json version contains the build metatag, which itself contains
+ * the increment version that should be passed to the manifest version to make
+ * each build unique.
  *
  * @param buildEnv The build environment.
- * @param manifestEnv The manifest version environment.
  * @param browser The target browser.
  * @param targetPart The existing manifest content.
  * @param addedPart The additional manifest content to merge.
  *
  * @returns The updated manifest object.
+ *
+ * @throws Error when package version cannot be parsed or has invalid format.
  */
 export const updateManifest = (
     buildEnv: BuildTargetEnv,
-    manifestEnv: ManifestVersionEnv,
     browser: Browser,
     targetPart: ManifestBase,
     addedPart: Partial<ManifestBase>,
@@ -116,26 +118,48 @@ export const updateManifest = (
     const manifestVersion = union.manifest_version || targetPart.manifest_version;
     const name = union.name || targetPart.name;
 
+    const parsedVersion = parse(packageJson.version);
+
+    if (!parsedVersion) {
+        throw new Error(`Cannot parse package version: ${packageJson.version}`);
+    }
+
+    const { build } = parsedVersion;
+
+    const [
+        incrementVersion,
+        buildMetatag,
+        dnrVersion,
+    ] = build;
+
+    if (incrementVersion === undefined) {
+        throw new Error(`Invalid increment version format: ${packageJson.version}`);
+    }
+
+    if (buildMetatag === undefined) {
+        throw new Error(`Invalid build metatag format: ${packageJson.version}`);
+    }
+
+    if (dnrVersion === undefined) {
+        throw new Error(`Invalid dnr version format: ${packageJson.version}`);
+    }
+
+    const appVersion = new SemVer(parsedVersion);
+
+    // Clear the build metatag since it's not allowed in manifest version.
+    appVersion.build = [];
+
     // Build the final manifest object
     const result: WebExtensionManifest = {
-        version: packageJson.version,
-        version_name: packageJson.version,
+        // Passing build increment version to the version in the manifest
+        // to make each build unique and easily identifiable, since we often
+        // update builds for MV3 via skip review process.
+        version: `${appVersion.format()}.${incrementVersion}`,
         manifest_version: manifestVersion,
         name,
         ...devPolicy,
         ...union, // Spread other properties from the merged object
     };
-
-    // For MV3 will use the version name with date of the DNR ruleset version,
-    // e.g. "7.8.5 (25-06-12 14:30)".
-    if (manifestEnv === ManifestVersionEnv.Third) {
-        const dnrBuildDate = format(
-            new UTCDate(getVersionTimestampMs()),
-            'yy-MM-dd HH:mm',
-        );
-
-        result.version_name += ` (${dnrBuildDate})`;
-    }
 
     return result;
 };
@@ -144,32 +168,47 @@ export const updateManifest = (
  * Updates a manifest buffer with new values and returns the updated buffer.
  *
  * @param buildEnv The build environment.
- * @param manifestEnv The manifest version environment.
  * @param browser The target browser.
  * @param targetPart The existing manifest content as a buffer.
  * @param addedPart The additional manifest content to merge.
  *
  * @returns A buffer containing the updated manifest.
+ *
+ * @throws Error when package version cannot be parsed or has invalid format.
  */
 export const updateManifestBuffer = (
     buildEnv: BuildTargetEnv,
-    manifestEnv: ManifestVersionEnv,
     browser: Browser,
     targetPart: Buffer,
     addedPart: Partial<WebExtensionManifest>,
 ): Buffer => {
     const target = JSON.parse(targetPart.toString());
 
-    const result = updateManifest(buildEnv, manifestEnv, browser, target, addedPart);
+    const result = updateManifest(buildEnv, browser, target, addedPart);
 
     return Buffer.from(JSON.stringify(result, null, 4));
 };
 
+/**
+ * Capitalizes the first letter of a string.
+ *
+ * @param str The string to capitalize.
+ *
+ * @returns The string with the first letter capitalized.
+ */
 const capitalize = (str: string) => {
     return str.charAt(0)
         .toUpperCase() + str.slice(1);
 };
 
+/**
+ * Gets the name suffix for the extension based on build environment and browser.
+ *
+ * @param buildEnv The build environment.
+ * @param browser The target browser.
+ *
+ * @returns The name suffix string.
+ */
 const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
     switch (browser) {
         case Browser.FirefoxStandalone: {
@@ -214,6 +253,15 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
     return '';
 };
 
+/**
+ * Updates the locales message name with environment-specific suffix.
+ *
+ * @param content The content buffer containing locale messages.
+ * @param env The build environment.
+ * @param browser The target browser.
+ *
+ * @returns The updated JSON string with modified name message.
+ */
 export const updateLocalesMSGName = (content: Buffer, env: BuildTargetEnv, browser: Browser) => {
     const suffix = getNameSuffix(env, browser);
 
