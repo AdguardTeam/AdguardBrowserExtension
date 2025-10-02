@@ -25,7 +25,7 @@ import { type ExecuteScriptOptionsCommon } from './types';
 /**
  * ExecuteScriptOptionsCommon with MV2 specific fields.
  */
-type ExecuteScriptOptionsMv2 = ExecuteScriptOptionsCommon & {
+export type ExecuteScriptOptionsMv2 = ExecuteScriptOptionsCommon & {
     /**
      * The time at which the script should be executed.
      */
