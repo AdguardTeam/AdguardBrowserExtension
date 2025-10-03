@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { browserAction } from 'browser-action-api';
+export { browserAction } from 'browser-action';
