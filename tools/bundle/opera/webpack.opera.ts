@@ -26,7 +26,7 @@ import { genMv2CommonConfig } from '../webpack.common-mv2';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import { type BrowserConfig } from '../common-constants';
-import { BUILD_ENV, MANIFEST_ENV } from '../../constants';
+import { BUILD_ENV } from '../../constants';
 import { commonManifest } from '../manifest.common';
 
 import { operaManifest } from './manifest.opera';
@@ -61,7 +61,6 @@ export const genOperaConfig = (browserConfig: BrowserConfig) => {
                         to: 'manifest.json',
                         transform: () => updateManifestBuffer(
                             BUILD_ENV,
-                            MANIFEST_ENV,
                             browserConfig.browser,
                             Buffer.from(JSON.stringify(commonManifest)),
                             operaManifest,
