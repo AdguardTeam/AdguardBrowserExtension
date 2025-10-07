@@ -39,6 +39,7 @@ done
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
+# TODO: Change to actual branch after testing
 TSURLFILTER_REF="fix/AG-24612"
 
 # Repository URLs
