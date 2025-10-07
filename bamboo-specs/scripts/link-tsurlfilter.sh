@@ -8,7 +8,7 @@ ls -la
 
 # Parse command line arguments
 LINK_AGTREE=false
-LINK_TSURLFILTER="fix/AG-24612"
+LINK_TSURLFILTER=false
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -39,7 +39,7 @@ done
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
-TSURLFILTER_REF="release/browser-extension-v5.3"
+TSURLFILTER_REF="fix/AG-24612"
 
 # Repository URLs
 TSURLFILTER_REPO="ssh://git@bit.int.agrd.dev:7999/adguard-filters/tsurlfilter.git"
