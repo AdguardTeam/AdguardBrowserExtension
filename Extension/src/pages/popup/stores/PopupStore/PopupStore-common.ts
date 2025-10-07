@@ -15,9 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { createContext } from 'react';
-
 import browser from 'webextension-polyfill';
 import {
     action,
@@ -29,28 +26,26 @@ import {
 } from 'mobx';
 import punycode from 'punycode/';
 
-import { type GetStatisticsDataResponse, type SettingsData } from '../../../background/api';
-import { type GetTabInfoForPopupResponse } from '../../../background/services';
-import { type PageStatsDataItem } from '../../../background/schema';
-import { messenger } from '../../services/messenger';
+import { type GetStatisticsDataResponse, type SettingsData } from '../../../../background/api';
+import { type GetTabInfoForPopupResponse } from '../../../../background/services';
+import { type PageStatsDataItem } from '../../../../background/schema';
+import { messenger } from '../../../services/messenger';
 import {
     SpecificPopupState,
     TimeRange,
     ViewState,
-} from '../constants';
-import { translator } from '../../../common/translators/translator';
-import { type PromoNotification } from '../../../background/storages';
+} from '../../constants';
+import { translator } from '../../../../common/translators/translator';
+import { type PromoNotification } from '../../../../background/storages';
 import {
     AppState,
     appStateActor,
     AppStateEvent,
-} from '../state-machines/app-state-machine';
-import { asyncWrapper } from '../../filtering-log/stores/helpers';
-import { MIN_UPDATE_DISPLAY_DURATION_MS, TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
-import { UserAgent } from '../../../common/user-agent';
-import { logger } from '../../../common/logger';
-import { sleepIfNecessary } from '../../../common/sleep-utils';
-import { NotificationType, type NotificationParams } from '../../common/types';
+} from '../../state-machines/app-state-machine';
+import { asyncWrapper } from '../../../filtering-log/stores/helpers';
+import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../../common/constants';
+import { UserAgent } from '../../../../common/user-agent';
+import { type NotificationParams } from '../../../common/types';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -67,7 +62,7 @@ type CategoryBlockedStatsInfo = {
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
 
-export class PopupStore {
+export abstract class PopupStoreCommon {
     TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     /**
@@ -169,7 +164,6 @@ export class PopupStore {
 
     constructor() {
         makeObservable(this);
-        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -248,7 +242,6 @@ export class PopupStore {
                 options,
                 stats,
                 settings,
-                mv3SpecificOptions,
             } = response;
 
             // frame info
@@ -278,47 +271,16 @@ export class PopupStore {
 
             this.setAppActorInitState();
 
-            // Handle MV3-specific options
-            if (!mv3SpecificOptions) {
-                // Early exit for MV2 or when mv3SpecificOptions is absent
-                this.areFilterLimitsExceeded = false;
-                this.setIsExtensionUpdateAvailable(false);
-                return;
-            }
-
-            const {
-                areFilterLimitsExceeded,
-                isExtensionUpdateAvailable,
-                isExtensionReloadedOnUpdate,
-                isSuccessfulExtensionUpdate,
-            } = mv3SpecificOptions;
-
-            this.areFilterLimitsExceeded = areFilterLimitsExceeded;
-            this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
-
-            // notification about successful or failed update should be shown after the popup is opened.
-            // and it cannot be done by notifier (from the background page)
-            // because event may be dispatched _before_ the popup is opened,
-            // i.e. listener may not be registered yet.
-            if (isExtensionReloadedOnUpdate) {
-                if (isSuccessfulExtensionUpdate) {
-                    this.setUpdateNotification({
-                        type: NotificationType.Success,
-                        text: translator.getMessage('update_success_text'),
-                    });
-                } else {
-                    this.setUpdateNotification({
-                        type: NotificationType.Error,
-                        text: translator.getMessage('update_failed_text'),
-                        button: {
-                            title: translator.getMessage('update_failed_try_again_btn'),
-                            onClick: this.checkUpdatesMV3,
-                        },
-                    });
-                }
-            }
+            this.configureExtensionUpdates(options);
         });
     };
+
+    /**
+     * Configures extension-specific update options.
+     *
+     * @param options - Extension options, structure varies between MV2 and MV3
+     */
+    protected abstract configureExtensionUpdates(options: GetTabInfoForPopupResponse['options']): void;
 
     /**
      * Sends a message to the background to set the application filtering paused state to the specified value.
@@ -551,7 +513,7 @@ export class PopupStore {
             return null;
         }
 
-        const statsDataForCurrentRange = PopupStore.getDataByRange(stats, this.selectedTimeRange);
+        const statsDataForCurrentRange = PopupStoreCommon.getDataByRange(stats, this.selectedTimeRange);
 
         if (!statsDataForCurrentRange) {
             return null;
@@ -628,31 +590,6 @@ export class PopupStore {
         return this.settings.values[this.settings.names.AppearanceTheme];
     }
 
-    /**
-     * Checks for updates and if update is available, starts the update process.
-     *
-     * Note:
-     * This behavior is different on options page
-     * where two separate clicks are required
-     * to check for updates and start the update process.
-     */
-    @action
-    async checkUpdatesMV3() {
-        const start = Date.now();
-        this.setIsExtensionUpdating(true);
-
-        try {
-            this.setUpdateNotification(null);
-            await messenger.checkUpdatesFromPopupMV3();
-        } catch (error: unknown) {
-            logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
-        }
-
-        // Ensure minimum duration for smooth UI experience
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-        this.setIsExtensionUpdating(false);
-    }
-
     @action
     setIsExtensionUpdateAvailable(isUpdateAvailable: boolean): void {
         this.isExtensionUpdateAvailable = isUpdateAvailable;
@@ -663,10 +600,18 @@ export class PopupStore {
         this.isExtensionUpdating = isUpdating;
     }
 
+    /**
+     * Checks for updates and if update is available, starts the update process.
+     *
+     * Note:
+     * This behavior is different on options page
+     * where two separate clicks are required
+     * to check for updates and start the update process.
+     */
+    abstract checkUpdates(): void;
+
     @action
     setUpdateNotification(notification: NotificationParams | null): void {
         this.updateNotification = notification;
     }
 }
-
-export const popupStore = createContext(new PopupStore());

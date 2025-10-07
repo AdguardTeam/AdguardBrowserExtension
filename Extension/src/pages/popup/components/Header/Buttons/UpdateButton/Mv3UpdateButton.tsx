@@ -35,7 +35,7 @@ const Mv3UpdateButton = observer(() => {
         if (!__IS_MV3__) {
             throw new Error('Extension update is not supported in MV2');
         }
-        await store.checkUpdatesMV3();
+        await store.checkUpdates();
     };
 
     const handleUpdateExtensionClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
