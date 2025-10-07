@@ -8,7 +8,7 @@ ls -la
 
 # Parse command line arguments
 LINK_AGTREE=false
-LINK_TSURLFILTER=false
+LINK_TSURLFILTER="fix/AG-24612"
 
 while [ $# -gt 0 ]; do
     case $1 in
