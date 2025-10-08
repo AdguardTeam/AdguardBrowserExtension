@@ -39,6 +39,14 @@ export class PagesApi extends PagesApiCommon {
     protected chromeExtensionStoreForwardAction: ForwardAction.ChromeStore = ForwardAction.ChromeStore;
 
     /** @inheritdoc */
+    // Ignoring custom filters in MV3 since AG-39385.
+    // TODO: remove overriding when custom filters will be supported for MV3.
+    // eslint-disable-next-line class-methods-use-this
+    protected getCustomFiltersUrls(): string[] {
+        return [];
+    }
+
+    /** @inheritdoc */
     // eslint-disable-next-line class-methods-use-this
     protected shouldOpenSettingsPageWithCustomFilterModal(): boolean {
         if (!isUserScriptsApiSupported()) {

@@ -299,9 +299,7 @@ export abstract class PagesApiCommon {
         const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
 
         if (isCustomFiltersEnabled) {
-            const customFilterUrls = CustomFilterApi.getFiltersData()
-                .filter(({ enabled }) => enabled)
-                .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+            const customFilterUrls = this.getCustomFiltersUrls();
 
             if (customFilterUrls.length > 0) {
                 params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
@@ -324,6 +322,23 @@ export abstract class PagesApiCommon {
         const reportUrl = Forward.get(params);
 
         return reportUrl;
+    }
+
+    /**
+     * Returns list of enabled custom filters URLs.
+     *
+     * Filters the custom filters data to include only enabled filters
+     * and extracts their URLs with trimmed file paths.
+     *
+     * @returns List of custom filters urls.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    protected getCustomFiltersUrls(): string[] {
+        const customFilterUrls = CustomFilterApi.getFiltersData()
+            .filter(({ enabled }) => enabled)
+            .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+
+        return customFilterUrls;
     }
 
     /**
