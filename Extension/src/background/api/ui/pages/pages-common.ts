@@ -21,55 +21,54 @@ import { UTCDate } from '@date-fns/utc';
 
 import { getErrorMessage } from '@adguard/logger';
 
-import { UserAgent } from '../../../common/user-agent';
+import { UserAgent } from '../../../../common/user-agent';
 import {
     type AddFilteringSubscriptionMessage,
     type ScriptletCloseWindowMessage,
     type UpdateFullscreenUserRulesThemeMessage,
-} from '../../../common/messages';
+} from '../../../../common/messages';
 import {
     Forward,
     ForwardAction,
     ForwardFrom,
     type ForwardParams,
-} from '../../../common/forward';
-import { UrlUtils } from '../../utils/url';
+} from '../../../../common/forward';
+import { UrlUtils } from '../../../utils/url';
 import {
     browserStorage,
     groupStateStorage,
     settingsStorage,
-} from '../../storages';
-import { SettingOption } from '../../schema';
-import { BrowserUtils } from '../../utils/browser-utils';
+} from '../../../storages';
+import { SettingOption } from '../../../schema';
+import { BrowserUtils } from '../../../utils/browser-utils';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
     CHROME_EXTENSIONS_SETTINGS_URL,
     FILTERING_LOG_WINDOW_STATE,
-} from '../../../common/constants';
-import { WindowsApi, TabsApi } from '../../../common/api/extension';
-import { Prefs } from '../../prefs';
-import { CustomFilterApi, FiltersApi } from '../filters';
+} from '../../../../common/constants';
+import { WindowsApi, TabsApi } from '../../../../common/api/extension';
+import { Prefs } from '../../../prefs';
+import { CustomFilterApi, FiltersApi } from '../../filters';
 import {
     FILTERING_LOG_OUTPUT,
     POST_INSTALL_OUTPUT,
     FULLSCREEN_USER_RULES_OUTPUT,
     OPTIONS_OUTPUT,
-} from '../../../../../constants';
-import { logger } from '../../../common/logger';
-import { OptionsPageSections } from '../../../common/nav';
-import { FilterUpdateService } from '../../services/filter-update';
-import { CustomFilterUtils } from '../../../common/custom-filter-utils';
-import { isUserScriptsApiSupported } from '../../../common/user-scripts-api';
-
-import { browserAction } from './browser-action';
+} from '../../../../../../constants';
+import { logger } from '../../../../common/logger';
+import { OptionsPageSections } from '../../../../common/nav';
+import { FilterUpdateService } from '../../../services/filter-update';
+import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
+import { isUserScriptsApiSupported } from '../../../../common/user-scripts-api';
+import { browserAction } from '../browser-action';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
 /**
  * Pages API provides methods for managing browser pages.
  */
-export class PagesApi {
+export abstract class PagesApiCommon {
     /**
      * Product type.
      *
@@ -82,17 +81,17 @@ export class PagesApi {
     /**
      * Settings page url.
      */
-    public static readonly settingsUrl = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT);
+    public static readonly settingsUrl = PagesApiCommon.getExtensionPageUrl(OPTIONS_OUTPUT);
 
     /**
      * Filtering log page url.
      */
-    public static readonly filteringLogUrl = PagesApi.getExtensionPageUrl(FILTERING_LOG_OUTPUT);
+    public static readonly filteringLogUrl = PagesApiCommon.getExtensionPageUrl(FILTERING_LOG_OUTPUT);
 
     /**
      * Fullscreen user rule editor page url.
      */
-    public static readonly fullscreenUserRulesPageUrl = PagesApi.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT);
+    public static readonly fullscreenUserRulesPageUrl = PagesApiCommon.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT);
 
     /**
      * Default state of popup window.
@@ -107,23 +106,12 @@ export class PagesApi {
     /**
      * Filters download page url.
      */
-    public static readonly postInstallPageUrl = PagesApi.getExtensionPageUrl(POST_INSTALL_OUTPUT);
+    public static readonly postInstallPageUrl = PagesApiCommon.getExtensionPageUrl(POST_INSTALL_OUTPUT);
 
     /**
      * Thank you page url.
      */
-    public static readonly thankYouPageUrl = Forward.get({
-        action: ForwardAction.ThankYou,
-        from: ForwardFrom.Background,
-    });
-
-    /**
-     * Thank you page url for mv3.
-     */
-    public static readonly thankYouPageUrlMv3 = Forward.get({
-        action: ForwardAction.ThankYouMv3,
-        from: ForwardFrom.Background,
-    });
+    protected abstract thankYouPageUrl: string;
 
     /**
      * Compare page url.
@@ -136,17 +124,17 @@ export class PagesApi {
     /**
      *  Extension browser store url.
      */
-    public static readonly extensionStoreUrl = PagesApi.getExtensionStoreUrl();
+    public static readonly extensionStoreUrl = PagesApiCommon.getExtensionStoreUrl();
 
     /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
      * Otherwise only focuses on the open setting tab.
      */
     public static async openSettingsPage(): Promise<void> {
-        let tab = await TabsApi.findOne({ url: `${PagesApi.settingsUrl}*` });
+        let tab = await TabsApi.findOne({ url: `${PagesApiCommon.settingsUrl}*` });
 
         if (!tab) {
-            tab = await browser.tabs.create({ url: PagesApi.settingsUrl });
+            tab = await browser.tabs.create({ url: PagesApiCommon.settingsUrl });
         }
 
         await TabsApi.focus(tab);
@@ -157,7 +145,7 @@ export class PagesApi {
      * If the page has been already opened, focus on window instead creating new one.
      */
     public static async openFullscreenUserRulesPage(): Promise<void> {
-        const tab = await TabsApi.findOne({ url: `${PagesApi.fullscreenUserRulesPageUrl}*` });
+        const tab = await TabsApi.findOne({ url: `${PagesApiCommon.fullscreenUserRulesPageUrl}*` });
 
         if (tab) {
             await TabsApi.focus(tab);
@@ -165,14 +153,14 @@ export class PagesApi {
         }
 
         const theme = settingsStorage.get(SettingOption.AppearanceTheme);
-        const url = `${PagesApi.fullscreenUserRulesPageUrl}?theme=${theme}`;
+        const url = `${PagesApiCommon.fullscreenUserRulesPageUrl}?theme=${theme}`;
 
         // Open a new tab without type to get it as a new tab in a new window
         // with the ability to move and attach it to the current browser window.
         await WindowsApi.create({
             url,
             focused: true,
-            ...PagesApi.defaultPopupWindowState,
+            ...PagesApiCommon.defaultPopupWindowState,
         });
     }
 
@@ -186,14 +174,14 @@ export class PagesApi {
     public static async updateFullscreenUserRulesPageTheme(
         { data }: UpdateFullscreenUserRulesThemeMessage,
     ): Promise<void> {
-        const tab = await TabsApi.findOne({ url: `${PagesApi.fullscreenUserRulesPageUrl}*` });
+        const tab = await TabsApi.findOne({ url: `${PagesApiCommon.fullscreenUserRulesPageUrl}*` });
 
         if (!tab) {
             return;
         }
 
         const { theme } = data;
-        const url = `${PagesApi.fullscreenUserRulesPageUrl}?theme=${theme}`;
+        const url = `${PagesApiCommon.fullscreenUserRulesPageUrl}?theme=${theme}`;
 
         await browser.tabs.update(tab.id, { url });
     }
@@ -208,9 +196,9 @@ export class PagesApi {
             return;
         }
 
-        const url = PagesApi.filteringLogUrl + (activeTab.id ? `#${activeTab.id}` : '');
+        const url = PagesApiCommon.filteringLogUrl + (activeTab.id ? `#${activeTab.id}` : '');
 
-        const tab = await TabsApi.findOne({ url: `${PagesApi.filteringLogUrl}*` });
+        const tab = await TabsApi.findOne({ url: `${PagesApiCommon.filteringLogUrl}*` });
 
         if (tab) {
             await browser.tabs.update(tab.id, { url });
@@ -231,7 +219,7 @@ export class PagesApi {
         try {
             const options = typeof windowStateString === 'string'
                 ? JSON.parse(windowStateString)
-                : PagesApi.defaultPopupWindowState;
+                : PagesApiCommon.defaultPopupWindowState;
 
             await WindowsApi.create({
                 url,
@@ -247,7 +235,7 @@ export class PagesApi {
                 await WindowsApi.create({
                     url,
                     type: windowType,
-                    ...PagesApi.defaultPopupWindowState,
+                    ...PagesApiCommon.defaultPopupWindowState,
                 });
             }
         }
@@ -262,7 +250,7 @@ export class PagesApi {
      *
      * @returns Issue report url.
      */
-    public static async getIssueReportUrl(siteUrl: string, from: ForwardFrom): Promise<string> {
+    public async getIssueReportUrl(siteUrl: string, from: ForwardFrom): Promise<string> {
         let browserName = UserAgent.browserName;
         let browserDetails: string | undefined;
 
@@ -279,7 +267,7 @@ export class PagesApi {
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            product_type: PagesApi.PRODUCT_TYPE,
+            product_type: PagesApiCommon.PRODUCT_TYPE,
             manifest_version: encodeURIComponent(manifestDetails.manifest_version),
             product_version: encodeURIComponent(manifestDetails.version),
             url: encodeURIComponent(siteUrl),
@@ -303,12 +291,9 @@ export class PagesApi {
         }
 
         const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
-        // Ignoring custom filters in MV3 since AG-39385.
-        // TODO: fix the condition when custom filters will be supported for MV3
-        if (isCustomFiltersEnabled && !__IS_MV3__) {
-            const customFilterUrls = CustomFilterApi.getFiltersData()
-                .filter(({ enabled }) => enabled)
-                .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+
+        if (isCustomFiltersEnabled) {
+            const customFilterUrls = this.getCustomFiltersUrls();
 
             if (customFilterUrls.length > 0) {
                 params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
@@ -318,14 +303,14 @@ export class PagesApi {
         const filtersLastUpdate = await FilterUpdateService.getLastUpdateTimeMs();
         if (filtersLastUpdate) {
             params.filters_last_update = encodeURIComponent(
-                PagesApi.convertTimestampToTimeString(filtersLastUpdate),
+                PagesApiCommon.convertTimestampToTimeString(filtersLastUpdate),
             );
         }
 
         Object.assign(
             params,
-            PagesApi.getStealthParams(commonFilterIds),
-            PagesApi.getBrowserSecurityParams(),
+            PagesApiCommon.getStealthParams(commonFilterIds),
+            PagesApiCommon.getBrowserSecurityParams(),
         );
 
         const reportUrl = Forward.get(params);
@@ -334,13 +319,24 @@ export class PagesApi {
     }
 
     /**
+     *
+     */
+    protected getCustomFiltersUrls(): string[] {
+        const customFilterUrls = CustomFilterApi.getFiltersData()
+            .filter(({ enabled }) => enabled)
+            .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+
+        return customFilterUrls;
+    }
+
+    /**
      * Opens abuse page tab.
      *
      * @param siteUrl Target site url.
      * @param from UI which user is forwarded from.
      */
-    public static async openAbusePage(siteUrl: string, from: ForwardFrom): Promise<void> {
-        const reportUrl = await PagesApi.getIssueReportUrl(siteUrl, from);
+    public async openAbusePage(siteUrl: string, from: ForwardFrom): Promise<void> {
+        const reportUrl = await this.getIssueReportUrl(siteUrl, from);
 
         await browser.tabs.create({ url: reportUrl });
     }
@@ -391,40 +387,40 @@ export class PagesApi {
      * Opens filters download page.
      */
     public static async openPostInstallPage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApi.postInstallPageUrl });
+        await browser.tabs.create({ url: PagesApiCommon.postInstallPageUrl });
     }
 
     /**
      * Opens compare page.
      */
     public static async openComparePage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApi.comparePageUrl });
+        await browser.tabs.create({ url: PagesApiCommon.comparePageUrl });
     }
 
     /**
      * Opens thank you page.
      */
-    public static async openThankYouPage(): Promise<void> {
+    public openThankYouPage = async (): Promise<void> => {
         const params = BrowserUtils.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(browser.i18n.getUILanguage())}`);
 
-        const pageUrl = __IS_MV3__ ? PagesApi.thankYouPageUrlMv3 : PagesApi.thankYouPageUrl;
+        const pageUrl = this.thankYouPageUrl;
         const thankYouUrl = `${pageUrl}?${params.join('&')}`;
 
-        const postInstallPage = await TabsApi.findOne({ url: PagesApi.postInstallPageUrl });
+        const postInstallPage = await TabsApi.findOne({ url: PagesApiCommon.postInstallPageUrl });
 
         if (postInstallPage) {
             await browser.tabs.update(postInstallPage.id, { url: thankYouUrl });
         } else {
             await browser.tabs.create({ url: thankYouUrl });
         }
-    }
+    };
 
     /**
      * Opens extension store page.
      */
     public static async openExtensionStorePage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApi.extensionStoreUrl });
+        await browser.tabs.create({ url: PagesApiCommon.extensionStoreUrl });
     }
 
     /**
@@ -455,7 +451,7 @@ export class PagesApi {
      * @returns Opened or updated Tab object.
      */
     private static async openTabOnSettingsPage(url: string): Promise<browser.Tabs.Tab> {
-        const tab = await TabsApi.findOne({ url: `${PagesApi.settingsUrl}*` });
+        const tab = await TabsApi.findOne({ url: `${PagesApiCommon.settingsUrl}*` });
 
         if (!tab) {
             const newTab = await browser.tabs.create({ url });
@@ -474,7 +470,7 @@ export class PagesApi {
      */
     public static async openSettingsPageWithCustomFilterModal(message: AddFilteringSubscriptionMessage): Promise<void> {
         if (__IS_MV3__ && !isUserScriptsApiSupported()) {
-            logger.debug('[ext.PagesApi.openSettingsPageWithCustomFilterModal]: User scripts API permission is not granted');
+            logger.debug('[ext.PagesApiCommon.openSettingsPageWithCustomFilterModal]: User scripts API permission is not granted');
             return;
         }
 
@@ -486,9 +482,9 @@ export class PagesApi {
         }
         optionalPart += `&subscribe=${encodeURIComponent(url)}`;
 
-        const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, optionalPart);
+        const path = PagesApiCommon.getExtensionPageUrl(OPTIONS_OUTPUT, optionalPart);
 
-        const tab = await PagesApi.openTabOnSettingsPage(path);
+        const tab = await PagesApiCommon.openTabOnSettingsPage(path);
 
         await TabsApi.focus(tab);
 
@@ -504,9 +500,9 @@ export class PagesApi {
      * @param query Query string to open on settings page.
      */
     private static async openSettingsPageWithQuery(query: string): Promise<void> {
-        const path = PagesApi.getExtensionPageUrl(OPTIONS_OUTPUT, query);
+        const path = PagesApiCommon.getExtensionPageUrl(OPTIONS_OUTPUT, query);
 
-        const tab = await PagesApi.openTabOnSettingsPage(path);
+        const tab = await PagesApiCommon.openTabOnSettingsPage(path);
 
         await TabsApi.focus(tab);
     }
@@ -518,7 +514,7 @@ export class PagesApi {
     public static async openFiltersOnSettingsPage(): Promise<void> {
         const queryPart = `#${OptionsPageSections.filters}`;
 
-        await PagesApi.openSettingsPageWithQuery(queryPart);
+        await PagesApiCommon.openSettingsPageWithQuery(queryPart);
     }
 
     /**
@@ -528,7 +524,7 @@ export class PagesApi {
     public static async openRulesLimitsPage(): Promise<void> {
         const queryPart = `#${OptionsPageSections.ruleLimits}`;
 
-        await PagesApi.openSettingsPageWithQuery(queryPart);
+        await PagesApiCommon.openSettingsPageWithQuery(queryPart);
     }
 
     /**
@@ -541,7 +537,7 @@ export class PagesApi {
         });
 
         if (!lastFocusedWindowId) {
-            logger.warn('[ext.PagesApi.openExtensionPopup]: No normal window found to open popup');
+            logger.warn('[ext.PagesApiCommon.openExtensionPopup]: No normal window found to open popup');
             return;
         }
 
@@ -553,7 +549,7 @@ export class PagesApi {
                 windowId: lastFocusedWindowId,
             });
         } catch (e) {
-            logger.error('[ext.PagesApi.openExtensionPopup]: Failed to open popup', e);
+            logger.error('[ext.PagesApiCommon.openExtensionPopup]: Failed to open popup', e);
         }
     }
 
