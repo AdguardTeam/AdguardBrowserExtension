@@ -320,7 +320,10 @@ export abstract class PagesApiCommon {
     }
 
     /**
-     * FIXME: JSDoc.
+     * Returns list of enabled custom filters URLs.
+     *
+     * Filters the custom filters data to include only enabled filters
+     * and extracts their URLs with trimmed file paths.
      *
      * @returns List of custom filters urls.
      */
@@ -467,7 +470,12 @@ export abstract class PagesApiCommon {
     }
 
     /**
-     * FIXME: JSDoc.
+     * Determines whether the settings page should be opened with custom filter modal.
+     *
+     * This method is implemented differently in MV2 and MV3 versions
+     * based on their specific capabilities and restrictions.
+     *
+     * @returns True if settings page should open with custom filter modal, false otherwise.
      */
     protected abstract shouldOpenSettingsPageWithCustomFilterModal(): boolean;
 
