@@ -140,7 +140,7 @@ export class UiService {
 
         messageHandler.addListener(MessageType.OpenSiteReportTab, UiService.openSiteReportPage);
 
-        messageHandler.addListener(MessageType.OpenThankyouPage, pagesApi.openThankYouPage);
+        messageHandler.addListener(MessageType.OpenThankYouPage, pagesApi.openThankYouPage);
         messageHandler.addListener(MessageType.OpenExtensionStore, pagesApi.openExtensionStorePage);
         messageHandler.addListener(MessageType.OpenComparePage, PagesApi.openComparePage);
         messageHandler.addListener(
