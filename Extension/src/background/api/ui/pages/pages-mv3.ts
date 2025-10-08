@@ -36,8 +36,11 @@ export class PagesApi extends PagesApiCommon {
     });
 
     /** @inheritdoc */
+    protected chromeExtensionStoreForwardAction: ForwardAction.ChromeStore = ForwardAction.ChromeStore;
+
+    /** @inheritdoc */
     // Ignoring custom filters in MV3 since AG-39385.
-    // TODO: fix the condition when custom filters will be supported for MV3.
+    // TODO: remove overriding when custom filters will be supported for MV3.
     // eslint-disable-next-line class-methods-use-this
     protected getCustomFiltersUrls(): string[] {
         return [];
@@ -58,11 +61,5 @@ export class PagesApi extends PagesApiCommon {
     // eslint-disable-next-line class-methods-use-this
     protected getBrowserSecurityParams(): { [key: string]: string } {
         return {};
-    }
-
-    /** @inheritdoc */
-    // eslint-disable-next-line class-methods-use-this
-    protected getChromeExtensionStoreForwardAction(): ForwardAction.ChromeStore {
-        return ForwardAction.ChromeStore;
     }
 }

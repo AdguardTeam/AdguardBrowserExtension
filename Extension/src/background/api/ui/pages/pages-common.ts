@@ -80,24 +80,24 @@ export abstract class PagesApiCommon {
     /**
      * Settings page url.
      */
-    public static readonly settingsUrl = PagesApiCommon.getExtensionPageUrl(OPTIONS_OUTPUT);
+    private static readonly settingsUrl = PagesApiCommon.getExtensionPageUrl(OPTIONS_OUTPUT);
 
     /**
      * Filtering log page url.
      */
-    public static readonly filteringLogUrl = PagesApiCommon.getExtensionPageUrl(FILTERING_LOG_OUTPUT);
+    private static readonly filteringLogUrl = PagesApiCommon.getExtensionPageUrl(FILTERING_LOG_OUTPUT);
 
     /**
      * Fullscreen user rule editor page url.
      */
-    public static readonly fullscreenUserRulesPageUrl = PagesApiCommon.getExtensionPageUrl(
+    private static readonly fullscreenUserRulesPageUrl = PagesApiCommon.getExtensionPageUrl(
         FULLSCREEN_USER_RULES_OUTPUT,
     );
 
     /**
      * Default state of popup window.
      */
-    public static readonly defaultPopupWindowState: Windows.CreateCreateDataType = {
+    private static readonly defaultPopupWindowState: Windows.CreateCreateDataType = {
         width: 1280,
         height: 720,
         top: 0,
@@ -107,7 +107,7 @@ export abstract class PagesApiCommon {
     /**
      * Filters download page url.
      */
-    public static readonly postInstallPageUrl = PagesApiCommon.getExtensionPageUrl(POST_INSTALL_OUTPUT);
+    private static readonly postInstallPageUrl = PagesApiCommon.getExtensionPageUrl(POST_INSTALL_OUTPUT);
 
     /**
      * Thank you page url.
@@ -115,9 +115,14 @@ export abstract class PagesApiCommon {
     protected abstract thankYouPageUrl: string;
 
     /**
+     * Chrome extension store forward action.
+     */
+    protected abstract chromeExtensionStoreForwardAction: ForwardAction.ChromeStore | ForwardAction.ChromeMv2Store;
+
+    /**
      * Compare page url.
      */
-    public static readonly comparePageUrl = Forward.get({
+    private static readonly comparePageUrl = Forward.get({
         action: ForwardAction.Compare,
         from: ForwardFrom.Options,
     });
@@ -600,7 +605,7 @@ export abstract class PagesApiCommon {
         } else if (UserAgent.isEdge) {
             action = ForwardAction.EdgeStore;
         } else {
-            action = this.getChromeExtensionStoreForwardAction();
+            action = this.chromeExtensionStoreForwardAction;
         }
 
         return Forward.get({
@@ -608,8 +613,6 @@ export abstract class PagesApiCommon {
             from: ForwardFrom.Options,
         });
     }
-
-    protected abstract getChromeExtensionStoreForwardAction(): ForwardAction.ChromeStore | ForwardAction.ChromeMv2Store;
 
     /**
      * Returns browser security url params.

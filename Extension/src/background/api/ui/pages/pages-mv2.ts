@@ -36,6 +36,9 @@ export class PagesApi extends PagesApiCommon {
     });
 
     /** @inheritdoc */
+    protected chromeExtensionStoreForwardAction: ForwardAction.ChromeMv2Store = ForwardAction.ChromeMv2Store;
+
+    /** @inheritdoc */
     // eslint-disable-next-line class-methods-use-this
     protected shouldOpenSettingsPageWithCustomFilterModal(): boolean {
         return true;
@@ -46,11 +49,5 @@ export class PagesApi extends PagesApiCommon {
     protected getBrowserSecurityParams(): { [key: string]: string } {
         const isEnabled = !settingsStorage.get(SettingOption.DisableSafebrowsing);
         return { 'browsing_security.enabled': String(isEnabled) };
-    }
-
-    /** @inheritdoc */
-    // eslint-disable-next-line class-methods-use-this
-    protected getChromeExtensionStoreForwardAction(): ForwardAction.ChromeMv2Store {
-        return ForwardAction.ChromeMv2Store;
     }
 }
