@@ -20,17 +20,37 @@ import {
     ForwardAction,
     ForwardFrom,
 } from '../../../../common/forward';
+import { SettingOption } from '../../../schema';
+import { settingsStorage } from '../../../storages';
 
 import { PagesApiCommon } from './pages-common';
 
-// TODO: We can manipulates tabs directly from content-script and other extension pages context.
-// So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
 /**
  * Pages API provides methods for managing browser pages.
  */
 export class PagesApi extends PagesApiCommon {
+    /** @inheritdoc */
     protected thankYouPageUrl: string = Forward.get({
         action: ForwardAction.ThankYou,
         from: ForwardFrom.Background,
     });
+
+    /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected shouldOpenSettingsPageWithCustomFilterModal(): boolean {
+        return true;
+    }
+
+    /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected getBrowserSecurityParams(): { [key: string]: string } {
+        const isEnabled = !settingsStorage.get(SettingOption.DisableSafebrowsing);
+        return { 'browsing_security.enabled': String(isEnabled) };
+    }
+
+    /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected getChromeExtensionStoreForwardAction(): ForwardAction.ChromeMv2Store {
+        return ForwardAction.ChromeMv2Store;
+    }
 }

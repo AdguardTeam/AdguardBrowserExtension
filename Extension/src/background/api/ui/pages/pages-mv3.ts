@@ -20,28 +20,49 @@ import {
     ForwardAction,
     ForwardFrom,
 } from '../../../../common/forward';
+import { logger } from '../../../../common/logger';
+import { isUserScriptsApiSupported } from '../../../../common/user-scripts-api';
 
 import { PagesApiCommon } from './pages-common';
 
-// TODO: We can manipulates tabs directly from content-script and other extension pages context.
-// So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
 /**
  * Pages API provides methods for managing browser pages.
  */
 export class PagesApi extends PagesApiCommon {
+    /** @inheritdoc */
     protected thankYouPageUrl: string = Forward.get({
         action: ForwardAction.ThankYouMv3,
         from: ForwardFrom.Background,
     });
 
-    /**
-     * TODO Create docs
-     * // Ignoring custom filters in MV3 since AG-39385.
-     * // TODO: fix the condition when custom filters will be supported for MV3.
-     *
-     * @returns
-     */
-    protected static getCustomFiltersUrls(): string[] {
+    /** @inheritdoc */
+    // Ignoring custom filters in MV3 since AG-39385.
+    // TODO: fix the condition when custom filters will be supported for MV3.
+    // eslint-disable-next-line class-methods-use-this
+    protected getCustomFiltersUrls(): string[] {
         return [];
+    }
+
+    /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected shouldOpenSettingsPageWithCustomFilterModal(): boolean {
+        if (!isUserScriptsApiSupported()) {
+            logger.debug('[ext.PagesApi.shouldOpenSettingsPageWithCustomFilterModal]: User scripts API permission is not granted');
+            return false;
+        }
+
+        return true;
+    }
+
+    /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected getBrowserSecurityParams(): { [key: string]: string } {
+        return {};
+    }
+
+    /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected getChromeExtensionStoreForwardAction(): ForwardAction.ChromeStore {
+        return ForwardAction.ChromeStore;
     }
 }

@@ -141,7 +141,7 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenSiteReportTab, UiService.openSiteReportPage);
 
         messageHandler.addListener(MessageType.OpenThankyouPage, pagesApi.openThankYouPage);
-        messageHandler.addListener(MessageType.OpenExtensionStore, PagesApi.openExtensionStorePage);
+        messageHandler.addListener(MessageType.OpenExtensionStore, pagesApi.openExtensionStorePage);
         messageHandler.addListener(MessageType.OpenComparePage, PagesApi.openComparePage);
         messageHandler.addListener(
             MessageType.OpenChromeExtensionsSettingsPage,
@@ -155,7 +155,7 @@ export class UiService {
         );
         messageHandler.addListener(
             MessageType.AddFilteringSubscription,
-            PagesApi.openSettingsPageWithCustomFilterModal,
+            pagesApi.openSettingsPageWithCustomFilterModal,
         );
 
         messageHandler.addListener(MessageType.OpenAssistant, AssistantApi.openAssistant);

@@ -60,7 +60,6 @@ import { logger } from '../../../../common/logger';
 import { OptionsPageSections } from '../../../../common/nav';
 import { FilterUpdateService } from '../../../services/filter-update';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
-import { isUserScriptsApiSupported } from '../../../../common/user-scripts-api';
 import { browserAction } from '../browser-action';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
@@ -91,7 +90,9 @@ export abstract class PagesApiCommon {
     /**
      * Fullscreen user rule editor page url.
      */
-    public static readonly fullscreenUserRulesPageUrl = PagesApiCommon.getExtensionPageUrl(FULLSCREEN_USER_RULES_OUTPUT);
+    public static readonly fullscreenUserRulesPageUrl = PagesApiCommon.getExtensionPageUrl(
+        FULLSCREEN_USER_RULES_OUTPUT,
+    );
 
     /**
      * Default state of popup window.
@@ -124,7 +125,7 @@ export abstract class PagesApiCommon {
     /**
      *  Extension browser store url.
      */
-    public static readonly extensionStoreUrl = PagesApiCommon.getExtensionStoreUrl();
+    private readonly extensionStoreUrl = this.getExtensionStoreUrl();
 
     /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
@@ -310,7 +311,7 @@ export abstract class PagesApiCommon {
         Object.assign(
             params,
             PagesApiCommon.getStealthParams(commonFilterIds),
-            PagesApiCommon.getBrowserSecurityParams(),
+            this.getBrowserSecurityParams(),
         );
 
         const reportUrl = Forward.get(params);
@@ -319,8 +320,11 @@ export abstract class PagesApiCommon {
     }
 
     /**
+     * FIXME: JSDoc.
      *
+     * @returns List of custom filters urls.
      */
+    // eslint-disable-next-line class-methods-use-this
     protected getCustomFiltersUrls(): string[] {
         const customFilterUrls = CustomFilterApi.getFiltersData()
             .filter(({ enabled }) => enabled)
@@ -419,9 +423,9 @@ export abstract class PagesApiCommon {
     /**
      * Opens extension store page.
      */
-    public static async openExtensionStorePage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApiCommon.extensionStoreUrl });
-    }
+    public openExtensionStorePage = async (): Promise<void> => {
+        await browser.tabs.create({ url: this.extensionStoreUrl });
+    };
 
     /**
      * Opens Chrome's extensions settings page.
@@ -463,14 +467,18 @@ export abstract class PagesApiCommon {
     }
 
     /**
+     * FIXME: JSDoc.
+     */
+    protected abstract shouldOpenSettingsPageWithCustomFilterModal(): boolean;
+
+    /**
      * Opens 'Add custom filter' modal window into settings page.
      * If the page has been already opened, reload it with new custom filter query params, passed from content script.
      *
      * @param message - Content script message with custom filter data.
      */
-    public static async openSettingsPageWithCustomFilterModal(message: AddFilteringSubscriptionMessage): Promise<void> {
-        if (__IS_MV3__ && !isUserScriptsApiSupported()) {
-            logger.debug('[ext.PagesApiCommon.openSettingsPageWithCustomFilterModal]: User scripts API permission is not granted');
+    public openSettingsPageWithCustomFilterModal = async (message: AddFilteringSubscriptionMessage): Promise<void> => {
+        if (!this.shouldOpenSettingsPageWithCustomFilterModal()) {
             return;
         }
 
@@ -491,7 +499,7 @@ export abstract class PagesApiCommon {
         // Reload option page for force modal window rerender
         // TODO: track url update in frontend and remove force reloading via webextension API
         await TabsApi.reload(tab.id);
-    }
+    };
 
     /**
      * Opens settings page with specified query.
@@ -575,17 +583,16 @@ export abstract class PagesApiCommon {
      *
      * @returns Extension store url.
      */
-    private static getExtensionStoreUrl(): string {
-        let action = ForwardAction.ChromeStore;
-
+    private getExtensionStoreUrl(): string {
+        let action: ForwardAction;
         if (UserAgent.isOpera) {
             action = ForwardAction.OperaStore;
         } else if (UserAgent.isFirefox) {
             action = ForwardAction.FirefoxStore;
         } else if (UserAgent.isEdge) {
             action = ForwardAction.EdgeStore;
-        } else if (!__IS_MV3__) {
-            action = ForwardAction.ChromeMv2Store;
+        } else {
+            action = this.getChromeExtensionStoreForwardAction();
         }
 
         return Forward.get({
@@ -594,19 +601,14 @@ export abstract class PagesApiCommon {
         });
     }
 
+    protected abstract getChromeExtensionStoreForwardAction(): ForwardAction.ChromeStore | ForwardAction.ChromeMv2Store;
+
     /**
      * Returns browser security url params.
      *
      * @returns Browser security url params record.
      */
-    private static getBrowserSecurityParams(): { [key: string]: string } {
-        if (__IS_MV3__) {
-            return {};
-        }
-
-        const isEnabled = !settingsStorage.get(SettingOption.DisableSafebrowsing);
-        return { 'browsing_security.enabled': String(isEnabled) };
-    }
+    protected abstract getBrowserSecurityParams(): { [key: string]: string };
 
     /**
      * Returns stealth url params.
