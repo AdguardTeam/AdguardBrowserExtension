@@ -299,7 +299,9 @@ export abstract class PagesApiCommon {
         const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
 
         if (isCustomFiltersEnabled) {
-            const customFilterUrls = this.getCustomFiltersUrls();
+            const customFilterUrls = CustomFilterApi.getFiltersData()
+                .filter(({ enabled }) => enabled)
+                .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
 
             if (customFilterUrls.length > 0) {
                 params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
@@ -322,23 +324,6 @@ export abstract class PagesApiCommon {
         const reportUrl = Forward.get(params);
 
         return reportUrl;
-    }
-
-    /**
-     * Returns list of enabled custom filters URLs.
-     *
-     * Filters the custom filters data to include only enabled filters
-     * and extracts their URLs with trimmed file paths.
-     *
-     * @returns List of custom filters urls.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    protected getCustomFiltersUrls(): string[] {
-        const customFilterUrls = CustomFilterApi.getFiltersData()
-            .filter(({ enabled }) => enabled)
-            .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
-
-        return customFilterUrls;
     }
 
     /**
@@ -597,15 +582,14 @@ export abstract class PagesApiCommon {
      * @returns Extension store url.
      */
     private getExtensionStoreUrl(): string {
-        let action: ForwardAction;
+        let action: ForwardAction = this.chromeExtensionStoreForwardAction;
+
         if (UserAgent.isOpera) {
             action = ForwardAction.OperaStore;
         } else if (UserAgent.isFirefox) {
             action = ForwardAction.FirefoxStore;
         } else if (UserAgent.isEdge) {
             action = ForwardAction.EdgeStore;
-        } else {
-            action = this.chromeExtensionStoreForwardAction;
         }
 
         return Forward.get({
