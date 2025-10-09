@@ -66,6 +66,7 @@ const extensionUpdateMachine = setup({
             on: {
                 [ExtensionUpdateFSMEvent.Init]: [
                     {
+                        // TODO: check if it is still needed. AG-47075
                         guard: ({ event }: { event: EventType }): boolean => !!event.isUpdateAvailable,
                         target: ExtensionUpdateFSMState.Available,
                     },
@@ -90,6 +91,10 @@ const extensionUpdateMachine = setup({
                 },
                 [ExtensionUpdateFSMEvent.NoUpdateAvailable]: {
                     target: ExtensionUpdateFSMState.NotAvailable,
+                },
+                // This can be done if checking failed due to timeout
+                [ExtensionUpdateFSMEvent.UpdateFailed]: {
+                    target: ExtensionUpdateFSMState.Failed,
                 },
             },
         },

@@ -45,6 +45,7 @@ import { type FilterMetadata } from '../../background/api/filters/main';
 import { type GetAllowlistDomainsResponse } from '../../background/services/allowlist';
 import { type GetUserRulesEditorDataResponse, type GetUserRulesResponse } from '../../background/services/userrules';
 import { type GetCustomFilterInfoResult } from '../../background/api/filters/custom';
+import { type ManualExtensionUpdateData } from '../../background/services/extension-update/types';
 
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 
@@ -72,10 +73,8 @@ export enum MessageType {
     GetAllowlistDomains = 'getAllowlistDomains',
     SaveAllowlistDomains = 'saveAllowlistDomains',
     CheckFiltersUpdate = 'checkFiltersUpdate',
-    CheckExtensionUpdateFromPopup = 'checkExtensionUpdateFromPopup',
-    CheckExtensionUpdateFromOptions = 'checkExtensionUpdateFromOptions',
-    UpdateExtensionFromPopup = 'updateExtensionFromPopup',
-    UpdateExtensionFromOptions = 'updateExtensionFromOptions',
+    CheckExtensionUpdateMv3 = 'checkExtensionUpdateMv3',
+    UpdateExtensionMv3 = 'updateExtensionMv3',
     DisableFiltersGroup = 'disableFiltersGroup',
     DisableFilter = 'disableFilter',
     LoadCustomFilterInfo = 'loadCustomFilterInfo',
@@ -241,20 +240,15 @@ export type CheckFiltersUpdateMessage = {
     type: MessageType.CheckFiltersUpdate;
 };
 
-export type CheckExtensionUpdateMessage = {
-    type: MessageType.CheckExtensionUpdateFromPopup;
+export type CheckExtensionUpdateMessageMv3 = {
+    type: MessageType.CheckExtensionUpdateMv3;
 };
 
-export type CheckExtensionUpdateFromOptionsMessage = {
-    type: MessageType.CheckExtensionUpdateFromOptions;
-};
-
-export type UpdateExtensionMessage = {
-    type: MessageType.UpdateExtensionFromOptions;
-};
-
-export type UpdateExtensionFromPopupMessage = {
-    type: MessageType.UpdateExtensionFromPopup;
+export type UpdateExtensionMessageMv3 = {
+    type: MessageType.UpdateExtensionMv3;
+    data: {
+        from: ManualExtensionUpdateData['pageToOpenAfterReload'];
+    };
 };
 
 export type GetAllowlistDomainsMessage = {
@@ -704,20 +698,12 @@ export type MessageMap = {
         message: CheckFiltersUpdateMessage;
         response: FilterMetadata[] | undefined;
     };
-    [MessageType.CheckExtensionUpdateFromPopup]: {
-        message: CheckExtensionUpdateMessage;
+    [MessageType.CheckExtensionUpdateMv3]: {
+        message: CheckExtensionUpdateMessageMv3;
         response: void;
     };
-    [MessageType.CheckExtensionUpdateFromOptions]: {
-        message: CheckExtensionUpdateFromOptionsMessage;
-        response: boolean;
-    };
-    [MessageType.UpdateExtensionFromOptions]: {
-        message: UpdateExtensionMessage;
-        response: void;
-    };
-    [MessageType.UpdateExtensionFromPopup]: {
-        message: UpdateExtensionFromPopupMessage;
+    [MessageType.UpdateExtensionMv3]: {
+        message: UpdateExtensionMessageMv3;
         response: void;
     };
     [MessageType.GetAllowlistDomains]: {
