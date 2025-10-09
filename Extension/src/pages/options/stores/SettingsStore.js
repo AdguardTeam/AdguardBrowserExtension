@@ -32,6 +32,7 @@ import {
     WASTE_CHARACTERS,
 } from '../../../common/constants';
 import { logger } from '../../../common/logger';
+import { ForwardFrom } from '../../../common/forward';
 import { sleepIfNecessary, sleep } from '../../../common/sleep-utils';
 import { translator } from '../../../common/translators/translator';
 import { UserAgent } from '../../../common/user-agent';
@@ -210,10 +211,10 @@ class SettingsStore {
     isExtensionUpdateAvailable = false;
 
     /**
-     * Whether the extension update is checking.
+     * Whether the extension update is checking or is updating now.
      */
     @observable
-    isCheckingExtensionUpdate = false;
+    isExtensionCheckingUpdateOrUpdating = false;
 
     @observable
     selectedGroupId = null;
@@ -751,29 +752,27 @@ class SettingsStore {
         }
     }
 
+    // eslint-disable-next-line class-methods-use-this
     @action
     async checkUpdatesMV3() {
         const start = Date.now();
-        this.setIsCheckingExtensionUpdate(true);
-        let isAvailable = false;
-
         try {
-            isAvailable = await messenger.checkUpdatesFromOptionsMV3();
+            await messenger.checkUpdatesMV3();
         } catch (error) {
             logger.debug('[ext.SettingsStore.checkUpdatesMV3]: failed to check updates on options page: ', error);
         }
 
         // Ensure minimum duration for smooth UI experience
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-        this.setIsCheckingExtensionUpdate(false);
-        this.setIsExtensionUpdateAvailable(isAvailable);
     }
 
     // eslint-disable-next-line class-methods-use-this
     async updateExtensionMV3() {
         const start = Date.now();
         try {
-            await messenger.updateExtensionFromOptionsMV3();
+            await messenger.updateExtensionMV3({
+                from: ForwardFrom.Options,
+            });
         } catch (error) {
             logger.debug('[ext.SettingsStore.updateExtensionMV3]: failed to update extension on options page: ', error);
         }
@@ -787,8 +786,8 @@ class SettingsStore {
     }
 
     @action
-    setIsCheckingExtensionUpdate(isChecking) {
-        this.isCheckingExtensionUpdate = isChecking;
+    setIsExtensionCheckingUpdateOrUpdating(isChecking) {
+        this.isExtensionCheckingUpdateOrUpdating = isChecking;
     }
 
     /**

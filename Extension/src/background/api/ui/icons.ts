@@ -226,7 +226,7 @@ class IconsApi {
                 : this.promoIcons.enabled;
         }
 
-        if (__IS_MV3__ && ExtensionUpdateService.getIsUpdateAvailable()) {
+        if (__IS_MV3__ && ExtensionUpdateService.isUpdateAvailable) {
             return defaultIconVariants.updateAvailable;
         }
 

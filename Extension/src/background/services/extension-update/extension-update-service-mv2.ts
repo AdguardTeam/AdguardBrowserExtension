@@ -65,7 +65,7 @@ export class ExtensionUpdateService {
      * @throws Not implemented error.
      */
     // eslint-disable-next-line class-methods-use-this
-    public static getIsUpdateAvailable(): boolean {
+    public static get isUpdateAvailable(): boolean {
         throw new NotImplementedError();
     }
 
