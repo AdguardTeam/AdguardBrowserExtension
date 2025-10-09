@@ -249,15 +249,15 @@ branch-overrides:
 
                   pnpm install ${bamboo.varsPnpm}
 
-                  # Update patch version because resources was changed.
-                  pnpm increment
-
                   # Update filters before build.
                   # --skip-local-resources is used to skip updating local resources,
                   # because to use "skip review" feature in the Chrome Web Store
                   # we need to ensure that changes are made only in rulesets
                   # json files.
                   OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3 --skip-local-resources
+
+                  # Update patch version because resources was changed.
+                  pnpm increment
 
                   # Create artifacts directory if it doesn't exist.
                   mkdir -p artifacts
