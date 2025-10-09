@@ -161,8 +161,11 @@ export class PopupStore {
     @observable
     isExtensionUpdateAvailable = false;
 
+    /**
+     * Whether the extension update is checking or is updating now.
+     */
     @observable
-    isExtensionUpdating = false;
+    isExtensionCheckingUpdateOrUpdating = false;
 
     @observable
     updateNotification: NotificationParams | null = null;
@@ -300,22 +303,24 @@ export class PopupStore {
             // and it cannot be done by notifier (from the background page)
             // because event may be dispatched _before_ the popup is opened,
             // i.e. listener may not be registered yet.
-            if (isExtensionReloadedOnUpdate) {
-                if (isSuccessfulExtensionUpdate) {
-                    this.setUpdateNotification({
-                        type: NotificationType.Success,
-                        text: translator.getMessage('update_success_text'),
-                    });
-                } else {
-                    this.setUpdateNotification({
-                        type: NotificationType.Error,
-                        text: translator.getMessage('update_failed_text'),
-                        button: {
-                            title: translator.getMessage('update_failed_try_again_btn'),
-                            onClick: this.checkUpdatesMV3,
-                        },
-                    });
-                }
+            if (!isExtensionReloadedOnUpdate) {
+                return;
+            }
+
+            if (isSuccessfulExtensionUpdate) {
+                this.setUpdateNotification({
+                    type: NotificationType.Success,
+                    text: translator.getMessage('update_success_text'),
+                });
+            } else {
+                this.setUpdateNotification({
+                    type: NotificationType.Error,
+                    text: translator.getMessage('update_failed_text'),
+                    button: {
+                        title: translator.getMessage('update_failed_try_again_btn'),
+                        onClick: this.checkUpdatesMV3,
+                    },
+                });
             }
         });
     };
@@ -639,18 +644,16 @@ export class PopupStore {
     @action
     async checkUpdatesMV3() {
         const start = Date.now();
-        this.setIsExtensionUpdating(true);
 
         try {
             this.setUpdateNotification(null);
-            await messenger.checkUpdatesFromPopupMV3();
+            await messenger.checkUpdatesMV3();
         } catch (error: unknown) {
             logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
         }
 
         // Ensure minimum duration for smooth UI experience
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-        this.setIsExtensionUpdating(false);
     }
 
     @action
@@ -659,8 +662,8 @@ export class PopupStore {
     }
 
     @action
-    setIsExtensionUpdating(isUpdating: boolean): void {
-        this.isExtensionUpdating = isUpdating;
+    setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
+        this.isExtensionCheckingUpdateOrUpdating = value;
     }
 
     @action
