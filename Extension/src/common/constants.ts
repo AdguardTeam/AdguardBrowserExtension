@@ -18,6 +18,8 @@
 
 import { type PreprocessedFilterList } from '@adguard/tswebextension';
 
+import { type ForwardFrom } from './forward';
+
 /**
  * Current version of app storage data schema.
  *
@@ -254,10 +256,7 @@ export const USER_SCRIPTS_API_WARNING_RECHECK_DELAY_MS = 2000;
 /**
  * Enum with the list of the pages where manual extension update can be triggered.
  */
-export enum ManualExtensionUpdatePage {
-    Options = 'options',
-    Popup = 'popup',
-}
+export type ManualExtensionUpdatePage = ForwardFrom.Popup | ForwardFrom.Options;
 
 /**
  * States for the extension update finite state machine (FSM).
