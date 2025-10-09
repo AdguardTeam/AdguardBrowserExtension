@@ -303,9 +303,14 @@ export class PagesApi {
         }
 
         const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
-        // Ignoring custom filters in MV3 since AG-39385.
-        // TODO: fix the condition when custom filters will be supported for MV3
-        if (isCustomFiltersEnabled && !__IS_MV3__) {
+        if (
+            isCustomFiltersEnabled
+            && (
+                // always report custom filters for mv2
+                !__IS_MV3__
+                // report custom filters for mv3 if userscript api permission is granted
+                || (__IS_MV3__ && isUserScriptsApiSupported()))
+        ) {
             const customFilterUrls = CustomFilterApi.getFiltersData()
                 .filter(({ enabled }) => enabled)
                 .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
