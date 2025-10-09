@@ -16,98 +16,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-    useContext,
-    useEffect,
-    useRef,
-} from 'react';
+import { useEffect, useRef } from 'react';
 
 import browser, { type Runtime } from 'webextension-polyfill';
 
-import { ExtensionUpdateFSMState, NotifierType } from '../../../common/constants';
-import { logger } from '../../../common/logger';
 import { MessageType } from '../../../common/messages';
-import { translator } from '../../../common/translators/translator';
-import { NotificationType } from '../../common/types';
-import { type LongLivedConnectionCallbackMessage, messenger } from '../../services/messenger';
-import { popupStore } from '../stores/PopupStore';
 
-const NOTIFIER_EVENTS = [
-    NotifierType.ExtensionUpdateStateChange,
-];
-
-export const useMessageHandler = () => {
-    const store = useContext(popupStore);
-
+export const useMessageHandler = (
+    createMessageListener: () => Promise<() => void>,
+) => {
     const reloadingRef = useRef<boolean>(false);
     const callbackRef = useRef<(() => void) | null>(null);
-
-    const handleExtensionUpdateStateChange = (state: ExtensionUpdateFSMState) => {
-        switch (state) {
-            case ExtensionUpdateFSMState.Checking:
-                store.setUpdateNotification({
-                    type: NotificationType.Loading,
-                    animationCondition: true,
-                    text: translator.getMessage('update_checking_in_progress'),
-                });
-                break;
-            case ExtensionUpdateFSMState.NotAvailable:
-                store.setUpdateNotification({
-                    type: NotificationType.Success,
-                    text: translator.getMessage('update_not_needed'),
-                });
-                break;
-            // it is possible when popup is opened by user
-            // after the update check was triggered on the options page,
-            // so "checking" popup notification should be reset
-            case ExtensionUpdateFSMState.Available:
-                store.setUpdateNotification(null);
-                store.setIsExtensionUpdateAvailable(true);
-                break;
-            case ExtensionUpdateFSMState.Updating:
-                store.setUpdateNotification({
-                    type: NotificationType.Loading,
-                    animationCondition: true,
-                    text: translator.getMessage('update_installing_in_progress_title'),
-                });
-                break;
-            case ExtensionUpdateFSMState.Failed:
-                store.setUpdateNotification({
-                    type: NotificationType.Error,
-                    text: translator.getMessage('update_failed_text'),
-                    button: {
-                        title: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: store.checkUpdatesMV3,
-                    },
-                });
-                break;
-            default:
-                // do nothing since notification should be shown
-                // for a limited list of states
-                break;
-        }
-    };
-
-    const messageHandler = async (message: LongLivedConnectionCallbackMessage) => {
-        const { type, data } = message;
-
-        if (type !== NotifierType.ExtensionUpdateStateChange) {
-            logger.warn(`[ext.useMessageHandler]: Undefined message type: ${type}`);
-            return;
-        }
-
-        const [state] = data;
-        handleExtensionUpdateStateChange(state);
-    };
-
-    /**
-     * Subscribe to notification from background page with this method
-     * If use runtime.onMessage, then we can intercept messages from popup
-     * to the message handler on background page.
-     */
-    const createMessageListener = async () => {
-        return messenger.createEventListener(NOTIFIER_EVENTS, messageHandler);
-    };
 
     /**
      * Handle messages from the background page.
@@ -128,7 +47,6 @@ export const useMessageHandler = () => {
         message: any,
         sender: Runtime.MessageSender,
         sendResponse: (response: unknown) => void,
-        // eslint-disable-next-line consistent-return
     ): any => {
         const { type } = message;
         if (type === MessageType.UpdateListeners) {
@@ -165,6 +83,7 @@ export const useMessageHandler = () => {
 
             browser.runtime.onMessage.removeListener(handleBrowserMessage);
         };
+    // Call the effect only once.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 };
