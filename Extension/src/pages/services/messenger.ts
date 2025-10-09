@@ -61,6 +61,7 @@ import {
     type AddUrlToTrustedMessage,
     type ExtractedMessage,
     type OpenSafebrowsingTrustedMessage,
+    type UpdateExtensionMessageMv3,
 } from '../../common/messages';
 import { type NotifierType } from '../../common/constants';
 import { type CreateEventListenerResponse } from '../../background/services/event';
@@ -524,60 +525,29 @@ class Messenger {
     }
 
     /**
-     * Sends a message to the background page to check for extension updates initiated from popup.
-     */
-    async checkUpdatesFromPopupMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateFromPopup>> {
-        if (!__IS_MV3__) {
-            logger.warn('[ext.Messenger.checkUpdatesFromPopupMV3]: extension update is not supported in MV2');
-            return;
-        }
-
-        return this.sendMessage(MessageType.CheckExtensionUpdateFromPopup);
-    }
-
-    /**
-     * Sends a message to the background page to update extension initiated from popup.
-     */
-    async updateExtensionFromPopupMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtensionFromPopup>> {
-        if (!__IS_MV3__) {
-            logger.warn('[ext.Messenger.updateExtensionFromPopupMV3]: extension update is not supported in MV2');
-            return;
-        }
-
-        return this.sendMessage(MessageType.UpdateExtensionFromPopup);
-    }
-
-    /**
      * Sends a message to the background page to check for extension updates.
-     *
-     * @returns Promise that resolves with boolean - true if update is available, false otherwise.
      */
-    async checkUpdatesFromOptionsMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateFromOptions>> {
+    async checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> {
         if (!__IS_MV3__) {
-            logger.warn('[ext.Messenger.checkUpdatesFromOptionsMV3]: extension update is not supported in MV2');
-            return false;
-        }
-
-        return this.sendMessage(MessageType.CheckExtensionUpdateFromOptions);
-    }
-
-    /**
-     * Sends a message to the background page to update the extension from the options page.
-     *
-     * @returns Promise that resolves with boolean false if update failed,
-     * otherwise void because the extension reloads on success.
-     */
-    async updateExtensionFromOptionsMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtensionFromOptions>> {
-        if (!__IS_MV3__) {
-            logger.warn('[ext.Messenger.updateExtensionFromOptionsMV3]: extension update is not supported in MV2');
+            logger.warn('[ext.Messenger.checkUpdatesMV3]: extension update is not supported in MV2');
             return;
         }
 
-        try {
-            await this.sendMessage(MessageType.UpdateExtensionFromOptions);
-        } catch (error) {
-            logger.debug('[ext.Messenger.updateExtensionFromOptionsMV3]: failed to update extension: ', error);
+        return this.sendMessage(MessageType.CheckExtensionUpdateMv3);
+    }
+
+    /**
+     * Sends a message to the background page to update extension.
+     */
+    async updateExtensionMV3(
+        { from }: UpdateExtensionMessageMv3['data'],
+    ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> {
+        if (!__IS_MV3__) {
+            logger.warn('[ext.Messenger.updateExtensionMV3]: extension update is not supported in MV2');
+            return;
         }
+
+        return this.sendMessage(MessageType.UpdateExtensionMv3, { from });
     }
 
     /**

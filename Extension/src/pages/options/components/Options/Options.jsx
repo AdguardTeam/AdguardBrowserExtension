@@ -108,7 +108,11 @@ const Options = observer(() => {
 
         const handleExtensionUpdateStateChange = (state) => {
             switch (state) {
+                case ExtensionUpdateFSMState.Checking:
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(true);
+                    break;
                 case ExtensionUpdateFSMState.NotAvailable: {
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
                     uiStore.addNotification({
                         type: NotificationType.Success,
                         text: translator.getMessage('update_not_needed'),
@@ -116,10 +120,15 @@ const Options = observer(() => {
                     break;
                 }
                 case ExtensionUpdateFSMState.Available: {
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
                     settingsStore.setIsExtensionUpdateAvailable(true);
                     break;
                 }
+                case ExtensionUpdateFSMState.Updating:
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(true);
+                    break;
                 case ExtensionUpdateFSMState.Failed: {
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
                     settingsStore.setIsExtensionUpdateAvailable(false);
                     uiStore.addNotification({
                         type: NotificationType.Error,

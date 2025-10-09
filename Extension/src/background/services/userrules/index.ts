@@ -15,32 +15,5 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import zod from 'zod';
-
-import { ForwardFrom } from '../../../common/forward';
-
-/**
- * Manual extension update data validator.
- */
-export const ManualExtensionUpdateDataValidator = zod.object({
-    /**
-     * Version of the extension where the manual extension update was initialized.
-     */
-    initVersion: zod.string(),
-
-    /**
-     * Page to open after the extension reloads.
-     */
-    pageToOpenAfterReload: zod.enum([ForwardFrom.Options, ForwardFrom.Popup]),
-
-    /**
-     * Whether the extension update was successful.
-     */
-    isOk: zod.boolean(),
-});
-
-/**
- * Manual extension update data.
- */
-export type ManualExtensionUpdateData = zod.infer<typeof ManualExtensionUpdateDataValidator>;
+export { UserRulesService } from 'userrules';
+export { type GetUserRulesResponse, type GetUserRulesEditorDataResponse } from './userrules-common';

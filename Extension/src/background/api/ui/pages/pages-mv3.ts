@@ -30,6 +30,12 @@ import { PagesApiCommon } from './pages-common';
  */
 export class PagesApi extends PagesApiCommon {
     /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected isSendCustomFiltersUrls(): boolean {
+        return isUserScriptsApiSupported();
+    }
+
+    /** @inheritdoc */
     protected thankYouPageUrl: string = Forward.get({
         action: ForwardAction.ThankYouMv3,
         from: ForwardFrom.Background,

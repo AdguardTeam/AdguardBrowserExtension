@@ -297,8 +297,7 @@ export abstract class PagesApiCommon {
         }
 
         const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
-
-        if (isCustomFiltersEnabled) {
+        if (isCustomFiltersEnabled && this.isSendCustomFiltersUrls()) {
             const customFilterUrls = CustomFilterApi.getFiltersData()
                 .filter(({ enabled }) => enabled)
                 .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
@@ -325,6 +324,13 @@ export abstract class PagesApiCommon {
 
         return reportUrl;
     }
+
+    /**
+     * Determines whether custom filter URLs should be included in issue reports.
+     *
+     * @returns True if custom filter URLs should be sent, false otherwise.
+     */
+    protected abstract isSendCustomFiltersUrls(): boolean;
 
     /**
      * Opens abuse page tab.

@@ -174,7 +174,7 @@ export class PopupService {
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
         const isExtensionUpdateAvailable = __IS_MV3__
-            ? ExtensionUpdateService.getIsUpdateAvailable()
+            ? ExtensionUpdateService.isUpdateAvailable
             : false;
         const manualExtensionUpdateData = __IS_MV3__
             ? await ExtensionUpdateService.getManualExtensionUpdateData()
