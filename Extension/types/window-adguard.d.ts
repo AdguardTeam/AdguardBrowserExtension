@@ -34,6 +34,11 @@ declare global {
              * Used to trigger autoUpdate function for tests.
              */
             autoUpdate: (forceUpdate?: boolean) => Promise<FilterMetadata[]>;
+
+            /**
+             * Used to mock update check in CWS for tests for MV3.
+             */
+            mockMv3UpdateCheckInCws: boolean | undefined;
         };
     }
 }

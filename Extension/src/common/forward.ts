@@ -86,6 +86,9 @@ export const enum ForwardAction {
     UserScriptsApiRequired = 'developer_mode_required',
 }
 
+/**
+ * All pages from which a user can be forwarded.
+ */
 export const enum ForwardFrom {
     Background = 'background',
     Options = 'options_screen',
