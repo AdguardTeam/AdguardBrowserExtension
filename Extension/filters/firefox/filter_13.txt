@@ -1,9 +1,9 @@
-! Checksum: tx0BTKUwn/DHWrG8Gsg3dA
-! Diff-Path: ../patches/13/13-s-1759306411-3600.patch
+! Checksum: 0uPuwXBzrkPhHJ1v2y4c6Q
+! Diff-Path: ../patches/13/13-s-1759986696-3600.patch
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.59.78
-! TimeUpdated: 2025-10-01T08:09:40+00:00
+! Version: 2.0.59.87
+! TimeUpdated: 2025-10-09T05:08:02+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1518,7 +1518,7 @@ sozcu.com.tr,korkusuz.com.tr,szctv.com.tr,bursa.com,sozcu.com.tr,megahaber27.com
 ! ##div[id^="ad_"]
 gelirkapisi.com##div[id^="ad_"]
 ! ##.stream-item
-bedavainternet.com.tr,turkedebiyati.org,frpnet.net,teknobh.com,begonya.com,egehaber.com,voleybolmagazin.com,kadinvekadin.net,savunmasanayist.com,aof.tc,m5dergi.com,sosyola.com,havadiskibris.com,unirehberi.com##.stream-item
+maksatbilgi.com,bedavainternet.com.tr,turkedebiyati.org,frpnet.net,teknobh.com,begonya.com,egehaber.com,voleybolmagazin.com,kadinvekadin.net,savunmasanayist.com,aof.tc,m5dergi.com,sosyola.com,havadiskibris.com,unirehberi.com##.stream-item
 ! ##body .code-block
 techolay.net,havadiskibris.com,oyunindir.club,armoniscans.com,teknobh.com,yoldaolmak.com,aof.tc,sorumatik.co,andronova.net,koinfinans.com,hwp.com.tr,konupara.com,lafmacun.net,oyundunyasi.net,bilgenc.com,teknodiot.com,ruyashoujo.com,pchocasi.com.tr,dusuncekatalogu.com##body .code-block
 !
@@ -1541,7 +1541,15 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+trtspor.com.tr##main[class^="wrapper_wrapper"] > div:has(> .ad-container)
+optraco.top#%#//scriptlet('trusted-set-local-storage-item', 'adControl', '{"count":10,"pauseUntil":9999999999999}')
+maksatbilgi.com###mb-sticky-ad
+||afyonturkeligazetesi.com/images/money/WI3hPLwS4AlD.jpg
 nasil-yazilir.com###HTML4
+||diziyiizle.com/wp-content/uploads/*.gif
+vidlax.xyz#%#//scriptlet('set-constant', 'jwSetup.advertising', 'undefined')
+||cdn1-vidlax.xyz/*.mp4
+diziyiizle.com##div[class]:has(> a[href^="https://cutt.ly/"])
 diziyiizle.com#%#//scriptlet('set-local-storage-item', 'redirected_to_home', 'true')
 pandaspor.live###adCreative
 pandaspor.live#%#//scriptlet('remove-attr', 'disabled', 'button#skipBtn')
@@ -1616,7 +1624,7 @@ hdfilmcehennemi.*###loadingIframe
 uzaymanga.com#%#//scriptlet('prevent-window-open')
 uzaymanga.com#%#//scriptlet('prevent-addEventListener', 'click', 'openPopup')
 sporx.com##div[style^="float:left; width:300px; min-height:250px;"]
-aspor.com.tr##.currency-view
+aspor.com.tr##.currency-view:not(#style_important)
 webtekno.com##.sidebar-block:has(.sidebar-trend a.sidebar-trend__item__link[href^="https://s.mdznconnect.com/"])
 nufusu.com##div[class^="pure"] > div[class^="pure"]:has(> div.ortala > ins.adsbygoogle)
 sorubak.com##div[style="min-height:350px;"]
@@ -4646,7 +4654,7 @@ denizlihaber.com##.apw-xbr
 denizlihaber.com##.ap-940x100
 denizlihaber.com##.ap-928X96
 denizlihaber.com##.ap-450x400
-azbuz.org,fosforludusunceler.com##.geoit_popup_ade
+techdergi.net,azbuz.org,fosforludusunceler.com##.geoit_popup_ade
 star.com.tr##a[href*="//apps.star.com.tr/advredir"]
 pembeoje.com##center > a[href="https://www.dekolte.net"] > img
 ||dekolte.net/resim/dekolte336.gif
@@ -6368,6 +6376,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/214719
+@@||buski.gov.tr/files/adverts/$~third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/213134
 silahilanlarim.com#@##adslider
 ! https://github.com/AdguardTeam/AdguardFilters/issues/212391
