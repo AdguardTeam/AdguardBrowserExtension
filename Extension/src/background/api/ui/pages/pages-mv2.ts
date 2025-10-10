@@ -31,7 +31,7 @@ import { PagesApiCommon } from './pages-common';
 export class PagesApi extends PagesApiCommon {
     /** @inheritdoc */
     // eslint-disable-next-line class-methods-use-this
-    protected isSendCustomFiltersUrls(): boolean {
+    protected shouldCustomFiltersUrls(): boolean {
         return true;
     }
 
