@@ -339,8 +339,7 @@ branch-overrides:
 
       # run auto-build every 3 hours after 30 minutes of the hour to collect all
       # changes made by filter list maintainers during the last 3 hours update.
-      # FIXME: Temporary disabled until v5.2.111-beta on manual review in CWS.
-      # triggers:
-      #   - cron:
-      #       expression: 0 30 */3 ? * *
-      #       description: Run auto-build every 3 hours at 30 minutes past the hour.
+      triggers:
+        - cron:
+            expression: 0 30 */3 ? * *
+            description: Run auto-build every 3 hours at 30 minutes past the hour.
