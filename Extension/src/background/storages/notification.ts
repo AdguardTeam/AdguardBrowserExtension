@@ -92,10 +92,10 @@ const HALLOWEEN_25_ID = 'halloween25';
 const backToSchool25Notification: PromoNotification = {
     id: HALLOWEEN_25_ID,
     locales: {
-        // en: {
-        //     title: 'Buy with discount, win Golden Ticket',
-        //     btn: 'Grab the deal'
-        // },
+        en: {
+            title: 'Buy with discount, win Golden Ticket',
+            btn: 'Grab the deal',
+        },
         fr: {
             title: 'Achetez avec une remise, gagnez un billet doré',
             btn: 'Profitez de l\'offre',
@@ -136,7 +136,7 @@ const backToSchool25Notification: PromoNotification = {
             title: '限時特價期間購買，即有機會抽中金獎券喔',
             btn: '試試手氣',
         },
-        en: {
+        ja: {
             title: '特価で購入すれば、抽選でゴールデンチケットが当たる',
             btn: '運を試す',
         },
