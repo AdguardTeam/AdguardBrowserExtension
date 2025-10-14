@@ -89,7 +89,7 @@ export type PromoNotification = {
 
 const HALLOWEEN_25_ID = 'halloween25';
 
-const backToSchool25Notification: PromoNotification = {
+const halloween25Notification: PromoNotification = {
     id: HALLOWEEN_25_ID,
     locales: {
         en: {
@@ -283,5 +283,5 @@ const backToSchool25Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [HALLOWEEN_25_ID, backToSchool25Notification],
+    [HALLOWEEN_25_ID, halloween25Notification],
 ]);
