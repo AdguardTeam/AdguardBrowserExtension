@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated [@adguard/tswebextension] to v3.2.12.
+- Updated [@adguard/tswebextension] to v3.2.13.
 
 
-## [v5.2.112.1] - 2025-13-09
+## [v5.2.112.1] - 2025-10-13
 
 ### Changed
 
