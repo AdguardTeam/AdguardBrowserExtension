@@ -69,6 +69,9 @@ export const PromoNotification = observer(() => {
         backgroundImage: `url(${bgImage})`,
     };
 
+    // TODO: should be removed after halloween25 promo. Use for locale specific styling
+    const currentLocale = navigator.language.toLowerCase().split('-')[0];
+
     const notificationClassnames = classnames('promo-notification', {
         'promo-notification--closing': notificationIsClosed,
     });
@@ -77,6 +80,7 @@ export const PromoNotification = observer(() => {
         <div
             className={notificationClassnames}
             style={promoStyle}
+            data-locale={currentLocale}
         >
             <button
                 aria-label="close"

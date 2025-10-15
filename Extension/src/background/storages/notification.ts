@@ -137,7 +137,7 @@ const halloween25Notification: PromoNotification = {
             btn: '試試手氣',
         },
         ja: {
-            title: '特価で購入すれば、抽選でゴールデンチケットが当たる',
+            title: '特価で購入すれば、抽選でゴールデン チケットが当たる',
             btn: '運を試す',
         },
         ko: {
@@ -275,8 +275,19 @@ const halloween25Notification: PromoNotification = {
     to: '31 October 2025 23:59:00',
     type: 'animated',
     bgImage: browser.runtime.getURL('assets/images/halloween25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween25-update.svg'),
-    icons: defaultIconVariants,
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween25.svg'),
+    icons: {
+        enabled: {
+            '19': 'assets/icons/halloween25-on-19.svg',
+            '38': 'assets/icons/halloween25-on-38.svg',
+        },
+        disabled: {
+            '19': 'assets/icons/halloween25-off-19.svg',
+            '38': 'assets/icons/halloween25-off-38.svg',
+        },
+        warning: defaultIconVariants.warning,
+        updateAvailable: defaultIconVariants.updateAvailable,
+    },
 };
 
 /**
