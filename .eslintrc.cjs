@@ -164,6 +164,17 @@ module.exports = {
                 message: 'Wildcard exports are not allowed.',
             },
         ],
+        'no-restricted-imports': [
+            'error',
+            {
+                patterns: [
+                    {
+                        group: ['**/services/messenger/messenger-mv2', '**/services/messenger/messenger-mv3'],
+                        message: 'Import messenger from "services/messenger" or "messenger" alias instead.',
+                    },
+                ],
+            },
+        ],
         'no-prototype-builtins': 'off',
         'no-continue': 'off',
         'no-bitwise': 'off',

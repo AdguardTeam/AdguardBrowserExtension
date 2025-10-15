@@ -22,7 +22,12 @@ import { observer } from 'mobx-react';
 import { throttle } from 'lodash-es';
 
 import { Filters } from '../Filters';
-import { Messenger, messenger } from '../../../services/messenger';
+import {
+    Messenger,
+    messenger,
+    type LongLivedConnectionCallbackMessage,
+    Page,
+} from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { rootStore } from '../../stores/RootStore';
 import { RequestModal } from '../RequestWizard/RequestModal';
@@ -32,7 +37,6 @@ import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
 import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
-import { type LongLivedConnectionCallbackMessage, Page } from '../../../services/messenger/messenger-common';
 
 import '../../styles/styles.pcss';
 
