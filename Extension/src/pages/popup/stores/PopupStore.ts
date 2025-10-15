@@ -29,10 +29,11 @@ import {
 } from 'mobx';
 import punycode from 'punycode/';
 
+import { messenger } from 'messenger';
+
 import { type GetStatisticsDataResponse, type SettingsData } from '../../../background/api';
 import { type GetTabInfoForPopupResponse } from '../../../background/services';
 import { type PageStatsDataItem } from '../../../background/schema';
-import { messenger } from '../../services/messenger';
 import {
     SpecificPopupState,
     TimeRange,

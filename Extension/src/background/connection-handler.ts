@@ -24,7 +24,7 @@ import {
     type NotifyListenersMessage,
 } from '../common/messages';
 import { logger } from '../common/logger';
-import { Page } from '../pages/services/messenger';
+import { Page } from '../pages/services/messenger/messenger-common';
 
 import { notifier } from './notifier';
 import { filteringLogApi } from './api';

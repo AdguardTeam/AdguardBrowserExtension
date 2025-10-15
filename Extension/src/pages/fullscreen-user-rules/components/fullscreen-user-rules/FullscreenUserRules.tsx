@@ -24,15 +24,12 @@ import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { Notifications } from '../../../options/components/Notifications';
 import { NotifierType } from '../../../../common/constants';
 import { rootStore } from '../../../options/stores/RootStore';
-import {
-    Messenger,
-    type LongLivedConnectionCallbackMessage,
-    Page,
-} from '../../../services/messenger';
+import { Messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { fullscreenUserRulesStore } from '../../stores/FullscreenUserRulesStore';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons } from '../../../common/components/ui/Icons';
+import { type LongLivedConnectionCallbackMessage, Page } from '../../../services/messenger/messenger-common';
 
 import '../../../options/styles/styles.pcss';
 import '../../../options/components/UserRules/styles.pcss';

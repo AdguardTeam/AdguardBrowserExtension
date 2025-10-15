@@ -13,6 +13,18 @@ module.exports = {
         sourceType: 'module',
     },
     'rules': {
+        'no-restricted-imports': [
+            'error',
+            {
+                patterns: [
+                    {
+                        group: ['**/services/messenger/messenger-mv2', '**/services/messenger/messenger-mv3'],
+                        message: 'Import messenger from "services/messenger" or "messenger" alias instead.',
+                    },
+                ],
+            },
+        ],
+
         '@typescript-eslint/indent': [
             'error',
             4,
