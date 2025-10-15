@@ -271,7 +271,7 @@ const halloween25Notification: PromoNotification = {
     },
     text: '',
     url: Forward.get({ action: ForwardAction.Halloween25 }),
-    from: '5 October 2025 12:00:00',
+    from: '25 October 2025 12:00:00',
     to: '31 October 2025 23:59:00',
     type: 'animated',
     bgImage: browser.runtime.getURL('assets/images/halloween25.svg'),
