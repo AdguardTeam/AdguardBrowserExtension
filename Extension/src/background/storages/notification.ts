@@ -278,12 +278,12 @@ const halloween25Notification: PromoNotification = {
     bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween25.svg'),
     icons: {
         enabled: {
-            '19': 'assets/icons/halloween25-on-19.svg',
-            '38': 'assets/icons/halloween25-on-38.svg',
+            '19': browser.runtime.getURL('assets/icons/halloween25-on-19.svg'),
+            '38': browser.runtime.getURL('assets/icons/halloween25-on-38.svg'),
         },
         disabled: {
-            '19': 'assets/icons/halloween25-off-19.svg',
-            '38': 'assets/icons/halloween25-off-38.svg',
+            '19': browser.runtime.getURL('assets/icons/halloween25-off-19.svg'),
+            '38': browser.runtime.getURL('assets/icons/halloween25-off-38.svg'),
         },
         warning: defaultIconVariants.warning,
         updateAvailable: defaultIconVariants.updateAvailable,
