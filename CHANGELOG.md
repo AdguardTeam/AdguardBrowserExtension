@@ -5,14 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.2.112.0] - 2025-10-13
+## Unreleased 5.2 patch 2
+
+### Changed
+
+- Updated [@adguard/tswebextension] to v3.2.12.
+
+
+## [v5.2.112.1] - 2025-13-09
+
+### Changed
+
+- New 4 digits build versioning scheme: `major.minor.patch+buildTag`. `buildTag`
+  is incremented with every build.
 
 ### Fixed
 
 - Minimize the extension update fetch response size in MV3.
 - The extension is failed to update via the popup [#3317].
 
-[5.2.112.0]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.2.77...v5.2.112%2B0.build.20251001190036
+[v5.2.112.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B1.build.20251009120050
 [#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
 
 ## [5.2.77] - 2025-09-22
