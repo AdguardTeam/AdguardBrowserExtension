@@ -202,23 +202,33 @@
     font-weight: 700;
     line-height: 120%;
     font-size: 20px;
-    color: #3D3D3D;
+    color: #FFFFFF;
     word-break: keep-all;
 }
 
 .adguard-update-popup__btn {
-    display: inline-block;
+    box-sizing: border-box;
     text-decoration: none;
     cursor: pointer;
-    color: #3D3D3D;
+    color: #FFFFFF;
     font-weight: 400;
     font-size: 16px;
     line-height: 150%;
-    background-color: #FFFFFF;
-    padding: 12px 24px;
-    min-width: 120px;
-    border: 1px solid #3D3D3D;
+    background-color: #13714E;
+    padding: 16px 24px;
+    min-width: 160px;
     border-radius: 8px;
     margin-top: 16px;
     white-space: nowrap;
+    transition: 0.3s;
+}
+
+.adguard-update-popup__btn:active {
+    background-color: #39764C;
+}
+
+@media (hover: hover) {
+    .adguard-update-popup__btn:hover {
+        background-color: #4d995F;
+    }
 }
