@@ -553,17 +553,16 @@ class Messenger {
     /**
      * Sends a message to the background page to update the status of a filter group.
      *
-     * @param id Group identifier.
+     * @param groupId Group identifier.
      * @param enabled Whether the group should be enabled or disabled.
      *
      * @returns Promise that resolves after the message is sent.
      */
     async updateGroupStatus(
-        id: string,
+        groupId: number,
         enabled: boolean,
     ): Promise<ExtractMessageResponse<MessageType.EnableFiltersGroup | MessageType.DisableFiltersGroup>> {
         const type = enabled ? MessageType.EnableFiltersGroup : MessageType.DisableFiltersGroup;
-        const groupId = Number.parseInt(id, 10);
 
         return this.sendMessage(type, { groupId });
     }

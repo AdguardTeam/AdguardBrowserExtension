@@ -10,6 +10,7 @@ import {
     StealthOption,
     CustomFilterOption,
 } from '../../../Extension/src/background/schema';
+import { AppearanceTheme } from '../../../Extension/src/common/constants';
 
 import { filterNameFixture } from './filterWithMetadata';
 
@@ -147,7 +148,7 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
         [GeneralSettingsOption.AutodetectFilters]: false,
         [GeneralSettingsOption.SafebrowsingEnabled]: !__IS_MV3__,
         [GeneralSettingsOption.FiltersUpdatePeriod]: __IS_MV3__ ? -1 : 3600000,
-        [GeneralSettingsOption.AppearanceTheme]: 'dark',
+        [GeneralSettingsOption.AppearanceTheme]: AppearanceTheme.Dark,
     },
     [RootOption.ExtensionSpecificSettings]: {
         [ExtensionSpecificSettingsOption.UseOptimizedFilters]: true,

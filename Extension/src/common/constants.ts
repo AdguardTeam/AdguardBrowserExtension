@@ -344,3 +344,12 @@ export const enum ExtensionUpdateFSMEvent {
  * Time duration for showing update state change. Needed for smoother user experience.
  */
 export const MIN_UPDATE_DISPLAY_DURATION_MS = 2 * 1000;
+
+/**
+ * Available appearance themes for the extension UI.
+ */
+export const enum AppearanceTheme {
+    System = 'system',
+    Dark = 'dark',
+    Light = 'light',
+}

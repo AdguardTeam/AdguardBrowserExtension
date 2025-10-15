@@ -26,6 +26,7 @@ import {
 
 import {
     AntibannerGroupsId,
+    AntiBannerFiltersId,
     MIN_UPDATE_DISPLAY_DURATION_MS,
     RECOMMENDED_TAG_ID,
     TRUSTED_TAG_KEYWORD,
@@ -36,10 +37,20 @@ import { ForwardFrom } from '../../../common/forward';
 import { sleepIfNecessary, sleep } from '../../../common/sleep-utils';
 import { translator } from '../../../common/translators/translator';
 import { UserAgent } from '../../../common/user-agent';
+import { type SettingOption, type Settings } from '../../../background/schema/settings';
+import { type IRulesLimits } from '../../../background/services/rules-limits/interface';
+import { type GetOptionsDataResponse } from '../../../background/services/settings/types';
+import { type CustomFilterSubscriptionData } from '../../../common/messages/constants';
+import { type FilterMetadata } from '../../../background/api/filters/main';
+import {
+    type CategoriesGroupData,
+    type CategoriesFilterData,
+} from '../../../background/api/filters/categories/categories-mv2';
 import {
     createSavingService,
     SavingFSMEvent,
     SavingFSMState,
+    type SavingFSMStateType,
 } from '../../common/components/Editor/savingFSM';
 import { NotificationType } from '../../common/types';
 import { messenger } from '../../services/messenger';
@@ -51,6 +62,10 @@ import {
     sortGroupsOnSearch,
 } from '../components/Filters/helpers';
 import { optionsStorage } from '../options-storage';
+import { type AppearanceTheme } from '../../../common/constants';
+
+import { type RootStore } from './RootStore';
+import { type default as UiStore } from './UiStore';
 
 /**
  * Sometimes the options page might be opened before the background page or
@@ -59,12 +74,14 @@ import { optionsStorage } from '../options-storage';
  * In this case, we need to retry getting data from the background.
  * https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2712
  *
- * @param {Function} fetchFunction Function to fetch data from
+ * @param fetchFunction Function to fetch data from
  * the background page or service worker.
  *
  * @returns Data for the options page from the background page.
  */
-const fetchDataWithRetry = async (fetchFunction) => {
+const fetchDataWithRetry = async <T>(
+    fetchFunction: () => Promise<T>,
+): Promise<T | null> => {
     /**
      * Delay between retries in milliseconds
      */
@@ -78,9 +95,9 @@ const fetchDataWithRetry = async (fetchFunction) => {
     /**
      * Inner function to retry getting data from the background service.
      *
-     * @param retryTimes {number} - number of retries left
+     * @param retryTimes - number of retries left
      */
-    const innerRetry = async (retryTimes) => {
+    const innerRetry = async (retryTimes: number): Promise<T | null> => {
         if (retryTimes === 0) {
             logger.error('[ext.SettingsStore]: failed to get from the background service.');
             return null;
@@ -104,7 +121,7 @@ const fetchDataWithRetry = async (fetchFunction) => {
     return innerRetry(TOTAL_RETRY_TIMES);
 };
 
-const DEFAULT_RULES_LIMITS = {
+const DEFAULT_RULES_LIMITS: IRulesLimits = {
     dynamicRulesEnabledCount: 0,
     dynamicRulesMaximumCount: 0,
     dynamicRulesUnsafeEnabledCount: 0,
@@ -122,16 +139,22 @@ const DEFAULT_RULES_LIMITS = {
     areFilterLimitsExceeded: false,
 };
 
-/**
- * @typedef {import('../../common/messages/constants').CustomFilterSubscriptionData} CustomFilterSubscriptionData
- */
+// Constants for filter-related setting keys
+const FILTER_SETTING_KEYS = {
+    ALLOW_ACCEPTABLE_ADS: 'allowAcceptableAds',
+    BLOCK_KNOWN_TRACKERS: 'blockKnownTrackers',
+    STRIP_TRACKING_PARAMETERS: 'stripTrackingParameters',
+} as const;
+
+// Type derived from constants
+type FilterRelatedSettingKey = typeof FILTER_SETTING_KEYS[keyof typeof FILTER_SETTING_KEYS];
 
 class SettingsStore {
-    KEYS = {
-        ALLOW_ACCEPTABLE_ADS: 'allowAcceptableAds',
-        BLOCK_KNOWN_TRACKERS: 'blockKnownTrackers',
-        STRIP_TRACKING_PARAMETERS: 'stripTrackingParameters',
-    };
+    FILTER_SETTING_KEYS = FILTER_SETTING_KEYS;
+
+    rootStore: RootStore;
+
+    uiStore: UiStore;
 
     savingAllowlistService = createSavingService({
         id: 'allowlist',
@@ -163,43 +186,43 @@ class SettingsStore {
     });
 
     @observable
-    settings = null;
+    settings: GetOptionsDataResponse['settings'] | null = null;
 
     @observable
     optionsReadyToRender = false;
 
     @observable
-    appVersion = null;
+    appVersion: string | null = null;
 
     @observable
-    libVersions = null;
+    libVersions: GetOptionsDataResponse['libVersions'] | null = null;
 
     @observable
-    filters = [];
+    filters: CategoriesFilterData[] = [];
 
     @observable
-    categories = [];
+    categories: CategoriesGroupData[] = [];
 
     @observable
-    visibleFilters = [];
+    visibleFilters: CategoriesFilterData[] = [];
 
     @observable
     rulesCount = 0;
 
     @observable
-    allowAcceptableAds = null;
+    allowAcceptableAds: boolean | null = null;
 
     @observable
-    blockKnownTrackers = null;
+    blockKnownTrackers: boolean | null = null;
 
     @observable
-    stripTrackingParameters = null;
+    stripTrackingParameters: boolean | null = null;
 
     @observable
     allowlist = '';
 
     @observable
-    savingAllowlistState = this.savingAllowlistService.getSnapshot().value;
+    savingAllowlistState: SavingFSMStateType = this.savingAllowlistService.getSnapshot().value;
 
     @observable
     filtersUpdating = false;
@@ -217,13 +240,13 @@ class SettingsStore {
     isExtensionCheckingUpdateOrUpdating = false;
 
     @observable
-    selectedGroupId = null;
+    selectedGroupId: number | null = null;
 
     @observable
-    isChrome = null;
+    isChrome: boolean | null = null;
 
     @observable
-    currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.version) : null;
+    currentChromeVersion: number | null = UserAgent.isChromium ? Number(UserAgent.version) : null;
 
     @observable
     searchInput = '';
@@ -235,7 +258,7 @@ class SettingsStore {
     allowlistEditorContentChanged = false;
 
     @observable
-    allowlistEditorWrap = null;
+    allowlistEditorWrap: boolean | null = null;
 
     @observable
     fullscreenUserRulesEditorIsOpen = false;
@@ -244,18 +267,18 @@ class SettingsStore {
     allowlistSizeReset = false;
 
     @observable
-    filtersToGetConsentFor = [];
+    filtersToGetConsentFor: FilterMetadata[] = [];
 
     @observable
     isAnnoyancesConsentModalOpen = false;
 
     @observable
-    filterIdSelectedForConsent = null;
+    filterIdSelectedForConsent: number | null = null;
 
     @observable
-    rulesLimits = DEFAULT_RULES_LIMITS;
+    rulesLimits: IRulesLimits = DEFAULT_RULES_LIMITS;
 
-    constructor(rootStore) {
+    constructor(rootStore: RootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
         this.uiStore = rootStore.uiStore;
@@ -311,19 +334,23 @@ class SettingsStore {
     }
 
     @action
-    async requestOptionsData(firstRender) {
+    async requestOptionsData(firstRender?: boolean): Promise<GetOptionsDataResponse | null> {
         // do not re-render options page if the annoyances consent modal is open.
         // it is needed to prevent switch disabling due to the actual state while the modal is shown
         if (this.isAnnoyancesConsentModalOpen) {
-            return;
+            return null;
         }
 
-        let data = null;
+        let data: GetOptionsDataResponse | null = null;
         if (firstRender) {
             // on first render background service might not be ready to provide data, so we need to get it with retry
             data = await fetchDataWithRetry(messenger.getOptionsData.bind(messenger));
         } else {
             data = await messenger.getOptionsData();
+        }
+
+        if (!data) {
+            return null;
         }
 
         runInAction(() => {
@@ -355,7 +382,6 @@ class SettingsStore {
             this.rulesCount = data.filtersInfo.rulesCount;
             this.appVersion = data.appVersion;
             this.libVersions = data.libVersions;
-            this.constants = data.constants;
             this.setAllowAcceptableAds(data.filtersMetadata.filters);
             this.setBlockKnownTrackers(data.filtersMetadata.filters);
             this.setStripTrackingParameters(data.filtersMetadata.filters);
@@ -385,21 +411,20 @@ class SettingsStore {
             // because event may be dispatched before the options page is opened,
             // i.e. listener may not be registered yet.
             if (isExtensionReloadedOnUpdate) {
-                if (isSuccessfulExtensionUpdate) {
-                    this.uiStore.addNotification({
+                const notification = isSuccessfulExtensionUpdate
+                    ? {
                         type: NotificationType.Success,
                         text: translator.getMessage('update_success_text'),
-                    });
-                } else {
-                    this.uiStore.addNotification({
+                    } : {
                         type: NotificationType.Error,
                         text: translator.getMessage('update_failed_text'),
                         button: {
                             title: translator.getMessage('update_failed_try_again_btn'),
                             onClick: this.checkUpdatesMV3,
                         },
-                    });
-                }
+                    };
+
+                this.uiStore.addNotification(notification);
             }
         });
 
@@ -407,23 +432,30 @@ class SettingsStore {
     }
 
     @action
-    setSelectedGroupId(dirtyGroupId) {
-        const groupId = Number.parseInt(dirtyGroupId, 10);
-
-        if (Number.isNaN(groupId)) {
+    setSelectedGroupId(groupId: number | null): void {
+        if (groupId === null) {
             this.selectedGroupId = null;
+            return;
+        }
+
+        const groupExists = this.categories.find((category) => category.groupId === groupId);
+        if (groupExists) {
+            this.selectedGroupId = groupId;
         } else {
-            const groupExists = this.categories.find((category) => category.groupId === groupId);
-            if (groupExists) {
-                this.selectedGroupId = groupId;
-            } else {
-                this.selectedGroupId = null;
-            }
+            this.selectedGroupId = null;
         }
     }
 
     @action
-    async updateSetting(settingId, value, ignoreBackground = false) {
+    async updateSetting<T extends SettingOption>(
+        settingId: T,
+        value: Settings[T],
+        ignoreBackground = false,
+    ): Promise<void> {
+        if (!this.settings) {
+            logger.debug('[ext.SettingsStore.updateSetting]: settings is not initialized yet');
+            return;
+        }
         this.settings.values[settingId] = value;
 
         if (!ignoreBackground) {
@@ -431,12 +463,21 @@ class SettingsStore {
         }
     }
 
-    async setFilterRelatedSettingState(filterId, optionKey, enabled) {
+    async setFilterRelatedSettingState(
+        filterId: number,
+        optionKey: FilterRelatedSettingKey,
+        enabled: boolean,
+    ): Promise<void> {
         const prevValue = this[optionKey];
         this[optionKey] = enabled;
         try {
             const relatedFilter = this.filters
                 .find((f) => f.filterId === filterId);
+
+            if (!relatedFilter) {
+                logger.debug('[ext.SettingsStore.setFilterRelatedSettingState]: related filter not found');
+                return;
+            }
 
             if (enabled) {
                 await messenger.enableFilter(filterId);
@@ -455,106 +496,89 @@ class SettingsStore {
     }
 
     @action
-    async setAllowAcceptableAdsState(enabled) {
-        const { SearchAndSelfPromoFilterId } = this.constants.AntiBannerFiltersId;
+    async setAllowAcceptableAdsState(enabled: boolean): Promise<void> {
         await this.setFilterRelatedSettingState(
-            SearchAndSelfPromoFilterId,
-            this.KEYS.ALLOW_ACCEPTABLE_ADS,
+            AntiBannerFiltersId.SearchAndSelfPromoFilterId,
+            this.FILTER_SETTING_KEYS.ALLOW_ACCEPTABLE_ADS,
             !enabled,
         );
     }
 
     @action
-    async setBlockKnownTrackersState(enabled) {
-        const { TrackingFilterId } = this.constants.AntiBannerFiltersId;
+    async setBlockKnownTrackersState(enabled: boolean): Promise<void> {
         await this.setFilterRelatedSettingState(
-            TrackingFilterId,
-            this.KEYS.BLOCK_KNOWN_TRACKERS,
+            AntiBannerFiltersId.TrackingFilterId,
+            this.FILTER_SETTING_KEYS.BLOCK_KNOWN_TRACKERS,
             enabled,
         );
     }
 
     @action
-    async setStripTrackingParametersState(enabled) {
-        const { UrlTrackingFilterId } = this.constants.AntiBannerFiltersId;
+    async setStripTrackingParametersState(enabled: boolean): Promise<void> {
         await this.setFilterRelatedSettingState(
-            UrlTrackingFilterId,
-            this.KEYS.STRIP_TRACKING_PARAMETERS,
+            AntiBannerFiltersId.UrlTrackingFilterId,
+            this.FILTER_SETTING_KEYS.STRIP_TRACKING_PARAMETERS,
             enabled,
         );
     }
 
-    setSetting(filtersId, settingKey, filters) {
+    private setSetting(
+        filtersId: number,
+        settingKey: FilterRelatedSettingKey,
+        filters: CategoriesFilterData[],
+    ): void {
         const relatedFilter = filters
             .find((f) => f.filterId === filtersId);
-        this[settingKey] = !!(relatedFilter.enabled);
+        this[settingKey] = !!(relatedFilter?.enabled);
     }
 
     @action
-    setAllowAcceptableAds(filters) {
-        const { SearchAndSelfPromoFilterId } = this.constants.AntiBannerFiltersId;
-        this.setSetting(SearchAndSelfPromoFilterId, this.KEYS.ALLOW_ACCEPTABLE_ADS, filters);
+    setAllowAcceptableAds(filters: CategoriesFilterData[]): void {
+        this.setSetting(AntiBannerFiltersId.SearchAndSelfPromoFilterId, 'allowAcceptableAds', filters);
     }
 
     @action
-    setBlockKnownTrackers(filters) {
-        const { TrackingFilterId } = this.constants.AntiBannerFiltersId;
-        this.setSetting(TrackingFilterId, this.KEYS.BLOCK_KNOWN_TRACKERS, filters);
+    setBlockKnownTrackers(filters: CategoriesFilterData[]): void {
+        this.setSetting(AntiBannerFiltersId.TrackingFilterId, 'blockKnownTrackers', filters);
     }
 
     @action
-    setStripTrackingParameters(filters) {
-        const { UrlTrackingFilterId } = this.constants.AntiBannerFiltersId;
-        this.setSetting(UrlTrackingFilterId, this.KEYS.STRIP_TRACKING_PARAMETERS, filters);
+    setStripTrackingParameters(filters: CategoriesFilterData[]): void {
+        this.setSetting(AntiBannerFiltersId.UrlTrackingFilterId, 'stripTrackingParameters', filters);
     }
 
-    isFilterEnabled(filterId) {
+    private isFilterEnabled(filterId: number): boolean {
         const filter = this.filters
             .find((f) => f.filterId === filterId);
-        return filter.enabled;
+        return filter?.enabled === true;
     }
 
-    isCategoryEnabled(categoryId) {
+    private isCategoryEnabled(categoryId: number): boolean {
         const category = this.categories
             .find((c) => c.groupId === categoryId);
-        return category.enabled;
+        return category?.enabled === true;
     }
 
     /**
      * Checks whether the group is touched.
      *
-     * @param {number} groupId Group id.
+     * @param groupId Group id.
      *
-     * @returns {boolean} True if the group is touched, false otherwise.
+     * @returns True if the group is touched, false otherwise.
      */
-    isGroupTouched(groupId) {
+    isGroupTouched(groupId: number): boolean {
         return this.categories.some((c) => c.groupId === groupId && c.touched);
-    }
-
-    isAllowAcceptableAdsFilterEnabled() {
-        const { SearchAndSelfPromoFilterId } = this.constants.AntiBannerFiltersId;
-        return this.isFilterEnabled(SearchAndSelfPromoFilterId);
-    }
-
-    isBlockKnownTrackersFilterEnabled() {
-        const { TrackingFilterId } = this.constants.AntiBannerFiltersId;
-        return this.isFilterEnabled(TrackingFilterId);
-    }
-
-    isStripTrackingParametersFilterEnabled() {
-        const { UrlTrackingFilterId } = this.constants.AntiBannerFiltersId;
-        return this.isFilterEnabled(UrlTrackingFilterId);
     }
 
     /**
      * List of annoyances filters.
      */
     @computed
-    get annoyancesFilters() {
+    get annoyancesFilters(): CategoriesFilterData[] {
         const annoyancesGroup = this.categories.find((group) => {
             return group.groupId === AntibannerGroupsId.AnnoyancesFiltersGroupId;
         });
-        return annoyancesGroup.filters;
+        return annoyancesGroup?.filters || [];
     }
 
     /**
@@ -562,7 +586,7 @@ class SettingsStore {
      * which are only AdGuard annoyances filters.
      */
     @computed
-    get recommendedAnnoyancesFilters() {
+    get recommendedAnnoyancesFilters(): CategoriesFilterData[] {
         return this.annoyancesFilters.filter((filter) => {
             return filter.tags.includes(RECOMMENDED_TAG_ID);
         });
@@ -583,31 +607,25 @@ class SettingsStore {
     }
 
     @action
-    async updateGroupSetting(groupId, enabled) {
+    async updateGroupSetting(groupId: number, enabled: boolean): Promise<void> {
         const recommendedFiltersIds = await messenger.updateGroupStatus(groupId, enabled);
         await this.getRulesLimitsCounters();
 
         runInAction(() => {
             if (groupId === AntibannerGroupsId.OtherFiltersGroupId
-                && this.isAllowAcceptableAdsFilterEnabled()) {
+                && this.isFilterEnabled(AntiBannerFiltersId.SearchAndSelfPromoFilterId)) {
                 this.allowAcceptableAds = enabled;
             } else if (groupId === AntibannerGroupsId.PrivacyFiltersGroupId) {
-                if (this.isBlockKnownTrackersFilterEnabled()) {
+                if (this.isFilterEnabled(AntiBannerFiltersId.TrackingFilterId)) {
                     this.blockKnownTrackers = enabled;
                 }
-                if (this.isStripTrackingParametersFilterEnabled()) {
+                if (this.isFilterEnabled(AntiBannerFiltersId.UrlTrackingFilterId)) {
                     this.stripTrackingParameters = enabled;
                 }
             }
             this.categories.forEach((group) => {
                 if (group.groupId === groupId) {
-                    if (enabled) {
-                        // eslint-disable-next-line no-param-reassign
-                        group.enabled = true;
-                    } else {
-                        // eslint-disable-next-line no-param-reassign
-                        delete group.enabled;
-                    }
+                    group.enabled = enabled;
                 }
             });
 
@@ -620,76 +638,72 @@ class SettingsStore {
     }
 
     @action
-    updateGroupStateUI(groupId, enabled) {
+    updateGroupStateUI(groupId: number, enabled: boolean): void {
         this.categories.forEach((category) => {
             if (category.groupId === groupId) {
-                if (enabled) {
-                    category.enabled = true;
-                } else {
-                    delete category.enabled;
-                }
+                category.enabled = enabled;
             }
         });
     }
 
     @action
-    updateFilterStateUI(filterId, enabled) {
+    updateFilterStateUI(filterId: number, enabled: boolean): void {
         this.filters.forEach((filter) => {
             if (filter.filterId === filterId) {
-                if (enabled) {
-                    filter.enabled = true;
-                } else {
-                    delete filter.enabled;
-                }
+                filter.enabled = enabled;
             }
         });
     }
 
     @action
-    setFiltersToGetConsentFor(filters) {
+    setFiltersToGetConsentFor(filters: FilterMetadata[]): void {
         this.filtersToGetConsentFor = filters;
     }
 
     @action
-    refreshFilters(updatedFilters) {
+    refreshFilters(updatedFilters?: FilterMetadata[]): void {
         if (updatedFilters && updatedFilters.length) {
             updatedFilters.forEach((filter) => this.refreshFilter(filter));
         }
     }
 
     @action
-    refreshFilter(filter) {
-        if (!filter) {
+    refreshFilter(filter: Partial<CategoriesFilterData>): void {
+        if (!filter || typeof filter.filterId !== 'number') {
             return;
         }
 
         const idx = this.filters.findIndex((f) => f.filterId === filter.filterId);
-        if (idx !== -1) {
-            Object.keys(filter).forEach((key) => {
-                this.filters[idx][key] = filter[key];
-            });
+        if (idx === -1) {
+            logger.debug('[ext.SettingsStore.refreshFilter]: filter not found', filter);
+            return;
         }
+
+        const targetFilter = this.filters[idx];
+        if (!targetFilter) {
+            return;
+        }
+
+        SettingsStore.updateObjectProperties(targetFilter, filter);
     }
 
     @action
-    setFilterEnabledState = (rawFilterId, enabled) => {
-        const filterId = parseInt(rawFilterId, 10);
+    setFilterEnabledState = (filterId: number, enabled: boolean): void => {
         this.filters.forEach((filter) => {
             if (filter.filterId === filterId) {
-            // eslint-disable-next-line no-param-reassign
                 filter.enabled = !!enabled;
             }
         });
+
         this.visibleFilters.forEach((filter) => {
             if (filter.filterId === filterId) {
-            // eslint-disable-next-line no-param-reassign
                 filter.enabled = !!enabled;
             }
         });
     };
 
     @action
-    async updateFilterSetting(filterId, enabled) {
+    async updateFilterSetting(filterId: number, enabled: boolean): Promise<void> {
         /**
          * Optimistically set the enabled property to true.
          * The verified state of the filter will be emitted after the engine update.
@@ -705,11 +719,11 @@ class SettingsStore {
                 : await messenger.disableFilter(filterId);
 
             // update allow acceptable ads setting
-            if (filterId === this.constants.AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
+            if (filterId === AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
                 this.allowAcceptableAds = enabled;
-            } else if (filterId === this.constants.AntiBannerFiltersId.TrackingFilterId) {
+            } else if (filterId === AntiBannerFiltersId.TrackingFilterId) {
                 this.blockKnownTrackers = enabled;
-            } else if (filterId === this.constants.AntiBannerFiltersId.UrlTrackingFilterId) {
+            } else if (filterId === AntiBannerFiltersId.UrlTrackingFilterId) {
                 this.stripTrackingParameters = enabled;
             }
 
@@ -732,7 +746,7 @@ class SettingsStore {
     }
 
     @action
-    setFiltersUpdating(value) {
+    setFiltersUpdating(value: boolean): void {
         this.filtersUpdating = value;
     }
 
@@ -781,13 +795,13 @@ class SettingsStore {
     }
 
     @action
-    setIsExtensionUpdateAvailable(isAvailable) {
+    setIsExtensionUpdateAvailable(isAvailable: boolean): void {
         this.isExtensionUpdateAvailable = isAvailable;
     }
 
     @action
-    setIsExtensionCheckingUpdateOrUpdating(isChecking) {
-        this.isExtensionCheckingUpdateOrUpdating = isChecking;
+    setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
+        this.isExtensionCheckingUpdateOrUpdating = value;
     }
 
     /**
@@ -798,7 +812,7 @@ class SettingsStore {
      * @returns {Promise<number>} Custom filter id.
      */
     @action
-    async addCustomFilter(filter) {
+    async addCustomFilter(filter: CustomFilterSubscriptionData): Promise<number | undefined> {
         const newFilter = await messenger.addCustomFilter(filter);
 
         if (!newFilter) {
@@ -823,7 +837,7 @@ class SettingsStore {
     }
 
     @action
-    async removeCustomFilter(filterId) {
+    async removeCustomFilter(filterId: number): Promise<void> {
         await messenger.removeCustomFilter(filterId);
         runInAction(() => {
             this.setFilters(this.filters.filter((filter) => filter.filterId !== filterId));
@@ -834,7 +848,7 @@ class SettingsStore {
     }
 
     @action
-    setAllowlist = (allowlist) => {
+    setAllowlist = (allowlist: string): void => {
         this.allowlist = allowlist;
     };
 
@@ -848,7 +862,7 @@ class SettingsStore {
         }
     };
 
-    saveAllowlist = async (value) => {
+    saveAllowlist = async (value: string): Promise<void> => {
         return new Promise((resolve, reject) => {
             try {
                 this.savingAllowlistService.send({
@@ -863,12 +877,12 @@ class SettingsStore {
     };
 
     @action
-    setAllowlistEditorContentChangedState = (state) => {
+    setAllowlistEditorContentChangedState = (state: boolean): void => {
         this.allowlistEditorContentChanged = state;
     };
 
     @action
-    setSearchInput = (value) => {
+    setSearchInput = (value: string): void => {
         this.searchInput = value;
         this.sortFilters();
         this.sortSearchGroups();
@@ -876,7 +890,7 @@ class SettingsStore {
     };
 
     @action
-    setSearchSelect = (value) => {
+    setSearchSelect = (value: string): void => {
         this.searchSelect = value;
         this.sortFilters();
         this.sortSearchGroups();
@@ -898,12 +912,12 @@ class SettingsStore {
     };
 
     @action
-    setFilters = (filters) => {
+    setFilters = (filters: CategoriesFilterData[]): void => {
         this.filters = filters;
     };
 
     @action
-    setVisibleFilters = (visibleFilters) => {
+    setVisibleFilters = (visibleFilters: CategoriesFilterData[]): void => {
         this.visibleFilters = visibleFilters;
     };
 
@@ -917,7 +931,7 @@ class SettingsStore {
     };
 
     @action
-    setGroups = (categories) => {
+    setGroups = (categories: CategoriesGroupData[]): void => {
         this.categories = categories;
     };
 
@@ -978,7 +992,7 @@ class SettingsStore {
             }
 
             // AG-10491
-            if (filter.trusted) {
+            if ('trusted' in filter && filter.trusted) {
                 const trustedTagMatching = `#${TRUSTED_TAG_KEYWORD}`.match(searchQuery);
                 if (trustedTagMatching) {
                     return true;
@@ -990,8 +1004,9 @@ class SettingsStore {
     }
 
     @computed
-    get appearanceTheme() {
+    get appearanceTheme(): AppearanceTheme | null {
         if (!this.settings) {
+            logger.debug('[ext.SettingsStore.appearanceTheme]: settings is not initialized yet');
             return null;
         }
 
@@ -999,15 +1014,20 @@ class SettingsStore {
     }
 
     @computed
-    get showAdguardPromoInfo() {
+    get showAdguardPromoInfo(): boolean | null {
         if (!this.settings) {
+            logger.debug('[ext.SettingsStore.showAdguardPromoInfo]: settings is not initialized yet');
             return null;
         }
         return !this.settings.values[this.settings.names.DisableShowAdguardPromoInfo];
     }
 
     @action
-    async hideAdguardPromoInfo() {
+    async hideAdguardPromoInfo(): Promise<void> {
+        if (!this.settings) {
+            logger.debug('[ext.SettingsStore.hideAdguardPromoInfo]: settings is not initialized yet');
+            return;
+        }
         await this.updateSetting(this.settings.names.DisableShowAdguardPromoInfo, true);
     }
 
@@ -1031,37 +1051,54 @@ class SettingsStore {
     }
 
     @computed
-    get footerRateShowState() {
+    get footerRateShowState(): boolean {
+        if (!this.settings) {
+            logger.debug('[ext.SettingsStore.footerRateShowState]: settings is not initialized yet');
+            return false;
+        }
         return !this.settings.values[this.settings.names.HideRateBlock];
     }
 
     @action
-    async hideFooterRateShow() {
+    async hideFooterRateShow(): Promise<void> {
+        if (!this.settings) {
+            logger.debug('[ext.SettingsStore.hideFooterRateShow]: settings is not initialized yet');
+            return;
+        }
         await this.updateSetting(this.settings.names.HideRateBlock, true);
     }
 
     @action
-    setFullscreenUserRulesEditorState(isOpen) {
+    setFullscreenUserRulesEditorState(isOpen: boolean): void {
         this.fullscreenUserRulesEditorIsOpen = isOpen;
     }
 
     @computed
-    get isFullscreenUserRulesEditorOpen() {
+    get isFullscreenUserRulesEditorOpen(): boolean {
         return this.fullscreenUserRulesEditorIsOpen;
     }
 
     @computed
-    get userFilterEnabledSettingId() {
+    get userFilterEnabledSettingId(): SettingOption.UserFilterEnabled | null {
+        if (!this.settings) {
+            logger.debug('[ext.SettingsStore.userFilterEnabledSettingId]: settings is not initialized yet');
+            return null;
+        }
         return this.settings.names.UserFilterEnabled;
     }
 
     @computed
-    get userFilterEnabled() {
+    get userFilterEnabled(): boolean | null {
+        if (!this.settings || !this.userFilterEnabledSettingId) {
+            logger.debug('[ext.SettingsStore.userFilterEnabled]: settings is not initialized yet');
+            return null;
+        }
+
         return this.settings.values[this.userFilterEnabledSettingId];
     }
 
     @action
-    setAllowlistSizeReset(value) {
+    setAllowlistSizeReset(value: boolean): void {
         this.allowlistSizeReset = value;
     }
 
@@ -1072,12 +1109,12 @@ class SettingsStore {
     }
 
     @action
-    setIsAnnoyancesConsentModalOpen = (value) => {
+    setIsAnnoyancesConsentModalOpen = (value: boolean): void => {
         this.isAnnoyancesConsentModalOpen = value;
     };
 
     @action
-    setFilterIdSelectedForConsent = (filterId) => {
+    setFilterIdSelectedForConsent = (filterId: number): void => {
         this.filterIdSelectedForConsent = filterId;
         this.updateFilterStateUI(filterId, true);
     };
@@ -1116,6 +1153,23 @@ class SettingsStore {
         }
         // consent modal for group
         return true;
+    }
+
+    /**
+     * Type-safe method to update object properties for MobX reactivity.
+     * Updates each property individually to ensure MobX observers are triggered.
+     */
+    private static updateObjectProperties<T extends Record<string, any>>(
+        target: T,
+        source: Partial<T>,
+    ): void {
+        const keys = Object.keys(source) as Array<keyof T>;
+        keys.forEach((key) => {
+            const value = source[key];
+            if (value !== undefined) {
+                target[key] = value;
+            }
+        });
     }
 }
 
