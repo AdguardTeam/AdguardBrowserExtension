@@ -76,9 +76,11 @@ export const RulesLimits = observer(() => {
      * @returns Array of filter names.
      */
     const getFiltersNames = (filterIds: number[]): string[] => {
-        return filterIds.map((filterId: number) => {
-            return settingsStore.filters.find((f) => f.filterId === filterId)?.name;
-        });
+        const { filters } = settingsStore;
+
+        return filterIds
+            .map((id: number) => filters.find((f) => f.filterId === id)?.name)
+            .filter((name): name is string => name !== undefined);
     };
 
     const handleReactivateFilters = async () => {

@@ -29,7 +29,6 @@ import { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { handleFileUpload } from '../../../helpers';
-import { AppearanceTheme } from '../../../../common/settings';
 import {
     ACCEPTABLE_ADS_LEARN_MORE_URL,
     SAFEBROWSING_LEARN_MORE_URL,
@@ -45,7 +44,7 @@ import { ensurePermission } from '../../ensure-permission';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
 import { Unknown } from '../../../../common/unknown';
-import { FiltersUpdateTime } from '../../../../common/constants';
+import { AppearanceTheme, FiltersUpdateTime } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning } from '../Warnings';
 import { logger } from '../../../../common/logger';
 
@@ -236,7 +235,7 @@ export const General = observer(() => {
         <>
             <SettingsSection title={translator.getMessage('options_general_settings')}>
                 <StaticFiltersLimitsWarning />
-                { /* TODO fix type error when SettingsSection be rewritten in typescript */ }
+                { /* TODO fix type error when SettingsSection be rewritten in typescript */}
                 {/* @ts-ignore */}
                 <SettingSetSelect
                     title={translator.getMessage('options_select_theme')}

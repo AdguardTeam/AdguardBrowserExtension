@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AppearanceTheme } from '../../src/common/settings';
+import { AppearanceTheme } from '../../src/common/constants';
 
 declare global {
     interface Window {

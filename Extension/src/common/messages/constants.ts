@@ -27,9 +27,8 @@ import { type Windows } from 'webextension-polyfill';
 
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
-import { type CustomFilterMetadata } from '../../background/schema/custom-filter-metadata';
-import { type NotifierType } from '../constants';
-import { type AppearanceTheme } from '../settings';
+import { type CategoriesFilterData } from '../../background/api/filters/categories';
+import { type AppearanceTheme, type NotifierType } from '../constants';
 import { type FilteringLogTabInfo } from '../../background/api/filtering-log';
 import { type GetTabInfoForPopupResponse } from '../../background/services/ui/popup';
 import { type GetFilteringLogDataResponse } from '../../background/services/filtering-log';
@@ -828,7 +827,7 @@ export type MessageMap = {
     };
     [MessageType.SubscribeToCustomFilter]: {
         message: SubscribeToCustomFilterMessage;
-        response: CustomFilterMetadata;
+        response: CategoriesFilterData;
     };
     // This message is sent from background and handled on UI side.
     [MessageType.AppInitialized]: {
