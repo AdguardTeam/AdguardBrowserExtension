@@ -95,7 +95,7 @@ export class PopupService extends PopupServiceCommon {
 
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
-        const isExtensionUpdateAvailable = ExtensionUpdateService.getIsUpdateAvailable();
+        const isExtensionUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
         const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
         const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
         const isSuccessfulExtensionUpdate = manualExtensionUpdateData?.isOk || false;

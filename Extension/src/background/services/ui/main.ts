@@ -32,8 +32,7 @@ import {
 } from '../../../common/messages';
 import { UserAgent } from '../../../common/user-agent';
 import { engine } from '../../engine';
-import { AntiBannerFiltersId, type NotifierType } from '../../../common/constants';
-import { notifier } from '../../notifier';
+import { AntiBannerFiltersId, type AppearanceTheme } from '../../../common/constants';
 import {
     toasts,
     FiltersApi,
@@ -49,7 +48,6 @@ import {
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
-import { type AppearanceTheme } from '../../../common/settings';
 import { SettingOption } from '../../schema';
 
 /**
@@ -71,11 +69,6 @@ export type PageInitAppData = {
             mobile: boolean;
         };
         appVersion: string;
-    };
-    constants: {
-        AntiBannerFiltersId: typeof AntiBannerFiltersId;
-        // TODO: Seems like deprecated, can be removed.
-        EventNotifierType: typeof NotifierType;
     };
 };
 
@@ -261,10 +254,6 @@ export class UiService {
                     mobile: UserAgent.isAndroid,
                 },
                 appVersion: browser.runtime.getManifest().version,
-            },
-            constants: {
-                AntiBannerFiltersId,
-                EventNotifierType: notifier.events,
             },
         };
     }

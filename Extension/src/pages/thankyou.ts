@@ -18,6 +18,7 @@
 
 import { UserAgent } from '../common/user-agent';
 import { type PageInitAppData } from '../background/services';
+import { AntiBannerFiltersId } from '../common/constants';
 
 import { messenger } from './services/messenger';
 
@@ -25,7 +26,6 @@ const PageController = (response: PageInitAppData) => {
     const {
         userSettings,
         enabledFilters,
-        constants: { AntiBannerFiltersId },
     } = response;
 
     let safebrowsingEnabledCheckbox: HTMLElement | null = null;

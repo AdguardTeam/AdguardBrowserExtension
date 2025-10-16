@@ -9,6 +9,7 @@ import {
     AllowlistOption,
     StealthOption,
 } from '../../../Extension/src/background/schema';
+import { AppearanceTheme } from '../../../Extension/src/common/constants';
 import { UserAgent } from '../../../Extension/src/common/user-agent';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,7 +21,7 @@ export const getDefaultExportFixture = (isMv3: boolean): Config => ({
         [GeneralSettingsOption.AutodetectFilters]: true,
         [GeneralSettingsOption.SafebrowsingEnabled]: false,
         [GeneralSettingsOption.FiltersUpdatePeriod]: -1,
-        [GeneralSettingsOption.AppearanceTheme]: 'system',
+        [GeneralSettingsOption.AppearanceTheme]: AppearanceTheme.System,
     },
     [RootOption.ExtensionSpecificSettings]: {
         [ExtensionSpecificSettingsOption.UseOptimizedFilters]: false,

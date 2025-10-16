@@ -78,17 +78,17 @@ export class PopupStore extends PopupStoreCommon {
     @action
     async checkUpdates() {
         const start = Date.now();
-        this.setIsExtensionUpdating(true);
+        this.setIsExtensionUpdateAvailable(true);
 
         try {
             this.setUpdateNotification(null);
-            await messenger.checkUpdatesFromPopupMV3();
+            await messenger.checkUpdatesMV3();
         } catch (error: unknown) {
             logger.debug('[ext.PopupStore.checkUpdates]: failed to check updates in popup: ', error);
         }
 
         // Ensure minimum duration for smooth UI experience
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-        this.setIsExtensionUpdating(false);
+        this.setIsExtensionUpdateAvailable(false);
     }
 }

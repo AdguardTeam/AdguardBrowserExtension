@@ -173,6 +173,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'locale-detect': path.resolve(__dirname, `../../Extension/src/background/services/locale-detect/locale-detect-mv${manifestVersion}.ts`),
         'popup-service': path.resolve(__dirname, `../../Extension/src/background/services/ui/popup/popup-mv${manifestVersion}.ts`),
         'popup-store': path.resolve(__dirname, `../../Extension/src/pages/popup/stores/PopupStore/PopupStore-mv${manifestVersion}.ts`),
+        'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {

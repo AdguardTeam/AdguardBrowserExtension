@@ -27,7 +27,6 @@ import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
 import { messageHandler } from '../../message-handler';
 import { UserAgent } from '../../../common/user-agent';
-import { AntiBannerFiltersId } from '../../../common/constants';
 import { engine } from '../../engine';
 import {
     Categories,
@@ -112,9 +111,6 @@ export class SettingsService {
             libVersions: Prefs.libVersions,
             environmentOptions: {
                 isChrome: UserAgent.isChrome,
-            },
-            constants: {
-                AntiBannerFiltersId,
             },
             filtersInfo: {
                 rulesCount: engine.api.getRulesCount(),

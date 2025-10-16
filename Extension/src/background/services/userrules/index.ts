@@ -15,18 +15,5 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import type {
-    RegularFilterMetadata,
-    FilterVersionData,
-    CustomFilterMetadata,
-    TagMetadata,
-} from '../../../../background/schema';
-
-export type RenderedFilterType = RegularFilterMetadata
-& FilterVersionData
-& CustomFilterMetadata
-& {
-    enabled: boolean;
-    tagsDetails: TagMetadata[];
-};
+export { UserRulesService } from 'userrules';
+export { type GetUserRulesResponse, type GetUserRulesEditorDataResponse } from './userrules-common';

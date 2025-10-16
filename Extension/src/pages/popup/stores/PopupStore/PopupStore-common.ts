@@ -43,9 +43,11 @@ import {
     AppStateEvent,
 } from '../../state-machines/app-state-machine';
 import { asyncWrapper } from '../../../filtering-log/stores/helpers';
-import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../../common/constants';
+import { MIN_UPDATE_DISPLAY_DURATION_MS, TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../../common/constants';
 import { UserAgent } from '../../../../common/user-agent';
 import { type NotificationParams } from '../../../common/types';
+import { logger } from '../../../../common/logger';
+import { sleepIfNecessary } from '../../../../common/sleep-utils';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -156,8 +158,11 @@ export abstract class PopupStoreCommon {
     @observable
     isExtensionUpdateAvailable = false;
 
+    /**
+     * Whether the extension update is checking or is updating now.
+     */
     @observable
-    isExtensionUpdating = false;
+    isExtensionCheckingUpdateOrUpdating = false;
 
     @observable
     updateNotification: NotificationParams | null = null;
@@ -590,14 +595,37 @@ export abstract class PopupStoreCommon {
         return this.settings.values[this.settings.names.AppearanceTheme];
     }
 
+    /**
+     * Checks for updates and if update is available, starts the update process.
+     *
+     * Note:
+     * This behavior is different on options page
+     * where two separate clicks are required
+     * to check for updates and start the update process.
+     */
+    @action
+    async checkUpdatesMV3() {
+        const start = Date.now();
+
+        try {
+            this.setUpdateNotification(null);
+            await messenger.checkUpdatesMV3();
+        } catch (error: unknown) {
+            logger.debug('[ext.PopupStoreCommon.checkUpdatesMV3]: failed to check updates in popup: ', error);
+        }
+
+        // Ensure minimum duration for smooth UI experience
+        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
+    }
+
     @action
     setIsExtensionUpdateAvailable(isUpdateAvailable: boolean): void {
         this.isExtensionUpdateAvailable = isUpdateAvailable;
     }
 
     @action
-    setIsExtensionUpdating(isUpdating: boolean): void {
-        this.isExtensionUpdating = isUpdating;
+    setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
+        this.isExtensionCheckingUpdateOrUpdating = value;
     }
 
     /**

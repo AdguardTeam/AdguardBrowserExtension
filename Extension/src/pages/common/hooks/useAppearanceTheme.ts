@@ -20,9 +20,9 @@ import { useLayoutEffect } from 'react';
 
 import { throttle } from 'lodash-es';
 
-import { AppearanceTheme } from '../../../common/settings';
+import { AppearanceTheme } from '../../../common/constants';
 
-export const useAppearanceTheme = (appearanceTheme) => {
+export const useAppearanceTheme = (appearanceTheme: AppearanceTheme | null) => {
     useLayoutEffect(() => {
         const STORAGE_KEY = 'appearance_theme';
         const DARK_THEME_CLASS = 'dark-mode';
@@ -35,7 +35,7 @@ export const useAppearanceTheme = (appearanceTheme) => {
 
         let theme = appearanceTheme;
         if (!theme) {
-            theme = localStorage.getItem(STORAGE_KEY);
+            theme = localStorage.getItem(STORAGE_KEY) as AppearanceTheme;
         } else {
             throttledSetToStorage(theme);
         }
