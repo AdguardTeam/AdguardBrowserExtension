@@ -65,6 +65,7 @@ import {
     DocumentBlockService,
     PromoNotificationService,
     filterUpdateService,
+    someService,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -92,6 +93,18 @@ export class App {
      * First sync modules are initialized, then async modules.
      */
     public static async init(): Promise<void> {
+        // Common method available in both versions
+        someService.init();
+        // Abstract method available in both versions
+        someService.abstractcommonMethod();
+
+        // Specific method available only in MV3
+        someService.MV3SpecificMethod();
+
+        // MV2 is not available in MV3 files
+        // VS code show error: Property 'MV2SpecificMethod' does not exist on type 'SomeService'
+        // someService.MV2SpecificMethod();
+
         // removes listeners on re-initialization, because new ones will be registered during process
         App.removeListeners();
 

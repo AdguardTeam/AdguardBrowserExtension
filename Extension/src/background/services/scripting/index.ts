@@ -20,6 +20,4 @@
 // it is an alias for manifest-specific implementation of the rules rules limits
 // service. It will be replaced with mv2 or mv3 version during the build
 // via webpack.
-export { executeScript } from 'scripting-service';
-export { type ExecuteScriptOptionsMv2 } from './scripting-service-mv2';
-export { type ExecuteScriptOptionsMv3 } from './scripting-service-mv3';
+export { executeScript, type ExecuteScriptOptions } from 'scripting-service';

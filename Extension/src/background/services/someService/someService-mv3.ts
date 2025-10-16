@@ -16,27 +16,33 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type BuildTargetEnv } from '../../constants';
-import {
-    type Browser,
-    ENV_CONF,
-    type EnvConfig,
-} from '../constants';
+import { SomeServiceCommon } from './someService-common';
 
-import { type BrowserConfig, BROWSERS_CONF } from './common-constants';
+/**
+ * Manifest V3 specific implementation of SomeService.
+ */
+export class SomeService extends SomeServiceCommon {
+    /**
+     * Implementation of abstract method for MV3.
+     *
+     * @returns Test string value.
+     */
+    abstractcommonMethod(): string {
+        // eslint-disable-next-line no-console
+        console.log('overrided mv3 abstract method');
 
-export const getBrowserConf = (browser: Browser): BrowserConfig => {
-    const browserConf = BROWSERS_CONF[browser as keyof typeof BROWSERS_CONF];
-    if (!browserConf) {
-        throw new Error(`No browser config for: "${browser}"`);
+        return this.test;
     }
-    return browserConf;
-};
 
-export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
-    const envConfig = ENV_CONF[env];
-    if (!envConfig) {
-        throw new Error(`No env config for: "${env}"`);
+    /**
+     * Method specific to Manifest V3 only.
+     *
+     * @returns Test string value.
+     */
+    MV3SpecificMethod(): string {
+        // eslint-disable-next-line no-console
+        console.log('mv3 method');
+
+        return this.test;
     }
-    return envConfig;
-};
+}

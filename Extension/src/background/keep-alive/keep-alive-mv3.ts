@@ -18,7 +18,7 @@
 
 import browser from 'webextension-polyfill';
 
-import { executeScript, type ExecuteScriptOptionsMv3 } from '../services/scripting';
+import { executeScript, type ExecuteScriptOptions } from '../services/scripting';
 import { logger } from '../../common/logger';
 
 import { KeepAliveCommon } from './keep-alive-common';
@@ -101,7 +101,7 @@ export class KeepAlive extends KeepAliveCommon {
                  * and here is only MV3-specific executeScript should be used.
                  */
                 // eslint-disable-next-line no-await-in-loop
-                await executeScript(tab.id, { func: keepAliveFunc } as ExecuteScriptOptionsMv3);
+                await executeScript(tab.id, { func: keepAliveFunc } as ExecuteScriptOptions);
                 return;
             } catch (e) {
                 // use debug level to avoid extension errors when blocking pages is loading

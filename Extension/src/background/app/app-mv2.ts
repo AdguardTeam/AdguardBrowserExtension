@@ -62,6 +62,7 @@ import {
     localeDetect,
     PromoNotificationService,
     filterUpdateService,
+    someService,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -132,6 +133,17 @@ export class App {
 
         // Set the current log level from session storage.
         await logger.init();
+
+        // Common method available in both versions
+        someService.init();
+        // Abstract method available in both versions
+        someService.abstractcommonMethod();
+
+        // Specific method available only in MV2
+        someService.MV2SpecificMethod();
+
+        // MV3 is not available in MV2 files
+        // someService.MV3SpecificMethod();
 
         await trackInitTimesForDebugging();
 

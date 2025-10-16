@@ -89,7 +89,7 @@ export abstract class ContextMenuApiCommon {
      * Used in because updateMenu can be called multiple times from various event listeners, but
      * context menu doesn't require fast update.
      */
-    public throttledUpdateMenu = throttle((frameData: FrameData) => {
+    public throttledUpdateMenu: (frameData: FrameData) => void = throttle((frameData: FrameData) => {
         this.updateMenu(frameData);
     }, 100);
 

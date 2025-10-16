@@ -16,27 +16,23 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type BuildTargetEnv } from '../../constants';
-import {
-    type Browser,
-    ENV_CONF,
-    type EnvConfig,
-} from '../constants';
+/**
+ * Base class for SomeService with common methods available in both MV2 and MV3.
+ */
+export abstract class SomeServiceCommon {
+    test = 'test';
 
-import { type BrowserConfig, BROWSERS_CONF } from './common-constants';
-
-export const getBrowserConf = (browser: Browser): BrowserConfig => {
-    const browserConf = BROWSERS_CONF[browser as keyof typeof BROWSERS_CONF];
-    if (!browserConf) {
-        throw new Error(`No browser config for: "${browser}"`);
+    /**
+     * Initializes the service with common functionality.
+     */
+    init(): void {
+        // eslint-disable-next-line no-console
+        console.log('common test init');
+        this.abstractcommonMethod();
     }
-    return browserConf;
-};
 
-export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
-    const envConfig = ENV_CONF[env];
-    if (!envConfig) {
-        throw new Error(`No env config for: "${env}"`);
-    }
-    return envConfig;
-};
+    /**
+     * Abstract method that must be implemented by concrete classes.
+     */
+    abstract abstractcommonMethod(): string;
+}

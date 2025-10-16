@@ -1,10 +1,20 @@
 {
     "extends": "./tsconfig.base.json",
     "include": [
+        "constants.ts",
+        "tools/",
         "Extension/",
         "tests/"
     ],
+    "exclude": [
+        "Extension/**/*-mv3.ts",
+        "Extension/**/*-mv3.tsx",
+        "tools/skip-review/download-latest-extension.ts"
+    ],
     "compilerOptions": {
+        "composite": true,
+        "noEmit": false,
+        "emitDeclarationOnly": true,
         "paths": {
             "app": ["./Extension/src/background/app/app-mv2.ts"],
             "engine": ["./Extension/src/background/engine/engine-mv2.ts"],
@@ -29,6 +39,7 @@
             "userrules": ["./Extension/src/background/services/userrules/userrules-mv2.ts"],
             "keep-alive-api": ["./Extension/src/background/keep-alive/keep-alive-mv2.ts"],
             "locale-detect": ["./Extension/src/background/services/locale-detect/locale-detect-mv2.ts"],
+            "someService": ["./Extension/src/background/services/someService/someService-mv2.ts"],
         }
     }
 }
