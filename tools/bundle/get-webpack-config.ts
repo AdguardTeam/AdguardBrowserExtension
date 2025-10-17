@@ -18,7 +18,6 @@
 
 import path from 'node:path';
 
-// @ts-ignore - no types available
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import { Browser } from '../constants';
