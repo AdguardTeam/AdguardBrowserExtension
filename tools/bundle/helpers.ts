@@ -18,7 +18,7 @@
 
 import { type BuildTargetEnv } from '../../constants';
 import {
-    type Browser,
+    Browser,
     ENV_CONF,
     type EnvConfig,
 } from '../constants';
@@ -26,7 +26,11 @@ import {
 import { type BrowserConfig, BROWSERS_CONF } from './common-constants';
 
 export const getBrowserConf = (browser: Browser): BrowserConfig => {
-    const browserConf = BROWSERS_CONF[browser as keyof typeof BROWSERS_CONF];
+    if (browser === Browser.ChromeCrx) {
+        throw new Error(`Browser "${browser}" is not supported for webpack builds`);
+    }
+
+    const browserConf = BROWSERS_CONF[browser];
     if (!browserConf) {
         throw new Error(`No browser config for: "${browser}"`);
     }
