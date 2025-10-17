@@ -34,6 +34,5 @@ export { FiltersService } from './filters';
 export { localeDetect } from './locale-detect';
 export { DocumentBlockService } from './document-block';
 export { FilterUpdateService, filterUpdateService } from './filter-update';
-export { someService } from './someService';
 // Do not export SafebrowsingService here, because it will break MV3 build
 // because of dependencies with window object.
