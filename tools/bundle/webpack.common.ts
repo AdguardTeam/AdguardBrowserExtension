@@ -149,6 +149,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
 
     const alias: Record<string, string> = {
         'tswebextension': path.resolve(__dirname, `../../Extension/src/background/tswebextension/tswebextension-mv${manifestVersion}.ts`),
+        'browser-action': path.resolve(__dirname, `../../Extension/src/background/api/ui/browser-action/browser-action-mv${manifestVersion}.ts`),
         'app': path.resolve(__dirname, `../../Extension/src/background/app/app-mv${manifestVersion}.ts`),
         'engine': path.resolve(__dirname, `../../Extension/src/background/engine/engine-mv${manifestVersion}.ts`),
         'scripting-service': path.resolve(__dirname, `../../Extension/src/background/services/scripting/scripting-service-mv${manifestVersion}.ts`),
@@ -157,21 +158,19 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'custom-filters-service': path.resolve(__dirname, `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`),
         'extension-update-service': path.resolve(__dirname, `../../Extension/src/background/services/extension-update/extension-update-service-mv${manifestVersion}.ts`),
         'rules-limits-service': path.resolve(__dirname, `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`),
-        'content-script': path.resolve(__dirname, `../../Extension/pages/content-script-start/mv${manifestVersion}.ts`),
+        'filter-update-service': path.resolve(__dirname, `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`),
+        'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
         'network-api': path.resolve(__dirname, `../../Extension/src/background/api/network/network-mv${manifestVersion}.ts`),
         'network-api-settings': path.resolve(__dirname, `../../Extension/src/background/api/network/settings-mv${manifestVersion}.ts`),
         'filters-update-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/update/update-mv${manifestVersion}.ts`),
         'common-filter-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/common/common-mv${manifestVersion}.ts`),
         'filter-categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
         'settings-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/settings-mv${manifestVersion}.ts`),
-        'filter-update-service': path.resolve(__dirname, `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`),
-        'browser-action': path.resolve(__dirname, `../../Extension/src/background/api/ui/browser-action/browser-action-mv${manifestVersion}.ts`),
         'context-menu-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/context-menu/context-menu-mv${manifestVersion}.ts`),
-        'icons-cache': path.resolve(__dirname, `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`),
         'icons-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/icons/icons-mv${manifestVersion}.ts`),
+        'icons-cache': path.resolve(__dirname, `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`),
+        'content-script': path.resolve(__dirname, `../../Extension/pages/content-script-start/mv${manifestVersion}.ts`),
         'keep-alive-api': path.resolve(__dirname, `../../Extension/src/background/keep-alive/keep-alive-mv${manifestVersion}.ts`),
-        'locale-detect': path.resolve(__dirname, `../../Extension/src/background/services/locale-detect/locale-detect-mv${manifestVersion}.ts`),
-        'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {

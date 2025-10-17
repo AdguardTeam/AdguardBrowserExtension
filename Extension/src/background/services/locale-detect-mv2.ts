@@ -18,19 +18,19 @@
 
 import browser, { type Tabs } from 'webextension-polyfill';
 
-import { getDomain, isHttpRequest } from '../../tswebextension';
-import { UserAgent } from '../../../common/user-agent';
-import { type RegularFilterMetadata, SettingOption } from '../../schema';
+import { getDomain, isHttpRequest } from '../tswebextension';
+import { UserAgent } from '../../common/user-agent';
+import { type RegularFilterMetadata, SettingOption } from '../schema';
 import {
     groupStateStorage,
     metadataStorage,
     settingsStorage,
-} from '../../storages';
-import { engine } from '../../engine';
-import { toasts } from '../../api/ui';
-import { FiltersApi } from '../../api/filters/main';
-import { CommonFilterApi } from '../../api/filters/common';
-import { AntibannerGroupsId } from '../../../common/constants';
+} from '../storages';
+import { engine } from '../engine';
+import { toasts } from '../api/ui';
+import { FiltersApi } from '../api/filters/main';
+import { CommonFilterApi } from '../api/filters/common';
+import { AntibannerGroupsId } from '../../common/constants';
 
 type BrowsingLanguage = {
     language: string;

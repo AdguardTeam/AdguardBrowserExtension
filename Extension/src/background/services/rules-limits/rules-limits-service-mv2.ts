@@ -19,13 +19,13 @@
 import { NotImplementedError } from '../../errors/not-implemented-error';
 
 /**
+ * TODO: remove this MV2 implimentation after split Extension/src/background/services/ui/popup.ts for mv2/mv3 versions.
  * This service is a empty dummy to correct work of MV2 build without
  * using MV3 code.
  */
 export class RulesLimitsService {
     /**
      * Just a empty dummy method for MV2.
-     * TODO: remove this method after split Extension/src/background/services/ui/popup.ts for mv2/mv3 versions.
      *
      * @throws Not implemented error.
      */

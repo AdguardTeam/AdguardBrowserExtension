@@ -59,7 +59,6 @@ import {
     FilteringLogService,
     eventService,
     DocumentBlockService,
-    localeDetect,
     PromoNotificationService,
     filterUpdateService,
 } from '../services';
@@ -69,6 +68,7 @@ import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
 import { getZodErrorMessage } from '../../common/error';
+import { localeDetect } from '../services/locale-detect-mv2';
 
 /**
  * Logs initialization times for debugging purposes.

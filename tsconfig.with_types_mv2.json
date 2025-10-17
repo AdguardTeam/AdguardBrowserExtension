@@ -8,22 +8,19 @@
     ],
     "exclude": [
         "Extension/**/*-mv3.ts",
-        "Extension/**/*-mv3.tsx"
+        "Extension/**/*-mv3.tsx",
+        // It is common file, that imports MV3-specific code and is used by Bamboo CI
+        "tools/skip-review/download-latest-extension.ts"
     ],
     "compilerOptions": {
         "composite": true,
         "noEmit": false,
         "emitDeclarationOnly": true,
         "paths": {
-            // libs
             "tswebextension": ["./Extension/src/background/tswebextension/tswebextension-mv2.ts"],
             "browser-action": ["./Extension/src/background/api/ui/browser-action/browser-action-mv2.ts"],
-
-            // engine
             "app": ["./Extension/src/background/app/app-mv2.ts"],
             "engine": ["./Extension/src/background/engine/engine-mv2.ts"],
-
-            // services
             "scripting-service": ["./Extension/src/background/services/scripting/scripting-service-mv2.ts"],
             "settings-service": ["./Extension/src/background/services/settings/settings-service-mv2.ts"],
             "filters-service": ["./Extension/src/background/services/filters/filters-service-mv2.ts"],
@@ -32,9 +29,6 @@
             "rules-limits-service": ["./Extension/src/background/services/rules-limits/rules-limits-service-mv2.ts"],
             "filter-update-service": ["./Extension/src/background/services/filter-update/filter-update-mv2.ts"],
             "userrules": ["./Extension/src/background/services/userrules/userrules-mv2.ts"],
-            "locale-detect": ["./Extension/src/background/services/locale-detect/locale-detect-mv2.ts"],
-
-            // api
             "network-api": ["./Extension/src/background/api/network/network-mv2.ts"],
             "network-api-settings": ["./Extension/src/background/api/network/settings-mv2.ts"],
             "filters-update-api": ["./Extension/src/background/api/filters/update/update-mv2.ts"],
@@ -44,8 +38,6 @@
             "context-menu-api": ["./Extension/src/background/api/ui/context-menu/context-menu-mv2.ts"],
             "icons-api": ["./Extension/src/background/api/ui/icons/icons-mv2.ts"],
             "icons-cache": ["./Extension/src/common/api/extension/icons-cache/icons-cache-mv2.ts"],
-
-            // other
             "keep-alive-api": ["./Extension/src/background/keep-alive/keep-alive-mv2.ts"]
         }
     }
