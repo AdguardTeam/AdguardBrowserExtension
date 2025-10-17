@@ -62,11 +62,6 @@ AutoDeployAndPublish Release:
               echo "Expedited review failed, trying normal review"
               ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
             fi
-  final-tasks:
-    - script: &cleanup-script
-        interpreter: SHELL
-        scripts:
-          - "./bamboo-specs/scripts/cleanup.sh"
   requirements: &requirements
     - adg-docker: 'true'
   notifications: &notifications
@@ -125,7 +120,5 @@ AutoDeployAndPublish Beta:
               echo "Expedited review failed, trying normal review"
               ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
             fi
-  final-tasks:
-    - script: *cleanup-script
   requirements: *requirements
   notifications: *notifications
