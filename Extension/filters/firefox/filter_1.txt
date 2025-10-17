@@ -1,9 +1,9 @@
-! Checksum: 5p/jJAXbhbIFTy8l8MAcMA
-! Diff-Path: ../patches/1/1-s-1759317035-3600.patch
+! Checksum: cDwLWcZuR8Ny5KdIQYQgrQ
+! Diff-Path: ../patches/1/1-s-1759911209-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.2.12
-! TimeUpdated: 2025-10-01T11:06:16+00:00
+! Version: 2.1.2.25
+! TimeUpdated: 2025-10-08T08:09:23+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -3766,12 +3766,13 @@ cdntvpotok.com#%#(()=>{document.addEventListener("DOMContentLoaded",(()=>{if(typ
 cdntvpotok.com##.player-button
 ! https://github.com/AdguardTeam/AdguardFilters/issues/213035
 dtf.ru#@#.ad.banner
-dtf.ru#%#//scriptlet('prevent-element-src-loading', 'script', '/ads\/system\/context\.js|configs\/sites\/dtf\.js|capirs_async\.js/')
-dtf.ru#%#(()=>{const c={construct:(c,o,r)=>{try{o[0]?.detectAdblock&&(o[0].detectAdblock=!1)}catch(c){}return Reflect.construct(c,o,r)}};window.Proxy=new Proxy(window.Proxy,c)})();
+dtf.ru#%#//scriptlet('prevent-fetch', '/ssp\.rambler\.ru\/capirs_async\.js|wi-fi\.ru\/mtt\/configs\/sites\/dtf\.js|yandex\.ru\/ads\//')
+dtf.ru#%#(()=>{const t=window.Map.prototype.values,a={apply:(a,e,p)=>{try{const a=Array.from(t.call(e))[0];(a?.parentElement?.matches(".supbar")||a?.matches?.(".rotator"))&&(e=new Map)}catch(t){}return Reflect.apply(a,e,p)}};window.Map.prototype.values=new Proxy(window.Map.prototype.values,a)})();
 ||dtf.ru/assets/index-*.js$replace=/"assets\/Blocker-[\d\w]+\.js"\,//
 ||dtf.ru/assets/index-*.js$replace=/detectAdblock:/detectNoAdblock:/
 ! TODO: remove when this issues will be fixed - https://github.com/AdguardTeam/Scriptlets/issues/514
 ! https://github.com/AdguardTeam/AdguardFilters/issues/212306
+blitzfoxhub.com#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'AnalyticsMonitor')
 blitzfoxhub.com#%#//scriptlet('remove-node-text', 'script', 'detect-modal')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/206755
 ||servermon.ru/assets/template_mon/js_src/script.js
@@ -3826,7 +3827,7 @@ positiverecords.ru#@#.ad-google
 ||tests24.su^$cookie=/^ai/
 ! pikabu.ru
 pikabu.ru#%#//scriptlet('abort-on-property-write', 'Ya')
-pikabu.ru#%#//scriptlet('remove-node-text', 'script', '/xhr\.setRequestHeader\(_{0,2}[req]{0,3}[hHxX]?[a-zA-Z0-9_]{1,2}[a-zA-Z0-9_]{1,3}_?[a-zA-Z0-9]?[a-zA-Z0-9_]?[RrpP]/')
+pikabu.ru#%#//scriptlet('remove-node-text', 'script', '/xhr\.setRequestHeader\(_{0,2}[a-z]{0,6}[hHxX]?[a-zA-Z0-9_]{1,2}[a-zA-Z0-9_]{1,3}_?[a-zA-Z0-9]?[a-zA-Z0-9_]?[RrpP]/')
 ! sports.ru
 sports.ru#%#//scriptlet('json-prune', 'direct rtbAuctionInfo')
 sports.ru#%#//scriptlet('set-constant', 'Ya.adfoxCode.create', 'noopFunc')
@@ -4963,6 +4964,7 @@ yandex.*#?#.business-card-title-view__actions > div.business-card-title-view__ad
 ||yandex-pogoda.static-storage.net/*/*/*$script,replace=/adblock//
 !
 ! Yandex.Market
+market.yandex.*##div[data-apiary-widget-name="@light/RecomMediaAdv"]
 market.yandex.*##div[data-apiary-widget-name="@monetize/HeroBannerCarousel"]
 market.yandex.*##div[data-zone-name="headerPromo"]
 market.yandex.*###banner-streamer
@@ -6933,6 +6935,10 @@ glavbukh.ru,chehov-vid.ru,161.ru,prufy.ru,ysia.ru,5koleso.ru,ngs.ru,i38.ru,chita
 !
 !
 !
+chesnok.media##.reklama_d
+||static.vr.m-31.ru/sticky-stage/*/sticky-ad-player.
+vidal.ru##.products-table > tbody > tr[class] ~ tr:not([class])
+99px.ru##div[role^="advertizing"]
 tass.ru##div[class^="DesktopLayout_top"]
 tass.ru##div[class*="CardsGrid_ad_"]
 partnerkin.com#$#.article_ab_container.main_top { display: none !important; }
@@ -17524,10 +17530,10 @@ vk.com,vk.ru##div[data-ad]
 ! Вероятно проблемное
 ! vk.com,vk.ru#?##feed_rows > div[class^="feed_row"]:has(> div[class] .PostHeaderSubtitle:contains(/[Реклама]/))
 vk.com,vk.ru#%#//scriptlet('trusted-replace-xhr-response', '/banner:/g', '_banner:', 'feed')
+vk.com,vk.ru##.post_marked_as_ads
 vk.com,vk.ru##._ads_promoted_post
 ! vk.com,vk.ru###feed_rows > div[class="feed_row "] > div[class^="feed_repost-"]:has(div[class="wall_marked_as_ads"])
 ! vk.com,vk.ru##[class^="ads_ad_"]
-! vk.com,vk.ru###page_wall_posts > div.post_marked_as_ads
 ! vk.com,vk.ru##div[id^="postadsite_"]
 ! vk.com,vk.ru###ads_special_promo_wrap
 ! vk.com,vk.ru##div[data-ad-view]
@@ -17622,6 +17628,8 @@ woman.rambler.ru##.swiper-wrapper > div.j-gallery__banner
 woman.rambler.ru##.article__read-also
 woman.rambler.ru##div[class*="traffic-blocks"][class*="intresting"]
 !
+||cpa-elements.rambler.ru/promo-gallery/sdk.js
+finance.rambler.ru##div[id^="rambler-promo-gallery-"] ~ div[class]:not([id])
 finance.rambler.ru##.finance__partners
 finance.rambler.ru,auto.rambler.ru,news.rambler.ru,sport.rambler.ru,weekend.rambler.ru##.article__read-also
 finance.rambler.ru,auto.rambler.ru,news.rambler.ru,sport.rambler.ru,weekend.rambler.ru##.traffic-blocks
@@ -17682,9 +17690,14 @@ weekend.rambler.ru##div[id^="ban_240x400"]
 !
 ! leftovers
 rambler.ru##div[class*="xmr"][style^="min-height:"]
+[$path=/\/(dom|pro)/]rambler.ru##div[style^="order:"][style*="-1"]
+[$path=/\/(dom|pro|eco)/]rambler.ru##div[class]:has(> div[id^="adfox-"])
+[$path=/dom]rambler.ru##rambler-info-banner
+weekend.rambler.ru##rambler-info-banner
+sport.rambler.ru,finance.rambler.ru##aside[class]:has(> div > div.banner--native-partner_widget)
+family.rambler.ru,life.rambler.ru,weekend.rambler.ru,auto.rambler.ru,kino.rambler.ru,doctor.rambler.ru,travel.rambler.ru,sport.rambler.ru,woman.rambler.ru,news.rambler.ru,finance.rambler.ru##div[style^="order:"][style*="-1"]
+family.rambler.ru,life.rambler.ru,weekend.rambler.ru,auto.rambler.ru,kino.rambler.ru,doctor.rambler.ru,travel.rambler.ru,sport.rambler.ru,woman.rambler.ru,news.rambler.ru,finance.rambler.ru##div[class]:has(> div[id^="adfox-"])
 weekend.rambler.ru,auto.rambler.ru,kino.rambler.ru,weather.rambler.ru,doctor.rambler.ru,travel.rambler.ru,sport.rambler.ru,woman.rambler.ru,news.rambler.ru,finance.rambler.ru##div[class*="banner-"]
-weekend.rambler.ru,auto.rambler.ru,kino.rambler.ru,doctor.rambler.ru,travel.rambler.ru,sport.rambler.ru,woman.rambler.ru,news.rambler.ru,finance.rambler.ru##div[style^="order:"][style*="-1"]
-weekend.rambler.ru,auto.rambler.ru,kino.rambler.ru,doctor.rambler.ru,travel.rambler.ru,sport.rambler.ru,woman.rambler.ru,news.rambler.ru,finance.rambler.ru##div[class]:has(> div[id^="adfox-"])
 weekend.rambler.ru,auto.rambler.ru,kino.rambler.ru,doctor.rambler.ru,travel.rambler.ru,sport.rambler.ru,woman.rambler.ru,news.rambler.ru,finance.rambler.ru##div[data-index] > div[class]:has(> div > div[data-rnet])
 weekend.rambler.ru,auto.rambler.ru,kino.rambler.ru,doctor.rambler.ru,travel.rambler.ru,sport.rambler.ru,woman.rambler.ru,news.rambler.ru,finance.rambler.ru#$?#script + div[class] > div[class]:has(> div[class^="banner-"]) { min-height: 0 !important; }
 weather.rambler.ru##div[data-block="seo"]
@@ -17829,6 +17842,8 @@ forum.ngs.ru##div[id^="div-hb-"]
 !
 ! ixbt.com
 ! new design
+www.ixbt.com#$#.branding .main__container { margin-top: 0 !important; }
+www.ixbt.com##span[id^="tgb"]
 ixbt.games##.sidebar-c
 ixbt.com,ixbt.games,ixbt.pro##.desktop-c
 ixbt.com,ixbt.games,ixbt.pro##.recommend-c
@@ -17917,17 +17932,17 @@ adme.media##div[data-test-id="article-content"] > div[class*=" "]:not([tabindex]
 adme.media#?#div[data-test-id="article-bottom-recommended"] > div > div > div[style="position:relative"] > div > div:has(div:empty + div:empty + div:empty)
 !
 ! Start: vc.ru, dtf.ru, spark.ru
-dtf.ru##.content-list > div.content ~ div[style]:has(> div.skeleton-content)
-vc.ru,dtf.ru##div[style*="layout-sidebar-banner-"]
+||api.dtf.ru/*/distribution?place=
+vc.ru##div[style*="layout-sidebar-banner-"]
 vc.ru##.entry > div[class]:has(> a[href^="https://booster.osnova.io/a/redirect"])
 vc.ru##.content-list > div:has(> div.skeleton-content)
 vc.ru#?#.content-list > div.rotator:has(> div[class] > div[class] > a[href="/plus/Close%20Ad"])
 vc.ru##.entry-rotator
 vc.ru##.dstr-fl
 dtf.ru#?#.content-list div[class]:has(> div[class] > div[class] + a[href^="https://vc.ru/cabinet/services"])
-vc.ru,dtf.ru##.supbar--top
+vc.ru##.supbar--top
 dtf.ru,vc.ru##.propaganda
-dtf.ru,vc.ru##.rotator
+vc.ru##.rotator
 dtf.ru##div.subsite-header > div.subsite-header__cover > a.subsite-branding
 dtf.ru##.post-branding-top
 dtf.ru##.post-branding-bottom
@@ -17963,6 +17978,16 @@ dtf.ru##.daily-promo-unit
 spark.ru##.jobs--layout
 new.dtf.ru#?#.view > div.rotator:has(> div.ALMGcspq)
 new.dtf.ru##.ALMGcspq
+! baits
+dtf.ru##.supbar--top > div[style] > *
+dtf.ru#$#.supbar--top > div[style] { zoom: 1% !important; opacity: 1% !important; }
+dtf.ru##.rotator > div[style] > *
+dtf.ru#$#.rotator > div[style] { zoom: 1% !important; opacity: 1% !important; }
+dtf.ru##div[style*="layout-sidebar-banner-"] > div
+dtf.ru#$#div[style*="layout-sidebar-banner-"] { zoom: 1% !important; opacity: 1% !important; }
+dtf.ru##.supbar--top
+dtf.ru##.rotator
+dtf.ru##div[style*="layout-sidebar-banner-"]
 ! End: vc.ru, dtf.ru, spark.ru
 !
 ! pb.wtf
