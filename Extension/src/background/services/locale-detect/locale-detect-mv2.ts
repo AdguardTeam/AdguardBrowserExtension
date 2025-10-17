@@ -32,8 +32,6 @@ import { FiltersApi } from '../../api/filters/main';
 import { CommonFilterApi } from '../../api/filters/common';
 import { AntibannerGroupsId } from '../../../common/constants';
 
-import { type LocaleDetectCommon } from './locale-detect-common';
-
 type BrowsingLanguage = {
     language: string;
     time: number;
@@ -44,7 +42,7 @@ type BrowsingLanguage = {
  *
  * @note This service is only used in Manifest V2 extensions.
  */
-class LocaleDetect implements LocaleDetectCommon {
+class LocaleDetect {
     static SUCCESS_HIT_COUNT = 3;
 
     static MAX_HISTORY_LENGTH = 10;

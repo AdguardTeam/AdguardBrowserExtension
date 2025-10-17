@@ -24,22 +24,8 @@ import { NotImplementedError } from '../../errors/not-implemented-error';
  */
 export class RulesLimitsService {
     /**
-     * Just a empty dummy for MV2.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    init(): void { }
-
-    /**
-     * Just a empty dummy for MV2.
-     *
-     * @throws Not implemented error.
-     */
-    public static getExpectedEnabledFilters = (): number[] => {
-        throw new NotImplementedError();
-    };
-
-    /**
      * Just a empty dummy method for MV2.
+     * TODO: remove this method after split Extension/src/background/services/ui/popup.ts for mv2/mv3 versions.
      *
      * @throws Not implemented error.
      */
@@ -47,5 +33,3 @@ export class RulesLimitsService {
         throw new NotImplementedError();
     }
 }
-
-export const rulesLimitsService = new RulesLimitsService();
