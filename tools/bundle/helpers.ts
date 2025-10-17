@@ -30,11 +30,7 @@ export const getBrowserConf = (browser: Browser): BrowserConfig => {
         throw new Error(`Browser "${browser}" is not supported for webpack builds`);
     }
 
-    const browserConf = BROWSERS_CONF[browser];
-    if (!browserConf) {
-        throw new Error(`No browser config for: "${browser}"`);
-    }
-    return browserConf;
+    return BROWSERS_CONF[browser];
 };
 
 export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
