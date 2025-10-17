@@ -102,7 +102,7 @@ const halloween25Notification: PromoNotification = {
         },
         it: {
             title: 'Acquista con lo sconto, ricevi il biglietto d\'oro',
-            btn: 'Approfitta dell\'offerta',
+            btn: 'Tenta la fortuna',
         },
         de: {
             title: 'Mit Rabatt kaufen — Goldticket gewinnen',
@@ -174,7 +174,7 @@ const halloween25Notification: PromoNotification = {
         },
         el: {
             title: 'Κερδίστε Χρυσό Εισιτήριο με έκπτωση',
-            btn: 'Πιάστε την προσφορά',
+            btn: 'Αποκτήστε έκπτωση',
         },
         fa: {
             title: 'با تخفیف بخر و بلیط طلایی برنده شو',
@@ -225,7 +225,7 @@ const halloween25Notification: PromoNotification = {
             btn: 'Spróbować szczęścia',
         },
         ro: {
-            title: 'Cumpără cu reducere și câștigă un bilet de aur',
+            title: 'Cumpără cu reducere și câștigă',
             btn: 'Încerca norocul',
         },
         sk: {
