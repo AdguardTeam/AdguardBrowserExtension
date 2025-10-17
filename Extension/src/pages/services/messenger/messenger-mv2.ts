@@ -17,33 +17,32 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { type ExtractMessageResponse, MessageType } from '../../../common/messages';
-import { logger } from '../../../common/logger';
 
 import { MessengerCommon } from './messenger-common';
 
 export class Messenger extends MessengerCommon {
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     async updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
         return this.sendMessage(MessageType.CheckFiltersUpdate);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     async checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> {
-        logger.warn('[ext.Messenger.checkUpdatesMV3]: extension update is not supported in MV2');
+        throw new Error('[ext.Messenger.checkUpdatesMV3]: extension update is not supported in MV2');
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     async updateExtensionMV3(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         { from }: any,
     ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> {
-        logger.warn('[ext.Messenger.updateExtensionMV3]: extension update is not supported in MV2');
+        throw new Error('[ext.Messenger.updateExtensionMV3]: extension update is not supported in MV2');
     }
 }
 

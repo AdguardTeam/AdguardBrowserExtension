@@ -20,26 +20,24 @@ import {
     MessageType,
     type UpdateExtensionMessageMv3,
 } from '../../../common/messages';
-import { logger } from '../../../common/logger';
 
 import { MessengerCommon } from './messenger-common';
 
 export class Messenger extends MessengerCommon {
     // eslint-disable-next-line class-methods-use-this
     async updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
-        logger.warn('[ext.Messenger.updateFiltersMV2]: filters update is not supported in MV3');
-        return [];
+        throw new Error('[ext.Messenger.updateFiltersMV2]: filters update is not supported in MV3');
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     async checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> {
         return this.sendMessage(MessageType.CheckExtensionUpdateMv3);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     async updateExtensionMV3(
         { from }: UpdateExtensionMessageMv3['data'],

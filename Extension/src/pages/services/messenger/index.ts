@@ -17,5 +17,4 @@
  */
 
 export { messenger } from 'messenger';
-export { MessengerCommon as Messenger, Page } from './messenger-common';
-export type { LongLivedConnectionCallbackMessage } from './messenger-common';
+export { MessengerCommon as Messenger, Page, type LongLivedConnectionCallbackMessage } from './messenger-common';
