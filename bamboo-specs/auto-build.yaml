@@ -249,15 +249,15 @@ branch-overrides:
 
                   pnpm install ${bamboo.varsPnpm}
 
-                  # Update patch version because resources was changed.
-                  pnpm increment
-
                   # Update filters before build.
                   # --skip-local-resources is used to skip updating local resources,
                   # because to use "skip review" feature in the Chrome Web Store
                   # we need to ensure that changes are made only in rulesets
                   # json files.
                   OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3 --skip-local-resources
+
+                  # Update patch version because resources was changed.
+                  pnpm increment
 
                   # Create artifacts directory if it doesn't exist.
                   mkdir -p artifacts
@@ -270,14 +270,12 @@ branch-overrides:
                   # from the Chrome Web Store to check that new versions
                   # are eligible for "skip review" feature.
                   pnpm tsx tools/skip-review/download-latest-extension beta
-                  # FIXME: Uncomment after publish release.
-                  # pnpm tsx tools/skip-review/download-latest-extension release
+                  pnpm tsx tools/skip-review/download-latest-extension release
 
                   # Check that beta and release updates contain only safe
                   # changes in rulesets and only in rule_resources files.
                   pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
-                  # FIXME: Uncomment after publish release.
-                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
 
                   # Move zip artifacts to the artifacts directory, because we will
                   # publish zip versions of the extension.
