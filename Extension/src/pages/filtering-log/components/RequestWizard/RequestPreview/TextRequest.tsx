@@ -22,7 +22,7 @@ import beautify from 'js-beautify';
 
 import { ContentType as RequestType } from 'tswebextension';
 
-const getBeautifier = (type) => {
+const getBeautifier = (type: RequestType) => {
     switch (type) {
         case RequestType.Document:
         case RequestType.Subdocument:
@@ -32,7 +32,7 @@ const getBeautifier = (type) => {
         case RequestType.Stylesheet:
             return beautify.css;
         default:
-            return (i) => i;
+            return (i: string) => i;
     }
 };
 
@@ -40,6 +40,10 @@ export const TextRequest = ({
     text,
     requestType,
     shouldBeautify,
+}: {
+    text: string;
+    requestType: RequestType;
+    shouldBeautify: boolean;
 }) => {
     const [textState, setTextState] = useState(text);
 

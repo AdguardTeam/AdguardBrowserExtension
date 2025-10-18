@@ -52,7 +52,7 @@ export const RequestPreview = observer(() => {
 
     const { selectedEvent } = logStore;
 
-    const { requestType, requestUrl } = selectedEvent;
+    const { requestType, requestUrl } = selectedEvent as any;
 
     const isText = requestType === RequestType.Document
         || requestType === RequestType.Subdocument
@@ -74,7 +74,7 @@ export const RequestPreview = observer(() => {
     const [previewState, send] = useMachine(
         fetchMachine.provide({
             actors: {
-                fetchData: fromPromise(getFetcher()),
+                fetchData: fromPromise(getFetcher() as any),
             },
         }),
     );
@@ -108,7 +108,7 @@ export const RequestPreview = observer(() => {
     const beautifyButtonTitle = translator.getMessage('filtering_log_details_modal_beautify_button');
 
     const renderContent = () => {
-        if (previewState.matches(FetchStates.LOADING)) {
+        if (previewState.matches(FetchStates.LOADING as never)) {
             return (
                 <div className="request-preview__status">
                     <span className="request-info__value request-preview__text">
@@ -117,7 +117,7 @@ export const RequestPreview = observer(() => {
                 </div>
             );
         }
-        if (previewState.matches(FetchStates.FAILURE)) {
+        if (previewState.matches(FetchStates.FAILURE as never)) {
             return (
                 <div className="request-preview__status">
                     <span className="request-info__error request-preview__text">
@@ -134,7 +134,7 @@ export const RequestPreview = observer(() => {
                 </div>
             );
         }
-        if (previewState.matches(FetchStates.SUCCESS)) {
+        if (previewState.matches(FetchStates.SUCCESS as never)) {
             if (isImage) {
                 return (
                     <ImageRequest
@@ -185,7 +185,7 @@ export const RequestPreview = observer(() => {
                 >
                     {backToRequestButtonTitle}
                 </button>
-                {isText && previewState.matches(FetchStates.SUCCESS) && (
+                {isText && previewState.matches(FetchStates.SUCCESS as never) && (
                     <button
                         type="button"
                         className="button button--l button--transparent request-modal__button"

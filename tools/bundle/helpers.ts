@@ -27,7 +27,7 @@ import { type BrowserConfig, BROWSERS_CONF } from './common-constants';
 
 export const getBrowserConf = (browser: Browser): BrowserConfig => {
     if (browser === Browser.ChromeCrx) {
-        throw new Error(`Browser "${browser}" is not supported for webpack builds`);
+        throw new Error(`No browser config for: "${browser}"`);
     }
 
     return BROWSERS_CONF[browser];
