@@ -457,6 +457,7 @@ const Filters = observer(() => {
             // Filter checkbox -> Filter description -> Back button
             <button
                 type="button"
+                role="link"
                 onClick={handleReturnToGroups}
                 aria-label={translator.getMessage('options_filters_back_button')}
                 className="filters__back"
@@ -471,6 +472,7 @@ const Filters = observer(() => {
                     <Icon
                         id="#arrow-left"
                         className="icon--24"
+                        aria-hidden="true"
                     />
                 </div>
             </button>
