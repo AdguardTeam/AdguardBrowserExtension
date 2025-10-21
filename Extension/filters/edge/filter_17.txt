@@ -1,9 +1,9 @@
-! Checksum: yhwJlt+Q8rcYJ9cjoV1TvQ
-! Diff-Path: ../patches/17/17-s-1759220012-3600.patch
+! Checksum: 2H4Cmcpa5G+OdxD3/6B6rg
+! Diff-Path: ../patches/17/17-s-1759839329-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.11.88
-! TimeUpdated: 2025-09-30T08:10:10+00:00
+! Version: 2.0.11.90
+! TimeUpdated: 2025-10-07T12:12:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -426,6 +426,15 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/212975
+$removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
+||item.rakuten.co.jp^$removeparam=iasid
+! https://fanicon.net/tours/1038/4036?from=home
+||fanicon.net^$removeparam=from
+! https://github.com/AdguardTeam/AdguardFilters/issues/214913
+||lululemon.com.hk^$removeparam=cid
+||lululemon.com.hk^$removeparam=mcid
+||lululemon.com.hk^$removeparam=ismcid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/213755
 ||steiledema.boxnow.gr^$removeparam=/^lkws_/
 ! casino.ua
