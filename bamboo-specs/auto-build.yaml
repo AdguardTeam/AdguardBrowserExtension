@@ -249,15 +249,15 @@ branch-overrides:
 
                   pnpm install ${bamboo.varsPnpm}
 
-                  # Update patch version because resources was changed.
-                  pnpm increment
-
                   # Update filters before build.
                   # --skip-local-resources is used to skip updating local resources,
                   # because to use "skip review" feature in the Chrome Web Store
                   # we need to ensure that changes are made only in rulesets
                   # json files.
                   OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3 --skip-local-resources
+
+                  # Update patch version because resources was changed.
+                  pnpm increment
 
                   # Create artifacts directory if it doesn't exist.
                   mkdir -p artifacts
@@ -269,15 +269,15 @@ branch-overrides:
                   # Download latest beta and release versions of the extension
                   # from the Chrome Web Store to check that new versions
                   # are eligible for "skip review" feature.
-                  pnpm tsx tools/skip-review/download-latest-extension beta
-                  # FIXME: Uncomment after publish release.
-                  # pnpm tsx tools/skip-review/download-latest-extension release
+                  # TODO: uncomment after halloween release. AG-47227
+                  # pnpm tsx tools/skip-review/download-latest-extension beta
+                  pnpm tsx tools/skip-review/download-latest-extension release
 
                   # Check that beta and release updates contain only safe
                   # changes in rulesets and only in rule_resources files.
-                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
-                  # FIXME: Uncomment after publish release.
-                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+                  # TODO: uncomment after halloween release. AG-47227
+                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
+                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
 
                   # Move zip artifacts to the artifacts directory, because we will
                   # publish zip versions of the extension.
@@ -337,9 +337,9 @@ branch-overrides:
         requirements:
           - adg-docker: 'true'
 
-      # run auto-build every 3 hours after 30 minutes of the hour to collect all
-      # changes made by filter list maintainers during the last 3 hours update.
+      # Run auto-build as specified and collect all changes made by
+      # filter list maintainers.
       triggers:
         - cron:
-            expression: 0 30 */3 ? * *
-            description: Run auto-build every 3 hours at 30 minutes past the hour.
+            expression: 0 30 */12 ? * *
+            description: Run auto-build every 12 hours at 30 minutes past the hour.
