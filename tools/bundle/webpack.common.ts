@@ -171,6 +171,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'icons-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/icons/icons-mv${manifestVersion}.ts`),
         'keep-alive-api': path.resolve(__dirname, `../../Extension/src/background/keep-alive/keep-alive-mv${manifestVersion}.ts`),
         'locale-detect': path.resolve(__dirname, `../../Extension/src/background/services/locale-detect/locale-detect-mv${manifestVersion}.ts`),
+        'pages': path.resolve(__dirname, `../../Extension/src/background/api/ui/pages/pages-mv${manifestVersion}.ts`),
         'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
         'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),
     };

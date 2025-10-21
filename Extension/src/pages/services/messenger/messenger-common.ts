@@ -1040,8 +1040,8 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openThankyouPage(): Promise<ExtractMessageResponse<MessageType.OpenThankyouPage>> {
-        return this.sendMessage(MessageType.OpenThankyouPage);
+    async openThankYouPage(): Promise<ExtractMessageResponse<MessageType.OpenThankYouPage>> {
+        return this.sendMessage(MessageType.OpenThankYouPage);
     }
 
     /**

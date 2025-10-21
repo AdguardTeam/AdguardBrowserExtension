@@ -39,6 +39,7 @@ import {
     TabsApi,
     SettingsApi,
     PagesApi,
+    pagesApi,
     AssistantApi,
     type SettingsData,
     type FilterMetadata,
@@ -132,8 +133,8 @@ export class UiService {
 
         messageHandler.addListener(MessageType.OpenSiteReportTab, UiService.openSiteReportPage);
 
-        messageHandler.addListener(MessageType.OpenThankyouPage, PagesApi.openThankYouPage);
-        messageHandler.addListener(MessageType.OpenExtensionStore, PagesApi.openExtensionStorePage);
+        messageHandler.addListener(MessageType.OpenThankYouPage, pagesApi.openThankYouPage);
+        messageHandler.addListener(MessageType.OpenExtensionStore, pagesApi.openExtensionStorePage);
         messageHandler.addListener(MessageType.OpenComparePage, PagesApi.openComparePage);
         messageHandler.addListener(
             MessageType.OpenChromeExtensionsSettingsPage,
@@ -147,7 +148,7 @@ export class UiService {
         );
         messageHandler.addListener(
             MessageType.AddFilteringSubscription,
-            PagesApi.openSettingsPageWithCustomFilterModal,
+            pagesApi.openSettingsPageWithCustomFilterModal,
         );
 
         messageHandler.addListener(MessageType.OpenAssistant, AssistantApi.openAssistant);
@@ -174,7 +175,7 @@ export class UiService {
     private static async openAbusePage({ data }: OpenAbuseTabMessage): Promise<void> {
         const { url, from } = data;
 
-        await PagesApi.openAbusePage(url, from);
+        await pagesApi.openAbusePage(url, from);
     }
 
     /**
@@ -184,7 +185,7 @@ export class UiService {
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.url) {
-            await PagesApi.openAbusePage(activeTab.url, ForwardFrom.ContextMenu);
+            await pagesApi.openAbusePage(activeTab.url, ForwardFrom.ContextMenu);
         } else {
             logger.warn('[ext.UiService.openAbusePageForActiveTab]: cannot open abuse page for active tab, active tab is undefined');
         }
