@@ -52,6 +52,7 @@ export { SettingsApi, type SettingsData } from './settings';
 export {
     UiApi,
     PagesApi,
+    pagesApi,
     toasts,
     promoNotificationApi,
     FramesApi,
