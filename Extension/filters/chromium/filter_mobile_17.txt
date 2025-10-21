@@ -1,9 +1,9 @@
-! Checksum: vU1q9T4Uvpt+dQui0R85jA
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1759220008-3600.patch
+! Checksum: M79EjCgoCb+MWJNqvYdrxA
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1759839325-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.11.88
-! TimeUpdated: 2025-09-30T08:10:10+00:00
+! Version: 2.0.11.90
+! TimeUpdated: 2025-10-07T12:12:04+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=loclid
 $removeparam=line_uid
@@ -280,6 +280,12 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+$removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
+||item.rakuten.co.jp^$removeparam=iasid
+||fanicon.net^$removeparam=from
+||lululemon.com.hk^$removeparam=cid
+||lululemon.com.hk^$removeparam=mcid
+||lululemon.com.hk^$removeparam=ismcid
 ||steiledema.boxnow.gr^$removeparam=/^lkws_/
 ||casino.ua/short-register/$removeparam
 ||4kdownload.com^$removeparam=source

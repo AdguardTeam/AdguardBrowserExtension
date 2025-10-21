@@ -87,203 +87,203 @@ export type PromoNotification = {
     icons?: IconVariants;
 };
 
-const BACK_TO_SCHOOL_25_ID = 'backToSchool25';
+const HALLOWEEN_25_ID = 'halloween25';
 
-const backToSchool25Notification: PromoNotification = {
-    id: BACK_TO_SCHOOL_25_ID,
+const halloween25Notification: PromoNotification = {
+    id: HALLOWEEN_25_ID,
     locales: {
         en: {
-            title: 'Back to School promo',
-            btn: 'Up to 40% off',
+            title: 'Buy with discount, win Golden Ticket',
+            btn: 'Grab the deal',
         },
         fr: {
-            title: 'La Rentrée avec AdGuard',
-            btn: "Jusqu'à 40% de remise",
+            title: 'Achetez avec une remise, gagnez un billet doré',
+            btn: 'Profitez de l\'offre',
         },
         it: {
-            title: 'A Scuola con AdGuard',
-            btn: 'Fino al 40% di sconto',
+            title: 'Acquista con lo sconto, ricevi il biglietto d\'oro',
+            btn: 'Tenta la fortuna',
         },
         de: {
-            title: 'Back to School Promo',
-            btn: 'Bis zu 40% Rabatt',
+            title: 'Mit Rabatt kaufen — Goldticket gewinnen',
+            btn: 'Angebot holen',
         },
         ru: {
-            title: 'Снова в школу',
-            btn: 'Скидки до 40%',
+            title: 'Купите со скидкой — выиграйте золотой билет',
+            btn: 'Испытать удачу',
         },
         es: {
-            title: 'Promo de vuelta al cole',
-            btn: 'Hasta un 40% OFF',
+            title: 'Compra con descuento, gana un boleto dorado',
+            btn: 'Aprovechar la oferta',
         },
         es_419: {
-            title: 'Vuelta al cole',
-            btn: 'Hasta un 40% OFF',
+            title: 'Compra con descuento, gana un boleto dorado',
+            btn: 'Aprovechar la oferta',
         },
         pt_pt: {
-            title: 'Promo de volta às aulas',
-            btn: 'Até 40% OFF',
+            title: 'Compre com desconto, ganhe um bilhete dourado',
+            btn: 'Aproveitar a oferta',
         },
         pt_br: {
-            title: 'Promo de volta às aulas',
-            btn: 'Até 40% OFF',
+            title: 'Compre com desconto, ganhe um bilhete dourado',
+            btn: 'Aproveitar a oferta',
         },
         zh_cn: {
-            title: '返校季 SALE',
-            btn: '低至6折',
+            title: '限时特价期间购买，即有机会抽中金奖券',
+            btn: '试试手气',
         },
         zh_tw: {
-            title: '返校 SALE',
-            btn: '低至6折',
+            title: '限時特價期間購買，即有機會抽中金獎券喔',
+            btn: '試試手氣',
         },
-        // ja: {
-        //     title: 'AdGuard 16周年セール',
-        //     btn: 'セール内容はこちら',
-        // },
+        ja: {
+            title: '特価で購入すれば、抽選でゴールデン チケットが当たる',
+            btn: '運を試す',
+        },
         ko: {
-            title: '백투스쿨 세일',
-            btn: '최대 40% 할인',
+            title: '할인받고 골든 티켓을 잡으세요!',
+            btn: '할인 받기',
         },
         uk: {
-            title: 'Знову до школи',
-            btn: 'Знижки до 40%',
+            title: 'Купуй зі знижкою — вигравай золотий квиток',
+            btn: 'Спробуй удачу',
         },
         ar: {
-            title: 'عرض العودة إلى المدرسة',
-            btn: '٪خصومات تصل إلى 40',
+            title: 'اشترِ بخصم واربح تذكرة ذهبية',
+            btn: 'اغتنم العرض',
         },
         be: {
-            title: 'Зноў у школу',
-            btn: 'Зніжкі да 40%',
+            title: 'Купляй са зніжкай і выйграй залаты білет',
+            btn: 'Паспрабаваць удачу',
         },
         bg: {
-            title: 'Обратно на училище: промоция',
-            btn: 'Отстъпки до 40%',
+            title: 'Купи с отстъпка и спечели златен билет',
+            btn: 'Опита късмета',
         },
         ca: {
-            title: "Tornada a l'escola",
-            btn: 'Descomptes –40%',
+            title: 'Compra amb descompte i prova sort',
+            btn: 'Aprofita l\'oferta',
         },
         cs: {
-            title: 'Zpátky do školy: Akce',
-            btn: 'Slevy až 40%',
+            title: 'Kup se slevou a vyhraj zlatou vstupenku',
+            btn: 'Zkusit štěstí',
         },
         da: {
-            title: 'Tilbage til skole promo',
-            btn: 'Rabatter op til 40%',
+            title: 'Køb med rabat og vind en gylden billet',
+            btn: 'Prøve lykken',
         },
         el: {
-            title: 'Επιστροφή στα σχολεία',
-            btn: 'Εκπτώσεις έως και 40%',
+            title: 'Κερδίστε Χρυσό Εισιτήριο με έκπτωση',
+            btn: 'Αποκτήστε έκπτωση',
         },
         fa: {
-            title: 'تبلیغات بازگشت به مدرسه',
-            btn: '٪خفیف‌ها تا 40',
+            title: 'با تخفیف بخر و بلیط طلایی برنده شو',
+            btn: 'امتحان کردن شانس',
         },
         fi: {
-            title: 'Takaisin kouluun -kampanja',
-            btn: 'Alennukset jopa 40%',
+            title: 'Osta alennuksella ja voita kultainen lippu',
+            btn: 'Kokeilla onnea',
         },
         he: {
-            title: 'מבצע חזרה לבית הספר',
-            btn: 'הנחות עד 40%',
+            title: 'קנו בהנחה וזכו בכרטיס זהב',
+            btn: 'לנסות מזל',
         },
         hr: {
-            title: 'Natrag u školu: Promo',
-            btn: 'Popusti do 40%',
+            title: 'Kupi s popustom i osvoji zlatnu kartu',
+            btn: 'Okušati sreću',
         },
         hu: {
-            title: 'Vissza az iskolába promóció',
-            btn: 'Akár 40% kedvezmény',
+            title: 'Vásárolj kedvezménnyel és nyerj aranyjegyet',
+            btn: 'Kipróbálni szerencsét',
         },
         hy: {
-            title: 'Վերադառնալ դպրոց',
-            btn: 'Զեղչեր՝ մինչև 40%',
+            title: 'Գնիր զեղչով և շահիր ոսկե տոմս',
+            btn: 'Փորձել բախտը',
         },
         id: {
-            title: 'Promo Kembali ke Sekolah',
-            btn: 'Diskon hingga 40%',
+            title: 'Beli dengan diskon dan menangkan tiket emas',
+            btn: 'Coba keberuntungan',
         },
         lt: {
-            title: 'Atgal į mokyklą: akcija',
-            btn: 'Nuolaidos iki 40%',
+            title: 'Pirk su nuolaida ir laimėk auksinį bilietą',
+            btn: 'Išbandyti sėkmę',
         },
         ms: {
-            title: 'Promosi Kembali ke Sekolah',
-            btn: 'Diskaun sehingga 40%',
+            title: 'Beli dengan diskaun dan menangi tiket emas',
+            btn: 'Cuba nasib',
         },
         nb: {
-            title: 'Tilbake til skolen',
-            btn: 'Rabatter opptil 40%',
+            title: 'Kjøp med rabatt og vinn en gullbillett',
+            btn: 'Prøve lykken',
         },
         nl: {
-            title: 'Terug naar school promotie',
-            btn: 'Kortingen tot 40%',
+            title: 'Koop met korting en win een gouden ticket',
+            btn: 'Proberen geluk',
         },
         pl: {
-            title: 'Powrót do szkoły: Promocja',
-            btn: 'Zniżki do 40%',
+            title: 'Kup ze zniżką i wygraj złoty bilet',
+            btn: 'Spróbować szczęścia',
         },
         ro: {
-            title: 'Înapoi la școală: Promoția',
-            btn: 'Reduceri de până la 40%',
+            title: 'Cumpără cu reducere și câștigă',
+            btn: 'Încerca norocul',
         },
         sk: {
-            title: 'Späť do školy: Promo akcia',
-            btn: 'Zľavy až do 40%',
+            title: 'Kúp so zľavou a vyhraj zlatý lístok',
+            btn: 'Skúsiť šťastie',
         },
         sl: {
-            title: 'Nazaj v šolo: Promocija',
-            btn: 'Popusti do 40%',
+            title: 'Kupite s popustom in osvojite zlato vstopnico',
+            btn: 'Preizkusiti srečo',
         },
         sr_latn: {
-            title: 'Povratak u školu: Promocija',
-            btn: 'Popusti do 40%',
+            title: 'Kupi sa popustom i osvoji zlatnu kartu',
+            btn: 'Oprobati sreću',
         },
         sv: {
-            title: 'Tillbaka till skolan',
-            btn: 'Rabatter upp till 40%',
+            title: 'Köp med rabatt och vinn en gyllene biljett',
+            btn: 'Prova lyckan',
         },
         tr: {
-            title: 'Okula Dönüş kampanyası',
-            btn: '%40’a varan indirimler',
+            title: 'İndirimle satın al ve altın bilet kazan',
+            btn: 'Şansı denemek',
         },
         vi: {
-            title: 'Back to School: Khuyến mãi',
-            btn: 'Giảm giá lên đến 40%',
+            title: 'Mua với giá giảm và trúng vé vàng',
+            btn: 'Thử vận may',
         },
         mk: {
-            title: 'Назад на училиште: Промоција',
-            btn: 'Попусти до 40%',
+            title: 'Купи со попуст и освои златен билет',
+            btn: 'Обиди ја среќата',
         },
         hi: {
-            title: 'स्कूल वापसी प्रमो',
-            btn: '40% तक की छूट',
+            title: 'छूट पर खरीदें और गोल्डन टिकट जीतें',
+            btn: 'किस्मत आज़माना',
         },
         et: {
-            title: 'Tagasi kooli pakkumine',
-            btn: 'Allahindlus kuni 40%',
+            title: 'Osta soodustusega ja võida kuldne pilet',
+            btn: 'Proovida õnne',
         },
         th: {
-            title: 'Back to School',
-            btn: 'ส่วนลดสูงสุด 40%',
+            title: 'ซื้อพร้อมส่วนลดและลุ้นรับตั๋วทอง',
+            btn: 'ลองเสี่ยงโชค',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.BackToSchool25 }),
-    from: '25 August 2025 12:00:00',
-    to: '1 September 2025 23:59:00',
+    url: Forward.get({ action: ForwardAction.Halloween25 }),
+    from: '25 October 2025 12:00:00',
+    to: '31 October 2025 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/bts25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/bts25-update.svg'),
+    bgImage: browser.runtime.getURL('assets/images/halloween25.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween25.svg'),
     icons: {
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/bts25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/bts25-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween25-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween25-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/bts25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/bts25-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/halloween25-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/halloween25-off-38.png'),
         },
         warning: defaultIconVariants.warning,
         updateAvailable: defaultIconVariants.updateAvailable,
@@ -294,5 +294,5 @@ const backToSchool25Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [BACK_TO_SCHOOL_25_ID, backToSchool25Notification],
+    [HALLOWEEN_25_ID, halloween25Notification],
 ]);
