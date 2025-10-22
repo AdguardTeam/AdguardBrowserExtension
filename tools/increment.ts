@@ -90,7 +90,11 @@ const incrementVersion = async (): Promise<void> => {
     console.log('Changes:');
     console.log(`  - Increment version: ${incrementVersionStr} -> ${newIncrementVersion}`);
     console.log(`  - Build metatag: ${buildMetatag} (unchanged)`);
-    console.log(`  - DNR version: ${dnrVersionStr} -> ${newDnrPatchVersion}`);
+    if (dnrVersionStr === String(newDnrPatchVersion)) {
+        console.log(`  - DNR version: ${dnrVersionStr} (unchanged)`);
+    } else {
+        console.log(`  - DNR version: ${dnrVersionStr} -> ${newDnrPatchVersion}`);
+    }
 
     // Update package.json
     packageJson.version = newVersion;

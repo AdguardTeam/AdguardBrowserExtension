@@ -22,6 +22,8 @@ import {
     ExtensionUpdateFSMState,
     MANUAL_EXTENSION_UPDATE_KEY,
     MIN_UPDATE_DISPLAY_DURATION_MS,
+    AUTO_UPDATE_STATE_KEY_MV3,
+    AUTO_UPDATE_CONFIG_KEY_MV3,
 } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { MessageType, type UpdateExtensionMessageMv3 } from '../../../common/messages';
@@ -76,8 +78,44 @@ import { extensionUpdateActor } from './extension-update-machine';
  *   Chrome will NOT automatically reload the extension. Instead, it waits for the extension
  *   to call `chrome.runtime.reload()` when ready (i.e., when user clicks "Update" button).
  * - This allows the user to finish their work before reloading the extension.
+ *
+ * ## Auto-update behavior:
+ * - Update icon appears only after 24 hours (configurable) since update became available.
+ * - Update applies automatically after 30 minutes (configurable) of browser inactivity.
+ * - Browser activity is tracked via webNavigation.onCommitted events.
+ * - Config can be overridden via chrome.storage.local (key: 'auto-update-config-mv3').
+ * - Config is loaded once during initialization and cached in memory.
+ *
+ * FIXME: Check all async/await methods, maybe some of them can be sync.
+ * FIXME: Do not use "activity" word everywhere, just "idle" or "event" where applicable.
  */
 export class ExtensionUpdateService {
+    /**
+     * Default configuration for automatic extension updates.
+     *
+     * These values control when the update icon appears and when updates are applied automatically.
+     */
+    static readonly AutoUpdateConfig = {
+        /**
+         * Time to wait before showing the update icon after update becomes available.
+         * Default: 24 hours in milliseconds.
+         */
+        iconDelayMs: 24 * 60 * 60 * 1000,
+
+        /**
+         * Time of inactivity (no tab navigation events) before automatically applying update.
+         * Default: 30 minutes in milliseconds.
+         */
+        idleThresholdMs: 30 * 60 * 1000,
+
+        /**
+         * Interval for checking if conditions are met to apply auto-update.
+         * Default: 1 minute in milliseconds to prevent fall into service worker
+         * restart case, where TTL of SW will be less that the interval.
+         */
+        checkIntervalMs: 1 * 60 * 1000,
+    };
+
     /**
      * Regular expression to match the version from the latest version URL.
      */
@@ -101,6 +139,32 @@ export class ExtensionUpdateService {
     private static checkingUpdateTimeoutId: number | undefined;
 
     /**
+     * Interval ID for periodic auto-update check.
+     */
+    private static autoUpdateCheckIntervalId: number | undefined;
+
+    /**
+     * Timestamp when update became available.
+     */
+    private static updateAvailableTimestamp: number | null = null;
+
+    /**
+     * Timestamp of last navigation activity.
+     */
+    private static lastActivityTimestamp: number | null = null;
+
+    /**
+     * Flag indicating if last update check was manual (user-initiated).
+     */
+    private static isManualCheck: boolean = false;
+
+    /**
+     * Cached auto-update configuration.
+     * Loaded from storage on init, defaults to AutoUpdateConfig if not found.
+     */
+    private static autoUpdateConfig = ExtensionUpdateService.AutoUpdateConfig;
+
+    /**
      * Initializes the service.
      *
      * IMPORTANT.
@@ -112,8 +176,17 @@ export class ExtensionUpdateService {
      * - The user can then reload the extension at their convenience by clicking "Update".
      * - Chrome will NOT automatically reload the extension when this listener is present.
      */
-    public static init(): void {
+    public static async init(): Promise<void> {
         extensionUpdateActor.start();
+
+        // Load configuration from storage
+        await ExtensionUpdateService.loadAutoUpdateConfig();
+
+        // Load persisted state if any
+        await ExtensionUpdateService.loadAutoUpdateState();
+
+        // Start checking for "idle" condition and icon delay if update is pending
+        ExtensionUpdateService.initChecksForAutoUpdate();
 
         // Register listener that will be called when Chrome finishes downloading an update.
         // This can happen either:
@@ -126,6 +199,31 @@ export class ExtensionUpdateService {
     }
 
     /**
+     * Loads auto-update configuration from storage on initialization.
+     * Reads from chrome.storage.local to allow runtime configuration for testing.
+     */
+    private static async loadAutoUpdateConfig(): Promise<void> {
+        try {
+            const configStr = await browserStorage.get(AUTO_UPDATE_CONFIG_KEY_MV3);
+
+            if (typeof configStr !== 'string' || !configStr) {
+                return;
+            }
+
+            const customConfig = JSON.parse(configStr) as Partial<typeof ExtensionUpdateService.AutoUpdateConfig>;
+
+            logger.info('[ext.ExtensionUpdateService.loadAutoUpdateConfig]: Using custom config from storage:', customConfig);
+
+            ExtensionUpdateService.autoUpdateConfig = {
+                ...ExtensionUpdateService.AutoUpdateConfig,
+                ...customConfig,
+            };
+        } catch (error) {
+            logger.warn('[ext.ExtensionUpdateService.loadAutoUpdateConfig]: Failed to parse config from storage:', error);
+        }
+    }
+
+    /**
      * Handles the onUpdateAvailable event from Chrome runtime.
      *
      * This listener is called by Chrome when an extension update has been downloaded
@@ -133,22 +231,25 @@ export class ExtensionUpdateService {
      *
      * 1. **After manual check**: User clicked "Check for Updates" → requestUpdateCheck()
      *    found an update → Chrome downloaded it → this listener fires.
+     *    In this case, update icon appears immediately.
      *
      * 2. **Automatic update check**: Chrome detected and downloaded an update in background
      *    (even if user never clicked "Check for Updates") → this listener fires.
+     *    In this case, update icon appears after iconDelayMs (24 hours by default).
      *
-     * When this listener fires:
-     * - FSM transitions to `Available` state.
-     * - UI shows "Update" button to the user.
-     * - Chrome waits for the extension to call chrome.runtime.reload() (will NOT reload automatically).
-     * - User can reload the extension at their convenience by clicking "Update" button.
+     * FIXME: Write a case after service worker restart.
      *
-     * @see {@link https://developer.chrome.com/docs/extensions/reference/api/runtime#event-onUpdateAvailable}
+     * When this listener is registered, Chrome will NOT automatically reload the extension.
+     * Instead, it waits for the extension to call chrome.runtime.reload() explicitly.
      *
-     * @param details Update details from Chrome.
+     * @param details Details about the available update.
      */
-    private static onUpdateAvailable(details: chrome.runtime.UpdateAvailableDetails): void {
-        logger.debug(`[ext.ExtensionUpdateService.onUpdateAvailable]: Update became available, version: ${details.version}`);
+    private static async onUpdateAvailable(details: chrome.runtime.UpdateAvailableDetails): Promise<void> {
+        logger.info(
+            '[ext.ExtensionUpdateService.onUpdateAvailable]:',
+            `Update became available, version: ${details.version}, manual check: ${ExtensionUpdateService.isManualCheck}`,
+        );
+
         // Send UpdateAvailable event to FSM → FSM transitions to Available state → UI shows Update button
         extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.UpdateAvailable });
         chrome.runtime.onUpdateAvailable.removeListener(ExtensionUpdateService.onUpdateAvailable);
@@ -157,6 +258,32 @@ export class ExtensionUpdateService {
         // eslint-disable-next-line no-restricted-globals
         self.clearTimeout(ExtensionUpdateService.checkingUpdateTimeoutId);
         ExtensionUpdateService.checkingUpdateTimeoutId = undefined;
+
+        // Store timestamp when update became available
+        const now = Date.now();
+        ExtensionUpdateService.updateAvailableTimestamp = now;
+        ExtensionUpdateService.lastActivityTimestamp = now;
+
+        // Save state to storage for persistence across service worker restarts
+        await ExtensionUpdateService.saveAutoUpdateState();
+
+        // Start periodic check for auto-update conditions only if not manual
+        if (!ExtensionUpdateService.isManualCheck) {
+            ExtensionUpdateService.startAutoUpdateCheck();
+
+            // Set up activity tracking via webNavigation and tabs events.
+            ExtensionUpdateService.setupActivityTracking();
+
+            logger.trace(
+                '[ext.ExtensionUpdateService.onUpdateAvailable]:',
+                `Auto-update tracking started. Icon delay: ${ExtensionUpdateService.autoUpdateConfig.iconDelayMs}ms, Idle threshold: ${ExtensionUpdateService.autoUpdateConfig.idleThresholdMs}ms`,
+            );
+        } else {
+            logger.trace(
+                '[ext.ExtensionUpdateService.onUpdateAvailable]:',
+                'Manual check - update icon will be shown immediately',
+            );
+        }
     }
 
     /**
@@ -166,10 +293,13 @@ export class ExtensionUpdateService {
      * and call onUpdateAvailable listener, which will send UpdateAvailable event
      * to FSM, that is why this method returns void.
      *
-     * For whole checking step we set a timeout, because it consists of multiple steps
-     * with not-determined duration.
+     * For whole checking step we set a timeout, because it consists
+     * of multiple steps with not-determined duration.
      */
     private static async checkExtensionUpdate(): Promise<void> {
+        // Mark this as manual check
+        ExtensionUpdateService.isManualCheck = true;
+
         const start = Date.now();
 
         // We set timeout for the whole update check operation since it consists
@@ -203,6 +333,9 @@ export class ExtensionUpdateService {
             // Do nothing, just wait for onUpdateAvailable event from Chrome.
         } else {
             extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.NoUpdateAvailable });
+
+            // Reset manual check flag
+            ExtensionUpdateService.isManualCheck = false;
         }
     }
 
@@ -312,6 +445,9 @@ export class ExtensionUpdateService {
         const start = Date.now();
 
         extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.Update });
+
+        // Clear auto-update state on manual update
+        ExtensionUpdateService.clearAutoUpdateState();
 
         let isExtensionUpdated = false;
 
@@ -465,7 +601,7 @@ export class ExtensionUpdateService {
             const updatedLastVersionPart = lastVersionPart ? lastVersionPart + 1 : 0;
 
             // Creating new version just for validation that version is correctly formed.
-            const mockedVersion = new Version(currentVersion.data.join('.') + updatedLastVersionPart);
+            const mockedVersion = new Version(`${currentVersion.data.join('.')}.${updatedLastVersionPart}`);
 
             const stringifiedVersion = mockedVersion.data.join('.');
 
@@ -545,5 +681,221 @@ export class ExtensionUpdateService {
         await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
 
         return manualExtensionUpdateData;
+    }
+
+    /**
+     * Updates last activity timestamp.
+     */
+    private static updateLastActivityTimestamp(): void {
+        ExtensionUpdateService.lastActivityTimestamp = Date.now();
+
+        logger.trace('[ext.ExtensionUpdateService.updateLastActivityTimestamp]: Activity detected, updating last activity timestamp:', new Date().toISOString());
+
+        // Save to storage on every activity to persist across service worker restarts
+        // Do not await intentionally.
+        ExtensionUpdateService.saveAutoUpdateState().catch((error) => {
+            logger.error('[ext.ExtensionUpdateService.updateLastActivityTimestamp]: Failed to save activity timestamp:', error);
+        });
+    }
+
+    /**
+     * Sets up activity tracking via webNavigation.onCommitted event.
+     */
+    private static setupActivityTracking(): void {
+        logger.debug('[ext.ExtensionUpdateService.setupActivityTracking]: Setting up activity tracking');
+
+        chrome.webNavigation.onCommitted.addListener(() => {
+            ExtensionUpdateService.updateLastActivityTimestamp();
+        });
+    }
+
+    /**
+     * Loads persisted auto-update state from storage.
+     */
+    private static async loadAutoUpdateState(): Promise<void> {
+        try {
+            const stateStr = await browserStorage.get(AUTO_UPDATE_STATE_KEY_MV3);
+            if (typeof stateStr !== 'string') {
+                return;
+            }
+
+            const parsedJson = JSON.parse(stateStr);
+
+            if (!('updateAvailableTimestamp' in parsedJson) || !('lastActivityTimestamp' in parsedJson)) {
+                logger.debug('[ext.ExtensionUpdateService.loadAutoUpdateState]: Failed to parse state:', parsedJson);
+                return;
+            }
+
+            // Update in-memory cache
+            ExtensionUpdateService.updateAvailableTimestamp = parsedJson.updateAvailableTimestamp;
+            ExtensionUpdateService.lastActivityTimestamp = parsedJson.lastActivityTimestamp;
+        } catch (error) {
+            logger.error('[ext.ExtensionUpdateService.loadAutoUpdateState]: Failed to load auto-update state:', error);
+        }
+    }
+
+    /**
+     * Initializes periodically checks for automatic extension update:
+     * interval check for auto-update and activity tracking.
+     */
+    private static initChecksForAutoUpdate(): void {
+        if (ExtensionUpdateService.updateAvailableTimestamp === null) {
+            logger.debug('[ext.ExtensionUpdateService.initChecksForAutoUpdate]: Update available timestamp is not set, skipping auto-update check setup');
+            return;
+        }
+
+        // To show update button in the popup and in the settings since update
+        // is available and for correct check for showing icon when iconDelayMs
+        // passed.
+        extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.UpdateAvailable });
+        chrome.runtime.onUpdateAvailable.removeListener(ExtensionUpdateService.onUpdateAvailable);
+
+        // Resume periodic check for auto-update conditions
+        ExtensionUpdateService.startAutoUpdateCheck();
+
+        // Set up activity tracking via webNavigation and tabs events.
+        ExtensionUpdateService.setupActivityTracking();
+    }
+
+    /**
+     * Saves auto-update state to storage.
+     * We need to store this state to persist across service worker restarts,
+     * since service worker can restart in a less time then we configured to
+     * fall into "idle" state, so both of updateAvailableTimestamp and
+     * lastActivityTimestamp are important to save in storage, e.g.:
+     * - 10:00 `onUpdateAvailable` received
+     * - 10:05 `lastActivityTimestamp` last updated
+     * - 10:10 service worker restarts
+     * - 10:11 service worker starts and loads auto-update state
+     * - 10:35 service worker detects "idle" state and performs auto-update.
+     *
+     * So if we will not save `updateAvailableTimestamp` and `lastActivityTimestamp`
+     * in storage, we can possible forever wait for "idle" state and never perform
+     * auto-update.
+     */
+    private static async saveAutoUpdateState(): Promise<void> {
+        if (ExtensionUpdateService.updateAvailableTimestamp === null) {
+            return;
+        }
+
+        const state = {
+            updateAvailableTimestamp: ExtensionUpdateService.updateAvailableTimestamp,
+            lastActivityTimestamp: ExtensionUpdateService.lastActivityTimestamp,
+        };
+
+        await browserStorage.set(AUTO_UPDATE_STATE_KEY_MV3, JSON.stringify(state));
+    }
+
+    /**
+     * Clears auto-update state.
+     */
+    private static async clearAutoUpdateState(): Promise<void> {
+        ExtensionUpdateService.updateAvailableTimestamp = null;
+        ExtensionUpdateService.stopAutoUpdateCheck();
+
+        try {
+            await browserStorage.remove(AUTO_UPDATE_STATE_KEY_MV3);
+        } catch (error) {
+            logger.error('[ext.ExtensionUpdateService.clearAutoUpdateState]: Failed to clear storage:', error);
+        }
+    }
+
+    /**
+     * Starts periodic check for auto-update conditions.
+     */
+    private static startAutoUpdateCheck(): void {
+        // Avoid multiple intervals
+        if (ExtensionUpdateService.autoUpdateCheckIntervalId !== undefined) {
+            return;
+        }
+
+        // eslint-disable-next-line no-restricted-globals
+        ExtensionUpdateService.autoUpdateCheckIntervalId = self.setInterval(
+            () => ExtensionUpdateService.checkAutoUpdateConditions(),
+            ExtensionUpdateService.autoUpdateConfig.checkIntervalMs,
+        );
+    }
+
+    /**
+     * Stops periodic auto-update check.
+     */
+    private static stopAutoUpdateCheck(): void {
+        // eslint-disable-next-line no-restricted-globals
+        self.clearInterval(ExtensionUpdateService.autoUpdateCheckIntervalId);
+        ExtensionUpdateService.autoUpdateCheckIntervalId = undefined;
+    }
+
+    /**
+     * Checks if browser became "idle" and should apply update.
+     */
+    private static async checkAutoUpdateConditions(): Promise<void> {
+        try {
+            if (ExtensionUpdateService.lastActivityTimestamp === null) {
+                logger.trace('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: No activity timestamp found, stopping auto-update check');
+                ExtensionUpdateService.stopAutoUpdateCheck();
+                return;
+            }
+
+            const now = Date.now();
+            const timeSinceActivity = now - ExtensionUpdateService.lastActivityTimestamp;
+
+            // Check if browser is idle and should apply update
+            if (timeSinceActivity < ExtensionUpdateService.autoUpdateConfig.idleThresholdMs) {
+                logger.trace('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Browser is not idle, skipping update, after last activity: ', timeSinceActivity, 'ms');
+                return;
+            }
+
+            logger.info('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Idle threshold reached, applying update');
+            await ExtensionUpdateService.clearAutoUpdateState();
+            // To avoid possible collisions.
+            await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
+            ExtensionUpdateService.applyAutoUpdate();
+        } catch (error) {
+            logger.error('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Failed to check auto-update conditions:', error);
+        }
+    }
+
+    /**
+     * Applies extension update automatically.
+     */
+    private static applyAutoUpdate(): void {
+        extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.Update });
+
+        try {
+            ExtensionUpdateService.reloadExtension();
+        } catch (e) {
+            logger.error(`[ext.ExtensionUpdateService.applyAutoUpdate]: Failed to reload: ${e}`);
+            extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.UpdateFailed });
+        }
+    }
+
+    /**
+     * Checks if update icon should be shown based on delay period.
+     *
+     * For manual checks: Icon is shown immediately.
+     * For automatic checks: Icon is shown after iconDelayMs (24 hours by default).
+     *
+     * Uses in-memory cache to avoid storage reads on every icon update (called for each tab).
+     * State is loaded from storage on init and updated on events.
+     *
+     * @returns True if icon should be shown, false otherwise.
+     */
+    public static shouldShowUpdateIcon(): boolean {
+        if (!ExtensionUpdateService.isUpdateAvailable || ExtensionUpdateService.updateAvailableTimestamp === null) {
+            return false;
+        }
+
+        // If last check was manual, show icon immediately.
+        if (ExtensionUpdateService.isManualCheck) {
+            return true;
+        }
+
+        // For automatic checks, wait for delay period.
+        const timeSinceUpdateAvailable = Date.now() - ExtensionUpdateService.updateAvailableTimestamp;
+        const config = ExtensionUpdateService.autoUpdateConfig;
+
+        logger.trace('[ext.ExtensionUpdateService.shouldShowUpdateIcon]: Time since update available:', timeSinceUpdateAvailable);
+
+        return timeSinceUpdateAvailable >= config.iconDelayMs;
     }
 }
