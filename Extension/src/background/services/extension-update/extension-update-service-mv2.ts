@@ -77,4 +77,13 @@ export class ExtensionUpdateService {
     public static async getManualExtensionUpdateData(): Promise<ManualExtensionUpdateData | null> {
         throw new NotImplementedError();
     }
+
+    /**
+     * Just a empty dummy method for MV2.
+     *
+     * @throws Not implemented error.
+     */
+    public static shouldShowUpdateIcon(): boolean {
+        throw new NotImplementedError();
+    }
 }
