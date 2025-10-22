@@ -88,32 +88,6 @@ import { extensionUpdateActor } from './extension-update-machine';
  */
 export class ExtensionUpdateService {
     /**
-     * Default configuration for automatic extension updates.
-     *
-     * These values control when the update icon appears and when updates are applied automatically.
-     */
-    static readonly AutoUpdateConfig = {
-        /**
-         * Time to wait before showing the update icon after update becomes available.
-         * Default: 24 hours in milliseconds.
-         */
-        iconDelayMs: 24 * 60 * 60 * 1000,
-
-        /**
-         * Time of inactivity (no tab navigation events) before automatically applying update.
-         * Default: 30 minutes in milliseconds.
-         */
-        idleThresholdMs: 30 * 60 * 1000,
-
-        /**
-         * Interval for checking if conditions are met to apply auto-update.
-         * Default: 1 minute in milliseconds to prevent fall into service worker
-         * restart case, where TTL of SW will be less that the interval.
-         */
-        checkIntervalMs: 1 * 60 * 1000,
-    };
-
-    /**
      * Regular expression to match the version from the latest version URL.
      */
     private static readonly LATEST_VERSION_URL_REGEXP = /_([0-9_]+)\.crx$/;
@@ -157,9 +131,29 @@ export class ExtensionUpdateService {
 
     /**
      * Cached auto-update configuration.
-     * Loaded from storage on init, defaults to AutoUpdateConfig if not found.
+     *
+     * Can be manually overridden via chrome.storage.local.
      */
-    private static autoUpdateConfig = ExtensionUpdateService.AutoUpdateConfig;
+    private static autoUpdateConfig = {
+        /**
+         * Time to wait before showing the update icon after update becomes available.
+         * Default: 24 hours in milliseconds.
+         */
+        iconDelayMs: 24 * 60 * 60 * 1000,
+
+        /**
+         * Time of inactivity (no tab navigation events) before automatically applying update.
+         * Default: 30 minutes in milliseconds.
+         */
+        idleThresholdMs: 30 * 60 * 1000,
+
+        /**
+         * Interval for checking if conditions are met to apply auto-update.
+         * Default: 1 minute in milliseconds to prevent fall into service worker
+         * restart case, where TTL of SW will be less that the interval.
+         */
+        checkIntervalMs: 1 * 60 * 1000,
+    };
 
     /**
      * Initializes the service.
@@ -207,12 +201,12 @@ export class ExtensionUpdateService {
                 return;
             }
 
-            const customConfig = JSON.parse(configStr) as Partial<typeof ExtensionUpdateService.AutoUpdateConfig>;
+            const customConfig = JSON.parse(configStr);
 
             logger.info('[ext.ExtensionUpdateService.loadAutoUpdateConfig]: Using custom config from storage:', customConfig);
 
             ExtensionUpdateService.autoUpdateConfig = {
-                ...ExtensionUpdateService.AutoUpdateConfig,
+                ...ExtensionUpdateService.autoUpdateConfig,
                 ...customConfig,
             };
         } catch (error) {
