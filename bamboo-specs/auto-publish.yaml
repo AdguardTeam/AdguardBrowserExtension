@@ -13,9 +13,10 @@ environments:
 
 AutoDeployAndPublish Release:
   # run auto-deploy only after successful build
-  triggers:
-    - build-success:
-        branch: stable-v5.2
+  # TODO: uncomment after halloween release. AG-47227
+  # triggers:
+  #   - build-success:
+  #       branch: stable-v5.2
   tasks:
     - clean
     - checkout: &checkout
@@ -41,27 +42,31 @@ AutoDeployAndPublish Release:
             # artifacts inside deploy script.
             mv chrome-mv3-release.zip chrome-mv3.zip
 
-            # Deploying and publishing release in Chrome Web Store.
-            # This script attempts to deploy the browser extension to the webstore with expedited review.
-            # If the expedited review deployment fails (i.e., the exit status is non-zero),
-            # it catches the error and attempts to deploy with a normal review process.
-            # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
-            # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
-            set +e
-            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish-expedited-review
+            # TODO: remove after halloween release. AG-47227
+            echo "Publishing release is disabled until release halloween promo"
 
-            # Capture exit code
-            EXIT_CODE=$?
+            # TODO: uncomment after halloween release. AG-47227
+            # # Deploying and publishing release in Chrome Web Store.
+            # # This script attempts to deploy the browser extension to the webstore with expedited review.
+            # # If the expedited review deployment fails (i.e., the exit status is non-zero),
+            # # it catches the error and attempts to deploy with a normal review process.
+            # # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
+            # # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
+            # set +e
+            # ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish-expedited-review
 
-            # Enable errexit as it was set before
-            set -e
+            # # Capture exit code
+            # EXIT_CODE=$?
 
-            # If expedited review process exited with non-zero status,
-            # try normal review.
-            if [ $EXIT_CODE -ne 0 ]; then
-              echo "Expedited review failed, trying normal review"
-              ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
-            fi
+            # # Enable errexit as it was set before
+            # set -e
+
+            # # If expedited review process exited with non-zero status,
+            # # try normal review.
+            # if [ $EXIT_CODE -ne 0 ]; then
+            #   echo "Expedited review failed, trying normal review"
+            #   ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
+            # fi
   requirements: &requirements
     - adg-docker: 'true'
   notifications: &notifications
