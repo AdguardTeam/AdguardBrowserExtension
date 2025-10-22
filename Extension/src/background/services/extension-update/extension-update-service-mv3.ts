@@ -253,31 +253,35 @@ export class ExtensionUpdateService {
         self.clearTimeout(ExtensionUpdateService.checkingUpdateTimeoutId);
         ExtensionUpdateService.checkingUpdateTimeoutId = undefined;
 
-        // Store timestamp when update became available
-        const now = Date.now();
-        ExtensionUpdateService.updateAvailableTimestamp = now;
-        ExtensionUpdateService.lastNavigationTimestamp = now;
-
-        // Save state to storage for persistence across service worker restarts
-        await ExtensionUpdateService.saveAutoUpdateState();
-
-        // Start periodic check for auto-update conditions only if not manual
-        if (!ExtensionUpdateService.isManualCheck) {
-            ExtensionUpdateService.startAutoUpdateCheck();
-
-            // Set up navigation tracking via webNavigation events.
-            ExtensionUpdateService.setupNavigationTracking();
-
-            logger.trace(
-                '[ext.ExtensionUpdateService.onUpdateAvailable]:',
-                `Auto-update tracking started. Icon delay: ${ExtensionUpdateService.autoUpdateConfig.iconDelayMs}ms, Inactivity threshold: ${ExtensionUpdateService.autoUpdateConfig.idleThresholdMs}ms`,
-            );
-        } else {
+        // TODO: Add saving onUpdateAvailable event to storage in a separate
+        // field to not override updateAvailableTimestamp for auto-update case.
+        // AG-47051
+        if (ExtensionUpdateService.isManualCheck) {
             logger.trace(
                 '[ext.ExtensionUpdateService.onUpdateAvailable]:',
                 'Manual check - update icon will be shown immediately',
             );
+            return;
         }
+
+        // Store timestamp when update became available.
+        const now = Date.now();
+        ExtensionUpdateService.updateAvailableTimestamp = now;
+        ExtensionUpdateService.lastNavigationTimestamp = now;
+
+        // Save state to storage for persistence across service worker restarts.
+        await ExtensionUpdateService.saveAutoUpdateState();
+
+        // Start periodic check for auto-update conditions.
+        ExtensionUpdateService.startAutoUpdateCheck();
+
+        // Set up navigation tracking via webNavigation events.
+        ExtensionUpdateService.setupNavigationTracking();
+
+        logger.trace(
+            '[ext.ExtensionUpdateService.onUpdateAvailable]:',
+            `Auto-update tracking started. Icon delay: ${ExtensionUpdateService.autoUpdateConfig.iconDelayMs}ms, Inactivity threshold: ${ExtensionUpdateService.autoUpdateConfig.idleThresholdMs}ms`,
+        );
     }
 
     /**
