@@ -685,12 +685,13 @@ export class ExtensionUpdateService {
     private static updateLastNavigationTimestamp(): void {
         ExtensionUpdateService.lastNavigationTimestamp = Date.now();
 
-        logger.trace('[ext.ExtensionUpdateService.updateLastNavigationTimestamp]: Navigation event detected, updating timestamp:', new Date().toISOString());
+        logger.trace('[ext.ExtensionUpdateService.updateLastNavigationTimestamp]: Navigation event detected, updating timestamp:', new Date(ExtensionUpdateService.lastNavigationTimestamp).toISOString());
 
         // Save to storage on every navigation to persist across service worker restarts
         // Do not await intentionally.
         ExtensionUpdateService.saveAutoUpdateState().catch((error) => {
-            logger.error('[ext.ExtensionUpdateService.updateLastNavigationTimestamp]: Failed to save navigation timestamp:', error);
+            // In debug to prevent show error in production
+            logger.debug('[ext.ExtensionUpdateService.updateLastNavigationTimestamp]: Failed to save navigation timestamp:', error);
         });
     }
 
@@ -840,7 +841,7 @@ export class ExtensionUpdateService {
                 return;
             }
 
-            logger.info('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Inactivity threshold reached, applying update');
+            logger.debug('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Inactivity threshold reached, applying update');
             await ExtensionUpdateService.clearAutoUpdateState();
             // To avoid possible collisions.
             await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
