@@ -760,11 +760,11 @@ export class ExtensionUpdateService {
      * since service worker can restart in less time than configured idle threshold,
      * so both updateAvailableTimestamp and lastNavigationTimestamp are important
      * to save in storage, e.g.:
-     * - 10:00 `onUpdateAvailable` received
-     * - 10:05 `lastNavigationTimestamp` last updated
-     * - 10:10 service worker restarts
-     * - 10:11 service worker starts and loads auto-update state
-     * - 10:35 service worker detects idle state and performs auto-update.
+     * - 10:00 `onUpdateAvailable` received;
+     * - 10:05 `lastNavigationTimestamp` last updated;
+     * - 10:10 service worker restarts and loads auto-update state;
+     * - 10:35 service worker detects idle state and performs auto-update
+     *   (30 minutes after last activity).
      *
      * Without saving these timestamps to storage, we could potentially wait forever
      * for idle state and never perform auto-update.
