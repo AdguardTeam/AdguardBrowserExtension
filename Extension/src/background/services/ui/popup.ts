@@ -231,5 +231,6 @@ export class PopupService {
         const { state } = data;
 
         await SettingsApi.setSetting(SettingOption.DisableFiltering, state);
+        await SettingsApi.setSetting(SettingOption.DisableStealthMode, state);
     }
 }
