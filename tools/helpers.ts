@@ -20,7 +20,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { parse, SemVer } from 'semver';
+import { parse, type SemVer } from 'semver';
 import { merge } from 'webpack-merge';
 import { type Manifest } from 'webextension-polyfill';
 
@@ -39,6 +39,13 @@ const __dirname = path.dirname(__filename);
 
 type ManifestBase = Manifest.ManifestBase;
 type WebExtensionManifest = Manifest.WebExtensionManifest;
+
+export type ParsedVersion = {
+    parsedVersion: SemVer;
+    incrementVersion: string;
+    buildMetatag: string;
+    dnrVersion: string;
+};
 
 /**
  * Retrieves the sha value for the click2load.html redirects resource.
@@ -88,6 +95,78 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
 };
 
 /**
+ * Parses and validates the package.json version string.
+ *
+ * Extracts and validates all required build metadata components from the version string.
+ * The expected version format is: `major.minor.patch+increment.build.dnrVersion`
+ * (e.g., "5.3.0+88.build.20251001150205").
+ *
+ * @returns Parsed version object.
+ *
+ * @throws Error if package version cannot be parsed.
+ */
+const parseAndValidateVersion = (version: string): ParsedVersion => {
+    const parsedVersion = parse(version);
+
+    if (!parsedVersion) {
+        throw new Error(`Cannot parse package version: ${packageJson.version}`);
+    }
+
+    const { build } = parsedVersion;
+
+    const [
+        incrementVersion,
+        buildMetatag,
+        dnrVersion,
+    ] = build;
+
+    if (incrementVersion === undefined) {
+        throw new Error(`Invalid increment version format: ${packageJson.version}`);
+    }
+
+    if (buildMetatag === undefined) {
+        throw new Error(`Invalid build metatag format: ${packageJson.version}`);
+    }
+
+    if (dnrVersion === undefined) {
+        throw new Error(`Invalid dnr version format: ${packageJson.version}`);
+    }
+
+    return {
+        parsedVersion,
+        incrementVersion,
+        buildMetatag,
+        dnrVersion,
+    };
+};
+
+/**
+ * Parses the package.json version and returns the formatted version string
+ * in the format major.minor.patch.increment (e.g., "5.3.0.88").
+ *
+ * This function extracts the increment version from the build metadata
+ * and formats it for use in manifest.json and build.txt files.
+ *
+ * @param version The version string to format.
+ * @param clearBuildMetadata If true, clears the build metadata from the parsed version.
+ * Default is false. Set to true for manifest.json compatibility.
+ *
+ * @returns The formatted version string.
+ *
+ * @throws Error when package version cannot be parsed or has invalid format.
+ */
+export const getFormattedVersion = (version: string, clearBuildMetadata = false): string => {
+    const { parsedVersion, incrementVersion } = parseAndValidateVersion(version);
+
+    if (clearBuildMetadata) {
+        // Clear the build metatag since it's not allowed in manifest version.
+        parsedVersion.build = [];
+    }
+
+    return `${parsedVersion.format()}.${incrementVersion}`;
+};
+
+/**
  * Updates a manifest object with new values and returns the updated manifest.
  * Also updates the version and name fields based on the package.json version,
  * since package.json version contains the build metatag, which itself contains
@@ -118,43 +197,12 @@ export const updateManifest = (
     const manifestVersion = union.manifest_version || targetPart.manifest_version;
     const name = union.name || targetPart.name;
 
-    const parsedVersion = parse(packageJson.version);
-
-    if (!parsedVersion) {
-        throw new Error(`Cannot parse package version: ${packageJson.version}`);
-    }
-
-    const { build } = parsedVersion;
-
-    const [
-        incrementVersion,
-        buildMetatag,
-        dnrVersion,
-    ] = build;
-
-    if (incrementVersion === undefined) {
-        throw new Error(`Invalid increment version format: ${packageJson.version}`);
-    }
-
-    if (buildMetatag === undefined) {
-        throw new Error(`Invalid build metatag format: ${packageJson.version}`);
-    }
-
-    if (dnrVersion === undefined) {
-        throw new Error(`Invalid dnr version format: ${packageJson.version}`);
-    }
-
-    const appVersion = new SemVer(parsedVersion);
-
-    // Clear the build metatag since it's not allowed in manifest version.
-    appVersion.build = [];
-
     // Build the final manifest object
     const result: WebExtensionManifest = {
         // Passing build increment version to the version in the manifest
         // to make each build unique and easily identifiable, since we often
         // update builds for MV3 via skip review process.
-        version: `${appVersion.format()}.${incrementVersion}`,
+        version: getFormattedVersion(packageJson.version, true),
         manifest_version: manifestVersion,
         name,
         ...devPolicy,
