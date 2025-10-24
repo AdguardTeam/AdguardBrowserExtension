@@ -58,6 +58,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
         - [Analyzing bundle size](#dev-bundle-size)
         - [Debug MV3 declarative rules](#dev-debug-mv3)
     - [Linter](#dev-linter)
+    - [TypeScript Configuration](#dev-typescript-configs)
     - [Update localizations](#dev-localizations)
     - [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 - [Permissions required](#permissions-required)
@@ -604,6 +605,39 @@ pnpm exec tsurlfilter convert --help
 
 Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
+
+### <a name="dev-typescript-configs"></a> TypeScript Configuration
+
+The project uses **TypeScript Project References** to completely separate Manifest V2 and V3 codebases into independent TypeScript projects. This architectural approach eliminates the need for empty stub implementations and provides superior IDE support.
+
+#### Configuration Files Overview
+
+The project contains **5 TypeScript configuration files**, each serving a specific purpose:
+
+1. **`tsconfig.base.json`** - Shared base configuration
+   - Common compiler options for all projects
+   - JSX support and module resolution settings
+
+2. **`tsconfig.json`** - Root project references container
+   - Contains minimal includes
+   - References both MV2 and MV3 projects
+   - Enables VS Code to automatically switch between projects
+
+3. **`tsconfig.mv2.json`** - Manifest V2 project
+   - Excludes all `**/*-mv3.ts` and `**/*-mv3.tsx` files
+   - Contains MV2-specific path aliases
+   - Composite project with declaration output
+
+4. **`tsconfig.mv3.json`** - Manifest V3 project
+   - Excludes all `**/*-mv2.ts` and `**/*-mv2.tsx` files
+   - Contains MV3-specific path aliases
+   - Composite project with declaration output
+
+5. **`tsconfig.eslint.json`** - ESLint-specific configuration
+   - Includes all files for linting purposes
+   - Special path mapping for JSX files
+   - Separate from compilation projects
+
 
 ### <a name="dev-localizations"></a> Update localizations
 

@@ -15,9 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { type ConfigurationResult } from '@adguard/tswebextension/mv3';
-
 import { type Engine } from 'engine';
 
 import { SettingOption } from '../../schema';
@@ -51,14 +48,4 @@ export class UserRulesService extends UserRulesServiceCommon {
     private static async handleEnableStateChange(): Promise<void> {
         await UserRulesServiceCommon.engine.debounceUpdate();
     }
-
-    /**
-     * Checks for user rules parsing errors in the configuration result.
-     *
-     * @note Empty implementation for MV2 compatibility with MV3.
-     *
-     * @param result Configuration result from the engine.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public static checkUserRulesRegexpErrors(result: ConfigurationResult): void {}
 }

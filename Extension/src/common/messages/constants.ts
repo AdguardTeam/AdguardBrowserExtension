@@ -111,7 +111,7 @@ export enum MessageType {
     GetOptionsData = 'getOptionsData',
     ChangeUserSettings = 'changeUserSetting',
     CheckRequestFilterReady = 'checkRequestFilterReady',
-    OpenThankyouPage = 'openThankYouPage',
+    OpenThankYouPage = 'openThankYouPage',
     OpenSafebrowsingTrusted = 'openSafebrowsingTrusted',
     GetSelectorsAndScripts = 'getSelectorsAndScripts',
     CheckPageScriptWrapperRequest = 'checkPageScriptWrapperRequest',
@@ -298,8 +298,8 @@ export type OpenSiteReportTabMessage = {
     };
 };
 
-export type OpenThankyouPageMessage = {
-    type: MessageType.OpenThankyouPage;
+export type OpenThankYouPageMessage = {
+    type: MessageType.OpenThankYouPage;
 };
 
 export type GetOptionsDataMessage = {
@@ -745,8 +745,8 @@ export type MessageMap = {
         message: OpenSiteReportTabMessage;
         response: void;
     };
-    [MessageType.OpenThankyouPage]: {
-        message: OpenThankyouPageMessage;
+    [MessageType.OpenThankYouPage]: {
+        message: OpenThankYouPageMessage;
         response: void;
     };
     [MessageType.GetOptionsData]: {

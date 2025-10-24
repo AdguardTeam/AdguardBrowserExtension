@@ -16,24 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type LocaleDetectCommon } from './locale-detect-common';
+import { PagesApi } from 'pages';
 
-/**
- * Locale detection service for Manifest V3.
- *
- * Empty stub - functionality disabled in MV3. Enabling filters based on
- * detected locale would require checking declarative rules limits, adding
- * significant complexity. For simplicity, this feature is not implemented.
- *
- * NOTE: This module is intentionally not used anywhere in MV3 build, but kept
- * for consistency with MV2/MV3 architecture pattern to avoid confusion.
- */
-class LocaleDetect implements LocaleDetectCommon {
-    /**
-     * Adds listener for tab update message.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    init(): void {}
-}
-
-export const localeDetect = new LocaleDetect();
+export { PagesApi } from 'pages';
+export const pagesApi = new PagesApi();

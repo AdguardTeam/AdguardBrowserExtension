@@ -18,7 +18,7 @@
 
 import { type BuildTargetEnv } from '../../constants';
 import {
-    type Browser,
+    Browser,
     ENV_CONF,
     type EnvConfig,
 } from '../constants';
@@ -26,11 +26,11 @@ import {
 import { type BrowserConfig, BROWSERS_CONF } from './common-constants';
 
 export const getBrowserConf = (browser: Browser): BrowserConfig => {
-    const browserConf = BROWSERS_CONF[browser];
-    if (!browserConf) {
+    if (browser === Browser.ChromeCrx) {
         throw new Error(`No browser config for: "${browser}"`);
     }
-    return browserConf;
+
+    return BROWSERS_CONF[browser];
 };
 
 export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
