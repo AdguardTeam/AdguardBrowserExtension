@@ -17,9 +17,5 @@
  */
 import { MetadataStorageCommon } from './metadata-common';
 
-/**
- * {@inheritDoc MetadataStorageCommon}.
- *
- * In MV2, the MetadataStorage class remains as-is from the common implementation.
- */
+/** @inheritdoc */
 export class MetadataStorage extends MetadataStorageCommon {}

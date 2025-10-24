@@ -15,20 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { type Metadata } from '../../schema';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { StringStorage } from '../../utils/string-storage';
-
 import { MetadataStorageCommon } from './metadata-common';
 
-/**
- * Class for synchronous control {@link Metadata} storage,
- * that is persisted as string in another key value storage.
- *
- * @see {@link StringStorage}
- */
+/** @inheritdoc */
 export class MetadataStorage extends MetadataStorageCommon {
     /**
      * Return version for DNR rulesets.
