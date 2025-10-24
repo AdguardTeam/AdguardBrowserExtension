@@ -48,7 +48,7 @@ const createProjectForManifestVersion = (
     resolve: {
         alias: loadAliases(
             path.resolve(__dirname),
-            `./tsconfig.with_types_mv${manifestVersion}.json`,
+            `./tsconfig.mv${manifestVersion}.json`,
         ),
     },
     test: {

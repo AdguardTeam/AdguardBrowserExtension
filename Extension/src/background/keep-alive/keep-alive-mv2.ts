@@ -18,7 +18,7 @@
 
 import browser from 'webextension-polyfill';
 
-import { executeScript, type ExecuteScriptOptionsMv2 } from '../services/scripting';
+import { executeScript } from '../services/scripting';
 import { logger } from '../../common/logger';
 import { UserAgent } from '../../common/user-agent';
 import { KEEP_ALIVE_PORT_NAME } from '../../common/constants';
@@ -92,12 +92,8 @@ export class KeepAlive extends KeepAliveCommon {
         // eslint-disable-next-line no-restricted-syntax
         for (const tab of tabs) {
             try {
-                /**
-                 * Type assertion is needed because of the difference in types between MV2 and MV3
-                 * and here is only MV2-specific executeScript should be used.
-                 */
                 // eslint-disable-next-line no-await-in-loop
-                await executeScript(tab.id, { code: keepAliveCode } as ExecuteScriptOptionsMv2);
+                await executeScript(tab.id, { code: keepAliveCode });
                 return;
             } catch (e) {
                 // use debug level to avoid extension errors when blocking pages is loading

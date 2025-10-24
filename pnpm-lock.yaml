@@ -201,6 +201,9 @@ importers:
       '@types/webextension-polyfill':
         specifier: 0.12.1
         version: 0.12.1
+      '@types/webpack-bundle-analyzer':
+        specifier: ^4.7.0
+        version: 4.7.0(@swc/core@1.11.21)
       '@types/zip-webpack-plugin':
         specifier: 3.0.6
         version: 3.0.6
@@ -1446,6 +1449,9 @@ packages:
 
   '@types/webextension-polyfill@0.12.1':
     resolution: {integrity: sha512-xPTFWwQ8BxPevPF2IKsf4hpZNss4LxaOLZXypQH4E63BDLmcwX/RMGdI4tB4VO4Nb6xDBH3F/p4gz4wvof1o9w==}
+
+  '@types/webpack-bundle-analyzer@4.7.0':
+    resolution: {integrity: sha512-c5i2ThslSNSG8W891BRvOd/RoCjI2zwph8maD22b1adtSns20j+0azDDMCK06DiVrzTgnwiDl5Ntmu1YRJw8Sg==}
 
   '@types/webpack-sources@3.2.3':
     resolution: {integrity: sha512-4nZOdMwSPHZ4pTEZzSp0AsTM4K7Qmu40UKW4tJDiOVs20UzYF9l+qUe4s0ftfN0pin06n+5cWWDJXH+sbhAiDw==}
@@ -6041,6 +6047,17 @@ snapshots:
       '@types/node': 22.14.1
 
   '@types/webextension-polyfill@0.12.1': {}
+
+  '@types/webpack-bundle-analyzer@4.7.0(@swc/core@1.11.21)':
+    dependencies:
+      '@types/node': 22.14.1
+      tapable: 2.2.1
+      webpack: 5.97.1(@swc/core@1.11.21)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
+      - webpack-cli
 
   '@types/webpack-sources@3.2.3':
     dependencies:

@@ -27,40 +27,7 @@ import { type ManualExtensionUpdateData } from './types';
 export class ExtensionUpdateService {
     /**
      * Just a empty dummy method for MV2.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor, @typescript-eslint/no-empty-function
-    constructor() { }
-
-    /**
-     * Just a empty dummy method for MV2.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    public static init(): void { }
-
-    /**
-     * Just a empty dummy method for MV2.
-     *
-     * @throws Not implemented error.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    async manualUpdateExtension(): Promise<boolean> {
-        throw new NotImplementedError();
-    }
-
-    /**
-     * Just a empty dummy method for MV2.
-     *
-     * @param isUpdate Whether the extension version was updated.
-     *
-     * @throws Not implemented error.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public static async handleExtensionReloadOnUpdate(isUpdate: boolean): Promise<void> {
-        throw new NotImplementedError();
-    }
-
-    /**
-     * Just a empty dummy method for MV2.
+     * TODO: remove this method after split Extension/src/background/services/ui/popup.ts for mv2/mv3 versions.
      *
      * @throws Not implemented error.
      */
@@ -71,6 +38,7 @@ export class ExtensionUpdateService {
 
     /**
      * Just a empty dummy method for MV2.
+     * TODO: remove this method after split Extension/src/background/services/ui/popup.ts for mv2/mv3 versions.
      *
      * @throws Not implemented error.
      */
