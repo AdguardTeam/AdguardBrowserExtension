@@ -32,14 +32,14 @@ import {
 } from '../../../common/messages';
 import { UserAgent } from '../../../common/user-agent';
 import { engine } from '../../engine';
-import { AntiBannerFiltersId, type NotifierType } from '../../../common/constants';
-import { notifier } from '../../notifier';
+import { AntiBannerFiltersId, type AppearanceTheme } from '../../../common/constants';
 import {
     toasts,
     FiltersApi,
     TabsApi,
     SettingsApi,
     PagesApi,
+    pagesApi,
     AssistantApi,
     type SettingsData,
     type FilterMetadata,
@@ -49,7 +49,6 @@ import {
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
-import { type AppearanceTheme } from '../../../common/settings';
 import { SettingOption } from '../../schema';
 
 /**
@@ -71,11 +70,6 @@ export type PageInitAppData = {
             mobile: boolean;
         };
         appVersion: string;
-    };
-    constants: {
-        AntiBannerFiltersId: typeof AntiBannerFiltersId;
-        // TODO: Seems like deprecated, can be removed.
-        EventNotifierType: typeof NotifierType;
     };
 };
 
@@ -139,8 +133,8 @@ export class UiService {
 
         messageHandler.addListener(MessageType.OpenSiteReportTab, UiService.openSiteReportPage);
 
-        messageHandler.addListener(MessageType.OpenThankyouPage, PagesApi.openThankYouPage);
-        messageHandler.addListener(MessageType.OpenExtensionStore, PagesApi.openExtensionStorePage);
+        messageHandler.addListener(MessageType.OpenThankYouPage, pagesApi.openThankYouPage);
+        messageHandler.addListener(MessageType.OpenExtensionStore, pagesApi.openExtensionStorePage);
         messageHandler.addListener(MessageType.OpenComparePage, PagesApi.openComparePage);
         messageHandler.addListener(
             MessageType.OpenChromeExtensionsSettingsPage,
@@ -154,7 +148,7 @@ export class UiService {
         );
         messageHandler.addListener(
             MessageType.AddFilteringSubscription,
-            PagesApi.openSettingsPageWithCustomFilterModal,
+            pagesApi.openSettingsPageWithCustomFilterModal,
         );
 
         messageHandler.addListener(MessageType.OpenAssistant, AssistantApi.openAssistant);
@@ -181,7 +175,7 @@ export class UiService {
     private static async openAbusePage({ data }: OpenAbuseTabMessage): Promise<void> {
         const { url, from } = data;
 
-        await PagesApi.openAbusePage(url, from);
+        await pagesApi.openAbusePage(url, from);
     }
 
     /**
@@ -191,7 +185,7 @@ export class UiService {
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.url) {
-            await PagesApi.openAbusePage(activeTab.url, ForwardFrom.ContextMenu);
+            await pagesApi.openAbusePage(activeTab.url, ForwardFrom.ContextMenu);
         } else {
             logger.warn('[ext.UiService.openAbusePageForActiveTab]: cannot open abuse page for active tab, active tab is undefined');
         }
@@ -261,10 +255,6 @@ export class UiService {
                     mobile: UserAgent.isAndroid,
                 },
                 appVersion: browser.runtime.getManifest().version,
-            },
-            constants: {
-                AntiBannerFiltersId,
-                EventNotifierType: notifier.events,
             },
         };
     }

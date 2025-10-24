@@ -43,15 +43,10 @@ import { type FilterMetadata, FiltersApi } from '../main';
 /**
  * Filter data displayed in category section on options page.
  */
-export type CategoriesFilterData = (
-    (RegularFilterMetadata | CustomFilterMetadata) &
-    // Optional because there is no field 'languages' in CustomFilterMetadata.
-    // TODO: consider removing because RegularFilterMetadata already has 'languages' field.
-    { languages?: string[] } &
+export type CategoriesFilterData = (RegularFilterMetadata | CustomFilterMetadata) &
     FilterStateData &
     FilterVersionData &
-    { tagsDetails: TagMetadata[] }
-);
+    { tagsDetails?: TagMetadata[] };
 
 /**
  * Groups data displayed on options page.
@@ -230,16 +225,18 @@ export class Categories {
         const result: number[] = [];
 
         filters.forEach((filter) => {
-            if (Categories.isRecommendedFilter(filter) && Categories.isFilterMatchPlatform(filter)) {
-                // get ids intersection to enable recommended filters matching the lang tag
-                // only if filter has language
-                if (filter.languages && filter.languages.length > 0) {
-                    if (langSuitableFilters.includes(filter.filterId)) {
-                        result.push(filter.filterId);
-                    }
-                } else {
+            if (!Categories.isRecommendedFilter(filter) || !Categories.isFilterMatchPlatform(filter)) {
+                return;
+            }
+
+            // get ids intersection to enable recommended filters matching the lang tag
+            // only if filter has language
+            if ('languages' in filter && filter.languages.length > 0) {
+                if (langSuitableFilters.includes(filter.filterId)) {
                     result.push(filter.filterId);
                 }
+            } else {
+                result.push(filter.filterId);
             }
         });
 

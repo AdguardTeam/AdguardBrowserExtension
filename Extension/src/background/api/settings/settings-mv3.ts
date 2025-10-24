@@ -19,7 +19,7 @@ import { type SettingsConfig as SettingsConfigMV3 } from '@adguard/tswebextensio
 import { type SettingsConfig as SettingsConfigMV2 } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
-import { type AppearanceTheme, defaultSettings } from '../../../common/settings';
+import { defaultSettings } from '../../../common/settings';
 import {
     type AllowlistConfig,
     AllowlistOption,
@@ -58,6 +58,7 @@ import {
 import {
     ADGUARD_SETTINGS_KEY,
     AntiBannerFiltersId,
+    type AppearanceTheme,
     NotifierType,
 } from '../../../common/constants';
 import { settingsEvents } from '../../events';

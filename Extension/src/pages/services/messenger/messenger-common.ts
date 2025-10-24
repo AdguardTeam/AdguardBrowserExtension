@@ -19,7 +19,7 @@
 import browser from 'webextension-polyfill';
 import { nanoid } from 'nanoid';
 
-import { logger } from '../../common/logger';
+import { logger } from '../../../common/logger';
 import {
     APP_MESSAGE_HANDLER_NAME,
     MessageType,
@@ -61,12 +61,13 @@ import {
     type AddUrlToTrustedMessage,
     type ExtractedMessage,
     type OpenSafebrowsingTrustedMessage,
-} from '../../common/messages';
-import { type NotifierType } from '../../common/constants';
-import { type CreateEventListenerResponse } from '../../background/services/event';
+    type UpdateExtensionMessageMv3,
+} from '../../../common/messages';
+import { type NotifierType } from '../../../common/constants';
+import { type CreateEventListenerResponse } from '../../../background/services';
 
 /**
- * @typedef {import('../../common/messages').MessageMap} MessageMap
+ * @typedef {import('../../../common/messages').MessageMap} MessageMap
  */
 
 /**
@@ -92,14 +93,14 @@ export const enum Page {
 type UnloadCallback = () => void;
 
 /**
- * Messenger class, used to communicate with the background page from the UI.
+ * MessengerCommon class, used to communicate with the background page from the UI.
  * Actually, it's a wrapper around the browser.runtime.sendMessage method.
  */
-class Messenger {
+export abstract class MessengerCommon {
     onMessage = browser.runtime.onMessage;
 
     /**
-     * Creates an instance of the Messenger class.
+     * Creates an instance of the MessengerCommon class.
      */
     constructor() {
         this.resetUserRulesForPage = this.resetUserRulesForPage.bind(this);
@@ -123,7 +124,7 @@ class Messenger {
      * to see all possible message types and their responses.
      */
     // eslint-disable-next-line class-methods-use-this
-    private async sendMessage<T extends ValidMessageTypes>(
+    protected async sendMessage<T extends ValidMessageTypes>(
         type: MessageWithoutHandlerName<T>['type'],
         data?: 'data' extends keyof MessageWithoutHandlerName<T> ? MessageWithoutHandlerName<T>['data'] : undefined,
     ): Promise<ExtractMessageResponse<T>> {
@@ -159,13 +160,13 @@ class Messenger {
 
             port.onMessage.addListener((message) => {
                 if (!messageHasTypeField(message)) {
-                    logger.error('[ext.Messenger]: received message in Messenger.createLongLivedConnection has no type field:', message);
+                    logger.error('[ext.MessengerCommon]: received message in MessengerCommon.createLongLivedConnection has no type field:', message);
                     return;
                 }
 
                 if (message.type === MessageType.NotifyListeners) {
                     if (!messageHasTypeAndDataFields(message)) {
-                        logger.error('[ext.Messenger]: received message with type MessageType.NotifyListeners has no data:', message);
+                        logger.error('[ext.MessengerCommon]: received message with type MessageType.NotifyListeners has no data:', message);
                         return;
                     }
 
@@ -178,7 +179,7 @@ class Messenger {
 
             port.onDisconnect.addListener(() => {
                 if (browser.runtime.lastError) {
-                    logger.error('[ext.Messenger]: received error on disconnect:', browser.runtime.lastError.message);
+                    logger.error('[ext.MessengerCommon]: received error on disconnect:', browser.runtime.lastError.message);
                 }
                 // we try to connect again if the background page was terminated
                 if (!forceDisconnected) {
@@ -236,13 +237,13 @@ class Messenger {
 
         const messageHandler = (message: unknown) => {
             if (!messageHasTypeField(message)) {
-                logger.error('[ext.Messenger]: received message in Messenger.createEventListener has no type field:', message);
+                logger.error('[ext.MessengerCommon]: received message in MessengerCommon.createEventListener has no type field:', message);
                 return undefined;
             }
 
             if (message.type === MessageType.NotifyListeners) {
                 if (!messageHasTypeAndDataFields(message)) {
-                    logger.error('[ext.Messenger]: received message with type MessageType.NotifyListeners has no data:', message);
+                    logger.error('[ext.MessengerCommon]: received message with type MessageType.NotifyListeners has no data:', message);
                     return undefined;
                 }
 
@@ -514,86 +515,33 @@ class Messenger {
      *
      * @returns Promise that resolves with the list of filters.
      */
-    async updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
-        if (__IS_MV3__) {
-            logger.warn('[ext.Messenger.updateFiltersMV2]: filters update is not supported in MV3');
-            return [];
-        }
-
-        return this.sendMessage(MessageType.CheckFiltersUpdate);
-    }
-
-    /**
-     * Sends a message to the background page to check for extension updates initiated from popup.
-     */
-    async checkUpdatesFromPopupMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateFromPopup>> {
-        if (!__IS_MV3__) {
-            logger.warn('[ext.Messenger.checkUpdatesFromPopupMV3]: extension update is not supported in MV2');
-            return;
-        }
-
-        return this.sendMessage(MessageType.CheckExtensionUpdateFromPopup);
-    }
-
-    /**
-     * Sends a message to the background page to update extension initiated from popup.
-     */
-    async updateExtensionFromPopupMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtensionFromPopup>> {
-        if (!__IS_MV3__) {
-            logger.warn('[ext.Messenger.updateExtensionFromPopupMV3]: extension update is not supported in MV2');
-            return;
-        }
-
-        return this.sendMessage(MessageType.UpdateExtensionFromPopup);
-    }
+    abstract updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>>;
 
     /**
      * Sends a message to the background page to check for extension updates.
-     *
-     * @returns Promise that resolves with boolean - true if update is available, false otherwise.
      */
-    async checkUpdatesFromOptionsMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateFromOptions>> {
-        if (!__IS_MV3__) {
-            logger.warn('[ext.Messenger.checkUpdatesFromOptionsMV3]: extension update is not supported in MV2');
-            return false;
-        }
-
-        return this.sendMessage(MessageType.CheckExtensionUpdateFromOptions);
-    }
+    abstract checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>>;
 
     /**
-     * Sends a message to the background page to update the extension from the options page.
-     *
-     * @returns Promise that resolves with boolean false if update failed,
-     * otherwise void because the extension reloads on success.
+     * Sends a message to the background page to update extension.
      */
-    async updateExtensionFromOptionsMV3(): Promise<ExtractMessageResponse<MessageType.UpdateExtensionFromOptions>> {
-        if (!__IS_MV3__) {
-            logger.warn('[ext.Messenger.updateExtensionFromOptionsMV3]: extension update is not supported in MV2');
-            return;
-        }
-
-        try {
-            await this.sendMessage(MessageType.UpdateExtensionFromOptions);
-        } catch (error) {
-            logger.debug('[ext.Messenger.updateExtensionFromOptionsMV3]: failed to update extension: ', error);
-        }
-    }
+    abstract updateExtensionMV3(
+        { from }: UpdateExtensionMessageMv3['data'],
+    ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>>;
 
     /**
      * Sends a message to the background page to update the status of a filter group.
      *
-     * @param id Group identifier.
+     * @param groupId Group identifier.
      * @param enabled Whether the group should be enabled or disabled.
      *
      * @returns Promise that resolves after the message is sent.
      */
     async updateGroupStatus(
-        id: string,
+        groupId: number,
         enabled: boolean,
     ): Promise<ExtractMessageResponse<MessageType.EnableFiltersGroup | MessageType.DisableFiltersGroup>> {
         const type = enabled ? MessageType.EnableFiltersGroup : MessageType.DisableFiltersGroup;
-        const groupId = Number.parseInt(id, 10);
 
         return this.sendMessage(type, { groupId });
     }
@@ -782,7 +730,7 @@ class Messenger {
         const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
 
         if (!currentTab?.id) {
-            logger.warn('[ext.Messenger.resetUserRulesForPage]: cannot get current tab id');
+            logger.warn('[ext.MessengerCommon.resetUserRulesForPage]: cannot get current tab id');
             return;
         }
 
@@ -1092,8 +1040,8 @@ class Messenger {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openThankyouPage(): Promise<ExtractMessageResponse<MessageType.OpenThankyouPage>> {
-        return this.sendMessage(MessageType.OpenThankyouPage);
+    async openThankYouPage(): Promise<ExtractMessageResponse<MessageType.OpenThankYouPage>> {
+        return this.sendMessage(MessageType.OpenThankYouPage);
     }
 
     /**
@@ -1126,7 +1074,3 @@ class Messenger {
         return this.sendMessage(MessageType.OpenSafebrowsingTrusted, { url });
     }
 }
-
-const messenger = new Messenger();
-
-export { messenger, Messenger };

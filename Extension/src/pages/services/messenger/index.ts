@@ -16,15 +16,5 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Common interface for locale detection service.
- *
- * Automatically detects user's locale and enables appropriate language-specific
- * filters to improve ad blocking effectiveness for regional content.
- */
-export interface LocaleDetectCommon {
-    /**
-     * Adds listener for tab update message.
-     */
-    init(): void;
-}
+export { messenger } from 'messenger';
+export { MessengerCommon as Messenger, Page, type LongLivedConnectionCallbackMessage } from './messenger-common';

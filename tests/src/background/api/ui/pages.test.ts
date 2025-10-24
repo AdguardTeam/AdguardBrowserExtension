@@ -6,7 +6,7 @@ import {
     vi,
 } from 'vitest';
 
-import { PagesApi } from '../../../../../Extension/src/background/api/ui/pages';
+import { pagesApi } from '../../../../../Extension/src/background/api/ui/pages';
 import { SettingsApi } from '../../../../../Extension/src/background/api/settings';
 import { FilterStateStorage } from '../../../../../Extension/src/background/storages/filter-state';
 import { GroupStateStorage } from '../../../../../Extension/src/background/storages/group-state';
@@ -33,7 +33,7 @@ describe('PagesApi', () => {
         const websiteUrl = 'https://example.com';
         const reportedFrom = ForwardFrom.Popup;
 
-        const reportUrl = await PagesApi.getIssueReportUrl(websiteUrl, reportedFrom);
+        const reportUrl = await pagesApi.getIssueReportUrl(websiteUrl, reportedFrom);
 
         const url = new URL(reportUrl);
 

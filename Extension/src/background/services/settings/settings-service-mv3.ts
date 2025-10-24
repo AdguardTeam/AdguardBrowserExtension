@@ -31,7 +31,7 @@ import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
 import { messageHandler } from '../../message-handler';
 import { UserAgent } from '../../../common/user-agent';
-import { AntiBannerFiltersId, ExtensionUpdateFSMEvent } from '../../../common/constants';
+import { ExtensionUpdateFSMEvent } from '../../../common/constants';
 import { engine } from '../../engine';
 import {
     Categories,
@@ -123,7 +123,7 @@ export class SettingsService {
 
         const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
 
-        const isExtensionUpdateAvailable = ExtensionUpdateService.getIsUpdateAvailable();
+        const isExtensionUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
 
         extensionUpdateActor.send({
             type: ExtensionUpdateFSMEvent.Init,
@@ -137,9 +137,6 @@ export class SettingsService {
             libVersions: Prefs.libVersions,
             environmentOptions: {
                 isChrome: UserAgent.isChrome,
-            },
-            constants: {
-                AntiBannerFiltersId,
             },
             filtersInfo: {
                 rulesCount: engine.api.getRulesCount(),

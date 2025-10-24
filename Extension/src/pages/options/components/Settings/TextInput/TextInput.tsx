@@ -30,6 +30,7 @@ import cn from 'classnames';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import { type SettingHandler } from '../../../types';
+import { type SettingOption } from '../../../../../background/schema/settings';
 
 import './input.pcss';
 
@@ -38,7 +39,7 @@ export type TextInputValue = string | number;
 export type TextEventHandler = ChangeEventHandler<HTMLInputElement>;
 
 export type TextInputProps = {
-    id: string;
+    id: SettingOption;
     value: TextInputValue;
     handler: SettingHandler;
     placeholder?: string;
@@ -80,7 +81,7 @@ const useTextInput = (
         (e) => {
             const { name: id, value: data } = e.target;
             setInputValue(data);
-            debouncedChangeHandler({ id, data, event: e });
+            debouncedChangeHandler({ id: id as SettingOption, data, event: e });
         },
         // create new change handler only on debounced change handler re-creation
         [debouncedChangeHandler],

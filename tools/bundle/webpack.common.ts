@@ -165,6 +165,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'filter-categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
         'settings-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/settings-mv${manifestVersion}.ts`),
         'filter-update-service': path.resolve(__dirname, `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`),
+        'browser-action': path.resolve(__dirname, `../../Extension/src/background/api/ui/browser-action/browser-action-mv${manifestVersion}.ts`),
         'context-menu-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/context-menu/context-menu-mv${manifestVersion}.ts`),
         'icons-cache': path.resolve(__dirname, `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`),
         'icons-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/icons/icons-mv${manifestVersion}.ts`),
@@ -172,6 +173,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'metadata-schema': path.resolve(__dirname, `../../Extension/src/background/schema/metadata/metadata/metadata-mv${manifestVersion}.ts`),
         'metadata-storage': path.resolve(__dirname, `../../Extension/src/background/storages/metadata/metadata-mv${manifestVersion}.ts`),
         'filters-api-main': path.resolve(__dirname, `../../Extension/src/background/api/filters/main/main-mv${manifestVersion}.ts`),
+        'keep-alive-api': path.resolve(__dirname, `../../Extension/src/background/keep-alive/keep-alive-mv${manifestVersion}.ts`),
+        'pages': path.resolve(__dirname, `../../Extension/src/background/api/ui/pages/pages-mv${manifestVersion}.ts`),
+        'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
+        'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {

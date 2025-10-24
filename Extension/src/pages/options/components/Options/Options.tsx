@@ -57,7 +57,7 @@ import { SkipToContentButton } from '../SkipToContentButton';
 
 import '../../styles/styles.pcss';
 
-const createRouter = (children) => {
+const createRouter = (children: React.ReactNode) => {
     return createHashRouter(
         createRoutesFromElements(children),
         // We are opting out these features and hiding the warning messages by setting it to false.
@@ -106,9 +106,13 @@ const Options = observer(() => {
     useEffect(() => {
         let removeListenerCallback = () => { };
 
-        const handleExtensionUpdateStateChange = (state) => {
+        const handleExtensionUpdateStateChange = (state: ExtensionUpdateFSMState) => {
             switch (state) {
+                case ExtensionUpdateFSMState.Checking:
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(true);
+                    break;
                 case ExtensionUpdateFSMState.NotAvailable: {
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
                     uiStore.addNotification({
                         type: NotificationType.Success,
                         text: translator.getMessage('update_not_needed'),
@@ -116,10 +120,15 @@ const Options = observer(() => {
                     break;
                 }
                 case ExtensionUpdateFSMState.Available: {
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
                     settingsStore.setIsExtensionUpdateAvailable(true);
                     break;
                 }
+                case ExtensionUpdateFSMState.Updating:
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(true);
+                    break;
                 case ExtensionUpdateFSMState.Failed: {
+                    settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
                     settingsStore.setIsExtensionUpdateAvailable(false);
                     uiStore.addNotification({
                         type: NotificationType.Error,
@@ -193,7 +202,15 @@ const Options = observer(() => {
         };
 
         (async () => {
-            const { mv3SpecificOptions } = await settingsStore.requestOptionsData(true);
+            const optionsData = await settingsStore.requestOptionsData();
+
+            if (!optionsData) {
+                logger.error('[ext.Options]: Failed to get options data');
+
+                return;
+            }
+
+            const { mv3SpecificOptions } = optionsData;
 
             // Show notification about changed filter list by browser only once.
             if (__IS_MV3__ && mv3SpecificOptions?.areFilterLimitsExceeded) {
@@ -230,6 +247,7 @@ const Options = observer(() => {
                     // TODO: Remove this when react-router-dom is updated to v7
                     // https://github.com/remix-run/react-router/issues/12250
                     future={{
+                        // @ts-expect-error v7_relativeSplatPath can be used here, but types are not updated yet
                         v7_relativeSplatPath: false,
                         v7_startTransition: false,
                     }}

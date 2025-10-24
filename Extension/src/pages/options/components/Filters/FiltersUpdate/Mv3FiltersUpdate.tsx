@@ -43,7 +43,7 @@ const Mv3FiltersUpdate = observer(() => {
     const checkUpdatesTitle = translator.getMessage('update_check');
     const updateAvailableBtnTitle = translator.getMessage('update_available_update_btn');
 
-    if (settingsStore.isCheckingExtensionUpdate) {
+    if (settingsStore.isExtensionCheckingUpdateOrUpdating) {
         return (
             <div className="extension-update">
                 <div className="extension-update__info">

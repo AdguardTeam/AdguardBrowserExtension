@@ -23,17 +23,82 @@ import { nanoid } from 'nanoid';
 
 import { popupStore } from '../../stores/PopupStore';
 import { useMessageHandler } from '../../hooks/useMessageHandler';
+import { messenger } from '../../../services/messenger';
+import { NotifierType, ExtensionUpdateFSMState } from '../../../../common/constants';
+import { translator } from '../../../../common/translators/translator';
+import { NotificationType } from '../../../common/types';
 
 import { Notification } from './Notification';
 
 /**
- * The component needed to show a notification about the rule limits
- * exceeded in popup.
+ * The component needed to show a notification about the extension update check
+ * result in popup.
  */
 export const UpdateNotification = observer(() => {
     const store = useContext(popupStore);
 
-    useMessageHandler();
+    const NOTIFIER_EVENTS = [NotifierType.ExtensionUpdateStateChange];
+
+    // TODO: Move this subscription to root Popup component
+    const handleExtensionUpdateStateChange = (state: ExtensionUpdateFSMState) => {
+        switch (state) {
+            case ExtensionUpdateFSMState.Checking:
+                store.setIsExtensionCheckingUpdateOrUpdating(true);
+                store.setUpdateNotification({
+                    type: NotificationType.Loading,
+                    animationCondition: true,
+                    text: translator.getMessage('update_checking_in_progress'),
+                    closeManually: true,
+                });
+                break;
+            case ExtensionUpdateFSMState.NotAvailable:
+                store.setIsExtensionCheckingUpdateOrUpdating(false);
+                store.setUpdateNotification({
+                    type: NotificationType.Success,
+                    text: translator.getMessage('update_not_needed'),
+                });
+                break;
+            case ExtensionUpdateFSMState.Available:
+                store.setIsExtensionCheckingUpdateOrUpdating(false);
+                store.setUpdateNotification(null);
+                store.setIsExtensionUpdateAvailable(true);
+                break;
+            case ExtensionUpdateFSMState.Updating:
+                store.setIsExtensionCheckingUpdateOrUpdating(true);
+                store.setUpdateNotification({
+                    type: NotificationType.Loading,
+                    closeManually: true,
+                    animationCondition: true,
+                    text: translator.getMessage('update_installing_in_progress_title'),
+                });
+                break;
+            case ExtensionUpdateFSMState.Failed:
+                store.setUpdateNotification({
+                    type: NotificationType.Error,
+                    text: translator.getMessage('update_failed_text'),
+                    button: {
+                        title: translator.getMessage('update_failed_try_again_btn'),
+                        onClick: store.checkUpdatesMV3,
+                    },
+                });
+                break;
+            default:
+                break;
+        }
+    };
+
+    const messageHandler = async (message: any) => {
+        const { type, data } = message as { type: NotifierType; data: any };
+
+        if (type !== NotifierType.ExtensionUpdateStateChange) {
+            return;
+        }
+
+        const [state] = data;
+        handleExtensionUpdateStateChange(state);
+    };
+
+    useMessageHandler(() => messenger.createEventListener(NOTIFIER_EVENTS, messageHandler));
 
     const { updateNotification } = store;
 

@@ -1,9 +1,9 @@
-! Checksum: QiHymRaSVeWimN2uwJAs0g
-! Diff-Path: ../patches/21/21-s-1759327872-3600.patch
+! Checksum: tzRR1MzMO3eICp+6Qhx0Iw
+! Diff-Path: ../patches/21/21-s-1759947198-3600.patch
 ! Title: AdGuard Other Annoyances filter
 ! Description: Blocks irritating elements on web pages that do not fall under the popular categories of annoyances.
-! Version: 2.0.37.82
-! TimeUpdated: 2025-10-01T14:07:42+00:00
+! Version: 2.0.37.97
+! TimeUpdated: 2025-10-08T18:09:49+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -3526,6 +3526,28 @@ www.kinopoisk.ru##footer > div:has(> div > div[data-testid="kp-ui.amediateka-foo
 !
 ! SECTION: Self-promo - Regular rules
 !
+farodevigo.es###mid_news iframe
+androidcentral.com###article-body > div.mb-6:has(> div[class] > p.infoDisclaimer > a[href="https://google.com/preferences/source?q="])
+amtrak.com##.promo-simple-image:has(> div > a.am-fm__popup-link)
+welivesecurity.com##.sidebar-card-banner:not([href*="welivesecurity.com"])
+freightwaves.com#$#.f3-article-cta { display: none !important; }
+freightwaves.com#$#.top-banner { display: none !important; }
+freightwaves.com#$#body { padding-top: 0 !important; }
+gamewith.jp##.walkthrough-gamewith-announces
+gamewith.jp###article-body > a[href^="https://hrmos.co/"]
+gamewith.jp###article-body > h3:has(+ a[href^="https://hrmos.co/"])
+ipvoid.com##.page-title > div.container > p[style]:has(> a[href^="https://www.appsvoid.com/"])
+hobbygames.ru##.banner
+nypost.com##.zephrModal
+faq.rakuten.net#$#c-mobilebanner { display: none !important; }
+faq.rakuten.net#$#.siteforceThemeLayoutStarter { padding-top: 0 !important; }
+faq.rakuten.net#$#div[class^="CCRM_RMobile_Banner"] { display: none !important; }
+faq.rakuten.net#$#.themeLayoutStarterWrapper::before { padding-top: 0 !important; }
+stay.rakuten.co.jp##a[href^="https://network.mobile.rakuten.co.jp/campaign/"]
+stay.rakuten.co.jp##a[href="/campaign/mobile/app/?l-id=pr-banner"]
+nexusmods.com##free-trial-banner
+buttersc.one,invillage-outvillage.com,misskey.gamelore.fun,misskey.systems,mivatter.com,msk.kitazawa.me,oekakiskey.com,side.misskey.productions,sushi.ski,voskey.icalo.net,novelskey.tarbin.net,gp.tsukimi.club,misskey.neos.love,mk.yopo.work,nijimiss.moe#%#//scriptlet('json-prune', 'ads.[].imageUrl')
+buttersc.one,invillage-outvillage.com,misskey.gamelore.fun,misskey.systems,mivatter.com,msk.kitazawa.me,oekakiskey.com,side.misskey.productions,sushi.ski,voskey.icalo.net,novelskey.tarbin.net,gp.tsukimi.club,misskey.neos.love,mk.yopo.work,nijimiss.moe##.xF6dY
 findingpass.org###nordpassPopup
 live.bilibili.com##.left-container > .flip-view:has(> div.flip-view-image-ctnr > div.p-relative > a.item-wrapper > div[data-type="liveroom_banner_show"])
 gemini.google.com##announcement-banner
@@ -3534,8 +3556,6 @@ dmv-written-test.com###sticky-banner
 dmv-written-test.com###pop-up-show
 mynet.com##.mynet-promotion-banner
 mynet.com##.mobile-promo-swiper-container
-sm.faq.rakuten.net#$#div[class^="CCRM_RMobile_Banner"] { display: none !important; }
-sm.faq.rakuten.net#$#.themeLayoutStarterWrapper::before { padding-top: 0 !important; }
 rebates.jp###stickyFooter
 rebates.jp##main > div > a[href*="_welcomebanner"]
 rebates.jp##.la-track-rebatesbutton-maincarousel-unauth
@@ -3861,8 +3881,6 @@ paulaschoice.com##.ju_Con[data-title*="Anniversary%20Sale%20Message"]
 puntodebreak.com##div[id^="block-faldon"]
 chigai.fromation.co.jp##.kcontainer
 cybernews.com##.partner-content-block
-corp.faq.rakuten.net#$#c-mobilebanner { display: none !important; }
-corp.faq.rakuten.net#$#.siteforceThemeLayoutStarter { padding-top: 0 !important; }
 k2s.cc##.section-question
 afisha.ru###root > div[style^="width: 100%; height: 120px; display: flex;"]
 kimbino.*#$#.brochure-secret-modal { display: none !important; }
@@ -6544,18 +6562,16 @@ pixiv.net##section.popular-introduction
 ||mpgh.net/images/mini_offur.png
 vk.com###lovina_ads_row
 v.qq.com#?#div.nav-wrap > div > div:has(> a[href^="https://iwan.video.qq.com"])
-nijimiss.moe,novelskey.tarbin.net,gp.tsukimi.club,misskey.neos.love,mk.yopo.work,nijimiss.moe##.xF6dY
 !+ NOT_OPTIMIZED
 jorudan.co.jp##.com_bottom_banner
 !+ NOT_OPTIMIZED
 jorudan.co.jp##.com_lp_frame
-!+ NOT_PLATFORM(ext_ublock)
-nijimiss.moe,novelskey.tarbin.net,gp.tsukimi.club,misskey.neos.love,mk.yopo.work,nijimiss.moe#%#//scriptlet('json-prune', 'ads.[].imageUrl')
 !
 ! NOTE: Regular rules end ⬆️
 ! !SECTION: Self-promo - Regular rules
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/214641
 ! https://github.com/AdguardTeam/AdguardFilters/issues/187875#issuecomment-3243213902
 twitch.tv##.channel-info-content div[class^="Layout-sc-"][style^="background-image: url(\"https://static-cdn.jtvnw.net/subs-image-assets/banner/subtember2025/banner-"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/209935#issuecomment-3156737102
@@ -8880,6 +8896,9 @@ newsweek.com##iframe[src="http://sns.europe.newsweek.com/newsletter?popup=1"]
 !##############################
 ! SECTION: Tweaks - JS
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/214632
+okpeliz.com#%#//scriptlet('adjust-setTimeout', '/countdown|progressLine/', '*', '0.001')
+okpeliz.com#%#//scriptlet('adjust-setInterval', '/countdown|progressLine/', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/214587
 nexusmods.com#%#//scriptlet('adjust-setInterval', 'remaining--;')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/214159
@@ -9543,7 +9562,7 @@ askpaccosi.com#%#!function(){if(-1<location.href.indexOf("?wpsafelink=http")){va
 ! https://github.com/AdguardTeam/AdguardFilters/issues/195780
 mixdrop.*#%#//scriptlet('trusted-click-element', '.download-top .download-wrapper > a.download-btn:not([href])', '', '500')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/105185
-mixdrop21.net,mixdropjmk.pw,mdzsmutpcvykb.net,mdfx9dc8n.net,mixdrop.*#%#//scriptlet('adjust-setTimeout', 'Please wait', '*', '0.001')
+md3b0j6hj.com,mixdrop21.net,mixdropjmk.pw,mdzsmutpcvykb.net,mdfx9dc8n.net,mixdrop.*#%#//scriptlet('adjust-setTimeout', 'Please wait', '*', '0.001')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104501
 themehits.com#%#//scriptlet("adjust-setTimeout", "showText", "*", "0.02")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/104839

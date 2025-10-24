@@ -1,9 +1,9 @@
-! Checksum: mmJD9kv3IviXW1BUVu/mrw
-! Diff-Path: ../patches/9/9-s-1759320930-3600.patch
+! Checksum: APS6cvITmwuz8llnPoVLnQ
+! Diff-Path: ../patches/9/9-s-1759907471-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.32.0
-! TimeUpdated: 2025-10-01T12:11:43+00:00
+! Version: 2.0.32.6
+! TimeUpdated: 2025-10-08T07:07:35+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -24,6 +24,7 @@
 ! https://forum.adguard.com/index.php?threads/ivoox-com-podcasts-issues.29530/
 ! ||addevweb.com^$third-party
 !
+||adme2.click^
 ||mathilde-ads.com^
 ||jogoforte.com^
 ||publyads.jstag.space^
@@ -232,12 +233,14 @@ starckfilmes.*#%#//scriptlet('prevent-addEventListener', 'click', 'overlay-notif
 laprovincia.es,informacion.es,levante-emv.com#%#//scriptlet('prevent-fetch', 'googlesyndication')
 @@||trafico.prensaiberica.es/adm/min/pb_wrapper/prebid.js$domain=levante-emv.com|informacion.es|laprovincia.es
 @@||trafico.prensaiberica.es/adm/min/pb_wrapper/pbwrapper.js$domain=levante-emv.com|informacion.es|laprovincia.es
+! https://github.com/AdguardTeam/AdguardFilters/issues/214701
 ! https://github.com/AdguardTeam/AdguardFilters/issues/211721
 ! https://github.com/AdguardTeam/AdguardFilters/issues/210710
+||cdn.bcdn.zip/scripts/webapp.min.js
 ||cdn.bcdn.zip/scripts/abcdf.min.js
 ||cdn.bcdn.zip/scripts/pol2.min.js
 ||cdn.bcdn.zip/scripts/desabilitar-botao2.js
-netcinez.*,netcinetv.*#%#//scriptlet('prevent-eval-if', 'break;case')
+netccine.lat,netcinez.*,netcinetv.*#%#//scriptlet('prevent-eval-if', 'break;case')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/210605
 viciados.net#%#//scriptlet('prevent-fetch', 'googlesyndication')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/210330
@@ -1992,6 +1995,13 @@ reporteindigo.com,omelete.com.mx,c5n.com,t13.cl,solowrestling.mundodeportivo.com
 !
 ! NOTE: Specific rules
 !
+diez.bo##div[data-tipo^="tipo_"]
+vision360.bo##.banner-simple
+elpais.bo#%#//scriptlet('remove-node-text', 'script', 'ads-popup')
+elpais.bo#$#.uk-modal-page { overflow: auto !important; }
+elpais.bo#$##ads-popup { display: none !important; }
+emperorscan.mundoalterno.org###anuncio-flotante-1
+||okpeliz.com/adsAncash.php
 elperiodicomediterraneo.com##div[data-recs]
 ||kudanetwork.com/ser.php?t=AADIV
 somoskudasai.com##div[id^="AADIV"]
@@ -2112,7 +2122,7 @@ atarde.com.br##.atr-article-full-ads
 atarde.com.br##.ad-article-desk
 metrocptm.com.br###block-3
 metrocptm.com.br##.stpd-wp-block
-||cdn.jsdelivr.net/npm/sweetalert$domain=netcine.lat|nettcine.lat
+||cdn.jsdelivr.net/npm/sweetalert$domain=netcine.lat|nettcine.lat|netccine.lat
 gazetadopovo.com.br##.ads-banner-header
 jb.com.br##.propaganda-geral
 correiobraziliense.com.br##.rasgado-materia
@@ -2364,7 +2374,7 @@ mangacrab.org,topmanhuas.org,twobluescans.com#%#//scriptlet('abort-current-inlin
 kns.cookni.net,twobluescans.com##a[href^="https://www.polybuzz.ai/"]
 kns.cookni.net,twobluescans.com##.c-sidebar:has(> div.container a[href^="https://www.polybuzz.ai/"])
 kns.cookni.net,twobluescans.com##.row > div.widget:has(> div.c-widget-wrap iframe[id^="google_ads"])
-curiosidadtop.com,threedaos.zdrz.xyz,mewingzone.com,samuraiscan.cookni.net,kns.cookni.net,twobluescans.com##div[id^="ad-container"]
+baxoi.buzz,curiosidadtop.com,threedaos.zdrz.xyz,mewingzone.com,samuraiscan.cookni.net,kns.cookni.net,twobluescans.com##div[id^="ad-container"]
 elsiglodedurango.com.mx##.col-4 > .h-900:has(> .pub)
 estadiodeportes.mx###__next > div.grid:has(> div.content > div.module > header + div.bannercover)
 nacionflix.com,estadiodeportes.mx##.bannercover
@@ -3154,6 +3164,7 @@ universohq.com##.barAds
 istoe.com.br##div[style^="width: 100%; min-height: 250px;"]
 laopinion.com.co##div[class^="pauta"]
 ||player.*/assets/vast_*.xml
+||cuevana.*/edgeSystem*.js
 cuevana2.*,cuevana3.*,gnula.*,poseidonhd2.co,cuevana2espanol.*,cuevana.*##a[rel*="sponsored"] img
 /edgeSystem*.js$domain=cuevana.*|cuevana2espanol.*|poseidonhd2.co|gnula.*|cuevana3.*|pelispedia.life|cuevana2.*
 ffcv.es##.hidden-xs.zn_section
@@ -3224,8 +3235,8 @@ eltiempo.com##div[class^="gpt-slot-"]
 eltiempo.com##.ad-container-hor
 occidente.co###id-custom_banner
 audiotools.in,lanacion.com.co##.widget_custom_html
+eldeber.com.bo,laarena.com.ar##.container-spot
 laarena.com.ar##.cont-publis-home
-laarena.com.ar##.container-spot
 laarena.com.ar##.container__publi
 cronista.com##div[class^="piecesponsor"]
 contextotucuman.com##.sidebar > div[class^="divide"]
@@ -5683,6 +5694,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/214711
+||imasdk.googleapis.com/js/sdkloader/ima3.js$redirect=google-ima3,domain=playerclips.laliga.com
 ! https://github.com/uBlockOrigin/uAssets/issues/24543#issuecomment-3287354728
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$redirect=noopjs,domain=caracoltv.com,important
 @@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=caracoltv.com

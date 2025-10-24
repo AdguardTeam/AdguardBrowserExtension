@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { localeDetect } from 'locale-detect';
+export { KeepAlive } from 'keep-alive-api';
