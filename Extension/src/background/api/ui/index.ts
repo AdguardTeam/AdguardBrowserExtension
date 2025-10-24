@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 export { UiApi } from './main';
-export { PagesApi } from './pages';
+export { PagesApi, pagesApi } from './pages';
 export { toasts } from './toasts';
 export { promoNotificationApi } from './promo-notification';
 export { FramesApi, type FrameData } from './frames';

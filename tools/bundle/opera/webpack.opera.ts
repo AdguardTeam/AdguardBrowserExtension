@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
 
-import { genMv2CommonConfig } from '../webpack.common-mv2';
+import { genMv2CommonConfig } from '../webpack.common.mv2';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import { type BrowserConfig } from '../common-constants';

@@ -23,6 +23,7 @@ import {
     observable,
     runInAction,
 } from 'mobx';
+import { type CategoriesGroupData, type CategoriesFilterData } from 'filter-categories-api';
 
 import {
     AntibannerGroupsId,
@@ -42,10 +43,6 @@ import { type IRulesLimits } from '../../../background/services/rules-limits/int
 import { type GetOptionsDataResponse } from '../../../background/services/settings/types';
 import { type CustomFilterSubscriptionData } from '../../../common/messages/constants';
 import { type FilterMetadata } from '../../../background/api/filters/main';
-import {
-    type CategoriesGroupData,
-    type CategoriesFilterData,
-} from '../../../background/api/filters/categories/categories-mv2';
 import {
     createSavingService,
     SavingFSMEvent,

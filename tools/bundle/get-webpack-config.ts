@@ -26,7 +26,7 @@ import { genChromeConfig } from './chrome/webpack.chrome';
 import { genFirefoxConfig } from './firefox/webpack.firefox';
 import { genEdgeConfig } from './edge/webpack.edge';
 import { genOperaConfig } from './opera/webpack.opera';
-import { genChromeMv3Config } from './chrome-mv3/webpack.chrome-mv3';
+import { genChromeMv3Config } from './chrome-mv3/webpack.chrome.mv3';
 import { getBrowserConf } from './helpers';
 
 const ANALYZE_REPORTS_DIR = '../../analyze-reports';
