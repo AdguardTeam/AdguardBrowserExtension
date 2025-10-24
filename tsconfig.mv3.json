@@ -1,13 +1,13 @@
 {
     "extends": "./tsconfig.base.json",
-    "include": [
-        "Extension/",
-        "tests/"
-    ],
     "exclude": [
-        "tests/src/background/api/ui/frames.test.ts"
+        "**/*-mv2.ts",
+        "**/*-mv2.tsx"
     ],
     "compilerOptions": {
+        "composite": true,
+        "noEmit": false,
+        "emitDeclarationOnly": true,
         "paths": {
             "app": ["./Extension/src/background/app/app-mv3.ts"],
             "engine": ["./Extension/src/background/engine/engine-mv3.ts"],
@@ -31,7 +31,6 @@
             "icons-api": ["./Extension/src/background/api/ui/icons/icons-mv3.ts"],
             "userrules": ["./Extension/src/background/services/userrules/userrules-mv3.ts"],
             "keep-alive-api": ["./Extension/src/background/keep-alive/keep-alive-mv3.ts"],
-            "locale-detect": ["./Extension/src/background/services/locale-detect/locale-detect-mv3.ts"],
             "messenger": ["./Extension/src/pages/services/messenger/messenger-mv3.ts"],
             "pages": ["./Extension/src/background/api/ui/pages/pages-mv3.ts"],
         }

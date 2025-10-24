@@ -16,10 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import MD5 from 'crypto-js/md5';
+import { type CategoriesFilterData } from 'filter-categories-api';
 
 import { type DownloadResult } from '@adguard/filters-downloader/browser';
-
-import { type CategoriesFilterData } from 'filter-categories-api';
 
 import { BrowserUtils } from '../../utils/browser-utils';
 import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';

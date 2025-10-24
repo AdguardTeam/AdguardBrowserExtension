@@ -26,7 +26,7 @@ import { type Configuration } from 'webpack';
 
 import { RulesetsInjector } from '@adguard/dnr-rulesets';
 
-import { genMv3CommonConfig } from '../webpack.common-mv3';
+import { genMv3CommonConfig } from '../webpack.common.mv3';
 import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
 import { updateManifestBuffer } from '../../helpers';
 import {
@@ -38,7 +38,7 @@ import { type BrowserConfig } from '../common-constants';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
 import { commonManifest } from '../manifest.common';
 
-import { chromeMv3Manifest } from './manifest.chrome-mv3';
+import { chromeMv3Manifest } from './manifest.chrome.mv3';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
