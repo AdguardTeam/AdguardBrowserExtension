@@ -157,23 +157,25 @@ export abstract class PopupServiceCommon {
 
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
-        if (tabContext) {
-            return {
-                frameInfo: FramesApi.getMainFrameData(tabContext),
-                stats: PageStatsApi.getStatisticsData(),
-                settings: SettingsApi.getData(),
-                options: {
-                    showStatsSupported: true,
-                    isFirefoxBrowser: UserAgent.isFirefox,
-                    showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    isMacOs: UserAgent.isMacOs,
-                    isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
-                    notification: await promoNotificationApi.getCurrentNotification(),
-                    isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
-                },
-            };
+        if (!tabContext) {
+            return;
         }
+
+        return {
+            frameInfo: FramesApi.getMainFrameData(tabContext),
+            stats: PageStatsApi.getStatisticsData(),
+            settings: SettingsApi.getData(),
+            options: {
+                showStatsSupported: true,
+                isFirefoxBrowser: UserAgent.isFirefox,
+                showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                isMacOs: UserAgent.isMacOs,
+                isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
+                notification: await promoNotificationApi.getCurrentNotification(),
+                isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
+            },
+        };
     }
 
     /**
