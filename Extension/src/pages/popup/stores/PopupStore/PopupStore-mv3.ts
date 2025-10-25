@@ -36,6 +36,7 @@ export class PopupStore extends PopupStoreCommon {
         this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
     }
 
+    /** @inheritdoc */
     protected async configureExtensionUpdates(): Promise<void> {
         const options = await messenger.getExtensionStatusForPopupMV3();
 
@@ -72,14 +73,7 @@ export class PopupStore extends PopupStoreCommon {
         }
     }
 
-    /**
-     * Checks for updates and if update is available, starts the update process.
-     *
-     * Note:
-     * This behavior is different on options page
-     * where two separate clicks are required
-     * to check for updates and start the update process.
-     */
+    /** @inheritdoc */
     @action
     async checkUpdatesMV3() {
         const start = Date.now();

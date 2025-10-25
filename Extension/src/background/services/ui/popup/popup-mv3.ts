@@ -57,9 +57,7 @@ export type GetExtensionStatusForPopupResponse = {
  * Handles work with popups.
  */
 export class PopupService extends PopupServiceCommon {
-    /**
-     * Creates listeners for getter of tab info and for popup.
-     */
+    /** @inheritdoc */
     static init(): void {
         PopupServiceCommon.init();
         messageHandler.addListener(
