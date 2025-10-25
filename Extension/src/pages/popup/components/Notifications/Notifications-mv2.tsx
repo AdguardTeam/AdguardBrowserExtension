@@ -16,4 +16,5 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { Notifications } from './Notifications';
+/** Notifications component for MV2 if empty for compatibility with MV3 */
+export const Notifications = () => null;

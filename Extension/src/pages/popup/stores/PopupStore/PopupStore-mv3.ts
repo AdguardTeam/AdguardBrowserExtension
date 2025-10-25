@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { action } from 'mobx';
+import { action, observable } from 'mobx';
 
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
@@ -23,10 +23,14 @@ import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { logger } from '../../../../common/logger';
 import { sleepIfNecessary } from '../../../../common/sleep-utils';
 import { NotificationType } from '../../../common/types';
+import { type NotificationParams } from '../../../common/types';
 
 import { PopupStoreCommon } from './PopupStore-common';
 
 export class PopupStore extends PopupStoreCommon {
+    @observable
+    areFilterLimitsExceeded = false;
+
     constructor() {
         super();
         this.checkUpdates = this.checkUpdates.bind(this);
@@ -91,5 +95,10 @@ export class PopupStore extends PopupStoreCommon {
         // Ensure minimum duration for smooth UI experience
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
         this.setIsExtensionUpdateAvailable(false);
+    }
+
+    @action
+    setUpdateNotification(notification: NotificationParams | null): void {
+        this.updateNotification = notification;
     }
 }

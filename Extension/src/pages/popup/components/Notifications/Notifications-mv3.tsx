@@ -21,8 +21,8 @@ import { observer } from 'mobx-react';
 
 import { popupStore } from '../../stores/PopupStore';
 
-import { RuleLimitsNotification } from './RuleLimitsNotification';
-import { UpdateNotification } from './UpdateNotification';
+import { RuleLimitsNotification } from './RuleLimitsNotification-mv3';
+import { UpdateNotification } from './UpdateNotification-mv3';
 
 import './notifications.pcss';
 

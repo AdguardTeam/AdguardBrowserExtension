@@ -171,6 +171,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'keep-alive-api': path.resolve(__dirname, `../../Extension/src/background/keep-alive/keep-alive-mv${manifestVersion}.ts`),
         'popup-service': path.resolve(__dirname, `../../Extension/src/background/services/ui/popup/popup-mv${manifestVersion}.ts`),
         'popup-store': path.resolve(__dirname, `../../Extension/src/pages/popup/stores/PopupStore/PopupStore-mv${manifestVersion}.ts`),
+        'notifications': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Notifications/Notifications-mv${manifestVersion}.tsx`),
         'pages': path.resolve(__dirname, `../../Extension/src/background/api/ui/pages/pages-mv${manifestVersion}.ts`),
         'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
         'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),

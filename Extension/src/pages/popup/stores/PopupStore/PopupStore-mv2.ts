@@ -21,6 +21,16 @@ import { PopupStoreCommon } from './PopupStore-common';
 
 export class PopupStore extends PopupStoreCommon {
     /**
+     * Checks for updates - not supported in MV2.
+     *
+     * @throws {Error} Always throws an error indicating that the method is not implemented.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    checkUpdates(): void {
+        throw new Error('Method not implemented.');
+    }
+
+    /**
      * Configures extension-specific update options - not supported in MV2.
      *
      * Extension updates are only available in MV3 version.
@@ -29,16 +39,5 @@ export class PopupStore extends PopupStoreCommon {
     // eslint-disable-next-line class-methods-use-this
     protected configureExtensionUpdates(): void {
         logger.debug('[ext.PopupStore.configureExtensionUpdates]: extension updates are not supported in MV2');
-    }
-
-    /**
-     * Checks for updates - not supported in MV2.
-     *
-     * Extension updates are only available in MV3 version.
-     * This method exists for interface compatibility but does nothing.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    checkUpdates() {
-        logger.debug('[ext.PopupStore.checkUpdates]: extension updates are not supported in MV2');
     }
 }

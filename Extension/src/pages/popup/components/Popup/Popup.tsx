@@ -23,12 +23,13 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 
+import { Notifications } from 'notifications';
+
 import { Tabs } from '../Tabs';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Icons } from '../ui/Icons';
 import { MainContainer } from '../MainContainer';
-import { Notifications } from '../Notifications';
 import { PromoNotification } from '../PromoNotification';
 import { SplashScreen } from '../SplashScreen';
 import { popupStore } from '../../stores/PopupStore';
@@ -161,7 +162,7 @@ export const Popup = observer(() => {
             <Tabs />
             <Footer />
             {/* Promo should be rendered in top of other notifications */}
-            {__IS_MV3__ && <Notifications />}
+            <Notifications />
             <PromoNotification />
         </>
     );
