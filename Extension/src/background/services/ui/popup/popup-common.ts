@@ -131,6 +131,15 @@ export abstract class PopupServiceCommon {
     }
 
     /**
+     * Returns the state of the application initialization.
+     *
+     * @returns True if the application is initialized, false otherwise.
+     */
+    static getIsAppInitialized(): boolean {
+        return appContext.get(AppContextKey.IsInit);
+    }
+
+    /**
      * Returns tab info: frame info, stats form {@link PageStatsApi},
      * current settings and some other options.
      *
@@ -164,15 +173,6 @@ export abstract class PopupServiceCommon {
                 },
             };
         }
-    }
-
-    /**
-     * Returns the state of the application initialization.
-     *
-     * @returns True if the application is initialized, false otherwise.
-     */
-    static getIsAppInitialized(): boolean {
-        return appContext.get(AppContextKey.IsInit);
     }
 
     /**
