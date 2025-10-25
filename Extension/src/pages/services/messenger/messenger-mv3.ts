@@ -47,6 +47,11 @@ export class Messenger extends MessengerCommon {
         return this.sendMessage(MessageType.UpdateExtensionMv3, { from });
     }
 
+    /**
+     * Sends a message to the background page to get extension status for MV3 popup.
+     *
+     * @returns Promise that resolves with extension status
+     */
     async getExtensionStatusForPopupMV3(): Promise<GetExtensionStatusForPopupResponse> {
         return this.sendMessage(MessageType.GetExtensionStatusForPopupMV3);
     }
