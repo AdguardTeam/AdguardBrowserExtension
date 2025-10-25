@@ -124,6 +124,7 @@ export abstract class PopupServiceCommon {
      */
     static init(): void {
         messageHandler.addListener(MessageType.GetIsEngineStarted, PopupServiceCommon.getIsAppInitialized);
+        messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupServiceCommon.getTabInfoForPopup);
         messageHandler.addListener(
             MessageType.ChangeApplicationFilteringPaused,
             PopupServiceCommon.onChangeFilteringPaused,
