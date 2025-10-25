@@ -155,7 +155,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'settings-service': path.resolve(__dirname, `../../Extension/src/background/services/settings/settings-service-mv${manifestVersion}.ts`),
         'filters-service': path.resolve(__dirname, `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`),
         'custom-filters-service': path.resolve(__dirname, `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`),
-        'extension-update-service': path.resolve(__dirname, `../../Extension/src/background/services/extension-update/extension-update-service-mv${manifestVersion}.ts`),
         'rules-limits-service': path.resolve(__dirname, `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`),
         'content-script': path.resolve(__dirname, `../../Extension/pages/content-script-start/mv${manifestVersion}.ts`),
         'network-api': path.resolve(__dirname, `../../Extension/src/background/api/network/network-mv${manifestVersion}.ts`),

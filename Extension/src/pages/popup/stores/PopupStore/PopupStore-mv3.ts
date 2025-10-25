@@ -17,7 +17,6 @@
  */
 import { action } from 'mobx';
 
-import { type GetTabInfoForPopupResponse } from '../../../../background/services';
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
@@ -33,7 +32,9 @@ export class PopupStore extends PopupStoreCommon {
         this.checkUpdates = this.checkUpdates.bind(this);
     }
 
-    protected configureExtensionUpdates(options: GetTabInfoForPopupResponse['options']): void {
+    protected async configureExtensionUpdates(): Promise<void> {
+        const options = await messenger.getExtensionStatusForPopupMV3();
+
         const {
             areFilterLimitsExceeded,
             isExtensionUpdateAvailable,

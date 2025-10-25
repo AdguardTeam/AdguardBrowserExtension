@@ -20,9 +20,15 @@ import { logger } from '../../../../common/logger';
 import { PopupStoreCommon } from './PopupStore-common';
 
 export class PopupStore extends PopupStoreCommon {
+    /**
+     * Configures extension-specific update options - not supported in MV2.
+     *
+     * Extension updates are only available in MV3 version.
+     * This method exists for interface compatibility but does nothing.
+     */
+    // eslint-disable-next-line class-methods-use-this
     protected configureExtensionUpdates(): void {
-        this.areFilterLimitsExceeded = false;
-        this.setIsExtensionUpdateAvailable(false);
+        logger.debug('[ext.PopupStore.configureExtensionUpdates]: extension updates are not supported in MV2');
     }
 
     /**

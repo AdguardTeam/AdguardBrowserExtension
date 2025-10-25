@@ -16,12 +16,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type ChangeApplicationFilteringPausedMessage, MessageType } from '../../../../common/messages';
+import {
+    type ChangeApplicationFilteringPausedMessage,
+    MessageType,
+    type GetTabInfoForPopupMessage,
+} from '../../../../common/messages';
 import { messageHandler } from '../../../message-handler';
 import { SettingOption } from '../../../schema';
 import {
     appContext,
     AppContextKey,
+    settingsStorage,
     type PromoNotification,
 } from '../../../storages';
 import {
@@ -29,12 +34,18 @@ import {
     SettingsApi,
     type GetStatisticsDataResponse,
     type SettingsData,
+    FramesApi,
+    PageStatsApi,
+    promoNotificationApi,
+    UserRulesApi,
 } from '../../../api';
+import { tabsApi as tsWebExtTabsApi } from '../../../tswebextension';
+import { UserAgent } from '../../../../common/user-agent';
 
 /**
  * Tab info for the popup.
  */
-export type GetTabInfoForPopupResponseCommon = {
+export type GetTabInfoForPopupResponse = {
     /**
      * Info about main frame for the tab.
      */
@@ -107,7 +118,7 @@ export type GetTabInfoForPopupResponseCommon = {
 /**
  * Handles work with popups.
  */
-export class PopupServiceCommon {
+export abstract class PopupServiceCommon {
     /**
      * Creates listeners for getter of tab info and for popup.
      */
@@ -117,6 +128,42 @@ export class PopupServiceCommon {
             MessageType.ChangeApplicationFilteringPaused,
             PopupServiceCommon.onChangeFilteringPaused,
         );
+    }
+
+    /**
+     * Returns tab info: frame info, stats form {@link PageStatsApi},
+     * current settings and some other options.
+     *
+     * @param message Message of type {@link GetTabInfoForPopupMessage}.
+     * @param message.data Contains tab id.
+     *
+     * @returns If found - tab context {@link GetTabInfoForPopupResponse},
+     * or undefined if not found.
+     */
+    static async getTabInfoForPopup(
+        { data }: GetTabInfoForPopupMessage,
+    ): Promise<GetTabInfoForPopupResponse | undefined> {
+        const { tabId } = data;
+
+        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
+
+        if (tabContext) {
+            return {
+                frameInfo: FramesApi.getMainFrameData(tabContext),
+                stats: PageStatsApi.getStatisticsData(),
+                settings: SettingsApi.getData(),
+                options: {
+                    showStatsSupported: true,
+                    isFirefoxBrowser: UserAgent.isFirefox,
+                    showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                    isMacOs: UserAgent.isMacOs,
+                    isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
+                    notification: await promoNotificationApi.getCurrentNotification(),
+                    isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                    hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
+                },
+            };
+        }
     }
 
     /**

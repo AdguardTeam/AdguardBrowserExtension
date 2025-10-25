@@ -16,54 +16,41 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
 import { RulesLimitsService } from 'rules-limits-service';
 
+import { ExtensionUpdateService } from '../../extension-update/extension-update-service-mv3';
 import { ExtensionUpdateFSMEvent } from '../../../../common/constants';
-import { tabsApi as tsWebExtTabsApi } from '../../../tswebextension';
-import { type GetTabInfoForPopupMessage, MessageType } from '../../../../common/messages';
+import { MessageType } from '../../../../common/messages';
 import { messageHandler } from '../../../message-handler';
-import { SettingOption } from '../../../schema';
-import { UserAgent } from '../../../../common/user-agent';
-import { settingsStorage } from '../../../storages';
-import {
-    FramesApi,
-    PageStatsApi,
-    SettingsApi,
-    promoNotificationApi,
-    UserRulesApi,
-} from '../../../api';
-import { extensionUpdateActor } from '../../extension-update/extension-update-machine';
+import { extensionUpdateActor } from '../../extension-update/extension-update-machine-mv3';
 
-import { PopupServiceCommon, type GetTabInfoForPopupResponseCommon } from './popup-common';
+import { PopupServiceCommon } from './popup-common';
 
 /**
- * Tab info for the popup.
+ * Response type for getting extension status information specific to Manifest V3 popup.
+ * Contains extension update status and filter limits information.
  */
-export type GetTabInfoForPopupResponse = GetTabInfoForPopupResponseCommon & {
-    options: GetTabInfoForPopupResponseCommon['options'] & {
-        /**
-         * Whether the rule limits are exceeded
-         * and browser changed the list of enabled filters.
-         */
-        areFilterLimitsExceeded: boolean;
+export type GetExtensionStatusForPopupResponse = {
+    /**
+     * Whether the rule limits are exceeded
+     * and browser changed the list of enabled filters.
+     */
+    areFilterLimitsExceeded: boolean;
 
-        /**
-         * Whether the extension update is available after the checking.
-         */
-        isExtensionUpdateAvailable: boolean;
+    /**
+     * Whether the extension update is available after the checking.
+     */
+    isExtensionUpdateAvailable: boolean;
 
-        /**
-         * Whether the extension was reloaded after update.
-         */
-        isExtensionReloadedOnUpdate: boolean;
+    /**
+     * Whether the extension was reloaded after update.
+     */
+    isExtensionReloadedOnUpdate: boolean;
 
-        /**
-         * Whether the extension update was successful.
-         */
-        isSuccessfulExtensionUpdate: boolean;
-    };
+    /**
+     * Whether the extension update was successful.
+     */
+    isSuccessfulExtensionUpdate: boolean;
 };
 
 /**
@@ -75,26 +62,18 @@ export class PopupService extends PopupServiceCommon {
      */
     static init(): void {
         PopupServiceCommon.init();
-        messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
+        messageHandler.addListener(
+            MessageType.GetExtensionStatusForPopupMV3,
+            PopupService.getExtensionStatusForPopupMV3,
+        );
     }
 
     /**
-     * Returns tab info: frame info, stats form {@link PageStatsApi},
-     * current settings and some other options.
+     * Returns extension status for MV3 popup.
      *
-     * @param message Message of type {@link GetTabInfoForPopupMessage}.
-     * @param message.data Contains tab id.
-     *
-     * @returns If found - tab context {@link GetTabInfoForPopupResponseCommon},
-     * or undefined if not found.
+     * @returns Extension status including update info and filter limits.
      */
-    static async getTabInfoForPopup(
-        { data }: GetTabInfoForPopupMessage,
-    ): Promise<GetTabInfoForPopupResponse | undefined> {
-        const { tabId } = data;
-
-        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
-
+    static async getExtensionStatusForPopupMV3(): Promise<GetExtensionStatusForPopupResponse> {
         const isExtensionUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
         const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
         const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
@@ -106,27 +85,11 @@ export class PopupService extends PopupServiceCommon {
             isUpdateAvailable: isExtensionUpdateAvailable,
         });
 
-        if (tabContext) {
-            return {
-                frameInfo: FramesApi.getMainFrameData(tabContext),
-                stats: PageStatsApi.getStatisticsData(),
-                settings: SettingsApi.getData(),
-                options: {
-                    showStatsSupported: true,
-                    isFirefoxBrowser: UserAgent.isFirefox,
-                    showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    isMacOs: UserAgent.isMacOs,
-                    isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
-                    notification: await promoNotificationApi.getCurrentNotification(),
-                    isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
-
-                    areFilterLimitsExceeded: await RulesLimitsService.areFilterLimitsExceeded(),
-                    isExtensionUpdateAvailable,
-                    isExtensionReloadedOnUpdate,
-                    isSuccessfulExtensionUpdate,
-                },
-            };
-        }
+        return {
+            areFilterLimitsExceeded: await RulesLimitsService.areFilterLimitsExceeded(),
+            isExtensionUpdateAvailable,
+            isExtensionReloadedOnUpdate,
+            isSuccessfulExtensionUpdate,
+        };
     }
 }

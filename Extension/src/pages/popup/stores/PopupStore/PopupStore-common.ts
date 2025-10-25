@@ -276,7 +276,7 @@ export abstract class PopupStoreCommon {
 
             this.setAppActorInitState();
 
-            this.configureExtensionUpdates(options);
+            this.configureExtensionUpdates();
         });
     };
 
@@ -285,7 +285,7 @@ export abstract class PopupStoreCommon {
      *
      * @param options - Extension options, structure varies between MV2 and MV3
      */
-    protected abstract configureExtensionUpdates(options: GetTabInfoForPopupResponse['options']): void;
+    protected abstract configureExtensionUpdates(): void;
 
     /**
      * Sends a message to the background to set the application filtering paused state to the specified value.

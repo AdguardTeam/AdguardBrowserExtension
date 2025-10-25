@@ -15,78 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { PopupServiceCommon } from './popup-common';
 
-import { ExtensionUpdateFSMEvent } from '../../../../common/constants';
-import { tabsApi as tsWebExtTabsApi } from '../../../tswebextension';
-import { type GetTabInfoForPopupMessage, MessageType } from '../../../../common/messages';
-import { messageHandler } from '../../../message-handler';
-import { SettingOption } from '../../../schema';
-import { UserAgent } from '../../../../common/user-agent';
-import { settingsStorage } from '../../../storages';
-import {
-    FramesApi,
-    PageStatsApi,
-    SettingsApi,
-    promoNotificationApi,
-    UserRulesApi,
-} from '../../../api';
-import { extensionUpdateActor } from '../../extension-update/extension-update-machine';
-
-import { PopupServiceCommon, type GetTabInfoForPopupResponseCommon } from './popup-common';
-
-export type GetTabInfoForPopupResponse = GetTabInfoForPopupResponseCommon;
+export type GetExtensionStatusForPopupResponse = {};
 
 /**
  * Handles work with popups.
  */
-export class PopupService extends PopupServiceCommon {
-    /**
-     * Creates listeners for getter of tab info and for popup.
-     */
-    static init(): void {
-        PopupServiceCommon.init();
-        messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
-    }
-
-    /**
-     * Returns tab info: frame info, stats form {@link PageStatsApi},
-     * current settings and some other options.
-     *
-     * @param message Message of type {@link GetTabInfoForPopupMessage}.
-     * @param message.data Contains tab id.
-     *
-     * @returns If found - tab context {@link GetTabInfoForPopupResponseCommon},
-     * or undefined if not found.
-     */
-    static async getTabInfoForPopup(
-        { data }: GetTabInfoForPopupMessage,
-    ): Promise<GetTabInfoForPopupResponse | undefined> {
-        const { tabId } = data;
-
-        const tabContext = tsWebExtTabsApi.getTabContext(tabId);
-
-        extensionUpdateActor.send({
-            type: ExtensionUpdateFSMEvent.Init,
-            isReloadedOnUpdate: false,
-            isUpdateAvailable: false,
-        });
-
-        if (tabContext) {
-            return {
-                frameInfo: FramesApi.getMainFrameData(tabContext),
-                stats: PageStatsApi.getStatisticsData(),
-                settings: SettingsApi.getData(),
-                options: {
-                    showStatsSupported: true,
-                    isFirefoxBrowser: UserAgent.isFirefox,
-                    showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    isMacOs: UserAgent.isMacOs,
-                    isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
-                    notification: await promoNotificationApi.getCurrentNotification(),
-                    isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
-                },
-            };
-        }
-    }
-}
+export class PopupService extends PopupServiceCommon {}
