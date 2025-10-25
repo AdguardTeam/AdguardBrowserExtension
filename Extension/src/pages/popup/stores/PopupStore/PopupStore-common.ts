@@ -278,7 +278,7 @@ export abstract class PopupStoreCommon {
     /**
      * Configures extension-specific update options.
      *
-     * @param options - Extension options, structure varies between MV2 and MV3
+     * @param options Extension options, structure varies between MV2 and MV3
      */
     protected abstract configureExtensionUpdates(): void;
 
