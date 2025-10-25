@@ -26,7 +26,7 @@ export class PopupStore extends PopupStoreCommon {
      * @throws {Error} Always throws an error indicating that the method is not implemented.
      */
     // eslint-disable-next-line class-methods-use-this
-    checkUpdates(): void {
+    checkUpdatesMV3(): void {
         throw new Error('Method not implemented.');
     }
 

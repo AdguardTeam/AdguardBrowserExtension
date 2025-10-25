@@ -33,7 +33,7 @@ export class PopupStore extends PopupStoreCommon {
 
     constructor() {
         super();
-        this.checkUpdates = this.checkUpdates.bind(this);
+        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
     }
 
     protected async configureExtensionUpdates(): Promise<void> {
@@ -65,7 +65,7 @@ export class PopupStore extends PopupStoreCommon {
                     text: translator.getMessage('update_failed_text'),
                     button: {
                         title: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: this.checkUpdates,
+                        onClick: this.checkUpdatesMV3,
                     },
                 });
             }
@@ -81,7 +81,7 @@ export class PopupStore extends PopupStoreCommon {
      * to check for updates and start the update process.
      */
     @action
-    async checkUpdates() {
+    async checkUpdatesMV3() {
         const start = Date.now();
         this.setIsExtensionUpdateAvailable(true);
 
@@ -89,7 +89,7 @@ export class PopupStore extends PopupStoreCommon {
             this.setUpdateNotification(null);
             await messenger.checkUpdatesMV3();
         } catch (error: unknown) {
-            logger.debug('[ext.PopupStore.checkUpdates]: failed to check updates in popup: ', error);
+            logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
         }
 
         // Ensure minimum duration for smooth UI experience

@@ -290,7 +290,7 @@ export abstract class PopupStoreCommon {
      * where two separate clicks are required
      * to check for updates and start the update process.
      */
-    abstract checkUpdates(): void;
+    abstract checkUpdatesMV3(): void;
 
     /**
      * Sends a message to the background to set the application filtering paused state to the specified value.
