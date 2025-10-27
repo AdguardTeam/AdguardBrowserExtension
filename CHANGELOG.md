@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not enable any filters on settings import if `enabled-filters` is empty [#3136].
 - Settings applied notification appearing before settings are actually applied [#3278].
 - Preserve logs does not retain all records in the filtering log [#3148].
+- Tracking protection is also disabled in MV3 when protection is paused in extension.
 
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
