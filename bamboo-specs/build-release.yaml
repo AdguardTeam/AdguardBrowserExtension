@@ -6,6 +6,8 @@ plan:
   name: browser extension - build release
 variables:
   dockerNode: adguard/extension-builder:22.17--0.2.1--0
+  # playwright is needed for integration tests after build
+  dockerPlaywright: adguard/playwright-runner:22.17--1.53.2--1
   buildType: release
 
 stages:
@@ -20,6 +22,11 @@ stages:
       final: false
       jobs:
         - Build
+  - Integration tests:
+      manual: false
+      final: false
+      jobs:
+        - Integration tests
 
 Check Bundle Size:
   key: SIZECHECK
@@ -192,6 +199,31 @@ Build:
       pattern: source.zip
       shared: true
       required: true
+  requirements: *requirements
+
+Integration tests:
+  key: INTEGRATIONTESTS
+  other:
+    clean-working-dir: true
+  docker:
+    image: ${bamboo.dockerPlaywright}
+    volumes:
+      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+  tasks:
+    - artifact-download:
+        artifacts:
+          - name: chrome-mv3.zip
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            # Call the common script with timeout
+            ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh ${bamboo.buildType}
+  final-tasks:
+    - test-parser:
+        type: junit
+        test-results: 'tests-reports/integration-tests-*.xml'
+    - script: *cleanup-script
   requirements: *requirements
 
 triggers: []
