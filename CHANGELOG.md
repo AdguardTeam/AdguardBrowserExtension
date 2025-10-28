@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased 5.2 patch 2
+## [v5.2.112.84] - 2025-10-25
 
 ### Changed
 
 - Updated [@adguard/tswebextension] to v3.2.13.
 
+[v5.2.112.84]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B84.build.20251022090039
 
 ## [v5.2.112.1] - 2025-10-13
 
