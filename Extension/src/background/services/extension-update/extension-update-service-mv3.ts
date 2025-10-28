@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { throttle } from 'lodash-es';
+
 import { ExtensionsIds } from '../../../../../constants';
 import {
     ExtensionUpdateFSMEvent,
@@ -105,6 +107,11 @@ export class ExtensionUpdateService {
     private static readonly UPDATE_AVAILABLE_STATUS = 'update_available';
 
     /**
+     * Throttle interval for saveAutoUpdateState, 5 seconds in milliseconds.
+     */
+    private static readonly SAVE_AUTO_UPDATE_STATE_THROTTLE_MS = 5 * 1000;
+
+    /**
      * Timeout ID for checking update operation.
      */
     private static checkingUpdateTimeoutId: number | undefined;
@@ -139,21 +146,30 @@ export class ExtensionUpdateService {
          * Time to wait before showing the update icon after update becomes available.
          * Default: 24 hours in milliseconds.
          */
-        iconDelayMs: 24 * 60 * 60 * 1000,
+        ICON_DELAY_MS: 24 * 60 * 60 * 1000,
 
         /**
          * Time of inactivity (no tab navigation events) before automatically applying update.
          * Default: 30 minutes in milliseconds.
          */
-        idleThresholdMs: 30 * 60 * 1000,
+        IDLE_THRESHOLD_MS: 30 * 60 * 1000,
 
         /**
          * Interval for checking if conditions are met to apply auto-update.
-         * Default: 1 minute in milliseconds to prevent fall into service worker
+         * Default: 20 seconds in milliseconds to prevent fall into service worker
          * restart case, where TTL of SW will be less that the interval.
+         * See https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle#idle-shutdown.
          */
-        checkIntervalMs: 1 * 60 * 1000,
+        CHECK_INTERVAL_MS: 20 * 1000,
     };
+
+    /**
+     * Throttled version of saveAutoUpdateState to avoid excessive storage writes.
+     */
+    private static saveAutoUpdateStateThrottled = throttle(
+        () => ExtensionUpdateService.saveAutoUpdateState(),
+        ExtensionUpdateService.SAVE_AUTO_UPDATE_STATE_THROTTLE_MS,
+    );
 
     /**
      * Initializes the service.
@@ -226,7 +242,7 @@ export class ExtensionUpdateService {
      *
      * 2. **Automatic update check**: Chrome detected and downloaded an update in background
      *    (even if user never clicked "Check for Updates") → this listener fires.
-     *    In this case, update icon appears after iconDelayMs (24 hours by default).
+     *    In this case, update icon appears after iconDelayMs.
      *
      * 3. **After service worker restart**: If update was already available before restart,
      *    the persisted state is loaded from storage in `loadAutoUpdateState()` and
@@ -280,7 +296,7 @@ export class ExtensionUpdateService {
 
         logger.trace(
             '[ext.ExtensionUpdateService.onUpdateAvailable]:',
-            `Auto-update tracking started. Icon delay: ${ExtensionUpdateService.autoUpdateConfig.iconDelayMs}ms, Inactivity threshold: ${ExtensionUpdateService.autoUpdateConfig.idleThresholdMs}ms`,
+            `Auto-update tracking started. Icon delay: ${ExtensionUpdateService.autoUpdateConfig.ICON_DELAY_MS}ms, Inactivity threshold: ${ExtensionUpdateService.autoUpdateConfig.IDLE_THRESHOLD_MS}ms`,
         );
     }
 
@@ -687,10 +703,10 @@ export class ExtensionUpdateService {
 
         logger.trace('[ext.ExtensionUpdateService.updateLastNavigationTimestamp]: Navigation event detected, updating timestamp:', new Date(ExtensionUpdateService.lastNavigationTimestamp).toISOString());
 
-        // Save to storage on every navigation to persist across service worker restarts
+        // Save to storage on every navigation to persist across service worker restarts.
         // Do not await intentionally.
-        ExtensionUpdateService.saveAutoUpdateState().catch((error) => {
-            // In debug to prevent show error in production
+        ExtensionUpdateService.saveAutoUpdateStateThrottled().catch((error) => {
+            // Log to debug channel to prevent show error in production.
             logger.debug('[ext.ExtensionUpdateService.updateLastNavigationTimestamp]: Failed to save navigation timestamp:', error);
         });
     }
@@ -779,7 +795,11 @@ export class ExtensionUpdateService {
             lastNavigationTimestamp: ExtensionUpdateService.lastNavigationTimestamp,
         };
 
-        await browserStorage.set(AUTO_UPDATE_STATE_KEY_MV3, JSON.stringify(state));
+        try {
+            await browserStorage.set(AUTO_UPDATE_STATE_KEY_MV3, JSON.stringify(state));
+        } catch (error) {
+            logger.debug('[ext.ExtensionUpdateService.saveAutoUpdateState]: Failed to save auto-update state:', error);
+        }
     }
 
     /**
@@ -808,7 +828,7 @@ export class ExtensionUpdateService {
         // eslint-disable-next-line no-restricted-globals
         ExtensionUpdateService.autoUpdateCheckIntervalId = self.setInterval(
             () => ExtensionUpdateService.checkAutoUpdateConditions(),
-            ExtensionUpdateService.autoUpdateConfig.checkIntervalMs,
+            ExtensionUpdateService.autoUpdateConfig.CHECK_INTERVAL_MS,
         );
     }
 
@@ -836,7 +856,7 @@ export class ExtensionUpdateService {
             const timeSinceLastNavigation = now - ExtensionUpdateService.lastNavigationTimestamp;
 
             // Check if browser is idle and should apply update
-            if (timeSinceLastNavigation < ExtensionUpdateService.autoUpdateConfig.idleThresholdMs) {
+            if (timeSinceLastNavigation < ExtensionUpdateService.autoUpdateConfig.IDLE_THRESHOLD_MS) {
                 logger.trace('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Browser is not idle, skipping update. Time since last navigation:', timeSinceLastNavigation, 'ms');
                 return;
             }
@@ -869,7 +889,7 @@ export class ExtensionUpdateService {
      * Checks if update icon should be shown based on delay period.
      *
      * For manual checks: Icon is shown immediately.
-     * For automatic checks: Icon is shown after iconDelayMs (24 hours by default).
+     * For automatic checks: Icon is shown after iconDelayMs.
      *
      * Uses in-memory cache to avoid storage reads on every icon update (called for each tab).
      * State is loaded from storage on init and updated on events.
@@ -892,6 +912,6 @@ export class ExtensionUpdateService {
 
         logger.trace('[ext.ExtensionUpdateService.shouldShowUpdateIcon]: Time since update available:', timeSinceUpdateAvailable);
 
-        return timeSinceUpdateAvailable >= config.iconDelayMs;
+        return timeSinceUpdateAvailable >= config.ICON_DELAY_MS;
     }
 }
