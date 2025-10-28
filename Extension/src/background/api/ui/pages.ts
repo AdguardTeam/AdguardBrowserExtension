@@ -537,7 +537,8 @@ export class PagesApi {
     }
 
     /**
-     * Opens the extension popup in the last focused _normal_ window.
+     * Opens the extension popup in the last focused _normal_ window
+     * which is a regular browser window with a toolbar.
      */
     public static async openExtensionPopup(): Promise<void> {
         // opening popup in the window with no toolbar throws an error. AG-46535
@@ -547,6 +548,19 @@ export class PagesApi {
 
         if (!lastFocusedWindowId) {
             logger.warn('[ext.PagesApi.openExtensionPopup]: No normal window found to open popup');
+            return;
+        }
+
+        /**
+         * Verify that any browser window is actually *active*.
+         * Because if user has switched to another app -> browser window is inactive,
+         * we cannot focus it forcibly, and cannot open the popup in it.
+         *
+         * So here we just gracefully log the reason and exit to avoid errors.
+         */
+        const window = await chrome.windows.get(lastFocusedWindowId);
+        if (!window.focused) {
+            logger.warn('[ext.PagesApi.openExtensionPopup]: Window is not focused. User may have switched to another window.');
             return;
         }
 

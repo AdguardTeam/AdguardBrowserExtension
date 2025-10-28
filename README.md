@@ -62,6 +62,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
     - [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 - [Permissions required](#permissions-required)
 - [Auto-publish builds](#auto-publish-builds)
+- [Versioning Schema](#versioning-schema)
 - [Minimum supported browser versions](#browser-compatibility)
 
 ## <a name="installation"></a> Installation
@@ -737,6 +738,23 @@ Therefore, any updates that include changes to script rules will require the ful
 These automated tasks will run all necessary checks: unit tests, translation checks, and linter. After that, they will update resources, including filters and local script rules, create a build, and run integration tests to ensure the update is safe.
 
 Finally, the new version of the extension will be published to the Chrome Web Store.
+
+## <a name="versioning-schema"></a> Versioning Schema
+
+The extension uses the following versioning schema:
+
+```
+major.minor.patch+autoBuildIncrementVersion.buildTag.dnrRulesetsVersion
+```
+
+- **major.minor.patch**: Standard semantic versioning for the extension codebase.
+- **autoBuildIncrementVersion**: An incrementing number used as the fourth part of the manifest version (e.g., `88` in `5.2.1.88`).
+- **buildTag**: A delimiter indicating the build's readiness.
+- **dnrRulesetsVersion**: The patch version of the DNR rulesets, which includes the build date for those rulesets.
+
+Example: `5.2.1+88.beta.20251014`
+
+But for build versions we will use following format: `major.minor.patch.autoBuildIncrementVersion` to comply with the browser requirements for version.
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 
