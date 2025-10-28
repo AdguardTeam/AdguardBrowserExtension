@@ -57,7 +57,7 @@ import { extensionUpdateActor } from './extension-update-machine';
  * 2. Service checks latest version in Chrome Web Store via HEAD request.
  * 3. If newer version exists, calls `chrome.runtime.requestUpdateCheck()`.
  * 4. Chrome downloads update → `onUpdateAvailable` fires → state becomes `Available`.
- * 5. Extension waits for user action or reloads itself automatically.
+ * 5. Extension waits for user action.
  * 6. After reload, service checks storage and shows success/failure notification.
  *
  * ## State machine states:
