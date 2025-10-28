@@ -39,7 +39,12 @@ import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
 import { ForwardFrom } from '../../../common/forward';
 
-import { ManualExtensionUpdateDataValidator, type ManualExtensionUpdateData } from './types';
+import {
+    ManualExtensionUpdateDataValidator,
+    AutoUpdateStateValidator,
+    AutoUpdateConfigValidator,
+    type ManualExtensionUpdateData,
+} from './types';
 import { extensionUpdateActor } from './extension-update-machine';
 
 /**
@@ -213,11 +218,11 @@ export class ExtensionUpdateService {
         try {
             const configStr = await browserStorage.get(AUTO_UPDATE_CONFIG_KEY_MV3);
 
-            if (typeof configStr !== 'string' || !configStr) {
+            if (typeof configStr !== 'string') {
                 return;
             }
 
-            const customConfig = JSON.parse(configStr);
+            const customConfig = AutoUpdateConfigValidator.parse(JSON.parse(configStr));
 
             logger.info('[ext.ExtensionUpdateService.loadAutoUpdateConfig]: Using custom config from storage:', customConfig);
 
@@ -518,13 +523,13 @@ export class ExtensionUpdateService {
      * @returns Manual extension update data or null if not found.
      */
     private static async retrieveManualExtensionUpdateData(): Promise<ManualExtensionUpdateData | null> {
-        const manualExtensionUpdateStr = await browserStorage.get(MANUAL_EXTENSION_UPDATE_KEY);
-
-        if (typeof manualExtensionUpdateStr !== 'string') {
-            return null;
-        }
-
         try {
+            const manualExtensionUpdateStr = await browserStorage.get(MANUAL_EXTENSION_UPDATE_KEY);
+
+            if (typeof manualExtensionUpdateStr !== 'string') {
+                return null;
+            }
+
             const parsedData = ManualExtensionUpdateDataValidator.parse(JSON.parse(manualExtensionUpdateStr));
             return parsedData;
         } catch (e) {
@@ -728,20 +733,16 @@ export class ExtensionUpdateService {
     private static async loadAutoUpdateState(): Promise<void> {
         try {
             const stateStr = await browserStorage.get(AUTO_UPDATE_STATE_KEY_MV3);
+
             if (typeof stateStr !== 'string') {
                 return;
             }
 
-            const parsedJson = JSON.parse(stateStr);
-
-            if (!('updateAvailableTimestamp' in parsedJson) || !('lastNavigationTimestamp' in parsedJson)) {
-                logger.debug('[ext.ExtensionUpdateService.loadAutoUpdateState]: Failed to parse state:', parsedJson);
-                return;
-            }
+            const state = AutoUpdateStateValidator.parse(JSON.parse(stateStr));
 
             // Update in-memory cache
-            ExtensionUpdateService.updateAvailableTimestamp = parsedJson.updateAvailableTimestamp;
-            ExtensionUpdateService.lastNavigationTimestamp = parsedJson.lastNavigationTimestamp;
+            ExtensionUpdateService.updateAvailableTimestamp = state.updateAvailableTimestamp;
+            ExtensionUpdateService.lastNavigationTimestamp = state.lastNavigationTimestamp;
         } catch (error) {
             logger.error('[ext.ExtensionUpdateService.loadAutoUpdateState]: Failed to load auto-update state:', error);
         }

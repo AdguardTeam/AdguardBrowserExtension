@@ -44,3 +44,48 @@ export const ManualExtensionUpdateDataValidator = zod.object({
  * Manual extension update data.
  */
 export type ManualExtensionUpdateData = zod.infer<typeof ManualExtensionUpdateDataValidator>;
+
+/**
+ * Auto-update state validator.
+ */
+export const AutoUpdateStateValidator = zod.object({
+    /**
+     * Timestamp when update became available.
+     */
+    updateAvailableTimestamp: zod.number(),
+
+    /**
+     * Timestamp of last navigation event.
+     */
+    lastNavigationTimestamp: zod.number(),
+});
+
+/**
+ * Auto-update state data.
+ */
+export type AutoUpdateState = zod.infer<typeof AutoUpdateStateValidator>;
+
+/**
+ * Auto-update configuration validator.
+ */
+export const AutoUpdateConfigValidator = zod.object({
+    /**
+     * Time to wait before showing the update icon after update becomes available.
+     */
+    ICON_DELAY_MS: zod.number().optional(),
+
+    /**
+     * Time of inactivity before automatically applying update.
+     */
+    IDLE_THRESHOLD_MS: zod.number().optional(),
+
+    /**
+     * Interval for checking if conditions are met to apply auto-update.
+     */
+    CHECK_INTERVAL_MS: zod.number().optional(),
+}).strict();
+
+/**
+ * Auto-update configuration data.
+ */
+export type AutoUpdateConfig = zod.infer<typeof AutoUpdateConfigValidator>;
