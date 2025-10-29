@@ -58,6 +58,16 @@ export const AutoUpdateStateValidator = zod.object({
      * Timestamp of last navigation event.
      */
     lastNavigationTimestamp: zod.number(),
+
+    /**
+     * Next available version for auto-update.
+     */
+    nextVersion: zod.string(),
+
+    /**
+     * Update discovered via manual check triggered by user or automatically.
+     */
+    isManualCheck: zod.boolean(),
 });
 
 /**

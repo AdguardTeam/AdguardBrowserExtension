@@ -44,6 +44,7 @@ import {
     AutoUpdateStateValidator,
     AutoUpdateConfigValidator,
     type ManualExtensionUpdateData,
+    type AutoUpdateState,
 } from './types';
 import { extensionUpdateActor } from './extension-update-machine';
 
@@ -142,6 +143,11 @@ export class ExtensionUpdateService {
     private static isManualCheck: boolean = false;
 
     /**
+     * Next available version for update.
+     */
+    private static nextVersion: string | undefined;
+
+    /**
      * Cached auto-update configuration.
      *
      * Can be manually overridden via chrome.storage.local.
@@ -206,8 +212,11 @@ export class ExtensionUpdateService {
         // Load persisted state if any
         await ExtensionUpdateService.loadAutoUpdateState();
 
-        // Start checking for "idle" condition and icon delay if update is pending
-        ExtensionUpdateService.initChecksForAutoUpdate();
+        // If update was already available before service worker restart,
+        // restore the auto-update process or show update icon immediately.
+        if (ExtensionUpdateService.nextVersion) {
+            ExtensionUpdateService.onUpdateAvailable({ version: ExtensionUpdateService.nextVersion });
+        }
     }
 
     /**
@@ -239,7 +248,9 @@ export class ExtensionUpdateService {
      * Handles the onUpdateAvailable event from Chrome runtime.
      *
      * This listener is called by Chrome when an extension update has been downloaded
-     * and is ready to be installed. This can happen in the following scenarios:
+     * and is ready to be installed, or by explicitly after SW restart and update
+     * is already available.
+     * This can happen in the following scenarios:
      *
      * 1. **After manual check**: User clicked "Check for Updates" → requestUpdateCheck()
      *    found an update → Chrome downloaded it → this listener fires.
@@ -250,19 +261,22 @@ export class ExtensionUpdateService {
      *    In this case, update icon appears after iconDelayMs.
      *
      * 3. **After service worker restart**: If update was already available before restart,
-     *    the persisted state is loaded from storage in `loadAutoUpdateState()` and
-     *    `initChecksForAutoUpdate()` restores the update state, periodic checks, and
-     *    navigation tracking to continue the auto-update process seamlessly.
+     *    the persisted state is loaded from storage and this method is called
+     *    again to restore the update state, periodic checks, and navigation
+     *    listener to continue the auto-update process seamlessly if
+     *    check was initiated automatically, or shows the update icon immediately
+     *    if it was a manual check.
      *
      * When this listener is registered, Chrome will NOT automatically reload the extension.
      * Instead, it waits for the extension to call chrome.runtime.reload() explicitly.
      *
      * @param details Details about the available update.
+     * @param details.version The version of the available update.
      */
-    private static async onUpdateAvailable(details: chrome.runtime.UpdateAvailableDetails): Promise<void> {
+    private static async onUpdateAvailable({ version }: chrome.runtime.UpdateAvailableDetails): Promise<void> {
         logger.info(
             '[ext.ExtensionUpdateService.onUpdateAvailable]:',
-            `Update became available, version: ${details.version}, manual check: ${ExtensionUpdateService.isManualCheck}`,
+            `Update became available, version: ${version}, manual check: ${ExtensionUpdateService.isManualCheck}`,
         );
 
         // Send UpdateAvailable event to FSM → FSM transitions to Available state → UI shows Update button
@@ -273,14 +287,19 @@ export class ExtensionUpdateService {
         self.clearTimeout(ExtensionUpdateService.checkingUpdateTimeoutId);
         ExtensionUpdateService.checkingUpdateTimeoutId = undefined;
 
-        // TODO: Add saving onUpdateAvailable event to storage in a separate
-        // field to not override updateAvailableTimestamp for auto-update case.
-        // AG-47051
+        ExtensionUpdateService.nextVersion = version;
+
+        // For manual check earlier exit after saving state for persistence
+        // across SW restarts.
         if (ExtensionUpdateService.isManualCheck) {
+            // Save state to storage for persistence across SW restarts.
+            await ExtensionUpdateService.saveAutoUpdateState();
+
             logger.trace(
                 '[ext.ExtensionUpdateService.onUpdateAvailable]:',
                 'Manual check - update icon will be shown immediately',
             );
+
             return;
         }
 
@@ -289,7 +308,7 @@ export class ExtensionUpdateService {
         ExtensionUpdateService.updateAvailableTimestamp = now;
         ExtensionUpdateService.lastNavigationTimestamp = now;
 
-        // Save state to storage for persistence across service worker restarts.
+        // Save state to storage for persistence across SW restarts.
         await ExtensionUpdateService.saveAutoUpdateState();
 
         // Start periodic check for auto-update conditions.
@@ -748,28 +767,6 @@ export class ExtensionUpdateService {
     }
 
     /**
-     * Initializes periodic checks for automatic extension update:
-     * interval check for auto-update and navigation tracking.
-     */
-    private static initChecksForAutoUpdate(): void {
-        if (ExtensionUpdateService.updateAvailableTimestamp === null) {
-            logger.debug('[ext.ExtensionUpdateService.initChecksForAutoUpdate]: Update available timestamp is not set, skipping auto-update check setup');
-            return;
-        }
-
-        // To show update button in the popup and in the settings since update
-        // is available and for correct check for showing icon when iconDelayMs
-        // passed.
-        extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.UpdateAvailable });
-
-        // Resume periodic check for auto-update conditions
-        ExtensionUpdateService.startAutoUpdateCheck();
-
-        // Set up navigation tracking via webNavigation events.
-        ExtensionUpdateService.setupNavigationTracking();
-    }
-
-    /**
      * Saves auto-update state to storage.
      * We need to store this state to persist across service worker restarts,
      * since service worker can restart in less time than configured idle threshold,
@@ -785,13 +782,19 @@ export class ExtensionUpdateService {
      * for idle state and never perform auto-update.
      */
     private static async saveAutoUpdateState(): Promise<void> {
-        if (ExtensionUpdateService.updateAvailableTimestamp === null) {
+        if (ExtensionUpdateService.updateAvailableTimestamp === null
+            || ExtensionUpdateService.lastNavigationTimestamp === null
+            || ExtensionUpdateService.nextVersion === undefined
+        ) {
+            logger.debug('[ext.ExtensionUpdateService.saveAutoUpdateState]: Update available timestamp, last navigation timestamp or next version is null/undefined, skipping save');
             return;
         }
 
-        const state = {
+        const state: AutoUpdateState = {
             updateAvailableTimestamp: ExtensionUpdateService.updateAvailableTimestamp,
             lastNavigationTimestamp: ExtensionUpdateService.lastNavigationTimestamp,
+            nextVersion: ExtensionUpdateService.nextVersion,
+            isManualCheck: ExtensionUpdateService.isManualCheck,
         };
 
         try {
@@ -845,9 +848,14 @@ export class ExtensionUpdateService {
      */
     private static async checkAutoUpdateConditions(): Promise<void> {
         try {
-            if (ExtensionUpdateService.lastNavigationTimestamp === null) {
-                logger.trace('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: No navigation timestamp found, stopping auto-update check');
+            if (!ExtensionUpdateService.nextVersion) {
+                logger.trace('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: No next version found, stopping auto-update check');
                 ExtensionUpdateService.stopAutoUpdateCheck();
+                return;
+            }
+
+            if (ExtensionUpdateService.lastNavigationTimestamp === null) {
+                logger.trace('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: No last navigation timestamp found, cannot check idle state');
                 return;
             }
 
@@ -896,13 +904,18 @@ export class ExtensionUpdateService {
      * @returns True if icon should be shown, false otherwise.
      */
     public static shouldShowUpdateIcon(): boolean {
-        if (!ExtensionUpdateService.isUpdateAvailable || ExtensionUpdateService.updateAvailableTimestamp === null) {
+        if (!ExtensionUpdateService.isUpdateAvailable || ExtensionUpdateService.nextVersion === null) {
             return false;
         }
 
         // If last check was manual, show icon immediately.
         if (ExtensionUpdateService.isManualCheck) {
             return true;
+        }
+
+        if (ExtensionUpdateService.updateAvailableTimestamp === null) {
+            logger.trace('[ext.ExtensionUpdateService.shouldShowUpdateIcon]: Update available timestamp is null, cannot determine if update icon should be shown');
+            return false;
         }
 
         // For automatic checks, wait for delay period.
