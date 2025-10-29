@@ -37,11 +37,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 
-## [5.2.112.1] - 2025-10-14
+## [v5.2.112.84] - 2025-10-25
 
 ### Changed
 
 - Updated [@adguard/tswebextension] to v3.2.13.
+
+[v5.2.112.84]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B84.build.20251022090039
+
+## [5.2.112.1] - 2025-10-14
+
+### Fixed
+
+- The extension is failed to update via the popup [#3317].
+[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
 
 [5.2.112.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B1.build.20251009120050
 
@@ -55,10 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Minimize the extension update fetch response size in MV3.
-- The extension is failed to update via the popup [#3317].
 
 [5.2.112.0]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B0.build.20251001190036
-[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
 
 ## [5.2.77] - 2025-09-22
 
