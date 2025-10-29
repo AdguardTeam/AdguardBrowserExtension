@@ -5,10 +5,12 @@
     padding: 16px;
     min-height: 70px;
 
-    &__content {
-        flex: 1 1 auto;
-        min-width: 0;
-        max-width: 420px;
+    @media (max-width: 640px) {
+        &__content {
+            flex: 1 1 auto;
+            min-width: 0;
+            max-width: 420px;
+        }
     }
 
     &__title {
@@ -67,7 +69,6 @@
     }
 
     &__desc {
-        margin-right: 55px;
         color: var(--text-description-description-default);
         font-size: 14px;
         line-height: 18px;
