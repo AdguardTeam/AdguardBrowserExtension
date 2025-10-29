@@ -340,7 +340,8 @@ branch-overrides:
 
       # Run auto-build as specified and collect all changes made by
       # filter list maintainers.
-      triggers:
-        - cron:
-            expression: 0 30 */12 ? * *
-            description: Run auto-build every 12 hours at 30 minutes past the hour.
+      triggers: []
+        # FIXME: Paused auto-builds until v5.2.112.96 on the review
+        # - cron:
+        #     expression: 0 30 */12 ? * *
+        #     description: Run auto-build every 12 hours at 30 minutes past the hour.
