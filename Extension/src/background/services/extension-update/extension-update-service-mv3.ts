@@ -267,7 +267,6 @@ export class ExtensionUpdateService {
 
         // Send UpdateAvailable event to FSM → FSM transitions to Available state → UI shows Update button
         extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.UpdateAvailable });
-        chrome.runtime.onUpdateAvailable.removeListener(ExtensionUpdateService.onUpdateAvailable);
 
         // Clear the checking update timeout if it was set
         // eslint-disable-next-line no-restricted-globals
@@ -762,7 +761,6 @@ export class ExtensionUpdateService {
         // is available and for correct check for showing icon when iconDelayMs
         // passed.
         extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.UpdateAvailable });
-        chrome.runtime.onUpdateAvailable.removeListener(ExtensionUpdateService.onUpdateAvailable);
 
         // Resume periodic check for auto-update conditions
         ExtensionUpdateService.startAutoUpdateCheck();
