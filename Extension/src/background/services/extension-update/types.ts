@@ -51,13 +51,25 @@ export type ManualExtensionUpdateData = zod.infer<typeof ManualExtensionUpdateDa
 export const AutoUpdateStateValidator = zod.object({
     /**
      * Timestamp when update became available.
+     *
+     * Can be skipped if isManualCheck is true.
+     *
+     * TODO: Automate checking for this field:
+     * - If isManualCheck is true, updateAvailableTimestamp should be skipped.
+     * - If isManualCheck is false, updateAvailableTimestamp should be required.
      */
-    updateAvailableTimestamp: zod.number(),
+    updateAvailableTimestamp: zod.number().optional(),
 
     /**
      * Timestamp of last navigation event.
+     *
+     * Can be skipped if isManualCheck is true.
+     *
+     * TODO: Automate checking for this field:
+     * - If isManualCheck is true, lastNavigationTimestamp should be skipped.
+     * - If isManualCheck is false, lastNavigationTimestamp should be required.
      */
-    lastNavigationTimestamp: zod.number(),
+    lastNavigationTimestamp: zod.number().optional(),
 
     /**
      * Next available version for auto-update.
