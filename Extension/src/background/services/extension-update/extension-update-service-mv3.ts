@@ -16,14 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { throttle } from 'lodash-es';
-
 import {
     ExtensionUpdateFSMEvent,
     ExtensionUpdateFSMState,
     MANUAL_EXTENSION_UPDATE_KEY,
     MIN_UPDATE_DISPLAY_DURATION_MS,
-    AUTO_UPDATE_STATE_KEY_MV3,
     AUTO_UPDATE_CONFIG_KEY_MV3,
 } from '../../../common/constants';
 import { logger } from '../../../common/logger';
@@ -38,14 +35,13 @@ import { ForwardFrom } from '../../../common/forward';
 
 import {
     ManualExtensionUpdateDataValidator,
-    AutoUpdateStateValidator,
     AutoUpdateConfigValidator,
     type ManualExtensionUpdateData,
-    type AutoUpdateState,
 } from './types';
 import { extensionUpdateActor } from './extension-update-machine';
 import { CwsVersionChecker } from './cws-version-checker';
 import { IdleDetector } from './idle-detector';
+import { UpdateStateManager } from './update-state-manager';
 
 /**
  * Service for checking and updating the extension in Manifest V3.
@@ -87,8 +83,8 @@ import { IdleDetector } from './idle-detector';
  * - This allows the user to finish their work before reloading the extension.
  *
  * ## Auto-update behavior:
- * - Update icon appears only after 24 hours (configurable) since update became available.
- * - Update applies automatically after 30 minutes (configurable) of browser inactivity.
+ * - Update icon appears only after `ICON_DELAY_MS` since update became available.
+ * - Update applies automatically after `IDLE_THRESHOLD_MS` of browser inactivity.
  * - Browser inactivity is tracked via webNavigation.onCommitted events.
  * - Config can be overridden via chrome.storage.local (key: 'auto-update-config-mv3').
  * - Config is loaded once during initialization and cached in memory.
@@ -107,11 +103,6 @@ export class ExtensionUpdateService {
     private static readonly UPDATE_AVAILABLE_STATUS = 'update_available';
 
     /**
-     * Throttle interval for saveAutoUpdateState, 5 seconds in milliseconds.
-     */
-    private static readonly SAVE_AUTO_UPDATE_STATE_THROTTLE_MS = 5 * 1000;
-
-    /**
      * Timeout ID for checking update operation.
      */
     private static checkingUpdateTimeoutId: number | undefined;
@@ -122,24 +113,14 @@ export class ExtensionUpdateService {
     private static autoUpdateCheckIntervalId: number | undefined;
 
     /**
-     * Timestamp when update became available.
-     */
-    private static updateAvailableTimestamp: number | undefined;
-
-    /**
-     * Flag indicating if last update check was manual (user-initiated).
-     */
-    private static isManualCheck: boolean = false;
-
-    /**
      * Idle detector for tracking browser navigation activity.
      */
     private static idleDetector: IdleDetector | null = null;
 
     /**
-     * Next available version for update.
+     * State manager for save current update state during SW restarts.
      */
-    private static nextVersion: string | undefined;
+    private static stateManager = new UpdateStateManager();
 
     /**
      * Cached auto-update configuration.
@@ -169,14 +150,6 @@ export class ExtensionUpdateService {
     };
 
     /**
-     * Throttled version of saveAutoUpdateState to avoid excessive storage writes.
-     */
-    private static saveAutoUpdateStateThrottled = throttle(
-        (lastNavigationTimestamp) => ExtensionUpdateService.saveAutoUpdateState(lastNavigationTimestamp),
-        ExtensionUpdateService.SAVE_AUTO_UPDATE_STATE_THROTTLE_MS,
-    );
-
-    /**
      * Initializes the service.
      *
      * IMPORTANT.
@@ -204,7 +177,7 @@ export class ExtensionUpdateService {
         await ExtensionUpdateService.loadAutoUpdateConfig();
 
         // Load persisted state if any saved before SW restart
-        const state = await ExtensionUpdateService.loadAutoUpdateState();
+        const state = await ExtensionUpdateService.stateManager.init();
 
         if (!state) {
             return;
@@ -280,7 +253,7 @@ export class ExtensionUpdateService {
     ): Promise<void> {
         logger.info(
             '[ext.ExtensionUpdateService.onUpdateAvailable]:',
-            `Update became available, version: ${version}, manual check: ${ExtensionUpdateService.isManualCheck}`,
+            `Update became available, version: ${version}, manual check: ${ExtensionUpdateService.stateManager.isManualCheck}`,
         );
 
         // Send UpdateAvailable event to FSM → FSM transitions to Available state → UI shows Update button
@@ -291,11 +264,11 @@ export class ExtensionUpdateService {
         self.clearTimeout(ExtensionUpdateService.checkingUpdateTimeoutId);
         ExtensionUpdateService.checkingUpdateTimeoutId = undefined;
 
-        ExtensionUpdateService.nextVersion = version;
+        ExtensionUpdateService.stateManager.nextVersion = version;
 
         // For manual check earlier exit after saving state for persistence
         // across SW restarts.
-        if (ExtensionUpdateService.isManualCheck) {
+        if (ExtensionUpdateService.stateManager.isManualCheck) {
             // Save state to storage for persistence across SW restarts.
             await ExtensionUpdateService.saveAutoUpdateState();
 
@@ -307,19 +280,15 @@ export class ExtensionUpdateService {
             return;
         }
 
-        // It can be undefined if it method was called by browser and not by us,
-        // after SW restart.
-        if (ExtensionUpdateService.updateAvailableTimestamp === undefined) {
-            ExtensionUpdateService.updateAvailableTimestamp = Date.now();
+        // Set timestamp when update became available (if not already set after SW restart)
+        if (ExtensionUpdateService.stateManager.updateAvailableTimestamp === undefined) {
+            ExtensionUpdateService.stateManager.updateAvailableTimestamp = Date.now();
         }
 
         // Save to storage on every navigation to persist across service worker restarts.
         const onNavigation = (timestamp: number): void => {
-            // Do not await intentionally.
-            ExtensionUpdateService.saveAutoUpdateStateThrottled(timestamp).catch((error) => {
-                // Log to debug channel to prevent show error in production.
-                logger.debug('[ext.ExtensionUpdateService.onUpdateAvailable]: Failed to save navigation timestamp:', error);
-            });
+            // Update state and trigger throttled save.
+            ExtensionUpdateService.stateManager.set('lastNavigationTimestamp', timestamp);
         };
 
         // Create idle detector with callback to save state on navigation.
@@ -330,7 +299,7 @@ export class ExtensionUpdateService {
             initialTimestamp: loadedNavigationTimestampMs,
         });
 
-        // Save state to storage for persistence across SW restarts.
+        // Save state to storage for persistence across SW restarts (triggers actual write).
         await ExtensionUpdateService.saveAutoUpdateState();
 
         // Start periodic check for auto-update conditions.
@@ -354,7 +323,7 @@ export class ExtensionUpdateService {
      */
     private static async checkExtensionUpdate(): Promise<void> {
         // Mark this as manual check
-        ExtensionUpdateService.isManualCheck = true;
+        ExtensionUpdateService.stateManager.isManualCheck = true;
 
         const start = Date.now();
 
@@ -391,7 +360,7 @@ export class ExtensionUpdateService {
             extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.NoUpdateAvailable });
 
             // Reset manual check flag
-            ExtensionUpdateService.isManualCheck = false;
+            ExtensionUpdateService.stateManager.isManualCheck = false;
         }
     }
 
@@ -648,31 +617,6 @@ export class ExtensionUpdateService {
     }
 
     /**
-     * Loads persisted auto-update state from storage.
-     *
-     * @returns Auto-update state or null if not found.
-     */
-    private static async loadAutoUpdateState(): Promise<AutoUpdateState | null> {
-        try {
-            const stateStr = await browserStorage.get(AUTO_UPDATE_STATE_KEY_MV3);
-
-            if (typeof stateStr !== 'string') {
-                return null;
-            }
-
-            const state = AutoUpdateStateValidator.parse(JSON.parse(stateStr));
-
-            // Update in-memory cache
-            ExtensionUpdateService.updateAvailableTimestamp = state.updateAvailableTimestamp;
-
-            return state;
-        } catch (error) {
-            logger.error('[ext.ExtensionUpdateService.loadAutoUpdateState]: Failed to load auto-update state:', error);
-            return null;
-        }
-    }
-
-    /**
      * Saves auto-update state to storage.
      * We need to store this state to persist across service worker restarts,
      * since service worker can restart in less time than configured idle threshold,
@@ -686,46 +630,27 @@ export class ExtensionUpdateService {
      *
      * Without saving these timestamps to storage, we could potentially wait forever
      * for idle state and never perform auto-update.
-     *
-     * @param lastNavigationTimestamp Last navigation event timestamp.
      */
-    private static async saveAutoUpdateState(
-        lastNavigationTimestamp?: number,
-    ): Promise<void> {
-        if (ExtensionUpdateService.nextVersion === undefined) {
+    private static async saveAutoUpdateState(): Promise<void> {
+        if (ExtensionUpdateService.stateManager.nextVersion === undefined) {
             logger.debug('[ext.ExtensionUpdateService.saveAutoUpdateState]: Next version is undefined, skipping save');
             return;
         }
 
-        // FIXME: Maybe pass whole state as parameter?
-        const state: AutoUpdateState = {
-            lastNavigationTimestamp,
-            updateAvailableTimestamp: ExtensionUpdateService.updateAvailableTimestamp,
-            nextVersion: ExtensionUpdateService.nextVersion,
-            isManualCheck: ExtensionUpdateService.isManualCheck,
-        };
-
-        try {
-            await browserStorage.set(AUTO_UPDATE_STATE_KEY_MV3, JSON.stringify(state));
-        } catch (error) {
-            logger.debug('[ext.ExtensionUpdateService.saveAutoUpdateState]: Failed to save auto-update state:', error);
-        }
+        // Explicitly trigger save
+        ExtensionUpdateService.stateManager.save();
     }
 
     /**
      * Clears auto-update state.
      */
     private static async clearAutoUpdateState(): Promise<void> {
-        ExtensionUpdateService.updateAvailableTimestamp = undefined;
         ExtensionUpdateService.stopAutoUpdateCheck();
         ExtensionUpdateService.idleDetector?.stopMonitoring();
         ExtensionUpdateService.idleDetector = null;
 
-        try {
-            await browserStorage.remove(AUTO_UPDATE_STATE_KEY_MV3);
-        } catch (error) {
-            logger.error('[ext.ExtensionUpdateService.clearAutoUpdateState]: Failed to clear storage:', error);
-        }
+        // Clear state from storage and cache (this clears all fields)
+        await ExtensionUpdateService.stateManager.clear();
     }
 
     /**
@@ -758,7 +683,7 @@ export class ExtensionUpdateService {
      */
     private static async checkAutoUpdateConditions(): Promise<void> {
         try {
-            if (!ExtensionUpdateService.nextVersion) {
+            if (!ExtensionUpdateService.stateManager.nextVersion) {
                 logger.debug('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: No next version found, stopping auto-update check');
                 ExtensionUpdateService.stopAutoUpdateCheck();
                 return;
@@ -815,22 +740,22 @@ export class ExtensionUpdateService {
      * @returns True if icon should be shown, false otherwise.
      */
     public static shouldShowUpdateIcon(): boolean {
-        if (!ExtensionUpdateService.isUpdateAvailable || ExtensionUpdateService.nextVersion === null) {
+        if (!ExtensionUpdateService.isUpdateAvailable || ExtensionUpdateService.stateManager.nextVersion === null) {
             return false;
         }
 
         // If last check was manual, show icon immediately.
-        if (ExtensionUpdateService.isManualCheck) {
+        if (ExtensionUpdateService.stateManager.isManualCheck) {
             return true;
         }
 
-        if (ExtensionUpdateService.updateAvailableTimestamp === undefined) {
+        if (ExtensionUpdateService.stateManager.updateAvailableTimestamp === undefined) {
             logger.trace('[ext.ExtensionUpdateService.shouldShowUpdateIcon]: Update available timestamp is undefined, cannot determine if update icon should be shown');
             return false;
         }
 
         // For automatic checks, wait for delay period.
-        const timeSinceUpdateAvailable = Date.now() - ExtensionUpdateService.updateAvailableTimestamp;
+        const timeSinceUpdateAvailable = Date.now() - ExtensionUpdateService.stateManager.updateAvailableTimestamp;
         const config = ExtensionUpdateService.autoUpdateConfig;
 
         logger.trace('[ext.ExtensionUpdateService.shouldShowUpdateIcon]: Time since update available:', timeSinceUpdateAvailable);
