@@ -21,7 +21,6 @@ import {
     ExtensionUpdateFSMState,
     MANUAL_EXTENSION_UPDATE_KEY,
     MIN_UPDATE_DISPLAY_DURATION_MS,
-    AUTO_UPDATE_CONFIG_KEY_MV3,
 } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { MessageType, type UpdateExtensionMessageMv3 } from '../../../common/messages';
@@ -33,15 +32,11 @@ import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
 import { ForwardFrom } from '../../../common/forward';
 
-import {
-    ManualExtensionUpdateDataValidator,
-    AutoUpdateConfigValidator,
-    type ManualExtensionUpdateData,
-} from './types';
+import { ManualExtensionUpdateDataValidator, type ManualExtensionUpdateData } from './types';
 import { extensionUpdateActor } from './extension-update-machine';
 import { CwsVersionChecker } from './cws-version-checker';
-import { IdleDetector } from './idle-detector';
 import { UpdateStateManager } from './update-state-manager';
+import { AutoUpdateManager } from './auto-update-manager';
 
 /**
  * Service for checking and updating the extension in Manifest V3.
@@ -108,46 +103,14 @@ export class ExtensionUpdateService {
     private static checkingUpdateTimeoutId: number | undefined;
 
     /**
-     * Interval ID for periodic auto-update check.
-     */
-    private static autoUpdateCheckIntervalId: number | undefined;
-
-    /**
-     * Idle detector for tracking browser navigation activity.
-     */
-    private static idleDetector: IdleDetector | null = null;
-
-    /**
      * State manager for save current update state during SW restarts.
      */
     private static stateManager = new UpdateStateManager();
 
     /**
-     * Cached auto-update configuration.
-     *
-     * Can be manually overridden via chrome.storage.local.
+     * Auto-update manager for orchestrating automatic updates.
      */
-    private static autoUpdateConfig = {
-        /**
-         * Time to wait before showing the update icon after update becomes available.
-         * Default: 24 hours in milliseconds.
-         */
-        ICON_DELAY_MS: 24 * 60 * 60 * 1000,
-
-        /**
-         * Time of inactivity (no tab navigation events) before automatically applying update.
-         * Default: 30 minutes in milliseconds.
-         */
-        IDLE_THRESHOLD_MS: 30 * 60 * 1000,
-
-        /**
-         * Interval for checking if conditions are met to apply auto-update.
-         * Default: 20 seconds in milliseconds to prevent fall into service worker
-         * restart case, where TTL of SW will be less that the interval.
-         * See https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle#idle-shutdown.
-         */
-        CHECK_INTERVAL_MS: 20 * 1000,
-    };
+    private static autoUpdateManager: AutoUpdateManager | null = null;
 
     /**
      * Initializes the service.
@@ -173,9 +136,6 @@ export class ExtensionUpdateService {
         messageHandler.addListener(MessageType.CheckExtensionUpdateMv3, ExtensionUpdateService.checkExtensionUpdate);
         messageHandler.addListener(MessageType.UpdateExtensionMv3, ExtensionUpdateService.updateExtension);
 
-        // Load configuration from storage
-        await ExtensionUpdateService.loadAutoUpdateConfig();
-
         // Load persisted state if any saved before SW restart
         const state = await ExtensionUpdateService.stateManager.init();
 
@@ -189,31 +149,6 @@ export class ExtensionUpdateService {
             { version: state.nextVersion },
             state.lastNavigationTimestamp,
         );
-    }
-
-    /**
-     * Loads auto-update configuration from storage on initialization.
-     * Reads from chrome.storage.local to allow runtime configuration for testing.
-     */
-    private static async loadAutoUpdateConfig(): Promise<void> {
-        try {
-            const configStr = await browserStorage.get(AUTO_UPDATE_CONFIG_KEY_MV3);
-
-            if (typeof configStr !== 'string') {
-                return;
-            }
-
-            const customConfig = AutoUpdateConfigValidator.parse(JSON.parse(configStr));
-
-            logger.info('[ext.ExtensionUpdateService.loadAutoUpdateConfig]: Using custom config from storage:', customConfig);
-
-            ExtensionUpdateService.autoUpdateConfig = {
-                ...ExtensionUpdateService.autoUpdateConfig,
-                ...customConfig,
-            };
-        } catch (error) {
-            logger.warn('[ext.ExtensionUpdateService.loadAutoUpdateConfig]: Failed to parse config from storage:', error);
-        }
     }
 
     /**
@@ -272,10 +207,7 @@ export class ExtensionUpdateService {
             // Save state to storage for persistence across SW restarts.
             await ExtensionUpdateService.saveAutoUpdateState();
 
-            logger.trace(
-                '[ext.ExtensionUpdateService.onUpdateAvailable]:',
-                'Manual check - update icon will be shown immediately',
-            );
+            logger.trace('[ext.ExtensionUpdateService.onUpdateAvailable]: Manual check - update icon will be shown immediately');
 
             return;
         }
@@ -285,30 +217,21 @@ export class ExtensionUpdateService {
             ExtensionUpdateService.stateManager.updateAvailableTimestamp = Date.now();
         }
 
-        // Save to storage on every navigation to persist across service worker restarts.
-        const onNavigation = (timestamp: number): void => {
-            // Update state and trigger throttled save.
-            ExtensionUpdateService.stateManager.set('lastNavigationTimestamp', timestamp);
-        };
-
-        // Create idle detector with callback to save state on navigation.
-        // Monitoring starts automatically in constructor.
-        // Use loaded timestamp from storage if available (after SW restart), otherwise defaults to now.
-        ExtensionUpdateService.idleDetector = new IdleDetector({
-            onNavigation,
-            initialTimestamp: loadedNavigationTimestampMs,
-        });
-
         // Save state to storage for persistence across SW restarts (triggers actual write).
         await ExtensionUpdateService.saveAutoUpdateState();
 
-        // Start periodic check for auto-update conditions.
-        ExtensionUpdateService.startAutoUpdateCheck();
+        // Start auto-update monitoring
+        ExtensionUpdateService.autoUpdateManager = new AutoUpdateManager({
+            stateManager: ExtensionUpdateService.stateManager,
+            onUpdateShouldApply: (): void => {
+                // Fire-and-forget, don't await
+                ExtensionUpdateService.applyAutoUpdate();
+            },
+        });
 
-        logger.trace(
-            '[ext.ExtensionUpdateService.onUpdateAvailable]:',
-            `Auto-update tracking started. Icon delay: ${ExtensionUpdateService.autoUpdateConfig.ICON_DELAY_MS}ms, Inactivity threshold: ${ExtensionUpdateService.autoUpdateConfig.IDLE_THRESHOLD_MS}ms`,
-        );
+        // Load config and start monitoring
+        await ExtensionUpdateService.autoUpdateManager.init();
+        ExtensionUpdateService.autoUpdateManager.startMonitoring(loadedNavigationTimestampMs);
     }
 
     /**
@@ -645,82 +568,25 @@ export class ExtensionUpdateService {
      * Clears auto-update state.
      */
     private static async clearAutoUpdateState(): Promise<void> {
-        ExtensionUpdateService.stopAutoUpdateCheck();
-        ExtensionUpdateService.idleDetector?.stopMonitoring();
-        ExtensionUpdateService.idleDetector = null;
+        // Stop auto-update manager
+        ExtensionUpdateService.autoUpdateManager?.stopMonitoring();
+        ExtensionUpdateService.autoUpdateManager = null;
 
         // Clear state from storage and cache (this clears all fields)
         await ExtensionUpdateService.stateManager.clear();
     }
 
     /**
-     * Starts periodic check for auto-update conditions.
+     * Applies extension update automatically.
      */
-    private static startAutoUpdateCheck(): void {
-        // Avoid multiple intervals
-        if (ExtensionUpdateService.autoUpdateCheckIntervalId !== undefined) {
-            return;
-        }
-
-        // eslint-disable-next-line no-restricted-globals
-        ExtensionUpdateService.autoUpdateCheckIntervalId = self.setInterval(
-            () => ExtensionUpdateService.checkAutoUpdateConditions(),
-            ExtensionUpdateService.autoUpdateConfig.CHECK_INTERVAL_MS,
-        );
-    }
-
-    /**
-     * Stops periodic auto-update check.
-     */
-    private static stopAutoUpdateCheck(): void {
-        // eslint-disable-next-line no-restricted-globals
-        self.clearInterval(ExtensionUpdateService.autoUpdateCheckIntervalId);
-        ExtensionUpdateService.autoUpdateCheckIntervalId = undefined;
-    }
-
-    /**
-     * Checks if browser is idle (no navigation events) and should apply update.
-     */
-    private static async checkAutoUpdateConditions(): Promise<void> {
+    private static async applyAutoUpdate(): Promise<void> {
+        extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.Update });
         try {
-            if (!ExtensionUpdateService.stateManager.nextVersion) {
-                logger.debug('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: No next version found, stopping auto-update check');
-                ExtensionUpdateService.stopAutoUpdateCheck();
-                return;
-            }
-
-            if (!ExtensionUpdateService.idleDetector) {
-                logger.error('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Idle detector is not initialized');
-                return;
-            }
-
-            // FIXME: Pass IDLE_THRESHOLD_MS to idleDetector constructor and
-            // encapsulate this check in idleDetector
-            const idleDuration = ExtensionUpdateService.idleDetector.getIdleDuration();
-
-            // Check if browser is idle and should apply update
-            if (idleDuration < ExtensionUpdateService.autoUpdateConfig.IDLE_THRESHOLD_MS) {
-                logger.trace('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Browser is not idle, skipping update. Idle duration:', idleDuration, 'ms');
-                return;
-            }
-
-            logger.debug('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Inactivity threshold reached, applying update');
+            // Clear state first
             await ExtensionUpdateService.clearAutoUpdateState();
             // To avoid possible collisions.
             await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
-            ExtensionUpdateService.applyAutoUpdate();
-        } catch (error) {
-            logger.error('[ext.ExtensionUpdateService.checkAutoUpdateConditions]: Failed to check auto-update conditions:', error);
-        }
-    }
 
-    /**
-     * Applies extension update automatically.
-     */
-    private static applyAutoUpdate(): void {
-        extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.Update });
-
-        try {
             ExtensionUpdateService.reloadExtension();
         } catch (e) {
             logger.error(`[ext.ExtensionUpdateService.applyAutoUpdate]: Failed to reload: ${e}`);
@@ -756,10 +622,14 @@ export class ExtensionUpdateService {
 
         // For automatic checks, wait for delay period.
         const timeSinceUpdateAvailable = Date.now() - ExtensionUpdateService.stateManager.updateAvailableTimestamp;
-        const config = ExtensionUpdateService.autoUpdateConfig;
+
+        if (!ExtensionUpdateService.autoUpdateManager) {
+            logger.trace('[ext.ExtensionUpdateService.shouldShowUpdateIcon]: AutoUpdateManager is not initialized, cannot determine if update icon should be shown');
+            return false;
+        }
 
         logger.trace('[ext.ExtensionUpdateService.shouldShowUpdateIcon]: Time since update available:', timeSinceUpdateAvailable);
 
-        return timeSinceUpdateAvailable >= config.ICON_DELAY_MS;
+        return timeSinceUpdateAvailable >= ExtensionUpdateService.autoUpdateManager.iconDelayMs;
     }
 }
