@@ -30,11 +30,10 @@ import {
     type RegularFilterI18nMetadata,
     type GroupI18nMetadata,
     type TagI18nMetadata,
-} from '../schema';
-import { StringStorage } from '../utils/string-storage';
-import { I18n } from '../utils/i18n';
-
-import { settingsStorage } from './settings';
+} from '../../schema';
+import { StringStorage } from '../../utils/string-storage';
+import { I18n } from '../../utils/i18n';
+import { settingsStorage } from '../settings';
 
 /**
  * Class for synchronous control {@link Metadata} storage,
@@ -42,37 +41,7 @@ import { settingsStorage } from './settings';
  *
  * @see {@link StringStorage}
  */
-export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metadata, 'sync'> {
-    /**
-     * Return version for DNR rulesets.
-     *
-     * @returns Version for DNR rulesets.
-     *
-     * @throws Error if metadata is not initialized.
-     */
-    public getDnrRulesetsVersion(): string | undefined {
-        if (!this.data) {
-            throw MetadataStorage.createNotInitializedError();
-        }
-
-        return this.data.version;
-    }
-
-    /**
-     * Return build timestamp ms for DNR rulesets.
-     *
-     * @returns Build timestamp in milliseconds for DNR rulesets.
-     *
-     * @throws Error if metadata is not initialized.
-     */
-    public getDnrRulesetsBuildTimestampMs(): number | undefined {
-        if (!this.data) {
-            throw MetadataStorage.createNotInitializedError();
-        }
-
-        return this.data.versionTimestampMs;
-    }
-
+export class MetadataStorageCommon extends StringStorage<SettingOption.Metadata, Metadata, 'sync'> {
     /**
      * Returns regular filters metadata.
      *
@@ -82,7 +51,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      */
     public getFilters(): RegularFilterMetadata[] {
         if (!this.data) {
-            throw MetadataStorage.createNotInitializedError();
+            throw MetadataStorageCommon.createNotInitializedError();
         }
 
         return this.data.filters;
@@ -99,7 +68,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      */
     public getFilter(filterId: number): RegularFilterMetadata | undefined {
         if (!this.data) {
-            throw MetadataStorage.createNotInitializedError();
+            throw MetadataStorageCommon.createNotInitializedError();
         }
 
         return this.data.filters.find((el) => el.filterId === filterId);
@@ -114,7 +83,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      */
     public getGroups(): GroupMetadata[] {
         if (!this.data) {
-            throw MetadataStorage.createNotInitializedError();
+            throw MetadataStorageCommon.createNotInitializedError();
         }
 
         return this.data.groups;
@@ -131,7 +100,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      */
     public getGroup(groupId: number): GroupMetadata | undefined {
         if (!this.data) {
-            throw MetadataStorage.createNotInitializedError();
+            throw MetadataStorageCommon.createNotInitializedError();
         }
 
         return this.data.groups.find((el) => el.groupId === groupId);
@@ -146,7 +115,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      */
     public getTags(): TagMetadata[] {
         if (!this.data) {
-            throw MetadataStorage.createNotInitializedError();
+            throw MetadataStorageCommon.createNotInitializedError();
         }
 
         return this.data.tags;
@@ -163,7 +132,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      */
     public getTag(tagId: number): TagMetadata | undefined {
         if (!this.data) {
-            throw MetadataStorage.createNotInitializedError();
+            throw MetadataStorageCommon.createNotInitializedError();
         }
 
         return this.data.tags.find((el) => el.tagId === tagId);
@@ -206,9 +175,9 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
 
         const uiLanguage: string = browser.i18n.getUILanguage();
 
-        tags.forEach((tag) => MetadataStorage.applyFilterTagLocalization(tag, tagsI18n, uiLanguage));
-        filters.forEach((filter) => MetadataStorage.applyFilterLocalization(filter, filtersI18n, uiLanguage));
-        groups.forEach((group) => MetadataStorage.applyGroupLocalization(group, groupsI18n, uiLanguage));
+        tags.forEach((tag) => MetadataStorageCommon.applyFilterTagLocalization(tag, tagsI18n, uiLanguage));
+        filters.forEach((filter) => MetadataStorageCommon.applyFilterLocalization(filter, filtersI18n, uiLanguage));
+        groups.forEach((group) => MetadataStorageCommon.applyGroupLocalization(group, groupsI18n, uiLanguage));
 
         metadata.locale = uiLanguage;
 
@@ -232,7 +201,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
         if (!rawLocalizations) {
             return;
         }
-        const localizations = MetadataStorage.normalizeLocalization(rawLocalizations);
+        const localizations = MetadataStorageCommon.normalizeLocalization(rawLocalizations);
 
         const locale = I18n.find(Object.keys(localizations), uiLanguage);
 
@@ -266,7 +235,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
             return;
         }
 
-        const localizations = MetadataStorage.normalizeLocalization(rawLocalizations);
+        const localizations = MetadataStorageCommon.normalizeLocalization(rawLocalizations);
 
         const locale = I18n.find(Object.keys(localizations), uiLanguage);
 
@@ -300,7 +269,7 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
             return;
         }
 
-        const localizations = MetadataStorage.normalizeLocalization(rawLocalizations);
+        const localizations = MetadataStorageCommon.normalizeLocalization(rawLocalizations);
 
         const locale = I18n.find(Object.keys(localizations), uiLanguage);
 
@@ -339,14 +308,14 @@ export class MetadataStorage extends StringStorage<SettingOption.Metadata, Metad
      *
      * @returns A basic {@link Error} with a custom message.
      */
-    private static createNotInitializedError(): Error {
+    protected static createNotInitializedError(): Error {
         return new Error('Metadata is not initialized');
     }
 }
 
 /**
- * {@link MetadataStorage} Instance, that stores
+ * {@link MetadataStorageCommon} Instance, that stores
  * stringified {@link Metadata} in {@link settingsStorage} under
  * {@link SettingOption.Metadata} key.
  */
-export const metadataStorage = new MetadataStorage(SettingOption.Metadata, settingsStorage);
+export const metadataStorage = new MetadataStorageCommon(SettingOption.Metadata, settingsStorage);
