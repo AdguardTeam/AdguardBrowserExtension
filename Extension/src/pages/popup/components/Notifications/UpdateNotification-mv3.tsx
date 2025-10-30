@@ -28,7 +28,7 @@ import { NotifierType, ExtensionUpdateFSMState } from '../../../../common/consta
 import { translator } from '../../../../common/translators/translator';
 import { NotificationType } from '../../../common/types';
 
-import { Notification } from './Notification';
+import { Notification } from './Notification-mv3';
 
 /**
  * The component needed to show a notification about the extension update check

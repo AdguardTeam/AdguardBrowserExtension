@@ -16,25 +16,20 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
+import React from 'react';
 
-import { popupStore } from '../../stores/PopupStore';
+import { Tabs } from '../Tabs';
+import { Header } from '../Header';
+import { Footer } from '../Footer';
+import { MainContainer } from '../MainContainer';
+import { PromoNotification } from '../PromoNotification';
 
-import { RuleLimitsNotification } from './RuleLimitsNotification';
-import { UpdateNotification } from './UpdateNotification';
-
-import './notifications.pcss';
-
-export const Notifications = observer(() => {
-    const store = useContext(popupStore);
-
-    const { areFilterLimitsExceeded } = store;
-
-    return (
-        <div className="notifications">
-            <UpdateNotification />
-            {areFilterLimitsExceeded && <RuleLimitsNotification />}
-        </div>
-    );
-});
+export const PopupLayout = () => (
+    <>
+        <Header />
+        <MainContainer />
+        <Tabs />
+        <Footer />
+        <PromoNotification />
+    </>
+);

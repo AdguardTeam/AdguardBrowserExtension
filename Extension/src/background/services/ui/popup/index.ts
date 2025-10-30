@@ -16,4 +16,5 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export type { ManualExtensionUpdateData } from './types';
+export { PopupService, type GetExtensionStatusForPopupResponse } from 'popup-service';
+export { type GetTabInfoForPopupResponse } from './popup-common';

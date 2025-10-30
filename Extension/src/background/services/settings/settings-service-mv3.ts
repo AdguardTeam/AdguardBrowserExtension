@@ -18,10 +18,9 @@
 
 import browser from 'webextension-polyfill';
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
 import { RulesLimitsService } from 'rules-limits-service';
 
+import { ExtensionUpdateService } from '../extension-update/extension-update-service-mv3';
 import {
     MessageType,
     type ChangeUserSettingMessage,
@@ -46,7 +45,7 @@ import {
     settingsEvents,
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
-import { extensionUpdateActor } from '../extension-update/extension-update-machine';
+import { extensionUpdateActor } from '../extension-update/extension-update-machine-mv3';
 
 import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
 

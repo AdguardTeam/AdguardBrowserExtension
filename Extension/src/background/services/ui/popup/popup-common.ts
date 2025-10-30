@@ -16,38 +16,31 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
-import { RulesLimitsService } from 'rules-limits-service';
-
-import { ExtensionUpdateFSMEvent } from '../../../common/constants';
-import { tabsApi as tsWebExtTabsApi } from '../../tswebextension';
 import {
     type ChangeApplicationFilteringPausedMessage,
-    type GetTabInfoForPopupMessage,
     MessageType,
-} from '../../../common/messages';
-import { messageHandler } from '../../message-handler';
-import { SettingOption } from '../../schema';
-import { UserAgent } from '../../../common/user-agent';
+    type GetTabInfoForPopupMessage,
+} from '../../../../common/messages';
+import { messageHandler } from '../../../message-handler';
+import { SettingOption } from '../../../schema';
 import {
     appContext,
     AppContextKey,
     settingsStorage,
     type PromoNotification,
-} from '../../storages';
+} from '../../../storages';
 import {
     type FrameData,
-    FramesApi,
-    PageStatsApi,
     SettingsApi,
-    promoNotificationApi,
     type GetStatisticsDataResponse,
     type SettingsData,
+    FramesApi,
+    PageStatsApi,
+    promoNotificationApi,
     UserRulesApi,
-} from '../../api';
-import { extensionUpdateActor } from '../extension-update/extension-update-machine';
-import { type MV3SpecificOptions } from '../types';
+} from '../../../api';
+import { tabsApi as tsWebExtTabsApi } from '../../../tswebextension';
+import { UserAgent } from '../../../../common/user-agent';
 
 /**
  * Tab info for the popup.
@@ -120,30 +113,21 @@ export type GetTabInfoForPopupResponse = {
          */
         hasUserRulesToReset: boolean;
     };
-
-    /**
-     * MV3-specific options.
-     *
-     * This field is:
-     * - contains MV3-specific properties for MV3;
-     * - null for MV2.
-     */
-    mv3SpecificOptions: MV3SpecificOptions | null;
 };
 
 /**
  * Handles work with popups.
  */
-export class PopupService {
+export abstract class PopupServiceCommon {
     /**
      * Creates listeners for getter of tab info and for popup.
      */
     static init(): void {
-        messageHandler.addListener(MessageType.GetIsEngineStarted, PopupService.getIsAppInitialized);
-        messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
+        messageHandler.addListener(MessageType.GetIsEngineStarted, PopupServiceCommon.getIsAppInitialized);
+        messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupServiceCommon.getTabInfoForPopup);
         messageHandler.addListener(
             MessageType.ChangeApplicationFilteringPaused,
-            PopupService.onChangeFilteringPaused,
+            PopupServiceCommon.onChangeFilteringPaused,
         );
     }
 
@@ -173,52 +157,25 @@ export class PopupService {
 
         const tabContext = tsWebExtTabsApi.getTabContext(tabId);
 
-        const isExtensionUpdateAvailable = __IS_MV3__
-            ? ExtensionUpdateService.isUpdateAvailable
-            : false;
-        const manualExtensionUpdateData = __IS_MV3__
-            ? await ExtensionUpdateService.getManualExtensionUpdateData()
-            : null;
-
-        const isExtensionReloadedOnUpdate = __IS_MV3__
-            ? manualExtensionUpdateData !== null
-            : false;
-
-        const isSuccessfulExtensionUpdate = __IS_MV3__
-            ? manualExtensionUpdateData?.isOk || false
-            : false;
-
-        extensionUpdateActor.send({
-            type: ExtensionUpdateFSMEvent.Init,
-            isReloadedOnUpdate: isExtensionReloadedOnUpdate,
-            isUpdateAvailable: isExtensionUpdateAvailable,
-        });
-
-        if (tabContext) {
-            return {
-                frameInfo: FramesApi.getMainFrameData(tabContext),
-                stats: PageStatsApi.getStatisticsData(),
-                settings: SettingsApi.getData(),
-                mv3SpecificOptions: __IS_MV3__
-                    ? {
-                        areFilterLimitsExceeded: await RulesLimitsService.areFilterLimitsExceeded(),
-                        isExtensionUpdateAvailable,
-                        isExtensionReloadedOnUpdate,
-                        isSuccessfulExtensionUpdate,
-                    }
-                    : null,
-                options: {
-                    showStatsSupported: true,
-                    isFirefoxBrowser: UserAgent.isFirefox,
-                    showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    isMacOs: UserAgent.isMacOs,
-                    isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
-                    notification: await promoNotificationApi.getCurrentNotification(),
-                    isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
-                    hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
-                },
-            };
+        if (!tabContext) {
+            return;
         }
+
+        return {
+            frameInfo: FramesApi.getMainFrameData(tabContext),
+            stats: PageStatsApi.getStatisticsData(),
+            settings: SettingsApi.getData(),
+            options: {
+                showStatsSupported: true,
+                isFirefoxBrowser: UserAgent.isFirefox,
+                showInfoAboutFullVersion: !settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                isMacOs: UserAgent.isMacOs,
+                isEdgeBrowser: UserAgent.isEdge || UserAgent.isEdgeChromium,
+                notification: await promoNotificationApi.getCurrentNotification(),
+                isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
+                hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
+            },
+        };
     }
 
     /**

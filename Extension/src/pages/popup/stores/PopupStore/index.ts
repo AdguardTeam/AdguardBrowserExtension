@@ -15,5 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { createContext } from 'react';
 
-export type { ManualExtensionUpdateData } from './types';
+import { PopupStore } from 'popup-store';
+
+export const popupStore = createContext(new PopupStore());

@@ -16,4 +16,16 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export type { ManualExtensionUpdateData } from './types';
+import { PopupStoreCommon } from './PopupStore-common';
+
+export class PopupStore extends PopupStoreCommon {
+    /**
+     * Checks for updates - not supported in MV2.
+     *
+     * @throws {Error} Always throws an error indicating that the method is not implemented.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    async checkUpdatesMV3(): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
+}
