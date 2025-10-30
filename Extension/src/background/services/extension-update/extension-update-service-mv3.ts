@@ -305,8 +305,13 @@ export class ExtensionUpdateService {
 
         // Store timestamp when update became available.
         const now = Date.now();
-        ExtensionUpdateService.updateAvailableTimestamp = now;
-        ExtensionUpdateService.lastNavigationTimestamp = now;
+        // It can be not null if we are restoring state after SW restart.
+        if (ExtensionUpdateService.updateAvailableTimestamp === null) {
+            ExtensionUpdateService.updateAvailableTimestamp = now;
+        }
+        if (ExtensionUpdateService.lastNavigationTimestamp === null) {
+            ExtensionUpdateService.lastNavigationTimestamp = now;
+        }
 
         // Save state to storage for persistence across SW restarts.
         await ExtensionUpdateService.saveAutoUpdateState();
