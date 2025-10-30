@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { type GetExtensionStatusForPopupResponse } from 'popup-service';
+
 import {
     type ExtractMessageResponse,
     MessageType,
@@ -43,6 +45,15 @@ export class Messenger extends MessengerCommon {
         { from }: UpdateExtensionMessageMv3['data'],
     ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> {
         return this.sendMessage(MessageType.UpdateExtensionMv3, { from });
+    }
+
+    /**
+     * Sends a message to the background page to get extension status for MV3 popup.
+     *
+     * @returns Promise that resolves with extension status
+     */
+    async getExtensionStatusForPopupMV3(): Promise<GetExtensionStatusForPopupResponse> {
+        return this.sendMessage(MessageType.GetExtensionStatusForPopupMV3);
     }
 }
 

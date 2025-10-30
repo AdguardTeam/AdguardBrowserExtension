@@ -18,10 +18,9 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
 import { rulesLimitsService } from 'rules-limits-service';
 
+import { ExtensionUpdateService } from '../services/extension-update/extension-update-service-mv3';
 import { engine } from '../engine';
 import { MessageType, sendMessage } from '../../common/messages';
 import { logger } from '../../common/logger';

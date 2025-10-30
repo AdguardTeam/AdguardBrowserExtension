@@ -165,7 +165,7 @@ function createExtensionUpdateActorWithHandler(): ReturnType<typeof createActor>
             return;
         }
 
-        logger.debug(`[ext.extension-update-machine]: Current state: ${state.value}, previous state: ${previousStateValue}`);
+        logger.debug(`[ext.extension-update-machine-mv3]: Current state: ${state.value}, previous state: ${previousStateValue}`);
 
         notifier.notifyListeners(NotifierType.ExtensionUpdateStateChange, state.value);
 

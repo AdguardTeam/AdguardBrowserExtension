@@ -30,7 +30,10 @@ import { type SettingOption, type Settings } from '../../background/schema/setti
 import { type CategoriesFilterData } from '../../background/api/filters/categories';
 import { type AppearanceTheme, type NotifierType } from '../constants';
 import { type FilteringLogTabInfo } from '../../background/api/filtering-log';
-import { type GetTabInfoForPopupResponse } from '../../background/services/ui/popup';
+import {
+    type GetExtensionStatusForPopupResponse,
+    type GetTabInfoForPopupResponse,
+} from '../../background/services/ui/popup';
 import { type GetFilteringLogDataResponse } from '../../background/services/filtering-log';
 import {
     type IRulesLimits,
@@ -144,6 +147,7 @@ export enum MessageType {
     ClearRulesLimitsWarningMv3 = 'clearRulesLimitsWarningMv3',
     RestoreFiltersMv3 = 'restoreFiltersMv3',
     CurrentLimitsMv3 = 'currentLimitsMv3',
+    GetExtensionStatusForPopupMV3 = 'getExtensionStatusForPopupMV3',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -639,6 +643,10 @@ export type GetRulesLimitsCountersMv3Message = {
     type: MessageType.GetRulesLimitsCountersMv3;
 };
 
+export type GetExtensionStatusForPopupMV3Message = {
+    type: MessageType.GetExtensionStatusForPopupMV3;
+};
+
 // Unified message map that includes both message structure and response types
 export type MessageMap = {
     [MessageType.CreateEventListener]: {
@@ -956,6 +964,10 @@ export type MessageMap = {
     [MessageType.ClearRulesLimitsWarningMv3]: {
         message: ClearRulesLimitsWarningMv3Message;
         response: void;
+    };
+    [MessageType.GetExtensionStatusForPopupMV3]: {
+        message: GetExtensionStatusForPopupMV3Message;
+        response: GetExtensionStatusForPopupResponse;
     };
     [MessageType.InitializeFrameScript]: {
         message: InitializeFrameScriptMessage;

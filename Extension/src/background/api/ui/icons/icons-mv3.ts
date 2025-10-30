@@ -16,10 +16,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
 import { RulesLimitsService } from 'rules-limits-service';
 
+import { ExtensionUpdateService } from '../../../services/extension-update/extension-update-service-mv3';
 import { type IconData } from '../../../storages';
 
 import { IconsApiCommon } from './icons-common';

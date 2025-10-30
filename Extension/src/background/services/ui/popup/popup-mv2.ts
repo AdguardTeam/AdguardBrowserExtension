@@ -15,5 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { PopupServiceCommon } from './popup-common';
 
-export { Notifications } from './Notifications';
+/**
+ * Empty type for MV2 compatibility.
+ * This type is only needed for MV3 extension status functionality.
+ */
+export type GetExtensionStatusForPopupResponse = {};
+
+export { PopupServiceCommon as PopupService };

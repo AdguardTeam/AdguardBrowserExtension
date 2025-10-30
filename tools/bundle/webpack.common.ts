@@ -155,7 +155,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'settings-service': path.resolve(__dirname, `../../Extension/src/background/services/settings/settings-service-mv${manifestVersion}.ts`),
         'filters-service': path.resolve(__dirname, `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`),
         'custom-filters-service': path.resolve(__dirname, `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`),
-        'extension-update-service': path.resolve(__dirname, `../../Extension/src/background/services/extension-update/extension-update-service-mv${manifestVersion}.ts`),
         'rules-limits-service': path.resolve(__dirname, `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`),
         'content-script': path.resolve(__dirname, `../../Extension/pages/content-script-start/mv${manifestVersion}.ts`),
         'network-api': path.resolve(__dirname, `../../Extension/src/background/api/network/network-mv${manifestVersion}.ts`),
@@ -170,9 +169,12 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'icons-cache': path.resolve(__dirname, `../../Extension/src/common/api/extension/icons-cache/icons-cache-mv${manifestVersion}.ts`),
         'icons-api': path.resolve(__dirname, `../../Extension/src/background/api/ui/icons/icons-mv${manifestVersion}.ts`),
         'keep-alive-api': path.resolve(__dirname, `../../Extension/src/background/keep-alive/keep-alive-mv${manifestVersion}.ts`),
+        'popup-service': path.resolve(__dirname, `../../Extension/src/background/services/ui/popup/popup-mv${manifestVersion}.ts`),
+        'popup-store': path.resolve(__dirname, `../../Extension/src/pages/popup/stores/PopupStore/PopupStore-mv${manifestVersion}.ts`),
         'pages': path.resolve(__dirname, `../../Extension/src/background/api/ui/pages/pages-mv${manifestVersion}.ts`),
         'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
         'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),
+        'popup-layout': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Popup/Popup-mv${manifestVersion}.tsx`),
         'filters-adapter': path.resolve(__dirname, `../../Extension/src/background/storages/filters-adapter/filters-adapter-mv${manifestVersion}.ts`),
     };
 

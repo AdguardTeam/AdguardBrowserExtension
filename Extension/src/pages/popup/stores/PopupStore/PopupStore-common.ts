@@ -15,9 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { createContext } from 'react';
-
 import browser from 'webextension-polyfill';
 import {
     action,
@@ -29,28 +26,25 @@ import {
 } from 'mobx';
 import punycode from 'punycode/';
 
-import { type GetStatisticsDataResponse, type SettingsData } from '../../../background/api';
-import { type GetTabInfoForPopupResponse } from '../../../background/services';
-import { type PageStatsDataItem } from '../../../background/schema';
-import { messenger } from '../../services/messenger';
+import { type GetStatisticsDataResponse, type SettingsData } from '../../../../background/api';
+import { type GetTabInfoForPopupResponse } from '../../../../background/services';
+import { type PageStatsDataItem } from '../../../../background/schema';
+import { messenger } from '../../../services/messenger';
 import {
     SpecificPopupState,
     TimeRange,
     ViewState,
-} from '../constants';
-import { translator } from '../../../common/translators/translator';
-import { type PromoNotification } from '../../../background/storages';
+} from '../../constants';
+import { translator } from '../../../../common/translators/translator';
+import { type PromoNotification } from '../../../../background/storages';
 import {
     AppState,
     appStateActor,
     AppStateEvent,
-} from '../state-machines/app-state-machine';
-import { asyncWrapper } from '../../filtering-log/stores/helpers';
-import { MIN_UPDATE_DISPLAY_DURATION_MS, TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../common/constants';
-import { UserAgent } from '../../../common/user-agent';
-import { logger } from '../../../common/logger';
-import { sleepIfNecessary } from '../../../common/sleep-utils';
-import { NotificationType, type NotificationParams } from '../../common/types';
+} from '../../state-machines/app-state-machine';
+import { asyncWrapper } from '../../../filtering-log/stores/helpers';
+import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../../common/constants';
+import { UserAgent } from '../../../../common/user-agent';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -67,7 +61,7 @@ type CategoryBlockedStatsInfo = {
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
 
-export class PopupStore {
+export abstract class PopupStoreCommon {
     TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     /**
@@ -148,9 +142,6 @@ export class PopupStore {
     @observable
     settings: SettingsData | null = null;
 
-    @observable
-    areFilterLimitsExceeded = false;
-
     currentTabId?: number | null = null;
 
     domainName: string | null = null;
@@ -167,12 +158,10 @@ export class PopupStore {
     @observable
     isExtensionCheckingUpdateOrUpdating = false;
 
-    @observable
-    updateNotification: NotificationParams | null = null;
-
     constructor() {
         makeObservable(this);
         this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
+        this.getPopupData = this.getPopupData.bind(this);
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -216,8 +205,11 @@ export class PopupStore {
             && !this.isEngineStarted;
     }
 
+    /**
+     * Retrieves and sets up popup data including browser detection, tab info, and initial state.
+     */
     @action
-    getPopupData = async (): Promise<GetTabInfoForPopupResponse | undefined> => {
+    async getPopupData(): Promise<void> {
         /**
          * Get android data first because our styles depends on it,
          * and UI might shift because it was loaded too late.
@@ -245,85 +237,61 @@ export class PopupStore {
             return;
         }
 
-        runInAction(() => {
-            const {
-                frameInfo,
-                options,
-                stats,
-                settings,
-                mv3SpecificOptions,
-            } = response;
+        this.updatePopupState(response, currentTab.id);
+    }
 
-            // frame info
-            this.applicationFilteringPaused = frameInfo.applicationFilteringDisabled;
-            this.isFilteringPossible = frameInfo.isFilteringPossible;
-            this.url = frameInfo.url;
-            this.totalBlocked = frameInfo.totalBlocked;
-            this.totalBlockedTab = frameInfo.totalBlockedTab;
-            this.domainName = frameInfo.domainName;
-            this.documentAllowlisted = frameInfo.documentAllowlisted;
-            this.userAllowlisted = frameInfo.userAllowlisted;
-            this.canAddRemoveRule = frameInfo.canAddRemoveRule;
+    /**
+     * Updates the popup state based on the tab info response.
+     *
+     * @param tabInfo Response containing frame info, options, stats and settings
+     * @param tabId ID of the current active tab
+     */
+    @action
+    protected updatePopupState(tabInfo: GetTabInfoForPopupResponse, tabId: number) {
+        const {
+            frameInfo,
+            options,
+            stats,
+            settings,
+        } = tabInfo;
 
-            // options
-            this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
-            this.isEdgeBrowser = options.isEdgeBrowser;
-            this.promoNotification = options.notification;
-            this.hasUserRulesToReset = options.hasUserRulesToReset;
+        // frame info
+        this.applicationFilteringPaused = frameInfo.applicationFilteringDisabled;
+        this.isFilteringPossible = frameInfo.isFilteringPossible;
+        this.url = frameInfo.url;
+        this.totalBlocked = frameInfo.totalBlocked;
+        this.totalBlockedTab = frameInfo.totalBlockedTab;
+        this.domainName = frameInfo.domainName;
+        this.documentAllowlisted = frameInfo.documentAllowlisted;
+        this.userAllowlisted = frameInfo.userAllowlisted;
+        this.canAddRemoveRule = frameInfo.canAddRemoveRule;
 
-            // stats
-            this.stats = stats;
+        // options
+        this.showInfoAboutFullVersion = options.showInfoAboutFullVersion;
+        this.isEdgeBrowser = options.isEdgeBrowser;
+        this.promoNotification = options.notification;
+        this.hasUserRulesToReset = options.hasUserRulesToReset;
 
-            // settings
-            this.settings = settings;
+        // stats
+        this.stats = stats;
 
-            this.currentTabId = currentTab.id;
+        // settings
+        this.settings = settings;
 
-            this.setAppActorInitState();
+        this.currentTabId = tabId;
 
-            // Handle MV3-specific options
-            if (!mv3SpecificOptions) {
-                // Early exit for MV2 or when mv3SpecificOptions is absent
-                this.areFilterLimitsExceeded = false;
-                this.setIsExtensionUpdateAvailable(false);
-                return;
-            }
+        this.setAppActorInitState();
+    }
 
-            const {
-                areFilterLimitsExceeded,
-                isExtensionUpdateAvailable,
-                isExtensionReloadedOnUpdate,
-                isSuccessfulExtensionUpdate,
-            } = mv3SpecificOptions;
-
-            this.areFilterLimitsExceeded = areFilterLimitsExceeded;
-            this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
-
-            // notification about successful or failed update should be shown after the popup is opened.
-            // and it cannot be done by notifier (from the background page)
-            // because event may be dispatched _before_ the popup is opened,
-            // i.e. listener may not be registered yet.
-            if (!isExtensionReloadedOnUpdate) {
-                return;
-            }
-
-            if (isSuccessfulExtensionUpdate) {
-                this.setUpdateNotification({
-                    type: NotificationType.Success,
-                    text: translator.getMessage('update_success_text'),
-                });
-            } else {
-                this.setUpdateNotification({
-                    type: NotificationType.Error,
-                    text: translator.getMessage('update_failed_text'),
-                    button: {
-                        title: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: this.checkUpdatesMV3,
-                    },
-                });
-            }
-        });
-    };
+    /**
+     * Checks for updates and if update is available, starts the update process.
+     *
+     * Note:
+     * This behavior is different on options page
+     * where two separate clicks are required
+     * to check for updates and start the update process.
+     */
+    abstract checkUpdatesMV3(): Promise<void>;
 
     /**
      * Sends a message to the background to set the application filtering paused state to the specified value.
@@ -556,7 +524,7 @@ export class PopupStore {
             return null;
         }
 
-        const statsDataForCurrentRange = PopupStore.getDataByRange(stats, this.selectedTimeRange);
+        const statsDataForCurrentRange = PopupStoreCommon.getDataByRange(stats, this.selectedTimeRange);
 
         if (!statsDataForCurrentRange) {
             return null;
@@ -633,29 +601,6 @@ export class PopupStore {
         return this.settings.values[this.settings.names.AppearanceTheme];
     }
 
-    /**
-     * Checks for updates and if update is available, starts the update process.
-     *
-     * Note:
-     * This behavior is different on options page
-     * where two separate clicks are required
-     * to check for updates and start the update process.
-     */
-    @action
-    async checkUpdatesMV3() {
-        const start = Date.now();
-
-        try {
-            this.setUpdateNotification(null);
-            await messenger.checkUpdatesMV3();
-        } catch (error: unknown) {
-            logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
-        }
-
-        // Ensure minimum duration for smooth UI experience
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-    }
-
     @action
     setIsExtensionUpdateAvailable(isUpdateAvailable: boolean): void {
         this.isExtensionUpdateAvailable = isUpdateAvailable;
@@ -665,11 +610,4 @@ export class PopupStore {
     setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
         this.isExtensionCheckingUpdateOrUpdating = value;
     }
-
-    @action
-    setUpdateNotification(notification: NotificationParams | null): void {
-        this.updateNotification = notification;
-    }
 }
-
-export const popupStore = createContext(new PopupStore());

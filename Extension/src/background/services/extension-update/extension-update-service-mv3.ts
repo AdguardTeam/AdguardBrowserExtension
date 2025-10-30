@@ -36,7 +36,7 @@ import { Version } from '../../utils/version';
 import { ForwardFrom } from '../../../common/forward';
 
 import { ManualExtensionUpdateDataValidator, type ManualExtensionUpdateData } from './types';
-import { extensionUpdateActor } from './extension-update-machine';
+import { extensionUpdateActor } from './extension-update-machine-mv3';
 
 /**
  * Service for checking and updating the extension in Manifest V3.
