@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AUTO_UPDATE_CONFIG_KEY_MV3 } from '../../../common/constants';
+import { AUTO_UPDATE_CONFIG_KEY_MV3, MANUAL_EXTENSION_UPDATE_KEY } from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import { browserStorage } from '../../storages';
 
@@ -25,7 +25,7 @@ import { IdleDetector } from './idle-detector';
 import { type UpdateStateManager } from './update-state-manager';
 
 /**
- * Manages automatic update orchestration after Chrome downloads an update.
+ * Handles automatic update orchestration after Chrome downloads an update.
  *
  * Responsibilities:
  * - Create and manage IdleDetector for tracking browser inactivity.
@@ -33,7 +33,7 @@ import { type UpdateStateManager } from './update-state-manager';
  * - Apply update when idle threshold is met.
  * - Clean up resources.
  */
-export class AutoUpdateManager {
+export class AutoUpdateHandler {
     /**
      * Idle detector for tracking browser navigation activity.
      */
@@ -64,25 +64,33 @@ export class AutoUpdateManager {
     };
 
     /**
-     * Callback to invoke when update should be applied.
+     * Callback to invoke when update is about to be applied.
      */
-    private readonly onUpdateShouldApply: () => void;
+    private readonly onUpdateApplyStart: () => void;
 
     /**
-     * Creates AutoUpdateManager instance.
+     * Callback to invoke when update application fails.
+     */
+    private readonly onUpdateApplyFailed: () => void;
+
+    /**
+     * Creates AutoUpdateHandler instance.
      *
      * @param options Configuration options.
      * @param options.stateManager State manager for persistence.
-     * @param options.onUpdateShouldApply Callback when update should be applied.
+     * @param options.onUpdateApplyStart Callback when update application starts.
+     * @param options.onUpdateApplyFailed Callback when update application fails.
      */
     constructor(options: {
         stateManager: UpdateStateManager;
-        onUpdateShouldApply: () => void;
+        onUpdateApplyStart: () => void;
+        onUpdateApplyFailed: () => void;
     }) {
         this.stateManager = options.stateManager;
-        this.onUpdateShouldApply = options.onUpdateShouldApply;
+        this.onUpdateApplyStart = options.onUpdateApplyStart;
+        this.onUpdateApplyFailed = options.onUpdateApplyFailed;
         // Config will be loaded via init()
-        this.config = AutoUpdateManager.DEFAULT_CONFIG;
+        this.config = AutoUpdateHandler.DEFAULT_CONFIG;
     }
 
     /**
@@ -116,14 +124,14 @@ export class AutoUpdateManager {
 
             const customConfig = AutoUpdateConfigValidator.parse(JSON.parse(configStr));
 
-            logger.info('[ext.AutoUpdateManager.loadConfig]: Using custom config from storage:', customConfig);
+            logger.info('[ext.AutoUpdateHandler.loadConfig]: Using custom config from storage:', customConfig);
 
             this.config = {
-                ...AutoUpdateManager.DEFAULT_CONFIG,
+                ...AutoUpdateHandler.DEFAULT_CONFIG,
                 ...customConfig,
             };
         } catch (error) {
-            logger.error('[ext.AutoUpdateManager.loadConfig]: Failed to load config:', error);
+            logger.error('[ext.AutoUpdateHandler.loadConfig]: Failed to load config:', error);
         }
     }
 
@@ -145,7 +153,7 @@ export class AutoUpdateManager {
     public startMonitoring(loadedNavigationTimestamp?: number): void {
         // Avoid multiple intervals
         if (this.checkIntervalId !== undefined) {
-            logger.debug('[ext.AutoUpdateManager.startMonitoring]: Auto-update check already running');
+            logger.debug('[ext.AutoUpdateHandler.startMonitoring]: Auto-update check already running');
             return;
         }
 
@@ -166,7 +174,7 @@ export class AutoUpdateManager {
             this.config.CHECK_INTERVAL_MS,
         );
 
-        logger.trace(`[ext.AutoUpdateManager.startMonitoring]: Auto-update monitoring started. Check interval: ${this.config.CHECK_INTERVAL_MS}ms, Idle threshold: ${this.config.IDLE_THRESHOLD_MS}ms, Icon delay: ${this.config.ICON_DELAY_MS}ms`);
+        logger.trace(`[ext.AutoUpdateHandler.startMonitoring]: Auto-update monitoring started. Check interval: ${this.config.CHECK_INTERVAL_MS}ms, Idle threshold: ${this.config.IDLE_THRESHOLD_MS}ms, Icon delay: ${this.config.ICON_DELAY_MS}ms`);
     }
 
     /**
@@ -186,7 +194,7 @@ export class AutoUpdateManager {
             this.idleDetector = null;
         }
 
-        logger.trace('[ext.AutoUpdateManager.stopMonitoring]: Auto-update monitoring stopped');
+        logger.trace('[ext.AutoUpdateHandler.stopMonitoring]: Auto-update monitoring stopped');
     }
 
     /**
@@ -207,14 +215,14 @@ export class AutoUpdateManager {
             // Ensure next version is still available
             const nextVersion = this.stateManager.nextVersion;
             if (!nextVersion) {
-                logger.debug('[ext.AutoUpdateManager.checkConditions]: No next version found, stopping');
+                logger.debug('[ext.AutoUpdateHandler.checkConditions]: No next version found, stopping');
                 this.stopMonitoring();
                 return;
             }
 
             // Ensure idle detector is initialized
             if (!this.idleDetector) {
-                logger.error('[ext.AutoUpdateManager.checkConditions]: Idle detector is not initialized');
+                logger.error('[ext.AutoUpdateHandler.checkConditions]: Idle detector is not initialized');
                 return;
             }
 
@@ -225,17 +233,75 @@ export class AutoUpdateManager {
             // Check if browser is idle and should apply update
             const idleThreshold = this.config.IDLE_THRESHOLD_MS;
             if (idleDuration < idleThreshold) {
-                logger.trace(`[ext.AutoUpdateManager.checkConditions]: Browser is not idle, skipping update. Idle duration: ${idleDuration}ms, threshold: ${idleThreshold}ms`);
+                logger.trace(`[ext.AutoUpdateHandler.checkConditions]: Browser is not idle, skipping update. Idle duration: ${idleDuration}ms, threshold: ${idleThreshold}ms`);
                 return;
             }
 
-            logger.info(`[ext.AutoUpdateManager.checkConditions]: Idle threshold reached, applying update. Idle duration: ${idleDuration}ms`);
+            logger.info(`[ext.AutoUpdateHandler.checkConditions]: Idle threshold reached, applying update. Idle duration: ${idleDuration}ms`);
 
-            // Stop monitoring and invoke callback
+            // Stop monitoring and apply update
             this.stopMonitoring();
-            this.onUpdateShouldApply();
+            await this.applyUpdate();
         } catch (error) {
-            logger.error('[ext.AutoUpdateManager.checkConditions]: Failed to check conditions:', error);
+            logger.error('[ext.AutoUpdateHandler.checkConditions]: Failed to check conditions:', error);
         }
+    }
+
+    /**
+     * Applies automatic update and reloads extension.
+     * Clears state and removes manual update markers to avoid collisions.
+     */
+    public async applyUpdate(): Promise<void> {
+        this.onUpdateApplyStart();
+        try {
+            // Stop monitoring and clear state
+            this.stopMonitoring();
+            await this.stateManager.clear();
+
+            // To avoid possible collisions with manual update, e.g. do not
+            // open popup or show notification after silent auto-update.
+            await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
+
+            // Reload extension
+            chrome.runtime.reload();
+        } catch (e) {
+            logger.error(`[ext.AutoUpdateHandler.applyUpdate]: Failed to reload: ${e}`);
+            this.onUpdateApplyFailed();
+        }
+    }
+
+    /**
+     * Clears update state and stops monitoring.
+     * Called when manual update is triggered to prevent auto-update interference.
+     */
+    public async clearState(): Promise<void> {
+        this.stopMonitoring();
+        await this.stateManager.clear();
+    }
+
+    /**
+     * Handles update available event for automatic checks.
+     * Sets timestamp, saves state, and starts monitoring.
+     *
+     * @param loadedNavigationTimestamp Timestamp from storage if SW restarted.
+     */
+    public async onUpdateAvailable(
+        loadedNavigationTimestamp?: number,
+    ): Promise<void> {
+        // Set timestamp when update became available. If SW restart occurred
+        // before update was applied, this timestamp will be restored from
+        // storage for correct icon delay calculation.
+        if (this.stateManager.updateAvailableTimestamp === undefined) {
+            this.stateManager.updateAvailableTimestamp = Date.now();
+        }
+
+        // Save state to storage for persistence across SW restarts
+        this.stateManager.save();
+
+        // Load config and start monitoring
+        await this.init();
+        this.startMonitoring(loadedNavigationTimestamp);
+
+        logger.trace(`[ext.AutoUpdateHandler.onUpdateAvailable]: Auto-update monitoring started. Icon delay: ${this.config.ICON_DELAY_MS}ms, Idle threshold: ${this.config.IDLE_THRESHOLD_MS}ms`);
     }
 }

@@ -28,6 +28,24 @@ import { type AutoUpdateState, AutoUpdateStateValidator } from './types';
 /**
  * Manages persistence of auto-update state to chrome.storage.local.
  * Handles state caching and throttled writes.
+ *
+ * We need to store this state to persist across service worker restarts,
+ * since service worker can restart in less time than configured idle threshold,
+ * so both `updateAvailableTimestamp` and `lastNavigationTimestamp` are important
+ * to save in storage, e.g.:
+ * - 10:00 `onUpdateAvailable` received;
+ * - 10:05 `lastNavigationTimestamp` last updated;
+ * - 10:10 service worker restarts and loads state;
+ * - 10:35 service worker detects idle state and performs auto-update
+ *   (30 minutes after last activity).
+ *
+ * Without saving these timestamps to storage, we could potentially wait
+ * forever for idle state and never perform auto-update.
+ *
+ * Also we store information about next version and isManualCheck flag
+ * to show update icon after SW restarts.
+ *
+ * FIXME: It not AutoUpdateState anymore, rename.
  */
 export class UpdateStateManager implements StorageInterface<
     keyof AutoUpdateState,
