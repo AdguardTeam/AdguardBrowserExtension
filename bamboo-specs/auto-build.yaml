@@ -8,7 +8,7 @@ variables:
   # Playwright is needed for integration tests after build.
   dockerPlaywright: adguard/playwright-runner:22.17--1.53.2--1
   # Node.js is needed for build and tests.
-  dockerNode: adguard/extension-builder:22.17--0.2--0
+  dockerNode: adguard/extension-builder:22.17--0.2.1--0
   # Stable branch name for auto-update only filters.
   stableBranchName: stable/v5.2
 
@@ -42,6 +42,11 @@ DoNothing:
             BRANCH="${bamboo.planRepository.branchName}"
 
             echo "Build and deployment is not supported on branch ${BRANCH}, skipping"
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
   # Since the artifact is being published from a non-master branch, it should
   # still be available in the master branch.
   artifacts: &artifacts
@@ -132,10 +137,10 @@ branch-overrides:
 
                   ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
         final-tasks:
-          - script:
+          - script: &cleanup-script
               interpreter: SHELL
               scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+                - "./bamboo-specs/scripts/cleanup.sh"
         requirements:
           - adg-docker: 'true'
 
@@ -172,10 +177,7 @@ branch-overrides:
               type: junit
               # mv3 postfix because we run auto-builds only for mv3 branch.
               test-results: 'tests-reports/unit-tests-mv3.xml'
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
 
@@ -208,13 +210,9 @@ branch-overrides:
 
                   pnpm locales validate --min
         final-tasks:
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
-
 
       Update filters and build:
         key: UPDATEFILTERSANDBUILD
@@ -251,15 +249,15 @@ branch-overrides:
 
                   pnpm install ${bamboo.varsPnpm}
 
-                  # Update patch version because resources was changed.
-                  pnpm increment
-
                   # Update filters before build.
                   # --skip-local-resources is used to skip updating local resources,
                   # because to use "skip review" feature in the Chrome Web Store
                   # we need to ensure that changes are made only in rulesets
                   # json files.
                   OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3 --skip-local-resources
+
+                  # Update patch version because resources was changed.
+                  pnpm increment
 
                   # Create artifacts directory if it doesn't exist.
                   mkdir -p artifacts
@@ -272,14 +270,12 @@ branch-overrides:
                   # from the Chrome Web Store to check that new versions
                   # are eligible for "skip review" feature.
                   pnpm tsx tools/skip-review/download-latest-extension beta
-                  # FIXME: Uncomment after publish release.
-                  # pnpm tsx tools/skip-review/download-latest-extension release
+                  pnpm tsx tools/skip-review/download-latest-extension release
 
                   # Check that beta and release updates contain only safe
                   # changes in rulesets and only in rule_resources files.
                   pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
-                  # FIXME: Uncomment after publish release.
-                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
 
                   # Move zip artifacts to the artifacts directory, because we will
                   # publish zip versions of the extension.
@@ -305,7 +301,7 @@ branch-overrides:
           - script:
               interpreter: SHELL
               scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+                - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
         artifacts: *artifacts
         requirements: *requirements
 
@@ -335,16 +331,13 @@ branch-overrides:
           - test-parser:
               type: junit
               test-results: 'tests-reports/integration-tests-*.xml'
-          - script:
-              interpreter: SHELL
-              scripts:
-                - ./bamboo-specs/scripts/cleanup.sh
+          - script: *cleanup-script
         requirements:
           - adg-docker: 'true'
 
-      # run auto-build each hour after 30 minutes of the hour to collect all
-      # changes made by filter list maintainers during the last hour update.
+      # Run auto-build as specified and collect all changes made by
+      # filter list maintainers.
       triggers:
         - cron:
-            expression: 0 30 * ? * *
-            description: Run auto-build every hour at 30 minutes past the hour.
+            expression: 0 30 */12 ? * *
+            description: Run auto-build every 12 hours at 30 minutes past the hour.

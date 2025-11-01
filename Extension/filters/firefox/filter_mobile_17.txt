@@ -1,9 +1,9 @@
-! Checksum: 46o72AM3aA4hqafOqMtaqg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1758031858-3600.patch
+! Checksum: WLVxaXvauPWHZo/Imzh0lg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1759839333-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.11.84
-! TimeUpdated: 2025-09-16T14:07:23+00:00
+! Version: 2.0.11.90
+! TimeUpdated: 2025-10-07T12:12:04+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=loclid
 $removeparam=line_uid
@@ -222,6 +222,7 @@ $removeparam=dpg_campaign
 $removeparam=dpg_medium
 $removeparam=dpg_content
 $removeparam=admitad_uid
+$removeparam=adj_label
 $removeparam=adj_campaign
 $removeparam=adj_t
 $removeparam=adj_creative
@@ -279,6 +280,13 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+$removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
+||item.rakuten.co.jp^$removeparam=iasid
+||fanicon.net^$removeparam=from
+||lululemon.com.hk^$removeparam=cid
+||lululemon.com.hk^$removeparam=mcid
+||lululemon.com.hk^$removeparam=ismcid
+||steiledema.boxnow.gr^$removeparam=/^lkws_/
 ||casino.ua/short-register/$removeparam
 ||4kdownload.com^$removeparam=source
 ||perplexity.ai^$removeparam=login-source
@@ -1296,6 +1304,7 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||lite.qwant.com/redirect/$removeparam=uri
 ||realestate.yahoo.co.jp^$removeparam=sc_out
 ||glami.cz^$removeparam=/ga[ct]id/
+||open.spotify.com^$removeparam=pi
 ||open.spotify.com^$removeparam=referral
 ||open.spotify.com^$removeparam=si
 ||skt.sh/common/share/bridge?$removeparam=referer
@@ -1361,7 +1370,6 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||jiji.com^$removeparam=m
 ||fashion-press.net^$removeparam=media
 ||douban.com^$removeparam=_i
-||oshiete.goo.ne.jp^$removeparam=from
 ||immobilienscout24.de^$removeparam=referrer
 ||immobilienscout24.de^$removeparam=navigationServiceUrl
 ||immobilienscout24.de^$removeparam=searchId
@@ -2177,6 +2185,7 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||adj.st^$removeparam=adj_t
 @@||passport.jlcpcb.com^$removeparam=from
 @@||yandex.go.link^$removeparam=adj_t
 @@||em.dynamicyield.com^$removeparam=cuid

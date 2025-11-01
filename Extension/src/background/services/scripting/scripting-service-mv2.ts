@@ -25,7 +25,7 @@ import { type ExecuteScriptOptionsCommon } from './types';
 /**
  * ExecuteScriptOptionsCommon with MV2 specific fields.
  */
-type ExecuteScriptOptionsMv2 = ExecuteScriptOptionsCommon & {
+type ExecuteScriptOptions = ExecuteScriptOptionsCommon & {
     /**
      * The time at which the script should be executed.
      */
@@ -47,7 +47,7 @@ type ExecuteScriptOptionsMv2 = ExecuteScriptOptionsCommon & {
  */
 export const executeScript = async (
     tabId: number | undefined,
-    options: ExecuteScriptOptionsMv2,
+    options: ExecuteScriptOptions,
 ): Promise<void> => {
     if (!tabId) {
         logger.debug('[ext.scripting-service-mv2]: tab id is not provided');

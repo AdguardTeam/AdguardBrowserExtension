@@ -141,8 +141,7 @@ async function checkForDuplicatePackages(): Promise<boolean> {
         const [result] = JSON.parse(stdout);
 
         if (!result.dependencies) {
-            console.error('Invalid output from pnpm why command');
-            return false;
+            throw new Error('Invalid output from pnpm why command');
         }
 
         const dependenciesAsArr = Object.entries(result.dependencies)
@@ -157,7 +156,7 @@ async function checkForDuplicatePackages(): Promise<boolean> {
         return hasDuplicates;
     } catch (error) {
         console.error(`Error checking for duplicate packages: ${error}`);
-        return false;
+        return true;
     }
 }
 
@@ -379,7 +378,11 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
                 }
             });
 
-        console.log('✅ All file sizes for Firefox Add-ons Store are ok!');
+        if (found) {
+            console.error('❌ Some file sizes for Firefox Add-ons Store exceed the limit!');
+        } else {
+            console.log('✅ All file sizes for Firefox Add-ons Store are ok!');
+        }
 
         return found;
     } catch (error) {
@@ -416,6 +419,10 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
         try {
             // Get current build stats for this target
             const currentStats = await getCurrentBuildStats(buildEnv, target);
+
+            if (!sizesData[buildEnv] || !sizesData[buildEnv][target]) {
+                throw new Error(`Reference Build size for env ${buildEnv} and target ${target} not found.`);
+            }
 
             // Compare with reference sizes if available
             if (sizesData[buildEnv] && sizesData[buildEnv][target]) {

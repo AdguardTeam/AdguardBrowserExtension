@@ -43,9 +43,9 @@ const Mv3FiltersUpdate = observer(() => {
     const checkUpdatesTitle = translator.getMessage('update_check');
     const updateAvailableBtnTitle = translator.getMessage('update_available_update_btn');
 
-    const renderContent = () => {
-        if (settingsStore.isCheckingExtensionUpdate) {
-            return (
+    if (settingsStore.isExtensionCheckingUpdateOrUpdating) {
+        return (
+            <div className="extension-update">
                 <div className="extension-update__info">
                     <Icon
                         id="#reload"
@@ -60,11 +60,13 @@ const Mv3FiltersUpdate = observer(() => {
                         </div>
                     </div>
                 </div>
-            );
-        }
+            </div>
+        );
+    }
 
-        if (isUpdating) {
-            return (
+    if (isUpdating) {
+        return (
+            <div className="extension-update">
                 <div className="extension-update__info">
                     <Icon
                         id="#loading"
@@ -82,42 +84,45 @@ const Mv3FiltersUpdate = observer(() => {
                         </div>
                     </div>
                 </div>
-            );
-        }
+            </div>
+        );
+    }
 
-        if (settingsStore.isExtensionUpdateAvailable) {
-            return (
-                <>
-                    <div className="extension-update__info">
-                        <Icon
-                            id="#update-available"
-                            className="icon--24 icon--green-default"
-                            aria-hidden="true"
-                        />
-                        <div className="extension-update__text">
-                            <div className="extension-update__title">
-                                {translator.getMessage('update_available_title')}
-                            </div>
-                            <div className="extension-update__desc">
-                                {translator.getMessage('update_available_desc')}
-                            </div>
+    if (settingsStore.isExtensionUpdateAvailable) {
+        return (
+            <div className="extension-update">
+                <div className="extension-update__info">
+                    <Icon
+                        id="#update-available"
+                        className="icon--24 icon--green-default"
+                        aria-hidden="true"
+                    />
+                    <div className="extension-update__text">
+                        <div className="extension-update__title">
+                            {translator.getMessage('update_available_title')}
+                        </div>
+                        <div className="extension-update__desc">
+                            {translator.getMessage('update_available_desc')}
                         </div>
                     </div>
-                    <div className="extension-update__update-btn">
-                        <button
-                            type="button"
-                            onClick={updateClickHandler}
-                            className="button button--link button--link--underlined button--link--green"
-                            title={updateAvailableBtnTitle}
-                        >
-                            {updateAvailableBtnTitle}
-                        </button>
-                    </div>
-                </>
-            );
-        }
+                </div>
+                <div className="extension-update__update-btn">
+                    <button
+                        type="button"
+                        onClick={updateClickHandler}
+                        className="button button--link button--link--underlined button--link--green"
+                        title={updateAvailableBtnTitle}
+                    >
+                        {updateAvailableBtnTitle}
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-        return (
+    // default case - check updates button
+    return (
+        <div className="extension-update">
             <button
                 type="button"
                 onClick={settingsStore.checkUpdatesMV3}
@@ -135,12 +140,6 @@ const Mv3FiltersUpdate = observer(() => {
                     </div>
                 </div>
             </button>
-        );
-    };
-
-    return (
-        <div className="extension-update">
-            {renderContent()}
         </div>
     );
 });

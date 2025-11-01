@@ -21,9 +21,11 @@
 // typescript
 import { type ChangeEvent } from 'react';
 
+import { type Settings, type SettingOption } from '../../background/schema';
+
 type HandlerPayload = {
-    data: unknown;
-    id: string;
+    id: SettingOption;
+    data: Settings[SettingOption];
     event: ChangeEvent | undefined;
 };
 

@@ -20,6 +20,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { parse, type SemVer } from 'semver';
 import { merge } from 'webpack-merge';
 import { type Manifest } from 'webextension-polyfill';
 
@@ -34,10 +35,35 @@ import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-c
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-/* eslint-enable @typescript-eslint/naming-convention */
 
 type ManifestBase = Manifest.ManifestBase;
 type WebExtensionManifest = Manifest.WebExtensionManifest;
+
+/**
+ * Parsed version components from package.json.
+ *
+ * @example
+ * Original: "5.3.0+88.build.20251001150205"
+ * After clearing build metadata: "5.3.0"
+ */
+export type ParsedVersion = {
+    /**
+     * Parsed SemVer object.
+     */
+    parsedVersion: SemVer;
+    /**
+     * Build increment number.
+     */
+    incrementVersion: string;
+    /**
+     * Build tag identifier.
+     */
+    buildMetatag: string;
+    /**
+     * DNR version timestamp in YYYYMMDDHHmmss format.
+     */
+    dnrVersion: string;
+};
 
 /**
  * Retrieves the sha value for the click2load.html redirects resource.
@@ -87,17 +113,91 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
 };
 
 /**
- * Updates manifest object with new values
+ * Parses and validates the package.json version string.
  *
- * @param env
- * @param browser
- * @param targetPart
- * @param addedPart
+ * Extracts and validates all required build metadata components from the version string.
+ * The expected version format is: `major.minor.patch+increment.build.dnrVersion`
+ * (e.g., "5.3.0+88.build.20251001150205").
  *
- * @returns {*&{content_security_policy: string, version: string}}
+ * @returns Parsed version object.
+ *
+ * @throws Error if package version cannot be parsed.
+ */
+const parseAndValidateVersion = (version: string): ParsedVersion => {
+    const parsedVersion = parse(version);
+
+    if (!parsedVersion) {
+        throw new Error(`Cannot parse package version: ${packageJson.version}`);
+    }
+
+    const { build } = parsedVersion;
+
+    const [
+        incrementVersion,
+        buildMetatag,
+        dnrVersion,
+    ] = build;
+
+    if (incrementVersion === undefined) {
+        throw new Error(`Invalid increment version format: ${packageJson.version}`);
+    }
+
+    if (buildMetatag === undefined) {
+        throw new Error(`Invalid build metatag format: ${packageJson.version}`);
+    }
+
+    if (dnrVersion === undefined) {
+        throw new Error(`Invalid dnr version format: ${packageJson.version}`);
+    }
+
+    return {
+        parsedVersion,
+        incrementVersion,
+        buildMetatag,
+        dnrVersion,
+    };
+};
+
+/**
+ * Parses the package.json version and returns the formatted version string
+ * in the format major.minor.patch.increment (e.g., "5.3.0.88").
+ *
+ * This function extracts the increment version from the build metadata
+ * and formats it for use in manifest.json and build.txt files.
+ *
+ * @param version The version string to format.
+ *
+ * @returns The formatted version string.
+ *
+ * @throws Error when package version cannot be parsed or has invalid format.
+ */
+export const getFormattedVersion = (version: string): string => {
+    const { parsedVersion, incrementVersion } = parseAndValidateVersion(version);
+
+    // Clear the build metatag since it's not allowed in manifest version.
+    parsedVersion.build = [];
+
+    return `${parsedVersion.format()}.${incrementVersion}`;
+};
+
+/**
+ * Updates a manifest object with new values and returns the updated manifest.
+ * Also updates the version and name fields based on the package.json version,
+ * since package.json version contains the build metatag, which itself contains
+ * the increment version that should be passed to the manifest version to make
+ * each build unique.
+ *
+ * @param buildEnv The build environment.
+ * @param browser The target browser.
+ * @param targetPart The existing manifest content.
+ * @param addedPart The additional manifest content to merge.
+ *
+ * @returns The updated manifest object.
+ *
+ * @throws Error when package version cannot be parsed or has invalid format.
  */
 export const updateManifest = (
-    env: BuildTargetEnv,
+    buildEnv: BuildTargetEnv,
     browser: Browser,
     targetPart: ManifestBase,
     addedPart: Partial<ManifestBase>,
@@ -105,7 +205,7 @@ export const updateManifest = (
     // Merge the parts, ensuring the merged object has the expected type
     const union = merge(targetPart, addedPart);
 
-    const devPolicy = getEnvPolicy(env, browser);
+    const devPolicy = getEnvPolicy(buildEnv, browser);
 
     // Ensure that version and name are properly set
     const manifestVersion = union.manifest_version || targetPart.manifest_version;
@@ -113,7 +213,10 @@ export const updateManifest = (
 
     // Build the final manifest object
     const result: WebExtensionManifest = {
-        version: packageJson.version,
+        // Passing build increment version to the version in the manifest
+        // to make each build unique and easily identifiable, since we often
+        // update builds for MV3 via skip review process.
+        version: getFormattedVersion(packageJson.version),
         manifest_version: manifestVersion,
         name,
         ...devPolicy,
@@ -126,31 +229,48 @@ export const updateManifest = (
 /**
  * Updates a manifest buffer with new values and returns the updated buffer.
  *
- * @param env The build environment.
+ * @param buildEnv The build environment.
  * @param browser The target browser.
  * @param targetPart The existing manifest content as a buffer.
  * @param addedPart The additional manifest content to merge.
  *
  * @returns A buffer containing the updated manifest.
+ *
+ * @throws Error when package version cannot be parsed or has invalid format.
  */
 export const updateManifestBuffer = (
-    env: BuildTargetEnv,
+    buildEnv: BuildTargetEnv,
     browser: Browser,
     targetPart: Buffer,
     addedPart: Partial<WebExtensionManifest>,
 ): Buffer => {
     const target = JSON.parse(targetPart.toString());
 
-    const result = updateManifest(env, browser, target, addedPart);
+    const result = updateManifest(buildEnv, browser, target, addedPart);
 
     return Buffer.from(JSON.stringify(result, null, 4));
 };
 
+/**
+ * Capitalizes the first letter of a string.
+ *
+ * @param str The string to capitalize.
+ *
+ * @returns The string with the first letter capitalized.
+ */
 const capitalize = (str: string) => {
     return str.charAt(0)
         .toUpperCase() + str.slice(1);
 };
 
+/**
+ * Gets the name suffix for the extension based on build environment and browser.
+ *
+ * @param buildEnv The build environment.
+ * @param browser The target browser.
+ *
+ * @returns The name suffix string.
+ */
 const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
     switch (browser) {
         case Browser.FirefoxStandalone: {
@@ -195,6 +315,15 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
     return '';
 };
 
+/**
+ * Updates the locales message name with environment-specific suffix.
+ *
+ * @param content The content buffer containing locale messages.
+ * @param env The build environment.
+ * @param browser The target browser.
+ *
+ * @returns The updated JSON string with modified name message.
+ */
 export const updateLocalesMSGName = (content: Buffer, env: BuildTargetEnv, browser: Browser) => {
     const suffix = getNameSuffix(env, browser);
 

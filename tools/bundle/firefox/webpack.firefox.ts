@@ -23,7 +23,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import { merge } from 'webpack-merge';
 import { type WebpackPluginInstance } from 'webpack';
 
-import { genMv2CommonConfig } from '../webpack.common-mv2';
+import { genMv2CommonConfig } from '../webpack.common.mv2';
 import { updateManifestBuffer } from '../../helpers';
 import { Browser, BUILD_ENV } from '../../constants';
 import { type BrowserConfig } from '../common-constants';

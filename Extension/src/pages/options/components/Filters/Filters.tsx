@@ -42,7 +42,7 @@ import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnin
 import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
 import { getStaticWarningMessage } from '../Warnings/messages';
-import type { CategoriesGroupData } from '../../../../background/api';
+import type { CategoriesGroupData, CategoriesFilterData } from '../../../../background/api';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
 import { Group } from './Group';
@@ -54,7 +54,8 @@ import { FiltersUpdate } from './FiltersUpdate';
 import { AddCustomModal } from './AddCustomModal';
 import { SEARCH_FILTERS } from './Search/constants';
 import { UserScriptsApiWarningInsideCustomGroup } from './UserScriptsApiWarningForCustomFilters';
-import type { RenderedFilterType } from './types';
+
+import './filters.pcss';
 
 /**
  * Parameters for the filter list render function inside the group.
@@ -63,7 +64,7 @@ type FilterListRenderParams = {
     /**
      * List of filters to render.
      */
-    filtersToRender: RenderedFilterType[];
+    filtersToRender: CategoriesFilterData[];
 
     /**
      * Whether the group is enabled.
@@ -117,14 +118,11 @@ const Filters = observer(() => {
         categories,
         filters,
         filtersToRender,
-    }: {
-        categories: CategoriesGroupData[];
-        filters: RenderedFilterType[];
-        filtersToRender: RenderedFilterType[];
     } = settingsStore;
 
     useEffect(() => {
-        settingsStore.setSelectedGroupId(query.get(QUERY_PARAM_NAMES.GROUP));
+        const parsedGroupId = Number.parseInt(query.get(QUERY_PARAM_NAMES.GROUP) || '', 10);
+        settingsStore.setSelectedGroupId(Number.isNaN(parsedGroupId) ? null : parsedGroupId);
         setGroupDetermined(true);
         settingsStore.setSearchInput('');
         settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
@@ -293,11 +291,11 @@ const Filters = observer(() => {
         );
     };
 
-    const renderGroupsOnSearch = (matchedFilters: RenderedFilterType[]) => {
+    const renderGroupsOnSearch = (matchedFilters: CategoriesFilterData[]) => {
         // collect search data as object where
         // key is group id and value is searched filters
         const searchData = matchedFilters
-            .reduce((acc: { [key: number]: RenderedFilterType[] }, filter) => {
+            .reduce((acc: { [key: number]: CategoriesFilterData[] }, filter) => {
                 const { groupId } = filter;
                 if (typeof acc[groupId] === 'undefined') {
                     acc[groupId] = [filter];
@@ -457,36 +455,27 @@ const Filters = observer(() => {
         const renderBackButton = () => (
             // Order should remain the same to keep the focus order
             // Filter checkbox -> Filter description -> Back button
-            <>
+            <button
+                type="button"
+                role="link"
+                onClick={handleReturnToGroups}
+                aria-label={translator.getMessage('options_filters_back_button')}
+                className="filters__back"
+            >
                 <div className="title__inner">
-                    <button
-                        type="button"
-                        onClick={handleReturnToGroups}
-                        className="title title--back-btn"
-                        // This button must be hidden for keyboard navigation and Screen Readers,
-                        // because we already have a back button below, main reason for this button is to
-                        // provide larger area of click for mouse users.
-                        tabIndex={-1}
-                        aria-hidden="true"
-                    >
+                    <div className="title title--back-btn">
+                        <div className="button setting__back">
+                            <Icon
+                                id="#arrow-left"
+                                className="icon--24"
+                                aria-hidden="true"
+                            />
+                        </div>
                         <span id={titleId}>{selectedGroup.groupName}</span>
-                    </button>
+                    </div>
                     {description && <div className="title__desc title__desc--back">{description}</div>}
                 </div>
-                <button
-                    role="link"
-                    type="button"
-                    aria-label={translator.getMessage('options_filters_back_button')}
-                    className="button setting__back"
-                    onClick={handleReturnToGroups}
-                >
-                    <Icon
-                        id="#arrow-left"
-                        className="icon--24"
-                        aria-hidden="true"
-                    />
-                </button>
-            </>
+            </button>
         );
 
         const renderEmptyFiltersMessage = () => {
