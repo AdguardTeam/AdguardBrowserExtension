@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED } from './constants';
-import { logger } from './logger';
-import { UserAgent } from './user-agent';
+import { USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED } from '../constants';
+import { logger } from '../logger';
+import { UserAgent } from '../user-agent';
 
 /**
  * Checks if User scripts API permission is granted.
@@ -46,24 +45,19 @@ export const isUserScriptsApiSupported = () => {
  */
 export const shouldShowUserScriptsApiWarning = (): boolean => {
     if (isUserScriptsApiSupported()) {
-        logger.debug('[ext.user-scripts-api]: User Scripts API permission is already granted');
-        return false;
-    }
-
-    if (!__IS_MV3__) {
-        logger.debug('[ext.user-scripts-api]: User Scripts API supported only in MV3');
+        logger.debug('[ext.user-scripts-api-mv3]: User Scripts API permission is already granted');
         return false;
     }
 
     const currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.version) : null;
 
     if (!currentChromeVersion) {
-        logger.debug('[ext.user-scripts-api]: User Scripts API supported only in Chromium-based browsers');
+        logger.debug('[ext.user-scripts-api-mv3]: User Scripts API supported only in Chromium-based browsers');
         return false;
     }
 
     if (currentChromeVersion < USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED.DEV_MODE_TOGGLE) {
-        logger.debug(`[ext.user-scripts-api]: User Scripts API is not supported in Chrome v${currentChromeVersion}`);
+        logger.debug(`[ext.user-scripts-api-mv3]: User Scripts API is not supported in Chrome v${currentChromeVersion}`);
         return false;
     }
 

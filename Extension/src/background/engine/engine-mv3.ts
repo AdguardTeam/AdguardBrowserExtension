@@ -49,7 +49,7 @@ import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 import { FiltersStorage } from '../storages/filters';
 import { CommonFilterUtils } from '../../common/common-filter-utils';
-import { isUserScriptsApiSupported } from '../../common/user-scripts-api';
+import { isUserScriptsApiSupported } from '../../common/user-scripts-api/user-scripts-api-mv3';
 
 import { type TsWebExtensionEngine } from './interface';
 

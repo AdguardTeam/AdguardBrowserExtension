@@ -177,6 +177,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'pages': path.resolve(__dirname, `../../Extension/src/background/api/ui/pages/pages-mv${manifestVersion}.ts`),
         'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
         'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),
+        'user-scripts-api': path.resolve(__dirname, `../../Extension/src/common/user-scripts-api/user-scripts-api-mv${manifestVersion}.ts`),
         'popup-layout': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Popup/Popup-mv${manifestVersion}.tsx`),
         'filters-adapter': path.resolve(__dirname, `../../Extension/src/background/storages/filters-adapter/filters-adapter-mv${manifestVersion}.ts`),
         'prefs': path.resolve(__dirname, `../../Extension/src/background/prefs/prefs-mv${manifestVersion}.ts`),

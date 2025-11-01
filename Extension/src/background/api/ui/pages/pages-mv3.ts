@@ -21,7 +21,7 @@ import {
     ForwardFrom,
 } from '../../../../common/forward';
 import { logger } from '../../../../common/logger';
-import { isUserScriptsApiSupported } from '../../../../common/user-scripts-api';
+import { isUserScriptsApiSupported } from '../../../../common/user-scripts-api/user-scripts-api-mv3';
 
 import { PagesApiCommon } from './pages-common';
 
