@@ -42,7 +42,7 @@ import {
 import { type FilterUpdateOptions } from '../filters';
 import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
-import { isUserScriptsApiSupported } from '../../../common/user-scripts-api';
+import { isUserScriptsApiSupported } from '../../../common/user-scripts-api/user-scripts-api-mv3';
 
 import { NetworkSettings } from './settings-mv3';
 
