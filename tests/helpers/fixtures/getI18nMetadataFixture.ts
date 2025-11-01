@@ -1,4 +1,5 @@
 import i18nMetadataMv2 from '../../../Extension/filters/chromium/filters_i18n.json';
+// eslint-disable-next-line no-restricted-imports
 import i18nMetadataMv3 from '../../../Extension/filters/chromium-mv3/filters_i18n.json';
 import { i18nMetadataValidator, type I18nMetadata } from '../../../Extension/src/background/schema';
 
