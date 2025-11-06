@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings applied notification appearing before settings are actually applied [#3278].
 - Preserve logs does not retain all records in the filtering log [#3148].
 - Tracking protection is also disabled in MV3 when protection is paused in extension.
+- Apply $document blocking rule even if specific exception rule is present [#3262].
 - Blocked iframes are not collapsed on Firefox [#3116].
 
 
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
+[#3262]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3262
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 
 
