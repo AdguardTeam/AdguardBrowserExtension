@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /**
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -26,35 +27,34 @@ import {
 import { MessengerCommon } from './messenger-common';
 
 export class Messenger extends MessengerCommon {
-    // eslint-disable-next-line class-methods-use-this
-    async updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
+    updateFiltersMV2 = async (): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> => {
         throw new Error('[ext.Messenger.updateFiltersMV2]: filters update is not supported in MV3');
-    }
+    };
 
     /**
      * @inheritdoc
      */
-    async checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> {
+    checkUpdatesMV3 = async (): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> => {
         return this.sendMessage(MessageType.CheckExtensionUpdateMv3);
-    }
+    };
 
     /**
      * @inheritdoc
      */
-    async updateExtensionMV3(
+    updateExtensionMV3 = async (
         { from }: UpdateExtensionMessageMv3['data'],
-    ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> {
+    ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> => {
         return this.sendMessage(MessageType.UpdateExtensionMv3, { from });
-    }
+    };
 
     /**
      * Sends a message to the background page to get extension status for MV3 popup.
      *
      * @returns Promise that resolves with extension status
      */
-    async getExtensionStatusForPopupMV3(): Promise<GetExtensionStatusForPopupResponse> {
+    getExtensionStatusForPopupMV3 = async (): Promise<GetExtensionStatusForPopupResponse> => {
         return this.sendMessage(MessageType.GetExtensionStatusForPopupMV3);
-    }
+    };
 }
 
 export const messenger = new Messenger();

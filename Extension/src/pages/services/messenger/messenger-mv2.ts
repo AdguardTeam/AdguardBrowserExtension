@@ -24,26 +24,26 @@ export class Messenger extends MessengerCommon {
     /**
      * @inheritdoc
      */
-    async updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> {
+    updateFiltersMV2 = async (): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> => {
         return this.sendMessage(MessageType.CheckFiltersUpdate);
-    }
+    };
 
     /**
      * @inheritdoc
      */
-    async checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> {
+    checkUpdatesMV3 = async (): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> => {
         throw new Error('[ext.Messenger.checkUpdatesMV3]: extension update is not supported in MV2');
-    }
+    };
 
     /**
      * @inheritdoc
      */
-    async updateExtensionMV3(
+    updateExtensionMV3 = async (
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         { from }: any,
-    ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> {
+    ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> => {
         throw new Error('[ext.Messenger.updateExtensionMV3]: extension update is not supported in MV2');
-    }
+    };
 }
 
 export const messenger = new Messenger();
