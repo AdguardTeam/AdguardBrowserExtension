@@ -269,15 +269,13 @@ branch-overrides:
                   # Download latest beta and release versions of the extension
                   # from the Chrome Web Store to check that new versions
                   # are eligible for "skip review" feature.
-                  # FIXME: Paused auto-builds until v5.2.112.96 on the review
-                  # pnpm tsx tools/skip-review/download-latest-extension beta
-                  # pnpm tsx tools/skip-review/download-latest-extension release
+                  pnpm tsx tools/skip-review/download-latest-extension beta
+                  pnpm tsx tools/skip-review/download-latest-extension release
 
                   # Check that beta and release updates contain only safe
                   # changes in rulesets and only in rule_resources files.
-                  # FIXME: Paused auto-builds until v5.2.112.96 on the review
-                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
-                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
+                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
 
                   # Move zip artifacts to the artifacts directory, because we will
                   # publish zip versions of the extension.
@@ -289,17 +287,16 @@ branch-overrides:
               file: build/release/build.txt
               scope: RESULT
               namespace: inject
-          # FIXME: Paused auto-builds until v5.2.112.96 on the review
-          # - any-task:
-          #     plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-          #     configuration:
-          #       selectedRepository: defaultRepository
-          #       commitMessage: 'skipci: Filters update & increment patch version'
-          # - any-task:
-          #     plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
-          #     configuration:
-          #       selectedRepository: defaultRepository
-          #       tagName: autobuild-v${bamboo.inject.version}
+          - any-task:
+              plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+              configuration:
+                selectedRepository: defaultRepository
+                commitMessage: 'skipci: Filters update & increment patch version'
+          - any-task:
+              plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
+              configuration:
+                selectedRepository: defaultRepository
+                tagName: autobuild-v${bamboo.inject.version}
         final-tasks:
           - script:
               interpreter: SHELL
@@ -340,8 +337,7 @@ branch-overrides:
 
       # Run auto-build as specified and collect all changes made by
       # filter list maintainers.
-      triggers: []
-        # FIXME: Paused auto-builds until v5.2.112.96 on the review
-        # - cron:
-        #     expression: 0 30 */12 ? * *
-        #     description: Run auto-build every 12 hours at 30 minutes past the hour.
+      triggers:
+        - cron:
+            expression: 0 30 */12 ? * *
+            description: Run auto-build every 12 hours at 30 minutes past the hour.
