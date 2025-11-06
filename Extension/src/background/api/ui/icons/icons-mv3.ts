@@ -19,7 +19,9 @@
 import { RulesLimitsService } from 'rules-limits-service';
 
 import { ExtensionUpdateService } from '../../../services/extension-update/extension-update-service-mv3';
+import { extensionUpdateActor } from '../../../services/extension-update/extension-update-machine-mv3';
 import { type IconData } from '../../../storages';
+import { ExtensionUpdateFSMEvent } from '../../../../common/constants';
 
 import { IconsApiCommon } from './icons-common';
 import { defaultIconVariants } from './defaultIconVariants';
@@ -67,3 +69,33 @@ class IconsApi extends IconsApiCommon {
 }
 
 export const iconsApi = new IconsApi();
+
+// Debug helpers: expose ways to test different icon states from console
+// Use self for service worker (MV3) environment
+// eslint-disable-next-line
+(self as any).testUpdateAvailable = async (isAvailable: boolean = true) => {
+    if (isAvailable) {
+        // Transition to Available state
+        extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.UpdateAvailable });
+    } else {
+        // Transition to Idle state
+        extensionUpdateActor.send({ type: ExtensionUpdateFSMEvent.NoUpdateAvailable });
+    }
+    await iconsApi.update();
+    // eslint-disable-next-line
+    console.log(`Update available state set to: ${isAvailable}`);
+    // eslint-disable-next-line
+    console.log(`Current state: ${extensionUpdateActor.getSnapshot().value}`);
+};
+
+// eslint-disable-next-line
+(self as any).testRulesLimits = async (exceeded: boolean = true) => {
+    // Mock the areFilterLimitsExceeded method
+    // eslint-disable-next-line
+    RulesLimitsService.areFilterLimitsExceeded = async () => exceeded;
+    await iconsApi.update();
+    // eslint-disable-next-line
+    console.log(`Rules limits exceeded state set to: ${exceeded}`);
+    // eslint-disable-next-line
+    console.log('Note: This is mocked. Call testRulesLimits(false) to restore or reload extension.');
+};
