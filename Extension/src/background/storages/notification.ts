@@ -34,6 +34,11 @@ export type IconData = {
      * 38x38 icon size.
      */
     '38': string;
+
+    /**
+     * Message key for the tooltip.
+     */
+    tooltipMessageKey?: string;
 };
 
 /**

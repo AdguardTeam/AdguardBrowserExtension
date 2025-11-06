@@ -30,6 +30,7 @@ import { logger } from '../../../../common/logger';
 import { FramesApi, type FrameData } from '../frames';
 import { promoNotificationApi } from '../promo-notification';
 import { browserAction } from '../browser-action';
+import { translator } from '../../../../common/translators/translator';
 
 /**
  * The Icons API is responsible for managing the extension's action state.
@@ -135,6 +136,9 @@ export abstract class IconsApiCommon {
         try {
             await IconsApiCommon.setActionIcon(icon, tabId);
 
+            // Update tooltip to match the icon for this tab
+            await IconsApiCommon.updateTooltip(icon);
+
             if (badgeText.length !== 0) {
                 await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
                 await browserAction.setBadgeText({ tabId, text: badgeText });
@@ -174,7 +178,38 @@ export abstract class IconsApiCommon {
      * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
      */
     private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
-        await browserAction.setIcon({ imageData: await iconsCache.getIconImageData(icon), tabId });
+        // Extract only the icon size properties (19, 38) for the cache
+        const iconPaths = {
+            '19': icon['19'],
+            '38': icon['38'],
+        };
+        await browserAction.setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId });
+    }
+
+    /**
+     * Updates the extension tooltip based on the current icon.
+     *
+     * @param icon Current icon variant.
+     */
+    private static async updateTooltip(icon: IconData): Promise<void> {
+        try {
+            let title: string;
+
+            if (icon.tooltipMessageKey) {
+                // Use the message key from the icon to get the localized message
+                const appName = translator.getMessage('name');
+                const message = translator.getMessage(icon.tooltipMessageKey);
+                title = `${appName}\n${message}`;
+            } else {
+                // Fallback to just the app name
+                title = translator.getMessage('name');
+            }
+
+            await browserAction.setTitle({ title });
+            logger.debug(`[ext.IconsApiCommon.updateTooltip]: Tooltip set to: "${title}"`);
+        } catch (e) {
+            logger.error('[ext.IconsApiCommon.updateTooltip]: Failed to set tooltip:', e);
+        }
     }
 
     /**
