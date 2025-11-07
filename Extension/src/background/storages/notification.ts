@@ -25,20 +25,19 @@ import { defaultIconVariants } from '../api/ui/icons';
  * Icon data for different sizes.
  */
 export type IconData = {
-    /**
-     * 19x19 icon size.
-     */
-    '19': string;
 
     /**
-     * 38x38 icon size.
+     * Icon paths for different sizes.
      */
-    '38': string;
+    iconPaths: {
+        '19': string;
+        '38': string;
+    };
 
     /**
-     * Message key for the tooltip.
+     * Tooltip text to display.
      */
-    tooltipMessageKey?: string;
+    tooltip?: string;
 };
 
 /**
@@ -283,12 +282,16 @@ const halloween25Notification: PromoNotification = {
     bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween25.svg'),
     icons: {
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/halloween25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween25-on-38.png'),
+            iconPaths: {
+                '19': browser.runtime.getURL('assets/icons/halloween25-on-19.png'),
+                '38': browser.runtime.getURL('assets/icons/halloween25-on-38.png'),
+            },
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/halloween25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween25-off-38.png'),
+            iconPaths: {
+                '19': browser.runtime.getURL('assets/icons/halloween25-off-19.png'),
+                '38': browser.runtime.getURL('assets/icons/halloween25-off-38.png'),
+            },
         },
         warning: defaultIconVariants.warning,
         updateAvailable: defaultIconVariants.updateAvailable,

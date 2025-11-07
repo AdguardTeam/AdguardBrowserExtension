@@ -136,9 +136,6 @@ export abstract class IconsApiCommon {
         try {
             await IconsApiCommon.setActionIcon(icon, tabId);
 
-            // Update tooltip to match the icon for this tab
-            await IconsApiCommon.updateTooltip(icon);
-
             if (badgeText.length !== 0) {
                 await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
                 await browserAction.setBadgeText({ tabId, text: badgeText });
@@ -172,43 +169,28 @@ export abstract class IconsApiCommon {
     }
 
     /**
-     * Sets the icon for the extension action.
+     * Sets the icon and tooltip for the extension action.
      *
-     * @param icon Icon to set.
-     * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
+     * @param icon Icon data object.
+     * @param icon.iconPaths Icons to set.
+     * @param icon.tooltip Tooltip text.
+     * @param tabId Tab's id, if not specified, the icon and tooltip will be set for all tabs.
      */
-    private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
-        // Extract only the icon size properties (19, 38) for the cache
-        const iconPaths = {
-            '19': icon['19'],
-            '38': icon['38'],
-        };
-        await browserAction.setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId });
-    }
-
-    /**
-     * Updates the extension tooltip based on the current icon.
-     *
-     * @param icon Current icon variant.
-     */
-    private static async updateTooltip(icon: IconData): Promise<void> {
+    private static async setActionIcon({ iconPaths, tooltip }: IconData, tabId?: number): Promise<void> {
         try {
-            let title: string;
+            const appName = translator.getMessage('name');
+            const title = tooltip
+                ? `${appName}\n${tooltip}`
+                : appName;
 
-            if (icon.tooltipMessageKey) {
-                // Use the message key from the icon to get the localized message
-                const appName = translator.getMessage('name');
-                const message = translator.getMessage(icon.tooltipMessageKey);
-                title = `${appName}\n${message}`;
-            } else {
-                // Fallback to just the app name
-                title = translator.getMessage('name');
-            }
+            await Promise.all([
+                browserAction.setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId }),
+                browserAction.setTitle({ title, tabId }),
+            ]);
 
-            await browserAction.setTitle({ title });
-            logger.debug(`[ext.IconsApiCommon.updateTooltip]: Tooltip set to: "${title}"`);
+            logger.debug(`[ext.IconsApiCommon.setActionIcon]: Icon and tooltip set for tab ${tabId ?? 'all'}`);
         } catch (e) {
-            logger.error('[ext.IconsApiCommon.updateTooltip]: Failed to set tooltip:', e);
+            logger.info('[ext.IconsApiCommon.setActionIcon]: Failed to set icon or tooltip:', e);
         }
     }
 
