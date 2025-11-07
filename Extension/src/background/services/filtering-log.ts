@@ -570,6 +570,9 @@ export class FilteringLogService {
     /**
      * Records the blocked csp report.
      *
+     * @note In MV3 version, to ensure that a CSP report was actually blocked,
+     * you need to verify that the request has a declarative rule applied. More info: AG-24612
+     *
      * @param event Event with type {@link CspReportBlocked}.
      * @param event.data Destructed data from {@link CspReportBlocked}:
      * tab id, event id and cspReportBlocked - last one is a boolean flag.
