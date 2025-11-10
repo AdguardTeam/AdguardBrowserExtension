@@ -367,9 +367,10 @@ pnpm crx keygen ./private/AdguardBrowserExtension
 
     ```shell
     docker run --rm -it \
-        -v $(pwd):/workspace \
+        -v "$(pwd)":/workspace \
         -w /workspace \
-        adguard/extension-builder:22.17--0.2.1--0
+        adguard/extension-builder:22.17--0.2.1--0 \
+        /bin/bash
     ```
 
 1. Inside the docker container, install the dependencies:
@@ -397,7 +398,7 @@ If you need to build the **RELEASE** version:
 1. Run:
 
     ```shell
-    pnpm release firefox
+    pnpm release firefox-amo
     ```
 
 1. Navigate to the build directory:
@@ -406,7 +407,7 @@ If you need to build the **RELEASE** version:
     cd ./build/release
     ```
 
-1. Compare the generated `firefox.zip` file with the uploaded one.
+1. Compare the generated `firefox-amo.zip` file with the uploaded one.
 
 #### <a name="dev-bundle-size"></a> Analyzing bundle size
 
