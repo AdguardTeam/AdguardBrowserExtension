@@ -15,24 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { logger } from '../../common/logger';
+import { logger } from '../../../common/logger';
 import {
     MessageType,
     type SaveAllowlistDomainsMessage,
     type AddAllowlistDomainForTabIdMessage,
     type AddAllowlistDomainForUrlMessage,
     type RemoveAllowlistDomainMessage,
-} from '../../common/messages';
-import { messageHandler } from '../message-handler';
-import { engine } from '../engine';
-import { SettingOption } from '../schema';
-import { AllowlistApi, TabsApi } from '../api';
+} from '../../../common/messages';
+import { messageHandler } from '../../message-handler';
+import { engine } from '../../engine';
+import { SettingOption } from '../../schema';
+import { AllowlistApi, TabsApi } from '../../api';
 import {
     ContextMenuAction,
     contextMenuEvents,
     settingsEvents,
-} from '../events';
-import { Prefs } from '../prefs';
+} from '../../events';
+import { Prefs } from '../../prefs';
 
 export type GetAllowlistDomainsResponse = {
     content: string;
@@ -40,35 +40,35 @@ export type GetAllowlistDomainsResponse = {
 };
 
 /**
- * Service for processing events with a allowlist.
+ * Base service for processing events with a allowlist.
  */
-export class AllowlistService {
+export abstract class AllowlistServiceCommon {
     /**
      * Initialize handlers.
      */
     public static init(): void {
-        messageHandler.addListener(MessageType.GetAllowlistDomains, AllowlistService.onGetAllowlistDomains);
-        messageHandler.addListener(MessageType.SaveAllowlistDomains, AllowlistService.handleDomainsSave);
+        messageHandler.addListener(MessageType.GetAllowlistDomains, this.onGetAllowlistDomains);
+        messageHandler.addListener(MessageType.SaveAllowlistDomains, this.handleDomainsSave);
         messageHandler.addListener(
             MessageType.AddAllowlistDomainForTabId,
-            AllowlistService.onAddAllowlistDomainForTabId,
+            this.onAddAllowlistDomainForTabId,
         );
         messageHandler.addListener(
             MessageType.AddAllowlistDomainForUrl,
-            AllowlistService.onAddAllowlistDomainForUrl,
+            this.onAddAllowlistDomainForUrl,
         );
-        messageHandler.addListener(MessageType.RemoveAllowlistDomain, AllowlistService.onRemoveAllowlistDomain);
+        messageHandler.addListener(MessageType.RemoveAllowlistDomain, this.onRemoveAllowlistDomain);
 
-        settingsEvents.addListener(SettingOption.AllowlistEnabled, AllowlistService.updateEngine);
-        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, AllowlistService.updateEngine);
+        settingsEvents.addListener(SettingOption.AllowlistEnabled, this.updateEngine.bind(this));
+        settingsEvents.addListener(SettingOption.DefaultAllowlistMode, this.updateEngine.bind(this));
 
         contextMenuEvents.addListener(
             ContextMenuAction.SiteFilteringOn,
-            AllowlistService.enableSiteFilteringFromContextMenu,
+            this.enableSiteFilteringFromContextMenu,
         );
         contextMenuEvents.addListener(
             ContextMenuAction.SiteFilteringOff,
-            AllowlistService.disableSiteFilteringFromContextMenu,
+            this.disableSiteFilteringFromContextMenu,
         );
     }
 
@@ -151,7 +151,7 @@ export class AllowlistService {
         if (activeTab?.id) {
             await AllowlistApi.enableTabFiltering(activeTab.id, true);
         } else {
-            logger.warn('[ext.AllowlistService.enableSiteFilteringFromContextMenu]: cannot open site report page for active tab, active tab is undefined');
+            logger.warn('[ext.AllowlistServiceCommon.enableSiteFilteringFromContextMenu]: cannot open site report page for active tab, active tab is undefined');
         }
     }
 
@@ -164,7 +164,7 @@ export class AllowlistService {
         if (activeTab?.id) {
             await AllowlistApi.disableTabFilteringForTabId(activeTab.id);
         } else {
-            logger.warn('[ext.AllowlistService.disableSiteFilteringFromContextMenu]: cannot open site report page for active tab, active tab is undefined');
+            logger.warn('[ext.AllowlistServiceCommon.disableSiteFilteringFromContextMenu]: cannot open site report page for active tab, active tab is undefined');
         }
     }
 
@@ -176,12 +176,10 @@ export class AllowlistService {
      * is a heavyweight call.
      * For MV3 we should wait for the engine to be ready and then check for
      * possible exceeding the limits.
+     *
+     * @throws Error if method not implemented.
      */
-    private static async updateEngine(): Promise<void> {
-        if (__IS_MV3__) {
-            await engine.update();
-        } else {
-            engine.debounceUpdate();
-        }
+    protected static updateEngine(): Promise<void> {
+        throw new Error('updateEngine() must be implemented by subclass');
     }
 }
