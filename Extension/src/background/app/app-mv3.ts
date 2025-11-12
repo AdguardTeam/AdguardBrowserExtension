@@ -246,7 +246,7 @@ export class App {
          */
         eventService.init();
 
-        ExtensionUpdateService.init();
+        await ExtensionUpdateService.init();
 
         /**
          * Called after eventService init, otherwise it won't handle messages.

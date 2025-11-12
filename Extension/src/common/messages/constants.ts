@@ -45,7 +45,7 @@ import { type FilterMetadata } from '../../background/api/filters/main';
 import { type GetAllowlistDomainsResponse } from '../../background/services/allowlist';
 import { type GetUserRulesEditorDataResponse, type GetUserRulesResponse } from '../../background/services/userrules';
 import { type GetCustomFilterInfoResult } from '../../background/api/filters/custom';
-import { type ManualExtensionUpdateData } from '../../background/services/extension-update/types';
+import { type ManualUpdateMetadata } from '../../background/services/extension-update/types';
 
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 
@@ -247,7 +247,7 @@ export type CheckExtensionUpdateMessageMv3 = {
 export type UpdateExtensionMessageMv3 = {
     type: MessageType.UpdateExtensionMv3;
     data: {
-        from: ManualExtensionUpdateData['pageToOpenAfterReload'];
+        from: ManualUpdateMetadata['pageToOpenAfterReload'];
     };
 };
 
