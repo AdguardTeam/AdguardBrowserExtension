@@ -226,7 +226,8 @@ class IconsApi {
                 : this.promoIcons.enabled;
         }
 
-        if (__IS_MV3__ && ExtensionUpdateService.isUpdateAvailable) {
+        // Check if update icon should be shown based on delay period
+        if (__IS_MV3__ && ExtensionUpdateService.shouldShowUpdateIcon()) {
             return defaultIconVariants.updateAvailable;
         }
 

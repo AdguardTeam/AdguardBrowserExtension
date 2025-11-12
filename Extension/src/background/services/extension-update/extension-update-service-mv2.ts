@@ -18,7 +18,7 @@
 
 import { NotImplementedError } from '../../errors/not-implemented-error';
 
-import { type ManualExtensionUpdateData } from './types';
+import { type ManualUpdateMetadata } from './types';
 
 /**
  * This service is a empty dummy to correct work of MV2 build without
@@ -74,7 +74,16 @@ export class ExtensionUpdateService {
      *
      * @throws Not implemented error.
      */
-    public static async getManualExtensionUpdateData(): Promise<ManualExtensionUpdateData | null> {
+    public static async getManualExtensionUpdateData(): Promise<ManualUpdateMetadata | null> {
+        throw new NotImplementedError();
+    }
+
+    /**
+     * Just a empty dummy method for MV2.
+     *
+     * @throws Not implemented error.
+     */
+    public static shouldShowUpdateIcon(): boolean {
         throw new NotImplementedError();
     }
 }
