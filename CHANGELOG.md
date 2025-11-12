@@ -54,9 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - The extension is failed to update via the popup [#3317].
-[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
 
 [5.2.112.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B1.build.20251009120050
+[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
 
 ## [5.2.112.0] - 2025-10-13
 
