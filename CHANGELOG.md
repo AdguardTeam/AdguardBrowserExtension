@@ -30,9 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apply $document blocking rule even if specific exception rule is present [#3262].
 - Blocked iframes are not collapsed on Firefox [#3116].
 
-
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
+[#3116]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3116
 [#3136]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136
 [#3148]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3148
 [#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
@@ -40,8 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 [#3262]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3262
-[#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
-
 
 ## [v5.2.112.84] - 2025-10-25
 
