@@ -33,19 +33,21 @@ import { ManualUpdateHandler } from './manual-update-handler';
  * ## Update flow:
  *
  * ### Automatic update (Chrome native):
- * 1. Chrome detects update in Web Store and downloads it in background.
- * 2. `chrome.runtime.onUpdateAvailable` event fires.
- * 3. State machine transitions to `Available` state.
- * 4. Extension waits for user action or reloads itself automatically.
- * 5. After reload, service checks storage and shows success/failure notification.
+ * 1. Chrome detects update and downloads it in background.
+ * 2. `chrome.runtime.onUpdateAvailable` event fires → state becomes `Available`.
+ * 3. Extension reloads automatically after `IDLE_THRESHOLD_MS` of inactivity,
+ *    or shows update icon after `ICON_DELAY_MS` and waits for user action.
+ * 4. After reload, shows success/failure notification.
+ *
+ * **Note**: Custom filters are NOT updated in automatic flow, only if user
+ * clicks "Update" button.
  *
  * ### Manual update (user-initiated):
- * 1. User clicks "Check for updates" in popup/options.
- * 2. Service checks latest version in Chrome Web Store via HEAD request.
- * 3. If newer version exists, calls `chrome.runtime.requestUpdateCheck()`.
- * 4. Chrome downloads update → `onUpdateAvailable` fires → state becomes `Available`.
- * 5. Extension waits for user action.
- * 6. After reload, service checks storage and shows success/failure notification.
+ * 1. User clicks "Check for updates" → checks CWS via HEAD request.
+ * 2. If update exists, calls `chrome.runtime.requestUpdateCheck()`.
+ * 3. Chrome downloads update → `onUpdateAvailable` fires → state becomes `Available`.
+ * 4. User clicks "Update" button → custom filters are updated → extension reloads.
+ * 5. After reload, shows success/failure notification.
  *
  * ## State machine states:
  * - `Idle` - default state, no update activity.

@@ -7,10 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.2 patch 3
 
+### Added
+
+- Add ability to update custom filters in MV3 [#3016].
+
 ### Changed
 
 - Extension will apply auto-update in MV3 if update is available and browser
   became idle for a while.
+
+[#3016]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3016
 
 ## [v5.2.112.84] - 2025-10-25
 
