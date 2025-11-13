@@ -24,9 +24,10 @@ import { messageHandler } from '../message-handler';
 import { type TelemetryScreenName } from './enums';
 
 /**
- * TODO: refactor Note. It was rule for each property
- * NOTE: This is not defined in state storage because
- * it's not needed to persist if extension is reloaded.
+ * Tracks page navigation and screen views for telemetry purposes.
+ *
+ * Maintains current and previous screen names to provide navigation context
+ * in telemetry events.
  */
 export class TelemetryPageTracker {
     /**
