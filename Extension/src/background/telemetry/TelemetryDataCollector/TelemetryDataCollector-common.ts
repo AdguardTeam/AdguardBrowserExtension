@@ -7,7 +7,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * AdGuard Browser Extegit diff master > diff.txtnsion is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -48,19 +48,10 @@ export class TelemetryDataCollectorCommon {
      */
     private static readonly APP_TYPE = 'ADGUARD_EXTENSION';
 
-    /**
-     * Synthetic ID for telemetry events.
-     */
     private static syntheticId: string | undefined;
 
-    /**
-     * User agent.
-     */
     private static userAgent: TelemetryUserAgent | undefined;
 
-    /**
-     * Props.
-     */
     private static props: TelemetryProps | undefined;
 
     /**
@@ -84,12 +75,12 @@ export class TelemetryDataCollectorCommon {
     }
 
     /**
-     * Gets user agent information (OS name, platform, version).
+     * Collects OS information from browser runtime.
      *
      * TODO: Maybe add information about browser? We can use "name" or "device" field for this,
      * because version field is double.
      *
-     * @returns User agent data.
+     * @returns User agent data with OS name, platform architecture, and version.
      */
     private static async getUserAgent(): Promise<TelemetryUserAgent> {
         const platformInfo = await browser.runtime.getPlatformInfo();
@@ -107,9 +98,9 @@ export class TelemetryDataCollectorCommon {
     }
 
     /**
-     * Gets telemetry props (locales, theme, retention cohort, update interval).
+     * Collects application properties for telemetry.
      *
-     * @returns Telemetry props.
+     * @returns Props including locales, theme, retention cohort, and update interval.
      */
     private static async getProps(): Promise<TelemetryProps> {
         const appLocale = browser.i18n.getUILanguage();

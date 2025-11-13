@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { logger } from '../../common/logger';
+
 import { type TelemetryApiEventData } from './types';
 
-// TODO: Should I move this file to background api or this is Ok?
 /**
+ * TODO: Should I move this file to background api or this is Ok?
  * API client for sending telemetry events to the telemetry service.
  */
 export class TelemetryApi {
@@ -43,7 +45,16 @@ export class TelemetryApi {
             body: JSON.stringify(data),
         };
 
-        await fetch(url, config);
+        try {
+            const response = await fetch(url, config);
+
+            if (!response.ok) {
+                // TODO: maybe move to debug?
+                logger.error(`[ext.TelemetryApi.sendEvent]: Failed to send event: ${response.status}`);
+            }
+        } catch (error) {
+            logger.error(`[ext.TelemetryApi.sendEvent]: Failed to send event: ${error}`);
+        }
     }
 
     /**

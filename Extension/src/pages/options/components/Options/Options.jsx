@@ -121,8 +121,8 @@ const Options = observer(() => {
         window.addEventListener('beforeunload', onUnload);
 
         return () => {
-            onUnload();
             window.removeEventListener('beforeunload', onUnload);
+            onUnload();
         };
     }, [telemetryStore]);
 

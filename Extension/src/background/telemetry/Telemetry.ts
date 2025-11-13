@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { debounce } from 'lodash-es';
+
 import { TelemetryDataCollector } from 'telemetry-data-collector';
 
 import { SettingOption } from '../schema/settings/enum';
@@ -142,14 +143,18 @@ export class Telemetry {
             return;
         }
 
-        const baseData = await TelemetryDataCollector.getBaseData();
+        try {
+            const baseData = await TelemetryDataCollector.getBaseData();
 
-        const apiData: TelemetryApiEventData = {
-            ...baseData,
-            ...event,
-        };
+            const apiData: TelemetryApiEventData = {
+                ...baseData,
+                ...event,
+            };
 
-        await TelemetryApi.sendEvent(apiData);
+            await TelemetryApi.sendEvent(apiData);
+        } catch (e) {
+            logger.error(`[ext.Telemetry.sendEvent]: Failed to send event: ${e}`);
+        }
     }
 
     /**
