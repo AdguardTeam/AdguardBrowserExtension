@@ -1,9 +1,9 @@
-! Checksum: tA1c5yPe1wE8t/PY0vRQyQ
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1759939929-3600.patch
+! Checksum: NMuXNPWV56VX+Oo9UtU3hw
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1760530517-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.74
-! TimeUpdated: 2025-10-08T16:08:27+00:00
+! Version: 2.0.3.76
+! TimeUpdated: 2025-10-15T12:11:48+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -174,6 +174,7 @@ ebay.*#@#.srp-river-answer[class*="CAROUSEL"]:not([class*="NAVIGATION"])
 aliexpress.com#@#.search-item-card-wrapper-list:has( > div:only-child > div:only-child > a + div[class*="multi"])
 [$path=/jobs]linkedin.com#@##ember33
 [$path=/jobs]linkedin.com#@#.discovery-templates-entity-item:has(> div[data-job-id="search"] > div > .job-card-list__footer-wrapper > .job-card-container__footer-item.align-items-center:first-child)
+startpage.com#@##main > div[style^="margin-bottom:"] > div:has(> div[style^="margin-bottom:"] > svg)
 startpage.com#@?##main > div[class^="css-"]:has(> div[class^="css-"] > p[class^="css-"]:contains(/Annoncer|Anzeigen|Ads|Anuncios|Publicités|Advertenties|Annonser|Reklamy|Anúncios/))
 startpage.com#@?#.main-results-container > div.shopping-header > div[class^="css-"] > div[class^="css-"] > div.information-container + div[class^="css-"]:has(> span:contains(/Sponsoreret|Gesponsert|Sponsored|Patrocinad|Sponsorisé|Gesponsord|Sponset|Sponsorowane|Sponsrad/))
 metager.org#@$?##results > div.result:has(> div.result-header > div.result-subheadline > a.result-link > span.advertisement-mark) { remove: true; }
