@@ -99,9 +99,32 @@ const OptionsLayout = observer(() => {
 });
 
 const Options = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
 
     useAppearanceTheme(settingsStore.appearanceTheme);
+
+    useEffect(() => {
+        let pageId = null;
+
+        (async () => {
+            pageId = await messenger.addTelemetryOpenedPage();
+            telemetryStore.setPageId(pageId);
+        })();
+
+        const onUnload = async () => {
+            if (pageId) {
+                telemetryStore.setPageId(null);
+                await messenger.removeTelemetryOpenedPage(pageId);
+            }
+        };
+
+        window.addEventListener('beforeunload', onUnload);
+
+        return () => {
+            onUnload();
+            window.removeEventListener('beforeunload', onUnload);
+        };
+    }, [telemetryStore]);
 
     useEffect(() => {
         let removeListenerCallback = () => { };

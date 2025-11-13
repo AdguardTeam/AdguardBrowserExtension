@@ -19,6 +19,8 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SETTINGS_TYPES } from '../Settings/Setting';
@@ -37,7 +39,10 @@ export const Miscellaneous = observer(() => {
     const {
         settingsStore,
         uiStore,
+        telemetryStore,
     } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.AdditionalSettings);
 
     const userRulesEditorStoreContext = useContext(userRulesEditorStore);
 

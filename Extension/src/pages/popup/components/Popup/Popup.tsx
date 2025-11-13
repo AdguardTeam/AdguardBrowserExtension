@@ -32,7 +32,11 @@ import { Notifications } from '../Notifications';
 import { PromoNotification } from '../PromoNotification';
 import { SplashScreen } from '../SplashScreen';
 import { popupStore } from '../../stores/PopupStore';
-import { messenger } from '../../../services/messenger';
+import {
+    messenger,
+    Messenger,
+    Page,
+} from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import {
@@ -43,6 +47,8 @@ import {
 } from '../../../../common/messages';
 import { logger } from '../../../../common/logger';
 import { useObservePopupHeight } from '../../hooks/useObservePopupHeight';
+import { TelemetryScreenName } from '../../../../background/telemetry';
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 
 import '../../styles/main.pcss';
 import './popup.pcss';
@@ -56,9 +62,11 @@ export const Popup = observer(() => {
         getPopupData,
         updateBlockedStats,
         isAndroidBrowser,
+        telemetryStore,
     } = useContext(popupStore);
 
     useAppearanceTheme(appearanceTheme);
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.MainPage);
 
     // retrieve init data
     useEffect(() => {
@@ -119,6 +127,21 @@ export const Popup = observer(() => {
         handleResizeCleanUp,
         handleResizeCleanUp,
     );
+
+    // Set up telemetry page ID from long-lived connection
+    useEffect(() => {
+        const { portId } = Messenger.createLongLivedConnection(
+            Page.Popup,
+            [],
+            () => {},
+        );
+
+        telemetryStore.setPageId(portId);
+
+        return () => {
+            telemetryStore.setPageId(null);
+        };
+    }, [telemetryStore]);
 
     // subscribe to stats change
     useEffect(() => {

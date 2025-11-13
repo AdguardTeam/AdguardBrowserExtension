@@ -59,6 +59,11 @@ export const AUTO_UPDATE_STATE_KEY_MV3 = 'auto-update-state-mv3';
 export const AUTO_UPDATE_CONFIG_KEY_MV3 = 'auto-update-config-mv3';
 
 /**
+ * Storage key for telemetry synthetic ID.
+ */
+export const TELEMETRY_SYNTHETIC_ID_KEY = 'telemetry-synthetic-id';
+
+/**
  * Filter ids used in the code on the background page and filtering log page.
  */
 export enum AntiBannerFiltersId {

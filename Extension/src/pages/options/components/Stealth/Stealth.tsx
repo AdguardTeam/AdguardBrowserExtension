@@ -22,6 +22,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
@@ -42,7 +44,9 @@ const BlockKnownTrackers = 'blockKnownTrackers';
 const STRIP_TRACKING_PARAMETERS = 'stripTrackingParameters';
 
 const Stealth = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.TrackingProtectionScreen);
     const { settings, blockKnownTrackers, stripTrackingParameters }: any = settingsStore;
 
     if (!settings) {

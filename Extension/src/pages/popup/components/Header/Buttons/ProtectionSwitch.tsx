@@ -22,6 +22,7 @@ import { observer } from 'mobx-react';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { popupStore } from '../../../stores/PopupStore';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/telemetry';
 
 /**
  * Pause/Resume button component.
@@ -29,15 +30,24 @@ import { popupStore } from '../../../stores/PopupStore';
 export const ProtectionSwitch = observer(() => {
     const store = useContext(popupStore);
 
-    const { applicationFilteringPaused, pauseApplicationFiltering, resumeApplicationFiltering } = store;
+    const {
+        applicationFilteringPaused, pauseApplicationFiltering, resumeApplicationFiltering, telemetryStore,
+    } = store;
 
-    let iconId = '#pause';
-    let buttonHandler = pauseApplicationFiltering;
+    const onClick = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.PauseClick,
+            TelemetryScreenName.MainPage,
+        );
 
-    if (applicationFilteringPaused) {
-        iconId = '#start';
-        buttonHandler = resumeApplicationFiltering;
-    }
+        if (applicationFilteringPaused) {
+            await resumeApplicationFiltering();
+        } else {
+            await pauseApplicationFiltering();
+        }
+    };
+
+    const iconId = applicationFilteringPaused ? '#start' : '#pause';
 
     return (
         <button
@@ -46,7 +56,7 @@ export const ProtectionSwitch = observer(() => {
             title={translator.getMessage('popup_protection_button')}
             className="button popup-header__button"
             aria-checked={!applicationFilteringPaused}
-            onClick={buttonHandler}
+            onClick={onClick}
         >
             <Icon
                 id={iconId}

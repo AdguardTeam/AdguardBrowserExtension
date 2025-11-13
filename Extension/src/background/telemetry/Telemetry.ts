@@ -15,194 +15,173 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
-import { TelemetryEventData, TelemetryBaseData, TelemetryProps, TelemetryUserAgent, TelemetryApiEventData, TelemetryPageViewData, TelemetryCustomEventData } from "./types";
-import { TelemetryApi } from "./TelemetryApi";
-import { SettingOption } from "../schema/settings/enum";    
-import { SettingsApi } from "../api";
-import { Prefs } from "../prefs";
-import { UserAgent } from '../../common/user-agent';
-import { Theme, RetentionCohort, FilterUpdateIntervalSource } from './enums';
-import { AppearanceTheme, APP_VERSION_KEY, FiltersUpdateTime } from '../../common/constants';
-import { browserStorage } from '../storages';
-import { logger } from '../../common/logger';
+import { debounce } from 'lodash-es';
+import { TelemetryDataCollector } from 'telemetry-data-collector';
 
+import { SettingOption } from '../schema/settings/enum';
+import { SettingsApi } from '../api';
+import { logger } from '../../common/logger';
+import { messageHandler } from '../message-handler';
+import {
+    MessageType,
+    type SendTelemetryCustomEventMessage,
+    type SendTelemetryPageViewEventMessage,
+} from '../../common/messages';
+
+import { TelemetryApi } from './TelemetryApi';
+import {
+    type TelemetryEventData,
+    type TelemetryApiEventData,
+    type TelemetryCustomEventData,
+    type TelemetryPageViewData,
+} from './types';
+import { TelemetryPageTracker } from './TelemetryPageTracker';
+
+/**
+ * Telemetry service for tracking user interactions and sending analytics events.
+ *
+ * Handles page view events, custom events, and manages telemetry state.
+ * Events are debounced and sent to the telemetry API.
+ */
 export class Telemetry {
     /**
-     * Application type sent in telemetry events
+     * Page tracker.
      */
-    private static readonly APP_TYPE = 'ADGUARD_EXTENSION';
+    private static pageTracker = new TelemetryPageTracker();
 
     /**
-     * Synthetic ID for telemetry events
-     * TODO: Generate synthetic ID
+     * Debounce timeout for sending events.
      */
-    private syntheticId: string = 'lalalalalala';
+    public static readonly SEND_EVENT_TIMEOUT = 300;
 
     /**
-     * User agent
-     * TODO: is "!" okey?
+     * Initializes telemetry service.
+     *
+     * Generates or retrieves synthetic ID, collects user agent and props,
+     * and sets up message listeners for telemetry events.
      */
-    private userAgent!: TelemetryUserAgent;
+    public static async init(): Promise<void> {
+        await TelemetryDataCollector.init();
 
-    /**
-     * Props
-     * TODO: is "!" okey?
-     */
-    private props!: TelemetryProps;
-
-    /**
-     * Flag indicating whether telemetry module is initialized or not.
-     */
-    private isInitialized = false;
-
-    /**
-     * AppearanceTheme to TelemetryTheme mapper.
-     */
-    private static readonly THEME_MAPPER: Record<AppearanceTheme, Theme> = {
-        [AppearanceTheme.Light]: Theme.Light,
-        [AppearanceTheme.Dark]: Theme.Dark,
-        [AppearanceTheme.System]: Theme.System,
-    };
-
-    constructor() {
-        this.init();
+        messageHandler.addListener(MessageType.SendTelemetryPageViewEvent, Telemetry.sendPageViewEventDebounced);
+        messageHandler.addListener(MessageType.SendTelemetryCustomEvent, Telemetry.sendCustomEventDebounced);
     }
 
-    async init() {
-        this.userAgent = await this.getUserAgent();
-        this.props = await this.getProps();
-        this.isInitialized = true;
-    }
- 
-    async sendPageViewEvent(event: TelemetryPageViewData) {
-        await this.sendEvent(event);
-    }
+    /**
+     * Sends a telemetry page view event.
+     *
+     * @param message Message with screen name and page ID.
+     * @param message.data Event data containing screen name and page ID.
+     */
+    private static async sendPageViewEvent({ data }: SendTelemetryPageViewEventMessage): Promise<void> {
+        const { screenName, pageId } = data;
 
-    async sendCustomEvent(event: TelemetryCustomEventData) {
-        await this.sendEvent(event);
-    }
+        if (!Telemetry.pageTracker.updateScreen(screenName, pageId)) {
+            logger.debug(`[ext.Telemetry.sendPageViewEvent]: Screen '${screenName}' in page '${pageId}' already sent`);
 
-    private async sendEvent(event: TelemetryEventData) {
-        if (!this.isHelpUsEnabled()) {
             return;
         }
 
-        const baseData = await this.getBaseData();
+        const event: TelemetryPageViewData = {
+            pageview: {
+                name: screenName,
+                ref_name: Telemetry.pageTracker.prevScreenName,
+            },
+        };
 
-        const apiData: TelemetryApiEventData = { 
+        await Telemetry.sendEvent(event);
+    }
+
+    /**
+     * Debounced version of {@link sendPageViewEvent}.
+     *
+     * @see {@link sendPageViewEvent} - For implementation.
+     * @see {@link SEND_EVENT_TIMEOUT} - For debounce timeout.
+     */
+    private static sendPageViewEventDebounced = debounce(
+        Telemetry.sendPageViewEvent,
+        Telemetry.SEND_EVENT_TIMEOUT,
+    );
+
+    /**
+     * Sends a telemetry custom event.
+     *
+     * @param message Message with custom event data.
+     * @param message.data Event data containing screen name and event name.
+     */
+    private static async sendCustomEvent({ data }: SendTelemetryCustomEventMessage): Promise<void> {
+        const { screenName, eventName } = data;
+
+        const event: TelemetryCustomEventData = {
+            event: {
+                name: eventName,
+                ref_name: screenName,
+            },
+        };
+        await Telemetry.sendEvent(event);
+    }
+
+    /**
+     * Debounced version of {@link sendCustomEvent}.
+     *
+     * @see {@link sendCustomEvent} - For implementation.
+     * @see {@link SEND_EVENT_TIMEOUT} - For debounce timeout.
+     */
+    private static sendCustomEventDebounced = debounce(
+        Telemetry.sendCustomEvent,
+        Telemetry.SEND_EVENT_TIMEOUT,
+    );
+
+    /**
+     * Sends a telemetry event to the API.
+     *
+     * @param event Event data (page view or custom event).
+     */
+    private static async sendEvent(event: TelemetryEventData): Promise<void> {
+        if (!Telemetry.isHelpUsEnabled()) {
+            return;
+        }
+
+        const baseData = await TelemetryDataCollector.getBaseData();
+
+        const apiData: TelemetryApiEventData = {
             ...baseData,
-            ...event
+            ...event,
         };
 
         await TelemetryApi.sendEvent(apiData);
     }
 
     /**
-     * Checks if telemetry events can be sent.
+     * Checks if telemetry is enabled.
      *
-     * @returns True if telemetry events can be sent, false otherwise.
+     * @returns True if telemetry is enabled.
      */
-    private canSendEvents(): boolean {
-        // Double check if user opted in to send telemetry events.
-        // At this point we previously checked if settings enabled or not,
-        // but in case if event is reached this point it means that bug appeared.
-        if (!this.isHelpUsEnabled()) {
-            logger.debug('Telemetry is disabled by user');
-            return false;
-        }
-
-        // Do not send telemetry events if module is not initialized
-        // only after making sure that user opted in
-        // NOTE: We are not throwing an error here because telemetry
-        // should neither block the application nor notify the user
-        if (!this.isInitialized) {
-            logger.debug('Telemetry module is not initialized');
-            return false;
-        }
-
-        return true;
-    }
-
-    private isHelpUsEnabled() {
-        // TODO: Should we update settings description? 
+    private static isHelpUsEnabled(): boolean {
+        // TODO: Should we update settings description?
         // Current description: "Sends anonymous stats on ad filter usage to AdGuard."
         // Now, we will send more information...
+        // By default this option is disabled. If we don't show user modal page about this, user never on this.
         return !SettingsApi.getSetting(SettingOption.DisableCollectHits);
     }
 
-    private async getBaseData(): Promise<TelemetryBaseData> {
-        return {
-            synthetic_id: this.syntheticId,
-            app_type: Telemetry.APP_TYPE,
-            version: Prefs.version,
-            user_agent: this.userAgent,
-            props: this.props,
-        };
-    }
-
-    // TODO: Maybe add information about browser? We can user "name" or "device" field for this, because version field is double
-    private async getUserAgent(): Promise<TelemetryUserAgent> {
-        const platformInfo = await browser.runtime.getPlatformInfo();
-        const name = UserAgent.getSystemName() || platformInfo.os;
-        const version = await UserAgent.getSystemInfo() || 'unknown';
-        const platform = platformInfo.arch;
-
-        return {
-            os: {
-                name,
-                platform,
-                version,
-            }
-        };
-    }
-
-    private async getProps(): Promise<TelemetryProps> {
-        const appLocale = browser.i18n.getUILanguage();
-        const systemLocale = navigator.language;
-        
-        const appTheme: AppearanceTheme = SettingsApi.getSetting(SettingOption.AppearanceTheme);
-        const theme = Telemetry.THEME_MAPPER[appTheme];
-        
-        const retentionCohort = await this.getRetentionCohort();
-        const updateInterval = this.getFilterUpdateInterval();
-        
-        return {
-            app_locale: appLocale,
-            system_locale: systemLocale,
-            theme,
-            retention_cohort: retentionCohort,
-            update_interval: updateInterval,
-        };
-    }
+    /**
+     * Handles popup connected event.
+     * Adds `portName` to the list of opened pages.
+     *
+     * @param portName Name of the port popup connected to.
+     */
+    public static handlePopupConnect = (portName: string): void => {
+        Telemetry.pageTracker.addOpenedPage(portName);
+    };
 
     /**
-     * Calculates retention cohort based on installation date
-     * TODO: AI suggest me this version. Is it okey? 
+     * Handles popup disconnected event.
+     * Removes `portName` from the list of opened pages.
+     *
+     * @param portName Name of the port popup connected to.
      */
-    private async getRetentionCohort(): Promise<RetentionCohort> {
-        // Get installation date from storage
-        const appVersion = await browserStorage.get(APP_VERSION_KEY);
-        
-        // If no version stored, it's a new installation
-        if (!appVersion) {
-            return RetentionCohort.Day1;
-        }
-        
-        // For existing users, we don't have exact install date stored
-        // So we consider them as longtime users
-        return RetentionCohort.Longtime;
-    }
-
-    /**
-     * Gets filter update interval source
-     */
-    private getFilterUpdateInterval(): FilterUpdateIntervalSource {
-        const updatePeriod: FiltersUpdateTime = SettingsApi.getSetting(SettingOption.FiltersUpdatePeriod);
-        const isDefault = updatePeriod === FiltersUpdateTime.OneHour;
-        // TODO: Why is only two values? Why we cant send number info?
-        return isDefault 
-            ? FilterUpdateIntervalSource.SystemDefault 
-            : FilterUpdateIntervalSource.Custom;
-    }
+    public static handlePopupDisconnect = (portName: string): void => {
+        Telemetry.pageTracker.removeOpenedPage(portName);
+    };
 }

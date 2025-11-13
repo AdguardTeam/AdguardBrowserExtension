@@ -26,22 +26,34 @@ import { Icon } from '../../../../../common/components/ui/Icon';
 import { messenger } from '../../../../../services/messenger';
 import { popupStore } from '../../../../stores/PopupStore';
 import { ForwardFrom } from '../../../../../../common/forward';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../../background/telemetry';
 
 const Mv3UpdateButton = observer(() => {
     const store = useContext(popupStore);
 
-    const { isExtensionUpdateAvailable } = store;
+    const { isExtensionUpdateAvailable, telemetryStore } = store;
 
     const handleCheckUpdatesClick = async () => {
         if (!__IS_MV3__) {
             throw new Error('Extension update is not supported in MV2');
         }
+        // TODO: update extension and check updates is the same action?
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.CheckUpdatesClick,
+            TelemetryScreenName.MainPage,
+        );
         await store.checkUpdatesMV3();
     };
 
     const handleUpdateExtensionClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
         e.preventDefault();
         const start = Date.now();
+
+        // TODO: update extension and check updates is the same action?
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.UpdateAvailableClick,
+            TelemetryScreenName.MainPage,
+        );
 
         // TODO: We should rely on event for changing status instead of setting
         // flags manually

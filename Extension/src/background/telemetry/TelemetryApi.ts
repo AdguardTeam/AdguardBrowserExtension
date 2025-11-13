@@ -15,23 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { type TelemetryApiEventData } from './types';
 
-import { TelemetryApiEventData } from "./types"
-
-//TODO: Should I move this file to background api or this is Ok?
+// TODO: Should I move this file to background api or this is Ok?
+/**
+ * API client for sending telemetry events to the telemetry service.
+ */
 export class TelemetryApi {
-
-    //TODO: create config for dev and prod versions. look vpn example
+    // TODO: create config for dev and prod versions. look vpn example
     private static readonly TELEMETRY_URL = 'telemetry.service.agrd.dev';
 
     private static readonly API_PATH = 'v1/event';
 
-    //TODO : maybe create common wrapper for fetch requests?
+    /**
+     * Sends a telemetry event to the telemetry service.
+     *
+     * @param data Telemetry event data to send.
+     */
     static async sendEvent(data: TelemetryApiEventData): Promise<void> {
         const url = TelemetryApi.getRequestUrl();
 
         const config: RequestInit = {
-            method: "POST",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -41,6 +46,11 @@ export class TelemetryApi {
         await fetch(url, config);
     }
 
+    /**
+     * Constructs the full URL for telemetry API requests.
+     *
+     * @returns The complete telemetry API URL.
+     */
     private static getRequestUrl(): string {
         return `https://${TelemetryApi.TELEMETRY_URL}/${TelemetryApi.API_PATH}`;
     }

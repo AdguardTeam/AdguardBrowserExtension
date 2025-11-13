@@ -16,19 +16,23 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { ForwardFrom } from '../../../../../common/forward';
 import { translator } from '../../../../../common/translators/translator';
 import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { logger } from '../../../../../common/logger';
+import { popupStore } from '../../../stores/PopupStore';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/telemetry';
 
 import { type SingleActionParams } from './types';
 
 import '../actions.pcss';
 
 export const ReportIssueAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
+    const store = useContext(popupStore);
+    const { telemetryStore } = store;
     const title = translator.getMessage('popup_abuse_site');
 
     /**
@@ -44,6 +48,10 @@ export const ReportIssueAction = ({ className, isFilteringPossible, url }: Singl
             return;
         }
 
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.ReportIssueClick,
+            TelemetryScreenName.MainPage,
+        );
         messenger.openAbuseSite(url, ForwardFrom.Popup);
         window.close();
     };

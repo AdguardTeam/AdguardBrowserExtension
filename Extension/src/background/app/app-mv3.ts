@@ -73,6 +73,7 @@ import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { ContentScriptInjector } from '../content-script-injector';
 import { getZodErrorMessage } from '../../common/error';
+import { Telemetry } from '../telemetry/Telemetry';
 
 /**
  * This class is app entry point.
@@ -305,6 +306,8 @@ export class App {
         // so the event should be dispatched eventually after all initialization
         // is done.
         dispatchEvent(new Event(EXTENSION_INITIALIZED_EVENT));
+
+        await Telemetry.init();
     }
 
     /**

@@ -16,7 +16,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import type { Runtime } from 'webextension-polyfill';
-import { FilterUpdateIntervalSource, RetentionCohort, TelemetryScreenName, Theme } from './enums';
+
+import {
+    type FilterUpdateIntervalSource,
+    type RetentionCohort,
+    type TelemetryEventName,
+    type TelemetryScreenName,
+    type Theme,
+} from './enums';
 
 /**
  * User agent info.
@@ -43,7 +50,7 @@ export type TelemetryUserAgent = {
     os: {
         /**
          * Operating system name, e.g. Windows, Android, iOS, Mac.
-         * TODO: Can i Use types from runtime or UserAgent? I have some type from vpn extension 
+         * TODO: Can i Use types from runtime or UserAgent? I have some type from vpn extension .
          */
         name: string;
 
@@ -57,21 +64,23 @@ export type TelemetryUserAgent = {
          */
         version: string;
     };
-}
+};
 
 /**
  * Special type of event, refers to page view.
  */
 export type TelemetryPageViewData = {
-    /**
-     * Name of shown page
-     */
-    name: TelemetryScreenName;
-    /**
-     * Name of referer page
-     */
-    ref_name?: TelemetryScreenName;
-}
+    pageview: {
+        /**
+         * Name of shown page.
+         */
+        name: TelemetryScreenName;
+        /**
+         * Name of referer page.
+         */
+        ref_name?: TelemetryScreenName;
+    };
+};
 
 /**
  * Custom properties for the event. Can be attached to both pageviews and custom events.
@@ -79,99 +88,95 @@ export type TelemetryPageViewData = {
 export type TelemetryProps = {
     /**
      * Selected in application locale, e.g. "en-US".
-     * TODO: find in browser.i18n.getUILanguage() и navigator.language
      */
-    app_locale: string,
+    app_locale: string;
     /**
      * System locale, e.g. "en-US".
-     * TODO: find in browser.i18n.getUILanguage() и navigator.language
      */
-    system_locale: string,
+    system_locale: string;
 
     /**
-     * UI theme
+     * UI theme.
      */
-    theme: Theme,
+    theme: Theme;
 
     /**
-     * Retention cohort of the user
-     * TODO: find info about this.
+     * Retention cohort of the user.
      */
-    retention_cohort: RetentionCohort,
+    retention_cohort: RetentionCohort;
 
     /**
-     * Filter update interval source. 
+     * Filter update interval source.
      * TODO: We don't have filter updating in MV3
      * TODO: find info about this.
      */
-    update_interval: FilterUpdateIntervalSource
-}
+    update_interval?: FilterUpdateIntervalSource | null;
+};
 
 /**
- * Custom type of event. Client must specify pageview or event, not both. 
+ * Custom type of event. Client must specify pageview or event, not both.
  * If both pageview and event are present, the pageview will be used.
  */
 export type TelemetryCustomEventData = {
-    /**
-     * Name of this custom event, e.g. "purchase".
-     */
-    name: TelemetryPageViewData,
+    event: {
+        /**
+         * Name of this custom event, e.g. "purchase".
+         */
+        name: TelemetryEventName;
 
-    /**
-     * Name of page where custom event occurs, e.g. "login_screen".
-     */
-    ref_name: TelemetryScreenName,
+        /**
+         * Name of page where custom event occurs, e.g. "login_screen".
+         */
+        ref_name: TelemetryScreenName;
 
-    /**
-     * Action name.
-     */
-    action: string,
+        /**
+         * Action name.
+         */
+        action?: string;
 
-    /**
-     * Label name.
-     */
-    label: string
-}
-
+        /**
+         * Label name.
+         */
+        label?: string;
+    };
+};
 
 /**
- * Telemetry base event data passed to the API
+ * Telemetry base event data passed to the API.
  */
 export type TelemetryBaseData = {
     /**
-     * Unique and random synthetic identifier for telemetry tracking. 
-     * Doesn’t relate to the original application identifier using for other API requests. 
+     * Unique and random synthetic identifier for telemetry tracking.
+     * Doesn’t relate to the original application identifier using for other API requests.
      * It must be eight characters long and consist of characters [a-f1-9].
      * Must match the regular expression [a-f1-9]{8}.
      */
-    synthetic_id: string,
+    synthetic_id: string;
 
     /**
      * Application type.
      */
-    app_type: string,
+    app_type: string;
 
     /**
      * Short version of application, e.g. "2.14 beta 1".
      */
-    version: string,
+    version: string;
 
     /**
-     * {@link TelemetryUserAgent}
+     * {@link TelemetryUserAgent}.
      */
-    user_agent: TelemetryUserAgent,
+    user_agent: TelemetryUserAgent;
 
     /**
-     * {@link TelemetryProps}
+     * {@link TelemetryProps}.
      */
-    props?: TelemetryProps
-}
-
-
+    props?: TelemetryProps;
+};
 
 export type TelemetryEventData = TelemetryPageViewData | TelemetryCustomEventData;
 
 /**
- * Telemetry event data passed to the API
+ * Telemetry event data passed to the API.
  */
 export type TelemetryApiEventData = TelemetryEventData & TelemetryBaseData;

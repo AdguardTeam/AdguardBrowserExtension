@@ -15,5 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { Telemetry } from './Telemetry';
-export { TelemetryEventName, TelemetryScreenName } from './enums';
+import { useEffect } from 'react';
+
+import { type TelemetryScreenName } from '../../../background/telemetry';
+
+import { type TelemetryStore } from './TelemetryStore';
+
+/**
+ * Hook that sends a page view telemetry event when the component is mounted.
+ *
+ * The event is sent once on component mount with the specified screen name.
+ * The backend tracks screen navigation using pageId from the telemetry store.
+ *
+ * @param telemetryStore Telemetry store instance.
+ * @param screenName Name of the screen to be logged in telemetry.
+ */
+export function useTelemetryPageViewEvent(
+    telemetryStore: TelemetryStore,
+    screenName: TelemetryScreenName,
+): void {
+    useEffect(() => {
+        telemetryStore.sendPageViewEvent(screenName);
+    }, [telemetryStore, screenName]);
+}

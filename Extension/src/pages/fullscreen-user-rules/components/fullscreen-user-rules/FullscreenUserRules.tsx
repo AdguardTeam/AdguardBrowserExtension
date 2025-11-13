@@ -55,7 +55,7 @@ export const FullscreenUserRules = observer(() => {
                 NotifierType.SettingUpdated,
             ];
 
-            removeListenerCallback = Messenger.createLongLivedConnection(
+            const { onUnload } = Messenger.createLongLivedConnection(
                 Page.FullscreenUserRules,
                 events,
                 async (message: LongLivedConnectionCallbackMessage) => {
@@ -73,6 +73,8 @@ export const FullscreenUserRules = observer(() => {
                     }
                 },
             );
+
+            removeListenerCallback = onUnload;
         })();
 
         return () => {

@@ -165,6 +165,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'filter-categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
         'settings-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/settings-mv${manifestVersion}.ts`),
         'filter-update-service': path.resolve(__dirname, `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`),
+        'telemetry-data-collector': path.resolve(__dirname, `../../Extension/src/background/telemetry/TelemetryDataCollector/TelemetryDataCollector-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {

@@ -26,6 +26,7 @@ import { isTransitionAppState } from '../../../state-machines/app-state-machine'
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { logger } from '../../../../../common/logger';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/telemetry';
 
 /**
  * Main switcher component props.
@@ -48,7 +49,7 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
         return null;
     }
 
-    const { appState } = useContext(popupStore);
+    const { appState, telemetryStore } = useContext(popupStore);
 
     const isTransition = isTransitionAppState(appState);
 
@@ -59,6 +60,17 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
         return null;
     }
 
+    const onClick = () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.ProtectionSwitch,
+            TelemetryScreenName.MainPage,
+        );
+
+        if (clickHandler) {
+            clickHandler();
+        }
+    };
+
     return (
         <button
             type="button"
@@ -66,7 +78,7 @@ export const MainSwitch = observer(({ isEnabled, clickHandler }: MainSwitchProps
             className={cn('switcher', {
                 'non-active': isTransition,
             })}
-            onClick={clickHandler}
+            onClick={onClick}
             title={translator.getMessage('popup_switch_button')}
             aria-checked={isEnabled}
         >

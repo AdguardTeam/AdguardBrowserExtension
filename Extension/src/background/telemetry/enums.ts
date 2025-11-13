@@ -16,10 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-//TODO: it need to create adapter to convert app theme to telemetry theme. Find App Theme in SettingOption.AppearanceTheme
 /**
- * UI theme
+ * UI theme.
  */
 export enum Theme {
     Light = 'LIGHT',
@@ -41,7 +39,7 @@ export enum RetentionCohort {
 }
 
 /**
- * Filter update interval source. 
+ * Filter update interval source.
  * TODO: We don't have filter updating in MV3
  * TODO: find info about this.
  */
@@ -66,21 +64,22 @@ export enum FilterUpdateIntervalSource {
 // }
 
 /**
- * Telemetry screen name
+ * Telemetry screen name.
  */
 export enum TelemetryScreenName {
     MainPage = 'main_page',
-    SecurePage = 'secure_page', 
-    BlockElementScreen = 'block_element_screen', 
-    GeneralSettings = 'general_settings', 	
-    FiltersScreen = 'filters_screen', 
+    // TODO: how can create telemetry on this page?
+    SecurePage = 'secure_page',
+    // TODO: how can create telemetry on this page?
+    BlockElementScreen = 'block_element_screen',
+    GeneralSettings = 'general_settings',
+    FiltersScreen = 'filters_screen',
     TrackingProtectionScreen = 'tracking_protection_screen',
     WebsiteAllowListScreen = 'website_allow_list_screen',
     UserRulesScreen = 'user_rules_screen',
     AdditionalSettings = 'additional_settings',
-    // TODO: talk about error in name(rules_limts -> rules_limits)
     RulesLimits = 'rules_limits',
-    AboutScreen = 'about_screen'
+    AboutScreen = 'about_screen',
 }
 
 export enum TelemetryEventName {
@@ -95,5 +94,6 @@ export enum TelemetryEventName {
     AppleClick = 'apple_click',
     AndroidClick = 'android_click',
     UpdateAvailableClick = 'update_available_click',
+    // TODO: how can create telemetry on this event?
     BlockElementClick = 'block_element_click',
 }

@@ -35,6 +35,7 @@ import {
 } from '../Stats/StatsTable';
 import { ViewState } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/telemetry';
 
 import { Tab, TabKey } from './Tab';
 
@@ -61,6 +62,12 @@ export const Tabs = observer(() => {
     const TabContent = contentMap[viewState];
 
     const handleTabClick = (viewState: ViewState) => () => {
+        if (viewState === ViewState.Stats) {
+            store.telemetryStore.sendCustomEvent(
+                TelemetryEventName.StatisticClick,
+                TelemetryScreenName.MainPage,
+            );
+        }
         store.setViewState(viewState);
     };
 

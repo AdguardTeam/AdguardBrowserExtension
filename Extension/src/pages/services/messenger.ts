@@ -62,6 +62,8 @@ import {
     type ExtractedMessage,
     type OpenSafebrowsingTrustedMessage,
     type UpdateExtensionMessageMv3,
+    type SendTelemetryPageViewEventMessage,
+    type SendTelemetryCustomEventMessage,
 } from '../../common/messages';
 import { type NotifierType } from '../../common/constants';
 import { type CreateEventListenerResponse } from '../../background/services/event';
@@ -88,12 +90,28 @@ export type LongLivedConnectionCallbackMessage = {
 export const enum Page {
     FullscreenUserRules = 'fullscreen-user-rules',
     FilteringLog = 'filtering-log',
+    Popup = 'popup',
 }
 
 type UnloadCallback = () => void;
 
 /**
- * Messenger class, used to communicate with the background page from the UI.
+ * Result of createLongLivedConnection.
+ */
+export type LongLivedConnectionResult = {
+    /**
+     * Callback function which disconnects from the background page.
+     */
+    onUnload: UnloadCallback;
+
+    /**
+     * Port ID of the connection.
+     */
+    portId: string;
+};
+
+/**
+ * MessengerCommon class, used to communicate with the background page from the UI.
  * Actually, it's a wrapper around the browser.runtime.sendMessage method.
  */
 class Messenger {
@@ -144,18 +162,20 @@ class Messenger {
      * @param events List of events to which subscribe.
      * @param callback Callback called when event fires.
      *
-     * @returns Function to remove listener on unload.
+     * @returns Object with onUnload callback and portId.
      */
     static createLongLivedConnection = (
         page: Page,
         events: NotifierType[],
         callback: (message: LongLivedConnectionCallbackMessage) => void,
-    ): UnloadCallback => {
+    ): LongLivedConnectionResult => {
         let port: browser.Runtime.Port;
         let forceDisconnected = false;
 
+        const portId = `${page}_${nanoid()}`;
+
         const connect = (): void => {
-            port = browser.runtime.connect({ name: `${page}_${nanoid()}` });
+            port = browser.runtime.connect({ name: portId });
             port.postMessage({ type: MessageType.AddLongLivedConnection, data: { events } });
 
             port.onMessage.addListener((message) => {
@@ -200,7 +220,7 @@ class Messenger {
         window.addEventListener('beforeunload', onUnload);
         window.addEventListener('unload', onUnload);
 
-        return onUnload;
+        return { onUnload, portId };
     };
 
     /**
@@ -1095,6 +1115,56 @@ class Messenger {
     ): Promise<ExtractMessageResponse<MessageType.OpenSafebrowsingTrusted>> {
         return this.sendMessage(MessageType.OpenSafebrowsingTrusted, { url });
     }
+
+    /**
+     * Sends a message to the background page to send a telemetry page view event.
+     *
+     * @param screenName Screen name of the page.
+     * @param pageId Page ID of the page.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    sendTelemetryPageViewEvent = async (
+        screenName: SendTelemetryPageViewEventMessage['data']['screenName'],
+        pageId: SendTelemetryPageViewEventMessage['data']['pageId'],
+    ): Promise<ExtractMessageResponse<MessageType.SendTelemetryPageViewEvent>> => {
+        return this.sendMessage(MessageType.SendTelemetryPageViewEvent, { screenName, pageId });
+    };
+
+    /**
+     * Sends a message to the background page to send a telemetry custom event.
+     *
+     * @param screenName Screen name of the page.
+     * @param eventName Name of the event.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    sendTelemetryCustomEvent = async (
+        screenName: SendTelemetryCustomEventMessage['data']['screenName'],
+        eventName: SendTelemetryCustomEventMessage['data']['eventName'],
+    ): Promise<ExtractMessageResponse<MessageType.SendTelemetryCustomEvent>> => {
+        return this.sendMessage(MessageType.SendTelemetryCustomEvent, { screenName, eventName });
+    };
+
+    /**
+     * Adds opened page to telemetry tracking.
+     *
+     * @returns Promise that resolves with the page ID.
+     */
+    addTelemetryOpenedPage = async (): Promise<string> => {
+        return this.sendMessage(MessageType.AddTelemetryOpenedPage);
+    };
+
+    /**
+     * Removes opened page from telemetry tracking.
+     *
+     * @param pageId Page ID to remove.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    removeTelemetryOpenedPage = async (pageId: string): Promise<void> => {
+        return this.sendMessage(MessageType.RemoveTelemetryOpenedPage, { pageId });
+    };
 }
 
 const messenger = new Messenger();
