@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New loading icon and animation for the extension popup.
 - Add ability to update custom filters in MV3 [#3016].
 
 ### Changed

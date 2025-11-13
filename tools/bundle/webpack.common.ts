@@ -380,6 +380,13 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                         filename: 'assets/images/[name][ext]',
                     },
                 },
+                {
+                    test: /\.(webm|mp4)$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'assets/videos/[name][ext]',
+                    },
+                },
             ],
         },
         plugins: [

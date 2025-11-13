@@ -80,7 +80,7 @@ export enum MessageType {
     LoadCustomFilterInfo = 'loadCustomFilterInfo',
     SubscribeToCustomFilter = 'subscribeToCustomFilter',
     RemoveAntiBannerFilter = 'removeAntiBannerFilter',
-    GetIsEngineStarted = 'getIsEngineStarted',
+    GetIsAppInitialized = 'getIsAppInitialized',
     GetTabInfoForPopup = 'getTabInfoForPopup',
     ChangeApplicationFilteringPaused = 'changeApplicationFilteringPaused',
     OpenRulesLimitsTab = 'openRulesLimitsTab',
@@ -183,8 +183,8 @@ export type RemoveListenerMessage = {
     };
 };
 
-export type GetIsEngineStartedMessage = {
-    type: MessageType.GetIsEngineStarted;
+export type GetIsAppInitializedMessage = {
+    type: MessageType.GetIsAppInitialized;
 };
 
 export type GetTabInfoForPopupMessage = {
@@ -662,8 +662,8 @@ export type MessageMap = {
         message: AddFilteringSubscriptionMessage;
         response: void;
     };
-    [MessageType.GetIsEngineStarted]: {
-        message: GetIsEngineStartedMessage;
+    [MessageType.GetIsAppInitialized]: {
+        message: GetIsAppInitializedMessage;
         response: boolean;
     };
     [MessageType.GetTabInfoForPopup]: {
