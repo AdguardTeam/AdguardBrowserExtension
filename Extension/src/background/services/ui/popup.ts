@@ -139,7 +139,7 @@ export class PopupService {
      * Creates listeners for getter of tab info and for popup.
      */
     static init(): void {
-        messageHandler.addListener(MessageType.GetIsEngineStarted, PopupService.getIsAppInitialized);
+        messageHandler.addListener(MessageType.GetIsAppInitialized, PopupService.getIsAppInitialized);
         messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
         messageHandler.addListener(
             MessageType.ChangeApplicationFilteringPaused,
@@ -176,6 +176,7 @@ export class PopupService {
         const isExtensionUpdateAvailable = __IS_MV3__
             ? ExtensionUpdateService.isUpdateAvailable
             : false;
+
         const manualExtensionUpdateData = __IS_MV3__
             ? await ExtensionUpdateService.getManualExtensionUpdateData()
             : null;
@@ -188,6 +189,7 @@ export class PopupService {
             ? manualExtensionUpdateData?.isOk || false
             : false;
 
+        // TODO: AG-47075 Should be moved to extension update service initialization.
         extensionUpdateActor.send({
             type: ExtensionUpdateFSMEvent.Init,
             isReloadedOnUpdate: isExtensionReloadedOnUpdate,

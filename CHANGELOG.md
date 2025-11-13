@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.2.300.0] - ??
+
+### Added
+
+- New loading icon and animation for the extension popup.
+- Add ability to update custom filters in MV3 [#3016].
+
+### Changed
+
+- Extension will apply auto-update in MV3 if update is available and browser
+  became idle for a while.
+
+[#3016]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3016
+
 ## [v5.2.112.84] - 2025-10-25
 
 ### Changed

@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export {
-    type FilterUpdateOptions,
-    type FilterUpdateOptionsList,
-    FilterUpdateApi,
-} from 'filters-update-api';
+
+export { FilterUpdateApi } from 'filters-update-api';
+export type { FilterUpdateOptions, FilterUpdateOptionsList } from './types';

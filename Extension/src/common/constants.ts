@@ -44,6 +44,19 @@ export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
 export const MANUAL_EXTENSION_UPDATE_KEY = 'manual-extension-update';
+/**
+ * Storage key to prevent double injection of content scripts after extension update.
+ * Set before extension reload, checked and cleared after reload.
+ */
+export const CONTENT_SCRIPT_INJECTION_FLAG = 'content-script-injection-flag';
+/**
+ * Storage key for auto-update state data, used only in MV3.
+ */
+export const AUTO_UPDATE_STATE_KEY_MV3 = 'auto-update-state-mv3';
+/**
+ * Storage key for auto-update configuration override, used only in MV3 for testing.
+ */
+export const AUTO_UPDATE_CONFIG_KEY_MV3 = 'auto-update-config-mv3';
 
 /**
  * Filter ids used in the code on the background page and filtering log page.

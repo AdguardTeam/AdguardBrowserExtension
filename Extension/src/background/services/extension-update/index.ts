@@ -23,4 +23,4 @@
 
 export { ExtensionUpdateService } from 'extension-update-service';
 
-export type { ManualExtensionUpdateData } from './types';
+export type { ManualUpdateMetadata } from './types';

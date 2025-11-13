@@ -519,7 +519,7 @@
 			},
 			"uk": {
 				"name": "Віджети соціальних мереж",
-				"description": "Блокує елементи соціальних мереж, такі як кнопки «Подобається» та «Обмін»"
+				"description": "Блокує елементи соціальних мереж, такі як кнопки «Подобається» та «Поділитись»"
 			},
 			"vi": {
 				"name": "Tiện ích xã hội",
@@ -697,7 +697,7 @@
 			},
 			"uk": {
 				"name": "Подразники",
-				"description": "Блокує надокучливі веб-елементи, такі як повідомлення про файли cookie або спливаючі вікна на сторінці"
+				"description": "Блокує надокучливі вебелементи, наприклад, повідомлення про кукі або спливні вікна на сторінці"
 			},
 			"vi": {
 				"name": "Làm phiền",
@@ -1231,7 +1231,7 @@
 			},
 			"uk": {
 				"name": "Для певної мови",
-				"description": "Блокування оголошень на вебсайтах певними мовами"
+				"description": "Блокує рекламу на вебсайтах певними мовами"
 			},
 			"vi": {
 				"name": "Ngôn ngữ cụ thể",
@@ -28838,6 +28838,184 @@
 			"zh_TW": {
 				"name": "Block Outsider Intrusion into LAN",
 				"description": "防止公共網際網路網站竊取局域網檔案。"
+			}
+		},
+		"259": {
+			"ar": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "يحظر برامج ضارة أكثر من معظم قوائم مكافحة البرامج الضارة الرئيسية الأخرى - المجالات وأنماط عناوين URL المستخدمة في سلاسل إعادة توجيه البرامج الضارة وعناوين IP التي تستخدمها البرامج الضارة فقط وتذمر PUP وعدد قليل من المحتالين. تم تضمينه بالفعل في قائمة مضايقات Dandelion Sprout."
+			},
+			"be": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Блакіруе больш шкодных праграм, чым большасць іншых асноўных спісаў супраць шкодных праграм — дамены і шаблоны URL-адрасоў, якія выкарыстоўваюцца ў ланцужках перанакіравання шкодных праграм, IP-адрасы, што выкарыстоўваюцца выключна для шкодных праграм, дакучлівыя паведамленні PUP і некалькі ашуканцаў. Ужо ўключана ў Dandelion Sprout's Annoyances List."
+			},
+			"bg": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Блокира повече вреден софтуер от повечето други големи анти-вреден софтуер списъци – домейни и URL модели, използвани във вериги за пренасочване на вреден софтуер, Потребителски IP адреси, които се използват единствено от вреден софтуер, съобщения за потенциално нежелани програми и няколко измамници. Вече е включен в Dandelion Sprout's Annoyances List."
+			},
+			"ca": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Bloca més programari maliciós que la majoria d'altres llistes principals antiprogramari maliciós: dominis i patrons d'URL utilitzats en cadenes de redirecció de programari maliciós, adreces IP utilitzades exclusivament per programari maliciós, avisos persistents de PUP i alguns estafadors. Ja està inclosa a Dandelion Sprout's Annoyances List."
+			},
+			"cs": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blokuje více malwaru než většina ostatních hlavních seznamů antimalwaru - domény a vzory URL používané v řetězcích přesměrování malwaru, IP adresy, které jsou používány výhradně malwarem, PUP a několik podvodníků. Již zařazeno do seznamu Annoyances Dandelion Sprout."
+			},
+			"da": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blokerer mere malware end de fleste andre større anti-malware-lister - domæner og URL-mønstre, som bruges i malware-omdirigeringskæder, IP-adresser udelukkende brugt af malware, PUP-nøgler og nogle få svindlere. Allerede inkluderet i Dandelion Sprout's Annoyances List."
+			},
+			"de": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Sperrt mehr Schadsoftware als die meisten anderen großen Anti-Malware-Listen — Domains und URL-Muster, die in Malware-Umleitungsketten verwendet werden, IP-Adressen, die ausschließlich von Malware genutzt werden, PUP-Nags (nervige Potenziell unerwünschte Programme) und einige Betrüger. Bereits in der Dandelion Sprout's Annoyances List enthalten."
+			},
+			"el": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Αποκλείει περισσότερο κακόβουλο λογισμικό από τις περισσότερες άλλες μεγάλες λίστες κατά του κακόβουλου λογισμικού - τομείς και μοτίβα URL που χρησιμοποιούνται σε αλυσίδες ανακατεύθυνσης κακόβουλου λογισμικού, Διευθύνσεις IP που χρησιμοποιούνται αποκλειστικά από κακόβουλο λογισμικό, ενοχλητικά από PUP, και μερικούς απατεώνες. Περιλαμβάνεται ήδη στη Dandelion Sprout's Annoyances List."
+			},
+			"en": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blocks more malware than most other major anti-malware lists — domains and URL patterns used in malware redirection chains, IP addresses that are solely used by malware, PUP nags, and a few scammers. Already included in Dandelion Sprout's Annoyances List."
+			},
+			"es": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Bloquea más malware que la mayoría de otras listas principales de anti-malware: dominios y patrones de URL utilizados en cadenas de redirección de malware, direcciones IP que solo son utilizadas por malware, molestias de PUP y algunos estafadores. Ya está incluida en Dandelion Sprout's Annoyances List."
+			},
+			"es_ES": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Bloquea más malware que la mayoría de otras listas principales de anti-malware: dominios y patrones de URL utilizados en cadenas de redirección de malware, direcciones IP que solo son utilizadas por malware, molestias de PUP y algunos estafadores. Ya está incluida en Dandelion Sprout's Annoyances List."
+			},
+			"fa": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "بیشتر از اکثر فهرست‌های عمده ضدبدافزار، بدافزارها را مسدود می‌کند - دامنه‌ها و الگوهای تارنشانی که در زنجیره‌های تغییر مسیر بدافزار استفاده می‌شوند، نشانی‌های IP که فقط توسط بدافزار استفاده می‌شوند، مزاحمت‌های PUP و چند کلاهبردار. همین حالا در Dandelion Sprout's Annoyances List وجود دارد."
+			},
+			"fi": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Estää enemmän haittaohjelmia kuin useimmat muut merkittävät haittaohjelmien torjuntaluettelot - haittaohjelmien uudelleenohjausketjuissa käytetyt verkkotunnukset ja URL-mallit, IP-osoitteet, joita käyttävät ainoastaan haittaohjelmat, PUP-haittaohjelmat ja muutamat huijarit. Sisältyy jo Dandelion Sproutin ärsyttävyysluetteloon."
+			},
+			"fr": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Bloque plus de maliciels que la plupart des autres grandes listes anti-maliciel - domaines et motifs d'URL utilisés dans les chaînes de redirection de maliciels, adresses IP utilisées uniquement par des maliciels, nuisances PUP, et quelques escrocs. Déjà inclus dans la liste Dandelion Sprout's Annoyances List."
+			},
+			"he": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "חוסם יותר נוזקות מרוב שאר הרשימות המרכזיות נגד נוזקות – דומיינים ותבניות כתובות הנמצאות בשימוש בשרשראות הפניה של נוזקות, כתובות IP שמיועדות אך ורק לנוזקות, התרעות PUP ומספר נוכלים. כבר כלול ב-Dandelion Sprout's Annoyances List."
+			},
+			"hi": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "अधिकांश अन्य प्रमुख एंटी-मैलवेयर सूचियों की तुलना में यह सूची अधिक मैलवेयर को अवरुद्ध करती है - वे डोमेन और URL पैटर्न जो मैलवेयर रीडायरेक्शन चेन में उपयोग होते हैं, मैलवेयर द्वारा ही प्रयुक्त IP address, PUP nag, और कुछ स्कैमर्स। Dandelion Sprout's Annoyances List में पहले से शामिल है।"
+			},
+			"hr": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blokira više zlonamjernih programa nego većina drugih glavnih anti-malware popisa – domene i URL obrasce koji se koriste u lancima preusmjeravanja zlonamjernih programa, IP adrese koje koristi isključivo zlonamjerni programi, napomene potencijalno neželjenih programa, te nekoliko prevaranata. Već je uključeno u Dandelion Sprout's Annoyances List."
+			},
+			"hu": {
+				"name": "Dandelion Sprout kártevők elleni listája",
+				"description": "Több kártevőt blokkol, mint a legtöbb másik nagy kártevő-ellenes lista – olyan domaineket és URL-mintákat, amelyeket kártevő átirányítási láncokban használnak, kizárólag kártevő által használt IP-címeket, PUP figyelmeztetéseket és néhány csalót. Már tartalmazza a Dandelion Sprout's Annoyances List."
+			},
+			"hy": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Արգելափակում է ավելի շատ վնասակար ծրագրեր, քան մյուս խոշոր հակավնասակար ծրագրերի ցուցակների մեծ մասը՝ տիրույթներ եւ URL օրինաչափություններ, որոնք օգտագործվում են վնասակար ծրագրերի վերաուղղման շղթաներում, IP հասցեներ, որոնք օգտագործվում են միայն վնասակար ծրագրերի կողմից, PUP նյարդայնացումներ եւ մի քանի խաբեբաներ։ Արդեն ընդգրկված է Dandelion Sprout-ի նյարդայնությունների ցուցակում։"
+			},
+			"id": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Memblokir lebih banyak malware daripada sebagian besar daftar anti-malware utama lainnya - domain dan pola URL yang digunakan dalam rantai pengalihan malware, Alamat IP yang hanya digunakan oleh malware, pesan pengganggu PUP, dan beberapa penipu. Sudah termasuk dalam Dandelion Sprout's Annoyances List."
+			},
+			"it": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blocca più malware rispetto alla maggior parte delle altre principali liste anti-malware: domini e pattern di URL usati nelle catene di reindirizzamento del malware, indirizzi IP usati esclusivamente dal malware, disturbi dei PUP e alcuni truffatori. Già incluso in Dandelion Sprout's Annoyances List."
+			},
+			"ja": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "他の主要なマルウェア対策リストよりも多くのマルウェアをブロックします。マルウェアのリダイレクトチェーンで使用されるドメインやURLパターン、マルウェアによってのみ使用されるIPアドレス、PUPの迷惑要素、そしていくつかの詐欺師もブロック対象に入っています。※このリストは、既に「Dandelion Sprout\\'s Annoyances List」に含まれています。"
+			},
+			"ko": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "대부분의 주요 악성코드 차단 목록보다 더 많은 악성코드를 차단합니다. 악성코드 리디렉션 체인에 사용되는 도메인 및 URL 패턴, 악성코드 전용 IP 주소, PUP(잠재적으로 원하지 않는 프로그램) 알림, 그리고 일부 사기꾼을 차단합니다. 이미 Dandelion Sprout's Annoyances List에 포함되어 있습니다."
+			},
+			"lt": {
+				"name": "Dandelion Sprout's Anti-Malware sąrašas",
+				"description": "Blokuoja daugiau kenkėjiškų programų nei dauguma kitų pagrindinių antivirusinių sąrašų – domenai ir URL šablonai, naudojami kenkėjiškų programų nukreipimuose, IP adresai, kurie naudojami tik kenkėjiškoms programoms, potencialiai nepageidaujamų programų (PNP) įkyrūs pranešimai ir keli sukčiai. Jau įtrauktas į Dandelion Sprout's Annoyances List."
+			},
+			"mk": {
+				"name": "Список против малициозен софтвер на Dandelion Sprout",
+				"description": "Блокира повеќе злонамерна содржина од повеќето други главни анти-злонамерни списоци – домени и URL шаблони користени во синџири за пренасочување на злонамерна содржина, IP адреси кои се користат единствено од злонамерни, досадни пораки од PUP, и неколку измамници. Веќе е вклучен во Dandelion Sprout's Annoyances List."
+			},
+			"ms": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Menyekat lebih banyak perisian jahat berbanding kebanyakan senarai anti-perisian jahat utama yang lain - domain dan corak URL yang digunakan dalam rantaian pengalihan perisian jahat, Alamat IP yang hanya digunakan oleh perisian jahat, notifikasi PUP, dan beberapa penipu. Sudah termasuk dalam Dandelion Sprout's Annoyances List."
+			},
+			"nl": {
+				"name": "Dandelion Sprout's Anti-malwarelijst",
+				"description": "Blokkeert meer malware dan de meeste andere grote anti-malwarelijsten: domeinen en URL-patronen die worden gebruikt in malware-omleidingsketens, IP-adressen die uitsluitend door malware worden gebruikt, PUP-nags en een paar oplichters. Reeds opgenomen in de lijst met ergernissen van Dandelion Sprout."
+			},
+			"no": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blokkerer mer skadevare enn de fleste andre store anti-skadevare lister – domener og URL-mønstre brukt i skadevare-omdirigeringskjeder, IP-adresser som kun brukes av skadevare, PUP-varsler og noen få svindlere. Allerede inkludert i Dandelion Sprout's Annoyances List."
+			},
+			"pl": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blokuje więcej złośliwego oprogramowania niż większość innych głównych list anty-malware – domeny oraz wzorce URL używane w łańcuchach przekierowań złośliwego oprogramowania, adresy IP wykorzystywane wyłącznie przez złośliwe oprogramowanie, powiadomienia typu PUP oraz kilku oszustów. Już zawarte w Dandelion Sprout's Annoyances List."
+			},
+			"pt": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Bloqueia mais malware do que a maioria das outras grandes listas anti-malware: domínios e padrões de URL usados em cadeias de redirecionamento de malware, endereços de IP usados exclusivamente por malware, aborrecimentos de PUP, e alguns golpistas. Já incluído na Dandelion Sprout's Annoyances List."
+			},
+			"pt_BR": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Bloqueia mais malware do que a maioria das outras principais listas antimalware: domínios e padrões de URL usados em cadeias de redirecionamento de malware, endereços de IP usados exclusivamente por malware, notificações persistentes de PUP e alguns golpistas. Já incluído na Dandelion Sprout's Annoyances List."
+			},
+			"pt_PT": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Bloqueia mais malware do que a maioria das outras grandes listas anti-malware: domínios e padrões de URL usados em cadeias de redirecionamento de malware, endereços de IP usados exclusivamente por malware, aborrecimentos de PUP, e alguns golpistas. Já incluído na Dandelion Sprout's Annoyances List."
+			},
+			"ro": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blochează mai mult malware decât majoritatea celorlalte liste anti-malware majore - domenii și tipare de URL folosite în lanțuri de redirecționare de malware, Adrese IP folosite exclusiv de malware, notificări PUP și câțiva escroci. Deja inclusă în Dandelion Sprout's Annoyances List."
+			},
+			"ru": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Блокирует больше вредоносных программ, чем большинство других крупных списков: домены и URL-шаблоны, участвующие в перенаправлениях к вредоносному ПО, IP-адреса, которые используются исключительно вредоносными программами, навязчивые PUP-уведомления и несколько мошеннических ресурсов. Уже включён в Dandelion Sprout's Annoyances List."
+			},
+			"sk": {
+				"name": "Zoznam Anti-Malware od Dandelion Sprout",
+				"description": "Blokuje viac malvéru ako väčšina ostatných hlavných zoznamov anti-malvéru – domény a vzory URL používané v reťazcoch presmerovania malvéru, IP adresy, ktoré používa výlučne malvér, potenciálne nežiaduce programy a niekoľko podvodníkov. Už je zahrnutý v zozname nepríjemností Dandelion Sprout."
+			},
+			"sl": {
+				"name": "Seznam Dandelion Sprouta proti zlonamernmi programi",
+				"description": "Onemogoči več zlonamernih programov kot večina drugih glavnih seznamov za zaščito pred zlonamernimi programi — domene in vzorci URL naslovov, ki se uporabljajo v preusmeritvenih verigah zlonamernih programov, naslovi IP, ki jih izključno uporabljajo zlonamerni programi, nadležnosti PUP ter nekaj prevarantov. Je že vključen v Dandelion Sprout's Annoyances List."
+			},
+			"sr": {
+				"name": "Dandelion Sprout's Anti-Malware lista",
+				"description": "Blokira više malware-a nego većina drugih glavnih anti-malware lista — domena i URL obrazaca korišćenih u lancima preusmeravanja malware-a, IP adresa koje isključivo koristi malware, nagoveštaja PUP-a i nekoliko prevaranata. Već je uključeno u Dandelion Sprout's Annoyances List."
+			},
+			"sv": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Blockerar mer skadeprogram än de flesta andra stora anti-skadeprogram-listor — domäner och URL-mönster som används i skadeprogram-omdirigeringskedjor, IP-adresser som endast används av skadeprogram, PUP-naggar och några bedragare. Redan inkluderad i Dandelion Sprout's Annoyances List."
+			},
+			"th": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "บล็อกมัลแวร์ได้มากกว่ารายการป้องกันมัลแวร์หลักอื่น ๆ ส่วนใหญ่ — เช่น โดเมนและรูปแบบ URL ที่ใช้ในเครือข่ายเปลี่ยนเส้นทางของมัลแวร์ ที่อยู่ IP ที่ใช้โดยมัลแวร์เท่านั้น การแจ้งเตือน PUP ที่รบกวน และสแกมเมอร์บางราย รายการนี้ถูกเพิ่มไว้ใน Dandelion Sprout's Annoyances List แล้ว"
+			},
+			"tr": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Çoğu diğer büyük kötü amaçlı yazılım karşıtı listeden daha fazla kötü amaçlı yazılımı engeller — kötü amaçlı yazılım yönlendirme zincirlerinde kullanılan alan adları ve URL kalıpları, yalnızca kötü amaçlı yazılım tarafından kullanılan IP adresleri, PUP uyarıları ve birkaç dolandırıcı. Dandelion Sprout's Annoyances List içinde zaten bulunmaktadır."
+			},
+			"uk": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Блокує більше шкідливих програм, ніж більшість інших основних фільтрів захисту від шахрайських програм — домени та шаблони URL, що використовуються у ланцюжках перенаправлення шкідливої програми, IP-адреси, які використовуються виключно шкідливою програмою, настирливі повідомлення потенційно небажаних програм, а також кілька шахраїв. Вже включено до Dandelion Sprout's Annoyances List."
+			},
+			"vi": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "Chặn nhiều phần mềm độc hại hơn hầu hết các danh sách chống phần mềm độc hại lớn khác — các domain và mẫu URL được sử dụng trong chuỗi chuyển hướng phần mềm độc hại, Địa chỉ IP chỉ được phần mềm độc hại sử dụng, các cảnh báo khó chịu của PUP, và một số kẻ lừa đảo. Đã được bao gồm trong Dandelion Sprout's Annoyances List."
+			},
+			"zh": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "相比多数主流反恶意软件列表，本列表具备更全面的拦截能力，其覆盖范围包括：恶意软件重定向链中的域名与 URL 模式、恶意软件专属 IP 地址、潜在不受欢迎程序（PUP）弹窗及部分欺诈网站。该列表功能已集成于 Dandelion Sprout‘s Annoyances List 中。"
+			},
+			"zh_TW": {
+				"name": "Dandelion Sprout's Anti-Malware List",
+				"description": "相比多數主流反惡意軟體列表，本列表具備更全面的封鎖能力，其覆蓋範圍包括：惡意軟體重定向鏈中的域名與 URL 模式、惡意軟體專屬 IP 地址、潛在不受歡迎程式（PUP）彈窗及部分欺詐網站。該列表功能已集成於 Dandelion Sprout‘s Annoyances List 中。"
 			}
 		}
 	}

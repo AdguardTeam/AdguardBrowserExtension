@@ -24,6 +24,8 @@ import { ExtensionUpdateService } from 'extension-update-service';
 import { RulesLimitsService } from 'rules-limits-service';
 
 import {
+    appContext,
+    AppContextKey,
     settingsStorage,
     type IconData,
     type IconVariants,
@@ -53,6 +55,10 @@ export const defaultIconVariants: IconVariants = {
         '19': browser.runtime.getURL('assets/icons/update-available-19.png'),
         '38': browser.runtime.getURL('assets/icons/update-available-38.png'),
     },
+    loading: {
+        '19': browser.runtime.getURL('assets/icons/loading-19.png'),
+        '38': browser.runtime.getURL('assets/icons/loading-38.png'),
+    },
 };
 
 /**
@@ -75,14 +81,12 @@ class IconsApi {
     public async init(): Promise<void> {
         await this.setPromoIconIfAny();
 
-        if (this.promoIcons?.enabled) {
-            // Pre-set promo icon to avoid flicker on tabs change
-            await this.update();
-        }
+        // Preset corrected icon during initialization
+        await this.update();
     }
 
     /**
-     * Pre-set one icon for all tabs based on the current extension state and
+     * Set one icon for all tabs based on the current extension state and
      * promo notification (if any). After that updates icon for current tab
      * based on tab context data.
      */
@@ -96,7 +100,7 @@ class IconsApi {
                 return;
             }
             try {
-                logger.debug(`[ext.IconsApi.update]: updating icon for tab ${tab.id}`, icon);
+                logger.trace(`[ext.IconsApi.update]: updating icon for tab ${tab.id}`, icon);
                 await IconsApi.setActionIcon(icon, tab.id);
             } catch (e) {
                 logger.debug(`[ext.IconsApi.update]: failed to update icon for tab ${tab.id}:`, e);
@@ -176,7 +180,7 @@ class IconsApi {
      * @param frameData Tab's {@link FrameData}.
      */
     public async dismissPromoIcon(tabId?: number, frameData?: FrameData): Promise<void> {
-        this.setPromoIcons(null);
+        this.promoIcons = null;
 
         const icon = await this.pickIconVariant();
 
@@ -205,11 +209,22 @@ class IconsApi {
      * Picks the icon variant based on the current extension state.
      * Fallbacks to default icon variants if the promo icons are not set.
      *
+     * Order of priority:
+     * 1. Loading icon if the extension is not initialized yet.
+     * 2. Warning icon if MV3 filter limits are exceeded.
+     * 3. Promo notification icons if any.
+     * 4. Update available icon if an update is available (MV3 only).
+     * 5. Enabled/Disabled icon based on the isDisabled parameter.
+     *
      * @param isDisabled Is website allowlisted or app filtering disabled.
      *
      * @returns Icon variant to display.
      */
     private async pickIconVariant(isDisabled = false): Promise<IconData> {
+        if (!appContext.get(AppContextKey.IsInit)) {
+            return defaultIconVariants.loading;
+        }
+
         const isMv3LimitsExceeded = __IS_MV3__
             ? await RulesLimitsService.areFilterLimitsExceeded()
             : false;
@@ -226,7 +241,8 @@ class IconsApi {
                 : this.promoIcons.enabled;
         }
 
-        if (__IS_MV3__ && ExtensionUpdateService.isUpdateAvailable) {
+        // Check if update icon should be shown based on delay period
+        if (__IS_MV3__ && ExtensionUpdateService.shouldShowUpdateIcon()) {
             return defaultIconVariants.updateAvailable;
         }
 
@@ -264,15 +280,6 @@ class IconsApi {
     }
 
     /**
-     * Sets the promo icon variants.
-     *
-     * @param iconVariants Icon variants to set.
-     */
-    private setPromoIcons(iconVariants: IconVariants | null): void {
-        this.promoIcons = iconVariants;
-    }
-
-    /**
      * If promo icons variants are not set,
      * fetches icon variants from the promo notification api (if any),
      * otherwise does nothing.
@@ -283,7 +290,7 @@ class IconsApi {
         }
         const notification = await promoNotificationApi.getCurrentNotification();
         if (notification && notification.icons) {
-            this.setPromoIcons(notification.icons);
+            this.promoIcons = notification.icons;
         }
     }
 
@@ -298,7 +305,7 @@ class IconsApi {
     private async resetPromoIconIfAny(tabId: number, frameData: FrameData): Promise<void> {
         const notification = await promoNotificationApi.getCurrentNotification();
         if (notification && notification.icons) {
-            this.setPromoIcons(notification.icons);
+            this.promoIcons = notification.icons;
         } else {
             await this.dismissPromoIcon(tabId, frameData);
         }
