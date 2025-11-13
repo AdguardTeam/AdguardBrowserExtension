@@ -20,7 +20,7 @@ import { MANUAL_EXTENSION_UPDATE_KEY, MIN_UPDATE_DISPLAY_DURATION_MS } from '../
 import { logger } from '../../../common/logger';
 import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { ForwardFrom } from '../../../common/forward';
-import { PagesApi } from '../../api';
+import { FilterUpdateApi, PagesApi } from '../../api';
 import { browserStorage } from '../../storages';
 import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
@@ -211,12 +211,15 @@ export class ManualUpdateHandler {
     }
 
     /**
-     * Applies manual update and reloads extension.
+     * Applies manual update for extension and reloads extension.
      *
      * Flow:
-     * 1. Stores manual update data (initVersion, pageToOpenAfterReload).
-     * 2. Clears auto update state.
-     * 3. Reloads extension via chrome.runtime.reload().
+     * 1. Updates custom filters before reload.
+     * 2. Stores manual update data (initVersion, pageToOpenAfterReload).
+     * 3. Sets content script update flag to prevent double injection.
+     * 4. Clears auto update state.
+     * 5. Reloads extension via chrome.runtime.reload().
+     * 6. Handles update failure and notifies via callback.
      *
      * @param from Page from which update was initiated.
      * @param clearAutoUpdateState Callback to clear auto update state.
@@ -230,6 +233,12 @@ export class ManualUpdateHandler {
         this.onUpdateApplyStart();
 
         let isExtensionUpdated = false;
+
+        try {
+            await FilterUpdateApi.updateCustomFilters();
+        } catch (e) {
+            logger.error(`[ext.ManualUpdateHandler.applyUpdate]: Failed to update custom filters before extension reload, updating extension will continue. Origin error: ${e}`);
+        }
 
         try {
             const { currentAppVersion } = await getRunInfo();
