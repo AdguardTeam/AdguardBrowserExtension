@@ -28,8 +28,7 @@ export enum Theme {
 }
 
 /**
- * Retention cohort of the user
- * TODO: find info about this.
+ * Retention cohort of the user.
  */
 export enum RetentionCohort {
     Day1 = 'DAY_1',
@@ -40,8 +39,6 @@ export enum RetentionCohort {
 
 /**
  * Filter update interval source.
- * TODO: We don't have filter updating in MV3
- * TODO: find info about this.
  */
 export enum FilterUpdateIntervalSource {
     SystemDefault = 'SYSTEM_DEFAULT',
