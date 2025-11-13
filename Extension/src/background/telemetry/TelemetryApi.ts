@@ -33,7 +33,7 @@ export class TelemetryApi {
     /**
      * API endpoint path.
      */
-    private static readonly API_PATH = 'v1/event';
+    private static readonly API_PATH = 'api/v1/event';
 
     /**
      * Sends a telemetry event to the telemetry service.
@@ -58,7 +58,7 @@ export class TelemetryApi {
                 logger.error(`[ext.TelemetryApi.sendEvent]: Failed to send event: ${response.status}`);
             }
         } catch (error) {
-            logger.error(`[ext.TelemetryApi.sendEvent]: Failed to send event: ${error}`);
+            logger.error('[ext.TelemetryApi.sendEvent]: Failed to send event');
         }
     }
 
