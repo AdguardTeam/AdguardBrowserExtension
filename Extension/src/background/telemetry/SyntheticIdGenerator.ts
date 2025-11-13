@@ -44,18 +44,18 @@ export class SyntheticIdGenerator {
      * @returns Synthetic ID.
      */
     public static async gainSyntheticId(): Promise<string> {
-        const syntheticId = await browserStorage.get(TELEMETRY_SYNTHETIC_ID_KEY);
+        const storedId = await browserStorage.get(TELEMETRY_SYNTHETIC_ID_KEY);
 
         // Generate new synthetic ID if it doesn't exist in storage
-        if (typeof syntheticId !== 'string' || !SyntheticIdGenerator.isValidSyntheticId(syntheticId)) {
+        if (typeof storedId !== 'string' || !SyntheticIdGenerator.isValidSyntheticId(storedId)) {
             logger.debug('[ext.SyntheticIdGenerator.gainSyntheticId]: Generating new synthetic id');
-            const syntheticId = SyntheticIdGenerator.generateSyntheticId();
-            await browserStorage.set(TELEMETRY_SYNTHETIC_ID_KEY, syntheticId);
+            const newId = SyntheticIdGenerator.generateSyntheticId();
+            await browserStorage.set(TELEMETRY_SYNTHETIC_ID_KEY, newId);
 
-            return syntheticId;
+            return newId;
         }
 
-        return syntheticId;
+        return storedId;
     }
 
     /**

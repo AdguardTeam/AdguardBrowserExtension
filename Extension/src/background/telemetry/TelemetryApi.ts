@@ -24,9 +24,15 @@ import { type TelemetryApiEventData } from './types';
  * API client for sending telemetry events to the telemetry service.
  */
 export class TelemetryApi {
-    // TODO: create config for dev and prod versions. look vpn example
-    private static readonly TELEMETRY_URL = 'telemetry.service.agrd.dev';
+    /**
+     * Telemetry service URL.
+     * TODO: Should I move this to the some common config?
+     */
+    private static readonly TELEMETRY_URL = IS_RELEASE ? 'api.agrd-tm.com' : 'telemetry.service.agrd.dev';
 
+    /**
+     * API endpoint path.
+     */
     private static readonly API_PATH = 'v1/event';
 
     /**
@@ -49,7 +55,6 @@ export class TelemetryApi {
             const response = await fetch(url, config);
 
             if (!response.ok) {
-                // TODO: maybe move to debug?
                 logger.error(`[ext.TelemetryApi.sendEvent]: Failed to send event: ${response.status}`);
             }
         } catch (error) {
