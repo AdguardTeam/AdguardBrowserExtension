@@ -139,7 +139,7 @@ export class PopupService {
      * Creates listeners for getter of tab info and for popup.
      */
     static init(): void {
-        messageHandler.addListener(MessageType.GetIsEngineStarted, PopupService.getIsAppInitialized);
+        messageHandler.addListener(MessageType.GetIsAppInitialized, PopupService.getIsAppInitialized);
         messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupService.getTabInfoForPopup);
         messageHandler.addListener(
             MessageType.ChangeApplicationFilteringPaused,

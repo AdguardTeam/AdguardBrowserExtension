@@ -155,7 +155,7 @@ export class Engine implements TsWebExtensionEngine {
          *   - Base filter (ID: 2) is enabled in manifest
          *   - Default filters (IDs: 2, 10) are pending enablement.
          */
-        iconsApi.update();
+        await iconsApi.update();
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
@@ -193,7 +193,7 @@ export class Engine implements TsWebExtensionEngine {
             }
         }
         // Updates extension icon state to reflect current filtering status.
-        iconsApi.update();
+        await iconsApi.update();
         filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
