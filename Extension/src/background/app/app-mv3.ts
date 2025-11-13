@@ -51,6 +51,7 @@ import {
     PageStatsApi,
     UiApi,
     HitStatsApi,
+    iconsApi,
 } from '../api';
 import {
     UiService,
@@ -246,7 +247,7 @@ export class App {
          */
         eventService.init();
 
-        ExtensionUpdateService.init();
+        await ExtensionUpdateService.init();
 
         /**
          * Called after eventService init, otherwise it won't handle messages.
@@ -290,6 +291,9 @@ export class App {
         await engine.start();
 
         appContext.set(AppContextKey.IsInit, true);
+
+        // Update icons to hide "loading" icon
+        await iconsApi.update();
 
         await sendMessage({ type: MessageType.AppInitialized });
 

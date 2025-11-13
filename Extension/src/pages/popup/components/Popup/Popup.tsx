@@ -30,7 +30,6 @@ import { Icons } from '../ui/Icons';
 import { MainContainer } from '../MainContainer';
 import { Notifications } from '../Notifications';
 import { PromoNotification } from '../PromoNotification';
-import { SplashScreen } from '../SplashScreen';
 import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
@@ -43,6 +42,7 @@ import {
 } from '../../../../common/messages';
 import { logger } from '../../../../common/logger';
 import { useObservePopupHeight } from '../../hooks/useObservePopupHeight';
+import { AnimatedLoader } from '../AnimatedLoader';
 
 import '../../styles/main.pcss';
 import './popup.pcss';
@@ -50,9 +50,9 @@ import './popup.pcss';
 export const Popup = observer(() => {
     const {
         appearanceTheme,
-        isLoading,
-        isEngineStarted,
-        checkIsEngineStarted,
+        isAppInitialized,
+        fetchIsAppInitialized,
+        setIsAppInitialized,
         getPopupData,
         updateBlockedStats,
         isAndroidBrowser,
@@ -63,10 +63,10 @@ export const Popup = observer(() => {
     // retrieve init data
     useEffect(() => {
         (async () => {
-            await checkIsEngineStarted();
+            await fetchIsAppInitialized();
             await getPopupData();
         })();
-    }, [checkIsEngineStarted, getPopupData]);
+    }, [fetchIsAppInitialized, getPopupData]);
 
     /**
      * We are adding "android" class to html element
@@ -139,6 +139,7 @@ export const Popup = observer(() => {
                     break;
                 }
                 case MessageType.AppInitialized: {
+                    setIsAppInitialized(true);
                     getPopupData();
                     break;
                 }
@@ -152,7 +153,7 @@ export const Popup = observer(() => {
         return () => {
             messenger.onMessage.removeListener(messageHandler);
         };
-    }, [updateBlockedStats, getPopupData]);
+    }, [updateBlockedStats, getPopupData, setIsAppInitialized]);
 
     const LoadedPopup = (
         <>
@@ -166,15 +167,13 @@ export const Popup = observer(() => {
         </>
     );
 
-    const PopupContent = isLoading
-        ? <SplashScreen isEngineStarted={isEngineStarted} />
-        : LoadedPopup;
-
     return (
         <>
             <CommonIcons />
             <Icons />
-            {PopupContent}
+            <AnimatedLoader isLoading={!isAppInitialized}>
+                {LoadedPopup}
+            </AnimatedLoader>
         </>
     );
 });

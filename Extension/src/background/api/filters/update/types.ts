@@ -16,4 +16,21 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { SplashScreen } from './SplashScreen';
+/**
+ * Filter update detail.
+ */
+export type FilterUpdateOptions = {
+    /**
+     * Filter identifier.
+     */
+    filterId: number;
+    /**
+     * Should we update filters fully without patch updates or load patches to filters.
+     */
+    ignorePatches: boolean;
+};
+
+/**
+ * List of filter update details.
+ */
+export type FilterUpdateOptionsList = FilterUpdateOptions[];

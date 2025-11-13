@@ -46,7 +46,7 @@ export const isUserScriptsApiSupported = () => {
  */
 export const shouldShowUserScriptsApiWarning = (): boolean => {
     if (isUserScriptsApiSupported()) {
-        logger.debug('[ext.user-scripts-api]: User Scripts API permission is already granted');
+        logger.trace('[ext.user-scripts-api]: User Scripts API permission is already granted');
         return false;
     }
 

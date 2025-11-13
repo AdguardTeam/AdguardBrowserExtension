@@ -41,7 +41,7 @@ import {
 import { translator } from '../../../common/translators/translator';
 import { type PromoNotification } from '../../../background/storages';
 import {
-    AppState,
+    type AppState,
     appStateActor,
     AppStateEvent,
 } from '../state-machines/app-state-machine';
@@ -83,17 +83,10 @@ export class PopupStore {
     isFilteringPossible = true;
 
     /**
-     * Flag that indicates whether the filtering engine is started.
-     *
-     * Needed for splash screen displaying.
-     *
-     * If not set, equals to `null` which means that the engine state is unknown
-     * and empty screen (splash screen with no logo) should be displayed.
-     * If set to `true`, the engine is started and the splash screen should not be displayed.
-     * If set to `false`, the engine is not started and the splash screen should be displayed.
+     * Flag that indicates whether the application is initialized.
      */
     @observable
-    isEngineStarted: boolean | null = null;
+    isAppInitialized: boolean = false;
 
     /**
      * Flag that indicates whether the filtering on a website is disabled
@@ -182,15 +175,22 @@ export class PopupStore {
     }
 
     /**
-     * Checks whether the filtering engine is started.
+     * Fetches the application initialized state from the background.
+     */
+    fetchIsAppInitialized = async () => {
+        const res = await messenger.getIsAppInitialized();
+
+        this.setIsAppInitialized(res);
+    };
+
+    /**
+     * Sets the application initialized flag.
+     *
+     * @param value Whether the application is initialized.
      */
     @action
-    checkIsEngineStarted = async () => {
-        const res = await messenger.getIsEngineStarted();
-
-        runInAction(() => {
-            this.isEngineStarted = res;
-        });
+    setIsAppInitialized = (value: boolean) => {
+        this.isAppInitialized = value;
     };
 
     /**
@@ -205,16 +205,6 @@ export class PopupStore {
             appStateActor.send({ type: AppStateEvent.Enable });
         }
     };
-
-    /**
-     * Flag that indicates whether the popup is loading
-     * and a splash screen should be displayed.
-     */
-    @computed
-    get isLoading(): boolean {
-        return this.appState === AppState.Loading
-            && !this.isEngineStarted;
-    }
 
     @action
     getPopupData = async (): Promise<GetTabInfoForPopupResponse | undefined> => {

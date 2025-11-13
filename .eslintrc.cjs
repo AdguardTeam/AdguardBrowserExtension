@@ -126,7 +126,9 @@ module.exports = {
             'ignoreComments': false,
             'ignoreTemplateLiterals': true,
             /**
-             * Ignore calls to logger, e.g. logger.error(), because of the long string.
+             * Ignore calls to logger, e.g. logger.error(), because it's easier
+             * to find long log messages just via copy-pasting them to the search
+             * and line breaks make it harder.
              */
             'ignorePattern': 'logger\\.',
         }],

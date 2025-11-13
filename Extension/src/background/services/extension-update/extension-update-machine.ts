@@ -175,7 +175,7 @@ function createExtensionUpdateActorWithHandler(): ReturnType<typeof createActor>
         // needed, because it will set the correct icon for all tabs independent
         // of their state (enabled/disabled/allowlisted).
         if (state.value === ExtensionUpdateFSMState.Available) {
-            iconsApi.update();
+            await iconsApi.update();
         }
     };
 
