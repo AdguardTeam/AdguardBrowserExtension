@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.2 patch 3
 
+### Added
+
+- Telemetry system for tracking user interactions and analytics events.
+
 ### Changed
 
 - Extension will apply auto-update in MV3 if update is available and browser
