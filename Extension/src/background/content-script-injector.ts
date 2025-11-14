@@ -32,9 +32,11 @@ import {
     CONTENT_SCRIPT_END_OUTPUT,
     SUBSCRIBE_OUTPUT,
 } from '../../../constants';
+import { CONTENT_SCRIPT_INJECTION_FLAG } from '../common/constants';
 import { TabsApi } from '../common/api/extension/tabs';
 
 import { createPromiseWithTimeout } from './utils/timeouts';
+import { browserStorage } from './storages';
 
 /**
  * Helper class for injecting content script into tabs, opened before extension
@@ -93,6 +95,14 @@ export class ContentScriptInjector {
      * Returns open tabs and injects content scripts into tab contexts.
      */
     public static async init(): Promise<void> {
+        // Check if content scripts were already injected after extension update
+        const injectionFlag = await browserStorage.get(CONTENT_SCRIPT_INJECTION_FLAG);
+        if (Boolean(injectionFlag) === true) {
+            logger.info('[ext.ContentScriptInjector.init]: Content scripts already injected after extension update, skipping injection');
+            await browserStorage.remove(CONTENT_SCRIPT_INJECTION_FLAG);
+            return;
+        }
+
         const tabs = await TabsApi.getAll();
 
         const tasks: Promise<void>[] = [];
@@ -265,5 +275,18 @@ export class ContentScriptInjector {
         }
 
         return isInjected;
+    }
+
+    /**
+     * Sets the flag to prevent double injection after extension update.
+     * This flag persists in browserStorage across extension reloads.
+     * Should be called by update handlers before extension reload.
+     */
+    public static async setUpdateFlag(): Promise<void> {
+        try {
+            await browserStorage.set(CONTENT_SCRIPT_INJECTION_FLAG, true);
+        } catch (e) {
+            logger.error('[ext.ContentScriptInjector.setUpdateFlag]: cannot set update flag in browser storage:', e);
+        }
     }
 }

@@ -37,4 +37,8 @@ export const defaultIconVariants: IconVariants = {
         '19': browser.runtime.getURL('assets/icons/update-available-19.png'),
         '38': browser.runtime.getURL('assets/icons/update-available-38.png'),
     },
+    loading: {
+        '19': browser.runtime.getURL('assets/icons/loading-19.png'),
+        '38': browser.runtime.getURL('assets/icons/loading-38.png'),
+    },
 };

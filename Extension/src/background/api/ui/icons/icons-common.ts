@@ -16,6 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+import { browserAction } from 'browser-action';
 
 import { tabsApi as tsWebExtTabsApi } from 'tswebextension';
 
@@ -29,7 +30,6 @@ import { iconsCache, TabsApi as CommonTabsApi } from '../../../../common/api/ext
 import { logger } from '../../../../common/logger';
 import { FramesApi, type FrameData } from '../frames';
 import { promoNotificationApi } from '../promo-notification';
-import { browserAction } from '../browser-action';
 
 /**
  * The Icons API is responsible for managing the extension's action state.
@@ -51,14 +51,12 @@ export abstract class IconsApiCommon {
     public async init(): Promise<void> {
         await this.setPromoIconIfAny();
 
-        if (this.promoIcons?.enabled) {
-            // Pre-set promo icon to avoid flicker on tabs change
-            await this.update();
-        }
+        // Preset corrected icon during initialization
+        await this.update();
     }
 
     /**
-     * Pre-set one icon for all tabs based on the current extension state and
+     * Set one icon for all tabs based on the current extension state and
      * promo notification (if any). After that updates icon for current tab
      * based on tab context data.
      */
@@ -72,7 +70,7 @@ export abstract class IconsApiCommon {
                 return;
             }
             try {
-                logger.debug(`[ext.IconsApiCommon.update]: updating icon for tab ${tab.id}`, icon);
+                logger.trace(`[ext.IconsApiCommon.update]: updating icon for tab ${tab.id}`, icon);
                 await IconsApiCommon.setActionIcon(icon, tab.id);
             } catch (e) {
                 logger.debug(`[ext.IconsApiCommon.update]: failed to update icon for tab ${tab.id}:`, e);
@@ -152,7 +150,7 @@ export abstract class IconsApiCommon {
      * @param frameData Tab's {@link FrameData}.
      */
     public async dismissPromoIcon(tabId?: number, frameData?: FrameData): Promise<void> {
-        this.setPromoIcons(null);
+        this.promoIcons = null;
 
         const icon = await this.pickIconVariant();
 
@@ -219,15 +217,6 @@ export abstract class IconsApiCommon {
     }
 
     /**
-     * Sets the promo icon variants.
-     *
-     * @param iconVariants Icon variants to set.
-     */
-    private setPromoIcons(iconVariants: IconVariants | null): void {
-        this.promoIcons = iconVariants;
-    }
-
-    /**
      * If promo icons variants are not set,
      * fetches icon variants from the promo notification api (if any),
      * otherwise does nothing.
@@ -238,7 +227,7 @@ export abstract class IconsApiCommon {
         }
         const notification = await promoNotificationApi.getCurrentNotification();
         if (notification && notification.icons) {
-            this.setPromoIcons(notification.icons);
+            this.promoIcons = notification.icons;
         }
     }
 
@@ -253,7 +242,7 @@ export abstract class IconsApiCommon {
     private async resetPromoIconIfAny(tabId: number, frameData: FrameData): Promise<void> {
         const notification = await promoNotificationApi.getCurrentNotification();
         if (notification && notification.icons) {
-            this.setPromoIcons(notification.icons);
+            this.promoIcons = notification.icons;
         } else {
             await this.dismissPromoIcon(tabId, frameData);
         }

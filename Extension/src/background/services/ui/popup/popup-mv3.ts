@@ -78,6 +78,7 @@ export class PopupService extends PopupServiceCommon {
         const isSuccessfulExtensionUpdate = manualExtensionUpdateData?.isOk || false;
         const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
 
+        // TODO: AG-47075 Should be moved to extension update service initialization.
         extensionUpdateActor.send({
             type: ExtensionUpdateFSMEvent.Init,
             isReloadedOnUpdate: isExtensionReloadedOnUpdate,
