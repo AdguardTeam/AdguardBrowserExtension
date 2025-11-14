@@ -275,8 +275,9 @@ const blackFriday25Notification: PromoNotification = {
     to: '5 December 2025 23:59:00',
     type: 'animated',
     bgImage: browser.runtime.getURL('assets/images/blackfriday25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/blackfriday25-update.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/blackfriday25.svg'),
     icons: {
+        ...defaultIconVariants,
         enabled: {
             '19': browser.runtime.getURL('assets/icons/blackfriday25-on-19.png'),
             '38': browser.runtime.getURL('assets/icons/blackfriday25-on-38.png'),
@@ -285,8 +286,6 @@ const blackFriday25Notification: PromoNotification = {
             '19': browser.runtime.getURL('assets/icons/blackfriday25-off-19.png'),
             '38': browser.runtime.getURL('assets/icons/blackfriday25-off-38.png'),
         },
-        warning: defaultIconVariants.warning,
-        updateAvailable: defaultIconVariants.updateAvailable,
     },
 };
 
