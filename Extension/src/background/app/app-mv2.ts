@@ -47,6 +47,7 @@ import {
     UiApi,
     PageStatsApi,
     HitStatsApi,
+    iconsApi,
 } from '../api';
 import {
     UiService,
@@ -314,6 +315,9 @@ export class App {
         await engine.start();
 
         appContext.set(AppContextKey.IsInit, true);
+
+        // Update icons to hide "loading" icon
+        await iconsApi.update();
 
         // Initialize filters updates, after engine started, so that it won't mingle with engine
         // initialization from current rules

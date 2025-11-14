@@ -123,7 +123,7 @@ export abstract class PopupServiceCommon {
      * Creates listeners for getter of tab info and for popup.
      */
     static init(): void {
-        messageHandler.addListener(MessageType.GetIsEngineStarted, PopupServiceCommon.getIsAppInitialized);
+        messageHandler.addListener(MessageType.GetIsAppInitialized, PopupServiceCommon.getIsAppInitialized);
         messageHandler.addListener(MessageType.GetTabInfoForPopup, PopupServiceCommon.getTabInfoForPopup);
         messageHandler.addListener(
             MessageType.ChangeApplicationFilteringPaused,

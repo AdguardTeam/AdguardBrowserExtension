@@ -17,7 +17,9 @@
  */
 import { type Runtime } from 'webextension-polyfill';
 
-import { Engine, type EngineMessage } from 'engine';
+import { MESSAGE_HANDLER_NAME } from '@adguard/tswebextension/mv3';
+
+import type { EngineMessage } from 'engine';
 
 import {
     type Message,
@@ -48,7 +50,7 @@ export class BackgroundMessageHandler extends MessageHandler {
         message: Message | EngineMessage,
         sender: Runtime.MessageSender,
     ): Promise<unknown> | undefined {
-        if (message.handlerName === Engine.messageHandlerName) {
+        if (message.handlerName === MESSAGE_HANDLER_NAME) {
             return engine.handleMessage(message, sender);
         }
 

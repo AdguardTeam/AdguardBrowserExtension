@@ -21,11 +21,65 @@ import zod from 'zod';
 import { ForwardFrom } from '../../../common/forward';
 
 /**
- * Manual extension update data validator.
+ * Field names for AutoUpdateState to avoid magic strings.
  */
-export const ManualExtensionUpdateDataValidator = zod.object({
+export const AutoUpdateStateField = {
+    nextVersion: 'nextVersion',
+    isManualCheck: 'isManualCheck',
+    updateAvailableTimestamp: 'updateAvailableTimestamp',
+    lastNavigationTimestamp: 'lastNavigationTimestamp',
+} as const;
+
+/**
+ * Shared update state validator (used by both manual and auto-update).
+ */
+export const SharedUpdateStateValidator = zod.object({
     /**
-     * Version of the extension where the manual extension update was initialized.
+     * Next available version for update.
+     */
+    [AutoUpdateStateField.nextVersion]: zod.string().optional(),
+
+    /**
+     * Whether update was discovered via manual check (user-triggered)
+     * or automatically (Chrome background update).
+     */
+    [AutoUpdateStateField.isManualCheck]: zod.boolean().optional(),
+});
+
+/**
+ * Shared update state (used by both manual and auto-update).
+ */
+export type SharedUpdateState = zod.infer<typeof SharedUpdateStateValidator>;
+
+/**
+ * Auto-update specific state validator (timestamps for orchestration).
+ */
+export const AutoUpdateSpecificStateValidator = zod.object({
+    /**
+     * Timestamp when update became available (for icon delay calculation).
+     * Only used for automatic updates.
+     */
+    [AutoUpdateStateField.updateAvailableTimestamp]: zod.number().optional(),
+
+    /**
+     * Timestamp of last navigation event (for idle detection).
+     * Only used for automatic updates.
+     */
+    [AutoUpdateStateField.lastNavigationTimestamp]: zod.number().optional(),
+});
+
+/**
+ * Auto-update specific state (timestamps for orchestration).
+ */
+export type AutoUpdateSpecificState = zod.infer<typeof AutoUpdateSpecificStateValidator>;
+
+/**
+ * Manual update notification metadata validator.
+ * Stored before reload, retrieved once by UI for notification, then deleted.
+ */
+export const ManualUpdateMetadataValidator = zod.object({
+    /**
+     * Version of the extension where the manual update was initialized.
      */
     initVersion: zod.string(),
 
@@ -41,6 +95,45 @@ export const ManualExtensionUpdateDataValidator = zod.object({
 });
 
 /**
- * Manual extension update data.
+ * Manual update notification metadata.
+ * Stored before reload, retrieved once by UI for notification, then deleted.
  */
-export type ManualExtensionUpdateData = zod.infer<typeof ManualExtensionUpdateDataValidator>;
+export type ManualUpdateMetadata = zod.infer<typeof ManualUpdateMetadataValidator>;
+
+/**
+ * Combined update state validator (shared + auto-specific).
+ * This is stored together in chrome.storage.local for efficiency.
+ */
+export const AutoUpdateStateValidator = SharedUpdateStateValidator.merge(
+    AutoUpdateSpecificStateValidator,
+);
+
+/**
+ * Combined update state (shared + auto-specific).
+ */
+export type AutoUpdateState = SharedUpdateState & AutoUpdateSpecificState;
+
+/**
+ * Auto-update configuration validator.
+ */
+export const AutoUpdateConfigValidator = zod.object({
+    /**
+     * Time to wait before showing the update icon after update becomes available.
+     */
+    iconDelayMs: zod.number().optional(),
+
+    /**
+     * Time of inactivity before automatically applying update.
+     */
+    idleThresholdMs: zod.number().optional(),
+
+    /**
+     * Interval for checking if conditions are met to apply auto-update.
+     */
+    checkIntervalMs: zod.number().optional(),
+}).strict();
+
+/**
+ * Auto-update configuration data.
+ */
+export type AutoUpdateConfig = zod.infer<typeof AutoUpdateConfigValidator>;

@@ -124,6 +124,7 @@ export class SettingsService {
 
         const isExtensionUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
 
+        // TODO: AG-47075 Should be moved to extension update service initialization.
         extensionUpdateActor.send({
             type: ExtensionUpdateFSMEvent.Init,
             isUpdateAvailable: isExtensionUpdateAvailable,
