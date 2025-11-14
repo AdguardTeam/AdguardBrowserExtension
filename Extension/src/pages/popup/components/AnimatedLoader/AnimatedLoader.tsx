@@ -75,7 +75,10 @@ export const AnimatedLoader = ({
     const [waited, setWaited] = useState(false);
     const [fastLoaded, setFastLoaded] = useState(false);
 
+    // Tracker for "fast load" case
     const loadStartTimeRef = useRef<number>(Date.now());
+    // Tracker for animation loop timing
+    const videoPlayStartTimeRef = useRef<number | null>(null);
     const videoDurationRef = useRef<number>(DEFAULT_ANIMATION_DURATION_MS);
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -89,13 +92,23 @@ export const AnimatedLoader = ({
 
         const elapsedTime = Date.now() - loadStartTimeRef.current;
 
-        // If loaded very quickly (before LOADER_MIN_DURATION_MS), show content immediately
+        // If loaded very quickly (before LOADER_MIN_DURATION_MS), show content
+        // immediately.
         if (elapsedTime < LOADER_MIN_DURATION_MS) {
             setFastLoaded(true);
+            return;
+        }
+
+        // If video hasn't started playing yet, but loading is done,
+        // we can consider the loading complete to prevent flickers.
+        if (!videoPlayStartTimeRef.current) {
+            setWaited(true);
+            return;
         }
 
         const animationDuration = videoDurationRef.current;
-        const toNextAnimationLoop = animationDuration - (elapsedTime % animationDuration);
+        const videoElapsedTime = Date.now() - videoPlayStartTimeRef.current;
+        const toNextAnimationLoop = animationDuration - (videoElapsedTime % animationDuration);
         const timer = setTimeout(() => {
             setWaited(true);
         }, toNextAnimationLoop);
@@ -110,8 +123,16 @@ export const AnimatedLoader = ({
             logger.warn('[ext.AnimatedLoader]: Video ref is null when loading metadata');
             return;
         }
+
         // Store the video duration in milliseconds
         videoDurationRef.current = videoRef.current.duration * 1000;
+        logger.trace('[ext.AnimatedLoader]: Video metadata loaded, duration:', videoDurationRef.current);
+    };
+
+    const handleVideoPlay = () => {
+        logger.trace('[ext.AnimatedLoader]: Video started playing');
+        // Set the timer for when video actually started playing
+        videoPlayStartTimeRef.current = Date.now();
     };
 
     const loader = (
@@ -125,6 +146,7 @@ export const AnimatedLoader = ({
                 muted
                 playsInline
                 onLoadedMetadata={handleVideoLoadedMetadata}
+                onPlay={handleVideoPlay}
             />
         </div>
     );
