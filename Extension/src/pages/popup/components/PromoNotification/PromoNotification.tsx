@@ -29,7 +29,7 @@ import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 
 import './promo-notification.pcss';
-// TODO: revert all file after testing
+
 export const PromoNotification = observer(() => {
     const {
         promoNotification,
@@ -38,8 +38,6 @@ export const PromoNotification = observer(() => {
     } = useContext(popupStore);
 
     const [notificationIsClosed, setNotificationIsClosed] = useState(false);
-    // TODO: remove after tests
-    const [currentLocaleIndex, setCurrentLocaleIndex] = useState(0);
 
     // schedule notification removal
     useEffect(() => {
@@ -47,19 +45,6 @@ export const PromoNotification = observer(() => {
             messenger.setNotificationViewed(true);
         }
     }, [promoNotification]);
-
-    // TODO: remove after testing
-    const availableLocales = Object.keys(promoNotification?.locales || {});
-
-    const handleLocaleSwitch = () => {
-        if (availableLocales.length > 0) {
-            setCurrentLocaleIndex((prevIndex) => {
-                const nextIndex = (prevIndex + 1) % availableLocales.length;
-
-                return nextIndex;
-            });
-        }
-    };
 
     if (
         !promoNotification
@@ -78,14 +63,7 @@ export const PromoNotification = observer(() => {
         }, closeTimeoutMs);
     };
 
-    // TODO: revert after tests
-    const currentLocale = availableLocales[currentLocaleIndex];
-    const currentText = (currentLocale && promoNotification.locales?.[currentLocale])
-        ? promoNotification.locales[currentLocale]
-        : promoNotification.text;
-
-    const { bgImage } = promoNotification;
-    const { title, btn } = typeof currentText === 'string' ? { title: '', btn: '' } : currentText;
+    const { bgImage, text: { title, btn } } = promoNotification;
 
     const promoStyle = {
         backgroundImage: `url(${bgImage})`,
@@ -95,30 +73,16 @@ export const PromoNotification = observer(() => {
         'promo-notification--closing': notificationIsClosed,
     });
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleLocaleSwitch();
-        }
-    };
-
     return (
         <div
             className={notificationClassnames}
             style={promoStyle}
-            onClick={handleLocaleSwitch}
-            onKeyDown={handleKeyDown}
-            role="button"
-            tabIndex={0}
         >
             <button
                 aria-label="close"
                 type="button"
                 className="promo-notification__close"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    handleNotificationClose();
-                }}
+                onClick={handleNotificationClose}
             >
                 <svg className="icon icon--24">
                     <use xlinkHref="#cross" />
@@ -131,10 +95,7 @@ export const PromoNotification = observer(() => {
                 <button
                     type="button"
                     className="promo-notification__btn"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        openPromoNotificationUrl();
-                    }}
+                    onClick={openPromoNotificationUrl}
                 >
                     {btn}
                 </button>
