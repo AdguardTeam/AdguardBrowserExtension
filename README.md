@@ -706,17 +706,29 @@ This is useful for temporarily relaxing or tightening the allowed size delta for
 
 ## <a name="permissions-required"></a> Permissions required
 
+### Common permissions for all browsers and manifest versions
+
 - `tabs`                          - this permission is required in order to get the URL of the options page tab
-- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
-- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime.
+- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources
+- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime
 - `contextMenus`                  - this permission is required in order to create a context menu
-- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
 - `storage`                       - this permission is required in order to save user settings, user rules and custom filters
-- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
-- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+- `privacy`                       - this permission allows access to browser privacy settings; required in Firefox, optional in Chrome/Edge/Opera
+
+### Permissions for MV2 only
+
+- `<all_urls>`                    - this permission grants access to all websites to apply content scripts and filtering rules
+- `webRequestBlocking`            - this permission is required to block or modify HTTP requests synchronously
+
+### Permissions for MV3 only
+
+- `host_permissions`              - this permission grants access to all websites (MV3 uses this instead of `<all_urls>`)
 - `userScripts`                   - this permission is required to let the user subscribe to custom filter lists and evaluate rules from these lists
+- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
+- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
+- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 
 ## <a name="auto-publish-builds"></a> Auto-publish builds
 
