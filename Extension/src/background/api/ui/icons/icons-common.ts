@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
-import { browserAction } from 'browser-action';
 
 import { tabsApi as tsWebExtTabsApi } from 'tswebextension';
 
@@ -30,6 +29,8 @@ import { iconsCache, TabsApi as CommonTabsApi } from '../../../../common/api/ext
 import { logger } from '../../../../common/logger';
 import { FramesApi, type FrameData } from '../frames';
 import { promoNotificationApi } from '../promo-notification';
+import { browserAction } from '../browser-action';
+import { translator } from '../../../../common/translators/translator';
 
 /**
  * The Icons API is responsible for managing the extension's action state.
@@ -166,13 +167,29 @@ export abstract class IconsApiCommon {
     }
 
     /**
-     * Sets the icon for the extension action.
+     * Sets the icon and tooltip for the extension action.
      *
-     * @param icon Icon to set.
-     * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
+     * @param icon Icon data object.
+     * @param icon.iconPaths Icons to set.
+     * @param icon.tooltip Tooltip text.
+     * @param tabId Tab's id, if not specified, the icon and tooltip will be set for all tabs.
      */
-    private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
-        await browserAction.setIcon({ imageData: await iconsCache.getIconImageData(icon), tabId });
+    private static async setActionIcon({ iconPaths, tooltip }: IconData, tabId?: number): Promise<void> {
+        try {
+            const appName = translator.getMessage('name');
+            const title = tooltip
+                ? `${appName}\n${tooltip}`
+                : appName;
+
+            await Promise.all([
+                browserAction.setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId }),
+                browserAction.setTitle({ title, tabId }),
+            ]);
+
+            logger.debug(`[ext.IconsApiCommon.setActionIcon]: Icon and tooltip set for tab ${tabId ?? 'all'}`);
+        } catch (e) {
+            logger.info('[ext.IconsApiCommon.setActionIcon]: Failed to set icon or tooltip:', e);
+        }
     }
 
     /**
