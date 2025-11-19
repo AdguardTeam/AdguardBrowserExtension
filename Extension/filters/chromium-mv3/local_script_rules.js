@@ -2293,54 +2293,54 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "7b0fe49ca4878b71af2e77dfe4259f5a" due to: ' + e);
         }
     },
-    '(()=>{let t;const e={apply:(e,o,c)=>{try{const e=c[0],o=c[1];let r,i;try{r=t?.STATE_ERROR,i=t?.STATE_VALIDATION}catch{r=void 0,i=void 0}if(r&&i&&"object"==typeof e&&null!==e&&1===Object.keys(e).length&&Object.values(e)[0]===r&&"object"==typeof o&&null!==o&&(n=o,Object.values(n).some((t=>{if("function"==typeof t&&t.toString().includes("]:!0}"))return!0})))){const[t]=Object.keys(e);void 0!==t&&Reflect.set(e,t,i)}}catch(t){}var n;return Reflect.apply(e,o,c)}};window.Object.is=new Proxy(window.Object.is,e);const o={apply:(e,o,c)=>{try{const e=c[0],o=c[1];!t&&e&&o&&"object"==typeof e&&"Module"===e[Symbol.toStringTag]&&"string"==typeof o&&"NitroScript"===o&&(t=e)}catch(t){}return Reflect.apply(e,o,c)}};window.Object.defineProperty=new Proxy(window.Object.defineProperty,o)})();': () => {
+    '(()=>{let t;const e={apply:(e,o,c)=>{try{const r=c[0],l=c[1];let y;try{y=t?.getNitroStateValue()}catch{return Reflect.apply(e,o,c)}if(y&&"object"==typeof r&&null!==r&&1===Object.keys(r).length&&"number"==typeof Object.values(r)[0]&&"object"==typeof l&&null!==l&&(n=l,Object.values(n).some((t=>{if("function"==typeof t&&t.toString().includes("]:!0}"))return!0})))){const[t]=Object.keys(r);void 0!==t&&Reflect.set(r,t,y+1)}}catch(t){}var n;return Reflect.apply(e,o,c)}};window.Object.is=new Proxy(window.Object.is,e);const o={apply:(e,o,c)=>{try{const e=c[0],o=c[1];!t&&e&&o&&"object"==typeof e&&"Module"===e[Symbol.toStringTag]&&"string"==typeof o&&"NitroScript"===o&&(t=e)}catch(t){}return Reflect.apply(e,o,c)}};window.Object.defineProperty=new Proxy(window.Object.defineProperty,o)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["892e11fcddece999c6b0f08fdb971f4a"] === e) return;
+            if (Window.prototype.toString.b990af6625716f6d6fe45948d5a5b4fa === e) return;
             (() => {
                 let e;
                 const t = {
-                    apply: (t, o, c) => {
+                    apply: (t, o, r) => {
                         try {
-                            const t = c[0], o = c[1];
-                            let n, i;
+                            const c = r[0], f = r[1];
+                            let i;
                             try {
-                                n = e?.STATE_ERROR, i = e?.STATE_VALIDATION;
+                                i = e?.getNitroStateValue();
                             } catch {
-                                n = void 0, i = void 0;
+                                return Reflect.apply(t, o, r);
                             }
-                            if (n && i && "object" == typeof t && null !== t && 1 === Object.keys(t).length && Object.values(t)[0] === n && "object" == typeof o && null !== o && (r = o, 
-                            Object.values(r).some((e => {
+                            if (i && "object" == typeof c && null !== c && 1 === Object.keys(c).length && "number" == typeof Object.values(c)[0] && "object" == typeof f && null !== f && (n = f, 
+                            Object.values(n).some((e => {
                                 if ("function" == typeof e && e.toString().includes("]:!0}")) return !0;
                             })))) {
-                                const [e] = Object.keys(t);
-                                void 0 !== e && Reflect.set(t, e, i);
+                                const [e] = Object.keys(c);
+                                void 0 !== e && Reflect.set(c, e, i + 1);
                             }
                         } catch (e) {}
-                        var r;
-                        return Reflect.apply(t, o, c);
+                        var n;
+                        return Reflect.apply(t, o, r);
                     }
                 };
                 window.Object.is = new Proxy(window.Object.is, t);
                 const o = {
-                    apply: (t, o, c) => {
+                    apply: (t, o, r) => {
                         try {
-                            const t = c[0], o = c[1];
+                            const t = r[0], o = r[1];
                             !e && t && o && "object" == typeof t && "Module" === t[Symbol.toStringTag] && "string" == typeof o && "NitroScript" === o && (e = t);
                         } catch (e) {}
-                        return Reflect.apply(t, o, c);
+                        return Reflect.apply(t, o, r);
                     }
                 };
                 window.Object.defineProperty = new Proxy(window.Object.defineProperty, o);
             })();
-            Object.defineProperty(Window.prototype.toString, "892e11fcddece999c6b0f08fdb971f4a", {
+            Object.defineProperty(Window.prototype.toString, "b990af6625716f6d6fe45948d5a5b4fa", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "892e11fcddece999c6b0f08fdb971f4a" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "b990af6625716f6d6fe45948d5a5b4fa" due to: ' + e);
         }
     },
     '!function(){const e={apply:(e,t,o)=>{const i=o[1];if(!i||"object"!=typeof i.QiyiPlayerProphetData)return Reflect.apply(e,t,o)}};window.Object.defineProperties=new Proxy(window.Object.defineProperties,e)}();': () => {
@@ -10011,6 +10011,32 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "fde1dae48543296e9f6bd72f2157ce95" due to: ' + e);
+        }
+    },
+    "(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&o.matches('iframe[style=\"display: none;\"]:not([src], [id])')&&o.contentWindow&&(o.contentWindow.JSON=window.JSON)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e),Element.prototype.insertAdjacentElement=new Proxy(Element.prototype.insertAdjacentElement,e)})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.cac290bf6aaac173cd65049c0bb5f60c === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, n) => {
+                        const o = Reflect.apply(e, t, n);
+                        try {
+                            o instanceof HTMLIFrameElement && o.matches('iframe[style="display: none;"]:not([src], [id])') && o.contentWindow && (o.contentWindow.JSON = window.JSON);
+                        } catch (e) {}
+                        return o;
+                    }
+                };
+                Node.prototype.appendChild = new Proxy(Node.prototype.appendChild, e), Element.prototype.insertAdjacentElement = new Proxy(Element.prototype.insertAdjacentElement, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "cac290bf6aaac173cd65049c0bb5f60c", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "cac290bf6aaac173cd65049c0bb5f60c" due to: ' + e);
         }
     },
     '(function(){window.eval=new Proxy(eval,{apply:(e,c,n)=>{const o=Reflect.apply(e,c,n);if("object"==typeof o&&o.banners)try{o.banners.forEach(((e,c)=>{e.commercial&&(e.commercial={})}))}catch(e){console.debug(e)}return o}})})();': () => {
