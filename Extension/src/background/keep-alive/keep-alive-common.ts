@@ -70,14 +70,14 @@ export abstract class KeepAliveCommon {
      * @param info Tab update info.
      * @param tab Tab details.
      */
-    protected static onUpdate = (
+    protected static onUpdate(
         tabId: number,
         info: browser.Tabs.OnUpdatedChangeInfoType,
         tab: browser.Tabs.Tab,
-    ): void => {
+    ): void {
         if (info.url && isHttpRequest(info.url)) {
             // @ts-ignore - executeScriptOnTab is implemented in child classes
             this.executeScriptOnTab([tab]);
         }
-    };
+    }
 }

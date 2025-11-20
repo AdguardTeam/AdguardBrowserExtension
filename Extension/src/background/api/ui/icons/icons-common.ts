@@ -185,8 +185,6 @@ export abstract class IconsApiCommon {
                 browserAction.setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId }),
                 browserAction.setTitle({ title, tabId }),
             ]);
-
-            logger.debug(`[ext.IconsApiCommon.setActionIcon]: Icon and tooltip set for tab ${tabId ?? 'all'}`);
         } catch (e) {
             logger.info('[ext.IconsApiCommon.setActionIcon]: Failed to set icon or tooltip:', e);
         }
