@@ -79,7 +79,7 @@ export class KeepAlive extends KeepAliveCommon {
         /**
          * When tab updates, we try to inject the content script to it.
          */
-        browser.tabs.onUpdated.addListener(KeepAlive.onUpdate);
+        browser.tabs.onUpdated.addListener(KeepAlive.onUpdate.bind(KeepAlive));
         KeepAlive.keepServiceWorkerAlive();
 
         KeepAlive.executeScriptOnTab();
