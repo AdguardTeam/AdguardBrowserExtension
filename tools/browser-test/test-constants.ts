@@ -32,7 +32,7 @@ const __dirname = path.dirname(__filename);
 
 export const USER_DATA_PATH = path.join(__dirname, '../tmp');
 
-export const TESTCASES_BASE_URL = 'https://testcases.agrd.dev';
+export const TESTCASES_BASE_URL = 'https://eb07c908.adguard-testcases.pages.dev';
 
 export const TESTCASES_DATA_PATH = '/data.json';
 
