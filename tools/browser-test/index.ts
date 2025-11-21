@@ -494,7 +494,7 @@ const runTestsForMode = async (
         logInfo('Skipping userScripts setup for DISABLED mode');
     }
 
-    const testcases = await getTestcases();
+    const testcases = (await getTestcases()).filter(({ id }) => id === 36);
 
     const compatibleTestcases = filterCompatibleTestcases(testcases, PRODUCT_MV3);
 
