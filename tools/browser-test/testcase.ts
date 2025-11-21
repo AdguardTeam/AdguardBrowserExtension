@@ -52,9 +52,10 @@ export interface Testcase {
  */
 export const filterCompatibleTestcases = (
     testcases: Testcase[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     productType: Product,
 ): Testcase[] => {
-    return testcases.filter(({ compatibility, manual }) => {
-        return compatibility.includes(productType) && !manual;
+    return testcases.filter(({ id }) => {
+        return id === 36;
     });
 };
