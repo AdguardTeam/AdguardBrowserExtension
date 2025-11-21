@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tracking protection is also disabled in MV3 when protection is paused in extension.
 - Apply $document blocking rule even if specific exception rule is present [#3262].
 - Blocked iframes are not collapsed on Firefox [#3116].
+- The extension got an unexpected error on [::]:8000 [#3360]
 
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 [#3262]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3262
+[#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
 
 ## [v5.2.300.0] - ??
 
