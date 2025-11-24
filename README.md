@@ -62,6 +62,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
     - [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 - [Permissions required](#permissions-required)
 - [Auto-publish builds](#auto-publish-builds)
+- [Versioning Schema](#versioning-schema)
 - [Minimum supported browser versions](#browser-compatibility)
 
 ## <a name="installation"></a> Installation
@@ -366,9 +367,10 @@ pnpm crx keygen ./private/AdguardBrowserExtension
 
     ```shell
     docker run --rm -it \
-        -v $(pwd):/workspace \
+        -v "$(pwd)":/workspace \
         -w /workspace \
-        adguard/extension-builder:22.17--0.2.1--0
+        adguard/extension-builder:22.17--0.2.1--0 \
+        /bin/bash
     ```
 
 1. Inside the docker container, install the dependencies:
@@ -396,7 +398,7 @@ If you need to build the **RELEASE** version:
 1. Run:
 
     ```shell
-    pnpm release firefox
+    pnpm release firefox-amo
     ```
 
 1. Navigate to the build directory:
@@ -405,7 +407,7 @@ If you need to build the **RELEASE** version:
     cd ./build/release
     ```
 
-1. Compare the generated `firefox.zip` file with the uploaded one.
+1. Compare the generated `firefox-amo.zip` file with the uploaded one.
 
 #### <a name="dev-bundle-size"></a> Analyzing bundle size
 
@@ -704,17 +706,29 @@ This is useful for temporarily relaxing or tightening the allowed size delta for
 
 ## <a name="permissions-required"></a> Permissions required
 
+### Common permissions for all browsers and manifest versions
+
 - `tabs`                          - this permission is required in order to get the URL of the options page tab
-- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources.
-- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime.
+- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources
+- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime
 - `contextMenus`                  - this permission is required in order to create a context menu
-- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
 - `storage`                       - this permission is required in order to save user settings, user rules and custom filters
-- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
-- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 - `unlimitedStorage`              - this permission is required in order to save large filters
 - `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
+- `privacy`                       - this permission allows access to browser privacy settings; required in Firefox, optional in Chrome/Edge/Opera
+
+### Permissions for MV2 only
+
+- `<all_urls>`                    - this permission grants access to all websites to apply content scripts and filtering rules
+- `webRequestBlocking`            - this permission is required to block or modify HTTP requests synchronously
+
+### Permissions for MV3 only
+
+- `host_permissions`              - this permission grants access to all websites (MV3 uses this instead of `<all_urls>`)
 - `userScripts`                   - this permission is required to let the user subscribe to custom filter lists and evaluate rules from these lists
+- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
+- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
+- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
 
 ## <a name="auto-publish-builds"></a> Auto-publish builds
 
@@ -737,6 +751,23 @@ Therefore, any updates that include changes to script rules will require the ful
 These automated tasks will run all necessary checks: unit tests, translation checks, and linter. After that, they will update resources, including filters and local script rules, create a build, and run integration tests to ensure the update is safe.
 
 Finally, the new version of the extension will be published to the Chrome Web Store.
+
+## <a name="versioning-schema"></a> Versioning Schema
+
+The extension uses the following versioning schema:
+
+```
+major.minor.patch+autoBuildIncrementVersion.buildTag.dnrRulesetsVersion
+```
+
+- **major.minor.patch**: Standard semantic versioning for the extension codebase.
+- **autoBuildIncrementVersion**: An incrementing number used as the fourth part of the manifest version (e.g., `88` in `5.2.1.88`).
+- **buildTag**: A delimiter indicating the build's readiness.
+- **dnrRulesetsVersion**: The patch version of the DNR rulesets, which includes the build date for those rulesets.
+
+Example: `5.2.1+88.beta.20251014`
+
+But for build versions we will use following format: `major.minor.patch.autoBuildIncrementVersion` to comply with the browser requirements for version.
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 

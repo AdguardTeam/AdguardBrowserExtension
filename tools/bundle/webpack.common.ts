@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -378,6 +380,13 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     type: 'asset/resource',
                     generator: {
                         filename: 'assets/images/[name][ext]',
+                    },
+                },
+                {
+                    test: /\.(webm|mp4)$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'assets/videos/[name][ext]',
                     },
                 },
             ],

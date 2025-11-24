@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -634,13 +636,13 @@ class Messenger {
     }
 
     /**
-     * Sends a message to the background page to check if the engine is started.
+     * Sends a message to the background page to check if the application is initialized.
      *
      * @returns Promise that resolves to a boolean value:
-     * true if the engine is started, false otherwise.
+     * true if the application is initialized, false otherwise.
      */
-    async getIsEngineStarted(): Promise<ExtractMessageResponse<MessageType.GetIsEngineStarted>> {
-        return this.sendMessage(MessageType.GetIsEngineStarted);
+    async getIsAppInitialized(): Promise<ExtractMessageResponse<MessageType.GetIsAppInitialized>> {
+        return this.sendMessage(MessageType.GetIsAppInitialized);
     }
 
     /**

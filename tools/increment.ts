@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -90,7 +92,11 @@ const incrementVersion = async (): Promise<void> => {
     console.log('Changes:');
     console.log(`  - Increment version: ${incrementVersionStr} -> ${newIncrementVersion}`);
     console.log(`  - Build metatag: ${buildMetatag} (unchanged)`);
-    console.log(`  - DNR version: ${dnrVersionStr} -> ${newDnrPatchVersion}`);
+    if (dnrVersionStr === String(newDnrPatchVersion)) {
+        console.log(`  - DNR version: ${dnrVersionStr} (unchanged)`);
+    } else {
+        console.log(`  - DNR version: ${dnrVersionStr} -> ${newDnrPatchVersion}`);
+    }
 
     // Update package.json
     packageJson.version = newVersion;

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -125,6 +127,7 @@ export class SettingsService {
 
         const isExtensionUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
 
+        // TODO: AG-47075 Should be moved to extension update service initialization.
         extensionUpdateActor.send({
             type: ExtensionUpdateFSMEvent.Init,
             isUpdateAvailable: isExtensionUpdateAvailable,

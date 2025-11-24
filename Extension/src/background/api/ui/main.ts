@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -51,6 +53,8 @@ export class UiApi {
      * @param frameData The {@link FrameData} object.
      */
     private static throttledUpdateAction = throttle((tabId: number, frameData: FrameData): void => {
+        // Note: not awaited intentionally - throttled UI updates are fire-and-forget
+        // to avoid blocking the caller and allow updates to happen asynchronously
         iconsApi.updateTabAction(tabId, frameData);
         UiApi.broadcastTotalBlockedMessage(tabId, frameData);
     }, UiApi.THROTTLE_DELAY_MS);
@@ -66,6 +70,8 @@ export class UiApi {
         await ContextMenuApi.throttledUpdateMenu(frameData);
 
         const tabId = tabContext.info.id;
+        // Note: not awaited intentionally - throttled UI updates are fire-and-forget
+        // to avoid blocking the caller and allow updates to happen asynchronously
         UiApi.throttledUpdateAction(tabId, frameData);
     }
 

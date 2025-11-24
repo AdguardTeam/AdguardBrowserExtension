@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -59,6 +61,11 @@ export type IconVariants = {
      * State icon variants when the extension update is available.
      */
     updateAvailable: IconData;
+
+    /**
+     * State icon variants when the extension is loading.
+     */
+    loading: IconData;
 };
 
 export type PromoNotification = {
@@ -87,206 +94,205 @@ export type PromoNotification = {
     icons?: IconVariants;
 };
 
-const BACK_TO_SCHOOL_25_ID = 'backToSchool25';
+const BLACK_FRIDAY_25_ID = 'black_friday_25';
 
-const backToSchool25Notification: PromoNotification = {
-    id: BACK_TO_SCHOOL_25_ID,
+const blackFriday25Notification: PromoNotification = {
+    id: BLACK_FRIDAY_25_ID,
     locales: {
         en: {
-            title: 'Back to School promo',
-            btn: 'Up to 40% off',
+            title: 'The best time to improve your protection',
+            btn: 'Learn how',
         },
         fr: {
-            title: 'La Rentrée avec AdGuard',
-            btn: "Jusqu'à 40% de remise",
+            title: 'Augmentez votre protection',
+            btn: 'Comment faire',
         },
         it: {
-            title: 'A Scuola con AdGuard',
-            btn: 'Fino al 40% di sconto',
+            title: 'Il tempo per una maggiore protezione',
+            btn: 'Come fare',
         },
         de: {
-            title: 'Back to School Promo',
-            btn: 'Bis zu 40% Rabatt',
+            title: 'Zeit, sich besser zu schützen',
+            btn: 'Auf geht’s!',
         },
         ru: {
-            title: 'Снова в школу',
-            btn: 'Скидки до 40%',
+            title: 'Время улучшить защиту',
+            btn: 'Узнать как',
         },
         es: {
-            title: 'Promo de vuelta al cole',
-            btn: 'Hasta un 40% OFF',
+            title: 'El mejor momento para mejorar tu protección',
+            btn: 'Cómo hacerlo',
         },
         es_419: {
-            title: 'Vuelta al cole',
-            btn: 'Hasta un 40% OFF',
+            title: 'Es hora de mejorar tu protección',
+            btn: 'Averiguar como',
         },
         pt_pt: {
-            title: 'Promo de volta às aulas',
-            btn: 'Até 40% OFF',
+            title: 'O melhor momento para aumentar tua proteção',
+            btn: 'Saiba como',
         },
         pt_br: {
-            title: 'Promo de volta às aulas',
-            btn: 'Até 40% OFF',
+            title: 'O melhor momento para aumentar sua proteção',
+            btn: 'Saiba como',
         },
         zh_cn: {
-            title: '返校季 SALE',
-            btn: '低至6折',
+            title: '增强保护',
+            btn: '了解更多',
         },
         zh_tw: {
-            title: '返校 SALE',
-            btn: '低至6折',
+            title: '增強保護',
+            btn: '了解詳情',
         },
-        // ja: {
-        //     title: 'AdGuard 16周年セール',
-        //     btn: 'セール内容はこちら',
-        // },
+        ja: {
+            title: '保護機能を強化 するなら今が一番お得',
+            btn: '今年最大の割引をGET',
+        },
         ko: {
-            title: '백투스쿨 세일',
-            btn: '최대 40% 할인',
+            title: '보호 기능을 개선하기 가장 좋은 시기',
+            btn: '자세히 알아보기',
         },
         uk: {
-            title: 'Знову до школи',
-            btn: 'Знижки до 40%',
+            title: 'Час покращити захист',
+            btn: 'Дізнатись як',
         },
         ar: {
-            title: 'عرض العودة إلى المدرسة',
-            btn: '٪خصومات تصل إلى 40',
+            title: 'حان الوقت لتحسين الحماية الخاصة بك',
+            btn: 'اكتشف كيف',
         },
         be: {
-            title: 'Зноў у школу',
-            btn: 'Зніжкі да 40%',
+            title: 'Час палепшыць абарону',
+            btn: 'Даведацца як',
         },
         bg: {
-            title: 'Обратно на училище: промоция',
-            btn: 'Отстъпки до 40%',
+            title: 'Време е да подобрите защитата си',
+            btn: 'Разберете как',
         },
         ca: {
-            title: "Tornada a l'escola",
-            btn: 'Descomptes –40%',
+            title: 'És hora de millorar la teva protecció',
+            btn: 'Descobriu com',
         },
         cs: {
-            title: 'Zpátky do školy: Akce',
-            btn: 'Slevy až 40%',
+            title: 'Je čas zlepšit vaši ochranu',
+            btn: 'Zjistěte jak',
         },
         da: {
-            title: 'Tilbage til skole promo',
-            btn: 'Rabatter op til 40%',
+            title: 'Tid til at forbedre din beskyttelse',
+            btn: 'Find ud af hvordan',
         },
         el: {
-            title: 'Επιστροφή στα σχολεία',
-            btn: 'Εκπτώσεις έως και 40%',
+            title: 'Ώρα να βελτιώσετε την άμυνά σας',
+            btn: 'Βρες πως',
         },
         fa: {
-            title: 'تبلیغات بازگشت به مدرسه',
-            btn: '٪خفیف‌ها تا 40',
+            title: 'زمان بهبود محافظت از خود است',
+            btn: 'دریابید که چگونه',
         },
         fi: {
-            title: 'Takaisin kouluun -kampanja',
-            btn: 'Alennukset jopa 40%',
+            title: 'Aika parantaa suojaustasi',
+            btn: 'Saada selville miten',
         },
         he: {
-            title: 'מבצע חזרה לבית הספר',
-            btn: 'הנחות עד 40%',
+            title: 'הגיע הזמן לשפר את ההגנה שלך',
+            btn: 'לברר איך',
         },
         hr: {
-            title: 'Natrag u školu: Promo',
-            btn: 'Popusti do 40%',
+            title: 'Vrijeme je da poboljšate svoju zaštitu',
+            btn: 'Saznajte kako',
         },
         hu: {
-            title: 'Vissza az iskolába promóció',
-            btn: 'Akár 40% kedvezmény',
+            title: 'A legjobb idő a védelem felturbózására',
+            btn: 'Tudd meg, hogyan',
         },
         hy: {
-            title: 'Վերադառնալ դպրոց',
-            btn: 'Զեղչեր՝ մինչև 40%',
+            title: 'Ցանկանու՞մ եք պաշտպանել ձեր սարքը:',
+            btn: 'Պարզեք, թե ինչպես',
         },
         id: {
-            title: 'Promo Kembali ke Sekolah',
-            btn: 'Diskon hingga 40%',
+            title: 'Tingkatkan perlindungan Anda',
+            btn: 'Cari tahu caranya',
         },
         lt: {
-            title: 'Atgal į mokyklą: akcija',
-            btn: 'Nuolaidos iki 40%',
+            title: 'Laikas pagerinti savo apsaugą',
+            btn: 'Sužinokite, kaip',
         },
         ms: {
-            title: 'Promosi Kembali ke Sekolah',
-            btn: 'Diskaun sehingga 40%',
+            title: 'Tingkatkan perlindungan anda',
+            btn: 'Ketahui caranya',
         },
         nb: {
-            title: 'Tilbake til skolen',
-            btn: 'Rabatter opptil 40%',
+            title: 'På tide å forbedre beskyttelsen',
+            btn: 'Finn ut hvordan',
         },
         nl: {
-            title: 'Terug naar school promotie',
-            btn: 'Kortingen tot 40%',
+            title: 'Verbeter uw bescherming',
+            btn: 'Uitvinden hoe',
         },
         pl: {
-            title: 'Powrót do szkoły: Promocja',
-            btn: 'Zniżki do 40%',
+            title: 'Czas ulepszyć swoją ochronę',
+            btn: 'Naucz się jak',
         },
         ro: {
-            title: 'Înapoi la școală: Promoția',
-            btn: 'Reduceri de până la 40%',
+            title: 'Îmbunătățiți-vă protecția',
+            btn: 'Aflați cum',
         },
         sk: {
-            title: 'Späť do školy: Promo akcia',
-            btn: 'Zľavy až do 40%',
+            title: 'Čas na zlepšenie ochrany',
+            btn: 'Zistite, ako',
         },
         sl: {
-            title: 'Nazaj v šolo: Promocija',
-            btn: 'Popusti do 40%',
+            title: 'Čas za izboljšanje zaščite',
+            btn: 'Ugotovite, kako',
         },
         sr_latn: {
-            title: 'Povratak u školu: Promocija',
-            btn: 'Popusti do 40%',
+            title: 'Vreme je da poboljšaš svoju odbranu',
+            btn: 'Saznajte kako',
         },
         sv: {
-            title: 'Tillbaka till skolan',
-            btn: 'Rabatter upp till 40%',
+            title: 'Dags att förbättra ditt skydd',
+            btn: 'Ta reda på hur',
         },
         tr: {
-            title: 'Okula Dönüş kampanyası',
-            btn: '%40’a varan indirimler',
+            title: 'Korumanızı geliştirme zamanı',
+            btn: 'Nasıl olduğunu öğren',
         },
         vi: {
-            title: 'Back to School: Khuyến mãi',
-            btn: 'Giảm giá lên đến 40%',
+            title: 'Cải thiện khả năng bảo vệ của bạn',
+            btn: 'Tìm hiểu cách',
         },
         mk: {
-            title: 'Назад на училиште: Промоција',
-            btn: 'Попусти до 40%',
+            title: 'Време е да ја подобрите заштитата',
+            btn: 'Дознајте како',
         },
         hi: {
-            title: 'स्कूल वापसी प्रमो',
-            btn: '40% तक की छूट',
+            title: 'अपनी सुरक्षा में सुधार करें',
+            btn: 'सीखो कैसे',
         },
         et: {
-            title: 'Tagasi kooli pakkumine',
-            btn: 'Allahindlus kuni 40%',
+            title: 'Aeg parandada oma kaitset',
+            btn: 'Uurige, kuidas',
         },
         th: {
-            title: 'Back to School',
-            btn: 'ส่วนลดสูงสุด 40%',
+            title: 'ปรับปรุงการป้องกันของคุณ',
+            btn: 'ค้นหาวิธีการ',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.BackToSchool25 }),
-    from: '25 August 2025 12:00:00',
-    to: '1 September 2025 23:59:00',
+    url: Forward.get({ action: ForwardAction.BlackFriday25 }),
+    from: '24 November 2025 12:00:00',
+    to: '5 December 2025 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/bts25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/bts25-update.svg'),
+    bgImage: browser.runtime.getURL('assets/images/blackfriday25.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/blackfriday25.svg'),
     icons: {
+        ...defaultIconVariants,
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/bts25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/bts25-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/blackfriday25-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/blackfriday25-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/bts25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/bts25-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/blackfriday25-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/blackfriday25-off-38.png'),
         },
-        warning: defaultIconVariants.warning,
-        updateAvailable: defaultIconVariants.updateAvailable,
     },
 };
 
@@ -294,5 +300,5 @@ const backToSchool25Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [BACK_TO_SCHOOL_25_ID, backToSchool25Notification],
+    [BLACK_FRIDAY_25_ID, blackFriday25Notification],
 ]);

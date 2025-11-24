@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -23,4 +25,4 @@
 
 export { ExtensionUpdateService } from 'extension-update-service';
 
-export type { ManualExtensionUpdateData } from './types';
+export type { ManualUpdateMetadata } from './types';

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,6 +21,11 @@
 // Declare other types of files here if you want to import them in project as URL
 
 declare module '*.svg' {
+    const content: string;
+    export default content;
+}
+
+declare module '*.webm' {
     const content: string;
     export default content;
 }

@@ -42,7 +42,14 @@ done
 TSURLFILTER_REF=""
 
 # Repository URLs
-TSURLFILTER_REPO="ssh://git@bit.int.agrd.dev:7999/adguard-filters/tsurlfilter.git"
+# This should be set as a Bamboo project variable: tsurlfilterRepoUrl
+TSURLFILTER_REPO="${bamboo_tsurlfilterRepoUrl}"
+
+# Validate required variable is set
+if [ -n "${TSURLFILTER_REF}" ] && [ -z "${TSURLFILTER_REPO}" ]; then
+    echo "ERROR: bamboo_tsurlfilterRepoUrl is not set. Please configure it in Bamboo project variables."
+    exit 1
+fi
 
 # Function to setup SSH for tsurlfilter cloning
 setup_ssh() {

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -175,7 +177,7 @@ function createExtensionUpdateActorWithHandler(): ReturnType<typeof createActor>
         // needed, because it will set the correct icon for all tabs independent
         // of their state (enabled/disabled/allowlisted).
         if (state.value === ExtensionUpdateFSMState.Available) {
-            iconsApi.update();
+            await iconsApi.update();
         }
     };
 

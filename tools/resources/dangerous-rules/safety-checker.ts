@@ -1,5 +1,7 @@
 /* eslint-disable max-len,no-console */
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -103,7 +105,7 @@ class SafetyChecker {
     async checkScriptText(scriptText: string): Promise<AIResponse> {
         const prompt = SafetyChecker.buildPrompt();
         const chatCompletion = await this.openai.chat.completions.create({
-            model: 'gpt-4.1',
+            model: 'gpt-5',
             messages: [
                 {
                     role: 'system',

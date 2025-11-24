@@ -1,9 +1,9 @@
-! Checksum: 9DrDWFoSbU/5Y5HbautHOw
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1758553903-3600.patch
+! Checksum: 7xey/yn89WseNRH6Xk+L4w
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1762110590-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.68
-! TimeUpdated: 2025-09-22T15:08:00+00:00
+! Version: 2.0.8.76
+! TimeUpdated: 2025-11-02T19:06:09+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -791,7 +791,7 @@ treinreiziger.nl##.ads-adsense-treinreiziger-horizontaal
 treinreiziger.nl##.ads-adsense-treinreiziger-horizontaal-5
 faillissementsdossier.nl##.adsbybinq
 openingstijden.com,promootjesite.nl,radiofm.nl##.adsense
-adodenhaag.nl,spelletje.nl##.adv
+adodenhaag.nl,schuttevaer.nl,spelletje.nl##.adv
 amusement.tv,beurs.tv,cultuur.tv,formule1.tv,gamen.tv,geloof.tv,gezondheid.tv,informatief.tv,jongeren.tv,kennis.tv,kinderen.tv,kook.tv,lachen.tv,mensen.tv,mode.tv,muziek.tv,natuur.tv,nederland.tv,nieuws.tv,ondernemen.tv,onrecht.tv,oranje.tv,politiek.tv,reis.tv,serie.tv,spelletjes.tv,sporten.tv,talentenjacht.tv,vaartuig.tv,verkiezing.tv,voertuig.tv,voetbal.tv,weer.tv,woon.tv##.adv-tekst
 filmtotaal.nl,hoimedia.com,intermediair.nl##.advert
 newsbit.nl##.advert-converting-bar
@@ -801,6 +801,7 @@ rallylovers.be##.advertentierechts
 autoweek.nl##.advertise
 1twente.nl,bnnvara.nl,elektormagazine.nl,fonkmagazine.nl,hpdetijd.nl,kieskeurig.nl,maassluis24.nl,nl24.nu,schiedam24.nl,tvgids.tv,twentefm.nl,zijaanzij.nl##.advertisement
 goodbye.be,sporza.be##.advertising
+automotive-online.nl##.advertistement
 albrandswaardsdagblad.nl,barendrechtsdagblad.nl,dagblad010.nl,dagblad070.nl,goudsdagblad.nl,ridderkerksdagblad.nl,rijswijksdagblad.nl,voorburgsdagblad.nl,zoetermeersdagblad.nl##.advrow
 geenstijl.nl##.afctr-wrapper
 wielerflits.be,wielerflits.nl##.affiliate_links
@@ -1506,7 +1507,6 @@ weer.nl#?#.shadow-lvl-2:-abp-has(a[href^="https://www.voordeeluitjes.nl/"])
 wielerflits.nl#?#.widget-container:-abp-has(.h3.mb-4:-abp-contains(Wielerdeals))
 wielerflits.nl#?#li.list-item.list-item-aside:-abp-has(.badge:-abp-contains(Ad))
 wielerflits.nl#?#li.list-item.list-item-default:-abp-has(span:-abp-contains(Ad))
-wintersport.nl#?#.mb-6:-abp-contains(gesponsord)
 wkdarts.nl#?#.wpb_wrapper:-abp-has(div:-abp-contains(#advertentie))
 bokt.nl#@#.ad-body
 gratisaftehalen.nl#@#.ads-image
@@ -1528,6 +1528,7 @@ vakantieplaats.nl#@#.topAds
 ||cdn.optoutadvertising.com^
 ||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
+||h3v9p8x2q1r7-agckaeh6g2ehcaes.*.azurewebsites.net^
 ||x9t7g4m2qk2.azurewebsites.net^
 ||kjdsfjisdfjr23.azurewebsites.net^
 ||content2.nrc.nl^
@@ -1539,6 +1540,7 @@ vakantieplaats.nl#@#.topAds
 @@||tweakers.net/i^$image
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
+webcams-vlissingen.nl#%#//scriptlet('abort-current-inline-script', 'document.createElement', 'adsbygoogle.js')
 radio10.nl#%#//scriptlet('prevent-setTimeout', 'throw i(r+"err",[o,a,e],d,c),e}finally{i(', '50')
 forum.fok.nl#%#//scriptlet('prevent-setTimeout', 'ckad')
 forum.fok.nl#@##advertentie
@@ -1568,15 +1570,16 @@ kijk.nl#@##topbanner_ad
 @@/prebid/ad.gif?user=*&adId=$domain=kijk.nl
 @@||ads-talpa.adhese.com/json/$domain=kijk.nl
 kijk.nl#$#body .pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links { display: initial !important; }
-||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=goplay.be
-||pagead2.googlesyndication.com/omsdk/releases/live/omweb-v1.js$script,domain=goplay.be,redirect=noopjs
-@@||pubads.g.doubleclick.net/ondemand/*/content/*/vid/*/streams$domain=goplay.be
-||pubads.g.doubleclick.net/ondemand/*/content/*/vid/*/streams/*/time-events.json$important,domain=goplay.be
-goplay.be#%#//scriptlet('xml-prune', 'Period[id*="-ad-"]', '', '.mpd')
-goplay.be#%#//scriptlet('prevent-fetch', 'pubads.g.doubleclick.net/gampad/ads')
-@@||imasdk.googleapis.com/js/sdkloader/ima3_dai.js$script,domain=goplay.be
-||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=noopjs,domain=goplay.be
-@@||pagead2.googlesyndication.com/omsdk/releases/live/omweb-v1.js$script,domain=goplay.be
+||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=goplay.be|play.tv
+||pagead2.googlesyndication.com/omsdk/releases/live/omweb-v1.js$script,domain=goplay.be|play.tv,redirect=noopjs
+@@||pubads.g.doubleclick.net/ondemand/*/content/*/vid/*/streams$domain=goplay.be|play.tv
+||pubads.g.doubleclick.net/ondemand/*/content/*/vid/*/streams/*/time-events.json$important,domain=goplay.be|play.tv
+||dai.google.com/ondemand/dash/content/*/time-events.json$domain=goplay.be|play.tv
+play.tv,goplay.be#%#//scriptlet('xml-prune', 'Period[id*="-ad-"]', '', '.mpd')
+play.tv,goplay.be#%#//scriptlet('prevent-fetch', 'pubads.g.doubleclick.net/gampad/ads')
+@@||imasdk.googleapis.com/js/sdkloader/ima3_dai.js$script,domain=goplay.be|play.tv
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=noopjs,domain=goplay.be|play.tv
+@@||pagead2.googlesyndication.com/omsdk/releases/live/omweb-v1.js$script,domain=goplay.be|play.tv
 ||goplay.be/js/sourcepoint/msg?v=
 vier.be#@#.googleAd
 hardware.info#%#//scriptlet("abort-on-property-read", "Object.prototype.autoRecov")
@@ -1608,6 +1611,10 @@ gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px 
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+funda.nl##div[data-testid="halfpage-ad"]
+wintersport.nl##.wintersport-banner
+wintersport.nl##.row:has(> .col > .row--dense .v-chip__content)
+||azurewebsites.net/*?player_*[max_ad_dur]=*[adslot]=*&VPAID=
 moviemeter.nl##.small-leaderboard
 deondernemer.nl##div[class^="adBlock"]
 deondernemer.nl##section[class^="SingleBlock_advertisement"]
@@ -1669,7 +1676,6 @@ voetbalzone.nl##div[class^="ad-wrapper"]
 voetbalzone.nl##.fco-openweb-ad
 gptoday.net###gptoday_ros_foxtrot_rectangle-halfpage
 etos.nl##div[class^="gam-banner--"]
-npo.nl#%#//scriptlet('json-prune-fetch-response', 'assets.preroll assets.prerollDebug', '', '/stream-link')
 ||biernet.nl/site/plugins/bja_new/redirect.php
 biernet.nl##.bja-cont
 biernet.nl###ban_blok
@@ -1870,10 +1876,13 @@ klusidee.nl##td.td-ad
 ||pcnltelecom.tdsapi.com/portal/iframe.js
 ||serving-sys.com/*.mp4^$domain=kijk.nl
 ||totaaltv.nl/upload/Banner-sep-astrasat.gif
+!+ NOT_PLATFORM(ext_ublock)
+bnnvara.nl,npo.nl,npodoc.nl,vpro.nl#%#//scriptlet('json-prune-fetch-response', 'assets.preroll assets.prerollDebug', '', '/stream-link')
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_dutch
 !+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+wintersport.nl#@?#.mb-6:contains(gesponsord)
 moviemeter.nl#%#//scriptlet('trusted-suppress-native-method', 'document.write', '"adswag.nl"', 'prevent')
 puna.nl#@#.raw-html-component
 @@||2mdn.net/instream/html5/ima3.js$domain=puna.bbvms.com|puna.nl

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -51,6 +53,7 @@ import {
     PageStatsApi,
     UiApi,
     HitStatsApi,
+    iconsApi,
 } from '../api';
 import {
     UiService,
@@ -246,7 +249,7 @@ export class App {
          */
         eventService.init();
 
-        ExtensionUpdateService.init();
+        await ExtensionUpdateService.init();
 
         /**
          * Called after eventService init, otherwise it won't handle messages.
@@ -290,6 +293,9 @@ export class App {
         await engine.start();
 
         appContext.set(AppContextKey.IsInit, true);
+
+        // Update icons to hide "loading" icon
+        await iconsApi.update();
 
         await sendMessage({ type: MessageType.AppInitialized });
 
