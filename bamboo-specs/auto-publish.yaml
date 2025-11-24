@@ -12,11 +12,10 @@ environments:
   - AutoDeployAndPublish Beta
 
 AutoDeployAndPublish Release:
-  # FIXME: Enable cron when manual review for v5.2.112.105 is done.
-  # # run auto-deploy only after successful build
-  # triggers:
-  #   - build-success:
-  #       branch: stable-v5.2
+  # run auto-deploy only after successful build
+  triggers:
+    - build-success:
+        branch: stable-v5.2
   tasks:
     - clean
     - checkout: &checkout
@@ -42,28 +41,27 @@ AutoDeployAndPublish Release:
             # artifacts inside deploy script.
             mv chrome-mv3-release.zip chrome-mv3.zip
 
-            # FIXME: Enable when manual review for v5.2.112.105 is done.
-            # # Deploying and publishing release in Chrome Web Store.
-            # # This script attempts to deploy the browser extension to the webstore with expedited review.
-            # # If the expedited review deployment fails (i.e., the exit status is non-zero),
-            # # it catches the error and attempts to deploy with a normal review process.
-            # # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
-            # # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
-            # set +e
-            # ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish-expedited-review
+            # Deploying and publishing release in Chrome Web Store.
+            # This script attempts to deploy the browser extension to the webstore with expedited review.
+            # If the expedited review deployment fails (i.e., the exit status is non-zero),
+            # it catches the error and attempts to deploy with a normal review process.
+            # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
+            # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
+            set +e
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish-expedited-review
 
-            # # Capture exit code
-            # EXIT_CODE=$?
+            # Capture exit code
+            EXIT_CODE=$?
 
-            # # Enable errexit as it was set before
-            # set -e
+            # Enable errexit as it was set before
+            set -e
 
-            # # If expedited review process exited with non-zero status,
-            # # try normal review.
-            # if [ $EXIT_CODE -ne 0 ]; then
-            #   echo "Expedited review failed, trying normal review"
-            #   ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
-            # fi
+            # If expedited review process exited with non-zero status,
+            # try normal review.
+            if [ $EXIT_CODE -ne 0 ]; then
+              echo "Expedited review failed, trying normal review"
+              ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
+            fi
   requirements: &requirements
     - adg-docker: 'true'
   notifications: &notifications
@@ -75,10 +73,11 @@ AutoDeployAndPublish Release:
             url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
 
 AutoDeployAndPublish Beta:
-  # run auto-deploy only after successful build
-  triggers:
-    - build-success:
-        branch: stable-v5.2
+  # FIXME: Enable cron when manual review for v5.2.400.8 (only for beta) is done.
+  # # run auto-deploy only after successful build
+  # triggers:
+  #   - build-success:
+  #       branch: stable-v5.2
   tasks:
     - clean
     - checkout: *checkout
@@ -101,26 +100,27 @@ AutoDeployAndPublish Beta:
             # artifacts inside deploy script.
             mv chrome-mv3-beta.zip chrome-mv3.zip
 
-            # Deploying and publishing beta in Chrome Web Store.
-            # This script attempts to deploy the browser extension to the webstore with expedited review.
-            # If the expedited review deployment fails (i.e., the exit status is non-zero),
-            # it catches the error and attempts to deploy with a normal review process.
-            # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
-            # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
-            set +e
-            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish-expedited-review
+            # FIXME: Enable when manual review for v5.2.400.8 (only for beta) is done.
+            # # Deploying and publishing beta in Chrome Web Store.
+            # # This script attempts to deploy the browser extension to the webstore with expedited review.
+            # # If the expedited review deployment fails (i.e., the exit status is non-zero),
+            # # it catches the error and attempts to deploy with a normal review process.
+            # # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
+            # # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
+            # set +e
+            # ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish-expedited-review
 
-            # Capture exit code
-            EXIT_CODE=$?
+            # # Capture exit code
+            # EXIT_CODE=$?
 
-            # Enable errexit as it was set before
-            set -e
+            # # Enable errexit as it was set before
+            # set -e
 
-            # If expedited review process exited with non-zero status,
-            # try normal review.
-            if [ $EXIT_CODE -ne 0 ]; then
-              echo "Expedited review failed, trying normal review"
-              ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
-            fi
+            # # If expedited review process exited with non-zero status,
+            # # try normal review.
+            # if [ $EXIT_CODE -ne 0 ]; then
+            #   echo "Expedited review failed, trying normal review"
+            #   ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
+            # fi
   requirements: *requirements
   notifications: *notifications
