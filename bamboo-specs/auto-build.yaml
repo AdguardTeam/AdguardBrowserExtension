@@ -266,18 +266,27 @@ branch-overrides:
                   pnpm beta chrome-mv3
                   pnpm release chrome-mv3
 
-                  # Download latest beta and release versions of the extension
-                  # from the Chrome Web Store to check that new versions
-                  # are eligible for "skip review" feature.
-                  # TODO: uncomment after halloween release. AG-47227
-                  # pnpm tsx tools/skip-review/download-latest-extension beta
-                  # pnpm tsx tools/skip-review/download-latest-extension release
+                  if [ "${bamboo.disableAutoBuildsBeta}" != "true" ]; then
+                      # Download latest beta version of the extension
+                      # from the Chrome Web Store to check that new versions
+                      # are eligible for "skip review" feature.
+                      pnpm tsx tools/skip-review/download-latest-extension beta
 
-                  # Check that beta and release updates contain only safe
-                  # changes in rulesets and only in rule_resources files.
-                  # TODO: uncomment after halloween release. AG-47227
-                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
-                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+                      # Check that beta updates contain only safe
+                      # changes in rulesets and only in rule_resources files.
+                      pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
+                  fi
+
+                  if [ "${bamboo.disableAutoBuildsRelease}" != "true" ]; then
+                      # Download latest release version of the extension
+                      # from the Chrome Web Store to check that new versions
+                      # are eligible for "skip review" feature.
+                      pnpm tsx tools/skip-review/download-latest-extension release
+
+                      # Check that release updates contain only safe
+                      # changes in rulesets and only in rule_resources files.
+                      pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+                  fi
 
                   # Move zip artifacts to the artifacts directory, because we will
                   # publish zip versions of the extension.

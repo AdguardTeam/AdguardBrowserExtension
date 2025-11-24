@@ -27,6 +27,10 @@ AutoDeployAndPublish Release:
         artifacts:
           - name: chrome-mv3-release.zip
     - script:
+        conditions:
+          - variable:
+              equals:
+                bamboo.disableAutoBuildsRelease: "false"
         interpreter: SHELL
         scripts:
           - |-
@@ -90,6 +94,10 @@ AutoDeployAndPublish Beta:
         artifacts:
           - name: chrome-mv3-beta.zip
     - script:
+        conditions:
+          - variable:
+              equals:
+                bamboo.disableAutoBuildsBeta: "false"
         interpreter: SHELL
         scripts:
           - |-
