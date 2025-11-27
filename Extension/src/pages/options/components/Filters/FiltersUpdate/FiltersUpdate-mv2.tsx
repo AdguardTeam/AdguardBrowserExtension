@@ -25,7 +25,7 @@ import { formatDate } from '../helpers';
 
 import './filters-update.pcss';
 
-const Mv2FiltersUpdate = observer(() => {
+export const FiltersUpdate = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     const {
@@ -63,5 +63,3 @@ const Mv2FiltersUpdate = observer(() => {
         </div>
     );
 });
-
-export { Mv2FiltersUpdate as FiltersUpdate };

@@ -29,7 +29,7 @@ import { rootStore } from '../../../stores/RootStore';
 
 import './filters-update.pcss';
 
-const Mv3FiltersUpdate = observer(() => {
+export const FiltersUpdate = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     const [isUpdating, setIsUpdating] = useState(false);
@@ -143,5 +143,3 @@ const Mv3FiltersUpdate = observer(() => {
         </div>
     );
 });
-
-export { Mv3FiltersUpdate as FiltersUpdate };
