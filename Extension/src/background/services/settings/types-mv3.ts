@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { type GetOptionsDataResponseCommon } from './types-common';
 
 /**
- * MV3-specific options for pages — options and popup.
+ * Runtime information returned with options data.
  */
-export type MV3SpecificOptions = {
+type RuntimeInfo = {
     /**
      * Whether the rule limits are exceeded
      * and browser changed the list of enabled filters.
@@ -40,4 +41,26 @@ export type MV3SpecificOptions = {
      * Whether the extension update was successful.
      */
     isSuccessfulExtensionUpdate: boolean;
+};
+
+/**
+ * Settings with some additional data for the options page:
+ * app version, environment options, constants, filters info, filters metadata, etc.
+ */
+export type GetOptionsDataResponse = GetOptionsDataResponseCommon & {
+
+    /**
+     * Versions of the libraries used in the extension.
+     */
+    libVersions: GetOptionsDataResponseCommon['libVersions'] & {
+
+        /**
+         * Version of the DNR-Rulesets library.
+         * Will be filled after extension will load metadata for DNR rulesets.
+         */
+        dnrRulesets?: string;
+    };
+
+    /** Runtime information used by the options page. */
+    runtimeInfo: RuntimeInfo;
 };

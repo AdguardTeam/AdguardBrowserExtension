@@ -47,8 +47,8 @@ import {
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
 import { extensionUpdateActor } from '../extension-update/extension-update-machine-mv3';
 
-import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
-
+import { type GetOptionsDataResponse } from './types-mv3';
+import { type ExportMessageResponse } from './types-common';
 /**
  * SettingsService handles all setting-related messages and
  * calls {@link SettingsApi} to handle settings.
@@ -143,7 +143,7 @@ export class SettingsService {
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
-            mv3SpecificOptions: {
+            runtimeInfo: {
                 areFilterLimitsExceeded,
                 isExtensionUpdateAvailable,
                 isExtensionReloadedOnUpdate,
