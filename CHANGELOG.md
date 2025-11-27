@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v5.2.300.0] - ??
+## Unreleased
+
+### Changed
+
+- Updated [@adguard/agtree] to v3.3.1.
+- Updated [@adguard/assistant] to v4.3.77.
+- Updated [@adguard/scriptlets] to v2.2.13.
+- Updated [@adguard/tsurlfilter] to v3.5.1.
+- Updated [@adguard/tswebextension] to v3.2.16.
+
+## [5.2.400] - 2025-11-24
 
 ### Added
 
@@ -17,17 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extension will apply auto-update in MV3 if update is available and browser
   became idle for a while.
 
+[5.2.400]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.400%2B0.build.20251119090043
 [#3016]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3016
 
-## [v5.2.112.84] - 2025-10-25
+## [5.2.112.84] - 2025-10-25
 
 ### Changed
 
 - Updated [@adguard/tswebextension] to v3.2.13.
 
-[v5.2.112.84]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B84.build.20251022090039
+[5.2.112.84]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B84.build.20251022090039
 
-## [v5.2.112.1] - 2025-10-13
+## [5.2.112.1] - 2025-10-13
 
 ### Changed
 
@@ -39,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimize the extension update fetch response size in MV3.
 - The extension is failed to update via the popup [#3317].
 
-[v5.2.112.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B1.build.20251009120050
+[5.2.112.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B1.build.20251009120050
 [#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
 
 ## [5.2.77] - 2025-09-22
