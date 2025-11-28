@@ -30,9 +30,9 @@ import { logger } from '../../../../common/logger';
 import { AntiBannerFiltersId, MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { type RootStore } from '../RootStore';
 
-import SettingsStoreCommon from './SettingsStore-common';
+import { SettingsStoreCommon } from './SettingsStore-common';
 
-class SettingsStore extends SettingsStoreCommon {
+export class SettingsStore extends SettingsStoreCommon {
     @observable
     filtersUpdating = false;
 
@@ -133,5 +133,3 @@ class SettingsStore extends SettingsStoreCommon {
         this.filtersUpdating = value;
     }
 }
-
-export default SettingsStore;

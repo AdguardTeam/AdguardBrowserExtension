@@ -35,7 +35,7 @@ import { AntiBannerFiltersId, MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../..
 import { sleepIfNecessary } from '../../../../common/sleep-utils';
 import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
 
-import SettingsStoreCommon, { fetchDataWithRetry } from './SettingsStore-common';
+import { SettingsStoreCommon, fetchDataWithRetry } from './SettingsStore-common';
 
 const DEFAULT_RULES_LIMITS: IRulesLimits = {
     dynamicRulesEnabledCount: 0,
@@ -55,7 +55,7 @@ const DEFAULT_RULES_LIMITS: IRulesLimits = {
     areFilterLimitsExceeded: false,
 };
 
-class SettingsStore extends SettingsStoreCommon {
+export class SettingsStore extends SettingsStoreCommon {
     /**
      * Whether the extension update is available after the checking.
      */
@@ -245,5 +245,3 @@ class SettingsStore extends SettingsStoreCommon {
         this.isExtensionUpdateAvailable = isAvailable;
     }
 }
-
-export default SettingsStore;

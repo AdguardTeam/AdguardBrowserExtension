@@ -122,7 +122,7 @@ const FILTER_SETTING_KEYS = {
 // Type derived from constants
 type FilterRelatedSettingKey = typeof FILTER_SETTING_KEYS[keyof typeof FILTER_SETTING_KEYS];
 
-abstract class SettingsStoreCommon {
+export abstract class SettingsStoreCommon {
     FILTER_SETTING_KEYS = FILTER_SETTING_KEYS;
 
     rootStore: RootStore;
@@ -964,5 +964,3 @@ abstract class SettingsStoreCommon {
         });
     }
 }
-
-export default SettingsStoreCommon;
