@@ -95,11 +95,21 @@ export const PromoNotification = observer(() => {
         'promo-notification--closing': notificationIsClosed,
     });
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleLocaleSwitch();
+        }
+    };
+
     return (
         <div
             className={notificationClassnames}
             style={promoStyle}
             onClick={handleLocaleSwitch}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
         >
             <button
                 aria-label="close"
