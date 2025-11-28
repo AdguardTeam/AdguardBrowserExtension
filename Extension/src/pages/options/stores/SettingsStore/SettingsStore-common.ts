@@ -328,8 +328,8 @@ export abstract class SettingsStoreCommon {
         this.setBlockKnownTrackers(data.filtersMetadata.filters);
         this.setStripTrackingParameters(data.filtersMetadata.filters);
         this.isChrome = data.environmentOptions.isChrome;
-        this.optionsReadyToRender = true;
         this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
+        this.optionsReadyToRender = true;
     }
 
     @action

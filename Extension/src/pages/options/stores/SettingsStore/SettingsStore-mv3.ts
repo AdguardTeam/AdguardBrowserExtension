@@ -62,6 +62,9 @@ export class SettingsStore extends SettingsStoreCommon {
     @observable
     isExtensionUpdateAvailable = false;
 
+    /**
+     * Current rule limits and counters for DNR.
+     */
     @observable
     rulesLimits: IRulesLimits = DEFAULT_RULES_LIMITS;
 
@@ -163,6 +166,9 @@ export class SettingsStore extends SettingsStoreCommon {
         });
     }
 
+    /**
+     * Checks for extension updates
+     */
     // eslint-disable-next-line class-methods-use-this
     @action
     async checkUpdatesMV3() {

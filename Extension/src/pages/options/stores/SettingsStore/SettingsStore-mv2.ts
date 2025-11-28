@@ -32,9 +32,17 @@ import { type RootStore } from '../RootStore';
 import { SettingsStoreCommon } from './SettingsStore-common';
 
 export class SettingsStore extends SettingsStoreCommon {
+    /**
+     * Whether filters are currently being updated.
+     * Used to show loading state during filter updates.
+     */
     @observable
     filtersUpdating = false;
 
+    /**
+     * Total count of active filtering rules.
+     * Updated after each options data request.
+     */
     @observable
     rulesCount = 0;
 
