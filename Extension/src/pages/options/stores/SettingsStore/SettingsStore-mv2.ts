@@ -26,8 +26,7 @@ import {
 import { type GetOptionsDataResponse } from 'settings-types';
 
 import { messenger } from '../../../services/messenger';
-import { logger } from '../../../../common/logger';
-import { AntiBannerFiltersId, MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
+import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { type RootStore } from '../RootStore';
 
 import { SettingsStoreCommon } from './SettingsStore-common';
@@ -78,40 +77,9 @@ export class SettingsStore extends SettingsStoreCommon {
      */
     @action
     async updateFilterSetting(filterId: number, enabled: boolean): Promise<void> {
-        /**
-         * Optimistically set the enabled property to true.
-         * The verified state of the filter will be emitted after the engine update.
-         */
-
         this.setFilterEnabledState(filterId, enabled);
 
-        try {
-            const groupId = enabled
-                ? await messenger.enableFilter(filterId)
-                : await messenger.disableFilter(filterId);
-
-            // update allow acceptable ads setting
-            if (filterId === AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
-                this.allowAcceptableAds = enabled;
-            } else if (filterId === AntiBannerFiltersId.TrackingFilterId) {
-                this.blockKnownTrackers = enabled;
-            } else if (filterId === AntiBannerFiltersId.UrlTrackingFilterId) {
-                this.stripTrackingParameters = enabled;
-            }
-
-            if (groupId) {
-                const group = this.categories.find((group) => group.groupId === groupId);
-
-                if (group) {
-                    group.enabled = true;
-                    // if any filter in group is enabled, the group is considered as touched
-                    group.touched = true;
-                }
-            }
-        } catch (e) {
-            logger.error('[ext.SettingsStore.updateFilterSetting]: failed to update filter setting: ', e);
-            this.setFilterEnabledState(filterId, !enabled);
-        }
+        await this.updateFilterSettingCore(filterId, enabled);
     }
 
     /**

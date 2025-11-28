@@ -589,6 +589,50 @@ export abstract class SettingsStoreCommon {
     };
 
     /**
+     * Core logic for updating filter setting.
+     * Sends request to backend, updates related states and UI.
+     *
+     * @param filterId Target filter id.
+     * @param enabled Desired enabled state.
+     *
+     * @returns True if update was successful, false otherwise.
+     */
+    @action
+    async updateFilterSettingCore(filterId: number, enabled: boolean): Promise<boolean> {
+        try {
+            const groupId = enabled
+                ? await messenger.enableFilter(filterId)
+                : await messenger.disableFilter(filterId);
+
+            // update allow acceptable ads setting
+            if (filterId === AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
+                this.allowAcceptableAds = enabled;
+            } else if (filterId === AntiBannerFiltersId.TrackingFilterId) {
+                this.blockKnownTrackers = enabled;
+            } else if (filterId === AntiBannerFiltersId.UrlTrackingFilterId) {
+                this.stripTrackingParameters = enabled;
+            }
+
+            if (groupId) {
+                const group = this.categories.find((group) => group.groupId === groupId);
+
+                if (group) {
+                    group.enabled = true;
+                    // if any filter in group is enabled, the group is considered as touched
+                    group.touched = true;
+                }
+            }
+
+            return true;
+        } catch (e) {
+            logger.error('[ext.SettingsStoreCommon.updateFilterSettingCore]: failed to update filter setting: ', e);
+            this.setFilterEnabledState(filterId, !enabled);
+
+            return false;
+        }
+    }
+
+    /**
      * Toggles a single filter and updates related settings and groups state.
      *
      * @param filterId Target filter id.
