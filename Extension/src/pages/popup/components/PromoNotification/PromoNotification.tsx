@@ -29,7 +29,7 @@ import { popupStore } from '../../stores/PopupStore';
 import { messenger } from '../../../services/messenger';
 
 import './promo-notification.pcss';
-//TODO: revert all file after testing
+// TODO: revert all file after testing
 export const PromoNotification = observer(() => {
     const {
         promoNotification,
@@ -38,9 +38,8 @@ export const PromoNotification = observer(() => {
     } = useContext(popupStore);
 
     const [notificationIsClosed, setNotificationIsClosed] = useState(false);
-    //TODO: remove after tests
+    // TODO: remove after tests
     const [currentLocaleIndex, setCurrentLocaleIndex] = useState(0);
-
 
     // schedule notification removal
     useEffect(() => {
@@ -56,8 +55,7 @@ export const PromoNotification = observer(() => {
         if (availableLocales.length > 0) {
             setCurrentLocaleIndex((prevIndex) => {
                 const nextIndex = (prevIndex + 1) % availableLocales.length;
-                const nextLocale = availableLocales[nextIndex];
-                console.log(nextLocale);
+
                 return nextIndex;
             });
         }
@@ -82,10 +80,10 @@ export const PromoNotification = observer(() => {
 
     // TODO: revert after tests
     const currentLocale = availableLocales[currentLocaleIndex];
-    const currentText = (currentLocale && promoNotification.locales?.[currentLocale]) 
+    const currentText = (currentLocale && promoNotification.locales?.[currentLocale])
         ? promoNotification.locales[currentLocale]
         : promoNotification.text;
-    
+
     const { bgImage } = promoNotification;
     const { title, btn } = typeof currentText === 'string' ? { title: '', btn: '' } : currentText;
 

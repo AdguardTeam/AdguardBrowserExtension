@@ -92,183 +92,183 @@ const BLACK_FRIDAY_25_ID = 'black_friday_25';
 const blackFriday25Notification: PromoNotification = {
     id: BLACK_FRIDAY_25_ID,
     locales: {
-        "en": {
-            "title": "The best time to improve your protection",
-            "btn": "Learn how"
+        'en': {
+            'title': 'The best time to improve your protection',
+            'btn': 'Learn how',
         },
-        "fr": {
-            "title": "Augmentez votre protection",
-            "btn": "Comment faire"
+        'fr': {
+            'title': 'Augmentez votre protection',
+            'btn': 'Comment faire',
         },
-        "it": {
-            "title": "Il tempo per una maggiore protezione",
-            "btn": "Come fare"
+        'it': {
+            'title': 'Il tempo per una maggiore protezione',
+            'btn': 'Come fare',
         },
-        "de": {
-            "title": "Zeit, sich besser zu schützen",
-            "btn": "Auf geht’s!"
+        'de': {
+            'title': 'Zeit, sich besser zu schützen',
+            'btn': 'Auf geht’s!',
         },
-        "ru": {
-            "title": "Время улучшить защиту",
-            "btn": "Узнать как"
+        'ru': {
+            'title': 'Время улучшить защиту',
+            'btn': 'Узнать как',
         },
-        "es": {
-            "title": "El mejor momento para mejorar tu protección",
-            "btn": "Cómo hacerlo"
+        'es': {
+            'title': 'El mejor momento para mejorar tu protección',
+            'btn': 'Cómo hacerlo',
         },
-        "es_419": {
-            "title": "Es hora de mejorar tu protección",
-            "btn": "Averiguar como"
+        'es_419': {
+            'title': 'Es hora de mejorar tu protección',
+            'btn': 'Averiguar como',
         },
-        "pt_pt": {
-            "title": "O melhor momento para aumentar tua proteção",
-            "btn": "Saiba como"
+        'pt_pt': {
+            'title': 'O melhor momento para aumentar tua proteção',
+            'btn': 'Saiba como',
         },
-        "pt_br": {
-            "title": "O melhor momento para aumentar sua proteção",
-            "btn": "Saiba como"
+        'pt_br': {
+            'title': 'O melhor momento para aumentar sua proteção',
+            'btn': 'Saiba como',
         },
-        "zh_cn": {
-            "title": "增强保护",
-            "btn": "了解更多"
+        'zh_cn': {
+            'title': '增强保护',
+            'btn': '了解更多',
         },
-        "zh_tw": {
-            "title": "增強保護",
-            "btn": "了解詳情"
+        'zh_tw': {
+            'title': '增強保護',
+            'btn': '了解詳情',
         },
-        "ja": {
-            "title": "保護機能を強化 するなら今だ。",
-            "btn": "Узнать как"
+        'ja': {
+            'title': '保護機能を強化 するなら今だ。',
+            'btn': 'Узнать как',
         },
-        "ko": {
-            "title": "보호 기능을 개선하기 가장 좋은 시기",
-            "btn": "자세히 알아보기"
+        'ko': {
+            'title': '보호 기능을 개선하기 가장 좋은 시기',
+            'btn': '자세히 알아보기',
         },
-        "uk": {
-            "title": "Час покращити захист",
-            "btn": "Дізнатись як"
+        'uk': {
+            'title': 'Час покращити захист',
+            'btn': 'Дізнатись як',
         },
-        "ar": {
-            "title": "حان الوقت لتحسين الحماية الخاصة بك",
-            "btn": "اكتشف كيف"
+        'ar': {
+            'title': 'حان الوقت لتحسين الحماية الخاصة بك',
+            'btn': 'اكتشف كيف',
         },
-        "be": {
-            "title": "Час палепшыць абарону",
-            "btn": "Даведацца як"
+        'be': {
+            'title': 'Час палепшыць абарону',
+            'btn': 'Даведацца як',
         },
-        "bg": {
-            "title": "Време е да подобрите защитата си",
-            "btn": "Разберете как"
+        'bg': {
+            'title': 'Време е да подобрите защитата си',
+            'btn': 'Разберете как',
         },
-        "ca": {
-            "title": "És hora de millorar la teva protecció",
-            "btn": "Descobriu com"
+        'ca': {
+            'title': 'És hora de millorar la teva protecció',
+            'btn': 'Descobriu com',
         },
-        "cs": {
-            "title": "Je čas zlepšit vaši ochranu",
-            "btn": "Zjistěte jak"
+        'cs': {
+            'title': 'Je čas zlepšit vaši ochranu',
+            'btn': 'Zjistěte jak',
         },
-        "da": {
-            "title": "Tid til at forbedre din beskyttelse",
-            "btn": "Find ud af hvordan"
+        'da': {
+            'title': 'Tid til at forbedre din beskyttelse',
+            'btn': 'Find ud af hvordan',
         },
-        "el": {
-            "title": "Ώρα να βελτιώσετε την άμυνά σας",
-            "btn": "Βρες πως"
+        'el': {
+            'title': 'Ώρα να βελτιώσετε την άμυνά σας',
+            'btn': 'Βρες πως',
         },
-        "fa": {
-            "title": "زمان بهبود محافظت از خود است",
-            "btn": "دریابید که چگونه"
+        'fa': {
+            'title': 'زمان بهبود محافظت از خود است',
+            'btn': 'دریابید که چگونه',
         },
-        "fi": {
-            "title": "Aika parantaa suojaustasi",
-            "btn": "Saada selville miten"
+        'fi': {
+            'title': 'Aika parantaa suojaustasi',
+            'btn': 'Saada selville miten',
         },
-        "he": {
-            "title": "הגיע הזמן לשפר את ההגנה שלך",
-            "btn": "לברר איך"
+        'he': {
+            'title': 'הגיע הזמן לשפר את ההגנה שלך',
+            'btn': 'לברר איך',
         },
-        "hr": {
-            "title": "Vrijeme je da poboljšate svoju zaštitu",
-            "btn": "Saznajte kako"
+        'hr': {
+            'title': 'Vrijeme je da poboljšate svoju zaštitu',
+            'btn': 'Saznajte kako',
         },
-        "hu": {
-            "title": "A legjobb idő a védelem felturbózására",
-            "btn": "Tudd meg, hogyan"
+        'hu': {
+            'title': 'A legjobb idő a védelem felturbózására',
+            'btn': 'Tudd meg, hogyan',
         },
-        "hy": {
-            "title": "Ցանկանու՞մ եք պաշտպանել ձեր սարքը:",
-            "btn": "Պարզեք, թե ինչպես"
+        'hy': {
+            'title': 'Ցանկանու՞մ եք պաշտպանել ձեր սարքը:',
+            'btn': 'Պարզեք, թե ինչպես',
         },
-        "id": {
-            "title": "Tingkatkan perlindungan Anda",
-            "btn": "Cari tahu caranya"
+        'id': {
+            'title': 'Tingkatkan perlindungan Anda',
+            'btn': 'Cari tahu caranya',
         },
-        "lt": {
-            "title": "Laikas pagerinti savo apsaugą",
-            "btn": "Sužinokite, kaip"
+        'lt': {
+            'title': 'Laikas pagerinti savo apsaugą',
+            'btn': 'Sužinokite, kaip',
         },
-        "ms": {
-            "title": "Tingkatkan perlindungan anda",
-            "btn": "Ketahui caranya"
+        'ms': {
+            'title': 'Tingkatkan perlindungan anda',
+            'btn': 'Ketahui caranya',
         },
-        "nb": {
-            "title": "På tide å forbedre beskyttelsen",
-            "btn": "Finn ut hvordan"
+        'nb': {
+            'title': 'På tide å forbedre beskyttelsen',
+            'btn': 'Finn ut hvordan',
         },
-        "nl": {
-            "title": "Verbeter uw bescherming",
-            "btn": "Uitvinden hoe"
+        'nl': {
+            'title': 'Verbeter uw bescherming',
+            'btn': 'Uitvinden hoe',
         },
-        "pl": {
-            "title": "Czas ulepszyć swoją ochronę",
-            "btn": "Naucz się jak"
+        'pl': {
+            'title': 'Czas ulepszyć swoją ochronę',
+            'btn': 'Naucz się jak',
         },
-        "ro": {
-            "title": "Îmbunătățiți-vă protecția",
-            "btn": "Aflați cum"
+        'ro': {
+            'title': 'Îmbunătățiți-vă protecția',
+            'btn': 'Aflați cum',
         },
-        "sk": {
-            "title": "Čas na zlepšenie ochrany",
-            "btn": "Zistite, ako"
+        'sk': {
+            'title': 'Čas na zlepšenie ochrany',
+            'btn': 'Zistite, ako',
         },
-        "sl": {
-            "title": "Čas za izboljšanje zaščite",
-            "btn": "Ugotovite, kako"
+        'sl': {
+            'title': 'Čas za izboljšanje zaščite',
+            'btn': 'Ugotovite, kako',
         },
-        "sr_latn": {
-            "title": "Vreme je da poboljšaš svoju odbranu",
-            "btn": "Saznajte kako"
+        'sr_latn': {
+            'title': 'Vreme je da poboljšaš svoju odbranu',
+            'btn': 'Saznajte kako',
         },
-        "sv": {
-            "title": "Dags att förbättra ditt skydd",
-            "btn": "Ta reda på hur"
+        'sv': {
+            'title': 'Dags att förbättra ditt skydd',
+            'btn': 'Ta reda på hur',
         },
-        "tr": {
-            "title": "Korumanızı geliştirme zamanı",
-            "btn": "Nasıl olduğunu öğren"
+        'tr': {
+            'title': 'Korumanızı geliştirme zamanı',
+            'btn': 'Nasıl olduğunu öğren',
         },
-        "vi": {
-            "title": "Cải thiện khả năng bảo vệ của bạn",
-            "btn": "Tìm hiểu cách"
+        'vi': {
+            'title': 'Cải thiện khả năng bảo vệ của bạn',
+            'btn': 'Tìm hiểu cách',
         },
-        "mk": {
-            "title": "Време е да ја подобрите заштитата",
-            "btn": "Дознајте како"
+        'mk': {
+            'title': 'Време е да ја подобрите заштитата',
+            'btn': 'Дознајте како',
         },
-        "hi": {
-            "title": "अपनी सुरक्षा में सुधार करें",
-            "btn": "सीखो कैसे"
+        'hi': {
+            'title': 'अपनी सुरक्षा में सुधार करें',
+            'btn': 'सीखो कैसे',
         },
-        "et": {
-            "title": "Aeg parandada oma kaitset",
-            "btn": "Uurige, kuidas"
+        'et': {
+            'title': 'Aeg parandada oma kaitset',
+            'btn': 'Uurige, kuidas',
         },
-        "th": {
-            "title": "ปรับปรุงการป้องกันของคุณ",
-            "btn": "ค้นหาวิธีการ"
-        }
+        'th': {
+            'title': 'ปรับปรุงการป้องกันของคุณ',
+            'btn': 'ค้นหาวิธีการ',
         },
+    },
     text: '',
     url: Forward.get({ action: ForwardAction.BlackFriday25 }),
     from: '24 November 2025 12:00:00',
