@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -92,204 +94,204 @@ export type PromoNotification = {
     icons?: IconVariants;
 };
 
-const HALLOWEEN_25_ID = 'halloween25';
+const BLACK_FRIDAY_25_ID = 'black_friday_25';
 
-const halloween25Notification: PromoNotification = {
-    id: HALLOWEEN_25_ID,
+const blackFriday25Notification: PromoNotification = {
+    id: BLACK_FRIDAY_25_ID,
     locales: {
         en: {
-            title: 'Buy with discount, win Golden Ticket',
-            btn: 'Grab the deal',
+            title: 'The best time to improve your protection',
+            btn: 'Learn how',
         },
         fr: {
-            title: 'Achetez avec une remise, gagnez un billet doré',
-            btn: 'Profitez de l\'offre',
+            title: 'Augmentez votre protection',
+            btn: 'Comment faire',
         },
         it: {
-            title: 'Acquista con lo sconto, ricevi il biglietto d\'oro',
-            btn: 'Tenta la fortuna',
+            title: 'Il tempo per una maggiore protezione',
+            btn: 'Come fare',
         },
         de: {
-            title: 'Mit Rabatt kaufen — Goldticket gewinnen',
-            btn: 'Angebot holen',
+            title: 'Zeit, sich besser zu schützen',
+            btn: 'Auf geht’s!',
         },
         ru: {
-            title: 'Купите со скидкой — выиграйте золотой билет',
-            btn: 'Испытать удачу',
+            title: 'Время улучшить защиту',
+            btn: 'Узнать как',
         },
         es: {
-            title: 'Compra con descuento, gana un boleto dorado',
-            btn: 'Aprovechar la oferta',
+            title: 'El mejor momento para mejorar tu protección',
+            btn: 'Cómo hacerlo',
         },
         es_419: {
-            title: 'Compra con descuento, gana un boleto dorado',
-            btn: 'Aprovechar la oferta',
+            title: 'Es hora de mejorar tu protección',
+            btn: 'Averiguar como',
         },
         pt_pt: {
-            title: 'Compre com desconto, ganhe um bilhete dourado',
-            btn: 'Aproveitar a oferta',
+            title: 'O melhor momento para aumentar tua proteção',
+            btn: 'Saiba como',
         },
         pt_br: {
-            title: 'Compre com desconto, ganhe um bilhete dourado',
-            btn: 'Aproveitar a oferta',
+            title: 'O melhor momento para aumentar sua proteção',
+            btn: 'Saiba como',
         },
         zh_cn: {
-            title: '限时特价期间购买，即有机会抽中金奖券',
-            btn: '试试手气',
+            title: '增强保护',
+            btn: '了解更多',
         },
         zh_tw: {
-            title: '限時特價期間購買，即有機會抽中金獎券喔',
-            btn: '試試手氣',
+            title: '增強保護',
+            btn: '了解詳情',
         },
         ja: {
-            title: '特価で購入すれば、抽選でゴールデン チケットが当たる',
-            btn: '運を試す',
+            title: '保護機能を強化 するなら今が一番お得',
+            btn: '今年最大の割引をGET',
         },
         ko: {
-            title: '할인받고 골든 티켓을 잡으세요!',
-            btn: '할인 받기',
+            title: '보호 기능을 개선하기 가장 좋은 시기',
+            btn: '자세히 알아보기',
         },
         uk: {
-            title: 'Купуй зі знижкою — вигравай золотий квиток',
-            btn: 'Спробуй удачу',
+            title: 'Час покращити захист',
+            btn: 'Дізнатись як',
         },
         ar: {
-            title: 'اشترِ بخصم واربح تذكرة ذهبية',
-            btn: 'اغتنم العرض',
+            title: 'حان الوقت لتحسين الحماية الخاصة بك',
+            btn: 'اكتشف كيف',
         },
         be: {
-            title: 'Купляй са зніжкай і выйграй залаты білет',
-            btn: 'Паспрабаваць удачу',
+            title: 'Час палепшыць абарону',
+            btn: 'Даведацца як',
         },
         bg: {
-            title: 'Купи с отстъпка и спечели златен билет',
-            btn: 'Опита късмета',
+            title: 'Време е да подобрите защитата си',
+            btn: 'Разберете как',
         },
         ca: {
-            title: 'Compra amb descompte i prova sort',
-            btn: 'Aprofita l\'oferta',
+            title: 'És hora de millorar la teva protecció',
+            btn: 'Descobriu com',
         },
         cs: {
-            title: 'Kup se slevou a vyhraj zlatou vstupenku',
-            btn: 'Zkusit štěstí',
+            title: 'Je čas zlepšit vaši ochranu',
+            btn: 'Zjistěte jak',
         },
         da: {
-            title: 'Køb med rabat og vind en gylden billet',
-            btn: 'Prøve lykken',
+            title: 'Tid til at forbedre din beskyttelse',
+            btn: 'Find ud af hvordan',
         },
         el: {
-            title: 'Κερδίστε Χρυσό Εισιτήριο με έκπτωση',
-            btn: 'Αποκτήστε έκπτωση',
+            title: 'Ώρα να βελτιώσετε την άμυνά σας',
+            btn: 'Βρες πως',
         },
         fa: {
-            title: 'با تخفیف بخر و بلیط طلایی برنده شو',
-            btn: 'امتحان کردن شانس',
+            title: 'زمان بهبود محافظت از خود است',
+            btn: 'دریابید که چگونه',
         },
         fi: {
-            title: 'Osta alennuksella ja voita kultainen lippu',
-            btn: 'Kokeilla onnea',
+            title: 'Aika parantaa suojaustasi',
+            btn: 'Saada selville miten',
         },
         he: {
-            title: 'קנו בהנחה וזכו בכרטיס זהב',
-            btn: 'לנסות מזל',
+            title: 'הגיע הזמן לשפר את ההגנה שלך',
+            btn: 'לברר איך',
         },
         hr: {
-            title: 'Kupi s popustom i osvoji zlatnu kartu',
-            btn: 'Okušati sreću',
+            title: 'Vrijeme je da poboljšate svoju zaštitu',
+            btn: 'Saznajte kako',
         },
         hu: {
-            title: 'Vásárolj kedvezménnyel és nyerj aranyjegyet',
-            btn: 'Kipróbálni szerencsét',
+            title: 'A legjobb idő a védelem felturbózására',
+            btn: 'Tudd meg, hogyan',
         },
         hy: {
-            title: 'Գնիր զեղչով և շահիր ոսկե տոմս',
-            btn: 'Փորձել բախտը',
+            title: 'Ցանկանու՞մ եք պաշտպանել ձեր սարքը:',
+            btn: 'Պարզեք, թե ինչպես',
         },
         id: {
-            title: 'Beli dengan diskon dan menangkan tiket emas',
-            btn: 'Coba keberuntungan',
+            title: 'Tingkatkan perlindungan Anda',
+            btn: 'Cari tahu caranya',
         },
         lt: {
-            title: 'Pirk su nuolaida ir laimėk auksinį bilietą',
-            btn: 'Išbandyti sėkmę',
+            title: 'Laikas pagerinti savo apsaugą',
+            btn: 'Sužinokite, kaip',
         },
         ms: {
-            title: 'Beli dengan diskaun dan menangi tiket emas',
-            btn: 'Cuba nasib',
+            title: 'Tingkatkan perlindungan anda',
+            btn: 'Ketahui caranya',
         },
         nb: {
-            title: 'Kjøp med rabatt og vinn en gullbillett',
-            btn: 'Prøve lykken',
+            title: 'På tide å forbedre beskyttelsen',
+            btn: 'Finn ut hvordan',
         },
         nl: {
-            title: 'Koop met korting en win een gouden ticket',
-            btn: 'Proberen geluk',
+            title: 'Verbeter uw bescherming',
+            btn: 'Uitvinden hoe',
         },
         pl: {
-            title: 'Kup ze zniżką i wygraj złoty bilet',
-            btn: 'Spróbować szczęścia',
+            title: 'Czas ulepszyć swoją ochronę',
+            btn: 'Naucz się jak',
         },
         ro: {
-            title: 'Cumpără cu reducere și câștigă',
-            btn: 'Încerca norocul',
+            title: 'Îmbunătățiți-vă protecția',
+            btn: 'Aflați cum',
         },
         sk: {
-            title: 'Kúp so zľavou a vyhraj zlatý lístok',
-            btn: 'Skúsiť šťastie',
+            title: 'Čas na zlepšenie ochrany',
+            btn: 'Zistite, ako',
         },
         sl: {
-            title: 'Kupite s popustom in osvojite zlato vstopnico',
-            btn: 'Preizkusiti srečo',
+            title: 'Čas za izboljšanje zaščite',
+            btn: 'Ugotovite, kako',
         },
         sr_latn: {
-            title: 'Kupi sa popustom i osvoji zlatnu kartu',
-            btn: 'Oprobati sreću',
+            title: 'Vreme je da poboljšaš svoju odbranu',
+            btn: 'Saznajte kako',
         },
         sv: {
-            title: 'Köp med rabatt och vinn en gyllene biljett',
-            btn: 'Prova lyckan',
+            title: 'Dags att förbättra ditt skydd',
+            btn: 'Ta reda på hur',
         },
         tr: {
-            title: 'İndirimle satın al ve altın bilet kazan',
-            btn: 'Şansı denemek',
+            title: 'Korumanızı geliştirme zamanı',
+            btn: 'Nasıl olduğunu öğren',
         },
         vi: {
-            title: 'Mua với giá giảm và trúng vé vàng',
-            btn: 'Thử vận may',
+            title: 'Cải thiện khả năng bảo vệ của bạn',
+            btn: 'Tìm hiểu cách',
         },
         mk: {
-            title: 'Купи со попуст и освои златен билет',
-            btn: 'Обиди ја среќата',
+            title: 'Време е да ја подобрите заштитата',
+            btn: 'Дознајте како',
         },
         hi: {
-            title: 'छूट पर खरीदें और गोल्डन टिकट जीतें',
-            btn: 'किस्मत आज़माना',
+            title: 'अपनी सुरक्षा में सुधार करें',
+            btn: 'सीखो कैसे',
         },
         et: {
-            title: 'Osta soodustusega ja võida kuldne pilet',
-            btn: 'Proovida õnne',
+            title: 'Aeg parandada oma kaitset',
+            btn: 'Uurige, kuidas',
         },
         th: {
-            title: 'ซื้อพร้อมส่วนลดและลุ้นรับตั๋วทอง',
-            btn: 'ลองเสี่ยงโชค',
+            title: 'ปรับปรุงการป้องกันของคุณ',
+            btn: 'ค้นหาวิธีการ',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.Halloween25 }),
-    from: '25 October 2025 12:00:00',
-    to: '31 October 2025 23:59:00',
+    url: Forward.get({ action: ForwardAction.BlackFriday25 }),
+    from: '24 November 2025 12:00:00',
+    to: '5 December 2025 23:59:00',
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/halloween25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween25.svg'),
+    bgImage: browser.runtime.getURL('assets/images/blackfriday25.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/blackfriday25.svg'),
     icons: {
         ...defaultIconVariants,
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/halloween25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween25-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/blackfriday25-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/blackfriday25-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/halloween25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween25-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/blackfriday25-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/blackfriday25-off-38.png'),
         },
     },
 };
@@ -298,5 +300,5 @@ const halloween25Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [HALLOWEEN_25_ID, halloween25Notification],
+    [BLACK_FRIDAY_25_ID, blackFriday25Notification],
 ]);
