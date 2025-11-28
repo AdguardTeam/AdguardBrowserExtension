@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import React from 'react';
+import { Route } from 'react-router-dom';
 
-import React, { useContext, useEffect } from 'react';
-import { Route, RouterProvider } from 'react-router-dom';
-import { observer } from 'mobx-react';
+import { type SettingsStore } from 'settings-store';
 
 import { General } from '../General';
 import { Filters } from '../Filters';
@@ -27,130 +27,59 @@ import { Allowlist } from '../Allowlist';
 import { UserRules } from '../UserRules';
 import { Miscellaneous } from '../Miscellaneous';
 import { About } from '../About';
-import { rootStore } from '../../stores/RootStore';
-import { updateFilterDescription } from '../../../helpers';
-import { messenger } from '../../../services/messenger';
-import { logger } from '../../../../common/logger';
-import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
-import { Loader } from '../../../common/components/Loader';
-import { NotifierType } from '../../../../common/constants';
-import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { OptionsPageSections } from '../../../../common/nav';
-import { Icons } from '../ui/Icons';
+import type UiStore from '../../stores/UiStore';
+import { logger } from '../../../../common/logger';
 
-import { createRouter, OptionsLayout } from './Options-common';
+import { OptionsLayout } from './Options-layout';
 
-import '../../styles/styles.pcss';
+export {
+    createCommonMessageHandler as createMessageHandler,
+    COMMON_EVENTS as EVENTS,
+} from './Options-common';
 
-const Options = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+/**
+ * Initializes options page by loading options data
+ *
+ * @param settingsStore - Settings store instance
+ * @param uiStore - UI store instance (unused in MV2, required for MV3 compatibility)
+ *
+ * @returns Promise resolving to true if initialization succeeded, false otherwise
+ */
+export const initialize = async (
+    settingsStore: SettingsStore,
+    // uiStore parameter unused but required for compatibility with MV3
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    uiStore: UiStore,
+): Promise<boolean> => {
+    const optionsData = await settingsStore.requestOptionsData();
 
-    useAppearanceTheme(settingsStore.appearanceTheme);
+    if (!optionsData) {
+        logger.error('[ext.Options-mv2]: Failed to get options data');
 
-    useEffect(() => {
-        let removeListenerCallback = () => { };
-
-        const subscribeToMessages = async () => {
-            const events = [
-                NotifierType.RequestFilterUpdated,
-                NotifierType.UpdateAllowlistFilterRules,
-                NotifierType.FiltersUpdateCheckReady,
-                NotifierType.SettingUpdated,
-                NotifierType.FullscreenUserRulesEditorUpdated,
-            ];
-
-            removeListenerCallback = await messenger.createEventListener(
-                events,
-                async (message) => {
-                    const { type } = message;
-
-                    switch (type) {
-                        case NotifierType.RequestFilterUpdated: {
-                            await settingsStore.requestOptionsData();
-                            break;
-                        }
-                        case NotifierType.UpdateAllowlistFilterRules: {
-                            await settingsStore.getAllowlist();
-                            break;
-                        }
-                        case NotifierType.FiltersUpdateCheckReady: {
-                            const [updatedFilters] = message.data;
-                            settingsStore.refreshFilters(updatedFilters);
-                            uiStore.addNotification(updateFilterDescription(updatedFilters));
-                            break;
-                        }
-                        case NotifierType.SettingUpdated: {
-                            await settingsStore.requestOptionsData();
-                            break;
-                        }
-                        case NotifierType.FullscreenUserRulesEditorUpdated: {
-                            const [isOpen] = message.data;
-                            settingsStore.setFullscreenUserRulesEditorState(isOpen);
-                            break;
-                        }
-                        default: {
-                            logger.warn('[ext.Options-mv2]: Undefined message type:', type);
-                            break;
-                        }
-                    }
-                },
-            );
-        };
-
-        (async () => {
-            const optionsData = await settingsStore.requestOptionsData();
-
-            if (!optionsData) {
-                logger.error('[ext.Options-mv2]: Failed to get options data');
-
-                return;
-            }
-
-            await subscribeToMessages();
-        })();
-
-        return () => {
-            removeListenerCallback();
-        };
-    }, [settingsStore, uiStore]);
-
-    if (!settingsStore.optionsReadyToRender) {
-        return null;
+        return false;
     }
 
-    return (
-        <>
-            <CommonIcons />
-            <Icons />
-            <Loader showLoader={uiStore.showLoader} />
-            <div className="page">
-                <RouterProvider
-                    // We are opting out these features and hiding the warning messages by setting it to false.
-                    // TODO: Remove this when react-router-dom is updated to v7
-                    // https://github.com/remix-run/react-router/issues/12250
-                    future={{
-                        // @ts-expect-error v7_relativeSplatPath can be used here, but types are not updated yet
-                        v7_relativeSplatPath: false,
-                        v7_startTransition: false,
-                    }}
-                    router={(
-                        createRouter(
-                            <Route path="/" element={<OptionsLayout />}>
-                                <Route index element={<General />} />
-                                <Route path={OptionsPageSections.filters} element={<Filters />} />
-                                <Route path={OptionsPageSections.stealth} element={<Stealth />} />
-                                <Route path={OptionsPageSections.allowlist} element={<Allowlist />} />
-                                <Route path={OptionsPageSections.userFilter} element={<UserRules />} />
-                                <Route path={OptionsPageSections.miscellaneous} element={<Miscellaneous />} />
-                                <Route path={OptionsPageSections.about} element={<About />} />
-                                <Route path="*" element={<General />} />
-                            </Route>,
-                        )
-                    )}
-                />
-            </div>
-        </>
-    );
-});
+    return true;
+};
 
-export { Options };
+/**
+ * Returns the route configuration for options page
+ * Includes all standard pages without Rules Limits section
+ *
+ * @returns JSX Route element with nested routes for all option pages
+ */
+export const getOptionRoute = () => {
+    return (
+        <Route path="/" element={<OptionsLayout />}>
+            <Route index element={<General />} />
+            <Route path={OptionsPageSections.filters} element={<Filters />} />
+            <Route path={OptionsPageSections.stealth} element={<Stealth />} />
+            <Route path={OptionsPageSections.allowlist} element={<Allowlist />} />
+            <Route path={OptionsPageSections.userFilter} element={<UserRules />} />
+            <Route path={OptionsPageSections.miscellaneous} element={<Miscellaneous />} />
+            <Route path={OptionsPageSections.about} element={<About />} />
+            <Route path="*" element={<General />} />
+        </Route>
+    );
+};
