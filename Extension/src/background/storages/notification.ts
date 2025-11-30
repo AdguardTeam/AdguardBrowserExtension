@@ -137,7 +137,7 @@ const blackFriday25Notification: PromoNotification = {
             btn: '了解詳情',
         },
         ja: {
-            title: '保護機能を強化 するなら今だ。',
+            title: '保護機能を強化 するなら今が一番お得',
             btn: '今年最大の割引をGET',
         },
         ko: {
