@@ -65,7 +65,7 @@ export class SettingsStore extends SettingsStoreCommon {
      * Triggers filters update and refreshes local filters metadata.
      */
     @action
-    async updateFiltersMV2() {
+    async updateFilters() {
         this.setFiltersUpdating(true);
         try {
             const filtersUpdates = await messenger.updateFiltersMV2();
@@ -85,6 +85,7 @@ export class SettingsStore extends SettingsStoreCommon {
      */
     @action
     async updateFilterSetting(filterId: number, enabled: boolean): Promise<void> {
+        // MV2: Optimistic update - UI changes immediately, reverts on error.
         this.setFilterEnabledState(filterId, enabled);
 
         await this.updateFilterSettingCore(filterId, enabled);

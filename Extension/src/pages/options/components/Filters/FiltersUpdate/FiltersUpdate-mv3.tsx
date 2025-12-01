@@ -125,7 +125,7 @@ export const FiltersUpdate = observer(() => {
         <div className="extension-update">
             <button
                 type="button"
-                onClick={settingsStore.checkUpdatesMV3}
+                onClick={settingsStore.checkUpdates}
                 className="extension-update__info extension-update__check-btn"
                 title={checkUpdatesTitle}
             >

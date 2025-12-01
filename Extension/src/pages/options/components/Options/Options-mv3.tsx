@@ -82,7 +82,7 @@ export const createMessageHandler = (
                     text: translator.getMessage('update_failed_text'),
                     button: {
                         title: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: settingsStore.checkUpdatesMV3,
+                        onClick: settingsStore.checkUpdates,
                     },
                 });
                 break;

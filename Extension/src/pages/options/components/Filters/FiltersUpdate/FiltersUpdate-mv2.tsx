@@ -36,7 +36,7 @@ export const FiltersUpdate = observer(() => {
     } = settingsStore;
 
     const updateClickHandler = async () => {
-        await settingsStore.updateFiltersMV2();
+        await settingsStore.updateFilters();
     };
 
     return (

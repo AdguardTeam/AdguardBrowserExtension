@@ -31,13 +31,6 @@ export class Messenger extends MessengerCommon {
     /**
      * @inheritdoc
      */
-    checkUpdatesMV3 = async (): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> => {
-        throw new Error('[ext.Messenger.checkUpdatesMV3]: extension update is not supported in MV2');
-    };
-
-    /**
-     * @inheritdoc
-     */
     updateExtensionMV3 = async (
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         { from }: any,

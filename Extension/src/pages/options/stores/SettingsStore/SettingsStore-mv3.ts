@@ -77,7 +77,7 @@ export class SettingsStore extends SettingsStoreCommon {
     constructor(rootStore: RootStore) {
         super(rootStore);
 
-        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
+        this.checkUpdates = this.checkUpdates.bind(this);
         makeObservable(this);
     }
 
@@ -128,7 +128,7 @@ export class SettingsStore extends SettingsStoreCommon {
                     text: translator.getMessage('update_failed_text'),
                     button: {
                         title: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: this.checkUpdatesMV3,
+                        onClick: this.checkUpdates,
                     },
                 };
 
@@ -171,12 +171,12 @@ export class SettingsStore extends SettingsStoreCommon {
      */
     // eslint-disable-next-line class-methods-use-this
     @action
-    async checkUpdatesMV3() {
+    async checkUpdates() {
         const start = Date.now();
         try {
-            await messenger.checkUpdatesMV3();
+            await messenger.checkUpdates();
         } catch (error) {
-            logger.debug('[ext.SettingsStore.checkUpdatesMV3]: failed to check updates on options page: ', error);
+            logger.debug('[ext.SettingsStore.checkUpdates]: failed to check updates on options page: ', error);
         }
 
         // Ensure minimum duration for smooth UI experience
@@ -208,6 +208,7 @@ export class SettingsStore extends SettingsStoreCommon {
     async updateFilterSetting(filterId: number, enabled: boolean): Promise<void> {
         const updateResult = await this.updateFilterSettingCore(filterId, enabled);
 
+        // Pessimistic update: UI changes only after success due to DNR limits
         if (updateResult) {
             this.setFilterEnabledState(filterId, enabled);
         }

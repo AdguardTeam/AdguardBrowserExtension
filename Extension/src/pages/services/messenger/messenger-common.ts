@@ -501,18 +501,6 @@ export abstract class MessengerCommon {
     };
 
     /**
-     * Sends a message to the background page to update filters.
-     *
-     * @returns Promise that resolves with the list of filters.
-     */
-    abstract updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>>;
-
-    /**
-     * Sends a message to the background page to check for extension updates.
-     */
-    abstract checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>>;
-
-    /**
      * Sends a message to the background page to update extension.
      */
     abstract updateExtensionMV3(
