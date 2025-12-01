@@ -27,7 +27,6 @@ import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';
 import { PageStatsApi } from '../page-stats';
 import { SettingsApi } from '../settings';
-import { engine } from '../../engine';
 
 type FrameRule = {
     filterId: number;
@@ -146,10 +145,14 @@ export class FramesApi {
                 userAllowlisted = filterId === AntiBannerFiltersId.UserFilterId
                        || filterId === AntiBannerFiltersId.AllowlistFilterId;
 
-                let ruleText = engine.api.retrieveRuleText(
-                    mainFrameRule.getFilterListId(),
-                    mainFrameRule.getIndex(),
-                );
+                let ruleText = '';
+
+                // FIXME: Restore .getText() in tsurlfilter
+
+                // let ruleText = engine.api.retrieveRuleText(
+                //     mainFrameRule.getFilterListId(),
+                //     mainFrameRule.getIndex(),
+                // );
 
                 if (!ruleText) {
                     ruleText = '<Cannot retrieve rule text>';

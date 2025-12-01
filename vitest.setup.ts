@@ -85,11 +85,122 @@ vi.mock('nanoid', () => ({
 vi.mock('./Extension/src/common/logger.ts');
 
 // TODO: Add mock for mv3 version. AG-37302
-vi.mock('@adguard/tswebextension', async () => ({
-    ...(await vi.importActual('@adguard/tswebextension')),
-    TsWebExtension: MockedTsWebExtension,
-    isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
-}));
+vi.mock('@adguard/tswebextension', async () => {
+    const actual = await vi.importActual('@adguard/tswebextension') as any;
+    const tsurlfilter = await vi.importActual('@adguard/tsurlfilter') as any;
+    return {
+        ...actual,
+        TsWebExtension: MockedTsWebExtension,
+        isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
+        // ConvertedFilterList is actually from @adguard/tsurlfilter
+        ConvertedFilterList: tsurlfilter.ConvertedFilterList,
+        // Utility functions that are re-exported
+        getDomain: actual.getDomain,
+        isHttpRequest: actual.isHttpRequest,
+        MAIN_FRAME_ID: actual.MAIN_FRAME_ID,
+        FilteringEventType: actual.FilteringEventType,
+        RequestEvents: actual.RequestEvents,
+        // Mock tabsApi
+        tabsApi: {
+            onCreate: { subscribe: vi.fn() },
+            onUpdate: { subscribe: vi.fn() },
+            onDelete: { subscribe: vi.fn() },
+            onActivate: { subscribe: vi.fn() },
+            getTabContext: vi.fn(),
+            isIncognitoTab: vi.fn(() => false),
+        },
+        // Mock defaultFilteringLog
+        defaultFilteringLog: {
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+        },
+        // Mock companiesDbService
+        companiesDbService: {
+            getCompaniesDbCategories: vi.fn(() => ({
+                audio_video_player: 'audio_video_player',
+                comments: 'comments',
+                customer_interaction: 'customer_interaction',
+                pornvertising: 'pornvertising',
+                advertising: 'advertising',
+                essential: 'essential',
+                site_analytics: 'site_analytics',
+                social_media: 'social_media',
+                misc: 'misc',
+                cdn: 'cdn',
+                hosting: 'hosting',
+                unknown: 'unknown',
+                extensions: 'extensions',
+                email: 'email',
+                consent: 'consent',
+                telemetry: 'telemetry',
+                mobile_analytics: 'mobile_analytics',
+            })),
+        },
+    };
+});
+
+// Mock for MV3 version of tswebextension
+// We manually construct the mock to avoid Zod initialization issues and linked package resolution
+vi.mock('@adguard/tswebextension/mv3', async () => {
+    const tsurlfilter = await vi.importActual('@adguard/tsurlfilter') as any;
+    // Import MV2 actual for utility functions, but handle potential linked package issues
+    let mv2: any;
+    try {
+        mv2 = await vi.importActual('@adguard/tswebextension');
+    } catch (e) {
+        // If linked package fails to load, use empty object and we'll set functions to undefined
+        mv2 = {};
+    }
+    return {
+        TsWebExtension: MockedTsWebExtension,
+        isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
+        ConvertedFilterList: tsurlfilter.ConvertedFilterList,
+        // Re-export common constants and types that may be needed
+        MESSAGE_HANDLER_NAME: 'tsWebExtension',
+        // Utility functions
+        getDomain: mv2.getDomain,
+        isHttpRequest: mv2.isHttpRequest,
+        MAIN_FRAME_ID: mv2.MAIN_FRAME_ID,
+        FilteringEventType: mv2.FilteringEventType,
+        RequestEvents: mv2.RequestEvents,
+        // Mock tabsApi
+        tabsApi: {
+            onCreate: { subscribe: vi.fn() },
+            onUpdate: { subscribe: vi.fn() },
+            onDelete: { subscribe: vi.fn() },
+            onActivate: { subscribe: vi.fn() },
+            getTabContext: vi.fn(),
+            isIncognitoTab: vi.fn(() => false),
+        },
+        // Mock defaultFilteringLog
+        defaultFilteringLog: {
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+        },
+        // Mock companiesDbService
+        companiesDbService: {
+            getCompaniesDbCategories: vi.fn(() => ({
+                audio_video_player: 'audio_video_player',
+                comments: 'comments',
+                customer_interaction: 'customer_interaction',
+                pornvertising: 'pornvertising',
+                advertising: 'advertising',
+                essential: 'essential',
+                site_analytics: 'site_analytics',
+                social_media: 'social_media',
+                misc: 'misc',
+                cdn: 'cdn',
+                hosting: 'hosting',
+                unknown: 'unknown',
+                extensions: 'extensions',
+                email: 'email',
+                consent: 'consent',
+                telemetry: 'telemetry',
+                mobile_analytics: 'mobile_analytics',
+            })),
+        },
+    };
+});
 
 vi.mock('lodash-es', async () => ({
     ...await vi.importActual('lodash-es'),

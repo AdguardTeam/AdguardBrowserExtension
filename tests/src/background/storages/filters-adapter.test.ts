@@ -11,8 +11,7 @@ import {
 
 import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
-
-import { ConvertedFilterList } from 'tswebextension';
+import { ConvertedFilterList } from '@adguard/tsurlfilter';
 
 import { mockLocalStorage } from '../../../helpers';
 import { FiltersStoragesAdapter } from '../../../../Extension/src/background/storages/filters-adapter';

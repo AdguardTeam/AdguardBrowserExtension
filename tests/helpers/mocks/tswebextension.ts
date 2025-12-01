@@ -15,6 +15,11 @@ export class MockedTsWebExtension {
 
     public configuration = {} as ConfigurationMV2Context;
 
+    // Static methods for MV3
+    public static setLocalScriptRules = vi.fn();
+
+    public static syncRuleSetWithIdbByFilterId = vi.fn(() => Promise.resolve());
+
     public start = vi.fn(async () => {
         this.isStarted = true;
         return Promise.resolve();
@@ -72,4 +77,6 @@ export class MockedTsWebExtension {
     public setSendDoNotTrack = vi.fn();
 
     public setBlockWebRTC = vi.fn();
+
+    public initStorage = vi.fn(() => Promise.resolve());
 }
