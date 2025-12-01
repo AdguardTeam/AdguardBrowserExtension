@@ -25,12 +25,15 @@ import {
     observable,
     runInAction,
 } from 'mobx';
+import { type SettingsData } from 'settings-api';
 
 import { messenger } from '../../services/messenger';
+import { logger } from '../../../common/logger';
+import { type SettingOption } from '../../../background/schema';
 
 class FullscreenUserRulesStore {
     @observable
-    settings = null;
+    settings: SettingsData | null = null;
 
     constructor() {
         makeObservable(this);
@@ -51,6 +54,15 @@ class FullscreenUserRulesStore {
         }
 
         return this.settings.values[this.settings.names.AppearanceTheme];
+    }
+
+    @computed
+    get userFilterEnabledSettingId(): SettingOption.UserFilterEnabled | null {
+        if (!this.settings) {
+            logger.debug('[ext.FullscreenUserRulesStore.userFilterEnabledSettingId]: settings is not initialized yet');
+            return null;
+        }
+        return this.settings.names.UserFilterEnabled;
     }
 }
 

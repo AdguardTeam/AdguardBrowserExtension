@@ -24,6 +24,7 @@ import {
     runInAction,
 } from 'mobx';
 import { type CategoriesGroupData, type CategoriesFilterData } from 'filter-categories-api';
+import { type SettingsData } from 'settings-api';
 
 import {
     AntibannerGroupsId,
@@ -183,7 +184,7 @@ class SettingsStore {
     });
 
     @observable
-    settings: GetOptionsDataResponse['settings'] | null = null;
+    settings: SettingsData | null = null;
 
     @observable
     optionsReadyToRender = false;
@@ -328,6 +329,14 @@ class SettingsStore {
         }
 
         return currentLimitsMv3;
+    }
+
+    @action
+    async getFullscreenUserRulesData() {
+        const { settings } = await messenger.getUserRulesEditorData();
+        runInAction(() => {
+            this.settings = settings;
+        });
     }
 
     @action
