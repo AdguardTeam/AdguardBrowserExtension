@@ -31,6 +31,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [5.2.400]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.400%2B0.build.20251119090043
 [#3016]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3016
 
+## [5.2.113.0]
+
+### Fixed
+
+- Removed clipboard permissions [#3362].
+
+[#3362]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3362
+[5.2.113.0]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/5.2.113%2B0.build.20251022090039
+
 ## [5.2.112.84] - 2025-10-25
 
 ### Changed
