@@ -373,7 +373,28 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     },
                 },
                 {
+                    test: /\.module\.(css|pcss)$/,
+                    use: [
+                        'style-loader',
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                importLoaders: 1,
+                                url: false,
+                                modules: {
+                                    localIdentName: isDev
+                                        ? '[name]__[local]--[hash:base64:5]'
+                                        : '[hash:base64]',
+                                    exportLocalsConvention: 'camelCaseOnly',
+                                },
+                            },
+                        },
+                        'postcss-loader',
+                    ],
+                },
+                {
                     test: /\.(css|pcss)$/,
+                    exclude: /\.module\.(css|pcss)$/,
                     use: [
                         'style-loader',
                         {
