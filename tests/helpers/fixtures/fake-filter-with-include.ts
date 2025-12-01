@@ -1,4 +1,4 @@
-import { calculateChecksum } from '../../../tools/resources/download-filters';
+import { calculateChecksum } from '../../../tools/utils/checksum';
 
 const includedFakeFilterName = 'included-fake-filter.txt';
 

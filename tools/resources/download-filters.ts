@@ -21,7 +21,6 @@
  */
 import path from 'node:path';
 import fs from 'node:fs';
-import crypto from 'crypto';
 
 import fse from 'fs-extra';
 import axios from 'axios';
@@ -42,6 +41,10 @@ import {
     LOCAL_METADATA_FILE_NAME,
     LOCAL_I18N_METADATA_FILE_NAME,
 } from '../../constants';
+import { calculateChecksum } from '../utils/checksum';
+
+// Re-export for backward compatibility
+export { calculateChecksum };
 
 const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
 
@@ -118,28 +121,6 @@ const getUrlsOfFiltersResources = (browser: AssetsFiltersBrowser): DownloadResou
         ...filters,
         ...filtersMobile,
     ];
-};
-
-/**
- * Normalizes a response.
- *
- * @param response Filter rules response.
- *
- * @returns Normalized response.
- */
-const normalizeResponse = (response: string): string => {
-    const partOfResponse = response.substring(0, 200);
-    const match = partOfResponse.match(CHECKSUM_PATTERN);
-    if (match) {
-        response = response.replace(match[0], '');
-    }
-    response = response.replace(/\r/g, '');
-    response = response.replace(/\n+/g, '\n');
-    return response;
-};
-
-export const calculateChecksum = (body: string): string => {
-    return crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g, '');
 };
 
 /**
