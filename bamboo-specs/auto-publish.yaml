@@ -13,13 +13,12 @@ environments:
 
 AutoDeployAndPublish Release:
   # run auto-deploy only after successful build
-  # TODO: Uncomment in AG-44839
-  # triggers:
-  #   - build-success:
-  #       branch: stable-v5.2
+  triggers:
+    - build-success:
+        branch: stable-v5.2
   tasks:
     - clean
-    - checkout:
+    - checkout: &checkout
         repository: bamboo-deploy-publisher
         path: bamboo-deploy-publisher
         force-clean-build: true
@@ -33,42 +32,39 @@ AutoDeployAndPublish Release:
             set -x
             set -e
 
-            # FIXME: Delete this after release is ready.
-            echo "Auto-publish plan for release is disabled until the next release is ready."
+            # Fix mixed logs
+            exec 2>&1
+            ls -la
 
-            # # Fix mixed logs
-            # exec 2>&1
-            # ls -la
+            # Rename release artifact to the final name, this is needed because
+            # we use one common name 'chrome-mv3.zip' for both beta and release
+            # artifacts inside deploy script.
+            mv chrome-mv3-release.zip chrome-mv3.zip
 
-            # # Rename release artifact to the final name, this is needed because
-            # # we use one common name 'chrome-mv3.zip' for both beta and release
-            # # artifacts inside deploy script.
-            # mv chrome-mv3-release.zip chrome-mv3.zip
+            # Deploying and publishing release in Chrome Web Store.
+            # This script attempts to deploy the browser extension to the webstore with expedited review.
+            # If the expedited review deployment fails (i.e., the exit status is non-zero),
+            # it catches the error and attempts to deploy with a normal review process.
+            # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
+            # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
+            set +e
+            ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish-expedited-review
 
-            # # Deploying and publishing release in Chrome Web Store.
-            # # This script attempts to deploy the browser extension to the webstore with expedited review.
-            # # If the expedited review deployment fails (i.e., the exit status is non-zero),
-            # # it catches the error and attempts to deploy with a normal review process.
-            # # The 'set +e' command allows the script to continue running even if the expedited review deployment fails.
-            # # The 'set -e' command ensures that the script will exit immediately if any subsequent command fails.
-            # set +e
-            # ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish-expedited-review
+            # Capture exit code
+            EXIT_CODE=$?
 
-            # # Capture exit code
-            # EXIT_CODE=$?
+            # Enable errexit as it was set before
+            set -e
 
-            # # Enable errexit as it was set before
-            # set -e
-
-            # # If expedited review process exited with non-zero status,
-            # # try normal review.
-            # if [ $EXIT_CODE -ne 0 ]; then
-            #   echo "Expedited review failed, trying normal review"
-            #   ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
-            # fi
-  requirements:
+            # If expedited review process exited with non-zero status,
+            # try normal review.
+            if [ $EXIT_CODE -ne 0 ]; then
+              echo "Expedited review failed, trying normal review"
+              ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
+            fi
+  requirements: &requirements
     - adg-docker: 'true'
-  notifications:
+  notifications: &notifications
     - events:
         - deployment-started-and-finished
       recipients:
@@ -83,10 +79,7 @@ AutoDeployAndPublish Beta:
         branch: stable-v5.2
   tasks:
     - clean
-    - checkout:
-        repository: bamboo-deploy-publisher
-        path: bamboo-deploy-publisher
-        force-clean-build: true
+    - checkout: *checkout
     - artifact-download:
         artifacts:
           - name: chrome-mv3-beta.zip
@@ -127,12 +120,5 @@ AutoDeployAndPublish Beta:
               echo "Expedited review failed, trying normal review"
               ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
             fi
-  requirements:
-    - adg-docker: 'true'
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  requirements: *requirements
+  notifications: *notifications

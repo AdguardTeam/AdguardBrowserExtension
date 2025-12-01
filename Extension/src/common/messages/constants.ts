@@ -27,11 +27,13 @@ import { type Windows } from 'webextension-polyfill';
 
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
-import { type CustomFilterMetadata } from '../../background/schema/custom-filter-metadata';
-import { type NotifierType } from '../constants';
-import { type AppearanceTheme } from '../settings';
+import { type CategoriesFilterData } from '../../background/api/filters/categories';
+import { type AppearanceTheme, type NotifierType } from '../constants';
 import { type FilteringLogTabInfo } from '../../background/api/filtering-log';
-import { type GetTabInfoForPopupResponse } from '../../background/services/ui/popup';
+import {
+    type GetExtensionStatusForPopupResponse,
+    type GetTabInfoForPopupResponse,
+} from '../../background/services/ui/popup';
 import { type GetFilteringLogDataResponse } from '../../background/services/filtering-log';
 import {
     type IRulesLimits,
@@ -45,6 +47,7 @@ import { type FilterMetadata } from '../../background/api/filters/main';
 import { type GetAllowlistDomainsResponse } from '../../background/services/allowlist';
 import { type GetUserRulesEditorDataResponse, type GetUserRulesResponse } from '../../background/services/userrules';
 import { type GetCustomFilterInfoResult } from '../../background/api/filters/custom';
+import { type ManualExtensionUpdateData } from '../../background/services/extension-update/types';
 
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 
@@ -72,10 +75,8 @@ export enum MessageType {
     GetAllowlistDomains = 'getAllowlistDomains',
     SaveAllowlistDomains = 'saveAllowlistDomains',
     CheckFiltersUpdate = 'checkFiltersUpdate',
-    CheckExtensionUpdateFromPopup = 'checkExtensionUpdateFromPopup',
-    CheckExtensionUpdateFromOptions = 'checkExtensionUpdateFromOptions',
-    UpdateExtensionFromPopup = 'updateExtensionFromPopup',
-    UpdateExtensionFromOptions = 'updateExtensionFromOptions',
+    CheckExtensionUpdateMv3 = 'checkExtensionUpdateMv3',
+    UpdateExtensionMv3 = 'updateExtensionMv3',
     DisableFiltersGroup = 'disableFiltersGroup',
     DisableFilter = 'disableFilter',
     LoadCustomFilterInfo = 'loadCustomFilterInfo',
@@ -113,7 +114,7 @@ export enum MessageType {
     GetOptionsData = 'getOptionsData',
     ChangeUserSettings = 'changeUserSetting',
     CheckRequestFilterReady = 'checkRequestFilterReady',
-    OpenThankyouPage = 'openThankYouPage',
+    OpenThankYouPage = 'openThankYouPage',
     OpenSafebrowsingTrusted = 'openSafebrowsingTrusted',
     GetSelectorsAndScripts = 'getSelectorsAndScripts',
     CheckPageScriptWrapperRequest = 'checkPageScriptWrapperRequest',
@@ -146,6 +147,7 @@ export enum MessageType {
     ClearRulesLimitsWarningMv3 = 'clearRulesLimitsWarningMv3',
     RestoreFiltersMv3 = 'restoreFiltersMv3',
     CurrentLimitsMv3 = 'currentLimitsMv3',
+    GetExtensionStatusForPopupMV3 = 'getExtensionStatusForPopupMV3',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -241,20 +243,15 @@ export type CheckFiltersUpdateMessage = {
     type: MessageType.CheckFiltersUpdate;
 };
 
-export type CheckExtensionUpdateMessage = {
-    type: MessageType.CheckExtensionUpdateFromPopup;
+export type CheckExtensionUpdateMessageMv3 = {
+    type: MessageType.CheckExtensionUpdateMv3;
 };
 
-export type CheckExtensionUpdateFromOptionsMessage = {
-    type: MessageType.CheckExtensionUpdateFromOptions;
-};
-
-export type UpdateExtensionMessage = {
-    type: MessageType.UpdateExtensionFromOptions;
-};
-
-export type UpdateExtensionFromPopupMessage = {
-    type: MessageType.UpdateExtensionFromPopup;
+export type UpdateExtensionMessageMv3 = {
+    type: MessageType.UpdateExtensionMv3;
+    data: {
+        from: ManualExtensionUpdateData['pageToOpenAfterReload'];
+    };
 };
 
 export type GetAllowlistDomainsMessage = {
@@ -305,8 +302,8 @@ export type OpenSiteReportTabMessage = {
     };
 };
 
-export type OpenThankyouPageMessage = {
-    type: MessageType.OpenThankyouPage;
+export type OpenThankYouPageMessage = {
+    type: MessageType.OpenThankYouPage;
 };
 
 export type GetOptionsDataMessage = {
@@ -646,6 +643,10 @@ export type GetRulesLimitsCountersMv3Message = {
     type: MessageType.GetRulesLimitsCountersMv3;
 };
 
+export type GetExtensionStatusForPopupMV3Message = {
+    type: MessageType.GetExtensionStatusForPopupMV3;
+};
+
 // Unified message map that includes both message structure and response types
 export type MessageMap = {
     [MessageType.CreateEventListener]: {
@@ -704,20 +705,12 @@ export type MessageMap = {
         message: CheckFiltersUpdateMessage;
         response: FilterMetadata[] | undefined;
     };
-    [MessageType.CheckExtensionUpdateFromPopup]: {
-        message: CheckExtensionUpdateMessage;
+    [MessageType.CheckExtensionUpdateMv3]: {
+        message: CheckExtensionUpdateMessageMv3;
         response: void;
     };
-    [MessageType.CheckExtensionUpdateFromOptions]: {
-        message: CheckExtensionUpdateFromOptionsMessage;
-        response: boolean;
-    };
-    [MessageType.UpdateExtensionFromOptions]: {
-        message: UpdateExtensionMessage;
-        response: void;
-    };
-    [MessageType.UpdateExtensionFromPopup]: {
-        message: UpdateExtensionFromPopupMessage;
+    [MessageType.UpdateExtensionMv3]: {
+        message: UpdateExtensionMessageMv3;
         response: void;
     };
     [MessageType.GetAllowlistDomains]: {
@@ -760,8 +753,8 @@ export type MessageMap = {
         message: OpenSiteReportTabMessage;
         response: void;
     };
-    [MessageType.OpenThankyouPage]: {
-        message: OpenThankyouPageMessage;
+    [MessageType.OpenThankYouPage]: {
+        message: OpenThankYouPageMessage;
         response: void;
     };
     [MessageType.GetOptionsData]: {
@@ -842,7 +835,7 @@ export type MessageMap = {
     };
     [MessageType.SubscribeToCustomFilter]: {
         message: SubscribeToCustomFilterMessage;
-        response: CustomFilterMetadata;
+        response: CategoriesFilterData;
     };
     // This message is sent from background and handled on UI side.
     [MessageType.AppInitialized]: {
@@ -971,6 +964,10 @@ export type MessageMap = {
     [MessageType.ClearRulesLimitsWarningMv3]: {
         message: ClearRulesLimitsWarningMv3Message;
         response: void;
+    };
+    [MessageType.GetExtensionStatusForPopupMV3]: {
+        message: GetExtensionStatusForPopupMV3Message;
+        response: GetExtensionStatusForPopupResponse;
     };
     [MessageType.InitializeFrameScript]: {
         message: InitializeFrameScriptMessage;

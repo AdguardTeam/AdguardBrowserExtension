@@ -16,11 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// NOTE: Here important to use 'extension-update-service' without path, because
-// it is an alias for manifest-specific implementation of the extension update
-// service. It will be replaced with MV2 or MV3 version during the build
-// via webpack.
-
-export { ExtensionUpdateService } from 'extension-update-service';
-
 export type { ManualExtensionUpdateData } from './types';

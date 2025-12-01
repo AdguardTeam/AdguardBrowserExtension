@@ -66,6 +66,7 @@ export class BackgroundMessageHandler extends MessageHandler {
 
             const fn = (async (): Promise<unknown> => {
                 try {
+                    // eslint-disable-next-line @typescript-eslint/return-await
                     return await listener(message, sender);
                 } catch (e) {
                     logger.error('[ext.BackgroundMessageHandler.handleMessage]: an error occurred while handling message:', message, 'error:', e);

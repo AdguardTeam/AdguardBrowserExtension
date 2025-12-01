@@ -102,7 +102,7 @@ pnpm locales [download | upload | renew | validate | info]
 
 - `renew` — renew base locale
 
-- `validate` — validate locales translations and check for missing locale keys used in source code (defaults to validate *all* locales):
+- `validate` — validate locales translations and check for missing locale keys used in source code. Also performs static analysis to ensure `translator.getMessage()` and `translator.getPlural()` calls use string literals instead of variables for proper locale key detection (defaults to validate *all* locales):
     - **-R**, **--min** — for critical errors of all locales and translations readiness of required ones
     - **-l** or **--locales** — for specific list of space-separated locales
         - **<list_of_locales>...** — locales to validate
@@ -126,7 +126,7 @@ pnpm locales upload
 # to renew base locale
 pnpm locales renew
 
-# validate all locales and check for missing locale keys used in source code
+# validate all locales, check for missing locale keys, and verify translator calls use string literals
 pnpm locales validate
 # or check critical errors for all locales and translations readiness for ours
 pnpm locales validate --min

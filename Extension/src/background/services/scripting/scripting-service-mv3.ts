@@ -23,7 +23,7 @@ import { type ExecuteScriptOptionsCommon } from './types';
 /**
  * ExecuteScriptOptionsCommon with MV3 specific fields.
  */
-type ExecuteScriptOptionsMv3 = ExecuteScriptOptionsCommon & {
+type ExecuteScriptOptions = ExecuteScriptOptionsCommon & {
     /**
      * The function to execute.
      */
@@ -40,7 +40,7 @@ type ExecuteScriptOptionsMv3 = ExecuteScriptOptionsCommon & {
  */
 export const executeScript = async (
     tabId: number | undefined,
-    options: ExecuteScriptOptionsMv3,
+    options: ExecuteScriptOptions,
 ): Promise<void> => {
     if (!tabId) {
         logger.debug('[ext.scripting-service-mv3]: tab id is not provided');

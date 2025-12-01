@@ -18,10 +18,9 @@
 
 import browser from 'webextension-polyfill';
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
 import { RulesLimitsService } from 'rules-limits-service';
 
+import { ExtensionUpdateService } from '../extension-update/extension-update-service-mv3';
 import {
     MessageType,
     type ChangeUserSettingMessage,
@@ -31,7 +30,7 @@ import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
 import { messageHandler } from '../../message-handler';
 import { UserAgent } from '../../../common/user-agent';
-import { AntiBannerFiltersId, ExtensionUpdateFSMEvent } from '../../../common/constants';
+import { ExtensionUpdateFSMEvent } from '../../../common/constants';
 import { engine } from '../../engine';
 import {
     Categories,
@@ -46,7 +45,7 @@ import {
     settingsEvents,
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
-import { extensionUpdateActor } from '../extension-update/extension-update-machine';
+import { extensionUpdateActor } from '../extension-update/extension-update-machine-mv3';
 
 import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
 
@@ -123,7 +122,7 @@ export class SettingsService {
 
         const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
 
-        const isExtensionUpdateAvailable = ExtensionUpdateService.getIsUpdateAvailable();
+        const isExtensionUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
 
         extensionUpdateActor.send({
             type: ExtensionUpdateFSMEvent.Init,
@@ -137,9 +136,6 @@ export class SettingsService {
             libVersions: Prefs.libVersions,
             environmentOptions: {
                 isChrome: UserAgent.isChrome,
-            },
-            constants: {
-                AntiBannerFiltersId,
             },
             filtersInfo: {
                 rulesCount: engine.api.getRulesCount(),

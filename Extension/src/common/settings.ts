@@ -18,13 +18,8 @@
 
 import { SettingOption, type Settings } from '../background/schema/settings';
 
+import { AppearanceTheme } from './constants';
 import { UserAgent } from './user-agent';
-
-export const enum AppearanceTheme {
-    System = 'system',
-    Dark = 'dark',
-    Light = 'light',
-}
 
 export const DEFAULT_FILTERS_UPDATE_PERIOD = -1;
 
@@ -66,4 +61,5 @@ export const defaultSettings: Settings = {
     [SettingOption.DisableShowContextMenu]: false,
     [SettingOption.AllowlistDomains]: JSON.stringify(DEFAULT_ALLOWLIST),
     [SettingOption.InvertedAllowlistDomains]: JSON.stringify(DEFAULT_INVERTED_ALLOWLIST),
+    [SettingOption.PreserveLogEnabled]: false,
 };

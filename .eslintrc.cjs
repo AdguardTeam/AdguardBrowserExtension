@@ -21,7 +21,7 @@ module.exports = {
         'ecmaFeatures': {
             'jsx': true,
         },
-        'project': 'tsconfig.json',
+        'project': 'tsconfig.eslint.json',
     },
     'settings': {
         'react': {
@@ -30,6 +30,7 @@ module.exports = {
         'import/resolver': {
             'typescript': {
                 'alwaysTryTypes': true,
+                'project': 'tsconfig.eslint.json',
             },
             'node': {
                 'extensions': [

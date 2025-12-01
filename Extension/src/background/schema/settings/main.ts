@@ -18,10 +18,11 @@
 import zod from 'zod';
 
 import { SchemaPreprocessor } from '../preprocessor';
+import { AppearanceTheme } from '../../../common/constants';
 
 import { SettingOption } from './enum';
 
-export const appearanceValidator = zod.enum(['system', 'dark', 'light']);
+export const appearanceValidator = zod.enum([AppearanceTheme.System, AppearanceTheme.Light, AppearanceTheme.Dark]);
 
 /**
  * Setting options may be stringified, use preprocessors for correct type casting.
@@ -182,6 +183,11 @@ export const settingsValidator = zod.object({
      * without reload entire extension.
      */
     [SettingOption.DisableFiltering]: SchemaPreprocessor.booleanValidator,
+
+    /**
+     * Preserve log enabled setting for filtering log UI.
+     */
+    [SettingOption.PreserveLogEnabled]: SchemaPreprocessor.booleanValidator,
 });
 
 /**

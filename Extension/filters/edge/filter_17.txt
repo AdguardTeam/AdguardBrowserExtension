@@ -1,9 +1,9 @@
-! Checksum: tdGucb0AYlnuab/IQURf6A
-! Diff-Path: ../patches/17/17-s-1758031855-3600.patch
+! Checksum: 2H4Cmcpa5G+OdxD3/6B6rg
+! Diff-Path: ../patches/17/17-s-1759839329-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.11.84
-! TimeUpdated: 2025-09-16T14:07:23+00:00
+! Version: 2.0.11.90
+! TimeUpdated: 2025-10-07T12:12:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -343,6 +343,7 @@ $removeparam=dpg_content
 ! AdmitAd tracking
 $removeparam=admitad_uid
 ! adjust.com tracking
+$removeparam=adj_label
 $removeparam=adj_campaign
 $removeparam=adj_t
 $removeparam=adj_creative
@@ -425,6 +426,17 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/212975
+$removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
+||item.rakuten.co.jp^$removeparam=iasid
+! https://fanicon.net/tours/1038/4036?from=home
+||fanicon.net^$removeparam=from
+! https://github.com/AdguardTeam/AdguardFilters/issues/214913
+||lululemon.com.hk^$removeparam=cid
+||lululemon.com.hk^$removeparam=mcid
+||lululemon.com.hk^$removeparam=ismcid
+! https://github.com/AdguardTeam/AdguardFilters/issues/213755
+||steiledema.boxnow.gr^$removeparam=/^lkws_/
 ! casino.ua
 ||casino.ua/short-register/$removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/213205
@@ -1895,6 +1907,9 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||realestate.yahoo.co.jp^$removeparam=sc_out
 ! https://github.com/AdguardTeam/AdguardFilters/issues/143623
 ||glami.cz^$removeparam=/ga[ct]id/
+! spotify.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/214514
+||open.spotify.com^$removeparam=pi
 ! https://github.com/AdguardTeam/AdguardFilters/issues/143625
 ||open.spotify.com^$removeparam=referral
 ||open.spotify.com^$removeparam=si
@@ -2000,8 +2015,6 @@ $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||fashion-press.net^$removeparam=media
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136853
 ||douban.com^$removeparam=_i
-! https://oshiete.goo.ne.jp/ksos/?from=hensyu_i
-||oshiete.goo.ne.jp^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/135493
 ||immobilienscout24.de^$removeparam=referrer
 ||immobilienscout24.de^$removeparam=navigationServiceUrl
@@ -3120,6 +3133,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/214119
+@@||adj.st^$removeparam=adj_t
 ! https://github.com/AdguardTeam/AdguardFilters/issues/213210
 @@||passport.jlcpcb.com^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/211078

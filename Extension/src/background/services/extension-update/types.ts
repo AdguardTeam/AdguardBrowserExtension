@@ -18,7 +18,7 @@
 
 import zod from 'zod';
 
-import { ManualExtensionUpdatePage } from '../../../common/constants';
+import { ForwardFrom } from '../../../common/forward';
 
 /**
  * Manual extension update data validator.
@@ -32,7 +32,7 @@ export const ManualExtensionUpdateDataValidator = zod.object({
     /**
      * Page to open after the extension reloads.
      */
-    pageToOpenAfterReload: zod.enum([ManualExtensionUpdatePage.Popup, ManualExtensionUpdatePage.Options]),
+    pageToOpenAfterReload: zod.enum([ForwardFrom.Options, ForwardFrom.Popup]),
 
     /**
      * Whether the extension update was successful.

@@ -16,13 +16,19 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import MD5 from 'crypto-js/md5';
+import { type CategoriesFilterData } from 'filter-categories-api';
 
 import { type DownloadResult } from '@adguard/filters-downloader/browser';
 
 import { BrowserUtils } from '../../utils/browser-utils';
 import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';
-import { type CustomFilterMetadata, customFilterMetadataStorageDataValidator } from '../../schema';
+import {
+    type CustomFilterMetadata,
+    customFilterMetadataStorageDataValidator,
+    type FilterStateData,
+    type FilterVersionData,
+} from '../../schema';
 import { customFilterMetadataStorage } from '../../storages/custom-filter-metadata';
 import { filterStateStorage } from '../../storages/filter-state';
 import { groupStateStorage } from '../../storages/group-state';
@@ -216,7 +222,7 @@ export class CustomFilterApi {
      *
      * @returns Created filter metadata.
      */
-    public static async createFilter(filterData: CustomFilterDTO): Promise<CustomFilterMetadata> {
+    public static async createFilter(filterData: CustomFilterDTO): Promise<CategoriesFilterData> {
         const { customUrl, trusted, enabled } = filterData;
 
         // download and parse custom filter data
@@ -258,23 +264,24 @@ export class CustomFilterApi {
             expires: Number(expires),
             timeUpdated: new Date(timeUpdated).getTime(),
         };
-
         customFilterMetadataStorage.set(filterMetadata);
 
-        filterVersionStorage.set(filterId, {
+        const filterVersionData: FilterVersionData = {
             version,
             diffPath,
             expires: filterMetadata.expires,
             lastUpdateTime: filterMetadata.timeUpdated,
             lastCheckTime: Date.now(),
             lastScheduledCheckTime: Date.now(),
-        });
+        };
+        filterVersionStorage.set(filterId, filterVersionData);
 
-        filterStateStorage.set(filterId, {
+        const filterStateData: FilterStateData = {
             loaded: true,
             installed: true,
             enabled,
-        });
+        };
+        filterStateStorage.set(filterId, filterStateData);
 
         // Note: we should join array of rules here, because they contain
         // preprocessed directives, e.g. including another filter via `!#include`
@@ -289,7 +296,15 @@ export class CustomFilterApi {
             groupStateStorage.enableGroups([filterMetadata.groupId]);
         }
 
-        return filterMetadata;
+        const resultCustomFilterData: CategoriesFilterData = {
+            ...filterMetadata,
+            ...filterVersionData,
+            loaded: true,
+            installed: true,
+            enabled,
+        };
+
+        return resultCustomFilterData;
     }
 
     /**

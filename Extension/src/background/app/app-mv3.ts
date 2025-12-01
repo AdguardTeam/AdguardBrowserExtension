@@ -18,10 +18,9 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
-import { ExtensionUpdateService } from 'extension-update-service';
-
 import { rulesLimitsService } from 'rules-limits-service';
 
+import { ExtensionUpdateService } from '../services/extension-update/extension-update-service-mv3';
 import { engine } from '../engine';
 import { MessageType, sendMessage } from '../../common/messages';
 import { logger } from '../../common/logger';
@@ -63,7 +62,6 @@ import {
     FilteringLogService,
     eventService,
     DocumentBlockService,
-    localeDetect,
     PromoNotificationService,
     filterUpdateService,
 } from '../services';
@@ -235,9 +233,6 @@ export class App {
 
         // Adds listeners for popup events
         PopupService.init();
-
-        // Initializes language detector for auto-enabling relevant filters
-        localeDetect.init();
 
         /**
          * Adds listener for creating `notifier` events. Triggers by frontend.

@@ -63,6 +63,7 @@ import {
 } from '../api';
 import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
+import { FilteringLogApi } from '../api/filtering-log';
 
 export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[];
@@ -636,7 +637,7 @@ export class FilteringLogService {
      */
     private static onSetPreserveLogState({ data }: SetPreserveLogStateMessage): void {
         const { state } = data;
-        filteringLogApi.setPreserveLogState(state);
+        FilteringLogApi.setPreserveLogState(state);
     }
 
     /**
@@ -686,7 +687,7 @@ export class FilteringLogService {
         return {
             filtersMetadata: FiltersApi.getFiltersMetadata(),
             settings: SettingsApi.getData(),
-            preserveLogEnabled: filteringLogApi.isPreserveLogEnabled(),
+            preserveLogEnabled: FilteringLogApi.isPreserveLogEnabled(),
         };
     }
 

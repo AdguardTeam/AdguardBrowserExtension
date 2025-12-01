@@ -1,4 +1,13 @@
 {
+    "include": [
+        "vitest.setup.ts",
+        "vitest.config.ts",
+        "postcss.config.js",
+        "constants.ts",
+        "tools/",
+        "Extension/",
+        "tests/"
+    ],
     "compilerOptions": {
         "module": "esnext",
         "moduleResolution": "bundler",
@@ -43,6 +52,15 @@
             "filter-categories-api": ["./Extension/src/background/api/filters/categories/categories-mv3.ts"],
             "settings-api": ["./Extension/src/background/api/settings/settings-mv3.ts"],
             "filter-update-service": ["./Extension/src/background/services/filter-update/filter-update-mv3.ts"],
+            "browser-action": ["./Extension/src/background/api/ui/browser-action/browser-action-mv3.ts"],
+            "context-menu-api": ["./Extension/src/background/api/ui/context-menu/context-menu-mv3.ts"],
+            "icons-cache": ["./Extension/src/common/api/extension/icons-cache/icons-cache-mv3.ts"],
+            "icons-api": ["./Extension/src/background/api/ui/icons/icons-mv3.ts"],
+            "userrules": ["./Extension/src/background/services/userrules/userrules-mv3.ts"],
+            "keep-alive-api": ["./Extension/src/background/keep-alive/keep-alive-mv3.ts"],
+            "locale-detect": ["./Extension/src/background/services/locale-detect/locale-detect-mv3.ts"],
+            "messenger": ["./Extension/src/pages/services/messenger/messenger-mv3.ts"],
+            "pages": ["./Extension/src/background/api/ui/pages/pages-mv3.ts"],
         }
     }
 }

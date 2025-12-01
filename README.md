@@ -58,10 +58,12 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
         - [Analyzing bundle size](#dev-bundle-size)
         - [Debug MV3 declarative rules](#dev-debug-mv3)
     - [Linter](#dev-linter)
+    - [TypeScript Configuration](#dev-typescript-configs)
     - [Update localizations](#dev-localizations)
     - [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 - [Permissions required](#permissions-required)
 - [Auto-publish builds](#auto-publish-builds)
+- [Versioning Schema](#versioning-schema)
 - [Minimum supported browser versions](#browser-compatibility)
 
 ## <a name="installation"></a> Installation
@@ -368,7 +370,7 @@ pnpm crx keygen ./private/AdguardBrowserExtension
     docker run --rm -it \
         -v $(pwd):/workspace \
         -w /workspace \
-        adguard/extension-builder:22.17--0.2--0
+        adguard/extension-builder:22.17--0.2.1--0
     ```
 
 1. Inside the docker container, install the dependencies:
@@ -481,15 +483,18 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 **A. Automatic (recommended for most cases):**
 
 1. **Build the extension** (if not done yet):
+
     ```shell
     pnpm install
     pnpm dev chrome-mv3
     ```
 
 1. **Start watching for filter changes:**
+
     ```shell
     pnpm debug-filters:watch
     ```
+
     - This will extract text filters to `./build/dev/chrome-mv3/filters` and watch for changes.
     - When you edit and save any filter file, DNR rulesets will be rebuilt automatically.
 
@@ -498,12 +503,14 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 **B. Manual (for advanced/manual control):**
 
 1. **Build the extension** (if not done yet):
+
     ```shell
     pnpm install
     pnpm dev chrome-mv3
     ```
 
 1. **Extract text filters:**
+
     ```shell
     pnpm debug-filters:extract
     ```
@@ -511,23 +518,26 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 1. **Edit the text filters** in `./build/dev/chrome-mv3/filters` as needed.
 
 1. **Convert filters to DNR rulesets:**
+
     ```shell
     pnpm debug-filters:convert
     ```
 
 1. **Reload the extension in your browser** to apply new rulesets.
 
-**Tip:**
-- To download the latest available text filters, run:
-    ```shell
-    pnpm debug-filters:load
-    ```
+> [!TIP]
+> To download the latest available text filters, run:
+>
+> ```shell
+> pnpm debug-filters:load
+> ```
 
 If you see an exclamation mark in the filtering log, it means the assumed rule (calculated by the engine) and the applied rule (converted to DNR) are different. Otherwise, only the applied rule (in DNR and text ways) will be shown.
 
 ##### <a name="dev-technical-info-about-debug-commands"></a> Technical information about commands
 
 - **Watch for changes and auto-convert:**
+
     ```shell
     pnpm debug-filters:watch
     # Under the hood:
@@ -541,7 +551,9 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # loaded during runtime).
         /web-accessible-resources/redirects
     ```
+
 - **Load latest text filters and metadata:**
+
     ```shell
     pnpm debug-filters:load
     # Under the hood:
@@ -551,7 +563,9 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Destination path for text filters
         ./build/dev/chrome-mv3/filters
     ```
+
 - **Manual conversion:**
+
     ```shell
     pnpm debug-filters:convert
     # Under the hood:
@@ -567,7 +581,9 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Destination path for converted DNR rulesets
         ./build/dev/chrome-mv3/filters/declarative
     ```
+
 - **Extract text filters from DNR rulesets:**
+
     ```shell
     pnpm debug-filters:extract
     # Under the hood:
@@ -579,16 +595,49 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
     ```
 
 For all command options, use `--help`, e.g.:
+
 ```shell
 pnpm exec dnr-rulesets watch --help
 pnpm exec tsurlfilter convert --help
 ```
 
-
 ### <a name="dev-linter"></a> Linter
 
 Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
+
+### <a name="dev-typescript-configs"></a> TypeScript Configuration
+
+The project uses **TypeScript Project References** to completely separate Manifest V2 and V3 codebases into independent TypeScript projects. This architectural approach eliminates the need for empty stub implementations and provides superior IDE support.
+
+#### Configuration Files Overview
+
+The project contains **5 TypeScript configuration files**, each serving a specific purpose:
+
+1. **`tsconfig.base.json`** - Shared base configuration
+   - Common compiler options for all projects
+   - JSX support and module resolution settings
+
+2. **`tsconfig.json`** - Root project references container
+   - Contains minimal includes
+   - References both MV2 and MV3 projects
+   - Enables VS Code to automatically switch between projects
+
+3. **`tsconfig.mv2.json`** - Manifest V2 project
+   - Excludes all `**/*-mv3.ts` and `**/*-mv3.tsx` files
+   - Contains MV2-specific path aliases
+   - Composite project with declaration output
+
+4. **`tsconfig.mv3.json`** - Manifest V3 project
+   - Excludes all `**/*-mv2.ts` and `**/*-mv2.tsx` files
+   - Contains MV3-specific path aliases
+   - Composite project with declaration output
+
+5. **`tsconfig.eslint.json`** - ESLint-specific configuration
+   - Includes all files for linting purposes
+   - Special path mapping for JSX files
+   - Separate from compilation projects
+
 
 ### <a name="dev-localizations"></a> Update localizations
 
@@ -724,7 +773,7 @@ Due to the transition from MV2 to MV3, we cannot update our filters remotely. To
 
 ### Auto-update cycle
 
-We have set up an auto-update cycle that runs every hour to sync with fresh releases from the [`@adguard/dnr-rulesets`](https://www.npmjs.com/package/@adguard/dnr-rulesets) npm package. This ensures our extension stays up-to-date with the latest filter rules.
+We have set up an automated update cycle that regularly syncs with fresh releases from the [`@adguard/dnr-rulesets`](https://www.npmjs.com/package/@adguard/dnr-rulesets) npm package. The update frequency is configured in our [CI build schedule](../bamboo-specs/auto-build.yaml). This ensures our extension stays up-to-date with the latest filter rules.
 
 To deploy new releases as soon as possible, we have implemented all the steps outlined in Chrome's [Skip Review documentation](https://developer.chrome.com/docs/webstore/skip-review). This allows us to publish updates to the Chrome Web Store without waiting for the full review cycle.
 
@@ -739,6 +788,23 @@ Therefore, any updates that include changes to script rules will require the ful
 These automated tasks will run all necessary checks: unit tests, translation checks, and linter. After that, they will update resources, including filters and local script rules, create a build, and run integration tests to ensure the update is safe.
 
 Finally, the new version of the extension will be published to the Chrome Web Store.
+
+## <a name="versioning-schema"></a> Versioning Schema
+
+The extension uses the following versioning schema:
+
+```
+major.minor.patch+autoBuildIncrementVersion.buildTag.dnrRulesetsVersion
+```
+
+- **major.minor.patch**: Standard semantic versioning for the extension codebase.
+- **autoBuildIncrementVersion**: An incrementing number used as the fourth part of the manifest version (e.g., `88` in `5.2.1.88`).
+- **buildTag**: A delimiter indicating the build's readiness.
+- **dnrRulesetsVersion**: The patch version of the DNR rulesets, which includes the build date for those rulesets.
+
+Example: `5.2.1+88.beta.20251014`
+
+But for build versions we will use following format: `major.minor.patch.autoBuildIncrementVersion` to comply with the browser requirements for version.
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 

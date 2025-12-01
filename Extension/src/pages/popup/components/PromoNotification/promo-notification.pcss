@@ -57,21 +57,31 @@
         font-weight: 700;
         line-height: 120%;
         font-size: 20px;
-        color: #3D3D3D;
+        color: var(--gray-0);
         word-break: keep-all;
     }
 
     &__btn {
-        color: #3D3D3D;
+        color: var(--gray-0);
         font-weight: 400;
-        font-size: 16px;
-        line-height: 150%;
-        background-color: #FFFFFF;
-        padding: 12px 24px;
-        min-width: 168px;
-        border: 1px solid #3D3D3D;
+        font-size: 18px;
+        line-height: 130%;
+        background-color: #13714E;
+        padding: 16px 24px;
+        min-width: 200px;
         border-radius: 8px;
         margin-top: 24px;
         white-space: nowrap;
+        transition: var(--t3);
+    }
+
+    @media (hover: hover) {
+        &__btn:hover {
+            background-color: #4d995F;
+        }
+    }
+
+    &__btn:active {
+        background-color: #39764C;
     }
 }

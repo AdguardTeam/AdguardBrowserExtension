@@ -27,7 +27,6 @@ import { observer } from 'mobx-react';
 
 import cn from 'classnames';
 
-import { type RegularFilterMetadata } from '../../../../background/schema';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { translator } from '../../../../common/translators/translator';
@@ -39,11 +38,11 @@ import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
 import { getStaticWarningMessage } from '../Warnings/messages';
+import { type CategoriesFilterData } from '../../../../background/api/filters/categories';
 
 import { formatDate } from './helpers';
 import { HighlightSearch } from './Search/HighlightSearch';
 import { FilterTags } from './FilterTags';
-import { type RenderedFilterType } from './types';
 
 import './filter.pcss';
 
@@ -72,7 +71,7 @@ const removePrefix = (extendedFilterId: string): string => {
 };
 
 type FilterParams = {
-    filter: RenderedFilterType;
+    filter: CategoriesFilterData;
     groupEnabled: boolean;
     disabled?: boolean;
 };
@@ -90,11 +89,19 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         lastCheckTime,
         lastUpdateTime,
         homepage,
-        trusted,
-        customUrl,
         enabled,
         tagsDetails = [],
     } = filter;
+
+    let trusted: boolean | undefined;
+    if ('trusted' in filter) {
+        trusted = filter.trusted;
+    }
+
+    let customUrl: string | undefined;
+    if ('customUrl' in filter) {
+        customUrl = filter.customUrl;
+    }
 
     // Trusted tag can be only on custom filters,
     const tags = trusted
@@ -143,7 +150,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         // remove prefix from filter id and parse it to number
         const filterId = Number.parseInt(removePrefix(id), 10);
         const annoyancesFilter = settingsStore.annoyancesFilters
-            .find((f: RegularFilterMetadata) => f.filterId === filterId);
+            .find((f) => f.filterId === filterId);
 
         const updateFilterSettingWrapper = addMinDelayLoader(
             uiStore.setShowLoader,
@@ -194,36 +201,37 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
     );
 
     const renderRemoveButton = () => {
-        if (customUrl) {
-            return (
-                <>
-                    {isOpenRemoveFilterModal && (
-                        <ConfirmModal
-                            title={translator.getMessage('options_remove_filter_confirm_modal_title')}
-                            subtitle={name}
-                            isOpen={isOpenRemoveFilterModal}
-                            setIsOpen={setIsOpenRemoveFilterModal}
-                            onConfirm={handleRemoveFilterConfirmWrapper}
-                            customConfirmTitle={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
-                        />
-                    )}
-                    <button
-                        type="button"
-                        className="button filter__remove"
-                        onClick={handleRemoveFilterClick}
-                        title={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
-                        disabled={disabled}
-                    >
-                        <Icon
-                            id="#trash"
-                            className="icon icon--24 icon--red-default"
-                            aria-hidden="true"
-                        />
-                    </button>
-                </>
-            );
+        if (!customUrl) {
+            return null;
         }
-        return null;
+
+        return (
+            <>
+                {isOpenRemoveFilterModal && (
+                    <ConfirmModal
+                        title={translator.getMessage('options_remove_filter_confirm_modal_title')}
+                        subtitle={name}
+                        isOpen={isOpenRemoveFilterModal}
+                        setIsOpen={setIsOpenRemoveFilterModal}
+                        onConfirm={handleRemoveFilterConfirmWrapper}
+                        customConfirmTitle={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
+                    />
+                )}
+                <button
+                    type="button"
+                    className="button filter__remove"
+                    onClick={handleRemoveFilterClick}
+                    title={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
+                    disabled={disabled}
+                >
+                    <Icon
+                        id="#trash"
+                        className="icon icon--24 icon--red-default"
+                        aria-hidden="true"
+                    />
+                </button>
+            </>
+        );
     };
 
     const filterClassName = cn('filter', {

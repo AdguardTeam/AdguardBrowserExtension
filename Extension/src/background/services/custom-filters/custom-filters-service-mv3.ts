@@ -27,7 +27,7 @@ import { CustomFilterApi, type GetCustomFilterInfoResult } from '../../api/filte
 import { messageHandler } from '../../message-handler';
 import { notifier } from '../../notifier';
 import { engine } from '../../engine';
-import type { CustomFilterMetadata } from '../../schema';
+import { type CategoriesFilterData } from '../../api/filters/categories/categories-mv3';
 
 /**
  * Service for processing events with custom filters.
@@ -63,7 +63,7 @@ export class CustomFiltersService {
      *
      * @returns Custom filter metadata.
      */
-    static async onCustomFilterSubscription(message: SubscribeToCustomFilterMessage): Promise<CustomFilterMetadata> {
+    static async onCustomFilterSubscription(message: SubscribeToCustomFilterMessage): Promise<CategoriesFilterData> {
         const { filter } = message.data;
 
         const { customUrl, name, trusted } = filter;

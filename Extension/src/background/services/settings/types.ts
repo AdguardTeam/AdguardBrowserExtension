@@ -16,7 +16,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type AntiBannerFiltersId } from '../../../common/constants';
 import { type CategoriesData, type SettingsData } from '../../api';
 import { type MV3SpecificOptions } from '../types';
 
@@ -47,6 +46,7 @@ export type GetOptionsDataResponse = {
 
     /**
      * Extension version.
+     * Used in the About section of the options page.
      */
     appVersion: string;
 
@@ -89,16 +89,6 @@ export type GetOptionsDataResponse = {
          * Whether the extension is running in Chrome.
          */
         isChrome: boolean;
-    };
-
-    /**
-     * Constants needed for the options page.
-     */
-    constants: {
-        /**
-         * Filters IDs.
-         */
-        AntiBannerFiltersId: typeof AntiBannerFiltersId;
     };
 
     /**

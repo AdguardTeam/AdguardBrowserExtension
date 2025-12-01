@@ -16,6 +16,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { type ForwardFrom } from './forward';
+
 /**
  * Current version of app storage data schema.
  *
@@ -241,10 +243,7 @@ export const USER_SCRIPTS_API_WARNING_RECHECK_DELAY_MS = 2000;
 /**
  * Enum with the list of the pages where manual extension update can be triggered.
  */
-export enum ManualExtensionUpdatePage {
-    Options = 'options',
-    Popup = 'popup',
-}
+export type ManualExtensionUpdatePage = ForwardFrom.Popup | ForwardFrom.Options;
 
 /**
  * States for the extension update finite state machine (FSM).
@@ -332,3 +331,12 @@ export const enum ExtensionUpdateFSMEvent {
  * Time duration for showing update state change. Needed for smoother user experience.
  */
 export const MIN_UPDATE_DISPLAY_DURATION_MS = 2 * 1000;
+
+/**
+ * Available appearance themes for the extension UI.
+ */
+export const enum AppearanceTheme {
+    System = 'system',
+    Dark = 'dark',
+    Light = 'light',
+}
