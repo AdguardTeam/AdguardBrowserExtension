@@ -85,7 +85,6 @@ export class SettingsStore extends SettingsStoreCommon {
      */
     @action
     async updateFilterSetting(filterId: number, enabled: boolean): Promise<void> {
-        // MV2: Optimistic update - UI changes immediately, reverts on error.
         this.setFilterEnabledState(filterId, enabled);
 
         await this.updateFilterSettingCore(filterId, enabled);

@@ -208,7 +208,7 @@ export class SettingsStore extends SettingsStoreCommon {
     async updateFilterSetting(filterId: number, enabled: boolean): Promise<void> {
         const updateResult = await this.updateFilterSettingCore(filterId, enabled);
 
-        // Pessimistic update: UI changes only after success due to DNR limits
+        // Do not update filter state for mv3 optimistically
         if (updateResult) {
             this.setFilterEnabledState(filterId, enabled);
         }
