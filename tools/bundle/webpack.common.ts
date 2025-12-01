@@ -156,6 +156,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'filters-service': path.resolve(__dirname, `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`),
         'custom-filters-service': path.resolve(__dirname, `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`),
         'rules-limits-service': path.resolve(__dirname, `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`),
+        'allowlist-service': path.resolve(__dirname, `../../Extension/src/background/services/allowlist/allowlist-mv${manifestVersion}.ts`),
         'content-script': path.resolve(__dirname, `../../Extension/pages/content-script-start/mv${manifestVersion}.ts`),
         'network-api': path.resolve(__dirname, `../../Extension/src/background/api/network/network-mv${manifestVersion}.ts`),
         'network-api-settings': path.resolve(__dirname, `../../Extension/src/background/api/network/settings-mv${manifestVersion}.ts`),
@@ -177,8 +178,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'pages': path.resolve(__dirname, `../../Extension/src/background/api/ui/pages/pages-mv${manifestVersion}.ts`),
         'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
         'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),
+        'user-scripts-api': path.resolve(__dirname, `../../Extension/src/common/user-scripts-api/user-scripts-api-mv${manifestVersion}.ts`),
         'popup-layout': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Popup/Popup-mv${manifestVersion}.tsx`),
         'filters-adapter': path.resolve(__dirname, `../../Extension/src/background/storages/filters-adapter/filters-adapter-mv${manifestVersion}.ts`),
+        'prefs': path.resolve(__dirname, `../../Extension/src/background/prefs/prefs-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {
@@ -370,7 +373,28 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     },
                 },
                 {
+                    test: /\.module\.(css|pcss)$/,
+                    use: [
+                        'style-loader',
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                importLoaders: 1,
+                                url: false,
+                                modules: {
+                                    localIdentName: isDev
+                                        ? '[name]__[local]--[hash:base64:5]'
+                                        : '[hash:base64]',
+                                    exportLocalsConvention: 'camelCaseOnly',
+                                },
+                            },
+                        },
+                        'postcss-loader',
+                    ],
+                },
+                {
                     test: /\.(css|pcss)$/,
+                    exclude: /\.module\.(css|pcss)$/,
                     use: [
                         'style-loader',
                         {
@@ -392,6 +416,13 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     type: 'asset/resource',
                     generator: {
                         filename: 'assets/images/[name][ext]',
+                    },
+                },
+                {
+                    test: /\.(webm|mp4)$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'assets/videos/[name][ext]',
                     },
                 },
             ],

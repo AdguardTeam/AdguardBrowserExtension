@@ -15,7 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { type IconData } from '../../../storages';
+import {
+    appContext,
+    AppContextKey,
+    type IconData,
+} from '../../../storages';
 
 import { IconsApiCommon } from './icons-common';
 import { defaultIconVariants } from './defaultIconVariants';
@@ -33,6 +37,10 @@ class IconsApi extends IconsApiCommon {
      * @returns Icon variant to display.
      */
     protected async pickIconVariant(isDisabled = false): Promise<IconData> {
+        if (!appContext.get(AppContextKey.IsInit)) {
+            return defaultIconVariants.loading;
+        }
+
         // prioritize promo icons over the update-available icon,
         // i.e. PromoNotification is rendered on top of other notifications as well
         if (this.promoIcons) {

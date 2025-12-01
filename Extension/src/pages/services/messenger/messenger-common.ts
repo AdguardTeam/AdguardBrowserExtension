@@ -100,17 +100,6 @@ export abstract class MessengerCommon {
     onMessage = browser.runtime.onMessage;
 
     /**
-     * Creates an instance of the MessengerCommon class.
-     */
-    constructor() {
-        this.resetUserRulesForPage = this.resetUserRulesForPage.bind(this);
-        this.updateFiltersMV2 = this.updateFiltersMV2.bind(this);
-        this.removeAllowlistDomain = this.removeAllowlistDomain.bind(this);
-        this.addAllowlistDomainForTabId = this.addAllowlistDomainForTabId.bind(this);
-        this.addAllowlistDomainForUrl = this.addAllowlistDomainForUrl.bind(this);
-    }
-
-    /**
      * Sends a message to the background page.
      *
      * All messages described in the {@link MessageType} enum.
@@ -293,9 +282,9 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves when the message is sent.
      */
-    async updateListeners(): Promise<ExtractMessageResponse<MessageType.UpdateListeners>> {
+    updateListeners = async (): Promise<ExtractMessageResponse<MessageType.UpdateListeners>> => {
         return this.sendMessage(MessageType.UpdateListeners);
-    }
+    };
 
     /**
      * Sends a message to the background page to get the settings data for
@@ -304,9 +293,9 @@ export abstract class MessengerCommon {
      * @returns Promise that resolves with the settings data for
      * the options page with some additional info.
      */
-    async getOptionsData(): Promise<ExtractMessageResponse<MessageType.GetOptionsData>> {
+    getOptionsData = async (): Promise<ExtractMessageResponse<MessageType.GetOptionsData>> => {
         return this.sendMessage(MessageType.GetOptionsData);
-    }
+    };
 
     /**
      * Sends a message to the background page to change the user setting.
@@ -316,10 +305,10 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async changeUserSetting(
+    changeUserSetting = async (
         settingId: ChangeUserSettingMessage['data']['key'],
         value: ChangeUserSettingMessage['data']['value'],
-    ): Promise<ExtractMessageResponse<MessageType.ChangeUserSettings>> {
+    ): Promise<ExtractMessageResponse<MessageType.ChangeUserSettings>> => {
         await this.sendMessage(
             MessageType.ChangeUserSettings,
             {
@@ -327,43 +316,44 @@ export abstract class MessengerCommon {
                 value,
             },
         );
-    }
+    };
 
     /**
      * Sends a message to the background page to open the extension store.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openExtensionStore(): Promise<ExtractMessageResponse<MessageType.OpenExtensionStore>> {
+    openExtensionStore = async (): Promise<ExtractMessageResponse<MessageType.OpenExtensionStore>> => {
         return this.sendMessage(MessageType.OpenExtensionStore);
-    }
+    };
 
     /**
      * Sends a message to the background page to open the compare page.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openComparePage(): Promise<ExtractMessageResponse<MessageType.OpenComparePage>> {
+    openComparePage = async (): Promise<ExtractMessageResponse<MessageType.OpenComparePage>> => {
         return this.sendMessage(MessageType.OpenComparePage);
-    }
+    };
 
     /**
      * Sends a message to the background page to open the Chrome extensions settings page.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openChromeExtensionsPage(): Promise<ExtractMessageResponse<MessageType.OpenChromeExtensionsSettingsPage>> {
+    openChromeExtensionsPage = async ()
+    : Promise<ExtractMessageResponse<MessageType.OpenChromeExtensionsSettingsPage>> => {
         return this.sendMessage(MessageType.OpenChromeExtensionsSettingsPage);
-    }
+    };
 
     /**
      * Sends a message to the background page to open the extension details page.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openExtensionDetailsPage(): Promise<ExtractMessageResponse<MessageType.OpenExtensionDetailsPage>> {
+    openExtensionDetailsPage = async (): Promise<ExtractMessageResponse<MessageType.OpenExtensionDetailsPage>> => {
         return this.sendMessage(MessageType.OpenExtensionDetailsPage);
-    }
+    };
 
     /**
      * Sends a message to the background page to enable a filter by filter id.
@@ -372,11 +362,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async enableFilter(
+    enableFilter = async (
         filterId: AddAndEnableFilterMessage['data']['filterId'],
-    ): Promise<ExtractMessageResponse<MessageType.AddAndEnableFilter>> {
+    ): Promise<ExtractMessageResponse<MessageType.AddAndEnableFilter>> => {
         return this.sendMessage(MessageType.AddAndEnableFilter, { filterId });
-    }
+    };
 
     /**
      * Sends a message to the background page to disable a filter by filter id.
@@ -385,11 +375,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async disableFilter(
+    disableFilter = async (
         filterId: DisableFilterMessage['data']['filterId'],
-    ): Promise<ExtractMessageResponse<MessageType.DisableFilter>> {
+    ): Promise<ExtractMessageResponse<MessageType.DisableFilter>> => {
         return this.sendMessage(MessageType.DisableFilter, { filterId });
-    }
+    };
 
     /**
      * Sends a message to the background page to apply settings from a JSON object.
@@ -398,29 +388,29 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async applySettingsJson(
+    applySettingsJson = async (
         json: ApplySettingsJsonMessage['data']['json'],
-    ): Promise<ExtractMessageResponse<MessageType.ApplySettingsJson>> {
+    ): Promise<ExtractMessageResponse<MessageType.ApplySettingsJson>> => {
         return this.sendMessage(MessageType.ApplySettingsJson, { json });
-    }
+    };
 
     /**
      * Sends a message to the background page to open the filtering log.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openFilteringLog(): Promise<ExtractMessageResponse<MessageType.OpenFilteringLog>> {
+    openFilteringLog = async (): Promise<ExtractMessageResponse<MessageType.OpenFilteringLog>> => {
         return this.sendMessage(MessageType.OpenFilteringLog);
-    }
+    };
 
     /**
      * Sends a message to the background page to reset the blocked ads statistics.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async resetStatistics(): Promise<ExtractMessageResponse<MessageType.ResetBlockedAdsCount>> {
+    resetStatistics = async (): Promise<ExtractMessageResponse<MessageType.ResetBlockedAdsCount>> => {
         return this.sendMessage(MessageType.ResetBlockedAdsCount);
-    }
+    };
 
     /**
      * Sends a message to the background page to set the filtering log window state.
@@ -429,29 +419,29 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async setFilteringLogWindowState(
+    setFilteringLogWindowState = async (
         windowState: SetFilteringLogWindowStateMessage['data']['windowState'],
-    ): Promise<ExtractMessageResponse<MessageType.SetFilteringLogWindowState>> {
+    ): Promise<ExtractMessageResponse<MessageType.SetFilteringLogWindowState>> => {
         return this.sendMessage(MessageType.SetFilteringLogWindowState, { windowState });
-    }
+    };
 
     /**
      * Sends a message to the background page to reset the settings.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async resetSettings(): Promise<ExtractMessageResponse<MessageType.ResetSettings>> {
+    resetSettings = async (): Promise<ExtractMessageResponse<MessageType.ResetSettings>> => {
         return this.sendMessage(MessageType.ResetSettings);
-    }
+    };
 
     /**
      * Sends a message to the background page to get the user rules.
      *
      * @returns Promise that resolves with the user rules.
      */
-    async getUserRules(): Promise<ExtractMessageResponse<MessageType.GetUserRules>> {
+    getUserRules = async (): Promise<ExtractMessageResponse<MessageType.GetUserRules>> => {
         return this.sendMessage(MessageType.GetUserRules);
-    }
+    };
 
     /**
      * Sends a message to the background page to save user rules.
@@ -460,29 +450,29 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async saveUserRules(
+    saveUserRules = async (
         value: SaveUserRulesMessage['data']['value'],
-    ): Promise<ExtractMessageResponse<MessageType.SaveUserRules>> {
+    ): Promise<ExtractMessageResponse<MessageType.SaveUserRules>> => {
         await this.sendMessage(MessageType.SaveUserRules, { value });
-    }
+    };
 
     /**
      * Sends a message to the background page to open user rules editor in fullscreen.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openFullscreenUserRules(): Promise<ExtractMessageResponse<MessageType.OpenFullscreenUserRules>> {
+    openFullscreenUserRules = async (): Promise<ExtractMessageResponse<MessageType.OpenFullscreenUserRules>> => {
         return this.sendMessage(MessageType.OpenFullscreenUserRules);
-    }
+    };
 
     /**
      * Sends a message to the background page to get the allowlist domains.
      *
      * @returns Promise that resolves with the list of allowlist domains.
      */
-    async getAllowlist(): Promise<ExtractMessageResponse<MessageType.GetAllowlistDomains>> {
+    getAllowlist = async (): Promise<ExtractMessageResponse<MessageType.GetAllowlistDomains>> => {
         return this.sendMessage(MessageType.GetAllowlistDomains);
-    }
+    };
 
     /**
      * Sends a message to the background page to save the allowlist domains.
@@ -491,11 +481,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async saveAllowlist(
+    saveAllowlist = async (
         value: SaveUserRulesMessage['data']['value'],
-    ): Promise<ExtractMessageResponse<MessageType.SaveAllowlistDomains>> {
+    ): Promise<ExtractMessageResponse<MessageType.SaveAllowlistDomains>> => {
         await this.sendMessage(MessageType.SaveAllowlistDomains, { value });
-    }
+    };
 
     /**
      * Sends a message to the background page to mark a notification as viewed.
@@ -504,11 +494,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async setNotificationViewed(
+    setNotificationViewed = async (
         withDelay: SetNotificationViewedMessage['data']['withDelay'],
-    ): Promise<ExtractMessageResponse<MessageType.SetNotificationViewed>> {
+    ): Promise<ExtractMessageResponse<MessageType.SetNotificationViewed>> => {
         await this.sendMessage(MessageType.SetNotificationViewed, { withDelay });
-    }
+    };
 
     /**
      * Sends a message to the background page to update filters.
@@ -537,14 +527,14 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async updateGroupStatus(
+    updateGroupStatus = async (
         groupId: number,
         enabled: boolean,
-    ): Promise<ExtractMessageResponse<MessageType.EnableFiltersGroup | MessageType.DisableFiltersGroup>> {
+    ): Promise<ExtractMessageResponse<MessageType.EnableFiltersGroup | MessageType.DisableFiltersGroup>> => {
         const type = enabled ? MessageType.EnableFiltersGroup : MessageType.DisableFiltersGroup;
 
         return this.sendMessage(type, { groupId });
-    }
+    };
 
     /**
      * Sends a message to the background page to set consented filters.
@@ -553,11 +543,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async setConsentedFilters(
+    setConsentedFilters = async (
         filterIds: SetConsentedFiltersMessage['data']['filterIds'],
-    ): Promise<ExtractMessageResponse<MessageType.SetConsentedFilters>> {
+    ): Promise<ExtractMessageResponse<MessageType.SetConsentedFilters>> => {
         return this.sendMessage(MessageType.SetConsentedFilters, { filterIds });
-    }
+    };
 
     /**
      * Sends a message to the background page to check if a filter is consented.
@@ -566,11 +556,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves with the result of the check.
      */
-    async getIsConsentedFilter(
+    getIsConsentedFilter = async (
         filterId: GetIsConsentedFilterMessage['data']['filterId'],
-    ): Promise<ExtractMessageResponse<MessageType.GetIsConsentedFilter>> {
+    ): Promise<ExtractMessageResponse<MessageType.GetIsConsentedFilter>> => {
         return this.sendMessage(MessageType.GetIsConsentedFilter, { filterId });
-    }
+    };
 
     /**
      * Sends a message to the background page to check a custom filter URL.
@@ -579,11 +569,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves with the result of the check.
      */
-    async checkCustomUrl(
+    checkCustomUrl = async (
         url: LoadCustomFilterInfoMessage['data']['url'],
-    ): Promise<ExtractMessageResponse<MessageType.LoadCustomFilterInfo>> {
+    ): Promise<ExtractMessageResponse<MessageType.LoadCustomFilterInfo>> => {
         return this.sendMessage(MessageType.LoadCustomFilterInfo, { url });
-    }
+    };
 
     /**
      * Sends a message to the background page to add a custom filter.
@@ -592,11 +582,11 @@ export abstract class MessengerCommon {
      *
      * @returns {Promise<CustomFilterMetadata>} Custom filter metadata.
      */
-    async addCustomFilter(
+    addCustomFilter = async (
         filter: SubscribeToCustomFilterMessage['data']['filter'],
-    ): Promise<ExtractMessageResponse<MessageType.SubscribeToCustomFilter>> {
+    ): Promise<ExtractMessageResponse<MessageType.SubscribeToCustomFilter>> => {
         return this.sendMessage(MessageType.SubscribeToCustomFilter, { filter });
-    }
+    };
 
     /**
      * Sends a message to the background page to remove a custom filter.
@@ -605,21 +595,21 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the filter is removed.
      */
-    async removeCustomFilter(
+    removeCustomFilter = async (
         filterId: RemoveAntiBannerFilterMessage['data']['filterId'],
-    ): Promise<ExtractMessageResponse<MessageType.RemoveAntiBannerFilter>> {
+    ): Promise<ExtractMessageResponse<MessageType.RemoveAntiBannerFilter>> => {
         await this.sendMessage(MessageType.RemoveAntiBannerFilter, { filterId });
-    }
+    };
 
     /**
-     * Sends a message to the background page to check if the engine is started.
+     * Sends a message to the background page to check if the application is initialized.
      *
      * @returns Promise that resolves to a boolean value:
-     * true if the engine is started, false otherwise.
+     * true if the application is initialized, false otherwise.
      */
-    async getIsEngineStarted(): Promise<ExtractMessageResponse<MessageType.GetIsEngineStarted>> {
-        return this.sendMessage(MessageType.GetIsEngineStarted);
-    }
+    getIsAppInitialized = async (): Promise<ExtractMessageResponse<MessageType.GetIsAppInitialized>> => {
+        return this.sendMessage(MessageType.GetIsAppInitialized);
+    };
 
     /**
      * Sends a message to the background to get the tab info for the popup.
@@ -628,11 +618,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves with the tab info or undefined.
      */
-    async getTabInfoForPopup(
+    getTabInfoForPopup = async (
         tabId: GetTabInfoForPopupMessage['data']['tabId'],
-    ): Promise<ExtractMessageResponse<MessageType.GetTabInfoForPopup>> {
+    ): Promise<ExtractMessageResponse<MessageType.GetTabInfoForPopup>> => {
         return this.sendMessage(MessageType.GetTabInfoForPopup, { tabId });
-    }
+    };
 
     /**
      * Sends a message to the background page to change application filtering state.
@@ -641,11 +631,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the state is changed.
      */
-    async changeApplicationFilteringPaused(
+    changeApplicationFilteringPaused = async (
         state: ChangeApplicationFilteringPausedMessage['data']['state'],
-    ): Promise<ExtractMessageResponse<MessageType.ChangeApplicationFilteringPaused>> {
+    ): Promise<ExtractMessageResponse<MessageType.ChangeApplicationFilteringPaused>> => {
         return this.sendMessage(MessageType.ChangeApplicationFilteringPaused, { state });
-    }
+    };
 
     /**
      * Sends a message to the background page to update the theme of the fullscreen user rules.
@@ -654,38 +644,38 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the theme is updated.
      */
-    async updateFullscreenUserRulesTheme(
+    updateFullscreenUserRulesTheme = async (
         theme: UpdateFullscreenUserRulesThemeMessage['data']['theme'],
-    ): Promise<ExtractMessageResponse<MessageType.UpdateFullscreenUserRulesTheme>> {
+    ): Promise<ExtractMessageResponse<MessageType.UpdateFullscreenUserRulesTheme>> => {
         return this.sendMessage(MessageType.UpdateFullscreenUserRulesTheme, { theme });
-    }
+    };
 
     /**
      * Sends a message to the background page to open the rules limits tab.
      *
      * @returns Promise that resolves after the tab is opened.
      */
-    async openRulesLimitsTab(): Promise<ExtractMessageResponse<MessageType.OpenRulesLimitsTab>> {
+    openRulesLimitsTab = async (): Promise<ExtractMessageResponse<MessageType.OpenRulesLimitsTab>> => {
         return this.sendMessage(MessageType.OpenRulesLimitsTab);
-    }
+    };
 
     /**
      * Sends a message to the background page to open the settings tab.
      *
      * @returns Promise that resolves after the tab is opened.
      */
-    async openSettingsTab(): Promise<ExtractMessageResponse<MessageType.OpenSettingsTab>> {
+    openSettingsTab = async (): Promise<ExtractMessageResponse<MessageType.OpenSettingsTab>> => {
         return this.sendMessage(MessageType.OpenSettingsTab);
-    }
+    };
 
     /**
      * Sends a message to the background page to open the assistant.
      *
      * @returns Promise that resolves after the assistant is opened.
      */
-    async openAssistant(): Promise<ExtractMessageResponse<MessageType.OpenAssistant>> {
+    openAssistant = async (): Promise<ExtractMessageResponse<MessageType.OpenAssistant>> => {
         return this.sendMessage(MessageType.OpenAssistant);
-    }
+    };
 
     /**
      * Sends a message to the background page to open the abuse reporting tab for a site.
@@ -695,12 +685,12 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the tab is opened.
      */
-    async openAbuseSite(
+    openAbuseSite = async (
         url: OpenAbuseTabMessage['data']['url'],
         from: OpenAbuseTabMessage['data']['from'],
-    ): Promise<ExtractMessageResponse<MessageType.OpenAbuseTab>> {
+    ): Promise<ExtractMessageResponse<MessageType.OpenAbuseTab>> => {
         return this.sendMessage(MessageType.OpenAbuseTab, { url, from });
-    }
+    };
 
     /**
      * Sends a message to the background page to check site security.
@@ -710,12 +700,12 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves with the site security info.
      */
-    async checkSiteSecurity(
+    checkSiteSecurity = async (
         url: OpenSiteReportTabMessage['data']['url'],
         from: OpenSiteReportTabMessage['data']['from'],
-    ): Promise<ExtractMessageResponse<MessageType.OpenSiteReportTab>> {
+    ): Promise<ExtractMessageResponse<MessageType.OpenSiteReportTab>> => {
         return this.sendMessage(MessageType.OpenSiteReportTab, { url, from });
-    }
+    };
 
     /**
      * Sends a message to the background page to reset user rules for a specific page.
@@ -724,13 +714,13 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the user rules are reset.
      */
-    async resetUserRulesForPage(
+    resetUserRulesForPage = async (
         url: ResetUserRulesForPageMessage['data']['url'],
-    ): Promise<ExtractMessageResponse<MessageType.ResetUserRulesForPage>> {
+    ): Promise<ExtractMessageResponse<MessageType.ResetUserRulesForPage>> => {
         const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
 
         if (!currentTab?.id) {
-            logger.warn('[ext.MessengerCommon.resetUserRulesForPage]: cannot get current tab id');
+            logger.warn('[ext.MessengerCommon]: cannot get current tab id');
             return;
         }
 
@@ -738,7 +728,7 @@ export abstract class MessengerCommon {
             MessageType.ResetUserRulesForPage,
             { url, tabId: currentTab?.id },
         );
-    }
+    };
 
     /**
      * Sends a message to the background page to remove an allowlist domain.
@@ -748,12 +738,12 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the domain is removed.
      */
-    async removeAllowlistDomain(
+    removeAllowlistDomain = async (
         tabId: RemoveAllowlistDomainMessage['data']['tabId'],
         tabRefresh: RemoveAllowlistDomainMessage['data']['tabRefresh'],
-    ): Promise<ExtractMessageResponse<MessageType.RemoveAllowlistDomain>> {
+    ): Promise<ExtractMessageResponse<MessageType.RemoveAllowlistDomain>> => {
         return this.sendMessage(MessageType.RemoveAllowlistDomain, { tabId, tabRefresh });
-    }
+    };
 
     /**
      * Sends a message to the background page to add an allowlist domain for a specific tab.
@@ -762,11 +752,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the domain is added.
      */
-    async addAllowlistDomainForTabId(
+    addAllowlistDomainForTabId = async (
         tabId: AddAllowlistDomainForTabIdMessage['data']['tabId'],
-    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomainForTabId>> {
+    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomainForTabId>> => {
         return this.sendMessage(MessageType.AddAllowlistDomainForTabId, { tabId });
-    }
+    };
 
     /**
      * Sends a message to the background page to add an allowlist domain for a specific URL.
@@ -778,38 +768,38 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the domain is added.
      */
-    async addAllowlistDomainForUrl(
+    addAllowlistDomainForUrl = async (
         url: AddAllowlistDomainForUrlMessage['data']['url'],
-    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomainForUrl>> {
+    ): Promise<ExtractMessageResponse<MessageType.AddAllowlistDomainForUrl>> => {
         return this.sendMessage(MessageType.AddAllowlistDomainForUrl, { url });
-    }
+    };
 
     /**
      * Works only in MV2, since MV3 doesn't support filtering log yet.
      *
      * @returns Promise that resolves after the filtering log page is opened.
      */
-    async onOpenFilteringLogPage(): Promise<ExtractMessageResponse<MessageType.OnOpenFilteringLogPage>> {
+    onOpenFilteringLogPage = async (): Promise<ExtractMessageResponse<MessageType.OnOpenFilteringLogPage>> => {
         await this.sendMessage(MessageType.OnOpenFilteringLogPage);
-    }
+    };
 
     /**
      * Sends a message to the background page to get filtering log data.
      *
      * @returns Promise that resolves with filtering log data.
      */
-    async getFilteringLogData(): Promise<ExtractMessageResponse<MessageType.GetFilteringLogData>> {
+    getFilteringLogData = async (): Promise<ExtractMessageResponse<MessageType.GetFilteringLogData>> => {
         return this.sendMessage(MessageType.GetFilteringLogData);
-    }
+    };
 
     /**
      * Sends a message to the background page to close the filtering log page.
      *
      * @returns Promise that resolves after the page is closed.
      */
-    async onCloseFilteringLogPage(): Promise<ExtractMessageResponse<MessageType.OnCloseFilteringLogPage>> {
+    onCloseFilteringLogPage = async (): Promise<ExtractMessageResponse<MessageType.OnCloseFilteringLogPage>> => {
         await this.sendMessage(MessageType.OnCloseFilteringLogPage);
-    }
+    };
 
     /**
      * Sends a message to the background page to get filtering info by tab ID.
@@ -818,20 +808,20 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves with filtering info about the tab.
      */
-    async getFilteringInfoByTabId(
+    getFilteringInfoByTabId = async (
         tabId: GetFilteringInfoByTabIdMessage['data']['tabId'],
-    ): Promise<ExtractMessageResponse<MessageType.GetFilteringInfoByTabId>> {
+    ): Promise<ExtractMessageResponse<MessageType.GetFilteringInfoByTabId>> => {
         return this.sendMessage(MessageType.GetFilteringInfoByTabId, { tabId });
-    }
+    };
 
     /**
      * Sends a message to the background page to synchronize the list of open tabs.
      *
      * @returns Promise that resolves with an array of filtering info about open tabs.
      */
-    async synchronizeOpenTabs(): Promise<ExtractMessageResponse<MessageType.SynchronizeOpenTabs>> {
+    synchronizeOpenTabs = async (): Promise<ExtractMessageResponse<MessageType.SynchronizeOpenTabs>> => {
         return this.sendMessage(MessageType.SynchronizeOpenTabs);
-    }
+    };
 
     /**
      * Sends a message to the background page to clear events by tab ID.
@@ -841,12 +831,12 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the events are cleared.
      */
-    async clearEventsByTabId(
+    clearEventsByTabId = async (
         tabId: ClearEventsByTabIdMessage['data']['tabId'],
         ignorePreserveLog?: ClearEventsByTabIdMessage['data']['ignorePreserveLog'],
-    ): Promise<ExtractMessageResponse<MessageType.ClearEventsByTabId>> {
+    ): Promise<ExtractMessageResponse<MessageType.ClearEventsByTabId>> => {
         return this.sendMessage(MessageType.ClearEventsByTabId, { tabId, ignorePreserveLog });
-    }
+    };
 
     /**
      * Sends a message to the background page to refresh the current page by tab ID.
@@ -855,11 +845,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the page is refreshed.
      */
-    async refreshPage(
+    refreshPage = async (
         tabId: RefreshPageMessage['data']['tabId'],
-    ): Promise<ExtractMessageResponse<MessageType.RefreshPage>> {
+    ): Promise<ExtractMessageResponse<MessageType.RefreshPage>> => {
         await this.sendMessage(MessageType.RefreshPage, { tabId });
-    }
+    };
 
     /**
      * Sends a message to the background page to add a user rule.
@@ -868,11 +858,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async addUserRule(
+    addUserRule = async (
         ruleText: AddUserRuleMessage['data']['ruleText'],
-    ): Promise<ExtractMessageResponse<MessageType.AddUserRule>> {
+    ): Promise<ExtractMessageResponse<MessageType.AddUserRule>> => {
         await this.sendMessage(MessageType.AddUserRule, { ruleText });
-    }
+    };
 
     /**
      * Sends a message to the background page to remove a user rule.
@@ -881,11 +871,11 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async removeUserRule(
+    removeUserRule = async (
         ruleText: RemoveUserRuleMessage['data']['ruleText'],
-    ): Promise<ExtractMessageResponse<MessageType.RemoveUserRule>> {
+    ): Promise<ExtractMessageResponse<MessageType.RemoveUserRule>> => {
         await this.sendMessage(MessageType.RemoveUserRule, { ruleText });
-    }
+    };
 
     /**
      * Sends a message to the background page to set the preserve log state.
@@ -894,20 +884,20 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async setPreserveLogState(
+    setPreserveLogState = async (
         state: SetPreserveLogStateMessage['data']['state'],
-    ): Promise<ExtractMessageResponse<MessageType.SetPreserveLogState>> {
+    ): Promise<ExtractMessageResponse<MessageType.SetPreserveLogState>> => {
         return this.sendMessage(MessageType.SetPreserveLogState, { state });
-    }
+    };
 
     /**
      * Sends a message to the background page to get the editor storage content.
      *
      * @returns Promise that resolves with the editor storage content.
      */
-    async getEditorStorageContent(): Promise<ExtractMessageResponse<MessageType.GetEditorStorageContent>> {
+    getEditorStorageContent = async (): Promise<ExtractMessageResponse<MessageType.GetEditorStorageContent>> => {
         return this.sendMessage(MessageType.GetEditorStorageContent);
-    }
+    };
 
     /**
      * Sends a message to the background page to set the editor storage content.
@@ -916,20 +906,20 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async setEditorStorageContent(
+    setEditorStorageContent = async (
         content: SetEditorStorageContentMessage['data']['content'],
-    ): Promise<ExtractMessageResponse<MessageType.SetEditorStorageContent>> {
+    ): Promise<ExtractMessageResponse<MessageType.SetEditorStorageContent>> => {
         return this.sendMessage(MessageType.SetEditorStorageContent, { content });
-    }
+    };
 
     /**
      * Sends a message to the background page to get the rules limits counters for MV3.
      *
      * @returns Promise that resolves with the rules limits counters for MV3.
      */
-    async getRulesLimitsCounters(): Promise<ExtractMessageResponse<MessageType.GetRulesLimitsCountersMv3>> {
+    getRulesLimitsCounters = async (): Promise<ExtractMessageResponse<MessageType.GetRulesLimitsCountersMv3>> => {
         return this.sendMessage(MessageType.GetRulesLimitsCountersMv3);
-    }
+    };
 
     /**
      * Sends a message to the background page to check if it is possible to enable a static filter.
@@ -940,11 +930,11 @@ export abstract class MessengerCommon {
      *
      * @throws Error If the filter is not static.
      */
-    async canEnableStaticFilter(
+    canEnableStaticFilter = async (
         filterId: CanEnableStaticFilterMv3Message['data']['filterId'],
-    ): Promise<ExtractMessageResponse<MessageType.CanEnableStaticFilterMv3>> {
+    ): Promise<ExtractMessageResponse<MessageType.CanEnableStaticFilterMv3>> => {
         return this.sendMessage(MessageType.CanEnableStaticFilterMv3, { filterId });
-    }
+    };
 
     /**
      * Sends a message to the background page to check if all dynamic rules for a user rules' group can be enabled.
@@ -953,29 +943,29 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves with the result of the static group check.
      */
-    async canEnableStaticGroup(
+    canEnableStaticGroup = async (
         groupId: CanEnableStaticGroupMv3Message['data']['groupId'],
-    ): Promise<ExtractMessageResponse<MessageType.CanEnableStaticGroupMv3>> {
+    ): Promise<ExtractMessageResponse<MessageType.CanEnableStaticGroupMv3>> => {
         return this.sendMessage(MessageType.CanEnableStaticGroupMv3, { groupId });
-    }
+    };
 
     /**
      * Sends a message to the background page to get the current static filters limits.
      *
      * @returns Promise that resolves with the current static filters limits.
      */
-    async getCurrentLimits(): Promise<ExtractMessageResponse<MessageType.CurrentLimitsMv3>> {
+    getCurrentLimits = async (): Promise<ExtractMessageResponse<MessageType.CurrentLimitsMv3>> => {
         return this.sendMessage(MessageType.CurrentLimitsMv3);
-    }
+    };
 
     /**
      * Sends a message to the background page to check if the request filter is ready.
      *
      * @returns Promise that resolves to a boolean indicating if the request filter is ready.
      */
-    async checkRequestFilterReady(): Promise<ExtractMessageResponse<MessageType.CheckRequestFilterReady>> {
+    checkRequestFilterReady = async (): Promise<ExtractMessageResponse<MessageType.CheckRequestFilterReady>> => {
         return this.sendMessage(MessageType.CheckRequestFilterReady);
-    }
+    };
 
     /**
      * Sends a message to the background page to add a URL to the trusted list.
@@ -984,83 +974,84 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async addUrlToTrusted(
+    addUrlToTrusted = async (
         url: AddUrlToTrustedMessage['data']['url'],
-    ): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> {
+    ): Promise<ExtractMessageResponse<MessageType.AddUrlToTrusted>> => {
         return this.sendMessage(MessageType.AddUrlToTrusted, { url });
-    }
+    };
 
     /**
      * Sends a message to the background page to get user rules editor data.
      *
      * @returns Promise that resolves with the user rules editor data.
      */
-    async getUserRulesEditorData(): Promise<ExtractMessageResponse<MessageType.GetUserRulesEditorData>> {
+    getUserRulesEditorData = async (): Promise<ExtractMessageResponse<MessageType.GetUserRulesEditorData>> => {
         return this.sendMessage(MessageType.GetUserRulesEditorData);
-    }
+    };
 
     /**
      * Sends a message to the background page to restore filters in MV3.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async restoreFiltersMv3(): Promise<ExtractMessageResponse<MessageType.RestoreFiltersMv3>> {
+    restoreFiltersMv3 = async (): Promise<ExtractMessageResponse<MessageType.RestoreFiltersMv3>> => {
         return this.sendMessage(MessageType.RestoreFiltersMv3);
-    }
+    };
 
     /**
      * Sends a message to the background page to clear the rules limits warning in MV3.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async clearRulesLimitsWarningMv3(): Promise<ExtractMessageResponse<MessageType.ClearRulesLimitsWarningMv3>> {
+    clearRulesLimitsWarningMv3 = async (): Promise<ExtractMessageResponse<MessageType.ClearRulesLimitsWarningMv3>> => {
         return this.sendMessage(MessageType.ClearRulesLimitsWarningMv3);
-    }
+    };
 
     /**
      * Sends a message to the background page to get the allowlist domains.
      *
      * @returns Promise that resolves with the allowlist domains.
      */
-    async getAllowlistDomains(): Promise<ExtractMessageResponse<MessageType.GetAllowlistDomains>> {
+    getAllowlistDomains = async (): Promise<ExtractMessageResponse<MessageType.GetAllowlistDomains>> => {
         return this.sendMessage(MessageType.GetAllowlistDomains);
-    }
+    };
 
     /**
      * Sends a message to the background page to load the settings JSON.
      *
      * @returns Promise that resolves with the loaded settings JSON.
      */
-    async loadSettingsJson(): Promise<ExtractMessageResponse<MessageType.LoadSettingsJson>> {
+    loadSettingsJson = async (): Promise<ExtractMessageResponse<MessageType.LoadSettingsJson>> => {
         return this.sendMessage(MessageType.LoadSettingsJson);
-    }
+    };
 
     /**
      * Sends a message to the background page to open the thank you page.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    async openThankYouPage(): Promise<ExtractMessageResponse<MessageType.OpenThankYouPage>> {
+    openThankYouPage = async (): Promise<ExtractMessageResponse<MessageType.OpenThankYouPage>> => {
         return this.sendMessage(MessageType.OpenThankYouPage);
-    }
+    };
 
     /**
      * Sends a message to the background page to initialize the frame script.
      *
      * @returns Promise that resolves with the initialization data for the frame script.
      */
-    async initializeFrameScript(): Promise<ExtractMessageResponse<MessageType.InitializeFrameScript>> {
+    initializeFrameScript = async (): Promise<ExtractMessageResponse<MessageType.InitializeFrameScript>> => {
         return this.sendMessage(MessageType.InitializeFrameScript);
-    }
+    };
 
     /**
      * Sends a message to the background page to initialize the blocking page script.
      *
      * @returns Promise that resolves with the initialization data for the blocking page script.
      */
-    async initializeBlockingPageScript(): Promise<ExtractMessageResponse<MessageType.InitializeBlockingPageScript>> {
+    initializeBlockingPageScript = async ()
+    : Promise<ExtractMessageResponse<MessageType.InitializeBlockingPageScript>> => {
         return this.sendMessage(MessageType.InitializeBlockingPageScript);
-    }
+    };
 
     /**
      * Sends a message to the background page to mark url as trusted and ignore
@@ -1068,9 +1059,9 @@ export abstract class MessengerCommon {
      *
      * @returns Promise that resolves with the initialization data for the frame script.
      */
-    async openSafebrowsingTrusted(
+    openSafebrowsingTrusted = async (
         url: OpenSafebrowsingTrustedMessage['data']['url'],
-    ): Promise<ExtractMessageResponse<MessageType.OpenSafebrowsingTrusted>> {
+    ): Promise<ExtractMessageResponse<MessageType.OpenSafebrowsingTrusted>> => {
         return this.sendMessage(MessageType.OpenSafebrowsingTrusted, { url });
-    }
+    };
 }

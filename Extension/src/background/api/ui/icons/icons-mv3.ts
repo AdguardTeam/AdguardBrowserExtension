@@ -19,7 +19,11 @@
 import { RulesLimitsService } from 'rules-limits-service';
 
 import { ExtensionUpdateService } from '../../../services/extension-update/extension-update-service-mv3';
-import { type IconData } from '../../../storages';
+import {
+    appContext,
+    AppContextKey,
+    type IconData,
+} from '../../../storages';
 
 import { IconsApiCommon } from './icons-common';
 import { defaultIconVariants } from './defaultIconVariants';
@@ -32,16 +36,21 @@ class IconsApi extends IconsApiCommon {
      * Picks the icon variant based on the current extension state.
      *
      * Icon selection priority (highest to lowest):
-     * 1. MV3 limits exceeded icon (warning) - when filter limits are exceeded
-     * 2. Promo icons - when promotional notification is active
-     * 3. Extension update icon - when extension update is available
-     * 4. Default icon - fallback for normal operation (enabled/disabled).
+     * 1. Loading icon if the extension is not initialized yet.
+     * 2. MV3 limits exceeded icon (warning) - when filter limits are exceeded
+     * 3. Promo icons - when promotional notification is active
+     * 4. Extension update icon - when extension update is available
+     * 5. Default icon - fallback for normal operation (enabled/disabled).
      *
      * @param isDisabled Is website allowlisted or app filtering disabled.
      *
      * @returns Icon variant to display.
      */
     protected async pickIconVariant(isDisabled = false): Promise<IconData> {
+        if (!appContext.get(AppContextKey.IsInit)) {
+            return defaultIconVariants.loading;
+        }
+
         const isMv3LimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
 
         if (isMv3LimitsExceeded) {

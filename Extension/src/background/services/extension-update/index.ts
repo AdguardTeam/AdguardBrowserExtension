@@ -16,4 +16,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export type { ManualExtensionUpdateData } from './types';
+export type { ManualUpdateMetadata } from './types';

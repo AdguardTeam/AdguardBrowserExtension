@@ -25,8 +25,7 @@ import { CheckMarkCheckbox } from '../../../common/components/ui/Checkbox/Checkm
 import { rootStore } from '../../stores/RootStore';
 import { optionsStorage } from '../../../options/options-storage';
 
-import './preserveLogModal.pcss';
-import '../../../common/styles/modal.pcss';
+import styles from './preserveLogModal.module.pcss';
 
 const PreserveLogModal = observer(() => {
     const { logStore } = useContext(rootStore);
@@ -50,7 +49,7 @@ const PreserveLogModal = observer(() => {
 
     const renderSubtitle = () => (
         <>
-            <div className="modal__subtitle">
+            <div className={styles.subtitle}>
                 {translator.getMessage('filtering_log_preserve_log_modal_description')}
             </div>
             <CheckMarkCheckbox

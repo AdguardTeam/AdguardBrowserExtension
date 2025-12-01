@@ -30,24 +30,7 @@ import { CommonFilterApi } from '../common/common-mv2';
 import { type FilterMetadata, FiltersApi } from '../main';
 import { CustomFilterApi } from '../custom';
 
-/**
- * Filter update detail.
- */
-export type FilterUpdateOptions = {
-    /**
-     * Filter identifier.
-     */
-    filterId: number;
-    /**
-     * Should we update filters fully without patch updates or load patches to filters.
-     */
-    ignorePatches: boolean;
-};
-
-/**
- * List of filter update details.
- */
-export type FilterUpdateOptionsList = FilterUpdateOptions[];
+import { type FilterUpdateOptions, type FilterUpdateOptionsList } from './types';
 
 /**
  * API for manual and automatic (by period) filter rules updates.
@@ -73,6 +56,8 @@ export class FilterUpdateApi {
      * @param filterIds List of filter ids to check.
      *
      * @returns List of metadata for updated filters.
+     *
+     * @todo TODO: Return value is not used, can be removed.
      */
     public static async checkForFiltersUpdates(filterIds: number[]): Promise<FilterMetadata[]> {
         const filtersToCheck = FilterUpdateApi.selectFiltersIdsToUpdate(filterIds);
@@ -341,6 +326,15 @@ export class FilterUpdateApi {
             // If it is time to check the renewal, add to the array.
             return lastCheckTime + updatePeriod <= Date.now();
         });
+    }
+
+    /**
+     * Dummy method, added for backward compatibility with other modules.
+     * TODO: Remove in AG-44868.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    public static async updateCustomFilters(): Promise<void> {
+        throw new Error('Not implemented');
     }
 }
 

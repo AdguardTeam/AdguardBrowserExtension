@@ -18,23 +18,43 @@
 
 import browser from 'webextension-polyfill';
 
+import { translator } from '../../../../common/translators/translator';
 import { type IconVariants } from '../../../storages';
 
 export const defaultIconVariants: IconVariants = {
     enabled: {
-        '19': browser.runtime.getURL('assets/icons/on-19.png'),
-        '38': browser.runtime.getURL('assets/icons/on-38.png'),
+        iconPaths: {
+            '19': browser.runtime.getURL('assets/icons/on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/on-38.png'),
+        },
+        tooltip: translator.getMessage('popup_tooltip_protection_enabled'),
     },
     disabled: {
-        '19': browser.runtime.getURL('assets/icons/off-19.png'),
-        '38': browser.runtime.getURL('assets/icons/off-38.png'),
+        iconPaths: {
+            '19': browser.runtime.getURL('assets/icons/off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/off-38.png'),
+        },
+        tooltip: translator.getMessage('popup_tooltip_protection_disabled'),
     },
     warning: {
-        '19': browser.runtime.getURL('assets/icons/warning-19.png'),
-        '38': browser.runtime.getURL('assets/icons/warning-38.png'),
+        iconPaths: {
+            '19': browser.runtime.getURL('assets/icons/warning-19.png'),
+            '38': browser.runtime.getURL('assets/icons/warning-38.png'),
+        },
+        tooltip: translator.getMessage('popup_tooltip_some_rules_not_applied'),
     },
     updateAvailable: {
-        '19': browser.runtime.getURL('assets/icons/update-available-19.png'),
-        '38': browser.runtime.getURL('assets/icons/update-available-38.png'),
+        iconPaths: {
+            '19': browser.runtime.getURL('assets/icons/update-available-19.png'),
+            '38': browser.runtime.getURL('assets/icons/update-available-38.png'),
+        },
+        tooltip: translator.getMessage('popup_tooltip_update_available'),
+    },
+    loading: {
+        iconPaths: {
+            '19': browser.runtime.getURL('assets/icons/loading-19.png'),
+            '38': browser.runtime.getURL('assets/icons/loading-38.png'),
+        },
+        tooltip: translator.getMessage('popup_tooltip_loading'),
     },
 };

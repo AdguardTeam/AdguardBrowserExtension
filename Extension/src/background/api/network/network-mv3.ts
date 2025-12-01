@@ -42,7 +42,7 @@ import {
 import { type FilterUpdateOptions } from '../filters';
 import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
-import { isUserScriptsApiSupported } from '../../../common/user-scripts-api';
+import { isUserScriptsApiSupported } from '../../../common/user-scripts-api/user-scripts-api-mv3';
 
 import { NetworkSettings } from './settings-mv3';
 
@@ -471,17 +471,6 @@ export class Network {
 
         const url = useOptimizedFilters ? this.settings.optimizedFilterRulesUrl : this.settings.filterRulesUrl;
         return url.replaceAll('{filter_id}', String(filterId));
-    }
-
-    /**
-     * Appends request key to url.
-     *
-     * @param url Url string.
-     *
-     * @returns Url with key query param.
-     */
-    private addKeyParameter(url: string): string {
-        return `${url}&key=${this.settings.apiKey}`;
     }
 
     /**

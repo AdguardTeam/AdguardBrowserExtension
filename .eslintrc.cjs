@@ -127,7 +127,9 @@ module.exports = {
             'ignoreComments': false,
             'ignoreTemplateLiterals': true,
             /**
-             * Ignore calls to logger, e.g. logger.error(), because of the long string.
+             * Ignore calls to logger, e.g. logger.error(), because it's easier
+             * to find long log messages just via copy-pasting them to the search
+             * and line breaks make it harder.
              */
             'ignorePattern': 'logger\\.',
         }],
@@ -163,6 +165,21 @@ module.exports = {
             {
                 selector: 'ExportAllDeclaration',
                 message: 'Wildcard exports are not allowed.',
+            },
+        ],
+        'no-restricted-imports': [
+            'error',
+            {
+                patterns: [
+                    {
+                        group: [
+                            '**/*-mv2',
+                            '**/*-mv3',
+                        ],
+                        // eslint-disable-next-line max-len
+                        message: 'Do not import directly from MV2/MV3 implementations. Use the appropriate alias or index file instead.',
+                    },
+                ],
             },
         ],
         'no-prototype-builtins': 'off',
@@ -230,5 +247,14 @@ module.exports = {
         'coverage',
         // Directory for temporary files
         'tmp/',
+    ],
+    'overrides': [
+        // This override needed to allow mv2/mv3 imports inside mv2/mv3 specific files.
+        {
+            files: ['**/*-mv2.{ts,tsx,js,jsx}', '**/*-mv3.{ts,tsx,js,jsx}'],
+            rules: {
+                'no-restricted-imports': 'off',
+            },
+        },
     ],
 };

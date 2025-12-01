@@ -753,3 +753,17 @@ export const getStorageFixturesV12 = (expires: number): StorageData[] => {
         return settings;
     });
 };
+
+export const getStorageFixturesV13 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV12 = getStorageFixturesV12(expires);
+
+    return storageSettingsFixturesV12.map((settings) => {
+        const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
+
+        adgSettings['preserve-log-enabled'] = false;
+
+        settings['schema-version'] = 13;
+
+        return settings;
+    });
+};

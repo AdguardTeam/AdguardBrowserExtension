@@ -25,15 +25,19 @@ import { defaultIconVariants } from '../api/ui/icons';
  * Icon data for different sizes.
  */
 export type IconData = {
-    /**
-     * 19x19 icon size.
-     */
-    '19': string;
 
     /**
-     * 38x38 icon size.
+     * Icon paths for different sizes.
      */
-    '38': string;
+    iconPaths: {
+        '19': string;
+        '38': string;
+    };
+
+    /**
+     * Tooltip text to display.
+     */
+    tooltip?: string;
 };
 
 /**
@@ -59,6 +63,11 @@ export type IconVariants = {
      * State icon variants when the extension update is available.
      */
     updateAvailable: IconData;
+
+    /**
+     * State icon variants when the extension is loading.
+     */
+    loading: IconData;
 };
 
 export type PromoNotification = {
@@ -277,16 +286,19 @@ const halloween25Notification: PromoNotification = {
     bgImage: browser.runtime.getURL('assets/images/halloween25.svg'),
     bgImageOnUpdate: browser.runtime.getURL('assets/images/halloween25.svg'),
     icons: {
+        ...defaultIconVariants,
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/halloween25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween25-on-38.png'),
+            iconPaths: {
+                '19': browser.runtime.getURL('assets/icons/halloween25-on-19.png'),
+                '38': browser.runtime.getURL('assets/icons/halloween25-on-38.png'),
+            },
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/halloween25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/halloween25-off-38.png'),
+            iconPaths: {
+                '19': browser.runtime.getURL('assets/icons/halloween25-off-19.png'),
+                '38': browser.runtime.getURL('assets/icons/halloween25-off-38.png'),
+            },
         },
-        warning: defaultIconVariants.warning,
-        updateAvailable: defaultIconVariants.updateAvailable,
     },
 };
 

@@ -27,15 +27,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings applied notification appearing before settings are actually applied [#3278].
 - Preserve logs does not retain all records in the filtering log [#3148].
 - Tracking protection is also disabled in MV3 when protection is paused in extension.
+- Apply $document blocking rule even if specific exception rule is present [#3262].
+- Blocked iframes are not collapsed on Firefox [#3116].
+- The extension got an unexpected error on [::]:8000 [#3360]
 
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
+[#3116]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3116
 [#3136]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136
 [#3148]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3148
 [#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
 [#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
 [#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
+[#3262]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3262
+[#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
+
+## [v5.2.300.0] - ??
+
+### Added
+
+- New loading icon and animation for the extension popup.
+- Add ability to update custom filters in MV3 [#3016].
+
+### Changed
+
+- Extension will apply auto-update in MV3 if update is available and browser
+  became idle for a while.
+
+[#3016]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3016
 
 ## [v5.2.112.84] - 2025-10-25
 
@@ -50,9 +70,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - The extension is failed to update via the popup [#3317].
-[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
 
 [5.2.112.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B1.build.20251009120050
+[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
 
 ## [5.2.112.0] - 2025-10-13
 
