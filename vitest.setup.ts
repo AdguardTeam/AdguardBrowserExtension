@@ -30,6 +30,9 @@ import {
     MockedTsWebExtension,
     mockLocalStorage,
     mockXhrRequests,
+    createMockTabsApi,
+    createMockDefaultFilteringLog,
+    createMockCompaniesDbService,
 } from './tests/helpers';
 import { mockGlobalFetch } from './tests/helpers/mocks/fetch';
 
@@ -101,41 +104,11 @@ vi.mock('@adguard/tswebextension', async () => {
         FilteringEventType: actual.FilteringEventType,
         RequestEvents: actual.RequestEvents,
         // Mock tabsApi
-        tabsApi: {
-            onCreate: { subscribe: vi.fn() },
-            onUpdate: { subscribe: vi.fn() },
-            onDelete: { subscribe: vi.fn() },
-            onActivate: { subscribe: vi.fn() },
-            getTabContext: vi.fn(),
-            isIncognitoTab: vi.fn(() => false),
-        },
+        tabsApi: createMockTabsApi(),
         // Mock defaultFilteringLog
-        defaultFilteringLog: {
-            addEventListener: vi.fn(),
-            removeEventListener: vi.fn(),
-        },
+        defaultFilteringLog: createMockDefaultFilteringLog(),
         // Mock companiesDbService
-        companiesDbService: {
-            getCompaniesDbCategories: vi.fn(() => ({
-                audio_video_player: 'audio_video_player',
-                comments: 'comments',
-                customer_interaction: 'customer_interaction',
-                pornvertising: 'pornvertising',
-                advertising: 'advertising',
-                essential: 'essential',
-                site_analytics: 'site_analytics',
-                social_media: 'social_media',
-                misc: 'misc',
-                cdn: 'cdn',
-                hosting: 'hosting',
-                unknown: 'unknown',
-                extensions: 'extensions',
-                email: 'email',
-                consent: 'consent',
-                telemetry: 'telemetry',
-                mobile_analytics: 'mobile_analytics',
-            })),
-        },
+        companiesDbService: createMockCompaniesDbService(),
     };
 });
 
@@ -164,41 +137,11 @@ vi.mock('@adguard/tswebextension/mv3', async () => {
         FilteringEventType: mv2.FilteringEventType,
         RequestEvents: mv2.RequestEvents,
         // Mock tabsApi
-        tabsApi: {
-            onCreate: { subscribe: vi.fn() },
-            onUpdate: { subscribe: vi.fn() },
-            onDelete: { subscribe: vi.fn() },
-            onActivate: { subscribe: vi.fn() },
-            getTabContext: vi.fn(),
-            isIncognitoTab: vi.fn(() => false),
-        },
+        tabsApi: createMockTabsApi(),
         // Mock defaultFilteringLog
-        defaultFilteringLog: {
-            addEventListener: vi.fn(),
-            removeEventListener: vi.fn(),
-        },
+        defaultFilteringLog: createMockDefaultFilteringLog(),
         // Mock companiesDbService
-        companiesDbService: {
-            getCompaniesDbCategories: vi.fn(() => ({
-                audio_video_player: 'audio_video_player',
-                comments: 'comments',
-                customer_interaction: 'customer_interaction',
-                pornvertising: 'pornvertising',
-                advertising: 'advertising',
-                essential: 'essential',
-                site_analytics: 'site_analytics',
-                social_media: 'social_media',
-                misc: 'misc',
-                cdn: 'cdn',
-                hosting: 'hosting',
-                unknown: 'unknown',
-                extensions: 'extensions',
-                email: 'email',
-                consent: 'consent',
-                telemetry: 'telemetry',
-                mobile_analytics: 'mobile_analytics',
-            })),
-        },
+        companiesDbService: createMockCompaniesDbService(),
     };
 });
 

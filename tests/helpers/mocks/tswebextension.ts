@@ -9,6 +9,54 @@ import {
 
 import { MockedEventCannel } from './event-channel';
 
+/**
+ * Factory function for tabsApi mock used in both MV2 and MV3 tswebextension mocks.
+ * Returns a fresh mock instance each time it's called.
+ */
+export const createMockTabsApi = () => ({
+    onCreate: { subscribe: vi.fn() },
+    onUpdate: { subscribe: vi.fn() },
+    onDelete: { subscribe: vi.fn() },
+    onActivate: { subscribe: vi.fn() },
+    getTabContext: vi.fn(),
+    isIncognitoTab: vi.fn(() => false),
+});
+
+/**
+ * Factory function for defaultFilteringLog mock used in both MV2 and MV3 tswebextension mocks.
+ * Returns a fresh mock instance each time it's called.
+ */
+export const createMockDefaultFilteringLog = () => ({
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+});
+
+/**
+ * Factory function for companiesDbService mock used in both MV2 and MV3 tswebextension mocks.
+ * Returns a fresh mock instance each time it's called.
+ */
+export const createMockCompaniesDbService = () => ({
+    getCompaniesDbCategories: vi.fn(() => ({
+        audio_video_player: 'audio_video_player',
+        comments: 'comments',
+        customer_interaction: 'customer_interaction',
+        pornvertising: 'pornvertising',
+        advertising: 'advertising',
+        essential: 'essential',
+        site_analytics: 'site_analytics',
+        social_media: 'social_media',
+        misc: 'misc',
+        cdn: 'cdn',
+        hosting: 'hosting',
+        unknown: 'unknown',
+        extensions: 'extensions',
+        email: 'email',
+        consent: 'consent',
+        telemetry: 'telemetry',
+        mobile_analytics: 'mobile_analytics',
+    })),
+});
+
 // TODO: restore inherit from TsWebExtension after lib module resolves update if needed.
 export class MockedTsWebExtension {
     public isStarted = false;

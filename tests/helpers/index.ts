@@ -37,6 +37,9 @@ export {
     mockFilterPath,
     mockXhrRequests,
     MockedTsWebExtension,
+    createMockTabsApi,
+    createMockDefaultFilteringLog,
+    createMockCompaniesDbService,
     SettingsApi,
     PageStatsApi,
 } from './mocks';
