@@ -695,6 +695,34 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "62de8ad86c59d0b7297a578a18ec0db3" due to: ' + e);
         }
     },
+    "(()=>{const e=function(){};window.tC={privacy:{getOptinCategories:e,cookieData:[]},addConsentChangeListener:e,removeConsentChangeListener:e,container:{reload:e}},window.tc_events_global=e})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["3e6ad3ca98205e8e015d731852c14ada"] === e) return;
+            (() => {
+                const e = function() {};
+                window.tC = {
+                    privacy: {
+                        getOptinCategories: e,
+                        cookieData: []
+                    },
+                    addConsentChangeListener: e,
+                    removeConsentChangeListener: e,
+                    container: {
+                        reload: e
+                    }
+                }, window.tc_events_global = e;
+            })();
+            Object.defineProperty(Window.prototype.toString, "3e6ad3ca98205e8e015d731852c14ada", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "3e6ad3ca98205e8e015d731852c14ada" due to: ' + e);
+        }
+    },
     '(()=>{window.TATM=window.TATM||{},TATM.init=()=>{},TATM.initAdUnits=()=>{},TATM.pageReady=()=>{},TATM.getVast=function(n){return new Promise((n=>{n()}))},TATM.push=function(n){if("function"==typeof n)try{n()}catch(n){console.debug(n)}};})();': () => {
         try {
             const e = "done";
@@ -2293,54 +2321,54 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "7b0fe49ca4878b71af2e77dfe4259f5a" due to: ' + e);
         }
     },
-    '(()=>{let t;const e={apply:(e,o,c)=>{try{const e=c[0],o=c[1];let r,i;try{r=t?.STATE_ERROR,i=t?.STATE_VALIDATION}catch{r=void 0,i=void 0}if(r&&i&&"object"==typeof e&&null!==e&&1===Object.keys(e).length&&Object.values(e)[0]===r&&"object"==typeof o&&null!==o&&(n=o,Object.values(n).some((t=>{if("function"==typeof t&&t.toString().includes("]:!0}"))return!0})))){const[t]=Object.keys(e);void 0!==t&&Reflect.set(e,t,i)}}catch(t){}var n;return Reflect.apply(e,o,c)}};window.Object.is=new Proxy(window.Object.is,e);const o={apply:(e,o,c)=>{try{const e=c[0],o=c[1];!t&&e&&o&&"object"==typeof e&&"Module"===e[Symbol.toStringTag]&&"string"==typeof o&&"NitroScript"===o&&(t=e)}catch(t){}return Reflect.apply(e,o,c)}};window.Object.defineProperty=new Proxy(window.Object.defineProperty,o)})();': () => {
+    '(()=>{let t;const e={apply:(e,o,c)=>{try{const r=c[0],l=c[1];let y;try{y=t?.getNitroStateValue()}catch{return Reflect.apply(e,o,c)}if(y&&"object"==typeof r&&null!==r&&1===Object.keys(r).length&&"number"==typeof Object.values(r)[0]&&"object"==typeof l&&null!==l&&(n=l,Object.values(n).some((t=>{if("function"==typeof t&&t.toString().includes("]:!0}"))return!0})))){const[t]=Object.keys(r);void 0!==t&&Reflect.set(r,t,y+1)}}catch(t){}var n;return Reflect.apply(e,o,c)}};window.Object.is=new Proxy(window.Object.is,e);const o={apply:(e,o,c)=>{try{const e=c[0],o=c[1];!t&&e&&o&&"object"==typeof e&&"Module"===e[Symbol.toStringTag]&&"string"==typeof o&&"NitroScript"===o&&(t=e)}catch(t){}return Reflect.apply(e,o,c)}};window.Object.defineProperty=new Proxy(window.Object.defineProperty,o)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["892e11fcddece999c6b0f08fdb971f4a"] === e) return;
+            if (Window.prototype.toString.b990af6625716f6d6fe45948d5a5b4fa === e) return;
             (() => {
                 let e;
                 const t = {
-                    apply: (t, o, c) => {
+                    apply: (t, o, r) => {
                         try {
-                            const t = c[0], o = c[1];
-                            let n, i;
+                            const c = r[0], f = r[1];
+                            let i;
                             try {
-                                n = e?.STATE_ERROR, i = e?.STATE_VALIDATION;
+                                i = e?.getNitroStateValue();
                             } catch {
-                                n = void 0, i = void 0;
+                                return Reflect.apply(t, o, r);
                             }
-                            if (n && i && "object" == typeof t && null !== t && 1 === Object.keys(t).length && Object.values(t)[0] === n && "object" == typeof o && null !== o && (r = o, 
-                            Object.values(r).some((e => {
+                            if (i && "object" == typeof c && null !== c && 1 === Object.keys(c).length && "number" == typeof Object.values(c)[0] && "object" == typeof f && null !== f && (n = f, 
+                            Object.values(n).some((e => {
                                 if ("function" == typeof e && e.toString().includes("]:!0}")) return !0;
                             })))) {
-                                const [e] = Object.keys(t);
-                                void 0 !== e && Reflect.set(t, e, i);
+                                const [e] = Object.keys(c);
+                                void 0 !== e && Reflect.set(c, e, i + 1);
                             }
                         } catch (e) {}
-                        var r;
-                        return Reflect.apply(t, o, c);
+                        var n;
+                        return Reflect.apply(t, o, r);
                     }
                 };
                 window.Object.is = new Proxy(window.Object.is, t);
                 const o = {
-                    apply: (t, o, c) => {
+                    apply: (t, o, r) => {
                         try {
-                            const t = c[0], o = c[1];
+                            const t = r[0], o = r[1];
                             !e && t && o && "object" == typeof t && "Module" === t[Symbol.toStringTag] && "string" == typeof o && "NitroScript" === o && (e = t);
                         } catch (e) {}
-                        return Reflect.apply(t, o, c);
+                        return Reflect.apply(t, o, r);
                     }
                 };
                 window.Object.defineProperty = new Proxy(window.Object.defineProperty, o);
             })();
-            Object.defineProperty(Window.prototype.toString, "892e11fcddece999c6b0f08fdb971f4a", {
+            Object.defineProperty(Window.prototype.toString, "b990af6625716f6d6fe45948d5a5b4fa", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "892e11fcddece999c6b0f08fdb971f4a" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "b990af6625716f6d6fe45948d5a5b4fa" due to: ' + e);
         }
     },
     '!function(){const e={apply:(e,t,o)=>{const i=o[1];if(!i||"object"!=typeof i.QiyiPlayerProphetData)return Reflect.apply(e,t,o)}};window.Object.defineProperties=new Proxy(window.Object.defineProperties,e)}();': () => {
@@ -3113,6 +3141,32 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "36fd3167269f896e4009a009ae54edb3" due to: ' + e);
+        }
+    },
+    '(()=>{const r={apply:(r,e,t)=>{try{const r=(new Error).stack,e=t[0];if(r.includes("adBlockingDetected")&&e?.adFailurePercentage)return 0}catch(r){}return Reflect.apply(r,e,t)}};window.Array.prototype.push=new Proxy(window.Array.prototype.push,r)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["2569876940a174e979811de8e9ef4610"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, r, t) => {
+                        try {
+                            const e = (new Error).stack, r = t[0];
+                            if (e.includes("adBlockingDetected") && r?.adFailurePercentage) return 0;
+                        } catch (e) {}
+                        return Reflect.apply(e, r, t);
+                    }
+                };
+                window.Array.prototype.push = new Proxy(window.Array.prototype.push, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "2569876940a174e979811de8e9ef4610", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "2569876940a174e979811de8e9ef4610" due to: ' + e);
         }
     },
     '(()=>{let e;const t={apply:(t,n,o)=>(o[0]?.behavior?.controlType&&o[0]?.initialItems&&"function"==typeof o[0].update&&(e=o[0].update,o[0].update=function(){this.update=e}),Reflect.apply(t,n,o))};window.Object.keys=new Proxy(window.Object.keys,t)})();': () => {
@@ -4935,6 +4989,32 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "786bc16fd657931f3a0d027130de4773" due to: ' + e);
+        }
+    },
+    '(()=>{const t={apply:(t,e,o)=>{try{const t=e;t&&"object"==typeof t&&t.context?.bidRequestId&&(e={})}catch(t){}return Reflect.apply(t,e,o)}};window.Object.prototype.hasOwnProperty=new Proxy(window.Object.prototype.hasOwnProperty,t)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["34e4fe8cb80172726ed88130c50a490c"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, o) => {
+                        try {
+                            const e = t;
+                            e && "object" == typeof e && e.context?.bidRequestId && (t = {});
+                        } catch (e) {}
+                        return Reflect.apply(e, t, o);
+                    }
+                };
+                window.Object.prototype.hasOwnProperty = new Proxy(window.Object.prototype.hasOwnProperty, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "34e4fe8cb80172726ed88130c50a490c", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "34e4fe8cb80172726ed88130c50a490c" due to: ' + e);
         }
     },
     '!function(){const r={apply:(r,o,e)=>(e[0]?.includes?.("</VAST>")&&(e[0]=""),Reflect.apply(r,o,e))};window.DOMParser.prototype.parseFromString=new Proxy(window.DOMParser.prototype.parseFromString,r)}();': () => {
@@ -7283,10 +7363,10 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "cb487be2d2edd22f1a9ce90cd6ffe9cf" due to: ' + e);
         }
     },
-    '!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll("div[data-pagelet^=\\"FeedUnit\\"]:not([style*=\\"display: none\\"]), div[role=\\"feed\\"] > div:not([style*=\\"display: none\\"]), div[role=\\"feed\\"] > span:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\"main\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] h3[dir=\\"auto\\"] + div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div > div > div:not([style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div > div > div:not([style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * div[class] > div > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div > div > span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div div span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div div span > div > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div span div[class=\\"\\"]:not([style*=\\"display: none\\"]), div:not([class],[id]) div:not([class],[id]) > [class]:not([style*=\\"display: none\\"],img,div,h3,span,a), div[role=\\"main\\"] h3 + div[aria-hidden] + div > * > *:not(div,[style*=\\"display: none\\"]),div[role=\\"main\\"] h3 + div[aria-hidden] + div > div:not([style*=\\"display: none\\"])").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.("__reactEvents")||a.includes?.("__reactProps")){a=e[a];try{if(a.children?.props?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.category?.includes("SPONSORED")||a.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting||a.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.__fragments?.useCometFeedUnitReordering_newsFeedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.new_sponsorw_distn_aucton_of||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.da_the_spons?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsore_da?.brs_filter_setting){b++,e.style="display: none !important;";var f=e.querySelector("a[href][aria-label]:not([aria-hidden])");f&&(d.push(["Ad blocked based on property ["+b+"] -> "+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();': () => {
+    '!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll("div[data-pagelet^=\\"FeedUnit\\"]:not([style*=\\"display: none\\"]), div[role=\\"feed\\"] > div:not([style*=\\"display: none\\"]), div[role=\\"feed\\"] > span:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\"main\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] h3[dir=\\"auto\\"] + div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div > div > div:not([style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div > div > div:not([style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * div[class] > div > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div > div > span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div div span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div div span > div > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div span div[class=\\"\\"]:not([style*=\\"display: none\\"]), div:not([class],[id]) div:not([class],[id]) > [class]:not([style*=\\"display: none\\"],img,div,h3,span,a), div[role=\\"main\\"] h3 + div[aria-hidden] + div > * > *:not(div,[style*=\\"display: none\\"]),div[role=\\"main\\"] h3 + div[aria-hidden] + div > div:not([style*=\\"display: none\\"])").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.("__reactEvents")||a.includes?.("__reactProps")){a=e[a];try{if(a.children?.props?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.category?.includes("SPONSORED")||a.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting||a.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.__fragments?.useCometFeedUnitReordering_newsFeedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.new_sponsorw_distn_aucton_of||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.da_the_spons?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsore_da?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_the_dat?.brs_filter_setting){b++,e.style="display: none !important;";var f=e.querySelector("a[href][aria-label]:not([aria-hidden])");f&&(d.push(["Ad blocked based on property ["+b+"] -> "+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.faef15d5658dc2812fc7ca9b1fcf8876 === e) return;
+            if (Window.prototype.toString["576a8d1321e69ae4622d2409ad77deb0"] === e) return;
             !function() {
                 var e = 0, d = [];
                 new MutationObserver((function() {
@@ -7295,7 +7375,7 @@ export const localScriptRules = {
                             if (r.includes?.("__reactEvents") || r.includes?.("__reactProps")) {
                                 r = i[r];
                                 try {
-                                    if (r.children?.props?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.category?.includes("SPONSORED") || r.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id || r.children?.props?.children?.props?.minGapType?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting || r.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.__fragments?.useCometFeedUnitReordering_newsFeedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.new_sponsorw_distn_aucton_of || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.da_the_spons?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsore_da?.brs_filter_setting) {
+                                    if (r.children?.props?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.category?.includes("SPONSORED") || r.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id || r.children?.props?.children?.props?.minGapType?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting || r.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.__fragments?.useCometFeedUnitReordering_newsFeedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.new_sponsorw_distn_aucton_of || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.da_the_spons?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsore_da?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_the_dat?.brs_filter_setting) {
                                         e++, i.style = "display: none !important;";
                                         var s = i.querySelector("a[href][aria-label]:not([aria-hidden])");
                                         s && (d.push([ "Ad blocked based on property [" + e + "] -> " + s.ariaLabel ]), 
@@ -7310,28 +7390,28 @@ export const localScriptRules = {
                     subtree: !0
                 });
             }();
-            Object.defineProperty(Window.prototype.toString, "faef15d5658dc2812fc7ca9b1fcf8876", {
+            Object.defineProperty(Window.prototype.toString, "576a8d1321e69ae4622d2409ad77deb0", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "faef15d5658dc2812fc7ca9b1fcf8876" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "576a8d1321e69ae4622d2409ad77deb0" due to: ' + e);
         }
     },
-    '(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll(\'div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"]), div[role="complementary"] div:has(+ div[data-visualcompletion]) > div:not([style*="display: none"])\');for(const s of n){const n=Object.keys(s).find((e=>e.includes("__reactFiber")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit"))return s.style.display="none",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();': () => {
+    '(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll(\'div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"]), div[role="complementary"] div:has(+ div[data-visualcompletion]) > div:not([style*="display: none"]), div[role="complementary"] > div[class] > div[class] > div[class] > div[class] > div > div:not([style*="display: none"]),div[role="complementary"] > div[class] > div[class] > div[class] > div[class] > div > div > div:not([style*="display: none"])\');for(const s of n){const n=Object.keys(s).find((e=>e.includes("__reactFiber")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit"))return s.style.display="none",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.e5520b88f1ab8a8177c19ea7ed1eea60 === e) return;
+            if (Window.prototype.toString.d7bdccff18fe1619323480eaa54a0ae2 === e) return;
             (() => {
                 const e = new MutationObserver((() => {
-                    const n = document.querySelectorAll('div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"]), div[role="complementary"] div:has(+ div[data-visualcompletion]) > div:not([style*="display: none"])');
-                    for (const t of n) {
-                        const n = Object.keys(t).find((e => e.includes("__reactFiber")));
-                        if (n) {
-                            const o = t[n];
-                            if (o?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return t.style.display = "none", 
+                    const s = document.querySelectorAll('div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"]), div[role="complementary"] div:has(+ div[data-visualcompletion]) > div:not([style*="display: none"]), div[role="complementary"] > div[class] > div[class] > div[class] > div[class] > div > div:not([style*="display: none"]),div[role="complementary"] > div[class] > div[class] > div[class] > div[class] > div > div > div:not([style*="display: none"])');
+                    for (const i of s) {
+                        const s = Object.keys(i).find((e => e.includes("__reactFiber")));
+                        if (s) {
+                            const d = i[s];
+                            if (d?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return i.style.display = "none", 
                             void e.disconnect();
                         }
                     }
@@ -7341,14 +7421,14 @@ export const localScriptRules = {
                     subtree: !0
                 });
             })();
-            Object.defineProperty(Window.prototype.toString, "e5520b88f1ab8a8177c19ea7ed1eea60", {
+            Object.defineProperty(Window.prototype.toString, "d7bdccff18fe1619323480eaa54a0ae2", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "e5520b88f1ab8a8177c19ea7ed1eea60" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "d7bdccff18fe1619323480eaa54a0ae2" due to: ' + e);
         }
     },
     '!function(){(new MutationObserver(function(){window.location.href.includes("/watch")&&document.querySelectorAll(\'#watch_feed div:not([class]):not([id]) > div[class*=" "]:not([style*="display: none !important"]) div[class^="_"] > div[class*=" "]\').forEach(function(b){Object.keys(b).forEach(function(a){if(a.includes("__reactFiber")){a=b[a];try{var c,d,e,f;if(null==(c=a)?0:null==(d=c["return"])?0:null==(e=d.memoizedProps)?0:null==(f=e.story)?0:f.sponsored_data){var g=b.closest(\'#watch_feed div[class*=" "] div:not([class]):not([id]) > div[class*=" "]:not([style*="display: none !important"])\');g.style="display: none !important;"}}catch(h){}}})})})).observe(document,{childList:!0,subtree:!0,attributeFilter:["style"]})}();': () => {
@@ -9850,6 +9930,23 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "f5bda0983617c9e82a78a551426bbb32" due to: ' + e);
+        }
+    },
+    'window.addEventListener("selectstart",function(a){a.stopPropagation()},!0);': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.bd1b4f0e1559b5644a30844b6213ffd3 === e) return;
+            window.addEventListener("selectstart", (function(e) {
+                e.stopPropagation();
+            }), !0);
+            Object.defineProperty(Window.prototype.toString, "bd1b4f0e1559b5644a30844b6213ffd3", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "bd1b4f0e1559b5644a30844b6213ffd3" due to: ' + e);
         }
     },
     "(function(){z=self.EventTarget.prototype.addEventListener;self.EventTarget.prototype.addEventListener=function(a,b){if(!/cut|copy|paste/.test(a.toString()))return z.apply(this,arguments)}})();": () => {

@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Made clipboard permissions optional for Firefox, with a prompt shown when needed in User Rules and Allowlist editors [#3364]
 
+[#3364]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3364
+
+<!-- TODO: Specify date after publish on GH -->
+## [5.2.500] - ??
+
+### Fixed
+- The update promo banner does not persist dismissal and shows again after
+  the extension updates [#3385].
+
 ### Changed
 
 - Updated [@adguard/agtree] to v3.3.1.
@@ -19,7 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/tsurlfilter] to v3.5.1.
 - Updated [@adguard/tswebextension] to v3.2.16.
 
-[#3364]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3364
+[#3385]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3385
+<!-- TODO: Specify after publish on GH -->
+[5.2.500]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
 
 ## [5.2.400] - 2025-11-24
 
