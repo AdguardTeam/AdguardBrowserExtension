@@ -29,7 +29,7 @@ import { rootStore } from '../../../stores/RootStore';
 
 import './filters-update.pcss';
 
-const Mv3FiltersUpdate = observer(() => {
+export const FiltersUpdate = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     const [isUpdating, setIsUpdating] = useState(false);
@@ -125,7 +125,7 @@ const Mv3FiltersUpdate = observer(() => {
         <div className="extension-update">
             <button
                 type="button"
-                onClick={settingsStore.checkUpdatesMV3}
+                onClick={settingsStore.checkUpdates}
                 className="extension-update__info extension-update__check-btn"
                 title={checkUpdatesTitle}
             >
@@ -143,5 +143,3 @@ const Mv3FiltersUpdate = observer(() => {
         </div>
     );
 });
-
-export { Mv3FiltersUpdate as FiltersUpdate };

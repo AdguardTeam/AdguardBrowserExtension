@@ -41,7 +41,7 @@ import {
     type StaticLimitsCheckResult,
 } from '../../background/services/rules-limits/interface';
 import { type BlockingPageInitAppData, type PageInitAppData } from '../../background/services/ui/main';
-import { type ExportMessageResponse, type GetOptionsDataResponse } from '../../background/services/settings/types';
+import { type ExportMessageResponse, type GetOptionsDataResponse } from '../../background/services/settings';
 import { type CreateEventListenerResponse } from '../../background/services/event';
 import { type FilterMetadata } from '../../background/api/filters/main';
 import { type GetAllowlistDomainsResponse } from '../../background/services/allowlist';

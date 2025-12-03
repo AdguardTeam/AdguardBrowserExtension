@@ -508,11 +508,6 @@ export abstract class MessengerCommon {
     abstract updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>>;
 
     /**
-     * Sends a message to the background page to check for extension updates.
-     */
-    abstract checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>>;
-
-    /**
      * Sends a message to the background page to update extension.
      */
     abstract updateExtensionMV3(

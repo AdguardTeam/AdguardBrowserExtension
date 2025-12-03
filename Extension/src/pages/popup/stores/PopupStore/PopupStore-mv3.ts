@@ -48,7 +48,7 @@ export class PopupStore extends PopupStoreCommon {
     async getPopupData(): Promise<undefined> {
         await super.getPopupData();
 
-        const options = await messenger.getExtensionStatusForPopupMV3();
+        const options = await messenger.getExtensionStatusForPopup();
 
         this.configureExtensionUpdates(options);
     }
@@ -102,7 +102,7 @@ export class PopupStore extends PopupStoreCommon {
 
         try {
             this.setUpdateNotification(null);
-            await messenger.checkUpdatesMV3();
+            await messenger.checkUpdates();
         } catch (error: unknown) {
             logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
         }
