@@ -43,7 +43,8 @@ import {
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
 
-import { type ExportMessageResponse, type GetOptionsDataResponse } from './types';
+import { type GetOptionsDataResponse } from './types-mv2';
+import { type ExportMessageResponse } from './types-common';
 
 /**
  * SettingsService handles all setting-related messages and
@@ -117,8 +118,6 @@ export class SettingsService {
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
-            // MV3-specific options are null for MV2
-            mv3SpecificOptions: null,
         };
     }
 

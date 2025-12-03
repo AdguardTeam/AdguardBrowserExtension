@@ -32,9 +32,9 @@ export class Messenger extends MessengerCommon {
     };
 
     /**
-     * @inheritdoc
+     * Sends a message to the background page to check for extension updates.
      */
-    checkUpdatesMV3 = async (): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> => {
+    checkUpdates = async (): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>> => {
         return this.sendMessage(MessageType.CheckExtensionUpdateMv3);
     };
 
@@ -48,11 +48,11 @@ export class Messenger extends MessengerCommon {
     };
 
     /**
-     * Sends a message to the background page to get extension status for MV3 popup.
+     * Sends a message to the background page to get extension status for popup.
      *
      * @returns Promise that resolves with extension status
      */
-    getExtensionStatusForPopupMV3 = async (): Promise<GetExtensionStatusForPopupResponse> => {
+    getExtensionStatusForPopup = async (): Promise<GetExtensionStatusForPopupResponse> => {
         return this.sendMessage(MessageType.GetExtensionStatusForPopupMV3);
     };
 }

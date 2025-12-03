@@ -29,41 +29,35 @@ import { type SettingsData } from 'settings-api';
 import {
     AntibannerGroupsId,
     AntiBannerFiltersId,
-    MIN_UPDATE_DISPLAY_DURATION_MS,
     RECOMMENDED_TAG_ID,
     TRUSTED_TAG_KEYWORD,
     WASTE_CHARACTERS,
-} from '../../../common/constants';
-import { logger } from '../../../common/logger';
-import { ForwardFrom } from '../../../common/forward';
-import { sleepIfNecessary, sleep } from '../../../common/sleep-utils';
-import { translator } from '../../../common/translators/translator';
-import { UserAgent } from '../../../common/user-agent';
-import { type SettingOption, type Settings } from '../../../background/schema/settings';
-import { type IRulesLimits } from '../../../background/services/rules-limits/interface';
-import { type GetOptionsDataResponse } from '../../../background/services/settings/types';
-import { type CustomFilterSubscriptionData } from '../../../common/messages/constants';
-import { type FilterMetadata } from '../../../background/api/filters/main';
+} from '../../../../common/constants';
+import { logger } from '../../../../common/logger';
+import { sleep } from '../../../../common/sleep-utils';
+import { UserAgent } from '../../../../common/user-agent';
+import { type SettingOption, type Settings } from '../../../../background/schema/settings';
+import { type GetOptionsDataResponse } from '../../../../background/services/settings';
+import { type CustomFilterSubscriptionData } from '../../../../common/messages/constants';
+import { type FilterMetadata } from '../../../../background/api/filters/main';
 import {
     createSavingService,
     SavingFSMEvent,
     SavingFSMState,
     type SavingFSMStateType,
-} from '../../common/components/Editor/savingFSM';
-import { NotificationType } from '../../common/types';
-import { messenger } from '../../services/messenger';
-import { SEARCH_FILTERS } from '../components/Filters/Search/constants';
+} from '../../../common/components/Editor/savingFSM';
+import { messenger } from '../../../services/messenger';
+import { SEARCH_FILTERS } from '../../components/Filters/Search/constants';
 import {
     sortFilters,
     updateFilters,
     updateGroups,
     sortGroupsOnSearch,
-} from '../components/Filters/helpers';
-import { optionsStorage } from '../options-storage';
-import { type AppearanceTheme } from '../../../common/constants';
-
-import { type RootStore } from './RootStore';
-import { type default as UiStore } from './UiStore';
+} from '../../components/Filters/helpers';
+import { optionsStorage } from '../../options-storage';
+import { type AppearanceTheme } from '../../../../common/constants';
+import { type RootStore } from '../RootStore';
+import { type default as UiStore } from '../UiStore';
 
 /**
  * Sometimes the options page might be opened before the background page or
@@ -77,7 +71,7 @@ import { type default as UiStore } from './UiStore';
  *
  * @returns Data for the options page from the background page.
  */
-const fetchDataWithRetry = async <T>(
+export const fetchDataWithRetry = async <T>(
     fetchFunction: () => Promise<T>,
 ): Promise<T | null> => {
     /**
@@ -97,7 +91,7 @@ const fetchDataWithRetry = async <T>(
      */
     const innerRetry = async (retryTimes: number): Promise<T | null> => {
         if (retryTimes === 0) {
-            logger.error('[ext.SettingsStore]: failed to get from the background service.');
+            logger.error('[ext.SettingsStore-common]: failed to get from the background service.');
             return null;
         }
         try {
@@ -110,31 +104,13 @@ const fetchDataWithRetry = async <T>(
 
             return data;
         } catch (e) {
-            logger.warn('[ext.SettingsStore]: failed to get from the background service, will retry fetch. error: ', e);
+            logger.warn('[ext.SettingsStore-common]: failed to get from the background service, will retry fetch. error: ', e);
             await sleep(RETRY_DELAY_MS);
             return innerRetry(retryTimes - 1);
         }
     };
 
     return innerRetry(TOTAL_RETRY_TIMES);
-};
-
-const DEFAULT_RULES_LIMITS: IRulesLimits = {
-    dynamicRulesEnabledCount: 0,
-    dynamicRulesMaximumCount: 0,
-    dynamicRulesUnsafeEnabledCount: 0,
-    dynamicRulesUnsafeMaximumCount: 0,
-    dynamicRulesRegexpsEnabledCount: 0,
-    dynamicRulesRegexpsMaximumCount: 0,
-    staticFiltersEnabledCount: 0,
-    staticFiltersMaximumCount: 0,
-    staticRulesEnabledCount: 0,
-    staticRulesMaximumCount: 0,
-    staticRulesRegexpsEnabledCount: 0,
-    staticRulesRegexpsMaxCount: 0,
-    expectedEnabledFilters: [],
-    actuallyEnabledFilters: [],
-    areFilterLimitsExceeded: false,
 };
 
 // Constants for filter-related setting keys
@@ -147,7 +123,7 @@ const FILTER_SETTING_KEYS = {
 // Type derived from constants
 type FilterRelatedSettingKey = typeof FILTER_SETTING_KEYS[keyof typeof FILTER_SETTING_KEYS];
 
-class SettingsStore {
+export abstract class SettingsStoreCommon {
     FILTER_SETTING_KEYS = FILTER_SETTING_KEYS;
 
     rootStore: RootStore;
@@ -205,9 +181,6 @@ class SettingsStore {
     visibleFilters: CategoriesFilterData[] = [];
 
     @observable
-    rulesCount = 0;
-
-    @observable
     allowAcceptableAds: boolean | null = null;
 
     @observable
@@ -221,21 +194,6 @@ class SettingsStore {
 
     @observable
     savingAllowlistState: SavingFSMStateType = this.savingAllowlistService.getSnapshot().value;
-
-    @observable
-    filtersUpdating = false;
-
-    /**
-     * Whether the extension update is available after the checking.
-     */
-    @observable
-    isExtensionUpdateAvailable = false;
-
-    /**
-     * Whether the extension update is checking or is updating now.
-     */
-    @observable
-    isExtensionCheckingUpdateOrUpdating = false;
 
     @observable
     selectedGroupId: number | null = null;
@@ -273,9 +231,6 @@ class SettingsStore {
     @observable
     filterIdSelectedForConsent: number | null = null;
 
-    @observable
-    rulesLimits: IRulesLimits = DEFAULT_RULES_LIMITS;
-
     constructor(rootStore: RootStore) {
         makeObservable(this);
         this.rootStore = rootStore;
@@ -285,7 +240,6 @@ class SettingsStore {
         this.updateFilterSetting = this.updateFilterSetting.bind(this);
         this.updateGroupSetting = this.updateGroupSetting.bind(this);
         this.setAllowAcceptableAdsState = this.setAllowAcceptableAdsState.bind(this);
-        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
 
         this.savingAllowlistService.subscribe((state) => {
             runInAction(() => {
@@ -294,26 +248,6 @@ class SettingsStore {
                     this.allowlistEditorContentChanged = false;
                 }
             });
-        });
-    }
-
-    @action
-    async getRulesLimitsCounters() {
-        // This method should only be called for MV3-based extensions
-        // AG-40166
-        if (!__IS_MV3__) {
-            return;
-        }
-
-        const rulesLimits = await fetchDataWithRetry(messenger.getRulesLimitsCounters.bind(messenger));
-
-        // Will use default rules limits if the background service is not ready.
-        if (!rulesLimits) {
-            return;
-        }
-
-        runInAction(() => {
-            this.rulesLimits = rulesLimits;
         });
     }
 
@@ -359,82 +293,52 @@ class SettingsStore {
             return null;
         }
 
-        runInAction(() => {
-            this.settings = data.settings;
-            // on first render we sort filters to show enabled on the top
-            // filter should remain on the same place event after being enabled or disabled
-            if (firstRender) {
-                this.setFilters(sortFilters(data.filtersMetadata.filters));
-            } else {
-                // on the next filters updates, we update filters keeping order
-                /**
-                 * TODO: Updating filters on background service response can cause filter enable
-                 * state mismatch, because we toggle switches on frontend side first, but cannot determine when
-                 * action in background service is completed and final result of user action.
-                 * It seems that we need to use a new approach with atomic updates instead of global
-                 * state synchronization to avoid this kind of problems. This task can be split into two parts:
-                 * - Moving specific logic from the background to the settings page.
-                 * - Integrate a transparent transaction model with simple collision resolution to prevent
-                 * race conditions.
-                 */
-                this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
-            }
-            // do not rerender groups on its turning on/off while searching
-            if (this.isSearching) {
-                this.setGroups(updateGroups(this.categories, data.filtersMetadata.categories));
-            } else {
-                this.setGroups(data.filtersMetadata.categories);
-            }
-            this.rulesCount = data.filtersInfo.rulesCount;
-            this.appVersion = data.appVersion;
-            this.libVersions = data.libVersions;
-            this.setAllowAcceptableAds(data.filtersMetadata.filters);
-            this.setBlockKnownTrackers(data.filtersMetadata.filters);
-            this.setStripTrackingParameters(data.filtersMetadata.filters);
-            this.isChrome = data.environmentOptions.isChrome;
-            this.optionsReadyToRender = true;
-            this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
-
-            // Handle MV3-specific options
-            const { mv3SpecificOptions } = data;
-
-            if (!mv3SpecificOptions) {
-                // Early exit for MV2 or when mv3SpecificOptions is absent
-                this.setIsExtensionUpdateAvailable(false);
-                return;
-            }
-
-            const {
-                isExtensionUpdateAvailable,
-                isExtensionReloadedOnUpdate,
-                isSuccessfulExtensionUpdate,
-            } = mv3SpecificOptions;
-
-            this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
-
-            // notification about successful or failed update should be shown after the options page is opened.
-            // and it cannot be done by notifier (from the background page)
-            // because event may be dispatched before the options page is opened,
-            // i.e. listener may not be registered yet.
-            if (isExtensionReloadedOnUpdate) {
-                const notification = isSuccessfulExtensionUpdate
-                    ? {
-                        type: NotificationType.Success,
-                        text: translator.getMessage('update_success_text'),
-                    } : {
-                        type: NotificationType.Error,
-                        text: translator.getMessage('update_failed_text'),
-                        button: {
-                            title: translator.getMessage('update_failed_try_again_btn'),
-                            onClick: this.checkUpdatesMV3,
-                        },
-                    };
-
-                this.uiStore.addNotification(notification);
-            }
-        });
+        this.applyOptionsData(data, firstRender);
 
         return data;
+    }
+
+    /**
+     * Applies options data from the background to the options store state.
+     *
+     * @param data Options data payload for the page.
+     * @param firstRender Whether this is the first render.
+     */
+    @action
+    protected applyOptionsData(data: GetOptionsDataResponse, firstRender?: boolean): void {
+        this.settings = data.settings;
+        // on first render we sort filters to show enabled on the top
+        // filter should remain on the same place event after being enabled or disabled
+        if (firstRender) {
+            this.setFilters(sortFilters(data.filtersMetadata.filters));
+        } else {
+            // on the next filters updates, we update filters keeping order
+            /**
+             * TODO: Updating filters on background service response can cause filter enable
+             * state mismatch, because we toggle switches on frontend side first, but cannot determine when
+             * action in background service is completed and final result of user action.
+             * It seems that we need to use a new approach with atomic updates instead of global
+             * state synchronization to avoid this kind of problems. This task can be split into two parts:
+             * - Moving specific logic from the background to the settings page.
+             * - Integrate a transparent transaction model with simple collision resolution to prevent
+             * race conditions.
+             */
+            this.setFilters(updateFilters(this.filters, data.filtersMetadata.filters));
+        }
+        // do not rerender groups on its turning on/off while searching
+        if (this.isSearching) {
+            this.setGroups(updateGroups(this.categories, data.filtersMetadata.categories));
+        } else {
+            this.setGroups(data.filtersMetadata.categories);
+        }
+        this.appVersion = data.appVersion;
+        this.libVersions = data.libVersions;
+        this.setAllowAcceptableAds(data.filtersMetadata.filters);
+        this.setBlockKnownTrackers(data.filtersMetadata.filters);
+        this.setStripTrackingParameters(data.filtersMetadata.filters);
+        this.isChrome = data.environmentOptions.isChrome;
+        this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
+        this.optionsReadyToRender = true;
     }
 
     @action
@@ -459,7 +363,7 @@ class SettingsStore {
         ignoreBackground = false,
     ): Promise<void> {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStore.updateSetting]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.updateSetting]: settings is not initialized yet');
             return;
         }
         this.settings.values[settingId] = value;
@@ -481,7 +385,7 @@ class SettingsStore {
                 .find((f) => f.filterId === filterId);
 
             if (!relatedFilter) {
-                logger.debug('[ext.SettingsStore.setFilterRelatedSettingState]: related filter not found');
+                logger.debug('[ext.SettingsStoreCommon.setFilterRelatedSettingState]: related filter not found');
                 return;
             }
 
@@ -598,24 +502,9 @@ class SettingsStore {
         });
     }
 
-    /**
-     * Used to display the last check time under all rules count.
-     *
-     * @returns {number} the latest check time of all filters.
-     */
-    @computed
-    get latestCheckTime() {
-        return Math.max(...this.filters
-            .map(({ lastScheduledCheckTime, lastCheckTime }) => Math.max(
-                lastScheduledCheckTime || 0,
-                lastCheckTime || 0,
-            )));
-    }
-
     @action
     async updateGroupSetting(groupId: number, enabled: boolean): Promise<void> {
         const recommendedFiltersIds = await messenger.updateGroupStatus(groupId, enabled);
-        await this.getRulesLimitsCounters();
 
         runInAction(() => {
             if (groupId === AntibannerGroupsId.OtherFiltersGroupId
@@ -681,7 +570,7 @@ class SettingsStore {
 
         const idx = this.filters.findIndex((f) => f.filterId === filter.filterId);
         if (idx === -1) {
-            logger.debug('[ext.SettingsStore.refreshFilter]: filter not found', filter);
+            logger.debug('[ext.SettingsStoreCommon.refreshFilter]: filter not found', filter);
             return;
         }
 
@@ -690,7 +579,7 @@ class SettingsStore {
             return;
         }
 
-        SettingsStore.updateObjectProperties(targetFilter, filter);
+        SettingsStoreCommon.updateObjectProperties(targetFilter, filter);
     }
 
     @action
@@ -708,17 +597,17 @@ class SettingsStore {
         });
     };
 
+    /**
+     * Core logic for updating filter setting.
+     * Sends request to backend, updates related states and UI.
+     *
+     * @param filterId Target filter id.
+     * @param enabled Desired enabled state.
+     *
+     * @returns True if update was successful, false otherwise.
+     */
     @action
-    async updateFilterSetting(filterId: number, enabled: boolean): Promise<void> {
-        /**
-         * Optimistically set the enabled property to true.
-         * The verified state of the filter will be emitted after the engine update.
-         */
-        // do not update filter state for mv3 optimistically
-        if (!__IS_MV3__) {
-            this.setFilterEnabledState(filterId, enabled);
-        }
-
+    async updateFilterSettingCore(filterId: number, enabled: boolean): Promise<boolean> {
         try {
             const groupId = enabled
                 ? await messenger.enableFilter(filterId)
@@ -742,73 +631,23 @@ class SettingsStore {
                     group.touched = true;
                 }
             }
-            if (__IS_MV3__) {
-                this.setFilterEnabledState(filterId, enabled);
-            }
+
+            return true;
         } catch (e) {
-            logger.error('[ext.SettingsStore.updateFilterSetting]: failed to update filter setting: ', e);
+            logger.error('[ext.SettingsStoreCommon.updateFilterSettingCore]: failed to update filter setting: ', e);
             this.setFilterEnabledState(filterId, !enabled);
+
+            return false;
         }
     }
 
-    @action
-    setFiltersUpdating(value: boolean): void {
-        this.filtersUpdating = value;
-    }
-
-    @action
-    async updateFiltersMV2() {
-        this.setFiltersUpdating(true);
-        try {
-            const filtersUpdates = await messenger.updateFiltersMV2();
-            this.refreshFilters(filtersUpdates);
-            setTimeout(() => {
-                this.setFiltersUpdating(false);
-            }, MIN_UPDATE_DISPLAY_DURATION_MS);
-            return filtersUpdates;
-        } catch (error) {
-            this.setFiltersUpdating(false);
-            throw error;
-        }
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    @action
-    async checkUpdatesMV3() {
-        const start = Date.now();
-        try {
-            await messenger.checkUpdatesMV3();
-        } catch (error) {
-            logger.debug('[ext.SettingsStore.checkUpdatesMV3]: failed to check updates on options page: ', error);
-        }
-
-        // Ensure minimum duration for smooth UI experience
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    async updateExtensionMV3() {
-        const start = Date.now();
-        try {
-            await messenger.updateExtensionMV3({
-                from: ForwardFrom.Options,
-            });
-        } catch (error) {
-            logger.debug('[ext.SettingsStore.updateExtensionMV3]: failed to update extension on options page: ', error);
-        }
-        // Ensure minimum duration for smooth UI experience before extension reload
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-    }
-
-    @action
-    setIsExtensionUpdateAvailable(isAvailable: boolean): void {
-        this.isExtensionUpdateAvailable = isAvailable;
-    }
-
-    @action
-    setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
-        this.isExtensionCheckingUpdateOrUpdating = value;
-    }
+    /**
+     * Toggles a single filter and updates related settings and groups state.
+     *
+     * @param filterId Target filter id.
+     * @param enabled Desired enabled state.
+     */
+    abstract updateFilterSetting(filterId: number, enabled: boolean): Promise<void>;
 
     /**
      * Adds a custom filter but does not enable it.
@@ -864,7 +703,7 @@ class SettingsStore {
             const { content } = await messenger.getAllowlist();
             this.setAllowlist(content);
         } catch (e) {
-            logger.error('[ext.SettingsStore]: failed to get allowlist: ', e);
+            logger.error('[ext.SettingsStoreCommon]: failed to get allowlist: ', e);
         }
     };
 
@@ -1012,7 +851,7 @@ class SettingsStore {
     @computed
     get appearanceTheme(): AppearanceTheme | null {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStore.appearanceTheme]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.appearanceTheme]: settings is not initialized yet');
             return null;
         }
 
@@ -1022,7 +861,7 @@ class SettingsStore {
     @computed
     get showAdguardPromoInfo(): boolean | null {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStore.showAdguardPromoInfo]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.showAdguardPromoInfo]: settings is not initialized yet');
             return null;
         }
         return !this.settings.values[this.settings.names.DisableShowAdguardPromoInfo];
@@ -1031,7 +870,7 @@ class SettingsStore {
     @action
     async hideAdguardPromoInfo(): Promise<void> {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStore.hideAdguardPromoInfo]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.hideAdguardPromoInfo]: settings is not initialized yet');
             return;
         }
         await this.updateSetting(this.settings.names.DisableShowAdguardPromoInfo, true);
@@ -1059,7 +898,7 @@ class SettingsStore {
     @computed
     get footerRateShowState(): boolean {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStore.footerRateShowState]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.footerRateShowState]: settings is not initialized yet');
             return false;
         }
         return !this.settings.values[this.settings.names.HideRateBlock];
@@ -1068,7 +907,7 @@ class SettingsStore {
     @action
     async hideFooterRateShow(): Promise<void> {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStore.hideFooterRateShow]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.hideFooterRateShow]: settings is not initialized yet');
             return;
         }
         await this.updateSetting(this.settings.names.HideRateBlock, true);
@@ -1087,7 +926,7 @@ class SettingsStore {
     @computed
     get userFilterEnabledSettingId(): SettingOption.UserFilterEnabled | null {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStore.userFilterEnabledSettingId]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.userFilterEnabledSettingId]: settings is not initialized yet');
             return null;
         }
         return this.settings.names.UserFilterEnabled;
@@ -1096,7 +935,7 @@ class SettingsStore {
     @computed
     get userFilterEnabled(): boolean | null {
         if (!this.settings || !this.userFilterEnabledSettingId) {
-            logger.debug('[ext.SettingsStore.userFilterEnabled]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.userFilterEnabled]: settings is not initialized yet');
             return null;
         }
 
@@ -1178,5 +1017,3 @@ class SettingsStore {
         });
     }
 }
-
-export default SettingsStore;

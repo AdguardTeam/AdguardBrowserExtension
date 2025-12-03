@@ -180,8 +180,12 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),
         'user-scripts-api': path.resolve(__dirname, `../../Extension/src/common/user-scripts-api/user-scripts-api-mv${manifestVersion}.ts`),
         'popup-layout': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Popup/Popup-mv${manifestVersion}.tsx`),
+        'filters-update': path.resolve(__dirname, `../../Extension/src/pages/options/components/Filters/FiltersUpdate/FiltersUpdate-mv${manifestVersion}.tsx`),
         'filters-adapter': path.resolve(__dirname, `../../Extension/src/background/storages/filters-adapter/filters-adapter-mv${manifestVersion}.ts`),
         'prefs': path.resolve(__dirname, `../../Extension/src/background/prefs/prefs-mv${manifestVersion}.ts`),
+        'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types-mv${manifestVersion}.ts`),
+        'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
+        'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {

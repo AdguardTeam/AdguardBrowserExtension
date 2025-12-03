@@ -22,7 +22,7 @@ import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
 import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from 'tswebextension';
 
-import type { GetOptionsDataResponse } from '../services/settings/types';
+import type { GetOptionsDataResponse } from '../services/settings';
 
 /**
  * Extension global preferences.

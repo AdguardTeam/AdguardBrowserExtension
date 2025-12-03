@@ -16,4 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { RulesLimits } from './RulesLimits';
+import { type GetOptionsDataResponseCommon } from './types-common';
+
+/**
+ * Settings with some additional data for the options page:
+ * app version, environment options, constants, filters info, filters metadata, etc.
+ */
+export type GetOptionsDataResponse = GetOptionsDataResponseCommon;
