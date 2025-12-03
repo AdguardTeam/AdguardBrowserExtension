@@ -80,6 +80,10 @@ export const firefoxManifest = {
         'cookies',
         'privacy',
     ],
+    'optional_permissions': [
+        'clipboardRead',
+        'clipboardWrite',
+    ],
 };
 
 export const firefoxManifestStandalone = {
