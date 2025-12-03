@@ -270,14 +270,12 @@ branch-overrides:
                   # from the Chrome Web Store to check that new versions
                   # are eligible for "skip review" feature.
                   pnpm tsx tools/skip-review/download-latest-extension beta
-                  # FIXME: Enable when manual review for v5.2.112.105 is done.
-                  # pnpm tsx tools/skip-review/download-latest-extension release
+                  pnpm tsx tools/skip-review/download-latest-extension release
 
                   # Check that beta and release updates contain only safe
                   # changes in rulesets and only in rule_resources files.
                   pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
-                  # FIXME: Enable when manual review for v5.2.112.105 is done.
-                  # pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
 
                   # Move zip artifacts to the artifacts directory, because we will
                   # publish zip versions of the extension.
