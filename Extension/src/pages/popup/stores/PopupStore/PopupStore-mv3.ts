@@ -39,6 +39,15 @@ export class PopupStore extends PopupStoreCommon {
     @observable
     updateNotification: NotificationParams | null = null;
 
+    @observable
+    isExtensionUpdateAvailable = false;
+
+    /**
+     * Whether the extension update is checking or is updating now.
+     */
+    @observable
+    isExtensionCheckingUpdateOrUpdating = false;
+
     constructor() {
         super();
         makeObservable(this);
@@ -89,30 +98,42 @@ export class PopupStore extends PopupStoreCommon {
                 text: translator.getMessage('update_failed_text'),
                 button: {
                     title: translator.getMessage('update_failed_try_again_btn'),
-                    onClick: this.checkUpdatesMV3,
+                    onClick: this.checkUpdates,
                 },
             });
         }
     }
 
-    /** @inheritdoc */
+    /**
+     * Checks for updates and if update is available, starts the update process.
+     */
     @action
-    async checkUpdatesMV3() {
+    checkUpdates = async () => {
         const start = Date.now();
 
         try {
             this.setUpdateNotification(null);
             await messenger.checkUpdates();
         } catch (error: unknown) {
-            logger.debug('[ext.PopupStore.checkUpdatesMV3]: failed to check updates in popup: ', error);
+            logger.debug('[ext.PopupStore]: failed to check updates in popup: ', error);
         }
 
         // Ensure minimum duration for smooth UI experience
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-    }
+    };
 
     @action
     setUpdateNotification(notification: NotificationParams | null): void {
         this.updateNotification = notification;
+    }
+
+    @action
+    setIsExtensionUpdateAvailable(isUpdateAvailable: boolean): void {
+        this.isExtensionUpdateAvailable = isUpdateAvailable;
+    }
+
+    @action
+    setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
+        this.isExtensionCheckingUpdateOrUpdating = value;
     }
 }

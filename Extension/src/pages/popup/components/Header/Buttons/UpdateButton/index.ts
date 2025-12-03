@@ -20,4 +20,4 @@
 // export './UpdateButton' will be replaced during webpack compilation
 // with NormalModuleReplacementPlugin to proper implementation
 // from './Mv2UpdateButton' or './Mv3UpdateButton'
-export { UpdateButton } from './AbstractUpdateButton';
+export { UpdateButton } from 'update-button';

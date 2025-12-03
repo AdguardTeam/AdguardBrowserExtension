@@ -142,18 +142,8 @@ export abstract class PopupStoreCommon {
     @observable
     appState: AppState = appStateActor.getSnapshot().value;
 
-    @observable
-    isExtensionUpdateAvailable = false;
-
-    /**
-     * Whether the extension update is checking or is updating now.
-     */
-    @observable
-    isExtensionCheckingUpdateOrUpdating = false;
-
     constructor() {
         makeObservable(this);
-        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
         this.getPopupData = this.getPopupData.bind(this);
 
         appStateActor.subscribe((state) => {
@@ -272,16 +262,6 @@ export abstract class PopupStoreCommon {
 
         this.setAppActorInitState();
     }
-
-    /**
-     * Checks for updates and if update is available, starts the update process.
-     *
-     * Note:
-     * This behavior is different on options page
-     * where two separate clicks are required
-     * to check for updates and start the update process.
-     */
-    abstract checkUpdatesMV3(): Promise<void>;
 
     /**
      * Sends a message to the background to set the application filtering paused state to the specified value.
@@ -589,15 +569,5 @@ export abstract class PopupStoreCommon {
         }
 
         return this.settings.values[this.settings.names.AppearanceTheme];
-    }
-
-    @action
-    setIsExtensionUpdateAvailable(isUpdateAvailable: boolean): void {
-        this.isExtensionUpdateAvailable = isUpdateAvailable;
-    }
-
-    @action
-    setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
-        this.isExtensionCheckingUpdateOrUpdating = value;
     }
 }

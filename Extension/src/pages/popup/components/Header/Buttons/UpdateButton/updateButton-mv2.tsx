@@ -29,7 +29,7 @@ import { addMinDurationTime } from '../../../../../../common/sleep-utils';
 import { messenger } from '../../../../../services/messenger';
 import { getFiltersUpdateResultMessage } from '../../../../../../common/toast-helper';
 
-const Mv2UpdateButton = () => {
+export const UpdateButton = () => {
     const refUpdatingBtn = useRef<HTMLButtonElement>(null);
 
     const timeoutId = useRef<NodeJS.Timeout>();
@@ -37,16 +37,11 @@ const Mv2UpdateButton = () => {
     const [updateMessage, setUpdateMessage] = useState('');
 
     const updateFiltersWithMinDuration = addMinDurationTime(
-        messenger.updateFiltersMV2,
+        messenger.updateFilters,
         MIN_UPDATE_DISPLAY_DURATION_MS,
     );
 
     const handleUpdateFiltersClick = async () => {
-        // In MV3 we don't support update of filters.
-        if (__IS_MV3__) {
-            throw new Error('Filters update is not supported in MV3');
-        }
-
         clearTimeout(timeoutId.current);
 
         setFiltersUpdating(true);
@@ -80,22 +75,24 @@ const Mv2UpdateButton = () => {
                 className="sr-only"
                 aria-live="assertive"
                 tabIndex={-1}
-                aria-hidden={!filtersUpdating && !updateMessage}
+                aria-hidden={!filtersUpdating && !updateMessage} // MV2
             >
                 {filtersUpdating ? translator.getMessage('options_popup_updating_filters') : updateMessage}
+                {' '}
+// MV2
             </div>
             <button
                 className="button popup-header__button"
-                ref={refUpdatingBtn}
-                disabled={filtersUpdating}
+                ref={refUpdatingBtn} // MV2
+                disabled={filtersUpdating} // MV2
                 type="button"
-                onClick={handleUpdateFiltersClick}
-                title={translator.getMessage('popup_header_update_filters')}
+                onClick={handleUpdateFiltersClick} // handler
+                title={translator.getMessage('popup_header_update_filters')} // message
             >
                 <Icon
                     id="#reload"
                     className="icon--24 icon--header"
-                    animationCondition={filtersUpdating}
+                    animationCondition={filtersUpdating} // MV3
                     animationClassName="icon--loading"
                     aria-hidden="true"
                 />
@@ -103,5 +100,3 @@ const Mv2UpdateButton = () => {
         </>
     );
 };
-
-export { Mv2UpdateButton as UpdateButton };

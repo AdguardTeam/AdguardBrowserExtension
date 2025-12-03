@@ -186,6 +186,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types-mv${manifestVersion}.ts`),
         'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
         'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
+        'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/updateButton-mv${manifestVersion}.tsx`),
     };
 
     const configuration: Configuration = {

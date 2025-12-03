@@ -61,7 +61,6 @@ import {
     type AddUrlToTrustedMessage,
     type ExtractedMessage,
     type OpenSafebrowsingTrustedMessage,
-    type UpdateExtensionMessageMv3,
 } from '../../../common/messages';
 import { type NotifierType } from '../../../common/constants';
 import { type CreateEventListenerResponse } from '../../../background/services';
@@ -499,20 +498,6 @@ export abstract class MessengerCommon {
     ): Promise<ExtractMessageResponse<MessageType.SetNotificationViewed>> => {
         await this.sendMessage(MessageType.SetNotificationViewed, { withDelay });
     };
-
-    /**
-     * Sends a message to the background page to update filters.
-     *
-     * @returns Promise that resolves with the list of filters.
-     */
-    abstract updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>>;
-
-    /**
-     * Sends a message to the background page to update extension.
-     */
-    abstract updateExtensionMV3(
-        { from }: UpdateExtensionMessageMv3['data'],
-    ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>>;
 
     /**
      * Sends a message to the background page to update the status of a filter group.
