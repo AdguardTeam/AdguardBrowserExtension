@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - The update promo banner does not persist dismissal and shows again after
   the extension updates [#3385].
-- Fixed extension startup issue in 360 Browser [#3058].
+- The extension doesn't work in browser 360 [#3058].
 
 ### Changed
 
