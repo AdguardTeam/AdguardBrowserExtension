@@ -204,7 +204,11 @@ class IconsApi {
      * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
      */
     private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
-        await browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
+        /**
+         * AG-38219 For some reason browserAction.setIcon() promise is not resolved
+         * in 360 browser MV3, the icon still sets correctly.
+         */
+        browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
     }
 
     /**
