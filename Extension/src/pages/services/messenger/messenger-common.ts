@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -506,11 +508,6 @@ export abstract class MessengerCommon {
      * @returns Promise that resolves with the list of filters.
      */
     abstract updateFiltersMV2(): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>>;
-
-    /**
-     * Sends a message to the background page to check for extension updates.
-     */
-    abstract checkUpdatesMV3(): Promise<ExtractMessageResponse<MessageType.CheckExtensionUpdateMv3>>;
 
     /**
      * Sends a message to the background page to update extension.

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -44,7 +46,7 @@ import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
 import { addMinDelayLoader } from '../helpers';
 // TODO: Continue to remove dependency on the root store via adding loader and
-// notifications to own 'user-rules-editor' store.
+// notifications to own 'user-rules-editor' store. AG-48937
 import { rootStore } from '../../../options/stores/RootStore';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
@@ -68,7 +70,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const inputRef = useRef(null);
     const actionsRef = useRef(null);
 
-    const switchId = 'user-filter-switch';
+    const switchId = settingsStore.userFilterEnabledSettingId;
     const switchTitleId = `${switchId}-title`;
 
     let shouldResetSize = false;
@@ -423,10 +425,17 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         window.close();
     };
 
+    const updateSettingWithLimitCheck = async (settingId, value) => {
+        await settingsStore.updateSetting(settingId, value);
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
+    };
+
     const handleUserRulesToggle = async ({ id, data }) => {
         await addMinDelayLoader(
             uiStore.setShowLoader,
-            store.updateSetting,
+            updateSettingWithLimitCheck,
         )(id, data);
     };
 

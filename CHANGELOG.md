@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Apply $document blocking rule even if specific exception rule is present [#3262].
 - Blocked iframes are not collapsed on Firefox [#3116].
 - The extension got an unexpected error on [::]:8000 [#3360]
+- Toggle, that doesn't work in User Rules fullscreen mode [#3365]
 
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
@@ -42,8 +43,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 [#3262]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3262
 [#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
+[#3365]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3365
 
-## [v5.2.300.0] - ??
+## [5.2.500.8] - ??
+
+### Fixed
+
+- Made clipboard permissions optional for Firefox, with a prompt shown when needed in User Rules and Allowlist editors [#3364]
+
+[#3364]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3364
+
+<!-- TODO: Specify date after publish on GH -->
+## [5.2.500] - ??
+
+### Fixed
+- The update promo banner does not persist dismissal and shows again after
+  the extension updates [#3385].
+
+### Changed
+
+- Updated [@adguard/agtree] to v3.3.1.
+- Updated [@adguard/assistant] to v4.3.77.
+- Updated [@adguard/scriptlets] to v2.2.13.
+- Updated [@adguard/tsurlfilter] to v3.5.1.
+- Updated [@adguard/tswebextension] to v3.2.16.
+
+[#3385]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3385
+<!-- TODO: Specify after publish on GH -->
+[5.2.500]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
+
+## [5.2.400] - 2025-11-24
 
 ### Added
 
@@ -55,15 +84,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extension will apply auto-update in MV3 if update is available and browser
   became idle for a while.
 
+[5.2.400]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.400%2B0.build.20251119090043
 [#3016]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3016
 
-## [v5.2.112.84] - 2025-10-25
+## [5.2.113.0]
+
+### Fixed
+
+- Removed clipboard permissions [#3362].
+
+[#3362]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3362
+[5.2.113.0]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/5.2.113%2B0.build.20251022090039
+
+## [5.2.112.84] - 2025-10-25
 
 ### Changed
 
 - Updated [@adguard/tswebextension] to v3.2.13.
 
-[v5.2.112.84]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B84.build.20251022090039
+[5.2.112.84]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B84.build.20251022090039
 
 ## [5.2.112.1] - 2025-10-14
 

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -25,7 +27,7 @@ import { formatDate } from '../helpers';
 
 import './filters-update.pcss';
 
-const Mv2FiltersUpdate = observer(() => {
+export const FiltersUpdate = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
     const {
@@ -36,7 +38,7 @@ const Mv2FiltersUpdate = observer(() => {
     } = settingsStore;
 
     const updateClickHandler = async () => {
-        await settingsStore.updateFiltersMV2();
+        await settingsStore.updateFilters();
     };
 
     return (
@@ -63,5 +65,3 @@ const Mv2FiltersUpdate = observer(() => {
         </div>
     );
 });
-
-export { Mv2FiltersUpdate as FiltersUpdate };

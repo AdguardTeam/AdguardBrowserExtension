@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -20,21 +22,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { type Configuration, CopyRspackPlugin } from '@rspack/core';
 import { merge } from 'webpack-merge';
-import { type Configuration } from 'webpack';
 
 import { RulesetsInjector } from '@adguard/dnr-rulesets';
 
-import { genMv3CommonConfig } from '../webpack.common.mv3';
-import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
+import { genMv3CommonConfig } from '../rspack.common.mv3';
+import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../rspack.common';
 import { updateManifestBuffer } from '../../helpers';
 import {
     AssetsFiltersBrowser,
     BUILD_ENV,
     FILTERS_DEST,
 } from '../../constants';
-import { type BrowserConfig } from '../common-constants';
+import { type BrowserConfig, type BuildOptions } from '../common-constants';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../constants';
 import { commonManifest } from '../manifest.common';
 
@@ -57,8 +58,8 @@ const BASE_FILTER_ID = '2';
 
 const rulesetsInjector = new RulesetsInjector();
 
-export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: boolean) => {
-    const commonConfig = genMv3CommonConfig(browserConfig, isWatchMode);
+export const genChromeMv3Config = (browserConfig: BrowserConfig, options: BuildOptions = {}) => {
+    const commonConfig = genMv3CommonConfig(browserConfig, options);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
@@ -108,12 +109,12 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, isWatchMode: bo
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
         plugins: [
-            new CopyWebpackPlugin({
+            new CopyRspackPlugin({
                 patterns: [
                     {
                         /**
                          * This is a dummy import to keep "clean" usage of
-                         * `CopyWebpackPlugin`. We actually use `commonManifest`
+                         * `CopyRspackPlugin`. We actually use `commonManifest`
                          * imported above.
                          */
                         from: path.resolve(__dirname, '../manifest.common.ts'),

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,9 +17,4 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-// !IMPORTANT!
-// export './FiltersUpdate' will be replaced during webpack compilation
-// with NormalModuleReplacementPlugin to proper implementation
-// from './Mv2FiltersUpdate' or './Mv3FiltersUpdate'
-export { FiltersUpdate } from './AbstractFiltersUpdate';
+export { FiltersUpdate } from 'filters-update';

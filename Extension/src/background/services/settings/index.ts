@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,17 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-// NOTE: Here important to use 'settings-service' without path, because
-// it is an alias for manifest-specific implementation of the rules rules limits
-// service. It will be replaced with mv2 or mv3 version during the build
-// via webpack.
-
-/**
- * SettingsService is a singleton instance of SettingsService which
- * will be replaced with mv2 or mv3 implementation during the build via webpack.
- *
- * By default, mv2 will be used.
- */
-
 export { SettingsService } from 'settings-service';
+export { type GetOptionsDataResponse } from 'settings-types';
+export { type ExportMessageResponse } from './types-common';

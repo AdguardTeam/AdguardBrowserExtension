@@ -16,15 +16,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * This component is needed to be replaced during webpack compilation
- * with NormalModuleReplacementPlugin to proper implementation
- * from './Mv2FiltersUpdate' or './Mv3FiltersUpdate'.
- *
- * @throws An error if the component is not replaced.
- */
-const AbstractFiltersUpdate = () => {
-    throw new Error('Seems like webpack did not inject proper FiltersUpdate component');
-};
+import { type GetOptionsDataResponseCommon } from './types-common';
 
-export { AbstractFiltersUpdate as FiltersUpdate };
+/**
+ * Settings with some additional data for the options page:
+ * app version, environment options, constants, filters info, filters metadata, etc.
+ */
+export type GetOptionsDataResponse = GetOptionsDataResponseCommon;

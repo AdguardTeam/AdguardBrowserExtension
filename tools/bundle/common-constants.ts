@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,7 +21,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type HtmlWebpackPlugin from 'html-webpack-plugin';
+import type { HtmlRspackPluginOptions } from '@rspack/core';
 
 import { Browser } from '../constants';
 
@@ -43,8 +45,7 @@ export const BLOCKING_SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extensi
 export const BLOCKING_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/blocking/blocked');
 export const EDITOR_PATH = path.resolve(__dirname, '../../Extension/src/pages/common/components/Editor');
 
-export const htmlTemplatePluginCommonOptions: Partial<HtmlWebpackPlugin.Options> = {
-    cache: false,
+export const htmlTemplatePluginCommonOptions: Partial<HtmlRspackPluginOptions> = {
     scriptLoading: 'blocking',
 };
 
@@ -54,6 +55,22 @@ export type BrowserConfig = {
     buildDir: string;
     zipName: string;
 };
+
+/**
+ * Build options passed from CLI to rspack configuration.
+ */
+export interface BuildOptions {
+    /**
+     * Whether to run in watch mode.
+     */
+    isWatchMode?: boolean;
+
+    /**
+     * Whether to create zip archives after build.
+     * Defaults to false, use --zip flag to enable.
+     */
+    zip?: boolean;
+}
 
 export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserConfig> = {
     [Browser.Chrome]: {
@@ -95,15 +112,14 @@ export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserC
 };
 
 /**
- * RegExp for matching components that need to be replaced while webpack building.
+ * List of components that have different implementations for MV2 and MV3.
+ * These are resolved using rspack's resolve.alias in rspack.common.ts.
  *
- * Needed for components which are different for MV2 and MV3.
+ * Components:
+ * - UpdateButton: Different update UI for MV2 vs MV3
+ * - FiltersUpdate: Different filter update logic for MV2 vs MV3
  */
-export const COMPONENT_REPLACEMENT_MATCH_REGEXP = new RegExp(
-    `\\.\\/Abstract(${
-        [
-            'UpdateButton',
-            'FiltersUpdate',
-        ].join('|')
-    })`,
-);
+export const MV_SPECIFIC_COMPONENTS = [
+    'UpdateButton',
+    'FiltersUpdate',
+] as const;

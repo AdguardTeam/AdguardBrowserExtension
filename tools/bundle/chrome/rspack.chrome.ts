@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,43 +21,43 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { type Configuration, CopyRspackPlugin } from '@rspack/core';
 import { merge } from 'webpack-merge';
-import { type Configuration } from 'webpack';
 
-import { genMv2CommonConfig } from '../webpack.common.mv2';
-import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
+// eslint-disable-next-line no-restricted-imports
+import { genMv2CommonConfig } from '../rspack.common.mv2';
+import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../rspack.common';
 import { updateManifestBuffer } from '../../helpers';
 import { BUILD_ENV } from '../../constants';
-import { type BrowserConfig } from '../common-constants';
+import { type BrowserConfig, type BuildOptions } from '../common-constants';
 import { commonManifest } from '../manifest.common';
 
-import { edgeManifest } from './manifest.edge';
+import { chromeManifest } from './manifest.chrome';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export const genEdgeConfig = (browserConfig: BrowserConfig) => {
-    const commonConfig = genMv2CommonConfig(browserConfig);
+export const genChromeConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}) => {
+    const commonConfig = genMv2CommonConfig(browserConfig, options);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
     }
 
-    const edgeConfig: Configuration = {
+    const chromeConfig: Configuration = {
         entry: CHROMIUM_DEVTOOLS_ENTRIES,
         output: {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
         plugins: [
-            new CopyWebpackPlugin({
+            new CopyRspackPlugin({
                 patterns: [
                     {
                         /**
                          * This is a dummy import to keep "clean" usage of
-                         * `CopyWebpackPlugin`. We actually use `commonManifest`
+                         * `CopyRspackPlugin`. We actually use `commonManifest`
                          * imported above.
                          */
                         from: path.resolve(__dirname, '../manifest.common.ts'),
@@ -64,12 +66,12 @@ export const genEdgeConfig = (browserConfig: BrowserConfig) => {
                             BUILD_ENV,
                             browserConfig.browser,
                             Buffer.from(JSON.stringify(commonManifest)),
-                            edgeManifest,
+                            chromeManifest,
                         ),
                     },
                     {
                         context: 'Extension',
-                        from: 'filters/edge',
+                        from: 'filters/chromium',
                         to: 'filters',
                     },
                 ],
@@ -78,5 +80,5 @@ export const genEdgeConfig = (browserConfig: BrowserConfig) => {
         ],
     };
 
-    return merge(commonConfig, edgeConfig);
+    return merge(commonConfig, chromeConfig);
 };

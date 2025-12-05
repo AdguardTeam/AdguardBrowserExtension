@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -22,31 +24,23 @@ import { observer } from 'mobx-react';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
+import { type SettingOption } from '../../../../background/schema';
 
-export const UserRulesSwitcher = observer(({ labelId }) => {
+export const UserRulesSwitcher = observer(({ labelId }: { labelId: string }) => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
-    /**
-     * Check if user rules can be enabled (due to dynamic rules limit)
-     * and if so, update the setting. Otherwise, sets a specific limit warning to show.
-     *
-     * @param {object} updateSettingData Data to update the setting.
-     * @param {string} updateSettingData.id Setting ID.
-     * @param {boolean} updateSettingData.data New setting value.
-     */
-    const updateUserRulesSetting = async ({ id, data }) => {
-        await settingsStore.updateSetting(id, data);
-
+    const updateSettingWithLimitCheck = async (settingId: SettingOption, value: boolean) => {
+        await settingsStore.updateSetting(settingId, value);
         if (__IS_MV3__) {
             await settingsStore.checkLimitations();
         }
     };
 
-    const handleUserGroupToggle = async (updateSettingData) => {
+    const handleUserGroupToggle = async ({ id, data }: { id: SettingOption; data: boolean }) => {
         await addMinDelayLoader(
             uiStore.setShowLoader,
-            updateUserRulesSetting,
-        )(updateSettingData);
+            updateSettingWithLimitCheck,
+        )(id, data);
     };
 
     return (

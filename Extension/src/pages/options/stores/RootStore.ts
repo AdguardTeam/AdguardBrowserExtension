@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,8 +21,8 @@
 import { createContext } from 'react';
 
 import { configure } from 'mobx';
+import { SettingsStore } from 'settings-store';
 
-import SettingsStore from './SettingsStore';
 import UiStore from './UiStore';
 
 // Do not allow property change outside of store actions

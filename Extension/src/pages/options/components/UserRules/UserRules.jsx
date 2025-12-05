@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -26,7 +28,8 @@ import { translator } from '../../../../common/translators/translator';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
-import { DynamicRulesLimitsWarning } from '../Warnings';
+import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnings';
+import { UserAgent } from '../../../../common/user-agent';
 
 import { UserRulesSwitcher } from './UserRulesSwitcher';
 import { UserScriptsApiWarningForUserRules } from './UserScriptsApiWarningForUserRules';
@@ -70,6 +73,7 @@ const UserRules = observer(() => {
             />
             <DynamicRulesLimitsWarning />
             <UserScriptsApiWarningForUserRules />
+            {UserAgent.isFirefoxMobile && <ClipboardPermissionWarning />}
             <div className={linksClassNames}>
                 <RuleSyntaxLink />
             </div>

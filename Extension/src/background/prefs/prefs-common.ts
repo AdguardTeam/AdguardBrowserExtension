@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -22,7 +24,7 @@ import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
 import { TSWEBEXTENSION_VERSION, EXTENDED_CSS_VERSION } from 'tswebextension';
 
-import type { GetOptionsDataResponse } from '../services/settings/types';
+import type { GetOptionsDataResponse } from '../services/settings';
 
 /**
  * Extension global preferences.
