@@ -28,13 +28,13 @@ import {
     getStorageFixturesV11,
     getStorageFixturesV12,
     getStorageFixturesV13,
+    getStorageFixturesV14,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { SbCache } from '../../../../Extension/src/background/storages';
 import { FILTER_KEY_PREFIX } from '../../../../Extension/src/background/api/update/assets/old-filters-storage-v1';
 import { settingsValidator } from '../../../../Extension/src/background/schema';
-import { getStorageFixturesV14 } from '../../../helpers/fixtures/getStorageFixtures';
 
 vi.mock('../../../../Extension/src/background/engine');
 vi.mock('../../../../Extension/src/background/api/ui/icons');

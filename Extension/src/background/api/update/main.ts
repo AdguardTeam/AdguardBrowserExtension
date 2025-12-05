@@ -88,7 +88,7 @@ export class UpdateApi {
         '10': UpdateApi.migrateFromV10toV11,
         '11': UpdateApi.migrateFromV11toV12,
         '12': UpdateApi.migrateFromV12toV13,
-        '14': UpdateApi.migrateFromV13toV14,
+        '13': UpdateApi.migrateFromV13toV14,
     };
 
     /**
