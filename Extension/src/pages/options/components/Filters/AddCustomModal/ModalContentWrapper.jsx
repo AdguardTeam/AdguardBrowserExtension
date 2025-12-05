@@ -21,6 +21,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
+import cn from 'classnames';
 
 import { Icon } from '../../../../common/components/ui/Icon';
 import { translator } from '../../../../../common/translators/translator';
@@ -30,9 +31,10 @@ const ModalContentWrapper = ({
     title,
     actions,
     children,
+    className,
 }) => {
     return (
-        <div className="modal">
+        <div className={cn('modal', className)}>
             <div className="modal__content">
                 <div className="modal__header">
                     {title && (
@@ -64,6 +66,7 @@ ModalContentWrapper.propTypes = {
     closeModalHandler: PropTypes.func.isRequired,
     children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
     title: PropTypes.string,
+    className: PropTypes.string,
 };
 
 export { ModalContentWrapper };

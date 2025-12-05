@@ -27,6 +27,8 @@ import React, {
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
@@ -49,7 +51,9 @@ import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
 
 const Allowlist = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.WebsiteAllowListScreen);
 
     // rerender allowlist after removed and none-saved domains and import
     // AG-10492

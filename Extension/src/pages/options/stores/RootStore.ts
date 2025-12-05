@@ -22,6 +22,8 @@ import { createContext } from 'react';
 
 import { configure } from 'mobx';
 
+import { TelemetryStore } from '../../common/telemetry';
+
 import SettingsStore from './SettingsStore';
 import UiStore from './UiStore';
 
@@ -33,11 +35,14 @@ export class RootStore {
 
     public settingsStore: SettingsStore;
 
+    public telemetryStore: TelemetryStore;
+
     constructor() {
         // uiStore should be initialized before settingsStore
         // because settingsStore uses uiStore
         this.uiStore = new UiStore(this);
         this.settingsStore = new SettingsStore(this);
+        this.telemetryStore = new TelemetryStore();
     }
 }
 
