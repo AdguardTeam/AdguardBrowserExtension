@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -209,14 +211,27 @@ class Toasts {
             return;
         }
 
-        const { getMajorVersionNumber, getMinorVersionNumber } = BrowserUtils;
+        const {
+            getMajorVersionNumber,
+            getMinorVersionNumber,
+            getPatchVersionNumber,
+            getBuildVersionNumber,
+        } = BrowserUtils;
 
         const promoNotification = await promoNotificationApi.getCurrentNotification();
         const majorVersionNotChanged = getMajorVersionNumber(currentVersion) === getMajorVersionNumber(previousVersion);
         const minorVersionNotChanged = getMinorVersionNumber(currentVersion) === getMinorVersionNumber(previousVersion);
+        const patchVersionNotChanged = getPatchVersionNumber(currentVersion) === getPatchVersionNumber(previousVersion);
+        const isAutoBuildUpdate = majorVersionNotChanged && minorVersionNotChanged && patchVersionNotChanged
+            && (getBuildVersionNumber(currentVersion) > getBuildVersionNumber(previousVersion));
 
+        // Do not show popup for auto build updates.
+        if (isAutoBuildUpdate) {
+            return;
+        }
+
+        // In case of no promo available or versions equivalence (major and minor).
         if (!promoNotification && majorVersionNotChanged && minorVersionNotChanged) {
-            // In case of no promo available or versions equivalence (major and minor).
             return;
         }
 

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -164,5 +166,29 @@ export class BrowserUtils {
     public static getMinorVersionNumber(version: string): string {
         const v = new Version(version);
         return String(v.data[1]);
+    }
+
+    /**
+     * Returns patch number of version.
+     *
+     * @param version Semver string.
+     *
+     * @returns Patch part of semver.
+     */
+    public static getPatchVersionNumber(version: string): string {
+        const v = new Version(version);
+        return String(v.data[2]);
+    }
+
+    /**
+     * Returns build number of version.
+     *
+     * @param version Semver string.
+     *
+     * @returns Build part of semver.
+     */
+    public static getBuildVersionNumber(version: string): string {
+        const v = new Version(version);
+        return String(v.data[3]);
     }
 }
