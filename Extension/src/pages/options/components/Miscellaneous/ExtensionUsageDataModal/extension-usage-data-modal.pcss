@@ -1,0 +1,43 @@
+/* FIXME: Use module styles in this modal after merge v5.3. AG-48550 */
+
+.extension-usage-modal__overlay {
+    position: fixed;
+    inset: 0px;
+    z-index: var(--z-idx-options-modals);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.ReactModal__Content.extension-usage-modal__content {
+    min-width: 300px;
+    background-color: var(--fills-backgrounds-page-background-default);
+    border: none;
+    padding: 0px;
+    outline: none;
+    border-radius: 8px;
+    overflow: auto;
+    background: rgb(255, 255, 255);
+    inset: 40px;
+
+    @media (min-width: 760px) {
+        width: 720px;
+    }
+
+    .extension-usage-modal {
+        max-width: 720px;
+        line-height: 150%;
+
+        &__btn {
+            width: 50%;
+            max-width: 200px;
+            margin: 0 24px 0 0;
+        }
+
+        &__actions {
+            padding-top: 32px;
+        }
+    }
+}
+

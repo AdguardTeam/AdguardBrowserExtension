@@ -45,6 +45,12 @@ import { settingsEvents } from '../events';
 import { Prefs } from '../prefs';
 import { logger } from '../../common/logger';
 
+import {
+    Telemetry,
+    TelemetryEventName,
+    TelemetryScreenName,
+} from './telemetry';
+
 export type GetUserRulesResponse = {
     content: string;
     appVersion: string;
@@ -78,6 +84,7 @@ export class UserRulesService {
         messageHandler.addListener(MessageType.SetEditorStorageContent, UserRulesService.setEditorStorageContent);
         messageHandler.addListener(MessageType.ResetUserRulesForPage, UserRulesService.resetUserRulesForPage);
 
+        UserRulesService.engine.api.onAssistantCreateRule.subscribe(UserRulesService.handleAssistantCreateRule);
         UserRulesService.engine.api.onAssistantCreateRule.subscribe(UserRulesService.addUserRule);
 
         settingsEvents.addListener(
@@ -108,6 +115,20 @@ export class UserRulesService {
             userRules: await UserRulesApi.getOriginalUserRules(),
             settings: SettingsApi.getData(),
         };
+    }
+
+    /**
+     * Handles rule creation from assistant.
+     * Sends telemetry event for block element action.
+     *
+     * @note Telemetry event is sent from the background because the assistant
+     *   lives in a separate repository and is not directly accessible from the extension UI code.
+     */
+    private static async handleAssistantCreateRule(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.BlockElementScreen,
+            TelemetryEventName.BlockElementClick,
+        );
     }
 
     /**
