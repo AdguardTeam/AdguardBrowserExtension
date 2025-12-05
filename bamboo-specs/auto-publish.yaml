@@ -29,7 +29,7 @@ AutoDeployAndPublish Release:
         conditions:
           - variable:
               equals:
-                bamboo.disableAutoBuildsRelease: "false"
+                bamboo.enableAutoBuildsRelease: "true"
         interpreter: SHELL
         scripts:
           - |-
@@ -92,7 +92,7 @@ AutoDeployAndPublish Beta:
         conditions:
           - variable:
               equals:
-                bamboo.disableAutoBuildsBeta: "false"
+                bamboo.enableAutoBuildsBeta: "true"
         interpreter: SHELL
         scripts:
           - |-
