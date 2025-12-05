@@ -9,10 +9,10 @@ RESULT_FILE="artifacts/auto-build.properties"
 mkdir -p artifacts
 
 if [ "${bamboo_enableAutoBuildsBeta}" = "true" ] || [ "${bamboo_enableAutoBuildsRelease}" = "true" ]; then
-  echo "Both flags are true, disabling autobuild"
+  echo "One of flags is true, enabling autobuild"
   echo "autoBuildEnabled=true" > "${RESULT_FILE}"
 else
-  echo "One of flags is not true, enabling autobuild"
+  echo "One of flags is not true, disabling autobuild"
   echo "autoBuildEnabled=false" > "${RESULT_FILE}"
 fi
 
