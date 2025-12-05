@@ -62,6 +62,9 @@
     "options_filters_filter_updated": {
         "message": "ažurirano:"
     },
+    "options_filters_filter_tags": {
+        "message": "Filter oznake"
+    },
     "options_filters_back_button": {
         "message": "Vrati se"
     },
@@ -592,7 +595,7 @@
         "message": "Zahtevaj detalje"
     },
     "filtering_modal_preview_title": {
-        "message": "Pregled"
+        "message": "Preview"
     },
     "filtering_modal_type": {
         "message": "Vrsta:"
@@ -625,7 +628,7 @@
         "message": "ukloni iz korisničkog filtera"
     },
     "filtering_modal_preview_request_button": {
-        "message": "Pregled"
+        "message": "Preview"
     },
     "filtering_modal_remove_allowlist": {
         "message": "Ukloni sa bele liste"
@@ -783,9 +786,6 @@
     "options_update_antibanner_filters": {
         "message": "Proveri da li postoje nadogradnje filtera"
     },
-    "options_check_update": {
-        "message": "Proveri ažuriranja"
-    },
     "options_check_update_progress": {
         "message": "Proveravam..."
     },
@@ -868,7 +868,10 @@
         "message": "Dinamička pravila"
     },
     "options_rule_limits_dynamic_user_rules": {
-        "message": "Pravila koja je dodao korisnik, kao što su <user_rules>korisnička pravila<\/user_rules>, <allowlist>sa liste dozvoljenih<\/allowlist>, <custom_filters>prilagođeni filteri<\/custom_filters>, i <quick_fixes>popravke u brzom obliku<\/quick_fixes>"
+        "message": "Pravila koja je dodao korisnik, kao što su <user_rules>korisnička pravila<\/user_rules>, <allowlist>sa liste dozvoljenih sajtova<\/allowlist> i <custom_filters>prilagođeni filteri<\/custom_filters>"
+    },
+    "options_rule_limits_dynamic_user_rules_no_custom_filters": {
+        "message": "Pravila koja dodaju korisnici, kao što su <user_rules>Pravila korišćenja<\/user_rules> I <allowlist>Sajtovi na listi dozvoljenih<\/allowlist>"
     },
     "options_rule_limits_dynamic_unsafe": {
         "description": "Note: First dollar sign is used to escape the second one, so eventually only one dollar sign will be displayed",
@@ -947,7 +950,19 @@
         "message": "Dostigli ste granicu regex pravila koja je dodao korisnik. %maximum% od %current% regex pravila je omogućeno."
     },
     "options_developer_mode_required": {
-        "message": "Vaš browser ograničava <external-link>neke tipove pravila<\/external-link>. Da biste primenili sva pravila, <settings-link>omogućite developerski režim<\/settings-link>.",
+        "message": "Vaš pretraživač ograničava <external-link>Neke vrste pravila<\/external-link>. Da biste primenili sva pravila, omogućite <b>Režim za programere<\/b> u vašem pretraživaču <settings-link>Podešavanja proširenja<\/settings-link>",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_allow_user_scripts_required": {
+        "message": "Vaš pretraživač ograničava <external-link>Neke vrste pravila<\/external-link>. Da biste primenili sva pravila, omogućite <b>Dozvoli korisničke skripte<\/b> u vašem pretraživaču <settings-link>Podešavanja proširenja<\/settings-link>",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_custom_group_developer_mode_required": {
+        "message": "Da biste koristili prilagođene filtere, omogućite <b>Režim za programere<\/b> u vašem pretraživaču <settings-link>Podešavanja proširenja<\/settings-link>",
+        "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
+    },
+    "options_custom_group_allow_user_scripts_required": {
+        "message": "Da biste koristili prilagođene filtere, omogućite <b>Dozvoli korisničke skripte<\/b> u vašem pretraživaču <settings-link>Podešavanja proširenja<\/settings-link>",
         "description": "Note: <settings-link> and <external-link> are just <a> tags, so it would be rendered as a link."
     },
     "options_show_adguard_full_version_title": {
@@ -1057,6 +1072,36 @@
     },
     "options_first_party_desc": {
         "message": "Ograničite vek trajanja kolačića prvog lica (minute)"
+    },
+    "options_anonymized_usage_data_title": {
+        "message": "Pošaljite anonimizirane podatke o korištenju proširenja"
+    },
+    "options_anonymized_usage_data_description": {
+        "message": "Šalje anonimne podatke o korišćenju ekstenzije AdGuard-u. <button>Saznaj više<\/button>"
+    },
+    "options_anonymized_usage_data_modal_title": {
+        "message": "Podaci o korištenju proširenja"
+    },
+    "options_anonymized_usage_data_modal_intro": {
+        "message": "Ovi podaci uključuju:"
+    },
+    "options_anonymized_usage_data_modal_list_item_screens": {
+        "message": "Nazivi ekrana s kojima se interagirate"
+    },
+    "options_anonymized_usage_data_modal_list_item_buttons": {
+        "message": "Imena dugmadi na koje kliknete"
+    },
+    "options_anonymized_usage_data_modal_list_item_session_ids": {
+        "message": "Identifikatori sesije"
+    },
+    "options_anonymized_usage_data_modal_reason": {
+        "message": "Potrebni su nam ovi podaci da bismo analizirali i poboljšali funkcionalnost AdGuard"
+    },
+    "options_anonymized_usage_data_modal_privacy_note": {
+        "message": "Ovi podaci su anonimni i koriste se samo interno. Nikada ih ne delimo sa trećim licima"
+    },
+    "options_anonymized_usage_data_modal_got_it_button": {
+        "message": "Shvatam"
     },
     "popup_abuse_site": {
         "message": "Pošaljite žalbu u vezi ove stranice"
@@ -1324,6 +1369,39 @@
     },
     "clear_button_title": {
         "message": "Očisti"
+    },
+    "update_check": {
+        "message": "Proveri ažuriranja"
+    },
+    "update_checking_in_progress": {
+        "message": "Proveravam ažuriranja..."
+    },
+    "update_available_title": {
+        "message": "Dostupna su ažuriranja"
+    },
+    "update_available_desc": {
+        "message": "Za efikasno blokiranje oglasa, držite svoje ekstenzije i filtere ažurnim"
+    },
+    "update_available_update_btn": {
+        "message": "Ažuriraj"
+    },
+    "update_installing_in_progress_title": {
+        "message": "Ažuriranje ekstenzije i filtera..."
+    },
+    "update_installing_in_progress_desc": {
+        "message": "Ekstenzija će se ponovo pokrenuti nakon ažuriranja"
+    },
+    "update_not_needed": {
+        "message": "Vaša ekstenzija i filteri su ažurirani"
+    },
+    "update_failed_text": {
+        "message": "Nije moguće završiti ažuriranje"
+    },
+    "update_success_text": {
+        "message": "Ekstenzija i filteri su ažurirani"
+    },
+    "update_failed_try_again_btn": {
+        "message": "Pokušaj ponovo"
     },
     "filtering_modal_applied_rules": {
         "message": "| Primenjeno pravilo: | Primenjena pravila: | Primenjena pravila:",
