@@ -27,6 +27,8 @@ import { messenger } from '../../../../../services/messenger';
 import { popupStore } from '../../../../stores/PopupStore';
 import { ForwardFrom } from '../../../../../../common/forward';
 
+import { UpdateButtonCommon } from './updateButton-common';
+
 export const UpdateButton = observer(() => {
     const store = useContext(popupStore);
 
@@ -73,33 +75,15 @@ export const UpdateButton = observer(() => {
     }
 
     return (
-        <>
-            <div
-                role="status"
-                className="sr-only"
-                aria-live="assertive"
-                tabIndex={-1}
-                aria-hidden={!store.isExtensionCheckingUpdateOrUpdating} // MV3
-            >
-                {store.isExtensionCheckingUpdateOrUpdating ? translator.getMessage('update_checking_in_progress') : '' }{
-                //mv3
-                }
-            </div>
-            <button
-                className="button popup-header__button"
-                disabled={store.isExtensionCheckingUpdateOrUpdating} // MV3
-                type="button"
-                onClick={handleCheckUpdatesClick} // handler
-                title={translator.getMessage('update_check')} // message
-            >
-                <Icon
-                    id="#reload"
-                    className="icon--24 icon--header"
-                    animationCondition={store.isExtensionCheckingUpdateOrUpdating} // MV3
-                    animationClassName="icon--loading"
-                    aria-hidden="true"
-                />
-            </button>
-        </>
+        <UpdateButtonCommon
+            isUpdating={store.isExtensionCheckingUpdateOrUpdating}
+            statusMessage={
+                store.isExtensionCheckingUpdateOrUpdating
+                    ? translator.getMessage('update_checking_in_progress')
+                    : ''
+            }
+            onClick={handleCheckUpdatesClick}
+            buttonTitle={translator.getMessage('update_check')}
+        />
     );
 });

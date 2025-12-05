@@ -24,14 +24,13 @@ import React, {
 
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../../../common/constants';
 import { translator } from '../../../../../../common/translators/translator';
-import { Icon } from '../../../../../common/components/ui/Icon';
 import { addMinDurationTime } from '../../../../../../common/sleep-utils';
 import { messenger } from '../../../../../services/messenger';
 import { getFiltersUpdateResultMessage } from '../../../../../../common/toast-helper';
 
-export const UpdateButton = () => {
-    const refUpdatingBtn = useRef<HTMLButtonElement>(null);
+import { UpdateButtonCommon } from './updateButton-common';
 
+export const UpdateButton = () => {
     const timeoutId = useRef<NodeJS.Timeout>();
     const [filtersUpdating, setFiltersUpdating] = useState(false);
     const [updateMessage, setUpdateMessage] = useState('');
@@ -69,34 +68,11 @@ export const UpdateButton = () => {
     }, []);
 
     return (
-        <>
-            <div
-                role="status"
-                className="sr-only"
-                aria-live="assertive"
-                tabIndex={-1}
-                aria-hidden={!filtersUpdating && !updateMessage} // MV2
-            >
-                {filtersUpdating ? translator.getMessage('options_popup_updating_filters') : updateMessage}
-                {' '}
-// MV2
-            </div>
-            <button
-                className="button popup-header__button"
-                ref={refUpdatingBtn} // MV2
-                disabled={filtersUpdating} // MV2
-                type="button"
-                onClick={handleUpdateFiltersClick} // handler
-                title={translator.getMessage('popup_header_update_filters')} // message
-            >
-                <Icon
-                    id="#reload"
-                    className="icon--24 icon--header"
-                    animationCondition={filtersUpdating} // MV3
-                    animationClassName="icon--loading"
-                    aria-hidden="true"
-                />
-            </button>
-        </>
+        <UpdateButtonCommon
+            isUpdating={filtersUpdating}
+            statusMessage={filtersUpdating ? translator.getMessage('options_popup_updating_filters') : updateMessage}
+            onClick={handleUpdateFiltersClick}
+            buttonTitle={translator.getMessage('popup_header_update_filters')}
+        />
     );
 };
