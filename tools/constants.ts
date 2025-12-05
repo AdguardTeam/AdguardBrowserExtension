@@ -107,6 +107,8 @@ export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');
 
+export const ANALYZE_REPORTS_DIR = path.resolve(__dirname, '../build/analyze-reports');
+
 /* eslint-disable max-len */
 // filters constants
 export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';

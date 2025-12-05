@@ -19,13 +19,14 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { CopyRspackPlugin } from '@rspack/core';
 import { merge } from 'webpack-merge';
 
-import { genMv2CommonConfig } from '../webpack.common.mv2';
-import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../webpack.common';
+// eslint-disable-next-line no-restricted-imports
+import { genMv2CommonConfig } from '../rspack.common.mv2';
+import { CHROMIUM_DEVTOOLS_ENTRIES, CHROMIUM_DEVTOOLS_PAGES_PLUGINS } from '../rspack.common';
 import { updateManifestBuffer } from '../../helpers';
-import { type BrowserConfig } from '../common-constants';
+import { type BrowserConfig, type BuildOptions } from '../common-constants';
 import { BUILD_ENV } from '../../constants';
 import { commonManifest } from '../manifest.common';
 
@@ -36,8 +37,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export const genOperaConfig = (browserConfig: BrowserConfig) => {
-    const commonConfig = genMv2CommonConfig(browserConfig);
+export const genOperaConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}) => {
+    const commonConfig = genMv2CommonConfig(browserConfig, options);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
@@ -49,12 +50,12 @@ export const genOperaConfig = (browserConfig: BrowserConfig) => {
             path: path.join(commonConfig.output.path, browserConfig.buildDir),
         },
         plugins: [
-            new CopyWebpackPlugin({
+            new CopyRspackPlugin({
                 patterns: [
                     {
                         /**
                          * This is a dummy import to keep "clean" usage of
-                         * `CopyWebpackPlugin`. We actually use `commonManifest`
+                         * `CopyRspackPlugin`. We actually use `commonManifest`
                          * imported above.
                          */
                         from: path.resolve(__dirname, '../manifest.common.ts'),
