@@ -149,7 +149,6 @@ branch-overrides:
                   ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
         final-tasks:
           - script: &cleanup-script
-              conditions: *isAutoBuildEnabled
               interpreter: SHELL
               scripts:
                 - "./bamboo-specs/scripts/cleanup.sh"
