@@ -30,6 +30,7 @@ import { ResourceType } from '@adguard/tsurlfilter/es/declarative-converter';
 import { MANIFEST_ENV } from './tools/constants';
 import {
     MockedTsWebExtension,
+    MockedTsWebExtensionMV3,
     mockLocalStorage,
     mockXhrRequests,
 } from './tests/helpers';
@@ -86,10 +87,15 @@ vi.mock('nanoid', () => ({
 // Mock log to hide all logger message
 vi.mock('./Extension/src/common/logger.ts');
 
-// TODO: Add mock for mv3 version. AG-37302
 vi.mock('@adguard/tswebextension', async () => ({
     ...(await vi.importActual('@adguard/tswebextension')),
     TsWebExtension: MockedTsWebExtension,
+    isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
+}));
+
+vi.mock('@adguard/tswebextension/mv3', async () => ({
+    ...(await vi.importActual('@adguard/tswebextension/mv3')),
+    TsWebExtension: MockedTsWebExtensionMV3,
     isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
 }));
 

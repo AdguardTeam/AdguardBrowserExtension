@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-// TODO: Use 'tswebextension' alias to work with mv3 version. AG-37302
+// EventChannelInterface is compatible with both MV2 and MV3
 import { type EventChannelInterface } from '@adguard/tswebextension';
 
 export class MockedEventCannel<T> implements EventChannelInterface<T> {

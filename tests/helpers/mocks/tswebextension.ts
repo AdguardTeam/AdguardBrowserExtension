@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-// TODO: Use 'tswebextension' alias to work with mv3 version. AG-37302
+// MV2 version of TsWebExtension mock. For MV3, see tswebextension-mv3.ts
 import {
     type EventChannel,
     type FilteringLogEvent,
