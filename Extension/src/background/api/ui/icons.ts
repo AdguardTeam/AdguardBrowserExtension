@@ -89,7 +89,7 @@ class IconsApi {
      * AG-38219 Flag to indicate if setIcon promise doesn't resolve (360 Browser).
      * If true, we skip awaiting setIcon calls.
      */
-    private setIconTimeoutDetected = false;
+    private static setIconTimeoutDetected = false;
 
     /**
      * Initializes Icons API.
@@ -117,7 +117,7 @@ class IconsApi {
             }
             try {
                 logger.trace(`[ext.IconsApi.update]: updating icon for tab ${tab.id}`, icon);
-                await this.setActionIcon(icon, tab.id);
+                await IconsApi.setActionIcon(icon, tab.id);
             } catch (e) {
                 logger.debug(`[ext.IconsApi.update]: failed to update icon for tab ${tab.id}:`, e);
             }
@@ -177,7 +177,7 @@ class IconsApi {
         const badgeText = IconsApi.getBadgeText(totalBlockedTab, isDisabled);
 
         try {
-            await this.setActionIcon(icon, tabId);
+            await IconsApi.setActionIcon(icon, tabId);
 
             if (badgeText.length !== 0) {
                 await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
@@ -201,13 +201,13 @@ class IconsApi {
         const icon = await this.pickIconVariant();
 
         // Get rid of promo icon on all tabs, this prevents icon flickering on tab change
-        await this.setActionIcon(icon);
+        await IconsApi.setActionIcon(icon);
 
         // Update action icon for the specified tab if any
         if (tabId && frameData) {
             const isDisabled = frameData.documentAllowlisted || frameData.applicationFilteringDisabled;
             const disabledIcon = await this.pickIconVariant(isDisabled);
-            await this.setActionIcon(disabledIcon, tabId);
+            await IconsApi.setActionIcon(disabledIcon, tabId);
         }
     }
 
@@ -222,16 +222,18 @@ class IconsApi {
      * @param icon Icon to set.
      * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
      */
-    private async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
+    private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
         /**
          * AG-38219 For some reason browserAction.setIcon() promise is not resolved
          * in 360 browser MV3, the icon still sets correctly.
          * We use a timeout to avoid waiting indefinitely for the promise to resolve.
          * Once timeout is detected, we skip awaiting setIcon calls.
          */
-        const setIconPromise = browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
+        const setIconPromise = browserAction
+            .setIcon({ imageData: await getIconImageData(icon), tabId })
+            .then(() => SetIconResult.Resolved);
 
-        if (this.setIconTimeoutDetected) {
+        if (IconsApi.setIconTimeoutDetected) {
             return;
         }
 
@@ -241,11 +243,11 @@ class IconsApi {
             timeoutId = setTimeout(() => resolve(SetIconResult.Timeout), IconsApi.SET_ICON_TIMEOUT_MS);
         });
 
-        const result = await Promise.race([setIconPromise.then(() => SetIconResult.Resolved), timeoutPromise]);
+        const result = await Promise.race([setIconPromise, timeoutPromise]);
 
         if (result === SetIconResult.Timeout) {
             logger.info('[ext.IconsApi.setActionIcon]: setIcon promise did not resolve in time, likely 360 Browser. Skipping await for future calls.');
-            this.setIconTimeoutDetected = true;
+            IconsApi.setIconTimeoutDetected = true;
         } else if (timeoutId !== undefined) {
             clearTimeout(timeoutId);
         }
