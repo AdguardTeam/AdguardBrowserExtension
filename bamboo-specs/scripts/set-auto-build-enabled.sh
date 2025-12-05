@@ -12,7 +12,7 @@ if [ "${bamboo_enableAutoBuildsBeta}" = "true" ] || [ "${bamboo_enableAutoBuilds
   echo "One of flags is true, enabling autobuild"
   echo "autoBuildEnabled=true" > "${RESULT_FILE}"
 else
-  echo "One of flags is not true, disabling autobuild"
+  echo "Both flags are not true, disabling autobuild"
   echo "autoBuildEnabled=false" > "${RESULT_FILE}"
 fi
 
