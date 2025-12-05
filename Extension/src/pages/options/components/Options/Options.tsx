@@ -16,7 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useRef,
+} from 'react';
 import {
     createHashRouter,
     createRoutesFromElements,
@@ -61,9 +65,33 @@ export const createRouter = (
 };
 
 export const Options = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
+    const pageIdRef = useRef<string | null>(null);
 
     useAppearanceTheme(settingsStore.appearanceTheme);
+
+    useEffect(() => {
+        (async () => {
+            const pageId = await messenger.addTelemetryOpenedPage();
+            pageIdRef.current = pageId;
+            telemetryStore.setPageId(pageId);
+        })();
+
+        const onUnload = () => {
+            if (pageIdRef.current) {
+                telemetryStore.setPageId(null);
+                messenger.removeTelemetryOpenedPage(pageIdRef.current);
+                pageIdRef.current = null;
+            }
+        };
+
+        window.addEventListener('beforeunload', onUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', onUnload);
+            onUnload();
+        };
+    }, [telemetryStore]);
 
     useEffect(() => {
         let removeListenerCallback = () => { };

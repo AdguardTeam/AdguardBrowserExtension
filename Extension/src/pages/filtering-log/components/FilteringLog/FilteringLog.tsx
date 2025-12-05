@@ -103,7 +103,7 @@ const FilteringLog = observer(() => {
                 NotifierType.CustomFilterAdded,
             ];
 
-            removeListenerCallback = Messenger.createLongLivedConnection(
+            const { onUnload } = Messenger.createLongLivedConnection(
                 Page.FilteringLog,
                 events,
                 async (message: LongLivedConnectionCallbackMessage) => {
@@ -142,6 +142,8 @@ const FilteringLog = observer(() => {
                     }
                 },
             );
+
+            removeListenerCallback = onUnload;
         })();
 
         return () => {

@@ -24,6 +24,8 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';
@@ -46,7 +48,9 @@ export const RulesLimits = observer(() => {
      */
     const THRESHOLD_HIGHLIGHT_PERCENTAGE = 80;
 
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.RulesLimits);
 
     useEffect(() => {
         settingsStore.getRulesLimitsCounters();

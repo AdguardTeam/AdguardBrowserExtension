@@ -34,6 +34,7 @@ import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { SbCache } from '../../../../Extension/src/background/storages';
 import { FILTER_KEY_PREFIX } from '../../../../Extension/src/background/api/update/assets/old-filters-storage-v1';
 import { settingsValidator } from '../../../../Extension/src/background/schema';
+import { getStorageFixturesV14 } from '../../../helpers/fixtures/getStorageFixtures';
 
 vi.mock('../../../../Extension/src/background/engine');
 vi.mock('../../../../Extension/src/background/api/ui/icons');
@@ -164,6 +165,7 @@ describe('Update Api (without indexedDB)', () => {
             v11: getStorageFixturesV11(expires),
             v12: getStorageFixturesV12(expires),
             v13: getStorageFixturesV13(expires),
+            v14: getStorageFixturesV14(expires),
         };
 
         const targetVersion = Object.keys(migrationCasesData).pop() as keyof typeof migrationCasesData;

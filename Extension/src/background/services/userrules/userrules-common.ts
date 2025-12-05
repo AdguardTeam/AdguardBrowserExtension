@@ -36,6 +36,11 @@ import {
     TabsApi,
 } from '../../api';
 import { Prefs } from '../../prefs';
+import {
+    Telemetry,
+    TelemetryEventName,
+    TelemetryScreenName,
+} from '../telemetry';
 
 export type GetUserRulesResponse = {
     content: string;
@@ -71,6 +76,9 @@ export class UserRulesServiceCommon {
         messageHandler.addListener(MessageType.ResetUserRulesForPage, UserRulesServiceCommon.resetUserRulesForPage);
 
         UserRulesServiceCommon.engine.api.onAssistantCreateRule.subscribe(UserRulesServiceCommon.addUserRule);
+        UserRulesServiceCommon.engine.api.onAssistantCreateRule.subscribe(
+            UserRulesServiceCommon.handleAssistantCreateRule,
+        );
     }
 
     /**
@@ -95,6 +103,20 @@ export class UserRulesServiceCommon {
             userRules: await UserRulesApi.getOriginalUserRules(),
             settings: SettingsApi.getData(),
         };
+    }
+
+    /**
+     * Handles rule creation from assistant.
+     * Sends telemetry event for block element action.
+     *
+     * @note Telemetry event is sent from the background because the assistant
+     *   lives in a separate repository and is not directly accessible from the extension UI code.
+     */
+    private static async handleAssistantCreateRule(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.BlockElementScreen,
+            TelemetryEventName.BlockElementClick,
+        );
     }
 
     /**

@@ -45,6 +45,8 @@ const createProjectForManifestVersion = (
         IS_RELEASE: true,
         IS_BETA: false,
         __IS_MV3__: manifestVersion === ManifestVersionEnv.Third,
+        // Telemetry service URL (same as in webpack for release)
+        TELEMETRY_URL: JSON.stringify('telemetry.local'),
     },
     plugins: [tsconfigPaths()],
     resolve: {
