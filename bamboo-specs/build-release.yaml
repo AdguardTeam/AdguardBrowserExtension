@@ -122,7 +122,8 @@ Build:
 
             pnpm install ${bamboo.varsPnpm}
 
-            pnpm ${bamboo.buildType}
+            # Build all browsers with zip archives for artifacts
+            pnpm ${bamboo.buildType} --zip
 
             # zip source files for publishing on AMO
             ./bamboo-specs/scripts/archive-source.sh ${bamboo.buildType}

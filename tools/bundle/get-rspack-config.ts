@@ -18,45 +18,49 @@
 
 import path from 'node:path';
 
+// rspack supports webpack bundle analyzer
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
-import { Browser } from '../constants';
+import {
+    ANALYZE_REPORTS_DIR,
+    Browser,
+    BUILD_ENV,
+} from '../constants';
 
-import { genChromeConfig } from './chrome/webpack.chrome';
-import { genFirefoxConfig } from './firefox/webpack.firefox';
-import { genEdgeConfig } from './edge/webpack.edge';
-import { genOperaConfig } from './opera/webpack.opera';
+import { type BuildOptions } from './common-constants';
+import { genChromeConfig } from './chrome/rspack.chrome';
+import { genFirefoxConfig } from './firefox/rspack.firefox';
+import { genEdgeConfig } from './edge/rspack.edge';
+import { genOperaConfig } from './opera/rspack.opera';
 // eslint-disable-next-line no-restricted-imports
-import { genChromeMv3Config } from './chrome-mv3/webpack.chrome.mv3';
+import { genChromeMv3Config } from './chrome-mv3/rspack.chrome.mv3';
 import { getBrowserConf } from './helpers';
 
-const ANALYZE_REPORTS_DIR = '../../analyze-reports';
-
-export const getWebpackConfig = (browser: Browser, isWatchMode = false) => {
+export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) => {
     const browserConf = getBrowserConf(browser);
 
-    let webpackConfig;
+    let rspackConfig;
 
     switch (browser) {
         case Browser.Chrome: {
-            webpackConfig = genChromeConfig(browserConf, isWatchMode);
+            rspackConfig = genChromeConfig(browserConf, options);
             break;
         }
         case Browser.ChromeMv3: {
-            webpackConfig = genChromeMv3Config(browserConf, isWatchMode);
+            rspackConfig = genChromeMv3Config(browserConf, options);
             break;
         }
         case Browser.FirefoxStandalone:
         case Browser.FirefoxAmo: {
-            webpackConfig = genFirefoxConfig(browserConf);
+            rspackConfig = genFirefoxConfig(browserConf, options);
             break;
         }
         case Browser.Opera: {
-            webpackConfig = genOperaConfig(browserConf);
+            rspackConfig = genOperaConfig(browserConf, options);
             break;
         }
         case Browser.Edge: {
-            webpackConfig = genEdgeConfig(browserConf);
+            rspackConfig = genEdgeConfig(browserConf, options);
             break;
         }
         default: {
@@ -64,17 +68,17 @@ export const getWebpackConfig = (browser: Browser, isWatchMode = false) => {
         }
     }
 
-    if (process.env.ANALYZE === 'true' && webpackConfig.plugins) {
-        const reportFilename = process.env.BUILD_ENV
-            ? path.join(ANALYZE_REPORTS_DIR, `${browser}-${process.env.BUILD_ENV}.html`)
+    if (process.env.ANALYZE === 'true' && rspackConfig.plugins) {
+        const reportFilename = BUILD_ENV
+            ? path.join(ANALYZE_REPORTS_DIR, `${browser}-${BUILD_ENV}.html`)
             : path.join(ANALYZE_REPORTS_DIR, `${browser}.html`);
 
-        webpackConfig.plugins.push(new BundleAnalyzerPlugin({
+        rspackConfig.plugins.push(new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             reportFilename,
             openAnalyzer: true,
         }));
     }
 
-    return webpackConfig;
+    return rspackConfig;
 };

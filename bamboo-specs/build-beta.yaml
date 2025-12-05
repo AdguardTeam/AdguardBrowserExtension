@@ -118,7 +118,8 @@ Build:
 
             pnpm install ${bamboo.varsPnpm}
 
-            pnpm ${bamboo.buildType}
+            # Build all browsers with zip archives for artifacts
+            pnpm ${bamboo.buildType} --zip
 
             # Build CRX by a separate script run
             pnpm ${bamboo.buildType} chrome-crx

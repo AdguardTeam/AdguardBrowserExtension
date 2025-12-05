@@ -18,10 +18,8 @@
 
 import path from 'node:path';
 
-import webpack from 'webpack';
-import type { Configuration } from 'webpack';
+import { type Configuration, HtmlRspackPlugin } from '@rspack/core';
 import { merge } from 'webpack-merge';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import {
     BACKGROUND_OUTPUT,
@@ -35,20 +33,13 @@ import {
     BLOCKING_BLOCKED_PATH,
     CONTENT_SCRIPT_START_PATH,
     htmlTemplatePluginCommonOptions,
-    COMPONENT_REPLACEMENT_MATCH_REGEXP,
     type BrowserConfig,
+    type BuildOptions,
 } from './common-constants';
-import { genCommonConfig } from './webpack.common';
+import { genCommonConfig } from './rspack.common';
 
-const Mv3ReplacementPlugin = new webpack.NormalModuleReplacementPlugin(
-    COMPONENT_REPLACEMENT_MATCH_REGEXP,
-    ((resource: any) => {
-        resource.request = resource.request.replace(/\.\/Abstract(.*)/, './Mv3$1');
-    }),
-);
-
-export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: boolean): Configuration => {
-    const commonConfig = genCommonConfig(browserConfig, isWatchMode);
+export const genMv3CommonConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}): Configuration => {
+    const commonConfig = genCommonConfig(browserConfig, options);
 
     return merge(commonConfig, {
         entry: {
@@ -69,8 +60,7 @@ export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: bo
             },
         },
         plugins: [
-            Mv3ReplacementPlugin,
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(BLOCKING_BLOCKED_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${BLOCKING_BLOCKED_OUTPUT}.html`,
