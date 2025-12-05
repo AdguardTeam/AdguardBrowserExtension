@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -413,24 +415,32 @@ export class Popups {
                     });
                 }
 
-                if (showPromoNotification && element.classList.contains('set-notification-viewed')) {
+                // Mark promo notification as viewed if it was shown
+                if (showPromoNotification) {
                     sendMessage({
                         type: MessageType.SetNotificationViewed,
                         data: {
                             withDelay: false,
                         },
                     });
+                }
+
+                if (showPromoNotification && element.classList.contains('set-notification-viewed')) {
                     // close only promo notification, not whole iframe
                     const promoNotification = iframeDocument.querySelector('.adguard-update-popup__offer');
-                    if (promoNotification) {
-                        promoNotification.parentNode?.removeChild(promoNotification);
-                        // eslint-disable-next-line max-len
-                        const versionPopup: HTMLElement | null = iframeDocument.getElementById('adguard-new-version-popup');
-                        if (versionPopup) {
-                            // fix height of the frame
-                            versionPopup.style.minHeight = '300px';
-                        }
+                    if (!promoNotification) {
+                        return;
                     }
+
+                    promoNotification.parentNode?.removeChild(promoNotification);
+                    // eslint-disable-next-line max-len
+                    const versionPopup: HTMLElement | null = iframeDocument.getElementById('adguard-new-version-popup');
+                    if (versionPopup) {
+                        // fix height of the frame
+                        versionPopup.style.minHeight = '300px';
+                    }
+
+                    // Prevent closing the whole iframe
                     return;
                 }
 
