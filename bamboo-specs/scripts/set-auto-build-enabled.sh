@@ -4,7 +4,9 @@ set -e
 echo "enableAutoBuildsBeta=${bamboo_enableAutoBuildsBeta}"
 echo "enableAutoBuildsRelease=${bamboo_enableAutoBuildsRelease}"
 
-RESULT_FILE="auto-build.properties"
+RESULT_FILE="artifacts/auto-build.properties"
+
+mkdir -p artifacts
 
 if [ "${bamboo_enableAutoBuildsBeta}" = "true" ] || [ "${bamboo_enableAutoBuildsRelease}" = "true" ]; then
   echo "Both flags are true, disabling autobuild"
