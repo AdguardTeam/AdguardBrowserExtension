@@ -24,6 +24,7 @@ export const getDefaultExportFixture = (isMv3: boolean): Config => ({
         [GeneralSettingsOption.AppearanceTheme]: AppearanceTheme.System,
     },
     [RootOption.ExtensionSpecificSettings]: {
+        [ExtensionSpecificSettingsOption.AllowAnonymizedUsageData]: false,
         [ExtensionSpecificSettingsOption.UseOptimizedFilters]: false,
         [ExtensionSpecificSettingsOption.CollectHitsCount]: false,
         [ExtensionSpecificSettingsOption.ShowContextMenu]: true,

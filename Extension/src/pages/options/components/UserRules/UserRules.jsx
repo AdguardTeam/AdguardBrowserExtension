@@ -23,6 +23,8 @@ import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { translator } from '../../../../common/translators/translator';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
@@ -38,7 +40,9 @@ import { RuleSyntaxLink } from './RuleSyntaxLink';
 import './styles.pcss';
 
 const UserRules = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.UserRulesScreen);
 
     const handleGoToEditorClick = async () => {
         await messenger.openFullscreenUserRules();

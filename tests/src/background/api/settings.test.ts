@@ -223,6 +223,34 @@ describe('Settings Api', () => {
             expect(JSON.parse(exportedSettingsString)).toStrictEqual(EXPORTED_SETTINGS_V_2_0);
         }, EXTENDED_TIMEOUT_MS);
 
+        it('Imports optional AllowAnonymizedUsageData when present', async () => {
+            await SettingsApi.setSetting(SettingOption.AllowAnonymizedUsageData, false);
+            expect(SettingsApi.getSetting(SettingOption.AllowAnonymizedUsageData)).toBe(false);
+
+            const userConfig = getDefaultExportFixture(__IS_MV3__);
+            // eslint-disable-next-line max-len
+            userConfig[RootOption.ExtensionSpecificSettings][ExtensionSpecificSettingsOption.AllowAnonymizedUsageData] = true;
+
+            const importResult = await SettingsApi.import(JSON.stringify(userConfig));
+
+            expect(importResult).toBeTruthy();
+            expect(SettingsApi.getSetting(SettingOption.AllowAnonymizedUsageData)).toBe(true);
+        }, EXTENDED_TIMEOUT_MS);
+
+        it('Sets AllowAnonymizedUsageData to default when not present in import', async () => {
+            await SettingsApi.setSetting(SettingOption.AllowAnonymizedUsageData, true);
+            expect(SettingsApi.getSetting(SettingOption.AllowAnonymizedUsageData)).toBe(true);
+
+            const userConfig = getDefaultExportFixture(__IS_MV3__);
+            // eslint-disable-next-line max-len
+            delete userConfig[RootOption.ExtensionSpecificSettings][ExtensionSpecificSettingsOption.AllowAnonymizedUsageData];
+
+            const importResult = await SettingsApi.import(JSON.stringify(userConfig));
+
+            expect(importResult).toBeTruthy();
+            expect(SettingsApi.getSetting(SettingOption.AllowAnonymizedUsageData)).toBe(false);
+        }, EXTENDED_TIMEOUT_MS);
+
         it('Reset default settings', async () => {
             await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(false);

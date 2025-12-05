@@ -88,6 +88,7 @@ export class UpdateApi {
         '10': UpdateApi.migrateFromV10toV11,
         '11': UpdateApi.migrateFromV11toV12,
         '12': UpdateApi.migrateFromV12toV13,
+        '14': UpdateApi.migrateFromV13toV14,
     };
 
     /**
@@ -210,11 +211,29 @@ export class UpdateApi {
     };
 
     /**
-     * Run data migration from schema v12 to schema v13.
+     * Run data migration from schema v13 to schema v14.
      *
      * Adds the new {SettingOption.PreserveLogEnabled} setting with default value false.
      *
      * For the extension update to v5.3.0.
+     */
+    private static async migrateFromV13toV14(): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+        settings[SettingOption.PreserveLogEnabled] = false;
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
+     * Run data migration from schema v12 to schema v13.
+     *
+     * Adds the new {SettingOption.AllowAnonymizedUsageData} setting with default value false.
+     *
+     * For the extension update to v5.2.600.X.
      */
     private static async migrateFromV12toV13(): Promise<void> {
         const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
@@ -222,7 +241,7 @@ export class UpdateApi {
         if (!UpdateApi.isObject(settings)) {
             throw new Error('Settings is not an object');
         }
-        settings[SettingOption.PreserveLogEnabled] = false;
+        settings[SettingOption.AllowAnonymizedUsageData] = false;
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
     }

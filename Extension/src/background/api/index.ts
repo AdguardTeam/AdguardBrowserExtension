@@ -71,3 +71,4 @@ export { UpdateApi } from './update';
 export { SafebrowsingApi } from './safebrowsing';
 export { DocumentBlockApi } from './document-block';
 export { PageStatsApi, PopupStatsCategories, type GetStatisticsDataResponse } from './page-stats';
+export { TelemetryApi } from './TelemetryApi';
