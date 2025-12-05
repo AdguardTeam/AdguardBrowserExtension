@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Beautification to exported settings JSON for improved readability [#3069].
 - Ability to keep filtering log records without size limitations when "Preserve log" is enabled [#3148].
+- Support of `:has()` pseudo-class as standard CSS conditionally:
+    - if there are no other extended pseudo-classes in the selector, or
+    - if the `#?#` separator is explicitly used in the rule [#2587].
 
 ### Changed
 
