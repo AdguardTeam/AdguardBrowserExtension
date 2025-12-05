@@ -40,6 +40,14 @@ import { FramesApi, type FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
 import { browserAction } from './browser-action';
 
+/**
+ * Result of the setIcon promise race.
+ */
+const enum SetIconResult {
+    Resolved = 'resolved',
+    Timeout = 'timeout',
+}
+
 export const defaultIconVariants: IconVariants = {
     enabled: {
         '19': browser.runtime.getURL('assets/icons/on-19.png'),
@@ -78,6 +86,12 @@ class IconsApi {
     private promoIcons: IconVariants | null = null;
 
     /**
+     * AG-38219 Flag to indicate if setIcon promise doesn't resolve (360 Browser).
+     * If true, we skip awaiting setIcon calls.
+     */
+    private setIconTimeoutDetected = false;
+
+    /**
      * Initializes Icons API.
      */
     public async init(): Promise<void> {
@@ -103,7 +117,7 @@ class IconsApi {
             }
             try {
                 logger.trace(`[ext.IconsApi.update]: updating icon for tab ${tab.id}`, icon);
-                await IconsApi.setActionIcon(icon, tab.id);
+                await this.setActionIcon(icon, tab.id);
             } catch (e) {
                 logger.debug(`[ext.IconsApi.update]: failed to update icon for tab ${tab.id}:`, e);
             }
@@ -163,7 +177,7 @@ class IconsApi {
         const badgeText = IconsApi.getBadgeText(totalBlockedTab, isDisabled);
 
         try {
-            await IconsApi.setActionIcon(icon, tabId);
+            await this.setActionIcon(icon, tabId);
 
             if (badgeText.length !== 0) {
                 await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
@@ -187,15 +201,20 @@ class IconsApi {
         const icon = await this.pickIconVariant();
 
         // Get rid of promo icon on all tabs, this prevents icon flickering on tab change
-        await IconsApi.setActionIcon(icon);
+        await this.setActionIcon(icon);
 
         // Update action icon for the specified tab if any
         if (tabId && frameData) {
             const isDisabled = frameData.documentAllowlisted || frameData.applicationFilteringDisabled;
             const disabledIcon = await this.pickIconVariant(isDisabled);
-            await IconsApi.setActionIcon(disabledIcon, tabId);
+            await this.setActionIcon(disabledIcon, tabId);
         }
     }
+
+    /**
+     * Timeout in milliseconds to wait for setIcon promise to resolve.
+     */
+    private static readonly SET_ICON_TIMEOUT_MS = 100;
 
     /**
      * Sets the icon for the extension action.
@@ -203,12 +222,33 @@ class IconsApi {
      * @param icon Icon to set.
      * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
      */
-    private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
+    private async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
         /**
          * AG-38219 For some reason browserAction.setIcon() promise is not resolved
          * in 360 browser MV3, the icon still sets correctly.
+         * We use a timeout to avoid waiting indefinitely for the promise to resolve.
+         * Once timeout is detected, we skip awaiting setIcon calls.
          */
-        browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
+        const setIconPromise = browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
+
+        if (this.setIconTimeoutDetected) {
+            return;
+        }
+
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+        const timeoutPromise = new Promise<SetIconResult.Timeout>((resolve) => {
+            timeoutId = setTimeout(() => resolve(SetIconResult.Timeout), IconsApi.SET_ICON_TIMEOUT_MS);
+        });
+
+        const result = await Promise.race([setIconPromise.then(() => SetIconResult.Resolved), timeoutPromise]);
+
+        if (result === SetIconResult.Timeout) {
+            logger.info('[ext.IconsApi.setActionIcon]: setIcon promise did not resolve in time, likely 360 Browser. Skipping await for future calls.');
+            this.setIconTimeoutDetected = true;
+        } else if (timeoutId !== undefined) {
+            clearTimeout(timeoutId);
+        }
     }
 
     /**
