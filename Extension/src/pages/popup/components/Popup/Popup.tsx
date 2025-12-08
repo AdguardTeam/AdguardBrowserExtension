@@ -29,7 +29,11 @@ import { PopupLayout } from 'popup-layout';
 
 import { Icons } from '../ui/Icons';
 import { popupStore } from '../../stores/PopupStore';
-import { messenger } from '../../../services/messenger';
+import {
+    messenger,
+    Messenger,
+    Page,
+} from '../../../services/messenger';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import {
@@ -40,6 +44,8 @@ import {
 } from '../../../../common/messages';
 import { logger } from '../../../../common/logger';
 import { useObservePopupHeight } from '../../hooks/useObservePopupHeight';
+import { TelemetryScreenName } from '../../../../background/services';
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { AnimatedLoader } from '../AnimatedLoader';
 
 import '../../styles/main.pcss';
@@ -54,9 +60,15 @@ export const Popup = observer(() => {
         getPopupData,
         updateBlockedStats,
         isAndroidBrowser,
+        isFilteringPossible,
+        telemetryStore,
     } = useContext(popupStore);
 
     useAppearanceTheme(appearanceTheme);
+
+    // Send different telemetry screen name based on whether filtering is possible
+    const screenName = isFilteringPossible ? TelemetryScreenName.MainPage : TelemetryScreenName.SecurePage;
+    useTelemetryPageViewEvent(telemetryStore, screenName);
 
     // retrieve init data
     useEffect(() => {
@@ -117,6 +129,24 @@ export const Popup = observer(() => {
         handleResizeCleanUp,
         handleResizeCleanUp,
     );
+
+    // Set up telemetry page ID from long-lived connection
+    useEffect(() => {
+        // For popup we only need the portId (e.g. for telemetry) and don't listen
+        // for any messages on this long-lived connection, so we pass an empty handler.
+        const { portId, onUnload } = Messenger.createLongLivedConnection(
+            Page.Popup,
+            [],
+            () => {},
+        );
+
+        telemetryStore.setPageId(portId);
+
+        return () => {
+            telemetryStore.setPageId(null);
+            onUnload();
+        };
+    }, [telemetryStore]);
 
     // subscribe to stats change
     useEffect(() => {

@@ -28,6 +28,7 @@ import {
     getStorageFixturesV11,
     getStorageFixturesV12,
     getStorageFixturesV13,
+    getStorageFixturesV14,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -164,6 +165,7 @@ describe('Update Api (without indexedDB)', () => {
             v11: getStorageFixturesV11(expires),
             v12: getStorageFixturesV12(expires),
             v13: getStorageFixturesV13(expires),
+            v14: getStorageFixturesV14(expires),
         };
 
         const targetVersion = Object.keys(migrationCasesData).pop() as keyof typeof migrationCasesData;

@@ -47,6 +47,7 @@ import {
 import { asyncWrapper } from '../../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../../common/constants';
 import { UserAgent } from '../../../../common/user-agent';
+import { TelemetryStore } from '../../../common/telemetry';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -153,10 +154,16 @@ export abstract class PopupStoreCommon {
     @observable
     isExtensionCheckingUpdateOrUpdating = false;
 
+    /**
+     * Telemetry store.
+     */
+    telemetryStore: TelemetryStore;
+
     constructor() {
         makeObservable(this);
         this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
         this.getPopupData = this.getPopupData.bind(this);
+        this.telemetryStore = new TelemetryStore();
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -273,6 +280,10 @@ export abstract class PopupStoreCommon {
         this.currentTabId = tabId;
 
         this.setAppActorInitState();
+
+        // telemetry
+        const anonymizedUsageDataAllowed = settings.values[settings.names.AllowAnonymizedUsageData];
+        this.telemetryStore.setIsAnonymizedUsageDataAllowed(anonymizedUsageDataAllowed);
     }
 
     /**

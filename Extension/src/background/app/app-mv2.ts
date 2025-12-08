@@ -64,6 +64,7 @@ import {
     DocumentBlockService,
     PromoNotificationService,
     filterUpdateService,
+    Telemetry,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -326,6 +327,8 @@ export class App {
         filterUpdateService.init();
 
         await sendMessage({ type: MessageType.AppInitialized });
+
+        await Telemetry.init();
     }
 
     /**

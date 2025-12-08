@@ -408,6 +408,8 @@ export abstract class PagesApiCommon {
     public openThankYouPage = async (): Promise<void> => {
         const params = BrowserUtils.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(browser.i18n.getUILanguage())}`);
+        // Param for hiding telemetry consent checkbox for old extension versions
+        params.push('show_telemetry_consent=true');
 
         const pageUrl = this.thankYouPageUrl;
         const thankYouUrl = `${pageUrl}?${params.join('&')}`;

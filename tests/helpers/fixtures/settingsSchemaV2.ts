@@ -59,6 +59,7 @@ export const getExportedSettingsV2 = () => ({
     'extension-specific-settings': {
         'use-optimized-filters': true,
         'collect-hits-count': false,
+        'allow-anonymized-usage-data': false,
         'show-context-menu': true,
         'show-info-about-adguard': false,
         'show-app-updated-info': true,

@@ -30,6 +30,7 @@ import { ResourceType } from '@adguard/tsurlfilter/es/declarative-converter';
 import { MANIFEST_ENV } from './tools/constants';
 import {
     MockedTsWebExtension,
+    MockedTsWebExtensionMV3,
     mockLocalStorage,
     mockXhrRequests,
     createMockTabsApi,
@@ -53,6 +54,10 @@ browser.runtime.getManifest.callsFake(() => ({
     version: '0.0.0',
     manifest_version: MANIFEST_ENV as any,
 }));
+browser.runtime.getPlatformInfo.resolves({
+    os: 'mac',
+    arch: 'x86-64',
+});
 Object.assign(browser, {
     /**
      * These values are used in the background script to determine the maximum
@@ -82,14 +87,13 @@ Object.assign(browser, {
 vi.mock('webextension-polyfill', () => ({ default: browser }));
 
 vi.mock('nanoid', () => ({
-    nanoid: (): string => 'cTkoV5Vs',
-    customAlphabet: (): Function => (): string => 'cTkoV5Vs',
+    nanoid: (): string => 'cd42f5fa',
+    customAlphabet: (): Function => (): string => 'cd42f5fa',
 }));
 
 // Mock log to hide all logger message
 vi.mock('./Extension/src/common/logger.ts');
 
-// TODO: Add mock for mv3 version. AG-37302
 vi.mock('@adguard/tswebextension', async () => {
     const actual = await vi.importActual('@adguard/tswebextension') as any;
     const tsurlfilter = await vi.importActual('@adguard/tsurlfilter') as any;
@@ -127,7 +131,7 @@ vi.mock('@adguard/tswebextension/mv3', async () => {
         mv2 = {};
     }
     return {
-        TsWebExtension: MockedTsWebExtension,
+        TsWebExtension: MockedTsWebExtensionMV3,
         isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
         ConvertedFilterList: tsurlfilter.ConvertedFilterList,
         // Re-export common constants and types that may be needed

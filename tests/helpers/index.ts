@@ -29,6 +29,7 @@ export {
     getStorageFixturesV11,
     getStorageFixturesV12,
     getStorageFixturesV13,
+    getStorageFixturesV14,
     type StorageData,
 } from './fixtures';
 
@@ -37,6 +38,7 @@ export {
     mockFilterPath,
     mockXhrRequests,
     MockedTsWebExtension,
+    MockedTsWebExtensionMV3,
     createMockTabsApi,
     createMockDefaultFilteringLog,
     createMockCompaniesDbService,

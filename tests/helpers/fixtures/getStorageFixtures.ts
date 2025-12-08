@@ -760,9 +760,23 @@ export const getStorageFixturesV13 = (expires: number): StorageData[] => {
     return storageSettingsFixturesV12.map((settings) => {
         const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
 
-        adgSettings['preserve-log-enabled'] = false;
+        adgSettings['allow-anonymized-usage-data'] = false;
 
         settings['schema-version'] = 13;
+
+        return settings;
+    });
+};
+
+export const getStorageFixturesV14 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV13 = getStorageFixturesV13(expires);
+
+    return storageSettingsFixturesV13.map((settings) => {
+        const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
+
+        adgSettings['preserve-log-enabled'] = false;
+
+        settings['schema-version'] = 14;
 
         return settings;
     });
