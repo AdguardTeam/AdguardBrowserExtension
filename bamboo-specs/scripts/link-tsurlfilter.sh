@@ -9,6 +9,7 @@ ls -la
 # Parse command line arguments
 LINK_AGTREE=false
 LINK_TSURLFILTER=false
+LINK_DNR_RULESETS=false
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -20,9 +21,13 @@ while [ $# -gt 0 ]; do
             LINK_TSURLFILTER=true
             shift
             ;;
+        --with-dnr-rulesets)
+            LINK_DNR_RULESETS=true
+            shift
+            ;;
         *)
             echo "Unknown option: $1"
-            echo "Available options: --with-agtree, --with-tsurlfilter"
+            echo "Available options: --with-agtree, --with-tsurlfilter, --with-dnr-rulesets"
             exit 1
             ;;
     esac
@@ -105,6 +110,11 @@ link_tswebextension() {
         && pnpm install \
         && npx lerna run build --scope=@adguard/tswebextension --include-dependencies)
 
+        # Build dnr-rulesets if required
+        if [ "$LINK_DNR_RULESETS" = true ]; then
+            npx lerna run build --scope=@adguard/dnr-rulesets --include-dependencies
+        fi
+
         # Return to main project directory and link the built tswebextension package
         cd "${ORIGINAL_DIR}"
 
@@ -120,6 +130,11 @@ link_tswebextension() {
         if [ "$LINK_TSURLFILTER" = true ]; then
             echo "Linking tsurlfilter package to main project..."
             pnpm link ../tsurlfilter/packages/tsurlfilter
+        fi
+
+        if [ "$LINK_DNR_RULESETS" = true ]; then
+            echo "Linking dnr-rulesets package to main project..."
+            pnpm link ../tsurlfilter/packages/dnr-rulesets
         fi
 
         # CSS Tokenizer is a dependency of AGTree and TSUrlFilter
