@@ -17,9 +17,4 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-// !IMPORTANT!
-// export './UpdateButton' will be replaced during webpack compilation
-// with NormalModuleReplacementPlugin to proper implementation
-// from './Mv2UpdateButton' or './Mv3UpdateButton'
 export { UpdateButton } from 'update-button';

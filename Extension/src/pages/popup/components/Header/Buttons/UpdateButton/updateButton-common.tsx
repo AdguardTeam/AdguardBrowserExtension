@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -40,7 +42,7 @@ export const UpdateButtonCommon = ({
                 className="sr-only"
                 aria-live="assertive"
                 tabIndex={-1}
-                aria-hidden={!isUpdating || !statusMessage}
+                aria-hidden={!isUpdating && !statusMessage}
             >
                 {statusMessage}
             </div>
