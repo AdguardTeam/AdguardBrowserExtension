@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -23,6 +25,7 @@ import cn from 'classnames';
 
 import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../ui/Icon';
+import theme from '../../styles/theme';
 
 type ConfirmModalParams = {
     /**
@@ -91,11 +94,12 @@ export const ConfirmModal = ({
     const confirmTitle = customConfirmTitle || 'OK';
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
 
-    const subtitleClassName = cn('modal__subtitle', {
-        'modal__subtitle--one-line': !isConsent,
-    });
+    const subtitleClassName = cn(
+        theme.modal.subtitle,
+        !isConsent && theme.modal.subtitleOneLine,
+    );
 
-    const okBtnClassName = cn('button button--l modal__btn button--green-bg', {
+    const okBtnClassName = cn(`button button--l ${theme.modal.btn} button--green-bg`, {
         'button--red-bg': !isConsent,
     });
 
@@ -119,29 +123,25 @@ export const ConfirmModal = ({
         <Modal
             isOpen={isOpen}
             onRequestClose={handleCancel}
-            // re-define default styles
-            style={{
-                content: {
-                    padding: 0,
-                    borderRadius: 8,
-                },
-            }}
+            overlayClassName={theme.modal.overlay}
+            className={theme.modal.wrapper}
         >
             <div
-                // 'modal--scrollable' is needed for ':has(.modal--scrollable)' selector to work
+                // 'modalScrollable' is needed for ':has(.modalScrollable)' selector to work
                 // and for scrollbar to display properly (AG-34984)
-                className={cn('modal', {
-                    'modal--scrollable': isScrollable,
-                })}
+                className={cn(
+                    theme.modal.modal,
+                    isScrollable && theme.modal.modalScrollable,
+                )}
             >
-                <div className="modal__content">
-                    <div className="modal__header">
-                        <div className="modal__title">
+                <div className={theme.modal.content}>
+                    <div className={theme.modal.header}>
+                        <div className={theme.modal.title}>
                             {title}
                         </div>
                         <button
                             type="button"
-                            className="button modal__close"
+                            className={`button ${theme.modal.btnClose}`}
                             title={translator.getMessage('close_button_title')}
                             onClick={handleCancel}
                         >
@@ -156,7 +156,7 @@ export const ConfirmModal = ({
                         </div>
                     )}
                 </div>
-                <div className="modal__actions">
+                <div className={theme.modal.actions}>
                     <button
                         className={okBtnClassName}
                         type="button"
@@ -166,7 +166,7 @@ export const ConfirmModal = ({
                         {confirmTitle}
                     </button>
                     <button
-                        className="button button--l button--transparent modal__btn modal__btn--confirm"
+                        className={`button button--l button--transparent ${theme.modal.btn} ${theme.modal.btnConfirm}`}
                         type="button"
                         onClick={handleCancel}
                         title={cancelTitle}

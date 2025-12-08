@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -406,6 +408,8 @@ export abstract class PagesApiCommon {
     public openThankYouPage = async (): Promise<void> => {
         const params = BrowserUtils.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(browser.i18n.getUILanguage())}`);
+        // Param for hiding telemetry consent checkbox for old extension versions
+        params.push('show_telemetry_consent=true');
 
         const pageUrl = this.thankYouPageUrl;
         const thankYouUrl = `${pageUrl}?${params.join('&')}`;

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -33,6 +35,7 @@ const PageController = (response: PageInitAppData) => {
     let socialFilterEnabledCheckbox: HTMLElement | null = null;
     let sendStatsCheckbox: HTMLElement | null = null;
     let allowAcceptableAdsCheckbox: HTMLElement | null = null;
+    let allowAnonymizedUsageDataCheckbox: HTMLElement | null = null;
 
     const safebrowsingEnabledChange = (e: Event) => {
         const checkbox = e.currentTarget as HTMLInputElement;
@@ -77,6 +80,14 @@ const PageController = (response: PageInitAppData) => {
         }
     };
 
+    const allowAnonymizedUsageDataChange = (e: Event) => {
+        const checkbox = e.currentTarget as HTMLInputElement;
+        messenger.changeUserSetting(
+            userSettings.names.AllowAnonymizedUsageData,
+            checkbox.checked,
+        );
+    };
+
     const bindEvents = () => {
         safebrowsingEnabledCheckbox = document.getElementById('safebrowsingEnabledCheckbox');
         trackingFilterEnabledCheckbox = document.getElementById('trackingFilterEnabledCheckbox');
@@ -84,13 +95,16 @@ const PageController = (response: PageInitAppData) => {
         // sendSafebrowsingStatsCheckbox - id saved, because it should be changed on thankyou page
         sendStatsCheckbox = document.getElementById('sendSafebrowsingStatsCheckbox');
         allowAcceptableAdsCheckbox = document.getElementById('allowAcceptableAds');
+        allowAnonymizedUsageDataCheckbox = document.getElementById('sendAnonymizedData');
 
         safebrowsingEnabledCheckbox?.addEventListener('change', safebrowsingEnabledChange);
         trackingFilterEnabledCheckbox?.addEventListener('change', trackingFilterEnabledChange);
         socialFilterEnabledCheckbox?.addEventListener('change', socialFilterEnabledChange);
-        // ignore Firefox, see task AG-2322
         if (!UserAgent.isFirefox) {
+            // ignore Firefox, see task AG-2322
             sendStatsCheckbox?.addEventListener('change', sendStatsCheckboxChange);
+            // ignore Firefox, see task ADG-11023
+            allowAnonymizedUsageDataCheckbox?.addEventListener('change', allowAnonymizedUsageDataChange);
         }
         allowAcceptableAdsCheckbox?.addEventListener('change', allowAcceptableAdsChange);
 
@@ -127,6 +141,7 @@ const PageController = (response: PageInitAppData) => {
         const socialFilterEnabled = AntiBannerFiltersId.SocialFilterId in enabledFilters;
         const allowAcceptableAdsEnabled = AntiBannerFiltersId.SearchAndSelfPromoFilterId in enabledFilters;
         const collectHitsCount = !userSettings.values[userSettings.names.DisableCollectHits];
+        const allowAnonymizedUsageData = userSettings.values[userSettings.names.AllowAnonymizedUsageData];
 
         if (!__IS_MV3__) {
             const safebrowsingEnabled = !userSettings.values[userSettings.names.DisableSafebrowsing];
@@ -137,6 +152,7 @@ const PageController = (response: PageInitAppData) => {
         updateCheckbox(socialFilterEnabledCheckbox, socialFilterEnabled);
         updateCheckbox(allowAcceptableAdsCheckbox, allowAcceptableAdsEnabled);
         updateCheckbox(sendStatsCheckbox, collectHitsCount);
+        updateCheckbox(allowAnonymizedUsageDataCheckbox, allowAnonymizedUsageData);
     };
 
     const init = () => {

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,23 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import modal from './modal.module.pcss';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import { i18n } from '../../common/translators/i18n';
-import { translator } from '../../common/translators/translator';
-
-import { FullscreenUserRules } from './components/fullscreen-user-rules';
-
-export const fullscreenUserRulesPage = {
-    init: () => {
-        document.title = translator.getMessage('fullscreen_user_rules_title');
-        document.documentElement.lang = i18n.getUILanguage();
-
-        ReactDOM.render(
-            <FullscreenUserRules />,
-            document.getElementById('root'),
-        );
-    },
+const theme = {
+    modal,
 };
+
+export default theme;

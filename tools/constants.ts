@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -106,6 +108,8 @@ export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
 };
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');
+
+export const ANALYZE_REPORTS_DIR = path.resolve(__dirname, '../build/analyze-reports');
 
 /* eslint-disable max-len */
 // filters constants

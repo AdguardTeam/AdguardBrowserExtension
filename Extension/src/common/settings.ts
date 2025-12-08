@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -35,6 +37,7 @@ export const defaultSettings: Settings = {
     [SettingOption.DisableShowAdguardPromoInfo]: !(UserAgent.isWindows || UserAgent.isMacOs) || UserAgent.isEdge,
     [SettingOption.DisableSafebrowsing]: true,
     [SettingOption.DisableCollectHits]: true,
+    [SettingOption.AllowAnonymizedUsageData]: false,
     [SettingOption.DefaultAllowlistMode]: true,
     [SettingOption.AllowlistEnabled]: true,
     // TODO: consider ditching optimized filters for mobile mv3 builds if (or when) they become available

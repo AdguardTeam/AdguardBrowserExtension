@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,42 +18,22 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createContext } from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import {
-    action,
-    computed,
-    makeObservable,
-    observable,
-    runInAction,
-} from 'mobx';
+import { i18n } from '../../common/translators/i18n';
+import { translator } from '../../common/translators/translator';
 
-import { messenger } from '../../services/messenger';
+import { FullscreenUserRules } from './components/fullscreen-user-rules';
 
-class FullscreenUserRulesStore {
-    @observable
-    settings = null;
+export const fullscreenUserRulesPage = {
+    init: () => {
+        document.title = translator.getMessage('fullscreen_user_rules_title');
+        document.documentElement.lang = i18n.getUILanguage();
 
-    constructor() {
-        makeObservable(this);
-    }
-
-    @action
-    async getFullscreenUserRulesData() {
-        const { settings } = await messenger.getUserRulesEditorData();
-        runInAction(() => {
-            this.settings = settings;
-        });
-    }
-
-    @computed
-    get appearanceTheme() {
-        if (!this.settings) {
-            return null;
-        }
-
-        return this.settings.values[this.settings.names.AppearanceTheme];
-    }
-}
-
-export const fullscreenUserRulesStore = createContext(new FullscreenUserRulesStore());
+        ReactDOM.render(
+            <FullscreenUserRules />,
+            document.getElementById('root'),
+        );
+    },
+};

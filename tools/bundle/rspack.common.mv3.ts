@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -18,9 +20,8 @@
 
 import path from 'node:path';
 
-import type { Configuration } from 'webpack';
+import { type Configuration, HtmlRspackPlugin } from '@rspack/core';
 import { merge } from 'webpack-merge';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import {
     BACKGROUND_OUTPUT,
@@ -35,11 +36,12 @@ import {
     CONTENT_SCRIPT_START_PATH,
     htmlTemplatePluginCommonOptions,
     type BrowserConfig,
+    type BuildOptions,
 } from './common-constants';
-import { genCommonConfig } from './webpack.common';
+import { genCommonConfig } from './rspack.common';
 
-export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: boolean): Configuration => {
-    const commonConfig = genCommonConfig(browserConfig, isWatchMode);
+export const genMv3CommonConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}): Configuration => {
+    const commonConfig = genCommonConfig(browserConfig, options);
 
     return merge(commonConfig, {
         entry: {
@@ -60,7 +62,7 @@ export const genMv3CommonConfig = (browserConfig: BrowserConfig, isWatchMode: bo
             },
         },
         plugins: [
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(BLOCKING_BLOCKED_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${BLOCKING_BLOCKED_OUTPUT}.html`,

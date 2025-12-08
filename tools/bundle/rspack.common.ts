@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,12 +21,13 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import ZipWebpackPlugin from 'zip-webpack-plugin';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-// webpack.DefinePlugin is not named exported by webpack.
-import webpack, { type Configuration, type EntryObject } from 'webpack';
+import {
+    rspack,
+    type Configuration,
+    type EntryObject,
+    HtmlRspackPlugin,
+    CopyRspackPlugin,
+} from '@rspack/core';
 
 import {
     BUILD_PATH,
@@ -62,9 +65,11 @@ import {
     BuildTargetEnv,
 } from '../../constants';
 
+import { ZipPlugin } from './zip-plugin';
 import {
     ASSISTANT_INJECT_PATH,
     type BrowserConfig,
+    type BuildOptions,
     CONTENT_SCRIPT_END_PATH,
     EDITOR_PATH,
     FILTERING_LOG_PATH,
@@ -85,13 +90,22 @@ const __dirname = path.dirname(__filename);
 
 const config = getEnvConf(BUILD_ENV);
 
+/**
+ * Telemetry API URLs mapping by build environment.
+ */
+const TELEMETRY_API_URLS: Record<BuildTargetEnv, string> = {
+    [BuildTargetEnv.Dev]: 'telemetry.service.agrd.dev',
+    [BuildTargetEnv.Beta]: 'api.agrd-tm.com',
+    [BuildTargetEnv.Release]: 'api.agrd-tm.com',
+};
+
 const OUTPUT_PATH = config.outputPath;
 
 /**
  * Separately described chunks for large entry points to avoid missing some
  * chunk dependencies in the final bundle, because we list chunks in two places:
  * - `entry.dependOn` option,
- * - `HtmlWebpackPlugin.chunks` option.
+ * - `HtmlRspackPlugin.chunks` option.
  */
 export const ENTRY_POINTS_CHUNKS = {
     [BACKGROUND_OUTPUT]: [
@@ -143,10 +157,12 @@ export const ENTRY_POINTS_CHUNKS = {
     ],
 };
 
-export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = false): Configuration => {
+export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}): Configuration => {
+    const { isWatchMode = false, zip } = options;
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
     const manifestVersion = browserConfig.browser === Browser.ChromeMv3 ? 3 : 2;
 
+    // Base aliases for MV-specific services and APIs
     const alias: Record<string, string> = {
         'tswebextension': path.resolve(__dirname, `../../Extension/src/background/tswebextension/tswebextension-mv${manifestVersion}.ts`),
         'app': path.resolve(__dirname, `../../Extension/src/background/app/app-mv${manifestVersion}.ts`),
@@ -192,15 +208,18 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
     const configuration: Configuration = {
         mode: config.mode,
         target: 'web',
-        stats: 'verbose',
+        stats: 'normal',
         optimization: {
             minimize: false,
             runtimeChunk: 'single',
             usedExports: true,
             sideEffects: true,
         },
+        // Enable persistent filesystem caching for faster rebuilds
         cache: isDev,
-        devtool: isDev ? 'eval-source-map' : false,
+        // Use cheap-module-source-map in dev for faster builds (still shows original source)
+        // eval-source-map is slower but has better debugging; switch if needed
+        devtool: isDev ? 'cheap-module-source-map' : false,
         entry: {
             [OPTIONS_OUTPUT]: {
                 import: OPTIONS_PATH,
@@ -286,6 +305,8 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
         output: {
             path: path.join(BUILD_PATH, OUTPUT_PATH),
             filename: '[name].js',
+            // Rspack has built-in clean functionality (replaces CleanWebpackPlugin)
+            clean: true,
         },
         resolve: {
             modules: [
@@ -302,9 +323,9 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                  * This structure helps reduce duplication but also means that dependencies of dependencies
                  * are not directly accessible in the root.
                  *
-                 * As a result, Webpack may fail to resolve these "nested" dependencies in pnpm's setup,
+                 * As a result, rspack may fail to resolve these "nested" dependencies in pnpm's setup,
                  * since they are not in the root `node_modules`.
-                 * To ensure Webpack can locate dependencies correctly in a pnpm project,
+                 * To ensure rspack can locate dependencies correctly in a pnpm project,
                  * we add `node_modules/.pnpm/node_modules` to the module resolution path as a fallback.
                  */
                 'node_modules/.pnpm/node_modules',
@@ -336,12 +357,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                         },
                     }],
                 },
-                /*
-                 * Prevent browser console warnings with source map issue
-                 * by deleting source map url comments in production build
-                 */
                 {
-                    test: /\.(js|ts)x?$/,
+                    // Prevent browser console warnings about missing source maps
+                    // by removing sourceMappingURL comments from dependencies in production.
+                    // In development, skip processing to preserve source maps for debugging.
+                    test: /\.m?(js|ts)x?$/,
                     enforce: 'pre',
                     use: [
                         {
@@ -358,13 +378,28 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     exclude: /node_modules\/(?!@adguard\/tswebextension)/,
                     use: [
                         {
-                            loader: 'swc-loader',
+                            // Rspack has built-in SWC loader
+                            loader: 'builtin:swc-loader',
                             options: {
+                                jsc: {
+                                    parser: {
+                                        syntax: 'typescript',
+                                        tsx: true,
+                                        decorators: true,
+                                    },
+                                    transform: {
+                                        legacyDecorator: true,
+                                        decoratorMetadata: true,
+                                        react: {
+                                            runtime: 'automatic',
+                                        },
+                                    },
+                                },
                                 env: {
                                     targets: {
-                                        chrome: MIN_SUPPORTED_VERSION.CHROMIUM_MV2,
-                                        firefox: MIN_SUPPORTED_VERSION.FIREFOX,
-                                        opera: MIN_SUPPORTED_VERSION.OPERA,
+                                        chrome: String(MIN_SUPPORTED_VERSION.CHROMIUM_MV2),
+                                        firefox: String(MIN_SUPPORTED_VERSION.FIREFOX),
+                                        opera: String(MIN_SUPPORTED_VERSION.OPERA),
                                     },
                                     mode: 'usage',
                                     coreJs: '3.32',
@@ -378,8 +413,36 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     },
                 },
                 {
-                    test: /\.(css|pcss)$/,
+                    test: /\.module\.(css|pcss)$/,
                     use: [
+                        {
+                            loader: 'style-loader',
+                            options: {
+                                esModule: false,
+                            },
+                        },
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                importLoaders: 1,
+                                esModule: false,
+                                modules: {
+                                    localIdentName: isDev
+                                        ? '[name]__[local]--[hash:base64:5]'
+                                        : '[hash:base64]',
+                                    exportLocalsConvention: 'camelCaseOnly',
+                                },
+                            },
+                        },
+                        'postcss-loader',
+                    ],
+                    type: 'javascript/auto',
+                },
+                {
+                    test: /\.(css|pcss)$/,
+                    exclude: /\.module\.(css|pcss)$/,
+                    use: [
+                        // Rspack's built-in style injection
                         'style-loader',
                         {
                             loader: 'css-loader',
@@ -390,6 +453,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                         },
                         'postcss-loader',
                     ],
+                    type: 'javascript/auto',
                 },
                 {
                     test: /\.(woff|woff2|eot|ttf|otf)$/,
@@ -412,8 +476,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
             ],
         },
         plugins: [
-            new CleanWebpackPlugin(),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(OPTIONS_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${OPTIONS_OUTPUT}.html`,
@@ -422,19 +485,19 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     OPTIONS_OUTPUT,
                 ],
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(POPUP_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${POPUP_OUTPUT}.html`,
                 chunks: [REACT_VENDOR_OUTPUT, MOBX_VENDOR_OUTPUT, POPUP_OUTPUT],
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(POST_INSTALL_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${POST_INSTALL_OUTPUT}.html`,
                 chunks: [POST_INSTALL_OUTPUT],
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(FULLSCREEN_USER_RULES_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
@@ -443,7 +506,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     FULLSCREEN_USER_RULES_OUTPUT,
                 ],
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(FILTERING_LOG_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
@@ -452,7 +515,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     FILTERING_LOG_OUTPUT,
                 ],
             }),
-            new CopyWebpackPlugin({
+            new CopyRspackPlugin({
                 patterns: [
                     {
                         context: 'Extension',
@@ -474,7 +537,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                     },
                 ],
             }),
-            new webpack.DefinePlugin({
+            new rspack.DefinePlugin({
                 // We are doing stricter JS rule checking for Firefox AMO, so we
                 // need to determine if the Firefox browser is AMO or not.
                 // TODO consider making this variable to be less common used
@@ -485,16 +548,20 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 IS_RELEASE: BUILD_ENV === BuildTargetEnv.Release,
                 IS_BETA: BUILD_ENV === BuildTargetEnv.Beta,
                 __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
+                // Telemetry service URL from mapping
+                TELEMETRY_URL: JSON.stringify(TELEMETRY_API_URLS[BUILD_ENV]),
             }),
         ],
     };
 
-    // Run the archive only if it is not a watch mode to reduce the build time.
-    if (!isWatchMode && configuration.plugins) {
-        // @ts-expect-error ZipWebpackPlugin has outdated types
-        configuration.plugins.push(new ZipWebpackPlugin({
-            path: '../',
-            filename: `${browserConfig.zipName}.zip`,
+    // Determine whether to create zip archives:
+    // - Default is false, use --zip to enable
+    // - Always skip in watch mode
+    const shouldZip = !isWatchMode && zip;
+    if (shouldZip && configuration.plugins) {
+        configuration.plugins.push(new ZipPlugin({
+            outputPath: '../',
+            filename: browserConfig.zipName,
         }));
     }
 
@@ -512,12 +579,12 @@ export const CHROMIUM_DEVTOOLS_ENTRIES: EntryObject = {
 };
 
 export const CHROMIUM_DEVTOOLS_PAGES_PLUGINS = [
-    new HtmlWebpackPlugin({
+    new HtmlRspackPlugin({
         template: path.join(DEVTOOLS_PATH, 'devtools.html'),
         filename: `${DEVTOOLS_OUTPUT}.html`,
         chunks: [DEVTOOLS_OUTPUT],
     }),
-    new HtmlWebpackPlugin({
+    new HtmlRspackPlugin({
         template: path.join(DEVTOOLS_PATH, 'devtools-elements-sidebar.html'),
         filename: `${DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT}.html`,
         chunks: [DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT],

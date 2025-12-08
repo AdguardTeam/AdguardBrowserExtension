@@ -28,11 +28,13 @@ import {
     getStorageFixturesV11,
     getStorageFixturesV12,
     getStorageFixturesV13,
+    getStorageFixturesV14,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { SbCache } from '../../../../Extension/src/background/storages';
 import { FILTER_KEY_PREFIX } from '../../../../Extension/src/background/api/update/assets/old-filters-storage-v1';
+import { settingsValidator } from '../../../../Extension/src/background/schema';
 
 vi.mock('../../../../Extension/src/background/engine');
 vi.mock('../../../../Extension/src/background/api/ui/icons');
@@ -140,6 +142,12 @@ describe('Update Api (without indexedDB)', () => {
 
             // Some properties in the data are stored as strings, but we need to compare them as objects, not as strings
             expect(deepJsonParse(settings)).toStrictEqual(deepJsonParse(data.to));
+
+            // Verify settings integrity
+            const adguardSettings = settings['adguard-settings'];
+            const validationResult = settingsValidator.safeParse(adguardSettings);
+
+            expect(validationResult.success).toBe(true);
         };
 
         const migrationCasesData = {
@@ -157,6 +165,7 @@ describe('Update Api (without indexedDB)', () => {
             v11: getStorageFixturesV11(expires),
             v12: getStorageFixturesV12(expires),
             v13: getStorageFixturesV13(expires),
+            v14: getStorageFixturesV14(expires),
         };
 
         const targetVersion = Object.keys(migrationCasesData).pop() as keyof typeof migrationCasesData;

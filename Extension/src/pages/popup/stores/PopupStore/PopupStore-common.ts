@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -45,6 +47,7 @@ import {
 import { asyncWrapper } from '../../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../../common/constants';
 import { UserAgent } from '../../../../common/user-agent';
+import { TelemetryStore } from '../../../common/telemetry';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -142,9 +145,15 @@ export class PopupStoreCommon {
     @observable
     appState: AppState = appStateActor.getSnapshot().value;
 
+    /**
+     * Telemetry store.
+     */
+    telemetryStore: TelemetryStore;
+
     constructor() {
         makeObservable(this);
         this.getPopupData = this.getPopupData.bind(this);
+        this.telemetryStore = new TelemetryStore();
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -261,6 +270,10 @@ export class PopupStoreCommon {
         this.currentTabId = tabId;
 
         this.setAppActorInitState();
+
+        // telemetry
+        const anonymizedUsageDataAllowed = settings.values[settings.names.AllowAnonymizedUsageData];
+        this.telemetryStore.setIsAnonymizedUsageDataAllowed(anonymizedUsageDataAllowed);
     }
 
     /**

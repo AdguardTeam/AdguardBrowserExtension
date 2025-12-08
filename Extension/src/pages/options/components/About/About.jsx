@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,6 +21,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services';
 import { rootStore } from '../../stores/RootStore';
 import {
     CHANGELOG_URL,
@@ -35,7 +39,9 @@ import { AboutLink } from './AboutLink';
 import './about-page.pcss';
 
 const About = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, telemetryStore } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.AboutScreen);
 
     const { appVersion, libVersions } = settingsStore;
 

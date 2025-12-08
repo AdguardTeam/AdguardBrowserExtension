@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -25,3 +27,6 @@ declare const IS_BETA: boolean;
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare const __IS_MV3__: boolean;
+
+// Telemetry service URL passed from webpack DefinePlugin
+declare const TELEMETRY_URL: string;

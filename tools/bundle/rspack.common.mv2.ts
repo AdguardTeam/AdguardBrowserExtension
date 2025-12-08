@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -18,8 +20,7 @@
 
 import path from 'node:path';
 
-import type { Configuration } from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { type Configuration, HtmlRspackPlugin } from '@rspack/core';
 import { merge } from 'webpack-merge';
 
 import {
@@ -37,11 +38,12 @@ import {
     CONTENT_SCRIPT_START_PATH,
     htmlTemplatePluginCommonOptions,
     type BrowserConfig,
+    type BuildOptions,
 } from './common-constants';
-import { ENTRY_POINTS_CHUNKS, genCommonConfig } from './webpack.common';
+import { ENTRY_POINTS_CHUNKS, genCommonConfig } from './rspack.common';
 
-export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = false): Configuration => {
-    const commonConfig = genCommonConfig(browserConfig, isWatchMode);
+export const genMv2CommonConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}): Configuration => {
+    const commonConfig = genCommonConfig(browserConfig, options);
 
     return merge(commonConfig, {
         entry: {
@@ -61,25 +63,22 @@ export const genMv2CommonConfig = (browserConfig: BrowserConfig, isWatchMode = f
             },
         },
         plugins: [
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(BACKGROUND_PATH, INDEX_HTML_FILE_NAME),
-                templateParameters: {
-                    browser: process.env.BROWSER,
-                },
                 filename: `${BACKGROUND_OUTPUT}.html`,
                 chunks: [
                     ...ENTRY_POINTS_CHUNKS[BACKGROUND_OUTPUT],
                     BACKGROUND_OUTPUT,
                 ],
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(BLOCKING_BLOCKED_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${BLOCKING_BLOCKED_OUTPUT}.html`,
                 chunks: [BLOCKING_BLOCKED_OUTPUT],
             }),
-            new HtmlWebpackPlugin({
+            new HtmlRspackPlugin({
                 ...htmlTemplatePluginCommonOptions,
                 template: path.join(BLOCKING_SAFEBROWSING_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${BLOCKING_SAFEBROWSING_OUTPUT}.html`,

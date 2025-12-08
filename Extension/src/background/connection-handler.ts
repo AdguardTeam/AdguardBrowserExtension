@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -28,7 +30,7 @@ import { Page } from '../pages/services/messenger';
 
 import { notifier } from './notifier';
 import { filteringLogApi } from './api';
-import { fullscreenUserRulesEditor } from './services';
+import { fullscreenUserRulesEditor, Telemetry } from './services';
 import { KeepAlive } from './keep-alive';
 
 /**
@@ -109,6 +111,11 @@ export class ConnectionHandler {
                 break;
             }
 
+            case port.name.startsWith(Page.Popup): {
+                Telemetry.handlePopupConnect(port.name);
+                break;
+            }
+
             case port.name === KEEP_ALIVE_PORT_NAME: {
                 // This handler exists solely to prevent errors from the default case.
                 logger.debug('[ext.ConnectionHandler.onPortConnection]: connected to the port');
@@ -138,6 +145,11 @@ export class ConnectionHandler {
 
             case port.name.startsWith(Page.FullscreenUserRules): {
                 fullscreenUserRulesEditor.onClosePage();
+                break;
+            }
+
+            case port.name.startsWith(Page.Popup): {
+                Telemetry.handlePopupDisconnect(port.name);
                 break;
             }
 

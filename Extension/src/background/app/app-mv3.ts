@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -65,6 +67,7 @@ import {
     DocumentBlockService,
     PromoNotificationService,
     filterUpdateService,
+    Telemetry,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -302,6 +305,8 @@ export class App {
         // so the event should be dispatched eventually after all initialization
         // is done.
         dispatchEvent(new Event(EXTENSION_INITIALIZED_EVENT));
+
+        await Telemetry.init();
     }
 
     /**

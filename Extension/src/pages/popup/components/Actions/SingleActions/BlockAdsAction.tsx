@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,17 +18,22 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
 
 import { translator } from '../../../../../common/translators/translator';
 import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { popupStore } from '../../../stores/PopupStore';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services';
 
 import { type SingleActionParams } from './types';
 
 import '../actions.pcss';
 
-export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionParams) => {
+export const BlockAdsAction = observer(({ className, isFilteringPossible }: SingleActionParams) => {
+    const store = useContext(popupStore);
+    const { telemetryStore } = store;
     const title = translator.getMessage('popup_block_site_ads_option');
 
     /**
@@ -36,6 +43,11 @@ export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionP
         if (!isFilteringPossible) {
             return;
         }
+
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.BlockManuallyClick,
+            TelemetryScreenName.MainPage,
+        );
         messenger.openAssistant();
         window.close();
     };
@@ -57,4 +69,4 @@ export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionP
             </span>
         </button>
     );
-};
+});

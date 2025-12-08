@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -43,6 +45,8 @@ const createProjectForManifestVersion = (
         IS_RELEASE: true,
         IS_BETA: false,
         __IS_MV3__: manifestVersion === ManifestVersionEnv.Third,
+        // Telemetry service URL (same as in webpack for release)
+        TELEMETRY_URL: JSON.stringify('telemetry.local'),
     },
     plugins: [tsconfigPaths()],
     resolve: {

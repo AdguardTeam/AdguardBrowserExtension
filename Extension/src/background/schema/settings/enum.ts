@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -32,6 +34,7 @@ export enum SettingOption {
     // Extension specific settings.
     UseOptimizedFilters = 'use-optimized-filters',
     DisableCollectHits = 'hits-count-disabled',
+    AllowAnonymizedUsageData = 'allow-anonymized-usage-data',
     DisableShowContextMenu = 'context-menu-disabled',
     // Flag used to show link to comparison of desktop and browser extension versions.
     DisableShowAdguardPromoInfo = 'show-info-about-adguard-disabled',

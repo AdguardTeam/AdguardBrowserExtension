@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,6 +21,8 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SETTINGS_TYPES } from '../Settings/Setting';
@@ -33,11 +37,16 @@ import { translator } from '../../../../common/translators/translator';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { COLLECT_HITS_LEARN_MORE_URL } from '../../constants';
 
+import { ExtensionUsageDataModal } from './ExtensionUsageDataModal/ExtensionUsageDataModal';
+
 export const Miscellaneous = observer(() => {
     const {
         settingsStore,
         uiStore,
+        telemetryStore,
     } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.AdditionalSettings);
 
     const userRulesEditorStoreContext = useContext(userRulesEditorStore);
 
@@ -49,6 +58,7 @@ export const Miscellaneous = observer(() => {
 
     const [isOpenResetStatsModal, setIsOpenResetStatsModal] = useState(false);
     const [isOpenResetSettingsModal, setIsOpenResetSettingsModal] = useState(false);
+    const [isUsageDataModalOpen, setIsUsageDataModalOpen] = useState(false);
 
     const settingChangeHandler = async ({ id, data }) => {
         logger.trace(`[ext.Miscellaneous]: Setting ${id} set to ${data}`);
@@ -114,6 +124,7 @@ export const Miscellaneous = observer(() => {
     const {
         UseOptimizedFilters,
         DisableCollectHits,
+        AllowAnonymizedUsageData,
         DisableShowContextMenu,
         DisableShowAdguardPromoInfo,
         DisableShowAppUpdatedNotification,
@@ -167,7 +178,25 @@ export const Miscellaneous = observer(() => {
                     value={settings.values[DisableCollectHits]}
                     handler={settingChangeHandler}
                 />
-
+                <SettingsSetCheckbox
+                    title={translator.getMessage('options_anonymized_usage_data_title')}
+                    description={reactTranslator.getMessage('options_anonymized_usage_data_description', {
+                        button: (chunks) => (
+                            <button
+                                type="button"
+                                className="button button--link button--link--underlined button--link--green"
+                                onClick={() => setIsUsageDataModalOpen(true)}
+                            >
+                                {chunks}
+                            </button>
+                        ),
+                    })}
+                    id={AllowAnonymizedUsageData}
+                    label={translator.getMessage('options_anonymized_usage_data_title')}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    value={settings.values[AllowAnonymizedUsageData]}
+                    handler={settingChangeHandler}
+                />
                 <SettingsSetCheckbox
                     title={translator.getMessage('options_show_blocked_ads_count_title')}
                     disabled={settings.values[DisableShowPageStats]}
@@ -250,6 +279,12 @@ export const Miscellaneous = observer(() => {
                         }
                     />
                 )}
+
+                <ExtensionUsageDataModal
+                    closeModalHandler={() => setIsUsageDataModalOpen(false)}
+                    isOpen={isUsageDataModalOpen}
+                />
+
                 <button
                     type="button"
                     className="links-menu__item button--link--red"

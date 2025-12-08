@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -62,6 +64,7 @@ import {
     DocumentBlockService,
     PromoNotificationService,
     filterUpdateService,
+    Telemetry,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -324,6 +327,8 @@ export class App {
         filterUpdateService.init();
 
         await sendMessage({ type: MessageType.AppInitialized });
+
+        await Telemetry.init();
     }
 
     /**

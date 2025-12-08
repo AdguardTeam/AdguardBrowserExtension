@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -33,5 +35,15 @@ export {
 export { FiltersService } from './filters';
 export { DocumentBlockService } from './document-block';
 export { FilterUpdateService, filterUpdateService } from './filter-update';
+export {
+    Telemetry,
+    TelemetryEventName,
+    TelemetryScreenName,
+    type TelemetryApiEventData,
+    SyntheticIdGenerator,
+    TelemetryDataCollector,
+    TelemetryPageTracker,
+    Theme,
+} from './telemetry';
 // Do not export SafebrowsingService here, because it will break MV3 build
 // because of dependencies with window object.

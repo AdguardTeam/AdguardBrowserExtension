@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -25,6 +27,8 @@ import React, {
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
@@ -38,15 +42,18 @@ import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getFirstNonDisabledElement } from '../../../common/utils/dom';
-import { DynamicRulesLimitsWarning } from '../Warnings';
+import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
 import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
+import { UserAgent } from '../../../../common/user-agent';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
 
 const Allowlist = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.WebsiteAllowListScreen);
 
     // rerender allowlist after removed and none-saved domains and import
     // AG-10492
@@ -216,6 +223,7 @@ const Allowlist = observer(() => {
                 inlineControl={(<AllowlistSwitcher labelId={switchTitleId} />)}
             />
             <DynamicRulesLimitsWarning />
+            {UserAgent.isFirefoxMobile && <ClipboardPermissionWarning />}
             <Editor
                 name="allowlist"
                 editorRef={editorRef}

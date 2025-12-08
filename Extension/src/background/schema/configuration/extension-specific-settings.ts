@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -23,6 +25,7 @@ import zod from 'zod';
 export const enum ExtensionSpecificSettingsOption {
     UseOptimizedFilters = 'use-optimized-filters',
     CollectHitsCount = 'collect-hits-count',
+    AllowAnonymizedUsageData = 'allow-anonymized-usage-data',
     ShowContextMenu = 'show-context-menu',
     ShowInfoAboutAdguard = 'show-info-about-adguard',
     ShowAppUpdatedInfo = 'show-app-updated-info',
@@ -47,6 +50,12 @@ export const extensionSpecificSettingsConfigValidator = zod.object({
      * @see https://adguard.com/kb/general/ad-filtering/tracking-filter-statistics/ for clarification.
      */
     [ExtensionSpecificSettingsOption.CollectHitsCount]: zod.boolean(),
+    /**
+     * If the flag is set to true, the application will send anonymized
+     * statistics about the extension usage, which will help us to improve and
+     * optimize the product.
+     */
+    [ExtensionSpecificSettingsOption.AllowAnonymizedUsageData]: zod.boolean().optional(),
     /**
      * Whether or not to add filtering options (add domain to allowlist,
      * enable or disable filtering) to the context menu (available by

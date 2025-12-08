@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -24,6 +26,7 @@ import {
     runInAction,
 } from 'mobx';
 import { type CategoriesGroupData, type CategoriesFilterData } from 'filter-categories-api';
+import { type SettingsData } from 'settings-api';
 
 import {
     AntibannerGroupsId,
@@ -159,7 +162,7 @@ export abstract class SettingsStoreCommon {
     });
 
     @observable
-    settings: GetOptionsDataResponse['settings'] | null = null;
+    settings: SettingsData | null = null;
 
     @observable
     optionsReadyToRender = false;
@@ -262,6 +265,14 @@ export abstract class SettingsStoreCommon {
         }
 
         return currentLimitsMv3;
+    }
+
+    @action
+    async getFullscreenUserRulesData() {
+        const { settings } = await messenger.getUserRulesEditorData();
+        runInAction(() => {
+            this.settings = settings;
+        });
     }
 
     @action

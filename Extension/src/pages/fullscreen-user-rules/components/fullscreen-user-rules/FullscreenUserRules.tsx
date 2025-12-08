@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -40,13 +42,15 @@ import '../../../options/components/UserRules/styles.pcss';
 export const FullscreenUserRules = observer(() => {
     const store = useContext(fullscreenUserRulesStore);
 
-    const { uiStore: { showLoader } } = useContext(rootStore);
+    // TODO: Move rootStore fields, that fullscreenUserRules need to fullscreenUserRulesStore: AG-48937
+    const { uiStore: { showLoader }, settingsStore } = useContext(rootStore);
 
     useAppearanceTheme(store.appearanceTheme);
 
     // append message listeners
     useEffect(() => {
         store.getFullscreenUserRulesData();
+        settingsStore.getFullscreenUserRulesData();
 
         let removeListenerCallback = () => {};
 
@@ -55,7 +59,7 @@ export const FullscreenUserRules = observer(() => {
                 NotifierType.SettingUpdated,
             ];
 
-            removeListenerCallback = Messenger.createLongLivedConnection(
+            const { onUnload } = Messenger.createLongLivedConnection(
                 Page.FullscreenUserRules,
                 events,
                 async (message: LongLivedConnectionCallbackMessage) => {
@@ -73,12 +77,14 @@ export const FullscreenUserRules = observer(() => {
                     }
                 },
             );
+
+            removeListenerCallback = onUnload;
         })();
 
         return () => {
             removeListenerCallback();
         };
-    }, [store]);
+    }, [store, settingsStore]);
 
     return (
         <>

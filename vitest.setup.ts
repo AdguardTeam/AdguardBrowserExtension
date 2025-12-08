@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -28,6 +30,7 @@ import { ResourceType } from '@adguard/tsurlfilter/es/declarative-converter';
 import { MANIFEST_ENV } from './tools/constants';
 import {
     MockedTsWebExtension,
+    MockedTsWebExtensionMV3,
     mockLocalStorage,
     mockXhrRequests,
 } from './tests/helpers';
@@ -48,6 +51,10 @@ browser.runtime.getManifest.callsFake(() => ({
     version: '0.0.0',
     manifest_version: MANIFEST_ENV as any,
 }));
+browser.runtime.getPlatformInfo.resolves({
+    os: 'mac',
+    arch: 'x86-64',
+});
 Object.assign(browser, {
     /**
      * These values are used in the background script to determine the maximum
@@ -77,17 +84,22 @@ Object.assign(browser, {
 vi.mock('webextension-polyfill', () => ({ default: browser }));
 
 vi.mock('nanoid', () => ({
-    nanoid: (): string => 'cTkoV5Vs',
-    customAlphabet: (): Function => (): string => 'cTkoV5Vs',
+    nanoid: (): string => 'cd42f5fa',
+    customAlphabet: (): Function => (): string => 'cd42f5fa',
 }));
 
 // Mock log to hide all logger message
 vi.mock('./Extension/src/common/logger.ts');
 
-// TODO: Add mock for mv3 version. AG-37302
 vi.mock('@adguard/tswebextension', async () => ({
     ...(await vi.importActual('@adguard/tswebextension')),
     TsWebExtension: MockedTsWebExtension,
+    isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
+}));
+
+vi.mock('@adguard/tswebextension/mv3', async () => ({
+    ...(await vi.importActual('@adguard/tswebextension/mv3')),
+    TsWebExtension: MockedTsWebExtensionMV3,
     isExtensionUrl: vi.fn((url: string) => url.startsWith(EXTENSION_URL_PREFIX)),
 }));
 

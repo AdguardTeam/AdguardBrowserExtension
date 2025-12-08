@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -101,7 +103,7 @@ const FilteringLog = observer(() => {
                 NotifierType.CustomFilterAdded,
             ];
 
-            removeListenerCallback = Messenger.createLongLivedConnection(
+            const { onUnload } = Messenger.createLongLivedConnection(
                 Page.FilteringLog,
                 events,
                 async (message: LongLivedConnectionCallbackMessage) => {
@@ -140,6 +142,8 @@ const FilteringLog = observer(() => {
                     }
                 },
             );
+
+            removeListenerCallback = onUnload;
         })();
 
         return () => {

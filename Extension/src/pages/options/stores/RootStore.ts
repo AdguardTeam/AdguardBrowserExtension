@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -21,6 +23,8 @@ import { createContext } from 'react';
 import { configure } from 'mobx';
 import { SettingsStore } from 'settings-store';
 
+import { TelemetryStore } from '../../common/telemetry';
+
 import UiStore from './UiStore';
 
 // Do not allow property change outside of store actions
@@ -31,11 +35,14 @@ export class RootStore {
 
     public settingsStore: SettingsStore;
 
+    public telemetryStore: TelemetryStore;
+
     constructor() {
         // uiStore should be initialized before settingsStore
         // because settingsStore uses uiStore
         this.uiStore = new UiStore(this);
         this.settingsStore = new SettingsStore(this);
+        this.telemetryStore = new TelemetryStore();
     }
 }
 

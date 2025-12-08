@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -29,6 +31,8 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import { sortBy } from 'lodash-es';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services';
 import { translator } from '../../../../common/translators/translator';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { rootStore } from '../../stores/RootStore';
@@ -87,7 +91,9 @@ const QUERY_PARAM_NAMES = {
 };
 
 const Filters = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.FiltersScreen);
 
     const navigate = useNavigate();
 

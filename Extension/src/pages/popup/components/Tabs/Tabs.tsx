@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -35,6 +37,7 @@ import {
 } from '../Stats/StatsTable';
 import { ViewState } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
 
 import { Tab, TabKey } from './Tab';
 
@@ -61,6 +64,12 @@ export const Tabs = observer(() => {
     const TabContent = contentMap[viewState];
 
     const handleTabClick = (viewState: ViewState) => () => {
+        if (viewState === ViewState.Stats) {
+            store.telemetryStore.sendCustomEvent(
+                TelemetryEventName.StatisticsClick,
+                TelemetryScreenName.MainPage,
+            );
+        }
         store.setViewState(viewState);
     };
 

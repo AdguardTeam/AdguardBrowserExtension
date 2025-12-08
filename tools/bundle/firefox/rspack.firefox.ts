@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -19,14 +21,14 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { type RspackPluginInstance, CopyRspackPlugin } from '@rspack/core';
 import { merge } from 'webpack-merge';
-import { type WebpackPluginInstance } from 'webpack';
 
-import { genMv2CommonConfig } from '../webpack.common.mv2';
+// eslint-disable-next-line no-restricted-imports
+import { genMv2CommonConfig } from '../rspack.common.mv2';
 import { updateManifestBuffer } from '../../helpers';
 import { Browser, BUILD_ENV } from '../../constants';
-import { type BrowserConfig } from '../common-constants';
+import { type BrowserConfig, type BuildOptions } from '../common-constants';
 import { commonManifest } from '../manifest.common';
 
 import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
@@ -36,20 +38,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export const genFirefoxConfig = (browserConfig: BrowserConfig) => {
-    const commonConfig = genMv2CommonConfig(browserConfig);
+export const genFirefoxConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}) => {
+    const commonConfig = genMv2CommonConfig(browserConfig, options);
 
     if (!commonConfig?.output?.path) {
         throw new Error('commonConfig.output.path is undefined');
     }
 
-    const plugins: WebpackPluginInstance[] = [
-        new CopyWebpackPlugin({
+    const plugins: RspackPluginInstance[] = [
+        new CopyRspackPlugin({
             patterns: [
                 {
                     /**
                      * This is a dummy import to keep "clean" usage of
-                     * `CopyWebpackPlugin`. We actually use `commonManifest`
+                     * `CopyRspackPlugin`. We actually use `commonManifest`
                      * imported above.
                      */
                     from: path.resolve(__dirname, '../manifest.common.ts'),

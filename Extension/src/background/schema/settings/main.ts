@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -60,6 +62,10 @@ export const settingsValidator = zod.object({
      * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.CollectHitsCount]}.
      */
     [SettingOption.DisableCollectHits]: SchemaPreprocessor.booleanValidator,
+    /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.AllowAnonymizedUsageData]}.
+     */
+    [SettingOption.AllowAnonymizedUsageData]: SchemaPreprocessor.booleanValidator,
     /**
      * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.ShowContextMenu]}.
      */

@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -34,34 +36,13 @@ import { rootStore } from '../../../stores/RootStore';
 import { addMinDelayLoader } from '../../../../common/components/helpers';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { AddCustomInput } from '../AddCustomInput';
+import theme from '../../../../common/styles/theme';
 
 import { ModalContentWrapper } from './ModalContentWrapper';
 
-Modal.setAppElement('#root');
+import styles from './AddCustomModal.module.pcss';
 
-const customStyles = {
-    overlay: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, .1)',
-        width: '100%',
-        height: '100%',
-        zIndex: 7,
-    },
-    content: {
-        border: 0,
-        height: 'auto',
-        position: 'relative',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        padding: 0,
-        overflow: 'auto',
-        borderRadius: 8,
-    },
-};
+Modal.setAppElement('#root');
 
 /**
  * Escape key string.
@@ -166,16 +147,14 @@ const AddCustomModal = observer(({
             closeModalHandler={closeModal}
             title={translator.getMessage('options_add_custom_filter_modal_title')}
             actions={(
-                <div className="modal__actions">
-                    <button
-                        className="button button--l button--green-bg modal__btn"
-                        type="button"
-                        onClick={handleSendUrlToCheck}
-                        disabled={customUrlToAddIsEmpty}
-                    >
-                        {translator.getMessage('options_popup_next_button')}
-                    </button>
-                </div>
+                <button
+                    className={`button button--l button--green-bg ${theme.modal.btn}`}
+                    type="button"
+                    onClick={handleSendUrlToCheck}
+                    disabled={customUrlToAddIsEmpty}
+                >
+                    {translator.getMessage('options_popup_next_button')}
+                </button>
             )}
         >
             <form onSubmit={handleSendUrlToCheck}>
@@ -241,16 +220,14 @@ const AddCustomModal = observer(({
                 // so base strings should be checked after that
                 title={translator.getMessage('options_add_custom_filter_modal_title')}
                 actions={(
-                    <div className="modal__actions">
-                        <button
-                            disabled={isLoading || !filterToAddName}
-                            type="button"
-                            onClick={handleApproveWrapper}
-                            className="button button--l button--green-bg modal__btn"
-                        >
-                            {translator.getMessage('options_add_custom_filter_modal_add_button')}
-                        </button>
-                    </div>
+                    <button
+                        disabled={isLoading || !filterToAddName}
+                        type="button"
+                        onClick={handleApproveWrapper}
+                        className={`button button--l button--green-bg ${theme.modal.btn}`}
+                    >
+                        {translator.getMessage('options_add_custom_filter_modal_add_button')}
+                    </button>
                 )}
             >
                 <form onSubmit={handleApproveWrapper}>
@@ -262,66 +239,66 @@ const AddCustomModal = observer(({
                         value={filterToAddName}
                     />
 
-                    <div className="modal__filter--info">
+                    <div className={styles.filterInfo}>
                         {trimmedDescription && (
                             <div>
-                                <span className="modal__filter--info-item">
+                                <span className={styles.filterInfoItem}>
                                     {translator.getMessage('options_popup_filter_description')}
                                 </span>
-                                <span className="modal__filter--info-item">
+                                <span className={styles.filterInfoItem}>
                                     {trimmedDescription}
                                 </span>
                             </div>
                         )}
                         {trimmedVersion && (
                             <div>
-                                <span className="modal__filter--info-item">
+                                <span className={styles.filterInfoItem}>
                                     {translator.getMessage('options_popup_filter_version')}
                                 </span>
-                                <span className="modal__filter--info-item">
+                                <span className={styles.filterInfoItem}>
                                     {trimmedVersion}
                                 </span>
                             </div>
                         )}
                         <div>
-                            <span className="modal__filter--info-item">
+                            <span className={styles.filterInfoItem}>
                                 {translator.getMessage('options_popup_filter_rules_count')}
                             </span>
-                            <span className="modal__filter--info-item">
+                            <span className={styles.filterInfoItem}>
                                 {rulesCount}
                             </span>
                         </div>
                         {trimmedHomepage && (
                             <div>
-                                <span className="modal__filter--info-item">
+                                <span className={styles.filterInfoItem}>
                                     {translator.getMessage('options_popup_filter_homepage')}
                                 </span>
                                 <a
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     href={trimmedHomepage}
-                                    className="modal__filter--info-item modal__filter--info-item--url"
+                                    className={`${styles.filterInfoItem} ${styles.filterInfoItemUrl}`}
                                 >
                                     {trimmedHomepage}
                                 </a>
                             </div>
                         )}
                         <div>
-                            <span className="modal__filter--info-item">
+                            <span className={styles.filterInfoItem}>
                                 {translator.getMessage('options_popup_filter_url')}
                             </span>
                             <a
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 href={customUrl}
-                                className="modal__filter--info-item modal__filter--info-item--url"
+                                className={`${styles.filterInfoItem} ${styles.filterInfoItemUrl}`}
                             >
                                 {customUrl}
                             </a>
                         </div>
                     </div>
 
-                    <div className="modal__filter--trusted">
+                    <div className={styles.filterTrusted}>
                         <label className="checkbox-label" htmlFor="trusted">
                             <input
                                 id="trusted"
@@ -339,7 +316,7 @@ const AddCustomModal = observer(({
                             </div>
                             {translator.getMessage('options_add_custom_filter_modal_filter_trusted')}
                         </label>
-                        <div className="modal__filter--trusted-desc">
+                        <div className={styles.filterTrustedDesc}>
                             {translator.getMessage('options_add_custom_filter_modal_filter_trusted_description')}
                         </div>
                     </div>
@@ -354,7 +331,7 @@ const AddCustomModal = observer(({
                 closeModalHandler={closeModal}
                 title={translator.getMessage('options_add_custom_filter_modal_checking_filter')}
             >
-                <form className="modal__content" />
+                <form className={theme.modal.content} />
             </ModalContentWrapper>
         );
     };
@@ -370,19 +347,17 @@ const AddCustomModal = observer(({
                 closeModalHandler={closeModal}
                 title={translator.getMessage('options_add_custom_filter_modal_error_title')}
                 actions={(
-                    <div className="modal__actions">
-                        <button
-                            type="button"
-                            onClick={tryAgainHandler}
-                            className="button button--l button--green-bg modal__btn"
-                        >
-                            {translator.getMessage('options_popup_try_again_button')}
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        onClick={tryAgainHandler}
+                        className={`button button--l button--green-bg ${theme.modal.btn}`}
+                    >
+                        {translator.getMessage('options_popup_try_again_button')}
+                    </button>
                 )}
             >
                 <form>
-                    <div role="alert" className="modal__desc">
+                    <div role="alert" className={styles.desc}>
                         {error || translator.getMessage('options_add_custom_filter_modal_error_subtitle')}
                     </div>
                 </form>
@@ -412,8 +387,9 @@ const AddCustomModal = observer(({
     return (
         <Modal
             isOpen={modalIsOpen}
-            style={customStyles}
             onRequestClose={closeModal}
+            overlayClassName={theme.modal.overlay}
+            className={theme.modal.wrapper}
         >
             {renderStep()}
         </Modal>
