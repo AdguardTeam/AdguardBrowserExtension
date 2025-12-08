@@ -71,19 +71,17 @@ export const UpdateButton = observer(() => {
 
     if (isExtensionUpdateAvailable) {
         return (
-            <button
-                className="button popup-header__button"
-                disabled={store.isExtensionCheckingUpdateOrUpdating}
-                type="button"
+            <UpdateButtonCommon
+                isUpdating={store.isExtensionCheckingUpdateOrUpdating}
                 onClick={handleUpdateExtensionClick}
-                title={translator.getMessage('update_available_title')}
+                buttonTitle={translator.getMessage('update_available_title')}
             >
                 <Icon
                     id="#update-available"
                     className="icon--24 icon--header icon--header--update-available"
                     aria-hidden="true"
                 />
-            </button>
+            </UpdateButtonCommon>
         );
     }
 

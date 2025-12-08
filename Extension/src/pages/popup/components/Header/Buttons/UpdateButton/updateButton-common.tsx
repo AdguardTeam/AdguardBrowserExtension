@@ -16,21 +16,22 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { type KeyboardEvent, type MouseEvent } from 'react';
 
 import { Icon } from '../../../../../common/components/ui/Icon';
 
 export const UpdateButtonCommon = ({
     isUpdating,
-    statusMessage,
+    statusMessage = '',
     onClick,
     buttonTitle,
+    children,
 }: {
     isUpdating: boolean;
-    statusMessage: string;
-    onClick: () => void;
+    statusMessage?: string;
+    onClick: (e: MouseEvent | KeyboardEvent) => void;
     buttonTitle: string;
-
+    children?: React.ReactNode;
 }) => {
     return (
         <>
@@ -50,13 +51,15 @@ export const UpdateButtonCommon = ({
                 onClick={onClick}
                 title={buttonTitle}
             >
-                <Icon
-                    id="#reload"
-                    className="icon--24 icon--header"
-                    animationCondition={isUpdating}
-                    animationClassName="icon--loading"
-                    aria-hidden="true"
-                />
+                {children || (
+                    <Icon
+                        id="#reload"
+                        className="icon--24 icon--header"
+                        animationCondition={isUpdating}
+                        animationClassName="icon--loading"
+                        aria-hidden="true"
+                    />
+                )}
             </button>
         </>
     );
