@@ -38,11 +38,11 @@ export class RootStore {
     public telemetryStore: TelemetryStore;
 
     constructor() {
-        // uiStore should be initialized before settingsStore
-        // because settingsStore uses uiStore
+        // uiStore and telemetryStore should be initialized before settingsStore
+        // because settingsStore uses these stores
         this.uiStore = new UiStore(this);
-        this.settingsStore = new SettingsStore(this);
         this.telemetryStore = new TelemetryStore();
+        this.settingsStore = new SettingsStore(this);
     }
 }
 

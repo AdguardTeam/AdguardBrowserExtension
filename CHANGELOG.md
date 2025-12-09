@@ -5,25 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
-
-### Added
-
-- Telemetry system for tracking user interactions and analytics events.
+## [5.2.600] - ??
 
 ### Fixed
 
 - Made clipboard permissions optional for Firefox, with a prompt shown when needed in User Rules and Allowlist editors [#3364]
+- The extension doesn't work in browser 360 [#3058].
 
 [#3364]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3364
+[#3058]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3058
 
 <!-- TODO: Specify date after publish on GH -->
-## [5.2.500] - ??
+[5.2.600]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
+
+## [5.2.500] - 2025-12-05
 
 ### Fixed
 - The update promo banner does not persist dismissal and shows again after
   the extension updates [#3385].
-- The extension doesn't work in browser 360 [#3058].
 
 ### Changed
 
@@ -34,9 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/tswebextension] to v3.2.16.
 
 [#3385]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3385
-[#3058]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3058
-<!-- TODO: Specify after publish on GH -->
-[5.2.500]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
+
+[5.2.500]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.500%2B0.build.20251127140045
 
 ## [5.2.400] - 2025-11-24
 

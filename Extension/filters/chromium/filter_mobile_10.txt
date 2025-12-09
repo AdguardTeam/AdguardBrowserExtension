@@ -1,9 +1,9 @@
-! Checksum: NMuXNPWV56VX+Oo9UtU3hw
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1760530517-3600.patch
+! Checksum: 17XOsWoUez5m+w+pWfF4OA
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1764347276-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.76
-! TimeUpdated: 2025-10-15T12:11:48+00:00
+! Version: 2.0.3.81
+! TimeUpdated: 2025-11-28T16:25:09+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -91,6 +91,12 @@ ya.ru,yandex.*#@##search-result > [class][data-cid]:has(> div.Organic > div a[hr
 yandex.*#@#.content__left > ul#search-result > li:has(> div.organic > div.OrganicTitle > a[href^="https://ya.ru/search/_crpd/"])
 ya.ru,yandex.*#@$?##search-result > li:has(span:contains(/[PРeеkклaаmмaа]{7}/)) { remove: true; }
 ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="Organic"] > div[class^="VanillaReact"] > a[data-event-required])
+amazon.*#@#.a-section:has(> div[cel_widget_id^="adplacements:"]:last-child)
+amazon.*#@#div[cel_widget_id^="adplacements:"]
+amazon.*#@#.a-section:has(> .a-section:only-child > div[cel_widget_id^="sp-pop-mobile-"])
+amazon.*#@#div[cel_widget_id^="sp-pop-mobile-"]
+amazon.*#@#div[data-idt="AXIOM"]
+amazon.*#@#div[cel_widget_id^="sb-themed-collection-v2-mobile_loom-mobile"]
 amazon.*#@#div[id^="dp-ads-"]
 amazon.*#@##px-profile_feature_div
 amazon.*#@#div[data-cel-widget="softlines-btf-substitute-zone-container-T3_feature_div"]
@@ -169,7 +175,7 @@ buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
-ebay.*#@$#.x-rx-slot { position: absolute!important; left: -4000px!important;}
+ebay.*#@$#.x-rx-slot { position: absolute!important; left: -4000px!important; }
 ebay.*#@#.srp-river-answer[class*="CAROUSEL"]:not([class*="NAVIGATION"])
 aliexpress.com#@#.search-item-card-wrapper-list:has( > div:only-child > div:only-child > a + div[class*="multi"])
 [$path=/jobs]linkedin.com#@##ember33
@@ -235,5 +241,5 @@ walmart.com#@?#.flex > div[class]:has(> div[class][style*="contain-intrinsic-siz
 !#safari_cb_affinity
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_usefulads
-!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
+!+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext

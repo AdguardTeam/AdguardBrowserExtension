@@ -42,5 +42,5 @@ export function useTelemetryPageViewEvent(
         }
 
         telemetryStore.sendPageViewEvent(screenName);
-    }, [telemetryStore, screenName, telemetryStore.pageId]);
+    }, [telemetryStore, screenName, telemetryStore.pageId, telemetryStore.isAnonymizedUsageDataAllowed]);
 }
