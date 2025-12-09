@@ -1,9 +1,9 @@
-! Checksum: r8pCW7t2/ZFvxH617ZlRmw
-! Diff-Path: ../patches/23/23-s-1762935198-3600.patch
+! Checksum: hB3Uu2+oAhs2gGuUbjUA3g
+! Diff-Path: ../patches/23/23-s-1764347285-3600.patch
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.7.37
-! TimeUpdated: 2025-11-12T08:09:54+00:00
+! Version: 2.0.7.46
+! TimeUpdated: 2025-11-28T16:25:26+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -608,7 +608,6 @@ http://*.ru/leftunit.pl?
 /css/branding_*.css$domain=~citigroup.com
 /ctxtlink/*
 /cu2.php?block_data$third-party
-/dc_ads.
 /delivery/ag.php
 /delivery/avw.php
 /din_new6.php?code=*&bid=*&linkdest=
@@ -794,7 +793,7 @@ _160x290
 _160x600
 _336x280
 _580x100
-_600x100.png
+_600x100.png$domain=~buy-eu.piano.io
 _610x120.gif
 _728.gif
 _728by90
@@ -1435,6 +1434,10 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||sinehut.com^$all
+||kputjp.com^
+||brodownload8s.com^
+||innovation-lab.ru^$third-party
 ||paintejuke.com^$all
 ||agl007.site^
 ||6i7y3i.ru^
@@ -3894,13 +3897,13 @@ eurolab.ua#$#body { padding-top: 0!important; }
 sport.ua#$#body[style] { padding-top: 0!important; }
 sport.ua#$#body { background-color: #e8e8e8!important; }
 ! i.ua - удаление брендированного фона
-i.ua#$#body{ background-image: none!important; background-color: #FFFFFF!important; }
+i.ua#$#body { background-image: none!important; background-color: #FFFFFF!important; }
 ! minfin.com.ua - удаление отступа сверху
-minfin.com.ua#$#.mfz-page-wrap {margin: 0px auto 50px!important;}
+minfin.com.ua#$#.mfz-page-wrap { margin: 0px auto 50px!important; }
 ! depo.ua - удаление отступа сверху
-depo.ua#$#.container {margin-top: 0!important; }
+depo.ua#$#.container { margin-top: 0!important; }
 ! china-review.com.ua - удаление отступа сверху
-china-review.com.ua#$#body {margin-top: 0!important; }
+china-review.com.ua#$#body { margin-top: 0!important; }
 ! proagro.com.ua - убран отступ
 proagro.com.ua#$##all > main { margin: 0 15px 0 165px !important; }
 ! https://forum.adguard.com/index.php?threads/16876/
@@ -3957,7 +3960,7 @@ obozrevatel.com,theblueprint.ru,hellomagrussia.ru,unian.ua,uaportal.com,nebogach
 ! ##.advert
 ufacitynews.ru,sevastopol.su,zn.ua,pravo.ru,lubertsyriamo.ru,kommersant.ru,dvnovosti.ru,kubnews.ru,turbopages.org,chernozem.info,flashgames.ru,footballreview.ru,inforesist.org,msgforum.ru,newsland.com,province.ru,tenews.org.ua,zab.ru##.advert
 ! ##div[id^="unit_"]
-ferra.ru,malls.ru,montecarlo.ru,hightech.fm,ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.*,sm.news,politring.com,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
+ura.news,ferra.ru,malls.ru,montecarlo.ru,hightech.fm,ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.*,sm.news,politring.com,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
 ! ##div[id^="adfox_"]
 mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,gorodche.ru,smartpress.by,raenza.ru,eadaily.com,zakon.kz,svpressa.ru,udf.name,udf.by,baby.ru,pikabu.ru,thequestion.ru##div[id^="adfox_"]
 !
@@ -4279,7 +4282,8 @@ citrus.ua,xsport.ua,zi.dn.ua,zi.ua##img[src^="/upload/rk/"]
 !
 !
 !
-rezka-ua.*#%#//scriptlet('abort-current-inline-script', 'document.getElementsByTagName', 'AMSP')
+auto.ria.com##div[id^="dfp"]
+fakty.com.ua##.pip-video-wrapper
 112.ua##.vertical__banner
 112.ua##p[style="margin-top:-18px;font-size:12px;margin-bottom: 40px;"]
 glavred.net##.main-partners
@@ -4436,7 +4440,7 @@ tva.in.ua#?#.theiaStickySidebar > div.widget:has(> div.widget-container > div.te
 sovety.pp.ua#?#aside > div.uk-panel:has(> div[id^="riainfo"])
 sovety.pp.ua#?#aside > div.uk-panel:has(> div.bannergroup)
 glavnoe.ua#?#.content-block > div.headed-block:has(div[class]:contains(новости партнеров))
-24tv.ua#$?#.publications-wrapper > div[class] > div.column:has(> div.news-card > div.news-box-wrapper > div[id^="div-gpt-ad-"]) { remove:true; }
+24tv.ua#$?#.publications-wrapper > div[class] > div.column:has(> div.news-card > div.news-box-wrapper > div[id^="div-gpt-ad-"]) { remove: true; }
 unn.com.ua#?#.b-page-border > ul[style*="width: 600px"]:has(> li > div[id^="admixer_"])
 gsminfo.com.ua#?#.entry-content > div.code-block:has(> ins.adsbygoogle)
 versii.if.ua#?#aside#widget-wrapper > li:has(> section.my_widget_style)
@@ -5582,7 +5586,7 @@ player.starlight.digital#%#//scriptlet('trusted-replace-fetch-response', '"media
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ukrainian
 ! Detect of using AdGuard products
-!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
+!+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Detect HTTPS filtering
 ! Detect Advanced Protection of AdGuard for iOS

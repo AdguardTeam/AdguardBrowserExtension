@@ -119,7 +119,7 @@ export class TelemetryStore {
      */
     sendPageViewEvent = async (screenName: TelemetryScreenName): Promise<void> => {
         try {
-            if (this.isAnonymizedUsageDataAllowed) {
+            if (!this.isAnonymizedUsageDataAllowed) {
                 return;
             }
 
@@ -147,7 +147,7 @@ export class TelemetryStore {
         screenName: TelemetryActionToScreenMap[TelemetryEventName],
     ): Promise<void> => {
         try {
-            if (this.isAnonymizedUsageDataAllowed) {
+            if (!this.isAnonymizedUsageDataAllowed) {
                 return;
             }
 
