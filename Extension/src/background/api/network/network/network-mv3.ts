@@ -29,10 +29,10 @@ import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-ut
 import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
 import { TsWebExtension } from '@adguard/tswebextension/mv3';
 
-import { LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
-import { CustomFilterUtils } from '../../../common/custom-filter-utils';
-import { logger } from '../../../common/logger';
-import { UserAgent } from '../../../common/user-agent';
+import { LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../../constants';
+import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
+import { logger } from '../../../../common/logger';
+import { UserAgent } from '../../../../common/user-agent';
 import {
     type Metadata,
     type I18nMetadata,
@@ -40,13 +40,12 @@ import {
     metadataValidator,
     i18nMetadataValidator,
     localScriptRulesValidator,
-} from '../../schema';
-import { type FilterUpdateOptions } from '../filters';
-import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
-import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
-import { isUserScriptsApiSupported } from '../../../common/user-scripts-api/user-scripts-api-mv3';
-
-import { NetworkSettings } from './settings-mv3';
+} from '../../../schema';
+import { type FilterUpdateOptions } from '../../filters';
+import { NEWLINE_CHAR_REGEX } from '../../../../common/constants';
+import { FiltersStoragesAdapter } from '../../../storages/filters-adapter';
+import { isUserScriptsApiSupported } from '../../../../common/user-scripts-api/user-scripts-api-mv3';
+import { NetworkSettings } from '../settings/settings-mv3';
 
 export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: boolean };
 

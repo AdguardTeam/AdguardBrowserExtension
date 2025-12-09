@@ -16,13 +16,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ContextMenuApiCommon } from './context-menu-common';
-
 /**
  * API for creating and updating browser context menus for Manifest V3.
  *
- * Empty implementation - MV3 version doesn't add "Update Filters" menu item
+ * MV3 version doesn't add "Update Filters" menu item
  * because manual filter updates are not supported in MV3 architecture.
  * All functionality is inherited from the base class.
  */
-export class ContextMenuApi extends ContextMenuApiCommon {}
+export { ContextMenuApiCommon as ContextMenuApi } from './context-menu-common';

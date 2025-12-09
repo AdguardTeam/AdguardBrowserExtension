@@ -16,8 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { RulesLimitsService } from 'rules-limits-service';
-
+import { RulesLimitsService } from '../../rules-limits/rules-limits-service-mv3';
 import { ExtensionUpdateService } from '../../extension-update/extension-update-service-mv3';
 import { ExtensionUpdateFSMEvent } from '../../../../common/constants';
 import { MessageType } from '../../../../common/messages';

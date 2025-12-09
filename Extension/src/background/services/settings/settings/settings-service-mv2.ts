@@ -24,29 +24,28 @@ import {
     MessageType,
     type ChangeUserSettingMessage,
     type ApplySettingsJsonMessage,
-} from '../../../common/messages';
-import { logger } from '../../../common/logger';
-import { SettingOption } from '../../schema';
-import { messageHandler } from '../../message-handler';
-import { UserAgent } from '../../../common/user-agent';
-import { engine } from '../../engine';
+} from '../../../../common/messages';
+import { logger } from '../../../../common/logger';
+import { SettingOption } from '../../../schema';
+import { messageHandler } from '../../../message-handler';
+import { UserAgent } from '../../../../common/user-agent';
+import { engine } from '../../../engine';
 import {
     Categories,
     HitStatsApi,
     SafebrowsingApi,
     SettingsApi,
     TabsApi,
-} from '../../api';
-import { Prefs } from '../../prefs';
+} from '../../../api';
+import { Prefs } from '../../../prefs';
 import {
     ContextMenuAction,
     contextMenuEvents,
     settingsEvents,
-} from '../../events';
-import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
-
-import { type GetOptionsDataResponse } from './types-mv2';
-import { type ExportMessageResponse } from './types-common';
+} from '../../../events';
+import { fullscreenUserRulesEditor } from '../../fullscreen-user-rules-editor';
+import { type GetOptionsDataResponse } from '../types/types-mv2';
+import { type ExportMessageResponse } from '../types';
 
 /**
  * SettingsService handles all setting-related messages and

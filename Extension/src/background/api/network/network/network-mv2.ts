@@ -26,9 +26,9 @@ import {
     type DownloadResult,
 } from '@adguard/filters-downloader/browser';
 
-import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../constants';
-import { logger } from '../../../common/logger';
-import { UserAgent } from '../../../common/user-agent';
+import { LOCAL_METADATA_FILE_NAME, LOCAL_I18N_METADATA_FILE_NAME } from '../../../../../../constants';
+import { logger } from '../../../../common/logger';
+import { UserAgent } from '../../../../common/user-agent';
 import {
     type Metadata,
     type I18nMetadata,
@@ -36,10 +36,9 @@ import {
     metadataValidator,
     i18nMetadataValidator,
     localScriptRulesValidator,
-} from '../../schema';
-import { type FilterUpdateOptions } from '../filters';
-
-import { NetworkSettings } from './settings-mv2';
+} from '../../../schema';
+import { type FilterUpdateOptions } from '../../filters';
+import { NetworkSettings } from '../settings/settings-mv2';
 
 export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: boolean };
 

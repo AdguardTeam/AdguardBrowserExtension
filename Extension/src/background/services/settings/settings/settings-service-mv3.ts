@@ -20,37 +20,36 @@
 
 import browser from 'webextension-polyfill';
 
-import { RulesLimitsService } from 'rules-limits-service';
-
-import { ExtensionUpdateService } from '../extension-update/extension-update-service-mv3';
+import { RulesLimitsService } from '../../rules-limits/rules-limits-service-mv3';
+import { ExtensionUpdateService } from '../../extension-update/extension-update-service-mv3';
 import {
     MessageType,
     type ChangeUserSettingMessage,
     type ApplySettingsJsonMessage,
-} from '../../../common/messages';
-import { logger } from '../../../common/logger';
-import { SettingOption } from '../../schema';
-import { messageHandler } from '../../message-handler';
-import { UserAgent } from '../../../common/user-agent';
-import { ExtensionUpdateFSMEvent } from '../../../common/constants';
-import { engine } from '../../engine';
+} from '../../../../common/messages';
+import { logger } from '../../../../common/logger';
+import { SettingOption } from '../../../schema';
+import { messageHandler } from '../../../message-handler';
+import { UserAgent } from '../../../../common/user-agent';
+import { ExtensionUpdateFSMEvent } from '../../../../common/constants';
+import { engine } from '../../../engine';
 import {
     Categories,
     HitStatsApi,
     SettingsApi,
     TabsApi,
-} from '../../api';
-import { Prefs } from '../../prefs';
+} from '../../../api';
+import { Prefs } from '../../../prefs';
 import {
     ContextMenuAction,
     contextMenuEvents,
     settingsEvents,
-} from '../../events';
-import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
-import { extensionUpdateActor } from '../extension-update/extension-update-machine-mv3';
+} from '../../../events';
+import { fullscreenUserRulesEditor } from '../../fullscreen-user-rules-editor';
+import { extensionUpdateActor } from '../../extension-update/extension-update-machine-mv3';
+import { type GetOptionsDataResponse } from '../types/types-mv3';
+import { type ExportMessageResponse } from '../types';
 
-import { type GetOptionsDataResponse } from './types-mv3';
-import { type ExportMessageResponse } from './types-common';
 /**
  * SettingsService handles all setting-related messages and
  * calls {@link SettingsApi} to handle settings.

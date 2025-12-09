@@ -20,6 +20,7 @@ import { PopupServiceCommon } from './popup-common';
 /**
  * Empty type for MV2 compatibility.
  * This type is only needed for MV3 extension status functionality.
+ * //TODO: remove after splitting constants.ts.
  */
 export type GetExtensionStatusForPopupResponse = {};
 

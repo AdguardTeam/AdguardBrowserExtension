@@ -18,20 +18,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NotImplementedError } from '../../errors/not-implemented-error';
+import { type GetOptionsDataResponseCommon } from './types-common';
 
 /**
- * TODO: remove this MV2 implimentation after split Extension/src/background/services/ui/popup.ts for mv2/mv3 versions.
- * This service is a empty dummy to correct work of MV2 build without
- * using MV3 code.
+ * Settings with some additional data for the options page:
+ * app version, environment options, constants, filters info, filters metadata, etc.
  */
-export class RulesLimitsService {
-    /**
-     * Just a empty dummy method for MV2.
-     *
-     * @throws Not implemented error.
-     */
-    public static areFilterLimitsExceeded(): boolean {
-        throw new NotImplementedError();
-    }
-}
+export type GetOptionsDataResponse = GetOptionsDataResponseCommon;
