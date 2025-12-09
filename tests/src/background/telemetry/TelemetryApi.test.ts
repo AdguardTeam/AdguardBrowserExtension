@@ -34,7 +34,7 @@ import {
 import { TelemetryApi } from '../../../../Extension/src/background/api';
 
 describe('TelemetryApi', () => {
-    let fetchMock: ReturnType<typeof vi.fn>;
+    let fetchMock: ReturnType<typeof vi.fn<typeof fetch>>;
 
     const createBaseEventData = (): Omit<TelemetryApiEventData, 'pageview' | 'event'> => ({
         synthetic_id: 'abc12345',
@@ -62,16 +62,16 @@ describe('TelemetryApi', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        fetchMock = vi.fn();
+        fetchMock = vi.fn<typeof fetch>();
         global.fetch = fetchMock;
     });
 
     describe('sendEvent', () => {
         test('sends POST request to correct URL with proper headers', async () => {
-            fetchMock.mockResolvedValue({
+            fetchMock.mockResolvedValue(Response.json({
                 ok: true,
                 status: 200,
-            });
+            }));
 
             const eventData: TelemetryApiEventData = {
                 ...createBaseEventData(),
@@ -97,10 +97,10 @@ describe('TelemetryApi', () => {
         });
 
         test('handles HTTP error response', async () => {
-            fetchMock.mockResolvedValue({
+            fetchMock.mockResolvedValue(Response.json({
                 ok: false,
                 status: 500,
-            });
+            }));
 
             const eventData: TelemetryApiEventData = {
                 ...createBaseEventData(),
