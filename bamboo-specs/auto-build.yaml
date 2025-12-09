@@ -12,7 +12,11 @@ variables:
   # Stable branch name for auto-update only filters.
   stableBranchName: stable/v5.2
 
-# Since auto-build is being run only for a stable branch now (specified in
+repositories:
+  - browser-extension:
+      scope: global
+
+# Since auto-builds are being run only for a stable branch now (specified in
 # `bamboo.stableBranchName`) we should skip the build stage for other branches.
 stages:
   - DoNothing:
@@ -257,7 +261,9 @@ branch-overrides:
                   ls -la
 
                   # Check if auto-build is disabled
-                  # Note: Creates empty artifacts to prevent build failure,
+                  # Note: Creates empty artifacts to prevent build failure.
+                  # However, auto-publish will not work because the same condition
+                  # is also checked in the auto-publish stage.
                   if [ "${bamboo.inject.autoBuildEnabled}" = "false" ]; then
                     echo "Auto-build is disabled, creating empty artifacts and exiting"
                     mkdir -p artifacts

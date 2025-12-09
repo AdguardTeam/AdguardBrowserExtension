@@ -1,14 +1,21 @@
-! Checksum: 79OwoAU/EJRbG9XSpDfdNg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1762949751-3600.patch
+! Checksum: Z2dTvzFIFPRPqVKjDTMhSw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1765023228-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.17
-! TimeUpdated: 2025-11-12T12:12:24+00:00
+! Version: 2.0.12.59
+! TimeUpdated: 2025-12-06T12:11:10+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=janet
 $removeparam=vs_campaign_id
 $removeparam=adsterra_clid
 $removeparam=adsterra_placement_id
 $removeparam=loclid
+$removeparam=ldtag_cl
+$removeparam=lt_r
+$removeparam=srclt
+$removeparam=_ly_c
+$removeparam=_ly_r
+$removeparam=yj_r
 $removeparam=line_uid
 $removeparam=mt_click_id
 $removeparam=mt_network
@@ -293,6 +300,63 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||kaigonoshigoto.jp^$removeparam=scid
+||coco.fun/share/$removeparam=share_to
+||coco.fun/share/$removeparam=m
+||coco.fun/share/$removeparam=d
+||music.amazon.co.jp^$removeparam=ref
+||irisplaza.co.jp^$removeparam=fd_bridge_id
+||ana.co.jp^$removeparam=mall_cid
+||ana.co.jp^$removeparam=cid
+||coca-cola.com^$removeparam=openExternalBrowser
+||promo-search.yahoo.co.jp^$removeparam=fr
+||shop.tsukumo.co.jp/goods/$removeparam=cid
+||s.awa.fm^$removeparam=t
+||aozorabank.co.jp^$removeparam=lid
+||teinei.co.jp^$removeparam=ref
+||teinei.co.jp^$removeparam=camp_no
+||teinei.co.jp^$removeparam=rmai
+||frontier-direct.jp^$removeparam=argument
+||frontier-direct.jp^$removeparam=dmai
+||careerindex.jp^$removeparam=pathway
+||sell.amazon.de^$removeparam=refTag
+||sell.amazon.de^$removeparam=ld
+||qoo10.jp^$removeparam=__da_seqno
+||qoo10.jp^$removeparam=flowpath_page_no
+||qoo10.jp^$removeparam=flowpath_page_value
+||research-panel.jp^$removeparam=AID
+||status.medium.com^$removeparam=source
+||sonybank.jp^$removeparam=kid
+||sonybank.jp^$removeparam=cid
+||cmoa.jp^$removeparam=pg
+||cmoa.jp^$removeparam=lp_fol
+||cmoa.jp^$removeparam=adef1043
+||and-pro.jp^$removeparam=waad
+||healthgrades.com^$removeparam=referrerSource
+||zurichlife.co.jp^$removeparam=waad
+||zurichlife.co.jp^$removeparam=agentCode
+||chickencoopcompany.com/services/$removeparam=analytics_context
+||chickencoopcompany.com/services/$removeparam=analytics_trace_id
+||shop.app/accounts/$removeparam=analytics_trace_id
+||byn.kr^$removeparam=rURL
+||smbc.co.jp^$removeparam=aff
+||smbc.co.jp^$removeparam=um
+||smbc.co.jp^$removeparam=us
+||metlife.co.jp^$removeparam=BannerCode
+||metlife.co.jp^$removeparam=Page
+||gu-global.com^$removeparam=path
+||mel.fm^$removeparam=infNews
+||cmoa.jp^$removeparam=cmoa
+||cmoa.jp^$removeparam=cmoa_pg
+||cmoa.jp^$removeparam=site
+||cmoa.jp^$removeparam=adme5101
+||myoji-yurai.net^$removeparam=from
+||jiji.com^$removeparam=ref
+$removeparam=promo,domain=vjav.com|vjav.tube
+||p-bandai.com^$removeparam=eccid
+||p-bandai.com^$removeparam=ecuid
+||p-bandai.com^$removeparam=octid
+||p-bandai.com^$removeparam=ectag
 ||hh.ru^$removeparam=hhtmFrom
 ||mgstage.com^$removeparam=form
 ||playerok.com^$removeparam=click
@@ -304,9 +368,12 @@ $removeparam=fb_source
 ||scoopzapp.com^$removeparam=nid
 ||scoopzapp.com^$removeparam=pd
 ||scoopzapp.com^$removeparam=s
-||cj.dotomi.com^$removeparam=/^\w=/
-||emjcd.com^$removeparam=/^\w=/
-||nextdns.io/?from=$removeparam=from
+||ad.doubleclick.net/ddm/clk/$removeparam=PID
+||ad.doubleclick.net/ddm/clk/$removeparam=deeplink
+||ad.doubleclick.net/ddm/clk/$removeparam=clickId
+||ad.doubleclick.net/ddm/clk/$removeparam=clickOrigin
+||ad.doubleclick.net/ddm/clk/$removeparam=/^\\$ja=/
+||ad.doubleclick.net/ddm/clk/$removeparam=/^utm_custom\d+/
 ||fastmail.com^$removeparam=pscd
 ||fastmail.com^$removeparam=ps_partner_key
 ||fastmail.com^$removeparam=ps_xid
@@ -314,8 +381,6 @@ $removeparam=fb_source
 ||fastmail.com^$removeparam=gspk
 ||notebooklm.google.*$removeparam=icid
 ||notebooklm.google.*$removeparam=original_referer
-||redbull.com^$removeparam=ldtag_cl
-||redbull.com^$removeparam=lt_r
 ||sravni.ru^$removeparam=rubricAlias
 ||pcmax.jp^$removeparam=ad_id
 ||indianexpress.com^$removeparam=ref
@@ -599,7 +664,6 @@ $removeparam=phfp,domain=protonvpn.com|proton.me
 ||rd.bizrate.com$removeparam=dMid
 ||metro.*$removeparam=cnxclid
 ||ehon.alphapolis.co.jp^$removeparam=from
-||liferbc.ru^$removeparam=from
 ||luisaviaroma.com/*/p$removeparam=lvrid
 ||dailymail.co.uk^$removeparam=ns_mchannel
 ||dailymail.co.uk^$removeparam=ns_campaign
@@ -734,7 +798,7 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 ||lidea.today^$removeparam=from
 ||change.org^$removeparam=source_location
 ||change.org^$removeparam=user_flow
-||rbc.ru^$removeparam=from
+*$removeparam=from,domain=rbc.ru|rbclifemedia.ru
 ||fontanka.ru^$removeparam=from
 ||p.liadm.com/click?s=$removeparam=i6
 ||p.liadm.com/click?s=$removeparam=_lc2_fpi
@@ -1838,6 +1902,7 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt|affiliate.privatevp
 ||edx.org^$removeparam=source
 ||infoq.com^$removeparam=/topicPageSponsorship|^itm_/
 ||adshares.net^$removeparam=cid
+||adobe.com/download/$removeparam=trackingid
 ||creativecloud.adobe.com^$removeparam=trackingid
 ||get.adobe.com^$removeparam=browser_type
 ||get.adobe.com^$removeparam=browser_dist
@@ -2226,7 +2291,7 @@ $removeparam=s,domain=twitter.com|x.com
 ||gamesplanet.com^$removeparam=ref
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
-!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
+!+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 @@||adj.st^$removeparam=adj_t
 @@||passport.jlcpcb.com^$removeparam=from
