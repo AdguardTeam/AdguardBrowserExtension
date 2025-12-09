@@ -119,7 +119,18 @@ branch-overrides:
         tasks:
           - checkout:
               force-clean-build: true
+          - script: &setAutoBuildEnabled
+              interpreter: SHELL
+              scripts:
+                - "./bamboo-specs/scripts/set-auto-build-enabled.sh"
+          - inject-variables: &injectAutoBuildEnabled
+              file: artifacts/auto-build.properties
+              scope: RESULT
           - script:
+              conditions: &isAutoBuildEnabled
+                - variable:
+                    equals:
+                      bamboo.inject.autoBuildEnabled: "true"
               interpreter: SHELL
               scripts:
                 - |-
@@ -155,7 +166,10 @@ branch-overrides:
         tasks:
           - checkout:
               force-clean-build: true
+          - script: *setAutoBuildEnabled
+          - inject-variables: *injectAutoBuildEnabled
           - script:
+              conditions: *isAutoBuildEnabled
               interpreter: SHELL
               scripts:
                 - |-
@@ -174,6 +188,7 @@ branch-overrides:
                   ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci
         final-tasks:
           - test-parser:
+              conditions: *isAutoBuildEnabled
               type: junit
               # mv3 postfix because we run auto-builds only for mv3 branch.
               test-results: 'tests-reports/unit-tests-mv3.xml'
@@ -192,7 +207,10 @@ branch-overrides:
         tasks:
           - checkout:
               force-clean-build: true
+          - script: *setAutoBuildEnabled
+          - inject-variables: *injectAutoBuildEnabled
           - script:
+              conditions: *isAutoBuildEnabled
               interpreter: SHELL
               scripts:
                 - |-
@@ -225,6 +243,8 @@ branch-overrides:
         tasks:
           - checkout:
               force-clean-build: true
+          - script: *setAutoBuildEnabled
+          - inject-variables: *injectAutoBuildEnabled
           - script:
               interpreter: SHELL
               scripts:
@@ -235,6 +255,17 @@ branch-overrides:
                   # Fix mixed logs
                   exec 2>&1
                   ls -la
+
+                  # Check if auto-build is disabled
+                  # Note: Creates empty artifacts to prevent build failure,
+                  if [ "${bamboo.inject.autoBuildEnabled}" = "false" ]; then
+                    echo "Auto-build is disabled, creating empty artifacts and exiting"
+                    mkdir -p artifacts
+                    touch artifacts/chrome-mv3-beta.zip
+                    touch artifacts/chrome-mv3-release.zip
+
+                    exit 0;
+                  fi
 
                   # Validate that current branch is valid for build.
                   if [ "${bamboo.planRepository.branchName}" != "${bamboo.stableBranchName}" ]; then
@@ -282,17 +313,20 @@ branch-overrides:
                   mv build/beta/chrome-mv3.zip artifacts/chrome-mv3-beta.zip
                   mv build/release/chrome-mv3.zip artifacts/chrome-mv3-release.zip
           - inject-variables:
+              conditions: *isAutoBuildEnabled
               # Doesn't matter which channel we use, because version is the same
               # for both channels.
               file: build/release/build.txt
               scope: RESULT
               namespace: inject
           - any-task:
+              conditions: *isAutoBuildEnabled
               plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
               configuration:
                 selectedRepository: defaultRepository
                 commitMessage: 'skipci: Filters update & increment patch version'
           - any-task:
+              conditions: *isAutoBuildEnabled
               plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
               configuration:
                 selectedRepository: defaultRepository
@@ -314,13 +348,18 @@ branch-overrides:
           volumes:
             ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
         tasks:
+          - script: *setAutoBuildEnabled
+          - inject-variables: *injectAutoBuildEnabled
           - artifact-download:
+              conditions: *isAutoBuildEnabled
               artifacts:
                 - name: chrome-mv3-release.zip
           - artifact-download:
+              conditions: *isAutoBuildEnabled
               artifacts:
                 - name: chrome-mv3-beta.zip
           - script:
+              conditions: *isAutoBuildEnabled
               interpreter: SHELL
               scripts:
                 - |-
@@ -329,6 +368,7 @@ branch-overrides:
                   ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh beta
         final-tasks:
           - test-parser:
+              conditions: *isAutoBuildEnabled
               type: junit
               test-results: 'tests-reports/integration-tests-*.xml'
           - script: *cleanup-script
