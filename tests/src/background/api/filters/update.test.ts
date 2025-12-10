@@ -357,12 +357,11 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                 .mockImplementation(() => Promise.resolve({
                     filter: fakeFilterV4WithDiffPath.split('\n'),
                     rawFilter: fakeFilterV4WithDiffPath,
-                }))
-                .mockClear(); // Vitest 4: clear call history since vi.spyOn returns same spy instance
+                }));
 
             await FilterUpdateApi.autoUpdateFilters(false);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
-                // note: vi.spyOn no longer resets call count in Vitest 4, must use mockClear()
+                // note: vi.spyOn resets call count
                 1,
                 'https://filters.adtidy.org/extension/chromium/filters/1.txt',
                 {

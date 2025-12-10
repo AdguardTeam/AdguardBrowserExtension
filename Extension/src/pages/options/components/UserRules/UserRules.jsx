@@ -23,15 +23,12 @@ import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
 
-import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { translator } from '../../../../common/translators/translator';
 import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
-import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnings';
-import { UserAgent } from '../../../../common/user-agent';
+import { DynamicRulesLimitsWarning } from '../Warnings';
 
 import { UserRulesSwitcher } from './UserRulesSwitcher';
 import { UserScriptsApiWarningForUserRules } from './UserScriptsApiWarningForUserRules';
@@ -40,9 +37,7 @@ import { RuleSyntaxLink } from './RuleSyntaxLink';
 import './styles.pcss';
 
 const UserRules = observer(() => {
-    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
-
-    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.UserRulesScreen);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
     const handleGoToEditorClick = async () => {
         await messenger.openFullscreenUserRules();
@@ -77,7 +72,6 @@ const UserRules = observer(() => {
             />
             <DynamicRulesLimitsWarning />
             <UserScriptsApiWarningForUserRules />
-            {UserAgent.isFirefoxMobile && <ClipboardPermissionWarning />}
             <div className={linksClassNames}>
                 <RuleSyntaxLink />
             </div>

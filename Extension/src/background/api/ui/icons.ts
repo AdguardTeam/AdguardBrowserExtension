@@ -40,14 +40,6 @@ import { FramesApi, type FrameData } from './frames';
 import { promoNotificationApi } from './promo-notification';
 import { browserAction } from './browser-action';
 
-/**
- * Result of the setIcon promise race.
- */
-const enum SetIconResult {
-    Resolved = 'resolved',
-    Timeout = 'timeout',
-}
-
 export const defaultIconVariants: IconVariants = {
     enabled: {
         '19': browser.runtime.getURL('assets/icons/on-19.png'),
@@ -84,12 +76,6 @@ class IconsApi {
      * Icon variants for the promo notification, if any is available.
      */
     private promoIcons: IconVariants | null = null;
-
-    /**
-     * AG-38219 Flag to indicate if setIcon promise doesn't resolve (360 Browser).
-     * If true, we skip awaiting setIcon calls.
-     */
-    private static setIconTimeoutDetected = false;
 
     /**
      * Initializes Icons API.
@@ -212,44 +198,13 @@ class IconsApi {
     }
 
     /**
-     * Timeout in milliseconds to wait for setIcon promise to resolve.
-     */
-    private static readonly SET_ICON_TIMEOUT_MS = 100;
-
-    /**
      * Sets the icon for the extension action.
      *
      * @param icon Icon to set.
      * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
      */
     private static async setActionIcon(icon: IconData, tabId?: number): Promise<void> {
-        /**
-         * AG-38219 For some reason browserAction.setIcon() promise is not resolved
-         * in 360 browser MV3, the icon still sets correctly.
-         * We use a timeout to avoid waiting indefinitely for the promise to resolve.
-         * Once timeout is detected, we skip awaiting setIcon calls.
-         */
-        const setIconPromise = browserAction
-            .setIcon({ imageData: await getIconImageData(icon), tabId })
-            .then(() => SetIconResult.Resolved);
-
-        if (IconsApi.setIconTimeoutDetected) {
-            return;
-        }
-
-        let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-        const timeoutPromise = new Promise<SetIconResult.Timeout>((resolve) => {
-            timeoutId = setTimeout(() => resolve(SetIconResult.Timeout), IconsApi.SET_ICON_TIMEOUT_MS);
-        });
-
-        const result = await Promise.race([setIconPromise, timeoutPromise]);
-
-        if (result === SetIconResult.Timeout) {
-            logger.info('[ext.IconsApi.setActionIcon]: setIcon promise did not resolve in time, likely 360 Browser. Skipping await for future calls.');
-            IconsApi.setIconTimeoutDetected = true;
-        }
-        clearTimeout(timeoutId);
+        await browserAction.setIcon({ imageData: await getIconImageData(icon), tabId });
     }
 
     /**

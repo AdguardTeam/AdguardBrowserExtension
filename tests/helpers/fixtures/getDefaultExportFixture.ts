@@ -23,7 +23,6 @@ export const getDefaultExportFixture = (isMv3: boolean): Config => ({
         [GeneralSettingsOption.AppearanceTheme]: 'system',
     },
     [RootOption.ExtensionSpecificSettings]: {
-        [ExtensionSpecificSettingsOption.AllowAnonymizedUsageData]: false,
         [ExtensionSpecificSettingsOption.UseOptimizedFilters]: false,
         [ExtensionSpecificSettingsOption.CollectHitsCount]: false,
         [ExtensionSpecificSettingsOption.ShowContextMenu]: true,

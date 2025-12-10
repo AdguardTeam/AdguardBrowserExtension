@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
 import browser from 'webextension-polyfill';
 
 import { getErrorMessage } from '@adguard/logger';
@@ -30,46 +29,48 @@ type OptionalPermission = browser.Manifest.OptionalPermission;
  */
 export class Permissions implements Permissions {
     /**
-     * Checks if browser has permissions.
+     * Checks if browser has permission.
      *
-     * @param permissions Array of permissions.
+     * @param permission One of optional permissions.
      *
-     * @returns True if browser has all permissions, otherwise false.
+     * @returns Boolean flag
      *
-     * @throws Error if failed to check permissions
+     * @throws Error failed to check
      */
-    static async hasPermissions(permissions: OptionalPermission[]): Promise<boolean> {
+    static async hasPermission(permission: OptionalPermission): Promise<boolean> {
         const permissionsRequest = {
-            permissions,
+            permissions: [permission],
         };
 
         try {
             return await browser.permissions.contains(permissionsRequest);
         } catch (e) {
             const errorMessage = getErrorMessage(e);
-            throw new Error(`Was not able to check if browser contains permissions: "${permissions.join(', ')}", error: "${errorMessage}"`);
+            throw new Error(
+                `Was not able to check if browser contains permission: "${permission}", error: "${errorMessage}"`,
+            );
         }
     }
 
     /**
-     * Requests permissions from user.
+     * Requests optional permissions from user.
      *
-     * @param permissions Array of permissions.
+     * @param permission One of optional permissions.
      *
-     * @returns True if permissions were granted, otherwise false.
+     * @returns True if permission granted, otherwise false.
      *
-     * @throws Error if failed to request permissions, due to browser error or user
+     * @throws Error if failed to request permission, due to browser error or user
      */
-    static async addPermissions(permissions: OptionalPermission[]): Promise<boolean> {
+    static async addPermission(permission: OptionalPermission): Promise<boolean> {
         const permissionsRequest = {
-            permissions,
+            permissions: [permission],
         };
 
         try {
             return await browser.permissions.request(permissionsRequest);
         } catch (e) {
             const errorMessage = getErrorMessage(e);
-            throw new Error(`Was not able to add permissions: "${permissions.join(', ')}", error: "${errorMessage}"`);
+            throw new Error(`Was not able to add permission: "${permission}", error: "${errorMessage}"`);
         }
     }
 
@@ -79,7 +80,7 @@ export class Permissions implements Permissions {
      * @returns True if permission was granted.
      */
     static async addPrivacy(): Promise<boolean> {
-        return Permissions.addPermissions(['privacy']);
+        return Permissions.addPermission('privacy');
     }
 
     /**
@@ -88,24 +89,6 @@ export class Permissions implements Permissions {
      * @returns True if extension already has privacy permission.
      */
     static async hasPrivacy(): Promise<boolean> {
-        return Permissions.hasPermissions(['privacy']);
-    }
-
-    /**
-     * Checks if clipboard permissions were granted by user.
-     *
-     * @returns True if extension already has both clipboardRead and clipboardWrite permissions.
-     */
-    static async hasClipboardPermissions(): Promise<boolean> {
-        return Permissions.hasPermissions(['clipboardRead', 'clipboardWrite']);
-    }
-
-    /**
-     * Requests clipboard permissions (clipboardRead and clipboardWrite).
-     *
-     * @returns True if permissions were granted.
-     */
-    static async addClipboardPermissions(): Promise<boolean> {
-        return Permissions.addPermissions(['clipboardRead', 'clipboardWrite']);
+        return Permissions.hasPermission('privacy');
     }
 }

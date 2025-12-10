@@ -34,7 +34,6 @@ export enum SettingOption {
     // Extension specific settings.
     UseOptimizedFilters = 'use-optimized-filters',
     DisableCollectHits = 'hits-count-disabled',
-    AllowAnonymizedUsageData = 'allow-anonymized-usage-data',
     DisableShowContextMenu = 'context-menu-disabled',
     // Flag used to show link to comparison of desktop and browser extension versions.
     DisableShowAdguardPromoInfo = 'show-info-about-adguard-disabled',

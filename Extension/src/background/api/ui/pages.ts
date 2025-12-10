@@ -414,8 +414,6 @@ export class PagesApi {
     public static async openThankYouPage(): Promise<void> {
         const params = BrowserUtils.getExtensionParams();
         params.push(`_locale=${encodeURIComponent(browser.i18n.getUILanguage())}`);
-        // Param for hiding telemetry consent checkbox for old extension versions
-        params.push('show_telemetry_consent=true');
 
         const pageUrl = __IS_MV3__ ? PagesApi.thankYouPageUrlMv3 : PagesApi.thankYouPageUrl;
         const thankYouUrl = `${pageUrl}?${params.join('&')}`;

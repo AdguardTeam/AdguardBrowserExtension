@@ -25,26 +25,11 @@ import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { IOS_URL, ANDROID_URL } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
 
 import './footer.pcss';
 
 export const Footer = observer(() => {
     const store = useContext(popupStore);
-
-    const handleAppleClick = () => {
-        store.telemetryStore.sendCustomEvent(
-            TelemetryEventName.AppleClick,
-            TelemetryScreenName.MainPage,
-        );
-    };
-
-    const handleAndroidClick = () => {
-        store.telemetryStore.sendCustomEvent(
-            TelemetryEventName.AndroidClick,
-            TelemetryScreenName.MainPage,
-        );
-    };
 
     let footerContent = (
         <>
@@ -61,7 +46,6 @@ export const Footer = observer(() => {
                     rel="noreferrer"
                     className="footer__link"
                     title={translator.getMessage('popup_adguard_for_ios')}
-                    onClick={handleAppleClick}
                 >
                     <Icon
                         id="#apple"
@@ -75,7 +59,6 @@ export const Footer = observer(() => {
                     rel="noreferrer"
                     className="footer__link"
                     title={translator.getMessage('popup_adguard_for_android')}
-                    onClick={handleAndroidClick}
                 >
                     <Icon
                         id="#android"

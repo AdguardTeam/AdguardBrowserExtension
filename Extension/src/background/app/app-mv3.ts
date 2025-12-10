@@ -69,7 +69,6 @@ import {
     localeDetect,
     PromoNotificationService,
     filterUpdateService,
-    Telemetry,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -312,8 +311,6 @@ export class App {
         // so the event should be dispatched eventually after all initialization
         // is done.
         dispatchEvent(new Event(EXTENSION_INITIALIZED_EVENT));
-
-        await Telemetry.init();
     }
 
     /**

@@ -50,10 +50,6 @@ browser.runtime.getManifest.callsFake(() => ({
     version: '0.0.0',
     manifest_version: MANIFEST_ENV as any,
 }));
-browser.runtime.getPlatformInfo.resolves({
-    os: 'mac',
-    arch: 'x86-64',
-});
 Object.assign(browser, {
     /**
      * These values are used in the background script to determine the maximum
@@ -83,8 +79,8 @@ Object.assign(browser, {
 vi.mock('webextension-polyfill', () => ({ default: browser }));
 
 vi.mock('nanoid', () => ({
-    nanoid: (): string => 'cd42f5fa',
-    customAlphabet: (): Function => (): string => 'cd42f5fa',
+    nanoid: (): string => 'cTkoV5Vs',
+    customAlphabet: (): Function => (): string => 'cTkoV5Vs',
 }));
 
 // Mock log to hide all logger message

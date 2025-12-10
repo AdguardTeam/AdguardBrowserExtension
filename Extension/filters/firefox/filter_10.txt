@@ -1,9 +1,9 @@
-! Checksum: GaAEfxryhi8xY3IXqBf0BQ
-! Diff-Path: ../patches/10/10-s-1764347287-3600.patch
+! Checksum: IpYVyKbxdxNhW+0tKEd0vg
+! Diff-Path: ../patches/10/10-s-1760530524-3600.patch
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.81
-! TimeUpdated: 2025-11-28T16:25:09+00:00
+! Version: 2.0.3.76
+! TimeUpdated: 2025-10-15T12:11:48+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -156,12 +156,6 @@ ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="or
 ! END: Yandex
 !
 ! Amazon
-amazon.*#@#.a-section:has(> div[cel_widget_id^="adplacements:"]:last-child)
-amazon.*#@#div[cel_widget_id^="adplacements:"]
-amazon.*#@#.a-section:has(> .a-section:only-child > div[cel_widget_id^="sp-pop-mobile-"])
-amazon.*#@#div[cel_widget_id^="sp-pop-mobile-"]
-amazon.*#@#div[data-idt="AXIOM"]
-amazon.*#@#div[cel_widget_id^="sb-themed-collection-v2-mobile_loom-mobile"]
 amazon.*#@#div[id^="dp-ads-"]
 amazon.*#@##px-profile_feature_div
 amazon.*#@#div[data-cel-widget="softlines-btf-substitute-zone-container-T3_feature_div"]
@@ -254,7 +248,7 @@ buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] h2.mfe-card-group-title:contains(sponsored))
-ebay.*#@$#.x-rx-slot { position: absolute!important; left: -4000px!important; }
+ebay.*#@$#.x-rx-slot { position: absolute!important; left: -4000px!important;}
 ebay.*#@#.srp-river-answer[class*="CAROUSEL"]:not([class*="NAVIGATION"])
 !
 ! aliexpress.com
@@ -368,7 +362,7 @@ walmart.com#@?#.flex > div[class]:has(> div[class][style*="contain-intrinsic-siz
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_usefulads
 ! Detect of using AdGuard products
-!+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
+!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Detect HTTPS filtering
 ! Detect Advanced Protection of AdGuard for iOS

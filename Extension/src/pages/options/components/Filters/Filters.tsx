@@ -31,8 +31,6 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import { sortBy } from 'lodash-es';
 
-import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services';
 import { translator } from '../../../../common/translators/translator';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { rootStore } from '../../stores/RootStore';
@@ -59,8 +57,6 @@ import { AddCustomModal } from './AddCustomModal';
 import { SEARCH_FILTERS } from './Search/constants';
 import { UserScriptsApiWarningInsideCustomGroup } from './UserScriptsApiWarningForCustomFilters';
 import type { RenderedFilterType } from './types';
-
-import './filters.pcss';
 
 /**
  * Parameters for the filter list render function inside the group.
@@ -92,9 +88,7 @@ const QUERY_PARAM_NAMES = {
 };
 
 const Filters = observer(() => {
-    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
-
-    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.FiltersScreen);
+    const { settingsStore, uiStore } = useContext(rootStore);
 
     const navigate = useNavigate();
 
@@ -465,27 +459,36 @@ const Filters = observer(() => {
         const renderBackButton = () => (
             // Order should remain the same to keep the focus order
             // Filter checkbox -> Filter description -> Back button
-            <button
-                type="button"
-                role="link"
-                onClick={handleReturnToGroups}
-                aria-label={translator.getMessage('options_filters_back_button')}
-                className="filters__back"
-            >
+            <>
                 <div className="title__inner">
-                    <div className="title title--back-btn">
+                    <button
+                        type="button"
+                        onClick={handleReturnToGroups}
+                        className="title title--back-btn"
+                        // This button must be hidden for keyboard navigation and Screen Readers,
+                        // because we already have a back button below, main reason for this button is to
+                        // provide larger area of click for mouse users.
+                        tabIndex={-1}
+                        aria-hidden="true"
+                    >
                         <span id={titleId}>{selectedGroup.groupName}</span>
-                    </div>
+                    </button>
                     {description && <div className="title__desc title__desc--back">{description}</div>}
                 </div>
-                <div className="button setting__back">
+                <button
+                    role="link"
+                    type="button"
+                    aria-label={translator.getMessage('options_filters_back_button')}
+                    className="button setting__back"
+                    onClick={handleReturnToGroups}
+                >
                     <Icon
                         id="#arrow-left"
                         className="icon--24"
                         aria-hidden="true"
                     />
-                </div>
-            </button>
+                </button>
+            </>
         );
 
         const renderEmptyFiltersMessage = () => {
