@@ -360,7 +360,6 @@ export class SettingsApi {
     private static importExtensionSpecificSettings({
         [ExtensionSpecificSettingsOption.UseOptimizedFilters]: useOptimizedFilters,
         [ExtensionSpecificSettingsOption.CollectHitsCount]: collectHitsCount,
-        [ExtensionSpecificSettingsOption.AllowAnonymizedUsageData]: allowAnonymizedUsageData,
         [ExtensionSpecificSettingsOption.ShowContextMenu]: showContextMenu,
         [ExtensionSpecificSettingsOption.ShowInfoAboutAdguard]: showInfoAboutAdguard,
         [ExtensionSpecificSettingsOption.ShowAppUpdatedInfo]: showAppUpdatedInfo,
@@ -374,9 +373,6 @@ export class SettingsApi {
         settingsStorage.set(SettingOption.DisableShowAppUpdatedNotification, !showAppUpdatedInfo);
         settingsStorage.set(SettingOption.HideRateBlock, hideRateAdguard);
         settingsStorage.set(SettingOption.UserRulesEditorWrap, userRulesEditorWrap);
-        if (allowAnonymizedUsageData !== undefined) {
-            settingsStorage.set(SettingOption.AllowAnonymizedUsageData, allowAnonymizedUsageData);
-        }
     }
 
     /**
@@ -391,9 +387,6 @@ export class SettingsApi {
             ),
             [ExtensionSpecificSettingsOption.CollectHitsCount]: (
                 !settingsStorage.get(SettingOption.DisableCollectHits)
-            ),
-            [ExtensionSpecificSettingsOption.AllowAnonymizedUsageData]: (
-                settingsStorage.get(SettingOption.AllowAnonymizedUsageData)
             ),
             [ExtensionSpecificSettingsOption.ShowContextMenu]: (
                 !settingsStorage.get(SettingOption.DisableShowContextMenu)

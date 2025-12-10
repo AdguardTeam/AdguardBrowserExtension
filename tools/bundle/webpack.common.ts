@@ -87,15 +87,6 @@ const __dirname = path.dirname(__filename);
 
 const config = getEnvConf(BUILD_ENV);
 
-/**
- * Telemetry API URLs mapping by build environment.
- */
-const TELEMETRY_API_URLS: Record<BuildTargetEnv, string> = {
-    [BuildTargetEnv.Dev]: 'telemetry.service.agrd.dev',
-    [BuildTargetEnv.Beta]: 'api.agrd-tm.com',
-    [BuildTargetEnv.Release]: 'api.agrd-tm.com',
-};
-
 const OUTPUT_PATH = config.outputPath;
 
 /**
@@ -474,8 +465,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, isWatchMode = fals
                 IS_RELEASE: BUILD_ENV === BuildTargetEnv.Release,
                 IS_BETA: BUILD_ENV === BuildTargetEnv.Beta,
                 __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
-                // Telemetry service URL from mapping
-                TELEMETRY_URL: JSON.stringify(TELEMETRY_API_URLS[BUILD_ENV]),
             }),
         ],
     };

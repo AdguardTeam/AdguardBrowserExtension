@@ -53,7 +53,6 @@ import { UserAgent } from '../../../common/user-agent';
 import { logger } from '../../../common/logger';
 import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { NotificationType, type NotificationParams } from '../../common/types';
-import { TelemetryStore } from '../../common/telemetry';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -166,15 +165,9 @@ export class PopupStore {
     @observable
     updateNotification: NotificationParams | null = null;
 
-    /**
-     * Telemetry store.
-     */
-    telemetryStore: TelemetryStore;
-
     constructor() {
         makeObservable(this);
         this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
-        this.telemetryStore = new TelemetryStore();
 
         appStateActor.subscribe((state) => {
             runInAction(() => {
@@ -279,10 +272,6 @@ export class PopupStore {
             this.currentTabId = currentTab.id;
 
             this.setAppActorInitState();
-
-            // telemetry
-            const anonymizedUsageDataAllowed = settings.values[settings.names.AllowAnonymizedUsageData];
-            this.telemetryStore.setIsAnonymizedUsageDataAllowed(anonymizedUsageDataAllowed);
 
             // Handle MV3-specific options
             if (!mv3SpecificOptions) {

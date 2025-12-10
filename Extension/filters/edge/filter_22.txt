@@ -1,9 +1,9 @@
-! Checksum: yBmAbKYA3gB6us530BeaFQ
-! Diff-Path: ../patches/22/22-s-1764843068-3600.patch
+! Checksum: +R/y0JykyQ7abPcFcVxUHg
+! Diff-Path: ../patches/22/22-s-1762870765-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.13.13
-! TimeUpdated: 2025-12-04T10:08:45+00:00
+! Version: 2.0.13.2
+! TimeUpdated: 2025-11-11T14:08:35+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1389,7 +1389,6 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (third-party services)
 !
-||tariffuxx.de^$third-party
 ||web-client.moveo.ai^$third-party
 ||rosinenpicker.de/external/
 ||hotukdeals.com/search/price_comparison/pricespy?
@@ -1770,8 +1769,6 @@ yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
 !
 !   SECTION: Widgets - Marketing - Allowlist
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/218990
-@@||widgets.coingecko.com/gecko-coin-price-chart-widget.js$domain=rewards.ambire.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/214100
 @@||secure.livechatinc.com/customer/action/open_chat?$domain=direct.lc.chat
 ! https://github.com/AdguardTeam/AdguardFilters/issues/205808
@@ -1933,7 +1930,6 @@ full-count.jp#?#section > div.c-heading:has(> p.c-heading__en:contains(RECOMMEND
 /js/chat/edu_chat.js
 /wp-content/plugins/creame-whatsapp-me/public/js/joinchat.
 !
-||omniqa.ru^
 ||livechat.nextop.com^$third-party
 ||titanembeds.com^$third-party
 ||cdn.shulex-voc.com/shulex-live-chat/
@@ -1993,12 +1989,9 @@ freestreams-live.my###custom_html-9
 ! Blocking these chat widgets if they are really annoying
 ||widget.intercom.io^$domain=appmaster.io|internxt.com
 ||helpdeskeddy.com//js/contact-widget.js$domain=litres.ru
-||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com|revouninstaller.com
+||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com
 litres.ru###call_support
 !
-mediaexpert.pl###help-bubble
-mediaexpert.pl###expert-help-bubble
-||livechat.oyunfor.com^
 ugreen.com##body > div[style="visibility: visible;"]:has(> div > iframe#launcher)
 animelon.com##div[class^="discord"]
 pebblehost.com##.crisp-client
@@ -2444,14 +2437,6 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
-hongkongfp.com###block-108
-hongkongfp.com##.wp-block-newspack-blocks-donate
-hongkongfp.com##.entry-content > div.wp-block-image:has(> figure[class] > a[href="https://hongkongfp.com/support-hong-kong-free-press/"])
-baikal-journal.ru##.m-block-donationpromo
-wpr.org#%#//scriptlet('set-cookie', 'splash-page', 'hidden')
-wpr.org##.promotion-page-header
-wpr.org##.entry-content > div.wp-block-wpr-promotion
-english.nv.ua##.eng-patreon-promo
 pbs.org#$#div[data-popup-type="large_funding"] { display: none !important; }
 pbs.org#$#body[style^="overflow:"] { overflow: auto !important; }
 novastream.top###donationBanner
@@ -2719,7 +2704,7 @@ samlab.ws##iframe[src^="https://yoomoney.ru/"]
 ||yoomoney.ru/quickpay/shop-widget$domain=ovgorskiy.ru|blog.themarfa.name
 ||funding.webmoney.ru/widgets/$domain=ovgorskiy.ru|demek.ru|скачатьофис.рф
 ! Google Revenue Manager
-||news.google.com/swg/js/v1/swg-basic.js$domain=wololo.net|premierguitar.com|svetandroida.cz|12punto.com.tr|game-maps.com|tv5.com.tr|ginjfo.com
+||news.google.com/swg/js/v1/swg-basic.js$domain=wololo.net|premierguitar.com|svetandroida.cz|12punto.com.tr|game-maps.com|tv5.com.tr
 ! The Moscow Times
 themoscowtimes.com##.preheader_advert
 themoscowtimes.com##.contribute-article
@@ -2753,10 +2738,10 @@ pokemon-matome.net##div[class^="rssinline"]
 !
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_annoyances_widgets
-!+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
+!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_annoyances_ext
 ! Detect of using AdGuard products
-!+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
+!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Detect HTTPS filtering
 ! Detect Advanced Protection of AdGuard for iOS

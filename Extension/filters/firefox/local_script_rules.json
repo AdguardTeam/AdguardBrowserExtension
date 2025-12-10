@@ -361,14 +361,6 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const r={apply:(r,e,t)=>{try{const r=(new Error).stack,e=t[0];if(r.includes(\"adBlockingDetected\")&&e?.adFailurePercentage)return 0}catch(r){}return Reflect.apply(r,e,t)}};window.Array.prototype.push=new Proxy(window.Array.prototype.push,r)})();": [
-            {
-                "permittedDomains": [
-                    "itv.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "(()=>{let e;const t={apply:(t,n,o)=>(o[0]?.behavior?.controlType&&o[0]?.initialItems&&\"function\"==typeof o[0].update&&(e=o[0].update,o[0].update=function(){this.update=e}),Reflect.apply(t,n,o))};window.Object.keys=new Proxy(window.Object.keys,t)})();": [
             {
                 "permittedDomains": [
@@ -668,7 +660,6 @@
         "(()=>{const e=Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\").set,t=Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\").get;Object.defineProperty(Element.prototype,\"innerHTML\",{get(){return t.call(this)},set(t){if(t?.includes?.(\"allow adblock\"))throw new Error;e.call(this,t)}})})();": [
             {
                 "permittedDomains": [
-                    "myvidplay.com",
                     "dsvplay.com",
                     "vide0.net",
                     "do7go.com",
@@ -1077,6 +1068,22 @@
                 "restrictedDomains": []
             }
         ],
+        "window.my_random_number = 1;": [
+            {
+                "permittedDomains": [
+                    "calciomercato.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\\[_0x/.test(a.toString()))return b(a,c)};})();": [
+            {
+                "permittedDomains": [
+                    "calciomercato.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{window.com_adswizz_synchro_decorateUrl=(a)=>a;})();": [
             {
                 "permittedDomains": [
@@ -1203,7 +1210,6 @@
         "(()=>{Object.defineProperty=new Proxy(Object.defineProperty,{apply:(e,t,n)=>{const r=new Set([\"VP\",\"w3\",\"JW\"]),o=n[1],c=n[2]?.get;return o&&r.has(o)&&\"function\"==typeof c&&/^\\(\\)=>.$/.test(c.toString())&&(n[2].get=function(){return function(){return!1}}),Reflect.apply(e,t,n)}});})();": [
             {
                 "permittedDomains": [
-                    "jastrzabpost.pl",
                     "wirtualnemedia.pl",
                     "open.fm",
                     "deliciousmagazine.pl",
@@ -1282,26 +1288,6 @@
             {
                 "permittedDomains": [
                     "freedisc.pl"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "(()=>{const t={apply:(t,e,o)=>{try{const t=e;t&&\"object\"==typeof t&&t.context?.bidRequestId&&(e={})}catch(t){}return Reflect.apply(t,e,o)}};window.Object.prototype.hasOwnProperty=new Proxy(window.Object.prototype.hasOwnProperty,t)})();": [
-            {
-                "permittedDomains": [
-                    "historiapoznania.pl",
-                    "wirtualnemedia.pl",
-                    "pcformat.pl",
-                    "pudelek.pl",
-                    "abczdrowie.pl",
-                    "pysznosci.pl",
-                    "o2.pl",
-                    "autokult.pl",
-                    "jastrzabpost.pl",
-                    "genialne.pl",
-                    "polygamia.pl",
-                    "money.pl",
-                    "wp.pl"
                 ],
                 "restrictedDomains": []
             }
@@ -1443,18 +1429,6 @@
             {
                 "permittedDomains": [
                     "agarz.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "(()=>{let t=!1;const e=window.setTimeout,n={apply:(n,o,c)=>{try{c[0]?.toString?.().includes(\"thisArg.dispatchEvent\")&&(t=!0,e((()=>{t=!1}),50))}catch(t){}return Reflect.apply(n,o,c)}};window.setTimeout=new Proxy(window.setTimeout,n);const o=new Set([\"readystatechange\",\"load\",\"loadend\"]),c={construct:(e,n,c)=>{try{const e=n[0];if(t&&o.has(e)&&location.href.includes(\"/video/\"))return new ProgressEvent(e)}catch(t){}return Reflect.construct(e,n,c)}};window.Event=new Proxy(window.Event,c)})();": [
-            {
-                "permittedDomains": [
-                    "primevideo.com",
-                    "amazon.co.uk",
-                    "amazon.de",
-                    "amazon.co.jp",
-                    "amazon.com"
                 ],
                 "restrictedDomains": []
             }
@@ -1979,7 +1953,7 @@
                 "restrictedDomains": []
             }
         ],
-        "!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll(\"div[data-pagelet^=\\\"FeedUnit\\\"]:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > div:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > span:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] h3[dir=\\\"auto\\\"] + div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div > div > span > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div div span > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div div span > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div span > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div span div[class=\\\"\\\"]:not([style*=\\\"display: none\\\"]), div:not([class],[id]) div:not([class],[id]) > [class]:not([style*=\\\"display: none\\\"],img,div,h3,span,a), div[role=\\\"main\\\"] h3 + div[aria-hidden] + div > * > *:not(div,[style*=\\\"display: none\\\"]),div[role=\\\"main\\\"] h3 + div[aria-hidden] + div > div:not([style*=\\\"display: none\\\"])\").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.(\"__reactEvents\")||a.includes?.(\"__reactProps\")){a=e[a];try{if(a.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting||a.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.__fragments?.useCometFeedUnitReordering_newsFeedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.new_sponsorw_distn_aucton_of||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.da_the_spons?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsore_da?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_the_dat?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.th_dat_spo?.brs_filter_setting){b++,e.style=\"display: none !important;\";var f=e.querySelector(\"a[href][aria-label]:not([aria-hidden])\");f&&(d.push([\"Ad blocked based on property [\"+b+\"] -> \"+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();": [
+        "!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll(\"div[data-pagelet^=\\\"FeedUnit\\\"]:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > div:not([style*=\\\"display: none\\\"]), div[role=\\\"feed\\\"] > span:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class]:not([style*=\\\"display: none\\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] h3[dir=\\\"auto\\\"] + div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h2 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > h3 ~ div > div > div > div:not([style*=\\\"display: none\\\"]) > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * div[class] > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div > div[class]:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div > div > span > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div div span > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div div span > div > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div span > div:not([style*=\\\"display: none\\\"]), div[role=\\\"main\\\"] div > :is(h2, h3) ~ div > * > div span div[class=\\\"\\\"]:not([style*=\\\"display: none\\\"]), div:not([class],[id]) div:not([class],[id]) > [class]:not([style*=\\\"display: none\\\"],img,div,h3,span,a), div[role=\\\"main\\\"] h3 + div[aria-hidden] + div > * > *:not(div,[style*=\\\"display: none\\\"]),div[role=\\\"main\\\"] h3 + div[aria-hidden] + div > div:not([style*=\\\"display: none\\\"])\").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.(\"__reactEvents\")||a.includes?.(\"__reactProps\")){a=e[a];try{if(a.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.category?.includes(\"SPONSORED\")||a.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting||a.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes(\"SPONSORED\")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.__fragments?.useCometFeedUnitReordering_newsFeedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.new_sponsorw_distn_aucton_of||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.da_the_spons?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsore_da?.brs_filter_setting){b++,e.style=\"display: none !important;\";var f=e.querySelector(\"a[href][aria-label]:not([aria-hidden])\");f&&(d.push([\"Ad blocked based on property [\"+b+\"] -> \"+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -1988,7 +1962,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll('div[role=\"complementary\"] div[class*=\" \"] > div[class] > div:not([class]) > div:not([class], [style*=\"display: none\"]), div[role=\"complementary\"] div[class*=\" \"] > div[class] > div:not([class]) > span[class] > div[class]:not([style*=\"display: none\"]), div[role=\"complementary\"] div:has(+ div[data-visualcompletion]) > div:not([style*=\"display: none\"]), div[role=\"complementary\"] > div[class] > div[class] > div[class] > div[class] > div > div:not([style*=\"display: none\"]),div[role=\"complementary\"] > div[class] > div[class] > div[class] > div[class] > div > div > div:not([style*=\"display: none\"])');for(const s of n){const n=Object.keys(s).find((e=>e.includes(\"__reactFiber\")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes(\"adsSideFeedUnit\"))return s.style.display=\"none\",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();": [
+        "(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll('div[role=\"complementary\"] div[class*=\" \"] > div[class] > div:not([class]) > div:not([class], [style*=\"display: none\"]), div[role=\"complementary\"] div[class*=\" \"] > div[class] > div:not([class]) > span[class] > div[class]:not([style*=\"display: none\"]), div[role=\"complementary\"] div:has(+ div[data-visualcompletion]) > div:not([style*=\"display: none\"])');for(const s of n){const n=Object.keys(s).find((e=>e.includes(\"__reactFiber\")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes(\"adsSideFeedUnit\"))return s.style.display=\"none\",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -2194,25 +2168,9 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e={includes:String.prototype.includes,filter:Array.prototype.filter},t=()=>(new Error).stack,l=t=>e.includes.call(t,\"loader.min.js\")||e.includes.call(t,\"andwonderful.com/safe.min.js\"),n={construct:(n,o,r)=>{const c=t();return l(c)&&o[0]&&e.includes.call(o[0],\"adshield\")&&(o[0]=[\"(function(){})();\"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=t();return l(c)&&r[0]&&e.includes.call(r[0],\"new Error\")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=t();return l(c)&&r[0]&&o?.includes?.(\"setTimeout\")&&(o=e.filter.call(o,(t=>!e.includes.call(t,\"setTimeout\")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();": [
+        "(()=>{const e=\"loader.min.js\",t={includes:String.prototype.includes,filter:Array.prototype.filter},l=()=>(new Error).stack,n={construct:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&o[0]&&t.includes.call(o[0],\"adshield\")&&(o[0]=[\"(function(){})();\"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&t.includes.call(r[0],\"new Error\")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=l();return t.includes.call(c,e)&&r[0]&&o?.includes?.(\"setTimeout\")&&(o=t.filter.call(o,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();": [
             {
                 "permittedDomains": [
-                    "game8.jp",
-                    "motorradfrage.net",
-                    "sportlerfrage.net",
-                    "finanzfrage.net",
-                    "reisefrage.net",
-                    "gesundheitsfrage.net",
-                    "computerfrage.net",
-                    "autofrage.net",
-                    "wholesomeyum.com",
-                    "gutefrage.net",
-                    "sportico.com",
-                    "wwd.com",
-                    "neoseeker.com",
-                    "yahoo.com",
-                    "doviz.com",
-                    "baseballchannel.jp",
                     "programme-tv.net",
                     "tz.de",
                     "ygosu.com",
@@ -2271,14 +2229,6 @@
             {
                 "permittedDomains": [
                     "www.youtube.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "(()=>{let t=!1;document.addEventListener(\"click\",(e=>{const s=e.target.matches(\".episode-item, .tray-slide, .top10-post\")?e.target:e.target.closest(\".episode-item, .tray-slide, .top10-post\");s&&!t&&(((t,e=1,s=10)=>{if(!t||e<=0)return;let i=0;const o=()=>{i>=e||(t.click(),i++,i<e&&setTimeout(o,s))};setTimeout(o,s)})(s,2),t=!0)}),!0)})();": [
-            {
-                "permittedDomains": [
-                    "animahd.com"
                 ],
                 "restrictedDomains": []
             }
@@ -2971,6 +2921,16 @@
                 "permittedDomains": [
                     "lessentiel.lu",
                     "20min.ch"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const a=(a,b,c)=>{const d=Reflect.apply(a,b,c),e=\".list-programmatic-ad-item--multi-line, .list-inbox-ad-item--multi-line { display: none !important; }\";if(\"adoptedStyleSheets\"in document){const a=new CSSStyleSheet;a.replaceSync(e),d.adoptedStyleSheets=[a]}else{const a=document.createElement(\"style\");a.innerText=e,d.appendChild(a)}return d};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,{apply:a})})();": [
+            {
+                "permittedDomains": [
+                    "gmx.net",
+                    "gmx.at",
+                    "web.de"
                 ],
                 "restrictedDomains": []
             }
@@ -4245,14 +4205,6 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const t={construct:(t,e,n)=>{const r=e[0],o=r?.toString(),c=o?.includes(\"vidFloating\");return c&&(e[0]=()=>{}),Reflect.construct(t,e,n)}};window.IntersectionObserver=new Proxy(window.IntersectionObserver,t)})();": [
-            {
-                "permittedDomains": [
-                    "calciomercato.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "(()=>{var b=EventTarget.prototype.addEventListener,c=function(a,b){var c=document.querySelector(\"button.AppHeader-login, .AppHeader-userInfo > .AppHeader-profile > div > button.Button--blue\");c&&b.bind(c)(\"click\",function(){d.disconnect()},{once:!0})},d=new MutationObserver(function(){var a=document.querySelector(\".Modal-wrapper .signFlowModal > .Modal-closeButton\");a&&(d.disconnect(),e.disconnect(),a.click())});d.observe(document,{childList:!0,subtree:!0});var e=new MutationObserver(a=>{c(a,b)});e.observe(document,{childList:!0,subtree:!0}),setTimeout(function(){e.disconnect(),d.disconnect()},5E3)})();": [
             {
                 "permittedDomains": [
@@ -4746,18 +4698,39 @@
                 "restrictedDomains": []
             }
         ],
-        "window.addEventListener(\"selectstart\",function(a){a.stopPropagation()},!0);": [
-            {
-                "permittedDomains": [
-                    "murciatoday.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "(function(){z=self.EventTarget.prototype.addEventListener;self.EventTarget.prototype.addEventListener=function(a,b){if(!/cut|copy|paste/.test(a.toString()))return z.apply(this,arguments)}})();": [
             {
                 "permittedDomains": [
                     "kingbet.net"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.addEventListener(\"contextmenu\",function(a){a.stopPropagation()},!0);": [
+            {
+                "permittedDomains": [
+                    "sterham.net",
+                    "omuzaani.me",
+                    "stiffgamerdown.com",
+                    "animeshouse.net",
+                    "animeunity.it",
+                    "themeslide.com",
+                    "orangespotlight.com",
+                    "magdyman.com",
+                    "topflix.*",
+                    "poisonous-raspberry-fields.blogspot.com",
+                    "redirdx.in",
+                    "tmofans.com",
+                    "thememazing.com",
+                    "baan-series.com",
+                    "baixarfilmetorrent.net",
+                    "yourupload.com",
+                    "wikitechy.com",
+                    "windes.com.es",
+                    "freecourser.com",
+                    "audioreview.m1001.coreserver.jp",
+                    "portalwrc.pl",
+                    "themeslide.com"
                 ],
                 "restrictedDomains": []
             }

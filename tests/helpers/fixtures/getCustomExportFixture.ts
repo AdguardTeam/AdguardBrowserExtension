@@ -39,7 +39,6 @@ export const getExportedSettingsProtocolV1Fixture = () => ({
         'show-app-updated-info': true,
         'hide-rate-adguard': true,
         'user-rules-editor-wrap': false,
-        'allow-anonymized-usage-data': false,
     },
     'filters': {
         'enabled-filters': [1, 2, 3, 4, 7, 13, 17, 18, 19, 20, 21, 22, 241, 1000],
@@ -167,7 +166,6 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
         [ExtensionSpecificSettingsOption.ShowAppUpdatedInfo]: true,
         [ExtensionSpecificSettingsOption.HideRateAdguard]: true,
         [ExtensionSpecificSettingsOption.UserRulesEditorWrap]: false,
-        [ExtensionSpecificSettingsOption.AllowAnonymizedUsageData]: false,
     },
     [RootOption.Filters]: {
         [FiltersOption.EnabledFilters]: __IS_MV3__

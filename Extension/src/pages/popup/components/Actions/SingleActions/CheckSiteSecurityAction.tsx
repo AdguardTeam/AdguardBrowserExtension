@@ -18,24 +18,19 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
+import React from 'react';
 
 import { ForwardFrom } from '../../../../../common/forward';
 import { translator } from '../../../../../common/translators/translator';
 import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { logger } from '../../../../../common/logger';
-import { popupStore } from '../../../stores/PopupStore';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services';
 
 import { type SingleActionParams } from './types';
 
 import '../actions.pcss';
 
-export const CheckSiteSecurityAction = observer(({ className, isFilteringPossible, url }: SingleActionParams) => {
-    const store = useContext(popupStore);
-    const { telemetryStore } = store;
+export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
     const title = translator.getMessage('popup_security_report');
 
     /**
@@ -51,10 +46,6 @@ export const CheckSiteSecurityAction = observer(({ className, isFilteringPossibl
             return;
         }
 
-        telemetryStore.sendCustomEvent(
-            TelemetryEventName.CheckSecurityClick,
-            TelemetryScreenName.MainPage,
-        );
         messenger.checkSiteSecurity(url, ForwardFrom.Popup);
         window.close();
     };
@@ -76,4 +67,4 @@ export const CheckSiteSecurityAction = observer(({ className, isFilteringPossibl
             </span>
         </button>
     );
-});
+};
