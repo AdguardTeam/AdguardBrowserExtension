@@ -1,9 +1,9 @@
-! Checksum: Eeqt6hxIedN4imvaDrAUEg
-! Diff-Path: ../patches/3_optimized/3_optimized-s-1765260826-3600.patch
+! Checksum: fJGi4GVTT9pnYK3+dD5fOA
+! Diff-Path: ../patches/3_optimized/3_optimized-s-1765379528-3600.patch
 ! Title: AdGuard Tracking Protection filter (Optimized)
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.96.31
-! TimeUpdated: 2025-12-09T06:10:44+00:00
+! Version: 2.0.96.38
+! TimeUpdated: 2025-12-10T15:09:07+00:00
 ! Expires: 10 days (update frequency)
 !+ NOT_PLATFORM(ext_chromium_mv3)
 www.youtube.com#%#//scriptlet('prevent-xhr', '/\/api\/stats\/atr\?.+?&rt=\d+\.\d+.+?&volume=\d+&cbr=.+?&fexp=v1%[-%0-9C]{300,}&.+?&muted=\d(&vis=3)?&docid=/ method:POST')
@@ -49962,6 +49962,10 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1) { remove: true; }
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||tags.news.com.au^$~script
 |piwik.
+||fls-na.amazon.com^
+||tag.poomang.com^
+||counter.tldw.me^
+||analytics.blender.org^
 ||d.nordprotect.com^
 ||async-px-eu.dynamicyield.com^
 ||pm.redbull.com^
@@ -69355,6 +69359,7 @@ zjjz6lpv44aguszo.cloud.s11.sfmc-osl.com$image
 /^https:\/\/cs\d{3}\.\w+\.com\/cscript\/\d{3}\/[\w\d]+\.js$/$script,third-party,match-case
 !+ NOT_OPTIMIZED
 /.well-known/private-click-measurement
+/web-vitals-tracker.js
 /.rum/@adobe/helix-
 ://sp.*/sp/h|$xmlhttprequest
 /srpc.js?ssss
@@ -70013,7 +70018,7 @@ _tracking.php?b=
 $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 ||google-analytics.com/analytics.js$script,redirect=google-analytics,domain=~olx.*|~banki.ru|~bigc.co.th|~sonos.com|~hepsiburada.com
 ||google-analytics.com/ga.js$script,redirect=google-analytics-ga,domain=~daj.jp
-||googletagmanager.com/gtm.js$third-party,script,redirect=google-analytics,domain=~corsair.com|~olx.*|~simon.com|~bethesda.net|~paddle.com
+||googletagmanager.com/gtm.js$third-party,script,redirect=google-analytics,domain=~corsair.com|~olx.*|~simon.com|~bethesda.net|~paddle.com|~linodellefateresort.com
 ||googletagservices.com/tag/js/gpt.js$xmlhttprequest,script,redirect=googletagservices-gpt
 !+ NOT_OPTIMIZED
 ||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=~golf.com|~today.line.me|~inmuebles24.com|~inside.com.tw|~investing.com|~olx.com.eg|~eksisozluk.com|~heycar.co.uk|~gizmodo.jp
@@ -70031,6 +70036,14 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 /prod/dfm/t8y9347t.min.js$redirect=nooptext,important,domain=dailycamera.com
 ||google-analytics.com^$object,redirect=noopjs
 ||googletagmanager.com/gtag/$third-party,object,redirect=noopjs
+||a0.awsstatic.com/eb-csr/*/orchestrate.js
+||a0.awsstatic.com/libra/*/vendor/require-marketo-munchkin.js
+||a0.awsstatic.com/libra/*/vendor/web-vitals.attribution.iife.js
+nikkei.com###pianoRecommendBottom
+itmedia.co.jp##.is-recommend:empty
+itmedia.co.jp##.format--subheading:has(+ .is-recommend:empty)
+||vortexgaming.io/ga_script.js
+||p-api.vortexgaming.io/api/log/
 ||usconcealedcarry.com/scripts/bundles/deltaAnalytics/
 ||usconcealedcarry.com/api/events?
 usatoday.com##.gnt_tb
@@ -70195,7 +70208,6 @@ dominos.jp###_vis_opt_path_hides
 ||static.danawa.com/globaljs/static/targetPush/targetPushTracking.js
 ||static.danawa.com/globaljs/static/bdl/dsac.min.js
 ||americantourister.co.kr/on/demandware.static/Sites-AmericanTouristerKR-Site/*/internal/jscript/dwac-*.js
-business.nikkei.com###pianoRecommendBottom
 ||leboncoin.fr/piano-analytics/
 ||softonic.jp/web-stats
 ||chatgpt.com/ces/v1/i^
@@ -75994,6 +76006,10 @@ $cookie=_pubcid
 $cookie=pbjs-unifiedid
 $cookie=bf_lead
 $cookie=bf_visit
+||amazon.com^$cookie=aws-target-data
+||amazon.com^$cookie=aws-target-session-id
+||amazon.com^$cookie=aws-target-visitor-id
+||amazon.com^$cookie=aws-vid
 ||yellowpages.com^$cookie=vrid
 ||spooncast.net^$cookie=/^_hackle_/
 ||emart.ssg.com^$cookie=PCID
@@ -77685,6 +77701,8 @@ d4?appid*type*
 !### Temporary ###
 @@||st-*.dynamicyield.com/st*&inHead=true&id=*&jsession=*scriptVersion=*&noConsent=
 !#################
+@@||experience.ninetailed.co/v2/organizations/*/environments/main/profiles/$xmlhttprequest,domain=dkb.de
+||googletagmanager.com/ns.html$subdocument,redirect=noopframe,domain=dkb.de
 @@||tags.tiqcdn.com/utag/cbsi/pluto-tv/prod/utag.js$domain=pluto.tv
 @@||st-eu.dynamicyield.com/st?sec=$domain=manor.ch
 @@||tags.tiqcdn.com/utag/bofa/ml/prod/utag.js$domain=ml.com
@@ -79526,7 +79544,6 @@ kizi.com#%#window.google_trackConversion = function() {};
 @@||google-analytics.com^$domain=daemon-tools.cc
 @@||omtrdc.net^$domain=abbyy.ru
 @@||omtrdc.net^*/mbox/standard?$script,domain=ancestry.com|ancestry.com.au|blogtalkradio.com
-@@||omtrdc.net^$domain=amazon.co.uk|amazon.com|amazon.de
 @@||svtrd.com^$domain=moneyou.de|ns.nl
 @@||mxpnl.com^$domain=dailysteals.com
 @@.2o7.net/$domain=today.com

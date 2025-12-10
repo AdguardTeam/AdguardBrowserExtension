@@ -22,7 +22,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services';
+import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { rootStore } from '../../stores/RootStore';
 import {
     CHANGELOG_URL,
