@@ -1,9 +1,9 @@
-! Checksum: AYNiNqS5ml+N3pgW34JewA
-! Diff-Path: ../patches/20_optimized/20_optimized-s-1765257202-3600.patch
+! Checksum: IOu9kGyRsNgE44O89bQZQQ
+! Diff-Path: ../patches/20_optimized/20_optimized-s-1765347234-3600.patch
 ! Title: AdGuard Mobile App Banners filter (Optimized)
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.25.26
-! TimeUpdated: 2025-12-09T05:10:55+00:00
+! Version: 2.0.25.29
+! TimeUpdated: 2025-12-10T06:11:11+00:00
 ! Expires: 10 days (update frequency)
 /js/jquery.smartbanner.js
 ##.duyuru_kutusu
@@ -101,7 +101,6 @@ xn--pckua2a7gp15o89zb.com##.p-resultArea_sideWrap--appbnr
 follow.yahoo.co.jp##div[class^="AppPromotion_AppPromotion__"]
 bikemap.net##div[class^="app-qr-code_container"]
 temp-mail.lol#%#//scriptlet('trusted-set-local-storage-item', 'app-install-promotion', '{"hasSeenBefore":true,"alreadyInstalled":true}')
-stay.rakuten.co.jp##.css-eg1at3
 stay.rakuten.co.jp##a[href^="/app/?l-id="]
 news.yahoo.co.jp##li:has(> a[href*="/app.adjust.com"]:only-child)
 animelatinohd.com##div[class^="messageApp_modal_"]
@@ -280,7 +279,6 @@ wetransfer.com##.AppInstallBanner
 apsiyon.com#$##mobile-redirect-banner { display: none !important; }
 apsiyon.com#%#//scriptlet('remove-class', 'with-sb', '#header')
 sports.sina.com.cn###sinaadsbox
-fashion.sina.com.cn##.top-ad-box
 finance.sina.com.cn###SFA_NV_POP_ZW
 photo.sina.com.cn##.side-btns-2wm
 news.sina.com.cn##.side-btns-2w
@@ -449,7 +447,6 @@ level.travel#%#//scriptlet('trusted-set-cookie', 'lt_go_to_app_mobile_popup', 'h
 perekrestok.ru#%#//scriptlet('trusted-click-element', 'button.app-banner-close', '', '800')
 arabam.com,m.sonyunara.jp,magnit.ru##.install-app-banner
 navitime.co.jp###body-left > div.section:has(> a[href="https://www.navitime.co.jp/pcstorage/html/japan_travel/english/"])
-kids-doctor.jp##.detail_footer_app_dl_container
 msn.com##div[class^="weatherMobileUpsellContainer-"]
 digitimes.com.tw#%#//scriptlet('abort-current-inline-script', '$', 'apppromo')
 moises.ai##.relative > div.flex-col:has(> div[role="group"] > a[title="App Store"])
@@ -1038,6 +1035,7 @@ minkara.carview.co.jp##.app-smartbnr
 comic-days.com##div[class^="Original_app_area_wrapper"]
 family.co.jp###sptabnemu
 slickdeals.net#$#.sdModalOverlay { display: none !important; }
+slickdeals.net#$##bottomFullBar { display: none !important; }
 peple.com.tr##.footer-top
 finance.sina.com.cn,kashikoi.with.is,smsnator.online,emailnator.com##.top-banner
 pazarama.com#%#//scriptlet('set-cookie', 'prevent-in-app', 'true')
@@ -1343,6 +1341,7 @@ hipdf.com##.wsc-ad-plugin-container
 aliexpress.com,aliexpress.us#$#body.smartbanner-placeholder { padding-top: 0 !important; }
 aliexpress.com,aliexpress.us#%#//scriptlet('trusted-click-element', '#header-float-banner img[alt="Close button"]')
 golosameriki.com###wrowblock-27871_73
+nepisirsem.com##.rightband td[style="padding: 5px;"]
 coconala.com###xeory-fixed-banner-sp
 coconala.com##a[data-event-category^="AD_"]
 newsdigest.jp##.app-banner__inner
@@ -1623,7 +1622,6 @@ businessinsider.com##.app-badges
 genius.com##.android_banner
 m.dm5.com,manhuaren.com###index-ad
 m.dm5.com,manhuaren.com##.ad-top-info
-dvtk.eu###app-downloader
 olx.ua##.footerapps
 weathernews.jp##aside#sub a[href="https://weathernews.jp/app/"]
 weathernews.jp###link_banner > ul.small > li.web
@@ -1857,8 +1855,6 @@ togetter.com##a[data-ga="action_moreapp"]
 togetter.com###appdl_bottom
 !+ NOT_OPTIMIZED
 posfie.com,togetter.com###appdl_header
-!+ NOT_OPTIMIZED
-blog.goo.ne.jp###msg-box-app-recommend
 !+ NOT_OPTIMIZED
 eracom.com.tw,nexttv.com.tw#$#.download-tip { display: none!important; }
 !+ NOT_OPTIMIZED

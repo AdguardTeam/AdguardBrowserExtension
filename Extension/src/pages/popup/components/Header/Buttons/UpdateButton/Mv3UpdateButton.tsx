@@ -28,7 +28,7 @@ import { Icon } from '../../../../../common/components/ui/Icon';
 import { messenger } from '../../../../../services/messenger';
 import { popupStore } from '../../../../stores/PopupStore';
 import { ForwardFrom } from '../../../../../../common/forward';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../../background/services';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../../background/services/telemetry/enums';
 
 const Mv3UpdateButton = observer(() => {
     const store = useContext(popupStore);

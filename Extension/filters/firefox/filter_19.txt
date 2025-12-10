@@ -1,9 +1,9 @@
-! Checksum: 3sB4C25W8m76Ztt/cNj+PQ
-! Diff-Path: ../patches/19/19-s-1765264322-3600.patch
+! Checksum: 8tMfi5NFwafGAFZgHbaDtw
+! Diff-Path: ../patches/19/19-s-1765365013-3600.patch
 ! Title: AdGuard Popups filter
 ! Description: Blocks all kinds of pop-ups that are not necessary for websites' operation according to our Filter policy.
-! Version: 2.0.66.76
-! TimeUpdated: 2025-12-09T07:09:29+00:00
+! Version: 2.0.66.84
+! TimeUpdated: 2025-12-10T11:07:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -547,7 +547,6 @@ armidaleexpress.com.au,bendigoadvertiser.com.au,canberratimes.com.au,centralwest
 ! The rules for content blockers only:
 ! LINK: AnnoyancesFilter/Popups/sections/antiadblock.txt#content_blockers
 !
-smash-karts.game-files.crazygames.com#%#//scriptlet('set-constant', 'adblockDetected', 'false')
 seelen.io#%#//scriptlet('prevent-addEventListener', '/load|error/', '', 'elements', 'script')
 txori.com##body > div.cache
 txori.com#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'aContainer')
@@ -913,7 +912,7 @@ workingdays.org#%#//scriptlet('set-constant', 'isadblocking', 'false')
 nartag.com##.w-help
 pisupisu.pl###bear_wrap
 torrentgalaxy.to,torrentgalaxy.mx###blockalert
-aawweb.beauty,colourxh.site,xhamster43.desi,fullxh.com,interxh.site,xhspot.com,xhwide5.com,xhchannel.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,valuexh.life,xhdate.world,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,xhamster42.desi,xhvid.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,megaxh.com,xhamster16.*,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.*,xhamster14.com,xhamster15.com,xhamster17.*,xhamster18.*,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster22.com,xhamster27.com,openxh.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##aside[data-role$="ab-message"]
+xhamster44.desi,aawweb.beauty,colourxh.site,xhamster43.desi,fullxh.com,interxh.site,xhspot.com,xhwide5.com,xhchannel.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,valuexh.life,xhdate.world,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,xhamster42.desi,xhvid.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,megaxh.com,xhamster16.*,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.*,xhamster14.com,xhamster15.com,xhamster17.*,xhamster18.*,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster22.com,xhamster27.com,openxh.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com##aside[data-role$="ab-message"]
 animefenix.tv###my-modal
 olarila.com##.__b-popup1__
 olarila.com##.__b-popup1__ + div.esPopupWrapper
@@ -3259,6 +3258,9 @@ inews.co.uk,pinterest.com#%#//scriptlet('set-constant', 'google.accounts.id.prom
 !
 ! SECTION: Popups - Regular rules
 !
+cian.ru#%#//scriptlet('set-cookie', 'frontend-offer-card.newbuilding_broker_onboarding_shown', '1')
+alfastrah.ru##.SmartCaptcha-Shield
+abema.tv#%#//scriptlet('trusted-click-element', '.com-onboarding-OnboardingWelcomeModal__button-wrapper > button.com-a-Button--dark')
 time.com###scale-agent-overlay-container[aria-label="chat with time ai"]
 tvfoco.uai.com.br###modalPushArticle
 tvfoco.uai.com.br###modalPushArticleAmp
@@ -6227,7 +6229,7 @@ gaiax-socialmedialab.jp##.js-service-popup
 column.valx.jp,jp.sharp##.floating
 pixeldrain.com##.intro_popup
 kokoiko.smbc-card.com##.surfaceFixedBanner
-special.goo.ne.jp,volstar-official.jp###bfb_content_sp
+volstar-official.jp###bfb_content_sp
 qobuz.com##.store-launch-injector
 qobuz.com##.modal-backdrop
 noklapja.hu#$#.blurry { filter: none !important; }
@@ -6598,7 +6600,6 @@ thenationalpulse.com,professor-excel.com##.hustle-popup
 ||professor-excel.com/wp-content/plugins/wordpress-popup/assets/hustle-ui/css/hustle-popup.min.css
 ||professor-excel.com/wp-content/plugins/wordpress-popup/assets/hustle-ui/css/hustle-global.min.css
 fit-dz.blogspot.com###fbox
-goo.ne.jp#?##gpu:has(> a[data-popup-link])
 rosenthal.de#$#.exit-intent { display: none!important; }
 rosenthal.de#$#html { overflow: visible!important; }
 nova.rambler.ru##div[class^="RabotaWidgetNew__root_ready--"]
@@ -10216,9 +10217,6 @@ myfoxzone.com,wtol.com,5newsonline.com,fox61.com,wthr.com,wqad.com,fox43.com,10t
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175941
 ! https://github.com/AdguardTeam/AdguardFilters/issues/169531#issuecomment-1877526044
 ||smetrics.telegraph.co.uk^
-! https://github.com/AdguardTeam/AdguardFilters/issues/166762#issuecomment-1820750011
-abema.tv#$#.body--prevent-scroll { overflow: auto !important; }
-abema.tv#$#.com-onboarding-OnboardingModalContainerView--enter-done { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/155513
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89306
 fiverr.com#%#//scriptlet('trusted-click-element', '.signing-modal')
@@ -11210,7 +11208,7 @@ labs.google.com#@##google-hats-survey
 ! Disabling of push-notifications
 !
 ! #%#//scriptlet('set-constant', 'Notification.requestPermission', 'noopFunc')
-evvelcevap.com,wal.yalenkino.org,pibig.info,lefigaro.fr,banki.ru,a2zapk.io,delfi.lt,ganyancanavari.com,turkcell.com.tr,a101.com.tr,news.mail.ru,realitatea.net,winnipegfreepress.com,tenorshare.com,gzt.com,haber.biz,sakshi.com,shiftdelete.net,community.oneplus.com,lnc.nc,superfilmes.ph,meduza.io,yenisafak.com,offidocs.com,onedio.com,hpplus.jp,fullfilmcibaba1.com,joom.com,nbc.com,maximum.ru,ch3plus.com,dropmefiles.com,rg.ru,reddit.com,life.ru#%#//scriptlet('set-constant', 'Notification.requestPermission', 'noopFunc')
+lovense.com,evvelcevap.com,wal.yalenkino.org,pibig.info,lefigaro.fr,banki.ru,a2zapk.io,delfi.lt,ganyancanavari.com,turkcell.com.tr,a101.com.tr,news.mail.ru,realitatea.net,winnipegfreepress.com,tenorshare.com,gzt.com,haber.biz,sakshi.com,shiftdelete.net,community.oneplus.com,lnc.nc,superfilmes.ph,meduza.io,yenisafak.com,offidocs.com,onedio.com,hpplus.jp,fullfilmcibaba1.com,joom.com,nbc.com,maximum.ru,ch3plus.com,dropmefiles.com,rg.ru,reddit.com,life.ru#%#//scriptlet('set-constant', 'Notification.requestPermission', 'noopFunc')
 !
 wallstreet-online.de,dni.ru#%#if (window.PushManager) { window.PushManager.prototype.subscribe = function () { return { then: function (func) { } }; }; }
 macwelt.de,pcwelt.de#%#//scriptlet("set-constant", "firebase.messaging", "noopFunc")
@@ -11219,6 +11217,7 @@ macwelt.de,pcwelt.de#%#//scriptlet("set-constant", "firebase.messaging", "noopFu
 !
 ! SECTION: Push notifications - Regular rules
 !
+lovense.com##.notice_wrap
 tvfoco.uai.com.br##.push-notification-card
 kuudere.*#%#//scriptlet('set-local-storage-item', 'kuudere_notif_dialog_dismissed', '1')
 ||m-bemomotors.youlead.pl/WebpushPrompt.js$domain=omoda.grupabemo.pl
@@ -11800,7 +11799,7 @@ youla.ru##.web_push_confirmation
 izlesene.com,doviz.com,sinemalar.com###x-comet-dialog
 stalkermods.ru,ucoz.net##.pshsndr
 ilbianconero.com,calciomercato.com###dialog-push-notification
-sbt.com.br,goo.ne.jp,sports.ru,tribuna.com##.webpush
+sbt.com.br,sports.ru,tribuna.com##.webpush
 eleman.net##.pushRegistrationDiv
 steambalance.cc,paris2024.org,estadao.com.br##.push
 ||static.shopback.net/tags/plugins/shoppush.js
@@ -12160,6 +12159,7 @@ gaugau.futabanet.jp,newscientist.com,jiji.com,edp24.co.uk,technologyreview.com,n
 !
 ! SECTION: Subscriptions - Regular rules
 !
+hltv.org##.hubspot-embed
 usconcealedcarry.com##body > delta-modals
 zaranikas.gr##.bottom-slider-section
 protagon.gr##p[style]:has(> strong > a[href^="https://news.google.com/publications/"])

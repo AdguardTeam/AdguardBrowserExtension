@@ -1,5 +1,5 @@
-! Checksum: TVzJZEVqEn0fkvvyau03fQ
-! Diff-Path: ../patches/16_optimized/16_optimized-s-1765248157-3600.patch
+! Checksum: FqctH/Jnn0sHY1mGj84FMQ
+! Diff-Path: ../patches/16_optimized/16_optimized-s-1765334628-3600.patch
 ! Title: AdGuard French filter (Optimized)
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
 ! Version: 2.0.55.16
@@ -1201,7 +1201,6 @@ forospyware.com#@#.ad_content_wrapper
 @@||damoh.$media
 alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#.header-promo
 @@||template-help.com^$domain=templatemonster.com
-@@||cdn.videoplaza.tv/contrib/fr-m6/svm/homadConfigVideoplaza-clubic.json?cache=$domain=player.m6web.fr
 &ad_count=
 &ad_unit_
 &ADMode=
@@ -1478,7 +1477,6 @@ alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#
 ://banner.*click
 ://banner.*utm_
 ://banners2.$third-party
-://be.ads.
 ://block.*/rotator-$script
 ://cdn.*/p/?zid=
 ://cdn.ad.
@@ -1808,6 +1806,7 @@ _build=iclick-$popup
 ||clicmanager.net^$third-party
 ||conduit.com^$third-party
 ||cougar-rencontre.net^$third-party
+||cougarmessenger.com^$third-party
 ||cpa-content.com^$third-party
 ||cpaofferstat.com^$third-party
 ||cpmstar.com^$third-party
@@ -1912,6 +1911,7 @@ _build=iclick-$popup
 ||piximedia.com^$third-party
 ||play-asia.com^$third-party
 ||plurielmediacenter.com^$third-party
+||poparb.com^$third-party
 ||popupmaker.com^$third-party
 ||pornme.pm^$third-party
 ||pubinteractive.ca^$third-party
@@ -1950,6 +1950,7 @@ _build=iclick-$popup
 ||tpctrust.com^$third-party
 ||trafficroots.com^$third-party
 ||traffictrade.pro^$third-party
+||transexmessenger.com^$third-party
 ||travelbar.tools^$third-party
 ||trk-egestas.com^$third-party
 ||truenat.bid^$third-party
@@ -2008,6 +2009,7 @@ _build=iclick-$popup
 ||accuratevotingorthodox.com^
 ||achyrepeatitchy.com^
 ||acidprolific.com^
+||acobnnvet.com^
 ||acoponposeur.com^
 ||acrepantherrecite.com^
 ||acthist.com^
@@ -2045,7 +2047,6 @@ _build=iclick-$popup
 ||allworldinfo4.store^
 ||aloftriottomato.com^
 ||amangrunts.shop^
-||amongremember.com^
 ||amusingsnow.pro^
 ||anadistil.com^
 ||analaxadulatory.com^
@@ -2106,7 +2107,6 @@ _build=iclick-$popup
 ||bowlingunauthorized.com^
 ||brashstudiocrucial.com^
 ||brazilprocyon.com^
-||breastfeedingminutepond.com^
 ||brocardcored.com^
 ||broosnighed.com^
 ||brunettemattersrefused.com^
@@ -2609,7 +2609,6 @@ _build=iclick-$popup
 ||sh.st^
 ||shacsda.name^
 ||shoftoupsouxoam.net^
-||shon.xyz^
 ||shpuzesoxyfhh.com^
 ||shrubricing.com^
 ||shuffele.com^
@@ -3205,7 +3204,6 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||bdgest.com/prepub/
 ||bedetheque.com/javascript/campagne?
 ||bleachmx.fr/wp-content/uploads/bleach-
-||bons-plans-elise.fr/wp-content/uploads/$third-party
 ||boursier.com/illustrations/campaigns/
 ||bricozone.fr/styles/soft_responsive/xenforo/layout/j
 ||cambro.tv/player/html.php
@@ -3399,6 +3397,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ||weshrak.com^*/imp.php?
 ||weshrak.com^*/pub.php?
 ||wiflix-*/voir/
+||wii-info.fr/ban/
 ||wii-info.fr/bane/
 ||wii-info.fr/p/
 ||winamax.fr/img/banners/
@@ -3448,7 +3447,6 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ###block-gc-ad-bloc-droite-1
 ###block-gc-ad-dhtml
 ###block-gc-ad-megaban-haut
-###block_pub
 ###bottom-adv
 ###bottom_ad_space
 ###bottom_pub
@@ -3612,6 +3610,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ###pubHaut
 ###pubHead
 ###pubHeader
+###pubImg
 ###pubLeft
 ###pubRight
 ###pubTop
@@ -3728,6 +3727,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ###top_side_pub
 ###topleftad
 ###toppub
+###tower_pub
 ###user18div
 ###vertical-ad
 ###vertical-ads
@@ -3785,6 +3785,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ##.breaking-ad
 ##.buzz-ads
 ##.c-ads-sidebar
+##.carre_pub
 ##.carrepub
 ##.catAds
 ##.co-ads
@@ -4094,6 +4095,7 @@ $stylesheet,third-party,domain=1fichier.com|7-up.net|9xupload.me|adshrinks.com|a
 ##.single-top-ads
 ##.site-inner-ads
 ##.site-pub-interstitiel
+##.site-pub-skin
 ##.site-pub-top
 ##.skin_outer_ad
 ##.smiliar_ads
@@ -4189,7 +4191,6 @@ oisd.nl###adgbn
 cuisineaz.com###advi
 finalclap.com###aff_tuto_com
 akeo.fr###amazon
-lenouveleconomiste.fr###b_top
 commentcamarche.com,commentcamarche.net###ba_right
 meilleurmobile.com###backgrounddiv
 manga-news.com###ban970250
@@ -4444,7 +4445,6 @@ jetanimes.com##.mysticky-welcomebar-fixed
 tchatche.com##.native-banner
 porndoe.com##.news-ticker-wrap
 nordicmag.info##.nordi-widget
-lenouveleconomiste.fr##.nveco-widget
 lecho.be##.o-hpgrid__row-sponsoredcombo
 01net.com##.od-tlc
 01net.com,journaldugeek.com##.od-wrapper
@@ -4578,6 +4578,7 @@ free-reseau.fr##a[href*="&tag=freereseaufr-"]
 3dnatives.com,audiofanzine.com,lesimprimantes3d.fr##a[href*="&utm_"]
 1001ebooks.com,1337x.st,1337x.to,amairgil.cz,blablastream.com,blablastream.space,cocostream.rip,cpasbien.fun,cpasfini.me,extreme-down.party,film01stream.com,film01stream.ws,filmzenstream.cloud,gogoflix.cyou,hds.quest,hdss.at,hdss.yachts,mistergeek.net,oxtorrent.ac,papystreaming.black,papystreaming.stream,sokrostream.tube,streamonsport.club,streampourvous.lol,supervideo.cc,topsddns.net,vfcomplet.vip,vfserie.win,voirfilms.live,voirfilmstreaming.tv,voirseries.rip,wiflix-nouvelle-adresse.site,x1337x.eu,x1337x.ws,yggtorrent.support,zt-za.fr##a[href*=".php"]
 7-up.net,abidjan.net,algerie-eco.com,algerie-focus.com,algerie360.com,bigbike-magazine.com,bismirabbika.com,brain-magazine.fr,cnetfrance.fr,doukkalia.press.ma,grimper.com,igen.fr,internetparsatellite.net,kiteboarder-mag.com,ktotv.com,lebonfap.com,letagparfait.com,macg.co,montagnes-magazine.com,mubawab.ma,nintendo-master.com,niveales.com,portail.free.fr,public.fr,radego.over-blog.com,skieur.com,skimagazine.fr,snowsurf.com,streaming-one.com,supmag.fr,tahiti-infos.com,telecharger-jeuxpc.fr,trekmag.com,unleashed.fr,upload.ac,vakarm.net,watchgeneration.fr,widermag.com,windmag.com##a[href*="//bit.ly/"]
+abidjan.net,algerie-focus.com,algerie360.com,bc.vc,bismirabbika.com,extratorrents.ch,gum-gum-streaming.com,igen.fr,instinct-voyageur.fr,israelmagazine.co.il,jeux.com,journaldumusulman.fr,lnc.nc,macg.co,orientation-chabab.com,proxylistpro.com,tendancehotellerie.fr,watchgeneration.fr##a[href*="//goo.gl/"]
 amateur2sexe.fr,pornovore.fr##a[href*="/?id="]
 tube8.fr##a[href*="/_xa/ads?"]
 maghrebemergent.com,maghrebemergent.info##a[href*="/banners/click/"]

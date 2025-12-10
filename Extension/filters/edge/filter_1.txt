@@ -1,9 +1,9 @@
-! Checksum: ym/Hpgp5CPYb67cPxhNHow
-! Diff-Path: ../patches/1/1-s-1765213873-3600.patch
+! Checksum: y8nR7RYMe1z17qQgQ2FkvQ
+! Diff-Path: ../patches/1/1-s-1765375850-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.3.25
-! TimeUpdated: 2025-12-08T17:08:16+00:00
+! Version: 2.1.3.31
+! TimeUpdated: 2025-12-10T14:07:55+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -4467,6 +4467,7 @@ dzen.ru##.news-app__content div[class*="__column_myTarget mg-grid__item"] div[cl
 [$path=/pogoda]dzen.ru##.adv_type_rtb
 !
 ! Ad in Dzen articles
+dzen.ru##div[class^="content--mascot-banner__"]
 dzen.ru##div[class^="content--dzen-pro-article-banner"]
 [$path]dzen.ru##.feed__item article[class*="_is"]:not([class*="__card"]):not(:has(> div.short-video-carousel-view))
 dzen.ru##body:not(.page_article-editor) div[class^="article"][class*="holder"]
@@ -4902,7 +4903,7 @@ ya.ru,yandex.*##.serp-list > div.incut
 ya.ru,yandex.*##.DirectInline
 !
 ! Yandex.Maps
-[$path=/maps]yandex.*##div[class^="masstransit-"][class*="-panel-view_"] ~ div[style="padding: 16px 0px; position: relative;"]
+[$path=/maps]yandex.*##div[class^="masstransit-"][class*="-panel-view_"] ~ div[style^="padding: 16px 0px;"][style*="position: relative;"]
 yandex.*##.map-controls__additional-button > a.promo-button
 [$path=/maps]yandex.*##.search-business-snippet-view__content > div.search-business-snippet-view__badge:has(span[data-nosnippet="true"] > span[class$="_advert-text"])
 [$path=/web-maps]yandex.*##div[data-chunk="promo-chunk"]
@@ -6565,6 +6566,8 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 !
 !
+zakon.kz##.desktop-full-advert
+zakon.kz##.news-and-ad > .info-block
 nur.kz##.main-page-sub-menu__list > li:has(> a[href^="https://special.nur.kz/otbasy"])
 nur.kz##[class*="-adv"]
 goloskarpat.info##.dynads
@@ -6873,6 +6876,9 @@ vedomosti.ru,kommersant.ru,rg.ru,glavbukh.ru,chehov-vid.ru,161.ru,prufy.ru,ysia.
 !
 !
 !
+uchi.ru##a[href^="https://www.tbank.ru/cards/"]
+rambler.ru##div[aria-label="Реклама"]
+wtftime.ru##.art_sidebar_sticky
 freetp.org##div[id^="news-id-"] > p[style="text-align: center;"] a[target="_blank"]
 freetp.org##.maincont.gg > [align="center"] > a[style=""]
 rg.ru##div[class*="PageArticle_partner__"]
@@ -12643,7 +12649,7 @@ facebook.com,facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion##.ad
 facebook.com,facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion##.adsCategoryTitleLink
 regnum.ru##.ads_container_wrapper
 ip2geolocation.com##.adsbl
-forum.awd.ru,kakprosto.ru,spec-komp.com,vz.ru##.adsbygoogle
+wtftime.ru,forum.awd.ru,kakprosto.ru,spec-komp.com,vz.ru##.adsbygoogle
 ideales.ru,transfiles.ru##.adsbygoogle > *
 softsalad.ru##.adsbygoogle ~ div[class="hidden-xs"] > a[rel="nofollow"] > img
 levelsex.com##.adsdelivery

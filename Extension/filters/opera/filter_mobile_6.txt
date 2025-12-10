@@ -1,9 +1,9 @@
-! Checksum: P8BvkBiQwV3SmTh3HZjKxg
-! Diff-Path: ../patches/6_optimized/6_optimized-s-1765248165-3600.patch
+! Checksum: byN9KjBnXtSdbSWnhqDeYQ
+! Diff-Path: ../patches/6_optimized/6_optimized-s-1765334637-3600.patch
 ! Title: AdGuard German filter (Optimized)
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.50.54
-! TimeUpdated: 2025-12-08T18:10:06+00:00
+! Version: 2.0.50.55
+! TimeUpdated: 2025-12-09T09:09:33+00:00
 ! Expires: 10 days (update frequency)
 ||tizofvtuqo.com^
 ||ads.goldbach-germany.de^
@@ -795,6 +795,7 @@ finanzen.net,mainfranken24.de,jetzt.de,derwesten.de,eurosport.de,ingenieur.de,he
 stern.de,monopol-magazin.de,krone.at,cleverdialer.de,sueddeutsche.de,geo.de,northdata.de,losungencodycross.com,spieletipps.de,heise.de,netdoktor.de,aachener-zeitung.de,wissen.de##.ad-container
 winfuture.de,netzwelt.de,quoka.de,farmeramania.de,bravofly.de,computerbild.de,digitalfernsehen.de,hl-live.de,chinamobilemag.de,focus.de,pcwelt.de##.adsbygoogle
 it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpool.de,fnweb.de,laborjournal.de,deraktionaer.tv,food-tiger.de,morgenweb.de##.billboard
+testsieger.de###sponsoredProductPdp
 chip.de##article + div:has(> h3:first-child + a[href^="https://www.chip.de/angebote"]:last-child)
 heise.de##.swvzinfobox + hr
 heise.de##.swvzinfobox
@@ -2188,7 +2189,6 @@ integralrechner.de,ableitungsrechner.net###content > .center > .middle-right-col
 onlinetvrecorder.com###topbannerdiv
 ||static.onlinetvrecorder.com/images/*banner
 mopo.de##a[href*="advertorial"]
-kino.de###hockeystick
 stern.de##.stern-gutscheinbox
 focus.de##.ps-trackingposition_OrangerButton
 focus.de##.adsBlock
@@ -2481,7 +2481,6 @@ onvista.de#?#.col__content section:has(> div.grid > div.col h2 + div.ov-subline:
 onvista.de#?#.col__content section:has(> div > h2 + div.ov-subline:contains(Werbung))
 werkenntdenbesten.de#?#.w-full.flex-col.items-center:has(> .relative > div[x-data="modules.ad()"])
 tvspielfilm.de#?#.info-table > tbody > tr:not([class]):has(> td > .desktop_banner_any)
-lokalklick.eu#?#.td_block_wrap:has(> h4 > span:contains(Anzeige))
 mactechnews.de#?#div[class] > div[id^="traffective-ad-"]:upward(1)
 dubisthalle.de#?#.sidebar-content > div[id^="block-"]> div[id^="dbh-"] > .dbh-adlabel:upward(2)
 bild.de#?#.main-content ~ .mtl--footer:has(> * > .anchor--external)
@@ -3037,6 +3036,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||superpromo24.de^$third-party
 ||symplr.de^$third-party
 ||tagrpd.de^$third-party
+||tip-ads.de^$third-party
 ||trafficfabrik.com^$third-party
 ||trmads.eu^$third-party
 ||trmwidget.eu^$third-party
@@ -3098,7 +3098,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||recht-aktuell.de/js.ads?
 ||rev.lapippa.com^
 ||roemerforum.com/banner/
-||scout69.com/?wms=$third-party
 ||spotlight.offerista.com^$third-party
 ||start.amateurcommunity.com^
 ||start.sexpartnercommunity.com^
@@ -3336,7 +3335,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||oeffentlichen-dienst.de/images/banners/
 ||oekoportal.de/sites/default/files/stromvergleich.png
 ||okey-online.com/prg/daten/datenbanken/banner
-||oktoberfestportal.de/pics_banner/
 ||omano.de/AdServer/
 ||onlinekorrektor.de/cnc/
 ||onlinewahn.de/sky.js
@@ -3603,8 +3601,6 @@ finanzen.net###billboard_btf_2
 jungle.world###block-anzeige
 macgadget.de###block-anzeige2
 hoerzu.de###block-block-218
-buecher-magazin.de,online-webradio.com###block-block-7
-buecher-magazin.de###block-block-8
 duden.de###block-dudende-d-970x250-1billboard
 duden.de###block-leaderboard2ndslot
 duden.de###block-lexemleaderboardunten
@@ -3683,7 +3679,6 @@ archiexpo.de,directindustry.de,medicalexpo.de,nauticexpo.de,rotelaterne.de###hea
 diegrenzgaenger.lu###header-wrapper + div[class="row "]
 klamm.de###header_main
 amazon.de###heroQuickPromo_feature_div
-kino.de###hockeystick
 kleinanzeigen.de###home-billboard
 winfuture.de###homepage_rectangle
 finanzfluss.de###in-search-invesco-01-25
@@ -3845,7 +3840,6 @@ my-ladies.ch###topBannerContainer
 raidrush.net###top_ga
 wintotal.de###topads
 myfont.de###toplists
-buecher-magazin.de###topshadow
 suche.t-online.de###tpctop
 teltarif.de###ttParallaxcontainer
 tvdigital.de###tvd-ad-top
@@ -4250,6 +4244,7 @@ vol.at##.laendleimmo
 regioactive.de##.lb
 boomerangtv.de,infosat.de,linux-community.de,linux-magazin.de,meteovista.de,rhein-zeitung.de,spielen.de##.leaderboard
 gastrojournal.ch##.leaderbord
+wasserburger-stimme.de##.lefthellwetter
 queer.de##.leistenbanner
 xdate.ch##.list-AxDxS
 mydict.net##.list-group
@@ -4471,6 +4466,7 @@ hansa-online.de##.spu-box
 spox.com##.spx-adsurbg-banner
 ebay.de##.srp-1p__banner
 finanzen.net##.sticky__container--mrec
+wasserburger-stimme.de##.stimm-widget
 bafoeg-rechner.de,studis-online.de##.ston-ad
 bafoeg-rechner.de,studis-online.de##.ston-contentad
 automotive-aktuell.de,bauen-garten.de,bauen-wohnen-aktuell.de,blaulichtreport-saarland.de,business-echo.de,emobilratgeber.de,finanzratgeber24.de,gesundheit-on.de,karriere-aktuell.de,landmomente.de,mittelstand-nachrichten.de,oberberg-nachrichten.de,reiseratgeber24.de,suedwestfalen-nachrichten.de,tedamo.de,tutonaut.de,wirtschaftsfenster.de##.stream-item
@@ -4518,7 +4514,6 @@ xrel.to##.top_news_adv
 n-tv.de##.topbanner-mobile
 queer.de##.toplinks
 f95.de##.topsponlink
-xnxx-deutsch.com##.tracking-btn
 supermarkt-inside.de##.tracking_trigger
 trauerhilfe.it##.trauerhilfe_ads
 astronomie.de##.tx-sf-banners
@@ -4778,6 +4773,7 @@ fitundgesund.at,ichkoche.at,metal-hammer.de##div[id^="sas_"]
 sempre-audio.at##div[id^="sempr-"]
 amazon.de##div[id^="sp_detail"]
 20min.ch##div[id^="sport__inside-"]
+wasserburger-stimme.de##div[id^="stimm-"]
 supermarktblog.com,supertipp-online.de##div[id^="super-"]
 fitbook.de,petbook.de##div[id^="superbanner_"]
 teltarif.de##div[id^="tarifSlider"]
@@ -4963,7 +4959,6 @@ mediamarkt.at,mediamarkt.ch,mediamarkt.de,saturn.de##[data-test="mms-product-car
 obi.*##[data-track-section^="home-topteaser"]:has(hobi-advertiser-tag)
 onvista.de##a.link:has(div[style="opacity: 1;"])
 onvista.de##a[href^="https://www.lbbw-markets.de/portal/privatkunden/themen/produkteimfokus/bonus-zertifikate?pk_campaign="]
-t3n.de##article.c-pin:has(div.c-badge + span.u-text-extrasmall)
 hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##article.card:has(.with-ad-marker)
 allround-pc.com##article.is-card:has(span.is-ad)
 finanzen.net##article.page-content__item:has(img[alt="UBS"])

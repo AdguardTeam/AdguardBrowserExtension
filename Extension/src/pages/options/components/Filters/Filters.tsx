@@ -32,7 +32,7 @@ import classNames from 'classnames';
 import { sortBy } from 'lodash-es';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services';
+import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { translator } from '../../../../common/translators/translator';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { rootStore } from '../../stores/RootStore';
