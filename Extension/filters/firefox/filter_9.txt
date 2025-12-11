@@ -1,9 +1,9 @@
-! Checksum: 6Ki3Fe2e5ouFNDAjfsHzFA
-! Diff-Path: ../patches/9/9-s-1763017906-3600.patch
+! Checksum: KKI5G9vRYDDw0bdYkKQxzw
+! Diff-Path: ../patches/9/9-s-1765350756-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.32.34
-! TimeUpdated: 2025-11-13T07:08:01+00:00
+! Version: 2.0.32.54
+! TimeUpdated: 2025-12-10T07:09:51+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -194,6 +194,23 @@
 !
 !
 !
+! https://github.com/uBlockOrigin/uAssets/issues/22957#issuecomment-3628711511
+3xyaoi.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
+! https://github.com/AdguardTeam/AdguardFilters/issues/219700
+||app.doramas.org/js/adb_plus.o.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/219399
+darkmahou.org#@##banner-ad
+darkmahou.org#$#body { overflow: auto !important; }
+darkmahou.org#$##aviso-bloqueio-overlay { display: none !important; }
+darkmahou.org#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
+darkmahou.org#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '/adsbygoogle.js')
+! https://github.com/AdguardTeam/AdguardFilters/issues/218370
+anime-jl.net#%#//scriptlet('abort-current-inline-script', 'document.createElement', 'detect')
+anime-jl.net#@#.ad-unit:not(.textads)
+! https://github.com/AdguardTeam/AdguardFilters/issues/218094
+zonaaps.com#%#//scriptlet('prevent-addEventListener', 'load', 'detect')
+zonaaps.com#$##antiAdblockOverlay { display: none !important; }
+zonaaps.com#$#body { overflow: auto !important; pointer-events: auto !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/217141
 latamtoon.com#$#body { overflow: auto !important; }
 latamtoon.com#$#body > div[id]:has(> div > div[style^="font-size:clamp("]) { display: none !important; }
@@ -233,10 +250,11 @@ manhastro.net#%#//scriptlet('prevent-fetch', 'static.ads-twitter.com')
 manhastro.net#%#//scriptlet('prevent-fetch', 'google-analytics.com')
 manhastro.net#%#//scriptlet('prevent-requestAnimationFrame', 'ULTIMATE_BAIT_REMOVED')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/212429
+! TODO: Consider to add "##body > #adblock-modal.adblock-modal" rule if it's used on another websites
 ! Generic fix for frequently changed "random" domains
 ##body > .content.uid ~ .footer + #adblock-modal
-financasdeouro.info,receitascaseiras.xyz,dicasreceita.com,tudoesportes.online###adblock-modal
-financasdeouro.info,receitascaseiras.xyz,dicasreceita.com,tudoesportes.online#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', 'adsbygoogle')
+culinaria.top,financasdeouro.info,receitascaseiras.xyz,dicasreceita.com,tudoesportes.online###adblock-modal
+culinaria.top,financasdeouro.info,receitascaseiras.xyz,dicasreceita.com,tudoesportes.online#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', 'adsbygoogle')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/211362
 starckfilmes.*#%#//scriptlet('prevent-addEventListener', 'click', 'overlay-notification')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/211280
@@ -1040,7 +1058,7 @@ hobba.tv#@##ad-box
 @@||torrentmegafilme.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/34477
 radiotormentamx.com#$##ad { position: absolute!important; left: -3000px!important; }
-radiotormentamx.com#$##adsdiv  { position: absolute!important; left: -3000px!important; }
+radiotormentamx.com#$##adsdiv { position: absolute!important; left: -3000px!important; }
 @@||radiotormentamx.com^$generichide
 @@||radiotormentamx.com/images/*.jpg#
 @@.png#$domain=radiotormentamx.com
@@ -1963,7 +1981,7 @@ profesionalreview.com#$#body { background-image:none!important; }
 lavanguardia.com#$#.lv-publi-box { position: absolute!important; left: -3000px!important; }
 lavanguardia.com#$#.megabanner-adv { position: absolute!important; left: -3000px!important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/12753
-depor.com#$#.ads-300x300 {position: absolute!important; left: -3000px!important; }
+depor.com#$#.ads-300x300 { position: absolute!important; left: -3000px!important; }
 ! https://forum.adguard.com/index.php?threads/25456/
 androidayuda.com,softzone.es,hardzone.es#$##NEWS_RELATED { position: absolute !important; left: -3000px !important; }
 androidayuda.com,androidayuda.com#$##ROBAPAGINAS_INLINE_LEFT { position: absolute !important; left: -3000px !important; }
@@ -2122,6 +2140,34 @@ cl1ca.com,periodicocorreo.com.mx,guiavidaesaude.com,muyinteresante.com,reportein
 !
 ! NOTE: Specific rules
 !
+univision.com,televisa.com##.min-\[1100px\]\:sticky > .relative > .col-span-full
+univision.com,televisa.com##.min-\[1100px\]\:col-span-8 > .col-span-full .md\:mt-8.md\:mb-10
+olx.com.br##div.flex[class*="Advertising"]
+||olympusbiblioteca.com/third-parties.js
+telehit.com##div.relative:has(> div.flex > div[id^="gpt-top-ad-container-"])
+telehit.com##footer div.relative:has(> a[aria-label="VixBannerFooter"])
+telehit.com##.place-content-end
+mundocine.es##div[style="text-align:center;font-size: small;"]
+mundocine.es##.cm-entry-summary > hr
+elconciso.es#$?#div.slot:has(> div.board-advertising:only-child) { remove: true; }
+tvfoco.uai.com.br##.adsbgnew
+telecinco.es##astro-island[opts*="AdsContainer"]
+||baul.mediaset.es/dist-maivs-modules/_astro/AdsContainer.*.js$domain=telecinco.es
+jcconcursos.com.br##.list-unstyled > li:has(a[href^="/noticia/ofertas"])
+jcconcursos.com.br##.container-fluid > .mb-3
+distritocomedia.com##.-mb-2.sm\:hidden > .md\:mt-8.md\:mb-10
+globo.com##.horizon-impression-wrapper > div[class^="sc-"] > ul[class^="sc-"] > li[class^="sc-"]:has(> glb-ad)
+teleantioquia.co##.ads-column-loaded
+teleantioquia.co##.ad-serve-horizontal-header
+blizzboygames.net##div[id^="ig-banner-"]
+blizzboygames.net##.gp-inner-loop > .gp-post-item:has(> .gp-post-thumbnail > div[class^="gp-image-"] > a[target="_blank"])
+blizzboygames.net#$?#.gp-inner-loop > .gp-post-item:has(> .gp-post-thumbnail > div[class^="gp-image-"] > a[target="_blank"]) { remove: true; }
+blizzpaste.com#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', 'noopener noreferrer')
+playpaste.net##.entry-content .flex-center > a[target="_blank"] > img
+playpaste.net#%#//scriptlet('abort-current-inline-script', '$', 'window.open')
+culturaocio.com##.cabecera_pie_taboola
+culturaocio.com###ctl00_PublicidadSuperior
+culturaocio.com##.columns > div[id^="colLatera"][style]:has(> .parent_sticky > div[id^="sc-mpu-"])
 semana.com##.ads-cls
 cronista.com##.adzone-ad
 plplayer.com#%#//scriptlet('abort-on-property-read', 'LieDetector')
@@ -2216,7 +2262,7 @@ nacionflix.com###__next > div[class^="jsx-"]:has(> div.content > div.module > di
 independentespanol.com###billboard-wrapper
 independentespanol.com##.teads
 independentespanol.com##.mpu-item
-adslzone.net,topesdegama.com##.gaz-ad
+softzone.es,redeszone.net,hardzone.es,lamanzanamordida.net,adslzone.net,topesdegama.com##.gaz-ad
 magazineluiza.com.br##div[data-testid="mod-adsbanner"]
 elboletin.com##div[data-widget_type="html.default"]
 zonamovilidad.es##div[class^="caja-publi-"]
@@ -2601,7 +2647,7 @@ climatempo.com.br##div.accordion-card:has(> div[data-type="ad_space"])
 climatempo.com.br##div.accordion-card:has(> div[data-type="ad_network"])
 seriesperu.com,peliculas8k.com#%#//scriptlet('prevent-addEventListener', 'click', 'manejar')
 seriesperu.com,peliculas8k.com#%#//scriptlet('abort-current-inline-script', 'setTimeout', '_blank')
-televisa.com##div[data-widget-type="ADVERTISEMENT"]
+distritocomedia.com,televisa.com##div[data-widget-type="ADVERTISEMENT"]
 televisa.com##.bg-stripes-light-iconPromo:has(> div[id^="gpt-top-ad-container-"])
 clarosports.com##div[class^="footer-card-evento"] > a[target="_blank"]
 dn.pt###navbar > div[id^="widget-"] > div[class^="widget-module__"]
@@ -2813,12 +2859,12 @@ marcialhub.xyz##.sidebar-hidden > .ad + .c-sidebar
 latamtoon.com,curiosidadtop.com,swordalada.org,marcialhub.xyz##.body-wrap > div[class^="c-sidebar c-top-"]:not(:has(div[class*="widget-manga-popular"]))
 pelisenhd.org###image_banner_turk_id
 elchapuzasinformatico.com###pc_sidebar_300x600_1
-metrocptm.com.br,elchapuzasinformatico.com##body .ads:not(#style_important)
+cinemascomics.com,metrocptm.com.br,elchapuzasinformatico.com##body .ads:not(#style_important)
 elimparcial.com##div[id^="arcad-feature-"]
 otvfoco.com.br##div[id*="ZONA_IAB_"]
 otvfoco.com.br##.row > div:has(> div.ads-bg)
 climadobrasil.com.br,otempo.pt,clima.com,eltiempo.es##.mods-box
-diariodesevilla.es,tvn-2.com##aside[data-ad-type]
+elconciso.es,diariodesevilla.es,tvn-2.com##aside[data-ad-type]
 portaldozacarias.com.br##.publicidade-esq
 mundodonghua.com##.container > .col-md-9 > .pl-15:has(> h4 > .fa-ad)
 hobbyconsolas.com###megaad-wrapper
@@ -2858,7 +2904,7 @@ hardwaresfera.com##.widget_aawp_widget_bestseller
 verseriehd.cc##.movie-xpb > a[rel]
 onlinegratis.cc,seriesgratis.cloud,veronline.*##.movie-xyz > a[rel]
 r7.com##aside > section[role="contentinfo"]:has(li > a[href^="https://cupons.r7.com/"])
-noticias.r7.com##div[id^="taboola-"]
+culturaocio.com,noticias.r7.com##div[id^="taboola-"]
 blocktrends.com.br###out-of-page-ad
 elliberal.com.ar##.Ad--1--1
 megacurioso.com.br##.ad-billboard-middle-home
@@ -3278,7 +3324,7 @@ animeflv.net##a[href^="https://www.twitch.tv/merchivt/"]
 mantrazscan.com###fixedbanner
 recetasderechupete.com##.mrf-adv__wrapper
 eldebate.com##.c-add-wall
-eldebate.com,cope.es,cadena100.es,primicias.ec,eltiempo.com,miarevista.es,muyinteresante.es##.c-add
+segre.com,eldebate.com,cope.es,cadena100.es,primicias.ec,eltiempo.com,miarevista.es,muyinteresante.es##.c-add
 mangacrab.com###fixedban2
 futemax.app##.alertWS
 carteldemanhwas.com##div[id^="teaser"]
@@ -5055,7 +5101,7 @@ impre.com##.ads125BackTexture
 ticotimes.net##.ads_by_tico
 inkanime.com,anime-latino.net,animeflv.net##.adspl
 intereconomia.com##.adv-top
-atribuna.com.br,lance.com.br,larazon.es,folha.uol.com.br,tribunaavila.com##.advertising
+teleantioquia.co,atribuna.com.br,lance.com.br,larazon.es,folha.uol.com.br,tribunaavila.com##.advertising
 lanacion.cl##.advs1
 lanacion.cl##.advs2
 lanacion.cl##.advs3
@@ -5854,7 +5900,7 @@ otakuworldsite.blogspot.com##.AdSense
 !+ NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_spanish
 ! Detect of using AdGuard products
-!+ NOT_PLATFORM(windows, mac, android, ios, ext_ublock) NOT_OPTIMIZED
+!+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Detect HTTPS filtering
 ! Detect Advanced Protection of AdGuard for iOS
@@ -5869,6 +5915,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/219538
+@@||c.amazon-adsystem.com/aax2/apstag.js$domain=telehit.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/216360
 @@/publicidad-$domain=radioeuroextasis.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/214711

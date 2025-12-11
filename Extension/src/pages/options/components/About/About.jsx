@@ -21,6 +21,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { rootStore } from '../../stores/RootStore';
 import {
     CHANGELOG_URL,
@@ -35,7 +37,9 @@ import { translator } from '../../../../common/translators/translator';
 import './about-page.pcss';
 
 const About = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, telemetryStore } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.AboutScreen);
 
     const { appVersion, libVersions } = settingsStore;
 

@@ -29,7 +29,7 @@ import { type ForwardFrom } from './forward';
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 12;
+export const APP_SCHEMA_VERSION = 13;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -59,6 +59,11 @@ export const AUTO_UPDATE_STATE_KEY_MV3 = 'auto-update-state-mv3';
  * Storage key for auto-update configuration override, used only in MV3 for testing.
  */
 export const AUTO_UPDATE_CONFIG_KEY_MV3 = 'auto-update-config-mv3';
+
+/**
+ * Storage key for telemetry synthetic ID.
+ */
+export const TELEMETRY_SYNTHETIC_ID_KEY = 'telemetry-synthetic-id';
 
 /**
  * Filter ids used in the code on the background page and filtering log page.

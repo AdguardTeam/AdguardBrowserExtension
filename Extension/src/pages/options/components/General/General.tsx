@@ -24,6 +24,8 @@
 import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
 
+import { useTelemetryPageViewEvent } from '../../../common/telemetry';
+import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SettingSetSelect } from '../Settings/SettingSetSelect';
@@ -121,7 +123,10 @@ export const General = observer(() => {
     const {
         settingsStore,
         uiStore,
+        telemetryStore,
     } = useContext(rootStore);
+
+    useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.GeneralSettings);
 
     const { settings, allowAcceptableAds }: any = settingsStore;
 

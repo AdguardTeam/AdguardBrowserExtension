@@ -62,6 +62,10 @@ export const settingsValidator = zod.object({
      */
     [SettingOption.DisableCollectHits]: SchemaPreprocessor.booleanValidator,
     /**
+     * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.AllowAnonymizedUsageData]}.
+     */
+    [SettingOption.AllowAnonymizedUsageData]: SchemaPreprocessor.booleanValidator,
+    /**
      * See {@link ExtensionSpecificSettingsConfig[ExtensionSpecificSettingsOption.ShowContextMenu]}.
      */
     [SettingOption.DisableShowContextMenu]: SchemaPreprocessor.booleanValidator,

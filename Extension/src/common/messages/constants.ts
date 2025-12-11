@@ -48,6 +48,8 @@ import { type GetAllowlistDomainsResponse } from '../../background/services/allo
 import { type GetUserRulesEditorDataResponse, type GetUserRulesResponse } from '../../background/services/userrules';
 import { type GetCustomFilterInfoResult } from '../../background/api/filters/custom';
 import { type ManualUpdateMetadata } from '../../background/services/extension-update/types';
+import { type TelemetryEventName, type TelemetryScreenName } from '../../background/services/telemetry';
+import { type TelemetryActionToScreenMap } from '../../background/services/telemetry/enums';
 
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 
@@ -141,6 +143,10 @@ export enum MessageType {
     UpdateListeners = 'updateListeners',
     SetConsentedFilters = 'setConsentedFilters',
     GetIsConsentedFilter = 'getIsConsentedFilter',
+    SendTelemetryCustomEvent = 'sendTelemetryCustomEvent',
+    SendTelemetryPageViewEvent = 'sendTelemetryPageViewEvent',
+    AddTelemetryOpenedPage = 'addTelemetryOpenedPage',
+    RemoveTelemetryOpenedPage = 'removeTelemetryOpenedPage',
     GetRulesLimitsCountersMv3 = 'getRulesLimitsCountersMv3',
     CanEnableStaticFilterMv3 = 'canEnableStaticFilterMv3',
     CanEnableStaticGroupMv3 = 'canEnableStaticGroupMv3',
@@ -612,6 +618,33 @@ export type ShowVersionUpdatedPopupMessage = {
     };
 };
 
+export type SendTelemetryPageViewEventMessage = {
+    type: MessageType.SendTelemetryPageViewEvent;
+    data: {
+        screenName: TelemetryScreenName;
+        pageId: string;
+    };
+};
+
+export type SendTelemetryCustomEventMessage = {
+    type: MessageType.SendTelemetryCustomEvent;
+    data: {
+        screenName: TelemetryActionToScreenMap[TelemetryEventName];
+        eventName: TelemetryEventName;
+    };
+};
+
+export type AddTelemetryOpenedPageMessage = {
+    type: MessageType.AddTelemetryOpenedPage;
+};
+
+export type RemoveTelemetryOpenedPageMessage = {
+    type: MessageType.RemoveTelemetryOpenedPage;
+    data: {
+        pageId: string;
+    };
+};
+
 export type CanEnableStaticFilterMv3Message = {
     type: MessageType.CanEnableStaticFilterMv3;
     data: {
@@ -934,6 +967,22 @@ export type MessageMap = {
     };
     [MessageType.AddUrlToTrusted]: {
         message: AddUrlToTrustedMessage;
+        response: void;
+    };
+    [MessageType.SendTelemetryPageViewEvent]: {
+        message: SendTelemetryPageViewEventMessage;
+        response: void;
+    };
+    [MessageType.SendTelemetryCustomEvent]: {
+        message: SendTelemetryCustomEventMessage;
+        response: void;
+    };
+    [MessageType.AddTelemetryOpenedPage]: {
+        message: AddTelemetryOpenedPageMessage;
+        response: string;
+    };
+    [MessageType.RemoveTelemetryOpenedPage]: {
+        message: RemoveTelemetryOpenedPageMessage;
         response: void;
     };
     [MessageType.CurrentLimitsMv3]: {
