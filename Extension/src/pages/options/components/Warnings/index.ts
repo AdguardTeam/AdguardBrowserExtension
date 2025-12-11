@@ -20,3 +20,4 @@
 
 export { StaticFiltersLimitsWarning } from './StaticFiltersLimitsWarning';
 export { DynamicRulesLimitsWarning } from './DynamicRulesLimitsWarning';
+export { ClipboardPermissionWarning } from './ClipboardPermissionWarning';

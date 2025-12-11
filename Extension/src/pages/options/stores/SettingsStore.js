@@ -261,6 +261,7 @@ class SettingsStore {
         makeObservable(this);
         this.rootStore = rootStore;
         this.uiStore = rootStore.uiStore;
+        this.telemetryStore = rootStore.telemetryStore;
 
         this.updateSetting = this.updateSetting.bind(this);
         this.updateFilterSetting = this.updateFilterSetting.bind(this);
@@ -364,6 +365,10 @@ class SettingsStore {
             this.isChrome = data.environmentOptions.isChrome;
             this.optionsReadyToRender = true;
             this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
+
+            // telemetry
+            const anonymizedUsageDataAllowed = data.settings.values[data.settings.names.AllowAnonymizedUsageData];
+            this.telemetryStore.setIsAnonymizedUsageDataAllowed(anonymizedUsageDataAllowed);
 
             // Handle MV3-specific options
             const { mv3SpecificOptions } = data;

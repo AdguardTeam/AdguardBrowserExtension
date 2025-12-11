@@ -30,5 +30,6 @@ export {
     getStorageFixturesV10,
     getStorageFixturesV11,
     getStorageFixturesV12,
+    getStorageFixturesV13,
     type StorageData,
 } from './getStorageFixtures';
