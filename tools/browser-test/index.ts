@@ -34,10 +34,8 @@ import unzipper from 'unzipper';
  * Direct import from tsurlfilter instead of tswebextension, because tsurlfilter
  * has exported cjs builds, which is required in node environment.
  */
-
 import { ConvertedFilterList } from '@adguard/tsurlfilter';
-
-import { type Configuration } from 'tswebextension';
+import { type Configuration } from '@adguard/tswebextension/mv3';
 
 import { BuildTargetEnv } from '../../constants';
 import { BUILD_PATH } from '../constants';

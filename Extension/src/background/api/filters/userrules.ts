@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { RuleParser } from '@adguard/agtree/parser';
 import {
     ConvertedFilterList,
     RuleSyntaxUtils,
@@ -107,9 +106,8 @@ export class UserRulesApi {
 
             while (lbIndex < content.length) {
                 const rawRule = content.slice(ruleStartIndex, lbIndex);
-                const ruleNode = RuleParser.parse(rawRule);
 
-                if (RuleSyntaxUtils.isRuleForUrl(ruleNode, url)) {
+                if (RuleSyntaxUtils.isRuleForUrl(rawRule, url)) {
                     return true;
                 }
 
@@ -224,7 +222,7 @@ export class UserRulesApi {
                 .split(NEWLINE_CHAR_REGEX)
                 .filter((rule) => {
                     try {
-                        return !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url);
+                        return !RuleSyntaxUtils.isRuleForUrl(rule, url);
                     } catch (e) {
                         // Possible parsing error here.
                         // Keep invalid rules in the list, because we need to keep everything that user added.
