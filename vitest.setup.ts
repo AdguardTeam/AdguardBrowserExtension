@@ -122,13 +122,13 @@ vi.mock('@adguard/tswebextension', async () => {
 // We manually construct the mock to avoid Zod initialization issues and linked package resolution
 vi.mock('@adguard/tswebextension/mv3', async () => {
     const tsurlfilter = await vi.importActual('@adguard/tsurlfilter') as any;
-    // Import MV2 actual for utility functions, but handle potential linked package issues
-    let mv2: any;
+    // Import MV3 actual for utility functions and constants
+    let mv3Actual: any;
     try {
-        mv2 = await vi.importActual('@adguard/tswebextension');
+        mv3Actual = await vi.importActual('@adguard/tswebextension/mv3');
     } catch (e) {
         // If linked package fails to load, use empty object and we'll set functions to undefined
-        mv2 = {};
+        mv3Actual = {};
     }
     return {
         TsWebExtension: MockedTsWebExtensionMV3,
@@ -137,11 +137,11 @@ vi.mock('@adguard/tswebextension/mv3', async () => {
         // Re-export common constants and types that may be needed
         MESSAGE_HANDLER_NAME: 'tsWebExtension',
         // Utility functions
-        getDomain: mv2.getDomain,
-        isHttpRequest: mv2.isHttpRequest,
-        MAIN_FRAME_ID: mv2.MAIN_FRAME_ID,
-        FilteringEventType: mv2.FilteringEventType,
-        RequestEvents: mv2.RequestEvents,
+        getDomain: mv3Actual.getDomain,
+        isHttpRequest: mv3Actual.isHttpRequest,
+        MAIN_FRAME_ID: mv3Actual.MAIN_FRAME_ID,
+        FilteringEventType: mv3Actual.FilteringEventType,
+        RequestEvents: mv3Actual.RequestEvents,
         // Mock tabsApi
         tabsApi: createMockTabsApi(),
         // Mock defaultFilteringLog
