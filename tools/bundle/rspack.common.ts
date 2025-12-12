@@ -200,7 +200,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types/types-mv${manifestVersion}.ts`),
         'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
         'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
-        'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/updateButton-mv${manifestVersion}.tsx`),
+        'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
     };
 
     const configuration: Configuration = {
