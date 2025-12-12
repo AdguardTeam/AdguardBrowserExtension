@@ -22,20 +22,12 @@ import { MessengerCommon } from './messenger-common';
 
 export class Messenger extends MessengerCommon {
     /**
-     * @inheritdoc
+     * Sends a message to the background page to update filters.
+     *
+     * @returns Promise that resolves with the list of filters.
      */
-    updateFiltersMV2 = async (): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> => {
+    updateFilters = async (): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> => {
         return this.sendMessage(MessageType.CheckFiltersUpdate);
-    };
-
-    /**
-     * @inheritdoc
-     */
-    updateExtensionMV3 = async (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        { from }: any,
-    ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> => {
-        throw new Error('[ext.Messenger.updateExtensionMV3]: extension update is not supported in MV2');
     };
 }
 

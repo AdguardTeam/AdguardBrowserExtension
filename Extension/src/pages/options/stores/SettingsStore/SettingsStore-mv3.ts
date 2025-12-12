@@ -191,7 +191,7 @@ export class SettingsStore extends SettingsStoreCommon {
     async updateExtensionMV3() {
         const start = Date.now();
         try {
-            await messenger.updateExtensionMV3({
+            await messenger.updateExtension({
                 from: ForwardFrom.Options,
             });
         } catch (error) {

@@ -64,7 +64,7 @@ type CategoryBlockedStatsInfo = {
 // Do not allow property change outside of store actions
 configure({ enforceActions: 'observed' });
 
-export abstract class PopupStoreCommon {
+export class PopupStoreCommon {
     TOTAL_BLOCKED_GROUP_ID = TOTAL_BLOCKED_STATS_GROUP_ID;
 
     /**
@@ -145,15 +145,6 @@ export abstract class PopupStoreCommon {
     @observable
     appState: AppState = appStateActor.getSnapshot().value;
 
-    @observable
-    isExtensionUpdateAvailable = false;
-
-    /**
-     * Whether the extension update is checking or is updating now.
-     */
-    @observable
-    isExtensionCheckingUpdateOrUpdating = false;
-
     /**
      * Telemetry store.
      */
@@ -161,7 +152,6 @@ export abstract class PopupStoreCommon {
 
     constructor() {
         makeObservable(this);
-        this.checkUpdatesMV3 = this.checkUpdatesMV3.bind(this);
         this.getPopupData = this.getPopupData.bind(this);
         this.telemetryStore = new TelemetryStore();
 
@@ -285,16 +275,6 @@ export abstract class PopupStoreCommon {
         const anonymizedUsageDataAllowed = settings.values[settings.names.AllowAnonymizedUsageData];
         this.telemetryStore.setIsAnonymizedUsageDataAllowed(anonymizedUsageDataAllowed);
     }
-
-    /**
-     * Checks for updates and if update is available, starts the update process.
-     *
-     * Note:
-     * This behavior is different on options page
-     * where two separate clicks are required
-     * to check for updates and start the update process.
-     */
-    abstract checkUpdatesMV3(): Promise<void>;
 
     /**
      * Sends a message to the background to set the application filtering paused state to the specified value.
@@ -602,15 +582,5 @@ export abstract class PopupStoreCommon {
         }
 
         return this.settings.values[this.settings.names.AppearanceTheme];
-    }
-
-    @action
-    setIsExtensionUpdateAvailable(isUpdateAvailable: boolean): void {
-        this.isExtensionUpdateAvailable = isUpdateAvailable;
-    }
-
-    @action
-    setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
-        this.isExtensionCheckingUpdateOrUpdating = value;
     }
 }
