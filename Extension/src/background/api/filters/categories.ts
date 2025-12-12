@@ -18,18 +18,16 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 // TODO (AG-44868): Reduce code duplication across mv2 and mv3
-import { FilterUpdateApi } from '../update';
-import { CommonFilterApi } from '../common';
-import { UserAgent } from '../../../../common/user-agent';
-import { RECOMMENDED_TAG_ID } from '../../../../common/constants';
-import { CommonFilterUtils } from '../../../../common/common-filter-utils';
+import { UserAgent } from '../../../common/user-agent';
+import { RECOMMENDED_TAG_ID } from '../../../common/constants';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
 import {
     metadataStorage,
     filterStateStorage,
     groupStateStorage,
     filterVersionStorage,
     customFilterMetadataStorage,
-} from '../../../storages';
+} from '../../storages';
 import {
     type GroupMetadata,
     type TagMetadata,
@@ -38,19 +36,20 @@ import {
     type FilterStateData,
     type FilterVersionData,
     type CustomFilterMetadata,
-} from '../../../schema';
-import { logger } from '../../../../common/logger';
-import { type FilterMetadata, FiltersApi } from '../main';
+} from '../../schema';
+import { logger } from '../../../common/logger';
+
+import { CommonFilterApi } from './common';
+import { FilterUpdateApi } from './update';
+import { type FilterMetadata, FiltersApi } from './main';
 
 /**
  * Filter data displayed in category section on options page.
  */
-export type CategoriesFilterData = (
-    (RegularFilterMetadata | CustomFilterMetadata) &
+export type CategoriesFilterData = (RegularFilterMetadata | CustomFilterMetadata) &
     FilterStateData &
     FilterVersionData &
-    { tagsDetails?: TagMetadata[] }
-);
+    { tagsDetails?: TagMetadata[] };
 
 /**
  * Groups data displayed on options page.

@@ -29,7 +29,7 @@ import { CustomFilterApi, type GetCustomFilterInfoResult } from '../../api/filte
 import { messageHandler } from '../../message-handler';
 import { notifier } from '../../notifier';
 import { engine } from '../../engine';
-import { type CategoriesFilterData } from '../../api/filters/categories/categories-mv3';
+import { type CategoriesFilterData } from '../../api/filters/categories';
 
 /**
  * Service for processing events with custom filters.

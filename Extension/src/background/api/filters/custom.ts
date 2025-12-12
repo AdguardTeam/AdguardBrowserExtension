@@ -18,7 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import MD5 from 'crypto-js/md5';
-import { type CategoriesFilterData } from 'filter-categories-api';
 
 import { type DownloadResult } from '@adguard/filters-downloader/browser';
 
@@ -42,6 +41,7 @@ import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { createPromiseWithTimeout } from '../../utils/timeouts';
 import { getZodErrorMessage } from '../../../common/error';
 
+import { type CategoriesFilterData } from './categories';
 import { type FilterUpdateOptions } from './update';
 import { type FilterParsedData, FilterParser } from './parser';
 import { type FilterMetadata } from './main';
