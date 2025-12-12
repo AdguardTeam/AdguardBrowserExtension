@@ -75,7 +75,6 @@ import {
     FILTERING_LOG_PATH,
     FULLSCREEN_USER_RULES_PATH,
     htmlTemplatePluginCommonOptions,
-    MV_SPECIFIC_COMPONENTS,
     OPTIONS_PATH,
     POPUP_PATH,
     POST_INSTALL_PATH,
@@ -158,26 +157,6 @@ export const ENTRY_POINTS_CHUNKS = {
     ],
 };
 
-/**
- * Get MV2/MV3 component aliases for resolving Abstract components to their
- * manifest-version-specific implementations.
- * This replaces the webpack NormalModuleReplacementPlugin approach.
- *
- * @param manifestVersion The manifest version (2 or 3).
- *
- * @returns Alias configuration for MV2/MV3 component switching.
- */
-const getMvComponentAliases = (manifestVersion: number): Record<string, string> => {
-    const mvSuffix = manifestVersion === 3 ? 'Mv3' : 'Mv2';
-
-    return Object.fromEntries(
-        MV_SPECIFIC_COMPONENTS.flatMap((name) => [
-            [`./Abstract${name}`, `./${mvSuffix}${name}`],
-            [`./Abstract${name}.tsx`, `./${mvSuffix}${name}.tsx`],
-        ]),
-    );
-};
-
 export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}): Configuration => {
     const { isWatchMode = false, zip } = options;
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
@@ -223,8 +202,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types-mv${manifestVersion}.ts`),
         'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
         'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
-        // MV2/MV3 component aliases (replaces NormalModuleReplacementPlugin)
-        ...getMvComponentAliases(manifestVersion),
+        'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
     };
 
     const configuration: Configuration = {

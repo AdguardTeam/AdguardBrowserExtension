@@ -30,21 +30,20 @@ import { popupStore } from '../../../../stores/PopupStore';
 import { ForwardFrom } from '../../../../../../common/forward';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../../background/services';
 
-const Mv3UpdateButton = observer(() => {
+import { UpdateButtonCommon } from './UpdateButton-common';
+
+export const UpdateButton = observer(() => {
     const store = useContext(popupStore);
 
     const { isExtensionUpdateAvailable, telemetryStore } = store;
 
     const handleCheckUpdatesClick = async () => {
-        if (!__IS_MV3__) {
-            throw new Error('Extension update is not supported in MV2');
-        }
-
         telemetryStore.sendCustomEvent(
             TelemetryEventName.CheckUpdatesClick,
             TelemetryScreenName.MainPage,
         );
-        await store.checkUpdatesMV3();
+
+        await store.checkUpdates();
     };
 
     const handleUpdateExtensionClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
@@ -61,7 +60,7 @@ const Mv3UpdateButton = observer(() => {
         // reset update availability flag
         store.setIsExtensionUpdateAvailable(false);
         store.setIsExtensionCheckingUpdateOrUpdating(true);
-        await messenger.updateExtensionMV3({
+        await messenger.updateExtension({
             from: ForwardFrom.Popup,
         });
 
@@ -72,50 +71,30 @@ const Mv3UpdateButton = observer(() => {
 
     if (isExtensionUpdateAvailable) {
         return (
-            <button
-                className="button popup-header__button"
-                disabled={store.isExtensionCheckingUpdateOrUpdating}
-                type="button"
+            <UpdateButtonCommon
+                isUpdating={store.isExtensionCheckingUpdateOrUpdating}
                 onClick={handleUpdateExtensionClick}
-                title={translator.getMessage('update_available_title')}
+                buttonTitle={translator.getMessage('update_available_title')}
             >
                 <Icon
                     id="#update-available"
                     className="icon--24 icon--header icon--header--update-available"
                     aria-hidden="true"
                 />
-            </button>
+            </UpdateButtonCommon>
         );
     }
 
     return (
-        <>
-            <div
-                role="status"
-                className="sr-only"
-                aria-live="assertive"
-                tabIndex={-1}
-                aria-hidden={!store.isExtensionCheckingUpdateOrUpdating}
-            >
-                {store.isExtensionCheckingUpdateOrUpdating ? translator.getMessage('update_checking_in_progress') : ''}
-            </div>
-            <button
-                className="button popup-header__button"
-                disabled={store.isExtensionCheckingUpdateOrUpdating}
-                type="button"
-                onClick={handleCheckUpdatesClick}
-                title={translator.getMessage('update_check')}
-            >
-                <Icon
-                    id="#reload"
-                    className="icon--24 icon--header"
-                    animationCondition={store.isExtensionCheckingUpdateOrUpdating}
-                    animationClassName="icon--loading"
-                    aria-hidden="true"
-                />
-            </button>
-        </>
+        <UpdateButtonCommon
+            isUpdating={store.isExtensionCheckingUpdateOrUpdating}
+            statusMessage={
+                store.isExtensionCheckingUpdateOrUpdating
+                    ? translator.getMessage('update_checking_in_progress')
+                    : ''
+            }
+            onClick={handleCheckUpdatesClick}
+            buttonTitle={translator.getMessage('update_check')}
+        />
     );
 });
-
-export { Mv3UpdateButton as UpdateButton };

@@ -68,7 +68,7 @@ export class SettingsStore extends SettingsStoreCommon {
     async updateFilters() {
         this.setFiltersUpdating(true);
         try {
-            const filtersUpdates = await messenger.updateFiltersMV2();
+            const filtersUpdates = await messenger.updateFilters();
             this.refreshFilters(filtersUpdates);
             setTimeout(() => {
                 this.setFiltersUpdating(false);

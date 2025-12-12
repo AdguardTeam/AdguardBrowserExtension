@@ -110,16 +110,3 @@ export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserC
         zipName: Browser.Edge,
     },
 };
-
-/**
- * List of components that have different implementations for MV2 and MV3.
- * These are resolved using rspack's resolve.alias in rspack.common.ts.
- *
- * Components:
- * - UpdateButton: Different update UI for MV2 vs MV3
- * - FiltersUpdate: Different filter update logic for MV2 vs MV3
- */
-export const MV_SPECIFIC_COMPONENTS = [
-    'UpdateButton',
-    'FiltersUpdate',
-] as const;
