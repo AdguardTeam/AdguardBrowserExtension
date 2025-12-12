@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -15,5 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 export { UserRulesService } from 'userrules';
 export { type GetUserRulesResponse, type GetUserRulesEditorDataResponse } from './userrules-common';
