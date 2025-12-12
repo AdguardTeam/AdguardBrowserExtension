@@ -135,7 +135,7 @@ describe('Settings Api', () => {
                     false,
                 );
 
-            expect(SettingsApi.getTsWebExtConfiguration(__IS_MV3__)).toStrictEqual(expected);
+            expect(SettingsApi.getTsWebExtConfiguration()).toStrictEqual(expected);
         });
     });
 
