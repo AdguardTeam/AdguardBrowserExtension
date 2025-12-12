@@ -123,7 +123,7 @@ const newYear25Notification: PromoNotification = {
         },
         ru: {
             title: 'Интернет засияет с AdGuard',
-            btn: 'Попробуйте',
+            btn: 'Попробовать',
         },
         es: {
             title: 'Tu web brilla con AdGuard',
@@ -167,7 +167,7 @@ const newYear25Notification: PromoNotification = {
         },
         be: {
             title: 'Інтэрнэт заззяе з AdGuard',
-            btn: 'Паспрабуйце',
+            btn: 'Паспрабаваць',
         },
         bg: {
             title: 'Интернетът ще засияе с AdGuard',
