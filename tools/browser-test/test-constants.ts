@@ -21,7 +21,8 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { ConvertedFilterList, type Configuration } from '@adguard/tswebextension/mv3';
+import { ConvertedFilterList } from '@adguard/tsurlfilter';
+import { type Configuration } from '@adguard/tswebextension/mv3';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
