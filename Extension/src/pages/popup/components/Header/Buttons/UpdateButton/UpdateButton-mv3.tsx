@@ -30,11 +30,7 @@ import { popupStore } from '../../../../stores/PopupStore';
 import { ForwardFrom } from '../../../../../../common/forward';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../../background/services';
 
-<<<<<<<< HEAD:Extension/src/pages/popup/components/Header/Buttons/UpdateButton/updateButton-mv3.tsx
-import { UpdateButtonCommon } from './updateButton-common';
-========
 import { UpdateButtonCommon } from './UpdateButton-common';
->>>>>>>> release/v5.3:Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv3.tsx
 
 export const UpdateButton = observer(() => {
     const store = useContext(popupStore);

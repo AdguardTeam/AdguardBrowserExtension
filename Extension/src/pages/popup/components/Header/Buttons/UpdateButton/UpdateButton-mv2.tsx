@@ -30,11 +30,7 @@ import { addMinDurationTime } from '../../../../../../common/sleep-utils';
 import { messenger } from '../../../../../services/messenger';
 import { getFiltersUpdateResultMessage } from '../../../../../../common/toast-helper';
 
-<<<<<<<< HEAD:Extension/src/pages/popup/components/Header/Buttons/UpdateButton/updateButton-mv2.tsx
-import { UpdateButtonCommon } from './updateButton-common';
-========
 import { UpdateButtonCommon } from './UpdateButton-common';
->>>>>>>> release/v5.3:Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv2.tsx
 
 export const UpdateButton = () => {
     const timeoutId = useRef<NodeJS.Timeout>();
