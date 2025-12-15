@@ -329,15 +329,6 @@ export class FilterUpdateApi {
             return lastCheckTime + updatePeriod <= Date.now();
         });
     }
-
-    /**
-     * Dummy method, added for backward compatibility with other modules.
-     * TODO: Remove in AG-44868.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    public static async updateCustomFilters(): Promise<void> {
-        throw new Error('Not implemented');
-    }
 }
 
 // TODO: remove later

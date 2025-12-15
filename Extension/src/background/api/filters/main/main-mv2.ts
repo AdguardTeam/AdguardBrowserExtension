@@ -15,4 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { FiltersApiCommon as FiltersApi } from './main-common';
+import { FilterUpdateApi } from 'filters-update-api';
+
+import { FiltersApiCommon } from './main-common';
+
+/**
+ * API for managing filters data. This class is a facade for working with
+ * filters, for example, its methods are called by the handlers of user actions:
+ * enabling or disabling a filter or filter group, updating, etc. It depends on
+ * CommonFilterApi and CustomFilterApi.
+ */
+export class FiltersApi extends FiltersApiCommon {
+    /**
+     * @inheritdoc
+     */
+    protected static override async afterLoadAndEnable(
+        loadedFilters: number[],
+        alreadyLoadedFilterIds: number[],
+        remote: boolean,
+        enableGroups: boolean,
+    ): Promise<void> {
+        if (!remote) {
+            await FilterUpdateApi.checkForFiltersUpdates(loadedFilters);
+        } else if (alreadyLoadedFilterIds.length > 0) {
+            await FilterUpdateApi.checkForFiltersUpdates(alreadyLoadedFilterIds);
+        }
+
+        if (enableGroups) {
+            FiltersApiCommon.enableGroupsWereNotTouched(loadedFilters);
+        }
+    }
+}

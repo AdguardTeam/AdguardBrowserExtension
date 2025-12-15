@@ -17,3 +17,29 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+import { FiltersApi } from '../main';
+import { logger } from '../../../../common/logger';
+import { groupStateStorage } from '../../../storages';
+
+import { CategoriesCommon } from './categories-common';
+
+/**
+ * Class for filter groups management.
+ */
+export class Categories extends CategoriesCommon {
+    /**
+     * @inheritdoc
+     */
+    public static override async enableGroup(
+        groupId: number,
+        recommendedFiltersIds: number[] = [],
+    ): Promise<void> {
+        if (recommendedFiltersIds.length > 0) {
+            await FiltersApi.loadAndEnableFilters(recommendedFiltersIds, false);
+        }
+
+        groupStateStorage.enableGroups([groupId]);
+        logger.info(`[ext.Categories.enableGroup]: enabled group: id='${groupId}', name='${CategoriesCommon.getGroupName(groupId)}'`);
+    }
+}

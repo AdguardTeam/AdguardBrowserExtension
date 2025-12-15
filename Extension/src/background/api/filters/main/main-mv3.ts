@@ -43,6 +43,20 @@ export class FiltersApi extends FiltersApiCommon {
     }
 
     /**
+     * @inheritdoc
+     */
+    protected static override async afterLoadAndEnable(
+        loadedFilters: number[],
+        alreadyLoadedFilterIds: number[],
+        remote: boolean,
+        enableGroups: boolean,
+    ): Promise<void> {
+        if (enableGroups) {
+            FiltersApiCommon.enableGroupsWereNotTouched(loadedFilters);
+        }
+    }
+
+    /**
      * Reload filters and their metadata from local storage.
      *
      * Needed only in MV3 version because we don't update filters from remote,
