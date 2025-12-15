@@ -81,7 +81,7 @@ type HitStats = {
  * All requests sent by this class are covered in the privacy policy:
  * http://adguard.com/en/privacy.html#browsers.
  */
-export class NetworkCommon {
+export abstract class NetworkCommon {
     protected settings = new NetworkSettings();
 
     /**
