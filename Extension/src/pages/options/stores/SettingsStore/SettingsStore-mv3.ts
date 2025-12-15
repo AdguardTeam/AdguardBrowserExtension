@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -191,7 +193,7 @@ export class SettingsStore extends SettingsStoreCommon {
     async updateExtensionMV3() {
         const start = Date.now();
         try {
-            await messenger.updateExtensionMV3({
+            await messenger.updateExtension({
                 from: ForwardFrom.Options,
             });
         } catch (error) {

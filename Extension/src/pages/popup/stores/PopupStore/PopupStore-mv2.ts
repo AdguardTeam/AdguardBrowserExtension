@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -16,16 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { PopupStoreCommon } from './PopupStore-common';
-
-export class PopupStore extends PopupStoreCommon {
-    /**
-     * Checks for updates - not supported in MV2.
-     *
-     * @throws {Error} Always throws an error indicating that the method is not implemented.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    async checkUpdatesMV3(): Promise<void> {
-        throw new Error('Method not implemented.');
-    }
-}
+export { PopupStoreCommon as PopupStore } from './PopupStore-common';

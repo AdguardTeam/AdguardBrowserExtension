@@ -1,5 +1,6 @@
-/* eslint-disable class-methods-use-this */
 /**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
@@ -27,10 +28,6 @@ import {
 import { MessengerCommon } from './messenger-common';
 
 export class Messenger extends MessengerCommon {
-    updateFiltersMV2 = async (): Promise<ExtractMessageResponse<MessageType.CheckFiltersUpdate>> => {
-        throw new Error('[ext.Messenger.updateFiltersMV2]: filters update is not supported in MV3');
-    };
-
     /**
      * Sends a message to the background page to check for extension updates.
      */
@@ -39,9 +36,9 @@ export class Messenger extends MessengerCommon {
     };
 
     /**
-     * @inheritdoc
+     * Sends a message to the background page to update extension.
      */
-    updateExtensionMV3 = async (
+    updateExtension = async (
         { from }: UpdateExtensionMessageMv3['data'],
     ): Promise<ExtractMessageResponse<MessageType.UpdateExtensionMv3>> => {
         return this.sendMessage(MessageType.UpdateExtensionMv3, { from });

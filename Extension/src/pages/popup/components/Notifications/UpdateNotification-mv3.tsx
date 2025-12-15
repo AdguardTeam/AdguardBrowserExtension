@@ -80,7 +80,7 @@ export const UpdateNotification = observer(() => {
                     text: translator.getMessage('update_failed_text'),
                     button: {
                         title: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: store.checkUpdatesMV3,
+                        onClick: store.checkUpdates,
                     },
                 });
                 break;
