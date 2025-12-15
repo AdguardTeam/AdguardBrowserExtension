@@ -1,8 +1,3 @@
-// TODO figure out how to fix the eslint errors
-/* eslint-disable jsx-a11y/anchor-is-valid,
-   jsx-a11y/click-events-have-key-events,
-   jsx-a11y/no-static-element-interactions
-*/
 /**
  * Copyright (c) 2015-2025 Adguard Software Ltd.
  *
@@ -22,6 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+// TODO figure out how to fix the eslint errors
+/* eslint-disable jsx-a11y/anchor-is-valid,
+   jsx-a11y/click-events-have-key-events,
+   jsx-a11y/no-static-element-interactions
+*/
 
 import React from 'react';
 

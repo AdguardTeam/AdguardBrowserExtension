@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax, no-console */
 /**
  * Copyright (c) 2015-2025 Adguard Software Ltd.
  *
@@ -18,6 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* eslint-disable no-restricted-syntax, no-console */
 
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
