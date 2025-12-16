@@ -338,7 +338,9 @@ export class RuleTextService {
         filterId: number,
         ruleIndex: number,
     ): Promise<RuleText | null> {
-        // Special case: when inverted allowlist mode is enabled, we generate rules dynamically without rule index
+        // Special case: when inverted allowlist mode is enabled, we generate allowlist rules dynamically
+        // without rule index in tswebextension's `DocumentApi.matchFrameInverted` method,
+        // and we should not attempt to show them in the UI
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2883
         if (
             this.allowlistInverted
