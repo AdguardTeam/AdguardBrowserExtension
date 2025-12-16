@@ -60,9 +60,10 @@ import {
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
-=import { KeepAlive } from '../keep-alive';
+import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
 import { localeDetect } from '../services/locale-detect-mv2';
+
 import { AppCommon } from './app-common';
 // FIXME: CHECK mv2 and mv3 files. Check TODOMV2/3 comments
 /**
@@ -108,7 +109,6 @@ const trackInitTimesForDebugging = async (): Promise<void> => {
  * and handle webextension API events for first install and update scenario.
  */
 export class App extends AppCommon {
-
     /**
      * Initializes all app services and handle webextension API events for first
      * install and update scenario.
