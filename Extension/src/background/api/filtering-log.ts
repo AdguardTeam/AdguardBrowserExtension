@@ -362,13 +362,12 @@ export class FilteringLogApi {
 
         const originalRuleText = filterData.getOriginalRuleText(ruleIndex);
 
-        // FIXME: this is just an extra protection layer, probably we don't need it
         if (originalRuleText === null) {
             let baseMessage = `[ext.FilteringLogApi.getRuleText]: failed to get line start index for filter id ${filterId} and rule index ${ruleIndex}`;
 
             const ruleText = engine.api.retrieveRuleText(filterId, ruleIndex);
 
-            // Note: during normal operation, ruleNode should not be null,
+            // Note: during normal operation, ruleText should not be null,
             // but we handle this case just in case, and to provide type safety
             if (ruleText) {
                 baseMessage += `, applied rule text: ${ruleText}`;
@@ -393,7 +392,7 @@ export class FilteringLogApi {
 
             const ruleText = engine.api.retrieveRuleText(filterId, ruleIndex);
 
-            // Note: during normal operation, ruleNode should not be null,
+            // Note: during normal operation, ruleText should not be null,
             // but we handle this case just in case, and to provide type safety
             if (ruleText) {
                 baseMessage += `, applied rule text: ${ruleText}`;
