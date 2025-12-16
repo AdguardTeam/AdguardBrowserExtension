@@ -91,7 +91,7 @@ export abstract class IconsApiCommon {
             return;
         }
 
-        const frameData = FramesApi.getMainFrameData(tabContext);
+        const frameData = await FramesApi.getMainFrameData(tabContext);
 
         try {
             await this.updateTabAction(tabId, frameData);

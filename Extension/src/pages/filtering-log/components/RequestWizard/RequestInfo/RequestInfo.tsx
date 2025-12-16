@@ -56,7 +56,11 @@ import { optionsStorage } from '../../../../options/options-storage';
 import { DEFAULT_MODAL_WIDTH_PX, LINE_COUNT_LIMIT } from '../constants';
 import { TextCollapser } from '../../../../common/components/TextCollapser/TextCollapser';
 import { AddedRuleState } from '../../../constants';
-import { type FilteringLogEvent, type FilteringEventRuleData } from '../../../../../background/api/filtering-log';
+import {
+    type FilteringLogEvent,
+    type FilteringEventRuleData,
+    type UIFilteringLogEvent,
+} from '../../../../../background/api/filtering-log';
 import { type FilterMetadata } from '../../../../../background/api';
 import { Popover } from '../../../../common/components/ui/Popover/Popover';
 import { getFilterName } from '../../../../helpers';
@@ -538,7 +542,7 @@ const RequestInfo = observer(() => {
         wizardStore.setUnblockState();
     };
 
-    const removeFromUserFilterHandler = (event: FilteringLogEvent) => {
+    const removeFromUserFilterHandler = (event: UIFilteringLogEvent) => {
         wizardStore.removeFromUserFilterHandler(event);
     };
 
@@ -566,7 +570,7 @@ const RequestInfo = observer(() => {
         );
     };
 
-    const renderControlButtons = (event: FilteringLogEvent) => {
+    const renderControlButtons = (event: UIFilteringLogEvent) => {
         const { requestRule } = event;
 
         const BUTTON_MAP = {

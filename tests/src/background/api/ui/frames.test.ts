@@ -75,7 +75,7 @@ describe('Frames Api', () => {
         appContext.set(AppContextKey.IsInit, true);
     });
 
-    it('getMainFrameData calculates documentAllowlisted and canAddRemoveRule', () => {
+    it('getMainFrameData calculates documentAllowlisted and canAddRemoveRule', async () => {
         const rule = '@@||testcases.agrd.dev$document';
         const url = 'https://testcases.agrd.dev/test-important-vs-urlblock.html';
 
@@ -94,7 +94,7 @@ describe('Frames Api', () => {
 
         // TODO (Slava): fix later
         // @ts-ignore
-        const frameData = FramesApi.getMainFrameData(tabContext);
+        const frameData = await FramesApi.getMainFrameData(tabContext);
         const { documentAllowlisted, canAddRemoveRule } = frameData;
 
         expect(documentAllowlisted).toBe(true);

@@ -164,7 +164,7 @@ export abstract class PopupServiceCommon {
         }
 
         return {
-            frameInfo: FramesApi.getMainFrameData(tabContext),
+            frameInfo: await FramesApi.getMainFrameData(tabContext),
             stats: PageStatsApi.getStatisticsData(),
             settings: SettingsApi.getData(),
             options: {

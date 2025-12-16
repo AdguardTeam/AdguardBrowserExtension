@@ -53,6 +53,7 @@ import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rul
 import { FiltersStorage } from '../storages/filters';
 import { CommonFilterUtils } from '../../common/common-filter-utils';
 import { isUserScriptsApiSupported } from '../../common/user-scripts-api/user-scripts-api-mv3';
+import { ruleTextService } from '../services/rule-text';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -159,7 +160,7 @@ export class Engine implements TsWebExtensionEngine {
          *   - Default filters (IDs: 2, 10) are pending enablement.
          */
         await iconsApi.update();
-        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
+        ruleTextService.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -197,7 +198,7 @@ export class Engine implements TsWebExtensionEngine {
         }
         // Updates extension icon state to reflect current filtering status.
         await iconsApi.update();
-        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
+        ruleTextService.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**

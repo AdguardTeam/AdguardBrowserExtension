@@ -31,6 +31,7 @@ import { find, truncate } from 'lodash-es';
 import { ContentType as RequestType } from 'tswebextension';
 
 import {
+    type FilteringLogEvent,
     type FilteringLogTabInfo,
     type FilterMetadata,
     type SettingsData,
@@ -383,36 +384,40 @@ class LogStore {
      * This is like helper to move rule's texts to upper level, inside event
      * itself to make other code easier to access these rule's texts.
      *
+     * Transforms FilteringLogEvent to UIFilteringLogEvent by adding required fields.
+     *
      * @param filteringEvent Filtering event to format.
      *
-     * @returns Same filtering event, but with extracted rules texts if found any.
+     * @returns UI filtering event with extracted rules texts.
      */
-    formatEvent = (filteringEvent: UIFilteringLogEvent): UIFilteringLogEvent => {
+    formatEvent = (filteringEvent: FilteringLogEvent): UIFilteringLogEvent => {
         const { requestRule } = filteringEvent;
 
         const { originalRuleText, appliedRuleText } = requestRule ?? {};
 
         // For $replace and $stealth rules, which will be grouped in RequestInfo with filter names specified,
         // we only show filter name on a main log screen for a single rule.
+        let filterName: string | null | undefined;
         if (requestRule) {
-            filteringEvent.filterName = getFilterName(requestRule?.filterId, this.filtersMetadata);
-        }
-
-        const { filterName } = filteringEvent;
-
-        if (originalRuleText) {
-            filteringEvent.originalRuleText = originalRuleText;
-        }
-
-        if (appliedRuleText) {
-            filteringEvent.appliedRuleText = appliedRuleText;
+            filterName = getFilterName(requestRule?.filterId, this.filtersMetadata);
         }
 
         if (!filterName) {
-            filteringEvent.filterName = getRuleFilterName(filteringEvent, this.filtersMetadata);
+            filterName = getRuleFilterName(filteringEvent, this.filtersMetadata);
         }
 
-        return filteringEvent;
+        // Transform to UIFilteringLogEvent by adding required RuleText fields
+        const uiEvent: UIFilteringLogEvent = {
+            ...filteringEvent,
+            appliedRuleText: appliedRuleText ?? '', // Required by RuleText interface
+            filterName,
+        };
+
+        if (originalRuleText) {
+            uiEvent.originalRuleText = originalRuleText;
+        }
+
+        return uiEvent;
     };
 
     @action

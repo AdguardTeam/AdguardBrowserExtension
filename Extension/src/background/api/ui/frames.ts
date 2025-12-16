@@ -29,7 +29,7 @@ import { SettingOption } from '../../schema';
 import { appContext, AppContextKey } from '../../storages';
 import { PageStatsApi } from '../page-stats';
 import { SettingsApi } from '../settings';
-import { engine } from '../../engine';
+import { ruleTextService } from '../../services/rule-text';
 
 type FrameRule = {
     filterId: number;
@@ -112,12 +112,12 @@ export class FramesApi {
      * @returns The {@link FrameData} object can be partially empty if no frames
      * were found for a given tab context.
      */
-    public static getMainFrameData({
+    public static async getMainFrameData({
         info,
         frames,
         blockedRequestCount,
         mainFrameRule,
-    }: MainFrameDataInfo): FrameData {
+    }: MainFrameDataInfo): Promise<FrameData> {
         const mainFrame = frames.get(MAIN_FRAME_ID);
 
         const url = info?.url
@@ -148,12 +148,20 @@ export class FramesApi {
                 userAllowlisted = filterId === AntiBannerFiltersId.UserFilterId
                        || filterId === AntiBannerFiltersId.AllowlistFilterId;
 
-                let ruleText = engine.api.retrieveRuleText(
+                const ruleTextData = await ruleTextService.getRuleText(
                     mainFrameRule.getFilterListId(),
                     mainFrameRule.getIndex(),
                 );
 
-                if (!ruleText) {
+                let ruleText: string;
+
+                if (ruleTextData) {
+                    ruleText = ruleTextData.appliedRuleText;
+
+                    if (!ruleText) {
+                        ruleText += ` (original: ${ruleTextData.originalRuleText})`;
+                    }
+                } else {
                     ruleText = '<Cannot retrieve rule text>';
                 }
 

@@ -40,9 +40,9 @@ import {
     SettingsApi,
     DocumentBlockApi,
     network,
-    filteringLogApi,
 } from '../api';
 import { NotifierType } from '../../common/constants';
+import { ruleTextService } from '../services/rule-text';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -94,7 +94,7 @@ export class Engine implements TsWebExtensionEngine {
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
-        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
+        ruleTextService.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -112,7 +112,7 @@ export class Engine implements TsWebExtensionEngine {
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
-        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
+        ruleTextService.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**

@@ -20,6 +20,7 @@
 export { FilteringLogService, type GetFilteringLogDataResponse } from './filtering-log';
 export { SettingsService } from './settings';
 export { AllowlistService, type GetAllowlistDomainsResponse } from './allowlist';
+export { ruleTextService, type RuleText } from './rule-text';
 export { fullscreenUserRulesEditor } from './fullscreen-user-rules-editor';
 export { CustomFiltersService } from './custom-filters';
 export { UserRulesService, type GetUserRulesResponse, type GetUserRulesEditorDataResponse } from './userrules';

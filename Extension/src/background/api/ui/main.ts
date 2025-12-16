@@ -65,7 +65,7 @@ export class UiApi {
      * @param tabContext Updated {@link TabContext}.
      */
     public static async update(tabContext: TabContext): Promise<void> {
-        const frameData = FramesApi.getMainFrameData(tabContext);
+        const frameData = await FramesApi.getMainFrameData(tabContext);
 
         contextMenuApi.throttledUpdateMenu(frameData);
 
@@ -86,7 +86,7 @@ export class UiApi {
         if (tabId) {
             const tabContext = tsWebExtTabsApi.getTabContext(tabId);
             if (tabContext) {
-                frameData = FramesApi.getMainFrameData(tabContext);
+                frameData = await FramesApi.getMainFrameData(tabContext);
             }
         }
 
