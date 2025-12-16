@@ -24,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The update promo banner does not persist dismissal and shows again after
   the extension updates [#3385].
 
+### Changed
+
+- Updated [@adguard/agtree] to v3.3.1.
+- Updated [@adguard/assistant] to v4.3.77.
+- Updated [@adguard/scriptlets] to v2.2.13.
+- Updated [@adguard/tsurlfilter] to v3.5.1.
+- Updated [@adguard/tswebextension] to v3.2.16.
+
 [#3385]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3385
 
 [5.2.500]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.500%2B0.build.20251127140045

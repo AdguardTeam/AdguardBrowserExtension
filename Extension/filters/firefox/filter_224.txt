@@ -1,9 +1,9 @@
-! Checksum: C2D5BqaZM4auAgvt7eg2zg
-! Diff-Path: ../patches/224/224-s-1765372901-3600.patch
+! Checksum: prLYUs7ZDZhAy2xM55yE0A
+! Diff-Path: ../patches/224/224-s-1765853094-3600.patch
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.49.56
-! TimeUpdated: 2025-12-10T13:19:13+00:00
+! Version: 2.1.49.89
+! TimeUpdated: 2025-12-16T02:42:28+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1090,6 +1090,9 @@ ipv6.baidu.com,www.baidu.com,www1.baidu.com,xueshu.baidu.com###content_left > .r
 !
 ! NOTE: Specific rules
 !
+||kanav.ad/template/*/images/qf/
+kanav.ad##div[class^="img-ad"]
+youku.com##div[class*="adDrawer"]
 *$xmlhttprequest,denyallow=ddxsmf.com|apps.bdimg.com|cdnsrc.asp.net,domain=ddxsmf.com
 eprice.com.hk##div[style]:has(> div[id^="div-gpt-ad-"])
 ||wnimg1.ru/data/game/*/*-*x*.gif
@@ -3201,6 +3204,11 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! ! temporary
 ! https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3031
 !
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/219840
+@@||p3-tt.byteimg.com/obj/$domain=agedm.io
+! https://github.com/AdguardTeam/AdguardFilters/issues/219453
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,redirect=googlesyndication-adsbygoogle,domain=zhongguose.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/218512
 elsworld.cn#@##footer-banner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/218056
@@ -5154,6 +5162,7 @@ newduba.cn###jq_youxi
 ##.a-media.ex-728-90
 ##a[clickmode="cpt"]
 ###foot > #btmBox
+##.home-qf > div[class*="img-ad"]
 ##.module-player > .dds_w
 ##.content > .dds_w
 ##body > div.container[style="margin-bottom: 10px;"] > script:first-child ~ div[style="height:60px;width:100%;"]
@@ -5181,6 +5190,71 @@ newduba.cn###jq_youxi
 .z.dkt-ib.com
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||6fm4dcpj31.com^
+||cautious60.com^
+||aybikaemg.com^
+||b053d0h076.com^
+||fortune59.com^
+||tkll12160nb.com^
+||zbfo.cn^
+||3245duu17z.com^
+||grateful03.com^
+||877mcpiom.com^
+||p99c3kwxg.com^
+||shipment30.top^
+||tkll12150nb.com^
+||l6h17ybxe.com^
+||nqwgvk.cn^
+||kls24qtvc.com^
+||tkll12151nb.com^
+||afrlodurf.com^
+||ixog.cn^
+||harmful26.top^
+||tasgxk4ia6.com^
+||0tc1bdbgsm.com^
+||tkll12140nb.com^
+||oekkuthy.com^
+||partnership75.com^
+||jgid.cn^
+||8wvb8xoqgq.com^
+||v4ox630nia.com^
+||tkll12141nb.com^
+||bmmpotgeaz.com^
+||0hagz9mdc.com^
+||appoint38.com^
+||v84tz11w7.com^
+||tkll12130nb.com^
+||vrrm.cn^
+||insurance55.top^
+||yarcokme.com^
+||fsmnmorgb.com^
+||9soefyenw.com^
+||tkll12131nb.com^
+||ephothuwi.com^
+||bnqektutom.com^
+||3nopvvhju5.com^
+||veuf2obzc8.com^
+||travel44.top^
+||tkll12120nb.com^
+||entrepreneurs46.com^
+||enelveufry.com^
+||vwe5pjt0jq.com^
+||wres.cn^
+||of384py2xt.com^
+||tkll12121nb.com^
+||odmerorlzo.com^
+||accomplish89.com^
+||vdhatq0co.com^
+||68tkaiaji.com^
+||ycglik.icu^
+||tkll12110nb.com^
+||ysuy.cn^
+||hanzidnbn.com^
+||vid12110hl.com^
+||chairman69.top^
+||yeql3hzbd.com^
+||at32jaers.com^
+||tkll12111nb.com^
 ||vid12100hl.com^
 ||smkqwa.icu^
 ||agency23.top^
@@ -13713,6 +13787,7 @@ meijutt.*/js/pcjs/
 ||ping0.cc/static/images/ad/
 ||workers.dev^$domain=axiang.cc
 zhihu.com##.Pc-word-new
+youku.com##div[class*="adDrawer"]
 6park.com##td[style="line-height:30px;text-align:center;color:red;background-color:white;"]
 6park.com##.main_news_list > a[href^="http"]:not([href*="6park.com"])
 hkcards.com#?#div[style*="min-height"]:has(.my-1)
@@ -21488,7 +21563,7 @@ wss://*.*.top/$third-party
 ||6gxs.net/js/
 ||maomaoks.com/1.
 ||feiniaoks.com/1.
-||wuxianxs.net/mm.
+||wuxianxs.net/m
 /skin/default/js/qbtr.js
 ||62868.com/static/js/gg.
 ||deqixs.com/config/
@@ -21505,6 +21580,7 @@ wss://*.*.top/$third-party
 ||lzbao.net/mtvbox.
 ||4taoxs.com/api/accept/
 /tongji/ad.js
+/tt1-1367073066.cos.
 ||haogushi88.cc/static/simple/yue
 ||zztxt.net/Public/wapbiquge/js/static.js
 ||haishuxs.com/js/
@@ -22218,7 +22294,6 @@ fqsousou.com,kengso.com#@#.user-share
 ||de.tynt.com^
 ||diagnosis.ad.xiaomi.com^
 ||dig.bdurl.net^
-||dl.zuimeitianqi.com^
 ||dlogs.bwton.com^
 ||dm.toutiao.com^
 ||domain.aishengji.com^
@@ -22238,8 +22313,6 @@ fqsousou.com,kengso.com#@#.user-share
 ||ef-dongfeng.tanx.com^
 ||engine.dcad01.com^
 ||entry.baidu.com^
-||errlog.umeng.com^
-||errnewlog.umeng.com^
 ||et-eus.w.inmobi.com^
 ||event.tradplusad.com^
 ||events-drcn.op.dbankcloud.cn^
@@ -22263,7 +22336,6 @@ fqsousou.com,kengso.com#@#.user-share
 ||gemini.yahoo.com^
 ||geo.yahoo.com^
 ||getui.cn^
-||getui.com^
 ||ggx.cmvideo.cn^
 ||ggx01.miguvideo.com^
 ||ggx03.miguvideo.com^
@@ -22550,7 +22622,6 @@ fqsousou.com,kengso.com#@#.user-share
 ||s8t.teads.tv^
 ||saad.ms.zhangyue.net^
 ||saas.hpplay.cn^
-||safebrowsing.googleapis.com^
 ||safebrowsing.urlsec.gg.com^
 ||samsung-com.112.2o7.net^
 ||samsungads.com^
@@ -22618,6 +22689,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||supply.inmobicdn.net^
 ||sv-video.play.aiseet.atianqi.com^
 ||syh-imp.cdnjtzy.com^
+||syh.zybang.com^
 ||szbdyd.com^
 ||t-dsp.pinduoduo.com^
 ||t.applovin.com^

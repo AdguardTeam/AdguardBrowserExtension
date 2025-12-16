@@ -1,9 +1,9 @@
-! Checksum: +S1VDKmOSVAH7RXeEfDLFQ
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1765350752-3600.patch
+! Checksum: MTwVzpzhiYnABg/j6wsRlw
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1765856308-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.66.15
-! TimeUpdated: 2025-12-10T07:09:53+00:00
+! Version: 2.0.66.24
+! TimeUpdated: 2025-12-16T03:35:36+00:00
 ! Expires: 10 days (update frequency)
 ||*.libaishuo.com^$third-party
 ||adx-open-service.youku.com^
@@ -90,6 +90,8 @@
 ||startup.mobile.yandex.net^
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
+||sonicsads.com^
+||nextacdn.top^
 ||se.rfvtgbyhn.com^
 ||tc.qzwxrtyk.com^
 ||bstgms4y.com^
@@ -783,7 +785,9 @@
 ||iadsdk.apple.com^
 ||imwx.com/mobile/adconfig/
 ||infolinks.com^
-||inmobi.com^
+||ads.inmobi.com^
+||config.inmobi.com^
+||glance.inmobi.com^
 ||inmobi.net^
 ||inmobi.cn^
 ||inmobicdn.net^
@@ -1385,6 +1389,7 @@ deviantart.com#$#div[class*="dp-ad-"] { height: 0!important; width: 0!important;
 @@||api.bufferapp.com/*/profiles.json
 @@||api.bufferapp.com/*/service/
 @@||api.bufferapp.com/*/user
+@@||cmp.inmobi.com^$domain=protothema.gr
 amazon.*#@#.s-result-item:has([data-ad-feedback-label-id])
 amazon.*#@#.s-result-item:has(div.puis-sponsored-label-text)
 @@||cmp.inmobi.com^$domain=the-express.com
@@ -1591,6 +1596,8 @@ opinion.cw.com.tw,aidoly.net,celeby-media.net,kyun2-girls.com,hapiee.com,2ch-c.n
 chip.de,gamesworld.de,fnn.jp##.Ad
 medipalette.lotte.co.jp,genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
+biography.com###main-content > section[data-vars-block-heading] > div:has(> .ad-container)
+gosexpod.com##.content__block > div[style="margin-top:-7px;margin-bottom:1px;min-height:170px"]
 hdblog.it###maxticker_container + div[style^="margin:"][style*="background: #000;"]
 pley.gg##.e-con-boxed:has(.generic-banner)
 zakon.kz##.top-brendingMob
@@ -1887,7 +1894,7 @@ jaxon.gg##span.pointer[data-code]
 jaxon.gg##.col-xl-4:has(> div > span.pointer[data-code])
 mtgsalvation.com##.post-mobile-ad
 clickpetroleoegas.com.br##.cpg-pub
-hpjav.in,momon-ga.com,book18.fans,nyahentai.re,asmr18.fans,jav.direct,openload.mov,doujinantena.top,javmix.tv##.home-h:has(+ div[style^="margin: -12px -1"] > div[style^="max-width: 1"][style*="height"][style*="margin: 0 auto"])
+hpjav.in,momon-ga.com,book18.fans,nyahentai.*,asmr18.fans,jav.direct,openload.mov,doujinantena.top,javmix.tv##.home-h:has(+ div[style^="margin: -12px -1"] > div[style^="max-width: 1"][style*="height"][style*="margin: 0 auto"])
 wear.jp##.xl\:block + div.bg-gray-200.py-\[10px\]
 tarnkappe.info##.mobile-only:has(> .interscroller-wrapper:only-child)
 gallery.123telugu.com##.mobile-only-ad
@@ -2395,7 +2402,6 @@ google.ad,google.ae,google.al,google.am,google.as,google.at,google.az,google.ba,
 gamerant.com###adsninja-below-main-pic
 eurointegration.com.ua##body > span
 cbr.com##div[id^="adsninja-"]
-yahoo.com##div[class^="col-fullbleed mb-4 bg-marshmallow pb-5 "]
 books.j-cast.com##div[id^="sp_books\.j-cast_kiji_"][style^="min-width: 300px"]
 xs798621.xsrv.jp##.ad_min_box
 btvnovinite.bg##div[class^="megaboard-"]
@@ -2819,7 +2825,7 @@ amazon.*##div[data-cel-widget="softlines-btf-substitute-zone-container-T3_featur
 amazon.*##div[id="softlines-mobile-btf-discovery-zone-T3_feature_div"] .softlines-zone-content > div[id^="sims-simsContainer_feature_div"]
 lawspot.gr###pbmb
 ilfattoquotidiano.it###adk-interstitial-list
-nyahentai.re,momon-ga.com###video_inst_area
+nyahentai.*,momon-ga.com###video_inst_area
 xatakahome.com##body article.article div.ad
 lapkins.ru##.start .start-ban
 gizmodo.com##.ad-mobile-dynamic
@@ -2948,7 +2954,7 @@ woman.mynavi.jp##div[style="margin:20px auto 0;text-align: center; min-height: 3
 cartune.me##div[style^="display:flex;justify-content:center;align-items:center;text-align:center;min-height:"]
 tecnoandroid.it,treccani.it###gmp-sticky-middlemobile
 tecnoandroid.it,treccani.it###gmpSkinMobileSpacer
-faz.net,zeit.de##.iqdcontainer
+scinexx.de,faz.net,zeit.de##.iqdcontainer
 amp.marca.com##.ue-c-ad
 meteoblue.com##div[id^="display_mobile_ad"]
 oreno3d.com##.video-figure > div[style^="position: absolute; top: 0px; left: 0px;"]
@@ -3282,6 +3288,7 @@ tempo.pt##.ad_m_bottom
 video.fc2.com##iframe[src^="/pagead/"]
 mainichikirei.jp##aside[style="width:100%; padding:10px 0; background:#f3f3f3;"]
 bg-mania.jp##div[style="min-height:120px; min-width:100%;"]
+full-count.jp##a[id^="c2_click_"][id*="_banner_"]
 full-count.jp###c2_click_jera_award_sp_article_end
 mi-mollet.com###MM_SP_PerfectView
 corriere.it###ads_halfpage_mobile
@@ -3954,7 +3961,7 @@ coinranking.com##.sticky--full-width
 moviewalker.jp##div[style*="min-width:320px;"]
 business.nikkei.com##.dag_rectangle
 a-eroland.net###fam_rectp
-nyahentai.re##.__isboostOverlay
+nyahentai.*##.__isboostOverlay
 parismatch.com##.lmn-habmob
 blogterest.net###glkab
 the-sun.com##.amp-adv-wrapper
@@ -4059,8 +4066,8 @@ poder360.com.br##.box-banner-footer
 vkprime.com##.skip_button
 vkprime.com##.jubnabtn
 vkprime.com##.overlay_main
-nyahentai.re,javfan.one##div[style^="width: 300px;"][style*="height: 250px;"]
-nyahentai.re##div[style^="max-width: 480px;"][style*="max-height: 500px;"]
+nyahentai.*,javfan.one##div[style^="width: 300px;"][style*="height: 250px;"]
+nyahentai.*##div[style^="max-width: 480px;"][style*="max-height: 500px;"]
 daretoku-eromanga.info###container > div.widget_text.side_col:not(:last-child)
 hbooks.club##div[style^="width:"][style*="height:"][style*="margin:"][style$=";overflow:hidden;"]
 hdzog.com##.video-page__content > div[class]:first-child > div[class]
@@ -6709,7 +6716,7 @@ bicycling.com#?#section > div[class]:has(> .ad-container)
 zockify.de#?#.embed-responsive:has(> .embed-responsive-item > .vm-placement)
 tagesspiegel.de#?#article div:has(> div[id^="iqadtile"])
 bestproducts.com,cosmopolitan.com,thepioneerwoman.com,roadandtrack.com,womansday.com,harpersbazaar.com,countryliving.com,womenshealthmag.com,autoweek.com#?#section > div[class*="css-"]:has(> div[id^="gpt-ad"])
-elle.com,elledecor.com,runnersworld.com#?#div[class*="css-"]:has(> div.ad-container)
+richessemag.jp,elle.com,elledecor.com,runnersworld.com##div[class*="css-"]:has(> div.ad-container)
 popularmechanics.com#?#section > div[class*=" "]:has(> div[class]:first-child + .ad-container:last-child)
 veranda.com,wetter.com#?#div[class^="sc-"]:has(> div.ad-container)
 wetter.com##.som-wrapper

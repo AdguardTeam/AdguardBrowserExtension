@@ -94,204 +94,210 @@ export type PromoNotification = {
     icons?: IconVariants;
 };
 
-const BLACK_FRIDAY_25_ID = 'black_friday_25';
+const isRuLocale = browser.i18n.getUILanguage().substring(0, 2).toLowerCase() === 'ru';
 
-const blackFriday25Notification: PromoNotification = {
-    id: BLACK_FRIDAY_25_ID,
+const dateTo = isRuLocale
+    ? '3 January 2026 23:59:00'
+    : '1 January 2026 23:59:00';
+
+const NEW_YEAR_25_ID = 'new_year_25';
+
+const newYear25Notification: PromoNotification = {
+    id: NEW_YEAR_25_ID,
     locales: {
         en: {
-            title: 'The best time to improve your protection',
-            btn: 'Learn how',
+            title: 'Add spark to browsing',
+            btn: 'Unlock the deal',
         },
         fr: {
-            title: 'Augmentez votre protection',
-            btn: 'Comment faire',
+            title: 'Le Web rayonnera avec AdGuard',
+            btn: 'Découvrez l\'offre',
         },
         it: {
-            title: 'Il tempo per una maggiore protezione',
-            btn: 'Come fare',
+            title: 'Il Web brillerà con AdGuard',
+            btn: 'Vedi l\'offerta',
         },
         de: {
-            title: 'Zeit, sich besser zu schützen',
-            btn: 'Auf geht’s!',
+            title: 'Mehr Glanz beim Surfen',
+            btn: 'Deal öffnen',
         },
         ru: {
-            title: 'Время улучшить защиту',
-            btn: 'Узнать как',
+            title: 'Интернет засияет с AdGuard',
+            btn: 'Попробовать',
         },
         es: {
-            title: 'El mejor momento para mejorar tu protección',
-            btn: 'Cómo hacerlo',
+            title: 'Tu web brilla con AdGuard',
+            btn: 'Aprovechar',
         },
         es_419: {
-            title: 'Es hora de mejorar tu protección',
-            btn: 'Averiguar como',
+            title: 'Tu web brilla con AdGuard',
+            btn: 'Aprovechar',
         },
         pt_pt: {
-            title: 'O melhor momento para aumentar tua proteção',
-            btn: 'Saiba como',
+            title: 'A sua web brilha com o AdGuard',
+            btn: 'Ver a oferta',
         },
         pt_br: {
-            title: 'O melhor momento para aumentar sua proteção',
-            btn: 'Saiba como',
+            title: 'Sua web brilha com AdGuard',
+            btn: 'Ver oferta',
         },
         zh_cn: {
-            title: '增强保护',
-            btn: '了解更多',
+            title: '一键点亮，浏览再无干扰',
+            btn: '解锁专属特惠',
         },
         zh_tw: {
-            title: '增強保護',
-            btn: '了解詳情',
+            title: '一鍵點亮，瀏覽再無干擾',
+            btn: '解鎖專屬特惠',
         },
         ja: {
-            title: '保護機能を強化 するなら今が一番お得',
-            btn: '今年最大の割引をGET',
+            title: 'クリスマスセールと 有料版の特徴について',
+            btn: '詳細はこちら',
         },
         ko: {
-            title: '보호 기능을 개선하기 가장 좋은 시기',
+            title: 'AdGuard 크리스마스 프로모션',
             btn: '자세히 알아보기',
         },
         uk: {
-            title: 'Час покращити захист',
-            btn: 'Дізнатись як',
+            title: 'Інтернет засяє з AdGuard',
+            btn: 'Спробуйте',
         },
         ar: {
-            title: 'حان الوقت لتحسين الحماية الخاصة بك',
-            btn: 'اكتشف كيف',
+            title: 'أضف لمسة لتصفحك',
+            btn: 'افتح العرض',
         },
         be: {
-            title: 'Час палепшыць абарону',
-            btn: 'Даведацца як',
+            title: 'Інтэрнэт заззяе з AdGuard',
+            btn: 'Паспрабаваць',
         },
         bg: {
-            title: 'Време е да подобрите защитата си',
-            btn: 'Разберете как',
+            title: 'Интернетът ще засияе с AdGuard',
+            btn: 'Опитайте',
         },
         ca: {
-            title: 'És hora de millorar la teva protecció',
-            btn: 'Descobriu com',
+            title: 'Dóna llum a la navegació',
+            btn: 'Obre l’oferta',
         },
         cs: {
-            title: 'Je čas zlepšit vaši ochranu',
-            btn: 'Zjistěte jak',
+            title: 'Internet zazáří s AdGuardem',
+            btn: 'Vyzkoušejte',
         },
         da: {
-            title: 'Tid til at forbedre din beskyttelse',
-            btn: 'Find ud af hvordan',
+            title: 'Giv browseren lidt glans',
+            btn: 'Åpne tilbudet',
         },
         el: {
-            title: 'Ώρα να βελτιώσετε την άμυνά σας',
-            btn: 'Βρες πως',
+            title: 'Πρωτοχρονιά στο AdGuard',
+            btn: 'Ανοιξε',
         },
         fa: {
-            title: 'زمان بهبود محافظت از خود است',
-            btn: 'دریابید که چگونه',
+            title: 'مرور خود را درخشان کن',
+            btn: 'پیشنهاد را باز کن',
         },
         fi: {
-            title: 'Aika parantaa suojaustasi',
-            btn: 'Saada selville miten',
+            title: 'Lisää säihkettä selaamiseen',
+            btn: 'Avaa diili',
         },
         he: {
-            title: 'הגיע הזמן לשפר את ההגנה שלך',
-            btn: 'לברר איך',
+            title: 'הוסף ניצוץ לגלישה',
+            btn: 'פתח את ההצעה',
         },
         hr: {
-            title: 'Vrijeme je da poboljšate svoju zaštitu',
-            btn: 'Saznajte kako',
+            title: 'Internet će zasjati uz AdGuard',
+            btn: 'Isprobajte',
         },
         hu: {
-            title: 'A legjobb idő a védelem felturbózására',
-            btn: 'Tudd meg, hogyan',
+            title: 'Vigyél szikrást böngészéshez',
+            btn: 'Fogd a deal-t',
         },
         hy: {
-            title: 'Ցանկանու՞մ եք պաշտպանել ձեր սարքը:',
-            btn: 'Պարզեք, թե ինչպես',
+            title: 'Ինտերնետը կփայլի AdGuard-ով',
+            btn: 'Փորձեք',
         },
         id: {
-            title: 'Tingkatkan perlindungan Anda',
-            btn: 'Cari tahu caranya',
+            title: 'Tambahkan kilau saat browsing',
+            btn: 'Buka penawaran',
         },
         lt: {
-            title: 'Laikas pagerinti savo apsaugą',
-            btn: 'Sužinokite, kaip',
+            title: 'Įnešk žaismo naršymui',
+            btn: 'Atidaryk pasiūlymą',
         },
         ms: {
-            title: 'Tingkatkan perlindungan anda',
-            btn: 'Ketahui caranya',
+            title: 'Tahun Baru dalam AdGuard',
+            btn: 'Buka',
         },
         nb: {
-            title: 'På tide å forbedre beskyttelsen',
-            btn: 'Finn ut hvordan',
+            title: 'Gi surfing en gnist',
+            btn: 'Lås opp tilbudet',
         },
         nl: {
-            title: 'Verbeter uw bescherming',
-            btn: 'Uitvinden hoe',
+            title: 'Geef browsen wat extra glans',
+            btn: 'Open de deal',
         },
         pl: {
-            title: 'Czas ulepszyć swoją ochronę',
-            btn: 'Naucz się jak',
+            title: 'Wszystko zabłyśnie z AdGuardem',
+            btn: 'Wypróbuj',
         },
         ro: {
-            title: 'Îmbunătățiți-vă protecția',
-            btn: 'Aflați cum',
+            title: 'Dă strălucire navigării',
+            btn: 'Deschide oferta',
         },
         sk: {
-            title: 'Čas na zlepšenie ochrany',
-            btn: 'Zistite, ako',
+            title: 'Všetko sa rozžiari s AdGuardom',
+            btn: 'Vyskúšajte',
         },
         sl: {
-            title: 'Čas za izboljšanje zaščite',
-            btn: 'Ugotovite, kako',
+            title: 'Vse bo zasijalo z AdGuardom',
+            btn: 'Preizkusite',
         },
         sr_latn: {
-            title: 'Vreme je da poboljšaš svoju odbranu',
-            btn: 'Saznajte kako',
+            title: 'Sve će zasijati uz AdGuard',
+            btn: 'Probajte',
         },
         sv: {
-            title: 'Dags att förbättra ditt skydd',
-            btn: 'Ta reda på hur',
+            title: 'Ge surfing en gnista',
+            btn: 'Öppna erbjudandet',
         },
         tr: {
-            title: 'Korumanızı geliştirme zamanı',
-            btn: 'Nasıl olduğunu öğren',
+            title: 'Taramaya ışıltı kat',
+            btn: 'Teklifi aç',
         },
         vi: {
-            title: 'Cải thiện khả năng bảo vệ của bạn',
-            btn: 'Tìm hiểu cách',
+            title: 'Thêm tinh tú cho trình duyệt',
+            btn: 'Mở ưu đãi',
         },
         mk: {
-            title: 'Време е да ја подобрите заштитата',
-            btn: 'Дознајте како',
+            title: 'Сè ќе заблеска со AdGuard',
+            btn: 'Пробајте',
         },
         hi: {
-            title: 'अपनी सुरक्षा में सुधार करें',
-            btn: 'सीखो कैसे',
+            title: 'ब्राउज़िंग में चमक जोड़ें',
+            btn: 'डील अनलॉक करें',
         },
         et: {
-            title: 'Aeg parandada oma kaitset',
-            btn: 'Uurige, kuidas',
+            title: 'Lisa sära sirvimisele',
+            btn: 'Ava diil',
         },
         th: {
-            title: 'ปรับปรุงการป้องกันของคุณ',
-            btn: 'ค้นหาวิธีการ',
+            title: 'เพิ่มความสดใสให้การท่องเว็บ',
+            btn: 'ปลดล็อกดีล',
         },
     },
     text: '',
-    url: Forward.get({ action: ForwardAction.BlackFriday25 }),
-    from: '24 November 2025 12:00:00',
-    to: '5 December 2025 23:59:00',
+    url: Forward.get({ action: ForwardAction.NewYear25 }),
+    from: '22 December 2025 12:00:00',
+    to: dateTo,
     type: 'animated',
-    bgImage: browser.runtime.getURL('assets/images/blackfriday25.svg'),
-    bgImageOnUpdate: browser.runtime.getURL('assets/images/blackfriday25.svg'),
+    bgImage: browser.runtime.getURL('assets/images/newyear25.svg'),
+    bgImageOnUpdate: browser.runtime.getURL('assets/images/newyear25.svg'),
     icons: {
         ...defaultIconVariants,
         enabled: {
-            '19': browser.runtime.getURL('assets/icons/blackfriday25-on-19.png'),
-            '38': browser.runtime.getURL('assets/icons/blackfriday25-on-38.png'),
+            '19': browser.runtime.getURL('assets/icons/newyear25-on-19.png'),
+            '38': browser.runtime.getURL('assets/icons/newyear25-on-38.png'),
         },
         disabled: {
-            '19': browser.runtime.getURL('assets/icons/blackfriday25-off-19.png'),
-            '38': browser.runtime.getURL('assets/icons/blackfriday25-off-38.png'),
+            '19': browser.runtime.getURL('assets/icons/newyear25-off-19.png'),
+            '38': browser.runtime.getURL('assets/icons/newyear25-off-38.png'),
         },
     },
 };
@@ -300,5 +306,5 @@ const blackFriday25Notification: PromoNotification = {
  * In-memory notifications mapping.
  */
 export const notificationStorage = new Map<string, PromoNotification>([
-    [BLACK_FRIDAY_25_ID, blackFriday25Notification],
+    [NEW_YEAR_25_ID, newYear25Notification],
 ]);
