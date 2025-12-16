@@ -1,9 +1,9 @@
-! Checksum: lVWoL+lgvXasdJP3iEuKZA
-! Diff-Path: ../patches/20/20-s-1765347225-3600.patch
+! Checksum: gWbVB1oG8DhcqnOoFz5rIA
+! Diff-Path: ../patches/20/20-s-1765858843-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.25.29
-! TimeUpdated: 2025-12-10T06:11:11+00:00
+! Version: 2.0.25.43
+! TimeUpdated: 2025-12-16T04:18:07+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,12 @@ alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,ra
 !
 !
 !
+redfin.com###AppInstallBanner
+goodnovel.com##.qrcode
+snkrdunk.com##app-banner
+byu.id###best-deal > div[class^="styles_section__wrapper"]
+kabum.com.br###banner-apps-container
+tokyo-city.ru#%#//scriptlet('trusted-set-local-storage-item', 'lastShowDownload', '"2030-12-11T14:39:03.754Z"')
 newt.net##article > a[class$="__appBanner"]
 newt.net##aside div[class$="__areaOrAppBanner"]
 newt.net##aside > section[class^="AppDownload"]
@@ -2941,7 +2947,7 @@ coolapk.com##.apk_right_two
 coolapk.com##.app_left > div.left_download
 coolapk.com##a[onclick="weixinDownload();"]
 smotrim.ru,tieba.baidu.com#$#body { overflow: auto !important; }
-klook.com,japantaxi.jp,crichd.*,theinitium.com,operanewsapp.com,iq.com,news.awa.fm##.download
+goodnovel.com,klook.com,japantaxi.jp,crichd.*,theinitium.com,operanewsapp.com,iq.com,news.awa.fm##.download
 sirabee.com##a[href^="https://app.sirabee.com"]
 ati.su##div[data-app="splash-screen"]
 mobile.donanimhaber.com##.mobil-forum-tanitim
@@ -3126,7 +3132,7 @@ banggood.com##div[class^="top_app_download_"]
 andro-news.com##.rightbar .google-play
 spencers.in###appLinkPopup
 olx.ua##.footerapps
-mediamarkt.com.tr##body > .ins-preview-wrapper div.ins-notification-content
+kabum.com.br,mediamarkt.com.tr##body > .ins-preview-wrapper div.ins-notification-content
 symbolab.com###androidLink
 symbolab.com###itunesLink
 au.ru##div[id^="au-mobile-app-teaser-modal"]

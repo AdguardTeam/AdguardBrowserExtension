@@ -1200,7 +1200,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{Object.defineProperty=new Proxy(Object.defineProperty,{apply:(e,t,n)=>{const r=new Set([\"VP\",\"w3\",\"JW\"]),o=n[1],c=n[2]?.get;return o&&r.has(o)&&\"function\"==typeof c&&/^\\(\\)=>.$/.test(c.toString())&&(n[2].get=function(){return function(){return!1}}),Reflect.apply(e,t,n)}});})();": [
+        "(()=>{const t=new Set([\"VP\",\"w3\",\"JW\"]),e=/\\{return\\(.{1,5}\\)\\(\\)===.\\..\\}/,n={apply:(t,n,r)=>{if(\"function\"!=typeof t)return Reflect.apply(t,n,r);const p=t.toString();return e.test(p)&&(t=function(){return!1}),Reflect.apply(t,n,r)}},r={apply:(t,e,r)=>{let p=Reflect.apply(t,e,r);return\"function\"==typeof p&&(p=new Proxy(p,n)),p}},p={apply:(e,n,p)=>{try{const o=p[1],c=p[2]?.get;if(!o||\"function\"!=typeof c)return Reflect.apply(e,n,p);t.has(o)&&/^\\(\\)=>.$/.test(c.toString())?p[2].get=function(){return function(){return!1}}:\"A\"===o&&c.toString().includes(\"()=>i\")&&(p[2].get=new Proxy(p[2].get,r))}catch(t){}return Reflect.apply(e,n,p)}};Object.defineProperty=new Proxy(Object.defineProperty,p)})();": [
             {
                 "permittedDomains": [
                     "jastrzabpost.pl",
@@ -1501,14 +1501,6 @@
                 "permittedDomains": [
                     "minefun.io",
                     "poki.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "(()=>{const e=document.documentElement;new MutationObserver((()=>{const e=document.querySelector(\".skeleton-video-cover-noanimate > .relative > a[href] + button\");e&&e.click()})).observe(e,{attributes:!0,childList:!0,subtree:!0})})();": [
-            {
-                "permittedDomains": [
-                    "hentaidna.tv"
                 ],
                 "restrictedDomains": []
             }
@@ -2197,6 +2189,28 @@
         "(()=>{const e={includes:String.prototype.includes,filter:Array.prototype.filter},t=()=>(new Error).stack,l=t=>e.includes.call(t,\"loader.min.js\")||e.includes.call(t,\"andwonderful.com/safe.min.js\"),n={construct:(n,o,r)=>{const c=t();return l(c)&&o[0]&&e.includes.call(o[0],\"adshield\")&&(o[0]=[\"(function(){})();\"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=t();return l(c)&&r[0]&&e.includes.call(r[0],\"new Error\")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=t();return l(c)&&r[0]&&o?.includes?.(\"setTimeout\")&&(o=e.filter.call(o,(t=>!e.includes.call(t,\"setTimeout\")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();": [
             {
                 "permittedDomains": [
+                    "madaboutfood.co",
+                    "galonamission.com",
+                    "iheartnaptime.net",
+                    "momontimeout.com",
+                    "31daily.com",
+                    "easydessertrecipes.com",
+                    "scribd.com",
+                    "dessertsonadime.com",
+                    "skinnytaste.com",
+                    "thehomesteadinghippy.com",
+                    "gigafile.nu",
+                    "trilltrill.jp",
+                    "intoindiegames.com",
+                    "liveandletsfly.com",
+                    "traicy.com",
+                    "stuckonsweet.com",
+                    "worldhistory.org",
+                    "kuruma-news.jp",
+                    "1lumen.com",
+                    "bluearchive.gg",
+                    "ttforum.co.uk",
+                    "newatlas.com",
                     "game8.jp",
                     "motorradfrage.net",
                     "sportlerfrage.net",
@@ -3036,14 +3050,6 @@
             {
                 "permittedDomains": [
                     "giga.de"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "!function(){const o={apply:(o,n,r)=>(new Error).stack.includes(\"refreshad\")?0:Reflect.apply(o,n,r)};window.Math.floor=new Proxy(window.Math.floor,o)}();": [
-            {
-                "permittedDomains": [
-                    "jprime.jp"
                 ],
                 "restrictedDomains": []
             }
@@ -4358,6 +4364,14 @@
             {
                 "permittedDomains": [
                     "yasir252.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{let t,e=!0;document.addEventListener(\"click\",(i=>{if(i.target.matches(\"button.button-login\"))return e=!1,void(t&&(t.style.visibility=\"visible\"));i.target.matches(\"button.close\")&&document.querySelector(\"dialog.PartLoginModal\").contains(i.target)&&(e=!0)}),!0),document.addEventListener(\"toggle\",(i=>{i.target.matches(\"dialog.PartLoginModal\")&&\"open\"===i.newState&&e&&(t=i.target,t.style.visibility=\"hidden\",t.querySelector(\"button.close\").click())}),!0)})();": [
+            {
+                "permittedDomains": [
+                    "bijutsutecho.com"
                 ],
                 "restrictedDomains": []
             }

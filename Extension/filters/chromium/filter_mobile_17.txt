@@ -1,10 +1,11 @@
-! Checksum: H1uKOSXLjTC90lPzK3Vv7w
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1765296721-3600.patch
+! Checksum: bgaz+yF0OIRWwx//Cu7ifg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1765869181-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.61
-! TimeUpdated: 2025-12-09T16:09:30+00:00
+! Version: 2.0.12.66
+! TimeUpdated: 2025-12-16T07:10:31+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=ftag
 $removeparam=janet
 $removeparam=vs_campaign_id
 $removeparam=adsterra_clid
@@ -185,6 +186,9 @@ $removeparam=itm_medium
 $removeparam=itm_campaign
 $removeparam=itm_content
 $removeparam=itm_term
+$removeparam=utm_emailid
+$removeparam=utm_email
+$removeparam=utm_newsletterid
 $removeparam=utm_tag
 $removeparam=utm_adset
 $removeparam=utm_adgroup
@@ -301,6 +305,8 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+||oricon.co.jp^$removeparam=ref
+||carviewform.yahoo.co.jp^$removeparam=src
 ||kaigonoshigoto.jp^$removeparam=scid
 ||coco.fun/share/$removeparam=share_to
 ||coco.fun/share/$removeparam=m
@@ -766,6 +772,7 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 ||puma.com^$removeparam=sc_uid
 ||puma.com^$removeparam=sc_llid
 ||puma.com^$removeparam=sc_eh
+||reddit.com^$removeparam=target_user
 ||reddit.com^$removeparam=%243p
 ||reddit.com^$removeparam=%24deep_link
 ||reddit.com^$removeparam=post_index
@@ -1470,6 +1477,8 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||cinematoday.jp^$removeparam=g_clk
 $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||basketballking.jp^$removeparam=cx_art
+||cnet.com^$removeparam=medium
+||cnet.com^$removeparam=source
 ||japan.cnet.com^$removeparam=tag
 ||asahi.com^$removeparam=iref
 ||asahi.com^$removeparam=ref
