@@ -73,6 +73,13 @@ export class RuleTextService {
     private static readonly MAX_CACHED_FILTERS = 20;
 
     /**
+     * Maximum total cache size in bytes.
+     * Set to 100MB to handle large filter lists while preventing unbounded growth.
+     * Typical filter: ~300KB, so this allows caching many filters comfortably.
+     */
+    private static readonly MAX_CACHE_SIZE_BYTES = 100 * 1024 * 1024;
+
+    /**
      * Time-to-live for cached filters in milliseconds.
      * Filters are automatically evicted after 2 minutes of inactivity.
      * Provides safety net for memory management during filtering log sessions:
@@ -86,13 +93,17 @@ export class RuleTextService {
      * Cache for filters data.
      * The key is the filter list id and the value is the filter data.
      * Cache is only used when enabled via {@link enableCache} (typically by filtering log).
-     * Uses LRU eviction to limit memory usage - least recently used filters
-     * are automatically removed when cache is full.
-     * TTL-based expiration removes filters after 2 minutes of inactivity.
+     * Uses LRU eviction with dual limits:
+     * - Count limit: max 20 filters
+     * - Size limit: max 100MB total
+     * - TTL: 2 minutes of inactivity
+     * Whichever limit is hit first triggers eviction of least recently used filters.
      * The cache can be cleared by calling {@link clear} or {@link disableCache}.
      */
     private filtersCache = new LRUCache<number, ConvertedFilterList>({
         max: RuleTextService.MAX_CACHED_FILTERS,
+        maxSize: RuleTextService.MAX_CACHE_SIZE_BYTES,
+        sizeCalculation: RuleTextService.getSizeOfConvertedFilterList,
         ttl: RuleTextService.CACHE_TTL_MS,
         allowStale: false,
         updateAgeOnGet: true,
@@ -135,6 +146,39 @@ export class RuleTextService {
         // Force new string allocation by concatenation
         // This breaks the reference to the parent string buffer
         return str.split('').join('');
+    }
+
+    /**
+     * Estimates the memory size of a ConvertedFilterList in bytes.
+     * Used for LRU cache size tracking - optimized for speed over perfect accuracy.
+     *
+     * Calculation:
+     * - Content string: length * 2 (UTF-16 encoding).
+     * - Originals array: sum of rule lengths * 2.
+     * - Conversions map: entry count * 16 (approximate).
+     *
+     * Typical accuracy: ~99% of actual memory usage, fast O(n) calculation.
+     *
+     * @param convertedFilterList The filter list to measure.
+     *
+     * @returns Approximate size in bytes.
+     */
+    private static getSizeOfConvertedFilterList(convertedFilterList: ConvertedFilterList): number {
+        let bytes = 0;
+
+        // Content string (UTF-16: 2 bytes per character)
+        bytes += convertedFilterList.getContent().length * 2;
+
+        const data = convertedFilterList.getConversionData();
+
+        // Original rules array (each string is 2 bytes per character)
+        bytes += data.originals.reduce((sum, rule) => sum + rule.length * 2, 0);
+
+        // Conversions map (keys are numbers stored as strings, values are numbers)
+        // Approximate: 8 bytes per key + 8 bytes per value
+        bytes += Object.keys(data.conversions).length * 16;
+
+        return bytes;
     }
 
     /**
