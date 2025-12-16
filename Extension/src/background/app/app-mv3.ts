@@ -74,6 +74,7 @@ import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { ContentScriptInjector } from '../content-script-injector';
 import { getZodErrorMessage } from '../../common/error';
+
 import { AppCommon } from './app-common';
 
 /**
@@ -149,7 +150,7 @@ export class App extends AppCommon {
         }
 
         // Initializes network settings.
-        await network.init(); //TODOMV3
+        await network.init(); // TODOMV3
 
         // Initializes App storage data
         await App.initClientId();
@@ -159,7 +160,7 @@ export class App extends AppCommon {
 
         await UiApi.init();
 
-        await rulesLimitsService.init(); //TODOMV3
+        await rulesLimitsService.init(); // TODOMV3
 
         /**
          * Injects content scripts into already opened tabs.

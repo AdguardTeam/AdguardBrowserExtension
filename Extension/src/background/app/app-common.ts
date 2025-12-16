@@ -73,7 +73,9 @@ import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
 import { getZodErrorMessage } from '../../common/error';
 
-
+/**
+ *
+ */
 export class AppCommon {
     private static uninstallUrl = Forward.get({
         action: ForwardAction.UninstallExtension,
@@ -109,7 +111,7 @@ export class AppCommon {
         settingsEvents.removeListeners();
     }
 
-        /**
+    /**
      * Handles engine status request from filters-download page.
      *
      * @returns True, if filter engine is initialized, else false.
@@ -150,7 +152,7 @@ export class AppCommon {
         try {
             clientId = zod.string().parse(storageClientId);
         } catch (e) {
-            logger.warn('[ext.App.initClientId]: error while parsing client id, generating a new one, error: ', getZodErrorMessage(e));
+            logger.warn('[ext.AppCommon.initClientId]: error while parsing client id, generating a new one, error: ', getZodErrorMessage(e));
             clientId = InstallApi.genClientId();
             await browserStorage.set(CLIENT_ID_KEY, clientId);
         }
