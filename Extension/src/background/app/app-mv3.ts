@@ -74,6 +74,7 @@ import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { ContentScriptInjector } from '../content-script-injector';
 import { getZodErrorMessage } from '../../common/error';
+import { AppCommon } from './app-common';
 
 /**
  * This class is app entry point.
@@ -81,12 +82,7 @@ import { getZodErrorMessage } from '../../common/error';
  * {@link App.init} Initializes all app services
  * and handle webextension API events for first install and update scenario.
  */
-export class App {
-    private static uninstallUrl = Forward.get({
-        action: ForwardAction.UninstallExtension,
-        from: ForwardFrom.Background,
-    });
-
+export class App extends AppCommon {
     /**
      * Initializes all app services
      * and handle webextension API events for first install and update scenario.
@@ -153,7 +149,7 @@ export class App {
         }
 
         // Initializes network settings.
-        await network.init();
+        await network.init(); //TODOMV3
 
         // Initializes App storage data
         await App.initClientId();
@@ -163,7 +159,7 @@ export class App {
 
         await UiApi.init();
 
-        await rulesLimitsService.init();
+        await rulesLimitsService.init(); //TODOMV3
 
         /**
          * Injects content scripts into already opened tabs.
@@ -195,7 +191,7 @@ export class App {
         // even for patches, because MV3 does not support remote filter updates
         // (either full or through diffs) and filters are updated only with
         // the update of the entire extension.
-        if (isUpdate) {
+        if (isUpdate) { // TODOMV3
             const filtersIds = await FiltersApi.reloadFiltersFromLocal();
             logger.info('[ext.App.asyncInit]: following filters has been updated from local resources:', filtersIds);
         }
@@ -244,7 +240,7 @@ export class App {
          */
         eventService.init();
 
-        await ExtensionUpdateService.init();
+        await ExtensionUpdateService.init(); // TODOMV3
 
         /**
          * Called after eventService init, otherwise it won't handle messages.
@@ -279,7 +275,7 @@ export class App {
         // Update additional scenario
         if (isUpdate) {
             if (!settingsStorage.get(SettingOption.DisableShowAppUpdatedNotification)) {
-                // for isUpdate state previousAppVersion can't be null
+                // for isUpdate state previousAppVersion can't be null. TODOMV3 save comment
                 toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion!);
             }
         }
@@ -292,77 +288,19 @@ export class App {
         // Update icons to hide "loading" icon
         await iconsApi.update();
 
-        await sendMessage({ type: MessageType.AppInitialized });
+        await sendMessage({ type: MessageType.AppInitialized }); // TODOMV3
 
         // Set filters last update timestamp for issue reporting
         await filterUpdateService.init();
 
-        await ExtensionUpdateService.handleExtensionReloadOnUpdate(isUpdate);
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(isUpdate); // TODOMV3
 
         // This event is used for integration tests (scripts/browser-test/index.ts)
         // and waitUntilExtensionInitialized() is adding a listener to the event
         // so the event should be dispatched eventually after all initialization
         // is done.
-        dispatchEvent(new Event(EXTENSION_INITIALIZED_EVENT));
+        dispatchEvent(new Event(EXTENSION_INITIALIZED_EVENT)); // TODOMV3
 
         await Telemetry.init();
-    }
-
-    /**
-     * Remove all registered app event listeners.
-     */
-    private static removeListeners(): void {
-        messageHandler.removeListeners();
-        contextMenuEvents.removeListeners();
-        settingsEvents.removeListeners();
-    }
-
-    /**
-     * Handles engine status request from filters-download page.
-     *
-     * @returns True, if filter engine is initialized, else false.
-     */
-    private static onCheckRequestFilterReady(): boolean {
-        const ready = engine.api.isStarted;
-
-        /**
-         * If engine is ready, user will be redirected to thankyou page.
-         *
-         * CheckRequestFilterReady listener is not needed anymore.
-         */
-        if (ready) {
-            messageHandler.removeListener(MessageType.CheckRequestFilterReady);
-        }
-
-        return ready;
-    }
-
-    /**
-     * Sets app uninstall url.
-     */
-    private static async setUninstallUrl(): Promise<void> {
-        try {
-            await browser.runtime.setUninstallURL(App.uninstallUrl);
-        } catch (e) {
-            logger.error('[ext.App.setUninstallUrl]: cannot set app uninstall url. Origin error:', e);
-        }
-    }
-
-    /**
-     * Initializes App storage data.
-     */
-    private static async initClientId(): Promise<void> {
-        const storageClientId = await browserStorage.get(CLIENT_ID_KEY);
-        let clientId: string;
-
-        try {
-            clientId = zod.string().parse(storageClientId);
-        } catch (e) {
-            logger.warn('[ext.App.initClientId]: error while parsing client id, generating a new one, error: ', getZodErrorMessage(e));
-            clientId = InstallApi.genClientId();
-            await browserStorage.set(CLIENT_ID_KEY, clientId);
-        }
-
-        appContext.set(AppContextKey.ClientId, clientId);
     }
 }

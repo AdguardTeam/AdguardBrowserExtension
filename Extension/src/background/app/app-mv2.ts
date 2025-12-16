@@ -18,17 +18,10 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
-import zod from 'zod';
 
 import { engine } from '../engine';
 import { MessageType, sendMessage } from '../../common/messages';
 import { logger } from '../../common/logger';
-import {
-    Forward,
-    ForwardAction,
-    ForwardFrom,
-} from '../../common/forward';
-import { CLIENT_ID_KEY } from '../../common/constants';
 import { ContentScriptInjector } from '../content-script-injector';
 import { messageHandler } from '../message-handler';
 import { ConnectionHandler } from '../connection-handler';
@@ -36,7 +29,6 @@ import {
     appContext,
     AppContextKey,
     settingsStorage,
-    browserStorage,
 } from '../storages';
 import {
     toasts,
@@ -68,12 +60,11 @@ import {
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
-import { contextMenuEvents, settingsEvents } from '../events';
-import { KeepAlive } from '../keep-alive';
+=import { KeepAlive } from '../keep-alive';
 import { SafebrowsingService } from '../services/safebrowsing';
-import { getZodErrorMessage } from '../../common/error';
 import { localeDetect } from '../services/locale-detect-mv2';
-
+import { AppCommon } from './app-common';
+// FIXME: CHECK mv2 and mv3 files. Check TODOMV2/3 comments
 /**
  * Logs initialization times for debugging purposes.
  * To enable logging, set `_test_debugInitLoggingFlag` to `true` in local storage.
@@ -116,11 +107,7 @@ const trackInitTimesForDebugging = async (): Promise<void> => {
  * {@link App.init} Initializes all app services
  * and handle webextension API events for first install and update scenario.
  */
-export class App {
-    private static uninstallUrl = Forward.get({
-        action: ForwardAction.UninstallExtension,
-        from: ForwardFrom.Background,
-    });
+export class App extends AppCommon {
 
     /**
      * Initializes all app services and handle webextension API events for first
@@ -137,7 +124,7 @@ export class App {
         // Set the current log level from session storage.
         await logger.init();
 
-        await trackInitTimesForDebugging();
+        await trackInitTimesForDebugging(); // TODOMV2
 
         // TODO: Remove after migration to MV3
         // This is a temporary solution to keep event pages alive in Firefox.
@@ -245,7 +232,7 @@ export class App {
         PopupService.init();
 
         // Initializes language detector for auto-enabling relevant filters
-        localeDetect.init();
+        localeDetect.init(); // TODOMV2
 
         /**
          * Adds listener for creating `notifier` events. Triggers by frontend.
@@ -266,7 +253,7 @@ export class App {
          * - Adds listener for safebrowsing settings option switcher
          * - Adds listener for "add trusted domain" message.
          */
-        await SafebrowsingService.init();
+        await SafebrowsingService.init(); // TODOMV2
 
         /**
          * Initializes Document block module
@@ -311,7 +298,7 @@ export class App {
              * And they should be loaded before the engine start,
              * otherwise we will not be able to enable them later.
              */
-            await FiltersApi.reloadEnabledFilters();
+            await FiltersApi.reloadEnabledFilters(); // TODOMV2
         }
 
         // Runs tswebextension
@@ -326,67 +313,9 @@ export class App {
         // initialization from current rules
         filterUpdateService.init();
 
-        await sendMessage({ type: MessageType.AppInitialized });
+        await sendMessage({ type: MessageType.AppInitialized }); // TODOMV2
 
         await Telemetry.init();
-    }
-
-    /**
-     * Remove all registered app event listeners.
-     */
-    private static removeListeners(): void {
-        messageHandler.removeListeners();
-        contextMenuEvents.removeListeners();
-        settingsEvents.removeListeners();
-    }
-
-    /**
-     * Handles engine status request from filters-download page.
-     *
-     * @returns True, if filter engine is initialized, else false.
-     */
-    private static onCheckRequestFilterReady(): boolean {
-        const ready = engine.api.isStarted;
-
-        /**
-         * If engine is ready, user will be redirected to thankyou page.
-         *
-         * CheckRequestFilterReady listener is not needed anymore.
-         */
-        if (ready) {
-            messageHandler.removeListener(MessageType.CheckRequestFilterReady);
-        }
-
-        return ready;
-    }
-
-    /**
-     * Sets app uninstall url.
-     */
-    private static async setUninstallUrl(): Promise<void> {
-        try {
-            await browser.runtime.setUninstallURL(App.uninstallUrl);
-        } catch (e) {
-            logger.error('[ext.App.setUninstallUrl]: cannot set app uninstall url. Origin error:', e);
-        }
-    }
-
-    /**
-     * Initializes App storage data.
-     */
-    private static async initClientId(): Promise<void> {
-        const storageClientId = await browserStorage.get(CLIENT_ID_KEY);
-        let clientId: string;
-
-        try {
-            clientId = zod.string().parse(storageClientId);
-        } catch (e) {
-            logger.warn('[ext.App.initClientId]: error while parsing client id, generating a new one, error: ', getZodErrorMessage(e));
-            clientId = InstallApi.genClientId();
-            await browserStorage.set(CLIENT_ID_KEY, clientId);
-        }
-
-        appContext.set(AppContextKey.ClientId, clientId);
     }
 }
 
