@@ -124,7 +124,6 @@ const waitForTests = async (
         { timeout: 0 },
     );
 
-    // dummy
     if (debugMode) {
         await page.pause();
         await sleep(TESTS_TIMEOUT_MS * 1000);
