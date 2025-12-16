@@ -1,9 +1,9 @@
-! Checksum: 8QR1BTjcBgsbkwHXALkRpw
-! Diff-Path: ../patches/20/20-s-1765347231-3600.patch
+! Checksum: YEgYEz9Lx3mEIHXjNiSxnw
+! Diff-Path: ../patches/20/20-s-1765858850-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.25.29
-! TimeUpdated: 2025-12-10T06:11:11+00:00
+! Version: 2.0.25.43
+! TimeUpdated: 2025-12-16T04:18:07+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,12 @@ alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,ra
 !
 !
 !
+redfin.com###AppInstallBanner
+goodnovel.com##.qrcode
+snkrdunk.com##app-banner
+byu.id###best-deal > div[class^="styles_section__wrapper"]
+kabum.com.br###banner-apps-container
+tokyo-city.ru#%#//scriptlet('trusted-set-local-storage-item', 'lastShowDownload', '"2030-12-11T14:39:03.754Z"')
 newt.net##article > a[class$="__appBanner"]
 newt.net##aside div[class$="__areaOrAppBanner"]
 newt.net##aside > section[class^="AppDownload"]
@@ -2941,7 +2947,7 @@ coolapk.com##.apk_right_two
 coolapk.com##.app_left > div.left_download
 coolapk.com##a[onclick="weixinDownload();"]
 smotrim.ru,tieba.baidu.com#$#body { overflow: auto !important; }
-klook.com,japantaxi.jp,crichd.*,theinitium.com,operanewsapp.com,iq.com,news.awa.fm##.download
+goodnovel.com,klook.com,japantaxi.jp,crichd.*,theinitium.com,operanewsapp.com,iq.com,news.awa.fm##.download
 sirabee.com##a[href^="https://app.sirabee.com"]
 ati.su##div[data-app="splash-screen"]
 mobile.donanimhaber.com##.mobil-forum-tanitim
@@ -3126,7 +3132,7 @@ banggood.com##div[class^="top_app_download_"]
 andro-news.com##.rightbar .google-play
 spencers.in###appLinkPopup
 olx.ua##.footerapps
-mediamarkt.com.tr##body > .ins-preview-wrapper div.ins-notification-content
+kabum.com.br,mediamarkt.com.tr##body > .ins-preview-wrapper div.ins-notification-content
 symbolab.com###androidLink
 symbolab.com###itunesLink
 au.ru##div[id^="au-mobile-app-teaser-modal"]
@@ -3845,8 +3851,25 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+nishinippon.co.jp##article > .grid > .grid[data-nosnippet="true"]:has(> a[href^="https://app.adjust.com/"])
+arte.tv##header[role="banner"] a[href="https://arte.app.link/header-dl"]
+kayak.bo#%#//scriptlet('trusted-click-element', '.c-ulo-mod-variant-popup button[aria-label="Cerrar"]')
+ja.wikipedia.org##main > div.banner-container
+goodnovel.com#$#.fix-down { display: none !important; }
+goodnovel.com#$#.seo-navbar { display: none !important; }
+goodnovel.com#$#.nav-placeholder { display: none !important; }
+goodnovel.com#$#.nav { top: 0 !important }
+zexy.net#$#body.is-AppDownloadModalVisible { position: static !important; }
+zexy.net#$#.appAppeal__footerBannerBox { display: none !important; }
+zexy.net#$#.appAppeal__modal { display: none !important; }
+zexy.net#$##appHeaderBanner { display: none !important; }
+snkrdunk.com##.article-sns-box
+pttavm.com##div[class^="mobileAppBar"]
+audiomack.com##.SinglePageMusicCardInfo-downloadLink
 reddit.com##span[data-part="get-app-btn"]
 openrec.tv##.page-wrapper > div:has(> button ~ img)
+openrec.tv##div[role="tabpanel"] > div > section[class^="sc-"]:has(> div > div > a[href="https://apps.apple.com/app/id912776162"])
+openrec.tv##.page-wrapper > div[class^="sc-"]:has(> div > div > div[role="button"] ~ div > a[href="https://apps.apple.com/app/id912776162"])
 openrec.tv##.page-wrapper > div > div:has(> div > div[role="button"] ~ div > a[href="http://play.google.com/store/apps/details?id=jp.co.cyber_z.openrecviewapp"])
 openrec.tv##div[role="tabpanel"] > div > section:has(> div > div > a[href="http://play.google.com/store/apps/details?id=jp.co.cyber_z.openrecviewapp"])
 newt.net##div[class^="FixedAppBannerForSp"]

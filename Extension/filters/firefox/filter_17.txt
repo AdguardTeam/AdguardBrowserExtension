@@ -1,9 +1,9 @@
-! Checksum: X2xHAwTeoklGEK4ooZcN5g
-! Diff-Path: ../patches/17/17-s-1765296728-3600.patch
+! Checksum: 1kWtgQ8BMuCSbXIzWfL4xg
+! Diff-Path: ../patches/17/17-s-1765869185-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.61
-! TimeUpdated: 2025-12-09T16:09:30+00:00
+! Version: 2.0.12.66
+! TimeUpdated: 2025-12-16T07:10:31+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -21,6 +21,8 @@
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
 !
+! FastFlow
+$removeparam=ftag
 ! https://5-fifth.com/products/detail?product_id=26125&janet=0qB9lV3s&a=1
 $removeparam=janet
 ! https://github.com/AdguardTeam/AdguardFilters/issues/217620
@@ -308,6 +310,9 @@ $removeparam=itm_campaign
 $removeparam=itm_content
 $removeparam=itm_term
 ! UTM
+$removeparam=utm_emailid
+$removeparam=utm_email
+$removeparam=utm_newsletterid
 $removeparam=utm_tag
 $removeparam=utm_adset
 $removeparam=utm_adgroup
@@ -457,7 +462,12 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://www.oricon.co.jp/kyujin/?ref_cd=kyujinbtnbottom-news
+||oricon.co.jp^$removeparam=ref
+! https://carviewform.yahoo.co.jp/kaitori/?src=kuruma_news__kaitorisatei_button
+||carviewform.yahoo.co.jp^$removeparam=src
 ! https://github.com/AdguardTeam/AdguardFilters/issues/219694
+! aglint-disable-next-line
 ! https://github.com/AdguardTeam/AdguardFilters/issues/219079
 ||kaigonoshigoto.jp^$removeparam=scid
 ! coco.fun
@@ -1139,6 +1149,8 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 ||puma.com^$removeparam=sc_eh
 !
 ! reddit.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/219381#issuecomment-3648484916
+||reddit.com^$removeparam=target_user
 ! https://github.com/AdguardTeam/AdguardFilters/issues/191029
 ||reddit.com^$removeparam=%243p
 ||reddit.com^$removeparam=%24deep_link
@@ -2185,7 +2197,9 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ! https://github.com/AdguardTeam/AdguardFilters/pull/137576
 ||basketballking.jp^$removeparam=cx_art
-! https://github.com/AdguardTeam/AdguardFilters/issues/136987
+! cnet.com
+||cnet.com^$removeparam=medium
+||cnet.com^$removeparam=source
 ||japan.cnet.com^$removeparam=tag
 ! https://github.com/AdguardTeam/AdguardFilters/issues/136988
 ||asahi.com^$removeparam=iref
