@@ -94,7 +94,7 @@ export class Engine implements TsWebExtensionEngine {
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
-        ruleTextService.onEngineUpdated(configuration.settings.allowlistInverted);
+        ruleTextService.onEngineUpdated(configuration.settings);
     }
 
     /**
@@ -112,7 +112,7 @@ export class Engine implements TsWebExtensionEngine {
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
 
-        ruleTextService.onEngineUpdated(configuration.settings.allowlistInverted);
+        ruleTextService.onEngineUpdated(configuration.settings);
     }
 
     /**

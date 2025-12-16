@@ -160,7 +160,7 @@ export class Engine implements TsWebExtensionEngine {
          *   - Default filters (IDs: 2, 10) are pending enablement.
          */
         await iconsApi.update();
-        ruleTextService.onEngineUpdated(configuration.settings.allowlistInverted);
+        ruleTextService.onEngineUpdated(configuration.settings);
     }
 
     /**
@@ -198,7 +198,7 @@ export class Engine implements TsWebExtensionEngine {
         }
         // Updates extension icon state to reflect current filtering status.
         await iconsApi.update();
-        ruleTextService.onEngineUpdated(configuration.settings.allowlistInverted);
+        ruleTextService.onEngineUpdated(configuration.settings);
     }
 
     /**

@@ -22,7 +22,7 @@ import { LRUCache } from 'lru-cache';
 
 import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
 
-import { type ConvertedFilterList } from 'tswebextension';
+import type { Configuration, ConvertedFilterList } from 'tswebextension';
 
 import { AntiBannerFiltersId } from '../../common/constants';
 import { logger } from '../../common/logger';
@@ -216,10 +216,10 @@ export class RuleTextService {
     /**
      * Called when the engine is updated.
      *
-     * @param allowlistInverted Whether allowlist mode is inverted.
+     * @param settings Engine configuration settings.
      */
-    public onEngineUpdated(allowlistInverted: boolean): void {
-        this.allowlistInverted = allowlistInverted;
+    public onEngineUpdated(settings: Partial<Configuration['settings']>): void {
+        this.allowlistInverted = settings.allowlistInverted ?? this.allowlistInverted;
         // Clear cache to ensure fresh data after engine update
         this.purgeFiltersCache();
         this.purgeFilterSyncAttempts();
@@ -338,6 +338,8 @@ export class RuleTextService {
         filterId: number,
         ruleIndex: number,
     ): Promise<RuleText | null> {
+        // Special case: when inverted allowlist mode is enabled, we generate rules dynamically without rule index
+        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2883
         if (
             this.allowlistInverted
             && filterId === AntiBannerFiltersId.AllowlistFilterId
