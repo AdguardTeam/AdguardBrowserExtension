@@ -308,6 +308,10 @@ export class RuleTextService {
      * Cache will be used until explicitly disabled with {@link disableCache}.
      */
     public enableCache(): void {
+        if (this.cachingEnabled) {
+            return;
+        }
+
         this.cachingEnabled = true;
         logger.debug('[ext.RuleTextService.enableCache]: caching enabled.');
     }
@@ -317,9 +321,12 @@ export class RuleTextService {
      * Should be called when bulk operations are complete (e.g., filtering log closed).
      */
     public disableCache(): void {
+        if (!this.cachingEnabled) {
+            return;
+        }
+
         this.cachingEnabled = false;
-        this.purgeFiltersCache();
-        this.purgeFilterSyncAttempts();
+        this.clear();
         logger.debug('[ext.RuleTextService.disableCache]: caching disabled and caches cleared.');
     }
 
