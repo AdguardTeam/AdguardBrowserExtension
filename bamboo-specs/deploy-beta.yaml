@@ -38,8 +38,9 @@ static.adtidy.org:
             ./bamboo-deploy-publisher/deploy.sh chrome-extension-beta
   final-tasks: []
   variables: {}
-  requirements:
+  requirements: &requirements
     - adg-docker: 'true'
+    - extension: 'true'
   notifications:
     - events:
         - deployment-started-and-finished
@@ -75,8 +76,7 @@ Chrome WebStore MV3:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
+  requirements: *requirements
   notifications:
     - events:
         - deployment-started-and-finished
@@ -117,8 +117,7 @@ GitHub:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-github-beta
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
+  requirements: *requirements
   notifications:
     - events:
         - deployment-started-and-finished
