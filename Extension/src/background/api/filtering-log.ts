@@ -177,9 +177,7 @@ export class FilteringLogApi {
         this.openedFilteringLogsPages += 1;
 
         // Enable caching for bulk rule text lookups during filtering log session
-        if (this.openedFilteringLogsPages === 1) {
-            ruleTextService.enableCache();
-        }
+        ruleTextService.enableCache();
 
         try {
             engine.api.setDebugScriptlets(true);
