@@ -42,7 +42,6 @@ import {
     toasts,
     CommonFilterApi,
     PagesApi,
-    FiltersApi,
     SettingsApi,
     UpdateApi,
     InstallApi,
@@ -70,13 +69,18 @@ import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
-import { SafebrowsingService } from '../services/safebrowsing';
 import { getZodErrorMessage } from '../../common/error';
 
 /**
+ * This class is app entry point.
  *
+ * {@link AppCommon.init} Initializes all app services
+ * and handle webextension API events for first install and update scenario.
  */
 export class AppCommon {
+    /**
+     * The uninstall URL for the extension.
+     */
     private static uninstallUrl = Forward.get({
         action: ForwardAction.UninstallExtension,
         from: ForwardFrom.Background,
@@ -87,25 +91,218 @@ export class AppCommon {
      * and handle webextension API events for first install and update scenario.
      *
      * First sync modules are initialized, then async modules.
+     *
+     * @returns True if this is an extension update, false otherwise.
      */
-    public static async init(): Promise<void> {
+    public static async init(): Promise<boolean> {
         // removes listeners on re-initialization, because new ones will be registered during process
         AppCommon.removeListeners();
 
-        // First initialize critical sync event handlers.
-        AppCommon.syncInit();
+        /**
+         * Important: should be called before async part inside {@link App.init},
+         * because in MV3 handlers should be registered on the top level in sync
+         * functions.
+         */
+        UiService.syncInit();
 
         // Set the current log level from session storage.
         await logger.init();
 
-        // Then "lazy" call for all other stuff.
-        await AppCommon.asyncInit();
+        // TODO: Remove in MV2 after migration to MV3
+        // This is a temporary solution to keep event pages alive in Firefox.
+        // We will remove it once engine initialization becomes faster.
+        KeepAlive.init();
+
+        // Reads persisted data from session storage.
+        await engine.api.initStorage();
+
+        // Initializes connection and message handler as soon as possible
+        // to prevent connection errors from extension pages
+        ConnectionHandler.init();
+        messageHandler.init();
+
+        // get application run info
+        const runInfo = await getRunInfo();
+
+        const { previousAppVersion, currentAppVersion } = runInfo;
+        const isAppVersionChanged = previousAppVersion !== currentAppVersion;
+        const isInstall = isAppVersionChanged && !previousAppVersion;
+        const isUpdate = isAppVersionChanged && !!previousAppVersion;
+
+        if (isInstall) {
+            await InstallApi.install(runInfo);
+        }
+
+        if (isUpdate) {
+            await UpdateApi.update(runInfo);
+        }
+
+        // Initializes App storage data
+        await AppCommon.initClientId();
+
+        // Initializes Settings storage data
+        await SettingsApi.init();
+
+        await UiApi.init();
+
+        /**
+         * Injects content scripts into already opened tabs.
+         *
+         * Does injection when all requirements are met:
+         * - Statistics collection is disabled - prevents conflicts from multiple
+         * `cssHitCounters`;
+         * - Content scripts have not been injected in the current session -
+         * avoids unnecessary injections.
+         */
+        if (
+            SettingsApi.getSetting(SettingOption.DisableCollectHits)
+            && !await ContentScriptInjector.isInjected()
+        ) {
+            await ContentScriptInjector.init();
+            await ContentScriptInjector.setInjected();
+        }
+
+        await this.initFiltersApi(isInstall, isUpdate);
+
+        await PageStatsApi.init();
+        await HitStatsApi.init();
+
+        /**
+         * Initializes promo notifications:
+         * - Initializes notifications storage
+         * - Adds listeners for notification events.
+         */
+        PromoNotificationService.init();
+
+        // Adds listeners for settings events
+        SettingsService.init();
+
+        // Adds listeners for filter and group state events (enabling, updates)
+        await FiltersService.init();
+
+        // Adds listeners specified for custom filters
+        CustomFiltersService.init();
+
+        // Adds listeners for allowlist events
+        AllowlistService.init();
+
+        // Adds listeners for userrules list events
+        await UserRulesService.init(engine);
+
+        // Adds listeners for filtering log
+        FilteringLogService.init();
+
+        /**
+         * Adds listeners for managing ui
+         * (routing between extension pages, toasts, icon update).
+         */
+        await UiService.init();
+
+        // Adds listeners for popup events
+        PopupService.init();
+
+        /**
+         * Adds listener for creating `notifier` events. Triggers by frontend.
+         *
+         * TODO: delete after frontend refactoring.
+         */
+        eventService.init();
+
+        await this.manifestSpecificInit();
+
+        /**
+         * Called after eventService init and manifestSpecificInit, otherwise it won't handle messages.
+         */
+        await KeepAlive.resyncEventSubscriptions();
+
+        /**
+         * Initializes Document block module
+         * - Initializes persisted cache for trusted domains
+         * - Adds listener for "add trusted domain" message.
+         */
+        await DocumentBlockService.init();
+
+        // Sets app uninstall url
+        await AppCommon.setUninstallUrl();
+
+        // First install additional scenario
+        if (isInstall) {
+            // Adds engine status listener for filters-download page
+            messageHandler.addListener(MessageType.CheckRequestFilterReady, AppCommon.onCheckRequestFilterReady);
+
+            // Opens filters-download page
+            await PagesApi.openPostInstallPage();
+
+            // Loads default filters
+            await CommonFilterApi.initDefaultFilters(true);
+
+            // Write the current version to the storage only after successful initialization of the extension
+            await InstallApi.postSuccessInstall(currentAppVersion);
+        }
+
+        if (isUpdate) {
+            await this.updateAdditionalScenario(currentAppVersion, previousAppVersion);
+        }
+
+        // Runs tswebextension
+        await engine.start();
+
+        appContext.set(AppContextKey.IsInit, true);
+
+        // Update icons to hide "loading" icon
+        await iconsApi.update();
+
+        // Initialize filters updates, after engine started, so that it won't mingle with engine
+        // initialization from current rules in MV2
+        // And set filters last update timestamp for issue reporting in MV3
+        await filterUpdateService.init();
+
+        await Telemetry.init();
+
+        await sendMessage({ type: MessageType.AppInitialized });
+
+        return isUpdate;
+    }
+
+    /**
+     * Hook for initializing manifest-specific (MV2 or MV3) services.
+     */
+    protected static async manifestSpecificInit(): Promise<void> {
+        throw new Error('Not implemented');
+    }
+
+    /**
+     * Initializing FiltersApi.
+     *
+     * @param isInstall - True if this is a fresh installation.
+     * @param isUpdate - True if this is an extension update.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected static async initFiltersApi(isInstall: boolean, isUpdate: boolean): Promise<void> {
+        throw new Error('Not implemented');
+    }
+
+    /**
+     * Handles additional logic during extension update scenario.
+     * Can be overridden in derived classes to add manifest-specific update logic.
+     *
+     * @param currentAppVersion - Current extension version.
+     * @param previousAppVersion - Previous extension version before update.
+     */
+    protected static async updateAdditionalScenario(
+        currentAppVersion: string,
+        previousAppVersion: string,
+    ): Promise<void> {
+        if (!settingsStorage.get(SettingOption.DisableShowAppUpdatedNotification)) {
+            // for isUpdate state previousAppVersion can't be null.
+            toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion!);
+        }
     }
 
     /**
      * Remove all registered app event listeners.
      */
-    protected static removeListeners(): void {
+    private static removeListeners(): void {
         messageHandler.removeListeners();
         contextMenuEvents.removeListeners();
         settingsEvents.removeListeners();
@@ -116,7 +313,7 @@ export class AppCommon {
      *
      * @returns True, if filter engine is initialized, else false.
      */
-    protected static onCheckRequestFilterReady(): boolean {
+    private static onCheckRequestFilterReady(): boolean {
         const ready = engine.api.isStarted;
 
         /**
@@ -134,7 +331,7 @@ export class AppCommon {
     /**
      * Sets app uninstall url.
      */
-    protected static async setUninstallUrl(): Promise<void> {
+    private static async setUninstallUrl(): Promise<void> {
         try {
             await browser.runtime.setUninstallURL(AppCommon.uninstallUrl);
         } catch (e) {
