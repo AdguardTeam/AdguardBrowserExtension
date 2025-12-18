@@ -70,6 +70,7 @@ import { getRunInfo } from '../utils';
 import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { getZodErrorMessage } from '../../common/error';
+import { NotImplementedError } from '../errors/not-implemented-error';
 
 /**
  * This class is app entry point.
@@ -268,7 +269,7 @@ export class AppCommon {
      * Hook for initializing manifest-specific (MV2 or MV3) services.
      */
     protected static async manifestSpecificInit(): Promise<void> {
-        throw new Error('Not implemented');
+        throw new NotImplementedError();
     }
 
     /**
@@ -279,7 +280,7 @@ export class AppCommon {
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected static async initFiltersApi(isInstall: boolean, isUpdate: boolean): Promise<void> {
-        throw new Error('Not implemented');
+        throw new NotImplementedError();
     }
 
     /**
