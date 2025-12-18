@@ -36,7 +36,7 @@ export class App extends AppCommon {
      * @inheritdoc
      */
     public static override async init(): Promise<boolean> {
-        const isUpdate = await AppCommon.init();
+        const isUpdate = await super.init();
 
         await ExtensionUpdateService.handleExtensionReloadOnUpdate(isUpdate);
 
