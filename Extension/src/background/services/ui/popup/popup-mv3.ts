@@ -59,7 +59,7 @@ export type GetExtensionStatusForPopupResponse = {
  */
 export class PopupService extends PopupServiceCommon {
     /** @inheritdoc */
-    static init(): void {
+    static override init(): void {
         PopupServiceCommon.init();
         messageHandler.addListener(
             MessageType.GetExtensionStatusForPopupMV3,

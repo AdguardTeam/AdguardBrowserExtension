@@ -54,7 +54,7 @@ export class FiltersService extends FiltersServiceCommon {
     /**
      * @inheritdoc
      */
-    protected static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
+    protected static override async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
         await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
     }
 

@@ -29,7 +29,7 @@ export class CommonFilterApi extends CommonFilterApiCommon {
     /**
      * @inheritdoc
      */
-    public static async loadFilterRulesFromBackend(
+    public static override async loadFilterRulesFromBackend(
         filterUpdateOptions: FilterUpdateOptions,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         forceRemote: boolean,

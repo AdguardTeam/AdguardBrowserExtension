@@ -34,7 +34,7 @@ export class UserRulesService extends UserRulesServiceCommon {
      *
      * @param engine Engine instance.
      */
-    public static async init(engine: Engine): Promise<void> {
+    public static override async init(engine: Engine): Promise<void> {
         UserRulesServiceCommon.init(engine);
 
         settingsEvents.addListener(

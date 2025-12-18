@@ -58,7 +58,7 @@ export class SettingsApi extends SettingsApiCommon {
     /**
      * @inheritdoc
      */
-    protected static async importGeneralSettings(generalSettingsConfig: GeneralSettingsConfig): Promise<void> {
+    protected static override async importGeneralSettings(generalSettingsConfig: GeneralSettingsConfig): Promise<void> {
         await SettingsApiCommon.importGeneralSettings(generalSettingsConfig);
 
         const safebrowsingEnabled = generalSettingsConfig[GeneralSettingsOption.SafebrowsingEnabled];
@@ -74,7 +74,7 @@ export class SettingsApi extends SettingsApiCommon {
      *
      * @param builtInFilters Array of built-in filters ids.
      */
-    protected static async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
+    protected static override async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
         const remoteFailedFilterIds = await SettingsApi.loadBuiltInFiltersRemote(builtInFilters);
 
         if (remoteFailedFilterIds.length === 0) {
@@ -141,7 +141,7 @@ export class SettingsApi extends SettingsApiCommon {
      *
      * @returns Array of common filter ids with MV2-specific mappings applied.
      */
-    protected static getFiltersToEnable(enabledFilters: number[]): number[] {
+    protected static override getFiltersToEnable(enabledFilters: number[]): number[] {
         const filtersToEnable = SettingsApiCommon.getFiltersToEnable(enabledFilters);
 
         // special handling for large AdGuard Annoyances filter,
@@ -157,7 +157,7 @@ export class SettingsApi extends SettingsApiCommon {
     /**
      * @inheritdoc
      */
-    protected static async importStealth(stealthConfig: StealthConfig): Promise<void> {
+    protected static override async importStealth(stealthConfig: StealthConfig): Promise<void> {
         await SettingsApiCommon.importStealth(stealthConfig, true);
     }
 }

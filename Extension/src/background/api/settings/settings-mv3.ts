@@ -65,7 +65,7 @@ export class SettingsApi extends SettingsApiCommon {
      *
      * @param builtInFilters Array of built-in filters ids.
      */
-    protected static async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
+    protected static override async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
         const filtersToLoad: number[] = [];
 
         builtInFilters.forEach((filterId) => {
@@ -82,7 +82,7 @@ export class SettingsApi extends SettingsApiCommon {
     /**
      * @inheritdoc
      */
-    protected static async importStealth(stealthConfig: StealthConfig): Promise<void> {
+    protected static override async importStealth(stealthConfig: StealthConfig): Promise<void> {
         await SettingsApiCommon.importStealth(stealthConfig, false);
     }
 }
