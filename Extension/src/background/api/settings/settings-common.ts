@@ -265,11 +265,9 @@ export class SettingsApiCommon {
             const stealthOptions = validConfig[RootOption.Stealth];
 
             if (stealthOptions) {
-                // FIXME: check, that overriding it is work
                 await this.importStealth(stealthOptions);
             }
 
-            // FIxME: check, that overriding is work
             await this.importGeneralSettings(validConfig[RootOption.GeneralSettings]);
             await this.importFilters(validConfig[RootOption.Filters]);
 
@@ -350,9 +348,7 @@ export class SettingsApiCommon {
         await SettingsApiCommon.importUserFilter(userFilter);
         SettingsApiCommon.importAllowlist(allowlist);
 
-        // FIXME: check, that overriding it is work
         const filtersToEnable = this.getFiltersToEnable(enabledFilters);
-        // FIXME: check, that overriding it is work
         await this.loadBuiltInFilters(filtersToEnable);
 
         await CustomFilterApi.createFilters(customFilters);
@@ -411,9 +407,7 @@ export class SettingsApiCommon {
                 !settingsStorage.get(SettingOption.DisableShowPageStats)
             ),
             [GeneralSettingsOption.AutodetectFilters]: !settingsStorage.get(SettingOption.DisableDetectFilters),
-            // FIXME: mv3 export this, but not import!!!
             [GeneralSettingsOption.SafebrowsingEnabled]: !settingsStorage.get(SettingOption.DisableSafebrowsing),
-            // FIXME: mv3 export this, but not import!!!
             [GeneralSettingsOption.FiltersUpdatePeriod]: settingsStorage.get(SettingOption.FiltersUpdatePeriod),
             [GeneralSettingsOption.AppearanceTheme]: settingsStorage.get(SettingOption.AppearanceTheme),
         };

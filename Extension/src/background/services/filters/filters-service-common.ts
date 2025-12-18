@@ -51,10 +51,10 @@ export class FiltersServiceCommon {
      * disabling hit collection.
      */
     public static init(): void {
-        messageHandler.addListener(MessageType.AddAndEnableFilter, this.onFilterEnable);
-        messageHandler.addListener(MessageType.DisableFilter, this.onFilterDisable);
-        messageHandler.addListener(MessageType.EnableFiltersGroup, this.onGroupEnable);
-        messageHandler.addListener(MessageType.DisableFiltersGroup, this.onGroupDisable);
+        messageHandler.addListener(MessageType.AddAndEnableFilter, this.onFilterEnable.bind(this));
+        messageHandler.addListener(MessageType.DisableFilter, this.onFilterDisable.bind(this));
+        messageHandler.addListener(MessageType.EnableFiltersGroup, this.onGroupEnable.bind(this));
+        messageHandler.addListener(MessageType.DisableFiltersGroup, this.onGroupDisable.bind(this));
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersServiceCommon.resetBlockedAdsCount);
         messageHandler.addListener(MessageType.SetConsentedFilters, FiltersServiceCommon.setConsentedFilters);
         messageHandler.addListener(MessageType.GetIsConsentedFilter, FiltersServiceCommon.getIsConsentedFilter);
@@ -104,7 +104,6 @@ export class FiltersServiceCommon {
 
         if (groupState.enabled) {
             // update the engine only if the group is enabled
-            // FIXME: check, that overriding is working
             await this.updateEngine();
         }
     }
@@ -238,7 +237,6 @@ export class FiltersServiceCommon {
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
-        // FIXME: check, that overriding is working in every method
         throw new NotImplementedError();
     }
 
@@ -246,7 +244,6 @@ export class FiltersServiceCommon {
      * Updates the filtering engine.
      */
     protected static async updateEngine(): Promise<void> {
-        // FIXME: check, that overriding is working in every method
         throw new NotImplementedError();
     }
 }

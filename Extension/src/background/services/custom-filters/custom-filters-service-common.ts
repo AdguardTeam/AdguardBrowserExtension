@@ -39,9 +39,9 @@ export abstract class CustomFiltersServiceCommon {
      * Init handlers.
      */
     static init(): void {
-        messageHandler.addListener(MessageType.LoadCustomFilterInfo, this.onCustomFilterInfoLoad);
-        messageHandler.addListener(MessageType.SubscribeToCustomFilter, this.onCustomFilterSubscription);
-        messageHandler.addListener(MessageType.RemoveAntiBannerFilter, this.onCustomFilterRemove);
+        messageHandler.addListener(MessageType.LoadCustomFilterInfo, this.onCustomFilterInfoLoad.bind(this));
+        messageHandler.addListener(MessageType.SubscribeToCustomFilter, this.onCustomFilterSubscription.bind(this));
+        messageHandler.addListener(MessageType.RemoveAntiBannerFilter, this.onCustomFilterRemove.bind(this));
     }
 
     /**

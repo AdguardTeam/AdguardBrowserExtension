@@ -50,7 +50,7 @@ export class FiltersService extends FiltersServiceCommon {
      * disabling hit collection.
      */
     public static override init(): void {
-        FiltersServiceCommon.init();
+        super.init();
         messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.manualCheckFiltersUpdate);
         contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.manualCheckFiltersUpdate);
         settingsEvents.addListener(SettingOption.UseOptimizedFilters, FiltersService.onOptimizedFiltersSwitch);
@@ -93,7 +93,7 @@ export class FiltersService extends FiltersServiceCommon {
     /**
      * @inheritdoc
      */
-    protected static async updateEngine(): Promise<void> {
+    protected static override async updateEngine(): Promise<void> {
         engine.debounceUpdate();
     }
 }

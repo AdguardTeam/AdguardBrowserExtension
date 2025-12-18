@@ -48,7 +48,7 @@ export class SettingsApi extends SettingsApiCommon {
             stealth: {
                 ...commonConfig.stealth,
                 // TODO: revert when will be found a better way to add exclusions for $stealth=referrer
-                // AG-34765 FIXME: check task
+                // AG-34765 TODO: check task
                 // Setting to false so that it will remove already added session rules.
                 hideReferrer: false,
                 // TODO: revert when will be found a better way to add exclusions for $stealth=searchqueries

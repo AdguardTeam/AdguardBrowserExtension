@@ -43,7 +43,6 @@ import { SettingsApiCommon } from './settings-common';
 export class SettingsApi extends SettingsApiCommon {
     /**
      * Collects {@link SettingsConfig} for tswebextension from current extension settings.
-     * FIXME: check, that method overrided correctly.
      *
      * @returns Collected {@link SettingsConfig} for tswebextension.
      */
@@ -59,22 +58,11 @@ export class SettingsApi extends SettingsApiCommon {
     /**
      * @inheritdoc
      */
-    protected static async importGeneralSettings({
-        [GeneralSettingsOption.AllowAcceptableAds]: allowAcceptableAds,
-        [GeneralSettingsOption.ShowBlockedAdsCount]: showBlockedAdsCount,
-        [GeneralSettingsOption.AutodetectFilters]: autodetectFilters,
-        [GeneralSettingsOption.SafebrowsingEnabled]: safebrowsingEnabled,
-        [GeneralSettingsOption.FiltersUpdatePeriod]: filtersUpdatePeriod,
-        [GeneralSettingsOption.AppearanceTheme]: appearanceTheme,
-    }: GeneralSettingsConfig): Promise<void> {
-        SettingsApiCommon.importGeneralSettings({
-            [GeneralSettingsOption.AllowAcceptableAds]: allowAcceptableAds,
-            [GeneralSettingsOption.ShowBlockedAdsCount]: showBlockedAdsCount,
-            [GeneralSettingsOption.AutodetectFilters]: autodetectFilters,
-            [GeneralSettingsOption.SafebrowsingEnabled]: safebrowsingEnabled,
-            [GeneralSettingsOption.FiltersUpdatePeriod]: filtersUpdatePeriod,
-            [GeneralSettingsOption.AppearanceTheme]: appearanceTheme,
-        });
+    protected static async importGeneralSettings(generalSettingsConfig: GeneralSettingsConfig): Promise<void> {
+        await SettingsApiCommon.importGeneralSettings(generalSettingsConfig);
+
+        const safebrowsingEnabled = generalSettingsConfig[GeneralSettingsOption.SafebrowsingEnabled];
+        const filtersUpdatePeriod = generalSettingsConfig[GeneralSettingsOption.FiltersUpdatePeriod];
 
         settingsStorage.set(SettingOption.DisableSafebrowsing, !safebrowsingEnabled);
         settingsStorage.set(SettingOption.FiltersUpdatePeriod, filtersUpdatePeriod);

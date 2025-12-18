@@ -38,7 +38,7 @@ export class FiltersService extends FiltersServiceCommon {
      * disabling hit collection.
      */
     public static override init(): void {
-        FiltersServiceCommon.init();
+        super.init();
         messageHandler.addListener(MessageType.RestoreFiltersMv3, FiltersService.onRestoreFilters);
     }
 
@@ -61,7 +61,7 @@ export class FiltersService extends FiltersServiceCommon {
     /**
      * @inheritdoc
      */
-    protected static async updateEngine(): Promise<void> {
+    protected static override async updateEngine(): Promise<void> {
         await engine.update();
     }
 }

@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-// TODO (AG-44868): Reduce code duplication across mv2 and mv3
 import { filterVersionStorage, settingsStorage } from '../../../storages';
 import { SettingOption } from '../../../schema';
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../common/settings';
