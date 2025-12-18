@@ -152,8 +152,7 @@ branch-overrides:
               interpreter: SHELL
               scripts:
                 - "./bamboo-specs/scripts/cleanup.sh"
-        requirements:
-          - adg-docker: 'true'
+        requirements: *requirements
 
       Unit tests:
         key: UNITTESTS
@@ -193,8 +192,7 @@ branch-overrides:
               # mv3 postfix because we run auto-builds only for mv3 branch.
               test-results: 'tests-reports/unit-tests-mv3.xml'
           - script: *cleanup-script
-        requirements:
-          - adg-docker: 'true'
+        requirements: *requirements
 
       Locales check:
         key: LOCALESCHECK
@@ -229,8 +227,7 @@ branch-overrides:
                   pnpm locales validate --min
         final-tasks:
           - script: *cleanup-script
-        requirements:
-          - adg-docker: 'true'
+        requirements: *requirements
 
       Update filters and build:
         key: UPDATEFILTERSANDBUILD
@@ -374,8 +371,7 @@ branch-overrides:
               type: junit
               test-results: 'tests-reports/integration-tests-*.xml'
           - script: *cleanup-script
-        requirements:
-          - adg-docker: 'true'
+        requirements: *requirements
 
       # Run auto-build as specified and collect all changes made by
       # filter list maintainers.
