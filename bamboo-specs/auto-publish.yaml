@@ -26,6 +26,10 @@ AutoDeployAndPublish Release:
         artifacts:
           - name: chrome-mv3-release.zip
     - script:
+        conditions:
+          - variable:
+              equals:
+                bamboo.enableAutoBuildsRelease: "true"
         interpreter: SHELL
         scripts:
           - |-
@@ -64,6 +68,7 @@ AutoDeployAndPublish Release:
             fi
   requirements: &requirements
     - adg-docker: 'true'
+    - extension: 'true'
   notifications: &notifications
     - events:
         - deployment-started-and-finished
@@ -84,6 +89,10 @@ AutoDeployAndPublish Beta:
         artifacts:
           - name: chrome-mv3-beta.zip
     - script:
+        conditions:
+          - variable:
+              equals:
+                bamboo.enableAutoBuildsBeta: "true"
         interpreter: SHELL
         scripts:
           - |-

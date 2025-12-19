@@ -60,6 +60,7 @@ import { optionsStorage } from '../../options-storage';
 import { type AppearanceTheme } from '../../../../common/constants';
 import { type RootStore } from '../RootStore';
 import { type default as UiStore } from '../UiStore';
+import { type TelemetryStore } from '../../../common/telemetry';
 
 /**
  * Sometimes the options page might be opened before the background page or
@@ -131,6 +132,8 @@ export abstract class SettingsStoreCommon {
     rootStore: RootStore;
 
     uiStore: UiStore;
+
+    telemetryStore: TelemetryStore;
 
     savingAllowlistService = createSavingService({
         id: 'allowlist',
@@ -237,6 +240,7 @@ export abstract class SettingsStoreCommon {
         makeObservable(this);
         this.rootStore = rootStore;
         this.uiStore = rootStore.uiStore;
+        this.telemetryStore = rootStore.telemetryStore;
 
         this.updateSetting = this.updateSetting.bind(this);
         this.updateFilterSetting = this.updateFilterSetting.bind(this);
@@ -294,6 +298,10 @@ export abstract class SettingsStoreCommon {
         if (!data) {
             return null;
         }
+
+        // telemetry
+        const anonymizedUsageDataAllowed = data.settings.values[data.settings.names.AllowAnonymizedUsageData];
+        this.telemetryStore.setIsAnonymizedUsageDataAllowed(anonymizedUsageDataAllowed);
 
         this.applyOptionsData(data, firstRender);
 

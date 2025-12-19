@@ -27,12 +27,20 @@ import {
     type IconVariants,
 } from '../../../storages';
 import { SettingOption } from '../../../schema';
-import { iconsCache, TabsApi as CommonTabsApi } from '../../../../common/api/extension';
+import { TabsApi as CommonTabsApi, iconsCache } from '../../../../common/api/extension';
 import { logger } from '../../../../common/logger';
 import { FramesApi, type FrameData } from '../frames';
 import { promoNotificationApi } from '../promo-notification';
 import { browserAction } from '../browser-action';
 import { translator } from '../../../../common/translators/translator';
+
+/**
+ * Result of the setIcon promise race.
+ */
+const enum SetIconResult {
+    Resolved = 'resolved',
+    Timeout = 'timeout',
+}
 
 /**
  * The Icons API is responsible for managing the extension's action state.
@@ -47,6 +55,12 @@ export abstract class IconsApiCommon {
      * Icon variants for the promo notification, if any is available.
      */
     protected promoIcons: IconVariants | null = null;
+
+    /**
+     * AG-38219 Flag to indicate if setIcon promise doesn't resolve (360 Browser).
+     * If true, we skip awaiting setIcon calls.
+     */
+    private static setIconTimeoutDetected = false;
 
     /**
      * Initializes Icons API.
@@ -169,7 +183,54 @@ export abstract class IconsApiCommon {
     }
 
     /**
-     * Sets the icon and tooltip for the extension action.
+     * Timeout in milliseconds to wait for setIcon promise to resolve.
+     */
+    private static readonly SET_ICON_TIMEOUT_MS = 100;
+
+    /**
+     * Inner wrapper for browserAction.setIcon with special timeout handling.
+     *
+     * @param icon Icon data object.
+     * @param icon.iconPaths Icons to set.
+     * @param tabId Tab's id, if not specified, the icon will be set for all tabs.
+     *
+     * @returns Promise that resolves when the icon is set or timeout is detected.
+     */
+    private static async setIcon({ iconPaths }: IconData, tabId?: number): Promise<void> {
+        /**
+         * AG-38219 For some reason browserAction.setIcon() promise is not resolved
+         * in 360 browser MV3, the icon still sets correctly.
+         * We use a timeout to avoid waiting indefinitely for the promise to resolve.
+         * Once timeout is detected, we skip awaiting setIcon calls.
+         */
+        const setIconPromise = browserAction
+            .setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId })
+            .then(() => SetIconResult.Resolved);
+
+        if (IconsApiCommon.setIconTimeoutDetected) {
+            return;
+        }
+
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+        const timeoutPromise = new Promise<SetIconResult.Timeout>((resolve) => {
+            timeoutId = setTimeout(
+                () => resolve(SetIconResult.Timeout),
+                IconsApiCommon.SET_ICON_TIMEOUT_MS,
+            );
+        });
+
+        const result = await Promise.race([setIconPromise, timeoutPromise]);
+
+        if (result === SetIconResult.Timeout) {
+            logger.info('[ext.IconsApiCommon.setIcon]: setIcon promise did not resolve in time, likely 360 Browser. Skipping await for future calls.');
+            IconsApiCommon.setIconTimeoutDetected = true;
+        }
+        clearTimeout(timeoutId);
+    }
+
+    /**
+     * Sets the icon for the extension action.
      *
      * @param icon Icon data object.
      * @param icon.iconPaths Icons to set.
@@ -184,9 +245,17 @@ export abstract class IconsApiCommon {
                 : appName;
 
             await Promise.all([
-                browserAction.setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId }),
-                browserAction.setTitle({ title, tabId }),
+                IconsApiCommon.setIcon(
+                    { iconPaths, tooltip },
+                    tabId,
+                ),
+                browserAction.setTitle({
+                    title,
+                    tabId,
+                }),
             ]);
+
+            logger.debug(`[ext.IconsApiCommon.setActionIcon]: Icon and tooltip set for tab ${tabId ?? 'all'}`);
         } catch (e) {
             logger.info('[ext.IconsApiCommon.setActionIcon]: Failed to set icon or tooltip:', e);
         }

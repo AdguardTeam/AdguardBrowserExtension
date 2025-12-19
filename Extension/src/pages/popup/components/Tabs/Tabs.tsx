@@ -37,7 +37,7 @@ import {
 } from '../Stats/StatsTable';
 import { ViewState } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 
 import { Tab, TabKey } from './Tab';
 
