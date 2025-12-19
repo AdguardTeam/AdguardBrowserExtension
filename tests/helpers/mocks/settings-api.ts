@@ -18,46 +18,46 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { vi } from 'vitest';
+import { type Mock, vi } from 'vitest';
 
 export class SettingsApi {
-    init = vi.fn();
+    init: Mock = vi.fn();
 
-    setSetting = vi.fn();
+    setSetting: Mock = vi.fn();
 
-    static getSetting = vi.fn();
+    static getSetting: Mock = vi.fn();
 
-    getData = vi.fn();
+    getData: Mock = vi.fn();
 
-    getTsWebExtConfiguration = vi.fn();
+    getTsWebExtConfiguration: Mock = vi.fn();
 
-    reset = vi.fn();
+    reset: Mock = vi.fn();
 
-    import = vi.fn();
+    import: Mock = vi.fn();
 
-    export = vi.fn();
+    export: Mock = vi.fn();
 
-    importGeneralSettings = vi.fn();
+    importGeneralSettings: Mock = vi.fn();
 
-    exportGeneralSettings = vi.fn();
+    exportGeneralSettings: Mock = vi.fn();
 
-    importExtensionSpecificSettings = vi.fn();
+    importExtensionSpecificSettings: Mock = vi.fn();
 
-    exportExtensionSpecificSettings = vi.fn();
+    exportExtensionSpecificSettings: Mock = vi.fn();
 
-    importFilters = vi.fn();
+    importFilters: Mock = vi.fn();
 
-    exportFilters = vi.fn();
+    exportFilters: Mock = vi.fn();
 
-    importUserFilter = vi.fn();
+    importUserFilter: Mock = vi.fn();
 
-    exportUserFilter = vi.fn();
+    exportUserFilter: Mock = vi.fn();
 
-    importAllowlist = vi.fn();
+    importAllowlist: Mock = vi.fn();
 
-    exportAllowlist = vi.fn();
+    exportAllowlist: Mock = vi.fn();
 
-    importStealth = vi.fn();
+    importStealth: Mock = vi.fn();
 
-    exportStealth = vi.fn();
+    exportStealth: Mock = vi.fn();
 }

@@ -18,15 +18,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { vi } from 'vitest';
+import { type Mock, vi } from 'vitest';
 
 // EventChannelInterface is compatible with both MV2 and MV3
 import { type EventChannelInterface } from '@adguard/tswebextension';
 
 export class MockedEventCannel<T> implements EventChannelInterface<T> {
-    dispatch = vi.fn();
+    dispatch: Mock = vi.fn();
 
-    subscribe = vi.fn();
+    subscribe: Mock = vi.fn();
 
-    unsubscribe = vi.fn();
+    unsubscribe: Mock = vi.fn();
 }

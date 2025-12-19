@@ -18,20 +18,20 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { vi } from 'vitest';
+import { type Mock, vi } from 'vitest';
 
 export class PageStatsApi {
-    init = vi.fn();
+    init: Mock = vi.fn();
 
-    static getTotalBlocked = vi.fn();
+    static getTotalBlocked: Mock = vi.fn();
 
-    incrementTotalBlocked = vi.fn();
+    incrementTotalBlocked: Mock = vi.fn();
 
-    reset = vi.fn();
+    reset: Mock = vi.fn();
 
-    updateStats = vi.fn();
+    updateStats: Mock = vi.fn();
 
-    getStatisticsData = vi.fn();
+    getStatisticsData: Mock = vi.fn();
 
-    getGroups = vi.fn();
+    getGroups: Mock = vi.fn();
 }

@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { vi } from 'vitest';
+import { type Mock, vi } from 'vitest';
 
 import {
     type EventChannel,
@@ -41,9 +41,9 @@ export class MockedTsWebExtensionMV3 {
      * Static method to set local script rules.
      * In MV3, this is called as TsWebExtension.setLocalScriptRules(localScriptRules).
      */
-    public static setLocalScriptRules = vi.fn();
+    public static setLocalScriptRules: Mock = vi.fn();
 
-    public start = vi.fn(async (): Promise<ConfigurationResult> => {
+    public start: Mock = vi.fn(async (): Promise<ConfigurationResult> => {
         this.isStarted = true;
         return Promise.resolve({
             rulesCount: 0,
@@ -84,7 +84,7 @@ export class MockedTsWebExtensionMV3 {
         } as ConfigurationResult);
     });
 
-    public stop = vi.fn(async () => {
+    public stop: Mock = vi.fn(async () => {
         this.isStarted = false;
         return Promise.resolve();
     });
@@ -95,7 +95,7 @@ export class MockedTsWebExtensionMV3 {
 
     public getRulesCount = vi.fn(() => 0);
 
-    public getMessageHandler = vi.fn(() => vi.fn());
+    public getMessageHandler: Mock = vi.fn(() => vi.fn());
 
     public initStorage = vi.fn(async () => Promise.resolve());
 
