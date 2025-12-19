@@ -44,7 +44,7 @@ import {
 } from '../../../../common/messages';
 import { logger } from '../../../../common/logger';
 import { useObservePopupHeight } from '../../hooks/useObservePopupHeight';
-import { TelemetryScreenName } from '../../../../background/services';
+import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { AnimatedLoader } from '../AnimatedLoader';
 

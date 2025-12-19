@@ -37,8 +37,9 @@ static.adtidy.org:
             ./bamboo-deploy-publisher/deploy.sh firefox-extension-beta
   final-tasks: []
   variables: {}
-  requirements:
+  requirements: &requirements
     - adg-docker: 'true'
+    - extension: 'true'
   notifications:
     - events:
         - deployment-started-and-finished
@@ -77,8 +78,7 @@ GitHub:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-github-beta-firefox
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
+  requirements: *requirements
   notifications:
     - events:
         - deployment-started-and-finished

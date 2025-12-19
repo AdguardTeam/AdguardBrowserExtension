@@ -32,7 +32,7 @@ import classNames from 'classnames';
 import { sortBy } from 'lodash-es';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services';
+import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { translator } from '../../../../common/translators/translator';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { rootStore } from '../../stores/RootStore';
@@ -470,16 +470,16 @@ const Filters = observer(() => {
             >
                 <div className="title__inner">
                     <div className="title title--back-btn">
-                        <div className="button setting__back">
-                            <Icon
-                                id="#arrow-left"
-                                className="icon--24"
-                                aria-hidden="true"
-                            />
-                        </div>
                         <span id={titleId}>{selectedGroup.groupName}</span>
                     </div>
                     {description && <div className="title__desc title__desc--back">{description}</div>}
+                </div>
+                <div className="button setting__back">
+                    <Icon
+                        id="#arrow-left"
+                        className="icon--24"
+                        aria-hidden="true"
+                    />
                 </div>
             </button>
         );

@@ -25,7 +25,7 @@ import { Link } from 'react-router-dom';
 import cn from 'classnames';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services';
+import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { translator } from '../../../../common/translators/translator';

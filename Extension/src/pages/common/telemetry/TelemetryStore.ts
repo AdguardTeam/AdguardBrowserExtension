@@ -25,9 +25,12 @@ import {
 } from 'mobx';
 
 import { logger } from '../../../common/logger';
-import { type TelemetryEventName, type TelemetryScreenName } from '../../../background/services';
+import {
+    type TelemetryEventName,
+    type TelemetryScreenName,
+    type TelemetryActionToScreenMap,
+} from '../../../background/services/telemetry/enums';
 import { messenger } from '../../services/messenger';
-import { type TelemetryActionToScreenMap } from '../../../background/services/telemetry/enums';
 
 /**
  * Telemetry store.
@@ -119,7 +122,7 @@ export class TelemetryStore {
      */
     sendPageViewEvent = async (screenName: TelemetryScreenName): Promise<void> => {
         try {
-            if (this.isAnonymizedUsageDataAllowed) {
+            if (!this.isAnonymizedUsageDataAllowed) {
                 return;
             }
 
@@ -147,7 +150,7 @@ export class TelemetryStore {
         screenName: TelemetryActionToScreenMap[TelemetryEventName],
     ): Promise<void> => {
         try {
-            if (this.isAnonymizedUsageDataAllowed) {
+            if (!this.isAnonymizedUsageDataAllowed) {
                 return;
             }
 

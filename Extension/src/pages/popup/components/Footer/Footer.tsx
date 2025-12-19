@@ -25,7 +25,7 @@ import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { IOS_URL, ANDROID_URL } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 
 import './footer.pcss';
 
