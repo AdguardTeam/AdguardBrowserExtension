@@ -292,7 +292,6 @@ export class SettingsApiCommon {
             [RootOption.Stealth]: SettingsApiCommon.exportStealth(),
         };
 
-        // FIXME: Is it better to leave it with formatting or without?
         return JSON.stringify(config, null, 4);
     }
 
