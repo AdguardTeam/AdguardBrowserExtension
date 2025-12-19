@@ -247,17 +247,19 @@ export abstract class CategoriesCommon {
             const tagDetails = tagsMetadata.find((tag) => tag.tagId === tagId);
 
             if (tagDetails) {
-                if (tagDetails.keyword.startsWith('reference:')) {
+                const normalizedTagDetails = { ...tagDetails };
+                if (normalizedTagDetails.keyword.startsWith('reference:')) {
                     // Hide 'reference:' tags
                     continue;
                 }
 
-                if (!tagDetails.keyword.startsWith('lang:')) {
+                if (!normalizedTagDetails.keyword.startsWith('lang:')) {
                     // Hide prefixes except of 'lang:'
-                    tagDetails.keyword = tagDetails.keyword.substring(tagDetails.keyword.indexOf(':') + 1);
+                    const keyword = normalizedTagDetails.keyword;
+                    normalizedTagDetails.keyword = keyword.substring(keyword.indexOf(':') + 1);
                 }
 
-                tagsDetails.push(tagDetails);
+                tagsDetails.push(normalizedTagDetails);
             }
         }
 

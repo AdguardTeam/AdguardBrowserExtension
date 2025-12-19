@@ -40,8 +40,10 @@ import {
 
 export type ExtensionXMLHttpRequest = XMLHttpRequest & { mozBackgroundRequest: boolean };
 
-export type ResponseLikeXMLHttpRequest = Response
-    & Pick<ExtensionXMLHttpRequest, 'responseText' | 'mozBackgroundRequest'>;
+export type ResponseLikeXMLHttpRequest = Pick<
+    ExtensionXMLHttpRequest,
+    'status' | 'statusText' | 'responseText' | 'mozBackgroundRequest'
+>;
 
 /**
  * Hit statistics for a single filter.
@@ -355,9 +357,9 @@ export abstract class NetworkCommon {
 
         const responseText = await response.text();
 
-        // TODO: Use fetch response directly.
         return {
-            ...response,
+            status: response.status,
+            statusText: response.statusText,
             mozBackgroundRequest: true,
             responseText,
         };
