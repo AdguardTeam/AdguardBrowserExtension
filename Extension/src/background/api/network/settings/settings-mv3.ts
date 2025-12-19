@@ -54,9 +54,6 @@ export class NetworkSettings extends NetworkSettingsCommon {
          * 3. The rules look like: `example.org#%#scripttext`. Whenever the rule is
          *    matched, we check if there's a function for `scripttext` in
          *    `localScriptRules`, retrieve it from there and execute it.
-         *
-         * Downloading rules from remote server is completely disabled in the
-         * MV3 build by returning `null` here.
          */
         return `${this.filtersRulesBaseUrl}/chromium-mv3`;
     }
