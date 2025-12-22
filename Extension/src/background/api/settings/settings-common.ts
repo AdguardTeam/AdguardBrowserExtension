@@ -292,7 +292,7 @@ export class SettingsApiCommon {
             [RootOption.Stealth]: SettingsApiCommon.exportStealth(),
         };
 
-        return JSON.stringify(config, null, 4);
+        return JSON.stringify(config);
     }
 
     /**
