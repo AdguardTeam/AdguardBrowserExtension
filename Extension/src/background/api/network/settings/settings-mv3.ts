@@ -25,14 +25,13 @@ import { NetworkSettingsCommon } from './settings-common';
  */
 export class NetworkSettings extends NetworkSettingsCommon {
     /**
-     * Used to set the base url for filter rules through the local storage
-     * for testing purposes.
+     * Returns the base URL for filter rules.
+     * In MV3, always returns the default URL since standard filters
+     * are loaded from IndexedDB (bundled with the extension).
      *
-     * @returns Promise that resolves to the base url for filter rules.
+     * @returns Default filter rules base URL.
      */
     protected async getFilterRulesBaseUrl(): Promise<string> {
-        // We don't need to set base url in MV3 because we cannot update filters via patches.
-        // TODO: Remove check when filters will support patches in MV3.
         return this.DEFAULT_FILTER_RULES_BASE_URL;
     }
 
