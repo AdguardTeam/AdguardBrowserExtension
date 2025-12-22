@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support of `:has()` pseudo-class as standard CSS conditionally:
     - if there are no other extended pseudo-classes in the selector, or
     - if the `#?#` separator is explicitly used in the rule [#2587].
+- Full CSS selector syntax support in HTML filtering rules [tsurlfilter#96].
 
 ### Changed
 
@@ -47,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3262]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3262
 [#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
 [#3365]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3365
+[tsurlfilter#96]: https://github.com/AdguardTeam/tsurlfilter/issues/96
 
 ## [5.2.600.3] - 2025-12-16
 
