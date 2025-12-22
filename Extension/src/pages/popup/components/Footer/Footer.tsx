@@ -31,6 +31,7 @@ import './footer.pcss';
 
 export const Footer = observer(() => {
     const store = useContext(popupStore);
+    const { isAndroidBrowser } = store;
 
     const handleAppleClick = () => {
         store.telemetryStore.sendCustomEvent(
@@ -94,6 +95,8 @@ export const Footer = observer(() => {
     }
 
     return (
-        <div className="footer">{footerContent}</div>
+        isAndroidBrowser
+            ? null
+            : <div className="footer">{footerContent}</div>
     );
 });
