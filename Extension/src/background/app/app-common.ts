@@ -109,7 +109,7 @@ export class AppCommon {
         // Set the current log level from session storage.
         await logger.init();
 
-        // TODO: Remove in MV2 after migration to MV3
+        // TODO: Remove to MV3 only after migration to MV3
         // This is a temporary solution to keep event pages alive in Firefox.
         // We will remove it once engine initialization becomes faster.
         KeepAlive.init();

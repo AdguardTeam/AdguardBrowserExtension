@@ -169,8 +169,6 @@ export class FilterUpdateApi {
         if (updatedFilters.length > 0) {
             engine.debounceUpdate();
 
-            // set last update time only for MV2
-            // because there is no ability to update filters with patches in MV3
             await FilterUpdateService.setLastUpdateTimeMs(Date.now());
         }
 

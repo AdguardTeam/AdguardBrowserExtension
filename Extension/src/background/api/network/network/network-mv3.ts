@@ -56,7 +56,7 @@ export class Network extends NetworkCommon {
      * @returns Downloaded filter rules.
      *
      * @throws An error if FiltersDownloader.downloadWithRaw() fails.
-     * @throws An error if Userscript API is not enabled. It is required to download remote filters in MV3.
+     * @throws An error if Userscript API is not enabled.
      */
     public async downloadFilterRules(
         filterUpdateOptions: FilterUpdateOptions,
@@ -123,8 +123,7 @@ export class Network extends NetworkCommon {
     }
 
     /**
-     * Loads filters metadata from local file.
-     * For MV3, it loads metadata from the metadata ruleset file.
+     * Loads metadata from the metadata ruleset file.
      *
      * @returns Object of {@link Metadata}.
      *

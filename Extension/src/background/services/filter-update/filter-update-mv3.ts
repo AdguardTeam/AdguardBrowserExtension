@@ -39,7 +39,7 @@ export class FilterUpdateService extends FilterUpdateServiceCommon {
             logger.warn('[ext.FilterUpdateService.init]: DNR rulesets build timestamp is not available.');
             return;
         }
-        // We set last update time in MV3 during issue reporting.
+        // We set last update time during issue reporting.
         await FilterUpdateService.setLastUpdateTimeMs(dnrRulesetsBuildTimestampMs);
     }
 }

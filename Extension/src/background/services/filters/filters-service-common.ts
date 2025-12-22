@@ -39,8 +39,6 @@ import { NotImplementedError } from '../../errors/not-implemented-error';
 
 /**
  * FiltersService creates handlers for messages that relate to filters.
- *
- * **MV2 version**.
  */
 export class FiltersServiceCommon {
     /**

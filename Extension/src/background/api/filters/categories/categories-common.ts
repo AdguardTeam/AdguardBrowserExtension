@@ -17,8 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { NotImplementedError } from '@adguard/agtree';
-
 import { UserAgent } from '../../../../common/user-agent';
 import { RECOMMENDED_TAG_ID } from '../../../../common/constants';
 import { CommonFilterUtils } from '../../../../common/common-filter-utils';
@@ -41,6 +39,7 @@ import {
 import { logger } from '../../../../common/logger';
 import { CommonFilterApi } from '../common';
 import { type FilterMetadata, FiltersApi } from '../main';
+import { NotImplementedError } from '../../../errors/not-implemented-error';
 
 /**
  * Filter data displayed in category section on options page.

@@ -58,7 +58,7 @@ export class SettingsApi extends SettingsApiCommon {
     }
 
     /**
-     * Loads built-in filters and enables them **for MV3**.
+     * Loads built-in filters and enables them.
      *
      * Checks whether the filter is supported by MV3.
      * Tries to load them from the storage only.

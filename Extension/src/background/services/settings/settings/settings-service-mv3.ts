@@ -17,38 +17,20 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import browser from 'webextension-polyfill';
-
 import { RulesLimitsService } from '../../rules-limits/rules-limits-service-mv3';
 import { ExtensionUpdateService } from '../../extension-update/extension-update-service-mv3';
-import {
-    MessageType,
-    type ChangeUserSettingMessage,
-    type ApplySettingsJsonMessage,
-} from '../../../../common/messages';
+import { MessageType } from '../../../../common/messages';
 import { logger } from '../../../../common/logger';
 import { SettingOption } from '../../../schema';
 import { messageHandler } from '../../../message-handler';
-import { UserAgent } from '../../../../common/user-agent';
 import { ExtensionUpdateFSMEvent } from '../../../../common/constants';
 import { engine } from '../../../engine';
-import {
-    Categories,
-    HitStatsApi,
-    SettingsApi,
-    TabsApi,
-} from '../../../api';
-import { Prefs } from '../../../prefs';
-import {
-    ContextMenuAction,
-    contextMenuEvents,
-    settingsEvents,
-} from '../../../events';
-import { fullscreenUserRulesEditor } from '../../fullscreen-user-rules-editor';
+import { SettingsApi, TabsApi } from '../../../api';
+import { settingsEvents } from '../../../events';
 import { extensionUpdateActor } from '../../extension-update/extension-update-machine-mv3';
 import { type GetOptionsDataResponse } from '../types/types-mv3';
-import { type ExportMessageResponse } from '../types';
+
+import { SettingsServiceCommon } from './settings-service-common';
 
 /**
  * SettingsService handles all setting-related messages and
@@ -56,7 +38,7 @@ import { type ExportMessageResponse } from '../types';
  *
  * TODO: gracefully handle errors for tswebextension events. AG-37301.
  */
-export class SettingsService {
+export class SettingsService extends SettingsServiceCommon {
     /**
      * Adds a listener for background messages about settings: load/apply settings
      * from JSON and change/reset/return of custom settings.
@@ -64,13 +46,10 @@ export class SettingsService {
      * any {@link SettingOption} parameter.
      * Adds a listener to enable or disable protection from the context menu.
      */
-    static init(): void {
-        messageHandler.addListener(MessageType.GetOptionsData, SettingsService.getOptionsData);
-        messageHandler.addListener(MessageType.ResetSettings, SettingsService.reset);
-        messageHandler.addListener(MessageType.ChangeUserSettings, SettingsService.changeUserSettings);
-        messageHandler.addListener(MessageType.ApplySettingsJson, SettingsService.import);
-        messageHandler.addListener(MessageType.LoadSettingsJson, SettingsService.export);
+    static override init(): void {
+        SettingsServiceCommon.init();
 
+        messageHandler.addListener(MessageType.GetOptionsData, SettingsService.getOptionsData);
         settingsEvents.addListener(SettingOption.DisableStealthMode, SettingsService.onDisableStealthModeStateChange);
         // TODO: revert when will be found a better way to add exclusions for $stealth=referrer
         // AG-34765
@@ -81,7 +60,6 @@ export class SettingsService {
         settingsEvents.addListener(SettingOption.SendDoNotTrack, SettingsService.onSendDoNotTrackStateChange);
         settingsEvents.addListener(SettingOption.RemoveXClientData, SettingsService.onRemoveXClientDataStateChange);
         settingsEvents.addListener(SettingOption.BlockWebRTC, SettingsService.onBlockWebRTCStateChange);
-        settingsEvents.addListener(SettingOption.DisableCollectHits, SettingsService.onDisableCollectHitsChange);
 
         // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
         // settingsEvents.addListener(
@@ -105,9 +83,6 @@ export class SettingsService {
             SettingOption.DisableFiltering,
             SettingsService.onDisableFilteringStateChange,
         );
-
-        contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsService.enableFiltering);
-        contextMenuEvents.addListener(ContextMenuAction.DisableProtection, SettingsService.disableFiltering);
     }
 
     /**
@@ -116,7 +91,8 @@ export class SettingsService {
      *
      * @returns Item of {@link GetOptionsDataResponse}.
      */
-    static async getOptionsData(): Promise<GetOptionsDataResponse> {
+    static override async getOptionsData(): Promise<GetOptionsDataResponse> {
+        const commonData = await super.getOptionsData();
         const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
 
         const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
@@ -133,79 +109,13 @@ export class SettingsService {
         });
 
         return {
-            settings: SettingsApi.getData(),
-            appVersion: Prefs.version,
-            libVersions: Prefs.libVersions,
-            environmentOptions: {
-                isChrome: UserAgent.isChrome,
-            },
-            filtersInfo: {
-                rulesCount: engine.api.getRulesCount(),
-            },
-            filtersMetadata: Categories.getCategories(),
-            fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
+            ...commonData,
             runtimeInfo: {
                 areFilterLimitsExceeded,
                 isExtensionUpdateAvailable,
                 isExtensionReloadedOnUpdate,
                 isSuccessfulExtensionUpdate: manualExtensionUpdateData?.isOk || false,
             },
-        };
-    }
-
-    /**
-     * Changes user settings.
-     *
-     * @param message Item of {@link ChangeUserSettingMessage}.
-     */
-    static async changeUserSettings(message: ChangeUserSettingMessage): Promise<void> {
-        const { key, value } = message.data;
-        await SettingsApi.setSetting(key, value);
-    }
-
-    /**
-     * Resets user settings and updates engine.
-     *
-     * @returns Result of resetting.
-     */
-    static async reset(): Promise<boolean> {
-        try {
-            // Should enable default filters and their groups.
-            await SettingsApi.reset(true);
-            await engine.update();
-
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    /**
-     * Imports settings from JSON.
-     *
-     * @param message Message with JSON settings {@link ApplySettingsJsonMessage}.
-     *
-     * @returns Boolean result of importing.
-     */
-    static async import(message: ApplySettingsJsonMessage): Promise<boolean> {
-        const { json } = message.data;
-
-        const isImported = await SettingsApi.import(json);
-
-        await engine.update();
-
-        return isImported;
-    }
-
-    /**
-     * Exports settings.
-     *
-     * @returns Promise with {@link ExportMessageResponse}.
-     */
-    static async export(): Promise<ExportMessageResponse> {
-        return {
-            content: await SettingsApi.export(),
-            appVersion: browser.runtime.getManifest().version,
         };
     }
 
@@ -240,7 +150,7 @@ export class SettingsService {
     }
 
     /**
-     * Called when {@link SettingOption.HideSearchQueries} setting changed.
+     * Called when {@link SettingOption.HideReferrer} setting changed.
      *
      * @param isHideReferrerEnabled Changed {@link SettingOption.HideReferrer} setting value.
      */
@@ -276,9 +186,9 @@ export class SettingsService {
     }
 
     /**
-     * Called when {@link SettingOption.RemoveXClientData} setting changed.
+     * Called when {@link SettingOption.SendDoNotTrack} setting changed.
      *
-     * @param isSendDoNotTrackEnabled Changed {@link SettingOption.RemoveXClientData} setting value.
+     * @param isSendDoNotTrackEnabled Changed {@link SettingOption.SendDoNotTrack} setting value.
      */
     static async onSendDoNotTrackStateChange(isSendDoNotTrackEnabled: boolean): Promise<void> {
         try {
@@ -329,19 +239,6 @@ export class SettingsService {
         }
     }
 
-    /**
-     * Called when {@link SettingOption.DisableCollectHits} changes.
-     *
-     * @param disableCollectHitsStats Setting value.
-     */
-    static onDisableCollectHitsChange(disableCollectHitsStats: boolean): void {
-        engine.api.setCollectHitStats(!disableCollectHitsStats);
-
-        if (disableCollectHitsStats) {
-            HitStatsApi.cleanup();
-        }
-    }
-
     // TODO: Possibly can be implemented when https://github.com/w3c/webextensions/issues/439 will be implemented.
     // /**
     //  * Called when {@link SettingOption.SelfDestructThirdPartyCookies} setting changed.
@@ -389,18 +286,4 @@ export class SettingsService {
     // static onSelfDestructFirstPartyCookiesTimeStateChange(): void {
     //     throw new Error('onSelfDestructFirstPartyCookiesTimeStateChange not implemented for mv3');
     // }
-
-    /**
-     * Called when protection enabling is requested.
-     */
-    static async enableFiltering(): Promise<void> {
-        await SettingsApi.setSetting(SettingOption.DisableFiltering, false);
-    }
-
-    /**
-     * Called when protection disabling is requested.
-     */
-    static async disableFiltering(): Promise<void> {
-        await SettingsApi.setSetting(SettingOption.DisableFiltering, true);
-    }
 }

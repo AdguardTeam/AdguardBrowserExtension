@@ -65,8 +65,6 @@ export class Network extends NetworkCommon {
             /**
              * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
              * process in the extension.
-             *
-             * Note, that downloading anything is forbidden in MV3 extension.
              */
 
             // eslint-disable-next-line max-len
@@ -87,7 +85,7 @@ export class Network extends NetworkCommon {
 
         // local filters do not support patches, that is why we always download them fully
         if (isLocalFilter || filterUpdateOptions.ignorePatches || !rawFilter) {
-            // full remote filter update for MV2
+            // full remote filter update
             const result = await FiltersDownloader.downloadWithRaw(
                 url,
                 {
@@ -121,7 +119,6 @@ export class Network extends NetworkCommon {
 
     /**
      * Loads filters metadata from local file.
-     * For MV3, it loads metadata from the metadata ruleset file.
      *
      * @returns Object of {@link Metadata}.
      *

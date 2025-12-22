@@ -69,7 +69,7 @@ export class SettingsApi extends SettingsApiCommon {
     }
 
     /**
-     * Loads built-in filters and enables them **for MV2**.
+     * Loads built-in filters and enables them.
      * Firstly, tries to load filters from the backend, if it fails, tries to load them from the embedded.
      *
      * @param builtInFilters Array of built-in filters ids.
@@ -146,7 +146,6 @@ export class SettingsApi extends SettingsApiCommon {
 
         // special handling for large AdGuard Annoyances filter,
         // all other deprecated filters shall be skipped;
-        // only for MV2 because it was never available in MV3
         if (filtersToEnable.includes(AntiBannerFiltersId.AnnoyancesCombinedFilterId)) {
             filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
         }
