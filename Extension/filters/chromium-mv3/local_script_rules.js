@@ -3043,6 +3043,44 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "8e9df515585941ac85187baf28cedac1" due to: ' + a);
         }
     },
+    '(()=>{const t=Promise.prototype.then;Promise.prototype.then=new Proxy(t,{apply:(t,e,o)=>{const n=o[0];return"function"!=typeof n||(o[0]=new Proxy(n,{apply:(t,e,o)=>{let n=o[0];if(n&&"object"==typeof n){const t=Object.keys(n);if(4===t.length&&"totalMessages"in n){const e=t.find((t=>"boolean"==typeof n[t]));e&&!1===n[e]&&(n[e]=!0)}}return Reflect.apply(t,e,o)}})),Reflect.apply(t,e,o)}});try{Promise.prototype.then.toString=()=>"function then() { [native code] }"}catch(t){}})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["467010f6ad4e4f33b43fa4f3cf36c11b"] === e) return;
+            (() => {
+                const e = Promise.prototype.then;
+                Promise.prototype.then = new Proxy(e, {
+                    apply: (e, t, o) => {
+                        const n = o[0];
+                        return "function" != typeof n || (o[0] = new Proxy(n, {
+                            apply: (e, t, o) => {
+                                let n = o[0];
+                                if (n && "object" == typeof n) {
+                                    const e = Object.keys(n);
+                                    if (4 === e.length && "totalMessages" in n) {
+                                        const t = e.find((e => "boolean" == typeof n[e]));
+                                        t && !1 === n[t] && (n[t] = !0);
+                                    }
+                                }
+                                return Reflect.apply(e, t, o);
+                            }
+                        })), Reflect.apply(e, t, o);
+                    }
+                });
+                try {
+                    Promise.prototype.then.toString = () => "function then() { [native code] }";
+                } catch (e) {}
+            })();
+            Object.defineProperty(Window.prototype.toString, "467010f6ad4e4f33b43fa4f3cf36c11b", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "467010f6ad4e4f33b43fa4f3cf36c11b" due to: ' + e);
+        }
+    },
     '((e="",t="",o="basic",s="",n)=>{const r={apply:(r,a,u)=>{try{let r="";const a=u[0],c=u[1]?.method||"";let l=!1;if("string"==typeof a&&a.includes(e)&&c.toLowerCase()===t.toLowerCase()?(r=a,l=!0):a instanceof Request&&a.url.includes(e)&&a.method.toLowerCase()===t.toLowerCase()&&(r=a.url,l=!0),l){const e=((e,t)=>{try{if(void 0===e||"cors"===e||"no-cors"===e)return new URL(t).origin===document.location.origin?"basic":"no-cors"===e?"opaque":"cors"}catch(e){}})(o,r),t=((e,t)=>{const o=e||"",n=new Response(s,{headers:{"Content-Length":`${s.length}`},status:200,statusText:"OK"});return"opaque"===t?Object.defineProperties(n,{body:{value:null},status:{value:0},ok:{value:!1},statusText:{value:""},url:{value:""},type:{value:t}}):Object.defineProperties(n,{url:{value:o},type:{value:t}}),n})(r,e);return n?new Promise((e=>{setTimeout((()=>{e(t)}),n)})):Promise.resolve(t)}}catch(e){}return Reflect.apply(r,a,u)}};window.fetch=new Proxy(window.fetch,r)})("https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-3497863494706299","HEAD","no-cors","",121);': () => {
         try {
             const e = "done";
