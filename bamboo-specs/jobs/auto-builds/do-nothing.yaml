@@ -1,0 +1,40 @@
+key: NOTHING
+other:
+  clean-working-dir: true
+docker:
+  image: ${bamboo.dockerNode}
+tasks:
+  - checkout:
+      force-clean-build: true
+  - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+          set -e
+          set -x
+
+          BRANCH="${bamboo.planRepository.branchName}"
+
+          echo "Build and deployment is not supported on branch ${BRANCH}, skipping"
+final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+        - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
+# Define artifacts even for 'do-nothing' job to go through Bamboo check
+# about artifacts chain: artifacts must be defined in all jobs that are
+# producing or consuming them.
+artifacts:
+  - name: chrome-mv3-beta.zip
+    location: artifacts
+    pattern: chrome-mv3-beta.zip
+    shared: true
+    required: true
+  - name: chrome-mv3-release.zip
+    location: artifacts
+    pattern: chrome-mv3-release.zip
+    shared: true
+    required: true
+requirements:
+  - adg-docker: 'true'
+  - extension: 'true'
