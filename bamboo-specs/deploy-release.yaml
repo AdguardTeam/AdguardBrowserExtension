@@ -40,9 +40,10 @@ static.adtidy.org:
             ./bamboo-deploy-publisher/deploy.sh firefox-extension-release
   final-tasks: []
   variables: {}
-  requirements:
+  requirements: &requirements
     - adg-docker: 'true'
-  notifications:
+    - extension: 'true'
+  notifications: &notifications
     - events:
         - deployment-started-and-finished
       recipients:
@@ -77,15 +78,8 @@ Chrome WebStore MV2:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-mv2
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  requirements: *requirements
+  notifications: *notifications
 
 Chrome WebStore MV3:
   triggers: []
@@ -114,15 +108,8 @@ Chrome WebStore MV3:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  requirements: *requirements
+  notifications: *notifications
 
 Addons Mozilla:
   triggers: []
@@ -152,15 +139,8 @@ Addons Mozilla:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-amo
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  requirements: *requirements
+  notifications: *notifications
 
 Edge Addons:
   triggers: []
@@ -189,15 +169,8 @@ Edge Addons:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-edge
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  requirements: *requirements
+  notifications: *notifications
 
 GitHub:
   triggers: []
@@ -232,12 +205,5 @@ GitHub:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-github-release
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  requirements: *requirements
+  notifications: *notifications

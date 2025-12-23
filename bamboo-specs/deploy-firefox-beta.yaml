@@ -37,9 +37,10 @@ static.adtidy.org:
             ./bamboo-deploy-publisher/deploy.sh firefox-extension-beta
   final-tasks: []
   variables: {}
-  requirements:
+  requirements: &requirements
     - adg-docker: 'true'
-  notifications:
+    - extension: 'true'
+  notifications: &notifications
     - events:
         - deployment-started-and-finished
       recipients:
@@ -77,12 +78,5 @@ GitHub:
             ./bamboo-deploy-publisher/deploy.sh browser-extension-github-beta-firefox
   final-tasks: []
   variables: {}
-  requirements:
-    - adg-docker: 'true'
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  requirements: *requirements
+  notifications: *notifications
