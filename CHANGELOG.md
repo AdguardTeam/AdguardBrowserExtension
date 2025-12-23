@@ -24,6 +24,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The update promo banner does not persist dismissal and shows again after
   the extension updates [#3385].
 
+## [5.2.600] - 2025-12-16
+
+### Fixed
+
+- Made clipboard permissions optional for Firefox, with a prompt shown when needed in User Rules and Allowlist editors [#3364]
+- The extension doesn't work in browser 360 [#3058].
+
+[#3364]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3364
+[#3058]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3058
+
+[5.2.600]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.600%2B3.build.20251209190042
+
+## [5.2.500] - 2025-12-05
+
+### Fixed
+- The update promo banner does not persist dismissal and shows again after
+  the extension updates [#3385].
+
 ### Changed
 
 - Updated [@adguard/agtree] to v3.3.1.

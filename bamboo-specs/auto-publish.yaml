@@ -13,7 +13,7 @@ environments:
 
 AutoDeployAndPublish Release:
   # run auto-deploy only after successful build
-  triggers:
+  triggers: &triggers
     - build-success:
         branch: stable-v5.2
   tasks:
@@ -29,7 +29,7 @@ AutoDeployAndPublish Release:
         conditions:
           - variable:
               equals:
-                bamboo.enableAutoBuildsRelease: "true"
+                bamboo.inject.releaseChannelAvailable: "true"
         interpreter: SHELL
         scripts:
           - |-
@@ -63,24 +63,27 @@ AutoDeployAndPublish Release:
             # If expedited review process exited with non-zero status,
             # try normal review.
             if [ $EXIT_CODE -ne 0 ]; then
-              echo "Expedited review failed, trying normal review"
+              echo "⚠️ Expedited review failed, trying normal review"
               ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-release-publish
+              echo "✅ Release deployed successfully with normal review."
+            else
+              echo "✅ Release deployed successfully with expedited review."
             fi
   requirements: &requirements
     - adg-docker: 'true'
+    - extension: 'true'
   notifications: &notifications
     - events:
-        - deployment-started-and-finished
+        # Notify only about deployment failures to avoid noise, since we can
+        # skip deployment if current channel is on review or rollout process.
+        - deployment-failed
       recipients:
         - webhook:
             name: Deploy webhook
             url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
 
 AutoDeployAndPublish Beta:
-  # run auto-deploy only after successful build
-  triggers:
-    - build-success:
-        branch: stable-v5.2
+  triggers: *triggers
   tasks:
     - clean
     - checkout: *checkout
@@ -91,7 +94,7 @@ AutoDeployAndPublish Beta:
         conditions:
           - variable:
               equals:
-                bamboo.enableAutoBuildsBeta: "true"
+                bamboo.inject.betaChannelAvailable: "true"
         interpreter: SHELL
         scripts:
           - |-
@@ -125,8 +128,11 @@ AutoDeployAndPublish Beta:
             # If expedited review process exited with non-zero status,
             # try normal review.
             if [ $EXIT_CODE -ne 0 ]; then
-              echo "Expedited review failed, trying normal review"
+              echo "⚠️ Expedited review failed, trying normal review"
               ./bamboo-deploy-publisher/deploy.sh browser-extension-webstore-beta-publish
+              echo "✅ Beta deployed successfully with normal review."
+            else
+              echo "✅ Beta deployed successfully with expedited review."
             fi
   requirements: *requirements
   notifications: *notifications

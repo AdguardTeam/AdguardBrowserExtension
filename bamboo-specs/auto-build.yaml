@@ -8,61 +8,20 @@ variables:
   # Playwright is needed for integration tests after build.
   dockerPlaywright: adguard/playwright-runner:22.17--1.53.2--1
   # Node.js is needed for build and tests.
-  dockerNode: adguard/extension-builder:22.17--0.2.1--0
+  dockerNode: adguard/extension-builder:22.17--0.3.0--0
   # Stable branch name for auto-update only filters.
   stableBranchName: stable/v5.2
 
 # Since auto-builds are being run only for a stable branch now (specified in
 # `bamboo.stableBranchName`) we should skip the build stage for other branches.
 stages:
-  - DoNothing:
+  - Do nothing:
       manual: false
       final: false
       jobs:
-        - DoNothing
+        - Do nothing
 
-DoNothing:
-  key: NOTHING
-  other:
-    clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-  tasks:
-    - checkout:
-        force-clean-build: true
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -e
-            set -x
-
-            BRANCH="${bamboo.planRepository.branchName}"
-
-            echo "Build and deployment is not supported on branch ${BRANCH}, skipping"
-  final-tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
-  # Since the artifact is being published from a non-master branch, it should
-  # still be available in the master branch.
-  artifacts: &artifacts
-    - name: chrome-mv3-beta.zip
-      location: artifacts
-      pattern: chrome-mv3-beta.zip
-      shared: true
-      required: true
-    - name: chrome-mv3-release.zip
-      location: artifacts
-      pattern: chrome-mv3-release.zip
-      shared: true
-      required: true
-  requirements: &requirements
-    - adg-docker: 'true'
-    - extension: 'true'
+Do nothing: !include 'jobs/auto-builds/do-nothing.yaml'
 
 branches:
   create: manually
@@ -78,25 +37,40 @@ notifications:
       - plan-status-changed
 
 labels: []
+
 other:
   concurrent-build-plugin: system-default
 
 # Run plan only for 'stable/v5.2' branch.
 # Override is needed to skip the build stage for other branches,
-# because even if branches are not supposed to be run for PRs (due to 'create: manually' above),
-# build was triggered by 'cron' anyway.
+# because even if branches are not supposed to be run for PRs
+# (due to 'create: manually' above), build was triggered by 'cron' anyway.
 branch-overrides:
   -
     # Note: it should be equal with `bamboo.stableBranchName`
     stable/v5.2:
+      # Job definitions for auto-builds
+      Check CWS Availability: !include 'jobs/auto-builds/check-cws-availability.yaml'
+      Lint: !include 'jobs/auto-builds/lint.yaml'
+      Unit tests: !include 'jobs/auto-builds/unit-tests.yaml'
+      Update filters and build: !include 'jobs/auto-builds/update-filters-and-build.yaml'
+      Integration tests: !include 'jobs/auto-builds/integration-tests.yaml'
+
       stages:
+        # Note: we do this check inside build plan and not in deployment plan to
+        # reduce extra complexity in publish scripts and because we suppose that
+        # channels will not be changed between build and publish stages.
+        - Check CWS Availability:
+            manual: false
+            final: false
+            jobs:
+              - Check CWS Availability
         - Tests:
             manual: false
             final: false
             jobs:
               - Lint
               - Unit tests
-              - Locales check
         - Update filters and build:
             manual: false
             final: false
@@ -107,275 +81,6 @@ branch-overrides:
             final: false
             jobs:
               - Integration tests
-
-      Lint:
-        key: LINT
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerNode}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-        tasks:
-          - checkout:
-              force-clean-build: true
-          - script: &setAutoBuildEnabled
-              interpreter: SHELL
-              scripts:
-                - "./bamboo-specs/scripts/set-auto-build-enabled.sh"
-          - inject-variables: &injectAutoBuildEnabled
-              file: artifacts/auto-build.properties
-              scope: RESULT
-          - script:
-              conditions: &isAutoBuildEnabled
-                - variable:
-                    equals:
-                      bamboo.inject.autoBuildEnabled: "true"
-              interpreter: SHELL
-              scripts:
-                - |-
-                  set -x
-                  set -e
-                  ls -la
-
-                  # Fix mixed logs.
-                  exec 2>&1
-
-                  # Set cache directory
-                  pnpm config set store-dir ${bamboo.cachePnpm}
-
-                  pnpm install ${bamboo.varsPnpm}
-
-                  ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
-        final-tasks:
-          - script: &cleanup-script
-              interpreter: SHELL
-              scripts:
-                - "./bamboo-specs/scripts/cleanup.sh"
-        requirements:
-          - adg-docker: 'true'
-
-      Unit tests:
-        key: UNITTESTS
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerNode}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-        tasks:
-          - checkout:
-              force-clean-build: true
-          - script: *setAutoBuildEnabled
-          - inject-variables: *injectAutoBuildEnabled
-          - script:
-              conditions: *isAutoBuildEnabled
-              interpreter: SHELL
-              scripts:
-                - |-
-                  set -x
-                  set -e
-                  ls -la
-
-                  # Fix mixed logs.
-                  exec 2>&1
-
-                  # Set cache directory
-                  pnpm config set store-dir ${bamboo.cachePnpm}
-
-                  pnpm install ${bamboo.varsPnpm}
-
-                  ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci
-        final-tasks:
-          - test-parser:
-              conditions: *isAutoBuildEnabled
-              type: junit
-              # mv3 postfix because we run auto-builds only for mv3 branch.
-              test-results: 'tests-reports/unit-tests-mv3.xml'
-          - script: *cleanup-script
-        requirements:
-          - adg-docker: 'true'
-
-      Locales check:
-        key: LOCALESCHECK
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerNode}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-        tasks:
-          - checkout:
-              force-clean-build: true
-          - script: *setAutoBuildEnabled
-          - inject-variables: *injectAutoBuildEnabled
-          - script:
-              conditions: *isAutoBuildEnabled
-              interpreter: SHELL
-              scripts:
-                - |-
-                  set -x
-                  set -e
-                  ls -la
-
-                  # Fix mixed logs.
-                  exec 2>&1
-
-                  # Set cache directory
-                  pnpm config set store-dir ${bamboo.cachePnpm}
-
-                  pnpm install ${bamboo.varsPnpm}
-
-                  pnpm locales validate --min
-        final-tasks:
-          - script: *cleanup-script
-        requirements:
-          - adg-docker: 'true'
-
-      Update filters and build:
-        key: UPDATEFILTERSANDBUILD
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerNode}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-        tasks:
-          - checkout:
-              force-clean-build: true
-          - script: *setAutoBuildEnabled
-          - inject-variables: *injectAutoBuildEnabled
-          - script:
-              interpreter: SHELL
-              scripts:
-                - |-
-                  set -x
-                  set -e
-
-                  # Fix mixed logs
-                  exec 2>&1
-                  ls -la
-
-                  # Check if auto-build is disabled
-                  # Note: Creates empty artifacts to prevent build failure.
-                  # However, auto-publish will not work because the same condition
-                  # is also checked in the auto-publish stage.
-                  if [ "${bamboo.inject.autoBuildEnabled}" = "false" ]; then
-                    echo "Auto-build is disabled, creating empty artifacts and exiting"
-                    mkdir -p artifacts
-                    touch artifacts/chrome-mv3-beta.zip
-                    touch artifacts/chrome-mv3-release.zip
-
-                    exit 0;
-                  fi
-
-                  # Validate that current branch is valid for build.
-                  if [ "${bamboo.planRepository.branchName}" != "${bamboo.stableBranchName}" ]; then
-                      # Throw error if current branch is not ${bamboo.stableBranchName},
-                      # because we do not deploy new releases not from stable branch.
-                      echo "auto-build is not supported on branch ${bamboo.stableBranchName}"
-                      exit 1;
-                  fi
-
-                  # Set cache directory
-                  pnpm config set store-dir ${bamboo.cachePnpm}
-
-                  pnpm install ${bamboo.varsPnpm}
-
-                  # Update filters before build.
-                  # --skip-local-resources is used to skip updating local resources,
-                  # because to use "skip review" feature in the Chrome Web Store
-                  # we need to ensure that changes are made only in rulesets
-                  # json files.
-                  OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3 --skip-local-resources
-
-                  # Update patch version because resources was changed.
-                  pnpm increment
-
-                  # Create artifacts directory if it doesn't exist.
-                  mkdir -p artifacts
-
-                  # Build release and beta versions of the extension.
-                  pnpm beta chrome-mv3
-                  pnpm release chrome-mv3
-
-                  # Download latest beta and release versions of the extension
-                  # from the Chrome Web Store to check that new versions
-                  # are eligible for "skip review" feature.
-                  pnpm tsx tools/skip-review/download-latest-extension beta
-                  pnpm tsx tools/skip-review/download-latest-extension release
-
-                  # Check that beta and release updates contain only safe
-                  # changes in rulesets and only in rule_resources files.
-                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
-                  pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
-
-                  # Move zip artifacts to the artifacts directory, because we will
-                  # publish zip versions of the extension.
-                  mv build/beta/chrome-mv3.zip artifacts/chrome-mv3-beta.zip
-                  mv build/release/chrome-mv3.zip artifacts/chrome-mv3-release.zip
-          - inject-variables:
-              conditions: *isAutoBuildEnabled
-              # Doesn't matter which channel we use, because version is the same
-              # for both channels.
-              file: build/release/build.txt
-              scope: RESULT
-              namespace: inject
-          - any-task:
-              conditions: *isAutoBuildEnabled
-              plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
-              configuration:
-                selectedRepository: defaultRepository
-                commitMessage: 'skipci: Filters update & increment patch version'
-          - any-task:
-              conditions: *isAutoBuildEnabled
-              plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
-              configuration:
-                selectedRepository: defaultRepository
-                tagName: autobuild-v${bamboo.inject.version}
-        final-tasks:
-          - script:
-              interpreter: SHELL
-              scripts:
-                - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
-        artifacts: *artifacts
-        requirements: *requirements
-
-      Integration tests:
-        key: INTEGRATIONTESTS
-        other:
-          clean-working-dir: true
-        docker:
-          image: ${bamboo.dockerPlaywright}
-          volumes:
-            ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-        tasks:
-          - script: *setAutoBuildEnabled
-          - inject-variables: *injectAutoBuildEnabled
-          - artifact-download:
-              conditions: *isAutoBuildEnabled
-              artifacts:
-                - name: chrome-mv3-release.zip
-          - artifact-download:
-              conditions: *isAutoBuildEnabled
-              artifacts:
-                - name: chrome-mv3-beta.zip
-          - script:
-              conditions: *isAutoBuildEnabled
-              interpreter: SHELL
-              scripts:
-                - |-
-                  # Call the common script for both release and beta.
-                  ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh release
-                  ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh beta
-        final-tasks:
-          - test-parser:
-              conditions: *isAutoBuildEnabled
-              type: junit
-              test-results: 'tests-reports/integration-tests-*.xml'
-          - script: *cleanup-script
-        requirements:
-          - adg-docker: 'true'
 
       # Run auto-build as specified and collect all changes made by
       # filter list maintainers.
