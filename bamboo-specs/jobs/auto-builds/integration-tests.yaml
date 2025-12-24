@@ -1,0 +1,30 @@
+key: INTEGRATIONTESTS
+other:
+  clean-working-dir: true
+docker:
+  image: ${bamboo.dockerPlaywright}
+  volumes:
+    ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+tasks:
+  - artifact-download:
+      artifacts:
+        - name: chrome-mv3-release.zip
+        - name: chrome-mv3-beta.zip
+  - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+          # Call the common script for both release and beta.
+          ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh release
+          ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh beta
+final-tasks:
+  - test-parser:
+      type: junit
+      test-results: 'tests-reports/integration-tests-*.xml'
+  - script:
+      interpreter: SHELL
+      scripts:
+        - "./bamboo-specs/scripts/cleanup.sh"
+requirements:
+  - adg-docker: 'true'
+  - extension: 'true'

@@ -1,0 +1,39 @@
+key: UNITTESTS
+other:
+  clean-working-dir: true
+docker:
+  image: ${bamboo.dockerNode}
+  volumes:
+    ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+tasks:
+  - checkout:
+      force-clean-build: true
+  - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+          set -x
+          set -e
+          ls -la
+
+          # Fix mixed logs.
+          exec 2>&1
+
+          # Set cache directory
+          pnpm config set store-dir ${bamboo.cachePnpm}
+
+          pnpm install ${bamboo.varsPnpm}
+
+          ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci
+final-tasks:
+  - test-parser:
+      type: junit
+      # mv3 postfix because we run auto-builds only for mv3 branch.
+      test-results: 'tests-reports/unit-tests-mv3.xml'
+  - script:
+      interpreter: SHELL
+      scripts:
+        - "./bamboo-specs/scripts/cleanup.sh"
+requirements:
+  - adg-docker: 'true'
+  - extension: 'true'

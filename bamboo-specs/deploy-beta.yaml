@@ -41,7 +41,7 @@ static.adtidy.org:
   requirements: &requirements
     - adg-docker: 'true'
     - extension: 'true'
-  notifications:
+  notifications: &notifications
     - events:
         - deployment-started-and-finished
       recipients:
@@ -77,13 +77,7 @@ Chrome WebStore MV3:
   final-tasks: []
   variables: {}
   requirements: *requirements
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  notifications: *notifications
 
 GitHub:
   triggers: []
@@ -118,10 +112,4 @@ GitHub:
   final-tasks: []
   variables: {}
   requirements: *requirements
-  notifications:
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
+  notifications: *notifications
