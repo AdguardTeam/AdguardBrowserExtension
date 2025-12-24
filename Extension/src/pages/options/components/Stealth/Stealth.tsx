@@ -165,7 +165,6 @@ const Stealth = observer(() => {
         RemoveXClientData,
     } = settings.names;
 
-    const isStealthModeDisabled = settings.values[DisableStealthMode];
     const isThirdPartyCookiesEnabled = settings.values[SelfDestructThirdPartyCookies];
     const isFirstPartyCookiesEnabled = settings.values[SelfDestructFirstPartyCookies];
 
@@ -299,7 +298,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={SelfDestructThirdPartyCookiesTime}
                             className="stealth__input"
-                            disabled={!isThirdPartyCookiesEnabled || isStealthModeDisabled}
+                            disabled={!isThirdPartyCookiesEnabled}
                             type={SETTINGS_TYPES.INPUT}
                             value={settings.values[SelfDestructThirdPartyCookiesTime]}
                             handler={settingChangeHandler}
@@ -335,7 +334,7 @@ const Stealth = observer(() => {
                         <Setting
                             id={SelfDestructFirstPartyCookiesTime}
                             className="stealth__input"
-                            disabled={!isFirstPartyCookiesEnabled || isStealthModeDisabled}
+                            disabled={!isFirstPartyCookiesEnabled}
                             type={SETTINGS_TYPES.INPUT}
                             value={settings.values[SelfDestructFirstPartyCookiesTime]}
                             handler={settingChangeHandler}
@@ -380,7 +379,7 @@ const Stealth = observer(() => {
                         label={translator.getMessage('options_hide_referrer_title')}
                         value={settings.values[HideReferrer]}
                         handler={settingChangeHandler}
-                    />
+                    />  
                 )}
 
                 {settingsStore.isChrome && (
