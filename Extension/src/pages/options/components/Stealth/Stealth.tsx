@@ -196,7 +196,6 @@ const Stealth = observer(() => {
             <SettingsSection
                 title={translator.getMessage('options_stealth_general_title')}
                 mode="subTitle"
-                disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
                     // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
@@ -204,7 +203,6 @@ const Stealth = observer(() => {
                     title={translator.getMessage('options_block_known_trackers_title')}
                     description={translator.getMessage('options_block_known_trackers_description')}
                     disabled={!blockKnownTrackers}
-                    sectionDisabled={isStealthModeDisabled}
                     id={BlockKnownTrackers}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_block_known_trackers_title')}
@@ -218,7 +216,6 @@ const Stealth = observer(() => {
                     title={translator.getMessage('options_strip_tracking_params_title')}
                     description={translator.getMessage('options_strip_tracking_params_description')}
                     disabled={!stripTrackingParameters}
-                    sectionDisabled={isStealthModeDisabled}
                     id={STRIP_TRACKING_PARAMETERS}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_strip_tracking_params_title')}
@@ -231,7 +228,6 @@ const Stealth = observer(() => {
                     title={translator.getMessage('options_hide_search_queries_title')}
                     description={translator.getMessage('options_hide_search_queries_desc')}
                     disabled={!settings.values[HideSearchQueries]}
-                    sectionDisabled={isStealthModeDisabled}
                     id={HideSearchQueries}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_hide_search_queries_title')}
@@ -265,7 +261,6 @@ const Stealth = observer(() => {
                         ),
                     })}
                     disabled={!settings.values[SendDoNotTrack]}
-                    sectionDisabled={isStealthModeDisabled}
                     id={SendDoNotTrack}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_send_not_track_title')}
@@ -278,7 +273,6 @@ const Stealth = observer(() => {
                 <SettingsSection
                     title={translator.getMessage('options_stealth_tracking_methods_title')}
                     mode="subTitle"
-                    disabled={isStealthModeDisabled}
                 >
                     { /* TODO fix type error when SettingsSection be rewritten in typescript */}
                     {/* @ts-ignore */}
@@ -292,7 +286,6 @@ const Stealth = observer(() => {
                             />
                         )}
                         disabled={!isThirdPartyCookiesEnabled}
-                        sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructThirdPartyCookies}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_third_party_title')}
@@ -329,7 +322,6 @@ const Stealth = observer(() => {
                             />
                         )}
                         disabled={!isFirstPartyCookiesEnabled}
-                        sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructFirstPartyCookies}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_first_party_title')}
@@ -359,7 +351,6 @@ const Stealth = observer(() => {
             <SettingsSection
                 title={translator.getMessage('options_stealth_miscellaneous_title')}
                 mode="subTitle"
-                disabled={isStealthModeDisabled}
             >
 
                 <SettingsSetCheckbox
@@ -368,7 +359,6 @@ const Stealth = observer(() => {
                     title={translator.getMessage('options_disable_webrtc_title')}
                     description={translator.getMessage('options_disable_webrtc_desc')}
                     disabled={!settings.values[BlockWebRTC]}
-                    sectionDisabled={isStealthModeDisabled}
                     id={BlockWebRTC}
                     type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_disable_webrtc_title')}
@@ -385,7 +375,6 @@ const Stealth = observer(() => {
                         title={translator.getMessage('options_hide_referrer_title')}
                         description={translator.getMessage('options_hide_referrer_desc')}
                         disabled={!settings.values[HideReferrer]}
-                        sectionDisabled={isStealthModeDisabled}
                         id={HideReferrer}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_hide_referrer_title')}
@@ -401,7 +390,6 @@ const Stealth = observer(() => {
                         title={translator.getMessage('options_remove_client_data_title')}
                         description={translator.getMessage('options_remove_client_data_desc')}
                         disabled={!settings.values[RemoveXClientData]}
-                        sectionDisabled={isStealthModeDisabled}
                         id={RemoveXClientData}
                         type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_remove_client_data_title')}

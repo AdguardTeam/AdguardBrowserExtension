@@ -48,7 +48,7 @@ export const FiltersUpdate = observer(() => {
                     {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
                 </div>
                 <div className="filters-update__desc">
-                    {formatDate(latestCheckTime)}
+                    {translator.getMessage('options_antibanner_updated', { date: formatDate(latestCheckTime) })}
                 </div>
             </div>
             <button

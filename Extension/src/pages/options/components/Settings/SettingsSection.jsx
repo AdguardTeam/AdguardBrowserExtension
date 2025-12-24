@@ -107,7 +107,7 @@ const SettingsSection = (props) => {
             >
                 {renderContent()}
             </label>
-            <div>
+            <div className="settings__content">
                 {children}
             </div>
         </div>

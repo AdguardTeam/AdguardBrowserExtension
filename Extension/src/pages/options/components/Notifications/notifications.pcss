@@ -23,21 +23,32 @@
 }
 
 .notifications {
-    position: fixed;
     z-index: var(--z-idx-options-notifications);
-    bottom: 68px;
-    right: 22px;
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    left: 8px;
+
+    @media (min-width: 640px) {
+        bottom: 68px;
+        right: 22px;
+        left: auto;
+    }
 }
 
 .notification {
     padding: 12px;
-    max-width: 360px;
+    max-width: 100%;
     display: flex;
     align-items: flex-start;
     border-radius: 4px;
     background-color: var(--fills-snacks-mobile-snacks-default);
     color: var(--text-buttons-primary-default);
     animation: notify-show 0.3s ease-in;
+
+    @media (min-width: 640px) {
+        max-width: 360px;
+    }
 
     &--error > svg {
         color: var(--stroke-icons-error-icon-default);

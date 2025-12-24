@@ -63,6 +63,7 @@
     &__inline-control {
         margin-left: 16px;
         height: auto;
+        position: relative;
 
         @media (min-width: 640px) {
             &_group {
@@ -81,6 +82,18 @@
                     }
                 }
             }
+        }
+    }
+    
+    @media (max-width: 640px) {
+        &__filter-checkbox:before {
+            content: "";
+            position: absolute;
+            width: 1px;
+            background-color: var(--stroke-icons-gray-icons-disabled);
+            left: -17px;
+            top: -2px;
+            bottom: -2px;
         }
     }
 
@@ -162,6 +175,14 @@
         }
     }
 
+    &__desc-counter {
+        display: none;
+
+        @media (min-width: 640px) {
+            display: block;
+        }
+    }
+
     /* TODO: check if used, and remove if not */
     &__tags {
         display: flex;
@@ -174,18 +195,6 @@
         margin-right: 20px;
     }
 
-    &__back {
-        color: var(--stroke-icons-gray-icons-default);
-        position: absolute;
-        padding-top: 14px;
-        left: -18px;
-
-        @media (max-width: 640px) {
-            display: flex;
-            padding-top: unset;
-            position: unset;
-        }
-    }
 
     &__alert-desc,
     &__alert-link {

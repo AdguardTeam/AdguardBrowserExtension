@@ -99,7 +99,7 @@ export const ConfirmModal = ({
         !isConsent && theme.modal.subtitleOneLine,
     );
 
-    const okBtnClassName = cn(`button button--l ${theme.modal.btn} button--green-bg`, {
+    const okBtnClassName = cn(`button button--l ${theme.modal.btn} button--green-bg ${theme.modal.btnOk}`, {
         'button--red-bg': !isConsent,
     });
 
@@ -135,11 +135,7 @@ export const ConfirmModal = ({
                 )}
             >
                 <div className={theme.modal.content}>
-                    <div className={theme.modal.header}>
-                        <div className={theme.modal.title}>
-                            {title}
-                        </div>
-                        <button
+                    <button
                             type="button"
                             className={`button ${theme.modal.btnClose}`}
                             title={translator.getMessage('close_button_title')}
@@ -147,6 +143,10 @@ export const ConfirmModal = ({
                         >
                             <Icon id="#cross" aria-hidden="true" />
                         </button>
+                    <div className={theme.modal.header}>
+                        <div className={theme.modal.title}>
+                            {title}
+                        </div>
                     </div>
                     {subtitle && (
                         <div

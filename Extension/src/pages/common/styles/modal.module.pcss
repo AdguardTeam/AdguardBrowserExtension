@@ -6,10 +6,11 @@
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
+    padding: 32px 8px;
 }
 
 .wrapper {
-    min-width: 300px;
+    width: 100%;
     background-color: var(--fills-backgrounds-page-background-default);
     border: none;
     padding: 0px;
@@ -42,7 +43,6 @@
     align-items: flex-start;
     max-height: 100%;
     padding: 0;
-    max-width: 600px;
     min-width: 330px;
     overflow-y: auto;
     background-color: var(--fills-backgrounds-page-background-default);
@@ -68,8 +68,9 @@
 
     .content {
         width: 100%;
-        padding: 32px 32px 0;
+        padding: 40px 16px 0 16px;
         overflow-x: hidden;
+        position: relative;
 
         background:
             /* shadow cover bottom */
@@ -87,6 +88,10 @@
         background-repeat: no-repeat;
         background-size: 100% 24px, 100% 16px;
         background-attachment: local, scroll;
+
+        @media(min-width: 640px) {
+            padding: 32px 32px 0;
+        }
     }
 
     .header {
@@ -102,6 +107,11 @@
         font-weight: 700;
         margin-bottom: 12px;
         width: 100%;
+        text-align: center;
+
+        @media (min-width: 640px) {
+            text-align: left;
+        }
     }
 
     .subtitle {
@@ -118,22 +128,34 @@
     }
 
     .btn {
-        width: 50%;
-        max-width: 300px;
-        margin: 0 24px 0 0;
+        width: 100%;
+        max-width: 100%;
+        
 
         &.btnConfirm {
             min-width: 100px;
+            display: none;
+
+            @media(min-width: 640px) {
+                display: block;
+            }
         }
 
-        &:last-child {
-            margin-right: 0;
+        @media(min-width: 640px) {
+            width: 50%;
+            max-width: 300px;
+            margin-right: 24px;
+
+            &:last-child {
+                margin-right: 0;
+            }
         }
     }
 
     .btnClose {
-        margin-top: -18px;
-        margin-right: -18px;
+        position: absolute;
+        top: 16px;
+        right: 16px;
 
         :global(.icon) {
             width: 24px;
@@ -144,10 +166,14 @@
 
     .actions {
         width: 100%;
-        padding: 24px 32px 32px;
+        padding: 24px 16px 32px;
         display: flex;
         align-items: center;
         box-sizing: border-box;
+
+        @media(min-width: 640px) {
+            padding: 24px 32px 32px;
+        }
     }
 }
 

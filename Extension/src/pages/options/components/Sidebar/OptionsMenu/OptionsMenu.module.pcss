@@ -1,0 +1,44 @@
+.filterSortMenu {
+    position: relative;
+}
+
+.dropdown {
+    position: absolute;
+    right: 0;
+    width: 240px;
+    top: calc(100% + 8px);
+    padding: 0px 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    background-color: white;
+}
+
+.menuButton {
+    background: transparent;
+    border: 0;
+}
+
+.dropdownItem {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background: transparent;
+    border: 0;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.dropdownItem:not(:last-child) {
+    border-bottom: 1px solid var(--gray-30);
+}
+
+.dropdownItem[aria-selected="true"] {
+    font-weight: 600;
+}
+
+.checkMark {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+}

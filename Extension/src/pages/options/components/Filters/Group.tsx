@@ -265,13 +265,13 @@ const Group = observer(({
                         {groupDescription}
                     </span>
                     {filterDetails && (
-                        <span id={filterDetailsId} className="setting__desc">
+                        <span id={filterDetailsId} className="setting__desc setting__desc-counter">
                             {filterDetails}
                         </span>
                     )}
                 </span>
             </button>
-            <div className="setting__inline-control setting__inline-control_group">
+            <div className="setting__inline-control setting__inline-control_group setting__filter-checkbox">
                 <Setting
                     id={groupId}
                     type={SETTINGS_TYPES.CHECKBOX}
