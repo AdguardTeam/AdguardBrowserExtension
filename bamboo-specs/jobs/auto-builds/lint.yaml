@@ -1,0 +1,36 @@
+key: LINT
+other:
+  clean-working-dir: true
+docker:
+  image: ${bamboo.dockerNode}
+  volumes:
+    ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+tasks:
+  - checkout:
+      force-clean-build: true
+  - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+          set -x
+          set -e
+          ls -la
+
+          # Fix mixed logs.
+          exec 2>&1
+
+          # Set cache directory
+          pnpm config set store-dir ${bamboo.cachePnpm}
+
+          pnpm install ${bamboo.varsPnpm}
+
+          ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
+          ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm locales validate --min
+final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+        - "./bamboo-specs/scripts/cleanup.sh"
+requirements:
+  - adg-docker: 'true'
+  - extension: 'true'
