@@ -379,7 +379,7 @@ const Stealth = observer(() => {
                         label={translator.getMessage('options_hide_referrer_title')}
                         value={settings.values[HideReferrer]}
                         handler={settingChangeHandler}
-                    />  
+                    />
                 )}
 
                 {settingsStore.isChrome && (

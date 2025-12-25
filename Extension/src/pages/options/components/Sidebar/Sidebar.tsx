@@ -27,6 +27,7 @@ import { useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
+import { UpdateButtonMobile } from 'update-button-mobile';
 
 import { Icon } from '../../../common/components/ui/Icon';
 import { rootStore } from '../../stores/RootStore';
@@ -38,9 +39,8 @@ import { translator } from '../../../../common/translators/translator';
 import { Compare } from './Compare';
 
 import './sidebar.pcss';
-import { UpdateButtonMobile } from 'update-button-mobile';
-import { FilterSortMenu } from './MenuDropDown';
-import { PageActionsMenu } from './MenuDropDown';
+
+import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
 
 const SIDEBAR_ID = 'sidebar';
 

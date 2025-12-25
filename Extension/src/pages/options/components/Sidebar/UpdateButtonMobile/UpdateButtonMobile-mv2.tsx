@@ -18,13 +18,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from "react";
-import { rootStore } from "../../../stores/RootStore";
-import { translator } from "../../../../../common/translators/translator";
+import React, { useContext } from 'react';
+import { observer } from 'mobx-react';
+
+import { rootStore } from '../../../stores/RootStore';
+import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 
-import styles from "./UpdateButtonMobile.module.pcss";
-import { observer } from "mobx-react";
+import styles from './UpdateButtonMobile.module.pcss';
 
 export const UpdateButtonMobile = observer(() => {
     const { settingsStore } = useContext(rootStore);

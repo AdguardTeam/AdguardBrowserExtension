@@ -46,10 +46,10 @@ import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnin
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
 import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
 import { UserAgent } from '../../../../common/user-agent';
+import theme from '../../../common/styles/theme';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
-import theme from '../../../common/styles/theme';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
@@ -108,20 +108,19 @@ const Allowlist = observer(() => {
         settingsStore.setAllowlistEditorContentChangedState(false);
 
         uiStore.setSidebarMenuOptions([
-            { 
+            {
                 id: 'import_allowlist',
-                title: translator.getMessage('options_userfilter_import'), 
-                onClick: importClickHandler 
+                title: translator.getMessage('options_userfilter_import'),
+                onClick: importClickHandler,
             },
             {
                 id: 'export_allowlist',
-                title: translator.getMessage('options_userfilter_export'), 
+                title: translator.getMessage('options_userfilter_export'),
                 onClick: exportClickHandler,
-                disabled: !settingsStore.allowlist
+                disabled: !settingsStore.allowlist,
             },
         ]);
     }, [settingsStore.allowlist, settingsStore]);
-
 
     const isSaving = settingsStore.savingAllowlistState === SavingFSMState.Saving;
     const hasUnsavedChanges = !isSaving && settingsStore.allowlistEditorContentChanged;
@@ -135,7 +134,6 @@ const Allowlist = observer(() => {
 
     const switchId = AllowlistEnabled;
     const switchTitleId = `${switchId}-title`;
-
 
     const saveAllowlist = async (allowlist) => {
         if (!__IS_MV3__) {

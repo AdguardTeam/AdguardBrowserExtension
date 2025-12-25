@@ -43,6 +43,7 @@ import { StatusMode, getStatusMode } from '../../filteringLogStatus';
 import { Status } from '../Status';
 
 import { FilteringEventsEmpty } from './FilteringEventsEmpty';
+import { FilteringEventsRowsMobile } from './FilteringEventsRowsMobile';
 
 import './filtering-events.pcss';
 
@@ -88,12 +89,12 @@ const rowClassNameMap = {
     [StatusMode.ALLOWED_STEALTH]: RowClassName.GREEN,
 };
 
-const getRowClassName = (event) => {
+export const getRowClassName = (event) => {
     const mode = getStatusMode(event);
     return rowClassNameMap[mode];
 };
 
-const urlAccessor = (props) => {
+export const urlAccessor = (props) => {
     const {
         requestUrl,
         cookieName,
@@ -116,7 +117,7 @@ const urlAccessor = (props) => {
     return requestUrl;
 };
 
-const typeAccessor = (props) => {
+export const typeAccessor = (props) => {
     return getRequestEventType(props);
 };
 
@@ -366,12 +367,11 @@ const TableInnerWrapper = forwardRef(({ children, ...rest }, ref) => {
 });
 
 const FilteringEventsRows = observer(({
-    logStore,
+    events,
     columns,
     handleRowClick,
 }) => {
-    const { events } = logStore;
-    const isLogEventsEmpty = logStore.events.length === 0;
+    const isLogEventsEmpty = events.length === 0;
 
     return (
         /**
@@ -607,6 +607,10 @@ const FilteringEvents = observer(() => {
 
     const columns = addMethods(columnsData);
 
+    const isMobile = window.innerWidth < 640;
+
+    const { events } = logStore;
+
     /**
      * WAI ARIA attributes are hidden if the table is empty, this needed
      * to properly announce FilteringEventsEmpty component, otherwise
@@ -620,7 +624,7 @@ const FilteringEvents = observer(() => {
             // Set number of rows explicitly for screen readers, because table
             // is virtualized and not all of the rows are rendered at the same time.
             // Add 1 to the number of rows to include the header row.
-            aria-rowcount={isLogEventsEmpty ? undefined : logStore.events.length + 1}
+            aria-rowcount={isLogEventsEmpty ? undefined : events.length + 1}
         >
             <div
                 style={{ minWidth: `${minTableWidth}px` }}
@@ -628,11 +632,15 @@ const FilteringEvents = observer(() => {
                 ref={tableRef}
             >
                 <div className="tbody" style={{ height: '100%' }}>
-                    <FilteringEventsRows
-                        logStore={logStore}
-                        handleRowClick={handleRowClick}
-                        columns={columns}
-                    />
+                    {isMobile
+                        ? <FilteringEventsRowsMobile handleRowClick={handleRowClick} />
+                        : (
+                            <FilteringEventsRows
+                                events={events}
+                                handleRowClick={handleRowClick}
+                                columns={columns}
+                            />
+                        )}
                     <FilteringEventsEmpty />
                 </div>
             </div>

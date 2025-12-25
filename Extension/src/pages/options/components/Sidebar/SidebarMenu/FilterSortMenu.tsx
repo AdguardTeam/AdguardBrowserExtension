@@ -26,44 +26,11 @@ import { observer } from 'mobx-react';
 
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
-import { translator } from '../../../../../common/translators/translator';
-import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
+import { MenuDropDown } from '../../../../common/components/ui/MenuDropDown';
 import { sortFilterOptions } from '../../Filters/constants';
-import { SEARCH_FILTERS } from '../../Filters/Search/constants';
+import { type SEARCH_FILTERS } from '../../Filters/Search/constants';
 
-import styles from './MenuDropDown.module.pcss';
-
-export const MenuDropDown = ({ children }: { children: React.ReactNode }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const menuRef = useRef<HTMLDivElement | null>(null);
-
-    useOutsideClick(menuRef, () => setIsOpen(false));
-    
-    return (
-       <div className={styles.filterSortMenu} ref={menuRef}>
-            <button
-                type="button"
-                className={styles.menuButton}
-                onClick={() => setIsOpen(!isOpen)}
-                aria-label={translator.getMessage('options_filters_search_filter')}
-                aria-expanded={isOpen}
-            >
-                <Icon
-                    id="#more-vertical"
-                    className="icon--24 icon--gray-default"
-                    aria-hidden="true"
-                />
-            </button>
-            
-            {isOpen && (
-                <div className={styles.dropdown} onClick={() => setIsOpen(false)}>
-                    {children}
-                </div>
-            )}
-        </div>
-    )
-}
+import styles from './SidebarMenu.module.pcss';
 
 export const FilterSortMenu = observer(() => {
     const { settingsStore } = useContext(rootStore);
@@ -75,7 +42,7 @@ export const FilterSortMenu = observer(() => {
     };
 
     return (
-        <MenuDropDown>   
+        <MenuDropDown>
             {sortFilterOptions.map(({ value, title }) => {
                 const isSelected = value === settingsStore.searchSelect;
 
@@ -101,27 +68,3 @@ export const FilterSortMenu = observer(() => {
         </MenuDropDown>
     );
 });
-
-
-export const PageActionsMenu = observer(() => {
-    const { uiStore } = useContext(rootStore);
-    const { sidebarMenuOptions } = uiStore;
-
-    return (
-        <MenuDropDown>   
-            {sidebarMenuOptions.map((el, i) => {
-                return (
-                    <button 
-                        key={`pageActionMenu-${el.id}`}
-                        type="button"
-                        className={styles.pageActionItem}
-                        onClick={el.onClick}
-                        disabled={el.disabled}
-                    >
-                        {el.title}
-                    </button>
-                )
-            })}
-        </MenuDropDown>
-    )
-})

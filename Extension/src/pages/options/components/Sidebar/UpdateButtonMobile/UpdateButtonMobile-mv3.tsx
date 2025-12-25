@@ -20,4 +20,4 @@
 
 export const UpdateButtonMobile = () => {
     return null;
-}
+};

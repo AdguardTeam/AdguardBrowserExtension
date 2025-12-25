@@ -40,7 +40,7 @@ type MenuOption = {
     title: string;
     onClick: () => void;
     disabled?: boolean;
-}
+};
 
 class UiStore {
     /**

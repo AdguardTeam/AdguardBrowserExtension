@@ -79,9 +79,9 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="more-vertical" viewBox="0 0 24 24">
-                <path fillRule="evenodd" clipRule="evenodd" d="M12 7C11.1716 7 10.5 6.32843 10.5 5.5C10.5 4.67157 11.1716 4 12 4C12.8284 4 13.5 4.67157 13.5 5.5C13.5 6.32843 12.8284 7 12 7Z" fill="#7F7F7F"/>
-                <path fillRule="evenodd" clipRule="evenodd" d="M12 13.5C11.1716 13.5 10.5 12.8284 10.5 12C10.5 11.1716 11.1716 10.5 12 10.5C12.8284 10.5 13.5 11.1716 13.5 12C13.5 12.8284 12.8284 13.5 12 13.5Z" fill="#7F7F7F"/>
-                <path fillRule="evenodd" clipRule="evenodd" d="M12 20C11.1716 20 10.5 19.3284 10.5 18.5C10.5 17.6716 11.1716 17 12 17C12.8284 17 13.5 17.6716 13.5 18.5C13.5 19.3284 12.8284 20 12 20Z" fill="#7F7F7F"/>
+                <path fillRule="evenodd" clipRule="evenodd" d="M12 7C11.1716 7 10.5 6.32843 10.5 5.5C10.5 4.67157 11.1716 4 12 4C12.8284 4 13.5 4.67157 13.5 5.5C13.5 6.32843 12.8284 7 12 7Z" fill="#7F7F7F" />
+                <path fillRule="evenodd" clipRule="evenodd" d="M12 13.5C11.1716 13.5 10.5 12.8284 10.5 12C10.5 11.1716 11.1716 10.5 12 10.5C12.8284 10.5 13.5 11.1716 13.5 12C13.5 12.8284 12.8284 13.5 12 13.5Z" fill="#7F7F7F" />
+                <path fillRule="evenodd" clipRule="evenodd" d="M12 20C11.1716 20 10.5 19.3284 10.5 18.5C10.5 17.6716 11.1716 17 12 17C12.8284 17 13.5 17.6716 13.5 18.5C13.5 19.3284 12.8284 20 12 20Z" fill="#7F7F7F" />
             </symbol>
 
             <symbol id="line-break-on" viewBox="0 0 24 24">
@@ -135,19 +135,20 @@ export const Icons = () => {
             </symbol>
 
             <symbol id="loading" viewBox="0 0 24 24">
-                <path fill="none" stroke="#67B279" d="M6.29054 5.04252c.11374-.09345.22981-.18417.34812-.27205M8.55511 3.68292c.2649-.10985.53619-.20741.81315-.29197.14206-.04337.28562-.08333.43057-.11976M12 3c4.9706 0 9 4.02944 9 9 0 4.9706-4.0294 9-9 9-2.48528 0-4.73528-1.0074-6.36396-2.636-.829-.829-1.49703-1.819-1.95318-2.9191" />
-            </symbol>
-
-            <symbol id="saving" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M6.29078 5.04252C6.40453 4.94907 6.5206 4.85835 6.6389 4.77047" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8.55316 3.68292C8.81806 3.57307 9.08935 3.47551 9.3663 3.39095C9.50837 3.34758 9.65192 3.30762 9.79688 3.27119" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C9.51472 21 7.26472 19.9926 5.63604 18.364C4.80704 17.535 4.13901 16.545 3.68286 15.4449" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path fill="none" stroke="currentColor" d="M6.29054 5.04252c.11374-.09345.22981-.18417.34812-.27205M8.55511 3.68292c.2649-.10985.53619-.20741.81315-.29197.14206-.04337.28562-.08333.43057-.11976M12 3c4.9706 0 9 4.02944 9 9 0 4.9706-4.0294 9-9 9-2.48528 0-4.73528-1.0074-6.36396-2.636-.829-.829-1.49703-1.819-1.95318-2.9191" />
             </symbol>
 
             <symbol id="update-available" viewBox="0 0 24 24">
                 <g fill="none" fillRule="evenodd">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m12 4 7 10.49h-3.5V20h-7v-5.51H5L12 4Z" clipRule="evenodd" />
                 </g>
+            </symbol>
+
+            <symbol id="customize" viewBox="0 0 24 24">
+                <circle cx="5" cy="19" r="2" stroke="#67B279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" fill="none" />
+                <circle cx="12" cy="12" r="2" stroke="#67B279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" fill="none" />
+                <path stroke="#67B279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4" clipRule="evenodd" fill="none" />
+                <path stroke="#67B279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3v7M19 21V7M5 3v14M12 14v7" fill="none" />
             </symbol>
         </svg>
     );

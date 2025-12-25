@@ -176,14 +176,13 @@ export class UserAgent {
      * @returns True if the current platform is Android.
      */
     static async getIsAndroid(): Promise<boolean> {
-        // try {
-        //     const { os } = await browser.runtime.getPlatformInfo();
-        //     return os === UserAgent.ANDROID_OS_NAME;
-        // } catch {
-        //     // If runtime.getPlatformInfo() is not supported, we fallback to the UserAgent string.
-        //     return UserAgent.isAndroid;
-        // }
-        return true;
+        try {
+            const { os } = await browser.runtime.getPlatformInfo();
+            return os === UserAgent.ANDROID_OS_NAME;
+        } catch {
+            // If runtime.getPlatformInfo() is not supported, we fallback to the UserAgent string.
+            return UserAgent.isAndroid;
+        }
     }
 
     /**

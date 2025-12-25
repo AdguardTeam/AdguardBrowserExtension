@@ -42,6 +42,8 @@ import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
 
 import '../../styles/styles.pcss';
 
+import { Sidebar } from '../Sidebar';
+
 const FilteringLog = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
     const RESIZE_THROTTLE = 500;
@@ -195,6 +197,7 @@ const FilteringLog = observer(() => {
             <Icons />
             {wizardStore.isModalOpen
                 && <RequestModal />}
+            <Sidebar />
             <Filters />
             <FilteringEvents />
         </>

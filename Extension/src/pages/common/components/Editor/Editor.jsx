@@ -35,7 +35,6 @@ import './mode-adguard.js';
 
 import './editor.pcss';
 
-
 /**
  * Helper to get Oculus-specific class for the editor container.
  *
@@ -70,7 +69,6 @@ const Editor = ({
     const [size, setSize] = useState(JSON.parse(editorStorageSize) || DEFAULT_EDITOR_SIZE);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
     const [hasContent, setHasContent] = useState(false);
-
 
     useEffect(() => {
         if (editorStorageSize) {

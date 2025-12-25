@@ -37,6 +37,12 @@ import { getStatusTitle } from './statusTitles';
 
 import './status.pcss';
 
+export const areNetworkBadgesVisible = (requestUrl, mode) => {
+    const isModified = mode === StatusMode.MODIFIED;
+
+    return requestUrl && !isModified;
+};
+
 export const Status = (props) => {
     const {
         statusCode,
@@ -52,15 +58,14 @@ export const Status = (props) => {
     const itemClassNames = getItemClassName(color);
     const badgeClassNames = getBadgeClassNames(color);
     const isBlocked = mode === StatusMode.BLOCKED;
-    const isModified = mode === StatusMode.MODIFIED;
-    const areNetworkBadgesVisible = requestUrl && !isModified;
+    const showNetworkBadges = areNetworkBadgesVisible(requestUrl, mode);
     const statusTooltipText = getStatusTitle(mode);
     const statusToShow = statusCode || '----';
 
     // This text is rendered only for Screen readers as summary of the status
     let requestStatusSummary = `${timeString}.`;
 
-    if (areNetworkBadgesVisible) {
+    if (showNetworkBadges) {
         requestStatusSummary += ` ${translator.getMessage('filtering_log_tag_request_status')}: ${statusTooltipText}.`;
 
         if (!isBlocked) {
@@ -88,7 +93,7 @@ export const Status = (props) => {
                 <div className="status__item status__item_width60">
                     {timeString}
                 </div>
-                {areNetworkBadgesVisible && (
+                {showNetworkBadges && (
                     <>
                         <div className={itemClassNames}>
                             <Popover text={statusTooltipText}>
