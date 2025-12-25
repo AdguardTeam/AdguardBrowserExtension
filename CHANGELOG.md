@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [5.2.800] - 2025-12-25
+
+### Fixed
+
+- Memory leak caused by storing data URL favicons in tab contexts. [#2594]
+
+[#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
+
+[5.2.800]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.800%2B1.build.20251216080045
 
 ## [5.2.600] - 2025-12-16
 
