@@ -5,24 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.2.600] - ??
+## [5.2.800] - 2025-12-25
 
 ### Fixed
 
-- Made clipboard permissions optional for Firefox, with a prompt shown when needed in User Rules and Allowlist editors [#3364]
-- The extension doesn't work in browser 360 [#3058].
+- Memory leak caused by storing data URL favicons in tab contexts. [#2594]
 
-[#3364]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3364
-[#3058]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3058
+[#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
 
-<!-- TODO: Specify date after publish on GH -->
-[5.2.600]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases
-
-## [5.2.500] - 2025-12-05
-
-### Fixed
-- The update promo banner does not persist dismissal and shows again after
-  the extension updates [#3385].
+[5.2.800]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.800%2B1.build.20251216080045
 
 ## [5.2.600] - 2025-12-16
 
