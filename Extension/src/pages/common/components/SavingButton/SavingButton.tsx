@@ -27,6 +27,8 @@ import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../ui/Icon';
 import { UserAgent } from '../../../../common/user-agent';
 
+import styles from './SavingButton.module.pcss';
+
 const renderSavingState = (savingRulesState: SavingFSMState) => {
     type IndicatorTextMapType = {
         [key in SavingFSMState]: string | null;
@@ -79,6 +81,8 @@ type SavingButtonParams = {
 };
 
 export const SavingButton = ({ onClick, savingState, contentChanged }: SavingButtonParams) => {
+    const isSaving = savingState === SavingFSMState.Saving;
+
     return (
         <div className="actions__saving">
             {!__IS_MV3__ && renderSavingState(savingState)}
@@ -87,10 +91,17 @@ export const SavingButton = ({ onClick, savingState, contentChanged }: SavingBut
                 className="button button--l button--green-bg actions__btn actions__btn--saving"
                 onClick={onClick}
                 title={translator.getMessage('options_editor_save')}
-                disabled={!contentChanged}
+                disabled={!contentChanged || isSaving}
                 aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+S' : 'Ctrl+S'}
             >
                 {translator.getMessage('options_editor_save')}
+                {isSaving && (
+                    <Icon
+                        id="#saving"
+                        className={`icon--24 ${styles.savingSpinner}`}
+                        aria-hidden="true"
+                    />
+                )}
             </button>
         </div>
     );

@@ -57,6 +57,7 @@ import { ToggleWrapButton } from './ToggleWrapButton';
 import { ToggleFullscreenButton } from './ToggleFullscreenButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { userRulesEditorStore } from './UserRulesEditorStore';
+import theme from '../../styles/theme';
 
 /**
  * This module is placed in the common directory because it is used in the options page
@@ -385,6 +386,25 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         exportData(ExportTypes.UserFilter);
     };
 
+    // Set sidebar menu options for mobile
+    useEffect(() => {
+        uiStore.setSidebarMenuOptions([
+            {
+                id: 'import_user_rules',
+                title: translator.getMessage('options_userfilter_import'),
+                onClick: importClickHandler,
+            },
+            {
+                id: 'export_user_rules',
+                title: translator.getMessage('options_userfilter_export'),
+                onClick: exportClickHandler,
+                disabled: !store.userRulesExportAvailable,
+            },
+        ]);
+
+        return () => uiStore.setSidebarMenuOptions([]);
+    }, [store.userRulesExportAvailable, uiStore]);
+
     // We set wrap mode directly in order to avoid editor re-rendering
     // Otherwise editor would remove all unsaved content
     const toggleWrap = async () => {
@@ -501,7 +521,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     />
                     <button
                         type="button"
-                        className="button button--l button--transparent actions__btn"
+                        className={`button button--l button--transparent actions__btn ${theme.common.hideMobile}`}
                         onClick={importClickHandler}
                         title={translator.getMessage('options_userfilter_import')}
                     >
@@ -509,7 +529,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     </button>
                     <button
                         type="button"
-                        className="button button--l button--transparent actions__btn"
+                        className={`button button--l button--transparent actions__btn ${theme.common.hideMobile}`}
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
                         title={translator.getMessage('options_userfilter_export')}

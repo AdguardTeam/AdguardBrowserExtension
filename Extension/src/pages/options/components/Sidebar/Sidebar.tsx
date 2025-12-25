@@ -39,7 +39,8 @@ import { Compare } from './Compare';
 
 import './sidebar.pcss';
 import { UpdateButtonMobile } from 'update-button-mobile';
-import { FilterSortMenu } from './OptionsMenu';
+import { FilterSortMenu } from './MenuDropDown';
+import { PageActionsMenu } from './MenuDropDown';
 
 const SIDEBAR_ID = 'sidebar';
 
@@ -106,6 +107,10 @@ const Sidebar = observer(() => {
     });
 
     const isFiltersPage = location.pathname.startsWith(`/${OptionsPageSections.filters}`);
+    const isAllowListPage = location.pathname.startsWith(`/${OptionsPageSections.allowlist}`);
+    const isUserFilterPage = location.pathname.startsWith(`/${OptionsPageSections.userFilter}`);
+
+    const showPageActionsMenu = isAllowListPage || isUserFilterPage;
 
     return (
         <>
@@ -127,6 +132,7 @@ const Sidebar = observer(() => {
                 <div className="sidebar__actions">
                     {isFiltersPage && <UpdateButtonMobile />}
                     {isFiltersPage && <FilterSortMenu />}
+                    {showPageActionsMenu && <PageActionsMenu />}
                 </div>
             </div>
             {/* eslint-disable-next-line max-len */}

@@ -18,4 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { FilterSortMenu } from './OptionsMenu';
+export { FilterSortMenu, PageActionsMenu } from './MenuDropDown';

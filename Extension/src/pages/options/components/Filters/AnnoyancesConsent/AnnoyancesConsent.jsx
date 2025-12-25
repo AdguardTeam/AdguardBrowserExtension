@@ -110,6 +110,7 @@ export const AnnoyancesConsent = observer(({
             customConfirmTitle={translator.getMessage('options_filters_annoyances_consent_enable_button')}
             isConsent
             isScrollable={filtersToGetConsentFor.length > 1}
+            isOptionalBtnHidden
         />
     );
 });

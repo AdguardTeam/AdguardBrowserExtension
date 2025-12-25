@@ -20,6 +20,10 @@
         height: 0;
         border-bottom: 10px solid var(--gray-50);
         border-left: 10px solid transparent;
+
+        @media (max-width: 640px) {
+            display: none;
+        }
     }
 
     @media (max-width: 1024px) {
@@ -32,6 +36,28 @@
         max-width: 100vw;
         resize: both;
     }
+
+    @media (max-width: 640px) {
+        width: calc(100% - 32px) !important;
+        border: 1px solid var(--gray-50);
+        border-radius: 8px;
+        margin-left: 16px;
+        padding: 16px;
+    }
+
+    &__hint {
+        position: absolute;
+        top: 16px;
+        left: 20px;
+        color: var(--gray-50);
+        z-index: 1;
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+
 
     &--full-screen {
         width: 100% !important;

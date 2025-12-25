@@ -31,21 +31,10 @@ import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
 import { sortFilterOptions } from '../../Filters/constants';
 import { SEARCH_FILTERS } from '../../Filters/Search/constants';
 
-import styles from './OptionsMenu.module.pcss';
+import styles from './MenuDropDown.module.pcss';
 
-export const OptionsMenu = (
-    { 
-        children, 
-        handleToggle,
-        isOpen,
-        setIsOpen
-
-    }: { 
-        children: React.ReactNode,
-        handleToggle: () => void,
-        isOpen: boolean,
-        setIsOpen: (value: boolean) => void,
-    }) => {
+export const MenuDropDown = ({ children }: { children: React.ReactNode }) => {
+    const [isOpen, setIsOpen] = useState(false);
 
     const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -56,7 +45,7 @@ export const OptionsMenu = (
             <button
                 type="button"
                 className={styles.menuButton}
-                onClick={handleToggle}
+                onClick={() => setIsOpen(!isOpen)}
                 aria-label={translator.getMessage('options_filters_search_filter')}
                 aria-expanded={isOpen}
             >
@@ -68,7 +57,7 @@ export const OptionsMenu = (
             </button>
             
             {isOpen && (
-                <div className={styles.dropdown}>
+                <div className={styles.dropdown} onClick={() => setIsOpen(false)}>
                     {children}
                 </div>
             )}
@@ -78,25 +67,15 @@ export const OptionsMenu = (
 
 export const FilterSortMenu = observer(() => {
     const { settingsStore } = useContext(rootStore);
-    const [isOpen, setIsOpen] = useState(false);
-
-    const handleToggle = () => {
-        setIsOpen((prev) => !prev);
-    };
 
     const searchSelectHandler = (value: SEARCH_FILTERS) => {
         settingsStore.setSearchSelect(value);
         settingsStore.sortFilters();
         settingsStore.sortSearchGroups();
-        setIsOpen(false);
     };
 
     return (
-        <OptionsMenu
-            handleToggle={handleToggle}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-        >   
+        <MenuDropDown>   
             {sortFilterOptions.map(({ value, title }) => {
                 const isSelected = value === settingsStore.searchSelect;
 
@@ -104,7 +83,7 @@ export const FilterSortMenu = observer(() => {
                     <button
                         key={value}
                         type="button"
-                        className={styles.dropdownItem}
+                        className={styles.filterSortItem}
                         onClick={() => searchSelectHandler(value)}
                         aria-selected={isSelected}
                     >
@@ -119,6 +98,30 @@ export const FilterSortMenu = observer(() => {
                     </button>
                 );
             })}
-        </OptionsMenu>
+        </MenuDropDown>
     );
 });
+
+
+export const PageActionsMenu = observer(() => {
+    const { uiStore } = useContext(rootStore);
+    const { sidebarMenuOptions } = uiStore;
+
+    return (
+        <MenuDropDown>   
+            {sidebarMenuOptions.map((el, i) => {
+                return (
+                    <button 
+                        key={`pageActionMenu-${el.id}`}
+                        type="button"
+                        className={styles.pageActionItem}
+                        onClick={el.onClick}
+                        disabled={el.disabled}
+                    >
+                        {el.title}
+                    </button>
+                )
+            })}
+        </MenuDropDown>
+    )
+})

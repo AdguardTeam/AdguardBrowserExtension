@@ -77,6 +77,11 @@ type ConfirmModalParams = {
      * Flag to make modal content scrollable. Default is false.
      */
     isScrollable?: boolean;
+
+    /**
+     * Flag to hide optional button. Default is false.
+     */
+    isOptionalBtnHidden?: boolean;
 };
 
 export const ConfirmModal = ({
@@ -90,6 +95,7 @@ export const ConfirmModal = ({
     customCancelTitle,
     isConsent,
     isScrollable = false,
+    isOptionalBtnHidden = false,
 }: ConfirmModalParams) => {
     const confirmTitle = customConfirmTitle || 'OK';
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
@@ -166,7 +172,12 @@ export const ConfirmModal = ({
                         {confirmTitle}
                     </button>
                     <button
-                        className={`button button--l button--transparent ${theme.modal.btn} ${theme.modal.btnConfirm}`}
+                        className={cn(
+                            'button button--l',
+                            'button--transparent',
+                            theme.modal.btn,
+                            isOptionalBtnHidden && theme.modal.optionalBtn,
+                        )}
                         type="button"
                         onClick={handleCancel}
                         title={cancelTitle}

@@ -253,6 +253,7 @@ export const Miscellaneous = observer(() => {
                 {isOpenResetStatsModal && (
                     <ConfirmModal
                         title={translator.getMessage('options_clear_stats_confirm_modal_title')}
+                        subtitle={translator.getMessage('options_clear_stats_confirm_modal_subtitle')}
                         isOpen={isOpenResetStatsModal}
                         setIsOpen={setIsOpenResetStatsModal}
                         onConfirm={handleResetStatisticsConfirm}
@@ -271,6 +272,7 @@ export const Miscellaneous = observer(() => {
                 {isOpenResetSettingsModal && (
                     <ConfirmModal
                         title={translator.getMessage('options_reset_settings_confirm_modal_title')}
+                        subtitle={translator.getMessage('options_reset_settings_confirm_modal_subtitle')}
                         isOpen={isOpenResetSettingsModal}
                         setIsOpen={setIsOpenResetSettingsModal}
                         onConfirm={handleResetSettingsConfirmWrapper}

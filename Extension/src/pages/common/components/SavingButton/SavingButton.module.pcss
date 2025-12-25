@@ -1,0 +1,19 @@
+.savingSpinner {
+    display: none;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    right: 16px;
+
+    @media (max-width: 640px) {
+        display: block;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

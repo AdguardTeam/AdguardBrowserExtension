@@ -43,7 +43,6 @@
     align-items: flex-start;
     max-height: 100%;
     padding: 0;
-    min-width: 330px;
     overflow-y: auto;
     background-color: var(--fills-backgrounds-page-background-default);
 
@@ -124,6 +123,10 @@
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
+
+            @media(max-width: 640px) {
+                text-align: center;
+            }
         }
     }
 
@@ -131,24 +134,15 @@
         width: 100%;
         max-width: 100%;
         
-
-        &.btnConfirm {
-            min-width: 100px;
-            display: none;
-
-            @media(min-width: 640px) {
-                display: block;
+        &.optionalBtn {
+            @media(max-width: 640px) {
+               display: none;
             }
         }
 
         @media(min-width: 640px) {
             width: 50%;
             max-width: 300px;
-            margin-right: 24px;
-
-            &:last-child {
-                margin-right: 0;
-            }
         }
     }
 
@@ -166,13 +160,16 @@
 
     .actions {
         width: 100%;
-        padding: 24px 16px 32px;
+        padding: 24px 32px 32px;
         display: flex;
+        gap: 24px;
         align-items: center;
         box-sizing: border-box;
 
-        @media(min-width: 640px) {
-            padding: 24px 32px 32px;
+        @media(max-width: 640px) {
+            gap: 16px;
+            padding: 24px 16px 32px;
+            flex-direction: column;
         }
     }
 }

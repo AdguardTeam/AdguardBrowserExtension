@@ -35,6 +35,7 @@ import './mode-adguard.js';
 
 import './editor.pcss';
 
+
 /**
  * Helper to get Oculus-specific class for the editor container.
  *
@@ -67,6 +68,9 @@ const Editor = ({
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
     const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
     const [size, setSize] = useState(JSON.parse(editorStorageSize) || DEFAULT_EDITOR_SIZE);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+    const [hasContent, setHasContent] = useState(false);
+
 
     useEffect(() => {
         if (editorStorageSize) {
@@ -99,6 +103,7 @@ const Editor = ({
                 width: width + EDITOR_PADDING, height,
             }));
             editorRef.current.editor.resize();
+            setIsMobile(window.innerWidth < 640);
         };
 
     const editorClassName = cn(
@@ -107,6 +112,11 @@ const Editor = ({
         { 'editor--with-margin': !fullscreen },
         getOculusClass(),
     );
+
+    const handleChange = (newValue) => {
+        setHasContent(newValue?.length > 0);
+        onChange(newValue);
+    };
 
     // highlight rules syntax only for user rules
     const editorMode = highlightRules ? 'adguard' : 'text';
@@ -127,6 +137,7 @@ const Editor = ({
 
     return (
         <div style={editorStyles} className={editorClassName}>
+            {isMobile && !hasContent && <div className="editor__hint">example.com</div>}
             <AceEditor
                 ref={editorRef}
                 width="100%"
@@ -139,8 +150,10 @@ const Editor = ({
                 fontSize={14}
                 value={value}
                 commands={mergedShortcuts}
-                onChange={onChange}
+                onChange={handleChange}
                 readOnly={readOnly}
+                showGutter={!isMobile}
+                highlightActiveLine={!isMobile}
             />
             <ReactResizeDetector
                 skipOnMount
