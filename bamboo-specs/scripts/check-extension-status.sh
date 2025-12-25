@@ -29,6 +29,7 @@ STATUS_OUTPUT=$(CHROME_CLIENT_ID="${bamboo_chromeWebStoreClientId}" \
     CHROME_CLIENT_SECRET="${bamboo_chromeWebStoreClientSecret}" \
     CHROME_REFRESH_TOKEN="${bamboo_chromeWebStoreSecretRefreshToken}" \
     CHROME_PUBLISHER_ID="${bamboo_chromeWebStorePublisherId}" \
+    CHROME_API_VERSION=v2 \
     go-webext status chrome \
     -a "${EXTENSION_ID}" 2>&1)
 
