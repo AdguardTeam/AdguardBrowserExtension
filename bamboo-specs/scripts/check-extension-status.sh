@@ -25,15 +25,11 @@ fi
 echo "Checking status for extension: ${EXTENSION_ID}"
 
 # Get status from Chrome Web Store
-STATUS_OUTPUT=$(docker run --rm \
-    -e CHROME_CLIENT_ID="${bamboo_chromeWebStoreClientId}" \
-    -e CHROME_CLIENT_SECRET="${bamboo_chromeWebStoreClientSecret}" \
-    -e CHROME_REFRESH_TOKEN="${bamboo_chromeWebStoreSecretRefreshToken}" \
-    -e CHROME_PUBLISHER_ID="${bamboo_chromeWebStorePublisherId}" \
-    -v "${PWD}":/storage \
-    --workdir /storage \
-    adguard/extension-deployer:1.23.6--0.3.0 \
-    status chrome \
+STATUS_OUTPUT=$(CHROME_CLIENT_ID="${bamboo_chromeWebStoreClientId}" \
+    CHROME_CLIENT_SECRET="${bamboo_chromeWebStoreClientSecret}" \
+    CHROME_REFRESH_TOKEN="${bamboo_chromeWebStoreSecretRefreshToken}" \
+    CHROME_PUBLISHER_ID="${bamboo_chromeWebStorePublisherId}" \
+    go-webext status chrome \
     -a "${EXTENSION_ID}" 2>&1)
 
 echo "${STATUS_OUTPUT}"
