@@ -39,7 +39,7 @@ export class FiltersApi extends FiltersApiCommon {
      *
      * @param isInstall Is this is an installation initialization or not.
      */
-    public static async init(isInstall: boolean): Promise<void> {
+    public static override async init(isInstall: boolean): Promise<void> {
         await FiltersApiCommon.init(isInstall);
 
         Prefs.libVersions.dnrRulesets = metadataStorage.getDnrRulesetsVersion();

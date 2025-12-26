@@ -65,7 +65,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      * @param filterId Filter id.
      * @param filter Raw filter list or preprocessed filter list.
      */
-    public static async set(filterId: number, filter: string | PreprocessedFilterList): Promise<void> {
+    public static override async set(filterId: number, filter: string | PreprocessedFilterList): Promise<void> {
         // Do not allow to modify static filters in MV3.
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
             logger.error(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
@@ -76,7 +76,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     }
 
     /** @inheritdoc */
-    public static async has(filterId: number): Promise<boolean> {
+    public static override async has(filterId: number): Promise<boolean> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
             return TsWebExtensionFiltersStorage.has(filterId);
         }
@@ -92,7 +92,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      *
      * @param filterId Filter id.
      */
-    public static async remove(filterId: number): Promise<void> {
+    public static override async remove(filterId: number): Promise<void> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
             logger.error(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
             return;
@@ -102,7 +102,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     }
 
     /** @inheritdoc */
-    public static async getRawFilterList(
+    public static override async getRawFilterList(
         filterId: number,
     ): Promise<PreprocessedFilterList['rawFilterList'] | undefined> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
@@ -113,7 +113,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     }
 
     /** @inheritdoc */
-    public static async getFilterList(
+    public static override async getFilterList(
         filterId: number,
     ): Promise<PreprocessedFilterList['filterList'] | undefined> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
@@ -124,7 +124,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     }
 
     /** @inheritdoc */
-    public static async getConversionMap(
+    public static override async getConversionMap(
         filterId: number,
     ): Promise<PreprocessedFilterList['conversionMap'] | undefined> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
@@ -135,7 +135,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     }
 
     /** @inheritdoc */
-    public static async getSourceMap(
+    public static override async getSourceMap(
         filterId: number,
     ): Promise<PreprocessedFilterList['sourceMap'] | undefined> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
