@@ -17,16 +17,36 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { MessageType } from '../../../../common/messages';
-import { logger } from '../../../../common/logger';
-import { SettingOption } from '../../../schema';
-import { messageHandler } from '../../../message-handler';
-import { engine } from '../../../engine';
-import { SafebrowsingApi, TabsApi } from '../../../api';
-import { settingsEvents } from '../../../events';
-import { type GetOptionsDataResponse } from '../types/types-mv2';
 
-import { SettingsServiceCommon } from './settings-service-common';
+import browser from 'webextension-polyfill';
+
+import {
+    MessageType,
+    type ChangeUserSettingMessage,
+    type ApplySettingsJsonMessage,
+} from '../../../common/messages';
+import { logger } from '../../../common/logger';
+import { SettingOption } from '../../schema';
+import { messageHandler } from '../../message-handler';
+import { UserAgent } from '../../../common/user-agent';
+import { engine } from '../../engine';
+import {
+    Categories,
+    HitStatsApi,
+    SafebrowsingApi,
+    SettingsApi,
+    TabsApi,
+} from '../../api';
+import { Prefs } from '../../prefs';
+import {
+    ContextMenuAction,
+    contextMenuEvents,
+    settingsEvents,
+} from '../../events';
+import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
+
+import { type GetOptionsDataResponse } from './types-mv2';
+import { type ExportMessageResponse } from './types-common';
 
 /**
  * SettingsService handles all setting-related messages and
@@ -34,7 +54,7 @@ import { SettingsServiceCommon } from './settings-service-common';
  *
  * TODO: gracefully handle errors for tswebextension events. AG-37301.
  */
-export class SettingsService extends SettingsServiceCommon {
+export class SettingsService {
     /**
      * Adds a listener for background messages about settings: load/apply settings
      * from JSON and change/reset/return of custom settings.
@@ -42,10 +62,12 @@ export class SettingsService extends SettingsServiceCommon {
      * any {@link SettingOption} parameter.
      * Adds a listener to enable or disable protection from the context menu.
      */
-    static override init(): void {
-        SettingsServiceCommon.init();
-
+    static init(): void {
         messageHandler.addListener(MessageType.GetOptionsData, SettingsService.getOptionsData);
+        messageHandler.addListener(MessageType.ResetSettings, SettingsService.reset);
+        messageHandler.addListener(MessageType.ChangeUserSettings, SettingsService.changeUserSettings);
+        messageHandler.addListener(MessageType.ApplySettingsJson, SettingsService.import);
+        messageHandler.addListener(MessageType.LoadSettingsJson, SettingsService.export);
 
         settingsEvents.addListener(SettingOption.DisableStealthMode, SettingsService.onDisableStealthModeStateChange);
         settingsEvents.addListener(SettingOption.HideReferrer, SettingsService.onHideReferrerStateChange);
@@ -73,6 +95,10 @@ export class SettingsService extends SettingsServiceCommon {
             SettingOption.DisableFiltering,
             SettingsService.onDisableFilteringStateChange,
         );
+        settingsEvents.addListener(SettingOption.DisableCollectHits, SettingsService.onDisableCollectHitsChange);
+
+        contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsService.enableFiltering);
+        contextMenuEvents.addListener(ContextMenuAction.DisableProtection, SettingsService.disableFiltering);
     }
 
     /**
@@ -81,8 +107,78 @@ export class SettingsService extends SettingsServiceCommon {
      *
      * @returns Item of {@link GetOptionsDataResponse}.
      */
-    static override async getOptionsData(): Promise<GetOptionsDataResponse> {
-        return super.getOptionsData();
+    static async getOptionsData(): Promise<GetOptionsDataResponse> {
+        return {
+            settings: SettingsApi.getData(),
+            appVersion: Prefs.version,
+            libVersions: Prefs.libVersions,
+            environmentOptions: {
+                isChrome: UserAgent.isChrome,
+            },
+            filtersInfo: {
+                rulesCount: engine.api.getRulesCount(),
+            },
+            filtersMetadata: Categories.getCategories(),
+            fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
+        };
+    }
+
+    /**
+     * Changes user settings.
+     *
+     * @param message Item of {@link ChangeUserSettingMessage}.
+     */
+    static async changeUserSettings(message: ChangeUserSettingMessage): Promise<void> {
+        const { key, value } = message.data;
+        await SettingsApi.setSetting(key, value);
+    }
+
+    /**
+     * Resets user settings and updates engine.
+     *
+     * @returns Result of resetting.
+     */
+    static async reset(): Promise<boolean> {
+        try {
+            // Should enable default filters and their groups.
+            await SettingsApi.reset(true);
+            await engine.update();
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
+     * Imports settings from JSON.
+     *
+     * @param message Message with JSON settings {@link ApplySettingsJsonMessage}.
+     *
+     * @returns Result of importing.
+     */
+    static async import(message: ApplySettingsJsonMessage): Promise<boolean> {
+        const { json } = message.data;
+
+        const isImported = await SettingsApi.import(json);
+
+        if (isImported) {
+            await engine.update();
+        }
+
+        return isImported;
+    }
+
+    /**
+     * Exports settings.
+     *
+     * @returns Promise with {@link ExportMessageResponse}.
+     */
+    static async export(): Promise<ExportMessageResponse> {
+        return {
+            content: await SettingsApi.export(),
+            appVersion: browser.runtime.getManifest().version,
+        };
     }
 
     /**
@@ -121,7 +217,7 @@ export class SettingsService extends SettingsServiceCommon {
     }
 
     /**
-     * Called when {@link SettingOption.HideReferrer} setting changed.
+     * Called when {@link SettingOption.HideSearchQueries} setting changed.
      *
      * @param isHideReferrerEnabled Changed {@link SettingOption.HideReferrer} setting value.
      */
@@ -147,9 +243,9 @@ export class SettingsService extends SettingsServiceCommon {
     }
 
     /**
-     * Called when {@link SettingOption.SendDoNotTrack} setting changed.
+     * Called when {@link SettingOption.RemoveXClientData} setting changed.
      *
-     * @param isSendDoNotTrackEnabled Changed {@link SettingOption.SendDoNotTrack} setting value.
+     * @param isSendDoNotTrackEnabled Changed {@link SettingOption.RemoveXClientData} setting value.
      */
     static async onSendDoNotTrackStateChange(isSendDoNotTrackEnabled: boolean): Promise<void> {
         try {
@@ -223,5 +319,31 @@ export class SettingsService extends SettingsServiceCommon {
      */
     static onSelfDestructFirstPartyCookiesTimeStateChange(): void {
         engine.debounceUpdate();
+    }
+
+    /**
+     * Called when {@link SettingOption.DisableCollectHits} changes.
+     *
+     * @param disableCollectHitsStats Setting value.
+     */
+    static onDisableCollectHitsChange(disableCollectHitsStats: boolean): void {
+        engine.api.setCollectHitStats(!disableCollectHitsStats);
+        if (disableCollectHitsStats) {
+            HitStatsApi.cleanup();
+        }
+    }
+
+    /**
+     * Called when protection enabling is requested.
+     */
+    static async enableFiltering(): Promise<void> {
+        await SettingsApi.setSetting(SettingOption.DisableFiltering, false);
+    }
+
+    /**
+     * Called when protection disabling is requested.
+     */
+    static async disableFiltering(): Promise<void> {
+        await SettingsApi.setSetting(SettingOption.DisableFiltering, true);
     }
 }
