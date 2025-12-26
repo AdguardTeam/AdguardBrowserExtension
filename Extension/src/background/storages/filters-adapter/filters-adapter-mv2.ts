@@ -17,7 +17,4 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { FiltersStoragesAdapterCommon } from './filters-adapter-common';
-
-export { FiltersStoragesAdapterCommon as FiltersStoragesAdapter };
+export { FiltersStoragesAdapterCommon as FiltersStoragesAdapter } from './filters-adapter-common';

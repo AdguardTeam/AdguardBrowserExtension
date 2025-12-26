@@ -57,7 +57,7 @@ export class PopupStore extends PopupStoreCommon {
     }
 
     /** @inheritdoc */
-    async getPopupData(): Promise<undefined> {
+    async overridegetPopupData(): Promise<undefined> {
         await super.getPopupData();
 
         const options = await messenger.getExtensionStatusForPopup();

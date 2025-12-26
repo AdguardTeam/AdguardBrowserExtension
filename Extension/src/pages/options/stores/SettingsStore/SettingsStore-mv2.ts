@@ -58,7 +58,7 @@ export class SettingsStore extends SettingsStoreCommon {
      * @inheritdoc
      */
     @override
-    protected applyOptionsData(data: GetOptionsDataResponse, firstRender?: boolean): void {
+    protected override applyOptionsData(data: GetOptionsDataResponse, firstRender?: boolean): void {
         super.applyOptionsData(data, firstRender);
         this.rulesCount = data.filtersInfo.rulesCount;
     }

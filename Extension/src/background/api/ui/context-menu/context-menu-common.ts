@@ -53,7 +53,7 @@ const createMenu = (props: browser.Menus.CreateCreatePropertiesType): Promise<vo
 /**
  * API for creating and updating browser context menus.
  */
-export abstract class ContextMenuApiCommon {
+export class ContextMenuApiCommon {
     /**
      * Context menu titles.
      */
