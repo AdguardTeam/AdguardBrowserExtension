@@ -17,6 +17,4 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { SettingsService } from 'settings-service';
-export { type GetOptionsDataResponse } from 'settings-types';
-export { type ExportMessageResponse } from './types';
+export { type GetOptionsDataResponseCommon as GetOptionsDataResponse } from './types-common';
