@@ -19,4 +19,4 @@
  */
 export { SettingsService } from 'settings-service';
 export { type GetOptionsDataResponse } from 'settings-types';
-export { type ExportMessageResponse } from './types';
+export { type ExportMessageResponse } from './types-common';
