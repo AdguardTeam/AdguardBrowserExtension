@@ -27,7 +27,7 @@ import { PrefsCommon } from './prefs-common';
  */
 export class Prefs extends PrefsCommon {
     /** @inheritdoc */
-    public static readonly libVersions: GetOptionsDataResponse['libVersions'] = {
+    public static override readonly libVersions: GetOptionsDataResponse['libVersions'] = {
         ...PrefsCommon.libVersions,
         // DNR Ruleset version is set during extension initialization
         // via setDnrRulesetsVersion() method.
