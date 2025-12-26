@@ -1,0 +1,65 @@
+key: CHECKCWS
+other:
+  clean-working-dir: true
+docker:
+  image: ${bamboo.dockerNode}
+tasks:
+  - checkout:
+      force-clean-build: true
+  - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+          set -e
+          set -x
+
+          mkdir -p artifacts
+          RESULT_FILE="artifacts/cws-availability.properties"
+
+          echo "Checking CWS availability for both channels..."
+
+          BETA_AVAILABLE=false
+          RELEASE_AVAILABLE=false
+
+          echo "--- Checking Beta channel ---"
+          if ./bamboo-specs/scripts/check-extension-status.sh beta; then
+              echo "✅ Beta channel is available"
+              BETA_AVAILABLE=true
+          else
+              echo "⚠️ Beta channel is not available"
+          fi
+
+          echo ""
+          echo "--- Checking Release channel ---"
+          if ./bamboo-specs/scripts/check-extension-status.sh release; then
+              echo "✅ Release channel is available"
+              RELEASE_AVAILABLE=true
+          else
+              echo "⚠️ Release channel is not available"
+          fi
+
+          # Write results
+          {
+              echo "betaChannelAvailable=${BETA_AVAILABLE}"
+              echo "releaseChannelAvailable=${RELEASE_AVAILABLE}"
+          } > "${RESULT_FILE}"
+
+          echo ""
+          echo "=== CWS Availability ==="
+          cat "${RESULT_FILE}"
+
+          # If both channels are unavailable, fail the build
+          if [ "${BETA_AVAILABLE}" = "false" ] && [ "${RELEASE_AVAILABLE}" = "false" ]; then
+              echo ""
+              echo "❌ Both channels are unavailable, stopping build"
+              exit 1
+          fi
+
+          echo ""
+          echo "✅ At least one channel is available, proceeding with build"
+  - inject-variables:
+      file: artifacts/cws-availability.properties
+      scope: RESULT
+requirements:
+  - adg-docker: 'true'
+  - extension: 'true'

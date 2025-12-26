@@ -1,0 +1,121 @@
+key: UPDATERULESETSANDBUILD
+other:
+  clean-working-dir: true
+docker:
+  image: ${bamboo.dockerNode}
+  volumes:
+    ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
+tasks:
+  - checkout:
+      force-clean-build: true
+  - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+          set -x
+          set -e
+
+          # Fix mixed logs
+          exec 2>&1
+          ls -la
+
+          # Validate that current branch is valid for build.
+          if [ "${bamboo.planRepository.branchName}" != "${bamboo.stableBranchName}" ]; then
+              # Throw error if current branch is not ${bamboo.stableBranchName},
+              # because we do not deploy new releases not from stable branch.
+              echo "auto-build is not supported on branch ${bamboo.stableBranchName}"
+              exit 1;
+          fi
+
+          # Set cache directory
+          pnpm config set store-dir ${bamboo.cachePnpm}
+
+          pnpm install ${bamboo.varsPnpm}
+
+          # If it is night after Monday (UTC), we need to update rulesets with
+          # local resources and not use "skip review" feature to collect all
+          # changes in filter lists made after weekend.
+          skipReview="true"
+          if ./bamboo-specs/scripts/check-is-manual-review.sh; then
+            echo "Updating local resources (manual review)"
+            skipReview="false"
+          else
+            echo "Skipping local resources (expedited review)"
+            skipReview="true"
+          fi
+
+          # Update rulesets before build.
+          if [ "${skipReview}" == "true" ]; then
+            # `--skip-local-resources` is used to skip updating local resources
+            # with dictionary of scripts, because to use "skip review" feature
+            # in the Chrome Web Store we need to ensure that changes are made
+            # only in rulesets json files.
+            OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3 --skip-local-resources
+          else
+            # Otherwise, extension will go through manual review.
+            OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
+          fi
+
+          # Update patch version because resources was changed.
+          pnpm increment
+
+          # Create artifacts directory if it doesn't exist.
+          mkdir -p artifacts
+
+          # Build release and beta versions of the extension.
+          pnpm beta chrome-mv3
+          pnpm release chrome-mv3
+
+          # If we want to use "skip review" feature, check that changes are safe.
+          if [ "${skipReview}" == "true" ]; then
+            # Download latest beta and release versions of the extension
+            # from the Chrome Web Store to check that new versions
+            # are eligible for "skip review" feature.
+            pnpm tsx tools/skip-review/download-latest-extension beta
+            pnpm tsx tools/skip-review/download-latest-extension release
+
+            # Check that beta and release updates contain only safe
+            # changes in rulesets and only in rule_resources files.
+            pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
+            pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+          fi
+
+          # Move zip artifacts to the artifacts directory, because we will
+          # publish zip versions of the extension.
+          mv build/beta/chrome-mv3.zip artifacts/chrome-mv3-beta.zip
+          mv build/release/chrome-mv3.zip artifacts/chrome-mv3-release.zip
+  - inject-variables:
+      # Doesn't matter which channel we use, because version is the same
+      # for both channels.
+      file: build/release/build.txt
+      scope: RESULT
+      namespace: inject
+  - any-task:
+      plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+      configuration:
+        selectedRepository: defaultRepository
+        commitMessage: 'skipci: Rulesets update & increment patch version'
+  - any-task:
+      plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
+      configuration:
+        selectedRepository: defaultRepository
+        tagName: autobuild-v${bamboo.inject.version}
+final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+        - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-mv3-beta.zip,artifacts/chrome-mv3-release.zip"
+artifacts:
+  - name: chrome-mv3-beta.zip
+    location: artifacts
+    pattern: chrome-mv3-beta.zip
+    shared: true
+    required: true
+  - name: chrome-mv3-release.zip
+    location: artifacts
+    pattern: chrome-mv3-release.zip
+    shared: true
+    required: true
+requirements:
+  - adg-docker: 'true'
+  - extension: 'true'

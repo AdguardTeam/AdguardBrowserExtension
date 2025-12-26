@@ -20,8 +20,7 @@
 import browser from 'webextension-polyfill';
 import zod from 'zod';
 
-import { rulesLimitsService } from 'rules-limits-service';
-
+import { rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { ExtensionUpdateService } from '../services/extension-update/extension-update-service-mv3';
 import { engine } from '../engine';
 import { MessageType, sendMessage } from '../../common/messages';
