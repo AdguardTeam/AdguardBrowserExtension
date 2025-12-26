@@ -32,7 +32,7 @@ export class ContextMenuApi extends ContextMenuApiCommon {
      *
      * @param withSeparator Whether to add a separator after the menu item.
      */
-    protected async addUpdateFiltersMenuItem(withSeparator: boolean): Promise<void> {
+    protected override async addUpdateFiltersMenuItem(withSeparator: boolean): Promise<void> {
         await ContextMenuApiCommon.addMenuItem(ContextMenuAction.UpdateFilters);
 
         if (withSeparator) {

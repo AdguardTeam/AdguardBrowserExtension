@@ -27,7 +27,7 @@ import { AllowlistServiceCommon } from './allowlist-common';
  */
 export class AllowlistService extends AllowlistServiceCommon {
     /** @inheritDoc */
-    protected static async updateEngine(): Promise<void> {
+    protected static override async updateEngine(): Promise<void> {
         engine.debounceUpdate();
     }
 }
