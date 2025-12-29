@@ -82,10 +82,12 @@ function getMetaParts(
         if (event.requestThirdParty) {
             metaParts.push('3P');
         }
-        const type = typeAccessor(event);
-        if (type !== '') {
-            metaParts.push(type);
-        }
+    }
+
+    const type = typeAccessor(event);
+    
+    if (type !== '') {
+        metaParts.push(type);
     }
 
     if (event.frameDomain) {

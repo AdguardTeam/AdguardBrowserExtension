@@ -95,7 +95,7 @@ export const Sidebar = observer(() => {
                     {translator.getMessage('filtering_refresh_tab_short_mobile')}
                 </MenuButton>
                 <MenuButton
-                    handler={() => {}}
+                    handler={() => logStore.setIsCustomizeModalOpen(true)}
                     iconId="#customize"
                 >
                     {translator.getMessage('filtering_menu_open_filters')}

@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import cn from 'classnames';
@@ -32,11 +32,25 @@ import { TabSelector } from '../Filters/TabSelector';
 import { optionsStorage } from '../../../options/options-storage';
 
 import './actions.pcss';
+import { TabSelectorMobile } from '../Filters/TabSelector/TabSelectorMobile';
 
 const Actions = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
 
     const { preserveLogEnabled } = logStore;
+    //FIXME: move to common
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+
+    // FIXME: Move to universal hook
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 640);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+    
 
     const shouldShowPreserveLogModal = optionsStorage.getItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
 
@@ -75,7 +89,11 @@ const Actions = observer(() => {
     return (
         <div className="actions">
             <div className="actions__col actions__tab-selector">
-                <TabSelector />
+                {
+                    isMobile 
+                    ? <TabSelectorMobile/>
+                    : <TabSelector/>
+                }
             </div>
             <div className="actions__col actions__buttons">
                 <div className="actions__action actions__preserve">

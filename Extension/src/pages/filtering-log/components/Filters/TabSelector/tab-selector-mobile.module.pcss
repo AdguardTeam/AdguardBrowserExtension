@@ -1,0 +1,76 @@
+.tabSelector {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.tabSelectorHeader {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    width: 100%;
+    background: transparent;
+    border: none;
+    justify-content: space-between;
+}
+
+.tabSelectorTitle {
+    font-size: 24px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tabSelectorArrow {
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.tabSelectorArrowOpen {
+    transform: rotate(180deg);
+}
+
+.tabSelectorDropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--fills-backgrounds-page-background-default);
+    border-radius: 8px;
+    box-shadow: var(--big-light-shadow-br);
+    z-index: 25;
+    overflow: hidden;
+    padding: 0 8px;
+}
+
+.tabSelectorSearch {
+    padding: 16px 8px;
+}
+
+.tabSelectorList {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.tabItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    border: 0;
+    font-size: 16px;
+}
+
+.tabItemActive {
+    font-weight: 600;
+}
+
+.tabItemText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 16px;
+}

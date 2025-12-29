@@ -22,6 +22,8 @@ import React, {
     forwardRef,
     useImperativeHandle,
     useRef,
+    useState,
+    useEffect,
 } from 'react';
 
 import classNames from 'classnames';
@@ -55,6 +57,18 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
     ...inputProps
 }, passedRef) => {
     const localRef = useRef<HTMLInputElement>(null);
+    // FIXME: move 640 to constant in any place
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+
+    // FIXME: Move to universal hook
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 640);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useImperativeHandle(passedRef, () => localRef.current!);
 
@@ -75,6 +89,10 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
     };
 
     const renderControl = () => {
+        if (isMobile) {
+            return null;
+        }
+
         if (control) {
             return control;
         }

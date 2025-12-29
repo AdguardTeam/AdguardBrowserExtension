@@ -27,6 +27,10 @@ export const Icons = () => {
                 <path stroke="currentColor" fill="none" d="M8.0354 10.9305L11.965 14.9997L16.0342 11.0702" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
 
+            <symbol id="arrow-down-mobile" viewBox="0 0 24 24">
+                <path stroke="#7F7F7F" fill="none" d="M6 9L12 15L18 9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </symbol>
+
             <symbol id="ban" viewBox="0 0 16 16">
                 <path stroke="currentColor" fill="none" fillRule="evenodd" clipRule="evenodd" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path stroke="currentColor" fill="none" d="M2.22 13.84 13.55 2.51" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

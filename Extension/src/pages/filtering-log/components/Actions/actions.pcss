@@ -4,7 +4,7 @@
     z-index: 10;
     display: inline-flex;
     align-items: center;
-    width: 100%;
+    width: calc(100% - 32px);
 
     @media (max-width: 640px) {
         flex-wrap: wrap;
@@ -20,7 +20,8 @@
         width: 400px;
 
         @media (max-width: 640px) {
-            width: 330px;
+            width: 100%;
+            margin-bottom: 16px;
         }
     }
 
@@ -35,7 +36,7 @@
     }
 
     &__search {
-        width: 330px;
+        width: 100%;
 
         @media (min-width: 640px) {
             width: calc(100% - 427px);

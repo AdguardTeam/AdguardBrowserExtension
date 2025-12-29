@@ -73,7 +73,7 @@ const enum EventTypeFilters {
 /**
  * Filter for the filtering log.
  */
-type SingleLogFilter = {
+export type SingleLogFilter = {
     /**
      * Filter id.
      */
@@ -103,7 +103,7 @@ type SingleLogFilter = {
 /**
  * Group of filters for the filtering log.
  */
-type LogFilters = {
+export type LogFilters = {
     /**
      * Flag that indicates whether all filters are enabled.
      */
@@ -293,6 +293,9 @@ class LogStore {
 
     @observable
     isPreserveLogModalOpen = false;
+
+    @observable
+    isCustomizeModalOpen = false;
 
     @observable
     selectedEvent: UIFilteringLogEvent | null = null;
@@ -529,6 +532,11 @@ class LogStore {
         runInAction(() => {
             this.isPreserveLogModalOpen = value;
         });
+    };
+
+    @action
+    setIsCustomizeModalOpen = (value: boolean) => {
+        this.isCustomizeModalOpen = value;
     };
 
     @computed

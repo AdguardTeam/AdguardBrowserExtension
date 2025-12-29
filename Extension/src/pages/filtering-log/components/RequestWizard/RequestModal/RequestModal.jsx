@@ -97,7 +97,7 @@ const RequestModal = observer(() => {
             modalContent = <RequestInfo />;
     }
 
-    const className = cn('ReactModal__Content request-modal thin-scrollbar', {
+    const className = cn('request-modal thin-scrollbar', {
         'request-modal__view': requestModalStateEnum.isView,
         'request-modal__block': requestModalStateEnum.isBlock,
         'request-modal__unblock': requestModalStateEnum.isUnblock,
@@ -146,7 +146,7 @@ const RequestModal = observer(() => {
             isOpen={isModalOpen}
             onRequestClose={closeModal}
             className={className}
-            overlayClassName="ReactModal__Overlay request-modal__overlay"
+            overlayClassName="request-modal__overlay"
             style={{
                 content: {
                     width: `${modalWidth}px`,
