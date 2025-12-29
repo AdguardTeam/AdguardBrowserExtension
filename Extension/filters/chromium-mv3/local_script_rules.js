@@ -8029,47 +8029,48 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "b94a9a08e8bfdbb7535bd54ba79a2610" due to: ' + e);
         }
     },
-    '(()=>{const e={includes:String.prototype.includes,filter:Array.prototype.filter},t=()=>(new Error).stack,l=t=>e.includes.call(t,"loader.min.js")||e.includes.call(t,"andwonderful.com/safe.min.js")||e.includes.call(t,"html-load.com"),n={construct:(n,o,r)=>{const c=t();return l(c)&&o[0]&&e.includes.call(o[0],"adshield")&&(o[0]=["(function(){})();"]),Reflect.construct(n,o,r)}};window.Blob=new Proxy(window.Blob,n);const o={apply:(n,o,r)=>{const c=t();return l(c)&&r[0]&&e.includes.call(r[0],"new Error")&&(r[0]=()=>{}),Reflect.apply(n,o,r)}};window.setTimeout=new Proxy(window.setTimeout,o);const r={apply:(n,o,r)=>{const c=t();return l(c)&&r[0]&&o?.includes?.("setTimeout")&&(o=e.filter.call(o,(t=>!e.includes.call(t,"setTimeout")))),Reflect.apply(n,o,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,r)})();': () => {
+    '(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\./,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,r=o=>t.regexTest.call(e,o),l={construct:(e,l,n)=>{const c=o();return r(c)&&l[0]&&t.includes.call(l[0],"adshield")&&(l[0]=["(function(){})();"]),Reflect.construct(e,l,n)}};window.Blob=new Proxy(window.Blob,l);const n={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&t.includes.call(n[0],"new Error")&&(n[0]=()=>{}),Reflect.apply(e,l,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&l?.includes?.("setTimeout")&&(l=t.filter.call(l,(e=>!t.includes.call(e,"setTimeout")))),Reflect.apply(e,l,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.c99ced72d475f4ce799db4d1dd7b7346 === e) return;
+            if (Window.prototype.toString.c54ae5d29b7bd5a4fe6a5ebf5dab60ce === e) return;
             (() => {
-                const e = {
+                const e = /html-load\.com|loader\.min\.js|andwonderful\.com\/safe\.min\.js|shieldload\./, t = {
+                    filter: Array.prototype.filter,
                     includes: String.prototype.includes,
-                    filter: Array.prototype.filter
-                }, t = () => (new Error).stack, o = t => e.includes.call(t, "loader.min.js") || e.includes.call(t, "andwonderful.com/safe.min.js") || e.includes.call(t, "html-load.com"), r = {
-                    construct: (r, n, c) => {
-                        const l = t();
-                        return o(l) && n[0] && e.includes.call(n[0], "adshield") && (n[0] = [ "(function(){})();" ]), 
-                        Reflect.construct(r, n, c);
+                    regexTest: RegExp.prototype.test
+                }, o = () => (new Error).stack, r = o => t.regexTest.call(e, o), n = {
+                    construct: (e, n, l) => {
+                        const c = o();
+                        return r(c) && n[0] && t.includes.call(n[0], "adshield") && (n[0] = [ "(function(){})();" ]), 
+                        Reflect.construct(e, n, l);
                     }
                 };
-                window.Blob = new Proxy(window.Blob, r);
-                const n = {
-                    apply: (r, n, c) => {
-                        const l = t();
-                        return o(l) && c[0] && e.includes.call(c[0], "new Error") && (c[0] = () => {}), 
-                        Reflect.apply(r, n, c);
+                window.Blob = new Proxy(window.Blob, n);
+                const l = {
+                    apply: (e, n, l) => {
+                        const c = o();
+                        return r(c) && l[0] && t.includes.call(l[0], "new Error") && (l[0] = () => {}), 
+                        Reflect.apply(e, n, l);
                     }
                 };
-                window.setTimeout = new Proxy(window.setTimeout, n);
+                window.setTimeout = new Proxy(window.setTimeout, l);
                 const c = {
-                    apply: (r, n, c) => {
-                        const l = t();
-                        return o(l) && c[0] && n?.includes?.("setTimeout") && (n = e.filter.call(n, (t => !e.includes.call(t, "setTimeout")))), 
-                        Reflect.apply(r, n, c);
+                    apply: (e, n, l) => {
+                        const c = o();
+                        return r(c) && l[0] && n?.includes?.("setTimeout") && (n = t.filter.call(n, (e => !t.includes.call(e, "setTimeout")))), 
+                        Reflect.apply(e, n, l);
                     }
                 };
                 window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, c);
             })();
-            Object.defineProperty(Window.prototype.toString, "c99ced72d475f4ce799db4d1dd7b7346", {
+            Object.defineProperty(Window.prototype.toString, "c54ae5d29b7bd5a4fe6a5ebf5dab60ce", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "c99ced72d475f4ce799db4d1dd7b7346" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "c54ae5d29b7bd5a4fe6a5ebf5dab60ce" due to: ' + e);
         }
     },
     '(()=>{const e={apply:(e,l,o)=>"link"===o[0]||"style"===o[0]?[]:Reflect.apply(e,l,o)};window.document.querySelectorAll=new Proxy(window.document.querySelectorAll,e)})();': () => {
