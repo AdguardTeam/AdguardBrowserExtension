@@ -25,7 +25,6 @@ import {
     observable,
     runInAction,
 } from 'mobx';
-import { type CategoriesGroupData, type CategoriesFilterData } from 'filter-categories-api';
 import { type SettingsData } from 'settings-api';
 
 import {
@@ -42,6 +41,7 @@ import { type SettingOption, type Settings } from '../../../../background/schema
 import { type GetOptionsDataResponse } from '../../../../background/services/settings';
 import { type CustomFilterSubscriptionData } from '../../../../common/messages/constants';
 import { type FilterMetadata } from '../../../../background/api/filters/main';
+import { type CategoriesFilterData, type CategoriesGroupData } from '../../../../background/api/filters/categories';
 import {
     createSavingService,
     SavingFSMEvent,

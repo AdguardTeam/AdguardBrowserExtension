@@ -177,7 +177,6 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'network-api-settings': path.resolve(__dirname, `../../Extension/src/background/api/network/settings-mv${manifestVersion}.ts`),
         'filters-update-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/update/update-mv${manifestVersion}.ts`),
         'common-filter-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/common/common-mv${manifestVersion}.ts`),
-        'filter-categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
         'settings-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/settings-mv${manifestVersion}.ts`),
         'filter-update-service': path.resolve(__dirname, `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`),
         'browser-action': path.resolve(__dirname, `../../Extension/src/background/api/ui/browser-action/browser-action-mv${manifestVersion}.ts`),
