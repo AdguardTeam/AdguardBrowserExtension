@@ -5396,6 +5396,23 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
         }
     },
+    '(()=>{document.addEventListener("DOMContentLoaded",(()=>{"function"==typeof showgame&&showgame()}));})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["60639f622c0aeeaed4d3c6402add6364"] === e) return;
+            document.addEventListener("DOMContentLoaded", (() => {
+                "function" == typeof showgame && showgame();
+            }));
+            Object.defineProperty(Window.prototype.toString, "60639f622c0aeeaed4d3c6402add6364", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "60639f622c0aeeaed4d3c6402add6364" due to: ' + e);
+        }
+    },
     '(()=>{const e=Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML").set,t=Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML").get;Object.defineProperty(Element.prototype,"innerHTML",{get(){const e=t.call(this);return e.includes("delete window")?"":e},set(t){e.call(this,t)}})})();': () => {
         try {
             const e = "done";
