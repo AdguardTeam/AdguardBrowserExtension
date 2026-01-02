@@ -81,7 +81,7 @@ export const enum ForwardAction {
     GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',
     FilteringLogAssumedRule = 'filtering_log_assumed_rule',
-    BlackFriday25 = 'blackfriday_25',
+    NewYear25 = 'new_year_25',
     // TODO: Delete from here and TDS after release v5.2.
     CustomFiltersMv3Disabled = 'custom_mv3_disabled',
     // IMPORTANT: do not change the value as tds is already configured for that specific string.
