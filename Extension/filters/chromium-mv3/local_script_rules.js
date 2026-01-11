@@ -8008,6 +8008,28 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "b94a9a08e8bfdbb7535bd54ba79a2610" due to: ' + e);
         }
     },
+    '!function(){var e=Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML").set;Object.defineProperty(Element.prototype,"innerHTML",{set:function(t){return t.includes("html-load.com")?e.call(this,""):e.call(this,t)}})}();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.a9729560c879f0e07a037c0bd2da0571 === e) return;
+            !function() {
+                var e = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML").set;
+                Object.defineProperty(Element.prototype, "innerHTML", {
+                    set: function(t) {
+                        return t.includes("html-load.com") ? e.call(this, "") : e.call(this, t);
+                    }
+                });
+            }();
+            Object.defineProperty(Window.prototype.toString, "a9729560c879f0e07a037c0bd2da0571", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "a9729560c879f0e07a037c0bd2da0571" due to: ' + e);
+        }
+    },
     '(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\./,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,r=o=>t.regexTest.call(e,o),l={construct:(e,l,n)=>{const c=o();return r(c)&&l[0]&&t.includes.call(l[0],"adshield")&&(l[0]=["(function(){})();"]),Reflect.construct(e,l,n)}};window.Blob=new Proxy(window.Blob,l);const n={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&t.includes.call(n[0],"new Error")&&(n[0]=()=>{}),Reflect.apply(e,l,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&l?.includes?.("setTimeout")&&(l=t.filter.call(l,(e=>!t.includes.call(e,"setTimeout")))),Reflect.apply(e,l,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();': () => {
         try {
             const e = "done";
