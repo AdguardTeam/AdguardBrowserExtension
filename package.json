@@ -22,7 +22,7 @@
         "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~3.2 && tsx tools/resources/update-local-test-script-rules.ts && tsx tools/resources-mv3.ts",
         "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
-        "lint:code": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts .",
+        "lint:code": "eslint --cache --max-warnings=0 --ext .jsx,.js,.cjs,.mjs,.tsx,.ts .",
         "lint": "pnpm lint:code && pnpm lint:types",
         "increment": "tsx tools/increment.ts",
         "prepare": "husky install",
