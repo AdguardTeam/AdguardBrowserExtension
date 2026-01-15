@@ -95,13 +95,14 @@ link_tswebextension() {
         # Store original directory to return to later
         ORIGINAL_DIR=$(pwd)
 
-        cd ..
+        # Clone inside browser-extension to keep symlinks within directory tree
+        # This fixes PYDocker's docker cp failing on symlinks pointing outside
 
         # Ensure idempotency: start from a clean folder
-        rm -rf tsurlfilter || true
+        rm -rf vendor/tsurlfilter || true
 
-        mkdir -p tsurlfilter
-        cd tsurlfilter
+        mkdir -p vendor/tsurlfilter
+        cd vendor/tsurlfilter
 
         clone_tsurlfilter
 
@@ -113,23 +114,23 @@ link_tswebextension() {
         cd "${ORIGINAL_DIR}"
 
         echo "Linking tswebextension package to main project..."
-        pnpm link ../tsurlfilter/packages/tswebextension
+        pnpm link ./vendor/tsurlfilter/packages/tswebextension
 
         # Optionally link additional packages based on command line flags
         if [ "$LINK_AGTREE" = true ]; then
             echo "Linking agtree package to main project..."
-            pnpm link ../tsurlfilter/packages/agtree
+            pnpm link ./vendor/tsurlfilter/packages/agtree
         fi
 
         if [ "$LINK_TSURLFILTER" = true ]; then
             echo "Linking tsurlfilter package to main project..."
-            pnpm link ../tsurlfilter/packages/tsurlfilter
+            pnpm link ./vendor/tsurlfilter/packages/tsurlfilter
         fi
 
         # CSS Tokenizer is a dependency of AGTree and TSUrlFilter
         # if any of them is linked, link CSS Tokenizer as well
         if [ "$LINK_AGTREE" = true ] || [ "$LINK_TSURLFILTER" = true ]; then
-            pnpm link ../tsurlfilter/packages/css-tokenizer
+            pnpm link ./vendor/tsurlfilter/packages/css-tokenizer
         fi
     else
         echo "No TSURLFILTER_REF specified, skipping tsurlfilter clone"
