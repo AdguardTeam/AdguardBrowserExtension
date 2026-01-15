@@ -4,40 +4,28 @@ plan:
   project-key: ADGEXT
   key: BETESTSPECS
   name: browser extension - test
-variables:
-  # playwright is needed for integration tests after build
-  dockerPlaywright: adguard/playwright-runner:22.17--1.53.2--1
-
 stages:
-  - Test build:
-      manual: false
-      final: false
-      jobs:
-        - Test dev build
-        - Build chrome crx artifact
-  - Tests:
+  - Build and test:
       manual: false
       final: false
       jobs:
         - Lint
         - Unit tests
+        - Test dev build
+        - Build chrome crx artifact
+  - Integration tests:
+      manual: false
+      final: false
+      jobs:
         - Integration tests
 
 Test dev build:
   key: TESTDEVBUILD
   other:
     clean-working-dir: true
-  docker: &docker
-    image: ${bamboo.dockerPlaywright}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
         force-clean-build: true
-    - script:
-        interpreter: SHELL
-        scripts:
-          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
     - script:
         interpreter: SHELL
         scripts:
@@ -45,84 +33,60 @@ Test dev build:
             set -x
             set -e
 
-            ls -la
-
             # Fix mixed logs
             exec 2>&1
 
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-            pnpm install ${bamboo.varsPnpm}
+            export DOCKER_BUILDKIT=1
 
-            # Create dev build with zip files for CI artifacts
-            # Note: no -- separator needed, options work with subcommand
-            pnpm dev --zip
-
-            # Create artifacts directory if it doesn't exist
-            mkdir -p artifacts
-
-            # Move all artifacts to the artifacts directory.
-            mv build/dev/build.txt artifacts/
-            # Add postfix to all zip files for easier identification target env.
-            mv build/dev/chrome.zip artifacts/chrome-dev.zip
-            mv build/dev/chrome-mv3.zip artifacts/chrome-mv3-dev.zip
-            mv build/dev/edge.zip artifacts/edge-dev.zip
-            mv build/dev/firefox-amo.zip artifacts/firefox-amo-dev.zip
-            mv build/dev/firefox-standalone.zip artifacts/firefox-standalone-dev.zip
-            mv build/dev/opera.zip artifacts/opera-dev.zip
-
-            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
-            # TODO: Remove after fixing PYDocker rsync performance
-            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
-            # Keep only artifacts and bamboo-specs (needed for cleanup.sh)
-            echo "=== DEBUG: Before cleanup ==="
-            ls -la
-            du -sh . || true
-            echo "=== DEBUG: Running cleanup ==="
-            find . -mindepth 1 -maxdepth 1 \
-              ! -name 'artifacts' \
-              ! -name 'bamboo-specs' \
-              -exec rm -rf {} + || true
-            echo "=== DEBUG: After cleanup ==="
-            ls -la
-            du -sh . || true
+            # Build with named context for tsurlfilter
+            # Docker checksums the context content for cache invalidation
+            docker build \
+              --file Dockerfile.test \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target dev-build-output \
+              --output type=local,dest=output \
+              .
   # IMPORTANT: run clean after each job, since each job is run in a separate
   # directory and we want to clean up after each job.
   final-tasks:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome-dev.zip,artifacts/chrome-mv3-dev.zip,artifacts/edge-dev.zip,artifacts/firefox-amo-dev.zip,artifacts/firefox-standalone-dev.zip,artifacts/opera-dev.zip"
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/chrome-dev.zip,output/artifacts/chrome-mv3-dev.zip,output/artifacts/edge-dev.zip,output/artifacts/firefox-amo-dev.zip,output/artifacts/firefox-standalone-dev.zip,output/artifacts/opera-dev.zip"
   artifacts:
     - name: build.txt
-      location: artifacts
+      location: output/artifacts
       pattern: build.txt
       required: true
     - name: chrome-dev.zip
-      location: artifacts
+      location: output/artifacts
       pattern: chrome-dev.zip
       required: true
     - name: chrome-mv3-dev.zip
-      location: artifacts
+      location: output/artifacts
       pattern: chrome-mv3-dev.zip
       required: true
       # Mark it shared to download from stages for tests
       shared: true
     - name: edge-dev.zip
-      location: artifacts
+      location: output/artifacts
       pattern: edge-dev.zip
       required: true
     - name: firefox-amo-dev.zip
-      location: artifacts
+      location: output/artifacts
       pattern: firefox-amo-dev.zip
       required: true
     - name: firefox-standalone-dev.zip
-      location: artifacts
+      location: output/artifacts
       pattern: firefox-standalone-dev.zip
       required: true
     - name: opera-dev.zip
-      location: artifacts
+      location: output/artifacts
       pattern: opera-dev.zip
       required: true
   requirements: &requirements
@@ -132,61 +96,42 @@ Build chrome crx artifact:
   key: BUILDCHROMECRX
   other:
     clean-working-dir: true
-  docker: *docker
   tasks:
     - checkout:
         force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
-          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
-    - script:
-        scripts:
           - |-
             set -x
             set -e
 
-            ls -la
-
             # Fix mixed logs
             exec 2>&1
 
-            # Create artifacts directory first thing to ensure it exists
-            mkdir -p artifacts
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
+            export DOCKER_BUILDKIT=1
 
-            pnpm install ${bamboo.varsPnpm}
-
-            # Create dev build
-            pnpm dev chrome-crx
-
-            # Add postfix to the built file for easier identification target env
-            mv build/dev/chrome.crx artifacts/chrome-dev.crx
-
-            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
-            # TODO: Remove after fixing PYDocker rsync performance
-            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
-            echo "=== DEBUG: Before cleanup ==="
-            ls -la
-            du -sh . || true
-            echo "=== DEBUG: Running cleanup ==="
-            find . -mindepth 1 -maxdepth 1 \
-              ! -name 'artifacts' \
-              ! -name 'bamboo-specs' \
-              -exec rm -rf {} + || true
-            echo "=== DEBUG: After cleanup ==="
-            ls -la
-            du -sh . || true
+            # Build with named context for tsurlfilter
+            # Docker checksums the context content for cache invalidation
+            docker build \
+              --file Dockerfile.test \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target chrome-crx-output \
+              --output type=local,dest=output \
+              .
   final-tasks:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh artifacts/chrome-dev.crx"
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/chrome-dev.crx"
   artifacts:
     - name: chrome-dev.crx
-      location: artifacts
+      location: output/artifacts
       pattern: chrome-dev.crx
       required: true
   requirements: *requirements
@@ -195,12 +140,9 @@ Lint:
   key: LINT
   other:
     clean-working-dir: true
-  docker: *docker
   tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -208,31 +150,24 @@ Lint:
             set -x
             set -e
 
-            ls -la
-
             # Fix mixed logs
             exec 2>&1
 
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-            pnpm install ${bamboo.varsPnpm}
+            export DOCKER_BUILDKIT=1
 
-            ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
-
-            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
-            # TODO: Remove after fixing PYDocker rsync performance
-            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
-            echo "=== DEBUG: Before cleanup ==="
-            ls -la
-            du -sh . || true
-            echo "=== DEBUG: Running cleanup ==="
-            find . -mindepth 1 -maxdepth 1 \
-              ! -name 'bamboo-specs' \
-              -exec rm -rf {} + || true
-            echo "=== DEBUG: After cleanup ==="
-            ls -la
-            du -sh . || true
+            # Build with named context for tsurlfilter
+            # Docker checksums the context content for cache invalidation
+            docker build \
+              --file Dockerfile.test \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target lint-output \
+              --output type=local,dest=output \
+              .
   final-tasks:
     - script: &cleanup-script
         interpreter: SHELL
@@ -244,12 +179,9 @@ Unit tests:
   key: UNITTESTS
   other:
     clean-working-dir: true
-  docker: *docker
   tasks:
-    - script:
-        interpreter: SHELL
-        scripts:
-          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
+    - checkout:
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
@@ -257,37 +189,37 @@ Unit tests:
             set -x
             set -e
 
-            ls -la
-
             # Fix mixed logs
             exec 2>&1
 
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-            pnpm install ${bamboo.varsPnpm}
+            export DOCKER_BUILDKIT=1
 
-            ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci
-
-            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
-            # TODO: Remove after fixing PYDocker rsync performance
-            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
-            # Keep tests-reports for junit parser
-            echo "=== DEBUG: Before cleanup ==="
-            ls -la
-            du -sh . || true
-            echo "=== DEBUG: Running cleanup ==="
-            find . -mindepth 1 -maxdepth 1 \
-              ! -name 'tests-reports' \
-              ! -name 'bamboo-specs' \
-              -exec rm -rf {} + || true
-            echo "=== DEBUG: After cleanup ==="
-            ls -la
-            du -sh . || true
+            # Build with named context for tsurlfilter
+            # Docker checksums the context content for cache invalidation
+            docker build \
+              --file Dockerfile.test \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target unit-tests-output \
+              --output type=local,dest=output \
+              .
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            if [ -f output/exit-code.txt ]; then
+              exit $(cat output/exit-code.txt)
+            fi
+            echo "output/exit-code.txt not found"
+            exit 1
   final-tasks:
     - test-parser:
         type: junit
-        test-results: 'tests-reports/unit-tests-mv*.xml'
+        test-results: 'output/tests-reports/unit-tests-mv*.xml'
     - script: *cleanup-script
   requirements: *requirements
 
@@ -295,41 +227,59 @@ Integration tests:
   key: INTEGRATIONTESTS
   other:
     clean-working-dir: true
-  docker: *docker
   tasks:
+    - checkout:
+        force-clean-build: true
     - artifact-download:
         artifacts:
           - name: chrome-mv3-dev.zip
     - script:
         interpreter: SHELL
         scripts:
-          - ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
+          - |-
+            set -e
+            mkdir -p artifacts
+            if [ -f chrome-mv3-dev.zip ]; then
+              mv chrome-mv3-dev.zip artifacts/
+            fi
     - script:
         interpreter: SHELL
         scripts:
           - |-
-            # Call the common script with timeout
-            ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh dev
+            set -x
+            set -e
 
-            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
-            # TODO: Remove after fixing PYDocker rsync performance
-            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
-            # Keep tests-reports for junit parser
-            echo "=== DEBUG: Before cleanup ==="
-            ls -la
-            du -sh . || true
-            echo "=== DEBUG: Running cleanup ==="
-            find . -mindepth 1 -maxdepth 1 \
-              ! -name 'tests-reports' \
-              ! -name 'bamboo-specs' \
-              -exec rm -rf {} + || true
-            echo "=== DEBUG: After cleanup ==="
-            ls -la
-            du -sh . || true
+            # Fix mixed logs
+            exec 2>&1
+
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
+
+            export DOCKER_BUILDKIT=1
+
+            # Build with named context for tsurlfilter
+            # Docker checksums the context content for cache invalidation
+            docker build \
+              --file Dockerfile.test \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target integration-tests-output \
+              --output type=local,dest=output \
+              .
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            if [ -f output/exit-code.txt ]; then
+              exit $(cat output/exit-code.txt)
+            fi
+            echo "output/exit-code.txt not found"
+            exit 1
   final-tasks:
     - test-parser:
         type: junit
-        test-results: 'tests-reports/integration-tests-*.xml'
+        test-results: 'output/tests-reports/integration-tests-*.xml'
     - script: *cleanup-script
   requirements: *requirements
 
