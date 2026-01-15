@@ -44,6 +44,7 @@ Test dev build:
           - |-
             set -x
             set -e
+
             ls -la
 
             # Fix mixed logs
@@ -70,6 +71,22 @@ Test dev build:
             mv build/dev/firefox-amo.zip artifacts/firefox-amo-dev.zip
             mv build/dev/firefox-standalone.zip artifacts/firefox-standalone-dev.zip
             mv build/dev/opera.zip artifacts/opera-dev.zip
+
+            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
+            # TODO: Remove after fixing PYDocker rsync performance
+            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
+            # Keep only artifacts and bamboo-specs (needed for cleanup.sh)
+            echo "=== DEBUG: Before cleanup ==="
+            ls -la
+            du -sh . || true
+            echo "=== DEBUG: Running cleanup ==="
+            find . -mindepth 1 -maxdepth 1 \
+              ! -name 'artifacts' \
+              ! -name 'bamboo-specs' \
+              -exec rm -rf {} + || true
+            echo "=== DEBUG: After cleanup ==="
+            ls -la
+            du -sh . || true
   # IMPORTANT: run clean after each job, since each job is run in a separate
   # directory and we want to clean up after each job.
   final-tasks:
@@ -128,6 +145,7 @@ Build chrome crx artifact:
           - |-
             set -x
             set -e
+
             ls -la
 
             # Fix mixed logs
@@ -146,6 +164,21 @@ Build chrome crx artifact:
 
             # Add postfix to the built file for easier identification target env
             mv build/dev/chrome.crx artifacts/chrome-dev.crx
+
+            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
+            # TODO: Remove after fixing PYDocker rsync performance
+            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
+            echo "=== DEBUG: Before cleanup ==="
+            ls -la
+            du -sh . || true
+            echo "=== DEBUG: Running cleanup ==="
+            find . -mindepth 1 -maxdepth 1 \
+              ! -name 'artifacts' \
+              ! -name 'bamboo-specs' \
+              -exec rm -rf {} + || true
+            echo "=== DEBUG: After cleanup ==="
+            ls -la
+            du -sh . || true
   final-tasks:
     - script:
         interpreter: SHELL
@@ -174,6 +207,7 @@ Lint:
           - |-
             set -x
             set -e
+
             ls -la
 
             # Fix mixed logs
@@ -185,6 +219,20 @@ Lint:
             pnpm install ${bamboo.varsPnpm}
 
             ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
+
+            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
+            # TODO: Remove after fixing PYDocker rsync performance
+            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
+            echo "=== DEBUG: Before cleanup ==="
+            ls -la
+            du -sh . || true
+            echo "=== DEBUG: Running cleanup ==="
+            find . -mindepth 1 -maxdepth 1 \
+              ! -name 'bamboo-specs' \
+              -exec rm -rf {} + || true
+            echo "=== DEBUG: After cleanup ==="
+            ls -la
+            du -sh . || true
   final-tasks:
     - script: &cleanup-script
         interpreter: SHELL
@@ -208,6 +256,7 @@ Unit tests:
           - |-
             set -x
             set -e
+
             ls -la
 
             # Fix mixed logs
@@ -219,6 +268,22 @@ Unit tests:
             pnpm install ${bamboo.varsPnpm}
 
             ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci
+
+            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
+            # TODO: Remove after fixing PYDocker rsync performance
+            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
+            # Keep tests-reports for junit parser
+            echo "=== DEBUG: Before cleanup ==="
+            ls -la
+            du -sh . || true
+            echo "=== DEBUG: Running cleanup ==="
+            find . -mindepth 1 -maxdepth 1 \
+              ! -name 'tests-reports' \
+              ! -name 'bamboo-specs' \
+              -exec rm -rf {} + || true
+            echo "=== DEBUG: After cleanup ==="
+            ls -la
+            du -sh . || true
   final-tasks:
     - test-parser:
         type: junit
@@ -245,6 +310,22 @@ Integration tests:
           - |-
             # Call the common script with timeout
             ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh dev
+
+            # TEMPORARY: Pre-cleanup before final-task rsync to reduce sync time
+            # TODO: Remove after fixing PYDocker rsync performance
+            # NOTE: This only helps on successful runs; final-tasks run regardless of success/failure
+            # Keep tests-reports for junit parser
+            echo "=== DEBUG: Before cleanup ==="
+            ls -la
+            du -sh . || true
+            echo "=== DEBUG: Running cleanup ==="
+            find . -mindepth 1 -maxdepth 1 \
+              ! -name 'tests-reports' \
+              ! -name 'bamboo-specs' \
+              -exec rm -rf {} + || true
+            echo "=== DEBUG: After cleanup ==="
+            ls -la
+            du -sh . || true
   final-tasks:
     - test-parser:
         type: junit
