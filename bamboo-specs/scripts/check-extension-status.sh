@@ -52,12 +52,18 @@ if ! echo "${STATUS_OUTPUT}" | grep -q "Published State: PUBLISHED"; then
     exit 1
 fi
 
-# Check if there's a submission under review
+# Check submitted state (should be unset, CANCELLED, or PUBLISHED)
+# Submitted state will be unset if no submission since last successful publish
 if echo "${STATUS_OUTPUT}" | grep -q "Submitted State:"; then
     SUBMITTED_STATE=$(echo "${STATUS_OUTPUT}" | grep "Submitted State:" | awk '{print $3}')
-    echo "⚠️ Extension has a pending submission (${SUBMITTED_STATE}), auto-build NOT allowed"
-    echo "Auto-build is only allowed when there are no pending submissions"
-    exit 1
+    if [ "${SUBMITTED_STATE}" != "CANCELLED" ] && [ "${SUBMITTED_STATE}" != "PUBLISHED" ]; then
+        echo "⚠️ Extension is mostly under review with pending submission (${SUBMITTED_STATE}), auto-build NOT allowed"
+        echo "Auto-build is only allowed when submitted state is unset, CANCELLED, or PUBLISHED"
+        exit 1
+    fi
+    echo "✅ Submitted state is ${SUBMITTED_STATE} (acceptable)"
+else
+    echo "✅ No submitted state (no submission since last publish)"
 fi
 
 # Check if rollout is at 100%
