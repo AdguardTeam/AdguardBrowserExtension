@@ -4269,6 +4269,24 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "312c329877d22ebe2fb61034e6a10055" due to: ' + e);
         }
     },
+    "var _st = window.setTimeout; window.setTimeout = function(a, b) { if(!/_detectAdBlocker/.test(a)){ _st(a,b);}};": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.b052dc5df97eaa80a24a214c96f52633 === e) return;
+            var _st = window.setTimeout;
+            window.setTimeout = function(e, t) {
+                /_detectAdBlocker/.test(e) || _st(e, t);
+            };
+            Object.defineProperty(Window.prototype.toString, "b052dc5df97eaa80a24a214c96f52633", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "b052dc5df97eaa80a24a214c96f52633" due to: ' + e);
+        }
+    },
     '(function(a){setTimeout=function(){var b="function"==typeof arguments[0]?Function.prototype.toString.call(arguments[0]):"string"==typeof arguments[0]?arguments[0]:String(arguments[0]);return/\\[(_0x[a-z0-9]{4,})\\[\\d+\\]\\][\\[\\(]\\1\\[\\d+\\]/.test(b)?NaN:a.apply(window,arguments)}.bind();Object.defineProperty(setTimeout,"name",{value:a.name});setTimeout.toString=Function.prototype.toString.bind(a)})(setTimeout);': () => {
         try {
             const t = "done";
@@ -5338,26 +5356,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
-        }
-    },
-    '(()=>{if(location.href.includes("/watch.php?id=")){const i=location.href.replace("watch.php","video.php");location.assign(i)}})();': () => {
-        try {
-            const c = "done";
-            if (Window.prototype.toString["84c67320f2cd3cf804a18044c1387f4a"] === c) return;
-            (() => {
-                if (location.href.includes("/watch.php?id=")) {
-                    const c = location.href.replace("watch.php", "video.php");
-                    location.assign(c);
-                }
-            })();
-            Object.defineProperty(Window.prototype.toString, "84c67320f2cd3cf804a18044c1387f4a", {
-                value: c,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (c) {
-            console.error('Error executing AG js rule with uniqueId "84c67320f2cd3cf804a18044c1387f4a" due to: ' + c);
         }
     },
     '(()=>{document.addEventListener("DOMContentLoaded",(()=>{"function"==typeof showgame&&showgame()}));})();': () => {
