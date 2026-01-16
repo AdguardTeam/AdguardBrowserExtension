@@ -174,30 +174,59 @@ to the local dev build of `tsurlfilter`.
 
 ### <a name="dev-ci-link"></a> Linking tsurlfilter on CI (Bamboo)
 
-For CI builds, you can link with a specific tsurlfilter commit, branch, or tag using the automated linking script.
+CI builds use Docker multi-stage builds defined in `Dockerfile.test`. The tsurlfilter linking process is split into two phases:
 
-To enable tsurlfilter linking on CI:
+1. **Clone phase** (`clone-tsurlfilter.sh`) - Clones tsurlfilter repository on CI (~3 seconds)
+2. **Build phase** (inside Docker) - Builds tsurlfilter packages (~70 seconds, cached by Docker)
+3. **Link phase** (`link-tsurlfilter.sh`) - Links pre-built packages to the browser extension (~2-3 seconds)
 
-1. **Edit the configuration in `bamboo-specs/scripts/link-tsurlfilter.sh`:**
+#### Configuring tsurlfilter reference
 
-   ```bash
-   # Set TSURLFILTER_REF to the desired reference
-   # TSURLFILTER_REF="fix/AG-45315"     # branch name
-   # TSURLFILTER_REF="a1b2c3d4e5f6..."  # commit hash
-   # TSURLFILTER_REF="v2.1.0"           # tag name
-   # TSURLFILTER_REF=""                 # skip linking (default)
-   ```
+To link with a specific tsurlfilter commit, branch, or tag, edit the configuration in `bamboo-specs/scripts/clone-tsurlfilter.sh`:
 
-2. **The script will automatically:**
-    - Clone the specified tsurlfilter reference
-    - Build the tswebextension package
-    - Link it to the browser extension project
-    - Clean up the tsurlfilter directory after the build
+```bash
+# Set TSURLFILTER_REF to the desired reference
+# TSURLFILTER_REF="fix/AG-45315"     # branch name
+# TSURLFILTER_REF="a1b2c3d4e5f6..."  # commit hash
+# TSURLFILTER_REF="v2.1.0"           # tag name
+# TSURLFILTER_REF=""                 # skip cloning/building/linking
+```
 
-The linking script is integrated into all CI jobs (tests, linting, builds) and only activates when `TSURLFILTER_REF` is set to a non-empty value.
+#### How it works
+
+The build process uses Docker named build contexts for efficient caching:
+
+1. **Clone on CI** - `clone-tsurlfilter.sh` clones tsurlfilter to a sibling directory (`../tsurlfilter`). This happens outside Docker, so no SSH keys are needed inside the container.
+
+2. **`tsurlfilter-build` stage** - Receives the cloned source via `--build-context tsurlfilter=../tsurlfilter`. Docker automatically checksums the content and caches the build (~70 seconds). Cache invalidates only when tsurlfilter source changes.
+
+3. **`linked-deps` stage** - Combines the browser extension dependencies with pre-built tsurlfilter packages. Runs `link-tsurlfilter.sh` to create pnpm links.
+
+4. **Build/test stages** - All CI jobs (lint, unit tests, integration tests, builds) inherit from `linked-deps` and share the same cached dependencies.
 
 > [!NOTE]
-> The CI linking is designed to be idempotent and automatically handles SSH setup and cleanup.
+> The tsurlfilter build stage is cached by Docker based on source content checksum. Rebuilds occur automatically when any file in the tsurlfilter repository changes.
+
+#### Running CI tests locally
+
+You can run the same CI tests locally using Docker:
+
+```shell
+# First, clone tsurlfilter to sibling directory
+./bamboo-specs/scripts/clone-tsurlfilter.sh
+
+# Run unit tests
+docker build -f Dockerfile.test --build-context tsurlfilter=../tsurlfilter --target unit-tests-output --output type=local,dest=output .
+
+# Run linter
+docker build -f Dockerfile.test --build-context tsurlfilter=../tsurlfilter --target lint-output --output type=local,dest=output .
+
+# Build dev artifacts
+docker build -f Dockerfile.test --build-context tsurlfilter=../tsurlfilter --target dev-build-output --output type=local,dest=output .
+```
+
+> [!TIP]
+> Pass `--build-arg TEST_RUN_ID=$(date +%s)` to bust the cache and force a fresh run.
 
 ### <a name="dev-beta-and-release"></a> Building the beta and release versions
 
