@@ -59,7 +59,7 @@ import { AddCustomModal } from './AddCustomModal';
 import { SEARCH_FILTERS } from './Search/constants';
 import { UserScriptsApiWarningInsideCustomGroup } from './UserScriptsApiWarningForCustomFilters';
 
-import './filters.pcss';
+import styles from './filters.module.pcss';
 
 /**
  * Parameters for the filter list render function inside the group.
@@ -466,20 +466,18 @@ const Filters = observer(() => {
                 role="link"
                 onClick={handleReturnToGroups}
                 aria-label={translator.getMessage('options_filters_back_button')}
-                className="filters__back"
+                className={styles.filtersBack}
             >
                 <div className="title__inner">
                     <div className="title title--back-btn">
+                        <Icon
+                            id="#arrow-left"
+                            className="icon--24 title--back-btn--icon"
+                            aria-hidden="true"
+                        />
                         <span id={titleId}>{selectedGroup.groupName}</span>
                     </div>
                     {description && <div className="title__desc title__desc--back">{description}</div>}
-                </div>
-                <div className="button setting__back">
-                    <Icon
-                        id="#arrow-left"
-                        className="icon--24"
-                        aria-hidden="true"
-                    />
                 </div>
             </button>
         );

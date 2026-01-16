@@ -102,12 +102,13 @@ label.checkbox-label {
 
 .content {
     position: relative;
-    padding: 40px 16px;
+    padding: 65px 0;
     width: 100%;
     max-width: 100%;
 
     @media (min-width: 640px) {
         max-width: 672px;
+        padding: 40px 16px;
     };
 
     &__btn {
@@ -165,12 +166,15 @@ label.checkbox-label {
         line-height: 21px;
         font-weight: 600;
         cursor: pointer;
-    }
-}
 
-.footer {
-    width: 100%;
-    flex: 0 0 auto;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        @media (min-width: 640px) {
+            width: auto;
+        }
+    }
 }
 
 .disabled {
@@ -283,6 +287,10 @@ label.checkbox-label {
         background-color: transparent;
         border: 0;
         cursor: pointer;
+
+        &--icon {
+            margin-top: 1px;
+        }
     }
 
     &--sub {

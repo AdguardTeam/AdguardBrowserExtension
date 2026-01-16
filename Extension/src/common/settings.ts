@@ -34,7 +34,11 @@ export const DEFAULT_ALLOWLIST = [];
 export const DEFAULT_INVERTED_ALLOWLIST = [];
 
 export const defaultSettings: Settings = {
-    [SettingOption.DisableShowAdguardPromoInfo]: !(UserAgent.isWindows || UserAgent.isMacOs) || UserAgent.isEdge,
+    [SettingOption.DisableShowAdguardPromoInfo]: !(
+        UserAgent.isWindows
+        || UserAgent.isMacOs
+        || UserAgent.isAndroid
+    ) || UserAgent.isEdge,
     [SettingOption.DisableSafebrowsing]: true,
     [SettingOption.DisableCollectHits]: true,
     [SettingOption.AllowAnonymizedUsageData]: false,

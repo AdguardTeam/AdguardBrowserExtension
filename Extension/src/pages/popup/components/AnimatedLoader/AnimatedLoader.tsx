@@ -44,6 +44,11 @@ const LOADER_MIN_DURATION_MS = 50;
  */
 const DEFAULT_ANIMATION_DURATION_MS = 1800;
 
+/**
+ * Minimum time (in ms) to show the loader.
+ */
+const LOADER_MIN_TIME_ELAPSED_MS = 500;
+
 type AnimatedLoaderProps = {
     /**
      * Component to render after timeout passes.
@@ -76,6 +81,7 @@ export const AnimatedLoader = ({
     const [loaded, setLoaded] = useState(false);
     const [waited, setWaited] = useState(false);
     const [fastLoaded, setFastLoaded] = useState(false);
+    const [minTimeElapsed, setMinTimeElapsed] = useState(false);
 
     // Tracker for "fast load" case
     const loadStartTimeRef = useRef<number>(Date.now());
@@ -83,6 +89,14 @@ export const AnimatedLoader = ({
     const videoPlayStartTimeRef = useRef<number | null>(null);
     const videoDurationRef = useRef<number>(DEFAULT_ANIMATION_DURATION_MS);
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setMinTimeElapsed(true);
+        }, LOADER_MIN_TIME_ELAPSED_MS);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     // Check fast load case
     useEffect(() => {
@@ -118,7 +132,7 @@ export const AnimatedLoader = ({
         return () => clearTimeout(timer);
     }, [isLoading]);
 
-    const showContent = (loaded && waited) || fastLoaded;
+    const showContent = (loaded && waited && minTimeElapsed) || fastLoaded;
 
     const handleVideoLoadedMetadata = () => {
         if (!videoRef.current) {
