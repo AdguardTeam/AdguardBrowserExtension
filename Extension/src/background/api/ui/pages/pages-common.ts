@@ -272,12 +272,16 @@ export abstract class PagesApiCommon {
 
         const manifestDetails = browser.runtime.getManifest();
 
+        // Add beta suffix to version so that filter developers can identify
+        // which version the issue is reported against.
+        const productVersion = IS_BETA ? `${manifestDetails.version}-beta` : manifestDetails.version;
+
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
             product_type: PagesApiCommon.PRODUCT_TYPE,
             manifest_version: encodeURIComponent(manifestDetails.manifest_version),
-            product_version: encodeURIComponent(manifestDetails.version),
+            product_version: encodeURIComponent(productVersion),
             url: encodeURIComponent(siteUrl),
         };
 
