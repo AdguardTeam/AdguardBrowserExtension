@@ -198,8 +198,6 @@ const Stealth = observer(() => {
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_block_known_trackers_title')}
                     description={translator.getMessage('options_block_known_trackers_description')}
                     disabled={!blockKnownTrackers}
@@ -211,8 +209,6 @@ const Stealth = observer(() => {
                 />
 
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_strip_tracking_params_title')}
                     description={translator.getMessage('options_strip_tracking_params_description')}
                     disabled={!stripTrackingParameters}
@@ -223,8 +219,6 @@ const Stealth = observer(() => {
                     handler={stripTrackingParametersChangeHandlerWrapper}
                 />
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_hide_search_queries_title')}
                     description={translator.getMessage('options_hide_search_queries_desc')}
                     disabled={!settings.values[HideSearchQueries]}
@@ -235,8 +229,6 @@ const Stealth = observer(() => {
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_send_not_track_title')}
                     description={reactTranslator.getMessage('options_send_not_track_desc', {
                         gpc: (chunks: string) => (
@@ -275,8 +267,6 @@ const Stealth = observer(() => {
                     mode="subTitle"
                     disabled={isStealthModeDisabled}
                 >
-                    { /* TODO fix type error when SettingsSection be rewritten in typescript */}
-                    {/* @ts-ignore */}
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_third_party_title')}
                         description={(
@@ -310,8 +300,6 @@ const Stealth = observer(() => {
                         />
                     </SettingsSetCheckbox>
 
-                    { /* TODO fix type error when SettingsSection be rewritten in typescript */}
-                    {/* @ts-ignore */}
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_first_party_title')}
                         description={(
@@ -354,8 +342,6 @@ const Stealth = observer(() => {
             >
 
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox is rewritten in TypeScript
-                    // @ts-ignore
                     title={translator.getMessage('options_disable_webrtc_title')}
                     description={translator.getMessage('options_disable_webrtc_desc')}
                     disabled={!settings.values[BlockWebRTC]}
@@ -370,8 +356,6 @@ const Stealth = observer(() => {
                     referrer rule with stealth exclusion AG-34765 */}
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
                         title={translator.getMessage('options_hide_referrer_title')}
                         description={translator.getMessage('options_hide_referrer_desc')}
                         disabled={!settings.values[HideReferrer]}
@@ -385,8 +369,6 @@ const Stealth = observer(() => {
 
                 {settingsStore.isChrome && (
                     <SettingsSetCheckbox
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
                         title={translator.getMessage('options_remove_client_data_title')}
                         description={translator.getMessage('options_remove_client_data_desc')}
                         disabled={!settings.values[RemoveXClientData]}

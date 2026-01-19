@@ -94,7 +94,7 @@ export const AnnoyancesConsent = observer(({
             {shouldShowFilterPolicy && (
                 <div className={styles.filterPolicy}>
                     {reactTranslator.getMessage('options_filters_annoyances_consent_filter_policy', {
-                        a: (chunks: string[]) => (
+                        a: (chunks: string) => (
                             <a
                                 className={styles.filterPolicyLink}
                                 href={FILTER_POLICY_URL}
