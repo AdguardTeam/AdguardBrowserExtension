@@ -142,12 +142,11 @@ export class CommonFilterApi {
             filter,
             rawFilter,
             isPatchUpdateFailed,
-        } = await network.downloadFilterRules(
+        } = await network.downloadFilterRules({
             filterUpdateOptions,
-            false,
-            isOptimized,
-            oldRawFilter,
-        );
+            useOptimizedFilters: isOptimized,
+            rawFilter: oldRawFilter,
+        });
 
         const currentFilterState = filterStateStorage.get(filterUpdateOptions.filterId);
         filterStateStorage.set(filterUpdateOptions.filterId, {
