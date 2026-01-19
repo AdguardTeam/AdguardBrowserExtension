@@ -491,7 +491,7 @@ const RequestInfo = observer(() => {
                 });
 
                 return (
-                    <Popover text={text as string} fixedWidth>
+                    <Popover text={text}>
                         <Icon
                             id="#question"
                             className="icon icon--24 icon--green-default"

@@ -6,10 +6,11 @@
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
+    padding: 32px 8px;
 }
 
 .wrapper {
-    min-width: 300px;
+    width: 100%;
     background-color: var(--fills-backgrounds-page-background-default);
     border: none;
     padding: 0px;
@@ -42,8 +43,6 @@
     align-items: flex-start;
     max-height: 100%;
     padding: 0;
-    max-width: 600px;
-    min-width: 330px;
     overflow-y: auto;
     background-color: var(--fills-backgrounds-page-background-default);
 
@@ -70,6 +69,7 @@
         width: 100%;
         padding: 32px 32px 0;
         overflow-x: hidden;
+        position: relative;
 
         background:
             /* shadow cover bottom */
@@ -87,6 +87,10 @@
         background-repeat: no-repeat;
         background-size: 100% 24px, 100% 16px;
         background-attachment: local, scroll;
+
+        @media(max-width: 640px) {
+            padding: 40px 16px 0 16px;
+        }
     }
 
     .header {
@@ -102,6 +106,10 @@
         font-weight: 700;
         margin-bottom: 12px;
         width: 100%;
+
+        @media (max-width: 640px) {
+            text-align: center;
+        }
     }
 
     .subtitle {
@@ -115,25 +123,32 @@
             overflow: hidden;
             white-space: nowrap;
         }
+
+        @media(max-width: 640px) {
+            text-align: center;
+        }
     }
 
     .btn {
-        width: 50%;
-        max-width: 300px;
-        margin: 0 24px 0 0;
-
-        &.btnConfirm {
-            min-width: 100px;
+        width: 100%;
+        max-width: 100%;
+        
+        &.optionalBtn {
+            @media(max-width: 640px) {
+               display: none;
+            }
         }
 
-        &:last-child {
-            margin-right: 0;
+        @media(min-width: 640px) {
+            width: 50%;
+            max-width: 300px;
         }
     }
 
     .btnClose {
-        margin-top: -18px;
-        margin-right: -18px;
+        position: absolute;
+        top: 16px;
+        right: 16px;
 
         :global(.icon) {
             width: 24px;
@@ -146,8 +161,15 @@
         width: 100%;
         padding: 24px 32px 32px;
         display: flex;
+        gap: 24px;
         align-items: center;
         box-sizing: border-box;
+
+        @media(max-width: 640px) {
+            gap: 16px;
+            padding: 24px 16px 32px;
+            flex-direction: column;
+        }
     }
 }
 

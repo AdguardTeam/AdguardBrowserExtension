@@ -28,7 +28,7 @@ import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
+import { Setting } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -183,7 +183,6 @@ const Stealth = observer(() => {
                 inlineControl={(
                     <Setting
                         id={DisableStealthMode}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_privacy_title')}
                         labelId={switchTitleId}
                         inverted
@@ -206,7 +205,6 @@ const Stealth = observer(() => {
                     disabled={!blockKnownTrackers}
                     sectionDisabled={isStealthModeDisabled}
                     id={BlockKnownTrackers}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_block_known_trackers_title')}
                     value={blockKnownTrackers}
                     handler={blockKnownTrackersChangeHandlerWrapper}
@@ -220,7 +218,6 @@ const Stealth = observer(() => {
                     disabled={!stripTrackingParameters}
                     sectionDisabled={isStealthModeDisabled}
                     id={STRIP_TRACKING_PARAMETERS}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_strip_tracking_params_title')}
                     value={stripTrackingParameters}
                     handler={stripTrackingParametersChangeHandlerWrapper}
@@ -233,7 +230,6 @@ const Stealth = observer(() => {
                     disabled={!settings.values[HideSearchQueries]}
                     sectionDisabled={isStealthModeDisabled}
                     id={HideSearchQueries}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_hide_search_queries_title')}
                     value={settings.values[HideSearchQueries]}
                     handler={settingChangeHandler}
@@ -267,7 +263,6 @@ const Stealth = observer(() => {
                     disabled={!settings.values[SendDoNotTrack]}
                     sectionDisabled={isStealthModeDisabled}
                     id={SendDoNotTrack}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_send_not_track_title')}
                     value={settings.values[SendDoNotTrack]}
                     handler={settingChangeHandler}
@@ -294,7 +289,6 @@ const Stealth = observer(() => {
                         disabled={!isThirdPartyCookiesEnabled}
                         sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructThirdPartyCookies}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_third_party_title')}
                         value={isThirdPartyCookiesEnabled}
                         handler={settingChangeHandler}
@@ -307,7 +301,6 @@ const Stealth = observer(() => {
                             id={SelfDestructThirdPartyCookiesTime}
                             className="stealth__input"
                             disabled={!isThirdPartyCookiesEnabled || isStealthModeDisabled}
-                            type={SETTINGS_TYPES.INPUT}
                             value={settings.values[SelfDestructThirdPartyCookiesTime]}
                             handler={settingChangeHandler}
                             placeholder={DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN}
@@ -331,7 +324,6 @@ const Stealth = observer(() => {
                         disabled={!isFirstPartyCookiesEnabled}
                         sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructFirstPartyCookies}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_first_party_title')}
                         value={isFirstPartyCookiesEnabled}
                         handler={settingChangeHandler}
@@ -344,7 +336,6 @@ const Stealth = observer(() => {
                             id={SelfDestructFirstPartyCookiesTime}
                             className="stealth__input"
                             disabled={!isFirstPartyCookiesEnabled || isStealthModeDisabled}
-                            type={SETTINGS_TYPES.INPUT}
                             value={settings.values[SelfDestructFirstPartyCookiesTime]}
                             handler={settingChangeHandler}
                             placeholder={DEFAULT_FIRST_PARTY_COOKIES_SELF_DESTRUCT_MIN}
@@ -370,7 +361,6 @@ const Stealth = observer(() => {
                     disabled={!settings.values[BlockWebRTC]}
                     sectionDisabled={isStealthModeDisabled}
                     id={BlockWebRTC}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_disable_webrtc_title')}
                     value={settings.values[BlockWebRTC]}
                     handler={privacySettingChangeHandlerWithLoader}
@@ -387,7 +377,6 @@ const Stealth = observer(() => {
                         disabled={!settings.values[HideReferrer]}
                         sectionDisabled={isStealthModeDisabled}
                         id={HideReferrer}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_hide_referrer_title')}
                         value={settings.values[HideReferrer]}
                         handler={settingChangeHandler}
@@ -403,7 +392,6 @@ const Stealth = observer(() => {
                         disabled={!settings.values[RemoveXClientData]}
                         sectionDisabled={isStealthModeDisabled}
                         id={RemoveXClientData}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_remove_client_data_title')}
                         value={settings.values[RemoveXClientData]}
                         handler={settingChangeHandler}

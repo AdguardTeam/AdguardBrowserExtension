@@ -25,7 +25,6 @@ import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
-import { SETTINGS_TYPES } from '../Settings/Setting';
 import { messenger } from '../../../services/messenger';
 import { rootStore } from '../../stores/RootStore';
 import { NotificationType } from '../../../common/types';
@@ -36,6 +35,7 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { COLLECT_HITS_LEARN_MORE_URL } from '../../constants';
+import { type SettingHandler } from '../../types';
 
 import { ExtensionUsageDataModal } from './ExtensionUsageDataModal/ExtensionUsageDataModal';
 
@@ -52,20 +52,20 @@ export const Miscellaneous = observer(() => {
 
     const { settings } = settingsStore;
 
-    if (!settings) {
-        return null;
-    }
-
     const [isOpenResetStatsModal, setIsOpenResetStatsModal] = useState(false);
     const [isOpenResetSettingsModal, setIsOpenResetSettingsModal] = useState(false);
     const [isUsageDataModalOpen, setIsUsageDataModalOpen] = useState(false);
 
-    const settingChangeHandler = async ({ id, data }) => {
+    if (!settings) {
+        return null;
+    }
+
+    const settingChangeHandler: SettingHandler = async ({ id, data }) => {
         logger.trace(`[ext.Miscellaneous]: Setting ${id} set to ${data}`);
         await settingsStore.updateSetting(id, data);
     };
 
-    const handleInvertAllowlistChange = async ({ id, data }) => {
+    const handleInvertAllowlistChange: SettingHandler = async ({ id, data }) => {
         await addMinDelayLoader(
             uiStore.setShowLoader,
             settingsStore.updateSetting,
@@ -142,7 +142,6 @@ export const Miscellaneous = observer(() => {
                         disabled={!settings.values[UseOptimizedFilters]}
                         id={UseOptimizedFilters}
                         label={translator.getMessage('options_use_optimized_filters')}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         value={settings.values[UseOptimizedFilters]}
                         handler={settingChangeHandler}
                     />
@@ -152,7 +151,6 @@ export const Miscellaneous = observer(() => {
                     description={translator.getMessage('options_allowlist_invert_desc')}
                     id={DefaultAllowlistMode}
                     label={translator.getMessage('options_allowlist_invert')}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     value={settings.values[DefaultAllowlistMode]}
                     handler={handleInvertAllowlistChange}
                     inverted
@@ -160,7 +158,7 @@ export const Miscellaneous = observer(() => {
                 <SettingsSetCheckbox
                     title={translator.getMessage('options_collect_hit_stats_title')}
                     description={reactTranslator.getMessage('options_collect_hit_stats_desc', {
-                        a: (chunks) => (
+                        a: (chunks: string) => (
                             <a
                                 href={COLLECT_HITS_LEARN_MORE_URL}
                                 target="_blank"
@@ -172,7 +170,6 @@ export const Miscellaneous = observer(() => {
                     })}
                     disabled={settings.values[DisableCollectHits]}
                     id={DisableCollectHits}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_collect_hit_stats_title')}
                     inverted
                     value={settings.values[DisableCollectHits]}
@@ -181,7 +178,7 @@ export const Miscellaneous = observer(() => {
                 <SettingsSetCheckbox
                     title={translator.getMessage('options_anonymized_usage_data_title')}
                     description={reactTranslator.getMessage('options_anonymized_usage_data_description', {
-                        button: (chunks) => (
+                        button: (chunks: string) => (
                             <button
                                 type="button"
                                 className="button button--link button--link--underlined button--link--green"
@@ -193,7 +190,6 @@ export const Miscellaneous = observer(() => {
                     })}
                     id={AllowAnonymizedUsageData}
                     label={translator.getMessage('options_anonymized_usage_data_title')}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     value={settings.values[AllowAnonymizedUsageData]}
                     handler={settingChangeHandler}
                 />
@@ -201,7 +197,6 @@ export const Miscellaneous = observer(() => {
                     title={translator.getMessage('options_show_blocked_ads_count_title')}
                     disabled={settings.values[DisableShowPageStats]}
                     id={DisableShowPageStats}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_show_blocked_ads_count_title')}
                     inverted
                     value={settings.values[DisableShowPageStats]}
@@ -212,7 +207,6 @@ export const Miscellaneous = observer(() => {
                     title={translator.getMessage('options_show_context_menu_title')}
                     disabled={settings.values[DisableShowContextMenu]}
                     id={DisableShowContextMenu}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_show_context_menu_title')}
                     inverted
                     value={settings.values[DisableShowContextMenu]}
@@ -223,7 +217,6 @@ export const Miscellaneous = observer(() => {
                     title={translator.getMessage('options_show_adguard_full_version_title')}
                     disabled={settings.values[DisableShowAdguardPromoInfo]}
                     id={DisableShowAdguardPromoInfo}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_show_adguard_full_version_title')}
                     inverted
                     value={settings.values[DisableShowAdguardPromoInfo]}
@@ -234,7 +227,6 @@ export const Miscellaneous = observer(() => {
                     title={translator.getMessage('options_show_app_updated_notification')}
                     disabled={settings.values[DisableShowAppUpdatedNotification]}
                     id={DisableShowAppUpdatedNotification}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_show_app_updated_notification')}
                     inverted
                     value={settings.values[DisableShowAppUpdatedNotification]}
@@ -253,6 +245,7 @@ export const Miscellaneous = observer(() => {
                 {isOpenResetStatsModal && (
                     <ConfirmModal
                         title={translator.getMessage('options_clear_stats_confirm_modal_title')}
+                        subtitle={translator.getMessage('options_clear_stats_confirm_modal_subtitle')}
                         isOpen={isOpenResetStatsModal}
                         setIsOpen={setIsOpenResetStatsModal}
                         onConfirm={handleResetStatisticsConfirm}
@@ -271,6 +264,7 @@ export const Miscellaneous = observer(() => {
                 {isOpenResetSettingsModal && (
                     <ConfirmModal
                         title={translator.getMessage('options_reset_settings_confirm_modal_title')}
+                        subtitle={translator.getMessage('options_reset_settings_confirm_modal_subtitle')}
                         isOpen={isOpenResetSettingsModal}
                         setIsOpen={setIsOpenResetSettingsModal}
                         onConfirm={handleResetSettingsConfirmWrapper}

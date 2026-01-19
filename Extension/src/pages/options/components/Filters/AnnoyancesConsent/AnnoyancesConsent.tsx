@@ -21,6 +21,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import cn from 'classnames';
+
 import { ConfirmModal } from '../../../../common/components/ConfirmModal';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { Popover } from '../../../../common/components/ui/Popover';
@@ -28,8 +30,17 @@ import { translator } from '../../../../../common/translators/translator';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { rootStore } from '../../../stores/RootStore';
 import { FILTER_POLICY_URL } from '../../../constants';
+import theme from '../../../../common/styles/theme';
 
-import './annoyances-consent.pcss';
+import styles from './annoyances-consent.module.pcss';
+
+type AnnoyancesConsentProps = {
+    isOpen: boolean;
+    setIsOpen: (isOpen: boolean) => void;
+    onConfirm: () => void;
+    onCancel: () => void;
+    shouldShowFilterPolicy: boolean;
+};
 
 export const AnnoyancesConsent = observer(({
     isOpen,
@@ -37,7 +48,7 @@ export const AnnoyancesConsent = observer(({
     onConfirm,
     onCancel,
     shouldShowFilterPolicy,
-}) => {
+}: AnnoyancesConsentProps) => {
     const { settingsStore } = useContext(rootStore);
 
     const { filtersToGetConsentFor } = settingsStore;
@@ -46,9 +57,9 @@ export const AnnoyancesConsent = observer(({
 
     const renderFilters = () => {
         return filtersToGetConsentFor.map((filter) => (
-            <li key={filter.filterId} className="annoyances-consent__text annoyances-consent__filter">
-                <div className="annoyances-consent__filter--header">
-                    <div className="annoyances-consent__filter--name">
+            <li key={filter.filterId} className={styles.filterItem}>
+                <div className={styles.filterHeader}>
+                    <div className={styles.filterName}>
                         {filter.name}
                     </div>
                     <Popover text={tooltipText}>
@@ -56,13 +67,13 @@ export const AnnoyancesConsent = observer(({
                             href={filter.homepage}
                             target="_blank"
                             rel="noreferrer"
-                            className="annoyances-consent__filter--homepage-link"
+                            className={cn(styles.filterHomepageLink, theme.common.hideOnMobile)}
                         >
-                            <Icon id="#link" aria-hidden="true" />
+                            <Icon id="#link" aria-hidden="true" className="icon--24" />
                         </a>
                     </Popover>
                 </div>
-                <div className="annoyances-consent__filter--description">
+                <div className={styles.filterDescription}>
                     {filter.description}
                 </div>
             </li>
@@ -70,22 +81,22 @@ export const AnnoyancesConsent = observer(({
     };
 
     const renderSubtitle = () => (
-        <div className="annoyances-consent__content">
-            <div className="annoyances-consent__text annoyances-consent__description">
+        <div className={styles.content}>
+            <div className={`${styles.text} ${styles.description}`}>
                 {translator.getMessage('options_filters_annoyances_consent_description')}
             </div>
-            <div className="annoyances-consent__text annoyances-consent__description">
+            <div className={`${styles.text} ${styles.description}`}>
                 {translator.getMessage('options_filters_annoyances_consent_question')}
             </div>
-            <ul className="annoyances-consent__text annoyances-consent__filters">
+            <ul className={`${styles.text} ${styles.filters}`}>
                 {renderFilters()}
             </ul>
             {shouldShowFilterPolicy && (
-                <div className="annoyances-consent__filter--policy">
+                <div className={styles.filterPolicy}>
                     {reactTranslator.getMessage('options_filters_annoyances_consent_filter_policy', {
-                        a: (chunks) => (
+                        a: (chunks: string[]) => (
                             <a
-                                className="annoyances-consent__filter--policy--link"
+                                className={styles.filterPolicyLink}
                                 href={FILTER_POLICY_URL}
                                 target="_blank"
                                 rel="noreferrer"
@@ -110,6 +121,7 @@ export const AnnoyancesConsent = observer(({
             customConfirmTitle={translator.getMessage('options_filters_annoyances_consent_enable_button')}
             isConsent
             isScrollable={filtersToGetConsentFor.length > 1}
+            isOptionalBtnHidden
         />
     );
 });

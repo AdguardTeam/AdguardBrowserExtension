@@ -74,9 +74,19 @@ type ConfirmModalParams = {
     isConsent?: boolean;
 
     /**
+     * Flag to truncate subtitle to one line. Default is false (multiline).
+     */
+    isSubtitleOneLine?: boolean;
+
+    /**
      * Flag to make modal content scrollable. Default is false.
      */
     isScrollable?: boolean;
+
+    /**
+     * Flag to hide optional button. Default is false.
+     */
+    isOptionalBtnHidden?: boolean;
 };
 
 export const ConfirmModal = ({
@@ -89,14 +99,16 @@ export const ConfirmModal = ({
     customConfirmTitle,
     customCancelTitle,
     isConsent,
+    isSubtitleOneLine = false,
     isScrollable = false,
+    isOptionalBtnHidden = false,
 }: ConfirmModalParams) => {
     const confirmTitle = customConfirmTitle || 'OK';
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
 
     const subtitleClassName = cn(
         theme.modal.subtitle,
-        !isConsent && theme.modal.subtitleOneLine,
+        isSubtitleOneLine && theme.modal.subtitleOneLine,
     );
 
     const okBtnClassName = cn(`button button--l ${theme.modal.btn} button--green-bg`, {
@@ -135,18 +147,18 @@ export const ConfirmModal = ({
                 )}
             >
                 <div className={theme.modal.content}>
+                    <button
+                        type="button"
+                        className={`button ${theme.modal.btnClose}`}
+                        title={translator.getMessage('close_button_title')}
+                        onClick={handleCancel}
+                    >
+                        <Icon id="#cross" aria-hidden="true" />
+                    </button>
                     <div className={theme.modal.header}>
                         <div className={theme.modal.title}>
                             {title}
                         </div>
-                        <button
-                            type="button"
-                            className={`button ${theme.modal.btnClose}`}
-                            title={translator.getMessage('close_button_title')}
-                            onClick={handleCancel}
-                        >
-                            <Icon id="#cross" aria-hidden="true" />
-                        </button>
                     </div>
                     {subtitle && (
                         <div
@@ -166,7 +178,12 @@ export const ConfirmModal = ({
                         {confirmTitle}
                     </button>
                     <button
-                        className={`button button--l button--transparent ${theme.modal.btn} ${theme.modal.btnConfirm}`}
+                        className={cn(
+                            'button button--l',
+                            'button--transparent',
+                            theme.modal.btn,
+                            isOptionalBtnHidden && theme.modal.optionalBtn,
+                        )}
                         type="button"
                         onClick={handleCancel}
                         title={cancelTitle}
