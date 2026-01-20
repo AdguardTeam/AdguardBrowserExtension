@@ -45,7 +45,7 @@ tasks:
           fi
 
           # Update rulesets before build.
-          if [ "${skipReview}" == "true" ]; then
+          if [ "${skipReview}" = "true" ]; then
             # `--skip-local-resources` is used to skip updating local resources
             # with dictionary of scripts, because to use "skip review" feature
             # in the Chrome Web Store we need to ensure that changes are made
@@ -67,17 +67,17 @@ tasks:
           pnpm release chrome-mv3
 
           # If we want to use "skip review" feature, check that changes are safe.
-          if [ "${skipReview}" == "true" ]; then
+          if [ "${skipReview}" = "true" ]; then
             # Download latest beta and release versions of the extension
             # from the Chrome Web Store to check that new versions
             # are eligible for "skip review" feature.
-            pnpm tsx tools/skip-review/download-latest-extension beta
-            pnpm tsx tools/skip-review/download-latest-extension release
+            [ "${bamboo.inject.betaChannelAvailable}" = "true" ] && pnpm tsx tools/skip-review/download-latest-extension beta
+            [ "${bamboo.inject.releaseChannelAvailable}" = "true" ] && pnpm tsx tools/skip-review/download-latest-extension release
 
             # Check that beta and release updates contain only safe
             # changes in rulesets and only in rule_resources files.
-            pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
-            pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
+            [ "${bamboo.inject.betaChannelAvailable}" = "true" ] && pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3
+            [ "${bamboo.inject.releaseChannelAvailable}" = "true" ] && pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3
           fi
 
           # Move zip artifacts to the artifacts directory, because we will
