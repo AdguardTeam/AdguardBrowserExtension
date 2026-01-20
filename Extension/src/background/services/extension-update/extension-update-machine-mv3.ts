@@ -68,7 +68,27 @@ const extensionUpdateMachine = setup({
             on: {
                 [ExtensionUpdateFSMEvent.Init]: [
                     {
-                        // TODO: check if it is still needed. AG-47075
+                        /**
+                         * Guard to restore Available state when update is already downloaded.
+                         *
+                         * Purpose: When a page (popup/options) loads and an update was already made
+                         * available by Chrome (via onUpdateAvailable event), we need to restore the
+                         * FSM to Available state so the UI can show the "Update" button immediately.
+                         *
+                         * This happens when:
+                         * - Chrome auto-downloaded an update in the background;
+                         * - User manually checked for update, it was found, but user didn't apply it yet;
+                         * - Page was closed and reopened while update is still pending.
+                         *
+                         * Without this guard, the FSM would stay in Idle state and the UI wouldn't
+                         * know an update is available, even though ExtensionUpdateService.isUpdateAvailable
+                         * returns true.
+                         *
+                         * @param data Event data.
+                         * @param data.event Event object containing the update availability information.
+                         *
+                         * @returns True if an update is available, false otherwise.
+                         */
                         guard: ({ event }: { event: EventType }): boolean => !!event.isUpdateAvailable,
                         target: ExtensionUpdateFSMState.Available,
                     },
@@ -87,16 +107,73 @@ const extensionUpdateMachine = setup({
             },
         },
         [ExtensionUpdateFSMState.Checking]: {
+            after: {
+                NOTIFICATION_DELAY: [
+                    {
+                        /**
+                         * Guard to transition to Available state after minimum display duration.
+                         *
+                         * Ensures "Checking for updates..." notification displays for at least 2 seconds
+                         * before showing the update button, even if Chrome finds the update immediately.
+                         *
+                         * @param data Guard context object.
+                         * @param data.event Event that triggered the guard.
+                         *
+                         * @returns True if UpdateAvailable event was received.
+                         */
+                        guard: ({ event }: { event: EventType }): boolean => (
+                            event.type === ExtensionUpdateFSMEvent.UpdateAvailable
+                        ),
+                        target: ExtensionUpdateFSMState.Available,
+                    },
+                    {
+                        /**
+                         * Guard to transition to NotAvailable state after minimum display duration.
+                         *
+                         * Ensures "Checking for updates..." notification displays for at least 2 seconds
+                         * before showing "No update available" result, preventing UI flicker.
+                         *
+                         * @param data Guard context object.
+                         * @param data.event Event that triggered the guard.
+                         *
+                         * @returns True if NoUpdateAvailable event was received.
+                         */
+                        guard: ({ event }: { event: EventType }): boolean => (
+                            event.type === ExtensionUpdateFSMEvent.NoUpdateAvailable
+                        ),
+                        target: ExtensionUpdateFSMState.NotAvailable,
+                    },
+                    {
+                        /**
+                         * Guard to transition to Failed state after minimum display duration.
+                         *
+                         * Ensures "Checking for updates..." notification displays for at least 2 seconds
+                         * before showing error notification, providing smooth UI experience.
+                         *
+                         * @param data Guard context object.
+                         * @param data.event Event that triggered the guard.
+                         *
+                         * @returns True if UpdateFailed event was received.
+                         */
+                        guard: ({ event }: { event: EventType }): boolean => (
+                            event.type === ExtensionUpdateFSMEvent.UpdateFailed
+                        ),
+                        target: ExtensionUpdateFSMState.Failed,
+                    },
+                ],
+            },
             on: {
                 [ExtensionUpdateFSMEvent.UpdateAvailable]: {
-                    target: ExtensionUpdateFSMState.Available,
+                    // Store the event to be processed after delay
+                    actions: [],
                 },
                 [ExtensionUpdateFSMEvent.NoUpdateAvailable]: {
-                    target: ExtensionUpdateFSMState.NotAvailable,
+                    // Store the event to be processed after delay
+                    actions: [],
                 },
-                // This can be done if checking failed due to timeout
                 [ExtensionUpdateFSMEvent.UpdateFailed]: {
-                    target: ExtensionUpdateFSMState.Failed,
+                    // Store the event to be processed after delay
+                    actions: [],
                 },
             },
         },
@@ -116,9 +193,31 @@ const extensionUpdateMachine = setup({
             },
         },
         [ExtensionUpdateFSMState.Updating]: {
+            after: {
+                NOTIFICATION_DELAY: [
+                    {
+                        /**
+                         * Guard to transition to Failed state after minimum display duration.
+                         *
+                         * Ensures "Updating..." notification displays for at least 2 seconds
+                         * before showing error notification, providing smooth UI experience.
+                         *
+                         * @param data Guard context object.
+                         * @param data.event Event that triggered the guard.
+                         *
+                         * @returns True if UpdateFailed event was received.
+                         */
+                        guard: ({ event }: { event: EventType }): boolean => {
+                            return event.type === ExtensionUpdateFSMEvent.UpdateFailed;
+                        },
+                        target: ExtensionUpdateFSMState.Failed,
+                    },
+                ],
+            },
             on: {
                 [ExtensionUpdateFSMEvent.UpdateFailed]: {
-                    target: ExtensionUpdateFSMState.Failed,
+                    // Store the event to be processed after delay
+                    actions: [],
                 },
                 /**
                  * Note: there is no event for successful update, because it is not needed —

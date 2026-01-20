@@ -42,6 +42,9 @@ import {
     messageHasTypeField,
     MessageType,
 } from '../../../../common/messages';
+import { NotifierType, ExtensionUpdateFSMState } from '../../../../common/constants';
+import { NotificationType } from '../../../common/types';
+import { translator } from '../../../../common/translators/translator';
 import { logger } from '../../../../common/logger';
 import { useObservePopupHeight } from '../../hooks/useObservePopupHeight';
 import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
@@ -52,6 +55,7 @@ import '../../styles/main.pcss';
 import './popup.pcss';
 
 export const Popup = observer(() => {
+    const store = useContext(popupStore);
     const {
         appearanceTheme,
         isAppInitialized,
@@ -62,7 +66,7 @@ export const Popup = observer(() => {
         isAndroidBrowser,
         isFilteringPossible,
         telemetryStore,
-    } = useContext(popupStore);
+    } = store;
 
     useAppearanceTheme(appearanceTheme);
 
@@ -148,7 +152,7 @@ export const Popup = observer(() => {
         };
     }, [telemetryStore]);
 
-    // subscribe to stats change
+    // subscribe to stats change and extension update state changes
     useEffect(() => {
         const messageHandler = (message: unknown): undefined => {
             if (!messageHasTypeField(message)) {
@@ -182,6 +186,82 @@ export const Popup = observer(() => {
             messenger.onMessage.removeListener(messageHandler);
         };
     }, [updateBlockedStats, getPopupData, setIsAppInitialized]);
+
+    // Subscribe to FSM extension update state changes
+    useEffect(() => {
+        const handleExtensionUpdateStateChange = (state: ExtensionUpdateFSMState) => {
+            switch (state) {
+                case ExtensionUpdateFSMState.Checking:
+                    store.setIsExtensionCheckingUpdateOrUpdating(true);
+                    store.setUpdateNotification({
+                        type: NotificationType.Loading,
+                        animationCondition: true,
+                        text: translator.getMessage('update_checking_in_progress'),
+                        closeManually: true,
+                    });
+                    break;
+                case ExtensionUpdateFSMState.NotAvailable:
+                    store.setIsExtensionCheckingUpdateOrUpdating(false);
+                    store.setUpdateNotification({
+                        type: NotificationType.Success,
+                        text: translator.getMessage('update_not_needed'),
+                    });
+                    break;
+                case ExtensionUpdateFSMState.Available:
+                    store.setIsExtensionCheckingUpdateOrUpdating(false);
+                    store.setUpdateNotification(null);
+                    store.setIsExtensionUpdateAvailable(true);
+                    break;
+                case ExtensionUpdateFSMState.Updating:
+                    store.setIsExtensionCheckingUpdateOrUpdating(true);
+                    store.setUpdateNotification({
+                        type: NotificationType.Loading,
+                        closeManually: true,
+                        animationCondition: true,
+                        text: translator.getMessage('update_installing_in_progress_title'),
+                    });
+                    break;
+                case ExtensionUpdateFSMState.Failed:
+                    store.setIsExtensionCheckingUpdateOrUpdating(false);
+                    store.setUpdateNotification({
+                        type: NotificationType.Error,
+                        text: translator.getMessage('update_failed_text'),
+                        button: {
+                            title: translator.getMessage('update_failed_try_again_btn'),
+                            onClick: store.checkUpdates,
+                        },
+                    });
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        const notifierEvents = [NotifierType.ExtensionUpdateStateChange];
+
+        const messageHandler = async (message: any) => {
+            const { type, data } = message as { type: NotifierType; data: any };
+
+            if (type !== NotifierType.ExtensionUpdateStateChange) {
+                return;
+            }
+
+            const [state] = data;
+            handleExtensionUpdateStateChange(state);
+        };
+
+        let removeListener: () => void;
+
+        messenger.createEventListener(notifierEvents, messageHandler).then((unsubscribe) => {
+            removeListener = unsubscribe;
+        });
+
+        return () => {
+            if (removeListener) {
+                removeListener();
+            }
+        };
+    }, [store]);
 
     return (
         <>

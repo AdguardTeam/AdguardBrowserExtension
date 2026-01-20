@@ -20,10 +20,8 @@
 
 import { RulesLimitsService } from '../../rules-limits/rules-limits-service-mv3';
 import { ExtensionUpdateService } from '../../extension-update/extension-update-service-mv3';
-import { ExtensionUpdateFSMEvent } from '../../../../common/constants';
 import { MessageType } from '../../../../common/messages';
 import { messageHandler } from '../../../message-handler';
-import { extensionUpdateActor } from '../../extension-update/extension-update-machine-mv3';
 
 import { PopupServiceCommon } from './popup-common';
 
@@ -78,13 +76,6 @@ export class PopupService extends PopupServiceCommon {
         const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
         const isSuccessfulExtensionUpdate = manualExtensionUpdateData?.isOk || false;
         const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
-
-        // TODO: AG-47075 Should be moved to extension update service initialization.
-        extensionUpdateActor.send({
-            type: ExtensionUpdateFSMEvent.Init,
-            isReloadedOnUpdate: isExtensionReloadedOnUpdate,
-            isUpdateAvailable: isExtensionUpdateAvailable,
-        });
 
         return {
             areFilterLimitsExceeded,

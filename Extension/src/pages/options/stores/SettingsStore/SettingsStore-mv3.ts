@@ -33,8 +33,6 @@ import { type RootStore } from '../RootStore';
 import { ForwardFrom } from '../../../../common/forward';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
-import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
-import { sleepIfNecessary } from '../../../../common/sleep-utils';
 import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
 
 import { SettingsStoreCommon, fetchDataWithRetry } from './SettingsStore-common';
@@ -174,24 +172,18 @@ export class SettingsStore extends SettingsStoreCommon {
     // eslint-disable-next-line class-methods-use-this
     @action
     async checkUpdates() {
-        const start = Date.now();
         try {
             await messenger.checkUpdates();
         } catch (error) {
             logger.debug('[ext.SettingsStore.checkUpdates]: failed to check updates on options page: ', error);
         }
-
-        // Ensure minimum duration for smooth UI experience
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
     }
 
     /**
-     * Triggers extension update and waits minimum duration
-     * for a smoother UI experience before reload.
+     * Triggers extension update.
      */
     // eslint-disable-next-line class-methods-use-this
     async updateExtensionMV3() {
-        const start = Date.now();
         try {
             await messenger.updateExtension({
                 from: ForwardFrom.Options,
@@ -199,8 +191,6 @@ export class SettingsStore extends SettingsStoreCommon {
         } catch (error) {
             logger.debug('[ext.SettingsStore.updateExtensionMV3]: failed to update extension on options page: ', error);
         }
-        // Ensure minimum duration for smooth UI experience before extension reload
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
     }
 
     /**

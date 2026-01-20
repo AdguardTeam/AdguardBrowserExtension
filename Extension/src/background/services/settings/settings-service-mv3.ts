@@ -31,7 +31,6 @@ import { logger } from '../../../common/logger';
 import { SettingOption } from '../../schema';
 import { messageHandler } from '../../message-handler';
 import { UserAgent } from '../../../common/user-agent';
-import { ExtensionUpdateFSMEvent } from '../../../common/constants';
 import { engine } from '../../engine';
 import {
     Categories,
@@ -46,7 +45,6 @@ import {
     settingsEvents,
 } from '../../events';
 import { fullscreenUserRulesEditor } from '../fullscreen-user-rules-editor';
-import { extensionUpdateActor } from '../extension-update/extension-update-machine-mv3';
 
 import { type GetOptionsDataResponse } from './types-mv3';
 import { type ExportMessageResponse } from './types-common';
@@ -124,13 +122,6 @@ export class SettingsService {
         const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
 
         const isExtensionUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
-
-        // TODO: AG-47075 Should be moved to extension update service initialization.
-        extensionUpdateActor.send({
-            type: ExtensionUpdateFSMEvent.Init,
-            isUpdateAvailable: isExtensionUpdateAvailable,
-            isReloadedOnUpdate: isExtensionReloadedOnUpdate,
-        });
 
         return {
             settings: SettingsApi.getData(),

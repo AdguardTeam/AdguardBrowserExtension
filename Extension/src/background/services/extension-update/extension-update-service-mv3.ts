@@ -157,6 +157,18 @@ export class ExtensionUpdateService {
         // Load persisted state if any saved before SW restart
         const state = await ExtensionUpdateService.stateManager.init();
 
+        // Initialize FSM state based on persisted state
+        const manualExtensionUpdateData = await ExtensionUpdateService.getManualExtensionUpdateData();
+        const isExtensionReloadedOnUpdate = manualExtensionUpdateData !== null;
+        const isUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
+
+        // Send Init event to FSM to restore state if needed
+        extensionUpdateActor.send({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable,
+            isReloadedOnUpdate: isExtensionReloadedOnUpdate,
+        });
+
         if (!state || !state.nextVersion) {
             return;
         }

@@ -27,9 +27,7 @@ import { type GetExtensionStatusForPopupResponse } from 'popup-service';
 
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
-import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { logger } from '../../../../common/logger';
-import { sleepIfNecessary } from '../../../../common/sleep-utils';
 import { NotificationType } from '../../../common/types';
 import { type NotificationParams } from '../../../common/types';
 
@@ -112,17 +110,12 @@ export class PopupStore extends PopupStoreCommon {
      */
     @action
     checkUpdates = async () => {
-        const start = Date.now();
-
         try {
             this.setUpdateNotification(null);
             await messenger.checkUpdates();
         } catch (error: unknown) {
             logger.debug('[ext.PopupStore]: failed to check updates in popup: ', error);
         }
-
-        // Ensure minimum duration for smooth UI experience
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
     };
 
     @action
