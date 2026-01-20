@@ -57,6 +57,7 @@ const createProjectForManifestVersion = (
     },
     test: {
         name: `mv${manifestVersion}`,
+        exclude: ['**/node_modules/**', '**/vendor/**'],
         setupFiles: [
             // Setup all needed stuff: mocks, etc.
             'fake-indexeddb/auto',

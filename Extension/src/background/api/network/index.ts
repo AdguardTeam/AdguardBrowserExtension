@@ -20,9 +20,11 @@
 export {
     network,
     Network,
+} from 'network-api';
+export {
     type ExtensionXMLHttpRequest,
     type ResponseLikeXMLHttpRequest,
     type FilterHitStats,
     type FiltersHitStats,
-} from 'network-api';
+} from './network/network-common';
 export { NetworkSettings } from 'network-api-settings';
