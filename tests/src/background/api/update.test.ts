@@ -239,5 +239,54 @@ describe('Update Api (without indexedDB)', () => {
                 ),
             );
         });
+
+        // Test for migration from V13 to V14: filter format migration
+        it('should migrate filter storage format from preprocessor to FilterList (v13 to v14)', async () => {
+            const [data] = getStorageFixturesV13(expires);
+
+            if (!data) {
+                throw new Error('fixture is not defined');
+            }
+
+            const storage = mockLocalStorage(data);
+
+            const runInfo = await getRunInfo();
+
+            await UpdateApi.update(runInfo);
+
+            const settings = await storage.get(null);
+
+            // Verify that old preprocessor format keys are removed
+            const oldFormatKeys = Object.keys(settings).filter((key) => key.startsWith('rawFilterList_')
+                || key.startsWith('conversionMap_')
+                || key.startsWith('filterList_')
+                || key.startsWith('sourceMap_'));
+            expect(oldFormatKeys).toHaveLength(0);
+
+            // Verify that new FilterList format keys are present
+            const newFormatKeys = Object.keys(settings).filter((key) => key.startsWith('filterContent_')
+                || key.startsWith('conversionData_'));
+
+            // We should have at least some filter content keys
+            // (the exact number depends on the fixture, but there should be pairs)
+            expect(newFormatKeys.length).toBeGreaterThan(0);
+            expect(newFormatKeys.length % 2).toBe(0); // Should be even (pairs of content + data)
+
+            // Verify that filterContent and conversionData pairs exist
+            const filterContentKeys = newFormatKeys.filter((key) => key.startsWith('filterContent_'));
+            filterContentKeys.forEach((contentKey) => {
+                const id = contentKey.replace('filterContent_', '');
+                const dataKey = `conversionData_${id}`;
+                expect(settings[dataKey]).toBeDefined();
+            });
+
+            // Verify preserve-log-enabled setting was added
+            const adguardSettings = settings['adguard-settings'];
+            expect(adguardSettings).toBeDefined();
+            expect((adguardSettings as any)['preserve-log-enabled']).toBe(false);
+
+            // Verify schema version
+            expect(settings['schema-version']).toBe(14);
+        });
     });
 });

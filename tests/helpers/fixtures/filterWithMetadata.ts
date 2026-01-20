@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { calculateChecksum } from '../../../tools/resources/download-filters';
+import { calculateChecksum } from '../../../tools/utils/checksum';
 
 const currentDateWithoutMS = new Date().toISOString().slice(0, -5);
 export const filterNameFixture = 'AdGuard Fixture Filter';

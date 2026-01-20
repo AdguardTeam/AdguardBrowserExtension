@@ -17,16 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { type AnyRule, InputByteBuffer } from '@adguard/agtree';
-import { RuleParser } from '@adguard/agtree/parser';
-import { RuleDeserializer } from '@adguard/agtree/deserializer';
-import {
-    FilterListPreprocessor,
-    getRuleSourceIndex,
-    getRuleSourceText,
-    type PreprocessedFilterList,
-    RuleSyntaxUtils,
-} from '@adguard/tsurlfilter';
+import { FilterList, RuleSyntaxUtils } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
 import {
@@ -44,6 +35,7 @@ import {
 } from '../../storages';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import { getZodErrorMessage } from '../../../common/error';
+import { LineScanner } from '../../utils';
 
 /**
  * API for managing user rules list.
@@ -62,7 +54,7 @@ export class UserRulesApi {
             if (!(await FiltersStorage.has(AntiBannerFiltersId.UserFilterId))) {
                 await FiltersStorage.set(
                     AntiBannerFiltersId.UserFilterId,
-                    FilterListPreprocessor.createEmptyPreprocessedFilterList(),
+                    FilterList.createEmpty(),
                 );
             } else {
                 // In this case zod will validate the data.
@@ -74,7 +66,7 @@ export class UserRulesApi {
             }
             await FiltersStorage.set(
                 AntiBannerFiltersId.UserFilterId,
-                FilterListPreprocessor.createEmptyPreprocessedFilterList(),
+                FilterList.createEmpty(),
             );
         }
     }
@@ -101,13 +93,11 @@ export class UserRulesApi {
         }
 
         try {
-            const chunks = await UserRulesApi.getBinaryUserRules();
-            const buffer = new InputByteBuffer(chunks);
-            let ruleNode: AnyRule;
-            // If the next byte is 0, it means that there's nothing to read.
-            while (buffer.peekUint8() !== 0) {
-                RuleDeserializer.deserialize(buffer, ruleNode = {} as AnyRule);
-                if (RuleSyntaxUtils.isRuleForUrl(ruleNode, url)) {
+            const content = (await UserRulesApi.getUserRules()).getContent();
+            const scanner = new LineScanner(content);
+
+            for (const rawRule of scanner) {
+                if (RuleSyntaxUtils.isRuleForUrl(rawRule, url)) {
                     return true;
                 }
             }
@@ -123,28 +113,11 @@ export class UserRulesApi {
      *
      * @returns User rules list.
      */
-    public static async getUserRules(): Promise<PreprocessedFilterList> {
+    public static async getUserRules(): Promise<FilterList> {
         const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
 
         if (!data) {
-            return FilterListPreprocessor.createEmptyPreprocessedFilterList();
-        }
-
-        return data;
-    }
-
-    /**
-     * Returns binary serialized, preprocessed rules from user list.
-     *
-     * @note This may include converted rules and does not include syntactically invalid rules.
-     *
-     * @returns User rules list in binary format.
-     */
-    public static async getBinaryUserRules(): Promise<Uint8Array[]> {
-        const data = await FiltersStorage.getFilterList(AntiBannerFiltersId.UserFilterId);
-
-        if (!data) {
-            return FilterListPreprocessor.createEmptyPreprocessedFilterList().filterList;
+            return FilterList.createEmpty();
         }
 
         return data;
@@ -204,19 +177,13 @@ export class UserRulesApi {
      * @returns True, if rule was removed, else returns false.
      */
     public static async removeUserRuleByIndex(index: number): Promise<boolean> {
-        const [rawFilterList, sourceMap, conversionMap] = await Promise.all([
-            FiltersStoragesAdapter.getRawFilterList(AntiBannerFiltersId.UserFilterId),
-            FiltersStoragesAdapter.getSourceMap(AntiBannerFiltersId.UserFilterId),
-            FiltersStoragesAdapter.getConversionMap(AntiBannerFiltersId.UserFilterId),
-        ]);
+        const filter = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
 
-        if (!sourceMap || !conversionMap || !rawFilterList) {
+        if (!filter) {
             return false;
         }
 
-        const lineStartIndex = getRuleSourceIndex(index, sourceMap);
-
-        const ruleText = conversionMap[lineStartIndex] ?? getRuleSourceText(index, rawFilterList);
+        const ruleText = filter.getOriginalRuleText(index);
 
         if (!ruleText) {
             return false;
@@ -240,7 +207,7 @@ export class UserRulesApi {
                 .split(NEWLINE_CHAR_REGEX)
                 .filter((rule) => {
                     try {
-                        return !RuleSyntaxUtils.isRuleForUrl(RuleParser.parse(rule), url);
+                        return !RuleSyntaxUtils.isRuleForUrl(rule, url);
                     } catch (e) {
                         // Possible parsing error here.
                         // Keep invalid rules in the list, because we need to keep everything that user added.

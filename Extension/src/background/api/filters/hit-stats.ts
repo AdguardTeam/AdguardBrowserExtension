@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { debounce, isEmpty } from 'lodash-es';
-
-import { RuleGenerator } from '@adguard/agtree';
-
-import { getRuleSourceIndex, getRuleSourceText } from 'tswebextension';
+import {
+    debounce,
+    isEmpty,
+    isNull,
+} from 'lodash-es';
 
 import { AntiBannerFiltersId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
 import { logger } from '../../../common/logger';
@@ -34,7 +34,6 @@ import {
 } from '../network';
 import { getZodErrorMessage } from '../../../common/error';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
-import { engine } from '../../engine';
 
 /**
  * This API is used to store and track ad filters usage stats.
@@ -149,64 +148,16 @@ export class HitStatsApi {
                 return [filterId, {}];
             }
 
-            const { rawFilterList, conversionMap, sourceMap } = filterData;
-
-            // It is impossible to get rule text if there is no source map
-            if (!sourceMap) {
-                return [filterId, {}];
-            }
-
             const ruleTexts = Object.entries(stats).map(([ruleIndex, hits]): [string, number] | null => {
-                // Get line start index in the source file by rule start index in the byte array
-                const lineStartIndex = getRuleSourceIndex(Number(ruleIndex), sourceMap);
-
-                // During normal operation, this should not happen
-                if (lineStartIndex === -1) {
-                    let baseMessage = `[ext.HitsStatsApi.sendStats.transformFilterHits] cannot find rule source index for rule index ${ruleIndex}`;
-
-                    const ruleNode = engine.api.retrieveRuleNode(Number(filterId), Number(ruleIndex));
-
-                    // Note: during normal operation, ruleNode should not be null,
-                    // but we handle this case just in case, and to provide type safety
-                    if (ruleNode) {
-                        const generatedRuleText = RuleGenerator.generate(ruleNode);
-                        baseMessage += `, generated rule text: ${generatedRuleText}`;
-                    }
-
-                    // eslint-disable-next-line @adguard/logger-context/require-logger-context
-                    logger.error(baseMessage);
-                    return null;
-                }
-
-                const appliedRuleText = getRuleSourceText(lineStartIndex, rawFilterList);
-
-                // During normal operation, this should not happen
-                if (!appliedRuleText) {
-                    let baseMessage = `[ext.HitsStatsApi.sendStats.transformFilterHits] cannot find rule text for rule index ${ruleIndex}`;
-
-                    const ruleNode = engine.api.retrieveRuleNode(Number(filterId), Number(ruleIndex));
-
-                    // Note: during normal operation, ruleNode should not be null,
-                    // but we handle this case just in case, and to provide type safety
-                    if (ruleNode) {
-                        const generatedRuleText = RuleGenerator.generate(ruleNode);
-                        baseMessage += `, generated rule text: ${generatedRuleText}`;
-                    }
-
-                    // eslint-disable-next-line @adguard/logger-context/require-logger-context
-                    logger.error(baseMessage);
-                    return null;
-                }
-
                 // In statistics, we need the original rule text which can be found in the filter list
-                if (conversionMap) {
-                    const originalRuleText = conversionMap[lineStartIndex];
-                    if (originalRuleText) {
-                        return [originalRuleText, hits];
-                    }
+                const originalRuleText = filterData.getOriginalRuleText(Number(ruleIndex));
+
+                if (isNull(originalRuleText)) {
+                    logger.error(`[ext.HitStatsApi.sendStats]: cannot find rule text for rule index ${ruleIndex}`);
+                    return null;
                 }
 
-                return [appliedRuleText, hits];
+                return [originalRuleText, hits];
             }).filter((entry): entry is [string, number] => entry !== null);
 
             return [filterId, Object.fromEntries(ruleTexts)];
