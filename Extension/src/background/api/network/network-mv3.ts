@@ -184,7 +184,7 @@ export class Network {
             // it will use it's own default log level.
             await TsWebExtension.syncRuleSetWithIdbByFilterId(filterId, 'filters/declarative');
 
-            const rawFilterList = await FiltersStoragesAdapter.getRawFilterList(filterId);
+            const rawFilterList = await FiltersStoragesAdapter.getFilterContent(filterId);
 
             if (!rawFilterList) {
                 throw new Error(`Cannot find filter with id ${filterId}`);

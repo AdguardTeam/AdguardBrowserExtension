@@ -328,6 +328,22 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                  * we add `node_modules/.pnpm/node_modules` to the module resolution path as a fallback.
                  */
                 'node_modules/.pnpm/node_modules',
+
+                /**
+                 * When using pnpm workspace with linked packages (via `link:` protocol in pnpm-workspace.yaml),
+                 * pnpm places the linked package's dependencies in the linked package's own node_modules folder.
+                 * For example, when `@adguard/agtree` is linked, its dependency `@adguard/css-tokenizer`
+                 * is placed at `node_modules/@adguard/agtree/node_modules/@adguard/css-tokenizer`
+                 * instead of `node_modules/.pnpm/node_modules`.
+                 *
+                 * To support this structure, we add node_modules paths for each linked @adguard package
+                 * so rspack can resolve their nested dependencies correctly.
+                 */
+                'node_modules/@adguard/agtree/node_modules',
+                'node_modules/@adguard/tsurlfilter/node_modules',
+                'node_modules/@adguard/tswebextension/node_modules',
+                'node_modules/@adguard/scriptlets/node_modules',
+                'node_modules/@adguard/dnr-rulesets/node_modules',
             ],
             fallback: {
                 crypto: 'crypto-browserify',

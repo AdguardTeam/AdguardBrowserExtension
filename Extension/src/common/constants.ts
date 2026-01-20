@@ -18,8 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type PreprocessedFilterList } from '@adguard/tswebextension';
-
 import { type ForwardFrom } from './forward';
 
 /**
@@ -220,17 +218,6 @@ export const FILTER_LIST_EXTENSION = '.txt';
  * integration tests.
  */
 export const EXTENSION_INITIALIZED_EVENT = 'initialized';
-
-/**
- * This is just a syntax sugar for setting default value if we not have
- * preprocessed list for user rules or for custom filters.
- */
-export const emptyPreprocessedFilterList: PreprocessedFilterList = {
-    filterList: [],
-    sourceMap: {},
-    rawFilterList: '',
-    conversionMap: {},
-};
 
 /**
  * Chrome's extensions settings page url.
