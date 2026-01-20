@@ -1,0 +1,39 @@
+.filtersUpdate {
+    border: 0;
+    outline: none;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+
+    @media (min-width: 640px) {
+        flex-wrap: nowrap;
+    }
+
+    .info {
+        flex-shrink: 1;
+        font-size: 14px;
+        line-height: 21px;
+        color: var(--text-description-description-default);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin: 0 5px 8px 0;
+
+        @media (min-width: 640px) {
+            margin: 0 8px 0 0;
+        }
+    }
+
+    .updateBtn {
+        flex-shrink: 0;
+        min-width: 200px;
+        display: none;
+
+        @media (min-width: 640px) {
+            display: block;
+        }
+    }
+}

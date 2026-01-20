@@ -25,7 +25,7 @@ import { translator } from '../../../../../common/translators/translator';
 import { rootStore } from '../../../stores/RootStore';
 import { formatDate } from '../helpers';
 
-import './filters-update.pcss';
+import styles from './filters-update.module.pcss';
 
 export const FiltersUpdate = observer(() => {
     const { settingsStore } = useContext(rootStore);
@@ -42,19 +42,19 @@ export const FiltersUpdate = observer(() => {
     };
 
     return (
-        <div className="filters-update">
-            <div className="filters-update__info">
-                <div className="filters-update__title">
+        <div className={styles.filtersUpdate}>
+            <div className={styles.info}>
+                <div>
                     {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
                 </div>
-                <div className="filters-update__desc">
-                    {formatDate(latestCheckTime)}
+                <div>
+                    {translator.getMessage('options_antibanner_updated', { date: formatDate(latestCheckTime) })}
                 </div>
             </div>
             <button
                 type="button"
                 onClick={updateClickHandler}
-                className="button button--m button--transparent filters-update__btn"
+                className={`button button--m button--transparent ${styles.updateBtn}`}
                 title={translator.getMessage('options_update_antibanner_filters')}
                 disabled={!isUpdateFiltersButtonActive || filtersUpdating}
             >

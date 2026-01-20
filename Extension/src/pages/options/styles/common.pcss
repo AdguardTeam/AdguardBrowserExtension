@@ -102,12 +102,13 @@ label.checkbox-label {
 
 .content {
     position: relative;
-    padding: 40px 16px;
+    padding: 65px 0;
     width: 100%;
     max-width: 100%;
 
     @media (min-width: 640px) {
         max-width: 672px;
+        padding: 40px 16px;
     };
 
     &__btn {
@@ -203,10 +204,6 @@ label.checkbox-label {
             cursor: pointer;
             transition: var(--t3) background-color;
 
-            & .checkbox__label:hover {
-                background-color: transparent;
-            }
-
             &:hover {
                 @media (hover: hover) {
                     background-color: var(--fills-backgrounds-page-background-hovered);
@@ -239,14 +236,6 @@ label.checkbox-label {
                 & .checkbox__in {
                     /* 16px (label padding) - 3px (default margin) */
                     top: 13px;
-                }
-
-                & .checkbox__label {
-                    padding: 16px;
-
-                    &:before {
-                        top: 0;
-                    }
                 }
             }
 

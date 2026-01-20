@@ -49,17 +49,16 @@ import { getStaticWarningMessage } from '../Warnings/messages';
 import type { CategoriesGroupData, CategoriesFilterData } from '../../../../background/api';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
-import { Group } from './Group';
-import { SearchGroup } from './Search/SearchGroup';
+import { Group, SearchGroup } from './Group';
 import { Filter } from './Filter';
 import { NoFiltersFound, NoFiltersYet } from './NoFilters';
 import { Search } from './Search';
 import { FiltersUpdate } from './FiltersUpdate';
 import { AddCustomModal } from './AddCustomModal';
-import { SEARCH_FILTERS } from './Search/constants';
+import { SearchFilters } from './Search/constants';
 import { UserScriptsApiWarningInsideCustomGroup } from './UserScriptsApiWarningForCustomFilters';
 
-import './filters.pcss';
+import styles from './filters.module.pcss';
 
 /**
  * Parameters for the filter list render function inside the group.
@@ -131,7 +130,7 @@ const Filters = observer(() => {
         settingsStore.setSelectedGroupId(Number.isNaN(parsedGroupId) ? null : parsedGroupId);
         setGroupDetermined(true);
         settingsStore.setSearchInput('');
-        settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
+        settingsStore.setSearchSelect(SearchFilters.ALL);
     }, [location.search, query, settingsStore]);
 
     const updateGroupSettingsWithLoader = addMinDelayLoader(
@@ -241,7 +240,7 @@ const Filters = observer(() => {
         const sortedGroups = sortBy(groups, 'displayNumber');
 
         return (
-            <ul className="group-list">
+            <ul className={styles.list}>
                 {sortedGroups.map((group) => {
                     return (
                         <Group
@@ -264,7 +263,7 @@ const Filters = observer(() => {
         navigate(`/${OptionsPageSections.filters}`);
         settingsStore.setSelectedGroupId(null);
         settingsStore.setSearchInput('');
-        settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
+        settingsStore.setSearchSelect(SearchFilters.ALL);
         settingsStore.sortFilters();
     };
 
@@ -278,10 +277,8 @@ const Filters = observer(() => {
         }
 
         const groupListClassName = classNames(
-            'group-list',
-            {
-                'group-list--disabled': areActionsDisabled,
-            },
+            styles.list,
+            areActionsDisabled && styles.listDisabled,
         );
 
         return (
@@ -323,7 +320,7 @@ const Filters = observer(() => {
         return (
             <ul className="search-group-list">
                 {groupsToRender.map((group) => {
-                    const filtersToShow = searchData[group.groupId];
+                    const filtersToShow = searchData[group.groupId] || [];
                     return (
                         <SearchGroup
                             key={group.groupId}
@@ -424,7 +421,7 @@ const Filters = observer(() => {
             return null;
         }
 
-        const buttonClass = classNames('button button--l button--green-bg', {
+        const buttonClass = classNames(`button button--l button--green-bg ${styles.addCustomFilterMobile}`, {
             'button--empty-custom-filter': isEmpty,
             'button--add-custom-filter': !isEmpty,
         });
@@ -466,7 +463,7 @@ const Filters = observer(() => {
                 role="link"
                 onClick={handleReturnToGroups}
                 aria-label={translator.getMessage('options_filters_back_button')}
-                className="filters__back"
+                className={styles.back}
             >
                 <div className="title__inner">
                     <div className="title title--back-btn">

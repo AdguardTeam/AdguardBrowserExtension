@@ -1,0 +1,35 @@
+.group {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.disabled {
+    & :global(.setting__icon) {
+        color: var(--stroke-icons-gray-icons-default);
+    }
+}
+
+.checkbox {
+    position: relative;
+    padding-top: 18px;
+    border-radius: 8px;
+    transition: var(--t3);
+    margin-left: 4px;
+    
+    &::before {
+        content: "";
+        position: absolute;
+        width: 1px;
+        background-color: var(--stroke-icons-gray-icons-disabled);
+        left: -2px;
+        top: 16px;
+        bottom: 14px;
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            background-color: var(--fills-backgrounds-page-background-hovered);
+        }
+    }
+}

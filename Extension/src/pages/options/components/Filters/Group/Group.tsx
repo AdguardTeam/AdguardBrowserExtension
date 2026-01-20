@@ -23,16 +23,15 @@ import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
 
-import { AntibannerGroupsId } from '../../../../common/constants';
-import { Icon } from '../../../common/components/ui/Icon';
-import { useVisibilityCheck } from '../../../common/hooks/useVisibilityCheck';
-import { USER_SCRIPTS_API_REQUIRED_URL } from '../../constants';
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
+import { AntibannerGroupsId } from '../../../../../common/constants';
+import { Icon } from '../../../../common/components/ui/Icon';
+import { useVisibilityCheck } from '../../../../common/hooks/useVisibilityCheck';
+import { USER_SCRIPTS_API_REQUIRED_URL } from '../../../constants';
+import { Setting, SETTINGS_TYPES } from '../../Settings/Setting';
+import { shouldShowUserScriptsApiWarning } from '../../../../../common/user-scripts-api';
+import { UserScriptsApiWarningOutsideCustomGroup } from '../UserScriptsApiWarningForCustomFilters';
 
-import { UserScriptsApiWarningOutsideCustomGroup } from './UserScriptsApiWarningForCustomFilters';
-
-import './group.pcss';
+import styles from './group.module.pcss';
 
 /**
  * Parameters for the {@link Group} component.
@@ -110,11 +109,7 @@ const DisabledCustomFiltersGroup = ({
     groupName,
     groupDescription,
 }: DisabledCustomFiltersGroupParams) => {
-    const groupClassName = classNames({
-        setting: true,
-        group: true,
-        'group--disabled': true,
-    });
+    const groupClassName = classNames(styles.group, styles.disabled);
 
     const warningDescriptionId = `${descriptionId}-warning`;
 
@@ -166,11 +161,7 @@ const Group = observer(({
     checkboxHandler,
     checkboxValue,
 }: GroupParams) => {
-    const groupClassName = classNames({
-        setting: true,
-        group: true,
-        'group--disabled': !checkboxValue,
-    });
+    const groupClassName = classNames(styles.group, !checkboxValue && styles.disabled);
 
     const titleId = `setting-title-${groupId}`;
     const descriptionId = `setting-desc-${groupId}`;
@@ -265,13 +256,13 @@ const Group = observer(({
                         {groupDescription}
                     </span>
                     {filterDetails && (
-                        <span id={filterDetailsId} className="setting__desc">
+                        <span id={filterDetailsId} className="setting__desc setting__desc-counter">
                             {filterDetails}
                         </span>
                     )}
                 </span>
             </button>
-            <div className="setting__inline-control setting__inline-control_group">
+            <div className={styles.checkbox}>
                 <Setting
                     id={groupId}
                     type={SETTINGS_TYPES.CHECKBOX}
@@ -280,7 +271,6 @@ const Group = observer(({
                     value={checkboxValue}
                     handler={checkboxHandler}
                     optimistic={!__IS_MV3__}
-                    className="group__checkbox"
                 />
             </div>
         </li>

@@ -31,27 +31,13 @@ import { Select } from '../../../../common/components/ui/Select';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { UserAgent } from '../../../../../common/user-agent';
 import { rootStore } from '../../../stores/RootStore';
+import { sortFilterOptions } from '../constants';
 
-import { SEARCH_FILTERS, TABLET_SCREEN_WIDTH } from './constants';
+import { SearchFilters, TABLET_SCREEN_WIDTH } from './constants';
 
 import './search.pcss';
 
 const isDesktopScreen = window.innerWidth > TABLET_SCREEN_WIDTH;
-
-const options = [
-    {
-        value: SEARCH_FILTERS.ALL,
-        title: translator.getMessage('options_filters_list_search_display_option_all_filters'),
-    },
-    {
-        value: SEARCH_FILTERS.ENABLED,
-        title: translator.getMessage('options_filters_list_search_display_option_enabled'),
-    },
-    {
-        value: SEARCH_FILTERS.DISABLED,
-        title: translator.getMessage('options_filters_list_search_display_option_disabled'),
-    },
-];
 
 const Search = observer(() => {
     const { settingsStore } = useContext(rootStore);
@@ -106,7 +92,7 @@ const Search = observer(() => {
     const searchCloseHandler = () => {
         setSearchInput('');
         searchInputRef.current.focus();
-        setSearchSelect(SEARCH_FILTERS.ALL);
+        setSearchSelect(SearchFilters.ALL);
         settingsStore.sortFilters();
         settingsStore.sortSearchGroups();
     };
@@ -173,7 +159,7 @@ const Search = observer(() => {
                 <Select
                     id="search-select"
                     handler={searchSelectHandler}
-                    options={options}
+                    options={sortFilterOptions}
                     value={searchSelect}
                     label={translator.getMessage('options_filters_search_filter')}
                 />

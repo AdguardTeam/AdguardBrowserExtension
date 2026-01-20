@@ -8,11 +8,6 @@
 
     &.group {
         padding: 16px;
-
-        @media (min-width: 640px) {
-            justify-content: flex-start;
-            padding: 0 16px 0 0;
-        }
     }
 
     &--disabled {
@@ -28,21 +23,16 @@
         width: 80%;
         border: 0;
         border-radius: 8px;
-        padding: 2px 6px;
         cursor: pointer;
         outline: none;
         text-align: left;
         background-color: transparent;
         transition: 0.3s ease background-color;
-
-
-        @media (min-width: 640px) {
+        
+        &_group {
+            flex-grow: 1;
+            border-radius: 8px;
             padding: 16px 0 16px 16px;
-
-            &_group {
-                flex-grow: 1;
-                border-radius: 8px;
-            }
         }
 
         &__custom-group-warning {
@@ -71,14 +61,6 @@
                 & .checkbox__in {
                     /* 16px (label padding) - 3px (default margin) */
                     top: 13px;
-                }
-
-                & .checkbox__label {
-                    padding: 16px;
-
-                    &:before {
-                        top: 0;
-                    }
                 }
             }
         }
@@ -162,6 +144,14 @@
         }
     }
 
+    &__desc-counter {
+        display: none;
+
+        @media (min-width: 640px) {
+            display: block;
+        }
+    }
+
     /* TODO: check if used, and remove if not */
     &__tags {
         display: flex;
@@ -219,9 +209,5 @@
 
     &:hover {
         background-color: var(--fills-backgrounds-page-background-hovered);
-    }
-
-    .checkbox__label:hover {
-        background-color: transparent;
     }
 }

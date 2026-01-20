@@ -49,7 +49,7 @@ import {
     type SavingFSMStateType,
 } from '../../../common/components/Editor/savingFSM';
 import { messenger } from '../../../services/messenger';
-import { SEARCH_FILTERS } from '../../components/Filters/Search/constants';
+import { SearchFilters } from '../../components/Filters/Search/constants';
 import {
     sortFilters,
     updateFilters,
@@ -213,7 +213,7 @@ export abstract class SettingsStoreCommon {
     searchInput = '';
 
     @observable
-    searchSelect = SEARCH_FILTERS.ALL;
+    searchSelect = SearchFilters.ALL;
 
     @observable
     allowlistEditorContentChanged = false;
@@ -683,8 +683,8 @@ export abstract class SettingsStoreCommon {
             if (!this.filters.some((f) => f.filterId === newFilter.filterId)) {
                 this.filters.push(newFilter);
             }
-            if (this.searchSelect !== SEARCH_FILTERS.ALL) {
-                this.setSearchSelect(SEARCH_FILTERS.ALL);
+            if (this.searchSelect !== SearchFilters.ALL) {
+                this.setSearchSelect(SearchFilters.ALL);
             }
         });
 
@@ -745,7 +745,7 @@ export abstract class SettingsStoreCommon {
     };
 
     @action
-    setSearchSelect = (value: string): void => {
+    setSearchSelect = (value: SearchFilters): void => {
         this.searchSelect = value;
         this.sortFilters();
         this.sortSearchGroups();
@@ -754,7 +754,7 @@ export abstract class SettingsStoreCommon {
 
     @computed
     get isSearching() {
-        return this.searchSelect !== SEARCH_FILTERS.ALL || this.searchInput;
+        return this.searchSelect !== SearchFilters.ALL || this.searchInput;
     }
 
     /**
@@ -801,10 +801,10 @@ export abstract class SettingsStoreCommon {
         this.visibleFilters = this.filters.filter((filter) => {
             let searchMod;
             switch (this.searchSelect) {
-                case SEARCH_FILTERS.ENABLED:
+                case SearchFilters.ENABLED:
                     searchMod = filter.enabled;
                     break;
-                case SEARCH_FILTERS.DISABLED:
+                case SearchFilters.DISABLED:
                     searchMod = !filter.enabled;
                     break;
                 default:
