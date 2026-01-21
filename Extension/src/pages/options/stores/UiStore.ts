@@ -35,6 +35,13 @@ import { type NotificationParamsWithId } from '../components/Notifications/Notif
 
 import { type RootStore } from './RootStore';
 
+type MenuOption = {
+    id: string;
+    title: string;
+    onClick: () => void;
+    disabled?: boolean;
+};
+
 class UiStore {
     /**
      * Root store instance. Added in advance, even though it is not used.
@@ -80,6 +87,12 @@ class UiStore {
      */
     @observable
     isSidebarOpen = false;
+
+    @observable sidebarMenuOptions: MenuOption[] = [];
+
+    @action setSidebarMenuOptions(options: MenuOption[]) {
+        this.sidebarMenuOptions = options;
+    }
 
     @action
     addNotification(params: NotificationParams) {

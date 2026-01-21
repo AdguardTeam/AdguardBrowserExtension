@@ -71,9 +71,12 @@ const SettingsSection = (props) => {
                         {title}
                     </TitleTag>
                 )}
-                {description && (<div className="title__desc">{description}</div>)}
             </div>
         );
+
+    const descriptionElement = !renderBackButton && description && (
+        <div className="title__desc">{description}</div>
+    );
 
     const control = inlineControl && (
         <div
@@ -107,6 +110,7 @@ const SettingsSection = (props) => {
             >
                 {renderContent()}
             </label>
+            {descriptionElement}
             <div>
                 {children}
             </div>

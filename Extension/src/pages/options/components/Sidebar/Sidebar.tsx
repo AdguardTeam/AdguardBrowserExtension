@@ -37,7 +37,7 @@ import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
 
 import { Compare } from './Compare';
-import { FilterSortMenu } from './SidebarMenu';
+import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
 
 import './sidebar.pcss';
 
@@ -106,6 +106,10 @@ const Sidebar = observer(() => {
     });
 
     const isFiltersPage = location.pathname.startsWith(`/${OptionsPageSections.filters}`);
+    const isAllowListPage = location.pathname.startsWith(`/${OptionsPageSections.allowlist}`);
+    const isUserFilterPage = location.pathname.startsWith(`/${OptionsPageSections.userFilter}`);
+
+    const showPageActionsMenu = isAllowListPage || isUserFilterPage;
 
     return (
         <>
@@ -127,6 +131,7 @@ const Sidebar = observer(() => {
                 <div className="sidebar__actions">
                     {isFiltersPage && <UpdateButtonMobile />}
                     {isFiltersPage && <FilterSortMenu />}
+                    {showPageActionsMenu && <PageActionsMenu />}
                 </div>
             </div>
             {/* eslint-disable-next-line max-len */}

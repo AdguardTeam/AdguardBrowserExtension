@@ -72,7 +72,7 @@ export const FiltersUpdate = observer(() => {
                 <div className={styles.info}>
                     <Icon
                         id="#loading"
-                        className="icon--24"
+                        className="icon--24 icon--green-default"
                         animationCondition
                         animationClassName="icon--loading"
                         aria-hidden="true"

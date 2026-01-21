@@ -467,16 +467,14 @@ const Filters = observer(() => {
             >
                 <div className="title__inner">
                     <div className="title title--back-btn">
+                        <Icon
+                            id="#arrow-left"
+                            className="icon--24"
+                            aria-hidden="true"
+                        />
                         <span id={titleId}>{selectedGroup.groupName}</span>
                     </div>
                     {description && <div className="title__desc title__desc--back">{description}</div>}
-                </div>
-                <div className="button setting__back">
-                    <Icon
-                        id="#arrow-left"
-                        className="icon--24"
-                        aria-hidden="true"
-                    />
                 </div>
             </button>
         );
