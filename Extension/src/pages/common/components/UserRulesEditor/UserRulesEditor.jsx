@@ -35,6 +35,7 @@ import { Editor, EditorLeaveModal } from '../Editor';
 import { translator } from '../../../../common/translators/translator';
 import { Checkbox } from '../ui/Checkbox';
 import { messenger } from '../../../services/messenger';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
 import {
     NotifierType,
     NEWLINE_CHAR_UNIX,
@@ -64,7 +65,7 @@ import { userRulesEditorStore } from './UserRulesEditorStore';
  */
 export const UserRulesEditor = observer(({ fullscreen }) => {
     const store = useContext(userRulesEditorStore);
-    const { uiStore, settingsStore } = useContext(rootStore);
+    const { uiStore, settingsStore, telemetryStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
@@ -237,7 +238,15 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const unsavedChangesSubtitle = translator.getMessage('options_userfilter_leave_subtitle');
     usePreventUnload(hasUnsavedChanges || isSaving, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
+    /**
+     * Saves user rules.
+     */
     const saveUserRules = async (userRules) => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.UserRulesSaveClick,
+            TelemetryScreenName.UserRulesScreen,
+        );
+
         if (isSaving) {
             return;
         }
@@ -311,6 +320,11 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
     const importClickHandler = (e) => {
         e.preventDefault();
+
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.UserRulesImportClick,
+            TelemetryScreenName.UserRulesScreen,
+        );
 
         if (!inputRef.current) {
             return;

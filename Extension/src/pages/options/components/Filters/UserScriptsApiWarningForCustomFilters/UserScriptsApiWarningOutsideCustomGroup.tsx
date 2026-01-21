@@ -30,9 +30,10 @@ import {
     USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED,
 } from '../../../../../common/constants';
 import { BrowserUtils } from '../../../../../background/utils/browser-utils';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services';
 
 export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
-    const { settingsStore: { currentChromeVersion } } = useContext(rootStore);
+    const { settingsStore: { currentChromeVersion }, telemetryStore } = useContext(rootStore);
 
     if (!currentChromeVersion) {
         return null;
@@ -49,6 +50,16 @@ export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
     };
 
     /**
+     * Sends telemetry for custom filters external link.
+     */
+    const handleCustomFiltersLinkClick = () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.CustomClick,
+            TelemetryScreenName.FiltersScreen,
+        );
+    };
+
+    /**
      * Returns an external link.
      *
      * @param text Link text.
@@ -60,6 +71,7 @@ export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
             href={USER_SCRIPTS_API_REQUIRED_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={handleCustomFiltersLinkClick}
         >
             {text}
         </a>

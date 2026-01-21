@@ -28,7 +28,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
@@ -106,8 +106,16 @@ const Allowlist = observer(() => {
     const switchId = AllowlistEnabled;
     const switchTitleId = `${switchId}-title`;
 
+    /**
+     * Handles import button click.
+     */
     const importClickHandler = (e) => {
         e.preventDefault();
+
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.AllowlistImportClick,
+            TelemetryScreenName.WebsiteAllowListScreen,
+        );
 
         if (!inputRef.current) {
             return;
@@ -163,7 +171,15 @@ const Allowlist = observer(() => {
         inputChangeHandler,
     );
 
+    /**
+     * Handles save button click.
+     */
     const saveClickHandler = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.AllowlistSaveClick,
+            TelemetryScreenName.WebsiteAllowListScreen,
+        );
+
         if (settingsStore.allowlistEditorContentChanged) {
             const value = editorRef.current.editor.getValue();
             await saveAllowlist(value);

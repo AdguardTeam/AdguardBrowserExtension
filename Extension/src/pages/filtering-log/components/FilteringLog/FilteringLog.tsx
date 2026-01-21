@@ -39,6 +39,7 @@ import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
 import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
+import { TelemetryScreenName } from '../../../../background/services';
 
 import '../../styles/styles.pcss';
 
@@ -57,6 +58,13 @@ const FilteringLog = observer(() => {
             ]);
         })();
     }, [logStore]);
+
+    useEffect(() => {
+        messenger.sendTelemetryPageViewEvent(
+            TelemetryScreenName.FilteringLogScreen,
+            Page.FilteringLog,
+        );
+    }, []);
 
     useEffect(() => {
         const FETCH_EVENTS_TIMEOUT_MS = 300;

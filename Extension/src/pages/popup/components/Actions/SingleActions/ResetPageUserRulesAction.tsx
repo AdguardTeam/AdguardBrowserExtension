@@ -18,7 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { observer } from 'mobx-react';
 
 import { addMinDurationTime } from '../../../../../common/sleep-utils';
 import { translator } from '../../../../../common/translators/translator';
@@ -26,12 +27,16 @@ import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { logger } from '../../../../../common/logger';
+import { popupStore } from '../../../stores/PopupStore';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services';
 
 import { type SingleActionParams } from './types';
 
 import '../actions.pcss';
 
-export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }: SingleActionParams) => {
+export const ResetPageUserRulesAction = observer(({ className, isFilteringPossible, url }: SingleActionParams) => {
+    const store = useContext(popupStore);
+    const { telemetryStore } = store;
     const [removingUserRules, clearingUserRules] = useState(false);
 
     const title = translator.getMessage('popup_reset_page_user_rules');
@@ -48,6 +53,11 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
      * Handle reset page user rules action click.
      */
     const handlePageUserRulesReset = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.DeleteUserRulesClick,
+            TelemetryScreenName.MainPage,
+        );
+
         if (!url) {
             logger.error('[ext.ResetPageUserRulesAction]: no URL provided for page user rules reset');
             return;
@@ -89,4 +99,4 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
             </span>
         </button>
     );
-};
+});

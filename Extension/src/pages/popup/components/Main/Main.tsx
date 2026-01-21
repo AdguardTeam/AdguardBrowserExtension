@@ -28,6 +28,7 @@ import { translator } from '../../../../common/translators/translator';
 import { popupStore } from '../../stores/PopupStore';
 import { AppState } from '../../state-machines/app-state-machine';
 import { COMPARE_URL, SpecificPopupState } from '../../constants';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
 
 import {
     MainSwitch,
@@ -86,6 +87,7 @@ export const Main = observer(() => {
         hasUserRulesToReset,
         toggleAllowlisted,
         resumeApplicationFiltering,
+        telemetryStore,
     } = store;
 
     const classes = classNames('main', {
@@ -151,6 +153,16 @@ export const Main = observer(() => {
     const isResumeButtonVisible = appState === AppState.Paused
         || appState === AppState.Pausing
         || appState === AppState.Resuming;
+
+    /**
+     * Telemetry for "How to enhance protection" link.
+     */
+    const handleHowToEnhanceClick = () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.HowToEnhanceClick,
+            TelemetryScreenName.MainPage,
+        );
+    };
 
     /**
      * Returns a component for the current app state.
@@ -228,6 +240,7 @@ export const Main = observer(() => {
                         target="_blank"
                         rel="noreferrer"
                         className="main__cta--link"
+                        onClick={handleHowToEnhanceClick}
                     >
                         {translator.getMessage('popup_header_cta_link')}
                     </a>

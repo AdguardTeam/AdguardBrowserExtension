@@ -26,6 +26,11 @@ import {
     type ApplySettingsJsonMessage,
 } from '../../../common/messages';
 import { logger } from '../../../common/logger';
+import {
+    Telemetry,
+    TelemetryEventName,
+    TelemetryScreenName,
+} from '../telemetry';
 import { SettingOption } from '../../schema';
 import { messageHandler } from '../../message-handler';
 import { UserAgent } from '../../../common/user-agent';
@@ -344,6 +349,11 @@ export class SettingsService {
      * Called when protection disabling is requested.
      */
     static async disableFiltering(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.TapPauseClick,
+        );
+
         await SettingsApi.setSetting(SettingOption.DisableFiltering, true);
     }
 }

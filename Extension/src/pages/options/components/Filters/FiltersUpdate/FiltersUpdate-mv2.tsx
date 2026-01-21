@@ -24,11 +24,12 @@ import { observer } from 'mobx-react';
 import { translator } from '../../../../../common/translators/translator';
 import { rootStore } from '../../../stores/RootStore';
 import { formatDate } from '../helpers';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services';
 
 import './filters-update.pcss';
 
 export const FiltersUpdate = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, telemetryStore } = useContext(rootStore);
 
     const {
         rulesCount,
@@ -38,6 +39,11 @@ export const FiltersUpdate = observer(() => {
     } = settingsStore;
 
     const updateClickHandler = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.FilterCheckUpdateClick,
+            TelemetryScreenName.FiltersScreen,
+        );
+
         await settingsStore.updateFilters();
     };
 

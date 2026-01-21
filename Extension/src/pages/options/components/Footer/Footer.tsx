@@ -25,17 +25,23 @@ import { translator } from '../../../../common/translators/translator';
 import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { rootStore } from '../../stores/RootStore';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
 
 import './footer.pcss';
 
 export const Footer = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, telemetryStore } = useContext(rootStore);
 
     const hideRate = () => {
         settingsStore.hideFooterRateShow();
     };
 
     const handleRateClick = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.RateUsClick,
+            TelemetryScreenName.MainPage,
+        );
+
         await messenger.openExtensionStore();
         settingsStore.hideFooterRateShow();
     };

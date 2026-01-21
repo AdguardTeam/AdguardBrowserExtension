@@ -32,6 +32,7 @@ import { rootStore } from '../../stores/RootStore';
 import { Nav } from '../Nav';
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services';
 
 import { Compare } from './Compare';
 
@@ -40,7 +41,7 @@ import './sidebar.pcss';
 const SIDEBAR_ID = 'sidebar';
 
 const Sidebar = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
 
     const { isSidebarOpen, openSidebar, closeSidebar } = uiStore;
 
@@ -85,6 +86,10 @@ const Sidebar = observer(() => {
     };
 
     const handleCompareClick = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.CompareClick,
+            TelemetryScreenName.MainPage,
+        );
         await messenger.openComparePage();
     };
 

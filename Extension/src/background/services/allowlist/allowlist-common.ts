@@ -35,6 +35,11 @@ import {
     settingsEvents,
 } from '../../events';
 import { Prefs } from '../../prefs';
+import {
+    Telemetry,
+    TelemetryEventName,
+    TelemetryScreenName,
+} from '../telemetry';
 
 export type GetAllowlistDomainsResponse = {
     content: string;
@@ -148,6 +153,11 @@ export abstract class AllowlistServiceCommon {
      * Listener for an event to enable site filtering from the context menu.
      */
     private static async enableSiteFilteringFromContextMenu(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.TapEnableFilteringClick,
+        );
+
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.id) {
@@ -161,6 +171,11 @@ export abstract class AllowlistServiceCommon {
      * Listener for an event to disable site filtering from the context menu.
      */
     private static async disableSiteFilteringFromContextMenu(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.MenuDisableFilteringClick,
+        );
+
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.id) {
