@@ -35,6 +35,7 @@ import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../../common/constants';
 import { NotificationType } from '../../../common/types';
 import { rootStore } from '../../stores/RootStore';
+import { SidebarMenuId } from '../../stores/UiStore';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -109,12 +110,12 @@ const Allowlist = observer(() => {
 
         uiStore.setSidebarMenuOptions([
             {
-                id: 'import_allowlist',
+                id: SidebarMenuId.ImportAllowlist,
                 title: translator.getMessage('options_userfilter_import'),
                 onClick: importClickHandler,
             },
             {
-                id: 'export_allowlist',
+                id: SidebarMenuId.ExportAllowlist,
                 title: translator.getMessage('options_userfilter_export'),
                 onClick: exportClickHandler,
                 disabled: !settingsStore.allowlist,

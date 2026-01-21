@@ -35,6 +35,13 @@ import { type NotificationParamsWithId } from '../components/Notifications/Notif
 
 import { type RootStore } from './RootStore';
 
+export enum SidebarMenuId {
+    ImportUserRules = 'import_user_rules',
+    ExportUserRules = 'export_user_rules',
+    ImportAllowlist = 'import_allowlist',
+    ExportAllowlist = 'export_allowlist',
+}
+
 type MenuOption = {
     id: string;
     title: string;

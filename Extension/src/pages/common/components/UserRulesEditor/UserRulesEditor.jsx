@@ -48,6 +48,7 @@ import { addMinDelayLoader } from '../helpers';
 // TODO: Continue to remove dependency on the root store via adding loader and
 // notifications to own 'user-rules-editor' store. AG-48937
 import { rootStore } from '../../../options/stores/RootStore';
+import { SidebarMenuId } from '../../../options/stores/UiStore';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
 import { NotificationType } from '../../types';
@@ -389,12 +390,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     useEffect(() => {
         uiStore.setSidebarMenuOptions([
             {
-                id: 'import_user_rules',
+                id: SidebarMenuId.ImportUserRules,
                 title: translator.getMessage('options_userfilter_import'),
                 onClick: importClickHandler,
             },
             {
-                id: 'export_user_rules',
+                id: SidebarMenuId.ExportUserRules,
                 title: translator.getMessage('options_userfilter_export'),
                 onClick: exportClickHandler,
                 disabled: !store.userRulesExportAvailable,
