@@ -254,8 +254,6 @@ export abstract class IconsApiCommon {
                     tabId,
                 }),
             ]);
-
-            logger.debug(`[ext.IconsApiCommon.setActionIcon]: Icon and tooltip set for tab ${tabId ?? 'all'}`);
         } catch (e) {
             logger.info('[ext.IconsApiCommon.setActionIcon]: Failed to set icon or tooltip:', e);
         }
