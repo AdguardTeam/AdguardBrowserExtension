@@ -509,6 +509,10 @@ class LogStore {
             preserveLogEnabled,
         } = await messenger.getFilteringLogData();
 
+        // telemetry
+        const anonymizedUsageDataAllowed = settings.values[settings.names.AllowAnonymizedUsageData];
+        this.rootStore.telemetryStore.setIsAnonymizedUsageDataAllowed(anonymizedUsageDataAllowed);
+
         runInAction(() => {
             this.filtersMetadata = filtersMetadata;
             this.settings = settings;
