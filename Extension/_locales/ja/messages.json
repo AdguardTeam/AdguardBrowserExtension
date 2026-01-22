@@ -32,6 +32,9 @@
     "options_filters_annoyances_consent_question": {
         "message": "これらのフィルタを有効にしますか?"
     },
+    "options_filters_annoyances_consent_filter_policy": {
+        "message": "AdGuard の迷惑要素フィルタが何をブロックするのかについて詳しくは、<a>フィルターポリシー<\/a>を参照してください。"
+    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "有効にする"
     },
@@ -177,8 +180,14 @@
     "options_allowlist": {
         "message": "ホワイトリスト"
     },
+    "options_allowlist_desc": {
+        "message": "AdGuardはこのリストに入っているウェブサイトで広告やトラッカーをブロックしません"
+    },
     "options_allowlist_invert": {
         "message": "ホワイトリストを逆転する"
+    },
+    "options_allowlist_invert_desc": {
+        "message": "ホワイトリストに登録されたウェブサイトのみで広告および追跡者をブロックします。"
     },
     "options_allowlist_alert_invert": {
         "message": "ホワイトリスト逆転中（リストにあるサイトでのみ広告をブロック）。<a>逆転をオフにする<\/a>"
@@ -546,6 +555,12 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "タブで検索"
     },
+    "filtering_log_preserve_log_off": {
+        "message": "ログを保持しない"
+    },
+    "filtering_log_preserve_log_on": {
+        "message": "ログを保存する"
+    },
     "filtering_refresh_tab_short": {
         "message": "更新する"
     },
@@ -732,6 +747,12 @@
     "options_general_settings": {
         "message": "一般"
     },
+    "options_block_acceptable_ads": {
+        "message": "検索広告やウェブサイトの自己宣伝をブロックする"
+    },
+    "options_block_acceptable_ads_desc": {
+        "message": "検索結果の中の広告やウェブサイトの自己宣伝をブロックします。<a>詳細はこちら<\/a>"
+    },
     "options_show_blocked_ads_count_title": {
         "message": "AdGuard拡張機能アイコンで広告ブロック数を表示する"
     },
@@ -777,6 +798,9 @@
     "options_set_update_interval": {
         "message": "フィルタの自動更新"
     },
+    "options_set_update_interval_desc": {
+        "message": "広告ブロックをより効果的にするために、フィルタを最新の状態に保ちます。"
+    },
     "options_userfilter_export": {
         "message": "エクスポート"
     },
@@ -798,6 +822,9 @@
     "options_userfilter_description_key": {
         "message": "ここで独自のルールを追加することができます。このオプションは、HTML\/CSSに精通した上級ユーザーにお勧めです。独自のフィルタールールの書き方を学ぶには<a>こちらのフィルタールール作成方法説明<\/a> を読んでください。"
     },
+    "options_userfilter_subtitle_key": {
+        "message": "独自のフィルタリングルールを追加できます。"
+    },
     "options_userfilter_line_break": {
         "message": "改行"
     },
@@ -815,6 +842,9 @@
     },
     "options_safebrowsing_enabled": {
         "message": "フィッシング詐欺とマルウェアからの保護"
+    },
+    "options_safebrowsing_enabled_desc": {
+        "message": "AdGuardの「ブラウジングセキュリティ」モジュールを使用して、悪意あるウェブサイトおよびフィッシングウェブサイトにアクセスしようとした場合に警告します。<a>詳細はこちら<\/a>"
     },
     "options_site": {
         "message": "公式ホームページ"
@@ -907,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "有効な組み込みルール数の上限に達しました。お使いのブラウザは有効な組み込みフィルタのリストを変更しました。有効になっているフィルタの数が %expected% から %current% に変更されました。"
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "お使いのブラウザの有効な組み込みルール上限に達しました。お使いのブラウザは有効な組み込みフィルタの数を %expected% から %current% に削減しました。"
+    },
     "options_limits_warning_static_filters": {
         "message": "有効な組み込みフィルタ数の上限に達しました。 %current% 個のフィルタのうち %maximum% 個が有効になっています。新しいルールを有効にするには、組み込みフィルタの一部をオフにしてください。"
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "お使いのブラウザの有効な組み込みフィルタ上限に達しました。 %current% 個のフィルタのうち %maximum% 個が有効になっています。新しいフィルタを有効にするには、組み込みフィルタの一部をオフにしてください。"
     },
     "options_limits_warning_static_rules": {
         "message": "有効な組み込みルール数の上限に達しました。 %current% 個のルールのうち %maximum% 個が有効になっています。新しいルールを有効にするには、組み込みフィルタの一部をオフにしてください。"
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "お使いのブラウザの有効な組み込みルール上限に達しました。 新しいルールを有効にするには、組み込みフィルタの一部をオフにしてください。"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "有効な組み込み正規表現ルールの数の上限に達しました。 %current% 個の正規表現ルールのうち %maximum% 個が有効になっています。新しいルールを有効にするには、組み込みフィルタの一部をオフにしてください。"
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "有効な正規表現ルール数の上限に達しました。 新しいルールを有効にするには、組み込みフィルタの一部をオフにしてください。"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "ユーザー追加ルールの数の上限に達しました。 %current% 個のルールのうち %maximum% 個が有効になっています。"
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "ユーザー追加ルールの上限に達しています。 %maximum%のうちの%current%ルールが有効です。新しいルールを追加するには、既存ルールの一部を削除してください。"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "ユーザー追加の安全でないルール数の上限に達しました。 %current% 個の安全でないルールのうち %maximum% 個が有効になっています。"
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "ユーザー追加の正規表現ルール数の上限に達しました。 %current% 個の正規表現ルールのうち %maximum% 個が有効になっています。"
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "ユーザー追加の正規表現ルールの上限に達しています。 %maximum%のうちの%current%ルールが有効です。新しい正規表現ルールを追加するには、既存ルールの一部を削除してください。"
     },
     "options_developer_mode_required": {
         "message": "お使いのブラウザでは、<external-link>ルールの一部のタイプ<\/external-link>が制限されています。全てのルールを適用するには、<settings-link>ブラウザの拡張機能設定<\/settings-link>で「<b>デベロッパモード<\/b>」を有効にしてください。",
@@ -964,6 +1012,12 @@
     },
     "options_reset_settings_error": {
         "message": "設定のリセット中にエラーが発生しました"
+    },
+    "options_collect_hit_stats_title": {
+        "message": "AdGuardフィルタの開発に貢献する"
+    },
+    "options_collect_hit_stats_desc": {
+        "message": "広告フィルタ使用状況の統計情報をAdGuardに送信します。（※統計情報は匿名です。）<a>詳細はこちら<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "ブラウザの右クリックメニューにAdGuardを追加する"
@@ -1016,6 +1070,9 @@
     "options_disable_webrtc_title": {
         "message": "WebRTCをブロックする"
     },
+    "options_disable_webrtc_desc": {
+        "message": "WebRTCをブロックします。WebRTCは、プロキシやVPNを使用していても実際のIPアドレスを漏らす可能性があります。※ブロックしますと、一部のメッセンジャー、ストリーミング・動画配信プラットフォーム、ゲームの機能に干渉する可能性があります。"
+    },
     "options_strip_tracking_params_title": {
         "message": "URLからトラッキングパラメータを削除する"
     },
@@ -1031,8 +1088,17 @@
     "options_third_party_title": {
         "message": "サードパーティCookieを削除する"
     },
+    "options_third_party_desc": {
+        "message": "サードパーティCookieの有効期間を制限することで、広告主がページ越えにユーザーの行動を追跡するのを防ぎます。"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "Cookieをブロックするには、有効期間を「0」に設定してください。"
+    },
     "options_third_party_block_cookies_warning": {
         "message": "これらのCookieをブロックした場合、一部のウェブサイトに再ログインする必要が生じたり、その他のクッキー関連問題に直面したりする可能性があります。"
+    },
+    "options_lifetime_minutes": {
+        "message": "有効期間（分）"
     },
     "options_first_party_title": {
         "message": "ファーストパーティCookieを削除する（非推奨）"
@@ -1286,8 +1352,17 @@
     "filtering_log_assumed_rule_description": {
         "message": "これは想定ルールです。詳細は<a>ナレッジベース<\/a>をご覧ください。"
     },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "ログを保存しますか？"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "※このオプションはメモリの使用量を大幅に増加させる可能性があります"
+    },
     "filtering_log_preserve_log_skip_modal_in_future": {
         "message": "次回から表示しない"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "保存する"
     },
     "options_stealth_general_title": {
         "message": "一般"

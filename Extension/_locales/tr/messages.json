@@ -26,8 +26,14 @@
     "options_filters_annoyances_consent_title": {
         "message": "Can sıkıcı öğe filtrelerini etkinleştirmeden önce lütfen dikkatlice oku"
     },
+    "options_filters_annoyances_consent_description": {
+        "message": "Bir veya daha fazla rahatsızlık filtresini etkinleştirmek üzeresiniz. Bu filtreler, ya web sitesi içeriğiyle ilgisiz olan ya da ilgili olsa bile kullanıcı deneyiminizi olumsuz etkileyen öğeleri engeller. Web sitesi sahipleri bu öğeleri zorunlu kabul edebilir: eğer bunları engellerseniz, sitenin kullanım şartlarını ihlal etmiş olabilirsiniz; bazı web sitesi işlevleri kullanılamayabilir veya düzgün çalışmayabilir. Ziyaret ettiğiniz web sitelerinin kullanım şartlarına uymaktan yalnızca sizin sorumlu olduğunuzu ve AdGuard’ın ürünlerimizi kullanarak ziyaret ettiğiniz web sitelerinin kullanım şartlarına uyumunuzdan sorumlu olmadığını anlıyor ve kabul ediyorsunuz."
+    },
     "options_filters_annoyances_consent_question": {
         "message": "Bu filtreler etkinleştirilsin mi?"
+    },
+    "options_filters_annoyances_consent_filter_policy": {
+        "message": "AdGuard'ın can sıkıcı öğe filtrelerinin neleri engellediğine ilişkin ayrıntılar için bkz. <a>Filtre politikası<\/a>"
     },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Etkinleştir"
@@ -174,8 +180,14 @@
     "options_allowlist": {
         "message": "İzin listesi"
     },
+    "options_allowlist_desc": {
+        "message": "AdGuard, listedeki sitelerde reklamları ve izleyicileri engellemez"
+    },
     "options_allowlist_invert": {
         "message": "İzin listesini ters çevir"
+    },
+    "options_allowlist_invert_desc": {
+        "message": "Sadece izin verilen sitelerdeki reklamları ve izleyicileri engeller"
     },
     "options_allowlist_alert_invert": {
         "message": "İzin listesi ters çevrildi. Reklamlar yalnızca kendisine eklenen sitelerde engellenir. <a>Devre dışı bırak<\/a>"
@@ -543,6 +555,12 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "Sekmelerde ara"
     },
+    "filtering_log_preserve_log_off": {
+        "message": "Günlüğü kaydetme"
+    },
+    "filtering_log_preserve_log_on": {
+        "message": "Günlüğü sakla"
+    },
     "filtering_refresh_tab_short": {
         "message": "Yenile"
     },
@@ -729,6 +747,12 @@
     "options_general_settings": {
         "message": "Genel"
     },
+    "options_block_acceptable_ads": {
+        "message": "Arama motoru reklamlarını ve sitelerin öz tanıtımını engelle"
+    },
+    "options_block_acceptable_ads_desc": {
+        "message": "Arama sonuçlarındaki reklamları ve sitelerin öz tanıtımını engeller. <a>Daha fazla bilgi edinin<\/a>"
+    },
     "options_show_blocked_ads_count_title": {
         "message": "AdGuard uzantı simgesinde engellenen reklamların sayısını göster"
     },
@@ -774,6 +798,9 @@
     "options_set_update_interval": {
         "message": "Filtreleri otomatik güncelle"
     },
+    "options_set_update_interval_desc": {
+        "message": "Filtrelerin güncel kalmasını sağlayarak daha etkili reklam engelleme sağlar"
+    },
     "options_userfilter_export": {
         "message": "Dışa aktar"
     },
@@ -795,6 +822,9 @@
     "options_userfilter_description_key": {
         "message": "Buraya kendi kurallarınızı ekleyebilirsiniz. Bu seçenek, HTML ve CSS'e aşina olan ileri düzey kullanıcılar için önerilir. Kendi filtre kurallarınızı nasıl yazacağınızı öğrenmek için <a>filtre kuralları eğitimini<\/a> okuyun."
     },
+    "options_userfilter_subtitle_key": {
+        "message": "Kendi filtreleme kurallarınızı eklemenizi sağlar"
+    },
     "options_userfilter_line_break": {
         "message": "Satır sonu"
     },
@@ -812,6 +842,9 @@
     },
     "options_safebrowsing_enabled": {
         "message": "Kimlik avı ve kötü amaçlı yazılım koruması"
+    },
+    "options_safebrowsing_enabled_desc": {
+        "message": "AdGuard Gezinti Koruması modülünü kullanarak kötü amaçlı ve kimlik avı siteleri konusunda uyarır. <a>Daha fazla bilgi edinin<\/a>"
     },
     "options_site": {
         "message": "Resmi site"
@@ -904,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "Etkin yerleşik kuralların sınırına ulaştınız. Tarayıcınız etkin yerleşik filtrelerin listesini değiştirdi. Etkinleştirilen filtre sayısı %expected% adresinden %current%adresine değişti."
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "Tarayıcınızın aktif yerleşik kurallar sınırına ulaştınız. Tarayıcınız etkin yerleşik filtreler listesini %expected% adresinden %current% adresine düşürdü"
+    },
     "options_limits_warning_static_filters": {
         "message": "Etkin yerleşik filtrelerin sınırına ulaştınız. %maximum% of %current% filtreleri etkinleştirildi. Yeni kuralları etkinleştirmek için bazı yerleşik filtreleri devre dışı bırakın."
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "Tarayıcınızın aktif yerleşik filtreler sınırına ulaştınız. %current% filtreden %maximum% filtresi etkin. Yeni filtreleri etkinleştirmek için bazı yerleşik filtreleri devre dışı bırakın"
     },
     "options_limits_warning_static_rules": {
         "message": "Etkin yerleşik kuralların sınırına ulaştınız. %maximum% of %current% kuralları etkinleştirildi. Yeni kuralları etkinleştirmek için bazı yerleşik filtreleri devre dışı bırakın."
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "Tarayıcınızın aktif yerleşik kurallar sınırına ulaştınız. Yeni kuralları etkinleştirmek için bazı yerleşik filtreleri devre dışı bırakın"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "Etkin yerleşik regex kurallarının sınırına ulaştınız. %maximum% of %current% regex kuralları etkinleştirildi. Yeni kuralları etkinleştirmek için bazı yerleşik filtreleri devre dışı bırakın."
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "Aktif yerleşik regex kuralları sınırına ulaştınız. Yeni kurallar etkinleştirmek için bazı yerleşik filtreleri devre dışı bırakın"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "Kullanıcı tarafından eklenen kuralların sınırına ulaştınız. %maximum% of %current% kuralları etkinleştirildi."
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "Kullanıcı eklemeli kurallar sınırına ulaştınız. %current% kuralın %maximum%'si etkin. Yeni kural eklemek için bazı mevcut kuralları kaldırın"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "Kullanıcı tarafından eklenen güvenli olmayan kuralların sınırına ulaştınız. %maximum% \/ %current% güvenli olmayan kurallar etkinleştirildi."
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "Kullanıcı tarafından eklenen regex kurallarının sınırına ulaştınız. %maximum% of %current% regex kuralları etkinleştirildi."
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "Kullanıcı eklemeli regex kurallar sınırına ulaştınız. %current% kuralın %maximum%'si etkin. Yeni regex kuralı eklemek için bazı mevcut kuralları kaldırın"
     },
     "options_developer_mode_required": {
         "message": "Tarayıcınız <external-link>bazı kural türlerini<\/external-link> kısıtlıyor. Tüm kuralları uygulamak için, tarayıcınızın <settings-link>uzantı ayarlarında<\/settings-link> <b>Geliştirici modu<\/b> öğesini açın",
@@ -961,6 +1012,12 @@
     },
     "options_reset_settings_error": {
         "message": "Ayarlar sıfırlanırken hata oluştu"
+    },
+    "options_collect_hit_stats_title": {
+        "message": "AdGuard filtrelerinin geliştirilmesine yardım edin"
+    },
+    "options_collect_hit_stats_desc": {
+        "message": "Reklam filtresi kullanımına ilişkin anonim istatistikleri AdGuard’a gönderir. <a>Daha fazla bilgi edinin<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "Tarayıcının sağ tık menüsüne AdGuard öğesini ekle"
@@ -1013,6 +1070,9 @@
     "options_disable_webrtc_title": {
         "message": "WebRTC'i engelle"
     },
+    "options_disable_webrtc_desc": {
+        "message": "Proxy veya VPN kullansanız bile gerçek IP adresinizi sızdırabilecek WebRTC'yi engeller. Bazı mesajlaşma uygulamaları, canlı yayın platformları veya oyunlar düzgün çalışmayabilir"
+    },
     "options_strip_tracking_params_title": {
         "message": "İzleme parametrelerini URL'lerden kaldır"
     },
@@ -1028,8 +1088,17 @@
     "options_third_party_title": {
         "message": "Üçüncü taraf çerezlerini sil"
     },
+    "options_third_party_desc": {
+        "message": "Üçüncü taraf çerezlerin kullanım süresini sınırlandırarak reklam verenlerin birden fazla sayfada davranışlarınızı izlemesini önler"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "Çerezleri engellemek için, kullanım süresini 0 olarak ayarlayın"
+    },
     "options_third_party_block_cookies_warning": {
         "message": "Bu çerezleri engellerseniz bazı sitelere yeniden giriş yapmanız gerekebilir veya çerezlerle ilgili başka sorunlarla karşılaşabilirsiniz"
+    },
+    "options_lifetime_minutes": {
+        "message": "Kullanım süresi, dakika cinsinden"
     },
     "options_first_party_title": {
         "message": "Birinci taraf çerezlerini sil (önerilmez)"
@@ -1283,8 +1352,17 @@
     "filtering_log_assumed_rule_description": {
         "message": "Bu varsayılan bir kuraldır. Ayrıntılar için <a>Bilgi tabanımıza<\/a> bakın"
     },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "Günlüğü sakla?"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "Bu seçenek bellek kullanımını önemli ölçüde artırabilir"
+    },
     "filtering_log_preserve_log_skip_modal_in_future": {
         "message": "Tekrar gösterme"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "Evet, sakla"
     },
     "options_stealth_general_title": {
         "message": "Genel"

@@ -32,6 +32,9 @@
     "options_filters_annoyances_consent_question": {
         "message": "Povolit tyto filtry?"
     },
+    "options_filters_annoyances_consent_filter_policy": {
+        "message": "Podrobnosti o tom, co filtry AdGuardu blokují, najdete v <a>Zásadách filtrování<\/a>"
+    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Povolit"
     },
@@ -177,8 +180,14 @@
     "options_allowlist": {
         "message": "Seznam povolených"
     },
+    "options_allowlist_desc": {
+        "message": "AdGuard neblokuje reklamy a slídiče na webových stránkách ze seznamu"
+    },
     "options_allowlist_invert": {
         "message": "Invertovat seznam povolených"
+    },
+    "options_allowlist_invert_desc": {
+        "message": "Blokuje reklamy a slídiče pouze na webových stránkách na seznamu povolených"
     },
     "options_allowlist_alert_invert": {
         "message": "Seznam povolených je obrácený. Reklamy jsou blokovány pouze na webech z tohoto seznamu. <a>Vypnout<\/a>"
@@ -546,6 +555,12 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "Hledat v kartách"
     },
+    "filtering_log_preserve_log_off": {
+        "message": "Nezachovávat log"
+    },
+    "filtering_log_preserve_log_on": {
+        "message": "Zachovat log"
+    },
     "filtering_refresh_tab_short": {
         "message": "Obnovit"
     },
@@ -732,6 +747,12 @@
     "options_general_settings": {
         "message": "Obecné"
     },
+    "options_block_acceptable_ads": {
+        "message": "Blokovat reklamy ve vyhledávání a vlastní propagaci na webových stránkách"
+    },
+    "options_block_acceptable_ads_desc": {
+        "message": "Blokuje reklamy ve výsledcích vyhledávání a vlastní propagaci webových stráneků <a>Další informace<\/a>"
+    },
     "options_show_blocked_ads_count_title": {
         "message": "Uvést počet blokovaných reklam na ikoně rozšíření AdGuard"
     },
@@ -777,6 +798,9 @@
     "options_set_update_interval": {
         "message": "Automatická aktualizace filtrů"
     },
+    "options_set_update_interval_desc": {
+        "message": "Udržuje filtry aktuální pro efektivnější blokování reklam"
+    },
     "options_userfilter_export": {
         "message": "Exportovat"
     },
@@ -798,6 +822,9 @@
     "options_userfilter_description_key": {
         "message": "Zde můžete přidat svá vlastní pravidla. Tato možnost je doporučena pro pokročilé uživatele obeznámené s HTML\/CSS. Přečtěte si <a>návod pravidel filtrován <\/a>, kde se dozvíte, jak napsat vlastní pravidla filtrování."
     },
+    "options_userfilter_subtitle_key": {
+        "message": "Umožňuje přidat vlastní pravidla filtrování"
+    },
     "options_userfilter_line_break": {
         "message": "Zalomení řádků"
     },
@@ -815,6 +842,9 @@
     },
     "options_safebrowsing_enabled": {
         "message": "Ochrana proti phishingu a škodlivému softwaru"
+    },
+    "options_safebrowsing_enabled_desc": {
+        "message": "Varuje před škodlivými a phishingovými webovými stránkami pomocí modulu Bezpečné prohlížení AdGuardu. <a>Další informace<\/a>"
     },
     "options_site": {
         "message": "Oficiální stránka"
@@ -907,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel. Váš prohlížeč upravil seznam aktivních vestavěných filtrů. Počet povolených filtrů se změnil z %expected% na %current%."
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel prohlížeče. Váš prohlížeč omezil seznam aktivních vestavěných filtrů z %expected% na %current%"
+    },
     "options_limits_warning_static_filters": {
         "message": "Dosáhli jste limitu počtu aktivních vestavěných filtrů. Je povoleno %maximum% z %current% filtrů. Chcete-li aktivovat nová pravidla, zakažte některé vestavěné filtry."
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "Dosáhli jste limitu počtu aktivních vestavěných filtrů prohlížeče. %maximum% z %current% filtrů jsou povoleny. Chcete-li aktivovat nové filtry, vypněte některé vestavěné"
     },
     "options_limits_warning_static_rules": {
         "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel. Je povoleno %maximum% z %current% pravidel. Chcete-li aktivovat nová pravidla, zakažte některé vestavěné filtry."
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel prohlížeče. Chcete-li aktivovat nová pravidla, vypněte některé vestavěné filtry"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel regex. Je povoleno %maximum% z %current% pravidel regex. Chcete-li aktivovat nová pravidla, zakažte některé vestavěné filtry."
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel regex. Chcete-li aktivovat nová pravidla, vypněte některé vestavěné filtry"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "Dosáhli jste limitu počtu pravidel přidaných uživateli. Je povoleno %maximum% z %current% pravidel."
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "Dosáhli jste limitu počtu pravidel přidaných uživateli. %maximum% z %current% pravidel jsou povolena. Chcete-li přidat nová pravidla, odeberte některá stávající"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "Dosáhli jste limitu počtu nebezpečných pravidel přidaných uživateli. Je povoleno %maximum% z %current% nebezpečných pravidel."
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "Dosáhli jste limitu počtu pravidel regex přidaných uživateli. Je povoleno %maximum% z %current% pravide regexl."
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "Dosáhli jste limitu počtu pravidel regex přidaných uživateli. %maximum% z %current% pravidel jsou povolena. Chcete-li přidat nová pravidla regex, odeberte některá stávající"
     },
     "options_developer_mode_required": {
         "message": "Váš prohlížeč omezuje <external-link>některé typy pravidel<\/external-link>. Chcete-li použít všechna pravidla, povolte <b>Režim pro vývojáře<\/b> v <settings-link>nastavení rozšíření<\/settings-link> vašeho prohlížeče",
@@ -964,6 +1012,12 @@
     },
     "options_reset_settings_error": {
         "message": "Chyba při resetování nastavení"
+    },
+    "options_collect_hit_stats_title": {
+        "message": "Pomozte nám vyvinout AdGuard filtry"
+    },
+    "options_collect_hit_stats_desc": {
+        "message": "Odesílá anonymní statistiky o používání filtrů do AdGuardu. <a>Další informace<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "Přidat položku AdGuard do kontextového menu prohlížeče"
@@ -1016,6 +1070,9 @@
     "options_disable_webrtc_title": {
         "message": "Blokovat WebRTC"
     },
+    "options_disable_webrtc_desc": {
+        "message": "Blokuje WebRTC, které může prozradit vaši skutečnou IP adresu, i když používáte proxy server nebo VPN.\nNěkteré messengery, streamovací platformy nebo hry mohou přestat správně fungovat"
+    },
     "options_strip_tracking_params_title": {
         "message": "Odebrat sledovací parametry z URL"
     },
@@ -1031,8 +1088,17 @@
     "options_third_party_title": {
         "message": "Odstraněit souborů cookie třetích stran"
     },
+    "options_third_party_desc": {
+        "message": "Zabraňuje inzerentům sledovat vaše chování na více stránkách tím, že omezuje životnost souborů cookies třetích stran"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "Chcete-li cookies zablokovat, nastavte životnost na 0"
+    },
     "options_third_party_block_cookies_warning": {
         "message": "Pokud tyto soubory cookies zablokujete, může se stát, že se budete muset na některé webové stránky znovu přihlásit nebo se setkáte s jinými problémy souvisejícími se soubory cookies"
+    },
+    "options_lifetime_minutes": {
+        "message": "Životnost v minutách"
     },
     "options_first_party_title": {
         "message": "Smazat vlastní cookies (není doporučeno)"
@@ -1286,8 +1352,17 @@
     "filtering_log_assumed_rule_description": {
         "message": "Jedná se o předpokládané pravidlo. Podrobnosti naleznete v naší <a>databázi znalostí<\/a>"
     },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "Zachovat log?"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "Tato možnost může významně zvýšit využití paměti"
+    },
     "filtering_log_preserve_log_skip_modal_in_future": {
         "message": "Znovu nezobrazovat"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "Ano, zachovat"
     },
     "options_stealth_general_title": {
         "message": "Obecné"

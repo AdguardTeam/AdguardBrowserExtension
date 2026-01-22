@@ -32,6 +32,9 @@
     "options_filters_annoyances_consent_question": {
         "message": "Aktifkan filter ini?"
     },
+    "options_filters_annoyances_consent_filter_policy": {
+        "message": "Untuk detail tentang apa yang diblokir filter gangguan AdGuard, lihat <a>Kebijakan filter<\/a>"
+    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Aktifkan"
     },
@@ -177,8 +180,14 @@
     "options_allowlist": {
         "message": "Daftar Putih"
     },
+    "options_allowlist_desc": {
+        "message": "AdGuard tidak memblokir iklan dan pelacak di situs web dari daftar"
+    },
     "options_allowlist_invert": {
         "message": "Balikkan daftar Putih"
+    },
+    "options_allowlist_invert_desc": {
+        "message": "Memblokir iklan dan pelacak hanya di situs web yang diizinkan"
     },
     "options_allowlist_alert_invert": {
         "message": "Daftar yang diizinkan dibalik. Iklan hanya diblokir di situs web yang ditambahkan ke dalamnya. <a>Nonaktifkan<\/a>"
@@ -546,6 +555,12 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "Cari di tab"
     },
+    "filtering_log_preserve_log_off": {
+        "message": "Jangan pertahankan catatan"
+    },
+    "filtering_log_preserve_log_on": {
+        "message": "Pertahankan catatan"
+    },
     "filtering_refresh_tab_short": {
         "message": "Segarkan"
     },
@@ -732,6 +747,12 @@
     "options_general_settings": {
         "message": "Umum"
     },
+    "options_block_acceptable_ads": {
+        "message": "Blokir iklan pencarian dan promosi situs web sendiri"
+    },
+    "options_block_acceptable_ads_desc": {
+        "message": "Memblokir iklan di hasil pencarian dan promosi mandiri dari situs web. <a>Pelajari lebih lanjut<\/a>"
+    },
     "options_show_blocked_ads_count_title": {
         "message": "Tunjukkan jumlah iklan yang diblokir pada ikon ekstensi AdGuard"
     },
@@ -777,6 +798,9 @@
     "options_set_update_interval": {
         "message": "Perbarui filter secara otomatis"
     },
+    "options_set_update_interval_desc": {
+        "message": "Menjaga filter tetap terbaru untuk pemblokiran iklan yang lebih efektif"
+    },
     "options_userfilter_export": {
         "message": "Ekspor"
     },
@@ -798,6 +822,9 @@
     "options_userfilter_description_key": {
         "message": "Anda dapat menambahkan aturan Anda sendiri di sini. Opsi ini direkomendasikan untuk pengguna tingkat lanjut yang terbiasa dengan HTML\/CSS. Baca <a>tutorial aturan filter<\/a> untuk belajar menulis menulis aturan filter Anda sendiri."
     },
+    "options_userfilter_subtitle_key": {
+        "message": "Memungkinkan Anda menambahkan aturan penyaringan sendiri"
+    },
     "options_userfilter_line_break": {
         "message": "Jeda baris"
     },
@@ -815,6 +842,9 @@
     },
     "options_safebrowsing_enabled": {
         "message": "Perlindungan dari phishing dan malware"
+    },
+    "options_safebrowsing_enabled_desc": {
+        "message": "Memberi peringatan tentang situs web berbahaya dan phishing menggunakan modul Keamanan Penjelajahan AdGuard. <a>Baca lebih lanjut<\/a>"
     },
     "options_site": {
         "message": "Situs resmi"
@@ -907,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "Anda telah mencapai batas aturan bawaan yang aktif. Peramban Anda telah mengubah daftar filter bawaan yang aktif. Jumlah filter yang diaktifkan telah berubah dari %expected% menjadi %current%."
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "Anda telah mencapai batas peramban Anda untuk aturan bawaan aktif. Peramban Anda telah mengurangi daftar filter bawaan aktif dari %expected% menjadi %current%"
+    },
     "options_limits_warning_static_filters": {
         "message": "Anda telah mencapai batas filter bawaan yang aktif. %maximum% dari %current% filter aktif. Untuk mengaktifkan aturan baru, nonaktifkan beberapa filter bawaan."
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "Anda telah mencapai batas peramban Anda untuk filter bawaan aktif. %maximum% dari %current% filter diaktifkan. Untuk mengaktifkan filter baru, matikan beberapa filter bawaan"
     },
     "options_limits_warning_static_rules": {
         "message": "Anda telah mencapai batas aturan bawaan yang aktif. %maximum% dari %current% aturan aktif. Untuk mengaktifkan aturan baru, nonaktifkan beberapa filter bawaan."
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "Anda telah mencapai batas peramban Anda untuk aturan bawaan aktif. Untuk mengaktifkan aturan baru, matikan beberapa filter bawaan"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "Anda telah mencapai batas aturan regex bawaan yang aktif. %maximum% dari %current% aturan regex aktif. Untuk mengaktifkan aturan baru, nonaktifkan beberapa filter bawaan."
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "Anda telah mencapai batas aturan regex bawaan aktif. Untuk mengaktifkan aturan baru, matikan beberapa filter bawaan"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "Anda telah mencapai batas aturan yang ditambahkan pengguna. %maximum% dari %current% aturan aktif."
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "Anda telah mencapai batas aturan yang ditambahkan pengguna. %maximum% dari %current% aturan diaktifkan. Untuk menambahkan aturan baru, hapus beberapa yang sudah ada"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "Anda telah mencapai batas aturan yang ditambahkan pengguna yang tidak aman. %maximum% dari %current% aturan yang tidak aman aktif."
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "Anda telah mencapai batas aturan regex yang ditambahkan pengguna. %maximum% dari %current% aturan regex aktif."
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "Anda telah mencapai batas aturan regex yang ditambahkan pengguna. %maximum% dari %current% aturan diaktifkan. Untuk menambahkan aturan regex baru, hapus beberapa yang sudah ada"
     },
     "options_developer_mode_required": {
         "message": "Browser Anda membatasi <external-link>beberapa jenis aturan<\/external-link>. Untuk menerapkan semua aturan, aktifkan <b>mode Pengembang<\/b> di <settings-link>pengaturan ekstensi<\/settings-link> browser Anda",
@@ -964,6 +1012,12 @@
     },
     "options_reset_settings_error": {
         "message": "Kesalahan saat mengatur ulang pengaturan"
+    },
+    "options_collect_hit_stats_title": {
+        "message": "Bantu mengembangkan filter AdGuard"
+    },
+    "options_collect_hit_stats_desc": {
+        "message": "Mengirim statistik anonim tentang penggunaan filter iklan ke AdGuard. <a>Pelajari lebih lanjut<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "Tambahkan item AdGuard ke konteks menu peramban"
@@ -1016,6 +1070,9 @@
     "options_disable_webrtc_title": {
         "message": "Blokir WebRTC"
     },
+    "options_disable_webrtc_desc": {
+        "message": "Memblokir WebRTC yang dapat membocorkan Alamat IP asli Anda bahkan jika Anda menggunakan proksi atau VPN. Beberapa aplikasi pesan, platform streaming, atau permainan mungkin berhenti berfungsi dengan benar"
+    },
     "options_strip_tracking_params_title": {
         "message": "Hapus parameter pelacakan dari URL"
     },
@@ -1031,8 +1088,17 @@
     "options_third_party_title": {
         "message": "Menghapus cookie pihak ketiga"
     },
+    "options_third_party_desc": {
+        "message": "Mencegah pengiklan melacak perilaku Anda di beberapa halaman dengan membatasi masa pakai cookie pihak ketiga"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "Untuk memblokir cookie, atur masa pakai menjadi 0"
+    },
     "options_third_party_block_cookies_warning": {
         "message": "Jika Anda memblokir cookie ini, Anda mungkin harus masuk kembali ke beberapa situs web atau menghadapi masalah terkait cookie lainnya"
+    },
+    "options_lifetime_minutes": {
+        "message": "Masa pakai, menit"
     },
     "options_first_party_title": {
         "message": "Hapus cookie pihak pertama (tidak disarankan)"
@@ -1286,8 +1352,17 @@
     "filtering_log_assumed_rule_description": {
         "message": "Ini adalah aturan yang diasumsikan. Untuk detailnya, lihat <a>basis pengetahuan<\/a> kami"
     },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "Pertahankan catatan?"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "Opsi ini dapat secara signifikan meningkatkan penggunaan memori"
+    },
     "filtering_log_preserve_log_skip_modal_in_future": {
         "message": "Jangan tampilkan lagi"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "Ya, pertahankan"
     },
     "options_stealth_general_title": {
         "message": "Umum"
