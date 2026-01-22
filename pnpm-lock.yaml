@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@adguard/agtree':
-        specifier: 3.4.3
-        version: 3.4.3
+        specifier: 4.0.0
+        version: 4.0.0
       '@adguard/filters-downloader':
         specifier: 2.4.2
         version: 2.4.2
@@ -27,11 +27,11 @@ importers:
         specifier: 1.0.2
         version: 1.0.2
       '@adguard/tsurlfilter':
-        specifier: 3.5.2
-        version: 3.5.2(@adguard/re2-wasm@1.2.0)
+        specifier: 4.0.0
+        version: 4.0.0(@adguard/re2-wasm@1.2.0)
       '@adguard/tswebextension':
-        specifier: 3.2.19
-        version: 3.2.19(@adguard/re2-wasm@1.2.0)
+        specifier: 4.0.0
+        version: 4.0.0(@adguard/re2-wasm@1.2.0)
       '@date-fns/utc':
         specifier: ^2.1.0
         version: 2.1.0
@@ -145,8 +145,8 @@ importers:
         version: 3.4.0(zod@3.24.4)
     devDependencies:
       '@adguard/dnr-rulesets':
-        specifier: ~3.2
-        version: 3.2.20251216080045
+        specifier: ~4.0
+        version: 4.0.0
       '@adguard/eslint-plugin-logger-context':
         specifier: ^1.0.1
         version: 1.0.1
@@ -394,6 +394,10 @@ packages:
     resolution: {integrity: sha512-T838KvYtWu3K6whQ46YLaIXYA7PbszX9QRp4dvNfF8iWdp98tcKHxXWslBwUN1DkcBOqqj4rrkarLmcwT2iAbg==}
     engines: {node: '>=22'}
 
+  '@adguard/agtree@4.0.0':
+    resolution: {integrity: sha512-K0C26AidT3G6O6zBWDDhIRkbYxpSS5gV8UMVlWX5eqJ0c/vd/eGtIOg0nKxpD0Qi7xphiHzAPjVYbGkfx0qwtA==}
+    engines: {node: '>=22'}
+
   '@adguard/assistant@4.3.77':
     resolution: {integrity: sha512-JfOcZBS1Ih47DneyA9p38WY2ZqB7MLd9M6sPydM6rArmsdkVEN922G7srSiqwnxW4QZtMYHIIkdwcYKAr09FUA==}
 
@@ -405,8 +409,8 @@ packages:
     engines: {node: '>=18.13.0'}
     hasBin: true
 
-  '@adguard/dnr-rulesets@3.2.20251216080045':
-    resolution: {integrity: sha512-YJnEG1ZHj0E3oGeIsrgygJci1iLH+zSbxY3Yl9tNmSQSSs7/3Q85umA0Wng2lWpy76SKmrxTRSUvNYJ7AxmPSQ==}
+  '@adguard/dnr-rulesets@4.0.0':
+    resolution: {integrity: sha512-NKv0OYB6LSMMWpibOKfrGG2/h0StKmEitSJJJQwwhoy5wPalOS8qrZ35DjiF9QcCPEH6JNeGzb9IW088XHMV7Q==}
     hasBin: true
 
   '@adguard/eslint-plugin-logger-context@1.0.1':
@@ -437,15 +441,15 @@ packages:
   '@adguard/translate@1.0.2':
     resolution: {integrity: sha512-TeQV4ngse/fcpFDCrtU5VqjZfQsdytSuGT8wF4biIM6c6v6W/tkUdrTDhNItq126hAZe65V8QgipTAp8qHdeZw==}
 
-  '@adguard/tsurlfilter@3.5.2':
-    resolution: {integrity: sha512-A0p9aCeOl+g9HrXi/g90dYFki+7+jNK/Nsn+CLknAYQcc0cFVHktdE+uNOa5+Ep7RIh1u85+zs9sNJc5R8zWaQ==}
+  '@adguard/tsurlfilter@4.0.0':
+    resolution: {integrity: sha512-J1JuWLvaQL84SxholqsPYz/CygppPJpgoLjVKMU0OUbTU7CSEDMZa0qxWfESmoRvizlzhXvy+KE5jCLqYj0wtA==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
       '@adguard/re2-wasm': 1.2.0
 
-  '@adguard/tswebextension@3.2.19':
-    resolution: {integrity: sha512-bJJm+AIgJw1yEo16ek/6VEXbRZV3t1mPaCjspv7Vf6EOqKWf+jHdL1SmP3xZL5gEY7Fm8FmDzfNBFEP7Cv7PkQ==}
+  '@adguard/tswebextension@4.0.0':
+    resolution: {integrity: sha512-bjDZf5665E28DlIOEw8qEu4K41xLd8wVDJRmKec3IW4ysmqGtlHEnCnaytw2YhTqgn5Z9PwVmEk/7pzjYR/Dug==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -5695,6 +5699,18 @@ snapshots:
       xregexp: 5.1.2
       zod: 3.24.4
 
+  '@adguard/agtree@4.0.0':
+    dependencies:
+      '@adguard/css-tokenizer': 1.2.0
+      camelcase-keys: 7.0.2
+      clone-deep: 4.0.1
+      glob-to-regexp: 0.4.1
+      is-ip: 3.1.0
+      json5: 2.2.3
+      sprintf-js: 1.1.3
+      tldts: 5.7.112
+      zod: 3.24.4
+
   '@adguard/assistant@4.3.77': {}
 
   '@adguard/css-tokenizer@1.2.0': {}
@@ -5704,12 +5720,12 @@ snapshots:
       commander: 11.1.0
       crypto-js: 4.2.0
 
-  '@adguard/dnr-rulesets@3.2.20251216080045':
+  '@adguard/dnr-rulesets@4.0.0':
     dependencies:
-      '@adguard/agtree': 3.4.3
+      '@adguard/agtree': 4.0.0
       '@adguard/logger': 2.0.0
       '@adguard/re2-wasm': 1.2.0
-      '@adguard/tsurlfilter': 3.5.2(@adguard/re2-wasm@1.2.0)
+      '@adguard/tsurlfilter': 4.0.0(@adguard/re2-wasm@1.2.0)
       axios: 1.13.2
       chokidar: 4.0.3
       commander: 12.1.0
@@ -5745,9 +5761,9 @@ snapshots:
 
   '@adguard/translate@1.0.2': {}
 
-  '@adguard/tsurlfilter@3.5.2(@adguard/re2-wasm@1.2.0)':
+  '@adguard/tsurlfilter@4.0.0(@adguard/re2-wasm@1.2.0)':
     dependencies:
-      '@adguard/agtree': 3.4.3
+      '@adguard/agtree': 4.0.0
       '@adguard/css-tokenizer': 1.2.0
       '@adguard/logger': 2.0.0
       '@adguard/re2-wasm': 1.2.0
@@ -5762,15 +5778,15 @@ snapshots:
       zod: 3.24.4
       zod-validation-error: 3.4.0(zod@3.24.4)
 
-  '@adguard/tswebextension@3.2.19(@adguard/re2-wasm@1.2.0)':
+  '@adguard/tswebextension@4.0.0(@adguard/re2-wasm@1.2.0)':
     dependencies:
-      '@adguard/agtree': 3.4.3
+      '@adguard/agtree': 4.0.0
       '@adguard/assistant': 4.3.77
       '@adguard/extended-css': 2.1.1
       '@adguard/logger': 2.0.0
       '@adguard/scriptlets': 2.2.14
       '@adguard/text-encoding': 0.8.3
-      '@adguard/tsurlfilter': 3.5.2(@adguard/re2-wasm@1.2.0)
+      '@adguard/tsurlfilter': 4.0.0(@adguard/re2-wasm@1.2.0)
       bowser: 2.11.0
       chrome-types: 0.1.394
       commander: 12.1.0

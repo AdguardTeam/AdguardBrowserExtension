@@ -1,9 +1,9 @@
-! Checksum: 1lIvGrOxccpKeiDyNIebZQ
-! Diff-Path: ../patches/17/17-s-1765869181-3600.patch
+! Checksum: abfBuTv1rSia6xapHBCR2g
+! Diff-Path: ../patches/17/17-s-1769001900-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.66
-! TimeUpdated: 2025-12-16T07:10:31+00:00
+! Version: 2.0.12.86
+! TimeUpdated: 2026-01-21T13:22:28+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,7 +20,17 @@
 ! Good: $removeparam=utm_id
 ! Bad:  $removeparam=utm_id,domain=example.org (for instance, should be in specific.txt)
 !
+! NOTE: Generic rules
 !
+! Oracle Eloqua
+$removeparam=elqTrackId
+$removeparam=elq
+$removeparam=elqaid
+$removeparam=elqat
+$removeparam=elqCampaignId
+$removeparam=elqak
+! Winfluencer
+$removeparam=winflncrtag
 ! FastFlow
 $removeparam=ftag
 ! https://5-fifth.com/products/detail?product_id=26125&janet=0qB9lV3s&a=1
@@ -89,8 +99,6 @@ $removeparam=bemobdata
 $removeparam=_bhlid
 ! Not identified. Popular on Japanese sites
 $removeparam=_bdadid
-! a8.net
-$removeparam=a8
 ! personaclick.com
 $removeparam=recommended_by
 $removeparam=recommended_code
@@ -161,7 +169,6 @@ $removeparam=iclid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158662
 $removeparam=user_email_address
 ! https://support.google.com/analytics/answer/10071811
-$removeparam=_ga
 $removeparam=_gl
 ! Coremetrics
 ! https://help.hcltechsw.com/commerce/8.0.0/coremetrics/refs/rmtusecmpcore.html
@@ -176,13 +183,9 @@ $removeparam=sscid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/154659
 $removeparam=rtkcid
 rtkcid=*&clickid=$removeparam=clickid
-! https://github.com/AdguardTeam/AdguardFilters/issues/152387
-! Sovrn (VigLink) tracking
-$removeparam=cuid
 ! impact.com
 $removeparam=ir_campaignid
 $removeparam=ir_adid
-$removeparam=irclickid
 $removeparam=ir_partnerid
 ! IO Technologies
 ! Identify a period of time for which unique visitors use our website
@@ -194,9 +197,6 @@ $removeparam=asgtbndr
 ! https://help.zeydoo.com/en/articles/4362736-how-to-setup-zeydoo-s2s-conversion-tracking
 $removeparam=ymid
 ^z=*&var=$removeparam=var
-! Tradedoubler
-! https://dev.tradedoubler.com/tracking/advertiser/
-$removeparam=tduid
 ! GLAMI click id
 ! https://help.glami.info/pixel-2.0-release-all-you-need-to-know
 $removeparam=gci
@@ -211,8 +211,6 @@ click_id=*_branch_referrer=$removeparam
 $removeparam=famad_xuid
 ! https://tsunen.team-lab.com/?twclid=2-3bhrj1ny7p11v5r9pap3anqge
 $removeparam=twclid
-! https://interactivead.ru/wp-content/uploads/2022/08/arir22_rkn.pdf
-$removeparam=erid
 ! Cxense clickthrough tracking
 $removeparam=cx_click
 $removeparam=cx_recsOrder
@@ -319,18 +317,15 @@ $removeparam=utm_adgroup
 $removeparam=utm_ad
 $removeparam=utm_affiliate
 $removeparam=utm_brand
-$removeparam=utm_campaign
 $removeparam=utm_campaignid
 $removeparam=utm_channel
 $removeparam=utm_cid
-$removeparam=utm_content
 $removeparam=utm_creative
 $removeparam=utm_emcid
 $removeparam=utm_emmid
 $removeparam=utm_id
 $removeparam=utm_id_
 $removeparam=utm_keyword
-$removeparam=utm_medium
 $removeparam=utm_name
 $removeparam=utm_place
 $removeparam=utm_product
@@ -343,11 +338,9 @@ $removeparam=utm_session
 $removeparam=utm_siteid
 $removeparam=utm_social
 $removeparam=utm_social-type
-$removeparam=utm_source
 $removeparam=utm_source_platform
 $removeparam=utm_supplier
 $removeparam=utm_swu
-$removeparam=utm_term
 $removeparam=utm_umguk
 $removeparam=utm_userid
 $removeparam=utm_viz_id
@@ -375,7 +368,6 @@ $removeparam=admitad_uid
 ! adjust.com tracking
 $removeparam=adj_label
 $removeparam=adj_campaign
-$removeparam=adj_t
 $removeparam=adj_creative
 $removeparam=gps_adid
 $removeparam=unicorn_click_id
@@ -410,15 +402,12 @@ $removeparam=pk_source
 ! Branch.io ( https://stackoverflow.com/questions/37882810/what-is-meaning-of-branch-match-id )
 $removeparam=_branch_referrer
 $removeparam=_branch_match_id
-! Valuecommerce ( https://help.valuecommerce.ne.jp/mer/dl/ITP2.0_for_iTAG.pdf )
-$removeparam=vc_lpp
 ! https://github.com/brave/brave-browser/issues/17507
 $removeparam=ml_subscriber
 $removeparam=ml_subscriber_hash
 ! Olytics
 $removeparam=rb_clickid
 $removeparam=oly_anon_id
-$removeparam=oly_enc_id
 ! AD EBiS
 $removeparam=ebisAdID
 ! Wicked Reports click tracking
@@ -437,7 +426,6 @@ $removeparam=nb_expid_meta
 $removeparam=adfrom
 $removeparam=nx_source
 $removeparam=_zucks_suid
-$removeparam=cmpid
 $removeparam=guccounter
 $removeparam=guce_referrer
 $removeparam=guce_referrer_sig
@@ -451,6 +439,47 @@ $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
 !
+! ###########################################################################################################################
+! ##################### Generic rules with exclusions for the MV3 extensions ################################################
+! ###########################################################################################################################
+! It's needed for the MV3 extensions - exceptions like `@@*$removeparam` do not work
+! TODO: Remove this section and revert to the original rules if this https://github.com/w3c/webextensions/issues/783 is fixed
+! SECTION: Generic rules with exclusions for the MV3 extensions
+!
+!
+! Move original rules to this directive if you can confirm the problem
+!
+$removeparam=cmpid
+! adjust.com tracking
+$removeparam=adj_t
+! https://github.com/AdguardTeam/AdguardFilters/issues/152387
+! Sovrn (VigLink) tracking
+$removeparam=cuid
+! a8.net
+$removeparam=a8
+! UTM
+$removeparam=utm_medium
+$removeparam=utm_campaign
+$removeparam=utm_referrer
+$removeparam=utm_content
+$removeparam=utm_source
+$removeparam=utm_term
+! impact.com
+$removeparam=irclickid
+! Valuecommerce ( https://help.valuecommerce.ne.jp/mer/dl/ITP2.0_for_iTAG.pdf )
+$removeparam=vc_lpp
+! https://interactivead.ru/wp-content/uploads/2022/08/arir22_rkn.pdf
+$removeparam=erid
+! Olytics
+$removeparam=oly_enc_id
+! https://support.google.com/analytics/answer/10071811
+$removeparam=_ga
+! Tradedoubler
+! https://dev.tradedoubler.com/tracking/advertiser/
+$removeparam=tduid
+! NOTE: Generic rules with exclusions for the MV3 extensions ⬆️
+! !SECTION: Generic rules with exclusions for the MV3 extensions
+!
 !---------------------------------------------------------------------------!
 !-------------- Specific web sites -----------------------------------------!
 !---------------------------------------------------------------------------!
@@ -462,6 +491,45 @@ $removeparam=fb_source
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/222986
+||tw.news.yahoo.com^$removeparam=link_source
+||tw.news.yahoo.com^$removeparam=taid
+! https://github.com/AdguardTeam/AdguardFilters/issues/223033
+||netmonet.co^$removeparam=id
+||netmonet.co^$removeparam=wpid
+||netmonet.co^$removeparam=visitId
+||netmonet.co^$removeparam=operation
+! https://github.com/AdguardTeam/AdguardFilters/issues/223062
+||topics.smt.docomo.ne.jp^$removeparam=fm
+||topics.smt.docomo.ne.jp^$removeparam=fm_topics_id
+||topics.smt.docomo.ne.jp^$removeparam=redirect
+! https://github.com/AdguardTeam/AdguardFilters/issues/222573
+||online.nojima.co.jp^$removeparam=campaign
+! https://github.com/AdguardTeam/AdguardFilters/issues/221928
+||temu.com^$removeparam=_x_ads_account
+||temu.com^$removeparam=_x_ads_creative_id
+||temu.com^$removeparam=_x_ads_id
+||temu.com^$removeparam=_x_ads_set
+||temu.com^$removeparam=_x_ns_catalog_id
+||temu.com^$removeparam=_x_ns_gid
+||temu.com^$removeparam=_x_ns_placement
+||temu.com^$removeparam=_x_ns_product_id
+||temu.com^$removeparam=_x_ns_site_id
+||temu.com^$removeparam=_x_ns_source
+||temu.com^$removeparam=_x_ns_crt_id
+||temu.com^$removeparam=_x_bg_adid
+||temu.com^$removeparam=_x_from
+||temu.com^$removeparam=adg_ctx
+||temu.com^$removeparam=mrk_rec
+! Browsec VPN
+||browsec-uninstall.s3-website.eu-central-1.amazonaws.com^$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/219082
+||bookoffonline.co.jp^$removeparam=xadid
+! https://github.com/AdguardTeam/AdguardFilters/issues/220817
+||reifen24.de^$removeparam=sv_campaign_id
+||reifen24.de^$removeparam=sv1
+! urban-vpn.com
+||urban-vpn.com^$removeparam=cid
 ! https://www.oricon.co.jp/kyujin/?ref_cd=kyujinbtnbottom-news
 ||oricon.co.jp^$removeparam=ref
 ! https://carviewform.yahoo.co.jp/kaitori/?src=kuruma_news__kaitorisatei_button
@@ -2185,8 +2253,6 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ! AT Internet
 ||bbc.$removeparam=facebook_page
 ||bbc.$removeparam=at_bbc_team
-! https://github.com/AdguardTeam/AdguardFilters/issues/138614
-||jlcpcb.com^$removeparam=from
 ! https://event.hoken-mammoth.jp/sp/lps/event_promotion12/?s_mf=0901mamana
 ||event.hoken-mammoth.jp^$removeparam=s_mf
 ! internal links ex. https://www.cinematoday.jp/page/A0008622?g_clk=top_specials
@@ -2496,8 +2562,6 @@ $removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.lived
 ||api.cxense.com/public/widget/data?json=$script,removeparam=getId
 ||api.cxense.com/public/widget/data?json=$script,removeparam=usi
 ||api.cxense.com/public/widget/data?json=$script,removeparam=widgetId
-! https://github.com/AdguardTeam/AdguardFilters/issues/114561
-||lp.sophos.com^$removeparam=elqTrackId
 ! https://github.com/AdguardTeam/AdguardFilters/issues/114206
 ||player.theplatform.com^$removeparam=playeranalytics
 ||player.theplatform.com^$removeparam=targetedlink
@@ -2870,8 +2934,8 @@ $removeparam=igshid,domain=instagram.com|threads.com|threads.net
 ||linkedin.com/premium/$removeparam=destRedirectURL
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-3262558
 ||linkedin.com^$removeparam=original_referer
-||linkedin.com^$removeparam=refId
-||linkedin.com^$removeparam=trackingId
+||linkedin.com^$removeparam=refId,document
+||linkedin.com^$removeparam=trackingId,document
 ! https://github.com/AdguardTeam/AdguardFilters/issues/88502
 ||linkedin.com/authwall?$removeparam=trkInfo
 ||linkedin.com/authwall?$removeparam=originalReferer
@@ -3335,10 +3399,12 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/uBlockOrigin/uAssets/issues/31494
+@@||usprobioticguide.com^$removeparam=utm_campaign
+! https://github.com/uBlockOrigin/uAssets/issues/31203
+@@||metabase.com^$removeparam=utm_term
 ! https://github.com/AdguardTeam/AdguardFilters/issues/214119
 @@||adj.st^$removeparam=adj_t
-! https://github.com/AdguardTeam/AdguardFilters/issues/213210
-@@||passport.jlcpcb.com^$removeparam=from
 ! https://github.com/AdguardTeam/AdguardFilters/issues/211078
 @@||yandex.go.link^$removeparam=adj_t
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-13135670
@@ -3467,8 +3533,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 @@||tix.axs.com^$removeparam
 ! https://github.com/AdguardTeam/AdguardFilters/issues/100285
 @@||sendgb.com/*/?utm_source=$removeparam=utm_source
-! https://github.com/AdguardTeam/AdguardFilters/issues/96952
-@@||img*.nga$removeparam=cmpid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/95837#issuecomment-944914999
 ! it can be removed after the release of the extension 4.0
 !
