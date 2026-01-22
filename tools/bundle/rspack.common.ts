@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -201,6 +201,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
         'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
         'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
+        'categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {
