@@ -37,7 +37,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 
 # ============================================================================
 # Stage: deps
-# Cached until package.json/pnpm-lock.yaml change
+# Cached until package.json/pnpm-lock.yaml changes
 # ============================================================================
 FROM base AS deps
 
@@ -53,17 +53,16 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 
 # ============================================================================
 # Stage: source-deps
+# Cached until source code changes
 # Has source + node_modules but NO tsurlfilter
-# Used by stages that don't need tsurlfilter (e.g., locales-check)
 # ============================================================================
-FROM base AS source-deps
+FROM deps AS source-deps
 
 COPY . /extension
-COPY --from=deps /extension/node_modules /extension/node_modules
 
 # ============================================================================
 # Stage: linked-deps
-# Combines deps and tsurlfilter-build, runs fast linking (~2-3 seconds)
+# Combines source-deps and tsurlfilter-build, runs fast linking (~2-3 seconds)
 # All build stages inherit from this stage
 # ============================================================================
 FROM source-deps AS linked-deps
