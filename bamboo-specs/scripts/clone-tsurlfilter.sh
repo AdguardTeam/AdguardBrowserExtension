@@ -64,6 +64,8 @@ setup_ssh() {
 clone_tsurlfilter() {
     if [ -z "${TSURLFILTER_REF}" ]; then
         echo "No TSURLFILTER_REF specified, creating empty directory"
+        # Clean up any existing tsurlfilter directory to ensure fresh state
+        rm -rf "${TSURLFILTER_DIR}"
         mkdir -p "${TSURLFILTER_DIR}"
         exit 0
     fi

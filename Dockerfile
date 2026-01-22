@@ -22,13 +22,19 @@ ENV PNPM_STORE=/pnpm-store
 # Cached until tsurlfilter source content changes (Docker checksums it)
 # This stage builds tsurlfilter packages (~70 seconds)
 # Output: /tsurlfilter with pre-built packages
+# If tsurlfilter context is empty (no packages dir), skips build entirely
 # ============================================================================
 FROM base AS tsurlfilter-build
 
 # Copy source from named build context (cloned on CI, no SSH needed here)
+# If TSURLFILTER_REF was empty, this will be an empty directory
 COPY --from=tsurlfilter . /tsurlfilter
 
+# Only build if tsurlfilter has packages (TSURLFILTER_REF was set)
+# Otherwise skip - npm versions from package.json will be used
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    [ ! -d "/tsurlfilter/packages" ] && echo "No tsurlfilter source, using npm versions" && exit 0; \
+    echo "Building tsurlfilter from source..." && \
     pnpm config set store-dir /pnpm-store && \
     cd /tsurlfilter/packages/tswebextension && \
     pnpm install && \
