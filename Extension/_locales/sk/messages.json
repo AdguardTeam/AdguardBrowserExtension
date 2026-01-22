@@ -32,6 +32,9 @@
     "options_filters_annoyances_consent_question": {
         "message": "Zapnúť tieto filtre?"
     },
+    "options_filters_annoyances_consent_filter_policy": {
+        "message": "Podrobnosti o tom, čo blokujú filtre obťažovania AdGuard, nájdete v časti <a>Politika filtrácie<\/a>"
+    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Zapnúť"
     },
@@ -177,8 +180,14 @@
     "options_allowlist": {
         "message": "Zoznam povolení"
     },
+    "options_allowlist_desc": {
+        "message": "AdGuard neblokuje reklamy a sledovače na webových stránkach zo zoznamu"
+    },
     "options_allowlist_invert": {
         "message": "Invertovať zoznam povolení"
+    },
+    "options_allowlist_invert_desc": {
+        "message": "Blokuje reklamy a sledovače iba na webových stránkach zo zoznamu povolených"
     },
     "options_allowlist_alert_invert": {
         "message": "Zoznam povolení je invertovaný. Reklamy sú blokované iba na webových stránkach, ktoré sú pridané. <a>Vypnúť<\/a>"
@@ -546,6 +555,12 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "Hľadať v kartách"
     },
+    "filtering_log_preserve_log_off": {
+        "message": "Nevytvárať denník"
+    },
+    "filtering_log_preserve_log_on": {
+        "message": "Zachovať denník"
+    },
     "filtering_refresh_tab_short": {
         "message": "Obnoviť"
     },
@@ -732,6 +747,12 @@
     "options_general_settings": {
         "message": "Všeobecné"
     },
+    "options_block_acceptable_ads": {
+        "message": "Blokovať vyhľadávacie reklamy a vlastnú propagáciu webovej stránky"
+    },
+    "options_block_acceptable_ads_desc": {
+        "message": "Blokuje reklamy vo výsledkoch vyhľadávania a vlastnú propagáciu webových stránok. <a>Dozvedieť sa viac<\/a>"
+    },
     "options_show_blocked_ads_count_title": {
         "message": "Zobrazovať počet zablokovaných reklám na ikone AdGuard rozšírenia"
     },
@@ -777,6 +798,9 @@
     "options_set_update_interval": {
         "message": "Automatická aktualizácia filtrov"
     },
+    "options_set_update_interval_desc": {
+        "message": "Udržiava filtre aktuálne pre účinnejšie blokovanie reklám"
+    },
     "options_userfilter_export": {
         "message": "Export"
     },
@@ -798,6 +822,9 @@
     "options_userfilter_description_key": {
         "message": "Tu môžete pridať svoje vlastné pravidlá. Táto možnosť sa odporúča pre pokročilých používateľov, ktorí poznajú HTML\/CSS. Prečítajte si <a>príručku pravidiel filtrácie<\/a>, kde sa dozviete, ako vytvoriť vlastné filtračné pravidlá."
     },
+    "options_userfilter_subtitle_key": {
+        "message": "Umožňuje pridať vlastné filtračné pravidlá"
+    },
     "options_userfilter_line_break": {
         "message": "Zalomenie riadku"
     },
@@ -815,6 +842,9 @@
     },
     "options_safebrowsing_enabled": {
         "message": "Ochrana proti podvodným a škodlivým stránkam"
+    },
+    "options_safebrowsing_enabled_desc": {
+        "message": "Varuje pred nebezpečnými a phishingovými webovými stránkami pomocou modulu AdGuard Bezpečnosť prehliadania. <a>Prečítať si viac<\/a>"
     },
     "options_site": {
         "message": "Oficiálna stránka"
@@ -907,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "Dosiahli ste limit aktívnych vstavaných pravidiel. Váš prehliadač upravil zoznam aktívnych vstavaných filtrov. Počet povolených filtrov sa zmenil z %expected% na %current%."
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "Dosiahli ste limit aktívnych vstavaných pravidiel vo vašom prehliadači. Váš prehliadač znížil zoznam aktívnych vstavaných filtrov z %expected% na %current%"
+    },
     "options_limits_warning_static_filters": {
         "message": "Dosiahli ste limit aktívnych zabudovaných filtrov. %maximum% z %current% filtre sú povolené. Ak chcete aktivovať nové pravidlá, vypnite niektoré zabudované filtre."
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "Dosiahli ste limit aktívnych vstavaných filtrov vo vašom prehliadači. Z %current% filtrov je povolených %maximum%. Ak chcete aktivovať nové filtre, vypnite niektoré vstavané filtre"
     },
     "options_limits_warning_static_rules": {
         "message": "Dosiahli ste limit aktívnych zabudovaných pravidiel. %maximum% z %current% pravidlá sú povolené. Ak chcete aktivovať nové pravidlá, vypnite niektoré zabudované filtre."
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "Dosiahli ste limit aktívnych vstavaných pravidiel vo vašom prehliadači. Ak chcete aktivovať nové pravidlá, vypnite niektoré vstavané filtre"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "Dosiahli ste limit aktívnych zabudovaných regex pravidiel. %maximum% z %current% regex pravidiel sú povolené. Ak chcete aktivovať nové pravidlá, vypnite niektoré zabudované filtre."
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "Dosiahli ste limit aktívnych vstavaných regulárnych výrazov. Ak chcete aktivovať nové pravidlá, vypnite niektoré vstavané filtre"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "Dosiahli ste limit pravidiel pridaných používateľom. %maximum% pravidiel %current% sú povolené."
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "Dosiahli ste limit používateľom pridaných pravidiel. Z %current% pravidiel je povolených %maximum%. Ak chcete pridať nové pravidlá, odstraňte niektoré existujúce"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "Dosiahli ste limit nebezpečných pravidiel pridaných používateľom. Sú povolené %maximum% z %current% nebezpečných pravidiel."
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "Dosiahli ste limit regex pravidiel pridaných používateľom. %maximum% z %current% regex pravidiel sú povolené."
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "Dosiahli ste limit používateľom pridaných regulárnych výrazov. Z %current% pravidiel je povolených %maximum%. Ak chcete pridať nové pravidlá regulárnych výrazov, odstraňte niektoré existujúce"
     },
     "options_developer_mode_required": {
         "message": "Váš prehliadač obmedzuje <external-link>niektoré typy pravidiel<\/external-link>. Ak chcete použiť všetky pravidlá, zapnite <b>Režim pre vývojárov<\/b> v nastaveniach rozšírení <settings-link>Vášho prehliadača<\/settings-link>",
@@ -964,6 +1012,12 @@
     },
     "options_reset_settings_error": {
         "message": "Chyba pri obnove nastavení"
+    },
+    "options_collect_hit_stats_title": {
+        "message": "Pomôžte vyvíjať filtre AdGuard"
+    },
+    "options_collect_hit_stats_desc": {
+        "message": "Odosiela anonymné štatistiky o používaní filtrov reklám do AdGuardu. <a>Dozvedieť sa viac<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "Pridať položku AdGuard do kontextovej ponuky prehliadača"
@@ -1016,6 +1070,9 @@
     "options_disable_webrtc_title": {
         "message": "Blokovať WebRTC"
     },
+    "options_disable_webrtc_desc": {
+        "message": "Blokuje WebRTC, ktorý môže odhaliť vašu skutočnú IP adresu, aj keď používate proxy alebo VPN. Niektoré messengery, streamovacie platformy alebo hry môžu prestať správne fungovať"
+    },
     "options_strip_tracking_params_title": {
         "message": "Odstráňte parametre sledovania z adries URL"
     },
@@ -1031,8 +1088,17 @@
     "options_third_party_title": {
         "message": "Odstraňovať súbory cookie tretích strán"
     },
+    "options_third_party_desc": {
+        "message": "Zabraňuje inzerentom sledovať vaše správanie na viacerých stránkach obmedzením životnosti cookies tretích strán"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "Ak chcete cookies zablokovať, nastavyte životnosť na 0"
+    },
     "options_third_party_block_cookies_warning": {
         "message": "Ak tieto súbory cookie zablokujete, možno sa budete musieť znova prihlásiť na niektoré webové stránky alebo čeliť iným problémom súvisiacim so súbormi cookie"
+    },
+    "options_lifetime_minutes": {
+        "message": "Životnosť, minúty"
     },
     "options_first_party_title": {
         "message": "Odstrániť vlastné súbory cookie (neodporúča sa)"
@@ -1286,8 +1352,17 @@
     "filtering_log_assumed_rule_description": {
         "message": "Toto je predpokladané pravidlo. Podrobnosti nájdete v našej znalostnej báze <a><\/a>"
     },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "Zachovať denník?"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "Táto voľba môže výrazne zvýšiť využitie pamäte"
+    },
     "filtering_log_preserve_log_skip_modal_in_future": {
         "message": "Už viac nezobrazovať"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "Áno, zachovať"
     },
     "options_stealth_general_title": {
         "message": "Všeobecné"

@@ -32,6 +32,9 @@
     "options_filters_annoyances_consent_question": {
         "message": "Aktivera filter?"
     },
+    "options_filters_annoyances_consent_filter_policy": {
+        "message": "Mer information om vad AdGuards irritationsfilter blockerar finns i <a>Filterpolicy<\/a>"
+    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Aktivera"
     },
@@ -177,8 +180,14 @@
     "options_allowlist": {
         "message": "Vitlista"
     },
+    "options_allowlist_desc": {
+        "message": "AdGuard blockerar inte annonser och spårare på webbplatser från listan"
+    },
     "options_allowlist_invert": {
         "message": "Invertera Vitlistan"
+    },
+    "options_allowlist_invert_desc": {
+        "message": "Blockerar annonser och spårare endast på webbplatser i tillåtelselistan"
     },
     "options_allowlist_alert_invert": {
         "message": "Vitlistan är inverterad. Annonser blockeras endast på webbplatser som läggs till. <a>Inaktivera<\/a>"
@@ -546,6 +555,12 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "Sök i tabbar"
     },
+    "filtering_log_preserve_log_off": {
+        "message": "Spara inte logg"
+    },
+    "filtering_log_preserve_log_on": {
+        "message": "Spara logg"
+    },
     "filtering_refresh_tab_short": {
         "message": "Uppdatera"
     },
@@ -732,6 +747,12 @@
     "options_general_settings": {
         "message": "Allmänt"
     },
+    "options_block_acceptable_ads": {
+        "message": "Blockera sökannonser och webbplatsers egenreklam"
+    },
+    "options_block_acceptable_ads_desc": {
+        "message": "Blockerar annonser i sökresultat och självreklam för webbplatser. <a>Läs mer<\/a>"
+    },
     "options_show_blocked_ads_count_title": {
         "message": "Visa antalet blockerade annonser på ikonen för AdGuard-tillägget"
     },
@@ -777,6 +798,9 @@
     "options_set_update_interval": {
         "message": "Uppdatera filter automatiskt"
     },
+    "options_set_update_interval_desc": {
+        "message": "Håller filtren uppdaterade för mer effektiv annonsblockering"
+    },
     "options_userfilter_export": {
         "message": "Exportera"
     },
@@ -798,6 +822,9 @@
     "options_userfilter_description_key": {
         "message": "Du kan lägga till dina egna regler här. Det här alternativet rekommenderas för avancerade användare som är bekanta med HTML\/CSS. Läs självstudien <a>guide för filterregler<\/a> för att lära dig hur du skriver dina egna filterregler."
     },
+    "options_userfilter_subtitle_key": {
+        "message": "Tillåter dig att lägga till egna filtreringsregler"
+    },
     "options_userfilter_line_break": {
         "message": "Radbrytning"
     },
@@ -815,6 +842,9 @@
     },
     "options_safebrowsing_enabled": {
         "message": "Phishing- och skadeprogramsskydd"
+    },
+    "options_safebrowsing_enabled_desc": {
+        "message": "Varnar för skadliga och nätfiske-webbplatser med hjälp av AdGuard-modulen Surfsäkerhet. <a>Läs mer<\/a>"
     },
     "options_site": {
         "message": "Officiell webbplats"
@@ -907,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "Du har nått gränsen för aktiva inbyggda regler. Din webbläsare har ändrat listan över aktiva inbyggda filter. Antalet aktiverade filter har ändrats från %expected% till %current%."
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "Du har nått din webbläsares gräns för aktiva inbyggda regler. Din webbläsare har minskat listan över aktiva inbyggda filter från %expected% till %current%"
+    },
     "options_limits_warning_static_filters": {
         "message": "Du har nått gränsen för aktiva inbyggda filter. %maximum% av %current% filter är aktiverade. För att aktivera nya regler, inaktivera några inbyggda filter."
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "Du har nått din webbläsares gräns för aktiva inbyggda filter. %maximum% av %current% filter är aktiverade. För att aktivera nya filter, inaktivera några inbyggda."
     },
     "options_limits_warning_static_rules": {
         "message": "Du har nått gränsen för aktiva inbyggda regler. %maximum% av %current% regler är aktiverade. För att aktivera nya regler, inaktivera några inbyggda filter."
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "Du har nått din webbläsares gräns för aktiva inbyggda regler. För att aktivera nya regler, inaktivera några inbyggda filter"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "Du har nått gränsen för aktiva inbyggda regex-regler. %maximum% av %current% regex-regler är aktiverade. För att aktivera nya regler, inaktivera några inbyggda filter."
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "Du har nått gränsen för aktiva inbyggda regex-regler. För att aktivera nya regler, inaktivera några inbyggda filter"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "Du har nått gränsen för användartillagda regler. %maximum% av %current% regler är aktiverade."
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "Du har nått gränsen för användartillagda regler. %maximum% av %current% regler är aktiverade. För att lägga till nya regler, ta bort några befintliga"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "Du har nått gränsen för användartillagda osäkra regler. %maximum% av %current% osäkra regler är aktiverade."
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "Du har nått gränsen för användartillagda regex-regler. %maximum% av %current% regex-regler är aktiverade."
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "Du har nått gränsen för användartillagda regex-regler. %maximum% av %current% regler är aktiverade. För att lägga till nya regex-regler, ta bort några befintliga"
     },
     "options_developer_mode_required": {
         "message": "Din webbläsare begränsar <external-link>vissa typer av regler<\/external-link>. För att tillämpa alla regler, aktivera <b>Utvecklarläge<\/b> i din webbläsares <settings-link>tilläggsinställningar<\/settings-link>",
@@ -964,6 +1012,12 @@
     },
     "options_reset_settings_error": {
         "message": "Fel vid återställning av inställningar"
+    },
+    "options_collect_hit_stats_title": {
+        "message": "Hjälp till att förbättra AdGuards filter"
+    },
+    "options_collect_hit_stats_desc": {
+        "message": "Skickar anonym statistik om användning av annonsfilter till AdGuard. <a>Läs mer<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "Lägg till AdGuard-objekt i webbläsarens snabbmeny"
@@ -1016,6 +1070,9 @@
     "options_disable_webrtc_title": {
         "message": "Blockera WebRTC"
     },
+    "options_disable_webrtc_desc": {
+        "message": "Blockerar WebRTC som kan läcka din riktiga IP-adress även om du använder en proxy eller VPN. Vissa meddelandeappar, streamingplattformar eller spel kan sluta fungera korrekt"
+    },
     "options_strip_tracking_params_title": {
         "message": "Ta bort spårningsparametrar från webbadresser"
     },
@@ -1031,8 +1088,17 @@
     "options_third_party_title": {
         "message": "Ta bort tredjepartscookies"
     },
+    "options_third_party_desc": {
+        "message": "Förhindrar att annonsörer spårar ditt beteende på flera sidor genom att begränsa livslängden för tredjepartscookies"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "För att blockera cookies, sätt livslängden till 0"
+    },
     "options_third_party_block_cookies_warning": {
         "message": "Om du blockerar dessa cookies kan du behöva logga in på vissa webbplatser igen eller stöta på andra cookie-relaterade problem"
+    },
+    "options_lifetime_minutes": {
+        "message": "Livslängd, minuter"
     },
     "options_first_party_title": {
         "message": "Ta bort förstapartscookies (rekommenderas ej)"
@@ -1285,6 +1351,18 @@
     },
     "filtering_log_assumed_rule_description": {
         "message": "Detta är en antagen regel. För detaljer, se vår <a>Kunskapsbas<\/a>"
+    },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "Spara logg?"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "Detta val kan avsevärt öka minnesanvändningen"
+    },
+    "filtering_log_preserve_log_skip_modal_in_future": {
+        "message": "Visa inte igen"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "Ja, spara"
     },
     "options_stealth_general_title": {
         "message": "Allmänt"

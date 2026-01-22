@@ -32,6 +32,9 @@
     "options_filters_annoyances_consent_question": {
         "message": "Želite omogočiti ta filter?"
     },
+    "options_filters_annoyances_consent_filter_policy": {
+        "message": "Za podrobnosti o tem, kaj AdGuardovi filtri motenj blokirajo, glejte <a>Politika filtra<\/a>"
+    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Omogoči"
     },
@@ -177,8 +180,14 @@
     "options_allowlist": {
         "message": "Seznam dovoljenih"
     },
+    "options_allowlist_desc": {
+        "message": "AdGuard ne blokira oglasov in sledilcev na spletnih straneh s seznama"
+    },
     "options_allowlist_invert": {
         "message": "Obrni seznam dovoljenih"
+    },
+    "options_allowlist_invert_desc": {
+        "message": "Blokira oglase in sledilce samo na spletnih straneh s seznama dovoljenih"
     },
     "options_allowlist_alert_invert": {
         "message": "Seznam dovoljenih je obrnjen. Oglasi so blokirani samo na spletnih straneh na katerih so dodani. <a>Onemogoči<\/a>"
@@ -546,6 +555,12 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "Poišči v zavihkih"
     },
+    "filtering_log_preserve_log_off": {
+        "message": "Ne ohrani dnevnika"
+    },
+    "filtering_log_preserve_log_on": {
+        "message": "Ohrani dnevnik"
+    },
     "filtering_refresh_tab_short": {
         "message": "Osveži"
     },
@@ -732,6 +747,12 @@
     "options_general_settings": {
         "message": "Splošno"
     },
+    "options_block_acceptable_ads": {
+        "message": "Onemogoči iskalne oglase in samopromocijo spletnih strani"
+    },
+    "options_block_acceptable_ads_desc": {
+        "message": "Blokira oglase v rezultatih iskanja in samopromocijo spletnih mest. <a>Več o tem<\/a>"
+    },
     "options_show_blocked_ads_count_title": {
         "message": "Nakaži število onemogočenih oglasov na ikoni AdGuard razširitve"
     },
@@ -777,6 +798,9 @@
     "options_set_update_interval": {
         "message": "Samodejno posodobi filtre"
     },
+    "options_set_update_interval_desc": {
+        "message": "Ohranja filtre posodobljene za učinkovitejše blokiranje oglasov"
+    },
     "options_userfilter_export": {
         "message": "Izvozi"
     },
@@ -798,6 +822,9 @@
     "options_userfilter_description_key": {
         "message": "Tu lahko dodate svoja pravila. Ta možnost je priporočljiva za napredne uporabnike, ki poznajo HTML\/CSS. Preberite <a>vadnico pravil o filtriranju<\/a>, če želite izvedeti, kako napisati lastna pravila filtriranja."
     },
+    "options_userfilter_subtitle_key": {
+        "message": "Omogoča dodajanje lastnih pravil za filtriranje"
+    },
     "options_userfilter_line_break": {
         "message": "Prelom vrstice"
     },
@@ -815,6 +842,9 @@
     },
     "options_safebrowsing_enabled": {
         "message": "Varstvo pred lažnim predstavljanjem in škodljivimi programi"
+    },
+    "options_safebrowsing_enabled_desc": {
+        "message": "Opozarja na zlonamerne in lažno predstavljanje spletne strani z uporabo modula AdGuard Varnost brskanja. <a>Preberi več<\/a>"
     },
     "options_site": {
         "message": "Uradna spletna stran"
@@ -907,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "Dosegli ste omejitev aktivnih vgrajenih filtrov. Brskalnik je spremenil seznam aktivnih vgrajenih filtrov. Število omogočenih filtrov se je spremenilo iz %expected% na %current%."
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "Dosegli ste omejitev aktivnih vgrajenih pravil vašega brskalnika. Vaš brskalnik je zmanjšal seznam aktivnih vgrajenih filtrov s %expected% na %current%"
+    },
     "options_limits_warning_static_filters": {
         "message": "Dosegli ste omejitev aktivnih vgrajenih filtrov. %maximum% od %current% filtrov je omogočenih. Za aktiviranje novih pravil onemogočite nekatere vgrajene filtre."
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "Dosegli ste omejitev aktivnih vgrajenih filtrov vašega brskalnika. Omogočenih je %maximum% od %current% filtrov. Za aktiviranje novih filtrov onemogočite nekatere vgrajene"
     },
     "options_limits_warning_static_rules": {
         "message": "Dosegli ste omejitev aktivnih vgrajenih pravil. %maximum% od %current% pravil je omogočenih. Za aktiviranje novih pravil onemogočite nekatere vgrajene filtre."
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "Dosegli ste omejitev aktivnih vgrajenih pravil vašega brskalnika. Za aktiviranje novih pravil onemogočite nekatere vgrajene filtre"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "Dosegli ste omejitev aktivnih vgrajenih pravil regularnega izraza. %maximum% od %current% pravil regularnega izraza je omogočenih. Za aktiviranje novih pravil onemogočite nekatere vgrajene filtre."
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "Dosegli ste omejitev aktivnih vgrajenih regex pravil. Za aktiviranje novih pravil onemogočite nekatere vgrajene filtre"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "Dosegli ste omejitev uporabniško dodanih pravil. %maximum% od %current% pravil je omogočenih."
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "Dosegli ste omejitev pravil, dodanih s strani uporabnika. Omogočenih je %maximum% od %current% pravil. Za dodajanje novih pravil odstranite nekaj obstoječih"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "Dosegli ste limit uporabniško dodanih nenačrtovanih pravil. %maximum% od %current% nenačrtovanih pravil je omogočenih."
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "Dosegli ste omejitev uporabniško dodanih pravil regularnega izraza. %maximum% od %current% pravil regularnih izrazov je omogočenih."
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "Dosegli ste omejitev regex pravil, dodanih s strani uporabnika. Omogočenih je %maximum% od %current% pravil. Za dodajanje novih regex pravil odstranite nekaj obstoječih"
     },
     "options_developer_mode_required": {
         "message": "Vaš brskalnik omejuje <external-link>nekatere vrste pravil<\/external-link>. Če želite uporabiti vsa pravila, omogočite <b>Način za razvijalce<\/b> v nastavitvah razširitve <settings-link>vašega brskalnika<\/settings-link>",
@@ -964,6 +1012,12 @@
     },
     "options_reset_settings_error": {
         "message": "Napaka pri ponastavitvi nastavitev"
+    },
+    "options_collect_hit_stats_title": {
+        "message": "Pomagajte razvijati filtre AdGuard"
+    },
+    "options_collect_hit_stats_desc": {
+        "message": "Pošlje anonimne statistike o uporabi filtrov oglasov AdGuardu. <a>Več o tem<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "Dodaj vnos AdGuarda vpriročni meni brskalnika"
@@ -1016,6 +1070,9 @@
     "options_disable_webrtc_title": {
         "message": "Onemogoči WebRTC"
     },
+    "options_disable_webrtc_desc": {
+        "message": "Blokira WebRTC, ki lahko razkrije vaš pravi naslov IP, tudi če uporabljate namestniški trežnik ali VPN. Nekateri sporočilniki, pretočne platforme ali igre morda ne bodo delovali pravilno"
+    },
     "options_strip_tracking_params_title": {
         "message": "Odstrani parametre sledenja iz URL-jev"
     },
@@ -1031,8 +1088,17 @@
     "options_third_party_title": {
         "message": "Izbrisati piškotke tretjih strani"
     },
+    "options_third_party_desc": {
+        "message": "Preprečuje oglaševalcem sledenje vašemu vedenju na več spletnih straneh z omejevanjem življenjske dobe piškotkov tretjih oseb"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "Za blokiranje piškotkov nastavite življenjsko dobo na 0"
+    },
     "options_third_party_block_cookies_warning": {
         "message": "Če te Piškotek popolnoma onemogočite, se boste morda morali znova prijaviti na nekaterih spletnih straneh ali se soočiti z drugimi težavami, povezanimi s Piškotek"
+    },
+    "options_lifetime_minutes": {
+        "message": "Življenjska doba, minute"
     },
     "options_first_party_title": {
         "message": "Izbriši first-party piškotke (ni priporočeno)"
@@ -1286,8 +1352,17 @@
     "filtering_log_assumed_rule_description": {
         "message": "To je predpostavljeno pravilo. Za podrobnosti si oglejte našo <a>bazo znanja<\/a>"
     },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "Ohrani dnevnik?"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "Ta možnost lahko znatno poveča porabo pomnilnika"
+    },
     "filtering_log_preserve_log_skip_modal_in_future": {
         "message": "Ne prikaži znova"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "Da, ohrani"
     },
     "options_stealth_general_title": {
         "message": "Splošno"
