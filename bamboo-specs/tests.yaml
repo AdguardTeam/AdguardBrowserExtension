@@ -30,8 +30,10 @@ Test dev build:
         interpreter: SHELL
         scripts:
           - |-
-            set -x
-            set -e
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
 
             # Fix mixed logs
             exec 2>&1
@@ -44,7 +46,7 @@ Test dev build:
             # Build with named context for tsurlfilter
             # Docker checksums the context content for cache invalidation
             docker build \
-              --file Dockerfile.test \
+              --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-context tsurlfilter=../tsurlfilter \
@@ -103,8 +105,10 @@ Build chrome crx artifact:
         interpreter: SHELL
         scripts:
           - |-
-            set -x
-            set -e
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
 
             # Fix mixed logs
             exec 2>&1
@@ -117,7 +121,7 @@ Build chrome crx artifact:
             # Build with named context for tsurlfilter
             # Docker checksums the context content for cache invalidation
             docker build \
-              --file Dockerfile.test \
+              --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-context tsurlfilter=../tsurlfilter \
@@ -147,8 +151,10 @@ Lint:
         interpreter: SHELL
         scripts:
           - |-
-            set -x
-            set -e
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
 
             # Fix mixed logs
             exec 2>&1
@@ -161,7 +167,7 @@ Lint:
             # Build with named context for tsurlfilter
             # Docker checksums the context content for cache invalidation
             docker build \
-              --file Dockerfile.test \
+              --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-context tsurlfilter=../tsurlfilter \
@@ -186,8 +192,10 @@ Unit tests:
         interpreter: SHELL
         scripts:
           - |-
-            set -x
-            set -e
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
 
             # Fix mixed logs
             exec 2>&1
@@ -200,7 +208,7 @@ Unit tests:
             # Build with named context for tsurlfilter
             # Docker checksums the context content for cache invalidation
             docker build \
-              --file Dockerfile.test \
+              --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-context tsurlfilter=../tsurlfilter \
@@ -237,20 +245,18 @@ Integration tests:
         interpreter: SHELL
         scripts:
           - |-
-            set -e
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
+
+            # Fix mixed logs
+            exec 2>&1
+
             mkdir -p artifacts
             if [ -f chrome-mv3-dev.zip ]; then
               mv chrome-mv3-dev.zip artifacts/
             fi
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
 
             # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
             ./bamboo-specs/scripts/clone-tsurlfilter.sh
@@ -260,7 +266,7 @@ Integration tests:
             # Build with named context for tsurlfilter
             # Docker checksums the context content for cache invalidation
             docker build \
-              --file Dockerfile.test \
+              --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-context tsurlfilter=../tsurlfilter \

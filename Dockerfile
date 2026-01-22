@@ -52,14 +52,22 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
         --ignore-scripts
 
 # ============================================================================
+# Stage: source-deps
+# Has source + node_modules but NO tsurlfilter
+# Used by stages that don't need tsurlfilter (e.g., locales-check)
+# ============================================================================
+FROM base AS source-deps
+
+COPY . /extension
+COPY --from=deps /extension/node_modules /extension/node_modules
+
+# ============================================================================
 # Stage: linked-deps
 # Combines deps and tsurlfilter-build, runs fast linking (~2-3 seconds)
 # All build stages inherit from this stage
 # ============================================================================
-FROM base AS linked-deps
+FROM source-deps AS linked-deps
 
-COPY . /extension
-COPY --from=deps /extension/node_modules /extension/node_modules
 COPY --from=tsurlfilter-build /tsurlfilter /tsurlfilter
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
@@ -122,12 +130,8 @@ COPY --from=chrome-crx /out/ /
 # ============================================================================
 FROM linked-deps AS lint
 
-ARG TEST_RUN_ID
-
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Bust build cache so test/lint/build stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    # Run lint with timeout.
+    # Run lint with timeout (cached until source changes).
     ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint && \
     mkdir -p /out && \
     touch /out/lint.txt
@@ -143,11 +147,8 @@ COPY --from=lint /out/ /
 # ============================================================================
 FROM linked-deps AS unit-tests
 
-ARG TEST_RUN_ID
-
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Bust build cache so test/lint/build stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Run unit tests (cached until source changes).
     mkdir -p /out/tests-reports && \
     set +e; \
     # Run unit tests with timeout.
@@ -199,3 +200,89 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 
 FROM scratch AS integration-tests-output
 COPY --from=integration-tests /out/ /
+
+# ============================================================================
+# Stage: beta-build
+# Creates beta build with zip files for CI artifacts
+# Requires private repo for certificate (passed via named build context)
+# ============================================================================
+FROM linked-deps AS beta-build
+
+# Copy private repo for certificates
+COPY --from=private . /extension/private
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so build stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Create beta build with zip files for CI artifacts.
+    pnpm beta --zip && \
+    # Create artifacts directory if it doesn't exist.
+    mkdir -p /out/artifacts && \
+    # Move all artifacts to the artifacts directory.
+    mv build/beta/build.txt /out/artifacts/ && \
+    mv build/beta/chrome.zip /out/artifacts/ && \
+    mv build/beta/chrome-mv3.zip /out/artifacts/ && \
+    mv build/beta/edge.zip /out/artifacts/
+
+FROM scratch AS beta-build-output
+COPY --from=beta-build /out/ /
+
+# ============================================================================
+# Stage: beta-chrome-crx
+# Creates Chrome CRX for beta build
+# Requires private repo for certificate (passed via named build context)
+# ============================================================================
+FROM linked-deps AS beta-chrome-crx
+
+# Copy private repo for certificates
+COPY --from=private . /extension/private
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so build stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Create beta CRX build.
+    pnpm beta chrome-crx && \
+    # Create artifacts directory if it doesn't exist.
+    mkdir -p /out/artifacts && \
+    # Move CRX and update.xml to artifacts.
+    mv build/beta/chrome.crx /out/artifacts/ && \
+    mv build/beta/update.xml /out/artifacts/
+
+FROM scratch AS beta-chrome-crx-output
+COPY --from=beta-chrome-crx /out/ /
+
+# ============================================================================
+# Stage: bundle-size-check
+# Checks bundle sizes for beta build
+# ============================================================================
+FROM linked-deps AS bundle-size-check
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Run beta build with zip files (cached until source changes).
+    pnpm beta --zip && \
+    # Check bundle sizes.
+    pnpm check-bundle-size beta && \
+    mkdir -p /out && \
+    touch /out/bundle-size-check.txt
+
+FROM scratch AS bundle-size-check-output
+COPY --from=bundle-size-check /out/ /
+
+# ============================================================================
+# Stage: locales-check
+# Validates translation files
+# ============================================================================
+FROM source-deps AS locales-check
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Validate locales (cached until source changes).
+    pnpm locales validate --min && \
+    mkdir -p /out && \
+    touch /out/locales-check.txt
+
+FROM scratch AS locales-check-output
+COPY --from=locales-check /out/ /

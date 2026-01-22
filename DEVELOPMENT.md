@@ -174,7 +174,7 @@ to the local dev build of `tsurlfilter`.
 
 ### <a name="dev-ci-link"></a> Linking tsurlfilter on CI (Bamboo)
 
-CI builds use Docker multi-stage builds defined in `Dockerfile.test`. The tsurlfilter linking process is split into two phases:
+CI builds use Docker multi-stage builds defined in `Dockerfile`. The tsurlfilter linking process is split into two phases:
 
 1. **Clone phase** (`clone-tsurlfilter.sh`) - Clones tsurlfilter repository on CI (~3 seconds)
 2. **Build phase** (inside Docker) - Builds tsurlfilter packages (~70 seconds, cached by Docker)
@@ -216,13 +216,13 @@ You can run the same CI tests locally using Docker:
 ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
 # Run unit tests
-docker build -f Dockerfile.test --build-context tsurlfilter=../tsurlfilter --target unit-tests-output --output type=local,dest=output .
+docker build -f Dockerfile --build-context tsurlfilter=../tsurlfilter --target unit-tests-output --output type=local,dest=output .
 
 # Run linter
-docker build -f Dockerfile.test --build-context tsurlfilter=../tsurlfilter --target lint-output --output type=local,dest=output .
+docker build -f Dockerfile --build-context tsurlfilter=../tsurlfilter --target lint-output --output type=local,dest=output .
 
 # Build dev artifacts
-docker build -f Dockerfile.test --build-context tsurlfilter=../tsurlfilter --target dev-build-output --output type=local,dest=output .
+docker build -f Dockerfile --build-context tsurlfilter=../tsurlfilter --target dev-build-output --output type=local,dest=output .
 ```
 
 > [!TIP]
