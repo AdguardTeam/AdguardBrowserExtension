@@ -1,9 +1,9 @@
-! Checksum: bdL2GzOFqM0eRAt84aLixQ
-! Diff-Path: ../patches/10/10-s-1764347292-3600.patch
+! Checksum: kwU1m72suDgqKGrV6jpLMg
+! Diff-Path: ../patches/10/10-s-1765883435-3600.patch
 ! Title: Filter unblocking search ads and self-promotion
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.81
-! TimeUpdated: 2025-11-28T16:25:09+00:00
+! Version: 2.0.3.82
+! TimeUpdated: 2025-12-16T11:07:40+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -345,6 +345,9 @@ consultant.ru#@#img[width="468"][height="60"]
 ! alibaba.com - promoted items in search results
 alibaba.com#@?#div[data-content="abox-ProductNormalList"] > div.J-offer-wrapper:has(> div > i.search-ad-icon)
 !-------------------------------------------------------------------------------!
+! baidu.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/220212
+baidu.com#@#.result-op[m-name^="aladdin-san/app/b2b_prod/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/138396
 ipv6.baidu.com,www.baidu.com,www1.baidu.com,xueshu.baidu.com#@##content_left > div:not([class]) > div[data-placeid]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/33697

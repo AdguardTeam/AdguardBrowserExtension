@@ -1,9 +1,9 @@
-! Checksum: 70HM1oWnJgorIpHlL+XzuA
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1764347292-3600.patch
+! Checksum: 0BgX+djp686tRNDZ4t9YgQ
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1765883435-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.81
-! TimeUpdated: 2025-11-28T16:25:09+00:00
+! Version: 2.0.3.82
+! TimeUpdated: 2025-12-16T11:07:40+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -232,6 +232,7 @@ atresplayer.com#@#.mod_blanco
 @@||adwolf.ru^$domain=retrofm.ru|radio7.ru|europaplus.ru
 consultant.ru#@#img[width="468"][height="60"]
 alibaba.com#@?#div[data-content="abox-ProductNormalList"] > div.J-offer-wrapper:has(> div > i.search-ad-icon)
+baidu.com#@#.result-op[m-name^="aladdin-san/app/b2b_prod/"]
 ipv6.baidu.com,www.baidu.com,www1.baidu.com,xueshu.baidu.com#@##content_left > div:not([class]) > div[data-placeid]
 baidu.com#@#.bds-list-ads
 wish.com#@#div[class^="ProductGrid__ProductGridRow"] > div:has(> a:only-child > div[class] > div[class]> div[class^="FeedTile__ProductBoostLabelWrapper"])
