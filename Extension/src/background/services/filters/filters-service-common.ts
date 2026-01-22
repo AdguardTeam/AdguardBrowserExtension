@@ -64,10 +64,6 @@ export abstract class FiltersServiceCommon {
      *
      * If filter group has been touched before and it is disabled now, the engine will not be updated.
      *
-     * NOTE: we do not await of async task execution and returns group id optimistic.
-     * TODO (v.zhelvis): handle enabling of group on frontend instead using this handler,
-     * because this is UI edge case.
-     *
      * @param message Message of {@link AddAndEnableFilterMessage} with filter
      * id to enable.
      *
@@ -138,9 +134,6 @@ export abstract class FiltersServiceCommon {
      * Enables group on {@link EnableFiltersGroupMessage} message via {@link FiltersService.enableGroup}.
      *
      * If group is activated first time, provides list of recommended filters.
-     * NOTE: we do not await of async task execution and returns array of recommended filters optimistic.
-     * TODO (v.zhelvis): handle enabling of recommended filters on frontend instead using this handler,
-     * because this is UI edge case.
      *
      * @param message {@link EnableFiltersGroupMessage} With specified group id.
      *
