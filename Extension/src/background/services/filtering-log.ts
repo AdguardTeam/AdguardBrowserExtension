@@ -161,6 +161,8 @@ export class FilteringLogService {
             eventId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -178,6 +180,9 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                // fallback should never happen during normal operation
+                appliedRuleText: appliedRuleText ?? `<rule text is not specified> (${filterId}:${ruleIndex})`,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -220,6 +225,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             cssRule,
             scriptRule,
             contentRule,
@@ -231,6 +238,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 cssRule,
                 scriptRule,
                 contentRule,
@@ -253,6 +262,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -271,6 +282,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -297,6 +310,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -315,6 +330,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -342,6 +359,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -357,6 +376,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -383,6 +404,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -398,6 +421,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -441,6 +466,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -455,6 +482,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -481,6 +510,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             cssRule,
             scriptRule,
             contentRule,
@@ -492,6 +523,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 cssRule,
                 scriptRule,
                 contentRule,
@@ -513,7 +546,12 @@ export class FilteringLogService {
         const { tabId, rules, eventId } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            replaceRules: rules,
+            replaceRules: rules.map((rule) => ({
+                filterId: rule.filterId,
+                ruleIndex: rule.ruleIndex,
+                appliedRuleText: rule.appliedRuleText,
+                originalRuleText: rule.originalRuleText ?? undefined,
+            })),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -552,6 +590,8 @@ export class FilteringLogService {
             stealthAllowlistRules: rules.map((rule) => ({
                 filterId: rule.filterId,
                 ruleIndex: rule.ruleIndex,
+                appliedRuleText: rule.appliedRuleText,
+                originalRuleText: rule.originalRuleText ?? undefined,
                 allowlistRule: rule.isAllowlist,
                 isImportant: rule.isImportant,
                 documentLevelRule: rule.isDocumentLevel,

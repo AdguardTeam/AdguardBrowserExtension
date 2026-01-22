@@ -27,16 +27,16 @@
         "message": "Пожалуйста, внимательно прочитайте текст ниже, прежде чем включать фильтры раздражителей"
     },
     "options_filters_annoyances_consent_description": {
-        "message": "Вы собираетесь включить один или несколько фильтров раздражителей. Они блокируют элементы, которые либо не имеют отношения к содержимому сайта, либо имеют, но раздражают пользователя. Владельцы сайтов могут считать эти элементы обязательными: если вы блокируете их, вы можете нарушить их условия; некоторые функции сайтов могут быть недоступны или работать некорректно. Включая фильтры, вы понимаете и соглашаетесь с тем, что несёте полную ответственность за соблюдение условий использования посещаемых вами сайтов и что AdGuard не несёт ответственности за соблюдение вами условий использования посещаемых вами сайтов."
+        "message": "Вы собираетесь включить один или несколько фильтров раздражителей. Они блокируют элементы, которые либо не имеют отношения к содержимому сайта, либо имеют, но раздражают пользователя. Владельцы сайтов могут считать эти элементы обязательными: если вы блокируете их, вы можете нарушить их условия; некоторая функциональность сайтов может быть недоступна или работать некорректно. Включая фильтры, вы понимаете и соглашаетесь с тем, что несёте полную ответственность за соблюдение условий использования посещаемых вами сайтов и что AdGuard не несёт ответственности за соблюдение вами условий использования сайтов, которые вы посещаете, используя наши продукты."
     },
     "options_filters_annoyances_consent_question": {
         "message": "Включить фильтры?"
     },
-    "options_filters_annoyances_consent_filter_policy": {
-        "message": "Подробнее о том, что блокируют фильтры раздражителей, читайте <a>в Политике фильтрации AdGuard<\/a>"
-    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Включить"
+    },
+    "options_filters_annoyances_consent_filter_homepage_tooltip": {
+        "message": "Сайт"
     },
     "popup_header_cta_link": {
         "message": "Как усилить защиту"
@@ -177,14 +177,8 @@
     "options_allowlist": {
         "message": "Белый список"
     },
-    "options_allowlist_desc": {
-        "message": "AdGuard не фильтрует рекламу на сайтах из белого списка"
-    },
     "options_allowlist_invert": {
         "message": "Инвертировать белый список"
-    },
-    "options_allowlist_invert_desc": {
-        "message": "Разблокировать рекламу везде, кроме сайтов из белого списка"
     },
     "options_allowlist_alert_invert": {
         "message": "Белый список инвертирован. Реклама блокируется только на сайтах из списка. <a>Отключить<\/a>"
@@ -250,7 +244,7 @@
         "message": "Собственные"
     },
     "options_antibanner_custom_group_description": {
-        "message": "Использовать сторонние фильтры с AdGuard"
+        "message": "Позволяет добавить фильтры из файла или URL-адреса"
     },
     "options_filters_enabled_per_group": {
         "message": "Включено: %current% из %total%"
@@ -552,12 +546,6 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "Поиск по вкладкам"
     },
-    "filtering_log_preserve_log_off": {
-        "message": "Не записывать лог"
-    },
-    "filtering_log_preserve_log_on": {
-        "message": "Записывать лог"
-    },
     "filtering_refresh_tab_short": {
         "message": "Обновить"
     },
@@ -744,12 +732,6 @@
     "options_general_settings": {
         "message": "Основные"
     },
-    "options_block_acceptable_ads": {
-        "message": "Блокировать поисковую рекламу и саморекламу сайтов"
-    },
-    "options_block_acceptable_ads_desc": {
-        "message": "Удалять саморекламу с сайтов и контекстную рекламу из результатов поиска. <a>Подробнее<\/a>"
-    },
     "options_show_blocked_ads_count_title": {
         "message": "Показывать количество заблокированной рекламы на иконке расширения AdGuard"
     },
@@ -757,7 +739,7 @@
         "message": "Автоматически подключать наиболее подходящие фильтры"
     },
     "options_enable_autodetect_filter_desc": {
-        "message": "Фильтры для конкретных языков будут включаться в зависимости от языка сайта"
+        "message": "Определяет язык сайта и активирует соответствующие фильтры"
     },
     "options_select_theme": {
         "message": "Тема"
@@ -795,9 +777,6 @@
     "options_set_update_interval": {
         "message": "Автообновление фильтров"
     },
-    "options_set_update_interval_desc": {
-        "message": "Для более эффективной блокировки фильтры необходимо регулярно обновлять"
-    },
     "options_userfilter_export": {
         "message": "Экспорт"
     },
@@ -819,9 +798,6 @@
     "options_userfilter_description_key": {
         "message": "Здесь вы можете добавлять свои правила. Эта опция рекомендована для продвинутых пользователей, знакомых с HTML\/CSS. Прочитайте <a>руководство<\/a>, чтобы научиться составлять свои правила фильтрации."
     },
-    "options_userfilter_subtitle_key": {
-        "message": "Использовать правила для более точной блокировки"
-    },
     "options_userfilter_line_break": {
         "message": "Перенос строки"
     },
@@ -839,9 +815,6 @@
     },
     "options_safebrowsing_enabled": {
         "message": "Защита от фишинговых и вредоносных сайтов"
-    },
-    "options_safebrowsing_enabled_desc": {
-        "message": "Обнаруживает потенциально вредоносные и фишинговые сайты, сверяя их с онлайн-базой данных. <a>Подробнее<\/a>"
     },
     "options_site": {
         "message": "Официальный сайт"
@@ -992,12 +965,6 @@
     "options_reset_settings_error": {
         "message": "Ошибка при сбросе настроек"
     },
-    "options_collect_hit_stats_title": {
-        "message": "Помочь с разработкой фильтров AdGuard"
-    },
-    "options_collect_hit_stats_desc": {
-        "message": "Отправлять <a>анонимную статистику об использовании рекламных фильтров<\/a>, чтобы помочь AdGuard улучшить их"
-    },
     "options_show_context_menu_title": {
         "message": "Добавить AdGuard в контекстное меню браузера"
     },
@@ -1011,7 +978,7 @@
         "message": "Защита от трекинга"
     },
     "options_privacy_desc": {
-        "message": "Защищать данные от онлайн-трекеров, блокируя наиболее популярные методы отслеживания"
+        "message": "Не даёт отследить вас и защищает ваши данные"
     },
     "options_hide_referrer_title": {
         "message": "Скрыть Referer от сторонних ресурсов"
@@ -1023,10 +990,10 @@
         "message": "Скрывать поисковые запросы"
     },
     "options_hide_search_queries_desc": {
-        "message": "Скрывать запросы для сайтов, на которые вы пришли из поисковой системы"
+        "message": "Скрывает ваши поисковые запросы от сайтов, посещённых через результаты поисковых систем"
     },
     "options_send_not_track_title": {
-        "message": "Просить сайты не отслеживать вас"
+        "message": "Просить сайты не отслеживать меня"
     },
     "options_send_not_track_desc": {
         "message": "Отправлять сигналы <gpc>Global Privacy Control<\/gpc> и <dnt>Do Not Track<\/dnt> сайтам, которые вы посещаете"
@@ -1047,34 +1014,34 @@
         "message": "Блокировать отправку Google Chrome информации о версии и изменениях доменам Google"
     },
     "options_disable_webrtc_title": {
-        "message": "Отключить WebRTC"
-    },
-    "options_disable_webrtc_desc": {
-        "message": "WebRTC может позволить другим узнать ваш реальный IP-адрес, даже если вы используете прокси-сервер или VPN"
+        "message": "Блокировать WebRTC"
     },
     "options_strip_tracking_params_title": {
-        "message": "Удалять параметры отслеживания"
+        "message": "Удалять параметры отслеживания из URL-адресов"
     },
     "options_strip_tracking_params_description": {
-        "message": "Удалять параметры из запросов с помощью Фильтра отслеживания по URL"
+        "message": "Удаляет трекинговые параметры из URL-адресов с помощью Фильтра отслеживания по URL"
     },
     "options_block_known_trackers_title": {
         "message": "Блокировать трекеры"
     },
     "options_block_known_trackers_description": {
-        "message": "Использовать Фильтр счётчиков и систем аналитики для блокировки трекеров"
+        "message": "Блокирует трекеры и веб-аналитику с помощью Фильтра счётчиков и систем аналитики"
     },
     "options_third_party_title": {
-        "message": "Самоуничтожение сторонних куки"
+        "message": "Удалять сторонние файлы куки"
     },
-    "options_third_party_desc": {
-        "message": "Ограничить время существования сторонних файлов cookie (в минутах)"
+    "options_third_party_block_cookies_warning": {
+        "message": "Если вы заблокируете эти куки, придётся время от времени заново входить на некоторые сайты или сталкиваться с другими проблемами, связанными с куки"
     },
     "options_first_party_title": {
-        "message": "Самоуничтожение куки сайта (не рекомендуется)"
+        "message": "Удалять куки сайта (не рекомендуется)"
     },
     "options_first_party_desc": {
-        "message": "Ограничить время существования основных файлов cookie (в минутах)"
+        "message": "Не позволяет сайтам запоминать ваши данные, такие как учётные данные и языковые настройки, ограничивая срок действия основных файлов куки"
+    },
+    "options_first_party_block_cookies_warning": {
+        "message": "Если вы заблокируете эти куки, некоторые сайты могут сломаться или перестать работать"
     },
     "options_anonymized_usage_data_title": {
         "message": "Отправлять анонимные данные об использовании расширения"
@@ -1125,16 +1092,16 @@
         "message": "Временной период статистики"
     },
     "popup_statistics_time_day": {
-        "message": "За день"
+        "message": "24 часа"
     },
     "popup_statistics_time_week": {
-        "message": "За неделю"
+        "message": "7 дней"
     },
     "popup_statistics_time_month": {
-        "message": "За месяц"
+        "message": "30 дней"
     },
     "popup_statistics_time_year": {
-        "message": "За год"
+        "message": "1 год"
     },
     "popup_switch_button": {
         "message": "Фильтрация на текущем сайте"
@@ -1319,11 +1286,14 @@
     "filtering_log_assumed_rule_description": {
         "message": "Это предполагаемое правило. Подробности см. в нашей <a>Базе знаний<\/a>"
     },
+    "filtering_log_preserve_log_skip_modal_in_future": {
+        "message": "Не показывать снова"
+    },
     "options_stealth_general_title": {
         "message": "Общие"
     },
-    "options_stealth_cookies_title": {
-        "message": "Куки"
+    "options_stealth_tracking_methods_title": {
+        "message": "Методы отслеживания"
     },
     "options_stealth_miscellaneous_title": {
         "message": "Разное"

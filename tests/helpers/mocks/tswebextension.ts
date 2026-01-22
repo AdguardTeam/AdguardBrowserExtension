@@ -92,4 +92,10 @@ export class MockedTsWebExtension {
     public setSendDoNotTrack: Mock = vi.fn();
 
     public setBlockWebRTC: Mock = vi.fn();
+
+    public initStorage = vi.fn(() => Promise.resolve());
+
+    public retrieveRuleText: Mock = vi.fn();
+
+    public retrieveOriginalRuleText: Mock = vi.fn();
 }

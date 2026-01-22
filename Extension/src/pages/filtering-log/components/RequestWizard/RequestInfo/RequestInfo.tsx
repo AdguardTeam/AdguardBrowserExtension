@@ -383,7 +383,11 @@ const RequestInfo = observer(() => {
     // If assumed and applied rules are the same - show only applied.
     if (selectedEvent.appliedRuleText && matchedRulesContainsAssumed) {
         // Hide assume rule and it's original (not preprocessed) version
-        infoElementsToShow = infoElementsToShow.filter((p) => p !== PARTS.ASSUMED_RULE && p !== PARTS.ORIGINAL_RULE);
+        // But keep original rule if there was a conversion (originalRuleTexts exists)
+        const partsToFilter = rulesData.originalRuleTexts.length > 0
+            ? [PARTS.ASSUMED_RULE]
+            : [PARTS.ASSUMED_RULE, PARTS.ORIGINAL_RULE];
+        infoElementsToShow = infoElementsToShow.filter((p) => !partsToFilter.includes(p));
     }
 
     const openInNewTabHandler = async () => {

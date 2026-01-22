@@ -29,7 +29,6 @@ import {
     vi,
 } from 'vitest';
 
-import { NetworkRuleParser } from '@adguard/agtree/parser';
 // TODO should be written separate test, because there is different api in mv3 and mv2 for tabs context
 //  after that remove exclude from the ./tsconfig.mv3.json
 import {
@@ -90,7 +89,7 @@ describe('Frames Api', () => {
             incognito: false,
         };
         const tabContext = new TabContext(info, documentApi);
-        tabContext.mainFrameRule = new NetworkRule(NetworkRuleParser.parse(rule), AntiBannerFiltersId.UserFilterId);
+        tabContext.mainFrameRule = new NetworkRule(rule, AntiBannerFiltersId.UserFilterId);
         tabContext.blockedRequestCount = 0;
 
         // TODO (Slava): fix later
