@@ -27,16 +27,16 @@
         "message": "Lue huolellisesti, ennen ärsykesuodattimien käyttöönottoa"
     },
     "options_filters_annoyances_consent_description": {
-        "message": "Olet juuri ottamassa käyttöön yhden tai useampia ärsykesuodattimia. Ne estävät elementtejä, jotka eivät liity verkkosivuston sisältöön tai liittyvät, mutta ärsyttävät käyttökokemustasi. Verkkosivustojen omistajat voivat pitää näitä elementtejä pakollisina: jos estät ne, saatat rikkoa heidän ehtojaan; Jotkin verkkosivustojen toiminnot eivät ehkä ole käytettävissä tai eivät ehkä toimi oikein. Ymmärrät ja hyväksyt, että olet yksin vastuussa vierailemiesi verkkosivustojen käyttöehtojen noudattamisesta ja että AdGuard ei ole vastuussa vierailemiesi verkkosivustojen käyttöehtojen noudattamisesta."
+        "message": "Olet ottamassa käyttöön yhden tai useamman ärsytyssuodattimen. Ne estävät elementtejä, jotka eivät joko liity verkkosivuston sisältöön tai liittyvät käyttökokemukseesi, mutta ärsyttävät sitä. Verkkosivustojen omistajat voivat pitää näitä elementtejä pakollisina: jos estät ne, saatat rikkoa heidän ehtojaan; Jotkin verkkosivustojen toiminnot eivät ehkä ole käytettävissä tai eivät välttämättä toimi oikein. Ymmärrät ja hyväksyt, että olet yksin vastuussa vierailemiesi verkkosivustojen käyttöehtojen noudattamisesta ja että AdGuard ei ole vastuussa tuotteidemme avulla vierailemiesi verkkosivustojen käyttöehtojen noudattamisesta."
     },
     "options_filters_annoyances_consent_question": {
         "message": "Ota suodattimet käyttöön?"
     },
-    "options_filters_annoyances_consent_filter_policy": {
-        "message": "Saat lisätietoja AdGuardin ärsykesuodattimen estämästä sisällöstä AdGuardin <a>Suodatinkäytännöstä<\/a>."
-    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Ota käyttöön"
+    },
+    "options_filters_annoyances_consent_filter_homepage_tooltip": {
+        "message": "Verkkosivusto"
     },
     "popup_header_cta_link": {
         "message": "Kuinka parantaa suojausta"
@@ -177,14 +177,8 @@
     "options_allowlist": {
         "message": "Sallittujen lista"
     },
-    "options_allowlist_desc": {
-        "message": "AdGuard ei suodata sallittujen listalla olevia sivuja"
-    },
     "options_allowlist_invert": {
         "message": "Käänteinen sallittujen lista"
-    },
-    "options_allowlist_invert_desc": {
-        "message": "Sallii mainokset kaikkialla, paitsi sallittujen listan sivuilla"
     },
     "options_allowlist_alert_invert": {
         "message": "Käänteinen sallittujen lista on käytössä. Mainokset estetään vain listalla olevilla sivustoilla. <a>Poista käytöstä<\/a>"
@@ -250,7 +244,7 @@
         "message": "Mukautettu"
     },
     "options_antibanner_custom_group_description": {
-        "message": "Käytä kolmannen osapuolen suodattimia AdGuardin kanssa"
+        "message": "Voit lisätä suodattimia tiedostosta tai URL-osoitteesta"
     },
     "options_filters_enabled_per_group": {
         "message": "Käytössä: %current%\/%total%"
@@ -358,7 +352,7 @@
         "message": "Kaikki"
     },
     "popup_statistics_category_advertising": {
-        "message": "Mainonta"
+        "message": "Mainokset"
     },
     "popup_statistics_category_trackers": {
         "message": "Seurannat"
@@ -552,12 +546,6 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "Etsi välilehdistä"
     },
-    "filtering_log_preserve_log_off": {
-        "message": "Ei lokikirjausta"
-    },
-    "filtering_log_preserve_log_on": {
-        "message": "Kirjaa loki"
-    },
     "filtering_refresh_tab_short": {
         "message": "Päivitä"
     },
@@ -744,12 +732,6 @@
     "options_general_settings": {
         "message": "Yleiset"
     },
-    "options_block_acceptable_ads": {
-        "message": "Estä hakumainonta ja sivustojen oma markkinointi"
-    },
-    "options_block_acceptable_ads_desc": {
-        "message": "Poista itseään mainostavat mainokset verkkosivuilta ja kontekstuaaliset mainokset hakutuloksista. <a>Lisätietoja<\/a>"
-    },
     "options_show_blocked_ads_count_title": {
         "message": "Näytä estettyjen mainosten määrä AdGuard-laajennuksen kuvakkeessa"
     },
@@ -757,7 +739,7 @@
         "message": "Käytä sopivimpia suodattimia automaattisesti"
     },
     "options_enable_autodetect_filter_desc": {
-        "message": "Kielikohtaiset suodattimet otetaan käyttöön sivuston kielen perusteella"
+        "message": "Tunnistaa verkkosivuston kielen ja aktivoi asianmukaiset suodattimet"
     },
     "options_select_theme": {
         "message": "Teema"
@@ -795,9 +777,6 @@
     "options_set_update_interval": {
         "message": "Suodatinten automaattinen päivitys"
     },
-    "options_set_update_interval_desc": {
-        "message": "Tehokas esto edellyttää suodattimien säännöllistä päivittämistä"
-    },
     "options_userfilter_export": {
         "message": "Vie"
     },
@@ -819,9 +798,6 @@
     "options_userfilter_description_key": {
         "message": "Tässä voit lisätä omia sääntöjäsi. Tämä vaihtoehto soveltuu edistyneille käyttäjille, jotka ymmärtävät HTML\/CSS-ohjelmointikieliä. Lue <a>suodatussääntöjen opas<\/a> oppiaksesi miten luot omia sääntöjä."
     },
-    "options_userfilter_subtitle_key": {
-        "message": "Hienosäädä mainosestoa omilla suodatussäännöilläsi"
-    },
     "options_userfilter_line_break": {
         "message": "Rivinvaihto"
     },
@@ -839,9 +815,6 @@
     },
     "options_safebrowsing_enabled": {
         "message": "Tietojenkalastelu- ja haittaohjelmasuojaus"
-    },
-    "options_safebrowsing_enabled_desc": {
-        "message": "Käytä AdGuardin Turvallinen selaus -moduulia, joka havaitsee mahdollisesti haitalliset ja tietojenkalastelusivustot vertaamalla niitä verkkotietokantaan. <a>Lue lisää<\/a>"
     },
     "options_site": {
         "message": "Virallinen sivusto"
@@ -992,12 +965,6 @@
     "options_reset_settings_error": {
         "message": "Virhe asetusten palautuksessa"
     },
-    "options_collect_hit_stats_title": {
-        "message": "Auta AdGuardin suodatinten kehityksessä"
-    },
-    "options_collect_hit_stats_desc": {
-        "message": "Lähetä <a>nimettömiä tilastotietoja mainossuodattimen käytöstä<\/a> auttaaksesi AdGuardia parantamaan suodattimiaan"
-    },
     "options_show_context_menu_title": {
         "message": "Lisää AdGuard selaimen valikkoon"
     },
@@ -1011,7 +978,7 @@
         "message": "Seurantaesto"
     },
     "options_privacy_desc": {
-        "message": "Suojaa henkilöllisyytesi ja arkaluontoiset henkilötietosi tuhansilta online-seurantaohjelmilta estämällä suosituimmat seurantamenetelmät"
+        "message": "Suojaa verkkotoimintaasi ja henkilökohtaisia tietojasi verkkoserannoilta."
     },
     "options_hide_referrer_title": {
         "message": "Piilota Referer-viitetieto ulkopuolisilta"
@@ -1023,10 +990,10 @@
         "message": "Piilota hakulausekkeet"
     },
     "options_hide_search_queries_desc": {
-        "message": "Piilota käytetyt hakulausekkeet hakukoneiden tuloksista avatuilta sivustoilta"
+        "message": "Piilottaa hakusi hakukoneiden tulosten kautta vierailluilta verkkosivustoilta"
     },
     "options_send_not_track_title": {
-        "message": "Pyydä, etteivät sivustot seuraa sinua"
+        "message": "Pyydä, etteivät verkkosivustot seuraa minua"
     },
     "options_send_not_track_desc": {
         "message": "Lähetä <gpc>Global Privacy Control<\/gpc> ja <dnt>Do Not Track<\/dnt> -signaalit käyttämillesi verkkosivustoille"
@@ -1047,34 +1014,34 @@
         "message": "Estää Google Chromea lähettämästä versionumeroaan ja kustomointitietoja Googlen palvelimille"
     },
     "options_disable_webrtc_title": {
-        "message": "Poista WebRTC käytöstä"
-    },
-    "options_disable_webrtc_desc": {
-        "message": "WebRTC voi vuotaa IP-osoitteesi, vaikka käyttäisit välityspalvelinta tai VPN: ää. WebRTC:n poistaminen käytöstä voi rikkoa joitain verkkosivustoja"
+        "message": "Estä WebRTC"
     },
     "options_strip_tracking_params_title": {
-        "message": "Poista seurantaparametrit"
+        "message": "Poista seurantaparametrit URL-osoitteista"
     },
     "options_strip_tracking_params_description": {
-        "message": "Parametrien poistaminen verkkopyynnöistä AdGuardin URL-seurantasuodattimen avulla"
+        "message": "Poistaa seurantaparametrit sivujen URL-osoitteista AdGuardin URL-seurannanestosuodattimella."
     },
     "options_block_known_trackers_title": {
         "message": "Estä seurannat"
     },
     "options_block_known_trackers_description": {
-        "message": "Estä seurantaohjelmat ja verkkoanalytiikkatyökalut AdGuard-seurantasuodattimella"
+        "message": "Estää verkon seuranta- ja analytiikkajärjestelmät AdGuardin seurantaestosuodattimella."
     },
     "options_third_party_title": {
-        "message": "Itsestään tuhoutuvat 3. osapuolen evästeet"
+        "message": "Poista kolmannen osapuolen evästeet"
     },
-    "options_third_party_desc": {
-        "message": "Rajoita kolmannen osapuolen evästeiden käyttöikää (minuutteina)"
+    "options_third_party_block_cookies_warning": {
+        "message": "Jos estät nämä evästeet, saatat joutua kirjautumaan uudelleen joillekin verkkosivustoille tai kohtaat muita evästeisiin liittyviä ongelmia"
     },
     "options_first_party_title": {
-        "message": "Ensimmäisen osapuolen evästeet tuohoutuvat itsestään (ei suositella)"
+        "message": "Poista ensimmäisen osapuolen evästeet (ei suositella)"
     },
     "options_first_party_desc": {
-        "message": "Rajoita ensimmäisen osapuolen evästeiden käyttöaikaa (minuuttia)"
+        "message": "Estää verkkosivustoja muistamasta tietojasi, kuten kirjautumistietojasi ja kieliasetuksiasi, rajoittamalla ensimmäisen osapuolen evästeiden käyttöikää"
+    },
+    "options_first_party_block_cookies_warning": {
+        "message": "Jos estät nämä evästeet, jotkin verkkosivustot saattavat lakata toimimasta"
     },
     "options_anonymized_usage_data_title": {
         "message": "Lähetä anonyymisti sovelluksen käyttödataa"
@@ -1125,16 +1092,16 @@
         "message": "Tilastojen ajanjakso"
     },
     "popup_statistics_time_day": {
-        "message": "Viimeinen päivä"
+        "message": "24 tunnilta"
     },
     "popup_statistics_time_week": {
-        "message": "Viimeinen viikko"
+        "message": "7 päivältä"
     },
     "popup_statistics_time_month": {
-        "message": "Viime kuussa"
+        "message": "30 päivältä"
     },
     "popup_statistics_time_year": {
-        "message": "Viime vuonna"
+        "message": "Vuotuinen"
     },
     "popup_switch_button": {
         "message": "Suojaus nykyiselle verkkosivustolle"
@@ -1319,11 +1286,14 @@
     "filtering_log_assumed_rule_description": {
         "message": "Tämä on oletettu sääntö. Lisätietoja saat <a>-tietokannasta<\/a>"
     },
+    "filtering_log_preserve_log_skip_modal_in_future": {
+        "message": "Älä näytä uudelleen"
+    },
     "options_stealth_general_title": {
         "message": "Yleiset"
     },
-    "options_stealth_cookies_title": {
-        "message": "Evästeet"
+    "options_stealth_tracking_methods_title": {
+        "message": "Seurantamenetelmät"
     },
     "options_stealth_miscellaneous_title": {
         "message": "Muut asetukset"
