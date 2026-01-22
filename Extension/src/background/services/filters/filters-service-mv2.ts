@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -280,7 +280,7 @@ export class FiltersService {
      * @param recommendedFiltersIds Array of filters ids to enable on first time the group has been activated.
      */
     private static async enableGroup(groupId: number, recommendedFiltersIds: number[] = []): Promise<void> {
-        await Categories.enableGroup(groupId, true, recommendedFiltersIds);
+        await Categories.enableGroup(groupId, recommendedFiltersIds);
         engine.debounceUpdate();
     }
 

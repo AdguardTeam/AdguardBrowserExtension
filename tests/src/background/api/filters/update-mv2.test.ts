@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -227,7 +227,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
             ]);
 
             const recommendedFiltersIds = Categories.getRecommendedFilterIdsByGroupId(groupId);
-            await Categories.enableGroup(groupId, true, recommendedFiltersIds);
+            await Categories.enableGroup(groupId, recommendedFiltersIds);
 
             const filterVersion = filterVersionStorage.get(recommendedPrivacyFilterId);
             expect(filterVersion?.version).toStrictEqual('1.0.0.0');
@@ -336,7 +336,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                 }));
 
             await FiltersApi.loadAndEnableFilters([filterId]);
-            await Categories.enableGroup(7, true);
+            await Categories.enableGroup(7);
             // after load and enable it downloads filters embedded into the extension
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
                 1,
@@ -421,7 +421,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
 
             // Trigger full (force) filter update on filter load
             await FiltersApi.loadAndEnableFilters([filterId]);
-            await Categories.enableGroup(7, true);
+            await Categories.enableGroup(7);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
                 1,
                 'chrome-extension://test/filters/filter_1.txt',

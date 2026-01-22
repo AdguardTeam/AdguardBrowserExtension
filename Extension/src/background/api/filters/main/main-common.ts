@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -62,8 +62,8 @@ import { UserRulesApi } from '../userrules';
 import { AllowlistApi } from '../allowlist';
 import { CommonFilterApi } from '../common';
 import { CustomFilterApi } from '../custom';
-import { FilterUpdateApi } from '../update';
 import { Categories } from '../categories';
+import { NotImplementedError } from '../../../errors/not-implemented-error';
 
 export type FilterMetadata = RegularFilterMetadata | CustomFilterMetadata;
 
@@ -73,7 +73,7 @@ export type FilterMetadata = RegularFilterMetadata | CustomFilterMetadata;
  * enabling or disabling a filter or filter group, updating, etc. It depends on
  * CommonFilterApi and CustomFilterApi.
  */
-export class FiltersApiCommon {
+export abstract class FiltersApiCommon {
     /**
      * Initialize filters storages.
      * Called while filters service initialization and app resetting.
@@ -304,21 +304,29 @@ export class FiltersApiCommon {
         });
         logger.info(`[ext.FiltersApiCommon.loadAndEnableFilters]: enabled filters: ${loadedFiltersToLog.join('; ')}`);
 
-        if (!remote) {
-            // Update the enabled filters only if loading happens from local resources
-            // When loading from remote resources, the filters are already up-to-date,
-            // except for the previously loaded filters, which we update below
-            await FilterUpdateApi.checkForFiltersUpdates(loadedFilters);
-        } else if (alreadyLoadedFilterIds.length > 0) {
-            // Update previously loaded filters because they won't be loaded,
-            // but still need to be updated to the latest versions
-            await FilterUpdateApi.checkForFiltersUpdates(alreadyLoadedFilterIds);
-        }
+        await this.afterLoadAndEnable(loadedFilters, alreadyLoadedFilterIds, remote, enableGroups);
+    }
 
-        if (enableGroups) {
-            // Enable filter groups if they were never enabled or disabled earlier
-            FiltersApiCommon.enableGroupsWereNotTouched(loadedFilters);
-        }
+    /**
+     * Hook method called after filters are loaded and enabled.
+     * Override in subclasses to add version-specific logic.
+     *
+     * @param loadedFilters All filters that were enabled (newly loaded + already loaded).
+     * @param alreadyLoadedFilterIds Filters that were already loaded before.
+     * @param remote Whether filters were loaded from remote or local resources.
+     * @param enableGroups Whether to enable untouched groups.
+     */
+    protected static async afterLoadAndEnable(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        loadedFilters: number[],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        alreadyLoadedFilterIds: number[],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        remote: boolean,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        enableGroups: boolean,
+    ): Promise<void> {
+        throw new NotImplementedError();
     }
 
     /**
@@ -440,7 +448,7 @@ export class FiltersApiCommon {
      *
      * @param filtersIds Filters ids.
      */
-    private static enableGroupsWereNotTouched(filtersIds: number[]): void {
+    protected static enableGroupsWereNotTouched(filtersIds: number[]): void {
         const groupIds: number[] = [];
 
         filtersIds.forEach((filterId) => {
