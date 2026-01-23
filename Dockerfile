@@ -149,10 +149,16 @@ COPY --from=lint /out/ /
 # ============================================================================
 # Stage: unit-tests
 # Runs unit tests during build
+# IMPORTANT: Cannot be cached - JUnit parser rejects test results with
+# timestamps older than task start time. TEST_RUN_ID busts cache on every build.
 # ============================================================================
 FROM linked-deps AS unit-tests
 
+ARG TEST_RUN_ID
+
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     # Run unit tests (cached until source changes).
     mkdir -p /out/tests-reports && \
     set +e; \
