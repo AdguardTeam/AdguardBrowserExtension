@@ -99,7 +99,9 @@ export class MockedTsWebExtensionMV3 {
 
     public initStorage = vi.fn(async () => Promise.resolve());
 
-    public retrieveRuleNode = vi.fn(() => null);
+    public retrieveRuleText = vi.fn(() => null);
+
+    public retrieveOriginalRuleText = vi.fn(() => null);
 
     public onFilteringLogEvent = new MockedEventCannel() as unknown as EventChannel<any>;
 

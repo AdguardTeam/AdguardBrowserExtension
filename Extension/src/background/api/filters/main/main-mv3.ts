@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -46,10 +46,21 @@ export class FiltersApi extends FiltersApiCommon {
     }
 
     /**
+     * @inheritdoc
+     */
+    protected static override async afterLoadAndEnable(
+        loadedFilters: number[],
+        alreadyLoadedFilterIds: number[],
+        remote: boolean,
+        enableGroups: boolean,
+    ): Promise<void> {
+        if (enableGroups) {
+            FiltersApiCommon.enableGroupsWereNotTouched(loadedFilters);
+        }
+    }
+
+    /**
      * Reload filters and their metadata from local storage.
-     *
-     * Needed only in MV3 version because we don't update filters from remote,
-     * we use bundled filters from local resources and their converted rulesets.
      *
      * @returns List of loaded filter IDs.
      */

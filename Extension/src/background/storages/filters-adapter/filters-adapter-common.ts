@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextension';
+import { type ConversionData, FilterList } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
 import { FiltersStorage as BrowserExtensionFiltersStorage } from '../filters';
@@ -34,7 +34,7 @@ export class FiltersStoragesAdapterCommon {
      * @param filterId Filter id.
      * @param filter Raw filter list or preprocessed filter list.
      */
-    public static async set(filterId: number, filter: string | PreprocessedFilterList): Promise<void> {
+    public static async set(filterId: number, filter: string | FilterList): Promise<void> {
         try {
             await BrowserExtensionFiltersStorage.set(filterId, filter);
         } catch (error: unknown) {
@@ -61,29 +61,22 @@ export class FiltersStoragesAdapterCommon {
      *
      * @returns Preprocessed filter list or `undefined` if the filter list does not exist.
      */
-    public static async get(filterId: number): Promise<PreprocessedFilterList | undefined> {
+    public static async get(filterId: number): Promise<FilterList | undefined> {
         // eslint-disable-next-line prefer-const
-        let [rawFilterList, filterList, conversionMap, sourceMap] = await Promise.all([
-            FiltersStoragesAdapterCommon.getRawFilterList(filterId),
-            FiltersStoragesAdapterCommon.getFilterList(filterId),
-            FiltersStoragesAdapterCommon.getConversionMap(filterId),
-            FiltersStoragesAdapterCommon.getSourceMap(filterId),
+        let [filterContent, conversionData] = await Promise.all([
+            FiltersStoragesAdapterCommon.getFilterContent(filterId),
+            FiltersStoragesAdapterCommon.getConversionData(filterId),
         ]);
 
-        if (rawFilterList === undefined || filterList === undefined || sourceMap === undefined) {
+        if (filterContent === undefined) {
             return undefined;
         }
 
-        if (conversionMap === undefined) {
-            conversionMap = {};
+        if (conversionData === undefined) {
+            conversionData = FilterList.createEmptyConversionData();
         }
 
-        return {
-            rawFilterList,
-            filterList,
-            conversionMap,
-            sourceMap,
-        };
+        return new FilterList(filterContent, conversionData);
     }
 
     /**
@@ -96,29 +89,14 @@ export class FiltersStoragesAdapterCommon {
     }
 
     /**
-     * Gets the raw filter list for the specified filter ID.
+     * Gets the raw filter list content for the specified filter ID.
      *
      * @param filterId Filter id.
      *
-     * @returns Raw filter list or `undefined` if the filter list does not exist.
+     * @returns Raw filter list content or `undefined` if the filter list does not exist.
      */
-    public static async getRawFilterList(
-        filterId: number,
-    ): Promise<PreprocessedFilterList['rawFilterList'] | undefined> {
-        return BrowserExtensionFiltersStorage.getRawFilterList(filterId);
-    }
-
-    /**
-     * Gets the byte array of the filter list for the specified filter ID.
-     *
-     * @param filterId Filter id.
-     *
-     * @returns Byte array of the filter list or `undefined` if the filter list does not exist.
-     */
-    public static async getFilterList(
-        filterId: number,
-    ): Promise<PreprocessedFilterList['filterList'] | undefined> {
-        return BrowserExtensionFiltersStorage.getFilterList(filterId);
+    public static async getFilterContent(filterId: number): Promise<string | undefined> {
+        return BrowserExtensionFiltersStorage.getFilterContent(filterId);
     }
 
     /**
@@ -128,23 +106,8 @@ export class FiltersStoragesAdapterCommon {
      *
      * @returns Conversion map or `undefined` if the filter list does not exist.
      */
-    public static async getConversionMap(
-        filterId: number,
-    ): Promise<PreprocessedFilterList['conversionMap'] | undefined> {
-        return BrowserExtensionFiltersStorage.getConversionMap(filterId);
-    }
-
-    /**
-     * Gets the source map for the specified filter ID.
-     *
-     * @param filterId Filter id.
-     *
-     * @returns Source map or `undefined` if the filter list does not exist.
-     */
-    public static async getSourceMap(
-        filterId: number,
-    ): Promise<PreprocessedFilterList['sourceMap'] | undefined> {
-        return BrowserExtensionFiltersStorage.getSourceMap(filterId);
+    public static async getConversionData(filterId: number): Promise<ConversionData | undefined> {
+        return BrowserExtensionFiltersStorage.getConversionData(filterId);
     }
 
     /**
@@ -155,22 +118,12 @@ export class FiltersStoragesAdapterCommon {
      * @returns Promise, resolved with original user rules strings.
      */
     static async getOriginalFilterList(filterId: number): Promise<string | undefined> {
-        const [rawFilterList, conversionMap] = await Promise.all([
-            FiltersStoragesAdapterCommon.getRawFilterList(filterId),
-            FiltersStoragesAdapterCommon.getConversionMap(filterId),
-        ]);
+        const filterList = await FiltersStoragesAdapterCommon.get(filterId);
 
-        if (rawFilterList === undefined) {
+        if (filterList === undefined) {
             return undefined;
         }
 
-        if (conversionMap === undefined) {
-            return rawFilterList;
-        }
-
-        return FilterListPreprocessor.getOriginalFilterListText({
-            rawFilterList,
-            conversionMap,
-        });
+        return filterList.getOriginalContent();
     }
 }
