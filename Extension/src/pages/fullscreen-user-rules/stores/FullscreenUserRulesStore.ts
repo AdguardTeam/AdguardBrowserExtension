@@ -27,8 +27,8 @@ import {
     observable,
     runInAction,
 } from 'mobx';
-import { type SettingsData } from 'settings-api';
 
+import { type SettingsData } from '../../../background/api/settings';
 import { messenger } from '../../services/messenger';
 import { logger } from '../../../common/logger';
 import { type SettingOption } from '../../../background/schema';
