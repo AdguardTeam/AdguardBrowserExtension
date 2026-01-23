@@ -240,6 +240,8 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
 
     /**
      * Saves user rules.
+     *
+     * @param userRules User rules content.
      */
     const saveUserRules = async (userRules) => {
         telemetryStore.sendCustomEvent(

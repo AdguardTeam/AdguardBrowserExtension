@@ -108,6 +108,8 @@ const Allowlist = observer(() => {
 
     /**
      * Handles import button click.
+     *
+     * @param e Click event.
      */
     const importClickHandler = (e) => {
         e.preventDefault();

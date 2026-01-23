@@ -44,6 +44,7 @@ import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
 import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
 import { TelemetryScreenName } from '../../../../background/services';
+import { SettingOption } from '../../../../background/schema';
 
 import '../../styles/styles.pcss';
 
@@ -159,7 +160,7 @@ const FilteringLog = observer(() => {
                         case NotifierType.SettingUpdated: {
                             const [{ propertyName, propertyValue }] = data;
                             logStore.onSettingUpdated(propertyName, propertyValue);
-                            if (propertyName === 'allow-anonymized-usage-data') {
+                            if (propertyName === SettingOption.AllowAnonymizedUsageData) {
                                 telemetryStore.setIsAnonymizedUsageDataAllowed(propertyValue);
                             }
                             break;
