@@ -35,7 +35,7 @@ import {
     type ExtensionXMLHttpRequest,
     NetworkCommon,
     type ResponseLikeXMLHttpRequest,
-    type DownloadFilterRulesOptionsCommon as DownloadFilterRulesOptions,
+    type DownloadFilterRulesOptions,
 } from './network-common';
 
 /**

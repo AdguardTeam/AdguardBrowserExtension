@@ -25,8 +25,8 @@ import {
     observable,
     runInAction,
 } from 'mobx';
-import { type SettingsData } from 'settings-api';
 
+import { type SettingsData } from '../../../../background/api/settings';
 import {
     AntibannerGroupsId,
     AntiBannerFiltersId,

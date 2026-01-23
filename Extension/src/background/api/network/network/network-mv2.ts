@@ -29,18 +29,8 @@ import {
     type ExtensionXMLHttpRequest,
     NetworkCommon,
     type ResponseLikeXMLHttpRequest,
-    type DownloadFilterRulesOptionsCommon,
+    type DownloadFilterRulesOptions,
 } from './network-common';
-
-/**
- * Options for downloading filter rules.
- */
-interface DownloadFilterRulesOptions extends DownloadFilterRulesOptionsCommon {
-    /**
-     * Force download filter rules from remote server.
-     */
-    forceRemote?: boolean;
-}
 
 /**
  * Api for working with our backend server.

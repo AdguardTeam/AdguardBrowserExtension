@@ -82,7 +82,7 @@ type HitStats = {
 /**
  * Options for downloading filter rules.
  */
-export interface DownloadFilterRulesOptionsCommon {
+export interface DownloadFilterRulesOptions {
     /**
      * Filter update detail containing filterId and other update info.
      */
@@ -95,6 +95,11 @@ export interface DownloadFilterRulesOptionsCommon {
      * Raw filter rules for patch updates.
      */
     rawFilter?: string;
+
+    /**
+     * Force download filter rules from remote server.
+     */
+    forceRemote?: boolean;
 }
 
 /**
