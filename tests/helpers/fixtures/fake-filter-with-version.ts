@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { calculateChecksum } from '../../../tools/resources/download-filters';
+import { calculateChecksum } from '../../../tools/utils/checksum';
 
 const fakeFilterWithVersion = (version: string) => {
     const currentDateWithoutMS = new Date().toISOString()

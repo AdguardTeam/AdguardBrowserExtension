@@ -26,6 +26,7 @@
             get: Fingerprint2.get
         };
         window.Fingerprint2 = Fingerprint2;
+        window.Fingerprint = Fingerprint2;
         hit(source);
     }
     function hit(e) {
