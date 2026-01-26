@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -227,7 +227,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
             ]);
 
             const recommendedFiltersIds = Categories.getRecommendedFilterIdsByGroupId(groupId);
-            await Categories.enableGroup(groupId, true, recommendedFiltersIds);
+            await Categories.enableGroup(groupId, recommendedFiltersIds);
 
             const filterVersion = filterVersionStorage.get(recommendedPrivacyFilterId);
             expect(filterVersion?.version).toStrictEqual('1.0.0.0');
@@ -336,7 +336,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                 }));
 
             await FiltersApi.loadAndEnableFilters([filterId]);
-            await Categories.enableGroup(7, true);
+            await Categories.enableGroup(7);
             // after load and enable it downloads filters embedded into the extension
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
                 1,
@@ -365,7 +365,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV1);
+            expect(await FiltersStoragesAdapter.getFilterContent(1)).toEqual(fakeFilterV1);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV1);
 
             returnMetadataWithVersion(filterId, '4.0.0.0');
@@ -392,7 +392,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getFilterContent(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             await FilterUpdateApi.autoUpdateFilters(false);
@@ -406,7 +406,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getFilterContent(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
         });
 
@@ -421,7 +421,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
 
             // Trigger full (force) filter update on filter load
             await FiltersApi.loadAndEnableFilters([filterId]);
-            await Categories.enableGroup(7, true);
+            await Categories.enableGroup(7);
             expect(FiltersDownloader.downloadWithRaw).nthCalledWith(
                 1,
                 'chrome-extension://test/filters/filter_1.txt',
@@ -435,7 +435,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
                     validateChecksumStrict: true,
                 },
             );
-            expect(await FiltersStoragesAdapter.getRawFilterList(1)).toEqual(fakeFilterV4WithDiffPath);
+            expect(await FiltersStoragesAdapter.getFilterContent(1)).toEqual(fakeFilterV4WithDiffPath);
             expect(await RawFiltersStorage.get(1)).toEqual(fakeFilterV4WithDiffPath);
 
             // Auto update filter to get a diff patch
@@ -534,7 +534,7 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
         it('should update filter with include', async () => {
             await FiltersApi.loadAndEnableFilters([filterId], true);
 
-            const rawFilterFromStorage = await FiltersStorage.getRawFilterList(filterId);
+            const rawFilterFromStorage = await FiltersStorage.getFilterContent(filterId);
 
             // Raw filter from storage should contain included content,
             // and not the `!#include` directive.

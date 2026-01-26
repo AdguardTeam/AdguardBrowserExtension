@@ -17,21 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-// TODO (AG-44868): Reduce code duplication across mv2 and mv3
 import {
     REMOTE_METADATA_FILE_NAME,
     REMOTE_I18N_METADATA_FILE_NAME,
     ADGUARD_FILTERS_IDS,
-} from '../../../../../constants';
-import { UserAgent } from '../../../common/user-agent';
-import { BrowserUtils } from '../../utils/browser-utils';
-import { logger } from '../../../common/logger';
-import { browserStorage } from '../../storages/shared-instances';
+} from '../../../../../../constants';
+import { BrowserUtils } from '../../../utils/browser-utils';
+import { logger } from '../../../../common/logger';
 
 /**
  * NetworkSettings contains a bunch of url's which are using by extension.
  */
-export class NetworkSettings {
+export abstract class NetworkSettingsCommon {
     // Base url of our backend server
     readonly backendUrl = 'https://chrome.adtidy.org';
 
@@ -50,20 +47,7 @@ export class NetworkSettings {
      * Note, that downloading filter rules is DISABLED in the current MV3 build
      * in order to ensure that remotely hosted rules are not used in Chrome.
      */
-    private readonly DEFAULT_FILTER_RULES_BASE_URL = 'https://filters.adtidy.org/extension';
-
-    /**
-     * By this key, qa can set the base url for filter rules through the local storage for testing
-     * purposes.
-     *
-     * @example
-     * ```javascript
-     *  localStorage.setItem('ag_filters_base_url', 'https://filters.adtidy.org/extension/');
-     * ```
-     *
-     * @private
-     */
-    private readonly FILTERS_BASE_URL_KEY = 'ag_filters_base_url';
+    protected readonly DEFAULT_FILTER_RULES_BASE_URL = 'https://filters.adtidy.org/extension';
 
     // Folder that contains filters metadata and files with rules. 'filters' by default
     readonly localFiltersFolder = 'filters';
@@ -80,7 +64,7 @@ export class NetworkSettings {
     /**
      * Base url for downloading filter rules.
      */
-    private filtersRulesBaseUrl: string = this.DEFAULT_FILTER_RULES_BASE_URL;
+    protected filtersRulesBaseUrl: string = this.DEFAULT_FILTER_RULES_BASE_URL;
 
     /**
      * Initializes the network settings.
@@ -89,7 +73,7 @@ export class NetworkSettings {
         // For testing purposes, we can set the base url for filter rules
         // through the local storage.
         this.filtersRulesBaseUrl = await this.getFilterRulesBaseUrl();
-        logger.info('[ext.NetworkSettings.init]: filters rules base url:', this.filtersRulesBaseUrl);
+        logger.info('[ext.NetworkSettingsCommon.init]: filters rules base url:', this.filtersRulesBaseUrl);
     }
 
     /**
@@ -98,43 +82,7 @@ export class NetworkSettings {
      *
      * @returns Promise that resolves to the base url for filter rules.
      */
-    private async getFilterRulesBaseUrl(): Promise<string> {
-        try {
-            const url = await browserStorage.get(this.FILTERS_BASE_URL_KEY);
-
-            if (typeof url !== 'string' || !url) {
-                logger.warn('[ext.NetworkSettings.getFilterRulesBaseUrl]: Invalid filter rules base url from storage:', url);
-                return this.DEFAULT_FILTER_RULES_BASE_URL;
-            }
-
-            return url;
-        } catch (error) {
-            logger.warn('[ext.NetworkSettings.getFilterRulesBaseUrl]: Failed to get filters base url from storage:', error);
-            return this.DEFAULT_FILTER_RULES_BASE_URL;
-        }
-    }
-
-    /**
-     * Returns the url from which the filters can be downloaded.
-     *
-     * @returns The url from which filters can be downloaded.
-     */
-    // eslint-disable-next-line class-methods-use-this
-    get filtersUrl(): string {
-        if (UserAgent.isFirefox) {
-            return `${this.filtersRulesBaseUrl}/firefox`;
-        }
-
-        if (UserAgent.isEdge) {
-            return `${this.filtersRulesBaseUrl}/edge`;
-        }
-
-        if (UserAgent.isOpera) {
-            return `${this.filtersRulesBaseUrl}/opera`;
-        }
-
-        return `${this.filtersRulesBaseUrl}/chromium`;
-    }
+    protected abstract getFilterRulesBaseUrl(): Promise<string>;
 
     /**
      * Returns URL for downloading AG filters.
@@ -173,6 +121,13 @@ export class NetworkSettings {
         const params = BrowserUtils.getExtensionParams();
         return `${this.filtersUrl}/${REMOTE_I18N_METADATA_FILE_NAME}?${params.join('&')}`;
     }
+
+    /**
+     * Returns the url from which the filters can be downloaded.
+     *
+     * @returns The url from which filters can be downloaded.
+     */
+    abstract get filtersUrl(): string;
 
     /**
      * URL for collecting filter rules statistics.

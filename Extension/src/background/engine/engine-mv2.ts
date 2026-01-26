@@ -26,6 +26,7 @@ import {
     MESSAGE_HANDLER_NAME,
     createTsWebExtension,
     type Message as EngineMessage,
+    FilterList,
 } from '@adguard/tswebextension';
 
 import { logger } from '../../common/logger';
@@ -39,7 +40,6 @@ import {
     SettingsApi,
     DocumentBlockApi,
     network,
-    filteringLogApi,
 } from '../api';
 import { NotifierType } from '../../common/constants';
 
@@ -92,8 +92,6 @@ export class Engine implements TsWebExtensionEngine {
         logger.info(`[ext.Engine.start]: tswebextension is started. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
-
-        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -110,8 +108,6 @@ export class Engine implements TsWebExtensionEngine {
         logger.info(`[ext.Engine.update]: tswebextension configuration is updated. Rules count: ${rulesCount}`);
         // TODO: remove after frontend refactoring
         notifier.notifyListeners(NotifierType.RequestFilterUpdated);
-
-        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -126,27 +122,20 @@ export class Engine implements TsWebExtensionEngine {
 
         const tasks = enabledFilters.map(async (filterId) => {
             try {
-                const [content, sourceMap] = await Promise.all([
-                    FiltersStorage.getFilterList(filterId),
-                    FiltersStorage.getSourceMap(filterId),
-                ]);
+                const filter = await FiltersStorage.get(filterId);
 
-                if (!content) {
+                if (!filter) {
                     logger.error(`[ext.Engine.getConfiguration]: Failed to get filter ${filterId}`);
                     return;
-                }
-
-                if (!sourceMap) {
-                    logger.warn(`[ext.Engine.getConfiguration]: Source map is not found for filter ${filterId}`);
                 }
 
                 const trusted = FiltersApi.isFilterTrusted(filterId);
 
                 filters.push({
                     filterId,
-                    content,
+                    content: filter.getContent(),
+                    conversionData: filter.getConversionData(),
                     trusted,
-                    sourceMap,
                 });
             } catch (e) {
                 logger.error(`[ext.Engine.getConfiguration]: Failed to get filter ${filterId}`, e);
@@ -155,7 +144,7 @@ export class Engine implements TsWebExtensionEngine {
 
         await Promise.all(tasks);
 
-        const settings = SettingsApi.getTsWebExtConfiguration(false);
+        const settings = SettingsApi.getTsWebExtConfiguration();
 
         let allowlist: string[] = [];
 
@@ -169,25 +158,26 @@ export class Engine implements TsWebExtensionEngine {
 
         const trustedDomains = await DocumentBlockApi.getTrustedDomains();
 
+        let userrules: FilterList;
+
+        if (UserRulesApi.isEnabled()) {
+            userrules = await UserRulesApi.getUserRules();
+        } else {
+            userrules = FilterList.createEmpty();
+        }
+
         const result: ConfigurationMV2 = {
             verbose: !!(IS_RELEASE || IS_BETA),
             logLevel: logger.currentLevel,
             filters,
             userrules: {
-                content: [],
-                sourceMap: {},
+                content: userrules.getContent(),
+                conversionData: userrules.getConversionData(),
             },
             allowlist,
             settings,
             trustedDomains,
         };
-
-        if (UserRulesApi.isEnabled()) {
-            const { filterList, sourceMap } = await UserRulesApi.getUserRules();
-
-            result.userrules.content = filterList;
-            result.userrules.sourceMap = sourceMap;
-        }
 
         return result;
     }

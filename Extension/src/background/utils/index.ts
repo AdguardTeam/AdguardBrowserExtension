@@ -19,6 +19,7 @@
  */
 export { BrowserUtils } from './browser-utils';
 export { I18n } from './i18n';
+export { LineScanner } from './line-scanner';
 export { StringStorage } from './string-storage';
 export { UrlUtils } from './url';
 export { Version } from './version';
