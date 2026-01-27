@@ -11,7 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added beta suffix to the version in issue reports [#3330].
 
+### Fixed
+
+- $badfilter incorrectly negates rules with different $denyallow values [#3428].
+
 [#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330
+[#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428
 
 ## Unreleased 5.3
 
