@@ -20,7 +20,7 @@
         "locales": "tsx tools/locales.js",
         "resources": "tsx tools/resources.ts",
         "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~3.2 && tsx tools/resources/update-local-test-script-rules.ts && tsx tools/resources-mv3.ts",
-        "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
+        "resources:mv3:extract-unsafe-rules": "tsx tools/extract-unsafe-rules.ts",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
         "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
         "increment": "tsx tools/increment.ts",
@@ -28,10 +28,11 @@
         "lint-staged": "lint-staged",
         "check-types": "tsc --project tsconfig.mv2.json --noEmit && tsc --project tsconfig.mv3.json --noEmit",
         "disclaimer": "pnpm lint | tsx tools/insert-disclaimer.js",
-        "debug-filters:load": "pnpm exec dnr-rulesets load --latest-filters ./build/dev/chrome-mv3/filters",
-        "debug-filters:convert": "pnpm exec tsurlfilter convert --debug ./build/dev/chrome-mv3/filters /web-accessible-resources/redirects ./build/dev/chrome-mv3/filters/declarative",
-        "debug-filters:watch": "pnpm debug-filters:extract && pnpm exec dnr-rulesets watch --debug ./build/dev/chrome-mv3/manifest.json /web-accessible-resources/redirects",
-        "debug-filters:extract": "pnpm exec tsurlfilter extract-filters ./build/dev/chrome-mv3/filters/declarative ./build/dev/chrome-mv3/filters"
+        "debug-filters": "tsx tools/debug-filters.ts",
+        "debug-filters:load": "pnpm debug-filters load",
+        "debug-filters:convert": "pnpm debug-filters convert",
+        "debug-filters:watch": "pnpm debug-filters watch",
+        "debug-filters:extract": "pnpm debug-filters extract"
     },
     "repository": {
         "type": "git",
@@ -168,5 +169,10 @@
         "xstate": "5.19.0",
         "zod": "3.24.4",
         "zod-validation-error": "3.4.0"
+    },
+    "pnpm": {
+        "overrides": {
+            "@adguard/dnr-rulesets": "link:../tsurlfilter/packages/dnr-rulesets"
+        }
     }
 }

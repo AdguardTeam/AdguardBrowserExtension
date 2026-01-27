@@ -345,13 +345,13 @@ Additionally, you can edit filters and rebuild DNR rulesets without rebuilding t
 1. Run the following command in the terminal:
 
     ```shell
-    pnpm dev chrome-mv3
+    pnpm dev chrome-mv3 # OR: opera-mv3
     ```
 
 1. The built extension will be located in the following directory:
 
     ```shell
-    ./build/dev/chrome-mv3
+    ./build/dev/chrome-mv3 # OR: opera-mv3
     ```
 
 #### How to install the unpacked extension in the browser
@@ -378,7 +378,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 
     ```shell
     pnpm install
-    pnpm dev chrome-mv3
+    pnpm dev chrome-mv3 # OR: opera-mv3
     ```
 
 1. **Start watching for filter changes:**
@@ -387,7 +387,10 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
     pnpm debug-filters:watch
     ```
 
-    - This will extract text filters to `./build/dev/chrome-mv3/filters` and watch for changes.
+    - This command has `-b, --browser <browser>` option to specify the browser target.
+      Available browsers: `chrome-mv3`, `opera-mv3`.
+      Default: `chrome-mv3`.
+    - This will extract text filters to `./build/dev/<browser>/filters` and watch for changes.
     - When you edit and save any filter file, DNR rulesets will be rebuilt automatically.
 
 1. **Reload the extension in your browser** to apply new rulesets.
@@ -398,7 +401,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 
     ```shell
     pnpm install
-    pnpm dev chrome-mv3
+    pnpm dev chrome-mv3 # OR: opera-mv3
     ```
 
 1. **Extract text filters:**
@@ -407,13 +410,21 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
     pnpm debug-filters:extract
     ```
 
-1. **Edit the text filters** in `./build/dev/chrome-mv3/filters` as needed.
+    - This command has `-b, --browser <browser>` option to specify the browser target.
+      Available browsers: `chrome-mv3`, `opera-mv3`.
+      Default: `chrome-mv3`.
+
+1. **Edit the text filters** in `./build/dev/<browser>/filters` as needed.
 
 1. **Convert filters to DNR rulesets:**
 
     ```shell
     pnpm debug-filters:convert
     ```
+
+    - This command has `-b, --browser <browser>` option to specify the browser target.
+      Available browsers: `chrome-mv3`, `opera-mv3`.
+      Default: `chrome-mv3`.
 
 1. **Reload the extension in your browser** to apply new rulesets.
 
@@ -423,6 +434,10 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 > ```shell
 > pnpm debug-filters:load
 > ```
+>
+> - This command has `-b, --browser <browser>` option to specify the browser target.
+>   Available browsers: `chrome-mv3`, `opera-mv3`.
+>   Default: `chrome-mv3`.
 
 If you see an exclamation mark in the filtering log, it means the assumed rule (calculated by the engine) and the applied rule (converted to DNR) are different. Otherwise, only the applied rule (in DNR and text ways) will be shown.
 
@@ -437,7 +452,8 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Enable extended logging about rulesets, since it is optional - it can be removed
         --debug \
         # Path to the extension manifest
-        ./build/dev/chrome-mv3/manifest.json \
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        ./build/dev/<browser>/manifest.json \
         # Path to web-accessible-resources directory (needed for $redirect rules)
         # relative to the root directory of the extension (because they will be
         # loaded during runtime).
@@ -449,11 +465,16 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
     ```shell
     pnpm debug-filters:load
     # Under the hood:
-    pnpm exec dnr-rulesets load
+    pnpm exec dnr-rulesets load \
         # This will load latest text filters with their metadata
-        --latest-filters
+        --latest-filters \
+        # Browser target, can be 'chromium-mv3', 'opera-mv3'
+        # Note: `chrome-mv3` is automatically converted to `chromium-mv3`
+        # when you run `pnpm debug-filters:load chrome-mv3` command.
+        --browser <browser> \
         # Destination path for text filters
-        ./build/dev/chrome-mv3/filters
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        ./build/dev/<browser>/filters
     ```
 
 - **Manual conversion:**
@@ -465,13 +486,15 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Enable extended logging about rulesets
         --debug \
         # Path to the directory with text filters
-        ./build/dev/chrome-mv3/filters \
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        ./build/dev/<browser>/filters \
         # Path to web-accessible-resources directory (needed for $redirect rules)
         # relative to the root directory of the extension (because they will be
         # loaded during runtime).
         /web-accessible-resources/redirects \
         # Destination path for converted DNR rulesets
-        ./build/dev/chrome-mv3/filters/declarative
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        ./build/dev/<browser>/filters/declarative
     ```
 
 - **Extract text filters from DNR rulesets:**
@@ -481,9 +504,11 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
     # Under the hood:
     pnpm exec tsurlfilter extract-filters \
         # Path to the directory with DNR rulesets
-        ./build/dev/chrome-mv3/filters/declarative \
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        ./build/dev/<browser>/filters/declarative \
         # Path to save extracted text filters
-        ./build/dev/chrome-mv3/filters
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        ./build/dev/<browser>/filters
     ```
 
 For all command options, use `--help`, e.g.:

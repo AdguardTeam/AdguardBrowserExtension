@@ -21,6 +21,8 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { BrowserFilters } from '@adguard/dnr-rulesets';
+
 import {
     REMOTE_METADATA_FILE_NAME,
     REMOTE_I18N_METADATA_FILE_NAME,
@@ -100,6 +102,14 @@ export const MV3_BROWSERS = [
  */
 export type Mv3Browser = (typeof MV3_BROWSERS)[number];
 
+/**
+ * Map of {@link Mv3Browser} to {@link BrowserFilters}.
+ */
+export const MV3_BROWSER_TO_DNR_BROWSER_MAP: Record<Mv3Browser, BrowserFilters> = {
+    [Browser.ChromeMv3]: BrowserFilters.ChromiumMv3,
+    [Browser.OperaMv3]: BrowserFilters.OperaMv3,
+};
+
 export const isValidBrowserTarget = (target: any): target is Browser => {
     return Object.values(Browser).includes(target as Browser);
 };
@@ -115,6 +125,19 @@ export const enum AssetsFiltersBrowser {
     Opera = 'opera',
     OperaMv3 = 'opera-mv3',
 }
+
+/**
+ * List of {@link AssetsFiltersBrowser} values that are MV3 extension.
+ */
+export const MV3_ASSETS_FILTERS_BROWSERS = [
+    AssetsFiltersBrowser.ChromiumMv3,
+    AssetsFiltersBrowser.OperaMv3,
+] as const;
+
+/**
+ * Infered type for {@link MV3_ASSETS_FILTERS_BROWSERS}.
+ */
+export type Mv3AssetsFiltersBrowser = (typeof MV3_ASSETS_FILTERS_BROWSERS)[number];
 
 export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
     [BuildTargetEnv.Dev]: 'adguardadblockerdev@adguard.com',
