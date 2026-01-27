@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -83,8 +83,22 @@ export enum Browser {
     FirefoxAmo = 'firefox-amo',
     FirefoxStandalone = 'firefox-standalone',
     Opera = 'opera',
+    OperaMv3 = 'opera-mv3',
     Edge = 'edge',
 }
+
+/**
+ * List of {@link Browser} values that are MV3 extension.
+ */
+export const MV3_BROWSERS = [
+    Browser.ChromeMv3,
+    Browser.OperaMv3,
+] as const;
+
+/**
+ * Infered type for {@link MV3_BROWSERS}.
+ */
+export type Mv3Browser = (typeof MV3_BROWSERS)[number];
 
 export const isValidBrowserTarget = (target: any): target is Browser => {
     return Object.values(Browser).includes(target as Browser);
@@ -99,6 +113,7 @@ export const enum AssetsFiltersBrowser {
     Edge = 'edge',
     Firefox = 'firefox',
     Opera = 'opera',
+    OperaMv3 = 'opera-mv3',
 }
 
 export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {

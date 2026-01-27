@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -81,7 +81,7 @@ import {
     SUBSCRIBE_PATH,
     THANKYOU_PATH,
 } from './common-constants';
-import { getEnvConf } from './helpers';
+import { getEnvConf, isBrowserMv3 } from './helpers';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
@@ -160,7 +160,8 @@ export const ENTRY_POINTS_CHUNKS = {
 export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}): Configuration => {
     const { isWatchMode = false, zip } = options;
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
-    const manifestVersion = browserConfig.browser === Browser.ChromeMv3 ? 3 : 2;
+    const isMv3 = isBrowserMv3(browserConfig.browser);
+    const manifestVersion = isMv3 ? 3 : 2;
 
     // Base aliases for MV-specific services and APIs
     const alias: Record<string, string> = {
@@ -547,7 +548,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                 //  (e.g., make it to be __IS_RELEASE__ instead of IS_RELEASE)
                 IS_RELEASE: BUILD_ENV === BuildTargetEnv.Release,
                 IS_BETA: BUILD_ENV === BuildTargetEnv.Beta,
-                __IS_MV3__: browserConfig.browser === Browser.ChromeMv3,
+                __IS_MV3__: isMv3,
                 // Telemetry service URL from mapping
                 TELEMETRY_URL: JSON.stringify(TELEMETRY_API_URLS[BUILD_ENV]),
             }),

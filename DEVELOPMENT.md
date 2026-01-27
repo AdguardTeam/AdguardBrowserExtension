@@ -83,6 +83,7 @@ build/dev/edge
 build/dev/firefox-amo
 build/dev/firefox-standalone
 build/dev/opera
+build/dev/opera-mv3
 ```
 
 To make a dev build for a specific browser, run:
@@ -91,7 +92,7 @@ To make a dev build for a specific browser, run:
 pnpm dev <browser>
 ```
 
-Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `firefox-amo`,
+Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `opera-mv3`, `firefox-amo`,
 `firefox-standalone`, like this:
 
 ```shell

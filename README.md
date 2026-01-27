@@ -186,5 +186,6 @@ But for build versions we will use following format: `major.minor.patch.autoBuil
 | Firefox                     | ✅ 78   |
 | Firefox Mobile              | ✅ 113  |
 | Opera                       | ✅ 67   |
+| Opera MV3                   | ✅ 107  |
 | Edge Chromium               | ✅ 80   |
 | Edge Legacy                 | ❌      |

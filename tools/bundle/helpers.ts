@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -22,6 +22,8 @@ import { type BuildTargetEnv } from '../../constants';
 import {
     Browser,
     ENV_CONF,
+    MV3_BROWSERS,
+    type Mv3Browser,
     type EnvConfig,
 } from '../constants';
 
@@ -41,4 +43,8 @@ export const getEnvConf = (env: BuildTargetEnv): EnvConfig => {
         throw new Error(`No env config for: "${env}"`);
     }
     return envConfig;
+};
+
+export const isBrowserMv3 = (browser: Browser): browser is Mv3Browser => {
+    return MV3_BROWSERS.includes(browser as Mv3Browser);
 };
