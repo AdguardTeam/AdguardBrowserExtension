@@ -62,6 +62,7 @@ export const Popup = observer(() => {
         isAndroidBrowser,
         isFilteringPossible,
         telemetryStore,
+        isPopupDataReceived,
     } = useContext(popupStore);
 
     useAppearanceTheme(appearanceTheme);
@@ -188,7 +189,11 @@ export const Popup = observer(() => {
             <CommonIcons />
             <Icons />
             <AnimatedLoader isLoading={!isAppInitialized}>
-                <PopupLayout />
+                {/* We need to wait for popupData to prevent flicker */}
+                {/* of ui that depend on it on popup opening. */}
+                {/* This check is done here since AnimatedLoader */}
+                {/* is not used while popupData is loading */}
+                {isPopupDataReceived ? <PopupLayout /> : null}
             </AnimatedLoader>
         </>
     );
