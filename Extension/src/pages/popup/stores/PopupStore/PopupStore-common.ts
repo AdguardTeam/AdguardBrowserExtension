@@ -97,6 +97,9 @@ export class PopupStoreCommon {
     url: string | null = null;
 
     @observable
+    isPopupDataReceived = false;
+
+    @observable
     viewState = ViewState.Actions;
 
     @observable
@@ -344,6 +347,11 @@ export class PopupStoreCommon {
     setViewState = (state: ViewState) => {
         this.viewState = state;
     };
+
+    @action
+    setIsPopupDataReceived(value: boolean): void {
+        this.isPopupDataReceived = value;
+    }
 
     /**
      * Returns the current site URL or domain name.

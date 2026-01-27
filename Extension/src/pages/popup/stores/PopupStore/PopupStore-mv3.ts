@@ -43,7 +43,7 @@ export class PopupStore extends PopupStoreCommon {
     updateNotification: NotificationParams | null = null;
 
     @observable
-    isExtensionUpdateAvailable = false;
+    isExtensionUpdateAvailable: boolean = false;
 
     /**
      * Whether the extension update is checking or is updating now.
@@ -63,6 +63,7 @@ export class PopupStore extends PopupStoreCommon {
         const options = await messenger.getExtensionStatusForPopup();
 
         this.configureExtensionUpdates(options);
+        this.setIsPopupDataReceived(true);
     }
 
     /**
