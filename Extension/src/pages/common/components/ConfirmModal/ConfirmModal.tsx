@@ -182,7 +182,7 @@ export const ConfirmModal = ({
                             'button button--l',
                             'button--transparent',
                             theme.modal.btn,
-                            hideOptionalBtnInMobile && theme.modal.optionalBtn,
+                            hideOptionalBtnInMobile && theme.common.hideOnMobile,
                         )}
                         type="button"
                         onClick={handleCancel}
