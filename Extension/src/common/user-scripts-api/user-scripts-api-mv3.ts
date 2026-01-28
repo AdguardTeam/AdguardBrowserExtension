@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 import { USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED } from '../constants';
 import { logger } from '../logger';
 import { UserAgent } from '../user-agent';
@@ -51,7 +52,7 @@ export const shouldShowUserScriptsApiWarning = (): boolean => {
         return false;
     }
 
-    const currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.version) : null;
+    const currentChromeVersion = UserAgent.isChromium ? Number(UserAgent.engineVersion) : null;
 
     if (!currentChromeVersion) {
         logger.debug('[ext.user-scripts-api-mv3]: User Scripts API supported only in Chromium-based browsers');
