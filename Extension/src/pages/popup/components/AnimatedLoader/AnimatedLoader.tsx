@@ -48,7 +48,7 @@ type AnimatedLoaderProps = {
     /**
      * Component to render after timeout passes.
      */
-    children: JSX.Element;
+    children: JSX.Element | null;
 
     /**
      * Flag that indicates whether the application is still loading.

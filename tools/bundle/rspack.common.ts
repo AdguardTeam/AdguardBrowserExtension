@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -168,7 +168,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'app': path.resolve(__dirname, `../../Extension/src/background/app/app-mv${manifestVersion}.ts`),
         'engine': path.resolve(__dirname, `../../Extension/src/background/engine/engine-mv${manifestVersion}.ts`),
         'scripting-service': path.resolve(__dirname, `../../Extension/src/background/services/scripting/scripting-service-mv${manifestVersion}.ts`),
-        'settings-service': path.resolve(__dirname, `../../Extension/src/background/services/settings/settings-service-mv${manifestVersion}.ts`),
+        'settings-service': path.resolve(__dirname, `../../Extension/src/background/services/settings/settings/settings-service-mv${manifestVersion}.ts`),
         'filters-service': path.resolve(__dirname, `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`),
         'custom-filters-service': path.resolve(__dirname, `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`),
         'allowlist-service': path.resolve(__dirname, `../../Extension/src/background/services/allowlist/allowlist-mv${manifestVersion}.ts`),
@@ -197,10 +197,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'filters-update': path.resolve(__dirname, `../../Extension/src/pages/options/components/Filters/FiltersUpdate/FiltersUpdate-mv${manifestVersion}.tsx`),
         'filters-adapter': path.resolve(__dirname, `../../Extension/src/background/storages/filters-adapter/filters-adapter-mv${manifestVersion}.ts`),
         'prefs': path.resolve(__dirname, `../../Extension/src/background/prefs/prefs-mv${manifestVersion}.ts`),
-        'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types-mv${manifestVersion}.ts`),
+        'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types/types-mv${manifestVersion}.ts`),
         'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
         'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
         'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
+        'categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {
@@ -327,6 +328,22 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                  * we add `node_modules/.pnpm/node_modules` to the module resolution path as a fallback.
                  */
                 'node_modules/.pnpm/node_modules',
+
+                /**
+                 * When using pnpm workspace with linked packages (via `link:` protocol in pnpm-workspace.yaml),
+                 * pnpm places the linked package's dependencies in the linked package's own node_modules folder.
+                 * For example, when `@adguard/agtree` is linked, its dependency `@adguard/css-tokenizer`
+                 * is placed at `node_modules/@adguard/agtree/node_modules/@adguard/css-tokenizer`
+                 * instead of `node_modules/.pnpm/node_modules`.
+                 *
+                 * To support this structure, we add node_modules paths for each linked @adguard package
+                 * so rspack can resolve their nested dependencies correctly.
+                 */
+                'node_modules/@adguard/agtree/node_modules',
+                'node_modules/@adguard/tsurlfilter/node_modules',
+                'node_modules/@adguard/tswebextension/node_modules',
+                'node_modules/@adguard/scriptlets/node_modules',
+                'node_modules/@adguard/dnr-rulesets/node_modules',
             ],
             fallback: {
                 crypto: 'crypto-browserify',

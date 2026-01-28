@@ -11,7 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added beta suffix to the version in issue reports [#3330].
 
+### Fixed
+
+- Update indicator arrow flickers when opening the popup [#3351].
+- $badfilter incorrectly negates rules with different $denyallow values [#3428].
+
+[#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
 [#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330
+[#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428
 
 ## Unreleased 5.3
 
@@ -28,6 +35,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improved filters update logs readability, added version information before and after update [#2934].
 - Improved feature names and descriptions in Tracking protection (MV2).
+- Updated [@adguard/tsurlfilter] to v4.0.0.
+- Updated [@adguard/tswebextension] to v4.0.0.
+- Improved filtering log performance by optimizing rule text retrieval.
 
 ### Fixed
 
@@ -41,8 +51,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tracking protection is also disabled in MV3 when protection is paused in extension.
 - Apply $document blocking rule even if specific exception rule is present [#3262].
 - Blocked iframes are not collapsed on Firefox [#3116].
-- The extension got an unexpected error on [::]:8000 [#3360]
-- Toggle, that doesn't work in User Rules fullscreen mode [#3365]
+- The extension got an unexpected error on [::]:8000 [#3360].
+- Toggle, that doesn't work in User Rules fullscreen mode [#3365].
+- Original rule text now correctly displays in filtering log when rules are converted.
 
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069

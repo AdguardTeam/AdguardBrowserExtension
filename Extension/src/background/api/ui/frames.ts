@@ -18,8 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { RuleGenerator } from '@adguard/agtree';
-
 import {
     getDomain,
     isHttpRequest,
@@ -32,6 +30,7 @@ import { appContext, AppContextKey } from '../../storages';
 import { PageStatsApi } from '../page-stats';
 import { SettingsApi } from '../settings';
 import { engine } from '../../engine';
+import { logger } from '../../../common/logger';
 
 type FrameRule = {
     filterId: number;
@@ -150,15 +149,14 @@ export class FramesApi {
                 userAllowlisted = filterId === AntiBannerFiltersId.UserFilterId
                        || filterId === AntiBannerFiltersId.AllowlistFilterId;
 
-                const ruleNode = engine.api.retrieveRuleNode(
-                    mainFrameRule.getFilterListId(),
-                    mainFrameRule.getIndex(),
-                );
+                const ruleIndex = mainFrameRule.getIndex();
+                let ruleText = engine.api.retrieveRuleText(filterId, ruleIndex);
 
-                let ruleText = '<Cannot retrieve rule text>';
+                if (!ruleText) {
+                    // should never happen during normal operation
+                    ruleText = `<cannot retrieve rule text: ${filterId}:${ruleIndex}>`;
 
-                if (ruleNode) {
-                    ruleText = RuleGenerator.generate(ruleNode);
+                    logger.error(`[ext.FramesApi.getMainFrameData]: Cannot retrieve rule text: ${filterId}:${ruleIndex}`);
                 }
 
                 frameRule = {

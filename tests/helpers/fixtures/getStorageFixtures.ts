@@ -24,9 +24,10 @@ import zod from 'zod';
 import SuperJSON from 'superjson';
 import { isObject, trimEnd } from 'lodash-es';
 
-import { FilterListPreprocessor } from '@adguard/tsurlfilter';
+import { FilterList } from '@adguard/tsurlfilter';
 
 import { pageStatsValidator } from '../../../Extension/src/background/schema/page-stats';
+import { FilterListPreprocessor } from '../../../Extension/src/background/api/update/assets/preprocessor/preprocessor';
 
 const RAW_FILTER_KEY_PREFIX = 'raw_filterrules_';
 const FILTER_KEY_PREFIX = 'filterrules_';
@@ -797,6 +798,55 @@ export const getStorageFixturesV14 = (expires: number): StorageData[] => {
         const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
 
         adgSettings['preserve-log-enabled'] = false;
+
+        /**
+         * Migrate filter storage format from custom preprocessor to tsurlfilter's FilterList.
+         *
+         * OLD FORMAT: rawFilterList_<id>, conversionMap_<id>, filterList_<id>, sourceMap_<id>
+         * NEW FORMAT: filterContent_<id>, conversionData_<id>
+         */
+        const keys = Object.keys(settings);
+        const filterIds: Set<string> = new Set();
+        const keysToRemove: string[] = [];
+
+        // Collect filter IDs and keys to remove
+        keys.forEach((key) => {
+            if (key.startsWith('filterList_') || key.startsWith('sourceMap_')) {
+                // Binary data that was never used
+                keysToRemove.push(key);
+            }
+
+            if (key.startsWith('rawFilterList_') || key.startsWith('conversionMap_')) {
+                const rawId = key.slice(key.indexOf('_') + 1);
+                filterIds.add(rawId);
+                keysToRemove.push(key);
+            }
+        });
+
+        // Migrate each filter to the new format
+        filterIds.forEach((id) => {
+            const rawFilterList = settings[`rawFilterList_${id}`] as string | undefined;
+            const conversionMap = settings[`conversionMap_${id}`] as Record<string, string> | undefined;
+
+            if (rawFilterList !== undefined && conversionMap !== undefined) {
+                // Restore original filter list from preprocessed format
+                const originalFilterList = FilterListPreprocessor.getOriginalFilterListText({
+                    rawFilterList,
+                    conversionMap,
+                });
+
+                // Process with new FilterList class from tswebextension
+                const convertedFilterList = new FilterList(originalFilterList);
+
+                settings[`filterContent_${id}`] = convertedFilterList.getContent();
+                settings[`conversionData_${id}`] = convertedFilterList.getConversionData();
+            }
+        });
+
+        // Remove old keys
+        keysToRemove.forEach((key) => {
+            delete settings[key];
+        });
 
         settings['schema-version'] = 14;
 

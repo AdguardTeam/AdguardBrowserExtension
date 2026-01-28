@@ -18,4 +18,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { PopupStoreCommon as PopupStore } from './PopupStore-common';
+import { PopupStoreCommon } from './PopupStore-common';
+
+export class PopupStore extends PopupStoreCommon {
+    /** @inheritdoc */
+    override async getPopupData(): Promise<void> {
+        await super.getPopupData();
+        this.setIsPopupDataReceived(true);
+    }
+}
