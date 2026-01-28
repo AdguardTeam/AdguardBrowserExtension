@@ -142,6 +142,7 @@ Build:
             cp build/${bamboo.buildType}/firefox.zip artifacts/
             cp build/${bamboo.buildType}/edge.zip artifacts/
             cp build/${bamboo.buildType}/opera.zip artifacts/
+            cp build/${bamboo.buildType}/opera-mv3.zip artifacts/
             cp build/${bamboo.buildType}/source.zip artifacts/
     - inject-variables:
         file: artifacts/build.txt
@@ -156,7 +157,7 @@ Build:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome.zip,artifacts/chrome-mv3.zip,artifacts/firefox.zip,artifacts/edge.zip,artifacts/opera.zip,artifacts/source.zip"
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome.zip,artifacts/chrome-mv3.zip,artifacts/firefox.zip,artifacts/edge.zip,artifacts/opera.zip,artifacts/opera-mv3.zip,artifacts/source.zip"
   artifacts:
     - name: build.txt
       location: artifacts
@@ -186,6 +187,11 @@ Build:
     - name: opera.zip
       location: artifacts
       pattern: opera.zip
+      shared: true
+      required: true
+    - name: opera-mv3.zip
+      location: artifacts
+      pattern: opera-mv3.zip
       shared: true
       required: true
     - name: source.zip

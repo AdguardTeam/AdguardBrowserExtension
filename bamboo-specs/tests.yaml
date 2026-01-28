@@ -70,13 +70,14 @@ Test dev build:
             mv build/dev/firefox-amo.zip artifacts/firefox-amo-dev.zip
             mv build/dev/firefox-standalone.zip artifacts/firefox-standalone-dev.zip
             mv build/dev/opera.zip artifacts/opera-dev.zip
+            mv build/dev/opera-mv3.zip artifacts/opera-mv3-dev.zip
   # IMPORTANT: run clean after each job, since each job is run in a separate
   # directory and we want to clean up after each job.
   final-tasks:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome-dev.zip,artifacts/chrome-mv3-dev.zip,artifacts/edge-dev.zip,artifacts/firefox-amo-dev.zip,artifacts/firefox-standalone-dev.zip,artifacts/opera-dev.zip"
+          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome-dev.zip,artifacts/chrome-mv3-dev.zip,artifacts/edge-dev.zip,artifacts/firefox-amo-dev.zip,artifacts/firefox-standalone-dev.zip,artifacts/opera-dev.zip,artifacts/opera-mv3-dev.zip"
   artifacts:
     - name: build.txt
       location: artifacts
@@ -107,6 +108,10 @@ Test dev build:
     - name: opera-dev.zip
       location: artifacts
       pattern: opera-dev.zip
+      required: true
+    - name: opera-mv3-dev.zip
+      location: artifacts
+      pattern: opera-mv3-dev.zip
       required: true
   requirements: &requirements
     - adg-docker: 'true'
