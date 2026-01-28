@@ -42,7 +42,7 @@ export const operaMv3Manifest = {
     'host_permissions': [
         '<all_urls>',
     ],
-    'minimum_chrome_version': String(MIN_SUPPORTED_VERSION.CHROMIUM_MV3),
+    'minimum_opera_version': String(MIN_SUPPORTED_VERSION.OPERA_MV3),
     'web_accessible_resources': [
         {
             'resources': ['web-accessible-resources/*'],
@@ -71,5 +71,4 @@ export const operaMv3Manifest = {
     'optional_permissions': [
         'privacy',
     ],
-    'minimum_opera_version': String(MIN_SUPPORTED_VERSION.OPERA_MV3),
 };
