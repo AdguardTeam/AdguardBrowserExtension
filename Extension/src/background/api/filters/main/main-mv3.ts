@@ -72,6 +72,9 @@ export class FiltersApi extends FiltersApiCommon {
             logger.error('[ext.FiltersApi.reloadFiltersFromLocal]: cannot load local metadata due to:', getZodErrorMessage(e));
         }
 
+        // Update DNR rulesets version after reloading metadata from local files.
+        Prefs.libVersions.dnrRulesets = metadataStorage.getDnrRulesetsVersion();
+
         FiltersApiCommon.loadFilteringStates();
 
         await FiltersApiCommon.removeObsoleteFilters();
