@@ -43,9 +43,9 @@ const isDesktopScreen = window.innerWidth > TABLET_SCREEN_WIDTH;
 const Search = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
-    const searchInputRef = useRef();
+    const searchInputRef = useRef<HTMLInputElement>(null);
 
-    const searchRef = useRef();
+    const searchRef = useRef<HTMLDivElement>(null);
 
     const {
         setSearchInput,
@@ -57,15 +57,15 @@ const Search = observer(() => {
     useEffect(() => {
         // If keys changed, change aria-keyshortcuts attributes
         const modifierKeyProperty = UserAgent.isMacOs ? 'metaKey' : 'ctrlKey';
-        const handleSearchHotkey = (e) => {
+        const handleSearchHotkey = (e: KeyboardEvent) => {
             const { code } = e;
             if (e[modifierKeyProperty] && code === 'KeyF') {
                 e.preventDefault();
-                searchInputRef.current.focus();
-                searchInputRef.current.select();
+                searchInputRef.current?.focus();
+                searchInputRef.current?.select();
             }
         };
-        const handleResetHotkey = (e) => {
+        const handleResetHotkey = (e: KeyboardEvent) => {
             const { code } = e;
             if (code === 'Escape') {
                 e.preventDefault();
@@ -81,7 +81,7 @@ const Search = observer(() => {
         };
     }, [setSearchInput]);
 
-    const searchInputHandler = (e) => {
+    const searchInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setSearchInput(value);
         if (value.length === 0) {
@@ -92,35 +92,31 @@ const Search = observer(() => {
 
     const searchCloseHandler = () => {
         setSearchInput('');
-        searchInputRef.current.focus();
+        searchInputRef.current?.focus();
         setSearchSelect(SearchFilters.ALL);
         settingsStore.sortFilters();
         settingsStore.sortSearchGroups();
     };
 
-    const searchSelectHandler = (value) => {
-        setSearchSelect(value);
+    const searchSelectHandler = (value: string) => {
+        setSearchSelect(value as SearchFilters);
         settingsStore.sortFilters();
         settingsStore.sortSearchGroups();
     };
 
     const onSearchInputFocus = () => {
-        if (searchRef.current) {
-            searchRef.current.classList.add('search--focused');
-        }
+        searchRef.current?.classList.add('search--focused');
     };
 
     const onSearchInputBlur = () => {
-        if (searchRef.current) {
-            searchRef.current.classList.remove('search--focused');
-        }
+        searchRef.current?.classList.remove('search--focused');
     };
 
     useEffect(() => {
         // autofocus triggers the keypad on mobile devices, which worsens tab navigation
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2117
         if (searchInputRef.current && isDesktopScreen) {
-            searchInputRef.current.focus();
+            searchInputRef.current?.focus();
         }
     }, []);
 
