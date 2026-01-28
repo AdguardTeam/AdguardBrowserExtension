@@ -109,6 +109,9 @@ link_tswebextension() {
         && pnpm install \
         && npx lerna run build --scope=@adguard/tswebextension --include-dependencies)
 
+        cd ..
+        ls
+
         (cd .. \
         && cd dnr-rulesets \
         && pnpm install \
