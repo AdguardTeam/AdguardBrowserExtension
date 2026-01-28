@@ -309,8 +309,8 @@ ARG TEST_RUN_ID
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Bust build cache so build stages always rerun.
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    # Create beta build for Firefox standalone.
-    pnpm beta firefox-standalone && \
+    # Create beta build for Firefox standalone with zip archive.
+    pnpm beta firefox-standalone --zip && \
     # Create artifacts directory if it doesn't exist.
     mkdir -p /out/artifacts && \
     # Move artifacts to the artifacts directory.
