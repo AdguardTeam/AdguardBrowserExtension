@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -17,63 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
-import zod from 'zod';
 
 import { rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { ExtensionUpdateService } from '../services/extension-update/extension-update-service-mv3';
-import { engine } from '../engine';
-import { MessageType, sendMessage } from '../../common/messages';
 import { logger } from '../../common/logger';
-import {
-    Forward,
-    ForwardAction,
-    ForwardFrom,
-} from '../../common/forward';
-import { CLIENT_ID_KEY, EXTENSION_INITIALIZED_EVENT } from '../../common/constants';
-import { messageHandler } from '../message-handler';
-import { ConnectionHandler } from '../connection-handler';
-import {
-    appContext,
-    AppContextKey,
-    settingsStorage,
-    browserStorage,
-} from '../storages';
-import {
-    toasts,
-    CommonFilterApi,
-    PagesApi,
-    FiltersApi,
-    SettingsApi,
-    UpdateApi,
-    InstallApi,
-    network,
-    PageStatsApi,
-    UiApi,
-    HitStatsApi,
-    iconsApi,
-} from '../api';
-import {
-    UiService,
-    PopupService,
-    SettingsService,
-    FiltersService,
-    AllowlistService,
-    UserRulesService,
-    CustomFiltersService,
-    FilteringLogService,
-    eventService,
-    DocumentBlockService,
-    PromoNotificationService,
-    filterUpdateService,
-    Telemetry,
-} from '../services';
-import { SettingOption } from '../schema';
-import { getRunInfo } from '../utils';
-import { contextMenuEvents, settingsEvents } from '../events';
-import { KeepAlive } from '../keep-alive';
-import { ContentScriptInjector } from '../content-script-injector';
-import { getZodErrorMessage } from '../../common/error';
+import { EXTENSION_INITIALIZED_EVENT } from '../../common/constants';
+import { FiltersApi, network } from '../api';
+
+import { AppCommon } from './app-common';
 
 /**
  * This class is app entry point.
@@ -81,221 +32,12 @@ import { getZodErrorMessage } from '../../common/error';
  * {@link App.init} Initializes all app services
  * and handle webextension API events for first install and update scenario.
  */
-export class App {
-    private static uninstallUrl = Forward.get({
-        action: ForwardAction.UninstallExtension,
-        from: ForwardFrom.Background,
-    });
-
+export class App extends AppCommon {
     /**
-     * Initializes all app services
-     * and handle webextension API events for first install and update scenario.
-     *
-     * First sync modules are initialized, then async modules.
+     * @inheritdoc
      */
-    public static async init(): Promise<void> {
-        // removes listeners on re-initialization, because new ones will be registered during process
-        App.removeListeners();
-
-        // First initialize critical sync event handlers.
-        App.syncInit();
-
-        // Set the current log level from session storage.
-        await logger.init();
-
-        // Then "lazy" call for all other stuff.
-        await App.asyncInit();
-    }
-
-    /**
-     * Initializes **sync** modules.
-     *
-     * Important: should be called before async part inside {@link App.init},
-     * because in MV3 handlers should be registered on the top level in sync
-     * functions.
-     */
-    private static syncInit(): void {
-        UiService.syncInit();
-    }
-
-    // TODO: move other sync modules from App.asyncInit() to App.syncInit()
-    /**
-     * Initializes **async** modules.
-     */
-    private static async asyncInit(): Promise<void> {
-        // TODO: Remove after migration to MV3
-        // This is a temporary solution to keep event pages alive in Firefox.
-        // We will remove it once engine initialization becomes faster.
-        KeepAlive.init();
-
-        // Reads persisted data from session storage.
-        await engine.api.initStorage();
-
-        // Initializes connection and message handler as soon as possible
-        // to prevent connection errors from extension pages
-        ConnectionHandler.init();
-        messageHandler.init();
-
-        // get application run info
-        const runInfo = await getRunInfo();
-
-        const { previousAppVersion, currentAppVersion } = runInfo;
-        const isAppVersionChanged = previousAppVersion !== currentAppVersion;
-        const isInstall = isAppVersionChanged && !previousAppVersion;
-        const isUpdate = isAppVersionChanged && !!previousAppVersion;
-
-        if (isInstall) {
-            await InstallApi.install(runInfo);
-        }
-
-        if (isUpdate) {
-            await UpdateApi.update(runInfo);
-        }
-
-        // Initializes network settings.
-        await network.init();
-
-        // Initializes App storage data
-        await App.initClientId();
-
-        // Initializes Settings storage data
-        await SettingsApi.init();
-
-        await UiApi.init();
-
-        await rulesLimitsService.init();
-
-        /**
-         * Injects content scripts into already opened tabs.
-         *
-         * Does injection when all requirements are met:
-         * - Statistics collection is disabled - prevents conflicts from multiple
-         * `cssHitCounters`;
-         * - Content scripts have not been injected in the current session -
-         * avoids unnecessary injections.
-         */
-        if (
-            SettingsApi.getSetting(SettingOption.DisableCollectHits)
-            && !await ContentScriptInjector.isInjected()
-        ) {
-            await ContentScriptInjector.init();
-            await ContentScriptInjector.setInjected();
-        }
-
-        /**
-         * Initializes Filters data:
-         * - Loads app i18n metadata and caches it in i18n-metadata storage
-         * - Loads app metadata, apply localization from i18n-metadata storage and caches it in metadata storage
-         * - Initializes storages for userrules, allowlist, custom filters metadata and page-stats
-         * - Initializes storages for filters state, groups state and filters versions, based on app metadata.
-         */
-        await FiltersApi.init(isInstall);
-
-        // Update the filters in the MV3 version for each extension update,
-        // even for patches, because MV3 does not support remote filter updates
-        // (either full or through diffs) and filters are updated only with
-        // the update of the entire extension.
-        if (isUpdate) {
-            const filtersIds = await FiltersApi.reloadFiltersFromLocal();
-            logger.info('[ext.App.asyncInit]: following filters has been updated from local resources:', filtersIds);
-        }
-
-        await PageStatsApi.init();
-        await HitStatsApi.init();
-
-        /**
-         * Initializes promo notifications:
-         * - Initializes notifications storage
-         * - Adds listeners for notification events.
-         */
-        PromoNotificationService.init();
-
-        // Adds listeners for settings events
-        SettingsService.init();
-
-        // Adds listeners for filter and group state events (enabling, updates)
-        await FiltersService.init();
-
-        // Adds listeners specified for custom filters
-        CustomFiltersService.init();
-
-        // Adds listeners for allowlist events
-        AllowlistService.init();
-
-        // Adds listeners for userrules list events
-        await UserRulesService.init(engine);
-
-        // Adds listeners for filtering log
-        FilteringLogService.init();
-
-        /**
-         * Adds listeners for managing ui
-         * (routing between extension pages, toasts, icon update).
-         */
-        await UiService.init();
-
-        // Adds listeners for popup events
-        PopupService.init();
-
-        /**
-         * Adds listener for creating `notifier` events. Triggers by frontend.
-         *
-         * TODO: delete after frontend refactoring.
-         */
-        eventService.init();
-
-        await ExtensionUpdateService.init();
-
-        /**
-         * Called after eventService init, otherwise it won't handle messages.
-         */
-        await KeepAlive.resyncEventSubscriptions();
-
-        /**
-         * Initializes Document block module
-         * - Initializes persisted cache for trusted domains
-         * - Adds listener for "add trusted domain" message.
-         */
-        await DocumentBlockService.init();
-
-        // Sets app uninstall url
-        await App.setUninstallUrl();
-
-        // First install additional scenario
-        if (isInstall) {
-            // Adds engine status listener for filters-download page
-            messageHandler.addListener(MessageType.CheckRequestFilterReady, App.onCheckRequestFilterReady);
-
-            // Opens filters-download page
-            await PagesApi.openPostInstallPage();
-
-            // Loads default filters
-            await CommonFilterApi.initDefaultFilters(true);
-
-            // Write the current version to the storage only after successful initialization of the extension
-            await InstallApi.postSuccessInstall(currentAppVersion);
-        }
-
-        // Update additional scenario
-        if (isUpdate) {
-            if (!settingsStorage.get(SettingOption.DisableShowAppUpdatedNotification)) {
-                // for isUpdate state previousAppVersion can't be null
-                toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion!);
-            }
-        }
-
-        // Runs tswebextension
-        await engine.start();
-
-        appContext.set(AppContextKey.IsInit, true);
-
-        // Update icons to hide "loading" icon
-        await iconsApi.update();
-
-        await sendMessage({ type: MessageType.AppInitialized });
-
-        // Set filters last update timestamp for issue reporting
-        await filterUpdateService.init();
+    protected static override async asyncInit(): Promise<boolean> {
+        const isUpdate = await super.asyncInit();
 
         await ExtensionUpdateService.handleExtensionReloadOnUpdate(isUpdate);
 
@@ -305,64 +47,44 @@ export class App {
         // is done.
         dispatchEvent(new Event(EXTENSION_INITIALIZED_EVENT));
 
-        await Telemetry.init();
+        return isUpdate;
     }
 
     /**
-     * Remove all registered app event listeners.
+     * @inheritdoc
      */
-    private static removeListeners(): void {
-        messageHandler.removeListeners();
-        contextMenuEvents.removeListeners();
-        settingsEvents.removeListeners();
-    }
-
-    /**
-     * Handles engine status request from filters-download page.
-     *
-     * @returns True, if filter engine is initialized, else false.
-     */
-    private static onCheckRequestFilterReady(): boolean {
-        const ready = engine.api.isStarted;
+    protected static override async initFiltersApi(isInstall: boolean, isUpdate: boolean): Promise<void> {
+        // Initializes network settings.
+        await network.init();
 
         /**
-         * If engine is ready, user will be redirected to thankyou page.
+         * Initializes Filters data:
+         * - Loads app i18n metadata and caches it in i18n-metadata storage
+         * - Loads app metadata, apply localization from i18n-metadata storage and caches it in metadata storage
+         * - Initializes storages for userrules, allowlist, custom filters metadata and page-stats
+         * - Initializes storages for filters state, groups state and filters versions, based on app metadata.
          *
-         * CheckRequestFilterReady listener is not needed anymore.
+         * Need to be call after network.init.
          */
-        if (ready) {
-            messageHandler.removeListener(MessageType.CheckRequestFilterReady);
+        await FiltersApi.init(isInstall);
+
+        // Update the filters in the MV3 version for each extension update,
+        // even for patches, because MV3 does not support remote filter updates
+        // (either full or through diffs) and filters are updated only with
+        // the update of the entire extension.
+        if (isUpdate) {
+            const filtersIds = await FiltersApi.reloadFiltersFromLocal();
+            logger.info('[ext.App.initFiltersApi]: following filters has been updated from local resources:', filtersIds);
         }
 
-        return ready;
+        // Needs to be called after FiltersApi.init.
+        await rulesLimitsService.init();
     }
 
     /**
-     * Sets app uninstall url.
+     * @inheritdoc
      */
-    private static async setUninstallUrl(): Promise<void> {
-        try {
-            await browser.runtime.setUninstallURL(App.uninstallUrl);
-        } catch (e) {
-            logger.error('[ext.App.setUninstallUrl]: cannot set app uninstall url. Origin error:', e);
-        }
-    }
-
-    /**
-     * Initializes App storage data.
-     */
-    private static async initClientId(): Promise<void> {
-        const storageClientId = await browserStorage.get(CLIENT_ID_KEY);
-        let clientId: string;
-
-        try {
-            clientId = zod.string().parse(storageClientId);
-        } catch (e) {
-            logger.warn('[ext.App.initClientId]: error while parsing client id, generating a new one, error: ', getZodErrorMessage(e));
-            clientId = InstallApi.genClientId();
-            await browserStorage.set(CLIENT_ID_KEY, clientId);
-        }
-
-        appContext.set(AppContextKey.ClientId, clientId);
+    protected static override async manifestSpecificInit(): Promise<void> {
+        await ExtensionUpdateService.init();
     }
 }
