@@ -84,9 +84,9 @@ type ConfirmModalParams = {
     isScrollable?: boolean;
 
     /**
-     * Flag to hide optional button. Default is false.
+     * Flag to hide optional button in mobile extension. Default is false.
      */
-    isOptionalBtnHidden?: boolean;
+    hideOptionalBtnInMobile?: boolean;
 };
 
 export const ConfirmModal = ({
@@ -101,7 +101,7 @@ export const ConfirmModal = ({
     isConsent,
     isSubtitleOneLine = false,
     isScrollable = false,
-    isOptionalBtnHidden = false,
+    hideOptionalBtnInMobile = false,
 }: ConfirmModalParams) => {
     const confirmTitle = customConfirmTitle || 'OK';
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
@@ -182,7 +182,7 @@ export const ConfirmModal = ({
                             'button button--l',
                             'button--transparent',
                             theme.modal.btn,
-                            isOptionalBtnHidden && theme.modal.optionalBtn,
+                            hideOptionalBtnInMobile && theme.modal.optionalBtn,
                         )}
                         type="button"
                         onClick={handleCancel}

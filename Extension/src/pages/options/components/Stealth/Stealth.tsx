@@ -28,7 +28,7 @@ import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
-import { Setting } from '../Settings/Setting';
+import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -183,6 +183,7 @@ const Stealth = observer(() => {
                 inlineControl={(
                     <Setting
                         id={DisableStealthMode}
+                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_privacy_title')}
                         labelId={switchTitleId}
                         inverted
@@ -289,6 +290,7 @@ const Stealth = observer(() => {
                         </div>
                         <Setting
                             id={SelfDestructThirdPartyCookiesTime}
+                            type={SETTINGS_TYPES.INPUT}
                             className="stealth__input"
                             disabled={!isThirdPartyCookiesEnabled || isStealthModeDisabled}
                             value={settings.values[SelfDestructThirdPartyCookiesTime]}
@@ -322,6 +324,7 @@ const Stealth = observer(() => {
                         </div>
                         <Setting
                             id={SelfDestructFirstPartyCookiesTime}
+                            type={SETTINGS_TYPES.INPUT}
                             className="stealth__input"
                             disabled={!isFirstPartyCookiesEnabled || isStealthModeDisabled}
                             value={settings.values[SelfDestructFirstPartyCookiesTime]}
