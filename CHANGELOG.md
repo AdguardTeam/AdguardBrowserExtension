@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added beta suffix to the version in issue reports [#3330].
+- Handling speculative prerender requests.
 
 ### Fixed
 
