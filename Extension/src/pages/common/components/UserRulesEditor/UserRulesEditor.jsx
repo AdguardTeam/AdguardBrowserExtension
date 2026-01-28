@@ -521,7 +521,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     />
                     <button
                         type="button"
-                        className={`button button--l button--transparent actions__btn ${theme.common.hideMobile}`}
+                        className={cn('button button--l button--transparent actions__btn', theme.common.hideMobile)}
                         onClick={importClickHandler}
                         title={translator.getMessage('options_userfilter_import')}
                     >

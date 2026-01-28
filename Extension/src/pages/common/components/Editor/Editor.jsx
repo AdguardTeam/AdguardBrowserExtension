@@ -30,6 +30,7 @@ import 'ace-builds/src-noconflict/mode-text.js';
 
 import { logger } from '../../../../common/logger';
 import { UserAgent } from '../../../../common/user-agent';
+import { MOBILE_BREAKPOINT_PX } from '../../constants';
 
 import './mode-adguard.js';
 
@@ -69,8 +70,7 @@ const Editor = ({
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
     const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
     const [size, setSize] = useState(JSON.parse(editorStorageSize) || DEFAULT_EDITOR_SIZE);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
-    const [hasContent, setHasContent] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT_PX);
 
     useEffect(() => {
         if (editorStorageSize) {
@@ -103,7 +103,7 @@ const Editor = ({
                 width: width + EDITOR_PADDING, height,
             }));
             editorRef.current.editor.resize();
-            setIsMobile(window.innerWidth < 640);
+            setIsMobile(window.innerWidth < MOBILE_BREAKPOINT_PX);
         };
 
     const editorClassName = cn(
@@ -114,7 +114,6 @@ const Editor = ({
     );
 
     const handleChange = (newValue) => {
-        setHasContent(newValue?.length > 0);
         onChange(newValue);
     };
 
@@ -137,9 +136,9 @@ const Editor = ({
 
     return (
         <div style={editorStyles} className={editorClassName}>
-            {isMobile && !hasContent && <div className="editor__hint">{EXAMPLE_DOMAIN}</div>}
             <AceEditor
                 ref={editorRef}
+                placeholder={isMobile ? EXAMPLE_DOMAIN : undefined}
                 width="100%"
                 height="100%"
                 mode={editorMode}
