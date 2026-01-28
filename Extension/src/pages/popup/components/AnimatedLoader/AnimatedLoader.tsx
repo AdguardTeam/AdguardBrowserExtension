@@ -44,11 +44,6 @@ const LOADER_MIN_DURATION_MS = 50;
  */
 const DEFAULT_ANIMATION_DURATION_MS = 1800;
 
-/**
- * Minimum time (in ms) to show the loader.
- */
-const LOADER_MIN_TIME_ELAPSED_MS = 500;
-
 type AnimatedLoaderProps = {
     /**
      * Component to render after timeout passes.
@@ -93,7 +88,7 @@ export const AnimatedLoader = ({
     useEffect(() => {
         const timer = setTimeout(() => {
             setMinTimeElapsed(true);
-        }, LOADER_MIN_TIME_ELAPSED_MS);
+        }, DEFAULT_ANIMATION_DURATION_MS);
 
         return () => clearTimeout(timer);
     }, []);
