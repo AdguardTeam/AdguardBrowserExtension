@@ -18,10 +18,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Filter status options for displaying filters in the search results.
+ */
 export enum SearchFilters {
     ALL = 'all',
     ENABLED = 'enabled',
     DISABLED = 'disabled',
 }
-
-export const TABLET_SCREEN_WIDTH = 1024;

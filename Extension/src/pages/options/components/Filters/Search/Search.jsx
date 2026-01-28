@@ -30,10 +30,11 @@ import { translator } from '../../../../../common/translators/translator';
 import { Select } from '../../../../common/components/ui/Select';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { UserAgent } from '../../../../../common/user-agent';
+import { TABLET_SCREEN_WIDTH } from '../../../../common/constants';
 import { rootStore } from '../../../stores/RootStore';
-import { sortFilterOptions } from '../constants';
+import { filterStatusOptions } from '../constants';
 
-import { SearchFilters, TABLET_SCREEN_WIDTH } from './constants';
+import { SearchFilters } from './constants';
 
 import './search.pcss';
 
@@ -159,7 +160,7 @@ const Search = observer(() => {
                 <Select
                     id="search-select"
                     handler={searchSelectHandler}
-                    options={sortFilterOptions}
+                    options={filterStatusOptions}
                     value={searchSelect}
                     label={translator.getMessage('options_filters_search_filter')}
                 />

@@ -44,12 +44,9 @@ export const FiltersUpdate = observer(() => {
     return (
         <div className={styles.filtersUpdate}>
             <div className={styles.info}>
-                <div>
-                    {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
-                </div>
-                <div>
-                    {translator.getMessage('options_antibanner_updated', { date: formatDate(latestCheckTime) })}
-                </div>
+                {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
+                <br />
+                {translator.getMessage('options_antibanner_updated', { date: formatDate(latestCheckTime) })}
             </div>
             <button
                 type="button"

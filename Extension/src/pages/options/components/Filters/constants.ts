@@ -22,7 +22,10 @@ import { translator } from '../../../../common/translators/translator';
 
 import { SearchFilters } from './Search/constants';
 
-export const sortFilterOptions = [
+/**
+ * Options for filtering the filters list by their enabled/disabled status.
+ */
+export const filterStatusOptions = [
     {
         value: SearchFilters.ALL,
         title: translator.getMessage('options_filters_list_search_display_option_all_filters'),

@@ -34,3 +34,8 @@ export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';
  * Timeout for closing the notification, same as in the styles animation.
  */
 export const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
+
+/**
+ * Tablet screen width.
+ */
+export const TABLET_SCREEN_WIDTH = 1024;

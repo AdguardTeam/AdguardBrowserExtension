@@ -23,7 +23,7 @@ import { observer } from 'mobx-react';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { MenuDropDown } from '../../../../common/components/ui/MenuDropDown';
-import { sortFilterOptions } from '../../Filters/constants';
+import { filterStatusOptions } from '../../Filters/constants';
 import { type SearchFilters } from '../../Filters/Search/constants';
 
 import styles from './SidebarMenu.module.pcss';
@@ -39,7 +39,7 @@ export const FilterSortMenu = observer(() => {
 
     return (
         <MenuDropDown>
-            {sortFilterOptions.map(({ value, title }) => {
+            {filterStatusOptions.map(({ value, title }) => {
                 const isSelected = value === settingsStore.searchSelect;
 
                 return (
