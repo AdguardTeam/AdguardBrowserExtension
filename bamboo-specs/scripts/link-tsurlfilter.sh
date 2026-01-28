@@ -43,7 +43,7 @@ done
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
-TSURLFILTER_REF="release/browser-extension-v5.3"
+TSURLFILTER_REF="fix/AG-44299"
 
 # Repository URLs
 # This should be set as a Bamboo project variable: tsurlfilterRepoUrl
@@ -109,11 +109,18 @@ link_tswebextension() {
         && pnpm install \
         && npx lerna run build --scope=@adguard/tswebextension --include-dependencies)
 
+        (cd ../dnr-rulesets \
+        && pnpm install \
+        && npx lerna run build --scope=@adguard/dnr-rulesets --include-dependencies)
+
         # Return to main project directory and link the built tswebextension package
         cd "${ORIGINAL_DIR}"
 
         echo "Linking tswebextension package to main project..."
         pnpm link ../tsurlfilter/packages/tswebextension
+
+        echo "Linking dnr-rulesets package to main project..."
+        pnpm link ../tsurlfilter/packages/dnr-rulesets
 
         # Optionally link additional packages based on command line flags
         if [ "$LINK_AGTREE" = true ]; then
