@@ -19,7 +19,7 @@ ls -la
 # Parse command line arguments
 LINK_AGTREE=false
 LINK_TSURLFILTER=false
-LINK_DNR_RULESETS=false
+LINK_DNR_RULESETS=true
 
 while [ $# -gt 0 ]; do
     case $1 in

@@ -59,7 +59,7 @@ Test dev build:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/chrome-dev.zip,output/artifacts/chrome-mv3-dev.zip,output/artifacts/edge-dev.zip,output/artifacts/firefox-amo-dev.zip,output/artifacts/firefox-standalone-dev.zip,output/artifacts/opera-dev.zip"
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/chrome-dev.zip,output/artifacts/chrome-mv3-dev.zip,output/artifacts/edge-dev.zip,output/artifacts/firefox-amo-dev.zip,output/artifacts/firefox-standalone-dev.zip,output/artifacts/opera-dev.zip,output/artifacts/opera-mv3-dev.zip"
   artifacts:
     - name: build.txt
       location: output/artifacts
@@ -92,7 +92,7 @@ Test dev build:
       pattern: opera-dev.zip
       required: true
     - name: opera-mv3-dev.zip
-      location: artifacts
+      location: output/artifacts
       pattern: opera-mv3-dev.zip
       required: true
   requirements: &requirements

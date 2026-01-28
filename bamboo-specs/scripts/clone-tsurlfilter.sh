@@ -25,7 +25,7 @@ exec 2>&1
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
-TSURLFILTER_REF=""
+TSURLFILTER_REF="fix/AG-44299"
 
 # Repository URL
 # This should be set as a Bamboo project variable: tsurlfilterRepoUrl
