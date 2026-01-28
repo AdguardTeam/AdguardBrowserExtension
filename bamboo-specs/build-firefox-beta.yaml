@@ -5,10 +5,10 @@ plan:
   key: BEFIREFOXBETASPECS
   name: browser extension - build firefox beta
   description: |
-    Since signing usually takes a lot of time, go-webext will wait until some
-    timeout is reached and then fail the build - this is expected.
-    After extension will be signed, SAME bamboo build should be re-run to
-    download signed extension and save it in artifacts.
+    Builds and signs Firefox beta extension via Mozilla. May fail on 20-min
+    timeout if signing is slow.
+    Do not stop manually. Re-run the SAME build after Mozilla signs it
+    to download the signed .xpi.
 stages:
   - Build:
       manual: false
