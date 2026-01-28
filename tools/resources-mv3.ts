@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -23,7 +23,7 @@ import { excludeUnsafeRules } from '@adguard/dnr-rulesets';
 
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
-import { updateLocalResourcesForChromiumMv3 } from './resources/update-local-script-rules';
+import { updateLocalResourcesForMv3 } from './resources/update-local-script-rules';
 import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
 
 // TODO: worth refactoring since this function is separated from ./resources.ts
@@ -36,12 +36,18 @@ import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
  */
 const resourcesMv3 = async (skipLocalResources = false) => {
     console.log('Downloading resources for MV3...');
-    await downloadAndPrepareMv3Filters();
+    await Promise.all([
+        downloadAndPrepareMv3Filters(AssetsFiltersBrowser.ChromiumMv3),
+        downloadAndPrepareMv3Filters(AssetsFiltersBrowser.OperaMv3),
+    ]);
     console.log('Resources for MV3 downloaded');
 
     if (!skipLocalResources) {
         console.log('Updating local resources for MV3...');
-        await updateLocalResourcesForChromiumMv3();
+        await Promise.all([
+            updateLocalResourcesForMv3(AssetsFiltersBrowser.ChromiumMv3),
+            updateLocalResourcesForMv3(AssetsFiltersBrowser.OperaMv3),
+        ]);
         console.log('Local resources for MV3 updated');
     } else {
         console.log('Skipping update of local resources for MV3 (--skip-local-resources flag set)');
@@ -62,10 +68,16 @@ const resourcesMv3 = async (skipLocalResources = false) => {
      * for session rules is 5000 and we need to leave some space for other
      * rules, e.g. general $stealth rules from Tracking Protection filter.
      */
-    excludeUnsafeRules({
-        dir: DECLARATIVE_FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3),
-        limit: 4900,
-    });
+    await Promise.all([
+        excludeUnsafeRules({
+            dir: DECLARATIVE_FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3),
+            limit: 4900,
+        }),
+        excludeUnsafeRules({
+            dir: DECLARATIVE_FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.OperaMv3),
+            limit: 4900,
+        }),
+    ]);
 };
 
 (async () => {

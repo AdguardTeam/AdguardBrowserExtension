@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -38,6 +38,8 @@ import {
     FILTER_DOWNLOAD_URL_FORMAT,
     OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT,
     AssetsFiltersBrowser,
+    type Mv3AssetsFiltersBrowser,
+    MV3_ASSETS_FILTERS_BROWSER_TO_DNR_BROWSER_MAP,
 } from '../constants';
 import {
     ADGUARD_FILTERS_IDS,
@@ -206,13 +208,18 @@ const downloadFilter = async (resourceData: DownloadResourceData, browser: Asset
 /**
  * Copies the DNR rulesets from the @adguard/dnr-rulesets internal directory to
  * the declarative filters directory in browser extension.
+ *
+ * @param browser Target MV3 browser.
  */
-export const downloadAndPrepareMv3Filters = async () => {
+export const downloadAndPrepareMv3Filters = async (browser: Mv3AssetsFiltersBrowser) => {
     const loader = new AssetsLoader();
 
     // Note: it is just copying the files from the @adguard/dnr-rulesets package
     // to the filters directory. The files are already downloaded.
-    return loader.load(FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3));
+    return loader.load(
+        FILTERS_DEST.replace('%browser', browser),
+        { browser: MV3_ASSETS_FILTERS_BROWSER_TO_DNR_BROWSER_MAP[browser] },
+    );
 };
 
 /**
@@ -237,5 +244,6 @@ export const downloadFilters = async () => {
     await startDownload(AssetsFiltersBrowser.Edge);
     await startDownload(AssetsFiltersBrowser.Firefox);
     await startDownload(AssetsFiltersBrowser.Opera);
-    await downloadAndPrepareMv3Filters();
+    await downloadAndPrepareMv3Filters(AssetsFiltersBrowser.ChromiumMv3);
+    await downloadAndPrepareMv3Filters(AssetsFiltersBrowser.OperaMv3);
 };

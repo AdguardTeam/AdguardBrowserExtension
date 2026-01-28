@@ -19,7 +19,7 @@
         "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
         "locales": "tsx tools/locales.js",
         "resources": "tsx tools/resources.ts",
-        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~3.2 && tsx tools/resources/update-local-test-script-rules.ts && tsx tools/resources-mv3.ts",
+        "resources:mv3": "tsx tools/resources/update-local-test-script-rules.ts && tsx tools/resources-mv3.ts",
         "resources:mv3:extract-unsafe-rules": "tsx tools/extract-unsafe-rules.ts",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
         "lint": "eslint --cache --max-warnings=0 --ext .jsx,.js,.tsx,.ts . && pnpm check-types",
