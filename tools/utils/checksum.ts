@@ -18,20 +18,35 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NotImplementedError } from '../../errors/not-implemented-error';
+import crypto from 'crypto';
+
+const CHECKSUM_PATTERN = /^\s*!\s*checksum[\s-:]+([\w\+/=]+).*[\r\n]+/i;
 
 /**
- * TODO: remove this MV2 implimentation after split Extension/src/background/services/ui/popup.ts for mv2/mv3 versions.
- * This service is a empty dummy to correct work of MV2 build without
- * using MV3 code.
+ * Normalizes a response.
+ *
+ * @param response Filter rules response.
+ *
+ * @returns Normalized response.
  */
-export class RulesLimitsService {
-    /**
-     * Just a empty dummy method for MV2.
-     *
-     * @throws Not implemented error.
-     */
-    public static areFilterLimitsExceeded(): boolean {
-        throw new NotImplementedError();
+const normalizeResponse = (response: string): string => {
+    const partOfResponse = response.substring(0, 200);
+    const match = partOfResponse.match(CHECKSUM_PATTERN);
+    if (match) {
+        response = response.replace(match[0], '');
     }
-}
+    response = response.replace(/\r/g, '');
+    response = response.replace(/\n+/g, '\n');
+    return response;
+};
+
+/**
+ * Calculates the checksum for a filter list.
+ *
+ * @param body Filter rules content.
+ *
+ * @returns Calculated checksum.
+ */
+export const calculateChecksum = (body: string): string => {
+    return crypto.createHash('md5').update(normalizeResponse(body)).digest('base64').replace(/=/g, '');
+};

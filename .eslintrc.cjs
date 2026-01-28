@@ -1,6 +1,23 @@
 /**
- * @file Base eslint config for AdGuard extension
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 module.exports = {
     'root': true,
     'env': {
@@ -243,8 +260,14 @@ module.exports = {
         'notice/notice': [
             'error',
             {
-                mustMatch: `Copyright \\(c\\) 2015-${new Date().getFullYear()} Adguard Software Ltd\\.[\\s\\S]*This file is part of AdGuard Browser Extension[\\s\\S]*GNU General Public License[\\s\\S]*<http://www\\.gnu\\.org/licenses/>`,
+                mustMatch: `Copyright \\(c\\) 2015(?:-(?:${Array.from(
+                    { length: new Date().getFullYear() - 2016 + 1 },
+                    (_, i) => 2016 + i,
+                ).join('|')}))? Adguard Software Ltd\\.[\\s\\S]*This file is part of AdGuard Browser Extension[\\s\\S]*GNU General Public License[\\s\\S]*<http://www\\.gnu\\.org/licenses/>`,
                 onNonMatchingHeader: 'replace',
+                messages: {
+                    'whenFailedToMatch': 'Copyright notice is not valid',
+                },
                 template: `/**
  * Copyright (c) 2015-<%= YEAR %> Adguard Software Ltd.
  *

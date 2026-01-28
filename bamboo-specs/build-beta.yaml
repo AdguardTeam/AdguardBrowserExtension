@@ -4,9 +4,6 @@ plan:
   project-key: ADGEXT
   key: BEBETASPECS
   name: browser extension - build beta
-variables:
-  dockerNode: adguard/extension-builder:22.17--0.3.0--0
-  buildType: beta
 stages:
   - Size and locales check:
       manual: false
@@ -24,14 +21,10 @@ Check Bundle Size:
   key: SIZECHECK
   other:
     clean-working-dir: true
-  docker: &docker
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
-        force-clean-build: 'true'
-    - script: &setup-script
+        force-clean-build: true
+    - script:
         interpreter: SHELL
         scripts:
           - |-
@@ -43,56 +36,63 @@ Check Bundle Size:
             # Fix mixed logs
             exec 2>&1
 
-            ls -la
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -ex
+            export DOCKER_BUILDKIT=1
 
-            # Install dependencies
-            pnpm install ${bamboo.varsPnpm}
-
-            echo "Executing build for ${bamboo.buildType}"
-
-            # Run build
-            pnpm ${bamboo.buildType}
-
-            # Create artifacts directory if it doesn't exist
-            mkdir -p artifacts
-
-            echo "Checking bundle sizes"
-            pnpm check-bundle-size ${bamboo.buildType}
+            # Build with named context for tsurlfilter
+            # Docker checksums the context content for cache invalidation
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target bundle-size-check-output \
+              --output type=local,dest=output \
+              .
   final-tasks:
     - script: &cleanup-script
         interpreter: SHELL
         scripts:
           - "./bamboo-specs/scripts/cleanup.sh"
   requirements: &requirements
-    - adg-docker: 'true'
     - extension: 'true'
 
 Check translations:
   key: LOCALESCHECK
   other:
     clean-working-dir: true
-  docker: *docker
   tasks:
     - checkout:
         force-clean-build: true
-    - script: *setup-script
     - script:
         interpreter: SHELL
         scripts:
           - |-
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
             set -ex
 
-            pnpm install ${bamboo.varsPnpm}
+            # Fix mixed logs
+            exec 2>&1
 
-            pnpm locales validate --min
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
+
+            export DOCKER_BUILDKIT=1
+
+            # Build with named context for tsurlfilter
+            # Docker checksums the context content for cache invalidation
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target locales-check-output \
+              --output type=local,dest=output \
+              .
   final-tasks:
     - script: *cleanup-script
   requirements: *requirements
@@ -101,81 +101,93 @@ Build:
   key: BUILD
   other:
     clean-working-dir: true
-  docker: *docker
   tasks:
     - checkout:
-        force-clean-build: 'true'
+        force-clean-build: true
     - checkout:
         repository: extensions-private
         path: private
-        force-clean-build: 'true'
-    - script: *setup-script
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
           - |-
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
             set -ex
 
-            pnpm install ${bamboo.varsPnpm}
+            # Fix mixed logs
+            exec 2>&1
 
-            # Build all browsers with zip archives for artifacts
-            pnpm ${bamboo.buildType} --zip
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-            # Build CRX by a separate script run
-            pnpm ${bamboo.buildType} chrome-crx
+            export DOCKER_BUILDKIT=1
 
-            # Create artifacts directory if it doesn't exist
-            mkdir -p artifacts
+            # Build beta artifacts (chrome, chrome-mv3, edge zips + build.txt)
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --build-context private=private \
+              --target beta-build-output \
+              --output type=local,dest=output \
+              .
 
-            # Copy all artifacts to the artifacts directory
-            cp build/${bamboo.buildType}/build.txt artifacts/
-            cp build/${bamboo.buildType}/chrome.zip artifacts/
-            cp build/${bamboo.buildType}/chrome-mv3.zip artifacts/
-            cp build/${bamboo.buildType}/edge.zip artifacts/
-            cp build/${bamboo.buildType}/chrome.crx artifacts/
-            cp build/${bamboo.buildType}/update.xml artifacts/
+            # Build beta CRX and update.xml
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --build-context private=private \
+              --target beta-chrome-crx-output \
+              --output type=local,dest=output \
+              .
     - inject-variables:
-        file: artifacts/build.txt
+        file: output/artifacts/build.txt
         scope: RESULT
         namespace: inject
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.tagging
         configuration:
           selectedRepository: defaultRepository
-          tagName: v${bamboo.inject.version}-${bamboo.buildType}
+          tagName: v${bamboo.inject.version}-beta
   final-tasks:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/chrome.zip,artifacts/chrome-mv3.zip,artifacts/edge.zip,artifacts/chrome.crx,artifacts/update.xml"
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/chrome.zip,output/artifacts/chrome-mv3.zip,output/artifacts/edge.zip,output/artifacts/chrome.crx,output/artifacts/update.xml"
   artifacts:
     - name: build.txt
-      location: artifacts
+      location: output/artifacts
       pattern: build.txt
       shared: true
       required: true
     - name: chrome.zip
-      location: artifacts
+      location: output/artifacts
       pattern: chrome.zip
       shared: true
       required: true
     - name: chrome-mv3.zip
-      location: artifacts
+      location: output/artifacts
       pattern: chrome-mv3.zip
       shared: true
       required: true
     - name: edge.zip
-      location: artifacts
+      location: output/artifacts
       pattern: edge.zip
       shared: true
       required: true
     - name: chrome.crx
-      location: artifacts
+      location: output/artifacts
       pattern: chrome.crx
       shared: true
       required: true
     - name: update.xml
-      location: artifacts
+      location: output/artifacts
       pattern: update.xml
       shared: true
       required: true

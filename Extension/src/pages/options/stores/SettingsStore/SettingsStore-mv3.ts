@@ -89,7 +89,7 @@ export class SettingsStore extends SettingsStoreCommon {
      * @param firstRender Whether this is the first render of the options page.
      */
     @override
-    async requestOptionsData(firstRender?: boolean): Promise<GetOptionsDataResponse | null> {
+    override async requestOptionsData(firstRender?: boolean): Promise<GetOptionsDataResponse | null> {
         const data = await super.requestOptionsData(firstRender);
         if (!data) {
             return null;
@@ -145,7 +145,7 @@ export class SettingsStore extends SettingsStoreCommon {
      * @param enabled Desired enabled state.
      */
     @override
-    async updateGroupSetting(groupId: number, enabled: boolean): Promise<void> {
+    override async updateGroupSetting(groupId: number, enabled: boolean): Promise<void> {
         await super.updateGroupSetting(groupId, enabled);
 
         await this.getRulesLimitsCounters();

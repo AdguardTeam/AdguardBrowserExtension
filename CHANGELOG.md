@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improved filters update logs readability, added version information before and after update [#2934].
 - Improved feature names and descriptions in Tracking protection (MV2).
+- Updated [@adguard/tsurlfilter] to v4.0.0.
+- Updated [@adguard/tswebextension] to v4.0.0.
+- Improved filtering log performance by optimizing rule text retrieval.
 
 ### Fixed
 
@@ -33,8 +36,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tracking protection is also disabled in MV3 when protection is paused in extension.
 - Apply $document blocking rule even if specific exception rule is present [#3262].
 - Blocked iframes are not collapsed on Firefox [#3116].
-- The extension got an unexpected error on [::]:8000 [#3360]
-- Toggle, that doesn't work in User Rules fullscreen mode [#3365]
+- The extension got an unexpected error on [::]:8000 [#3360].
+- Toggle, that doesn't work in User Rules fullscreen mode [#3365].
+- Original rule text now correctly displays in filtering log when rules are converted.
 
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
@@ -49,6 +53,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
 [#3365]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3365
 [tsurlfilter#96]: https://github.com/AdguardTeam/tsurlfilter/issues/96
+
+## [5.2.800] - 2025-12-25
+
+### Fixed
+
+- Memory leak caused by storing data URL favicons in tab contexts. [#2594]
+
+[#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
+
+[5.2.800]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.800%2B1.build.20251216080045
 
 ## [5.2.600.3] - 2025-12-16
 

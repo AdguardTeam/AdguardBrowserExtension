@@ -23,8 +23,7 @@ import browser from 'webextension-polyfill';
 import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
 import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 import { METADATA_RULESET_ID } from '@adguard/tsurlfilter/es/declarative-converter';
-
-import { type PreprocessedFilterList } from 'tswebextension';
+import { type ConversionData, type FilterList } from '@adguard/tsurlfilter';
 
 import { logger } from '../../../common/logger';
 
@@ -65,7 +64,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      * @param filterId Filter id.
      * @param filter Raw filter list or preprocessed filter list.
      */
-    public static async set(filterId: number, filter: string | PreprocessedFilterList): Promise<void> {
+    public static override async set(filterId: number, filter: string | FilterList): Promise<void> {
         // Do not allow to modify static filters in MV3.
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
             logger.error(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
@@ -76,7 +75,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     }
 
     /** @inheritdoc */
-    public static async has(filterId: number): Promise<boolean> {
+    public static override async has(filterId: number): Promise<boolean> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
             return TsWebExtensionFiltersStorage.has(filterId);
         }
@@ -92,7 +91,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      *
      * @param filterId Filter id.
      */
-    public static async remove(filterId: number): Promise<void> {
+    public static override async remove(filterId: number): Promise<void> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
             logger.error(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
             return;
@@ -101,48 +100,32 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
         await FiltersStoragesAdapterCommon.remove(filterId);
     }
 
-    /** @inheritdoc */
-    public static async getRawFilterList(
-        filterId: number,
-    ): Promise<PreprocessedFilterList['rawFilterList'] | undefined> {
-        if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
+    /**
+     * Gets the raw filter list content for the specified filter ID.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns Raw filter list content or `undefined` if the filter list does not exist.
+     */
+    public static override async getFilterContent(filterId: number): Promise<string | undefined> {
+        const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
+        if (staticFilterIds !== null && staticFilterIds.has(filterId)) {
             return TsWebExtensionFiltersStorage.getRawFilterList(filterId);
         }
-
-        return FiltersStoragesAdapterCommon.getRawFilterList(filterId);
     }
 
-    /** @inheritdoc */
-    public static async getFilterList(
-        filterId: number,
-    ): Promise<PreprocessedFilterList['filterList'] | undefined> {
-        if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            return TsWebExtensionFiltersStorage.getFilterList(filterId);
+    /**
+     * Gets the conversion map for the specified filter ID.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns Conversion map or `undefined` if the filter list does not exist.
+     */
+    public static override async getConversionData(filterId: number): Promise<ConversionData | undefined> {
+        const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
+        if (staticFilterIds !== null && staticFilterIds.has(filterId)) {
+            return TsWebExtensionFiltersStorage.getConversionData(filterId);
         }
-
-        return FiltersStoragesAdapterCommon.getFilterList(filterId);
-    }
-
-    /** @inheritdoc */
-    public static async getConversionMap(
-        filterId: number,
-    ): Promise<PreprocessedFilterList['conversionMap'] | undefined> {
-        if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            return TsWebExtensionFiltersStorage.getConversionMap(filterId);
-        }
-
-        return FiltersStoragesAdapterCommon.getConversionMap(filterId);
-    }
-
-    /** @inheritdoc */
-    public static async getSourceMap(
-        filterId: number,
-    ): Promise<PreprocessedFilterList['sourceMap'] | undefined> {
-        if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            return TsWebExtensionFiltersStorage.getSourceMap(filterId);
-        }
-
-        return FiltersStoragesAdapterCommon.getSourceMap(filterId);
     }
 
     /**

@@ -1,9 +1,9 @@
-! Checksum: GFswc0+OXbXWi/ho4UUl/Q
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1765530786-3600.patch
+! Checksum: GSrPqdz4j8q2YG8cLdRNEA
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1769062454-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.82
-! TimeUpdated: 2025-12-12T09:10:13+00:00
+! Version: 2.0.8.93
+! TimeUpdated: 2026-01-22T06:11:34+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -268,6 +268,7 @@ _advertentieleaderboardhome.
 ||persberichten.com/Images/marcommit/
 ||popinstituut.nl/wp-content/uploads/2014/02/Huren.nl
 ||pornokartel.nl/wp-content/uploads/*/wp-script-leaderboard.gif
+||preroll.omroepvenlo.nl^
 ||promootjesite.nl/images/affliateBanner/
 ||propertynl.com/media/organization/banners/
 ||puurnaturisme.nl/images/banners/
@@ -888,7 +889,6 @@ bnr.nl##.bnr-message
 bodylifebenelux.nl##.bnrrow
 tpo.nl##.bol_pml_box
 wijwedden.net##.bookies
-voetbalvandaag.nl##.bookmaker-banner
 autoreview.nl##.bottom-bannuring
 onderwijsnieuwsdienst.nl##.bottomSpace
 bnr.nl##.branded
@@ -1232,6 +1232,7 @@ wanttoknow.nl##.text-center.mb-3
 netonline.be##.text_12_jobs_only
 meerdangewenst.nl##.tg-site-footer-section-1
 topgear.nl##.theme-advertorial
+berekenhet.nl##.tka-sponsored-container
 fantv.nl##.tm-top-a
 fantv.nl##.tm-top-c
 startpagina.nl,tweakers.net##.top-banner
@@ -1309,7 +1310,6 @@ voetbalprimeur.nl##[class^="Ad_"]
 bright.nl##[class^="Ad_ad_"]
 at5.nl##[class^="Advertisement_"]
 sporza.be##[class^="_adBanner_"]
-gamer.nl##[component-export="Ad"]
 androidplanet.nl##[data-name="featured-header"]
 9292.nl##[data-testid^="gpt-ad"]
 indeleiderstrui.nl##[data-ub-carousel]
@@ -1405,7 +1405,6 @@ skoften.net##div[style="min-height: 265px;"]
 gamereactor.nl##div[style="min-height: 600px; margin-bottom: 20px;"]
 waldnet.nl##div[style="padding-top: 30px; padding-bottom: 30px;"]
 spellingoefenen.nl##div[style="text-align: left; height: 320px; width: 240px;"]
-gamer.nl##div[style="width: 100%; height: 280px;"]
 landbouwgrond.nu##div[style="width: 100%; height: 320px;"]
 ammoniakrechten.nl,efarm.nl,fosfaat.nu,koemarkt.nl,landbouwgrond.nu,mechanisatie.nl,pluimveerechten.nu,quotum.nu,varkensrechten.nu##div[style="width:100%;height:320px;display:block;"]
 waldnet.nl##div[style^="height: 280px;"]
@@ -1497,6 +1496,7 @@ mediamarkt.be,mediamarkt.nl#?#[data-index-number]:contains(Gesponsord)
 mnm.be#?#.grid-item.grid-item-pebble:has(#pebble-label:contains(Advertentie))
 moviemeter.nl#?#.footer-artikelen:has(.footer-h6:contains(Partners))
 nieuwsopbeeld.nl#?#.td_module_wrap:has(.td-post-category:contains(Gesponsord))
+omroepvenlo.nl#?#.widget.rounded-lg:contains(Advertentie)
 psvinside.nl#?#.td_block_template_1:has(.block-title:contains(Partners))
 tijd.be#?#.o-hpgrid__row-tijdconnect:has(h2:contains(Gesponsorde inhoud))
 tostrams.nl#?#section.network:has(.contentheader.contentheader--network:contains(Gesponsorde links))
@@ -1580,6 +1580,7 @@ play.tv,goplay.be#%#//scriptlet('prevent-fetch', 'pubads.g.doubleclick.net/gampa
 @@||imasdk.googleapis.com/js/sdkloader/ima3_dai.js$script,domain=goplay.be|play.tv
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=noopjs,domain=goplay.be|play.tv
 @@||pagead2.googlesyndication.com/omsdk/releases/live/omweb-v1.js$script,domain=goplay.be|play.tv
+@@||securepubads.g.doubleclick.net/*gpt$script,domain=play.tv
 ||goplay.be/js/sourcepoint/msg?v=
 vier.be#@#.googleAd
 hardware.info#%#//scriptlet("abort-on-property-read", "Object.prototype.autoRecov")
@@ -1611,9 +1612,17 @@ gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px 
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
-wielerrevue.nl##div[data-aa-adunit]
-wielerrevue.nl##main .bg-reserved
-wielerrevue.nl##.sticky-incontent
+||ssl.p.jwpcdn.com/player/v/*/vast.js$domain=matele.be
+f1maximaal.nl##.raw-html-component:has(>div.Pnvp__ad)
+telegraaf.nl##.tik4-extension--inline-ad
+||ssl.p.jwpcdn.com/player/v/*/freewheel.js$domain=kijk.nl
+kijk.nl#%#//scriptlet('prevent-element-src-loading', 'script', '/freewheel.js')
+f1maximaal.nl##.w-full[class*="flex"]:has(> .flex_component > .raw-html-component > .Pnvp__ad)
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=player.vrt.be
+||zeilen.nl/builds/zeilen/assets/taboola-page-view-id-*.js
+zeilen.nl,wielerrevue.nl##div[data-aa-adunit]
+zeilen.nl,wielerrevue.nl##main .bg-reserved
+zeilen.nl,wielerrevue.nl##.sticky-incontent
 f1maximaal.nl##div[style^="margin-top: 0px; min-height:"]:has(> div.ms-container)
 f1maximaal.nl##div[style^="margin-top:0px;min-height:"]:has(> div.ms-container)
 ||service-api.nl/api/v2/ad?

@@ -20,9 +20,8 @@
 
 import browser from 'webextension-polyfill';
 
-import { RulesLimitsService } from 'rules-limits-service';
-
 import { ExtensionUpdateService } from '../extension-update/extension-update-service-mv3';
+import { RulesLimitsService } from '../rules-limits/rules-limits-service-mv3';
 import {
     MessageType,
     type ChangeUserSettingMessage,
