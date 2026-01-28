@@ -297,3 +297,70 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 
 FROM scratch AS locales-check-output
 COPY --from=locales-check /out/ /
+
+# ============================================================================
+# Stage: firefox-beta-build
+# Creates Firefox beta build with zip files and source archive for AMO
+# ============================================================================
+FROM linked-deps AS firefox-beta-build
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so build stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Create beta build for Firefox standalone.
+    pnpm beta firefox-standalone && \
+    # Create artifacts directory if it doesn't exist.
+    mkdir -p /out/artifacts && \
+    # Move artifacts to the artifacts directory.
+    mv build/beta/build.txt /out/artifacts/ && \
+    # Rename firefox-standalone.zip to firefox.zip (AG-41656 workaround).
+    mv build/beta/firefox-standalone.zip /out/artifacts/firefox.zip && \
+    # Archive source files for AMO publishing.
+    ./bamboo-specs/scripts/archive-source.sh beta && \
+    mv build/beta/source.zip /out/artifacts/
+
+FROM scratch AS firefox-beta-build-output
+COPY --from=firefox-beta-build /out/ /
+
+# ============================================================================
+# Stage: firefox-beta-sign
+# Signs Firefox extension with go-webext (requires AMO credentials)
+# Expects artifacts via named build context: --build-context firefox-artifacts=artifacts
+# Uses adguard/extension-builder image which has go-webext pre-installed
+# ============================================================================
+FROM adguard/extension-builder:22.17--0.3.0--0 AS firefox-beta-sign
+
+WORKDIR /sign
+
+# Copy artifacts from named build context (passed via --build-context firefox-artifacts=...)
+COPY --from=firefox-artifacts firefox.zip /sign/firefox.zip
+COPY --from=firefox-artifacts source.zip /sign/source.zip
+COPY --from=firefox-artifacts build.txt /sign/build.txt
+
+# AMO credentials passed as build args
+ARG FIREFOX_CLIENT_ID
+ARG FIREFOX_CLIENT_SECRET
+ARG TEST_RUN_ID
+
+# Bust build cache so signing always reruns.
+RUN echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    mkdir -p /out/artifacts && \
+    # Sign the Firefox extension with go-webext.
+    FIREFOX_CLIENT_ID="${FIREFOX_CLIENT_ID}" \
+    FIREFOX_CLIENT_SECRET="${FIREFOX_CLIENT_SECRET}" \
+    # Note that this command will fail after timeout if signing is not completed
+    # (this is expected behavior).
+    # After timeout and rerun same build it will download signed extension
+    # and finish successfully.
+    go-webext -v sign firefox -f 'firefox.zip' -s 'source.zip' -o 'firefox.xpi' && \
+    # Copy all artifacts to output.
+    cp build.txt /out/artifacts/ && \
+    cp firefox.zip /out/artifacts/ && \
+    cp firefox.xpi /out/artifacts/ && \
+    cp update.json /out/artifacts/ && \
+    cp source.zip /out/artifacts/
+
+FROM scratch AS firefox-beta-sign-output
+COPY --from=firefox-beta-sign /out/ /

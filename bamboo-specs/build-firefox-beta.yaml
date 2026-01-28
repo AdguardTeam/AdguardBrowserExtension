@@ -4,9 +4,11 @@ plan:
   project-key: ADGEXT
   key: BEFIREFOXBETASPECS
   name: browser extension - build firefox beta
-variables:
-  dockerNode: adguard/extension-builder:22.17--0.3.0--0
-  buildType: beta
+  description: |
+    Since signing usually takes a lot of time, go-webext will wait until some
+    timeout is reached and then fail the build - this is expected.
+    After extension will be signed, SAME bamboo build should be re-run to
+    download signed extension and save it in artifacts.
 stages:
   - Build:
       manual: false
@@ -18,92 +20,80 @@ Build:
   key: BUILD
   other:
     clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
-    # we use dns to avoid etimedout error when AMO is validating extension
-    docker-run-arguments: ['--dns', '8.8.8.8']
   tasks:
     - checkout:
-        force-clean-build: 'true'
+        force-clean-build: true
     - script:
         interpreter: SHELL
         scripts:
           - |-
-            set -x
-            set -e
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
 
             # Fix mixed logs
             exec 2>&1
 
-            ls -la
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
+            export DOCKER_BUILDKIT=1
 
-            pnpm install ${bamboo.varsPnpm}
-            pnpm ${bamboo.buildType} firefox-standalone
+            # Build Firefox beta artifacts (firefox.zip, source.zip, build.txt)
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target firefox-beta-build-output \
+              --output type=local,dest=output \
+              .
 
-            # zip source files for publishing on AMO
-            ./bamboo-specs/scripts/archive-source.sh ${bamboo.buildType}
-
-            # Move to the build/beta directory and sign the Firefox extension
-            cd ./build/${bamboo.buildType}
-
-            # Set environment variables and run go-webext to sign the Firefox extension
-            FIREFOX_CLIENT_ID="${bamboo_firefoxAmoClientId}" \
-            FIREFOX_CLIENT_SECRET="${bamboo_firefoxAmoClientSecret}" \
-            go-webext -v sign firefox -f 'firefox-standalone.zip' -s 'source.zip' -o 'firefox.xpi'
-
-            # Exit from build/beta directory
-            cd ../..
-
-            # TODO: (AG-41656) Remove this workaround and use the browser name
-            # as for all other builds
-            mv build/${bamboo.buildType}/firefox-standalone.zip build/${bamboo.buildType}/firefox.zip
-
-            # Create artifacts directory if it doesn't exist
-            mkdir -p artifacts
-
-            # Copy all artifacts to the artifacts directory
-            cp build/${bamboo.buildType}/build.txt artifacts/
-            cp build/${bamboo.buildType}/firefox.zip artifacts/
-            cp build/${bamboo.buildType}/firefox.xpi artifacts/
-            cp build/${bamboo.buildType}/update.json artifacts/
-            cp build/${bamboo.buildType}/source.zip artifacts/
+            # Sign Firefox extension with go-webext (firefox.xpi, update.json)
+            # Uses artifacts from previous build step via named build context
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-arg FIREFOX_CLIENT_ID=${bamboo_firefoxAmoClientId} \
+              --build-arg FIREFOX_CLIENT_SECRET=${bamboo_firefoxAmoClientSecret} \
+              --build-context firefox-artifacts=output/artifacts \
+              --target firefox-beta-sign-output \
+              --output type=local,dest=output \
+              .
     - inject-variables:
-        file: artifacts/build.txt
+        file: output/artifacts/build.txt
         scope: RESULT
         namespace: inject
   final-tasks:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh artifacts/build.txt,artifacts/firefox.zip,artifacts/firefox.xpi,artifacts/update.json,artifacts/source.zip"
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/firefox.zip,output/artifacts/firefox.xpi,output/artifacts/update.json,output/artifacts/source.zip"
   artifacts:
     - name: build.txt
-      location: artifacts
+      location: output/artifacts
       pattern: build.txt
       shared: true
       required: true
     - name: firefox.zip
-      location: artifacts
+      location: output/artifacts
       pattern: firefox.zip
       shared: true
       required: true
     - name: firefox.xpi
-      location: artifacts
+      location: output/artifacts
       pattern: firefox.xpi
       shared: true
       required: true
     - name: update.json
-      location: artifacts
+      location: output/artifacts
       pattern: update.json
       shared: true
       required: true
     - name: source.zip
-      location: artifacts
+      location: output/artifacts
       pattern: source.zip
       shared: true
       required: true
