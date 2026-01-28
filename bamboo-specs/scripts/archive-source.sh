@@ -24,17 +24,57 @@ OUTPUT_ZIP="$OUTPUT_DIR/source.zip"
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
-# Step 1: List all tracked files
-ALL_FILES=$(git ls-files)
+# Check if we're in a git repository
+# TODO: Remove usage of git when build-release.yaml migrates to Docker build (same as Firefox beta).
+#       At that point, only the find-based approach (else branch) will be needed.
+if git rev-parse --git-dir > /dev/null 2>&1; then
+  # Git is available - use git ls-files
+  # Step 1: List all tracked files
+  ALL_FILES=$(git ls-files)
 
-# Step 2: Exclude files in Extension/filters/
-FILES_EXCLUDING_FILTERS=$(grep -v '^Extension/filters/' <<< "$ALL_FILES")
+  # Step 2: Exclude files in Extension/filters/
+  FILES_EXCLUDING_FILTERS=$(grep -v '^Extension/filters/' <<< "$ALL_FILES")
 
-# Step 3: List only the Extension/filters/firefox files
-FIREFOX_FILTER_FILES=$(git ls-files Extension/filters/firefox)
+  # Step 3: List only the Extension/filters/firefox files
+  FIREFOX_FILTER_FILES=$(git ls-files Extension/filters/firefox)
 
-# Step 4: Combine the two lists
-COMBINED_FILES=$(echo -e "$FILES_EXCLUDING_FILTERS\n$FIREFOX_FILTER_FILES")
+  # Step 4: Combine the two lists
+  COMBINED_FILES=$(echo -e "$FILES_EXCLUDING_FILTERS\n$FIREFOX_FILTER_FILES")
+else
+  # No git available (e.g., inside Docker) - use find instead
+  # Build exclusion patterns from .gitignore
+  EXCLUDE_ARGS=""
+  if [ -f ".gitignore" ]; then
+    while IFS= read -r line; do
+      # Skip empty lines and comments
+      [[ -z "$line" || "$line" =~ ^# ]] && continue
+      # Skip negation patterns (lines starting with !)
+      [[ "$line" =~ ^! ]] && continue
+      # Remove trailing slashes and convert to find pattern
+      pattern="${line%/}"
+      # Skip patterns with wildcards in the middle (complex patterns)
+      [[ "$pattern" =~ \* ]] && pattern="${pattern//\*/}"
+      [ -n "$pattern" ] && EXCLUDE_ARGS="$EXCLUDE_ARGS ! -path './$pattern' ! -path './$pattern/*'"
+    done < .gitignore
+  fi
+
+  # Find all files, excluding .gitignore patterns and Extension/filters/
+  ALL_FILES=$(eval "find . -type f $EXCLUDE_ARGS ! -path './Extension/filters/*'" \
+    | sed 's|^\./||' | sort)
+
+  # Find Extension/filters/firefox files
+  FIREFOX_FILTER_FILES=""
+  if [ -d "Extension/filters/firefox" ]; then
+    FIREFOX_FILTER_FILES=$(find Extension/filters/firefox -type f | sort)
+  fi
+
+  # Combine the two lists
+  if [ -n "$FIREFOX_FILTER_FILES" ]; then
+    COMBINED_FILES=$(echo -e "$ALL_FILES\n$FIREFOX_FILTER_FILES")
+  else
+    COMBINED_FILES="$ALL_FILES"
+  fi
+fi
 
 # Step 5: Create the zip from combined list
 echo "$COMBINED_FILES" | zip -@ "$OUTPUT_ZIP"
