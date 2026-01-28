@@ -109,7 +109,8 @@ link_tswebextension() {
         && pnpm install \
         && npx lerna run build --scope=@adguard/tswebextension --include-dependencies)
 
-        (cd ../dnr-rulesets \
+        (cd .. \
+        && cd dnr-rulesets \
         && pnpm install \
         && npx lerna run build --scope=@adguard/dnr-rulesets --include-dependencies)
 
