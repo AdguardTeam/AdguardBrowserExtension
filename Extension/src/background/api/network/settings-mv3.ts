@@ -25,6 +25,7 @@ import {
 } from '../../../../../constants';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { logger } from '../../../common/logger';
+import { UserAgent } from '../../../common/user-agent';
 
 /**
  * NetworkSettings contains a bunch of url's which are using by extension.
@@ -127,6 +128,10 @@ export class NetworkSettings {
          * Downloading rules from remote server is completely disabled in the
          * MV3 build by returning `null` here.
          */
+        if (UserAgent.isOpera) {
+            return `${this.filtersRulesBaseUrl}/opera-mv3`;
+        }
+
         return `${this.filtersRulesBaseUrl}/chromium-mv3`;
     }
 
