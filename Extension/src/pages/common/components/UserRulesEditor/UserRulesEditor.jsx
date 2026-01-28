@@ -529,7 +529,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     </button>
                     <button
                         type="button"
-                        className={`button button--l button--transparent actions__btn ${theme.common.hideMobile}`}
+                        className={cn('button button--l', 'button--transparent actions__btn', theme.common.hideMobile)}
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
                         title={translator.getMessage('options_userfilter_export')}
