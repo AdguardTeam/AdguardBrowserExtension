@@ -1,58 +1,52 @@
 .footer {
-    & > &__rate {
-        padding: 32px 32px 40px;
+    width: 100%;
+    flex: 0 0 auto;
+    
+    .container {
         display: flex;
         justify-content: center;
-        align-items: center;
-
-        @media (min-width: 640px) {
-            padding: 0 32px;
-        }
-    }
-
-    &__in {
-        display: flex;
-        justify-content: space-between;
         height: 100%;
         width: 100%;
         flex-direction: column;
         align-items: flex-start;
-        max-width: 100%;
+        position: relative;
 
         @media (min-width: 640px) {
             flex-direction: row;
             align-items: center;
         }
-
-        &--rate {
-            position: relative;
-            justify-content: center;
-        }
     }
 
-    &__rate {
-        height: 158px;
+    .rate {
+        padding: 12px 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         background-color: var(--fills-backgrounds-page-background-additional-default);
 
-        @media (min-width: 640px) {
-            height: 56px;
+        @media (max-width: 640px) { 
+            padding: 24px;
         }
     }
 
-    &__rate-desc {
-        margin: 0 0 16px 0;
+    .rateDesc {
+        margin-bottom: 16px;
 
         @media (min-width: 640px) {
             margin: 0 16px 0 0;
         }
     }
 
-    &__rate-close {
+    .rateClose {
         position: absolute;
-        right: 0;
         cursor: pointer;
-        padding: 0;
         background-color: transparent;
+        right: 0;
         border: 0;
+        padding: 0;
+
+        @media (max-width: 640px) {
+            top: 0;
+        }
     }
 }

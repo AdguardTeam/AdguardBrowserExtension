@@ -26,7 +26,7 @@ import { messenger } from '../../../services/messenger';
 import { Icon } from '../../../common/components/ui/Icon';
 import { rootStore } from '../../stores/RootStore';
 
-import './footer.pcss';
+import styles from './footer.module.pcss';
 
 export const Footer = observer(() => {
     const { settingsStore } = useContext(rootStore);
@@ -41,11 +41,11 @@ export const Footer = observer(() => {
     };
 
     return (
-        <footer className="footer">
+        <footer className={styles.footer}>
             {settingsStore.footerRateShowState && (
-                <div role="alert" className="footer__rate">
-                    <div className="footer__in footer__in--rate container">
-                        <div className="footer__rate-desc">
+                <div role="alert" className={styles.rate}>
+                    <div className={styles.container}>
+                        <div className={styles.rateDesc}>
                             {translator.getMessage('options_do_you_like_question')}
                         </div>
                         <button
@@ -57,7 +57,7 @@ export const Footer = observer(() => {
                         </button>
                         <button
                             type="button"
-                            className="footer__rate-close"
+                            className={styles.rateClose}
                             onClick={hideRate}
                             aria-label={translator.getMessage('close_button_title')}
                         >
