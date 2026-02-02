@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased 5.3
+
+### Added
+
+- Beautification to exported settings JSON for improved readability [#3069].
+- Ability to keep filtering log records without size limitations when "Preserve log" is enabled [#3148].
+- Support of `:has()` pseudo-class as standard CSS conditionally:
+    - if there are no other extended pseudo-classes in the selector, or
+    - if the `#?#` separator is explicitly used in the rule [#2587].
+- Full CSS selector syntax support in HTML filtering rules [tsurlfilter#96].
+
+### Changed
+
+- Improved filters update logs readability, added version information before and after update [#2934].
+- Improved feature names and descriptions in Tracking protection (MV2).
+- Updated [@adguard/tsurlfilter] to v4.0.0.
+- Updated [@adguard/tswebextension] to v4.0.0.
+- Improved filtering log performance by optimizing rule text retrieval.
+
+### Fixed
+
+- Dynamic rules limit duplicate notifications.
+- Network rules with `$important` modifier are applied even if protection is disabled [#3227].
+- Early save reactivation and missing exit prompt during active User Rules/Allowlist save [#3151].
+- Some requests are blocked in 'Inverted allowlist' mode even though there're no websites added to the Allowlist [#3193].
+- Do not enable any filters on settings import if `enabled-filters` is empty [#3136].
+- Settings applied notification appearing before settings are actually applied [#3278].
+- Preserve logs does not retain all records in the filtering log [#3148].
+- Tracking protection is also disabled in MV3 when protection is paused in extension.
+- Apply $document blocking rule even if specific exception rule is present [#3262].
+- Blocked iframes are not collapsed on Firefox [#3116].
+- The extension got an unexpected error on [::]:8000 [#3360].
+- Toggle, that doesn't work in User Rules fullscreen mode [#3365].
+- Original rule text now correctly displays in filtering log when rules are converted.
+
+[#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
+[#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
+[#3116]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3116
+[#3136]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136
+[#3148]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3148
+[#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
+[#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
+[#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
+[#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
+[#3262]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3262
+[#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
+[#3365]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3365
+[tsurlfilter#96]: https://github.com/AdguardTeam/tsurlfilter/issues/96
+
 ## [5.2.800] - 2025-12-25
 
 ### Fixed
@@ -15,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [5.2.800]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.800%2B1.build.20251216080045
 
-## [5.2.600] - 2025-12-16
+## [5.2.600.3] - 2025-12-16
 
 ### Fixed
 
@@ -25,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3364]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3364
 [#3058]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3058
 
-[5.2.600]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.600%2B3.build.20251209190042
+[5.2.600.3]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.600%2B3.build.20251209190042
 
 ## [5.2.500] - 2025-12-05
 
@@ -77,7 +126,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [5.2.112.84]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B84.build.20251022090039
 
-## [5.2.112.1] - 2025-10-13
+## [5.2.112.1] - 2025-10-14
+
+### Fixed
+
+- The extension is failed to update via the popup [#3317].
+
+[5.2.112.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B1.build.20251009120050
+[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
+
+## [5.2.112.0] - 2025-10-13
 
 ### Changed
 
@@ -87,10 +145,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Minimize the extension update fetch response size in MV3.
-- The extension is failed to update via the popup [#3317].
 
-[5.2.112.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B1.build.20251009120050
-[#3317]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3317
+[5.2.112.0]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.112%2B0.build.20251001190036
 
 ## [5.2.77] - 2025-09-22
 

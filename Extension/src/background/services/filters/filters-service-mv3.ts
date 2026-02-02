@@ -17,9 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { RulesLimitsService } from 'rules-limits-service';
-
 import {
     type AddAndEnableFilterMessage,
     type DisableFilterMessage,
@@ -30,6 +27,7 @@ import {
     type SetConsentedFiltersMessage,
 } from '../../../common/messages';
 import { logger } from '../../../common/logger';
+import { RulesLimitsService } from '../rules-limits/rules-limits-service-mv3';
 import { messageHandler } from '../../message-handler';
 import { engine } from '../../engine';
 import {
@@ -38,7 +36,6 @@ import {
     FiltersApi,
     PageStatsApi,
 } from '../../api';
-import { AntiBannerFiltersId } from '../../../common/constants';
 
 /**
  * FiltersService creates handlers for messages that relate to filters.
@@ -261,13 +258,6 @@ export class FiltersService {
      * @param shouldEnableGroup Flag for enabling the filter group if it has not been touched before.
      */
     private static async enableFilter(filterId: number, shouldEnableGroup = false): Promise<void> {
-        // For quick fixes filter we have special logic with partially updating
-        // metadata and then load filter from remote.
-        if (filterId === AntiBannerFiltersId.QuickFixesFilterId) {
-            // TODO: revert if Quick Fixes filter is back
-            // await QuickFixesRulesApi.loadAndEnableQuickFixesRules();
-        } else {
-            await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
-        }
+        await FiltersApi.loadAndEnableFilters([filterId], false, shouldEnableGroup);
     }
 }

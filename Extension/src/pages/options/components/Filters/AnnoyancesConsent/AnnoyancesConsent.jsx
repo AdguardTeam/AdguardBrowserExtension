@@ -23,6 +23,7 @@ import { observer } from 'mobx-react';
 
 import { ConfirmModal } from '../../../../common/components/ConfirmModal';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { Popover } from '../../../../common/components/ui/Popover';
 import { translator } from '../../../../../common/translators/translator';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { rootStore } from '../../../stores/RootStore';
@@ -41,6 +42,8 @@ export const AnnoyancesConsent = observer(({
 
     const { filtersToGetConsentFor } = settingsStore;
 
+    const tooltipText = translator.getMessage('options_filters_annoyances_consent_filter_homepage_tooltip');
+
     const renderFilters = () => {
         return filtersToGetConsentFor.map((filter) => (
             <li key={filter.filterId} className="annoyances-consent__text annoyances-consent__filter">
@@ -48,15 +51,16 @@ export const AnnoyancesConsent = observer(({
                     <div className="annoyances-consent__filter--name">
                         {filter.name}
                     </div>
-                    <a
-                        href={filter.homepage}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="annoyances-consent__filter--homepage-link"
-                        title={translator.getMessage('options_filters_filter_link')}
-                    >
-                        <Icon id="#link" aria-hidden="true" />
-                    </a>
+                    <Popover text={tooltipText}>
+                        <a
+                            href={filter.homepage}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="annoyances-consent__filter--homepage-link"
+                        >
+                            <Icon id="#link" aria-hidden="true" />
+                        </a>
+                    </Popover>
                 </div>
                 <div className="annoyances-consent__filter--description">
                     {filter.description}
@@ -67,10 +71,10 @@ export const AnnoyancesConsent = observer(({
 
     const renderSubtitle = () => (
         <div className="annoyances-consent__content">
-            <div className="annoyances-consent__text">
+            <div className="annoyances-consent__text annoyances-consent__description">
                 {translator.getMessage('options_filters_annoyances_consent_description')}
             </div>
-            <div className="annoyances-consent__text">
+            <div className="annoyances-consent__text annoyances-consent__description">
                 {translator.getMessage('options_filters_annoyances_consent_question')}
             </div>
             <ul className="annoyances-consent__text annoyances-consent__filters">

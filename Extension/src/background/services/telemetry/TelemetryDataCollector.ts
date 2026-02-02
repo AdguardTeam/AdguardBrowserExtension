@@ -20,10 +20,11 @@
 import browser from 'webextension-polyfill';
 
 import { UserAgent } from '../../../common/user-agent';
-import { AppearanceTheme, DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
+import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
 import { Prefs } from '../../prefs';
 import { SettingsApi } from '../../api';
 import { SettingOption } from '../../schema';
+import { AppearanceTheme } from '../../../common/constants';
 
 import { TelemetryFilterUpdateIntervalMode, TelemetryTheme } from './enums';
 import {

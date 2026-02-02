@@ -117,12 +117,12 @@ export class CommonFilterApi {
      * from local resources. This parameter is ignored for MV3, and only
      * exists for compatibility.
      *
-     * **IMPORTANT: `forceRemote` can't be used for MV3** except Quick Fixes
+     * **IMPORTANT: `forceRemote` can't be used for MV3**
      * filter, because we update filters, their metadata, and rulesets with
      * whole extension update, because static ruleset cannot be updated
      * dynamically.
      * To prevent mismatch filters and rulesets version - we do not support load
-     * them from remote, except Quick Fixes Filter, because it will applied
+     * them from remote, because it will applied
      * dynamically.
      *
      * @returns Filter metadata — {@link RegularFilterMetadata}.
@@ -244,15 +244,6 @@ export class CommonFilterApi {
         // depends on CommonFilterApi and CustomFilterApi.
         // On the first run, we update the common filters from the backend.
         await FiltersApi.loadAndEnableFilters(filterIds, true, enableUntouchedGroups);
-
-        // TODO: revert if Quick Fixes filter is back
-        // // For MV3 version we have QuickFixes filter which does not have local
-        // // version and always should be updated from the server.
-        // await FiltersApi.loadAndEnableFilters(
-        //     [AntiBannerFiltersId.QuickFixesFilterId],
-        //     true,
-        //     enableUntouchedGroups,
-        // );
     }
 
     /**

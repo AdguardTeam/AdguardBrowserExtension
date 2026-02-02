@@ -1,11 +1,33 @@
+/**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /* eslint-disable max-len */
+
 import zod from 'zod';
 import SuperJSON from 'superjson';
 import { isObject, trimEnd } from 'lodash-es';
 
-import { FilterListPreprocessor } from '@adguard/tsurlfilter';
+import { FilterList } from '@adguard/tsurlfilter';
 
 import { pageStatsValidator } from '../../../Extension/src/background/schema/page-stats';
+import { FilterListPreprocessor } from '../../../Extension/src/background/api/update/assets/preprocessor/preprocessor';
 
 const RAW_FILTER_KEY_PREFIX = 'raw_filterrules_';
 const FILTER_KEY_PREFIX = 'filterrules_';
@@ -560,21 +582,8 @@ export const getStorageFixturesV7 = (expires: number): StorageData[] => {
             }),
         ).parse(JSON.parse(filtersStateData));
 
-        // Added AdGuard Quick Fixes filter which should be enabled by default.
-        const addedAdGuardQuickFixesFilterId = 24;
-        filtersState[addedAdGuardQuickFixesFilterId] = {
-            // Enabled by default.
-            enabled: true,
-            // Marked as not installed to not remove it as obsoleted
-            // (because after migration it would not have info in metadata).
-            installed: false,
-            // Marked as loaded to update it.
-            loaded: true,
-        };
-
         adgSettings['filters-state'] = JSON.stringify(filtersState);
         settings['adguard-settings'] = adgSettings;
-        settings['raw_filterrules_24.txt'] = '';
         settings['schema-version'] = 7;
 
         return settings;
@@ -590,8 +599,6 @@ export const getStorageFixturesV8 = (expires: number): StorageData[] => {
             settings['schema-version'] = 8;
             return settings;
         }
-
-        settings = removeQuickFixesFilter(settings);
 
         settings['schema-version'] = 8;
 
@@ -625,21 +632,8 @@ export const getStorageFixturesV9 = (expires: number): StorageData[] => {
             }),
         ).parse(JSON.parse(filtersStateData));
 
-        // Added AdGuard Quick Fixes filter which should be enabled by default.
-        const addedAdGuardQuickFixesFilterId = 24;
-        filtersState[addedAdGuardQuickFixesFilterId] = {
-            // Enabled by default.
-            enabled: true,
-            // Marked as not installed to not remove it as obsoleted
-            // (because after migration it would not have info in metadata).
-            installed: false,
-            // Marked as loaded to update it.
-            loaded: true,
-        };
-
         adgSettings['filters-state'] = JSON.stringify(filtersState);
         settings['adguard-settings'] = adgSettings;
-        settings['raw_filterrules_24.txt'] = '';
         settings['schema-version'] = 9;
 
         return settings;
@@ -656,43 +650,10 @@ export const getStorageFixturesV10 = (expires: number): StorageData[] => {
             return settings;
         }
 
-        settings = removeQuickFixesFilter(settings);
-
         settings['schema-version'] = 10;
 
         return settings;
     });
-};
-
-const removeQuickFixesFilter = (settings: StorageData): StorageData => {
-    const adgSettings = settings['adguard-settings'] as any;
-    const filtersStateData = adgSettings['filters-state'];
-
-    if (typeof filtersStateData !== 'string') {
-        throw new Error('Cannot read filters state data');
-    }
-
-    const filtersState = zod.record(
-        zod.string(),
-        zod.object({
-            enabled: zod.boolean(),
-            installed: zod.boolean(),
-            loaded: zod.boolean(),
-        }),
-    ).parse(JSON.parse(filtersStateData));
-
-    // Quick fixes filter was disabled in MV3 to comply with CWR policies.
-    // TODO: remove code totally later.
-
-    // Deprecated AdGuard Quick Fixes filter which should be removed.
-    const deprecatedAdGuardQuickFixesFilterId = 24;
-    delete filtersState[deprecatedAdGuardQuickFixesFilterId];
-
-    adgSettings['filters-state'] = JSON.stringify(filtersState);
-    settings['adguard-settings'] = adgSettings;
-    delete settings['raw_filterrules_24.txt'];
-
-    return settings;
 };
 
 export const getStorageFixturesV11 = (expires: number): StorageData[] => {
@@ -825,6 +786,69 @@ export const getStorageFixturesV13 = (expires: number): StorageData[] => {
         adgSettings['allow-anonymized-usage-data'] = false;
 
         settings['schema-version'] = 13;
+
+        return settings;
+    });
+};
+
+export const getStorageFixturesV14 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV13 = getStorageFixturesV13(expires);
+
+    return storageSettingsFixturesV13.map((settings) => {
+        const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
+
+        adgSettings['preserve-log-enabled'] = false;
+
+        /**
+         * Migrate filter storage format from custom preprocessor to tsurlfilter's FilterList.
+         *
+         * OLD FORMAT: rawFilterList_<id>, conversionMap_<id>, filterList_<id>, sourceMap_<id>
+         * NEW FORMAT: filterContent_<id>, conversionData_<id>
+         */
+        const keys = Object.keys(settings);
+        const filterIds: Set<string> = new Set();
+        const keysToRemove: string[] = [];
+
+        // Collect filter IDs and keys to remove
+        keys.forEach((key) => {
+            if (key.startsWith('filterList_') || key.startsWith('sourceMap_')) {
+                // Binary data that was never used
+                keysToRemove.push(key);
+            }
+
+            if (key.startsWith('rawFilterList_') || key.startsWith('conversionMap_')) {
+                const rawId = key.slice(key.indexOf('_') + 1);
+                filterIds.add(rawId);
+                keysToRemove.push(key);
+            }
+        });
+
+        // Migrate each filter to the new format
+        filterIds.forEach((id) => {
+            const rawFilterList = settings[`rawFilterList_${id}`] as string | undefined;
+            const conversionMap = settings[`conversionMap_${id}`] as Record<string, string> | undefined;
+
+            if (rawFilterList !== undefined && conversionMap !== undefined) {
+                // Restore original filter list from preprocessed format
+                const originalFilterList = FilterListPreprocessor.getOriginalFilterListText({
+                    rawFilterList,
+                    conversionMap,
+                });
+
+                // Process with new FilterList class from tswebextension
+                const convertedFilterList = new FilterList(originalFilterList);
+
+                settings[`filterContent_${id}`] = convertedFilterList.getContent();
+                settings[`conversionData_${id}`] = convertedFilterList.getConversionData();
+            }
+        });
+
+        // Remove old keys
+        keysToRemove.forEach((key) => {
+            delete settings[key];
+        });
+
+        settings['schema-version'] = 14;
 
         return settings;
     });

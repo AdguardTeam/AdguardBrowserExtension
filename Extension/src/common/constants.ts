@@ -18,8 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type PreprocessedFilterList } from '@adguard/tswebextension';
-
 import { type ForwardFrom } from './forward';
 
 /**
@@ -29,7 +27,7 @@ import { type ForwardFrom } from './forward';
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 13;
+export const APP_SCHEMA_VERSION = 14;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -83,9 +81,13 @@ export enum AntiBannerFiltersId {
     AnnoyancesMobileAppBannersFilterId = 20,
     AnnoyancesOtherAnnoyancesFilterId = 21,
     AnnoyancesWidgetsFilterId = 22,
-    QuickFixesFilterId = 24,
     AllowlistFilterId = 100,
     MobileAdsFilterId = 11,
+
+    /**
+     * @deprecated
+     */
+    QuickFixesFilterId = 24,
 }
 
 /**
@@ -216,17 +218,6 @@ export const FILTER_LIST_EXTENSION = '.txt';
  * integration tests.
  */
 export const EXTENSION_INITIALIZED_EVENT = 'initialized';
-
-/**
- * This is just a syntax sugar for setting default value if we not have
- * preprocessed list for user rules or for custom filters.
- */
-export const emptyPreprocessedFilterList: PreprocessedFilterList = {
-    filterList: [],
-    sourceMap: {},
-    rawFilterList: '',
-    conversionMap: {},
-};
 
 /**
  * Chrome's extensions settings page url.
@@ -360,3 +351,12 @@ export const enum ExtensionUpdateFSMEvent {
  * Time duration for showing update state change. Needed for smoother user experience.
  */
 export const MIN_UPDATE_DISPLAY_DURATION_MS = 2 * 1000;
+
+/**
+ * Available appearance themes for the extension UI.
+ */
+export const enum AppearanceTheme {
+    System = 'system',
+    Dark = 'dark',
+    Light = 'light',
+}

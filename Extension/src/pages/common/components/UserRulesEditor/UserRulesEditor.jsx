@@ -46,7 +46,7 @@ import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
 import { addMinDelayLoader } from '../helpers';
 // TODO: Continue to remove dependency on the root store via adding loader and
-// notifications to own 'user-rules-editor' store.
+// notifications to own 'user-rules-editor' store. AG-48937
 import { rootStore } from '../../../options/stores/RootStore';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
@@ -70,7 +70,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const inputRef = useRef(null);
     const actionsRef = useRef(null);
 
-    const switchId = 'user-filter-switch';
+    const switchId = settingsStore.userFilterEnabledSettingId;
     const switchTitleId = `${switchId}-title`;
 
     let shouldResetSize = false;
@@ -235,9 +235,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const hasUnsavedChanges = !isSaving && store.userRulesEditorContentChanged;
     const unsavedChangesTitle = translator.getMessage('options_editor_leave_title');
     const unsavedChangesSubtitle = translator.getMessage('options_userfilter_leave_subtitle');
-    usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
+    usePreventUnload(hasUnsavedChanges || isSaving, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
     const saveUserRules = async (userRules) => {
+        if (isSaving) {
+            return;
+        }
         store.setCursorPosition(editorRef.current.editor.getCursorPosition());
 
         // For MV2 version we don't show loader and don't check limits.
@@ -422,10 +425,17 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         window.close();
     };
 
+    const updateSettingWithLimitCheck = async (settingId, value) => {
+        await settingsStore.updateSetting(settingId, value);
+        if (__IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
+    };
+
     const handleUserRulesToggle = async ({ id, data }) => {
         await addMinDelayLoader(
             uiStore.setShowLoader,
-            store.updateSetting,
+            updateSettingWithLimitCheck,
         )(id, data);
     };
 
@@ -441,6 +451,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                 onSave={saveClickHandler}
                 onExit={focusFirstEnabledAction}
                 highlightRules
+                readOnly={isSaving}
             />
             {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}
             {/* We are hiding it because only Options page has router, and there is no point of using it */}

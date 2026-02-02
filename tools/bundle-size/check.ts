@@ -1,5 +1,25 @@
 /**
- * @file Bundle size checker script
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Bundle size checker script
  * Tracks and compares bundle sizes across builds to detect significant size increases.
  *
  * Functionality:
@@ -141,8 +161,7 @@ async function checkForDuplicatePackages(): Promise<boolean> {
         const [result] = JSON.parse(stdout);
 
         if (!result.dependencies) {
-            console.error('Invalid output from pnpm why command');
-            return false;
+            throw new Error('Invalid output from pnpm why command');
         }
 
         const dependenciesAsArr = Object.entries(result.dependencies)
@@ -157,7 +176,7 @@ async function checkForDuplicatePackages(): Promise<boolean> {
         return hasDuplicates;
     } catch (error) {
         console.error(`Error checking for duplicate packages: ${error}`);
-        return false;
+        return true;
     }
 }
 
@@ -379,7 +398,11 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
                 }
             });
 
-        console.log('✅ All file sizes for Firefox Add-ons Store are ok!');
+        if (found) {
+            console.error('❌ Some file sizes for Firefox Add-ons Store exceed the limit!');
+        } else {
+            console.log('✅ All file sizes for Firefox Add-ons Store are ok!');
+        }
 
         return found;
     } catch (error) {
@@ -416,6 +439,10 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
         try {
             // Get current build stats for this target
             const currentStats = await getCurrentBuildStats(buildEnv, target);
+
+            if (!sizesData[buildEnv] || !sizesData[buildEnv][target]) {
+                throw new Error(`Reference Build size for env ${buildEnv} and target ${target} not found.`);
+            }
 
             // Compare with reference sizes if available
             if (sizesData[buildEnv] && sizesData[buildEnv][target]) {

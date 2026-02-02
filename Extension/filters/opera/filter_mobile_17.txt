@@ -1,10 +1,17 @@
-! Checksum: pnmD+6cEciu7WKGXsrraBA
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1765869187-3600.patch
+! Checksum: ShjzNJ2IcwujpdespBvvfg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1769001909-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.66
-! TimeUpdated: 2025-12-16T07:10:31+00:00
+! Version: 2.0.12.86
+! TimeUpdated: 2026-01-21T13:22:28+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=elqTrackId
+$removeparam=elq
+$removeparam=elqaid
+$removeparam=elqat
+$removeparam=elqCampaignId
+$removeparam=elqak
+$removeparam=winflncrtag
 $removeparam=ftag
 $removeparam=janet
 $removeparam=vs_campaign_id
@@ -50,7 +57,6 @@ $removeparam=ebisOther5
 $removeparam=bemobdata
 $removeparam=_bhlid
 $removeparam=_bdadid
-$removeparam=a8
 $removeparam=recommended_by
 $removeparam=recommended_code
 $removeparam=personaclick_search_query
@@ -99,7 +105,6 @@ $removeparam=spot_im_redirect_source
 $removeparam=mt_link_id
 $removeparam=iclid
 $removeparam=user_email_address
-$removeparam=_ga
 $removeparam=_gl
 $removeparam=cm_me
 $removeparam=cm_cr
@@ -107,24 +112,20 @@ $removeparam=/^cm_mmc/
 $removeparam=sscid
 $removeparam=rtkcid
 rtkcid=*&clickid=$removeparam=clickid
-$removeparam=cuid
 $removeparam=ir_campaignid
 $removeparam=ir_adid
-$removeparam=irclickid
 $removeparam=ir_partnerid
 $removeparam=__io_lv
 $removeparam=_io_session_id
 $removeparam=asgtbndr
 $removeparam=ymid
 ^z=*&var=$removeparam=var
-$removeparam=tduid
 $removeparam=gci
 $removeparam=pk_vid
 $removeparam=mindbox-click-id
 click_id=*_branch_referrer=$removeparam
 $removeparam=famad_xuid
 $removeparam=twclid
-$removeparam=erid
 $removeparam=cx_click
 $removeparam=cx_recsOrder
 $removeparam=cx_recsWidget
@@ -195,18 +196,15 @@ $removeparam=utm_adgroup
 $removeparam=utm_ad
 $removeparam=utm_affiliate
 $removeparam=utm_brand
-$removeparam=utm_campaign
 $removeparam=utm_campaignid
 $removeparam=utm_channel
 $removeparam=utm_cid
-$removeparam=utm_content
 $removeparam=utm_creative
 $removeparam=utm_emcid
 $removeparam=utm_emmid
 $removeparam=utm_id
 $removeparam=utm_id_
 $removeparam=utm_keyword
-$removeparam=utm_medium
 $removeparam=utm_name
 $removeparam=utm_place
 $removeparam=utm_product
@@ -219,11 +217,9 @@ $removeparam=utm_session
 $removeparam=utm_siteid
 $removeparam=utm_social
 $removeparam=utm_social-type
-$removeparam=utm_source
 $removeparam=utm_source_platform
 $removeparam=utm_supplier
 $removeparam=utm_swu
-$removeparam=utm_term
 $removeparam=utm_umguk
 $removeparam=utm_userid
 $removeparam=utm_viz_id
@@ -244,7 +240,6 @@ $removeparam=dpg_content
 $removeparam=admitad_uid
 $removeparam=adj_label
 $removeparam=adj_campaign
-$removeparam=adj_t
 $removeparam=adj_creative
 $removeparam=gps_adid
 $removeparam=unicorn_click_id
@@ -274,12 +269,10 @@ $removeparam=pk_medium
 $removeparam=pk_source
 $removeparam=_branch_referrer
 $removeparam=_branch_match_id
-$removeparam=vc_lpp
 $removeparam=ml_subscriber
 $removeparam=ml_subscriber_hash
 $removeparam=rb_clickid
 $removeparam=oly_anon_id
-$removeparam=oly_enc_id
 $removeparam=ebisAdID
 $removeparam=wickedid
 $removeparam=irgwc
@@ -292,7 +285,6 @@ $removeparam=nb_expid_meta
 $removeparam=adfrom
 $removeparam=nx_source
 $removeparam=_zucks_suid
-$removeparam=cmpid
 $removeparam=guccounter
 $removeparam=guce_referrer
 $removeparam=guce_referrer_sig
@@ -305,6 +297,52 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+$removeparam=cmpid
+$removeparam=adj_t
+$removeparam=cuid
+$removeparam=a8
+$removeparam=utm_medium
+$removeparam=utm_campaign
+$removeparam=utm_referrer
+$removeparam=utm_content
+$removeparam=utm_source
+$removeparam=utm_term
+$removeparam=irclickid
+$removeparam=vc_lpp
+$removeparam=erid
+$removeparam=oly_enc_id
+$removeparam=_ga
+$removeparam=tduid
+||tw.news.yahoo.com^$removeparam=link_source
+||tw.news.yahoo.com^$removeparam=taid
+||netmonet.co^$removeparam=id
+||netmonet.co^$removeparam=wpid
+||netmonet.co^$removeparam=visitId
+||netmonet.co^$removeparam=operation
+||topics.smt.docomo.ne.jp^$removeparam=fm
+||topics.smt.docomo.ne.jp^$removeparam=fm_topics_id
+||topics.smt.docomo.ne.jp^$removeparam=redirect
+||online.nojima.co.jp^$removeparam=campaign
+||temu.com^$removeparam=_x_ads_account
+||temu.com^$removeparam=_x_ads_creative_id
+||temu.com^$removeparam=_x_ads_id
+||temu.com^$removeparam=_x_ads_set
+||temu.com^$removeparam=_x_ns_catalog_id
+||temu.com^$removeparam=_x_ns_gid
+||temu.com^$removeparam=_x_ns_placement
+||temu.com^$removeparam=_x_ns_product_id
+||temu.com^$removeparam=_x_ns_site_id
+||temu.com^$removeparam=_x_ns_source
+||temu.com^$removeparam=_x_ns_crt_id
+||temu.com^$removeparam=_x_bg_adid
+||temu.com^$removeparam=_x_from
+||temu.com^$removeparam=adg_ctx
+||temu.com^$removeparam=mrk_rec
+||browsec-uninstall.s3-website.eu-central-1.amazonaws.com^$removeparam
+||bookoffonline.co.jp^$removeparam=xadid
+||reifen24.de^$removeparam=sv_campaign_id
+||reifen24.de^$removeparam=sv1
+||urban-vpn.com^$removeparam=cid
 ||oricon.co.jp^$removeparam=ref
 ||carviewform.yahoo.co.jp^$removeparam=src
 ||kaigonoshigoto.jp^$removeparam=scid
@@ -1472,7 +1510,6 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||home.kingsoft.jp^$removeparam=from
 ||bbc.$removeparam=facebook_page
 ||bbc.$removeparam=at_bbc_team
-||jlcpcb.com^$removeparam=from
 ||event.hoken-mammoth.jp^$removeparam=s_mf
 ||cinematoday.jp^$removeparam=g_clk
 $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
@@ -1690,7 +1727,6 @@ $removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.lived
 ||api.cxense.com/public/widget/data?json=$script,removeparam=getId
 ||api.cxense.com/public/widget/data?json=$script,removeparam=usi
 ||api.cxense.com/public/widget/data?json=$script,removeparam=widgetId
-||lp.sophos.com^$removeparam=elqTrackId
 ||player.theplatform.com^$removeparam=playeranalytics
 ||player.theplatform.com^$removeparam=targetedlink
 ||zalando.$removeparam=wmc
@@ -1954,8 +1990,8 @@ $removeparam=igshid,domain=instagram.com|threads.com|threads.net
 ||linkedin.com/premium/$removeparam=upsellOrderOrigin
 ||linkedin.com/premium/$removeparam=destRedirectURL
 ||linkedin.com^$removeparam=original_referer
-||linkedin.com^$removeparam=refId
-||linkedin.com^$removeparam=trackingId
+||linkedin.com^$removeparam=refId,document
+||linkedin.com^$removeparam=trackingId,document
 ||linkedin.com/authwall?$removeparam=trkInfo
 ||linkedin.com/authwall?$removeparam=originalReferer
 ||linkedin.com^$removeparam=/^trk/
@@ -2303,8 +2339,9 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||usprobioticguide.com^$removeparam=utm_campaign
+@@||metabase.com^$removeparam=utm_term
 @@||adj.st^$removeparam=adj_t
-@@||passport.jlcpcb.com^$removeparam=from
 @@||yandex.go.link^$removeparam=adj_t
 @@||em.dynamicyield.com^$removeparam=cuid
 @@||a8cv.amiami.jp/click/$removeparam=a8
@@ -2376,7 +2413,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 @@||onet.pl/?utm_source=$removeparam
 @@||tix.axs.com^$removeparam
 @@||sendgb.com/*/?utm_source=$removeparam=utm_source
-@@||img*.nga$removeparam=cmpid
 @@||mywot.com/*/confirmNewEmail/$removeparam
 @@||app.plex.tv/auth-form/$removeparam=utm_source,domain=app.plex.tv
 @@||app.plex.tv/auth-form/$removeparam=utm_content,domain=app.plex.tv

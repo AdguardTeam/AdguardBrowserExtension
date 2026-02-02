@@ -38,6 +38,7 @@ import { NotifierType } from '../../../../common/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
+import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
 
 import '../../styles/styles.pcss';
 
@@ -189,6 +190,7 @@ const FilteringLog = observer(() => {
 
     return (
         <>
+            {logStore.isPreserveLogModalOpen && <PreserveLogModal />}
             <CommonIcons />
             <Icons />
             {wizardStore.isModalOpen

@@ -44,7 +44,7 @@ import {
 import { type FilterUpdateOptions } from '../filters';
 import { NEWLINE_CHAR_REGEX } from '../../../common/constants';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
-import { isUserScriptsApiSupported } from '../../../common/user-scripts-api';
+import { isUserScriptsApiSupported } from '../../../common/user-scripts-api/user-scripts-api-mv3';
 
 import { NetworkSettings } from './settings-mv3';
 
@@ -184,7 +184,7 @@ export class Network {
             // it will use it's own default log level.
             await TsWebExtension.syncRuleSetWithIdbByFilterId(filterId, 'filters/declarative');
 
-            const rawFilterList = await FiltersStoragesAdapter.getRawFilterList(filterId);
+            const rawFilterList = await FiltersStoragesAdapter.getFilterContent(filterId);
 
             if (!rawFilterList) {
                 throw new Error(`Cannot find filter with id ${filterId}`);
@@ -473,17 +473,6 @@ export class Network {
 
         const url = useOptimizedFilters ? this.settings.optimizedFilterRulesUrl : this.settings.filterRulesUrl;
         return url.replaceAll('{filter_id}', String(filterId));
-    }
-
-    /**
-     * Appends request key to url.
-     *
-     * @param url Url string.
-     *
-     * @returns Url with key query param.
-     */
-    private addKeyParameter(url: string): string {
-        return `${url}&key=${this.settings.apiKey}`;
     }
 
     /**

@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import { getSettingsV1 } from './settingsSchemaV1';
 
 const SETTINGS_V_1_0 = getSettingsV1();
@@ -71,8 +91,6 @@ export const getExportedSettingsV2 = () => ({
             // 14 - AdGuard Annoyances filter has been splitted into 5 other filters:
             // Cookie Notices, Popups, Mobile App Banners, Other Annoyances and Widgets
             ? [1, 2, 3, 4, 6, 11, 16, 17, 224, 1001, 1002]
-            // TODO: revert if Quick Fixes filter is back
-            // ? [1, 2, 3, 4, 6, 11, 16, 17, 24, 224, 1001, 1002]
             : [1, 2, 3, 4, 6, 11, 16, 17, 18, 19, 20, 21, 22, 224, 1001, 1002],
         'enabled-groups': [0, 1, 2, 3, 4, 5, 6, 7],
         'custom-filters': [{

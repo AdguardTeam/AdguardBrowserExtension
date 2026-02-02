@@ -6,6 +6,7 @@ plan:
   name: browser extension - build release
 variables:
   dockerNode: adguard/extension-builder:22.17--0.3.0--0
+  buildType: release
 
 stages:
   - Size and locales check:
@@ -56,25 +57,23 @@ Check Bundle Size:
             # Install dependencies
             pnpm install ${bamboo.varsPnpm}
 
-            BUILD_TYPE="release"
-
-            echo "Executing build for $BUILD_TYPE"
+            echo "Executing build for ${bamboo.buildType}"
 
             # Run build
-            pnpm $BUILD_TYPE
+            pnpm ${bamboo.buildType}
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
             # NOTE: Firefox standalone build is not needed for artifacts
             # but it is needed for bundle size check
-            pnpm release firefox-standalone
+            pnpm ${bamboo.buildType} firefox-standalone
 
             echo "Checking bundle sizes"
-            pnpm check-bundle-size release
+            pnpm check-bundle-size ${bamboo.buildType}
 
             # Cleaning up Firefox standalone build after bundle size check
-            rm -rf build/release/firefox-standalone
+            rm -rf build/${bamboo.buildType}/firefox-standalone
   final-tasks:
     - script: &cleanup-script
         interpreter: SHELL
@@ -122,26 +121,27 @@ Build:
 
             pnpm install ${bamboo.varsPnpm}
 
-            pnpm release
+            # Build all browsers with zip archives for artifacts
+            pnpm ${bamboo.buildType} --zip
 
             # zip source files for publishing on AMO
-            ./bamboo-specs/scripts/archive-source.sh release
+            ./bamboo-specs/scripts/archive-source.sh ${bamboo.buildType}
 
             # TODO: (AG-41656) Remove this workaround and use the browser name
             # as for all other builds
-            mv build/release/firefox-amo.zip build/release/firefox.zip
+            mv build/${bamboo.buildType}/firefox-amo.zip build/${bamboo.buildType}/firefox.zip
 
             # Create artifacts directory if it doesn't exist
             mkdir -p artifacts
 
             # Copy all artifacts to the artifacts directory
-            cp build/release/build.txt artifacts/
-            cp build/release/chrome.zip artifacts/
-            cp build/release/chrome-mv3.zip artifacts/
-            cp build/release/firefox.zip artifacts/
-            cp build/release/edge.zip artifacts/
-            cp build/release/opera.zip artifacts/
-            cp build/release/source.zip artifacts/
+            cp build/${bamboo.buildType}/build.txt artifacts/
+            cp build/${bamboo.buildType}/chrome.zip artifacts/
+            cp build/${bamboo.buildType}/chrome-mv3.zip artifacts/
+            cp build/${bamboo.buildType}/firefox.zip artifacts/
+            cp build/${bamboo.buildType}/edge.zip artifacts/
+            cp build/${bamboo.buildType}/opera.zip artifacts/
+            cp build/${bamboo.buildType}/source.zip artifacts/
     - inject-variables:
         file: artifacts/build.txt
         scope: RESULT

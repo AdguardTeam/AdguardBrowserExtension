@@ -28,6 +28,7 @@ import {
     type MessageHandler,
     type Message as EngineMessage,
     type ConfigurationResult,
+    FilterList,
 } from '@adguard/tswebextension/mv3';
 
 import { logger } from '../../common/logger';
@@ -46,12 +47,12 @@ import {
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
-import { emptyPreprocessedFilterList, NotifierType } from '../../common/constants';
+import { NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 import { FiltersStorage } from '../storages/filters';
 import { CommonFilterUtils } from '../../common/common-filter-utils';
-import { isUserScriptsApiSupported } from '../../common/user-scripts-api';
+import { isUserScriptsApiSupported } from '../../common/user-scripts-api/user-scripts-api-mv3';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -158,7 +159,6 @@ export class Engine implements TsWebExtensionEngine {
          *   - Default filters (IDs: 2, 10) are pending enablement.
          */
         await iconsApi.update();
-        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -196,7 +196,6 @@ export class Engine implements TsWebExtensionEngine {
         }
         // Updates extension icon state to reflect current filtering status.
         await iconsApi.update();
-        filteringLogApi.onEngineUpdated(configuration.settings.allowlistInverted);
     }
 
     /**
@@ -220,32 +219,18 @@ export class Engine implements TsWebExtensionEngine {
             }
         }
 
-        const userrules: Configuration['userrules'] = {
-            ...emptyPreprocessedFilterList,
-            /**
-             * User rules are always trusted.
-             */
-            trusted: true,
-        };
+        let userRulesFilter: FilterList;
 
         if (UserRulesApi.isEnabled()) {
-            Object.assign(userrules, await UserRulesApi.getUserRules());
+            userRulesFilter = await UserRulesApi.getUserRules();
+        } else {
+            userRulesFilter = FilterList.createEmpty();
         }
 
-        // TODO: Remove this block, quick fixes is no more and not coming back.
-        const quickFixesRules: Configuration['quickFixesRules'] = {
-            ...emptyPreprocessedFilterList,
-            /**
-             * Quick fixes are always trusted because it is the one of
-             * AdGuard's filter.
-             */
-            trusted: true,
+        const userrules: Configuration['userrules'] = {
+            content: userRulesFilter.getContent(),
+            conversionData: userRulesFilter.getConversionData(),
         };
-
-        // TODO: revert if Quick Fixes filter is back
-        // if (QuickFixesRulesApi.isEnabled()) {
-        //     Object.assign(quickFixesRules, await QuickFixesRulesApi.getQuickFixesRules());
-        // }
 
         let customFilters: Configuration['customFilters'] = [];
 
@@ -301,12 +286,17 @@ export class Engine implements TsWebExtensionEngine {
                 .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
             customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-                const preprocessedFilterList = await FiltersStorage.get(filterId);
+                let filterList = await FiltersStorage.get(filterId);
+
+                if (!filterList) {
+                    filterList = FilterList.createEmpty();
+                }
 
                 return {
                     filterId,
+                    content: filterList.getContent(),
+                    conversionData: filterList.getConversionData(),
                     trusted,
-                    ...(preprocessedFilterList || emptyPreprocessedFilterList),
                 };
             }));
         }
@@ -318,8 +308,6 @@ export class Engine implements TsWebExtensionEngine {
             // Custom filters from remote sources will be passed only if
             // User Scripts API permission is granted.
             customFilters,
-            // Deprecated, now is empty and will be removed in future.
-            quickFixesRules,
             verbose: !!(IS_RELEASE || IS_BETA) || logger.isVerbose(),
             logLevel: logger.currentLevel,
             // Built-in local filters.

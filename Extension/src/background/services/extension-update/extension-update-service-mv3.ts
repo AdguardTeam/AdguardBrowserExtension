@@ -24,10 +24,10 @@ import { MessageType } from '../../../common/messages/constants';
 import { messageHandler } from '../../message-handler';
 
 import { type ManualUpdateMetadata, AutoUpdateStateField } from './types';
-import { extensionUpdateActor } from './extension-update-machine';
-import { AutoUpdateStateManager } from './auto-update-state-manager';
-import { AutoUpdateHandler } from './auto-update-handler';
-import { ManualUpdateHandler } from './manual-update-handler';
+import { extensionUpdateActor } from './extension-update-machine-mv3';
+import { AutoUpdateStateManager } from './auto-update-state-manager-mv3';
+import { AutoUpdateHandler } from './auto-update-handler-mv3';
+import { ManualUpdateHandler } from './manual-update-handler-mv3';
 
 /**
  * Service for checking and updating the extension in Manifest V3.

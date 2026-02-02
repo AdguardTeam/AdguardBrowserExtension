@@ -26,6 +26,8 @@ import cn from 'classnames';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { translator } from '../../../../../common/translators/translator';
 
+import modalStyles from '../../../../common/styles/modal.module.pcss';
+
 const ModalContentWrapper = ({
     closeModalHandler,
     title,
@@ -34,17 +36,17 @@ const ModalContentWrapper = ({
     className,
 }) => {
     return (
-        <div className={cn('modal', className)}>
-            <div className="modal__content">
-                <div className="modal__header">
+        <div className={cn(modalStyles.modal, className)}>
+            <div className={modalStyles.content}>
+                <div className={modalStyles.header}>
                     {title && (
-                        <div className="modal__title">
+                        <div className={modalStyles.title}>
                             {title}
                         </div>
                     )}
                     <button
                         type="button"
-                        className="button modal__close"
+                        className={`button ${modalStyles.btnClose}`}
                         onClick={closeModalHandler}
                         title={translator.getMessage('close_button_title')}
                     >
@@ -53,7 +55,11 @@ const ModalContentWrapper = ({
                 </div>
                 {children}
             </div>
-            {actions}
+            {actions && (
+                <div className={modalStyles.actions}>
+                    {actions}
+                </div>
+            )}
         </div>
     );
 };
@@ -66,6 +72,7 @@ ModalContentWrapper.propTypes = {
     closeModalHandler: PropTypes.func.isRequired,
     children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
     title: PropTypes.string,
+    actions: PropTypes.node,
     className: PropTypes.string,
 };
 

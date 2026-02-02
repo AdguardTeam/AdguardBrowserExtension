@@ -1,6 +1,23 @@
 /**
- * @file Base eslint config for AdGuard extension
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
 module.exports = {
     'root': true,
     'env': {
@@ -21,7 +38,7 @@ module.exports = {
         'ecmaFeatures': {
             'jsx': true,
         },
-        'project': 'tsconfig.json',
+        'project': 'tsconfig.eslint.json',
     },
     'settings': {
         'react': {
@@ -30,6 +47,7 @@ module.exports = {
         'import/resolver': {
             'typescript': {
                 'alwaysTryTypes': true,
+                'project': 'tsconfig.eslint.json',
             },
             'node': {
                 'extensions': [
@@ -50,6 +68,7 @@ module.exports = {
     'plugins': [
         'import-newlines',
         '@adguard/logger-context',
+        'notice',
     ],
     'rules': {
         'no-console': 'error',
@@ -166,6 +185,21 @@ module.exports = {
                 message: 'Wildcard exports are not allowed.',
             },
         ],
+        'no-restricted-imports': [
+            'error',
+            {
+                patterns: [
+                    {
+                        group: [
+                            '**/*-mv2',
+                            '**/*-mv3',
+                        ],
+                        // eslint-disable-next-line max-len
+                        message: 'Do not import directly from MV2/MV3 implementations. Use the appropriate alias or index file instead.',
+                    },
+                ],
+            },
+        ],
         'no-prototype-builtins': 'off',
         'no-continue': 'off',
         'no-bitwise': 'off',
@@ -223,6 +257,40 @@ module.exports = {
         '@adguard/logger-context/require-logger-context': ['error', {
             contextModuleName: 'ext',
         }],
+        'notice/notice': [
+            'error',
+            {
+                mustMatch: `Copyright \\(c\\) 2015(?:-(?:${Array.from(
+                    { length: new Date().getFullYear() - 2016 + 1 },
+                    (_, i) => 2016 + i,
+                ).join('|')}))? Adguard Software Ltd\\.[\\s\\S]*This file is part of AdGuard Browser Extension[\\s\\S]*GNU General Public License[\\s\\S]*<http://www\\.gnu\\.org/licenses/>`,
+                onNonMatchingHeader: 'replace',
+                messages: {
+                    'whenFailedToMatch': 'Copyright notice is not valid',
+                },
+                template: `/**
+ * Copyright (c) 2015-<%= YEAR %> Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+`,
+            },
+        ],
     },
     'ignorePatterns': [
         'node_modules',
@@ -231,5 +299,14 @@ module.exports = {
         'coverage',
         // Directory for temporary files
         'tmp/',
+    ],
+    'overrides': [
+        // This override needed to allow mv2/mv3 imports inside mv2/mv3 specific files.
+        {
+            files: ['**/*-mv2.{ts,tsx,js,jsx}', '**/*-mv3.{ts,tsx,js,jsx}'],
+            rules: {
+                'no-restricted-imports': 'off',
+            },
+        },
     ],
 };

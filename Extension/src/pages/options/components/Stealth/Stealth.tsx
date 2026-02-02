@@ -42,6 +42,10 @@ import {
 import { type SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
 
+import { DescriptionWithWarning } from './DescriptionWithWarning';
+
+import './stealth.pcss';
+
 const BlockKnownTrackers = 'blockKnownTrackers';
 const STRIP_TRACKING_PARAMETERS = 'stripTrackingParameters';
 
@@ -272,7 +276,7 @@ const Stealth = observer(() => {
 
             {!__IS_MV3__ && (
                 <SettingsSection
-                    title={translator.getMessage('options_stealth_cookies_title')}
+                    title={translator.getMessage('options_stealth_tracking_methods_title')}
                     mode="subTitle"
                     disabled={isStealthModeDisabled}
                 >
@@ -280,7 +284,13 @@ const Stealth = observer(() => {
                     {/* @ts-ignore */}
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_third_party_title')}
-                        description={translator.getMessage('options_third_party_desc')}
+                        description={(
+                            <DescriptionWithWarning
+                                description={translator.getMessage('options_third_party_desc')}
+                                extraDescription={translator.getMessage('options_block_cookies_lifetime')}
+                                warningText={translator.getMessage('options_third_party_block_cookies_warning')}
+                            />
+                        )}
                         disabled={!isThirdPartyCookiesEnabled}
                         sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructThirdPartyCookies}
@@ -288,9 +298,14 @@ const Stealth = observer(() => {
                         label={translator.getMessage('options_third_party_title')}
                         value={isThirdPartyCookiesEnabled}
                         handler={settingChangeHandler}
+                        className="stealth__tracking-setting"
                     >
+                        <div className="stealth__tracking-setting__minutes">
+                            {translator.getMessage('options_lifetime_minutes')}
+                        </div>
                         <Setting
                             id={SelfDestructThirdPartyCookiesTime}
+                            className="stealth__input"
                             disabled={!isThirdPartyCookiesEnabled || isStealthModeDisabled}
                             type={SETTINGS_TYPES.INPUT}
                             value={settings.values[SelfDestructThirdPartyCookiesTime]}
@@ -306,7 +321,13 @@ const Stealth = observer(() => {
                     {/* @ts-ignore */}
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_first_party_title')}
-                        description={translator.getMessage('options_first_party_desc')}
+                        description={(
+                            <DescriptionWithWarning
+                                description={translator.getMessage('options_first_party_desc')}
+                                extraDescription={translator.getMessage('options_block_cookies_lifetime')}
+                                warningText={translator.getMessage('options_first_party_block_cookies_warning')}
+                            />
+                        )}
                         disabled={!isFirstPartyCookiesEnabled}
                         sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructFirstPartyCookies}
@@ -314,9 +335,14 @@ const Stealth = observer(() => {
                         label={translator.getMessage('options_first_party_title')}
                         value={isFirstPartyCookiesEnabled}
                         handler={settingChangeHandler}
+                        className="stealth__tracking-setting"
                     >
+                        <div className="stealth__tracking-setting__minutes">
+                            {translator.getMessage('options_lifetime_minutes')}
+                        </div>
                         <Setting
                             id={SelfDestructFirstPartyCookiesTime}
+                            className="stealth__input"
                             disabled={!isFirstPartyCookiesEnabled || isStealthModeDisabled}
                             type={SETTINGS_TYPES.INPUT}
                             value={settings.values[SelfDestructFirstPartyCookiesTime]}
@@ -335,6 +361,21 @@ const Stealth = observer(() => {
                 mode="subTitle"
                 disabled={isStealthModeDisabled}
             >
+
+                <SettingsSetCheckbox
+                    // TODO fix type error when SettingsSetCheckbox is rewritten in TypeScript
+                    // @ts-ignore
+                    title={translator.getMessage('options_disable_webrtc_title')}
+                    description={translator.getMessage('options_disable_webrtc_desc')}
+                    disabled={!settings.values[BlockWebRTC]}
+                    sectionDisabled={isStealthModeDisabled}
+                    id={BlockWebRTC}
+                    type={SETTINGS_TYPES.CHECKBOX}
+                    label={translator.getMessage('options_disable_webrtc_title')}
+                    value={settings.values[BlockWebRTC]}
+                    handler={privacySettingChangeHandlerWithLoader}
+                />
+
                 {/* TODO revert this option when will be found a way to disable
                     referrer rule with stealth exclusion AG-34765 */}
                 {!__IS_MV3__ && (
@@ -368,20 +409,6 @@ const Stealth = observer(() => {
                         handler={settingChangeHandler}
                     />
                 )}
-
-                <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
-                    title={translator.getMessage('options_disable_webrtc_title')}
-                    description={translator.getMessage('options_disable_webrtc_desc')}
-                    disabled={!settings.values[BlockWebRTC]}
-                    sectionDisabled={isStealthModeDisabled}
-                    id={BlockWebRTC}
-                    type={SETTINGS_TYPES.CHECKBOX}
-                    label={translator.getMessage('options_disable_webrtc_title')}
-                    value={settings.values[BlockWebRTC]}
-                    handler={privacySettingChangeHandlerWithLoader}
-                />
             </SettingsSection>
         </>
     );

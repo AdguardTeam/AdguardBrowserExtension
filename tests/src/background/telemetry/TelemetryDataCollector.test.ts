@@ -31,9 +31,10 @@ import {
     SyntheticIdGenerator,
 } from '../../../../Extension/src/background/services';
 import { TelemetryFilterUpdateIntervalMode } from '../../../../Extension/src/background/services/telemetry/enums';
-import { AppearanceTheme, DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../Extension/src/common/settings';
+import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../Extension/src/common/settings';
 import { UserAgent } from '../../../../Extension/src/common/user-agent';
 import { SettingOption } from '../../../../Extension/src/background/schema/settings/enum';
+import { AppearanceTheme } from '../../../../Extension/src/common/constants';
 
 const { mockSettingsStorageGet } = vi.hoisted(() => ({
     mockSettingsStorageGet: vi.fn(),

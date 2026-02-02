@@ -32,7 +32,6 @@ import { CustomFilterUtils } from './custom-filter-utils';
 export class CommonFilterUtils {
     /**
      * Checks if filter is built-in: not custom, not user-rules, not allowlist
-     * and not quick fixes filter (used only for MV3 version).
      *
      * @param filterId Filter id.
      *
@@ -42,8 +41,6 @@ export class CommonFilterUtils {
         return !CustomFilterUtils.isCustomFilter(filterId)
             && filterId !== AntiBannerFiltersId.UserFilterId
             && filterId !== AntiBannerFiltersId.AllowlistFilterId;
-        // TODO: revert if Quick Fixes filter is back
-        // && filterId !== AntiBannerFiltersId.QuickFixesFilterId;
     }
 
     /**
