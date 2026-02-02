@@ -268,15 +268,17 @@ COPY --from=beta-chrome-crx /out/ /
 
 # ============================================================================
 # Stage: bundle-size-check
-# Checks bundle sizes for beta build
+# Checks bundle sizes for specified build type (beta or release)
 # ============================================================================
 FROM linked-deps AS bundle-size-check
 
+ARG BUILD_TYPE
+
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Run beta build with zip files (cached until source changes).
-    pnpm beta --zip && \
+    # Run build with zip files (cached until source changes).
+    pnpm ${BUILD_TYPE} --zip && \
     # Check bundle sizes.
-    pnpm check-bundle-size beta && \
+    pnpm check-bundle-size ${BUILD_TYPE} && \
     mkdir -p /out && \
     touch /out/bundle-size-check.txt
 
@@ -364,3 +366,33 @@ RUN echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
 
 FROM scratch AS firefox-beta-sign-output
 COPY --from=firefox-beta-sign /out/ /
+
+# ============================================================================
+# Stage: release-build
+# Creates release build with zip files for CI artifacts
+# ============================================================================
+FROM linked-deps AS release-build
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so build stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Create release build with zip files for CI artifacts.
+    pnpm release --zip && \
+    # Archive source files for AMO publishing.
+    ./bamboo-specs/scripts/archive-source.sh release && \
+    # Create artifacts directory if it doesn't exist.
+    mkdir -p /out/artifacts && \
+    # Move all artifacts to the artifacts directory.
+    mv build/release/build.txt /out/artifacts/ && \
+    mv build/release/chrome.zip /out/artifacts/ && \
+    mv build/release/chrome-mv3.zip /out/artifacts/ && \
+    mv build/release/edge.zip /out/artifacts/ && \
+    mv build/release/opera.zip /out/artifacts/ && \
+    # TODO: (AG-41656) Remove this workaround and use the browser name as for all other builds.
+    mv build/release/firefox-amo.zip /out/artifacts/firefox.zip && \
+    mv build/release/source.zip /out/artifacts/
+
+FROM scratch AS release-build-output
+COPY --from=release-build /out/ /
