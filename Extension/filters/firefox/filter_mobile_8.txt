@@ -1,9 +1,9 @@
-! Checksum: K1SXMHX1Qioi/D4tZuA1YQ
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1769062457-3600.patch
+! Checksum: 8oEE+vH2ByBpCO3+HDrF5Q
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1770039271-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.93
-! TimeUpdated: 2026-01-22T06:11:34+00:00
+! Version: 2.0.8.95
+! TimeUpdated: 2026-02-02T13:31:19+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -1572,6 +1572,7 @@ kijk.nl#@##topbanner_ad
 @@/prebid/ad.gif?user=*&adId=$domain=kijk.nl
 @@||ads-talpa.adhese.com/json/$domain=kijk.nl
 kijk.nl#$#body .pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links { display: initial !important; }
+kijk.nl#%#(()=>{const t={apply:(t,e,n)=>{try{if((new Error).stack.includes("Popup"))return Reflect.apply(t,e,n);const o=e;"function"==typeof o&&(o.toString().includes("adBlockerDetected")||o.toString().includes("pub_300x250m"))&&(e=()=>new Promise((t=>t(!1))))}catch(t){}return Reflect.apply(t,e,n)}};window.Function.prototype.apply=new Proxy(window.Function.prototype.apply,t)})();
 ||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=goplay.be|play.tv
 ||pagead2.googlesyndication.com/omsdk/releases/live/omweb-v1.js$script,domain=goplay.be|play.tv,redirect=noopjs
 @@||pubads.g.doubleclick.net/ondemand/*/content/*/vid/*/streams$domain=goplay.be|play.tv
@@ -1617,6 +1618,9 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
 ||svonm.com/*config.json$replace=/"enabled": true\,/"enabled":false\,/i,important
+mijnwoordenboek.nl##.slider-wrap:has(> div[id^="Mijnwoordenboek."])
+mijnwoordenboek.nl##div[id^="Mijnwoordenboek."]
+mijnwoordenboek.nl##div[style="min-height:270px"]
 ||ssl.p.jwpcdn.com/player/v/*/vast.js$domain=matele.be
 f1maximaal.nl##.raw-html-component:has(>div.Pnvp__ad)
 telegraaf.nl##.tik4-extension--inline-ad

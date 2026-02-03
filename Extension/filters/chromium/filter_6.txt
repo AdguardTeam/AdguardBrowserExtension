@@ -1,9 +1,9 @@
-! Checksum: +I0EL4NW9LEJMAoFlsUIig
-! Diff-Path: ../patches/6/6-s-1768883285-3600.patch
+! Checksum: IfrqGI4LA+7xeSReq4ygVA
+! Diff-Path: ../patches/6/6-s-1770048970-3600.patch
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.50.85
-! TimeUpdated: 2026-01-20T04:24:57+00:00
+! Version: 2.0.50.95
+! TimeUpdated: 2026-02-02T16:13:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -362,7 +362,10 @@ essen-und-trinken.de#%#//scriptlet('prevent-setTimeout', 's.call(null)', '10')
 ! chpadblock
 schnittmuster-datenbank.de#%#//scriptlet("abort-on-property-read", "adsBlocked")
 !
+! NOTE: Regular rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/223787
+radioszene.de#$?##modal-extended-adblocker { remove: true; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/219175
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$xmlhttprequest,redirect=google-ima3,domain=games.focus.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/218085
@@ -1459,8 +1462,10 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
-radio.de##.relative[data-testid="page-holder"] > section.content-visibility-auto:not([id]):not([data-testid]):has(.ad-container)
-radio.de##body > .items-center:has(> .super-reklame-header-holder)
+linguee.de##.lMainNavbar__left > a[href^="https://www.DeepL.com/"]
+linguee.de###DeepLAppPromoStartPage
+verkehrslage.de##.overlay
+clevertilgen.de###offercard
 hartpunkt.de##.tdb_single_content > .tdb-block-inner > .g
 ok-magazin.de##[data-context="content_billboard"]
 boomlify.com##.lg\:flex.hidden
@@ -7651,7 +7656,6 @@ wetter.com#@#div[id^="div-gpt-"]
 ||fussballnationalmannschaft.net/wp-content/uploads/*/Sidebar_10pr.jpg
 ||gamekeyfinder.de/img/rot/
 ||gamemovieportal.ch/_partner/
-||gameothek.com/wp-content/uploads/buttons/
 ||gamesaktuell.de/tsimg/topbanner/
 ||gamezone.de/tsimg/topbanner/
 ||gandersheimer-kreisblatt.de/files/gk/banner/
@@ -8578,7 +8582,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||zwerg-am-berg.de/wp-content/uploads/*/Banner_
 /^https?:\/\/.*\/[a-z0-9A-Z_]{2,15}\.(php|jx|jsx|1ph|jsf|jz|jsm|j$)/$image,script,subdocument,domain=beeg-pornos.com|besterpornos.com|deinesexfilme.com|deutsche-sexfilme.net|deutschsex.com|deutschsex.mobi|einfachtitten.com|gutesexfilme.com|hd-pornos.info|hd-sexfilme.com|lesbenhd.com|meinyouporn.com|nurxxx.mobi|pornoaffe.com|pornoente.tv|pornofisch.com|pornohammer.com|pornohans.com|pornohirsch.net|pornojenny.com|pornoklinge.com|pornotom.com|pornotommy.com|pornozebra.com|reifporn.de|sexente.com|sexvideos-hd.com|tube8-pornos.com|xhamster-sexvideos.com|xnxx-porno.com
 /^https?:\/\/.*\/.*(sw[0-9a-z._-]|\.notify\.).*/$script,domain=hammerporno.xxx
-/^https?:\/\/[0-9a-z]{8,}\.com\/.*/$~media,~subdocument,third-party,domain=190.115.18.20|aniworld.to|bs.to|burningseries.nz|burningseries.sx|burningseries.vc|kinoger.to|megakino.co|s.to|serien.cam|serienstream.to|topstreamfilm.live
+/^https?:\/\/[0-9a-z]{8,}\.com\/.*/$~media,~subdocument,third-party,domain=190.115.18.20|aniworld.to|bs.to|burningseries.sx|burningseries.vc|kinoger.to|megakino.co|s.to|serien.cam|serienstream.to|topstreamfilm.live
 /^https?:\/\/[0-9a-z]{8,}\.xyz\/.*/$~media,third-party,domain=kinoger.com|megakino.co|topstreamfilm.live
 /googleads.$domain=g.doubleclick.net|googlesyndication.com
 /pagead2.$domain=g.doubleclick.net|googlesyndication.com|imasdk.googleapis.com
@@ -8753,7 +8757,6 @@ tiervermittlung.de###amazon_300x90
 skiinfo.de###anchorBG
 100urlaubsziele.de###angeboteStartseite2018
 moonsault.de###anzeige
-eindeutscherporno.com###anzeige9
 charivari.de###anzeige_mso_skyscraper
 charivari.de###anzeige_skyscraper_2
 hl-live.de###anzeiged2
@@ -11108,6 +11111,9 @@ bayreuther-tagblatt.de##div[id^="bayre-"]
 bz-berlin.de##div[id^="billboard"]
 fitbook.de,petbook.de##div[id^="billboard_"]
 hpd.de##div[id^="block-views-advertising-"]
+finanzfluss.de##div[id^="breakdown-gerd-kommer-"]
+finanzfluss.de##div[id^="broker-top-scalable-capital-"]
+finanzfluss.de##div[id^="broker-yield-section-scalable-capital-"]
 buongiornosuedtirol.it##div[id^="buong-"]
 fla.de##div[id^="cncpt-dsk_"]
 coincierge.de##div[id^="coinc-"]
@@ -11131,6 +11137,7 @@ ibiza-heute.de##div[id^="ibiza-"]
 ruhr24.de##div[id^="id-beep-slot-"]
 teltarif.de##div[id^="ideaload"]
 20min.ch##div[id^="influencer-radar__inside-"]
+finanzfluss.de##div[id^="invesco-table-"]
 journalistenwatch.com##div[id^="journ-"]
 20min.ch##div[id^="kinostreaming__inside-"]
 20min.ch##div[id^="kochen__inside-"]
@@ -11181,6 +11188,7 @@ amazon.de##div[id^="sp_detail"]
 wasserburger-stimme.de##div[id^="stimm-"]
 supermarktblog.com,supertipp-online.de##div[id^="super-"]
 fitbook.de,petbook.de##div[id^="superbanner_"]
+finanzfluss.de##div[id^="sustainability-gerd-kommer-"]
 teltarif.de##div[id^="tarifSlider"]
 tippscout.de##div[id^="tipps-"]
 bbheute.de,berliner-kurier.de,berliner-zeitung.de,bietigheimerzeitung.de,blick.de,donaukurier.de,evangelische-zeitung.de,frankenpost.de,ingolstadt-today.de,krzbb.de,main-echo.de,mittelbayerische.de,mopo.de,np-coburg.de,pnp.de,schwarzwaelder-bote.de,stuttgarter-nachrichten.de,stuttgarter-zeitung.de##div[id^="traffective-ad-"]
@@ -11469,6 +11477,7 @@ saechsische.de##.article-box:has(> .article-box__text > .article-box__info > spa
 saechsische.de##.article-fill:has(.article-badge.article-badge--ad)
 gewinn.com##.article-latest.article-layout-0 > .row:has(.advertorial-icon)
 meinbezirk.at##.article-list-item.article-card.article-card-default:has(.commercial-tag)
+merkurist.de##.articleDisplayableList-article:has(a[href*="/sparticles"])
 dnv-online.net##.artikel:has(.spitzmarketeaseranzeige)
 heise.de##.bg-gray-50:has(div[id*="_Incontent-"])
 finanzfluss.de##.billboard-card:has(.partner-ad-and-title)
@@ -11630,6 +11639,7 @@ jameda.de##li:has([data-testid="advertisementSign-flag"])
 prad.de##li:has(a[class*="_klickkampagne_"])
 baur.de##li:has(a[href^="https://b.fr3.eu.criteo.com/rm?"])
 gartenfreunde.de##li:has(span.gfadmarker)
+finanzfluss.de##li[data-cy="suggestion-item"]:has(a[href^="https://link.finanzfluss.de/inf/"])
 radiowaf.de#?#.csc-frame.csc-frame-default:contains(Anzeige)
 mein-mmo.de##section.post:has([data-type="sponsored"])
 breuninger.com##suchen-produkt:has(.suchen-produkt--gesponsert)

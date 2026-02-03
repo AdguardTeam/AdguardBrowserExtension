@@ -1,9 +1,9 @@
-! Checksum: +mY5GF6X2ElFiuRSxCa2Kg
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1765883432-3600.patch
+! Checksum: S0Te6qlPek5H3wNQS1vdFw
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1769541394-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.82
-! TimeUpdated: 2025-12-16T11:07:40+00:00
+! Version: 2.0.3.85
+! TimeUpdated: 2026-01-27T19:13:23+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -91,6 +91,8 @@ ya.ru,yandex.*#@##search-result > [class][data-cid]:has(> div.Organic > div a[hr
 yandex.*#@#.content__left > ul#search-result > li:has(> div.organic > div.OrganicTitle > a[href^="https://ya.ru/search/_crpd/"])
 ya.ru,yandex.*#@$?##search-result > li:has(span:contains(/[PРeеkклaаmмaа]{7}/)) { remove: true; }
 ya.ru,yandex.*#@#div[class^="serp-list"] > div.serp-item:has(> div[data-bem*="organic"] > div[class^="Organic"] > div[class^="VanillaReact"] > a[data-event-required])
+amazon.*#@#div[data-card-metrics-id^="universal-hero-quick-promo_DetailPage_"]
+amazon.*#@##mobile-dp-ilm_feature_div_01
 amazon.*#@#.a-section:has(> div[cel_widget_id^="adplacements:"]:last-child)
 amazon.*#@#div[cel_widget_id^="adplacements:"]
 amazon.*#@#.a-section:has(> .a-section:only-child > div[cel_widget_id^="sp-pop-mobile-"])

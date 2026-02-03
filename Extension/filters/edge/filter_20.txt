@@ -1,9 +1,9 @@
-! Checksum: tEL5+cZGF9rAysCJ+/gJ3A
-! Diff-Path: ../patches/20/20-s-1769084178-3600.patch
+! Checksum: PQh6zgsyw5t9fWi8zW/0ZQ
+! Diff-Path: ../patches/20/20-s-1770045774-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.26.57
-! TimeUpdated: 2026-01-22T12:13:44+00:00
+! Version: 2.0.26.88
+! TimeUpdated: 2026-02-02T15:20:00+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,36 @@ alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,ra
 !
 !
 !
+m.yelp.com##div[data-testid="smart-banner-pitch-app-gif"]
+[$path=/maps]google.*##div[role="main"] > div.pL6he
+[$path=/maps]google.*##ul[role="list"] > li.bzdiDe
+gmgn.ai#%#//scriptlet('trusted-set-local-storage-item', 'KEY_CLOSE_DOWNLOAD_APP_MODAL_TIME', '$now$')
+gmgn.ai#%#//scriptlet('trusted-set-local-storage-item', 'KEY_CLOSE_DOWNLOAD_APP_BANNER_TIME', '$now$')
+nicegram.app##div[class^="app_hub_sc__sc_styles_position_"]:has(> a[href^="https://play.google.com/store/apps/details?id=app.nicegram"])
+jp.moony.com##header .CMP-CM05-block > .CMP-CM28-reference.parbase:has(a[href^="https://app.moony.com/"])
+mdcalc.com#%#//scriptlet('set-cookie', 'mobile_cta_banner_dismissed', 'true')
+us.smartprix.com#$#sm-bottom-popup { display: none !important; }
+us.smartprix.com#$#sm-overlay { display: none !important; }
+us.smartprix.com#$#body { overflow: auto !important; }
+trial-net.co.jp#$#.app-remind { display: none !important; }
+trial-net.co.jp#%#//scriptlet('remove-class', 'header-app-remind', 'header')
+bundeswehr.de##.SmartBanner
+web3.okx.com###okx-global-download-banner
+valant.io##vng-smart-banner
+m.avito.ru##.js-apps-banner
+vevor.*##.AppDrainage
+caretobeauty.com##.pwa-download-footer__content
+caretobeauty.com#%#//scriptlet('set-local-storage-item', 'downloadPopupDisplayed', 'true')
+liveradious.com#%#//scriptlet('set-local-storage-item', 'stickyLineRemoved', 'true')
+satariz.com#%#//scriptlet('set-local-storage-item', 'satariz_mobile_app_banner_dismissed', 'true')
+radio.de,radio.at,radio.net##div:has(> div:first-child + div:last-child > .app-banner-btn)
+radio.de,radio.at,radio.net##a[data-testid="open-app-button"]
+wzzy.cc###qrCodeWidget
+calendar.yandex.ru##div[role="main"] > div[class^="MainBanner__wrap--"]:has(> div > a[href^="https://360.yandex.ru/calendar/#calendar-block"])
+nihaojewelry.com##.container > div.flex:has(> div.flex img[src$="/wholesale_jewelry_app.png"])
+vrisko.gr##.sectionAppGray
+yesstyle.com###smartbanner-button
+cjdropshipping.com##.src-components-CjHeader-components-DownloadApp-index__downloadApp--ca5JH
 s7.ru##div[class^="ds-Modal-root ds-Popup-root ds-Dialog-root "]
 calendar.yandex.ru##div[class^="TouchApp__wrap--"] > div[class^="TouchBanner__wrap--"]:has(> div[class*="TouchBanner__popup--"] a[href^="https://redirect.appmetrica.yandex.com/serve/"])
 trip.com##.m-flightlist__chromepop
@@ -208,7 +238,6 @@ www.dji.com#%#//scriptlet('trusted-click-element', '.universal-product-tip a.uni
 callie.com#$#.vi-app { display: none !important; }
 callie.com#%#//scriptlet('remove-class', 'app-tips', '.wrapper > div[class]')
 store.dji.com#%#//scriptlet('trusted-set-local-storage-item', 'top-banner-mobile-custom-banner-app-29437', '$now$')
-m.made-in-china.com##.downapp
 m.made-in-china.com##a[href^="https://made-in-china.onelink.me/"]
 stylewe.com##.layout-header__download-app-tips
 lebensmittelwarnung.de##.lmw-teaser
@@ -433,7 +462,7 @@ scoopzapp.com#?#.fixed:has(> div[class]:only-child > div[class] > div:only-child
 bristol.ru##.first-order-modal
 raycast.com##div[class^="GlobalBanner"]
 imdb.com##.imdb-header__app-button
-doordash.com##main > div[style="border: none; margin-top: var(--usage-space-medium);"]
+doordash.com##div[class^="StyledStackChildren-"]:has(> div[data-testid="appDownload"]:first-child + button[data-testid="appDownloadButton"]:last-child)
 doordash.com#%#//scriptlet('trusted-set-local-storage-item', 'appDownloadPromptDismissedV2Ttl', '{"value":"99999999999999","expiresAt":99999999999999}')
 t.shuqi.com##.ReaderFreeFixedGuideBtn
 enerjisa.com.tr,easy.co.il##.qr-container
@@ -3699,6 +3728,8 @@ wear.jp#%#//scriptlet('trusted-set-session-storage-item', 'status_of_app_redirec
 !
 !
 !+ NOT_OPTIMIZED
+doordash.com##main > div[style="border: none; margin-top: var(--usage-space-medium);"]
+!+ NOT_OPTIMIZED
 ticketmaster.com##.page > div[style]:not([class],[id]):has(> div[class]:only-child > div[class]:only-child > div[class] > a[href*="onelink.me"]:only-child)
 !+ NOT_OPTIMIZED
 ticketmaster.com###__next > div[class]:has(> div[class]:only-child > button ~ div[class] > a[href*="onelink.me"])
@@ -3930,6 +3961,19 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+sp.chunichi.co.jp###headAppArea
+zeta-ai.io#%#//scriptlet('trusted-set-local-storage-item', 'mmkv.default\APP_DOWNLOAD_MODAL_SHOWN', '$currentISODate$')
+zeta-ai.io###contents > div.flex > div[class] > button:has(> div[class] > img[srcset^="https://web-cdn.zeta-ai.io/"][srcset*="/media/banner-image."])
+radiko.jp#%#//scriptlet('trusted-set-session-storage-item', 'dismissRadikoAppBanner', '"true"')
+abema.tv##.com-vod-MobileTVScreen__view-in-app-overlay
+bigl.ua#%#//scriptlet('set-cookie', 'app_popup_mute', 'true')
+instacart.com,instacart.ca#%#//scriptlet('set-cookie', 'm3_app_download_banner', 'true')
+onlineradiobox.com##.about-mobile__section
+onlineradiobox.com###panel_mobile_playmarket
+delish.com#$#nav[data-tracking-id="topNav"] > div[class^="css-"]:has(> div[class^="css-"] > div[class^="css-"] > div[class^="css-"] > img[alt="Delish App Banner Logo"]) { display: none !important; }
+delish.com#$#nav[data-tracking-id="topNav"] { height: auto !important; }
+m.joybuy.co.uk##div[class^="header_downloadBarWrapper__"]
+m.globalsources.com##.app-download
 ggsel.net##.progressier-install-banner
 m.koreaherald.com##.event_bnn_bg
 travelocity.com##.page-header > .customer-notification-container > .uitk-view-row-theme-brand_promo_primary
@@ -3950,7 +3994,6 @@ kayak.com,momondo.com###mobile-app-promo-banner
 okinawatimes.co.jp##.deeplink_txt_color
 fedex.com##trk-shared-simplified-mobile-app-banner
 willmusic.com.tw,shop.showba.com.tw,mart.family.com.tw#%#//scriptlet('set-session-storage-item', 'AdHide', 'true')
-delish.com##nav[data-tracking-id="topNav"] > div[class^="css-"]:has(> div[class^="css-"] > img[src^="/_assets/design-tokens/"])
 hotpepper.jp#$#.app-bottom-modal-container { display: none !important; }
 hotpepper.jp#$#body.fixed-body { overflow: auto !important }
 baito.line.me##div[class^="AppDownloadLinkBar"]
@@ -4929,6 +4972,8 @@ scoopzapp.com#%#(()=>{const o={apply:(o,t,n)=>{try{"function"==typeof t&&"onTime
 116.ru,14.ru,161.ru,164.ru,173.ru,26.ru,29.ru,35.ru,43.ru,45.ru,48.ru,51.ru,53.ru,56.ru,59.ru,60.ru,63.ru,68.ru,71.ru,72.ru,74.ru,76.ru,86.ru,89.ru,93.ru,chita.ru,e1.ru,fontanka.ru,ircity.ru,izh1.ru,mgorsk.ru,msk1.ru,ngs.ru,ngs22.ru,ngs24.ru,ngs42.ru,ngs55.ru,ngs70.ru,nn.ru,sochi1.ru,sterlitamak1.ru,tolyatty.ru,ufa1.ru,v1.ru,vladivostok1.ru,voronezh1.ru##article > div[class^="wrapper_"]:has(> a[href^="https://redirect.appmetrica.yandex.com/"])
 !
 !+ NOT_OPTIMIZED
+m.made-in-china.com##.downapp
+!+ NOT_OPTIMIZED
 m.olx.ua###hydrate-root div[class^="css-"]:has(> button[data-testid="app-install-banner-close"])
 !+ NOT_OPTIMIZED
 dhgate.com##body::before
@@ -4977,6 +5022,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 ! SECTION: Mobile apps - Allowlist
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/223840
 ! https://github.com/AdguardTeam/AdguardFilters/issues/222775
 forbes.n1info.si#@#div[class^="smartbanner"][class*="-android"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/204986

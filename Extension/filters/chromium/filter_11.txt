@@ -1,9 +1,9 @@
-! Checksum: WEcWHJwic0WFQXaJMwq4Fg
-! Diff-Path: ../patches/11/11-s-1769059035-3600.patch
+! Checksum: 6Ji9Riozyq5yFRKCP3eZwQ
+! Diff-Path: ../patches/11/11-s-1770045768-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.67.23
-! TimeUpdated: 2026-01-22T05:14:19+00:00
+! Version: 2.0.67.49
+! TimeUpdated: 2026-02-02T15:19:44+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -169,6 +169,13 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||rainmaker4.production-public.tubi.io^
+||x3m.biz^
+||d1tru86qrby720.cloudfront.net^
+||ads.phonepe.com^
+||ads-static.phonepe.com^
+||bstream.channelcom.tech^
+||ggbond.peaksite.tech^
 ||mediation.goog^
 ||axon.ai^
 ||up.ousabq.tech^
@@ -1862,6 +1869,7 @@ deviantart.com#$#div[class*="dp-ad-"] { height: 0!important; width: 0!important;
 ! Yandex ads in mobile apps
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/223253
 ! https://github.com/AdguardTeam/AdguardFilters/issues/219449
 ! https://github.com/AdguardTeam/AdguardFilters/issues/213676#event-19865107435
 ! https://github.com/AdguardTeam/AdguardFilters/issues/211207
@@ -2417,6 +2425,26 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+baseballchannel.jp###sp_all_header
+itc.ua##.image-100
+walica.jp##footer + div.fixed.bottom-0.left-0.right-0.z-50.sm\:hidden
+thetoc.gr##.bannerparent
+thetoc.gr##.mg_underhero
+m.yelp.com##div[class*="new-serpia-"] > ol > li:has(div[data-traffic-crawl-id="SearchResultBizName"] > h3 > a[href^="/adredir?"])
+m.yelp.com##div[class*="new-serpia-"] > ol > li:has(> div[class*="sponsored-icon"])
+4j.com###Games_TopAdDiv
+mydealz.de##div[class]:has(> .ad--bg:only-child)
+amazon.*###softlines-btf-substitute-zone-container-3_feature_div
+amazon.*###softlines-mobile-btf-discovery-zone-T3_feature_div
+accuradio.com##div[class^="MobileBottomAd"]
+accuradio.com##div[class^="MobileSquareAd"]
+newegg.com#%#//scriptlet('json-prune-fetch-response', ' RecommendItems.RecommendInfo.[-].DataSource.[=].spsr RecommendInfo.[-].DataSource.[=].spsr', '', 'm/product/ajax/productPersonalization')
+newegg.com##span[data-nosnippet="true"] > .sponsored-brands-items
+fok.nl#$#@media (max-width: 1023px) { #pageWrapper { top: 5px !important; } }
+televisa.com##.sm\:hidden.-mb-2
+televisa.com##.mt-8.relative
+televisa.com##.sm\:hidden.object-contain
+hotokami.jp#$#@media (max-width: 768px) { .spots__menu.sticky { top: 0 !important; } }
 m.happymh.com#%#//scriptlet('trusted-set-local-storage-item', 'overlay_ad_last_shown', '$now$')
 m.happymh.com#%#//scriptlet('trusted-set-local-storage-item', 'fullscreen_ad_clicked', '$now$')
 m.happymh.com###root > .MuiContainer-root > div[class$="-root"]:has(> div[class$="-adTip"])
@@ -2637,7 +2665,7 @@ leslez.com##.opt
 talk.jp##.comments > div[class^="display_container"]:not(.comment)
 tass.ru##div[class^="MobileLayout_top_ad_"]
 thetab.com##div[id^="ad-inarticle"]
-iceporn.tv##.HeaderBanner
+porner.tv,iceporn.tv##.HeaderBanner
 ladybanana.co.uk##.infinite-item > ul > li:has(> div[id^="t"]:empty)
 ladybanana.co.uk##.infinite-item > ul > li:has(> ins[data-zoneid])
 jdpower.com##.jdpAd-placeholder-advertisement-floater
@@ -3764,7 +3792,6 @@ yahoo.com##div[id^="sda-LREC-"] > div[id^="LREC-"]
 aksam.com.tr##div[style="text-align:center;height:310px;"]
 aksam.com.tr##div[style="height:310px;"]
 aksam.com.tr##div[style="height:140px;"]
-mangapark.io##main > div:has(> div.px-3 > a[href][target="_blank"][q\:key="CY_1"])
 gazo-chat.net##a[href^="https://fam-ad.com/"]
 pixwox##.ah-box
 nan-net.com##.bbs_box[style="height:70px;"]
@@ -3968,7 +3995,7 @@ scribd.com##.page_wrapper > div[class] > a[href^="https://www.scribd.com/oauth/s
 leekduck.com###ad-event-page-mobile
 ddd-smart.net##.content-scroll-img
 duniaku.idntimes.com##amp-script[script="parallax-script"]
-7mmtv.sx##.ut_cg1_top
+7tv081.com,7mmtv.sx##.ut_cg1_top
 fresherslive.com##.mob_btm_sticky_ad
 ilgiorno.it##div[style="min-height:100px"]
 ilgiorno.it##div[style^="min-height: 100px; top:"]
@@ -7951,6 +7978,7 @@ pornhub.com,pornhub.org##.bottomNav > a[href][target="_blank"]
 pornhub.com,pornhub.org##.mgp_overlayContainer
 !
 ! m.yelp.com
+m.yelp.com##ol > li:has(> div[data-testid="themed-ad-top-divider"])
 m.yelp.com###BottomAdStandard
 m.yelp.com##section[data-testid="BottomAdStandard"]
 m.yelp.com##div[class*="main-content__"] > div > ol > li:has(div[data-traffic-crawl-id="SearchResultBizName"] > h3 > a[href^="/adredir?ad_business_id="])
@@ -8299,6 +8327,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Solving problems: problematic apps must be excluded by adding `~package_name` to these rules.
 !                   The most of excluded apps - browsers. They should not be matched.
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/221986
 ! Mail.Ru ads in apps
 ! https://github.com/AdguardTeam/AdguardFilters/issues/220432
 ! https://github.com/AdguardTeam/AdguardFilters/issues/217628

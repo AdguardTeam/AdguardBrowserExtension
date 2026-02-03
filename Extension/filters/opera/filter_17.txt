@@ -1,9 +1,9 @@
-! Checksum: +ELxG3cSay3UMx+72iu+5w
-! Diff-Path: ../patches/17/17-s-1769001909-3600.patch
+! Checksum: 2FnSbMwV+KUHsmeN3M9/YA
+! Diff-Path: ../patches/17/17-s-1770027897-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.86
-! TimeUpdated: 2026-01-21T13:22:28+00:00
+! Version: 2.0.12.95
+! TimeUpdated: 2026-02-02T10:22:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -22,6 +22,8 @@
 !
 ! NOTE: Generic rules
 !
+! Bance
+$removeparam=bance_xuid
 ! Oracle Eloqua
 $removeparam=elqTrackId
 $removeparam=elq
@@ -308,6 +310,8 @@ $removeparam=itm_campaign
 $removeparam=itm_content
 $removeparam=itm_term
 ! UTM
+$removeparam=utm_wave
+$removeparam=utm_lob
 $removeparam=utm_emailid
 $removeparam=utm_email
 $removeparam=utm_newsletterid
@@ -491,6 +495,24 @@ $removeparam=tduid
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/223803
+||petbook.de^$removeparam=dicbo
+||petbook.de^$removeparam=cid
+! https://riamo.ru/news/proisshestviya/voditel-avtobusa-v-podmoskove-dovez-istekajuschego-krovju-parnja-do-bolnitsy/?from=inf_cards
+||riamo.ru^$removeparam=from
+! https://blog.qiita.com/stock-share-beta/?utml_campaign=qiita_notification
+||blog.qiita.com^$removeparam=utml_campaign
+! https://x.com/Kdroidwin1/status/2017425829844963380 cv-measurement ads
+||cv-measurement.com^$removeparam=adcopy
+||cv-measurement.com^$removeparam=adbnr
+||cv-measurement.com^$removeparam=creative
+||ad.games.dmm.co.jp^$removeparam=clid
+||rcv.ixd.dmm.com^$removeparam=ad
+||rcv.ixd.dmm.com^$removeparam=advertiser
+||rcv.ixd.dmm.com^$removeparam=clid
+||ratel-ad.com^$removeparam=advertiser
+||123chat.jp/promotion/$removeparam=cid
+||123chat.jp/promotion/$removeparam=p
 ! https://github.com/AdguardTeam/AdguardFilters/issues/222986
 ||tw.news.yahoo.com^$removeparam=link_source
 ||tw.news.yahoo.com^$removeparam=taid
@@ -565,6 +587,8 @@ $removeparam=tduid
 ||teinei.co.jp^$removeparam=camp_no
 ||teinei.co.jp^$removeparam=rmai
 ! https://github.com/AdguardTeam/AdguardFilters/issues/219080
+||kojima.net^$removeparam=argument
+||kojima.net^$removeparam=dmai
 ||frontier-direct.jp^$removeparam=argument
 ||frontier-direct.jp^$removeparam=dmai
 ! https://github.com/AdguardTeam/AdguardFilters/issues/218448
@@ -1185,7 +1209,6 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/193005
 ||newspicks.com^$removeparam=a
 ||newspicks.com^$removeparam=adid
-||newspicks.com^$removeparam=ref
 ||newspicks.com^$removeparam=block
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192759
 ||wsj.com^$removeparam=mod
@@ -1716,7 +1739,6 @@ keepstreams.com^$removeparam=soft
 keepstreams.com^$removeparam=ad
 keepstreams.com^$removeparam=downloadmode
 ! https://github.com/AdguardTeam/AdguardFilters/issues/165022
-||newspicks.com^$removeparam=ref
 ||newspicks.com^$removeparam=ref_t
 ! https://github.com/AdguardTeam/AdguardFilters/issues/164620
 ||streamfab.jp^$removeparam=soft
@@ -3092,6 +3114,8 @@ $removeparam=search_domain,domain=ya.ru|yandex.*
 !
 ! Amazon tracking IDs found on several subpages
 ! Disabled rules:
+! https://github.com/AdguardTeam/AdguardFilters/issues/199705
+! ||amazon.*$removeparam=content-id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/157889#issuecomment-1660195416
 ! ||amazon.*$removeparam=psc
 ! https://github.com/AdguardTeam/AdguardFilters/issues/110571
@@ -3172,7 +3196,6 @@ $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
 ||amazon.*/hz/contact-us/csp$removeparam=from
 ||amazon.*/hz/contact-us/csp$removeparam=source
 ||amazon.*/message-us$removeparam=muClientName
-! ||amazon.*$removeparam=content-id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/83138
 ||app.mi.com/download/*?id=$removeparam=ref
 ||app.mi.com/download/*?id=$removeparam=nonce

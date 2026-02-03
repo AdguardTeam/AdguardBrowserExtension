@@ -1,10 +1,11 @@
-! Checksum: ShjzNJ2IcwujpdespBvvfg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1769001909-3600.patch
+! Checksum: z1+K8iOmGrYrAHkKkgvoDw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1770027897-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.86
-! TimeUpdated: 2026-01-21T13:22:28+00:00
+! Version: 2.0.12.95
+! TimeUpdated: 2026-02-02T10:22:04+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=bance_xuid
 $removeparam=elqTrackId
 $removeparam=elq
 $removeparam=elqaid
@@ -187,6 +188,8 @@ $removeparam=itm_medium
 $removeparam=itm_campaign
 $removeparam=itm_content
 $removeparam=itm_term
+$removeparam=utm_wave
+$removeparam=utm_lob
 $removeparam=utm_emailid
 $removeparam=utm_email
 $removeparam=utm_newsletterid
@@ -313,6 +316,20 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||petbook.de^$removeparam=dicbo
+||petbook.de^$removeparam=cid
+||riamo.ru^$removeparam=from
+||blog.qiita.com^$removeparam=utml_campaign
+||cv-measurement.com^$removeparam=adcopy
+||cv-measurement.com^$removeparam=adbnr
+||cv-measurement.com^$removeparam=creative
+||ad.games.dmm.co.jp^$removeparam=clid
+||rcv.ixd.dmm.com^$removeparam=ad
+||rcv.ixd.dmm.com^$removeparam=advertiser
+||rcv.ixd.dmm.com^$removeparam=clid
+||ratel-ad.com^$removeparam=advertiser
+||123chat.jp/promotion/$removeparam=cid
+||123chat.jp/promotion/$removeparam=p
 ||tw.news.yahoo.com^$removeparam=link_source
 ||tw.news.yahoo.com^$removeparam=taid
 ||netmonet.co^$removeparam=id
@@ -361,6 +378,8 @@ $removeparam=tduid
 ||teinei.co.jp^$removeparam=ref
 ||teinei.co.jp^$removeparam=camp_no
 ||teinei.co.jp^$removeparam=rmai
+||kojima.net^$removeparam=argument
+||kojima.net^$removeparam=dmai
 ||frontier-direct.jp^$removeparam=argument
 ||frontier-direct.jp^$removeparam=dmai
 ||careerindex.jp^$removeparam=pathway
@@ -788,7 +807,6 @@ $removeparam=cid,domain=nhk.jp|nhk.or.jp
 ||readyfor.jp^$removeparam=sns_share_token
 ||newspicks.com^$removeparam=a
 ||newspicks.com^$removeparam=adid
-||newspicks.com^$removeparam=ref
 ||newspicks.com^$removeparam=block
 ||wsj.com^$removeparam=mod
 ||fanatical.com^$removeparam=aff_track
@@ -1145,7 +1163,6 @@ keepstreams.com^$removeparam=c_ver
 keepstreams.com^$removeparam=soft
 keepstreams.com^$removeparam=ad
 keepstreams.com^$removeparam=downloadmode
-||newspicks.com^$removeparam=ref
 ||newspicks.com^$removeparam=ref_t
 ||streamfab.jp^$removeparam=soft
 ||streamfab.jp^$removeparam=ad
