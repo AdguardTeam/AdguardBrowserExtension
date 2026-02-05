@@ -48,10 +48,13 @@ import { addMinDelayLoader } from '../helpers';
 // TODO: Continue to remove dependency on the root store via adding loader and
 // notifications to own 'user-rules-editor' store. AG-48937
 import { rootStore } from '../../../options/stores/RootStore';
+import { SidebarMenuId } from '../../../options/stores/UiStore';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
 import { NotificationType } from '../../types';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
+import { SavingErrorMessage } from '../SavingButton';
+import theme from '../../styles/theme';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { ToggleFullscreenButton } from './ToggleFullscreenButton';
@@ -385,6 +388,24 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         exportData(ExportTypes.UserFilter);
     };
 
+    useEffect(() => {
+        uiStore.setSidebarMenuOptions([
+            {
+                id: SidebarMenuId.ImportUserRules,
+                title: translator.getMessage('options_userfilter_import'),
+                onClick: importClickHandler,
+            },
+            {
+                id: SidebarMenuId.ExportUserRules,
+                title: translator.getMessage('options_userfilter_export'),
+                onClick: exportClickHandler,
+                disabled: !store.userRulesExportAvailable,
+            },
+        ]);
+
+        return () => uiStore.setSidebarMenuOptions([]);
+    }, [store.userRulesExportAvailable, uiStore]);
+
     // We set wrap mode directly in order to avoid editor re-rendering
     // Otherwise editor would remove all unsaved content
     const toggleWrap = async () => {
@@ -462,6 +483,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     subtitle={unsavedChangesSubtitle}
                 />
             )}
+            <SavingErrorMessage savingState={store.savingUserRulesState} />
             <div
                 ref={actionsRef}
                 className={cn('actions actions--grid', {
@@ -501,7 +523,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     />
                     <button
                         type="button"
-                        className="button button--l button--transparent actions__btn"
+                        className={cn('button button--l button--transparent actions__btn', theme.common.hideMobile)}
                         onClick={importClickHandler}
                         title={translator.getMessage('options_userfilter_import')}
                     >
@@ -509,7 +531,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     </button>
                     <button
                         type="button"
-                        className="button button--l button--transparent actions__btn"
+                        className={cn('button button--l', 'button--transparent actions__btn', theme.common.hideMobile)}
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
                         title={translator.getMessage('options_userfilter_export')}

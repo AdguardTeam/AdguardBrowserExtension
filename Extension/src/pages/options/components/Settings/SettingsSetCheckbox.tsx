@@ -18,22 +18,43 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { type ReactNode } from 'react';
 
 import cn from 'classnames';
-import PropTypes from 'prop-types';
+
+import { type SettingOption } from '../../../../background/schema';
+import { type SettingHandler } from '../../types';
 
 import { Setting, SETTINGS_TYPES } from './Setting';
 import { SettingsSet } from './SettingsSet';
 
-// clickable setting with a label wrap
-const SettingsSetCheckbox = (props) => {
-    const {
-        title, description, children, disabled,
-        id, handler, label, inverted, value, sectionDisabled,
-        className,
-    } = props;
+type SettingsSetCheckboxProps = {
+    id: SettingOption | string;
+    title: string;
+    label: string;
+    value: boolean;
+    handler: SettingHandler;
+    description?: ReactNode;
+    children?: ReactNode;
+    disabled?: boolean;
+    inverted?: boolean;
+    sectionDisabled?: boolean;
+    className?: string;
+};
 
+const SettingsSetCheckbox = ({
+    id,
+    title,
+    label,
+    value,
+    handler,
+    description,
+    children,
+    disabled,
+    inverted,
+    sectionDisabled,
+    className = '',
+}: SettingsSetCheckboxProps) => {
     const titleId = `${id}-title`;
 
     return (
@@ -63,15 +84,6 @@ const SettingsSetCheckbox = (props) => {
             </SettingsSet>
         </label>
     );
-};
-
-SettingsSetCheckbox.defaultProps = {
-    className: '',
-};
-
-SettingsSetCheckbox.propTypes = {
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    className: PropTypes.string,
 };
 
 export { SettingsSetCheckbox };

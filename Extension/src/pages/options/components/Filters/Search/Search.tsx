@@ -30,35 +30,22 @@ import { translator } from '../../../../../common/translators/translator';
 import { Select } from '../../../../common/components/ui/Select';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { UserAgent } from '../../../../../common/user-agent';
+import { TABLET_BREAKPOINT_PX } from '../../../../common/constants';
 import { rootStore } from '../../../stores/RootStore';
+import { filterStatusOptions } from '../constants';
 
-import { SEARCH_FILTERS, TABLET_SCREEN_WIDTH } from './constants';
+import { SearchFilters } from './constants';
 
 import './search.pcss';
 
-const isDesktopScreen = window.innerWidth > TABLET_SCREEN_WIDTH;
-
-const options = [
-    {
-        value: SEARCH_FILTERS.ALL,
-        title: translator.getMessage('options_filters_list_search_display_option_all_filters'),
-    },
-    {
-        value: SEARCH_FILTERS.ENABLED,
-        title: translator.getMessage('options_filters_list_search_display_option_enabled'),
-    },
-    {
-        value: SEARCH_FILTERS.DISABLED,
-        title: translator.getMessage('options_filters_list_search_display_option_disabled'),
-    },
-];
+const isDesktopScreen = window.innerWidth > TABLET_BREAKPOINT_PX;
 
 const Search = observer(() => {
     const { settingsStore } = useContext(rootStore);
 
-    const searchInputRef = useRef();
+    const searchInputRef = useRef<HTMLInputElement>(null);
 
-    const searchRef = useRef();
+    const searchRef = useRef<HTMLDivElement>(null);
 
     const {
         setSearchInput,
@@ -70,15 +57,15 @@ const Search = observer(() => {
     useEffect(() => {
         // If keys changed, change aria-keyshortcuts attributes
         const modifierKeyProperty = UserAgent.isMacOs ? 'metaKey' : 'ctrlKey';
-        const handleSearchHotkey = (e) => {
+        const handleSearchHotkey = (e: KeyboardEvent) => {
             const { code } = e;
             if (e[modifierKeyProperty] && code === 'KeyF') {
                 e.preventDefault();
-                searchInputRef.current.focus();
-                searchInputRef.current.select();
+                searchInputRef.current?.focus();
+                searchInputRef.current?.select();
             }
         };
-        const handleResetHotkey = (e) => {
+        const handleResetHotkey = (e: KeyboardEvent) => {
             const { code } = e;
             if (code === 'Escape') {
                 e.preventDefault();
@@ -94,7 +81,7 @@ const Search = observer(() => {
         };
     }, [setSearchInput]);
 
-    const searchInputHandler = (e) => {
+    const searchInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setSearchInput(value);
         if (value.length === 0) {
@@ -105,28 +92,24 @@ const Search = observer(() => {
 
     const searchCloseHandler = () => {
         setSearchInput('');
-        searchInputRef.current.focus();
-        setSearchSelect(SEARCH_FILTERS.ALL);
+        searchInputRef.current?.focus();
+        setSearchSelect(SearchFilters.All);
         settingsStore.sortFilters();
         settingsStore.sortSearchGroups();
     };
 
-    const searchSelectHandler = (value) => {
-        setSearchSelect(value);
+    const searchSelectHandler = (value: string) => {
+        setSearchSelect(value as SearchFilters);
         settingsStore.sortFilters();
         settingsStore.sortSearchGroups();
     };
 
     const onSearchInputFocus = () => {
-        if (searchRef.current) {
-            searchRef.current.classList.add('search--focused');
-        }
+        searchRef.current?.classList.add('search--focused');
     };
 
     const onSearchInputBlur = () => {
-        if (searchRef.current) {
-            searchRef.current.classList.remove('search--focused');
-        }
+        searchRef.current?.classList.remove('search--focused');
     };
 
     useEffect(() => {
@@ -173,7 +156,7 @@ const Search = observer(() => {
                 <Select
                     id="search-select"
                     handler={searchSelectHandler}
-                    options={options}
+                    options={filterStatusOptions}
                     value={searchSelect}
                     label={translator.getMessage('options_filters_search_filter')}
                 />

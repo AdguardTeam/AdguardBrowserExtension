@@ -158,7 +158,7 @@ export const formatDate = (dateMs: number) => {
     const dateObj = new Date(dateMs);
     const formatOptions: Intl.DateTimeFormatOptions = {
         year: 'numeric',
-        month: 'long',
+        month: 'short',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit',

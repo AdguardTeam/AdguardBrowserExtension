@@ -29,7 +29,6 @@ import { TelemetryScreenName } from '../../../../background/services/telemetry/e
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SettingSetSelect } from '../Settings/SettingSetSelect';
-import { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { handleFileUpload } from '../../../helpers';
@@ -270,20 +269,15 @@ export const General = observer(() => {
                     })}
                     disabled={allowAcceptableAds}
                     id={AllowAcceptableAds}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     value={!allowAcceptableAds}
                     label={translator.getMessage('options_block_acceptable_ads')}
                     handler={allowAcceptableAdsChangeHandler}
                 />
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
                         title={translator.getMessage('options_safebrowsing_enabled')}
                         description={reactTranslator.getMessage('options_safebrowsing_enabled_desc', {
-                            // TODO: fix type error when SettingsSetCheckbox be rewritten in typescript
-                            // @ts-ignore
-                            a: (chunks) => (
+                            a: (chunks: string) => (
                                 <a
                                     href={SAFEBROWSING_LEARN_MORE_URL}
                                     target="_blank"
@@ -295,7 +289,6 @@ export const General = observer(() => {
                         })}
                         disabled={settings.values[DisableSafebrowsing]}
                         id={DisableSafebrowsing}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         inverted
                         label={translator.getMessage('options_safebrowsing_enabled')}
                         value={settings.values[DisableSafebrowsing]}
@@ -304,13 +297,10 @@ export const General = observer(() => {
                 )}
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
                         title={translator.getMessage('options_enable_autodetect_filter')}
                         description={translator.getMessage('options_enable_autodetect_filter_desc')}
                         disabled={settings.values[DisableDetectFilters]}
                         id={DisableDetectFilters}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         inverted
                         label={translator.getMessage('options_enable_autodetect_filter')}
                         handler={settingChangeHandler}

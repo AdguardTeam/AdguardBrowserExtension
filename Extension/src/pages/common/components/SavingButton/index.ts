@@ -19,3 +19,4 @@
  */
 
 export { SavingButton } from './SavingButton';
+export { SavingErrorMessage } from './SavingErrorMessage';

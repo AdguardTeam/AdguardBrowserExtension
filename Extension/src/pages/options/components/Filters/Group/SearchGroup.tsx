@@ -22,14 +22,15 @@ import React from 'react';
 
 import cn from 'classnames';
 
+import { type CategoriesFilterData } from '../../../../../background/api/filters/categories';
 import { Filter } from '../Filter';
 import { Setting, SETTINGS_TYPES } from '../../Settings/Setting';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { translator } from '../../../../../common/translators/translator';
 
-import '../group.pcss';
+import styles from './group.module.pcss';
 
-const renderFilters = (matchedFilters, groupEnabled) => {
+const renderFilters = (matchedFilters: CategoriesFilterData[], groupEnabled: boolean) => {
     return matchedFilters.map((filter) => (
         <Filter
             key={filter.filterId}
@@ -40,6 +41,44 @@ const renderFilters = (matchedFilters, groupEnabled) => {
     ));
 };
 
+/**
+ * Parameters for the {@link SearchGroup} component.
+ */
+type SearchGroupParams = {
+    /**
+     * Group name.
+     */
+    groupName: string;
+
+    /**
+     * Group id.
+     */
+    groupId: number;
+
+    /**
+     * Checkbox value.
+     */
+    groupEnabled: boolean;
+
+    /**
+     * Filters to show in the group.
+     */
+    filtersToShow: CategoriesFilterData[];
+
+    /**
+     * Handler for group click event.
+     */
+    groupClickHandler: () => void;
+
+    /**
+     * Handler for checkbox change event.
+     *
+     * @param id Group id.
+     * @param data Checkbox value.
+     */
+    checkboxHandler: ({ id, data }: { id: string; data: boolean }) => void;
+};
+
 const SearchGroup = ({
     groupName,
     groupId,
@@ -47,8 +86,8 @@ const SearchGroup = ({
     filtersToShow,
     groupClickHandler,
     checkboxHandler,
-}) => {
-    const groupClassName = cn('setting group', { 'group--disabled': !groupEnabled });
+}: SearchGroupParams) => {
+    const groupClassName = cn(styles.group, !groupEnabled && styles.disabled);
     const filtersClassName = cn('filters', {
         'filters--disabled': !groupEnabled,
     });
@@ -77,7 +116,7 @@ const SearchGroup = ({
                         </span>
                     </span>
                 </button>
-                <div className="setting__inline-control setting__inline-control_group">
+                <div className={styles.checkbox}>
                     <Setting
                         id={groupId}
                         type={SETTINGS_TYPES.CHECKBOX}
@@ -85,7 +124,6 @@ const SearchGroup = ({
                         labelId={titleId}
                         value={groupEnabled}
                         handler={checkboxHandler}
-                        className="group__checkbox"
                         optimistic={!__IS_MV3__}
                     />
                 </div>
