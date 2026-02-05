@@ -27,6 +27,12 @@
     z-index: var(--z-idx-options-notifications);
     bottom: 68px;
     right: 22px;
+
+    @media (max-width: 640px) {
+        bottom: 8px;
+        right: 8px;
+        left: 8px;
+    }
 }
 
 .notification {
@@ -38,6 +44,10 @@
     background-color: var(--fills-snacks-mobile-snacks-default);
     color: var(--text-buttons-primary-default);
     animation: notify-show 0.3s ease-in;
+
+    @media (max-width: 640px) {
+        max-width: 100%;
+    }
 
     &--error > svg {
         color: var(--stroke-icons-error-icon-default);

@@ -23,17 +23,21 @@ import React, {
     useLayoutEffect,
     useState,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
+import { UpdateButtonMobile } from 'update-button-mobile';
 
 import { Icon } from '../../../common/components/ui/Icon';
 import { rootStore } from '../../stores/RootStore';
+import { OptionsPageSections } from '../../../../common/nav';
 import { Nav } from '../Nav';
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
 
 import { Compare } from './Compare';
+import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
 
 import './sidebar.pcss';
 
@@ -41,6 +45,7 @@ const SIDEBAR_ID = 'sidebar';
 
 const Sidebar = observer(() => {
     const { settingsStore, uiStore } = useContext(rootStore);
+    const location = useLocation();
 
     const { isSidebarOpen, openSidebar, closeSidebar } = uiStore;
 
@@ -52,7 +57,7 @@ const Sidebar = observer(() => {
     useLayoutEffect(() => {
         const matchMedia = window.matchMedia(tabletAndAboveQuery);
 
-        const handleScreenChange = (e) => {
+        const handleScreenChange = (e: MediaQueryListEvent) => {
             setIsTabletAndAboveScreen(e.matches);
         };
 
@@ -100,6 +105,12 @@ const Sidebar = observer(() => {
         'sidebar__overlay--visible': isSidebarOpen,
     });
 
+    const isFiltersPage = location.pathname.startsWith(`/${OptionsPageSections.filters}`);
+    const isAllowListPage = location.pathname.startsWith(`/${OptionsPageSections.allowlist}`);
+    const isUserFilterPage = location.pathname.startsWith(`/${OptionsPageSections.userFilter}`);
+
+    const showPageActionsMenu = isAllowListPage || isUserFilterPage;
+
     return (
         <>
             <div className="sidebar__menu">
@@ -117,6 +128,11 @@ const Sidebar = observer(() => {
                         aria-hidden="true"
                     />
                 </button>
+                <div className="sidebar__actions">
+                    {isFiltersPage && <UpdateButtonMobile />}
+                    {isFiltersPage && <FilterSortMenu />}
+                    {showPageActionsMenu && <PageActionsMenu />}
+                </div>
             </div>
             {/* eslint-disable-next-line max-len */}
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}

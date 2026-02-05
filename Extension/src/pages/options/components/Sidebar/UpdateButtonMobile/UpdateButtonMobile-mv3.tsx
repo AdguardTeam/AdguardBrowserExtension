@@ -18,5 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { SavingButton } from './SavingButton';
-export { SavingErrorMessage } from './SavingErrorMessage';
+export const UpdateButtonMobile = () => {
+    return null;
+};

@@ -18,9 +18,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import modal from './modal.module.pcss';
+import common from './common.module.pcss';
 
 const theme = {
     modal,
+    common,
 };
 
 export default theme;

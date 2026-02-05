@@ -18,5 +18,32 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { SavingButton } from './SavingButton';
-export { SavingErrorMessage } from './SavingErrorMessage';
+import React from 'react';
+
+import { SavingFSMState } from '../Editor/savingFSM';
+import { translator } from '../../../../common/translators/translator';
+
+import styles from './SavingErrorMessage.module.pcss';
+
+type SavingErrorMessageProps = {
+    /**
+     * Current saving state from FSM.
+     */
+    savingState: SavingFSMState;
+};
+
+/**
+ * Displays error message when saving fails.
+ * Returns null if not in error state.
+ */
+export const SavingErrorMessage = ({ savingState }: SavingErrorMessageProps) => {
+    if (savingState === SavingFSMState.Error) {
+        return (
+            <div className={styles.errorMessage}>
+                {translator.getMessage('options_editor_save_error')}
+            </div>
+        );
+    }
+
+    return null;
+};

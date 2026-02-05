@@ -21,44 +21,43 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { translator } from '../../../../../common/translators/translator';
 import { rootStore } from '../../../stores/RootStore';
-import { formatDate } from '../helpers';
+import { translator } from '../../../../../common/translators/translator';
+import { Icon } from '../../../../common/components/ui/Icon';
 
-import styles from './filters-update.module.pcss';
+import styles from './UpdateButtonMobile.module.pcss';
 
-export const FiltersUpdate = observer(() => {
+export const UpdateButtonMobile = observer(() => {
     const { settingsStore } = useContext(rootStore);
-
     const {
-        rulesCount,
-        latestCheckTime,
         filtersUpdating,
         isUpdateFiltersButtonActive,
     } = settingsStore;
 
-    const updateClickHandler = async () => {
+    const handleUpdateFilters = async () => {
+        if (!isUpdateFiltersButtonActive || filtersUpdating) {
+            return;
+        }
+
         await settingsStore.updateFilters();
     };
 
     return (
-        <div className={styles.filtersUpdate}>
-            <div className={styles.info}>
-                {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
-                <br />
-                {translator.getMessage('options_antibanner_updated', { date: formatDate(latestCheckTime) })}
-            </div>
-            <button
-                type="button"
-                onClick={updateClickHandler}
-                className={`button button--m button--transparent ${styles.updateBtn}`}
-                title={translator.getMessage('options_update_antibanner_filters')}
-                disabled={!isUpdateFiltersButtonActive || filtersUpdating}
-            >
-                {filtersUpdating
-                    ? translator.getMessage('options_check_update_progress')
-                    : translator.getMessage('update_check')}
-            </button>
-        </div>
+        <button
+            type="button"
+            className={styles.mobileUpdateBtn}
+            onClick={handleUpdateFilters}
+            title={translator.getMessage('options_update_antibanner_filters')}
+            aria-label={translator.getMessage('options_update_antibanner_filters')}
+            disabled={!isUpdateFiltersButtonActive || filtersUpdating}
+        >
+            <Icon
+                id="#reload"
+                className="icon--24 icon--green-default"
+                animationCondition={filtersUpdating}
+                animationClassName="icon--loading"
+                aria-hidden="true"
+            />
+        </button>
     );
 });

@@ -17,11 +17,4 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-export const SEARCH_FILTERS = {
-    ALL: 'all',
-    ENABLED: 'enabled',
-    DISABLED: 'disabled',
-};
-
-export const TABLET_SCREEN_WIDTH = 1024;
+export { MenuDropDown } from './MenuDropDown';

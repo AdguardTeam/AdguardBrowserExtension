@@ -18,5 +18,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { SavingButton } from './SavingButton';
-export { SavingErrorMessage } from './SavingErrorMessage';
+/**
+ * Filter status options for displaying filters in the search results.
+ */
+export enum SearchFilters {
+    All = 'all',
+    Enabled = 'enabled',
+    Disabled = 'disabled',
+}

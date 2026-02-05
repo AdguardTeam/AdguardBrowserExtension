@@ -18,5 +18,24 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { SavingButton } from './SavingButton';
-export { SavingErrorMessage } from './SavingErrorMessage';
+import { translator } from '../../../../common/translators/translator';
+
+import { SearchFilters } from './Search/constants';
+
+/**
+ * Options for filtering the filters list by their enabled/disabled status.
+ */
+export const filterStatusOptions = [
+    {
+        value: SearchFilters.All,
+        title: translator.getMessage('options_filters_list_search_display_option_all_filters'),
+    },
+    {
+        value: SearchFilters.Enabled,
+        title: translator.getMessage('options_filters_list_search_display_option_enabled'),
+    },
+    {
+        value: SearchFilters.Disabled,
+        title: translator.getMessage('options_filters_list_search_display_option_disabled'),
+    },
+];

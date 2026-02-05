@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-// TODO remove all @ts-ignore, and explicit any
-/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
-
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
@@ -199,48 +195,37 @@ const Stealth = observer(() => {
                 disabled={isStealthModeDisabled}
             >
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_block_known_trackers_title')}
                     description={translator.getMessage('options_block_known_trackers_description')}
                     disabled={!blockKnownTrackers}
                     sectionDisabled={isStealthModeDisabled}
                     id={BlockKnownTrackers}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_block_known_trackers_title')}
                     value={blockKnownTrackers}
                     handler={blockKnownTrackersChangeHandlerWrapper}
                 />
 
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_strip_tracking_params_title')}
                     description={translator.getMessage('options_strip_tracking_params_description')}
                     disabled={!stripTrackingParameters}
                     sectionDisabled={isStealthModeDisabled}
                     id={STRIP_TRACKING_PARAMETERS}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_strip_tracking_params_title')}
                     value={stripTrackingParameters}
                     handler={stripTrackingParametersChangeHandlerWrapper}
                 />
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_hide_search_queries_title')}
                     description={translator.getMessage('options_hide_search_queries_desc')}
                     disabled={!settings.values[HideSearchQueries]}
                     sectionDisabled={isStealthModeDisabled}
                     id={HideSearchQueries}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_hide_search_queries_title')}
                     value={settings.values[HideSearchQueries]}
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_send_not_track_title')}
                     description={reactTranslator.getMessage('options_send_not_track_desc', {
                         gpc: (chunks: string) => (
@@ -267,7 +252,6 @@ const Stealth = observer(() => {
                     disabled={!settings.values[SendDoNotTrack]}
                     sectionDisabled={isStealthModeDisabled}
                     id={SendDoNotTrack}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_send_not_track_title')}
                     value={settings.values[SendDoNotTrack]}
                     handler={settingChangeHandler}
@@ -280,8 +264,6 @@ const Stealth = observer(() => {
                     mode="subTitle"
                     disabled={isStealthModeDisabled}
                 >
-                    { /* TODO fix type error when SettingsSection be rewritten in typescript */}
-                    {/* @ts-ignore */}
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_third_party_title')}
                         description={(
@@ -294,7 +276,6 @@ const Stealth = observer(() => {
                         disabled={!isThirdPartyCookiesEnabled}
                         sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructThirdPartyCookies}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_third_party_title')}
                         value={isThirdPartyCookiesEnabled}
                         handler={settingChangeHandler}
@@ -317,8 +298,6 @@ const Stealth = observer(() => {
                         />
                     </SettingsSetCheckbox>
 
-                    { /* TODO fix type error when SettingsSection be rewritten in typescript */}
-                    {/* @ts-ignore */}
                     <SettingsSetCheckbox
                         title={translator.getMessage('options_first_party_title')}
                         description={(
@@ -331,7 +310,6 @@ const Stealth = observer(() => {
                         disabled={!isFirstPartyCookiesEnabled}
                         sectionDisabled={isStealthModeDisabled}
                         id={SelfDestructFirstPartyCookies}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_first_party_title')}
                         value={isFirstPartyCookiesEnabled}
                         handler={settingChangeHandler}
@@ -363,14 +341,11 @@ const Stealth = observer(() => {
             >
 
                 <SettingsSetCheckbox
-                    // TODO fix type error when SettingsSetCheckbox is rewritten in TypeScript
-                    // @ts-ignore
                     title={translator.getMessage('options_disable_webrtc_title')}
                     description={translator.getMessage('options_disable_webrtc_desc')}
                     disabled={!settings.values[BlockWebRTC]}
                     sectionDisabled={isStealthModeDisabled}
                     id={BlockWebRTC}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     label={translator.getMessage('options_disable_webrtc_title')}
                     value={settings.values[BlockWebRTC]}
                     handler={privacySettingChangeHandlerWithLoader}
@@ -380,14 +355,11 @@ const Stealth = observer(() => {
                     referrer rule with stealth exclusion AG-34765 */}
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
                         title={translator.getMessage('options_hide_referrer_title')}
                         description={translator.getMessage('options_hide_referrer_desc')}
                         disabled={!settings.values[HideReferrer]}
                         sectionDisabled={isStealthModeDisabled}
                         id={HideReferrer}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_hide_referrer_title')}
                         value={settings.values[HideReferrer]}
                         handler={settingChangeHandler}
@@ -396,14 +368,11 @@ const Stealth = observer(() => {
 
                 {settingsStore.isChrome && (
                     <SettingsSetCheckbox
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
                         title={translator.getMessage('options_remove_client_data_title')}
                         description={translator.getMessage('options_remove_client_data_desc')}
                         disabled={!settings.values[RemoveXClientData]}
                         sectionDisabled={isStealthModeDisabled}
                         id={RemoveXClientData}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         label={translator.getMessage('options_remove_client_data_title')}
                         value={settings.values[RemoveXClientData]}
                         handler={settingChangeHandler}
