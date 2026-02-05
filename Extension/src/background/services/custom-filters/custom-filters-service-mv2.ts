@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -17,87 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { NotifierType } from '../../../common/constants';
-import {
-    MessageType,
-    type LoadCustomFilterInfoMessage,
-    type SubscribeToCustomFilterMessage,
-    type RemoveAntiBannerFilterMessage,
-} from '../../../common/messages';
-import { CustomFilterApi, type GetCustomFilterInfoResult } from '../../api/filters/custom';
-import { messageHandler } from '../../message-handler';
-import { notifier } from '../../notifier';
 import { engine } from '../../engine';
-import { type CategoriesFilterData } from '../../api/filters/categories';
+
+import { CustomFiltersServiceCommon } from './custom-filters-service-common';
 
 /**
  * Service for processing events with custom filters.
  */
-export class CustomFiltersService {
+export class CustomFiltersService extends CustomFiltersServiceCommon {
     /**
-     * Init handlers.
+     * @inheritdoc
      */
-    static init(): void {
-        messageHandler.addListener(MessageType.LoadCustomFilterInfo, CustomFiltersService.onCustomFilterInfoLoad);
-        // eslint-disable-next-line max-len
-        messageHandler.addListener(MessageType.SubscribeToCustomFilter, CustomFiltersService.onCustomFilterSubscription);
-        messageHandler.addListener(MessageType.RemoveAntiBannerFilter, CustomFiltersService.onCustomFilterRemove);
-    }
-
-    /**
-     * Returns custom filter info for modal window.
-     *
-     * @param message Message data.
-     *
-     * @returns Custom filter info.
-     */
-    static async onCustomFilterInfoLoad(message: LoadCustomFilterInfoMessage): Promise<GetCustomFilterInfoResult> {
-        const { url, title } = message.data;
-
-        return CustomFilterApi.getFilterInfo(url, title);
-    }
-
-    /**
-     * Add new custom filter.
-     *
-     * @param message Message data.
-     *
-     * @returns Custom filter metadata.
-     */
-    static async onCustomFilterSubscription(message: SubscribeToCustomFilterMessage): Promise<CategoriesFilterData> {
-        const { filter } = message.data;
-
-        const { customUrl, name, trusted } = filter;
-
-        // Creates a filter and enables the group if necessary.
-        const filterMetadata = await CustomFilterApi.createFilter({
-            customUrl,
-            title: name,
-            trusted,
-            enabled: true,
-        });
-
+    protected static override async updateEngine(): Promise<void> {
         engine.debounceUpdate();
-
-        notifier.notifyListeners(NotifierType.CustomFilterAdded);
-
-        return filterMetadata;
-    }
-
-    /**
-     * Removes a custom filter.
-     *
-     * If the filter was enabled, the engine will be updated.
-     *
-     * @param message Message data.
-     */
-    static async onCustomFilterRemove(message: RemoveAntiBannerFilterMessage): Promise<void> {
-        const { filterId } = message.data;
-
-        const wasEnabled = await CustomFilterApi.removeFilter(filterId);
-        if (wasEnabled) {
-            engine.debounceUpdate();
-        }
     }
 }
