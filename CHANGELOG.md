@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/tswebextension] to v4.0.0.
 - Updated [@adguard/agtree] to v4.0.0.
 - Updated [@adguard/scriptlets] to v2.2.15.
+- Updated [@adguard/dnr-rulesets] to v4.0.
 - Improved filtering log performance by optimizing rule text retrieval.
 
 ### Fixed
