@@ -45,7 +45,10 @@ export class PagesApi extends PagesApiCommon {
     });
 
     /** @inheritdoc */
-    protected chromeExtensionStoreForwardAction: ForwardAction.ChromeMv2Store = ForwardAction.ChromeMv2Store;
+    // eslint-disable-next-line class-methods-use-this
+    protected get chromeExtensionStoreForwardAction(): ForwardAction.ChromeMv2Store {
+        return ForwardAction.ChromeMv2Store;
+    }
 
     /** @inheritdoc */
     // eslint-disable-next-line class-methods-use-this
