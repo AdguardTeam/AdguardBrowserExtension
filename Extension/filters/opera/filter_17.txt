@@ -1,9 +1,9 @@
-! Checksum: 2FnSbMwV+KUHsmeN3M9/YA
-! Diff-Path: ../patches/17/17-s-1770027897-3600.patch
+! Checksum: z/w3HuSCTplwMYPhSzvGtw
+! Diff-Path: ../patches/17/17-s-1770352928-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.95
-! TimeUpdated: 2026-02-02T10:22:04+00:00
+! Version: 2.0.12.97
+! TimeUpdated: 2026-02-06T04:39:21+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -22,6 +22,10 @@
 !
 ! NOTE: Generic rules
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/224235
+! https://github.com/AdguardTeam/AdguardFilters/issues/217915
+$removeparam=analytics_context
+$removeparam=analytics_trace_id
 ! Bance
 $removeparam=bance_xuid
 ! Oracle Eloqua
@@ -495,6 +499,10 @@ $removeparam=tduid
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15687218
+||feeder.co^$removeparam=from
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15686111
+ref=shadcn.com^$removeparam=ref
 ! https://github.com/AdguardTeam/AdguardFilters/issues/223803
 ||petbook.de^$removeparam=dicbo
 ||petbook.de^$removeparam=cid
@@ -618,10 +626,6 @@ $removeparam=tduid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/218625
 ||zurichlife.co.jp^$removeparam=waad
 ||zurichlife.co.jp^$removeparam=agentCode
-! https://github.com/AdguardTeam/AdguardFilters/issues/217915
-||chickencoopcompany.com/services/$removeparam=analytics_context
-||chickencoopcompany.com/services/$removeparam=analytics_trace_id
-||shop.app/accounts/$removeparam=analytics_trace_id
 ! byn.kr - any product page via product listing page
 ||byn.kr^$removeparam=rURL
 ! https://github.com/AdguardTeam/AdguardFilters/issues/218031

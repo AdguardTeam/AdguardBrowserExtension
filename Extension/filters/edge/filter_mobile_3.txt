@@ -1,9 +1,9 @@
-! Checksum: 5/5JSie9uciHpS+yTII5Hg
-! Diff-Path: ../patches/3_optimized/3_optimized-s-1770045775-3600.patch
+! Checksum: OHdqPpUWM1VqKrFQz6ochQ
+! Diff-Path: ../patches/3_optimized/3_optimized-s-1770369808-3600.patch
 ! Title: AdGuard Tracking Protection filter (Optimized)
 ! Description: The most comprehensive list of various online counters and web analytics tools. Use this filter if you do not want your actions on the Internet to be tracked.
-! Version: 2.0.99.47
-! TimeUpdated: 2026-02-02T15:19:29+00:00
+! Version: 2.0.99.74
+! TimeUpdated: 2026-02-06T09:19:59+00:00
 ! Expires: 10 days (update frequency)
 !+ NOT_PLATFORM(ext_chromium_mv3)
 www.youtube.com#%#//scriptlet('prevent-xhr', '/\/api\/stats\/atr\?.+?&rt=\d+\.\d+.+?&volume=\d+&cbr=.+?&fexp=v1%[-%0-9C]{300,}&.+?&muted=\d(&vis=3)?&docid=/ method:POST')
@@ -255,6 +255,17 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1) { remove: true; }
 ||ib.snssdk.com^
 ||xlog.snssdk.com^
 ||log.snssdk.com^
+||iconmediapixel-ipv4.com^
+||iconmediapixel.com^
+||whale.camera^
+||log.ablyft.com^
+||participants.evolv.ai^
+||media.evolv.ai^
+||platform.datazoom.io^
+||wtb-tag.mikmak.ai^
+||get.civicscience.com^
+||perfalytics.com^
+||analytics.liine.com^
 ||netcoresmartech.com^
 ||verint-cdn.com^
 ||1mythtracker.xyz^
@@ -65518,6 +65529,19 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1) { remove: true; }
 !+ NOT_PLATFORM(ios, ext_safari, ext_android_cb)
 ||tags.news.com.au^$~script
 |piwik.
+||analytics.editorialedomani.it^
+||pixel.scoring.ru^
+||minimetrika.xsolla.com^
+||um.merinfo.se^
+||ins.connatix.com^
+||lit.connatix.com^
+||tracking.shopee.com.br^
+||iv-datatracker.spx.shopee.sg^
+||livetech.shopee.com.br^
+||a.kupibilet.ru^
+||clientlog.pwsdk.com^
+||dlog.pwsdk.com^
+||cdn-px-v1.metrix.az^
 ||event-tracker.inditex.com^
 ||t.y8.com^
 ||cs.avito.ru^
@@ -122876,6 +122900,7 @@ zmail.mtrl.me$image
 /detroitchicago/reno.js
 /detroitchicago/overlandpark.js
 /script.tagged-events.js
+/_vercel/insights/script.js
 /_vercel/speed-insights/script.js
 /p/tm.js?
 ://analytics.*/hardal
@@ -122963,10 +122988,13 @@ zmail.mtrl.me$image
 /web-pixel-*/worker.modern.js
 /web-pixels@*/web-pixel-*/sandbox/modern/*
 /wpm@*/web-pixel-
+/shopifycloud/perf-kit/shopify-perf-kit-*.min.js
 /shopifycloud/media-analytics/v*/analytics.js
 /shopifycloud/shopify/assets/shop_events_listener-*.js
+/shopifycloud/storefront/assets/shop_events_listener-*.js
 /shopify_stats.js
 /cdn/shopifycloud/consent-tracking-api/*
+/cdn/s/trekkie.storefront.*.min.js
 /shopify-datalayer-minified.js
 /.well-known/shopify/monorail
 /prod/dfm/t8y9347t.min.js
@@ -123519,7 +123547,7 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 ||googletagmanager.com/gtm.js$third-party,script,redirect=google-analytics,domain=~corsair.com|~olx.*|~simon.com|~bethesda.net|~paddle.com|~linodellefateresort.com
 ||googletagservices.com/tag/js/gpt.js$xmlhttprequest,script,redirect=googletagservices-gpt
 !+ NOT_OPTIMIZED
-||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=~golf.com|~today.line.me|~inmuebles24.com|~inside.com.tw|~investing.com|~olx.com.eg|~eksisozluk.com|~heycar.co.uk|~gizmodo.jp
+||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=~golf.com|~today.line.me|~inmuebles24.com|~inside.com.tw|~investing.com|~olx.com.eg|~eksisozluk.com|~heycar.co.uk|~gizmodo.jp|~dexerto.com
 !+ NOT_OPTIMIZED
 ||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,important,domain=turbo.pt
 .demdex.net/id^$redirect=nooptext,important
@@ -123534,6 +123562,21 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 /prod/dfm/t8y9347t.min.js$redirect=nooptext,important,domain=dailycamera.com
 ||google-analytics.com^$object,redirect=noopjs
 ||googletagmanager.com/gtag/$third-party,object,redirect=noopjs
+||s3.amazonaws.com/icontracker/
+||immowelt.de/serp-bff/analytics/
+||amazonaws.com/icontracker/
+||bundles-stats.kachingappz.app/impressions
+||bthaber.com/js/ads-tracker.js
+||bthaber.com/js/news-tracker.js
+||hindustantimes.com/cdp/user/ht
+hindustantimes.com##.middleTaboola
+turkifsalar7.space#%#//scriptlet('remove-node-text', 'script', 'MonsterInsightsDualTracker')
+||amazonaws.com/beacon.*/beacon/before-login.gif?
+kupibilet.ru#%#//scriptlet('set-local-storage-item', 'optimizely-vuid', '$remove$')
+||s-nsk.ppstatic.pl/lib/ppa/v*/js/main.hb.js
+||factually.co/api/track-pageview
+factually.co#%#//scriptlet('set-local-storage-item', 'userBrowserId', '$remove$')
+||api.gamsgo2.com/data_explorer/metric
 ||visahq.com/scripts/tracking_script/
 ||ddwl4m2hdecbv.cloudfront.net/b/*.js.gz
 ||att.com/msapi/chatlogicprocessor/v*/user/events
@@ -124366,7 +124409,6 @@ aihumanizer.ai,humbot.ai#%#//scriptlet('set-local-storage-item', '/__anon_id|bro
 ||api.viqeo.tv/v1/data/track?npvid=
 sky.pro#%#//scriptlet('set-local-storage-item', '/^(sales-ninja|snj)/', '$remove$')
 ||store.vspo.jp/cdn/s/trekkie.
-||store.vspo.jp/cdn/shopifycloud/perf-kit/shopify-perf-kit-*.min.js
 wpde.com##div[class^="index-module_featuredVideosWhiteWrapper"]:has(> div[class^="index-module_videoContainer"] > #taboola-video-reel-new-homepage)
 wpde.com##div[id^="taboolaContainerWrapper"]
 ||resources.hltv.org/hltv-tracking.js
@@ -124915,7 +124957,6 @@ geinoukame.com##.ninja-recommend-block + hr
 ||radar.cloudflare.com/api/analytics
 ||assets.bwbx.io/s3/foundation/event-recorder-client/1.0/event-recorder-client.min.js
 ||api.weglot.com/pageviews?api_key
-||makeship.com/_vercel/insights/script.js
 ||makeship.com/ingest/static/recorder-v2.js
 ||makeship.com/ingest/*?compression=
 ||hellomagazine.com/_vercel/*insights/*.js
@@ -125843,7 +125884,6 @@ cyclestyle.net,rbbtoday.com##.cx-top-news
 ||psr.staticbg.com/rum/monitor.min.js
 ||ebs.co.kr/js/weblogs/nethru/wlo.js
 ||connatix.com^*/pixel?
-||connatix.com/rtb/
 ||knotch-cdn.com/ktag/
 ||owata-net.com/js/ga.js
 ||blog-rss.com/track/
@@ -129654,6 +129694,8 @@ $cookie=_pubcid
 $cookie=pbjs-unifiedid
 $cookie=bf_lead
 $cookie=bf_visit
+||newspicks.com^$cookie=np_uuid
+||kupibilet.ru^$cookie=kb_client_id
 ||nicegram.app^$cookie=X-identify
 ||usnews.com^$cookie=usn_visitor_id
 ||kayak.com^$cookie=kmkid
@@ -130265,6 +130307,7 @@ $cookie=ev_did,domain=diariovasco.com
 ||analytics-sprint.qoqa.com^
 ||analytics.qoqa.ch^
 ||analytics.qoqa.com^
+||inapps.appsflyersdk.com^
 ||skadsdk.appsflyersdk.com^
 ||attr.appsflyersdk.com^
 dynamic-report-api.appsflyersdk.com^
@@ -130330,6 +130373,9 @@ dlsdk.appsflyer.com^
 ||int.vlancaa.site^
 ||int.vlancaa.fun^
 ||tok.vaicore.xyz^
+||log1.cmpassport.com^
+||bi-report.maxnapps.com^
+||events.production.us1.pgw-pci.klarna.net^
 ||event-gateway.data.karrotmarket.com^
 ||h-adashx4id.ut.taobao.com^
 ||gjtrack.ucweb.com^
@@ -131453,6 +131499,8 @@ d4?appid*type*
 !### Temporary ###
 @@||st-*.dynamicyield.com/st*&inHead=true&id=*&jsession=*scriptVersion=*&noConsent=
 !#################
+@@||optimizely.com^$image,domain=marinco.navico.com
+@@||adobedc.demdex.net^$xmlhttprequest,domain=sc.com
 @@||src.litix.io/*/bitmovin-mux.js$domain=shoof.alkass.net
 @@||lptag.liveperson.net^$domain=yesstyle.com
 @@||cdn.optimizely.com/datafiles/$domain=metro.at|metro.bg|metro-cc.hr|metro.fr|metro.it|metro-kz.com|metro.md|metro.pk|metro.ro|metro.rs|metro.sk|makro.es|metro-tr.com|metro.ua|makro.pt|metro.de
@@ -134293,6 +134341,7 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||doggieshome.com^
 ||dollardelta.com^
 ||dollarthrill.com^
+||domaincolumn.com^
 ||doomhedge.com^
 ||doubledefend.com^
 ||doubtdrawer.com^
@@ -134928,6 +134977,7 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||motionlessbelief.com^
 ||motionlessmeeting.com^
 ||mountedbattery.com^
+||movableobject.com^
 ||movemeal.com^
 ||mowgoats.com^
 ||muddledaftermath.com^
@@ -134994,6 +135044,7 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||objectsnetwork.com^
 ||oblivionfleet.com^
 ||obscenesidewalk.com^
+||obscurespace.com^
 ||obsidiangems.com^
 ||octaneblood.com^
 ||offerniche.com^
@@ -135028,6 +135079,7 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||overconfidentfood.com^
 ||overkick.com^
 ||overratedchalk.com^
+||owlbees.com^
 ||owlreporter.com^
 ||owlsr.us^
 ||owlstwo.com^
@@ -135056,6 +135108,7 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||pawsnug.com^
 ||peacefullimit.com^
 ||pedropanther.com^
+||peeringhost.net^
 ||pegsbuttons.com^
 ||perceivequarter.com^
 ||perfectfetch.com^

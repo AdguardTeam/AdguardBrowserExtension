@@ -1,10 +1,12 @@
-! Checksum: 0eVHyW10/25Yz1VuUkWN9Q
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1770027893-3600.patch
+! Checksum: oCHMCfO/efHoOB/WndRsMg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1770352923-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.95
-! TimeUpdated: 2026-02-02T10:22:04+00:00
+! Version: 2.0.12.97
+! TimeUpdated: 2026-02-06T04:39:21+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=analytics_context
+$removeparam=analytics_trace_id
 $removeparam=bance_xuid
 $removeparam=elqTrackId
 $removeparam=elq
@@ -316,6 +318,8 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||feeder.co^$removeparam=from
+ref=shadcn.com^$removeparam=ref
 ||petbook.de^$removeparam=dicbo
 ||petbook.de^$removeparam=cid
 ||riamo.ru^$removeparam=from
@@ -399,9 +403,6 @@ $removeparam=tduid
 ||healthgrades.com^$removeparam=referrerSource
 ||zurichlife.co.jp^$removeparam=waad
 ||zurichlife.co.jp^$removeparam=agentCode
-||chickencoopcompany.com/services/$removeparam=analytics_context
-||chickencoopcompany.com/services/$removeparam=analytics_trace_id
-||shop.app/accounts/$removeparam=analytics_trace_id
 ||byn.kr^$removeparam=rURL
 ||smbc.co.jp^$removeparam=aff
 ||smbc.co.jp^$removeparam=um

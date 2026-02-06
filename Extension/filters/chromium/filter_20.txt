@@ -1,9 +1,9 @@
-! Checksum: CLxwHHHpVgrgjRw2w8ibRA
-! Diff-Path: ../patches/20/20-s-1770045770-3600.patch
+! Checksum: PEysglp4h6wIoh4uE0zY3A
+! Diff-Path: ../patches/20/20-s-1770352915-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.26.88
-! TimeUpdated: 2026-02-02T15:20:00+00:00
+! Version: 2.0.27.3
+! TimeUpdated: 2026-02-06T04:39:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,15 @@ alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,ra
 !
 !
 !
+trendyol.com###smartbanner-wrapper
+megapteka.ru##.banner-podcast
+blog.espaces.com.br##a[href^="https://espaces.com.br/app"]
+coincodex.com##.get-app-wrapper
+cooking.nytimes.com##div[class^="css-"]:has(> div[data-testid="onsite-messaging-unit-cookingDock"])
+jiotv.com##.bannerContainer
+jiotv.com##div[class^="CtaBanner_"]
+op.gg##.w-full > div.items-center:has(> a[href^="https://itunes.apple.com/"])
+mega.nz##.application
 m.yelp.com##div[data-testid="smart-banner-pitch-app-gif"]
 [$path=/maps]google.*##div[role="main"] > div.pL6he
 [$path=/maps]google.*##ul[role="list"] > li.bzdiDe
@@ -337,7 +346,6 @@ redecanaistv.*,redecanais.*##.pm-video-heading > div[style]:has(> a[href="./andr
 gamersky.com##.pc-downLoad
 fenerbahce.org#%#//scriptlet('trusted-set-local-storage-item', 'superapp', '$now$')
 ||cdn.ekoltv.com.tr/news/44102.jpg
-ekoltv.com.tr##.banner
 energogarant.ru#%#//scriptlet('set-cookie', 'show_apps', 'true')
 sberhealth.ru###mobileAppBanner
 reso.ru##.main-mobileApps-bunner
@@ -1112,7 +1120,7 @@ bbcgoodfood.com##.piano-inline-template__content
 makc.ru###main-mobile-app
 finance.yahoo.com#$#body > div.wafer-lightbox-overlay:has(> div.wafer-ligthbox-source-subscription-monalixa-overlay-lightbox) { display: none !important; }
 finance.yahoo.com#$#html { overflow: auto !important; }
-pages.daraz.pk,idefix.com,lescon.com.tr,telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
+megapteka.ru,pages.daraz.pk,idefix.com,lescon.com.tr,telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
 telekom.de#%#//scriptlet('trusted-set-cookie', 'mma-banner', 'viewed')
 cod.tracker.gg,halotracker.com##.app-promo-section
 tracker.gg##.profile-hint
@@ -2514,7 +2522,7 @@ nicovideo.jp###jsSmartAppBanner
 seiga.nicovideo.jp##.launch_app_container
 seiga.nicovideo.jp##.related_info_main > div[style*="lohas.nicoseiga.jp/material/"]
 seiga.nicovideo.jp#?#a[href="https://site.nicovideo.jp/nicomanga/?appstore=1"][style^="width: 100%; text-align: center; background-color"]:upward(1)
-wealthadvisor.co.jp,gos-oplata.ru,bushikaku.net##.banner
+megapteka.ru,ekoltv.com.tr,wealthadvisor.co.jp,gos-oplata.ru,bushikaku.net##.banner
 ||tomorrowland.co.jp/assets/smartbanner/
 ||noin.shop/_nuxt/img/btn_webapp.appStore
 nbblog.jp###App
@@ -2701,7 +2709,7 @@ economictimes.indiatimes.com##.artData > div[data-url="/primebenefits_slider.cms
 m.bithumb.com###appInstallInducePopup
 collabo-cafe.com##.app__smart__dl
 webtoons.com##.foot_app
-boredpanda.com,hackread.com##.get-app
+coincodex.com,boredpanda.com,hackread.com##.get-app
 tryzapp.com##.jss6
 tryzapp.com##.jss69
 chorki.com##.appstore-suggestion

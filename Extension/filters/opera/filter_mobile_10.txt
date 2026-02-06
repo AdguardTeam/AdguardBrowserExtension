@@ -1,9 +1,9 @@
-! Checksum: Eq0EmKTwYwYYyfW2Fw+3BA
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1769541396-3600.patch
+! Checksum: jhFeuXvloZB+k6TGWjv06w
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1770239810-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.85
-! TimeUpdated: 2026-01-27T19:13:23+00:00
+! Version: 2.0.3.86
+! TimeUpdated: 2026-02-04T21:14:04+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -172,7 +172,6 @@ zalando.de#@##main-content div[class]:has(> div[class^="_"][data-trckng-componen
 docfinder.at#@#.search-results > .search-result:has(> a > .top > .base-info > .sub > .advert)
 search.brave.com#@#div[data-advertiser-id]
 buscape.com.br#@#div[class^="Hits_SponsoredWrapper__"]
-@@||developer.mozilla.org/pong/
 @@||startpage.com/adsense/search/async-ads.js$domain=startpage.com
 ebay.de#@?#.srp-list > .s-item:has(> div > .s-item__info > a > div[style="display:flex;"] span[role="text"] > span:contains(A) ~ span:contains(N) ~ span:contains(Z))
 ebay.com,ebay.co.uk,ebay.com.au#@?#div[itemtype="https://schema.org/Product"] div[id^="merch_html_"]:has(> div[id] .mfe-header > h2.mfe-pull-left:contains(Sponsored))

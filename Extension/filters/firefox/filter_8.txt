@@ -1,9 +1,9 @@
-! Checksum: pSBrawYs3kZvOW4V+Kt5Fw
-! Diff-Path: ../patches/8/8-s-1770039271-3600.patch
+! Checksum: gjmdW+8ADzh8z0GN+xUdZQ
+! Diff-Path: ../patches/8/8-s-1770146733-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.95
-! TimeUpdated: 2026-02-02T13:31:19+00:00
+! Version: 2.0.8.96
+! TimeUpdated: 2026-02-03T19:22:35+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1778,6 +1778,7 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+ad.cw##.ad-main-advertisement-top
 mijnwoordenboek.nl##.slider-wrap:has(> div[id^="Mijnwoordenboek."])
 mijnwoordenboek.nl##div[id^="Mijnwoordenboek."]
 mijnwoordenboek.nl##div[style="min-height:270px"]
@@ -2093,6 +2094,13 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/224045
+ad.cw#@#.ad-content
+ad.cw#@#.ad-main
+ad.cw#@#.ad-container-wrapper
+ad.cw#@#.ad-header
+ad.cw#@#.ad-col
+ad.cw#@#.ad-row
 ! https://github.com/AdguardTeam/AdguardFilters/issues/216470
 wintersport.nl#@?#.mb-6:contains(gesponsord)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/213830

@@ -1,9 +1,9 @@
-! Checksum: 4w7vBFNALUFsnsKifHlKHA
-! Diff-Path: ../patches/1/1-s-1770045776-3600.patch
+! Checksum: 65oA/LiS4jNTAP0aGpHIbQ
+! Diff-Path: ../patches/1/1-s-1770352921-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.4.12
-! TimeUpdated: 2026-02-02T15:19:10+00:00
+! Version: 2.1.4.17
+! TimeUpdated: 2026-02-06T04:38:40+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -6976,6 +6976,8 @@ vedomosti.ru,kommersant.ru,rg.ru,glavbukh.ru,chehov-vid.ru,161.ru,prufy.ru,ysia.
 !
 !
 !
+apteka.ru#%#//scriptlet('set-cookie', 'mayBeInteresting', '1')
+sportsdaily.ru##div[class^="bkPromo_bkPromo_"]
 riamo.ru##body > div[class^="_1"] > div[class^="_1"]  > div[class*="_1"][style^="--"]:has(> div[id^="sbo_"])
 riamo.ru##article > div[style^="--"]:has(> div.js-setka-news[data-bid])
 riamo.ru##article > div[style^="--"]:has(> .smi24__informer)
@@ -7204,7 +7206,6 @@ loads.ati.su##div[class*="skeleton"]
 bankrotstvo.info##.side-banner
 ||meduza.io/api/w*/banners
 promokodi.net##.cashback-store-leftcol-banner
-instapv.com##.w-full > div.items-center:has(> div.w-full > div[data-freestar-ad])
 sports.ru##.layout-branding
 sports.ru##.odds-widget
 sports.ru#?#.online-layout__third-position > h2.widget-heading:contains(Коэффициенты)
@@ -16889,6 +16890,7 @@ itc.ua,devby.io,profile.ru,glavred.info,pushkino.tv,tglink.ru,mos.news,nvdaily.r
 astromeridian.ru,forums.rusmedserv.com,gamemag.ru,igrigo.net,igru-xbox.net,itbukva.com,kinokrad.co,miytvideo.ru,repackov.net,seeyoupage.ru,torrentum.ru,tourister.ru,warfiles.ru##body > noindex
 !
 ! sport24.ru
+sport24.ru##main div[data-mobile-4]:has(> div[style] > a[class] > .bookmaker-rating)
 sport24.ru##div[style="height:3rem;margin-bottom:0.75rem"]
 sport24.ru##div:has(> a[style="cursor: pointer;"] > img[alt="winline"])
 sport24.ru##div[style^="--bg-color: #141419;"]:has(> a[style^="cursor:"] svg path[d^="M5.03 1.374C5.732"])

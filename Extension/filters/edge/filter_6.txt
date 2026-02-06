@@ -1,9 +1,9 @@
-! Checksum: PzqE5bfR3Nw44Bq60r8azA
-! Diff-Path: ../patches/6/6-s-1770048974-3600.patch
+! Checksum: rDZruLu9ksuQSeLytUbrAQ
+! Diff-Path: ../patches/6/6-s-1770359210-3600.patch
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.50.95
-! TimeUpdated: 2026-02-02T16:13:13+00:00
+! Version: 2.0.51.3
+! TimeUpdated: 2026-02-06T06:23:49+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -41,7 +41,6 @@
 ||cockpit.symplr.de^$third-party
 ||afl-static-cdn.newbiz-prod.stroeerws.de^$third-party
 ||embed.contentverticals.de^$third-party
-||ablyft.com^$third-party
 ||tikibihu.com^$third-party
 ||partners2.das-onlinespiel.de^$third-party
 ||intextlinks.idg.zone^$third-party
@@ -1550,6 +1549,12 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+immowelt.de##div[data-testid="serp-masthead-testid"]
+immowelt.de##div[data-testid="serp-inline-ad"]
+immowelt.de##div[id^="div-gam-ad-"]
+gmx.de,gmx.net##div[data-container="middle"]
+spiegel.de##section.relative[data-area="block>smartfeed"]:has(.peer[data-target-id="smartfeed-sponsored-box-1"])
+||teltarif.de/ad/
 linguee.de##.lMainNavbar__left > a[href^="https://www.DeepL.com/"]
 linguee.de###DeepLAppPromoStartPage
 verkehrslage.de##.overlay
@@ -5932,8 +5937,6 @@ ikea.com.tr#@#.firstload
 @@||t.cpdsrv.de/cpt.js$domain=noz.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/175205
 kleinanzeigen.de#@#[data-adid]
-! https://github.com/AdguardTeam/AdguardFilters/issues/168673
-@@||cdn.ablyft.com/s/$domain=giesswein.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167849
 lmdfdg.com#@##link_placeholder
 ! https://github.com/AdguardTeam/AdguardFilters/issues/158314
@@ -8808,7 +8811,7 @@ ww3.cad.de###WzTtDiV + table[Width="100%"][border="0"]
 mallorcazeitung.es###_mo_cti
 musiker-board.de###abAside
 spielesite.com###acTop
-sis-handball.de###ad
+schnelle-online.info,sis-handball.de###ad
 schmidtisblog.de###ad-before-1stparagraph
 heise.de###ad-landingpage-top
 pokewiki.de,timeanddate.de###ad1
@@ -9289,6 +9292,7 @@ insuedthueringen.de,np-coburg.de###rectangle_1_wrapper
 kurier.de###rectangle_2
 gelbeseiten.de###rectangles
 produck.de###rel-article
+11880.com###responsive-bhvr--ad-sidebar-sm-md-lg
 preispirat.ch###responsivePcard
 pressecop24.com###responsive_lightbox_image_widget-5
 pressecop24.com###responsive_lightbox_image_widget-6
@@ -9579,9 +9583,12 @@ ak-kurier.de,nr-kurier.de,ww-kurier.de##.ad + .uk-panel
 alpin.de,immobilienscout24.de,radioklassik.at##.ad-banner
 alpin.de##.ad-banner-billboard
 apollo-news.net##.ad-before-content
+apollo-news.net##.ad-box-border-space
 gebraucht-kaufen.de,it-daily.net,mixed.de,nebelspalter.ch,northdata.de,raetsel-hilfe.de,sueddeutsche.de,swissmom.ch,the-decoder.de,tt.com,watchtime.net,zeit.de##.ad-container
 aerzteblatt.de##.ad-container-dont-remove-me
 heise.de##.ad-desktop-group-2
+apollo-news.net##.ad-home-feed-box
+apollo-news.net##.ad-in-article-box
 hallo-minden.de##.ad-info
 augsburger-allgemeine.de##.ad-list_small-native-container
 diegrenzgaenger.lu##.ad-listing
@@ -9661,6 +9668,7 @@ fitbook.de,myhomebook.de,stylebook.de,techbook.de,travelbook.de##.affiliate-o2
 fitbook.de,myhomebook.de,stylebook.de,techbook.de,travelbook.de##.affiliate-saturn
 fitbook.de,myhomebook.de,stylebook.de,techbook.de,travelbook.de##.affiliate-tink
 pcgames.de##.affiliateBelowArticle
+achgut.com##.ag-wrapper
 radiodeutsch.com##.ai-placement
 nachbelichtet.com##.ai-track
 genialetricks.de,leckerschmecker.me,veggieboom.com##.ai-viewport-1
@@ -9844,6 +9852,7 @@ russland.capital,russland.news##.bodShopWidget
 fairaudio.de##.borlabs-dealer
 fairaudio.de##.borlabs_fairaudio_ads_widgetx
 gesundheit.de,onmeda.de##.box--ad
+11880.com##.box-entry-detail--ad
 wetter.at##.box.contentBoard.default.highlights
 schiene.de##.box.w300.h250.mb40
 liveticker.com##.boxOverContent
@@ -11126,7 +11135,7 @@ pictures-magazin.de##div[class^="pictu-"]
 mietminderungstabelle.de##div[class^="placeholderAdBox_"]
 rundschau.info##div[class^="runds-werbung-"]
 berliner-kurier.de,berliner-zeitung.de##div[class^="showheroes_"]
-berliner-kurier.de,berliner-zeitung.de,evangelische-zeitung.de##div[class^="traffective_"]
+berliner-kurier.de,berliner-zeitung.de,evangelische-zeitung.de,wochenblatt-reporter.de##div[class^="traffective_"]
 fraenkischertag.de##div[class^="werb-block-"]
 winfuture.de##div[class^="ws_contentAd"]
 amazon.de##div[data-ad-id]
@@ -11440,6 +11449,7 @@ lokalo.de##img[Width="770"]
 teneriffa-aktuell.com##img[Width="800"][height="230"]
 teneriffa-aktuell.com##img[Width="900"][height="350"]
 t-online.de,www-t--online-de.cdn.ampproject.org##img[Width="920"][usemap^="#immap"]
+schnelle-online.info##ins[data-ad-client]
 sumikai.com##ins[data-meh-id]
 tuhlteim.de##ins[style*="width: 300px; height: 250px;"]
 fuersie.de,idee-fuer-mich.de,jolie.de,leben-und-erziehen.de,maedchen.de,ok-magazin.de,petra.de,vital.de##kas
@@ -11573,6 +11583,7 @@ laola1.at##.block.medium:has(a[href^="https://dt.sportradar.com/"])
 preis24.de##.box.box-style1:has(.notice)
 gesundheit.de##.box.img_link:has(.advertorial_hint)
 wallstreet-online.de##.breakingNewsOfferteBox:has(span.offerteFlag)
+freitag.de##.bv-grid__breakout-l:has(.bc-cluster--ad)
 welt.de##.c-inline-teaser__body.c-inline-teaser__body--is-standalone:has(a[href^="https://www.financeads.net/tc.php?"])
 sportscheck.com##.c-product-tile:has(div.c-product-tile__sponsored)
 experten.de##.c-sidebar:has(> .widget-odd > div[class^="c-ad-exper-"])
@@ -11581,6 +11592,7 @@ automotiveit.eu,instandhaltung.de,produktion.de,technik-einkauf.de##.ce_postlist
 all-electronics.de,automotiveit.eu,produktion.de##.ce_topicbox:has(.label-ad-highlight)
 alfons-wurm-olpe.de,dreierlei-restaurant.de##.code-block:has(.hb-ad-inpage)
 ibooks.to##.code-block:has(i.fa-cloud-download-alt)
+wochenblatt-reporter.de##.content-card-wrap.pointer.outlined:has(.cmmrc-tag)
 shop-apotheke.at##.cross-sell-horizontal-slider__item-wrapper:has([href^="https://api.sae.systems/rma/api/v"])
 feuerwehrmagazin.de##.excerpt-tile.cell.small-12.medium-6:has(.advertorials)
 print.de##.excerpt-tile.cell:has(.advertorials)
@@ -11654,6 +11666,7 @@ connect.de,pc-magazin.de##.teaser:has(.teaser__promolabel)
 wallstreet-online.de##.teaser:has(span.generalAdTag)
 fuersie.de##.teaser__item:has(.teaser__adtype)
 immobilienscout24.de##.touchpoint-space:has(div[data-testid="dsa-link"])
+regensburg-digital.de##.uk-panel-box:has(.uk-badge-warning)
 eurotransport.de##.v-A_-sidecol__list__item:has(.v-A_-teaser__tag--ad)
 caravaning.de,motorradonline.de,outdoor-magazin.com,promobil.de##.v-A_-teaser__halfcol__listitem:has(.v-A_-teaser__tag--ad)
 elektrobike-online.com,roadbike.de##.v-A_-topteaser__article:has(.v-A_-teaser__tag--ad)

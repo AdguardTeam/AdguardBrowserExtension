@@ -1,9 +1,9 @@
-! Checksum: 8oEE+vH2ByBpCO3+HDrF5Q
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1770039271-3600.patch
+! Checksum: vmLKr7en/Elj1unbIpdVGw
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1770146733-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.8.95
-! TimeUpdated: 2026-02-02T13:31:19+00:00
+! Version: 2.0.8.96
+! TimeUpdated: 2026-02-03T19:22:35+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -1618,6 +1618,7 @@ omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
 ||svonm.com/*config.json$replace=/"enabled": true\,/"enabled":false\,/i,important
+ad.cw##.ad-main-advertisement-top
 mijnwoordenboek.nl##.slider-wrap:has(> div[id^="Mijnwoordenboek."])
 mijnwoordenboek.nl##div[id^="Mijnwoordenboek."]
 mijnwoordenboek.nl##div[style="min-height:270px"]
@@ -1910,6 +1911,12 @@ voipsipclient.blogspot.nl##.adsbygoogle
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_dutch
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+ad.cw#@#.ad-content
+ad.cw#@#.ad-main
+ad.cw#@#.ad-container-wrapper
+ad.cw#@#.ad-header
+ad.cw#@#.ad-col
+ad.cw#@#.ad-row
 wintersport.nl#@?#.mb-6:contains(gesponsord)
 moviemeter.nl#%#//scriptlet('trusted-suppress-native-method', 'document.write', '"adswag.nl"', 'prevent')
 puna.nl#@#.raw-html-component

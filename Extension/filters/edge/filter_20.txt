@@ -1,9 +1,9 @@
-! Checksum: PQh6zgsyw5t9fWi8zW/0ZQ
-! Diff-Path: ../patches/20/20-s-1770045774-3600.patch
+! Checksum: Z2IF7O9KfjxTOY1a8vR7pw
+! Diff-Path: ../patches/20/20-s-1770352920-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.26.88
-! TimeUpdated: 2026-02-02T15:20:00+00:00
+! Version: 2.0.27.3
+! TimeUpdated: 2026-02-06T04:39:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,15 @@ alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepeti.com,ra
 !
 !
 !
+trendyol.com###smartbanner-wrapper
+megapteka.ru##.banner-podcast
+blog.espaces.com.br##a[href^="https://espaces.com.br/app"]
+coincodex.com##.get-app-wrapper
+cooking.nytimes.com##div[class^="css-"]:has(> div[data-testid="onsite-messaging-unit-cookingDock"])
+jiotv.com##.bannerContainer
+jiotv.com##div[class^="CtaBanner_"]
+op.gg##.w-full > div.items-center:has(> a[href^="https://itunes.apple.com/"])
+mega.nz##.application
 m.yelp.com##div[data-testid="smart-banner-pitch-app-gif"]
 [$path=/maps]google.*##div[role="main"] > div.pL6he
 [$path=/maps]google.*##ul[role="list"] > li.bzdiDe
@@ -337,7 +346,6 @@ redecanaistv.*,redecanais.*##.pm-video-heading > div[style]:has(> a[href="./andr
 gamersky.com##.pc-downLoad
 fenerbahce.org#%#//scriptlet('trusted-set-local-storage-item', 'superapp', '$now$')
 ||cdn.ekoltv.com.tr/news/44102.jpg
-ekoltv.com.tr##.banner
 energogarant.ru#%#//scriptlet('set-cookie', 'show_apps', 'true')
 sberhealth.ru###mobileAppBanner
 reso.ru##.main-mobileApps-bunner
@@ -1112,7 +1120,7 @@ bbcgoodfood.com##.piano-inline-template__content
 makc.ru###main-mobile-app
 finance.yahoo.com#$#body > div.wafer-lightbox-overlay:has(> div.wafer-ligthbox-source-subscription-monalixa-overlay-lightbox) { display: none !important; }
 finance.yahoo.com#$#html { overflow: auto !important; }
-pages.daraz.pk,idefix.com,lescon.com.tr,telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
+megapteka.ru,pages.daraz.pk,idefix.com,lescon.com.tr,telekom.de,openrice.com,pass.telekom.de,lazada.com.ph,lamoda.ru,lazada.co.id,milliyet.com.tr,esky.com.tr,allo.ua,home24.de,cbsnews.com,lieferheld.de##.smart-banner
 telekom.de#%#//scriptlet('trusted-set-cookie', 'mma-banner', 'viewed')
 cod.tracker.gg,halotracker.com##.app-promo-section
 tracker.gg##.profile-hint
@@ -2514,7 +2522,7 @@ nicovideo.jp###jsSmartAppBanner
 seiga.nicovideo.jp##.launch_app_container
 seiga.nicovideo.jp##.related_info_main > div[style*="lohas.nicoseiga.jp/material/"]
 seiga.nicovideo.jp#?#a[href="https://site.nicovideo.jp/nicomanga/?appstore=1"][style^="width: 100%; text-align: center; background-color"]:upward(1)
-wealthadvisor.co.jp,gos-oplata.ru,bushikaku.net##.banner
+megapteka.ru,ekoltv.com.tr,wealthadvisor.co.jp,gos-oplata.ru,bushikaku.net##.banner
 ||tomorrowland.co.jp/assets/smartbanner/
 ||noin.shop/_nuxt/img/btn_webapp.appStore
 nbblog.jp###App
@@ -2701,7 +2709,7 @@ economictimes.indiatimes.com##.artData > div[data-url="/primebenefits_slider.cms
 m.bithumb.com###appInstallInducePopup
 collabo-cafe.com##.app__smart__dl
 webtoons.com##.foot_app
-boredpanda.com,hackread.com##.get-app
+coincodex.com,boredpanda.com,hackread.com##.get-app
 tryzapp.com##.jss6
 tryzapp.com##.jss69
 chorki.com##.appstore-suggestion
@@ -3961,6 +3969,15 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+newspicks.com#%#//scriptlet('trusted-set-cookie', 'show_app_lead', '$currentISODate$', '', '/', 'newspicks.com')
+contacts.google.com##body > div[class="GENl2b"][jslog$=" track:impression"]
+x.com#%#//scriptlet('trusted-click-element', 'main div[data-testid="primaryColumn"] div[aria-label="Home timeline"] a[href^="https://apps.apple.com/app/apple-store/"] + button[aria-label="Dismiss"]')
+x.com#%#//scriptlet('trusted-click-element', 'main div[data-testid="primaryColumn"] div[aria-label="Home timeline"] a[href^="market://details?id=com.twitter.android"] + button[aria-label="Dismiss"]')
+x.com#%#//scriptlet('trusted-click-element', 'div[role="group"] > div[data-testid="mask"] + div button', 'containsText:Continue on web')
+megapteka.ru##.rustore
+mountain-forecast.com#$#html { padding-top: 0 !important; }
+mountain-forecast.com#$#.smartbar { display: none !important; }
+aptoide.com#%#//scriptlet('set-cookie', 'closeInstaller', 'true')
 sp.chunichi.co.jp###headAppArea
 zeta-ai.io#%#//scriptlet('trusted-set-local-storage-item', 'mmkv.default\APP_DOWNLOAD_MODAL_SHOWN', '$currentISODate$')
 zeta-ai.io###contents > div.flex > div[class] > button:has(> div[class] > img[srcset^="https://web-cdn.zeta-ai.io/"][srcset*="/media/banner-image."])
@@ -4079,7 +4096,7 @@ familydollar.com#%#//scriptlet('set-local-storage-item', 'isDisplayDownloadAppSe
 aviasales.ru#%#//scriptlet('set-cookie', 'mobile_app_redirect', '1')
 vevor.co.uk##.AppDrainage
 hh.ru##div[class^="magritte-card"]:has(a[href^="https://hhlink.onelink.me/"])
-hh.ru#%#//scriptlet('trusted-set-local-storage-item', 'appPromoBannerHiddenUntil', '99999999999999')
+zarplata.ru,hh.ru#%#//scriptlet('trusted-set-local-storage-item', 'appPromoBannerHiddenUntil', '99999999999999')
 m.unice.com##.appHead-item
 tiktok.com##div[class*="-DivBannerInVideo"]
 m.koupon.ai##div[class^="Banner__Frame"]
@@ -4100,7 +4117,6 @@ m.yelp.*##div[class]:has(> div[class^="overlay-wrapper"] > a[data-testid="pitch-
 fashionnova.com##.footer > div.fixed.bottom-0:has(> div.relative a[href^="https://play.google.com/store/apps/details?id=co.tapcart.app.npQt0DXZpj"])
 tripadvisor.com##div[class]:has(> a[href^="https://tripadvisor.onelink.me/"][href*="?pid=mobilewebsite"])
 joom.com##div[class^="disclaimer___"] + div > div[class^="wrapper___"] > div[class^="banner___"]
-x.com##div[data-testid="primaryColumn"] > div[aria-label] > div > div:has(> a[href^="https://apps.apple.com/app/apple-store/id333903271"])
 nhk.or.jp###app_introduce
 web.nhk##body > div[class^="_"] > div[class*=" "][role="region"][aria-labelledby]
 townwork.net#%#//scriptlet('set-cookie', 'isAppBannerTopClosed', 'true')
@@ -4129,11 +4145,6 @@ gaitame.com###ad-marketnext
 pinterest.com#%#//scriptlet('set-session-storage-item', 'showedAppUpsellCurrentSession', 'true')
 pinterest.com#%#//scriptlet('trusted-set-local-storage-item', 'appUpsell', '$now$')
 ||m.webaslan.com/_img/banner/wa
-x.com#$#div[role="group"] > div[data-testid="mask"] + div:has(a[download]) { display: none !important; }
-x.com#$#div[role="group"]:has(> div[data-testid="mask"] + div:last-child a[download]) { display: none !important; }
-x.com#$#div[role="group"] > div[style]:not([class]):has(> div[class] > div[class] > a[href^="https://apps.apple.com/app/apple-store/"]) { display: none !important; }
-x.com#$#div[role="group"] > div[data-testid="mask"] { display: none !important; }
-x.com#$#html[style] { overflow: auto !important; position: static !important; }
 olimp.bet#$##header { top: 0 !important; }
 olimp.bet#$##subheader { top: 3rem !important; }
 olimp.bet#$##app-download-banner { display: none !important; }

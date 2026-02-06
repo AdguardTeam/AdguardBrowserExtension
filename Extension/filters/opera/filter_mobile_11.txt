@@ -1,9 +1,9 @@
-! Checksum: e0tLpEs9kPjMeqptDXPp8w
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1770045780-3600.patch
+! Checksum: 7lQnhWdnRwJcQVzlhmqK+Q
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1770308615-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.67.49
-! TimeUpdated: 2026-02-02T15:19:44+00:00
+! Version: 2.0.67.56
+! TimeUpdated: 2026-02-05T16:20:24+00:00
 ! Expires: 10 days (update frequency)
 ||banner.bet365partners.com^
 ||playwire.com^
@@ -95,6 +95,8 @@
 ||startup.mobile.yandex.net^
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
+||ad-api.maxnapps.com^
+||d3vgkjyuhp91nc.cloudfront.net^
 ||rainmaker4.production-public.tubi.io^
 ||x3m.biz^
 ||d1tru86qrby720.cloudfront.net^
@@ -1619,12 +1621,22 @@ qlife.jp,wiki.yjsnpi.nu,opinion.cw.com.tw,aidoly.net,celeby-media.net,kyun2-girl
 chip.de,gamesworld.de,fnn.jp##.Ad
 medipalette.lotte.co.jp,genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
+finance.yahoo.co.jp##li[class*="_InfiniteBbs__item--mmon_"]
+sports.yahoo.co.jp###ad-nm
+ensonhaber.com##.bn-wrapper
+hindustantimes.com##.mWebTopAdSticky
+hindustantimes.com##.bottomFixAd
+fucker.com##.a-con-m
+pornbaker.com###before-list-boxes-mobile-singl_2
+pornbaker.com###before-list-boxes-mobile-singl
+pornbaker.com###inside-video-boxes-mobile2_2
+pornbaker.com###inside-video-boxes-mobile2
 baseballchannel.jp###sp_all_header
 itc.ua##.image-100
 walica.jp##footer + div.fixed.bottom-0.left-0.right-0.z-50.sm\:hidden
 thetoc.gr##.bannerparent
 thetoc.gr##.mg_underhero
-m.yelp.com##div[class*="new-serpia-"] > ol > li:has(div[data-traffic-crawl-id="SearchResultBizName"] > h3 > a[href^="/adredir?"])
+m.yelp.com##div[class*="new-serpia-"] > ol > li:has(a[href^="/adredir?"])
 m.yelp.com##div[class*="new-serpia-"] > ol > li:has(> div[class*="sponsored-icon"])
 4j.com###Games_TopAdDiv
 mydealz.de##div[class]:has(> .ad--bg:only-child)
@@ -6142,7 +6154,6 @@ swedroid.se##div[id^="swedroid_mobil"] > iframe
 m.sabah.com.tr##div[data-mbzone="AltBant"]
 m.sabah.com.tr##div[data-mbzone-loaded="728x90"]
 m.sabah.com.tr#$#.promo { display: none !important; }
-m.sabah.com.tr#$#.promo + :is(.userPrivate, .container, .manset, #infContentCover, #contextual) { margin-top: 60px !important; }
 m.sabah.com.tr#$#.infgaleritrend .frame > .modal-closing > .topDetail > .article-header { margin-top: 60px !important; }
 /:\/\/[A-Za-z0-9]+.ru\/[A-Za-z0-9]{20,25}.js/$domain=music-radio.ru
 dnpr.com.ua,dp.ua,dialog.ua##amp-iframe[src^="https://m.mixadvert.com/"]
