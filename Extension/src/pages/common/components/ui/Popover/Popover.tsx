@@ -28,7 +28,7 @@ import { AttachmentPortal } from '../../AttachmentPortal';
 import { Tooltip } from '../Tooltip';
 import { type Position } from '../../types';
 
-import './popover.pcss';
+import styles from './popover.module.pcss';
 
 /**
  * Default delay before showing popover.
@@ -44,7 +44,7 @@ type PopoverParams = {
     /**
      * Popover text.
      */
-    text?: string;
+    text?: string | React.ReactNode;
 
     /**
      * Delay before showing popover.
@@ -55,11 +55,6 @@ type PopoverParams = {
      * Flag to show "Coming soon" text and use 'help' cursor.
      */
     comingSoon?: boolean;
-
-    /**
-     * Flag to set fixed width for popover.
-     */
-    fixedWidth?: boolean;
 
     /**
      * Child node.
@@ -74,7 +69,6 @@ export const Popover = ({
     text,
     delay,
     comingSoon,
-    fixedWidth,
     children,
     ...props
 }: PopoverParams) => {
@@ -117,8 +111,8 @@ export const Popover = ({
     };
 
     const popoverClassName = comingSoon
-        ? 'popover popover--coming-soon'
-        : 'popover';
+        ? styles.popoverComingSoon
+        : styles.popoverDefault;
 
     return (
         <div

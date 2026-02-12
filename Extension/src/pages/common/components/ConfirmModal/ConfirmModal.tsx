@@ -135,18 +135,18 @@ export const ConfirmModal = ({
                 )}
             >
                 <div className={theme.modal.content}>
+                    <button
+                        type="button"
+                        className={`button ${theme.modal.btnClose}`}
+                        title={translator.getMessage('close_button_title')}
+                        onClick={handleCancel}
+                    >
+                        <Icon id="#cross" aria-hidden="true" />
+                    </button>
                     <div className={theme.modal.header}>
                         <div className={theme.modal.title}>
                             {title}
                         </div>
-                        <button
-                            type="button"
-                            className={`button ${theme.modal.btnClose}`}
-                            title={translator.getMessage('close_button_title')}
-                            onClick={handleCancel}
-                        >
-                            <Icon id="#cross" aria-hidden="true" />
-                        </button>
                     </div>
                     {subtitle && (
                         <div
@@ -166,7 +166,7 @@ export const ConfirmModal = ({
                         {confirmTitle}
                     </button>
                     <button
-                        className={`button button--l button--transparent ${theme.modal.btn} ${theme.modal.btnConfirm}`}
+                        className={`button button--l button--transparent ${theme.modal.btn}`}
                         type="button"
                         onClick={handleCancel}
                         title={cancelTitle}
