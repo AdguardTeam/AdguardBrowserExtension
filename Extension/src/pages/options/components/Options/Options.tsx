@@ -35,6 +35,7 @@ import {
     EVENTS,
     initialize,
     getOptionRoute,
+    disposeEventPauseController,
 } from 'options';
 
 import { rootStore } from '../../stores/RootStore';
@@ -115,6 +116,7 @@ export const Options = observer(() => {
 
         return () => {
             removeListenerCallback();
+            disposeEventPauseController();
         };
     }, [settingsStore, uiStore]);
 
