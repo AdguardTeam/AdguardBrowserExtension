@@ -523,7 +523,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     />
                     <button
                         type="button"
-                        className={cn('button button--l button--transparent actions__btn', theme.common.hideMobile)}
+                        className={cn('button button--l button--transparent actions__btn', theme.common.hideOnMobile)}
                         onClick={importClickHandler}
                         title={translator.getMessage('options_userfilter_import')}
                     >
@@ -531,7 +531,11 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     </button>
                     <button
                         type="button"
-                        className={cn('button button--l', 'button--transparent actions__btn', theme.common.hideMobile)}
+                        className={cn(
+                            'button button--l',
+                            'button--transparent actions__btn',
+                            theme.common.hideOnMobile,
+                        )}
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
                         title={translator.getMessage('options_userfilter_export')}

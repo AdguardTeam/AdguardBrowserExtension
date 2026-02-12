@@ -272,7 +272,7 @@ const Allowlist = observer(() => {
                 />
                 <button
                     type="button"
-                    className={`button button--l button--transparent actions__btn ${theme.common.hideMobile}`}
+                    className={`button button--l button--transparent actions__btn ${theme.common.hideOnMobile}`}
                     onClick={importClickHandler}
                     title={translator.getMessage('options_userfilter_import')}
                 >
@@ -280,7 +280,7 @@ const Allowlist = observer(() => {
                 </button>
                 <button
                     type="button"
-                    className={`button button--l button--transparent actions__btn ${theme.common.hideMobile}`}
+                    className={`button button--l button--transparent actions__btn ${theme.common.hideOnMobile}`}
                     onClick={exportClickHandler}
                     disabled={!settingsStore.allowlist}
                     title={translator.getMessage('options_userfilter_export')}

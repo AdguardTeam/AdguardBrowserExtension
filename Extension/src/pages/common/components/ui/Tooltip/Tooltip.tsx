@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { type ReactNode } from 'react';
 
 import cn from 'classnames';
 
@@ -28,7 +28,7 @@ type TooltipParams = {
     /**
      * Tooltip text.
      */
-    text?: string;
+    text?: string | ReactNode;
 
     /**
      * Tooltip visibility flag.
