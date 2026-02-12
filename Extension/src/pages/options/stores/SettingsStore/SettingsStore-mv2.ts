@@ -30,6 +30,7 @@ import { type GetOptionsDataResponse } from 'settings-types';
 import { messenger } from '../../../services/messenger';
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { type RootStore } from '../RootStore';
+import { eventPauseController, ChangeType } from '../../../services/EventPauseController-mv2';
 
 import { SettingsStoreCommon } from './SettingsStore-common';
 
@@ -87,9 +88,44 @@ export class SettingsStore extends SettingsStoreCommon {
      */
     @action
     async updateFilterSetting(filterId: number, enabled: boolean): Promise<void> {
+        eventPauseController.registerPendingChange(ChangeType.Filter, filterId, enabled);
+
         this.setFilterEnabledState(filterId, enabled);
 
-        await this.updateFilterSettingCore(filterId, enabled);
+        try {
+            const success = await this.updateFilterSettingCore(filterId, enabled);
+
+            if (success) {
+                eventPauseController.confirmChange(ChangeType.Filter, filterId, enabled);
+            } else {
+                this.setFilterEnabledState(filterId, !enabled);
+                eventPauseController.cancelChange(ChangeType.Filter, filterId);
+            }
+        } catch (error) {
+            this.setFilterEnabledState(filterId, !enabled);
+            eventPauseController.cancelChange(ChangeType.Filter, filterId);
+            throw error;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    @override
+    override async updateGroupSetting(groupId: number, enabled: boolean): Promise<void> {
+        eventPauseController.registerPendingChange(ChangeType.Group, groupId, enabled);
+
+        this.updateGroupStateUI(groupId, enabled);
+
+        try {
+            await super.updateGroupSetting(groupId, enabled);
+
+            eventPauseController.confirmChange(ChangeType.Group, groupId, enabled);
+        } catch (error) {
+            this.updateGroupStateUI(groupId, !enabled);
+            eventPauseController.cancelChange(ChangeType.Group, groupId);
+            throw error;
+        }
     }
 
     /**
