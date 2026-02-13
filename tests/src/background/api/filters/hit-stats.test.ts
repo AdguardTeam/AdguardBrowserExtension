@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import browser, { type Storage } from 'webextension-polyfill';
 import waitForExpect from 'wait-for-expect';
 import { merge } from 'lodash-es';
@@ -11,7 +31,7 @@ import {
     vi,
 } from 'vitest';
 
-import { FilterListPreprocessor } from '@adguard/tswebextension';
+import { FilterList } from '@adguard/tswebextension';
 import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 
 import { network } from '../../../../../Extension/src/background/api/network';
@@ -26,7 +46,7 @@ import { mockLocalStorage } from '../../../../helpers';
 import { FiltersStorage, filterVersionStorage } from '../../../../../Extension/src/background/storages';
 import { FiltersStoragesAdapter } from '../../../../../Extension/src/background/storages/filters-adapter';
 
-const preprocessedFilter = FilterListPreprocessor.preprocess([
+const filter = new FilterList([
     'example.com##h1',
     '||example.org^$document',
 ].join('\n'));
@@ -51,7 +71,7 @@ describe('Hit Stats Api', () => {
 
     beforeEach(async () => {
         storage = mockLocalStorage();
-        getFilterSpy = vi.spyOn(FiltersStoragesAdapter, 'get').mockResolvedValue(preprocessedFilter);
+        getFilterSpy = vi.spyOn(FiltersStoragesAdapter, 'get').mockResolvedValue(filter);
 
         if (__IS_MV3__) {
             getManifestSpy = vi.spyOn(browser.runtime, 'getManifest').mockReturnValue({
@@ -168,7 +188,7 @@ describe('Hit Stats Api', () => {
 
         const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
         const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
-        vi.spyOn(FiltersStorage, 'get').mockResolvedValue(preprocessedFilter);
+        vi.spyOn(FiltersStorage, 'get').mockResolvedValue(filter);
 
         await HitStatsApi.init();
 
@@ -176,11 +196,11 @@ describe('Hit Stats Api', () => {
         vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
 
         // Add hits to both filters
-        HitStatsApi.addRuleHit(FIRST_FILTER_ID, 4);
+        HitStatsApi.addRuleHit(FIRST_FILTER_ID, 0);
 
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 4);
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 4);
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 48);
+        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 0);
+        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 0);
+        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 16);
 
         // Now let's simulate that the version of the first filter has increased
         vi.spyOn(filterVersionStorage, 'get').mockImplementation((filterId: number) => {

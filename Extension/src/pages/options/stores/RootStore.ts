@@ -21,10 +21,10 @@
 import { createContext } from 'react';
 
 import { configure } from 'mobx';
+import { SettingsStore } from 'settings-store';
 
 import { TelemetryStore } from '../../common/telemetry';
 
-import SettingsStore from './SettingsStore';
 import UiStore from './UiStore';
 
 // Do not allow property change outside of store actions

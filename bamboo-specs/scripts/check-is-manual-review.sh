@@ -1,14 +1,10 @@
 #!/bin/bash
 
-# This script checks if it's Tuesday at 0:30 local time (the night between Monday and Tuesday).
-# This allows collecting all changes made during Monday (first working day after weekend):
-# Note: Bamboo cron runs in local timezone (UTC+3), not UTC.
-# The cron runs at:
-# - Monday 0:30, 12:30 local → script returns false (skip review)
-# - Tuesday 0:30 local → script returns true ✓ (collects Monday's changes and send for
-# manual review)
-# - Tuesday 12:30 local → script returns false (skip review)
-# And so on for the rest of the week
+# This script checks if it's the right time for manual review.
+# Cron is configured for Tuesday 00:30 in UTC+3 (local Bamboo time).
+# However, `date` command on the build server returns UTC time.
+# Tuesday 00:30 UTC+3 = Monday 21:30 UTC
+# So we check for: Monday, hour 21 (in UTC)
 
 # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
 # Please do not move it to some common file, like `setup-tests.sh`, because sourcing A script from B script
@@ -17,15 +13,16 @@
 #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
 set -ex
 
-# Day of week in local time (1=Mon, 2=Tue ... 7=Sun)
+# Day of week (1=Mon, 2=Tue ... 7=Sun) - date returns UTC
 dayOfWeek=$(date +%u)
-TUESDAY_IDX=2
+MONDAY_IDX=1
 
-# Hour in local time (00-23)
+# Hour (00-23) - date returns UTC
 hours=$(date +%H)
 
-if [[ "$dayOfWeek" -eq "$TUESDAY_IDX" && "$hours" = "00" ]]; then
-  echo "OK: Tuesday and hour is 0 (covers 0:30 cron run)"
+# Tuesday 00:30 UTC+3 = Monday 21:30 UTC
+if [[ "$dayOfWeek" -eq "$MONDAY_IDX" && "$hours" = "21" ]]; then
+  echo "OK: Monday 21:xx UTC (= Tuesday 00:xx UTC+3)"
   exit 0 # Returns success when manual review is needed
 else
   echo "Skip"

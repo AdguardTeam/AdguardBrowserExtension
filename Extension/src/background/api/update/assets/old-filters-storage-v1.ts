@@ -19,12 +19,12 @@
  */
 import zod from 'zod';
 
-import { FilterListPreprocessor, type PreprocessedFilterList } from 'tswebextension';
-
 import { FILTER_LIST_EXTENSION } from '../../../../common/constants';
 import { logger } from '../../../../common/logger';
 import { hybridStorage } from '../../../storages/shared-instances';
 import { getZodErrorMessage } from '../../../../common/error';
+
+import { FilterListPreprocessor, type PreprocessedFilterList } from './preprocessor/preprocessor';
 
 /**
  * Storage prefix for raw preprocessed filter lists.

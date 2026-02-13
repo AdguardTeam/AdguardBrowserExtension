@@ -21,7 +21,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type HtmlWebpackPlugin from 'html-webpack-plugin';
+import type { HtmlRspackPluginOptions } from '@rspack/core';
 
 import { Browser } from '../constants';
 
@@ -45,8 +45,7 @@ export const BLOCKING_SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extensi
 export const BLOCKING_BLOCKED_PATH = path.resolve(__dirname, '../../Extension/pages/blocking/blocked');
 export const EDITOR_PATH = path.resolve(__dirname, '../../Extension/src/pages/common/components/Editor');
 
-export const htmlTemplatePluginCommonOptions: Partial<HtmlWebpackPlugin.Options> = {
-    cache: false,
+export const htmlTemplatePluginCommonOptions: Partial<HtmlRspackPluginOptions> = {
     scriptLoading: 'blocking',
 };
 
@@ -56,6 +55,22 @@ export type BrowserConfig = {
     buildDir: string;
     zipName: string;
 };
+
+/**
+ * Build options passed from CLI to rspack configuration.
+ */
+export interface BuildOptions {
+    /**
+     * Whether to run in watch mode.
+     */
+    isWatchMode?: boolean;
+
+    /**
+     * Whether to create zip archives after build.
+     * Defaults to false, use --zip flag to enable.
+     */
+    zip?: boolean;
+}
 
 export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserConfig> = {
     [Browser.Chrome]: {
@@ -95,17 +110,3 @@ export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserC
         zipName: Browser.Edge,
     },
 };
-
-/**
- * RegExp for matching components that need to be replaced while webpack building.
- *
- * Needed for components which are different for MV2 and MV3.
- */
-export const COMPONENT_REPLACEMENT_MATCH_REGEXP = new RegExp(
-    `\\.\\/Abstract(${
-        [
-            'UpdateButton',
-            'FiltersUpdate',
-        ].join('|')
-    })`,
-);

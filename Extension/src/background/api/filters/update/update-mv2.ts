@@ -19,11 +19,7 @@
  */
 // TODO (AG-44868): Reduce code duplication across mv2 and mv3
 import { filterVersionStorage, settingsStorage } from '../../../storages';
-import {
-    SettingOption,
-    type RegularFilterMetadata,
-    type CustomFilterMetadata,
-} from '../../../schema';
+import { SettingOption } from '../../../schema';
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../common/settings';
 import { logger } from '../../../../common/logger';
 import { FiltersUpdateTime } from '../../../../common/constants';
@@ -32,11 +28,11 @@ import { getZodErrorMessage } from '../../../../common/error';
 import { FilterUpdateService } from '../../../services/filter-update';
 import { CommonFilterUtils } from '../../../../common/common-filter-utils';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
-import { CommonFilterApi } from '../common';
+import { CommonFilterApi } from '../common/common-mv2';
 import { type FilterMetadata, FiltersApi } from '../main';
 import { CustomFilterApi } from '../custom';
 
-import { type FilterUpdateOptionsList } from './types';
+import { type FilterUpdateOptions, type FilterUpdateOptionsList } from './types';
 
 /**
  * API for manual and automatic (by period) filter rules updates.
@@ -106,8 +102,8 @@ export class FilterUpdateApi {
      */
     public static async autoUpdateFilters(forceUpdate = false): Promise<FilterMetadata[]> {
         const startUpdateLogMessage = forceUpdate
-            ? 'Update filters forced by user.'
-            : 'Update filters by scheduler.';
+            ? 'Update filters forced by user. \n Update method: full sync'
+            : 'Update filters by scheduler. \n Update method: differential';
         logger.info(`[ext.FilterUpdateApi.autoUpdateFilters]: ${startUpdateLogMessage}`);
 
         // If filtering is disabled, and it is not a forced update, it does nothing.
@@ -216,31 +212,32 @@ export class FilterUpdateApi {
             }
         }
 
-        const updatedFiltersMetadata: FilterMetadata[] = [];
-
-        const updateTasks = filterUpdateOptionsList.map(async (filterData) => {
-            let filterMetadata: CustomFilterMetadata | RegularFilterMetadata | null = null;
-
-            try {
-                if (CustomFilterUtils.isCustomFilter(filterData.filterId)) {
-                    filterMetadata = await CustomFilterApi.updateFilter(filterData);
-                } else {
-                    filterMetadata = await CommonFilterApi.updateFilter(filterData);
-                }
-            } catch (e) {
-                logger.error(`[ext.FilterUpdateApi.updateFilters]: failed to update filter id#${filterData.filterId} due to an error:`, getZodErrorMessage(e));
-
-                return;
-            }
-
-            if (filterMetadata) {
-                updatedFiltersMetadata.push(filterMetadata);
+        const customFiltersUpdateList: FilterUpdateOptions[] = [];
+        const commonFiltersUpdateList: FilterUpdateOptions[] = [];
+        filterUpdateOptionsList.forEach((filter) => {
+            if (CustomFilterUtils.isCustomFilter(filter.filterId)) {
+                customFiltersUpdateList.push(filter);
+            } else {
+                commonFiltersUpdateList.push(filter);
             }
         });
 
-        await Promise.allSettled(updateTasks);
+        const [updatedCustomFilters, updatedCommonFilters] = await Promise.allSettled([
+            CustomFilterApi.updateFilters(customFiltersUpdateList),
+            CommonFilterApi.updateFilters(commonFiltersUpdateList),
+        ]);
 
-        return updatedFiltersMetadata;
+        if (updatedCustomFilters.status === 'rejected') {
+            logger.error('[ext.FilterUpdateApi.updateFilters]: failed to update custom filters due to an error:', updatedCustomFilters.reason);
+        }
+        if (updatedCommonFilters.status === 'rejected') {
+            logger.error('[ext.FilterUpdateApi.updateFilters]: failed to update common filters due to an error:', updatedCommonFilters.reason);
+        }
+
+        return [
+            ...(updatedCustomFilters.status === 'fulfilled' ? updatedCustomFilters.value : []),
+            ...(updatedCommonFilters.status === 'fulfilled' ? updatedCommonFilters.value : []),
+        ];
     }
 
     /**

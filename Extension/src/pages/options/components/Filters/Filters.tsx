@@ -46,7 +46,7 @@ import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnin
 import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
 import { getStaticWarningMessage } from '../Warnings/messages';
-import type { CategoriesGroupData } from '../../../../background/api';
+import type { CategoriesGroupData, CategoriesFilterData } from '../../../../background/api';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
 import { Group } from './Group';
@@ -58,7 +58,6 @@ import { FiltersUpdate } from './FiltersUpdate';
 import { AddCustomModal } from './AddCustomModal';
 import { SEARCH_FILTERS } from './Search/constants';
 import { UserScriptsApiWarningInsideCustomGroup } from './UserScriptsApiWarningForCustomFilters';
-import type { RenderedFilterType } from './types';
 
 import './filters.pcss';
 
@@ -69,7 +68,7 @@ type FilterListRenderParams = {
     /**
      * List of filters to render.
      */
-    filtersToRender: RenderedFilterType[];
+    filtersToRender: CategoriesFilterData[];
 
     /**
      * Whether the group is enabled.
@@ -125,14 +124,11 @@ const Filters = observer(() => {
         categories,
         filters,
         filtersToRender,
-    }: {
-        categories: CategoriesGroupData[];
-        filters: RenderedFilterType[];
-        filtersToRender: RenderedFilterType[];
     } = settingsStore;
 
     useEffect(() => {
-        settingsStore.setSelectedGroupId(query.get(QUERY_PARAM_NAMES.GROUP));
+        const parsedGroupId = Number.parseInt(query.get(QUERY_PARAM_NAMES.GROUP) || '', 10);
+        settingsStore.setSelectedGroupId(Number.isNaN(parsedGroupId) ? null : parsedGroupId);
         setGroupDetermined(true);
         settingsStore.setSearchInput('');
         settingsStore.setSearchSelect(SEARCH_FILTERS.ALL);
@@ -301,11 +297,11 @@ const Filters = observer(() => {
         );
     };
 
-    const renderGroupsOnSearch = (matchedFilters: RenderedFilterType[]) => {
+    const renderGroupsOnSearch = (matchedFilters: CategoriesFilterData[]) => {
         // collect search data as object where
         // key is group id and value is searched filters
         const searchData = matchedFilters
-            .reduce((acc: { [key: number]: RenderedFilterType[] }, filter) => {
+            .reduce((acc: { [key: number]: CategoriesFilterData[] }, filter) => {
                 const { groupId } = filter;
                 if (typeof acc[groupId] === 'undefined') {
                     acc[groupId] = [filter];
@@ -474,16 +470,16 @@ const Filters = observer(() => {
             >
                 <div className="title__inner">
                     <div className="title title--back-btn">
+                        <div className="button setting__back">
+                            <Icon
+                                id="#arrow-left"
+                                className="icon--24"
+                                aria-hidden="true"
+                            />
+                        </div>
                         <span id={titleId}>{selectedGroup.groupName}</span>
                     </div>
                     {description && <div className="title__desc title__desc--back">{description}</div>}
-                </div>
-                <div className="button setting__back">
-                    <Icon
-                        id="#arrow-left"
-                        className="icon--24"
-                        aria-hidden="true"
-                    />
                 </div>
             </button>
         );

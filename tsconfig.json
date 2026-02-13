@@ -1,20 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
-    "include": [
-        "vitest.setup.ts",
-        "vitest.config.ts",
-        "postcss.config.js",
-        "tools/",
-        "tests/",
-        "Extension/",
-        "Extension/pages",
-        "Extension/assets/js/preload-theme.js",
-        ".eslintrc.cjs",
-        "tests/.eslintrc.cjs",
-        "tools/browser-test/.eslintrc.cjs",
-        "Extension/src/pages/.eslintrc.cjs",
-        "Extension/src/background/.eslintrc.cjs",
-        "Extension/src/background/schema/.eslintrc.cjs",
-        "tools/resources/dangerous-rules/.eslintrc.cjs",
+    "references": [
+        { "path": "./tsconfig.mv3.json" },
+        { "path": "./tsconfig.mv2.json" }
     ]
 }

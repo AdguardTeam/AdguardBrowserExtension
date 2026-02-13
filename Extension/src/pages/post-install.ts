@@ -64,7 +64,7 @@ export class PostInstall {
         PostInstall.nanobar.go(100);
         setTimeout(() => {
             if (window) {
-                messenger.openThankyouPage();
+                messenger.openThankYouPage();
             }
         }, PostInstall.openThankyouPageTimeoutMs);
     }

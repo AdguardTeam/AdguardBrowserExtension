@@ -7,7 +7,7 @@
 			},
 			"be": {
 				"name": "Блакіроўка рэкламы",
-				"description": "Блакуе рэкламу"
+				"description": "Блакіруе рэкламу"
 			},
 			"bg": {
 				"name": "Блокиране на реклами",
@@ -185,7 +185,7 @@
 			},
 			"be": {
 				"name": "Прыватнасць",
-				"description": "Блакуе трэкеры"
+				"description": "Блакіруе праграмы сачэння"
 			},
 			"bg": {
 				"name": "Поверителност",
@@ -438,7 +438,7 @@
 				"description": "Memblokir elemen media sosial, seperti tombol Suka dan Bagikan"
 			},
 			"it": {
-				"name": "Widget delle reti social",
+				"name": "Elementi reti social",
 				"description": "Blocca gli elementi dei social media, come i pulsanti Mi piace e Condividi"
 			},
 			"ja": {
@@ -692,7 +692,7 @@
 				"description": "บล็อกองค์ประกอบเว็บที่น่ารำคาญ เช่น ข้อความคุกกี้หรือป๊อปอัปในหน้า"
 			},
 			"tr": {
-				"name": "Can Sıkıcı Öğeler",
+				"name": "Can sıkıcı öğeler",
 				"description": "Çerez bildirimleri veya sayfa içi açılır pencereler gibi can sıkıcı web öğelerini engeller"
 			},
 			"uk": {
@@ -4992,7 +4992,7 @@
 				"name": "المخصصه - لسفاري"
 			},
 			"be": {
-				"description": "Распрацаваны адмыслова для выкарыстання з блакавальнікамі кантэнту Safari",
+				"description": "Распрацаваны адмыслова для працы з блакіроўшчыкамі змесціва Safari",
 				"name": "Толькі для Safari"
 			},
 			"bg": {
@@ -11935,7 +11935,7 @@
 			},
 			"be": {
 				"description": "Мае адпраўкі да французскага фільтра AdGuard",
-				"name": "Адпраўка да французскага фільтра AdGuard"
+				"name": "Адсылка да французскага фільтра AdGuard"
 			},
 			"bg": {
 				"description": "Съдържа препратки към Френския филтър",
@@ -14784,7 +14784,7 @@
 				"description": "القائمة السهلة الالمانية + ادجوارد مرشح ألماني. لقائمة التصفية التي تزيل الإعلانات تحديدًا على مواقع الويب باللغة الألمانية"
 			},
 			"be": {
-				"name": "Нямецкі фільтр",
+				"name": "Нямецкі фільтр AdGuard",
 				"description": "EasyList Germany + Нямецкі фільтр AdGuard. Фільтр, што дазваляе прыбраць рэкламу з сайтаў на нямецкай мове."
 			},
 			"bg": {
@@ -14962,7 +14962,7 @@
 				"description": "فلتر يتيح منع الإعلانات على مواقع الويب باللغة اليابانية"
 			},
 			"be": {
-				"name": "Японскі фільтр",
+				"name": "Японскі фільтр AdGuard",
 				"description": "Японскі фільтр AdGuard. Фільтр, што дазваляе прыбраць рэкламу з сайтаў на японскай мове."
 			},
 			"bg": {
@@ -15674,7 +15674,7 @@
 				"description": "تصفيه لكافة شبكات الإعلانات المتنقلة المعروفة. مفيده للاجهزه النقالة."
 			},
 			"be": {
-				"name": "Фільтр мабільнай рэкламы",
+				"name": "Фільтр рэкламы для мабільных прылад AdGuard",
 				"description": "Фільтр для рэкламных сетак, што выкарыстоўваюцца для рэкламы на мабільных прыладах."
 			},
 			"bg": {
@@ -16308,7 +16308,7 @@
 				"description": "Penapis yang terdiri daripada beberapa penapis lain (AdGuard Base, Penapis Media Sosial, Penapis Perlindungan Penjejakan, Penapis Iklan Mudah Alih, EasyList dan EasyPrivacy) dan dipermudahkan secara khusus untuk menjadi lebih serasi dengan penghalang iklan pada tahap DNS."
 			},
 			"nl": {
-				"name": "AdGuard DNS filter",
+				"name": "AdGuard DNS-filter",
 				"description": "Filter samengesteld uit verschillende andere filters (AdGuard-basisfilter, Sociale media filter, Traceerbeveiligingsfilter, Filter voor mobiele advertenties, EasyList en EasyPrivacy) en specifiek vereenvoudigd om beter compatibel te zijn met advertentieblokkering op DNS-niveau."
 			},
 			"no": {
@@ -17098,7 +17098,7 @@
 				"description": "يحظر اللافتات المزعجة التي تروج لتطبيقات الأجهزة المحمولة لمواقع الويب."
 			},
 			"be": {
-				"name": "Фільтр банэраў мабільных праграм AdGuard",
+				"name": "Фільтр банераў для мабільных прылад AdGuard",
 				"description": "Блакуе раздражняльныя банеры, якія рэкламуюць мабільныя праграмы вэб-сайтаў."
 			},
 			"bg": {
@@ -17276,7 +17276,7 @@
 				"description": "حظر العناصر المزعجة على صفحات الويب التي لا تندرج ضمن الفئات الشائعة للإزعاج."
 			},
 			"be": {
-				"name": "Фільтр іншых раздражненняў AdGuard",
+				"name": "Фільтр іншых раздражняльнікаў AdGuard",
 				"description": "Блакуе раздражняльныя элементы на вэб-старонках, якія не адносяцца да папулярных катэгорый раздражнення."
 			},
 			"bg": {
@@ -17887,7 +17887,7 @@
 			},
 			"it": {
 				"name": "EasyList",
-				"description": "EasyList è la sottoscrizione principale che rimuove gli annunci dalle pagine web in lingua inglese. Già incluso nel filtro AdGuard di Base."
+				"description": "EasyList è la sottoscrizione principale che rimuove le inserzioni dalle pagine web in lingua inglese. Già inclusa nel filtro AdGuard di Base."
 			},
 			"ja": {
 				"name": "EasyList",
@@ -21542,6 +21542,184 @@
 				"description": "用於西班牙文和葡萄牙文網站的附加過濾清單。"
 			}
 		},
+		"201": {
+			"ar": {
+				"name": "Web Annoyances Ultralist",
+				"description": "يحظر عناصر الويب المزعجة ويستعيد عقارات الشاشة المفقودة."
+			},
+			"be": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Блакуе раздражняльныя элементы ўэб-старонак і аднаўляе страчаную прастору на экране."
+			},
+			"bg": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Блокира досадни уеб елементи и освобождава загубено пространство на екрана."
+			},
+			"ca": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Bloqueja els elements de pàgina molestos i recupera l'espai de pantalla perdut."
+			},
+			"cs": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokuje nepříjemné prvky webových stránek a znovu získává zbytečný prostor na obrazovce."
+			},
+			"da": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokerer irriterende webelementer og gendanner mistet skærmplads."
+			},
+			"de": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blockiert störende Web-Elemente und gibt frei gewordene Bildschirmbereiche frei."
+			},
+			"el": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Αποκλείει ενοχλητικά στοιχεία ιστού και ανακτά χαμένα σημεία της οθόνης."
+			},
+			"en": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blocks annoying web elements and reclaims lost screen real estate."
+			},
+			"es": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Bloquea elementos molestos y recupera el espacio perdido de la pantalla."
+			},
+			"es_ES": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Bloquea elementos molestos y recupera el espacio perdido de la pantalla."
+			},
+			"fa": {
+				"name": "Web Annoyances Ultralist",
+				"description": "اجزاء وب آزاردهنده را مسدود می‌کند و فضای از دست رفته صفحه نمایش را بازیابی می‌کند."
+			},
+			"fi": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Estää ärsyttäviä verkkoelementtejä ja vapauttaa menetettyä näyttötilaa."
+			},
+			"fr": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Bloque les éléments Web gênants et récupère l'espace perdu à l'écran."
+			},
+			"he": {
+				"name": "Web Annoyances Ultralist",
+				"description": "חוסם אלמנטי רשת מטרידים ומשיב שטח אבוד של מסך."
+			},
+			"hi": {
+				"name": "Web Annoyances Ultralist",
+				"description": "अवरोधित करता है कष्टप्रद वेब तत्वों को और पुनः प्राप्त करता है खोई हुई स्क्रीन की जगह।"
+			},
+			"hr": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokira dosadne web elemente i vraća izgubljeni prostor na zaslonu."
+			},
+			"hu": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokkolja a bosszantó webes elemeket és visszaszerzi az a képernyő elvesztegetett részét."
+			},
+			"hy": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Արգելակում է ջղաձգող ցանցային տարրերը և վերադարձնում է կորցված էկրանային տարածքը։"
+			},
+			"id": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Memblokir elemen web yang mengganggu dan mendapatkan kembali bagian layar yang hilang."
+			},
+			"it": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blocca gli elementi web irritanti e recupera lo spazio perso sullo schermo."
+			},
+			"ja": {
+				"name": "Web Annoyances Ultralist",
+				"description": "迷惑なウェブ要素をブロックし、失われていた画面領域を取り戻します。"
+			},
+			"ko": {
+				"name": "Web Annoyances Ultralist",
+				"description": "화면 공간을 차지하는 방해 요소를 차단합니다."
+			},
+			"lt": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokuoja erzinančius žiniatinklio elementus ir susigrąžina prarastą ekrano plotą."
+			},
+			"mk": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Блокира досадни веб-елементи и го враќа изгубениот простор на екранот."
+			},
+			"ms": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Menyekat unsur web yang mengganggu dan mendapatkan kembali ruang skrin yang hilang."
+			},
+			"nl": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokkeert vervelende webelementen en herstelt verloren ruimte op het scherm."
+			},
+			"no": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokkerer irriterende nettleserelementer og gjenvinner tapt skjermplass."
+			},
+			"pl": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokuje irytujące elementy sieci i odzyskuje utracone miejsce na ekranie."
+			},
+			"pt": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Bloqueia elementos irritantes da web e recupera o espaço perdido no ecrã."
+			},
+			"pt_BR": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Bloqueia elementos irritantes da web e recupera o espaço perdido na tela."
+			},
+			"pt_PT": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Bloqueia elementos irritantes da web e recupera o espaço perdido no ecrã."
+			},
+			"ro": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blochează elemente web enervante și recuperează spațiu pierdut de pe ecran."
+			},
+			"ru": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Блокирует раздражающие элементы веб-страниц и восстанавливает потерянное пространство на экране."
+			},
+			"sk": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokuje obťažujúce webové prvky a získava späť vzhľad stratenej obrazovky."
+			},
+			"sl": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Zavira nadležne spletne elemente in povrne izgubljeno resnično stanje zaslona."
+			},
+			"sr": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blokira dosadne veb elemente i oslobađa izgubljen prostor na ekranu."
+			},
+			"sv": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Blockerar irriterande webbelement och återtar förlorad skärmyta."
+			},
+			"th": {
+				"name": "Web Annoyances Ultralist",
+				"description": "ปิดกั้นองค์ประกอบของเว็บที่น่ารำคาญและเรียกคืนอสังหาริมทรัพย์บนหน้าจอที่หายไป"
+			},
+			"tr": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Rahatsız edici internet öğelerini engeller ve kaybolan ekran alanını geri alır."
+			},
+			"uk": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Блокує надокучливі елементи й відновлює втрачений вміст екрану."
+			},
+			"vi": {
+				"name": "Web Annoyances Ultralist",
+				"description": "Chặn các yếu tố phiền nhiễu và giành lại không gian màn hình."
+			},
+			"zh": {
+				"name": "Web Annoyances Ultralist",
+				"description": "阻止恼人的网络元素，并夺回丢失的屏幕空间。"
+			},
+			"zh_TW": {
+				"name": "Web Annoyances Ultralist",
+				"description": "封鎖惱人的網絡元件，收回失去的螢幕空間。"
+			}
+		},
 		"202": {
 			"ar": {
 				"name": "قائمة EasyList لتايلاند",
@@ -24219,7 +24397,7 @@
 			},
 			"be": {
 				"name": "List-KR",
-				"description": "Фільтр, які падаляе рэкламу і розныя скрыпты з сайтаў з карэйскім кантэнтам. З'яднаны і дапоўнены правіламі AdGuard для палепшанай фільтрацыі. Гэты фільтр лепш выкарыстоўваць разам з Базавым фільтрам AdGuard."
+				"description": "Фільтр, які выдаляе рэкламу і розныя сцэнарыі з вэб-сайтаў з карэйскім змесцівам. Аб'яднаны і дапоўнены правіламі AdGuard для палепшанай фільтрацыі. Гэты фільтр лепш за ўсё выкарыстоўваць разам з базавым фільтрам AdGuard."
 			},
 			"bg": {
 				"name": "List-KR",
