@@ -146,7 +146,7 @@ importers:
     devDependencies:
       '@adguard/dnr-rulesets':
         specifier: ~4.0
-        version: 4.0.20260206100036
+        version: 4.0.20260213070056
       '@adguard/eslint-plugin-logger-context':
         specifier: ^1.0.1
         version: 1.0.1
@@ -405,8 +405,8 @@ packages:
     engines: {node: '>=18.13.0'}
     hasBin: true
 
-  '@adguard/dnr-rulesets@4.0.20260206100036':
-    resolution: {integrity: sha512-qwuv+YRUGbEp+TAGMtePugT9FtWv1qb5sm8NDMaWoHzia0S/J2WAWRXLNLwuUicHgHe/E0j6Nj72WkZRkr8Ssg==}
+  '@adguard/dnr-rulesets@4.0.20260213070056':
+    resolution: {integrity: sha512-eSxbketCeFpLVr4WZhPeTOtyNn6MKpDAeV71CS+5zP78Yq+72nWSAso4qCyQYb7PE/me59/5LebOBmouKCcJEw==}
     hasBin: true
 
   '@adguard/eslint-plugin-logger-context@1.0.1':
@@ -2028,8 +2028,8 @@ packages:
     resolution: {integrity: sha512-Xm7bpRXnDSX2YE2YFfBk2FnF0ep6tmG7xPh8iHee8MIcrgq762Nkce856dYtJYLkuIoYZvGfTs/PbZhideTcEg==}
     engines: {node: '>=4'}
 
-  axios@1.13.4:
-    resolution: {integrity: sha512-1wVkUaAO6WyaYtCkcYCOx12ZgpGf9Zif+qXa4n+oYzK558YryKqiL6UWwd5DqiH3VRW0GYhTZQ/vlgJrCoNQlg==}
+  axios@1.13.5:
+    resolution: {integrity: sha512-cz4ur7Vb0xS4/KUN0tPWe44eqxrIu31me+fbang3ijiNscE129POzipJJA6zniq2C/Z6sJCjMimjS8Lc/GAs8Q==}
 
   axios@1.6.2:
     resolution: {integrity: sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==}
@@ -3049,6 +3049,15 @@ packages:
   flatten@1.0.3:
     resolution: {integrity: sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==}
     deprecated: flatten is deprecated in favor of utility frameworks such as lodash.
+
+  follow-redirects@1.15.11:
+    resolution: {integrity: sha512-deG2P0JfjrTxl50XGCDyfI97ZGVCxIpfKYmfyrQ54n5FO/0gfIES8C/Psl6kWVDolizcaaxZJnTS0QSMxvnsBQ==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
 
   follow-redirects@1.15.9:
     resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
@@ -5694,13 +5703,13 @@ snapshots:
       commander: 11.1.0
       crypto-js: 4.2.0
 
-  '@adguard/dnr-rulesets@4.0.20260206100036':
+  '@adguard/dnr-rulesets@4.0.20260213070056':
     dependencies:
       '@adguard/agtree': 4.0.0
       '@adguard/logger': 2.0.0
       '@adguard/re2-wasm': 1.2.0
       '@adguard/tsurlfilter': 4.0.0(@adguard/re2-wasm@1.2.0)
-      axios: 1.13.4
+      axios: 1.13.5
       chokidar: 4.0.3
       commander: 12.1.0
       fast-glob: 3.3.3
@@ -7324,9 +7333,9 @@ snapshots:
 
   axe-core@4.10.3: {}
 
-  axios@1.13.4:
+  axios@1.13.5:
     dependencies:
-      follow-redirects: 1.15.9
+      follow-redirects: 1.15.11
       form-data: 4.0.5
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -8589,6 +8598,8 @@ snapshots:
   flatted@3.3.3: {}
 
   flatten@1.0.3: {}
+
+  follow-redirects@1.15.11: {}
 
   follow-redirects@1.15.9: {}
 
