@@ -16,10 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update indicator arrow flickers when opening the popup [#3351].
 - $badfilter incorrectly negates rules with different $denyallow values [#3428].
+- Filtering log window size/pos not restored with zoom [#3255].
 
 [#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
 [#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330
 [#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428
+[#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
 
 ## Unreleased 5.3
 

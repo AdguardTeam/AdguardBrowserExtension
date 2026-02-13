@@ -25,7 +25,6 @@
  * Also please try, if possible, to not import here external modules
  * other that types.
  */
-import { type Windows } from 'webextension-polyfill';
 
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
@@ -499,9 +498,6 @@ export type SetPreserveLogStateMessage = {
 
 export type SetFilteringLogWindowStateMessage = {
     type: MessageType.SetFilteringLogWindowState;
-    data: {
-        windowState: Windows.CreateCreateDataType;
-    };
 };
 
 export type RefreshPageMessage = {

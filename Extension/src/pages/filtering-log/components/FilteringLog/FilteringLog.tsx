@@ -44,7 +44,8 @@ import '../../styles/styles.pcss';
 
 const FilteringLog = observer(() => {
     const { wizardStore, logStore } = useContext(rootStore);
-    const RESIZE_THROTTLE = 500;
+    const RESIZE_THROTTLE_MS = 500;
+    const POSITION_POLL_INTERVAL_MS = 500;
 
     useAppearanceTheme(logStore.appearanceTheme);
 
@@ -152,41 +153,32 @@ const FilteringLog = observer(() => {
     }, [logStore, wizardStore]);
 
     useEffect(() => {
-        const windowStateHandler = () => {
-            const {
-                outerWidth,
-                outerHeight,
-                screenTop,
-                screenLeft,
-                screen,
-            } = window;
-
-            const isFullscreen = outerWidth === screen.width && outerHeight === screen.height;
-
-            if (isFullscreen) {
-                messenger.setFilteringLogWindowState({
-                    state: 'fullscreen',
-                });
-            } else {
-                messenger.setFilteringLogWindowState({
-                    width: outerWidth,
-                    height: outerHeight,
-                    top: screenTop,
-                    left: screenLeft,
-                });
-            }
+        const saveWindowState = () => {
+            // Send trigger to background — background will read true dimensions
+            // via browser.windows.get() and save them.
+            messenger.setFilteringLogWindowState();
         };
 
-        const throttledWindowStateHandler = throttle(windowStateHandler, RESIZE_THROTTLE);
+        const throttledSaveWindowState = throttle(saveWindowState, RESIZE_THROTTLE_MS);
 
-        window.addEventListener('beforeunload', windowStateHandler);
-        window.addEventListener('resize', throttledWindowStateHandler);
+        window.addEventListener('resize', throttledSaveWindowState, { passive: true });
+
+        let lastScreenX = window.screenX;
+        let lastScreenY = window.screenY;
+
+        const positionPollId = setInterval(() => {
+            if (window.screenX !== lastScreenX || window.screenY !== lastScreenY) {
+                lastScreenX = window.screenX;
+                lastScreenY = window.screenY;
+                saveWindowState();
+            }
+        }, POSITION_POLL_INTERVAL_MS);
 
         return () => {
-            window.removeEventListener('beforeunload', windowStateHandler);
-            window.removeEventListener('resize', throttledWindowStateHandler);
+            window.removeEventListener('resize', throttledSaveWindowState);
+            clearInterval(positionPollId);
         };
-    }, [logStore]);
+    }, []);
 
     return (
         <>
