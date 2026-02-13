@@ -32,7 +32,6 @@ import {
     type AddAndEnableFilterMessage,
     type DisableFilterMessage,
     type ApplySettingsJsonMessage,
-    type SetFilteringLogWindowStateMessage,
     type SaveUserRulesMessage,
     type SetConsentedFiltersMessage,
     type GetIsConsentedFilterMessage,
@@ -436,14 +435,10 @@ export abstract class MessengerCommon {
     /**
      * Sends a message to the background page to set the filtering log window state.
      *
-     * @param windowState State of the filtering log window.
-     *
      * @returns Promise that resolves after the message is sent.
      */
-    setFilteringLogWindowState = async (
-        windowState: SetFilteringLogWindowStateMessage['data']['windowState'],
-    ): Promise<ExtractMessageResponse<MessageType.SetFilteringLogWindowState>> => {
-        return this.sendMessage(MessageType.SetFilteringLogWindowState, { windowState });
+    setFilteringLogWindowState = async (): Promise<ExtractMessageResponse<MessageType.SetFilteringLogWindowState>> => {
+        return this.sendMessage(MessageType.SetFilteringLogWindowState);
     };
 
     /**
