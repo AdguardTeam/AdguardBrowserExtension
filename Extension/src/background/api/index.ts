@@ -34,8 +34,6 @@ export {
     type CategoriesData,
     HitStatsApi,
     annoyancesConsent,
-    // TODO: revert if Quick Fixes filter is back
-    // QuickFixesRulesApi,
 } from './filters';
 export {
     network,
@@ -56,6 +54,7 @@ export { SettingsApi, type SettingsData } from './settings';
 export {
     UiApi,
     PagesApi,
+    pagesApi,
     toasts,
     promoNotificationApi,
     FramesApi,
@@ -66,7 +65,7 @@ export {
     ContextMenuApi,
     browserAction,
 } from './ui';
-export { WindowsApi, TabsApi, getIconImageData } from '../../common/api/extension';
+export { WindowsApi, TabsApi, iconsCache } from '../../common/api/extension';
 export { InstallApi } from './install';
 export { UpdateApi } from './update';
 export { SafebrowsingApi } from './safebrowsing';

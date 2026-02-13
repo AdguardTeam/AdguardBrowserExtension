@@ -459,17 +459,6 @@ export class Network {
     }
 
     /**
-     * Appends request key to url.
-     *
-     * @param url Url string.
-     *
-     * @returns Url with key query param.
-     */
-    private addKeyParameter(url: string): string {
-        return `${url}&key=${this.settings.apiKey}`;
-    }
-
-    /**
      * Makes a request for json.
      *
      * @param url Url.

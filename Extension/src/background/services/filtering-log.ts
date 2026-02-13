@@ -65,6 +65,7 @@ import {
 } from '../api';
 import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
+import { FilteringLogApi } from '../api/filtering-log';
 
 export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[];
@@ -160,6 +161,8 @@ export class FilteringLogService {
             eventId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -177,6 +180,9 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                // fallback should never happen during normal operation
+                appliedRuleText: appliedRuleText ?? `<rule text is not specified> (${filterId}:${ruleIndex})`,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -219,6 +225,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             cssRule,
             scriptRule,
             contentRule,
@@ -230,6 +238,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 cssRule,
                 scriptRule,
                 contentRule,
@@ -252,6 +262,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -270,6 +282,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -296,6 +310,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -314,6 +330,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -341,6 +359,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -356,6 +376,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -382,6 +404,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -397,6 +421,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -440,6 +466,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             isAllowlist,
             isImportant,
             isDocumentLevel,
@@ -454,6 +482,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 allowlistRule: isAllowlist,
                 isImportant,
                 documentLevelRule: isDocumentLevel,
@@ -480,6 +510,8 @@ export class FilteringLogService {
             tabId,
             filterId,
             ruleIndex,
+            appliedRuleText,
+            originalRuleText,
             cssRule,
             scriptRule,
             contentRule,
@@ -491,6 +523,8 @@ export class FilteringLogService {
             requestRule: {
                 filterId,
                 ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
                 cssRule,
                 scriptRule,
                 contentRule,
@@ -512,7 +546,12 @@ export class FilteringLogService {
         const { tabId, rules, eventId } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            replaceRules: rules,
+            replaceRules: rules.map((rule) => ({
+                filterId: rule.filterId,
+                ruleIndex: rule.ruleIndex,
+                appliedRuleText: rule.appliedRuleText,
+                originalRuleText: rule.originalRuleText ?? undefined,
+            })),
         });
 
         if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
@@ -551,6 +590,8 @@ export class FilteringLogService {
             stealthAllowlistRules: rules.map((rule) => ({
                 filterId: rule.filterId,
                 ruleIndex: rule.ruleIndex,
+                appliedRuleText: rule.appliedRuleText,
+                originalRuleText: rule.originalRuleText ?? undefined,
                 allowlistRule: rule.isAllowlist,
                 isImportant: rule.isImportant,
                 documentLevelRule: rule.isDocumentLevel,
@@ -570,6 +611,9 @@ export class FilteringLogService {
 
     /**
      * Records the blocked csp report.
+     *
+     * @note In MV3 version, to ensure that a CSP report was actually blocked,
+     * you need to verify that the request has a declarative rule applied. More info: AG-24612
      *
      * @param event Event with type {@link CspReportBlocked}.
      * @param event.data Destructed data from {@link CspReportBlocked}:
@@ -638,7 +682,7 @@ export class FilteringLogService {
      */
     private static onSetPreserveLogState({ data }: SetPreserveLogStateMessage): void {
         const { state } = data;
-        filteringLogApi.setPreserveLogState(state);
+        FilteringLogApi.setPreserveLogState(state);
     }
 
     /**
@@ -688,7 +732,7 @@ export class FilteringLogService {
         return {
             filtersMetadata: FiltersApi.getFiltersMetadata(),
             settings: SettingsApi.getData(),
-            preserveLogEnabled: filteringLogApi.isPreserveLogEnabled(),
+            preserveLogEnabled: FilteringLogApi.isPreserveLogEnabled(),
         };
     }
 

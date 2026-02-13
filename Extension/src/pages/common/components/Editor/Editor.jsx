@@ -62,6 +62,7 @@ const Editor = ({
     shouldResetSize,
     onSave,
     onExit,
+    readOnly = false,
 }) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
     const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
@@ -103,6 +104,7 @@ const Editor = ({
     const editorClassName = cn(
         'editor',
         { 'editor--full-screen': fullscreen },
+        { 'editor--with-margin': !fullscreen },
         getOculusClass(),
     );
 
@@ -138,6 +140,7 @@ const Editor = ({
                 value={value}
                 commands={mergedShortcuts}
                 onChange={onChange}
+                readOnly={readOnly}
             />
             <ReactResizeDetector
                 skipOnMount

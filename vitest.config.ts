@@ -52,11 +52,12 @@ const createProjectForManifestVersion = (
     resolve: {
         alias: loadAliases(
             path.resolve(__dirname),
-            `./tsconfig.with_types_mv${manifestVersion}.json`,
+            `./tsconfig.mv${manifestVersion}.json`,
         ),
     },
     test: {
         name: `mv${manifestVersion}`,
+        exclude: ['**/node_modules/**', '**/vendor/**'],
         setupFiles: [
             // Setup all needed stuff: mocks, etc.
             'fake-indexeddb/auto',

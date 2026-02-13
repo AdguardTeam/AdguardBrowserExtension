@@ -34,6 +34,8 @@ import {
 } from '../../constants';
 import { translator } from '../../../../common/translators/translator';
 
+import { AboutLink } from './AboutLink';
+
 import './about-page.pcss';
 
 const About = observer(() => {
@@ -86,54 +88,12 @@ const About = observer(() => {
                     {translator.getMessage('options_copyright')}
                 </div>
                 <div className="links-menu">
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={CHANGELOG_URL}
-                        className="links-menu__item button--link--green"
-                    >
-                        {translator.getMessage('options_open_changelog')}
-                    </a>
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={PRIVACY_URL}
-                        className="links-menu__item button--link--green"
-                    >
-                        {translator.getMessage('options_privacy_policy')}
-                    </a>
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={WEBSITE_URL}
-                        className="links-menu__item button--link--green"
-                    >
-                        {translator.getMessage('options_site')}
-                    </a>
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={DISCUSS_URL}
-                        className="links-menu__item button--link--green"
-                    >
-                        {translator.getMessage('options_discuss')}
-                    </a>
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={ACKNOWLEDGMENTS_URL}
-                        className="links-menu__item button--link--green"
-                    >
-                        {translator.getMessage('options_acknowledgment')}
-                    </a>
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={GITHUB_URL}
-                        className="links-menu__item button--link--green"
-                    >
-                        {translator.getMessage('options_github')}
-                    </a>
+                    <AboutLink href={CHANGELOG_URL} title={translator.getMessage('options_open_changelog')} />
+                    <AboutLink href={PRIVACY_URL} title={translator.getMessage('options_privacy_policy')} />
+                    <AboutLink href={WEBSITE_URL} title={translator.getMessage('options_site')} />
+                    <AboutLink href={DISCUSS_URL} title={translator.getMessage('options_discuss')} />
+                    <AboutLink href={ACKNOWLEDGMENTS_URL} title={translator.getMessage('options_acknowledgment')} />
+                    <AboutLink href={GITHUB_URL} title={translator.getMessage('options_github')} />
                 </div>
             </div>
         </>

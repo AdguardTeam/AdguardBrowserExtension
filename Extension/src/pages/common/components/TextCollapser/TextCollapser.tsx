@@ -67,8 +67,8 @@ export const TextCollapser = forwardRef((
         }
     };
 
-    const DEFAULT_SHOW_MESSAGE = 'text_collapser_show_default';
-    const DEFAULT_HIDE_MESSAGE = 'text_collapser_hide_default';
+    const DEFAULT_SHOW_MESSAGE = translator.getMessage('text_collapser_show_default');
+    const DEFAULT_HIDE_MESSAGE = translator.getMessage('text_collapser_hide_default');
 
     // Pick required collapser button text
     const {
@@ -77,8 +77,8 @@ export const TextCollapser = forwardRef((
     } = collapserButtonMessages;
 
     const collapserButtonText = isCollapsed
-        ? translator.getMessage(showMessage)
-        : translator.getMessage(hideMessage);
+        ? showMessage
+        : hideMessage;
 
     // Pick required text style
     const hasCollapsedStyle = isCollapsed && isOverflown;

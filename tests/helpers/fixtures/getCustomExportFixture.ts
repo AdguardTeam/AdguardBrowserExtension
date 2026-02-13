@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import {
     type Config,
     RootOption,
@@ -10,6 +30,7 @@ import {
     StealthOption,
     CustomFilterOption,
 } from '../../../Extension/src/background/schema';
+import { AppearanceTheme } from '../../../Extension/src/common/constants';
 
 import { filterNameFixture } from './filterWithMetadata';
 
@@ -130,15 +151,6 @@ export const getImportedSettingsFromV1Fixture = () => {
                 return id !== 14 && id !== 15 && id !== 241;
             });
 
-        // TODO: revert if Quick Fixes filter is back
-        // // Insert before last element to correct order in strict equal tests.
-        // configV1.filters['enabled-filters'].splice(
-        //     configV1.filters['enabled-filters'].length - 1,
-        //     0,
-        //     // 24 - AdGuard Quick Fixes enabled by default for MV3.
-        //     24,
-        // );
-
         // Safebrowsing deleted after 5.0 (MV3).
         configV1['general-settings']['safebrowsing-enabled'] = false;
 
@@ -157,7 +169,7 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
         [GeneralSettingsOption.AutodetectFilters]: false,
         [GeneralSettingsOption.SafebrowsingEnabled]: !__IS_MV3__,
         [GeneralSettingsOption.FiltersUpdatePeriod]: __IS_MV3__ ? -1 : 3600000,
-        [GeneralSettingsOption.AppearanceTheme]: 'dark',
+        [GeneralSettingsOption.AppearanceTheme]: AppearanceTheme.Dark,
     },
     [RootOption.ExtensionSpecificSettings]: {
         [ExtensionSpecificSettingsOption.UseOptimizedFilters]: true,
@@ -176,8 +188,6 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
             // 15 - AdGuard DNS filter - not supported in MV3.
             // 241 - EasyList Cookie List, author does not support MV3.
             ? [1, 2, 3, 4, 7, 13, 17, 1000, 1001]
-            // TODO: revert if Quick Fixes filter is back
-            // ? [1, 2, 3, 4, 7, 13, 17, 24, 1000, 1001]
             : [1, 2, 3, 4, 7, 13, 17, 18, 19, 20, 21, 22, 241, 1000, 1001],
         [FiltersOption.EnabledGroups]: [0, 1, 2, 3, 4, 5, 6, 7],
         [FiltersOption.CustomFilters]: [{

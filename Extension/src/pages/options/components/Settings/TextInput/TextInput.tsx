@@ -28,9 +28,11 @@ import React, {
     type FC,
 } from 'react';
 
+import cn from 'classnames';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import { type SettingHandler } from '../../../types';
+import { type SettingOption } from '../../../../../background/schema/settings';
 
 import './input.pcss';
 
@@ -39,7 +41,7 @@ export type TextInputValue = string | number;
 export type TextEventHandler = ChangeEventHandler<HTMLInputElement>;
 
 export type TextInputProps = {
-    id: string;
+    id: SettingOption;
     value: TextInputValue;
     handler: SettingHandler;
     placeholder?: string;
@@ -47,6 +49,7 @@ export type TextInputProps = {
     required?: boolean;
     minValue?: number;
     step?: number;
+    className?: string;
 };
 
 const HANDLE_TEXT_INPUT_DEBOUNCE_MS = 1000;
@@ -80,7 +83,7 @@ const useTextInput = (
         (e) => {
             const { name: id, value: data } = e.target;
             setInputValue(data);
-            debouncedChangeHandler({ id, data, event: e });
+            debouncedChangeHandler({ id: id as SettingOption, data, event: e });
         },
         // create new change handler only on debounced change handler re-creation
         [debouncedChangeHandler],
@@ -98,6 +101,7 @@ export const TextInput: FC<TextInputProps> = ({
     required = false,
     minValue,
     step,
+    className,
 }) => {
     const [inputValue, changeHandler] = useTextInput(value, handler);
 
@@ -110,7 +114,7 @@ export const TextInput: FC<TextInputProps> = ({
                 value={inputValue}
                 onChange={changeHandler}
                 id={id}
-                className="input__in"
+                className={cn('input__in', className)}
                 placeholder={placeholder}
                 min={minValue}
                 required={required}

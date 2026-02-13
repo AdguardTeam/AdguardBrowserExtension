@@ -168,17 +168,6 @@ export class RulesLimitsService {
             return acc;
         }, {});
 
-        // TODO: revert if Quick Fixes filter is back
-        // // It is like "syntax sugar" for the quick fixes filter to emulate it
-        // // like an "empty" ruleset, because it looks like usual filter
-        // // in the UI, but it actually applied dynamically, so enabling it will
-        // // never change quota of the used static rules.
-        // counters[AntiBannerFiltersId.QuickFixesFilterId] = {
-        //     filterId: AntiBannerFiltersId.QuickFixesFilterId,
-        //     rulesCount: 0,
-        //     regexpRulesCount: 0,
-        // };
-
         return counters;
     };
 
@@ -410,9 +399,8 @@ export class RulesLimitsService {
      */
     public static getCurrentConfigurationEnabledFilters(): number[] {
         const ids = FiltersApi.getEnabledFiltersWithMetadata()
-            // Ignore custom filters, user rules, allowlist and quick fixes lists
-            // because they are user-defined (except quick fixes - it loaded
-            // dynamically from the remote) and do not use quota of the static
+            // Ignore custom filters, user rules and allowlist
+            // because they are user-defined and do not use quota of the static
             // rules.
             // of them is going via dynamic part of DNR rules.
             .filter((f) => CommonFilterUtils.isCommonFilter(f.filterId))

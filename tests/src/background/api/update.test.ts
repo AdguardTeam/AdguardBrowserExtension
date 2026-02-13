@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import {
     afterAll,
     afterEach,
@@ -28,11 +48,13 @@ import {
     getStorageFixturesV11,
     getStorageFixturesV12,
     getStorageFixturesV13,
+    getStorageFixturesV14,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { SbCache } from '../../../../Extension/src/background/storages';
 import { FILTER_KEY_PREFIX } from '../../../../Extension/src/background/api/update/assets/old-filters-storage-v1';
+import { settingsValidator } from '../../../../Extension/src/background/schema';
 
 vi.mock('../../../../Extension/src/background/engine');
 vi.mock('../../../../Extension/src/background/api/ui/icons');
@@ -140,6 +162,12 @@ describe('Update Api (without indexedDB)', () => {
 
             // Some properties in the data are stored as strings, but we need to compare them as objects, not as strings
             expect(deepJsonParse(settings)).toStrictEqual(deepJsonParse(data.to));
+
+            // Verify settings integrity
+            const adguardSettings = settings['adguard-settings'];
+            const validationResult = settingsValidator.safeParse(adguardSettings);
+
+            expect(validationResult.success).toBe(true);
         };
 
         const migrationCasesData = {
@@ -157,6 +185,7 @@ describe('Update Api (without indexedDB)', () => {
             v11: getStorageFixturesV11(expires),
             v12: getStorageFixturesV12(expires),
             v13: getStorageFixturesV13(expires),
+            v14: getStorageFixturesV14(expires),
         };
 
         const targetVersion = Object.keys(migrationCasesData).pop() as keyof typeof migrationCasesData;
@@ -209,6 +238,55 @@ describe('Update Api (without indexedDB)', () => {
                     }, {}),
                 ),
             );
+        });
+
+        // Test for migration from V13 to V14: filter format migration
+        it('should migrate filter storage format from preprocessor to FilterList (v13 to v14)', async () => {
+            const [data] = getStorageFixturesV13(expires);
+
+            if (!data) {
+                throw new Error('fixture is not defined');
+            }
+
+            const storage = mockLocalStorage(data);
+
+            const runInfo = await getRunInfo();
+
+            await UpdateApi.update(runInfo);
+
+            const settings = await storage.get(null);
+
+            // Verify that old preprocessor format keys are removed
+            const oldFormatKeys = Object.keys(settings).filter((key) => key.startsWith('rawFilterList_')
+                || key.startsWith('conversionMap_')
+                || key.startsWith('filterList_')
+                || key.startsWith('sourceMap_'));
+            expect(oldFormatKeys).toHaveLength(0);
+
+            // Verify that new FilterList format keys are present
+            const newFormatKeys = Object.keys(settings).filter((key) => key.startsWith('filterContent_')
+                || key.startsWith('conversionData_'));
+
+            // We should have at least some filter content keys
+            // (the exact number depends on the fixture, but there should be pairs)
+            expect(newFormatKeys.length).toBeGreaterThan(0);
+            expect(newFormatKeys.length % 2).toBe(0); // Should be even (pairs of content + data)
+
+            // Verify that filterContent and conversionData pairs exist
+            const filterContentKeys = newFormatKeys.filter((key) => key.startsWith('filterContent_'));
+            filterContentKeys.forEach((contentKey) => {
+                const id = contentKey.replace('filterContent_', '');
+                const dataKey = `conversionData_${id}`;
+                expect(settings[dataKey]).toBeDefined();
+            });
+
+            // Verify preserve-log-enabled setting was added
+            const adguardSettings = settings['adguard-settings'];
+            expect(adguardSettings).toBeDefined();
+            expect((adguardSettings as any)['preserve-log-enabled']).toBe(false);
+
+            // Verify schema version
+            expect(settings['schema-version']).toBe(14);
         });
     });
 });

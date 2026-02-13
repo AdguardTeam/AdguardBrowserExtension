@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import browser, { type Storage } from 'webextension-polyfill';
 import {
     afterEach,
@@ -11,8 +31,7 @@ import {
 
 import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
-
-import { FilterListPreprocessor } from 'tswebextension';
+import { FilterList } from '@adguard/tsurlfilter';
 
 import { mockLocalStorage } from '../../../helpers';
 import { FiltersStoragesAdapter } from '../../../../Extension/src/background/storages/filters-adapter';
@@ -28,7 +47,7 @@ const rawFilter = [
     'example.com##.ad',
 ].join('\n');
 
-const filter = FilterListPreprocessor.preprocess(rawFilter);
+const filter = new FilterList(rawFilter);
 
 describe.skipIf(__IS_MV3__)('FiltersStoragesAdapter (MV2)', () => {
     let localStorage: Storage.StorageArea;
@@ -55,14 +74,8 @@ describe.skipIf(__IS_MV3__)('FiltersStoragesAdapter (MV2)', () => {
 
         expect(filterFromStorage).not.toBeUndefined();
 
-        // Note: Under `filterList` key we have an Uint8Array, so we need to convert it before comparing
-        expect({
-            ...filterFromStorage,
-            filterList: filterFromStorage!.filterList.map(Buffer.from),
-        }).toEqual({
-            ...filter,
-            filterList: filter.filterList.map(Buffer.from),
-        });
+        expect(filterFromStorage?.getContent()).toEqual(filter.getContent());
+        expect(filterFromStorage?.getConversionData()).toEqual(filter.getConversionData());
     });
 
     it('has', async () => {
@@ -148,14 +161,8 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
 
         expect(filterFromStorage).not.toBeUndefined();
 
-        // Note: Under `filterList` key we have an Uint8Array, so we need to convert it before comparing
-        expect({
-            ...filterFromStorage,
-            filterList: filterFromStorage!.filterList.map(Buffer.from),
-        }).toEqual({
-            ...filter,
-            filterList: filter.filterList.map(Buffer.from),
-        });
+        expect(filterFromStorage?.getContent()).toEqual(filter.getContent());
+        expect(filterFromStorage?.getConversionData()).toEqual(filter.getConversionData());
     });
 
     it('set should not save static filters', async () => {

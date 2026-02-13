@@ -27,16 +27,19 @@
         "message": "Please read carefully before enabling annoyance filters"
     },
     "options_filters_annoyances_consent_description": {
-        "message": "You are about to enable one or more annoyance filters. They block elements that are either unrelated to website content or related but annoying to your user experience. Website owners may consider these elements mandatory: if you block them, you may be violating their terms; some functionality of websites may not be available or may not work properly. You understand and agree that you are solely responsible to comply with the terms of use of websites you visit and that AdGuard is not responsible for your compliance with the terms of use of websites you visit."
+        "message": "You are about to enable one or more annoyance filters. They block elements that are either unrelated to website content or related but annoying to your user experience. Website owners may consider these elements mandatory: if you block them, you may be violating their terms; some functionality of websites may not be available or may not work properly. You understand and agree that you are solely responsible to comply with the terms of use of websites you visit and that AdGuard is not responsible for your compliance with the terms of use of websites you visit using our products."
     },
     "options_filters_annoyances_consent_question": {
         "message": "Enable these filters?"
     },
     "options_filters_annoyances_consent_filter_policy": {
-        "message": "For details on what AdGuard's annoyance filters block, see <a>Filter policy<\/a>"
+        "message": "For details on what AdGuard’s annoyance filters block, see <a>Filter policy<\/a>"
     },
     "options_filters_annoyances_consent_enable_button": {
         "message": "Enable"
+    },
+    "options_filters_annoyances_consent_filter_homepage_tooltip": {
+        "message": "Homepage"
     },
     "popup_header_cta_link": {
         "message": "How to enhance protection"
@@ -156,6 +159,21 @@
         "message": "Unmatched adblock extension against advertising and pop-ups. Blocks ads on Facebook, YouTube and all other websites.",
         "description": "TEXT MAX LENGTH: 132"
     },
+    "popup_tooltip_protection_enabled": {
+        "message": "Protection enabled"
+    },
+    "popup_tooltip_protection_disabled": {
+        "message": "Protection disabled"
+    },
+    "popup_tooltip_some_rules_not_applied": {
+        "message": "Some rules not applied"
+    },
+    "popup_tooltip_update_available": {
+        "message": "Update available"
+    },
+    "popup_tooltip_loading": {
+        "message": "Loading..."
+    },
     "background_tab_title": {
         "message": "Background tab"
     },
@@ -163,13 +181,13 @@
         "message": "Allowlist"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard does not filter websites from the allowlist"
+        "message": "AdGuard doesn’t block ads and trackers on websites from the list"
     },
     "options_allowlist_invert": {
         "message": "Invert allowlist"
     },
     "options_allowlist_invert_desc": {
-        "message": "Unblock ads everywhere except for the allowlist"
+        "message": "Blocks ads and trackers on allowlisted websites only"
     },
     "options_allowlist_alert_invert": {
         "message": "Allowlist is inverted. Ads are blocked only on websites added to it. <a>Disable<\/a>"
@@ -235,7 +253,7 @@
         "message": "Custom"
     },
     "options_antibanner_custom_group_description": {
-        "message": "Use third-party filters with AdGuard"
+        "message": "Allows you to add filters from a file or URL"
     },
     "options_filters_enabled_per_group": {
         "message": "Enabled: %current% of %total%"
@@ -343,7 +361,7 @@
         "message": "All"
     },
     "popup_statistics_category_advertising": {
-        "message": "Advertising"
+        "message": "Ads"
     },
     "popup_statistics_category_trackers": {
         "message": "Trackers"
@@ -538,10 +556,10 @@
         "message": "Search in tabs"
     },
     "filtering_log_preserve_log_off": {
-        "message": "Do not record log"
+        "message": "Do not preserve log"
     },
     "filtering_log_preserve_log_on": {
-        "message": "Record log"
+        "message": "Preserve log"
     },
     "filtering_refresh_tab_short": {
         "message": "Refresh"
@@ -730,10 +748,10 @@
         "message": "General"
     },
     "options_block_acceptable_ads": {
-        "message": "Block search ads and websites' self-promotion"
+        "message": "Block search ads and website self-promotion"
     },
     "options_block_acceptable_ads_desc": {
-        "message": "Remove self-promotional ads from websites and contextual ads from search results. <a>Learn more<\/a>"
+        "message": "Blocks ads in search results and self-promotion of websites. <a>Learn more<\/a>"
     },
     "options_show_blocked_ads_count_title": {
         "message": "Indicate the number of blocked ads on the AdGuard extension icon"
@@ -742,7 +760,7 @@
         "message": "Activate the most appropriate filters automatically"
     },
     "options_enable_autodetect_filter_desc": {
-        "message": "Language-specific filters will turn on depending on the site language"
+        "message": "Detects the language of the website and activates appropriate filters"
     },
     "options_select_theme": {
         "message": "Theme"
@@ -781,7 +799,7 @@
         "message": "Auto-update filters"
     },
     "options_set_update_interval_desc": {
-        "message": "For more effective blocking, the filters need to be updated regularly"
+        "message": "Keeps the filters up to date for more effective ad blocking"
     },
     "options_userfilter_export": {
         "message": "Export"
@@ -805,7 +823,7 @@
         "message": "You can add your own rules here. This option is recommended for advanced users familiar with HTML\/CSS. Read the <a>filter rules tutorial<\/a> to learn how to write your own filter rules."
     },
     "options_userfilter_subtitle_key": {
-        "message": "Fine-tune ad blocking with your own filtering rules"
+        "message": "Allows you to add your own filtering rules"
     },
     "options_userfilter_line_break": {
         "message": "Line break"
@@ -826,10 +844,10 @@
         "message": "Phishing and malware protection"
     },
     "options_safebrowsing_enabled_desc": {
-        "message": "Enable AdGuard Browsing Security module that detects potentially malicious and phishing sites by checking them against an online database. <a>Read more<\/a>"
+        "message": "Warns about malicious and phishing websites using the AdGuard Browsing Security module. <a>Read more<\/a>"
     },
     "options_site": {
-        "message": "Official Website"
+        "message": "Official website"
     },
     "options_discuss": {
         "message": "Discuss AdGuard"
@@ -919,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "You've reached the limit of active built-in rules. Your browser has modified the list of active built-in filters. The number of filters enabled has changed from %expected% to %current%."
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "You've reached your browser's limit for active built-in rules. Your browser has reduced the list of active built-in filters from %expected% to %current%"
+    },
     "options_limits_warning_static_filters": {
         "message": "You've reached the limit of active built-in filters. %maximum% of %current% filters are enabled. To activate new rules, disable some built-in filters."
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "You've reached your browser's limit for active built-in filters. %maximum% of %current% filters are enabled. To activate new filters, disable some built-in ones"
     },
     "options_limits_warning_static_rules": {
         "message": "You've reached the limit of active built-in rules. %maximum% of %current% rules are enabled. To activate new rules, disable some built-in filters."
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "You've reached your browser's limit for active built-in rules. To activate new rules, disable some built-in filters"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "You've reached the limit of active built-in regex rules. %maximum% of %current% regex rules are enabled. To activate new rules, disable some built-in filters."
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "You've reached the limit of active built-in regex rules. To activate new rules, disable some built-in filters"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "You've reached the limit of user-added rules. %maximum% of %current% rules are enabled."
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "You've reached the limit of user-added rules. %maximum% of %current% rules are enabled. To add new rules, remove some existing ones"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "You've reached the limit of user-added unsafe rules. %maximum% of %current% unsafe rules are enabled."
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "You've reached the limit of user-added regex rules. %maximum% of %current% regex rules are enabled."
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "You've reached the limit of user-added regex rules. %maximum% of %current% rules are enabled. To add new regex rules, remove some existing ones"
     },
     "options_developer_mode_required": {
         "message": "Your browser restricts <external-link>some types of rules<\/external-link>. To apply all rules, enable <b>Developer mode<\/b> in your browser’s <settings-link>extension settings<\/settings-link>",
@@ -978,10 +1014,10 @@
         "message": "Error while resetting settings"
     },
     "options_collect_hit_stats_title": {
-        "message": "Help with the development of AdGuard filters"
+        "message": "Help develop AdGuard filters"
     },
     "options_collect_hit_stats_desc": {
-        "message": "Send <a>anonymous stats on ad filter usage<\/a> to help AdGuard improve its filters"
+        "message": "Sends anonymous stats on ad filter usage to AdGuard. <a>Learn more<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "Add AdGuard item to the browser's context menu"
@@ -996,7 +1032,7 @@
         "message": "Tracking protection"
     },
     "options_privacy_desc": {
-        "message": "Protect your identity and sensitive personal information from thousands of online trackers by blocking the most popular tracking methods"
+        "message": "Protects your online activity and personal data from web trackers"
     },
     "options_hide_referrer_title": {
         "message": "Hide Referer from third parties"
@@ -1005,13 +1041,13 @@
         "message": "Prevent third parties from knowing what website you are visiting"
     },
     "options_hide_search_queries_title": {
-        "message": "Hide your search queries"
+        "message": "Hide search queries"
     },
     "options_hide_search_queries_desc": {
-        "message": "Hide the queries for websites visited from a search engine"
+        "message": "Hides your searches from websites visited through search engine results"
     },
     "options_send_not_track_title": {
-        "message": "Ask websites not to track you"
+        "message": "Ask websites not to track me"
     },
     "options_send_not_track_desc": {
         "message": "Send the <gpc>Global Privacy Control<\/gpc> and <dnt>Do Not Track<\/dnt> signals to the websites you visit"
@@ -1032,34 +1068,46 @@
         "message": "Block Google Chrome from sending its version and modifications information to Google domains"
     },
     "options_disable_webrtc_title": {
-        "message": "Disable WebRTC"
+        "message": "Block WebRTC"
     },
     "options_disable_webrtc_desc": {
-        "message": "WebRTC can leak your IP address even if you use a proxy or a VPN. Disabling WebRTC can break some websites"
+        "message": "Blocks WebRTC that can leak your real IP address even if you use a proxy or VPN. Some messengers, streaming platforms, or games may stop working properly"
     },
     "options_strip_tracking_params_title": {
-        "message": "Remove tracking parameters"
+        "message": "Remove tracking parameters from URLs"
     },
     "options_strip_tracking_params_description": {
-        "message": "Remove parameters from web requests with AdGuard URL Tracking filter"
+        "message": "Removes tracking parameters from page URLs using AdGuard URL Tracking filter"
     },
     "options_block_known_trackers_title": {
         "message": "Block trackers"
     },
     "options_block_known_trackers_description": {
-        "message": "Block trackers and web analytics tools with AdGuard Tracking Protection filter"
+        "message": "Blocks trackers and web analytics using AdGuard Tracking Protection filter"
     },
     "options_third_party_title": {
-        "message": "Self-destruction of third-party cookies"
+        "message": "Delete third-party cookies"
     },
     "options_third_party_desc": {
-        "message": "Limit the lifetime of third-party cookies (minutes)"
+        "message": "Prevents advertisers from tracking your behavior across multiple pages by limiting the lifetime of third-party cookies"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "To block the cookies, set the lifetime to 0"
+    },
+    "options_third_party_block_cookies_warning": {
+        "message": "If you block these cookies, you may have to re-log in to some websites or face other cookie-related issues"
+    },
+    "options_lifetime_minutes": {
+        "message": "Lifetime, minutes"
     },
     "options_first_party_title": {
-        "message": "Self-destruction of first-party cookies (not recommended)"
+        "message": "Delete first-party cookies (not recommended)"
     },
     "options_first_party_desc": {
-        "message": "Limit the lifetime of first-party cookies (minutes)"
+        "message": "Prevents websites from remembering your details, such as your login credentials and language preferences, by limiting the lifetime of first-party cookies"
+    },
+    "options_first_party_block_cookies_warning": {
+        "message": "If you block these cookies, some websites may break or stop working"
     },
     "options_anonymized_usage_data_title": {
         "message": "Send anonymized extension usage data"
@@ -1110,16 +1158,16 @@
         "message": "Statistics time period"
     },
     "popup_statistics_time_day": {
-        "message": "Last day"
+        "message": "24 hours"
     },
     "popup_statistics_time_week": {
-        "message": "Last week"
+        "message": "7 days"
     },
     "popup_statistics_time_month": {
-        "message": "Last month"
+        "message": "30 days"
     },
     "popup_statistics_time_year": {
-        "message": "Last year"
+        "message": "1 year"
     },
     "popup_switch_button": {
         "message": "Protection for current website"
@@ -1304,11 +1352,23 @@
     "filtering_log_assumed_rule_description": {
         "message": "This is an assumed rule. For details, see our <a>Knowledge base<\/a>"
     },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "Preserve log?"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "This option may significantly increase memory usage"
+    },
+    "filtering_log_preserve_log_skip_modal_in_future": {
+        "message": "Don’t show again"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "Yes, preserve"
+    },
     "options_stealth_general_title": {
         "message": "General"
     },
-    "options_stealth_cookies_title": {
-        "message": "Cookies"
+    "options_stealth_tracking_methods_title": {
+        "message": "Tracking methods"
     },
     "options_stealth_miscellaneous_title": {
         "message": "Miscellaneous"

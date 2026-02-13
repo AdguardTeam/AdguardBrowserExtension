@@ -3406,6 +3406,35 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c7605ee2684a2146beda3b04ccfa8bec" due to: ' + e);
         }
     },
+    '(()=>{const o={apply:(o,e,t)=>{const n=t[0];"boolean"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(o,e,t)),1e3)}},e={apply:(e,t,n)=>{const p=n[0];return"function"==typeof p&&p.toString().includes("adblock")&&(n[0]=new Proxy(n[0],o)),Reflect.apply(e,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.ae44d9fdcbff602a8b5dd378d736b1e4 === e) return;
+            (() => {
+                const e = {
+                    apply: (e, o, t) => {
+                        const n = t[0];
+                        "boolean" == typeof n && !0 === n && (t[0] = !1), setTimeout((() => Reflect.apply(e, o, t)), 1e3);
+                    }
+                }, o = {
+                    apply: (o, t, n) => {
+                        const r = n[0];
+                        return "function" == typeof r && r.toString().includes("adblock") && (n[0] = new Proxy(n[0], e)), 
+                        Reflect.apply(o, t, n);
+                    }
+                };
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o);
+            })();
+            Object.defineProperty(Window.prototype.toString, "ae44d9fdcbff602a8b5dd378d736b1e4", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "ae44d9fdcbff602a8b5dd378d736b1e4" due to: ' + e);
+        }
+    },
     '(()=>{const e=()=>{document.querySelectorAll(".chakra-portal").forEach((e=>{e.querySelector(\'.chakra-modal__overlay[style*="opacity"]\')&&e.setAttribute("style","display: none !important;")}))},t=()=>{},a=function(t,a){const r={name:t,listener:a};requestAnimationFrame((()=>{try{"rewardedSlotGranted"===r.name&&setTimeout(e,2e3),r.listener()}catch(e){}}))};window.googletag={cmd:[],pubads:()=>({addEventListener:a,removeEventListener:t,refresh:t,getTargeting:()=>[],setTargeting:t,disableInitialLoad:t,enableSingleRequest:t,collapseEmptyDivs:t,getSlots:t}),defineSlot:()=>({addService(){}}),defineOutOfPageSlot:t,enableServices:t,display:t,enums:{OutOfPageFormat:{REWARDED:1}}},googletag.cmd.push=e=>{try{e()}catch(e){}return 1}})();': () => {
         try {
             const e = "done";
@@ -3575,6 +3604,35 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "75be2f053259701edcb277b5ff24cd28" due to: ' + e);
+        }
+    },
+    '(()=>{const o={apply:(o,e,t)=>{const n=t[0];"boolean"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(o,e,t)),1e3)}},e={apply:(e,t,n)=>{const p=n[0];return"function"==typeof p&&p.toString().includes("free-download-form")&&(n[0]=new Proxy(n[0],o)),Reflect.apply(e,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.fed0651027569c8561bf1af6a00d880d === e) return;
+            (() => {
+                const e = {
+                    apply: (e, o, t) => {
+                        const r = t[0];
+                        "boolean" == typeof r && !0 === r && (t[0] = !1), setTimeout((() => Reflect.apply(e, o, t)), 1e3);
+                    }
+                }, o = {
+                    apply: (o, t, r) => {
+                        const n = r[0];
+                        return "function" == typeof n && n.toString().includes("free-download-form") && (r[0] = new Proxy(r[0], e)), 
+                        Reflect.apply(o, t, r);
+                    }
+                };
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o);
+            })();
+            Object.defineProperty(Window.prototype.toString, "fed0651027569c8561bf1af6a00d880d", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "fed0651027569c8561bf1af6a00d880d" due to: ' + e);
         }
     },
     '(()=>{const e=window.Promise,o={construct:(o,t,n)=>t[0]&&t[0]?.toString()?.includes("[!1,!1,!1,!1]")&&t[0]?.toString()?.includes(".responseText")?e.resolve(!1):Reflect.construct(o,t,n)},t=new Proxy(window.Promise,o);Object.defineProperty(window,"Promise",{set:e=>{},get:()=>t})})();': () => {
@@ -4266,59 +4324,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "73f1b4fc791cbf3105708cabf5b1db21" due to: ' + e);
         }
     },
-    "window.call_Ad = function() { };": () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["7c1456a0dab6ca53b945e21a27f6b209"] === e) return;
-            window.call_Ad = function() {};
-            Object.defineProperty(Window.prototype.toString, "7c1456a0dab6ca53b945e21a27f6b209", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "7c1456a0dab6ca53b945e21a27f6b209" due to: ' + e);
-        }
-    },
-    "window.RunAds = !0;": () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["6c387c219fbbef62f244b67bd5165f03"] === e) return;
-            window.RunAds = !0;
-            Object.defineProperty(Window.prototype.toString, "6c387c219fbbef62f244b67bd5165f03", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "6c387c219fbbef62f244b67bd5165f03" due to: ' + e);
-        }
-    },
-    "window._r3z = {}; Object.defineProperties(window._r3z, { jq: { value: undefined }, pub: { value: {} } });": () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["48c98c062b9c63813998a881d8c039c9"] === e) return;
-            window._r3z = {};
-            Object.defineProperties(window._r3z, {
-                jq: {
-                    value: void 0
-                },
-                pub: {
-                    value: {}
-                }
-            });
-            Object.defineProperty(Window.prototype.toString, "48c98c062b9c63813998a881d8c039c9", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "48c98c062b9c63813998a881d8c039c9" due to: ' + e);
-        }
-    },
     "(function() { window.xRds = false; window.frg = true; window.frag = true;  })();": () => {
         try {
             const e = "done";
@@ -4369,26 +4374,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "2ac41d844f1f8bd49b7778aeb6e0c2cc" due to: ' + e);
-        }
-    },
-    "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/adsbygoogle instanceof Array/.test(a.toString()))return b(a,c)};})();": () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.db544946f4c7aec68c0cc554e909aa42 === e) return;
-            !function() {
-                var e = window.setTimeout;
-                window.setTimeout = function(t, o) {
-                    if (!/adsbygoogle instanceof Array/.test(t.toString())) return e(t, o);
-                };
-            }();
-            Object.defineProperty(Window.prototype.toString, "db544946f4c7aec68c0cc554e909aa42", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "db544946f4c7aec68c0cc554e909aa42" due to: ' + e);
         }
     },
     'window.ad_permission = "OK";': () => {
@@ -8130,15 +8115,15 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "ae4fa77cc5169989696ccbb4288099b4" due to: ' + e);
         }
     },
-    '(()=>{const e="pyv",t="ad_type",n="none";let o=e;const a=e=>{o=e};(()=>{try{const e=Object.getOwnPropertyDescriptor(window.JSON,"parse");return!!e&&e.writable}catch(e){return!1}})()||a(t);const c=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},r=(o,a,r)=>{try{if(!o||!a||!r)return;if(r===e)return a.adPlaybackContext={pyv:!0},void c(o);if(r===t)return a.adPlaybackContext={adType:"AD_TYPE_INSTREAM"},void c(o);if(r===n)return void delete a.adPlaybackContext}catch(e){}},l=["playerErrorMessageRenderer","UNPLAYABLE"],i={apply:(c,r,i)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/")||o===n)return Reflect.apply(c,r,i);let y;try{if(y=Reflect.apply(c,r,i),!y.responseContext&&!y.playabilityStatus)return y;const u=JSON.stringify(y);return l.some((e=>u.includes(e)))&&!u.includes("CONTENT_CHECK_REQUIRED")?o===e?(a(t),y):(a(n),y):(o===t&&y.playerConfig?.granularVariableSpeedConfig&&(y.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate=200,y.playerConfig.granularVariableSpeedConfig.minimumPlaybackRate=25),y)}catch(e){}return y}};window.JSON.parse=new Proxy(window.JSON.parse,i);const y={apply:(e,t,n)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,n);try{let a=n[0];if(a&&(a.includes(\'"contentPlaybackContext"\')||a.includes(\'"adSignalsInfo"\'))){const c=JSON.parse(a);if(!c.context?.client)return Reflect.apply(e,t,n);c.playbackContext&&r(c,c.playbackContext,o),c.playerRequest&&r(c,c.playerRequest.playbackContext,o),a=JSON.stringify(c),n[0]=a}}catch(e){}return Reflect.apply(e,t,n)}};window.TextEncoder.prototype.encode=new Proxy(window.TextEncoder.prototype.encode,y);const u={apply:(e,t,n)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,n);try{const a=n[0];if(!a?.context?.client)return Reflect.apply(e,t,n);a.playbackContext&&"undefined"===a.playbackContext.adPlaybackContext&&r(a,a.playbackContext,o),a.playerRequest&&"undefined"===a.playerRequest.playbackContext.adPlaybackContext&&r(a,a.playerRequest.playbackContext,o),n[0]=a}catch(e){}return Reflect.apply(e,t,n)}};window.JSON.stringify=new Proxy(window.JSON.stringify,u);const s={construct:(e,t,n)=>{try{const a=t[0];let c=t[1]?.body;if(!a?.includes("youtubei")||location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/")||!c)return Reflect.construct(e,t,n);if(c.includes(\'"contentPlaybackContext"\')||c.includes(\'"adSignalsInfo"\')){const a=JSON.parse(c);if(!a.context?.client)return Reflect.construct(e,t,n);a.playbackContext&&r(a,a.playbackContext,o),a.playerRequest&&r(a,a.playerRequest.playbackContext,o),c=JSON.stringify(a),t[1].body=c}}catch(e){}return Reflect.construct(e,t,n)}};window.Request=new Proxy(window.Request,s)})();': () => {
+    '(()=>{const e="pyv",t="ad_type",n="none";let a=e;const o=window.JSON.stringify,c=e=>{a=e};(()=>{try{const e=Object.getOwnPropertyDescriptor(window.JSON,"parse");return!!e&&e.writable}catch(e){return!1}})()||((()=>{const e={apply:(e,t,n)=>{try{const e=t;e?.includes(\'"minimumPlaybackRate":100,"maximumPlaybackRate":100\')&&(t=e.replace(\'"minimumPlaybackRate":100,"maximumPlaybackRate":100\',\'"minimumPlaybackRate":25,"maximumPlaybackRate":200\'))}catch(e){}return Reflect.apply(e,t,n)}};window.String.prototype.replace=new Proxy(window.String.prototype.replace,e)})(),c(t));const r=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},l=(a,o,c)=>{try{if(!a||!o||!c)return;if(c===e)return o.adPlaybackContext={pyv:!0},void r(a);if(c===t)return o.adPlaybackContext={adType:"AD_TYPE_INSTREAM"},void r(a);if(c===n)return void delete o.adPlaybackContext}catch(e){}},i=["playerErrorMessageRenderer","UNPLAYABLE"],y={apply:(r,l,y)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/")||a===n)return Reflect.apply(r,l,y);let u;try{if(u=Reflect.apply(r,l,y),!u.responseContext&&!u.playabilityStatus)return u;const p=o(u);return i.some((e=>p.includes(e)))&&!p.includes("CONTENT_CHECK_REQUIRED")?a===e?(c(t),u):(c(n),u):(a===t&&u.playerConfig?.granularVariableSpeedConfig&&(u.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate=200,u.playerConfig.granularVariableSpeedConfig.minimumPlaybackRate=25),u)}catch(e){}return u}};window.JSON.parse=new Proxy(window.JSON.parse,y);const u={apply:(e,t,n)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,n);try{let c=n[0];if(c&&(c.includes(\'"contentPlaybackContext"\')||c.includes(\'"adSignalsInfo"\'))){const r=JSON.parse(c);if(!r.context?.client)return Reflect.apply(e,t,n);r.playbackContext&&l(r,r.playbackContext,a),r.playerRequest&&l(r,r.playerRequest.playbackContext,a),c=o(r),n[0]=c}}catch(e){}return Reflect.apply(e,t,n)}};window.TextEncoder.prototype.encode=new Proxy(window.TextEncoder.prototype.encode,u);const p={apply:(e,t,n)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,n);try{const o=n[0];if(!o?.context?.client)return Reflect.apply(e,t,n);o.playbackContext&&"undefined"===o.playbackContext.adPlaybackContext&&l(o,o.playbackContext,a),o.playerRequest&&"undefined"===o.playerRequest.playbackContext.adPlaybackContext&&l(o,o.playerRequest.playbackContext,a),n[0]=o}catch(e){}return Reflect.apply(e,t,n)}};window.JSON.stringify=new Proxy(window.JSON.stringify,p);const s={construct:(e,t,n)=>{try{const c=t[0];let r=t[1]?.body;if(!c?.includes("youtubei")||location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/")||!r)return Reflect.construct(e,t,n);if(r.includes(\'"contentPlaybackContext"\')||r.includes(\'"adSignalsInfo"\')){const c=JSON.parse(r);if(!c.context?.client)return Reflect.construct(e,t,n);c.playbackContext&&l(c,c.playbackContext,a),c.playerRequest&&l(c,c.playerRequest.playbackContext,a),r=o(c),t[1].body=r}}catch(e){}return Reflect.construct(e,t,n)}};window.Request=new Proxy(window.Request,s)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["26a6e80631ab1984da64587454d1d151"] === e) return;
+            if (Window.prototype.toString.d6054ebc26b0f6582e21f1ac2736013a === e) return;
             (() => {
                 const e = "pyv", t = "ad_type", n = "none";
-                let o = e;
-                const a = e => {
-                    o = e;
+                let a = e;
+                const o = window.JSON.stringify, c = e => {
+                    a = e;
                 };
                 (() => {
                     try {
@@ -8147,76 +8132,87 @@ export const localScriptRules = {
                     } catch (e) {
                         return !1;
                     }
-                })() || a(t);
+                })() || ((() => {
+                    const e = {
+                        apply: (e, t, n) => {
+                            try {
+                                const e = t;
+                                e?.includes('"minimumPlaybackRate":100,"maximumPlaybackRate":100') && (t = e.replace('"minimumPlaybackRate":100,"maximumPlaybackRate":100', '"minimumPlaybackRate":25,"maximumPlaybackRate":200'));
+                            } catch (e) {}
+                            return Reflect.apply(e, t, n);
+                        }
+                    };
+                    window.String.prototype.replace = new Proxy(window.String.prototype.replace, e);
+                })(), c(t));
                 const r = e => {
                     (e.playbackContext || e.playerRequest) && delete e.context?.client?.configInfo?.appInstallData;
-                }, c = (o, a, c) => {
+                }, l = (a, o, c) => {
                     try {
-                        if (!o || !a || !c) return;
-                        if (c === e) return a.adPlaybackContext = {
+                        if (!a || !o || !c) return;
+                        if (c === e) return o.adPlaybackContext = {
                             pyv: !0
-                        }, void r(o);
-                        if (c === t) return a.adPlaybackContext = {
+                        }, void r(a);
+                        if (c === t) return o.adPlaybackContext = {
                             adType: "AD_TYPE_INSTREAM"
-                        }, void r(o);
-                        if (c === n) return void delete a.adPlaybackContext;
+                        }, void r(a);
+                        if (c === n) return void delete o.adPlaybackContext;
                     } catch (e) {}
-                }, l = [ "playerErrorMessageRenderer", "UNPLAYABLE" ], i = {
-                    apply: (r, c, i) => {
-                        if (location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/") || o === n) return Reflect.apply(r, c, i);
-                        let u;
+                }, i = [ "playerErrorMessageRenderer", "UNPLAYABLE" ], u = {
+                    apply: (r, l, u) => {
+                        if (location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/") || a === n) return Reflect.apply(r, l, u);
+                        let y;
                         try {
-                            if (u = Reflect.apply(r, c, i), !u.responseContext && !u.playabilityStatus) return u;
-                            const y = JSON.stringify(u);
-                            return l.some((e => y.includes(e))) && !y.includes("CONTENT_CHECK_REQUIRED") ? o === e ? (a(t), 
-                            u) : (a(n), u) : (o === t && u.playerConfig?.granularVariableSpeedConfig && (u.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate = 200, 
-                            u.playerConfig.granularVariableSpeedConfig.minimumPlaybackRate = 25), u);
+                            if (y = Reflect.apply(r, l, u), !y.responseContext && !y.playabilityStatus) return y;
+                            const p = o(y);
+                            return i.some((e => p.includes(e))) && !p.includes("CONTENT_CHECK_REQUIRED") ? a === e ? (c(t), 
+                            y) : (c(n), y) : (a === t && y.playerConfig?.granularVariableSpeedConfig && (y.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate = 200, 
+                            y.playerConfig.granularVariableSpeedConfig.minimumPlaybackRate = 25), y);
                         } catch (e) {}
-                        return u;
+                        return y;
                     }
                 };
-                window.JSON.parse = new Proxy(window.JSON.parse, i);
-                const u = {
+                window.JSON.parse = new Proxy(window.JSON.parse, u);
+                const y = {
                     apply: (e, t, n) => {
                         if (location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/")) return Reflect.apply(e, t, n);
                         try {
-                            let a = n[0];
-                            if (a && (a.includes('"contentPlaybackContext"') || a.includes('"adSignalsInfo"'))) {
-                                const r = JSON.parse(a);
+                            let c = n[0];
+                            if (c && (c.includes('"contentPlaybackContext"') || c.includes('"adSignalsInfo"'))) {
+                                const r = JSON.parse(c);
                                 if (!r.context?.client) return Reflect.apply(e, t, n);
-                                r.playbackContext && c(r, r.playbackContext, o), r.playerRequest && c(r, r.playerRequest.playbackContext, o), 
-                                a = JSON.stringify(r), n[0] = a;
+                                r.playbackContext && l(r, r.playbackContext, a), r.playerRequest && l(r, r.playerRequest.playbackContext, a), 
+                                c = o(r), n[0] = c;
                             }
                         } catch (e) {}
                         return Reflect.apply(e, t, n);
                     }
                 };
-                window.TextEncoder.prototype.encode = new Proxy(window.TextEncoder.prototype.encode, u);
-                const y = {
+                window.TextEncoder.prototype.encode = new Proxy(window.TextEncoder.prototype.encode, y);
+                const p = {
                     apply: (e, t, n) => {
                         if (location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/")) return Reflect.apply(e, t, n);
                         try {
-                            const a = n[0];
-                            if (!a?.context?.client) return Reflect.apply(e, t, n);
-                            a.playbackContext && "undefined" === a.playbackContext.adPlaybackContext && c(a, a.playbackContext, o), 
-                            a.playerRequest && "undefined" === a.playerRequest.playbackContext.adPlaybackContext && c(a, a.playerRequest.playbackContext, o), 
-                            n[0] = a;
+                            const o = n[0];
+                            if (!o?.context?.client) return Reflect.apply(e, t, n);
+                            o.playbackContext && "undefined" === o.playbackContext.adPlaybackContext && l(o, o.playbackContext, a), 
+                            o.playerRequest && "undefined" === o.playerRequest.playbackContext.adPlaybackContext && l(o, o.playerRequest.playbackContext, a), 
+                            n[0] = o;
                         } catch (e) {}
                         return Reflect.apply(e, t, n);
                     }
                 };
-                window.JSON.stringify = new Proxy(window.JSON.stringify, y);
+                window.JSON.stringify = new Proxy(window.JSON.stringify, p);
                 const s = {
                     construct: (e, t, n) => {
                         try {
-                            const a = t[0];
+                            const c = t[0];
                             let r = t[1]?.body;
-                            if (!a?.includes("youtubei") || location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/") || !r) return Reflect.construct(e, t, n);
+                            if (!c?.includes("youtubei") || location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/") || !r) return Reflect.construct(e, t, n);
                             if (r.includes('"contentPlaybackContext"') || r.includes('"adSignalsInfo"')) {
-                                const a = JSON.parse(r);
-                                if (!a.context?.client) return Reflect.construct(e, t, n);
-                                a.playbackContext && c(a, a.playbackContext, o), a.playerRequest && c(a, a.playerRequest.playbackContext, o), 
-                                r = JSON.stringify(a), t[1].body = r;
+                                const c = JSON.parse(r);
+                                if (!c.context?.client) return Reflect.construct(e, t, n);
+                                c.playbackContext && l(c, c.playbackContext, a), c.playerRequest && l(c, c.playerRequest.playbackContext, a), 
+                                r = o(c), t[1].body = r;
                             }
                         } catch (e) {}
                         return Reflect.construct(e, t, n);
@@ -8224,14 +8220,14 @@ export const localScriptRules = {
                 };
                 window.Request = new Proxy(window.Request, s);
             })();
-            Object.defineProperty(Window.prototype.toString, "26a6e80631ab1984da64587454d1d151", {
+            Object.defineProperty(Window.prototype.toString, "d6054ebc26b0f6582e21f1ac2736013a", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "26a6e80631ab1984da64587454d1d151" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "d6054ebc26b0f6582e21f1ac2736013a" due to: ' + e);
         }
     },
     '(()=>{const e="movie_player",t="ytd-watch-flexy[player-unavailable]",r=`#${e} > .ytp-error`,o="yt-playability-error-supported-renderers#error-screen:has(>*)",n=\'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]\',a="pyv",c="ad_type",l="none";let d=a;const i=new Set,y=()=>{const t=document.getElementById(e),r=window.location.search,o=new URLSearchParams(r).get("v")||t?.getVideoData?.().video_id,n=new URLSearchParams(r).get("t")??"0";return{videoId:o,timeInSeconds:parseInt(n,10)}},u=()=>{f();const t=document.getElementById(e);if(t&&"function"==typeof t.loadVideoById)try{const{videoId:e,timeInSeconds:r}=y();t.loadVideoById(e,r)}catch(e){}},s=(()=>{let e=null,t=null,r=0;return o=>{try{if(!o)return!1;const{videoId:n}=y();return!!n&&(e===n&&t===o?r++:(e=n,t=o,r=1),r>=2&&(r=0,!0))}catch(e){return!1}}})(),p=e=>{d=e},f=()=>{const r=document.getElementById(e),a=document.querySelector(o),c=document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"),l=document.querySelector(t),d=document.querySelector(n);r&&!d&&(l||c)&&(a?.style.setProperty("display","none","important"),c?.style.setProperty("display","none","important"),l?.removeAttribute("player-unavailable"))},m=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},b=(e,t,r)=>{try{if(!e||!t||!r)return;if(r===a)return t.adPlaybackContext={pyv:!0},void m(e);if(r===c)return t.adPlaybackContext={adType:"AD_TYPE_INSTREAM"},void m(e);if(r===l)return void delete t.adPlaybackContext}catch(e){}};(()=>{const e={apply:(e,t,r)=>{try{let o=r[0];if(!o||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,r);const n=Array.isArray(o),a=n?o[0]:o;if("string"!=typeof a)return Reflect.apply(e,t,r);if(!a.includes(\'"contentPlaybackContext"\')&&!a.includes(\'"adSignalsInfo"\'))return Reflect.apply(e,t,r);const c=JSON.parse(a);if(!c.context?.client)return Reflect.apply(e,t,r);c.playbackContext&&b(c,c.playbackContext,d),c.playerRequest&&b(c,c.playerRequest.playbackContext,d);const l=JSON.stringify(c);n?r[0][0]=l:r[0]=l}catch(e){}return Reflect.apply(e,t,r)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();const v=document.documentElement;new MutationObserver((()=>{if(document.querySelector(o)&&f(),!(()=>{const a=document.getElementById(e),c=document.querySelector(r),l=document.querySelector(o),d=document.querySelector(t),i=document.querySelector(n);if(!a||i)return!1;const y=a.getVideoData?.();return(l||d||c)&&null!=y?.errorCode})())return;const{videoId:m}=y();(e=>{if(e)for(const t of i)t!==e&&i.delete(t)})(m),(()=>{if(d===a){if(!s(c))return void u();p(c),u()}else if(d===c){if(!s(l))return void u();p(l),u()}else if(d===l){const{videoId:e}=y();if(!e||i.has(e))return void f();i.add(e),u()}})()})).observe(v,{attributes:!0,childList:!0,subtree:!0})})();': () => {
@@ -11194,6 +11190,33 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "e33ef1a5a53f3c2f5bbed2ef8c665146" due to: ' + e);
+        }
+    },
+    '(()=>{const t={apply:(t,e,n)=>{try{if((new Error).stack.includes("Popup"))return Reflect.apply(t,e,n);const o=e;"function"==typeof o&&(o.toString().includes("adBlockerDetected")||o.toString().includes("pub_300x250m"))&&(e=()=>new Promise((t=>t(!1))))}catch(t){}return Reflect.apply(t,e,n)}};window.Function.prototype.apply=new Proxy(window.Function.prototype.apply,t)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["42ffe067a681d5ec7165f6c5dbf0e6f3"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, o) => {
+                        try {
+                            if ((new Error).stack.includes("Popup")) return Reflect.apply(e, t, o);
+                            const r = t;
+                            "function" == typeof r && (r.toString().includes("adBlockerDetected") || r.toString().includes("pub_300x250m")) && (t = () => new Promise((e => e(!1))));
+                        } catch (e) {}
+                        return Reflect.apply(e, t, o);
+                    }
+                };
+                window.Function.prototype.apply = new Proxy(window.Function.prototype.apply, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "42ffe067a681d5ec7165f6c5dbf0e6f3", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "42ffe067a681d5ec7165f6c5dbf0e6f3" due to: ' + e);
         }
     },
     '!function(){var t={cmd:[],public:{getVideoAdUrl:function(){},createNewPosition:function(){},refreshAds:function(){},setTargetingOnPosition:function(){},getDailymotionAdsParamsForScript:function(t,n){if("function"==typeof n)try{if(1===n.length){const o=t[0];n({[o]:o})}}catch(n){console.debug(n)}}}};t.cmd.push=function(t){let n=function(){try{"function"==typeof t&&t()}catch(t){}};"complete"===document.readyState?n():window.addEventListener("load",(()=>{n()}))},window.jad=t}();': () => {

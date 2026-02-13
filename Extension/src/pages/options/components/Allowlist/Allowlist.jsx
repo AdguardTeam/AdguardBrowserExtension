@@ -97,7 +97,7 @@ const Allowlist = observer(() => {
     const hasUnsavedChanges = !isSaving && settingsStore.allowlistEditorContentChanged;
     const unsavedChangesTitle = translator.getMessage('options_editor_leave_title');
     const unsavedChangesSubtitle = translator.getMessage('options_allowlist_leave_subtitle');
-    usePreventUnload(hasUnsavedChanges, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
+    usePreventUnload(hasUnsavedChanges || isSaving, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
     const { settings } = settingsStore;
 
@@ -232,6 +232,7 @@ const Allowlist = observer(() => {
                 shouldResetSize={shouldResetSize}
                 onSave={saveClickHandler}
                 onExit={focusFirstEnabledButton}
+                readOnly={isSaving}
             />
             {hasUnsavedChanges && (
                 <EditorLeaveModal

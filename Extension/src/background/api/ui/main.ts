@@ -24,7 +24,7 @@ import { MessageType, sendMessage } from '../../../common/messages';
 import { TabsApi } from '../../../common/api/extension';
 import { logger } from '../../../common/logger';
 
-import { ContextMenuApi } from './context-menu';
+import { contextMenuApi } from './context-menu';
 import { type FrameData, FramesApi } from './frames';
 import { iconsApi } from './icons';
 
@@ -67,7 +67,7 @@ export class UiApi {
     public static async update(tabContext: TabContext): Promise<void> {
         const frameData = FramesApi.getMainFrameData(tabContext);
 
-        await ContextMenuApi.throttledUpdateMenu(frameData);
+        contextMenuApi.throttledUpdateMenu(frameData);
 
         const tabId = tabContext.info.id;
         // Note: not awaited intentionally - throttled UI updates are fire-and-forget

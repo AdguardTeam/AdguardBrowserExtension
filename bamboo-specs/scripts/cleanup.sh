@@ -13,8 +13,8 @@ set -ex
 # Redirect stderr (2) to stdout (1) to capture all output in a single log
 exec 2>&1
 
-echo "Size before cleanup:" && du -h | tail -n 1
-echo "Top 5 files:" && du -h | sort -hr | head -n 5
+echo "Size before cleanup:" && du -sh .
+echo "Top 5 directories:" && du -sh */ 2>/dev/null | sort -hr | head -n 5
 
 # Parse artifacts from command line argument
 ARTIFACTS_ARG="${1:-}"
@@ -41,8 +41,8 @@ done
 # Clean entire workspace (including dotfiles and .git)
 find . -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
 
-# Also clean tsurlfilter in parent directory (created by link-tsurlfilter.sh)
-rm -rf ../tsurlfilter
+# Note: tsurlfilter is now cloned inside vendor/tsurlfilter (not ../tsurlfilter)
+# It gets cleaned by the find command above
 
 # Restore artifacts
 for f in $ARTIFACTS; do
@@ -52,7 +52,7 @@ for f in $ARTIFACTS; do
   mv "$TMP/$f" "$f"
 done
 
-echo "Size after cleanup:" && du -h | tail -n 1
-echo "Top 5 files:" && du -h | sort -hr | head -n 5
+echo "Size after cleanup:" && du -sh .
+echo "Top 5 directories:" && du -sh */ 2>/dev/null | sort -hr | head -n 5
 
 echo "Cleanup completed successfully"

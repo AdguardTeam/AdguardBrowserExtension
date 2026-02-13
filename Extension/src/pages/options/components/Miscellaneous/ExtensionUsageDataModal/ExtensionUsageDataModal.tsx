@@ -20,11 +20,14 @@
 import React from 'react';
 import Modal from 'react-modal';
 
+import cn from 'classnames';
+
 import { ModalContentWrapper } from '../../Filters/AddCustomModal/ModalContentWrapper';
 import { PRIVACY_URL } from '../../../constants';
 import { translator } from '../../../../../common/translators/translator';
+import theme from '../../../../common/styles/theme';
 
-import './extension-usage-data-modal.pcss';
+import styles from './extension-usage-data-modal.module.pcss';
 
 type ExtensionUsageDataModalProps = {
     closeModalHandler: () => void;
@@ -42,26 +45,24 @@ export const ExtensionUsageDataModal: React.FC<ExtensionUsageDataModalProps> = (
         <Modal
             isOpen={isOpen}
             onRequestClose={handleClose}
-            overlayClassName="extension-usage-modal__overlay"
-            className="extension-usage-modal__content"
+            overlayClassName={theme.modal.overlay}
+            className={cn(theme.modal.wrapper, styles.wrapper)}
         >
             <ModalContentWrapper
                 closeModalHandler={handleClose}
-                className="extension-usage-modal"
+                className={styles.modal}
                 title={translator.getMessage('options_anonymized_usage_data_modal_title')}
                 actions={(
-                    <div className="modal__actions extension-usage-modal__actions">
-                        <button
-                            type="button"
-                            className="button button--l button--green-bg extension-usage-modal__btn"
-                            onClick={handleClose}
-                        >
-                            {translator.getMessage('options_anonymized_usage_data_modal_got_it_button')}
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        className={cn('button button--l button--green-bg', styles.btn)}
+                        onClick={handleClose}
+                    >
+                        {translator.getMessage('options_anonymized_usage_data_modal_got_it_button')}
+                    </button>
                 )}
             >
-                <div>
+                <div className={styles.contentWrapper}>
                     <p>{translator.getMessage('options_anonymized_usage_data_modal_intro')}</p>
                     <ul>
                         <li>{translator.getMessage('options_anonymized_usage_data_modal_list_item_screens')}</li>

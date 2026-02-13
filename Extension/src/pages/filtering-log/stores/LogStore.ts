@@ -292,6 +292,9 @@ class LogStore {
     preserveLogEnabled = false;
 
     @observable
+    isPreserveLogModalOpen = false;
+
+    @observable
     selectedEvent: UIFilteringLogEvent | null = null;
 
     @observable
@@ -521,6 +524,13 @@ class LogStore {
         await this.getEventsByTabId(this.selectedTabId);
     };
 
+    @action
+    setIsPreserveLogModalOpen = async (value: boolean) => {
+        runInAction(() => {
+            this.isPreserveLogModalOpen = value;
+        });
+    };
+
     @computed
     get events() {
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
@@ -638,6 +648,7 @@ class LogStore {
     @action
     setPreserveLog = async (state: boolean) => {
         await messenger.setPreserveLogState(state);
+
         runInAction(() => {
             this.preserveLogEnabled = state;
         });

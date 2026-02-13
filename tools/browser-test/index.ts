@@ -34,7 +34,8 @@ import unzipper from 'unzipper';
  * Direct import from tsurlfilter instead of tswebextension, because tsurlfilter
  * has exported cjs builds, which is required in node environment.
  */
-import { FilterListPreprocessor } from '@adguard/tsurlfilter';
+import { FilterList } from '@adguard/tsurlfilter';
+import { type Configuration } from '@adguard/tswebextension/mv3';
 
 import { BuildTargetEnv } from '../../constants';
 import { BUILD_PATH } from '../constants';
@@ -48,7 +49,6 @@ import {
 } from './test-constants';
 import {
     addQunitListeners,
-    type SerializedConfiguration,
     setTsWebExtensionConfig,
     waitUntilExtensionInitialized,
 } from './page-injections';
@@ -152,26 +152,18 @@ const passUserRulesToServiceWorker = async (
 ): Promise<void> => {
     // Preprocess user rules earlier in order not to do it during
     // backgroundPage.evaluate().
-    const userrules = {
-        ...FilterListPreprocessor.preprocess(userrulesStr),
-        trusted: true,
-    };
+    const userrulesFilter = new FilterList(userrulesStr);
 
-    // After preprocessing we should manual serialize them to avoid system
-    // serialization non-primitive objects with JSON, because it can not be
-    // deserialized on the page and data will be broken.
-    const serializedFilterList = userrules.filterList.map((item: Uint8Array) => Array.from(item));
-
-    const configuration: SerializedConfiguration = {
+    const configuration: Configuration = {
         ...DEFAULT_EXTENSION_CONFIG,
         userrules: {
-            ...userrules,
-            filterList: serializedFilterList,
+            content: userrulesFilter.getContent(),
+            conversionData: userrulesFilter.getConversionData(),
         },
     };
 
     // Update tsWebExtension config
-    await backgroundPage.evaluate<void, SerializedConfiguration>(
+    await backgroundPage.evaluate<void, Configuration>(
         setTsWebExtensionConfig,
         configuration,
     );

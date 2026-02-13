@@ -1,8 +1,3 @@
-// TODO figure out how to fix the eslint errors
-/* eslint-disable jsx-a11y/anchor-is-valid,
-   jsx-a11y/click-events-have-key-events,
-   jsx-a11y/no-static-element-interactions
-*/
 /**
  * Copyright (c) 2015-2025 Adguard Software Ltd.
  *
@@ -22,6 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+// TODO figure out how to fix the eslint errors
+/* eslint-disable jsx-a11y/anchor-is-valid,
+   jsx-a11y/click-events-have-key-events,
+   jsx-a11y/no-static-element-interactions
+*/
 
 import React from 'react';
 
@@ -78,6 +79,17 @@ export const Warning = ({
         action: ForwardAction.GetTheApp,
         from: ForwardFrom.Options,
     });
+
+    const renderCloseWarningLink = (chunks: string) => (
+        <a
+            target="_blank"
+            rel="noreferrer"
+            className="rules-limits__group-option-link"
+            onClick={onClickCloseWarning}
+        >
+            {chunks}
+        </a>
+    );
 
     return (
         <div className="rules-limits rules-limits__warning">
@@ -148,24 +160,21 @@ export const Warning = ({
                         })}
                     </div>
                     <div className="rules-limits__group-option">
-                        {reactTranslator.getMessage(
+                        {
                             actuallyEnabledFilterNames.length > 0
-                                ? 'options_rule_limits_warning_actions_close_warning_multiple_filters'
-                                : 'options_rule_limits_warning_actions_close_warning_one_filter',
-                            {
-                                // eslint-disable-next-line react/no-unstable-nested-components
-                                a: (chunks: string) => (
-                                    <a
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="rules-limits__group-option-link"
-                                        onClick={onClickCloseWarning}
-                                    >
-                                        {chunks}
-                                    </a>
-                                ),
-                            },
-                        )}
+                                ? reactTranslator.getMessage(
+                                    'options_rule_limits_warning_actions_close_warning_multiple_filters',
+                                    {
+                                        a: renderCloseWarningLink,
+                                    },
+                                )
+                                : reactTranslator.getMessage(
+                                    'options_rule_limits_warning_actions_close_warning_one_filter',
+                                    {
+                                        a: renderCloseWarningLink,
+                                    },
+                                )
+                        }
                     </div>
                 </div>
             </div>

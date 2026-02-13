@@ -1,3 +1,23 @@
+/**
+ * Copyright (c) 2015-2025 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import browser from 'sinon-chrome';
 import { type Storage } from 'webextension-polyfill';
 import {
@@ -16,6 +36,7 @@ import {
     HIDE_DOCUMENT_REFERRER_OUTPUT,
 } from '../../../../constants';
 import {
+    CommonFilterApi,
     DocumentBlockApi,
     SettingsApi,
     type SettingsData,
@@ -27,6 +48,7 @@ import {
     FiltersOption,
     RootOption,
     SettingOption,
+    StealthOption,
 } from '../../../../Extension/src/background/schema';
 import { settingsStorage } from '../../../../Extension/src/background/storages';
 import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
@@ -218,7 +240,7 @@ describe('Settings Api', () => {
 
             const exportedSettingsString = await SettingsApi.export();
             const EXPORTED_SETTINGS_V_2_0 = getExportedSettingsV2();
-            expect(exportedSettingsString).toStrictEqual(JSON.stringify(EXPORTED_SETTINGS_V_2_0));
+            expect(JSON.parse(exportedSettingsString)).toStrictEqual(EXPORTED_SETTINGS_V_2_0);
         }, EXTENDED_TIMEOUT_MS);
 
         it('Imports optional AllowAnonymizedUsageData when present', async () => {
@@ -261,6 +283,33 @@ describe('Settings Api', () => {
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
             expect(await DocumentBlockApi.getTrustedDomains()).toStrictEqual([]);
+        }, EXTENDED_TIMEOUT_MS);
+
+        it('should not enable default filters on import', async () => {
+            const initDefaultFiltersSpy = vi.spyOn(CommonFilterApi, 'initDefaultFilters');
+
+            const userConfig = getExportedSettingsProtocolV2Fixture();
+
+            // Disable all filters in settings
+            userConfig[RootOption.Filters][FiltersOption.EnabledFilters] = [];
+            userConfig[RootOption.Filters][FiltersOption.EnabledGroups] = [];
+            userConfig[RootOption.Filters][FiltersOption.CustomFilters] = [];
+            if (userConfig[RootOption.Stealth]) {
+                userConfig[RootOption.Stealth][StealthOption.BlockKnownTrackers] = false;
+                userConfig[RootOption.Stealth][StealthOption.StripTrackingParams] = false;
+            }
+
+            const importResult = await SettingsApi.import(JSON.stringify(userConfig));
+
+            // Should export successfully
+            expect(importResult).toBeTruthy();
+
+            // Should not initialize default filters
+            expect(initDefaultFiltersSpy).not.toHaveBeenCalled();
+
+            // Exported settings should be the same
+            const exportedSettings = await SettingsApi.export();
+            expect(JSON.parse(exportedSettings)).toStrictEqual(userConfig);
         }, EXTENDED_TIMEOUT_MS);
     });
 });

@@ -70,4 +70,7 @@ export enum SettingOption {
     Metadata = 'filters-metadata',
     I18nMetadata = 'filters-i18n-metadata',
     CustomFilters = 'custom-filters',
+
+    // Preserve log.
+    PreserveLogEnabled = 'preserve-log-enabled',
 }
