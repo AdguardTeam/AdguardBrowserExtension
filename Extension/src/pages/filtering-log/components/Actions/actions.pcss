@@ -1,13 +1,18 @@
 .actions {
     padding: 16px 16px 8px;
     position: relative;
-    z-index: 10;
+    z-index: var(--z-idx-filtering-log-actions);
     display: inline-flex;
     align-items: center;
     width: 100%;
+    box-sizing: border-box;
 
-    @media (max-width: 640px) {
+    @media (--to-mobile) {
         flex-wrap: wrap;
+    }
+
+    @media (--to-desktop) {
+        transform: translateY(0);
     }
 
     &__col {
@@ -19,8 +24,9 @@
     &__tab-selector {
         width: 400px;
 
-        @media (max-width: 640px) {
-            width: 330px;
+        @media (--to-mobile) {
+            width: 100%;
+            margin-bottom: 16px;
         }
     }
 
@@ -31,9 +37,9 @@
     }
 
     &__search {
-        width: 330px;
+        width: 100%;
 
-        @media (min-width: 640px) {
+        @media (--from-tablet) {
             width: calc(100% - 427px);
         }
 
@@ -44,10 +50,6 @@
         @media (min-width: 1024px) {
             width: calc(100% - 617px);
         }
-    }
-
-    @media (max-width: 1200px) {
-        transform: translateY(0);
     }
 
     &__action {
@@ -99,7 +101,7 @@
         position: relative;
         font-size: 15px;
 
-        @media (max-width: 640px) {
+        @media (--to-mobile) {
             width: 100%;
         }
     }

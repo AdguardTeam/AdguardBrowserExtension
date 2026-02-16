@@ -35,6 +35,7 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { Nav } from '../Nav';
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
+import { MOBILE_BREAKPOINT_PX } from '../../../common/constants';
 
 import { Compare } from './Compare';
 import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
@@ -49,7 +50,7 @@ const Sidebar = observer(() => {
 
     const { isSidebarOpen, openSidebar, closeSidebar } = uiStore;
 
-    const tabletAndAboveQuery = '(min-width: 640px)';
+    const tabletAndAboveQuery = `(min-width: ${MOBILE_BREAKPOINT_PX}px)`;
     const [isTabletAndAboveScreen, setIsTabletAndAboveScreen] = useState(
         window.matchMedia(tabletAndAboveQuery).matches,
     );
@@ -69,7 +70,7 @@ const Sidebar = observer(() => {
         return () => {
             matchMedia.removeEventListener('change', handleScreenChange);
         };
-    }, []);
+    }, [tabletAndAboveQuery]);
 
     // Lock sidebar from tab focus if sidebar is closed and it's below tablet screen size.
     const isSidebarLocked = !isSidebarOpen && !isTabletAndAboveScreen;

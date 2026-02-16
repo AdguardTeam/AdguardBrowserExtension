@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,14 +18,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import postcssPresetEnv from 'postcss-preset-env';
-import postcssSvg from 'postcss-svg';
-import postcssNested from 'postcss-nested';
+/**
+ * Estimated size for virtualized list items in mobile view.
+ * This is an average between minimum (2 lines of text, ~60px) and maximum (4 lines of text, ~92px).
+ * Used as initial estimate before actual measurement.
+ */
+export const ESTIMATED_ITEM_SIZE_PX = 75;
 
-export default {
-    plugins: [
-        postcssPresetEnv({ stage: 3 }),
-        postcssSvg(),
-        postcssNested(),
-    ],
-};
+/**
+ * Number of items to render outside of the visible area in mobile view.
+ */
+export const OVERSCAN_COUNT = 5;

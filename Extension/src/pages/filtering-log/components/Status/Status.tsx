@@ -23,6 +23,7 @@ import React from 'react';
 import cn from 'classnames';
 import { format } from 'date-fns';
 
+import { type FilteringLogEvent } from '../../../../background/api';
 import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { Popover } from '../../../common/components/ui/Popover';
@@ -37,7 +38,31 @@ import { getStatusTitle } from './statusTitles';
 
 import './status.pcss';
 
-export const Status = (props) => {
+/**
+ * Checks if network badges should be visible for the given request.
+ *
+ * @param requestUrl Request URL.
+ * @param mode Status mode.
+ *
+ * @returns True if network badges should be visible.
+ */
+export const areNetworkBadgesVisible = (
+    requestUrl: string | undefined,
+    mode: typeof StatusMode[keyof typeof StatusMode],
+): boolean => {
+    const isModified = mode === StatusMode.Modified;
+
+    return Boolean(requestUrl) && !isModified;
+};
+
+/**
+ * Displays filtering log event status with badges and metadata.
+ *
+ * @param props Filtering log event.
+ *
+ * @returns Status component.
+ */
+export const Status = (props: FilteringLogEvent) => {
     const {
         statusCode,
         timestamp,
@@ -46,21 +71,20 @@ export const Status = (props) => {
         requestThirdParty,
     } = props;
 
-    const timeString = format(timestamp, 'HH:mm:ss');
+    const timeString = format(timestamp || 0, 'HH:mm:ss');
     const mode = getStatusMode(props);
     const color = colorMap[mode];
     const itemClassNames = getItemClassName(color);
     const badgeClassNames = getBadgeClassNames(color);
-    const isBlocked = mode === StatusMode.BLOCKED;
-    const isModified = mode === StatusMode.MODIFIED;
-    const areNetworkBadgesVisible = requestUrl && !isModified;
+    const isBlocked = mode === StatusMode.Blocked;
+    const showNetworkBadges = areNetworkBadgesVisible(requestUrl, mode);
     const statusTooltipText = getStatusTitle(mode);
     const statusToShow = statusCode || '----';
 
     // This text is rendered only for Screen readers as summary of the status
     let requestStatusSummary = `${timeString}.`;
 
-    if (areNetworkBadgesVisible) {
+    if (showNetworkBadges) {
         requestStatusSummary += ` ${translator.getMessage('filtering_log_tag_request_status')}: ${statusTooltipText}.`;
 
         if (!isBlocked) {
@@ -88,7 +112,7 @@ export const Status = (props) => {
                 <div className="status__item status__item_width60">
                     {timeString}
                 </div>
-                {areNetworkBadgesVisible && (
+                {showNetworkBadges && (
                     <>
                         <div className={itemClassNames}>
                             <Popover text={statusTooltipText}>

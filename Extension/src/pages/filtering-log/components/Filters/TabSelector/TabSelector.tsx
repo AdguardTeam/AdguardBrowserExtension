@@ -29,7 +29,6 @@ import { observer } from 'mobx-react';
 import cn from 'classnames';
 
 import { translator } from '../../../../../common/translators/translator';
-import { WASTE_CHARACTERS } from '../../../../../common/constants';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { useOutsideClick } from '../../../../common/hooks/useOutsideClick';
@@ -37,19 +36,21 @@ import { useOutsideFocus } from '../../../../common/hooks/useOutsideFocus';
 import { useKeyDown } from '../../../../common/hooks/useKeyDown';
 import { Search } from '../../Search';
 
+import { filterTabsBySearch } from './utils';
+
 import './tab-selector.pcss';
 
 const TabSelector = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
-    const refSelector = useRef(null);
-    const refResult = useRef(null);
-    const searchInputRef = useRef(null);
+    const refSelector = useRef<HTMLDivElement>(null);
+    const refResult = useRef<HTMLDivElement>(null);
+    const searchInputRef = useRef<HTMLInputElement>(null);
     const { tabs, selectedTabId, selectIsOpen } = logStore;
 
-    const [prevTabTitle, setPrevTabTitle] = useState('');
-    const [searchValue, setSearchValue] = useState('');
-    const [resultItems, setResultItems] = useState([]);
-    const [currentStep, setCurrentStep] = useState(0);
+    const [prevTabTitle, setPrevTabTitle] = useState<string>('');
+    const [searchValue, setSearchValue] = useState<string>('');
+    const [resultItems, setResultItems] = useState<Element[]>([]);
+    const [currentStep, setCurrentStep] = useState<number>(0);
 
     const SELECTED_CLASS_NAME = 'selected';
     const INPUT_ID = 'tabs-selector-input';
@@ -57,8 +58,8 @@ const TabSelector = observer(() => {
     const LABEL = translator.getMessage('filtering_log_search_tabs_placeholder');
 
     useEffect(() => {
-        if (refResult.current?.childNodes) {
-            setResultItems(Array.from(refResult.current.childNodes));
+        if (refResult.current?.children) {
+            setResultItems(Array.from(refResult.current.children));
         }
     }, [selectIsOpen, searchValue]);
 
@@ -87,7 +88,9 @@ const TabSelector = observer(() => {
 
     const quitTabSearch = () => {
         cancelTabSearch();
-        document.activeElement.blur();
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
     };
 
     useKeyDown(refResult, 'Escape', () => {
@@ -110,9 +113,11 @@ const TabSelector = observer(() => {
 
         if (activeElem || targetElem) {
             (async () => {
-                await selectionHandlerSearch(Number(activeElem ? activeElem.id : targetElem.id));
+                await selectionHandlerSearch(Number(activeElem ? activeElem.id : targetElem?.id));
             })();
-            document.activeElement.blur();
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
         }
     });
 
@@ -143,7 +148,7 @@ const TabSelector = observer(() => {
         }
     }, [selectedTabId, tabs, selectIsOpen]);
 
-    const selectionHandlerSearch = async (id) => {
+    const selectionHandlerSearch = async (id: number) => {
         logStore.setSelectIsOpenState(false);
         setCurrentStep(0);
         if (selectedTabId === id) {
@@ -153,11 +158,10 @@ const TabSelector = observer(() => {
     };
 
     const renderSearchResult = () => {
-        const searchValueString = searchValue.replace(WASTE_CHARACTERS, '\\$&');
-        const searchQuery = new RegExp(searchValueString, 'ig');
+        const filteredTabs = filterTabsBySearch(tabs, searchValue);
 
-        return tabs.map((tab) => {
-            const { title, tabId, domain } = tab;
+        return filteredTabs.map((tab) => {
+            const { title, tabId } = tab;
 
             const isActive = tabId === selectedTabId;
 
@@ -166,40 +170,33 @@ const TabSelector = observer(() => {
                 { 'tab-selector__result-item--text--active': isActive },
             );
 
-            if (
-                title.match(searchQuery)
-                || (domain && domain.match(searchQuery))
-            ) {
-                return (
-                    <button
-                        key={tabId}
-                        id={tabId}
-                        type="button"
-                        role="option"
-                        aria-selected={isActive}
-                        className="tab-selector__result-item"
-                        onClick={() => selectionHandlerSearch(tabId)}
-                        tabIndex={0}
-                    >
-                        <span className={itemTextClassName}>
-                            {title}
-                        </span>
-                        {isActive && (
-                            <Icon
-                                id="#tick"
-                                className="icon icon--24 icon--green-default"
-                                aria-hidden="true"
-                            />
-                        )}
-                    </button>
-                );
-            }
-
-            return null;
+            return (
+                <button
+                    key={tabId}
+                    id={String(tabId)}
+                    type="button"
+                    role="option"
+                    aria-selected={isActive}
+                    className="tab-selector__result-item"
+                    onClick={() => selectionHandlerSearch(tabId)}
+                    tabIndex={0}
+                >
+                    <span className={itemTextClassName}>
+                        {title}
+                    </span>
+                    {isActive && (
+                        <Icon
+                            id="#tick"
+                            className="icon icon--24 icon--green-default"
+                            aria-hidden="true"
+                        />
+                    )}
+                </button>
+            );
         });
     };
 
-    const searchChangeHandler = (value) => {
+    const searchChangeHandler = (value: string) => {
         setCurrentStep(0);
         setSearchValue(value);
     };
@@ -214,7 +211,7 @@ const TabSelector = observer(() => {
         if (selectIsOpen) {
             quitTabSearch();
         } else {
-            searchInputRef.current.focus();
+            searchInputRef.current?.focus();
         }
     };
 

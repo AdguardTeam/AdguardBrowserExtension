@@ -27,6 +27,10 @@ export const Icons = () => {
                 <path stroke="currentColor" fill="none" d="M8.0354 10.9305L11.965 14.9997L16.0342 11.0702" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </symbol>
 
+            <symbol id="arrow-down-mobile" viewBox="0 0 24 24">
+                <path stroke="currentColor" fill="none" d="M6 9L12 15L18 9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </symbol>
+
             <symbol id="ban" viewBox="0 0 16 16">
                 <path stroke="currentColor" fill="none" fillRule="evenodd" clipRule="evenodd" d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path stroke="currentColor" fill="none" d="M2.22 13.84 13.55 2.51" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -55,6 +59,13 @@ export const Icons = () => {
                     <path stroke="currentColor" d="m36.28 14-8.8 8.8H2l8.8-8.8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     <path stroke="currentColor" d="m35.98 14.3 8.8 8.8h17.6l-9.1-9.1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
+            </symbol>
+
+            <symbol id="customize" viewBox="0 0 24 24">
+                <circle cx="5" cy="19" r="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" fill="none" />
+                <circle cx="12" cy="12" r="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" fill="none" />
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4" clipRule="evenodd" fill="none" />
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3v7M19 21V7M5 3v14M12 14v7" fill="none" />
             </symbol>
         </svg>
     );

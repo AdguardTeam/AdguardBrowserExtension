@@ -39,6 +39,8 @@ import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
 import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
+import { CustomizeModal } from '../CustomizeModal';
+import { Sidebar } from '../Sidebar';
 
 import '../../styles/styles.pcss';
 
@@ -182,11 +184,12 @@ const FilteringLog = observer(() => {
 
     return (
         <>
-            {logStore.isPreserveLogModalOpen && <PreserveLogModal />}
             <CommonIcons />
             <Icons />
-            {wizardStore.isModalOpen
-                && <RequestModal />}
+            {logStore.isPreserveLogModalOpen && <PreserveLogModal />}
+            {wizardStore.isModalOpen && <RequestModal />}
+            {logStore.isCustomizeModalOpen && <CustomizeModal />}
+            <Sidebar />
             <Filters />
             <FilteringEvents />
         </>

@@ -21,33 +21,47 @@
 import { StatusMode } from '../../filteringLogStatus';
 
 /**
- * @typedef {object} StatusColor
- * @property {string} GRAY
- * @property {string} ORANGE
- * @property {string} RED
- * @property {string} GREEN
+ * Color variants for status display.
  */
-export const StatusColor = {
-    GRAY: 'gray',
-    ORANGE: 'orange',
-    RED: 'red',
-    GREEN: 'green',
+export enum StatusColor {
+    Gray = 'gray',
+    Orange = 'orange',
+    Red = 'red',
+    Green = 'green',
+}
+
+/**
+ * Maps status mode to corresponding color.
+ */
+export const colorMap: Record<StatusMode, StatusColor> = {
+    [StatusMode.Regular]: StatusColor.Gray,
+    [StatusMode.Modified]: StatusColor.Orange,
+    [StatusMode.Blocked]: StatusColor.Red,
+    [StatusMode.Allowed]: StatusColor.Green,
+    [StatusMode.AllowedStealth]: StatusColor.Green,
 };
 
-export const colorMap = {
-    [StatusMode.REGULAR]: StatusColor.GRAY,
-    [StatusMode.MODIFIED]: StatusColor.ORANGE,
-    [StatusMode.BLOCKED]: StatusColor.RED,
-    [StatusMode.ALLOWED]: StatusColor.GREEN,
-};
-
-export const getItemClassName = (color) => {
+/**
+ * Returns CSS class name for status item.
+ *
+ * @param color Status color.
+ *
+ * @returns CSS class name string.
+ */
+export const getItemClassName = (color: StatusColor | undefined): string => {
     return color
         ? `status__item status__item--${color}`
         : 'status__item';
 };
 
-export const getBadgeClassNames = (color) => {
+/**
+ * Returns CSS class names for status badge.
+ *
+ * @param color Status color.
+ *
+ * @returns CSS class name string.
+ */
+export const getBadgeClassNames = (color: StatusColor | undefined): string => {
     return color
         ? `status__badge status__badge--${color}`
         : 'status__badge';

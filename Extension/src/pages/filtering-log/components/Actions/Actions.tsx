@@ -30,6 +30,9 @@ import { Popover } from '../../../common/components/ui/Popover';
 import { EventsSearch } from '../Filters/EventsSearch';
 import { TabSelector } from '../Filters/TabSelector';
 import { optionsStorage } from '../../../options/options-storage';
+import theme from '../../../common/styles/theme';
+import { TabSelectorMobile } from '../Filters/TabSelector/TabSelectorMobile';
+import { useIsMobile } from '../../../common/hooks/useIsMobile';
 
 import './actions.pcss';
 
@@ -38,14 +41,16 @@ const Actions = observer(() => {
 
     const { preserveLogEnabled } = logStore;
 
+    const isMobile = useIsMobile();
+
     const shouldShowPreserveLogModal = optionsStorage.getItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
 
-    const clearLogHandler = async (e) => {
+    const clearLogHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         await logStore.clearFilteringEvents();
     };
 
-    const refreshPage = async (e) => {
+    const refreshPage = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         await logStore.refreshPage();
         if (!preserveLogEnabled) {
@@ -53,7 +58,7 @@ const Actions = observer(() => {
         }
     };
 
-    const preserveLogHandler = (e) => {
+    const preserveLogHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (shouldShowPreserveLogModal && e.target.checked) {
             logStore.setIsPreserveLogModalOpen(true);
         } else {
@@ -75,9 +80,13 @@ const Actions = observer(() => {
     return (
         <div className="actions">
             <div className="actions__col actions__tab-selector">
-                <TabSelector />
+                {
+                    isMobile
+                        ? <TabSelectorMobile />
+                        : <TabSelector />
+                }
             </div>
-            <div className="actions__col actions__buttons">
+            <div className={cn('actions__col', 'actions__buttons', theme.common.hideMobile)}>
                 <div className="actions__action actions__preserve">
                     <input
                         className="checkbox-input"
