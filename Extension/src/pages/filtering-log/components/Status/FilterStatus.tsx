@@ -28,13 +28,32 @@ import { colorMap, getItemClassName } from './statusStyles';
 
 import './status.pcss';
 
-export const FilterStatus = ({ statusCode, method, mode }) => {
+/**
+ * Props for FilterStatus component.
+ */
+type FilterStatusProps = {
+    statusCode?: number;
+    method?: string;
+    mode: StatusMode;
+};
+
+/**
+ * Displays filtering status (blocked/allowed/modified...).
+ *
+ * @param props Component props.
+ * @param props.statusCode HTTP status code.
+ * @param props.method HTTP method.
+ * @param props.mode Filtering status mode.
+ *
+ * @returns Filter status component.
+ */
+export const FilterStatus = ({ statusCode, method, mode }: FilterStatusProps) => {
     const title = getStatusTitle(mode);
     const color = colorMap[mode];
     const itemClassNames = getItemClassName(color);
-    const isBlocked = mode === StatusMode.BLOCKED;
+    const isBlocked = mode === StatusMode.Blocked;
 
-    let iconId;
+    let iconId: string | undefined;
     if (isBlocked) {
         iconId = '#ban';
     } else if (method) {

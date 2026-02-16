@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,25 +18,27 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Wizard request state.
- */
-export const enum WizardRequestState {
-    View = 'view.request',
-    Block = 'block.request',
-    Unblock = 'unblock.request',
-    Preview = 'preview.request',
-}
+import React, { forwardRef } from 'react';
+
+import { TableHeader } from './TableHeader';
+import { ITEM_HEIGHT_PX } from './constants';
 
 /**
- * State of added rule.
+ * Inner wrapper for virtualized table with header.
  */
-export const enum AddedRuleState {
-    Block = 'block',
-    Unblock = 'unblock',
-}
+export const TableInnerWrapper = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+    (props, ref) => {
+        const { children, ...rest } = props;
+        return (
+            <div ref={ref} {...rest}>
+                <TableHeader
+                    style={{
+                        top: 0, left: 0, width: '100%', height: ITEM_HEIGHT_PX,
+                    }}
+                />
 
-/**
- * ID for the "all" tag filter.
- */
-export const ALL_TAG_ID = 'all';
+                {children}
+            </div>
+        );
+    },
+);

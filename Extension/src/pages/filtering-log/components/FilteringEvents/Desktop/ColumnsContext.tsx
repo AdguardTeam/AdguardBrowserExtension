@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,25 +18,28 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Wizard request state.
- */
-export const enum WizardRequestState {
-    View = 'view.request',
-    Block = 'block.request',
-    Unblock = 'unblock.request',
-    Preview = 'preview.request',
-}
+import React from 'react';
+
+import { type Column } from './types';
 
 /**
- * State of added rule.
+ * Context type for columns configuration.
  */
-export const enum AddedRuleState {
-    Block = 'block',
-    Unblock = 'unblock',
-}
+type ColumnsContextType = {
+    /**
+     * Array of column configurations for the filtering events table.
+     */
+    columns: Column[];
+    /**
+     * Flag indicating whether the log events list is empty.
+     * Used to control accessibility attributes in table header.
+     */
+    isLogEventsEmpty: boolean;
+};
 
-/**
- * ID for the "all" tag filter.
- */
-export const ALL_TAG_ID = 'all';
+export const ColumnsContext = React.createContext<ColumnsContextType>({
+    columns: [],
+    isLogEventsEmpty: true,
+});
+
+export const ColumnsProvider = ColumnsContext.Provider;

@@ -18,25 +18,28 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Wizard request state.
- */
-export const enum WizardRequestState {
-    View = 'view.request',
-    Block = 'block.request',
-    Unblock = 'unblock.request',
-    Preview = 'preview.request',
-}
+import { WASTE_CHARACTERS } from '../../../../../common/constants';
+import { type SelectorTab } from '../../../stores/LogStore';
 
 /**
- * State of added rule.
+ * Filters tabs based on search value.
+ * Searches in both title and domain fields.
+ *
+ * @param tabs Array of tabs to filter
+ * @param searchValue Search query string
+ *
+ * @returns Filtered array of tabs
  */
-export const enum AddedRuleState {
-    Block = 'block',
-    Unblock = 'unblock',
-}
+export const filterTabsBySearch = (tabs: SelectorTab[], searchValue: string): SelectorTab[] => {
+    if (!searchValue) {
+        return tabs;
+    }
 
-/**
- * ID for the "all" tag filter.
- */
-export const ALL_TAG_ID = 'all';
+    const searchValueString = searchValue.replace(WASTE_CHARACTERS, '\\$&');
+    const searchQuery = new RegExp(searchValueString, 'ig');
+
+    return tabs.filter((tab) => {
+        const { title, domain } = tab;
+        return title.match(searchQuery) || (domain && domain.match(searchQuery));
+    });
+};

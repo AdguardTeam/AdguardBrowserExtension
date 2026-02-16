@@ -18,25 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Wizard request state.
- */
-export const enum WizardRequestState {
-    View = 'view.request',
-    Block = 'block.request',
-    Unblock = 'unblock.request',
-    Preview = 'preview.request',
-}
-
-/**
- * State of added rule.
- */
-export const enum AddedRuleState {
-    Block = 'block',
-    Unblock = 'unblock',
-}
-
-/**
- * ID for the "all" tag filter.
- */
-export const ALL_TAG_ID = 'all';
+export { Sidebar } from './Sidebar';

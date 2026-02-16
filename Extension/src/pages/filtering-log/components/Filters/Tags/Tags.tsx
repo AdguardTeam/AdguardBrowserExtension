@@ -21,23 +21,30 @@
 import React, { useRef } from 'react';
 
 import { translator } from '../../../../../common/translators/translator';
+import { type LogFilters } from '../../../stores/LogStore';
+import { ALL_TAG_ID } from '../../../constants';
 
 import { Tag, TagKeyAction } from './Tag';
 
-const ALL_TAG_ID = 'all';
+type TagsProps = {
+    tags: LogFilters;
+    setTags: (tags: LogFilters) => void;
+    type: string;
+    label: string;
+};
 
 export const Tags = ({
     tags,
     setTags,
     type,
     label,
-}) => {
-    const { allButtonEnabled, filters } = tags;
+}: TagsProps) => {
+    const { areAllButtonsEnabled, filters } = tags;
 
     // Store references to tag elements (key is tagId, value is tagRef)
-    const tagsRefs = useRef({});
+    const tagsRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-    const enableOne = (tagId) => {
+    const enableOne = (tagId: string) => {
         const updatedTags = filters.map((tag) => {
             return {
                 ...tag,
@@ -45,7 +52,7 @@ export const Tags = ({
             };
         });
 
-        setTags({ filters: updatedTags, allButtonEnabled: false });
+        setTags({ filters: updatedTags, areAllButtonsEnabled: false });
     };
 
     const enableAll = () => {
@@ -53,10 +60,10 @@ export const Tags = ({
             return { ...tag, enabled: true };
         });
 
-        setTags({ filters: updatedTags, allButtonEnabled: true });
+        setTags({ filters: updatedTags, areAllButtonsEnabled: true });
     };
 
-    const enableAndFocus = (tagId) => {
+    const enableAndFocus = (tagId: string) => {
         const element = tagsRefs.current[tagId];
         if (!element) {
             return;
@@ -71,11 +78,11 @@ export const Tags = ({
         element.focus();
     };
 
-    const toggleMultiple = (tagId) => {
+    const toggleMultiple = (tagId: string) => {
         let updatedTags;
         const everyEnabled = filters.every((tag) => tag.enabled);
         if (everyEnabled) {
-            if (allButtonEnabled) {
+            if (areAllButtonsEnabled) {
                 // disable all, except selected
                 updatedTags = filters.map((tag) => {
                     if (tag.id !== tagId) {
@@ -86,7 +93,7 @@ export const Tags = ({
                     }
                     return { ...tag };
                 });
-                setTags({ filters: updatedTags, allButtonEnabled: false });
+                setTags({ filters: updatedTags, areAllButtonsEnabled: false });
             } else {
                 // disable only selected
                 updatedTags = filters.map((tag) => {
@@ -98,7 +105,7 @@ export const Tags = ({
                     }
                     return tag;
                 });
-                setTags({ filters: updatedTags, allButtonEnabled });
+                setTags({ filters: updatedTags, areAllButtonsEnabled });
             }
         } else {
             updatedTags = filters.map((tag) => {
@@ -117,14 +124,14 @@ export const Tags = ({
                         enabled: true,
                     };
                 });
-                setTags({ filters: updatedTags, allButtonEnabled: true });
+                setTags({ filters: updatedTags, areAllButtonsEnabled: true });
             } else {
-                setTags({ filters: updatedTags, allButtonEnabled });
+                setTags({ filters: updatedTags, areAllButtonsEnabled });
             }
         }
     };
 
-    const handleTagClick = (tagId, isMetaPressed) => {
+    const handleTagClick = (tagId: string, isMetaPressed: boolean) => {
         if (isMetaPressed) {
             toggleMultiple(tagId);
         } else {
@@ -136,10 +143,13 @@ export const Tags = ({
         enableAll();
     };
 
-    const moveSelection = (tagId, isPrev) => {
+    const moveSelection = (tagId: string, isPrev: boolean) => {
         if (tagId === ALL_TAG_ID) {
             const targetIndex = isPrev ? filters.length - 1 : 0;
-            enableAndFocus(filters[targetIndex].id);
+            const targetFilter = filters[targetIndex];
+            if (targetFilter) {
+                enableAndFocus(targetFilter.id);
+            }
             return;
         }
 
@@ -150,11 +160,14 @@ export const Tags = ({
             enableAndFocus(ALL_TAG_ID);
         } else if (currentIndex !== -1) {
             const targetIndex = isPrev ? currentIndex - 1 : currentIndex + 1;
-            enableAndFocus(filters[targetIndex].id);
+            const targetFilter = filters[targetIndex];
+            if (targetFilter) {
+                enableAndFocus(targetFilter.id);
+            }
         }
     };
 
-    const onKeyDown = (tagId, action) => {
+    const onKeyDown = (tagId: string, action: TagKeyAction) => {
         switch (action) {
             case TagKeyAction.Prev:
                 moveSelection(tagId, true);
@@ -176,7 +189,7 @@ export const Tags = ({
                 type={type}
                 id={ALL_TAG_ID}
                 title={translator.getMessage('filtering_type_all')}
-                checked={allButtonEnabled}
+                checked={areAllButtonsEnabled}
                 onClick={handleAllClick}
                 onKeyDown={onKeyDown}
             />
@@ -190,7 +203,7 @@ export const Tags = ({
                     id={tag.id}
                     title={tag.title}
                     tooltip={tag.tooltip}
-                    checked={!allButtonEnabled && tag.enabled}
+                    checked={!areAllButtonsEnabled && tag.enabled}
                     onClick={handleTagClick}
                     onKeyDown={onKeyDown}
                 />

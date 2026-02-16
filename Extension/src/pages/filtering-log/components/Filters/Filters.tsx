@@ -24,10 +24,13 @@ import React, {
     useCallback,
 } from 'react';
 
+import cn from 'classnames';
+
 import { Actions } from '../Actions';
 import { Icon } from '../../../common/components/ui/Icon';
 import { isVerticalScroll } from '../../../helpers';
 import { useResizeObserver } from '../../../common/hooks/useResizeObserver';
+import theme from '../../../common/styles/theme';
 
 import { MiscellaneousFilters } from './MiscellaneousFilters';
 import { EventsTypeFilter } from './EventsTypeFilter';
@@ -106,7 +109,7 @@ const Filters = () => {
                 <Actions />
             </div>
 
-            <div className="filters__events-tags">
+            <div className={cn('filters__events-tags', theme.common.hideMobile)}>
                 <div
                     ref={ref}
                     onScroll={scrollTags}

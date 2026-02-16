@@ -25,14 +25,16 @@ import React, {
     useState,
     useRef,
     forwardRef,
+    type CSSProperties,
 } from 'react';
 import { observer } from 'mobx-react';
-import { FixedSizeList } from 'react-window';
+import { FixedSizeList, type ListChildComponentProps } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { throttle } from 'lodash-es';
 import cn from 'classnames';
 
+import { type UIFilteringLogEvent } from '../../../../background/api';
 import { rootStore } from '../../stores/RootStore';
 import { getRequestEventType } from '../RequestWizard/utils';
 import { translator } from '../../../../common/translators/translator';
@@ -41,14 +43,22 @@ import { passiveEventSupported } from '../../../helpers';
 import { optionsStorage } from '../../../options/options-storage';
 import { StatusMode, getStatusMode } from '../../filteringLogStatus';
 import { Status } from '../Status';
+import { useIsMobile } from '../../../common/hooks/useIsMobile';
 
 import { FilteringEventsEmpty } from './FilteringEventsEmpty';
+import { FilteringEventsRowsMobile } from './Mobile/FilteringEventsRowsMobile';
+import { ITEM_HEIGHT_PX } from './Desktop/constants';
 
 import './filtering-events.pcss';
 
-const ITEM_HEIGHT_PX = 30;
-
-const filterNameAccessor = (props) => {
+/**
+ * Returns filter name for the event.
+ *
+ * @param props Filtering log event.
+ *
+ * @returns Filter name string.
+ */
+const filterNameAccessor = (props: UIFilteringLogEvent): string => {
     const {
         requestRule,
         filterName,
@@ -63,37 +73,50 @@ const filterNameAccessor = (props) => {
         return translator.getMessage('filtering_log_privacy_applied_rules');
     }
 
-    return props.filterName;
+    return props.filterName || '';
 };
 
 /**
- * @typedef {object} RowClassName
- * @property {string} YELLOW
- * @property {string} RED
- * @property {string} GREEN
- * @property {string} LIGHT_GREEN
+ * CSS class names for row highlighting.
  */
-const RowClassName = {
-    YELLOW: 'yellow',
-    RED: 'red',
-    GREEN: 'green',
-    LIGHT_GREEN: 'light-green',
-};
+enum RowClassName {
+    Yellow = 'yellow',
+    Red = 'red',
+    Green = 'green',
+    LightGreen = 'light-green',
+}
 
+/**
+ * Maps status mode to row CSS class name.
+ */
 const rowClassNameMap = {
-    [StatusMode.REGULAR]: null,
-    [StatusMode.MODIFIED]: RowClassName.YELLOW,
-    [StatusMode.BLOCKED]: RowClassName.RED,
-    [StatusMode.ALLOWED]: RowClassName.LIGHT_GREEN,
-    [StatusMode.ALLOWED_STEALTH]: RowClassName.GREEN,
+    [StatusMode.Regular]: null,
+    [StatusMode.Modified]: RowClassName.Yellow,
+    [StatusMode.Blocked]: RowClassName.Red,
+    [StatusMode.Allowed]: RowClassName.LightGreen,
+    [StatusMode.AllowedStealth]: RowClassName.Green,
 };
 
-const getRowClassName = (event) => {
+/**
+ * Returns CSS class name for event row based on status.
+ *
+ * @param event Filtering log event.
+ *
+ * @returns CSS class name or null.
+ */
+export const getRowClassName = (event: UIFilteringLogEvent): string | null => {
     const mode = getStatusMode(event);
-    return rowClassNameMap[mode];
+    return rowClassNameMap[mode] ?? null;
 };
 
-const urlAccessor = (props) => {
+/**
+ * Returns display URL for the event (request URL, cookie, or element).
+ *
+ * @param props Filtering log event.
+ *
+ * @returns Display URL string.
+ */
+export const urlAccessor = (props: UIFilteringLogEvent): string | undefined => {
     const {
         requestUrl,
         cookieName,
@@ -116,11 +139,25 @@ const urlAccessor = (props) => {
     return requestUrl;
 };
 
-const typeAccessor = (props) => {
+/**
+ * Returns request type for the event.
+ *
+ * @param props Filtering log event.
+ *
+ * @returns Request type string.
+ */
+export const typeAccessor = (props: UIFilteringLogEvent): string => {
     return getRequestEventType(props);
 };
 
-const ruleAccessor = (props) => {
+/**
+ * Returns rule text or rules information for the event.
+ *
+ * @param props Filtering log event.
+ *
+ * @returns Rule text or React node with rules.
+ */
+const ruleAccessor = (props: UIFilteringLogEvent): string | React.ReactNode => {
     const {
         requestRule,
         replaceRules,
@@ -147,7 +184,7 @@ const ruleAccessor = (props) => {
     if (stealthAllowlistRules && stealthAllowlistRules.length > 0) {
         const rulesCount = stealthAllowlistRules.length;
         if (rulesCount === 1) {
-            return stealthAllowlistRules[0].appliedRuleText;
+            return stealthAllowlistRules[0]?.appliedRuleText;
         }
 
         ruleText = translator.getMessage('filtering_log_stealth_rules', { rules_count: rulesCount });
@@ -161,10 +198,10 @@ const ruleAccessor = (props) => {
     }
 
     // If we have exact matched rule - show it.
-    if (declarativeRuleInfo?.sourceRules.length > 0) {
+    if (declarativeRuleInfo?.sourceRules?.length && declarativeRuleInfo.sourceRules.length > 0) {
         // But for allowlisted sited we do not needed to show source rule,
         // only show "this site is allowlisted".
-        if (declarativeRuleInfo.sourceRules[0].filterId === AntiBannerFiltersId.AllowlistFilterId) {
+        if (declarativeRuleInfo.sourceRules[0]?.filterId === AntiBannerFiltersId.AllowlistFilterId) {
             return translator.getMessage('filtering_log_in_allowlist');
         }
 
@@ -207,19 +244,56 @@ const ruleAccessor = (props) => {
     );
 };
 
-const statusAccessor = (props) => {
-    return (
-        <Status {...props} />
-    );
+/**
+ * Accessor wrapper for Status component.
+ *
+ * @param props Filtering log event.
+ *
+ * @returns Status React component.
+ */
+const statusAccessor = (props: UIFilteringLogEvent): React.ReactNode => {
+    return <Status {...props} />;
 };
 
+/**
+ * Column configuration for the table.
+ */
+type Column = {
+    id: string;
+    Header: string;
+    accessor: keyof UIFilteringLogEvent | ((event: UIFilteringLogEvent) => React.ReactNode);
+    getWidth: () => string;
+    getResizerProps: () => {
+        onMouseDown: (e: React.MouseEvent) => void;
+        onTouchStart: (e: React.TouchEvent) => void;
+    };
+};
+
+/**
+ * Props for table row component.
+ */
+type RowProps = {
+    index: number;
+    event: UIFilteringLogEvent;
+    columns: Column[];
+    onClick: (e: React.MouseEvent | React.KeyboardEvent) => void;
+    style: React.CSSProperties;
+};
+
+/**
+ * Table row component for filtering log event.
+ *
+ * @param props Row props.
+ *
+ * @returns Table row component.
+ */
 const Row = observer(({
     index,
     event,
     columns,
     onClick,
     style,
-}) => {
+}: RowProps) => {
     const { logStore } = useContext(rootStore);
 
     const className = cn(
@@ -234,7 +308,7 @@ const Row = observer(({
             role="row"
             style={{
                 ...style,
-                top: `${parseFloat(style.top) + ITEM_HEIGHT_PX}px`,
+                top: `${parseFloat(String(style.top ?? 0)) + ITEM_HEIGHT_PX}px`,
             }}
             id={event.eventId}
             onClick={onClick}
@@ -247,11 +321,11 @@ const Row = observer(({
             {
                 columns.map((column) => {
                     const { accessor } = column;
-                    let cellContent;
-                    if (typeof accessor === 'string') {
-                        cellContent = event[accessor];
-                    } else {
+                    let cellContent: React.ReactNode;
+                    if (typeof accessor === 'function') {
                         cellContent = accessor(event);
+                    } else {
+                        cellContent = event[accessor];
                     }
 
                     return (
@@ -277,11 +351,21 @@ const Row = observer(({
     );
 });
 
+/**
+ * Virtualized row wrapper component.
+ *
+ * @param props List child component props from react-window.
+ * @param props.index Row index.
+ * @param props.style Row style.
+ * @param props.data Row data containing events, columns, and handleRowClick.
+ *
+ * @returns Virtualized row component.
+ */
 const VirtualizedRow = ({
     index,
     style,
     data,
-}) => {
+}: ListChildComponentProps) => {
     const { events, columns, handleRowClick } = data;
     const event = events[index];
 
@@ -296,11 +380,32 @@ const VirtualizedRow = ({
     );
 };
 
-const ColumnsContext = React.createContext({});
+/**
+ * Context type for columns configuration.
+ */
+type ColumnsContextType = {
+    columns: Column[];
+    isLogEventsEmpty: boolean;
+};
+
+const ColumnsContext = React.createContext<ColumnsContextType>({
+    columns: [],
+    isLogEventsEmpty: true,
+});
 
 const ColumnsProvider = ColumnsContext.Provider;
 
-const TableHeader = ({ style }) => {
+/**
+ * Table header component with column headers and resizers.
+ *
+ * @param props Table header props.
+ * @param props.style CSS properties for header positioning.
+ *
+ * @returns Table header component.
+ */
+const TableHeader = ({ style }: {
+    style: CSSProperties;
+}) => {
     const { columns, isLogEventsEmpty } = useContext(ColumnsContext);
 
     /**
@@ -349,29 +454,48 @@ const TableHeader = ({ style }) => {
     );
 };
 
-const TableInnerWrapper = forwardRef(({ children, ...rest }, ref) => {
-    return (
-        <div ref={ref} {...rest}>
-            <TableHeader
-                index={0}
-                key={0}
-                style={{
-                    top: 0, left: 0, width: '100%', height: 30,
-                }}
-            />
+/**
+ * Inner wrapper for virtualized table with header.
+ */
+const TableInnerWrapper = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+    (props, ref) => {
+        const { children, ...rest } = props;
+        return (
+            <div ref={ref} {...rest}>
+                <TableHeader
+                    style={{
+                        top: 0, left: 0, width: '100%', height: ITEM_HEIGHT_PX,
+                    }}
+                />
 
-            {children}
-        </div>
-    );
-});
+                {children}
+            </div>
+        );
+    },
+);
 
+/**
+ * Props for FilteringEventsRows component.
+ */
+type FilteringEventsRowsProps = {
+    events: UIFilteringLogEvent[];
+    columns: Column[];
+    handleRowClick: (e: React.MouseEvent | React.KeyboardEvent) => void;
+};
+
+/**
+ * Desktop virtualized table of filtering log events.
+ *
+ * @param props Component props.
+ *
+ * @returns Virtualized events table.
+ */
 const FilteringEventsRows = observer(({
-    logStore,
+    events,
     columns,
     handleRowClick,
-}) => {
-    const { events } = logStore;
-    const isLogEventsEmpty = logStore.events.length === 0;
+}: FilteringEventsRowsProps) => {
+    const isLogEventsEmpty = events.length === 0;
 
     return (
         /**
@@ -384,11 +508,13 @@ const FilteringEventsRows = observer(({
             <AutoSizer>
                 {({
                     height,
+                    width,
                 }) => {
                     return (
                         <FixedSizeList
                             className="list"
-                            height={height}
+                            height={height || 0}
+                            width={width || 0}
                             itemCount={events.length}
                             itemData={{
                                 events,
@@ -407,9 +533,33 @@ const FilteringEventsRows = observer(({
     );
 });
 
-const DEFAULT_COLUMN_WIDTH = 200;
-const MIN_COLUMN_WIDTH = 50;
+/**
+ * Default width for table columns in pixels.
+ */
+const DEFAULT_COLUMN_WIDTH_PX = 200;
 
+/**
+ * Minimum width for table columns in pixels.
+ */
+const MIN_COLUMN_WIDTH_PX = 50;
+
+/**
+ * Column render data with width in pixels.
+ */
+type ColumnRenderData = {
+    width: number;
+};
+
+/**
+ * Map of column IDs to their render data.
+ */
+type ColumnsRenderData = Record<string, ColumnRenderData>;
+
+/**
+ * Main filtering events component with table or mobile view.
+ *
+ * @returns Filtering events component.
+ */
 const FilteringEvents = observer(() => {
     const { logStore } = useContext(rootStore);
 
@@ -417,12 +567,12 @@ const FilteringEvents = observer(() => {
 
     const tableRef = useRef(null);
 
-    const handleRowClick = useCallback((e) => {
+    const handleRowClick = useCallback((e: React.MouseEvent | React.KeyboardEvent) => {
         const { id } = e.currentTarget;
         logStore.handleSelectEvent(id);
     }, [logStore]);
 
-    const columnsData = [
+    const columnsData: Omit<Column, 'getWidth' | 'getResizerProps'>[] = [
         {
             id: 'status',
             Header: `${translator.getMessage('filtering_table_status')}`,
@@ -455,7 +605,7 @@ const FilteringEvents = observer(() => {
         },
     ];
 
-    const [columnsRenderData, setColumnsRenderData] = useState(
+    const [columnsRenderData, setColumnsRenderData] = useState<ColumnsRenderData>(
         optionsStorage.getItem(optionsStorage.KEYS.COLUMNS_DATA),
     );
 
@@ -463,9 +613,9 @@ const FilteringEvents = observer(() => {
         optionsStorage.setItem(optionsStorage.KEYS.COLUMNS_DATA, columnsRenderData);
     }, [columnsRenderData]);
 
-    let startClientX = null;
+    let startClientX: number | null = null;
 
-    const dispatchMove = throttle((clientX, columnId) => {
+    const dispatchMove = throttle((clientX: number, columnId: string) => {
         if (!startClientX) {
             return;
         }
@@ -473,14 +623,14 @@ const FilteringEvents = observer(() => {
         let columnWidth = columnsRenderData[columnId]?.width;
 
         if (!columnWidth) {
-            columnWidth = DEFAULT_COLUMN_WIDTH;
+            columnWidth = DEFAULT_COLUMN_WIDTH_PX;
         }
 
         const deltaX = startClientX - clientX;
 
         const newColumnWidth = columnWidth - deltaX;
 
-        if (newColumnWidth < MIN_COLUMN_WIDTH) {
+        if (newColumnWidth < MIN_COLUMN_WIDTH_PX) {
             return;
         }
 
@@ -493,7 +643,7 @@ const FilteringEvents = observer(() => {
         });
     }, 20);
 
-    const dispatchMovingStarted = (clientX) => {
+    const dispatchMovingStarted = (clientX: number) => {
         startClientX = clientX;
         // fixes cursor blinking and text selection
         document.body.classList.add('col-resize');
@@ -505,23 +655,36 @@ const FilteringEvents = observer(() => {
         document.body.classList.remove('col-resize');
     };
 
-    const onResizeStart = (e, columnId) => {
+    const onResizeStart = (e: React.MouseEvent | React.TouchEvent, columnId: string) => {
         let isTouchEvent = false;
-        if (e.type === 'touchstart') {
+        let clientX: number;
+
+        if ('touches' in e) {
             // lets not respond to multiple touches (e.g. 2 or 3 fingers)
-            if (e.touches && e.touches.length > 1) {
+            if (e.touches.length > 1) {
                 return;
             }
-            isTouchEvent = true;
-        }
 
-        const clientX = isTouchEvent ? Math.round(e.touches[0].clientX) : e.clientX;
+            isTouchEvent = true;
+            const touch = e.touches[0];
+            if (!touch) {
+                return;
+            }
+
+            clientX = Math.round(touch.clientX);
+        } else {
+            clientX = e.clientX;
+        }
 
         const handlersAndEvents = {
             mouse: {
                 moveEvent: 'mousemove',
                 // eslint-disable-next-line no-shadow
-                moveHandler: (e) => dispatchMove(e.clientX, columnId),
+                moveHandler: (e: Event) => {
+                    if (e instanceof MouseEvent) {
+                        dispatchMove(e.clientX, columnId);
+                    }
+                },
                 upEvent: 'mouseup',
                 upHandler: () => {
                     document.removeEventListener(
@@ -538,12 +701,19 @@ const FilteringEvents = observer(() => {
             touch: {
                 moveEvent: 'touchmove',
                 // eslint-disable-next-line no-shadow
-                moveHandler: (e) => {
+                moveHandler: (e: Event) => {
+                    if (!(e instanceof TouchEvent)) {
+                        return false;
+                    }
+                    const touch = e.touches[0];
+                    if (!touch) {
+                        return false;
+                    }
                     if (e.cancelable) {
                         e.preventDefault();
                         e.stopPropagation();
                     }
-                    dispatchMove(e.touches[0].clientX, columnId);
+                    dispatchMove(touch.clientX, columnId);
                     return false;
                 },
                 upEvent: 'touchend',
@@ -554,7 +724,7 @@ const FilteringEvents = observer(() => {
                     );
                     document.removeEventListener(
                         handlersAndEvents.touch.upEvent,
-                        handlersAndEvents.touch.moveHandler,
+                        handlersAndEvents.touch.upHandler,
                     );
                     dispatchEnd();
                 },
@@ -581,19 +751,20 @@ const FilteringEvents = observer(() => {
         dispatchMovingStarted(clientX);
     };
 
-    const getResizerProps = (columnId) => {
+    const getResizerProps = (columnId: string) => {
         return {
-            onMouseDown: (e) => onResizeStart(e, columnId),
-            onTouchStart: (e) => onResizeStart(e, columnId),
+            onMouseDown: (e: React.MouseEvent) => onResizeStart(e, columnId),
+            onTouchStart: (e: React.TouchEvent) => onResizeStart(e, columnId),
         };
     };
 
-    const addMethods = (columns) => {
+    const addMethods = (columns: Omit<Column, 'getWidth' | 'getResizerProps'>[]): Column[] => {
         return columns.map((column) => {
             return {
                 ...column,
                 getWidth: () => {
-                    return `${columnsRenderData[column.id].width}px`;
+                    const width = columnsRenderData[column.id]?.width ?? DEFAULT_COLUMN_WIDTH_PX;
+                    return `${width}px`;
                 },
                 getResizerProps: () => {
                     return getResizerProps(column.id);
@@ -606,6 +777,10 @@ const FilteringEvents = observer(() => {
         .reduce((acc, { width }) => acc + width + SCROLLBAR_WIDTH, 0);
 
     const columns = addMethods(columnsData);
+
+    const isMobile = useIsMobile();
+
+    const { events } = logStore;
 
     /**
      * WAI ARIA attributes are hidden if the table is empty, this needed
@@ -620,7 +795,7 @@ const FilteringEvents = observer(() => {
             // Set number of rows explicitly for screen readers, because table
             // is virtualized and not all of the rows are rendered at the same time.
             // Add 1 to the number of rows to include the header row.
-            aria-rowcount={isLogEventsEmpty ? undefined : logStore.events.length + 1}
+            aria-rowcount={isLogEventsEmpty ? undefined : events.length + 1}
         >
             <div
                 style={{ minWidth: `${minTableWidth}px` }}
@@ -628,11 +803,15 @@ const FilteringEvents = observer(() => {
                 ref={tableRef}
             >
                 <div className="tbody" style={{ height: '100%' }}>
-                    <FilteringEventsRows
-                        logStore={logStore}
-                        handleRowClick={handleRowClick}
-                        columns={columns}
-                    />
+                    {isMobile
+                        ? <FilteringEventsRowsMobile handleRowClick={handleRowClick} />
+                        : (
+                            <FilteringEventsRows
+                                events={events}
+                                handleRowClick={handleRowClick}
+                                columns={columns}
+                            />
+                        )}
                     <FilteringEventsEmpty />
                 </div>
             </div>

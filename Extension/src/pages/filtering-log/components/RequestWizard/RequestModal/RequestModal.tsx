@@ -39,6 +39,8 @@ import { optionsStorage } from '../../../../options/options-storage';
 import { WizardRequestState } from '../../../constants';
 import { RequestPreview } from '../RequestPreview';
 import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
+import theme from '../../../styles/theme';
+import { useIsMobile } from '../../../../common/hooks/useIsMobile';
 
 import './request-modal.pcss';
 
@@ -46,7 +48,8 @@ Modal.setAppElement('#root');
 
 const RequestModal = observer(() => {
     const { wizardStore } = useContext(rootStore);
-    const onKeyUp = useCallback((e) => {
+    const isMobile = useIsMobile();
+    const onKeyUp = useCallback((e: KeyboardEvent) => {
         if (e.key === 'Escape') {
             wizardStore.closeModal();
         }
@@ -74,7 +77,7 @@ const RequestModal = observer(() => {
         requestModalStateEnum,
     } = wizardStore;
 
-    let modalContent;
+    let modalContent: JSX.Element;
 
     switch (requestModalState) {
         case WizardRequestState.View: {
@@ -97,18 +100,18 @@ const RequestModal = observer(() => {
             modalContent = <RequestInfo />;
     }
 
-    const className = cn('ReactModal__Content request-modal thin-scrollbar', {
+    const className = cn(theme.sideModal.sideModal, 'thin-scrollbar', {
         'request-modal__view': requestModalStateEnum.isView,
         'request-modal__block': requestModalStateEnum.isBlock,
         'request-modal__unblock': requestModalStateEnum.isUnblock,
     });
 
-    const persistModalWidth = (width) => {
+    const persistModalWidth = (width: number) => {
         setModalWidth(width);
         optionsStorage.setItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH, width);
     };
 
-    const pointerMoveHandler = (e) => {
+    const pointerMoveHandler = (e: React.PointerEvent<HTMLDivElement>) => {
         if (!isDraggingRef.current) {
             return;
         }
@@ -124,14 +127,14 @@ const RequestModal = observer(() => {
 
     const BODY_RESIZE_CLASS_NAME = 'col-resize';
 
-    const pointerDownHandler = (e) => {
-        e.target.setPointerCapture(e.pointerId);
+    const pointerDownHandler = (e: React.PointerEvent<HTMLDivElement>) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
         isDraggingRef.current = true;
         document.body.classList.add(BODY_RESIZE_CLASS_NAME);
     };
 
-    const pointerUpHandler = (e) => {
-        const target = e.target;
+    const pointerUpHandler = (e: React.PointerEvent<HTMLDivElement>) => {
+        const target = e.currentTarget;
         if (!target.hasPointerCapture(e.pointerId)) {
             return;
         }
@@ -141,17 +144,21 @@ const RequestModal = observer(() => {
         document.body.classList.remove(BODY_RESIZE_CLASS_NAME);
     };
 
+    const modalStyle = isMobile
+        ? {}
+        : {
+            content: {
+                width: `${modalWidth}px`,
+            },
+        };
+
     return (
         <Modal
             isOpen={isModalOpen}
             onRequestClose={closeModal}
             className={className}
-            overlayClassName="ReactModal__Overlay request-modal__overlay"
-            style={{
-                content: {
-                    width: `${modalWidth}px`,
-                },
-            }}
+            overlayClassName={theme.sideModal.overlay}
+            style={modalStyle}
         >
             <div
                 className="request-modal__dragbar"

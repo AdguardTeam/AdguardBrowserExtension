@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,25 +18,18 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Wizard request state.
- */
-export const enum WizardRequestState {
-    View = 'view.request',
-    Block = 'block.request',
-    Unblock = 'unblock.request',
-    Preview = 'preview.request',
-}
+import { type UIFilteringLogEvent } from '../../../../../background/api';
 
 /**
- * State of added rule.
+ * Column configuration for the table.
  */
-export const enum AddedRuleState {
-    Block = 'block',
-    Unblock = 'unblock',
-}
-
-/**
- * ID for the "all" tag filter.
- */
-export const ALL_TAG_ID = 'all';
+export type Column = {
+    id: string;
+    Header: string;
+    accessor: keyof UIFilteringLogEvent | ((event: UIFilteringLogEvent) => React.ReactNode);
+    getWidth: () => string;
+    getResizerProps: () => {
+        onMouseDown: (e: React.MouseEvent) => void;
+        onTouchStart: (e: React.TouchEvent) => void;
+    };
+};

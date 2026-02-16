@@ -22,27 +22,23 @@ import { StatusMode } from '../../filteringLogStatus';
 import { translator } from '../../../../common/translators/translator';
 
 /**
- * @typedef {object} StatusTitle
- * @property {string} PROCESSED
- * @property {string} BLOCKED
- * @property {string} MODIFIED
- * @property {string} UNBLOCKED
+ * Maps status mode to translated title.
  */
-const StatusTitle = {
-    PROCESSED: translator.getMessage('filtering_log_status_processed'),
-    BLOCKED: translator.getMessage('filtering_log_status_blocked'),
-    MODIFIED: translator.getMessage('filtering_log_status_modified'),
-    UNBLOCKED: translator.getMessage('filtering_log_status_allowed'),
+const titleMap: Record<StatusMode, string> = {
+    [StatusMode.Regular]: translator.getMessage('filtering_log_status_processed'),
+    [StatusMode.Modified]: translator.getMessage('filtering_log_status_modified'),
+    [StatusMode.Blocked]: translator.getMessage('filtering_log_status_blocked'),
+    [StatusMode.Allowed]: translator.getMessage('filtering_log_status_allowed'),
+    [StatusMode.AllowedStealth]: translator.getMessage('filtering_log_status_processed'),
 };
 
-const titleMap = {
-    [StatusMode.REGULAR]: StatusTitle.PROCESSED,
-    [StatusMode.MODIFIED]: StatusTitle.MODIFIED,
-    [StatusMode.BLOCKED]: StatusTitle.BLOCKED,
-    [StatusMode.ALLOWED]: StatusTitle.UNBLOCKED,
-    [StatusMode.ALLOWED_STEALTH]: StatusTitle.PROCESSED,
-};
-
-export const getStatusTitle = (mode) => {
+/**
+ * Returns translated title for status mode.
+ *
+ * @param mode Status mode.
+ *
+ * @returns Translated status title.
+ */
+export const getStatusTitle = (mode: StatusMode): string => {
     return titleMap[mode];
 };

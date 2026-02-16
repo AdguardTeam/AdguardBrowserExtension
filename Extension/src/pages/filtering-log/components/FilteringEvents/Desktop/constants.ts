@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -19,24 +19,6 @@
  */
 
 /**
- * Wizard request state.
+ * Height of each table row in the desktop filtering log view.
  */
-export const enum WizardRequestState {
-    View = 'view.request',
-    Block = 'block.request',
-    Unblock = 'unblock.request',
-    Preview = 'preview.request',
-}
-
-/**
- * State of added rule.
- */
-export const enum AddedRuleState {
-    Block = 'block',
-    Unblock = 'unblock',
-}
-
-/**
- * ID for the "all" tag filter.
- */
-export const ALL_TAG_ID = 'all';
+export const ITEM_HEIGHT_PX = 30;

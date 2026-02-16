@@ -18,25 +18,20 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Wizard request state.
- */
-export const enum WizardRequestState {
-    View = 'view.request',
-    Block = 'block.request',
-    Unblock = 'unblock.request',
-    Preview = 'preview.request',
-}
+import postcssGlobalData from '@csstools/postcss-global-data';
+import postcssNested from 'postcss-nested';
+import postcssPresetEnv from 'postcss-preset-env';
+import postcssCustomMedia from 'postcss-custom-media';
+import postcssSvg from 'postcss-svg';
 
-/**
- * State of added rule.
- */
-export const enum AddedRuleState {
-    Block = 'block',
-    Unblock = 'unblock',
-}
-
-/**
- * ID for the "all" tag filter.
- */
-export const ALL_TAG_ID = 'all';
+export default {
+    plugins: [
+        // should go before postcss-custom-media to correctly inject media rules
+        postcssGlobalData({ files: ['./Extension/src/pages/common/styles/media.pcss'] }),
+        // should go before postcssPresetEnv with nesting-rules enabled
+        postcssNested(),
+        postcssPresetEnv({ stage: 3, features: { 'nesting-rules': true } }),
+        postcssCustomMedia(),
+        postcssSvg(),
+    ],
+};

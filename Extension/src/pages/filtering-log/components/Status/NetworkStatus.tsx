@@ -25,8 +25,16 @@ import { Popover } from '../../../common/components/ui/Popover';
 
 import { getBadgeClassNames, StatusColor } from './statusStyles';
 
-export const NetworkStatus = ({ method, statusCode, isThirdParty }) => {
-    const badgeClassNames = getBadgeClassNames(StatusColor.GRAY);
+export const NetworkStatus = ({
+    method,
+    statusCode,
+    isThirdParty,
+}: {
+    method: string;
+    statusCode?: number;
+    isThirdParty?: boolean;
+}) => {
+    const badgeClassNames = getBadgeClassNames(StatusColor.Gray);
 
     const statusTooltipText = translator.getMessage('filtering_log_badge_tooltip_http_status_code');
     const statusToShow = statusCode || '----';
