@@ -40,6 +40,11 @@ Build:
 
             export DOCKER_BUILDKIT=1
 
+            # Generate find-compatible .gitignore exclusions on the host (where .git is available).
+            # The gitignore-excludes.txt file is included in the Docker context and consumed by
+            # archive-source.sh inside Docker (where .git is not available).
+            ./bamboo-specs/scripts/generate-find-excludes.sh gitignore-excludes.txt
+
             # Build Firefox beta artifacts (firefox.zip, source.zip, build.txt)
             docker build \
               --file Dockerfile \
