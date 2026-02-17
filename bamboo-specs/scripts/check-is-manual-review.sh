@@ -15,13 +15,13 @@ set -ex
 
 # Day of week (1=Mon, 2=Tue ... 7=Sun) - date returns UTC
 dayOfWeek=$(date +%u)
-MONDAY_IDX=1
+TUESDAY_IDX=2
 
 # Hour (00-23) - date returns UTC
 hours=$(date +%H)
 
 # Tuesday 00:30 UTC+3 = Monday 21:30 UTC
-if [[ "$dayOfWeek" -eq "$MONDAY_IDX" && "$hours" = "20" ]]; then
+if [[ "$dayOfWeek" -eq "$TUESDAY_IDX" && "$hours" = "23" ]]; then
   echo "OK: Monday 21:xx UTC (= Tuesday 00:xx UTC+3)"
   exit 0 # Returns success when manual review is needed
 else
