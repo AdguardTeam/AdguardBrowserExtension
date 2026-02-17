@@ -477,8 +477,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Increment patch version.
     pnpm increment && \
     # Build both channels.
-    pnpm beta chrome-mv3 && \
-    pnpm release chrome-mv3 && \
+    pnpm beta chrome-mv3 --zip && \
+    pnpm release chrome-mv3 --zip && \
     # Skip-review checks (download latest from CWS + compare).
     if [ "${SKIP_REVIEW}" = "true" ]; then \
       if [ "${BETA_CHANNEL_AVAILABLE}" = "true" ]; then \
