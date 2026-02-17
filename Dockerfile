@@ -166,7 +166,15 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci; \
     EXIT_CODE=$?; \
     # Keep tests-reports for junit parser.
-    if [ -d tests-reports ]; then cp -R tests-reports/. /out/tests-reports/; fi; \
+    # NOTE: touch is intentional - --output type=local preserves container mtimes,
+    # so extracted XML files retain the timestamp from when they were written inside
+    # the container. If the Bamboo task was queued for a while before running, those
+    # timestamps predate the task start time and the JUnit parser rejects them with
+    # "file was modified before task started". Touching after cp resets mtime to now.
+    if [ -d tests-reports ]; then \
+      cp -R tests-reports/. /out/tests-reports/ && \
+      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+    fi; \
     # Note that we export test-results in junit format (for Bamboo to understand)
     # and suppress the original exit code (so that we could get the test results).
     # See bamboo-specs to understand how exit-code.txt is used.
