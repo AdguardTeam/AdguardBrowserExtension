@@ -51,10 +51,10 @@ tasks:
             --file Dockerfile \
             --progress plain \
             --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-            --build-arg OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} \
             --build-arg SKIP_REVIEW=${skipReview} \
             --build-arg BETA_CHANNEL_AVAILABLE=${bamboo.inject.betaChannelAvailable} \
             --build-arg RELEASE_CHANNEL_AVAILABLE=${bamboo.inject.releaseChannelAvailable} \
+            --secret id=OPENAI_API_KEY,env=bamboo_openAiExtensionBuildTokenPassword \
             --build-context tsurlfilter=../tsurlfilter \
             --target auto-build-output \
             --output type=local,dest=output \
