@@ -36,7 +36,10 @@ import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
  */
 const resourcesMv3 = async (skipLocalResources = false) => {
     console.log('Downloading resources for MV3...');
-    await downloadAndPrepareMv3Filters();
+    // Skip translations and local resources only during fast auto-build with
+    // skip review flow to minimize changes and stay eligible for expedited
+    // review.
+    await downloadAndPrepareMv3Filters(skipLocalResources);
     console.log('Resources for MV3 downloaded');
 
     if (!skipLocalResources) {
