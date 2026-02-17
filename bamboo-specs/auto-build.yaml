@@ -5,12 +5,8 @@ plan:
   key: AUTOBUILD
   name: browser extension - auto-build
 variables:
-  # Playwright is needed for integration tests after build.
-  dockerPlaywright: adguard/playwright-runner:22.17--1.53.2--1
-  # Node.js is needed for build and tests.
-  dockerNode: adguard/extension-builder:22.17--0.3.0--0
   # Stable branch name for auto-update only filters.
-  stableBranchName: stable/v5.2
+  stableBranchName: stable/v5.3
 
 # Since auto-builds are being run only for a stable branch now (specified in
 # `bamboo.stableBranchName`) we should skip the build stage for other branches.
@@ -41,14 +37,14 @@ labels: []
 other:
   concurrent-build-plugin: system-default
 
-# Run plan only for 'stable/v5.2' branch.
+# Run plan only for 'stable/v5.3' branch.
 # Override is needed to skip the build stage for other branches,
 # because even if branches are not supposed to be run for PRs
 # (due to 'create: manually' above), build was triggered by 'cron' anyway.
 branch-overrides:
   -
     # Note: it should be equal with `bamboo.stableBranchName`
-    stable/v5.2:
+    stable/v5.3:
       # Job definitions for auto-builds
       Check CWS Availability: !include 'jobs/auto-builds/check-cws-availability.yaml'
       Lint: !include 'jobs/auto-builds/lint.yaml'

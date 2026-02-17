@@ -1,8 +1,6 @@
 key: CHECKCWS
 other:
   clean-working-dir: true
-docker:
-  image: ${bamboo.dockerNode}
 tasks:
   - checkout:
       force-clean-build: true
@@ -10,55 +8,34 @@ tasks:
       interpreter: SHELL
       scripts:
         - |-
-          set -e
-          set -x
+          # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+          #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+          #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+          set -ex
 
-          mkdir -p artifacts
-          RESULT_FILE="artifacts/cws-availability.properties"
+          # Fix mixed logs
+          exec 2>&1
 
-          echo "Checking CWS availability for both channels..."
+          export DOCKER_BUILDKIT=1
 
-          BETA_AVAILABLE=false
-          RELEASE_AVAILABLE=false
-
-          echo "--- Checking Beta channel ---"
-          if ./bamboo-specs/scripts/check-extension-status.sh beta; then
-              echo "✅ Beta channel is available"
-              BETA_AVAILABLE=true
-          else
-              echo "⚠️ Beta channel is not available"
-          fi
-
-          echo ""
-          echo "--- Checking Release channel ---"
-          if ./bamboo-specs/scripts/check-extension-status.sh release; then
-              echo "✅ Release channel is available"
-              RELEASE_AVAILABLE=true
-          else
-              echo "⚠️ Release channel is not available"
-          fi
-
-          # Write results
-          {
-              echo "betaChannelAvailable=${BETA_AVAILABLE}"
-              echo "releaseChannelAvailable=${RELEASE_AVAILABLE}"
-          } > "${RESULT_FILE}"
-
-          echo ""
-          echo "=== CWS Availability ==="
-          cat "${RESULT_FILE}"
-
-          # If both channels are unavailable, fail the build
-          if [ "${BETA_AVAILABLE}" = "false" ] && [ "${RELEASE_AVAILABLE}" = "false" ]; then
-              echo ""
-              echo "❌ Both channels are unavailable, stopping build"
-              exit 1
-          fi
-
-          echo ""
-          echo "✅ At least one channel is available, proceeding with build"
+          docker build \
+            --file Dockerfile \
+            --progress plain \
+            --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+            --build-arg CHROME_CLIENT_ID=${bamboo.chromeWebStoreClientId} \
+            --build-arg CHROME_CLIENT_SECRET=${bamboo.chromeWebStoreClientSecret} \
+            --build-arg CHROME_REFRESH_TOKEN=${bamboo.chromeWebStoreSecretRefreshToken} \
+            --build-arg CHROME_PUBLISHER_ID=${bamboo.chromeWebStorePublisherId} \
+            --target check-cws-output \
+            --output type=local,dest=output \
+            .
   - inject-variables:
-      file: artifacts/cws-availability.properties
+      file: output/artifacts/cws-availability.properties
       scope: RESULT
+final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+        - "./bamboo-specs/scripts/cleanup.sh"
 requirements:
   - extension: 'true'

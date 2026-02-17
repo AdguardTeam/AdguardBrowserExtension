@@ -18,7 +18,7 @@ if [ "${CHANNEL}" = "release" ]; then
 elif [ "${CHANNEL}" = "beta" ]; then
     EXTENSION_ID="apjcbfpjihpedihablmalmbbhjpklbdf"
 else
-    echo "Unknown channel: ${CHANNEL}"
+    echo "⚠️ Unknown channel: ${CHANNEL}"
     exit 1
 fi
 
@@ -78,5 +78,5 @@ if ! echo "${STATUS_OUTPUT}" | grep -q "Rollout: 100%"; then
     exit 1
 fi
 
-echo "✅ Extension is PUBLISHED at 100% rollout with no pending submissions, auto-build allowed"
+echo "✅ Extension is PUBLISHED at 100% rollout with no pending submissions, auto-build allowed for channel ${CHANNEL}"
 exit 0

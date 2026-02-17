@@ -1,11 +1,9 @@
 key: INTEGRATIONTESTS
 other:
   clean-working-dir: true
-docker:
-  image: ${bamboo.dockerPlaywright}
-  volumes:
-    ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
 tasks:
+  - checkout:
+      force-clean-build: true
   - artifact-download:
       artifacts:
         - name: chrome-mv3-release.zip
@@ -14,13 +12,83 @@ tasks:
       interpreter: SHELL
       scripts:
         - |-
-          # Call the common script for both release and beta.
-          ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh release
-          ./bamboo-specs/scripts/timeout-wrapper.sh 300s bash ./bamboo-specs/scripts/integration-tests.sh beta
+          # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+          #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+          #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+          set -ex
+
+          # Fix mixed logs
+          exec 2>&1
+
+          # Move downloaded artifacts to artifacts/ directory for Docker context
+          mkdir -p artifacts
+          [ -f chrome-mv3-release.zip ] && mv chrome-mv3-release.zip artifacts/chrome-mv3-release.zip
+          [ -f chrome-mv3-beta.zip ] && mv chrome-mv3-beta.zip artifacts/chrome-mv3-beta.zip
+
+          # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+          ./bamboo-specs/scripts/clone-tsurlfilter.sh
+
+          export DOCKER_BUILDKIT=1
+
+          # Run integration tests for release.
+          docker build \
+            --file Dockerfile \
+            --progress plain \
+            --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+            --build-arg BUILD_TYPE=release \
+            --build-context tsurlfilter=../tsurlfilter \
+            --target integration-tests-output \
+            --output type=local,dest=output-release \
+            .
+
+          # Run integration tests for beta.
+          docker build \
+            --file Dockerfile \
+            --progress plain \
+            --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+            --build-arg BUILD_TYPE=beta \
+            --build-context tsurlfilter=../tsurlfilter \
+            --target integration-tests-output \
+            --output type=local,dest=output-beta \
+            .
+
+          # Merge test results into single output directory.
+          mkdir -p output/tests-reports
+          find output-release/tests-reports -name '*.xml' -exec cp {} output/tests-reports/ \; 2>/dev/null || true
+          find output-beta/tests-reports -name '*.xml' -exec cp {} output/tests-reports/ \; 2>/dev/null || true
+  - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+          echo "🔍 Checking integration test results..."
+
+          if [ -f output-release/exit-code.txt ]; then
+            RELEASE_EXIT=$(cat output-release/exit-code.txt)
+          else
+            echo "❌ output-release/exit-code.txt not found"; exit 1
+          fi
+          if [ -f output-beta/exit-code.txt ]; then
+            BETA_EXIT=$(cat output-beta/exit-code.txt)
+          else
+            echo "❌ output-beta/exit-code.txt not found"; exit 1
+          fi
+
+          echo "📊 Release tests exit code: $RELEASE_EXIT"
+          echo "📊 Beta tests exit code: $BETA_EXIT"
+
+          if [ "$RELEASE_EXIT" != "0" ]; then
+            echo "❌ Release integration tests failed"; exit $RELEASE_EXIT
+          fi
+          if [ "$BETA_EXIT" != "0" ]; then
+            echo "❌ Beta integration tests failed"; exit $BETA_EXIT
+          fi
+
+          echo "✅ All integration tests passed"
+          exit 0
 final-tasks:
   - test-parser:
       type: junit
-      test-results: 'tests-reports/integration-tests-*.xml'
+      test-results: 'output/tests-reports/integration-tests-*.xml'
   - script:
       interpreter: SHELL
       scripts:
