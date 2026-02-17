@@ -27,6 +27,7 @@ import { observer } from 'mobx-react';
 
 import { fromPromise } from 'xstate';
 import { useMachine } from '@xstate/react';
+import cn from 'classnames';
 
 import { ContentType as RequestType } from 'tswebextension';
 
@@ -38,6 +39,7 @@ import {
     FetchStates,
 } from '../../../../common/machines/fetchMachine';
 import { rootStore } from '../../../stores/RootStore';
+import theme from '../../../styles/theme';
 
 import { ImageRequest } from './ImageRequest';
 import { TextRequest } from './TextRequest';
@@ -160,22 +162,22 @@ export const RequestPreview = observer(() => {
 
     return (
         <>
-            <div className="request-modal__title">
+            <div className={theme.sideModal.title}>
                 <button
                     type="button"
                     onClick={handleBackToRequestClick}
-                    className="request-modal__navigation"
+                    className={theme.sideModal.navigation}
                 >
                     <Icon
                         id="#arrow-left"
                         className="icon--24 icon--gray-default"
                     />
-                    <span className="request-modal__header">
+                    <span className={theme.sideModal.header}>
                         {translator.getMessage('filtering_modal_preview_title')}
                     </span>
                 </button>
             </div>
-            <div className="request-modal__content request-preview thin-scrollbar">
+            <div className={cn(theme.sideModal.content, 'request-preview', 'thin-scrollbar')}>
                 {renderContent()}
             </div>
             <div className="request-modal__controls">

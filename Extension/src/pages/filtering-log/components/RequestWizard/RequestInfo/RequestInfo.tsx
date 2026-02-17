@@ -48,10 +48,12 @@ import {
 import { rootStore } from '../../../stores/RootStore';
 import { WindowsApi } from '../../../../../common/api/extension/windows';
 import { AntiBannerFiltersId } from '../../../../../common/constants';
+import theme from '../../../styles/theme';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
+import { useIsMobile } from '../../../../common/hooks/useIsMobile';
 import { optionsStorage } from '../../../../options/options-storage';
 import { DEFAULT_MODAL_WIDTH_PX, LINE_COUNT_LIMIT } from '../constants';
 import { TextCollapser } from '../../../../common/components/TextCollapser/TextCollapser';
@@ -274,6 +276,7 @@ const RequestInfo = observer(() => {
     }
 
     const [textMaxWidth, setTextMaxWidth] = useState(DEFAULT_MODAL_WIDTH_PX);
+    const isMobile = useIsMobile();
 
     useLayoutEffect(() => {
         const MODAL_PADDINGS_PX = 70;
@@ -495,7 +498,7 @@ const RequestInfo = observer(() => {
                 });
 
                 return (
-                    <Popover text={text as string} fixedWidth>
+                    <Popover text={text}>
                         <Icon
                             id="#question"
                             className="icon icon--24 icon--green-default"
@@ -513,9 +516,10 @@ const RequestInfo = observer(() => {
                 )
                 : textsWithCollapsers;
 
+            const shouldBreakByWords = !isRequestUrl && !isRule;
             const classNames = isDeclarativeRule && selectedEvent.declarativeRuleInfo?.declarativeRuleJson
                 ? cn('request-info__value', 'scrollable', 'thin-scrollbar')
-                : cn('request-info__value');
+                : cn('request-info__value', { 'request-info__value--text': shouldBreakByWords });
 
             return (
                 <div key={title} className="request-info">
@@ -630,7 +634,7 @@ const RequestInfo = observer(() => {
             && !event?.element
             && !event?.script
             && !event?.cookieName
-            && !(getStatusMode(event) === StatusMode.BLOCKED);
+            && !(getStatusMode(event) === StatusMode.Blocked);
 
         if (addedRuleState === AddedRuleState.Block) {
             return renderButton(BUTTON_MAP.REMOVE_ADDED_BLOCK_RULE);
@@ -674,11 +678,11 @@ const RequestInfo = observer(() => {
 
     const getFilterStatusMode = () => {
         if (addedRuleState === AddedRuleState.Block) {
-            return StatusMode.BLOCKED;
+            return StatusMode.Blocked;
         }
 
         if (addedRuleState === AddedRuleState.Unblock) {
-            return StatusMode.ALLOWED;
+            return StatusMode.Allowed;
         }
 
         return getStatusMode(selectedEvent);
@@ -686,28 +690,28 @@ const RequestInfo = observer(() => {
 
     return (
         <>
-            <div className={cn('request-modal__title', { 'request-modal__title_fixed': contentOverflowed })}>
+            <div className={cn(theme.sideModal.title, { 'request-modal__title_fixed': contentOverflowed })}>
                 <button
                     type="button"
                     onClick={closeModal}
-                    className="request-modal__navigation"
+                    className={theme.sideModal.navigation}
                     aria-label={translator.getMessage('close_button_title')}
                 >
                     <Icon
-                        id="#cross"
+                        id={isMobile ? '#arrow-left' : '#cross'}
                         className="icon--24 icon--gray-default"
                         aria-hidden="true"
                     />
                 </button>
-                <span className="request-modal__header">
+                <span className={theme.sideModal.header}>
                     {translator.getMessage('filtering_modal_info_title')}
                 </span>
             </div>
-            <div ref={contentRef} className="request-modal__content thin-scrollbar">
+            <div ref={contentRef} className={`${theme.sideModal.content} thin-scrollbar`}>
                 {selectedEvent.method && (
                     <div className="request-info">
                         <div className="request-info__main">
-                            <div className="request-info__key">
+                            <div className="request-info__key request-info__key--spaced">
                                 {translator.getMessage('filtering_modal_status_text_desc')}
                             </div>
                             <NetworkStatus

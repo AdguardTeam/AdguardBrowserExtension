@@ -51,7 +51,7 @@ export const Loader = ({ showLoader }: LoaderParams) => {
                         <div className="loader__content">
                             <Icon
                                 id="#loading"
-                                className="icon--24"
+                                className="icon--24 icon--green-default"
                                 animationCondition={showLoader}
                                 animationClassName="icon--loading"
                             />

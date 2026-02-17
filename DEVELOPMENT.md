@@ -12,6 +12,7 @@
    - [Hotfix filters for MV3 with skip review](#dev-hotfix-mv3)
 - [Linter](#dev-linter)
 - [TypeScript Configuration](#dev-typescript-configs)
+- [CSS Architecture](#dev-css)
 - [Update localizations](#dev-localizations)
 - [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 
@@ -641,6 +642,16 @@ The project contains **5 TypeScript configuration files**, each serving a specif
     - Includes all files for linting purposes
     - Special path mapping for JSX files
     - Separate from compilation projects
+
+### <a name="dev-css"></a> CSS Cascade Layers
+
+The project uses two CSS layers to manage style priority:
+
+- **`components`** - Component-specific styles (buttons, modals, etc.)
+- **`utilities`** - Utility classes with higher priority (e.g., `.hideOnMobile`)
+
+Layer order is declared inline in HTML templates (e.g., `Extension/pages/options/index.html`):
+This ensures the layer order is established before any `style-loader` injections from JavaScript bundles. The `utilities` layer has higher priority than `components`, ensuring utility classes always override component styles.
 
 ### <a name="dev-localizations"></a> Update localizations
 

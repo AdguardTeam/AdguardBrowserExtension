@@ -116,7 +116,9 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
                 className={inputClasses}
                 {...inputProps}
             />
-            {renderControl()}
+            <div className="search__control">
+                {renderControl()}
+            </div>
         </div>
     );
 });
