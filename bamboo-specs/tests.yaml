@@ -269,6 +269,7 @@ Integration tests:
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-arg BUILD_TYPE=dev \
               --build-context tsurlfilter=../tsurlfilter \
               --target integration-tests-output \
               --output type=local,dest=output \

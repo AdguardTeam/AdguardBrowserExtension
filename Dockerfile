@@ -180,31 +180,34 @@ COPY --from=unit-tests /out/ /
 
 # ============================================================================
 # Stage: integration-tests
-# Runs integration tests (requires chrome-mv3-dev.zip artifact)
+# Runs integration tests for a given BUILD_TYPE (dev, beta, release)
+# Expects artifacts/chrome-mv3-<BUILD_TYPE>.zip in build context
 # ============================================================================
 FROM linked-deps AS integration-tests
 
-COPY artifacts/chrome-mv3-dev.zip /extension/chrome-mv3-dev.zip
+ARG BUILD_TYPE
+
+COPY artifacts/ /extension/artifacts/
 
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Bust build cache so test/lint/build stages always rerun.
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    mkdir -p build/dev && \
+    mkdir -p build/${BUILD_TYPE} && \
     # Move artifact to build directory, because integration tests expect it there.
-    mv /extension/chrome-mv3-dev.zip /extension/build/dev/chrome-mv3.zip && \
+    mv /extension/artifacts/chrome-mv3-${BUILD_TYPE}.zip /extension/build/${BUILD_TYPE}/chrome-mv3.zip && \
     # For correct link playwright browsers.
     pnpm exec playwright install && \
     mkdir -p /out/tests-reports && \
     set +e; \
     # Run integration tests.
-    pnpm test:integration dev; \
+    pnpm test:integration ${BUILD_TYPE}; \
     EXIT_CODE=$?; \
     if [ -d tests-reports ]; then cp -R tests-reports/. /out/tests-reports/; fi; \
     # Rename test report to match JUnit parser pattern (mirrors integration-tests.sh).
     if [ -f /out/tests-reports/integration-tests.xml ]; then \
-        mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-dev.xml; \
+        mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-${BUILD_TYPE}.xml; \
     fi; \
     echo ${EXIT_CODE} > /out/exit-code.txt; \
     exit 0
@@ -396,3 +399,111 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 
 FROM scratch AS release-build-output
 COPY --from=release-build /out/ /
+
+# ============================================================================
+# Stage: check-cws
+# Checks Chrome Web Store availability for beta and release channels
+# Uses adguard/extension-builder which has go-webext pre-installed
+# ============================================================================
+FROM adguard/extension-builder:22.17--0.3.0--0 AS check-cws
+
+WORKDIR /check
+
+COPY bamboo-specs/scripts/check-extension-status.sh ./
+
+ARG CHROME_CLIENT_ID
+ARG CHROME_CLIENT_SECRET
+ARG CHROME_REFRESH_TOKEN
+ARG CHROME_PUBLISHER_ID
+ARG TEST_RUN_ID
+
+RUN echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    mkdir -p /out/artifacts && \
+    BETA_AVAILABLE=false && \
+    RELEASE_AVAILABLE=false && \
+    (CHROME_CLIENT_ID="${CHROME_CLIENT_ID}" \
+     CHROME_CLIENT_SECRET="${CHROME_CLIENT_SECRET}" \
+     CHROME_REFRESH_TOKEN="${CHROME_REFRESH_TOKEN}" \
+     CHROME_PUBLISHER_ID="${CHROME_PUBLISHER_ID}" \
+     CHROME_API_VERSION=v2 \
+     ./check-extension-status.sh beta && BETA_AVAILABLE=true || true) && \
+    (CHROME_CLIENT_ID="${CHROME_CLIENT_ID}" \
+     CHROME_CLIENT_SECRET="${CHROME_CLIENT_SECRET}" \
+     CHROME_REFRESH_TOKEN="${CHROME_REFRESH_TOKEN}" \
+     CHROME_PUBLISHER_ID="${CHROME_PUBLISHER_ID}" \
+     CHROME_API_VERSION=v2 \
+     ./check-extension-status.sh release && RELEASE_AVAILABLE=true || true) && \
+    echo "betaChannelAvailable=${BETA_AVAILABLE}" > /out/artifacts/cws-availability.properties && \
+    echo "releaseChannelAvailable=${RELEASE_AVAILABLE}" >> /out/artifacts/cws-availability.properties && \
+    cat /out/artifacts/cws-availability.properties && \
+    if [ "${BETA_AVAILABLE}" = "false" ] && [ "${RELEASE_AVAILABLE}" = "false" ]; then \
+        echo "❌ Both channels unavailable, stopping build"; exit 1; \
+    fi && \
+    echo "✅ At least one channel is available, proceeding with build"
+
+FROM scratch AS check-cws-output
+COPY --from=check-cws /out/ /
+
+# ============================================================================
+# Stage: auto-build
+# Updates filter rulesets, increments version, builds beta+release chrome-mv3
+# Outputs: artifacts (zips + build.txt) + modified source files (rulesets,
+# locales, local script rules and package.json) for git commit
+# Used by auto-build.yaml plan
+# ============================================================================
+FROM linked-deps AS auto-build
+
+ARG TEST_RUN_ID
+ARG OPENAI_API_KEY
+ARG SKIP_REVIEW
+ARG BETA_CHANNEL_AVAILABLE
+ARG RELEASE_CHANNEL_AVAILABLE
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    pnpm config set store-dir /pnpm-store && \
+    # Mark time before modifications to detect changed files later.
+    # We use a marker file instead of git diff to avoid copying the whole
+    # .git directory into the Docker image.
+    touch /tmp/.pre-update-marker && \
+    # Update rulesets.
+    if [ "${SKIP_REVIEW}" = "true" ]; then \
+      OPENAI_API_KEY="${OPENAI_API_KEY}" pnpm resources:mv3 --skip-local-resources; \
+    else \
+      OPENAI_API_KEY="${OPENAI_API_KEY}" pnpm resources:mv3; \
+    fi && \
+    # Increment patch version.
+    pnpm increment && \
+    # Build both channels.
+    pnpm beta chrome-mv3 && \
+    pnpm release chrome-mv3 && \
+    # Skip-review checks (download latest from CWS + compare).
+    if [ "${SKIP_REVIEW}" = "true" ]; then \
+      if [ "${BETA_CHANNEL_AVAILABLE}" = "true" ]; then \
+        pnpm tsx tools/skip-review/download-latest-extension-mv3 beta && \
+        pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3; \
+      fi; \
+      if [ "${RELEASE_CHANNEL_AVAILABLE}" = "true" ]; then \
+        pnpm tsx tools/skip-review/download-latest-extension-mv3 release && \
+        pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3; \
+      fi; \
+    fi && \
+    # Collect build artifacts.
+    mkdir -p /out/artifacts && \
+    mv build/beta/chrome-mv3.zip /out/artifacts/chrome-mv3-beta.zip && \
+    mv build/release/chrome-mv3.zip /out/artifacts/chrome-mv3-release.zip && \
+    cp build/release/build.txt /out/artifacts/ && \
+    # Collect modified source files for git commit.
+    # Uses marker file to find files changed by pnpm resources:mv3 and pnpm increment.
+    # Build exclusion args from gitignore-excludes.txt (generated on host by generate-find-excludes.sh)
+    # to skip build artifacts, node_modules, etc.
+    mkdir -p /out/modified && \
+    . ./bamboo-specs/scripts/parse-gitignore.sh gitignore-excludes.txt && \
+    find . -newer /tmp/.pre-update-marker -type f "${GITIGNORE_EXCLUDE_ARGS[@]}" \
+      | sed 's|^\./||' | while IFS= read -r f; do \
+        mkdir -p "/out/modified/$(dirname "$f")"; \
+        cp "$f" "/out/modified/$f"; \
+      done
+
+FROM scratch AS auto-build-output
+COPY --from=auto-build /out/ /
