@@ -2,6 +2,16 @@
 
 # This script checks the status of a Chrome Web Store extension and determines
 # whether an auto-build is allowed based on its publication and rollout status.
+#
+# Usage: ./check-extension-status.sh [channel]
+#   channel: "release" (default) or "beta"
+#
+# Required environment variables (must be set by the caller):
+#   CHROME_CLIENT_ID       - Chrome Web Store API client ID
+#   CHROME_CLIENT_SECRET   - Chrome Web Store API client secret
+#   CHROME_REFRESH_TOKEN   - Chrome Web Store API refresh token
+#   CHROME_PUBLISHER_ID    - Chrome Web Store publisher ID
+#   CHROME_API_VERSION     - Chrome Web Store API version (e.g., "v2")
 
 # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
 # Please do not move it to some common file, like `setup-tests.sh`, because sourcing A script from B script
@@ -25,13 +35,7 @@ fi
 echo "Checking status for extension: ${EXTENSION_ID}"
 
 # Get status from Chrome Web Store
-STATUS_OUTPUT=$(CHROME_CLIENT_ID="${bamboo_chromeWebStoreClientId}" \
-    CHROME_CLIENT_SECRET="${bamboo_chromeWebStoreClientSecret}" \
-    CHROME_REFRESH_TOKEN="${bamboo_chromeWebStoreSecretRefreshToken}" \
-    CHROME_PUBLISHER_ID="${bamboo_chromeWebStorePublisherId}" \
-    CHROME_API_VERSION=v2 \
-    go-webext status chrome \
-    -a "${EXTENSION_ID}" 2>&1)
+STATUS_OUTPUT=$(go-webext status chrome -a "${EXTENSION_ID}" 2>&1)
 
 echo "${STATUS_OUTPUT}"
 
