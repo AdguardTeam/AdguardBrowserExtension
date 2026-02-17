@@ -23,9 +23,9 @@ tasks:
             --progress plain \
             --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
             --build-arg CHROME_CLIENT_ID=${bamboo.chromeWebStoreClientId} \
-            --build-arg CHROME_CLIENT_SECRET=${bamboo.chromeWebStoreClientSecret} \
-            --build-arg CHROME_REFRESH_TOKEN=${bamboo.chromeWebStoreSecretRefreshToken} \
             --build-arg CHROME_PUBLISHER_ID=${bamboo.chromeWebStorePublisherId} \
+            --secret id=CHROME_CLIENT_SECRET,env=bamboo_chromeWebStoreClientSecret \
+            --secret id=CHROME_REFRESH_TOKEN,env=bamboo_chromeWebStoreSecretRefreshToken \
             --target check-cws-output \
             --output type=local,dest=output \
             .
