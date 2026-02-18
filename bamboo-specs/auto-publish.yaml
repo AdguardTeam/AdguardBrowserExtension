@@ -13,10 +13,9 @@ environments:
 
 AutoDeployAndPublish Release:
   # run auto-deploy only after successful build
-  # FIXME: TMP disabled for tests
-  # triggers: &triggers
-  #   - build-success:
-  #       branch: stable-v5.3
+  triggers: &triggers
+    - build-success:
+        branch: stable-v5.3
   tasks:
     - clean
     - checkout: &checkout
@@ -74,8 +73,7 @@ AutoDeployAndPublish Release:
     - extension: 'true'
 
 AutoDeployAndPublish Beta:
-  # FIXME: TMP disabled for tests
-  # triggers: *triggers
+  triggers: *triggers
   tasks:
     - clean
     - checkout: *checkout
