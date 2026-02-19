@@ -56,6 +56,8 @@ export const Miscellaneous = observer(() => {
     const [isOpenResetSettingsModal, setIsOpenResetSettingsModal] = useState(false);
     const [isUsageDataModalOpen, setIsUsageDataModalOpen] = useState(false);
 
+    const [isOpenInvertAllowlistModal, setIsOpenInvertAllowlistModal] = useState(false);
+
     if (!settings) {
         return null;
     }
@@ -65,12 +67,49 @@ export const Miscellaneous = observer(() => {
         await settingsStore.updateSetting(id, data);
     };
 
+    /**
+     * Handles the change of the invert allowlist setting.
+     *
+     * Note: This handler is used to show a confirmation modal
+     * **only** when the user tries to enable the invert allowlist feature,
+     * i.e. no modal for its disabling.
+     *
+     * @param obj Settings object.
+     * @param obj.id Setting ID.
+     * @param obj.data Setting value.
+     *
+     * @returns Promise that resolves when the setting is updated.
+     */
     const handleInvertAllowlistChange: SettingHandler = async ({ id, data }) => {
+        // data === false means DefaultAllowlistMode → false (inverted mode = enabling feature)
+        if (data === false) {
+            setIsOpenInvertAllowlistModal(true);
+            throw new Error('[revert-checkbox] User needs to confirm invert allowlist');
+        }
+
         await addMinDelayLoader(
             uiStore.setShowLoader,
             settingsStore.updateSetting,
         )(id, data);
     };
+
+    /**
+     * Handles the confirmation of the invert allowlist modal.
+     *
+     * @returns Promise that resolves when the setting is updated.
+     */
+    const handleInvertAllowlistConfirm = async () => {
+        await settingsStore.updateSetting(settings.names.DefaultAllowlistMode, false);
+    };
+
+    /**
+     * Wrapper for the invert allowlist confirm handler with min delay loader,
+     * which is needed to apply the changes in the background.
+     */
+    const handleInvertAllowlistConfirmWrapper = addMinDelayLoader(
+        uiStore.setShowLoader,
+        handleInvertAllowlistConfirm,
+    );
 
     const handleFilteringLogClick = async () => {
         await messenger.openFilteringLog();
@@ -155,6 +194,19 @@ export const Miscellaneous = observer(() => {
                     handler={handleInvertAllowlistChange}
                     inverted
                 />
+                {isOpenInvertAllowlistModal && (
+                    <ConfirmModal
+                        title={translator.getMessage('options_invert_allowlist_confirm_modal_title')}
+                        subtitle={translator.getMessage('options_invert_allowlist_confirm_modal_subtitle')}
+                        isOpen={isOpenInvertAllowlistModal}
+                        setIsOpen={setIsOpenInvertAllowlistModal}
+                        onConfirm={handleInvertAllowlistConfirmWrapper}
+                        customConfirmTitle={
+                            translator.getMessage('options_invert_allowlist_confirm_modal_confirm_button')
+                        }
+                        isConsent
+                    />
+                )}
                 <SettingsSetCheckbox
                     title={translator.getMessage('options_collect_hit_stats_title')}
                     description={reactTranslator.getMessage('options_collect_hit_stats_desc', {
