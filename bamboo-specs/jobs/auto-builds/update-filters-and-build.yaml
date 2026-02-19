@@ -24,11 +24,10 @@ tasks:
               exit 1;
           fi
 
-          # If it is night after Monday (UTC), we need to update rulesets with
-          # local resources and not use "skip review" feature to collect all
-          # changes in filter lists made after weekend.
+          # On Tuesdays the first build collects fixes made on Monday after the
+          # weekend, so we do a full manual review instead of skipping it.
           skipReview="true"
-          if ./bamboo-specs/scripts/check-is-manual-review.sh; then
+          if [[ "$(date +%u)" -eq 2 ]]; then
             echo "Updating local resources (manual review)"
             skipReview="false"
           else
@@ -51,10 +50,10 @@ tasks:
             --file Dockerfile \
             --progress plain \
             --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-            --build-arg OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} \
             --build-arg SKIP_REVIEW=${skipReview} \
             --build-arg BETA_CHANNEL_AVAILABLE=${bamboo.inject.betaChannelAvailable} \
             --build-arg RELEASE_CHANNEL_AVAILABLE=${bamboo.inject.releaseChannelAvailable} \
+            --secret id=OPENAI_API_KEY,env=bamboo_openAiExtensionBuildTokenPassword \
             --build-context tsurlfilter=../tsurlfilter \
             --target auto-build-output \
             --output type=local,dest=output \

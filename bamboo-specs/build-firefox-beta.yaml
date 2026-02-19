@@ -62,7 +62,7 @@ Build:
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-arg FIREFOX_CLIENT_ID=${bamboo_firefoxAmoClientId} \
-              --build-arg FIREFOX_CLIENT_SECRET=${bamboo_firefoxAmoClientSecret} \
+              --secret id=FIREFOX_CLIENT_SECRET,env=bamboo_firefoxAmoClientSecret \
               --build-context firefox-artifacts=output/artifacts \
               --target firefox-beta-sign-output \
               --output type=local,dest=output \
@@ -113,6 +113,5 @@ branches:
   link-to-jira: 'true'
 
 labels: []
-
 other:
   concurrent-build-plugin: system-default

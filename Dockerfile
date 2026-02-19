@@ -166,7 +166,15 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci; \
     EXIT_CODE=$?; \
     # Keep tests-reports for junit parser.
-    if [ -d tests-reports ]; then cp -R tests-reports/. /out/tests-reports/; fi; \
+    # NOTE: touch is intentional - --output type=local preserves container mtimes,
+    # so extracted XML files retain the timestamp from when they were written inside
+    # the container. If the Bamboo task was queued for a while before running, those
+    # timestamps predate the task start time and the JUnit parser rejects them with
+    # "file was modified before task started". Touching after cp resets mtime to now.
+    if [ -d tests-reports ]; then \
+      cp -R tests-reports/. /out/tests-reports/ && \
+      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+    fi; \
     # Note that we export test-results in junit format (for Bamboo to understand)
     # and suppress the original exit code (so that we could get the test results).
     # See bamboo-specs to understand how exit-code.txt is used.
@@ -204,7 +212,15 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run integration tests.
     pnpm test:integration ${BUILD_TYPE}; \
     EXIT_CODE=$?; \
-    if [ -d tests-reports ]; then cp -R tests-reports/. /out/tests-reports/; fi; \
+    # NOTE: touch is intentional - --output type=local preserves container mtimes,
+    # so extracted XML files retain the timestamp from when they were written inside
+    # the container. If the Bamboo task was queued for a while before running, those
+    # timestamps predate the task start time and the JUnit parser rejects them with
+    # "file was modified before task started". Touching after cp resets mtime to now.
+    if [ -d tests-reports ]; then \
+      cp -R tests-reports/. /out/tests-reports/ && \
+      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+    fi; \
     # Rename test report to match JUnit parser pattern (mirrors integration-tests.sh).
     if [ -f /out/tests-reports/integration-tests.xml ]; then \
         mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-${BUILD_TYPE}.xml; \
@@ -344,17 +360,17 @@ COPY --from=firefox-artifacts firefox.zip /sign/firefox.zip
 COPY --from=firefox-artifacts source.zip /sign/source.zip
 COPY --from=firefox-artifacts build.txt /sign/build.txt
 
-# AMO credentials passed as build args
+# AMO credentials passed as build args (non-sensitive) and secrets (sensitive)
 ARG FIREFOX_CLIENT_ID
-ARG FIREFOX_CLIENT_SECRET
 ARG TEST_RUN_ID
 
 # Bust build cache so signing always reruns.
-RUN echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+RUN --mount=type=secret,id=FIREFOX_CLIENT_SECRET \
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     mkdir -p /out/artifacts && \
     # Sign the Firefox extension with go-webext.
     FIREFOX_CLIENT_ID="${FIREFOX_CLIENT_ID}" \
-    FIREFOX_CLIENT_SECRET="${FIREFOX_CLIENT_SECRET}" \
+    FIREFOX_CLIENT_SECRET="$(cat /run/secrets/FIREFOX_CLIENT_SECRET)" \
     # Note that this command will fail after timeout if signing is not completed
     # (this is expected behavior).
     # After timeout and rerun same build it will download signed extension
@@ -412,27 +428,29 @@ WORKDIR /check
 COPY bamboo-specs/scripts/check-extension-status.sh ./
 
 ARG CHROME_CLIENT_ID
-ARG CHROME_CLIENT_SECRET
-ARG CHROME_REFRESH_TOKEN
 ARG CHROME_PUBLISHER_ID
 ARG TEST_RUN_ID
 
-RUN echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+RUN --mount=type=secret,id=CHROME_CLIENT_SECRET \
+    --mount=type=secret,id=CHROME_REFRESH_TOKEN \
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     mkdir -p /out/artifacts && \
-    BETA_AVAILABLE=false && \
-    RELEASE_AVAILABLE=false && \
+    echo "false" > /tmp/beta_available && \
+    echo "false" > /tmp/release_available && \
     (CHROME_CLIENT_ID="${CHROME_CLIENT_ID}" \
-     CHROME_CLIENT_SECRET="${CHROME_CLIENT_SECRET}" \
-     CHROME_REFRESH_TOKEN="${CHROME_REFRESH_TOKEN}" \
+     CHROME_CLIENT_SECRET="$(cat /run/secrets/CHROME_CLIENT_SECRET)" \
+     CHROME_REFRESH_TOKEN="$(cat /run/secrets/CHROME_REFRESH_TOKEN)" \
      CHROME_PUBLISHER_ID="${CHROME_PUBLISHER_ID}" \
      CHROME_API_VERSION=v2 \
-     ./check-extension-status.sh beta && BETA_AVAILABLE=true || true) && \
+     ./check-extension-status.sh beta && echo "true" > /tmp/beta_available || true) && \
     (CHROME_CLIENT_ID="${CHROME_CLIENT_ID}" \
-     CHROME_CLIENT_SECRET="${CHROME_CLIENT_SECRET}" \
-     CHROME_REFRESH_TOKEN="${CHROME_REFRESH_TOKEN}" \
+     CHROME_CLIENT_SECRET="$(cat /run/secrets/CHROME_CLIENT_SECRET)" \
+     CHROME_REFRESH_TOKEN="$(cat /run/secrets/CHROME_REFRESH_TOKEN)" \
      CHROME_PUBLISHER_ID="${CHROME_PUBLISHER_ID}" \
      CHROME_API_VERSION=v2 \
-     ./check-extension-status.sh release && RELEASE_AVAILABLE=true || true) && \
+     ./check-extension-status.sh release && echo "true" > /tmp/release_available || true) && \
+    BETA_AVAILABLE=$(cat /tmp/beta_available) && \
+    RELEASE_AVAILABLE=$(cat /tmp/release_available) && \
     echo "betaChannelAvailable=${BETA_AVAILABLE}" > /out/artifacts/cws-availability.properties && \
     echo "releaseChannelAvailable=${RELEASE_AVAILABLE}" >> /out/artifacts/cws-availability.properties && \
     cat /out/artifacts/cws-availability.properties && \
@@ -454,12 +472,12 @@ COPY --from=check-cws /out/ /
 FROM linked-deps AS auto-build
 
 ARG TEST_RUN_ID
-ARG OPENAI_API_KEY
 ARG SKIP_REVIEW
 ARG BETA_CHANNEL_AVAILABLE
 ARG RELEASE_CHANNEL_AVAILABLE
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    --mount=type=secret,id=OPENAI_API_KEY \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     pnpm config set store-dir /pnpm-store && \
     # Mark time before modifications to detect changed files later.
@@ -468,15 +486,15 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     touch /tmp/.pre-update-marker && \
     # Update rulesets.
     if [ "${SKIP_REVIEW}" = "true" ]; then \
-      OPENAI_API_KEY="${OPENAI_API_KEY}" pnpm resources:mv3 --skip-local-resources; \
+      OPENAI_API_KEY="$(cat /run/secrets/OPENAI_API_KEY)" pnpm resources:mv3 --skip-local-resources; \
     else \
-      OPENAI_API_KEY="${OPENAI_API_KEY}" pnpm resources:mv3; \
+      OPENAI_API_KEY="$(cat /run/secrets/OPENAI_API_KEY)" pnpm resources:mv3; \
     fi && \
     # Increment patch version.
     pnpm increment && \
     # Build both channels.
-    pnpm beta chrome-mv3 && \
-    pnpm release chrome-mv3 && \
+    pnpm beta chrome-mv3 --zip && \
+    pnpm release chrome-mv3 --zip && \
     # Skip-review checks (download latest from CWS + compare).
     if [ "${SKIP_REVIEW}" = "true" ]; then \
       if [ "${BETA_CHANNEL_AVAILABLE}" = "true" ]; then \
