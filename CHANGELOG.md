@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 5.3 patch 1 <!-- TODO: Add release date -->
 
+### Fixed
+
+- Statistics tooltip appears in wrong position when hovering over chart columns [#3449].
+
+[#3449]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3449
+
 ### Changed
 
 - Updated [@adguard/tsurlfilter] to v4.0.1.
@@ -63,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
 [#3365]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3365
 [tsurlfilter#96]: https://github.com/AdguardTeam/tsurlfilter/issues/96
+
 [5.3.0.8]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.3.0.8
 
 ## [5.2.800] - 2025-12-25
