@@ -5,7 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased 5.3
+## 5.3 patch 1 <!-- TODO: Add release date -->
+
+### Changed
+
+- Updated [@adguard/tsurlfilter] to v4.0.1.
+- Updated [@adguard/tswebextension] to v4.0.1.
+
+## [5.3.0.8] - 2026-02-10
 
 ### Added
 
@@ -56,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
 [#3365]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3365
 [tsurlfilter#96]: https://github.com/AdguardTeam/tsurlfilter/issues/96
+[5.3.0.8]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.3.0.8
 
 ## [5.2.800] - 2025-12-25
 
