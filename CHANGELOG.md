@@ -5,18 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 5.3 patch 1 <!-- TODO: Add release date -->
+## [5.3 patch 1] <!-- TODO: Add release date -->
 
 ### Fixed
 
 - Statistics tooltip appears in wrong position when hovering over chart columns [#3449].
 
-[#3449]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3449
-
 ### Changed
 
-- Updated [@adguard/tsurlfilter] to v4.0.1.
-- Updated [@adguard/tswebextension] to v4.0.1.
+- Updated [@adguard/agtree] to v4.0.1.
+- Updated [@adguard/scriptlets] to v2.2.16.
+- Updated [@adguard/tsurlfilter] to v4.0.2.
+- Updated [@adguard/tswebextension] to v4.0.2.
+
+[5.3 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.0.8...HEAD
+[#3449]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3449
 
 ## [5.3.0.8] - 2026-02-10
 
@@ -52,10 +55,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tracking protection is also disabled in MV3 when protection is paused in extension.
 - Apply $document blocking rule even if specific exception rule is present [#3262].
 - Blocked iframes are not collapsed on Firefox [#3116].
-- The extension got an unexpected error on [::]:8000 [#3360].
+- The extension got an unexpected error on `[::]:8000` [#3360].
 - Toggle, that doesn't work in User Rules fullscreen mode [#3365].
 - Original rule text now correctly displays in filtering log when rules are converted.
 
+[5.3.0.8]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.3.0.8
 [#2934]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2934
 [#3069]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3069
 [#3116]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3116
@@ -64,21 +68,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3151]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3151
 [#3193]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3193
 [#3227]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3227
-[#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 [#3262]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3262
+[#3278]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3278
 [#3360]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3360
 [#3365]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3365
 [tsurlfilter#96]: https://github.com/AdguardTeam/tsurlfilter/issues/96
-
-[5.3.0.8]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.3.0.8
 
 ## [5.2.800] - 2025-12-25
 
 ### Fixed
 
-- Memory leak caused by storing data URL favicons in tab contexts. [#2594]
-
-[#2594]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2594
+- Memory leak caused by storing data URL favicons in tab contexts [#2594].
 
 [5.2.800]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.800%2B1.build.20251216080045
 
@@ -89,14 +89,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made clipboard permissions optional for Firefox, with a prompt shown when needed in User Rules and Allowlist editors [#3364]
 - The extension doesn't work in browser 360 [#3058].
 
+[5.2.600.3]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.600%2B3.build.20251209190042
 [#3364]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3364
 [#3058]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3058
-
-[5.2.600.3]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.600%2B3.build.20251209190042
 
 ## [5.2.500] - 2025-12-05
 
 ### Fixed
+
 - The update promo banner does not persist dismissal and shows again after
   the extension updates [#3385].
 
@@ -108,9 +108,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/tsurlfilter] to v3.5.1.
 - Updated [@adguard/tswebextension] to v3.2.16.
 
-[#3385]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3385
-
 [5.2.500]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/v5.2.500%2B0.build.20251127140045
+[#3385]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3385
 
 ## [5.2.400] - 2025-11-24
 
@@ -133,8 +132,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed clipboard permissions [#3362].
 
-[#3362]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3362
 [5.2.113.0]: https://github.com/AdguardTeam/AdguardBrowserExtension/releases/tag/5.2.113%2B0.build.20251022090039
+[#3362]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3362
 
 ## [5.2.112.84] - 2025-10-25
 
