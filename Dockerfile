@@ -67,6 +67,22 @@ FROM deps AS source-deps
 COPY . /extension
 
 # ============================================================================
+# Stage: increment
+# Increments the patch version in package.json
+# Output: /out/modified/package.json with bumped version
+# ============================================================================
+FROM source-deps AS increment
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    pnpm config set store-dir /pnpm-store && \
+    pnpm increment && \
+    mkdir -p /out/modified && \
+    cp package.json /out/modified/
+
+FROM scratch AS increment-output
+COPY --from=increment /out/ /
+
+# ============================================================================
 # Stage: linked-deps
 # Combines source-deps and tsurlfilter-build, runs fast linking (~2-3 seconds)
 # All build stages inherit from this stage
