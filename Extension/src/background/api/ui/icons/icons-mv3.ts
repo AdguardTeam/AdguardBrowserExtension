@@ -66,7 +66,7 @@ class IconsApi extends IconsApiCommon {
                 : this.promoIcons.enabled;
         }
 
-        if (ExtensionUpdateService.isUpdateAvailable) {
+        if (ExtensionUpdateService.shouldShowUpdateIcon()) {
             return defaultIconVariants.updateAvailable;
         }
 

@@ -15,7 +15,7 @@ AutoDeployAndPublish Release:
   # run auto-deploy only after successful build
   triggers: &triggers
     - build-success:
-        branch: stable-v5.2
+        branch: stable-v5.3
   tasks:
     - clean
     - checkout: &checkout
@@ -71,15 +71,6 @@ AutoDeployAndPublish Release:
             fi
   requirements: &requirements
     - extension: 'true'
-  notifications: &notifications
-    - events:
-        # Notify only about deployment failures to avoid noise, since we can
-        # skip deployment if current channel is on review or rollout process.
-        - deployment-failed
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
 
 AutoDeployAndPublish Beta:
   triggers: *triggers
@@ -134,4 +125,3 @@ AutoDeployAndPublish Beta:
               echo "✅ Beta deployed successfully with expedited review."
             fi
   requirements: *requirements
-  notifications: *notifications

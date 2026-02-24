@@ -1,10 +1,6 @@
 key: UNITTESTS
 other:
   clean-working-dir: true
-docker:
-  image: ${bamboo.dockerNode}
-  volumes:
-    ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
 tasks:
   - checkout:
       force-clean-build: true
@@ -12,24 +8,43 @@ tasks:
       interpreter: SHELL
       scripts:
         - |-
-          set -x
-          set -e
-          ls -la
+          # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+          #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+          #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+          set -ex
 
-          # Fix mixed logs.
+          # Fix mixed logs
           exec 2>&1
 
-          # Set cache directory
-          pnpm config set store-dir ${bamboo.cachePnpm}
+          # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+          ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-          pnpm install ${bamboo.varsPnpm}
+          export DOCKER_BUILDKIT=1
 
-          ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci
+          # Build with named context for tsurlfilter
+          # Docker checksums the context content for cache invalidation
+          docker build \
+            --file Dockerfile \
+            --progress plain \
+            --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+            --build-context tsurlfilter=../tsurlfilter \
+            --target unit-tests-output \
+            --output type=local,dest=output \
+            .
+  - script:
+      interpreter: SHELL
+      scripts:
+        - |-
+          if [ -f output/exit-code.txt ]; then
+            exit $(cat output/exit-code.txt)
+          fi
+          echo "output/exit-code.txt not found"
+          exit 1
 final-tasks:
   - test-parser:
       type: junit
-      # mv3 postfix because we run auto-builds only for mv3 branch.
-      test-results: 'tests-reports/unit-tests-mv3.xml'
+      # Parse only MV3 results file because we run auto-builds only for MV3.
+      test-results: 'output/tests-reports/unit-tests-mv3.xml'
   - script:
       interpreter: SHELL
       scripts:

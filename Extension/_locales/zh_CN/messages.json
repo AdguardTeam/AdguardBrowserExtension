@@ -32,6 +32,9 @@
     "options_filters_annoyances_consent_question": {
         "message": "启用这些过滤器？"
     },
+    "options_filters_annoyances_consent_filter_policy": {
+        "message": "有关 AdGuard 恼人广告过滤器的拦截详情，请参阅<a>过滤器政策<\/a>"
+    },
     "options_filters_annoyances_consent_enable_button": {
         "message": "启用"
     },
@@ -177,8 +180,14 @@
     "options_allowlist": {
         "message": "白名单"
     },
+    "options_allowlist_desc": {
+        "message": "AdGuard 不会拦截清单内网站的广告与跟踪器"
+    },
     "options_allowlist_invert": {
         "message": "颠倒白名单"
+    },
+    "options_allowlist_invert_desc": {
+        "message": "仅拦截白名单网站上的广告与跟踪器"
     },
     "options_allowlist_alert_invert": {
         "message": "白名单已倒置。仅拦截添加到其中的网站上的广告。<a>禁用<\/a>"
@@ -546,6 +555,12 @@
     "filtering_log_search_tabs_placeholder": {
         "message": "在标签中搜索"
     },
+    "filtering_log_preserve_log_off": {
+        "message": "不保留日志"
+    },
+    "filtering_log_preserve_log_on": {
+        "message": "保留日志"
+    },
     "filtering_refresh_tab_short": {
         "message": "刷新"
     },
@@ -732,6 +747,12 @@
     "options_general_settings": {
         "message": "常规设置"
     },
+    "options_block_acceptable_ads": {
+        "message": "拦截搜索广告和网站自我推销"
+    },
+    "options_block_acceptable_ads_desc": {
+        "message": "在搜索结果中拦截广告与网站的自我推广。<a>了解更多<\/a>"
+    },
     "options_show_blocked_ads_count_title": {
         "message": "在 AdGuard 扩展图标上显示已拦截的广告数量"
     },
@@ -777,6 +798,9 @@
     "options_set_update_interval": {
         "message": "自动更新过滤器"
     },
+    "options_set_update_interval_desc": {
+        "message": "保持过滤器更新，以实现更高效的广告拦截"
+    },
     "options_userfilter_export": {
         "message": "导出"
     },
@@ -798,6 +822,9 @@
     "options_userfilter_description_key": {
         "message": "您可以在这里添加自己的规则。建议熟悉 HTML\/CSS 的高级用户使用此选项。阅读 <a>过滤器规则教程<\/a>来学习如何编写您自己的过滤器规则。"
     },
+    "options_userfilter_subtitle_key": {
+        "message": "允许添加自定义过滤规则"
+    },
     "options_userfilter_line_break": {
         "message": "换行"
     },
@@ -815,6 +842,9 @@
     },
     "options_safebrowsing_enabled": {
         "message": "钓鱼和恶意保护"
+    },
+    "options_safebrowsing_enabled_desc": {
+        "message": "通过 AdGuard 浏览安全模块警告恶意与钓鱼网站。<a>了解更多<\/a>"
     },
     "options_site": {
         "message": "官方网站"
@@ -907,23 +937,41 @@
     "options_all_limits_exceeded_warning": {
         "message": "您已达到内置规则激活上限。 浏览器已修改了内置规则过滤器列表。 启用的过滤器数量已从 %expected% 个更改为 %current% 个。"
     },
+    "options_all_limits_exceeded_warning_browser": {
+        "message": "您已达到浏览器活动内置规则的上限。您的浏览器已将活动内置过滤器列表从 %expected% 减少到 %current%"
+    },
     "options_limits_warning_static_filters": {
         "message": "您已达到内置过滤器的限制。 %maximum% 个过滤器（共 %current% 个）已启用。要激活新规则，请禁用一些内置过滤器。"
+    },
+    "options_limits_warning_static_filters_browser": {
+        "message": "您已达到浏览器内置过滤器的启用上限，当前启用 %current% 个，上限 %maximum% 个。要启用新过滤器，请先关闭部分内置过滤器。"
     },
     "options_limits_warning_static_rules": {
         "message": "您已达到内置规则的限制。 %maximum% 个规则（共 %current% 个）已启用。要激活新规则，请禁用一些内置过滤器。"
     },
+    "options_limits_warning_static_rules_browser": {
+        "message": "您已达到浏览器中已激活内置规则的上限。要激活新规则，请关闭一些内置过滤器。"
+    },
     "options_limits_warning_static_regex_rules": {
         "message": "您已达到内置正则表达式规则的限制。 %maximum% 个正则表达式规则（共 %current% 个）已启用。要激活新规则，请禁用一些内置过滤器。"
     },
+    "options_limits_warning_static_regex_rules_no_counter": {
+        "message": "已达到启用的内置正则规则上限。要激活新规则，请关闭一些内置过滤器。"
+    },
     "options_limits_warning_dynamic_rules": {
         "message": "您已达到用户添加规则的限制。 %maximum% 条规则中的 %current% 条已启用。"
+    },
+    "options_limits_warning_dynamic_rules_hint": {
+        "message": "已达到用户添加规则的上限。%maximum% 个规则（共 %current% 个）已启用。要添加新规则，请删除一些已有的规则。"
     },
     "options_limits_warning_dynamic_unsafe_rules": {
         "message": "您已达到用户添加不安全规则的限制。 %current% 个不安全规则中的 %maximum% 个已启用。"
     },
     "options_limits_warning_dynamic_regex_rules": {
         "message": "您已达到用户添加正则表达式规则的限制。 %maximum% 个正则表达式规则中的 %current% 个已启用。"
+    },
+    "options_limits_warning_dynamic_regex_rules_hint": {
+        "message": "已达到用户添加正则表达式规则的上限。%maximum% 个规则（共 %current% 个）已启用。要添加新的正则表达式规则，请删除一些已有的规则。"
     },
     "options_developer_mode_required": {
         "message": "您的浏览器限制了<external-link>某些类型的规则<\/external-link>。要应用所有规则，请在浏览器<settings-link>扩展设置<\/settings-link>中启用<b>开发人员模式<\/b>。",
@@ -964,6 +1012,12 @@
     },
     "options_reset_settings_error": {
         "message": "重置设置时出错"
+    },
+    "options_collect_hit_stats_title": {
+        "message": "协助完善 AdGuard 过滤器"
+    },
+    "options_collect_hit_stats_desc": {
+        "message": "向 AdGuard 发送匿名的广告过滤器使用统计。<a>了解更多<\/a>"
     },
     "options_show_context_menu_title": {
         "message": "添加 AdGuard 到浏览器上下文菜单"
@@ -1016,6 +1070,9 @@
     "options_disable_webrtc_title": {
         "message": "拦截 WebRTC"
     },
+    "options_disable_webrtc_desc": {
+        "message": "屏蔽可能导致真实 IP 地址泄露的 WebRTC 协议（即使您使用代理或 VPN 时）。\n部分即时通讯软件、流媒体平台或游戏可能因此无法正常运行。"
+    },
     "options_strip_tracking_params_title": {
         "message": "从 URL 中删除跟踪参数"
     },
@@ -1031,8 +1088,17 @@
     "options_third_party_title": {
         "message": "删除第三方 Cookie"
     },
+    "options_third_party_desc": {
+        "message": "通过限制第三方 Cookie 的生命周期，防止广告商跨多个网页跟踪您的浏览行为。"
+    },
+    "options_block_cookies_lifetime": {
+        "message": "如需彻底阻止此类 Cookie，请将生命周期设置为 0。"
+    },
     "options_third_party_block_cookies_warning": {
         "message": "如果阻止这些 Cookie，用户可能需要重新登录某些网站或面临其他与 Cookie 相关的问题。"
+    },
+    "options_lifetime_minutes": {
+        "message": "生存时间（分钟）"
     },
     "options_first_party_title": {
         "message": "删除第一方 Cookie（不推荐）"
@@ -1286,8 +1352,17 @@
     "filtering_log_assumed_rule_description": {
         "message": "这是一个假设的规则。有关详细信息，请参阅我们的<a>知识库<\/a>。"
     },
+    "filtering_log_preserve_log_modal_title": {
+        "message": "保留日志？"
+    },
+    "filtering_log_preserve_log_modal_description": {
+        "message": "此选项可能会显著增加内存占用"
+    },
     "filtering_log_preserve_log_skip_modal_in_future": {
         "message": "不再显示"
+    },
+    "filtering_log_preserve_log_modal_confirm": {
+        "message": "是，保留日志"
     },
     "options_stealth_general_title": {
         "message": "常规"

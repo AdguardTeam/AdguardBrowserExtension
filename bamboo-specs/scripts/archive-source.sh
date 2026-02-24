@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Archives source files into a zip for AMO (addons.mozilla.org) publishing.
+# Excludes files matching .gitignore patterns and Extension/filters/ (except firefox).
+#
 # Usage: ./archive-source.sh beta|release
 # Example: ./archive-source.sh release
 
@@ -24,19 +27,82 @@ OUTPUT_ZIP="$OUTPUT_DIR/source.zip"
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
-# Step 1: List all tracked files
-ALL_FILES=$(git ls-files)
+# Build exclusion patterns via shared script.
+# Prefers gitignore-excludes.txt (generated on host by generate-find-excludes.sh),
+# falls back to .gitignore parsing if gitignore-excludes.txt is not available.
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "$SCRIPT_DIR/parse-gitignore.sh" gitignore-excludes.txt
 
-# Step 2: Exclude files in Extension/filters/
-FILES_EXCLUDING_FILTERS=$(grep -v '^Extension/filters/' <<< "$ALL_FILES")
+# Find all files, excluding .git, .gitignore patterns and Extension/filters/
+ALL_FILES=$(find . -type f ! -path './.git/*' "${GITIGNORE_EXCLUDE_ARGS[@]}" ! -path './Extension/filters/*' \
+  | sed 's|^\./||' | sort)
 
-# Step 3: List only the Extension/filters/firefox files
-FIREFOX_FILTER_FILES=$(git ls-files Extension/filters/firefox)
+# Find Extension/filters/firefox files
+FIREFOX_FILTER_FILES=""
+if [ -d "Extension/filters/firefox" ]; then
+  FIREFOX_FILTER_FILES=$(find Extension/filters/firefox -type f | sort)
+fi
 
-# Step 4: Combine the two lists
-COMBINED_FILES=$(echo -e "$FILES_EXCLUDING_FILTERS\n$FIREFOX_FILTER_FILES")
+# Combine the two lists
+if [ -n "$FIREFOX_FILTER_FILES" ]; then
+  COMBINED_FILES=$(echo -e "$ALL_FILES\n$FIREFOX_FILTER_FILES")
+else
+  COMBINED_FILES="$ALL_FILES"
+fi
 
 # Step 5: Create the zip from combined list
 echo "$COMBINED_FILES" | zip -@ "$OUTPUT_ZIP"
+
+# Append Firefox Add-ons Review team build instructions to README.md inside source.zip.
+# The review instructions are embedded here as a heredoc so everything stays in one file.
+# See https://extensionworkshop.com/documentation/publish/source-code-submission/
+TEMP_DIR=$(mktemp -d)
+unzip -o "$OUTPUT_ZIP" README.md -d "$TEMP_DIR"
+# Replace the TOC anchor with a TOC entry for the Firefox reviewer section.
+sed -i.bak 's/<!-- TOC:AMO_REVIEW -->/- [Building Instructions for Firefox Add-ons Review Team](#building-instructions-for-firefox-add-ons-review-team)/' "$TEMP_DIR/README.md"
+rm -f "$TEMP_DIR/README.md.bak"
+cat >> "$TEMP_DIR/README.md" << 'REVIEW_EOF'
+
+## Building Instructions for Firefox Add-ons Review Team
+
+This section is intended for the Firefox Add-ons Review team to reproduce
+the extension build from source.
+
+### Prerequisites
+
+The only prerequisite is [Docker](https://docs.docker.com/get-docker/).
+All build tools (Node.js v22, pnpm v10) are pre-installed in the Docker image.
+
+### Building the release version
+
+You can build the release version by running a single command:
+
+```sh
+docker run --rm \
+    -v "$(pwd)":/workspace \
+    -w /workspace \
+    adguard/extension-builder:22.17--0.3.0--0 \
+    bash -c "pnpm install && pnpm release firefox-amo"
+```
+
+The build output will be in the `./build/release/firefox-amo` directory.
+The resulting `firefox-amo.zip` can be compared with the uploaded add-on.
+
+### Building the beta version
+
+```sh
+docker run --rm \
+    -v "$(pwd)":/workspace \
+    -w /workspace \
+    adguard/extension-builder:22.17--0.3.0--0 \
+    bash -c "pnpm install && pnpm beta firefox-standalone"
+```
+
+The build output will be in the `./build/beta/firefox-standalone` directory.
+The resulting `firefox-standalone.zip` can be compared with the uploaded add-on.
+REVIEW_EOF
+ABS_OUTPUT_ZIP="$(cd "$(dirname "$OUTPUT_ZIP")" && pwd)/$(basename "$OUTPUT_ZIP")"
+(cd "$TEMP_DIR" && zip "$ABS_OUTPUT_ZIP" README.md)
+rm -rf "$TEMP_DIR"
 
 echo "source.zip created at $OUTPUT_ZIP"
