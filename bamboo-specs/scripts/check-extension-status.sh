@@ -2,6 +2,16 @@
 
 # This script checks the status of a Chrome Web Store extension and determines
 # whether an auto-build is allowed based on its publication and rollout status.
+#
+# Usage: ./check-extension-status.sh [channel]
+#   channel: "release" (default) or "beta"
+#
+# Required environment variables (must be set by the caller):
+#   CHROME_CLIENT_ID       - Chrome Web Store API client ID
+#   CHROME_CLIENT_SECRET   - Chrome Web Store API client secret
+#   CHROME_REFRESH_TOKEN   - Chrome Web Store API refresh token
+#   CHROME_PUBLISHER_ID    - Chrome Web Store publisher ID
+#   CHROME_API_VERSION     - Chrome Web Store API version (e.g., "v2")
 
 # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
 # Please do not move it to some common file, like `setup-tests.sh`, because sourcing A script from B script
@@ -18,23 +28,14 @@ if [ "${CHANNEL}" = "release" ]; then
 elif [ "${CHANNEL}" = "beta" ]; then
     EXTENSION_ID="apjcbfpjihpedihablmalmbbhjpklbdf"
 else
-    echo "Unknown channel: ${CHANNEL}"
+    echo "⚠️ Unknown channel: ${CHANNEL}"
     exit 1
 fi
 
 echo "Checking status for extension: ${EXTENSION_ID}"
 
 # Get status from Chrome Web Store
-STATUS_OUTPUT=$(docker run --rm \
-    -e CHROME_CLIENT_ID="${bamboo_chromeWebStoreClientId}" \
-    -e CHROME_CLIENT_SECRET="${bamboo_chromeWebStoreClientSecret}" \
-    -e CHROME_REFRESH_TOKEN="${bamboo_chromeWebStoreSecretRefreshToken}" \
-    -e CHROME_PUBLISHER_ID="${bamboo_chromeWebStorePublisherId}" \
-    -v "${PWD}":/storage \
-    --workdir /storage \
-    adguard/extension-deployer:1.23.6--0.3.0 \
-    status chrome \
-    -a "${EXTENSION_ID}" 2>&1)
+STATUS_OUTPUT=$(go-webext status chrome -a "${EXTENSION_ID}" 2>&1)
 
 echo "${STATUS_OUTPUT}"
 
@@ -81,5 +82,5 @@ if ! echo "${STATUS_OUTPUT}" | grep -q "Rollout: 100%"; then
     exit 1
 fi
 
-echo "✅ Extension is PUBLISHED at 100% rollout with no pending submissions, auto-build allowed"
+echo "✅ Extension is PUBLISHED at 100% rollout with no pending submissions, auto-build allowed for channel ${CHANNEL}"
 exit 0

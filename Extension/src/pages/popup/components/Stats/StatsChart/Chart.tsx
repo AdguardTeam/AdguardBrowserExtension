@@ -18,7 +18,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, {
+    useEffect,
+    useState,
+    useRef,
+} from 'react';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -26,8 +30,30 @@ import 'c3/c3.css';
 import { translator } from '../../../../../common/translators/translator';
 import { TimeRange } from '../../../constants';
 import { useObservePopupHeight, POPUP_DEFAULT_HEIGHT } from '../../../hooks/useObservePopupHeight';
+import { type GetStatisticsDataResponse } from '../../../../../background/api/page-stats';
 
 import './chart.pcss';
+
+/**
+ * Number of hours to show per category label on day chart.
+ */
+const HOURS_PER_CATEGORY_LABEL = 3;
+
+/**
+ * Vertical offset for tooltip positioning.
+ */
+const TOOLTIP_OFFSET_PX = 10;
+
+/**
+ * Horizontal padding for chart.
+ */
+const CHART_PADDING_PX = 15;
+
+/**
+ * Height difference when chart is in small mode.
+ * Based on height of one action button.
+ */
+const SMALL_MODE_HEIGHT_DIFF_PX = 40;
 
 const DAYS_OF_WEEK = [
     translator.getMessage('popup_statistics_week_days_mon'),
@@ -39,8 +65,15 @@ const DAYS_OF_WEEK = [
     translator.getMessage('popup_statistics_week_days_sun'),
 ];
 
-const dayOfWeekAsString = (dayIndex) => {
-    return DAYS_OF_WEEK[dayIndex];
+/**
+ * Get localized day of week string by index.
+ *
+ * @param dayIndex Day index (0-6, where 0 is Monday).
+ *
+ * @returns Localized day name.
+ */
+const dayOfWeekAsString = (dayIndex: number): string => {
+    return DAYS_OF_WEEK[dayIndex] || '';
 };
 
 const MONTHS_OF_YEAR = [
@@ -58,47 +91,79 @@ const MONTHS_OF_YEAR = [
     translator.getMessage('popup_statistics_months_dec'),
 ];
 
-const monthsAsString = (monthIndex) => {
-    return MONTHS_OF_YEAR[monthIndex];
+/**
+ * Get localized month string by index.
+ *
+ * @param monthIndex Month index (0-11, where 0 is January).
+ *
+ * @returns Localized month name.
+ */
+const monthsAsString = (monthIndex: number): string => {
+    return MONTHS_OF_YEAR[monthIndex] || '';
 };
 
-const selectRequestsStatsData = (stats, range, type) => {
-    const result = [];
+/**
+ * Select statistics data based on time range and type.
+ *
+ * @param stats Statistics object containing data for different time ranges.
+ * @param range Time range to select data from.
+ * @param type Type of statistics category to extract.
+ *
+ * @returns Array of statistics values.
+ */
+const selectRequestsStatsData = (stats: GetStatisticsDataResponse, range: TimeRange, type: string): number[] => {
+    const result: number[] = [];
     switch (range) {
         case TimeRange.Day:
             stats.today.forEach((d) => {
-                result.push(d[type]);
+                result.push(d[type] ?? 0);
             });
             break;
         case TimeRange.Week:
             stats.lastWeek.forEach((d) => {
-                result.push(d[type]);
+                result.push(d[type] ?? 0);
             });
             break;
         case TimeRange.Month:
             stats.lastMonth.forEach((d) => {
-                result.push(d[type]);
+                result.push(d[type] ?? 0);
             });
             break;
         case TimeRange.Year:
             stats.lastYear.forEach((d) => {
-                result.push(d[type]);
+                result.push(d[type] ?? 0);
             });
             break;
         default:
             break;
     }
-    return result.map((val) => (val === undefined ? 0 : val));
+    return result;
 };
 
-const getCategoriesLines = (statsData, range) => {
+/**
+ * Generate chart categories and grid lines based on time range.
+ *
+ * @param statsData Array of statistics values.
+ * @param range Time range for the chart.
+ *
+ * @returns Object containing categories labels and grid line positions.
+ *
+ * @throws Error if range type is invalid.
+ */
+const getCategoriesLines = (
+    statsData: number[],
+    range: TimeRange,
+): {
+    categories: string[];
+    lines: Array<{ value: number }>;
+} => {
     const now = new Date();
     const day = now.getDay();
     const month = now.getMonth();
     const lastDayOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
 
-    let categories = [];
-    const lines = [];
+    let categories: string[] = [];
+    const lines: Array<{ value: number }> = [];
 
     const HOURS_PER_DAY = 24;
     const DAYS_PER_WEEK = 7;
@@ -108,7 +173,7 @@ const getCategoriesLines = (statsData, range) => {
     switch (range) {
         case TimeRange.Day:
             for (let i = 1; i <= HOURS_PER_DAY; i += 1) {
-                if (i % 3 === 0) {
+                if (i % HOURS_PER_CATEGORY_LABEL === 0) {
                     const hour = (i + now.getHours()) % HOURS_PER_DAY;
                     categories.push(hour.toString());
                     lines.push({
@@ -129,7 +194,7 @@ const getCategoriesLines = (statsData, range) => {
             break;
         case TimeRange.Month:
             for (let i = 0; i <= DAYS_PER_MONTH; i += 1) {
-                if (i % 3 === 0) {
+                if (i % HOURS_PER_CATEGORY_LABEL === 0) {
                     const c = ((i + now.getDate()) % lastDayOfPrevMonth) + 1;
                     categories.push(c.toString());
                     lines.push({
@@ -189,16 +254,35 @@ const calculateChartHeight = (popupHeight = window.innerHeight) => {
     );
 };
 
+/**
+ * Statistics chart component.
+ *
+ * Displays a spline chart with statistics data based on selected time range.
+ * Supports responsive height adjustment for mobile browsers.
+ */
 export const Chart = ({
     stats,
     range,
     type,
     small,
     isAndroidBrowser,
+}: {
+    stats: GetStatisticsDataResponse;
+    range: TimeRange;
+    type: string;
+    small: boolean;
+    isAndroidBrowser: boolean;
 }) => {
     const [chartHeight, setChartHeight] = useState(calculateChartHeight());
+    const mouseYRef = useRef<number>(0);
 
     useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            mouseYRef.current = e.clientY;
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+
         const statsData = selectRequestsStatsData(stats, range, type);
         const categoriesLines = getCategoriesLines(statsData, range);
         const { categories } = categoriesLines;
@@ -210,20 +294,16 @@ export const Chart = ({
             + '  <stop offset="100%" style="stop-color:#65BDA8;stop-opacity:1" />'
             + '</linearGradient>';
 
-        /**
-         * Amount of pixel to subtract from chart height.
-         * 40px is based on height of one action button.
-         */
-        const heightDiff = small ? 40 : 0;
+        const heightDiff = small ? SMALL_MODE_HEIGHT_DIFF_PX : 0;
 
         c3.generate({
-            bindTo: '#chart',
+            bindto: '#chart',
             size: {
                 height: chartHeight - heightDiff,
             },
             data: {
                 columns: [
-                    ['data1'].concat(statsData),
+                    ['data1', ...statsData],
                 ],
                 types: {
                     data1: 'area-spline',
@@ -233,8 +313,8 @@ export const Chart = ({
                 },
             },
             padding: {
-                left: 15,
-                right: 15,
+                left: CHART_PADDING_PX,
+                right: CHART_PADDING_PX,
             },
             axis: {
                 x: {
@@ -275,19 +355,26 @@ export const Chart = ({
             tooltip: {
                 position(data, width, height, element) {
                     const chart = document.querySelector('#chart');
+                    if (!chart) {
+                        return { top: 0, left: 0 };
+                    }
                     const elementRect = element.getBoundingClientRect();
-                    const elementCenterPosition = elementRect.left + (elementRect.width / 2);
-                    const tooltipHalfWidth = chart.querySelector('.chart__tooltip').clientWidth / 2;
-                    const tooltipLeft = elementCenterPosition - tooltipHalfWidth;
-                    // eslint-disable-next-line no-undef
-                    const top = d3.mouse(element)[1] - 50;
+                    const chartRect = chart.getBoundingClientRect();
+
+                    const elementCenter = elementRect.left + elementRect.width / 2;
+                    const left = elementCenter - chartRect.left - (width / 2);
+
+                    const mouseY = mouseYRef.current;
+                    const top = mouseY - chartRect.top - height - TOOLTIP_OFFSET_PX;
+
                     return {
                         top,
-                        left: tooltipLeft,
+                        left,
                     };
                 },
-                contents(d) {
-                    const [{ value }] = d;
+                contents(d: Array<{ value: number }>) {
+                    const value = d[0]?.value ?? 0;
+
                     return `<div id="tooltip" class="chart__tooltip">${value}</div>`;
                 },
             },
@@ -296,6 +383,10 @@ export const Chart = ({
                 this.svg[0][0].getElementsByTagName('defs')[0].innerHTML += grad1;
             },
         });
+
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+        };
     }, [range, type, stats, small, chartHeight]);
 
     /**
@@ -303,7 +394,7 @@ export const Chart = ({
      *
      * @param newPopupHeight New height of the popup.
      */
-    const handleResize = (newPopupHeight) => {
+    const handleResize = (newPopupHeight: number) => {
         setChartHeight(calculateChartHeight(newPopupHeight));
     };
 

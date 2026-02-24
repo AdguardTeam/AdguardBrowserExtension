@@ -482,4 +482,8 @@ export const safeRules: RuleSample[] = [
             + '});\n',
         reason: 'creates and styles a div and an iframe within a specific container on the webpage, but it doesn\'t load any external resources or perform network requests. The primary action is DOM manipulation, a common practice in web development. Without any additional context suggesting malicious intent or behavior, this script is not considered dangerous.',
     },
+    {
+        rule: '(()=>{window.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll(\'.embed-container > [data-blocked-by-rodoguard="true"]\').forEach((e=>{const t=e.getAttribute("data-src")||e.getAttribute("src"),r=e.tagName.toLowerCase(),a=e.attributes;if(!t||!r)return;const o=document.createElement(r);if(o.setAttribute("src",t),"iframe"===r&&a.length)for(const e of a)"src"!==e.name&&"data-blocked-by-rodoguard"!==e.name&&o.setAttribute(e.name,e.value);e.replaceWith(o)}))}));})();',
+        reason: 'restores embedded content (iframes and other elements) that was blocked by the rodoguard cookie consent system. It recreates elements with their original src from data-src attributes within the same page context. While it does set src attributes that could point to external resources, this is the intended functionality to unblock legitimate embedded content (like videos or social media embeds) that users want to see after accepting cookies. The script only operates on elements specifically marked as blocked by rodoguard (data-blocked-by-rodoguard="true"), making it a targeted fix for a specific cookie consent implementation rather than arbitrary external resource loading.',
+    },
 ];

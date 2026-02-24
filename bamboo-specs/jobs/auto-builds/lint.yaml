@@ -1,10 +1,6 @@
 key: LINT
 other:
   clean-working-dir: true
-docker:
-  image: ${bamboo.dockerNode}
-  volumes:
-    ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
 tasks:
   - checkout:
       force-clean-build: true
@@ -12,20 +8,38 @@ tasks:
       interpreter: SHELL
       scripts:
         - |-
-          set -x
-          set -e
-          ls -la
+          # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+          #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+          #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+          set -ex
 
-          # Fix mixed logs.
+          # Fix mixed logs
           exec 2>&1
 
-          # Set cache directory
-          pnpm config set store-dir ${bamboo.cachePnpm}
+          # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+          ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
-          pnpm install ${bamboo.varsPnpm}
+          export DOCKER_BUILDKIT=1
 
-          ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint
-          ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm locales validate --min
+          # Run lint
+          docker build \
+            --file Dockerfile \
+            --progress plain \
+            --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+            --build-context tsurlfilter=../tsurlfilter \
+            --target lint-output \
+            --output type=local,dest=output-lint \
+            .
+
+          # Run locales check
+          docker build \
+            --file Dockerfile \
+            --progress plain \
+            --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+            --build-context tsurlfilter=../tsurlfilter \
+            --target locales-check-output \
+            --output type=local,dest=output-locales \
+            .
 final-tasks:
   - script:
       interpreter: SHELL

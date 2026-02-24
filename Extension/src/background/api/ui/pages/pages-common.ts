@@ -118,8 +118,12 @@ export abstract class PagesApiCommon {
 
     /**
      * Chrome extension store forward action.
+     *
+     * Defined as a getter (not a field) so that it lives on the prototype
+     * and is available during base class field initialization.
      */
-    protected abstract chromeExtensionStoreForwardAction: ForwardAction.ChromeStore | ForwardAction.ChromeMv2Store;
+    protected abstract get chromeExtensionStoreForwardAction():
+        ForwardAction.ChromeStore | ForwardAction.ChromeMv2Store;
 
     /**
      * Compare page url.
@@ -130,7 +134,7 @@ export abstract class PagesApiCommon {
     });
 
     /**
-     *  Extension browser store url.
+     * Extension browser store url.
      */
     private readonly extensionStoreUrl = this.getExtensionStoreUrl();
 

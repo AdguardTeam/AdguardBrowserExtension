@@ -71,12 +71,9 @@ const SettingsSection = (props) => {
                         {title}
                     </TitleTag>
                 )}
+                {description && (<div className="title__desc">{description}</div>)}
             </div>
         );
-
-    const descriptionElement = !renderBackButton && description && (
-        <div className="title__desc">{description}</div>
-    );
 
     const control = inlineControl && (
         <div
@@ -104,13 +101,18 @@ const SettingsSection = (props) => {
 
     return (
         <div key={title} className={settingGroupClassName} inert={disabled ? '' : undefined}>
-            <label
-                className={titleContainerClass}
-                htmlFor={id}
-            >
-                {renderContent()}
-            </label>
-            {descriptionElement}
+            {renderBackButton ? (
+                <div className={titleContainerClass}>
+                    {renderContent()}
+                </div>
+            ) : (
+                <label
+                    className={titleContainerClass}
+                    htmlFor={id}
+                >
+                    {renderContent()}
+                </label>
+            )}
             <div>
                 {children}
             </div>

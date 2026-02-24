@@ -25,6 +25,7 @@ import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
 import { updateLocalResourcesForChromiumMv3 } from './resources/update-local-script-rules';
 import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
+import { updateTestcasesScriptRules } from './resources/update-local-test-script-rules';
 
 // TODO: worth refactoring since this function is separated from ./resources.ts
 
@@ -36,11 +37,16 @@ import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
  */
 const resourcesMv3 = async (skipLocalResources = false) => {
     console.log('Downloading resources for MV3...');
-    await downloadAndPrepareMv3Filters();
+    // Skip translations and local resources only during fast auto-build with
+    // skip review flow to minimize changes and stay eligible for expedited
+    // review.
+    await downloadAndPrepareMv3Filters(skipLocalResources);
     console.log('Resources for MV3 downloaded');
 
     if (!skipLocalResources) {
         console.log('Updating local resources for MV3...');
+        await updateTestcasesScriptRules();
+        console.log('Local script rules from testcases updated');
         await updateLocalResourcesForChromiumMv3();
         console.log('Local resources for MV3 updated');
     } else {

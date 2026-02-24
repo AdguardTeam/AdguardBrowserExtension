@@ -52,6 +52,7 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
 - [Auto-publish builds](#auto-publish-builds)
 - [Versioning Schema](#versioning-schema)
 - [Minimum supported browser versions](#browser-compatibility)
+<!-- TOC:AMO_REVIEW -->
 
 ## <a name="installation"></a> Installation
 

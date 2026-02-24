@@ -281,5 +281,3 @@ export const updateTestcasesScriptRules = async (): Promise<void> => {
     console.log(`✓ Found ${allJsRules.size} unique JS rules`);
     console.log(`✓ Updated TESTCASES_RULES array in ${TARGET_FILE_PATH}`);
 };
-
-updateTestcasesScriptRules();

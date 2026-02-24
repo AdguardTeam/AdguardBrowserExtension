@@ -1,8 +1,6 @@
 key: NOTHING
 other:
   clean-working-dir: true
-docker:
-  image: ${bamboo.dockerNode}
 tasks:
   - checkout:
       force-clean-build: true
@@ -10,12 +8,12 @@ tasks:
       interpreter: SHELL
       scripts:
         - |-
-          set -e
-          set -x
+          # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+          #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+          #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+          set -ex
 
-          BRANCH="${bamboo.planRepository.branchName}"
-
-          echo "Build and deployment is not supported on branch ${BRANCH}, skipping"
+          echo "Build and deployment is not supported on branch ${bamboo.planRepository.branchName}, skipping"
 final-tasks:
   - script:
       interpreter: SHELL

@@ -42,13 +42,6 @@ static.adtidy.org:
   variables: {}
   requirements: &requirements
     - extension: 'true'
-  notifications: &notifications
-    - events:
-        - deployment-started-and-finished
-      recipients:
-        - webhook:
-            name: Deploy webhook
-            url: http://prod.jirahub.service.eu.consul/v1/webhook/bamboo?channel=adguard-qa-extensions-builds
 
 Chrome WebStore MV2:
   triggers: []
@@ -78,7 +71,6 @@ Chrome WebStore MV2:
   final-tasks: []
   variables: {}
   requirements: *requirements
-  notifications: *notifications
 
 Chrome WebStore MV3:
   triggers: []
@@ -108,7 +100,6 @@ Chrome WebStore MV3:
   final-tasks: []
   variables: {}
   requirements: *requirements
-  notifications: *notifications
 
 Addons Mozilla:
   triggers: []
@@ -139,7 +130,6 @@ Addons Mozilla:
   final-tasks: []
   variables: {}
   requirements: *requirements
-  notifications: *notifications
 
 Edge Addons:
   triggers: []
@@ -169,7 +159,6 @@ Edge Addons:
   final-tasks: []
   variables: {}
   requirements: *requirements
-  notifications: *notifications
 
 GitHub:
   triggers: []
@@ -205,4 +194,3 @@ GitHub:
   final-tasks: []
   variables: {}
   requirements: *requirements
-  notifications: *notifications
