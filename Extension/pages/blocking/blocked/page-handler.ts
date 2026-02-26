@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type BlockingPageInitAppData } from '../../../src/background/services';
+import { type BlockingPageInitAppData } from '../../../src/background/services/types';
 import { messenger } from '../../../src/pages/services/messenger';
 import { logger } from '../../../src/common/logger';
 import { getFilterName } from '../../../src/pages/helpers';

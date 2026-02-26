@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.3 patch 1] <!-- TODO: Add release date -->
 
+### Added
+
+- Opera MV3 extension support.
+
 ### Fixed
 
 - Statistics tooltip appears in wrong position when hovering over chart columns [#3449].

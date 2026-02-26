@@ -28,19 +28,33 @@ import { observer } from 'mobx-react';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
 
 import './filters-update.pcss';
 
 export const FiltersUpdate = observer(() => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, telemetryStore } = useContext(rootStore);
 
     const [isUpdating, setIsUpdating] = useState(false);
 
     const updateClickHandler = useCallback(async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.FilterCheckUpdateClick,
+            TelemetryScreenName.FiltersScreen,
+        );
+
         setIsUpdating(true);
         await settingsStore.updateExtensionMV3();
         setIsUpdating(false);
-    }, [settingsStore, setIsUpdating]);
+    }, [settingsStore, telemetryStore, setIsUpdating]);
+
+    const checkUpdatesClickHandler = useCallback(() => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.FilterCheckUpdateClick,
+            TelemetryScreenName.FiltersScreen,
+        );
+        settingsStore.checkUpdates();
+    }, [settingsStore, telemetryStore]);
 
     const checkUpdatesTitle = translator.getMessage('update_check');
     const updateAvailableBtnTitle = translator.getMessage('update_available_update_btn');
@@ -127,7 +141,7 @@ export const FiltersUpdate = observer(() => {
         <div className="extension-update">
             <button
                 type="button"
-                onClick={settingsStore.checkUpdates}
+                onClick={checkUpdatesClickHandler}
                 className="extension-update__info extension-update__check-btn"
                 title={checkUpdatesTitle}
             >

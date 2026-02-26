@@ -18,7 +18,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useRef,
+} from 'react';
 import { observer } from 'mobx-react';
 
 import { throttle } from 'lodash-es';
@@ -39,24 +43,51 @@ import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
 import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
+import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { SettingOption } from '../../../../background/schema';
 
 import '../../styles/styles.pcss';
 
 const FilteringLog = observer(() => {
-    const { wizardStore, logStore } = useContext(rootStore);
+    const { wizardStore, logStore, telemetryStore } = useContext(rootStore);
+    const pageIdRef = useRef<string | null>(null);
     const RESIZE_THROTTLE = 500;
 
     useAppearanceTheme(logStore.appearanceTheme);
 
-    // init
+    // Initialize telemetry and load data
     useEffect(() => {
         (async () => {
+            // Load data first to set isAnonymizedUsageDataAllowed
             await Promise.all([
                 logStore.synchronizeOpenTabs(),
                 logStore.getFilteringLogData(),
             ]);
+
+            // Then set pageId and send telemetry page view event
+            const pageId = await messenger.addTelemetryOpenedPage();
+            pageIdRef.current = pageId;
+            telemetryStore.setPageId(pageId);
+
+            // Send telemetry page view event manually since data is loaded in this component
+            telemetryStore.sendPageViewEvent(TelemetryScreenName.FilteringLogScreen);
         })();
-    }, [logStore]);
+
+        const onUnload = () => {
+            if (pageIdRef.current) {
+                telemetryStore.setPageId(null);
+                messenger.removeTelemetryOpenedPage(pageIdRef.current);
+                pageIdRef.current = null;
+            }
+        };
+
+        window.addEventListener('beforeunload', onUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', onUnload);
+            onUnload();
+        };
+    }, [telemetryStore, logStore]);
 
     useEffect(() => {
         const FETCH_EVENTS_TIMEOUT_MS = 300;
@@ -129,6 +160,9 @@ const FilteringLog = observer(() => {
                         case NotifierType.SettingUpdated: {
                             const [{ propertyName, propertyValue }] = data;
                             logStore.onSettingUpdated(propertyName, propertyValue);
+                            if (propertyName === SettingOption.AllowAnonymizedUsageData) {
+                                telemetryStore.setIsAnonymizedUsageDataAllowed(propertyValue);
+                            }
                             break;
                         }
                         case NotifierType.CustomFilterAdded: {
@@ -149,7 +183,7 @@ const FilteringLog = observer(() => {
         return () => {
             removeListenerCallback();
         };
-    }, [logStore, wizardStore]);
+    }, [logStore, telemetryStore, wizardStore]);
 
     useEffect(() => {
         const windowStateHandler = () => {

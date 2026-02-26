@@ -32,6 +32,7 @@ import { useVisibilityCheck } from '../../../../common/hooks/useVisibilityCheck'
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { USER_SCRIPTS_API_REQUIRED_URL } from '../../../constants';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
 
 /**
  * User scripts API warning component for User rules section.
@@ -42,7 +43,7 @@ import { USER_SCRIPTS_API_REQUIRED_URL } from '../../../constants';
  * limited or unavailable.
  */
 export const UserScriptsApiWarningInsideCustomGroup = observer(() => {
-    const { settingsStore: { currentChromeVersion } } = useContext(rootStore);
+    const { settingsStore: { currentChromeVersion }, telemetryStore } = useContext(rootStore);
 
     const showWarning = useVisibilityCheck(shouldShowUserScriptsApiWarning);
 
@@ -57,6 +58,10 @@ export const UserScriptsApiWarningInsideCustomGroup = observer(() => {
 
     const openExtensionDetails = async (e: React.MouseEvent) => {
         e.preventDefault();
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.CustomClick,
+            TelemetryScreenName.FiltersScreen,
+        );
         await messenger.openExtensionDetailsPage();
     };
 

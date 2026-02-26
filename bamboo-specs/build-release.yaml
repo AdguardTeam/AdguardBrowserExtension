@@ -128,7 +128,7 @@ Build:
             # archive-source.sh inside Docker (where .git is not available).
             ./bamboo-specs/scripts/generate-find-excludes.sh gitignore-excludes.txt
 
-            # Build release artifacts (chrome, chrome-mv3, edge, opera, firefox zips + build.txt + source.zip)
+            # Build release artifacts (chrome, chrome-mv3, edge, opera, opera-mv3, firefox zips + build.txt + source.zip)
             docker build \
               --file Dockerfile \
               --progress plain \
@@ -150,7 +150,7 @@ Build:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/chrome.zip,output/artifacts/chrome-mv3.zip,output/artifacts/firefox.zip,output/artifacts/edge.zip,output/artifacts/opera.zip,output/artifacts/source.zip"
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/chrome.zip,output/artifacts/chrome-mv3.zip,output/artifacts/firefox.zip,output/artifacts/edge.zip,output/artifacts/opera.zip,output/artifacts/opera-mv3.zip,output/artifacts/source.zip"
   artifacts:
     - name: build.txt
       location: output/artifacts
@@ -180,6 +180,11 @@ Build:
     - name: opera.zip
       location: output/artifacts
       pattern: opera.zip
+      shared: true
+      required: true
+    - name: opera-mv3.zip
+      location: output/artifacts
+      pattern: opera-mv3.zip
       shared: true
       required: true
     - name: source.zip

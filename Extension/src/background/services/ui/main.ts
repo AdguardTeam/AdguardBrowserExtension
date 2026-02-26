@@ -52,6 +52,11 @@ import {
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
 import { SettingOption } from '../../schema';
+import {
+    Telemetry,
+    TelemetryEventName,
+    TelemetryScreenName,
+} from '../telemetry';
 
 /**
  * Init app data for extension pages.
@@ -112,11 +117,11 @@ export class UiService {
             ContextMenuApi.init();
         }
 
-        contextMenuEvents.addListener(ContextMenuAction.OpenSettings, PagesApi.openSettingsPage);
-        contextMenuEvents.addListener(ContextMenuAction.OpenLog, PagesApi.openFilteringLogPage);
+        contextMenuEvents.addListener(ContextMenuAction.OpenSettings, UiService.openSettingsPageWithTelemetry);
+        contextMenuEvents.addListener(ContextMenuAction.OpenLog, UiService.openFilteringLogPageWithTelemetry);
         contextMenuEvents.addListener(ContextMenuAction.ComplaintWebsite, UiService.openAbusePageForActiveTab);
         contextMenuEvents.addListener(ContextMenuAction.SecurityReport, UiService.openSiteReportPageForActiveTab);
-        contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, AssistantApi.openAssistant);
+        contextMenuEvents.addListener(ContextMenuAction.BlockSiteAds, UiService.openAssistantWithTelemetry);
     }
 
     /**
@@ -184,6 +189,11 @@ export class UiService {
      * Opens abuse page for current active tab url in new tab.
      */
     private static async openAbusePageForActiveTab(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.TapReportIssueClick,
+        );
+
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.url) {
@@ -191,6 +201,42 @@ export class UiService {
         } else {
             logger.warn('[ext.UiService.openAbusePageForActiveTab]: cannot open abuse page for active tab, active tab is undefined');
         }
+    }
+
+    /**
+     * Opens filtering log page with telemetry for context menu action.
+     */
+    private static async openFilteringLogPageWithTelemetry(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.TapFilteringLogClick,
+        );
+
+        await PagesApi.openFilteringLogPage();
+    }
+
+    /**
+     * Opens settings page with telemetry for context menu action.
+     */
+    private static async openSettingsPageWithTelemetry(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.TapGeneralSettingsClick,
+        );
+
+        await PagesApi.openSettingsPage();
+    }
+
+    /**
+     * Opens assistant with telemetry for context menu action.
+     */
+    private static async openAssistantWithTelemetry(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.MenuBlockAdsManuallyClick,
+        );
+
+        await AssistantApi.openAssistant();
     }
 
     /**
@@ -209,6 +255,11 @@ export class UiService {
      * Opens site report page for current active tab url in new tab.
      */
     private static async openSiteReportPageForActiveTab(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.TapCheckWebsiteSecurityClick,
+        );
+
         const activeTab = await TabsApi.getActive();
 
         if (activeTab?.url) {
