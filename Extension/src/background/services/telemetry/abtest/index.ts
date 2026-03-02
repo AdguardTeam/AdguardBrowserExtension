@@ -17,15 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { Telemetry } from './Telemetry';
-export { SyntheticIdGenerator } from './SyntheticIdGenerator';
-export { TelemetryEventName, TelemetryScreenName, TelemetryTheme as Theme } from './enums';
-export type { TelemetryApiEventData } from './types';
-export { TelemetryDataCollector } from './TelemetryDataCollector';
-export { TelemetryPageTracker } from './TelemetryPageTracker';
-export { ABTestManager } from './abtest';
+
+export { ABTestManager } from './ABTestManager';
 export type {
     ExperimentSlot,
+    VariantCache,
     SessionStartRequest,
     SessionStartResponse,
-} from './abtest';
+    SessionStartVariantAssignment,
+} from './types';
+export { EXPERIMENT_REGISTRY, VARIANTS_STORAGE_KEY, type ExperimentRegistry } from './constants';

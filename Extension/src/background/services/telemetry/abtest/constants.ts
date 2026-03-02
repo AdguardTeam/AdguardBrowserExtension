@@ -17,15 +17,26 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { Telemetry } from './Telemetry';
-export { SyntheticIdGenerator } from './SyntheticIdGenerator';
-export { TelemetryEventName, TelemetryScreenName, TelemetryTheme as Theme } from './enums';
-export type { TelemetryApiEventData } from './types';
-export { TelemetryDataCollector } from './TelemetryDataCollector';
-export { TelemetryPageTracker } from './TelemetryPageTracker';
-export { ABTestManager } from './abtest';
-export type {
-    ExperimentSlot,
-    SessionStartRequest,
-    SessionStartResponse,
-} from './abtest';
+
+import { type VariantCache } from './types';
+
+/**
+ * Storage key for the variant cache.
+ */
+export const VARIANTS_STORAGE_KEY = 'ab_test_manager.variants';
+
+/**
+ * Type for the experiment registry mapping slots to experiment IDs.
+ */
+export type ExperimentRegistry = Readonly<VariantCache>;
+
+/**
+ * Registry of active A/B experiments.
+ *
+ * Maps Plausible Analytics custom property slots to experiment IDs.
+ * Maximum 3 slots (experiment_1, experiment_2, experiment_3).
+ * Add new experiments here when needed.
+ *
+ * Example: { experiment_1: 'AG-47804-trial-a_def' }.
+ */
+export const EXPERIMENT_REGISTRY: ExperimentRegistry = {};
