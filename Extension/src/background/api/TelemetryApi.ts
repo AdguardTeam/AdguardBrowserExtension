@@ -19,6 +19,8 @@
  */
 import { logger } from '../../common/logger';
 import { type TelemetryApiEventData } from '../services';
+import { type SessionStartRequest, type SessionStartResponse } from '../services/telemetry/abtest/types';
+import { sessionStartResponseSchema } from '../schema/telemetry/sessionStartResponse';
 
 /**
  * API client for sending telemetry events to the telemetry service.
@@ -28,6 +30,11 @@ export class TelemetryApi {
      * API endpoint path.
      */
     private static readonly API_PATH = 'api/v1/event';
+
+    /**
+     * Session start API endpoint path.
+     */
+    private static readonly SESSION_START_PATH = 'api/v1/session_start';
 
     /**
      * Sends a telemetry event to the telemetry service.
@@ -57,11 +64,49 @@ export class TelemetryApi {
     }
 
     /**
+     * Sends a session_start request to request A/B experiment variant assignments.
+     *
+     * @param data Session start request data.
+     *
+     * @returns Parsed session start response.
+     */
+    static async sendSessionStart(data: SessionStartRequest): Promise<SessionStartResponse> {
+        const url = new URL(TelemetryApi.SESSION_START_PATH, `https://${TELEMETRY_URL}`);
+
+        const config: RequestInit = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        };
+
+        try {
+            const response = await fetch(url, config);
+
+            if (!response.ok) {
+                logger.error(`[ext.TelemetryApi.sendSessionStart]: Failed to send session_start: ${response.status}`);
+                return { versions: {} };
+            }
+
+            const json = await response.json();
+            const parsed = sessionStartResponseSchema.parse(json);
+
+            return {
+                versions: parsed.versions as SessionStartResponse['versions'],
+            };
+        } catch (error) {
+            logger.error('[ext.TelemetryApi.sendSessionStart]: Failed to send session_start', error);
+            return { versions: {} };
+        }
+    }
+
+    /**
      * Constructs the full URL for telemetry API requests.
      *
      * @returns The complete telemetry API URL.
      */
     private static get requestUrl(): string {
-        return `https://${TELEMETRY_URL}/${TelemetryApi.API_PATH}`;
+        return new URL(TelemetryApi.API_PATH, `https://${TELEMETRY_URL}`).href;
     }
 }

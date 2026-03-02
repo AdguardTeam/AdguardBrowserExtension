@@ -32,10 +32,11 @@ import {
     TelemetryScreenName,
     Theme,
 } from '../../../../Extension/src/background/services';
-import { SettingOption } from '../../../../Extension/src/background/schema/settings/enum';
+import { SettingOption } from '../../../../Extension/src/background/schema';
 import { messageHandler } from '../../../../Extension/src/background/message-handler';
 import { SettingsApi, TelemetryApi } from '../../../../Extension/src/background/api';
 import { MessageType } from '../../../../Extension/src/common/messages';
+import { ABTestManager } from '../../../../Extension/src/background/services/telemetry';
 
 vi.mock('../../../../Extension/src/background/message-handler', () => ({
     messageHandler: {
@@ -56,6 +57,15 @@ vi.mock('../../../../Extension/src/common/logger', () => ({
     logger: {
         debug: vi.fn(),
         error: vi.fn(),
+    },
+}));
+
+vi.mock('../../../../Extension/src/background/services/telemetry/abtest/ABTestManager', () => ({
+    ABTestManager: {
+        getVariantsForProps: vi.fn().mockResolvedValue({}),
+        getTestsPayload: vi.fn().mockResolvedValue({}),
+        processResponse: vi.fn().mockResolvedValue(undefined),
+        resetCache: vi.fn(),
     },
 }));
 
@@ -187,6 +197,20 @@ describe('Telemetry', () => {
             await Telemetry.sendPageViewEvent(TelemetryScreenName.GeneralSettings, 'page-1');
 
             expect(TelemetryApi.sendEvent).toHaveBeenCalledTimes(3);
+        });
+    });
+
+    describe('experiment props', () => {
+        test('does not include empty experiment fields in telemetry events', async () => {
+            vi.spyOn(ABTestManager, 'getVariantsForProps').mockResolvedValue({});
+
+            await Telemetry.sendPageViewEvent(TelemetryScreenName.MainPage, 'page-1');
+
+            const callArgs = vi.mocked(TelemetryApi.sendEvent).mock.calls[0]![0];
+            expect(callArgs.props).toBeDefined();
+            expect(callArgs.props).not.toHaveProperty('experiment_1');
+            expect(callArgs.props).not.toHaveProperty('experiment_2');
+            expect(callArgs.props).not.toHaveProperty('experiment_3');
         });
     });
 });

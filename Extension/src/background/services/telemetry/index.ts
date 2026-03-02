@@ -23,3 +23,9 @@ export { TelemetryEventName, TelemetryScreenName, TelemetryTheme as Theme } from
 export type { TelemetryApiEventData } from './types';
 export { TelemetryDataCollector } from './TelemetryDataCollector';
 export { TelemetryPageTracker } from './TelemetryPageTracker';
+export { ABTestManager } from './abtest';
+export type {
+    ExperimentSlot,
+    SessionStartRequest,
+    SessionStartResponse,
+} from './abtest';
