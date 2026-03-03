@@ -22,6 +22,8 @@ import { createContext } from 'react';
 
 import { configure } from 'mobx';
 
+import { TelemetryStore } from '../../common/telemetry';
+
 import { LogStore } from './LogStore';
 import { WizardStore } from './WizardStore';
 
@@ -33,7 +35,11 @@ export class RootStore {
 
     public wizardStore: WizardStore;
 
+    public telemetryStore: TelemetryStore;
+
     constructor() {
+        // telemetryStore should be initialized before other stores
+        this.telemetryStore = new TelemetryStore();
         this.logStore = new LogStore(this);
         this.wizardStore = new WizardStore(this);
     }

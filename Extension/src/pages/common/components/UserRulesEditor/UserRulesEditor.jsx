@@ -35,6 +35,7 @@ import { Editor, EditorLeaveModal } from '../Editor';
 import { translator } from '../../../../common/translators/translator';
 import { Checkbox } from '../ui/Checkbox';
 import { messenger } from '../../../services/messenger';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import {
     NotifierType,
     NEWLINE_CHAR_UNIX,
@@ -67,7 +68,7 @@ import { userRulesEditorStore } from './UserRulesEditorStore';
  */
 export const UserRulesEditor = observer(({ fullscreen }) => {
     const store = useContext(userRulesEditorStore);
-    const { uiStore, settingsStore } = useContext(rootStore);
+    const { uiStore, settingsStore, telemetryStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
@@ -240,7 +241,17 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     const unsavedChangesSubtitle = translator.getMessage('options_userfilter_leave_subtitle');
     usePreventUnload(hasUnsavedChanges || isSaving, `${unsavedChangesTitle} ${unsavedChangesSubtitle}`);
 
+    /**
+     * Saves user rules.
+     *
+     * @param userRules User rules content.
+     */
     const saveUserRules = async (userRules) => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.UserRulesSaveClick,
+            TelemetryScreenName.UserRulesScreen,
+        );
+
         if (isSaving) {
             return;
         }
@@ -312,15 +323,20 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         event.target.value = '';
     };
 
-    const importClickHandler = (e) => {
+    const importClickHandler = useCallback((e) => {
         e.preventDefault();
+
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.UserRulesImportClick,
+            TelemetryScreenName.UserRulesScreen,
+        );
 
         if (!inputRef.current) {
             return;
         }
 
         inputRef.current.click();
-    };
+    }, [telemetryStore]);
 
     const saveClickHandler = async () => {
         if (!store.userRulesEditorContentChanged) {
@@ -404,7 +420,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         ]);
 
         return () => uiStore.setSidebarMenuOptions([]);
-    }, [store.userRulesExportAvailable, uiStore]);
+    }, [importClickHandler, store.userRulesExportAvailable, uiStore]);
 
     // We set wrap mode directly in order to avoid editor re-rendering
     // Otherwise editor would remove all unsaved content

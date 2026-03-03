@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -89,6 +89,11 @@ const bundleOpera = (options: CommanderOptions) => {
     return bundleRunner(rspackConfig, options);
 };
 
+const bundleOperaMv3 = (options: CommanderOptions) => {
+    const rspackConfig = getRspackConfig(Browser.OperaMv3, getBuildOptions(options));
+    return bundleRunner(rspackConfig, options);
+};
+
 const bundleChromeCrx = async () => {
     const key = 'Building CRX for Chrome';
     console.log(`${key}...`);
@@ -135,7 +140,7 @@ const runTasksInParallel = async (
  * Build strategy:
  * 1. Run copyExternals first (required before any builds)
  * 2. Run all MV2 browser builds in parallel (Chrome, Firefox, Edge, Opera)
- * 3. Run Chrome MV3 build (separate due to different config)
+ * 3. Run all MV3 browser builds in parallel (Chrome MV3, Opera MV3)
  * 4. Run buildInfo last
  *
  * @param options Command line options.
@@ -151,7 +156,7 @@ const mainBuild = async (options: CommanderOptions) => {
 
     // Step 3: Run all browser builds in parallel
     // MV2 builds: Chrome, Firefox AMO, Firefox Standalone, Edge, Opera
-    // MV3 builds: Chrome MV3
+    // MV3 builds: Chrome MV3, Opera MV3
     const mv2Builds = [
         bundleChrome,
         bundleFirefoxAmo,
@@ -162,6 +167,7 @@ const mainBuild = async (options: CommanderOptions) => {
 
     const mv3Builds = [
         bundleChromeMv3,
+        bundleOperaMv3,
     ];
 
     // For dev builds, run all builds in parallel for maximum speed
@@ -254,6 +260,15 @@ const opera = async (options: CommanderOptions) => {
     }
 };
 
+const operaMv3 = async (options: CommanderOptions) => {
+    try {
+        await runSingleTask(bundleOperaMv3, options);
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
 const firefoxAmo = async (options: CommanderOptions) => {
     try {
         await runSingleTask(bundleFirefoxAmo, options);
@@ -317,6 +332,13 @@ program
     .description('Builds extension for opera browser')
     .action(() => {
         opera(program.opts());
+    });
+
+program
+    .command(Browser.OperaMv3)
+    .description('Builds extension for opera-mv3 browser')
+    .action(() => {
+        operaMv3(program.opts());
     });
 
 program

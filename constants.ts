@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -105,5 +105,15 @@ export const MIN_SUPPORTED_VERSION = {
     FIREFOX: 78,
     FIREFOX_MOBILE: 113,
     OPERA: 67,
+    /**
+     * Keep it in sync with the Chromium MV3 version.
+     * Opera is based on Chromium, but lags behind it a bit.
+     * For example, Opera 107 is based on Chromium 121.
+     *
+     * @see {@link https://en.wikipedia.org/wiki/History_of_the_Opera_web_browser} - To find corresponding Chromium version.
+     * @see {@link https://blogs.opera.com/desktop} - To find the latest Opera version.
+     * @see {@link https://blogs.opera.com/desktop/changelog-for-107} - Change log for Opera 107 (or insert any other version).
+     */
+    OPERA_MV3: 107,
     EDGE_CHROMIUM: 80,
 };

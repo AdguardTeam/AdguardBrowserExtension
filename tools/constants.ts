@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -20,6 +20,8 @@
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { BrowserFilters } from '@adguard/dnr-rulesets';
 
 import {
     REMOTE_METADATA_FILE_NAME,
@@ -83,8 +85,30 @@ export enum Browser {
     FirefoxAmo = 'firefox-amo',
     FirefoxStandalone = 'firefox-standalone',
     Opera = 'opera',
+    OperaMv3 = 'opera-mv3',
     Edge = 'edge',
 }
+
+/**
+ * List of {@link Browser} values that are MV3 extension.
+ */
+export const MV3_BROWSERS = [
+    Browser.ChromeMv3,
+    Browser.OperaMv3,
+] as const;
+
+/**
+ * Infered type for {@link MV3_BROWSERS}.
+ */
+export type Mv3Browser = (typeof MV3_BROWSERS)[number];
+
+/**
+ * Map of {@link Mv3Browser} to {@link BrowserFilters}.
+ */
+export const MV3_BROWSER_TO_DNR_BROWSER_MAP: Record<Mv3Browser, BrowserFilters> = {
+    [Browser.ChromeMv3]: BrowserFilters.ChromiumMv3,
+    [Browser.OperaMv3]: BrowserFilters.OperaMv3,
+};
 
 export const isValidBrowserTarget = (target: any): target is Browser => {
     return Object.values(Browser).includes(target as Browser);
@@ -99,7 +123,29 @@ export const enum AssetsFiltersBrowser {
     Edge = 'edge',
     Firefox = 'firefox',
     Opera = 'opera',
+    OperaMv3 = 'opera-mv3',
 }
+
+/**
+ * List of {@link AssetsFiltersBrowser} values that are MV3 extension.
+ */
+export const MV3_ASSETS_FILTERS_BROWSERS = [
+    AssetsFiltersBrowser.ChromiumMv3,
+    AssetsFiltersBrowser.OperaMv3,
+] as const;
+
+/**
+ * Infered type for {@link MV3_ASSETS_FILTERS_BROWSERS}.
+ */
+export type Mv3AssetsFiltersBrowser = (typeof MV3_ASSETS_FILTERS_BROWSERS)[number];
+
+/**
+ * Map of {@link Mv3AssetsFiltersBrowser} to {@link BrowserFilters}.
+ */
+export const MV3_ASSETS_FILTERS_BROWSER_TO_DNR_BROWSER_MAP: Record<Mv3AssetsFiltersBrowser, BrowserFilters> = {
+    [AssetsFiltersBrowser.ChromiumMv3]: BrowserFilters.ChromiumMv3,
+    [AssetsFiltersBrowser.OperaMv3]: BrowserFilters.OperaMv3,
+};
 
 export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
     [BuildTargetEnv.Dev]: 'adguardadblockerdev@adguard.com',

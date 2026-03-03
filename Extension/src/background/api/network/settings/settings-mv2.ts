@@ -44,7 +44,7 @@ export class NetworkSettings extends NetworkSettingsCommon {
      *
      * @returns Promise that resolves to the base url for filter rules.
      */
-    protected async getFilterRulesBaseUrl(): Promise<string> {
+    protected override async getFilterRulesBaseUrl(): Promise<string> {
         try {
             const url = await browserStorage.get(this.FILTERS_BASE_URL_KEY);
 
@@ -63,7 +63,7 @@ export class NetworkSettings extends NetworkSettingsCommon {
     /**
      * @inheritdoc
      */
-    get filtersUrl(): string {
+    override get filtersUrl(): string {
         if (UserAgent.isFirefox) {
             return `${this.filtersRulesBaseUrl}/firefox`;
         }

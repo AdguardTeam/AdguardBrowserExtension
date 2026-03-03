@@ -129,6 +129,21 @@ export type TelemetryProps = {
      * Filter update interval source.
      */
     update_interval?: TelemetryFilterUpdateIntervalMode | null;
+
+    /**
+     * Assigned variant for A/B experiment slot 1.
+     */
+    experiment_1?: string;
+
+    /**
+     * Assigned variant for A/B experiment slot 2.
+     */
+    experiment_2?: string;
+
+    /**
+     * Assigned variant for A/B experiment slot 3.
+     */
+    experiment_3?: string;
 };
 
 /**
