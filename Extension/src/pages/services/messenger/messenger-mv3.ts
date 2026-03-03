@@ -45,6 +45,14 @@ export class Messenger extends MessengerCommon {
     };
 
     /**
+     * Sends a message to the background page to update custom filters
+     * independently of extension update.
+     */
+    updateCustomFilters = async (): Promise<ExtractMessageResponse<MessageType.UpdateCustomFiltersMv3>> => {
+        return this.sendMessage(MessageType.UpdateCustomFiltersMv3);
+    };
+
+    /**
      * Sends a message to the background page to get extension status for popup.
      *
      * @returns Promise that resolves with extension status

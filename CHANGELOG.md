@@ -5,7 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## Unreleased 5.4
 
 ### Added
@@ -13,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added beta suffix to the version in issue reports [#3330].
 - Handling speculative prerender requests.
 - Confirmation modal for inverting allowlist.
+- Independent update of custom filters in MV3
+  without waiting for the extension update availability [#2944].
 
 ### Fixed
 
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - $badfilter incorrectly negates rules with different $denyallow values [#3428].
 - Filtering log window size/pos not restored with zoom [#3255].
 
+[#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
 [#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
 [#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330
 [#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428

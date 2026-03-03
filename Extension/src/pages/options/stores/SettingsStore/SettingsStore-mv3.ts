@@ -175,6 +175,14 @@ export class SettingsStore extends SettingsStoreCommon {
     @action
     async checkUpdates() {
         const start = Date.now();
+
+        // Update custom filters first, independently of extension update. AG-50684
+        try {
+            await messenger.updateCustomFilters();
+        } catch (error: unknown) {
+            logger.debug('[ext.SettingsStore.checkUpdates]: failed to update custom filters: ', error);
+        }
+
         try {
             await messenger.checkUpdates();
         } catch (error) {
