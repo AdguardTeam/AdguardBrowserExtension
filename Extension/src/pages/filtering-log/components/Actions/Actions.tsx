@@ -29,7 +29,7 @@ import { Icon } from '../../../common/components/ui/Icon';
 import { Popover } from '../../../common/components/ui/Popover';
 import { EventsSearch } from '../Filters/EventsSearch';
 import { TabSelector } from '../Filters/TabSelector';
-import { optionsStorage } from '../../../options/options-storage';
+import { filteringLogStorage } from '../../filtering-log-storage';
 import theme from '../../../common/styles/theme';
 import { TabSelectorMobile } from '../Filters/TabSelector/TabSelectorMobile';
 import { useIsMobile } from '../../../common/hooks/useIsMobile';
@@ -43,7 +43,7 @@ const Actions = observer(() => {
 
     const isMobile = useIsMobile();
 
-    const shouldShowPreserveLogModal = optionsStorage.getItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
+    const shouldShowPreserveLogModal = filteringLogStorage.getItem(filteringLogStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
 
     const clearLogHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();

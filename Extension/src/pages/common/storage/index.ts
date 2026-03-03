@@ -18,20 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { LocalPageStorage } from '../../common/storage';
-
-/**
- * Module used to keep options page settings, which do not need extension level persistence
- */
-export class OptionsStorage extends LocalPageStorage {
-    KEYS = {
-        /**
-         * Allowlist editor wrap setting
-         */
-        ALLOWLIST_EDITOR_WRAP: 'allowlist-editor-wrap',
-    };
-
-    protected DEFAULTS = {
-        [this.KEYS.ALLOWLIST_EDITOR_WRAP]: false,
-    };
-}
+export { LocalPageStorage } from './LocalPageStorage';

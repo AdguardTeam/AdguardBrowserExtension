@@ -24,7 +24,7 @@ import { observer } from 'mobx-react';
 import { MenuDropDown } from '../../../common/components/ui/MenuDropDown';
 import { rootStore } from '../../stores/RootStore';
 import { translator } from '../../../../common/translators/translator';
-import { optionsStorage } from '../../../options/options-storage';
+import { filteringLogStorage } from '../../filtering-log-storage';
 
 import { MenuButton } from './MenuButton';
 
@@ -38,7 +38,7 @@ import styles from './Sidebar.module.pcss';
 export const Sidebar = observer(() => {
     const { logStore, wizardStore } = useContext(rootStore);
     const { preserveLogEnabled } = logStore;
-    const shouldShowPreserveLogModal = optionsStorage.getItem(optionsStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
+    const shouldShowPreserveLogModal = filteringLogStorage.getItem(filteringLogStorage.KEYS.SHOW_PRESERVE_LOG_MODAL);
 
     const clearLogHandler = async (e: MouseEvent) => {
         e.preventDefault();

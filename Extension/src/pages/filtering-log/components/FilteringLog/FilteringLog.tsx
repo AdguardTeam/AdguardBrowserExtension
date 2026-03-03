@@ -40,7 +40,7 @@ import { RequestModal } from '../RequestWizard/RequestModal';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { NotifierType } from '../../../../common/constants';
 import { FULLSCREEN_STATE } from '../../../../common/messages/constants';
-import { optionsStorage } from '../../../options/options-storage';
+import { filteringLogStorage } from '../../filtering-log-storage';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
@@ -204,8 +204,8 @@ const FilteringLog = observer(() => {
                 } = win;
 
                 if (state === FULLSCREEN_STATE) {
-                    optionsStorage.setItem(
-                        optionsStorage.KEYS.FILTERING_LOG_WINDOW_STATE,
+                    filteringLogStorage.setItem(
+                        filteringLogStorage.KEYS.FILTERING_LOG_WINDOW_STATE,
                         { state: FULLSCREEN_STATE },
                     );
                 } else if (
@@ -214,8 +214,8 @@ const FilteringLog = observer(() => {
                     && top !== undefined
                     && left !== undefined
                 ) {
-                    optionsStorage.setItem(
-                        optionsStorage.KEYS.FILTERING_LOG_WINDOW_STATE,
+                    filteringLogStorage.setItem(
+                        filteringLogStorage.KEYS.FILTERING_LOG_WINDOW_STATE,
                         {
                             width,
                             height,
