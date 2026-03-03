@@ -249,9 +249,11 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
             beautifiedJsContent,
         );
 
-        // Run validation with ES modules support
+        // Run validation with ES modules support.
+        // NO_UPDATE_NOTIFIER=1 suppresses npm's "new version available" notice on stderr.
         const result = await exec(
             `npx tsx ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
+            { env: { ...process.env, NO_UPDATE_NOTIFIER: '1' } },
         );
         if (result.stdout) {
             console.log(`tsx stdout for ${fileName}:\n${result.stdout}`);
