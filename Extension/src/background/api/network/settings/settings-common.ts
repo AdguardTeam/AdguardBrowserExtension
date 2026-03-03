@@ -83,7 +83,7 @@ export abstract class NetworkSettingsCommon {
      *
      * @returns Promise that resolves to the base url for filter rules.
      */
-    private async getFilterRulesBaseUrl(): Promise<string> {
+    protected async getFilterRulesBaseUrl(): Promise<string> {
         // We don't need to set base url in MV3 because we cannot update filters via patches.
         // TODO: Remove check when filters will support patches in MV3.
         return this.DEFAULT_FILTER_RULES_BASE_URL;

@@ -31,14 +31,14 @@ export class NetworkSettings extends NetworkSettingsCommon {
      *
      * @returns Default filter rules base URL.
      */
-    protected async getFilterRulesBaseUrl(): Promise<string> {
+    protected override async getFilterRulesBaseUrl(): Promise<string> {
         return this.DEFAULT_FILTER_RULES_BASE_URL;
     }
 
     /**
      * @inheritdoc
      */
-    get filtersUrl(): string {
+    override get filtersUrl(): string {
         /**
          * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
          * process in the extension.
