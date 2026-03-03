@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Statistics tooltip appears in wrong position when hovering over chart columns [#3449].
+- Freeze on extensions startup [#3400].
 
 ### Changed
 
@@ -46,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [5.3 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.0.8...HEAD
 [#3449]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3449
+[#3400]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3400
 
 ## [5.3.0.8] - 2026-02-10
 
