@@ -19,6 +19,7 @@
  */
 
 import React, {
+    useCallback,
     useContext,
     useEffect,
     useRef,
@@ -28,7 +29,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
@@ -66,15 +67,20 @@ const Allowlist = observer(() => {
     const inputRef = useRef(null);
     const actionsRef = useRef(null);
 
-    const importClickHandler = (e) => {
+    const importClickHandler = useCallback((e) => {
         e.preventDefault();
+
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.AllowlistImportClick,
+            TelemetryScreenName.WebsiteAllowListScreen,
+        );
 
         if (!inputRef.current) {
             return;
         }
 
         inputRef.current.click();
-    };
+    }, [telemetryStore]);
 
     const exportClickHandler = () => {
         exportData(ExportTypes.Allowlist);
@@ -122,7 +128,7 @@ const Allowlist = observer(() => {
                 disabled: !settingsStore.allowlist,
             },
         ]);
-    }, [settingsStore.allowlist, settingsStore, uiStore]);
+    }, [importClickHandler, settingsStore.allowlist, settingsStore, uiStore]);
 
     const isSaving = settingsStore.savingAllowlistState === SavingFSMState.Saving;
     const hasUnsavedChanges = !isSaving && settingsStore.allowlistEditorContentChanged;
@@ -180,7 +186,15 @@ const Allowlist = observer(() => {
         inputChangeHandler,
     );
 
+    /**
+     * Handles save button click.
+     */
     const saveClickHandler = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.AllowlistSaveClick,
+            TelemetryScreenName.WebsiteAllowListScreen,
+        );
+
         if (settingsStore.allowlistEditorContentChanged) {
             const value = editorRef.current.editor.getValue();
             await saveAllowlist(value);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -36,6 +36,8 @@ import { genEdgeConfig } from './edge/rspack.edge';
 import { genOperaConfig } from './opera/rspack.opera';
 // eslint-disable-next-line no-restricted-imports
 import { genChromeMv3Config } from './chrome-mv3/rspack.chrome.mv3';
+// eslint-disable-next-line no-restricted-imports
+import { genOperaMv3Config } from './opera-mv3/rspack.opera.mv3';
 import { getBrowserConf } from './helpers';
 
 export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) => {
@@ -59,6 +61,10 @@ export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) =>
         }
         case Browser.Opera: {
             rspackConfig = genOperaConfig(browserConf, options);
+            break;
+        }
+        case Browser.OperaMv3: {
+            rspackConfig = genOperaMv3Config(browserConf, options);
             break;
         }
         case Browser.Edge: {

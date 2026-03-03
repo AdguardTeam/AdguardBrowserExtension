@@ -119,7 +119,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/dev/edge.zip /out/artifacts/edge-dev.zip && \
     mv build/dev/firefox-amo.zip /out/artifacts/firefox-amo-dev.zip && \
     mv build/dev/firefox-standalone.zip /out/artifacts/firefox-standalone-dev.zip && \
-    mv build/dev/opera.zip /out/artifacts/opera-dev.zip
+    mv build/dev/opera.zip /out/artifacts/opera-dev.zip && \
+    mv build/dev/opera-mv3.zip /out/artifacts/opera-mv3-dev.zip
 
 FROM scratch AS dev-build-output
 COPY --from=dev-build /out/ /
@@ -425,6 +426,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/release/chrome-mv3.zip /out/artifacts/ && \
     mv build/release/edge.zip /out/artifacts/ && \
     mv build/release/opera.zip /out/artifacts/ && \
+    mv build/release/opera-mv3.zip /out/artifacts/ && \
     # TODO: (AG-41656) Remove this workaround and use the browser name as for all other builds.
     mv build/release/firefox-amo.zip /out/artifacts/firefox.zip && \
     mv build/release/source.zip /out/artifacts/

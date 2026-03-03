@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -105,6 +105,7 @@ const getClickToLoadSha = () => {
 const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
     switch (browser) {
         case Browser.ChromeMv3:
+        case Browser.OperaMv3:
             return { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } };
         default:
             return env === BuildTargetEnv.Dev
@@ -302,7 +303,8 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
             }
             break;
         }
-        case Browser.Chrome: {
+        case Browser.Chrome:
+        case Browser.Opera: {
             if (buildEnv === BuildTargetEnv.Release) {
                 return ' MV2';
             }

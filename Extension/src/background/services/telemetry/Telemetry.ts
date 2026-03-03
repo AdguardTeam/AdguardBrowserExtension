@@ -28,6 +28,8 @@ import {
 } from '../../../common/messages';
 import { SettingsApi, TelemetryApi } from '../../api';
 import { SettingOption } from '../../schema';
+import { notifier } from '../../notifier';
+import { NotifierType } from '../../../common/constants';
 
 import { TelemetryDataCollector } from './TelemetryDataCollector';
 import {
@@ -36,6 +38,8 @@ import {
     type TelemetryCustomEventData,
     type TelemetryPageViewData,
 } from './types';
+import { ABTestManager } from './abtest';
+import { type SessionStartRequest } from './abtest';
 import { TelemetryPageTracker } from './TelemetryPageTracker';
 import {
     type TelemetryActionToScreenMap,
@@ -61,6 +65,11 @@ export class Telemetry {
     public static readonly SEND_EVENT_TIMEOUT_MS = 300;
 
     /**
+     * Flag to prevent concurrent session_start requests.
+     */
+    private static isSessionStartInProgress = false;
+
+    /**
      * Initializes telemetry service.
      *
      * Generates or retrieves synthetic ID, collects user agent and props,
@@ -72,8 +81,16 @@ export class Telemetry {
         this.pageTracker = new TelemetryPageTracker();
         this.pageTracker.init();
 
+        await Telemetry.runSessionStart();
+
         messageHandler.addListener(MessageType.SendTelemetryPageViewEvent, Telemetry.handlePageViewEventDebounced);
         messageHandler.addListener(MessageType.SendTelemetryCustomEvent, Telemetry.handleCustomEventDebounced);
+
+        // Listen for setting updates to trigger session_start when user enables telemetry
+        notifier.addSpecifiedListener(
+            [NotifierType.SettingUpdated],
+            Telemetry.handleSettingUpdated,
+        );
     }
 
     /**
@@ -184,8 +201,18 @@ export class Telemetry {
         try {
             const baseData = await TelemetryDataCollector.getBaseData();
 
+            // Merge experiment variants into props (only include non-empty values)
+            const experimentVariants = await ABTestManager.getVariantsForProps();
+            const propsWithExperiments = baseData.props ? {
+                ...baseData.props,
+                ...(experimentVariants.experiment_1 && { experiment_1: experimentVariants.experiment_1 }),
+                ...(experimentVariants.experiment_2 && { experiment_2: experimentVariants.experiment_2 }),
+                ...(experimentVariants.experiment_3 && { experiment_3: experimentVariants.experiment_3 }),
+            } : undefined;
+
             const apiData: TelemetryApiEventData = {
                 ...baseData,
+                props: propsWithExperiments,
                 ...event,
             };
 
@@ -222,5 +249,58 @@ export class Telemetry {
      */
     public static handlePopupDisconnect = (portName: string): void => {
         Telemetry.pageTracker.removeOpenedPage(portName);
+    };
+
+    /**
+     * Sends a session_start request to request A/B experiment variant assignments.
+     * Fire-and-forget: errors are caught and logged; the extension continues normally.
+     * Prevents concurrent calls to avoid duplicate requests.
+     */
+    private static async runSessionStart(): Promise<void> {
+        if (!Telemetry.isAnonymizedUsageDataAllowed()) {
+            return;
+        }
+
+        if (Telemetry.isSessionStartInProgress) {
+            logger.debug('[ext.Telemetry.runSessionStart]: session_start already in progress, skipping');
+            return;
+        }
+
+        Telemetry.isSessionStartInProgress = true;
+
+        try {
+            const baseData = await TelemetryDataCollector.getBaseData();
+            const tests = await ABTestManager.getTestsPayload();
+
+            const request: SessionStartRequest = {
+                synthetic_id: baseData.synthetic_id,
+                app_type: baseData.app_type as 'EXTENSION',
+                version: baseData.version,
+                user_agent: baseData.user_agent,
+                props: baseData.props,
+                tests,
+            };
+
+            const response = await TelemetryApi.sendSessionStart(request);
+            await ABTestManager.processResponse(response);
+        } catch (e) {
+            logger.debug('[ext.Telemetry.runSessionStart]: session_start failed', e);
+        } finally {
+            Telemetry.isSessionStartInProgress = false;
+        }
+    }
+
+    /**
+     * Handles setting updated event.
+     * Triggers session_start when user enables telemetry consent.
+     *
+     * @param args Arguments from notifier: [event, settingUpdate].
+     */
+    private static handleSettingUpdated = (...args: unknown[]): void => {
+        const [, settingUpdate] = args as [NotifierType, { propertyName: string; propertyValue: unknown }];
+        if (settingUpdate.propertyName === SettingOption.AllowAnonymizedUsageData
+            && settingUpdate.propertyValue === true) {
+            Telemetry.runSessionStart();
+        }
     };
 }

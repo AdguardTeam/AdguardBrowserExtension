@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -54,6 +54,7 @@ import {
     FILTERS_DEST,
     LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3,
     LOCAL_SCRIPT_RULES_COMMENT,
+    type Mv3AssetsFiltersBrowser,
 } from '../constants';
 
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-extractor';
@@ -227,8 +228,13 @@ const wrapScriptCode = (uniqueId: string, code: string): string => {
  *
  * @param rawContent Raw content.
  * @param fileName JS file name.
+ * @param browser Target browser.
  */
-const saveToJsFile = async (rawContent: string, fileName: string): Promise<void> => {
+const saveToJsFile = async (
+    rawContent: string,
+    fileName: string,
+    browser: Mv3AssetsFiltersBrowser,
+): Promise<void> => {
     const beautifiedJsContent = (await minify(rawContent, {
         mangle: false,
         compress: false,
@@ -245,13 +251,13 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
 
     try {
         await fs.writeFile(
-            `${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
+            `${FILTERS_DEST.replace('%browser', browser)}/${fileName}`,
             beautifiedJsContent,
         );
 
         // Run validation with ES modules support
         const result = await exec(
-            `npx tsx ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
+            `npx tsx ${FILTERS_DEST.replace('%browser', browser)}/${fileName}`,
         );
         assert.ok(result.stderr === '', 'No errors during execution');
         assert.ok(result.stdout === '', 'No output during execution');
@@ -262,15 +268,19 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
 };
 
 /**
- * Updates `local_script_rules.js` for Chromium MV3 based on JS rules from the
+ * Updates `local_script_rules.js` for MV3 based target on JS rules from the
  * pre-built filters.
  *
  * It is possible to follow all places using this logic by searching
  * `JS_RULES_EXECUTION`.
  *
  * @param jsRules Set of unique JS rules collected from the pre-built filters.
+ * @param browser Target browser.
  */
-const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>) => {
+const updateLocalScriptRulesForMv3 = async (
+    jsRules: Set<string>,
+    browser: Mv3AssetsFiltersBrowser,
+) => {
     // First, process testcases rules
     TESTCASES_RULES.forEach((rawRule) => {
         const ruleNode = CosmeticRuleParser.parse(rawRule);
@@ -360,16 +370,18 @@ const updateLocalScriptRulesForChromiumMv3 = async (jsRules: Set<string>) => {
     const jsFileContent = `${beautifyComment(LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3)}
 export const localScriptRules = { ${processedRules.join(`,${LF}`)} };${LF}`;
 
-    await saveToJsFile(jsFileContent, LOCAL_SCRIPT_RULES_FILE_NAME);
+    await saveToJsFile(jsFileContent, LOCAL_SCRIPT_RULES_FILE_NAME, browser);
 };
 
 /**
  * Updates `local_script_rules.js` based on the rules from the pre-built filters
- * and testcases rules for Chromium MV3.
+ * and testcases rules for MV3 target.
+ *
+ * @param browser Target browser.
  */
-export const updateLocalResourcesForChromiumMv3 = async () => {
+export const updateLocalResourcesForMv3 = async (browser: Mv3AssetsFiltersBrowser) => {
     const folder = path.join(
-        FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3),
+        FILTERS_DEST.replace('%browser', browser),
         'declarative',
     );
 
@@ -399,7 +411,7 @@ export const updateLocalResourcesForChromiumMv3 = async () => {
         });
     }
 
-    await updateLocalScriptRulesForChromiumMv3(jsRules);
+    await updateLocalScriptRulesForMv3(jsRules, browser);
 };
 
 export const updateLocalScriptRulesForFirefox = async () => {
