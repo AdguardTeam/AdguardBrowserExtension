@@ -249,11 +249,10 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
             beautifiedJsContent,
         );
 
-        // Run validation with ES modules support.
-        // NO_UPDATE_NOTIFIER=1 suppresses npm's "new version available" notice on stderr.
+        // --no-update-notifier suppresses npm's "new version available" notice
+        // that npx writes to stderr in clean environments (e.g. Docker).
         const result = await exec(
-            `npx tsx ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
-            { env: { ...process.env, NO_UPDATE_NOTIFIER: '1' } },
+            `npx --no-update-notifier tsx ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
         );
         if (result.stdout) {
             console.log(`tsx stdout for ${fileName}:\n${result.stdout}`);
@@ -261,7 +260,7 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
         if (result.stderr) {
             console.warn(`tsx stderr for ${fileName}:\n${result.stderr}`);
         }
-        assert.ok(result.stderr === '', 'No errors during execution');
+        assert.ok(result.stderr === '', `Errors during execution:\n${result.stderr}`);
         assert.ok(result.stdout === '', 'No output during execution');
     } catch (error) {
         console.error('Error:', error);
