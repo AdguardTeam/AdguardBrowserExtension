@@ -50,6 +50,7 @@ export enum TelemetryScreenName {
     AdditionalSettings = 'additional_settings',
     RulesLimits = 'rules_limits',
     AboutScreen = 'about_screen',
+    FilteringLogScreen = 'filtering_log_screen',
 }
 
 /**
@@ -68,6 +69,26 @@ export enum TelemetryEventName {
     AndroidClick = 'android_click',
     UpdateAvailableClick = 'update_available_click',
     BlockElementClick = 'block_element_click',
+    HowToEnhanceClick = 'how_to_enhance_click',
+    DeleteUserRulesClick = 'delete_user_rules_click',
+    FilterCheckUpdateClick = 'filter_check_update_click',
+    CustomClick = 'custom_click',
+    AllowlistSaveClick = 'allowlist_save_click',
+    AllowlistImportClick = 'allowlist_import_click',
+    UserRulesSaveClick = 'user_rules_save_click',
+    UserRulesImportClick = 'user_rules_import_click',
+    CompareClick = 'compare_click',
+    RateUsClick = 'rate_us_click',
+    TapEnableFilteringClick = 'tap_enable_filtering_click',
+    TapCheckWebsiteSecurityClick = 'tap_check_website_security_click',
+    TapReportIssueClick = 'tap_report_issue_click',
+    TapPauseClick = 'tap_pause_click',
+    TapFilteringLogClick = 'tap_filtering_log_click',
+    TapGeneralSettingsClick = 'tap_general_settings_click',
+    ExtensionSettingsClick = 'extension_settings_click',
+    MenuDisableFilteringClick = 'menu_disable_filtering_click',
+    MenuBlockAdsManuallyClick = 'menu_block_ads_manually_click',
+    MenuOptionsClick = 'menu_options_click',
 }
 
 export type TelemetryActionToScreenMap = {
@@ -83,4 +104,24 @@ export type TelemetryActionToScreenMap = {
     [TelemetryEventName.AndroidClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.UpdateAvailableClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.BlockElementClick]: TelemetryScreenName.BlockElementScreen;
+    [TelemetryEventName.HowToEnhanceClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.DeleteUserRulesClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.FilterCheckUpdateClick]: TelemetryScreenName.FiltersScreen;
+    [TelemetryEventName.CustomClick]: TelemetryScreenName.FiltersScreen;
+    [TelemetryEventName.AllowlistSaveClick]: TelemetryScreenName.WebsiteAllowListScreen;
+    [TelemetryEventName.AllowlistImportClick]: TelemetryScreenName.WebsiteAllowListScreen;
+    [TelemetryEventName.UserRulesSaveClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.UserRulesImportClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.CompareClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.RateUsClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.TapEnableFilteringClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.TapCheckWebsiteSecurityClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.TapReportIssueClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.TapPauseClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.TapFilteringLogClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.TapGeneralSettingsClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.ExtensionSettingsClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.MenuDisableFilteringClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.MenuBlockAdsManuallyClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.MenuOptionsClick]: TelemetryScreenName.MainPage;
 };

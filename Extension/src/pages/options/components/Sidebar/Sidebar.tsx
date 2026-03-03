@@ -36,6 +36,7 @@ import { Nav } from '../Nav';
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
 import { MOBILE_BREAKPOINT_PX } from '../../../common/constants';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
 
 import { Compare } from './Compare';
 import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
@@ -45,7 +46,7 @@ import './sidebar.pcss';
 const SIDEBAR_ID = 'sidebar';
 
 const Sidebar = observer(() => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
     const location = useLocation();
 
     const { isSidebarOpen, openSidebar, closeSidebar } = uiStore;
@@ -91,6 +92,10 @@ const Sidebar = observer(() => {
     };
 
     const handleCompareClick = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.CompareClick,
+            TelemetryScreenName.MainPage,
+        );
         await messenger.openComparePage();
     };
 

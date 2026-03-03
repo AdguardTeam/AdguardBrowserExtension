@@ -66,7 +66,7 @@ import {
     type SendTelemetryCustomEventMessage,
 } from '../../../common/messages';
 import { type NotifierType } from '../../../common/constants';
-import { type CreateEventListenerResponse } from '../../../background/services';
+import { type CreateEventListenerResponse } from '../../../background/services/event';
 
 /**
  * @typedef {import('../../../common/messages').MessageMap} MessageMap

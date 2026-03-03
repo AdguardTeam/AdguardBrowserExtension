@@ -42,6 +42,11 @@ import {
 import { fullscreenUserRulesEditor } from '../../fullscreen-user-rules-editor';
 import { type ExportMessageResponse } from '../types';
 import { type GetOptionsDataResponseCommon } from '../types/types-common';
+import {
+    Telemetry,
+    TelemetryEventName,
+    TelemetryScreenName,
+} from '../../telemetry';
 
 /**
  * SettingsService handles all setting-related messages and
@@ -171,6 +176,11 @@ export abstract class SettingsServiceCommon {
      * Called when protection disabling is requested.
      */
     static async disableFiltering(): Promise<void> {
+        await Telemetry.sendCustomEvent(
+            TelemetryScreenName.MainPage,
+            TelemetryEventName.TapPauseClick,
+        );
+
         await SettingsApi.setSetting(SettingOption.DisableFiltering, true);
     }
 }

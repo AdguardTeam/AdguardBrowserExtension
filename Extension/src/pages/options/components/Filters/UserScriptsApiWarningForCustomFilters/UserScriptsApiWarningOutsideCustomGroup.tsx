@@ -30,9 +30,10 @@ import {
     USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED,
 } from '../../../../../common/constants';
 import { BrowserUtils } from '../../../../../background/utils/browser-utils';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
 
 export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
-    const { settingsStore: { currentChromeVersion } } = useContext(rootStore);
+    const { settingsStore: { currentChromeVersion }, telemetryStore } = useContext(rootStore);
 
     if (!currentChromeVersion) {
         return null;
@@ -45,6 +46,10 @@ export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
 
     const openExtensionDetails = async (e: React.MouseEvent) => {
         e.preventDefault();
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.CustomClick,
+            TelemetryScreenName.FiltersScreen,
+        );
         await messenger.openExtensionDetailsPage();
     };
 

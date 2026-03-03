@@ -143,8 +143,8 @@ pnpm build:beta              # Beta build
 - `chrome-mv3` (MV3)
 - `firefox`
 - `edge` (MV2)
-- `edge-mv3` (MV3)
 - `opera`
+- `opera-mv3` (MV3)
 
 ## Important Notes
 
