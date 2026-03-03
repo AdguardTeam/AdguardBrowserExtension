@@ -253,6 +253,12 @@ const saveToJsFile = async (rawContent: string, fileName: string): Promise<void>
         const result = await exec(
             `npx tsx ${FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3)}/${fileName}`,
         );
+        if (result.stdout) {
+            console.log(`tsx stdout for ${fileName}:\n${result.stdout}`);
+        }
+        if (result.stderr) {
+            console.warn(`tsx stderr for ${fileName}:\n${result.stderr}`);
+        }
         assert.ok(result.stderr === '', 'No errors during execution');
         assert.ok(result.stdout === '', 'No output during execution');
     } catch (error) {
