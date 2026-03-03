@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -26,6 +26,7 @@ import { getErrorMessage } from '@adguard/logger';
 import { UserAgent } from '../../../../common/user-agent';
 import {
     type AddFilteringSubscriptionMessage,
+    type OpenFilteringLogMessage,
     type ScriptletCloseWindowMessage,
     type UpdateFullscreenUserRulesThemeMessage,
 } from '../../../../common/messages';
@@ -36,18 +37,13 @@ import {
     type ForwardParams,
 } from '../../../../common/forward';
 import { UrlUtils } from '../../../utils/url';
-import {
-    browserStorage,
-    groupStateStorage,
-    settingsStorage,
-} from '../../../storages';
+import { groupStateStorage, settingsStorage } from '../../../storages';
 import { SettingOption } from '../../../schema';
 import { BrowserUtils } from '../../../utils/browser-utils';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
     CHROME_EXTENSIONS_SETTINGS_URL,
-    FILTERING_LOG_WINDOW_STATE,
 } from '../../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../../common/api/extension';
 import { Prefs } from '../../../prefs';
@@ -201,8 +197,10 @@ export abstract class PagesApiCommon {
     /**
      * Opens filtering log page window.
      * If the page has been already opened, focus on window instead creating new one.
+     *
+     * @param message Optional message containing window state from localStorage.
      */
-    public static async openFilteringLogPage(): Promise<void> {
+    public static async openFilteringLogPage(message?: OpenFilteringLogMessage): Promise<void> {
         const activeTab = await TabsApi.getActive();
         if (!activeTab) {
             return;
@@ -218,7 +216,7 @@ export abstract class PagesApiCommon {
             return;
         }
 
-        const windowStateString = await browserStorage.get(FILTERING_LOG_WINDOW_STATE);
+        const windowState = message?.data?.windowState;
 
         // Firefox does not allow to maximize popup windows on Windows operating system.
         // For more details, see the Bugzilla report:
@@ -229,9 +227,7 @@ export abstract class PagesApiCommon {
         const windowType = UserAgent.isFirefox && UserAgent.isWindows ? 'normal' : 'popup';
 
         try {
-            const options = typeof windowStateString === 'string'
-                ? JSON.parse(windowStateString)
-                : PagesApiCommon.defaultPopupWindowState;
+            const options = windowState ?? PagesApiCommon.defaultPopupWindowState;
 
             await WindowsApi.create({
                 url,

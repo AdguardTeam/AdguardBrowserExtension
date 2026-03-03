@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -134,7 +134,6 @@ export enum MessageType {
     GetUserRulesEditorData = 'getUserRulesEditorData',
     GetEditorStorageContent = 'getEditorStorageContent',
     SetEditorStorageContent = 'setEditorStorageContent',
-    SetFilteringLogWindowState = 'setFilteringLogWindowState',
     AppInitialized = 'appInitialized',
     UpdateTotalBlocked = 'updateTotalBlocked',
     ScriptletCloseWindow = 'scriptletCloseWindow',
@@ -289,8 +288,22 @@ export type OpenExtensionStoreMessage = {
     type: MessageType.OpenExtensionStore;
 };
 
+export const FULLSCREEN_STATE = 'fullscreen' as const;
+
+export type FilteringLogWindowState = {
+    width: number;
+    height: number;
+    top: number;
+    left: number;
+} | {
+    state: typeof FULLSCREEN_STATE;
+};
+
 export type OpenFilteringLogMessage = {
     type: MessageType.OpenFilteringLog;
+    data?: {
+        windowState?: FilteringLogWindowState;
+    };
 };
 
 export type OpenAbuseTabMessage = {
@@ -494,10 +507,6 @@ export type SetPreserveLogStateMessage = {
     data: {
         state: boolean;
     };
-};
-
-export type SetFilteringLogWindowStateMessage = {
-    type: MessageType.SetFilteringLogWindowState;
 };
 
 export type RefreshPageMessage = {
@@ -909,10 +918,6 @@ export type MessageMap = {
     [MessageType.GetFilteringInfoByTabId]: {
         message: GetFilteringInfoByTabIdMessage;
         response: FilteringLogTabInfo | undefined;
-    };
-    [MessageType.SetFilteringLogWindowState]: {
-        message: SetFilteringLogWindowStateMessage;
-        response: void;
     };
     [MessageType.EnableFiltersGroup]: {
         message: EnableFiltersGroupMessage;

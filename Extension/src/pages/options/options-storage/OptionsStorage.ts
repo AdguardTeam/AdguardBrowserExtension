@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -49,6 +49,11 @@ export class OptionsStorage {
          * Show preserve log modal state
          */
         SHOW_PRESERVE_LOG_MODAL: 'show-preserve-log-modal',
+
+        /**
+         * Filtering log window state (position and size)
+         */
+        FILTERING_LOG_WINDOW_STATE: 'filtering-log-window-state',
     };
 
     DEFAULTS = {
@@ -63,6 +68,7 @@ export class OptionsStorage {
             source: { width: 200 },
         },
         [this.KEYS.SHOW_PRESERVE_LOG_MODAL]: true,
+        [this.KEYS.FILTERING_LOG_WINDOW_STATE]: null,
     };
 
     /**

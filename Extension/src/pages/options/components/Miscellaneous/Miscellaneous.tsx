@@ -26,6 +26,7 @@ import { TelemetryScreenName } from '../../../../background/services/telemetry/e
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { messenger } from '../../../services/messenger';
+import { optionsStorage } from '../../options-storage';
 import { rootStore } from '../../stores/RootStore';
 import { NotificationType } from '../../../common/types';
 import { addMinDelayLoader } from '../../../common/components/helpers';
@@ -112,7 +113,8 @@ export const Miscellaneous = observer(() => {
     );
 
     const handleFilteringLogClick = async () => {
-        await messenger.openFilteringLog();
+        const windowState = optionsStorage.getItem(optionsStorage.KEYS.FILTERING_LOG_WINDOW_STATE);
+        await messenger.openFilteringLog(windowState);
     };
 
     const handleResetStatisticsClick = async () => {

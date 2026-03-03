@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -39,7 +39,6 @@ export const SB_LRU_CACHE_KEY = 'sb-lru-cache';
 export const SB_SUSPENDED_CACHE_KEY = 'safebrowsing-suspended-from';
 export const VIEWED_NOTIFICATIONS_KEY = 'viewed-notifications';
 export const LAST_NOTIFICATION_TIME_KEY = 'viewed-notification-time';
-export const FILTERING_LOG_WINDOW_STATE = 'filtering-log-window-state';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
