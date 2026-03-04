@@ -28,8 +28,12 @@ import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
 import { ContentScriptInjector } from '../../content-script-injector';
 
-import { type ManualUpdateMetadata, ManualUpdateMetadataValidator } from './types';
-import { CwsVersionChecker } from './cws-version-checker-mv3';
+import {
+    type ManualUpdateMetadata,
+    ManualUpdateMetadataValidator,
+    UpdateCheckStatus,
+} from './types';
+import { BackendUpdateChecker } from './backend-update-checker-mv3';
 import { type AutoUpdateStateManager } from './auto-update-state-manager-mv3';
 import { AutoUpdateStateField } from './types';
 
@@ -37,8 +41,8 @@ import { AutoUpdateStateField } from './types';
  * Handles manual extension update workflow initiated by user.
  *
  * Responsibilities:
- * - Check for updates via Chrome API.
- * - Verify update availability in CWS.
+ * - Check for updates via AdGuard Backend API.
+ * - Verify update availability before requesting Chrome download.
  * - Apply manual updates with proper state management.
  * - Store and retrieve manual update data across reloads.
  * - Handle post-update page navigation.
@@ -134,8 +138,8 @@ export class ManualUpdateHandler {
      *
      * Flow:
      * 1. Sets isManualCheck flag.
-     * 2. Checks if update available in CWS.
-     * 3. Calls chrome.runtime.requestUpdateCheck().
+     * 2. Checks AdGuard Backend API for update availability.
+     * 3. If update confirmed, calls chrome.runtime.requestUpdateCheck().
      * 4. Waits for Chrome to download update.
      * 5. Fires callbacks for FSM coordination.
      */
@@ -156,14 +160,16 @@ export class ManualUpdateHandler {
 
         this.onUpdateCheckStart();
 
-        // Before requesting update check, ensure that update is available in CWS
-        // to avoid unnecessary requestUpdateCheck calls since it is rate-limited.
-        const isUpdateAvailableInCws = await ManualUpdateHandler.isUpdateAvailableInCws();
+        // Before requesting update check, call the AdGuard Backend API
+        // to check if a newer version is available. This avoids unnecessary
+        // requestUpdateCheck calls since it is rate-limited by Chrome.
+        const backendResult = await BackendUpdateChecker.checkUpdate();
+        const isUpdateAvailable = backendResult.status === UpdateCheckStatus.UpdateAvailable;
 
-        // If update is available in CWS, request update check and wait for
-        // onUpdateAvailable event.
+        // If backend confirms an update, request Chrome to download it
+        // and wait for onUpdateAvailable event.
         let shouldWaitForUpdateEvent = false;
-        if (isUpdateAvailableInCws) {
+        if (isUpdateAvailable) {
             shouldWaitForUpdateEvent = await ManualUpdateHandler.requestUpdateCheck();
         }
 
@@ -174,7 +180,7 @@ export class ManualUpdateHandler {
 
         // Here we should wait for onUpdateAvailable event from Chrome when
         // browser will download the update in background.
-        if (isUpdateAvailableInCws && shouldWaitForUpdateEvent) {
+        if (isUpdateAvailable && shouldWaitForUpdateEvent) {
             // Do nothing, just wait for onUpdateAvailable event from Chrome.
             return;
         }
@@ -205,6 +211,16 @@ export class ManualUpdateHandler {
 
         // Save state to storage for persistence across SW restarts
         this.stateManager.save();
+
+        // Fire-and-forget backend call for analytics/logging only.
+        // The result does NOT gate the update — manual updates always proceed.
+        BackendUpdateChecker.checkUpdate()
+            .then((result) => {
+                logger.debug(`[ext.ManualUpdateHandler.onUpdateAvailable]: Post-download backend check result: ${result.status}`);
+            })
+            .catch((error) => {
+                logger.debug('[ext.ManualUpdateHandler.onUpdateAvailable]: Post-download backend check failed:', error);
+            });
 
         logger.trace('[ext.ManualUpdateHandler.onUpdateAvailable]: Update available after manual check - update icon will be shown immediately.');
 
@@ -239,7 +255,7 @@ export class ManualUpdateHandler {
         try {
             await FilterUpdateApi.updateCustomFilters();
         } catch (e) {
-            logger.error(`[ext.ManualUpdateHandler.applyUpdate]: Failed to update custom filters before extension reload, updating extension will continue. Origin error: ${e}`);
+            logger.error('[ext.ManualUpdateHandler.applyUpdate]: Failed to update custom filters before extension reload, updating extension will continue. Origin error:', e);
         }
 
         try {
@@ -269,7 +285,7 @@ export class ManualUpdateHandler {
         } catch (e) {
             await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
             isExtensionUpdated = false;
-            logger.error(`[ext.ManualUpdateHandler.applyUpdate]: Failed to reload extension: ${e}`);
+            logger.error('[ext.ManualUpdateHandler.applyUpdate]: Failed to reload extension:', e);
         }
 
         // IMPORTANT: only failure of the update is handled here
@@ -361,15 +377,6 @@ export class ManualUpdateHandler {
         await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
 
         return manualExtensionUpdateData;
-    }
-
-    /**
-     * Checks if update is available in Chrome Web Store.
-     *
-     * @returns True if update is available, false otherwise.
-     */
-    private static async isUpdateAvailableInCws(): Promise<boolean> {
-        return CwsVersionChecker.isUpdateAvailable();
     }
 
     /**
