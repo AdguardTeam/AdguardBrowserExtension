@@ -30,6 +30,7 @@ import {
 } from './types';
 import { IdleDetector } from './idle-detector-mv3';
 import { type AutoUpdateStateManager } from './auto-update-state-manager-mv3';
+import { BackendUpdateChecker } from './backend-update-checker-mv3';
 
 /**
  * Handles automatic update orchestration after Chrome downloads an update.
@@ -226,6 +227,17 @@ export class AutoUpdateHandler {
 
             logger.info(`[ext.AutoUpdateHandler.checkConditions]: Idle threshold reached, applying update. Idle duration: ${idleDuration}ms`);
 
+            // Fire-and-forget backend call for analytics/logging.
+            // Chrome already confirmed update is available via onUpdateAvailable,
+            // so the backend response does NOT gate the update.
+            BackendUpdateChecker.checkUpdate()
+                .then((result) => {
+                    logger.debug(`[ext.AutoUpdateHandler.checkConditions]: Backend check result: ${result.status}`);
+                })
+                .catch((error) => {
+                    logger.debug('[ext.AutoUpdateHandler.checkConditions]: Backend check failed:', error);
+                });
+
             // Stop monitoring and apply update
             this.stopMonitoring();
             await this.applyUpdate();
@@ -254,7 +266,7 @@ export class AutoUpdateHandler {
             // Reload extension
             chrome.runtime.reload();
         } catch (e) {
-            logger.error(`[ext.AutoUpdateHandler.applyUpdate]: Failed to reload: ${e}`);
+            logger.error('[ext.AutoUpdateHandler.applyUpdate]: Failed to reload:', e);
             this.onUpdateApplyFailed();
         }
     }
