@@ -64,7 +64,7 @@ Running integration tests with enabling debug mode (page will be stopped after
 tests execution) for one of them:
 
 ```shell
-pnpm test:integration <TARGET> [-d <TEST_ID>] [-u <USERSCRIPTS_MODE>]
+pnpm test:integration <TARGET> [-d|--debug-test-id <TEST_ID>] [-u <USERSCRIPTS_MODE>]
 # TARGET can be 'dev', 'beta', 'release', same as build targets.
 # TEST_ID can be extracted from https://testcases.agrd.dev/data.json
 # USERSCRIPTS_MODE can be 'enabled' or 'disabled' (default: both modes)
