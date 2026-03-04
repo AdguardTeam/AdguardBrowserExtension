@@ -116,6 +116,58 @@ export const AutoUpdateStateValidator = SharedUpdateStateValidator.merge(
 export type AutoUpdateState = SharedUpdateState & AutoUpdateSpecificState;
 
 /**
+ * Possible statuses returned by {@link BackendUpdateChecker.checkUpdate}.
+ */
+export const enum UpdateCheckStatus {
+    /**
+     * Backend confirmed a newer version is available.
+     */
+    UpdateAvailable = 'update_available',
+
+    /**
+     * No update: backend returned same/older version.
+     */
+    NoUpdate = 'no_update',
+
+    /**
+     * Backend returned 204 No Content — no update available.
+     */
+    NoContent = 'no_content',
+
+    /**
+     * Network error, timeout, malformed response, or unexpected HTTP status.
+     */
+    Error = 'error',
+}
+
+/**
+ * Discriminated union result from a backend update check.
+ * Callers use {@link UpdateCheckStatus} to decide how to proceed
+ * depending on the phase (pre-download vs post-download) and trigger
+ * (manual vs automatic).
+ */
+export type UpdateCheckResult =
+    | { status: UpdateCheckStatus.UpdateAvailable; version: string }
+    | { status: UpdateCheckStatus.NoUpdate }
+    | { status: UpdateCheckStatus.NoContent }
+    | { status: UpdateCheckStatus.Error; error: unknown };
+
+/**
+ * Validator for the backend update check API response (HTTP 200).
+ */
+export const BackendUpdateResponseValidator = zod.object({
+    /**
+     * The available extension version reported by the backend.
+     */
+    version: zod.string(),
+});
+
+/**
+ * Backend update check API response data.
+ */
+export type BackendUpdateResponse = zod.infer<typeof BackendUpdateResponseValidator>;
+
+/**
  * Auto-update configuration validator.
  */
 export const AutoUpdateConfigValidator = zod.object({
