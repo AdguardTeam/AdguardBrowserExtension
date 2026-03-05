@@ -1,9 +1,9 @@
-! Checksum: tmKnyoXzUgwg1rSI2qAebw
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1770352928-3600.patch
+! Checksum: mxFCdOycLfORq8O5n3CGqg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1772720709-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.97
-! TimeUpdated: 2026-02-06T04:39:21+00:00
+! Version: 2.0.13.12
+! TimeUpdated: 2026-03-05T14:22:05+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=analytics_context
 $removeparam=analytics_trace_id
@@ -318,6 +318,28 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||languagetool.org^$removeparam=host
+||languagetool.org^$removeparam=matomo
+||languagetool.org^$removeparam=trial_status
+||time.com^$removeparam=iid
+||aws.eu^$removeparam=trk
+||builder.aws.com^$removeparam=trk
+||pages.awscloud.com^$removeparam=trk
+||registration.awsevents.com^$removeparam=trk
+||coderpad.io^$removeparam=cg_referrer
+||ostrovok.ru^$removeparam=partner_slug
+||ostrovok.ru^$removeparam=partner_extra
+||ostrovok.ru^$removeparam=utmToken
+||navan.com^$removeparam=source
+||marriott.com^$removeparam=dtm_user_id
+||tracking.narvar.com^$removeparam=src
+||news.jp^$removeparam=c
+||reddit.com^$removeparam=entry_point
+||bunjang.co.kr^$removeparam=ref_content
+||bunjang.co.kr^$removeparam=ref_code
+||bunjang.co.kr^$removeparam=imp_id
+||account.proton.me^$removeparam=ref
+||soundcore.com^$document,removeparam=ref
 ||feeder.co^$removeparam=from
 ref=shadcn.com^$removeparam=ref
 ||petbook.de^$removeparam=dicbo
@@ -568,6 +590,7 @@ $removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
 ||em.dynamicyield.com^$removeparam=tag_ids
 ||ebikes.ca^$removeparam=___store
 ||ebikes.ca^$removeparam=___from_store
+||tapatalk.com^$removeparam=sid
 /viewforum.php?$removeparam=sid
 /viewtopic.php?$removeparam=sid
 ||html5.gamedistribution.com^$removeparam=mp_site_url
@@ -1475,6 +1498,8 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||lite.qwant.com/redirect/$removeparam=uri
 ||realestate.yahoo.co.jp^$removeparam=sc_out
 ||glami.cz^$removeparam=/ga[ct]id/
+||open.spotify.com^$removeparam=sp_cid
+||open.spotify.com^$removeparam=dlsi
 ||open.spotify.com^$removeparam=pi
 ||open.spotify.com^$removeparam=referral
 ||open.spotify.com^$removeparam=si
@@ -1488,6 +1513,7 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||click.speee-ad.jp^$removeparam=sess_id
 ||click.speee-ad.jp^$removeparam=slot_index
 ||click.speee-ad.jp^$removeparam=v
+||tiktok.com^$removeparam=_t
 ||tiktok.com$removeparam=referer_video_id
 ||tiktok.com^$removeparam=embed_source
 ||tiktok.com^$removeparam=referer_url
@@ -2357,6 +2383,7 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||canadacompanyregistry.com^$removeparam=utm_campaign
 @@||usprobioticguide.com^$removeparam=utm_campaign
 @@||metabase.com^$removeparam=utm_term
 @@||adj.st^$removeparam=adj_t
