@@ -28,7 +28,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { MIN_USER_RULES_REMOVAL_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { logger } from '../../../../../common/logger';
 import { popupStore } from '../../../stores/PopupStore';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 import { type SingleActionParams } from './types';
 

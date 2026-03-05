@@ -30,6 +30,11 @@ import { SettingsApi, TelemetryApi } from '../../api';
 import { SettingOption } from '../../schema';
 import { notifier } from '../../notifier';
 import { NotifierType } from '../../../common/constants';
+import {
+    type TelemetryActionToScreenMap,
+    type TelemetryEventName,
+    type TelemetryScreenName,
+} from '../../../common/telemetry';
 
 import { TelemetryDataCollector } from './TelemetryDataCollector';
 import {
@@ -41,11 +46,6 @@ import {
 import { ABTestManager } from './abtest';
 import { type SessionStartRequest } from './abtest';
 import { TelemetryPageTracker } from './TelemetryPageTracker';
-import {
-    type TelemetryActionToScreenMap,
-    type TelemetryEventName,
-    type TelemetryScreenName,
-} from './enums';
 
 /**
  * Telemetry service for tracking user interactions and sending analytics events.

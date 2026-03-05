@@ -43,7 +43,7 @@ import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
 import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
-import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingOption } from '../../../../background/schema';
 
 import '../../styles/styles.pcss';

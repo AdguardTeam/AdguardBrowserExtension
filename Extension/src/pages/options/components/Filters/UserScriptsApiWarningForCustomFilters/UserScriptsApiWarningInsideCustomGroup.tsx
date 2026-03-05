@@ -32,7 +32,7 @@ import { useVisibilityCheck } from '../../../../common/hooks/useVisibilityCheck'
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { USER_SCRIPTS_API_REQUIRED_URL } from '../../../constants';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 /**
  * User scripts API warning component for User rules section.

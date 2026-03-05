@@ -28,7 +28,7 @@ import { translator } from '../../../../common/translators/translator';
 import { popupStore } from '../../stores/PopupStore';
 import { AppState } from '../../state-machines/app-state-machine';
 import { COMPARE_URL, SpecificPopupState } from '../../constants';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 
 import {
     MainSwitch,

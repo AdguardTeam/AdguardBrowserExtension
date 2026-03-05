@@ -32,7 +32,7 @@ import { rootStore } from '../../stores/RootStore';
 import { Nav } from '../Nav';
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 
 import { Compare } from './Compare';
 

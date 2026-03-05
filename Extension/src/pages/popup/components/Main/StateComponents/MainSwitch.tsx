@@ -28,7 +28,7 @@ import { isTransitionAppState } from '../../../state-machines/app-state-machine'
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { logger } from '../../../../../common/logger';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 /**
  * Main switcher component props.
