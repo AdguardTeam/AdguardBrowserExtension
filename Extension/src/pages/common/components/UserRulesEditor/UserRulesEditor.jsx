@@ -35,7 +35,7 @@ import { Editor, EditorLeaveModal } from '../Editor';
 import { translator } from '../../../../common/translators/translator';
 import { Checkbox } from '../ui/Checkbox';
 import { messenger } from '../../../services/messenger';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import {
     NotifierType,
     NEWLINE_CHAR_UNIX,

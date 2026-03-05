@@ -30,7 +30,7 @@ import {
     USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED,
 } from '../../../../../common/constants';
 import { BrowserUtils } from '../../../../../background/utils/browser-utils';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
     const { settingsStore: { currentChromeVersion }, telemetryStore } = useContext(rootStore);
