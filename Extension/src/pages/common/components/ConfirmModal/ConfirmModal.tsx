@@ -94,11 +94,6 @@ export const ConfirmModal = ({
     const confirmTitle = customConfirmTitle || 'OK';
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
 
-    const subtitleClassName = cn(
-        theme.modal.subtitle,
-        !isConsent && theme.modal.subtitleOneLine,
-    );
-
     const okBtnClassName = cn(`button button--l ${theme.modal.btn} button--green-bg`, {
         'button--red-bg': !isConsent,
     });
@@ -150,7 +145,7 @@ export const ConfirmModal = ({
                     </div>
                     {subtitle && (
                         <div
-                            className={subtitleClassName}
+                            className={theme.modal.subtitle}
                         >
                             {subtitle}
                         </div>

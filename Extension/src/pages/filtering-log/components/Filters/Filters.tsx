@@ -109,7 +109,7 @@ const Filters = () => {
                 <Actions />
             </div>
 
-            <div className={cn('filters__events-tags', theme.common.hideMobile)}>
+            <div className={cn('filters__events-tags', theme.common.hideOnMobile)}>
                 <div
                     ref={ref}
                     onScroll={scrollTags}
