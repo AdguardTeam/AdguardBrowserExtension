@@ -84,8 +84,8 @@ export const Sidebar = observer(() => {
                     colorClass={preserveLogEnabled ? 'icon--red-default' : 'icon--gray-default'}
                 >
                     {preserveLogEnabled
-                        ? translator.getMessage('filtering_log_preserve_log_on')
-                        : translator.getMessage('filtering_log_preserve_log_off')}
+                        ? translator.getMessage('filtering_log_preserve_log_off')
+                        : translator.getMessage('filtering_log_preserve_log_on')}
                 </MenuButton>
                 <MenuButton
                     handler={clearLogHandler}

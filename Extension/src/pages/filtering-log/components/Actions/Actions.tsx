@@ -86,7 +86,7 @@ const Actions = observer(() => {
                         : <TabSelector />
                 }
             </div>
-            <div className={cn('actions__col', 'actions__buttons', theme.common.hideMobile)}>
+            <div className={cn('actions__col', 'actions__buttons', theme.common.hideOnMobile)}>
                 <div className="actions__action actions__preserve">
                     <input
                         className="checkbox-input"
