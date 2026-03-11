@@ -2,21 +2,21 @@
 
 - [Requirements](#dev-requirements)
 - [How to build](#dev-build)
-   - [Tests and dev build](#dev-tests-and-build)
-   - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
-   - [Linking tsurlfilter on CI (Bamboo)](#dev-ci-link)
-   - [Building the beta and release versions](#dev-beta-and-release)
-   - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
-   - [Analyzing bundle size](#dev-bundle-size)
-   - [Debug MV3 declarative rules](#dev-debug-mv3)
-   - [Hotfix filters for MV3 with skip review](#dev-hotfix-mv3)
+    - [Tests and dev build](#dev-tests-and-build)
+    - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
+    - [Linking tsurlfilter on CI (Bamboo)](#dev-ci-link)
+    - [Building the beta and release versions](#dev-beta-and-release)
+    - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
+    - [Analyzing bundle size](#dev-bundle-size)
+    - [Debug MV3 declarative rules](#dev-debug-mv3)
+    - [Hotfix filters for MV3 with skip review](#dev-hotfix-mv3)
 - [Linter](#dev-linter)
 - [TypeScript Configuration](#dev-typescript-configs)
 - [CSS Architecture](#dev-css)
 - [Update localizations](#dev-localizations)
 - [Bundle Size Monitoring](#dev-bundle-size-monitoring)
 
-### <a name="dev-requirements"></a> Requirements
+## <a name="dev-requirements"></a> Requirements
 
 Ensure that the following software is installed on your computer:
 
@@ -416,7 +416,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
     ```shell
     pnpm debug-filters:watch
     ```
-   
+
     - This command has `-b, --browser <browser>` option to specify the browser target.
       Available browsers: `chrome-mv3`, `opera-mv3`.
       Default: `chrome-mv3`.
@@ -547,6 +547,7 @@ For all command options, use `--help`, e.g.:
 pnpm exec dnr-rulesets watch --help
 pnpm exec tsurlfilter convert --help
 ```
+
 ### <a name="dev-hotfix-mv3"></a> Hotfix filters for MV3 with skip review
 
 This guide explains how to update MV3 rulesets and submit them for Chrome Web Store fast-track review (skip review).
@@ -632,12 +633,12 @@ This guide explains how to update MV3 rulesets and submit them for Chrome Web St
     - Upload the extension to Chrome Web Store
     - Submit for fast-track review
 
-### <a name="dev-linter"></a> Linter
+## <a name="dev-linter"></a> Linter
 
 Despite our code may not currently comply with new style configuration,
 please, setup `eslint` in your editor to follow up with it `.eslintrc`
 
-### <a name="dev-typescript-configs"></a> TypeScript Configuration
+## <a name="dev-typescript-configs"></a> TypeScript Configuration
 
 The project uses **TypeScript Project References** to completely separate Manifest V2 and V3 codebases into independent TypeScript projects. This architectural approach eliminates the need for empty stub implementations and provides superior IDE support.
 
@@ -669,7 +670,7 @@ The project contains **5 TypeScript configuration files**, each serving a specif
     - Special path mapping for JSX files
     - Separate from compilation projects
 
-### <a name="dev-css"></a> CSS Cascade Layers
+## <a name="dev-css"></a> CSS Cascade Layers
 
 The project uses two CSS layers to manage style priority:
 
@@ -679,7 +680,7 @@ The project uses two CSS layers to manage style priority:
 Layer order is declared inline in HTML templates (e.g., `Extension/pages/options/index.html`):
 This ensures the layer order is established before any `style-loader` injections from JavaScript bundles. The `utilities` layer has higher priority than `components`, ensuring utility classes always override component styles.
 
-### <a name="dev-localizations"></a> Update localizations
+## <a name="dev-localizations"></a> Update localizations
 
 For detailed localization workflow and best practices, see [Locales Documentation](./tools/locales/README.md#dev-locales).
 
@@ -714,7 +715,7 @@ To show locales info run:
 pnpm locales info
 ```
 
-### <a name="dev-bundle-size-monitoring"></a> Bundle Size Monitoring
+## <a name="dev-bundle-size-monitoring"></a> Bundle Size Monitoring
 
 The browser extension project includes a comprehensive bundle size monitoring system, located in `tools/bundle-size`. This system helps ensure that our extension bundles remain within defined size limits, and that any significant increases are reviewed and justified.
 
