@@ -19,11 +19,8 @@
  */
 
 import { UserAgent } from '../common/user-agent';
-import {
-    type PageInitAppData,
-    TelemetryEventName,
-    TelemetryScreenName,
-} from '../background/services';
+import { type PageInitAppData } from '../background/services';
+import { TelemetryEventName, TelemetryScreenName } from '../common/telemetry';
 import { AntiBannerFiltersId } from '../common/constants';
 
 import { messenger } from './services/messenger';

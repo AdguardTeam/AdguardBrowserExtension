@@ -21,7 +21,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';

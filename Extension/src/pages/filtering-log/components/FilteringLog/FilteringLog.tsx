@@ -45,7 +45,7 @@ import { Icons } from '../ui/Icons';
 import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
 import { CustomizeModal } from '../CustomizeModal';
 import { Sidebar } from '../Sidebar';
-import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingOption } from '../../../../background/schema';
 
 import '../../styles/styles.pcss';

@@ -46,6 +46,11 @@ vi.mock('../../../../Extension/src/common/logger', () => ({
     },
 }));
 
+vi.mock('../../../../Extension/src/background/services/telemetry/abtest/constants', () => ({
+    VARIANTS_STORAGE_KEY: 'ab_test_manager.variants',
+    EXPERIMENT_REGISTRY: {},
+}));
+
 const makeResponse = (overrides: SessionStartResponse['versions'] = {}): SessionStartResponse => ({
     versions: overrides,
 });
@@ -155,6 +160,24 @@ describe('ABTestManager', () => {
             vi.mocked(browserStorage.get).mockResolvedValue(undefined);
 
             expect(await ABTestManager.getVariantsForProps()).toEqual({});
+        });
+    });
+
+    describe('hasVariant', () => {
+        it('should return true when variant is cached', async () => {
+            vi.mocked(browserStorage.get).mockResolvedValue({
+                experiment_1: 'AG-51010-limitations-browser-b',
+            });
+
+            expect(await ABTestManager.hasVariant('AG-51010-limitations-browser-b')).toBe(true);
+        });
+
+        it('should return false when variant is not cached', async () => {
+            vi.mocked(browserStorage.get).mockResolvedValue({
+                experiment_1: 'AG-51010-limitations-browser-a',
+            });
+
+            expect(await ABTestManager.hasVariant('AG-51010-limitations-browser-b')).toBe(false);
         });
     });
 

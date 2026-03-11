@@ -117,6 +117,14 @@ export class PopupStoreCommon {
     @observable
     showInfoAboutFullVersion = true;
 
+    /**
+     * Alternative protection button visibility state.
+     *
+     * State for AG-51010.
+     */
+    @observable
+    showAlternativeProtectionButton = true;
+
     @observable
     isEdgeBrowser = false;
 
@@ -263,6 +271,7 @@ export class PopupStoreCommon {
         this.isEdgeBrowser = options.isEdgeBrowser;
         this.promoNotification = options.notification;
         this.hasUserRulesToReset = options.hasUserRulesToReset;
+        this.showAlternativeProtectionButton = options.showAlternativeProtectionButton;
 
         // stats
         this.stats = stats;
