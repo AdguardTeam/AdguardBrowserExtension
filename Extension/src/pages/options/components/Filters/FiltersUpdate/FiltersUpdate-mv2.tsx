@@ -24,7 +24,7 @@ import { observer } from 'mobx-react';
 import { translator } from '../../../../../common/translators/translator';
 import { rootStore } from '../../../stores/RootStore';
 import { formatDate } from '../helpers';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 import styles from './filters-update.module.pcss';
 

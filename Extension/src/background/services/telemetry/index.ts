@@ -19,7 +19,7 @@
  */
 export { Telemetry } from './Telemetry';
 export { SyntheticIdGenerator } from './SyntheticIdGenerator';
-export { TelemetryEventName, TelemetryScreenName, TelemetryTheme as Theme } from './enums';
+export { TelemetryEventName, TelemetryScreenName, TelemetryTheme as Theme } from '../../../common/telemetry';
 export type { TelemetryApiEventData } from './types';
 export { TelemetryDataCollector } from './TelemetryDataCollector';
 export { TelemetryPageTracker } from './TelemetryPageTracker';

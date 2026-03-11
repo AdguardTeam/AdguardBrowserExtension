@@ -29,7 +29,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Editor, EditorLeaveModal } from '../../../common/components/Editor';

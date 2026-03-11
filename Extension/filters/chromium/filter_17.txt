@@ -1,9 +1,9 @@
-! Checksum: pAzsIfgCWFuq2pR0YFO6hw
-! Diff-Path: ../patches/17/17-s-1770352914-3600.patch
+! Checksum: jrDVRmqxkg9X0XsR8ZcEaw
+! Diff-Path: ../patches/17/17-s-1772720698-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.12.97
-! TimeUpdated: 2026-02-06T04:39:21+00:00
+! Version: 2.0.13.12
+! TimeUpdated: 2026-03-05T14:22:05+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -499,6 +499,42 @@ $removeparam=tduid
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! languagetool.org
+||languagetool.org^$removeparam=host
+||languagetool.org^$removeparam=matomo
+||languagetool.org^$removeparam=trial_status
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15946121
+||time.com^$removeparam=iid
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15984971
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15944807
+||aws.eu^$removeparam=trk
+||builder.aws.com^$removeparam=trk
+||pages.awscloud.com^$removeparam=trk
+||registration.awsevents.com^$removeparam=trk
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15938541
+||coderpad.io^$removeparam=cg_referrer
+! https://github.com/AdguardTeam/AdguardFilters/issues/225628
+||ostrovok.ru^$removeparam=partner_slug
+||ostrovok.ru^$removeparam=partner_extra
+||ostrovok.ru^$removeparam=utmToken
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15911579
+||navan.com^$removeparam=source
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15904700
+||marriott.com^$removeparam=dtm_user_id
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15866571
+||tracking.narvar.com^$removeparam=src
+! https://github.com/AdguardTeam/AdguardFilters/issues/225249
+||news.jp^$removeparam=c
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15852187
+||reddit.com^$removeparam=entry_point
+! https://github.com/AdguardTeam/AdguardFilters/issues/224934
+||bunjang.co.kr^$removeparam=ref_content
+||bunjang.co.kr^$removeparam=ref_code
+||bunjang.co.kr^$removeparam=imp_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/224605
+||account.proton.me^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/224428
+||soundcore.com^$document,removeparam=ref
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15687218
 ||feeder.co^$removeparam=from
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-15686111
@@ -889,6 +925,8 @@ $removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
 ! https://github.com/AdguardTeam/AdguardFilters/issues/204894
 ||ebikes.ca^$removeparam=___store
 ||ebikes.ca^$removeparam=___from_store
+! https://github.com/AdguardTeam/AdguardFilters/issues/224442
+||tapatalk.com^$removeparam=sid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/206358
 ! https://github.com/AdguardTeam/AdguardFilters/issues/205132
 /viewforum.php?$removeparam=sid
@@ -2196,6 +2234,9 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/143623
 ||glami.cz^$removeparam=/ga[ct]id/
 ! spotify.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/225820
+||open.spotify.com^$removeparam=sp_cid
+||open.spotify.com^$removeparam=dlsi
 ! https://github.com/AdguardTeam/AdguardFilters/issues/214514
 ||open.spotify.com^$removeparam=pi
 ! https://github.com/AdguardTeam/AdguardFilters/issues/143625
@@ -2216,6 +2257,8 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||click.speee-ad.jp^$removeparam=slot_index
 ||click.speee-ad.jp^$removeparam=v
 !! tiktok
+! https://github.com/AdguardTeam/AdguardFilters/issues/225183
+||tiktok.com^$removeparam=_t
 ! https://github.com/AdguardTeam/AdguardFilters/issues/192966
 ||tiktok.com$removeparam=referer_video_id
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-4978150
@@ -3426,6 +3469,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! canadacompanyregistry.com - utm_source is used to lookup the company name; removing it breaks the page
+@@||canadacompanyregistry.com^$removeparam=utm_campaign
 ! https://github.com/uBlockOrigin/uAssets/issues/31494
 @@||usprobioticguide.com^$removeparam=utm_campaign
 ! https://github.com/uBlockOrigin/uAssets/issues/31203

@@ -255,11 +255,18 @@ const saveToJsFile = async (
             beautifiedJsContent,
         );
 
-        // Run validation with ES modules support
+        // --no-update-notifier suppresses npm's "new version available" notice
+        // that npx writes to stderr in clean environments (e.g. Docker).
         const result = await exec(
-            `npx tsx ${FILTERS_DEST.replace('%browser', browser)}/${fileName}`,
+            `npx --no-update-notifier tsx ${FILTERS_DEST.replace('%browser', browser)}/${fileName}`,
         );
-        assert.ok(result.stderr === '', 'No errors during execution');
+        if (result.stdout) {
+            console.log(`tsx stdout for ${fileName}:\n${result.stdout}`);
+        }
+        if (result.stderr) {
+            console.warn(`tsx stderr for ${fileName}:\n${result.stderr}`);
+        }
+        assert.ok(result.stderr === '', `Errors during execution:\n${result.stderr}`);
         assert.ok(result.stdout === '', 'No output during execution');
     } catch (error) {
         console.error('Error:', error);

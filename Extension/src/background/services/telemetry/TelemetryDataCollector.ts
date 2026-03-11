@@ -25,8 +25,8 @@ import { Prefs } from '../../prefs';
 import { SettingsApi } from '../../api';
 import { SettingOption } from '../../schema';
 import { AppearanceTheme } from '../../../common/constants';
+import { TelemetryFilterUpdateIntervalMode, TelemetryTheme } from '../../../common/telemetry';
 
-import { TelemetryFilterUpdateIntervalMode, TelemetryTheme } from './enums';
 import {
     type TelemetryBaseData,
     type TelemetryProps,

@@ -150,6 +150,18 @@ export class ABTestManager {
     }
 
     /**
+     * Checks if a specific variant version is currently assigned.
+     *
+     * @param versionName Full version name to check for (e.g., 'AG-51010-limitations-browser-b').
+     *
+     * @returns True if the variant is assigned, false otherwise.
+     */
+    public static async hasVariant(versionName: string): Promise<boolean> {
+        const cache = await ABTestManager.getVariantsCache();
+        return Object.values(cache).includes(versionName);
+    }
+
+    /**
      * Loads the variant cache from browser.storage.local.
      * Returns an empty cache if storage is empty or the value fails validation.
      *

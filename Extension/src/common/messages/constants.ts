@@ -49,8 +49,11 @@ import { type GetAllowlistDomainsResponse } from '../../background/services/allo
 import { type GetUserRulesEditorDataResponse, type GetUserRulesResponse } from '../../background/services/userrules';
 import { type GetCustomFilterInfoResult } from '../../background/api/filters/custom';
 import { type ManualUpdateMetadata } from '../../background/services/extension-update/types';
-import { type TelemetryEventName, type TelemetryScreenName } from '../../background/services/telemetry';
-import { type TelemetryActionToScreenMap } from '../../background/services/telemetry/enums';
+import {
+    type TelemetryEventName,
+    type TelemetryScreenName,
+    type TelemetryActionToScreenMap,
+} from '../telemetry';
 
 export const APP_MESSAGE_HANDLER_NAME = 'app';
 

@@ -36,7 +36,7 @@ import { Nav } from '../Nav';
 import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
 import { MOBILE_BREAKPOINT_PX } from '../../../common/constants';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 
 import { Compare } from './Compare';
 import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
