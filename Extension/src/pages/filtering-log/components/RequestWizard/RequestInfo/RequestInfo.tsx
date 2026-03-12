@@ -54,7 +54,7 @@ import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 import { useIsMobile } from '../../../../common/hooks/useIsMobile';
-import { optionsStorage } from '../../../../options/options-storage';
+import { filteringLogStorage } from '../../../filtering-log-storage';
 import { DEFAULT_MODAL_WIDTH_PX, LINE_COUNT_LIMIT } from '../constants';
 import { TextCollapser } from '../../../../common/components/TextCollapser/TextCollapser';
 import { AddedRuleState } from '../../../constants';
@@ -280,7 +280,7 @@ const RequestInfo = observer(() => {
 
     useLayoutEffect(() => {
         const MODAL_PADDINGS_PX = 70;
-        const startModalWidth = optionsStorage.getItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
+        const startModalWidth = filteringLogStorage.getItem(filteringLogStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
             || DEFAULT_MODAL_WIDTH_PX;
 
         setTextMaxWidth(startModalWidth - MODAL_PADDINGS_PX);
