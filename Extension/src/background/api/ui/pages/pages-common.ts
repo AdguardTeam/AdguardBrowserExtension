@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -36,18 +36,14 @@ import {
     type ForwardParams,
 } from '../../../../common/forward';
 import { UrlUtils } from '../../../utils/url';
-import {
-    browserStorage,
-    groupStateStorage,
-    settingsStorage,
-} from '../../../storages';
+import { groupStateStorage, settingsStorage } from '../../../storages';
 import { SettingOption } from '../../../schema';
 import { BrowserUtils } from '../../../utils/browser-utils';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
     CHROME_EXTENSIONS_SETTINGS_URL,
-    FILTERING_LOG_WINDOW_STATE,
+    FILTERING_LOG_WINDOW_STATE_KEY,
 } from '../../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../../common/api/extension';
 import { Prefs } from '../../../prefs';
@@ -62,6 +58,7 @@ import { logger } from '../../../../common/logger';
 import { OptionsPageSections } from '../../../../common/nav';
 import { FilterUpdateService } from '../../../services/filter-update';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
+import { browserStorage } from '../../../storages/shared-instances';
 import { browserAction } from '../browser-action';
 
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
@@ -218,7 +215,7 @@ export abstract class PagesApiCommon {
             return;
         }
 
-        const windowStateString = await browserStorage.get(FILTERING_LOG_WINDOW_STATE);
+        const windowState = await browserStorage.get(FILTERING_LOG_WINDOW_STATE_KEY);
 
         // Firefox does not allow to maximize popup windows on Windows operating system.
         // For more details, see the Bugzilla report:
@@ -229,9 +226,7 @@ export abstract class PagesApiCommon {
         const windowType = UserAgent.isFirefox && UserAgent.isWindows ? 'normal' : 'popup';
 
         try {
-            const options = typeof windowStateString === 'string'
-                ? JSON.parse(windowStateString)
-                : PagesApiCommon.defaultPopupWindowState;
+            const options = windowState ?? PagesApiCommon.defaultPopupWindowState;
 
             await WindowsApi.create({
                 url,

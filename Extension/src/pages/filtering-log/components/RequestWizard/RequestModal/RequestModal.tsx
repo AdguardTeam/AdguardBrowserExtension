@@ -35,7 +35,7 @@ import cn from 'classnames';
 import { rootStore } from '../../../stores/RootStore';
 import { RequestInfo } from '../RequestInfo';
 import { RequestCreateRule } from '../RequestCreateRule';
-import { optionsStorage } from '../../../../options/options-storage';
+import { filteringLogStorage } from '../../../filtering-log-storage';
 import { WizardRequestState } from '../../../constants';
 import { RequestPreview } from '../RequestPreview';
 import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
@@ -64,7 +64,7 @@ const RequestModal = observer(() => {
 
     const MAX_MODAL_WIDTH_RATIO = 0.75;
 
-    const startModalWidth = optionsStorage.getItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
+    const startModalWidth = filteringLogStorage.getItem(filteringLogStorage.KEYS.REQUEST_INFO_MODAL_WIDTH)
         || DEFAULT_MODAL_WIDTH_PX;
 
     const [modalWidth, setModalWidth] = useState(startModalWidth);
@@ -108,7 +108,7 @@ const RequestModal = observer(() => {
 
     const persistModalWidth = (width: number) => {
         setModalWidth(width);
-        optionsStorage.setItem(optionsStorage.KEYS.REQUEST_INFO_MODAL_WIDTH, width);
+        filteringLogStorage.setItem(filteringLogStorage.KEYS.REQUEST_INFO_MODAL_WIDTH, width);
     };
 
     const pointerMoveHandler = (e: React.PointerEvent<HTMLDivElement>) => {
