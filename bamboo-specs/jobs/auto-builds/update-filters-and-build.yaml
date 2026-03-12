@@ -27,7 +27,7 @@ tasks:
           # On Tuesdays the first build collects fixes made on Monday after the
           # weekend, so we do a full manual review instead of skipping it.
           skipReview="true"
-          if [ "$(date +%u)" -eq 2 ]; then
+          if [ "$(date +%u)" -eq 4 ]; then
             echo "Updating local resources (manual review)"
             skipReview="false"
           else
