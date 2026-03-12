@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -293,6 +293,17 @@ export type OpenExtensionStoreMessage = {
     type: MessageType.OpenExtensionStore;
 };
 
+export const FULLSCREEN_STATE = 'fullscreen' as const;
+
+export type FilteringLogWindowState = {
+    width: number;
+    height: number;
+    top: number;
+    left: number;
+} | {
+    state: typeof FULLSCREEN_STATE;
+};
+
 export type OpenFilteringLogMessage = {
     type: MessageType.OpenFilteringLog;
 };
@@ -502,6 +513,9 @@ export type SetPreserveLogStateMessage = {
 
 export type SetFilteringLogWindowStateMessage = {
     type: MessageType.SetFilteringLogWindowState;
+    data: {
+        windowState: FilteringLogWindowState;
+    };
 };
 
 export type RefreshPageMessage = {

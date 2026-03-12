@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -26,6 +26,7 @@ import React, {
 import { observer } from 'mobx-react';
 
 import { throttle } from 'lodash-es';
+import browser from 'webextension-polyfill';
 
 import { Filters } from '../Filters';
 import {
@@ -39,6 +40,7 @@ import { rootStore } from '../../stores/RootStore';
 import { RequestModal } from '../RequestWizard/RequestModal';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { NotifierType } from '../../../../common/constants';
+import { FULLSCREEN_STATE } from '../../../../common/messages/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
@@ -189,10 +191,36 @@ const FilteringLog = observer(() => {
     }, [logStore, telemetryStore, wizardStore]);
 
     useEffect(() => {
-        const saveWindowState = () => {
-            // Send trigger to background — background will read true dimensions
-            // via browser.windows.get() and save them.
-            messenger.setFilteringLogWindowState();
+        const saveWindowState = async () => {
+            try {
+                const win = await browser.windows.getCurrent();
+
+                const {
+                    state,
+                    width,
+                    height,
+                    top,
+                    left,
+                } = win;
+
+                if (state === FULLSCREEN_STATE) {
+                    await messenger.saveFilteringLogWindowState({ state: FULLSCREEN_STATE });
+                } else if (
+                    width !== undefined
+                    && height !== undefined
+                    && top !== undefined
+                    && left !== undefined
+                ) {
+                    await messenger.saveFilteringLogWindowState({
+                        width,
+                        height,
+                        top,
+                        left,
+                    });
+                }
+            } catch (e: unknown) {
+                logger.debug('[ext.FilteringLog]: failed to save window state:', e);
+            }
         };
 
         const throttledSaveWindowState = throttle(saveWindowState, RESIZE_THROTTLE_MS);
