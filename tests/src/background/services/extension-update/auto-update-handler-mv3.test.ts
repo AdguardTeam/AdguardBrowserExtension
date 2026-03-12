@@ -27,6 +27,7 @@ import {
     afterEach,
 } from 'vitest';
 
+import { FilterUpdateApi } from '../../../../../Extension/src/background/api/filters/update/update-mv3';
 import {
     AutoUpdateHandler,
 } from '../../../../../Extension/src/background/services/extension-update/auto-update-handler-mv3';
@@ -47,6 +48,16 @@ vi.mock(
     () => ({
         BackendUpdateChecker: {
             checkUpdate: vi.fn(),
+        },
+    }),
+);
+
+// Mock FilterUpdateApi
+vi.mock(
+    '../../../../../Extension/src/background/api/filters/update/update-mv3',
+    () => ({
+        FilterUpdateApi: {
+            updateCustomFilters: vi.fn(),
         },
     }),
 );
@@ -179,6 +190,40 @@ describe('AutoUpdateHandler', () => {
             // Backend should NOT be called because idle check fails first
             expect(BackendUpdateChecker.checkUpdate).not.toHaveBeenCalled();
             expect(onUpdateApplyStart).not.toHaveBeenCalled();
+        });
+    });
+
+    describe.skipIf(!__IS_MV3__)('applyUpdate — custom filters', () => {
+        it('calls updateCustomFilters before reload', async () => {
+            // mock updateCustomFilters to resolve immediately
+            vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockResolvedValue(undefined);
+
+            // emulate extension update availability
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.UpdateAvailable,
+                version: '5.3.0.18',
+            });
+
+            await triggerCheckConditions();
+
+            expect(FilterUpdateApi.updateCustomFilters).toHaveBeenCalledTimes(1);
+            expect(mockReload).toHaveBeenCalledTimes(1);
+        });
+
+        it('proceeds with reload even when updateCustomFilters fails', async () => {
+            // mock updateCustomFilters to reject
+            vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockRejectedValue(new Error('network'));
+
+            // emulate extension update availability
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.UpdateAvailable,
+                version: '5.3.0.18',
+            });
+
+            await triggerCheckConditions();
+
+            expect(mockReload).toHaveBeenCalledTimes(1);
+            expect(onUpdateApplyFailed).not.toHaveBeenCalled();
         });
     });
 });
