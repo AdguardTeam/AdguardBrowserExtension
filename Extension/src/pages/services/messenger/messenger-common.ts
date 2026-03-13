@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -64,6 +64,7 @@ import {
     type OpenSafebrowsingTrustedMessage,
     type SendTelemetryPageViewEventMessage,
     type SendTelemetryCustomEventMessage,
+    type FilteringLogWindowState,
 } from '../../../common/messages';
 import { type NotifierType } from '../../../common/constants';
 import { type CreateEventListenerResponse } from '../../../background/services/event';
@@ -424,21 +425,25 @@ export abstract class MessengerCommon {
     };
 
     /**
+     * Sends a message to the background page to save filtering log window state.
+     *
+     * @param windowState Window state (position and size) to save.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    saveFilteringLogWindowState = async (
+        windowState: FilteringLogWindowState,
+    ): Promise<ExtractMessageResponse<MessageType.SetFilteringLogWindowState>> => {
+        return this.sendMessage(MessageType.SetFilteringLogWindowState, { windowState });
+    };
+
+    /**
      * Sends a message to the background page to reset the blocked ads statistics.
      *
      * @returns Promise that resolves after the message is sent.
      */
     resetStatistics = async (): Promise<ExtractMessageResponse<MessageType.ResetBlockedAdsCount>> => {
         return this.sendMessage(MessageType.ResetBlockedAdsCount);
-    };
-
-    /**
-     * Sends a message to the background page to set the filtering log window state.
-     *
-     * @returns Promise that resolves after the message is sent.
-     */
-    setFilteringLogWindowState = async (): Promise<ExtractMessageResponse<MessageType.SetFilteringLogWindowState>> => {
-        return this.sendMessage(MessageType.SetFilteringLogWindowState);
     };
 
     /**

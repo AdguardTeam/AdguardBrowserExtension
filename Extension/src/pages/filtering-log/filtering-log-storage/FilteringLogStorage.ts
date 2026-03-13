@@ -21,17 +21,41 @@
 import { LocalPageStorage } from '../../common/storage';
 
 /**
- * Module used to keep options page settings, which do not need extension level persistence
+ * Storage for filtering log page UI settings persisted in localStorage.
+ *
+ * Manages filtering log-specific UI preferences including:
+ * - column widths for the filtering log table;
+ * - request info modal width;
+ * - preserve log modal visibility state.
  */
-export class OptionsStorage extends LocalPageStorage {
+export class FilteringLogStorage extends LocalPageStorage {
     KEYS = {
         /**
-         * Allowlist editor wrap setting
+         * Filtering log columns widths
          */
-        ALLOWLIST_EDITOR_WRAP: 'allowlist-editor-wrap',
+        COLUMNS_DATA: 'columns-data',
+
+        /**
+         * Request modal width
+         */
+        REQUEST_INFO_MODAL_WIDTH: 'request-info-modal-width',
+
+        /**
+         * Show preserve log modal state
+         */
+        SHOW_PRESERVE_LOG_MODAL: 'show-preserve-log-modal',
     };
 
     protected DEFAULTS = {
-        [this.KEYS.ALLOWLIST_EDITOR_WRAP]: false,
+        [this.KEYS.REQUEST_INFO_MODAL_WIDTH]: null,
+        [this.KEYS.COLUMNS_DATA]: {
+            status: { width: 260 },
+            url: { width: 260 },
+            type: { width: 100 },
+            rule: { width: 260 },
+            filter: { width: 260 },
+            source: { width: 200 },
+        },
+        [this.KEYS.SHOW_PRESERVE_LOG_MODAL]: true,
     };
 }
