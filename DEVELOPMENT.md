@@ -766,6 +766,8 @@ This guide explains how to update MV3 rulesets and submit them for Chrome Web St
     - Upload the extension to Chrome Web Store
     - Submit for fast-track review
 
+<a name="dev-localizations"></a>
+
 ### Update localizations
 
 For detailed localization workflow and best practices, see [Locales Documentation](./tools/locales/README.md#dev-locales).
