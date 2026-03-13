@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -17,8 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import browser, { type Runtime, type Windows } from 'webextension-polyfill';
 
 import {
     type TabContext,
@@ -42,6 +40,7 @@ import {
     getDomain,
     type ApplyPermissionsRuleEvent,
     type DeclarativeRuleEvent,
+    type RuleInfo,
 } from 'tswebextension';
 
 import { messageHandler } from '../message-handler';
@@ -54,7 +53,7 @@ import {
     type SetPreserveLogStateMessage,
 } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
-import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../common/constants';
+import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE_KEY } from '../../common/constants';
 import {
     FiltersApi,
     type FilterMetadata,
@@ -65,10 +64,9 @@ import {
     TabsApi,
     HitStatsApi,
 } from '../api';
-import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { FilteringLogApi } from '../api/filtering-log';
-import { logger } from '../../common/logger';
+import { browserStorage } from '../storages/shared-instances';
 
 export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[];
@@ -549,7 +547,7 @@ export class FilteringLogService {
         const { tabId, rules, eventId } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            replaceRules: rules.map((rule) => ({
+            replaceRules: rules.map((rule: RuleInfo) => ({
                 filterId: rule.filterId,
                 ruleIndex: rule.ruleIndex,
                 appliedRuleText: rule.appliedRuleText,
@@ -740,61 +738,15 @@ export class FilteringLogService {
     }
 
     /**
-     * Saves the filtering log window state (position, size, etc.)
-     * by reading true dimensions from the {@link browser.windows} API,
-     * which are unaffected by page zoom in Firefox.
+     * Saves filtering log window state (position and size) to browser.storage.local.
      *
-     * @param _message Payload is ignored.
-     * @param sender Sender info containing the tab's window ID.
+     * @param message Message with type {@link SetFilteringLogWindowStateMessage}.
+     * @param message.data Contains the window state to save.
      */
     private static async onSetFilteringLogWindowState(
-        _message: SetFilteringLogWindowStateMessage,
-        sender: Runtime.MessageSender,
+        { data }: SetFilteringLogWindowStateMessage,
     ): Promise<void> {
-        const windowId = sender.tab?.windowId;
-        if (windowId === undefined) {
-            logger.debug('[ext.FilteringLogService.onSetFilteringLogWindowState]: no windowId from sender, skipping');
-            return;
-        }
-        try {
-            const win = await browser.windows.get(windowId);
-
-            await FilteringLogService.saveFilteringLogWindowState(win);
-        } catch (e) {
-            logger.debug('[ext.FilteringLogService.onSetFilteringLogWindowState]: failed to save window state:', e);
-        }
-    }
-
-    /**
-     * Saves the filtering log window state (position and size) from a
-     * {@link Windows.Window} object, which reports true dimensions unaffected
-     * by page zoom (unlike content page's `window.outerWidth` in Firefox).
-     *
-     * @param win Browser window object.
-     */
-    public static async saveFilteringLogWindowState(win: Windows.Window): Promise<void> {
-        if (win.state === 'fullscreen') {
-            await browserStorage.set(
-                FILTERING_LOG_WINDOW_STATE,
-                JSON.stringify({ state: 'fullscreen' }),
-            );
-        } else if (
-            win.width !== undefined
-            && win.height !== undefined
-            && win.top !== undefined
-            && win.left !== undefined
-        ) {
-            await browserStorage.set(
-                FILTERING_LOG_WINDOW_STATE,
-                JSON.stringify({
-                    width: win.width,
-                    height: win.height,
-                    top: win.top,
-                    left: win.left,
-                }),
-            );
-        } else {
-            logger.debug('[ext.FilteringLogService.saveFilteringLogWindowState]: window dimensions are incomplete, skipping save');
-        }
+        const { windowState } = data;
+        await browserStorage.set(FILTERING_LOG_WINDOW_STATE_KEY, windowState);
     }
 }

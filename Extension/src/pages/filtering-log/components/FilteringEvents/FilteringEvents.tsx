@@ -40,7 +40,7 @@ import { getRequestEventType } from '../RequestWizard/utils';
 import { translator } from '../../../../common/translators/translator';
 import { AntiBannerFiltersId, SCROLLBAR_WIDTH } from '../../../../common/constants';
 import { passiveEventSupported } from '../../../helpers';
-import { optionsStorage } from '../../../options/options-storage';
+import { filteringLogStorage } from '../../filtering-log-storage';
 import { StatusMode, getStatusMode } from '../../filteringLogStatus';
 import { Status } from '../Status';
 import { useIsMobile } from '../../../common/hooks/useIsMobile';
@@ -606,11 +606,11 @@ const FilteringEvents = observer(() => {
     ];
 
     const [columnsRenderData, setColumnsRenderData] = useState<ColumnsRenderData>(
-        optionsStorage.getItem(optionsStorage.KEYS.COLUMNS_DATA),
+        filteringLogStorage.getItem(filteringLogStorage.KEYS.COLUMNS_DATA),
     );
 
     useEffect(() => {
-        optionsStorage.setItem(optionsStorage.KEYS.COLUMNS_DATA, columnsRenderData);
+        filteringLogStorage.setItem(filteringLogStorage.KEYS.COLUMNS_DATA, columnsRenderData);
     }, [columnsRenderData]);
 
     let startClientX: number | null = null;
