@@ -8514,69 +8514,70 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "e6382ed1409915fb443e57398ab215c3" due to: ' + e);
         }
     },
-    '(()=>{const e={apply:(e,t,n)=>{const o=n[0];if("string"==typeof o?.value&&o.value.includes("playerResponse"))try{return o.value=o.value.replace(/"(adSlots|playerAds)":/g,\'"no_ads":\'),n[0]=o,Reflect.apply(e,t,n)}catch(e){}return Reflect.apply(e,t,n)}},t={apply:(t,n,o)=>{const p=o[0];return"function"==typeof p&&p.toString().includes(".next(")&&(o[0]=new Proxy(p,e)),Reflect.apply(t,n,o)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': () => {
+    '(()=>{const e={apply:(e,t,n)=>{const r=n[0];if("string"==typeof r?.value&&r.value.includes("playerResponse"))try{r.value=(a=r.value,location.href.includes("/watch")&&a.includes(\'"muteOnStart":true\')&&(a=a.replace(\'"muteOnStart":true\',\'"muteOnStart":false\')),a.replace(/"(adSlots|playerAds)":/g,\'"no_ads":\')),n[0]=r}catch(e){}var a;return Reflect.apply(e,t,n)}},t={apply:(t,n,r)=>{const a=r[0];return"function"==typeof a&&a.toString().includes(".next(")&&(r[0]=new Proxy(a,e)),Reflect.apply(t,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.c61d89df76505545d18c4dbdceb3f06d === e) return;
+            if (Window.prototype.toString["2b2592c23052ef25fc06258314bc495b"] === e) return;
             (() => {
                 const e = {
-                    apply: (e, t, o) => {
-                        const r = o[0];
-                        if ("string" == typeof r?.value && r.value.includes("playerResponse")) try {
-                            return r.value = r.value.replace(/"(adSlots|playerAds)":/g, '"no_ads":'), o[0] = r, 
-                            Reflect.apply(e, t, o);
+                    apply: (e, t, r) => {
+                        const n = r[0];
+                        if ("string" == typeof n?.value && n.value.includes("playerResponse")) try {
+                            n.value = (o = n.value, location.href.includes("/watch") && o.includes('"muteOnStart":true') && (o = o.replace('"muteOnStart":true', '"muteOnStart":false')), 
+                            o.replace(/"(adSlots|playerAds)":/g, '"no_ads":')), r[0] = n;
                         } catch (e) {}
-                        return Reflect.apply(e, t, o);
+                        var o;
+                        return Reflect.apply(e, t, r);
                     }
                 }, t = {
-                    apply: (t, o, r) => {
-                        const n = r[0];
-                        return "function" == typeof n && n.toString().includes(".next(") && (r[0] = new Proxy(n, e)), 
-                        Reflect.apply(t, o, r);
+                    apply: (t, r, n) => {
+                        const o = n[0];
+                        return "function" == typeof o && o.toString().includes(".next(") && (n[0] = new Proxy(o, e)), 
+                        Reflect.apply(t, r, n);
                     }
                 };
                 window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, t);
             })();
-            Object.defineProperty(Window.prototype.toString, "c61d89df76505545d18c4dbdceb3f06d", {
+            Object.defineProperty(Window.prototype.toString, "2b2592c23052ef25fc06258314bc495b", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "c61d89df76505545d18c4dbdceb3f06d" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "2b2592c23052ef25fc06258314bc495b" due to: ' + e);
         }
     },
-    '(()=>{const e={apply:(e,t,o)=>{const n=Reflect.apply(e,t,o);if(n?.responseContext)try{delete n.adSlots,delete n.playerAds}catch(e){}return n}},t={apply:(t,o,n)=>{const p=n[0];return"function"==typeof p&&p.toString().includes("jspbResponseCtor")&&(n[0]=new Proxy(p,e)),Reflect.apply(t,o,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': () => {
+    '(()=>{const e={apply:(e,t,o)=>{const n=Reflect.apply(e,t,o);if(n?.responseContext)try{delete n.adSlots,delete n.playerAds,location.href.includes("/watch")&&n.playerConfig?.audioConfig?.muteOnStart&&delete n.playerConfig.audioConfig.muteOnStart}catch(e){}return n}},t={apply:(t,o,n)=>{const r=n[0];return"function"==typeof r&&r.toString().includes("jspbResponseCtor")&&(n[0]=new Proxy(r,e)),Reflect.apply(t,o,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["1912114a62454f9401cbd38be503e917"] === e) return;
+            if (Window.prototype.toString.f89dd20adde53db3ba4ce5dc3479a5c3 === e) return;
             (() => {
                 const e = {
                     apply: (e, t, o) => {
-                        const r = Reflect.apply(e, t, o);
-                        if (r?.responseContext) try {
-                            delete r.adSlots, delete r.playerAds;
+                        const n = Reflect.apply(e, t, o);
+                        if (n?.responseContext) try {
+                            delete n.adSlots, delete n.playerAds, location.href.includes("/watch") && n.playerConfig?.audioConfig?.muteOnStart && delete n.playerConfig.audioConfig.muteOnStart;
                         } catch (e) {}
-                        return r;
+                        return n;
                     }
                 }, t = {
-                    apply: (t, o, r) => {
-                        const n = r[0];
-                        return "function" == typeof n && n.toString().includes("jspbResponseCtor") && (r[0] = new Proxy(n, e)), 
-                        Reflect.apply(t, o, r);
+                    apply: (t, o, n) => {
+                        const r = n[0];
+                        return "function" == typeof r && r.toString().includes("jspbResponseCtor") && (n[0] = new Proxy(r, e)), 
+                        Reflect.apply(t, o, n);
                     }
                 };
                 window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, t);
             })();
-            Object.defineProperty(Window.prototype.toString, "1912114a62454f9401cbd38be503e917", {
+            Object.defineProperty(Window.prototype.toString, "f89dd20adde53db3ba4ce5dc3479a5c3", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "1912114a62454f9401cbd38be503e917" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "f89dd20adde53db3ba4ce5dc3479a5c3" due to: ' + e);
         }
     },
     '(()=>{document.addEventListener("DOMContentLoaded",(()=>{const t=document.querySelector(\'astro-island[uid][props*="https://file-upload.org/file-redirect.html?url=https"]\'),e=t?.getAttribute("props")?.match(/https:\\/\\/file-upload\\.org\\/file-redirect\\.html\\?url=[^"]+/)?.[0];e&&location.assign(e)}));})();': () => {
