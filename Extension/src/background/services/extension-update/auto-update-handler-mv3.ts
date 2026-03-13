@@ -20,7 +20,6 @@
 
 import { AUTO_UPDATE_CONFIG_KEY_MV3, MANUAL_EXTENSION_UPDATE_KEY } from '../../../common/constants';
 import { logger } from '../../../common/logger';
-import { FilterUpdateApi } from '../../api';
 import { browserStorage } from '../../storages';
 import { ContentScriptInjector } from '../../content-script-injector';
 
@@ -250,19 +249,14 @@ export class AutoUpdateHandler {
     /**
      * Applies automatic update and reloads extension.
      *
-     * Updates custom filters, clears state and removes manual update markers
-     * to avoid collisions.
+     * Clears state and removes manual update markers to avoid collisions.
+     *
+     * Note: Custom filters are updated post-reload in App.asyncInit(), not here,
+     * to cover all update paths including an update triggered from chrome://extensions.
      */
     private async applyUpdate(): Promise<void> {
         this.onUpdateApplyStart();
         try {
-            // Update custom filters before reload (mirrors manual update path)
-            try {
-                await FilterUpdateApi.updateCustomFilters();
-            } catch (e: unknown) {
-                logger.error('[ext.AutoUpdateHandler.applyUpdate]: Failed to update custom filters before extension reload, updating extension will continue. Origin error:', e);
-            }
-
             // Clear state
             await this.stateManager.clear();
 

@@ -117,13 +117,6 @@ export class PopupStore extends PopupStoreCommon {
 
         this.setUpdateNotification(null);
 
-        // Update custom filters first, independently of extension update
-        try {
-            await messenger.updateCustomFilters();
-        } catch (error: unknown) {
-            logger.debug('[ext.PopupStore]: failed to update custom filters in popup: ', error);
-        }
-
         try {
             await messenger.checkUpdates();
         } catch (error: unknown) {

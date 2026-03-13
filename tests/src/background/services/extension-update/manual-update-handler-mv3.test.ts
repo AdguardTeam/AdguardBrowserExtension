@@ -38,7 +38,6 @@ import {
     AutoUpdateStateManager,
 } from '../../../../../Extension/src/background/services/extension-update/auto-update-state-manager-mv3';
 import { UpdateCheckStatus } from '../../../../../Extension/src/background/services/extension-update/types';
-import { ForwardFrom } from '../../../../../Extension/src/common/forward';
 
 // Mock BackendUpdateChecker to control its return values
 vi.mock(
@@ -188,25 +187,31 @@ describe('ManualUpdateHandler', () => {
         });
     });
 
-    describe.skipIf(!__IS_MV3__)('applyUpdate — custom filters', () => {
-        const clearAutoUpdateState = vi.fn().mockResolvedValue(undefined);
-
-        it('calls updateCustomFilters before reload', async () => {
+    describe.skipIf(!__IS_MV3__)('check() — custom filters update when no extension update', () => {
+        it('calls updateCustomFilters when no extension update is found', async () => {
             vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockResolvedValue(undefined);
 
-            await handler.applyUpdate(ForwardFrom.Popup, clearAutoUpdateState);
+            // Backend says no update
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
+
+            await handler.check();
 
             expect(FilterUpdateApi.updateCustomFilters).toHaveBeenCalledTimes(1);
-            expect(mockReload).toHaveBeenCalledTimes(1);
+            expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
         });
 
-        it('proceeds with reload even when updateCustomFilters fails', async () => {
+        it('still completes check when updateCustomFilters fails', async () => {
             vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockRejectedValue(new Error('network'));
 
-            await handler.applyUpdate(ForwardFrom.Popup, clearAutoUpdateState);
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
 
-            expect(mockReload).toHaveBeenCalledTimes(1);
-            expect(onUpdateApplyFailed).not.toHaveBeenCalled();
+            await handler.check();
+
+            expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
         });
     });
 
