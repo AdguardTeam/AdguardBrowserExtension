@@ -293,18 +293,16 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                                             : formatDate(lastCheckTime)}
                                     </div>
                                 </div>
-                                <div>
-                                    <a
-                                        className="filter__link"
-                                        href={homepage || customUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        tabIndex={disabled ? -1 : 0}
-                                        aria-hidden={disabled}
-                                    >
-                                        {translator.getMessage('options_filters_filter_link')}
-                                    </a>
-                                </div>
+                                <a
+                                    className="filter__link"
+                                    href={homepage || customUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    tabIndex={disabled ? -1 : 0}
+                                    aria-hidden={disabled}
+                                >
+                                    {translator.getMessage('options_filters_filter_link')}
+                                </a>
                                 <FilterTags
                                     filterId={filterId}
                                     tags={tags}

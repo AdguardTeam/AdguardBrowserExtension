@@ -1,58 +1,134 @@
 # Development
 
-- [Requirements](#dev-requirements)
-- [How to build](#dev-build)
-    - [Tests and dev build](#dev-tests-and-build)
-    - [Linking with the developer build of tsurlfilter/tswebextension](#dev-link)
-    - [Linking tsurlfilter on CI (Bamboo)](#dev-ci-link)
-    - [Building the beta and release versions](#dev-beta-and-release)
-    - [Special building instructions for Firefox reviewers](#dev-for-firefox-reviewers)
-    - [Analyzing bundle size](#dev-bundle-size)
-    - [Debug MV3 declarative rules](#dev-debug-mv3)
-    - [Hotfix filters for MV3 with skip review](#dev-hotfix-mv3)
-- [Linter](#dev-linter)
-- [TypeScript Configuration](#dev-typescript-configs)
-- [CSS Architecture](#dev-css)
-- [Update localizations](#dev-localizations)
-- [Bundle Size Monitoring](#dev-bundle-size-monitoring)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Development Workflow](#development-workflow)
+    - [Available Scripts](#available-scripts)
+    - [Running Tests](#running-tests)
+    - [Linting and Type Checking](#linting-and-type-checking)
+    - [Building](#building)
+    - [Watch Mode](#watch-mode)
+- [Common Tasks](#common-tasks)
+    - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
+    - [Linking tsurlfilter on CI (Bamboo)](#linking-tsurlfilter-on-ci-bamboo)
+    - [Building the beta and release versions](#building-the-beta-and-release-versions)
+    - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
+    - [Analyzing bundle size](#analyzing-bundle-size)
+    - [Debug MV3 declarative rules](#debug-mv3-declarative-rules)
+    - [Hotfix filters for MV3 with skip review](#hotfix-filters-for-mv3-with-skip-review)
+    - [Update localizations](#update-localizations)
+    - [Bundle Size Monitoring](#bundle-size-monitoring)
+- [Project Architecture](#project-architecture)
+    - [Background Layers](#background-layers)
+    - [TypeScript Configuration](#typescript-configuration)
+    - [CSS Cascade Layers](#css-cascade-layers)
+- [Environment Variables](#environment-variables)
+- [Troubleshooting](#troubleshooting)
+- [Additional Resources](#additional-resources)
 
-## <a name="dev-requirements"></a> Requirements
+<a name="dev-requirements"></a>
+
+## Prerequisites
 
 Ensure that the following software is installed on your computer:
 
 - [Node.js][nodejs]: v22 (you can install multiple versions using [nvm][nvm])
 - [pnpm][pnpm]: v10
 - [Git][git]
+- [Docker][docker] (optional, for CI-like builds and Firefox reviewer builds)
 
+[docker]: https://docs.docker.com/get-docker/
 [git]: https://git-scm.com/
 [nodejs]: https://nodejs.org/en/download
 [nvm]: https://github.com/nvm-sh/nvm
 [pnpm]: https://pnpm.io/installation
 
-## <a name="dev-build"></a> How to build
+## Getting Started
 
-### <a name="dev-tests-and-build"></a> Tests and dev build
+1. Clone the repository:
 
-Install local dependencies by running:
+    ```shell
+    git clone https://github.com/AdguardTeam/AdguardBrowserExtension.git
+    cd AdguardBrowserExtension
+    ```
 
-```shell
-pnpm install
-```
+2. Install dependencies:
 
-Running unit tests:
+    ```shell
+    pnpm install
+    ```
+
+3. (Optional) Copy and configure environment variables:
+
+    ```shell
+    cp .env.example .env
+    ```
+
+    See [Environment Variables](#environment-variables) for details.
+
+4. Build the extension for a specific browser:
+
+    ```shell
+    pnpm dev chrome
+    ```
+
+5. Load the unpacked extension into your browser from `./build/dev/chrome`.
+   See [How to install the unpacked extension](#how-to-install-the-unpacked-extension-in-the-browser)
+   for step-by-step instructions.
+
+<a name="dev-build"></a>
+
+## Development Workflow
+
+### Available Scripts
+
+| Command | Description |
+| ------- | ----------- |
+| `pnpm dev [browser]` | Development build (all browsers if none specified) |
+| `pnpm dev <browser> --watch` | Development build with file watching |
+| `pnpm beta [browser]` | Beta build |
+| `pnpm release [browser]` | Release build |
+| `pnpm test` | Run all unit tests (MV2 + MV3) |
+| `pnpm test:mv2` | Run MV2 unit tests only |
+| `pnpm test:mv3` | Run MV3 unit tests only |
+| `pnpm test:integration <target>` | Run integration tests |
+| `pnpm lint` | Run all linters (ESLint + TypeScript) |
+| `pnpm lint:code` | Run ESLint only |
+| `pnpm lint:types` | Run TypeScript type checking (MV2 + MV3) |
+| `pnpm lint:types:mv2` | TypeScript type checking for MV2 |
+| `pnpm lint:types:mv3` | TypeScript type checking for MV3 |
+| `pnpm resources` | Download filters and public suffix list |
+| `pnpm resources:mv3` | Download resources for MV3 (includes DNR rulesets) |
+| `pnpm locales <command>` | Manage localizations (see [Update localizations](#update-localizations)) |
+| `pnpm check-bundle-size <env> [browser]` | Check bundle sizes against limits |
+| `pnpm update-bundle-size <env> [browser]` | Update bundle size reference values |
+
+Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `opera`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
+
+<a name="dev-tests-and-build"></a>
+
+### Running Tests
+
+Unit tests use [Vitest](https://vitest.dev/) with separate projects for MV2 and MV3:
 
 ```shell
 pnpm test
 ```
 
-Running integration tests:
+Run tests matching a specific pattern:
+
+```shell
+pnpm test <pattern>
+```
+
+Integration tests require a built extension:
 
 ```shell
 pnpm test:integration <TARGET>
 # TARGET can be 'dev', 'beta', 'release', same as build targets.
 ```
 
-Running integration tests with userscripts mode selection:
+Integration tests with userscripts mode selection:
 
 ```shell
 pnpm test:integration <TARGET> [-u <USERSCRIPTS_MODE>]
@@ -60,7 +136,7 @@ pnpm test:integration <TARGET> [-u <USERSCRIPTS_MODE>]
 # USERSCRIPTS_MODE can be 'enabled' or 'disabled' (default: both modes)
 ```
 
-Running integration tests with enabling debug mode (page will be stopped after
+Integration tests with debug mode (page will be stopped after
 tests execution) for one of them:
 
 ```shell
@@ -70,7 +146,42 @@ pnpm test:integration <TARGET> [-d|--debug-test-id <TEST_ID>] [-u <USERSCRIPTS_M
 # USERSCRIPTS_MODE can be 'enabled' or 'disabled' (default: both modes)
 ```
 
-Run the following command to build the dev version:
+<a name="dev-linter"></a>
+
+### Linting and Type Checking
+
+The project uses ESLint with the Airbnb TypeScript configuration and strict TypeScript type checking.
+
+Run all linters:
+
+```shell
+pnpm lint
+```
+
+Run ESLint only:
+
+```shell
+pnpm lint:code
+```
+
+Run TypeScript type checking:
+
+```shell
+pnpm lint:types        # Both MV2 and MV3
+pnpm lint:types:mv2    # MV2 only
+pnpm lint:types:mv3    # MV3 only
+```
+
+Pre-commit hooks (via [Husky](https://typicode.github.io/husky/) and lint-staged) automatically lint staged files.
+
+> [!NOTE]
+> Before submitting a pull request, always run `pnpm lint` and `pnpm test` to verify
+> all checks pass. See the review checklist in [AGENTS.md](./AGENTS.md) for the full
+> pre-submission checklist.
+
+### Building
+
+Build the dev version for all browsers:
 
 ```shell
 pnpm dev
@@ -87,20 +198,22 @@ build/dev/opera
 build/dev/opera-mv3
 ```
 
-To make a dev build for a specific browser, run:
+Build for a specific browser:
 
 ```shell
 pnpm dev <browser>
 ```
 
-Where `<browser>` is one of the following: `chrome`, `chrome-mv3`, `edge`, `opera`, `opera-mv3`, `firefox-amo`,
-`firefox-standalone`, like this:
+Where `<browser>` is one of: `chrome`, `chrome-mv3`, `edge`, `opera`, `opera-mv3`, `firefox-amo`,
+`firefox-standalone`. For example:
 
 ```shell
 pnpm dev chrome
 ```
 
-To run dev build in watch mode, run:
+### Watch Mode
+
+Run the dev build in watch mode to automatically rebuild on file changes:
 
 ```shell
 pnpm dev --watch
@@ -112,7 +225,11 @@ Or for a specific browser:
 pnpm dev <browser> --watch
 ```
 
-### <a name="dev-link"></a> Linking with the developer build of tsurlfilter/tswebextension
+## Common Tasks
+
+<a name="dev-link"></a>
+
+### Linking with the developer build of tsurlfilter/tswebextension
 
 Since version v4.0, AdGuard browser extension uses an open source library
 [tsurlfilter] that implements
@@ -174,7 +291,9 @@ to the local dev build of `tsurlfilter`.
 
 [tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter
 
-### <a name="dev-ci-link"></a> Linking tsurlfilter on CI (Bamboo)
+<a name="dev-ci-link"></a>
+
+### Linking tsurlfilter on CI (Bamboo)
 
 CI builds use Docker multi-stage builds defined in `Dockerfile`. The tsurlfilter linking process is split into two phases:
 
@@ -230,7 +349,9 @@ docker build -f Dockerfile --build-context tsurlfilter=../tsurlfilter --target d
 > [!TIP]
 > Pass `--build-arg TEST_RUN_ID=$(date +%s)` to bust the cache and force a fresh run.
 
-### <a name="dev-beta-and-release"></a> Building the beta and release versions
+<a name="dev-beta-and-release"></a>
+
+### Building the beta and release versions
 
 Before building the release version, you should manually download the necessary
 resources that will be included into the build: filters and public suffix list.
@@ -242,7 +363,7 @@ pnpm resources
 > [!TIP]
 > Run `pnpm resources:mv3` to download resources for MV3 version.
 
-### Resources Process
+#### Resources Process
 
 The `pnpm resources` command performs the following steps:
 
@@ -283,7 +404,9 @@ to generate credentials for `crx` builds, see the example below:
 pnpm crx keygen ./private/AdguardBrowserExtension
 ```
 
-### <a name="dev-for-firefox-reviewers"></a> Special building instructions for Firefox reviewers
+<a name="dev-for-firefox-reviewers"></a>
+
+### Special building instructions for Firefox reviewers
 
 1. To ensure that the extension is built in the same way, use the docker image:
 
@@ -331,7 +454,9 @@ If you need to build the **RELEASE** version:
 
 1. Compare the generated `firefox-amo.zip` file with the uploaded one.
 
-### <a name="dev-bundle-size"></a> Analyzing bundle size
+<a name="dev-bundle-size"></a>
+
+### Analyzing bundle size
 
 If you want to analyze the bundle size, run build with the `ANALYZE` environment:
 
@@ -358,15 +483,19 @@ build/analyze-reports
 ├── <browser-name>-<build-type>.html
 ```
 
-### <a name="dev-debug-mv3"></a> Debug MV3 declarative rules
+<a name="dev-debug-mv3"></a>
+
+### Debug MV3 declarative rules
 
 If you want to debug MV3 declarative rules and check exactly which rules have been applied to requests, you can build and install the extension as described in the sections below. This will allow you to view the applied declarative rules in the filtering log.
 
 Additionally, you can edit filters and rebuild DNR rulesets without rebuilding the entire extension, which may be useful for debugging purposes.
 
-#### <a name="dev-debug-mv3-how-to-build"></a>  How to build the MV3 extension
+<a name="dev-debug-mv3-how-to-build"></a>
 
-1. Ensure that you have installed all dependencies as described in the [Requirements](#dev-requirements) section.
+#### How to build the MV3 extension
+
+1. Ensure that you have installed all dependencies as described in the [Prerequisites](#prerequisites) section.
 
     ```shell
     pnpm install
@@ -471,7 +600,9 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 
 If you see an exclamation mark in the filtering log, it means the assumed rule (calculated by the engine) and the applied rule (converted to DNR) are different. Otherwise, only the applied rule (in DNR and text ways) will be shown.
 
-#### <a name="dev-technical-info-about-debug-commands"></a> Technical information about commands
+<a name="dev-technical-info-about-debug-commands"></a>
+
+#### Technical information about commands
 
 - **Watch for changes and auto-convert:**
 
@@ -548,7 +679,9 @@ pnpm exec dnr-rulesets watch --help
 pnpm exec tsurlfilter convert --help
 ```
 
-### <a name="dev-hotfix-mv3"></a> Hotfix filters for MV3 with skip review
+<a name="dev-hotfix-mv3"></a>
+
+### Hotfix filters for MV3 with skip review
 
 This guide explains how to update MV3 rulesets and submit them for Chrome Web Store fast-track review (skip review).
 
@@ -633,54 +766,9 @@ This guide explains how to update MV3 rulesets and submit them for Chrome Web St
     - Upload the extension to Chrome Web Store
     - Submit for fast-track review
 
-## <a name="dev-linter"></a> Linter
+<a name="dev-localizations"></a>
 
-Despite our code may not currently comply with new style configuration,
-please, setup `eslint` in your editor to follow up with it `.eslintrc`
-
-## <a name="dev-typescript-configs"></a> TypeScript Configuration
-
-The project uses **TypeScript Project References** to completely separate Manifest V2 and V3 codebases into independent TypeScript projects. This architectural approach eliminates the need for empty stub implementations and provides superior IDE support.
-
-### Configuration Files Overview
-
-The project contains **5 TypeScript configuration files**, each serving a specific purpose:
-
-1. **`tsconfig.base.json`** - Shared base configuration
-    - Common compiler options for all projects
-    - JSX support and module resolution settings
-
-2. **`tsconfig.json`** - Root project references container
-    - Contains minimal includes
-    - References both MV2 and MV3 projects
-    - Enables VS Code to automatically switch between projects
-
-3. **`tsconfig.mv2.json`** - Manifest V2 project
-    - Excludes all `**/*-mv3.ts` and `**/*-mv3.tsx` files
-    - Contains MV2-specific path aliases
-    - Composite project with declaration output
-
-4. **`tsconfig.mv3.json`** - Manifest V3 project
-    - Excludes all `**/*-mv2.ts` and `**/*-mv2.tsx` files
-    - Contains MV3-specific path aliases
-    - Composite project with declaration output
-
-5. **`tsconfig.eslint.json`** - ESLint-specific configuration
-    - Includes all files for linting purposes
-    - Special path mapping for JSX files
-    - Separate from compilation projects
-
-## <a name="dev-css"></a> CSS Cascade Layers
-
-The project uses two CSS layers to manage style priority:
-
-- **`components`** - Component-specific styles (buttons, modals, etc.)
-- **`utilities`** - Utility classes with higher priority (e.g., `.hideOnMobile`)
-
-Layer order is declared inline in HTML templates (e.g., `Extension/pages/options/index.html`):
-This ensures the layer order is established before any `style-loader` injections from JavaScript bundles. The `utilities` layer has higher priority than `components`, ensuring utility classes always override component styles.
-
-## <a name="dev-localizations"></a> Update localizations
+### Update localizations
 
 For detailed localization workflow and best practices, see [Locales Documentation](./tools/locales/README.md#dev-locales).
 
@@ -715,11 +803,13 @@ To show locales info run:
 pnpm locales info
 ```
 
-## <a name="dev-bundle-size-monitoring"></a> Bundle Size Monitoring
+<a name="dev-bundle-size-monitoring"></a>
+
+### Bundle Size Monitoring
 
 The browser extension project includes a comprehensive bundle size monitoring system, located in `tools/bundle-size`. This system helps ensure that our extension bundles remain within defined size limits, and that any significant increases are reviewed and justified.
 
-### Key Features
+#### Key Features
 
 - Tracks and compares bundle sizes across different build types (`beta`, `release`, etc.) and browser targets (`chrome`, `chrome-mv3`, `edge`, etc.)
 - Detects significant size increases using configurable thresholds (default: 10%)
@@ -729,22 +819,22 @@ The browser extension project includes a comprehensive bundle size monitoring sy
 - Designed for CI/CD integration (Bamboo)
 - **For Firefox targets (AMO and Standalone) only**, every individual `.js` file is checked to ensure it does not exceed the 4MB limit imposed by the Firefox Add-ons Store. If any `.js` file is larger than 4MB, the check fails and the offending files are reported.
 
-### How it works
+#### How it works
 
 - On each beta or release build, the system compares the current bundle sizes to the reference values in `.bundle-sizes.json`.
 - If any size exceeds the configured threshold, or additionally check for 30MB limit for Chrome MV3 target or 4MB limit for Firefox targets - the check fails.
 - Duplicate package versions are detected and reported.
 
-### To update the bundle sizes manually
+#### To update the bundle sizes manually
 
 We have defined size limits in the project.
 
-1. When we build the `beta` or `release` version, the build process checks if we’re exceeding those limits.
+1. When we build the `beta` or `release` version, the build process checks if we're exceeding those limits.
 2. If we exceed the limits, the developer should investigate the cause and decide whether the size increase is acceptable.
 3. If the new sizes are justified, the developer updates the size values in the package and creates a commit.
 4. We then review and approve any changes to the sizes as part of the PR process.
 
-#### Steps
+##### Steps
 
 1. Run the build for the desired environment (e.g., `pnpm beta` or `pnpm release`).
 2. If the build fails due to bundle size limits, investigate the cause (e.g., new dependencies, large assets).
@@ -760,7 +850,7 @@ We have defined size limits in the project.
 4. Commit the updated `.bundle-sizes.json` file and include justification in your PR.
 5. The changes will be reviewed and approved as part of the PR process.
 
-### Checking bundle size locally
+#### Checking bundle size locally
 
 To check bundle sizes locally, use:
 
@@ -778,11 +868,11 @@ pnpm check-bundle-size --help
 pnpm update-bundle-size --help
 ```
 
-### Usage: Custom Threshold
+#### Custom Threshold
 
 You can override the default threshold for significant bundle size increases using the `--threshold` option:
 
-```sh
+```shell
 pnpm check-bundle-size <buildEnv> [targetBrowser] --threshold 5
 # or
 pnpm check-bundle-size release chrome-mv3 --threshold=20
@@ -793,3 +883,173 @@ pnpm check-bundle-size beta
 - `--threshold <number>`: Sets the allowed percentage increase in bundle size before the check fails. Default: 10%.
 
 This is useful for temporarily relaxing or tightening the allowed size delta for a specific check/build.
+
+## Project Architecture
+
+### Background Layers
+
+The background script (`Extension/src/background/`) follows a strict layered architecture. Each layer has a clear responsibility and dependency direction — **upper layers depend on lower layers, never the reverse**.
+
+```text
+┌─────────────────────────────────────────────────────┐
+│  app/              App entry point (init sequence)   │
+├─────────────────────────────────────────────────────┤
+│  services/         Event listeners, orchestration    │
+├─────────────────────────────────────────────────────┤
+│  api/              Business logic, public interface  │
+├─────────────────────────────────────────────────────┤
+│  engine/           tswebextension wrapper (MV2/MV3)  │
+├─────────────────────────────────────────────────────┤
+│  storages/         Data storage models               │
+├─────────────────────────────────────────────────────┤
+│  schema/           Zod validators and types          │
+└─────────────────────────────────────────────────────┘
+```
+
+#### Layer responsibilities
+
+- **`schema/`** — Zod validation schemas and TypeScript types for all persisted data (settings, filter state, metadata, etc.). This is the lowest layer — no dependencies on other background modules.
+- **`storages/`** — Data storage models built on top of the `schema` layer. Provides typed access to `chrome.storage.local`, IndexedDB, and in-memory caches.
+- **`engine/`** — Wrapper around `@adguard/tswebextension`. Has MV2 and MV3 implementations (`engine-mv2.ts`, `engine-mv3.ts`) resolved at build time via path aliases. Manages the filtering engine lifecycle (start, update, configuration).
+- **`api/`** — Business logic layer. Contains domain-specific APIs (filters, settings, allowlist, safebrowsing, UI, network, etc.) that read/write through `storages` and control the `engine`.
+- **`services/`** — Orchestration layer. Registers browser event listeners, wires together multiple APIs, and handles message-driven workflows (filter updates, settings sync, popup, filtering log, telemetry, etc.).
+- **`app/`** — Application entry point. `AppCommon` (with `AppMv2`/`AppMv3` subclasses) initializes all layers in the correct order: storages → engine → APIs → services.
+
+#### Supporting modules
+
+- **`events/`** — Typed event handlers for context menu and settings changes.
+- **`keep-alive/`** — Service worker / event page keep-alive mechanism (MV2/MV3 variants).
+- **`prefs/`** — Runtime preferences (MV2/MV3 variants).
+- **`tswebextension/`** — tswebextension configuration adapters (MV2/MV3 variants).
+- **`errors/`**, **`utils/`** — Shared error types and utility functions.
+- **`message-handler.ts`** — Routes messages from UI pages to the correct handler.
+- **`connection-handler.ts`** — Manages long-lived `Runtime.Port` connections.
+- **`notifier.ts`** — Internal pub/sub event bus for cross-module notifications.
+
+#### Folder structure
+
+```text
+Extension/src/background/
+├── app/                  # App entry point (AppCommon, AppMv2, AppMv3)
+├── api/                  # Business logic APIs
+│   ├── filters/          #   Filter management
+│   ├── network/          #   Network requests
+│   ├── settings/         #   Settings management
+│   ├── ui/               #   UI-related APIs (icons, popups, pages)
+│   └── ...               #   safebrowsing, install, update, etc.
+├── services/             # Event listeners and orchestration
+│   ├── filters/          #   Filter state management
+│   ├── settings/         #   Settings event handling
+│   ├── ui/               #   UI services (popup, promo notifications)
+│   ├── telemetry/        #   Telemetry collection
+│   └── ...               #   allowlist, userrules, custom-filters, etc.
+├── engine/               # tswebextension wrapper (MV2/MV3)
+├── storages/             # Data storage models
+├── schema/               # Zod validators and types
+├── events/               # Context menu and settings event handlers
+├── keep-alive/           # Service worker keep-alive (MV2/MV3)
+├── prefs/                # Runtime preferences (MV2/MV3)
+├── tswebextension/       # tswebextension config adapters (MV2/MV3)
+├── errors/               # Custom error types
+├── utils/                # Shared utilities
+├── connection-handler.ts # Long-lived port connections
+├── content-script-injector.ts
+├── message-handler.ts    # Message routing
+├── notifier.ts           # Internal pub/sub event bus
+└── index.ts              # Background script entry point
+```
+
+<a name="dev-typescript-configs"></a>
+
+### TypeScript Configuration
+
+The project uses **TypeScript Project References** to completely separate Manifest V2 and V3 codebases into independent TypeScript projects. This architectural approach eliminates the need for empty stub implementations and provides superior IDE support.
+
+#### Configuration Files Overview
+
+The project contains **5 TypeScript configuration files**, each serving a specific purpose:
+
+1. **`tsconfig.base.json`** - Shared base configuration
+    - Common compiler options for all projects
+    - JSX support and module resolution settings
+
+2. **`tsconfig.json`** - Root project references container
+    - Contains minimal includes
+    - References both MV2 and MV3 projects
+    - Enables VS Code to automatically switch between projects
+
+3. **`tsconfig.mv2.json`** - Manifest V2 project
+    - Excludes all `**/*-mv3.ts` and `**/*-mv3.tsx` files
+    - Contains MV2-specific path aliases
+    - Composite project with declaration output
+
+4. **`tsconfig.mv3.json`** - Manifest V3 project
+    - Excludes all `**/*-mv2.ts` and `**/*-mv2.tsx` files
+    - Contains MV3-specific path aliases
+    - Composite project with declaration output
+
+5. **`tsconfig.eslint.json`** - ESLint-specific configuration
+    - Includes all files for linting purposes
+    - Special path mapping for JSX files
+    - Separate from compilation projects
+
+<a name="dev-css"></a>
+
+### CSS Cascade Layers
+
+The project uses two CSS layers to manage style priority:
+
+- **`components`** - Component-specific styles (buttons, modals, etc.)
+- **`utilities`** - Utility classes with higher priority (e.g., `.hideOnMobile`)
+
+Layer order is declared inline in HTML templates (e.g., `Extension/pages/options/index.html`):
+This ensures the layer order is established before any `style-loader` injections from JavaScript bundles. The `utilities` layer has higher priority than `components`, ensuring utility classes always override component styles.
+
+## Environment Variables
+
+Optional environment variables are configured via a `.env` file (copy from `.env.example`):
+
+| Variable | Description |
+| -------- | ----------- |
+| `ARTIFACTORY_DOMAIN` | Artifactory domain for downloading blocking pages |
+| `OPENAI_API_KEY` | OpenAI API key for detecting dangerous script rules during `pnpm resources` |
+| `ANALYZE` | Set to `true` to generate bundle analysis reports during builds |
+
+## Troubleshooting
+
+### `pnpm install` fails with network errors
+
+The project has retry settings in `.npmrc`. If you still have issues, check your network/VPN configuration and try again.
+
+### ESLint reports `no-restricted-imports` errors
+
+You cannot import directly from `-mv2` or `-mv3` suffixed files in common code. Use TypeScript path aliases defined in `tsconfig.mv2.json` / `tsconfig.mv3.json` instead. See [AGENTS.md](./AGENTS.md) for import rules.
+
+### TypeScript errors in IDE but not in CI (or vice versa)
+
+The project uses TypeScript Project References with separate configs for MV2 and MV3. Make sure your IDE is using the correct `tsconfig.json` (the root one references both). Run `pnpm lint:types:mv2` and `pnpm lint:types:mv3` separately to isolate the issue.
+
+### `lint-staged` leaves a `lint-staged` section in `package.json`
+
+If the pre-commit hook is interrupted, lint-staged may leave a temporary section in `package.json`. Remove it manually from the diff before committing.
+
+### Linked tsurlfilter changes not picked up in watch mode
+
+Use the `--no-cache` flag when running watch mode with linked packages:
+
+```shell
+pnpm dev <browser> --watch --no-cache
+```
+
+### Bundle size check fails
+
+Investigate the cause of the size increase. If justified, update reference sizes with `pnpm update-bundle-size <env> [browser]` and include justification in your PR.
+
+## Additional Resources
+
+- [AGENTS.md](./AGENTS.md) — Code guidelines, conventions, and review checklist
+- [README.md](./README.md) — Project overview and installation instructions
+- [CHANGELOG.md](./CHANGELOG.md) — Version history
+- [Locales Documentation](./tools/locales/README.md) — Localization workflow
+- [Dangerous Rules Documentation](./tools/resources/dangerous-rules/README.md) — Dangerous rules detection
+- [tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) — Filtering engine library
