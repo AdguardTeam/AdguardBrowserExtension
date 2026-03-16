@@ -414,7 +414,7 @@ pnpm crx keygen ./private/AdguardBrowserExtension
     docker run --rm -it \
         -v "$(pwd)":/workspace \
         -w /workspace \
-        adguard/extension-builder:22.17--0.3.0--0 \
+        adguard/extension-builder:22.17--0.4.1--0 \
         /bin/bash
     ```
 
