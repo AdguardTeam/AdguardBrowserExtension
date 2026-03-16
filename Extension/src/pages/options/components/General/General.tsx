@@ -21,7 +21,11 @@
 // TODO remove no-explicit-any disabling
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment */
 
-import React, { useContext, useRef } from 'react';
+import React, {
+    useContext,
+    useRef,
+    useState,
+} from 'react';
 import { observer } from 'mobx-react';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
@@ -50,6 +54,7 @@ import { Unknown } from '../../../../common/unknown';
 import { AppearanceTheme, FiltersUpdateTime } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning } from '../Warnings';
 import { logger } from '../../../../common/logger';
+import { ExtensionUsageDataModal } from '../Miscellaneous/ExtensionUsageDataModal/ExtensionUsageDataModal';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -129,6 +134,7 @@ export const General = observer(() => {
     const { settings, allowAcceptableAds }: any = settingsStore;
 
     const importInputRef = useRef<HTMLInputElement>(null);
+    const [isUsageDataModalOpen, setIsUsageDataModalOpen] = useState(false);
 
     if (!settings) {
         return null;
@@ -235,6 +241,7 @@ export const General = observer(() => {
         FiltersUpdatePeriod,
         DisableSafebrowsing,
         AppearanceTheme,
+        AllowAnonymizedUsageData,
     } = settings.names;
 
     return (
@@ -268,6 +275,24 @@ export const General = observer(() => {
                     value={!allowAcceptableAds}
                     label={translator.getMessage('options_block_acceptable_ads')}
                     handler={allowAcceptableAdsChangeHandler}
+                />
+                <SettingsSetCheckbox
+                    title={translator.getMessage('options_anonymized_usage_data_title')}
+                    description={reactTranslator.getMessage('options_anonymized_usage_data_description', {
+                        button: (chunks: string) => (
+                            <button
+                                type="button"
+                                className="button button--link button--link--underlined button--link--green"
+                                onClick={() => setIsUsageDataModalOpen(true)}
+                            >
+                                {chunks}
+                            </button>
+                        ),
+                    })}
+                    id={AllowAnonymizedUsageData}
+                    label={translator.getMessage('options_anonymized_usage_data_title')}
+                    value={settings.values[AllowAnonymizedUsageData]}
+                    handler={settingChangeHandler}
                 />
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
@@ -315,6 +340,10 @@ export const General = observer(() => {
                     />
                 )}
             </SettingsSection>
+            <ExtensionUsageDataModal
+                closeModalHandler={() => setIsUsageDataModalOpen(false)}
+                isOpen={isUsageDataModalOpen}
+            />
             <div className="links-menu links-menu--section">
                 <button
                     type="button"

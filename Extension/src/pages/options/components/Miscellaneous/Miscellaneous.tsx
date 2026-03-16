@@ -37,8 +37,6 @@ import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { COLLECT_HITS_LEARN_MORE_URL } from '../../constants';
 import { type SettingHandler } from '../../types';
 
-import { ExtensionUsageDataModal } from './ExtensionUsageDataModal/ExtensionUsageDataModal';
-
 export const Miscellaneous = observer(() => {
     const {
         settingsStore,
@@ -54,8 +52,6 @@ export const Miscellaneous = observer(() => {
 
     const [isOpenResetStatsModal, setIsOpenResetStatsModal] = useState(false);
     const [isOpenResetSettingsModal, setIsOpenResetSettingsModal] = useState(false);
-    const [isUsageDataModalOpen, setIsUsageDataModalOpen] = useState(false);
-
     const [isOpenInvertAllowlistModal, setIsOpenInvertAllowlistModal] = useState(false);
 
     if (!settings) {
@@ -163,7 +159,6 @@ export const Miscellaneous = observer(() => {
     const {
         UseOptimizedFilters,
         DisableCollectHits,
-        AllowAnonymizedUsageData,
         DisableShowContextMenu,
         DisableShowAdguardPromoInfo,
         DisableShowAppUpdatedNotification,
@@ -225,24 +220,6 @@ export const Miscellaneous = observer(() => {
                     label={translator.getMessage('options_collect_hit_stats_title')}
                     inverted
                     value={settings.values[DisableCollectHits]}
-                    handler={settingChangeHandler}
-                />
-                <SettingsSetCheckbox
-                    title={translator.getMessage('options_anonymized_usage_data_title')}
-                    description={reactTranslator.getMessage('options_anonymized_usage_data_description', {
-                        button: (chunks: string) => (
-                            <button
-                                type="button"
-                                className="button button--link button--link--underlined button--link--green"
-                                onClick={() => setIsUsageDataModalOpen(true)}
-                            >
-                                {chunks}
-                            </button>
-                        ),
-                    })}
-                    id={AllowAnonymizedUsageData}
-                    label={translator.getMessage('options_anonymized_usage_data_title')}
-                    value={settings.values[AllowAnonymizedUsageData]}
                     handler={settingChangeHandler}
                 />
                 <SettingsSetCheckbox
@@ -325,11 +302,6 @@ export const Miscellaneous = observer(() => {
                         }
                     />
                 )}
-
-                <ExtensionUsageDataModal
-                    closeModalHandler={() => setIsUsageDataModalOpen(false)}
-                    isOpen={isUsageDataModalOpen}
-                />
 
                 <button
                     type="button"
