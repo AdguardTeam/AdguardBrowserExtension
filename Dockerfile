@@ -357,7 +357,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/beta/firefox-standalone.zip /out/artifacts/firefox.zip && \
     # Archive source files for AMO publishing.
     ./bamboo-specs/scripts/archive-source.sh beta && \
-    mv build/beta/source.zip /out/artifacts/
+    mv build/beta/source.zip /out/artifacts/ && \
+    mv build/beta/approval-notes.txt /out/artifacts/
 
 FROM scratch AS firefox-beta-build-output
 COPY --from=firefox-beta-build /out/ /
@@ -368,7 +369,7 @@ COPY --from=firefox-beta-build /out/ /
 # Expects artifacts via named build context: --build-context firefox-artifacts=artifacts
 # Uses adguard/extension-builder image which has go-webext pre-installed
 # ============================================================================
-FROM adguard/extension-builder:22.17--0.3.0--0 AS firefox-beta-sign
+FROM adguard/extension-builder:22.17--0.4.1--0 AS firefox-beta-sign
 
 WORKDIR /sign
 
@@ -376,6 +377,7 @@ WORKDIR /sign
 COPY --from=firefox-artifacts firefox.zip /sign/firefox.zip
 COPY --from=firefox-artifacts source.zip /sign/source.zip
 COPY --from=firefox-artifacts build.txt /sign/build.txt
+COPY --from=firefox-artifacts approval-notes.txt /sign/approval-notes.txt
 
 # AMO credentials passed as build args (non-sensitive) and secrets (sensitive)
 ARG FIREFOX_CLIENT_ID
@@ -392,7 +394,8 @@ RUN --mount=type=secret,id=FIREFOX_CLIENT_SECRET \
     # (this is expected behavior).
     # After timeout and rerun same build it will download signed extension
     # and finish successfully.
-    go-webext -v sign firefox -f 'firefox.zip' -s 'source.zip' -o 'firefox.xpi' && \
+    go-webext -v sign firefox -f 'firefox.zip' -s 'source.zip' -o 'firefox.xpi' \
+        -n "$(cat approval-notes.txt)" && \
     # Copy all artifacts to output.
     cp build.txt /out/artifacts/ && \
     cp firefox.zip /out/artifacts/ && \
@@ -429,7 +432,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/release/opera-mv3.zip /out/artifacts/ && \
     # TODO: (AG-41656) Remove this workaround and use the browser name as for all other builds.
     mv build/release/firefox-amo.zip /out/artifacts/firefox.zip && \
-    mv build/release/source.zip /out/artifacts/
+    mv build/release/source.zip /out/artifacts/ && \
+    mv build/release/approval-notes.txt /out/artifacts/
 
 FROM scratch AS release-build-output
 COPY --from=release-build /out/ /
