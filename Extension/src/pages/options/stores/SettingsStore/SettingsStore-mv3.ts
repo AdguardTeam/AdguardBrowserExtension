@@ -169,7 +169,14 @@ export class SettingsStore extends SettingsStoreCommon {
     }
 
     /**
-     * Checks for extension updates
+     * Checks for updates of the extension (always)
+     * and custom filters (optionally).
+     *
+     * Important: if there is no extension update found,
+     * custom filters are updated.
+     *
+     * Note: if extension update is found,
+     * custom filters will be updated after the extension reload.
      */
     // eslint-disable-next-line class-methods-use-this
     async checkUpdates() {
