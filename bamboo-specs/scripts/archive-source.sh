@@ -81,7 +81,7 @@ You can build the release version by running a single command:
 docker run --rm \
     -v "$(pwd)":/workspace \
     -w /workspace \
-    adguard/extension-builder:22.17--0.3.0--0 \
+    adguard/extension-builder:22.17--0.4.1--0 \
     bash -c "pnpm install && pnpm release firefox-amo"
 ```
 
@@ -94,7 +94,7 @@ The resulting `firefox-amo.zip` can be compared with the uploaded add-on.
 docker run --rm \
     -v "$(pwd)":/workspace \
     -w /workspace \
-    adguard/extension-builder:22.17--0.3.0--0 \
+    adguard/extension-builder:22.17--0.4.1--0 \
     bash -c "pnpm install && pnpm beta firefox-standalone"
 ```
 
@@ -106,3 +106,38 @@ ABS_OUTPUT_ZIP="$(cd "$(dirname "$OUTPUT_ZIP")" && pwd)/$(basename "$OUTPUT_ZIP"
 rm -rf "$TEMP_DIR"
 
 echo "source.zip created at $OUTPUT_ZIP"
+
+# Generate approval-notes.txt with plain-text build instructions for Mozilla AMO reviewers.
+# This file is passed to the AMO API via the approval_notes field so reviewers see
+# the build instructions without needing to inspect the source archive.
+# See https://mozilla.github.io/addons-server/topics/api/addons.html
+APPROVAL_NOTES_FILE="$OUTPUT_DIR/approval-notes.txt"
+cat > "$APPROVAL_NOTES_FILE" << 'APPROVAL_EOF'
+Build reproduction instructions for Firefox Add-ons Review Team.
+
+Prerequisites: Docker (https://docs.docker.com/get-docker/)
+All build tools (Node.js v22, pnpm v10) are pre-installed in the Docker image.
+
+To build the RELEASE version:
+
+  docker run --rm \
+      -v "$(pwd)":/workspace \
+      -w /workspace \
+      adguard/extension-builder:22.17--0.4.1--0 \
+      bash -c "pnpm install && pnpm release firefox-amo"
+
+Output: ./build/release/firefox-amo directory.
+Compare firefox-amo.zip with the uploaded add-on.
+
+To build the BETA version:
+
+  docker run --rm \
+      -v "$(pwd)":/workspace \
+      -w /workspace \
+      adguard/extension-builder:22.17--0.4.1--0 \
+      bash -c "pnpm install && pnpm beta firefox-standalone"
+
+Output: ./build/beta/firefox-standalone directory.
+Compare firefox-standalone.zip with the uploaded add-on.
+APPROVAL_EOF
+echo "approval-notes.txt created at $APPROVAL_NOTES_FILE"
