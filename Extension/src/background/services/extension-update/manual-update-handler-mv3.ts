@@ -187,6 +187,9 @@ export class ManualUpdateHandler {
 
         // Update custom filters even if no extension update is available,
         // so that "Check for Updates" always refreshes custom filters.
+        // NOTE: no need to update custom filters before the previous condition,
+        // because if extension update is present,
+        // custom filters will be updated _after_ the extension reload.
         try {
             await FilterUpdateApi.updateCustomFilters();
         } catch (e) {
