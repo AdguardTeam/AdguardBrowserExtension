@@ -53,7 +53,7 @@ import { ManualUpdateHandler } from './manual-update-handler-mv3';
  * 5. User clicks "Update" button → extension reloads.
  * 6. After reload, custom filters are updated in App.asyncInit(),
  *    then shows success/failure notification.
- * 7. If no extension update found, custom filters are still updated (blocking).
+ * 7. If no extension update found, custom filters are still updated (awaited).
  *
  * ### Chrome extensions page update:
  * 1. User clicks "Update" on chrome://extensions/.
