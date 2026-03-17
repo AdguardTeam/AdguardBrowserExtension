@@ -172,7 +172,6 @@ export class SettingsStore extends SettingsStoreCommon {
      * Checks for extension updates
      */
     // eslint-disable-next-line class-methods-use-this
-    @action
     async checkUpdates() {
         const start = Date.now();
 
