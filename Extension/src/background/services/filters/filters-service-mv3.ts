@@ -22,11 +22,7 @@ import { RulesLimitsService } from '../rules-limits/rules-limits-service-mv3';
 import { type EnableFiltersGroupMessage, MessageType } from '../../../common/messages';
 import { messageHandler } from '../../message-handler';
 import { engine } from '../../engine';
-import {
-    Categories,
-    FilterUpdateApi,
-    FiltersApi,
-} from '../../api';
+import { Categories, FiltersApi } from '../../api';
 import { logger } from '../../../common/logger';
 
 import { FiltersServiceCommon } from './filters-service-common';
@@ -45,7 +41,6 @@ export class FiltersService extends FiltersServiceCommon {
     public static override init(): void {
         super.init();
         messageHandler.addListener(MessageType.RestoreFiltersMv3, FiltersService.onRestoreFilters);
-        messageHandler.addListener(MessageType.UpdateCustomFiltersMv3, FiltersService.onUpdateCustomFilters);
     }
 
     /**
@@ -100,17 +95,5 @@ export class FiltersService extends FiltersServiceCommon {
      */
     protected static override async updateEngine(): Promise<void> {
         await engine.update();
-    }
-
-    /**
-     * Called when user requests custom filters update
-     * independently of extension update.
-     */
-    private static async onUpdateCustomFilters(): Promise<void> {
-        try {
-            await FilterUpdateApi.updateCustomFilters();
-        } catch (e: unknown) {
-            logger.error('[ext.FiltersService.onUpdateCustomFilters]: failed to update custom filters:', e);
-        }
     }
 }
