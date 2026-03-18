@@ -42,18 +42,23 @@ import { ManualUpdateHandler } from './manual-update-handler-mv3';
  * 3. Before applying, checks AdGuard Backend API (fail-open: updates proceed even on 204 or errors).
  * 4. Extension reloads automatically after `IDLE_THRESHOLD_MS` of inactivity,
  *    or shows update icon after `ICON_DELAY_MS` and waits for user action.
- * 5. After reload, shows success/failure notification.
- *
- * **Note**: Custom filters are NOT updated in automatic flow, only if user
- * clicks "Update" button.
+ * 5. After reload, custom filters are updated in App.asyncInit(),
+ *    then shows success/failure notification.
  *
  * ### Manual update (user-initiated):
  * 1. User clicks "Check for updates" → checks AdGuard Backend API.
  * 2. If backend confirms update, calls `chrome.runtime.requestUpdateCheck()`.
  * 3. Chrome downloads update → `onUpdateAvailable` fires → state becomes `Available`.
  * 4. Fire-and-forget backend analytics call (does not gate the update).
- * 5. User clicks "Update" button → custom filters are updated → extension reloads.
- * 6. After reload, shows success/failure notification.
+ * 5. User clicks "Update" button → extension reloads.
+ * 6. After reload, custom filters are updated in App.asyncInit(),
+ *    then shows success/failure notification.
+ * 7. If no extension update found, custom filters are still updated (awaited).
+ *
+ * ### Chrome extensions page update:
+ * 1. User clicks "Update" on chrome://extensions/.
+ * 2. Chrome directly updates and reloads the extension.
+ * 3. After reload, custom filters are updated in App.asyncInit().
  *
  * ## State machine states:
  * - `Idle` - default state, no update activity.

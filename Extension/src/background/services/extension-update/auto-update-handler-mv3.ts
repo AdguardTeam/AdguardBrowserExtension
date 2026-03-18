@@ -248,7 +248,11 @@ export class AutoUpdateHandler {
 
     /**
      * Applies automatic update and reloads extension.
+     *
      * Clears state and removes manual update markers to avoid collisions.
+     *
+     * Note: Custom filters are updated post-reload in App.asyncInit(), not here,
+     * to cover all update paths including an update triggered from chrome://extensions.
      */
     private async applyUpdate(): Promise<void> {
         this.onUpdateApplyStart();

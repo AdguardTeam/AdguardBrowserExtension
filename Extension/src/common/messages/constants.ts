@@ -157,7 +157,6 @@ export enum MessageType {
     ClearRulesLimitsWarningMv3 = 'clearRulesLimitsWarningMv3',
     RestoreFiltersMv3 = 'restoreFiltersMv3',
     CurrentLimitsMv3 = 'currentLimitsMv3',
-    UpdateCustomFiltersMv3 = 'updateCustomFiltersMv3',
     GetExtensionStatusForPopupMV3 = 'getExtensionStatusForPopupMV3',
 }
 
@@ -692,10 +691,6 @@ export type GetRulesLimitsCountersMv3Message = {
     type: MessageType.GetRulesLimitsCountersMv3;
 };
 
-export type UpdateCustomFiltersMv3Message = {
-    type: MessageType.UpdateCustomFiltersMv3;
-};
-
 export type GetExtensionStatusForPopupMV3Message = {
     type: MessageType.GetExtensionStatusForPopupMV3;
 };
@@ -1032,10 +1027,6 @@ export type MessageMap = {
     };
     [MessageType.ClearRulesLimitsWarningMv3]: {
         message: ClearRulesLimitsWarningMv3Message;
-        response: void;
-    };
-    [MessageType.UpdateCustomFiltersMv3]: {
-        message: UpdateCustomFiltersMv3Message;
         response: void;
     };
     [MessageType.GetExtensionStatusForPopupMV3]: {

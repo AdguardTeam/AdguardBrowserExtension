@@ -22,7 +22,11 @@ import { rulesLimitsService } from '../services/rules-limits/rules-limits-servic
 import { ExtensionUpdateService } from '../services/extension-update/extension-update-service-mv3';
 import { logger } from '../../common/logger';
 import { EXTENSION_INITIALIZED_EVENT } from '../../common/constants';
-import { FiltersApi, network } from '../api';
+import {
+    FiltersApi,
+    FilterUpdateApi,
+    network,
+} from '../api';
 
 import { AppCommon } from './app-common';
 
@@ -38,6 +42,17 @@ export class App extends AppCommon {
      */
     protected static override async asyncInit(): Promise<boolean> {
         const isUpdate = await super.asyncInit();
+
+        // Update custom filters after extension update.
+        // This is the single place for custom filter updates on extension reload,
+        // covering all update paths: manual, auto, and chrome://extensions.
+        if (isUpdate) {
+            try {
+                await FilterUpdateApi.updateCustomFilters();
+            } catch (e) {
+                logger.error('[ext.App.asyncInit]: Failed to update custom filters after extension update:', e);
+            }
+        }
 
         await ExtensionUpdateService.handleExtensionReloadOnUpdate(isUpdate);
 
