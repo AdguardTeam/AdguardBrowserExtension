@@ -70,6 +70,8 @@ export class PopupStore extends PopupStoreCommon {
      * Retrieves extension status including filter limits, update availability,
      * and update notifications. Sets up success/failure notifications for
      * extension updates that occurred during popup reload.
+     *
+     * @param options Extension status response data.
      */
     @action
     private configureExtensionUpdates(options: GetExtensionStatusForPopupResponse): void {

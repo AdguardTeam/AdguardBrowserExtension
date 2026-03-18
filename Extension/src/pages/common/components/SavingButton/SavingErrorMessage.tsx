@@ -35,6 +35,8 @@ type SavingErrorMessageProps = {
 /**
  * Displays error message when saving fails.
  * Returns null if not in error state.
+ *
+ * @param SavingErrorMessageProps Component props.
  */
 export const SavingErrorMessage = ({ savingState }: SavingErrorMessageProps) => {
     if (savingState === SavingFSMState.Error) {

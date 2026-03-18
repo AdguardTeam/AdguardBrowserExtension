@@ -1013,6 +1013,9 @@ export abstract class SettingsStoreCommon {
     /**
      * Type-safe method to update object properties for MobX reactivity.
      * Updates each property individually to ensure MobX observers are triggered.
+     *
+     * @param target Target object to update.
+     * @param source Source object with new values.
      */
     private static updateObjectProperties<T extends Record<string, any>>(
         target: T,

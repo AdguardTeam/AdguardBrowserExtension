@@ -68,6 +68,8 @@ type AnimatedLoaderProps = {
  *   ensuring smooth visual transition.
  *
  * Animation duration is automatically calculated from the Lottie JSON file.
+ *
+ * @param AnimatedLoaderProps Component props.
  */
 export const AnimatedLoader = ({
     children,
