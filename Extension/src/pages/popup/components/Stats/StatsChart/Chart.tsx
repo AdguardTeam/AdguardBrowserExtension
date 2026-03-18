@@ -254,11 +254,40 @@ const calculateChartHeight = (popupHeight = window.innerHeight) => {
     );
 };
 
+type ChartProps = {
+    /**
+     * Statistics data response.
+     */
+    stats: GetStatisticsDataResponse;
+
+    /**
+     * Selected time range.
+     */
+    range: TimeRange;
+
+    /**
+     * Chart type identifier.
+     */
+    type: string;
+
+    /**
+     * Small chart variant flag.
+     */
+    small: boolean;
+
+    /**
+     * Android browser detection flag.
+     */
+    isAndroidBrowser: boolean;
+};
+
 /**
  * Statistics chart component.
  *
  * Displays a spline chart with statistics data based on selected time range.
  * Supports responsive height adjustment for mobile browsers.
+ *
+ * @param ChartProps Component props.
  */
 export const Chart = ({
     stats,
@@ -266,13 +295,7 @@ export const Chart = ({
     type,
     small,
     isAndroidBrowser,
-}: {
-    stats: GetStatisticsDataResponse;
-    range: TimeRange;
-    type: string;
-    small: boolean;
-    isAndroidBrowser: boolean;
-}) => {
+}: ChartProps) => {
     const [chartHeight, setChartHeight] = useState(calculateChartHeight());
     const mouseYRef = useRef<number>(0);
 

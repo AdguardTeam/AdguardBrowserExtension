@@ -1059,6 +1059,8 @@ export abstract class MessengerCommon {
      * Sends a message to the background page to mark url as trusted and ignore
      * safebrowsing checks for it.
      *
+     * @param url URL to mark as trusted.
+     *
      * @returns Promise that resolves with the initialization data for the frame script.
      */
     openSafebrowsingTrusted = async (

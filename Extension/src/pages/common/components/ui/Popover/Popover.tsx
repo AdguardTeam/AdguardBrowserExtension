@@ -64,6 +64,8 @@ type PopoverParams = {
 
 /**
  * Wrap child container for handle tooltips rendering in overlay on hover
+ *
+ * @param PopoverParams Component props.
  */
 export const Popover = ({
     text,

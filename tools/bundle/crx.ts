@@ -73,6 +73,8 @@ const arePrivateKeysEqual = (keyA: PrivateKey, keyB: PrivateKey) => {
 /**
  * Retrieves certificate private key from specified path.
  *
+ * @param path The path to the private key file.
+ *
  * @returns Buffer of the private key
  *
  * @throws Error if the certificate is not found

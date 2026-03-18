@@ -65,6 +65,8 @@ type AnimatedWrapperParams = Pick<AriaAttributes, 'aria-hidden'> & {
 
 /**
  * Wrapper removes animation stuttering and makes icon resetting on animation end smooth
+ *
+ * @param AnimatedWrapperParams Params for wrapper.
  */
 const AnimatedWrapper = ({
     children,

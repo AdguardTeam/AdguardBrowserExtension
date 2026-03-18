@@ -319,6 +319,8 @@ export async function writeSizesFile(sizesData: SizesFile): Promise<void> {
 /**
  * Format a file size in human-readable format.
  *
+ * @param bytes Size in bytes to format.
+ *
  * @returns Formatted size string.
  */
 export function formatSize(bytes: number): string {

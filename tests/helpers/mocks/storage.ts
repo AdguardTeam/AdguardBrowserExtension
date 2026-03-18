@@ -35,6 +35,8 @@ class EmulatedLocalStorage implements Storage.StorageArea {
 
     /**
      * Get data from the storage
+     *
+     * @param keys Keys to retrieve from storage.
      */
     get(keys?: string | string[] | Record<string, unknown> | null | undefined): Promise<Record<string, unknown>> {
         if (keys === null) {
@@ -72,6 +74,8 @@ class EmulatedLocalStorage implements Storage.StorageArea {
 
     /**
      * Set data in storage
+     *
+     * @param items Items to store.
      */
     set(items: Record<string, unknown>): Promise<void> {
         Object.assign(this.data, items);
@@ -80,6 +84,8 @@ class EmulatedLocalStorage implements Storage.StorageArea {
 
     /**
      * Remove data from storage
+     *
+     * @param keys Keys to remove from storage.
      */
     remove(keys: string | string[]): Promise<void> {
         if (typeof keys === 'string') {
