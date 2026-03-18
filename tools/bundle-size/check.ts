@@ -305,6 +305,8 @@ async function checkMv3BundleSize(buildType: BuildTargetEnv, targetMv3Browser: M
  * Check the size of the Firefox Amo unpacked directory.
  *
  * @param buildType Build environment — beta or release.
+ * @param prevStats Previous bundle size statistics.
+ * @param threshold Size increase threshold percentage.
  *
  * @returns True if new size exceeds the limit
  * or if new size is more than threshold compared to previous size,

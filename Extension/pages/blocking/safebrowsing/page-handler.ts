@@ -52,6 +52,8 @@ const SAFEBROWSING_GO_BACK_BTN_ID = 'safebrowsingPageBackBtn';
 
 /**
  * Adds listener to handle "Proceed Anyway" button click.
+ *
+ * @param url URL to open when proceeding.
  */
 const addProceedAnywayListener = (url: string): void => {
     const proceedAnywayBtn = getElementById(SAFEBROWSING_PROCEED_BTN_ID);

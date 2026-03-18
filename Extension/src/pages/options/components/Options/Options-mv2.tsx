@@ -52,6 +52,9 @@ export {
 /**
  * MV2-specific message handler that wraps the common handler
  * with event pause logic to prevent toggle reversion.
+ *
+ * @param settingsStore Settings store instance.
+ * @param uiStore UI store instance.
  */
 const createMessageHandlerWithPause = (
     settingsStore: RootStore['settingsStore'],

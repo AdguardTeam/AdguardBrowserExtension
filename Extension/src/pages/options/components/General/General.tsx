@@ -108,6 +108,8 @@ const AllowAcceptableAds = 'allowAcceptableAds';
  * We need to handle privacy permission on user action.
  * That is why we check for privacy permission on the UI.
  *
+ * @param content JSON string content to parse.
+ *
  * @throws error if privacy permission is required, but it wasn't given
  */
 const handlePrivacyPermissionForWebRtc = (content: string): Promise<boolean> => {

@@ -37,6 +37,8 @@ export class Messenger extends MessengerCommon {
 
     /**
      * Sends a message to the background page to update extension.
+     *
+     * @param UpdateExtensionMessageMv3Data Message data with from field.
      */
     updateExtension = async (
         { from }: UpdateExtensionMessageMv3['data'],

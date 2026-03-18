@@ -36,6 +36,8 @@ import './notifications.pcss';
 /**
  * The component needed to show a notification about the rule limits
  * exceeded in popup.
+ *
+ * @param NotificationParams Component props.
  */
 export const Notification = ({
     type,
