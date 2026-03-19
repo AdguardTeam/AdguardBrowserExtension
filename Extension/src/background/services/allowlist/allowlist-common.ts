@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,6 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { logger } from '../../../common/logger';
+import { normalizeAllowlistDomains } from '../../../common/utils/allowlist-domains';
 import {
     MessageType,
     type SaveAllowlistDomainsMessage,
@@ -135,7 +136,13 @@ export abstract class AllowlistServiceCommon {
     private static async handleDomainsSave(message: SaveAllowlistDomainsMessage): Promise<void> {
         const { value } = message.data;
 
-        const domains = value.split(/[\r\n]+/);
+        const { domains, invalidEntries } = normalizeAllowlistDomains(value);
+
+        if (invalidEntries.length > 0) {
+            throw new Error(
+                `Invalid allowlist entries: ${invalidEntries.join(', ')}`,
+            );
+        }
 
         if (AllowlistApi.isInverted()) {
             AllowlistApi.setInvertedAllowlistDomains(domains);

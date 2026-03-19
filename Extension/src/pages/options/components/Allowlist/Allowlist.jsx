@@ -44,6 +44,7 @@ import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getFirstNonDisabledElement } from '../../../common/utils/dom';
+import { validateAllowlistEntries } from '../../../../common/utils/allowlist-domains';
 import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
 import { SavingErrorMessage } from '../../../common/components/SavingButton';
@@ -160,7 +161,22 @@ const Allowlist = observer(() => {
 
         try {
             const content = await handleFileUpload(file, 'txt');
-            await saveAllowlist(settingsStore.allowlist.concat('\n', content));
+            const combined = settingsStore.allowlist.concat('\n', content);
+
+            const { valid, invalidEntries } = validateAllowlistEntries(combined);
+
+            if (!valid) {
+                uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: translator.getMessage(
+                        'options_allowlist_invalid_entries',
+                        { entries: invalidEntries.join(', ') },
+                    ),
+                });
+                return;
+            }
+
+            await saveAllowlist(combined);
             setAllowlistRerender(true);
         } catch (e) {
             logger.debug('[ext.Allowlist]: error:', e);
@@ -197,7 +213,22 @@ const Allowlist = observer(() => {
 
         if (settingsStore.allowlistEditorContentChanged) {
             const value = editorRef.current.editor.getValue();
+
+            const { valid, invalidEntries } = validateAllowlistEntries(value);
+
+            if (!valid) {
+                uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: translator.getMessage(
+                        'options_allowlist_invalid_entries',
+                        { entries: invalidEntries.join(', ') },
+                    ),
+                });
+                return;
+            }
+
             await saveAllowlist(value);
+            setAllowlistRerender(true);
         }
     };
 
