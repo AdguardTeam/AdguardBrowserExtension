@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filtering log window size/pos not restored with zoom [#3255].
 - Blocking page incorrectly displayed for search results [#3414].
 - Use of invalid CSS selectors in element hiding rules affects all injected styles [#3329].
+- `$removeparam` rules not stripping all tracking parameters when multiple rules match the same URL in MV3 [#3444].
 
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
 [#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428
 [#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
 [#3329]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3329
+[#3444]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3444
 
 ## [5.3 patch 1] <!-- TODO: Add release date -->
 
