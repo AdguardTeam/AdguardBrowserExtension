@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -144,5 +144,61 @@ describe('Page Stats Api', () => {
         const expectedStats = getEmptyStatisticDataFixture();
 
         expect(stats).toStrictEqual(expectedStats);
+    });
+
+    // Regression test for AG-48836: without normalization on the write path,
+    // both day-1 and day-3 counts would merge into the same last bucket,
+    // causing the stats counter to "move with" the current date instead of
+    // staying pinned to the day it was recorded.
+    it('places blocked counts in separate daily buckets after a time gap', async () => {
+        await App.init();
+        await PageStatsApi.init();
+
+        const OTHER_STATS_CATEGORY_ID = 'Other';
+
+        // Day 1: accumulate 3 blocked requests.
+        const day1 = new Date(2026, 2, 17, 12, 0, 0).getTime();
+        vi.spyOn(Date, 'now').mockImplementation(() => day1);
+        await PageStatsApi.updateStats(OTHER_STATS_CATEGORY_ID, 3);
+
+        // Day 3: shift time +2 days, accumulate 5 more.
+        const day3 = new Date(2026, 2, 19, 12, 0, 0).getTime();
+        vi.spyOn(Date, 'now').mockImplementation(() => day3);
+        await PageStatsApi.updateStats(OTHER_STATS_CATEGORY_ID, 5);
+
+        const stats = PageStatsApi.getStatisticsData();
+        const { lastMonth } = stats;
+
+        // Current day (last bucket) should have only the day-3 count.
+        expect(lastMonth[lastMonth.length - 1]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(5);
+        // Day 2 (gap) should be zero.
+        expect(lastMonth[lastMonth.length - 2]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(0);
+        // Day 1 should have only the day-1 count.
+        expect(lastMonth[lastMonth.length - 3]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(3);
+    });
+
+    it('preserves totalBlocked when loading existing storage data', async () => {
+        const existingData = {
+            totalBlocked: 12345,
+            data: {
+                hours: Array(24).fill({ [PageStatsStorage.TOTAL_GROUP_ID]: 0 }),
+                days: Array(30).fill({ [PageStatsStorage.TOTAL_GROUP_ID]: 0 }),
+                months: Array(3).fill({ [PageStatsStorage.TOTAL_GROUP_ID]: 0 }),
+                updated: Date.now(),
+            },
+        };
+
+        await storage.set({
+            [PAGE_STATISTIC_KEY]: JSON.stringify(existingData),
+        });
+
+        await PageStatsApi.init();
+
+        expect(PageStatsApi.getTotalBlocked()).toBe(12345);
+
+        const stats = PageStatsApi.getStatisticsData();
+        expect(stats.today).toHaveLength(24);
+        expect(stats.lastWeek).toHaveLength(7);
+        expect(stats.lastMonth).toHaveLength(30);
     });
 });
