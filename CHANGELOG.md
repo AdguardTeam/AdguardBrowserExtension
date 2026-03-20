@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allowlist editor now normalizes entries by extracting domains from URLs, so entries with protocols, paths, or trailing slashes work correctly [#3430].
 - Use of invalid CSS selectors in element hiding rules affects all injected styles [#3329].
 - `$removeparam` rules not stripping all tracking parameters when multiple rules match the same URL in MV3 [#3444].
+- "Block ads manual" doesn't work on tabs opened before the update [#3452].
 
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
 [#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3430]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3430
 [#3329]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3329
 [#3444]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3444
+[AdguardBrowserExtension#3452]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3452
 
 ## [5.3 patch 1] <!-- TODO: Add release date -->
 
