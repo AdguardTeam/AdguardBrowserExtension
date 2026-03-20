@@ -29,11 +29,14 @@ import {
 import browser from 'webextension-polyfill';
 
 import { pagesApi } from '../../../../../Extension/src/background/api/ui/pages';
+import { PagesApiCommon } from '../../../../../Extension/src/background/api/ui/pages/pages-common';
 import { SettingsApi } from '../../../../../Extension/src/background/api/settings';
 import { FilterStateStorage } from '../../../../../Extension/src/background/storages/filter-state';
 import { GroupStateStorage } from '../../../../../Extension/src/background/storages/group-state';
 import { ForwardFrom } from '../../../../../Extension/src/common/forward';
 import { appContext, AppContextKey } from '../../../../../Extension/src/background/storages/app';
+import { browserStorage } from '../../../../../Extension/src/background/storages/shared-instances';
+import { TabsApi, WindowsApi } from '../../../../../Extension/src/common/api/extension';
 
 vi.mock('../../../../../Extension/src/background/storages/metadata');
 vi.mock('../../../../../Extension/src/common/user-agent');
@@ -64,6 +67,106 @@ describe('PagesApi', () => {
         expect(url.searchParams.get('from')).toBe(reportedFrom);
         expect(url.searchParams.get('url')).toBe(websiteUrl);
         expect(url.searchParams.get('product_type')).toBe('Ext');
+    });
+
+    describe('openFilteringLogPage', () => {
+        beforeEach(() => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            vi.spyOn(TabsApi, 'getActive').mockResolvedValue({ id: 1 } as any);
+            vi.spyOn(TabsApi, 'findOne').mockResolvedValue(undefined);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            vi.spyOn(WindowsApi, 'create').mockResolvedValue({} as any);
+        });
+
+        afterEach(() => {
+            vi.restoreAllMocks();
+        });
+
+        it('opens with default state when windowState is undefined', async () => {
+            vi.spyOn(browserStorage, 'get').mockResolvedValue(undefined);
+
+            await PagesApiCommon.openFilteringLogPage();
+
+            const spy = vi.mocked(WindowsApi.create);
+            expect(spy).toHaveBeenCalledOnce();
+            const createData = spy.mock.calls[0]![0]!;
+            expect(typeof createData).toBe('object');
+            expect(createData).toHaveProperty('width');
+            expect(createData).toHaveProperty('height');
+        });
+
+        it('opens with parsed state when windowState is a legacy JSON string', async () => {
+            vi.spyOn(browserStorage, 'get').mockResolvedValue(
+                '{"width":1280,"height":720,"top":233,"left":352}' as unknown as undefined,
+            );
+
+            await PagesApiCommon.openFilteringLogPage();
+
+            const spy = vi.mocked(WindowsApi.create);
+            expect(spy).toHaveBeenCalledOnce();
+            const createData = spy.mock.calls[0]![0]!;
+            expect(typeof createData).toBe('object');
+            expect(createData).toHaveProperty('width', 1280);
+            expect(createData).toHaveProperty('height', 720);
+            expect(createData).toHaveProperty('top', 233);
+            expect(createData).toHaveProperty('left', 352);
+        });
+
+        it('falls back to default state when windowState is a corrupt JSON string', async () => {
+            vi.spyOn(browserStorage, 'get').mockResolvedValue(
+                'not-valid-json' as unknown as undefined,
+            );
+
+            await PagesApiCommon.openFilteringLogPage();
+
+            const spy = vi.mocked(WindowsApi.create);
+            expect(spy).toHaveBeenCalledOnce();
+            const createData = spy.mock.calls[0]![0]!;
+            expect(typeof createData).toBe('object');
+            expect(createData).toHaveProperty('width');
+            expect(createData).toHaveProperty('height');
+        });
+
+        it('falls back to default state when windowState has extra unknown keys', async () => {
+            vi.spyOn(browserStorage, 'get').mockResolvedValue(
+                {
+                    width: 800,
+                    height: 600,
+                    top: 100,
+                    left: 50,
+                    unexpectedKey: 'should be rejected',
+                } as unknown as undefined,
+            );
+
+            await PagesApiCommon.openFilteringLogPage();
+
+            const spy = vi.mocked(WindowsApi.create);
+            expect(spy).toHaveBeenCalledOnce();
+            const createData = spy.mock.calls[0]![0]!;
+            expect(createData).toHaveProperty('width', 1280);
+            expect(createData).toHaveProperty('height', 720);
+        });
+
+        it('opens with object state when windowState is already an object', async () => {
+            vi.spyOn(browserStorage, 'get').mockResolvedValue(
+                {
+                    width: 800,
+                    height: 600,
+                    top: 100,
+                    left: 50,
+                } as unknown as undefined,
+            );
+
+            await PagesApiCommon.openFilteringLogPage();
+
+            const spy = vi.mocked(WindowsApi.create);
+            expect(spy).toHaveBeenCalledOnce();
+            const createData = spy.mock.calls[0]![0]!;
+            expect(createData).toHaveProperty('width', 800);
+            expect(createData).toHaveProperty('height', 600);
+            expect(createData).toHaveProperty('top', 100);
+            expect(createData).toHaveProperty('left', 50);
+        });
     });
 
     describe('forward URLs should not contain "undefined"', () => {
