@@ -20,6 +20,7 @@
 import browser, { type Runtime, type Windows } from 'webextension-polyfill';
 import { format } from 'date-fns';
 import { UTCDate } from '@date-fns/utc';
+import { z } from 'zod';
 
 import { getErrorMessage } from '@adguard/logger';
 
@@ -102,6 +103,24 @@ export abstract class PagesApiCommon {
         top: 0,
         left: 0,
     };
+
+    /**
+     * Zod schema for validating window state from storage.
+     *
+     * Validates either a normal window state with position and size,
+     * or a fullscreen window state.
+     */
+    private static readonly windowStateSchema = z.union([
+        z.object({
+            width: z.number(),
+            height: z.number(),
+            top: z.number(),
+            left: z.number(),
+        }).strict(),
+        z.object({
+            state: z.literal('fullscreen'),
+        }).strict(),
+    ]);
 
     /**
      * Filters download page url.
@@ -196,6 +215,45 @@ export abstract class PagesApiCommon {
     }
 
     /**
+     * Retrieves the window state for the filtering log page.
+     *
+     * If a saved window state exists, it is validated and returned.
+     * Otherwise, the default popup window state is returned.
+     *
+     * @returns The window state for the filtering log page.
+     */
+    private static async getFilteringLogWindowState(): Promise<Windows.CreateCreateDataType> {
+        const rawWindowState = await browserStorage.get(FILTERING_LOG_WINDOW_STATE_KEY);
+        let windowState: Windows.CreateCreateDataType | undefined;
+
+        if (!rawWindowState) {
+            return PagesApiCommon.defaultPopupWindowState;
+        }
+
+        let parsedState: unknown = rawWindowState;
+
+        if (typeof rawWindowState === 'string') {
+            try {
+                parsedState = JSON.parse(rawWindowState);
+            } catch (e) {
+                logger.debug('[ext.PagesApiCommon.getFilteringLogWindowState]: Failed to parse window state JSON', e);
+                parsedState = undefined;
+            }
+        }
+
+        if (parsedState !== undefined) {
+            const validationResult = PagesApiCommon.windowStateSchema.safeParse(parsedState);
+            if (validationResult.success) {
+                windowState = validationResult.data;
+            } else {
+                logger.debug('[ext.PagesApiCommon.getFilteringLogWindowState]: Invalid window state format, using default', validationResult.error);
+            }
+        }
+
+        return windowState || PagesApiCommon.defaultPopupWindowState;
+    }
+
+    /**
      * Opens filtering log page window.
      * If the page has been already opened, focus on window instead creating new one.
      */
@@ -215,8 +273,6 @@ export abstract class PagesApiCommon {
             return;
         }
 
-        const rawWindowState = await browserStorage.get(FILTERING_LOG_WINDOW_STATE_KEY);
-
         // Firefox does not allow to maximize popup windows on Windows operating system.
         // For more details, see the Bugzilla report:
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1756507
@@ -226,16 +282,7 @@ export abstract class PagesApiCommon {
         const windowType = UserAgent.isFirefox && UserAgent.isWindows ? 'normal' : 'popup';
 
         try {
-            let windowState;
-            if (typeof rawWindowState === 'string') {
-                try {
-                    windowState = JSON.parse(rawWindowState);
-                } catch (e) {
-                    logger.debug('[ext.PagesApiCommon.openFilteringLogPage]: Failed to parse window state:', e);
-                }
-            }
-
-            const options = windowState ?? PagesApiCommon.defaultPopupWindowState;
+            const options = await PagesApiCommon.getFilteringLogWindowState();
 
             await WindowsApi.create({
                 url,
