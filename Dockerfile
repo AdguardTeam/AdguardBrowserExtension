@@ -38,8 +38,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm config set store-dir /pnpm-store && \
     cd /tsurlfilter/packages/tswebextension && \
     pnpm install && \
-    npx lerna run build --scope=@adguard/tswebextension --include-dependencies && \
-    npx lerna run build --scope=@adguard/dnr-rulesets --include-dependencies
+    npx lerna run build --scope=@adguard/tswebextension --include-dependencies
 
 # ============================================================================
 # Stage: deps
@@ -93,7 +92,7 @@ COPY --from=tsurlfilter-build /tsurlfilter /tsurlfilter
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm config set store-dir /pnpm-store && \
-    ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter --with-dnr-rulesets
+    ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
 
 # ============================================================================
 # Stage: dev-build
