@@ -38,7 +38,7 @@ Test dev build:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            # Clone tsurlfilter (produces clean source-only context, no .git)
             ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
             export DOCKER_BUILDKIT=1
@@ -117,7 +117,7 @@ Build chrome crx artifact:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            # Clone tsurlfilter (produces clean source-only context, no .git)
             ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
             export DOCKER_BUILDKIT=1
@@ -163,7 +163,7 @@ Lint:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            # Clone tsurlfilter (produces clean source-only context, no .git)
             ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
             export DOCKER_BUILDKIT=1
@@ -204,7 +204,7 @@ Unit tests:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            # Clone tsurlfilter (produces clean source-only context, no .git)
             ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
             export DOCKER_BUILDKIT=1
@@ -262,7 +262,7 @@ Integration tests:
               mv chrome-mv3-dev.zip artifacts/
             fi
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            # Clone tsurlfilter (produces clean source-only context, no .git)
             ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
             export DOCKER_BUILDKIT=1
