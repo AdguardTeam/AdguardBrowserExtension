@@ -1,9 +1,9 @@
-! Checksum: YBkyUm38jlHRbkC7wsPZcA
-! Diff-Path: ../patches/22/22-s-1772717732-3600.patch
+! Checksum: tG38H6kn8F65lJAm0aFDOA
+! Diff-Path: ../patches/22/22-s-1774408288-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.13.68
-! TimeUpdated: 2026-03-05T13:32:22+00:00
+! Version: 2.0.13.75
+! TimeUpdated: 2026-03-25T03:08:29+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1763,6 +1763,7 @@ yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
 ||sinoptik.ua/_uploaded_files/informer/
 ||sinoptik.ua/informers$third-party
 ||sparmoscow.ru/_*.php|
+||ssl.ceneo.pl/shops/sw.js^$domain=interstyl-sklep.pl
 ||static.olark.com/jsclient/$third-party,domain=~fooda.com
 ||support-widget.nakanohito.jp^$domain=jre-travel.com
 ||svoe.guru/_*.php|
@@ -1834,6 +1835,8 @@ yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
 !
 !   SECTION: Widgets - Suggestion widgets
 !
+news.ebc.net.tw###_popIn_recommend_above
+news.ebc.net.tw###_popIn_recommend_below
 tvmovie.de#$#.asset-container .bx-dialog--exit-intent { display: none !important; }
 tvmovie.de#$#body.bx-js-dialog-opened { overflow: auto !important; }
 [$path=/maps]yandex.*##div[data-chunk="discovery-home"]
@@ -1951,7 +1954,11 @@ full-count.jp#?#section > div.c-heading:has(> p.c-heading__en:contains(RECOMMEND
 ##.online-chat-root-Verbox
 /js/chat/edu_chat.js
 /wp-content/plugins/creame-whatsapp-me/public/js/joinchat.
+! comm100.com AI-chat
+||comm100.com^$third-party
+/livechat.ashx?siteId=$script,third-party
 !
+||app.davision.ai^$third-party
 ||zdorovyak.com^$third-party
 ||code.tidio.co^$third-party
 ||omniqa.ru^
@@ -2019,6 +2026,9 @@ daddyhd.com##.sidebar__inner
 ||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com|revouninstaller.com
 litres.ru###call_support
 !
+||app.qualified.com/*/messenger?$domain=cloudflare.com
+iport.ru##div[class^="layout_chat_widgets_wrap__"]
+elcomercio.pe###merlin-widget-root
 blog.csdn.net##.csdn-side-toolbar a.option-box[data-type="cs"]
 blog.csdn.net##.csdn-side-toolbar a#sidecolumn-deepseek
 consultant.net.ua##.js-assistant-chat__wrapper

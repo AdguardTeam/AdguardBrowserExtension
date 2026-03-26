@@ -647,6 +647,7 @@
         "(()=>{const e=Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\").set,t=Object.getOwnPropertyDescriptor(Element.prototype,\"innerHTML\").get;Object.defineProperty(Element.prototype,\"innerHTML\",{get(){return t.call(this)},set(t){if(t?.includes?.(\"disable your adblocker\"))throw new Error;e.call(this,t)}})})();": [
             {
                 "permittedDomains": [
+                    "tpead.net",
                     "advertape.net",
                     "tapepops.com",
                     "watchadsontape.com",
@@ -1182,6 +1183,8 @@
         "(()=>{const t=new Set([\"VP\",\"w3\",\"JW\"]),e=/\\{return\\(.{1,5}\\)\\(\\)===.\\..\\}/,n={apply:(t,n,r)=>{if(\"function\"!=typeof t)return Reflect.apply(t,n,r);const p=t.toString();return e.test(p)&&(t=function(){return!1}),Reflect.apply(t,n,r)}},r={apply:(t,e,r)=>{let p=Reflect.apply(t,e,r);return\"function\"==typeof p&&(p=new Proxy(p,n)),p}},p={apply:(e,n,p)=>{try{const o=p[1],c=p[2]?.get;if(!o||\"function\"!=typeof c)return Reflect.apply(e,n,p);t.has(o)&&/^\\(\\)=>.$/.test(c.toString())?p[2].get=function(){return function(){return!1}}:\"A\"===o&&c.toString().includes(\"()=>i\")&&(p[2].get=new Proxy(p[2].get,r))}catch(t){}return Reflect.apply(e,n,p)}};Object.defineProperty=new Proxy(Object.defineProperty,p)})();": [
             {
                 "permittedDomains": [
+                    "so-magazyn.pl",
+                    "kafeteria.pl",
                     "informacje.wp.pl",
                     "wplatform.media",
                     "pcformat.pl",
@@ -1287,6 +1290,10 @@
         "(()=>{const t={apply:(t,e,o)=>{try{const t=e;t&&\"object\"==typeof t&&t.context?.bidRequestId&&(e={})}catch(t){}return Reflect.apply(t,e,o)}};window.Object.prototype.hasOwnProperty=new Proxy(window.Object.prototype.hasOwnProperty,t)})();": [
             {
                 "permittedDomains": [
+                    "so-magazyn.pl",
+                    "parenting.pl",
+                    "fotoblogia.pl",
+                    "kafeteria.pl",
                     "wplatform.media",
                     "staszownews.pl",
                     "zdrowienews.pl",
@@ -1974,7 +1981,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=\"SPONSORED\",r=\"AdsSideFeedUnit\",t={apply:(t,a,n)=>{try{const d=Reflect.apply(t,a,n);if(JSON.stringify(d).includes?.(e)||JSON.stringify(d).includes?.(r)){const t=d;return Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach((t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&delete t[3][1].__bbox.result.data.node,t[3]?.[1]?.__bbox?.result?.data?.viewer?.sideFeedUnit?.nodes?.[0]?.__typename===r&&delete t[3][1].__bbox.result.data.viewer.sideFeedUnit.nodes[0]})),Array.isArray(t.data?.viewer?.news_feed?.edges)&&(t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter((r=>r.category!==e))),t.data?.category===e&&delete t.data.node,t}return d}catch(e){return Reflect.apply(t,a,n)}}};window.JSON.parse=new Proxy(window.JSON.parse,t);const a={apply:(t,a,n)=>{try{const d=Reflect.apply(t,a,n);if(d?.startsWith?.(\"{\")&&d?.endsWith?.(\"}\")&&(d?.includes?.(e)||d?.includes?.(r))){const e=JSON.parse(d);return JSON.stringify(e)}return d}catch(e){return Reflect.apply(t,a,n)}}};window.String=new Proxy(window.String,a)})();": [
+        "(()=>{const e=\"SPONSORED\",t=\"SponsoredData\",r=\"AdsSideFeedUnit\",n={apply:(n,a,d)=>{try{const s=Reflect.apply(n,a,d);if(JSON.stringify(s).includes?.(e)||JSON.stringify(s).includes?.(t)||JSON.stringify(s).includes?.(r)){const n=s;if(Array.isArray(n.require?.[0]?.[3]?.[0]?.__bbox?.require)&&n.require[0][3][0].__bbox.require.forEach((n=>{if(n[3]?.[1]?.__bbox?.result?.data?.category===e&&delete n[3][1].__bbox.result.data.node,n[3]?.[1]?.__bbox?.result?.data?.node){const e=n[3][1].__bbox.result.data.node;Object.values(e).some((e=>e?.__typename===t))&&delete n[3][1].__bbox.result.data.node}n[3]?.[1]?.__bbox?.result?.data?.viewer?.sideFeedUnit?.nodes?.[0]?.__typename===r&&delete n[3][1].__bbox.result.data.viewer.sideFeedUnit.nodes[0]})),Array.isArray(n.data?.viewer?.news_feed?.edges)&&(n.data.viewer.news_feed.edges=n.data.viewer.news_feed.edges.filter((t=>t.category!==e))),n.data?.node){Object.values(n.data.node).some((e=>e?.__typename===t))&&delete n.data.node}return n.data?.category===e&&delete n.data.node,n}return s}catch(e){return Reflect.apply(n,a,d)}}};window.JSON.parse=new Proxy(window.JSON.parse,n);const a={apply:(n,a,d)=>{try{const s=Reflect.apply(n,a,d);if(s?.startsWith?.(\"{\")&&s?.endsWith?.(\"}\"),s?.startsWith?.(\"{\")&&s?.endsWith?.(\"}\")&&(s?.includes?.(e)||s?.includes?.(t)||s?.includes?.(r))){const e=JSON.parse(s);return JSON.stringify(e)}return s}catch(e){return Reflect.apply(n,a,d)}}};window.String=new Proxy(window.String,a);const d={apply:(e,r,n)=>{try{if(n[2]?.[0]&&n[2][0]?.includes?.(t)){const e=n[2][0].split(/\\r?\\n|\\r/),t=e.map((e=>JSON.parse(e))).map((e=>JSON.stringify(e))).join(\"\\r\\n\");n[2][0]=t}return Reflect.apply(e,r,n)}catch(t){return Reflect.apply(e,r,n)}}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,d)})();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -2207,9 +2214,12 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\./,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,r=o=>t.regexTest.call(e,o),l={construct:(e,l,n)=>{const c=o();return r(c)&&l[0]&&t.includes.call(l[0],\"adshield\")&&(l[0]=[\"(function(){})();\"]),Reflect.construct(e,l,n)}};window.Blob=new Proxy(window.Blob,l);const n={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&t.includes.call(n[0],\"new Error\")&&(n[0]=()=>{}),Reflect.apply(e,l,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&l?.includes?.(\"setTimeout\")&&(l=t.filter.call(l,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,l,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
+        "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\./,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,r=o=>t.regexTest.call(e,o),l={construct:(e,l,n)=>{const c=o();return r(c)&&l[0]&&t.includes.call(l[0],\"adshield\")&&(l[0]=[\"(function(){})();\"]),Reflect.construct(e,l,n)}};window.Blob=new Proxy(window.Blob,l);const n={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&t.includes.call(n[0],\"new Error\")&&(n[0]=()=>{}),Reflect.apply(e,l,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&l?.includes?.(\"setTimeout\")&&(l=t.filter.call(l,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,l,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "welt.de",
+                    "edmontonjournal.com",
+                    "itavisen.no",
                     "russianmachineneverbreaks.com",
                     "geo.fr",
                     "langenscheidt.com",
@@ -2333,7 +2343,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=\"pyv\",t=\"param_first\",a=\"param_second\",n=\"client_screen\",c=\"ad_type\",o=\"none\",r=\"eAFgAQ\",l=\"8AUB\",i=\"YAHI\",s=\"CHANNEL\",y=t;let p=y,u=null;const d=Object.getOwnPropertyDescriptor(Document.prototype,\"visibilityState\"),b=()=>{try{Object.defineProperty(document,\"visibilityState\",{get:()=>\"visible\",configurable:!0})}catch(e){}},f=window.JSON.stringify,m=e=>{p=e};(()=>{try{const e=Object.getOwnPropertyDescriptor(window.JSON,\"parse\");return!!e&&e.writable}catch(e){return!1}})()||((()=>{const e={apply:(e,t,a)=>{try{const e=t;e?.includes('\"minimumPlaybackRate\":100,\"maximumPlaybackRate\":100')&&(t=e.replace('\"minimumPlaybackRate\":100,\"maximumPlaybackRate\":100','\"minimumPlaybackRate\":25,\"maximumPlaybackRate\":200'))}catch(e){}return Reflect.apply(e,t,a)}};window.String.prototype.replace=new Proxy(window.String.prototype.replace,e)})(),m(n));const x=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},C=(p,f,C)=>{try{if(!p||!f||!C)return;(e=>{const t=e?.videoId;t&&(u&&u!==t&&m(y),u=t)})(p);const R=document.getElementById(\"movie_player\")?.getPlayerResponse()?.playabilityStatus?.status;if(\"LOGIN_REQUIRED\"!==R&&\"CONTENT_CHECK_REQUIRED\"!==R||(C=o),C===t&&p.context?.client?.clientScreen!==s&&!p.params?.startsWith(i))return p.params=r,p.playerRequest&&p.playerRequest.params!==r&&(p.playerRequest.params=r),p.playbackContext&&p.playbackContext.params!==r&&(p.playbackContext.params=r),f.contentPlaybackContext.lactMilliseconds=String(Date.now()),b(),void x(p);if(C===a&&p.context?.client?.clientScreen!==s&&!p.params?.startsWith(i))return p.params!==l&&(p.params=l),p.playerRequest&&p.playerRequest.params!==l&&(p.playerRequest.params=l),p.playbackContext&&p.playbackContext.params!==l&&(p.playbackContext.params=l),p.playlistId||(p.context.client.clientScreen=s),f.contentPlaybackContext.lactMilliseconds=String(Date.now()),b(),void x(p);if(!(C!==e||p.context?.client?.clientScreen===s||f.params?.startsWith(r)&&f.params?.startsWith(l)))return f.adPlaybackContext={pyv:!0},f.contentPlaybackContext.lactMilliseconds=String(Date.now()),void x(p);if(C===n&&\"WEB\"===p.context?.client?.clientName)return p.context.client.clientScreen=s,f.contentPlaybackContext.lactMilliseconds=String(Date.now()),b(),void x(p);if(C===c)return f.adPlaybackContext={adType:\"AD_TYPE_INSTREAM\"},f.contentPlaybackContext.lactMilliseconds=String(Date.now()),b(),void x(p);if(C===o)return delete f.adPlaybackContext,void(()=>{try{Object.defineProperty(document,\"visibilityState\",d)}catch(e){}})()}catch(e){}},R=[\"playerErrorMessageRenderer\",\"UNPLAYABLE\"],k={apply:(r,l,i)=>{if(location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\")||p===o)return Reflect.apply(r,l,i);let s;try{if(s=Reflect.apply(r,l,i),!s.responseContext&&!s.playabilityStatus)return s;const y=f(s);return R.some((e=>y.includes(e)))&&!y.includes(\"CONTENT_CHECK_REQUIRED\")?p===t?(m(a),s):p===a?(m(e),s):p===e?(m(n),s):p===n?(m(c),s):(m(o),s):(p===t&&s.playerConfig?.audioConfig?.muteOnStart&&location.href.includes(\"/watch\")&&delete s.playerConfig.audioConfig.muteOnStart,p===c&&s.playerConfig?.granularVariableSpeedConfig&&(s.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate=200,s.playerConfig.granularVariableSpeedConfig.minimumPlaybackRate=25),s)}catch(e){}return s}};window.JSON.parse=new Proxy(window.JSON.parse,k);const w={apply:(e,t,a)=>{if(location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\"))return Reflect.apply(e,t,a);try{let n=a[0];if(n&&(n.includes('\"contentPlaybackContext\"')||n.includes('\"adSignalsInfo\"'))){const c=JSON.parse(n);if(!c.context?.client)return Reflect.apply(e,t,a);c.playbackContext&&C(c,c.playbackContext,p),c.playerRequest&&C(c,c.playerRequest.playbackContext,p),n=f(c),a[0]=n}}catch(e){}return Reflect.apply(e,t,a)}};window.TextEncoder.prototype.encode=new Proxy(window.TextEncoder.prototype.encode,w);const g={apply:(e,t,a)=>{if(location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\"))return Reflect.apply(e,t,a);try{const n=a[0];if(!n?.context?.client)return Reflect.apply(e,t,a);n.playbackContext&&void 0===n.playbackContext.adPlaybackContext&&C(n,n.playbackContext,p),n.playerRequest&&void 0===n.playerRequest.playbackContext.adPlaybackContext&&C(n,n.playerRequest.playbackContext,p),a[0]=n}catch(e){}return Reflect.apply(e,t,a)}};window.JSON.stringify=new Proxy(window.JSON.stringify,g);const S={construct:(e,t,a)=>{try{const n=t[0];let c=t[1]?.body;if(!n?.includes(\"youtubei\")||location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\")||!c)return Reflect.construct(e,t,a);if(c.includes('\"contentPlaybackContext\"')||c.includes('\"adSignalsInfo\"')){const n=JSON.parse(c);if(!n.context?.client)return Reflect.construct(e,t,a);n.playbackContext&&C(n,n.playbackContext,p),n.playerRequest&&C(n,n.playerRequest.playbackContext,p),c=f(n),t[1].body=c}}catch(e){}return Reflect.construct(e,t,a)}};window.Request=new Proxy(window.Request,S)})();": [
+        "(()=>{const e=\"pyv\",t=\"param_first\",a=\"param_second\",n=\"client_screen\",c=\"ad_type\",o=\"none\",r=\"eAFgAQ\",l=\"8AUB\",i=\"YAHI\",s=\"CHANNEL\",y=t;let p=y,u=null;const d=Object.getOwnPropertyDescriptor(Document.prototype,\"visibilityState\"),b=()=>{try{Object.defineProperty(document,\"visibilityState\",{get:()=>\"visible\",configurable:!0})}catch(e){}},m=window.JSON.stringify,f=e=>{p=e};(()=>{try{const e=Object.getOwnPropertyDescriptor(window.JSON,\"parse\");return!!e&&e.writable}catch(e){return!1}})()||((()=>{const e={apply:(e,t,a)=>{try{const e=t;e?.includes('\"minimumPlaybackRate\":100,\"maximumPlaybackRate\":100')&&(t=e.replace('\"minimumPlaybackRate\":100,\"maximumPlaybackRate\":100','\"minimumPlaybackRate\":25,\"maximumPlaybackRate\":200'))}catch(e){}return Reflect.apply(e,t,a)}};window.String.prototype.replace=new Proxy(window.String.prototype.replace,e)})(),f(n));const x=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},C=(p,m,C)=>{try{if(!p||!m||!C)return;(e=>{const t=e?.videoId;t&&(u&&u!==t&&f(y),u=t)})(p);const R=document.getElementById(\"movie_player\")?.getPlayerResponse()?.playabilityStatus?.status;if(\"LOGIN_REQUIRED\"!==R&&\"CONTENT_CHECK_REQUIRED\"!==R||(C=o),C===t&&p.context?.client?.clientScreen!==s&&!p.params?.startsWith(i))return p.params=r,p.playerRequest&&p.playerRequest.params!==r&&(p.playerRequest.params=r),p.playbackContext&&p.playbackContext.params!==r&&(p.playbackContext.params=r),m.contentPlaybackContext.lactMilliseconds=String(Date.now()),b(),void x(p);if(C===a&&p.context?.client?.clientScreen!==s&&!p.params?.startsWith(i))return p.params!==l&&(p.params=l),p.playerRequest&&p.playerRequest.params!==l&&(p.playerRequest.params=l),p.playbackContext&&p.playbackContext.params!==l&&(p.playbackContext.params=l),p.playlistId||(p.context.client.clientScreen=s),m.contentPlaybackContext.lactMilliseconds=String(Date.now()),b(),void x(p);if(!(C!==e||p.context?.client?.clientScreen===s||m.params?.startsWith(r)&&m.params?.startsWith(l)))return m.adPlaybackContext={pyv:!0},m.contentPlaybackContext.lactMilliseconds=String(Date.now()),void x(p);if(C===n&&\"WEB\"===p.context?.client?.clientName)return p.context.client.clientScreen=s,m.contentPlaybackContext.lactMilliseconds=String(Date.now()),b(),void x(p);if(C===c)return m.adPlaybackContext={adType:\"AD_TYPE_INSTREAM\"},m.contentPlaybackContext.lactMilliseconds=String(Date.now()),b(),void x(p);if(C===o)return delete m.adPlaybackContext,void(()=>{try{Object.defineProperty(document,\"visibilityState\",d)}catch(e){}})()}catch(e){}},R=[\"playerErrorMessageRenderer\",\"UNPLAYABLE\"],k={apply:(r,l,i)=>{if(location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\")||p===o)return Reflect.apply(r,l,i);let s;try{if(s=Reflect.apply(r,l,i),!s.responseContext&&!s.playabilityStatus)return s;const y=m(s);return R.some((e=>y.includes(e)))&&!y.includes(\"CONTENT_CHECK_REQUIRED\")?p===t?(f(a),s):p===a?(f(e),s):p===e?(f(n),s):p===n?(f(c),s):(f(o),s):(p===t&&s.playerConfig?.audioConfig?.muteOnStart&&(location.href.includes(\"/watch\")||s.cards&&!s.playabilityStatus?.miniplayer)&&(delete s.playerConfig.audioConfig.muteOnStart,s.messages[0]?.youThereRenderer&&delete s.messages[0].youThereRenderer),p===c&&s.playerConfig?.granularVariableSpeedConfig&&(s.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate=200,s.playerConfig.granularVariableSpeedConfig.minimumPlaybackRate=25),s)}catch(e){}return s}};window.JSON.parse=new Proxy(window.JSON.parse,k);const w={apply:(e,t,a)=>{if(location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\"))return Reflect.apply(e,t,a);try{let n=a[0];if(n&&(n.includes('\"contentPlaybackContext\"')||n.includes('\"adSignalsInfo\"'))){const c=JSON.parse(n);if(!c.context?.client)return Reflect.apply(e,t,a);c.playbackContext&&C(c,c.playbackContext,p),c.playerRequest&&C(c,c.playerRequest.playbackContext,p),n=m(c),a[0]=n}}catch(e){}return Reflect.apply(e,t,a)}};window.TextEncoder.prototype.encode=new Proxy(window.TextEncoder.prototype.encode,w);const g={apply:(e,t,a)=>{if(location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\"))return Reflect.apply(e,t,a);try{const n=a[0];if(!n?.context?.client)return Reflect.apply(e,t,a);n.playbackContext&&void 0===n.playbackContext.adPlaybackContext&&C(n,n.playbackContext,p),n.playerRequest&&void 0===n.playerRequest.playbackContext.adPlaybackContext&&C(n,n.playerRequest.playbackContext,p),a[0]=n}catch(e){}return Reflect.apply(e,t,a)}};window.JSON.stringify=new Proxy(window.JSON.stringify,g);const S={construct:(e,t,a)=>{try{const n=t[0];let c=t[1]?.body;if(!n?.includes(\"youtubei\")||location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\")||!c)return Reflect.construct(e,t,a);if(c.includes('\"contentPlaybackContext\"')||c.includes('\"adSignalsInfo\"')){const n=JSON.parse(c);if(!n.context?.client)return Reflect.construct(e,t,a);n.playbackContext&&C(n,n.playbackContext,p),n.playerRequest&&C(n,n.playerRequest.playbackContext,p),c=m(n),t[1].body=c}}catch(e){}return Reflect.construct(e,t,a)}};window.Request=new Proxy(window.Request,S)})();": [
             {
                 "permittedDomains": [
                     "www.youtube.com"
@@ -2349,7 +2359,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e={apply:(e,t,n)=>{const o=n[0];if(\"string\"==typeof o?.value&&o.value.includes(\"playerResponse\"))try{return o.value=o.value.replace(/\"(adSlots|playerAds)\":/g,'\"no_ads\":'),n[0]=o,Reflect.apply(e,t,n)}catch(e){}return Reflect.apply(e,t,n)}},t={apply:(t,n,o)=>{const p=o[0];return\"function\"==typeof p&&p.toString().includes(\".next(\")&&(o[0]=new Proxy(p,e)),Reflect.apply(t,n,o)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();": [
+        "(()=>{const e={apply:(e,r,t)=>{const n=t[0];if(\"string\"==typeof n?.value&&n.value.includes(\"playerResponse\"))try{n.value=(l=n.value,(location.href.includes(\"/watch\")||l.includes(\"cards\")&&!l.includes('\"miniplayer\"'))&&l.includes('\"muteOnStart\":true')&&(l=l.replace('\"muteOnStart\":true','\"muteOnStart\":false')).includes('\"youThereRenderer\":')&&(l=l.replace('\"youThereRenderer\":','\"no_youThereRenderer\":')),l.replace(/\"(adSlots|playerAds)\":/g,'\"no_ads\":')),t[0]=n}catch(e){}var l;return Reflect.apply(e,r,t)}},r={apply:(r,t,n)=>{const l=n[0];return\"function\"==typeof l&&l.toString().includes(\".next(\")&&(n[0]=new Proxy(l,e)),Reflect.apply(r,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,r)})();": [
             {
                 "permittedDomains": [
                     "www.youtube.com"
@@ -2357,7 +2367,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e={apply:(e,t,o)=>{const n=Reflect.apply(e,t,o);if(n?.responseContext)try{delete n.adSlots,delete n.playerAds}catch(e){}return n}},t={apply:(t,o,n)=>{const p=n[0];return\"function\"==typeof p&&p.toString().includes(\"jspbResponseCtor\")&&(n[0]=new Proxy(p,e)),Reflect.apply(t,o,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();": [
+        "(()=>{const e={apply:(e,t,o)=>{const n=Reflect.apply(e,t,o);if(n?.responseContext)try{delete n.adSlots,delete n.playerAds,n.playerConfig?.audioConfig?.muteOnStart&&(location.href.includes(\"/watch\")||n.cards&&!n.playabilityStatus?.miniplayer)&&(delete n.playerConfig.audioConfig.muteOnStart,n.messages[0]?.youThereRenderer&&delete n.messages[0].youThereRenderer)}catch(e){}return n}},t={apply:(t,o,n)=>{const r=n[0];return\"function\"==typeof r&&r.toString().includes(\"jspbResponseCtor\")&&(n[0]=new Proxy(r,e)),Reflect.apply(t,o,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();": [
             {
                 "permittedDomains": [
                     "www.youtube.com"
@@ -3130,6 +3140,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{window.addEventListener(\"load\",(()=>{const t=document.querySelector(\"#openwebSection\"),e=document.querySelector(\"div[data-spot-id]\");if(!e||!t)return;const d=e.getAttribute(\"data-spot-id\");if(!d)return;var o;((t,e,d)=>{const o=document.createElement(\"div\");o.setAttribute(\"data-spotim-module\",\"conversation\"),o.setAttribute(\"data-spot-id\",t),o.setAttribute(\"data-post-id\",e),d.appendChild(o)})(d,Math.abs((o=document.title,[...o].reduce(((t,e)=>Math.imul(31,t)+e.charCodeAt(0)|0),0))),t);const a=document.createElement(\"script\");a.setAttribute(\"src\",`https://launcher.spot.im/spot/${d}`),a.setAttribute(\"async\",\"\"),document.head.appendChild(a)}));})();": [
+            {
+                "permittedDomains": [
+                    "daily.co.jp"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(function(){const a=Function.prototype.toString;window.EventTarget.prototype.addEventListener=new Proxy(window.EventTarget.prototype.addEventListener,{apply:(b,c,d)=>{const e=d[1],f=/detail.adblockDetected|handleAdblockDetect|Flags.autoRecov/;return e&&\"function\"==typeof e&&(f.test(a.call(e))||f.test(e.toString()))&&(d[1]=function(){}),Reflect.apply(b,c,d)}});Function.prototype.bind=new Proxy(Function.prototype.bind,{apply:(b,c,d)=>{const e=a.call(c),f=Reflect.apply(b,c,d);return f.toString=function(){return e},f}})})();": [
             {
                 "permittedDomains": [
@@ -3353,6 +3371,7 @@
         "(function(){if(-1<window.location.href.indexOf(\"o.php?l=\")){var b=location.href.split(\"o.php?l=\");if(b&&b[1]){b=b[1].replace(/\\|\\d/,'');for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();": [
             {
                 "permittedDomains": [
+                    "firesload.com",
                     "gourlpaste.com",
                     "acortaz.es"
                 ],
@@ -3413,6 +3432,8 @@
         "(()=>{document.addEventListener('DOMContentLoaded',function(){if(window.deco_url_b64&&typeof deco_url_b64==='string'&&deco_url_b64.startsWith('http')){location.assign(deco_url_b64);}});})();": [
             {
                 "permittedDomains": [
+                    "firesload.com",
+                    "gourlcero.com",
                     "gourlpaste.com",
                     "gourlpro.com",
                     "short.7hd.club",
@@ -3979,6 +4000,14 @@
             {
                 "permittedDomains": [
                     "rtlz.nl"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const t=document.documentElement,o=new MutationObserver((()=>{const t=document.querySelector('#mms-consent-portal-container button[data-test=\"pwa-consent-layer-deny-all\"]');if(t&&typeof t.click !== 'undefined'){t.click();}}));o.observe(t,{attributes:!0,childList:!0,subtree:!0})})();": [
+            {
+                "permittedDomains": [
+                    "mediamarkt.de"
                 ],
                 "restrictedDomains": []
             }
@@ -4959,6 +4988,175 @@
                     "nivod2.tv",
                     "nivod4.com",
                     "nivod5.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "!function(){let e=()=>{document.querySelector(\"#case-1-generichide > .test-banner1\").style.width=\"200px\"};\"complete\"===document.readyState?e():window.document.addEventListener(\"readystatechange\",e)}();": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.__testCase1 = true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.adg_test=true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.adg_test=false;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.orderTest = \"\"": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.orderTest += \"1\"": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.orderTest += \"2\"": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.orderTest += \"3\"": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.orderTest += \"4\"": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.__firefoxTest1 = true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "document.cookie = \"adg_test\";": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "document.__jsinjectTest = true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.__case13=true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.__case14=true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.__case15=true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.__case16=true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "window.__case5=true;": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.*",
+                    "pages.*"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "console.log('script rule')": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "console.log(Date.now(), \"default registered script\")": [
+            {
+                "permittedDomains": [
+                    "testcases.agrd.dev",
+                    "pages.dev"
                 ],
                 "restrictedDomains": []
             }
