@@ -22,11 +22,16 @@
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadFilters } from './resources/download-filters';
 import { updateLocalScriptRulesForFirefox } from './resources/update-local-script-rules';
+import { updateTestcasesScriptRules } from './resources/update-local-test-script-rules';
 
 const resources = async () => {
     console.log('Downloading resources...');
     await downloadFilters();
     console.log('Resources downloaded');
+
+    console.log('Updating local script rules from testcases...');
+    await updateTestcasesScriptRules();
+    console.log('Local script rules from testcases updated');
 
     console.log('Updating local script rules...');
     await updateLocalScriptRulesForFirefox();

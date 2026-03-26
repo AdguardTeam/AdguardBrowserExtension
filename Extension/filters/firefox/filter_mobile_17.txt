@@ -1,9 +1,9 @@
-! Checksum: tGFmS5aCdd0IVw2PSuwn0g
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1772720705-3600.patch
+! Checksum: GEjr3GDJyNSd2RHWoub2nQ
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1774316554-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.12
-! TimeUpdated: 2026-03-05T14:22:05+00:00
+! Version: 2.0.13.24
+! TimeUpdated: 2026-03-24T01:39:30+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=analytics_context
 $removeparam=analytics_trace_id
@@ -134,7 +134,6 @@ $removeparam=cx_recsOrder
 $removeparam=cx_recsWidget
 $removeparam=mkt_tok
 $removeparam=mindbox-message-key
-$removeparam=_kx
 ?uclick=*&uclickhash=$removeparam
 /?uclick=*;uclickhash=$removeparam
 &uclick=*&uclickhash=$removeparam
@@ -318,6 +317,18 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||duck.ai^$removeparam=origin
+||t.ly^$removeparam=ref
+||musescore.com^$removeparam=feature
+||paypal.com^$removeparam=utm_unptid
+||paypal.com^$removeparam=ppid
+||paypal.com^$removeparam=unptid
+||paypal.com^$removeparam=unp_tpcid
+||paypal.com^$removeparam=page
+||paypal.com^$removeparam=link_ref
+||paypal.com^$removeparam=rsta
+||paypal.com^$removeparam=cnac
+||paypal.com^$removeparam=pgrp
 ||languagetool.org^$removeparam=host
 ||languagetool.org^$removeparam=matomo
 ||languagetool.org^$removeparam=trial_status
@@ -558,6 +569,7 @@ $removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
 ||duckduckgo.com^$removeparam=vis
 ||duckduckgo.com^$removeparam=perf_id
 ||duckduckgo.com^$removeparam=parent_perf_id
+||duckduckgo.com^$removeparam=/^experiment_/
 ||olybet.lv^$removeparam=ref
 ||provereno.media^$removeparam=tg_rhash
 ||weathernews.jp^$removeparam=fm
@@ -1506,7 +1518,7 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||open.spotify.com^$removeparam=referral
 ||open.spotify.com^$removeparam=si
 ||skt.sh/common/share/bridge?$removeparam=referer
-||login.sooplive.co.kr^$removeparam=szFrom
+||login.sooplive.com^$removeparam=szFrom
 ||moffme.com^$removeparam=source
 ||moffme.com^$removeparam=medium
 ||moffme.com^$removeparam=campaign
@@ -2385,6 +2397,7 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||iforms.americanexpress.com^$removeparam=cuid
 @@||canadacompanyregistry.com^$removeparam=utm_campaign
 @@||usprobioticguide.com^$removeparam=utm_campaign
 @@||metabase.com^$removeparam=utm_term

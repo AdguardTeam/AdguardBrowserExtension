@@ -1,9 +1,9 @@
-! Checksum: y37KiKvl2tLd3PPSRMj7ww
-! Diff-Path: ../patches/23_optimized/23_optimized-s-1772637666-3600.patch
+! Checksum: kLY1YcZTLJ9hdTXL0vT8+w
+! Diff-Path: ../patches/23_optimized/23_optimized-s-1774399146-3600.patch
 ! Title: AdGuard Ukrainian filter (Optimized)
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.7.79
-! TimeUpdated: 2026-03-04T15:17:59+00:00
+! Version: 2.0.7.87
+! TimeUpdated: 2026-03-25T00:36:21+00:00
 ! Expires: 10 days (update frequency)
 /kinogo/js/ads/*
 /code/video-steam/?id=*&vast=
@@ -1308,6 +1308,7 @@ ucoz.ru/informer/
 ##noindex > div[onmouseout]
 ##noindex > nofollow > table[onmouseout^="this.bgColor"]
 ##td[id^="advtd"]
+||veyszc.com^
 ||spdcdnmpg.com^
 ||getnodejs.com^
 ||drunkwinter.com^
@@ -2642,7 +2643,6 @@ http://w7.ru^$third-party
 ||lc2ads.ru^$third-party
 ||lcads.ru^$third-party
 ||leadgid.go2cloud.org^$third-party
-||leads.su^$third-party
 ||leadsleader.ru^$third-party
 ||leadzu.com^$third-party
 ||league-of-legends.ru^$third-party
@@ -3006,7 +3006,6 @@ http://w7.ru^$third-party
 ||rollad.ru^$third-party
 ||rontar.com^$third-party
 ||rorer.ru^$third-party
-||rosinvest.com/informs/
 ||rot.rusoul.ru^
 ||rot.spotsniper.ru^$third-party
 ||rotaban.$third-party
@@ -3417,7 +3416,7 @@ http://w7.ru^$third-party
 ||206.54.181.250^
 ||popvalk.com^$third-party
 ||bjiuck.com^
-!+ NOT_PLATFORM(windows, mac, android)
+!+ NOT_PLATFORM(windows, mac, android, cli)
 ||greencuttlefish.com^$third-party,~xmlhttprequest
 !+ NOT_PLATFORM(ios, ext_android_cb, ext_safari)
 ||cpm.wargaming.net^$third-party
@@ -3454,7 +3453,7 @@ gsm.in.ua##body > div[class*=" "][style^="background: "]
 @@||sinoptik.ua^$generichide
 sinoptik.ua#%#//scriptlet("abort-on-property-read", "SIN.AdsLoader")
 budport.com.ua##body > div[style*="text-align:center"][style*="z-index:9999"]
-!+ NOT_PLATFORM(windows, mac, android)
+!+ NOT_PLATFORM(windows, mac, android, cli)
 @@||pubads.g.doubleclick.net/gampad/ads?sz=640x360&ad_rule=0&iu=%2F82479101%2FTsn.ua%2FPREroll-1_Cut&cust_params=$domain=imasdk.googleapis.com
 1plus1.video#%#//scriptlet('prevent-fetch', 'pagead2.googlesyndication.com')
 ||1plus1.video/static/player/js/ovva.$script,replace=/\.abMessage\(\)//
@@ -3472,7 +3471,7 @@ budport.com.ua##body > div[style*="text-align:center"][style*="z-index:9999"]
 @@||gaua.hit.gemius.pl/gemiuslib.js$domain=unian.net|unian.ua
 !#safari_cb_affinity
 prozoro.net.ua#%#//scriptlet('abort-on-property-read', 'adsBlocked')
-!+ NOT_PLATFORM(windows, mac, android)
+!+ NOT_PLATFORM(windows, mac, android, cli)
 @@||pixel.adtelligent.com/player/adblock$domain=player.starlight.digital
 ||static.adtelligent.com/static/jsvpaid.js$script,redirect=noopjs,important,domain=stb.ua|novy.tv|ictv.ua|teleportal.ua
 ictv.ua#@##adblock
@@ -3499,9 +3498,9 @@ omskbird.at.ua###_uwndWnd1
 24tv.ua##.no-ad-block
 @@||i.online.ua/js/advertisement.js
 @@||i.online.ua/adsence.js
-!+ NOT_PLATFORM(windows, mac, android)
+!+ NOT_PLATFORM(windows, mac, android, cli)
 zaxid.net,kurs.com.ru,isport.ua,24tv.ua,ria-m.tv,allboxing.ru#%#//scriptlet("abort-current-inline-script", "String.fromCharCode", "!function()")
-!+ NOT_PLATFORM(windows, mac, android)
+!+ NOT_PLATFORM(windows, mac, android, cli)
 dengi.ua,kino-hd720.net,mirknig.su,kino-fs.ucoz.net,ex-fs.net,hvylya.net#%#//scriptlet("abort-current-inline-script", "String.fromCharCode", "/\/\*[0-9a-f]{40}\*\//")
 aniqit.com#%#//scriptlet('json-prune', 'vast')
 ain.ua#%#//scriptlet('abort-current-inline-script', 'jQuery', 'link_br')
@@ -3579,7 +3578,7 @@ depo.ua#$#.container { margin-top: 0!important; }
 china-review.com.ua#$#body { margin-top: 0!important; }
 proagro.com.ua#$##all > main { margin: 0 15px 0 165px !important; }
 unian.net#$#.social-shares { visibility: hidden!important; }
-/^http(s?):\/\/[a-z]{6}\..*\/[a-z0-9]{3,30}\/[a-z0-9]{5,}\.php$/$script,third-party,domain=ego-zhena.ru|codernet.ru|desmyhome.ru|ale07.ru|wotexpress.info|koolinar.ru|newdaynews.ru|smiruss.ru|uk-parkovaya.ru|allkey.org|beejournal.ru|coronavirus-control.ru|fatelines.net|ovgorskiy.ru|fixmaster74.ru|winnote.ru|amperof.ru|220.guru|vph-holod.ru|severpost.ru|siniy-ekran.ru|ua.news|kslift.ru|politnavigator.net|tarifec.com|vse-vino.ru|pornreactor.cc|joyreactor.cc|reactor.cc|rsute.ru|enovosty.com|tayga.info|xnewsq.net|om1.ru|rustxt.ru|jpnsoft.ru|oc-windows.ru|cikavosti.com|u-news.com.ua|mp3frog.com|tom-dzherri.ru|konkurent.ru|dalanews.kz|svpressa.ru|bargu.by|mp3rax.com|progorodsamara.ru|yaom.ru|comandir.com|pocvetam.ru|osnmedia.ru|topdaynews.ru|hxmp3.com|novosti-n.org|mp3crown.cc|knews.kg|audiokniga-onlain.ru|xfilesserial.ru|kulichki.net|pesni-detskie.ru|militaryarms.ru|ranobe-novels.ru|vo-radio.ru|petstime.ru|nakanune.ru|time-in.ru|kotletki.online|sakhalife.ru|kinobaza24.ru|ianed.ru|turkish-tv.ru|android-kino-tv.ru|lafa.site|hozzi.ru|syzran-small.ru|inforuss.info|tourprom.ru|macdonaldsi.ru|togliatti24.ru|ctnews.ru|solenka.info|kaluga-poisk.ru|bragazeta.ru|astrologyk.com|potokmedia.ru|gotovim.ru|mir-znamenitostej.ru|topnews.ru|pg21.ru|podolyaka.su|asilmedia.org|telegraf.news|mechtarybolova.ru|fermilon.ru|seron.tv|prufy.ru
+/^http(s?):\/\/[a-z]{6}\..*\/[a-z0-9]{3,30}\/[a-z0-9]{5,}\.php$/$script,third-party,domain=infpol.ru|ego-zhena.ru|codernet.ru|desmyhome.ru|ale07.ru|wotexpress.info|koolinar.ru|newdaynews.ru|smiruss.ru|uk-parkovaya.ru|allkey.org|beejournal.ru|coronavirus-control.ru|fatelines.net|ovgorskiy.ru|fixmaster74.ru|winnote.ru|amperof.ru|220.guru|vph-holod.ru|severpost.ru|siniy-ekran.ru|ua.news|kslift.ru|politnavigator.net|tarifec.com|vse-vino.ru|pornreactor.cc|joyreactor.cc|reactor.cc|rsute.ru|enovosty.com|tayga.info|xnewsq.net|om1.ru|rustxt.ru|jpnsoft.ru|oc-windows.ru|cikavosti.com|u-news.com.ua|mp3frog.com|tom-dzherri.ru|konkurent.ru|dalanews.kz|svpressa.ru|bargu.by|mp3rax.com|progorodsamara.ru|yaom.ru|comandir.com|pocvetam.ru|osnmedia.ru|topdaynews.ru|hxmp3.com|novosti-n.org|mp3crown.cc|knews.kg|audiokniga-onlain.ru|xfilesserial.ru|kulichki.net|pesni-detskie.ru|militaryarms.ru|ranobe-novels.ru|vo-radio.ru|petstime.ru|nakanune.ru|time-in.ru|kotletki.online|sakhalife.ru|kinobaza24.ru|ianed.ru|turkish-tv.ru|android-kino-tv.ru|lafa.site|hozzi.ru|syzran-small.ru|inforuss.info|tourprom.ru|macdonaldsi.ru|togliatti24.ru|ctnews.ru|solenka.info|kaluga-poisk.ru|bragazeta.ru|astrologyk.com|potokmedia.ru|gotovim.ru|mir-znamenitostej.ru|topnews.ru|pg21.ru|podolyaka.su|asilmedia.org|telegraf.news|mechtarybolova.ru|fermilon.ru|seron.tv|prufy.ru
 /^http(s?):\/\/[A-Za-z0-9]{6}\.[A-Za-z0-9]{3}\/[A-Za-z0-9]{30,}\.php$/$script,third-party,domain=rsute.ru|afn.by|hdvideobox.ru|samelectrik.ru|amazingfacts.ru|allkey.org|kg-portal.ru|smartpress.by|unews.pro|inzhener-info.ru|vklook.online|joyreactor.cc|solenka.info|discover24.ru
 /^http(s?):\/\/[A-Za-z0-9]{6}\.[A-Za-z0-9]{3}\/[A-Za-z0-9-.]{6}\/[A-Za-z0-9-.\/]{25,}\.php$/$script,third-party,domain=solenka.info|kvmarvel.ru|crashplane.ru|ymkababy.ru|newsland.com|prozoro.net.ua|alau.kz|brjunetka.ru|tarifec.com|u-news.com.ua|b-online.ru|porosenka.net|dachnyuchastok.ru|gubka-bob.ru|film.ru|pg11.ru|pg12.ru|pg13.ru|pg21.ru|prochepetsk.ru|progorodnn.ru|progorodnsk.ru|progorodsamara.ru|samokat-dostavka.ru|lifedon.com.ua|clubhunters.ru|polytech-soft.com|max-vps.ru|unews.pro|vsplanet.net
 /^http(s?):\/\/([A-Za-z0-9-.]+\/){5,}[A-Za-z0-9_-]+$/$script,third-party,domain=crashplane.ru|ymkababy.ru|newsland.com|prozoro.net.ua|alau.kz|brjunetka.ru|tarifec.com|u-news.com.ua|b-online.ru|beejournal.ru|porosenka.net|dachnyuchastok.ru|gubka-bob.ru|film.ru|pg11.ru|pg12.ru|pg13.ru|pg21.ru|prochepetsk.ru|progorodnn.ru|progorodnsk.ru|progorodsamara.ru|fixmaster74.ru|samokat-dostavka.ru|coronavirus-control.ru|lifedon.com.ua|fatelines.net|clubhunters.ru|made-box.ru|howto-news.info
@@ -3599,6 +3598,8 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 *$xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=lrepacks.net|ikinogo.com
 !+ NOT_PLATFORM(ext_ublock)
 /:\/\/([a-z-]{4,10}\.)?(?!aniqit|kodikapi)[a-z0-9]{4,}\.(video|com|in\.net|link|tech|ru)/$xmlhttprequest,domain=aniqit.com|kodik.info|start.u-cdn.top|u-stream.in|kodik.biz
+technopark.ru##.catalog-banner
+tsn.ua##[data-ad-container]
 telegraf.ua##.tgr-ads
 telegraf.ua##.s-content > div.s-content__ratio:has(> script[id^="_vidverto-"])
 ||video.promptcdn.com/veoveo-creative/
@@ -3893,6 +3894,9 @@ kodik*/adv-vast/
 ||kodik.cc/vastadvert/
 /upload/rk/*$domain=citrus.ua|xsport.ua|zi.dn.ua|zi.ua
 citrus.ua,xsport.ua,zi.dn.ua,zi.ua##img[src^="/upload/rk/"]
+football24.ua##app-adv-placeholder
+football24.ua##app-video-adv-block
+rozetka.com.ua##.catalog-grid > .catalog-grid__cell:has(div.relative > .goods-tile__inner > div.goods-tile__content > span.promo-label ~ a[href*="?advToken"][rel$="sponsored"])
 svoboda.org##.special-sidebar
 minfin.com.ua###main-product-offer
 dou.ua##.mini-header > a[target="_blank"]
@@ -3922,7 +3926,7 @@ m-translate.org.ua#?#.ui > div.synonym:has(> div.divider:contains(Ad))
 minfin.com.ua##div[data-bn-slot]
 bigkyiv.com.ua###headlessui-portal-root
 novyny.live##.adv-sidebars
-24tv.ua##app-main-page-adv-block
+football24.ua,24tv.ua##app-main-page-adv-block
 poltava24.com.ua##.adsgoogle
 ||slotscity.ua/registration?refcode=$document
 glavcom.ua##.sunsite_actions
