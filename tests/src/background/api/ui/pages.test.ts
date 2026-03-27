@@ -66,7 +66,7 @@ describe('PagesApi', () => {
         expect(url.searchParams.get('app')).toBe('browser_extension');
         expect(url.searchParams.get('from')).toBe(reportedFrom);
         expect(url.searchParams.get('url')).toBe(websiteUrl);
-        expect(url.searchParams.get('product_type')).toBe('Ext');
+        expect(url.searchParams.get('product_type')).toBe('ext');
     });
 
     describe('openFilteringLogPage', () => {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -17,9 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { SettingsApi } from 'settings-api';
-export { type SettingsData } from './settings-common';
-export {
-    ConfigurationImportApi,
-    type ImportConfiguration,
-} from './configuration-import';
+
+import { ConfigurationImportApi } from './configuration-import-api';
+
+export { ConfigurationImportApi } from './configuration-import-api';
+
+/**
+ * MV2 concrete implementation of {@link ConfigurationImportApi}.
+ * Cookie self-destruct TTL settings and browsing-security are handled by
+ * {@link ConfigurationImportApi.buildConfig} which sets the appropriate fields
+ * in the {@link Config} object passed to {@link SettingsApi.import}.
+ */
+export class ConfigurationImportApiMv2 extends ConfigurationImportApi {
+}
+
+export const configurationImportApi = new ConfigurationImportApiMv2();

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -17,9 +17,28 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { SettingsApi } from 'settings-api';
-export { type SettingsData } from './settings-common';
-export {
-    ConfigurationImportApi,
-    type ImportConfiguration,
-} from './configuration-import';
+
+/**
+ * MV2 stub — there are no DNR quotas in MV2, so limits are never exceeded.
+ */
+export class RulesLimitsService {
+    /**
+     * MV2 stub. Always returns `false` because MV2 has no declarativeNetRequest quota.
+     *
+     * @returns `false`.
+     */
+    public static async areFilterLimitsExceeded(): Promise<boolean> {
+        return false;
+    }
+
+    /**
+     * MV2 stub. No-op because MV2 has no declarativeNetRequest quota warnings.
+     *
+     * @returns Resolved promise.
+     */
+    public static async clearRulesLimitsWarning(): Promise<void> {
+        return Promise.resolve();
+    }
+}
+
+export const rulesLimitsService = new RulesLimitsService();

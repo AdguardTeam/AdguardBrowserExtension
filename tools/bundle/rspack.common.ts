@@ -62,6 +62,7 @@ import {
     MIN_SUPPORTED_VERSION,
     INDEX_HTML_FILE_NAME,
     SUBSCRIBE_OUTPUT,
+    IMPORT_CONFIGURATION_OUTPUT,
     BuildTargetEnv,
 } from '../../constants';
 
@@ -79,6 +80,7 @@ import {
     POPUP_PATH,
     POST_INSTALL_PATH,
     SUBSCRIBE_PATH,
+    IMPORT_CONFIGURATION_PATH,
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf, isBrowserMv3 } from './helpers';
@@ -204,6 +206,8 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
         'update-button-mobile': path.resolve(__dirname, `../../Extension/src/pages/options/components/Sidebar/UpdateButtonMobile/UpdateButtonMobile-mv${manifestVersion}.tsx`),
         'categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
+        'rules-limits-service': path.resolve(__dirname, `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`),
+        'configuration-import-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-import/configuration-import-api-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {
@@ -265,6 +269,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
             },
             [SUBSCRIBE_OUTPUT]: {
                 import: SUBSCRIBE_PATH,
+                runtime: false,
+            },
+            [IMPORT_CONFIGURATION_OUTPUT]: {
+                import: IMPORT_CONFIGURATION_PATH,
                 runtime: false,
             },
             // Library vendors

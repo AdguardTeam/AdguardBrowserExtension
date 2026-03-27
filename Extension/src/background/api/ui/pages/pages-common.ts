@@ -62,6 +62,30 @@ import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
 import { browserStorage } from '../../../storages/shared-instances';
 import { browserAction } from '../browser-action';
 
+/**
+ * Descriptor of a single stealth cookie option used in issue report URL params.
+ */
+export type CookieStealthOption = {
+    queryKey: string;
+    settingKey: SettingOption;
+    settingValueKey?: SettingOption;
+};
+
+/**
+ * Browser name values matching the v4 reports schema enum.
+ *
+ * @see {@link https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters}
+ */
+enum BrowserName {
+    Chrome = 'chrome',
+    Edge = 'edge',
+    Firefox = 'firefox',
+    FirefoxMobile = 'firefox mobile',
+    Opera = 'opera',
+    Yandex = 'yandex',
+    Other = 'other',
+}
+
 // TODO: We can manipulates tabs directly from content-script and other extension pages context.
 // So this API can be shared and used for data flow simplifying (direct calls instead of message passing)
 /**
@@ -75,7 +99,7 @@ export abstract class PagesApiCommon {
      *
      * @see {@link https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters}
      */
-    private static readonly PRODUCT_TYPE = 'Ext';
+    private static readonly PRODUCT_TYPE = 'ext';
 
     /**
      * Settings page url.
@@ -322,6 +346,11 @@ export abstract class PagesApiCommon {
             browserName = 'Other';
         }
 
+        const normalisedBrowserName = PagesApiCommon.normaliseBrowserName(browserName ?? '');
+        if (normalisedBrowserName === BrowserName.Other && browserName) {
+            browserDetails = browserName;
+        }
+
         const commonFilterIds = FiltersApi.getEnabledFilters()
             .filter((filterId) => !CustomFilterUtils.isCustomFilter(filterId));
 
@@ -334,8 +363,9 @@ export abstract class PagesApiCommon {
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
+            scheme_version: '4',
             product_type: PagesApiCommon.PRODUCT_TYPE,
-            manifest_version: encodeURIComponent(manifestDetails.manifest_version),
+            'ext.manifest_version': encodeURIComponent(manifestDetails.manifest_version),
             product_version: encodeURIComponent(productVersion),
             url: encodeURIComponent(siteUrl),
         };
@@ -345,8 +375,8 @@ export abstract class PagesApiCommon {
             params.system_version = encodeURIComponent(systemInfo);
         }
 
-        if (browserName) {
-            params.browser = encodeURIComponent(browserName);
+        if (normalisedBrowserName) {
+            params.browser = encodeURIComponent(normalisedBrowserName);
         }
 
         if (browserDetails) {
@@ -354,17 +384,17 @@ export abstract class PagesApiCommon {
         }
 
         if (commonFilterIds.length > 0) {
-            params.filters = encodeURIComponent(commonFilterIds.join('.'));
+            params.regular_filters = encodeURIComponent(commonFilterIds.join(','));
         }
 
         const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
         if (isCustomFiltersEnabled && this.shouldCustomFiltersUrls()) {
-            const customFilterUrls = CustomFilterApi.getFiltersData()
+            const customFilterEntries = CustomFilterApi.getFiltersData()
                 .filter(({ enabled }) => enabled)
-                .map(({ customUrl }) => UrlUtils.trimFilterFilepath(customUrl));
+                .map(({ title, customUrl }) => `${title} (url: ${UrlUtils.trimFilterFilepath(customUrl)})`);
 
-            if (customFilterUrls.length > 0) {
-                params.custom_filters = encodeURIComponent(customFilterUrls.join(','));
+            if (customFilterEntries.length > 0) {
+                params.custom_filters = encodeURIComponent(customFilterEntries.join(','));
             }
         }
 
@@ -377,7 +407,7 @@ export abstract class PagesApiCommon {
 
         Object.assign(
             params,
-            PagesApiCommon.getStealthParams(commonFilterIds),
+            this.getStealthParams(commonFilterIds),
             this.getBrowserSecurityParams(),
         );
 
@@ -551,6 +581,7 @@ export abstract class PagesApiCommon {
 
         const { url, title } = message.data;
 
+        // TODO: Use shared constants for query parameters
         let optionalPart = '#filters?group=0';
         if (title) {
             optionalPart += `&title=${title}`;
@@ -689,31 +720,35 @@ export abstract class PagesApiCommon {
     protected abstract getBrowserSecurityParams(): { [key: string]: string };
 
     /**
+     * Returns manifest-version-specific stealth cookie options to include
+     * in the issue report URL params.
+     * MV2 supports self-destructing cookies; MV3 does not.
+     *
+     * @returns Array of stealth cookie option descriptors.
+     */
+    protected abstract getCookieStealthOptions(): CookieStealthOption[];
+
+    /**
      * Returns stealth url params.
      *
      * @param filterIds List of filter id.
      *
      * @returns Stealth url params record.
      */
-    private static getStealthParams(filterIds: number[]): { [key: string]: string } {
+    private getStealthParams(filterIds: number[]): { [key: string]: string } {
         const stealthEnabled = !settingsStorage.get(SettingOption.DisableStealthMode);
 
         if (!stealthEnabled) {
-            return { 'stealth.enabled': 'false' };
+            return { 'stealth.enabled': '0' };
         }
 
-        // TODO: Check values of queryKey and maybe move them to some ENUM?
         const stealthOptions = [
-            {
-                queryKey: 'stealth.ext_hide_referrer',
-                settingKey: SettingOption.HideReferrer,
-            },
             {
                 queryKey: 'stealth.hide_search_queries',
                 settingKey: SettingOption.HideSearchQueries,
             },
             {
-                queryKey: 'stealth.DNT',
+                queryKey: 'stealth.send_dnt',
                 settingKey: SettingOption.SendDoNotTrack,
             },
             {
@@ -721,22 +756,13 @@ export abstract class PagesApiCommon {
                 settingKey: SettingOption.RemoveXClientData,
             },
             {
-                queryKey: 'stealth.webrtc',
+                queryKey: 'stealth.block_webrtc',
                 settingKey: SettingOption.BlockWebRTC,
             },
-            {
-                queryKey: 'stealth.third_party_cookies',
-                settingKey: SettingOption.SelfDestructThirdPartyCookies,
-                settingValueKey: SettingOption.SelfDestructThirdPartyCookiesTime,
-            },
-            {
-                queryKey: 'stealth.first_party_cookies',
-                settingKey: SettingOption.SelfDestructFirstPartyCookies,
-                settingValueKey: SettingOption.SelfDestructFirstPartyCookiesTime,
-            },
+            ...this.getCookieStealthOptions(),
         ];
 
-        const stealthOptionsEntries = [['stealth.enabled', 'true']];
+        const stealthOptionsEntries = [['stealth.enabled', '1']];
 
         stealthOptions.forEach((stealthOption) => {
             const { queryKey, settingKey, settingValueKey } = stealthOption;
@@ -750,7 +776,7 @@ export abstract class PagesApiCommon {
             let option: string;
 
             if (!settingValueKey) {
-                option = String(setting);
+                option = setting ? '1' : '0';
             } else {
                 option = String(settingsStorage.get(settingValueKey));
             }
@@ -758,22 +784,39 @@ export abstract class PagesApiCommon {
             stealthOptionsEntries.push([queryKey, option]);
         });
 
+        if (settingsStorage.get(SettingOption.HideReferrer)) {
+            stealthOptionsEntries.push(['stealth.referrer', '']);
+        }
+
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721
         const isBlockTrackersEnabled = filterIds.includes(AntiBannerFiltersId.TrackingFilterId);
         if (isBlockTrackersEnabled) {
-            stealthOptionsEntries.push(['stealth.block_trackers', 'true']);
+            stealthOptionsEntries.push(['stealth.block_trackers', '1']);
         }
 
         const isRemoveUrlParamsEnabled = filterIds.includes(AntiBannerFiltersId.UrlTrackingFilterId);
         if (isRemoveUrlParamsEnabled) {
-            stealthOptionsEntries.push(['stealth.strip_url', 'true']);
+            stealthOptionsEntries.push(['stealth.strip_url', '1']);
         }
 
         return Object.fromEntries(stealthOptionsEntries);
     }
 
     /**
-     * Converts timestamp in milliseconds to time string.
+     * Normalises a browser name to the v4 schema enum value.
+     *
+     * @param name Raw browser name from {@link UserAgent.browserName}.
+     *
+     * @returns Lowercase v4 enum value.
+     */
+    private static normaliseBrowserName(name: string): BrowserName {
+        const lower = name.toLowerCase();
+        const values: string[] = Object.values(BrowserName);
+        return values.includes(lower) ? lower as BrowserName : BrowserName.Other;
+    }
+
+    /**
+     * Converts timestamp in milliseconds to ISO 8601 UTC time string.
      *
      * Needed for `filters_last_update` query parameters.
      *
@@ -781,9 +824,9 @@ export abstract class PagesApiCommon {
      *
      * @param timestampMs Timestamp in milliseconds.
      *
-     * @returns Time string in format `YYYY-MM-DD-HH-mm-ss` in **UTC+0**.
+     * @returns ISO 8601 UTC timestamp string (e.g. `2026-03-17T20:00:00Z`).
      */
     private static convertTimestampToTimeString(timestampMs: number): string {
-        return format(new UTCDate(timestampMs), 'yyyy-MM-dd-HH-mm-ss');
+        return format(new UTCDate(timestampMs), "yyyy-MM-dd'T'HH:mm:ss'Z'");
     }
 }

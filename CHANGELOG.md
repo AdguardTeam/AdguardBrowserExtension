@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Confirmation modal for inverting allowlist.
 - Independent update of custom filters in MV3
   without waiting for the extension update availability [#2944].
+- Import settings from `adguard:import_user_configuration` links on reports.adguard.com.
+
+### Changed
+
+- Issue report URL updated to v4 scheme: comma-separated filter IDs, stealth values
+  as `1`/`0`, `ext.manifest_version` parameter, normalised browser name, ISO 8601
+  timestamp for `filters_last_update`, custom filters include title and URL.
+- Cookie self-destruct stealth params (`stealth.third_party_cookies_min`,
+  `stealth.first_party_cookies_min`) are now MV2-only in issue report URLs (not
+  supported on MV3).
 
 ### Fixed
 

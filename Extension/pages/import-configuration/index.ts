@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -17,9 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { SettingsApi } from 'settings-api';
-export { type SettingsData } from './settings-common';
-export {
-    ConfigurationImportApi,
-    type ImportConfiguration,
-} from './configuration-import';
+import { ImportConfiguration } from '../../src/content-script/import-configuration';
+
+ImportConfiguration.init();

@@ -26,7 +26,7 @@ import {
 import { logger } from '../../../../common/logger';
 import { isUserScriptsApiSupported } from '../../../../common/user-scripts-api/user-scripts-api-mv3';
 
-import { PagesApiCommon } from './pages-common';
+import { PagesApiCommon, type CookieStealthOption } from './pages-common';
 
 /**
  * Pages API provides methods for managing browser pages.
@@ -65,5 +65,11 @@ export class PagesApi extends PagesApiCommon {
     // eslint-disable-next-line class-methods-use-this
     protected getBrowserSecurityParams(): { [key: string]: string } {
         return {};
+    }
+
+    /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected getCookieStealthOptions(): CookieStealthOption[] {
+        return [];
     }
 }

@@ -158,6 +158,11 @@ export enum MessageType {
     RestoreFiltersMv3 = 'restoreFiltersMv3',
     CurrentLimitsMv3 = 'currentLimitsMv3',
     GetExtensionStatusForPopupMV3 = 'getExtensionStatusForPopupMV3',
+    ImportConfiguration = 'importConfiguration',
+    IsPendingForImport = 'isPendingForImport',
+    GetPendingImportBlockWebrtc = 'getPendingImportBlockWebrtc',
+    ApplyImportConfiguration = 'applyImportConfiguration',
+    CancelImportConfiguration = 'cancelImportConfiguration',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -695,6 +700,29 @@ export type GetExtensionStatusForPopupMV3Message = {
     type: MessageType.GetExtensionStatusForPopupMV3;
 };
 
+export type ImportConfigurationMessage = {
+    type: MessageType.ImportConfiguration;
+    data: {
+        queryString: string;
+    };
+};
+
+export type IsPendingForImportMessage = {
+    type: MessageType.IsPendingForImport;
+};
+
+export type GetPendingImportBlockWebrtcMessage = {
+    type: MessageType.GetPendingImportBlockWebrtc;
+};
+
+export type ApplyImportConfigurationMessage = {
+    type: MessageType.ApplyImportConfiguration;
+};
+
+export type CancelImportConfigurationMessage = {
+    type: MessageType.CancelImportConfiguration;
+};
+
 // Unified message map that includes both message structure and response types
 export type MessageMap = {
     [MessageType.CreateEventListener]: {
@@ -1040,6 +1068,26 @@ export type MessageMap = {
     [MessageType.InitializeBlockingPageScript]: {
         message: InitializeBlockingPageScript;
         response: BlockingPageInitAppData;
+    };
+    [MessageType.ImportConfiguration]: {
+        message: ImportConfigurationMessage;
+        response: void;
+    };
+    [MessageType.IsPendingForImport]: {
+        message: IsPendingForImportMessage;
+        response: boolean;
+    };
+    [MessageType.GetPendingImportBlockWebrtc]: {
+        message: GetPendingImportBlockWebrtcMessage;
+        response: boolean;
+    };
+    [MessageType.ApplyImportConfiguration]: {
+        message: ApplyImportConfigurationMessage;
+        response: boolean;
+    };
+    [MessageType.CancelImportConfiguration]: {
+        message: CancelImportConfigurationMessage;
+        response: void;
     };
 };
 
