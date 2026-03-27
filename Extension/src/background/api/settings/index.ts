@@ -19,3 +19,7 @@
  */
 export { SettingsApi } from 'settings-api';
 export { type SettingsData } from './settings-common';
+export {
+    ConfigurationImportApi,
+    type ImportConfiguration,
+} from './configuration-import';

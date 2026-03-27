@@ -44,6 +44,7 @@ import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { Loader } from '../../../common/components/Loader';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons } from '../ui/Icons';
+import { ImportConfigurationDialog } from '../ImportConfigurationDialog/ImportConfigurationDialog';
 
 import '../../styles/styles.pcss';
 
@@ -129,6 +130,7 @@ export const Options = observer(() => {
             <CommonIcons />
             <Icons />
             <Loader showLoader={uiStore.showLoader} />
+            <ImportConfigurationDialog />
             <div className="page">
                 <RouterProvider
                     // We are opting out these features and hiding the warning messages by setting it to false.

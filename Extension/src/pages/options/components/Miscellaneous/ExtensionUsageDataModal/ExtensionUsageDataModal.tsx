@@ -22,7 +22,7 @@ import Modal from 'react-modal';
 
 import cn from 'classnames';
 
-import { ModalContentWrapper } from '../../Filters/AddCustomModal/ModalContentWrapper';
+import { ModalContentWrapper } from '../../../../common/components/ModalContentWrapper/ModalContentWrapper';
 import { PRIVACY_URL } from '../../../constants';
 import { translator } from '../../../../../common/translators/translator';
 import theme from '../../../../common/styles/theme';

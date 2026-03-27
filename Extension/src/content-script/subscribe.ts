@@ -20,6 +20,8 @@
 
 import { MessageType, sendMessage } from '../common/messages';
 
+import { initLinkInterceptor, getAnchorElement } from './link-interceptor';
+
 export type SubscriptionData = {
     url: string;
     title: string;
@@ -30,30 +32,32 @@ export type SubscriptionData = {
  */
 export class Subscribe {
     /**
+     * Mouse button code for the secondary (right) button.
+     * Right-click opens the context menu and must not be intercepted.
+     */
+    private static readonly MOUSE_BUTTON_SECONDARY = 2;
+
+    /**
      * Add listener for subscription links in document
      */
     public static init(): void {
-        if (!(document instanceof Document)) {
-            return;
-        }
-
-        // Use pointerdown to handle both mouse clicks and touch events
-        document.addEventListener('pointerdown', Subscribe.handleOnClickEvent);
+        initLinkInterceptor(Subscribe.handleOnClickEvent);
     }
 
     /**
      * If event is subscription link click, intercepts it and sends
      * {@link MessageType.AddFilteringSubscription} message to background, else pass event.
      *
-     * @param event - document mouse event
+     * @param event - document pointer event
      */
-    private static handleOnClickEvent(event: MouseEvent): void {
-        // ignore right-click
-        if (event.button === 2) {
+    private static handleOnClickEvent(event: PointerEvent): void {
+        // Right-click must be ignored so the browser can handle
+        // the context-menu action natively.
+        if (event.button === Subscribe.MOUSE_BUTTON_SECONDARY) {
             return;
         }
 
-        const target = Subscribe.getAnchorElement(event);
+        const target = getAnchorElement(event);
 
         if (!target || !Subscribe.hasSubscriptionLink(target)) {
             return;
@@ -72,27 +76,6 @@ export class Subscribe {
             type: MessageType.AddFilteringSubscription,
             data,
         });
-    }
-
-    /**
-     * If event target is anchor element, returns it, else search anchor in parent nodes.
-     *
-     * @param e - document mouse event
-     *
-     * @returns anchor element or null, if target is not found
-     */
-    private static getAnchorElement(e: MouseEvent): HTMLAnchorElement | null {
-        let element = e.target;
-
-        while (element) {
-            if (element instanceof HTMLAnchorElement) {
-                break;
-            }
-
-            element = element instanceof Element ? element.parentNode : null;
-        }
-
-        return element;
     }
 
     /**

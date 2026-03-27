@@ -236,6 +236,18 @@ async updateSetting(id: number, enabled: boolean): Promise<void> {
 - Exception: Test files (`*.test.ts`) and MV2/MV3-specific files can import
   directly
 
+#### Manifest-Version Branching
+
+- **DO NOT** use the `__IS_MV3__` global constant in shared/common source files
+  to branch behaviour at runtime. This couples both builds to dead code and
+  defeats tree-shaking.
+- Instead, split the differing logic into `-mv2` / `-mv3` file pairs and expose
+  it through an `abstract` method (or a TypeScript path-alias export) that each
+  version overrides. The common base class/module calls the abstraction; each
+  manifest-specific subclass/module provides the concrete implementation.
+- `__IS_MV3__` is **only** acceptable in test files (e.g.
+  `describe.skipIf(__IS_MV3__)`) where no alternative mechanism exists.
+
 #### JSDoc Style
 
 Use standard JSDoc format **without** `" - "` separator in `@param` and

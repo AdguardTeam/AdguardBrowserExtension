@@ -33,6 +33,8 @@ import {
     CONTENT_SCRIPT_START_OUTPUT,
     CONTENT_SCRIPT_END_OUTPUT,
     SUBSCRIBE_OUTPUT,
+    IMPORT_CONFIGURATION_OUTPUT,
+    IMPORT_CONFIGURATION_HOSTNAMES,
 } from '../../../constants';
 import { CONTENT_SCRIPT_INJECTION_FLAG } from '../common/constants';
 import { TabsApi } from '../common/api/extension/tabs';
@@ -53,12 +55,23 @@ export class ContentScriptInjector {
     private static INJECTION_LIMIT_MS = 1000;
 
     /**
-     * Content-scripts src relative paths.
+     * Content-scripts src relative paths, injected into all HTTP/HTTPS tabs.
      */
     private static contentScripts = [
         ContentScriptInjector.createContentScriptUrl(CONTENT_SCRIPT_START_OUTPUT),
         ContentScriptInjector.createContentScriptUrl(CONTENT_SCRIPT_END_OUTPUT),
         ContentScriptInjector.createContentScriptUrl(SUBSCRIBE_OUTPUT),
+    ];
+
+    /**
+     * Content-scripts that are restricted to specific URL patterns,
+     * matching the manifest content_scripts declarations.
+     */
+    private static restrictedContentScripts = [
+        {
+            files: [ContentScriptInjector.createContentScriptUrl(IMPORT_CONFIGURATION_OUTPUT)],
+            matchHostnames: IMPORT_CONFIGURATION_HOSTNAMES,
+        },
     ];
 
     /**
@@ -119,6 +132,16 @@ export class ContentScriptInjector {
             const { id } = tab;
 
             tasks.push(ContentScriptInjector.inject(id, ContentScriptInjector.contentScripts));
+
+            const { url } = tab;
+            if (url) {
+                const hostname = getHostname(url);
+                ContentScriptInjector.restrictedContentScripts.forEach(({ files, matchHostnames }) => {
+                    if (hostname && matchHostnames.includes(hostname)) {
+                        tasks.push(ContentScriptInjector.inject(id, files));
+                    }
+                });
+            }
         });
 
         // Loading order is not matter,
