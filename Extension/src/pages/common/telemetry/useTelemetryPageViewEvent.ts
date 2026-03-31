@@ -19,7 +19,7 @@
  */
 import { useEffect } from 'react';
 
-import { type TelemetryScreenName } from '../../../background/services/telemetry/enums';
+import { type TelemetryScreenName } from '../../../common/telemetry';
 
 import { type TelemetryStore } from './TelemetryStore';
 

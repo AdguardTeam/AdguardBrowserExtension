@@ -20,6 +20,7 @@
 
 import { UserAgent } from '../common/user-agent';
 import { type PageInitAppData } from '../background/services';
+import { TelemetryEventName, TelemetryScreenName } from '../common/telemetry';
 import { AntiBannerFiltersId } from '../common/constants';
 
 import { messenger } from './services/messenger';
@@ -120,6 +121,10 @@ const PageController = (response: PageInitAppData) => {
         openSettingsBtns.forEach((openSettingsBtn) => {
             openSettingsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                messenger.sendTelemetryCustomEvent(
+                    TelemetryScreenName.MainPage,
+                    TelemetryEventName.ExtensionSettingsClick,
+                );
                 messenger.openSettingsTab();
             });
         });

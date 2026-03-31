@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -102,6 +102,12 @@ export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserC
         devtools: true,
         buildDir: Browser.Opera,
         zipName: Browser.Opera,
+    },
+    [Browser.OperaMv3]: {
+        browser: Browser.OperaMv3,
+        devtools: true,
+        buildDir: Browser.OperaMv3,
+        zipName: Browser.OperaMv3,
     },
     [Browser.Edge]: {
         browser: Browser.Edge,

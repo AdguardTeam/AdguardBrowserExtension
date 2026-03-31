@@ -22,6 +22,8 @@ import { ExtensionUpdateFSMEvent, ExtensionUpdateFSMState } from '../../../commo
 import { logger } from '../../../common/logger';
 import { MessageType } from '../../../common/messages/constants';
 import { messageHandler } from '../../message-handler';
+import { Prefs } from '../../prefs';
+import { Version } from '../../utils/version';
 
 import { type ManualUpdateMetadata, AutoUpdateStateField } from './types';
 import { extensionUpdateActor } from './extension-update-machine-mv3';
@@ -37,19 +39,21 @@ import { ManualUpdateHandler } from './manual-update-handler-mv3';
  * ### Automatic update (Chrome native):
  * 1. Chrome detects update and downloads it in background.
  * 2. `chrome.runtime.onUpdateAvailable` event fires → state becomes `Available`.
- * 3. Extension reloads automatically after `IDLE_THRESHOLD_MS` of inactivity,
+ * 3. Before applying, checks AdGuard Backend API (fail-open: updates proceed even on 204 or errors).
+ * 4. Extension reloads automatically after `IDLE_THRESHOLD_MS` of inactivity,
  *    or shows update icon after `ICON_DELAY_MS` and waits for user action.
- * 4. After reload, shows success/failure notification.
+ * 5. After reload, shows success/failure notification.
  *
  * **Note**: Custom filters are NOT updated in automatic flow, only if user
  * clicks "Update" button.
  *
  * ### Manual update (user-initiated):
- * 1. User clicks "Check for updates" → checks CWS via HEAD request.
- * 2. If update exists, calls `chrome.runtime.requestUpdateCheck()`.
+ * 1. User clicks "Check for updates" → checks AdGuard Backend API.
+ * 2. If backend confirms update, calls `chrome.runtime.requestUpdateCheck()`.
  * 3. Chrome downloads update → `onUpdateAvailable` fires → state becomes `Available`.
- * 4. User clicks "Update" button → custom filters are updated → extension reloads.
- * 5. After reload, shows success/failure notification.
+ * 4. Fire-and-forget backend analytics call (does not gate the update).
+ * 5. User clicks "Update" button → custom filters are updated → extension reloads.
+ * 6. After reload, shows success/failure notification.
  *
  * ## State machine states:
  * - `Idle` - default state, no update activity.
@@ -161,6 +165,24 @@ export class ExtensionUpdateService {
             return;
         }
 
+        // Check if the persisted nextVersion is not newer than the current version.
+        // If Chrome applied the update during browser shutdown (bypassing our
+        // applyUpdate/clearAutoUpdateState flow), the persisted state becomes
+        // stale and must be cleared to avoid showing a false update indicator.
+        try {
+            const persisted = new Version(state.nextVersion);
+            const current = new Version(Prefs.version);
+            if (persisted.compare(current) <= 0) {
+                logger.info(`[ext.ExtensionUpdateService.init]: Clearing stale update state: persisted nextVersion ${state.nextVersion} is not newer than current version ${Prefs.version}`);
+                await ExtensionUpdateService.stateManager.clear();
+                return;
+            }
+        } catch (e) {
+            logger.error(`[ext.ExtensionUpdateService.init]: Failed to compare versions, clearing state defensively: ${e}`);
+            await ExtensionUpdateService.stateManager.clear();
+            return;
+        }
+
         // If update was already available before SW restart, manually trigger
         // `onUpdateAvailable` to restore the update process, independently of
         // source of update (manual or automatic).
@@ -202,9 +224,11 @@ export class ExtensionUpdateService {
      * it was loaded from storage after SW restart.
      */
     private static async onUpdateAvailable(
-        { version }: chrome.runtime.UpdateAvailableDetails,
+        details: chrome.runtime.UpdateAvailableDetails,
         loadedNavigationTimestampMs?: number,
     ): Promise<void> {
+        const { version } = details;
+
         logger.info(
             '[ext.ExtensionUpdateService.onUpdateAvailable]:',
             `Update became available, version: ${version}, manual check: ${ExtensionUpdateService.stateManager.get(AutoUpdateStateField.isManualCheck)}`,
@@ -305,6 +329,7 @@ export class ExtensionUpdateService {
      */
     public static shouldShowUpdateIcon(): boolean {
         const nextVersion = ExtensionUpdateService.stateManager.get(AutoUpdateStateField.nextVersion);
+
         if (!ExtensionUpdateService.isUpdateAvailable || !nextVersion) {
             return false;
         }
@@ -317,6 +342,7 @@ export class ExtensionUpdateService {
         const updateAvailableTimestamp = ExtensionUpdateService.stateManager.get(
             AutoUpdateStateField.updateAvailableTimestamp,
         );
+
         if (updateAvailableTimestamp === undefined) {
             logger.trace('[ext.ExtensionUpdateService.shouldShowUpdateIcon]: Update available timestamp is undefined, cannot determine if update icon should be shown');
             return false;

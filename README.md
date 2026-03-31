@@ -48,32 +48,31 @@ AdGuard is a fast and lightweight ad blocking browser extension that effectively
     - [Reporting issues](#contribution-reporting)
     - [Other options](#contribution-other)
 - [Development](DEVELOPMENT.md)
-- [Permissions required](#permissions-required)
+- [Getting Started](#getting-started)
+- [Permissions](#permissions-required)
 - [Auto-publish builds](#auto-publish-builds)
 - [Versioning Schema](#versioning-schema)
 - [Minimum supported browser versions](#browser-compatibility)
+- [Documentation](#documentation)
+<!-- TOC:AMO_REVIEW -->
 
 ## <a name="installation"></a> Installation
 
 ### <a name="installation-chrome"></a> Chrome and Chromium-based browsers
 
-You can get the latest available AdGuard Extension version from the
-[Chrome Web Store](https://agrd.io/extension_chrome).
+Install from the [Chrome Web Store](https://agrd.io/extension_chrome).
 
 ### <a name="installation-firefox"></a> Firefox
 
-You can get the latest version of AdGuard Extension from the
-[Mozilla Add-ons website](https://agrd.io/extension_firefox).
+Install from the [Mozilla Add-ons website](https://agrd.io/extension_firefox).
 
 ### <a name="installation-opera"></a> Opera
 
-Opera is basically a Chromium browser, but it maintains its own add-ons store.
-You can get AdGuard Extension [from there](https://agrd.io/extension_opera).
+Install from the [Opera Add-ons store](https://agrd.io/extension_opera).
 
 ### <a name="installation-edge"></a> Microsoft Edge
 
-The latest stable version of AdGuard browser extension is available in
-[Microsoft Store](https://agrd.io/extension_edge).
+Install from the [Microsoft Store](https://agrd.io/extension_edge).
 
 ## <a name="contribution"></a> Contribution
 
@@ -110,31 +109,42 @@ and click the *New issue* button.
 Here is a [dedicated page](https://adguard.com/contribute.html) for those who
 are willing to contribute.
 
+## <a name="getting-started"></a> Getting Started
+
+After installing the extension from your browser's store:
+
+1. **Click the AdGuard icon** in the browser toolbar to open the popup. Ad blocking is enabled by default with a recommended set of filter lists.
+2. **Toggle protection** on or off for the current website using the main switch in the popup.
+3. **Open settings** by clicking the gear icon in the popup to access the full options page.
+4. **Use the Assistant** — click the AdGuard icon, then select "Block an element on this page" to visually pick and block unwanted page elements.
+
+The extension works out of the box with sensible defaults.
+
 ## <a name="permissions-required"></a> Permissions required
 
 ### Common permissions for all browsers and manifest versions
 
-- `tabs`                          - this permission is required in order to get the URL of the options page tab
-- `webRequest`                    - this permission is necessary to apply complicated rules (cosmetic for instance), detecting and removing tracking cookies, counting blocked resources
-- `cookies`                       - this permissions is required to delete cookies from requests or changing their lifetime
-- `contextMenus`                  - this permission is required in order to create a context menu
-- `storage`                       - this permission is required in order to save user settings, user rules and custom filters
-- `unlimitedStorage`              - this permission is required in order to save large filters
-- `webNavigation`                 - this permission is required in order to catch the moment for injecting scriptlets
-- `privacy`                       - this permission allows access to browser privacy settings; required in Firefox, optional in Chrome/Edge/Opera
+- `tabs`                          - required to get the URL of the options page tab
+- `webRequest`                    - required to apply cosmetic rules, detect and remove tracking cookies, and count blocked resources
+- `cookies`                       - required to delete cookies from requests or change their lifetime
+- `contextMenus`                  - required to create a context menu
+- `storage`                       - required to save user settings, user rules, and custom filters
+- `unlimitedStorage`              - required to save large filter lists
+- `webNavigation`                 - required to catch the moment for injecting scriptlets
+- `privacy`                       - allows access to browser privacy settings; required in Firefox, optional in Chrome/Edge/Opera
 
 ### Permissions for MV2 only
 
-- `<all_urls>`                    - this permission grants access to all websites to apply content scripts and filtering rules
-- `webRequestBlocking`            - this permission is required to block or modify HTTP requests synchronously
+- `<all_urls>`                    - grants access to all websites to apply content scripts and filtering rules
+- `webRequestBlocking`            - required to block or modify HTTP requests synchronously
 
 ### Permissions for MV3 only
 
-- `host_permissions`              - this permission grants access to all websites (MV3 uses this instead of `<all_urls>`)
-- `userScripts`                   - this permission is required to let the user subscribe to custom filter lists and evaluate rules from these lists
-- `scripting`                     - this permission is required in order to inject assistant script only in the required pages
-- `declarativeNetRequest`         - this permission is required in order to block, redirect and modify URL requests
-- `declarativeNetRequestFeedback` - this permission is required in order to create a log of the blocked, redirected or modified URL requests
+- `host_permissions`              - grants access to all websites (MV3 uses this instead of `<all_urls>`)
+- `userScripts`                   - required to let the user subscribe to custom filter lists and evaluate rules from these lists
+- `scripting`                     - required to inject the assistant script into pages
+- `declarativeNetRequest`         - required to block, redirect, and modify URL requests
+- `declarativeNetRequestFeedback` - required to create a log of the blocked, redirected, or modified URL requests
 
 ## <a name="auto-publish-builds"></a> Auto-publish builds
 
@@ -177,6 +187,8 @@ But for build versions we will use following format: `major.minor.patch.autoBuil
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 
+The extension supports both Manifest V2 (MV2) and Manifest V3 (MV3) platforms. MV3 is the newer extension platform required by Chrome and other Chromium-based browsers going forward.
+
 <!-- NOTE: see MIN_SUPPORTED_VERSION in ./constants.ts -->
 
 | Browser                     | Version |
@@ -186,5 +198,12 @@ But for build versions we will use following format: `major.minor.patch.autoBuil
 | Firefox                     | ✅ 78   |
 | Firefox Mobile              | ✅ 113  |
 | Opera                       | ✅ 67   |
+| Opera MV3                   | ✅ 107  |
 | Edge Chromium               | ✅ 80   |
 | Edge Legacy                 | ❌      |
+
+## <a name="documentation"></a> Documentation
+
+- [Development](DEVELOPMENT.md) — development setup and build instructions
+- [Changelog](CHANGELOG.md) — version history
+- [LLM agent rules](AGENTS.md) — guidance for AI coding assistants

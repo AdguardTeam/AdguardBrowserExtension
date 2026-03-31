@@ -101,12 +101,18 @@ const SettingsSection = (props) => {
 
     return (
         <div key={title} className={settingGroupClassName} inert={disabled ? '' : undefined}>
-            <label
-                className={titleContainerClass}
-                htmlFor={id}
-            >
-                {renderContent()}
-            </label>
+            {renderBackButton ? (
+                <div className={titleContainerClass}>
+                    {renderContent()}
+                </div>
+            ) : (
+                <label
+                    className={titleContainerClass}
+                    htmlFor={id}
+                >
+                    {renderContent()}
+                </label>
+            )}
             <div>
                 {children}
             </div>

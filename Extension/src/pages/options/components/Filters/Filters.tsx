@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -32,7 +32,7 @@ import classNames from 'classnames';
 import { sortBy } from 'lodash-es';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../background/services/telemetry/enums';
+import { TelemetryScreenName } from '../../../../common/telemetry';
 import { translator } from '../../../../common/translators/translator';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { rootStore } from '../../stores/RootStore';
@@ -382,7 +382,7 @@ const Filters = observer(() => {
          *
          * 1. Default - regular users that did not grant User scripts API permission explicitly:
          *    - We collect and pre-build script rules from the filters and statically bundle
-         *      them into the extension - STEP 1. See 'updateLocalResourcesForChromiumMv3' in our build tools.
+         *      them into the extension - STEP 1. See 'updateLocalResourcesForMv3' in our build tools.
          *      IMPORTANT: all scripts and their arguments are local and bundled within the extension.
          *    - These pre-verified local scripts are passed to the engine - STEP 2.
          *    - At runtime before the execution, we check if each script rule is included

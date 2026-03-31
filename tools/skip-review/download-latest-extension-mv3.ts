@@ -25,8 +25,35 @@ import fs from 'node:fs';
 import unzipper from 'unzipper';
 import { ensureDir } from 'fs-extra';
 
-import { BuildTargetEnv, ExtensionsIds } from '../../constants';
-import { getCrxUrl } from '../../Extension/src/common/update-mv3';
+import {
+    BuildTargetEnv,
+    ExtensionsIds,
+    MIN_SUPPORTED_VERSION,
+} from '../../constants';
+
+/**
+ * Returns the Chrome Web Store extension update URL for a given extension ID.
+ *
+ * @param extensionId The extension ID in the Chrome Web Store.
+ * @param chromeVer Chrome version, default is {@link MIN_SUPPORTED_VERSION.CHROMIUM_MV3}.
+ *
+ * @returns The update URL for the CRX file.
+ */
+const getCrxUrl = (
+    extensionId: string,
+    chromeVer = MIN_SUPPORTED_VERSION.CHROMIUM_MV3,
+): string => {
+    const chromeVersionStr = `${chromeVer}.0.0.0`;
+
+    const url = new URL('https://clients2.google.com/service/update2/crx');
+
+    url.searchParams.set('response', 'redirect');
+    url.searchParams.set('acceptformat', 'crx3');
+    url.searchParams.set('prodversion', chromeVersionStr);
+    url.searchParams.set('x', `id=${extensionId}&installsource=ondemand&uc`);
+
+    return url.href;
+};
 
 /**
  * Local directory containing the previous extension, ignored by git.

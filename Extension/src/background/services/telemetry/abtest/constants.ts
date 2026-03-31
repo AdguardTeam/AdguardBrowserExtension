@@ -18,29 +18,29 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { MIN_SUPPORTED_VERSION } from '../../../constants';
+import { type VariantCache } from './types';
 
 /**
- * Returns the Chrome Web Store extension update URL for a given extension
- * ID and Chrome version.
- *
- * @param extensionId The extension ID in the Chrome Web Store.
- * @param chromeVer Chrome version, number, default is {@link MIN_SUPPORTED_VERSION.CHROMIUM_MV3}.
- *
- * @returns The update URL for the CRX file.
+ * Storage key for the variant cache.
  */
-export const getCrxUrl = (
-    extensionId: string,
-    chromeVer = MIN_SUPPORTED_VERSION.CHROMIUM_MV3,
-): string => {
-    const chromeVersionStr = `${chromeVer}.0.0.0`;
+export const VARIANTS_STORAGE_KEY = 'ab_test_manager.variants';
 
-    const url = new URL('https://clients2.google.com/service/update2/crx');
+/**
+ * Type for the experiment registry mapping slots to experiment IDs.
+ */
+export type ExperimentRegistry = Readonly<VariantCache>;
 
-    url.searchParams.set('response', 'redirect');
-    url.searchParams.set('acceptformat', 'crx3');
-    url.searchParams.set('prodversion', chromeVersionStr);
-    url.searchParams.set('x', `id=${extensionId}&installsource=ondemand&uc`);
-
-    return url.href;
+/**
+ * Registry of active A/B experiments.
+ *
+ * Maps Plausible Analytics custom property slots to experiment IDs.
+ * Maximum 3 slots (experiment_1, experiment_2, experiment_3).
+ * Add new experiments here when needed.
+ *
+ * Example: { experiment_1: 'AG-47804-trial-a_def' }.
+ */
+export const EXPERIMENT_REGISTRY: ExperimentRegistry = {
+    experiment_1: 'AG-51010-limitations-browser',
 };
+
+export const AG_51010_LIMITATIONS_BROWSER_B = 'AG-51010-limitations-browser-b';

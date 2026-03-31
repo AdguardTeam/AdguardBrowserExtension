@@ -24,7 +24,7 @@ import { observer } from 'mobx-react';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { popupStore } from '../../../stores/PopupStore';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 /**
  * Pause/Resume button component.
