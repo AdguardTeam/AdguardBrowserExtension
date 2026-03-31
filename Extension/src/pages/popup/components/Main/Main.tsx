@@ -28,6 +28,7 @@ import { translator } from '../../../../common/translators/translator';
 import { popupStore } from '../../stores/PopupStore';
 import { AppState } from '../../state-machines/app-state-machine';
 import { COMPARE_URL, SpecificPopupState } from '../../constants';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 
 import {
     MainSwitch,
@@ -86,6 +87,8 @@ export const Main = observer(() => {
         hasUserRulesToReset,
         toggleAllowlisted,
         resumeApplicationFiltering,
+        telemetryStore,
+        showAlternativeProtectionButton,
     } = store;
 
     const classes = classNames('main', {
@@ -153,6 +156,16 @@ export const Main = observer(() => {
         || appState === AppState.Resuming;
 
     /**
+     * Telemetry for "How to enhance protection" link.
+     */
+    const handleHowToEnhanceClick = () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.HowToEnhanceClick,
+            TelemetryScreenName.MainPage,
+        );
+    };
+
+    /**
      * Returns a component for the current app state.
      *
      * @returns Current state component.
@@ -195,6 +208,33 @@ export const Main = observer(() => {
         return null;
     };
 
+    const renderAdvancedProtection = () => {
+        if (!showInfoAboutFullVersion) {
+            return;
+        }
+
+        return (
+            <div className={
+                showAlternativeProtectionButton
+                    ? 'main__cta main__cta_alternative'
+                    : 'main__cta'
+            }
+            >
+                <a
+                    href={COMPARE_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="main__cta--link"
+                    onClick={handleHowToEnhanceClick}
+                >
+                    {showAlternativeProtectionButton
+                        ? translator.getMessage('popup_get_system_wide_protection')
+                        : translator.getMessage('popup_header_cta_link')}
+                </a>
+            </div>
+        );
+    };
+
     return (
         <div className={classes}>
             <div className="main__header">
@@ -221,18 +261,7 @@ export const Main = observer(() => {
 
             <div className="main__control">{getCentralControlByState()}</div>
 
-            {showInfoAboutFullVersion && (
-                <div className="main__cta">
-                    <a
-                        href={COMPARE_URL}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="main__cta--link"
-                    >
-                        {translator.getMessage('popup_header_cta_link')}
-                    </a>
-                </div>
-            )}
+            {renderAdvancedProtection()}
         </div>
     );
 });

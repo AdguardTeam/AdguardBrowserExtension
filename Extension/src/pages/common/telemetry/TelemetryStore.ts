@@ -29,7 +29,7 @@ import {
     type TelemetryEventName,
     type TelemetryScreenName,
     type TelemetryActionToScreenMap,
-} from '../../../background/services/telemetry/enums';
+} from '../../../common/telemetry';
 import { messenger } from '../../services/messenger';
 
 /**

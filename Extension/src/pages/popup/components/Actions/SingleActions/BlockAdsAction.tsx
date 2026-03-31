@@ -25,7 +25,7 @@ import { translator } from '../../../../../common/translators/translator';
 import { messenger } from '../../../../services/messenger';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { popupStore } from '../../../stores/PopupStore';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../../background/services/telemetry/enums';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 import { type SingleActionParams } from './types';
 

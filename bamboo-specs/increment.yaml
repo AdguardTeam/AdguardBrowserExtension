@@ -4,8 +4,6 @@ plan:
   project-key: ADGEXT
   key: BEINCRSPECS
   name: browser extension - increment version
-variables:
-  dockerNode: adguard/extension-builder:22.17--0.3.0--0
 
 stages:
   - Increment:
@@ -18,10 +16,6 @@ Increment:
   key: INCR
   other:
     clean-working-dir: true
-  docker:
-    image: ${bamboo.dockerNode}
-    volumes:
-      ${system.PNPM_DIR}: "${bamboo.cachePnpm}"
   tasks:
     - checkout:
         force-clean-build: 'true'
@@ -29,21 +23,25 @@ Increment:
         interpreter: SHELL
         scripts:
           - |-
-            set -x
-            set -e
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
 
             # Fix mixed logs
             exec 2>&1
 
-            ls -la
+            export DOCKER_BUILDKIT=1
 
-            # Set cache directory
-            pnpm config set store-dir ${bamboo.cachePnpm}
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --target increment-output \
+              --output type=local,dest=output \
+              .
 
-            # Install deps for custom increment script
-            pnpm install ${bamboo.varsPnpm}
-
-            pnpm increment
+            # Copy modified package.json back to working tree for VCS commit
+            cp output/modified/package.json .
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:

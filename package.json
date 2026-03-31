@@ -1,6 +1,6 @@
 {
     "name": "browser-extension",
-    "version": "5.3.0+55.build.20260331090057",
+    "version": "5.3.1+7.build.20260317170111",
     "description": "AdGuard Extension",
     "type": "module",
     "scripts": {
@@ -19,7 +19,7 @@
         "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
         "locales": "tsx tools/locales.js",
         "resources": "tsx tools/resources.ts",
-        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~4.0 && tsx tools/resources-mv3.ts",
+        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~4.1 && tsx tools/resources-mv3.ts",
         "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
         "lint:code": "eslint --cache --max-warnings=0 --ext .jsx,.js,.cjs,.mjs,.tsx,.ts .",
@@ -32,10 +32,11 @@
         "lint:types:mv2": "tsc --project tsconfig.mv2.json --noEmit",
         "lint:types:mv3": "tsc --project tsconfig.mv3.json --noEmit",
         "disclaimer": "pnpm lint | tsx tools/insert-disclaimer.js",
-        "debug-filters:load": "pnpm exec dnr-rulesets load --latest-filters ./build/dev/chrome-mv3/filters",
-        "debug-filters:convert": "pnpm exec tsurlfilter convert --debug ./build/dev/chrome-mv3/filters /web-accessible-resources/redirects ./build/dev/chrome-mv3/filters/declarative",
-        "debug-filters:watch": "pnpm debug-filters:extract && pnpm exec dnr-rulesets watch --debug ./build/dev/chrome-mv3/manifest.json /web-accessible-resources/redirects",
-        "debug-filters:extract": "pnpm exec tsurlfilter extract-filters ./build/dev/chrome-mv3/filters/declarative ./build/dev/chrome-mv3/filters"
+        "debug-filters": "tsx tools/debug-filters.ts",
+        "debug-filters:load": "pnpm debug-filters load",
+        "debug-filters:convert": "pnpm debug-filters convert",
+        "debug-filters:watch": "pnpm debug-filters watch",
+        "debug-filters:extract": "pnpm debug-filters extract"
     },
     "repository": {
         "type": "git",
@@ -44,12 +45,13 @@
     "author": "Adguard Software Ltd <adguard@adguard.com>",
     "license": "GPL-3.0",
     "devDependencies": {
-        "@adguard/dnr-rulesets": "~4.0",
+        "@adguard/dnr-rulesets": "~4.1",
         "@adguard/eslint-plugin-logger-context": "^1.0.1",
         "@adguard/re2-wasm": "1.2.0",
         "@rspack/cli": "^1.6.6",
         "@rspack/core": "^1.6.6",
         "@types/archiver": "^6.0.3",
+        "@types/c3": "^0.7.11",
         "@types/chrome": "0.0.268",
         "@types/crypto-js": "4.1.1",
         "@types/css.escape": "1.5.0",
@@ -127,14 +129,14 @@
         "webpack-merge": "^6.0.1"
     },
     "dependencies": {
-        "@adguard/agtree": "4.0.0",
+        "@adguard/agtree": "4.0.1",
         "@adguard/filters-downloader": "2.4.2",
         "@adguard/logger": "^2.0.0",
-        "@adguard/scriptlets": "2.2.15",
+        "@adguard/scriptlets": "2.2.16",
         "@adguard/text-encoding": "^0.8.3",
         "@adguard/translate": "1.0.2",
-        "@adguard/tsurlfilter": "4.0.0",
-        "@adguard/tswebextension": "4.0.0",
+        "@adguard/tsurlfilter": "4.0.2",
+        "@adguard/tswebextension": "4.0.3",
         "@date-fns/utc": "^2.1.0",
         "@xstate/react": "4.1.3",
         "ace-builds": "1.17.0",

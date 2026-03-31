@@ -22,8 +22,7 @@ import { nanoid } from 'nanoid';
 import { logger } from '../../../common/logger';
 import { MessageType } from '../../../common/messages';
 import { messageHandler } from '../../message-handler';
-
-import { type TelemetryScreenName } from './enums';
+import { type TelemetryScreenName } from '../../../common/telemetry';
 
 /**
  * Tracks page navigation and screen views for telemetry purposes.

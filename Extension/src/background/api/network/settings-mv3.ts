@@ -25,6 +25,7 @@ import {
 } from '../../../../../constants';
 import { BrowserUtils } from '../../utils/browser-utils';
 import { logger } from '../../../common/logger';
+import { UserAgent } from '../../../common/user-agent';
 
 /**
  * NetworkSettings contains a bunch of url's which are using by extension.
@@ -111,6 +112,10 @@ export class NetworkSettings {
     get filtersUrl(): string {
         // First of all check whether it is mv3-build
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
+
+        if (UserAgent.isOpera) {
+            return `${this.filtersRulesBaseUrl}/opera-mv3`;
+        }
 
         /**
          * Search for 'JS_RULES_EXECUTION' to find all parts of script execution

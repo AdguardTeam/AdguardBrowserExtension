@@ -303,7 +303,12 @@ module.exports = {
     'overrides': [
         // This override needed to allow mv2/mv3 imports inside mv2/mv3 specific files.
         {
-            files: ['**/*-mv2.{ts,tsx,js,jsx}', '**/*-mv3.{ts,tsx,js,jsx}'],
+            files: [
+                '**/*-mv2.{ts,tsx,js,jsx}',
+                '**/*-mv3.{ts,tsx,js,jsx}',
+                '**/*-mv2.test.{ts,tsx,js,jsx}',
+                '**/*-mv3.test.{ts,tsx,js,jsx}',
+            ],
             rules: {
                 'no-restricted-imports': 'off',
             },

@@ -43,6 +43,8 @@ import {
 } from '../../../api';
 import { tabsApi as tsWebExtTabsApi } from '../../../tswebextension';
 import { UserAgent } from '../../../../common/user-agent';
+import { ABTestManager } from '../../telemetry';
+import { AG_51010_LIMITATIONS_BROWSER_B } from '../../telemetry/abtest/constants';
 
 /**
  * Tab info for the popup.
@@ -114,6 +116,11 @@ export type GetTabInfoForPopupResponse = {
          * If true, they can be reset.
          */
         hasUserRulesToReset: boolean;
+
+        /**
+         * State for AG-51010 A/B test «Limitations of browser blocking».
+         */
+        showAlternativeProtectionButton: boolean;
     };
 };
 
@@ -176,6 +183,7 @@ export abstract class PopupServiceCommon {
                 notification: await promoNotificationApi.getCurrentNotification(),
                 isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
                 hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
+                showAlternativeProtectionButton: await ABTestManager.hasVariant(AG_51010_LIMITATIONS_BROWSER_B),
             },
         };
     }
