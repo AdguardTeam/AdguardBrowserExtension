@@ -46,8 +46,8 @@ export class PagesApi extends PagesApiCommon {
 
     /** @inheritdoc */
     // eslint-disable-next-line class-methods-use-this
-    protected get chromeExtensionStoreForwardAction(): ForwardAction.ChromeStore | ForwardAction.ChromeMv3Store {
-        return IS_BETA ? ForwardAction.ChromeMv3Store : ForwardAction.ChromeStore;
+    protected get chromeExtensionStoreForwardAction(): ForwardAction.ChromeStore | ForwardAction.ChromeMv3BetaStore {
+        return IS_BETA ? ForwardAction.ChromeMv3BetaStore : ForwardAction.ChromeStore;
     }
 
     /** @inheritdoc */

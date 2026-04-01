@@ -65,7 +65,7 @@ export const enum ForwardAction {
      * Previously known as "AdGuard AdBlocker MV3 Experimental",
      * currently — "AdGuard AdBlocker (MV3 Beta)".
      */
-    ChromeMv3Store = 'chrome_mv3_store',
+    ChromeMv3BetaStore = 'chrome_mv3_beta_store',
 
     /**
      * Supported MV2 release version.
