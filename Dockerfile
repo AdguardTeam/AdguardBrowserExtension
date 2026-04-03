@@ -37,7 +37,10 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     echo "Building tsurlfilter from source..." && \
     pnpm config set store-dir /pnpm-store && \
     cd /tsurlfilter/packages/tswebextension && \
-    pnpm install && \
+    pnpm install \
+        --frozen-lockfile \
+        --prefer-offline \
+        --ignore-scripts && \
     npx lerna run build --scope=@adguard/tswebextension --include-dependencies
 
 # ============================================================================
