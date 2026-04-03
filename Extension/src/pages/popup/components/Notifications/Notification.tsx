@@ -30,6 +30,7 @@ import { NOTIFICATION_TTL_MS } from '../../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
 import { TIME_TO_REMOVE_NOTIFICATION_MS } from '../../../common/constants';
 import { NotificationType, type NotificationParams } from '../../../common/types';
+import { translator } from '../../../../common/translators/translator';
 
 import './notifications.pcss';
 
@@ -43,7 +44,7 @@ export const Notification = ({
     type,
     animationCondition,
     text,
-    button,
+    buttons,
     closeManually,
 }: NotificationParams) => {
     const [notificationClosing, setNotificationClosing] = useState(false);
@@ -129,19 +130,20 @@ export const Notification = ({
                     <p>
                         {text}
                     </p>
-                    {button && (
+                    {buttons?.map((btn) => (
                         <button
+                            key={btn.title}
                             type="button"
-                            onClick={button.onClick}
-                            title={button.title}
+                            onClick={btn.onClick}
+                            title={btn.title}
                         >
-                            {button.title}
+                            {btn.title}
                         </button>
-                    )}
+                    ))}
                 </div>
             </div>
             <button
-                aria-label="close"
+                aria-label={translator.getMessage('close_button_title')}
                 type="button"
                 className="notification__btn-close"
                 onClick={handleCloseClick}

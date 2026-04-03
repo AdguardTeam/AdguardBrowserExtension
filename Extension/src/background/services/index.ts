@@ -45,5 +45,6 @@ export {
     TelemetryPageTracker,
     Theme,
 } from './telemetry';
+export { SearchPageAccessService } from './searchPageAccessService';
 // Do not export SafebrowsingService here, because it will break MV3 build
 // because of dependencies with window object.

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Confirmation modal for inverting allowlist.
 - Independent update of custom filters in MV3
   without waiting for the extension update availability [#2944].
+- Warning notification for Opera when "Allow access to search page results" permission is not granted [#2485].
 - Import settings from `adguard:import_user_configuration` links on reports.adguard.com.
 
 ### Changed
@@ -35,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use of invalid CSS selectors in element hiding rules affects all injected styles [#3329].
 - `$removeparam` rules not stripping all tracking parameters when multiple rules match the same URL in MV3 [#3444].
 
+[#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
 [#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
 [#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330

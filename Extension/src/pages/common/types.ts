@@ -58,9 +58,9 @@ export type NotificationParams = {
     text: string;
 
     /**
-     * Button to be shown in the notification, optional.
+     * Buttons to be shown in the notification, optional.
      */
-    button?: {
+    buttons?: {
         /**
          * Title of the button.
          */
@@ -70,7 +70,7 @@ export type NotificationParams = {
          * Click handler for the button.
          */
         onClick: () => void;
-    };
+    }[];
 
     /**
      * Flag to close notification manually.

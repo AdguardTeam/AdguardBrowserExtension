@@ -151,6 +151,7 @@ export enum MessageType {
     SendTelemetryPageViewEvent = 'sendTelemetryPageViewEvent',
     AddTelemetryOpenedPage = 'addTelemetryOpenedPage',
     RemoveTelemetryOpenedPage = 'removeTelemetryOpenedPage',
+    DismissSearchPageAccessNotification = 'dismissSearchPageAccessNotification',
     GetRulesLimitsCountersMv3 = 'getRulesLimitsCountersMv3',
     CanEnableStaticFilterMv3 = 'canEnableStaticFilterMv3',
     CanEnableStaticGroupMv3 = 'canEnableStaticGroupMv3',
@@ -666,6 +667,10 @@ export type RemoveTelemetryOpenedPageMessage = {
     };
 };
 
+export type DismissSearchPageAccessNotificationMessage = {
+    type: MessageType.DismissSearchPageAccessNotification;
+};
+
 export type CanEnableStaticFilterMv3Message = {
     type: MessageType.CanEnableStaticFilterMv3;
     data: {
@@ -1031,6 +1036,10 @@ export type MessageMap = {
     };
     [MessageType.RemoveTelemetryOpenedPage]: {
         message: RemoveTelemetryOpenedPageMessage;
+        response: void;
+    };
+    [MessageType.DismissSearchPageAccessNotification]: {
+        message: DismissSearchPageAccessNotificationMessage;
         response: void;
     };
     [MessageType.CurrentLimitsMv3]: {

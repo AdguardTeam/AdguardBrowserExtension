@@ -196,7 +196,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
         'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),
         'user-scripts-api': path.resolve(__dirname, `../../Extension/src/common/user-scripts-api/user-scripts-api-mv${manifestVersion}.ts`),
-        'popup-layout': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Popup/Popup-mv${manifestVersion}.tsx`),
+        'notifications': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Notifications/Notifications-mv${manifestVersion}.tsx`),
         'filters-update': path.resolve(__dirname, `../../Extension/src/pages/options/components/Filters/FiltersUpdate/FiltersUpdate-mv${manifestVersion}.tsx`),
         'filters-adapter': path.resolve(__dirname, `../../Extension/src/background/storages/filters-adapter/filters-adapter-mv${manifestVersion}.ts`),
         'prefs': path.resolve(__dirname, `../../Extension/src/background/prefs/prefs-mv${manifestVersion}.ts`),
@@ -206,6 +206,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
         'update-button-mobile': path.resolve(__dirname, `../../Extension/src/pages/options/components/Sidebar/UpdateButtonMobile/UpdateButtonMobile-mv${manifestVersion}.tsx`),
         'categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
+        'search-page-access-service': path.resolve(__dirname, `../../Extension/src/background/services/searchPageAccessService/SearchPageAccessService-mv${manifestVersion}.ts`),
         'rules-limits-service': path.resolve(__dirname, `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`),
         'configuration-import-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-import/configuration-import-api-mv${manifestVersion}.ts`),
     };

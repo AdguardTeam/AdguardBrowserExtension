@@ -1120,6 +1120,15 @@ export abstract class MessengerCommon {
     };
 
     /**
+     * Dismisses the search page access notification permanently.
+     *
+     * @returns Promise that resolves after the notification is dismissed.
+     */
+    dismissSearchPageAccessNotification = async (): Promise<void> => {
+        return this.sendMessage(MessageType.DismissSearchPageAccessNotification);
+    };
+
+    /**
      * Checks whether there is a pending import configuration in the background.
      *
      * @returns `true` if there is a pending import config, `false` otherwise.

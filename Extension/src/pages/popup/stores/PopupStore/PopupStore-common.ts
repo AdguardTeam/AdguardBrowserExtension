@@ -147,6 +147,9 @@ export class PopupStoreCommon {
     hasUserRulesToReset = false;
 
     @observable
+    showSearchAccessWarning = false;
+
+    @observable
     settings: SettingsData | null = null;
 
     currentTabId?: number | null = null;
@@ -272,6 +275,7 @@ export class PopupStoreCommon {
         this.promoNotification = options.notification;
         this.hasUserRulesToReset = options.hasUserRulesToReset;
         this.showAlternativeProtectionButton = options.showAlternativeProtectionButton;
+        this.showSearchAccessWarning = options.showSearchAccessWarning;
 
         // stats
         this.stats = stats;
@@ -600,4 +604,12 @@ export class PopupStoreCommon {
 
         return this.settings.values[this.settings.names.AppearanceTheme];
     }
+
+    @action
+    dismissSearchAccessWarning = async () => {
+        await messenger.dismissSearchPageAccessNotification();
+        runInAction(() => {
+            this.showSearchAccessWarning = false;
+        });
+    };
 }

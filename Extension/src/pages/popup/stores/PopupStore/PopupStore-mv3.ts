@@ -102,10 +102,10 @@ export class PopupStore extends PopupStoreCommon {
             this.setUpdateNotification({
                 type: NotificationType.Error,
                 text: translator.getMessage('update_failed_text'),
-                button: {
+                buttons: [{
                     title: translator.getMessage('update_failed_try_again_btn'),
                     onClick: this.checkUpdates,
-                },
+                }],
             });
         }
     }

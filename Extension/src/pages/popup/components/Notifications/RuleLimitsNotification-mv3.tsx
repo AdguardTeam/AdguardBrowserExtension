@@ -24,7 +24,7 @@ import { translator } from '../../../../common/translators/translator';
 import { NotificationType } from '../../../common/types';
 import { messenger } from '../../../services/messenger';
 
-import { Notification } from './Notification-mv3';
+import { Notification } from './Notification';
 
 /**
  * The component needed to show a notification about the rule limits
@@ -40,10 +40,12 @@ export const RuleLimitsNotification = () => {
         <Notification
             type={NotificationType.Error}
             text={translator.getMessage('popup_limits_exceeded_warning')}
-            button={{
-                title: translator.getMessage('options_rule_limits'),
-                onClick: handleRuleLimitsClick,
-            }}
+            buttons={[
+                {
+                    title: translator.getMessage('options_rule_limits'),
+                    onClick: handleRuleLimitsClick,
+                },
+            ]}
             closeManually
         />
     );

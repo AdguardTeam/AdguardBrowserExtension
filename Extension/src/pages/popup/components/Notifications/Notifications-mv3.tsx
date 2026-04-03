@@ -24,6 +24,7 @@ import { observer } from 'mobx-react';
 import { popupStore } from '../../stores/PopupStore';
 
 import { RuleLimitsNotification } from './RuleLimitsNotification-mv3';
+import { SearchAccessWarning } from './SearchAccessWarning';
 import { UpdateNotification } from './UpdateNotification-mv3';
 
 import './notifications.pcss';
@@ -37,6 +38,7 @@ export const Notifications = observer(() => {
         <div className="notifications">
             <UpdateNotification />
             {areFilterLimitsExceeded && <RuleLimitsNotification />}
+            <SearchAccessWarning />
         </div>
     );
 });

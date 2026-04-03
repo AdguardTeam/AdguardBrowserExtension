@@ -23,6 +23,7 @@ import {
     AppContextKey,
     type IconData,
 } from '../../../storages';
+import { SearchPageAccessService } from '../../../services/searchPageAccessService';
 
 import { IconsApiCommon } from './icons-common';
 import { defaultIconVariants } from './defaultIconVariants';
@@ -33,7 +34,12 @@ import { defaultIconVariants } from './defaultIconVariants';
 class IconsApi extends IconsApiCommon {
     /**
      * Picks the icon variant based on the current extension state.
-     * Fallbacks to default icon variants if the promo icons are not set.
+     *
+     * Icon selection priority (highest to lowest):
+     * 1. Loading icon if the extension is not initialized yet.
+     * 2. Opera search permission warning - when permission is not granted
+     * 3. Promo icons - when promotional notification is active
+     * 4. Default icon - fallback for normal operation (enabled/disabled).
      *
      * @param isDisabled Is website allowlisted or app filtering disabled.
      *
@@ -42,6 +48,11 @@ class IconsApi extends IconsApiCommon {
     protected async pickIconVariant(isDisabled = false): Promise<IconData> {
         if (!appContext.get(AppContextKey.IsInit)) {
             return defaultIconVariants.loading;
+        }
+
+        const shouldShowOperaWarning = await SearchPageAccessService.shouldShowNotification();
+        if (shouldShowOperaWarning) {
+            return defaultIconVariants.warning;
         }
 
         // prioritize promo icons over the update-available icon,
