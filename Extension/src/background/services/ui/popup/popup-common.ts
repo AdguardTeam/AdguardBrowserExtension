@@ -45,6 +45,7 @@ import { tabsApi as tsWebExtTabsApi } from '../../../tswebextension';
 import { UserAgent } from '../../../../common/user-agent';
 import { ABTestManager } from '../../telemetry';
 import { AG_51010_LIMITATIONS_BROWSER_B } from '../../telemetry/abtest/constants';
+import { SearchPageAccessService } from '../../searchPageAccessService';
 
 /**
  * Tab info for the popup.
@@ -121,6 +122,11 @@ export type GetTabInfoForPopupResponse = {
          * State for AG-51010 A/B test «Limitations of browser blocking».
          */
         showAlternativeProtectionButton: boolean;
+
+        /**
+         * Whether to show Opera search access warning.
+         */
+        showSearchAccessWarning: boolean;
     };
 };
 
@@ -184,6 +190,7 @@ export abstract class PopupServiceCommon {
                 isDisableShowAdguardPromoInfo: settingsStorage.get(SettingOption.DisableShowAdguardPromoInfo),
                 hasUserRulesToReset: await UserRulesApi.hasRulesForUrl(tabContext.info.url),
                 showAlternativeProtectionButton: await ABTestManager.hasVariant(AG_51010_LIMITATIONS_BROWSER_B),
+                showSearchAccessWarning: await SearchPageAccessService.shouldShowNotification(),
             },
         };
     }

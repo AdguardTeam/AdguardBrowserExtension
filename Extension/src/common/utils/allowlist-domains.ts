@@ -19,8 +19,7 @@
  */
 import { parse } from 'tldts';
 
-const WILDCARD_SUBDOMAIN_PREFIX = '*.';
-const WILDCARD_TLD_SUFFIX = '.*';
+import { WILDCARD_SUBDOMAIN_PREFIX, WILDCARD_TLD_SUFFIX } from '../constants';
 
 /**
  * Result of normalizing allowlist domains from user input.

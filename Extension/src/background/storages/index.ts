@@ -46,3 +46,4 @@ export { trustedDomainsStorage } from './trusted-domains';
 export { hitStatsStorage } from './hit-stats';
 export { annoyancesConsentStorage } from './annoyances-consent';
 export { browserStorage, hybridStorage } from './shared-instances';
+export { searchPageAccessStorage, type SearchPageAccessState } from './search-page-access';

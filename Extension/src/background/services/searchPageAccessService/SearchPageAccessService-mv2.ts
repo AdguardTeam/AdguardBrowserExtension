@@ -18,27 +18,21 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
+import browser from 'webextension-polyfill';
 
-import { popupStore } from '../../stores/PopupStore';
+import { SearchPageAccessServiceCommon } from './SearchPageAccessService-common';
 
-import { RuleLimitsNotification } from './RuleLimitsNotification-mv3';
-import { SearchAccessWarning } from './SearchAccessWarning';
-import { UpdateNotification } from './UpdateNotification-mv3';
-
-import './notifications.pcss';
-
-export const Notifications = observer(() => {
-    const store = useContext(popupStore);
-
-    const { areFilterLimitsExceeded } = store;
-
-    return (
-        <div className="notifications">
-            <UpdateNotification />
-            {areFilterLimitsExceeded && <RuleLimitsNotification />}
-            <SearchAccessWarning />
-        </div>
-    );
-});
+/**
+ * MV2 implementation of SearchPageAccessService.
+ */
+export class SearchPageAccessService extends SearchPageAccessServiceCommon {
+    /**
+     * @override
+     */
+    protected static override async executeTestScript(tabId: number): Promise<void> {
+        await browser.tabs.executeScript(tabId, {
+            code: '/* AdGuard permission test */',
+            runAt: 'document_start',
+        });
+    }
+}

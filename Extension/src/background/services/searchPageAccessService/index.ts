@@ -17,28 +17,4 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
-
-import { popupStore } from '../../stores/PopupStore';
-
-import { RuleLimitsNotification } from './RuleLimitsNotification-mv3';
-import { SearchAccessWarning } from './SearchAccessWarning';
-import { UpdateNotification } from './UpdateNotification-mv3';
-
-import './notifications.pcss';
-
-export const Notifications = observer(() => {
-    const store = useContext(popupStore);
-
-    const { areFilterLimitsExceeded } = store;
-
-    return (
-        <div className="notifications">
-            <UpdateNotification />
-            {areFilterLimitsExceeded && <RuleLimitsNotification />}
-            <SearchAccessWarning />
-        </div>
-    );
-});
+export { SearchPageAccessService } from 'search-page-access-service';
