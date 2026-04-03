@@ -82,10 +82,10 @@ export const createMessageHandler = (
                 uiStore.addNotification({
                     type: NotificationType.Error,
                     text: translator.getMessage('update_failed_text'),
-                    button: {
+                    buttons: [{
                         title: translator.getMessage('update_failed_try_again_btn'),
                         onClick: settingsStore.checkUpdates,
-                    },
+                    }],
                 });
                 break;
             }

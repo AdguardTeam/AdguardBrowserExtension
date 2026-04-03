@@ -69,6 +69,11 @@ export const FILTERING_LOG_WINDOW_STATE_KEY = 'filtering-log-window-state';
 export const TELEMETRY_SYNTHETIC_ID_KEY = 'telemetry-synthetic-id';
 
 /**
+ * Storage key for search page access state.
+ */
+export const SEARCH_PAGE_ACCESS_KEY = 'search-page-access-state';
+
+/**
  * Filter ids used in the code on the background page and filtering log page.
  */
 export enum AntiBannerFiltersId {
@@ -230,6 +235,11 @@ export const EXTENSION_INITIALIZED_EVENT = 'initialized';
 export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';
 
 /**
+ * Opera's extensions settings page url.
+ */
+export const OPERA_EXTENSIONS_SETTINGS_URL = 'opera://extensions';
+
+/**
  * Time-to-live for notifications in milliseconds.
  */
 export const NOTIFICATION_TTL_MS = 4000;
@@ -365,3 +375,13 @@ export const enum AppearanceTheme {
     Dark = 'dark',
     Light = 'light',
 }
+
+/**
+ * Wildcard prefix for subdomains matching.
+ */
+export const WILDCARD_SUBDOMAIN_PREFIX = '*.';
+
+/**
+ * Wildcard suffix for top-level domains matching.
+ */
+export const WILDCARD_TLD_SUFFIX = '.*';

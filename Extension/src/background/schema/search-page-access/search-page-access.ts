@@ -17,28 +17,23 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import zod from 'zod';
 
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
+export const searchPageAccessStorageDataValidator = zod.object({
+    /**
+     * Whether the search page access permission is granted.
+     *
+     * Defaults to false - we show warning by default until the first successful
+     * script injection on a search page confirms the permission is granted.
+     */
+    isPermissionGranted: zod.boolean().default(false),
+    /**
+     * Whether to show the notification to the user.
+     */
+    shouldShowNotification: zod.boolean().default(true),
+}).default({});
 
-import { popupStore } from '../../stores/PopupStore';
-
-import { RuleLimitsNotification } from './RuleLimitsNotification-mv3';
-import { SearchAccessWarning } from './SearchAccessWarning';
-import { UpdateNotification } from './UpdateNotification-mv3';
-
-import './notifications.pcss';
-
-export const Notifications = observer(() => {
-    const store = useContext(popupStore);
-
-    const { areFilterLimitsExceeded } = store;
-
-    return (
-        <div className="notifications">
-            <UpdateNotification />
-            {areFilterLimitsExceeded && <RuleLimitsNotification />}
-            <SearchAccessWarning />
-        </div>
-    );
-});
+/**
+ * State for search page access permission detection.
+ */
+export type SearchPageAccessStorageData = zod.infer<typeof searchPageAccessStorageDataValidator>;

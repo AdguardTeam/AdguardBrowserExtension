@@ -25,6 +25,7 @@ import {
     AppContextKey,
     type IconData,
 } from '../../../storages';
+import { SearchPageAccessService } from '../../../services/searchPageAccessService';
 
 import { IconsApiCommon } from './icons-common';
 import { defaultIconVariants } from './defaultIconVariants';
@@ -38,10 +39,11 @@ class IconsApi extends IconsApiCommon {
      *
      * Icon selection priority (highest to lowest):
      * 1. Loading icon if the extension is not initialized yet.
-     * 2. MV3 limits exceeded icon (warning) - when filter limits are exceeded
-     * 3. Promo icons - when promotional notification is active
-     * 4. Extension update icon - when extension update is available
-     * 5. Default icon - fallback for normal operation (enabled/disabled).
+     * 2. Opera search permission warning - when permission is not granted
+     * 3. MV3 limits exceeded icon (warning) - when filter limits are exceeded
+     * 4. Promo icons - when promotional notification is active
+     * 5. Extension update icon - when extension update is available
+     * 6. Default icon - fallback for normal operation (enabled/disabled).
      *
      * @param isDisabled Is website allowlisted or app filtering disabled.
      *
@@ -50,6 +52,11 @@ class IconsApi extends IconsApiCommon {
     protected async pickIconVariant(isDisabled = false): Promise<IconData> {
         if (!appContext.get(AppContextKey.IsInit)) {
             return defaultIconVariants.loading;
+        }
+
+        const shouldShowOperaWarning = await SearchPageAccessService.shouldShowNotification();
+        if (shouldShowOperaWarning) {
+            return defaultIconVariants.warning;
         }
 
         const isMv3LimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
