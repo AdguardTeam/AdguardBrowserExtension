@@ -32,6 +32,8 @@ import { FiltersDownloader } from '@adguard/filters-downloader/browser';
 
 import { CustomFilterApi } from '../../../../../Extension/src/background/api';
 import { App } from '../../../../../Extension/src/background/app';
+import { customFilterMetadataStorage } from '../../../../../Extension/src/background/storages/custom-filter-metadata';
+import { filterVersionStorage } from '../../../../../Extension/src/background/storages/filter-version';
 import { mockLocalStorage } from '../../../../helpers';
 import { APP_VERSION_KEY } from '../../../../../Extension/src/common/constants';
 import {
@@ -188,5 +190,143 @@ describe('CustomFilterApi.getFilterInfo — Last-Modified header integration', (
         expect(filter.customUrl).toBe('https://example.com/filter-6.txt');
         // rulesCount excludes comment lines (lines starting with '!')
         expect(filter.rulesCount).toBe(2);
+    });
+});
+
+/**
+ * Updated filter text with bumped version and no TimeUpdated metadata.
+ * Used to verify that Last-Modified header is persisted on update.
+ */
+const updatedFilterWithoutTimeUpdated = `! Title: Fake filter without TimeUpdated
+! Description: Filter for testing Last-Modified header fallback
+! Version: 2.0.0.0
+! Expires: 4 days (update frequency)
+!
+||example.com^$document
+||example.org^##h1
+||example.net^`;
+
+describe('CustomFilterApi.updateFilter — Last-Modified header persisted on update', () => {
+    let storage: Storage.StorageArea;
+
+    const filterUrl = 'https://example.com/custom-filter.txt';
+
+    beforeEach(async () => {
+        storage = mockLocalStorage({
+            [APP_VERSION_KEY]: '5.2.0.0',
+        });
+        await App.init();
+    });
+
+    afterEach(async () => {
+        await storage.clear();
+        vi.restoreAllMocks();
+    });
+
+    it('persists timeUpdated from Last-Modified header into storages on filter update', async () => {
+        // Step 1: Create the filter initially (v1, with current timestamp).
+        vi.spyOn(FiltersDownloader, 'downloadWithRaw')
+            .mockResolvedValue({
+                filter: fakeFilterWithoutTimeUpdated.split('\n'),
+                rawFilter: fakeFilterWithoutTimeUpdated,
+            });
+
+        const created = await CustomFilterApi.createFilter({
+            customUrl: filterUrl,
+            title: 'Test filter',
+            trusted: false,
+            enabled: true,
+        });
+        const { filterId } = created;
+
+        // Step 2: Mock the download to return an updated filter (v2)
+        // with a Last-Modified header and no TimeUpdated metadata.
+        const lastModified = 'Sat, 15 Mar 2025 14:00:00 GMT';
+
+        vi.spyOn(FiltersDownloader, 'downloadWithRaw')
+            .mockResolvedValue({
+                filter: updatedFilterWithoutTimeUpdated.split('\n'),
+                rawFilter: updatedFilterWithoutTimeUpdated,
+                headers: { lastModified },
+            });
+
+        // Step 3: Force-update the filter.
+        const updated = await CustomFilterApi.updateFilter({
+            filterId,
+            ignorePatches: true,
+        });
+
+        expect(updated).not.toBeNull();
+
+        // Step 4: Verify timeUpdated is persisted from Last-Modified header.
+        const expectedTimestamp = new Date('Sat, 15 Mar 2025 14:00:00 GMT').getTime();
+
+        // Check customFilterMetadataStorage
+        const metadata = customFilterMetadataStorage.getById(filterId);
+        expect(metadata).toBeDefined();
+        expect(metadata!.timeUpdated).toBe(expectedTimestamp);
+        expect(metadata!.version).toBe('2.0.0.0');
+
+        // Check filterVersionStorage
+        const versionData = filterVersionStorage.get(filterId);
+        expect(versionData).toBeDefined();
+        expect(versionData!.lastUpdateTime).toBe(expectedTimestamp);
+        expect(versionData!.version).toBe('2.0.0.0');
+    });
+
+    it('persists timeUpdated from TimeUpdated metadata (not Last-Modified) on update', async () => {
+        // Step 1: Create the filter initially.
+        vi.spyOn(FiltersDownloader, 'downloadWithRaw')
+            .mockResolvedValue({
+                filter: fakeFilterWithoutTimeUpdated.split('\n'),
+                rawFilter: fakeFilterWithoutTimeUpdated,
+            });
+
+        const created = await CustomFilterApi.createFilter({
+            customUrl: filterUrl,
+            title: 'Test filter',
+            trusted: false,
+            enabled: true,
+        });
+        const { filterId } = created;
+
+        // Step 2: Updated filter has TimeUpdated metadata AND Last-Modified header.
+        const updatedFilterWithMetadata = `! Title: Fake filter with TimeUpdated
+! Description: Updated filter
+! Version: 2.0.0.0
+! TimeUpdated: 2025-03-10T08:00:00+00:00
+! Expires: 4 days (update frequency)
+!
+||example.com^$document
+||example.org^##h1
+||example.net^`;
+
+        const lastModified = 'Sat, 15 Mar 2025 14:00:00 GMT';
+
+        vi.spyOn(FiltersDownloader, 'downloadWithRaw')
+            .mockResolvedValue({
+                filter: updatedFilterWithMetadata.split('\n'),
+                rawFilter: updatedFilterWithMetadata,
+                headers: { lastModified },
+            });
+
+        // Step 3: Force-update the filter.
+        const updated = await CustomFilterApi.updateFilter({
+            filterId,
+            ignorePatches: true,
+        });
+
+        expect(updated).not.toBeNull();
+
+        // Step 4: Verify timeUpdated comes from metadata, not Last-Modified.
+        const expectedTimestamp = new Date('2025-03-10T08:00:00+00:00').getTime();
+
+        const metadata = customFilterMetadataStorage.getById(filterId);
+        expect(metadata).toBeDefined();
+        expect(metadata!.timeUpdated).toBe(expectedTimestamp);
+
+        const versionData = filterVersionStorage.get(filterId);
+        expect(versionData).toBeDefined();
+        expect(versionData!.lastUpdateTime).toBe(expectedTimestamp);
     });
 });
