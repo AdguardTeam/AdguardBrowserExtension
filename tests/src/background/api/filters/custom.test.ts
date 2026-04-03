@@ -187,6 +187,6 @@ describe('CustomFilterApi.getFilterInfo — Last-Modified header integration', (
         expect(filter.timeUpdated).toBe('2024-01-01T12:00:00.000Z');
         expect(filter.customUrl).toBe('https://example.com/filter-6.txt');
         // rulesCount excludes comment lines (lines starting with '!')
-        expect(filter.rulesCount).toBeGreaterThan(0);
+        expect(filter.rulesCount).toBe(2);
     });
 });

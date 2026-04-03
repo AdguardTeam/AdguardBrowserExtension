@@ -202,7 +202,7 @@ export class CustomFilterApi {
         const filter = {
             ...parsedData,
             name: parsedData.name ? parsedData.name : title as string,
-            timeUpdated: parsedData.timeUpdated ? parsedData.timeUpdated : new Date().toISOString(),
+            timeUpdated: parsedData.timeUpdated,
             customUrl: url,
             rulesCount: downloadResult.filter.filter((rule) => rule.trim().indexOf('!') !== 0).length,
         };
@@ -567,6 +567,7 @@ export class CustomFilterApi {
             ...filterMetadata,
             version,
             checksum,
+            timeUpdated: new Date(timeUpdated).getTime(),
         };
 
         customFilterMetadataStorage.set(newFilterMetadata);
