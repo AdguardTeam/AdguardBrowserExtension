@@ -129,14 +129,14 @@ class UiStore {
      */
     @action
     addRuleLimitsNotification(text: string) {
-        const button = {
+        const buttons = [{
             title: translator.getMessage('options_rule_limits'),
             onClick: messenger.openRulesLimitsTab,
-        };
+        }];
         this.addNotification({
             type: NotificationType.Error,
             text,
-            button,
+            buttons,
         });
     }
 

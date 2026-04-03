@@ -65,6 +65,7 @@ import {
     PromoNotificationService,
     filterUpdateService,
     Telemetry,
+    SearchPageAccessService,
 } from '../services';
 import { SettingOption } from '../schema';
 import { getRunInfo } from '../utils';
@@ -138,6 +139,9 @@ export abstract class AppCommon {
         // to prevent connection errors from extension pages
         ConnectionHandler.init();
         messageHandler.init();
+
+        // Initializes Opera search page access detection service.
+        await SearchPageAccessService.init();
 
         // get application run info
         const runInfo = await getRunInfo();

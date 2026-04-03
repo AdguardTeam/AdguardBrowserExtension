@@ -18,26 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-
-import { Tabs } from '../Tabs';
-import { Header } from '../Header';
-import { Footer } from '../Footer';
-import { MainContainer } from '../MainContainer';
-import { Notifications } from '../Notifications/Notifications-mv3';
-import { PromoNotification } from '../PromoNotification';
-
-import '../../styles/main.pcss';
-import './popup.pcss';
-
-export const PopupLayout = () => (
-    <>
-        <Header />
-        <MainContainer />
-        <Tabs />
-        <Footer />
-        {/* Promo should be rendered in top of other notifications */}
-        <Notifications />
-        <PromoNotification />
-    </>
-);
+export { searchPageAccessStorageDataValidator, type SearchPageAccessStorageData } from './search-page-access';

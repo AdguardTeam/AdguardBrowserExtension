@@ -20,18 +20,12 @@
 
 import React from 'react';
 
-import { Tabs } from '../Tabs';
-import { Header } from '../Header';
-import { Footer } from '../Footer';
-import { MainContainer } from '../MainContainer';
-import { PromoNotification } from '../PromoNotification';
+import { SearchAccessWarning } from './SearchAccessWarning';
 
-export const PopupLayout = () => (
-    <>
-        <Header />
-        <MainContainer />
-        <Tabs />
-        <Footer />
-        <PromoNotification />
-    </>
+import './notifications.pcss';
+
+export const Notifications = () => (
+    <div className="notifications">
+        <SearchAccessWarning />
+    </div>
 );

@@ -60,7 +60,7 @@ export const Notification = (props: NotificationParamsWithId) => {
         id,
         text,
         type,
-        button,
+        buttons,
     } = props;
 
     useEffect(() => {
@@ -131,19 +131,20 @@ export const Notification = (props: NotificationParamsWithId) => {
                 aria-live="assertive"
             >
                 <p>{text}</p>
-                {button && (
+                {buttons?.map((btn) => (
                     <button
+                        key={btn.title}
                         type="button"
                         role="link"
                         onClick={() => {
                             handleCloseClick();
-                            button.onClick();
+                            btn.onClick();
                         }}
-                        title={button.title}
+                        title={btn.title}
                     >
-                        {button.title}
+                        {btn.title}
                     </button>
-                )}
+                ))}
             </div>
             <button
                 type="button"

@@ -108,6 +108,8 @@ export { safebrowsingStorageDataValidator, type SafebrowsingCacheData } from './
 
 export { annoyancesConsentStorageDataValidator, type AnnoyancesConsentStorageData } from './annoyances-consent';
 
+export { searchPageAccessStorageDataValidator, type SearchPageAccessStorageData } from './search-page-access';
+
 export {
     appearanceValidator,
     settingsValidator,
