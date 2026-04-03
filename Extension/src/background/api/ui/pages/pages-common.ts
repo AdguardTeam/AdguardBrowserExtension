@@ -163,7 +163,7 @@ export abstract class PagesApiCommon {
      * and is available during base class field initialization.
      */
     protected abstract get chromeExtensionStoreForwardAction():
-        ForwardAction.ChromeStore | ForwardAction.ChromeMv2Store | ForwardAction.ChromeMv3BetaStore;
+        ForwardAction.ChromeMv3Store | ForwardAction.ChromeMv2Store | ForwardAction.ChromeMv3BetaStore;
 
     /**
      * Compare page url.

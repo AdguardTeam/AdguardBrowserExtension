@@ -55,7 +55,7 @@ export const enum ForwardAction {
     /**
      * Main supported release version — "AdGuard AdBlocker".
      */
-    ChromeStore = 'chrome_store',
+    ChromeMv3Store = 'chrome_mv3store',
 
     // TODO: can be removed in few months after v5.0 MV3 release
     // since it will no longer be used
