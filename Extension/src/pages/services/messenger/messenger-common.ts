@@ -1118,4 +1118,48 @@ export abstract class MessengerCommon {
     removeTelemetryOpenedPage = async (pageId: string): Promise<void> => {
         return this.sendMessage(MessageType.RemoveTelemetryOpenedPage, { pageId });
     };
+
+    /**
+     * Checks whether there is a pending import configuration in the background.
+     *
+     * @returns `true` if there is a pending import config, `false` otherwise.
+     */
+    isPendingForImport = async (): Promise<
+    ExtractMessageResponse<MessageType.IsPendingForImport>
+    > => {
+        return this.sendMessage(MessageType.IsPendingForImport);
+    };
+
+    /**
+     * Returns whether the pending import configuration requests WebRTC blocking.
+     *
+     * @returns `true` if the pending config sets `blockWebrtc` to `true`.
+     */
+    getPendingImportBlockWebrtc = async (): Promise<
+    ExtractMessageResponse<MessageType.GetPendingImportBlockWebrtc>
+    > => {
+        return this.sendMessage(MessageType.GetPendingImportBlockWebrtc);
+    };
+
+    /**
+     * Applies the pending import configuration.
+     *
+     * @returns `true` if the import succeeded, `false` otherwise.
+     */
+    applyImportConfiguration = async (): Promise<
+    ExtractMessageResponse<MessageType.ApplyImportConfiguration>
+    > => {
+        return this.sendMessage(MessageType.ApplyImportConfiguration);
+    };
+
+    /**
+     * Cancels and discards the pending import configuration.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    cancelImportConfiguration = async (): Promise<
+    ExtractMessageResponse<MessageType.CancelImportConfiguration>
+    > => {
+        return this.sendMessage(MessageType.CancelImportConfiguration);
+    };
 }

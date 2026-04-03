@@ -145,6 +145,78 @@
         }
     }
 
+    &.modalWithImage {
+        flex-direction: row;
+        align-items: stretch;
+        padding: 32px;
+        position: relative;
+
+        .modalHeader {
+            display: none;
+        }
+
+        .imageColumn {
+            display: flex;
+            align-items: flex-end;
+            flex-shrink: 0;
+        }
+
+        .textColumn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 24px;
+        }
+
+        .actionsInline {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            margin-top: 24px;
+
+            @media(max-width: 640px) {
+                gap: 16px;
+                flex-direction: column;
+            }
+        }
+
+        @media(max-width: 640px) {
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 16px 32px;
+
+            .modalHeader {
+                display: flex;
+                width: 100%;
+                text-align: center;
+            }
+
+            .imageColumn {
+                margin-top: 24px;
+                justify-content: center;
+            }
+
+            .textColumn {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 16px;
+                text-align: center;
+
+                .title {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &:not(:has(.actions)) .content {
+        padding-bottom: 32px;
+
+        @media(max-width: 640px) {
+            padding-bottom: 40px;
+        }
+    }
+
     .actions {
         width: 100%;
         padding: 24px 32px 32px;

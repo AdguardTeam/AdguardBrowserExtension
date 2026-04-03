@@ -33,6 +33,17 @@ export const FULLSCREEN_USER_RULES_OUTPUT = 'pages/fullscreen-user-rules';
 export const BLOCKING_BLOCKED_OUTPUT = 'pages/blocking/blocked';
 export const BLOCKING_SAFEBROWSING_OUTPUT = 'pages/blocking/safebrowsing';
 export const SUBSCRIBE_OUTPUT = 'pages/subscribe';
+export const IMPORT_CONFIGURATION_OUTPUT = 'pages/import-configuration';
+
+/**
+ * Hostnames where the import-configuration content script is allowed to run.
+ * Used both in the manifest `content_scripts` matches and in the programmatic
+ * content-script injector so the two stay in sync.
+ */
+export const IMPORT_CONFIGURATION_HOSTNAMES = [
+    'reports.adguard.com',
+];
+
 export const CONTENT_SCRIPT_START_OUTPUT = 'pages/content-script-start';
 export const CONTENT_SCRIPT_END_OUTPUT = 'pages/content-script-end';
 export const THANKYOU_OUTPUT = 'pages/thankyou';
