@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Confirmation modal for inverting allowlist.
 - Independent update of custom filters in MV3
   without waiting for the extension update availability [#2944].
+- Use HTTP `Last-Modified` header as fallback for custom filter update timestamps
+  when `TimeUpdated` metadata is missing [#3407].
 
 ### Fixed
 
@@ -23,11 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocking page incorrectly displayed for search results [#3414].
 
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
-[#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
+[#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
 [#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330
+[#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
+[#3407]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3407
 [#3414]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3414
 [#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428
-[#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
 
 ## [5.3 patch 1] <!-- TODO: Add release date -->
 
