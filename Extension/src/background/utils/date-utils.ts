@@ -43,13 +43,13 @@ export const parseLastModifiedHeader = (header: string | undefined): number | nu
         const timestamp = new Date(header).getTime();
 
         if (!isValidTimestamp(timestamp)) {
-            logger.warn(`[ext.parseLastModifiedHeader]: Invalid Last-Modified header: "${header}"`);
+            logger.warn(`[ext.date-utils]: Invalid Last-Modified header: "${header}"`);
             return null;
         }
 
         return timestamp;
     } catch (error) {
-        logger.warn(`[ext.parseLastModifiedHeader]: Failed to parse Last-Modified header: "${header}"`, error);
+        logger.warn(`[ext.date-utils]: Failed to parse Last-Modified header: "${header}"`, error);
         return null;
     }
 };
@@ -75,7 +75,7 @@ export const isValidTimestamp = (timestamp: number): boolean => {
     // Check if timestamp is not too far in the future (allow some clock skew)
     const now = Date.now();
     if (timestamp > now + MAX_CLOCK_SKEW_MS) {
-        logger.warn(`[ext.isValidTimestamp]: Timestamp is in the future: ${timestamp} (current: ${now})`);
+        logger.warn(`[ext.date-utils]: Timestamp is in the future: ${timestamp} (current: ${now})`);
         return false;
     }
 
