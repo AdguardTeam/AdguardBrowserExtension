@@ -16,15 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   without waiting for the extension update availability [#2944].
 - Warning notification for Opera when "Allow access to search page results" permission is not granted [#2485].
 - Import settings from `adguard:import_user_configuration` links on reports.adguard.com.
+- Use HTTP `Last-Modified` header as fallback for custom filter update timestamps
+  when `TimeUpdated` metadata is missing [#3407].
 
 ### Changed
 
 - Issue report URL updated to v4 scheme: comma-separated filter IDs, stealth values
-  as `1`/`0`, `ext.manifest_version` parameter, normalised browser name, ISO 8601
+  as `1`/`0`, `ext.manifest_version` parameter, normalized browser name, ISO 8601
   timestamp for `filters_last_update`, custom filters include title and URL.
 - Cookie self-destruct stealth params (`stealth.third_party_cookies_min`,
   `stealth.first_party_cookies_min`) are now MV2-only in issue report URLs (not
   supported on MV3).
+- Updated [@adguard/filters-downloader] to v2.4.3.
 
 ### Fixed
 
@@ -38,13 +41,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
-[#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
+[#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
+[#3329]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3329
 [#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330
+[#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
+[#3407]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3407
 [#3414]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3414
 [#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428
-[#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
 [#3430]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3430
-[#3329]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3329
 [#3444]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3444
 
 ## [5.3 patch 1] <!-- TODO: Add release date -->

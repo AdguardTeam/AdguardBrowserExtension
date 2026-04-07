@@ -3,6 +3,42 @@
 This document provides guidance for AI coding assistants and human contributors
 working on the AdGuard Browser Extension codebase.
 
+- [Project Overview](#project-overview)
+- [Technical Context](#technical-context)
+- [Project Structure](#project-structure)
+    - [Manifest Versions](#manifest-versions)
+- [Build And Test Commands](#build-and-test-commands)
+    - [Setup](#setup)
+    - [Build](#build)
+    - [Test](#test)
+    - [Lint](#lint)
+    - [Other](#other)
+- [Contribution Instructions](#contribution-instructions)
+    - [Before Submitting Changes](#before-submitting-changes)
+    - [Copyright Header](#copyright-header)
+    - [Commit Conventions](#commit-conventions)
+- [Code Guidelines](#code-guidelines)
+    - [Architecture](#architecture)
+        - [Version-Specific Code Pattern](#version-specific-code-pattern)
+        - [TypeScript Configuration](#typescript-configuration)
+        - [Error Handling](#error-handling)
+        - [Optimistic UI Updates (MV2 only)](#optimistic-ui-updates-mv2-only)
+        - [Memory Management](#memory-management)
+    - [Code Quality](#code-quality)
+        - [Import Rules](#import-rules)
+        - [Manifest-Version Branching](#manifest-version-branching)
+        - [JSDoc Style](#jsdoc-style)
+        - [Logging](#logging)
+        - [MobX Decorators](#mobx-decorators)
+        - [Style](#style)
+    - [Testing](#testing)
+        - [Organization](#organization)
+        - [Configuration](#configuration)
+    - [Other](#other-1)
+        - [CI/CD (Bamboo)](#cicd-bamboo)
+        - [Bundle Size Monitoring](#bundle-size-monitoring)
+- [Resources](#resources)
+
 ## Project Overview
 
 AdGuard Browser Extension is a fast, lightweight, open-source ad-blocking
@@ -292,6 +328,10 @@ Descriptions must be complete sentences.
 - Airbnb ESLint config as base (`eslint-config-airbnb-typescript`)
 - Wildcard re-exports (`export *`) are forbidden
 - Consistent type imports: `import { type Foo } from '...'` (inline style)
+- Prefer `kebab-case` for file and directory names (e.g., `filter-metadata.ts`,
+  `custom-filters/`). Exception: React component files use `PascalCase`
+  (e.g., `Options.tsx`), and manifest-version suffixes follow the
+  `-mv2`/`-mv3` convention (e.g., `engine-mv2.ts`)
 
 ### Testing
 

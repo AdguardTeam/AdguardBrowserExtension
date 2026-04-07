@@ -188,20 +188,23 @@ export class CustomFilterApi {
             return { errorAlreadyExists: true };
         }
 
-        const rules = await CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(url);
+        const downloadResult = await CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(url);
 
-        if (!rules) {
+        if (!downloadResult) {
             return null;
         }
 
-        const parsedData = FilterParser.parseFilterDataFromHeader(rules.filter);
+        const parsedData = FilterParser.parseFilterDataFromHeader(
+            downloadResult.filter,
+            downloadResult.headers?.lastModified,
+        );
 
         const filter = {
             ...parsedData,
             name: parsedData.name ? parsedData.name : title as string,
-            timeUpdated: parsedData.timeUpdated ? parsedData.timeUpdated : new Date().toISOString(),
+            timeUpdated: parsedData.timeUpdated,
             customUrl: url,
-            rulesCount: rules.filter.filter((rule) => rule.trim().indexOf('!') !== 0).length,
+            rulesCount: downloadResult.filter.filter((rule) => rule.trim().indexOf('!') !== 0).length,
         };
 
         return { filter };
@@ -564,6 +567,7 @@ export class CustomFilterApi {
             ...filterMetadata,
             version,
             checksum,
+            timeUpdated: new Date(timeUpdated).getTime(),
         };
 
         customFilterMetadataStorage.set(newFilterMetadata);
@@ -676,6 +680,10 @@ export class CustomFilterApi {
     /**
      * Loads filter data from specified url and parse it.
      *
+     * If the filter lacks a `! TimeUpdated:` metadata tag,
+     * the HTTP `Last-Modified` response header is used as a fallback timestamp
+     * for the filter's update time.
+     *
      * @param url Custom filter subscription url.
      * @param rawFilter Optional raw filter rules.
      * @param force If true filter data will be downloaded directly, not through patches.
@@ -691,7 +699,10 @@ export class CustomFilterApi {
 
         const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
 
-        const parsed = FilterParser.parseFilterDataFromHeader(downloadResult.filter);
+        const parsed = FilterParser.parseFilterDataFromHeader(
+            downloadResult.filter,
+            downloadResult.headers?.lastModified,
+        );
 
         const { version } = parsed;
 
