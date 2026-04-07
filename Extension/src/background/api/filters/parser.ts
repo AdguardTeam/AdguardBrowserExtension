@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { parseLastModifiedHeader, convertToISOString } from '../../utils/date-utils';
+
 export type FilterParsedData = {
     name: string;
     description: string;
@@ -41,17 +43,18 @@ export class FilterParser {
      * Parses filter metadata from rules' header.
      *
      * @param rules Lines of raw filter data text.
+     * @param lastModifiedHeader Optional Last-Modified HTTP header value to use as fallback for TimeUpdated.
      *
      * @returns Parsed filter data.
      */
-    static parseFilterDataFromHeader(rules: string[]): FilterParsedData {
+    static parseFilterDataFromHeader(rules: string[], lastModifiedHeader?: string): FilterParsedData {
         return {
             name: FilterParser.parseTag('Title', rules),
             description: FilterParser.parseTag('Description', rules),
             homepage: FilterParser.parseTag('Homepage', rules),
             version: FilterParser.parseTag('Version', rules),
             expires: Number(FilterParser.parseTag('Expires', rules)),
-            timeUpdated: FilterParser.parseTag('TimeUpdated', rules),
+            timeUpdated: FilterParser.parseTag('TimeUpdated', rules, lastModifiedHeader),
             // Specs - https://github.com/ameshkov/diffupdates/tree/b81243c50d23e0a8be0fe95a80d55abd00b08981?tab=readme-ov-file#-diff-path
             diffPath: FilterParser.parseTag('Diff-Path', rules),
         };
@@ -62,10 +65,11 @@ export class FilterParser {
      *
      * @param tagName Filter header tag name.
      * @param rules Lines of filter rules text.
+     * @param lastModifiedHeader Optional Last-Modified HTTP header value (only used for TimeUpdated tag).
      *
      * @returns Value of specified header tag.
      */
-    private static parseTag(tagName: string, rules: string[]): string {
+    private static parseTag(tagName: string, rules: string[], lastModifiedHeader?: string): string {
         let result = '';
 
         // Look up no more than 50 first lines
@@ -105,6 +109,18 @@ export class FilterParser {
         }
 
         if (tagName === 'TimeUpdated') {
+            // Trim whitespace to handle empty or whitespace-only values
+            result = result.trim();
+
+            // Priority: TimeUpdated metadata > Last-Modified header > current timestamp
+            if (!result && lastModifiedHeader) {
+                const timestamp = parseLastModifiedHeader(lastModifiedHeader);
+                if (timestamp !== null) {
+                    result = convertToISOString(timestamp);
+                }
+            }
+
+            // Final fallback to current timestamp if both metadata and header are missing
             result = result || new Date().toISOString();
         }
 
