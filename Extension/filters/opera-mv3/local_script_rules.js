@@ -8400,81 +8400,81 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "2e8e930a77cdc0a58bb793b156709071" due to: ' + e);
         }
     },
-    '(()=>{const e="movie_player",t="ytd-watch-flexy[player-unavailable]",r=`#${e} > .ytp-error`,n="yt-playability-error-supported-renderers#error-screen:has(>*)",a=\'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]\',o="pyv",c="param_first",i="param_second",l="client_screen",s="ad_type",y="none",d="eAFgAQ",p="8AUB",u="YAHI",m="CHANNEL",f=c;let b=f,v=null;const S=new Set,x=()=>{const t=document.getElementById(e),r=window.location.search,n=new URLSearchParams(r).get("v")||t?.getVideoData?.().video_id,a=new URLSearchParams(r).get("t")??"0";return{videoId:n,timeInSeconds:parseInt(a,10)}},g=()=>{h();const t=document.getElementById(e);if(t&&"function"==typeof t.loadVideoById)try{const{videoId:e,timeInSeconds:r}=x();t.loadVideoById(e,r)}catch(e){}},I=(()=>{let e=null,t=null,r=0;return n=>{try{if(!n)return!1;const{videoId:a}=x();return!!a&&(e===a&&t===n?r++:(e=a,t=n,r=1),r>=2&&(r=0,!0))}catch(e){return!1}}})(),R=e=>{b=e},P=Object.getOwnPropertyDescriptor(Document.prototype,"visibilityState"),C=()=>{try{Object.defineProperty(document,"visibilityState",{get:()=>"visible",configurable:!0})}catch(e){}},h=()=>{const r=document.getElementById(e),o=document.querySelector(n),c=document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"),i=document.querySelector(t),l=document.querySelector(a);if(!r||l)return;const s=r.getPlayerResponse?.();"LOGIN_REQUIRED"!==s?.playabilityStatus?.status?(i||c)&&(o?.style.setProperty("display","none","important"),c?.style.setProperty("display","none","important"),i?.removeAttribute("player-unavailable")):o?.style.setProperty("display","block","important")},k=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},q=(e,t,r)=>{try{if(!e||!t||!r)return;if((e=>{const t=e?.videoId;t&&(v&&v!==t&&R(f),v=t)})(e),r===c&&e.context?.client?.clientScreen!==m&&!e.params?.startsWith(u))return e.params=d,e.playerRequest&&e.playerRequest.params!==d&&(e.playerRequest.params=d),e.playbackContext&&e.playbackContext.params!==d&&(e.playbackContext.params=d),t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(r===i&&e.context?.client?.clientScreen!==m&&!e.params?.startsWith(u))return e.params!==p&&(e.params=p),e.playerRequest&&e.playerRequest.params!==p&&(e.playerRequest.params=p),e.playbackContext&&e.playbackContext.params!==p&&(e.playbackContext.params=p),e.playlistId||(e.context.client.clientScreen=m),t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(!(r!==o||e.context?.client?.clientScreen===m||t.params?.startsWith(d)&&t.params?.startsWith(p)))return t.adPlaybackContext={pyv:!0},t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(r===l&&"WEB"===e.context?.client?.clientName)return e.context.client.clientScreen=m,t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(r===s)return t.adPlaybackContext={adType:"AD_TYPE_INSTREAM"},t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(r===y)return delete t.adPlaybackContext,void(()=>{try{Object.defineProperty(document,"visibilityState",P)}catch(e){}})()}catch(e){}};(()=>{const e={apply:(e,t,r)=>{try{let n=r[0];if(!n||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,r);const a=Array.isArray(n),o=a?n[0]:n;if("string"!=typeof o)return Reflect.apply(e,t,r);if(!o.includes(\'"contentPlaybackContext"\')&&!o.includes(\'"adSignalsInfo"\'))return Reflect.apply(e,t,r);const c=JSON.parse(o);if(!c.context?.client)return Reflect.apply(e,t,r);c.playbackContext&&q(c,c.playbackContext,b),c.playerRequest&&q(c,c.playerRequest.playbackContext,b);const i=JSON.stringify(c);a?r[0][0]=i:r[0]=i}catch(e){}return Reflect.apply(e,t,r)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();const w=document.documentElement;new MutationObserver((()=>{if(document.querySelector(n)&&h(),!(()=>{const o=document.getElementById(e),c=document.querySelector(r),i=document.querySelector(n),l=document.querySelector(t),s=document.querySelector(a);if(!o||s)return!1;const y=o.getPlayerResponse?.();if("LOGIN_REQUIRED"===y?.playabilityStatus?.status)return!1;const d=o.getVideoData?.();return(i||l||c)&&null!=d?.errorCode})())return;const{videoId:d}=x();(e=>{if(e)for(const t of S)t!==e&&S.delete(t)})(d),(()=>{if(b===c){if(!I(i))return void g();R(i),g()}else if(b===i){if(!I(o))return void g();R(o),g()}else if(b===o){if(!I(l))return void g();R(l),g()}else if(b===l){if(!I(s))return void g();R(s),g()}else if(b===s){if(!I(y))return void g();R(y),g()}else if(b===y){const{videoId:e}=x();if(!e||S.has(e))return void h();S.add(e),g()}})()})).observe(w,{attributes:!0,childList:!0,subtree:!0})})();': () => {
+    '(()=>{const e="movie_player",t="ytd-watch-flexy[player-unavailable]",r=`#${e} > .ytp-error`,n="yt-playability-error-supported-renderers#error-screen:has(>*)",a=\'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]\',o="LOGIN_REQUIRED",i="CONTENT_CHECK_REQUIRED",l="pyv",c="param_first",s="param_second",y="client_screen",p="ad_type",d="none",u="eAFgAQ",m="8AUB",f="YAHI",b="CHANNEL",S=c;let v=S,x=null;const g=new Set,C=()=>{const t=document.getElementById(e),r=window.location.search,n=new URLSearchParams(r).get("v")||t?.getVideoData?.().video_id,a=new URLSearchParams(r).get("t")??"0";return{videoId:n,timeInSeconds:parseInt(a,10)}},R=()=>{q();const t=document.getElementById(e);if(t&&"function"==typeof t.loadVideoById)try{const{videoId:e,timeInSeconds:r}=C();t.loadVideoById(e,r)}catch(e){}},I=(()=>{let e=null,t=null,r=0;return n=>{try{if(!n)return!1;const{videoId:a}=C();return!!a&&(e===a&&t===n?r++:(e=a,t=n,r=1),r>=2&&(r=0,!0))}catch(e){return!1}}})(),P=e=>{v=e},h=Object.getOwnPropertyDescriptor(Document.prototype,"visibilityState"),k=()=>{try{Object.defineProperty(document,"visibilityState",{get:()=>"visible",configurable:!0})}catch(e){}},q=()=>{const r=document.getElementById(e),l=document.querySelector(n),c=document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"),s=document.querySelector(t),y=document.querySelector(a);if(!r||y)return;const p=r.getPlayerResponse?.();p?.playabilityStatus?.status!==o&&p?.playabilityStatus?.status!==i?(s||c)&&(l?.style.setProperty("display","none","important"),c?.style.setProperty("display","none","important"),s?.removeAttribute("player-unavailable")):l?.style.setProperty("display","block","important")},w=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},E=(e,t,r)=>{try{if(!e||!t||!r)return;if((e=>{const t=e?.videoId;t&&(x&&x!==t&&P(S),x=t)})(e),r===c&&e.context?.client?.clientScreen!==b&&!e.params?.startsWith(f))return e.params=u,e.playerRequest&&e.playerRequest.params!==u&&(e.playerRequest.params=u),e.playbackContext&&e.playbackContext.params!==u&&(e.playbackContext.params=u),t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(r===s&&e.context?.client?.clientScreen!==b&&!e.params?.startsWith(f))return e.params!==m&&(e.params=m),e.playerRequest&&e.playerRequest.params!==m&&(e.playerRequest.params=m),e.playbackContext&&e.playbackContext.params!==m&&(e.playbackContext.params=m),e.playlistId||(e.context.client.clientScreen=b),t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(!(r!==l||e.context?.client?.clientScreen===b||t.params?.startsWith(u)&&t.params?.startsWith(m)))return t.adPlaybackContext={pyv:!0},t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(r===y&&"WEB"===e.context?.client?.clientName)return e.context.client.clientScreen=b,t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(r===p)return t.adPlaybackContext={adType:"AD_TYPE_INSTREAM"},t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(r===d)return delete t.adPlaybackContext,void(()=>{try{Object.defineProperty(document,"visibilityState",h)}catch(e){}})()}catch(e){}};(()=>{const e={apply:(e,t,r)=>{try{let n=r[0];if(!n||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,r);const a=Array.isArray(n),o=a?n[0]:n;if("string"!=typeof o)return Reflect.apply(e,t,r);if(!o.includes(\'"contentPlaybackContext"\')&&!o.includes(\'"adSignalsInfo"\'))return Reflect.apply(e,t,r);const i=JSON.parse(o);if(!i.context?.client)return Reflect.apply(e,t,r);i.playbackContext&&E(i,i.playbackContext,v),i.playerRequest&&E(i,i.playerRequest.playbackContext,v);const l=JSON.stringify(i);a?r[0][0]=l:r[0]=l}catch(e){}return Reflect.apply(e,t,r)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();const D=document.documentElement;new MutationObserver((()=>{if(document.querySelector(n)&&q(),!(()=>{const l=document.getElementById(e),c=document.querySelector(r),s=document.querySelector(n),y=document.querySelector(t),p=document.querySelector(a);if(!l||p)return!1;const d=l.getPlayerResponse?.();if(d?.playabilityStatus?.status===o||d?.playabilityStatus?.status===i)return!1;const u=l.getVideoData?.();return(s||y||c)&&null!=u?.errorCode})())return;const{videoId:u}=C();(e=>{if(e)for(const t of g)t!==e&&g.delete(t)})(u),(()=>{if(v===c){if(!I(s))return void R();P(s),R()}else if(v===s){if(!I(l))return void R();P(l),R()}else if(v===l){if(!I(y))return void R();P(y),R()}else if(v===y){if(!I(p))return void R();P(p),R()}else if(v===p){if(!I(d))return void R();P(d),R()}else if(v===d){const{videoId:e}=C();if(!e||g.has(e))return void q();g.add(e),R()}})()})).observe(D,{attributes:!0,childList:!0,subtree:!0})})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.e6382ed1409915fb443e57398ab215c3 === e) return;
+            if (Window.prototype.toString.db1d269c06f73d400756ed71f805dc26 === e) return;
             (() => {
-                const e = "movie_player", t = "ytd-watch-flexy[player-unavailable]", r = `#${e} > .ytp-error`, n = "yt-playability-error-supported-renderers#error-screen:has(>*)", o = 'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]', a = "pyv", i = "param_first", c = "param_second", l = "client_screen", s = "ad_type", y = "none", d = "eAFgAQ", p = "8AUB", u = "YAHI", f = "CHANNEL", b = i;
-                let m = b, S = null;
-                const v = new Set, x = () => {
-                    const t = document.getElementById(e), r = window.location.search, n = new URLSearchParams(r).get("v") || t?.getVideoData?.().video_id, o = new URLSearchParams(r).get("t") ?? "0";
+                const e = "movie_player", t = "ytd-watch-flexy[player-unavailable]", r = `#${e} > .ytp-error`, n = "yt-playability-error-supported-renderers#error-screen:has(>*)", a = 'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]', o = "LOGIN_REQUIRED", i = "CONTENT_CHECK_REQUIRED", c = "pyv", l = "param_first", s = "param_second", d = "client_screen", y = "ad_type", u = "none", p = "eAFgAQ", f = "8AUB", m = "YAHI", b = "CHANNEL", S = l;
+                let v = S, x = null;
+                const g = new Set, C = () => {
+                    const t = document.getElementById(e), r = window.location.search, n = new URLSearchParams(r).get("v") || t?.getVideoData?.().video_id, a = new URLSearchParams(r).get("t") ?? "0";
                     return {
                         videoId: n,
-                        timeInSeconds: parseInt(o, 10)
+                        timeInSeconds: parseInt(a, 10)
                     };
-                }, g = () => {
-                    w();
+                }, I = () => {
+                    q();
                     const t = document.getElementById(e);
                     if (t && "function" == typeof t.loadVideoById) try {
-                        const {videoId: e, timeInSeconds: r} = x();
+                        const {videoId: e, timeInSeconds: r} = C();
                         t.loadVideoById(e, r);
                     } catch (e) {}
-                }, I = (() => {
+                }, R = (() => {
                     let e = null, t = null, r = 0;
                     return n => {
                         try {
                             if (!n) return !1;
-                            const {videoId: o} = x();
-                            return !!o && (e === o && t === n ? r++ : (e = o, t = n, r = 1), r >= 2 && (r = 0, 
+                            const {videoId: a} = C();
+                            return !!a && (e === a && t === n ? r++ : (e = a, t = n, r = 1), r >= 2 && (r = 0, 
                             !0));
                         } catch (e) {
                             return !1;
                         }
                     };
-                })(), R = e => {
-                    m = e;
-                }, P = Object.getOwnPropertyDescriptor(Document.prototype, "visibilityState"), h = () => {
+                })(), P = e => {
+                    v = e;
+                }, h = Object.getOwnPropertyDescriptor(Document.prototype, "visibilityState"), w = () => {
                     try {
                         Object.defineProperty(document, "visibilityState", {
                             get: () => "visible",
                             configurable: !0
                         });
                     } catch (e) {}
-                }, w = () => {
-                    const r = document.getElementById(e), a = document.querySelector(n), i = document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"), c = document.querySelector(t), l = document.querySelector(o);
-                    if (!r || l) return;
-                    const s = r.getPlayerResponse?.();
-                    "LOGIN_REQUIRED" !== s?.playabilityStatus?.status ? (c || i) && (a?.style.setProperty("display", "none", "important"), 
-                    i?.style.setProperty("display", "none", "important"), c?.removeAttribute("player-unavailable")) : a?.style.setProperty("display", "block", "important");
-                }, C = e => {
+                }, q = () => {
+                    const r = document.getElementById(e), c = document.querySelector(n), l = document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"), s = document.querySelector(t), d = document.querySelector(a);
+                    if (!r || d) return;
+                    const y = r.getPlayerResponse?.();
+                    y?.playabilityStatus?.status !== o && y?.playabilityStatus?.status !== i ? (s || l) && (c?.style.setProperty("display", "none", "important"), 
+                    l?.style.setProperty("display", "none", "important"), s?.removeAttribute("player-unavailable")) : c?.style.setProperty("display", "block", "important");
+                }, k = e => {
                     (e.playbackContext || e.playerRequest) && delete e.context?.client?.configInfo?.appInstallData;
-                }, q = (e, t, r) => {
+                }, E = (e, t, r) => {
                     try {
                         if (!e || !t || !r) return;
                         if ((e => {
                             const t = e?.videoId;
-                            t && (S && S !== t && R(b), S = t);
-                        })(e), r === i && e.context?.client?.clientScreen !== f && !e.params?.startsWith(u)) return e.params = d, 
-                        e.playerRequest && e.playerRequest.params !== d && (e.playerRequest.params = d), 
-                        e.playbackContext && e.playbackContext.params !== d && (e.playbackContext.params = d), 
-                        t.contentPlaybackContext.lactMilliseconds = String(Date.now()), h(), void C(e);
-                        if (r === c && e.context?.client?.clientScreen !== f && !e.params?.startsWith(u)) return e.params !== p && (e.params = p), 
+                            t && (x && x !== t && P(S), x = t);
+                        })(e), r === l && e.context?.client?.clientScreen !== b && !e.params?.startsWith(m)) return e.params = p, 
                         e.playerRequest && e.playerRequest.params !== p && (e.playerRequest.params = p), 
                         e.playbackContext && e.playbackContext.params !== p && (e.playbackContext.params = p), 
-                        e.playlistId || (e.context.client.clientScreen = f), t.contentPlaybackContext.lactMilliseconds = String(Date.now()), 
-                        h(), void C(e);
-                        if (!(r !== a || e.context?.client?.clientScreen === f || t.params?.startsWith(d) && t.params?.startsWith(p))) return t.adPlaybackContext = {
+                        t.contentPlaybackContext.lactMilliseconds = String(Date.now()), w(), void k(e);
+                        if (r === s && e.context?.client?.clientScreen !== b && !e.params?.startsWith(m)) return e.params !== f && (e.params = f), 
+                        e.playerRequest && e.playerRequest.params !== f && (e.playerRequest.params = f), 
+                        e.playbackContext && e.playbackContext.params !== f && (e.playbackContext.params = f), 
+                        e.playlistId || (e.context.client.clientScreen = b), t.contentPlaybackContext.lactMilliseconds = String(Date.now()), 
+                        w(), void k(e);
+                        if (!(r !== c || e.context?.client?.clientScreen === b || t.params?.startsWith(p) && t.params?.startsWith(f))) return t.adPlaybackContext = {
                             pyv: !0
-                        }, t.contentPlaybackContext.lactMilliseconds = String(Date.now()), h(), void C(e);
-                        if (r === l && "WEB" === e.context?.client?.clientName) return e.context.client.clientScreen = f, 
-                        t.contentPlaybackContext.lactMilliseconds = String(Date.now()), h(), void C(e);
-                        if (r === s) return t.adPlaybackContext = {
+                        }, t.contentPlaybackContext.lactMilliseconds = String(Date.now()), w(), void k(e);
+                        if (r === d && "WEB" === e.context?.client?.clientName) return e.context.client.clientScreen = b, 
+                        t.contentPlaybackContext.lactMilliseconds = String(Date.now()), w(), void k(e);
+                        if (r === y) return t.adPlaybackContext = {
                             adType: "AD_TYPE_INSTREAM"
-                        }, t.contentPlaybackContext.lactMilliseconds = String(Date.now()), h(), void C(e);
-                        if (r === y) return delete t.adPlaybackContext, void (() => {
+                        }, t.contentPlaybackContext.lactMilliseconds = String(Date.now()), w(), void k(e);
+                        if (r === u) return delete t.adPlaybackContext, void (() => {
                             try {
-                                Object.defineProperty(document, "visibilityState", P);
+                                Object.defineProperty(document, "visibilityState", h);
                             } catch (e) {}
                         })();
                     } catch (e) {}
@@ -8485,69 +8485,69 @@ export const localScriptRules = {
                             try {
                                 let n = r[0];
                                 if (!n || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/")) return Reflect.apply(e, t, r);
-                                const o = Array.isArray(n), a = o ? n[0] : n;
-                                if ("string" != typeof a) return Reflect.apply(e, t, r);
-                                if (!a.includes('"contentPlaybackContext"') && !a.includes('"adSignalsInfo"')) return Reflect.apply(e, t, r);
-                                const i = JSON.parse(a);
+                                const a = Array.isArray(n), o = a ? n[0] : n;
+                                if ("string" != typeof o) return Reflect.apply(e, t, r);
+                                if (!o.includes('"contentPlaybackContext"') && !o.includes('"adSignalsInfo"')) return Reflect.apply(e, t, r);
+                                const i = JSON.parse(o);
                                 if (!i.context?.client) return Reflect.apply(e, t, r);
-                                i.playbackContext && q(i, i.playbackContext, m), i.playerRequest && q(i, i.playerRequest.playbackContext, m);
+                                i.playbackContext && E(i, i.playbackContext, v), i.playerRequest && E(i, i.playerRequest.playbackContext, v);
                                 const c = JSON.stringify(i);
-                                o ? r[0][0] = c : r[0] = c;
+                                a ? r[0][0] = c : r[0] = c;
                             } catch (e) {}
                             return Reflect.apply(e, t, r);
                         }
                     };
                     window.XMLHttpRequest.prototype.send = new Proxy(window.XMLHttpRequest.prototype.send, e);
                 })();
-                const k = document.documentElement;
+                const D = document.documentElement;
                 new MutationObserver((() => {
-                    if (document.querySelector(n) && w(), !(() => {
-                        const a = document.getElementById(e), i = document.querySelector(r), c = document.querySelector(n), l = document.querySelector(t), s = document.querySelector(o);
-                        if (!a || s) return !1;
-                        const y = a.getPlayerResponse?.();
-                        if ("LOGIN_REQUIRED" === y?.playabilityStatus?.status) return !1;
-                        const d = a.getVideoData?.();
-                        return (c || l || i) && null != d?.errorCode;
+                    if (document.querySelector(n) && q(), !(() => {
+                        const c = document.getElementById(e), l = document.querySelector(r), s = document.querySelector(n), d = document.querySelector(t), y = document.querySelector(a);
+                        if (!c || y) return !1;
+                        const u = c.getPlayerResponse?.();
+                        if (u?.playabilityStatus?.status === o || u?.playabilityStatus?.status === i) return !1;
+                        const p = c.getVideoData?.();
+                        return (s || d || l) && null != p?.errorCode;
                     })()) return;
-                    const {videoId: d} = x();
+                    const {videoId: p} = C();
                     (e => {
-                        if (e) for (const t of v) t !== e && v.delete(t);
-                    })(d), (() => {
-                        if (m === i) {
-                            if (!I(c)) return void g();
-                            R(c), g();
-                        } else if (m === c) {
-                            if (!I(a)) return void g();
-                            R(a), g();
-                        } else if (m === a) {
-                            if (!I(l)) return void g();
-                            R(l), g();
-                        } else if (m === l) {
-                            if (!I(s)) return void g();
-                            R(s), g();
-                        } else if (m === s) {
-                            if (!I(y)) return void g();
-                            R(y), g();
-                        } else if (m === y) {
-                            const {videoId: e} = x();
-                            if (!e || v.has(e)) return void w();
-                            v.add(e), g();
+                        if (e) for (const t of g) t !== e && g.delete(t);
+                    })(p), (() => {
+                        if (v === l) {
+                            if (!R(s)) return void I();
+                            P(s), I();
+                        } else if (v === s) {
+                            if (!R(c)) return void I();
+                            P(c), I();
+                        } else if (v === c) {
+                            if (!R(d)) return void I();
+                            P(d), I();
+                        } else if (v === d) {
+                            if (!R(y)) return void I();
+                            P(y), I();
+                        } else if (v === y) {
+                            if (!R(u)) return void I();
+                            P(u), I();
+                        } else if (v === u) {
+                            const {videoId: e} = C();
+                            if (!e || g.has(e)) return void q();
+                            g.add(e), I();
                         }
                     })();
-                })).observe(k, {
+                })).observe(D, {
                     attributes: !0,
                     childList: !0,
                     subtree: !0
                 });
             })();
-            Object.defineProperty(Window.prototype.toString, "e6382ed1409915fb443e57398ab215c3", {
+            Object.defineProperty(Window.prototype.toString, "db1d269c06f73d400756ed71f805dc26", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "e6382ed1409915fb443e57398ab215c3" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "db1d269c06f73d400756ed71f805dc26" due to: ' + e);
         }
     },
     '(()=>{const e={apply:(e,r,t)=>{const n=t[0];if("string"==typeof n?.value&&n.value.includes("playerResponse"))try{n.value=(l=n.value,(location.href.includes("/watch")||l.includes("cards")&&!l.includes(\'"miniplayer"\'))&&l.includes(\'"muteOnStart":true\')&&(l=l.replace(\'"muteOnStart":true\',\'"muteOnStart":false\')).includes(\'"youThereRenderer":\')&&(l=l.replace(\'"youThereRenderer":\',\'"no_youThereRenderer":\')),l.replace(/"(adSlots|playerAds)":/g,\'"no_ads":\')),t[0]=n}catch(e){}var l;return Reflect.apply(e,r,t)}},r={apply:(r,t,n)=>{const l=n[0];return"function"==typeof l&&l.toString().includes(".next(")&&(n[0]=new Proxy(l,e)),Reflect.apply(r,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,r)})();': () => {
