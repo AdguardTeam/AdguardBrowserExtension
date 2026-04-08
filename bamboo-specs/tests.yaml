@@ -13,10 +13,6 @@ stages:
         - Unit tests
         - Test dev build
         - Build chrome crx artifact
-  - Integration tests:
-      manual: false
-      final: false
-      jobs:
         - Integration tests
 
 Test dev build:
@@ -73,8 +69,6 @@ Test dev build:
       location: output/artifacts
       pattern: chrome-mv3-dev.zip
       required: true
-      # Mark it shared to download from stages for tests
-      shared: true
     - name: edge-dev.zip
       location: output/artifacts
       pattern: edge-dev.zip
@@ -242,9 +236,6 @@ Integration tests:
   tasks:
     - checkout:
         force-clean-build: true
-    - artifact-download:
-        artifacts:
-          - name: chrome-mv3-dev.zip
     - script:
         interpreter: SHELL
         scripts:
@@ -262,20 +253,21 @@ Integration tests:
               mv chrome-mv3-dev.zip artifacts/
             fi
 
-            # Clone tsurlfilter (produces clean source-only context, no .git)
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
             ./bamboo-specs/scripts/clone-tsurlfilter.sh
 
             export DOCKER_BUILDKIT=1
 
             # Build with named context for tsurlfilter
             # Docker checksums the context content for cache invalidation
+            # Uses standalone target that builds chrome-mv3 internally,
+            # so no pre-built artifacts are needed from other jobs.
             docker build \
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-              --build-arg BUILD_TYPE=dev \
               --build-context tsurlfilter=../tsurlfilter \
-              --target integration-tests-output \
+              --target integration-tests-standalone-output \
               --output type=local,dest=output \
               .
     - script:
