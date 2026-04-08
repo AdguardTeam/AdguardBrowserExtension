@@ -251,6 +251,46 @@ FROM scratch AS integration-tests-output
 COPY --from=integration-tests /out/ /
 
 # ============================================================================
+# Stage: integration-tests-standalone
+# Self-contained integration tests that build chrome-mv3 dev extension
+# internally, without requiring pre-built artifacts from another job.
+# Used by the tests plan where all jobs run in a single parallel stage.
+# ============================================================================
+FROM linked-deps AS integration-tests-standalone
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Build only chrome-mv3 dev extension with zip.
+    pnpm dev chrome-mv3 --zip && \
+    # For correct link playwright browsers.
+    pnpm exec playwright install && \
+    mkdir -p /out/tests-reports && \
+    set +e; \
+    # Run integration tests.
+    pnpm test:integration dev; \
+    EXIT_CODE=$?; \
+    # NOTE: touch is intentional - --output type=local preserves container mtimes,
+    # so extracted XML files retain the timestamp from when they were written inside
+    # the container. If the Bamboo task was queued for a while before running, those
+    # timestamps predate the task start time and the JUnit parser rejects them with
+    # "file was modified before task started". Touching after cp resets mtime to now.
+    if [ -d tests-reports ]; then \
+      cp -R tests-reports/. /out/tests-reports/ && \
+      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+    fi; \
+    if [ -f /out/tests-reports/integration-tests.xml ]; then \
+        mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-dev.xml; \
+    fi; \
+    echo ${EXIT_CODE} > /out/exit-code.txt; \
+    exit 0
+
+FROM scratch AS integration-tests-standalone-output
+COPY --from=integration-tests-standalone /out/ /
+
+# ============================================================================
 # Stage: beta-build
 # Creates beta build with zip files for CI artifacts
 # Requires private repo for certificate (passed via named build context)
