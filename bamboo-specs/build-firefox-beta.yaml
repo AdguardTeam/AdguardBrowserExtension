@@ -5,19 +5,23 @@ plan:
   key: BEFIREFOXBETASPECS
   name: browser extension - build firefox beta
   description: |
-    Builds and signs Firefox beta extension via Mozilla. May fail on 20-min
-    timeout if signing is slow.
-    Do not stop manually. Re-run the SAME build after Mozilla signs it
-    to download the signed .xpi.
+    Builds Firefox beta artifacts for both distribution channels in parallel:
+      - Build & Sign Standalone: builds firefox-standalone, then signs via
+        go-webext producing firefox.xpi + update.json. May fail on the 20-min
+        timeout if signing is slow. Do not stop manually. Re-run the SAME
+        build after Mozilla signs it to download the signed .xpi.
+      - Build AMO: produces unsigned firefox-amo.zip for AMO review.
+    AMO beta build is not blocked by standalone signing issues.
 stages:
   - Build:
       manual: false
       final: false
       jobs:
-        - Build
+        - Build & Sign Standalone
+        - Build AMO
 
-Build:
-  key: BUILD
+Build & Sign Standalone:
+  key: BUILDSTANDALONE
   other:
     clean-working-dir: true
   tasks:
@@ -45,7 +49,7 @@ Build:
             # archive-source.sh inside Docker (where .git is not available).
             ./bamboo-specs/scripts/generate-find-excludes.sh gitignore-excludes.txt
 
-            # Build Firefox beta artifacts (firefox.zip, source.zip, build.txt)
+            # Build Firefox standalone beta artifacts (firefox.zip, source.zip, build.txt)
             docker build \
               --file Dockerfile \
               --progress plain \
@@ -55,8 +59,10 @@ Build:
               --output type=local,dest=output \
               .
 
-            # Sign Firefox extension with go-webext (firefox.xpi, update.json)
-            # Uses artifacts from previous build step via named build context
+            # Sign Firefox standalone extension with go-webext (firefox.xpi, update.json)
+            # Uses artifacts from previous build step via named build context.
+            # May fail on the 20-min timeout if signing is slow.
+            # Re-run the SAME build after Mozilla signs it to download the signed .xpi.
             docker build \
               --file Dockerfile \
               --progress plain \
@@ -95,6 +101,78 @@ Build:
     - name: update.json
       location: output/artifacts
       pattern: update.json
+      shared: true
+      required: true
+    - name: source.zip
+      location: output/artifacts
+      pattern: source.zip
+      shared: true
+      required: true
+    - name: approval-notes.txt
+      location: output/artifacts
+      pattern: approval-notes.txt
+      shared: true
+      required: true
+  requirements:
+    - extension: 'true'
+
+Build AMO:
+  key: BUILDAMO
+  other:
+    clean-working-dir: true
+  tasks:
+    - checkout:
+        force-clean-build: true
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
+
+            # Fix mixed logs
+            exec 2>&1
+
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
+
+            export DOCKER_BUILDKIT=1
+
+            # Generate find-compatible .gitignore exclusions on the host (where .git is available).
+            # The gitignore-excludes.txt file is included in the Docker context and consumed by
+            # archive-source.sh inside Docker (where .git is not available).
+            ./bamboo-specs/scripts/generate-find-excludes.sh gitignore-excludes.txt
+
+            # Build Firefox AMO beta artifacts (firefox-amo.zip, source.zip, approval-notes.txt, build.txt)
+            # AMO-listed add-ons are not signed locally — AMO signs during review.
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target firefox-amo-beta-build-output \
+              --output type=local,dest=output \
+              .
+    - inject-variables:
+        file: output/artifacts/build.txt
+        scope: RESULT
+        namespace: inject
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/firefox-amo.zip,output/artifacts/source.zip,output/artifacts/approval-notes.txt"
+  artifacts:
+    - name: build.txt
+      location: output/artifacts
+      pattern: build.txt
+      shared: true
+      required: true
+    - name: firefox-amo.zip
+      location: output/artifacts
+      pattern: firefox-amo.zip
       shared: true
       required: true
     - name: source.zip
