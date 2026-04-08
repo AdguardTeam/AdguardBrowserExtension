@@ -6,7 +6,7 @@ plan:
   name: browser extension - build firefox beta
   description: |
     Builds Firefox beta artifacts for both distribution channels in parallel:
-      - Build & Sign Standalone: builds firefox-standalone, then signs via
+      - Build and Sign Standalone: builds firefox-standalone, then signs via
         go-webext producing firefox.xpi + update.json. May fail on the 20-min
         timeout if signing is slow. Do not stop manually. Re-run the SAME
         build after Mozilla signs it to download the signed .xpi.
@@ -17,10 +17,10 @@ stages:
       manual: false
       final: false
       jobs:
-        - Build & Sign Standalone
+        - Build and Sign Standalone
         - Build AMO
 
-Build & Sign Standalone:
+Build and Sign Standalone:
   key: BUILDSTANDALONE
   other:
     clean-working-dir: true
