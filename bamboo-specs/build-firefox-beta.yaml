@@ -81,13 +81,8 @@ Build and Sign Standalone:
     - script:
         interpreter: SHELL
         scripts:
-          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/firefox.zip,output/artifacts/firefox.xpi,output/artifacts/update.json,output/artifacts/source.zip,output/artifacts/approval-notes.txt"
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/firefox.zip,output/artifacts/firefox.xpi,output/artifacts/update.json"
   artifacts:
-    - name: build.txt
-      location: output/artifacts
-      pattern: build.txt
-      shared: true
-      required: true
     - name: firefox.zip
       location: output/artifacts
       pattern: firefox.zip
@@ -101,16 +96,6 @@ Build and Sign Standalone:
     - name: update.json
       location: output/artifacts
       pattern: update.json
-      shared: true
-      required: true
-    - name: source.zip
-      location: output/artifacts
-      pattern: source.zip
-      shared: true
-      required: true
-    - name: approval-notes.txt
-      location: output/artifacts
-      pattern: approval-notes.txt
       shared: true
       required: true
   requirements:
