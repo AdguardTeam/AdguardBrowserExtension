@@ -7,6 +7,10 @@ release-naming: ${bamboo.inject.version}-beta
 environments:
   - static.adtidy.org
   - GitHub
+# TODO(AG-44080): Uncomment after the build plan is imported with firefox-amo.zip artifact.
+# Bamboo validates deploy artifact references against the currently published plan,
+# so this environment must be added in a follow-up commit after the build plan goes live.
+#  - Addons Mozilla
 
 static.adtidy.org:
   triggers: []
@@ -71,3 +75,35 @@ GitHub:
   final-tasks: []
   variables: {}
   requirements: *requirements
+
+# TODO(AG-44080): Uncomment after the build plan is imported with firefox-amo.zip artifact.
+# Addons Mozilla:
+#   triggers: []
+#   tasks:
+#     - clean
+#     - checkout:
+#         repository: bamboo-deploy-publisher
+#         path: bamboo-deploy-publisher
+#         force-clean-build: true
+#     - artifact-download:
+#         artifacts:
+#           - name: build.txt
+#           - name: firefox-amo.zip
+#           - name: source.zip
+#           - name: approval-notes.txt
+#     - script:
+#         interpreter: SHELL
+#         scripts:
+#           - |-
+#             set -x
+#             set -e
+#
+#             # Fix mixed logs
+#             exec 2>&1
+#
+#             ls -la
+#
+#             ./bamboo-deploy-publisher/deploy.sh browser-extension-amo-beta
+#   final-tasks: []
+#   variables: {}
+#   requirements: *requirements
