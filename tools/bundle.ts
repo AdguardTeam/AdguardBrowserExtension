@@ -272,6 +272,7 @@ const operaMv3 = async (options: CommanderOptions) => {
 const firefoxAmo = async (options: CommanderOptions) => {
     try {
         await runSingleTask(bundleFirefoxAmo, options);
+        await runSingleTask(buildInfo, options);
     } catch (e) {
         console.error(e);
         process.exit(1);
