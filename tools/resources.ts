@@ -25,9 +25,12 @@ import { updateLocalScriptRulesForFirefox } from './resources/update-local-scrip
 import { updateTestcasesScriptRules } from './resources/update-local-test-script-rules';
 
 const resources = async () => {
+    const startTime = Date.now();
+
     console.log('Downloading resources...');
-    await downloadFilters();
-    console.log('Resources downloaded');
+    const count = await downloadFilters();
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    console.log(`Downloaded ${count} filter files in ${elapsed}s`);
 
     console.log('Updating local script rules from testcases...');
     await updateTestcasesScriptRules();
