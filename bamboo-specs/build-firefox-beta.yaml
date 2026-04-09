@@ -4,14 +4,10 @@ plan:
   project-key: ADGEXT
   key: BEFIREFOXBETASPECS
   name: browser extension - build firefox beta
-  description: |
-    Builds Firefox beta artifacts for both distribution channels in parallel:
-      - Build and Sign Standalone: builds firefox-standalone, then signs via
-        go-webext producing firefox.xpi + update.json. May fail on the 20-min
-        timeout if signing is slow. Do not stop manually. Re-run the SAME
-        build after Mozilla signs it to download the signed .xpi.
-      - Build AMO: produces unsigned firefox-amo.zip for AMO review.
-    AMO beta build is not blocked by standalone signing issues.
+  description: >-
+    Builds Firefox beta for both channels in parallel.
+    Standalone: builds, signs via go-webext (firefox.xpi + update.json).
+    AMO: unsigned firefox-amo.zip for review. AMO is not blocked by signing.
 stages:
   - Build:
       manual: false
