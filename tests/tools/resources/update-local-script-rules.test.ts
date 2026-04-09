@@ -22,6 +22,8 @@ import {
     describe,
     it,
     expect,
+    vi,
+    beforeEach,
 } from 'vitest';
 import { some } from 'lodash-es';
 
@@ -143,5 +145,235 @@ describe('TESTCASES_RULES parsing for Firefox local_script_rules', () => {
                 }
             }
         });
+    });
+});
+
+vi.mock('node:fs', async (importOriginal) => {
+    const actual = await importOriginal() as Record<string, unknown>;
+    const promises = (actual as { promises: Record<string, unknown> }).promises;
+    return {
+        ...actual,
+        default: {
+            ...actual,
+            promises: {
+                ...promises,
+                readFile: vi.fn().mockResolvedValue(
+                    '// header\nexport const TESTCASES_RULES = [\n];\n',
+                ),
+                writeFile: vi.fn().mockResolvedValue(undefined),
+            },
+        },
+    };
+});
+
+/**
+ * Creates a fake Testcase object for testing.
+ *
+ * @param id Testcase ID.
+ * @param rulesUrl Optional rules URL path.
+ *
+ * @returns Fake Testcase object.
+ */
+const makeTestcase = (id: number, rulesUrl?: string) => ({
+    id,
+    title: `Testcase ${id}`,
+    link: `https://testcases.agrd.dev/${id}`,
+    rulesUrl,
+    compatibility: [],
+});
+
+/**
+ * Creates a rules text with a JS injection rule.
+ *
+ * @param id Testcase ID to embed in the rule body.
+ *
+ * @returns Rules text string containing a JS injection rule.
+ */
+const makeRulesWithScript = (id: number) => `! Title: Test ${id}\ntestcases.agrd.dev#%#window.__test${id}=true;\n`;
+
+/**
+ * Rules text with no JS injection rules.
+ */
+const RULES_WITHOUT_SCRIPT = '! Title: No scripts\n||example.com^\n';
+
+describe('updateTestcasesScriptRules', () => {
+    const mockedFetch = vi.fn<typeof globalThis.fetch>();
+
+    beforeEach(async () => {
+        vi.clearAllMocks();
+
+        globalThis.fetch = mockedFetch;
+
+        // Reset fs mock
+        const fs = await import('node:fs');
+        vi.mocked(fs.default.promises.readFile).mockResolvedValue(
+            '// header\nexport const TESTCASES_RULES = [\n];\n',
+        );
+        vi.mocked(fs.default.promises.writeFile).mockResolvedValue(undefined);
+    });
+
+    it('processes all testcases and writes file once', async () => {
+        const testcases = [
+            makeTestcase(1, 'Filters/test-1.txt'),
+            makeTestcase(2, 'Filters/test-2.txt'),
+        ];
+
+        mockedFetch
+            .mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve(testcases),
+            } as Response)
+            .mockResolvedValueOnce({
+                ok: true,
+                text: () => Promise.resolve(makeRulesWithScript(1)),
+            } as Response)
+            .mockResolvedValueOnce({
+                ok: true,
+                text: () => Promise.resolve(makeRulesWithScript(2)),
+            } as Response);
+
+        const { updateTestcasesScriptRules } = await import(
+            '../../../tools/resources/update-local-test-script-rules'
+        );
+        await updateTestcasesScriptRules();
+
+        const fs = await import('node:fs');
+        expect(fs.default.promises.writeFile).toHaveBeenCalledTimes(1);
+    });
+
+    it('skips testcases without rulesUrl', async () => {
+        const testcases = [
+            makeTestcase(1), // no rulesUrl
+            makeTestcase(2, 'Filters/test-2.txt'),
+        ];
+
+        mockedFetch
+            .mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve(testcases),
+            } as Response)
+            .mockResolvedValueOnce({
+                ok: true,
+                text: () => Promise.resolve(makeRulesWithScript(2)),
+            } as Response);
+
+        const { updateTestcasesScriptRules } = await import(
+            '../../../tools/resources/update-local-test-script-rules'
+        );
+        await updateTestcasesScriptRules();
+
+        // Only 1 rules fetch (data.json + 1 rule file = 2 total fetch calls)
+        expect(mockedFetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('continues when individual download fails', async () => {
+        const testcases = [
+            makeTestcase(1, 'Filters/test-1.txt'),
+            makeTestcase(2, 'Filters/test-2.txt'),
+            makeTestcase(3, 'Filters/test-3.txt'),
+        ];
+
+        mockedFetch
+            .mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve(testcases),
+            } as Response)
+            .mockResolvedValueOnce({
+                ok: true,
+                text: () => Promise.resolve(makeRulesWithScript(1)),
+            } as Response)
+            .mockRejectedValueOnce(new Error('ECONNREFUSED'))
+            .mockResolvedValueOnce({
+                ok: true,
+                text: () => Promise.resolve(makeRulesWithScript(3)),
+            } as Response);
+
+        const { updateTestcasesScriptRules } = await import(
+            '../../../tools/resources/update-local-test-script-rules'
+        );
+
+        // Should NOT throw — errors are caught per testcase
+        await updateTestcasesScriptRules();
+
+        const fs = await import('node:fs');
+        // File should still be written with results from testcase 1 and 3
+        expect(fs.default.promises.writeFile).toHaveBeenCalledTimes(1);
+        const written = vi.mocked(fs.default.promises.writeFile).mock.calls[0]?.[1] as string;
+        expect(written).toContain('__test1');
+        expect(written).toContain('__test3');
+        expect(written).not.toContain('__test2');
+    });
+
+    it('preserves testcase ID ordering', async () => {
+        const testcases = [
+            makeTestcase(1, 'Filters/test-1.txt'),
+            makeTestcase(2, 'Filters/test-2.txt'),
+            makeTestcase(3, 'Filters/test-3.txt'),
+        ];
+
+        mockedFetch
+            .mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve(testcases),
+            } as Response)
+            .mockResolvedValueOnce({
+                ok: true,
+                text: () => Promise.resolve(makeRulesWithScript(1)),
+            } as Response)
+            .mockResolvedValueOnce({
+                ok: true,
+                text: () => Promise.resolve(RULES_WITHOUT_SCRIPT),
+            } as Response)
+            .mockResolvedValueOnce({
+                ok: true,
+                text: () => Promise.resolve(makeRulesWithScript(3)),
+            } as Response);
+
+        const { updateTestcasesScriptRules } = await import(
+            '../../../tools/resources/update-local-test-script-rules'
+        );
+        await updateTestcasesScriptRules();
+
+        const fs = await import('node:fs');
+        const written = vi.mocked(fs.default.promises.writeFile).mock.calls[0]?.[1] as string;
+        const idx1 = written.indexOf('__test1');
+        const idx3 = written.indexOf('__test3');
+        expect(idx1).toBeLessThan(idx3);
+    });
+
+    it('respects concurrency limit', async () => {
+        const count = 20;
+        const testcases = Array.from({ length: count }, (_, i) => (
+            makeTestcase(i + 1, `Filters/test-${i + 1}.txt`)
+        ));
+
+        let maxConcurrent = 0;
+        let currentConcurrent = 0;
+
+        mockedFetch
+            .mockResolvedValueOnce({
+                ok: true,
+                json: () => Promise.resolve(testcases),
+            } as Response)
+            .mockImplementation(async () => {
+                currentConcurrent += 1;
+                maxConcurrent = Math.max(maxConcurrent, currentConcurrent);
+                await new Promise((resolve) => {
+                    setTimeout(resolve, 1);
+                });
+                currentConcurrent -= 1;
+                return {
+                    ok: true,
+                    text: () => Promise.resolve(RULES_WITHOUT_SCRIPT),
+                } as Response;
+            });
+
+        const { updateTestcasesScriptRules } = await import(
+            '../../../tools/resources/update-local-test-script-rules'
+        );
+        await updateTestcasesScriptRules(5);
+
+        expect(maxConcurrent).toBeLessThanOrEqual(5);
+        expect(maxConcurrent).toBeGreaterThan(1);
     });
 });
