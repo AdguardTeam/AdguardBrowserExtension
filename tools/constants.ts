@@ -147,10 +147,40 @@ export const MV3_ASSETS_FILTERS_BROWSER_TO_DNR_BROWSER_MAP: Record<Mv3AssetsFilt
     [AssetsFiltersBrowser.OperaMv3]: BrowserFilters.OperaMv3,
 };
 
-export const FIREFOX_APP_IDS_MAP: Record<BuildTargetEnv, string> = {
-    [BuildTargetEnv.Dev]: 'adguardadblockerdev@adguard.com',
-    [BuildTargetEnv.Beta]: 'adguardadblockerbeta@adguard.com',
-    [BuildTargetEnv.Release]: 'adguardadblocker@adguard.com',
+export type FirefoxBrowserTarget = Browser.FirefoxAmo | Browser.FirefoxStandalone;
+
+export type FirefoxAppIdsMap = Record<BuildTargetEnv, Partial<Record<FirefoxBrowserTarget, string>>>;
+
+export const FIREFOX_APP_IDS_MAP: FirefoxAppIdsMap = {
+    [BuildTargetEnv.Dev]: {
+        [Browser.FirefoxAmo]: 'adguardadblockerdev@adguard.com',
+        [Browser.FirefoxStandalone]: 'adguardadblockerdev@adguard.com',
+    },
+    [BuildTargetEnv.Beta]: {
+        [Browser.FirefoxAmo]: 'adguardadblockeramobeta@adguard.com',
+        [Browser.FirefoxStandalone]: 'adguardadblockerbeta@adguard.com',
+    },
+    [BuildTargetEnv.Release]: {
+        [Browser.FirefoxAmo]: 'adguardadblocker@adguard.com',
+    },
+};
+
+/**
+ * Returns the Firefox app ID (gecko.id) for the given build environment and browser target.
+ *
+ * @param buildEnv Build environment (dev, beta, release).
+ * @param browser Firefox browser target (AMO or standalone).
+ *
+ * @returns The gecko.id string for the manifest.
+ *
+ * @throws If no app ID is configured for the given combination.
+ */
+export const getFirefoxAppId = (buildEnv: BuildTargetEnv, browser: FirefoxBrowserTarget): string => {
+    const appId = FIREFOX_APP_IDS_MAP[buildEnv][browser];
+    if (!appId) {
+        throw new Error(`No Firefox app ID for env "${buildEnv}" and browser "${browser}"`);
+    }
+    return appId;
 };
 
 export const BUILD_PATH = path.resolve(__dirname, '../build');

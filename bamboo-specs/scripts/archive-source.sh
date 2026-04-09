@@ -88,18 +88,36 @@ docker run --rm \
 The build output will be in the `./build/release/firefox-amo` directory.
 The resulting `firefox-amo.zip` can be compared with the uploaded add-on.
 
-### Building the beta version
+### Building beta variants by extension ID
+
+This source archive is used for the AMO-hosted beta submission.
+
+To build the beta extension with ID `adguardadblockeramobeta@adguard.com`:
 
 ```sh
 docker run --rm \
-    -v "$(pwd)":/workspace \
-    -w /workspace \
-    adguard/extension-builder:22.17--0.4.1--0 \
-    bash -c "pnpm install && pnpm beta firefox-standalone"
+  -v "$(pwd)":/workspace \
+  -w /workspace \
+  adguard/extension-builder:22.17--0.4.1--0 \
+  bash -c "pnpm install && pnpm beta firefox-amo"
+```
+
+The build output will be in the `./build/beta/firefox-amo` directory.
+The resulting `firefox-amo.zip` can be compared with the uploaded add-on.
+
+To build the beta extension with ID `adguardadblockerbeta@adguard.com`:
+
+```sh
+docker run --rm \
+  -v "$(pwd)":/workspace \
+  -w /workspace \
+  adguard/extension-builder:22.17--0.4.1--0 \
+  bash -c "pnpm install && pnpm beta firefox-standalone"
 ```
 
 The build output will be in the `./build/beta/firefox-standalone` directory.
-The resulting `firefox-standalone.zip` can be compared with the uploaded add-on.
+The resulting `firefox-standalone.zip` belongs to the standalone beta
+distribution and not to the AMO submission.
 REVIEW_EOF
 ABS_OUTPUT_ZIP="$(cd "$(dirname "$OUTPUT_ZIP")" && pwd)/$(basename "$OUTPUT_ZIP")"
 (cd "$TEMP_DIR" && zip "$ABS_OUTPUT_ZIP" README.md)
@@ -120,24 +138,42 @@ All build tools (Node.js v22, pnpm v10) are pre-installed in the Docker image.
 
 To build the RELEASE version:
 
-  docker run --rm \
-      -v "$(pwd)":/workspace \
-      -w /workspace \
-      adguard/extension-builder:22.17--0.4.1--0 \
-      bash -c "pnpm install && pnpm release firefox-amo"
+```sh
+docker run --rm \
+    -v "$(pwd)":/workspace \
+    -w /workspace \
+    adguard/extension-builder:22.17--0.4.1--0 \
+    bash -c "pnpm install && pnpm release firefox-amo"
+```
 
 Output: ./build/release/firefox-amo directory.
 Compare firefox-amo.zip with the uploaded add-on.
 
-To build the BETA version:
+To build the beta extension with ID adguardadblockeramobeta@adguard.com:
 
-  docker run --rm \
-      -v "$(pwd)":/workspace \
-      -w /workspace \
-      adguard/extension-builder:22.17--0.4.1--0 \
-      bash -c "pnpm install && pnpm beta firefox-standalone"
+```sh
+docker run --rm \
+    -v "$(pwd)":/workspace \
+    -w /workspace \
+    adguard/extension-builder:22.17--0.4.1--0 \
+    bash -c "pnpm install && pnpm beta firefox-amo"
+```
+
+Output: ./build/beta/firefox-amo directory.
+Compare firefox-amo.zip with the uploaded add-on.
+
+To build the beta extension with ID adguardadblockerbeta@adguard.com:
+
+```sh
+docker run --rm \
+    -v "$(pwd)":/workspace \
+    -w /workspace \
+    adguard/extension-builder:22.17--0.4.1--0 \
+    bash -c "pnpm install && pnpm beta firefox-standalone"
+```
 
 Output: ./build/beta/firefox-standalone directory.
-Compare firefox-standalone.zip with the uploaded add-on.
+This produces firefox-standalone.zip for the standalone beta distribution,
+not for the AMO submission.
 APPROVAL_EOF
 echo "approval-notes.txt created at $APPROVAL_NOTES_FILE"

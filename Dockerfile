@@ -407,7 +407,7 @@ COPY --from=firefox-beta-build /out/ /
 
 # ============================================================================
 # Stage: firefox-beta-sign
-# Signs Firefox extension with go-webext (requires AMO credentials)
+# Signs Firefox standalone beta with go-webext (requires AMO credentials)
 # Expects artifacts via named build context: --build-context firefox-artifacts=artifacts
 # Uses adguard/extension-builder image which has go-webext pre-installed
 # ============================================================================
@@ -429,7 +429,7 @@ ARG TEST_RUN_ID
 RUN --mount=type=secret,id=FIREFOX_CLIENT_SECRET \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     mkdir -p /out/artifacts && \
-    # Sign the Firefox extension with go-webext.
+    # Sign the Firefox standalone beta extension with go-webext.
     FIREFOX_CLIENT_ID="${FIREFOX_CLIENT_ID}" \
     FIREFOX_CLIENT_SECRET="$(cat /run/secrets/FIREFOX_CLIENT_SECRET)" \
     # Note that this command will fail after timeout if signing is not completed
@@ -447,6 +447,32 @@ RUN --mount=type=secret,id=FIREFOX_CLIENT_SECRET \
 
 FROM scratch AS firefox-beta-sign-output
 COPY --from=firefox-beta-sign /out/ /
+
+# ============================================================================
+# Stage: firefox-amo-beta-build
+# Creates Firefox AMO beta build with unsigned zip and AMO review artifacts
+# ============================================================================
+FROM linked-deps AS firefox-amo-beta-build
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so build stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Create beta build for Firefox AMO with zip archive.
+    pnpm beta firefox-amo --zip && \
+    # Create artifacts directory if it doesn't exist.
+    mkdir -p /out/artifacts && \
+    # Move artifacts to the artifacts directory.
+    mv build/beta/build.txt /out/artifacts/ && \
+    mv build/beta/firefox-amo.zip /out/artifacts/ && \
+    # Archive source files for AMO publishing.
+    ./bamboo-specs/scripts/archive-source.sh beta && \
+    mv build/beta/source.zip /out/artifacts/ && \
+    mv build/beta/approval-notes.txt /out/artifacts/
+
+FROM scratch AS firefox-amo-beta-build-output
+COPY --from=firefox-amo-beta-build /out/ /
 
 # ============================================================================
 # Stage: release-build
