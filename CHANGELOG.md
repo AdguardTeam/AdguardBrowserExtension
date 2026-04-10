@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `$removeparam` rules not stripping all tracking parameters when multiple rules match the same URL in MV3 [#3444].
 - "Block ads manual" doesn't work on tabs opened before the update [#3452].
 - The extension doesn't always update filters after starting the browser [#3280].
+- Custom filter subscription accepts URLs that return HTML pages instead of filter lists [#3501].
 
 [#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
@@ -56,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3444]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3444
 [#3452]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3452
 [#3280]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3280
+[#3501]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3501
 
 ## [5.3 patch 1] <!-- TODO: Add release date -->
 

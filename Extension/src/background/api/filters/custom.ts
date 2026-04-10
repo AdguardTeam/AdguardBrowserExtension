@@ -46,6 +46,7 @@ import { type FilterParsedData, FilterParser } from './parser';
 import { type FilterMetadata } from './main';
 import { CustomFilterLoader } from './custom/loader';
 import { type CategoriesFilterData } from './categories';
+import { isHtmlContent } from './content-validator';
 
 /**
  * Data transfer object for {@link CustomFilterApi} methods.
@@ -98,9 +99,21 @@ type CustomFilterAlreadyExistResponse = {
 };
 
 /**
+ * Response of {@link CustomFilterApi.getFilterInfo} for 'Add custom filter' modal window with data,
+ * returned if the downloaded content is an HTML document instead of a filter list.
+ */
+type CustomFilterHtmlContentResponse = {
+    errorHtmlContent: boolean;
+};
+
+/**
  * Response of {@link CustomFilterApi.getFilterInfo} for 'Add custom filter' modal window.
  */
-export type GetCustomFilterInfoResult = CreateCustomFilterResponse | CustomFilterAlreadyExistResponse | null;
+export type GetCustomFilterInfoResult =
+    | CreateCustomFilterResponse
+    | CustomFilterAlreadyExistResponse
+    | CustomFilterHtmlContentResponse
+    | null;
 
 /**
  * Parsed custom filter data from remote source.
@@ -177,9 +190,10 @@ export class CustomFilterApi {
      * @param title User-defined filter title.
      *
      * @returns
-     * One of three options:
+     * One of four options:
      * - {@link CreateCustomFilterResponse} on new filter subscription,
      * - {@link CustomFilterAlreadyExistResponse} if custom filter was added before
+     * - {@link CustomFilterHtmlContentResponse} if URL returned HTML content instead of filter rules
      * - null, if filter rules are not downloaded.
      */
     public static async getFilterInfo(url: string, title?: string): Promise<GetCustomFilterInfoResult> {
@@ -192,6 +206,11 @@ export class CustomFilterApi {
 
         if (!downloadResult) {
             return null;
+        }
+
+        if (isHtmlContent(downloadResult.filter)) {
+            logger.warn('[ext.CustomFilterApi.getFilterInfo]: URL returned HTML content instead of filter rules:', url);
+            return { errorHtmlContent: true };
         }
 
         const parsedData = FilterParser.parseFilterDataFromHeader(
