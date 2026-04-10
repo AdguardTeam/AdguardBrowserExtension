@@ -51,7 +51,7 @@ export const createCommonMessageHandler = (
             }
             case NotifierType.FiltersUpdateCheckReady: {
                 const [updatedFilters] = message.data;
-                settingsStore.refreshFilters(updatedFilters);
+                await settingsStore.refreshFilterTimestamps();
                 uiStore.addNotification(updateFilterDescription(updatedFilters));
                 break;
             }

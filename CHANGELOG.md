@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use of invalid CSS selectors in element hiding rules affects all injected styles [#3329].
 - `$removeparam` rules not stripping all tracking parameters when multiple rules match the same URL in MV3 [#3444].
 - "Block ads manual" doesn't work on tabs opened before the update [#3452].
+- The extension doesn't always update filters after starting the browser [#3280].
 
 [#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
@@ -52,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3430]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3430
 [#3444]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3444
 [#3452]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3452
+[#3280]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3280
 
 ## [5.3 patch 1] <!-- TODO: Add release date -->
 

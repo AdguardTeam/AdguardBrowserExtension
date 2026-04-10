@@ -319,6 +319,18 @@ export abstract class MessengerCommon {
     };
 
     /**
+     * Sends a message to the background page to get all filters
+     * with current version timestamps and state data.
+     * Lightweight alternative to {@link getOptionsData} for refreshing
+     * only filter timestamps.
+     *
+     * @returns Promise that resolves with the list of filters.
+     */
+    getCategoriesFilters = async (): Promise<ExtractMessageResponse<MessageType.GetCategoriesFilters>> => {
+        return this.sendMessage(MessageType.GetCategoriesFilters);
+    };
+
+    /**
      * Sends a message to the background page to change the user setting.
      *
      * @param settingId Setting identifier.

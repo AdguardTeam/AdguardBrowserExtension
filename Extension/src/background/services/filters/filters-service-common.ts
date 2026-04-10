@@ -32,6 +32,7 @@ import { messageHandler } from '../../message-handler';
 import {
     annoyancesConsent,
     Categories,
+    type CategoriesFilterData,
     FiltersApi,
     PageStatsApi,
 } from '../../api';
@@ -56,6 +57,18 @@ export abstract class FiltersServiceCommon {
         messageHandler.addListener(MessageType.ResetBlockedAdsCount, FiltersServiceCommon.resetBlockedAdsCount);
         messageHandler.addListener(MessageType.SetConsentedFilters, FiltersServiceCommon.setConsentedFilters);
         messageHandler.addListener(MessageType.GetIsConsentedFilter, FiltersServiceCommon.getIsConsentedFilter);
+        messageHandler.addListener(MessageType.GetCategoriesFilters, FiltersServiceCommon.getCategoriesFilters);
+    }
+
+    /**
+     * Returns all filters with current version timestamps and state data.
+     * Lightweight alternative to {@link getOptionsData} for refreshing
+     * only filter timestamps.
+     *
+     * @returns Array of {@link CategoriesFilterData}.
+     */
+    private static getCategoriesFilters(): CategoriesFilterData[] {
+        return Categories.getCategories().filters;
     }
 
     /**

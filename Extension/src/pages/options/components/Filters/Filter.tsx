@@ -89,6 +89,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         description,
         version,
         lastCheckTime,
+        lastScheduledCheckTime,
         lastUpdateTime,
         homepage,
         enabled,
@@ -288,9 +289,11 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                                         }
                                         {translator.getMessage('options_filters_filter_updated')}
                                         {' '}
-                                        {lastUpdateTime
-                                            ? formatDate(lastUpdateTime)
-                                            : formatDate(lastCheckTime)}
+                                        {formatDate(Math.max(
+                                            lastUpdateTime || 0,
+                                            lastCheckTime || 0,
+                                            lastScheduledCheckTime || 0,
+                                        ))}
                                     </div>
                                 </div>
                                 <a
