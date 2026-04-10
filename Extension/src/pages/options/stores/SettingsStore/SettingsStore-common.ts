@@ -572,6 +572,19 @@ export abstract class SettingsStoreCommon {
         }
     }
 
+    /**
+     * Fetches only the filter data with timestamps from the backend
+     * and merges them into the store. Lightweight alternative to
+     * {@link requestOptionsData} when only filter timestamps need
+     * to be refreshed.
+     */
+    async refreshFilterTimestamps(): Promise<void> {
+        const filters = await messenger.getCategoriesFilters();
+        runInAction(() => {
+            this.setFilters(updateFilters(this.filters, filters));
+        });
+    }
+
     @action
     refreshFilter(filter: Partial<CategoriesFilterData>): void {
         if (!filter || typeof filter.filterId !== 'number') {
