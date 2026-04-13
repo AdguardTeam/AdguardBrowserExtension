@@ -883,6 +883,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{const e=document,t=new MutationObserver((()=>{const e=document.querySelector(\"#onetrust-reject-all-handler\");e&&(e.click(),t.disconnect())}));t.observe(e,{attributes:!0,childList:!0,subtree:!0}),setTimeout((()=>{t.disconnect()}),1e4)})();": [
+            {
+                "permittedDomains": [
+                    "nowtv.com.tr"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{const t=document.documentElement,o=new MutationObserver((()=>{const t=document.querySelector('#mms-consent-portal-container button[data-test=\"pwa-consent-layer-deny-all\"]');if(t&&typeof t.click !== 'undefined'){t.click();}}));o.observe(t,{attributes:!0,childList:!0,subtree:!0})})();": [
             {
                 "permittedDomains": [
@@ -1745,6 +1753,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{const t={apply:(t,r,e)=>{try{const t=e[0];t?.matches?.('[class^=\"b_ad\"]')&&(e[0]=document.querySelector(\"#b_results .b_algo\"))}catch(t){}return Reflect.apply(t,r,e)}};window.Array.prototype.push=new Proxy(window.Array.prototype.push,t)})();": [
+            {
+                "permittedDomains": [
+                    "bing.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "!function(){const e={apply:(e,l,t)=>{const o=t[0];return o?.includes(\".b_ad,\")?t[0]=\"#b_results\":o?.includes(\".b_restorableLink\")&&(t[0]=\".b_algo\"),Reflect.apply(e,l,t)}};window.Element.prototype.querySelectorAll=new Proxy(window.Element.prototype.querySelectorAll,e)}();": [
             {
                 "permittedDomains": [
@@ -2268,6 +2284,7 @@
         "(()=>{const t={apply:(t,e,o)=>{try{const t=e;t&&\"object\"==typeof t&&t.context?.bidRequestId&&(e={})}catch(t){}return Reflect.apply(t,e,o)}};window.Object.prototype.hasOwnProperty=new Proxy(window.Object.prototype.hasOwnProperty,t)})();": [
             {
                 "permittedDomains": [
+                    "dobreprogramy.pl",
                     "so-magazyn.pl",
                     "parenting.pl",
                     "fotoblogia.pl",
@@ -3253,6 +3270,7 @@
         "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,r=o=>t.regexTest.call(e,o),l={construct:(e,l,n)=>{const c=o();return r(c)&&l[0]&&t.includes.call(l[0],\"adshield\")&&(l[0]=[\"(function(){})();\"]),Reflect.construct(e,l,n)}};window.Blob=new Proxy(window.Blob,l);const n={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&t.includes.call(n[0],\"new Error\")&&(n[0]=()=>{}),Reflect.apply(e,l,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&l?.includes?.(\"setTimeout\")&&(l=t.filter.call(l,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,l,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "followfollow.com",
                     "seriouseats.com",
                     "alfalfalfa.com",
                     "pcguide.com",
