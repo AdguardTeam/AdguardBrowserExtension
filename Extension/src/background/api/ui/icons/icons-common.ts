@@ -150,10 +150,8 @@ export abstract class IconsApiCommon {
         try {
             await IconsApiCommon.setActionIcon(icon, tabId);
 
-            if (badgeText.length !== 0) {
-                await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
-                await browserAction.setBadgeText({ tabId, text: badgeText });
-            }
+            await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
+            await browserAction.setBadgeText({ tabId, text: badgeText });
         } catch (e) {
             logger.info(`[ext.IconsApiCommon.updateTabAction]: failed to update tab icon for tab ${tabId}:`, e);
         }
