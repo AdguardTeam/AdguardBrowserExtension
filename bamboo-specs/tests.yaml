@@ -262,9 +262,11 @@ Integration tests:
             # Docker checksums the context content for cache invalidation
             # Uses standalone target that builds chrome-mv3 internally,
             # so no pre-built artifacts are needed from other jobs.
+            # TODO: remove --no-cache-filter after AG-46639
             docker build \
               --file Dockerfile \
               --progress plain \
+              --no-cache-filter=integration-tests \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-context tsurlfilter=../tsurlfilter \
               --target integration-tests-standalone-output \
