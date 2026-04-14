@@ -37,6 +37,7 @@ import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
 import { MOBILE_BREAKPOINT_PX } from '../../../common/constants';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
+import { RateNotification } from '../RateNotification';
 
 import { Compare } from './Compare';
 import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
@@ -100,6 +101,10 @@ const Sidebar = observer(() => {
     };
 
     const hideCompare = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.CloseCompareClick,
+            TelemetryScreenName.MainPage,
+        );
         await settingsStore.hideAdguardPromoInfo();
     };
 
@@ -152,11 +157,15 @@ const Sidebar = observer(() => {
                     <div className="logo" />
                 </div>
                 <Nav onLinkClick={closeSidebarWrapper} />
-                {settingsStore.showAdguardPromoInfo && (
-                    <Compare
-                        onCompareClick={handleCompareClick}
-                        onCloseClick={hideCompare}
-                    />
+                {settingsStore.showGeneralSettingsPromo ? (
+                    <RateNotification />
+                ) : (
+                    settingsStore.showAdguardPromoInfo && (
+                        <Compare
+                            onCompareClick={handleCompareClick}
+                            onCloseClick={hideCompare}
+                        />
+                    )
                 )}
             </div>
         </>
