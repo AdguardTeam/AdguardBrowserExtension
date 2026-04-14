@@ -56,6 +56,8 @@ import { StaticFiltersLimitsWarning } from '../Warnings';
 import { logger } from '../../../../common/logger';
 import { ExtensionUsageDataModal } from '../Miscellaneous/ExtensionUsageDataModal/ExtensionUsageDataModal';
 
+import { DesktopAppPromo } from './DesktopAppPromo';
+
 const filtersUpdatePeriodOptions = [
     {
         value: FiltersUpdateTime.Default,
@@ -385,6 +387,7 @@ export const General = observer(() => {
                     {translator.getMessage('options_leave_feedback')}
                 </button>
             </div>
+            {settingsStore.showGeneralSettingsPromo && <DesktopAppPromo />}
         </>
     );
 });

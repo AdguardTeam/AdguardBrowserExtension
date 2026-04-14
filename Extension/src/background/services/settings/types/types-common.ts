@@ -104,4 +104,9 @@ export type GetOptionsDataResponseCommon = {
      * Whether the user filter editor is open in the fullscreen mode.
      */
     fullscreenUserRulesEditorIsOpen: boolean;
+
+    /**
+     * Whether the General Settings promo A/B test B-variant is active.
+     */
+    showGeneralSettingsPromo: boolean;
 };

@@ -25,7 +25,7 @@ import {
     type TelemetryScreenName,
     type TelemetryTheme,
     type TelemetryActionToScreenMap,
-} from './enums';
+} from '../../../common/telemetry';
 
 /**
  * User agent info.

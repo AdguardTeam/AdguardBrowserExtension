@@ -86,6 +86,9 @@ export const enum ForwardAction {
     CustomFiltersMv3Disabled = 'custom_mv3_disabled',
     // IMPORTANT: do not change the value as tds is already configured for that specific string.
     UserScriptsApiRequired = 'developer_mode_required',
+    DesktopAppPromoWindows = 'desktop_app_promo_windows',
+    DesktopAppPromoMac = 'desktop_app_promo_mac',
+    DesktopAppPromoLinux = 'desktop_app_promo_linux',
 }
 
 /**
