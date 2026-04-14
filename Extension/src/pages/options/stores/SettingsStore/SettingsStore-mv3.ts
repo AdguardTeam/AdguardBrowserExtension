@@ -232,4 +232,19 @@ export class SettingsStore extends SettingsStoreCommon {
     setIsExtensionUpdateAvailable(isAvailable: boolean): void {
         this.isExtensionUpdateAvailable = isAvailable;
     }
+
+    /**
+     * Checks MV3 rule limitations and updates UI warnings.
+     */
+    @override
+    override async checkLimitations(): Promise<void> {
+        const currentLimitsMv3 = await messenger.getCurrentLimits();
+
+        this.uiStore.setStaticFiltersLimitsWarning(currentLimitsMv3.staticFiltersData);
+        this.uiStore.setDynamicRulesLimitsWarning(currentLimitsMv3.dynamicRulesData);
+
+        if (this.uiStore.dynamicRulesLimitsWarning) {
+            this.uiStore.addRuleLimitsNotification(this.uiStore.dynamicRulesLimitsWarning);
+        }
+    }
 }

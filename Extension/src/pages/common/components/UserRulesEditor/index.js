@@ -18,4 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { UserRulesEditor } from './UserRulesEditor';
+export { UserRulesEditor, UserRulesMenuKey } from './UserRulesEditor';

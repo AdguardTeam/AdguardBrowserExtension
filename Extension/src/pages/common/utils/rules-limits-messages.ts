@@ -18,11 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-    type InvalidDynamicResultData,
-    type InvalidStaticResultData,
-} from '../../../../background/services/rules-limits/interface';
-import { translator } from '../../../../common/translators/translator';
+import { type InvalidDynamicResultData, type InvalidStaticResultData } from '../../../background/services/rules-limits';
+import { translator } from '../../../common/translators/translator';
 
 /**
  * Returns a warning message based on the data.

@@ -22,8 +22,7 @@ import { observer } from 'mobx-react';
 import React, { useContext } from 'react';
 
 import { rootStore } from '../../stores/RootStore';
-
-import { Notification } from './Notification';
+import { Notification } from '../../../common/components/Notification';
 
 import './notifications.pcss';
 
@@ -46,7 +45,11 @@ export const Notifications = observer(() => {
     return (
         <div className="notifications">
             {reversedNotifications.map((notification) => (
-                <Notification key={notification.id} {...notification} />
+                <Notification
+                    key={notification.id}
+                    onRemove={(id) => uiStore.removeNotification(id)}
+                    {...notification}
+                />
             ))}
         </div>
     );

@@ -19,7 +19,6 @@
  */
 
 import React, {
-    useContext,
     useEffect,
     useState,
     useRef,
@@ -28,10 +27,9 @@ import React, {
 import classnames from 'classnames';
 
 import { NOTIFICATION_TTL_MS } from '../../../../common/constants';
-import { rootStore } from '../../stores/RootStore';
-import { TIME_TO_REMOVE_NOTIFICATION_MS } from '../../../common/constants';
-import { Icon } from '../../../common/components/ui/Icon';
-import { NotificationType, type NotificationParams } from '../../../common/types';
+import { TIME_TO_REMOVE_NOTIFICATION_MS } from '../../constants';
+import { Icon } from '../ui/Icon';
+import { NotificationType, type NotificationParams } from '../../types';
 import { translator } from '../../../../common/translators/translator';
 
 /**
@@ -45,22 +43,31 @@ export type NotificationParamsWithId = NotificationParams & {
 };
 
 /**
+ * Props for the Notification component.
+ */
+type NotificationProps = NotificationParamsWithId & {
+    /**
+     * Callback to remove a notification by id.
+     */
+    onRemove: (id: string) => void;
+};
+
+/**
  * Notification component.
  *
- * @param props Notification component props
+ * @param props Notification component props.
  */
-export const Notification = (props: NotificationParamsWithId) => {
+export const Notification = (props: NotificationProps) => {
     const [notificationIsClosed, setNotificationIsClosed] = useState(false);
 
     const [shouldCloseOnTimeout, setShouldCloseOnTimeout] = useState(true);
-
-    const { uiStore } = useContext(rootStore);
 
     const {
         id,
         text,
         type,
         buttons,
+        onRemove,
     } = props;
 
     useEffect(() => {
@@ -72,7 +79,7 @@ export const Notification = (props: NotificationParamsWithId) => {
 
         const removeTimeout = setTimeout(() => {
             if (shouldCloseOnTimeout) {
-                uiStore.removeNotification(id);
+                onRemove(id);
             }
         }, NOTIFICATION_TTL_MS + TIME_TO_REMOVE_NOTIFICATION_MS);
 
@@ -80,7 +87,7 @@ export const Notification = (props: NotificationParamsWithId) => {
             clearTimeout(closeTimeout);
             clearTimeout(removeTimeout);
         };
-    }, [id, uiStore, shouldCloseOnTimeout]);
+    }, [id, onRemove, shouldCloseOnTimeout]);
 
     const notificationClassnames = classnames(
         `notification notification--${type}`,
@@ -104,7 +111,7 @@ export const Notification = (props: NotificationParamsWithId) => {
         setNotificationIsClosed(true);
 
         removeOnClickTimeoutRef.current = window.setTimeout(() => {
-            uiStore.removeNotification(id);
+            onRemove(id);
         }, TIME_TO_REMOVE_NOTIFICATION_MS);
     };
 
