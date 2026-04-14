@@ -39,7 +39,7 @@ import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constant
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
-import { getStaticWarningMessage } from '../Warnings/messages';
+import { getStaticWarningMessage } from '../../../common/utils/rules-limits-messages';
 import { type CategoriesFilterData } from '../../../../background/api/filters/categories';
 
 import { formatDate } from './helpers';

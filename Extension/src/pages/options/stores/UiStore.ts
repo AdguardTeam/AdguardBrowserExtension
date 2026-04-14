@@ -30,8 +30,8 @@ import { translator } from '../../../common/translators/translator';
 import { NotificationType, type NotificationParams } from '../../common/types';
 import { messenger } from '../../services/messenger';
 // TODO: Maybe not import from components folder here?
-import { getDynamicWarningMessage, getStaticWarningMessage } from '../components/Warnings/messages';
-import { type NotificationParamsWithId } from '../components/Notifications/Notification';
+import { getDynamicWarningMessage, getStaticWarningMessage } from '../../common/utils/rules-limits-messages';
+import { type NotificationParamsWithId } from '../../common/components/Notification';
 
 import { type RootStore } from './RootStore';
 

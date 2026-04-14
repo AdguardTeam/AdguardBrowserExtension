@@ -257,19 +257,16 @@ export abstract class SettingsStoreCommon {
         });
     }
 
+    /**
+     * Checks MV3 rule limitations and updates UI warnings.
+     * No-op on MV2; overridden in SettingsStore-mv3.
+     */
+    /* eslint-disable class-methods-use-this */
     @action
-    async checkLimitations() {
-        const currentLimitsMv3 = await messenger.getCurrentLimits();
-
-        this.uiStore.setStaticFiltersLimitsWarning(currentLimitsMv3.staticFiltersData);
-        this.uiStore.setDynamicRulesLimitsWarning(currentLimitsMv3.dynamicRulesData);
-
-        if (this.uiStore.dynamicRulesLimitsWarning) {
-            this.uiStore.addRuleLimitsNotification(this.uiStore.dynamicRulesLimitsWarning);
-        }
-
-        return currentLimitsMv3;
+    async checkLimitations(): Promise<void> {
+        // No-op. Overridden in MV3 subclass.
     }
+    /* eslint-enable class-methods-use-this */
 
     @action
     async getFullscreenUserRulesData() {

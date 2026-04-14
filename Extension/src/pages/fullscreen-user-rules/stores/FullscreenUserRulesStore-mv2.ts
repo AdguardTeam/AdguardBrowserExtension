@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,4 +18,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { UserRulesEditor, UserRulesMenuKey } from './UserRulesEditor';
+import { createContext } from 'react';
+
+import { FullscreenUserRulesStore } from './FullscreenUserRulesStore';
+
+export { FullscreenUserRulesStore };
+
+/**
+ * MV2 fullscreen user rules store context.
+ */
+export const fullscreenUserRulesStore = createContext(new FullscreenUserRulesStore());

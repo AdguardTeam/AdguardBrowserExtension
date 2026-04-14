@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -21,15 +21,22 @@
 import { observer } from 'mobx-react';
 import React, { useContext } from 'react';
 
-import { rootStore } from '../../stores/RootStore';
+import { fullscreenUserRulesStore } from 'fullscreen-user-rules-store';
+
 import { Notification } from '../../../common/components/Notification';
 
-import './notifications.pcss';
+import '../../../common/components/Notification/notifications.pcss';
 
-export const Notifications = observer(() => {
-    const { uiStore } = useContext(rootStore);
+/**
+ * Notifications component for the fullscreen user rules page.
+ *
+ * Reuses the shared Notification component from the options page and injects
+ * onRemove from fullscreenUserRulesStore instead of rootStore.
+ */
+export const FullscreenNotifications = observer(() => {
+    const store = useContext(fullscreenUserRulesStore);
 
-    const { notifications } = uiStore;
+    const { notifications } = store;
 
     if (notifications.length === 0) {
         return null;
@@ -47,7 +54,7 @@ export const Notifications = observer(() => {
             {reversedNotifications.map((notification) => (
                 <Notification
                     key={notification.id}
-                    onRemove={(id) => uiStore.removeNotification(id)}
+                    onRemove={(id) => store.removeNotification(id)}
                     {...notification}
                 />
             ))}

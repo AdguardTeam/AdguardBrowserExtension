@@ -45,7 +45,7 @@ import { AntibannerGroupsId } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnings';
 import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
-import { getStaticWarningMessage } from '../Warnings/messages';
+import { getStaticWarningMessage } from '../../../common/utils/rules-limits-messages';
 import type { CategoriesGroupData, CategoriesFilterData } from '../../../../background/api';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
