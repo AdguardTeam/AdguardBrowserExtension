@@ -36,8 +36,9 @@ import { rootStore } from '../../../stores/RootStore';
 import { addMinDelayLoader } from '../../../../common/components/helpers';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { AddCustomInput } from '../AddCustomInput';
-import theme from '../../../../common/styles/theme';
 import { ModalContentWrapper } from '../../../../common/components/ModalContentWrapper/ModalContentWrapper';
+
+import theme from '../../../../common/styles/theme';
 
 import styles from './AddCustomModal.module.pcss';
 

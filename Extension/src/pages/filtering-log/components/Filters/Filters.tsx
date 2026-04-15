@@ -30,10 +30,11 @@ import { Actions } from '../Actions';
 import { Icon } from '../../../common/components/ui/Icon';
 import { isVerticalScroll } from '../../../helpers';
 import { useResizeObserver } from '../../../common/hooks/useResizeObserver';
-import theme from '../../../common/styles/theme';
 
 import { MiscellaneousFilters } from './MiscellaneousFilters';
 import { EventsTypeFilter } from './EventsTypeFilter';
+
+import theme from '../../../common/styles/theme';
 
 import './filters.pcss';
 
