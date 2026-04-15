@@ -127,6 +127,8 @@ module.exports = {
                     // Separate group for all .pcss styles
                     // eslint-disable-next-line max-len, object-curly-newline
                     { 'pattern': '*.pcss', 'group': 'object', 'patternOptions': { 'matchBase': true }, 'position': 'after' },
+                    // Place theme styles with all other styles
+                    { 'pattern': 'theme', 'group': 'object', 'patternOptions': { 'matchBase': true } },
                 ],
                 'pathGroupsExcludedImportTypes': ['builtin', 'react'],
                 'newlines-between': 'always',

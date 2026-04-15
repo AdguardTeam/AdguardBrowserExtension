@@ -39,8 +39,9 @@ import { filteringLogStorage } from '../../../filtering-log-storage';
 import { WizardRequestState } from '../../../constants';
 import { RequestPreview } from '../RequestPreview';
 import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
-import theme from '../../../styles/theme';
 import { useIsMobile } from '../../../../common/hooks/useIsMobile';
+
+import theme from '../../../styles/theme';
 
 import './request-modal.pcss';
 

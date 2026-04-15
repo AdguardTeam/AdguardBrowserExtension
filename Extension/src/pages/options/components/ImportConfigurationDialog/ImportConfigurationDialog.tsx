@@ -24,11 +24,12 @@ import Modal from 'react-modal';
 import { translator } from '../../../../common/translators/translator';
 import { messenger } from '../../../services/messenger';
 import { ModalContentWrapper } from '../../../common/components/ModalContentWrapper/ModalContentWrapper';
-import theme from '../../../common/styles/theme';
 import importSuccessImage from '../../../../../assets/images/import_success.svg';
 import importErrorImage from '../../../../../assets/images/import_error.svg';
 import { logger } from '../../../../common/logger';
 import { ensurePermission } from '../../ensure-permission';
+
+import theme from '../../../common/styles/theme';
 
 /**
  * Possible states of the import configuration dialog.

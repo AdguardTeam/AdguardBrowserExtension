@@ -48,7 +48,6 @@ import {
 import { rootStore } from '../../../stores/RootStore';
 import { WindowsApi } from '../../../../../common/api/extension/windows';
 import { AntiBannerFiltersId } from '../../../../../common/constants';
-import theme from '../../../styles/theme';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { NetworkStatus, FilterStatus } from '../../Status';
 import { StatusMode, getStatusMode } from '../../../filteringLogStatus';
@@ -62,6 +61,8 @@ import { type FilteringLogEvent, type FilteringEventRuleData } from '../../../..
 import { type FilterMetadata } from '../../../../../background/api';
 import { Popover } from '../../../../common/components/ui/Popover/Popover';
 import { getFilterName } from '../../../../helpers';
+
+import theme from '../../../styles/theme';
 
 import './request-info.pcss';
 

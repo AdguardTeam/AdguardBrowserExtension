@@ -27,9 +27,10 @@ import cn from 'classnames';
 import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
 import { rootStore } from '../../stores/RootStore';
-import theme from '../../styles/theme';
 
 import { FilterList } from './FilterList';
+
+import theme from '../../styles/theme';
 
 import styles from './customizeModal.module.pcss';
 
