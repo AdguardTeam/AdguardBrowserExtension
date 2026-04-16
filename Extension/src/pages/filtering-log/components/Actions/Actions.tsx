@@ -34,7 +34,6 @@ import { TabSelectorMobile } from '../Filters/TabSelector/TabSelectorMobile';
 import { useIsMobile } from '../../../common/hooks/useIsMobile';
 
 import theme from '../../../common/styles/theme';
-
 import './actions.pcss';
 
 const Actions = observer(() => {

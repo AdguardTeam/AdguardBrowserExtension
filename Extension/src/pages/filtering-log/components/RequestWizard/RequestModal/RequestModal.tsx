@@ -42,7 +42,6 @@ import { DEFAULT_MODAL_WIDTH_PX } from '../constants';
 import { useIsMobile } from '../../../../common/hooks/useIsMobile';
 
 import theme from '../../../styles/theme';
-
 import './request-modal.pcss';
 
 Modal.setAppElement('#root');

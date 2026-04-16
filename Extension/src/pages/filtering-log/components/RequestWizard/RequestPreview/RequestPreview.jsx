@@ -45,7 +45,6 @@ import { TextRequest } from './TextRequest';
 import { fetchText, fetchImage } from './fetchers';
 
 import theme from '../../../styles/theme';
-
 import '../RequestInfo/request-image.pcss';
 import './request-preview.pcss';
 

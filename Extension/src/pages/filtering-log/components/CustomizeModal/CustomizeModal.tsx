@@ -31,7 +31,6 @@ import { rootStore } from '../../stores/RootStore';
 import { FilterList } from './FilterList';
 
 import theme from '../../styles/theme';
-
 import styles from './customizeModal.module.pcss';
 
 /**

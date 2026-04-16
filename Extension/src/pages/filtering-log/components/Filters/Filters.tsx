@@ -35,7 +35,6 @@ import { MiscellaneousFilters } from './MiscellaneousFilters';
 import { EventsTypeFilter } from './EventsTypeFilter';
 
 import theme from '../../../common/styles/theme';
-
 import './filters.pcss';
 
 const RESIZE_OBSERVER_THROTTLE_MS = 500;
