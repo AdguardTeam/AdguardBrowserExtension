@@ -63,7 +63,6 @@ import { Popover } from '../../../../common/components/ui/Popover/Popover';
 import { getFilterName } from '../../../../helpers';
 
 import theme from '../../../styles/theme';
-
 import './request-info.pcss';
 
 /**

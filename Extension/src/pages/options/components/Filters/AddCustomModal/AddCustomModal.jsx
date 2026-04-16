@@ -39,7 +39,6 @@ import { AddCustomInput } from '../AddCustomInput';
 import { ModalContentWrapper } from '../../../../common/components/ModalContentWrapper/ModalContentWrapper';
 
 import theme from '../../../../common/styles/theme';
-
 import styles from './AddCustomModal.module.pcss';
 
 Modal.setAppElement('#root');

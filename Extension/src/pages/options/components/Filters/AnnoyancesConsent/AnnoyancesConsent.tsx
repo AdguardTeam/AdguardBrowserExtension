@@ -32,7 +32,6 @@ import { rootStore } from '../../../stores/RootStore';
 import { FILTER_POLICY_URL } from '../../../constants';
 
 import theme from '../../../../common/styles/theme';
-
 import styles from './annoyances-consent.module.pcss';
 
 /**
