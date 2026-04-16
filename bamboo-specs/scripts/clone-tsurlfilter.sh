@@ -30,7 +30,9 @@ exec 2>&1
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
-TSURLFILTER_REF="release/browser-extension-v5.4"
+# FIXME: Remove link when all libraries are published to npm and we can switch
+# to using npm dependencies instead of git cloning
+TSURLFILTER_REF="master"
 
 # Repository URL
 # This should be set as a Bamboo project variable: tsurlfilterRepoUrl
