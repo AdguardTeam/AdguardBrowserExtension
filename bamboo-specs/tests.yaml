@@ -219,6 +219,13 @@ Unit tests:
               --target unit-tests-output \
               --output type=local,dest=output \
               .
+
+            # Touch XML test reports to reset mtime to now.
+            # --output type=local preserves container mtimes, so extracted XML files
+            # retain the timestamp from when they were written inside the container.
+            # This can happen on cache hits (reruns) and causes the Bamboo JUnit parser
+            # to reject them with "file was modified before task started".
+            find output/tests-reports -name '*.xml' -exec touch {} + 2>/dev/null || true
     - script:
         interpreter: SHELL
         scripts:
@@ -278,6 +285,13 @@ Integration tests:
               --target integration-tests-output \
               --output type=local,dest=output \
               .
+
+            # Touch XML test reports to reset mtime to now.
+            # --output type=local preserves container mtimes, so extracted XML files
+            # retain the timestamp from when they were written inside the container.
+            # This can happen on cache hits (reruns) and causes the Bamboo JUnit parser
+            # to reject them with "file was modified before task started".
+            find output/tests-reports -name '*.xml' -exec touch {} + 2>/dev/null || true
     - script:
         interpreter: SHELL
         scripts:

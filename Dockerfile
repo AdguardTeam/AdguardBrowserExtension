@@ -166,8 +166,8 @@ COPY --from=lint /out/ /
 # ============================================================================
 # Stage: unit-tests
 # Runs unit tests during build
-# IMPORTANT: Cannot be cached - JUnit parser rejects test results with
-# timestamps older than task start time. TEST_RUN_ID busts cache on every build.
+# IMPORTANT: Cannot be cached - tests must run on every build to catch
+# regressions. TEST_RUN_ID busts cache on every build.
 # ============================================================================
 FROM linked-deps AS unit-tests
 
@@ -183,14 +183,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci; \
     EXIT_CODE=$?; \
     # Keep tests-reports for junit parser.
-    # NOTE: touch is intentional - --output type=local preserves container mtimes,
-    # so extracted XML files retain the timestamp from when they were written inside
-    # the container. If the Bamboo task was queued for a while before running, those
-    # timestamps predate the task start time and the JUnit parser rejects them with
-    # "file was modified before task started". Touching after cp resets mtime to now.
     if [ -d tests-reports ]; then \
-      cp -R tests-reports/. /out/tests-reports/ && \
-      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+      cp -R tests-reports/. /out/tests-reports/; \
     fi; \
     # Note that we export test-results in junit format (for Bamboo to understand)
     # and suppress the original exit code (so that we could get the test results).
@@ -229,14 +223,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run integration tests.
     pnpm test:integration ${BUILD_TYPE}; \
     EXIT_CODE=$?; \
-    # NOTE: touch is intentional - --output type=local preserves container mtimes,
-    # so extracted XML files retain the timestamp from when they were written inside
-    # the container. If the Bamboo task was queued for a while before running, those
-    # timestamps predate the task start time and the JUnit parser rejects them with
-    # "file was modified before task started". Touching after cp resets mtime to now.
     if [ -d tests-reports ]; then \
-      cp -R tests-reports/. /out/tests-reports/ && \
-      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+      cp -R tests-reports/. /out/tests-reports/; \
     fi; \
     # Rename test report to match JUnit parser pattern (mirrors integration-tests.sh).
     if [ -f /out/tests-reports/integration-tests.xml ]; then \
