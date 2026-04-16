@@ -266,7 +266,7 @@ Integration tests:
             docker build \
               --file Dockerfile \
               --progress plain \
-              --no-cache-filter=integration-tests \
+              --no-cache-filter=integration-tests-standalone \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-context tsurlfilter=../tsurlfilter \
               --target integration-tests-standalone-output \
