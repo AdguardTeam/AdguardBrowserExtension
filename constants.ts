@@ -82,10 +82,8 @@ export const INDEX_HTML_FILE_NAME = 'index.html';
  * List of AdGuard filters IDs.
  *
  * `12` is absent because Safari filter if obsolete and not used anymore.
- * `14` and `15` are absent because they are deprecated
- * (Annoyances combined and DNS filters respectively).
  */
-export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 16, 17, 18, 19, 20, 21, 22, 23, 224];
+export const ADGUARD_FILTERS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 224];
 
 /**
  * Environment types for build target.
