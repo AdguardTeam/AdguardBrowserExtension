@@ -518,12 +518,26 @@ export abstract class FiltersApiCommon {
      * @param remote If true, download data from backend, else load it from local files.
      */
     protected static async loadMetadataFromFromBackend(remote: boolean): Promise<void> {
-        const metadata = remote
+        const rawMetadata = remote
             ? await network.downloadMetadataFromBackend()
             : await network.getLocalFiltersMetadata();
 
-        // NOTE: For now, deprecated filter metadata is intentionally kept
-        // in the metadata as it is needed for settings import and migration.
+        const validFilters: RegularFilterMetadata[] = [];
+
+        rawMetadata.filters.forEach((filter) => {
+            if (filter.deprecated) {
+                logger.info(`[ext.FiltersApiCommon.loadMetadataFromFromBackend]: Filter with id ${filter.filterId} is deprecated and shall not be used.`);
+                // do not filter out deprecated filter metadata as it may be needed later
+                // e.g. during settings import
+            }
+
+            validFilters.push(filter);
+        });
+
+        const metadata = {
+            ...rawMetadata,
+            filters: validFilters,
+        };
 
         const i18nMetadata = i18nMetadataStorage.getData();
 
