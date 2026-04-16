@@ -261,7 +261,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm test:integration dev; \
     EXIT_CODE=$?; \
     if [ -d tests-reports ]; then \
-      cp -R tests-reports/. /out/tests-reports/ \
+      cp -R tests-reports/. /out/tests-reports/; \
     fi; \
     # Rename test report to match JUnit parser pattern.
     if [ -f /out/tests-reports/integration-tests.xml ]; then \
