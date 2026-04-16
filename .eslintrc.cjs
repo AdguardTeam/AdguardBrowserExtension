@@ -204,6 +204,7 @@ module.exports = {
         'no-continue': 'off',
         'no-bitwise': 'off',
         'no-underscore-dangle': 'off',
+
         // types described in ts
         'jsdoc/require-param-type': 'off',
         'jsdoc/require-returns-type': 'off',
