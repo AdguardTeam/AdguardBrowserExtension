@@ -485,11 +485,7 @@ export class SettingsApiCommon {
             filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
         }
 
-        // Remove deprecated filters — they have been replaced above
-        // or should simply be skipped (e.g. DNS filter).
-        return filtersToEnable.filter((id) => {
-            return !CommonFilterApi.getFilterMetadata(id)?.deprecated;
-        });
+        return filtersToEnable;
     }
 
     /**

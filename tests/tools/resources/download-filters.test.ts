@@ -78,8 +78,8 @@ axios.get = mockedAxiosGet;
 describe('getAllDownloadTasks', () => {
     it('returns tasks for all 4 browsers', () => {
         const tasks = getAllDownloadTasks();
-        // 4 browsers × (2 metadata + 21 filters + 21 optimized) = 4 × 44 = 176
-        expect(tasks.length).toBe(176);
+        // 4 browsers × (2 metadata + 23 filters + 23 optimized) = 4 × 48 = 192
+        expect(tasks.length).toBe(192);
     });
 
     it('each task has url, fileName, and browser', () => {
@@ -135,8 +135,8 @@ describe('downloadAllFilters', () => {
         } as never);
 
         const count = await downloadAllFilters();
-        expect(count).toBe(176);
-        expect(mockedAxiosGet).toHaveBeenCalledTimes(176);
+        expect(count).toBe(192);
+        expect(mockedAxiosGet).toHaveBeenCalledTimes(192);
     });
 
     it('passes timeout to axios requests', async () => {
@@ -169,7 +169,7 @@ describe('downloadAllFilters', () => {
 
         await downloadAllFilters();
 
-        expect(fs.promises.writeFile).toHaveBeenCalledTimes(176);
+        expect(fs.promises.writeFile).toHaveBeenCalledTimes(192);
     });
 
     it('fails fast when a download throws', async () => {
@@ -185,7 +185,7 @@ describe('downloadAllFilters', () => {
 
         // With concurrency 1, should stop after the error
         // (first succeeds, second fails, no more should run)
-        expect(mockedAxiosGet.mock.calls.length).toBeLessThan(176);
+        expect(mockedAxiosGet.mock.calls.length).toBeLessThan(192);
     });
 
     it('fails fast on checksum mismatch', async () => {
