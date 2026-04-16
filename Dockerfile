@@ -228,7 +228,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     if [ -d tests-reports ]; then \
       cp -R tests-reports/. /out/tests-reports/; \
     fi; \
-    # Rename test report to match JUnit parser pattern (mirrors integration-tests.sh).
+    # Rename test report to match JUnit parser pattern.
     if [ -f /out/tests-reports/integration-tests.xml ]; then \
         mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-${BUILD_TYPE}.xml; \
     fi; \
@@ -260,15 +260,10 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run integration tests.
     pnpm test:integration dev; \
     EXIT_CODE=$?; \
-    # NOTE: touch is intentional - --output type=local preserves container mtimes,
-    # so extracted XML files retain the timestamp from when they were written inside
-    # the container. If the Bamboo task was queued for a while before running, those
-    # timestamps predate the task start time and the JUnit parser rejects them with
-    # "file was modified before task started". Touching after cp resets mtime to now.
     if [ -d tests-reports ]; then \
-      cp -R tests-reports/. /out/tests-reports/ && \
-      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+      cp -R tests-reports/. /out/tests-reports/ \
     fi; \
+    # Rename test report to match JUnit parser pattern.
     if [ -f /out/tests-reports/integration-tests.xml ]; then \
         mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-dev.xml; \
     fi; \
