@@ -15,7 +15,7 @@
         "test": "vitest run",
         "test:mv2": "vitest run --project mv2",
         "test:mv3": "vitest run --project mv3",
-        "test:ci": "pnpm run test:mv2 --reporter default --reporter junit --outputFile=./tests-reports/unit-tests-mv2.xml && pnpm run test:mv3 --reporter default --reporter junit --outputFile=./tests-reports/unit-tests-mv3.xml",
+        "test:ci": "pnpm run test:mv2 --reporter default --reporter junit --outputFile=./tests-reports/unit-tests-mv2.xml && pnpm run test:mv3 --reporter default --reporter junit --outputFile=./tests-reports/unit-tests-mv3.xml && tsx tools/merge-junit.ts ./tests-reports/unit-tests-mv2.xml ./tests-reports/unit-tests-mv3.xml ./tests-reports/unit-tests.xml",
         "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
         "locales": "tsx tools/locales.js",
         "resources": "tsx tools/resources.ts",
