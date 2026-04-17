@@ -30,9 +30,7 @@ exec 2>&1
 #   TSURLFILTER_REF="v2.1.0"           # tag
 #   TSURLFILTER_REF=""                 # skip cloning
 
-# FIXME: Remove link when all libraries are published to npm and we can switch
-# to using npm dependencies instead of git cloning
-TSURLFILTER_REF="master"
+TSURLFILTER_REF=""
 
 # Repository URL
 # This should be set as a Bamboo project variable: tsurlfilterRepoUrl
