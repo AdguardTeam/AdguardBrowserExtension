@@ -50,6 +50,7 @@ export {
     getStorageFixturesV12,
     getStorageFixturesV13,
     getStorageFixturesV14,
+    getStorageFixturesV15,
     type StorageData,
 } from './fixtures';
 

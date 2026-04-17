@@ -32,7 +32,7 @@ import {
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
 import { notifier } from '../notifier';
-import { FiltersStorage } from '../storages';
+import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 import {
     FiltersApi,
     AllowlistApi,
@@ -122,7 +122,7 @@ export class Engine implements TsWebExtensionEngine {
 
         const tasks = enabledFilters.map(async (filterId) => {
             try {
-                const filter = await FiltersStorage.get(filterId);
+                const filter = await FiltersStoragesAdapter.get(filterId);
 
                 if (!filter) {
                     logger.error(`[ext.Engine.getConfiguration]: Failed to get filter ${filterId}`);

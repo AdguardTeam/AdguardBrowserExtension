@@ -28,11 +28,7 @@ import {
 } from '../../../common/constants';
 import { SettingOption } from '../../schema';
 import { notifier } from '../../notifier';
-import {
-    FiltersStorage,
-    settingsStorage,
-    editorStorage,
-} from '../../storages';
+import { settingsStorage, editorStorage } from '../../storages';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import { getZodErrorMessage } from '../../../common/error';
 import { LineScanner } from '../../utils';
@@ -51,20 +47,20 @@ export class UserRulesApi {
     public static async init(isInstall: boolean): Promise<void> {
         try {
             // Check if user filter is present in the storage to avoid errors.
-            if (!(await FiltersStorage.has(AntiBannerFiltersId.UserFilterId))) {
-                await FiltersStorage.set(
+            if (!(await FiltersStoragesAdapter.has(AntiBannerFiltersId.UserFilterId))) {
+                await FiltersStoragesAdapter.set(
                     AntiBannerFiltersId.UserFilterId,
                     FilterList.createEmpty(),
                 );
             } else {
                 // In this case zod will validate the data.
-                await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+                await FiltersStoragesAdapter.get(AntiBannerFiltersId.UserFilterId);
             }
         } catch (e) {
             if (!isInstall) {
                 logger.warn('[ext.UserRulesApi.init]: cannot parse user filter list from persisted storage, reset to default. Origin error:', getZodErrorMessage(e));
             }
-            await FiltersStorage.set(
+            await FiltersStoragesAdapter.set(
                 AntiBannerFiltersId.UserFilterId,
                 FilterList.createEmpty(),
             );
@@ -114,7 +110,7 @@ export class UserRulesApi {
      * @returns User rules list.
      */
     public static async getUserRules(): Promise<FilterList> {
-        const data = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+        const data = await FiltersStoragesAdapter.get(AntiBannerFiltersId.UserFilterId);
 
         if (!data) {
             return FilterList.createEmpty();
@@ -177,7 +173,7 @@ export class UserRulesApi {
      * @returns True, if rule was removed, else returns false.
      */
     public static async removeUserRuleByIndex(index: number): Promise<boolean> {
-        const filter = await FiltersStorage.get(AntiBannerFiltersId.UserFilterId);
+        const filter = await FiltersStoragesAdapter.get(AntiBannerFiltersId.UserFilterId);
 
         if (!filter) {
             return false;
@@ -224,7 +220,7 @@ export class UserRulesApi {
      * @param rulesText Rule text.
      */
     public static async setUserRules(rulesText: string): Promise<void> {
-        await FiltersStorage.set(AntiBannerFiltersId.UserFilterId, rulesText);
+        await FiltersStoragesAdapter.set(AntiBannerFiltersId.UserFilterId, rulesText);
 
         notifier.notifyListeners(NotifierType.UserFilterUpdated);
     }

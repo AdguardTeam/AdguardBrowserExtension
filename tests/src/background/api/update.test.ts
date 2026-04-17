@@ -18,6 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import browser, { type Storage } from 'webextension-polyfill';
 import {
     afterAll,
     afterEach,
@@ -29,6 +30,8 @@ import {
     vi,
     type MockInstance,
 } from 'vitest';
+
+import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 
 import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
 import { UpdateApi } from '../../../../Extension/src/background/api';
@@ -49,10 +52,11 @@ import {
     getStorageFixturesV12,
     getStorageFixturesV13,
     getStorageFixturesV14,
+    getStorageFixturesV15,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
-import { SbCache } from '../../../../Extension/src/background/storages';
+import { SbCache, hybridStorage } from '../../../../Extension/src/background/storages';
 import { FILTER_KEY_PREFIX } from '../../../../Extension/src/background/api/update/assets/old-filters-storage-v1';
 import { settingsValidator } from '../../../../Extension/src/background/schema';
 
@@ -186,6 +190,7 @@ describe('Update Api (without indexedDB)', () => {
             v12: getStorageFixturesV12(expires),
             v13: getStorageFixturesV13(expires),
             v14: getStorageFixturesV14(expires),
+            v15: getStorageFixturesV15(expires),
         };
 
         const targetVersion = Object.keys(migrationCasesData).pop() as keyof typeof migrationCasesData;
@@ -286,7 +291,63 @@ describe('Update Api (without indexedDB)', () => {
             expect((adguardSettings as any)['preserve-log-enabled']).toBe(false);
 
             // Verify schema version
-            expect(settings['schema-version']).toBe(14);
+            expect(settings['schema-version']).toBe(15);
+        });
+
+        describe.skipIf(!__IS_MV3__)('migrateFromV14toV15 (MV3)', () => {
+            const staticFilterId = 2;
+            const customFilterId = 1000;
+
+            let testLocalStorage: Storage.StorageArea;
+            let getManifestSpy: MockInstance;
+
+            beforeEach(async () => {
+                const [v14Data] = getStorageFixturesV14(expires);
+
+                if (!v14Data) {
+                    throw new Error('V14 fixture not found');
+                }
+
+                testLocalStorage = mockLocalStorage(v14Data);
+
+                getManifestSpy = vi.spyOn(browser.runtime, 'getManifest').mockReturnValue({
+                    ...browser.runtime.getManifest(),
+                    declarative_net_request: {
+                        rule_resources: [{
+                            id: getRuleSetId(staticFilterId),
+                            enabled: true,
+                            path: getRuleSetPath(staticFilterId),
+                        }],
+                    },
+                });
+
+                // Seed stale static filter entries and a non-static custom filter entry.
+                await hybridStorage.setMultiple({
+                    [`filterContent_${staticFilterId}`]: 'stale static filter data',
+                    [`conversionData_${staticFilterId}`]: 'stale conversion data',
+                    [`raw_filterrules_${staticFilterId}.txt`]: 'stale raw filter rules',
+                    [`filterContent_${customFilterId}`]: 'custom filter data',
+                });
+            });
+
+            afterEach(async () => {
+                getManifestSpy.mockRestore();
+                await testLocalStorage.clear();
+                await hybridStorage.clear();
+            });
+
+            it('removes stale static filter entries but preserves non-static filter data', async () => {
+                const runInfo = await getRunInfo();
+
+                await UpdateApi.update(runInfo);
+
+                expect(await hybridStorage.get(`filterContent_${staticFilterId}`)).toBeUndefined();
+                expect(await hybridStorage.get(`conversionData_${staticFilterId}`)).toBeUndefined();
+                expect(await hybridStorage.get(`raw_filterrules_${staticFilterId}.txt`)).toBeUndefined();
+
+                // Non-static custom filter data must NOT be removed.
+                expect(await hybridStorage.get(`filterContent_${customFilterId}`)).toBe('custom filter data');
+            });
         });
     });
 });

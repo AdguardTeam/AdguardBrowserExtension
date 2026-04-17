@@ -27,7 +27,7 @@ import { type ForwardFrom } from './forward';
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 14;
+export const APP_SCHEMA_VERSION = 15;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';

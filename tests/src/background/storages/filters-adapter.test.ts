@@ -37,6 +37,7 @@ import { mockLocalStorage } from '../../../helpers';
 import { FiltersStoragesAdapter } from '../../../../Extension/src/background/storages/filters-adapter';
 import {
     FiltersStorage as BrowserExtensionFiltersStorage,
+    RawFiltersStorage,
     hybridStorage,
 } from '../../../../Extension/src/background/storages';
 
@@ -93,6 +94,16 @@ describe.skipIf(__IS_MV3__)('FiltersStoragesAdapter (MV2)', () => {
         // Nothing happens if we try to remove a non-existent filter
         await FiltersStoragesAdapter.remove(1);
     });
+
+    it('setRaw', async () => {
+        const filterId = 1;
+        const rawFilterText = 'example.com##.ad\nexample.org##.banner';
+
+        await FiltersStoragesAdapter.setRaw(filterId, rawFilterText);
+
+        const result = await RawFiltersStorage.get(filterId);
+        expect(result).toBe(rawFilterText);
+    });
 });
 
 describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
@@ -103,6 +114,7 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
     let browserExtensionFiltersStorageSetSpy: MockInstance;
     let browserExtensionFiltersStorageRemoveSpy: MockInstance;
     let tsWebExtensionFiltersStorageHasSpy: MockInstance;
+    let rawFiltersStorageSetSpy: MockInstance;
 
     beforeEach(() => {
         localStorage = mockLocalStorage();
@@ -111,6 +123,8 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         browserExtensionFiltersStorageRemoveSpy = vi.spyOn(BrowserExtensionFiltersStorage, 'remove');
 
         tsWebExtensionFiltersStorageHasSpy = vi.spyOn(TsWebExtensionFiltersStorage, 'has');
+
+        rawFiltersStorageSetSpy = vi.spyOn(RawFiltersStorage, 'set');
 
         // Mock static filters
         getManifestSpy = vi.spyOn(browser.runtime, 'getManifest').mockReturnValue({
@@ -133,6 +147,8 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         browserExtensionFiltersStorageRemoveSpy.mockRestore();
 
         tsWebExtensionFiltersStorageHasSpy.mockRestore();
+
+        rawFiltersStorageSetSpy.mockRestore();
 
         getManifestSpy.mockRestore();
     });
@@ -169,6 +185,18 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         await FiltersStoragesAdapter.set(2, filter);
 
         expect(browserExtensionFiltersStorageSetSpy).not.toHaveBeenCalled();
+    });
+
+    it('setRaw should not save raw filter for static filters', async () => {
+        await FiltersStoragesAdapter.setRaw(2, rawFilter);
+
+        expect(rawFiltersStorageSetSpy).not.toHaveBeenCalled();
+    });
+
+    it('setRaw should save raw filter for non-static filters', async () => {
+        await FiltersStoragesAdapter.setRaw(1, rawFilter);
+
+        expect(rawFiltersStorageSetSpy).toHaveBeenCalledWith(1, rawFilter);
     });
 
     it('has', async () => {
