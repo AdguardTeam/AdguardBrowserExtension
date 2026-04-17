@@ -10,7 +10,8 @@ stages:
       final: false
       jobs:
         - Check Bundle Size
-        - Check translations
+#        TODO: Uncomment on release when translations are ready.
+#        - Check translations
   - Build:
       manual: false
       final: false
@@ -60,43 +61,44 @@ Check Bundle Size:
   requirements: &requirements
     - extension: 'true'
 
-Check translations:
-  key: LOCALESCHECK
-  other:
-    clean-working-dir: true
-  tasks:
-    - checkout:
-        force-clean-build: true
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
-            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
-            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
-            set -ex
-
-            # Fix mixed logs
-            exec 2>&1
-
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
-            ./bamboo-specs/scripts/clone-tsurlfilter.sh
-
-            export DOCKER_BUILDKIT=1
-
-            # Build with named context for tsurlfilter
-            # Docker checksums the context content for cache invalidation
-            docker build \
-              --file Dockerfile \
-              --progress plain \
-              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-              --build-context tsurlfilter=../tsurlfilter \
-              --target locales-check-output \
-              --output type=local,dest=output \
-              .
-  final-tasks:
-    - script: *cleanup-script
-  requirements: *requirements
+# TODO: Uncomment on release when translations are ready.
+# Check translations:
+#   key: LOCALESCHECK
+#   other:
+#     clean-working-dir: true
+#   tasks:
+#     - checkout:
+#         force-clean-build: true
+#     - script:
+#         interpreter: SHELL
+#         scripts:
+#           - |-
+#             # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+#             #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+#             #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+#             set -ex
+#
+#             # Fix mixed logs
+#             exec 2>&1
+#
+#             # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+#             ./bamboo-specs/scripts/clone-tsurlfilter.sh
+#
+#             export DOCKER_BUILDKIT=1
+#
+#             # Build with named context for tsurlfilter
+#             # Docker checksums the context content for cache invalidation
+#             docker build \
+#               --file Dockerfile \
+#               --progress plain \
+#               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+#               --build-context tsurlfilter=../tsurlfilter \
+#               --target locales-check-output \
+#               --output type=local,dest=output \
+#               .
+#   final-tasks:
+#     - script: *cleanup-script
+#   requirements: *requirements
 
 Build:
   key: BUILD
