@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -22,11 +22,19 @@
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadFilters } from './resources/download-filters';
 import { updateLocalScriptRulesForFirefox } from './resources/update-local-script-rules';
+import { updateTestcasesScriptRules } from './resources/update-local-test-script-rules';
 
 const resources = async () => {
+    const startTime = Date.now();
+
     console.log('Downloading resources...');
-    await downloadFilters();
-    console.log('Resources downloaded');
+    const count = await downloadFilters();
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    console.log(`Downloaded ${count} filter files in ${elapsed}s`);
+
+    console.log('Updating local script rules from testcases...');
+    await updateTestcasesScriptRules();
+    console.log('Local script rules from testcases updated');
 
     console.log('Updating local script rules...');
     await updateLocalScriptRulesForFirefox();

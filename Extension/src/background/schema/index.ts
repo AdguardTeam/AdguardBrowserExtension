@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -107,6 +107,8 @@ export { notificationTextRecordValidator, type NotificationTextRecord } from './
 export { safebrowsingStorageDataValidator, type SafebrowsingCacheData } from './safebrowsing';
 
 export { annoyancesConsentStorageDataValidator, type AnnoyancesConsentStorageData } from './annoyances-consent';
+
+export { searchPageAccessStorageDataValidator, type SearchPageAccessStorageData } from './search-page-access';
 
 export {
     appearanceValidator,

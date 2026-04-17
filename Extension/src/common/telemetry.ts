@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -49,6 +49,7 @@ export enum TelemetryScreenName {
     UserRulesScreen = 'user_rules_screen',
     AdditionalSettings = 'additional_settings',
     RulesLimits = 'rules_limits',
+    RulesLimitsError = 'rule_limits_error',
     AboutScreen = 'about_screen',
     FilteringLogScreen = 'filtering_log_screen',
 }
@@ -78,7 +79,9 @@ export enum TelemetryEventName {
     UserRulesSaveClick = 'user_rules_save_click',
     UserRulesImportClick = 'user_rules_import_click',
     CompareClick = 'compare_click',
+    CloseCompareClick = 'close_compare_click',
     RateUsClick = 'rate_us_click',
+    CloseRateUsClick = 'close_rate_us_click',
     TapEnableFilteringClick = 'tap_enable_filtering_click',
     TapCheckWebsiteSecurityClick = 'tap_check_website_security_click',
     TapReportIssueClick = 'tap_report_issue_click',
@@ -89,6 +92,9 @@ export enum TelemetryEventName {
     MenuDisableFilteringClick = 'menu_disable_filtering_click',
     MenuBlockAdsManuallyClick = 'menu_block_ads_manually_click',
     MenuOptionsClick = 'menu_options_click',
+    ReactivateFiltersClick = 'reactivate_filters_click',
+    GetTheAppClick = 'get_the_app_click',
+    CloseWarningClick = 'close_warning_click',
 }
 
 export type TelemetryActionToScreenMap = {
@@ -113,7 +119,9 @@ export type TelemetryActionToScreenMap = {
     [TelemetryEventName.UserRulesSaveClick]: TelemetryScreenName.UserRulesScreen;
     [TelemetryEventName.UserRulesImportClick]: TelemetryScreenName.UserRulesScreen;
     [TelemetryEventName.CompareClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.CloseCompareClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.RateUsClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.CloseRateUsClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.TapEnableFilteringClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.TapCheckWebsiteSecurityClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.TapReportIssueClick]: TelemetryScreenName.MainPage;
@@ -124,4 +132,7 @@ export type TelemetryActionToScreenMap = {
     [TelemetryEventName.MenuDisableFilteringClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.MenuBlockAdsManuallyClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.MenuOptionsClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.ReactivateFiltersClick]: TelemetryScreenName.RulesLimitsError;
+    [TelemetryEventName.GetTheAppClick]: TelemetryScreenName.RulesLimitsError;
+    [TelemetryEventName.CloseWarningClick]: TelemetryScreenName.RulesLimitsError;
 };

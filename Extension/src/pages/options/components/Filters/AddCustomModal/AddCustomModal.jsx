@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -37,8 +37,7 @@ import { addMinDelayLoader } from '../../../../common/components/helpers';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { AddCustomInput } from '../AddCustomInput';
 import theme from '../../../../common/styles/theme';
-
-import { ModalContentWrapper } from './ModalContentWrapper';
+import { ModalContentWrapper } from '../../../../common/components/ModalContentWrapper/ModalContentWrapper';
 
 import styles from './AddCustomModal.module.pcss';
 
@@ -128,6 +127,9 @@ const AddCustomModal = observer(({
                 setStepToRender(STEPS.ERROR);
             } else if (result.errorAlreadyExists) {
                 setError(translator.getMessage('options_antibanner_custom_filter_already_exists'));
+                setStepToRender(STEPS.ERROR);
+            } else if (result.errorHtmlContent) {
+                setError(translator.getMessage('options_add_custom_filter_modal_error_html_content'));
                 setStepToRender(STEPS.ERROR);
             } else if (!result.filter) {
                 setStepToRender(STEPS.ERROR);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -169,12 +169,19 @@ export class SettingsStore extends SettingsStoreCommon {
     }
 
     /**
-     * Checks for extension updates
+     * Checks for updates of the extension (always)
+     * and custom filters (optionally).
+     *
+     * Important: if there is no extension update found,
+     * custom filters are updated.
+     *
+     * Note: if extension update is found,
+     * custom filters will be updated after the extension reload.
      */
     // eslint-disable-next-line class-methods-use-this
-    @action
     async checkUpdates() {
         const start = Date.now();
+
         try {
             await messenger.checkUpdates();
         } catch (error) {
@@ -224,5 +231,20 @@ export class SettingsStore extends SettingsStoreCommon {
     @action
     setIsExtensionUpdateAvailable(isAvailable: boolean): void {
         this.isExtensionUpdateAvailable = isAvailable;
+    }
+
+    /**
+     * Checks MV3 rule limitations and updates UI warnings.
+     */
+    @override
+    override async checkLimitations(): Promise<void> {
+        const currentLimitsMv3 = await messenger.getCurrentLimits();
+
+        this.uiStore.setStaticFiltersLimitsWarning(currentLimitsMv3.staticFiltersData);
+        this.uiStore.setDynamicRulesLimitsWarning(currentLimitsMv3.dynamicRulesData);
+
+        if (this.uiStore.dynamicRulesLimitsWarning) {
+            this.uiStore.addRuleLimitsNotification(this.uiStore.dynamicRulesLimitsWarning);
+        }
     }
 }

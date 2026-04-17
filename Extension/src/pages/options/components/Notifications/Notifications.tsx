@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -22,8 +22,7 @@ import { observer } from 'mobx-react';
 import React, { useContext } from 'react';
 
 import { rootStore } from '../../stores/RootStore';
-
-import { Notification } from './Notification';
+import { Notification } from '../../../common/components/Notification';
 
 import './notifications.pcss';
 
@@ -46,7 +45,11 @@ export const Notifications = observer(() => {
     return (
         <div className="notifications">
             {reversedNotifications.map((notification) => (
-                <Notification key={notification.id} {...notification} />
+                <Notification
+                    key={notification.id}
+                    onRemove={(id) => uiStore.removeNotification(id)}
+                    {...notification}
+                />
             ))}
         </div>
     );

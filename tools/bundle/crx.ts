@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -72,6 +72,8 @@ const arePrivateKeysEqual = (keyA: PrivateKey, keyB: PrivateKey) => {
 
 /**
  * Retrieves certificate private key from specified path.
+ *
+ * @param path The path to the private key file.
  *
  * @returns Buffer of the private key
  *

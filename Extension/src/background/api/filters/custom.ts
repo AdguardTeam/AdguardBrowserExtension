@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,7 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import MD5 from 'crypto-js/md5';
-import { type CategoriesFilterData } from 'filter-categories-api';
 
 import { type DownloadResult } from '@adguard/filters-downloader/browser';
 
@@ -46,6 +45,8 @@ import { type FilterUpdateOptions } from './update';
 import { type FilterParsedData, FilterParser } from './parser';
 import { type FilterMetadata } from './main';
 import { CustomFilterLoader } from './custom/loader';
+import { type CategoriesFilterData } from './categories';
+import { isHtmlContent } from './content-validator';
 
 /**
  * Data transfer object for {@link CustomFilterApi} methods.
@@ -98,9 +99,21 @@ type CustomFilterAlreadyExistResponse = {
 };
 
 /**
+ * Response of {@link CustomFilterApi.getFilterInfo} for 'Add custom filter' modal window with data,
+ * returned if the downloaded content is an HTML document instead of a filter list.
+ */
+type CustomFilterHtmlContentResponse = {
+    errorHtmlContent: boolean;
+};
+
+/**
  * Response of {@link CustomFilterApi.getFilterInfo} for 'Add custom filter' modal window.
  */
-export type GetCustomFilterInfoResult = CreateCustomFilterResponse | CustomFilterAlreadyExistResponse | null;
+export type GetCustomFilterInfoResult =
+    | CreateCustomFilterResponse
+    | CustomFilterAlreadyExistResponse
+    | CustomFilterHtmlContentResponse
+    | null;
 
 /**
  * Parsed custom filter data from remote source.
@@ -177,9 +190,10 @@ export class CustomFilterApi {
      * @param title User-defined filter title.
      *
      * @returns
-     * One of three options:
+     * One of four options:
      * - {@link CreateCustomFilterResponse} on new filter subscription,
      * - {@link CustomFilterAlreadyExistResponse} if custom filter was added before
+     * - {@link CustomFilterHtmlContentResponse} if URL returned HTML content instead of filter rules
      * - null, if filter rules are not downloaded.
      */
     public static async getFilterInfo(url: string, title?: string): Promise<GetCustomFilterInfoResult> {
@@ -188,20 +202,28 @@ export class CustomFilterApi {
             return { errorAlreadyExists: true };
         }
 
-        const rules = await CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(url);
+        const downloadResult = await CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(url);
 
-        if (!rules) {
+        if (!downloadResult) {
             return null;
         }
 
-        const parsedData = FilterParser.parseFilterDataFromHeader(rules.filter);
+        if (isHtmlContent(downloadResult.filter)) {
+            logger.warn('[ext.CustomFilterApi.getFilterInfo]: URL returned HTML content instead of filter rules:', url);
+            return { errorHtmlContent: true };
+        }
+
+        const parsedData = FilterParser.parseFilterDataFromHeader(
+            downloadResult.filter,
+            downloadResult.headers?.lastModified,
+        );
 
         const filter = {
             ...parsedData,
             name: parsedData.name ? parsedData.name : title as string,
-            timeUpdated: parsedData.timeUpdated ? parsedData.timeUpdated : new Date().toISOString(),
+            timeUpdated: parsedData.timeUpdated,
             customUrl: url,
-            rulesCount: rules.filter.filter((rule) => rule.trim().indexOf('!') !== 0).length,
+            rulesCount: downloadResult.filter.filter((rule) => rule.trim().indexOf('!') !== 0).length,
         };
 
         return { filter };
@@ -564,6 +586,7 @@ export class CustomFilterApi {
             ...filterMetadata,
             version,
             checksum,
+            timeUpdated: new Date(timeUpdated).getTime(),
         };
 
         customFilterMetadataStorage.set(newFilterMetadata);
@@ -676,6 +699,10 @@ export class CustomFilterApi {
     /**
      * Loads filter data from specified url and parse it.
      *
+     * If the filter lacks a `! TimeUpdated:` metadata tag,
+     * the HTTP `Last-Modified` response header is used as a fallback timestamp
+     * for the filter's update time.
+     *
      * @param url Custom filter subscription url.
      * @param rawFilter Optional raw filter rules.
      * @param force If true filter data will be downloaded directly, not through patches.
@@ -691,7 +718,10 @@ export class CustomFilterApi {
 
         const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
 
-        const parsed = FilterParser.parseFilterDataFromHeader(downloadResult.filter);
+        const parsed = FilterParser.parseFilterDataFromHeader(
+            downloadResult.filter,
+            downloadResult.headers?.lastModified,
+        );
 
         const { version } = parsed;
 

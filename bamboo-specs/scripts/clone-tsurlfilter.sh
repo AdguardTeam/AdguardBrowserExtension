@@ -9,12 +9,17 @@ set -ex
 # Fix mixed logs
 exec 2>&1
 
-# This script is responsible for cloning the tsurlfilter repository.
-# It runs on CI (outside Docker) before docker build.
-# The cloned source is then passed to Docker via named build context.
-# Building happens inside Docker to leverage layer caching.
+# Clones the tsurlfilter repository and produces a clean Docker build context
+# containing only committed source files (no .git/ metadata).
 #
-# Output: ../tsurlfilter directory (sibling to browser-extension)
+# This is critical for Docker layer caching: Docker checksums every file in
+# the --build-context to decide if cached layers are valid. A raw git clone
+# includes .git/ (FETCH_HEAD, objects, index) which differs on every clone
+# even for the same commit — busting the cache and forcing a full tsurlfilter
+# rebuild (~3.5 min). By using `git archive`, we produce byte-identical output
+# across clones of the same ref, so Docker cache hits and the build takes ~0s.
+#
+# Output: ../tsurlfilter directory (sibling to browser-extension, source only)
 
 # Configuration
 # TSUrlFilter repository reference (branch, commit, or tag)
@@ -60,7 +65,7 @@ setup_ssh() {
     echo "SSH setup completed (using temp file with GIT_SSH_COMMAND)"
 }
 
-# Function to clone tsurlfilter repository
+# Function to clone tsurlfilter and produce clean source-only output
 clone_tsurlfilter() {
     if [ -z "${TSURLFILTER_REF}" ]; then
         echo "No TSURLFILTER_REF specified, creating empty directory"
@@ -77,19 +82,32 @@ clone_tsurlfilter() {
 
     setup_ssh
 
-    # Always clone fresh (CI cleans workspace anyway)
-    rm -rf "${TSURLFILTER_DIR}"
-    mkdir -p "${TSURLFILTER_DIR}"
-    cd "${TSURLFILTER_DIR}"
+    # Resolve to absolute path before cd-ing into the temp clone directory
+    ABS_TSURLFILTER_DIR="$(cd "$(dirname "${TSURLFILTER_DIR}")" && pwd)/$(basename "${TSURLFILTER_DIR}")"
+
+    rm -rf "${ABS_TSURLFILTER_DIR}"
+
+    CLONE_TMP=$(mktemp -d)
+    trap 'rm -rf "$CLONE_TMP"' EXIT
 
     echo "Cloning tsurlfilter with ref: ${TSURLFILTER_REF}"
 
-    git init
+    git init "$CLONE_TMP"
+    cd "$CLONE_TMP"
     git remote add origin "${TSURLFILTER_REPO}"
     git fetch --depth=1 origin "${TSURLFILTER_REF}"
     git checkout FETCH_HEAD
 
-    echo "tsurlfilter cloned successfully to ${TSURLFILTER_DIR}"
+    mkdir -p "${ABS_TSURLFILTER_DIR}"
+    git archive HEAD | tar -C "${ABS_TSURLFILTER_DIR}" -xf -
+
+    if [ ! -d "${ABS_TSURLFILTER_DIR}/packages" ]; then
+        echo "ERROR: git archive produced incomplete output (no packages/ directory)"
+        ls -la "${ABS_TSURLFILTER_DIR}"
+        exit 1
+    fi
+
+    echo "tsurlfilter cloned and prepared at ${ABS_TSURLFILTER_DIR} (source only, no .git)"
 }
 
 clone_tsurlfilter

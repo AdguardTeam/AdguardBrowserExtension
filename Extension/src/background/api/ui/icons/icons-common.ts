@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -150,10 +150,8 @@ export abstract class IconsApiCommon {
         try {
             await IconsApiCommon.setActionIcon(icon, tabId);
 
-            if (badgeText.length !== 0) {
-                await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
-                await browserAction.setBadgeText({ tabId, text: badgeText });
-            }
+            await browserAction.setBadgeBackgroundColor({ color: this.BADGE_COLOR });
+            await browserAction.setBadgeText({ tabId, text: badgeText });
         } catch (e) {
             logger.info(`[ext.IconsApiCommon.updateTabAction]: failed to update tab icon for tab ${tabId}:`, e);
         }
@@ -203,13 +201,16 @@ export abstract class IconsApiCommon {
          * We use a timeout to avoid waiting indefinitely for the promise to resolve.
          * Once timeout is detected, we skip awaiting setIcon calls.
          */
+        if (IconsApiCommon.setIconTimeoutDetected) {
+            browserAction
+                .setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId })
+                .catch((e) => logger.debug('[ext.IconsApiCommon.setIcon]: fire-and-forget setIcon failed:', e));
+            return;
+        }
+
         const setIconPromise = browserAction
             .setIcon({ imageData: await iconsCache.getIconImageData(iconPaths), tabId })
             .then(() => SetIconResult.Resolved);
-
-        if (IconsApiCommon.setIconTimeoutDetected) {
-            return;
-        }
 
         let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -222,7 +223,10 @@ export abstract class IconsApiCommon {
 
         const result = await Promise.race([setIconPromise, timeoutPromise]);
 
-        if (result === SetIconResult.Timeout) {
+        /**
+         * We check IconsApiCommon.setIconTimeoutDetected as well in case flag already set by another tab.
+         */
+        if (result === SetIconResult.Timeout && !IconsApiCommon.setIconTimeoutDetected) {
             logger.info('[ext.IconsApiCommon.setIcon]: setIcon promise did not resolve in time, likely 360 Browser. Skipping await for future calls.');
             IconsApiCommon.setIconTimeoutDetected = true;
         }

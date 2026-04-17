@@ -31,9 +31,11 @@ tasks:
           export DOCKER_BUILDKIT=1
 
           # Run integration tests for release.
+          # TODO: remove --no-cache-filter after AG-46639
           docker build \
             --file Dockerfile \
             --progress plain \
+            --no-cache-filter=integration-tests \
             --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
             --build-arg BUILD_TYPE=release \
             --build-context tsurlfilter=../tsurlfilter \
@@ -42,9 +44,11 @@ tasks:
             .
 
           # Run integration tests for beta.
+          # TODO: remove --no-cache-filter after AG-46639
           docker build \
             --file Dockerfile \
             --progress plain \
+            --no-cache-filter=integration-tests \
             --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
             --build-arg BUILD_TYPE=beta \
             --build-context tsurlfilter=../tsurlfilter \

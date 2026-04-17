@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,7 +18,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+} from 'react';
 import { observer } from 'mobx-react';
 
 import classNames from 'classnames';
@@ -27,8 +31,9 @@ import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { translator } from '../../../../common/translators/translator';
-import { UserRulesEditor } from '../../../common/components/UserRulesEditor';
+import { UserRulesEditor, UserRulesMenuKey } from '../../../common/components/UserRulesEditor';
 import { rootStore } from '../../stores/RootStore';
+import { SidebarMenuId } from '../../stores/UiStore';
 import { messenger } from '../../../services/messenger';
 import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnings';
 import { UserAgent } from '../../../../common/user-agent';
@@ -38,6 +43,14 @@ import { UserScriptsApiWarningForUserRules } from './UserScriptsApiWarningForUse
 import { RuleSyntaxLink } from './RuleSyntaxLink';
 
 import './styles.pcss';
+
+/**
+ * Maps UserRulesEditor menu option keys to sidebar menu IDs.
+ */
+const SIDEBAR_MENU_KEY_TO_ID = {
+    [UserRulesMenuKey.Import]: SidebarMenuId.ImportUserRules,
+    [UserRulesMenuKey.Export]: SidebarMenuId.ExportUserRules,
+};
 
 const UserRules = observer(() => {
     const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
@@ -57,13 +70,45 @@ const UserRules = observer(() => {
     // When we close fullscreen editor we should update limits warning message.
     useEffect(() => {
         const updateLimits = async () => {
-            if (__IS_MV3__ && !settingsStore.isFullscreenUserRulesEditorOpen) {
+            if (!settingsStore.isFullscreenUserRulesEditorOpen) {
                 await settingsStore.checkLimitations();
             }
         };
 
         updateLimits();
-    }, [settingsStore, uiStore, settingsStore.isFullscreenUserRulesEditorOpen]);
+    }, [settingsStore, settingsStore.isFullscreenUserRulesEditorOpen]);
+
+    const addNotification = useCallback(
+        (params) => uiStore.addNotification(params),
+        [uiStore],
+    );
+
+    const updateSetting = useCallback(
+        (settingId, value) => settingsStore.updateSetting(settingId, value),
+        [settingsStore],
+    );
+
+    const checkLimitations = useCallback(
+        () => settingsStore.checkLimitations(),
+        [settingsStore],
+    );
+
+    const sendTelemetryCustomEvent = useCallback(
+        (eventName, screenName) => telemetryStore.sendCustomEvent(eventName, screenName),
+        [telemetryStore],
+    );
+
+    /**
+     * Wraps the editor's sidebar menu options with the correct IDs
+     * before passing them to uiStore.
+     */
+    const setSidebarMenuOptions = useCallback((options) => {
+        const optionsWithIds = options.map((option) => ({
+            id: SIDEBAR_MENU_KEY_TO_ID[option.key],
+            ...option,
+        }));
+        uiStore.setSidebarMenuOptions(optionsWithIds);
+    }, [uiStore]);
 
     return (
         <>
@@ -102,7 +147,16 @@ const UserRules = observer(() => {
                         </button>
                     </div>
                 )
-                : (<UserRulesEditor />)}
+                : (
+                    <UserRulesEditor
+                        setShowLoader={uiStore.setShowLoader}
+                        addNotification={addNotification}
+                        updateSetting={updateSetting}
+                        checkLimitations={checkLimitations}
+                        sendTelemetryCustomEvent={sendTelemetryCustomEvent}
+                        setSidebarMenuOptions={setSidebarMenuOptions}
+                    />
+                )}
         </>
     );
 });

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -46,3 +46,4 @@ export { trustedDomainsStorage } from './trusted-domains';
 export { hitStatsStorage } from './hit-stats';
 export { annoyancesConsentStorage } from './annoyances-consent';
 export { browserStorage, hybridStorage } from './shared-instances';
+export { searchPageAccessStorage, type SearchPageAccessState } from './search-page-access';

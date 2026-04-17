@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -19,6 +19,7 @@
  */
 
 import React, {
+    useCallback,
     useContext,
     useEffect,
     useRef,
@@ -35,6 +36,7 @@ import { Editor, EditorLeaveModal } from '../../../common/components/Editor';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../../common/constants';
 import { NotificationType } from '../../../common/types';
 import { rootStore } from '../../stores/RootStore';
+import { SidebarMenuId } from '../../stores/UiStore';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
@@ -42,10 +44,13 @@ import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getFirstNonDisabledElement } from '../../../common/utils/dom';
+import { validateAllowlistEntries } from '../../../../common/utils/allowlist-domains';
 import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnings';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/components/Editor/savingFSM';
+import { SavingErrorMessage } from '../../../common/components/SavingButton';
 import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
 import { UserAgent } from '../../../../common/user-agent';
+import theme from '../../../common/styles/theme';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
@@ -62,6 +67,25 @@ const Allowlist = observer(() => {
     const editorRef = useRef(null);
     const inputRef = useRef(null);
     const actionsRef = useRef(null);
+
+    const importClickHandler = useCallback((e) => {
+        e.preventDefault();
+
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.AllowlistImportClick,
+            TelemetryScreenName.WebsiteAllowListScreen,
+        );
+
+        if (!inputRef.current) {
+            return;
+        }
+
+        inputRef.current.click();
+    }, [telemetryStore]);
+
+    const exportClickHandler = () => {
+        exportData(ExportTypes.Allowlist);
+    };
 
     useEffect(() => {
         (async () => {
@@ -91,7 +115,21 @@ const Allowlist = observer(() => {
             editorRef.current.editor.setValue(settingsStore.allowlist, CURSOR_POSITION_AFTER_INSERT);
         }
         settingsStore.setAllowlistEditorContentChangedState(false);
-    }, [settingsStore.allowlist, settingsStore]);
+
+        uiStore.setSidebarMenuOptions([
+            {
+                id: SidebarMenuId.ImportAllowlist,
+                title: translator.getMessage('options_userfilter_import'),
+                onClick: importClickHandler,
+            },
+            {
+                id: SidebarMenuId.ExportAllowlist,
+                title: translator.getMessage('options_userfilter_export'),
+                onClick: exportClickHandler,
+                disabled: !settingsStore.allowlist,
+            },
+        ]);
+    }, [importClickHandler, settingsStore.allowlist, settingsStore, uiStore]);
 
     const isSaving = settingsStore.savingAllowlistState === SavingFSMState.Saving;
     const hasUnsavedChanges = !isSaving && settingsStore.allowlistEditorContentChanged;
@@ -105,30 +143,6 @@ const Allowlist = observer(() => {
 
     const switchId = AllowlistEnabled;
     const switchTitleId = `${switchId}-title`;
-
-    /**
-     * Handles import button click.
-     *
-     * @param e Click event.
-     */
-    const importClickHandler = (e) => {
-        e.preventDefault();
-
-        telemetryStore.sendCustomEvent(
-            TelemetryEventName.AllowlistImportClick,
-            TelemetryScreenName.WebsiteAllowListScreen,
-        );
-
-        if (!inputRef.current) {
-            return;
-        }
-
-        inputRef.current.click();
-    };
-
-    const exportClickHandler = () => {
-        exportData(ExportTypes.Allowlist);
-    };
 
     const saveAllowlist = async (allowlist) => {
         if (!__IS_MV3__) {
@@ -147,7 +161,22 @@ const Allowlist = observer(() => {
 
         try {
             const content = await handleFileUpload(file, 'txt');
-            await saveAllowlist(settingsStore.allowlist.concat('\n', content));
+            const combined = settingsStore.allowlist.concat('\n', content);
+
+            const { valid, invalidEntries } = validateAllowlistEntries(combined);
+
+            if (!valid) {
+                uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: translator.getMessage(
+                        'options_allowlist_invalid_entries',
+                        { entries: invalidEntries.join(', ') },
+                    ),
+                });
+                return;
+            }
+
+            await saveAllowlist(combined);
             setAllowlistRerender(true);
         } catch (e) {
             logger.debug('[ext.Allowlist]: error:', e);
@@ -184,7 +213,22 @@ const Allowlist = observer(() => {
 
         if (settingsStore.allowlistEditorContentChanged) {
             const value = editorRef.current.editor.getValue();
+
+            const { valid, invalidEntries } = validateAllowlistEntries(value);
+
+            if (!valid) {
+                uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: translator.getMessage(
+                        'options_allowlist_invalid_entries',
+                        { entries: invalidEntries.join(', ') },
+                    ),
+                });
+                return;
+            }
+
             await saveAllowlist(value);
+            setAllowlistRerender(true);
         }
     };
 
@@ -258,9 +302,10 @@ const Allowlist = observer(() => {
                     subtitle={unsavedChangesSubtitle}
                 />
             )}
+            <SavingErrorMessage savingState={settingsStore.savingAllowlistState} />
             <div
                 ref={actionsRef}
-                className="actions actions--grid actions--buttons actions--allowlist"
+                className="actions actions--grid actions--buttons"
             >
                 <AllowlistSavingButton onClick={saveClickHandler} />
                 <input
@@ -272,7 +317,7 @@ const Allowlist = observer(() => {
                 />
                 <button
                     type="button"
-                    className="button button--l button--transparent actions__btn"
+                    className={`button button--l button--transparent actions__btn ${theme.common.hideOnMobile}`}
                     onClick={importClickHandler}
                     title={translator.getMessage('options_userfilter_import')}
                 >
@@ -280,7 +325,7 @@ const Allowlist = observer(() => {
                 </button>
                 <button
                     type="button"
-                    className="button button--l button--transparent actions__btn"
+                    className={`button button--l button--transparent actions__btn ${theme.common.hideOnMobile}`}
                     onClick={exportClickHandler}
                     disabled={!settingsStore.allowlist}
                     title={translator.getMessage('options_userfilter_export')}

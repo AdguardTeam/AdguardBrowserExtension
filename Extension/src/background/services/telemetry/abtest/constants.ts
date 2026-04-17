@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -41,6 +41,9 @@ export type ExperimentRegistry = Readonly<VariantCache>;
  */
 export const EXPERIMENT_REGISTRY: ExperimentRegistry = {
     experiment_1: 'AG-51010-limitations-browser',
+    experiment_2: 'AG-52622-general-settings-promo',
 };
 
 export const AG_51010_LIMITATIONS_BROWSER_B = 'AG-51010-limitations-browser-b';
+
+export const AG_52622_GENERAL_SETTINGS_PROMO_B = 'AG-52622-general-settings-promo-b';

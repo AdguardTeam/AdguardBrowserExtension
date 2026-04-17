@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -26,7 +26,7 @@ import { rootStore } from '../../../stores/RootStore';
 import { formatDate } from '../helpers';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
-import './filters-update.pcss';
+import styles from './filters-update.module.pcss';
 
 export const FiltersUpdate = observer(() => {
     const { settingsStore, telemetryStore } = useContext(rootStore);
@@ -50,19 +50,16 @@ export const FiltersUpdate = observer(() => {
     };
 
     return (
-        <div className="filters-update">
-            <div className="filters-update__info">
-                <div className="filters-update__title">
-                    {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
-                </div>
-                <div className="filters-update__desc">
-                    {formatDate(latestCheckTime)}
-                </div>
+        <div className={styles.filtersUpdate}>
+            <div className={styles.info}>
+                {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
+                <br />
+                {translator.getMessage('options_antibanner_updated', { date: formatDate(latestCheckTime) })}
             </div>
             <button
                 type="button"
                 onClick={updateClickHandler}
-                className="button button--m button--transparent filters-update__btn"
+                className={`button button--m button--transparent ${styles.updateBtn}`}
                 title={translator.getMessage('options_update_antibanner_filters')}
                 disabled={!isUpdateFiltersButtonActive || filtersUpdating}
             >
