@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -55,7 +55,7 @@ export const enum ForwardAction {
     /**
      * Main supported release version — "AdGuard AdBlocker".
      */
-    ChromeStore = 'chrome_store',
+    ChromeMv3Store = 'chrome_store',
 
     // TODO: can be removed in few months after v5.0 MV3 release
     // since it will no longer be used
@@ -65,7 +65,7 @@ export const enum ForwardAction {
      * Previously known as "AdGuard AdBlocker MV3 Experimental",
      * currently — "AdGuard AdBlocker (MV3 Beta)".
      */
-    ChromeMv3Store = 'chrome_mv3_store',
+    ChromeMv3BetaStore = 'chrome_mv3_store',
 
     /**
      * Supported MV2 release version.
@@ -86,6 +86,9 @@ export const enum ForwardAction {
     CustomFiltersMv3Disabled = 'custom_mv3_disabled',
     // IMPORTANT: do not change the value as tds is already configured for that specific string.
     UserScriptsApiRequired = 'developer_mode_required',
+    DesktopAppPromoWindows = 'desktop_app_promo_windows',
+    DesktopAppPromoMac = 'desktop_app_promo_mac',
+    DesktopAppPromoLinux = 'desktop_app_promo_linux',
 }
 
 /**

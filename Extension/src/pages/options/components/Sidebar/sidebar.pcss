@@ -17,16 +17,20 @@
     overflow-x: hidden;
 
     &__menu {
-        display: block;
+        display: flex;
         position: fixed;
         top: 0;
+        padding: 24px 16px 16px 16px;
         z-index: var(--z-idx-options-sidebar);
-        height: 40px;
+        height: 65px;
         width: 100%;
         background: var(--fills-backgrounds-page-background-default);
-        box-shadow: var(--small-light-shadow-br);
         font-size: 14px;
         line-height: 18px;
+
+        @media (min-width: 640px) {
+            height: 40px;
+        }
     }
 
     &__link-logo {
@@ -41,8 +45,8 @@
 
     &__menu-button {
         cursor: pointer;
-        margin: 6px 9px;
         border: 0;
+        padding: 0;
         background-color: transparent;
 
         &[aria-expanded="true"] {
@@ -50,7 +54,6 @@
             top: 16px;
             right: 16px;
             margin: 0;
-            padding: 0;
             pointer-events: none;
             opacity: 0;
 
@@ -59,6 +62,12 @@
                 opacity: 1;
             }
         }
+    }
+
+    &__actions {
+        display: flex;
+        gap: 16px;
+        margin-left: auto;
     }
 
     &__overlay {

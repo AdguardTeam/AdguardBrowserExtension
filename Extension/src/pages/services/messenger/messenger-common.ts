@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -32,7 +32,6 @@ import {
     type AddAndEnableFilterMessage,
     type DisableFilterMessage,
     type ApplySettingsJsonMessage,
-    type SetFilteringLogWindowStateMessage,
     type SaveUserRulesMessage,
     type SetConsentedFiltersMessage,
     type GetIsConsentedFilterMessage,
@@ -65,6 +64,7 @@ import {
     type OpenSafebrowsingTrustedMessage,
     type SendTelemetryPageViewEventMessage,
     type SendTelemetryCustomEventMessage,
+    type FilteringLogWindowState,
 } from '../../../common/messages';
 import { type NotifierType } from '../../../common/constants';
 import { type CreateEventListenerResponse } from '../../../background/services/event';
@@ -319,6 +319,18 @@ export abstract class MessengerCommon {
     };
 
     /**
+     * Sends a message to the background page to get all filters
+     * with current version timestamps and state data.
+     * Lightweight alternative to {@link getOptionsData} for refreshing
+     * only filter timestamps.
+     *
+     * @returns Promise that resolves with the list of filters.
+     */
+    getCategoriesFilters = async (): Promise<ExtractMessageResponse<MessageType.GetCategoriesFilters>> => {
+        return this.sendMessage(MessageType.GetCategoriesFilters);
+    };
+
+    /**
      * Sends a message to the background page to change the user setting.
      *
      * @param settingId Setting identifier.
@@ -425,25 +437,25 @@ export abstract class MessengerCommon {
     };
 
     /**
+     * Sends a message to the background page to save filtering log window state.
+     *
+     * @param windowState Window state (position and size) to save.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    saveFilteringLogWindowState = async (
+        windowState: FilteringLogWindowState,
+    ): Promise<ExtractMessageResponse<MessageType.SetFilteringLogWindowState>> => {
+        return this.sendMessage(MessageType.SetFilteringLogWindowState, { windowState });
+    };
+
+    /**
      * Sends a message to the background page to reset the blocked ads statistics.
      *
      * @returns Promise that resolves after the message is sent.
      */
     resetStatistics = async (): Promise<ExtractMessageResponse<MessageType.ResetBlockedAdsCount>> => {
         return this.sendMessage(MessageType.ResetBlockedAdsCount);
-    };
-
-    /**
-     * Sends a message to the background page to set the filtering log window state.
-     *
-     * @param windowState State of the filtering log window.
-     *
-     * @returns Promise that resolves after the message is sent.
-     */
-    setFilteringLogWindowState = async (
-        windowState: SetFilteringLogWindowStateMessage['data']['windowState'],
-    ): Promise<ExtractMessageResponse<MessageType.SetFilteringLogWindowState>> => {
-        return this.sendMessage(MessageType.SetFilteringLogWindowState, { windowState });
     };
 
     /**
@@ -1059,6 +1071,8 @@ export abstract class MessengerCommon {
      * Sends a message to the background page to mark url as trusted and ignore
      * safebrowsing checks for it.
      *
+     * @param url URL to mark as trusted.
+     *
      * @returns Promise that resolves with the initialization data for the frame script.
      */
     openSafebrowsingTrusted = async (
@@ -1115,5 +1129,58 @@ export abstract class MessengerCommon {
      */
     removeTelemetryOpenedPage = async (pageId: string): Promise<void> => {
         return this.sendMessage(MessageType.RemoveTelemetryOpenedPage, { pageId });
+    };
+
+    /**
+     * Dismisses the search page access notification permanently.
+     *
+     * @returns Promise that resolves after the notification is dismissed.
+     */
+    dismissSearchPageAccessNotification = async (): Promise<void> => {
+        return this.sendMessage(MessageType.DismissSearchPageAccessNotification);
+    };
+
+    /**
+     * Checks whether there is a pending import configuration in the background.
+     *
+     * @returns `true` if there is a pending import config, `false` otherwise.
+     */
+    isPendingForImport = async (): Promise<
+    ExtractMessageResponse<MessageType.IsPendingForImport>
+    > => {
+        return this.sendMessage(MessageType.IsPendingForImport);
+    };
+
+    /**
+     * Returns whether the pending import configuration requests WebRTC blocking.
+     *
+     * @returns `true` if the pending config sets `blockWebrtc` to `true`.
+     */
+    getPendingImportBlockWebrtc = async (): Promise<
+    ExtractMessageResponse<MessageType.GetPendingImportBlockWebrtc>
+    > => {
+        return this.sendMessage(MessageType.GetPendingImportBlockWebrtc);
+    };
+
+    /**
+     * Applies the pending import configuration.
+     *
+     * @returns `true` if the import succeeded, `false` otherwise.
+     */
+    applyImportConfiguration = async (): Promise<
+    ExtractMessageResponse<MessageType.ApplyImportConfiguration>
+    > => {
+        return this.sendMessage(MessageType.ApplyImportConfiguration);
+    };
+
+    /**
+     * Cancels and discards the pending import configuration.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    cancelImportConfiguration = async (): Promise<
+    ExtractMessageResponse<MessageType.CancelImportConfiguration>
+    > => {
+        return this.sendMessage(MessageType.CancelImportConfiguration);
     };
 }

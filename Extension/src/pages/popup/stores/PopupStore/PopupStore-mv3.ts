@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -43,7 +43,7 @@ export class PopupStore extends PopupStoreCommon {
     updateNotification: NotificationParams | null = null;
 
     @observable
-    isExtensionUpdateAvailable = false;
+    isExtensionUpdateAvailable: boolean = false;
 
     /**
      * Whether the extension update is checking or is updating now.
@@ -63,12 +63,15 @@ export class PopupStore extends PopupStoreCommon {
         const options = await messenger.getExtensionStatusForPopup();
 
         this.configureExtensionUpdates(options);
+        this.setIsPopupDataReceived(true);
     }
 
     /**
      * Retrieves extension status including filter limits, update availability,
      * and update notifications. Sets up success/failure notifications for
      * extension updates that occurred during popup reload.
+     *
+     * @param options Extension status response data.
      */
     @action
     private configureExtensionUpdates(options: GetExtensionStatusForPopupResponse): void {
@@ -99,10 +102,10 @@ export class PopupStore extends PopupStoreCommon {
             this.setUpdateNotification({
                 type: NotificationType.Error,
                 text: translator.getMessage('update_failed_text'),
-                button: {
+                buttons: [{
                     title: translator.getMessage('update_failed_try_again_btn'),
                     onClick: this.checkUpdates,
-                },
+                }],
             });
         }
     }
@@ -114,8 +117,9 @@ export class PopupStore extends PopupStoreCommon {
     checkUpdates = async () => {
         const start = Date.now();
 
+        this.setUpdateNotification(null);
+
         try {
-            this.setUpdateNotification(null);
             await messenger.checkUpdates();
         } catch (error: unknown) {
             logger.debug('[ext.PopupStore]: failed to check updates in popup: ', error);

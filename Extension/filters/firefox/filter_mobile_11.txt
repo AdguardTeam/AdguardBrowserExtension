@@ -1,9 +1,9 @@
-! Checksum: HvWfx/BQYwzxeHiRKTqblg
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1772724344-3600.patch
+! Checksum: /rLhbb3TY6ZWp+ugKI2Mfw
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1774423841-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.68.7
-! TimeUpdated: 2026-03-05T15:22:36+00:00
+! Version: 2.0.68.42
+! TimeUpdated: 2026-03-25T07:27:31+00:00
 ! Expires: 10 days (update frequency)
 ||banner.bet365partners.com^
 ||playwire.com^
@@ -88,13 +88,15 @@
 ||54.222.186.106^
 ||plugin.mobopay.baidu.com^
 ||mo.freeindoapp.com^
-||vod-mplayer.sooplive.co.kr^
-||reqde.sooplive.co.kr^
-||adballoon.sooplive.co.kr^
-||deapi.sooplive.co.kr^
+||vod-mplayer.sooplive.com^
+||reqde.sooplive.com^
+||adballoon.sooplive.com^
+||deapi.sooplive.com^
 ||startup.mobile.yandex.net^
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
+||ad.bestools.group^
+||ad.zankhana.ltd^
 ||afs.googlesyndication.com^
 ||pob-mob2.websearchbrowser.com^
 ||ucads.ucweb.com^
@@ -1409,7 +1411,7 @@ deviantart.com#$#div[class*="dp-ad-"] { height: 0!important; width: 0!important;
 ||youtube.com/api/stats/ads
 ||graph.facebook.com/network_ads
 ://yandex.ru/appcry|
-||sooplive.co.kr/data/af_app_ad_mobile.js
+||sooplive.com/data/af_app_ad_mobile.js
 @@||ads.cricbuzz.com/adserver/units/mobile/set_ads_values.php
 @@||api.branch.io/v1/open
 @@||ingress.com/intel?$document
@@ -1474,7 +1476,6 @@ matomedane.jp#@##AdvHeader
 ||googletagservices.com/tag/js/gpt.js$script,redirect=googletagservices-gpt,important,domain=ukr.net
 drive2.com,drive2.ru#@#div[itemtype^="http://schema.org/"] ~ div[data-role][data-target] ~ div:not(:last-child)
 drive2.com,drive2.ru#@#div[itemtype="http://schema.org/BlogPosting"] ~ div:not(:last-child)
-itest.5ch.net#@#.js-cardview_ad-320x180
 milesplit.com#@#.sticky-ad
 mrmoneymustache.com#@#.custom-ad
 @@||snssdk.com/video/drm/v*/play_licenses
@@ -1499,7 +1500,6 @@ niji-gazo.com#@#.ad-block
 @@||leanplum.com^$domain=nbc.com|leanplum.com
 @@||pics.porndroids.com^
 @@||api.gamer.com.tw/mobile_app/anime/*/stat_ad.php
-cancam.jp#@#.overlay-ad
 @@||meta.wikimedia.org/wiki^
 @@||lk-subscr.tricolor.tv^$document
 @@||pwapi.washingtonpost.com/*&__amp_source_origin
@@ -1630,6 +1630,45 @@ qlife.jp,wiki.yjsnpi.nu,opinion.cw.com.tw,aidoly.net,celeby-media.net,kyun2-girl
 chip.de,gamesworld.de,fnn.jp##.Ad
 medipalette.lotte.co.jp,genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
+health.tvbs.com.tw##div[data-testid="ad-uptop-mobile-wrapper"]
+noticias.yahoo.com##div.sticky.bottom-0:has(> div.ad-container)
+support.huawei.com##.mobile-common-doc-footer
+liteapks.com###ad-unit-1
+aydindenge.com.tr##.mad
+ole.com.ar#$#.bannerTopHeader ~ section[class^="sc-"]:has(> div[class^="sc-"] div.right) { top: 0 !important; }
+ole.com.ar#$##__next > header { padding-top: 50px !important; }
+ole.com.ar##article > div[class^="sc-"]:has(> div[id^="div-gpt-ad"])
+moviecrow.com###top-banner
+www.nytimes.com#%#//scriptlet('trusted-replace-argument', 'matchMedia.call', '1', '"none"', 'max-width')
+twpornstars.com##.block-inline.mobile
+m.slashdot.org###vibe-code
+yesasia.ru##div[style="display:block;height:600px;overflow:hidden;"]
+mwed.jp##div[style="margin-top:60px; width:300px; margin-inline:auto;"]
+cancam.jp##.sp-template-field
+123865.com##.appBottomBtn ~ .ant-carousel
+123865.com##.ant-modal-root:has(> .tuia-modal-wrap)
+cdn.ampproject.org##.ad-control-left
+by-them.com##.page_bottom_fixed_ad_wap
+trilltrill.jp##.RecruitmentBoxNew
+lezzet.com.tr##.db-ads
+trashbox.ru#%#//scriptlet('set-constant', 'bw_no_ad', 'noopFunc')
+suki-kira.com#$##im_interstitial_b { display: none !important; }
+suki-kira.com#$#body[style="overflow: hidden;"] { overflow: auto !important; }
+||ogfap.com/_astro/AdContainer.
+ogfap.com#%#//scriptlet('trusted-set-local-storage-item', 'ad-shown', '$now$')
+ogfap.com#%#//scriptlet('trusted-set-local-storage-item', 'ad-modal-visible', '$now$')
+shorts.xxx#$?#.boxads:not([data-creator]) { remove: true; }
+onlytik.com#%#//scriptlet('set-constant', 'ads_every_x_videos', 'undefined')
+onlytik.com#%#//scriptlet('prevent-addEventListener', 'click', 'clkUnder')
+adultgamesworld.com###showinmob
+minuteinbox.com##.addBlock
+marieclaire.com.tr##div[style^="width:320px;"][style*="height:100px"]
+player4me.vip#%#//scriptlet('abort-on-property-write', 'cache_loader')
+dalealbo.cl#$#.top-sticky-wrapper { display: none !important; }
+dalealbo.cl#$#header { top: 0 !important; }
+vidara.to,vidara.so##.ad-download-box
+gubdaily.ru#$?#.gub-ad-mob { remove: true; }
+gubdaily.ru##div[class^="ai-viewport"]:has(> .code-block > .gub-ad-article)
 medex.com.bd##.campaign-block
 ascii.jp###amaznav
 fullvideosporn.com#?#.video-header:contains(Advertisement)
@@ -1709,7 +1748,6 @@ thetoc.gr##.mg_underhero
 m.yelp.com##div[class*="new-serpia-"] > ol > li:has(a[href^="/adredir?"])
 m.yelp.com##div[class*="new-serpia-"] > ol > li:has(> div[class*="sponsored-icon"])
 4j.com###Games_TopAdDiv
-mydealz.de##div[class]:has(> .ad--bg:only-child)
 amazon.*###softlines-btf-substitute-zone-container-3_feature_div
 amazon.*###softlines-mobile-btf-discovery-zone-T3_feature_div
 accuradio.com##div[class^="MobileBottomAd"]
@@ -2821,7 +2859,7 @@ nikkansports.com###photoScrollText
 transtxxx.com##div[class^="video-conten"] > div[class]:first-child > div[class]:first-child > div[class]:first-child:has(> div[class] > div[id][class]:empty)
 transfer.smt.docomo.ne.jp##.d2c_header[style="height:250px"]
 dengekionline.com##div[class^="BasicLayout"][class*="BannerForSp_"]
-itest.5ch.net#$#.ad_300x250 { position: absolute !important; left: -3000px !important; }
+itest.5ch.io#$#.ad_300x250 { position: absolute !important; left: -3000px !important; }
 eclat.hpplus.jp###dfp_overlay
 milk-key.com##.ams-place
 raenonx.cc##.grid:has(> .overflow-hidden > .absolute > .adsbygoogle)
@@ -5036,7 +5074,6 @@ sport.sky.de##.sdc-site-au--amp > .sdc-site-au__label
 repubblica.it##div[id^="advHook-"]
 m.gazeta.ru##div[id^="gazeta-adv"]
 m.gazeta.ru##div[itemprop="articleBody"] > div[style^="min-height:"]
-5ch.net##.ads_conten_main
 tz.de##a[href^="https://www.outbrain.com/what-is/default/"]
 tz.de##a[href^="https://www.outbrain.com/what-is/default/"] + div[style="margin-top: 5px;"]
 tz.de##div[class="amp-flying-carpet-text-border"]

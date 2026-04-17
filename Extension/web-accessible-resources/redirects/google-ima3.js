@@ -8,7 +8,7 @@
     }
     function GoogleIma3(source) {
         var _window$google$ima;
-        var VERSION = "3.453.0";
+        var VERSION = "3.746.0";
         var ima = {};
         var AdDisplayContainer = function AdDisplayContainer(containerElement) {
             var divElement = document.createElement("div");
@@ -315,6 +315,9 @@
             getContentType: function getContentType() {
                 return "";
             },
+            getCreativeId: function getCreativeId() {
+                return "";
+            },
             getCreativeAdId: function getCreativeAdId() {
                 return "";
             },
@@ -617,10 +620,10 @@
     }
     function noopFunc() {}
     function logMessage(e, o) {
-        var n = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], g = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: l, verbose: v} = e;
-        if (n || v) {
-            var a = console.log;
-            g ? a(`${l}: ${o}`) : a(`${l}:`, o);
+        var r = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], a = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: n, verbose: g} = e;
+        if (r || g) {
+            var i = console.log;
+            a ? i(`${n}: ${o}`) : Array.isArray(o) ? i(`${n}:`, ...o) : i(`${n}:`, o);
         }
     }
     const updatedArgs = args ? [].concat(source).concat(args) : [ source ];

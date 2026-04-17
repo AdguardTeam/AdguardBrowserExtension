@@ -83,7 +83,7 @@ Ensure that the following software is installed on your computer:
 ### Available Scripts
 
 | Command | Description |
-|---|---|
+| ------- | ----------- |
 | `pnpm dev [browser]` | Development build (all browsers if none specified) |
 | `pnpm dev <browser> --watch` | Development build with file watching |
 | `pnpm beta [browser]` | Beta build |
@@ -1010,7 +1010,7 @@ This ensures the layer order is established before any `style-loader` injections
 Optional environment variables are configured via a `.env` file (copy from `.env.example`):
 
 | Variable | Description |
-|---|---|
+| -------- | ----------- |
 | `ARTIFACTORY_DOMAIN` | Artifactory domain for downloading blocking pages |
 | `OPENAI_API_KEY` | OpenAI API key for detecting dangerous script rules during `pnpm resources` |
 | `ANALYZE` | Set to `true` to generate bundle analysis reports during builds |

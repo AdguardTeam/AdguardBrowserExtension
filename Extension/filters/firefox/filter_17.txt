@@ -1,9 +1,9 @@
-! Checksum: RuF+URMyQ4+navQcxGikPg
-! Diff-Path: ../patches/17/17-s-1772720705-3600.patch
+! Checksum: ytnWwt5xsngtTqyVxsbpRw
+! Diff-Path: ../patches/17/17-s-1774316554-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.12
-! TimeUpdated: 2026-03-05T14:22:05+00:00
+! Version: 2.0.13.24
+! TimeUpdated: 2026-03-24T01:39:30+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -225,8 +225,6 @@ $removeparam=cx_recsWidget
 $removeparam=mkt_tok
 ! Mindbox email tracking
 $removeparam=mindbox-message-key
-! Klaviyo onsite tracking
-$removeparam=_kx
 ! https://github.com/AdguardTeam/AdguardFilters/issues/123544
 ! ad click tracking
 ?uclick=*&uclickhash=$removeparam
@@ -499,6 +497,23 @@ $removeparam=tduid
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/227596
+||duck.ai^$removeparam=origin
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-16099608
+||t.ly^$removeparam=ref
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-16004356
+||musescore.com^$removeparam=feature
+! paypal.com
+! https://github.com/AdguardTeam/AdguardFilters/issues/225822
+||paypal.com^$removeparam=utm_unptid
+||paypal.com^$removeparam=ppid
+||paypal.com^$removeparam=unptid
+||paypal.com^$removeparam=unp_tpcid
+||paypal.com^$removeparam=page
+||paypal.com^$removeparam=link_ref
+||paypal.com^$removeparam=rsta
+||paypal.com^$removeparam=cnac
+||paypal.com^$removeparam=pgrp
 ! languagetool.org
 ||languagetool.org^$removeparam=host
 ||languagetool.org^$removeparam=matomo
@@ -875,6 +890,11 @@ $removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
 ||duckduckgo.com^$removeparam=vis
 ||duckduckgo.com^$removeparam=perf_id
 ||duckduckgo.com^$removeparam=parent_perf_id
+!
+! A/B testing
+||duckduckgo.com^$removeparam=/^experiment_/
+! https://github.com/AdguardTeam/AdguardFilters/issues/227413#issuecomment-4107238932
+! ||duckduckgo.com^$removeparam=atb
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/208058
 ||olybet.lv^$removeparam=ref
@@ -2247,7 +2267,7 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ! SK Telecom (skt.sh domain used as their own URL shortening service )
 ||skt.sh/common/share/bridge?$removeparam=referer
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-4966523
-||login.sooplive.co.kr^$removeparam=szFrom
+||login.sooplive.com^$removeparam=szFrom
 ! moffme.com?source=gl&medium=moffme&campaign=article_2699
 ||moffme.com^$removeparam=source
 ||moffme.com^$removeparam=medium
@@ -3471,6 +3491,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/227175
+@@||iforms.americanexpress.com^$removeparam=cuid
 ! canadacompanyregistry.com - utm_source is used to lookup the company name; removing it breaks the page
 @@||canadacompanyregistry.com^$removeparam=utm_campaign
 ! https://github.com/uBlockOrigin/uAssets/issues/31494

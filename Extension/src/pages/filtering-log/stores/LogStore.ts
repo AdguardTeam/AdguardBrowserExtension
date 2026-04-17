@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -73,7 +73,7 @@ const enum EventTypeFilters {
 /**
  * Filter for the filtering log.
  */
-type SingleLogFilter = {
+export type SingleLogFilter = {
     /**
      * Filter id.
      */
@@ -103,11 +103,11 @@ type SingleLogFilter = {
 /**
  * Group of filters for the filtering log.
  */
-type LogFilters = {
+export type LogFilters = {
     /**
      * Flag that indicates whether all filters are enabled.
      */
-    allButtonEnabled: boolean;
+    areAllButtonsEnabled: boolean;
 
     /**
      * List of filters.
@@ -116,7 +116,7 @@ type LogFilters = {
 };
 
 const initMiscellaneousFilters: LogFilters = {
-    allButtonEnabled: true,
+    areAllButtonsEnabled: true,
     filters: [
         {
             id: MiscellaneousFilters.Regular,
@@ -152,7 +152,7 @@ const initMiscellaneousFilters: LogFilters = {
 };
 
 const initRequestSourceFilters: LogFilters = {
-    allButtonEnabled: true,
+    areAllButtonsEnabled: true,
     filters: [
         {
             id: RequestSourceFilters.FirstParty,
@@ -170,7 +170,7 @@ const initRequestSourceFilters: LogFilters = {
 };
 
 const initEventTypesFilters: LogFilters = {
-    allButtonEnabled: true,
+    areAllButtonsEnabled: true,
     filters: [
         {
             id: EventTypeFilters.Html,
@@ -258,7 +258,7 @@ type TabsMap = Record<string, FilteringLogTabInfo>;
 /**
  * Selector tab type.
  */
-type SelectorTab = {
+export type SelectorTab = {
     /**
      * Tab title.
      */
@@ -293,6 +293,9 @@ class LogStore {
 
     @observable
     isPreserveLogModalOpen = false;
+
+    @observable
+    isCustomizeModalOpen = false;
 
     @observable
     selectedEvent: UIFilteringLogEvent | null = null;
@@ -535,6 +538,11 @@ class LogStore {
         });
     };
 
+    @action
+    setIsCustomizeModalOpen = (value: boolean) => {
+        this.isCustomizeModalOpen = value;
+    };
+
     @computed
     get events() {
         const filteredEvents = this.filteringEvents.filter((filteringEvent) => {
@@ -565,10 +573,10 @@ class LogStore {
             // blocked CSP reports should be filtered as blocked requests in the filtering log. AG-24613
             const filteringEventType = getStatusMode(filteringEvent);
 
-            const isAllowlisted = filteringEventType === StatusMode.ALLOWED
-                || filteringEventType === StatusMode.ALLOWED_STEALTH;
-            const isBlocked = filteringEventType === StatusMode.BLOCKED;
-            const isModified = filteringEventType === StatusMode.MODIFIED;
+            const isAllowlisted = filteringEventType === StatusMode.Allowed
+                || filteringEventType === StatusMode.AllowedStealth;
+            const isBlocked = filteringEventType === StatusMode.Blocked;
+            const isModified = filteringEventType === StatusMode.Modified;
             const isRegular = !isAllowlisted && !isBlocked && !isModified;
 
             const { sourceRules } = filteringEvent?.declarativeRuleInfo || {};

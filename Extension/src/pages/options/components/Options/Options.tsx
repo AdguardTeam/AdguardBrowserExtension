@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -35,6 +35,7 @@ import {
     EVENTS,
     initialize,
     getOptionRoute,
+    disposeEventPauseController,
 } from 'options';
 
 import { rootStore } from '../../stores/RootStore';
@@ -43,6 +44,7 @@ import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { Loader } from '../../../common/components/Loader';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { Icons } from '../ui/Icons';
+import { ImportConfigurationDialog } from '../ImportConfigurationDialog/ImportConfigurationDialog';
 
 import '../../styles/styles.pcss';
 
@@ -115,6 +117,7 @@ export const Options = observer(() => {
 
         return () => {
             removeListenerCallback();
+            disposeEventPauseController();
         };
     }, [settingsStore, uiStore]);
 
@@ -127,6 +130,7 @@ export const Options = observer(() => {
             <CommonIcons />
             <Icons />
             <Loader showLoader={uiStore.showLoader} />
+            <ImportConfigurationDialog />
             <div className="page">
                 <RouterProvider
                     // We are opting out these features and hiding the warning messages by setting it to false.

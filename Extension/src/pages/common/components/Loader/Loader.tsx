@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -51,7 +51,7 @@ export const Loader = ({ showLoader }: LoaderParams) => {
                         <div className="loader__content">
                             <Icon
                                 id="#loading"
-                                className="icon--24"
+                                className="icon--24 icon--green-default"
                                 animationCondition={showLoader}
                                 animationClassName="icon--loading"
                             />

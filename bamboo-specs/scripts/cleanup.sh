@@ -41,8 +41,8 @@ done
 # Clean entire workspace (including dotfiles and .git)
 find . -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
 
-# Note: tsurlfilter is now cloned inside vendor/tsurlfilter (not ../tsurlfilter)
-# It gets cleaned by the find command above
+# Clean tsurlfilter directory (cloned as sibling by clone-tsurlfilter.sh)
+rm -rf ../tsurlfilter
 
 # Restore artifacts
 for f in $ARTIFACTS; do

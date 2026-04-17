@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -34,3 +34,13 @@ export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';
  * Timeout for closing the notification, same as in the styles animation.
  */
 export const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
+
+/**
+ * Mobile screen breakpoint in px.
+ */
+export const MOBILE_BREAKPOINT_PX = 640;
+
+/**
+ * Tablet screen breakpoint in px.
+ */
+export const TABLET_BREAKPOINT_PX = 1024;

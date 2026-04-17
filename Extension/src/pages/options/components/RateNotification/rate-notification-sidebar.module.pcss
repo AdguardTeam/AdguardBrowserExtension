@@ -1,0 +1,39 @@
+.container {
+    position: relative;
+    margin: auto 12px 0;
+    padding: 24px;
+    border-radius: 8px;
+    background-color: var(--fills-backgrounds-page-background-default);
+    box-shadow: var(--big-light-shadow-br);
+}
+
+.close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    opacity: 0;
+    transition: var(--t2);
+
+    .container:hover &,
+    .container:focus-within &,
+    &:focus-visible {
+        opacity: 1;
+    }
+
+    @media (--to-mobile) {
+        opacity: 1;
+    }
+}
+
+.description {
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.rateButton {
+    width: 100%;
+}

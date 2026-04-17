@@ -190,6 +190,8 @@ const mainBuild = async (options: CommanderOptions) => {
 
 /**
  * Firefox Standalone build without the update.json step (for parallel execution).
+ *
+ * @param options Commander options.
  */
 const bundleFirefoxStandaloneOnly = (options: CommanderOptions) => {
     const rspackConfig = getRspackConfig(Browser.FirefoxStandalone, getBuildOptions(options));
@@ -218,6 +220,8 @@ const chrome = async (options: CommanderOptions) => {
  * Runs CRX build of Chrome MV2 for mobile testing
  * should be run separately since it takes too much time
  * so it is better to run as a separate (parallel) job in test specs.
+ *
+ * @param options The commander options.
  */
 const chromeCrx = async (options: CommanderOptions) => {
     try {

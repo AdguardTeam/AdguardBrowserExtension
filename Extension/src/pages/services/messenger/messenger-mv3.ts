@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -37,6 +37,8 @@ export class Messenger extends MessengerCommon {
 
     /**
      * Sends a message to the background page to update extension.
+     *
+     * @param UpdateExtensionMessageMv3Data Message data with from field.
      */
     updateExtension = async (
         { from }: UpdateExtensionMessageMv3['data'],

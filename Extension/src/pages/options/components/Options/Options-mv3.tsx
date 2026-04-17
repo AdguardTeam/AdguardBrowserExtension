@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -43,11 +43,11 @@ import { COMMON_EVENTS, createCommonMessageHandler } from './Options-common';
 import { OptionsLayout } from './Options-layout';
 
 /**
- * Creates a message handler with extension update state change support
- * Handles all common events plus ExtensionUpdateStateChange
+ * Creates a message handler for the options page
+ * Handles incoming messages from the background script
  *
- * @param settingsStore - Settings store instance
- * @param uiStore - UI store instance for managing notifications
+ * @param settingsStore Settings store instance
+ * @param uiStore UI store instance
  *
  * @returns Async function that handles LongLivedConnectionCallbackMessage events including update state changes
  */
@@ -82,10 +82,10 @@ export const createMessageHandler = (
                 uiStore.addNotification({
                     type: NotificationType.Error,
                     text: translator.getMessage('update_failed_text'),
-                    button: {
+                    buttons: [{
                         title: translator.getMessage('update_failed_try_again_btn'),
                         onClick: settingsStore.checkUpdates,
-                    },
+                    }],
                 });
                 break;
             }
@@ -118,8 +118,8 @@ export const createMessageHandler = (
  * Initializes the options page with filter limits checking
  * Loads options data, checks for filter limits exceeded, and validates rule limitations
  *
- * @param settingsStore - Settings store instance
- * @param uiStore - UI store instance for displaying limit notifications
+ * @param settingsStore Settings store instance
+ * @param uiStore UI store instance for displaying limit notifications
  *
  * @returns Promise resolving to true if initialization succeeded, false otherwise
  */
@@ -157,6 +157,13 @@ export const EVENTS = [
     ...COMMON_EVENTS,
     NotifierType.ExtensionUpdateStateChange,
 ];
+
+/**
+ * Cleanup function for MV3 - no-op since MV3 doesn't use event pause controller.
+ */
+export const disposeEventPauseController = (): void => {
+    // No cleanup needed for MV3
+};
 
 /**
  * Returns the route configuration for options page

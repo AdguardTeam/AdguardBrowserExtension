@@ -37,9 +37,11 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     echo "Building tsurlfilter from source..." && \
     pnpm config set store-dir /pnpm-store && \
     cd /tsurlfilter/packages/tswebextension && \
-    pnpm install && \
-    npx lerna run build --scope=@adguard/tswebextension --include-dependencies && \
-    npx lerna run build --scope=@adguard/dnr-rulesets --include-dependencies
+    pnpm install \
+        --frozen-lockfile \
+        --prefer-offline \
+        --ignore-scripts && \
+    npx lerna run build --scope=@adguard/tswebextension --include-dependencies
 
 # ============================================================================
 # Stage: deps
@@ -93,7 +95,7 @@ COPY --from=tsurlfilter-build /tsurlfilter /tsurlfilter
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm config set store-dir /pnpm-store && \
-    ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter --with-dnr-rulesets
+    ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
 
 # ============================================================================
 # Stage: dev-build
@@ -154,7 +156,7 @@ FROM linked-deps AS lint
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run lint with timeout (cached until source changes).
-    ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint && \
+    ./bamboo-specs/scripts/timeout-wrapper.sh 180s pnpm lint && \
     mkdir -p /out && \
     touch /out/lint.txt
 
@@ -226,7 +228,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     if [ -d tests-reports ]; then \
       cp -R tests-reports/. /out/tests-reports/; \
     fi; \
-    # Rename test report to match JUnit parser pattern (mirrors integration-tests.sh).
+    # Rename test report to match JUnit parser pattern.
     if [ -f /out/tests-reports/integration-tests.xml ]; then \
         mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-${BUILD_TYPE}.xml; \
     fi; \
@@ -235,6 +237,41 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 
 FROM scratch AS integration-tests-output
 COPY --from=integration-tests /out/ /
+
+# ============================================================================
+# Stage: integration-tests-standalone
+# Self-contained integration tests that build chrome-mv3 dev extension
+# internally, without requiring pre-built artifacts from another job.
+# Used by the tests plan where all jobs run in a single parallel stage.
+# ============================================================================
+FROM linked-deps AS integration-tests-standalone
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Build only chrome-mv3 dev extension with zip.
+    pnpm dev chrome-mv3 --zip && \
+    # For correct link playwright browsers.
+    pnpm exec playwright install && \
+    mkdir -p /out/tests-reports && \
+    set +e; \
+    # Run integration tests.
+    pnpm test:integration dev; \
+    EXIT_CODE=$?; \
+    if [ -d tests-reports ]; then \
+      cp -R tests-reports/. /out/tests-reports/; \
+    fi; \
+    # Rename test report to match JUnit parser pattern.
+    if [ -f /out/tests-reports/integration-tests.xml ]; then \
+        mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-dev.xml; \
+    fi; \
+    echo ${EXIT_CODE} > /out/exit-code.txt; \
+    exit 0
+
+FROM scratch AS integration-tests-standalone-output
+COPY --from=integration-tests-standalone /out/ /
 
 # ============================================================================
 # Stage: beta-build

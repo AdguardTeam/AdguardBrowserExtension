@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -39,7 +39,7 @@ import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constant
 import { addMinDelayLoader } from '../../../common/components/helpers';
 import { Popover } from '../../../common/components/ui/Popover';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
-import { getStaticWarningMessage } from '../Warnings/messages';
+import { getStaticWarningMessage } from '../../../common/utils/rules-limits-messages';
 import { type CategoriesFilterData } from '../../../../background/api/filters/categories';
 
 import { formatDate } from './helpers';
@@ -89,6 +89,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         description,
         version,
         lastCheckTime,
+        lastScheduledCheckTime,
         lastUpdateTime,
         homepage,
         enabled,
@@ -288,23 +289,23 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                                         }
                                         {translator.getMessage('options_filters_filter_updated')}
                                         {' '}
-                                        {lastUpdateTime
-                                            ? formatDate(lastUpdateTime)
-                                            : formatDate(lastCheckTime)}
+                                        {formatDate(Math.max(
+                                            lastUpdateTime || 0,
+                                            lastCheckTime || 0,
+                                            lastScheduledCheckTime || 0,
+                                        ))}
                                     </div>
                                 </div>
-                                <div>
-                                    <a
-                                        className="filter__link"
-                                        href={homepage || customUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        tabIndex={disabled ? -1 : 0}
-                                        aria-hidden={disabled}
-                                    >
-                                        {translator.getMessage('options_filters_filter_link')}
-                                    </a>
-                                </div>
+                                <a
+                                    className="filter__link"
+                                    href={homepage || customUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    tabIndex={disabled ? -1 : 0}
+                                    aria-hidden={disabled}
+                                >
+                                    {translator.getMessage('options_filters_filter_link')}
+                                </a>
                                 <FilterTags
                                     filterId={filterId}
                                     tags={tags}

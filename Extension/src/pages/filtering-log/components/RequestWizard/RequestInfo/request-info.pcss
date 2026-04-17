@@ -22,6 +22,14 @@
         font-size: 14px;
         line-height: 22px;
         font-weight: 600;
+
+        &--spaced {
+            margin-bottom: 8px;
+        }
+
+        @media (--to-mobile) {
+            font-size: 16px;
+        }
     }
 
     &__value {
@@ -39,6 +47,10 @@
 
         &.scrollable {
             overflow-x: scroll;
+        }
+
+        &--text {
+            word-break: break-word;
         }
 
         pre {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -20,46 +20,9 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
-
 import { SavingFSMState } from '../Editor/savingFSM';
 import { translator } from '../../../../common/translators/translator';
-import { Icon } from '../ui/Icon';
 import { UserAgent } from '../../../../common/user-agent';
-
-const renderSavingState = (savingRulesState: SavingFSMState) => {
-    type IndicatorTextMapType = {
-        [key in SavingFSMState]: string | null;
-    };
-
-    const indicatorTextMap: IndicatorTextMapType = {
-        [SavingFSMState.Idle]: null,
-        [SavingFSMState.Saved]: translator.getMessage('options_editor_indicator_saved'),
-        [SavingFSMState.Saving]: translator.getMessage('options_editor_indicator_saving'),
-    };
-
-    const indicatorText = indicatorTextMap[savingRulesState as SavingFSMState];
-
-    if (!indicatorText) {
-        return null;
-    }
-
-    const indicatorClassnames = classnames('editor__label', {
-        'editor__label--saved': savingRulesState === SavingFSMState.Saved,
-    });
-
-    return (
-        <div className={indicatorClassnames}>
-            {/* TODO: check editor__icon styles later, it may no longer be needed */}
-            <Icon
-                id="#tick"
-                className="icon--18 icon--green-default editor__icon"
-                aria-hidden="true"
-            />
-            {indicatorText}
-        </div>
-    );
-};
 
 type SavingButtonParams = {
     /**
@@ -78,19 +41,32 @@ type SavingButtonParams = {
     contentChanged: boolean;
 };
 
+type IndicatorTextMapType = {
+    [key in SavingFSMState]: string | null;
+};
+
 export const SavingButton = ({ onClick, savingState, contentChanged }: SavingButtonParams) => {
+    const indicatorTextMap: IndicatorTextMapType = {
+        [SavingFSMState.Idle]: translator.getMessage('options_editor_save'),
+        [SavingFSMState.Saved]: translator.getMessage('options_editor_indicator_saved'),
+        [SavingFSMState.Saving]: translator.getMessage('options_editor_indicator_saving'),
+        [SavingFSMState.Error]: translator.getMessage('options_editor_save'),
+    };
+
+    const isSaving = savingState === SavingFSMState.Saving;
+    const indicatorText = indicatorTextMap[savingState];
+
     return (
         <div className="actions__saving">
-            {!__IS_MV3__ && renderSavingState(savingState)}
             <button
                 type="button"
                 className="button button--l button--green-bg actions__btn actions__btn--saving"
                 onClick={onClick}
                 title={translator.getMessage('options_editor_save')}
-                disabled={!contentChanged}
+                disabled={!contentChanged || isSaving}
                 aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+S' : 'Ctrl+S'}
             >
-                {translator.getMessage('options_editor_save')}
+                {indicatorText}
             </button>
         </div>
     );

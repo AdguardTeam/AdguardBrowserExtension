@@ -39,6 +39,7 @@ export const CONTENT_SCRIPT_START_PATH = path.resolve(__dirname, '../../Extensio
 export const ASSISTANT_INJECT_PATH = path.resolve(__dirname, '../../Extension/pages/assistant-inject');
 export const CONTENT_SCRIPT_END_PATH = path.resolve(__dirname, '../../Extension/pages/content-script-end');
 export const SUBSCRIBE_PATH = path.resolve(__dirname, '../../Extension/pages/subscribe');
+export const IMPORT_CONFIGURATION_PATH = path.resolve(__dirname, '../../Extension/pages/import-configuration');
 export const THANKYOU_PATH = path.resolve(__dirname, '../../Extension/pages/thankyou');
 export const FULLSCREEN_USER_RULES_PATH = path.resolve(__dirname, '../../Extension/pages/fullscreen-user-rules');
 export const BLOCKING_SAFEBROWSING_PATH = path.resolve(__dirname, '../../Extension/pages/blocking/safebrowsing');
