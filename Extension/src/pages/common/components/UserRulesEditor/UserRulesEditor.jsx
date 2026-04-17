@@ -51,12 +51,13 @@ import { usePreventUnload } from '../../hooks/usePreventUnload';
 import { NotificationType } from '../../types';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
 import { SavingErrorMessage } from '../SavingButton';
-import theme from '../../styles/theme';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { ToggleFullscreenButton } from './ToggleFullscreenButton';
 import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { userRulesEditorStore } from './UserRulesEditorStore';
+
+import theme from '../../styles/theme';
 
 /**
  * Keys identifying sidebar menu options emitted by UserRulesEditor.

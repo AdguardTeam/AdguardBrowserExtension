@@ -25,6 +25,7 @@ import cn from 'classnames';
 
 import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../ui/Icon';
+
 import theme from '../../styles/theme';
 
 type ConfirmModalParams = {

@@ -124,9 +124,9 @@ module.exports = {
                     { 'pattern': 'extension-update-service', 'group': 'internal', 'position': 'after' },
                     // Place rules-limits-service alias after internal
                     { 'pattern': 'rules-limits-service', 'group': 'internal', 'position': 'after' },
-                    // Separate group for all .pcss styles
+                    // Separate group for all .pcss styles and theme
                     // eslint-disable-next-line max-len, object-curly-newline
-                    { 'pattern': '*.pcss', 'group': 'object', 'patternOptions': { 'matchBase': true }, 'position': 'after' },
+                    { 'pattern': '{*.pcss,theme}', 'group': 'object', 'patternOptions': { 'matchBase': true }, 'position': 'after' },
                 ],
                 'pathGroupsExcludedImportTypes': ['builtin', 'react'],
                 'newlines-between': 'always',
