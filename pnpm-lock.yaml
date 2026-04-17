@@ -148,8 +148,8 @@ importers:
         version: 3.4.0(zod@3.24.4)
     devDependencies:
       '@adguard/dnr-rulesets':
-        specifier: ~4.1
-        version: 4.1.20260416150128
+        specifier: 4.2.0-beta
+        version: 4.2.0-beta
       '@adguard/eslint-plugin-logger-context':
         specifier: ^1.0.1
         version: 1.0.1
@@ -417,10 +417,6 @@ importers:
 
 packages:
 
-  '@adguard/agtree@4.0.4':
-    resolution: {integrity: sha512-KKT6Trau8dYJCmfLSihcKCk/kTVQ5qWHVO/chhNR+eSx3pJjZGJ+qLVkp1LCPdnccWIzWCO0b8a0nz0RhdhbMg==}
-    engines: {node: '>=22'}
-
   '@adguard/agtree@4.1.0-beta':
     resolution: {integrity: sha512-AWX3ytc5aqfxALISkPC4wYHs9La/wyaCjR5Oou6Nx9ATeoa3lvA3ICDheFx0TjbK2lvb/wHX310bk6zbEVNFog==}
     engines: {node: '>=22'}
@@ -436,8 +432,8 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  '@adguard/dnr-rulesets@4.1.20260416150128':
-    resolution: {integrity: sha512-CWuB9q7HMFvSdfw9Mfz6Xoq2DT/fpA7IH9ZaP/sUEIJcgvHYzXpOCqYK9FNo6kBtlkwRM03KvD58g2UefBqSdA==}
+  '@adguard/dnr-rulesets@4.2.0-beta':
+    resolution: {integrity: sha512-QXgk7T+YCLwEm3IhCIGn4TUL8j3uI8JR0tOgW4JAiDb69tY+7Iuc9bJdkcSb7f36/EdXYSyTNlvw/yX6aGZ6Zw==}
     hasBin: true
 
   '@adguard/eslint-plugin-logger-context@1.0.1':
@@ -459,9 +455,6 @@ packages:
     resolution: {integrity: sha512-yMtEJfThxN9rEYm2Zg3X8jUKaPYq5wByc90JbMspSWJo7MXw664gTvLD7/wijl6y79VSuAs77bXUIgBXutMp7A==}
     engines: {node: '>=10'}
 
-  '@adguard/scriptlets@2.3.1':
-    resolution: {integrity: sha512-E60vnKYv4GIlvtAVriyf3SYZk/u10shlfogTJFQa8ZKS2HHMuRAUTk8Msn42mycmD/Kf9P9J17l1SvgwVJ+otg==}
-
   '@adguard/scriptlets@2.4.0-beta':
     resolution: {integrity: sha512-wwcQdQdrNM87kZTK2+xK59hoDVqz2HFWPxmrpJbln7AvTpICeXsJQAqxqN/RkD90h0VhhYsoKrhQ9FzfwDS4dQ==}
 
@@ -470,13 +463,6 @@ packages:
 
   '@adguard/translate@2.0.1':
     resolution: {integrity: sha512-wMtm1p6/wzsoiRteIKLtUIX9zPDEQBz7wOyt7eRNr4EGxbcCMccPN0KgNVb0DXvKtvGKzOBrrarIMaScBAMNNQ==}
-
-  '@adguard/tsurlfilter@4.0.5':
-    resolution: {integrity: sha512-s/Iv86M9KUXXAfeyps/hmEbX5tismn19lAVqIkFptBujnrV6uEY2bxthzRsBWxY39Y8ZFwrjhe9nyZ3HILbU3g==}
-    engines: {node: '>=22'}
-    hasBin: true
-    peerDependencies:
-      '@adguard/re2-wasm': 1.2.0
 
   '@adguard/tsurlfilter@5.0.0-beta.1':
     resolution: {integrity: sha512-RtmfOu1523aJ4Sx/xNDOKAmikAg9vAaLIH6LdcbIQDF/1R2aP/k3ztOsLpUKMI8dXERhOkxKKTycBt47FFKbzQ==}
@@ -5931,18 +5917,6 @@ packages:
 
 snapshots:
 
-  '@adguard/agtree@4.0.4':
-    dependencies:
-      '@adguard/css-tokenizer': 1.2.0
-      camelcase-keys: 7.0.2
-      clone-deep: 4.0.1
-      glob-to-regexp: 0.4.1
-      is-ip: 3.1.0
-      json5: 2.2.3
-      sprintf-js: 1.1.3
-      tldts: 5.7.112
-      zod: 3.24.4
-
   '@adguard/agtree@4.1.0-beta':
     dependencies:
       '@adguard/css-tokenizer': 1.2.0
@@ -5964,12 +5938,12 @@ snapshots:
       commander: 11.1.0
       crypto-js: 4.2.0
 
-  '@adguard/dnr-rulesets@4.1.20260416150128':
+  '@adguard/dnr-rulesets@4.2.0-beta':
     dependencies:
-      '@adguard/agtree': 4.0.4
+      '@adguard/agtree': 4.1.0-beta
       '@adguard/logger': 2.0.0
       '@adguard/re2-wasm': 1.2.0
-      '@adguard/tsurlfilter': 4.0.5(@adguard/re2-wasm@1.2.0)
+      '@adguard/tsurlfilter': 5.0.0-beta.1(@adguard/re2-wasm@1.2.0)
       axios: 1.15.0
       chokidar: 4.0.3
       commander: 12.1.0
@@ -5995,12 +5969,6 @@ snapshots:
 
   '@adguard/re2-wasm@1.2.0': {}
 
-  '@adguard/scriptlets@2.3.1':
-    dependencies:
-      '@adguard/agtree': 4.0.4
-      '@types/trusted-types': 2.0.7
-      js-yaml: 3.14.1
-
   '@adguard/scriptlets@2.4.0-beta':
     dependencies:
       '@adguard/agtree': 4.1.0-beta
@@ -6010,23 +5978,6 @@ snapshots:
   '@adguard/text-encoding@0.8.3': {}
 
   '@adguard/translate@2.0.1': {}
-
-  '@adguard/tsurlfilter@4.0.5(@adguard/re2-wasm@1.2.0)':
-    dependencies:
-      '@adguard/agtree': 4.0.4
-      '@adguard/css-tokenizer': 1.2.0
-      '@adguard/logger': 2.0.0
-      '@adguard/re2-wasm': 1.2.0
-      '@adguard/scriptlets': 2.3.1
-      cidr-tools: 6.4.2
-      commander: 12.1.0
-      is-cidr: 4.0.2
-      is-ip: 3.1.0
-      lru-cache: 11.0.2
-      punycode: 2.3.1
-      tldts: 5.7.112
-      zod: 3.24.4
-      zod-validation-error: 3.4.0(zod@3.24.4)
 
   '@adguard/tsurlfilter@5.0.0-beta.1(@adguard/re2-wasm@1.2.0)':
     dependencies:
