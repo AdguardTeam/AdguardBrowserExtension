@@ -24,15 +24,14 @@ import { BrowserUtils } from '../../../utils/browser-utils';
 import { logger } from '../../../../common/logger';
 import { UserAgent } from '../../../../common/user-agent';
 import { SettingOption, type RegularFilterMetadata } from '../../../schema';
-import { AntiBannerFiltersId } from '../../../../common/constants';
+import { AntiBannerFiltersId, NEWLINE_CHAR_UNIX } from '../../../../common/constants';
 import {
     metadataStorage,
     filterStateStorage,
     settingsStorage,
-    FiltersStorage,
-    RawFiltersStorage,
     filterVersionStorage,
 } from '../../../storages';
+import { FiltersStoragesAdapter } from '../../../storages/filters-adapter';
 import { network } from '../../network';
 import { FiltersApi } from '../main';
 import { FilterParser } from '../parser';
@@ -44,8 +43,8 @@ import { FilterParser } from '../parser';
  * installation and updating common filters data, stored in next storages:
  * - {@link filterStateStorage} filters states;
  * - {@link filterVersionStorage} filters versions;
- * - {@link FiltersStorage} filter rules.
- * - {@link RawFiltersStorage} raw filter rules, before applying directives.
+ * - {@link FiltersStoragesAdapter} filter rules.
+ * - {@link FiltersStoragesAdapter} raw filter rules, before applying directives.
  */
 export class CommonFilterApiCommon {
     /**
@@ -93,7 +92,7 @@ export class CommonFilterApiCommon {
         forceRemote: boolean,
     ): Promise<RegularFilterMetadata> {
         const isOptimized = settingsStorage.get(SettingOption.UseOptimizedFilters);
-        const oldRawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
+        const oldRawFilter = await FiltersStoragesAdapter.getOriginal(filterUpdateOptions.filterId);
 
         const {
             filter,
@@ -169,8 +168,12 @@ export class CommonFilterApiCommon {
         // Note: we should join array of rules here, because they contain
         // preprocessed directives, e.g. including another filter via `!#include`
         // directive.
-        await FiltersStorage.set(filterUpdateOptions.filterId, filter.join('\n'));
-        await RawFiltersStorage.set(filterUpdateOptions.filterId, rawFilter);
+        // In MV3, static filters are managed by TSWebExtension, so we skip
+        // writing them to the extension's own storage.
+        if (!FiltersStoragesAdapter.isStaticFilterId(filterUpdateOptions.filterId)) {
+            await FiltersStoragesAdapter.set(filterUpdateOptions.filterId, filter.join(NEWLINE_CHAR_UNIX));
+            await FiltersStoragesAdapter.setRaw(filterUpdateOptions.filterId, rawFilter);
+        }
 
         return filterMetadata;
     }

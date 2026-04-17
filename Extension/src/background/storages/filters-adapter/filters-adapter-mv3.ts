@@ -67,11 +67,30 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     public static override async set(filterId: number, filter: string | FilterList): Promise<void> {
         // Do not allow to modify static filters in MV3.
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            logger.error(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
+            logger.warn(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
             return;
         }
 
         await FiltersStoragesAdapterCommon.set(filterId, filter);
+    }
+
+    /**
+     * Sets specified raw filter list with the specified ID in the storage.
+     *
+     * @note This method does nothing in MV3 version if the filter ID is a static filter ID,
+     * because static filters are managed by TSWebExtension and do not use the diff/patch update path.
+     *
+     * @param filterId Filter id.
+     * @param filter Raw filter rules.
+     */
+    public static override async setRaw(filterId: number, filter: string): Promise<void> {
+        // Do not allow to modify raw filter lists for static filters in MV3.
+        if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
+            logger.warn(`[ext.FiltersStoragesAdapter.setRaw]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
+            return;
+        }
+
+        await FiltersStoragesAdapterCommon.setRaw(filterId, filter);
     }
 
     /** @inheritdoc */
@@ -93,7 +112,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      */
     public static override async remove(filterId: number): Promise<void> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            logger.error(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
+            logger.warn(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
             return;
         }
 
@@ -101,11 +120,11 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     }
 
     /**
-     * Gets the raw filter list content for the specified filter ID.
+     * Gets the preprocessed filter list content for the specified filter ID.
      *
      * @param filterId Filter id.
      *
-     * @returns Raw filter list content or `undefined` if the filter list does not exist.
+     * @returns Preprocessed filter list content or `undefined` if the filter list does not exist.
      */
     public static override async getFilterContent(filterId: number): Promise<string | undefined> {
         const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
@@ -135,7 +154,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      *
      * @returns True if the given ID represents a static filter, otherwise false.
      */
-    private static isStaticFilterId(filterId: number): boolean {
+    public static override isStaticFilterId(filterId: number): boolean {
         const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
 
         return staticFilterIds !== null && staticFilterIds.has(filterId);

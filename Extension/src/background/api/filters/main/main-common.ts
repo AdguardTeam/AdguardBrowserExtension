@@ -42,9 +42,8 @@ import {
     FilterStateStorage,
     GroupStateStorage,
     FilterVersionStorage,
-    FiltersStorage,
-    RawFiltersStorage,
 } from '../../../storages';
+import { FiltersStoragesAdapter } from '../../../storages/filters-adapter';
 import {
     type Metadata,
     type I18nMetadata,
@@ -679,8 +678,7 @@ export abstract class FiltersApiCommon {
     private static async removeFilter(filterId: number): Promise<void> {
         filterVersionStorage.delete(filterId);
         filterStateStorage.delete(filterId);
-        await FiltersStorage.remove(filterId);
-        await RawFiltersStorage.remove(filterId);
+        await FiltersStoragesAdapter.remove(filterId);
     }
 
     /**

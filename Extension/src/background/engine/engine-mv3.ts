@@ -51,8 +51,8 @@ import { UserRulesService } from '../services/userrules';
 import { NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
-import { FiltersStorage } from '../storages/filters';
 import { CommonFilterUtils } from '../../common/common-filter-utils';
+import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 import { isUserScriptsApiSupported } from '../../common/user-scripts-api/user-scripts-api-mv3';
 
 import { type TsWebExtensionEngine } from './interface';
@@ -287,7 +287,7 @@ export class Engine implements TsWebExtensionEngine {
                 .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
             customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-                let filterList = await FiltersStorage.get(filterId);
+                let filterList = await FiltersStoragesAdapter.get(filterId);
 
                 if (!filterList) {
                     filterList = FilterList.createEmpty();
