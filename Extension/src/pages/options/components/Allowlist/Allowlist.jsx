@@ -50,10 +50,11 @@ import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../../../common/co
 import { SavingErrorMessage } from '../../../common/components/SavingButton';
 import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
 import { UserAgent } from '../../../../common/user-agent';
-import theme from '../../../common/styles/theme';
 
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
+
+import theme from '../../../common/styles/theme';
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
