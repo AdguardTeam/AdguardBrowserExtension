@@ -25,6 +25,7 @@ import {
     expect,
     it,
 } from 'vitest';
+import { type Tabs } from 'webextension-polyfill';
 
 import { FilteringLogApi } from '../../../../Extension/src/background/api/filtering-log';
 
@@ -81,5 +82,137 @@ describe('FilteringLogApi', () => {
 
         // and events should start to be collected
         expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents).toEqual([{ eventId }]);
+    });
+
+    describe('createTabInfo', () => {
+        // AG-30018: Edge fires tabs.onCreated with url='', title='', pendingUrl=undefined
+        // when window.open() creates a tab that immediately redirects.
+        // The old !url guard rejected such tabs, so filtering events arriving
+        // a few ms later were silently dropped.
+        it('registers tab with empty url and title (window.open redirect)', () => {
+            const filteringLogApi = new FilteringLogApi();
+            const tab: Tabs.Tab = {
+                id: 10,
+                url: '',
+                title: '',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            };
+
+            filteringLogApi.createTabInfo(tab);
+
+            const info = filteringLogApi.getFilteringInfoByTabId(10);
+            expect(info).toBeDefined();
+            expect(info?.title).toBe('');
+            expect(info?.domain).toBeNull();
+            expect(info?.isExtensionTab).toBe(false);
+        });
+
+        // Edge creates a hidden prerendered NTP tab (ntp.msn.com) with a url
+        // but empty title. Without this guard it appeared as a phantom tab
+        // in the filtering log.
+        it('skips tab with url but no title (Edge prerendered NTP)', () => {
+            const filteringLogApi = new FilteringLogApi();
+            const tab: Tabs.Tab = {
+                id: 11,
+                url: 'https://ntp.msn.com/edge/ntp',
+                title: '',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            };
+
+            filteringLogApi.createTabInfo(tab);
+
+            expect(filteringLogApi.getFilteringInfoByTabId(11)).toBeUndefined();
+        });
+
+        // pendingUrl with no title should be treated the same as url with no title.
+        it('skips tab with pendingUrl but no title', () => {
+            const filteringLogApi = new FilteringLogApi();
+            const tab: Tabs.Tab = {
+                id: 12,
+                url: '',
+                pendingUrl: 'https://ntp.msn.com/edge/ntp',
+                title: '',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            };
+
+            filteringLogApi.createTabInfo(tab);
+
+            expect(filteringLogApi.getFilteringInfoByTabId(12)).toBeUndefined();
+        });
+
+        // pendingUrl is used as the effective URL for domain resolution.
+        it('uses pendingUrl for domain when url is empty', () => {
+            const filteringLogApi = new FilteringLogApi();
+            const tab: Tabs.Tab = {
+                id: 13,
+                url: '',
+                pendingUrl: 'http://localhost:3000/go',
+                title: 'Redirecting',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            };
+
+            filteringLogApi.createTabInfo(tab);
+
+            const info = filteringLogApi.getFilteringInfoByTabId(13);
+            expect(info).toBeDefined();
+            expect(info?.domain).toBe('localhost');
+            expect(info?.title).toBe('Redirecting');
+        });
+
+        // Verifies the full redirect lifecycle: a tab is created with empty
+        // url/title, then updateTabInfo() arrives with the real URL.
+        // domain, title and isExtensionTab must all be refreshed.
+        it('updates domain and title when real URL arrives via updateTabInfo', () => {
+            const filteringLogApi = new FilteringLogApi();
+
+            // 1. Tab created with empty data (window.open redirect)
+            filteringLogApi.createTabInfo({
+                id: 20,
+                url: '',
+                title: '',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            });
+
+            const infoBefore = filteringLogApi.getFilteringInfoByTabId(20);
+            expect(infoBefore).toBeDefined();
+            expect(infoBefore?.domain).toBeNull();
+
+            // 2. Real URL arrives
+            filteringLogApi.updateTabInfo({
+                id: 20,
+                url: 'https://example.com/page',
+                title: 'Example Page',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            });
+
+            const infoAfter = filteringLogApi.getFilteringInfoByTabId(20);
+            expect(infoAfter?.title).toBe('Example Page');
+            expect(infoAfter?.domain).toBe('example.com');
+            expect(infoAfter?.isExtensionTab).toBe(false);
+        });
     });
 });

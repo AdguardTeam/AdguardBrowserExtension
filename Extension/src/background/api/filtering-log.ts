@@ -252,9 +252,9 @@ export class FilteringLogApi {
      * @param isSyntheticTab Is tab is used to send initial requests from new tab in chrome.
      */
     public createTabInfo(tab: Tabs.Tab, isSyntheticTab = false): void {
-        const { id, title, url } = tab;
+        const { id } = tab;
 
-        if (!id || !url || !title) {
+        if (!id) {
             return;
         }
 
@@ -263,6 +263,16 @@ export class FilteringLogApi {
         if (id === BACKGROUND_TAB_ID || isSyntheticTab) {
             return;
         }
+
+        // Skip tabs that have a URL but no title yet (e.g. Edge prerendered NTP);
+        // tabs with empty URL (window.open redirect) pass through to capture early events.
+        const url = tab.pendingUrl || tab.url || '';
+
+        if (url && !tab.title) {
+            return;
+        }
+
+        const title = tab.title || url;
 
         const tabInfo: FilteringLogTabInfo = {
             tabId: id,
@@ -303,6 +313,7 @@ export class FilteringLogApi {
 
         tabInfo.title = title;
         tabInfo.isExtensionTab = isExtensionUrl(url);
+        tabInfo.domain = getDomain(url);
 
         notifier.notifyListeners(NotifierType.TabUpdate, tabInfo);
     }
