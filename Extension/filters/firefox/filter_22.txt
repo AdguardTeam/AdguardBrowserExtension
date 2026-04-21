@@ -1,9 +1,9 @@
-! Checksum: tG38H6kn8F65lJAm0aFDOA
-! Diff-Path: ../patches/22/22-s-1774408288-3600.patch
+! Checksum: Bi8Q11KWyl6WxkpAplVzSg
+! Diff-Path: ../patches/22/22-s-1776163073-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.13.75
-! TimeUpdated: 2026-03-25T03:08:29+00:00
+! Version: 2.0.13.87
+! TimeUpdated: 2026-04-14T10:34:40+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -89,6 +89,9 @@ nizimoenews.livedoor.blog,butumori.com,netizen-voice.blog.jp,ityouchannel.livedo
 !
 ! NOTE: Blogroll specific rules
 !
+||chaos-giga.com/wp-content/uploads/js/above-content-links_random.js
+||chaos-giga.com/wp-content/uploads/js/link_random.js
+chaos-giga.com##.above-content-links
 ||yugioh-starlight.com/_/json/pbp_ranking.json
 ||yugioh-starlight.com/_/json/ranking_category_min_
 dot.asahi.com##.m-widget.js-closewidget-target
@@ -464,7 +467,7 @@ yokohama-sports.com##.antenna-midashi
 yokohama-sports.com##.text-rss-list
 hmangamatome.net##.rssbox_midashi
 hmangamatome.net,sexytvcap.com,erodoujinjohoukan.com###toprss
-/wp-content/plugins/chaty/*$domain=krx18.com|canadaglobalinfo.com|mkvcinemas.kim
+/wp-content/plugins/chaty/*$domain=krx18.com|mkvcinemas.kim
 ||vippers.jp/2ch-c_iframe_
 netouyonews.net##.wp-rss-template-container
 benri.com##.CTPXTBL
@@ -565,8 +568,8 @@ kijomatomelog.com,sukattojapan.com##.section-rss1
 sukattojapan.com#?#.related-wrapper > div.rss-single:upward(1)
 sukattojapan.com#?#.plugin-memo > div.side > div.blogroll-saido:upward(2)
 ||vtubernews.jp/*link.js
-hiragana46matome.com,toriizaka46.jp##.sec-rss
-hiragana46matome.com,toriizaka46.jp##.sec-rss-article
+hiragana46matome.com##.sec-rss
+hiragana46matome.com##.sec-rss-article
 pazdra2ch.blog.jp##div[id^="rss-box"]
 otonarisoku.com,pazdra2ch.blog.jp###comment-title
 pazdra2ch.blog.jp#?#.plugin-memo > div > div.side > div[id^="blz_rss_"]:upward(3)
@@ -2189,6 +2192,12 @@ zebratechnologies.force.com##.zbrbot-container
 !
 !   SECTION: Uncategorized
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/229092
+sn-jp.com##.br-vote-widget
+! https://github.com/AdguardTeam/AdguardFilters/issues/228367
+||tgrthaber.com/components/continuereading
+! https://github.com/AdguardTeam/AdguardFilters/issues/228142
+livemint.com##.aiQuickReadButton
 ! https://github.com/AdguardTeam/AdguardFilters/issues/225849
 tamindir.com##.ai-summary-widget
 ! https://github.com/AdguardTeam/AdguardFilters/issues/221292
@@ -2402,6 +2411,7 @@ faz.net#?#.ctn-PlaceholderContent:has(> .ctn-GDPR)
 ##amp-iframe[src^="https://widget.civey.com"]
 ##iframe[src*="compass.pressekompass.net/compasses"]
 !
+||aflt.travel.yandex.ru^$script,third-party
 ||widget.justwatch.com^$third-party
 ||widgets.sprinkletxt.com^
 ||insticator.com^$third-party
@@ -2492,6 +2502,13 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+20minut.ua##.thx-block
+telex.hu##.telex-donate
+telex.hu##.support-box
+vsquare.org##.content > div.module-item:has(> div.give-embed-form-wrapper)
+volcanodiscovery.com###supportPopup
+cutter.yt#$##popup { display: none !important; }
+cutter.yt#$#.blurred { filter: none !important; }
 betterbird.eu#%#//scriptlet('prevent-setTimeout', '/donate')
 tansajp.org##.banner_donation_request
 steamdb.info##.armored-headcrab
@@ -2506,7 +2523,8 @@ recyclemap.ru##.donation-section
 recyclemap.ru##rc-donation-banner
 pypi.org,python.org###fundraiser-banner-host
 kyivindependent.com###article-banner-slot
-meduza.io##.SupportPanel-module-root
+meduza.io#$#.Header-module-root { height: auto !important; }
+meduza.io#$#.SupportPanel-module-root { display: none !important; }
 hongkongfp.com###block-108
 hongkongfp.com##.wp-block-newspack-blocks-donate
 hongkongfp.com##.entry-content > div.wp-block-image:has(> figure[class] > a[href="https://hongkongfp.com/support-hong-kong-free-press/"])

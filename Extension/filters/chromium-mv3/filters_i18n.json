@@ -18694,6 +18694,184 @@
 				"description": "用於阿拉伯文網站之額外的過濾清單。"
 			}
 		},
+		"114": {
+			"ar": {
+				"name": "ROList",
+				"description": "قائمة تصفية إضافية لمواقع الويب باللغة الرومانية."
+			},
+			"be": {
+				"name": "ROList",
+				"description": "Дадатковы спіс фільтраў для вэб-сайтаў на румынскай мове."
+			},
+			"bg": {
+				"name": "ROList",
+				"description": "Допълнителен списък с филтри за уебсайтове на румънски език."
+			},
+			"ca": {
+				"name": "ROList",
+				"description": "Llista de filtres addicionals per a llocs web en romanès."
+			},
+			"cs": {
+				"name": "ROList",
+				"description": "Doplňkový seznam filtrů pro webové stránky v rumunštině."
+			},
+			"da": {
+				"name": "ROList",
+				"description": "Ekstra filterliste til rumænsksprogede websteder."
+			},
+			"de": {
+				"name": "ROList",
+				"description": "Zusätzliche Filterliste für Websites auf Rumänisch."
+			},
+			"el": {
+				"name": "ROList",
+				"description": "Πρόσθετη λίστα φίλτρων για ιστότοπους στα ρουμανικά."
+			},
+			"en": {
+				"name": "ROList",
+				"description": "Additional filter list for websites in Romanian."
+			},
+			"es": {
+				"name": "ROList",
+				"description": "Lista de filtros adicionales para sitios web en rumano."
+			},
+			"es_ES": {
+				"name": "ROList",
+				"description": "Lista de filtros adicionales para sitios web en rumano."
+			},
+			"fa": {
+				"name": "ROList",
+				"description": "لیست فیلتر اضافی برای وب‌سایت‌ها به زبان رومانیایی."
+			},
+			"fi": {
+				"name": "ROList",
+				"description": "Lisäsuodatinlista romaniankielisille verkkosivustoille."
+			},
+			"fr": {
+				"name": "ROList",
+				"description": "Liste de filtres supplémentaire pour les sites web en roumain."
+			},
+			"he": {
+				"name": "ROList",
+				"description": "רשימת מסננים נוספת עבור אתרים ברומנית."
+			},
+			"hi": {
+				"name": "ROList",
+				"description": "रोमानियन में वेबसाइटों के लिए अतिरिक्त फ़िल्टर सूची।"
+			},
+			"hr": {
+				"name": "ROList",
+				"description": "Rumunjski dodatak za EasyList."
+			},
+			"hu": {
+				"name": "ROList",
+				"description": "További szűrőlista román nyelvű weboldalakhoz."
+			},
+			"hy": {
+				"name": "ROList",
+				"description": "Լրացուցիչ զտիչների ցանկ ռումիներեն լեզվով կայքերի համար։"
+			},
+			"id": {
+				"name": "ROList",
+				"description": "Suplemen Rumania untuk EasyList."
+			},
+			"it": {
+				"name": "Elenco RO",
+				"description": "Elenco addizionale dei filtri per i siti web in rumeno."
+			},
+			"ja": {
+				"name": "ROList",
+				"description": "ルーマニア語サイト用、補足フィルタリストです。"
+			},
+			"ko": {
+				"name": "ROList",
+				"description": "루마니아어 웹사이트를 위한 추가 필터 목록입니다."
+			},
+			"lt": {
+				"name": "ROList",
+				"description": "Papildomas filtrų sąrašas rumunų kalbos svetainėms."
+			},
+			"mk": {
+				"name": "ROLlist",
+				"description": "Дополнителен список со филтри за веб-локации на романски јазик."
+			},
+			"ms": {
+				"name": "ROList",
+				"description": "Senarai penapis tambahan untuk laman web dalam bahasa Romania."
+			},
+			"nl": {
+				"name": "RO List",
+				"description": "Extra filterlijst voor websites in het Roemeens."
+			},
+			"no": {
+				"name": "ROList",
+				"description": "Rumensk supplement til EasyList."
+			},
+			"pl": {
+				"name": "ROList",
+				"description": "Rumuński dodatek do EasyList."
+			},
+			"pt": {
+				"name": "ROList",
+				"description": "Lista de filtros adicionais para sites em Romeno."
+			},
+			"pt_BR": {
+				"name": "ROList",
+				"description": "Lista de filtros adicionais para sites em Romeno."
+			},
+			"pt_PT": {
+				"name": "ROList",
+				"description": "Lista de filtros adicionais para sites em Romeno."
+			},
+			"ro": {
+				"name": "ROList",
+				"description": "Listă suplimentară de filtre pentru site-uri web în limba română."
+			},
+			"ru": {
+				"name": "ROList",
+				"description": "Дополнительный фильтр для сайтов на румынском языке."
+			},
+			"sk": {
+				"name": "ROList",
+				"description": "Dodatočný zoznam filtrov pre webové stránky v rumunčine."
+			},
+			"sl": {
+				"name": "ROList",
+				"description": "Dodaten seznam filtrov za spletne strani v romunskem jeziku."
+			},
+			"sr": {
+				"name": "ROList",
+				"description": "Rumunski dodatak za EasyList."
+			},
+			"sv": {
+				"name": "ROList",
+				"description": "Extra filterlista för webbplatser på rumänska."
+			},
+			"th": {
+				"name": "ROList",
+				"description": "ภาคผนวกภาษาโรมาเนียสำหรับ EasyList"
+			},
+			"tr": {
+				"name": "ROList",
+				"description": "Rumence siteleri için ek filtre listesi."
+			},
+			"uk": {
+				"name": "ROList",
+				"description": "Додатковий фільтр для вебсайтів румунською мовою."
+			},
+			"vi": {
+				"name": "ROList",
+				"description": "Phần bổ trợ tiếng Rumani cho EasyList."
+			},
+			"zh": {
+				"name": "ROList",
+				"description": "罗马尼亚语网站的补充过滤器列表。"
+			},
+			"zh_TW": {
+				"name": "ROList",
+				"description": "用於羅馬尼亞文網站之額外的過濾清單。"
+			}
+		},
 		"120": {
 			"ar": {
 				"name": "AdBlockID",

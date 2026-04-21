@@ -1,6 +1,6 @@
 <!--
  * blocking-pages - Blocking pages for AdGuard projects
- * @version v2.0.40
+ * @version v2.0.43
  * @link
  * @license Proprietary
  --><!DOCTYPE html>
@@ -621,6 +621,10 @@ svg {
                 overflow: hidden;
             }
 
+.input__container.hidden {
+            display: none;
+        }
+
 .input__label {
         margin-bottom: 8px;
         font-size: 14px;
@@ -727,6 +731,16 @@ svg {
             white-space: normal;
             white-space: initial;
             overflow-y: auto;
+        }
+
+.input__field-value--wrap {
+            text-overflow: initial;
+            white-space: normal;
+            white-space: initial;
+        }
+
+.input__field-value.hidden {
+            display: none;
         }
 
 .input__text-value {
@@ -1076,6 +1090,10 @@ svg {
 .faq-item__desc {
         overflow: hidden;
     }
+
+.faq-item__desc .hidden {
+            display: none;
+        }
 
 .faq-item__text {
         padding-top: 21px;
@@ -1490,6 +1508,7 @@ svg {
                                                     <div class="faq-item__desc">
                                                         <div data-id="extSafebrowsingReport" class="text faq-item__text"></div>
                                                         <div data-id="adgSafebrowsingFaqDesc1_2" class="text faq-item__text"></div>
+                                                        <span id="safebrowsingEmailSubject" class="hidden" data-id="safebrowsingEmailSubject"></span>
                                                     </div>
                                                 </div>
                                             </div>
