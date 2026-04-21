@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Import settings from `adguard:import_user_configuration` links on reports.adguard.com.
 - Use HTTP `Last-Modified` header as fallback for custom filter update timestamps
   when `TimeUpdated` metadata is missing [#3407].
+- `ROList` filter list in MV3 [#3473].
 
 ### Changed
 
@@ -27,7 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cookie self-destruct stealth params (`stealth.third_party_cookies_min`,
   `stealth.first_party_cookies_min`) are now MV2-only in issue report URLs (not
   supported on MV3).
-- Updated [@adguard/filters-downloader] to v2.4.3.
+- Updated [@adguard/agtree] to v4.1.0-beta.
+- Updated [@adguard/dnr-rulesets] to v4.2.0-beta.2.
+- Updated [@adguard/filters-downloader] to v2.4.4.
+- Updated [@adguard/scriptlets] to v2.4.0-beta.
+- Updated [@adguard/tsurlfilter] to v5.0.0-beta.1.
+- Updated [@adguard/tswebextension] to v4.1.0-beta.1.
 
 ### Fixed
 
@@ -47,18 +53,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
 [#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
+[#3280]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3280
 [#3329]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3329
 [#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330
 [#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
+[#3393]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3393
 [#3407]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3407
 [#3414]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3414
 [#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428
 [#3430]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3430
-[#3393]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3393
 [#3444]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3444
-[#3452]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3452
-[#3280]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3280
 [#3446]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3446
+[#3452]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3452
+[#3473]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3473
 [#3501]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3501
 
 ## [5.3 patch 1] <!-- TODO: Add release date -->
@@ -1029,6 +1036,7 @@ The extension is now fully compatible with MV3.
 
 [@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/assistant]: https://github.com/AdguardTeam/AdguardAssistant/blob/master/CHANGELOG.md
+[@adguard/dnr-rulesets]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/dnr-rulesets/CHANGELOG.md
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
 [@adguard/logger]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/logger/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
