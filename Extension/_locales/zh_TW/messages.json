@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "請再次嘗試或與支援聯繫"
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URL 返回的是網頁，而非過濾清單。請提供指向過濾檔案的直接連結。"
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "新增"
     },
@@ -150,7 +153,7 @@
         "message": "首頁："
     },
     "options_popup_filter_url": {
-        "message": "網址："
+        "message": "網址"
     },
     "options_popup_subscribe_button": {
         "message": "訂閱"
@@ -184,7 +187,7 @@
         "message": "允許清單"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard 不會封鎖清單內網站的廣告與追蹤器"
+        "message": "AdGuard 無法封鎖清單中網站上的廣告和追蹤器"
     },
     "options_allowlist_invert": {
         "message": "反向允許清單"
@@ -197,6 +200,9 @@
     },
     "options_allowlist_leave_subtitle": {
         "message": "允許清單的更改將丟失"
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "儲存時，請僅保留網域名稱或 URL。以下條目需要修復：%entries%"
     },
     "options_userfilter": {
         "message": "使用者規則"
@@ -250,7 +256,10 @@
         "message": "過濾器"
     },
     "options_antibanner_rules_count": {
-        "message": "過濾器規則總數：%rules_count%"
+        "message": "規則：%rules_count%"
+    },
+    "options_antibanner_updated": {
+        "message": "已更新：%date%"
     },
     "options_antibanner_custom_group": {
         "message": "自訂的"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "已儲存"
+    },
+    "options_editor_save_error": {
+        "message": "儲存失敗，請重試或聯繫支援人員。"
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "要匯入此設定檔，允許 AdGuard 更改您隱私相關的設定。"
@@ -442,7 +454,7 @@
         "message": "更新過濾器出錯"
     },
     "options_popup_update_not_found": {
-        "message": "無已發現的更新"
+        "message": "您的過濾器已是最新版本"
     },
     "options_popup_update_error": {
         "message": "未能取得更新。請稍後再試。"
@@ -553,7 +565,7 @@
         "message": "過濾記錄"
     },
     "filtering_log_search_string": {
-        "message": "過濾日誌記錄"
+        "message": "搜尋"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "在分頁中搜尋"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "重新整理"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "重新整理頁面"
+    },
+    "filtering_menu_open_filters": {
+        "message": "自訂"
     },
     "filtering_clear_log_events": {
         "message": "清除記錄"
@@ -598,7 +616,7 @@
         "message": "開啟細節"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "未找到。<reset>禁用過濾器<\/reset>或<refresh>重新載入頁面<\/refresh>以檢視日誌記錄。"
+        "message": "未找到任何內容。<reset>停用過濾器<\/reset>或<refresh>重新載入頁面<\/refresh>以查看日誌記錄。"
     },
     "filtering_modal_info_title": {
         "message": "請求細節"
@@ -607,10 +625,10 @@
         "message": "預覽"
     },
     "filtering_modal_type": {
-        "message": "類型："
+        "message": "類型"
     },
     "filtering_modal_source": {
-        "message": "來源："
+        "message": "來源"
     },
     "filtering_modal_rule": {
         "message": "規則："
@@ -619,10 +637,10 @@
         "message": "規則："
     },
     "filtering_modal_privacy": {
-        "message": "追蹤保護："
+        "message": "追蹤防護"
     },
     "filtering_modal_filter": {
-        "message": "過濾器："
+        "message": "過濾器"
     },
     "filtering_modal_block": {
         "message": "封鎖"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "從允許清單中移除"
     },
-    "filtering_modal_add_title": {
-        "message": "正在新增一項規則"
+    "filtering_modal_block_title": {
+        "message": "新增封鎖規則"
+    },
+    "filtering_modal_allow_title": {
+        "message": "新增允許規則"
     },
     "filtering_modal_status_text_desc": {
-        "message": "狀態："
+        "message": "狀態"
     },
     "filtering_modal_status_text_error": {
         "message": "無法加載預覽。請重試。"
@@ -655,19 +676,22 @@
         "message": "正在載入…"
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "過濾狀態："
+        "message": "過濾狀態"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "規則文字："
+        "message": "規則"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "樣本："
+    "filtering_modal_patterns_desc_block": {
+        "message": "什麼應被封鎖"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "什麼應被允許"
     },
     "filtering_modal_options_desc": {
-        "message": "選項："
+        "message": "選項"
     },
     "filtering_modal_apply_domains": {
-        "message": "對所有的網站套用該規則"
+        "message": "適用於所有網站"
     },
     "filtering_modal_third_party": {
         "message": "僅對第三方的請求套用"
@@ -676,7 +700,7 @@
         "message": "移除查詢參數"
     },
     "filtering_modal_add_rule": {
-        "message": "新增一項規則"
+        "message": "新增"
     },
     "filtering_modal_exception_title": {
         "message": "新增一個例外"
@@ -995,6 +1019,9 @@
     "options_show_adguard_full_version_title": {
         "message": "顯示關於 AdGuard 完整的版本之資訊"
     },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "所有資料使用統計將被永久刪除"
+    },
     "options_show_app_updated_notification": {
         "message": "通知有關擴充功能更新"
     },
@@ -1217,6 +1244,24 @@
     "options_nav_compare": {
         "message": "比較"
     },
+    "options_desktop_app_promo_title": {
+        "message": "擴充功能僅保護瀏覽器"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "像 Spotify、Discord 或 Zoom 這樣的應用程式仍可能顯示廣告並追蹤您的活動。"
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "我們的桌面應用程式可以保護您免受侵擾"
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "獲取 AdGuard Windows 版"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "獲取 AdGuard Mac 版"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "獲取 AdGuard Linux 版"
+    },
     "options_filters_search": {
         "message": "搜尋"
     },
@@ -1277,11 +1322,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "重置設定嗎？"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "所有設定將重設為預設值"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "重置"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "反向允許清單？"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "僅允許清單中的網站會封鎖廣告和追蹤器"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "反向"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "取消"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "匯入設定"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "匯入的設定將取代您當前設定。其他設定不會受影響。"
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "匯入"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "正在匯入…"
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "使用匯入的設定替換當前設定。匯入期間將禁用過濾。"
+    },
+    "options_import_configuration_success_title": {
+        "message": "全部完成"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "設定成功匯入"
+    },
+    "options_import_configuration_success_button": {
+        "message": "關閉"
+    },
+    "options_import_configuration_error_title": {
+        "message": "無法匯入設定"
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "請檢查匯入連線並重試。如果沒有幫助，請聯繫支援人員。"
+    },
+    "options_import_configuration_error_button": {
+        "message": "關閉"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "美化"
@@ -1293,7 +1383,7 @@
         "message": "再次嘗試"
     },
     "filtering_log_tag_request_source": {
-        "message": "請求來源"
+        "message": "請求起源"
     },
     "filtering_log_tag_tooltip_first_party": {
         "message": "第一方的請求"
@@ -1302,7 +1392,7 @@
         "message": "第三方的請求"
     },
     "filtering_log_tag_request_status": {
-        "message": "請求狀態"
+        "message": "過濾狀態"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "未經過濾處理的請求"
@@ -1455,7 +1545,7 @@
         "message": "再次嘗試"
     },
     "filtering_modal_applied_rules": {
-        "message": "已套用的規則： | 已套用的規則：",
+        "message": "已套用的規則 | 已套用的規則",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1558,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "DNR 規則："
+    },
+    "opera_search_permission_warning": {
+        "message": "要封鎖搜尋廣告，請在瀏覽器設定中允許存取搜尋結果頁面。"
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "前往「設定」"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "不再顯示"
     }
 }
