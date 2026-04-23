@@ -24,6 +24,8 @@ import assert from 'node:assert';
 
 import { Option, program } from 'commander';
 
+import { convertFilters } from '@adguard/tsurlfilter/cli';
+
 import {
     Browser,
     MV3_BROWSERS,
@@ -61,14 +63,12 @@ program
     .action(async (options) => {
         const browser = options.browser as Mv3Browser;
 
-        const command = `pnpm exec tsurlfilter convert \\
-                            --debug \\
-                            ./build/dev/${browser}/filters \\
-                            /web-accessible-resources/redirects \\
-                            ./build/dev/${browser}/filters/declarative`;
-
-        const result = await exec(command);
-        assert.ok(result.stderr === '', 'No errors during execution');
+        await convertFilters(
+            `./build/dev/${browser}/filters`,
+            '/web-accessible-resources/redirects',
+            `./build/dev/${browser}/filters/declarative`,
+            { debug: true },
+        );
     });
 
 program
