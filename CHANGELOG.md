@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased 5.5
+
+### Fixed
+
+- MV3: Rule limits counters now use actual DNR-enabled rulesets from the browser
+  instead of settings-based filter state, fixing mismatched counts when rulesets
+  are silently rejected by Chrome.
+- MV3: Static warning message for rules count now uses the correct i18n key
+  `options_limits_warning_static_rules_browser` instead of
+  `options_limits_warning_static_filters_browser`.
+
 ## Unreleased 5.4
 
 ### Added

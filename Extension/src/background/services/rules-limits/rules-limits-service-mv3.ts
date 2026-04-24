@@ -35,7 +35,6 @@ import {
 } from '../../../common/messages';
 import {
     Categories,
-    type FilterMetadata,
     FiltersApi,
     iconsApi,
 } from '../../api';
@@ -126,16 +125,6 @@ export class RulesLimitsService {
     }
 
     /**
-     * Get the number of enabled static filters.
-     *
-     * @returns The number of enabled static filters.
-     */
-    private static getStaticEnabledFiltersCount(): number {
-        return FiltersApi.getEnabledFiltersWithMetadata()
-            .filter((f) => !CustomFilterUtils.isCustomFilter(f.filterId)).length;
-    }
-
-    /**
      * Clears the rules limits warning by resetting the expected enabled filters.
      * This function is intended to be used when the user acknowledges the warning
      * and wants to reset the state to avoid further notifications.
@@ -172,24 +161,6 @@ export class RulesLimitsService {
     };
 
     /**
-     * Returns an array of ruleset counters.
-     *
-     * @param filters List of filters with metadata.
-     * @param ruleSetsCounters A map of ruleset counters.
-     *
-     * @returns An array of ruleset counters by filters ids.
-     */
-    private static getRuleSetCounters(
-        filters: FilterMetadata[],
-        ruleSetsCounters: RuleSetCountersMap,
-    ): RuleSetCounter[] {
-        return filters
-            .filter((f) => !CustomFilterUtils.isCustomFilter(f.filterId))
-            .map((filter) => ruleSetsCounters[filter.filterId])
-            .filter((ruleSet): ruleSet is RuleSetCounter => ruleSet !== undefined);
-    }
-
-    /**
      * Gets the static ruleset counter by filter id.
      *
      * @param result Configuration result.
@@ -209,38 +180,36 @@ export class RulesLimitsService {
     }
 
     /**
-     * Get the number of static rules enabled.
+     * Get the number of static rules enabled for given filter IDs.
      *
      * @param result Configuration result.
-     * @param filters Filters with metadata.
+     * @param filterIds Array of filter IDs.
      *
      * @returns The number of static rules enabled.
      */
-    private static getStaticRulesEnabledCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
+    private static getStaticRulesEnabledCountByIds(result: ConfigurationResult, filterIds: number[]): number {
         const ruleSetsCounters = RulesLimitsService.getRuleSetsCountersMap(result);
 
-        const ruleSets = RulesLimitsService.getRuleSetCounters(filters, ruleSetsCounters);
-
-        return ruleSets.reduce((sum, ruleSet) => {
-            return sum + ruleSet.rulesCount;
+        return filterIds.reduce((sum, filterId) => {
+            const counter = ruleSetsCounters[filterId];
+            return sum + (counter?.rulesCount ?? 0);
         }, 0);
     }
 
     /**
-     * Calculates how many regexp rules are in the rulesets.
+     * Calculates how many regexp rules are in the rulesets for given filter IDs.
      *
      * @param result Configuration result.
-     * @param filters Filters with metadata.
+     * @param filterIds Array of filter IDs.
      *
      * @returns Count of the regexp rules.
      */
-    private static getStaticRulesRegexpsCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
+    private static getStaticRulesRegexpsCountByIds(result: ConfigurationResult, filterIds: number[]): number {
         const ruleSetsCounters = RulesLimitsService.getRuleSetsCountersMap(result);
 
-        const ruleSets = RulesLimitsService.getRuleSetCounters(filters, ruleSetsCounters);
-
-        return ruleSets.reduce((sum, ruleSet) => {
-            return sum + ruleSet.regexpRulesCount;
+        return filterIds.reduce((sum, filterId) => {
+            const counter = ruleSetsCounters[filterId];
+            return sum + (counter?.regexpRulesCount ?? 0);
         }, 0);
     }
 
@@ -423,6 +392,10 @@ export class RulesLimitsService {
     /**
      * Determines and returns rules limits.
      *
+     * Uses the actual DNR-enabled rulesets (via Chrome API) for computing
+     * enabled counts so that the numbers reflect reality even when some
+     * rulesets were silently rejected by the browser.
+     *
      * @returns Rules limits or undefined if the configuration result is not ready yet.
      */
     private async onGetRulesLimitsCounters(): Promise<IRulesLimits | undefined> {
@@ -431,9 +404,12 @@ export class RulesLimitsService {
             return undefined;
         }
 
-        const filters = FiltersApi.getEnabledFiltersWithMetadata();
+        const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
 
-        const staticRulesEnabledCount = RulesLimitsService.getStaticRulesEnabledCount(result, filters);
+        const staticRulesEnabledCount = RulesLimitsService.getStaticRulesEnabledCountByIds(
+            result,
+            actuallyEnabledFilters,
+        );
         const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
         const staticRulesMaximumCount = staticRulesEnabledCount + availableStaticRulesCount;
 
@@ -444,13 +420,16 @@ export class RulesLimitsService {
             dynamicRulesUnsafeMaximumCount: RulesLimitsService.getDynamicUnsafeRulesMaximumCount(result),
             dynamicRulesRegexpsEnabledCount: RulesLimitsService.getDynamicRegexpRulesEnabledCount(result),
             dynamicRulesRegexpsMaximumCount: RulesLimitsService.getDynamicRegexpRulesMaximumCount(result),
-            staticFiltersEnabledCount: RulesLimitsService.getStaticEnabledFiltersCount(),
+            staticFiltersEnabledCount: actuallyEnabledFilters.length,
             staticFiltersMaximumCount: MAX_NUMBER_OF_ENABLED_STATIC_RULESETS,
             staticRulesEnabledCount,
             staticRulesMaximumCount,
-            staticRulesRegexpsEnabledCount: RulesLimitsService.getStaticRulesRegexpsCount(result, filters),
+            staticRulesRegexpsEnabledCount: RulesLimitsService.getStaticRulesRegexpsCountByIds(
+                result,
+                actuallyEnabledFilters,
+            ),
             staticRulesRegexpsMaxCount: MAX_NUMBER_OF_REGEX_RULES,
-            actuallyEnabledFilters: await RulesLimitsService.getActuallyEnabledFilters(),
+            actuallyEnabledFilters,
             expectedEnabledFilters: RulesLimitsService.getExpectedEnabledFilters(),
             areFilterLimitsExceeded: await RulesLimitsService.areFilterLimitsExceeded(),
         };
@@ -603,7 +582,8 @@ export class RulesLimitsService {
             return { ok: true };
         }
 
-        const enabledFiltersCount = RulesLimitsService.getStaticEnabledFiltersCount();
+        const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
+        const enabledFiltersCount = actuallyEnabledFilters.length;
         if (enabledFiltersCount === MAX_NUMBER_OF_ENABLED_STATIC_RULESETS) {
             return {
                 ok: false,
@@ -619,7 +599,6 @@ export class RulesLimitsService {
 
         const areFilterLimitsExceeded = await RulesLimitsService.areFilterLimitsExceeded();
         if (areFilterLimitsExceeded) {
-            const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
             return {
                 ok: false,
                 data: {
@@ -731,7 +710,8 @@ export class RulesLimitsService {
             return { ok: true };
         }
 
-        const enabledFiltersCount = RulesLimitsService.getStaticEnabledFiltersCount();
+        const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
+        const enabledFiltersCount = actuallyEnabledFilters.length;
         if (enabledFiltersCount > MAX_NUMBER_OF_ENABLED_STATIC_RULESETS) {
             return {
                 ok: false,
@@ -760,8 +740,10 @@ export class RulesLimitsService {
             };
         }
 
-        const enabledFilters = FiltersApi.getEnabledFiltersWithMetadata();
-        const allEnabledRegexpRulesCount = RulesLimitsService.getStaticRulesRegexpsCount(result, enabledFilters);
+        const allEnabledRegexpRulesCount = RulesLimitsService.getStaticRulesRegexpsCountByIds(
+            result,
+            actuallyEnabledFilters,
+        );
         const allPossibleEnabledRegexpRulesCount = allEnabledRegexpRulesCount + filterStaticRulesCount.regexpRulesCount;
         if (allPossibleEnabledRegexpRulesCount > MAX_NUMBER_OF_REGEX_RULES) {
             return {
@@ -820,7 +802,8 @@ export class RulesLimitsService {
             return { ok: true };
         }
 
-        const enabledFiltersCount = RulesLimitsService.getStaticEnabledFiltersCount();
+        const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
+        const enabledFiltersCount = actuallyEnabledFilters.length;
         const isWithinRulesetsLimit = enabledFiltersCount + filterIds.length <= MAX_NUMBER_OF_ENABLED_STATIC_RULESETS;
         if (!isWithinRulesetsLimit) {
             return {
@@ -861,8 +844,10 @@ export class RulesLimitsService {
             };
         }
 
-        const enabledFilters = FiltersApi.getEnabledFiltersWithMetadata();
-        const allEnabledRegexpRulesCount = RulesLimitsService.getStaticRulesRegexpsCount(result, enabledFilters);
+        const allEnabledRegexpRulesCount = RulesLimitsService.getStaticRulesRegexpsCountByIds(
+            result,
+            actuallyEnabledFilters,
+        );
         const regexpRulesIfFiltersEnabled = allEnabledRegexpRulesCount + totalRegexpRulesCount;
         const isWithinRegexRulesLimit = regexpRulesIfFiltersEnabled <= MAX_NUMBER_OF_REGEX_RULES;
 

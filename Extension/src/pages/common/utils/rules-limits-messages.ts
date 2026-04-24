@@ -48,7 +48,7 @@ export const getStaticWarningMessage = (data: InvalidStaticResultData): string |
     }
 
     if (rulesCount) {
-        return translator.getMessage('options_limits_warning_static_filters_browser', {
+        return translator.getMessage('options_limits_warning_static_rules_browser', {
             current: rulesCount.current,
             maximum: rulesCount.maximum,
         });
