@@ -133,6 +133,7 @@ describe.skipIf(!__IS_MV3__)('RulesLimitsService - onGetRulesLimitsCounters', ()
 
         // Set up declarativeNetRequest mocks on the global chrome object
         // (which is assigned from sinon-chrome in vitest.setup.ts).
+        // @ts-ignore
         Object.assign(browser.declarativeNetRequest, {
             getEnabledRulesets: mockGetEnabledRulesets,
             getAvailableStaticRuleCount: mockGetAvailableStaticRuleCount,
