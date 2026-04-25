@@ -1,9 +1,9 @@
-! Checksum: ytnWwt5xsngtTqyVxsbpRw
-! Diff-Path: ../patches/17/17-s-1774316554-3600.patch
+! Checksum: xHCFdT0HzB+P5/2t6sLY8g
+! Diff-Path: ../patches/17/17-s-1776184476-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.24
-! TimeUpdated: 2026-03-24T01:39:30+00:00
+! Version: 2.0.13.33
+! TimeUpdated: 2026-04-14T16:31:31+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -22,6 +22,13 @@
 !
 ! NOTE: Generic rules
 !
+! True Anthem
+! https://github.com/AdguardTeam/AdguardFilters/issues/228929
+! https://github.com/AdguardTeam/AdguardFilters/issues/222986
+$removeparam=link_source
+$removeparam=taid
+! Telergam Ads click tracking
+$removeparam=tgclid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/224235
 ! https://github.com/AdguardTeam/AdguardFilters/issues/217915
 $removeparam=analytics_context
@@ -312,6 +319,8 @@ $removeparam=itm_campaign
 $removeparam=itm_content
 $removeparam=itm_term
 ! UTM
+$removeparam=utm_compaign
+$removeparam=utm_prid
 $removeparam=utm_wave
 $removeparam=utm_lob
 $removeparam=utm_emailid
@@ -497,6 +506,13 @@ $removeparam=tduid
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/228812
+||kuper.ru^$removeparam=ads_identity_ads_promo_identity_site_uid
+||kuper.ru^$removeparam=ads_identity_ads_promo_identity_placement_uid
+! https://github.com/AdguardTeam/AdguardFilters/issues/228746
+||fboom.me^$removeparam=site
+! https://github.com/AdguardTeam/AdguardFilters/issues/228267
+||usaa.com^$removeparam=wa_ref
 ! https://github.com/AdguardTeam/AdguardFilters/issues/227596
 ||duck.ai^$removeparam=origin
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-16099608
@@ -572,9 +588,6 @@ ref=shadcn.com^$removeparam=ref
 ||ratel-ad.com^$removeparam=advertiser
 ||123chat.jp/promotion/$removeparam=cid
 ||123chat.jp/promotion/$removeparam=p
-! https://github.com/AdguardTeam/AdguardFilters/issues/222986
-||tw.news.yahoo.com^$removeparam=link_source
-||tw.news.yahoo.com^$removeparam=taid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/223033
 ||netmonet.co^$removeparam=id
 ||netmonet.co^$removeparam=wpid
@@ -893,8 +906,6 @@ $removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
 !
 ! A/B testing
 ||duckduckgo.com^$removeparam=/^experiment_/
-! https://github.com/AdguardTeam/AdguardFilters/issues/227413#issuecomment-4107238932
-! ||duckduckgo.com^$removeparam=atb
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/208058
 ||olybet.lv^$removeparam=ref
@@ -2487,8 +2498,9 @@ $removeparam=clid,domain=adguard-vpn.*|adguardvpn-help.*
 ||doctolib.de^$removeparam=utm_button
 ! https://github.com/AdguardTeam/AdguardFilters/issues/128206
 ||nationalgeographic.com^$removeparam=utm_rd
+! https://github.com/AdguardTeam/AdguardFilters/issues/227598
 ! https://github.com/AdguardTeam/AdguardFilters/issues/128339
-||ficbook.net^$removeparam=/premiumVisit|utm_compaign/
+*$domain=fic.fan|fanfictionero.com|ficmania.com|ficbook.net,removeparam=premiumVisit
 ! stripchat.com
 ||go.tscprts.com^$removeparam
 ||stripchat.com^$removeparam=abTest
@@ -2785,6 +2797,8 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||azby.fmworld.net^$removeparam=mc_pc
 ! https://toku.yahoo.co.jp/ytop202111/entry?fr=weather_right_column
 ||toku.yahoo.co.jp^$removeparam=fr
+! https://github.com/AdguardTeam/AdguardFilters/issues/228387
+||nikkei.com^$removeparam=n_tw
 ! https://github.com/AdguardTeam/AdguardFilters/issues/106436
 ! https://github.com/AdguardTeam/AdguardFilters/issues/106435
 ! https://github.com/AdguardTeam/AdguardFilters/issues/106434
@@ -3491,6 +3505,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/227699
+@@||msn.com^$app=msedgewebview2.exe,removeparam=ocid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/227175
 @@||iforms.americanexpress.com^$removeparam=cuid
 ! canadacompanyregistry.com - utm_source is used to lookup the company name; removing it breaks the page

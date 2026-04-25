@@ -1,9 +1,9 @@
-! Checksum: VXEdZUmHz4DU+x2ru0kULg
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1772631115-3600.patch
+! Checksum: lJb16hQZBdJ9nhoINfLj7A
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1776418830-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.87
-! TimeUpdated: 2026-03-04T13:29:00+00:00
+! Version: 2.0.3.89
+! TimeUpdated: 2026-04-17T09:37:29+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -87,6 +87,7 @@ google.*#@#c-wiz[jsrenderer="YTTf6c"] > .bhapoc.oJeWuf[jsname="bN97Pc"][data-ved
 search.ask.com#@#.sponsoredTop
 search.ask.com#@##sponsoredTop
 yandex.*#@#body:not([data-bem*="pogoda"]) .mini-suggest__popup-content > li[data-type="nav"]
+[$path=/search]ya.ru,yandex.*#@#.content__left li.serp-item:not(.serp-item__futuris-snippet):has(> div[class] div.AdvLabel)
 ya.ru,yandex.*#@##search-result > [class]:has(> div.Organic > div a[href*="_crpd"])
 yandex.*#@#.content__left > ul#search-result > li:has(> div.organic > div.OrganicTitle > a[href^="https://ya.ru/search/_crpd/"])
 ya.ru,yandex.*#@$?##search-result > li:has(span:contains(/[PРeеkклaаmмaа]{7}/)) { remove: true; }
