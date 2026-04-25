@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "Spróbuj ponownie lub skontaktuj się z pomocą techniczną"
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URL zwrócił stronę internetową zamiast listy filtrów. Podaj bezpośredni link do pliku filtra."
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "Dodaj"
     },
@@ -150,7 +153,7 @@
         "message": "Strona domowa:"
     },
     "options_popup_filter_url": {
-        "message": "URL:"
+        "message": "URL"
     },
     "options_popup_subscribe_button": {
         "message": "Subskrybuj"
@@ -184,7 +187,7 @@
         "message": "Lista dozwolonych"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard nie blokuje reklam i trackerów na stronach z listy"
+        "message": "AdGuard nie blokuje reklamy i trackery na stronach internetowych z listy"
     },
     "options_allowlist_invert": {
         "message": "Odwróć listę dozwolonych"
@@ -197,6 +200,9 @@
     },
     "options_allowlist_leave_subtitle": {
         "message": "Wprowadzone zmiany w liście dozwolonych zostaną utracone"
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "Aby zapisać, pozostaw tylko domeny lub URL. Te wymagają poprawy: %entries%"
     },
     "options_userfilter": {
         "message": "Reguły użytkownika"
@@ -250,7 +256,10 @@
         "message": "Filtry"
     },
     "options_antibanner_rules_count": {
-        "message": "Liczba reguł filtra: %rules_count%"
+        "message": "Reguły: %rules_count%"
+    },
+    "options_antibanner_updated": {
+        "message": "Zaktualizowano: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Niestandardowy"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "Zapisano"
+    },
+    "options_editor_save_error": {
+        "message": "Nie udało się zapisać zmian. Spróbuj ponownie lub skontaktuj się z pomocą techniczną"
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "Aby zaimportować ten plik ustawień, zezwól AdGuard na zmianę ustawień związanych z prywatnością."
@@ -442,7 +454,7 @@
         "message": "Błąd podczas aktualizacji filtrów"
     },
     "options_popup_update_not_found": {
-        "message": "Nie znaleziono aktualizacji"
+        "message": "Twoje filtry są aktualne"
     },
     "options_popup_update_error": {
         "message": "Nie udało się pobrać aktualizacji. Proszę spróbować ponownie później."
@@ -553,7 +565,7 @@
         "message": "Raport filtrowania"
     },
     "filtering_log_search_string": {
-        "message": "Filtruj zapisy dziennika"
+        "message": "Wyszukaj"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "Szukaj w zakładkach"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "Odśwież"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "Odśwież stronę"
+    },
+    "filtering_menu_open_filters": {
+        "message": "Dostosuj"
     },
     "filtering_clear_log_events": {
         "message": "Wyczyść dziennik"
@@ -598,7 +616,7 @@
         "message": "Zobacz szczegóły"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "Nic nie znaleziono. <reset>Wyłącz filtry<\/reset> lub <refresh>przeładuj stronę<\/refresh>, aby wyświetlić dziennik logów."
+        "message": "Nic nie znaleziono. <reset>resetuj filtry<\/reset> lub <refresh>odśwież stronę<\/refresh>, aby pogląd nagrywać logi"
     },
     "filtering_modal_info_title": {
         "message": "Szczegóły żądania"
@@ -607,10 +625,10 @@
         "message": "Podgląd"
     },
     "filtering_modal_type": {
-        "message": "Typ:"
+        "message": "Typ"
     },
     "filtering_modal_source": {
-        "message": "Źródło:"
+        "message": "Źródło"
     },
     "filtering_modal_rule": {
         "message": "Reguła:"
@@ -619,10 +637,10 @@
         "message": "Reguły:"
     },
     "filtering_modal_privacy": {
-        "message": "Ochrona przed śledzeniem:"
+        "message": "Ochrona przed śledzeniem"
     },
     "filtering_modal_filter": {
-        "message": "Filtr:"
+        "message": "Filtr"
     },
     "filtering_modal_block": {
         "message": "Blokuj"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "Usuń z listy dozwolonych"
     },
-    "filtering_modal_add_title": {
-        "message": "Dodawanie reguły"
+    "filtering_modal_block_title": {
+        "message": "Dodaj regułę blokującą"
+    },
+    "filtering_modal_allow_title": {
+        "message": "Dodaj regułę zezwalającą"
     },
     "filtering_modal_status_text_desc": {
-        "message": "Stan:"
+        "message": "Stan"
     },
     "filtering_modal_status_text_error": {
         "message": "Nie udało się załadować podglądu. Spróbuj ponownie"
@@ -655,19 +676,22 @@
         "message": "Ładowanie..."
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "Stan filtrowania:"
+        "message": "Stan filtrowania"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "Tekst reguły:"
+        "message": "Reguła"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "Wzorce:"
+    "filtering_modal_patterns_desc_block": {
+        "message": "Co powinno być blokowane"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "Co powinno być dozwolone"
     },
     "filtering_modal_options_desc": {
-        "message": "Opcje:"
+        "message": "Opcje"
     },
     "filtering_modal_apply_domains": {
-        "message": "Zastosuj tę regułę dla wszystkich stron"
+        "message": "Dotyczy wszystkich stron internetowych"
     },
     "filtering_modal_third_party": {
         "message": "Zastosuj tylko dla żądań firm trzecich"
@@ -676,7 +700,7 @@
         "message": "Usuń parametry zapytań"
     },
     "filtering_modal_add_rule": {
-        "message": "Dodaj regułę"
+        "message": "Dodaj"
     },
     "filtering_modal_exception_title": {
         "message": "Dodaj wyjątek"
@@ -995,6 +1019,9 @@
     "options_show_adguard_full_version_title": {
         "message": "Pokaż informacje o pełnej wersji AdGuard"
     },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "Wszystkie statystyki dotyczące użycia dane zostaną trwale usunięte"
+    },
     "options_show_app_updated_notification": {
         "message": "Powiadamiaj o aktualizacjach rozszerzenia"
     },
@@ -1217,6 +1244,24 @@
     "options_nav_compare": {
         "message": "Porównaj"
     },
+    "options_desktop_app_promo_title": {
+        "message": "Rozszerzenie chroni tylko przeglądarkę"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "Aplikacje takie jak Spotify, Discord lub Zoom mogą nadal pokaż reklamy i śledzić twoją aktywność"
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "Nasza aplikacja desktop może cię chronić przed nimi"
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "Pobierz AdGuard dla Windows"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "Pobierz AdGuard dla Mac"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "Pobierz AdGuard dla Linux"
+    },
     "options_filters_search": {
         "message": "Wyszukaj"
     },
@@ -1277,11 +1322,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "Zresetować ustawienia?"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "Wszystkie ustawienia zostaną resetuj do swoich wartości domyślnych"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "Zresetuj"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "Odwróć listę dozwolonych?"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "Reklamy i trackery będą tylko Zablokowane na stronach internetowych z allowlisty"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "Odwróć"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "Anuluj"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "Importowanie ustawień"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "Zaimportowane ustawienia zastąpią Twoje bieżące. Inne ustawienia nie zostaną naruszone"
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "Importuj"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "Importowanie..."
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "Zastąpienie bieżących ustawień zaimportowanymi. Podczas importu filtrowanie jest wyłączone"
+    },
+    "options_import_configuration_success_title": {
+        "message": "Wszystko gotowe"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "Ustawienia zostały pomyślnie zaimportowane"
+    },
+    "options_import_configuration_success_button": {
+        "message": "Zamknij"
+    },
+    "options_import_configuration_error_title": {
+        "message": "Nie udało się zaimportować ustawień"
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "Sprawdź link importu i spróbuj ponownie. Jeśli to nie pomoże, skontaktuj się ze wsparciem"
+    },
+    "options_import_configuration_error_button": {
+        "message": "Zamknij"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "Upiększ"
@@ -1302,7 +1392,7 @@
         "message": "Żądania stron trzecich"
     },
     "filtering_log_tag_request_status": {
-        "message": "Poproś o status"
+        "message": "Stan filtrowania"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "Żądania przetwarzane bez filtrowania"
@@ -1455,7 +1545,7 @@
         "message": "Spróbuj ponownie"
     },
     "filtering_modal_applied_rules": {
-        "message": "| Zastosowana reguła: | Zastosowane reguły: | Zastosowanych reguł:",
+        "message": "| Zastosowana reguła | Zastosowane reguły | Zastosowanych reguł",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1558,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "Reguła DNR:"
+    },
+    "opera_search_permission_warning": {
+        "message": "Aby blokować reklamy w wynikach wyszukiwania, pozwól na dostęp do wyników strony wyszukiwania w ustawienia przeglądarki"
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "Przejdź do Ustawień"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "Nie pokazuj więcej"
     }
 }

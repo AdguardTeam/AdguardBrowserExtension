@@ -311,10 +311,16 @@ const saveToJsFile = async (
         if (result.stdout) {
             console.log(`tsx stdout for ${fileName}:\n${result.stdout}`);
         }
+        // Filter out npm warnings about unknown env configs leaked from pnpm
+        const significantStderr = result.stderr
+            .split('\n')
+            .filter((line) => !line.startsWith('npm warn'))
+            .join('\n')
+            .trim();
         if (result.stderr) {
             console.warn(`tsx stderr for ${fileName}:\n${result.stderr}`);
         }
-        assert.ok(result.stderr === '', `Errors during execution:\n${result.stderr}`);
+        assert.ok(significantStderr === '', `Errors during execution:\n${result.stderr}`);
         assert.ok(result.stdout === '', 'No output during execution');
     } catch (error) {
         console.error('Error:', error);

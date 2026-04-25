@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "Palun proovige uuesti või võtke ühendust toega"
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URL tagastas veebilehe filterloendi asemel. Palun esitage otsene link filtri failile."
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "Lisa"
     },
@@ -150,7 +153,7 @@
         "message": "Koduleht:"
     },
     "options_popup_filter_url": {
-        "message": "URL:"
+        "message": "URL"
     },
     "options_popup_subscribe_button": {
         "message": "Telli"
@@ -184,7 +187,7 @@
         "message": "Valge list"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard ei blokeeri reklaame ja jälgijaid nimekirjas olevatel veebilehtedel"
+        "message": "AdGuard ei blokeeri reklaame ega jälgijaid loendis olevatel veebisaitidel"
     },
     "options_allowlist_invert": {
         "message": "Pöördjärjesta valge list"
@@ -197,6 +200,9 @@
     },
     "options_allowlist_leave_subtitle": {
         "message": "Teie muudatused lubatud nimekirjas kaovad"
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "Salvestamiseks jäta alles ainult domeenid või URL-id. Need vajavad parandamist: %entries%"
     },
     "options_userfilter": {
         "message": "Kasutaja reeglid"
@@ -250,7 +256,10 @@
         "message": "Filtrid"
     },
     "options_antibanner_rules_count": {
-        "message": "Reeglite hulk filtris: %rules_count%"
+        "message": "Reeglid: %rules_count%"
+    },
+    "options_antibanner_updated": {
+        "message": "Uuendatud: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Kohandatud"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "Salvesta"
+    },
+    "options_editor_save_error": {
+        "message": "Muudatuste salvestamine ebaõnnestus. Proovi uuesti või võta ühendust toega"
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "Selle seadistuste faili importimiseks luba AdGuardil muuta teie privaatsusega seotud seadeid."
@@ -442,7 +454,7 @@
         "message": "Filtrite uuendamisel ilmes viga"
     },
     "options_popup_update_not_found": {
-        "message": "Uuendusi ei leitud"
+        "message": "Teie filtrid on ajakohased"
     },
     "options_popup_update_error": {
         "message": "Uuendamine nurjus. Proovi hiljem uuesti."
@@ -553,7 +565,7 @@
         "message": "Filtreerimise logi"
     },
     "filtering_log_search_string": {
-        "message": "Filtreeri logikirjeid"
+        "message": "Otsida"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "Otsi vahelehtedelt"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "Värskenda"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "Värskenda lehte"
+    },
+    "filtering_menu_open_filters": {
+        "message": "Kohanda"
     },
     "filtering_clear_log_events": {
         "message": "Tühjenda logi"
@@ -598,7 +616,7 @@
         "message": "Ava üksikasjad"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "Midagi ei leitud. <reset>Keela filtrid<\/reset> või <refresh>uuenda lehte<\/refresh>, et logi salvestusi vaadata."
+        "message": "Midagi ei leitud. <reset>Keela filtrid<\/reset> või <refresh>laadi leht uuesti<\/refresh>, et vaadata logikirjeid"
     },
     "filtering_modal_info_title": {
         "message": "Päringu detailid"
@@ -607,10 +625,10 @@
         "message": "Eelvaade"
     },
     "filtering_modal_type": {
-        "message": "Tüüp:"
+        "message": "Tüüp"
     },
     "filtering_modal_source": {
-        "message": "Allikas:"
+        "message": "Allikas"
     },
     "filtering_modal_rule": {
         "message": "Reegel:"
@@ -619,10 +637,10 @@
         "message": "Reeglid:"
     },
     "filtering_modal_privacy": {
-        "message": "Jälgimiskaitse:"
+        "message": "Jälgimiskaitse"
     },
     "filtering_modal_filter": {
-        "message": "Filter:"
+        "message": "Filtreeri"
     },
     "filtering_modal_block": {
         "message": "Blokeeri"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "Eemalda valgest listist"
     },
-    "filtering_modal_add_title": {
-        "message": "Reegli lisamine"
+    "filtering_modal_block_title": {
+        "message": "Lisa blokeerimisreegel"
+    },
+    "filtering_modal_allow_title": {
+        "message": "Lisa lubamisreegel"
     },
     "filtering_modal_status_text_desc": {
-        "message": "Staatus:"
+        "message": "Staatus"
     },
     "filtering_modal_status_text_error": {
         "message": "Eelvaate laadimine ebaõnnestus. Palun proovi uuesti"
@@ -655,19 +676,22 @@
         "message": "Laadimine..."
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "Filtreerimise olek:"
+        "message": "Filtreerimise staatus"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "Reegli sisu:"
+        "message": "Reegel"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "Mustrid:"
+    "filtering_modal_patterns_desc_block": {
+        "message": "Mida tuleks blokeerida"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "Mida tuleks lubada"
     },
     "filtering_modal_options_desc": {
-        "message": "Valikud:"
+        "message": "Valikud"
     },
     "filtering_modal_apply_domains": {
-        "message": "Rakenda seda kõikidel veebilehtedel"
+        "message": "Kasuta kõikidel veebilehtedel"
     },
     "filtering_modal_third_party": {
         "message": "Rakenda ainult kolmanda osapoole päringutel"
@@ -676,13 +700,13 @@
         "message": "Eemalda päringu parameetrid"
     },
     "filtering_modal_add_rule": {
-        "message": "Lisa reegel"
+        "message": "LISA"
     },
     "filtering_modal_exception_title": {
         "message": "Lisa erand"
     },
     "filtering_modal_open_in_new_tab": {
-        "message": "Ava uues vahekaardis"
+        "message": "Ava uuel vahelehel"
     },
     "filtering_modal_show_full_url": {
         "message": "Kuva täispikk URL"
@@ -995,6 +1019,9 @@
     "options_show_adguard_full_version_title": {
         "message": "Näita teavitust AdGuardi täisversiooni kohta"
     },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "Kõik andmekasutuse statistika kustutatakse jäädavalt"
+    },
     "options_show_app_updated_notification": {
         "message": "Teavita mind AdGuardi brauserilisa uuendustest"
     },
@@ -1217,6 +1244,24 @@
     "options_nav_compare": {
         "message": "Võrdle"
     },
+    "options_desktop_app_promo_title": {
+        "message": "Laiendus kaitseb ainult brauserit"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "Rakendused nagu Spotify, Discord või Zoom võivad endiselt näidata reklaame ja jälgida teie tegevust"
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "Meie töölauarakendus saab teid nende eest kaitsta"
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "Hangi AdGuard Windows jaoks"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "Hangi AdGuard Mac jaoks"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "Hangi AdGuard Linux jaoks"
+    },
     "options_filters_search": {
         "message": "Otsing"
     },
@@ -1277,11 +1322,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "Lähtesta seadistused?"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "Kõik seaded lähtestatakse nende vaikimisi väärtustele"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "Lähtesta"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "Pööra lubatud nimekiri ümber?"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "Reklaamid ja jälgijad blokeeritakse ainult lubatud loendi veebisaitidel"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "Pööra"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "Tühista"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "Impordi seaded"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "Imporditud seaded asendavad teie praegused seaded. Teised seaded jäävad muutmata"
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "Impordi"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "Importimine..."
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "Asendame sinu praegused seaded imporditutega. Filtreerimine on impordi ajal keelatud"
+    },
+    "options_import_configuration_success_title": {
+        "message": "Tehtud"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "Seaded imporditi edukalt"
+    },
+    "options_import_configuration_success_button": {
+        "message": "Sulge"
+    },
+    "options_import_configuration_error_title": {
+        "message": "Seadete importimine nurjus"
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "Palun kontrolli impordi linki ja proovi uuesti. Kui see ei aita, võta ühendust toe osakonnaga"
+    },
+    "options_import_configuration_error_button": {
+        "message": "Sulge"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "Imeline"
@@ -1293,7 +1383,7 @@
         "message": "Proovi uuesti"
     },
     "filtering_log_tag_request_source": {
-        "message": "Päringu allikas"
+        "message": "Päringu päritolu"
     },
     "filtering_log_tag_tooltip_first_party": {
         "message": "Esimese osapoole päringud"
@@ -1302,7 +1392,7 @@
         "message": "Kolmanda-osapoole päringud"
     },
     "filtering_log_tag_request_status": {
-        "message": "Päringu olek"
+        "message": "Filtreerimise staatus"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "Ainult ilma filtreerimiseta töödeldud päringud"
@@ -1455,7 +1545,7 @@
         "message": "Proovi uuesti"
     },
     "filtering_modal_applied_rules": {
-        "message": "| Rakendatud reegel: | Rakendatud reeglid:",
+        "message": "| Rakendatud reegel | Rakendatud reeglid",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1558,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "DNR reegel:"
+    },
+    "opera_search_permission_warning": {
+        "message": "Otsingureklaamide blokeerimiseks lubage juurdepääs otsingutulemuste lehele brauseri seadetes"
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "Mine seadetesse"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "Ära kuva enam"
     }
 }

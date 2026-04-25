@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "다시 시도하거나 고객 지원에 문의해 주세요."
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URL이 필터 목록 대신 웹페이지를 반환했습니다. 필터 파일에 직접 접속하는 링크를 제공해 주세요."
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "추가"
     },
@@ -150,7 +153,7 @@
         "message": "홈페이지:"
     },
     "options_popup_filter_url": {
-        "message": "URL:"
+        "message": "URL"
     },
     "options_popup_subscribe_button": {
         "message": "구독"
@@ -184,7 +187,7 @@
         "message": "허용 목록"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard는 목록에 있는 웹사이트에서 광고와 추적기를 차단하지 않습니다."
+        "message": "AdGuard는 목록에 있는 웹사이트에서 광고와 추적기를 차단하지 않습니다."
     },
     "options_allowlist_invert": {
         "message": "허용 목록 반전"
@@ -197,6 +200,9 @@
     },
     "options_allowlist_leave_subtitle": {
         "message": "허용 목록에 대한 변경 사항이 손실됩니다."
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "저장하려면 도메인 또는 URL만 남기세요. 수정이 필요한 항목: %entries%"
     },
     "options_userfilter": {
         "message": "사용자 규칙"
@@ -250,7 +256,10 @@
         "message": "필터"
     },
     "options_antibanner_rules_count": {
-        "message": "필터 규칙 개수: %rules_count%"
+        "message": "규칙: %rules_count%"
+    },
+    "options_antibanner_updated": {
+        "message": "업데이트됨: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "사용자 정의 필터"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "저장"
+    },
+    "options_editor_save_error": {
+        "message": "변경 사항을 저장하지 못했습니다. 다시 시도하거나 고객 지원팀에 문의하세요."
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "이 설정 파일을 불러오기 위해 AdGuard가 개인정보 보호 관련 설정을 변경하도록 허용하세요."
@@ -442,7 +454,7 @@
         "message": "필터 업데이트 오류"
     },
     "options_popup_update_not_found": {
-        "message": "업데이트 없음"
+        "message": "필터가 최신 버전입니다"
     },
     "options_popup_update_error": {
         "message": "업데이트에 실패했습니다. 나중에 다시 해주세요."
@@ -553,7 +565,7 @@
         "message": "필터링 로그"
     },
     "filtering_log_search_string": {
-        "message": "로그 기록 필터링"
+        "message": "검색"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "탭 검색"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "새로고침"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "페이지 새로고침"
+    },
+    "filtering_menu_open_filters": {
+        "message": "사용자 정의"
     },
     "filtering_clear_log_events": {
         "message": "로그 비우기"
@@ -598,7 +616,7 @@
         "message": "세부 정보 열기"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "찾을 수 없습니다. 로그 기록을 보려면 <reset>필터를 비활성화<\/reset>하거나 <refresh>페이지를 새로 고침<\/refresh>하세요."
+        "message": "찾을 수 없습니다. 로그 기록을 보려면 <reset>필터를 비활성화<\/reset>하거나 <refresh>페이지를 새로고침<\/refresh>하세요."
     },
     "filtering_modal_info_title": {
         "message": "요청 세부 사항"
@@ -607,10 +625,10 @@
         "message": "미리 보기"
     },
     "filtering_modal_type": {
-        "message": "형식:"
+        "message": "유형"
     },
     "filtering_modal_source": {
-        "message": "출처:"
+        "message": "소스"
     },
     "filtering_modal_rule": {
         "message": "규칙:"
@@ -619,10 +637,10 @@
         "message": "규칙:"
     },
     "filtering_modal_privacy": {
-        "message": "추적 보호:"
+        "message": "추적 보호"
     },
     "filtering_modal_filter": {
-        "message": "필터:"
+        "message": "필터"
     },
     "filtering_modal_block": {
         "message": "차단"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "허용 목록에서 제거"
     },
-    "filtering_modal_add_title": {
-        "message": "규칙 추가"
+    "filtering_modal_block_title": {
+        "message": "차단 규칙 추가"
+    },
+    "filtering_modal_allow_title": {
+        "message": "허용 규칙 추가"
     },
     "filtering_modal_status_text_desc": {
-        "message": "상태:"
+        "message": "상태"
     },
     "filtering_modal_status_text_error": {
         "message": "미리보기를 로드하는 데 실패했습니다. 다시 시도해 주세요."
@@ -655,19 +676,22 @@
         "message": "로딩 중..."
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "필터링 상태:"
+        "message": "필터링 상태"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "규칙 텍스트:"
+        "message": "규칙"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "패턴:"
+    "filtering_modal_patterns_desc_block": {
+        "message": "차단해야 할 항목"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "허용해야 할 항목"
     },
     "filtering_modal_options_desc": {
-        "message": "옵션:"
+        "message": "옵션"
     },
     "filtering_modal_apply_domains": {
-        "message": "모든 웹사이트에 이 규칙 적용"
+        "message": "모든 웹사이트에 적용"
     },
     "filtering_modal_third_party": {
         "message": "제3자 요청에만 적용"
@@ -676,13 +700,13 @@
         "message": "쿼리 매개 변수 제거"
     },
     "filtering_modal_add_rule": {
-        "message": "규칙 추가"
+        "message": "추가"
     },
     "filtering_modal_exception_title": {
         "message": "예외 추가"
     },
     "filtering_modal_open_in_new_tab": {
-        "message": "새 탭에서 링크 열기"
+        "message": "새 탭에서 열기"
     },
     "filtering_modal_show_full_url": {
         "message": "전체 URL 표시"
@@ -914,7 +938,7 @@
         "message": "무슨 일이 발생했나요?"
     },
     "options_rule_limits_warning_explanation_description": {
-        "message": "새 확장 프로그램을 추가 또는 업데이트한 뒤 활성화된 내장 규칙 수의 제한을 초과했습니다. Chrome 브라우저가 매니페스트 V3에 따라 기본 필터를 제외한 확장 프로그램의 모든 내장 필터를 비활성화했습니다."
+        "message": "새 확장 프로그램을 추가 또는 업데이트한 뒤 활성화된 내장 규칙 수의 제한을 초과했습니다. Chrome 브라우저가 Manifest V3에 따라 기본 필터를 제외한 확장 프로그램의 모든 내장 필터를 비활성화했습니다."
     },
     "options_rule_limits_warning_list_enabled_before_title": {
         "message": "업데이트 전 활성화되었던 필터"
@@ -994,6 +1018,9 @@
     },
     "options_show_adguard_full_version_title": {
         "message": "AdGuard 전체 버전 정보 보기"
+    },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "데이터 사용량에 대한 모든 통계가 영구적으로 삭제됩니다."
     },
     "options_show_app_updated_notification": {
         "message": "필터 업데이트 알림"
@@ -1217,6 +1244,24 @@
     "options_nav_compare": {
         "message": "차이점 비교해보기"
     },
+    "options_desktop_app_promo_title": {
+        "message": "확장 프로그램은 브라우저만 보호합니다"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "Spotify, Discord, Zoom 등의 앱은 여전히 광고를 표시하고 활동을 추적할 수 있습니다."
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "데스크탑 앱을 이용하면 이들로부터 보호받을 수 있습니다."
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "Windows용 AdGuard 설치"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "Mac용 AdGuard 설치"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "Linux용 AdGuard 설치"
+    },
     "options_filters_search": {
         "message": "검색"
     },
@@ -1277,11 +1322,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "설정을 초기화하시겠습니까?"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "모든 설정이 기본값으로 초기화됩니다"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "초기화"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "허용 목록을 반전합니까?"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "광고와 추적기가 허용 목록에 있는 웹사이트에서만 차단됩니다"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "반전"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "취소"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "설정 불러오기"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "가져온 설정이 현재 설정을 대체합니다. 다른 설정은 영향을 받지 않습니다."
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "가져오기"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "가져오는 중..."
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "현재 설정을 가져온 설정으로 바꿉니다. 가져오기 중에는 필터링이 꺼집니다."
+    },
+    "options_import_configuration_success_title": {
+        "message": "모두 완료"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "설정을 성공적으로 가져왔습니다."
+    },
+    "options_import_configuration_success_button": {
+        "message": "닫기"
+    },
+    "options_import_configuration_error_title": {
+        "message": "설정을 가져오지 못했습니다."
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "링크를 확인하고 다시 시도해 보세요. 그래도 도움이 되지 않으면 지원팀에 문의하세요."
+    },
+    "options_import_configuration_error_button": {
+        "message": "닫기"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "가독성 향상"
@@ -1293,7 +1383,7 @@
         "message": "다시 시도"
     },
     "filtering_log_tag_request_source": {
-        "message": "요청 소스"
+        "message": "요청 출발지"
     },
     "filtering_log_tag_tooltip_first_party": {
         "message": "퍼스트 파티 요청"
@@ -1302,7 +1392,7 @@
         "message": "써드 파티 요청"
     },
     "filtering_log_tag_request_status": {
-        "message": "요청 상태"
+        "message": "필터링 상태"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "필터링 없이 처리된 요청"
@@ -1455,7 +1545,7 @@
         "message": "다시 시도해보세요"
     },
     "filtering_modal_applied_rules": {
-        "message": "| 적용된 규칙:",
+        "message": "적용된 규칙 | 적용된 규칙",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1558,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "DNR 규칙:"
+    },
+    "opera_search_permission_warning": {
+        "message": "검색 광고를 차단하려면 브라우저 설정에서 검색 페이지 결과에 접근하는 권한을 허용하세요."
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "설정으로 이동"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "다시 표시 안 함"
     }
 }
