@@ -1040,6 +1040,15 @@ export abstract class MessengerCommon {
     };
 
     /**
+     * Sends a message to the background to generate a share settings URL.
+     *
+     * @returns Promise that resolves with the share URL string.
+     */
+    generateShareUrl = async (): Promise<ExtractMessageResponse<MessageType.GenerateShareUrl>> => {
+        return this.sendMessage(MessageType.GenerateShareUrl);
+    };
+
+    /**
      * Sends a message to the background page to open the thank you page.
      *
      * @returns Promise that resolves after the message is sent.

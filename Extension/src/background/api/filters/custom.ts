@@ -51,7 +51,7 @@ import { isHtmlContent } from './content-validator';
 /**
  * Data transfer object for {@link CustomFilterApi} methods.
  */
-type CustomFilterDTO = {
+export type CustomFilterDTO = {
     /**
      * Custom filter subscription url.
      */
