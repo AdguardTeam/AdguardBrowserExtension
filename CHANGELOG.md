@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 5.4
+## [5.4]
 
 ### Added
 
@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocked requests in cross-domain iframes were not counted in the extension badge [#3446].
 - Custom filter subscription accepts URLs that return HTML pages instead of filter lists [#3501].
 
+[5.4]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.1.7...HEAD
 [#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
 [#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
@@ -69,7 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3473]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3473
 [#3501]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3501
 
-## [5.3 patch 1] <!-- TODO: Add release date -->
+## [5.3 patch 1] - 2026-03-30
 
 ### Added
 
@@ -87,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/tsurlfilter] to v4.0.2.
 - Updated [@adguard/tswebextension] to v4.0.2.
 
-[5.3 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.0.8...HEAD
+[5.3 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.0.8...v5.3.1.7
 [#3449]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3449
 [#3400]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3400
 
