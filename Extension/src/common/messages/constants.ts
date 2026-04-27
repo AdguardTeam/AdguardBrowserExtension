@@ -165,6 +165,7 @@ export enum MessageType {
     GetPendingImportBlockWebrtc = 'getPendingImportBlockWebrtc',
     ApplyImportConfiguration = 'applyImportConfiguration',
     CancelImportConfiguration = 'cancelImportConfiguration',
+    GenerateShareUrl = 'generateShareUrl',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -733,6 +734,10 @@ export type CancelImportConfigurationMessage = {
     type: MessageType.CancelImportConfiguration;
 };
 
+export type GenerateShareUrlMessage = {
+    type: MessageType.GenerateShareUrl;
+};
+
 // Unified message map that includes both message structure and response types
 export type MessageMap = {
     [MessageType.CreateEventListener]: {
@@ -1106,6 +1111,10 @@ export type MessageMap = {
     [MessageType.CancelImportConfiguration]: {
         message: CancelImportConfigurationMessage;
         response: void;
+    };
+    [MessageType.GenerateShareUrl]: {
+        message: GenerateShareUrlMessage;
+        response: string;
     };
 };
 

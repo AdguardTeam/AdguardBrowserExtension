@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use HTTP `Last-Modified` header as fallback for custom filter update timestamps
   when `TimeUpdated` metadata is missing [#3407].
 - `ROList` filter list in MV3 [#3473].
+- Share settings button on General page.
 
 ### Changed
 

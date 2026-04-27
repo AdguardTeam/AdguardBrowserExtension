@@ -23,3 +23,4 @@ export {
     ConfigurationImportApi,
     type ImportConfiguration,
 } from './configuration-import';
+export { ConfigurationExportApi } from './configuration-export';
