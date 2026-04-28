@@ -19,7 +19,7 @@
         "test:integration": "rimraf tmp && mkdir -p tests-reports && tsx tools/browser-test/index.ts",
         "locales": "tsx tools/locales.js",
         "resources": "tsx tools/resources.ts",
-        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@4.2.1 && tsx tools/resources-mv3.ts",
+        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~4.2 && tsx tools/resources-mv3.ts",
         "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
         "lint:code": "eslint --cache --max-warnings=0 --ext .jsx,.js,.cjs,.mjs,.tsx,.ts .",
@@ -44,7 +44,7 @@
     "author": "Adguard Software Ltd <adguard@adguard.com>",
     "license": "GPL-3.0",
     "devDependencies": {
-        "@adguard/dnr-rulesets": "4.2.1",
+        "@adguard/dnr-rulesets": "~4.2",
         "@adguard/eslint-plugin-logger-context": "1.0.1",
         "@adguard/re2-wasm": "1.2.0",
         "@csstools/postcss-global-data": "4.0.0",
