@@ -29,12 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cookie self-destruct stealth params (`stealth.third_party_cookies_min`,
   `stealth.first_party_cookies_min`) are now MV2-only in issue report URLs (not
   supported on MV3).
-- Updated [@adguard/agtree] to v4.1.0-beta.
-- Updated [@adguard/dnr-rulesets] to v4.2.0-beta.2.
+- Updated [@adguard/agtree] to v4.1.1.
+- Updated [@adguard/dnr-rulesets] to v4.2.1.
 - Updated [@adguard/filters-downloader] to v2.4.4.
-- Updated [@adguard/scriptlets] to v2.4.0-beta.
-- Updated [@adguard/tsurlfilter] to v5.0.0-beta.1.
-- Updated [@adguard/tswebextension] to v4.1.0-beta.1.
+- Updated [@adguard/scriptlets] to v2.4.2.
+- Updated [@adguard/tsurlfilter] to v5.0.1.
+- Updated [@adguard/tswebextension] to v4.1.1.
 
 ### Fixed
 
