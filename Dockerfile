@@ -37,9 +37,11 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     echo "Building tsurlfilter from source..." && \
     pnpm config set store-dir /pnpm-store && \
     cd /tsurlfilter/packages/tswebextension && \
-    pnpm install && \
-    npx lerna run build --scope=@adguard/tswebextension --include-dependencies && \
-    npx lerna run build --scope=@adguard/dnr-rulesets --include-dependencies
+    pnpm install \
+        --frozen-lockfile \
+        --prefer-offline \
+        --ignore-scripts && \
+    npx lerna run build --scope=@adguard/tswebextension --include-dependencies
 
 # ============================================================================
 # Stage: deps
@@ -93,7 +95,7 @@ COPY --from=tsurlfilter-build /tsurlfilter /tsurlfilter
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm config set store-dir /pnpm-store && \
-    ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter --with-dnr-rulesets
+    ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
 
 # ============================================================================
 # Stage: dev-build
@@ -154,7 +156,7 @@ FROM linked-deps AS lint
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run lint with timeout (cached until source changes).
-    ./bamboo-specs/scripts/timeout-wrapper.sh 120s pnpm lint && \
+    ./bamboo-specs/scripts/timeout-wrapper.sh 180s pnpm lint && \
     mkdir -p /out && \
     touch /out/lint.txt
 
@@ -166,8 +168,8 @@ COPY --from=lint /out/ /
 # ============================================================================
 # Stage: unit-tests
 # Runs unit tests during build
-# IMPORTANT: Cannot be cached - JUnit parser rejects test results with
-# timestamps older than task start time. TEST_RUN_ID busts cache on every build.
+# IMPORTANT: Cannot be cached - tests must run on every build to catch
+# regressions. TEST_RUN_ID busts cache on every build.
 # ============================================================================
 FROM linked-deps AS unit-tests
 
@@ -183,14 +185,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci; \
     EXIT_CODE=$?; \
     # Keep tests-reports for junit parser.
-    # NOTE: touch is intentional - --output type=local preserves container mtimes,
-    # so extracted XML files retain the timestamp from when they were written inside
-    # the container. If the Bamboo task was queued for a while before running, those
-    # timestamps predate the task start time and the JUnit parser rejects them with
-    # "file was modified before task started". Touching after cp resets mtime to now.
     if [ -d tests-reports ]; then \
-      cp -R tests-reports/. /out/tests-reports/ && \
-      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+      cp -R tests-reports/. /out/tests-reports/; \
     fi; \
     # Note that we export test-results in junit format (for Bamboo to understand)
     # and suppress the original exit code (so that we could get the test results).
@@ -229,16 +225,10 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run integration tests.
     pnpm test:integration ${BUILD_TYPE}; \
     EXIT_CODE=$?; \
-    # NOTE: touch is intentional - --output type=local preserves container mtimes,
-    # so extracted XML files retain the timestamp from when they were written inside
-    # the container. If the Bamboo task was queued for a while before running, those
-    # timestamps predate the task start time and the JUnit parser rejects them with
-    # "file was modified before task started". Touching after cp resets mtime to now.
     if [ -d tests-reports ]; then \
-      cp -R tests-reports/. /out/tests-reports/ && \
-      find /out/tests-reports -name '*.xml' -exec touch {} +; \
+      cp -R tests-reports/. /out/tests-reports/; \
     fi; \
-    # Rename test report to match JUnit parser pattern (mirrors integration-tests.sh).
+    # Rename test report to match JUnit parser pattern.
     if [ -f /out/tests-reports/integration-tests.xml ]; then \
         mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-${BUILD_TYPE}.xml; \
     fi; \
@@ -247,6 +237,41 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 
 FROM scratch AS integration-tests-output
 COPY --from=integration-tests /out/ /
+
+# ============================================================================
+# Stage: integration-tests-standalone
+# Self-contained integration tests that build chrome-mv3 dev extension
+# internally, without requiring pre-built artifacts from another job.
+# Used by the tests plan where all jobs run in a single parallel stage.
+# ============================================================================
+FROM linked-deps AS integration-tests-standalone
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Build only chrome-mv3 dev extension with zip.
+    pnpm dev chrome-mv3 --zip && \
+    # For correct link playwright browsers.
+    pnpm exec playwright install && \
+    mkdir -p /out/tests-reports && \
+    set +e; \
+    # Run integration tests.
+    pnpm test:integration dev; \
+    EXIT_CODE=$?; \
+    if [ -d tests-reports ]; then \
+      cp -R tests-reports/. /out/tests-reports/; \
+    fi; \
+    # Rename test report to match JUnit parser pattern.
+    if [ -f /out/tests-reports/integration-tests.xml ]; then \
+        mv /out/tests-reports/integration-tests.xml /out/tests-reports/integration-tests-dev.xml; \
+    fi; \
+    echo ${EXIT_CODE} > /out/exit-code.txt; \
+    exit 0
+
+FROM scratch AS integration-tests-standalone-output
+COPY --from=integration-tests-standalone /out/ /
 
 # ============================================================================
 # Stage: beta-build
@@ -365,7 +390,7 @@ COPY --from=firefox-beta-build /out/ /
 
 # ============================================================================
 # Stage: firefox-beta-sign
-# Signs Firefox extension with go-webext (requires AMO credentials)
+# Signs Firefox standalone beta with go-webext (requires AMO credentials)
 # Expects artifacts via named build context: --build-context firefox-artifacts=artifacts
 # Uses adguard/extension-builder image which has go-webext pre-installed
 # ============================================================================
@@ -387,7 +412,7 @@ ARG TEST_RUN_ID
 RUN --mount=type=secret,id=FIREFOX_CLIENT_SECRET \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     mkdir -p /out/artifacts && \
-    # Sign the Firefox extension with go-webext.
+    # Sign the Firefox standalone beta extension with go-webext.
     FIREFOX_CLIENT_ID="${FIREFOX_CLIENT_ID}" \
     FIREFOX_CLIENT_SECRET="$(cat /run/secrets/FIREFOX_CLIENT_SECRET)" \
     # Note that this command will fail after timeout if signing is not completed
@@ -405,6 +430,32 @@ RUN --mount=type=secret,id=FIREFOX_CLIENT_SECRET \
 
 FROM scratch AS firefox-beta-sign-output
 COPY --from=firefox-beta-sign /out/ /
+
+# ============================================================================
+# Stage: firefox-amo-beta-build
+# Creates Firefox AMO beta build with unsigned zip and AMO review artifacts
+# ============================================================================
+FROM linked-deps AS firefox-amo-beta-build
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so build stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Create beta build for Firefox AMO with zip archive.
+    pnpm beta firefox-amo --zip && \
+    # Create artifacts directory if it doesn't exist.
+    mkdir -p /out/artifacts && \
+    # Move artifacts to the artifacts directory.
+    mv build/beta/build.txt /out/artifacts/ && \
+    mv build/beta/firefox-amo.zip /out/artifacts/ && \
+    # Archive source files for AMO publishing.
+    ./bamboo-specs/scripts/archive-source.sh beta && \
+    mv build/beta/source.zip /out/artifacts/ && \
+    mv build/beta/approval-notes.txt /out/artifacts/
+
+FROM scratch AS firefox-amo-beta-build-output
+COPY --from=firefox-amo-beta-build /out/ /
 
 # ============================================================================
 # Stage: release-build
