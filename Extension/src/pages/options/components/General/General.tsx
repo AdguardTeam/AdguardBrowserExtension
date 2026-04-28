@@ -28,6 +28,8 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 
+import browser from 'webextension-polyfill';
+
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -146,6 +148,15 @@ export const General = observer(() => {
 
     const handleExportSettings = () => {
         exportData(ExportTypes.Settings);
+    };
+
+    const handleShareSettings = async () => {
+        try {
+            const url = await messenger.generateShareUrl();
+            await browser.tabs.create({ url, active: true });
+        } catch (e) {
+            logger.error('[ext.General]: ', e);
+        }
     };
 
     const handleImportSettings = () => {
@@ -349,6 +360,13 @@ export const General = observer(() => {
                 isOpen={isUsageDataModalOpen}
             />
             <div className="links-menu links-menu--section">
+                <button
+                    type="button"
+                    className="links-menu__item button--link--green"
+                    onClick={handleShareSettings}
+                >
+                    {translator.getMessage('options_share_settings')}
+                </button>
                 <button
                     type="button"
                     className="links-menu__item button--link--green"

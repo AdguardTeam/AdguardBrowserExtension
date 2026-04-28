@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 5.4
+## [5.4]
 
 ### Added
 
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use HTTP `Last-Modified` header as fallback for custom filter update timestamps
   when `TimeUpdated` metadata is missing [#3407].
 - `ROList` filter list in MV3 [#3473].
+- Share settings button on General page.
 
 ### Changed
 
@@ -50,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocked requests in cross-domain iframes were not counted in the extension badge [#3446].
 - Custom filter subscription accepts URLs that return HTML pages instead of filter lists [#3501].
 
+[5.4]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.1.7...HEAD
 [#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
 [#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
