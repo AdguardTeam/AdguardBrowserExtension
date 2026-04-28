@@ -17,10 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { SettingsApi } from 'settings-api';
-export { type SettingsData } from './settings-common';
-export {
-    ConfigurationImportApi,
-    type ImportConfiguration,
-} from './configuration-import';
-export { ConfigurationExportApi } from './configuration-export';
+
+import { ConfigurationExportApi } from './configuration-export-api';
+
+export { ConfigurationExportApi } from './configuration-export-api';
+
+/**
+ * MV2 concrete implementation of {@link ConfigurationExportApi}.
+ * All settings including browsing security and cookie TTLs are included.
+ */
+export class ConfigurationExportApiMv2 extends ConfigurationExportApi {
+}
+
+export const configurationExportApi = new ConfigurationExportApiMv2();

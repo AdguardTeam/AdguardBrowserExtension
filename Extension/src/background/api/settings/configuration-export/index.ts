@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-export { SettingsApi } from 'settings-api';
-export { type SettingsData } from './settings-common';
-export {
-    ConfigurationImportApi,
-    type ImportConfiguration,
-} from './configuration-import';
-export { ConfigurationExportApi } from './configuration-export';
+
+export { ConfigurationExportApi } from './configuration-export-api';
+export { configurationExportApi } from 'configuration-export-api';

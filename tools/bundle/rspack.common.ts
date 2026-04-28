@@ -209,6 +209,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'search-page-access-service': path.resolve(__dirname, `../../Extension/src/background/services/searchPageAccessService/SearchPageAccessService-mv${manifestVersion}.ts`),
         'rules-limits-service': path.resolve(__dirname, `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`),
         'configuration-import-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-import/configuration-import-api-mv${manifestVersion}.ts`),
+        'configuration-export-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-export/configuration-export-api-mv${manifestVersion}.ts`),
         'fullscreen-user-rules-store': path.resolve(__dirname, `../../Extension/src/pages/fullscreen-user-rules/stores/FullscreenUserRulesStore-mv${manifestVersion}.ts`),
     };
 

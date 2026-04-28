@@ -18,6 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+import { configurationExportApi } from 'configuration-export-api';
 
 import {
     MessageType,
@@ -33,6 +34,11 @@ import {
     HitStatsApi,
     SettingsApi,
 } from '../../../api';
+import {
+    Forward,
+    ForwardAction,
+    ForwardFrom,
+} from '../../../../common/forward';
 import { Prefs } from '../../../prefs';
 import {
     ContextMenuAction,
@@ -71,6 +77,7 @@ export abstract class SettingsServiceCommon {
         messageHandler.addListener(MessageType.ChangeUserSettings, SettingsServiceCommon.changeUserSettings);
 
         messageHandler.addListener(MessageType.LoadSettingsJson, SettingsServiceCommon.export);
+        messageHandler.addListener(MessageType.GenerateShareUrl, SettingsServiceCommon.generateShareUrl);
 
         settingsEvents.addListener(SettingOption.DisableCollectHits, SettingsServiceCommon.onDisableCollectHitsChange);
         contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsServiceCommon.enableFiltering);
@@ -154,6 +161,21 @@ export abstract class SettingsServiceCommon {
             content: await SettingsApi.export(),
             appVersion: browser.runtime.getManifest().version,
         };
+    }
+
+    /**
+     * Generates a share settings URL with current extension configuration.
+     *
+     * @returns Share URL string.
+     */
+    static generateShareUrl(): string {
+        const settingsParams = configurationExportApi.collectShareParams();
+
+        return Forward.get({
+            action: ForwardAction.ShareLink,
+            from: ForwardFrom.Options,
+            ...settingsParams,
+        });
     }
 
     /**
