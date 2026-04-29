@@ -1,9 +1,9 @@
-! Checksum: dk8Ucuvx78MWM80ykaqb8A
-! Diff-Path: ../patches/5/5-s-1776188038-3600.patch
+! Checksum: dE2OUDFXvTMgYmjvjDGfYw
+! Diff-Path: ../patches/5/5-s-1776854316-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.1.98
-! TimeUpdated: 2026-04-14T17:30:25+00:00
+! Version: 2.0.1.99
+! TimeUpdated: 2026-04-22T10:35:25+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -75,11 +75,6 @@
 !
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
-!
-! TODO: Move to Base filter if there will not be any issues with these rules
-! Fix fake buffering on mobile website
-m.youtube.com#%#//scriptlet('json-prune', 'playerResponse.messages.[].youThereRenderer')
-m.youtube.com#%#(()=>{const t={apply:(t,e,n)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(t,e,n);try{const a=n[0];if(!a?.context?.client)return Reflect.apply(t,e,n);const o=String(Date.now());a.playbackContext&&void 0===a.playbackContext.adPlaybackContext&&(a.playbackContext.contentPlaybackContext.lactMilliseconds=o),a.playerRequest&&void 0===a.playerRequest.playbackContext?.adPlaybackContext&&(a.playerRequest.playbackContext.contentPlaybackContext.lactMilliseconds=o),n[0]=a}catch(t){}return Reflect.apply(t,e,n)}};window.JSON.stringify=new Proxy(window.JSON.stringify,t)})();
 !
 ! Fix fake buffering on the initial load
 ! If there will not be any issues with these rules, they perhaps can be moved to the Base filter

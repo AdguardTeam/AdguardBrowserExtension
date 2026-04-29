@@ -1,9 +1,9 @@
-! Checksum: xT1LqnZWzDM47BoIPU5D1Q
-! Diff-Path: ../patches/9/9-s-1776685068-3600.patch
+! Checksum: fp78ymNHOkJHWhNq3wd0Lg
+! Diff-Path: ../patches/9/9-s-1777286898-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.34.7
-! TimeUpdated: 2026-04-20T11:34:33+00:00
+! Version: 2.0.34.13
+! TimeUpdated: 2026-04-27T10:44:45+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -198,6 +198,8 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/229657
+baixedetudo.net.br#%#//scriptlet('abort-current-inline-script', 'document.createElement', 'adblock')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228227
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228134
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228135
@@ -872,9 +874,6 @@ ouniversodatv.com#%#//scriptlet("set-constant", "easySettings.adblock", "0")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/97525
 @@||illamadas.es/public/javascripts/wp-banners.js
 illamadas.es#%#//scriptlet("abort-current-inline-script", "onload", "AdBlock")
-! https://github.com/AdguardTeam/AdguardFilters/issues/97340
-link.baixedetudo.net.br#%#//scriptlet("abort-current-inline-script", "document.createElement", "adblock")
-||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,xmlhttprequest,redirect=noopjs,domain=baixedetudo.net.br
 ! https://github.com/AdguardTeam/AdguardFilters/issues/96912
 ! TODO: use "prevent-xhr" scriptlet when it will be available
 ! stardeos.com#%#//scriptlet('prevent-xhr', 'pagead2.googlesyndication.com')
@@ -2155,6 +2154,13 @@ kltutors.com,eloutput.com,mundobytes.com,techondicas.com,jornalrepercussao.com.b
 !
 ! NOTE: Specific rules
 !
+bragadoinforma.com.ar##.container > div.d-block:has(> div.col-lg-12 > a[href^="go.php?"])
+bragadoinforma.com.ar##.row > div.col-lg-4:has(> div.col-lg-12 > a[href^="go.php?"])
+||clients.revistamercado.do/storage/resized/banners/
+revistamercado.do##.container > div.d-flex:has(> span.name-publicidad)
+pelando.com.br##.ad-placement
+pelando.com.br##div[class^="_adPlacement"]
+esportesdavez.com,redirectnflix.com#%#//scriptlet('set-session-storage-item', 'nf_done_clicks_v3_new', '3')
 megacurioso.com.br##div[data-label="Publicidade"]
 megacurioso.com.br##div[class^="styles_ads_by_content"]
 cine.com###pads
@@ -2315,7 +2321,7 @@ chavesnamao.com.br##div[style^="width:"] > div[style^="height:"] > div[style^="p
 chavesnamao.com.br##div[style^="width:"] > div[style^="height:"] > div[style^="position:"]:has(> div[class^="style_container__"] div[id^="div-gpt-ad-"])
 animeflv.net##[href^="https://muthrones.com/"]
 hispanidad.com##a[href^="https://www.amazon.es"]
-hispanidad.com,65ymas.com,motociclismo.es,elnacional.cat##.c-banner
+apd.cat,hispanidad.com,65ymas.com,motociclismo.es,elnacional.cat##.c-banner
 anitube.news#%#//scriptlet('abort-on-stack-trace', 'JSON.stringify', 'data:text/javascript')
 ||drpc.org^$xmlhttprequest,domain=anitube.news
 glamour.mx##div[class*="AdWrapper"]
@@ -3463,7 +3469,7 @@ noticiasaominuto.com##.escolha-consumidor-badge
 lance.com.br##div[class*="styles_advertisingVert__"]
 lance.com.br##div[class^="styles_quadradoArroba__"]
 observador.pt##.obs-ad-placeholder
-cba24n.com.ar##tadevel-ad
+esnotadiario.com,newsweek.com.ar,cba24n.com.ar##tadevel-ad
 cba24n.com.ar##div[id^="random-"]
 lance.com.br##div[class^="styles_stickySlot__"]
 lance.com.br##div[class^="styles_advertising__"]

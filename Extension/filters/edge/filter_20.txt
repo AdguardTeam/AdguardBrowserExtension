@@ -1,9 +1,9 @@
-! Checksum: reIDd/R34ZQaPrxQfrMGhQ
-! Diff-Path: ../patches/20/20-s-1776436535-3600.patch
+! Checksum: MKN8To/UEP65o+KLdX1zqA
+! Diff-Path: ../patches/20/20-s-1777286890-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.28.64
-! TimeUpdated: 2026-04-17T14:32:38+00:00
+! Version: 2.0.28.73
+! TimeUpdated: 2026-04-27T10:45:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,10 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+trhaber.com#%#//scriptlet('set-session-storage-item', 'trhaber_app_banner_dismissed', 'true')
+jkanime.net##.appGlobalMsj
+stremio.com##section[id^="stremio-on-tv"]
+mail.rambler.ru##div[class^="Promo-root-"]
 metallinvestbank.ru##.index-apps
 crediteurope.ru##main > section.mobile-app:has(> div.container > div.mobile-app-entities_blue > picture > source[srcset^="/upload/iblock/"][srcset$="/mobile_app_shadow.webp"])
 my.modulbank.ru#$#.auth__promo:has(.auth-promo--mobile-app) { display: none !important; }
@@ -342,7 +346,7 @@ m.olx.ua##div[class^="css-"]:has(> button[data-testid="app-install-banner-open"]
 chirashiplus.jp##.contents > a[href="https://app.chirashiplus.jp/"]
 poshmark.com##.btn--open-in-app
 hotokami.jp##a[onclick*="app"]
-zarahome.com,flipp.com##.download-app-banner
+suzuri.jp,zarahome.com,flipp.com##.download-app-banner
 coemee.com#%#//scriptlet('trusted-set-local-storage-item', 'pwa-install-prompt-dismissed', '2764250584116')
 vkusnoitochka.ru##a[href="https://trk.mail.ru/c/jpair2"]
 noz.de#$#.appB_page_box { display: none !important; }
@@ -389,7 +393,6 @@ pacificparadiseindian.com.au##div[data-class="app_download_banner"]
 dazeddigital.com##.article-main-content > .grid:has(a[href^="https://play.google.com/store/apps/details"])
 dazeddigital.com##.club-promo-strip
 bietigheimerzeitung.de##div[data-b-title="BHZ-R ePaper"]
-hepsiburada.com##details[class^="sf-smart-banner-"]
 e-shop.gr##.sidebar-apps
 ozdilekteyim.com##ozd-mobile-app-download
 moviebox.*##.pc-guide-mask
@@ -4112,6 +4115,10 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+distill.io###appPrompt
+vodafone.com.tr##div[data-region-id^="header--smart-link"]
+navitime.co.jp##.js-appli-japan-travel
+pelando.com.br###download-app-banner
 nieruchomosci-online.pl##.banner-mob
 hurriyet.com.tr##.news-inline-banner
 navitime.co.jp###midnight-sride-banner
@@ -4524,7 +4531,6 @@ teremok.ru,prioritypass.com,domainanalysis.io,finance.yahoo.com##.app-banner
 theinformation.com##a[data-testid="download-app"]
 quora.com#?#a[href="https://www.quora.com/"][target="_top"] + div[class] > button:has(> div > div > div:contains(App))
 fantasi.one#?##app > div.background:has(> div:only-child > .close + .content > p:contains(App))
-hepsiburada.com##details[class^="sf-smart-banner"]
 ifunny.co###App > div[class*=" "]:has(> div[class] a[href^="https://ifunny.onelink.me/"])
 okeydostavka.ru###mainHeaderMobileBanner
 op.gg##a[href^="https://apps.apple.com/"][href*="/app/op-gg/id605722237"]
@@ -4656,7 +4662,6 @@ cookpad.com##.btn--cookpad-orange-500[data-gtag-event-action-value="ClickAppDown
 cloud.tencent.com##.cdc-commercial-card
 m.sporx.com##.media-news:has(> div > a[href^="https://app.adjust.com/"])
 huggingface.co##a[href^="https://play.google.com/store/apps/"]
-hepsiburada.com##details[class^="sf-smart-banner-"]
 sporx.com#?##storyContent > div[id^="boxGallery_"]:has(> a[href^="https://app.adjust.com/"])
 homerun.co.uk##.appstore-mobil
 duckduckgo.com##a[class^="mobile-atb-banner_"]
@@ -5174,6 +5179,12 @@ scoopzapp.com#%#(()=>{const o={apply:(o,t,n)=>{try{"function"==typeof t&&"onTime
 ! shkulev media holding
 116.ru,14.ru,161.ru,164.ru,173.ru,26.ru,29.ru,35.ru,43.ru,45.ru,48.ru,51.ru,53.ru,56.ru,59.ru,60.ru,63.ru,68.ru,71.ru,72.ru,74.ru,76.ru,86.ru,89.ru,93.ru,chita.ru,e1.ru,fontanka.ru,ircity.ru,izh1.ru,mgorsk.ru,msk1.ru,ngs.ru,ngs22.ru,ngs24.ru,ngs42.ru,ngs55.ru,ngs70.ru,nn.ru,sochi1.ru,sterlitamak1.ru,tolyatty.ru,ufa1.ru,v1.ru,vladivostok1.ru,voronezh1.ru##article > div[class^="wrapper_"]:has(> a[href^="https://redirect.appmetrica.yandex.com/"])
 !
+!+ NOT_OPTIMIZED
+hepsiburada.com###hyd-adx
+!+ NOT_OPTIMIZED
+hepsiburada.com##div[data-test-id="sponsored-products"]
+!+ NOT_OPTIMIZED
+hepsiburada.com##details[class^="sf-smart-banner"]
 !+ NOT_OPTIMIZED
 m.made-in-china.com##.downapp
 !+ NOT_OPTIMIZED
