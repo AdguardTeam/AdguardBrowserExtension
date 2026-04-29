@@ -66,7 +66,7 @@ jobs:
                     value: "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>"
                     short: true
                   - title: "Message"
-                    value: "${{ github.event.head_commit.message }}"
+                    value: "${{ github.event.head_commit.message || format('Manual trigger by {0}', github.actor) }}"
                     short: false
                   - title: "Commit"
                     value: "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
