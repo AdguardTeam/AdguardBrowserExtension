@@ -1,9 +1,9 @@
-! Checksum: xl7dhJUF9di08dFMUdD5Uw
-! Diff-Path: ../patches/6/6-s-1777127062-3600.patch
+! Checksum: li04nIqKBJynk8yI700GJg
+! Diff-Path: ../patches/6/6-s-1776511256-3600.patch
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.51.80
-! TimeUpdated: 2026-04-25T14:21:19+00:00
+! Version: 2.0.51.71
+! TimeUpdated: 2026-04-18T11:17:51+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1557,11 +1557,6 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
-mobile.de##div[class^="AdaptivePageContainer_billboard"]
-immobilienscout24.de##.ad-content-banner
-blocktrainer.de##a[rel="noreferrer nofollow sponsored"]
-blocktrainer.de##.adoBanner
-blocktrainer.de##.adoBox
 ||stadlholz.com/ads/
 hd-source.to##div.sidebar-module:has(> .textwidget > p > a[href][target="_blank"] > img)
 immobilienscout24.de##div[data-testid="ListingsGrid"] > .touchpoint-card
@@ -1967,6 +1962,7 @@ netzwelt.de##article > .bgc-c3-02.pos-r
 netzwelt.de##.sc-waiputv
 netzwelt.de##.sc-waiputv + .fs-ms
 netzwelt.de##.sc-waiputv + .fs-ms + p:has(> a[href*="download"]:only-child)
+netzwelt.de##.ta-r
 leckerschmecker.me##.tag-anzeige
 wmn.de##.tag-sponsored
 travelbook.de,petbook.de#$#div[aria-label="Benachrichtigungen"]:has(> .modal-dialog div[data-type="notification-list"] > article:only-child > a[rel*="sponsored"]) { display: none !important; }
@@ -7369,6 +7365,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||probefahrt.gratis^$popup
 ||putenbrust.net^$popup
 ||sau-billig.net/?log=$popup,third-party
+||sloganmaker.net/?utm_campaign=*&utm_source=$popup,third-party
 ||smsdate.com^$popup
 ||start.sexpartnercommunity.com^$popup
 ||sunmaker.com/?a_aid=$popup
@@ -8140,6 +8137,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||notebookcheck.com/fileadmin/templates/wbg/
 ||nr-kurier.de/images/mankwetter.png
 ||nrhz.de/flyer/media/banner/
+||nurbilder.com/mdh1.php
 ||nurgay.to/scpu.js
 ||nurxxx.mobi/ai/s/s/js/ssu.v2.js
 ||nurxxx.net/ai/s/s/js/ssu.v2.js
@@ -9203,7 +9201,6 @@ finanzfluss.de###in-search-ad-kommer-matomo
 finanzfluss.de###in-search-invesco-01-25
 familienkost.de###incontent_1
 familienkost.de###incontent_2
-heilfastenkur.de###infobereich123
 moviedream.cx###informationbox2
 bz-berlin.de###inpage
 abload.de###iphpbannerleft
@@ -9415,7 +9412,6 @@ madchensex.com###side-spot
 abnehmen.com,aquariumforum.de,auswandererforum.de,pferd.de,radforum.de###sidebar > li > .ffwidget_sidebar
 areadvd.de###sidebar-left #text-5
 primeleague.gg###sidebar-sponsor
-mydealz.de###sidebarBottomAdSlotPortal
 mydealz.de###sidebarMiddleAdSlotPortal
 mydealz.de###sidebarTopAdSlotPortal
 uhrforum.de###sidebar_container
@@ -9974,7 +9970,6 @@ btc-echo.de##.btc-sponsored
 hockeyweb.de##.btn-danger
 boersennews.de##.btn-smartbroker
 radioguetersloh.de##.btn2
-heilfastenkur.de##.buch_produkt_rechts_ausgerichtet
 tvspielfilm.de##.button.affiliate
 lounge.fm##.buy
 eventelevator.de##.bwdfb-widget
@@ -10055,7 +10050,6 @@ deutscherskiverband.de##.container-banner-2
 ssvnaturns.it##.container-sponsoren
 mt.de##.container.margin-bottom-40.fullwidth-container-mobile.min-280
 goslarsche.de##.container_skyscraper
-android-hilfe.de##.content-ad
 android-hilfe.de##.content-ad-first
 hoerzu.de##.content-amazon
 kostenlosspielen.net##.content-main-box-300x250
@@ -10730,9 +10724,6 @@ sexabc.ch##.sliderINSERATE
 sexabc.ch##.sliderTOP
 suche6.ch##.slideshow
 wallis24.it##.slideshowck
-mydealz.de##.slot
-mydealz.de##.slot-wrapper--sidebarLinked-left
-mydealz.de##.slot-wrapper--sidebarLinked-right
 hcgherdeina.com##.small-sponsor-box
 finanznachrichten.de##.smartbroker--text
 finanznachrichten.de##.smartbroker-logo
@@ -10932,7 +10923,6 @@ finanztreff.de##.videosponsor_hsbc
 heizsparer.de,solaranlage-ratgeber.de##.vidheight[style="min-height:450px;"]
 busplaner.de##.view--advertorial
 netzwoche.ch##.view-partners
-windowspro.de##.view-sponsoredcontent
 mywheels.tv##.view-type-falken
 vip.de##.vip-medium-rectangle
 mobile.de##.vip-placeholder
@@ -11196,8 +11186,6 @@ android-hilfe.de##article[class="message message--post"]
 otto.de##article[data-origin="sponsored"]
 otto.de##article[data-producttile-tracking*="wk.san_ProductType\":\"sponsored\""]
 mobile.de##article[data-testid="srp-top-ad"]
-android-hilfe.de##article[id^="fh-"]
-nius.de##aside[aria-label="Werbung"]
 weristdeinfreund.de##aside[id^="banner"]
 bazar.at,dibeo.at##bb-gpt-ad
 ww3.cad.de##body > table[Width="100%"][border="0"]:first-child
@@ -11437,7 +11425,6 @@ hardwareluxx.de##div[style="float: right; clear: both; padding-left: 1rem; margi
 wirtschaftslexikon24.com##div[style="float:left;clear:left;height:620px;width:180px;padding-top:15px;"]
 breakpoint.untergrund.net##div[style="float:right; width: 110px; margin-left: 15px; margin-top: 12px; margin-bottom: 15px; padding: 2px 6px; text-align: center; border: 1px solid black; background:white; line-height: 2em; color: black;"]
 pixelio.de##div[style="float:right; width: 300px; height: 250px"]
-mydealz.de##div[style="height: 126px;"]
 scifiscene.de##div[style="height: 166px"]
 news.reiseuhu.de##div[style="height: 250px"]
 n-mag.org##div[style="height: 280px; margin: 5px 0 5px 0;"]
@@ -11478,7 +11465,6 @@ astroportal.com##div[style="width: 336px; height: 280px;"]
 strafbuch.de##div[style="width: 468px;height: 60px;overflow: hidden;float: right"]
 immoscout24.ch##div[style="width: auto; height: auto; min-height: 250px; display: flex; justify-content: center; align-items: center;"]
 immoscout24.ch##div[style="width: auto; height: auto; min-height: 250px; justify-content: center; align-items: center;"]
-heilfastenkur.de##div[style="width:100%; color:#b3b3b3; font-size:11px; margin-bottom:-5px;"]
 gutefrage.net##div[style="width:100%;height:252px;overflow:hidden"]
 gutefrage.net##div[style="width:100%;height:602px;overflow:hidden"]
 ariva.de##div[style="width:1000px; text-align:center; min-height:270px;"]
@@ -11956,17 +11942,20 @@ motorsport-total.com#?#.teaser_container.teaser-htmlcode.relative.row:has(.f1de-
 notebookcheck.com#?#.introa_news:contains(Anzeige)
 nur-positive-nachrichten.de#?#.moduletable.text-center:has(.bildunterschrift:contains(Anzeige))
 o-sport.de#?#.card-body:contains(Sponsoren)
+onvista.de#?#.cursor-pointer:contains(Werbung)
 onvista.de#?#.outer-spacing--xxlarge-top:contains(Werbung von)
-onvista.de#?#.ov-carousel__item:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
-onvista.de#?#a[class*="ArticleTeaserBox"]:has(div.ov-subline:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/))
-onvista.de#?#div[class*="Styles_ov-content-item-list__item"]:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
-onvista.de#?#div[class="bg-neutral-2 p-0 shadow-md rounded-2xl border-1 border-neutral-4 mb-0"]:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
-onvista.de#?#div[class="bg-neutral-2 p-0 shadow-md rounded-2xl border-1 border-neutral-4 mb-4"]:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
-onvista.de#?#div[class="bg-neutral-2 shadow-md rounded-2xl border-1 border-neutral-4 mb-4 p-0"]:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
-onvista.de#?#div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
-onvista.de#?#div[class="col py-0"]:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
-onvista.de#?#div[class="flex justify-between mb-4 border-b-1 border-b-grey-100 pb-2 dark:border-b-grey-700"]:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
-onvista.de#?#div[class="md:col-span-3 lg:col-span-4"]:contains(/Werbung|gnubreW|gnubreW|gnubreW|g​n​u​b​r​e​W|W​e​r​b​u​n​g/)
+onvista.de#?#.ov-carousel__item:contains(/Werbung|gnubreW/)
+onvista.de#?#.ov-carousel__item:contains(gnubreW)
+onvista.de#?#a[class*="ArticleTeaserBox"]:has(div.ov-subline:contains(Werbung))
+onvista.de#?#div[class*="Styles_ov-content-item-list__item"]:contains(Werbung)
+onvista.de#?#div[class="bg-neutral-2 p-0 shadow-md rounded-2xl border-1 border-neutral-4 mb-0"]:contains(gnubreW)
+onvista.de#?#div[class="bg-neutral-2 p-0 shadow-md rounded-2xl border-1 border-neutral-4 mb-4"]:contains(/Werbung|gnubreW/)
+onvista.de#?#div[class="bg-neutral-2 p-0 shadow-md rounded-2xl border-1 border-neutral-4 mb-4"]:contains(gnubreW)
+onvista.de#?#div[class="bg-neutral-2 shadow-md rounded-2xl border-1 border-neutral-4 mb-4 p-0"]:contains(gnubreW)
+onvista.de#?#div[class="col col--md-3 col--sm-4 col--lg-4 col--xl-4"]:contains(Werbung)
+onvista.de#?#div[class="col py-0"]:contains(/Werbung|gnubreW/)
+onvista.de#?#div[class="flex justify-between mb-4 border-b-1 border-b-grey-100 pb-2 dark:border-b-grey-700"]:contains(Werbung)
+onvista.de#?#div[class="md:col-span-3 lg:col-span-4"]:contains(gnubreW)
 pctipp.ch#?#.list_item:has(.dachzeile:contains(Partnerzone))
 pcwelt.de#?#div.box:has(span.banner-text + h4:contains(/Partner-Angebot|Angebote/))
 pollenflug.de#?#.services-item:contains(bei Amazon)

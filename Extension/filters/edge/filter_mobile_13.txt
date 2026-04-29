@@ -1,9 +1,9 @@
-! Checksum: GZbZuFO4qJymxH9eJ+eMOQ
-! Diff-Path: ../patches/13_optimized/13_optimized-s-1777301373-3600.patch
+! Checksum: Lhg0QK0F+irF/vsFRXvfhA
+! Diff-Path: ../patches/13_optimized/13_optimized-s-1776661908-3600.patch
 ! Title: AdGuard Turkish filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.63.84
-! TimeUpdated: 2026-04-27T14:46:24+00:00
+! Version: 2.0.63.75
+! TimeUpdated: 2026-04-20T05:08:42+00:00
 ! Expires: 10 days (update frequency)
 ||adcluster.com.tr^$third-party
 ||rtb-stack.com^
@@ -1039,9 +1039,8 @@ $xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.l
 /service/advertchannels?$domain=kocaelifikir.com|anayurtgazetesi.com|medyaankara.com|ozgunkocaeli.com.tr|urfanatik.com|dirilispostasi.com|turkuazgazetesi.net|yenialanya.com|bugunkocaeli.com.tr|cagdaskocaeli.com.tr|mansetaydin.com|enkocaeli.com|kocaelikoz.com|kocaelibarisgazetesi.com|seskocaeli.com|sigortahaber.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
-trhaber.com##div[data-canonical] > div.flex:has(> div.flex > div.flex > div.relative > div[id^="div-gpt-ad-"])
-mynet.com##.content-banner-div
 r10.net##.container > div[class^="ez"]
+||cdn.r10.net/editor/*.gif
 gazetevatan.com##.common-header
 enuygunfinans.com##[data-testid="hello-bar-link"]
 enuygunfinans.com##div[data-testid="advertisements-right"]
@@ -1175,6 +1174,8 @@ pornoizle9.icu##body > div[style="display: block;"]:has(ins[data-zoneid])
 pornoizle9.icu##.a-d_Py5f
 pornoizle9.icu#%#//scriptlet('abort-on-property-read', 'open')
 ||pornoizle9.icu/pk8/ntr/b100.js
+sotweturkifsa8.blog###block-35
+sotweturkifsa8.blog#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
 trtspor.com.tr##div[class]:has(> div.ad-container)
 velvetporntube.com##.bns-place-ob
 milliyet.com.tr#?#.medyanet-inline-adv
@@ -1190,11 +1191,14 @@ ifsagram6.com##.banner-wrap
 ||zerotik.space/maczer15.js
 filmgo2.org,filmmolly.com##.sayfa-sol > a[target="_blank"]
 turkifsahub.com##a[href^="https://go.aff.teslaaffilate.com/"]
+turkzzersifsa3.blog,turkifsalife16.blog,turkifsalifetr1.blog#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
 *$script,third-party,domain=turkifsalifetr1.blog
 ifsagram6.com###promoPopup
 ifsagram6.com#%#//scriptlet('trusted-replace-node-text', 'script', 'adPlayed', 'let adPlayed = false', 'let adPlayed = true')
 ||vendor-provider.*.cdn.digitaloceanspaces.com/ebetlab/*/promotions/$image
 sahibinden.com##.masthead-banner-container
+checkout.hepsiburada.com##div[class^="basket_container_"] div[class^="reco_"]
+checkout.hepsiburada.com##div[class^="basket_container_"] div[class^="carousel_container_"]
 ||haberturk.com/adscbg/
 ||im.haberturk.com/assets/hopeplayer/released/plugins/ads-debug.min.js
 ||sozcu.com.tr/lib/adsv2_dist/
@@ -1236,6 +1240,7 @@ yeniakit.com.tr##.row .col-5 div[id][style^="height:"]
 aspor.com.tr##.headline-items figure:has(> a[href^="http"])
 ||grupbul.com/assets/images/ads/
 grupbul.com##a[href^="/reklamYonlendir/"][target="_blank"] > img
+hepsiburada.com##.hepsiads-voltran-body
 ||abdpost.com/images/money/
 zerotik.com##a[href^="https://medyabayim.com/"]
 dizipala.*#%#//scriptlet('prevent-addEventListener', 'click', 'openHiddenPopup')
@@ -1287,6 +1292,7 @@ doviz.com##.top-ad-container
 diziwatch.*#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'initPop')
 ertv.com.tr##.news-detail > div.mx-auto:has(> div.haber-ici-1_greklam)
 ertv.com.tr##div[class*="greklam"]
+hepsiburada.com##div[class^="sf-Recommendation-"] > div[class^="sf-Recommendation-"]:has(> div[class^="sf-reco-"] > a[href^="https://adservice.hepsiburada.com/"])
 birsenaltuntas.com##.geoit_popup_ade
 birsenaltuntas.com##.theiaStickySidebar > aside.widget_custom_html:has(> div > ins.adsbygoogle)
 ag2m4.cfd#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'popupLastOpened')
@@ -1353,6 +1359,7 @@ f5haber.com##.row > div.text-center:has(> div.adpro)
 f5haber.com#$#.post-detail > div.infinity-item > div.row { justify-content: center !important; }
 ||turkcealtyazi.org/_popceh.js
 bitcoinsistemi.com##.tdb-block-inner > .code-block
+hepsiburada.com##div[data-test-id="sponsored-products"]
 hisse.net,webtekno.com##.adv-col
 webtekno.com##.content-adv-col
 webtekno.com###masthead-ad
@@ -1611,6 +1618,7 @@ filmizleplus.cc##div[class^="r_header_"]
 filmizleplus.cc,filmizletv.*###vidaltins
 filmizleplus.cc,filmizletv.*#$#.container.main { margin-top: 0 !important; }
 inattvgiris.pro###player div[data-watermark]
+hepsiburada.com##div[data-test-id="sponsored-products"]
 ||hdfilmizle.org/hdpp.js
 ||statbest.in/jwplayer.mp4
 ||statbest.in/wbdrma/hdg.php
@@ -1632,15 +1640,9 @@ roketdizi.*##.w-full:empty
 aylink.co##.interstitial-page #toasts
 aylink.co##.interstitial-page .wrapper > center:has(> div:only-child .download-buttons-video)
 ||tranimeizle.top/js/mm3.js
-checkout.hepsiburada.com##div[class^="basket_container_"] div[class^="carousel_container_"]
-checkout.hepsiburada.com##div[class^="basket_container_"] div[class^="reco_"]
-hepsiburada.com##.Advertisement
-hepsiburada.com##.hepsiads-voltran-body
-hepsiburada.com##.slick-slide:has(> div:only-child > div[class] > a[href^="https://adservice.hepsiburada.com/"])
-hepsiburada.com###DESKTOP_MASTHEAD-googleAdvertisement
-hepsiburada.com##div[id^="Advertisement_"]
+hepsiburada.com##.slick-slide:has(> div:only-child > div[class] > a[href^="https://adservice"])
+hepsiburada.com###hyd-adx
 hepsiburada.com##iframe[src=""]
-hepsiburada.com##li:has(article[class^="productCard-module_article"] > div[class^="productCard-module_productCardRoot"] > a[href^="https://adservice.hepsiburada.com/"])
 ||resimupload.org/*/*.gif$image,domain=pamukovasosyalmedya.com
 pamukovasosyalmedya.com##.yatayReklam
 sondakika.com##.info-text:has(> span.kripto-info > img[alt="Reklam"])
@@ -2403,6 +2405,7 @@ mynet.com##div[id^="diger_mansetler-"] > .col[isshowcase] > a[href^="https://www
 ||muhasebetr.com/dosyagonder/upload/2023-webtasarim-800x250.png
 muhasebetr.com##.logo-adv
 ||televole.com/wp-content/*/onvo_banner
+hepsiburada.com##div[id^="Advertisement_"]
 ||buzfilmizle3.com/popup.js
 technopat.net##div[style="width: 728px; height: 90px;"]
 ||dizipia.com/filmp.js
@@ -2603,6 +2606,7 @@ fotomac.com.tr##.icrypex-wrap
 sozcu.com.tr##.sidebar-related
 ||fullhdfilm.*/binss.js
 ||hdplayersystem.live/player/walpaperss.jpg
+hepsiburada.com###DESKTOP_MASTHEAD-googleAdvertisement
 turkiyegazetesi.com.tr###dfp-kare-1
 yasemin.com##div[id^="dfp-anasayfa-masthead-"]
 ||r.resimlink.com/ZyRYl.jpg
@@ -2623,6 +2627,7 @@ forum.donanimhaber.com##.page-between-box > div[id] > .image-link-area
 ||forum.donanimhaber.com/api*/Globalapi/ListProductAds
 haberler.com##article > .partners
 haberler.com###ana_160x600_scroll
+hepsiburada.com##.Advertisement
 gezilesiyer.com###custom_html-9
 teknobh.com##div[id^="stream-item"]
 ||animeevim.com/image/catalog/kampanya/animeevim-banner.gif
@@ -5375,17 +5380,10 @@ oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
 lovefilmizle.net,elzemfilm.org,dizicaps.*,erotikfilmtube.com,sexfilmleriizle.com#$#.play-that-video { display: none !important; }
 lovefilmizle.net,elzemfilm.org,dizicaps.*,erotikfilmtube.com,sexfilmleriizle.com#$#body div#player { display: block !important; }
-x.palv2.cfd#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollVideoUrl', '/prerollVideoUrl = "https:.*\.mp4";/', 'prerollVideoUrl = "";')
-||blogger.googleusercontent.com/img/$domain=x.palv2.cfd
-x.palv2.cfd###adPlayerBanner
-!+ NOT_VALIDATE
-||blogger.googleusercontent.com/img/$domain=/dizimor\d+\.com\.tr$/
-||dizimor*.com.tr/uploads/ad/
-[$domain=/dizimor\d+\.com\.tr$/]##div[data-ad-zone]
-[$domain=/turkleak\d+\.live$/]#$##video-ad-overlay { display: none !important; }
-[$domain=/turkleak\d+\.live$/]#$##main-video-content { display: block !important; }
-[$domain=/turkleak\d+\.live$/]#%#//scriptlet('prevent-addEventListener', 'click', 'window.open')
-[$domain=/doedaturkifsa\d+\.blog$/]#%#//scriptlet('remove-node-text', 'script', 'popUnder')
+[$domain=/turkleak\d+.live$/]#$##video-ad-overlay { display: none !important; }
+[$domain=/turkleak\d+.live$/]#$##main-video-content { display: block !important; }
+[$domain=/turkleak\d+.live$/]#%#//scriptlet('prevent-addEventListener', 'click', 'window.open')
+[$domain=/doedaturkifsa\d+.blog$/]#%#//scriptlet('remove-node-text', 'script', 'popUnder')
 [$domain=/turkporoclub\d+\.sbs$/]#%#//scriptlet('remove-node-text', 'script', 'LAST_POP')
 [$domain=/turkporoclub\d+\.sbs$/]#%#//scriptlet("abort-current-inline-script", "document.createElement", "'script'")
 [$domain=/turkporoclub\d+\.sbs$/]##h3.section-title
@@ -5416,14 +5414,6 @@ x.palv2.cfd###adPlayerBanner
 [$domain=/taraftarium\d+\.xyz$/]##.ads-container
 [$domain=/taraftarium\d+\.xyz$/]##.pageskin-wrapper
 [$domain=/taraftarium\d+\.xyz$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', 'prerollEnabled:true', 'prerollEnabled:false')
-[$domain=/^turkzzersifsa\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'app_advert')
-[$domain=/^turkzzersifsa\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
-[$domain=/^turkifsalife\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'app_advert')
-[$domain=/^turkifsalife\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
-[$domain=/^sotweturkifsa\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'app_advert')
-[$domain=/^sotweturkifsa\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
-[$domain=/^sotweturkifsa\d+\.blog$/]##.entry-content > div:has(> a[href="https://t.me/turkifsalifevip"])
-[$domain=/^sotweturkifsa\d+\.blog$/]###block-35
 [$domain=/turkifsa\d?.porn$/]#%#//scriptlet('abort-on-property-read', 'doOpen')
 [$domain=/turkifsalink\d+\.store$/]##a[href="http://ank.ac/"]
 [$domain=/turktube\d+\.xyz$/]##a[href^="https://tinyurl.com/"]

@@ -1,9 +1,9 @@
-! Checksum: 6UVu1Pz6AStV5JmkiuYkVw
-! Diff-Path: ../patches/22/22-s-1776951669-3600.patch
+! Checksum: /sKoqtf0c2RMBHkt/luEow
+! Diff-Path: ../patches/22/22-s-1776163063-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.13.93
-! TimeUpdated: 2026-04-23T13:38:39+00:00
+! Version: 2.0.13.87
+! TimeUpdated: 2026-04-14T10:34:40+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1409,7 +1409,6 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (third-party services)
 !
-||cdn.helvia.io^$third-party
 ||lemrock.com^$third-party
 ||tariffuxx.de^$third-party
 ||web-client.moveo.ai^$third-party
@@ -1793,9 +1792,6 @@ yuristznaet.ru##iframe[src^="http://form.cloudleadia.com/"]
 !
 !   SECTION: Widgets - Marketing - Allowlist
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/229403
-@@||api.popin.cc/searchbox/$domain=ampproject.net
-@@||api.popin.cc/images/logo.png$domain=ampproject.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/218990
 @@||widgets.coingecko.com/gecko-coin-price-chart-widget.js$domain=rewards.ambire.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/214100
@@ -2033,7 +2029,6 @@ daddyhd.com##.sidebar__inner
 ||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com|revouninstaller.com
 litres.ru###call_support
 !
-business.linkedin.com##.persistent-assistant-container
 ||app.qualified.com/*/messenger?$domain=cloudflare.com
 iport.ru##div[class^="layout_chat_widgets_wrap__"]
 elcomercio.pe###merlin-widget-root
@@ -2197,9 +2192,6 @@ zebratechnologies.force.com##.zbrbot-container
 !
 !   SECTION: Uncategorized
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/229681
-||power-technology.com/wp-content/plugins/sgpolls/
-||survey.alchemer.eu^$subdocument,third-party
 ! https://github.com/AdguardTeam/AdguardFilters/issues/229092
 sn-jp.com##.br-vote-widget
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228367
@@ -2510,8 +2502,6 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
-phys.org##.support-note
-phys.org##.article-main__support
 20minut.ua##.thx-block
 telex.hu##.telex-donate
 telex.hu##.support-box

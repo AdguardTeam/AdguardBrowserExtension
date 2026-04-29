@@ -1,9 +1,9 @@
-! Checksum: DdPqYb4kkGNOFaGuOdUbig
-! Diff-Path: ../patches/20/20-s-1777286886-3600.patch
+! Checksum: gKUDIRjmfuAis4VCnM418w
+! Diff-Path: ../patches/20/20-s-1776436531-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.28.73
-! TimeUpdated: 2026-04-27T10:45:12+00:00
+! Version: 2.0.28.64
+! TimeUpdated: 2026-04-17T14:32:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,10 +60,6 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
-trhaber.com#%#//scriptlet('set-session-storage-item', 'trhaber_app_banner_dismissed', 'true')
-jkanime.net##.appGlobalMsj
-stremio.com##section[id^="stremio-on-tv"]
-mail.rambler.ru##div[class^="Promo-root-"]
 metallinvestbank.ru##.index-apps
 crediteurope.ru##main > section.mobile-app:has(> div.container > div.mobile-app-entities_blue > picture > source[srcset^="/upload/iblock/"][srcset$="/mobile_app_shadow.webp"])
 my.modulbank.ru#$#.auth__promo:has(.auth-promo--mobile-app) { display: none !important; }
@@ -346,7 +342,7 @@ m.olx.ua##div[class^="css-"]:has(> button[data-testid="app-install-banner-open"]
 chirashiplus.jp##.contents > a[href="https://app.chirashiplus.jp/"]
 poshmark.com##.btn--open-in-app
 hotokami.jp##a[onclick*="app"]
-suzuri.jp,zarahome.com,flipp.com##.download-app-banner
+zarahome.com,flipp.com##.download-app-banner
 coemee.com#%#//scriptlet('trusted-set-local-storage-item', 'pwa-install-prompt-dismissed', '2764250584116')
 vkusnoitochka.ru##a[href="https://trk.mail.ru/c/jpair2"]
 noz.de#$#.appB_page_box { display: none !important; }
@@ -393,6 +389,7 @@ pacificparadiseindian.com.au##div[data-class="app_download_banner"]
 dazeddigital.com##.article-main-content > .grid:has(a[href^="https://play.google.com/store/apps/details"])
 dazeddigital.com##.club-promo-strip
 bietigheimerzeitung.de##div[data-b-title="BHZ-R ePaper"]
+hepsiburada.com##details[class^="sf-smart-banner-"]
 e-shop.gr##.sidebar-apps
 ozdilekteyim.com##ozd-mobile-app-download
 moviebox.*##.pc-guide-mask

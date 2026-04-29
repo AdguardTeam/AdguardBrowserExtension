@@ -4048,30 +4048,28 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "090ddb6ae838bb8f2e9f32783f4a3f91" due to: ' + e);
         }
     },
-    '(()=>{const e={apply:(e,t,l)=>{try{const e=l[0];e?.includes(".b_ad")?l[0]="#b_results .b_algo:not([style])":e?.includes(".b_restorableLink")&&(l[0]=".b_algo:not([style])")}catch(e){}return Reflect.apply(e,t,l)}};window.Element.prototype.querySelectorAll=new Proxy(window.Element.prototype.querySelectorAll,e)})();': () => {
+    '!function(){const e={apply:(e,l,t)=>{const o=t[0];return o?.includes(".b_ad,")?t[0]="#b_results":o?.includes(".b_restorableLink")&&(t[0]=".b_algo"),Reflect.apply(e,l,t)}};window.Element.prototype.querySelectorAll=new Proxy(window.Element.prototype.querySelectorAll,e)}();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.ab0b5298af0d2937679d2e5e0df0312b === e) return;
-            (() => {
+            if (Window.prototype.toString["009a684340d0a5680676bfe531438c9e"] === e) return;
+            !function() {
                 const e = {
                     apply: (e, t, o) => {
-                        try {
-                            const e = o[0];
-                            e?.includes(".b_ad") ? o[0] = "#b_results .b_algo:not([style])" : e?.includes(".b_restorableLink") && (o[0] = ".b_algo:not([style])");
-                        } catch (e) {}
-                        return Reflect.apply(e, t, o);
+                        const r = o[0];
+                        return r?.includes(".b_ad,") ? o[0] = "#b_results" : r?.includes(".b_restorableLink") && (o[0] = ".b_algo"), 
+                        Reflect.apply(e, t, o);
                     }
                 };
                 window.Element.prototype.querySelectorAll = new Proxy(window.Element.prototype.querySelectorAll, e);
-            })();
-            Object.defineProperty(Window.prototype.toString, "ab0b5298af0d2937679d2e5e0df0312b", {
+            }();
+            Object.defineProperty(Window.prototype.toString, "009a684340d0a5680676bfe531438c9e", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "ab0b5298af0d2937679d2e5e0df0312b" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "009a684340d0a5680676bfe531438c9e" due to: ' + e);
         }
     },
     "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\\]\\.bab\\(window/.test(a.toString()))return b(a,c)};})();": () => {
@@ -4305,6 +4303,21 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "be54fb20467f57c75acee13f527620e5" due to: ' + e);
+        }
+    },
+    "window.showads=true;": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["312c329877d22ebe2fb61034e6a10055"] === e) return;
+            window.showads = !0;
+            Object.defineProperty(Window.prototype.toString, "312c329877d22ebe2fb61034e6a10055", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "312c329877d22ebe2fb61034e6a10055" due to: ' + e);
         }
     },
     '(function(a){setTimeout=function(){var b="function"==typeof arguments[0]?Function.prototype.toString.call(arguments[0]):"string"==typeof arguments[0]?arguments[0]:String(arguments[0]);return/\\[(_0x[a-z0-9]{4,})\\[\\d+\\]\\][\\[\\(]\\1\\[\\d+\\]/.test(b)?NaN:a.apply(window,arguments)}.bind();Object.defineProperty(setTimeout,"name",{value:a.name});setTimeout.toString=Function.prototype.toString.bind(a)})(setTimeout);': () => {
@@ -8660,37 +8673,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "cc07a31f6361dd25da8c32728ac08e9f" due to: ' + e);
         }
     },
-    '(()=>{const t={apply:(t,e,n)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(t,e,n);try{const a=n[0];if(!a?.context?.client)return Reflect.apply(t,e,n);const o=String(Date.now());a.playbackContext&&void 0===a.playbackContext.adPlaybackContext&&(a.playbackContext.contentPlaybackContext.lactMilliseconds=o),a.playerRequest&&void 0===a.playerRequest.playbackContext?.adPlaybackContext&&(a.playerRequest.playbackContext.contentPlaybackContext.lactMilliseconds=o),n[0]=a}catch(t){}return Reflect.apply(t,e,n)}};window.JSON.stringify=new Proxy(window.JSON.stringify,t)})();': () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString.ab30cf651bf4f7660cc398c45c285c13 === t) return;
-            (() => {
-                const t = {
-                    apply: (t, e, c) => {
-                        if (location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/")) return Reflect.apply(t, e, c);
-                        try {
-                            const o = c[0];
-                            if (!o?.context?.client) return Reflect.apply(t, e, c);
-                            const n = String(Date.now());
-                            o.playbackContext && void 0 === o.playbackContext.adPlaybackContext && (o.playbackContext.contentPlaybackContext.lactMilliseconds = n), 
-                            o.playerRequest && void 0 === o.playerRequest.playbackContext?.adPlaybackContext && (o.playerRequest.playbackContext.contentPlaybackContext.lactMilliseconds = n), 
-                            c[0] = o;
-                        } catch (t) {}
-                        return Reflect.apply(t, e, c);
-                    }
-                };
-                window.JSON.stringify = new Proxy(window.JSON.stringify, t);
-            })();
-            Object.defineProperty(Window.prototype.toString, "ab30cf651bf4f7660cc398c45c285c13", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "ab30cf651bf4f7660cc398c45c285c13" due to: ' + t);
-        }
-    },
     '(()=>{document.addEventListener("DOMContentLoaded",(()=>{const t=document.querySelector(\'astro-island[uid][props*="https://file-upload.org/file-redirect.html?url=https"]\'),e=t?.getAttribute("props")?.match(/https:\\/\\/file-upload\\.org\\/file-redirect\\.html\\?url=[^"]+/)?.[0];e&&location.assign(e)}));})();': () => {
         try {
             const e = "done";
@@ -8827,340 +8809,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "f9fdd7bf50948a3a4434700b9afa2851" due to: ' + e);
-        }
-    },
-    'function GoogleIma3Dai(t){const e=t=>"object"==typeof t&&null!==t,s=t=>{if(!e(t))return{};const s={},o=Object.keys(t);for(let e=0;e<o.length;e+=1){const n=o[e];s[n]=String(t[n])}return s},o=t=>"string"==typeof t&&t.length>0?t:null,n=t=>{t.listeners=new Map},i=t=>{if("string"==typeof t)return[t];if(!Array.isArray(t))return[];const e=[];for(let s=0;s<t.length;s+=1){const o=t[s];"string"==typeof o&&e.push(o)}return e},r=(t,o)=>{t.adTagParameters={},t.apiKey=null,t.authToken=null,t.format="hls",t.networkCode=null,t.omidAccessModeRules=null,t.streamActivityMonitorId=null,e(o)&&Object.assign(t,o),t.adTagParameters=s(t.adTagParameters),"string"==typeof t.format&&0!==t.format.length||(t.format="hls")},a=(t,e)=>{r(t,e),t.customAssetKey="string"==typeof t.customAssetKey?t.customAssetKey:""},c=function(){n(this)};c.prototype.addEventListener=function(t,e){if("function"!=typeof e)return;const s=i(t);for(let t=0;t<s.length;t+=1){const o=s[t];this.listeners.has(o)||this.listeners.set(o,new Set);const n=this.listeners.get(o);n&&n.add(e)}},c.prototype.removeEventListener=function(t,e){if("function"!=typeof e)return;const s=i(t);for(let t=0;t<s.length;t+=1){const o=this.listeners.get(s[t]);o&&o.delete(e)}},c.prototype.dispatchEvent=function(e){const s=this.listeners.get(e.type);if(s)for(const o of Array.from(s))try{o(e)}catch(e){logMessage(t,e)}};const u=function(t){r(this,t)};u.StreamFormat={DASH:"dash",HLS:"hls"};const l=function(t){r(this,t),this.assetKey="string"==typeof this.assetKey?this.assetKey:""};Object.setPrototypeOf(l.prototype,u.prototype);const h=function(t){a(this,t)};Object.setPrototypeOf(h.prototype,u.prototype);const p=function(t){a(this,t),this.liveStreamEventId="string"==typeof this.liveStreamEventId?this.liveStreamEventId:"",this.oAuthToken="string"==typeof this.oAuthToken?this.oAuthToken:null,this.projectNumber="string"==typeof this.projectNumber?this.projectNumber:null,this.region="string"==typeof this.region?this.region:null,this.videoStitcherSessionOptions=e(this.videoStitcherSessionOptions)?this.videoStitcherSessionOptions:null};Object.setPrototypeOf(p.prototype,h.prototype);const d=function(t){r(this,t),this.adTagUrl="string"==typeof this.adTagUrl?this.adTagUrl:"",this.contentSourceUrl="string"==typeof this.contentSourceUrl?this.contentSourceUrl:"",this.oAuthToken="string"==typeof this.oAuthToken?this.oAuthToken:null,this.projectNumber="string"==typeof this.projectNumber?this.projectNumber:null,this.region="string"==typeof this.region?this.region:null,this.videoStitcherSessionOptions=e(this.videoStitcherSessionOptions)?this.videoStitcherSessionOptions:null,this.vodConfigId="string"==typeof this.vodConfigId?this.vodConfigId:""};Object.setPrototypeOf(d.prototype,u.prototype);const m=function(t){r(this,t),this.contentSourceId="string"==typeof this.contentSourceId?this.contentSourceId:"",this.videoId="string"==typeof this.videoId?this.videoId:""};Object.setPrototypeOf(m.prototype,u.prototype);const f=function(t){this.adPeriodData=null,this.adProgressData=null,this.cuepoints=[],this.errorMessage=null,this.manifestFormat="HLS",this.streamId=null,this.subtitles=[],this.url="",e(t)&&Object.assign(this,t)},g=function(t,e,s){this.type=t,this.streamData=e||new f,this.ad=s||null};g.Type={AD_BREAK_ENDED:"adBreakEnded",AD_BREAK_STARTED:"adBreakStarted",AD_PERIOD_ENDED:"adPeriodEnded",AD_PERIOD_STARTED:"adPeriodStarted",AD_PROGRESS:"adProgress",CLICK:"click",COMPLETE:"complete",CUEPOINTS_CHANGED:"cuepointsChanged",ERROR:"error",FIRST_QUARTILE:"firstquartile",HIDE_AD_UI:"hideAdUi",LOADED:"loaded",MIDPOINT:"midpoint",PAUSED:"paused",RESUMED:"resumed",SHOW_AD_UI:"showAdUi",SKIPPABLE_STATE_CHANGED:"skippableStateChanged",SKIPPED:"skip",STARTED:"started",STREAM_INITIALIZED:"streamInitialized",THIRD_QUARTILE:"thirdquartile",VIDEO_CLICKED:"videoClicked"},g.prototype.getAd=function(){return this.ad},g.prototype.getStreamData=function(){return this.streamData};const y=function(){this.locale=""};y.prototype.getLocale=function(){return this.locale},y.prototype.setLocale=function(t){this.locale=t};const S=new WeakMap,v=function(){S.set(this,{})};v.prototype.getFeatureFlags=function(){return(t=>{const e=S.get(t);if(e)return e;const s={};return S.set(t,s),s})(this)},v.prototype.setFeatureFlags=function(t){S.set(this,Object.assign({},t))};const E=t=>{const e=t;return"string"==typeof e.assetKey&&e.assetKey.length>0},I=t=>{const e=t;return"string"==typeof e.networkCode&&e.networkCode.length>0&&"string"==typeof e.customAssetKey&&e.customAssetKey.length>0},T=t=>{const e=t;return"string"==typeof e.contentSourceId&&e.contentSourceId.length>0&&"string"==typeof e.videoId&&e.videoId.length>0},A=t=>{const e=t,s=t,o=t,n=t;return"string"==typeof o.vodConfigId&&o.vodConfigId.length>0?`mock-video-stitcher-vod-${o.vodConfigId}`:"string"==typeof o.contentSourceUrl&&o.contentSourceUrl.length>0?"mock-video-stitcher-vod":"string"==typeof s.liveStreamEventId&&s.liveStreamEventId.length>0?`mock-video-stitcher-live-${s.liveStreamEventId}`:"string"==typeof e.assetKey&&e.assetKey.length>0?`mock-live-${e.assetKey}`:"string"==typeof n.videoId&&n.videoId.length>0?`mock-vod-${n.videoId}`:"mock-stream"},D=t=>"string"==typeof t.format&&"dash"===t.format.toLowerCase()?"DASH":"HLS",R=(t,s,o,n)=>{const i=new f({cuepoints:s.slice(),errorMessage:o,manifestFormat:D(t),streamId:A(t),url:""});return e(n)&&Object.assign(i,n),i},O=(t,e)=>{const s=Object.keys(e.adTagParameters);for(let o=0;o<s.length;o+=1){const n=s[o];t.searchParams.set(n,e.adTagParameters[n])}e.apiKey&&t.searchParams.set("api-key",e.apiKey),e.authToken&&t.searchParams.set("auth-token",e.authToken),e.streamActivityMonitorId&&t.searchParams.set("dai-sam-id",e.streamActivityMonitorId)},w=(t,e)=>{const s=new URL(`${e}/ssai/event/${t.assetKey}/streams`);return O(s,t),s.toString()},k=(t,e)=>{const s=new URL(`${e}/ssai/pods/api/v1/network/${t.networkCode}/custom_asset/${t.customAssetKey}/stream`),o="dash"===t.format.toLowerCase()?"dash":"hls";return O(s,t),s.searchParams.set("manifest-type",o),s.toString()},P=(t,e)=>{const s="dash"===t.format.toLowerCase()?"dash":"hls",o=new URL(`${e}/ondemand/${s}/content/${t.contentSourceId}/vid/${t.videoId}/streams`);return O(o,t),o.toString()},U="https://dai.google.com",M="https://pubads.g.doubleclick.net",b=(t,e,s)=>{const n=o(s.pod_manifest_url)||o(s.podManifestUrl)||"",i=o(s.stream_id)||o(s.streamId),r=o(s.stream_manifest)||o(s.streamUrl)||n||"",a=(t=>o(t.errorMessage)||o(t.error_message))(s),c=r.length>0||null!==i&&i.length>0,u=a||(c?null:"Stream initialization response missing stream URL"),l=o(s.manifest_format)||o(s.manifestFormat)||D(t),h=i||A(t),p=Array.isArray(s.subtitles)?s.subtitles:[];return R(t,e,u,{manifestFormat:l,podManifestUrl:n,pod_manifest_url:n,streamId:h,subtitles:p,url:r})},_=t=>{(t=>{t.adUiElement&&(t.adUiElement.style.display="none")})(t),(t=>{t.videoElement&&!t.videoElement.controls&&(t.videoElement.controls=!0)})(t)},C=function(t,e,s){n(this),this.videoElement=t||null,this.adUiElement=e||null,this.uiSettings=s||new y,this.clickElement=e||null,this.streamData=new f,this.streamMonitor={},this.streamRequest=null,this.cuepoints=[],this.lastMetadata=null,this.lastTimedMetadata=null};Object.setPrototypeOf(C.prototype,c.prototype),C.prototype.contentTimeForStreamTime=function(t){return"number"==typeof t?t:0},C.prototype.destroy=function(){this.reset()},C.prototype.focus=function(){const e=this.clickElement;if(e&&"function"==typeof e.focus)try{e.focus()}catch(e){logMessage(t,e)}},C.prototype.getAdSkippableState=function(){return!0},C.prototype.getStreamData=function(){return this.streamData},C.prototype.loadStreamMetadata=function(){_(this),this.dispatchEvent(new g(g.Type.LOADED,this.streamData))},C.prototype.onTimedMetadata=function(t){this.lastTimedMetadata=t},C.prototype.previousCuePointForStreamTime=function(t){let e=null;for(let s=0;s<this.cuepoints.length;s+=1){const o=this.cuepoints[s];"number"==typeof o.start&&(o.start<=t&&(e=o))}return e},C.prototype.processMetadata=function(t,e,s){this.lastMetadata={data:e,timestamp:s,type:t}},C.prototype.replaceAdTagParameters=function(t){this.streamRequest||(this.streamRequest=new u),this.streamRequest.adTagParameters=s(t)},C.prototype.requestStream=function(t){const s=(t=>{if(t instanceof u)return t;if(e(t)){if("string"==typeof t.liveStreamEventId)return new p(t);if("string"==typeof t.contentSourceUrl||"string"==typeof t.vodConfigId||"string"==typeof t.adTagUrl)return new d(t);if("string"==typeof t.customAssetKey)return new h(t);if("string"==typeof t.assetKey)return new l(t);if("string"==typeof t.contentSourceId||"string"==typeof t.videoId)return new m(t)}return new u})(t);this.streamRequest=s;const o=(t,e)=>{var s;this.streamData=e,(t=>t===g.Type.LOADED||t===g.Type.STREAM_INITIALIZED)(t)&&_(this),s=()=>{this.dispatchEvent(new g(g.Type.STREAM_INITIALIZED,e)),this.dispatchEvent(new g(t,e))},"function"!=typeof requestAnimationFrame?setTimeout(s,0):requestAnimationFrame(s)};if(!(t=>E(t)||I(t)||(t=>{const e=t;return"string"==typeof e.liveStreamEventId&&e.liveStreamEventId.length>0})(t)||(t=>{const e=t,s="string"==typeof e.contentSourceUrl&&e.contentSourceUrl.length>0,o="string"==typeof e.vodConfigId&&e.vodConfigId.length>0;return s||o})(t)||T(t))(s))return void o(g.Type.ERROR,R(s,this.cuepoints,"Missing stream request identifiers"));const n=(t=>I(t)?[k(t,U),k(t,M)]:E(t)?[w(t,U),w(t,M)]:T(t)?[P(t,U),P(t,M)]:[])(s);if(n.length>0){const t=s,i=async s=>{try{const i=await fetch(n[s],{method:"POST",credentials:"include"}),r=await(async t=>{const s=t;if(s&&!1===s.ok)throw new Error(`Stream initialization failed with status ${String(s.status||0)}`);if(s&&"function"==typeof s.json){const t=await s.json();return e(t)?t:{}}return e(t)?t:{}})(i);if(this.streamRequest!==t)return;const a=b(t,this.cuepoints,r),c=a.errorMessage?g.Type.ERROR:g.Type.LOADED;o(c,a)}catch(r){if(this.streamRequest!==t)return;if(s+1<n.length)return void await i(s+1);o(g.Type.ERROR,R(t,this.cuepoints,(t=>e(t)&&"string"==typeof t.message&&t.message.length>0?t.message:"Stream initialization failed")(r)))}};i(0)}else o(g.Type.LOADED,R(s,this.cuepoints,null))},C.prototype.reset=function(){this.cuepoints=[],this.lastMetadata=null,this.lastTimedMetadata=null,this.streamData=new f,this.streamRequest=null},C.prototype.setClickElement=function(t){this.adUiElement||(this.clickElement=t)},C.prototype.streamTimeForContentTime=function(t){return"number"==typeof t?t:0};const L={DaiSdkSettings:new v,LiveStreamRequest:l,PodStreamRequest:h,StreamData:f,StreamEvent:g,StreamManager:C,StreamRequest:u,UiSettings:y,VideoStitcherLiveStreamRequest:p,VideoStitcherVodStreamRequest:d,VODStreamRequest:m},K=window,j=e(K.google)?K.google:{};e(K.google)||(K.google=j);const q=e(j.ima)?j.ima:{};j.ima=q;const F=e(q.dai)?q.dai:{};q.dai=F;const N=e(F.api)?F.api:{};F.api=N,Object.assign(N,L)}GoogleIma3Dai();': () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString.a1f9094ecc9c5c192364ec753ec8eb3f === t) return;
-            function GoogleIma3Dai(t) {
-                const e = t => "object" == typeof t && null !== t, s = t => {
-                    if (!e(t)) return {};
-                    const s = {}, o = Object.keys(t);
-                    for (let e = 0; e < o.length; e += 1) {
-                        const n = o[e];
-                        s[n] = String(t[n]);
-                    }
-                    return s;
-                }, o = t => "string" == typeof t && t.length > 0 ? t : null, n = t => {
-                    t.listeners = new Map;
-                }, i = t => {
-                    if ("string" == typeof t) return [ t ];
-                    if (!Array.isArray(t)) return [];
-                    const e = [];
-                    for (let s = 0; s < t.length; s += 1) {
-                        const o = t[s];
-                        "string" == typeof o && e.push(o);
-                    }
-                    return e;
-                }, r = (t, o) => {
-                    t.adTagParameters = {}, t.apiKey = null, t.authToken = null, t.format = "hls", t.networkCode = null, 
-                    t.omidAccessModeRules = null, t.streamActivityMonitorId = null, e(o) && Object.assign(t, o), 
-                    t.adTagParameters = s(t.adTagParameters), "string" == typeof t.format && 0 !== t.format.length || (t.format = "hls");
-                }, a = (t, e) => {
-                    r(t, e), t.customAssetKey = "string" == typeof t.customAssetKey ? t.customAssetKey : "";
-                }, c = function() {
-                    n(this);
-                };
-                c.prototype.addEventListener = function(t, e) {
-                    if ("function" != typeof e) return;
-                    const s = i(t);
-                    for (let t = 0; t < s.length; t += 1) {
-                        const o = s[t];
-                        this.listeners.has(o) || this.listeners.set(o, new Set);
-                        const n = this.listeners.get(o);
-                        n && n.add(e);
-                    }
-                }, c.prototype.removeEventListener = function(t, e) {
-                    if ("function" != typeof e) return;
-                    const s = i(t);
-                    for (let t = 0; t < s.length; t += 1) {
-                        const o = this.listeners.get(s[t]);
-                        o && o.delete(e);
-                    }
-                }, c.prototype.dispatchEvent = function(e) {
-                    const s = this.listeners.get(e.type);
-                    if (s) for (const o of Array.from(s)) try {
-                        o(e);
-                    } catch (e) {
-                        logMessage(t, e);
-                    }
-                };
-                const u = function(t) {
-                    r(this, t);
-                };
-                u.StreamFormat = {
-                    DASH: "dash",
-                    HLS: "hls"
-                };
-                const l = function(t) {
-                    r(this, t), this.assetKey = "string" == typeof this.assetKey ? this.assetKey : "";
-                };
-                Object.setPrototypeOf(l.prototype, u.prototype);
-                const p = function(t) {
-                    a(this, t);
-                };
-                Object.setPrototypeOf(p.prototype, u.prototype);
-                const h = function(t) {
-                    a(this, t), this.liveStreamEventId = "string" == typeof this.liveStreamEventId ? this.liveStreamEventId : "", 
-                    this.oAuthToken = "string" == typeof this.oAuthToken ? this.oAuthToken : null, this.projectNumber = "string" == typeof this.projectNumber ? this.projectNumber : null, 
-                    this.region = "string" == typeof this.region ? this.region : null, this.videoStitcherSessionOptions = e(this.videoStitcherSessionOptions) ? this.videoStitcherSessionOptions : null;
-                };
-                Object.setPrototypeOf(h.prototype, p.prototype);
-                const d = function(t) {
-                    r(this, t), this.adTagUrl = "string" == typeof this.adTagUrl ? this.adTagUrl : "", 
-                    this.contentSourceUrl = "string" == typeof this.contentSourceUrl ? this.contentSourceUrl : "", 
-                    this.oAuthToken = "string" == typeof this.oAuthToken ? this.oAuthToken : null, this.projectNumber = "string" == typeof this.projectNumber ? this.projectNumber : null, 
-                    this.region = "string" == typeof this.region ? this.region : null, this.videoStitcherSessionOptions = e(this.videoStitcherSessionOptions) ? this.videoStitcherSessionOptions : null, 
-                    this.vodConfigId = "string" == typeof this.vodConfigId ? this.vodConfigId : "";
-                };
-                Object.setPrototypeOf(d.prototype, u.prototype);
-                const f = function(t) {
-                    r(this, t), this.contentSourceId = "string" == typeof this.contentSourceId ? this.contentSourceId : "", 
-                    this.videoId = "string" == typeof this.videoId ? this.videoId : "";
-                };
-                Object.setPrototypeOf(f.prototype, u.prototype);
-                const m = function(t) {
-                    this.adPeriodData = null, this.adProgressData = null, this.cuepoints = [], this.errorMessage = null, 
-                    this.manifestFormat = "HLS", this.streamId = null, this.subtitles = [], this.url = "", 
-                    e(t) && Object.assign(this, t);
-                }, g = function(t, e, s) {
-                    this.type = t, this.streamData = e || new m, this.ad = s || null;
-                };
-                g.Type = {
-                    AD_BREAK_ENDED: "adBreakEnded",
-                    AD_BREAK_STARTED: "adBreakStarted",
-                    AD_PERIOD_ENDED: "adPeriodEnded",
-                    AD_PERIOD_STARTED: "adPeriodStarted",
-                    AD_PROGRESS: "adProgress",
-                    CLICK: "click",
-                    COMPLETE: "complete",
-                    CUEPOINTS_CHANGED: "cuepointsChanged",
-                    ERROR: "error",
-                    FIRST_QUARTILE: "firstquartile",
-                    HIDE_AD_UI: "hideAdUi",
-                    LOADED: "loaded",
-                    MIDPOINT: "midpoint",
-                    PAUSED: "paused",
-                    RESUMED: "resumed",
-                    SHOW_AD_UI: "showAdUi",
-                    SKIPPABLE_STATE_CHANGED: "skippableStateChanged",
-                    SKIPPED: "skip",
-                    STARTED: "started",
-                    STREAM_INITIALIZED: "streamInitialized",
-                    THIRD_QUARTILE: "thirdquartile",
-                    VIDEO_CLICKED: "videoClicked"
-                }, g.prototype.getAd = function() {
-                    return this.ad;
-                }, g.prototype.getStreamData = function() {
-                    return this.streamData;
-                };
-                const y = function() {
-                    this.locale = "";
-                };
-                y.prototype.getLocale = function() {
-                    return this.locale;
-                }, y.prototype.setLocale = function(t) {
-                    this.locale = t;
-                };
-                const S = new WeakMap, v = function() {
-                    S.set(this, {});
-                };
-                v.prototype.getFeatureFlags = function() {
-                    return (t => {
-                        const e = S.get(t);
-                        if (e) return e;
-                        const s = {};
-                        return S.set(t, s), s;
-                    })(this);
-                }, v.prototype.setFeatureFlags = function(t) {
-                    S.set(this, Object.assign({}, t));
-                };
-                const E = t => {
-                    const e = t;
-                    return "string" == typeof e.assetKey && e.assetKey.length > 0;
-                }, I = t => {
-                    const e = t;
-                    return "string" == typeof e.networkCode && e.networkCode.length > 0 && "string" == typeof e.customAssetKey && e.customAssetKey.length > 0;
-                }, A = t => {
-                    const e = t;
-                    return "string" == typeof e.contentSourceId && e.contentSourceId.length > 0 && "string" == typeof e.videoId && e.videoId.length > 0;
-                }, T = t => {
-                    const e = t, s = t, o = t, n = t;
-                    return "string" == typeof o.vodConfigId && o.vodConfigId.length > 0 ? `mock-video-stitcher-vod-${o.vodConfigId}` : "string" == typeof o.contentSourceUrl && o.contentSourceUrl.length > 0 ? "mock-video-stitcher-vod" : "string" == typeof s.liveStreamEventId && s.liveStreamEventId.length > 0 ? `mock-video-stitcher-live-${s.liveStreamEventId}` : "string" == typeof e.assetKey && e.assetKey.length > 0 ? `mock-live-${e.assetKey}` : "string" == typeof n.videoId && n.videoId.length > 0 ? `mock-vod-${n.videoId}` : "mock-stream";
-                }, D = t => "string" == typeof t.format && "dash" === t.format.toLowerCase() ? "DASH" : "HLS", R = (t, s, o, n) => {
-                    const i = new m({
-                        cuepoints: s.slice(),
-                        errorMessage: o,
-                        manifestFormat: D(t),
-                        streamId: T(t),
-                        url: ""
-                    });
-                    return e(n) && Object.assign(i, n), i;
-                }, O = (t, e) => {
-                    const s = Object.keys(e.adTagParameters);
-                    for (let o = 0; o < s.length; o += 1) {
-                        const n = s[o];
-                        t.searchParams.set(n, e.adTagParameters[n]);
-                    }
-                    e.apiKey && t.searchParams.set("api-key", e.apiKey), e.authToken && t.searchParams.set("auth-token", e.authToken), 
-                    e.streamActivityMonitorId && t.searchParams.set("dai-sam-id", e.streamActivityMonitorId);
-                }, w = (t, e) => {
-                    const s = new URL(`${e}/ssai/event/${t.assetKey}/streams`);
-                    return O(s, t), s.toString();
-                }, k = (t, e) => {
-                    const s = new URL(`${e}/ssai/pods/api/v1/network/${t.networkCode}/custom_asset/${t.customAssetKey}/stream`), o = "dash" === t.format.toLowerCase() ? "dash" : "hls";
-                    return O(s, t), s.searchParams.set("manifest-type", o), s.toString();
-                }, b = (t, e) => {
-                    const s = "dash" === t.format.toLowerCase() ? "dash" : "hls", o = new URL(`${e}/ondemand/${s}/content/${t.contentSourceId}/vid/${t.videoId}/streams`);
-                    return O(o, t), o.toString();
-                }, P = "https://dai.google.com", U = "https://pubads.g.doubleclick.net", M = (t, e, s) => {
-                    const n = o(s.pod_manifest_url) || o(s.podManifestUrl) || "", i = o(s.stream_id) || o(s.streamId), r = o(s.stream_manifest) || o(s.streamUrl) || n || "", a = (t => o(t.errorMessage) || o(t.error_message))(s), c = r.length > 0 || null !== i && i.length > 0, u = a || (c ? null : "Stream initialization response missing stream URL"), l = o(s.manifest_format) || o(s.manifestFormat) || D(t), p = i || T(t), h = Array.isArray(s.subtitles) ? s.subtitles : [];
-                    return R(t, e, u, {
-                        manifestFormat: l,
-                        podManifestUrl: n,
-                        pod_manifest_url: n,
-                        streamId: p,
-                        subtitles: h,
-                        url: r
-                    });
-                }, _ = t => {
-                    (t => {
-                        t.adUiElement && (t.adUiElement.style.display = "none");
-                    })(t), (t => {
-                        t.videoElement && !t.videoElement.controls && (t.videoElement.controls = !0);
-                    })(t);
-                }, C = function(t, e, s) {
-                    n(this), this.videoElement = t || null, this.adUiElement = e || null, this.uiSettings = s || new y, 
-                    this.clickElement = e || null, this.streamData = new m, this.streamMonitor = {}, 
-                    this.streamRequest = null, this.cuepoints = [], this.lastMetadata = null, this.lastTimedMetadata = null;
-                };
-                Object.setPrototypeOf(C.prototype, c.prototype), C.prototype.contentTimeForStreamTime = function(t) {
-                    return "number" == typeof t ? t : 0;
-                }, C.prototype.destroy = function() {
-                    this.reset();
-                }, C.prototype.focus = function() {
-                    const e = this.clickElement;
-                    if (e && "function" == typeof e.focus) try {
-                        e.focus();
-                    } catch (e) {
-                        logMessage(t, e);
-                    }
-                }, C.prototype.getAdSkippableState = function() {
-                    return !0;
-                }, C.prototype.getStreamData = function() {
-                    return this.streamData;
-                }, C.prototype.loadStreamMetadata = function() {
-                    _(this), this.dispatchEvent(new g(g.Type.LOADED, this.streamData));
-                }, C.prototype.onTimedMetadata = function(t) {
-                    this.lastTimedMetadata = t;
-                }, C.prototype.previousCuePointForStreamTime = function(t) {
-                    let e = null;
-                    for (let s = 0; s < this.cuepoints.length; s += 1) {
-                        const o = this.cuepoints[s];
-                        "number" == typeof o.start && o.start <= t && (e = o);
-                    }
-                    return e;
-                }, C.prototype.processMetadata = function(t, e, s) {
-                    this.lastMetadata = {
-                        data: e,
-                        timestamp: s,
-                        type: t
-                    };
-                }, C.prototype.replaceAdTagParameters = function(t) {
-                    this.streamRequest || (this.streamRequest = new u), this.streamRequest.adTagParameters = s(t);
-                }, C.prototype.requestStream = function(t) {
-                    const s = (t => {
-                        if (t instanceof u) return t;
-                        if (e(t)) {
-                            if ("string" == typeof t.liveStreamEventId) return new h(t);
-                            if ("string" == typeof t.contentSourceUrl || "string" == typeof t.vodConfigId || "string" == typeof t.adTagUrl) return new d(t);
-                            if ("string" == typeof t.customAssetKey) return new p(t);
-                            if ("string" == typeof t.assetKey) return new l(t);
-                            if ("string" == typeof t.contentSourceId || "string" == typeof t.videoId) return new f(t);
-                        }
-                        return new u;
-                    })(t);
-                    this.streamRequest = s;
-                    const o = (t, e) => {
-                        var s;
-                        this.streamData = e, (t => t === g.Type.LOADED || t === g.Type.STREAM_INITIALIZED)(t) && _(this), 
-                        s = () => {
-                            this.dispatchEvent(new g(g.Type.STREAM_INITIALIZED, e)), this.dispatchEvent(new g(t, e));
-                        }, "function" != typeof requestAnimationFrame ? setTimeout(s, 0) : requestAnimationFrame(s);
-                    };
-                    if (!(t => E(t) || I(t) || (t => {
-                        const e = t;
-                        return "string" == typeof e.liveStreamEventId && e.liveStreamEventId.length > 0;
-                    })(t) || (t => {
-                        const e = t, s = "string" == typeof e.contentSourceUrl && e.contentSourceUrl.length > 0, o = "string" == typeof e.vodConfigId && e.vodConfigId.length > 0;
-                        return s || o;
-                    })(t) || A(t))(s)) return void o(g.Type.ERROR, R(s, this.cuepoints, "Missing stream request identifiers"));
-                    const n = (t => I(t) ? [ k(t, P), k(t, U) ] : E(t) ? [ w(t, P), w(t, U) ] : A(t) ? [ b(t, P), b(t, U) ] : [])(s);
-                    if (n.length > 0) {
-                        const t = s, i = async s => {
-                            try {
-                                const i = await fetch(n[s], {
-                                    method: "POST",
-                                    credentials: "include"
-                                }), r = await (async t => {
-                                    const s = t;
-                                    if (s && !1 === s.ok) throw new Error(`Stream initialization failed with status ${String(s.status || 0)}`);
-                                    if (s && "function" == typeof s.json) {
-                                        const t = await s.json();
-                                        return e(t) ? t : {};
-                                    }
-                                    return e(t) ? t : {};
-                                })(i);
-                                if (this.streamRequest !== t) return;
-                                const a = M(t, this.cuepoints, r), c = a.errorMessage ? g.Type.ERROR : g.Type.LOADED;
-                                o(c, a);
-                            } catch (r) {
-                                if (this.streamRequest !== t) return;
-                                if (s + 1 < n.length) return void await i(s + 1);
-                                o(g.Type.ERROR, R(t, this.cuepoints, (t => e(t) && "string" == typeof t.message && t.message.length > 0 ? t.message : "Stream initialization failed")(r)));
-                            }
-                        };
-                        i(0);
-                    } else o(g.Type.LOADED, R(s, this.cuepoints, null));
-                }, C.prototype.reset = function() {
-                    this.cuepoints = [], this.lastMetadata = null, this.lastTimedMetadata = null, this.streamData = new m, 
-                    this.streamRequest = null;
-                }, C.prototype.setClickElement = function(t) {
-                    this.adUiElement || (this.clickElement = t);
-                }, C.prototype.streamTimeForContentTime = function(t) {
-                    return "number" == typeof t ? t : 0;
-                };
-                const L = {
-                    DaiSdkSettings: new v,
-                    LiveStreamRequest: l,
-                    PodStreamRequest: p,
-                    StreamData: m,
-                    StreamEvent: g,
-                    StreamManager: C,
-                    StreamRequest: u,
-                    UiSettings: y,
-                    VideoStitcherLiveStreamRequest: h,
-                    VideoStitcherVodStreamRequest: d,
-                    VODStreamRequest: f
-                }, K = window, j = e(K.google) ? K.google : {};
-                e(K.google) || (K.google = j);
-                const q = e(j.ima) ? j.ima : {};
-                j.ima = q;
-                const F = e(q.dai) ? q.dai : {};
-                q.dai = F;
-                const N = e(F.api) ? F.api : {};
-                F.api = N, Object.assign(N, L);
-            }
-            GoogleIma3Dai();
-            Object.defineProperty(Window.prototype.toString, "a1f9094ecc9c5c192364ec753ec8eb3f", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "a1f9094ecc9c5c192364ec753ec8eb3f" due to: ' + e);
         }
     },
     '(()=>{document.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll(\'a[href^="https://af.gog.com/game/"]\').forEach((t=>{const e=t.getAttribute("href").replace("https://af.gog.com/","https://www.gog.com/");t.setAttribute("href",e)}))}));})();': () => {
@@ -11577,6 +11225,37 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "14a0dfcfc56570b45c7aa35014affd67" due to: ' + e);
+        }
+    },
+    '(()=>{const t={apply:(t,e,n)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(t,e,n);try{const a=n[0];if(!a?.context?.client)return Reflect.apply(t,e,n);const o=String(Date.now());a.playbackContext&&void 0===a.playbackContext.adPlaybackContext&&(a.playbackContext.contentPlaybackContext.lactMilliseconds=o),a.playerRequest&&void 0===a.playerRequest.playbackContext?.adPlaybackContext&&(a.playerRequest.playbackContext.contentPlaybackContext.lactMilliseconds=o),n[0]=a}catch(t){}return Reflect.apply(t,e,n)}};window.JSON.stringify=new Proxy(window.JSON.stringify,t)})();': () => {
+        try {
+            const t = "done";
+            if (Window.prototype.toString.ab30cf651bf4f7660cc398c45c285c13 === t) return;
+            (() => {
+                const t = {
+                    apply: (t, e, c) => {
+                        if (location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/")) return Reflect.apply(t, e, c);
+                        try {
+                            const o = c[0];
+                            if (!o?.context?.client) return Reflect.apply(t, e, c);
+                            const n = String(Date.now());
+                            o.playbackContext && void 0 === o.playbackContext.adPlaybackContext && (o.playbackContext.contentPlaybackContext.lactMilliseconds = n), 
+                            o.playerRequest && void 0 === o.playerRequest.playbackContext?.adPlaybackContext && (o.playerRequest.playbackContext.contentPlaybackContext.lactMilliseconds = n), 
+                            c[0] = o;
+                        } catch (t) {}
+                        return Reflect.apply(t, e, c);
+                    }
+                };
+                window.JSON.stringify = new Proxy(window.JSON.stringify, t);
+            })();
+            Object.defineProperty(Window.prototype.toString, "ab30cf651bf4f7660cc398c45c285c13", {
+                value: t,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (t) {
+            console.error('Error executing AG js rule with uniqueId "ab30cf651bf4f7660cc398c45c285c13" due to: ' + t);
         }
     },
     '(()=>{const t=Function.prototype.call;let e=!1,o=!1,n=!1;const c={apply:(c,r,a)=>{const i=a[0];if(i?.requestNumber&&i?.snapshot)try{o=((t,e=5)=>{if("object"!=typeof t||null===t)return!1;const o=new Array(1e3);let c=0;const r=new WeakSet;for(o[c++]={obj:t,depth:0};c>0&&!n;){const{obj:t,depth:a}=o[--c];if(a>e||"object"!=typeof t||null===t||r.has(t))continue;let i;r.add(t);try{i=Object.hasOwn(t,"backoffTimeMs")}catch(t){}if(i)return void 0!==t.backoffTimeMs||(n=!0,!1);for(const e in t)if(Object.hasOwn(t,e)){let n;try{n=t[e]}catch(t){}null!==n&&"object"==typeof n&&!r.has(n)&&c<o.length&&(o[c++]={obj:n,depth:a+1})}}return!1})(i),e=!0,(o||n)&&(Function.prototype.call=t)}catch(t){}return Reflect.apply(c,r,a)}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,c);window.addEventListener("load",(async()=>{if(Function.prototype.call=t,!o&&e)return;const n=window.location.search,c=new URLSearchParams(n).get("v");if(!c)return;const r=await(a="#movie_player",i=200,l=1e4,new Promise((t=>{if(!a||!i||!l)return void t(null);const e=Date.now()+l,o=()=>{const n=document.querySelector(a);n?t(n):Date.now()>e?t(null):setTimeout(o,i)};o()})));var a,i,l;if(!r)return;const s=new URLSearchParams(n).get("t")??"0",u=parseInt(s,10);if("function"==typeof r.loadVideoById&&!location.search.includes("&rco="))try{r.loadVideoById(c,u)}catch(t){}}))})();': () => {
