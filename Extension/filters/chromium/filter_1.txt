@@ -1,9 +1,9 @@
-! Checksum: TiBWzTpc79xNYccGr9Ks/A
-! Diff-Path: ../patches/1/1-s-1776540186-3600.patch
+! Checksum: OBeNP+PWIn2SHf7m6P4PEw
+! Diff-Path: ../patches/1/1-s-1777301368-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.5.46
-! TimeUpdated: 2026-04-18T19:19:50+00:00
+! Version: 2.1.5.54
+! TimeUpdated: 2026-04-27T14:45:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1438,6 +1438,8 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||merilrise.com^$third-party
+||elonreptiloid.pw^$third-party
 ||roomgome.com^
 ||gk7qlc.ru^
 ||gjv7fg.ru^
@@ -4587,6 +4589,7 @@ otvet.mail.ru##div[class^="_Card_"]:has(> div[class^="adv-slot-"])
 ! Fixing the first letter for the mobile version
 !
 ! ok.ru
+ok.ru##div[adchoicesize]
 ok.ru#%#//scriptlet('json-prune', 'result.body.direct')
 ||ok.ru/res/js/app/RightColumn_*.js
 ok.ru##.dialogWrapperBanner
@@ -6937,6 +6940,11 @@ gorod24.online,vedomosti.ru,kommersant.ru,rg.ru,glavbukh.ru,chehov-vid.ru,161.ru
 !
 ! NOTE: Specific rules
 !
+bcs-express.ru##div[style^="background-color:"]:has(> picture > img[src*="/promo-image/"])
+check.lenta.com##.banner_promo_wrapper
+profitcentr.com###baner-serf
+rodina-history.ru##div[class^="Adfox_"]
+ligazakon.net##.rekl_block_wrap
 the-day.ru##.creative-placeholder
 sravni.ru##div[class*="bordered-banner_withBorderRadius"]
 socportal.info##.bg-logo-ads
@@ -14968,7 +14976,7 @@ multmania.club,hdkinoteatr.com,free-torrents.org,game-torrent.info,goblin-online
 playtruck.2bb.ru##div[id^="b_script_"]
 lenov.ru##div[id^="b_tz"]
 rusplt.ru##div[id^="banganet_"]
-new-rutor.org,fedpress.ru,talks.by,tayga.info,turbina.ru##div[id^="banner_"]
+check.lenta.com,new-rutor.org,fedpress.ru,talks.by,tayga.info,turbina.ru##div[id^="banner_"]
 list-org.com##div[id^="bl_"]
 sobesednik.ru##div[id^="block-advert-"]
 donpress.com##div[id^="block-advertblock-"]
@@ -17859,7 +17867,7 @@ comments.rambler.ru##div[id^="adv_container"]
 kino.rambler.ru##div[data-banner]
 kino.rambler.ru##.article__partners
 !
-mail.rambler.ru##.AddBillboard-root-1v
+mail.rambler.ru##div[class^="AddBillboard-"]
 mail.rambler.ru##div[class^="AppContainer-adWrapper"]
 mail.rambler.ru##div[class^="Ad-direct-"]
 mail.rambler.ru##.virtualLettersTableWrap
@@ -18330,6 +18338,8 @@ lib.seu.edu.cn#@#.one-search
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/230051
+artuzel.com#@#.bannerBlock
 ! https://github.com/AdguardTeam/AdguardFilters/issues/229198
 @@||mospraz.ru/image/cache/catalog/categories/den-pobedy/icons/bannery-
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228354

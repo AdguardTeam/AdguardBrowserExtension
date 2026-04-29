@@ -1,9 +1,9 @@
-! Checksum: ogkb1COZQbDks39xwDhAuQ
-! Diff-Path: ../patches/7/7-s-1776688587-3600.patch
+! Checksum: B2b5+pSOjCHRYfSE8nBvNQ
+! Diff-Path: ../patches/7/7-s-1777297370-3600.patch
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.73.43
-! TimeUpdated: 2026-04-20T12:33:20+00:00
+! Version: 2.0.73.59
+! TimeUpdated: 2026-04-27T13:39:14+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1877,7 +1877,15 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
-fo76db.com##aside#wrap:has(> div[class^="swiper"] a[href^="https://amzn.to/"])
+auctions.yahoo.co.jp###buyee
+auctions.yahoo.co.jp###lineAccountBanner
+mona-news.com##div[class^="infeed-article-"]
+toyokeizai.net##.--g-a-pickup
+toyokeizai.net##.--vertical-stack:has(> div.ad-container)
+toyokeizai.net##.--trend
+toyokeizai.net##div[class^="c-g-a"]
+navitime.co.jp##.st-hotel-list-title
+navitime.co.jp##.st-hotel-list__item--link
 hentaianimezone.com##iframe[data-link]
 hentaianimezone.com##a.r34-tab
 sn-jp.com###container > .header_message
@@ -2038,13 +2046,14 @@ famitsu.com##a[class*="ArticleDetailBody_buttonForEC"]
 lazuda.com##.top-sponsorArea02
 ||app.lazuda.com/api/kyujin_box/
 news.tv-asahi.co.jp#$#body:is(.articles, .top) .con:has(.main-container) { min-height: auto !important; }
+news.denfaminicogamer.jp#%#//scriptlet('abort-current-inline-script', 'dataLayer.push', 'document.cookie.includes')
 news.denfaminicogamer.jp##aside[id]:has(> a[onclick^="dataLayer"] > img[onload])
 news.denfaminicogamer.jp###dc
 news.denfaminicogamer.jp##.drc
 news.denfaminicogamer.jp##.azl
 news.denfaminicogamer.jp##.steam
 news.denfaminicogamer.jp##.articleList > li:has(> aside.steam)
-news.denfaminicogamer.jp##.fade[id*="_"][style="display: flex;"]
+news.denfaminicogamer.jp##body > div[id][style="display: flex;"]
 u-rennai.jp##.summary_list_box > .items:has(> a[onclick^="ga('send', 'event',"])
 i2chmeijin.com##div[align="center"]:has(> span[style="color: #333333;"] > font[size="2"])
 tokyo-np.co.jp##.cmp-hdg005:has(+ .cmp-lst001 > div > ul > li > div[id^="div-gpt-ad-"])
@@ -2500,7 +2509,8 @@ cookpad.com###page + div.grid-cols-subgrid.col-span-2.sticky.bottom-0
 2ch.logpo.jp##.Jungle
 2ch.logpo.jp##.TATEJungleLarge
 math.nakaken88.com##.fix-sidebar > div.widget:has(> div.widget-body > div.myAdAm)
-mindhack2ch.com,seesaawiki.jp,playing.wiki,chronicle.wiki,sokuhou.wiki,game-info.wiki#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '/[Aa]dDiv/')
+mindhack2ch.com,seesaawiki.jp,playing.wiki,chronicle.wiki,sokuhou.wiki,game-info.wiki###vignette-overlay
+mindhack2ch.com,seesaawiki.jp,playing.wiki,chronicle.wiki,sokuhou.wiki,game-info.wiki#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '/[Aa]dDiv|showVignette/')
 ||way78.com/side.html
 way78.com##tr[bgcolor="#ffffff"][valign="top"] > td[width="170"]
 qa.tunagaru.info##.widget_smartslider3
@@ -4228,6 +4238,8 @@ hoge5ch.info##.amazon_item
 meshinews.blog.jp,hoge5ch.info##.right-container > div.plugin-memo:last-child
 ||coneti.net/post_image/mt_20220623211055_jF696njUWbNW.jpg$third-party
 ||poginfo.ddo.jp/pogs/images/pr/
+times.abema.tv##.ad-taboola-below-article-thumbnails-preview
+times.abema.tv##.ad-taboola-mid-article-thumbnails
 times.abema.tv##.article-body div[style="display:flex; justify-content:center; align-items:center; width:100%; margin:16px 0;"]
 times.abema.tv##.figure__link[href^="https://www.amazon.co.jp"]
 times.abema.tv##.article-relation-card
@@ -4799,7 +4811,7 @@ fob.jp###sidebar > div.widget_custom_html:has(+ div#fix_sidebar)
 city.kamisu.ibaraki.jp###topsadbg
 saku-city.mamafre.jp###bottomBanner
 ||city.saku.nagano.jp/banner/
-jmanga.*##div[style^="max-width:700px"]
+jmanga.host##div[style^="max-width:700px"]
 gihyo.jp##.m-listitem--ad
 musicman.co.jp##.bannerBox
 ||tool2.nan-net.com/doujin/depression1.jpg
@@ -6950,7 +6962,7 @@ conveni.getnews.jp##.ad-pc-top
 conveni.getnews.jp##div[id^="jp_cgn_"]
 find.5ch.io##.supporter
 entnavi.com##.doublerec_css
-valorantnews.jp,entnavi.com,inkyagamer.com##.widget_amgatti_sk
+hapirouinfo.jp,valorantnews.jp,entnavi.com,inkyagamer.com##.widget_amgatti_sk
 navicon.jp##div[style="clear:both;padding-top:1em;text-align:center;"]
 datadeliver.net###right_box_inner > div[align="left"]
 omocoro.jp##div[class$="-down-ad"]
@@ -7691,7 +7703,7 @@ city.nagano.nagano.jp,navi.narakotsu.co.jp##.banner2
 gadgerba.com##.header-info
 gadgerba.com##.p-cv-btn-wrap
 munesada.com##aside[class^="ads-"]
-aregasore.com,taisy0.com,baby-calendar.jp,news2019.biz,douzin-q.com,koe-voice.jp,koikatsu-portal.com,shiroutowiki.work,aiolin.com,player440.com,taishon.nagoya##.w-singleBottom
+job.migi-nanameue.co.jp,aregasore.com,taisy0.com,baby-calendar.jp,news2019.biz,douzin-q.com,koe-voice.jp,koikatsu-portal.com,shiroutowiki.work,aiolin.com,player440.com,taishon.nagoya##.w-singleBottom
 forzastyle.com##.CLS_reduced
 daifuku-diary.com###st_custom_html_widget-10
 forzastyle.com##div[id*="_Infeed_TOP-"]
@@ -8306,7 +8318,7 @@ photo-tea.com###r-fix
 photo-tea.com##.ad-footer-related
 photo-tea.com##.googleAdPost
 photo-tea.com##.googleAdSide
-itpassportgokaku.com,jumpmatome2ch.biz,fukafuka295.jp,livemimi.com,overwatch2sokuhou.com,hotondo.work,mega-nikke.com,xn--gdkl0dubtwb7e3008dk17a.com,dq10.news,karatedo.co.jp,murasan-net.com,tabanavi.com,umaroidblog.com,agemasen.com,lifematome.blog,entameclip.com,cyapu.com,studiosero.net,xn--eckybzahmsm43ab5g5336c9iug.com,androplus.org,naga-ken.info,smartasw.com,akirarok.com,akkinews.net,color-variations.com,jbjbgame.com,nonde-tabete.com,salary-saver.com,switchsoku.com,uzurea.net,wpteq.org,kowakunotsubo.com,gekibuzz.com,tikitengo.com,animanch.com,trovivo.com,umamusumelabo.com##.yyi-rinker-contents
+hapirouinfo.jp,itpassportgokaku.com,jumpmatome2ch.biz,fukafuka295.jp,livemimi.com,overwatch2sokuhou.com,hotondo.work,mega-nikke.com,xn--gdkl0dubtwb7e3008dk17a.com,dq10.news,karatedo.co.jp,murasan-net.com,tabanavi.com,umaroidblog.com,agemasen.com,lifematome.blog,entameclip.com,cyapu.com,studiosero.net,xn--eckybzahmsm43ab5g5336c9iug.com,androplus.org,naga-ken.info,smartasw.com,akirarok.com,akkinews.net,color-variations.com,jbjbgame.com,nonde-tabete.com,salary-saver.com,switchsoku.com,uzurea.net,wpteq.org,kowakunotsubo.com,gekibuzz.com,tikitengo.com,animanch.com,trovivo.com,umamusumelabo.com##.yyi-rinker-contents
 ||yoyaku-top10.jp/uploads/rectangle_banner/
 yoyaku-top10.jp##.p-rectangle_banner_box
 ||amazonaws.com/adv-img.zucks.jp/$third-party
@@ -8520,6 +8532,7 @@ traicy.com##.sp-header-ad
 hochi.news##.article-list__head:has(+ .job-list-wrap)
 hochi.news##.sub__head:has(+ .right_job-list-wrap)
 entapark.jp,hochi.news##div[class$="job-list-wrap"]
+hochi.news#?#main > div.sub__head:has(> h3.sub-head__title:contains(報知求人情報))
 hochi.news##.ad[style^="min-width: 300px"]
 hochi.news##.ad[style^="width:300px; height:250px"]
 hochi.news##.ad[style^="width:310px; height:250px"]
