@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -31,7 +31,7 @@ import { Browser, BUILD_ENV } from '../../constants';
 import { type BrowserConfig, type BuildOptions } from '../common-constants';
 import { commonManifest } from '../manifest.common';
 
-import { firefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
+import { getFirefoxManifest, firefoxManifestStandalone } from './manifest.firefox';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
@@ -39,6 +39,15 @@ const __dirname = path.dirname(__filename);
 /* eslint-enable @typescript-eslint/naming-convention */
 
 export const genFirefoxConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}) => {
+    if (
+        browserConfig.browser !== Browser.FirefoxAmo
+        && browserConfig.browser !== Browser.FirefoxStandalone
+    ) {
+        throw new Error(`Unsupported Firefox target: ${browserConfig.browser}`);
+    }
+
+    const { browser } = browserConfig;
+
     const commonConfig = genMv2CommonConfig(browserConfig, options);
 
     if (!commonConfig?.output?.path) {
@@ -58,18 +67,19 @@ export const genFirefoxConfig = (browserConfig: BrowserConfig, options: BuildOpt
                     to: 'manifest.json',
                     transform: () => {
                         const commonManifestContent = Buffer.from(JSON.stringify(commonManifest));
+                        const firefoxManifest = getFirefoxManifest(browser);
 
                         const firefoxManifestContent = updateManifestBuffer(
                             BUILD_ENV,
-                            browserConfig.browser,
+                            browser,
                             commonManifestContent,
                             firefoxManifest,
                         );
 
-                        if (browserConfig.browser === Browser.FirefoxStandalone) {
+                        if (browser === Browser.FirefoxStandalone) {
                             return updateManifestBuffer(
                                 BUILD_ENV,
-                                browserConfig.browser,
+                                browser,
                                 firefoxManifestContent, // target part
                                 firefoxManifestStandalone, // added part
                             );

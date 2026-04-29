@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -28,7 +28,7 @@ import { AttachmentPortal } from '../../AttachmentPortal';
 import { Tooltip } from '../Tooltip';
 import { type Position } from '../../types';
 
-import './popover.pcss';
+import styles from './popover.module.pcss';
 
 /**
  * Default delay before showing popover.
@@ -44,7 +44,7 @@ type PopoverParams = {
     /**
      * Popover text.
      */
-    text?: string;
+    text?: string | React.ReactNode;
 
     /**
      * Delay before showing popover.
@@ -57,11 +57,6 @@ type PopoverParams = {
     comingSoon?: boolean;
 
     /**
-     * Flag to set fixed width for popover.
-     */
-    fixedWidth?: boolean;
-
-    /**
      * Child node.
      */
     children: React.ReactNode;
@@ -69,12 +64,13 @@ type PopoverParams = {
 
 /**
  * Wrap child container for handle tooltips rendering in overlay on hover
+ *
+ * @param PopoverParams Component props.
  */
 export const Popover = ({
     text,
     delay,
     comingSoon,
-    fixedWidth,
     children,
     ...props
 }: PopoverParams) => {
@@ -117,8 +113,8 @@ export const Popover = ({
     };
 
     const popoverClassName = comingSoon
-        ? 'popover popover--coming-soon'
-        : 'popover';
+        ? styles.popoverComingSoon
+        : styles.popoverDefault;
 
     return (
         <div

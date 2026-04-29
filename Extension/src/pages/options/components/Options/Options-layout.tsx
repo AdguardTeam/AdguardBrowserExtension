@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -26,11 +26,11 @@ import { rootStore } from '../../stores/RootStore';
 import { SkipToContentButton } from '../SkipToContentButton';
 import { Sidebar } from '../Sidebar';
 import { Notifications } from '../Notifications';
-import { Footer } from '../Footer';
+import { RateNotification } from '../RateNotification';
 
 export const OptionsLayout = observer(() => {
     const mainRef = useRef(null);
-    const { uiStore } = useContext(rootStore);
+    const { uiStore, settingsStore } = useContext(rootStore);
 
     return (
         <>
@@ -45,7 +45,7 @@ export const OptionsLayout = observer(() => {
                     <Notifications />
                     <Outlet />
                 </main>
-                <Footer />
+                {!settingsStore.showGeneralSettingsPromo && <RateNotification />}
             </div>
         </>
     );

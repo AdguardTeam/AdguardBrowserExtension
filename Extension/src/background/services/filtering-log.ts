@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -40,6 +40,7 @@ import {
     getDomain,
     type ApplyPermissionsRuleEvent,
     type DeclarativeRuleEvent,
+    type RuleInfo,
 } from 'tswebextension';
 
 import { messageHandler } from '../message-handler';
@@ -52,7 +53,7 @@ import {
     type SetPreserveLogStateMessage,
 } from '../../common/messages';
 import { UserAgent } from '../../common/user-agent';
-import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE } from '../../common/constants';
+import { AntiBannerFiltersId, FILTERING_LOG_WINDOW_STATE_KEY } from '../../common/constants';
 import {
     FiltersApi,
     type FilterMetadata,
@@ -63,9 +64,9 @@ import {
     TabsApi,
     HitStatsApi,
 } from '../api';
-import { browserStorage } from '../storages';
 import { SettingOption } from '../schema';
 import { FilteringLogApi } from '../api/filtering-log';
+import { browserStorage } from '../storages/shared-instances';
 
 export type GetFilteringLogDataResponse = {
     filtersMetadata: FilterMetadata[];
@@ -546,7 +547,7 @@ export class FilteringLogService {
         const { tabId, rules, eventId } = data;
 
         filteringLogApi.updateEventData(tabId, eventId, {
-            replaceRules: rules.map((rule) => ({
+            replaceRules: rules.map((rule: RuleInfo) => ({
                 filterId: rule.filterId,
                 ruleIndex: rule.ruleIndex,
                 appliedRuleText: rule.appliedRuleText,
@@ -737,16 +738,15 @@ export class FilteringLogService {
     }
 
     /**
-     * Saves the parameters of the filtering log window: position, size, etc.
+     * Saves filtering log window state (position and size) to browser.storage.local.
      *
-     * @param message Message of type {@link SetFilteringLogWindowStateMessage}.
-     * @param message.data Parameters of the filter log window {@link Windows#CreateCreateDataType}.
+     * @param message Message with type {@link SetFilteringLogWindowStateMessage}.
+     * @param message.data Contains the window state to save.
      */
     private static async onSetFilteringLogWindowState(
         { data }: SetFilteringLogWindowStateMessage,
     ): Promise<void> {
         const { windowState } = data;
-
-        await browserStorage.set(FILTERING_LOG_WINDOW_STATE, JSON.stringify(windowState));
+        await browserStorage.set(FILTERING_LOG_WINDOW_STATE_KEY, windowState);
     }
 }

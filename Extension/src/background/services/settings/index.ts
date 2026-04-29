@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -19,4 +19,4 @@
  */
 export { SettingsService } from 'settings-service';
 export { type GetOptionsDataResponse } from 'settings-types';
-export { type ExportMessageResponse } from './types-common';
+export { type ExportMessageResponse } from './types';

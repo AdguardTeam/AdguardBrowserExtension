@@ -94,6 +94,8 @@ export class UserAgent {
      *
      * @see {@link https://learn.microsoft.com/en-us/microsoft-edge/web-platform/how-to-detect-win11#sample-code-for-detecting-windows-11}.
      *
+     * @param version The Windows version string from user agent.
+     *
      * @returns Actual Windows version.
      */
     static async getActualWindowsVersion(version: string): Promise<string> {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -33,9 +33,14 @@ export const enum SavingFSMState {
     Idle = 'idle',
     Saving = 'saving',
     Saved = 'saved',
+    Error = 'error',
 }
 
-export type SavingFSMStateType = SavingFSMState.Idle | SavingFSMState.Saving | SavingFSMState.Saved;
+export type SavingFSMStateType =
+    SavingFSMState.Idle
+    | SavingFSMState.Saving
+    | SavingFSMState.Saved
+    | SavingFSMState.Error;
 
 /**
  * Possible events of the saving state machine.
@@ -112,7 +117,7 @@ export const createSavingService = ({ id, services }: SavingServiceParams) => {
                         target: SavingFSMState.Saved,
                     },
                     onError: {
-                        target: SavingFSMState.Saved,
+                        target: SavingFSMState.Error,
                         actions: ({ event }) => {
                             const { error } = event;
                             logger.error('[ext.savingFSM]: failed to save data: ', error);
@@ -123,6 +128,11 @@ export const createSavingService = ({ id, services }: SavingServiceParams) => {
             [SavingFSMState.Saved]: {
                 after: {
                     [SAVED_DISPLAY_TIMEOUT_MS]: SavingFSMState.Idle,
+                },
+            },
+            [SavingFSMState.Error]: {
+                on: {
+                    [SavingFSMEvent.Save]: SavingFSMState.Saving,
                 },
             },
         },

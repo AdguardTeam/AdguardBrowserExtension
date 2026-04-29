@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -25,7 +25,6 @@
  * Also please try, if possible, to not import here external modules
  * other that types.
  */
-import { type Windows } from 'webextension-polyfill';
 
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
@@ -82,6 +81,7 @@ export enum MessageType {
     GetAllowlistDomains = 'getAllowlistDomains',
     SaveAllowlistDomains = 'saveAllowlistDomains',
     CheckFiltersUpdate = 'checkFiltersUpdate',
+    GetCategoriesFilters = 'getCategoriesFilters',
     CheckExtensionUpdateMv3 = 'checkExtensionUpdateMv3',
     UpdateExtensionMv3 = 'updateExtensionMv3',
     DisableFiltersGroup = 'disableFiltersGroup',
@@ -152,6 +152,7 @@ export enum MessageType {
     SendTelemetryPageViewEvent = 'sendTelemetryPageViewEvent',
     AddTelemetryOpenedPage = 'addTelemetryOpenedPage',
     RemoveTelemetryOpenedPage = 'removeTelemetryOpenedPage',
+    DismissSearchPageAccessNotification = 'dismissSearchPageAccessNotification',
     GetRulesLimitsCountersMv3 = 'getRulesLimitsCountersMv3',
     CanEnableStaticFilterMv3 = 'canEnableStaticFilterMv3',
     CanEnableStaticGroupMv3 = 'canEnableStaticGroupMv3',
@@ -159,6 +160,12 @@ export enum MessageType {
     RestoreFiltersMv3 = 'restoreFiltersMv3',
     CurrentLimitsMv3 = 'currentLimitsMv3',
     GetExtensionStatusForPopupMV3 = 'getExtensionStatusForPopupMV3',
+    ImportConfiguration = 'importConfiguration',
+    IsPendingForImport = 'isPendingForImport',
+    GetPendingImportBlockWebrtc = 'getPendingImportBlockWebrtc',
+    ApplyImportConfiguration = 'applyImportConfiguration',
+    CancelImportConfiguration = 'cancelImportConfiguration',
+    GenerateShareUrl = 'generateShareUrl',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -254,6 +261,10 @@ export type CheckFiltersUpdateMessage = {
     type: MessageType.CheckFiltersUpdate;
 };
 
+export type GetCategoriesFiltersMessage = {
+    type: MessageType.GetCategoriesFilters;
+};
+
 export type CheckExtensionUpdateMessageMv3 = {
     type: MessageType.CheckExtensionUpdateMv3;
 };
@@ -291,6 +302,17 @@ export type OpenFullscreenUserRulesMessage = {
 
 export type OpenExtensionStoreMessage = {
     type: MessageType.OpenExtensionStore;
+};
+
+export const FULLSCREEN_STATE = 'fullscreen' as const;
+
+export type FilteringLogWindowState = {
+    width: number;
+    height: number;
+    top: number;
+    left: number;
+} | {
+    state: typeof FULLSCREEN_STATE;
 };
 
 export type OpenFilteringLogMessage = {
@@ -503,7 +525,7 @@ export type SetPreserveLogStateMessage = {
 export type SetFilteringLogWindowStateMessage = {
     type: MessageType.SetFilteringLogWindowState;
     data: {
-        windowState: Windows.CreateCreateDataType;
+        windowState: FilteringLogWindowState;
     };
 };
 
@@ -651,6 +673,10 @@ export type RemoveTelemetryOpenedPageMessage = {
     };
 };
 
+export type DismissSearchPageAccessNotificationMessage = {
+    type: MessageType.DismissSearchPageAccessNotification;
+};
+
 export type CanEnableStaticFilterMv3Message = {
     type: MessageType.CanEnableStaticFilterMv3;
     data: {
@@ -683,6 +709,33 @@ export type GetRulesLimitsCountersMv3Message = {
 
 export type GetExtensionStatusForPopupMV3Message = {
     type: MessageType.GetExtensionStatusForPopupMV3;
+};
+
+export type ImportConfigurationMessage = {
+    type: MessageType.ImportConfiguration;
+    data: {
+        queryString: string;
+    };
+};
+
+export type IsPendingForImportMessage = {
+    type: MessageType.IsPendingForImport;
+};
+
+export type GetPendingImportBlockWebrtcMessage = {
+    type: MessageType.GetPendingImportBlockWebrtc;
+};
+
+export type ApplyImportConfigurationMessage = {
+    type: MessageType.ApplyImportConfiguration;
+};
+
+export type CancelImportConfigurationMessage = {
+    type: MessageType.CancelImportConfiguration;
+};
+
+export type GenerateShareUrlMessage = {
+    type: MessageType.GenerateShareUrl;
 };
 
 // Unified message map that includes both message structure and response types
@@ -742,6 +795,10 @@ export type MessageMap = {
     [MessageType.CheckFiltersUpdate]: {
         message: CheckFiltersUpdateMessage;
         response: FilterMetadata[] | undefined;
+    };
+    [MessageType.GetCategoriesFilters]: {
+        message: GetCategoriesFiltersMessage;
+        response: CategoriesFilterData[];
     };
     [MessageType.CheckExtensionUpdateMv3]: {
         message: CheckExtensionUpdateMessageMv3;
@@ -995,6 +1052,10 @@ export type MessageMap = {
         message: RemoveTelemetryOpenedPageMessage;
         response: void;
     };
+    [MessageType.DismissSearchPageAccessNotification]: {
+        message: DismissSearchPageAccessNotificationMessage;
+        response: void;
+    };
     [MessageType.CurrentLimitsMv3]: {
         message: CurrentLimitsMv3Message;
         response: Mv3LimitsCheckResult;
@@ -1030,6 +1091,30 @@ export type MessageMap = {
     [MessageType.InitializeBlockingPageScript]: {
         message: InitializeBlockingPageScript;
         response: BlockingPageInitAppData;
+    };
+    [MessageType.ImportConfiguration]: {
+        message: ImportConfigurationMessage;
+        response: void;
+    };
+    [MessageType.IsPendingForImport]: {
+        message: IsPendingForImportMessage;
+        response: boolean;
+    };
+    [MessageType.GetPendingImportBlockWebrtc]: {
+        message: GetPendingImportBlockWebrtcMessage;
+        response: boolean;
+    };
+    [MessageType.ApplyImportConfiguration]: {
+        message: ApplyImportConfigurationMessage;
+        response: boolean;
+    };
+    [MessageType.CancelImportConfiguration]: {
+        message: CancelImportConfigurationMessage;
+        response: void;
+    };
+    [MessageType.GenerateShareUrl]: {
+        message: GenerateShareUrlMessage;
+        response: string;
     };
 };
 

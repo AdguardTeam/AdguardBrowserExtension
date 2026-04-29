@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,8 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createContext } from 'react';
-
 import {
     action,
     computed,
@@ -27,28 +25,82 @@ import {
     observable,
     runInAction,
 } from 'mobx';
-import { type SettingsData } from 'settings-api';
+import { nanoid } from 'nanoid';
 
+import { type SettingsData } from '../../../background/api/settings';
 import { messenger } from '../../services/messenger';
 import { logger } from '../../../common/logger';
-import { type SettingOption } from '../../../background/schema';
+import { translator } from '../../../common/translators/translator';
+import { type SettingOption, type Settings } from '../../../background/schema';
+import { type NotificationParams, NotificationType } from '../../common/types';
+import { type TelemetryEventName, type TelemetryActionToScreenMap } from '../../../common/telemetry';
 
-class FullscreenUserRulesStore {
+/**
+ * Notification with id.
+ */
+type NotificationParamsWithId = NotificationParams & {
+    /**
+     * Unique notification id.
+     */
+    id: string;
+};
+
+/**
+ * Store for the fullscreen user rules page.
+ *
+ * Encapsulates all UI state (loader, notifications) and settings interactions
+ * so the page does not depend on the options-page RootStore. This reduces the
+ * fullscreen-user-rules bundle size (AG-48937).
+ */
+export class FullscreenUserRulesStore {
+    /**
+     * Extension settings data.
+     */
     @observable
     settings: SettingsData | null = null;
 
+    /**
+     * Loader visibility state.
+     */
+    @observable
+    showLoader = false;
+
+    /**
+     * Notifications list.
+     */
+    @observable
+    notifications: NotificationParamsWithId[] = [];
+
+    /**
+     * Whether anonymized usage data collection is allowed.
+     */
+    @observable
+    private allowAnonymizedUsageData = false;
+
     constructor() {
         makeObservable(this);
+
+        this.setShowLoader = this.setShowLoader.bind(this);
     }
 
+    /**
+     * Fetches fullscreen user rules data from the background page
+     * and updates settings and telemetry consent flag.
+     */
     @action
-    async getFullscreenUserRulesData() {
+    async getFullscreenUserRulesData(): Promise<void> {
         const { settings } = await messenger.getUserRulesEditorData();
         runInAction(() => {
             this.settings = settings;
+            this.allowAnonymizedUsageData = settings.values[
+                settings.names.AllowAnonymizedUsageData
+            ];
         });
     }
 
+    /**
+     * Appearance theme from settings.
+     */
     @computed
     get appearanceTheme() {
         if (!this.settings) {
@@ -58,6 +110,9 @@ class FullscreenUserRulesStore {
         return this.settings.values[this.settings.names.AppearanceTheme];
     }
 
+    /**
+     * Setting ID for user filter enabled toggle.
+     */
     @computed
     get userFilterEnabledSettingId(): SettingOption.UserFilterEnabled | null {
         if (!this.settings) {
@@ -66,6 +121,136 @@ class FullscreenUserRulesStore {
         }
         return this.settings.names.UserFilterEnabled;
     }
-}
 
-export const fullscreenUserRulesStore = createContext(new FullscreenUserRulesStore());
+    /**
+     * Sets the loader visibility state.
+     *
+     * @param value Loader visibility state.
+     */
+    @action
+    setShowLoader(value = false): void {
+        this.showLoader = value;
+    }
+
+    /**
+     * Adds a notification to the list.
+     *
+     * @param params Notification parameters.
+     *
+     * @returns Notification id or null if duplicate.
+     */
+    @action
+    addNotification(params: NotificationParams): string | null {
+        const isNotificationAlreadyPresent = this.notifications
+            .some((notification) => {
+                return notification.type === params.type
+                    && notification.text === params.text;
+            });
+
+        if (isNotificationAlreadyPresent) {
+            return null;
+        }
+        const id = nanoid();
+        this.notifications.push({
+            id,
+            ...params,
+        });
+        return id;
+    }
+
+    /**
+     * Adds an error notification about rule limits exceeded.
+     *
+     * The notification will have a button to open the rules limits tab.
+     *
+     * @param text Notification text.
+     */
+    @action
+    addRuleLimitsNotification(text: string): void {
+        const buttons = [{
+            title: translator.getMessage('options_rule_limits'),
+            onClick: messenger.openRulesLimitsTab,
+        }];
+        this.addNotification({
+            type: NotificationType.Error,
+            text,
+            buttons,
+        });
+    }
+
+    /**
+     * Removes a notification from the list.
+     *
+     * @param id Notification id.
+     */
+    @action
+    removeNotification(id: string): void {
+        this.notifications = this.notifications
+            .filter((notification) => notification.id !== id);
+    }
+
+    /**
+     * Updates a setting value locally and sends it to the background.
+     * Reverts the local value on failure.
+     *
+     * @param settingId Setting key.
+     * @param value New value.
+     */
+    @action
+    async updateSetting<T extends SettingOption>(
+        settingId: T,
+        value: Settings[T],
+    ): Promise<void> {
+        if (!this.settings) {
+            logger.debug('[ext.FullscreenUserRulesStore.updateSetting]: settings is not initialized yet');
+            return;
+        }
+
+        const previousValue = this.settings.values[settingId];
+        this.settings.values[settingId] = value;
+
+        try {
+            await messenger.changeUserSetting(settingId, value);
+        } catch (e) {
+            // Revert optimistic UI update on failure
+            runInAction(() => {
+                if (this.settings) {
+                    this.settings.values[settingId] = previousValue;
+                }
+            });
+            throw e;
+        }
+    }
+
+    /**
+     * Checks MV3 rule limitations and shows a notification if dynamic rules
+     * are over the limit. No-op on MV2; overridden in MV3 subclass.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    @action
+    async checkLimitations(): Promise<void> {
+        // No-op. Overridden in MV3 subclass.
+    }
+
+    /**
+     * Sends a custom telemetry event to the background if usage data collection
+     * is allowed.
+     *
+     * @param eventName Name of the custom telemetry event.
+     * @param screenName Name of the screen where the event occurred.
+     */
+    async sendTelemetryCustomEvent(
+        eventName: TelemetryEventName,
+        screenName: TelemetryActionToScreenMap[TelemetryEventName],
+    ): Promise<void> {
+        try {
+            if (!this.allowAnonymizedUsageData) {
+                return;
+            }
+
+            await messenger.sendTelemetryCustomEvent(screenName, eventName);
+        } catch (e) {
+            logger.debug('[ext.FullscreenUserRulesStore.sendTelemetryCustomEvent]: Failed to send custom telemetry event', e);
+        }
+    }
+}

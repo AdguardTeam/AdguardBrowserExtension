@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -249,7 +249,7 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
      *
      * @returns Updated page statistics data item.
      */
-    private static createStatsDataItem(
+    public static createStatsDataItem(
         categoryId: string | null,
         blocked: number,
     ): PageStatsDataItem {

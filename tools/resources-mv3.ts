@@ -61,7 +61,7 @@ const resourcesMv3 = async (skipLocalResources = false) => {
 
     if (process.env.OPENAI_API_KEY) {
         console.log('Finding dangerous rules...');
-        await findDangerousRules(process.env.OPENAI_API_KEY);
+        await findDangerousRules(process.env.OPENAI_API_KEY, true);
         console.log('Dangerous rules check completed');
     } else {
         console.log('OpenAI API key is not provided, skipping dangerous rules check');

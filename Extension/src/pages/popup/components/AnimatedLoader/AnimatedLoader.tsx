@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -48,7 +48,7 @@ type AnimatedLoaderProps = {
     /**
      * Component to render after timeout passes.
      */
-    children: JSX.Element;
+    children: JSX.Element | null;
 
     /**
      * Flag that indicates whether the application is still loading.
@@ -68,6 +68,8 @@ type AnimatedLoaderProps = {
  *   ensuring smooth visual transition.
  *
  * Animation duration is automatically calculated from the Lottie JSON file.
+ *
+ * @param AnimatedLoaderProps Component props.
  */
 export const AnimatedLoader = ({
     children,

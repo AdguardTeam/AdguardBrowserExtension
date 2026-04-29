@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -31,6 +31,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 import { AddedRuleState, WizardRequestState } from '../../../constants';
 import { logger } from '../../../../../common/logger';
+import theme from '../../../styles/theme';
 
 import './request-create-rule.pcss';
 
@@ -217,30 +218,29 @@ const RequestCreateRule = observer(() => {
         && wizardStore.rulePatterns.length > 1;
     const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
 
-    let title = translator.getMessage('filtering_modal_add_title');
-    if (wizardStore.requestModalState === WizardRequestState.Unblock) {
-        title = translator.getMessage('filtering_modal_exception_title');
-    }
+    const title = wizardStore.requestModalState === WizardRequestState.Unblock
+        ? translator.getMessage('filtering_modal_allow_title')
+        : translator.getMessage('filtering_modal_block_title');
 
     return (
         <>
-            <div className={cn('request-modal__title', { 'request-modal__title_fixed': contentOverflowed })}>
+            <div className={cn(theme.sideModal.title, { 'request-modal__title_fixed': contentOverflowed })}>
                 <button
                     type="button"
                     onClick={handleBackClick}
-                    className="request-modal__navigation"
+                    className={theme.sideModal.navigation}
                 >
                     <Icon
                         id="#arrow-left"
                         className="icon--24 icon--gray-default"
                     />
-                    <span className="request-modal__header">{title}</span>
+                    <span className={theme.sideModal.header}>{title}</span>
                 </button>
             </div>
-            <div ref={ref} className="request-modal__content thin-scrollbar">
+            <div ref={ref} className={`${theme.sideModal.content} thin-scrollbar`}>
                 <div className="request-info">
                     <div className="request-info__main">
-                        <div className="request-info__key">
+                        <div className="create-rule-title">
                             {translator.getMessage('filtering_modal_rule_text_desc')}
                         </div>
                         <textarea
@@ -248,14 +248,17 @@ const RequestCreateRule = observer(() => {
                             className="request-info__value request-modal__rule-text"
                             onChange={handleRuleChange}
                             value={wizardStore.rule}
+                            rows={3}
                         />
                     </div>
                 </div>
                 {showPatterns && (
                     <div className="request-info patterns">
                         <div className="request-info__main">
-                            <div className="request-info__key">
-                                {translator.getMessage('filtering_modal_patterns_desc')}
+                            <div className="create-rule-subtitle">
+                                {wizardStore.requestModalState === WizardRequestState.Unblock
+                                    ? translator.getMessage('filtering_modal_patterns_desc_allow')
+                                    : translator.getMessage('filtering_modal_patterns_desc_block')}
                             </div>
                             {rulePatterns}
                         </div>
@@ -264,7 +267,7 @@ const RequestCreateRule = observer(() => {
                 {showOptions && (
                     <div className="request-info options">
                         <div className="request-info__main">
-                            <div className="request-info__key">
+                            <div className="create-rule-subtitle">
                                 {translator.getMessage('filtering_modal_options_desc')}
                             </div>
                             {options}
